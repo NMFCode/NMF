@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="utf-8"?>
+<nmeta:Namespace xmi:version="2.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" Uri="http://nmf.codeplex.com/nmeta/" Prefix="nmeta" Name="Meta" xmlns:xmi="http://www.omg.org/XMI" xmlns:nmeta="http://nmf.codeplex.com/nmeta/" xsi:schemaLocation="http://nmf.codeplex.com/nmeta/ NMeta.xsd">
+ <Types xsi:type="nmeta:Class" BaseTypes="#//TypedElement/" Name="Attribute" Summary="Represents a simple-valued attribute">
+   <Attributes Type="#//String/" Name="DefaultValue" Summary="The default value for this attribute" />
+   <References Opposite="#//StructuredType/Attributes/" ReferenceType="#//StructuredType/" Name="DeclaringType" Summary="The type that declared this attribute" />
+   <References ReferenceType="#//Attribute/" Name="Refines" Summary="Gets or sets the attribute that is implemented by the current attribute" />
+ </Types>
+ <Types xsi:type="nmeta:Class" BaseTypes="#//TypedElement/" Name="AttributeConstraint">
+   <References Opposite="#//Class/AttributeConstraints/" LowerBound="1" ReferenceType="#//Class/" Name="DeclaringType" />
+   <Attributes IsOrdered="True" Name="Values" Type="#//String/" UpperBound="-1"/>
+   <References ReferenceType="#//Attribute/" LowerBound="1" Name="Constrains" />
+ </Types>
+ <Types xsi:type="nmeta:Class" BaseTypes="#//ReferenceType/" Name="Class" Summary="Represents a group of instances with common properties like attributes or references">
+   <Attributes DefaultValue="false" Type="#//Boolean/" LowerBound="1" Name="IsInterface" Summary="Determines whether this class is an interface" />
+   <Attributes DefaultValue="false" Type="#//Boolean/" LowerBound="1" Name="IsAbstract" />
+   <References UpperBound="-1" ReferenceType="#//Class/" Name="BaseTypes" />
+   <References UpperBound="1" ReferenceType="#//Class/" Name="InstanceOf" />
+   <References ReferenceType="#//Attribute/" Name="Identifier" />
+   <References IsContainment="True" Opposite="#//AttributeConstraint/DeclaringType/" UpperBound="-1" ReferenceType="#//AttributeConstraint/" Name="AttributeConstraints" />
+   <References IsContainment="True" Opposite="#//ReferenceConstraint/DeclaringType/" UpperBound="-1" ReferenceType="#//ReferenceConstraint/" Name="ReferenceConstraints" />
+ </Types>
+ <Types xsi:type="nmeta:Class" BaseTypes="#//StructuredType/" Name="DataType" Summary="Represents a complex immutable data class" />
+ <Types xsi:type="nmeta:Class" BaseTypes="#//Type/" Name="Enumeration">
+   <Attributes Type="#//Boolean/" LowerBound="1" Name="IsFlagged" />
+   <References IsContainment="True" Opposite="#//Literal/Enumeration/" UpperBound="-1" ReferenceType="#//Literal/" Name="Literals" />
+ </Types>
+ <Types xsi:type="nmeta:Class" BaseTypes="#//MetaElement/" Name="Event" Summary="Represents an event">
+   <References ReferenceType="#//DataType/" Name="Type" />
+   <References Opposite="#//ReferenceType/Events/" LowerBound="1" ReferenceType="#//ReferenceType/" Name="DeclaringType" />
+ </Types>
+ <Types xsi:type="nmeta:Class" BaseTypes="#//ReferenceType/" Name="Extension">
+   <References LowerBound="1" ReferenceType="#//Class/" Name="AdornedClass" />
+ </Types>
+ <Types xsi:type="nmeta:Class" BaseTypes="#//MetaElement/" Name="Literal">
+   <Attributes Type="#//Integer/" Name="Value" />
+   <References Opposite="#//Enumeration/Literals/" ReferenceType="#//Enumeration/" Name="Enumeration" IsOrdered="True"/>
+ </Types>
+ <Types xsi:type="nmeta:Class" IsAbstract="True" BaseTypes="#//ModelElement/" Identifier="#//MetaElement/Name/" Name="MetaElement">
+   <Attributes LowerBound="1" Type="#//String/" Name="Name" />
+   <Attributes Type="#//String/" Name="Summary" />
+   <Attributes Type="#//String/" Name="Remarks" />
+ </Types>
+ <Types xsi:type="nmeta:Class" BaseTypes="#//ModelElement/" Name="Model">
+   <Attributes Type="#//Uri/" Name="ModelUri" />
+   <References IsContainment="True" UpperBound="-1" ReferenceType="#//ModelElement/" Name="RootElements" />
+ </Types>
+ <Types xsi:type="nmeta:Class" IsAbstract="True" Name="ModelElement">
+   <Attributes LowerBound="1" Type="#//Uri/" Name="AbsoluteUri" />
+   <Attributes LowerBound="1" Type="#//Uri/" Name="RelativeUri" />
+   <References IsContainment="True" Opposite="#//ModelElementExtension/ExtendedElement/" UpperBound="-1" ReferenceType="#//ModelElementExtension/" Name="Extensions" />
+   <References ReferenceType="#//ModelElement/" Name="Parent" />
+   <References ReferenceType="#//ReferenceType/" Name="Type" />
+ </Types>
+ <Types xsi:type="nmeta:Class" IsAbstract="True" Name="ModelElementExtension" InstanceOf="#//Extension/">
+   <References Opposite="#//ModelElement/Extensions/" LowerBound="1" ReferenceType="#//ModelElement/" Name="ExtendedElement" />
+ </Types>
+ <Types xsi:type="nmeta:Class" BaseTypes="#//MetaElement/" Name="Namespace">
+   <Attributes Type="#//Uri/" Name="Uri" />
+   <Attributes Type="#//String/" Name="Prefix" />
+   <References Opposite="#//Namespace/ChildNamespaces/" ReferenceType="#//Namespace/" Name="ParentNamespace" />
+   <References IsContainment="True" Opposite="#//Namespace/ParentNamespace/" UpperBound="-1" ReferenceType="#//Namespace/" Name="ChildNamespaces" />
+   <References IsContainment="True" Opposite="#//Type/Namespace/" UpperBound="-1" ReferenceType="#//Type/" Name="Types" />
+ </Types>
+ <Types xsi:type="nmeta:Class" BaseTypes="#//TypedElement/" Name="Operation">
+   <References IsContainment="True" Opposite="#//Parameter/Operation/" UpperBound="-1" ReferenceType="#//Parameter/" Name="Parameters" />
+   <References Opposite="#//StructuredType/Operations/" LowerBound="1" ReferenceType="#//StructuredType/" Name="DeclaringType" />
+   <References ReferenceType="#//Operation/" Name="Refines" />
+ </Types>
+ <Types xsi:type="nmeta:Class" BaseTypes="#//TypedElement/" Name="Parameter">
+   <Attributes LowerBound="1" Type="#//Direction/" Name="Direction" />
+   <References Opposite="#//Operation/Parameters/" LowerBound="1" ReferenceType="#//Operation/" Name="Operation" />
+ </Types>
+ <Types xsi:type="nmeta:Class" BaseTypes="#//Type/" Name="PrimitiveType">
+   <Attributes Type="#//String/" Name="SystemType" />
+ </Types>
+ <Types xsi:type="nmeta:Class" BaseTypes="#//TypedElement/" Name="Reference">
+   <Attributes Type="#//Boolean/" LowerBound="1" Name="IsContainment" />
+   <References Opposite="#//ReferenceType/References/" LowerBound="1" ReferenceType="#//ReferenceType/" Name="DeclaringType" />
+   <References Opposite="#//Reference/Opposite/" ReferenceType="#//Reference/" Name="Opposite" />
+   <References ReferenceType="#//ReferenceType" Name="ReferenceType" Refines="#//TypedElement/Type"/>
+   <References ReferenceType="#//Reference/" Name="Refines" />
+ </Types>
+ <Types xsi:type="nmeta:Class" BaseTypes="#//TypedElement/" Name="ReferenceConstraint">
+   <References Opposite="#//Class/ReferenceConstraints/" LowerBound="1" ReferenceType="#//Class/" Name="DeclaringType" />
+   <References IsOrdered="True" Name="References" UpperBound="-1"/>
+   <References ReferenceType="#//Reference/" LowerBound="1" Name="Constrains" />
+ </Types>
+ <Types xsi:type="nmeta:Class" IsAbstract="True" BaseTypes="#//StructuredType/" Name="ReferenceType">
+   <References IsContainment="True" Opposite="#//Event/DeclaringType/" UpperBound="-1" ReferenceType="#//Event/" Name="Events" />
+   <References IsContainment="True" Opposite="#//Reference/DeclaringType/" UpperBound="-1" ReferenceType="#//Reference/" Name="References" />
+ </Types>
+ <Types xsi:type="nmeta:Class" IsAbstract="True" BaseTypes="#//Type/" Name="StructuredType">
+   <References IsContainment="True" Opposite="#//Operation/DeclaringType/" UpperBound="-1" ReferenceType="#//Operation/" Name="Operations" />
+   <References IsContainment="True" Opposite="#//Attribute/DeclaringType/" UpperBound="-1" ReferenceType="#//Attribute/" Name="Attributes" />
+ </Types>
+ <Types xsi:type="nmeta:Class" IsAbstract="True" BaseTypes="#//MetaElement/" Name="Type">
+   <References Opposite="#//Namespace/Types/" LowerBound="1" ReferenceType="#//Namespace/" Name="Namespace" />
+ </Types>
+ <Types xsi:type="nmeta:Class" IsAbstract="True" IsInterface="True" BaseTypes="#//MetaElement/" Name="TypedElement">
+   <Attributes LowerBound="1" Type="#//Boolean/" Name="IsOrdered" />
+   <Attributes LowerBound="1" Type="#//Boolean/" Name="IsUnique" />
+   <Attributes DefaultValue="0" LowerBound="1" Type="#//Integer/" Name="LowerBound" />
+   <Attributes DefaultValue="1" LowerBound="1" Type="#//Integer/" Name="UpperBound" />
+   <References LowerBound="1" ReferenceType="#//Type/" Name="Type" />
+ </Types>
+ <Types xsi:type="nmeta:Extension" AdornedClass="#//Type/" Name="MappedType">
+   <Attributes UpperBound="1" Type="#//SystemType/" Name="SystemType" />
+ </Types>
+ <Types xsi:type="nmeta:Enumeration" Name="Direction">
+   <Literals Name="In" />
+   <Literals Value="1" Name="Out" />
+   <Literals Value="2" Name="InOut" />
+ </Types>
+ <Types xsi:type="nmeta:PrimitiveType" SystemType="System.Boolean" Name="Boolean" />
+ <Types xsi:type="nmeta:PrimitiveType" SystemType="System.Byte" Name="Byte" />
+ <Types xsi:type="nmeta:PrimitiveType" SystemType="System.Byte[]" Name="ByteArray" />
+ <Types xsi:type="nmeta:PrimitiveType" SystemType="DateTime" Name="DateTime"/>
+ <Types xsi:type="nmeta:PrimitiveType" SystemType="System.Double" Name="Double" />
+ <Types xsi:type="nmeta:PrimitiveType" SystemType="System.Single" Name="Float" />
+ <Types xsi:type="nmeta:PrimitiveType" SystemType="Guid" Name="Guid"/>
+ <Types xsi:type="nmeta:PrimitiveType" SystemType="System.Int32" Name="Integer" />
+ <Types xsi:type="nmeta:PrimitiveType" SystemType="System.Int64" Name="Long" />
+ <Types xsi:type="nmeta:PrimitiveType" SystemType="System.Object" Name="Object" />
+ <Types xsi:type="nmeta:PrimitiveType" SystemType="System.String" Name="String" />
+ <Types xsi:type="nmeta:PrimitiveType" SystemType="System.Int16" Name="Short" />
+ <Types xsi:type="nmeta:PrimitiveType" SystemType="TimeSpan" Name="TimeSpan"/>
+ <Types xsi:type="nmeta:PrimitiveType" SystemType="Uri" Name="Uri" />
+ <Types xsi:type="nmeta:PrimitiveType" SystemType="System.Type" Name="SystemType" />
+</nmeta:Namespace>

@@ -1,0 +1,130 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{235646F1-1F85-47C9-8BD2-A3E854AC38EB}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>NMF.Transformations</RootNamespace>
+    <AssemblyName>NMF.Transformations</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <SccProjectName>SAK</SccProjectName>
+    <SccLocalPath>SAK</SccLocalPath>
+    <SccAuxPath>SAK</SccAuxPath>
+    <SccProvider>SAK</SccProvider>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <RunCodeAnalysis>true</RunCodeAnalysis>
+    <CodeAnalysisRuleSet>TransformationRules.ruleset</CodeAnalysisRuleSet>
+    <DocumentationFile>bin\Release\NMF.Transformations.XML</DocumentationFile>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="Microsoft.CSharp" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Linq\StaticPattern.cs" />
+    <Compile Include="Linq\StaticPatternContext.cs" />
+    <Compile Include="NTL\AbstractTransformationRule.cs" />
+    <Compile Include="NTL\ChangePropagationMode.cs" />
+    <Compile Include="NTL\ITransformationRulePattern.cs" />
+    <Compile Include="NTL\TraceExtensions.cs" />
+    <Compile Include="NTL\TraceTransformationRule.cs" />
+    <Compile Include="NTL\ComputationBase.cs" />
+    <Compile Include="NTL\TraceOnlyComputation.cs" />
+    <Compile Include="NTL\TransformationComputation.cs" />
+    <Compile Include="NTL\OverrideRuleAttribute.cs" />
+    <Compile Include="NTL\TransformationRuleBaseTN.cs" />
+    <Compile Include="NTL\InPlaceTransformationRuleBaseTN.cs" />
+    <Compile Include="NTL\InPlaceComputation.cs" />
+    <Compile Include="GlobalSuppressions.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="NTL\ReflectiveTransformation.cs" />
+    <Compile Include="Linq\ComputationWrapper.cs" />
+    <Compile Include="Linq\IncrementalExtensions.cs" />
+    <Compile Include="Linq\IncrementalPattern.cs" />
+    <Compile Include="Linq\IncrementalPatternContext.cs" />
+    <Compile Include="Linq\IncrementalPatternEngine.cs" />
+    <Compile Include="Linq\TransformationRuleSource.cs" />
+    <Compile Include="NTL\TransformationRule.cs" />
+    <Compile Include="NTL\TransformationRuleT2.cs" />
+    <Compile Include="NTL\TransformationRuleTN.cs" />
+    <Compile Include="NTL\InPlaceTransformationRule.cs" />
+    <Compile Include="NTL\InPlaceTransformationRuleT2.cs" />
+    <Compile Include="NTL\TransformationEngine.cs" />
+    <Compile Include="NTL\TransformationRuleBase.cs" />
+    <Compile Include="NTL\GeneralTransformationRuleBase.cs" />
+    <Compile Include="NTL\GeneralTransformationRuleBaseT2.cs" />
+    <Compile Include="NTL\TransformationRuleBaseT2.cs" />
+    <Compile Include="NTL\InPlaceTransformationRuleBase.cs" />
+    <Compile Include="NTL\InPlaceTransformationRuleBaseT2.cs" />
+    <Compile Include="NTL\InPlaceTransformationRuleTN.cs" />
+    <Compile Include="Tests\MockComputation.cs" />
+    <Compile Include="Tests\MockComputationCollection.cs" />
+    <Compile Include="Tests\MockTransformation.cs" />
+    <Compile Include="Tests\MockTransformationContext.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\Expressions\Expressions.Linq\Expressions.Linq.csproj">
+      <Project>{e82d72a1-90f6-4341-a82d-d6b40349df63}</Project>
+      <Name>Expressions.Linq</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Expressions\Expressions\Expressions.csproj">
+      <Project>{afca9d1d-26a6-482a-a5ab-0827ad0fd677}</Project>
+      <Name>Expressions</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Transformations.Core\Transformations.Core.csproj">
+      <Project>{9a62c452-44e3-4263-a91d-8b480259270d}</Project>
+      <Name>Transformations.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Tools\Utilities\Utilities.csproj">
+      <Project>{868226d4-bc8b-4b91-bd09-8f63d3c9debe}</Project>
+      <Name>Utilities</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <CodeAnalysisDictionary Include="..\CodeAnalysisDictionary.xml">
+      <Link>CodeAnalysisDictionary.xml</Link>
+    </CodeAnalysisDictionary>
+  </ItemGroup>
+  <ItemGroup />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

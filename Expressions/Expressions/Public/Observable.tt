@@ -1,0 +1,50 @@
+﻿<#@ template debug="false" hostspecific="false" language="C#" #>
+<#@ assembly name="System.Core" #>
+<#@ import namespace="System.Linq" #>
+<#@ import namespace="System.Text" #>
+<#@ import namespace="System.Collections.Generic" #>
+<#@ output extension=".cs" #>
+using System;
+using System.Linq.Expressions;
+
+namespace NMF.Expressions
+{
+    /// <summary>
+    /// This is a facade class that exposes the functionality of NMF Expressions compactly
+    /// </summary>
+    public static partial class Observable
+    {
+<# for(int i = 1; i <= 15; i++) { #>
+        /// <summary>
+        /// Creates an observable function from the given LINQ Expression of a lambda expression
+        /// </summary>
+<# for (int j = 1; j <= i; j++) { #>
+        /// <typeparam name="T<#= j #>">The type of the argument <#= j #></typeparam>
+<# } #>
+        /// <typeparam name="TResult">The type of the result</typeparam>
+        /// <param name="expression">The LINQ Expression tree</param>
+        /// <returns>An observable function. If this function is invoked with a set of arguments, the resulting notify value will update on underlying model updates</returns>
+        public static ObservingFunc<<# for (int j = 1; j <= i; j++) { #>T<#= j #>, <# } #>TResult> Func<<# for (int j = 1; j <= i; j++) { #>T<#= j #>, <# } #>TResult>(Expression<Func<<# for (int j = 1; j <= i; j++) { #>T<#= j #>, <# } #>TResult>> expression)
+        {
+            return new ObservingFunc<<# for (int j = 1; j <= i; j++) { #>T<#= j #>, <# } #>TResult>(expression);
+        }
+<# } #>
+
+<# for(int i = 1; i <= 15; i++) { #>
+        /// <summary>
+        /// Creates an observable function from the given LINQ Expression of a lambda expression with the given update handler
+        /// </summary>
+<# for (int j = 1; j <= i; j++) { #>
+        /// <typeparam name="T<#= j #>">The type of the argument <#= j #></typeparam>
+<# } #>
+        /// <typeparam name="TResult">The type of the result</typeparam>
+        /// <param name="expression">The LINQ Expression tree</param>
+		/// <param name="updateHandler">The update handler</param>
+        /// <returns>An observable function. If this function is invoked with a set of arguments, the resulting notify value will update on underlying model updates</returns>
+        public static ObservingFunc<<# for (int j = 1; j <= i; j++) { #>T<#= j #>, <# } #>TResult> Func<<# for (int j = 1; j <= i; j++) { #>T<#= j #>, <# } #>TResult>(Expression<Func<<# for (int j = 1; j <= i; j++) { #>T<#= j #>, <# } #>TResult>> expression, Action<<# for (int j = 1; j <= i; j++) { #>T<#= j #>, <# } #>TResult> updateHandler)
+        {
+            return new ReversableObservingFunc<<# for (int j = 1; j <= i; j++) { #>T<#= j #>, <# } #>TResult>(expression, updateHandler);
+        }
+<# } #>
+    }
+}

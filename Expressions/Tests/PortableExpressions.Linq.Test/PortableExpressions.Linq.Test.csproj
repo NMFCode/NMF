@@ -1,0 +1,189 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{28E1CCFD-718B-4B9C-8B95-F5B3B7CCCB88}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>NMF.Expressions.Linq.Test</RootNamespace>
+    <AssemblyName>NMF.PortableExpressions.Linq.Test</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <ProjectTypeGuids>{3AC096D0-A1C2-E12C-1390-A8335801FDAB};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
+    <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
+    <ReferencePath>$(ProgramFiles)\Common Files\microsoft shared\VSTT\$(VisualStudioVersion)\UITestExtensionPackages</ReferencePath>
+    <IsCodedUITest>False</IsCodedUITest>
+    <TestProjectType>UnitTest</TestProjectType>
+    <SccProjectName>SAK</SccProjectName>
+    <SccLocalPath>SAK</SccLocalPath>
+    <SccAuxPath>SAK</SccAuxPath>
+    <SccProvider>SAK</SccProvider>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+  </ItemGroup>
+  <Choose>
+    <When Condition="('$(VisualStudioVersion)' == '10.0' or '$(VisualStudioVersion)' == '') and '$(TargetFrameworkVersion)' == 'v3.5'">
+      <ItemGroup>
+        <Reference Include="Microsoft.VisualStudio.QualityTools.UnitTestFramework, Version=10.1.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
+      </ItemGroup>
+    </When>
+    <Otherwise>
+      <ItemGroup>
+        <Reference Include="Microsoft.VisualStudio.QualityTools.UnitTestFramework" />
+      </ItemGroup>
+    </Otherwise>
+  </Choose>
+  <ItemGroup>
+    <Compile Include="..\ObservableExpressions.Linq.Tests\AbsoluteValueComparer.cs">
+      <Link>AbsoluteValueComparer.cs</Link>
+    </Compile>
+    <Compile Include="..\ObservableExpressions.Linq.Tests\AllTests.cs">
+      <Link>AllTests.cs</Link>
+    </Compile>
+    <Compile Include="..\ObservableExpressions.Linq.Tests\AnyTest.cs">
+      <Link>AnyTest.cs</Link>
+    </Compile>
+    <Compile Include="..\ObservableExpressions.Linq.Tests\AssertExtensions.cs">
+      <Link>AssertExtensions.cs</Link>
+    </Compile>
+    <Compile Include="..\ObservableExpressions.Linq.Tests\AvgTests.cs">
+      <Link>AvgTests.cs</Link>
+    </Compile>
+    <Compile Include="..\ObservableExpressions.Linq.Tests\ConcatTests.cs">
+      <Link>ConcatTests.cs</Link>
+    </Compile>
+    <Compile Include="..\ObservableExpressions.Linq.Tests\ContainsTests.cs">
+      <Link>ContainsTests.cs</Link>
+    </Compile>
+    <Compile Include="..\ObservableExpressions.Linq.Tests\CountTest.cs">
+      <Link>CountTest.cs</Link>
+    </Compile>
+    <Compile Include="..\ObservableExpressions.Linq.Tests\DistinctTest.cs">
+      <Link>DistinctTest.cs</Link>
+    </Compile>
+    <Compile Include="..\ObservableExpressions.Linq.Tests\ExceptionTests.cs">
+      <Link>ExceptionTests.cs</Link>
+    </Compile>
+    <Compile Include="..\ObservableExpressions.Linq.Tests\FirstOrDefaultTests.cs">
+      <Link>FirstOrDefaultTests.cs</Link>
+    </Compile>
+    <Compile Include="..\ObservableExpressions.Linq.Tests\GroupByTest.cs">
+      <Link>GroupByTest.cs</Link>
+    </Compile>
+    <Compile Include="..\ObservableExpressions.Linq.Tests\JoinTests.cs">
+      <Link>JoinTests.cs</Link>
+    </Compile>
+    <Compile Include="..\ObservableExpressions.Linq.Tests\LambdaAvgTests.cs">
+      <Link>LambdaAvgTests.cs</Link>
+    </Compile>
+    <Compile Include="..\ObservableExpressions.Linq.Tests\LambdaMaxTests.cs">
+      <Link>LambdaMaxTests.cs</Link>
+    </Compile>
+    <Compile Include="..\ObservableExpressions.Linq.Tests\LambdaMinTests.cs">
+      <Link>LambdaMinTests.cs</Link>
+    </Compile>
+    <Compile Include="..\ObservableExpressions.Linq.Tests\LambdaSumTests.cs">
+      <Link>LambdaSumTests.cs</Link>
+    </Compile>
+    <Compile Include="..\ObservableExpressions.Linq.Tests\LinqTest.cs">
+      <Link>LinqTest.cs</Link>
+    </Compile>
+    <Compile Include="..\ObservableExpressions.Linq.Tests\MaxTests.cs">
+      <Link>MaxTests.cs</Link>
+    </Compile>
+    <Compile Include="..\ObservableExpressions.Linq.Tests\MinTests.cs">
+      <Link>MinTests.cs</Link>
+    </Compile>
+    <Compile Include="..\ObservableExpressions.Linq.Tests\OfTypeTests.cs">
+      <Link>OfTypeTests.cs</Link>
+    </Compile>
+    <Compile Include="..\ObservableExpressions.Linq.Tests\OrderByTest.cs">
+      <Link>OrderByTest.cs</Link>
+    </Compile>
+    <Compile Include="..\ObservableExpressions.Linq.Tests\SelectManyTest.cs">
+      <Link>SelectManyTest.cs</Link>
+    </Compile>
+    <Compile Include="..\ObservableExpressions.Linq.Tests\SelectTest.cs">
+      <Link>SelectTest.cs</Link>
+    </Compile>
+    <Compile Include="..\ObservableExpressions.Linq.Tests\SetEqualsTest.cs">
+      <Link>SetEqualsTest.cs</Link>
+    </Compile>
+    <Compile Include="..\ObservableExpressions.Linq.Tests\SetOperationTest.cs">
+      <Link>SetOperationTest.cs</Link>
+    </Compile>
+    <Compile Include="..\ObservableExpressions.Linq.Tests\SumTests.cs">
+      <Link>SumTests.cs</Link>
+    </Compile>
+    <Compile Include="..\ObservableExpressions.Linq.Tests\ThenByTests.cs">
+      <Link>ThenByTests.cs</Link>
+    </Compile>
+    <Compile Include="..\ObservableExpressions.Linq.Tests\WhereTest.cs">
+      <Link>WhereTest.cs</Link>
+    </Compile>
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\PortableExpressions.Test\PortableExpressions.Test.csproj">
+      <Project>{a101e569-e902-4076-af1f-6b60b465ab69}</Project>
+      <Name>PortableExpressions.Test</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\PortableExpressions\PortableExpressions.csproj">
+      <Project>{861297a5-e950-4ca3-9f9f-ed921e49c153}</Project>
+      <Name>PortableExpressions</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Choose>
+    <When Condition="'$(VisualStudioVersion)' == '10.0' And '$(IsCodedUITest)' == 'True'">
+      <ItemGroup>
+        <Reference Include="Microsoft.VisualStudio.QualityTools.CodedUITestFramework, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+          <Private>False</Private>
+        </Reference>
+        <Reference Include="Microsoft.VisualStudio.TestTools.UITest.Common, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+          <Private>False</Private>
+        </Reference>
+        <Reference Include="Microsoft.VisualStudio.TestTools.UITest.Extension, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+          <Private>False</Private>
+        </Reference>
+        <Reference Include="Microsoft.VisualStudio.TestTools.UITesting, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+          <Private>False</Private>
+        </Reference>
+      </ItemGroup>
+    </When>
+  </Choose>
+  <Import Project="$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets" Condition="Exists('$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets')" />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

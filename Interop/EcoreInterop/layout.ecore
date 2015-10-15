@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="ASCII"?>
+<ecore:EPackage xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" name="layout" nsURI="http://www.emftext.org/commons/layout" nsPrefix="layout">
+  <eClassifiers xsi:type="ecore:EClass" name="LayoutInformation" abstract="true">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="startOffset" lowerBound="1">
+      <eType xsi:type="ecore:EDataType" href="http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="hiddenTokenText" lowerBound="1">
+      <eType xsi:type="ecore:EDataType" href="http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="visibleTokenText" lowerBound="1">
+      <eType xsi:type="ecore:EDataType" href="http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    </eStructuralFeatures>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="syntaxElementID" lowerBound="1">
+      <eType xsi:type="ecore:EDataType" href="http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="ReferenceLayoutInformation" eSuperTypes="//LayoutInformation">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="object" lowerBound="1">
+      <eType xsi:type="ecore:EClass" href="http://www.eclipse.org/emf/2002/Ecore#//EObject"/>
+    </eStructuralFeatures>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="AttributeLayoutInformation" eSuperTypes="//LayoutInformation"/>
+  <eClassifiers xsi:type="ecore:EClass" name="KeywordLayoutInformation" eSuperTypes="//LayoutInformation"/>
+</ecore:EPackage>

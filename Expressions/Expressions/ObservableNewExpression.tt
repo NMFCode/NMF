@@ -1,0 +1,41 @@
+﻿<#@ template debug="false" hostspecific="false" language="C#" #>
+<#@ assembly name="System.Core" #>
+<#@ import namespace="System.Linq" #>
+<#@ import namespace="System.Text" #>
+<#@ import namespace="System.Collections.Generic" #>
+<#@ output extension=".cs" #>
+using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Collections.Specialized;
+using System.Linq;
+using System.Linq.Expressions;
+using System.Reflection;
+using System.Text;
+
+namespace NMF.Expressions
+{
+<#
+    for(int i = 1; i <= 15; i++)
+    {
+#>
+    internal class ObservableNewExpression<<# for (int j = 1; j <= i; j++) { #>T<#= j #>, <# } #>T> : ObservableStaticMethodCall<<# for (int j = 1; j <= i; j++) { #>T<#= j #>, <# } #>T>
+    {
+        public ObservableNewExpression(NewExpression node, ObservableExpressionBinder binder)
+            : base(CreateDelegate(node)<# for (int j = 1; j <= i; j++) { #>, binder.VisitObservable<T<#= j #>>(node.Arguments[<#= j-1 #>])<# } #>) { }
+
+        private static Func<<# for (int j = 1; j <= i; j++) { #>T<#= j #>, <# } #>T> CreateDelegate(NewExpression node)
+        {
+<# for (int j = 1; j <= i; j++) { #>
+            var p<#= j #> = Expression.Parameter(node.Arguments[<#= j-1 #>].Type, "p<#= j #>");
+<# } #>
+            var expression = Expression.Lambda<Func<<# for (int j = 1; j <= i; j++) { #>T<#= j #>, <# } #>T>>(
+                Expression.New(node.Constructor<# for (int j = 1; j <= i; j++) { #>, p<#= j #><# } #>)<# for (int j = 1; j <= i; j++) { #>, p<#= j #><# } #>);
+            return expression.Compile();
+        }
+
+    }
+<#
+    } 
+#>
+}

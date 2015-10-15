@@ -1,0 +1,185 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{A101E569-E902-4076-AF1F-6B60B465AB69}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>NMF.Expressions.Test</RootNamespace>
+    <AssemblyName>NMF.PortableExpressions.Test</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <ProjectTypeGuids>{3AC096D0-A1C2-E12C-1390-A8335801FDAB};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
+    <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
+    <ReferencePath>$(ProgramFiles)\Common Files\microsoft shared\VSTT\$(VisualStudioVersion)\UITestExtensionPackages</ReferencePath>
+    <IsCodedUITest>False</IsCodedUITest>
+    <TestProjectType>UnitTest</TestProjectType>
+    <SccProjectName>SAK</SccProjectName>
+    <SccLocalPath>SAK</SccLocalPath>
+    <SccAuxPath>SAK</SccAuxPath>
+    <SccProvider>SAK</SccProvider>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+  </ItemGroup>
+  <Choose>
+    <When Condition="('$(VisualStudioVersion)' == '10.0' or '$(VisualStudioVersion)' == '') and '$(TargetFrameworkVersion)' == 'v3.5'">
+      <ItemGroup>
+        <Reference Include="Microsoft.VisualStudio.QualityTools.UnitTestFramework, Version=10.1.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
+      </ItemGroup>
+    </When>
+    <Otherwise>
+      <ItemGroup>
+        <Reference Include="Microsoft.VisualStudio.QualityTools.UnitTestFramework" />
+      </ItemGroup>
+    </Otherwise>
+  </Choose>
+  <ItemGroup>
+    <Compile Include="..\ObservableExpressions.Test\Arithmetic\AddExpressionTests.cs">
+      <Link>Arithmetic\AddExpressionTests.cs</Link>
+    </Compile>
+    <Compile Include="..\ObservableExpressions.Test\Arithmetic\BinaryExpressionTests.cs">
+      <Link>Arithmetic\BinaryExpressionTests.cs</Link>
+    </Compile>
+    <Compile Include="..\ObservableExpressions.Test\Arithmetic\DivideExpressionTests.cs">
+      <Link>Arithmetic\DivideExpressionTests.cs</Link>
+    </Compile>
+    <Compile Include="..\ObservableExpressions.Test\Arithmetic\IntegerExprssionTests.cs">
+      <Link>Arithmetic\IntegerExprssionTests.cs</Link>
+    </Compile>
+    <Compile Include="..\ObservableExpressions.Test\Arithmetic\MultiplyExpressionTests.cs">
+      <Link>Arithmetic\MultiplyExpressionTests.cs</Link>
+    </Compile>
+    <Compile Include="..\ObservableExpressions.Test\Arithmetic\ShortcutOperatorTests.cs">
+      <Link>Arithmetic\ShortcutOperatorTests.cs</Link>
+    </Compile>
+    <Compile Include="..\ObservableExpressions.Test\Arithmetic\SubtractExpressionTests.cs">
+      <Link>Arithmetic\SubtractExpressionTests.cs</Link>
+    </Compile>
+    <Compile Include="..\ObservableExpressions.Test\CoalesceTests.cs">
+      <Link>CoalesceTests.cs</Link>
+    </Compile>
+    <Compile Include="..\ObservableExpressions.Test\Comparison\EqualsTests.cs">
+      <Link>Comparison\EqualsTests.cs</Link>
+    </Compile>
+    <Compile Include="..\ObservableExpressions.Test\Comparison\GreaterThanEqualsExpressionTests.cs">
+      <Link>Comparison\GreaterThanEqualsExpressionTests.cs</Link>
+    </Compile>
+    <Compile Include="..\ObservableExpressions.Test\Comparison\GreaterThanExpressionTests.cs">
+      <Link>Comparison\GreaterThanExpressionTests.cs</Link>
+    </Compile>
+    <Compile Include="..\ObservableExpressions.Test\Comparison\LessThanEqualsExpressionTests.cs">
+      <Link>Comparison\LessThanEqualsExpressionTests.cs</Link>
+    </Compile>
+    <Compile Include="..\ObservableExpressions.Test\Comparison\LessThanExpressionTests.cs">
+      <Link>Comparison\LessThanExpressionTests.cs</Link>
+    </Compile>
+    <Compile Include="..\ObservableExpressions.Test\ConditionalExpressionTests.cs">
+      <Link>ConditionalExpressionTests.cs</Link>
+    </Compile>
+    <Compile Include="..\ObservableExpressions.Test\DefaultExpressionTests.cs">
+      <Link>DefaultExpressionTests.cs</Link>
+    </Compile>
+    <Compile Include="..\ObservableExpressions.Test\DynamicTests.cs">
+      <Link>DynamicTests.cs</Link>
+    </Compile>
+    <Compile Include="..\ObservableExpressions.Test\ExceptionTests.cs">
+      <Link>ExceptionTests.cs</Link>
+    </Compile>
+    <Compile Include="..\ObservableExpressions.Test\FuncTests.cs">
+      <Link>FuncTests.cs</Link>
+    </Compile>
+    <Compile Include="..\ObservableExpressions.Test\IndexExpressionTests.cs">
+      <Link>IndexExpressionTests.cs</Link>
+    </Compile>
+    <Compile Include="..\ObservableExpressions.Test\ListInitializationTests.cs">
+      <Link>ListInitializationTests.cs</Link>
+    </Compile>
+    <Compile Include="..\ObservableExpressions.Test\MemberExpressionTests.cs">
+      <Link>MemberExpressionTests.cs</Link>
+    </Compile>
+    <Compile Include="..\ObservableExpressions.Test\MemberInitializationTests.cs">
+      <Link>MemberInitializationTests.cs</Link>
+    </Compile>
+    <Compile Include="..\ObservableExpressions.Test\MethodCallTests.cs">
+      <Link>MethodCallTests.cs</Link>
+    </Compile>
+    <Compile Include="..\ObservableExpressions.Test\NewArrayExpressionTests.cs">
+      <Link>NewArrayExpressionTests.cs</Link>
+    </Compile>
+    <Compile Include="..\ObservableExpressions.Test\NewExpressionTests.cs">
+      <Link>NewExpressionTests.cs</Link>
+    </Compile>
+    <Compile Include="..\ObservableExpressions.Test\ProxyCallExpressionTests.cs">
+      <Link>ProxyCallExpressionTests.cs</Link>
+    </Compile>
+    <Compile Include="..\ObservableExpressions.Test\TestStubs\Dummy.cs">
+      <Link>TestStubs\Dummy.cs</Link>
+    </Compile>
+    <Compile Include="..\ObservableExpressions.Test\TestStubs\Pair.cs">
+      <Link>TestStubs\Pair.cs</Link>
+    </Compile>
+    <Compile Include="..\ObservableExpressions.Test\UnaryExpressionTests.cs">
+      <Link>UnaryExpressionTests.cs</Link>
+    </Compile>
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\PortableExpressions\PortableExpressions.csproj">
+      <Project>{861297a5-e950-4ca3-9f9f-ed921e49c153}</Project>
+      <Name>PortableExpressions</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Choose>
+    <When Condition="'$(VisualStudioVersion)' == '10.0' And '$(IsCodedUITest)' == 'True'">
+      <ItemGroup>
+        <Reference Include="Microsoft.VisualStudio.QualityTools.CodedUITestFramework, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+          <Private>False</Private>
+        </Reference>
+        <Reference Include="Microsoft.VisualStudio.TestTools.UITest.Common, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+          <Private>False</Private>
+        </Reference>
+        <Reference Include="Microsoft.VisualStudio.TestTools.UITest.Extension, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+          <Private>False</Private>
+        </Reference>
+        <Reference Include="Microsoft.VisualStudio.TestTools.UITesting, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+          <Private>False</Private>
+        </Reference>
+      </ItemGroup>
+    </When>
+  </Choose>
+  <Import Project="$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets" Condition="Exists('$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets')" />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

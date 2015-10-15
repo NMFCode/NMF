@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ecore:EPackage xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" name="NMeta" nsURI="http://nmf.codeplex.com/nmeta/" nsPrefix="nmeta">
+  <eClassifiers xsi:type="ecore:EClass" name="Attribute" eSuperTypes="#//MetaElement #//ITypedElement">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="DeclaringType" eType="#//StructuredType"
+        eOpposite="#//StructuredType/Attributes"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="Implements" eType="#//Attribute"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="DefaultValue" eType="#//String"
+        defaultValueLiteral=""/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Class" eSuperTypes="#//ReferenceType">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="BaseTypes" upperBound="-1"
+        eType="#//Class" eKeys="#//MetaElement/Name"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="IsInterface" eType="#//Boolean"
+        defaultValueLiteral="false"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="IsAbstract" eType="#//Boolean"
+        defaultValueLiteral="false"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="Identifier" eType="#//Attribute"
+        volatile="true"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="DataType" eSuperTypes="#//StructuredType"/>
+  <eClassifiers xsi:type="ecore:EClass" name="Enumeration" eSuperTypes="#//Type">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="Literals" upperBound="-1"
+        eType="#//Literal" containment="true" eOpposite="#//Literal/Enumeration" eKeys="#//MetaElement/Name"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="IsFlagged" eType="#//Boolean"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Event" eSuperTypes="#//MetaElement">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="Type" eType="#//Type"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="DeclaringType" lowerBound="1"
+        eType="#//ReferenceType" eOpposite="#//ReferenceType/Events"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Extension" eSuperTypes="#//ReferenceType">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="AdornedClass" lowerBound="1"
+        eType="#//Class"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Literal" eSuperTypes="#//MetaElement">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="Enumeration" eType="#//Enumeration"
+        eOpposite="#//Enumeration/Literals" eKeys="#//MetaElement/Name"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="Value" eType="#//Integer"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="MetaElement" abstract="true" eSuperTypes="#//ModelElement">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="Name" lowerBound="1" eType="#//String"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="Summary" eType="#//String"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="Remarks" eType="#//String"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Model" eSuperTypes="#//ModelElement">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="ModelUri" eType="#//Uri"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="RootElements" upperBound="-1"
+        eType="#//ModelElement" containment="true"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="ModelElement" abstract="true">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="Extensions" upperBound="-1"
+        eType="#//ModelElementExtension" containment="true" eOpposite="#//ModelElementExtension/ExtendedElement"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="AbsoluteUri" lowerBound="1"
+        eType="#//Uri"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="RelativeUri" lowerBound="1"
+        eType="#//Uri"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="Model" eType="#//Model"
+        derived="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="Parent" eType="#//ModelElement"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="Type" lowerBound="1" eType="#//ReferenceType"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="ModelElementExtension" abstract="true">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="ExtendedElement" lowerBound="1"
+        eType="#//ModelElement" eOpposite="#//ModelElement/Extensions"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Namespace" eSuperTypes="#//MetaElement">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="ParentNamespace" eType="#//Namespace"
+        eOpposite="#//Namespace/ChildNamespaces"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="ChildNamespaces" upperBound="-1"
+        eType="#//Namespace" containment="true" eOpposite="#//Namespace/ParentNamespace"
+        eKeys="#//MetaElement/Name"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="Types" upperBound="-1"
+        eType="#//Type" containment="true" eOpposite="#//Type/Namespace"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="Uri" eType="#//Uri" defaultValueLiteral=""/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="Prefix" eType="#//String"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Operation" eSuperTypes="#//MetaElement #//ITypedElement">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="Parameters" upperBound="-1"
+        eType="#//Parameter" containment="true" eOpposite="#//Parameter/Operation"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="DeclaringType" lowerBound="1"
+        eType="#//StructuredType" eOpposite="#//StructuredType/Operations"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="Implements" eType="#//Operation"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Parameter" eSuperTypes="#//MetaElement #//ITypedElement">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="Direction" eType="#//Direction"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="Operation" lowerBound="1"
+        eType="#//Operation" eOpposite="#//Operation/Parameters"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="PrimitiveType" eSuperTypes="#//Type">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="SystemType" eType="#//String"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Reference" eSuperTypes="#//MetaElement #//ITypedElement">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="DeclaringType" lowerBound="1"
+        eType="#//ReferenceType" eOpposite="#//ReferenceType/References"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="IsContainment" eType="#//Boolean"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="Opposite" eType="#//Reference"
+        eOpposite="#//Reference/Opposite"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="Implements" eType="#//Reference"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="Type" lowerBound="1" eType="#//ReferenceType"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="ReferenceType" abstract="true" eSuperTypes="#//StructuredType">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="Events" upperBound="-1"
+        eType="#//Event" containment="true" eOpposite="#//Event/DeclaringType" eKeys="#//MetaElement/Name"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="References" upperBound="-1"
+        eType="#//Reference" containment="true" eOpposite="#//Reference/DeclaringType"
+        eKeys="#//MetaElement/Name"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="StructuredType" abstract="true" eSuperTypes="#//Type">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="Operations" upperBound="-1"
+        eType="#//Operation" containment="true" eOpposite="#//Operation/DeclaringType"
+        eKeys="#//MetaElement/Name"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="Attributes" upperBound="-1"
+        eType="#//Attribute" containment="true" eOpposite="#//Attribute/DeclaringType"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Type" abstract="true" eSuperTypes="#//MetaElement">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="Namespace" lowerBound="1"
+        eType="#//Namespace" eOpposite="#//Namespace/Types"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="ITypedElement" abstract="true" interface="true">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="Type" lowerBound="1" eType="#//Type"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="IsOrdered" eType="#//Boolean"
+        defaultValueLiteral="true"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="IsUnique" eType="#//Boolean"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="LowerBound" eType="#//Integer"
+        defaultValueLiteral="0"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="UpperBound" eType="#//Integer"
+        defaultValueLiteral="1"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EEnum" name="Direction">
+    <eLiterals name="In"/>
+    <eLiterals name="Out" value="1"/>
+    <eLiterals name="InOut" value="2"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EDataType" name="Boolean" instanceClassName="boolean"/>
+  <eClassifiers xsi:type="ecore:EDataType" name="Byte" instanceClassName="byte"/>
+  <eClassifiers xsi:type="ecore:EDataType" name="ByteArray" instanceClassName="byte[]"/>
+  <eClassifiers xsi:type="ecore:EDataType" name="DateTime" instanceClassName="org.joda.time.DateTime"/>
+  <eClassifiers xsi:type="ecore:EDataType" name="Double" instanceClassName="double"/>
+  <eClassifiers xsi:type="ecore:EDataType" name="Float" instanceClassName="float"/>
+  <eClassifiers xsi:type="ecore:EDataType" name="Guid" instanceClassName="java.util.UUID"/>
+  <eClassifiers xsi:type="ecore:EDataType" name="Integer" instanceClassName="int"/>
+  <eClassifiers xsi:type="ecore:EDataType" name="Long" instanceClassName="long"/>
+  <eClassifiers xsi:type="ecore:EDataType" name="Object" instanceTypeName="object"/>
+  <eClassifiers xsi:type="ecore:EDataType" name="String" instanceClassName="java.lang.String"/>
+  <eClassifiers xsi:type="ecore:EDataType" name="Short" instanceClassName="short"/>
+  <eClassifiers xsi:type="ecore:EDataType" name="TimeSpan" instanceClassName="org.joda.time.Duration"/>
+  <eClassifiers xsi:type="ecore:EDataType" name="Uri" instanceClassName="java.net.URI"/>
+</ecore:EPackage>

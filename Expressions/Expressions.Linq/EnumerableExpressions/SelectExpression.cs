@@ -1,0 +1,48 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Linq.Expressions;
+using System.Text;
+using SL = System.Linq.Enumerable;
+using NMF.Expressions.Linq;
+
+namespace NMF.Expressions
+{
+    internal class SelectExpression<TSource, TResult> : IEnumerableExpression<TResult>
+    {
+        public IEnumerableExpression<TSource> Source { get; private set; }
+        public Expression<Func<TSource, TResult>> SelectorExpression { get; private set; }
+        public Func<TSource, TResult> SelectorCompiled { get; private set; }
+
+        public SelectExpression(IEnumerableExpression<TSource> source, Expression<Func<TSource, TResult>> selector, Func<TSource, TResult> selectorCompiled)
+        {
+            if (source == null) throw new ArgumentNullException("source");
+            if (selector == null) throw new ArgumentNullException("selector");
+            if (selectorCompiled == null) selectorCompiled = ExpressionCompileRewriter.Compile(selector);
+
+            Source = source;
+            SelectorExpression = selector;
+            SelectorCompiled = selectorCompiled;
+        }
+
+        public INotifyEnumerable<TResult> AsNotifiable()
+        {
+            return Source.AsNotifiable().Select(SelectorExpression);
+        }
+
+        public IEnumerator<TResult> GetEnumerator()
+        {
+            return SL.Select(Source, SelectorCompiled).GetEnumerator();
+        }
+
+        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
+        {
+            return GetEnumerator();
+        }
+
+        INotifyEnumerable IEnumerableExpression.AsNotifiable()
+        {
+            return AsNotifiable();
+        }
+    }
+}

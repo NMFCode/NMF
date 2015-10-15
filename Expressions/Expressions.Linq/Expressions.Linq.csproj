@@ -1,0 +1,115 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{E82D72A1-90F6-4341-A82D-D6B40349DF63}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>NMF.Expressions</RootNamespace>
+    <AssemblyName>NMF.Expressions.Linq</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <SccProjectName>SAK</SccProjectName>
+    <SccLocalPath>SAK</SccLocalPath>
+    <SccAuxPath>SAK</SccAuxPath>
+    <SccProvider>SAK</SccProvider>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="Microsoft.CSharp" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="EnumerableExpressions\CastExpression.cs" />
+    <Compile Include="EnumerableExpressions\ConcatExpression.cs" />
+    <Compile Include="EnumerableExpressions\DistinctExpression.cs" />
+    <Compile Include="EnumerableExpressions\ExceptExpression.cs" />
+    <Compile Include="EnumerableExpressions\GroupByExpression.cs" />
+    <Compile Include="EnumerableExpressions\GroupJoinExpression.cs" />
+    <Compile Include="EnumerableExpressions\JoinExpression.cs" />
+    <Compile Include="EnumerableExpressions\OfTypeExpression.cs" />
+    <Compile Include="EnumerableExpressions\OrderByExpression.cs" />
+    <Compile Include="EnumerableExpressions\SelectExpression.cs" />
+    <Compile Include="EnumerableExpressions\SelectManyExpression.cs" />
+    <Compile Include="EnumerableExpressions\SimpleSelectManyExpression.cs" />
+    <Compile Include="EnumerableExpressions\ThenByExpression.cs" />
+    <Compile Include="EnumerableExpressions\WhereExpression.cs" />
+    <Compile Include="Facade\ExpressionExtensions.cs" />
+    <Compile Include="Facade\IEnumerableExpression.cs" />
+    <Compile Include="Facade\INotifyEnumerable.cs" />
+    <Compile Include="Facade\NotifyCollection.cs" />
+    <Compile Include="Facade\ObservableExtensions.cs" />
+    <Compile Include="Facade\OrderableList.cs" />
+    <Compile Include="Linq\ManualObservableCollectionView.cs" />
+    <Compile Include="Linq\Multiplicity.cs" />
+    <Compile Include="Linq\ObservableAggregate.cs" />
+    <Compile Include="Linq\ObservableAll.cs" />
+    <Compile Include="Linq\ObservableAny.cs" />
+    <Compile Include="Linq\ObservableAverage.cs" />
+    <Compile Include="Linq\ObservableCast.cs" />
+    <Compile Include="Linq\ObservableCollectionProxy.cs" />
+    <Compile Include="Linq\ObservableConcat.cs" />
+    <Compile Include="Linq\ObservableContains.cs" />
+    <Compile Include="Linq\ObservableCount.cs" />
+    <Compile Include="Linq\ObservableDistinct.cs" />
+    <Compile Include="Linq\ObservableEnumerable.cs" />
+    <Compile Include="Linq\ObservableExcept.cs" />
+    <Compile Include="Linq\ObservableExtensionProxies.cs" />
+    <Compile Include="Linq\ObservableFirstOrDefault.cs" />
+    <Compile Include="Linq\ObservableGroup.cs" />
+    <Compile Include="Linq\ObservableGroupBy.cs" />
+    <Compile Include="Linq\ObservableGroupJoin.cs" />
+    <Compile Include="Linq\ObservableIntersect.cs" />
+    <Compile Include="Linq\ObservableJoin.cs" />
+    <Compile Include="Linq\ObservableMin.cs" />
+    <Compile Include="Linq\ObservableOfType.cs" />
+    <Compile Include="Linq\ObservableOrderBy.cs" />
+    <Compile Include="Linq\ObservableProperSubsetOf.cs" />
+    <Compile Include="Linq\ObservableSelect.cs" />
+    <Compile Include="Linq\ObservableSelectMany.cs" />
+    <Compile Include="Linq\ObservableSetComparer.cs" />
+    <Compile Include="Linq\ObservableSetEquals.cs" />
+    <Compile Include="Linq\ObservableSimpleSelectMany.cs" />
+    <Compile Include="Linq\ObservableSingleOrDefault.cs" />
+    <Compile Include="Linq\ObservableSubsetOf.cs" />
+    <Compile Include="Linq\ObservableSum.cs" />
+    <Compile Include="Linq\ObservableThenBy.cs" />
+    <Compile Include="Linq\ObservableWhere.cs" />
+    <Compile Include="Linq\ReverseComparer.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Expressions\Expressions.csproj">
+      <Project>{afca9d1d-26a6-482a-a5ab-0827ad0fd677}</Project>
+      <Name>Expressions</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

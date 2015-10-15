@@ -1,0 +1,97 @@
+﻿<#@ template debug="false" hostspecific="false" language="C#" #>
+<#@ assembly name="System.Core" #>
+<#@ import namespace="System.Linq" #>
+<#@ import namespace="System.Text" #>
+<#@ import namespace="System.Collections.Generic" #>
+<#@ output extension=".cs" #>
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Linq.Expressions;
+using System.Reflection;
+using System.Text;
+
+namespace NMF.Expressions
+{
+<#
+    for(int i = 1; i <= 15; i++)
+    {
+#>
+    internal class ObservableStaticMethodCall<<# for (int j = 1; j <= i; j++) { #>T<#= j #>, <# } #>TResult> : ObservableStaticMethodBase<Func<<# for (int j = 1; j <= i; j++) { #>T<#= j #>, <# } #>TResult>, TResult>
+    {
+        public ObservableStaticMethodCall(MethodCallExpression expression, ObservableExpressionBinder binder)
+            : this(expression.Method<# for (int j = 1; j <= i; j++) { #>, binder.VisitObservable<T<#= j #>>(expression.Arguments[<#= j-1 #>])<# } #>) { }
+
+        public ObservableStaticMethodCall(MethodInfo method<# for (int j = 1; j <= i; j++) { #>, IObservableExpression<T<#= j #>> arg<#= j #><# } #>)
+            : base(method)
+        {
+<# for (int j = 1; j <= i; j++) { #>
+            if (arg<#= j #> == null) throw new ArgumentNullException("arg<#= j #>");
+<# } #>
+
+<# for (int j = 1; j <= i; j++) { #>
+            Argument<#= j #> = arg<#= j #>;
+<# } #>
+        }
+
+        public ObservableStaticMethodCall(Func<<# for (int j = 1; j <= i; j++) { #>T<#= j #>, <# } #>TResult> function<# for (int j = 1; j <= i; j++) { #>, IObservableExpression<T<#= j #>> arg<#= j #><# } #>)
+            : base(function)
+        {
+<# for (int j = 1; j <= i; j++) { #>
+            if (arg<#= j #> == null) throw new ArgumentNullException("arg<#= j #>");
+<# } #>
+
+<# for (int j = 1; j <= i; j++) { #>
+            Argument<#= j #> = arg<#= j #>;
+<# } #>
+        }
+
+<# for (int j = 1; j <= i; j++) { #>
+        public IObservableExpression<T<#= j #>> Argument<#= j #> { get; private set; }
+<# } #>
+
+        protected override TResult GetValue()
+        {
+            return Function(Argument1.Value<# for (int j = 2; j <= i; j++) { #>, Argument<#= j #>.Value<# } #>);
+        }
+
+        protected override void AttachCore()
+        {
+            var argChanged = new EventHandler<ValueChangedEventArgs>(ArgumentChanged);
+<# for (int j = 1; j <= i; j++) { #>
+            Argument<#= j #>.Attach();
+            Argument<#= j #>.ValueChanged += argChanged;
+<# } #>
+        }
+
+        protected override void DetachCore()
+        {
+            var argChanged = new EventHandler<ValueChangedEventArgs>(ArgumentChanged);
+<# for (int j = 1; j <= i; j++) { #>
+            Argument<#= j #>.ValueChanged -= argChanged;
+            Argument<#= j #>.Detach();
+<# } #>
+        }
+
+        public override bool IsConstant
+        {
+            get
+            {
+                return Argument1.IsConstant<# for (int j = 2; j <= i; j++) { #> && Argument<#= j #>.IsConstant<# } #>;
+            }
+        }
+
+        public override bool IsParameterFree
+        {
+            get { return Argument1.IsParameterFree<# for (int j = 1; j <= i; j++) { #> && Argument<#= j #>.IsParameterFree<# } #>; }
+        }
+
+        public override IObservableExpression<TResult> ApplyParameters(IDictionary<string, object> parameters)
+        {
+            return new ObservableStaticMethodCall<<# for (int j = 1; j <= i; j++) { #>T<#= j #>, <# } #>TResult>(Function<# for (int j = 1; j <= i; j++) { #>, Argument<#= j #>.ApplyParameters(parameters)<# } #>);
+        }
+    }
+<#
+    } 
+#>
+}
