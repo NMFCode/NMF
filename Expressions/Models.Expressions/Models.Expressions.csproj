@@ -9,8 +9,9 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>NMF.Expressions</RootNamespace>
     <AssemblyName>NMF.Expressions</AssemblyName>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -37,16 +38,18 @@
   <ItemGroup>
     <Compile Include="GeneralizingExpressionVisitor.cs" />
     <Compile Include="GeneralizingNotifySystem.cs" />
+    <Compile Include="ParameterReplacingVisitor.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="PropertyPath.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Expressions\Expressions.csproj">
-      <Project>{afca9d1d-26a6-482a-a5ab-0827ad0fd677}</Project>
-      <Name>Expressions</Name>
-    </ProjectReference>
     <ProjectReference Include="..\..\Models\Models\Models.csproj">
       <Project>{e42ac7b6-8120-40b5-8cd3-c4139b940897}</Project>
       <Name>Models</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Expressions\Expressions.csproj">
+      <Project>{afca9d1d-26a6-482a-a5ab-0827ad0fd677}</Project>
+      <Name>Expressions</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

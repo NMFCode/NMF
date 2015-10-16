@@ -97,6 +97,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Transformations.Tests", "Tr
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Models.Expressions", "Expressions\Models.Expressions\Models.Expressions.csproj", "{25183C1B-5A1D-4535-AE62-90105C00BEAF}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Models.Expressions.Tests", "Expressions\Tests\Models.Expressions.Tests\Models.Expressions.Tests.csproj", "{CE4F8D70-E17A-4C51-9C9E-BFB42978B5E8}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -235,6 +237,10 @@ Global
 		{25183C1B-5A1D-4535-AE62-90105C00BEAF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{25183C1B-5A1D-4535-AE62-90105C00BEAF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{25183C1B-5A1D-4535-AE62-90105C00BEAF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CE4F8D70-E17A-4C51-9C9E-BFB42978B5E8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CE4F8D70-E17A-4C51-9C9E-BFB42978B5E8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CE4F8D70-E17A-4C51-9C9E-BFB42978B5E8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CE4F8D70-E17A-4C51-9C9E-BFB42978B5E8}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -278,5 +284,6 @@ Global
 		{AB4705A4-A917-49DC-BF01-215241FA02E1} = {1C0861BF-06B9-4605-BA4B-0E7993E4CF0E}
 		{9E9F2CC8-8190-42B2-8D44-CCC28AC4292A} = {AB4705A4-A917-49DC-BF01-215241FA02E1}
 		{25183C1B-5A1D-4535-AE62-90105C00BEAF} = {A75E4BA2-EC03-4074-B5A9-1BA2636658E9}
+		{CE4F8D70-E17A-4C51-9C9E-BFB42978B5E8} = {0B9F756F-763B-4BEB-A592-78DBD370B3A9}
 	EndGlobalSection
 EndGlobal

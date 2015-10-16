@@ -9,79 +9,101 @@ namespace NMF.Expressions
 {
     internal class GeneralizingExpressionVisitor : ExpressionVisitor
     {
+        private List<PropertyPath> signatures = new List<PropertyPath>();
+        private PropertyPath currentPath;
+
         protected override Expression VisitBinary(BinaryExpression node)
         {
-            return base.VisitBinary(node);
+            Visit(node.Left);
+            Visit(node.Right);
+            currentPath = null;
+            return node;
         }
 
         protected override Expression VisitBlock(BlockExpression node)
         {
-            return base.VisitBlock(node);
+            throw new NotSupportedException("Statements are not supported!");
         }
 
         protected override CatchBlock VisitCatchBlock(CatchBlock node)
         {
-            return base.VisitCatchBlock(node);
+            throw new NotSupportedException("Statements are not supported!");
         }
 
         protected override Expression VisitConditional(ConditionalExpression node)
         {
-            return base.VisitConditional(node);
+            Visit(node.Test);
+            Visit(node.IfTrue);
+            Visit(node.IfFalse);
+            currentPath = null;
+            return node;
         }
 
         protected override Expression VisitConstant(ConstantExpression node)
         {
-            return base.VisitConstant(node);
+            currentPath = null;
+            return node;
         }
 
         protected override Expression VisitDebugInfo(DebugInfoExpression node)
         {
-            return base.VisitDebugInfo(node);
+            throw new NotSupportedException("Statements are not supported!");
         }
 
         protected override Expression VisitDefault(DefaultExpression node)
         {
-            return base.VisitDefault(node);
+            currentPath = null;
+            return node;
         }
 
         protected override Expression VisitDynamic(DynamicExpression node)
         {
-            return base.VisitDynamic(node);
+            throw new NotSupportedException("Dynamic expressions are not supported!");
         }
 
         protected override ElementInit VisitElementInit(ElementInit node)
         {
-            return base.VisitElementInit(node);
+            throw new NotImplementedException();
         }
 
         protected override Expression VisitGoto(GotoExpression node)
         {
-            return base.VisitGoto(node);
+            throw new NotSupportedException("Statements are not supported!");
         }
 
         protected override Expression VisitIndex(IndexExpression node)
         {
-            return base.VisitIndex(node);
+            foreach (var arg in node.Arguments)
+            {
+                Visit(arg);
+            }
+            Visit(node.Object);
+            return node;
         }
 
         protected override Expression VisitExtension(Expression node)
         {
-            return base.VisitExtension(node);
+            throw new NotSupportedException();
         }
 
         protected override Expression VisitInvocation(InvocationExpression node)
         {
-            return base.VisitInvocation(node);
+            foreach (var arg in node.Arguments)
+            {
+                Visit(arg);
+            }
+            Visit(node.Expression);
+            return node;
         }
 
         protected override Expression VisitLabel(LabelExpression node)
         {
-            return base.VisitLabel(node);
+            throw new NotSupportedException("Statements are not supported!");
         }
 
         protected override LabelTarget VisitLabelTarget(LabelTarget node)
         {
-            return base.VisitLabelTarget(node);
+            throw new NotSupportedException("Statements are not supported!");
         }
 
         protected override Expression VisitLambda<T>(Expression<T> node)
@@ -91,92 +113,131 @@ namespace NMF.Expressions
 
         protected override Expression VisitListInit(ListInitExpression node)
         {
-            return base.VisitListInit(node);
+            throw new NotImplementedException();
         }
 
         protected override Expression VisitLoop(LoopExpression node)
         {
-            return base.VisitLoop(node);
+            throw new NotSupportedException("Statements are not supported!");
         }
 
         protected override Expression VisitMember(MemberExpression node)
         {
-            return base.VisitMember(node);
+            Visit(node.Expression);
+            if (currentPath != null)
+            {
+                var newPath = signatures.FirstOrDefault(p => p.Parent == currentPath && p.Member == node.Member);
+                if (newPath == null)
+                {
+                    newPath = new PropertyAccess(currentPath, node.Member);
+                    signatures.Add(newPath);
+                }
+                currentPath = newPath;
+            }
+            else
+            {
+                throw new NotImplementedException();
+            }
+            return node;
         }
 
         protected override MemberAssignment VisitMemberAssignment(MemberAssignment node)
         {
-            return base.VisitMemberAssignment(node);
+            throw new NotImplementedException();
         }
 
         protected override MemberBinding VisitMemberBinding(MemberBinding node)
         {
-            return base.VisitMemberBinding(node);
+            throw new NotImplementedException();
         }
 
         protected override Expression VisitMemberInit(MemberInitExpression node)
         {
-            return base.VisitMemberInit(node);
+            throw new NotImplementedException();
         }
 
         protected override MemberListBinding VisitMemberListBinding(MemberListBinding node)
         {
-            return base.VisitMemberListBinding(node);
+            throw new NotImplementedException();
         }
 
         protected override MemberMemberBinding VisitMemberMemberBinding(MemberMemberBinding node)
         {
-            return base.VisitMemberMemberBinding(node);
+            throw new NotImplementedException();
         }
 
         protected override Expression VisitMethodCall(MethodCallExpression node)
         {
-            return base.VisitMethodCall(node);
+            foreach (var arg in node.Arguments)
+            {
+                Visit(arg);
+            }
+            Visit(node.Object);
+            currentPath = null;
+            return node;
         }
 
         protected override Expression VisitNew(NewExpression node)
         {
-            return base.VisitNew(node);
+            foreach (var arg in node.Arguments)
+            {
+                Visit(arg);
+            }
+            currentPath = null;
+            return node;
         }
 
         protected override Expression VisitNewArray(NewArrayExpression node)
         {
-            return base.VisitNewArray(node);
+            foreach (var arg in node.Expressions)
+            {
+                Visit(arg);
+            }
+            currentPath = null;
+            return node;
         }
 
         protected override Expression VisitParameter(ParameterExpression node)
         {
-            return base.VisitParameter(node);
+            currentPath = signatures.OfType<PathRoot>().FirstOrDefault(p => p.RootParameter == node);
+            if (currentPath == null)
+            {
+                currentPath = new PathRoot(node);
+                signatures.Add(currentPath);
+            }
+            return node;
         }
 
         protected override Expression VisitRuntimeVariables(RuntimeVariablesExpression node)
         {
-            return base.VisitRuntimeVariables(node);
+            throw new NotSupportedException("Statements are not supported!");
         }
 
         protected override Expression VisitSwitch(SwitchExpression node)
         {
-            return base.VisitSwitch(node);
+            throw new NotSupportedException("Statements are not supported!");
         }
 
         protected override SwitchCase VisitSwitchCase(SwitchCase node)
         {
-            return base.VisitSwitchCase(node);
+            throw new NotSupportedException("Statements are not supported!");
         }
 
         protected override Expression VisitTry(TryExpression node)
         {
-            return base.VisitTry(node);
+            throw new NotSupportedException("Statements are not supported!");
         }
 
         protected override Expression VisitTypeBinary(TypeBinaryExpression node)
         {
-            return base.VisitTypeBinary(node);
+            Visit(node.Expression);
+            return node;
         }
 
         protected override Expression VisitUnary(UnaryExpression node)
         {
-            return base.VisitUnary(node);
+            Visit(node.Operand);
+            return node;
         }
     }
 }
