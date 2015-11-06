@@ -99,7 +99,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Models.Expressions", "Expre
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Models.Expressions.Tests", "Expressions\Tests\Models.Expressions.Tests\Models.Expressions.Tests.csproj", "{CE4F8D70-E17A-4C51-9C9E-BFB42978B5E8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Benchmarking", "Analysis\Analysis.Core\Benchmarking.csproj", "{AFF77CC1-3907-4AD0-B072-B838DB793280}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Benchmarks", "Analysis\Benchmarks\Benchmarks.csproj", "{AFF77CC1-3907-4AD0-B072-B838DB793280}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
