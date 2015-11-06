@@ -23,6 +23,9 @@ namespace NMF.Expressions
 
         public INotifyExpression<T> CreateExpression<T>(Expression expression, IDictionary<string, object> parameterMappings)
         {
+            var generalizingVisitor = new GeneralizingExpressionVisitor();
+            generalizingVisitor.Visit(expression);
+            
             return Inner.CreateExpression<T>(expression, parameterMappings);
         }
 

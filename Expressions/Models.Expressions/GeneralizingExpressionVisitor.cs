@@ -1,7 +1,9 @@
-﻿using System;
+﻿using NMF.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -11,6 +13,31 @@ namespace NMF.Expressions
     {
         private List<PropertyPath> signatures = new List<PropertyPath>();
         private PropertyPath currentPath;
+
+        public ICollection<PropertyPath> Signatures
+        {
+            get
+            {
+                return signatures;
+            }
+        }
+
+        private static bool IsImmutableMethod(MethodInfo method)
+        {
+            return HasAttribute(method, typeof(ObservableProxyAttribute), false);
+        }
+
+        private static bool IsContainmentProperty(PropertyInfo property)
+        {
+            if (property.DeclaringType.IsValueType) return true;
+            return HasAttribute(property, typeof(ContainmentAttribute), true);
+        }
+
+        private static bool HasAttribute(MemberInfo member, Type attributeType, bool inherit)
+        {
+            var attributes = member.GetCustomAttributes(attributeType, inherit);
+            return attributes != null && attributes.Length > 0;
+        }
 
         protected override Expression VisitBinary(BinaryExpression node)
         {
@@ -35,6 +62,7 @@ namespace NMF.Expressions
             Visit(node.Test);
             Visit(node.IfTrue);
             Visit(node.IfFalse);
+
             currentPath = null;
             return node;
         }
@@ -168,13 +196,20 @@ namespace NMF.Expressions
 
         protected override Expression VisitMethodCall(MethodCallExpression node)
         {
-            foreach (var arg in node.Arguments)
+            if (IsImmutableMethod(node.Method))
             {
-                Visit(arg);
+                foreach (var arg in node.Arguments)
+                {
+                    Visit(arg);
+                }
+                Visit(node.Object);
+                currentPath = null;
+                return node;
             }
-            Visit(node.Object);
-            currentPath = null;
-            return node;
+            else
+            {
+                throw new NotImplementedException();
+            }
         }
 
         protected override Expression VisitNew(NewExpression node)

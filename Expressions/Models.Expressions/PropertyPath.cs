@@ -26,6 +26,8 @@ namespace NMF.Expressions
         {
             get;
         }
+
+        public bool IsUsed { get; set; }
     }
 
     internal class PropertyAccess : PropertyPath
