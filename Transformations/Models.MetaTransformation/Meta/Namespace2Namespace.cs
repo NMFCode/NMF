@@ -23,21 +23,15 @@ namespace NMF.Models.Meta
             {
                 get
                 {
-                    yield return "System";
-                    yield return "System.Collections";
-                    yield return "System.Collections.Generic";
-                    yield return "System.Collections.ObjectModel";
-                    yield return "System.ComponentModel";
-                    yield return "System.Diagnostics";
-                    yield return "System.Linq";
-                    yield return "NMF.Expressions";
-                    yield return "NMF.Expressions.Linq";
-                    yield return "NMF.Models";
-                    yield return "NMF.Models.Collections";
-                    yield return "NMF.Collections.Generic";
-                    yield return "NMF.Collections.ObjectModel";
-                    yield return "NMF.Serialization";
-                    yield return "NMF.Utilities";
+                    var t = Transformation as Meta2ClassesTransformation;
+                    if (t != null)
+                    {
+                        return t.SystemImports;
+                    }
+                    else
+                    {
+                        return DefaultSystemImports;
+                    }
                 }
             }
 

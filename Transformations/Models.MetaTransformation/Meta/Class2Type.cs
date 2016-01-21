@@ -103,6 +103,8 @@ namespace NMF.Models.Meta
 
                 base.Transform(input, generatedType, context);
 
+                EnsureNamespace(input, generatedType, context);
+
                 generatedType.BaseTypes.Add(typeof(IModelElement).Name);
 
                 var members = generatedType.Members;
@@ -135,6 +137,26 @@ namespace NMF.Models.Meta
                     lock (context.Data)
                     {
                         context.GetRootClasses(true).Add(input);
+                    }
+                }
+            }
+
+            private void EnsureNamespace(IClass input, CodeTypeDeclaration generatedType, ITransformationContext context)
+            {
+                var reference = generatedType.GetReferenceForType();
+                var ns2ns = Rule<Namespace2Namespace>();
+                if (ns2ns != null)
+                {
+                    var baseType = reference.BaseType;
+                    var systemAssembly = typeof(System.ComponentModel.IComponent).Assembly;
+                    foreach (var ns in ns2ns.DefaultImports)
+                    {
+                        var typeName = ns + "." + baseType;
+                        if (System.Type.GetType(typeName, false) != null || systemAssembly.GetType(typeName, false) != null)
+                        {
+                            reference.BaseType = context.Trace.ResolveIn(ns2ns, input.Namespace).Name + "." + baseType;
+                            return;
+                        }
                     }
                 }
             }
@@ -188,7 +210,6 @@ namespace NMF.Models.Meta
                 {
                     iface.CustomAttributes.Add(generatedType.CustomAttributes[i]);
                 }
-                iface.AddAttribute(typeof(XmlDefaultImplementationTypeAttribute), new CodeTypeOfExpression(generatedType.Name));
                 iface.AddAttribute(typeof(DefaultImplementationTypeAttribute), new CodeTypeOfExpression(generatedType.Name));
                 iface.WriteDocumentation("The public interface for " + input.Name);
                 return iface;

@@ -62,6 +62,45 @@ namespace NMF.Models.Meta
             }
         }
 
+
+        /// <summary>
+        /// Gets the default imported system namespaces
+        /// </summary>
+        public static IEnumerable<string> DefaultSystemImports
+        {
+            get
+            {
+                yield return "System";
+                yield return "System.Collections";
+                yield return "System.Collections.Generic";
+                yield return "System.Collections.ObjectModel";
+                yield return "System.ComponentModel";
+                yield return "System.Diagnostics";
+                yield return "System.Linq";
+                yield return "NMF.Expressions";
+                yield return "NMF.Expressions.Linq";
+                yield return "NMF.Models";
+                yield return "NMF.Models.Collections";
+                yield return "NMF.Collections.Generic";
+                yield return "NMF.Collections.ObjectModel";
+                yield return "NMF.Serialization";
+                yield return "NMF.Utilities";
+            }
+        }
+
+
+        /// <summary>
+        /// Gets the imported system namespaces
+        /// </summary>
+        public virtual IEnumerable<string> SystemImports
+        {
+            get
+            {
+                return DefaultSystemImports;
+            }
+        }
+
+
         /// <summary>
         /// Creates a reference to the given NMeta type
         /// </summary>

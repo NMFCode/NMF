@@ -82,7 +82,7 @@ namespace NMF.Models
 
         protected internal override Uri CreateUriWithFragment(string fragment, bool absolute)
         {
-            if (ModelUri == null || !absolute)
+            if (ModelUri == null || !absolute || !ModelUri.IsAbsoluteUri)
             {
                 return new Uri("#//" + fragment, UriKind.Relative);
             }
