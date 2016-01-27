@@ -41,336 +41,370 @@
     <Folder Include="Properties\" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="..\ObservableExpressions\ApplyParametersVisitor.cs">
-      <Link>ApplyParametersVisitor.cs</Link>
-    </Compile>
-    <Compile Include="..\ObservableExpressions\Arithmetics\ObservableBitwiseAnd.cs">
-      <Link>Arithmetics\ObservableBitwiseAnd.cs</Link>
-    </Compile>
-    <Compile Include="..\ObservableExpressions\Arithmetics\ObservableBitwiseOr.cs">
-      <Link>Arithmetics\ObservableBitwiseOr.cs</Link>
-    </Compile>
-    <Compile Include="..\ObservableExpressions\Arithmetics\ObservableBitwiseXor.cs">
-      <Link>Arithmetics\ObservableBitwiseXor.cs</Link>
-    </Compile>
-    <Compile Include="..\ObservableExpressions\Arithmetics\ObservableComparison.cs">
-      <Link>Arithmetics\ObservableComparison.cs</Link>
-    </Compile>
-    <Compile Include="..\ObservableExpressions\Arithmetics\ObservableDivide.cs">
-      <Link>Arithmetics\ObservableDivide.cs</Link>
-    </Compile>
-    <Compile Include="..\ObservableExpressions\Arithmetics\ObservableEquals.cs">
-      <Link>Arithmetics\ObservableEquals.cs</Link>
-    </Compile>
-    <Compile Include="..\ObservableExpressions\Arithmetics\ObservableLogicOperators.cs">
-      <Link>Arithmetics\ObservableLogicOperators.cs</Link>
-    </Compile>
-    <Compile Include="..\ObservableExpressions\Arithmetics\ObservableMinus.cs">
-      <Link>Arithmetics\ObservableMinus.cs</Link>
-    </Compile>
-    <Compile Include="..\ObservableExpressions\Arithmetics\ObservableModulo.cs">
-      <Link>Arithmetics\ObservableModulo.cs</Link>
-    </Compile>
-    <Compile Include="..\ObservableExpressions\Arithmetics\ObservableMultiply.cs">
-      <Link>Arithmetics\ObservableMultiply.cs</Link>
-    </Compile>
-    <Compile Include="..\ObservableExpressions\Arithmetics\ObservableOnesComplement.cs">
-      <Link>Arithmetics\ObservableOnesComplement.cs</Link>
-    </Compile>
-    <Compile Include="..\ObservableExpressions\Arithmetics\ObservablePlus.cs">
-      <Link>Arithmetics\ObservablePlus.cs</Link>
-    </Compile>
-    <Compile Include="..\ObservableExpressions\Arithmetics\ObservableShift.cs">
-      <Link>Arithmetics\ObservableShift.cs</Link>
-    </Compile>
-    <Compile Include="..\ObservableExpressions\Arithmetics\ObservableUnaryMinus.cs">
-      <Link>Arithmetics\ObservableUnaryMinus.cs</Link>
-    </Compile>
-    <Compile Include="..\ObservableExpressions\EnumerableExpressions\CastExpression.cs">
+    <Compile Include="..\Expressions.Linq\EnumerableExpressions\CastExpression.cs">
       <Link>EnumerableExpressions\CastExpression.cs</Link>
     </Compile>
-    <Compile Include="..\ObservableExpressions\EnumerableExpressions\ConcatExpression.cs">
+    <Compile Include="..\Expressions.Linq\EnumerableExpressions\ConcatExpression.cs">
       <Link>EnumerableExpressions\ConcatExpression.cs</Link>
     </Compile>
-    <Compile Include="..\ObservableExpressions\EnumerableExpressions\DistinctExpression.cs">
+    <Compile Include="..\Expressions.Linq\EnumerableExpressions\DistinctExpression.cs">
       <Link>EnumerableExpressions\DistinctExpression.cs</Link>
     </Compile>
-    <Compile Include="..\ObservableExpressions\EnumerableExpressions\ExceptExpression.cs">
+    <Compile Include="..\Expressions.Linq\EnumerableExpressions\ExceptExpression.cs">
       <Link>EnumerableExpressions\ExceptExpression.cs</Link>
     </Compile>
-    <Compile Include="..\ObservableExpressions\EnumerableExpressions\GroupByExpression.cs">
+    <Compile Include="..\Expressions.Linq\EnumerableExpressions\GroupByExpression.cs">
       <Link>EnumerableExpressions\GroupByExpression.cs</Link>
     </Compile>
-    <Compile Include="..\ObservableExpressions\EnumerableExpressions\GroupJoinExpression.cs">
+    <Compile Include="..\Expressions.Linq\EnumerableExpressions\GroupJoinExpression.cs">
       <Link>EnumerableExpressions\GroupJoinExpression.cs</Link>
     </Compile>
-    <Compile Include="..\ObservableExpressions\EnumerableExpressions\JoinExpression.cs">
+    <Compile Include="..\Expressions.Linq\EnumerableExpressions\JoinExpression.cs">
       <Link>EnumerableExpressions\JoinExpression.cs</Link>
     </Compile>
-    <Compile Include="..\ObservableExpressions\EnumerableExpressions\OfTypeExpression.cs">
+    <Compile Include="..\Expressions.Linq\EnumerableExpressions\OfTypeExpression.cs">
       <Link>EnumerableExpressions\OfTypeExpression.cs</Link>
     </Compile>
-    <Compile Include="..\ObservableExpressions\EnumerableExpressions\OrderByExpression.cs">
+    <Compile Include="..\Expressions.Linq\EnumerableExpressions\OrderByExpression.cs">
       <Link>EnumerableExpressions\OrderByExpression.cs</Link>
     </Compile>
-    <Compile Include="..\ObservableExpressions\EnumerableExpressions\SelectExpression.cs">
+    <Compile Include="..\Expressions.Linq\EnumerableExpressions\SelectExpression.cs">
       <Link>EnumerableExpressions\SelectExpression.cs</Link>
     </Compile>
-    <Compile Include="..\ObservableExpressions\EnumerableExpressions\SelectManyExpression.cs">
+    <Compile Include="..\Expressions.Linq\EnumerableExpressions\SelectManyExpression.cs">
       <Link>EnumerableExpressions\SelectManyExpression.cs</Link>
     </Compile>
-    <Compile Include="..\ObservableExpressions\EnumerableExpressions\SimpleSelectManyExpression.cs">
+    <Compile Include="..\Expressions.Linq\EnumerableExpressions\SimpleSelectManyExpression.cs">
       <Link>EnumerableExpressions\SimpleSelectManyExpression.cs</Link>
     </Compile>
-    <Compile Include="..\ObservableExpressions\EnumerableExpressions\ThenByExpression.cs">
+    <Compile Include="..\Expressions.Linq\EnumerableExpressions\ThenByExpression.cs">
       <Link>EnumerableExpressions\ThenByExpression.cs</Link>
     </Compile>
-    <Compile Include="..\ObservableExpressions\EnumerableExpressions\WhereExpression.cs">
+    <Compile Include="..\Expressions.Linq\EnumerableExpressions\WhereExpression.cs">
       <Link>EnumerableExpressions\WhereExpression.cs</Link>
     </Compile>
-    <Compile Include="..\ObservableExpressions\ExpressionRewriter\ExpressionCompileRewriter.cs">
-      <Link>ExpressionRewriter\ExpressionCompileRewriter.cs</Link>
-    </Compile>
-    <Compile Include="..\ObservableExpressions\ExpressionRewriter\ExpressionCompileRewriterAttribute.cs">
-      <Link>ExpressionRewriter\ExpressionCompileRewriterAttribute.cs</Link>
-    </Compile>
-    <Compile Include="..\ObservableExpressions\ExpressionRewriter\SetExpressionRewriter.cs">
-      <Link>ExpressionRewriter\SetExpressionRewriter.cs</Link>
-    </Compile>
-    <Compile Include="..\ObservableExpressions\ExpressionRewriter\SetExpressionRewriterAttribute.cs">
-      <Link>ExpressionRewriter\SetExpressionRewriterAttribute.cs</Link>
-    </Compile>
-    <Compile Include="..\ObservableExpressions\Facade\ConstantValue.cs">
-      <Link>Facade\ConstantValue.cs</Link>
-    </Compile>
-    <Compile Include="..\ObservableExpressions\Facade\ExpressionExtensions.cs">
+    <Compile Include="..\Expressions.Linq\Facade\ExpressionExtensions.cs">
       <Link>Facade\ExpressionExtensions.cs</Link>
     </Compile>
-    <Compile Include="..\ObservableExpressions\Facade\FunctionTypes.cs">
-      <Link>Facade\FunctionTypes.cs</Link>
-    </Compile>
-    <Compile Include="..\ObservableExpressions\Facade\FunctionTypes.Manual.cs">
-      <Link>Facade\FunctionTypes.Manual.cs</Link>
-    </Compile>
-    <Compile Include="..\ObservableExpressions\Facade\IEnumerableExpression.cs">
+    <Compile Include="..\Expressions.Linq\Facade\IEnumerableExpression.cs">
       <Link>Facade\IEnumerableExpression.cs</Link>
     </Compile>
-    <Compile Include="..\ObservableExpressions\Facade\INotifyEnumerable.cs">
+    <Compile Include="..\Expressions.Linq\Facade\INotifyEnumerable.cs">
       <Link>Facade\INotifyEnumerable.cs</Link>
     </Compile>
-    <Compile Include="..\ObservableExpressions\Facade\INotifyFactory.cs">
-      <Link>Facade\INotifyFactory.cs</Link>
-    </Compile>
-    <Compile Include="..\ObservableExpressions\Facade\INotifyValue.cs">
-      <Link>Facade\INotifyValue.cs</Link>
-    </Compile>
-    <Compile Include="..\ObservableExpressions\Facade\NotifyCollection.cs">
+    <Compile Include="..\Expressions.Linq\Facade\NotifyCollection.cs">
       <Link>Facade\NotifyCollection.cs</Link>
     </Compile>
-    <Compile Include="..\ObservableExpressions\Facade\NotifyValue.cs">
-      <Link>Facade\NotifyValue.cs</Link>
-    </Compile>
-    <Compile Include="..\ObservableExpressions\Facade\Observable.cs">
-      <Link>Facade\Observable.cs</Link>
-    </Compile>
-    <Compile Include="..\ObservableExpressions\Facade\Observable.Manual.cs">
-      <Link>Facade\Observable.Manual.cs</Link>
-    </Compile>
-    <Compile Include="..\ObservableExpressions\Facade\ObservableExtensions.cs">
+    <Compile Include="..\Expressions.Linq\Facade\ObservableExtensions.cs">
       <Link>Facade\ObservableExtensions.cs</Link>
     </Compile>
-    <Compile Include="..\ObservableExpressions\Facade\ObservableProxyAttribute.cs">
-      <Link>Facade\ObservableProxyAttribute.cs</Link>
-    </Compile>
-    <Compile Include="..\ObservableExpressions\Facade\OrderableList.cs">
+    <Compile Include="..\Expressions.Linq\Facade\OrderableList.cs">
       <Link>Facade\OrderableList.cs</Link>
     </Compile>
-    <Compile Include="..\ObservableExpressions\Facade\ReversableFunctionTypes.cs">
-      <Link>Facade\ReversableFunctionTypes.cs</Link>
-    </Compile>
-    <Compile Include="..\ObservableExpressions\Linq\ManualObservableCollectionView.cs">
+    <Compile Include="..\Expressions.Linq\Linq\ManualObservableCollectionView.cs">
       <Link>Linq\ManualObservableCollectionView.cs</Link>
     </Compile>
-    <Compile Include="..\ObservableExpressions\Linq\Multiplicity.cs">
+    <Compile Include="..\Expressions.Linq\Linq\Multiplicity.cs">
       <Link>Linq\Multiplicity.cs</Link>
     </Compile>
-    <Compile Include="..\ObservableExpressions\Linq\ObservableAggregate.cs">
+    <Compile Include="..\Expressions.Linq\Linq\ObservableAggregate.cs">
       <Link>Linq\ObservableAggregate.cs</Link>
     </Compile>
-    <Compile Include="..\ObservableExpressions\Linq\ObservableAll.cs">
+    <Compile Include="..\Expressions.Linq\Linq\ObservableAll.cs">
       <Link>Linq\ObservableAll.cs</Link>
     </Compile>
-    <Compile Include="..\ObservableExpressions\Linq\ObservableAny.cs">
+    <Compile Include="..\Expressions.Linq\Linq\ObservableAny.cs">
       <Link>Linq\ObservableAny.cs</Link>
     </Compile>
-    <Compile Include="..\ObservableExpressions\Linq\ObservableAverage.cs">
+    <Compile Include="..\Expressions.Linq\Linq\ObservableAverage.cs">
       <Link>Linq\ObservableAverage.cs</Link>
     </Compile>
-    <Compile Include="..\ObservableExpressions\Linq\ObservableCast.cs">
+    <Compile Include="..\Expressions.Linq\Linq\ObservableCast.cs">
       <Link>Linq\ObservableCast.cs</Link>
     </Compile>
-    <Compile Include="..\ObservableExpressions\Linq\ObservableCollectionProxy.cs">
+    <Compile Include="..\Expressions.Linq\Linq\ObservableCollectionProxy.cs">
       <Link>Linq\ObservableCollectionProxy.cs</Link>
     </Compile>
-    <Compile Include="..\ObservableExpressions\Linq\ObservableConcat.cs">
+    <Compile Include="..\Expressions.Linq\Linq\ObservableConcat.cs">
       <Link>Linq\ObservableConcat.cs</Link>
     </Compile>
-    <Compile Include="..\ObservableExpressions\Linq\ObservableContains.cs">
+    <Compile Include="..\Expressions.Linq\Linq\ObservableContains.cs">
       <Link>Linq\ObservableContains.cs</Link>
     </Compile>
-    <Compile Include="..\ObservableExpressions\Linq\ObservableCount.cs">
+    <Compile Include="..\Expressions.Linq\Linq\ObservableCount.cs">
       <Link>Linq\ObservableCount.cs</Link>
     </Compile>
-    <Compile Include="..\ObservableExpressions\Linq\ObservableDistinct.cs">
+    <Compile Include="..\Expressions.Linq\Linq\ObservableDistinct.cs">
       <Link>Linq\ObservableDistinct.cs</Link>
     </Compile>
-    <Compile Include="..\ObservableExpressions\Linq\ObservableEnumerable.cs">
+    <Compile Include="..\Expressions.Linq\Linq\ObservableEnumerable.cs">
       <Link>Linq\ObservableEnumerable.cs</Link>
     </Compile>
-    <Compile Include="..\ObservableExpressions\Linq\ObservableExcept.cs">
+    <Compile Include="..\Expressions.Linq\Linq\ObservableExcept.cs">
       <Link>Linq\ObservableExcept.cs</Link>
     </Compile>
-    <Compile Include="..\ObservableExpressions\Linq\ObservableExtensionProxies.cs">
+    <Compile Include="..\Expressions.Linq\Linq\ObservableExtensionProxies.cs">
       <Link>Linq\ObservableExtensionProxies.cs</Link>
     </Compile>
-    <Compile Include="..\ObservableExpressions\Linq\ObservableFirstOrDefault.cs">
+    <Compile Include="..\Expressions.Linq\Linq\ObservableFirstOrDefault.cs">
       <Link>Linq\ObservableFirstOrDefault.cs</Link>
     </Compile>
-    <Compile Include="..\ObservableExpressions\Linq\ObservableGroup.cs">
+    <Compile Include="..\Expressions.Linq\Linq\ObservableGroup.cs">
       <Link>Linq\ObservableGroup.cs</Link>
     </Compile>
-    <Compile Include="..\ObservableExpressions\Linq\ObservableGroupBy.cs">
+    <Compile Include="..\Expressions.Linq\Linq\ObservableGroupBy.cs">
       <Link>Linq\ObservableGroupBy.cs</Link>
     </Compile>
-    <Compile Include="..\ObservableExpressions\Linq\ObservableGroupJoin.cs">
+    <Compile Include="..\Expressions.Linq\Linq\ObservableGroupJoin.cs">
       <Link>Linq\ObservableGroupJoin.cs</Link>
     </Compile>
-    <Compile Include="..\ObservableExpressions\Linq\ObservableIntersect.cs">
+    <Compile Include="..\Expressions.Linq\Linq\ObservableIntersect.cs">
       <Link>Linq\ObservableIntersect.cs</Link>
     </Compile>
-    <Compile Include="..\ObservableExpressions\Linq\ObservableJoin.cs">
+    <Compile Include="..\Expressions.Linq\Linq\ObservableItemExpressionEnumerable.cs">
+      <Link>Linq\ObservableItemExpressionEnumerable.cs</Link>
+    </Compile>
+    <Compile Include="..\Expressions.Linq\Linq\ObservableJoin.cs">
       <Link>Linq\ObservableJoin.cs</Link>
     </Compile>
-    <Compile Include="..\ObservableExpressions\Linq\ObservableMin.cs">
+    <Compile Include="..\Expressions.Linq\Linq\ObservableMin.cs">
       <Link>Linq\ObservableMin.cs</Link>
     </Compile>
-    <Compile Include="..\ObservableExpressions\Linq\ObservableOfType.cs">
+    <Compile Include="..\Expressions.Linq\Linq\ObservableOfType.cs">
       <Link>Linq\ObservableOfType.cs</Link>
     </Compile>
-    <Compile Include="..\ObservableExpressions\Linq\ObservableOrderBy.cs">
+    <Compile Include="..\Expressions.Linq\Linq\ObservableOrderBy.cs">
       <Link>Linq\ObservableOrderBy.cs</Link>
     </Compile>
-    <Compile Include="..\ObservableExpressions\Linq\ObservableProperSubsetOf.cs">
+    <Compile Include="..\Expressions.Linq\Linq\ObservableProperSubsetOf.cs">
       <Link>Linq\ObservableProperSubsetOf.cs</Link>
     </Compile>
-    <Compile Include="..\ObservableExpressions\Linq\ObservableSelect.cs">
+    <Compile Include="..\Expressions.Linq\Linq\ObservableSelect.cs">
       <Link>Linq\ObservableSelect.cs</Link>
     </Compile>
-    <Compile Include="..\ObservableExpressions\Linq\ObservableSelectMany.cs">
+    <Compile Include="..\Expressions.Linq\Linq\ObservableSelectMany.cs">
       <Link>Linq\ObservableSelectMany.cs</Link>
     </Compile>
-    <Compile Include="..\ObservableExpressions\Linq\ObservableSetComparer.cs">
+    <Compile Include="..\Expressions.Linq\Linq\ObservableSetComparer.cs">
       <Link>Linq\ObservableSetComparer.cs</Link>
     </Compile>
-    <Compile Include="..\ObservableExpressions\Linq\ObservableSetEquals.cs">
+    <Compile Include="..\Expressions.Linq\Linq\ObservableSetEquals.cs">
       <Link>Linq\ObservableSetEquals.cs</Link>
     </Compile>
-    <Compile Include="..\ObservableExpressions\Linq\ObservableSimpleSelectMany.cs">
+    <Compile Include="..\Expressions.Linq\Linq\ObservableSimpleSelectMany.cs">
       <Link>Linq\ObservableSimpleSelectMany.cs</Link>
     </Compile>
-    <Compile Include="..\ObservableExpressions\Linq\ObservableSingleOrDefault.cs">
+    <Compile Include="..\Expressions.Linq\Linq\ObservableSingleOrDefault.cs">
       <Link>Linq\ObservableSingleOrDefault.cs</Link>
     </Compile>
-    <Compile Include="..\ObservableExpressions\Linq\ObservableSubsetOf.cs">
+    <Compile Include="..\Expressions.Linq\Linq\ObservableSubsetOf.cs">
       <Link>Linq\ObservableSubsetOf.cs</Link>
     </Compile>
-    <Compile Include="..\ObservableExpressions\Linq\ObservableSum.cs">
+    <Compile Include="..\Expressions.Linq\Linq\ObservableSum.cs">
       <Link>Linq\ObservableSum.cs</Link>
     </Compile>
-    <Compile Include="..\ObservableExpressions\Linq\ObservableThenBy.cs">
+    <Compile Include="..\Expressions.Linq\Linq\ObservableThenBy.cs">
       <Link>Linq\ObservableThenBy.cs</Link>
     </Compile>
-    <Compile Include="..\ObservableExpressions\Linq\ObservableWhere.cs">
+    <Compile Include="..\Expressions.Linq\Linq\ObservableWhere.cs">
       <Link>Linq\ObservableWhere.cs</Link>
     </Compile>
-    <Compile Include="..\ObservableExpressions\Linq\ReverseComparer.cs">
+    <Compile Include="..\Expressions.Linq\Linq\ReverseComparer.cs">
       <Link>Linq\ReverseComparer.cs</Link>
     </Compile>
-    <Compile Include="..\ObservableExpressions\ObservableArrayIndex.cs">
+    <Compile Include="..\Expressions\ApplyParametersVisitor.cs">
+      <Link>ApplyParametersVisitor.cs</Link>
+    </Compile>
+    <Compile Include="..\Expressions\Arithmetics\ObservableBitwiseAnd.cs">
+      <Link>Arithmetics\ObservableBitwiseAnd.cs</Link>
+    </Compile>
+    <Compile Include="..\Expressions\Arithmetics\ObservableBitwiseOr.cs">
+      <Link>Arithmetics\ObservableBitwiseOr.cs</Link>
+    </Compile>
+    <Compile Include="..\Expressions\Arithmetics\ObservableBitwiseXor.cs">
+      <Link>Arithmetics\ObservableBitwiseXor.cs</Link>
+    </Compile>
+    <Compile Include="..\Expressions\Arithmetics\ObservableComparison.cs">
+      <Link>Arithmetics\ObservableComparison.cs</Link>
+    </Compile>
+    <Compile Include="..\Expressions\Arithmetics\ObservableDivide.cs">
+      <Link>Arithmetics\ObservableDivide.cs</Link>
+    </Compile>
+    <Compile Include="..\Expressions\Arithmetics\ObservableEquals.cs">
+      <Link>Arithmetics\ObservableEquals.cs</Link>
+    </Compile>
+    <Compile Include="..\Expressions\Arithmetics\ObservableLogicOperators.cs">
+      <Link>Arithmetics\ObservableLogicOperators.cs</Link>
+    </Compile>
+    <Compile Include="..\Expressions\Arithmetics\ObservableMinus.cs">
+      <Link>Arithmetics\ObservableMinus.cs</Link>
+    </Compile>
+    <Compile Include="..\Expressions\Arithmetics\ObservableModulo.cs">
+      <Link>Arithmetics\ObservableModulo.cs</Link>
+    </Compile>
+    <Compile Include="..\Expressions\Arithmetics\ObservableMultiply.cs">
+      <Link>Arithmetics\ObservableMultiply.cs</Link>
+    </Compile>
+    <Compile Include="..\Expressions\Arithmetics\ObservableOnesComplement.cs">
+      <Link>Arithmetics\ObservableOnesComplement.cs</Link>
+    </Compile>
+    <Compile Include="..\Expressions\Arithmetics\ObservablePlus.cs">
+      <Link>Arithmetics\ObservablePlus.cs</Link>
+    </Compile>
+    <Compile Include="..\Expressions\Arithmetics\ObservableShift.cs">
+      <Link>Arithmetics\ObservableShift.cs</Link>
+    </Compile>
+    <Compile Include="..\Expressions\Arithmetics\ObservableUnaryMinus.cs">
+      <Link>Arithmetics\ObservableUnaryMinus.cs</Link>
+    </Compile>
+    <Compile Include="..\Expressions\ExpressionHelper.cs">
+      <Link>ExpressionHelper.cs</Link>
+    </Compile>
+    <Compile Include="..\Expressions\ExpressionRewriter\ExpressionCompileRewriter.cs">
+      <Link>ExpressionRewriter\ExpressionCompileRewriter.cs</Link>
+    </Compile>
+    <Compile Include="..\Expressions\ExpressionRewriter\ExpressionCompileRewriterAttribute.cs">
+      <Link>ExpressionRewriter\ExpressionCompileRewriterAttribute.cs</Link>
+    </Compile>
+    <Compile Include="..\Expressions\ExpressionRewriter\SetExpressionRewriter.cs">
+      <Link>ExpressionRewriter\SetExpressionRewriter.cs</Link>
+    </Compile>
+    <Compile Include="..\Expressions\ExpressionRewriter\SetExpressionRewriterAttribute.cs">
+      <Link>ExpressionRewriter\SetExpressionRewriterAttribute.cs</Link>
+    </Compile>
+    <Compile Include="..\Expressions\ObservableArrayIndex.cs">
       <Link>ObservableArrayIndex.cs</Link>
     </Compile>
-    <Compile Include="..\ObservableExpressions\ObservableArrayInitializationExpression.cs">
+    <Compile Include="..\Expressions\ObservableArrayInitializationExpression.cs">
       <Link>ObservableArrayInitializationExpression.cs</Link>
     </Compile>
-    <Compile Include="..\ObservableExpressions\ObservableBinaryExpression.cs">
+    <Compile Include="..\Expressions\ObservableBinaryExpression.cs">
       <Link>ObservableBinaryExpression.cs</Link>
     </Compile>
-    <Compile Include="..\ObservableExpressions\ObservableConditionalExpression.cs">
+    <Compile Include="..\Expressions\ObservableConditionalExpression.cs">
       <Link>ObservableConditionalExpression.cs</Link>
     </Compile>
-    <Compile Include="..\ObservableExpressions\ObservableConstant.cs">
+    <Compile Include="..\Expressions\ObservableConstant.cs">
       <Link>ObservableConstant.cs</Link>
     </Compile>
-    <Compile Include="..\ObservableExpressions\ObservableExpression.cs">
-      <Link>ObservableExpression.cs</Link>
-    </Compile>
-    <Compile Include="..\ObservableExpressions\ObservableExpressionBinder.cs">
+    <Compile Include="..\Expressions\ObservableExpressionBinder.cs">
       <Link>ObservableExpressionBinder.cs</Link>
     </Compile>
-    <Compile Include="..\ObservableExpressions\ObservableLambdaExpression.cs">
+    <Compile Include="..\Expressions\ObservableLambdaExpression.cs">
       <Link>ObservableLambdaExpression.cs</Link>
     </Compile>
-    <Compile Include="..\ObservableExpressions\ObservableListInit.cs">
+    <Compile Include="..\Expressions\ObservableListInit.cs">
       <Link>ObservableListInit.cs</Link>
     </Compile>
-    <Compile Include="..\ObservableExpressions\ObservableLocalVariable.cs">
+    <Compile Include="..\Expressions\ObservableLocalVariable.cs">
       <Link>ObservableLocalVariable.cs</Link>
     </Compile>
-    <Compile Include="..\ObservableExpressions\ObservableMemberBinding.cs">
+    <Compile Include="..\Expressions\ObservableMemberBinding.cs">
       <Link>ObservableMemberBinding.cs</Link>
     </Compile>
-    <Compile Include="..\ObservableExpressions\ObservableMemberExpression.cs">
+    <Compile Include="..\Expressions\ObservableMemberExpression.cs">
       <Link>ObservableMemberExpression.cs</Link>
     </Compile>
-    <Compile Include="..\ObservableExpressions\ObservableMemberInit.cs">
+    <Compile Include="..\Expressions\ObservableMemberInit.cs">
       <Link>ObservableMemberInit.cs</Link>
     </Compile>
-    <Compile Include="..\ObservableExpressions\ObservableMethodCall.cs">
+    <Compile Include="..\Expressions\ObservableMethodCall.cs">
       <Link>ObservableMethodCall.cs</Link>
     </Compile>
-    <Compile Include="..\ObservableExpressions\ObservableNewArrayExpression.cs">
+    <Compile Include="..\Expressions\ObservableMethodCallBase.cs">
+      <Link>ObservableMethodCallBase.cs</Link>
+    </Compile>
+    <Compile Include="..\Expressions\ObservableMethodProxyCall.cs">
+      <Link>ObservableMethodProxyCall.cs</Link>
+    </Compile>
+    <Compile Include="..\Expressions\ObservableNewArrayExpression.cs">
       <Link>ObservableNewArrayExpression.cs</Link>
     </Compile>
-    <Compile Include="..\ObservableExpressions\ObservableNewExpression1.cs">
+    <Compile Include="..\Expressions\ObservableNewExpression1.cs">
       <Link>ObservableNewExpression1.cs</Link>
     </Compile>
-    <Compile Include="..\ObservableExpressions\ObservableParameter.cs">
+    <Compile Include="..\Expressions\ObservableParameter.cs">
       <Link>ObservableParameter.cs</Link>
     </Compile>
-    <Compile Include="..\ObservableExpressions\ObservableProxyExpression.cs">
+    <Compile Include="..\Expressions\ObservableProxyCallBase.cs">
+      <Link>ObservableProxyCallBase.cs</Link>
+    </Compile>
+    <Compile Include="..\Expressions\ObservableProxyExpression.cs">
       <Link>ObservableProxyExpression.cs</Link>
     </Compile>
-    <Compile Include="..\ObservableExpressions\ObservableReversableExpression.cs">
+    <Compile Include="..\Expressions\ObservableReversableExpression.cs">
       <Link>ObservableReversableExpression.cs</Link>
     </Compile>
-    <Compile Include="..\ObservableExpressions\ObservableStaticMethodCall.cs">
+    <Compile Include="..\Expressions\ObservableStaticMethodCall.cs">
       <Link>ObservableStaticMethodCall.cs</Link>
     </Compile>
-    <Compile Include="..\ObservableExpressions\ObservableStaticMethodCallBase.cs">
+    <Compile Include="..\Expressions\ObservableStaticMethodCallBase.cs">
       <Link>ObservableStaticMethodCallBase.cs</Link>
     </Compile>
-    <Compile Include="..\ObservableExpressions\ObservableStaticProxyCall.cs">
+    <Compile Include="..\Expressions\ObservableStaticProxyCall.cs">
       <Link>ObservableStaticProxyCall.cs</Link>
     </Compile>
-    <Compile Include="..\ObservableExpressions\ObservableStaticProxyCallBase.cs">
-      <Link>ObservableStaticProxyCallBase.cs</Link>
-    </Compile>
-    <Compile Include="..\ObservableExpressions\ObservableTypeBinaryExpression.cs">
+    <Compile Include="..\Expressions\ObservableTypeBinaryExpression.cs">
       <Link>ObservableTypeBinaryExpression.cs</Link>
     </Compile>
-    <Compile Include="..\ObservableExpressions\ObservableUnaryExpression.cs">
+    <Compile Include="..\Expressions\ObservableUnaryExpression.cs">
       <Link>ObservableUnaryExpression.cs</Link>
     </Compile>
+    <Compile Include="..\Expressions\Public\ConstantValue.cs">
+      <Link>Facade\ConstantValue.cs</Link>
+    </Compile>
+    <Compile Include="..\Expressions\Public\FunctionTypes.cs">
+      <Link>Facade\FunctionTypes.cs</Link>
+    </Compile>
+    <Compile Include="..\Expressions\Public\FunctionTypes.Manual.cs">
+      <Link>Facade\FunctionTypes.Manual.cs</Link>
+    </Compile>
+    <Compile Include="..\Expressions\Public\INotifyExpression.cs">
+      <Link>Facade\INotifyExpression.cs</Link>
+    </Compile>
+    <Compile Include="..\Expressions\Public\INotifyReversableExpression.cs">
+      <Link>Facade\INotifyReversableExpression.cs</Link>
+    </Compile>
+    <Compile Include="..\Expressions\Public\INotifySystem.cs">
+      <Link>Facade\INotifySystem.cs</Link>
+    </Compile>
+    <Compile Include="..\Expressions\Public\INotifyValue.cs">
+      <Link>Facade\INotifyValue.cs</Link>
+    </Compile>
+    <Compile Include="..\Expressions\Public\InstructionLevelNotifySystem.cs">
+      <Link>Facade\InstructionLevelNotifySystem.cs</Link>
+    </Compile>
+    <Compile Include="..\Expressions\Public\NotifyExpression.cs">
+      <Link>Facade\NotifyExpression.cs</Link>
+    </Compile>
+    <Compile Include="..\Expressions\Public\NotifyExpressionBase.cs">
+      <Link>Facade\NotifyExpressionBase.cs</Link>
+    </Compile>
+    <Compile Include="..\Expressions\Public\NotifySystem.cs">
+      <Link>Facade\NotifySystem.cs</Link>
+    </Compile>
+    <Compile Include="..\Expressions\Public\NotifyValue.cs">
+      <Link>Facade\NotifyValue.cs</Link>
+    </Compile>
+    <Compile Include="..\Expressions\Public\Observable.cs">
+      <Link>Facade\Observable.cs</Link>
+    </Compile>
+    <Compile Include="..\Expressions\Public\Observable.Manual.cs">
+      <Link>Facade\Observable.Manual.cs</Link>
+    </Compile>
+    <Compile Include="..\Expressions\Public\ObservableProxyAttribute.cs">
+      <Link>Facade\ObservableProxyAttribute.cs</Link>
+    </Compile>
+    <Compile Include="..\Expressions\Public\ReversableExtensions.cs">
+      <Link>Facade\ReversableExtensions.cs</Link>
+    </Compile>
+    <Compile Include="..\Expressions\Public\ReversableFunctionTypes.cs">
+      <Link>Facade\ReversableFunctionTypes.cs</Link>
+    </Compile>
+    <Compile Include="..\Expressions\Public\ValueChangedEventArgs.cs">
+      <Link>Facade\ValueChangedEventArgs.cs</Link>
+    </Compile>
+    <Compile Include="AssemblyInfo.cs" />
     <Compile Include="ExpressionRewriter\ProxyMethodAttribute.cs" />
     <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="ReflectionHelper.cs" />

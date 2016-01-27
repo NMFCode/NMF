@@ -707,7 +707,7 @@ namespace NMF.Expressions
                     {
                         if (!IsNotifyValue(proxyMethodParameters[i].ParameterType, types[i]))
                         {
-                            if (types[i].IsAssignableFrom(proxyMethodParameters[i].ParameterType))
+                            if (ReflectionHelper.IsAssignableFrom(types[i], proxyMethodParameters[i].ParameterType))
                             {
                                 simples = true;
                             }
@@ -779,7 +779,7 @@ namespace NMF.Expressions
 
         private bool IsNotifyValue(Type actual, Type spec)
         {
-            return typeof(INotifyValue<>).MakeGenericType(spec).IsAssignableFrom(actual);
+            return ReflectionHelper.IsAssignableFrom(typeof(INotifyValue<>).MakeGenericType(spec), actual);
         }
 
         protected override Expression VisitNew(NewExpression node)

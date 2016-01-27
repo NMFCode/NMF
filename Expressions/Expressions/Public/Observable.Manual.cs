@@ -155,7 +155,7 @@ namespace NMF.Expressions
         /// <returns>An incremental value whether the object is of the given type</returns>
         public static INotifyExpression<bool> InstanceIOf(INotifyExpression<object> inner, Type type)
         {
-            return new ObservableTypeExpression(inner, type, type.IsValueType);
+            return new ObservableTypeExpression(inner, type, ReflectionHelper.IsValueType(type));
         }
 
         /// <summary>

@@ -60,94 +60,98 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
-    <Compile Include="..\ObservableExpressions.Linq.Tests\AbsoluteValueComparer.cs">
+    <Compile Include="..\Expressions.Linq.Tests\AbsoluteValueComparer.cs">
       <Link>AbsoluteValueComparer.cs</Link>
     </Compile>
-    <Compile Include="..\ObservableExpressions.Linq.Tests\AllTests.cs">
+    <Compile Include="..\Expressions.Linq.Tests\AllTests.cs">
       <Link>AllTests.cs</Link>
     </Compile>
-    <Compile Include="..\ObservableExpressions.Linq.Tests\AnyTest.cs">
+    <Compile Include="..\Expressions.Linq.Tests\AnyTest.cs">
       <Link>AnyTest.cs</Link>
     </Compile>
-    <Compile Include="..\ObservableExpressions.Linq.Tests\AssertExtensions.cs">
+    <Compile Include="..\Expressions.Linq.Tests\AssertExtensions.cs">
       <Link>AssertExtensions.cs</Link>
     </Compile>
-    <Compile Include="..\ObservableExpressions.Linq.Tests\AvgTests.cs">
+    <Compile Include="..\Expressions.Linq.Tests\AvgTests.cs">
       <Link>AvgTests.cs</Link>
     </Compile>
-    <Compile Include="..\ObservableExpressions.Linq.Tests\ConcatTests.cs">
+    <Compile Include="..\Expressions.Linq.Tests\ConcatTests.cs">
       <Link>ConcatTests.cs</Link>
     </Compile>
-    <Compile Include="..\ObservableExpressions.Linq.Tests\ContainsTests.cs">
+    <Compile Include="..\Expressions.Linq.Tests\ContainsTests.cs">
       <Link>ContainsTests.cs</Link>
     </Compile>
-    <Compile Include="..\ObservableExpressions.Linq.Tests\CountTest.cs">
+    <Compile Include="..\Expressions.Linq.Tests\CountTest.cs">
       <Link>CountTest.cs</Link>
     </Compile>
-    <Compile Include="..\ObservableExpressions.Linq.Tests\DistinctTest.cs">
+    <Compile Include="..\Expressions.Linq.Tests\DistinctTest.cs">
       <Link>DistinctTest.cs</Link>
     </Compile>
-    <Compile Include="..\ObservableExpressions.Linq.Tests\ExceptionTests.cs">
+    <Compile Include="..\Expressions.Linq.Tests\ExceptionTests.cs">
       <Link>ExceptionTests.cs</Link>
     </Compile>
-    <Compile Include="..\ObservableExpressions.Linq.Tests\FirstOrDefaultTests.cs">
+    <Compile Include="..\Expressions.Linq.Tests\FirstOrDefaultTests.cs">
       <Link>FirstOrDefaultTests.cs</Link>
     </Compile>
-    <Compile Include="..\ObservableExpressions.Linq.Tests\GroupByTest.cs">
+    <Compile Include="..\Expressions.Linq.Tests\GroupByTest.cs">
       <Link>GroupByTest.cs</Link>
     </Compile>
-    <Compile Include="..\ObservableExpressions.Linq.Tests\JoinTests.cs">
+    <Compile Include="..\Expressions.Linq.Tests\Integration\UnitTest1.cs">
+      <Link>Integration\UnitTest1.cs</Link>
+    </Compile>
+    <Compile Include="..\Expressions.Linq.Tests\JoinTests.cs">
       <Link>JoinTests.cs</Link>
     </Compile>
-    <Compile Include="..\ObservableExpressions.Linq.Tests\LambdaAvgTests.cs">
+    <Compile Include="..\Expressions.Linq.Tests\LambdaAvgTests.cs">
       <Link>LambdaAvgTests.cs</Link>
     </Compile>
-    <Compile Include="..\ObservableExpressions.Linq.Tests\LambdaMaxTests.cs">
+    <Compile Include="..\Expressions.Linq.Tests\LambdaMaxTests.cs">
       <Link>LambdaMaxTests.cs</Link>
     </Compile>
-    <Compile Include="..\ObservableExpressions.Linq.Tests\LambdaMinTests.cs">
+    <Compile Include="..\Expressions.Linq.Tests\LambdaMinTests.cs">
       <Link>LambdaMinTests.cs</Link>
     </Compile>
-    <Compile Include="..\ObservableExpressions.Linq.Tests\LambdaSumTests.cs">
+    <Compile Include="..\Expressions.Linq.Tests\LambdaSumTests.cs">
       <Link>LambdaSumTests.cs</Link>
     </Compile>
-    <Compile Include="..\ObservableExpressions.Linq.Tests\LinqTest.cs">
+    <Compile Include="..\Expressions.Linq.Tests\LinqTest.cs">
       <Link>LinqTest.cs</Link>
     </Compile>
-    <Compile Include="..\ObservableExpressions.Linq.Tests\MaxTests.cs">
+    <Compile Include="..\Expressions.Linq.Tests\MaxTests.cs">
       <Link>MaxTests.cs</Link>
     </Compile>
-    <Compile Include="..\ObservableExpressions.Linq.Tests\MinTests.cs">
+    <Compile Include="..\Expressions.Linq.Tests\MinTests.cs">
       <Link>MinTests.cs</Link>
     </Compile>
-    <Compile Include="..\ObservableExpressions.Linq.Tests\OfTypeTests.cs">
+    <Compile Include="..\Expressions.Linq.Tests\OfTypeTests.cs">
       <Link>OfTypeTests.cs</Link>
     </Compile>
-    <Compile Include="..\ObservableExpressions.Linq.Tests\OrderByTest.cs">
+    <Compile Include="..\Expressions.Linq.Tests\OrderByTest.cs">
       <Link>OrderByTest.cs</Link>
     </Compile>
-    <Compile Include="..\ObservableExpressions.Linq.Tests\SelectManyTest.cs">
+    <Compile Include="..\Expressions.Linq.Tests\SelectManyTest.cs">
       <Link>SelectManyTest.cs</Link>
     </Compile>
-    <Compile Include="..\ObservableExpressions.Linq.Tests\SelectTest.cs">
+    <Compile Include="..\Expressions.Linq.Tests\SelectTest.cs">
       <Link>SelectTest.cs</Link>
     </Compile>
-    <Compile Include="..\ObservableExpressions.Linq.Tests\SetEqualsTest.cs">
+    <Compile Include="..\Expressions.Linq.Tests\SetEqualsTest.cs">
       <Link>SetEqualsTest.cs</Link>
     </Compile>
-    <Compile Include="..\ObservableExpressions.Linq.Tests\SetOperationTest.cs">
+    <Compile Include="..\Expressions.Linq.Tests\SetOperationTest.cs">
       <Link>SetOperationTest.cs</Link>
     </Compile>
-    <Compile Include="..\ObservableExpressions.Linq.Tests\SumTests.cs">
+    <Compile Include="..\Expressions.Linq.Tests\SumTests.cs">
       <Link>SumTests.cs</Link>
     </Compile>
-    <Compile Include="..\ObservableExpressions.Linq.Tests\ThenByTests.cs">
+    <Compile Include="..\Expressions.Linq.Tests\ThenByTests.cs">
       <Link>ThenByTests.cs</Link>
     </Compile>
-    <Compile Include="..\ObservableExpressions.Linq.Tests\WhereTest.cs">
+    <Compile Include="..\Expressions.Linq.Tests\WhereTest.cs">
       <Link>WhereTest.cs</Link>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Reversable\ReversableFirstOrDefaultTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\PortableExpressions.Test\PortableExpressions.Test.csproj">

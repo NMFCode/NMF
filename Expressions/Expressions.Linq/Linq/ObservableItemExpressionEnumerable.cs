@@ -10,9 +10,9 @@ namespace NMF.Expressions.Linq
     internal abstract class ObservableItemExpressionEnumerable<TSource, TLambdaResult, TResult> : ObservableEnumerable<TResult>
     {
         private INotifyEnumerable<TSource> source;
-        private ObservableFunc<TSource, TLambdaResult> lambda;
+        private ObservingFunc<TSource, TLambdaResult> lambda;
 
-        public ObservableFunc<TSource, TLambdaResult> Lambda
+        public ObservingFunc<TSource, TLambdaResult> Lambda
         {
             get
             {
@@ -30,7 +30,7 @@ namespace NMF.Expressions.Linq
 
         private Dictionary<TSource, Stack<TaggedObservableValue<TLambdaResult, TResult>>> lambdas = new Dictionary<TSource, Stack<TaggedObservableValue<TLambdaResult, TResult>>>();
 
-        public ObservableItemExpressionEnumerable(INotifyEnumerable<TSource> source, ObservableFunc<TSource, TLambdaResult> lambda)
+        public ObservableItemExpressionEnumerable(INotifyEnumerable<TSource> source, ObservingFunc<TSource, TLambdaResult> lambda)
         {
             if (source == null) throw new ArgumentNullException("source");
             if (lambda == null) throw new ArgumentNullException("lambda");

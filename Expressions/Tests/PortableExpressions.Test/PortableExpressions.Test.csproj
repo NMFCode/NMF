@@ -60,92 +60,122 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
-    <Compile Include="..\ObservableExpressions.Test\Arithmetic\AddExpressionTests.cs">
+    <Compile Include="..\Expressions.Test\Arithmetic\AddExpressionTests.cs">
       <Link>Arithmetic\AddExpressionTests.cs</Link>
     </Compile>
-    <Compile Include="..\ObservableExpressions.Test\Arithmetic\BinaryExpressionTests.cs">
+    <Compile Include="..\Expressions.Test\Arithmetic\BinaryExpressionTests.cs">
       <Link>Arithmetic\BinaryExpressionTests.cs</Link>
     </Compile>
-    <Compile Include="..\ObservableExpressions.Test\Arithmetic\DivideExpressionTests.cs">
+    <Compile Include="..\Expressions.Test\Arithmetic\BitwiseAndExpressionTests.cs">
+      <Link>Arithmetic\BitwiseAndExpressionTests.cs</Link>
+    </Compile>
+    <Compile Include="..\Expressions.Test\Arithmetic\BitwiseOrExpressionTests.cs">
+      <Link>Arithmetic\BitwiseOrExpressionTests.cs</Link>
+    </Compile>
+    <Compile Include="..\Expressions.Test\Arithmetic\DivideExpressionTests.cs">
       <Link>Arithmetic\DivideExpressionTests.cs</Link>
     </Compile>
-    <Compile Include="..\ObservableExpressions.Test\Arithmetic\IntegerExprssionTests.cs">
+    <Compile Include="..\Expressions.Test\Arithmetic\IntegerExprssionTests.cs">
       <Link>Arithmetic\IntegerExprssionTests.cs</Link>
     </Compile>
-    <Compile Include="..\ObservableExpressions.Test\Arithmetic\MultiplyExpressionTests.cs">
+    <Compile Include="..\Expressions.Test\Arithmetic\ModuloExpressionTests.cs">
+      <Link>Arithmetic\ModuloExpressionTests.cs</Link>
+    </Compile>
+    <Compile Include="..\Expressions.Test\Arithmetic\MultiplyExpressionTests.cs">
       <Link>Arithmetic\MultiplyExpressionTests.cs</Link>
     </Compile>
-    <Compile Include="..\ObservableExpressions.Test\Arithmetic\ShortcutOperatorTests.cs">
+    <Compile Include="..\Expressions.Test\Arithmetic\ShiftExpressionTests.cs">
+      <Link>Arithmetic\ShiftExpressionTests.cs</Link>
+    </Compile>
+    <Compile Include="..\Expressions.Test\Arithmetic\ShortcutOperatorTests.cs">
       <Link>Arithmetic\ShortcutOperatorTests.cs</Link>
     </Compile>
-    <Compile Include="..\ObservableExpressions.Test\Arithmetic\SubtractExpressionTests.cs">
+    <Compile Include="..\Expressions.Test\Arithmetic\SubtractExpressionTests.cs">
       <Link>Arithmetic\SubtractExpressionTests.cs</Link>
     </Compile>
-    <Compile Include="..\ObservableExpressions.Test\CoalesceTests.cs">
+    <Compile Include="..\Expressions.Test\CoalesceTests.cs">
       <Link>CoalesceTests.cs</Link>
     </Compile>
-    <Compile Include="..\ObservableExpressions.Test\Comparison\EqualsTests.cs">
+    <Compile Include="..\Expressions.Test\Comparison\EqualsTests.cs">
       <Link>Comparison\EqualsTests.cs</Link>
     </Compile>
-    <Compile Include="..\ObservableExpressions.Test\Comparison\GreaterThanEqualsExpressionTests.cs">
+    <Compile Include="..\Expressions.Test\Comparison\GreaterThanEqualsExpressionTests.cs">
       <Link>Comparison\GreaterThanEqualsExpressionTests.cs</Link>
     </Compile>
-    <Compile Include="..\ObservableExpressions.Test\Comparison\GreaterThanExpressionTests.cs">
+    <Compile Include="..\Expressions.Test\Comparison\GreaterThanExpressionTests.cs">
       <Link>Comparison\GreaterThanExpressionTests.cs</Link>
     </Compile>
-    <Compile Include="..\ObservableExpressions.Test\Comparison\LessThanEqualsExpressionTests.cs">
+    <Compile Include="..\Expressions.Test\Comparison\LessThanEqualsExpressionTests.cs">
       <Link>Comparison\LessThanEqualsExpressionTests.cs</Link>
     </Compile>
-    <Compile Include="..\ObservableExpressions.Test\Comparison\LessThanExpressionTests.cs">
+    <Compile Include="..\Expressions.Test\Comparison\LessThanExpressionTests.cs">
       <Link>Comparison\LessThanExpressionTests.cs</Link>
     </Compile>
-    <Compile Include="..\ObservableExpressions.Test\ConditionalExpressionTests.cs">
+    <Compile Include="..\Expressions.Test\ConditionalExpressionTests.cs">
       <Link>ConditionalExpressionTests.cs</Link>
     </Compile>
-    <Compile Include="..\ObservableExpressions.Test\DefaultExpressionTests.cs">
+    <Compile Include="..\Expressions.Test\DefaultExpressionTests.cs">
       <Link>DefaultExpressionTests.cs</Link>
     </Compile>
-    <Compile Include="..\ObservableExpressions.Test\DynamicTests.cs">
+    <Compile Include="..\Expressions.Test\DynamicTests.cs">
       <Link>DynamicTests.cs</Link>
     </Compile>
-    <Compile Include="..\ObservableExpressions.Test\ExceptionTests.cs">
+    <Compile Include="..\Expressions.Test\ExceptionTests.cs">
       <Link>ExceptionTests.cs</Link>
     </Compile>
-    <Compile Include="..\ObservableExpressions.Test\FuncTests.cs">
+    <Compile Include="..\Expressions.Test\FuncTests.cs">
       <Link>FuncTests.cs</Link>
     </Compile>
-    <Compile Include="..\ObservableExpressions.Test\IndexExpressionTests.cs">
+    <Compile Include="..\Expressions.Test\IndexExpressionTests.cs">
       <Link>IndexExpressionTests.cs</Link>
     </Compile>
-    <Compile Include="..\ObservableExpressions.Test\ListInitializationTests.cs">
+    <Compile Include="..\Expressions.Test\ListInitializationTests.cs">
       <Link>ListInitializationTests.cs</Link>
     </Compile>
-    <Compile Include="..\ObservableExpressions.Test\MemberExpressionTests.cs">
+    <Compile Include="..\Expressions.Test\MemberExpressionTests.cs">
       <Link>MemberExpressionTests.cs</Link>
     </Compile>
-    <Compile Include="..\ObservableExpressions.Test\MemberInitializationTests.cs">
+    <Compile Include="..\Expressions.Test\MemberInitializationTests.cs">
       <Link>MemberInitializationTests.cs</Link>
     </Compile>
-    <Compile Include="..\ObservableExpressions.Test\MethodCallTests.cs">
+    <Compile Include="..\Expressions.Test\MethodCallTests.cs">
       <Link>MethodCallTests.cs</Link>
     </Compile>
-    <Compile Include="..\ObservableExpressions.Test\NewArrayExpressionTests.cs">
+    <Compile Include="..\Expressions.Test\NewArrayExpressionTests.cs">
       <Link>NewArrayExpressionTests.cs</Link>
     </Compile>
-    <Compile Include="..\ObservableExpressions.Test\NewExpressionTests.cs">
+    <Compile Include="..\Expressions.Test\NewExpressionTests.cs">
       <Link>NewExpressionTests.cs</Link>
     </Compile>
-    <Compile Include="..\ObservableExpressions.Test\ProxyCallExpressionTests.cs">
+    <Compile Include="..\Expressions.Test\ProxyCallExpressionTests.cs">
       <Link>ProxyCallExpressionTests.cs</Link>
     </Compile>
-    <Compile Include="..\ObservableExpressions.Test\TestStubs\Dummy.cs">
+    <Compile Include="..\Expressions.Test\Reversable\ReversableAddExpressionTests.cs">
+      <Link>Reversable\ReversableAddExpressionTests.cs</Link>
+    </Compile>
+    <Compile Include="..\Expressions.Test\Reversable\ReversableDivideExpressionTests.cs">
+      <Link>Reversable\ReversableDivideExpressionTests.cs</Link>
+    </Compile>
+    <Compile Include="..\Expressions.Test\Reversable\ReversableExpressionTests.cs">
+      <Link>Reversable\ReversableExpressionTests.cs</Link>
+    </Compile>
+    <Compile Include="..\Expressions.Test\Reversable\ReversableMultiplyExpressionTests.cs">
+      <Link>Reversable\ReversableMultiplyExpressionTests.cs</Link>
+    </Compile>
+    <Compile Include="..\Expressions.Test\Reversable\ReversableSubtractExpressionTests.cs">
+      <Link>Reversable\ReversableSubtractExpressionTests.cs</Link>
+    </Compile>
+    <Compile Include="..\Expressions.Test\TestStubs\Dummy.cs">
       <Link>TestStubs\Dummy.cs</Link>
     </Compile>
-    <Compile Include="..\ObservableExpressions.Test\TestStubs\Pair.cs">
+    <Compile Include="..\Expressions.Test\TestStubs\Pair.cs">
       <Link>TestStubs\Pair.cs</Link>
     </Compile>
-    <Compile Include="..\ObservableExpressions.Test\UnaryExpressionTests.cs">
+    <Compile Include="..\Expressions.Test\UnaryExpressionTests.cs">
       <Link>UnaryExpressionTests.cs</Link>
+    </Compile>
+    <Compile Include="..\Expressions.Test\UnitTest1.cs">
+      <Link>UnitTest1.cs</Link>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
