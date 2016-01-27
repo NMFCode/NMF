@@ -39,9 +39,6 @@ namespace Ecore2Code
         [Option('f', "folder", HelpText = "Determines whether the code for classes should be separated to multiple files")]
         public bool UseFolders { get; set; }
 
-        [Option('s', "separate", HelpText = "If specified, forces to generate interfaces for model classes")]
-        public bool SeparateImplementations { get; set; }
-
         [Option('p', "parallel", HelpText = "If specified, runs the code generator in parallel mode (in incubation)")]
         public bool Parallel { get; set; }
 
@@ -112,7 +109,6 @@ namespace Ecore2Code
 
             packageTransform.ForceGeneration = options.Force;
             packageTransform.CreateOperations = options.Operations;
-            packageTransform.SeparateImplementations = options.SeparateImplementations;
             packageTransform.DefaultNamespace = options.OverallNamespace;
 
             var metaPackage = LoadPackageFromFiles(options.InputFiles, options.OverallNamespace);

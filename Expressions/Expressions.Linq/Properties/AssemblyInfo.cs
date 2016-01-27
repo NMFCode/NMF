@@ -9,10 +9,10 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyTitle("NMF Expressions")]
 [assembly: AssemblyDescription("An expression framework and query syntax implementation that implements INotifyCollectionChanged")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("Georg Hinkel")]
-[assembly: AssemblyProduct("NMF")]
+[assembly: AssemblyCompany("")]
+[assembly: AssemblyProduct(".NET Modelling Framework")]
 [assembly: AssemblyCopyright("Copyright © Georg Hinkel 2013")]
-[assembly: AssemblyTrademark("Georg Hinkel")]
+[assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
 // Durch Festlegen von ComVisible auf "false" werden die Typen in dieser Assembly unsichtbar 

@@ -6,7 +6,7 @@ using System;
 // Allgemeine Informationen über eine Assembly werden über die folgenden 
 // Attribute gesteuert. Ändern Sie diese Attributwerte, um die Informationen zu ändern,
 // die mit einer Assembly verknüpft sind.
-[assembly: AssemblyTitle("Utilities")]
+[assembly: AssemblyTitle("NMF Utilities")]
 [assembly: AssemblyDescription("Utilities used throuout the .Net Modeling Framework")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]

@@ -7,7 +7,7 @@ using System;
 // Allgemeine Informationen über eine Assembly werden über die folgenden 
 // Attribute gesteuert. Ändern Sie diese Attributwerte, um die Informationen zu ändern,
 // die mit einer Assembly verknüpft sind.
-[assembly: AssemblyTitle("Transformations")]
+[assembly: AssemblyTitle("NMF Transformations")]
 [assembly: AssemblyDescription("Transformation Engine of NMF")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
