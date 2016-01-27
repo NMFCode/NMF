@@ -37,18 +37,21 @@ namespace NMF.Benchmarks
         /// <summary>
         /// Initializes the job. The time taken here is measured.
         /// </summary>
-        public abstract void Initialize();
+        /// <param name="options">The benchmark options</param>
+        public abstract void Initialize(BenchmarkOptions options);
 
         /// <summary>
         /// Analyzes the data and returns a reporting action
         /// </summary>
+        /// <param name="options">The benchmark options</param>
         /// <returns>An action that will write the data to the reports. This is then no longer measured</returns>
-        public abstract Action AnalyzeAndReport();
+        public abstract Action AnalyzeAndReport(BenchmarkOptions options);
 
         /// <summary>
         /// Prepares the job before initialization. The time taken here is not measured
         /// </summary>
-        public virtual void Prepare() { }
+        /// <param name="options">The benchmark options</param>
+        public virtual void Prepare(BenchmarkOptions options) { }
 
         /// <summary>
         /// Gets the memory consumption needed by the current job

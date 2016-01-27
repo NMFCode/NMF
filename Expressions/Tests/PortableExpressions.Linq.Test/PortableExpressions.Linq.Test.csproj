@@ -154,7 +154,7 @@
       <Project>{a101e569-e902-4076-af1f-6b60b465ab69}</Project>
       <Name>PortableExpressions.Test</Name>
     </ProjectReference>
-    <ProjectReference Include="..\PortableExpressions\PortableExpressions.csproj">
+    <ProjectReference Include="..\..\PortableExpressions\PortableExpressions.csproj">
       <Project>{861297a5-e950-4ca3-9f9f-ed921e49c153}</Project>
       <Name>PortableExpressions</Name>
     </ProjectReference>

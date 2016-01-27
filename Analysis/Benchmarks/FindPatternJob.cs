@@ -37,9 +37,10 @@ namespace NMF.Benchmarks
         /// <summary>
         /// Initializes the job. The time taken here is measured.
         /// </summary>
-        public override void Initialize()
+        /// <param name="options">The benchmark options</param>
+        public override void Initialize(BenchmarkOptions options)
         {
-            if (Benchmark.Options.Incremental)
+            if (options.Incremental)
             {
                 currentPattern = Pattern(Benchmark.Root).AsNotifiable();
             }
@@ -52,12 +53,13 @@ namespace NMF.Benchmarks
         /// <summary>
         /// Analyzes the data and returns a reporting action
         /// </summary>
+        /// <param name="options">The benchmark options</param>
         /// <returns>An action that will write the data to the reports. This is then no longer measured</returns>
-        public override Action AnalyzeAndReport()
+        public override Action AnalyzeAndReport(BenchmarkOptions options)
         {
             var count = currentPattern.Count();
 
-            return () => Benchmark.Report(Name, "Count", count);
+            return () => Benchmark.Report(Name, "Count", count, options);
         }
 
         /// <summary>

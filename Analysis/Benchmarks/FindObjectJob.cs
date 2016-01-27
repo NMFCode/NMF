@@ -44,8 +44,9 @@ namespace NMF.Benchmarks
         /// <summary>
         /// Analyzes the data and returns a reporting action
         /// </summary>
+        /// <param name="options">The benchmark options</param>
         /// <returns>An action that will write the data to the reports. This is then no longer measured</returns>
-        public override Action AnalyzeAndReport()
+        public override Action AnalyzeAndReport(BenchmarkOptions options)
         {
             TObject obj;
             if (incrementalValue != null)
@@ -56,15 +57,16 @@ namespace NMF.Benchmarks
             {
                 obj = functionCompiled();
             }
-            return () => Benchmark.Report(Name, "Value", obj);
+            return () => Benchmark.Report(Name, "Value", obj, options);
         }
 
         /// <summary>
         /// Initializes the job. The time taken here is measured.
         /// </summary>
-        public override void Initialize()
+        /// <param name="options">The benchmark options</param>
+        public override void Initialize(BenchmarkOptions options)
         {
-            if (Benchmark.Options.Incremental)
+            if (options.Incremental)
             {
                 incrementalValue = Observable.Expression(Query(Benchmark.Root));
             }
@@ -73,7 +75,8 @@ namespace NMF.Benchmarks
         /// <summary>
         /// Prepares the job before initialization. The time taken here is not measured
         /// </summary>
-        public override void Prepare()
+        /// <param name="options">The benchmark options</param>
+        public override void Prepare(BenchmarkOptions options)
         {
             functionCompiled = Query(Benchmark.Root).Compile();
         }

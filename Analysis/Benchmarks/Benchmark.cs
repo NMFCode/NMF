@@ -224,9 +224,9 @@ namespace NMF.Benchmarks
 
             foreach (var job in Analyzers)
             {
-                job.Prepare();
+                job.Prepare(options);
                 stopwatch.Restart();
-                job.Initialize();
+                job.Initialize(options);
                 stopwatch.Stop();
                 Report(job.Name, "Initialize", stopwatch.ElapsedMilliseconds, options);
 
@@ -236,7 +236,7 @@ namespace NMF.Benchmarks
                 }
 
                 stopwatch.Restart();
-                job.AnalyzeAndReport();
+                job.AnalyzeAndReport(options);
                 stopwatch.Stop();
                 Report(job.Name, "Validate", stopwatch.ElapsedMilliseconds, options);
             }
@@ -255,7 +255,7 @@ namespace NMF.Benchmarks
                     foreach (var job in Analyzers)
                     {
                         stopwatch.Restart();
-                        var reportAction = job.AnalyzeAndReport();
+                        var reportAction = job.AnalyzeAndReport(options);
                         stopwatch.Stop();
                         reportAction();
                         Report(job.Name, "Revalidate", stopwatch.ElapsedMilliseconds, options);
@@ -310,20 +310,20 @@ namespace NMF.Benchmarks
         {
             var executingAssembly = Assembly.GetExecutingAssembly();
             var executingAssemblyName = executingAssembly.GetName();
-            var descriptionAttribute = executingAssembly.GetCustomAttribute<AssemblyDescriptionAttribute>();
-            var titleAttribute = executingAssembly.GetCustomAttribute<AssemblyTitleAttribute>();
+            var descriptionAttribute = executingAssembly.GetCustomAttributes(typeof(AssemblyDescriptionAttribute), false);
+            var titleAttribute = executingAssembly.GetCustomAttributes(typeof(AssemblyTitleAttribute), false);
 
-            var title = titleAttribute != null ? titleAttribute.Title : executingAssemblyName.Name;
+            var title = titleAttribute != null && titleAttribute.Length > 0 ? (titleAttribute[0] as AssemblyTitleAttribute).Title : executingAssemblyName.Name;
 
             Log.WriteLine("This is {0} in version {1}.", title, executingAssemblyName.Version);
-            if (descriptionAttribute != null)
+            if (descriptionAttribute != null && descriptionAttribute.Length > 0)
             {
-                Log.WriteLine(descriptionAttribute.Description);
+                Log.WriteLine((descriptionAttribute[0] as AssemblyDescriptionAttribute).Description);
             }
-            var copyrightAttribute = executingAssembly.GetCustomAttribute<AssemblyCopyrightAttribute>();
-            if (copyrightAttribute != null)
+            var copyrightAttribute = executingAssembly.GetCustomAttributes(typeof(AssemblyCopyrightAttribute), false);
+            if (copyrightAttribute != null && copyrightAttribute.Length > 0)
             {
-                Log.WriteLine(copyrightAttribute.Copyright);
+                Log.WriteLine((copyrightAttribute[0] as AssemblyCopyrightAttribute).Copyright);
             }
         }
     }

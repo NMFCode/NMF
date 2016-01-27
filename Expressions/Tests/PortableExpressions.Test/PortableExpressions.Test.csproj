@@ -150,7 +150,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\PortableExpressions\PortableExpressions.csproj">
+    <ProjectReference Include="..\..\PortableExpressions\PortableExpressions.csproj">
       <Project>{861297a5-e950-4ca3-9f9f-ed921e49c153}</Project>
       <Name>PortableExpressions</Name>
     </ProjectReference>
