@@ -39,6 +39,9 @@
     <Reference Include="Microsoft.CSharp" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\..\CommonAssemblyInfo.cs">
+      <Link>CommonAssemblyInfo.cs</Link>
+    </Compile>
     <Compile Include="ParallelComputationContext.cs" />
     <Compile Include="ParallelTransformationContext.cs" />
     <Compile Include="ParallelTransformationContext2.cs" />

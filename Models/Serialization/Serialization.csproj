@@ -40,6 +40,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\..\CommonAssemblyInfo.cs">
+      <Link>CommonAssemblyInfo.cs</Link>
+    </Compile>
     <Compile Include="XMI\UnknownElementEventArgs.cs" />
     <Compile Include="XMI\XmiSerializationEntity.cs" />
     <Compile Include="XML\IPropertySerializationInfo.cs" />
@@ -62,6 +65,7 @@
     <Compile Include="XML\XmlKnownTypeAttribute.cs" />
     <Compile Include="XML\XmlNamespaceAttribute.cs" />
     <Compile Include="XML\XmlNamespacePrefixAttribute.cs" />
+    <Compile Include="XML\XmlOppositeAttribute.cs" />
     <Compile Include="XML\XmlPropertySerializationInfo.cs" />
     <Compile Include="XML\XmlPropertySetter.cs" />
     <Compile Include="XML\XmlSerializationContext.cs" />

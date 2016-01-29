@@ -36,6 +36,9 @@
     <Reference Include="Microsoft.CSharp" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\..\CommonAssemblyInfo.cs">
+      <Link>CommonAssemblyInfo.cs</Link>
+    </Compile>
     <Compile Include="GeneralizingExpressionVisitor.cs" />
     <Compile Include="GeneralizingNotifySystem.cs" />
     <Compile Include="ParameterReplacingVisitor.cs" />

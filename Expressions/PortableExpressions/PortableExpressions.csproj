@@ -41,6 +41,9 @@
     <Folder Include="Properties\" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\..\CommonAssemblyInfo.cs">
+      <Link>CommonAssemblyInfo.cs</Link>
+    </Compile>
     <Compile Include="..\Expressions.Linq\EnumerableExpressions\CastExpression.cs">
       <Link>EnumerableExpressions\CastExpression.cs</Link>
     </Compile>
@@ -350,6 +353,9 @@
     <Compile Include="..\Expressions\ObservableUnaryExpression.cs">
       <Link>ObservableUnaryExpression.cs</Link>
     </Compile>
+    <Compile Include="..\Expressions\Properties\AssemblyInfo.cs">
+      <Link>AssemblyInfo.cs</Link>
+    </Compile>
     <Compile Include="..\Expressions\Public\ConstantValue.cs">
       <Link>Facade\ConstantValue.cs</Link>
     </Compile>
@@ -404,7 +410,6 @@
     <Compile Include="..\Expressions\Public\ValueChangedEventArgs.cs">
       <Link>Facade\ValueChangedEventArgs.cs</Link>
     </Compile>
-    <Compile Include="AssemblyInfo.cs" />
     <Compile Include="ExpressionRewriter\ProxyMethodAttribute.cs" />
     <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="ReflectionHelper.cs" />

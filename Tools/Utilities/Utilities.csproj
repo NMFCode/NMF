@@ -42,6 +42,9 @@
     <Reference Include="Microsoft.CSharp" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\..\CommonAssemblyInfo.cs">
+      <Link>CommonAssemblyInfo.cs</Link>
+    </Compile>
     <Compile Include="Booleans.cs" />
     <Compile Include="DefaultImplementationTypeAttribute.cs" />
     <Compile Include="Extensions.cs" />

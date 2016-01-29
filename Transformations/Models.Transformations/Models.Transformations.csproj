@@ -39,6 +39,9 @@
     <Reference Include="Microsoft.CSharp" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\..\CommonAssemblyInfo.cs">
+      <Link>CommonAssemblyInfo.cs</Link>
+    </Compile>
     <Compile Include="IModelTransformation.cs" />
     <Compile Include="ModelCheckTransformation.cs" />
     <Compile Include="ModelCheckTransformationRule.cs" />

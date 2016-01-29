@@ -219,6 +219,7 @@ namespace NMF.Models.Meta
                     iface.CustomAttributes.Add(generatedType.CustomAttributes[i]);
                 }
                 iface.AddAttribute(typeof(DefaultImplementationTypeAttribute), new CodeTypeOfExpression(generatedType.Name));
+                iface.AddAttribute(typeof(XmlDefaultImplementationTypeAttribute), new CodeTypeOfExpression(generatedType.Name));
                 iface.WriteDocumentation("The public interface for " + input.Name);
                 return iface;
             }

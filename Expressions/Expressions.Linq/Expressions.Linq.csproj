@@ -40,6 +40,9 @@
     <Reference Include="Microsoft.CSharp" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\..\CommonAssemblyInfo.cs">
+      <Link>CommonAssemblyInfo.cs</Link>
+    </Compile>
     <Compile Include="EnumerableExpressions\CastExpression.cs" />
     <Compile Include="EnumerableExpressions\ConcatExpression.cs" />
     <Compile Include="EnumerableExpressions\DistinctExpression.cs" />

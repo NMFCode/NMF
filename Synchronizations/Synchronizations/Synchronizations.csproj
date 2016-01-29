@@ -44,6 +44,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\..\CommonAssemblyInfo.cs">
+      <Link>CommonAssemblyInfo.cs</Link>
+    </Compile>
     <Compile Include="Converter.cs" />
     <Compile Include="ISynchronizationContext.cs" />
     <Compile Include="ISynchronizationTransformationRule.cs" />

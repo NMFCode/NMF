@@ -43,6 +43,9 @@
     <Reference Include="System.XML" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\..\CommonAssemblyInfo.cs">
+      <Link>CommonAssemblyInfo.cs</Link>
+    </Compile>
     <Compile Include="Attributes\ContainmentAttribute.cs" />
     <Compile Include="Attributes\IdAttribute.cs" />
     <Compile Include="Attributes\LowerBoundAttribute.cs" />

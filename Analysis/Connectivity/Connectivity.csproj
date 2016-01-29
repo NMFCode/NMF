@@ -38,6 +38,9 @@
     <Reference Include="Microsoft.CSharp" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\..\CommonAssemblyInfo.cs">
+      <Link>CommonAssemblyInfo.cs</Link>
+    </Compile>
     <Compile Include="Connectivity\Connectivity.cs" />
     <Compile Include="Connectivity\HolmConnectivity.cs" />
     <Compile Include="Connectivity\UnionFind.cs" />

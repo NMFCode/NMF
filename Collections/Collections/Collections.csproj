@@ -41,6 +41,9 @@
     <Reference Include="Microsoft.CSharp" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\..\CommonAssemblyInfo.cs">
+      <Link>CommonAssemblyInfo.cs</Link>
+    </Compile>
     <Compile Include="Generic\EmptyList.cs" />
     <Compile Include="Generic\EnumerableDebuggerProxy.cs" />
     <Compile Include="Generic\IOrderedSet.cs" />

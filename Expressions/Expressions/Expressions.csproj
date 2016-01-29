@@ -46,6 +46,9 @@
     <Reference Include="Microsoft.CSharp" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\..\CommonAssemblyInfo.cs">
+      <Link>CommonAssemblyInfo.cs</Link>
+    </Compile>
     <Compile Include="ApplyParametersVisitor.cs" />
     <Compile Include="Arithmetics\ObservableBitwiseAnd.cs" />
     <Compile Include="Arithmetics\ObservableBitwiseOr.cs" />

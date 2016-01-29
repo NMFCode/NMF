@@ -38,6 +38,9 @@
     <Reference Include="Microsoft.CSharp" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\..\CommonAssemblyInfo.cs">
+      <Link>CommonAssemblyInfo.cs</Link>
+    </Compile>
     <Compile Include="Meta\Attribute2Property.cs" />
     <Compile Include="Meta\Class2Children.cs" />
     <Compile Include="Meta\Class2Referenced.cs" />

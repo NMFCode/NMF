@@ -46,6 +46,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\..\CommonAssemblyInfo.cs">
+      <Link>CommonAssemblyInfo.cs</Link>
+    </Compile>
     <Compile Include="Layout\AttributeLayoutInformation.cs" />
     <Compile Include="Layout\IAttributeLayoutInformation.cs" />
     <Compile Include="Layout\IKeywordLayoutInformation.cs" />

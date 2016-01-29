@@ -41,6 +41,9 @@
     <Reference Include="System.XML" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\..\CommonAssemblyInfo.cs">
+      <Link>CommonAssemblyInfo.cs</Link>
+    </Compile>
     <Compile Include="Benchmark.cs" />
     <Compile Include="BenchmarkJob.cs" />
     <Compile Include="BenchmarkOptions.cs" />
