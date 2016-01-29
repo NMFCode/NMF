@@ -12,6 +12,7 @@ using NMF.Models.Repository;
 using NMF.Expressions;
 using NMF.Collections.ObjectModel;
 using System.Collections.Specialized;
+using System.Web;
 
 namespace NMF.Models
 {
@@ -170,9 +171,12 @@ namespace NMF.Models
                     var model = Model;
                     if (model != null)
                     {
-                        var newFragment = fragment == null
-                            ? ToIdentifierString()
-                            : ToIdentifierString() + "/" + fragment;
+                        var newFragment = GetIdentifierFragment(this);
+
+                        if (fragment != null)
+                        {
+                            newFragment += fragment;
+                        }
 
                         if (absolute)
                         {
@@ -182,7 +186,7 @@ namespace NMF.Models
                         }
                         else
                         {
-                            result = new Uri(newFragment, UriKind.Relative);
+                            result = new Uri("#" + newFragment, UriKind.Relative);
                         }
                     }
                 }
@@ -281,7 +285,8 @@ namespace NMF.Models
             for (int i = 0; i < segments.Length; i++)
             {
                 if (current == null) return null;
-                current = current.GetModelElementForPathSegment(segments[i]) as ModelElement;
+                var segmentDecoded = Uri.UnescapeDataString(segments[i]);
+                current = current.GetModelElementForPathSegment(segmentDecoded) as ModelElement;
             }
             return current;
         }
@@ -320,7 +325,7 @@ namespace NMF.Models
             var id = child.ToIdentifierString();
             if (!string.IsNullOrWhiteSpace(id))
             {
-                return id + "/";
+                return Uri.EscapeDataString(id) + "/";
             }
             else
             {
@@ -349,7 +354,16 @@ namespace NMF.Models
         {
             if (segment == null) return null;
             var qString = segment.ToString().ToUpperInvariant();
-            if (!qString.StartsWith("@"))
+            if (qString.StartsWith("#"))
+            {
+                qString = qString.Substring(1);
+                foreach (var child in Children)
+                {
+                    if (child.IsIdentified && child.ToIdentifierString().ToUpperInvariant() == qString) return child;
+                }
+                return null;
+            }
+            else if (!qString.StartsWith("@"))
             {
                 foreach (var child in Children)
                 {

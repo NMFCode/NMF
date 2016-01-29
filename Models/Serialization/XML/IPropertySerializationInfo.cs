@@ -11,6 +11,8 @@ namespace NMF.Serialization
         string Namespace { get; }
         string NamespacePrefix { get; }
 
+        void AddToCollection(object input, object item, XmlSerializationContext context);
+
         bool ShallCreateInstance { get; }
         bool ShouldSerializeValue(object obj, object value);
         bool IsReadOnly { get; }
@@ -21,6 +23,8 @@ namespace NMF.Serialization
 
         XmlIdentificationMode IdentificationMode { get; }
         ITypeSerializationInfo PropertyType { get; }
+
+        IPropertySerializationInfo Opposite { get; }
 
         bool IsStringConvertible { get; }
         object ConvertFromString(string text);

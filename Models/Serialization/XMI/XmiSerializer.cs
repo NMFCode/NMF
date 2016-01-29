@@ -238,7 +238,7 @@ namespace NMF.Serialization.Xmi
                     string content = reader.ReadElementContentAsString();
                     if (p.PropertyType.IsCollection)
                     {
-                        p.PropertyType.AddToCollection(p.GetValue(obj, context), p.PropertyType.CollectionItemType.ConvertFromString(content));
+                        p.AddToCollection(obj, p.PropertyType.CollectionItemType.ConvertFromString(content), context);
                     }
                     else
                     {
@@ -250,7 +250,7 @@ namespace NMF.Serialization.Xmi
                     object current = DeserializeInternal(reader, p, context);
                     if (p.PropertyType.IsCollection)
                     {
-                        p.PropertyType.AddToCollection(p.GetValue(obj, context), current);
+                        p.AddToCollection(obj, current, context);
                     }
                     else
                     {
@@ -262,7 +262,7 @@ namespace NMF.Serialization.Xmi
             {
                 if (p.PropertyType.IsCollection)
                 {
-                    EnqueueAddToCollectionDelay(p.PropertyType, href, p.GetValue(obj, context), context);
+                    EnqueueAddToPropertyDelay(p, obj, href, context);
                 }
                 else
                 {

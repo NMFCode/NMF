@@ -43,10 +43,35 @@ namespace NMF.Serialization
         }
     }
 
+    class XmlAddToPropertyDelay : XmlIdentifierDelay
+    {
+        public IPropertySerializationInfo Property { get; private set; }
+
+        public XmlAddToPropertyDelay(IPropertySerializationInfo property)
+        {
+            Property = property;
+        }
+
+        public override ITypeSerializationInfo TargetType
+        {
+            get { return Property.PropertyType.CollectionItemType; }
+        }
+
+        public override void OnResolveIdentifiedObject(object instance, XmlSerializationContext context)
+        {
+            Property.AddToCollection(Target, instance, context);
+        }
+    }
+
     class XmlAddToCollectionDelay : XmlIdentifierDelay
     {
-        public ITypeSerializationInfo Type { get; set; }
+        public XmlAddToCollectionDelay(ITypeSerializationInfo type)
+        {
+            Type = type;
+        }
 
+        public ITypeSerializationInfo Type { get; private set; }
+        
         public override void OnResolveIdentifiedObject(object instance, XmlSerializationContext context)
         {
             Type.AddToCollection(Target, instance);

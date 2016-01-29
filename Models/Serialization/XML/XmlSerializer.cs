@@ -228,7 +228,7 @@ namespace NMF.Serialization
                 var indexParams = pi.GetIndexParameters();
                 if (indexParams == null || indexParams.Length == 0)
                 {
-                    RegisterPropertySerializationInfo(info, identifier, constructorInfos, ignoredProperties, pi);
+                    CreatePropertySerializationInfo(info, identifier, constructorInfos, ignoredProperties, pi);
                 }
             }
             if (constructorInfos != null)
@@ -252,7 +252,7 @@ namespace NMF.Serialization
             }
         }
 
-        protected virtual void RegisterPropertySerializationInfo(XmlTypeSerializationInfo typeSerializationInfo, string identifier, IPropertySerializationInfo[] constructorInfos, List<string> ignoredProperties, PropertyInfo pd)
+        private void CreatePropertySerializationInfo(XmlTypeSerializationInfo typeSerializationInfo, string identifier, IPropertySerializationInfo[] constructorInfos, List<string> ignoredProperties, PropertyInfo pd)
         {
             if (ignoredProperties.Contains(pd.Name)) return;
 
@@ -274,7 +274,6 @@ namespace NMF.Serialization
             else if (des != null && des.Visibility == DesignerSerializationVisibility.Content)
             {
                 p.ShallCreateInstance = false;
-
             }
             else
             {
@@ -294,7 +293,7 @@ namespace NMF.Serialization
                 typeSerializationInfo.IdentifierProperty = p;
             }
 
-            //evtl benutzt die property einen eigenen TypeConverter
+            //property might be using its own type converter
             p.Converter = GetTypeConverter(pd);
             if (p.Converter == null || !p.Converter.CanConvertFrom(typeof(string)) || !p.Converter.CanConvertTo(typeof(string)))
             {
@@ -311,7 +310,7 @@ namespace NMF.Serialization
                 }
             }
 
-            //auch hier soll gesteuert werden, ob die Eigenschaft als Attribut gerendert werden soll
+            //control serialization through an attribute
             if (cParam != null && constructorInfos != null)
             {
                 if (cParam.Index >= 0 || cParam.Index < constructorInfos.GetLength(0))
@@ -344,11 +343,10 @@ namespace NMF.Serialization
                 }
             }
 
-
-            //Defaulteinstellungen, können durch Attribute überschrieben werden
+            // default settings for element name and namespace
             p.ElementName = Settings.GetPersistanceString(pd.Name);
             p.Namespace = Settings.DefaultNamespace;
-            //
+            // override element name settings
             var elementName = Fetch(FetchAttribute<XmlElementNameAttribute>(pd, true), att => att.ElementName);
             if (elementName != null) p.ElementName = Settings.GetPersistanceString(elementName);
             var ns = Fetch(FetchAttribute<XmlNamespaceAttribute>(pd, true), att => att.Namespace);
@@ -356,6 +354,19 @@ namespace NMF.Serialization
             var nsPrefix = Fetch(FetchAttribute<XmlNamespacePrefixAttribute>(pd, true), att => att.NamespacePrefix);
             if (nsPrefix != null) p.NamespacePrefix = Settings.GetPersistanceString(nsPrefix);
             p.IdentificationMode = Fetch(FetchAttribute<XmlIdentificationModeAttribute>(pd, true), att => att.Mode);
+
+            // find opposite
+            var oppositeAtt = FetchAttribute<XmlOppositeAttribute>(pd, true);
+            if (oppositeAtt != null)
+            {
+                var oppositeType = GetSerializationInfo(oppositeAtt.OppositeType, true);
+                var oppositeProperty = oppositeType.AttributeProperties.OfType<XmlPropertySerializationInfo>().FirstOrDefault(prop => prop.Property.Name == oppositeAtt.OppositeProperty);
+                if (oppositeProperty != null)
+                {
+                    p.Opposite = oppositeProperty;
+                    oppositeProperty.Opposite = p;
+                }
+            }
         }
 
         private static TypeConverter GetTypeConverter(PropertyInfo pd)
@@ -843,7 +854,7 @@ namespace NMF.Serialization
                 else if (property.PropertyType.IsCollection)
                 {
                     object collection = property.GetValue(obj, context);
-                    property.PropertyType.AddToCollection(collection, target);
+                    property.AddToCollection(collection, target, context);
                 }
             }
             else
@@ -876,11 +887,11 @@ namespace NMF.Serialization
                 {
                     if (itemInfo.IsStringConvertible)
                     {
-                        info.AddToCollection(coll, itemInfo.ConvertFromString(item));
+                        property.AddToCollection(obj, itemInfo.ConvertFromString(item), context);
                     }
                     else
                     {
-                        EnqueueAddToCollectionDelay(info, item, coll, context);
+                        EnqueueAddToPropertyDelay(property, obj, item, context);
                     }
                 }
             }
@@ -890,6 +901,11 @@ namespace NMF.Serialization
             }
         }
 
+        protected internal void EnqueueAddToPropertyDelay(IPropertySerializationInfo property, object obj, string text, XmlSerializationContext context)
+        {
+            context.LostProperties.Enqueue(new XmlAddToPropertyDelay(property) { Target = obj, Identifier = text });
+        }
+
         protected internal void EnqueueSetPropertyDelay(IPropertySerializationInfo property, object obj, string text, XmlSerializationContext context)
         {
             context.LostProperties.Enqueue(new XmlSetPropertyDelay() { Identifier = text, Target = obj, Property = property });
@@ -897,7 +913,7 @@ namespace NMF.Serialization
 
         protected internal void EnqueueAddToCollectionDelay(ITypeSerializationInfo info, string item, object coll, XmlSerializationContext context)
         {
-            context.LostProperties.Enqueue(new XmlAddToCollectionDelay() { Identifier = item, Target = coll, Type = info });
+            context.LostProperties.Enqueue(new XmlAddToCollectionDelay(info) { Identifier = item, Target = coll});
         }
 
         /// <summary>

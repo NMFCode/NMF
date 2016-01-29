@@ -95,9 +95,22 @@ namespace NMF.Serialization.Xmi
             return input.ToString();
         }
 
+        public void AddToCollection(object input, object item, XmlSerializationContext context)
+        {
+            throw new InvalidOperationException();
+        }
+
         ITypeSerializationInfo IPropertySerializationInfo.PropertyType
         {
             get { return XmiStringSerializationInfo.Instance; }
+        }
+
+        public IPropertySerializationInfo Opposite
+        {
+            get
+            {
+                return null;
+            }
         }
     }
 }

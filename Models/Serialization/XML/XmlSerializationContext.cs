@@ -7,12 +7,39 @@ namespace NMF.Serialization
 {
     public class XmlSerializationContext
     {
+        private struct ObjectPropertyPair : IEquatable<ObjectPropertyPair>
+        {
+            public object Object { get; set; }
+
+            public IPropertySerializationInfo Property { get; set; }
+
+            public bool Equals(ObjectPropertyPair other)
+            {
+                return Object == other.Object && Property == other.Property;
+            }
+
+            public override bool Equals(object obj)
+            {
+                if (obj != null && obj is ObjectPropertyPair) return Equals((ObjectPropertyPair)obj);
+                return false;
+            }
+
+            public override int GetHashCode()
+            {
+                var hashCode = 0;
+                if (Object != null) hashCode = Object.GetHashCode();
+                if (Property != null) hashCode ^= Property.GetHashCode();
+                return hashCode;
+            }
+        }
+
         public XmlSerializationContext(object root)
         {
             Root = root;
         }
 
         private Dictionary<Type, Dictionary<string, object>> idStore = new Dictionary<Type, Dictionary<string, object>>();
+        private HashSet<ObjectPropertyPair> blockedProperties = new HashSet<ObjectPropertyPair>();
 
         private Queue<XmlIdentifierDelay> lostProperties = new Queue<XmlIdentifierDelay>();
         private Queue<ISupportInitialize> inits = new Queue<ISupportInitialize>();
@@ -93,6 +120,20 @@ namespace NMF.Serialization
             {
                 return null;
             }
+        }
+
+        public bool IsOppositeSet(object instance, IPropertySerializationInfo property)
+        {
+            if (property == null || property.Opposite == null) return false;
+            var pair = new ObjectPropertyPair() { Object = instance, Property = property };
+            return blockedProperties.Contains(pair);
+        }
+
+        public void BlockOpposite(object value, IPropertySerializationInfo property)
+        {
+            if (property == null || property.Opposite == null) return;
+            var pair = new ObjectPropertyPair() { Object = value, Property = property.Opposite };
+            blockedProperties.Add(pair);
         }
 
         public object Root

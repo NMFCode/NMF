@@ -139,7 +139,10 @@ namespace NMF.Serialization
 
         public void AddToCollection(object collection, object item)
         {
-            if (item != null) CollectionType.InvokeMember("Add", BindingFlags.Public | BindingFlags.InvokeMethod | BindingFlags.Instance, null, collection, new object[] { item });
+            if (item != null)
+            {
+                CollectionType.InvokeMember("Add", BindingFlags.Public | BindingFlags.InvokeMethod | BindingFlags.Instance, null, collection, new object[] { item });
+            }
         }
 
         IEnumerable<IPropertySerializationInfo> ITypeSerializationInfo.AttributeProperties

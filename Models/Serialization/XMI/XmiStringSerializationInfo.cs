@@ -63,7 +63,9 @@ namespace NMF.Serialization.Xmi
         }
 
         public void AddToCollection(object collection, object item)
-        {  }
+        {
+            throw new InvalidOperationException();
+        }
 
         public string ElementName
         {

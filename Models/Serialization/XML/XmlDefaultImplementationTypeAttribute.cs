@@ -4,7 +4,6 @@ using System.Text;
 
 namespace NMF.Serialization
 {
-    [Obsolete]
     [AttributeUsage(AttributeTargets.Interface, Inherited=false)]
     public class XmlDefaultImplementationTypeAttribute : Attribute
     {

@@ -11,6 +11,13 @@ namespace NMF.Serialization
 
     public abstract class XmlPropertySerializationInfo : IPropertySerializationInfo
     {
+        protected XmlPropertySerializationInfo(PropertyInfo property)
+        {
+            Property = property;
+        }
+
+        public PropertyInfo Property { get; private set; }
+
         public TypeConverter Converter
         {
             get;
@@ -36,6 +43,12 @@ namespace NMF.Serialization
         }
 
         public string NamespacePrefix
+        {
+            get;
+            set;
+        }
+
+        public XmlPropertySerializationInfo Opposite
         {
             get;
             set;
@@ -100,6 +113,16 @@ namespace NMF.Serialization
             }
         }
 
+        public void AddToCollection(object input, object item, XmlSerializationContext context)
+        {
+            if (!context.IsOppositeSet(input, this))
+            {
+                var collection = GetValue(input, context);
+                PropertyType.AddToCollection(collection, item);
+                context.BlockOpposite(item, this);
+            }
+        }
+
         public abstract bool IsReadOnly { get; }
 
 
@@ -107,6 +130,14 @@ namespace NMF.Serialization
         {
             get;
             set;
+        }
+
+        IPropertySerializationInfo IPropertySerializationInfo.Opposite
+        {
+            get
+            {
+                return Opposite;
+            }
         }
     }
 
@@ -116,7 +147,7 @@ namespace NMF.Serialization
         private Action<TComponent, TProperty> setter;
         private TProperty defaultValue = default(TProperty);
 
-        public XmlPropertySerializationInfo(PropertyInfo property)
+        public XmlPropertySerializationInfo(PropertyInfo property) : base(property)
         {
             getter = (Func<TComponent, TProperty>)Delegate.CreateDelegate(typeof(Func<TComponent, TProperty>), property.GetGetMethod());
             var setMethod = property.GetSetMethod(false);
@@ -133,9 +164,14 @@ namespace NMF.Serialization
 
         public override void SetValue(object obj, object value, XmlSerializationContext context)
         {
+            if (context.IsOppositeSet(obj, this))
+            {
+                return;
+            }
             try
             {
                 setter((TComponent)obj, (TProperty)value);
+                context.BlockOpposite(value, this);
             }
             catch (Exception e)
             {
