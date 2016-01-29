@@ -356,6 +356,13 @@ namespace NMF.Models.Meta
                     }
                     output.AddAttribute(typeof(XmlAttributeAttribute), true);
                 }
+
+                if (input.Opposite != null)
+                {
+                    var class2Type = Rule<Class2Type>();
+                    var oppositeDeclaringClass = context.Trace.ResolveIn(class2Type, input.Opposite.DeclaringType as Class);
+                    output.AddAttribute(typeof(XmlOppositeAttribute), new CodeTypeOfExpression(oppositeDeclaringClass.GetReferenceForType()), input.Opposite.Name);
+                }
             }
 
 

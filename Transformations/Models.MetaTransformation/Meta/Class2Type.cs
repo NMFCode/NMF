@@ -214,10 +214,6 @@ namespace NMF.Models.Meta
                     IsInterface = true
                 };
                 iface.BaseTypes.Add(typeof(IModelElement).Name);
-                for (int i = 0; i < generatedType.CustomAttributes.Count; i++)
-                {
-                    iface.CustomAttributes.Add(generatedType.CustomAttributes[i]);
-                }
                 iface.AddAttribute(typeof(DefaultImplementationTypeAttribute), new CodeTypeOfExpression(generatedType.Name));
                 iface.AddAttribute(typeof(XmlDefaultImplementationTypeAttribute), new CodeTypeOfExpression(generatedType.Name));
                 iface.WriteDocumentation("The public interface for " + input.Name);
