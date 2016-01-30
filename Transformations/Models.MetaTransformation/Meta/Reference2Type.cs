@@ -133,8 +133,8 @@ namespace NMF.Models.Meta
                 }
                 else
                 {
-                    ifNotNull.TrueStatements.Add(new CodeMethodInvokeExpression(item_opp, "Remove", new CodePropertyReferenceExpression(new CodeThisReferenceExpression(), "Parent")));
-                    ifNotNull.FalseStatements.Add(new CodeMethodInvokeExpression(item_opp, "Add", parent));
+                    ifNotNull.FalseStatements.Add(new CodeMethodInvokeExpression(item_opp, "Remove", new CodePropertyReferenceExpression(new CodeThisReferenceExpression(), "Parent")));
+                    ifNotNull.TrueStatements.Add(new CodeMethodInvokeExpression(item_opp, "Add", parent));
                 }
 
                 method.Statements.Add(ifNotNull);

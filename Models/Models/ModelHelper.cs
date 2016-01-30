@@ -18,7 +18,7 @@ namespace NMF.Models
         /// <returns>A relative Uri for the reference with the given index</returns>
         public static string CreatePath(string reference, int index)
         {
-            return "@" + reference + "." + index.ToString() + "/";
+            return "@" + reference + "." + index.ToString();
         }
 
         /// <summary>
@@ -28,7 +28,7 @@ namespace NMF.Models
         /// <returns>A relative Uri for the given reference</returns>
         public static string CreatePath(string reference)
         {
-            return "@" + reference + "/";
+            return "@" + reference;
         }
 
         /// <summary>

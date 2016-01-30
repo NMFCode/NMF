@@ -162,7 +162,15 @@ namespace NMF.Models
             Uri result = null;
             if (path != null)
             {
-                result = parent.CreateUriWithFragment(path + fragment, absolute);
+                if (fragment != null)
+                {
+                    fragment = path + "/" + fragment;
+                }
+                else
+                {
+                    fragment = path;
+                }
+                result = parent.CreateUriWithFragment(fragment, absolute);
             }
             if (result == null)
             {
@@ -175,7 +183,7 @@ namespace NMF.Models
 
                         if (fragment != null)
                         {
-                            newFragment += fragment;
+                            newFragment += "/" + fragment;
                         }
 
                         if (absolute)
@@ -194,14 +202,10 @@ namespace NMF.Models
             return result;
         }
 
-        protected virtual bool PreferIdentifiers
-        {
-            get
-            {
-                return true;
-            }
-        }
-
+        /// <summary>
+        /// Gets or sets whether identifiers should be preferred in the serialization
+        /// </summary>
+        public static bool PreferIdentifiers { get; set; }
 
         /// <summary>
         /// Gets a value indicating whether this item can be identified through its ToString value
@@ -301,7 +305,7 @@ namespace NMF.Models
         {
             if (child == null) return null;
             var childModelElement = child as ModelElement;
-            if (childModelElement == null || childModelElement.PreferIdentifiers)
+            if (childModelElement == null || PreferIdentifiers)
             {
                 if (child.IsIdentified)
                 {

@@ -149,6 +149,58 @@ namespace NMF.Models.Repository
             }
         }
 
+        private void EnsureModelIsKnown(IModelElement element)
+        {
+            var model = element.Model;
+            Model existingModel;
+            if (models.TryGetValue(model.ModelUri, out existingModel))
+            {
+                if (model != existingModel)
+                {
+                    throw new InvalidOperationException(string.Format("This repository already contains a different model with the Uri {0}", model.ModelUri));
+                }
+            }
+            else
+            {
+                models.Add(model.ModelUri, model);
+            }
+        }
+
+        /// <summary>
+        /// Saves the given model element to the specified stream
+        /// </summary>
+        /// <param name="element">The model element</param>
+        /// <param name="path">The path where to save the model element</param>
+        public void Save(IModelElement element, string path)
+        {
+            Serializer.Serialize(element, path);
+            EnsureModelIsKnown(element);
+        }
+
+        /// <summary>
+        /// Saves the given model element to the specified stream
+        /// </summary>
+        /// <param name="element">The model element</param>
+        /// <param name="path">The path where to save the model element</param>
+        /// <param name="uri">The uri under which the model element can be retrieved</param>
+        public void Save(IModelElement element, string path, Uri uri)
+        {
+            Serializer.Serialize(element, path, uri);
+            EnsureModelIsKnown(element);
+        }
+
+        /// <summary>
+        /// Saves the given model element to the specified stream
+        /// </summary>
+        /// <param name="element">The model element</param>
+        /// <param name="stream">The stream to save the model element to</param>
+        /// <param name="uri">The uri under which the model element shall be retrievable</param>
+        public void Save(IModelElement element, Stream stream, Uri uri)
+        {
+            Serializer.Serialize(element, stream, uri);
+            EnsureModelIsKnown(element);
+        }
+
         /// <summary>
         /// Gets called when a Uri cannot be resolved
         /// </summary>
