@@ -814,7 +814,7 @@ namespace NMF.Transformations
             if (persistor == null) persistor = (o1, o2) => { };
             if (filter == null) filter = i => true;
             if (selector == null) throw new ArgumentNullException("selector");
-            CallForInternal(new Type[] { typeof(TRequiredInput) }, typeof(TRequiredOutput), o => o.Output is TRequiredOutput && filter((TRequiredInput)o.GetInput(0)), o => new object[] { selector((TRequiredInput)o.GetInput(0)) }, (t, v) => persistor((TOut)t, (TRequiredOutput)v), false);
+            CallForInternal(new Type[] { typeof(TRequiredInput) }, typeof(TRequiredOutput), o => o.Output is TRequiredOutput && filter((TRequiredInput)o.GetInput(0)), o => new object[] { selector((TRequiredInput)o.GetInput(0)) }, (t, v) => persistor((TOut)v, (TRequiredOutput)t), false);
         }
 
         /// <summary>
@@ -837,7 +837,7 @@ namespace NMF.Transformations
             if (filter == null) filter = o => true;
             if (selector == null) throw new ArgumentNullException("selector");
             if (rule == null) throw new ArgumentNullException("rule");
-            CallForInternal(rule, o => filter((TRequiredInput)o.GetInput(0)), o => new object[] { selector((TRequiredInput)o.GetInput(0)) }, (t, v) => persistor((TOut)t, (TRequiredOutput)v), false);
+            CallForInternal(rule, o => filter((TRequiredInput)o.GetInput(0)), o => new object[] { selector((TRequiredInput)o.GetInput(0)) }, (t, v) => persistor((TOut)v, (TRequiredOutput)t), false);
         }
 
         /// <summary>
@@ -855,7 +855,7 @@ namespace NMF.Transformations
             if (persistor == null) persistor = (o1, o2) => { };
             if (filter == null) filter = (s1, s2) => true;
             if (selector == null) throw new ArgumentNullException("selector");
-            CallForInternal(new Type[] { typeof(TRequiredInput1), typeof(TRequiredInput2) }, typeof(TRequiredOutput), o => filter((TRequiredInput1)o.GetInput(0), (TRequiredInput2)o.GetInput(1)), o => new object[] { selector((TRequiredInput1)o.GetInput(0), (TRequiredInput2)o.GetInput(1)) }, (t, v) => persistor((TOut)t, (TRequiredOutput)v), false);
+            CallForInternal(new Type[] { typeof(TRequiredInput1), typeof(TRequiredInput2) }, typeof(TRequiredOutput), o => filter((TRequiredInput1)o.GetInput(0), (TRequiredInput2)o.GetInput(1)), o => new object[] { selector((TRequiredInput1)o.GetInput(0), (TRequiredInput2)o.GetInput(1)) }, (t, v) => persistor((TOut)v, (TRequiredOutput)t), false);
         }
 
         /// <summary>
@@ -880,7 +880,7 @@ namespace NMF.Transformations
             if (filter == null) filter = (o1, o2) => true;
             if (selector == null) throw new ArgumentNullException("selector");
             if (rule == null) throw new ArgumentNullException("rule");
-            CallForInternal(rule, o => filter((TRequiredInput1)o.GetInput(0), (TRequiredInput2)o.GetInput(1)), o => new object[] { selector((TRequiredInput1)o.GetInput(0), (TRequiredInput2)o.GetInput(1)) }, (t, v) => persistor((TOut)t, (TRequiredOutput)v), false);
+            CallForInternal(rule, o => filter((TRequiredInput1)o.GetInput(0), (TRequiredInput2)o.GetInput(1)), o => new object[] { selector((TRequiredInput1)o.GetInput(0), (TRequiredInput2)o.GetInput(1)) }, (t, v) => persistor((TOut)v, (TRequiredOutput)t), false);
         }
 
         /// <summary>
