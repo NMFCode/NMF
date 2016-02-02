@@ -168,15 +168,8 @@ namespace NMF.Serialization
             {
                 return;
             }
-            try
-            {
-                setter((TComponent)obj, (TProperty)value);
-                context.BlockOpposite(value, this);
-            }
-            catch (Exception e)
-            {
-                throw new InvalidOperationException(string.Format("The property {0} can not be written to.", ElementName), e);
-            }
+            setter((TComponent)obj, (TProperty)value);
+            context.BlockOpposite(value, this);
         }
 
         public override bool ShouldSerializeValue(object obj, object value)

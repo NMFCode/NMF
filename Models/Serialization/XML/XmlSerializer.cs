@@ -359,7 +359,11 @@ namespace NMF.Serialization
             var oppositeAtt = FetchAttribute<XmlOppositeAttribute>(pd, true);
             if (oppositeAtt != null)
             {
-                var oppositeType = GetSerializationInfo(oppositeAtt.OppositeType, true);
+                var oppositeType = p.PropertyType;
+                if (oppositeAtt.OppositeType != null)
+                {
+                    oppositeType = GetSerializationInfo(oppositeAtt.OppositeType, true);
+                }
                 var oppositeProperty = oppositeType.AttributeProperties.OfType<XmlPropertySerializationInfo>().FirstOrDefault(prop => prop.ElementName == oppositeAtt.OppositeProperty);
                 if (oppositeProperty != null)
                 {

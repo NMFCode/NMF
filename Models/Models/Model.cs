@@ -46,7 +46,7 @@ namespace NMF.Models
                 int num;
                 if (int.TryParse(reference, out num) && num > 0 && num < RootElements.Count)
                 {
-                    return RootElements[index];
+                    return RootElements[num];
                 }
                 return null;
             }

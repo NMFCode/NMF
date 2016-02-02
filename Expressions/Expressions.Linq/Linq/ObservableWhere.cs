@@ -10,9 +10,32 @@ namespace NMF.Expressions.Linq
 {
     internal sealed class ObservableWhere<T> : ObservableEnumerable<T>, INotifyCollection<T>
     {
+        internal struct ItemMultiplicity
+        {
+            public ItemMultiplicity(T item, int multiplicity) : this()
+            {
+                Multiplicity = multiplicity;
+                Item = item;
+            }
+
+            public int Multiplicity { get; private set; }
+
+            public T Item { get; private set; }
+
+            public ItemMultiplicity Increase()
+            {
+                return new ItemMultiplicity(Item, Multiplicity + 1);
+            }
+
+            public ItemMultiplicity Decrease()
+            {
+                return new ItemMultiplicity(Item, Multiplicity - 1);
+            }
+        }
+
         private INotifyEnumerable<T> source;
         private ObservingFunc<T, bool> lambda;
-        private Dictionary<T, TaggedObservableValue<bool, List<T>>> lambdas = new Dictionary<T, TaggedObservableValue<bool, List<T>>>();
+        private Dictionary<T, TaggedObservableValue<bool, ItemMultiplicity>> lambdas = new Dictionary<T, TaggedObservableValue<bool, ItemMultiplicity>>();
         private int nulls;
         private INotifyValue<bool> nullCheck;
         private static bool isValueType = ReflectionHelper.IsValueType<T>();
@@ -55,18 +78,17 @@ namespace NMF.Expressions.Linq
                     var removed = new List<T>();
                     foreach (T item in e.OldItems)
                     {
-                        TaggedObservableValue<bool, List<T>> lambdaResult;
+                        TaggedObservableValue<bool, ItemMultiplicity> lambdaResult;
                         if (isValueType || item != null)
                         {
                             if (lambdas.TryGetValue(item, out lambdaResult))
                             {
-                                var lastIndex = lambdaResult.Tag.Count - 1;
                                 if (lambdaResult.Value)
                                 {
-                                    removed.Add(lambdaResult.Tag[lastIndex]);
+                                    removed.Add(lambdaResult.Tag.Item);
                                 }
-                                lambdaResult.Tag.RemoveAt(lastIndex);
-                                if (lambdaResult.Tag.Count == 0)
+                                lambdaResult.Tag = lambdaResult.Tag.Decrease();
+                                if (lambdaResult.Tag.Multiplicity == 0)
                                 {
                                     lambdaResult.ValueChanged -= LambdaChanged;
                                     lambdaResult.Detach();
@@ -125,14 +147,17 @@ namespace NMF.Expressions.Linq
         {
             if (isValueType || item != null)
             {
-                TaggedObservableValue<bool, List<T>> lambdaResult;
+                TaggedObservableValue<bool, ItemMultiplicity> lambdaResult;
                 if (!lambdas.TryGetValue(item, out lambdaResult))
                 {
-                    lambdaResult = Lambda.InvokeTagged(item, new List<T>());
+                    lambdaResult = Lambda.InvokeTagged(item, new ItemMultiplicity(item, 1));
                     lambdas.Add(item, lambdaResult);
                     lambdaResult.ValueChanged += LambdaChanged;
                 }
-                lambdaResult.Tag.Add(item);
+                else
+                {
+                    lambdaResult.Tag = lambdaResult.Tag.Increase();
+                }
                 return lambdaResult;
             }
             else
@@ -196,7 +221,7 @@ namespace NMF.Expressions.Linq
             {
                 if (isValueType || item != null)
                 {
-                    TaggedObservableValue<bool, List<T>> node;
+                    TaggedObservableValue<bool, ItemMultiplicity> node;
                     if (lambdas.TryGetValue(item, out node))
                     {
                         return node.Value;
@@ -215,7 +240,7 @@ namespace NMF.Expressions.Linq
 
         public override bool Contains(T item)
         {
-            TaggedObservableValue<bool, List<T>> node;
+            TaggedObservableValue<bool, ItemMultiplicity> node;
             if (lambdas.TryGetValue(item, out node))
             {
                 return node.Value;
@@ -230,13 +255,13 @@ namespace NMF.Expressions.Linq
         {
             get
             {
-                return SL.Sum(SL.Where(lambdas.Values, lambda => lambda.Value), node => node.Tag.Count);
+                return SL.Sum(SL.Where(lambdas.Values, lambda => lambda.Value), node => node.Tag.Multiplicity);
             }
         }
 
         void ICollection<T>.Add(T item)
         {
-            TaggedObservableValue<bool, List<T>> stack;
+            TaggedObservableValue<bool, ItemMultiplicity> stack;
             if (!lambdas.TryGetValue(item, out stack))
             {
                 var sourceCollection = Source as INotifyCollection<T>;
@@ -303,10 +328,17 @@ namespace NMF.Expressions.Linq
             }
             else
             {
-                TaggedObservableValue<bool, List<T>> stack;
+                TaggedObservableValue<bool, ItemMultiplicity> stack;
                 if (lambdas.TryGetValue(item, out stack))
                 {
-                    //TODO
+                    if (stack.Tag.Multiplicity > 1)
+                    {
+                        throw new InvalidOperationException("Could not remove the requested item. Changing the predicate would result in multiple elements to be removed.");
+                    }
+                    else if (stack.IsReversable)
+                    {
+                        stack.Value = false;
+                    }
                 }
             }
             return false;

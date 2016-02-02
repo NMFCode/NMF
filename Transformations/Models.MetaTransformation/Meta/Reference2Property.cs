@@ -360,8 +360,15 @@ namespace NMF.Models.Meta
                 if (input.Opposite != null)
                 {
                     var class2Type = Rule<Class2Type>();
-                    var oppositeDeclaringClass = context.Trace.ResolveIn(class2Type, input.Opposite.DeclaringType as Class);
-                    output.AddAttribute(typeof(XmlOppositeAttribute), new CodeTypeOfExpression(oppositeDeclaringClass.GetReferenceForType()), input.Opposite.Name);
+                    var opposite = input.Opposite;
+                    if (opposite.ReferenceType == input.DeclaringType)
+                    {
+                        output.AddAttribute(typeof(XmlOppositeAttribute), input.Opposite.Name);
+                    }
+                    else
+                    {
+                        throw new NotImplementedException();
+                    }
                 }
             }
 

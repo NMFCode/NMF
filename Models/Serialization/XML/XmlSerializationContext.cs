@@ -65,7 +65,8 @@ namespace NMF.Serialization
             while (lostProperties.Count > 0)
             {
                 XmlIdentifierDelay p = lostProperties.Dequeue();
-                p.OnResolveIdentifiedObject(Resolve(p.Identifier, p.TargetType.Type), this);
+                var resolved = Resolve(p.Identifier, p.TargetType.Type);
+                p.OnResolveIdentifiedObject(resolved, this);
             }
             while (inits.Count > 0)
             {
