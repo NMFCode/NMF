@@ -152,6 +152,15 @@ namespace NMF.Benchmarks
             {
                 RunBenchmark(i, options);
             }
+
+            if (Log != null)
+            {
+                Log.Close();
+            }
+            if (Reporting != null)
+            {
+                Reporting.Close();
+            }
         }
 
         /// <summary>
