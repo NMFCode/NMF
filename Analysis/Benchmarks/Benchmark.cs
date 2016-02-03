@@ -152,6 +152,15 @@ namespace NMF.Benchmarks
             {
                 RunBenchmark(i, options);
             }
+
+            if (Log != null)
+            {
+                Log.Close();
+            }
+            if (Reporting != null)
+            {
+                Reporting.Close();
+            }
         }
 
         /// <summary>
@@ -220,7 +229,7 @@ namespace NMF.Benchmarks
             stopwatch.Start();
             LoadRoot(options);
             stopwatch.Stop();
-            Report(null, "Load", stopwatch.ElapsedMilliseconds, options);
+            Report(null, "Load", stopwatch.Elapsed.TotalMilliseconds, options);
 
             foreach (var job in Analyzers)
             {
@@ -228,7 +237,7 @@ namespace NMF.Benchmarks
                 stopwatch.Restart();
                 job.Initialize(options);
                 stopwatch.Stop();
-                Report(job.Name, "Initialize", stopwatch.ElapsedMilliseconds, options);
+                Report(job.Name, "Initialize", stopwatch.Elapsed.TotalMilliseconds, options);
 
                 if (i == 0 && options.Memory)
                 {
@@ -238,7 +247,7 @@ namespace NMF.Benchmarks
                 stopwatch.Restart();
                 job.AnalyzeAndReport(options);
                 stopwatch.Stop();
-                Report(job.Name, "Validate", stopwatch.ElapsedMilliseconds, options);
+                Report(job.Name, "Validate", stopwatch.Elapsed.TotalMilliseconds, options);
             }
 
             if (Modifier != null)
@@ -250,7 +259,7 @@ namespace NMF.Benchmarks
                     stopwatch.Restart();
                     Modifier(j);
                     stopwatch.Stop();
-                    Report(null, "Modify", stopwatch.ElapsedMilliseconds, options);
+                    Report(null, "Modify", stopwatch.Elapsed.TotalMilliseconds, options);
 
                     foreach (var job in Analyzers)
                     {
@@ -258,7 +267,7 @@ namespace NMF.Benchmarks
                         var reportAction = job.AnalyzeAndReport(options);
                         stopwatch.Stop();
                         reportAction();
-                        Report(job.Name, "Revalidate", stopwatch.ElapsedMilliseconds, options);
+                        Report(job.Name, "Revalidate", stopwatch.Elapsed.TotalMilliseconds, options);
                     }
                 }
             }
