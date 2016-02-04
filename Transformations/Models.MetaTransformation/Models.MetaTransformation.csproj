@@ -7,8 +7,8 @@
     <ProjectGuid>{EAC542FC-085F-454E-AAED-36B6ECB0A2F8}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Models.MetaTransformation</RootNamespace>
-    <AssemblyName>Models.MetaTransformation</AssemblyName>
+    <RootNamespace>NMF.Models.Meta</RootNamespace>
+    <AssemblyName>NMF.Models.MetaTransformation</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <SccProjectName>SAK</SccProjectName>

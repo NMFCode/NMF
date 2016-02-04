@@ -127,7 +127,25 @@ namespace NMF.Serialization
             if (!typesByQualifier.TryGetValue(info.Namespace ?? "", out typesOfNamespace))
             {
                 typesOfNamespace = new Dictionary<string, ITypeSerializationInfo>();
-                typesByQualifier.Add(info.Namespace ?? "", typesOfNamespace);
+                if (info.Namespace != null)
+                {
+                    var ns = info.Namespace;
+                    string alternate;
+                    if (ns.EndsWith("/"))
+                    {
+                        alternate = ns.Substring(0, ns.Length - 1);
+                    }
+                    else
+                    {
+                        alternate = ns + "/";
+                    }
+                    typesByQualifier.Add(ns, typesOfNamespace);
+                    typesByQualifier.Add(alternate, typesOfNamespace);
+                }
+                else
+                {
+                    typesByQualifier.Add("", typesOfNamespace);
+                }
             }
             var elName = Settings.CaseSensitive ? info.ElementName : info.ElementName.ToUpperInvariant();
             if (!typesOfNamespace.ContainsKey(elName))
