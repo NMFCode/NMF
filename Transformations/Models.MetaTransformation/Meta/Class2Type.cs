@@ -72,6 +72,9 @@ namespace NMF.Models.Meta
                 RequireMany(Rule<RefinedReferenceGenerator>(), cl => cl.ReferenceConstraints.Select(c => Tuple.Create(cl, c.Constrains)));
                 RequireMany(Rule<RefinedAttributeGenerator>(), cl => cl.AttributeConstraints.Select(c => Tuple.Create(cl, c.Constrains)));
 
+                RequireMany(Rule<Feature2Proxy>(), cl => cl.Attributes, (cl, proxies) => cl.Members.AddRange(proxies.ToArray()));
+                RequireMany(Rule<Feature2Proxy>(), cl => cl.References, (cl, proxies) => cl.Members.AddRange(proxies.ToArray()));
+
                 Call(Rule<Class2Children>(), (decl, childDecl) => { if (childDecl != null) decl.Members.Add(childDecl); });
                 Call(Rule<Class2Referenced>(), (decl, refDecl) => { if (refDecl != null) decl.Members.Add(refDecl); });
             }
@@ -100,7 +103,7 @@ namespace NMF.Models.Meta
                     generatedType.AddAttribute(typeof(ModelRepresentationClassAttribute), uri.AbsoluteUri);
                 }
 
-                generatedType.WriteDocumentation(input.Summary ?? string.Format("The representation of the {0} class", input.Name), input.Remarks);
+                generatedType.WriteDocumentation(input.Summary ?? string.Format("The default implementation of the {0} class", input.Name), input.Remarks);
 
                 base.Transform(input, generatedType, context);
 
@@ -109,26 +112,18 @@ namespace NMF.Models.Meta
                 generatedType.BaseTypes.Add(typeof(IModelElement).Name);
 
                 var members = generatedType.Members;
-
-                // Create Children
-                var childrenProperty = CreateChildren(input, generatedType, context);
-                if (childrenProperty != null) members.Add(childrenProperty);
-
-                // Create GetRelativeUriForChild
-                var getRelativeUriForChild = CreateGetRelativePathForNonIdentifiedChild(input, generatedType, context);
-                if (getRelativeUriForChild != null) members.Add(getRelativeUriForChild);
-
-                // Create GetModelElementForUri
-                var getModelElementForUri = CreateGetModelElementForReference(input, generatedType, context);
-                if (getModelElementForUri != null) members.Add(getModelElementForUri);
-
-                // Create References Property
-                var referencesProperty = CreateReferencesProperty(input, generatedType, context);
-                if (referencesProperty != null) members.Add(referencesProperty);
-
-                // Create GetClass
-                var getClass = CreateGetClass(input);
-                if (getClass != null) members.Add(getClass);
+                
+                AddIfNotNull(members, CreateChildren(input, generatedType, context));
+                AddIfNotNull(members, CreateGetRelativePathForNonIdentifiedChild(input, generatedType, context));
+                AddIfNotNull(members, CreateGetModelElementForReference(input, generatedType, context));
+                AddIfNotNull(members, CreateReferencesProperty(input, generatedType, context));
+                AddIfNotNull(members, CreateGetClass(input));
+                AddIfNotNull(members, CreateGetAttributeValue(input, generatedType, context));
+                AddIfNotNull(members, CreateGetCollectionForFeature(input, generatedType, context));
+                AddIfNotNull(members, CreateSetFeature(input, generatedType, context));
+                AddIfNotNull(members, CreateGetExpressionForAttribute(input, generatedType, context));
+                AddIfNotNull(members, CreateGetExpressionForReference(input, generatedType, context));
+                AddIfNotNull(members, CreateClassInstance(input));
 
                 ImplementIdentifier(input, generatedType);
 
@@ -139,6 +134,14 @@ namespace NMF.Models.Meta
                     {
                         context.GetRootClasses(true).Add(input);
                     }
+                }
+            }
+
+            private static void AddIfNotNull(CodeTypeMemberCollection members, CodeTypeMember member)
+            {
+                if (member != null)
+                {
+                    members.Add(member);
                 }
             }
 
@@ -338,6 +341,251 @@ namespace NMF.Models.Meta
             }
 
             /// <summary>
+            /// Generates the GetAttributeValue method
+            /// </summary>
+            /// /// <param name="input">The NMeta class for which to generate the method</param>
+            /// <param name="generatedType">The generated type for the class</param>
+            /// <param name="context">The transformaion context</param>
+            /// <returns>The GetAttributeValue method for the given class</returns>
+            protected virtual CodeMemberMethod CreateGetAttributeValue(IClass input, CodeTypeDeclaration generatedType, ITransformationContext context)
+            {
+                var getAttributeValue = new CodeMemberMethod()
+                {
+                    Name = "GetAttributeValue",
+                    ReturnType = new CodeTypeReference(typeof(object)),
+                    Attributes = MemberAttributes.Family | MemberAttributes.Override
+                };
+                getAttributeValue.Parameters.Add(new CodeParameterDeclarationExpression(typeof(string), "attribute"));
+                getAttributeValue.Parameters.Add(new CodeParameterDeclarationExpression(typeof(int), "index"));
+                AddAttributesOfClass(input, generatedType, AddToGetAttributeValue, getAttributeValue, context);
+                getAttributeValue.Statements.Add(new CodeMethodReturnStatement(
+                    new CodeMethodInvokeExpression(new CodeBaseReferenceExpression(), "GetModelElementForReference", new CodeArgumentReferenceExpression("reference"), new CodeArgumentReferenceExpression("index"))));
+                if (getAttributeValue.Statements.Count == 1) return null;
+                getAttributeValue.WriteDocumentation("Resolves the given attribute name", "The attribute value or null if it could not be found", new Dictionary<string, string>()
+                {
+                    {"attribute", "The requested attribute name"},
+                    {"index", "The index of this attribute"}
+                });
+                return getAttributeValue;
+            }
+
+            private static CodeMemberMethod AddToGetAttributeValue(CodeMemberMethod method, IAttribute attribute)
+            {
+                if (attribute.UpperBound == 1 || attribute.IsOrdered)
+                {
+                    var propRef = new CodePropertyReferenceExpression(new CodeThisReferenceExpression(), attribute.Name.ToPascalCase());
+                    var ifStmt = new CodeConditionStatement(new CodeBinaryOperatorExpression(new CodeVariableReferenceExpression("attribute"),
+                        CodeBinaryOperatorType.ValueEquality, new CodePrimitiveExpression(attribute.Name.ToUpperInvariant())));
+                    if (attribute.UpperBound == 1)
+                    {
+                        ifStmt.TrueStatements.Add(new CodeMethodReturnStatement(propRef));
+                    }
+                    else
+                    {
+                        var indexCondition = new CodeBinaryOperatorExpression(new CodeVariableReferenceExpression("index"), CodeBinaryOperatorType.LessThan,
+                            new CodePropertyReferenceExpression(propRef, "Count"));
+                        var innerIf = new CodeConditionStatement(indexCondition);
+                        innerIf.TrueStatements.Add(new CodeMethodReturnStatement(new CodeIndexerExpression(propRef, new CodeVariableReferenceExpression("index"))));
+                        innerIf.FalseStatements.Add(new CodeMethodReturnStatement(new CodePrimitiveExpression(null)));
+                        ifStmt.TrueStatements.Add(innerIf);
+                    }
+                    method.Statements.Add(ifStmt);
+                }
+                return method;
+            }
+
+            /// <summary>
+            /// Generates the GetCollectionForFeature method
+            /// </summary>
+            /// <param name="input">The NMeta class for which to generate the method</param>
+            /// <param name="generatedType">The generated type for the class</param>
+            /// <param name="context">The transformaion context</param>
+            /// <returns>The GetCollectionForFeature method</returns>
+            protected virtual CodeMemberMethod CreateGetCollectionForFeature(IClass input, CodeTypeDeclaration generatedType, ITransformationContext context)
+            {
+                var getCollectionForFeature = new CodeMemberMethod()
+                {
+                    Name = "GetCollectionForFeature",
+                    ReturnType = new CodeTypeReference(typeof(System.Collections.IList)),
+                    Attributes = MemberAttributes.Family | MemberAttributes.Override
+                };
+                getCollectionForFeature.Parameters.Add(new CodeParameterDeclarationExpression(typeof(string), "feature"));
+                AddReferencesOfClass(input, generatedType, AddToCollectionsForFeature, getCollectionForFeature, false, context);
+                AddAttributesOfClass(input, generatedType, AddToCollectionsForFeature, getCollectionForFeature, context);
+                if (getCollectionForFeature.Statements.Count == 0)
+                {
+                    return null;
+                }
+                getCollectionForFeature.Statements.Add(new CodeMethodReturnStatement(
+                    new CodeMethodInvokeExpression(new CodeBaseReferenceExpression(), "GetCollectionForFeature", new CodeArgumentReferenceExpression("feature"))));
+                getCollectionForFeature.WriteDocumentation("Gets the Model element collection for the given feature", "A non-generic list of elements", new Dictionary<string, string>()
+                {
+                    { "feature", "The requested feature" }
+                });
+                return getCollectionForFeature;
+            }
+
+            private CodeMemberMethod AddToCollectionsForFeature(CodeMemberMethod method, ITypedElement feature)
+            {
+                if (feature.UpperBound != 1)
+                {
+                    var propRef = new CodePropertyReferenceExpression(new CodeThisReferenceExpression(), feature.Name.ToPascalCase());
+                    var ifStmt = new CodeConditionStatement(new CodeBinaryOperatorExpression(new CodeVariableReferenceExpression("feature"),
+                        CodeBinaryOperatorType.ValueEquality, new CodePrimitiveExpression(feature.Name.ToUpperInvariant())));
+                    ifStmt.TrueStatements.Add(new CodeMethodReturnStatement(propRef));
+                    method.Statements.Add(ifStmt);
+                }
+                return method;
+            }
+
+            /// <summary>
+            /// Creates the SetFeature method
+            /// </summary>
+            /// <param name="input">The NMeta class for which to generate the method</param>
+            /// <param name="generatedType">The generated type for the class</param>
+            /// <param name="context">The transformaion context</param>
+            /// <returns>The SetFeature method</returns>
+            protected virtual CodeMemberMethod CreateSetFeature(IClass input, CodeTypeDeclaration generatedType, ITransformationContext context)
+            {
+                var setFeature = new CodeMemberMethod()
+                {
+                    Name = "SetFeature",
+                    ReturnType = null,
+                    Attributes = MemberAttributes.Family | MemberAttributes.Override
+                };
+                setFeature.Parameters.Add(new CodeParameterDeclarationExpression(typeof(string), "feature"));
+                setFeature.Parameters.Add(new CodeParameterDeclarationExpression(typeof(object), "value"));
+                AddReferencesOfClass(input, generatedType, AddSetFeature, setFeature, false, context);
+                AddAttributesOfClass(input, generatedType, AddSetFeature, setFeature, context);
+                if (setFeature.Statements.Count == 0)
+                {
+                    return null;
+                }
+                setFeature.Statements.Add(new CodeMethodInvokeExpression(new CodeBaseReferenceExpression(), "SetFeature", new CodeArgumentReferenceExpression("feature"), new CodeArgumentReferenceExpression("value")));
+                setFeature.WriteDocumentation("Sets a value to the given feature", null, new Dictionary<string, string>()
+                {
+                    { "feature", "The requested feature" },
+                    { "value", "The value that should be set to that feature" }
+                });
+                return setFeature;
+            }
+
+            private CodeMemberMethod AddSetFeature(CodeMemberMethod method, ITypedElement feature)
+            {
+                if (feature.UpperBound == 1)
+                {
+                    var propRef = new CodePropertyReferenceExpression(new CodeThisReferenceExpression(), feature.Name.ToPascalCase());
+                    var ifStmt = new CodeConditionStatement(new CodeBinaryOperatorExpression(new CodeVariableReferenceExpression("feature"),
+                        CodeBinaryOperatorType.ValueEquality, new CodePrimitiveExpression(feature.Name.ToUpperInvariant())));
+                    ifStmt.TrueStatements.Add(new CodeAssignStatement(propRef, new CodeArgumentReferenceExpression("value")));
+                    ifStmt.TrueStatements.Add(new CodeMethodReturnStatement());
+                    method.Statements.Add(ifStmt);
+                }
+                return method;
+            }
+
+            /// <summary>
+            /// Creates the GetExpressionForReference method
+            /// </summary>
+            /// <param name="input">The NMeta class for which to generate the method</param>
+            /// <param name="generatedType">The generated type for the class</param>
+            /// <param name="context">The transformaion context</param>
+            /// <returns>The GetExpressionForReference method</returns>
+            protected virtual CodeMemberMethod CreateGetExpressionForReference(IClass input, CodeTypeDeclaration generatedType, ITransformationContext context)
+            {
+                var getExpressionForReference = new CodeMemberMethod()
+                {
+                    Name = "GetExpressionForReference",
+                    Attributes = MemberAttributes.Family | MemberAttributes.Override,
+                    ReturnType = new CodeTypeReference(typeof(INotifyExpression<IModelElement>))
+                };
+                getExpressionForReference.Parameters.Add(new CodeParameterDeclarationExpression(typeof(string), "reference"));
+                AddReferencesOfClass(input, generatedType, (m,r) => AddToExpressionForFeature(m, r, context, "reference"), getExpressionForReference, false, context);
+                if (getExpressionForReference.Statements.Count == 0)
+                {
+                    return null;
+                }
+                getExpressionForReference.Statements.Add(new CodeMethodReturnStatement(
+                    new CodeMethodInvokeExpression(new CodeBaseReferenceExpression(), "GetExpressionForReference", new CodeArgumentReferenceExpression("reference"))));
+                getExpressionForReference.WriteDocumentation("Gets the property expression for the given reference", "An incremental property expression", new Dictionary<string, string>()
+                {
+                    { "reference", "The requested reference in upper case" }
+                });
+                return getExpressionForReference;
+            }
+
+            /// <summary>
+            /// Creates the GetExpressionForAttribute method
+            /// </summary>
+            /// <param name="input">The NMeta class for which to generate the method</param>
+            /// <param name="generatedType">The generated type for the class</param>
+            /// <param name="context">The transformaion context</param>
+            /// <returns>The GetExpressionForAttribute method</returns>
+            protected virtual CodeMemberMethod CreateGetExpressionForAttribute(IClass input, CodeTypeDeclaration generatedType, ITransformationContext context)
+            {
+                var getExpressionForAttribute = new CodeMemberMethod()
+                {
+                    Name = "GetExpressionForAttribute",
+                    Attributes = MemberAttributes.Family | MemberAttributes.Override,
+                    ReturnType = new CodeTypeReference(typeof(INotifyExpression<object>))
+                };
+                getExpressionForAttribute.Parameters.Add(new CodeParameterDeclarationExpression(typeof(string), "attribute"));
+                AddReferencesOfClass(input, generatedType, (m, r) => AddToExpressionForFeature(m, r, context, "attribute"), getExpressionForAttribute, false, context);
+                if (getExpressionForAttribute.Statements.Count == 0)
+                {
+                    return null;
+                }
+                getExpressionForAttribute.Statements.Add(new CodeMethodReturnStatement(
+                    new CodeMethodInvokeExpression(new CodeBaseReferenceExpression(), "GetExpressionForAttribute", new CodeArgumentReferenceExpression("attribute"))));
+                getExpressionForAttribute.WriteDocumentation("Gets the property expression for the given attribute", "An incremental property expression", new Dictionary<string, string>()
+                {
+                    { "attribute", "The requested attribute in upper case" }
+                });
+                return getExpressionForAttribute;
+            }
+
+            private CodeMemberMethod AddToExpressionForFeature(CodeMemberMethod method, ITypedElement feature, ITransformationContext context, string parameterName)
+            {
+                if (feature.UpperBound == 1)
+                {
+                    var propTypeRef = new CodeTypeReference(feature.Name.ToPascalCase() + "Proxy");
+                    var ifStmt = new CodeConditionStatement(new CodeBinaryOperatorExpression(new CodeVariableReferenceExpression(parameterName),
+                        CodeBinaryOperatorType.ValueEquality, new CodePrimitiveExpression(feature.Name.ToUpperInvariant())));
+                    ifStmt.TrueStatements.Add(new CodeMethodReturnStatement(new CodeObjectCreateExpression(propTypeRef, new CodeThisReferenceExpression())));
+                    method.Statements.Add(ifStmt);
+                }
+                return method;
+            }
+
+            /// <summary>
+            /// Generates the ClassInstance property
+            /// </summary>
+            /// <param name="input">The class for which to generate the property</param>
+            /// <returns>The ClassInatsnce property</returns>
+            protected virtual CodeMemberProperty CreateClassInstance(IClass input)
+            {
+                var classInstance = new CodeMemberProperty()
+                {
+                    Name = "ClassInstance",
+                    Attributes = MemberAttributes.Public | MemberAttributes.Final | MemberAttributes.Static | MemberAttributes.New,
+                    Type = new CodeTypeReference(typeof(IClass))
+                };
+                var absoluteUri = input.AbsoluteUri;
+                if (absoluteUri != null && absoluteUri.IsAbsoluteUri)
+                {
+                    var repositoryRef = new CodePropertyReferenceExpression(new CodeTypeReferenceExpression(typeof(MetaRepository)), "Instance");
+                    var classRef = new CodeMethodInvokeExpression(repositoryRef, "ResolveClass", new CodePrimitiveExpression(absoluteUri.AbsoluteUri));
+                    classInstance.GetStatements.Add(new CodeMethodReturnStatement(classRef));
+                }
+                else
+                {
+                    return null;
+                }
+                classInstance.WriteDocumentation("Gets the Class element that describes the structure of this type");
+                return classInstance;
+            }
+
+            /// <summary>
             /// Generates the method to create a relative path for a given child model element
             /// </summary>
             /// <param name="input">The NMeta class for which to generate the method</param>
@@ -394,10 +642,16 @@ namespace NMF.Models.Meta
                 return childrenProperty;
             }
 
-            private T AddReferencesOfClass<T>(IClass input, CodeTypeDeclaration typeDeclaration, Func<T, IReference, T> action, T initial, bool containmentsOnly, ITransformationContext context)
+            protected T AddReferencesOfClass<T>(IClass input, CodeTypeDeclaration typeDeclaration, Func<T, IReference, T> action, T initial, bool containmentsOnly, ITransformationContext context)
             {
                 var t = Transformation as Meta2ClassesTransformation;
                 return AddReferencesOfClass<T>(input, typeDeclaration, action, initial, true, new HashSet<IClass>(), containmentsOnly, context, Rule<Reference2Property>());
+            }
+            
+            protected T AddAttributesOfClass<T>(IClass input, CodeTypeDeclaration typeDeclaration, Func<T, IAttribute, T> action, T initial, ITransformationContext context)
+            {
+                var t = Transformation as Meta2ClassesTransformation;
+                return AddAttributesOfClass<T>(input, typeDeclaration, action, initial, true, new HashSet<IClass>(), context, Rule<Attribute2Property>());
             }
 
             private static T AddReferencesOfClass<T>(IClass input, CodeTypeDeclaration typeDeclaration, Func<T, IReference, T> action, T initial, bool inherit, HashSet<IClass> visited, bool containmentsOnly, ITransformationContext context, Reference2Property r2p)
@@ -419,6 +673,30 @@ namespace NMF.Models.Meta
                         foreach (var baseClass in input.BaseTypes.Where(type => !type.IsInterface))
                         {
                             initial = AddReferencesOfClass<T>(baseClass, typeDeclaration, action, initial, inherit, visited, containmentsOnly, context, r2p);
+                        }
+                    }
+                }
+                return initial;
+            }
+
+            private static T AddAttributesOfClass<T>(IClass input, CodeTypeDeclaration typeDeclaration, Func<T, IAttribute, T> action, T initial, bool inherit, HashSet<IClass> visited, ITransformationContext context, Attribute2Property a2p)
+            {
+                if (visited.Add(input))
+                {
+                    IEnumerable<IAttribute> attributes = input.Attributes;
+                    foreach (var a in attributes)
+                    {
+                        var property = context.Trace.ResolveIn(a2p, a);
+                        if (typeDeclaration.Members.Contains(property))
+                        {
+                            initial = action(initial, a);
+                        }
+                    }
+                    if (inherit)
+                    {
+                        foreach (var baseClass in input.BaseTypes.Where(type => !type.IsInterface))
+                        {
+                            initial = AddAttributesOfClass<T>(baseClass, typeDeclaration, action, initial, inherit, visited, context, a2p);
                         }
                     }
                 }

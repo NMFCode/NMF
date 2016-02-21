@@ -7,7 +7,7 @@ using System.Text;
 namespace NMF.Collections.Generic
 {
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1710:IdentifiersShouldHaveCorrectSuffix")]
-    public class DecoratedSet<T> : ISet<T>, ICollection<T>, IEnumerable<T>, IEnumerable, ICollection
+    public class DecoratedSet<T> : ISet<T>, ICollection<T>, IEnumerable<T>, IEnumerable, ICollection, IList
     {
         protected HashSet<T> Items { get; private set; }
 
@@ -169,6 +169,42 @@ namespace NMF.Collections.Generic
             ((ICollection)Items).CopyTo(array, index);
         }
 
+        int IList.Add(object value)
+        {
+            Add((T)value);
+            return 0;
+        }
+
+        bool IList.Contains(object value)
+        {
+            return Contains((T)value);
+        }
+
+        void IList.Clear()
+        {
+            Clear();
+        }
+
+        int IList.IndexOf(object value)
+        {
+            throw new InvalidOperationException();
+        }
+
+        void IList.Insert(int index, object value)
+        {
+            Add((T)value);
+        }
+
+        void IList.Remove(object value)
+        {
+            Remove((T)value);
+        }
+
+        void IList.RemoveAt(int index)
+        {
+            throw new InvalidOperationException();
+        }
+
         bool ICollection.IsSynchronized
         {
             get { return ((ICollection)Items).IsSynchronized; }
@@ -177,6 +213,35 @@ namespace NMF.Collections.Generic
         object ICollection.SyncRoot
         {
             get { return ((ICollection)Items).SyncRoot; }
+        }
+
+        bool IList.IsReadOnly
+        {
+            get
+            {
+                return false;
+            }
+        }
+
+        bool IList.IsFixedSize
+        {
+            get
+            {
+                return false;
+            }
+        }
+
+        object IList.this[int index]
+        {
+            get
+            {
+                throw new InvalidOperationException();
+            }
+
+            set
+            {
+                throw new InvalidOperationException();
+            }
         }
     }
 }

@@ -43,6 +43,7 @@
     </Compile>
     <Compile Include="Meta\Attribute2Property.cs" />
     <Compile Include="Meta\Class2Children.cs" />
+    <Compile Include="Meta\Class2Proxy.cs" />
     <Compile Include="Meta\Class2Referenced.cs" />
     <Compile Include="Meta\Class2Type.cs" />
     <Compile Include="Meta\DataType2Type.cs" />
@@ -52,6 +53,7 @@
     <Compile Include="Meta\Event2EventArgs.cs" />
     <Compile Include="Meta\Extension2Type.cs" />
     <Compile Include="Meta\Extensions.cs" />
+    <Compile Include="Meta\Feature2Proxy.cs" />
     <Compile Include="Meta\Meta2ClassesTransformation.cs" />
     <Compile Include="Meta\MetaFacade.cs" />
     <Compile Include="Meta\Namespace2CompileUnit.cs" />

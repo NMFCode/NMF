@@ -186,14 +186,14 @@ namespace NMF.Expressions.Linq
 
         private void LambdaChanged(object sender, ValueChangedEventArgs e)
         {
-            var lambdaResult = sender as TaggedObservableValue<bool, List<T>>;
+            var lambdaResult = sender as TaggedObservableValue<bool, ItemMultiplicity>;
             if (lambdaResult.Value)
             {
-                OnAddItems(lambdaResult.Tag);
+                OnAddItems(SL.Repeat(lambdaResult.Tag.Item, lambdaResult.Tag.Multiplicity));
             }
             else
             {
-                OnRemoveItems(lambdaResult.Tag);
+                OnRemoveItems(SL.Repeat(lambdaResult.Tag.Item, lambdaResult.Tag.Multiplicity));
             }
         }
 

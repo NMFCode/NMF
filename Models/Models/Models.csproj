@@ -98,6 +98,7 @@
     <Compile Include="Meta\TypedElement.cs" />
     <Compile Include="ModelExtensions.cs" />
     <Compile Include="ModelMetadataAttribute.cs" />
+    <Compile Include="ModelPropertyChange.cs" />
     <Compile Include="ModelRepresentationClassAttribute.cs" />
     <Compile Include="Repository\FileLocator.cs" />
     <Compile Include="Repository\FileMapLocator.cs" />

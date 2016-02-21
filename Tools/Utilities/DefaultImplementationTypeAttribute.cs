@@ -9,7 +9,7 @@ namespace NMF.Utilities
     /// This attribute represents that there is a default implementation for the given interface
     /// </summary>
     [AttributeUsage(AttributeTargets.Interface, Inherited = false)]
-    public class DefaultImplementationTypeAttribute : Attribute
+    public sealed class DefaultImplementationTypeAttribute : Attribute
     {
         /// <summary>
         /// The default implementation type for this interface

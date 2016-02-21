@@ -165,9 +165,7 @@ namespace NMF.Transformations.Core
         /// <summary>
         /// Computes the path of transformation rules for a given input
         /// </summary>
-        /// <param name="input">An array of input arguments</param>
-        /// <param name="types">An array of the input argument types</param>
-        /// <param name="transformation">The transformation rule that was originally called to create the output</param>
+        /// <param name="computation">The computation for which to compute the instantiating rule path</param>
         /// <returns>A stack of transformation rules that are involved with the output creation. The top element of the stack should be able to instantiate the output (i.e. must not be abstract)</returns>
         [EditorBrowsable(EditorBrowsableState.Advanced)]
         public virtual Stack<GeneralTransformationRule> ComputeInstantiatingTransformationRulePath(Computation computation)

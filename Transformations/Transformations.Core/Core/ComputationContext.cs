@@ -5,6 +5,9 @@ using System.Text;
 
 namespace NMF.Transformations.Core
 {
+    /// <summary>
+    /// This interface represents the transformation engine context information attached to a computation
+    /// </summary>
     public interface IComputationContext
     {
         /// <summary>
@@ -148,7 +151,14 @@ namespace NMF.Transformations.Core
             MinTransformDelayLevel = Math.Max(MinTransformDelayLevel, delayLevel);
         }
 
+        /// <summary>
+        /// Gets the minimum output delay level for this cmputation
+        /// </summary>
         public byte MinOutputDelayLevel { get; private set; }
+
+        /// <summary>
+        /// Gets the minimum transformation delay level for this computation
+        /// </summary>
         public byte MinTransformDelayLevel { get; private set; }
 
         /// <summary>

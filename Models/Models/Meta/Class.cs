@@ -23,6 +23,7 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
+using NMF.Models.Repository;
 
 namespace NMF.Models.Meta
 {
@@ -36,8 +37,7 @@ namespace NMF.Models.Meta
     [ModelRepresentationClassAttribute("http://nmf.codeplex.com/nmeta/#//Class/")]
     [DebuggerDisplayAttribute("Class {Name}")]
     public class Class : ReferenceType, IClass, IModelElement
-    {
-        
+    {        
         /// <summary>
         /// The backing field for the IsInterface property
         /// </summary>

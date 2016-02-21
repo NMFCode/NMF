@@ -63,11 +63,13 @@ namespace NMF.Models
         /// <summary>
         /// Gets the children of the current model element
         /// </summary>
+        [Constant]
         IEnumerableExpression<IModelElement> Children { get; }
 
         /// <summary>
         /// Gets the model elements referenced by the current model element
         /// </summary>
+        [Constant]
         IEnumerableExpression<IModelElement> ReferencedElements { get; }
 
         /// <summary>
@@ -89,13 +91,15 @@ namespace NMF.Models
         /// <returns>The class of the model element</returns>
         IClass GetClass();
 
-        object GetAttributeValue(IAttribute attribute);
 
-        IEnumerable GetAttributeValues(IAttribute attribute);
+        object GetAttributeValue(IAttribute attribute, int index = 0);
 
-        IModelElement GetReferencedElement(IReference reference);
 
-        IEnumerable<IModelElement> GetReferencedElements(IReference reference);
+        IList GetAttributeValues(IAttribute attribute);
+
+        IModelElement GetReferencedElement(IReference reference, int index = 0);
+
+        IList GetReferencedElements(IReference reference);
 
         event EventHandler<BubbledChangeEventArgs> BubbledChange;
     }

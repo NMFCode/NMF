@@ -13,6 +13,7 @@ using NMF.Expressions;
 using NMF.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.Web;
+using System.Collections;
 
 namespace NMF.Models
 {
@@ -116,6 +117,7 @@ namespace NMF.Models
         /// <summary>
         /// Gets a collection with the children of the current model element
         /// </summary>
+        [Constant]
         public virtual IEnumerableExpression<IModelElement> Children
         {
             get
@@ -384,12 +386,63 @@ namespace NMF.Models
         /// <summary>
         /// Gets the Model element for the given reference and index
         /// </summary>
-        /// <param name="reference">The reference name</param>
+        /// <param name="reference">The reference name in upper case</param>
         /// <param name="index">The index of the element within the reference</param>
         /// <returns>The model element at the given reference</returns>
         protected virtual IModelElement GetModelElementForReference(string reference, int index)
         {
-            return null;
+            throw new ArgumentOutOfRangeException("reference");
+        }
+
+        /// <summary>
+        /// Gets the Model element collection for the given feature
+        /// </summary>
+        /// <param name="feature">The features name in upper case</param>
+        /// <returns>A non-generic list of elements</returns>
+        protected virtual IList GetCollectionForFeature(string feature)
+        {
+            throw new ArgumentOutOfRangeException("feature");
+        }
+
+        /// <summary>
+        /// Gets the attribute value for the given attribute
+        /// </summary>
+        /// <param name="attribute">The attributes name in upper case</param>
+        /// <param name="index">The attributes index</param>
+        /// <returns>The attribute value</returns>
+        protected virtual object GetAttributeValue(string attribute, int index)
+        {
+            throw new ArgumentOutOfRangeException("attribute");
+        }
+
+        /// <summary>
+        /// Sets the given feature to the given value
+        /// </summary>
+        /// <param name="feature">The name of the feature that should be set</param>
+        /// <param name="value">The value that should be set</param>
+        protected virtual void SetFeature(string feature, object value)
+        {
+            throw new ArgumentOutOfRangeException("feature");
+        }
+
+        /// <summary>
+        /// Gets a property expression for the given reference
+        /// </summary>
+        /// <param name="reference">The name of the requested reference in upper case</param>
+        /// <returns>A property expression</returns>
+        protected virtual INotifyExpression<IModelElement> GetExpressionForReference(string reference)
+        {
+            throw new ArgumentOutOfRangeException("reference");
+        }
+
+        /// <summary>
+        /// Gets a property expression for the given attribute
+        /// </summary>
+        /// <param name="attribute">The requested attribute in upper case</param>
+        /// <returns>A property expression</returns>
+        protected virtual INotifyExpression<object> GetExpressionForAttribute(string attribute)
+        {
+            throw new ArgumentOutOfRangeException("attribute");
         }
 
 
@@ -500,6 +553,18 @@ namespace NMF.Models
 
 
         /// <summary>
+        /// Gets the NMeta class object for this type
+        /// </summary>
+        public static Meta.IClass ClassInstance
+        {
+            get
+            {
+                return MetaRepository.Instance.ResolveClass("http://nmf.codeplex.com/nmeta/#//ModelElement/");
+            }
+        }
+
+
+        /// <summary>
         /// Gets the value for the given attribute
         /// </summary>
         /// <param name="attribute">The attribute whose value is queried</param>
@@ -510,23 +575,27 @@ namespace NMF.Models
         }
 
         /// <summary>
-        /// Gets the values for the given attribute
-        /// </summary>
-        /// <param name="attribute">The attribute whose value is queried</param>
-        /// <returns>The attribute value collection</returns>
-        public virtual System.Collections.IEnumerable GetAttributeValues(Meta.IAttribute attribute)
-        {
-            throw new ArgumentOutOfRangeException("attribute");
-        }
-
-        /// <summary>
         /// Gets the referenced element of the current model element for the given reference
         /// </summary>
         /// <param name="reference">The reference</param>
+        /// <param name="index">The index of the desired model element, if multi-valued reference</param>
         /// <returns>The referenced element for the given reference</returns>
-        public virtual IModelElement GetReferencedElement(Meta.IReference reference)
+        [ObservableProxy(typeof(ModelElementProxy), "GetReferencedElement")]
+        public IModelElement GetReferencedElement(Meta.IReference reference, int index = 0)
         {
-            throw new ArgumentOutOfRangeException("reference");
+            if (reference == null) throw new ArgumentNullException("reference");
+            return GetModelElementForReference(reference.Name.ToUpperInvariant(), 0);
+        }
+
+        /// <summary>
+        /// Sets the referenced element of the current model element for the given reference
+        /// </summary>
+        /// <param name="reference">The reference</param>
+        /// <param name="element">The element that should be set</param>
+        public void SetReferencedElement(Meta.IReference reference, IModelElement element)
+        {
+            if (reference == null) throw new ArgumentNullException("reference");
+            SetFeature(reference.Name.ToUpperInvariant(), element);
         }
 
         /// <summary>
@@ -534,9 +603,44 @@ namespace NMF.Models
         /// </summary>
         /// <param name="reference">The reference</param>
         /// <returns>A collection of referenced elements</returns>
-        public virtual IEnumerable<IModelElement> GetReferencedElements(Meta.IReference reference)
+        public IList GetReferencedElements(Meta.IReference reference)
         {
             throw new ArgumentOutOfRangeException("reference");
+        }
+
+        /// <summary>
+        /// Gets the value of the current model element under the given attribute
+        /// </summary>
+        /// <param name="attribute">The attribute</param>
+        /// <param name="index">The index of the desired value, if multi-valued attribute</param>
+        /// <returns>The attributes value</returns>
+        [ObservableProxy(typeof(ModelElementProxy), "GetAttributeValue")]
+        public object GetAttributeValue(Meta.IAttribute attribute, int index = 0)
+        {
+            if (attribute == null) throw new ArgumentOutOfRangeException("attribute");
+            return GetAttributeValue(attribute.Name.ToUpperInvariant(), index);
+        }
+
+        /// <summary>
+        /// Sets the value of the current model element for the given attribute
+        /// </summary>
+        /// <param name="attribute">The attribute</param>
+        /// <param name="value">The value that should be set</param>
+        public void SetAttributeValue(Meta.IAttribute attribute, object value)
+        {
+            if (attribute == null) throw new ArgumentOutOfRangeException("attribute");
+            SetFeature(attribute.Name.ToUpperInvariant(), value);
+        }
+
+        /// <summary>
+        /// Gets the values for the given attribute
+        /// </summary>
+        /// <param name="attribute">The attribute whose value is queried</param>
+        /// <returns>The attribute value collection</returns>
+        public IList GetAttributeValues(Meta.IAttribute attribute)
+        {
+            if (attribute == null) throw new ArgumentOutOfRangeException("attribute");
+            return GetCollectionForFeature(attribute.Name.ToUpperInvariant());
         }
 
         /// <summary>
@@ -571,5 +675,28 @@ namespace NMF.Models
         /// Is fired when an element in the below containment hierarchy has changed
         /// </summary>
         public event EventHandler<BubbledChangeEventArgs> BubbledChange;
+
+        private class ModelElementProxy
+        {
+            public static INotifyExpression<IModelElement> GetReferencedElement(ModelElement element, Meta.IReference reference, int index)
+            {
+                if (reference == null) throw new ArgumentOutOfRangeException("reference");
+                if (reference.UpperBound == 1)
+                {
+                    return element.GetExpressionForReference(reference.Name.ToUpperInvariant());
+                }
+                throw new NotSupportedException();
+            }
+
+            public static INotifyExpression<object> GetAttributeValue(ModelElement element, Meta.IAttribute attribute, int index)
+            {
+                if (attribute == null) throw new ArgumentOutOfRangeException("attribute");
+                if (attribute.UpperBound == 1)
+                {
+                    return element.GetExpressionForAttribute(attribute.Name.ToUpperInvariant());
+                }
+                throw new NotSupportedException();
+            }
+        }
     }
 }
