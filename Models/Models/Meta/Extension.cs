@@ -14,6 +14,7 @@ using NMF.Expressions;
 using NMF.Expressions.Linq;
 using NMF.Models;
 using NMF.Models.Collections;
+using NMF.Models.Expressions;
 using NMF.Serialization;
 using NMF.Utilities;
 using System;
@@ -29,7 +30,7 @@ namespace NMF.Models.Meta
     
     
     /// <summary>
-    /// The representation of the Extension class
+    /// The default implementation of the Extension class
     /// </summary>
     [XmlNamespaceAttribute("http://nmf.codeplex.com/nmeta/")]
     [XmlNamespacePrefixAttribute("nmeta")]
@@ -85,6 +86,17 @@ namespace NMF.Models.Meta
         }
         
         /// <summary>
+        /// Gets the Class element that describes the structure of this type
+        /// </summary>
+        public new static NMF.Models.Meta.IClass ClassInstance
+        {
+            get
+            {
+                return NMF.Models.Repository.MetaRepository.Instance.ResolveClass("http://nmf.codeplex.com/nmeta/#//Extension/");
+            }
+        }
+        
+        /// <summary>
         /// Gets fired when the AdornedClass property changed its value
         /// </summary>
         public event EventHandler<ValueChangedEventArgs> AdornedClassChanged;
@@ -118,6 +130,98 @@ namespace NMF.Models.Meta
         public override NMF.Models.Meta.IClass GetClass()
         {
             return NMF.Models.Repository.MetaRepository.Instance.ResolveClass("http://nmf.codeplex.com/nmeta/#//Extension/");
+        }
+        
+        /// <summary>
+        /// Sets a value to the given feature
+        /// </summary>
+        /// <param name="feature">The requested feature</param>
+        /// <param name="value">The value that should be set to that feature</param>
+        protected override void SetFeature(string feature, object value)
+        {
+            if ((feature == "ADORNEDCLASS"))
+            {
+                this.AdornedClass = ((IClass)(value));
+                return;
+            }
+            base.SetFeature(feature, value);
+        }
+        
+        /// <summary>
+        /// Gets the property expression for the given attribute
+        /// </summary>
+        /// <returns>An incremental property expression</returns>
+        /// <param name="attribute">The requested attribute in upper case</param>
+        protected override NMF.Expressions.INotifyExpression<object> GetExpressionForAttribute(string attribute)
+        {
+            if ((attribute == "ADORNEDCLASS"))
+            {
+                return new AdornedClassProxy(this);
+            }
+            return base.GetExpressionForAttribute(attribute);
+        }
+        
+        /// <summary>
+        /// Gets the property expression for the given reference
+        /// </summary>
+        /// <returns>An incremental property expression</returns>
+        /// <param name="reference">The requested reference in upper case</param>
+        protected override NMF.Expressions.INotifyExpression<NMF.Models.IModelElement> GetExpressionForReference(string reference)
+        {
+            if ((reference == "ADORNEDCLASS"))
+            {
+                return new AdornedClassProxy(this);
+            }
+            return base.GetExpressionForReference(reference);
+        }
+        
+        /// <summary>
+        /// Represents a proxy to represent an incremental access to the AdornedClass property
+        /// </summary>
+        private sealed class AdornedClassProxy : ModelPropertyChange<IExtension, IClass>
+        {
+            
+            /// <summary>
+            /// Creates a new observable property access proxy
+            /// </summary>
+            /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
+            public AdornedClassProxy(IExtension modelElement) : 
+                    base(modelElement)
+            {
+            }
+            
+            /// <summary>
+            /// Gets or sets the value of this expression
+            /// </summary>
+            public override IClass Value
+            {
+                get
+                {
+                    return this.ModelElement.AdornedClass;
+                }
+                set
+                {
+                    this.ModelElement.AdornedClass = value;
+                }
+            }
+            
+            /// <summary>
+            /// Registers an event handler to subscribe specifically on the changed event for this property
+            /// </summary>
+            /// <param name="handler">The handler that should be subscribed to the property change event</param>
+            protected override void RegisterChangeEventHandler(System.EventHandler<NMF.Expressions.ValueChangedEventArgs> handler)
+            {
+                this.ModelElement.AdornedClassChanged += handler;
+            }
+            
+            /// <summary>
+            /// Registers an event handler to subscribe specifically on the changed event for this property
+            /// </summary>
+            /// <param name="handler">The handler that should be unsubscribed from the property change event</param>
+            protected override void UnregisterChangeEventHandler(System.EventHandler<NMF.Expressions.ValueChangedEventArgs> handler)
+            {
+                this.ModelElement.AdornedClassChanged -= handler;
+            }
         }
         
         /// <summary>

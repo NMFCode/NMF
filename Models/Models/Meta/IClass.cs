@@ -14,6 +14,7 @@ using NMF.Expressions;
 using NMF.Expressions.Linq;
 using NMF.Models;
 using NMF.Models.Collections;
+using NMF.Models.Expressions;
 using NMF.Serialization;
 using NMF.Utilities;
 using System;
@@ -31,11 +32,8 @@ namespace NMF.Models.Meta
     /// <summary>
     /// The public interface for Class
     /// </summary>
-    [XmlNamespaceAttribute("http://nmf.codeplex.com/nmeta/")]
-    [XmlNamespacePrefixAttribute("nmeta")]
-    [ModelRepresentationClassAttribute("http://nmf.codeplex.com/nmeta/#//Class/")]
-    [XmlDefaultImplementationTypeAttribute(typeof(Class))]
     [DefaultImplementationTypeAttribute(typeof(Class))]
+    [XmlDefaultImplementationTypeAttribute(typeof(Class))]
     public interface IClass : IModelElement, IReferenceType
     {
         
@@ -102,12 +100,12 @@ namespace NMF.Models.Meta
         /// <summary>
         /// Gets fired when the IsInterface property changed its value
         /// </summary>
-        event EventHandler IsInterfaceChanged;
+        event EventHandler<ValueChangedEventArgs> IsInterfaceChanged;
         
         /// <summary>
         /// Gets fired when the IsAbstract property changed its value
         /// </summary>
-        event EventHandler IsAbstractChanged;
+        event EventHandler<ValueChangedEventArgs> IsAbstractChanged;
         
         /// <summary>
         /// Gets fired when the InstanceOf property changed its value

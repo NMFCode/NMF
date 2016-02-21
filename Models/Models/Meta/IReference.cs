@@ -14,6 +14,7 @@ using NMF.Expressions;
 using NMF.Expressions.Linq;
 using NMF.Models;
 using NMF.Models.Collections;
+using NMF.Models.Expressions;
 using NMF.Serialization;
 using NMF.Utilities;
 using System;
@@ -31,11 +32,8 @@ namespace NMF.Models.Meta
     /// <summary>
     /// The public interface for Reference
     /// </summary>
-    [XmlNamespaceAttribute("http://nmf.codeplex.com/nmeta/")]
-    [XmlNamespacePrefixAttribute("nmeta")]
-    [ModelRepresentationClassAttribute("http://nmf.codeplex.com/nmeta/#//Reference/")]
-    [XmlDefaultImplementationTypeAttribute(typeof(Reference))]
     [DefaultImplementationTypeAttribute(typeof(Reference))]
+    [XmlDefaultImplementationTypeAttribute(typeof(Reference))]
     public interface IReference : IModelElement, ITypedElement
     {
         
@@ -87,7 +85,7 @@ namespace NMF.Models.Meta
         /// <summary>
         /// Gets fired when the IsContainment property changed its value
         /// </summary>
-        event EventHandler IsContainmentChanged;
+        event EventHandler<ValueChangedEventArgs> IsContainmentChanged;
         
         /// <summary>
         /// Gets fired when the DeclaringType property changed its value

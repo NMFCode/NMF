@@ -14,6 +14,7 @@ using NMF.Expressions;
 using NMF.Expressions.Linq;
 using NMF.Models;
 using NMF.Models.Collections;
+using NMF.Models.Expressions;
 using NMF.Serialization;
 using NMF.Utilities;
 using System;
@@ -31,11 +32,8 @@ namespace NMF.Models.Meta
     /// <summary>
     /// The public interface for ReferenceType
     /// </summary>
-    [XmlNamespaceAttribute("http://nmf.codeplex.com/nmeta/")]
-    [XmlNamespacePrefixAttribute("nmeta")]
-    [ModelRepresentationClassAttribute("http://nmf.codeplex.com/nmeta/#//ReferenceType/")]
-    [XmlDefaultImplementationTypeAttribute(typeof(ReferenceType))]
     [DefaultImplementationTypeAttribute(typeof(ReferenceType))]
+    [XmlDefaultImplementationTypeAttribute(typeof(ReferenceType))]
     public interface IReferenceType : IModelElement, IStructuredType
     {
         

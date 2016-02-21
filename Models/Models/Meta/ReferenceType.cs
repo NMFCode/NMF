@@ -14,6 +14,7 @@ using NMF.Expressions;
 using NMF.Expressions.Linq;
 using NMF.Models;
 using NMF.Models.Collections;
+using NMF.Models.Expressions;
 using NMF.Serialization;
 using NMF.Utilities;
 using System;
@@ -29,7 +30,7 @@ namespace NMF.Models.Meta
     
     
     /// <summary>
-    /// The representation of the ReferenceType class
+    /// The default implementation of the ReferenceType class
     /// </summary>
     [XmlNamespaceAttribute("http://nmf.codeplex.com/nmeta/")]
     [XmlNamespacePrefixAttribute("nmeta")]
@@ -62,6 +63,8 @@ namespace NMF.Models.Meta
         [DesignerSerializationVisibilityAttribute(DesignerSerializationVisibility.Content)]
         [XmlAttributeAttribute(false)]
         [ContainmentAttribute()]
+        [XmlOppositeAttribute("DeclaringType")]
+        [ConstantAttribute()]
         public virtual ICollectionExpression<IEvent> Events
         {
             get
@@ -76,6 +79,8 @@ namespace NMF.Models.Meta
         [DesignerSerializationVisibilityAttribute(DesignerSerializationVisibility.Content)]
         [XmlAttributeAttribute(false)]
         [ContainmentAttribute()]
+        [XmlOppositeAttribute("DeclaringType")]
+        [ConstantAttribute()]
         public virtual ICollectionExpression<IReference> References
         {
             get
@@ -107,6 +112,17 @@ namespace NMF.Models.Meta
         }
         
         /// <summary>
+        /// Gets the Class element that describes the structure of this type
+        /// </summary>
+        public new static NMF.Models.Meta.IClass ClassInstance
+        {
+            get
+            {
+                return NMF.Models.Repository.MetaRepository.Instance.ResolveClass("http://nmf.codeplex.com/nmeta/#//ReferenceType/");
+            }
+        }
+        
+        /// <summary>
         /// Forwards change notifications for the Events property to the parent model element
         /// </summary>
         /// <param name="sender">The collection that raised the change</param>
@@ -132,6 +148,24 @@ namespace NMF.Models.Meta
         public override NMF.Models.Meta.IClass GetClass()
         {
             return NMF.Models.Repository.MetaRepository.Instance.ResolveClass("http://nmf.codeplex.com/nmeta/#//ReferenceType/");
+        }
+        
+        /// <summary>
+        /// Gets the Model element collection for the given feature
+        /// </summary>
+        /// <returns>A non-generic list of elements</returns>
+        /// <param name="feature">The requested feature</param>
+        protected override System.Collections.IList GetCollectionForFeature(string feature)
+        {
+            if ((feature == "EVENTS"))
+            {
+                return this._events;
+            }
+            if ((feature == "REFERENCES"))
+            {
+                return this._references;
+            }
+            return base.GetCollectionForFeature(feature);
         }
         
         /// <summary>

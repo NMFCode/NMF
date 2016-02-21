@@ -14,6 +14,7 @@ using NMF.Expressions;
 using NMF.Expressions.Linq;
 using NMF.Models;
 using NMF.Models.Collections;
+using NMF.Models.Expressions;
 using NMF.Serialization;
 using NMF.Utilities;
 using System;
@@ -37,6 +38,17 @@ namespace NMF.Models.Meta
     [DebuggerDisplayAttribute("DataType {Name}")]
     public class DataType : StructuredType, IDataType, IModelElement
     {
+        
+        /// <summary>
+        /// Gets the Class element that describes the structure of this type
+        /// </summary>
+        public new static NMF.Models.Meta.IClass ClassInstance
+        {
+            get
+            {
+                return NMF.Models.Repository.MetaRepository.Instance.ResolveClass("http://nmf.codeplex.com/nmeta/#//DataType/");
+            }
+        }
         
         /// <summary>
         /// Gets the Class element that describes the structure of the current model element

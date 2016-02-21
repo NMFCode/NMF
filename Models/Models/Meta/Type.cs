@@ -14,6 +14,7 @@ using NMF.Expressions;
 using NMF.Expressions.Linq;
 using NMF.Models;
 using NMF.Models.Collections;
+using NMF.Models.Expressions;
 using NMF.Serialization;
 using NMF.Utilities;
 using System;
@@ -29,7 +30,7 @@ namespace NMF.Models.Meta
     
     
     /// <summary>
-    /// The representation of the Type class
+    /// The default implementation of the Type class
     /// </summary>
     [XmlNamespaceAttribute("http://nmf.codeplex.com/nmeta/")]
     [XmlNamespacePrefixAttribute("nmeta")]
@@ -43,6 +44,7 @@ namespace NMF.Models.Meta
         /// </summary>
         [DesignerSerializationVisibilityAttribute(DesignerSerializationVisibility.Hidden)]
         [XmlAttributeAttribute(true)]
+        [XmlOppositeAttribute("Types")]
         public virtual INamespace Namespace
         {
             get
@@ -63,6 +65,17 @@ namespace NMF.Models.Meta
             get
             {
                 return base.ReferencedElements.Concat(new TypeReferencedElementsCollection(this));
+            }
+        }
+        
+        /// <summary>
+        /// Gets the Class element that describes the structure of this type
+        /// </summary>
+        public new static NMF.Models.Meta.IClass ClassInstance
+        {
+            get
+            {
+                return NMF.Models.Repository.MetaRepository.Instance.ResolveClass("http://nmf.codeplex.com/nmeta/#//Type/");
             }
         }
         
@@ -111,6 +124,98 @@ namespace NMF.Models.Meta
         public override NMF.Models.Meta.IClass GetClass()
         {
             return NMF.Models.Repository.MetaRepository.Instance.ResolveClass("http://nmf.codeplex.com/nmeta/#//Type/");
+        }
+        
+        /// <summary>
+        /// Sets a value to the given feature
+        /// </summary>
+        /// <param name="feature">The requested feature</param>
+        /// <param name="value">The value that should be set to that feature</param>
+        protected override void SetFeature(string feature, object value)
+        {
+            if ((feature == "NAMESPACE"))
+            {
+                this.Namespace = ((INamespace)(value));
+                return;
+            }
+            base.SetFeature(feature, value);
+        }
+        
+        /// <summary>
+        /// Gets the property expression for the given attribute
+        /// </summary>
+        /// <returns>An incremental property expression</returns>
+        /// <param name="attribute">The requested attribute in upper case</param>
+        protected override NMF.Expressions.INotifyExpression<object> GetExpressionForAttribute(string attribute)
+        {
+            if ((attribute == "NAMESPACE"))
+            {
+                return new NamespaceProxy(this);
+            }
+            return base.GetExpressionForAttribute(attribute);
+        }
+        
+        /// <summary>
+        /// Gets the property expression for the given reference
+        /// </summary>
+        /// <returns>An incremental property expression</returns>
+        /// <param name="reference">The requested reference in upper case</param>
+        protected override NMF.Expressions.INotifyExpression<NMF.Models.IModelElement> GetExpressionForReference(string reference)
+        {
+            if ((reference == "NAMESPACE"))
+            {
+                return new NamespaceProxy(this);
+            }
+            return base.GetExpressionForReference(reference);
+        }
+        
+        /// <summary>
+        /// Represents a proxy to represent an incremental access to the Namespace property
+        /// </summary>
+        private sealed class NamespaceProxy : ModelPropertyChange<IType, INamespace>
+        {
+            
+            /// <summary>
+            /// Creates a new observable property access proxy
+            /// </summary>
+            /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
+            public NamespaceProxy(IType modelElement) : 
+                    base(modelElement)
+            {
+            }
+            
+            /// <summary>
+            /// Gets or sets the value of this expression
+            /// </summary>
+            public override INamespace Value
+            {
+                get
+                {
+                    return this.ModelElement.Namespace;
+                }
+                set
+                {
+                    this.ModelElement.Namespace = value;
+                }
+            }
+            
+            /// <summary>
+            /// Registers an event handler to subscribe specifically on the changed event for this property
+            /// </summary>
+            /// <param name="handler">The handler that should be subscribed to the property change event</param>
+            protected override void RegisterChangeEventHandler(System.EventHandler<NMF.Expressions.ValueChangedEventArgs> handler)
+            {
+                this.ModelElement.NamespaceChanged += handler;
+            }
+            
+            /// <summary>
+            /// Registers an event handler to subscribe specifically on the changed event for this property
+            /// </summary>
+            /// <param name="handler">The handler that should be unsubscribed from the property change event</param>
+            protected override void UnregisterChangeEventHandler(System.EventHandler<NMF.Expressions.ValueChangedEventArgs> handler)
+            {
+                this.ModelElement.NamespaceChanged -= handler;
+            }
         }
         
         /// <summary>

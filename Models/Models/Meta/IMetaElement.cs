@@ -14,6 +14,7 @@ using NMF.Expressions;
 using NMF.Expressions.Linq;
 using NMF.Models;
 using NMF.Models.Collections;
+using NMF.Models.Expressions;
 using NMF.Serialization;
 using NMF.Utilities;
 using System;
@@ -31,12 +32,8 @@ namespace NMF.Models.Meta
     /// <summary>
     /// The public interface for MetaElement
     /// </summary>
-    [XmlIdentifierAttribute("Name")]
-    [XmlNamespaceAttribute("http://nmf.codeplex.com/nmeta/")]
-    [XmlNamespacePrefixAttribute("nmeta")]
-    [ModelRepresentationClassAttribute("http://nmf.codeplex.com/nmeta/#//MetaElement/")]
-    [XmlDefaultImplementationTypeAttribute(typeof(MetaElement))]
     [DefaultImplementationTypeAttribute(typeof(MetaElement))]
+    [XmlDefaultImplementationTypeAttribute(typeof(MetaElement))]
     public interface IMetaElement : IModelElement
     {
         
@@ -70,17 +67,17 @@ namespace NMF.Models.Meta
         /// <summary>
         /// Gets fired when the Name property changed its value
         /// </summary>
-        event EventHandler NameChanged;
+        event EventHandler<ValueChangedEventArgs> NameChanged;
         
         /// <summary>
         /// Gets fired when the Summary property changed its value
         /// </summary>
-        event EventHandler SummaryChanged;
+        event EventHandler<ValueChangedEventArgs> SummaryChanged;
         
         /// <summary>
         /// Gets fired when the Remarks property changed its value
         /// </summary>
-        event EventHandler RemarksChanged;
+        event EventHandler<ValueChangedEventArgs> RemarksChanged;
     }
 }
 

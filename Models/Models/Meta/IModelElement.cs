@@ -14,6 +14,7 @@ using NMF.Expressions;
 using NMF.Expressions.Linq;
 using NMF.Models;
 using NMF.Models.Collections;
+using NMF.Models.Expressions;
 using NMF.Serialization;
 using NMF.Utilities;
 using System;
@@ -31,11 +32,8 @@ namespace NMF.Models.Meta
     /// <summary>
     /// The public interface for ModelElement
     /// </summary>
-    [XmlNamespaceAttribute("http://nmf.codeplex.com/nmeta/")]
-    [XmlNamespacePrefixAttribute("nmeta")]
-    [ModelRepresentationClassAttribute("http://nmf.codeplex.com/nmeta/#//ModelElement/")]
-    [XmlDefaultImplementationTypeAttribute(typeof(ModelElement))]
     [DefaultImplementationTypeAttribute(typeof(ModelElement))]
+    [XmlDefaultImplementationTypeAttribute(typeof(ModelElement))]
     public interface IModelElement : IModelElement
     {
         
@@ -68,7 +66,7 @@ namespace NMF.Models.Meta
         /// <summary>
         /// The Parent property
         /// </summary>
-        IModelElement Parent
+        NMF.Models.Meta.IModelElement Parent
         {
             get;
             set;
@@ -86,12 +84,12 @@ namespace NMF.Models.Meta
         /// <summary>
         /// Gets fired when the AbsoluteUri property changed its value
         /// </summary>
-        event EventHandler AbsoluteUriChanged;
+        event EventHandler<ValueChangedEventArgs> AbsoluteUriChanged;
         
         /// <summary>
         /// Gets fired when the RelativeUri property changed its value
         /// </summary>
-        event EventHandler RelativeUriChanged;
+        event EventHandler<ValueChangedEventArgs> RelativeUriChanged;
         
         /// <summary>
         /// Gets fired when the Parent property changed its value

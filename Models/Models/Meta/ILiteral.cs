@@ -14,6 +14,7 @@ using NMF.Expressions;
 using NMF.Expressions.Linq;
 using NMF.Models;
 using NMF.Models.Collections;
+using NMF.Models.Expressions;
 using NMF.Serialization;
 using NMF.Utilities;
 using System;
@@ -31,11 +32,8 @@ namespace NMF.Models.Meta
     /// <summary>
     /// The public interface for Literal
     /// </summary>
-    [XmlNamespaceAttribute("http://nmf.codeplex.com/nmeta/")]
-    [XmlNamespacePrefixAttribute("nmeta")]
-    [ModelRepresentationClassAttribute("http://nmf.codeplex.com/nmeta/#//Literal/")]
-    [XmlDefaultImplementationTypeAttribute(typeof(Literal))]
     [DefaultImplementationTypeAttribute(typeof(Literal))]
+    [XmlDefaultImplementationTypeAttribute(typeof(Literal))]
     public interface ILiteral : IModelElement, IMetaElement
     {
         
@@ -60,7 +58,7 @@ namespace NMF.Models.Meta
         /// <summary>
         /// Gets fired when the Value property changed its value
         /// </summary>
-        event EventHandler ValueChanged;
+        event EventHandler<ValueChangedEventArgs> ValueChanged;
         
         /// <summary>
         /// Gets fired when the Enumeration property changed its value

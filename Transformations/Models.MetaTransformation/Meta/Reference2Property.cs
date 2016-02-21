@@ -370,6 +370,11 @@ namespace NMF.Models.Meta
                         throw new NotImplementedException();
                     }
                 }
+
+                if (input.UpperBound != 1)
+                {
+                    output.AddAttribute(typeof(ConstantAttribute));
+                }
             }
 
 

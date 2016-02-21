@@ -14,6 +14,7 @@ using NMF.Expressions;
 using NMF.Expressions.Linq;
 using NMF.Models;
 using NMF.Models.Collections;
+using NMF.Models.Expressions;
 using NMF.Serialization;
 using NMF.Utilities;
 using System;
@@ -29,7 +30,7 @@ namespace NMF.Models.Meta
     
     
     /// <summary>
-    /// The representation of the Reference class
+    /// The default implementation of the Reference class
     /// </summary>
     [XmlNamespaceAttribute("http://nmf.codeplex.com/nmeta/")]
     [XmlNamespacePrefixAttribute("nmeta")]
@@ -102,10 +103,11 @@ namespace NMF.Models.Meta
             }
             set
             {
-                if ((value != this._isContainment))
+                if ((this._isContainment != value))
                 {
+                    bool old = this._isContainment;
                     this._isContainment = value;
-                    this.OnIsContainmentChanged(EventArgs.Empty);
+                    this.OnIsContainmentChanged(new ValueChangedEventArgs(old, value));
                     this.OnPropertyChanged("IsContainment");
                 }
             }
@@ -116,6 +118,7 @@ namespace NMF.Models.Meta
         /// </summary>
         [DesignerSerializationVisibilityAttribute(DesignerSerializationVisibility.Hidden)]
         [XmlAttributeAttribute(true)]
+        [XmlOppositeAttribute("References")]
         public virtual IReferenceType DeclaringType
         {
             get
@@ -132,6 +135,7 @@ namespace NMF.Models.Meta
         /// The Opposite property
         /// </summary>
         [XmlAttributeAttribute(true)]
+        [XmlOppositeAttribute("Opposite")]
         public virtual IReference Opposite
         {
             get
@@ -264,10 +268,11 @@ namespace NMF.Models.Meta
             }
             set
             {
-                if ((value != this._isOrdered))
+                if ((this._isOrdered != value))
                 {
+                    bool old = this._isOrdered;
                     this._isOrdered = value;
-                    this.OnIsOrderedChanged(EventArgs.Empty);
+                    this.OnIsOrderedChanged(new ValueChangedEventArgs(old, value));
                     this.OnPropertyChanged("IsOrdered");
                 }
             }
@@ -285,10 +290,11 @@ namespace NMF.Models.Meta
             }
             set
             {
-                if ((value != this._isUnique))
+                if ((this._isUnique != value))
                 {
+                    bool old = this._isUnique;
                     this._isUnique = value;
-                    this.OnIsUniqueChanged(EventArgs.Empty);
+                    this.OnIsUniqueChanged(new ValueChangedEventArgs(old, value));
                     this.OnPropertyChanged("IsUnique");
                 }
             }
@@ -307,10 +313,11 @@ namespace NMF.Models.Meta
             }
             set
             {
-                if ((value != this._lowerBound))
+                if ((this._lowerBound != value))
                 {
+                    int old = this._lowerBound;
                     this._lowerBound = value;
-                    this.OnLowerBoundChanged(EventArgs.Empty);
+                    this.OnLowerBoundChanged(new ValueChangedEventArgs(old, value));
                     this.OnPropertyChanged("LowerBound");
                 }
             }
@@ -329,10 +336,11 @@ namespace NMF.Models.Meta
             }
             set
             {
-                if ((value != this._upperBound))
+                if ((this._upperBound != value))
                 {
+                    int old = this._upperBound;
                     this._upperBound = value;
-                    this.OnUpperBoundChanged(EventArgs.Empty);
+                    this.OnUpperBoundChanged(new ValueChangedEventArgs(old, value));
                     this.OnPropertyChanged("UpperBound");
                 }
             }
@@ -350,9 +358,20 @@ namespace NMF.Models.Meta
         }
         
         /// <summary>
+        /// Gets the Class element that describes the structure of this type
+        /// </summary>
+        public new static NMF.Models.Meta.IClass ClassInstance
+        {
+            get
+            {
+                return NMF.Models.Repository.MetaRepository.Instance.ResolveClass("http://nmf.codeplex.com/nmeta/#//Reference/");
+            }
+        }
+        
+        /// <summary>
         /// Gets fired when the IsContainment property changed its value
         /// </summary>
-        public event EventHandler IsContainmentChanged;
+        public event EventHandler<ValueChangedEventArgs> IsContainmentChanged;
         
         /// <summary>
         /// Gets fired when the DeclaringType property changed its value
@@ -377,30 +396,30 @@ namespace NMF.Models.Meta
         /// <summary>
         /// Gets fired when the IsOrdered property changed its value
         /// </summary>
-        public event EventHandler IsOrderedChanged;
+        public event EventHandler<ValueChangedEventArgs> IsOrderedChanged;
         
         /// <summary>
         /// Gets fired when the IsUnique property changed its value
         /// </summary>
-        public event EventHandler IsUniqueChanged;
+        public event EventHandler<ValueChangedEventArgs> IsUniqueChanged;
         
         /// <summary>
         /// Gets fired when the LowerBound property changed its value
         /// </summary>
-        public event EventHandler LowerBoundChanged;
+        public event EventHandler<ValueChangedEventArgs> LowerBoundChanged;
         
         /// <summary>
         /// Gets fired when the UpperBound property changed its value
         /// </summary>
-        public event EventHandler UpperBoundChanged;
+        public event EventHandler<ValueChangedEventArgs> UpperBoundChanged;
         
         /// <summary>
         /// Raises the IsContainmentChanged event
         /// </summary>
         /// <param name="eventArgs">The event data</param>
-        protected virtual void OnIsContainmentChanged(EventArgs eventArgs)
+        protected virtual void OnIsContainmentChanged(ValueChangedEventArgs eventArgs)
         {
-            EventHandler handler = this.IsContainmentChanged;
+            EventHandler<ValueChangedEventArgs> handler = this.IsContainmentChanged;
             if ((handler != null))
             {
                 handler.Invoke(this, eventArgs);
@@ -514,9 +533,9 @@ namespace NMF.Models.Meta
         /// Raises the IsOrderedChanged event
         /// </summary>
         /// <param name="eventArgs">The event data</param>
-        protected virtual void OnIsOrderedChanged(EventArgs eventArgs)
+        protected virtual void OnIsOrderedChanged(ValueChangedEventArgs eventArgs)
         {
-            EventHandler handler = this.IsOrderedChanged;
+            EventHandler<ValueChangedEventArgs> handler = this.IsOrderedChanged;
             if ((handler != null))
             {
                 handler.Invoke(this, eventArgs);
@@ -527,9 +546,9 @@ namespace NMF.Models.Meta
         /// Raises the IsUniqueChanged event
         /// </summary>
         /// <param name="eventArgs">The event data</param>
-        protected virtual void OnIsUniqueChanged(EventArgs eventArgs)
+        protected virtual void OnIsUniqueChanged(ValueChangedEventArgs eventArgs)
         {
-            EventHandler handler = this.IsUniqueChanged;
+            EventHandler<ValueChangedEventArgs> handler = this.IsUniqueChanged;
             if ((handler != null))
             {
                 handler.Invoke(this, eventArgs);
@@ -540,9 +559,9 @@ namespace NMF.Models.Meta
         /// Raises the LowerBoundChanged event
         /// </summary>
         /// <param name="eventArgs">The event data</param>
-        protected virtual void OnLowerBoundChanged(EventArgs eventArgs)
+        protected virtual void OnLowerBoundChanged(ValueChangedEventArgs eventArgs)
         {
-            EventHandler handler = this.LowerBoundChanged;
+            EventHandler<ValueChangedEventArgs> handler = this.LowerBoundChanged;
             if ((handler != null))
             {
                 handler.Invoke(this, eventArgs);
@@ -553,9 +572,9 @@ namespace NMF.Models.Meta
         /// Raises the UpperBoundChanged event
         /// </summary>
         /// <param name="eventArgs">The event data</param>
-        protected virtual void OnUpperBoundChanged(EventArgs eventArgs)
+        protected virtual void OnUpperBoundChanged(ValueChangedEventArgs eventArgs)
         {
-            EventHandler handler = this.UpperBoundChanged;
+            EventHandler<ValueChangedEventArgs> handler = this.UpperBoundChanged;
             if ((handler != null))
             {
                 handler.Invoke(this, eventArgs);
@@ -568,6 +587,353 @@ namespace NMF.Models.Meta
         public override NMF.Models.Meta.IClass GetClass()
         {
             return NMF.Models.Repository.MetaRepository.Instance.ResolveClass("http://nmf.codeplex.com/nmeta/#//Reference/");
+        }
+        
+        /// <summary>
+        /// Resolves the given attribute name
+        /// </summary>
+        /// <returns>The attribute value or null if it could not be found</returns>
+        /// <param name="attribute">The requested attribute name</param>
+        /// <param name="index">The index of this attribute</param>
+        protected override object GetAttributeValue(string attribute, int index)
+        {
+            if ((attribute == "ISCONTAINMENT"))
+            {
+                return this.IsContainment;
+            }
+            return base.GetAttributeValue(attribute, index);
+        }
+        
+        /// <summary>
+        /// Sets a value to the given feature
+        /// </summary>
+        /// <param name="feature">The requested feature</param>
+        /// <param name="value">The value that should be set to that feature</param>
+        protected override void SetFeature(string feature, object value)
+        {
+            if ((feature == "DECLARINGTYPE"))
+            {
+                this.DeclaringType = ((IReferenceType)(value));
+                return;
+            }
+            if ((feature == "OPPOSITE"))
+            {
+                this.Opposite = ((IReference)(value));
+                return;
+            }
+            if ((feature == "REFERENCETYPE"))
+            {
+                this.ReferenceType = ((IReferenceType)(value));
+                return;
+            }
+            if ((feature == "REFINES"))
+            {
+                this.Refines = ((IReference)(value));
+                return;
+            }
+            if ((feature == "ISCONTAINMENT"))
+            {
+                this.IsContainment = ((bool)(value));
+                return;
+            }
+            base.SetFeature(feature, value);
+        }
+        
+        /// <summary>
+        /// Gets the property expression for the given attribute
+        /// </summary>
+        /// <returns>An incremental property expression</returns>
+        /// <param name="attribute">The requested attribute in upper case</param>
+        protected override NMF.Expressions.INotifyExpression<object> GetExpressionForAttribute(string attribute)
+        {
+            if ((attribute == "DECLARINGTYPE"))
+            {
+                return new DeclaringTypeProxy(this);
+            }
+            if ((attribute == "OPPOSITE"))
+            {
+                return new OppositeProxy(this);
+            }
+            if ((attribute == "REFERENCETYPE"))
+            {
+                return new ReferenceTypeProxy(this);
+            }
+            if ((attribute == "REFINES"))
+            {
+                return new RefinesProxy(this);
+            }
+            return base.GetExpressionForAttribute(attribute);
+        }
+        
+        /// <summary>
+        /// Gets the property expression for the given reference
+        /// </summary>
+        /// <returns>An incremental property expression</returns>
+        /// <param name="reference">The requested reference in upper case</param>
+        protected override NMF.Expressions.INotifyExpression<NMF.Models.IModelElement> GetExpressionForReference(string reference)
+        {
+            if ((reference == "DECLARINGTYPE"))
+            {
+                return new DeclaringTypeProxy(this);
+            }
+            if ((reference == "OPPOSITE"))
+            {
+                return new OppositeProxy(this);
+            }
+            if ((reference == "REFERENCETYPE"))
+            {
+                return new ReferenceTypeProxy(this);
+            }
+            if ((reference == "REFINES"))
+            {
+                return new RefinesProxy(this);
+            }
+            return base.GetExpressionForReference(reference);
+        }
+        
+        /// <summary>
+        /// Represents a proxy to represent an incremental access to the IsContainment property
+        /// </summary>
+        private sealed class IsContainmentProxy : ModelPropertyChange<IReference, bool>
+        {
+            
+            /// <summary>
+            /// Creates a new observable property access proxy
+            /// </summary>
+            /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
+            public IsContainmentProxy(IReference modelElement) : 
+                    base(modelElement)
+            {
+            }
+            
+            /// <summary>
+            /// Gets or sets the value of this expression
+            /// </summary>
+            public override bool Value
+            {
+                get
+                {
+                    return this.ModelElement.IsContainment;
+                }
+                set
+                {
+                    this.ModelElement.IsContainment = value;
+                }
+            }
+            
+            /// <summary>
+            /// Registers an event handler to subscribe specifically on the changed event for this property
+            /// </summary>
+            /// <param name="handler">The handler that should be subscribed to the property change event</param>
+            protected override void RegisterChangeEventHandler(System.EventHandler<NMF.Expressions.ValueChangedEventArgs> handler)
+            {
+                this.ModelElement.IsContainmentChanged += handler;
+            }
+            
+            /// <summary>
+            /// Registers an event handler to subscribe specifically on the changed event for this property
+            /// </summary>
+            /// <param name="handler">The handler that should be unsubscribed from the property change event</param>
+            protected override void UnregisterChangeEventHandler(System.EventHandler<NMF.Expressions.ValueChangedEventArgs> handler)
+            {
+                this.ModelElement.IsContainmentChanged -= handler;
+            }
+        }
+        
+        /// <summary>
+        /// Represents a proxy to represent an incremental access to the DeclaringType property
+        /// </summary>
+        private sealed class DeclaringTypeProxy : ModelPropertyChange<IReference, IReferenceType>
+        {
+            
+            /// <summary>
+            /// Creates a new observable property access proxy
+            /// </summary>
+            /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
+            public DeclaringTypeProxy(IReference modelElement) : 
+                    base(modelElement)
+            {
+            }
+            
+            /// <summary>
+            /// Gets or sets the value of this expression
+            /// </summary>
+            public override IReferenceType Value
+            {
+                get
+                {
+                    return this.ModelElement.DeclaringType;
+                }
+                set
+                {
+                    this.ModelElement.DeclaringType = value;
+                }
+            }
+            
+            /// <summary>
+            /// Registers an event handler to subscribe specifically on the changed event for this property
+            /// </summary>
+            /// <param name="handler">The handler that should be subscribed to the property change event</param>
+            protected override void RegisterChangeEventHandler(System.EventHandler<NMF.Expressions.ValueChangedEventArgs> handler)
+            {
+                this.ModelElement.DeclaringTypeChanged += handler;
+            }
+            
+            /// <summary>
+            /// Registers an event handler to subscribe specifically on the changed event for this property
+            /// </summary>
+            /// <param name="handler">The handler that should be unsubscribed from the property change event</param>
+            protected override void UnregisterChangeEventHandler(System.EventHandler<NMF.Expressions.ValueChangedEventArgs> handler)
+            {
+                this.ModelElement.DeclaringTypeChanged -= handler;
+            }
+        }
+        
+        /// <summary>
+        /// Represents a proxy to represent an incremental access to the Opposite property
+        /// </summary>
+        private sealed class OppositeProxy : ModelPropertyChange<IReference, IReference>
+        {
+            
+            /// <summary>
+            /// Creates a new observable property access proxy
+            /// </summary>
+            /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
+            public OppositeProxy(IReference modelElement) : 
+                    base(modelElement)
+            {
+            }
+            
+            /// <summary>
+            /// Gets or sets the value of this expression
+            /// </summary>
+            public override IReference Value
+            {
+                get
+                {
+                    return this.ModelElement.Opposite;
+                }
+                set
+                {
+                    this.ModelElement.Opposite = value;
+                }
+            }
+            
+            /// <summary>
+            /// Registers an event handler to subscribe specifically on the changed event for this property
+            /// </summary>
+            /// <param name="handler">The handler that should be subscribed to the property change event</param>
+            protected override void RegisterChangeEventHandler(System.EventHandler<NMF.Expressions.ValueChangedEventArgs> handler)
+            {
+                this.ModelElement.OppositeChanged += handler;
+            }
+            
+            /// <summary>
+            /// Registers an event handler to subscribe specifically on the changed event for this property
+            /// </summary>
+            /// <param name="handler">The handler that should be unsubscribed from the property change event</param>
+            protected override void UnregisterChangeEventHandler(System.EventHandler<NMF.Expressions.ValueChangedEventArgs> handler)
+            {
+                this.ModelElement.OppositeChanged -= handler;
+            }
+        }
+        
+        /// <summary>
+        /// Represents a proxy to represent an incremental access to the ReferenceType property
+        /// </summary>
+        private sealed class ReferenceTypeProxy : ModelPropertyChange<IReference, IReferenceType>
+        {
+            
+            /// <summary>
+            /// Creates a new observable property access proxy
+            /// </summary>
+            /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
+            public ReferenceTypeProxy(IReference modelElement) : 
+                    base(modelElement)
+            {
+            }
+            
+            /// <summary>
+            /// Gets or sets the value of this expression
+            /// </summary>
+            public override IReferenceType Value
+            {
+                get
+                {
+                    return this.ModelElement.ReferenceType;
+                }
+                set
+                {
+                    this.ModelElement.ReferenceType = value;
+                }
+            }
+            
+            /// <summary>
+            /// Registers an event handler to subscribe specifically on the changed event for this property
+            /// </summary>
+            /// <param name="handler">The handler that should be subscribed to the property change event</param>
+            protected override void RegisterChangeEventHandler(System.EventHandler<NMF.Expressions.ValueChangedEventArgs> handler)
+            {
+                this.ModelElement.ReferenceTypeChanged += handler;
+            }
+            
+            /// <summary>
+            /// Registers an event handler to subscribe specifically on the changed event for this property
+            /// </summary>
+            /// <param name="handler">The handler that should be unsubscribed from the property change event</param>
+            protected override void UnregisterChangeEventHandler(System.EventHandler<NMF.Expressions.ValueChangedEventArgs> handler)
+            {
+                this.ModelElement.ReferenceTypeChanged -= handler;
+            }
+        }
+        
+        /// <summary>
+        /// Represents a proxy to represent an incremental access to the Refines property
+        /// </summary>
+        private sealed class RefinesProxy : ModelPropertyChange<IReference, IReference>
+        {
+            
+            /// <summary>
+            /// Creates a new observable property access proxy
+            /// </summary>
+            /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
+            public RefinesProxy(IReference modelElement) : 
+                    base(modelElement)
+            {
+            }
+            
+            /// <summary>
+            /// Gets or sets the value of this expression
+            /// </summary>
+            public override IReference Value
+            {
+                get
+                {
+                    return this.ModelElement.Refines;
+                }
+                set
+                {
+                    this.ModelElement.Refines = value;
+                }
+            }
+            
+            /// <summary>
+            /// Registers an event handler to subscribe specifically on the changed event for this property
+            /// </summary>
+            /// <param name="handler">The handler that should be subscribed to the property change event</param>
+            protected override void RegisterChangeEventHandler(System.EventHandler<NMF.Expressions.ValueChangedEventArgs> handler)
+            {
+                this.ModelElement.RefinesChanged += handler;
+            }
+            
+            /// <summary>
+            /// Registers an event handler to subscribe specifically on the changed event for this property
+            /// </summary>
+            /// <param name="handler">The handler that should be unsubscribed from the property change event</param>
+            protected override void UnregisterChangeEventHandler(System.EventHandler<NMF.Expressions.ValueChangedEventArgs> handler)
+            {
+                this.ModelElement.RefinesChanged -= handler;
+            }
         }
         
         /// <summary>

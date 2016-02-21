@@ -14,6 +14,7 @@ using NMF.Expressions;
 using NMF.Expressions.Linq;
 using NMF.Models;
 using NMF.Models.Collections;
+using NMF.Models.Expressions;
 using NMF.Serialization;
 using NMF.Utilities;
 using System;
@@ -60,10 +61,11 @@ namespace NMF.Models.Meta
             }
             set
             {
-                if ((value != this._defaultValue))
+                if ((this._defaultValue != value))
                 {
+                    string old = this._defaultValue;
                     this._defaultValue = value;
-                    this.OnDefaultValueChanged(EventArgs.Empty);
+                    this.OnDefaultValueChanged(new ValueChangedEventArgs(old, value));
                     this.OnPropertyChanged("DefaultValue");
                 }
             }
@@ -74,6 +76,7 @@ namespace NMF.Models.Meta
         /// </summary>
         [DesignerSerializationVisibilityAttribute(DesignerSerializationVisibility.Hidden)]
         [XmlAttributeAttribute(true)]
+        [XmlOppositeAttribute("Attributes")]
         public virtual IStructuredType DeclaringType
         {
             get
@@ -128,9 +131,20 @@ namespace NMF.Models.Meta
         }
         
         /// <summary>
+        /// Gets the Class element that describes the structure of this type
+        /// </summary>
+        public new static NMF.Models.Meta.IClass ClassInstance
+        {
+            get
+            {
+                return NMF.Models.Repository.MetaRepository.Instance.ResolveClass("http://nmf.codeplex.com/nmeta/#//Attribute/");
+            }
+        }
+        
+        /// <summary>
         /// Gets fired when the DefaultValue property changed its value
         /// </summary>
-        public event EventHandler DefaultValueChanged;
+        public event EventHandler<ValueChangedEventArgs> DefaultValueChanged;
         
         /// <summary>
         /// Gets fired when the DeclaringType property changed its value
@@ -146,9 +160,9 @@ namespace NMF.Models.Meta
         /// Raises the DefaultValueChanged event
         /// </summary>
         /// <param name="eventArgs">The event data</param>
-        protected virtual void OnDefaultValueChanged(EventArgs eventArgs)
+        protected virtual void OnDefaultValueChanged(ValueChangedEventArgs eventArgs)
         {
-            EventHandler handler = this.DefaultValueChanged;
+            EventHandler<ValueChangedEventArgs> handler = this.DefaultValueChanged;
             if ((handler != null))
             {
                 handler.Invoke(this, eventArgs);
@@ -218,6 +232,229 @@ namespace NMF.Models.Meta
         public override NMF.Models.Meta.IClass GetClass()
         {
             return NMF.Models.Repository.MetaRepository.Instance.ResolveClass("http://nmf.codeplex.com/nmeta/#//Attribute/");
+        }
+        
+        /// <summary>
+        /// Resolves the given attribute name
+        /// </summary>
+        /// <returns>The attribute value or null if it could not be found</returns>
+        /// <param name="attribute">The requested attribute name</param>
+        /// <param name="index">The index of this attribute</param>
+        protected override object GetAttributeValue(string attribute, int index)
+        {
+            if ((attribute == "DEFAULTVALUE"))
+            {
+                return this.DefaultValue;
+            }
+            return base.GetAttributeValue(attribute, index);
+        }
+        
+        /// <summary>
+        /// Sets a value to the given feature
+        /// </summary>
+        /// <param name="feature">The requested feature</param>
+        /// <param name="value">The value that should be set to that feature</param>
+        protected override void SetFeature(string feature, object value)
+        {
+            if ((feature == "DECLARINGTYPE"))
+            {
+                this.DeclaringType = ((IStructuredType)(value));
+                return;
+            }
+            if ((feature == "REFINES"))
+            {
+                this.Refines = ((IAttribute)(value));
+                return;
+            }
+            if ((feature == "DEFAULTVALUE"))
+            {
+                this.DefaultValue = ((string)(value));
+                return;
+            }
+            base.SetFeature(feature, value);
+        }
+        
+        /// <summary>
+        /// Gets the property expression for the given attribute
+        /// </summary>
+        /// <returns>An incremental property expression</returns>
+        /// <param name="attribute">The requested attribute in upper case</param>
+        protected override NMF.Expressions.INotifyExpression<object> GetExpressionForAttribute(string attribute)
+        {
+            if ((attribute == "DECLARINGTYPE"))
+            {
+                return new DeclaringTypeProxy(this);
+            }
+            if ((attribute == "REFINES"))
+            {
+                return new RefinesProxy(this);
+            }
+            return base.GetExpressionForAttribute(attribute);
+        }
+        
+        /// <summary>
+        /// Gets the property expression for the given reference
+        /// </summary>
+        /// <returns>An incremental property expression</returns>
+        /// <param name="reference">The requested reference in upper case</param>
+        protected override NMF.Expressions.INotifyExpression<NMF.Models.IModelElement> GetExpressionForReference(string reference)
+        {
+            if ((reference == "DECLARINGTYPE"))
+            {
+                return new DeclaringTypeProxy(this);
+            }
+            if ((reference == "REFINES"))
+            {
+                return new RefinesProxy(this);
+            }
+            return base.GetExpressionForReference(reference);
+        }
+        
+        /// <summary>
+        /// Represents a proxy to represent an incremental access to the DefaultValue property
+        /// </summary>
+        private sealed class DefaultValueProxy : ModelPropertyChange<IAttribute, string>
+        {
+            
+            /// <summary>
+            /// Creates a new observable property access proxy
+            /// </summary>
+            /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
+            public DefaultValueProxy(IAttribute modelElement) : 
+                    base(modelElement)
+            {
+            }
+            
+            /// <summary>
+            /// Gets or sets the value of this expression
+            /// </summary>
+            public override string Value
+            {
+                get
+                {
+                    return this.ModelElement.DefaultValue;
+                }
+                set
+                {
+                    this.ModelElement.DefaultValue = value;
+                }
+            }
+            
+            /// <summary>
+            /// Registers an event handler to subscribe specifically on the changed event for this property
+            /// </summary>
+            /// <param name="handler">The handler that should be subscribed to the property change event</param>
+            protected override void RegisterChangeEventHandler(System.EventHandler<NMF.Expressions.ValueChangedEventArgs> handler)
+            {
+                this.ModelElement.DefaultValueChanged += handler;
+            }
+            
+            /// <summary>
+            /// Registers an event handler to subscribe specifically on the changed event for this property
+            /// </summary>
+            /// <param name="handler">The handler that should be unsubscribed from the property change event</param>
+            protected override void UnregisterChangeEventHandler(System.EventHandler<NMF.Expressions.ValueChangedEventArgs> handler)
+            {
+                this.ModelElement.DefaultValueChanged -= handler;
+            }
+        }
+        
+        /// <summary>
+        /// Represents a proxy to represent an incremental access to the DeclaringType property
+        /// </summary>
+        private sealed class DeclaringTypeProxy : ModelPropertyChange<IAttribute, IStructuredType>
+        {
+            
+            /// <summary>
+            /// Creates a new observable property access proxy
+            /// </summary>
+            /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
+            public DeclaringTypeProxy(IAttribute modelElement) : 
+                    base(modelElement)
+            {
+            }
+            
+            /// <summary>
+            /// Gets or sets the value of this expression
+            /// </summary>
+            public override IStructuredType Value
+            {
+                get
+                {
+                    return this.ModelElement.DeclaringType;
+                }
+                set
+                {
+                    this.ModelElement.DeclaringType = value;
+                }
+            }
+            
+            /// <summary>
+            /// Registers an event handler to subscribe specifically on the changed event for this property
+            /// </summary>
+            /// <param name="handler">The handler that should be subscribed to the property change event</param>
+            protected override void RegisterChangeEventHandler(System.EventHandler<NMF.Expressions.ValueChangedEventArgs> handler)
+            {
+                this.ModelElement.DeclaringTypeChanged += handler;
+            }
+            
+            /// <summary>
+            /// Registers an event handler to subscribe specifically on the changed event for this property
+            /// </summary>
+            /// <param name="handler">The handler that should be unsubscribed from the property change event</param>
+            protected override void UnregisterChangeEventHandler(System.EventHandler<NMF.Expressions.ValueChangedEventArgs> handler)
+            {
+                this.ModelElement.DeclaringTypeChanged -= handler;
+            }
+        }
+        
+        /// <summary>
+        /// Represents a proxy to represent an incremental access to the Refines property
+        /// </summary>
+        private sealed class RefinesProxy : ModelPropertyChange<IAttribute, IAttribute>
+        {
+            
+            /// <summary>
+            /// Creates a new observable property access proxy
+            /// </summary>
+            /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
+            public RefinesProxy(IAttribute modelElement) : 
+                    base(modelElement)
+            {
+            }
+            
+            /// <summary>
+            /// Gets or sets the value of this expression
+            /// </summary>
+            public override IAttribute Value
+            {
+                get
+                {
+                    return this.ModelElement.Refines;
+                }
+                set
+                {
+                    this.ModelElement.Refines = value;
+                }
+            }
+            
+            /// <summary>
+            /// Registers an event handler to subscribe specifically on the changed event for this property
+            /// </summary>
+            /// <param name="handler">The handler that should be subscribed to the property change event</param>
+            protected override void RegisterChangeEventHandler(System.EventHandler<NMF.Expressions.ValueChangedEventArgs> handler)
+            {
+                this.ModelElement.RefinesChanged += handler;
+            }
+            
+            /// <summary>
+            /// Registers an event handler to subscribe specifically on the changed event for this property
+            /// </summary>
+            /// <param name="handler">The handler that should be unsubscribed from the property change event</param>
+            protected override void UnregisterChangeEventHandler(System.EventHandler<NMF.Expressions.ValueChangedEventArgs> handler)
+            {
+                this.ModelElement.RefinesChanged -= handler;
+            }
         }
         
         /// <summary>

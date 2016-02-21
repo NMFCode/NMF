@@ -14,6 +14,7 @@ using NMF.Expressions;
 using NMF.Expressions.Linq;
 using NMF.Models;
 using NMF.Models.Collections;
+using NMF.Models.Expressions;
 using NMF.Serialization;
 using NMF.Utilities;
 using System;
@@ -31,11 +32,8 @@ namespace NMF.Models.Meta
     /// <summary>
     /// The public interface for Attribute
     /// </summary>
-    [XmlNamespaceAttribute("http://nmf.codeplex.com/nmeta/")]
-    [XmlNamespacePrefixAttribute("nmeta")]
-    [ModelRepresentationClassAttribute("http://nmf.codeplex.com/nmeta/#//Attribute/")]
-    [XmlDefaultImplementationTypeAttribute(typeof(Attribute))]
     [DefaultImplementationTypeAttribute(typeof(Attribute))]
+    [XmlDefaultImplementationTypeAttribute(typeof(Attribute))]
     public interface IAttribute : IModelElement, ITypedElement
     {
         
@@ -69,7 +67,7 @@ namespace NMF.Models.Meta
         /// <summary>
         /// Gets fired when the DefaultValue property changed its value
         /// </summary>
-        event EventHandler DefaultValueChanged;
+        event EventHandler<ValueChangedEventArgs> DefaultValueChanged;
         
         /// <summary>
         /// Gets fired when the DeclaringType property changed its value

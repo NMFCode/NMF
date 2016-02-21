@@ -14,6 +14,7 @@ using NMF.Expressions;
 using NMF.Expressions.Linq;
 using NMF.Models;
 using NMF.Models.Collections;
+using NMF.Models.Expressions;
 using NMF.Serialization;
 using NMF.Utilities;
 using System;
@@ -29,7 +30,7 @@ namespace NMF.Models.Meta
     
     
     /// <summary>
-    /// The representation of the Enumeration class
+    /// The default implementation of the Enumeration class
     /// </summary>
     [XmlNamespaceAttribute("http://nmf.codeplex.com/nmeta/")]
     [XmlNamespacePrefixAttribute("nmeta")]
@@ -66,10 +67,11 @@ namespace NMF.Models.Meta
             }
             set
             {
-                if ((value != this._isFlagged))
+                if ((this._isFlagged != value))
                 {
+                    bool old = this._isFlagged;
                     this._isFlagged = value;
-                    this.OnIsFlaggedChanged(EventArgs.Empty);
+                    this.OnIsFlaggedChanged(new ValueChangedEventArgs(old, value));
                     this.OnPropertyChanged("IsFlagged");
                 }
             }
@@ -81,6 +83,8 @@ namespace NMF.Models.Meta
         [DesignerSerializationVisibilityAttribute(DesignerSerializationVisibility.Content)]
         [XmlAttributeAttribute(false)]
         [ContainmentAttribute()]
+        [XmlOppositeAttribute("Enumeration")]
+        [ConstantAttribute()]
         public virtual ICollectionExpression<ILiteral> Literals
         {
             get
@@ -112,17 +116,28 @@ namespace NMF.Models.Meta
         }
         
         /// <summary>
+        /// Gets the Class element that describes the structure of this type
+        /// </summary>
+        public new static NMF.Models.Meta.IClass ClassInstance
+        {
+            get
+            {
+                return NMF.Models.Repository.MetaRepository.Instance.ResolveClass("http://nmf.codeplex.com/nmeta/#//Enumeration/");
+            }
+        }
+        
+        /// <summary>
         /// Gets fired when the IsFlagged property changed its value
         /// </summary>
-        public event EventHandler IsFlaggedChanged;
+        public event EventHandler<ValueChangedEventArgs> IsFlaggedChanged;
         
         /// <summary>
         /// Raises the IsFlaggedChanged event
         /// </summary>
         /// <param name="eventArgs">The event data</param>
-        protected virtual void OnIsFlaggedChanged(EventArgs eventArgs)
+        protected virtual void OnIsFlaggedChanged(ValueChangedEventArgs eventArgs)
         {
-            EventHandler handler = this.IsFlaggedChanged;
+            EventHandler<ValueChangedEventArgs> handler = this.IsFlaggedChanged;
             if ((handler != null))
             {
                 handler.Invoke(this, eventArgs);
@@ -145,6 +160,99 @@ namespace NMF.Models.Meta
         public override NMF.Models.Meta.IClass GetClass()
         {
             return NMF.Models.Repository.MetaRepository.Instance.ResolveClass("http://nmf.codeplex.com/nmeta/#//Enumeration/");
+        }
+        
+        /// <summary>
+        /// Resolves the given attribute name
+        /// </summary>
+        /// <returns>The attribute value or null if it could not be found</returns>
+        /// <param name="attribute">The requested attribute name</param>
+        /// <param name="index">The index of this attribute</param>
+        protected override object GetAttributeValue(string attribute, int index)
+        {
+            if ((attribute == "ISFLAGGED"))
+            {
+                return this.IsFlagged;
+            }
+            return base.GetAttributeValue(attribute, index);
+        }
+        
+        /// <summary>
+        /// Gets the Model element collection for the given feature
+        /// </summary>
+        /// <returns>A non-generic list of elements</returns>
+        /// <param name="feature">The requested feature</param>
+        protected override System.Collections.IList GetCollectionForFeature(string feature)
+        {
+            if ((feature == "LITERALS"))
+            {
+                return this._literals;
+            }
+            return base.GetCollectionForFeature(feature);
+        }
+        
+        /// <summary>
+        /// Sets a value to the given feature
+        /// </summary>
+        /// <param name="feature">The requested feature</param>
+        /// <param name="value">The value that should be set to that feature</param>
+        protected override void SetFeature(string feature, object value)
+        {
+            if ((feature == "ISFLAGGED"))
+            {
+                this.IsFlagged = ((bool)(value));
+                return;
+            }
+            base.SetFeature(feature, value);
+        }
+        
+        /// <summary>
+        /// Represents a proxy to represent an incremental access to the IsFlagged property
+        /// </summary>
+        private sealed class IsFlaggedProxy : ModelPropertyChange<IEnumeration, bool>
+        {
+            
+            /// <summary>
+            /// Creates a new observable property access proxy
+            /// </summary>
+            /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
+            public IsFlaggedProxy(IEnumeration modelElement) : 
+                    base(modelElement)
+            {
+            }
+            
+            /// <summary>
+            /// Gets or sets the value of this expression
+            /// </summary>
+            public override bool Value
+            {
+                get
+                {
+                    return this.ModelElement.IsFlagged;
+                }
+                set
+                {
+                    this.ModelElement.IsFlagged = value;
+                }
+            }
+            
+            /// <summary>
+            /// Registers an event handler to subscribe specifically on the changed event for this property
+            /// </summary>
+            /// <param name="handler">The handler that should be subscribed to the property change event</param>
+            protected override void RegisterChangeEventHandler(System.EventHandler<NMF.Expressions.ValueChangedEventArgs> handler)
+            {
+                this.ModelElement.IsFlaggedChanged += handler;
+            }
+            
+            /// <summary>
+            /// Registers an event handler to subscribe specifically on the changed event for this property
+            /// </summary>
+            /// <param name="handler">The handler that should be unsubscribed from the property change event</param>
+            protected override void UnregisterChangeEventHandler(System.EventHandler<NMF.Expressions.ValueChangedEventArgs> handler)
+            {
+                this.ModelElement.IsFlaggedChanged -= handler;
+            }
         }
         
         /// <summary>

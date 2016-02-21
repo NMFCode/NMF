@@ -14,6 +14,7 @@ using NMF.Expressions;
 using NMF.Expressions.Linq;
 using NMF.Models;
 using NMF.Models.Collections;
+using NMF.Models.Expressions;
 using NMF.Serialization;
 using NMF.Utilities;
 using System;
@@ -29,12 +30,12 @@ namespace NMF.Models.Meta
     
     
     /// <summary>
-    /// The representation of the ModelElement class
+    /// The default implementation of the ModelElement class
     /// </summary>
     [XmlNamespaceAttribute("http://nmf.codeplex.com/nmeta/")]
     [XmlNamespacePrefixAttribute("nmeta")]
     [ModelRepresentationClassAttribute("http://nmf.codeplex.com/nmeta/#//ModelElement/")]
-    public abstract class ModelElement : ModelElement, IModelElement, IModelElement
+    public abstract class ModelElement : ModelElement, NMF.Models.Meta.IModelElement, IModelElement
     {
         
         /// <summary>
@@ -55,7 +56,7 @@ namespace NMF.Models.Meta
         /// <summary>
         /// The backing field for the Parent property
         /// </summary>
-        private IModelElement _parent;
+        private NMF.Models.Meta.IModelElement _parent;
         
         /// <summary>
         /// The backing field for the Type property
@@ -80,10 +81,11 @@ namespace NMF.Models.Meta
             }
             set
             {
-                if ((value != this._absoluteUri))
+                if ((this._absoluteUri != value))
                 {
+                    Uri old = this._absoluteUri;
                     this._absoluteUri = value;
-                    this.OnAbsoluteUriChanged(EventArgs.Empty);
+                    this.OnAbsoluteUriChanged(new ValueChangedEventArgs(old, value));
                     this.OnPropertyChanged("AbsoluteUri");
                 }
             }
@@ -101,10 +103,11 @@ namespace NMF.Models.Meta
             }
             set
             {
-                if ((value != this._relativeUri))
+                if ((this._relativeUri != value))
                 {
+                    Uri old = this._relativeUri;
                     this._relativeUri = value;
-                    this.OnRelativeUriChanged(EventArgs.Empty);
+                    this.OnRelativeUriChanged(new ValueChangedEventArgs(old, value));
                     this.OnPropertyChanged("RelativeUri");
                 }
             }
@@ -116,6 +119,8 @@ namespace NMF.Models.Meta
         [DesignerSerializationVisibilityAttribute(DesignerSerializationVisibility.Content)]
         [XmlAttributeAttribute(false)]
         [ContainmentAttribute()]
+        [XmlOppositeAttribute("ExtendedElement")]
+        [ConstantAttribute()]
         public virtual ICollectionExpression<IModelElementExtension> Extensions
         {
             get
@@ -128,7 +133,7 @@ namespace NMF.Models.Meta
         /// The Parent property
         /// </summary>
         [XmlAttributeAttribute(true)]
-        public virtual IModelElement Parent
+        public virtual NMF.Models.Meta.IModelElement Parent
         {
             get
             {
@@ -138,7 +143,7 @@ namespace NMF.Models.Meta
             {
                 if ((this._parent != value))
                 {
-                    IModelElement old = this._parent;
+                    NMF.Models.Meta.IModelElement old = this._parent;
                     this._parent = value;
                     if ((old != null))
                     {
@@ -207,14 +212,25 @@ namespace NMF.Models.Meta
         }
         
         /// <summary>
+        /// Gets the Class element that describes the structure of this type
+        /// </summary>
+        public new static NMF.Models.Meta.IClass ClassInstance
+        {
+            get
+            {
+                return NMF.Models.Repository.MetaRepository.Instance.ResolveClass("http://nmf.codeplex.com/nmeta/#//ModelElement/");
+            }
+        }
+        
+        /// <summary>
         /// Gets fired when the AbsoluteUri property changed its value
         /// </summary>
-        public event EventHandler AbsoluteUriChanged;
+        public event EventHandler<ValueChangedEventArgs> AbsoluteUriChanged;
         
         /// <summary>
         /// Gets fired when the RelativeUri property changed its value
         /// </summary>
-        public event EventHandler RelativeUriChanged;
+        public event EventHandler<ValueChangedEventArgs> RelativeUriChanged;
         
         /// <summary>
         /// Gets fired when the Parent property changed its value
@@ -230,9 +246,9 @@ namespace NMF.Models.Meta
         /// Raises the AbsoluteUriChanged event
         /// </summary>
         /// <param name="eventArgs">The event data</param>
-        protected virtual void OnAbsoluteUriChanged(EventArgs eventArgs)
+        protected virtual void OnAbsoluteUriChanged(ValueChangedEventArgs eventArgs)
         {
-            EventHandler handler = this.AbsoluteUriChanged;
+            EventHandler<ValueChangedEventArgs> handler = this.AbsoluteUriChanged;
             if ((handler != null))
             {
                 handler.Invoke(this, eventArgs);
@@ -243,9 +259,9 @@ namespace NMF.Models.Meta
         /// Raises the RelativeUriChanged event
         /// </summary>
         /// <param name="eventArgs">The event data</param>
-        protected virtual void OnRelativeUriChanged(EventArgs eventArgs)
+        protected virtual void OnRelativeUriChanged(ValueChangedEventArgs eventArgs)
         {
-            EventHandler handler = this.RelativeUriChanged;
+            EventHandler<ValueChangedEventArgs> handler = this.RelativeUriChanged;
             if ((handler != null))
             {
                 handler.Invoke(this, eventArgs);
@@ -314,6 +330,301 @@ namespace NMF.Models.Meta
         public override NMF.Models.Meta.IClass GetClass()
         {
             return NMF.Models.Repository.MetaRepository.Instance.ResolveClass("http://nmf.codeplex.com/nmeta/#//ModelElement/");
+        }
+        
+        /// <summary>
+        /// Resolves the given attribute name
+        /// </summary>
+        /// <returns>The attribute value or null if it could not be found</returns>
+        /// <param name="attribute">The requested attribute name</param>
+        /// <param name="index">The index of this attribute</param>
+        protected override object GetAttributeValue(string attribute, int index)
+        {
+            if ((attribute == "ABSOLUTEURI"))
+            {
+                return this.AbsoluteUri;
+            }
+            if ((attribute == "RELATIVEURI"))
+            {
+                return this.RelativeUri;
+            }
+            return base.GetAttributeValue(attribute, index);
+        }
+        
+        /// <summary>
+        /// Gets the Model element collection for the given feature
+        /// </summary>
+        /// <returns>A non-generic list of elements</returns>
+        /// <param name="feature">The requested feature</param>
+        protected override System.Collections.IList GetCollectionForFeature(string feature)
+        {
+            if ((feature == "EXTENSIONS"))
+            {
+                return this._extensions;
+            }
+            return base.GetCollectionForFeature(feature);
+        }
+        
+        /// <summary>
+        /// Sets a value to the given feature
+        /// </summary>
+        /// <param name="feature">The requested feature</param>
+        /// <param name="value">The value that should be set to that feature</param>
+        protected override void SetFeature(string feature, object value)
+        {
+            if ((feature == "PARENT"))
+            {
+                this.Parent = ((NMF.Models.Meta.IModelElement)(value));
+                return;
+            }
+            if ((feature == "TYPE"))
+            {
+                this.Type = ((IReferenceType)(value));
+                return;
+            }
+            if ((feature == "ABSOLUTEURI"))
+            {
+                this.AbsoluteUri = ((Uri)(value));
+                return;
+            }
+            if ((feature == "RELATIVEURI"))
+            {
+                this.RelativeUri = ((Uri)(value));
+                return;
+            }
+            base.SetFeature(feature, value);
+        }
+        
+        /// <summary>
+        /// Gets the property expression for the given attribute
+        /// </summary>
+        /// <returns>An incremental property expression</returns>
+        /// <param name="attribute">The requested attribute in upper case</param>
+        protected override NMF.Expressions.INotifyExpression<object> GetExpressionForAttribute(string attribute)
+        {
+            if ((attribute == "PARENT"))
+            {
+                return new ParentProxy(this);
+            }
+            if ((attribute == "TYPE"))
+            {
+                return new TypeProxy(this);
+            }
+            return base.GetExpressionForAttribute(attribute);
+        }
+        
+        /// <summary>
+        /// Gets the property expression for the given reference
+        /// </summary>
+        /// <returns>An incremental property expression</returns>
+        /// <param name="reference">The requested reference in upper case</param>
+        protected override NMF.Expressions.INotifyExpression<NMF.Models.IModelElement> GetExpressionForReference(string reference)
+        {
+            if ((reference == "PARENT"))
+            {
+                return new ParentProxy(this);
+            }
+            if ((reference == "TYPE"))
+            {
+                return new TypeProxy(this);
+            }
+            return base.GetExpressionForReference(reference);
+        }
+        
+        /// <summary>
+        /// Represents a proxy to represent an incremental access to the AbsoluteUri property
+        /// </summary>
+        private sealed class AbsoluteUriProxy : ModelPropertyChange<NMF.Models.Meta.IModelElement, Uri>
+        {
+            
+            /// <summary>
+            /// Creates a new observable property access proxy
+            /// </summary>
+            /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
+            public AbsoluteUriProxy(NMF.Models.Meta.IModelElement modelElement) : 
+                    base(modelElement)
+            {
+            }
+            
+            /// <summary>
+            /// Gets or sets the value of this expression
+            /// </summary>
+            public override Uri Value
+            {
+                get
+                {
+                    return this.ModelElement.AbsoluteUri;
+                }
+                set
+                {
+                    this.ModelElement.AbsoluteUri = value;
+                }
+            }
+            
+            /// <summary>
+            /// Registers an event handler to subscribe specifically on the changed event for this property
+            /// </summary>
+            /// <param name="handler">The handler that should be subscribed to the property change event</param>
+            protected override void RegisterChangeEventHandler(System.EventHandler<NMF.Expressions.ValueChangedEventArgs> handler)
+            {
+                this.ModelElement.AbsoluteUriChanged += handler;
+            }
+            
+            /// <summary>
+            /// Registers an event handler to subscribe specifically on the changed event for this property
+            /// </summary>
+            /// <param name="handler">The handler that should be unsubscribed from the property change event</param>
+            protected override void UnregisterChangeEventHandler(System.EventHandler<NMF.Expressions.ValueChangedEventArgs> handler)
+            {
+                this.ModelElement.AbsoluteUriChanged -= handler;
+            }
+        }
+        
+        /// <summary>
+        /// Represents a proxy to represent an incremental access to the RelativeUri property
+        /// </summary>
+        private sealed class RelativeUriProxy : ModelPropertyChange<NMF.Models.Meta.IModelElement, Uri>
+        {
+            
+            /// <summary>
+            /// Creates a new observable property access proxy
+            /// </summary>
+            /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
+            public RelativeUriProxy(NMF.Models.Meta.IModelElement modelElement) : 
+                    base(modelElement)
+            {
+            }
+            
+            /// <summary>
+            /// Gets or sets the value of this expression
+            /// </summary>
+            public override Uri Value
+            {
+                get
+                {
+                    return this.ModelElement.RelativeUri;
+                }
+                set
+                {
+                    this.ModelElement.RelativeUri = value;
+                }
+            }
+            
+            /// <summary>
+            /// Registers an event handler to subscribe specifically on the changed event for this property
+            /// </summary>
+            /// <param name="handler">The handler that should be subscribed to the property change event</param>
+            protected override void RegisterChangeEventHandler(System.EventHandler<NMF.Expressions.ValueChangedEventArgs> handler)
+            {
+                this.ModelElement.RelativeUriChanged += handler;
+            }
+            
+            /// <summary>
+            /// Registers an event handler to subscribe specifically on the changed event for this property
+            /// </summary>
+            /// <param name="handler">The handler that should be unsubscribed from the property change event</param>
+            protected override void UnregisterChangeEventHandler(System.EventHandler<NMF.Expressions.ValueChangedEventArgs> handler)
+            {
+                this.ModelElement.RelativeUriChanged -= handler;
+            }
+        }
+        
+        /// <summary>
+        /// Represents a proxy to represent an incremental access to the Parent property
+        /// </summary>
+        private sealed class ParentProxy : ModelPropertyChange<NMF.Models.Meta.IModelElement, NMF.Models.Meta.IModelElement>
+        {
+            
+            /// <summary>
+            /// Creates a new observable property access proxy
+            /// </summary>
+            /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
+            public ParentProxy(NMF.Models.Meta.IModelElement modelElement) : 
+                    base(modelElement)
+            {
+            }
+            
+            /// <summary>
+            /// Gets or sets the value of this expression
+            /// </summary>
+            public override NMF.Models.Meta.IModelElement Value
+            {
+                get
+                {
+                    return this.ModelElement.Parent;
+                }
+                set
+                {
+                    this.ModelElement.Parent = value;
+                }
+            }
+            
+            /// <summary>
+            /// Registers an event handler to subscribe specifically on the changed event for this property
+            /// </summary>
+            /// <param name="handler">The handler that should be subscribed to the property change event</param>
+            protected override void RegisterChangeEventHandler(System.EventHandler<NMF.Expressions.ValueChangedEventArgs> handler)
+            {
+                this.ModelElement.ParentChanged += handler;
+            }
+            
+            /// <summary>
+            /// Registers an event handler to subscribe specifically on the changed event for this property
+            /// </summary>
+            /// <param name="handler">The handler that should be unsubscribed from the property change event</param>
+            protected override void UnregisterChangeEventHandler(System.EventHandler<NMF.Expressions.ValueChangedEventArgs> handler)
+            {
+                this.ModelElement.ParentChanged -= handler;
+            }
+        }
+        
+        /// <summary>
+        /// Represents a proxy to represent an incremental access to the Type property
+        /// </summary>
+        private sealed class TypeProxy : ModelPropertyChange<NMF.Models.Meta.IModelElement, IReferenceType>
+        {
+            
+            /// <summary>
+            /// Creates a new observable property access proxy
+            /// </summary>
+            /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
+            public TypeProxy(NMF.Models.Meta.IModelElement modelElement) : 
+                    base(modelElement)
+            {
+            }
+            
+            /// <summary>
+            /// Gets or sets the value of this expression
+            /// </summary>
+            public override IReferenceType Value
+            {
+                get
+                {
+                    return this.ModelElement.Type;
+                }
+                set
+                {
+                    this.ModelElement.Type = value;
+                }
+            }
+            
+            /// <summary>
+            /// Registers an event handler to subscribe specifically on the changed event for this property
+            /// </summary>
+            /// <param name="handler">The handler that should be subscribed to the property change event</param>
+            protected override void RegisterChangeEventHandler(System.EventHandler<NMF.Expressions.ValueChangedEventArgs> handler)
+            {
+                this.ModelElement.TypeChanged += handler;
+            }
+            
+            /// <summary>
+            /// Registers an event handler to subscribe specifically on the changed event for this property
+            /// </summary>
+            /// <param name="handler">The handler that should be unsubscribed from the property change event</param>
+            protected override void UnregisterChangeEventHandler(System.EventHandler<NMF.Expressions.ValueChangedEventArgs> handler)
+            {
+                this.ModelElement.TypeChanged -= handler;
+            }
         }
         
         /// <summary>
@@ -504,7 +815,7 @@ namespace NMF.Models.Meta
                 }
                 if ((this._parent.Parent == null))
                 {
-                    IModelElement parentCasted = item.As<IModelElement>();
+                    NMF.Models.Meta.IModelElement parentCasted = item.As<NMF.Models.Meta.IModelElement>();
                     if ((parentCasted != null))
                     {
                         this._parent.Parent = parentCasted;

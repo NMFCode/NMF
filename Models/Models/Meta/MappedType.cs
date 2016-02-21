@@ -14,6 +14,7 @@ using NMF.Expressions;
 using NMF.Expressions.Linq;
 using NMF.Models;
 using NMF.Models.Collections;
+using NMF.Models.Expressions;
 using NMF.Serialization;
 using NMF.Utilities;
 using System;
@@ -60,10 +61,11 @@ namespace NMF.Models.Meta
             }
             set
             {
-                if ((value != this._systemType))
+                if ((this._systemType != value))
                 {
+                    System.Type old = this._systemType;
                     this._systemType = value;
-                    this.OnSystemTypeChanged(EventArgs.Empty);
+                    this.OnSystemTypeChanged(new ValueChangedEventArgs(old, value));
                     this.OnPropertyChanged("SystemType");
                 }
             }
@@ -72,15 +74,15 @@ namespace NMF.Models.Meta
         /// <summary>
         /// Gets fired when the SystemType property changed its value
         /// </summary>
-        public event EventHandler SystemTypeChanged;
+        public event EventHandler<ValueChangedEventArgs> SystemTypeChanged;
         
         /// <summary>
         /// Raises the SystemTypeChanged event
         /// </summary>
         /// <param name="eventArgs">The event data</param>
-        protected virtual void OnSystemTypeChanged(EventArgs eventArgs)
+        protected virtual void OnSystemTypeChanged(ValueChangedEventArgs eventArgs)
         {
-            EventHandler handler = this.SystemTypeChanged;
+            EventHandler<ValueChangedEventArgs> handler = this.SystemTypeChanged;
             if ((handler != null))
             {
                 handler.Invoke(this, eventArgs);

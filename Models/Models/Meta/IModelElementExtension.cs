@@ -14,6 +14,7 @@ using NMF.Expressions;
 using NMF.Expressions.Linq;
 using NMF.Models;
 using NMF.Models.Collections;
+using NMF.Models.Expressions;
 using NMF.Serialization;
 using NMF.Utilities;
 using System;
@@ -31,18 +32,15 @@ namespace NMF.Models.Meta
     /// <summary>
     /// The public interface for ModelElementExtension
     /// </summary>
-    [XmlNamespaceAttribute("http://nmf.codeplex.com/nmeta/")]
-    [XmlNamespacePrefixAttribute("nmeta")]
-    [ModelRepresentationClassAttribute("http://nmf.codeplex.com/nmeta/#//ModelElementExtension/")]
-    [XmlDefaultImplementationTypeAttribute(typeof(ModelElementExtension))]
     [DefaultImplementationTypeAttribute(typeof(ModelElementExtension))]
+    [XmlDefaultImplementationTypeAttribute(typeof(ModelElementExtension))]
     public interface IModelElementExtension : IModelElement
     {
         
         /// <summary>
         /// The ExtendedElement property
         /// </summary>
-        IModelElement ExtendedElement
+        NMF.Models.Meta.IModelElement ExtendedElement
         {
             get;
             set;

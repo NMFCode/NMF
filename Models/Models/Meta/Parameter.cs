@@ -14,6 +14,7 @@ using NMF.Expressions;
 using NMF.Expressions.Linq;
 using NMF.Models;
 using NMF.Models.Collections;
+using NMF.Models.Expressions;
 using NMF.Serialization;
 using NMF.Utilities;
 using System;
@@ -29,7 +30,7 @@ namespace NMF.Models.Meta
     
     
     /// <summary>
-    /// The representation of the Parameter class
+    /// The default implementation of the Parameter class
     /// </summary>
     [XmlNamespaceAttribute("http://nmf.codeplex.com/nmeta/")]
     [XmlNamespacePrefixAttribute("nmeta")]
@@ -55,10 +56,11 @@ namespace NMF.Models.Meta
             }
             set
             {
-                if ((value != this._direction))
+                if ((this._direction != value))
                 {
+                    Direction old = this._direction;
                     this._direction = value;
-                    this.OnDirectionChanged(EventArgs.Empty);
+                    this.OnDirectionChanged(new ValueChangedEventArgs(old, value));
                     this.OnPropertyChanged("Direction");
                 }
             }
@@ -69,6 +71,7 @@ namespace NMF.Models.Meta
         /// </summary>
         [DesignerSerializationVisibilityAttribute(DesignerSerializationVisibility.Hidden)]
         [XmlAttributeAttribute(true)]
+        [XmlOppositeAttribute("Parameters")]
         public virtual IOperation Operation
         {
             get
@@ -93,9 +96,20 @@ namespace NMF.Models.Meta
         }
         
         /// <summary>
+        /// Gets the Class element that describes the structure of this type
+        /// </summary>
+        public new static NMF.Models.Meta.IClass ClassInstance
+        {
+            get
+            {
+                return NMF.Models.Repository.MetaRepository.Instance.ResolveClass("http://nmf.codeplex.com/nmeta/#//Parameter/");
+            }
+        }
+        
+        /// <summary>
         /// Gets fired when the Direction property changed its value
         /// </summary>
-        public event EventHandler DirectionChanged;
+        public event EventHandler<ValueChangedEventArgs> DirectionChanged;
         
         /// <summary>
         /// Gets fired when the Operation property changed its value
@@ -106,9 +120,9 @@ namespace NMF.Models.Meta
         /// Raises the DirectionChanged event
         /// </summary>
         /// <param name="eventArgs">The event data</param>
-        protected virtual void OnDirectionChanged(EventArgs eventArgs)
+        protected virtual void OnDirectionChanged(ValueChangedEventArgs eventArgs)
         {
-            EventHandler handler = this.DirectionChanged;
+            EventHandler<ValueChangedEventArgs> handler = this.DirectionChanged;
             if ((handler != null))
             {
                 handler.Invoke(this, eventArgs);
@@ -155,6 +169,167 @@ namespace NMF.Models.Meta
         public override NMF.Models.Meta.IClass GetClass()
         {
             return NMF.Models.Repository.MetaRepository.Instance.ResolveClass("http://nmf.codeplex.com/nmeta/#//Parameter/");
+        }
+        
+        /// <summary>
+        /// Resolves the given attribute name
+        /// </summary>
+        /// <returns>The attribute value or null if it could not be found</returns>
+        /// <param name="attribute">The requested attribute name</param>
+        /// <param name="index">The index of this attribute</param>
+        protected override object GetAttributeValue(string attribute, int index)
+        {
+            if ((attribute == "DIRECTION"))
+            {
+                return this.Direction;
+            }
+            return base.GetAttributeValue(attribute, index);
+        }
+        
+        /// <summary>
+        /// Sets a value to the given feature
+        /// </summary>
+        /// <param name="feature">The requested feature</param>
+        /// <param name="value">The value that should be set to that feature</param>
+        protected override void SetFeature(string feature, object value)
+        {
+            if ((feature == "OPERATION"))
+            {
+                this.Operation = ((IOperation)(value));
+                return;
+            }
+            if ((feature == "DIRECTION"))
+            {
+                this.Direction = ((Direction)(value));
+                return;
+            }
+            base.SetFeature(feature, value);
+        }
+        
+        /// <summary>
+        /// Gets the property expression for the given attribute
+        /// </summary>
+        /// <returns>An incremental property expression</returns>
+        /// <param name="attribute">The requested attribute in upper case</param>
+        protected override NMF.Expressions.INotifyExpression<object> GetExpressionForAttribute(string attribute)
+        {
+            if ((attribute == "OPERATION"))
+            {
+                return new OperationProxy(this);
+            }
+            return base.GetExpressionForAttribute(attribute);
+        }
+        
+        /// <summary>
+        /// Gets the property expression for the given reference
+        /// </summary>
+        /// <returns>An incremental property expression</returns>
+        /// <param name="reference">The requested reference in upper case</param>
+        protected override NMF.Expressions.INotifyExpression<NMF.Models.IModelElement> GetExpressionForReference(string reference)
+        {
+            if ((reference == "OPERATION"))
+            {
+                return new OperationProxy(this);
+            }
+            return base.GetExpressionForReference(reference);
+        }
+        
+        /// <summary>
+        /// Represents a proxy to represent an incremental access to the Direction property
+        /// </summary>
+        private sealed class DirectionProxy : ModelPropertyChange<IParameter, Direction>
+        {
+            
+            /// <summary>
+            /// Creates a new observable property access proxy
+            /// </summary>
+            /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
+            public DirectionProxy(IParameter modelElement) : 
+                    base(modelElement)
+            {
+            }
+            
+            /// <summary>
+            /// Gets or sets the value of this expression
+            /// </summary>
+            public override Direction Value
+            {
+                get
+                {
+                    return this.ModelElement.Direction;
+                }
+                set
+                {
+                    this.ModelElement.Direction = value;
+                }
+            }
+            
+            /// <summary>
+            /// Registers an event handler to subscribe specifically on the changed event for this property
+            /// </summary>
+            /// <param name="handler">The handler that should be subscribed to the property change event</param>
+            protected override void RegisterChangeEventHandler(System.EventHandler<NMF.Expressions.ValueChangedEventArgs> handler)
+            {
+                this.ModelElement.DirectionChanged += handler;
+            }
+            
+            /// <summary>
+            /// Registers an event handler to subscribe specifically on the changed event for this property
+            /// </summary>
+            /// <param name="handler">The handler that should be unsubscribed from the property change event</param>
+            protected override void UnregisterChangeEventHandler(System.EventHandler<NMF.Expressions.ValueChangedEventArgs> handler)
+            {
+                this.ModelElement.DirectionChanged -= handler;
+            }
+        }
+        
+        /// <summary>
+        /// Represents a proxy to represent an incremental access to the Operation property
+        /// </summary>
+        private sealed class OperationProxy : ModelPropertyChange<IParameter, IOperation>
+        {
+            
+            /// <summary>
+            /// Creates a new observable property access proxy
+            /// </summary>
+            /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
+            public OperationProxy(IParameter modelElement) : 
+                    base(modelElement)
+            {
+            }
+            
+            /// <summary>
+            /// Gets or sets the value of this expression
+            /// </summary>
+            public override IOperation Value
+            {
+                get
+                {
+                    return this.ModelElement.Operation;
+                }
+                set
+                {
+                    this.ModelElement.Operation = value;
+                }
+            }
+            
+            /// <summary>
+            /// Registers an event handler to subscribe specifically on the changed event for this property
+            /// </summary>
+            /// <param name="handler">The handler that should be subscribed to the property change event</param>
+            protected override void RegisterChangeEventHandler(System.EventHandler<NMF.Expressions.ValueChangedEventArgs> handler)
+            {
+                this.ModelElement.OperationChanged += handler;
+            }
+            
+            /// <summary>
+            /// Registers an event handler to subscribe specifically on the changed event for this property
+            /// </summary>
+            /// <param name="handler">The handler that should be unsubscribed from the property change event</param>
+            protected override void UnregisterChangeEventHandler(System.EventHandler<NMF.Expressions.ValueChangedEventArgs> handler)
+            {
+                this.ModelElement.OperationChanged -= handler;
+            }
         }
         
         /// <summary>

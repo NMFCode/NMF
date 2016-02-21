@@ -456,6 +456,11 @@ namespace NMF.CodeGen
             return CreateBackingField(property, property.Type, null);
         }
 
+        public static CodeFieldReferenceExpression GetBackingField(this CodeMemberProperty property)
+        {
+            return property.GetOrCreateUserItem<CodeFieldReferenceExpression>(BackingFieldRefKey);
+        }
+
         /// <summary>
         /// Creates a backing field for the given property
         /// </summary>

@@ -14,6 +14,7 @@ using NMF.Expressions;
 using NMF.Expressions.Linq;
 using NMF.Models;
 using NMF.Models.Collections;
+using NMF.Models.Expressions;
 using NMF.Serialization;
 using NMF.Utilities;
 using System;
@@ -29,7 +30,7 @@ namespace NMF.Models.Meta
     
     
     /// <summary>
-    /// The representation of the Operation class
+    /// The default implementation of the Operation class
     /// </summary>
     [XmlNamespaceAttribute("http://nmf.codeplex.com/nmeta/")]
     [XmlNamespacePrefixAttribute("nmeta")]
@@ -60,6 +61,8 @@ namespace NMF.Models.Meta
         [DesignerSerializationVisibilityAttribute(DesignerSerializationVisibility.Content)]
         [XmlAttributeAttribute(false)]
         [ContainmentAttribute()]
+        [XmlOppositeAttribute("Operation")]
+        [ConstantAttribute()]
         public virtual ICollectionExpression<IParameter> Parameters
         {
             get
@@ -73,6 +76,7 @@ namespace NMF.Models.Meta
         /// </summary>
         [DesignerSerializationVisibilityAttribute(DesignerSerializationVisibility.Hidden)]
         [XmlAttributeAttribute(true)]
+        [XmlOppositeAttribute("Operations")]
         public virtual IStructuredType DeclaringType
         {
             get
@@ -134,6 +138,17 @@ namespace NMF.Models.Meta
             get
             {
                 return base.ReferencedElements.Concat(new OperationReferencedElementsCollection(this));
+            }
+        }
+        
+        /// <summary>
+        /// Gets the Class element that describes the structure of this type
+        /// </summary>
+        public new static NMF.Models.Meta.IClass ClassInstance
+        {
+            get
+            {
+                return NMF.Models.Repository.MetaRepository.Instance.ResolveClass("http://nmf.codeplex.com/nmeta/#//Operation/");
             }
         }
         
@@ -220,6 +235,174 @@ namespace NMF.Models.Meta
         public override NMF.Models.Meta.IClass GetClass()
         {
             return NMF.Models.Repository.MetaRepository.Instance.ResolveClass("http://nmf.codeplex.com/nmeta/#//Operation/");
+        }
+        
+        /// <summary>
+        /// Gets the Model element collection for the given feature
+        /// </summary>
+        /// <returns>A non-generic list of elements</returns>
+        /// <param name="feature">The requested feature</param>
+        protected override System.Collections.IList GetCollectionForFeature(string feature)
+        {
+            if ((feature == "PARAMETERS"))
+            {
+                return this._parameters;
+            }
+            return base.GetCollectionForFeature(feature);
+        }
+        
+        /// <summary>
+        /// Sets a value to the given feature
+        /// </summary>
+        /// <param name="feature">The requested feature</param>
+        /// <param name="value">The value that should be set to that feature</param>
+        protected override void SetFeature(string feature, object value)
+        {
+            if ((feature == "DECLARINGTYPE"))
+            {
+                this.DeclaringType = ((IStructuredType)(value));
+                return;
+            }
+            if ((feature == "REFINES"))
+            {
+                this.Refines = ((IOperation)(value));
+                return;
+            }
+            base.SetFeature(feature, value);
+        }
+        
+        /// <summary>
+        /// Gets the property expression for the given attribute
+        /// </summary>
+        /// <returns>An incremental property expression</returns>
+        /// <param name="attribute">The requested attribute in upper case</param>
+        protected override NMF.Expressions.INotifyExpression<object> GetExpressionForAttribute(string attribute)
+        {
+            if ((attribute == "DECLARINGTYPE"))
+            {
+                return new DeclaringTypeProxy(this);
+            }
+            if ((attribute == "REFINES"))
+            {
+                return new RefinesProxy(this);
+            }
+            return base.GetExpressionForAttribute(attribute);
+        }
+        
+        /// <summary>
+        /// Gets the property expression for the given reference
+        /// </summary>
+        /// <returns>An incremental property expression</returns>
+        /// <param name="reference">The requested reference in upper case</param>
+        protected override NMF.Expressions.INotifyExpression<NMF.Models.IModelElement> GetExpressionForReference(string reference)
+        {
+            if ((reference == "DECLARINGTYPE"))
+            {
+                return new DeclaringTypeProxy(this);
+            }
+            if ((reference == "REFINES"))
+            {
+                return new RefinesProxy(this);
+            }
+            return base.GetExpressionForReference(reference);
+        }
+        
+        /// <summary>
+        /// Represents a proxy to represent an incremental access to the DeclaringType property
+        /// </summary>
+        private sealed class DeclaringTypeProxy : ModelPropertyChange<IOperation, IStructuredType>
+        {
+            
+            /// <summary>
+            /// Creates a new observable property access proxy
+            /// </summary>
+            /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
+            public DeclaringTypeProxy(IOperation modelElement) : 
+                    base(modelElement)
+            {
+            }
+            
+            /// <summary>
+            /// Gets or sets the value of this expression
+            /// </summary>
+            public override IStructuredType Value
+            {
+                get
+                {
+                    return this.ModelElement.DeclaringType;
+                }
+                set
+                {
+                    this.ModelElement.DeclaringType = value;
+                }
+            }
+            
+            /// <summary>
+            /// Registers an event handler to subscribe specifically on the changed event for this property
+            /// </summary>
+            /// <param name="handler">The handler that should be subscribed to the property change event</param>
+            protected override void RegisterChangeEventHandler(System.EventHandler<NMF.Expressions.ValueChangedEventArgs> handler)
+            {
+                this.ModelElement.DeclaringTypeChanged += handler;
+            }
+            
+            /// <summary>
+            /// Registers an event handler to subscribe specifically on the changed event for this property
+            /// </summary>
+            /// <param name="handler">The handler that should be unsubscribed from the property change event</param>
+            protected override void UnregisterChangeEventHandler(System.EventHandler<NMF.Expressions.ValueChangedEventArgs> handler)
+            {
+                this.ModelElement.DeclaringTypeChanged -= handler;
+            }
+        }
+        
+        /// <summary>
+        /// Represents a proxy to represent an incremental access to the Refines property
+        /// </summary>
+        private sealed class RefinesProxy : ModelPropertyChange<IOperation, IOperation>
+        {
+            
+            /// <summary>
+            /// Creates a new observable property access proxy
+            /// </summary>
+            /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
+            public RefinesProxy(IOperation modelElement) : 
+                    base(modelElement)
+            {
+            }
+            
+            /// <summary>
+            /// Gets or sets the value of this expression
+            /// </summary>
+            public override IOperation Value
+            {
+                get
+                {
+                    return this.ModelElement.Refines;
+                }
+                set
+                {
+                    this.ModelElement.Refines = value;
+                }
+            }
+            
+            /// <summary>
+            /// Registers an event handler to subscribe specifically on the changed event for this property
+            /// </summary>
+            /// <param name="handler">The handler that should be subscribed to the property change event</param>
+            protected override void RegisterChangeEventHandler(System.EventHandler<NMF.Expressions.ValueChangedEventArgs> handler)
+            {
+                this.ModelElement.RefinesChanged += handler;
+            }
+            
+            /// <summary>
+            /// Registers an event handler to subscribe specifically on the changed event for this property
+            /// </summary>
+            /// <param name="handler">The handler that should be unsubscribed from the property change event</param>
+            protected override void UnregisterChangeEventHandler(System.EventHandler<NMF.Expressions.ValueChangedEventArgs> handler)
+            {
+                this.ModelElement.RefinesChanged -= handler;
+            }
         }
         
         /// <summary>

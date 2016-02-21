@@ -391,7 +391,7 @@ namespace NMF.Models
         /// <returns>The model element at the given reference</returns>
         protected virtual IModelElement GetModelElementForReference(string reference, int index)
         {
-            throw new ArgumentOutOfRangeException("reference");
+            return null;
         }
 
         /// <summary>

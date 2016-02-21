@@ -14,6 +14,7 @@ using NMF.Expressions;
 using NMF.Expressions.Linq;
 using NMF.Models;
 using NMF.Models.Collections;
+using NMF.Models.Expressions;
 using NMF.Serialization;
 using NMF.Utilities;
 using System;
@@ -31,11 +32,8 @@ namespace NMF.Models.Meta
     /// <summary>
     /// The public interface for Enumeration
     /// </summary>
-    [XmlNamespaceAttribute("http://nmf.codeplex.com/nmeta/")]
-    [XmlNamespacePrefixAttribute("nmeta")]
-    [ModelRepresentationClassAttribute("http://nmf.codeplex.com/nmeta/#//Enumeration/")]
-    [XmlDefaultImplementationTypeAttribute(typeof(Enumeration))]
     [DefaultImplementationTypeAttribute(typeof(Enumeration))]
+    [XmlDefaultImplementationTypeAttribute(typeof(Enumeration))]
     public interface IEnumeration : IModelElement, IType
     {
         
@@ -59,7 +57,7 @@ namespace NMF.Models.Meta
         /// <summary>
         /// Gets fired when the IsFlagged property changed its value
         /// </summary>
-        event EventHandler IsFlaggedChanged;
+        event EventHandler<ValueChangedEventArgs> IsFlaggedChanged;
     }
 }
 

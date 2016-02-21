@@ -14,6 +14,7 @@ using NMF.Expressions;
 using NMF.Expressions.Linq;
 using NMF.Models;
 using NMF.Models.Collections;
+using NMF.Models.Expressions;
 using NMF.Serialization;
 using NMF.Utilities;
 using System;
@@ -29,7 +30,7 @@ namespace NMF.Models.Meta
     
     
     /// <summary>
-    /// The representation of the Namespace class
+    /// The default implementation of the Namespace class
     /// </summary>
     [XmlNamespaceAttribute("http://nmf.codeplex.com/nmeta/")]
     [XmlNamespacePrefixAttribute("nmeta")]
@@ -78,10 +79,11 @@ namespace NMF.Models.Meta
             }
             set
             {
-                if ((value != this._uri))
+                if ((this._uri != value))
                 {
+                    Uri old = this._uri;
                     this._uri = value;
-                    this.OnUriChanged(EventArgs.Empty);
+                    this.OnUriChanged(new ValueChangedEventArgs(old, value));
                     this.OnPropertyChanged("Uri");
                 }
             }
@@ -99,10 +101,11 @@ namespace NMF.Models.Meta
             }
             set
             {
-                if ((value != this._prefix))
+                if ((this._prefix != value))
                 {
+                    string old = this._prefix;
                     this._prefix = value;
-                    this.OnPrefixChanged(EventArgs.Empty);
+                    this.OnPrefixChanged(new ValueChangedEventArgs(old, value));
                     this.OnPropertyChanged("Prefix");
                 }
             }
@@ -113,6 +116,7 @@ namespace NMF.Models.Meta
         /// </summary>
         [DesignerSerializationVisibilityAttribute(DesignerSerializationVisibility.Hidden)]
         [XmlAttributeAttribute(true)]
+        [XmlOppositeAttribute("ChildNamespaces")]
         public virtual INamespace ParentNamespace
         {
             get
@@ -131,6 +135,8 @@ namespace NMF.Models.Meta
         [DesignerSerializationVisibilityAttribute(DesignerSerializationVisibility.Content)]
         [XmlAttributeAttribute(false)]
         [ContainmentAttribute()]
+        [XmlOppositeAttribute("ParentNamespace")]
+        [ConstantAttribute()]
         public virtual ICollectionExpression<INamespace> ChildNamespaces
         {
             get
@@ -145,6 +151,8 @@ namespace NMF.Models.Meta
         [DesignerSerializationVisibilityAttribute(DesignerSerializationVisibility.Content)]
         [XmlAttributeAttribute(false)]
         [ContainmentAttribute()]
+        [XmlOppositeAttribute("Namespace")]
+        [ConstantAttribute()]
         public virtual ICollectionExpression<IType> Types
         {
             get
@@ -176,14 +184,25 @@ namespace NMF.Models.Meta
         }
         
         /// <summary>
+        /// Gets the Class element that describes the structure of this type
+        /// </summary>
+        public new static NMF.Models.Meta.IClass ClassInstance
+        {
+            get
+            {
+                return NMF.Models.Repository.MetaRepository.Instance.ResolveClass("http://nmf.codeplex.com/nmeta/#//Namespace/");
+            }
+        }
+        
+        /// <summary>
         /// Gets fired when the Uri property changed its value
         /// </summary>
-        public event EventHandler UriChanged;
+        public event EventHandler<ValueChangedEventArgs> UriChanged;
         
         /// <summary>
         /// Gets fired when the Prefix property changed its value
         /// </summary>
-        public event EventHandler PrefixChanged;
+        public event EventHandler<ValueChangedEventArgs> PrefixChanged;
         
         /// <summary>
         /// Gets fired when the ParentNamespace property changed its value
@@ -194,9 +213,9 @@ namespace NMF.Models.Meta
         /// Raises the UriChanged event
         /// </summary>
         /// <param name="eventArgs">The event data</param>
-        protected virtual void OnUriChanged(EventArgs eventArgs)
+        protected virtual void OnUriChanged(ValueChangedEventArgs eventArgs)
         {
-            EventHandler handler = this.UriChanged;
+            EventHandler<ValueChangedEventArgs> handler = this.UriChanged;
             if ((handler != null))
             {
                 handler.Invoke(this, eventArgs);
@@ -207,9 +226,9 @@ namespace NMF.Models.Meta
         /// Raises the PrefixChanged event
         /// </summary>
         /// <param name="eventArgs">The event data</param>
-        protected virtual void OnPrefixChanged(EventArgs eventArgs)
+        protected virtual void OnPrefixChanged(ValueChangedEventArgs eventArgs)
         {
-            EventHandler handler = this.PrefixChanged;
+            EventHandler<ValueChangedEventArgs> handler = this.PrefixChanged;
             if ((handler != null))
             {
                 handler.Invoke(this, eventArgs);
@@ -276,6 +295,243 @@ namespace NMF.Models.Meta
         public override NMF.Models.Meta.IClass GetClass()
         {
             return NMF.Models.Repository.MetaRepository.Instance.ResolveClass("http://nmf.codeplex.com/nmeta/#//Namespace/");
+        }
+        
+        /// <summary>
+        /// Resolves the given attribute name
+        /// </summary>
+        /// <returns>The attribute value or null if it could not be found</returns>
+        /// <param name="attribute">The requested attribute name</param>
+        /// <param name="index">The index of this attribute</param>
+        protected override object GetAttributeValue(string attribute, int index)
+        {
+            if ((attribute == "URI"))
+            {
+                return this.Uri;
+            }
+            if ((attribute == "PREFIX"))
+            {
+                return this.Prefix;
+            }
+            return base.GetAttributeValue(attribute, index);
+        }
+        
+        /// <summary>
+        /// Gets the Model element collection for the given feature
+        /// </summary>
+        /// <returns>A non-generic list of elements</returns>
+        /// <param name="feature">The requested feature</param>
+        protected override System.Collections.IList GetCollectionForFeature(string feature)
+        {
+            if ((feature == "CHILDNAMESPACES"))
+            {
+                return this._childNamespaces;
+            }
+            if ((feature == "TYPES"))
+            {
+                return this._types;
+            }
+            return base.GetCollectionForFeature(feature);
+        }
+        
+        /// <summary>
+        /// Sets a value to the given feature
+        /// </summary>
+        /// <param name="feature">The requested feature</param>
+        /// <param name="value">The value that should be set to that feature</param>
+        protected override void SetFeature(string feature, object value)
+        {
+            if ((feature == "PARENTNAMESPACE"))
+            {
+                this.ParentNamespace = ((INamespace)(value));
+                return;
+            }
+            if ((feature == "URI"))
+            {
+                this.Uri = ((Uri)(value));
+                return;
+            }
+            if ((feature == "PREFIX"))
+            {
+                this.Prefix = ((string)(value));
+                return;
+            }
+            base.SetFeature(feature, value);
+        }
+        
+        /// <summary>
+        /// Gets the property expression for the given attribute
+        /// </summary>
+        /// <returns>An incremental property expression</returns>
+        /// <param name="attribute">The requested attribute in upper case</param>
+        protected override NMF.Expressions.INotifyExpression<object> GetExpressionForAttribute(string attribute)
+        {
+            if ((attribute == "PARENTNAMESPACE"))
+            {
+                return new ParentNamespaceProxy(this);
+            }
+            return base.GetExpressionForAttribute(attribute);
+        }
+        
+        /// <summary>
+        /// Gets the property expression for the given reference
+        /// </summary>
+        /// <returns>An incremental property expression</returns>
+        /// <param name="reference">The requested reference in upper case</param>
+        protected override NMF.Expressions.INotifyExpression<NMF.Models.IModelElement> GetExpressionForReference(string reference)
+        {
+            if ((reference == "PARENTNAMESPACE"))
+            {
+                return new ParentNamespaceProxy(this);
+            }
+            return base.GetExpressionForReference(reference);
+        }
+        
+        /// <summary>
+        /// Represents a proxy to represent an incremental access to the Uri property
+        /// </summary>
+        private sealed class UriProxy : ModelPropertyChange<INamespace, Uri>
+        {
+            
+            /// <summary>
+            /// Creates a new observable property access proxy
+            /// </summary>
+            /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
+            public UriProxy(INamespace modelElement) : 
+                    base(modelElement)
+            {
+            }
+            
+            /// <summary>
+            /// Gets or sets the value of this expression
+            /// </summary>
+            public override Uri Value
+            {
+                get
+                {
+                    return this.ModelElement.Uri;
+                }
+                set
+                {
+                    this.ModelElement.Uri = value;
+                }
+            }
+            
+            /// <summary>
+            /// Registers an event handler to subscribe specifically on the changed event for this property
+            /// </summary>
+            /// <param name="handler">The handler that should be subscribed to the property change event</param>
+            protected override void RegisterChangeEventHandler(System.EventHandler<NMF.Expressions.ValueChangedEventArgs> handler)
+            {
+                this.ModelElement.UriChanged += handler;
+            }
+            
+            /// <summary>
+            /// Registers an event handler to subscribe specifically on the changed event for this property
+            /// </summary>
+            /// <param name="handler">The handler that should be unsubscribed from the property change event</param>
+            protected override void UnregisterChangeEventHandler(System.EventHandler<NMF.Expressions.ValueChangedEventArgs> handler)
+            {
+                this.ModelElement.UriChanged -= handler;
+            }
+        }
+        
+        /// <summary>
+        /// Represents a proxy to represent an incremental access to the Prefix property
+        /// </summary>
+        private sealed class PrefixProxy : ModelPropertyChange<INamespace, string>
+        {
+            
+            /// <summary>
+            /// Creates a new observable property access proxy
+            /// </summary>
+            /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
+            public PrefixProxy(INamespace modelElement) : 
+                    base(modelElement)
+            {
+            }
+            
+            /// <summary>
+            /// Gets or sets the value of this expression
+            /// </summary>
+            public override string Value
+            {
+                get
+                {
+                    return this.ModelElement.Prefix;
+                }
+                set
+                {
+                    this.ModelElement.Prefix = value;
+                }
+            }
+            
+            /// <summary>
+            /// Registers an event handler to subscribe specifically on the changed event for this property
+            /// </summary>
+            /// <param name="handler">The handler that should be subscribed to the property change event</param>
+            protected override void RegisterChangeEventHandler(System.EventHandler<NMF.Expressions.ValueChangedEventArgs> handler)
+            {
+                this.ModelElement.PrefixChanged += handler;
+            }
+            
+            /// <summary>
+            /// Registers an event handler to subscribe specifically on the changed event for this property
+            /// </summary>
+            /// <param name="handler">The handler that should be unsubscribed from the property change event</param>
+            protected override void UnregisterChangeEventHandler(System.EventHandler<NMF.Expressions.ValueChangedEventArgs> handler)
+            {
+                this.ModelElement.PrefixChanged -= handler;
+            }
+        }
+        
+        /// <summary>
+        /// Represents a proxy to represent an incremental access to the ParentNamespace property
+        /// </summary>
+        private sealed class ParentNamespaceProxy : ModelPropertyChange<INamespace, INamespace>
+        {
+            
+            /// <summary>
+            /// Creates a new observable property access proxy
+            /// </summary>
+            /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
+            public ParentNamespaceProxy(INamespace modelElement) : 
+                    base(modelElement)
+            {
+            }
+            
+            /// <summary>
+            /// Gets or sets the value of this expression
+            /// </summary>
+            public override INamespace Value
+            {
+                get
+                {
+                    return this.ModelElement.ParentNamespace;
+                }
+                set
+                {
+                    this.ModelElement.ParentNamespace = value;
+                }
+            }
+            
+            /// <summary>
+            /// Registers an event handler to subscribe specifically on the changed event for this property
+            /// </summary>
+            /// <param name="handler">The handler that should be subscribed to the property change event</param>
+            protected override void RegisterChangeEventHandler(System.EventHandler<NMF.Expressions.ValueChangedEventArgs> handler)
+            {
+                this.ModelElement.ParentNamespaceChanged += handler;
+            }
+            
+            /// <summary>
+            /// Registers an event handler to subscribe specifically on the changed event for this property
+            /// </summary>
+            /// <param name="handler">The handler that should be unsubscribed from the property change event</param>
+            protected override void UnregisterChangeEventHandler(System.EventHandler<NMF.Expressions.ValueChangedEventArgs> handler)
+            {
+                this.ModelElement.ParentNamespaceChanged -= handler;
+            }
         }
         
         /// <summary>

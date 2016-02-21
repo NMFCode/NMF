@@ -14,6 +14,7 @@ using NMF.Expressions;
 using NMF.Expressions.Linq;
 using NMF.Models;
 using NMF.Models.Collections;
+using NMF.Models.Expressions;
 using NMF.Serialization;
 using NMF.Utilities;
 using System;
@@ -29,7 +30,7 @@ namespace NMF.Models.Meta
     
     
     /// <summary>
-    /// The representation of the TypedElement class
+    /// The default implementation of the TypedElement class
     /// </summary>
     [XmlNamespaceAttribute("http://nmf.codeplex.com/nmeta/")]
     [XmlNamespacePrefixAttribute("nmeta")]
@@ -75,10 +76,11 @@ namespace NMF.Models.Meta
             }
             set
             {
-                if ((value != this._isOrdered))
+                if ((this._isOrdered != value))
                 {
+                    bool old = this._isOrdered;
                     this._isOrdered = value;
-                    this.OnIsOrderedChanged(EventArgs.Empty);
+                    this.OnIsOrderedChanged(new ValueChangedEventArgs(old, value));
                     this.OnPropertyChanged("IsOrdered");
                 }
             }
@@ -96,10 +98,11 @@ namespace NMF.Models.Meta
             }
             set
             {
-                if ((value != this._isUnique))
+                if ((this._isUnique != value))
                 {
+                    bool old = this._isUnique;
                     this._isUnique = value;
-                    this.OnIsUniqueChanged(EventArgs.Empty);
+                    this.OnIsUniqueChanged(new ValueChangedEventArgs(old, value));
                     this.OnPropertyChanged("IsUnique");
                 }
             }
@@ -118,10 +121,11 @@ namespace NMF.Models.Meta
             }
             set
             {
-                if ((value != this._lowerBound))
+                if ((this._lowerBound != value))
                 {
+                    int old = this._lowerBound;
                     this._lowerBound = value;
-                    this.OnLowerBoundChanged(EventArgs.Empty);
+                    this.OnLowerBoundChanged(new ValueChangedEventArgs(old, value));
                     this.OnPropertyChanged("LowerBound");
                 }
             }
@@ -140,10 +144,11 @@ namespace NMF.Models.Meta
             }
             set
             {
-                if ((value != this._upperBound))
+                if ((this._upperBound != value))
                 {
+                    int old = this._upperBound;
                     this._upperBound = value;
-                    this.OnUpperBoundChanged(EventArgs.Empty);
+                    this.OnUpperBoundChanged(new ValueChangedEventArgs(old, value));
                     this.OnPropertyChanged("UpperBound");
                 }
             }
@@ -191,24 +196,35 @@ namespace NMF.Models.Meta
         }
         
         /// <summary>
+        /// Gets the Class element that describes the structure of this type
+        /// </summary>
+        public new static NMF.Models.Meta.IClass ClassInstance
+        {
+            get
+            {
+                return NMF.Models.Repository.MetaRepository.Instance.ResolveClass("http://nmf.codeplex.com/nmeta/#//TypedElement/");
+            }
+        }
+        
+        /// <summary>
         /// Gets fired when the IsOrdered property changed its value
         /// </summary>
-        public event EventHandler IsOrderedChanged;
+        public event EventHandler<ValueChangedEventArgs> IsOrderedChanged;
         
         /// <summary>
         /// Gets fired when the IsUnique property changed its value
         /// </summary>
-        public event EventHandler IsUniqueChanged;
+        public event EventHandler<ValueChangedEventArgs> IsUniqueChanged;
         
         /// <summary>
         /// Gets fired when the LowerBound property changed its value
         /// </summary>
-        public event EventHandler LowerBoundChanged;
+        public event EventHandler<ValueChangedEventArgs> LowerBoundChanged;
         
         /// <summary>
         /// Gets fired when the UpperBound property changed its value
         /// </summary>
-        public event EventHandler UpperBoundChanged;
+        public event EventHandler<ValueChangedEventArgs> UpperBoundChanged;
         
         /// <summary>
         /// Gets fired when the Type property changed its value
@@ -219,9 +235,9 @@ namespace NMF.Models.Meta
         /// Raises the IsOrderedChanged event
         /// </summary>
         /// <param name="eventArgs">The event data</param>
-        protected virtual void OnIsOrderedChanged(EventArgs eventArgs)
+        protected virtual void OnIsOrderedChanged(ValueChangedEventArgs eventArgs)
         {
-            EventHandler handler = this.IsOrderedChanged;
+            EventHandler<ValueChangedEventArgs> handler = this.IsOrderedChanged;
             if ((handler != null))
             {
                 handler.Invoke(this, eventArgs);
@@ -232,9 +248,9 @@ namespace NMF.Models.Meta
         /// Raises the IsUniqueChanged event
         /// </summary>
         /// <param name="eventArgs">The event data</param>
-        protected virtual void OnIsUniqueChanged(EventArgs eventArgs)
+        protected virtual void OnIsUniqueChanged(ValueChangedEventArgs eventArgs)
         {
-            EventHandler handler = this.IsUniqueChanged;
+            EventHandler<ValueChangedEventArgs> handler = this.IsUniqueChanged;
             if ((handler != null))
             {
                 handler.Invoke(this, eventArgs);
@@ -245,9 +261,9 @@ namespace NMF.Models.Meta
         /// Raises the LowerBoundChanged event
         /// </summary>
         /// <param name="eventArgs">The event data</param>
-        protected virtual void OnLowerBoundChanged(EventArgs eventArgs)
+        protected virtual void OnLowerBoundChanged(ValueChangedEventArgs eventArgs)
         {
-            EventHandler handler = this.LowerBoundChanged;
+            EventHandler<ValueChangedEventArgs> handler = this.LowerBoundChanged;
             if ((handler != null))
             {
                 handler.Invoke(this, eventArgs);
@@ -258,9 +274,9 @@ namespace NMF.Models.Meta
         /// Raises the UpperBoundChanged event
         /// </summary>
         /// <param name="eventArgs">The event data</param>
-        protected virtual void OnUpperBoundChanged(EventArgs eventArgs)
+        protected virtual void OnUpperBoundChanged(ValueChangedEventArgs eventArgs)
         {
-            EventHandler handler = this.UpperBoundChanged;
+            EventHandler<ValueChangedEventArgs> handler = this.UpperBoundChanged;
             if ((handler != null))
             {
                 handler.Invoke(this, eventArgs);
@@ -296,6 +312,341 @@ namespace NMF.Models.Meta
         public override NMF.Models.Meta.IClass GetClass()
         {
             return NMF.Models.Repository.MetaRepository.Instance.ResolveClass("http://nmf.codeplex.com/nmeta/#//TypedElement/");
+        }
+        
+        /// <summary>
+        /// Resolves the given attribute name
+        /// </summary>
+        /// <returns>The attribute value or null if it could not be found</returns>
+        /// <param name="attribute">The requested attribute name</param>
+        /// <param name="index">The index of this attribute</param>
+        protected override object GetAttributeValue(string attribute, int index)
+        {
+            if ((attribute == "ISORDERED"))
+            {
+                return this.IsOrdered;
+            }
+            if ((attribute == "ISUNIQUE"))
+            {
+                return this.IsUnique;
+            }
+            if ((attribute == "LOWERBOUND"))
+            {
+                return this.LowerBound;
+            }
+            if ((attribute == "UPPERBOUND"))
+            {
+                return this.UpperBound;
+            }
+            return base.GetAttributeValue(attribute, index);
+        }
+        
+        /// <summary>
+        /// Sets a value to the given feature
+        /// </summary>
+        /// <param name="feature">The requested feature</param>
+        /// <param name="value">The value that should be set to that feature</param>
+        protected override void SetFeature(string feature, object value)
+        {
+            if ((feature == "TYPE"))
+            {
+                this.Type = ((IType)(value));
+                return;
+            }
+            if ((feature == "ISORDERED"))
+            {
+                this.IsOrdered = ((bool)(value));
+                return;
+            }
+            if ((feature == "ISUNIQUE"))
+            {
+                this.IsUnique = ((bool)(value));
+                return;
+            }
+            if ((feature == "LOWERBOUND"))
+            {
+                this.LowerBound = ((int)(value));
+                return;
+            }
+            if ((feature == "UPPERBOUND"))
+            {
+                this.UpperBound = ((int)(value));
+                return;
+            }
+            base.SetFeature(feature, value);
+        }
+        
+        /// <summary>
+        /// Gets the property expression for the given attribute
+        /// </summary>
+        /// <returns>An incremental property expression</returns>
+        /// <param name="attribute">The requested attribute in upper case</param>
+        protected override NMF.Expressions.INotifyExpression<object> GetExpressionForAttribute(string attribute)
+        {
+            if ((attribute == "TYPE"))
+            {
+                return new TypeProxy(this);
+            }
+            return base.GetExpressionForAttribute(attribute);
+        }
+        
+        /// <summary>
+        /// Gets the property expression for the given reference
+        /// </summary>
+        /// <returns>An incremental property expression</returns>
+        /// <param name="reference">The requested reference in upper case</param>
+        protected override NMF.Expressions.INotifyExpression<NMF.Models.IModelElement> GetExpressionForReference(string reference)
+        {
+            if ((reference == "TYPE"))
+            {
+                return new TypeProxy(this);
+            }
+            return base.GetExpressionForReference(reference);
+        }
+        
+        /// <summary>
+        /// Represents a proxy to represent an incremental access to the IsOrdered property
+        /// </summary>
+        private sealed class IsOrderedProxy : ModelPropertyChange<ITypedElement, bool>
+        {
+            
+            /// <summary>
+            /// Creates a new observable property access proxy
+            /// </summary>
+            /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
+            public IsOrderedProxy(ITypedElement modelElement) : 
+                    base(modelElement)
+            {
+            }
+            
+            /// <summary>
+            /// Gets or sets the value of this expression
+            /// </summary>
+            public override bool Value
+            {
+                get
+                {
+                    return this.ModelElement.IsOrdered;
+                }
+                set
+                {
+                    this.ModelElement.IsOrdered = value;
+                }
+            }
+            
+            /// <summary>
+            /// Registers an event handler to subscribe specifically on the changed event for this property
+            /// </summary>
+            /// <param name="handler">The handler that should be subscribed to the property change event</param>
+            protected override void RegisterChangeEventHandler(System.EventHandler<NMF.Expressions.ValueChangedEventArgs> handler)
+            {
+                this.ModelElement.IsOrderedChanged += handler;
+            }
+            
+            /// <summary>
+            /// Registers an event handler to subscribe specifically on the changed event for this property
+            /// </summary>
+            /// <param name="handler">The handler that should be unsubscribed from the property change event</param>
+            protected override void UnregisterChangeEventHandler(System.EventHandler<NMF.Expressions.ValueChangedEventArgs> handler)
+            {
+                this.ModelElement.IsOrderedChanged -= handler;
+            }
+        }
+        
+        /// <summary>
+        /// Represents a proxy to represent an incremental access to the IsUnique property
+        /// </summary>
+        private sealed class IsUniqueProxy : ModelPropertyChange<ITypedElement, bool>
+        {
+            
+            /// <summary>
+            /// Creates a new observable property access proxy
+            /// </summary>
+            /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
+            public IsUniqueProxy(ITypedElement modelElement) : 
+                    base(modelElement)
+            {
+            }
+            
+            /// <summary>
+            /// Gets or sets the value of this expression
+            /// </summary>
+            public override bool Value
+            {
+                get
+                {
+                    return this.ModelElement.IsUnique;
+                }
+                set
+                {
+                    this.ModelElement.IsUnique = value;
+                }
+            }
+            
+            /// <summary>
+            /// Registers an event handler to subscribe specifically on the changed event for this property
+            /// </summary>
+            /// <param name="handler">The handler that should be subscribed to the property change event</param>
+            protected override void RegisterChangeEventHandler(System.EventHandler<NMF.Expressions.ValueChangedEventArgs> handler)
+            {
+                this.ModelElement.IsUniqueChanged += handler;
+            }
+            
+            /// <summary>
+            /// Registers an event handler to subscribe specifically on the changed event for this property
+            /// </summary>
+            /// <param name="handler">The handler that should be unsubscribed from the property change event</param>
+            protected override void UnregisterChangeEventHandler(System.EventHandler<NMF.Expressions.ValueChangedEventArgs> handler)
+            {
+                this.ModelElement.IsUniqueChanged -= handler;
+            }
+        }
+        
+        /// <summary>
+        /// Represents a proxy to represent an incremental access to the LowerBound property
+        /// </summary>
+        private sealed class LowerBoundProxy : ModelPropertyChange<ITypedElement, int>
+        {
+            
+            /// <summary>
+            /// Creates a new observable property access proxy
+            /// </summary>
+            /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
+            public LowerBoundProxy(ITypedElement modelElement) : 
+                    base(modelElement)
+            {
+            }
+            
+            /// <summary>
+            /// Gets or sets the value of this expression
+            /// </summary>
+            public override int Value
+            {
+                get
+                {
+                    return this.ModelElement.LowerBound;
+                }
+                set
+                {
+                    this.ModelElement.LowerBound = value;
+                }
+            }
+            
+            /// <summary>
+            /// Registers an event handler to subscribe specifically on the changed event for this property
+            /// </summary>
+            /// <param name="handler">The handler that should be subscribed to the property change event</param>
+            protected override void RegisterChangeEventHandler(System.EventHandler<NMF.Expressions.ValueChangedEventArgs> handler)
+            {
+                this.ModelElement.LowerBoundChanged += handler;
+            }
+            
+            /// <summary>
+            /// Registers an event handler to subscribe specifically on the changed event for this property
+            /// </summary>
+            /// <param name="handler">The handler that should be unsubscribed from the property change event</param>
+            protected override void UnregisterChangeEventHandler(System.EventHandler<NMF.Expressions.ValueChangedEventArgs> handler)
+            {
+                this.ModelElement.LowerBoundChanged -= handler;
+            }
+        }
+        
+        /// <summary>
+        /// Represents a proxy to represent an incremental access to the UpperBound property
+        /// </summary>
+        private sealed class UpperBoundProxy : ModelPropertyChange<ITypedElement, int>
+        {
+            
+            /// <summary>
+            /// Creates a new observable property access proxy
+            /// </summary>
+            /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
+            public UpperBoundProxy(ITypedElement modelElement) : 
+                    base(modelElement)
+            {
+            }
+            
+            /// <summary>
+            /// Gets or sets the value of this expression
+            /// </summary>
+            public override int Value
+            {
+                get
+                {
+                    return this.ModelElement.UpperBound;
+                }
+                set
+                {
+                    this.ModelElement.UpperBound = value;
+                }
+            }
+            
+            /// <summary>
+            /// Registers an event handler to subscribe specifically on the changed event for this property
+            /// </summary>
+            /// <param name="handler">The handler that should be subscribed to the property change event</param>
+            protected override void RegisterChangeEventHandler(System.EventHandler<NMF.Expressions.ValueChangedEventArgs> handler)
+            {
+                this.ModelElement.UpperBoundChanged += handler;
+            }
+            
+            /// <summary>
+            /// Registers an event handler to subscribe specifically on the changed event for this property
+            /// </summary>
+            /// <param name="handler">The handler that should be unsubscribed from the property change event</param>
+            protected override void UnregisterChangeEventHandler(System.EventHandler<NMF.Expressions.ValueChangedEventArgs> handler)
+            {
+                this.ModelElement.UpperBoundChanged -= handler;
+            }
+        }
+        
+        /// <summary>
+        /// Represents a proxy to represent an incremental access to the Type property
+        /// </summary>
+        private sealed class TypeProxy : ModelPropertyChange<ITypedElement, IType>
+        {
+            
+            /// <summary>
+            /// Creates a new observable property access proxy
+            /// </summary>
+            /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
+            public TypeProxy(ITypedElement modelElement) : 
+                    base(modelElement)
+            {
+            }
+            
+            /// <summary>
+            /// Gets or sets the value of this expression
+            /// </summary>
+            public override IType Value
+            {
+                get
+                {
+                    return this.ModelElement.Type;
+                }
+                set
+                {
+                    this.ModelElement.Type = value;
+                }
+            }
+            
+            /// <summary>
+            /// Registers an event handler to subscribe specifically on the changed event for this property
+            /// </summary>
+            /// <param name="handler">The handler that should be subscribed to the property change event</param>
+            protected override void RegisterChangeEventHandler(System.EventHandler<NMF.Expressions.ValueChangedEventArgs> handler)
+            {
+                this.ModelElement.TypeChanged += handler;
+            }
+            
+            /// <summary>
+            /// Registers an event handler to subscribe specifically on the changed event for this property
+            /// </summary>
+            /// <param name="handler">The handler that should be unsubscribed from the property change event</param>
+            protected override void UnregisterChangeEventHandler(System.EventHandler<NMF.Expressions.ValueChangedEventArgs> handler)
+            {
+                this.ModelElement.TypeChanged -= handler;
+            }
         }
         
         /// <summary>

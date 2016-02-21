@@ -14,6 +14,7 @@ using NMF.Expressions;
 using NMF.Expressions.Linq;
 using NMF.Models;
 using NMF.Models.Collections;
+using NMF.Models.Expressions;
 using NMF.Serialization;
 using NMF.Utilities;
 using System;
@@ -31,11 +32,8 @@ namespace NMF.Models.Meta
     /// <summary>
     /// The public interface for TypedElement
     /// </summary>
-    [XmlNamespaceAttribute("http://nmf.codeplex.com/nmeta/")]
-    [XmlNamespacePrefixAttribute("nmeta")]
-    [ModelRepresentationClassAttribute("http://nmf.codeplex.com/nmeta/#//TypedElement/")]
-    [XmlDefaultImplementationTypeAttribute(typeof(TypedElement))]
     [DefaultImplementationTypeAttribute(typeof(TypedElement))]
+    [XmlDefaultImplementationTypeAttribute(typeof(TypedElement))]
     public interface ITypedElement : IModelElement, IMetaElement
     {
         
@@ -87,22 +85,22 @@ namespace NMF.Models.Meta
         /// <summary>
         /// Gets fired when the IsOrdered property changed its value
         /// </summary>
-        event EventHandler IsOrderedChanged;
+        event EventHandler<ValueChangedEventArgs> IsOrderedChanged;
         
         /// <summary>
         /// Gets fired when the IsUnique property changed its value
         /// </summary>
-        event EventHandler IsUniqueChanged;
+        event EventHandler<ValueChangedEventArgs> IsUniqueChanged;
         
         /// <summary>
         /// Gets fired when the LowerBound property changed its value
         /// </summary>
-        event EventHandler LowerBoundChanged;
+        event EventHandler<ValueChangedEventArgs> LowerBoundChanged;
         
         /// <summary>
         /// Gets fired when the UpperBound property changed its value
         /// </summary>
-        event EventHandler UpperBoundChanged;
+        event EventHandler<ValueChangedEventArgs> UpperBoundChanged;
         
         /// <summary>
         /// Gets fired when the Type property changed its value

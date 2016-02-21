@@ -61,7 +61,15 @@ namespace NMF.Models.Meta
                 {
                     generatedProperty.Type = fieldType;
                     var callOnPropertyChanged = new CodeMethodInvokeExpression(new CodeThisReferenceExpression(), "OnPropertyChanged", new CodePrimitiveExpression(generatedProperty.Name));
-                    generatedProperty.ImplementSetter(fieldRef, generatedProperty.CreateOnChangedEventPattern(), new CodeExpressionStatement(callOnPropertyChanged));
+                    var oldDef = new CodeVariableDeclarationStatement(fieldType, "old", fieldRef);
+                    var oldRef = new CodeVariableReferenceExpression("old");
+                    var value = new CodePropertySetValueReferenceExpression();
+                    generatedProperty.SetStatements.Add(new CodeConditionStatement(new CodeBinaryOperatorExpression(fieldRef, CodeBinaryOperatorType.IdentityInequality, value),
+                        oldDef,
+                        new CodeAssignStatement(fieldRef, value),
+                        generatedProperty.CreateOnChangedEventPattern(new CodeTypeReference(typeof(ValueChangedEventArgs).Name),
+                             new CodeObjectCreateExpression(typeof(ValueChangedEventArgs).Name, oldRef, value)),
+                        new CodeExpressionStatement(callOnPropertyChanged)));
                 }
                 else
                 {
@@ -112,6 +120,10 @@ namespace NMF.Models.Meta
                     }
                 }
                 output.AddAttribute(typeof(XmlAttributeAttribute), true);
+                if (input.UpperBound != 1)
+                {
+                    output.AddAttribute(typeof(ConstantAttribute));
+                }
             }
 
             private CodeTypeReference CreateCollectionImplementationType(ITypedElement arg, CodeTypeReference elementType, ITransformationContext context)

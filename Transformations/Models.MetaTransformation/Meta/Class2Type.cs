@@ -72,8 +72,8 @@ namespace NMF.Models.Meta
                 RequireMany(Rule<RefinedReferenceGenerator>(), cl => cl.ReferenceConstraints.Select(c => Tuple.Create(cl, c.Constrains)));
                 RequireMany(Rule<RefinedAttributeGenerator>(), cl => cl.AttributeConstraints.Select(c => Tuple.Create(cl, c.Constrains)));
 
-                RequireMany(Rule<Feature2Proxy>(), cl => cl.Attributes, (cl, proxies) => cl.Members.AddRange(proxies.ToArray()));
-                RequireMany(Rule<Feature2Proxy>(), cl => cl.References, (cl, proxies) => cl.Members.AddRange(proxies.ToArray()));
+                RequireMany(Rule<Feature2Proxy>(), cl => cl.Attributes.Where(a => a.UpperBound == 1), (cl, proxies) => cl.Members.AddRange(proxies.ToArray()));
+                RequireMany(Rule<Feature2Proxy>(), cl => cl.References.Where(r => r.UpperBound == 1), (cl, proxies) => cl.Members.AddRange(proxies.ToArray()));
 
                 Call(Rule<Class2Children>(), (decl, childDecl) => { if (childDecl != null) decl.Members.Add(childDecl); });
                 Call(Rule<Class2Referenced>(), (decl, refDecl) => { if (refDecl != null) decl.Members.Add(refDecl); });
@@ -359,7 +359,7 @@ namespace NMF.Models.Meta
                 getAttributeValue.Parameters.Add(new CodeParameterDeclarationExpression(typeof(int), "index"));
                 AddAttributesOfClass(input, generatedType, AddToGetAttributeValue, getAttributeValue, context);
                 getAttributeValue.Statements.Add(new CodeMethodReturnStatement(
-                    new CodeMethodInvokeExpression(new CodeBaseReferenceExpression(), "GetModelElementForReference", new CodeArgumentReferenceExpression("reference"), new CodeArgumentReferenceExpression("index"))));
+                    new CodeMethodInvokeExpression(new CodeBaseReferenceExpression(), "GetAttributeValue", new CodeArgumentReferenceExpression("attribute"), new CodeArgumentReferenceExpression("index"))));
                 if (getAttributeValue.Statements.Count == 1) return null;
                 getAttributeValue.WriteDocumentation("Resolves the given attribute name", "The attribute value or null if it could not be found", new Dictionary<string, string>()
                 {
@@ -429,7 +429,7 @@ namespace NMF.Models.Meta
             {
                 if (feature.UpperBound != 1)
                 {
-                    var propRef = new CodePropertyReferenceExpression(new CodeThisReferenceExpression(), feature.Name.ToPascalCase());
+                    var propRef = new CodePropertyReferenceExpression(new CodeThisReferenceExpression(), "_" + feature.Name.ToCamelCase());
                     var ifStmt = new CodeConditionStatement(new CodeBinaryOperatorExpression(new CodeVariableReferenceExpression("feature"),
                         CodeBinaryOperatorType.ValueEquality, new CodePrimitiveExpression(feature.Name.ToUpperInvariant())));
                     ifStmt.TrueStatements.Add(new CodeMethodReturnStatement(propRef));
@@ -455,8 +455,8 @@ namespace NMF.Models.Meta
                 };
                 setFeature.Parameters.Add(new CodeParameterDeclarationExpression(typeof(string), "feature"));
                 setFeature.Parameters.Add(new CodeParameterDeclarationExpression(typeof(object), "value"));
-                AddReferencesOfClass(input, generatedType, AddSetFeature, setFeature, false, context);
-                AddAttributesOfClass(input, generatedType, AddSetFeature, setFeature, context);
+                AddReferencesOfClass(input, generatedType, (m,f) => AddSetFeature(m, f, context, true), setFeature, false, context);
+                AddAttributesOfClass(input, generatedType, (m,f) => AddSetFeature(m, f, context, false), setFeature, context);
                 if (setFeature.Statements.Count == 0)
                 {
                     return null;
@@ -470,14 +470,20 @@ namespace NMF.Models.Meta
                 return setFeature;
             }
 
-            private CodeMemberMethod AddSetFeature(CodeMemberMethod method, ITypedElement feature)
+            private CodeMemberMethod AddSetFeature(CodeMemberMethod method, ITypedElement feature, ITransformationContext context, bool isReference)
             {
                 if (feature.UpperBound == 1)
                 {
                     var propRef = new CodePropertyReferenceExpression(new CodeThisReferenceExpression(), feature.Name.ToPascalCase());
                     var ifStmt = new CodeConditionStatement(new CodeBinaryOperatorExpression(new CodeVariableReferenceExpression("feature"),
                         CodeBinaryOperatorType.ValueEquality, new CodePrimitiveExpression(feature.Name.ToUpperInvariant())));
-                    ifStmt.TrueStatements.Add(new CodeAssignStatement(propRef, new CodeArgumentReferenceExpression("value")));
+                    CodeExpression value = new CodeArgumentReferenceExpression("value");
+                    if (feature.Type != null || isReference)
+                    {
+                        var targetType = CreateReference(feature.Type, isReference, context);
+                        value = new CodeCastExpression(targetType, value);
+                    }
+                    ifStmt.TrueStatements.Add(new CodeAssignStatement(propRef, value));
                     ifStmt.TrueStatements.Add(new CodeMethodReturnStatement());
                     method.Statements.Add(ifStmt);
                 }

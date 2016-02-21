@@ -14,6 +14,7 @@ using NMF.Expressions;
 using NMF.Expressions.Linq;
 using NMF.Models;
 using NMF.Models.Collections;
+using NMF.Models.Expressions;
 using NMF.Serialization;
 using NMF.Utilities;
 using System;
@@ -28,10 +29,10 @@ namespace NMF.Models.Meta
 {
     
     
-    public class ModelElementExtensionsCollection : ObservableOppositeList<IModelElement, IModelElementExtension>
+    public class ModelElementExtensionsCollection : ObservableOppositeList<NMF.Models.Meta.IModelElement, IModelElementExtension>
     {
         
-        public ModelElementExtensionsCollection(IModelElement parent) : 
+        public ModelElementExtensionsCollection(NMF.Models.Meta.IModelElement parent) : 
                 base(parent)
         {
         }
@@ -41,7 +42,7 @@ namespace NMF.Models.Meta
             this.Remove(((IModelElementExtension)(sender)));
         }
         
-        protected override void SetOpposite(IModelElementExtension item, IModelElement parent)
+        protected override void SetOpposite(IModelElementExtension item, NMF.Models.Meta.IModelElement parent)
         {
             if ((parent != null))
             {

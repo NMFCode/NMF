@@ -14,6 +14,7 @@ using NMF.Expressions;
 using NMF.Expressions.Linq;
 using NMF.Models;
 using NMF.Models.Collections;
+using NMF.Models.Expressions;
 using NMF.Serialization;
 using NMF.Utilities;
 using System;
@@ -31,11 +32,8 @@ namespace NMF.Models.Meta
     /// <summary>
     /// The public interface for Namespace
     /// </summary>
-    [XmlNamespaceAttribute("http://nmf.codeplex.com/nmeta/")]
-    [XmlNamespacePrefixAttribute("nmeta")]
-    [ModelRepresentationClassAttribute("http://nmf.codeplex.com/nmeta/#//Namespace/")]
-    [XmlDefaultImplementationTypeAttribute(typeof(Namespace))]
     [DefaultImplementationTypeAttribute(typeof(Namespace))]
+    [XmlDefaultImplementationTypeAttribute(typeof(Namespace))]
     public interface INamespace : IModelElement, IMetaElement
     {
         
@@ -85,12 +83,12 @@ namespace NMF.Models.Meta
         /// <summary>
         /// Gets fired when the Uri property changed its value
         /// </summary>
-        event EventHandler UriChanged;
+        event EventHandler<ValueChangedEventArgs> UriChanged;
         
         /// <summary>
         /// Gets fired when the Prefix property changed its value
         /// </summary>
-        event EventHandler PrefixChanged;
+        event EventHandler<ValueChangedEventArgs> PrefixChanged;
         
         /// <summary>
         /// Gets fired when the ParentNamespace property changed its value
