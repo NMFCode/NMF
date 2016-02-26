@@ -240,6 +240,14 @@ namespace NMF.Serialization
             {
                 var parentTsi = GetSerializationInfo(type.BaseType, true);
                 info.BaseTypes.Add(parentTsi);
+                if (identifier == null && parentTsi.IsIdentified)
+                {
+                    XmlPropertySerializationInfo identifierProperty = parentTsi.IdentifierProperty as XmlPropertySerializationInfo;
+                    if (identifierProperty != null)
+                    {
+                        identifier = identifierProperty.Property.Name;
+                    }
+                }
             }
             foreach (var pi in type.GetProperties(BindingFlags.Public | BindingFlags.Instance))
             {
@@ -957,13 +965,20 @@ namespace NMF.Serialization
                     string id = CStr(p.ConvertFromString(reader.GetAttribute(p.ElementName, p.Namespace)));
                     if (!string.IsNullOrEmpty(id))
                     {
-                        if (!context.ContainsId(id, info.Type))
+                        if (OverrideIdentifiedObject(obj, reader, context))
                         {
-                            context.RegisterId(id, obj);
+                            if (!context.ContainsId(id, info.Type))
+                            {
+                                context.RegisterId(id, obj);
+                            }
+                            else
+                            {
+                                obj = context.Resolve(id, info.Type);
+                            }
                         }
                         else
                         {
-                            obj = context.Resolve(id, info.Type);
+                            context.RegisterId(id, obj);
                         }
                     }
                 }
@@ -972,6 +987,11 @@ namespace NMF.Serialization
             InitializeElementProperties(reader, ref obj, info, context);
             ISupportInitialize init = obj as ISupportInitialize;
             if (init != null) context.Inits.Enqueue(init);
+        }
+
+        protected virtual bool OverrideIdentifiedObject(object obj, XmlReader reader, XmlSerializationContext context)
+        {
+            return true;
         }
 
         protected virtual void InitializeElementProperties(XmlReader reader, ref object obj, ITypeSerializationInfo info, XmlSerializationContext context)

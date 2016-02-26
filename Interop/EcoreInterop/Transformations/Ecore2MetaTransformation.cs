@@ -7,45 +7,49 @@ using NMF.Transformations.Core;
 using NMF.Utilities;
 using NMF.Models;
 using System.Diagnostics;
+using NMF.Models.Repository;
 
 namespace NMF.Interop.Ecore.Transformations
 {
     public class Ecore2MetaTransformation : ReflectiveTransformation
     {
-        private static Dictionary<string, string> classesDict = new Dictionary<string, string>();
+        private static Dictionary<string, IPrimitiveType> classesDict = new Dictionary<string, IPrimitiveType>();
 
         static Ecore2MetaTransformation()
         {
-            classesDict.Add("byte", typeof(byte).FullName);
-            classesDict.Add("byte[]", typeof(byte[]).FullName);
-            classesDict.Add("int", typeof(int).FullName);
-            classesDict.Add("long", typeof(long).FullName);
-            classesDict.Add("boolean", typeof(bool).FullName);
-            classesDict.Add("double", typeof(double).FullName);
-            classesDict.Add("float", typeof(float).FullName);
-            classesDict.Add("decimal", typeof(decimal).FullName);
-            classesDict.Add("char", typeof(char).FullName);
-            classesDict.Add("short", typeof(short).FullName);
-            classesDict.Add("java.util.Date", typeof(System.DateTime).Name);
-            classesDict.Add("java.lang.String", typeof(string).FullName);
-            classesDict.Add("java.lang.Object", typeof(object).FullName);
-            classesDict.Add("java.lang.Byte", typeof(byte).FullName);
-            classesDict.Add("java.lang.Integer", typeof(int).FullName);
-            classesDict.Add("java.lang.Long", typeof(long).FullName);
-            classesDict.Add("java.lang.Boolean", typeof(bool).FullName);
-            classesDict.Add("java.lang.Double", typeof(double).FullName);
-            classesDict.Add("java.lang.Float", typeof(float).FullName);
-            classesDict.Add("java.lang.Decimal", typeof(decimal).FullName);
-            classesDict.Add("java.lang.Character", typeof(char).FullName);
-            classesDict.Add("java.lang.Short", typeof(short).FullName);
-            classesDict.Add("java.net.URI", typeof(System.Uri).Name);
+            classesDict.Add("byte", (IPrimitiveType)MetaRepository.Instance.Resolve("http://nmf.codeplex.com/nmeta/#//Byte"));
+            classesDict.Add("byte[]", (IPrimitiveType)MetaRepository.Instance.Resolve("http://nmf.codeplex.com/nmeta/#//ByteArray"));
+            classesDict.Add("int", (IPrimitiveType)MetaRepository.Instance.Resolve("http://nmf.codeplex.com/nmeta/#//Integer"));
+            classesDict.Add("long", (IPrimitiveType)MetaRepository.Instance.Resolve("http://nmf.codeplex.com/nmeta/#//Long"));
+            classesDict.Add("boolean", (IPrimitiveType)MetaRepository.Instance.Resolve("http://nmf.codeplex.com/nmeta/#//Boolean"));
+            classesDict.Add("double", (IPrimitiveType)MetaRepository.Instance.Resolve("http://nmf.codeplex.com/nmeta/#//Double"));
+            classesDict.Add("float", (IPrimitiveType)MetaRepository.Instance.Resolve("http://nmf.codeplex.com/nmeta/#//Float"));
+            classesDict.Add("decimal", (IPrimitiveType)MetaRepository.Instance.Resolve("http://nmf.codeplex.com/nmeta/#//Decimal"));
+            classesDict.Add("char", (IPrimitiveType)MetaRepository.Instance.Resolve("http://nmf.codeplex.com/nmeta/#//Char"));
+            classesDict.Add("short", (IPrimitiveType)MetaRepository.Instance.Resolve("http://nmf.codeplex.com/nmeta/#//Short"));
+            classesDict.Add("java.util.Date", (IPrimitiveType)MetaRepository.Instance.Resolve("http://nmf.codeplex.com/nmeta/#//DateTime"));
+            classesDict.Add("java.lang.String", (IPrimitiveType)MetaRepository.Instance.Resolve("http://nmf.codeplex.com/nmeta/#//String"));
+            classesDict.Add("java.lang.Object", (IPrimitiveType)MetaRepository.Instance.Resolve("http://nmf.codeplex.com/nmeta/#//Object"));
+            classesDict.Add("java.lang.Byte", (IPrimitiveType)MetaRepository.Instance.Resolve("http://nmf.codeplex.com/nmeta/#//Byte"));
+            classesDict.Add("java.lang.Integer", (IPrimitiveType)MetaRepository.Instance.Resolve("http://nmf.codeplex.com/nmeta/#//Integer"));
+            classesDict.Add("java.lang.Long", (IPrimitiveType)MetaRepository.Instance.Resolve("http://nmf.codeplex.com/nmeta/#//Long"));
+            classesDict.Add("java.lang.Boolean", (IPrimitiveType)MetaRepository.Instance.Resolve("http://nmf.codeplex.com/nmeta/#//Boolean"));
+            classesDict.Add("java.lang.Double", (IPrimitiveType)MetaRepository.Instance.Resolve("http://nmf.codeplex.com/nmeta/#//Double"));
+            classesDict.Add("java.lang.Float", (IPrimitiveType)MetaRepository.Instance.Resolve("http://nmf.codeplex.com/nmeta/#//Float"));
+            classesDict.Add("java.lang.Decimal", (IPrimitiveType)MetaRepository.Instance.Resolve("http://nmf.codeplex.com/nmeta/#//Decimal"));
+            classesDict.Add("java.lang.Character", (IPrimitiveType)MetaRepository.Instance.Resolve("http://nmf.codeplex.com/nmeta/#//Char"));
+            classesDict.Add("java.lang.Short", (IPrimitiveType)MetaRepository.Instance.Resolve("http://nmf.codeplex.com/nmeta/#//Short"));
+            classesDict.Add("java.net.URI", (IPrimitiveType)MetaRepository.Instance.Resolve("http://nmf.codeplex.com/nmeta/#//Uri"));
         }
 
         public class ENamedElement2MetaElement : AbstractTransformationRule<IENamedElement, IMetaElement>
         {
             public override void Transform(IENamedElement input, IMetaElement output, ITransformationContext context)
             {
-                output.Name = input.Name.ToString();
+                if (!(input is IEDataType) || (input is IEEnum))
+                {
+                    output.Name = input.Name.ToString();
+                }
             }
         }
 
@@ -81,7 +85,8 @@ namespace NMF.Interop.Ecore.Transformations
             {
                 MarkInstantiatingFor(Rule<ENamedElement2MetaElement>());
 
-                Require(Rule<EPackage2Namespace>(), selector: classifier => classifier.EPackage);
+                Require(Rule<EPackage2Namespace>(), selector: classifier => classifier.EPackage,
+                    filter: classifier => !(classifier is IEDataType) || (classifier is IEEnum));
             }
         }
 
@@ -145,20 +150,16 @@ namespace NMF.Interop.Ecore.Transformations
 
         public class EDataType2PrimitiveType : TransformationRule<IEDataType, IPrimitiveType>
         {
-            public override void Transform(IEDataType input, IPrimitiveType output, ITransformationContext context)
+            public override IPrimitiveType CreateOutput(IEDataType input, ITransformationContext context)
             {
-                string translated = null;
-                if (input.InstanceClassName != null && classesDict.TryGetValue(input.InstanceClassName, out translated))
+                IPrimitiveType type;
+                if (input.InstanceClassName != null && classesDict.TryGetValue(input.InstanceClassName, out type))
                 {
-                    output.SystemType = translated;
+                    return type;
                 }
                 else
                 {
-                    output.SystemType = typeof(object).FullName;
-                }
-                if (input.Name.StartsWith("E") && input.Name.Length >= 2 && char.IsUpper(input.Name[1]))
-                {
-                    output.Name = input.Name.Substring(1);
+                    return classesDict["java.lang.Object"];
                 }
             }
 

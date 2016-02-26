@@ -39,6 +39,7 @@ namespace NMF.Serialization
         }
 
         private Dictionary<Type, Dictionary<string, object>> idStore = new Dictionary<Type, Dictionary<string, object>>();
+        private Dictionary<Type, List<Dictionary<string, object>>> pathStore = new Dictionary<Type, List<Dictionary<string, object>>>();
         private HashSet<ObjectPropertyPair> blockedProperties = new HashSet<ObjectPropertyPair>();
 
         private Queue<XmlIdentifierDelay> lostProperties = new Queue<XmlIdentifierDelay>();
@@ -53,10 +54,6 @@ namespace NMF.Serialization
             {
                 var type = value.GetType();
                 RegisterId(id, value, type);
-                foreach (var iFace in type.GetInterfaces())
-                {
-                    RegisterId(id, value, iFace);
-                }
             }
         }
 
@@ -88,23 +85,29 @@ namespace NMF.Serialization
             }
             else
             {
-                dict[id] = value;
-            }
-            if (type.BaseType != null)
-            {
-                RegisterId(id, value, type.BaseType);
+                dict[id] = new NameClash();
             }
         }
+
+        private class NameClash { }
 
         public virtual bool ContainsId(string id, Type type)
         {
             Dictionary<string, object> dict;
-            if (type != null && idStore.TryGetValue(type, out dict))
+            if (idStore.TryGetValue(type, out dict))
             {
                 return dict.ContainsKey(id);
             }
             else
             {
+                List<Dictionary<string, object>> paths = GetOrCreateTypeStores(type);
+                foreach (var typeStore in paths)
+                {
+                    if (typeStore.ContainsKey(id))
+                    {
+                        return true;
+                    }
+                }
                 return false;
             }
         }
@@ -115,12 +118,48 @@ namespace NMF.Serialization
             object obj;
             if (idStore.TryGetValue(type, out dict) && dict.TryGetValue(id, out obj))
             {
+                if (obj is NameClash)
+                {
+                    throw new InvalidOperationException(string.Format("The id {0} is not unique for type {1}!", id, type.Name));
+                }
                 return obj;
             }
             else
             {
+                List<Dictionary<string, object>> paths = GetOrCreateTypeStores(type);
+                foreach (var typeStore in paths)
+                {
+                    if (typeStore.TryGetValue(id, out obj))
+                    {
+                        if (obj is NameClash)
+                        {
+                            throw new InvalidOperationException(string.Format("The id {0} is not unique for type {1}!", id, type.Name));
+                        }
+                        return obj;
+                    }
+                }
                 return null;
             }
+        }
+
+        private List<Dictionary<string, object>> GetOrCreateTypeStores(Type type)
+        {
+            // we have to search all paths
+            List<Dictionary<string, object>> paths;
+            if (!pathStore.TryGetValue(type, out paths))
+            {
+                paths = new List<Dictionary<string, object>>();
+                foreach (var pair in idStore)
+                {
+                    if (type.IsAssignableFrom(pair.Key))
+                    {
+                        paths.Add(pair.Value);
+                    }
+                }
+                pathStore.Add(type, paths);
+            }
+
+            return paths;
         }
 
         public bool IsOppositeSet(object instance, IPropertySerializationInfo property)

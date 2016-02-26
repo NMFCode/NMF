@@ -67,7 +67,6 @@ namespace Ecore2Code
     {
         CS,
         VB,
-        FS,
         CPP,
         JS
     }
@@ -146,9 +145,6 @@ namespace Ecore2Code
                     break;
                 case SupportedLanguage.VB:
                     generator = new Microsoft.VisualBasic.VBCodeProvider();
-                    break;
-                case SupportedLanguage.FS:
-                    generator = new Microsoft.FSharp.Compiler.CodeDom.FSharpCodeProvider();
                     break;
                 case SupportedLanguage.CPP:
                     generator = new Microsoft.VisualC.CppCodeProvider();

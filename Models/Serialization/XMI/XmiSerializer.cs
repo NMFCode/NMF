@@ -221,6 +221,11 @@ namespace NMF.Serialization.Xmi
             }
         }
 
+        protected override bool OverrideIdentifiedObject(object obj, XmlReader reader, XmlSerializationContext context)
+        {
+            return false;
+        }
+
         protected virtual void OnUnknownElement(UnknownElementEventArgs e)
         {
             if (UnknownElement != null) UnknownElement(this, e);

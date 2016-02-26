@@ -114,7 +114,9 @@
  <Types xsi:type="nmeta:PrimitiveType" SystemType="System.Boolean" Name="Boolean" />
  <Types xsi:type="nmeta:PrimitiveType" SystemType="System.Byte" Name="Byte" />
  <Types xsi:type="nmeta:PrimitiveType" SystemType="System.Byte[]" Name="ByteArray" />
+ <Types xsi:type="nmeta:PrimitiveType" SystemType="System.Char" Name="Char" />
  <Types xsi:type="nmeta:PrimitiveType" SystemType="DateTime" Name="DateTime"/>
+ <Types xsi:type="nmeta:PrimitiveType" SystemType="System.Decimal" Name="Decimal" />
  <Types xsi:type="nmeta:PrimitiveType" SystemType="System.Double" Name="Double" />
  <Types xsi:type="nmeta:PrimitiveType" SystemType="System.Single" Name="Float" />
  <Types xsi:type="nmeta:PrimitiveType" SystemType="Guid" Name="Guid"/>
