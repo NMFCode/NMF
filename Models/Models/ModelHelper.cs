@@ -52,7 +52,7 @@ namespace NMF.Models
             }
         }
 
-        public static Regex uriSegmentRegex = new Regex(@".+[\._](?<Number>\d+)", RegexOptions.Compiled);
+        public static Regex uriSegmentRegex = new Regex(@"^(.+[\._])?(?<Number>\d+)$", RegexOptions.Compiled);
 
         /// <summary>
         /// Parses the given relative Uri
@@ -70,8 +70,16 @@ namespace NMF.Models
             if (match.Success)
             {
                 var number = match.Groups["Number"];
-                reference = segment.Substring(0, number.Index - 1);
-                index = int.Parse(number.Value, CultureInfo.InvariantCulture);
+                if (number.Index > 0)
+                {
+                    reference = segment.Substring(0, number.Index - 1);
+                    index = int.Parse(number.Value, CultureInfo.InvariantCulture);
+                }
+                else
+                {
+                    reference = "#";
+                    index = int.Parse(number.Value, CultureInfo.InvariantCulture);
+                }
             }
             else
             {
