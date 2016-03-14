@@ -40,6 +40,11 @@ namespace NMF.Benchmarks
         public int Iteration { get; private set; }
 
         /// <summary>
+        /// Gets the name of the phase that is currently executed
+        /// </summary>
+        public string Phase { get; private set; }
+
+        /// <summary>
         /// Gets or sets a function that modifies the model under benchmark
         /// </summary>
         public Action<int> Modifier { get; set; }
@@ -226,28 +231,31 @@ namespace NMF.Benchmarks
         {
             RunIndex = i;
 
+            Phase = "Load";
             stopwatch.Start();
             LoadRoot(options);
             stopwatch.Stop();
-            Report(null, "Load", stopwatch.Elapsed.TotalMilliseconds, options);
+            Report(null, "Time", stopwatch.Elapsed.TotalMilliseconds, options);
 
             foreach (var job in Analyzers)
             {
+                Phase = "Initialize";
                 job.Prepare(options);
                 stopwatch.Restart();
                 job.Initialize(options);
                 stopwatch.Stop();
-                Report(job.Name, "Initialize", stopwatch.Elapsed.TotalMilliseconds, options);
+                Report(job.Name, "Time", stopwatch.Elapsed.TotalMilliseconds, options);
 
                 if (i == 0 && options.Memory)
                 {
                     Report(job.Name, "Memory", job.GetMemoryConsumption(), options);
                 }
 
+                Phase = "Validate";
                 stopwatch.Restart();
                 job.AnalyzeAndReport(options);
                 stopwatch.Stop();
-                Report(job.Name, "Validate", stopwatch.Elapsed.TotalMilliseconds, options);
+                Report(job.Name, "Time", stopwatch.Elapsed.TotalMilliseconds, options);
             }
 
             if (Modifier != null)
@@ -256,18 +264,20 @@ namespace NMF.Benchmarks
                 {
                     Iteration = j;
 
+                    Phase = "Modify";
                     stopwatch.Restart();
                     Modifier(j);
                     stopwatch.Stop();
-                    Report(null, "Modify", stopwatch.Elapsed.TotalMilliseconds, options);
+                    Report(null, "Time", stopwatch.Elapsed.TotalMilliseconds, options);
 
                     foreach (var job in Analyzers)
                     {
+                        Phase = "Revalidate";
                         stopwatch.Restart();
                         var reportAction = job.AnalyzeAndReport(options);
                         stopwatch.Stop();
                         reportAction();
-                        Report(job.Name, "Revalidate", stopwatch.Elapsed.TotalMilliseconds, options);
+                        Report(job.Name, "Time", stopwatch.Elapsed.TotalMilliseconds, options);
                     }
                 }
             }
@@ -278,16 +288,31 @@ namespace NMF.Benchmarks
         /// </summary>
         /// <param name="job">The job that reports or Null if this reports is not related to a job</param>
         /// <param name="phase">The action that has been done or the phase that the job is in</param>
+        /// <param name="metricName">The metric that is to be measured</param>
         /// <param name="value">The value to report</param>
         /// <param name="options">The benchmark options to be used</param>
-        public virtual void Report(string job, string phase, object value, BenchmarkOptions options)
+        public void Report(string job, string metricName, object value, BenchmarkOptions options)
         {
-            Reporting.WriteLine("{0};{1};{2};{3};{4};{5};",
+            Report(job, Phase, metricName, value, options);
+        }
+
+        /// <summary>
+        /// Creates an entry in the reporting CSV
+        /// </summary>
+        /// <param name="job">The job that reports or Null if this reports is not related to a job</param>
+        /// <param name="phase">The action that has been done or the phase that the job is in</param>
+        /// <param name="metricName">The metric that is to be measured</param>
+        /// <param name="value">The value to report</param>
+        /// <param name="options">The benchmark options to be used</param>
+        protected virtual void Report(string job, string phase, string metricName, object value, BenchmarkOptions options)
+        {
+            Reporting.WriteLine("{0};{1};{2};{3};{4};{5};{6};",
                 options.Id,
                 job,
                 phase,
                 RunIndex,
                 Iteration,
+                metricName,
                 value);
         }
 
