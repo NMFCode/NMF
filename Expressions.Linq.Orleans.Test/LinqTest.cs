@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using NMF.Expressions;
 using NMF.Expressions.Linq.Orleans.Interfaces;
+using NMF.Expressions.Linq.Orleans.Linq.Interfaces;
 using Orleans;
 using Orleans.Collections;
 using Orleans.Collections.Observable;
@@ -52,6 +53,31 @@ namespace Expressions.Linq.Orleans.Test
             await consumer.SetInput(new List<TransactionalStreamIdentity<ContainerHostedElement<string>>> { await selectNodeGrain.GetStreamIdentity() });
 
             var items = new List<int>() {1, 2, 5};
+            await provider.SendItems(items);
+
+            Assert.AreEqual(items.Count, consumer.Items.Count);
+            CollectionAssert.AreEquivalent(items, consumer.Items.Select(x => int.Parse(x.Item)).ToList());
+        }
+
+        [TestMethod]
+        public async Task TestObservableSelectAggregateGrain()
+        {
+            var provider = new MultiStreamProvider<int>(_provider, 4);
+
+            var collection = GrainClient.GrainFactory.GetGrain<IObservableContainerGrain<int>>(Guid.NewGuid());
+            await collection.SetNumberOfNodes(4);
+
+            await collection.SetInput(await provider.GetStreamIdentities());
+
+            var selectAggregateGrain = GrainClient.GrainFactory.GetGrain<IObservableSelectAggregateGrain<int, string>>(Guid.NewGuid());
+            await selectAggregateGrain.SetObservingFunc(i => i.ToString());
+
+            await selectAggregateGrain.SetInput(await collection.GetStreamIdentities());
+
+            var consumer = new MultiStreamListConsumer<ContainerHostedElement<string>>(_provider);
+            await consumer.SetInput(await selectAggregateGrain.GetStreamIdentities());
+
+            var items = Enumerable.Range(0, 10000).ToList();
             await provider.SendItems(items);
 
             Assert.AreEqual(items.Count, consumer.Items.Count);
