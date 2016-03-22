@@ -166,7 +166,7 @@ namespace NMF.Models
             {
                 if (fragment != null)
                 {
-                    fragment = path + "/" + fragment;
+                    fragment = path + fragment;
                 }
                 else
                 {

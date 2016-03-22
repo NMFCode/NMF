@@ -344,6 +344,8 @@ namespace NMF.Analysis
                 }
                 var tx = edge.Source.Node;
                 var ty = edge.Target.Node;
+                tx.MakeRoot();
+                ty.MakeRoot();
                 if (ty.Count < tx.Count)
                 {
                     var tmp = tx;

@@ -7,6 +7,7 @@ using System.CodeDom;
 using NMF.CodeGen;
 using NMF.Utilities;
 using NMF.Collections.Generic;
+using NMF.Transformations.Core;
 
 namespace NMF.Models.Meta
 {
@@ -24,7 +25,7 @@ namespace NMF.Models.Meta
             /// <param name="attribute">The NMeta attribute that is refined</param>
             /// <param name="property">The generated code property</param>
             /// <param name="context">The transformation context</param>
-            public override void Transform(IClass scope, IAttribute attribute, CodeMemberProperty property, Transformations.Core.ITransformationContext context)
+            public override void Transform(IClass scope, IAttribute attribute, CodeMemberProperty property, ITransformationContext context)
             {
                 var classDeclaration = context.Trace.ResolveIn(Rule<Type2Type>(), scope);
                 var originalAttribute = context.Trace.ResolveIn(Rule<Attribute2Property>(), attribute);
@@ -85,6 +86,8 @@ namespace NMF.Models.Meta
                         ifNotDefault.Condition = new CodeBinaryOperatorExpression(new CodePropertySetValueReferenceExpression(), CodeBinaryOperatorType.IdentityInequality, value);
                         property.SetStatements.Add(ifNotDefault);
                     }
+
+                    CreateChangeEvent(property, implementations, context);
                 }
                 else
                 {
@@ -101,6 +104,37 @@ namespace NMF.Models.Meta
                         property.GetStatements.Add(new CodeMethodReturnStatement(new CodePropertyReferenceExpression(new CodeTypeReferenceExpression(new CodeTypeReference(typeof(EmptyList<>).Name, attributeType)), "Instance")));
                     }
                 }
+            }
+
+            private static void CreateChangeEvent(CodeMemberProperty property, List<IAttribute> implementations, ITransformationContext context)
+            {
+                var eventSnippet = @"        event EventHandler<ValueChangedEventArgs> {0}.{1}
+        {{
+            add
+            {{{2}
+            }}
+            remove
+            {{{3}
+            }}
+        }}";
+                string addEvents = string.Empty;
+                string removeEvents = string.Empty;
+                var casts = new HashSet<string>();
+                foreach (var impl in implementations)
+                {
+                    var implTypeRef = CreateReference(impl.DeclaringType, true, context);
+                    var name = impl.Name.ToPascalCase() + "Changed";
+                    if (casts.Add(implTypeRef.BaseType))
+                    {
+                        var thisDeclaration = string.Format("\r\n                I{0} _this_{0} = this;", implTypeRef.BaseType);
+                        addEvents += thisDeclaration;
+                        removeEvents += thisDeclaration;
+                    }
+                    addEvents += string.Format("\r\n                _this_{1}.{0} += value;", name, implTypeRef.BaseType);
+                    removeEvents += string.Format("\r\n                _this_{1}.{0} -= value;", name, implTypeRef.BaseType);
+                }
+                eventSnippet = string.Format(eventSnippet, property.PrivateImplementationType.BaseType, property.Name + "Changed", addEvents, removeEvents);
+                property.DependentMembers(true).Add(new CodeSnippetTypeMember(eventSnippet));
             }
 
             public override void RegisterDependencies()

@@ -34,7 +34,7 @@ namespace NMF.Models.Meta
     /// </summary>
     [DefaultImplementationTypeAttribute(typeof(ReferenceConstraint))]
     [XmlDefaultImplementationTypeAttribute(typeof(ReferenceConstraint))]
-    public interface IReferenceConstraint : IModelElement, ITypedElement
+    public interface IReferenceConstraint : IModelElement
     {
         
         /// <summary>

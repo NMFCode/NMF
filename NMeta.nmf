@@ -5,7 +5,7 @@
    <References Opposite="#//StructuredType/Attributes/" ReferenceType="#//StructuredType/" Name="DeclaringType" Summary="The type that declared this attribute" />
    <References ReferenceType="#//Attribute/" Name="Refines" Summary="Gets or sets the attribute that is implemented by the current attribute" />
  </Types>
- <Types xsi:type="nmeta:Class" BaseTypes="#//TypedElement/" Name="AttributeConstraint">
+ <Types xsi:type="nmeta:Class" Name="AttributeConstraint">
    <References Opposite="#//Class/AttributeConstraints/" LowerBound="1" ReferenceType="#//Class/" Name="DeclaringType" />
    <Attributes IsOrdered="True" Name="Values" Type="#//String/" UpperBound="-1"/>
    <References ReferenceType="#//Attribute/" LowerBound="1" Name="Constrains" />
@@ -14,7 +14,8 @@
    <Attributes DefaultValue="false" Type="#//Boolean/" LowerBound="1" Name="IsInterface" Summary="Determines whether this class is an interface" />
    <Attributes DefaultValue="false" Type="#//Boolean/" LowerBound="1" Name="IsAbstract" />
    <References UpperBound="-1" ReferenceType="#//Class/" Name="BaseTypes" />
-   <References UpperBound="1" ReferenceType="#//Class/" Name="InstanceOf" />
+   <References UpperBound="1" ReferenceType="#//Class/" Name="InstanceOf" Opposite="#//Class/Instantiates" />
+   <References UpperBound="1" ReferenceType="#//Class/" Name="Instantiates" Opposite="#//Class/InstanceOf" />
    <References ReferenceType="#//Attribute/" Name="Identifier" />
    <References IsContainment="True" Opposite="#//AttributeConstraint/DeclaringType/" UpperBound="-1" ReferenceType="#//AttributeConstraint/" Name="AttributeConstraints" />
    <References IsContainment="True" Opposite="#//ReferenceConstraint/DeclaringType/" UpperBound="-1" ReferenceType="#//ReferenceConstraint/" Name="ReferenceConstraints" />
@@ -80,7 +81,7 @@
    <References ReferenceType="#//ReferenceType" Name="ReferenceType" Refines="#//TypedElement/Type"/>
    <References ReferenceType="#//Reference/" Name="Refines" />
  </Types>
- <Types xsi:type="nmeta:Class" BaseTypes="#//TypedElement/" Name="ReferenceConstraint">
+ <Types xsi:type="nmeta:Class" Name="ReferenceConstraint">
    <References Opposite="#//Class/ReferenceConstraints/" LowerBound="1" ReferenceType="#//Class/" Name="DeclaringType" />
    <References IsOrdered="True" Name="References" UpperBound="-1"/>
    <References ReferenceType="#//Reference/" LowerBound="1" Name="Constrains" />

@@ -9,6 +9,7 @@ using System.CodeDom;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Collections.Specialized;
 
 namespace NMF.Models.Meta
 {
@@ -50,15 +51,18 @@ namespace NMF.Models.Meta
 
                 generatedType.WriteDocumentation(string.Format("The collection class to implement the refined {0} reference for the {1} class", reference.Name, scope.Name));
 
+                var implementingReferences = scope.References.Where(r => r.Refines == reference).ToList();
+                var constraint = scope.ReferenceConstraints.FirstOrDefault(r => r.Constrains == reference);
+
                 var constructor = new CodeConstructor();
                 constructor.Attributes = MemberAttributes.Public;
                 constructor.Parameters.Add(new CodeParameterDeclarationExpression(scopeDeclaration.GetReferenceForType(), "parent"));
-                constructor.Statements.Add(new CodeAssignStatement(parentRef, new CodeArgumentReferenceExpression("parent")));
+                var constrParentRef = new CodeArgumentReferenceExpression("parent");
+                constructor.Statements.Add(new CodeAssignStatement(parentRef, constrParentRef));
+
+                ImplementNotifications(generatedType, implementingReferences, constructor, constrParentRef);
 
                 constructor.WriteDocumentation("Creates a new instance");
-
-                var implementingReferences = scope.References.Where(r => r.Refines == reference).ToList();
-                var constraint = scope.ReferenceConstraints.FirstOrDefault(r => r.Constrains == reference);
 
                 CodeExpression standardValuesRef = null;
 
@@ -88,6 +92,122 @@ namespace NMF.Models.Meta
                 {
                     ImplementList(generatedType, elementType, standardValuesRef, reference, implementingReferences, constraint, context);
                 }
+
+                ImplementNotifiable(generatedType, elementType);
+            }
+
+            protected virtual void ImplementNotifications(CodeTypeDeclaration generatedType, List<IReference> implementingAttributes, CodeConstructor constructor, CodeArgumentReferenceExpression constrParentRef)
+            {
+                generatedType.Members.Add(GenerateCollectionChangedEvent());
+                generatedType.Members.Add(GenerateOnCollectionChangedMethod());
+                CodeMemberMethod single = null;
+                CodeMemberMethod multi = null;
+                foreach (var att in implementingAttributes)
+                {
+                    if (att.UpperBound == 1)
+                    {
+                        if (single == null)
+                        {
+                            single = GenerateSingleValueChangedHandler();
+                        }
+                        constructor.Statements.Add(new CodeAttachEventStatement(constrParentRef, att.Name.ToPascalCase() + "Changed",
+                            new CodeMethodReferenceExpression(new CodeThisReferenceExpression(), single.Name)));
+                    }
+                    else
+                    {
+                        if (multi == null)
+                        {
+                            multi = GenerateMultiValueChangedHandler();
+                        }
+                        constructor.Statements.Add(new CodeAttachEventStatement(
+                            new CodeMethodInvokeExpression(new CodePropertyReferenceExpression(constrParentRef, att.Name.ToPascalCase()), "AsNotifiable"), "CollectionChanged",
+                            new CodeMethodReferenceExpression(new CodeThisReferenceExpression(), multi.Name)));
+                    }
+                }
+                if (single != null) generatedType.Members.Add(single);
+                if (multi != null) generatedType.Members.Add(multi);
+            }
+
+            private CodeMemberMethod GenerateSingleValueChangedHandler()
+            {
+                var handler = new CodeMemberMethod()
+                {
+                    Name = "HandleValueChange",
+                    Attributes = MemberAttributes.Private
+                };
+                handler.Parameters.Add(new CodeParameterDeclarationExpression(typeof(object), "sender"));
+                handler.Parameters.Add(new CodeParameterDeclarationExpression(typeof(ValueChangedEventArgs), "eventArgs"));
+
+                var argsRef = new CodeArgumentReferenceExpression("eventArgs");
+                var eDef = new CodeVariableDeclarationStatement(typeof(NotifyCollectionChangedEventArgs), "collectionEvent");
+                handler.Statements.Add(eDef);
+                var eRef = new CodeVariableReferenceExpression(eDef.Name);
+
+                var nullRef = new CodePrimitiveExpression(null);
+                var oldRef = new CodePropertyReferenceExpression(argsRef, "OldValue");
+                var newRef = new CodePropertyReferenceExpression(argsRef, "NewValue");
+
+                var mainIf = new CodeConditionStatement(new CodeBinaryOperatorExpression(newRef, CodeBinaryOperatorType.IdentityInequality, nullRef));
+                var innerIf = new CodeConditionStatement(new CodeBinaryOperatorExpression(oldRef, CodeBinaryOperatorType.IdentityInequality, nullRef));
+                innerIf.TrueStatements.Add(new CodeAssignStatement(eRef, new CodeObjectCreateExpression(typeof(NotifyCollectionChangedEventArgs),
+                    new CodeFieldReferenceExpression(new CodeTypeReferenceExpression(typeof(NotifyCollectionChangedAction)), NotifyCollectionChangedAction.Replace.ToString()),
+                    newRef, oldRef)));
+                innerIf.FalseStatements.Add(new CodeAssignStatement(eRef, new CodeObjectCreateExpression(typeof(NotifyCollectionChangedEventArgs),
+                    new CodeFieldReferenceExpression(new CodeTypeReferenceExpression(typeof(NotifyCollectionChangedAction)), NotifyCollectionChangedAction.Add.ToString()),
+                    newRef)));
+                mainIf.TrueStatements.Add(innerIf);
+                mainIf.FalseStatements.Add(new CodeAssignStatement(eRef, new CodeObjectCreateExpression(typeof(NotifyCollectionChangedEventArgs),
+                    new CodeFieldReferenceExpression(new CodeTypeReferenceExpression(typeof(NotifyCollectionChangedAction)), NotifyCollectionChangedAction.Remove.ToString()),
+                    oldRef)));
+                handler.Statements.Add(mainIf);
+
+                handler.Statements.Add(new CodeMethodInvokeExpression(new CodeThisReferenceExpression(), "OnCollectionChanged", eRef));
+
+                return handler;
+            }
+
+            private CodeMemberMethod GenerateMultiValueChangedHandler()
+            {
+                var handler = new CodeMemberMethod()
+                {
+                    Name = "HandleCollectionChange",
+                    Attributes = MemberAttributes.Private
+                };
+                handler.Parameters.Add(new CodeParameterDeclarationExpression(typeof(object), "sender"));
+                handler.Parameters.Add(new CodeParameterDeclarationExpression(typeof(NotifyCollectionChangedEventArgs), "eventArgs"));
+
+                handler.Statements.Add(new CodeMethodInvokeExpression(new CodeThisReferenceExpression(), "OnCollectionChanged", new CodeArgumentReferenceExpression("eventArgs")));
+
+                return handler;
+            }
+
+            private CodeMemberEvent GenerateCollectionChangedEvent()
+            {
+                var collectionChangedEvent = new CodeMemberEvent()
+                {
+                    Name = "CollectionChanged",
+                    Type = new CodeTypeReference(typeof(NotifyCollectionChangedEventHandler)),
+                    Attributes = MemberAttributes.Public
+                };
+                collectionChangedEvent.WriteDocumentation("Gets fired when the contents of this collection changes");
+                return collectionChangedEvent;
+            }
+
+            private CodeMemberMethod GenerateOnCollectionChangedMethod()
+            {
+                var onCollectionChanged = new CodeMemberMethod()
+                {
+                    Name = "OnCollectionChanged",
+                    Attributes = MemberAttributes.Family
+                };
+                onCollectionChanged.Parameters.Add(new CodeParameterDeclarationExpression(typeof(NotifyCollectionChangedEventArgs), "eventArgs"));
+                var handler = new CodeVariableDeclarationStatement(typeof(NotifyCollectionChangedEventHandler), "handler", new CodeEventReferenceExpression(new CodeThisReferenceExpression(), "CollectionChanged"));
+                var handlerRef = new CodeVariableReferenceExpression(handler.Name);
+                onCollectionChanged.Statements.Add(handler);
+                onCollectionChanged.Statements.Add(new CodeConditionStatement(new CodeBinaryOperatorExpression(handlerRef, CodeBinaryOperatorType.IdentityInequality, new CodePrimitiveExpression(null)),
+                    new CodeExpressionStatement(new CodeMethodInvokeExpression(handlerRef, "Invoke", new CodeThisReferenceExpression(), new CodeArgumentReferenceExpression("eventArgs")))));
+                onCollectionChanged.WriteDocumentation("Fires the CollectionChanged event");
+                return onCollectionChanged;
             }
 
             /// <summary>
@@ -126,6 +246,21 @@ namespace NMF.Models.Meta
                 generatedType.Members.Add(GenerateRemove(original, implementingReferences, elementType, context));
                 generatedType.Members.Add(GenerateGenericGetEnumerator(implementingReferences, constraint, elementType, standardValuesRef));
                 generatedType.Members.Add(GenerateObjectGetEnumerator());
+            }
+
+            /// <summary>
+            /// Implement the IEnumerableExpression interface
+            /// </summary>
+            /// <param name="generatedType">The generated code type declaration</param>
+            /// <param name="elementType">The element type reference</param>
+            protected virtual void ImplementNotifiable(CodeTypeDeclaration generatedType, CodeTypeReference elementType)
+            {
+                generatedType.Members.Add(GenerateIsAttached());
+                generatedType.Members.Add(GenerateCollectionAsNotifiableMethod(elementType));
+                generatedType.Members.Add(GenerateEnumerableAsNotifiableMethod(elementType));
+                generatedType.Members.Add(GenerateObjectAsNotifiableMethod());
+                generatedType.Members.Add(GenerateAttachMethod());
+                generatedType.Members.Add(GenerateDetachMethod());
             }
 
             private CodeMemberMethod GenerateAdd(IReference original, IEnumerable<IReference> implementingReferences, CodeTypeReference elementType, ITransformationContext context)
@@ -701,6 +836,83 @@ namespace NMF.Models.Meta
                 indexer.SetStatements.Add(throwOutOfRange);
                 indexer.WriteDocumentation("Gets or sets the item at the given position");
                 return indexer;
+            }
+
+            private CodeMemberProperty GenerateIsAttached()
+            {
+                var isAttachedProperty = new CodeMemberProperty()
+                {
+                    Attributes = MemberAttributes.Public | MemberAttributes.Final,
+                    Type = new CodeTypeReference(typeof(bool)),
+                    Name = "IsAttached"
+                };
+                isAttachedProperty.GetStatements.Add(new CodeMethodReturnStatement(new CodePrimitiveExpression(true)));
+                isAttachedProperty.WriteDocumentation("Returns that this composed collection is always attached.");
+                return isAttachedProperty;
+            }
+
+            private CodeMemberMethod GenerateCollectionAsNotifiableMethod(CodeTypeReference elementType)
+            {
+                var asNotifiable = new CodeMemberMethod()
+                {
+                    Name = "AsNotifiable",
+                    Attributes = MemberAttributes.Private,
+                    ReturnType = new CodeTypeReference(typeof(INotifyCollection<>).Name, elementType),
+                    PrivateImplementationType = new CodeTypeReference(typeof(ICollectionExpression<>).Name, elementType)
+                };
+                asNotifiable.Statements.Add(new CodeMethodReturnStatement(new CodeThisReferenceExpression()));
+                asNotifiable.WriteDocumentation("Gets an observable version of this collection");
+                return asNotifiable;
+            }
+
+            private CodeMemberMethod GenerateEnumerableAsNotifiableMethod(CodeTypeReference elementType)
+            {
+                var asNotifiable = new CodeMemberMethod()
+                {
+                    Name = "AsNotifiable",
+                    Attributes = MemberAttributes.Private,
+                    ReturnType = new CodeTypeReference(typeof(INotifyEnumerable<>).Name, elementType),
+                    PrivateImplementationType = new CodeTypeReference(typeof(IEnumerableExpression).Name, elementType)
+                };
+                asNotifiable.Statements.Add(new CodeMethodReturnStatement(new CodeThisReferenceExpression()));
+                asNotifiable.WriteDocumentation("Gets an observable version of this collection");
+                return asNotifiable;
+            }
+
+            private CodeMemberMethod GenerateObjectAsNotifiableMethod()
+            {
+                var asNotifiable = new CodeMemberMethod()
+                {
+                    Name = "AsNotifiable",
+                    Attributes = MemberAttributes.Private,
+                    ReturnType = new CodeTypeReference(typeof(INotifyEnumerable).Name),
+                    PrivateImplementationType = new CodeTypeReference(typeof(IEnumerableExpression))
+                };
+                asNotifiable.Statements.Add(new CodeMethodReturnStatement(new CodeThisReferenceExpression()));
+                asNotifiable.WriteDocumentation("Gets an observable version of this collection");
+                return asNotifiable;
+            }
+
+            private CodeMemberMethod GenerateAttachMethod()
+            {
+                var attach = new CodeMemberMethod()
+                {
+                    Attributes = MemberAttributes.Public | MemberAttributes.Final,
+                    Name = "Attach"
+                };
+                attach.WriteDocumentation("Attaches this collection class");
+                return attach;
+            }
+
+            private CodeMemberMethod GenerateDetachMethod()
+            {
+                var detach = new CodeMemberMethod()
+                {
+                    Attributes = MemberAttributes.Public | MemberAttributes.Final,
+                    Name = "Detach"
+                };
+                detach.WriteDocumentation("Detaches this collection class");
+                return detach;
             }
         }
     }

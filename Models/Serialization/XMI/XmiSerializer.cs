@@ -111,6 +111,11 @@ namespace NMF.Serialization.Xmi
             writer.WriteEndElement();
         }
 
+        protected override bool WriteIdentifiedObject(XmlWriter writer, object obj, XmlIdentificationMode identificationMode, ITypeSerializationInfo info, XmlSerializationContext context)
+        {
+            return false;
+        }
+
         protected override void WriteElementProperties(System.Xml.XmlWriter writer, object obj, ITypeSerializationInfo info, XmlSerializationContext context)
         {
             foreach (XmlPropertySerializationInfo pi in info.ElementProperties)

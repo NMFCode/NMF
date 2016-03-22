@@ -84,11 +84,11 @@ namespace NMF.Models
         {
             if (ModelUri == null || !absolute || !ModelUri.IsAbsoluteUri)
             {
-                return new Uri("/" + fragment, UriKind.Relative);
+                return new Uri("//" + fragment, UriKind.Relative);
             }
             else
             {
-                return new Uri(ModelUri, "#/" + fragment);
+                return new Uri(ModelUri, "#//" + fragment);
             }
         }
 

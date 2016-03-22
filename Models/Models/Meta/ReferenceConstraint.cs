@@ -35,8 +35,7 @@ namespace NMF.Models.Meta
     [XmlNamespaceAttribute("http://nmf.codeplex.com/nmeta/")]
     [XmlNamespacePrefixAttribute("nmeta")]
     [ModelRepresentationClassAttribute("http://nmf.codeplex.com/nmeta/#//ReferenceConstraint/")]
-    [DebuggerDisplayAttribute("ReferenceConstraint {Name}")]
-    public class ReferenceConstraint : TypedElement, IReferenceConstraint, IModelElement
+    public class ReferenceConstraint : ModelElement, IReferenceConstraint, IModelElement
     {
         
         /// <summary>

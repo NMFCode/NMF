@@ -51,6 +51,10 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\Analysis\Layering\Layering.csproj">
+      <Project>{a44583a6-d3dd-4798-a82f-93f54ef1431d}</Project>
+      <Name>Layering</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Transformations.Core\Transformations.Core.csproj">
       <Project>{9a62c452-44e3-4263-a91d-8b480259270d}</Project>
       <Name>Transformations.Core</Name>

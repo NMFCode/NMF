@@ -63,6 +63,10 @@ namespace NMF.Serialization
             {
                 XmlIdentifierDelay p = lostProperties.Dequeue();
                 var resolved = Resolve(p.Identifier, p.TargetType.Type);
+                if (resolved == null)
+                {
+                    throw new InvalidOperationException(string.Format("The reference {0} could not be resolved", p.Identifier));
+                }
                 p.OnResolveIdentifiedObject(resolved, this);
             }
             while (inits.Count > 0)

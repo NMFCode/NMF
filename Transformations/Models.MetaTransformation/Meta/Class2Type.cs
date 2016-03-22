@@ -72,8 +72,8 @@ namespace NMF.Models.Meta
                 RequireMany(Rule<RefinedReferenceGenerator>(), cl => cl.ReferenceConstraints.Select(c => Tuple.Create(cl, c.Constrains)));
                 RequireMany(Rule<RefinedAttributeGenerator>(), cl => cl.AttributeConstraints.Select(c => Tuple.Create(cl, c.Constrains)));
 
-                RequireMany(Rule<Feature2Proxy>(), cl => cl.Attributes.Where(a => a.UpperBound == 1), (cl, proxies) => cl.Members.AddRange(proxies.ToArray()));
-                RequireMany(Rule<Feature2Proxy>(), cl => cl.References.Where(r => r.UpperBound == 1), (cl, proxies) => cl.Members.AddRange(proxies.ToArray()));
+                RequireMany(Rule<Feature2Proxy>(), cl => cl.Attributes.Where(a => a.UpperBound == 1), (cl, proxies) => cl.DependentMembers(true).AddRange(proxies));
+                RequireMany(Rule<Feature2Proxy>(), cl => cl.References.Where(r => r.UpperBound == 1), (cl, proxies) => cl.DependentMembers(true).AddRange(proxies));
 
                 Call(Rule<Class2Children>(), (decl, childDecl) => { if (childDecl != null) decl.Members.Add(childDecl); });
                 Call(Rule<Class2Referenced>(), (decl, refDecl) => { if (refDecl != null) decl.Members.Add(refDecl); });
@@ -650,59 +650,32 @@ namespace NMF.Models.Meta
 
             protected T AddReferencesOfClass<T>(IClass input, CodeTypeDeclaration typeDeclaration, Func<T, IReference, T> action, T initial, bool containmentsOnly, ITransformationContext context)
             {
-                var t = Transformation as Meta2ClassesTransformation;
-                return AddReferencesOfClass<T>(input, typeDeclaration, action, initial, true, new HashSet<IClass>(), containmentsOnly, context, Rule<Reference2Property>());
-            }
-            
-            protected T AddAttributesOfClass<T>(IClass input, CodeTypeDeclaration typeDeclaration, Func<T, IAttribute, T> action, T initial, ITransformationContext context)
-            {
-                var t = Transformation as Meta2ClassesTransformation;
-                return AddAttributesOfClass<T>(input, typeDeclaration, action, initial, true, new HashSet<IClass>(), context, Rule<Attribute2Property>());
-            }
-
-            private static T AddReferencesOfClass<T>(IClass input, CodeTypeDeclaration typeDeclaration, Func<T, IReference, T> action, T initial, bool inherit, HashSet<IClass> visited, bool containmentsOnly, ITransformationContext context, Reference2Property r2p)
-            {
-                if (visited.Add(input))
+                var r2p = Rule<Reference2Property>();
+                foreach (var bcl in input.Closure(cl => cl.BaseTypes))
                 {
-                    IEnumerable<IReference> references = input.References;
-                    if (containmentsOnly) references = references.Where(r => r.IsContainment);
-                    foreach (var r in references)
+                    foreach (var reference in bcl.References)
                     {
-                        var property = context.Trace.ResolveIn(r2p, r);
+                        var property = context.Trace.ResolveIn(r2p, reference);
                         if (typeDeclaration.Members.Contains(property))
                         {
-                            initial = action(initial, r);
-                        }
-                    }
-                    if (inherit)
-                    {
-                        foreach (var baseClass in input.BaseTypes.Where(type => !type.IsInterface))
-                        {
-                            initial = AddReferencesOfClass<T>(baseClass, typeDeclaration, action, initial, inherit, visited, containmentsOnly, context, r2p);
+                            initial = action(initial, reference);
                         }
                     }
                 }
                 return initial;
             }
-
-            private static T AddAttributesOfClass<T>(IClass input, CodeTypeDeclaration typeDeclaration, Func<T, IAttribute, T> action, T initial, bool inherit, HashSet<IClass> visited, ITransformationContext context, Attribute2Property a2p)
+            
+            protected T AddAttributesOfClass<T>(IClass input, CodeTypeDeclaration typeDeclaration, Func<T, IAttribute, T> action, T initial, ITransformationContext context)
             {
-                if (visited.Add(input))
+                var a2p = Rule<Attribute2Property>();
+                foreach (var bcl in input.Closure(cl => cl.BaseTypes))
                 {
-                    IEnumerable<IAttribute> attributes = input.Attributes;
-                    foreach (var a in attributes)
+                    foreach (var att in bcl.Attributes)
                     {
-                        var property = context.Trace.ResolveIn(a2p, a);
+                        var property = context.Trace.ResolveIn(a2p, att);
                         if (typeDeclaration.Members.Contains(property))
                         {
-                            initial = action(initial, a);
-                        }
-                    }
-                    if (inherit)
-                    {
-                        foreach (var baseClass in input.BaseTypes.Where(type => !type.IsInterface))
-                        {
-                            initial = AddAttributesOfClass<T>(baseClass, typeDeclaration, action, initial, inherit, visited, context, a2p);
+                            initial = action(initial, att);
                         }
                     }
                 }
