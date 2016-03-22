@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<nmeta:Namespace xmi:version="2.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" Uri="http://nmf.codeplex.com/nmeta/" Prefix="nmeta" Name="Meta" xmlns:xmi="http://www.omg.org/XMI" xmlns:nmeta="http://nmf.codeplex.com/nmeta/" xsi:schemaLocation="http://nmf.codeplex.com/nmeta/ NMeta.xsd">
+<nmeta:Namespace xmi:version="2.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" Uri="http://nmf.codeplex.com/nmeta/" Prefix="nmeta" Name="Meta" xmlns:xmi="http://www.omg.org/XMI" xmlns:nmeta="http://nmf.codeplex.com/nmeta/">
  <Types xsi:type="nmeta:Class" BaseTypes="#//TypedElement/" Name="Attribute" Summary="Represents a simple-valued attribute">
    <Attributes Type="#//String/" Name="DefaultValue" Summary="The default value for this attribute" />
    <References Opposite="#//StructuredType/Attributes/" ReferenceType="#//StructuredType/" Name="DeclaringType" Summary="The type that declared this attribute" />

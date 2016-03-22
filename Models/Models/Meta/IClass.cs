@@ -73,6 +73,15 @@ namespace NMF.Models.Meta
         }
         
         /// <summary>
+        /// The Instantiates property
+        /// </summary>
+        IClass Instantiates
+        {
+            get;
+            set;
+        }
+        
+        /// <summary>
         /// The Identifier property
         /// </summary>
         IAttribute Identifier
@@ -111,6 +120,11 @@ namespace NMF.Models.Meta
         /// Gets fired when the InstanceOf property changed its value
         /// </summary>
         event EventHandler<ValueChangedEventArgs> InstanceOfChanged;
+        
+        /// <summary>
+        /// Gets fired when the Instantiates property changed its value
+        /// </summary>
+        event EventHandler<ValueChangedEventArgs> InstantiatesChanged;
         
         /// <summary>
         /// Gets fired when the Identifier property changed its value

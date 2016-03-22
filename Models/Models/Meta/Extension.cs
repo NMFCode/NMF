@@ -125,6 +125,35 @@ namespace NMF.Models.Meta
         }
         
         /// <summary>
+        /// Gets the relative URI fragment for the given child model element
+        /// </summary>
+        /// <returns>A fragment of the relative URI</returns>
+        /// <param name="element">The element that should be looked for</param>
+        protected override string GetRelativePathForNonIdentifiedChild(IModelElement element)
+        {
+            if ((element == this.AdornedClass))
+            {
+                return ModelHelper.CreatePath("AdornedClass");
+            }
+            return base.GetRelativePathForNonIdentifiedChild(element);
+        }
+        
+        /// <summary>
+        /// Resolves the given URI to a child model element
+        /// </summary>
+        /// <returns>The model element or null if it could not be found</returns>
+        /// <param name="reference">The requested reference name</param>
+        /// <param name="index">The index of this reference</param>
+        protected override IModelElement GetModelElementForReference(string reference, int index)
+        {
+            if ((reference == "ADORNEDCLASS"))
+            {
+                return this.AdornedClass;
+            }
+            return base.GetModelElementForReference(reference, index);
+        }
+        
+        /// <summary>
         /// Gets the Class element that describes the structure of the current model element
         /// </summary>
         public override NMF.Models.Meta.IClass GetClass()
@@ -173,55 +202,6 @@ namespace NMF.Models.Meta
                 return new AdornedClassProxy(this);
             }
             return base.GetExpressionForReference(reference);
-        }
-        
-        /// <summary>
-        /// Represents a proxy to represent an incremental access to the AdornedClass property
-        /// </summary>
-        private sealed class AdornedClassProxy : ModelPropertyChange<IExtension, IClass>
-        {
-            
-            /// <summary>
-            /// Creates a new observable property access proxy
-            /// </summary>
-            /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
-            public AdornedClassProxy(IExtension modelElement) : 
-                    base(modelElement)
-            {
-            }
-            
-            /// <summary>
-            /// Gets or sets the value of this expression
-            /// </summary>
-            public override IClass Value
-            {
-                get
-                {
-                    return this.ModelElement.AdornedClass;
-                }
-                set
-                {
-                    this.ModelElement.AdornedClass = value;
-                }
-            }
-            
-            /// <summary>
-            /// Registers an event handler to subscribe specifically on the changed event for this property
-            /// </summary>
-            /// <param name="handler">The handler that should be subscribed to the property change event</param>
-            protected override void RegisterChangeEventHandler(System.EventHandler<NMF.Expressions.ValueChangedEventArgs> handler)
-            {
-                this.ModelElement.AdornedClassChanged += handler;
-            }
-            
-            /// <summary>
-            /// Registers an event handler to subscribe specifically on the changed event for this property
-            /// </summary>
-            /// <param name="handler">The handler that should be unsubscribed from the property change event</param>
-            protected override void UnregisterChangeEventHandler(System.EventHandler<NMF.Expressions.ValueChangedEventArgs> handler)
-            {
-                this.ModelElement.AdornedClassChanged -= handler;
-            }
         }
         
         /// <summary>
@@ -341,6 +321,55 @@ namespace NMF.Models.Meta
             public override IEnumerator<IModelElement> GetEnumerator()
             {
                 return Enumerable.Empty<IModelElement>().Concat(this._parent.AdornedClass).GetEnumerator();
+            }
+        }
+        
+        /// <summary>
+        /// Represents a proxy to represent an incremental access to the AdornedClass property
+        /// </summary>
+        private sealed class AdornedClassProxy : ModelPropertyChange<IExtension, IClass>
+        {
+            
+            /// <summary>
+            /// Creates a new observable property access proxy
+            /// </summary>
+            /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
+            public AdornedClassProxy(IExtension modelElement) : 
+                    base(modelElement)
+            {
+            }
+            
+            /// <summary>
+            /// Gets or sets the value of this expression
+            /// </summary>
+            public override IClass Value
+            {
+                get
+                {
+                    return this.ModelElement.AdornedClass;
+                }
+                set
+                {
+                    this.ModelElement.AdornedClass = value;
+                }
+            }
+            
+            /// <summary>
+            /// Registers an event handler to subscribe specifically on the changed event for this property
+            /// </summary>
+            /// <param name="handler">The handler that should be subscribed to the property change event</param>
+            protected override void RegisterChangeEventHandler(System.EventHandler<NMF.Expressions.ValueChangedEventArgs> handler)
+            {
+                this.ModelElement.AdornedClassChanged += handler;
+            }
+            
+            /// <summary>
+            /// Registers an event handler to subscribe specifically on the changed event for this property
+            /// </summary>
+            /// <param name="handler">The handler that should be unsubscribed from the property change event</param>
+            protected override void UnregisterChangeEventHandler(System.EventHandler<NMF.Expressions.ValueChangedEventArgs> handler)
+            {
+                this.ModelElement.AdornedClassChanged -= handler;
             }
         }
     }

@@ -60,6 +60,11 @@ namespace NMF.Models.Meta
         private IClass _instanceOf;
         
         /// <summary>
+        /// The backing field for the Instantiates property
+        /// </summary>
+        private IClass _instantiates;
+        
+        /// <summary>
         /// The backing field for the Identifier property
         /// </summary>
         private IAttribute _identifier;
@@ -148,6 +153,7 @@ namespace NMF.Models.Meta
         /// The InstanceOf property
         /// </summary>
         [XmlAttributeAttribute(true)]
+        [XmlOppositeAttribute("Instantiates")]
         public virtual IClass InstanceOf
         {
             get
@@ -162,14 +168,49 @@ namespace NMF.Models.Meta
                     this._instanceOf = value;
                     if ((old != null))
                     {
+                        old.Instantiates = null;
                         old.Deleted -= this.OnResetInstanceOf;
                     }
                     if ((value != null))
                     {
+                        value.Instantiates = this;
                         value.Deleted += this.OnResetInstanceOf;
                     }
                     this.OnPropertyChanged("InstanceOf");
                     this.OnInstanceOfChanged(new ValueChangedEventArgs(old, value));
+                }
+            }
+        }
+        
+        /// <summary>
+        /// The Instantiates property
+        /// </summary>
+        [XmlAttributeAttribute(true)]
+        [XmlOppositeAttribute("InstanceOf")]
+        public virtual IClass Instantiates
+        {
+            get
+            {
+                return this._instantiates;
+            }
+            set
+            {
+                if ((this._instantiates != value))
+                {
+                    IClass old = this._instantiates;
+                    this._instantiates = value;
+                    if ((old != null))
+                    {
+                        old.InstanceOf = null;
+                        old.Deleted -= this.OnResetInstantiates;
+                    }
+                    if ((value != null))
+                    {
+                        value.InstanceOf = this;
+                        value.Deleted += this.OnResetInstantiates;
+                    }
+                    this.OnPropertyChanged("Instantiates");
+                    this.OnInstantiatesChanged(new ValueChangedEventArgs(old, value));
                 }
             }
         }
@@ -285,6 +326,11 @@ namespace NMF.Models.Meta
         public event EventHandler<ValueChangedEventArgs> InstanceOfChanged;
         
         /// <summary>
+        /// Gets fired when the Instantiates property changed its value
+        /// </summary>
+        public event EventHandler<ValueChangedEventArgs> InstantiatesChanged;
+        
+        /// <summary>
         /// Gets fired when the Identifier property changed its value
         /// </summary>
         public event EventHandler<ValueChangedEventArgs> IdentifierChanged;
@@ -349,6 +395,29 @@ namespace NMF.Models.Meta
         }
         
         /// <summary>
+        /// Raises the InstantiatesChanged event
+        /// </summary>
+        /// <param name="eventArgs">The event data</param>
+        protected virtual void OnInstantiatesChanged(ValueChangedEventArgs eventArgs)
+        {
+            EventHandler<ValueChangedEventArgs> handler = this.InstantiatesChanged;
+            if ((handler != null))
+            {
+                handler.Invoke(this, eventArgs);
+            }
+        }
+        
+        /// <summary>
+        /// Handles the event that the Instantiates property must reset
+        /// </summary>
+        /// <param name="sender">The object that sent this reset request</param>
+        /// <param name="eventArgs">The event data for the reset event</param>
+        private void OnResetInstantiates(object sender, EventArgs eventArgs)
+        {
+            this.Instantiates = null;
+        }
+        
+        /// <summary>
         /// Raises the IdentifierChanged event
         /// </summary>
         /// <param name="eventArgs">The event data</param>
@@ -389,6 +458,51 @@ namespace NMF.Models.Meta
         private void ReferenceConstraintsCollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
         {
             this.OnCollectionChanged("ReferenceConstraints", e);
+        }
+        
+        /// <summary>
+        /// Gets the relative URI fragment for the given child model element
+        /// </summary>
+        /// <returns>A fragment of the relative URI</returns>
+        /// <param name="element">The element that should be looked for</param>
+        protected override string GetRelativePathForNonIdentifiedChild(IModelElement element)
+        {
+            if ((element == this.InstanceOf))
+            {
+                return ModelHelper.CreatePath("InstanceOf");
+            }
+            if ((element == this.Instantiates))
+            {
+                return ModelHelper.CreatePath("Instantiates");
+            }
+            if ((element == this.Identifier))
+            {
+                return ModelHelper.CreatePath("Identifier");
+            }
+            return base.GetRelativePathForNonIdentifiedChild(element);
+        }
+        
+        /// <summary>
+        /// Resolves the given URI to a child model element
+        /// </summary>
+        /// <returns>The model element or null if it could not be found</returns>
+        /// <param name="reference">The requested reference name</param>
+        /// <param name="index">The index of this reference</param>
+        protected override IModelElement GetModelElementForReference(string reference, int index)
+        {
+            if ((reference == "INSTANCEOF"))
+            {
+                return this.InstanceOf;
+            }
+            if ((reference == "INSTANTIATES"))
+            {
+                return this.Instantiates;
+            }
+            if ((reference == "IDENTIFIER"))
+            {
+                return this.Identifier;
+            }
+            return base.GetModelElementForReference(reference, index);
         }
         
         /// <summary>
@@ -452,6 +566,11 @@ namespace NMF.Models.Meta
                 this.InstanceOf = ((IClass)(value));
                 return;
             }
+            if ((feature == "INSTANTIATES"))
+            {
+                this.Instantiates = ((IClass)(value));
+                return;
+            }
             if ((feature == "IDENTIFIER"))
             {
                 this.Identifier = ((IAttribute)(value));
@@ -481,6 +600,10 @@ namespace NMF.Models.Meta
             {
                 return new InstanceOfProxy(this);
             }
+            if ((attribute == "INSTANTIATES"))
+            {
+                return new InstantiatesProxy(this);
+            }
             if ((attribute == "IDENTIFIER"))
             {
                 return new IdentifierProxy(this);
@@ -499,207 +622,15 @@ namespace NMF.Models.Meta
             {
                 return new InstanceOfProxy(this);
             }
+            if ((reference == "INSTANTIATES"))
+            {
+                return new InstantiatesProxy(this);
+            }
             if ((reference == "IDENTIFIER"))
             {
                 return new IdentifierProxy(this);
             }
             return base.GetExpressionForReference(reference);
-        }
-        
-        /// <summary>
-        /// Represents a proxy to represent an incremental access to the IsInterface property
-        /// </summary>
-        private sealed class IsInterfaceProxy : ModelPropertyChange<IClass, bool>
-        {
-            
-            /// <summary>
-            /// Creates a new observable property access proxy
-            /// </summary>
-            /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
-            public IsInterfaceProxy(IClass modelElement) : 
-                    base(modelElement)
-            {
-            }
-            
-            /// <summary>
-            /// Gets or sets the value of this expression
-            /// </summary>
-            public override bool Value
-            {
-                get
-                {
-                    return this.ModelElement.IsInterface;
-                }
-                set
-                {
-                    this.ModelElement.IsInterface = value;
-                }
-            }
-            
-            /// <summary>
-            /// Registers an event handler to subscribe specifically on the changed event for this property
-            /// </summary>
-            /// <param name="handler">The handler that should be subscribed to the property change event</param>
-            protected override void RegisterChangeEventHandler(System.EventHandler<NMF.Expressions.ValueChangedEventArgs> handler)
-            {
-                this.ModelElement.IsInterfaceChanged += handler;
-            }
-            
-            /// <summary>
-            /// Registers an event handler to subscribe specifically on the changed event for this property
-            /// </summary>
-            /// <param name="handler">The handler that should be unsubscribed from the property change event</param>
-            protected override void UnregisterChangeEventHandler(System.EventHandler<NMF.Expressions.ValueChangedEventArgs> handler)
-            {
-                this.ModelElement.IsInterfaceChanged -= handler;
-            }
-        }
-        
-        /// <summary>
-        /// Represents a proxy to represent an incremental access to the IsAbstract property
-        /// </summary>
-        private sealed class IsAbstractProxy : ModelPropertyChange<IClass, bool>
-        {
-            
-            /// <summary>
-            /// Creates a new observable property access proxy
-            /// </summary>
-            /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
-            public IsAbstractProxy(IClass modelElement) : 
-                    base(modelElement)
-            {
-            }
-            
-            /// <summary>
-            /// Gets or sets the value of this expression
-            /// </summary>
-            public override bool Value
-            {
-                get
-                {
-                    return this.ModelElement.IsAbstract;
-                }
-                set
-                {
-                    this.ModelElement.IsAbstract = value;
-                }
-            }
-            
-            /// <summary>
-            /// Registers an event handler to subscribe specifically on the changed event for this property
-            /// </summary>
-            /// <param name="handler">The handler that should be subscribed to the property change event</param>
-            protected override void RegisterChangeEventHandler(System.EventHandler<NMF.Expressions.ValueChangedEventArgs> handler)
-            {
-                this.ModelElement.IsAbstractChanged += handler;
-            }
-            
-            /// <summary>
-            /// Registers an event handler to subscribe specifically on the changed event for this property
-            /// </summary>
-            /// <param name="handler">The handler that should be unsubscribed from the property change event</param>
-            protected override void UnregisterChangeEventHandler(System.EventHandler<NMF.Expressions.ValueChangedEventArgs> handler)
-            {
-                this.ModelElement.IsAbstractChanged -= handler;
-            }
-        }
-        
-        /// <summary>
-        /// Represents a proxy to represent an incremental access to the InstanceOf property
-        /// </summary>
-        private sealed class InstanceOfProxy : ModelPropertyChange<IClass, IClass>
-        {
-            
-            /// <summary>
-            /// Creates a new observable property access proxy
-            /// </summary>
-            /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
-            public InstanceOfProxy(IClass modelElement) : 
-                    base(modelElement)
-            {
-            }
-            
-            /// <summary>
-            /// Gets or sets the value of this expression
-            /// </summary>
-            public override IClass Value
-            {
-                get
-                {
-                    return this.ModelElement.InstanceOf;
-                }
-                set
-                {
-                    this.ModelElement.InstanceOf = value;
-                }
-            }
-            
-            /// <summary>
-            /// Registers an event handler to subscribe specifically on the changed event for this property
-            /// </summary>
-            /// <param name="handler">The handler that should be subscribed to the property change event</param>
-            protected override void RegisterChangeEventHandler(System.EventHandler<NMF.Expressions.ValueChangedEventArgs> handler)
-            {
-                this.ModelElement.InstanceOfChanged += handler;
-            }
-            
-            /// <summary>
-            /// Registers an event handler to subscribe specifically on the changed event for this property
-            /// </summary>
-            /// <param name="handler">The handler that should be unsubscribed from the property change event</param>
-            protected override void UnregisterChangeEventHandler(System.EventHandler<NMF.Expressions.ValueChangedEventArgs> handler)
-            {
-                this.ModelElement.InstanceOfChanged -= handler;
-            }
-        }
-        
-        /// <summary>
-        /// Represents a proxy to represent an incremental access to the Identifier property
-        /// </summary>
-        private sealed class IdentifierProxy : ModelPropertyChange<IClass, IAttribute>
-        {
-            
-            /// <summary>
-            /// Creates a new observable property access proxy
-            /// </summary>
-            /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
-            public IdentifierProxy(IClass modelElement) : 
-                    base(modelElement)
-            {
-            }
-            
-            /// <summary>
-            /// Gets or sets the value of this expression
-            /// </summary>
-            public override IAttribute Value
-            {
-                get
-                {
-                    return this.ModelElement.Identifier;
-                }
-                set
-                {
-                    this.ModelElement.Identifier = value;
-                }
-            }
-            
-            /// <summary>
-            /// Registers an event handler to subscribe specifically on the changed event for this property
-            /// </summary>
-            /// <param name="handler">The handler that should be subscribed to the property change event</param>
-            protected override void RegisterChangeEventHandler(System.EventHandler<NMF.Expressions.ValueChangedEventArgs> handler)
-            {
-                this.ModelElement.IdentifierChanged += handler;
-            }
-            
-            /// <summary>
-            /// Registers an event handler to subscribe specifically on the changed event for this property
-            /// </summary>
-            /// <param name="handler">The handler that should be unsubscribed from the property change event</param>
-            protected override void UnregisterChangeEventHandler(System.EventHandler<NMF.Expressions.ValueChangedEventArgs> handler)
-            {
-                this.ModelElement.IdentifierChanged -= handler;
-            }
         }
         
         /// <summary>
@@ -889,6 +820,10 @@ namespace NMF.Models.Meta
                     {
                         count = (count + 1);
                     }
+                    if ((this._parent.Instantiates != null))
+                    {
+                        count = (count + 1);
+                    }
                     if ((this._parent.Identifier != null))
                     {
                         count = (count + 1);
@@ -903,6 +838,7 @@ namespace NMF.Models.Meta
             {
                 this._parent.BaseTypes.AsNotifiable().CollectionChanged += this.PropagateCollectionChanges;
                 this._parent.InstanceOfChanged += this.PropagateValueChanges;
+                this._parent.InstantiatesChanged += this.PropagateValueChanges;
                 this._parent.IdentifierChanged += this.PropagateValueChanges;
                 this._parent.AttributeConstraints.AsNotifiable().CollectionChanged += this.PropagateCollectionChanges;
                 this._parent.ReferenceConstraints.AsNotifiable().CollectionChanged += this.PropagateCollectionChanges;
@@ -912,6 +848,7 @@ namespace NMF.Models.Meta
             {
                 this._parent.BaseTypes.AsNotifiable().CollectionChanged -= this.PropagateCollectionChanges;
                 this._parent.InstanceOfChanged -= this.PropagateValueChanges;
+                this._parent.InstantiatesChanged -= this.PropagateValueChanges;
                 this._parent.IdentifierChanged -= this.PropagateValueChanges;
                 this._parent.AttributeConstraints.AsNotifiable().CollectionChanged -= this.PropagateCollectionChanges;
                 this._parent.ReferenceConstraints.AsNotifiable().CollectionChanged -= this.PropagateCollectionChanges;
@@ -934,6 +871,15 @@ namespace NMF.Models.Meta
                     if ((instanceOfCasted != null))
                     {
                         this._parent.InstanceOf = instanceOfCasted;
+                        return;
+                    }
+                }
+                if ((this._parent.Instantiates == null))
+                {
+                    IClass instantiatesCasted = item.As<IClass>();
+                    if ((instantiatesCasted != null))
+                    {
+                        this._parent.Instantiates = instantiatesCasted;
                         return;
                     }
                 }
@@ -965,6 +911,7 @@ namespace NMF.Models.Meta
             {
                 this._parent.BaseTypes.Clear();
                 this._parent.InstanceOf = null;
+                this._parent.Instantiates = null;
                 this._parent.Identifier = null;
                 this._parent.AttributeConstraints.Clear();
                 this._parent.ReferenceConstraints.Clear();
@@ -982,6 +929,10 @@ namespace NMF.Models.Meta
                     return true;
                 }
                 if ((item == this._parent.InstanceOf))
+                {
+                    return true;
+                }
+                if ((item == this._parent.Instantiates))
                 {
                     return true;
                 }
@@ -1025,6 +976,11 @@ namespace NMF.Models.Meta
                 if ((this._parent.InstanceOf != null))
                 {
                     array[arrayIndex] = this._parent.InstanceOf;
+                    arrayIndex = (arrayIndex + 1);
+                }
+                if ((this._parent.Instantiates != null))
+                {
+                    array[arrayIndex] = this._parent.Instantiates;
                     arrayIndex = (arrayIndex + 1);
                 }
                 if ((this._parent.Identifier != null))
@@ -1082,6 +1038,11 @@ namespace NMF.Models.Meta
                     this._parent.InstanceOf = null;
                     return true;
                 }
+                if ((this._parent.Instantiates == item))
+                {
+                    this._parent.Instantiates = null;
+                    return true;
+                }
                 if ((this._parent.Identifier == item))
                 {
                     this._parent.Identifier = null;
@@ -1108,7 +1069,252 @@ namespace NMF.Models.Meta
             /// <returns>A generic enumerator</returns>
             public override IEnumerator<IModelElement> GetEnumerator()
             {
-                return Enumerable.Empty<IModelElement>().Concat(this._parent.BaseTypes).Concat(this._parent.InstanceOf).Concat(this._parent.Identifier).Concat(this._parent.AttributeConstraints).Concat(this._parent.ReferenceConstraints).GetEnumerator();
+                return Enumerable.Empty<IModelElement>().Concat(this._parent.BaseTypes).Concat(this._parent.InstanceOf).Concat(this._parent.Instantiates).Concat(this._parent.Identifier).Concat(this._parent.AttributeConstraints).Concat(this._parent.ReferenceConstraints).GetEnumerator();
+            }
+        }
+        
+        /// <summary>
+        /// Represents a proxy to represent an incremental access to the IsInterface property
+        /// </summary>
+        private sealed class IsInterfaceProxy : ModelPropertyChange<IClass, bool>
+        {
+            
+            /// <summary>
+            /// Creates a new observable property access proxy
+            /// </summary>
+            /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
+            public IsInterfaceProxy(IClass modelElement) : 
+                    base(modelElement)
+            {
+            }
+            
+            /// <summary>
+            /// Gets or sets the value of this expression
+            /// </summary>
+            public override bool Value
+            {
+                get
+                {
+                    return this.ModelElement.IsInterface;
+                }
+                set
+                {
+                    this.ModelElement.IsInterface = value;
+                }
+            }
+            
+            /// <summary>
+            /// Registers an event handler to subscribe specifically on the changed event for this property
+            /// </summary>
+            /// <param name="handler">The handler that should be subscribed to the property change event</param>
+            protected override void RegisterChangeEventHandler(System.EventHandler<NMF.Expressions.ValueChangedEventArgs> handler)
+            {
+                this.ModelElement.IsInterfaceChanged += handler;
+            }
+            
+            /// <summary>
+            /// Registers an event handler to subscribe specifically on the changed event for this property
+            /// </summary>
+            /// <param name="handler">The handler that should be unsubscribed from the property change event</param>
+            protected override void UnregisterChangeEventHandler(System.EventHandler<NMF.Expressions.ValueChangedEventArgs> handler)
+            {
+                this.ModelElement.IsInterfaceChanged -= handler;
+            }
+        }
+        
+        /// <summary>
+        /// Represents a proxy to represent an incremental access to the IsAbstract property
+        /// </summary>
+        private sealed class IsAbstractProxy : ModelPropertyChange<IClass, bool>
+        {
+            
+            /// <summary>
+            /// Creates a new observable property access proxy
+            /// </summary>
+            /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
+            public IsAbstractProxy(IClass modelElement) : 
+                    base(modelElement)
+            {
+            }
+            
+            /// <summary>
+            /// Gets or sets the value of this expression
+            /// </summary>
+            public override bool Value
+            {
+                get
+                {
+                    return this.ModelElement.IsAbstract;
+                }
+                set
+                {
+                    this.ModelElement.IsAbstract = value;
+                }
+            }
+            
+            /// <summary>
+            /// Registers an event handler to subscribe specifically on the changed event for this property
+            /// </summary>
+            /// <param name="handler">The handler that should be subscribed to the property change event</param>
+            protected override void RegisterChangeEventHandler(System.EventHandler<NMF.Expressions.ValueChangedEventArgs> handler)
+            {
+                this.ModelElement.IsAbstractChanged += handler;
+            }
+            
+            /// <summary>
+            /// Registers an event handler to subscribe specifically on the changed event for this property
+            /// </summary>
+            /// <param name="handler">The handler that should be unsubscribed from the property change event</param>
+            protected override void UnregisterChangeEventHandler(System.EventHandler<NMF.Expressions.ValueChangedEventArgs> handler)
+            {
+                this.ModelElement.IsAbstractChanged -= handler;
+            }
+        }
+        
+        /// <summary>
+        /// Represents a proxy to represent an incremental access to the InstanceOf property
+        /// </summary>
+        private sealed class InstanceOfProxy : ModelPropertyChange<IClass, IClass>
+        {
+            
+            /// <summary>
+            /// Creates a new observable property access proxy
+            /// </summary>
+            /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
+            public InstanceOfProxy(IClass modelElement) : 
+                    base(modelElement)
+            {
+            }
+            
+            /// <summary>
+            /// Gets or sets the value of this expression
+            /// </summary>
+            public override IClass Value
+            {
+                get
+                {
+                    return this.ModelElement.InstanceOf;
+                }
+                set
+                {
+                    this.ModelElement.InstanceOf = value;
+                }
+            }
+            
+            /// <summary>
+            /// Registers an event handler to subscribe specifically on the changed event for this property
+            /// </summary>
+            /// <param name="handler">The handler that should be subscribed to the property change event</param>
+            protected override void RegisterChangeEventHandler(System.EventHandler<NMF.Expressions.ValueChangedEventArgs> handler)
+            {
+                this.ModelElement.InstanceOfChanged += handler;
+            }
+            
+            /// <summary>
+            /// Registers an event handler to subscribe specifically on the changed event for this property
+            /// </summary>
+            /// <param name="handler">The handler that should be unsubscribed from the property change event</param>
+            protected override void UnregisterChangeEventHandler(System.EventHandler<NMF.Expressions.ValueChangedEventArgs> handler)
+            {
+                this.ModelElement.InstanceOfChanged -= handler;
+            }
+        }
+        
+        /// <summary>
+        /// Represents a proxy to represent an incremental access to the Instantiates property
+        /// </summary>
+        private sealed class InstantiatesProxy : ModelPropertyChange<IClass, IClass>
+        {
+            
+            /// <summary>
+            /// Creates a new observable property access proxy
+            /// </summary>
+            /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
+            public InstantiatesProxy(IClass modelElement) : 
+                    base(modelElement)
+            {
+            }
+            
+            /// <summary>
+            /// Gets or sets the value of this expression
+            /// </summary>
+            public override IClass Value
+            {
+                get
+                {
+                    return this.ModelElement.Instantiates;
+                }
+                set
+                {
+                    this.ModelElement.Instantiates = value;
+                }
+            }
+            
+            /// <summary>
+            /// Registers an event handler to subscribe specifically on the changed event for this property
+            /// </summary>
+            /// <param name="handler">The handler that should be subscribed to the property change event</param>
+            protected override void RegisterChangeEventHandler(System.EventHandler<NMF.Expressions.ValueChangedEventArgs> handler)
+            {
+                this.ModelElement.InstantiatesChanged += handler;
+            }
+            
+            /// <summary>
+            /// Registers an event handler to subscribe specifically on the changed event for this property
+            /// </summary>
+            /// <param name="handler">The handler that should be unsubscribed from the property change event</param>
+            protected override void UnregisterChangeEventHandler(System.EventHandler<NMF.Expressions.ValueChangedEventArgs> handler)
+            {
+                this.ModelElement.InstantiatesChanged -= handler;
+            }
+        }
+        
+        /// <summary>
+        /// Represents a proxy to represent an incremental access to the Identifier property
+        /// </summary>
+        private sealed class IdentifierProxy : ModelPropertyChange<IClass, IAttribute>
+        {
+            
+            /// <summary>
+            /// Creates a new observable property access proxy
+            /// </summary>
+            /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
+            public IdentifierProxy(IClass modelElement) : 
+                    base(modelElement)
+            {
+            }
+            
+            /// <summary>
+            /// Gets or sets the value of this expression
+            /// </summary>
+            public override IAttribute Value
+            {
+                get
+                {
+                    return this.ModelElement.Identifier;
+                }
+                set
+                {
+                    this.ModelElement.Identifier = value;
+                }
+            }
+            
+            /// <summary>
+            /// Registers an event handler to subscribe specifically on the changed event for this property
+            /// </summary>
+            /// <param name="handler">The handler that should be subscribed to the property change event</param>
+            protected override void RegisterChangeEventHandler(System.EventHandler<NMF.Expressions.ValueChangedEventArgs> handler)
+            {
+                this.ModelElement.IdentifierChanged += handler;
+            }
+            
+            /// <summary>
+            /// Registers an event handler to subscribe specifically on the changed event for this property
+            /// </summary>
+            /// <param name="handler">The handler that should be unsubscribed from the property change event</param>
+            protected override void UnregisterChangeEventHandler(System.EventHandler<NMF.Expressions.ValueChangedEventArgs> handler)
+            {
+                this.ModelElement.IdentifierChanged -= handler;
             }
         }
     }

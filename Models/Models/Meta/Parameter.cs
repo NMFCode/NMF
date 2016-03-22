@@ -164,6 +164,35 @@ namespace NMF.Models.Meta
         }
         
         /// <summary>
+        /// Gets the relative URI fragment for the given child model element
+        /// </summary>
+        /// <returns>A fragment of the relative URI</returns>
+        /// <param name="element">The element that should be looked for</param>
+        protected override string GetRelativePathForNonIdentifiedChild(IModelElement element)
+        {
+            if ((element == this.Operation))
+            {
+                return ModelHelper.CreatePath("Operation");
+            }
+            return base.GetRelativePathForNonIdentifiedChild(element);
+        }
+        
+        /// <summary>
+        /// Resolves the given URI to a child model element
+        /// </summary>
+        /// <returns>The model element or null if it could not be found</returns>
+        /// <param name="reference">The requested reference name</param>
+        /// <param name="index">The index of this reference</param>
+        protected override IModelElement GetModelElementForReference(string reference, int index)
+        {
+            if ((reference == "OPERATION"))
+            {
+                return this.Operation;
+            }
+            return base.GetModelElementForReference(reference, index);
+        }
+        
+        /// <summary>
         /// Gets the Class element that describes the structure of the current model element
         /// </summary>
         public override NMF.Models.Meta.IClass GetClass()
@@ -232,104 +261,6 @@ namespace NMF.Models.Meta
                 return new OperationProxy(this);
             }
             return base.GetExpressionForReference(reference);
-        }
-        
-        /// <summary>
-        /// Represents a proxy to represent an incremental access to the Direction property
-        /// </summary>
-        private sealed class DirectionProxy : ModelPropertyChange<IParameter, Direction>
-        {
-            
-            /// <summary>
-            /// Creates a new observable property access proxy
-            /// </summary>
-            /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
-            public DirectionProxy(IParameter modelElement) : 
-                    base(modelElement)
-            {
-            }
-            
-            /// <summary>
-            /// Gets or sets the value of this expression
-            /// </summary>
-            public override Direction Value
-            {
-                get
-                {
-                    return this.ModelElement.Direction;
-                }
-                set
-                {
-                    this.ModelElement.Direction = value;
-                }
-            }
-            
-            /// <summary>
-            /// Registers an event handler to subscribe specifically on the changed event for this property
-            /// </summary>
-            /// <param name="handler">The handler that should be subscribed to the property change event</param>
-            protected override void RegisterChangeEventHandler(System.EventHandler<NMF.Expressions.ValueChangedEventArgs> handler)
-            {
-                this.ModelElement.DirectionChanged += handler;
-            }
-            
-            /// <summary>
-            /// Registers an event handler to subscribe specifically on the changed event for this property
-            /// </summary>
-            /// <param name="handler">The handler that should be unsubscribed from the property change event</param>
-            protected override void UnregisterChangeEventHandler(System.EventHandler<NMF.Expressions.ValueChangedEventArgs> handler)
-            {
-                this.ModelElement.DirectionChanged -= handler;
-            }
-        }
-        
-        /// <summary>
-        /// Represents a proxy to represent an incremental access to the Operation property
-        /// </summary>
-        private sealed class OperationProxy : ModelPropertyChange<IParameter, IOperation>
-        {
-            
-            /// <summary>
-            /// Creates a new observable property access proxy
-            /// </summary>
-            /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
-            public OperationProxy(IParameter modelElement) : 
-                    base(modelElement)
-            {
-            }
-            
-            /// <summary>
-            /// Gets or sets the value of this expression
-            /// </summary>
-            public override IOperation Value
-            {
-                get
-                {
-                    return this.ModelElement.Operation;
-                }
-                set
-                {
-                    this.ModelElement.Operation = value;
-                }
-            }
-            
-            /// <summary>
-            /// Registers an event handler to subscribe specifically on the changed event for this property
-            /// </summary>
-            /// <param name="handler">The handler that should be subscribed to the property change event</param>
-            protected override void RegisterChangeEventHandler(System.EventHandler<NMF.Expressions.ValueChangedEventArgs> handler)
-            {
-                this.ModelElement.OperationChanged += handler;
-            }
-            
-            /// <summary>
-            /// Registers an event handler to subscribe specifically on the changed event for this property
-            /// </summary>
-            /// <param name="handler">The handler that should be unsubscribed from the property change event</param>
-            protected override void UnregisterChangeEventHandler(System.EventHandler<NMF.Expressions.ValueChangedEventArgs> handler)
-            {
-                this.ModelElement.OperationChanged -= handler;
-            }
         }
         
         /// <summary>
@@ -449,6 +380,104 @@ namespace NMF.Models.Meta
             public override IEnumerator<IModelElement> GetEnumerator()
             {
                 return Enumerable.Empty<IModelElement>().Concat(this._parent.Operation).GetEnumerator();
+            }
+        }
+        
+        /// <summary>
+        /// Represents a proxy to represent an incremental access to the Direction property
+        /// </summary>
+        private sealed class DirectionProxy : ModelPropertyChange<IParameter, Direction>
+        {
+            
+            /// <summary>
+            /// Creates a new observable property access proxy
+            /// </summary>
+            /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
+            public DirectionProxy(IParameter modelElement) : 
+                    base(modelElement)
+            {
+            }
+            
+            /// <summary>
+            /// Gets or sets the value of this expression
+            /// </summary>
+            public override Direction Value
+            {
+                get
+                {
+                    return this.ModelElement.Direction;
+                }
+                set
+                {
+                    this.ModelElement.Direction = value;
+                }
+            }
+            
+            /// <summary>
+            /// Registers an event handler to subscribe specifically on the changed event for this property
+            /// </summary>
+            /// <param name="handler">The handler that should be subscribed to the property change event</param>
+            protected override void RegisterChangeEventHandler(System.EventHandler<NMF.Expressions.ValueChangedEventArgs> handler)
+            {
+                this.ModelElement.DirectionChanged += handler;
+            }
+            
+            /// <summary>
+            /// Registers an event handler to subscribe specifically on the changed event for this property
+            /// </summary>
+            /// <param name="handler">The handler that should be unsubscribed from the property change event</param>
+            protected override void UnregisterChangeEventHandler(System.EventHandler<NMF.Expressions.ValueChangedEventArgs> handler)
+            {
+                this.ModelElement.DirectionChanged -= handler;
+            }
+        }
+        
+        /// <summary>
+        /// Represents a proxy to represent an incremental access to the Operation property
+        /// </summary>
+        private sealed class OperationProxy : ModelPropertyChange<IParameter, IOperation>
+        {
+            
+            /// <summary>
+            /// Creates a new observable property access proxy
+            /// </summary>
+            /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
+            public OperationProxy(IParameter modelElement) : 
+                    base(modelElement)
+            {
+            }
+            
+            /// <summary>
+            /// Gets or sets the value of this expression
+            /// </summary>
+            public override IOperation Value
+            {
+                get
+                {
+                    return this.ModelElement.Operation;
+                }
+                set
+                {
+                    this.ModelElement.Operation = value;
+                }
+            }
+            
+            /// <summary>
+            /// Registers an event handler to subscribe specifically on the changed event for this property
+            /// </summary>
+            /// <param name="handler">The handler that should be subscribed to the property change event</param>
+            protected override void RegisterChangeEventHandler(System.EventHandler<NMF.Expressions.ValueChangedEventArgs> handler)
+            {
+                this.ModelElement.OperationChanged += handler;
+            }
+            
+            /// <summary>
+            /// Registers an event handler to subscribe specifically on the changed event for this property
+            /// </summary>
+            /// <param name="handler">The handler that should be unsubscribed from the property change event</param>
+            protected override void UnregisterChangeEventHandler(System.EventHandler<NMF.Expressions.ValueChangedEventArgs> handler)
+            {
+                this.ModelElement.OperationChanged -= handler;
             }
         }
     }

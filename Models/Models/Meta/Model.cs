@@ -205,55 +205,6 @@ namespace NMF.Models.Meta
         }
         
         /// <summary>
-        /// Represents a proxy to represent an incremental access to the ModelUri property
-        /// </summary>
-        private sealed class ModelUriProxy : ModelPropertyChange<IModel, Uri>
-        {
-            
-            /// <summary>
-            /// Creates a new observable property access proxy
-            /// </summary>
-            /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
-            public ModelUriProxy(IModel modelElement) : 
-                    base(modelElement)
-            {
-            }
-            
-            /// <summary>
-            /// Gets or sets the value of this expression
-            /// </summary>
-            public override Uri Value
-            {
-                get
-                {
-                    return this.ModelElement.ModelUri;
-                }
-                set
-                {
-                    this.ModelElement.ModelUri = value;
-                }
-            }
-            
-            /// <summary>
-            /// Registers an event handler to subscribe specifically on the changed event for this property
-            /// </summary>
-            /// <param name="handler">The handler that should be subscribed to the property change event</param>
-            protected override void RegisterChangeEventHandler(System.EventHandler<NMF.Expressions.ValueChangedEventArgs> handler)
-            {
-                this.ModelElement.ModelUriChanged += handler;
-            }
-            
-            /// <summary>
-            /// Registers an event handler to subscribe specifically on the changed event for this property
-            /// </summary>
-            /// <param name="handler">The handler that should be unsubscribed from the property change event</param>
-            protected override void UnregisterChangeEventHandler(System.EventHandler<NMF.Expressions.ValueChangedEventArgs> handler)
-            {
-                this.ModelElement.ModelUriChanged -= handler;
-            }
-        }
-        
-        /// <summary>
         /// The collection class to to represent the children of the Model class
         /// </summary>
         public class ModelChildrenCollection : ReferenceCollection, ICollectionExpression<IModelElement>, ICollection<IModelElement>
@@ -498,6 +449,55 @@ namespace NMF.Models.Meta
             public override IEnumerator<IModelElement> GetEnumerator()
             {
                 return Enumerable.Empty<IModelElement>().Concat(this._parent.RootElements).GetEnumerator();
+            }
+        }
+        
+        /// <summary>
+        /// Represents a proxy to represent an incremental access to the ModelUri property
+        /// </summary>
+        private sealed class ModelUriProxy : ModelPropertyChange<IModel, Uri>
+        {
+            
+            /// <summary>
+            /// Creates a new observable property access proxy
+            /// </summary>
+            /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
+            public ModelUriProxy(IModel modelElement) : 
+                    base(modelElement)
+            {
+            }
+            
+            /// <summary>
+            /// Gets or sets the value of this expression
+            /// </summary>
+            public override Uri Value
+            {
+                get
+                {
+                    return this.ModelElement.ModelUri;
+                }
+                set
+                {
+                    this.ModelElement.ModelUri = value;
+                }
+            }
+            
+            /// <summary>
+            /// Registers an event handler to subscribe specifically on the changed event for this property
+            /// </summary>
+            /// <param name="handler">The handler that should be subscribed to the property change event</param>
+            protected override void RegisterChangeEventHandler(System.EventHandler<NMF.Expressions.ValueChangedEventArgs> handler)
+            {
+                this.ModelElement.ModelUriChanged += handler;
+            }
+            
+            /// <summary>
+            /// Registers an event handler to subscribe specifically on the changed event for this property
+            /// </summary>
+            /// <param name="handler">The handler that should be unsubscribed from the property change event</param>
+            protected override void UnregisterChangeEventHandler(System.EventHandler<NMF.Expressions.ValueChangedEventArgs> handler)
+            {
+                this.ModelElement.ModelUriChanged -= handler;
             }
         }
     }
