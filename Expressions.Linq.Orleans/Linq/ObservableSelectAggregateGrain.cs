@@ -11,11 +11,11 @@ using Orleans.Streams.Linq.Aggregates;
 
 namespace NMF.Expressions.Linq.Orleans
 {
-    public class ObservableSelectAggregateGrain<TSource, TResult> : StreamProcessorAggregate<ContainerHostedElement<TSource>, ContainerHostedElement<TResult>>, IObservableSelectAggregateGrain<TSource, TResult>
+    public class ObservableSelectAggregateGrain<TSource, TResult> : StreamProcessorAggregate<ContainerElement<TSource>, ContainerElement<TResult>>, IObservableSelectAggregateGrain<TSource, TResult>
     {
         private Func<TSource, TResult> _observingFunc;
 
-        protected override async Task<IStreamProcessorNodeGrain<ContainerHostedElement<TSource>, ContainerHostedElement<TResult>>> InitializeNode(TransactionalStreamIdentity<ContainerHostedElement<TSource>> identity)
+        protected override async Task<IStreamProcessorNodeGrain<ContainerElement<TSource>, ContainerElement<TResult>>> InitializeNode(StreamIdentity identity)
         {
             var node = GrainFactory.GetGrain<IObservableSelectNodeGrain<TSource, TResult>>(Guid.NewGuid());
             await node.SetObservingFunc(_observingFunc);

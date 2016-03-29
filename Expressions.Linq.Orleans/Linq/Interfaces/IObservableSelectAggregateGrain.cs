@@ -3,7 +3,7 @@ using Orleans.Streams;
 
 namespace NMF.Expressions.Linq.Orleans.Linq.Interfaces
 {
-    public interface IObservableSelectAggregateGrain<TSource, TResult> : IStreamProcessorAggregate<ContainerHostedElement<TSource>, ContainerHostedElement<TResult>>, IObservingFuncProcessor<TSource, TResult>
+    public interface IObservableSelectAggregateGrain<TSource, TResult> : IStreamProcessorAggregate<ContainerElement<TSource>, ContainerElement<TResult>>, IObservingFuncProcessor<TSource, TResult>
     {
          
     }
