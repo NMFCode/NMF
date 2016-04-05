@@ -4,6 +4,7 @@ using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using NMF.Expressions.Linq.Orleans.Interfaces;
 using Orleans;
@@ -18,30 +19,22 @@ namespace NMF.Expressions.Linq.Orleans
 {
     internal sealed class ObservableSelectNodeGrain<TSource, TResult> : StreamProcessorNodeGrain<ContainerElement<TSource>, ContainerElement<TResult>>, IObservableSelectNodeGrain<TSource, TResult>
     {
-        
-        private ObservingFunc<TSource, TResult> lambda;
 
-        public ObservingFunc<TSource, TResult> Lambda
-        {
-            get
-            {
-                return lambda;
-            }
-        }
+        private ObservingFunc<TSource, TResult> _lambda;
+        public ObservingFunc<TSource, TResult> Lambda => _lambda;
 
         private DistributedPropertyChangedProcessor<ContainerElement<TSource>> _propertyChangedProcessor;
-        private Dictionary<ContainerElementReference<TSource>,  TSource> _inputList;
-        private ContainerElementList<TResult> _resultElements; 
+        private Dictionary<ContainerElementReference<TSource>, TSource> _inputList;
+
         private Dictionary<TSource, TaggedObservableValue<TResult, ContainerElementReference<TResult>>> lambdas = new Dictionary<TSource, TaggedObservableValue<TResult, ContainerElementReference<TResult>>>();
-        private Queue<IStreamMessage> _outputMessages;
-        //private Dictionary<int, TSource> items = new Dictionary<int, TSource>();
+        private ContainerElementList<TResult> _resultElements;
+        
 
         public override async Task OnActivateAsync()
         {
             _propertyChangedProcessor = new DistributedPropertyChangedProcessor<ContainerElement<TSource>>();
             _inputList = new Dictionary<ContainerElementReference<TSource>, TSource>();
             _resultElements = new ContainerElementList<TResult>(this.GetPrimaryKey(), null, null);
-            _outputMessages = new Queue<IStreamMessage>();
             await base.OnActivateAsync();
         }
 
@@ -64,10 +57,10 @@ namespace NMF.Expressions.Linq.Orleans
                 await CalculateResult(item);
             }
 
-            while (_outputMessages.Count > 0)
-            {
-                await StreamMessageSender.SendMessage(_outputMessages.Dequeue());
-            }
+            dynamic x = itemMessage.Items.First();
+            x.Item.Value = 20;
+
+            await StreamMessageSender.SendMessagesFromQueue();
         }
 
 
@@ -75,7 +68,7 @@ namespace NMF.Expressions.Linq.Orleans
         private async Task CalculateResult(ContainerElement<TSource> hostedItem)
         {
             var itemKnown = _inputList.ContainsKey(hostedItem.Reference);
-            
+
             // remove
             if (itemKnown && !hostedItem.Reference.Exists)
             {
@@ -84,10 +77,10 @@ namespace NMF.Expressions.Linq.Orleans
                 _inputList.Remove(hostedItem.Reference);
                 if (lambdas.TryGetValue(item, out lambdaResult))
                 {
-                        lambdas.Remove(item);
-                        lambdaResult.PropertyChanged -= PropertyChanged;
-                        var removedReference = _resultElements.Remove(lambdaResult.Value);
-                        await StreamTransactionSender.SendItem(new ContainerElement<TResult>(removedReference, lambdaResult.Value));
+                    lambdas.Remove(item);
+                    lambdaResult.ValueChanged -= LambdaChanged;
+                    var removedReference = _resultElements.Remove(lambdaResult.Value);
+                    await StreamTransactionSender.SendItem(new ContainerElement<TResult>(removedReference, lambdaResult.Value));
                 }
             }
 
@@ -98,7 +91,6 @@ namespace NMF.Expressions.Linq.Orleans
                 _inputList.Add(hostedItem.Reference, hostedItem.Item);
                 var lambdaResult = AttachItem(hostedItem);
                 //lambdaResult.ValueChanged += LambdaChanged;
-                lambdaResult.PropertyChanged += PropertyChanged;
                 //var elementReference = (await _resultElements.AddRange(new List<TResult> { lambdaResult.Value })).First();
                 added.Add(lambdaResult.Value);
                 await StreamTransactionSender.SendItem(new ContainerElement<TResult>(lambdaResult.Tag, lambdaResult.Value));
@@ -110,17 +102,6 @@ namespace NMF.Expressions.Linq.Orleans
                 _inputList[hostedItem.Reference] = hostedItem.Item;
             }
             // Update
-        }
-
-        private void PropertyChanged(object sender, PropertyChangedEventArgs e)
-        {
-            OnPropertyChanged(sender as IContainerElementNotifyPropertyChanged, e); ;
-        }
-
-        private void OnPropertyChanged(IContainerElementNotifyPropertyChanged value, PropertyChangedEventArgs args)
-        {
-            var changeArgs = new ContainerElementPropertyChangedEventArgs(args.PropertyName, 42, value.Identifier);
-            _outputMessages.Enqueue(new ItemPropertyChangedMessage(changeArgs));
         }
 
         public override Task TearDown()
@@ -135,7 +116,7 @@ namespace NMF.Expressions.Linq.Orleans
             {
                 DetachItem(pair.Key, pair.Value);
             }
-            lambdas.Clear(); 
+            lambdas.Clear();
         }
 
         private TaggedObservableValue<TResult, ContainerElementReference<TResult>> AttachItem(ContainerElement<TSource> element)
@@ -143,8 +124,8 @@ namespace NMF.Expressions.Linq.Orleans
             TaggedObservableValue<TResult, ContainerElementReference<TResult>> lambdaResult;
             if (!lambdas.TryGetValue(element.Item, out lambdaResult))
             {
-                lambdaResult = lambda.InvokeTagged<ContainerElementReference<TResult>>(element.Item);
-                var resultReference = _resultElements.AddRange(new List<TResult> {lambdaResult.Value}).First();
+                lambdaResult = _lambda.InvokeTagged<ContainerElementReference<TResult>>(element.Item);
+                var resultReference = _resultElements.AddRange(new List<TResult> { lambdaResult.Value }).First();
                 lambdaResult.Tag = resultReference;
                 lambdaResult.ValueChanged += LambdaChanged;
                 lambdas.Add(element.Item, lambdaResult);
@@ -167,7 +148,7 @@ namespace NMF.Expressions.Linq.Orleans
             // Use tag to store item offset
             // TODO send property changed
             var changedResult = result as IContainerElementNotifyPropertyChanged;
-//            _outputMessages.Enqueue(new ItemPropertyChangedMessage(new ContainerElementPropertyChangedEventArgs(e.)));
+            //            _outputMessages.Enqueue(new ItemPropertyChangedMessage(new ContainerElementPropertyChangedEventArgs(e.)));
             //StreamTransactionSender.SendItem(new ContainerElement<TResult>(value.Tag, _resultElements[value.Tag]));
             // why multiple times?
             //for (int i = 0; i < value.Tag; i++)
@@ -176,10 +157,10 @@ namespace NMF.Expressions.Linq.Orleans
             //}
         }
 
-        public Task SetObservingFunc(Func<TSource, TResult> observingFunc)
+        public Task SetObservingFunc(SerializableFunc<TSource, TResult> observingFunc)
         {
-            Expression<Func<TSource, TResult>> observingExpression = x => observingFunc(x);
-            lambda = new ObservingFunc<TSource, TResult>(observingExpression);
+            //Expression<Func<TSource, TResult>> observingExpression = x => observingFunc(x);
+            _lambda = new ObservingFunc<TSource, TResult>(observingFunc.Value);
             return TaskDone.Done;
         }
 

@@ -34,6 +34,10 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="MetaLinq, Version=1.0.8.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\MetaLinq.1.0.8\lib\portable-net45+win+wpa81+wp80\MetaLinq.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="Microsoft.CodeAnalysis, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.CodeAnalysis.Common.1.0.0\lib\net45\Microsoft.CodeAnalysis.dll</HintPath>
       <Private>True</Private>
@@ -77,12 +81,16 @@
     <Reference Include="System.Data" />
     <Reference Include="System.Net.Http" />
     <Reference Include="System.Xml" />
+    <Reference Include="TestGrains">
+      <HintPath>..\..\..\..\Documents\Visual Studio 2015\Projects\Orleans.Containers\TestGrains\bin\Debug\TestGrains.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Linq\Interfaces\IObservableSelectAggregateGrain.cs" />
     <Compile Include="Linq\Interfaces\IObservableSelectNodeGrain.cs" />
     <Compile Include="Linq\Interfaces\IObservingFuncProcessor.cs" />
     <Compile Include="Linq\ObservableSelectAggregateGrain.cs" />
+    <Compile Include="Linq\TestObservableGrain.cs" />
     <Compile Include="Linq\ObservableSelectNodeGrain.cs" />
     <Compile Include="Linq\TaggedObservableValueWithPosition.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

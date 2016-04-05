@@ -13,7 +13,7 @@ namespace NMF.Expressions.Linq.Orleans
 {
     public class ObservableSelectAggregateGrain<TSource, TResult> : StreamProcessorAggregate<ContainerElement<TSource>, ContainerElement<TResult>>, IObservableSelectAggregateGrain<TSource, TResult>
     {
-        private Func<TSource, TResult> _observingFunc;
+        private SerializableFunc<TSource, TResult> _observingFunc;
 
         protected override async Task<IStreamProcessorNodeGrain<ContainerElement<TSource>, ContainerElement<TResult>>> InitializeNode(StreamIdentity identity)
         {
@@ -24,7 +24,7 @@ namespace NMF.Expressions.Linq.Orleans
             return node;
         }
 
-        public Task SetObservingFunc(Func<TSource, TResult> observingFunc)
+        public Task SetObservingFunc(SerializableFunc<TSource, TResult> observingFunc)
         {
             _observingFunc = observingFunc;
             return TaskDone.Done;

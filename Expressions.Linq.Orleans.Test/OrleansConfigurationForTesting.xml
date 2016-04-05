@@ -12,7 +12,7 @@
       <Provider Type="Orleans.Providers.Streams.SimpleMessageStream.SimpleMessageStreamProvider" Name="CollectionStreamProvider"/>
     </StreamProviders>
     <SeedNode Address="localhost" Port="22222"/>
-    <Messaging ResponseTimeout="30s"/>
+    <Messaging ResponseTimeout="600s"/>
   </Globals>
   <Defaults>
     <Networking Address="localhost" Port="22222"/>
