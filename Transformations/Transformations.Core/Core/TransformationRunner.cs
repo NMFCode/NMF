@@ -7,6 +7,9 @@ using System.Text;
 
 namespace NMF.Transformations.Core
 {
+    /// <summary>
+    /// Service class to run transformations
+    /// </summary>
     public static class TransformationRunner
     {
 
@@ -14,6 +17,7 @@ namespace NMF.Transformations.Core
         /// Transforms the input argument into an output using the provided transformation
         /// </summary>
         /// <param name="input">The input arguments as an array. This must not be null. The correct amount of parameters depends on the rule to start with.</param>
+        /// <param name="inputContext">The context in which the transformation rule is executed</param>
         /// <param name="startRule">The start rule to begin with (must not be null)</param>
         /// <param name="context">The transformation context (must not be null)</param>
         /// <returns>The transformation computation</returns>

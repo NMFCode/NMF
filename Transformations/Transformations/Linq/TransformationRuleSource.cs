@@ -140,6 +140,9 @@ namespace NMF.Transformations.Linq
             get { return true; }
         }
 
+        /// <summary>
+        /// Gets fired when new elements appear in the trace
+        /// </summary>
         public event NotifyCollectionChangedEventHandler CollectionChanged;
     }
 
@@ -276,6 +279,9 @@ namespace NMF.Transformations.Linq
             get { return true; }
         }
 
+        /// <summary>
+        /// Gets fired when new elements appear in the trace
+        /// </summary>
         public event NotifyCollectionChangedEventHandler CollectionChanged;
     }
 
@@ -408,6 +414,9 @@ namespace NMF.Transformations.Linq
             get { return true; }
         }
 
+        /// <summary>
+        /// Gets fired when new elements appear in the trace
+        /// </summary>
         public event NotifyCollectionChangedEventHandler CollectionChanged;
     }
 
@@ -542,6 +551,9 @@ namespace NMF.Transformations.Linq
             get { return true; }
         }
 
+        /// <summary>
+        /// Gets fired when new elements appear in the trace
+        /// </summary>
         public event NotifyCollectionChangedEventHandler CollectionChanged;
     }
 }

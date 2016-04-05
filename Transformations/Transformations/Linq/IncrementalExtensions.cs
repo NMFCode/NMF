@@ -614,7 +614,6 @@ namespace NMF.Transformations.Linq
         /// <summary>
         /// Filters the given monad instance with the given filter operator
         /// </summary>
-        /// <typeparam name="TParameter">The parameter type of this monad</typeparam>
         /// <typeparam name="T">The inner type of the monad instance</typeparam>
         /// <param name="items">The monad instance that should be filtered</param>
         /// <param name="filter">The filter that should be applied to the monad</param>
@@ -631,7 +630,6 @@ namespace NMF.Transformations.Linq
         /// <summary>
         /// Binds the Monad IRelationalSource to child items
         /// </summary>
-        /// <typeparam name="TParameter">The parameter type of this monad</typeparam>
         /// <typeparam name="T1">The inner type of the input monad instance</typeparam>
         /// <typeparam name="T2">The inner type of the result monad instance</typeparam>
         /// <param name="items">The monad instance whose child items should be selected</param>
@@ -648,7 +646,6 @@ namespace NMF.Transformations.Linq
         /// <summary>
         /// Binds the Monad IRelationalSource to child items
         /// </summary>
-        /// <typeparam name="TParameter">The parameter type of this monad</typeparam>
         /// <typeparam name="T1">The inner type of the outer monad instance</typeparam>
         /// <typeparam name="T2">The inner type of the inner monad instance</typeparam>
         /// <param name="items">The monad instance which children are to be selected</param>
@@ -672,7 +669,6 @@ namespace NMF.Transformations.Linq
         /// <summary>
         /// Binds the Monad IRelationalSource to child items
         /// </summary>
-        /// <typeparam name="TParameter">The parameter type of this monad</typeparam>
         /// <typeparam name="T1">The inner type of the outer monad instance</typeparam>
         /// <typeparam name="T2">The inner type of the inner monad instance</typeparam>
         /// <typeparam name="T3">The inner type of the return monad</typeparam>

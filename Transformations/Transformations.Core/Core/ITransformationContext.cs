@@ -39,6 +39,7 @@ namespace NMF.Transformations.Core
         /// Calls the given transformation with the specified input
         /// </summary>
         /// <param name="transformationRule">The rule that should be applied</param>
+        /// <param name="context">The context in which the transformation rule is executed</param>
         /// <param name="input">The input for the transformation rule</param>
         /// <returns>The computation that handles this request</returns>
         Computation CallTransformation(GeneralTransformationRule transformationRule, object[] input, IEnumerable context);

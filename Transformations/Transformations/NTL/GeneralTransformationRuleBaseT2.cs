@@ -704,6 +704,7 @@ namespace NMF.Transformations
         /// </summary>
         /// <typeparam name="TRequiredInput1">The first input type parameter of the transformation rule acting as trigger</typeparam>
         /// <typeparam name="TRequiredInput2">The second input type parameter of the transformation rule acting as trigger</typeparam>
+        /// <typeparam name="TRequiredOutput">The output type parameter of the transformation rule acting as trigger</typeparam>
         /// <param name="selector1">A method that selects the first input parameter for the current transformation rule</param>
         /// <param name="selector2">A method that selects the second input parameter for the current transformation rule</param>
         /// <exception cref="ArgumentNullException">An ArgumentNullException is thrown if the selector1 parameter is passed a null instance</exception>
@@ -719,6 +720,7 @@ namespace NMF.Transformations
         /// </summary>
         /// <typeparam name="TRequiredInput1">The first input type parameter of the transformation rule acting as trigger</typeparam>
         /// <typeparam name="TRequiredInput2">The second input type parameter of the transformation rule acting as trigger</typeparam>
+        /// <typeparam name="TRequiredOutput">The output type parameter of the transformation rule acting as trigger</typeparam>
         /// <param name="selector1">A method that selects the first input parameter for the current transformation rule</param>
         /// <param name="selector2">A method that selects the second input parameter for the current transformation rule</param>
         /// <param name="filter">A method that filters the objects where the dependency should be applied</param>
@@ -744,6 +746,7 @@ namespace NMF.Transformations
         /// </summary>
         /// <typeparam name="TRequiredInput1">The first input type parameter of the transformation rule acting as trigger</typeparam>
         /// <typeparam name="TRequiredInput2">The second input type parameter of the transformation rule acting as trigger</typeparam>
+        /// <typeparam name="TRequiredOutput">The output type parameter of the transformation rule acting as trigger</typeparam>
         /// <param name="selector1">A method that selects the first input parameter for the current transformation rule</param>
         /// <param name="selector2">A method that selects the second input parameter for the current transformation rule</param>
         /// <param name="rule">The transformation rule that act as trigger for the current transformation rule</param>
@@ -763,6 +766,7 @@ namespace NMF.Transformations
         /// </summary>
         /// <typeparam name="TRequiredInput1">The first input type parameter of the transformation rule acting as trigger</typeparam>
         /// <typeparam name="TRequiredInput2">The second input type parameter of the transformation rule acting as trigger</typeparam>
+        /// <typeparam name="TRequiredOutput">The output type parameter of the transformation rule acting as trigger</typeparam>
         /// <param name="selector1">A method that selects the first input parameter for the current transformation rule</param>
         /// <param name="selector2">A method that selects the second input parameter for the current transformation rule</param>
         /// <param name="filter">A method to filter the objects where the reversed dependency is applicable</param>
@@ -792,6 +796,7 @@ namespace NMF.Transformations
         /// Specify that the current transformation rule is called whenenver the given types are transformed
         /// </summary>
         /// <typeparam name="TRequiredInput">The input type of the transformation rule acting as trigger</typeparam>
+        /// <typeparam name="TRequiredOutput">The output type parameter of the transformation rule acting as trigger</typeparam>
         /// <param name="selector1">A method that selects the first input parameter for the current transformation rule</param>
         /// <param name="selector2">A method that selects the second input parameter for the current transformation rule</param>
         /// <exception cref="ArgumentNullException">An ArgumentNullException is thrown if the selector1 parameter is passed a null instance</exception>
@@ -806,6 +811,7 @@ namespace NMF.Transformations
         /// Specify that the current transformation rule is called whenenver the given types are transformed
         /// </summary>
         /// <typeparam name="TRequiredInput">The input type of the transformation rule acting as trigger</typeparam>
+        /// <typeparam name="TRequiredOutput">The output type parameter of the transformation rule acting as trigger</typeparam>
         /// <param name="selector1">A method that selects the first input parameter for the current transformation rule</param>
         /// <param name="selector2">A method that selects the second input parameter for the current transformation rule</param>
         /// <param name="filter">A method that filters the objects where the dependency should be applied</param>
@@ -830,6 +836,7 @@ namespace NMF.Transformations
         /// Specify that the current transformation rule is called whenenver objects are transformed with the given transformation rule
         /// </summary>
         /// <typeparam name="TRequiredInput">The input type of the transformation rule acting as trigger</typeparam>
+        /// <typeparam name="TRequiredOutput">The output type parameter of the transformation rule acting as trigger</typeparam>
         /// <param name="selector1">A method that selects the first input parameter for the current transformation rule</param>
         /// <param name="selector2">A method that selects the second input parameter for the current transformation rule</param>
         /// <param name="rule">The transformation rule that act as trigger for the current transformation rule</param>
@@ -847,6 +854,7 @@ namespace NMF.Transformations
         /// Specify that the current transformation rule is called whenenver objects are transformed with the given transformation rule
         /// </summary>
         /// <typeparam name="TRequiredInput">The input type of the transformation rule acting as trigger</typeparam>
+        /// <typeparam name="TRequiredOutput">The output type parameter of the transformation rule acting as trigger</typeparam>
         /// <param name="selector1">A method that selects the first input parameter for the current transformation rule</param>
         /// <param name="selector2">A method that selects the second input parameter for the current transformation rule</param>
         /// <param name="filter">A method to filter the objects where the reversed dependency is applicable</param>
@@ -1017,6 +1025,7 @@ namespace NMF.Transformations
         /// </summary>
         /// <typeparam name="TRequiredInput1">The first input type parameter of the transformation rule acting as trigger</typeparam>
         /// <typeparam name="TRequiredInput2">The second input type parameter of the transformation rule acting as trigger</typeparam>
+        /// <typeparam name="TRequiredOutput">The output type parameter of the transformation rule acting as trigger</typeparam>
         /// <param name="selector">A method that selects the input parameters for the current transformation rule</param>
         /// <exception cref="ArgumentNullException">An ArgumentNullException is thrown if the selector parameter is passed a null instance</exception>
         public void CallForEachOutputSensitive<TRequiredInput1, TRequiredInput2, TRequiredOutput>(Func<TRequiredInput1, TRequiredInput2, TRequiredOutput, IEnumerable<Tuple<TIn1, TIn2>>> selector)
@@ -1029,6 +1038,7 @@ namespace NMF.Transformations
         /// </summary>
         /// <typeparam name="TRequiredInput1">The first input type parameter of the transformation rule acting as trigger</typeparam>
         /// <typeparam name="TRequiredInput2">The second input type parameter of the transformation rule acting as trigger</typeparam>
+        /// <typeparam name="TRequiredOutput">The output type parameter of the transformation rule acting as trigger</typeparam>
         /// <param name="selector">A method that selects the input parameters for the current transformation rule</param>
         /// <param name="filter">A method that filters the inputs of the transformation rule acting as trigger</param>
         /// <exception cref="ArgumentNullException">An ArgumentNullException is thrown if the selector parameter is passed a null instance</exception>
@@ -1049,6 +1059,7 @@ namespace NMF.Transformations
         /// </summary>
         /// <typeparam name="TRequiredInput1">The first input type parameter of the transformation rule acting as trigger</typeparam>
         /// <typeparam name="TRequiredInput2">The second input type parameter of the transformation rule acting as trigger</typeparam>
+        /// <typeparam name="TRequiredOutput">The output type parameter of the transformation rule acting as trigger</typeparam>
         /// <param name="selector">A method that selects the input parameters for the current transformation rule</param>
         /// <param name="rule">The transformation rule acting as trigger for the current transformation rule</param>
         /// <exception cref="ArgumentNullException">An ArgumentNullException is thrown if the selector parameter is passed a null instance</exception>
@@ -1066,6 +1077,7 @@ namespace NMF.Transformations
         /// </summary>
         /// <typeparam name="TRequiredInput1">The first input type parameter of the transformation rule acting as trigger</typeparam>
         /// <typeparam name="TRequiredInput2">The second input type parameter of the transformation rule acting as trigger</typeparam>
+        /// <typeparam name="TRequiredOutput">The output type parameter of the transformation rule acting as trigger</typeparam>
         /// <param name="selector">A method that selects the input parameters for the current transformation rule</param>
         /// <param name="filter">A method that filters the inputs of the transformation rule acting as trigger</param>
         /// <param name="rule">The transformation rule acting as trigger for the current transformation rule</param>
@@ -1092,6 +1104,7 @@ namespace NMF.Transformations
         /// Specify that the current transformation rule is called whenenver the given types are transformed multiple times
         /// </summary>
         /// <typeparam name="TRequiredInput">The input type parameter of the transformation rule acting as trigger</typeparam>
+        /// <typeparam name="TRequiredOutput">The output type parameter of the transformation rule acting as trigger</typeparam>
         /// <param name="selector">A method that selects the input parameters for the current transformation rule</param>
         /// <exception cref="ArgumentNullException">An ArgumentNullException is thrown if the selector parameter is passed a null instance</exception>
         public void CallForEachOutputSensitive<TRequiredInput, TRequiredOutput>(Func<TRequiredInput, TRequiredOutput, IEnumerable<Tuple<TIn1, TIn2>>> selector)
@@ -1103,6 +1116,7 @@ namespace NMF.Transformations
         /// Specify that the current transformation rule is called whenenver the given types are transformed multiple times
         /// </summary>
         /// <typeparam name="TRequiredInput">The input type parameter of the transformation rule acting as trigger</typeparam>
+        /// <typeparam name="TRequiredOutput">The output type parameter of the transformation rule acting as trigger</typeparam>
         /// <param name="selector">A method that selects the input parameters for the current transformation rule</param>
         /// <param name="filter">A method that filters the inputs of the transformation rule acting as trigger</param>
         /// <exception cref="ArgumentNullException">An ArgumentNullException is thrown if the selector parameter is passed a null instance</exception>
@@ -1122,6 +1136,7 @@ namespace NMF.Transformations
         /// Specify that the current transformation rule is called whenenver the given types are transformed multiple times
         /// </summary>
         /// <typeparam name="TRequiredInput">The input type parameter of the transformation rule acting as trigger</typeparam>
+        /// <typeparam name="TRequiredOutput">The output type parameter of the transformation rule acting as trigger</typeparam>
         /// <param name="selector">A method that selects the input parameters for the current transformation rule</param>
         /// <param name="rule">The transformation rule acting as trigger for the current transformation rule</param>
         /// <exception cref="ArgumentNullException">An ArgumentNullException is thrown if the rule parameter is passed a null instance</exception>
@@ -1137,6 +1152,7 @@ namespace NMF.Transformations
         /// Specify that the current transformation rule is called whenenver the given types are transformed multiple times
         /// </summary>
         /// <typeparam name="TRequiredInput">The input type parameter of the transformation rule acting as trigger</typeparam>
+        /// <typeparam name="TRequiredOutput">The output type parameter of the transformation rule acting as trigger</typeparam>
         /// <param name="selector">A method that selects the input parameters for the current transformation rule</param>
         /// <param name="filter">A method that filters the inputs of the transformation rule acting as trigger</param>
         /// <param name="rule">The transformation rule acting as trigger for the current transformation rule</param>
@@ -1164,6 +1180,7 @@ namespace NMF.Transformations
         /// </summary>
         /// <param name="selector">A method that selects the input parameters for the current transformation rule</param>
         /// <param name="rule">The transformation rule that act as trigger for the current transformation rule</param>
+        /// <param name="needOutput">True, if the call must be made after the output of the trigger rule is created, otherwise false</param>
         /// <exception cref="ArgumentNullException">An ArgumentNullException is thrown if the selector parameter is passed a null instance</exception>
         /// <exception cref="ArgumentNullException">An ArgumentNullException is thrown if the rule parameter is passed a null instance</exception>
         public void CallFor(GeneralTransformationRule rule, Func<Computation, Tuple<TIn1, TIn2>> selector, bool needOutput)
@@ -1177,6 +1194,7 @@ namespace NMF.Transformations
         /// <param name="selector">A method that selects the input parameters for the current transformation rule</param>
         /// <param name="filter">A method to filter the objects where the reversed dependency is applicable</param>
         /// <param name="rule">The transformation rule that act as trigger for the current transformation rule</param>
+        /// <param name="needOutput">True, if the call must be made after the output of the trigger rule is created, otherwise false</param>
         /// <exception cref="ArgumentNullException">An ArgumentNullException is thrown if the selector parameter is passed a null instance</exception>
         /// <exception cref="ArgumentNullException">An ArgumentNullException is thrown if the rule parameter is passed a null instance</exception>
         public void CallFor(GeneralTransformationRule rule, Func<Computation, Tuple<TIn1, TIn2>> selector, Predicate<Computation> filter, bool needOutput)
@@ -1193,6 +1211,7 @@ namespace NMF.Transformations
         /// </summary>
         /// <param name="selector">A method that selects the input parameters for the current transformation rule</param>
         /// <param name="rule">The transformation rule acting as trigger for the current transformation rule</param>
+        /// <param name="needOutput">True, if the call must be made after the output of the trigger rule is created, otherwise false</param>
         /// <exception cref="ArgumentNullException">An ArgumentNullException is thrown if the rule parameter is passed a null instance</exception>
         /// <exception cref="ArgumentNullException">An ArgumentNullException is thrown if the selector parameter is passed a null instance</exception>
         public void CallForEach(GeneralTransformationRule rule, Func<Computation, IEnumerable<Tuple<TIn1, TIn2>>> selector, bool needOutput)
@@ -1206,6 +1225,7 @@ namespace NMF.Transformations
         /// <param name="selector">A method that selects the input parameters for the current transformation rule</param>
         /// <param name="filter">A method that filters the inputs of the transformation rule acting as trigger</param>
         /// <param name="rule">The transformation rule acting as trigger for the current transformation rule</param>
+        /// <param name="needOutput">True, if the call must be made after the output of the trigger rule is created, otherwise false</param>
         /// <exception cref="ArgumentNullException">An ArgumentNullException is thrown if the rule parameter is passed a null instance</exception>
         /// <exception cref="ArgumentNullException">An ArgumentNullException is thrown if the selector parameter is passed a null instance</exception>
         public void CallForEach(GeneralTransformationRule rule, Func<Computation, IEnumerable<Tuple<TIn1, TIn2>>> selector, Predicate<Computation> filter, bool needOutput)
