@@ -143,14 +143,6 @@ namespace NMF.Models.Meta
         }
         
         /// <summary>
-        /// Gets the Class element that describes the structure of the current model element
-        /// </summary>
-        public override NMF.Models.Meta.IClass GetClass()
-        {
-            return NMF.Models.Repository.MetaRepository.Instance.ResolveClass("http://nmf.codeplex.com/nmeta/#//ReferenceType/");
-        }
-        
-        /// <summary>
         /// Gets the Model element collection for the given feature
         /// </summary>
         /// <returns>A non-generic list of elements</returns>
@@ -166,6 +158,14 @@ namespace NMF.Models.Meta
                 return this._references;
             }
             return base.GetCollectionForFeature(feature);
+        }
+        
+        /// <summary>
+        /// Gets the Class for this model element
+        /// </summary>
+        public override IClass GetClass()
+        {
+            return ((IClass)(NMF.Models.Repository.MetaRepository.Instance.Resolve("http://nmf.codeplex.com/nmeta/#//ReferenceType/")));
         }
         
         /// <summary>

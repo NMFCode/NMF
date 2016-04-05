@@ -100,6 +100,11 @@ namespace NMF.Models.Meta
         /// Gets fired when the Type property changed its value
         /// </summary>
         event EventHandler<ValueChangedEventArgs> TypeChanged;
+        
+        /// <summary>
+        /// Gets the Class for this model element
+        /// </summary>
+        IClass GetClass();
     }
 }
 

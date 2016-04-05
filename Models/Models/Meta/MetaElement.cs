@@ -199,14 +199,6 @@ namespace NMF.Models.Meta
         }
         
         /// <summary>
-        /// Gets the Class element that describes the structure of the current model element
-        /// </summary>
-        public override NMF.Models.Meta.IClass GetClass()
-        {
-            return NMF.Models.Repository.MetaRepository.Instance.ResolveClass("http://nmf.codeplex.com/nmeta/#//MetaElement/");
-        }
-        
-        /// <summary>
         /// Resolves the given attribute name
         /// </summary>
         /// <returns>The attribute value or null if it could not be found</returns>
@@ -252,6 +244,14 @@ namespace NMF.Models.Meta
                 return;
             }
             base.SetFeature(feature, value);
+        }
+        
+        /// <summary>
+        /// Gets the Class for this model element
+        /// </summary>
+        public override IClass GetClass()
+        {
+            return ((IClass)(NMF.Models.Repository.MetaRepository.Instance.Resolve("http://nmf.codeplex.com/nmeta/#//MetaElement/")));
         }
         
         /// <summary>

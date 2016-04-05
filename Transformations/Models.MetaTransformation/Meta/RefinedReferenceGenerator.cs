@@ -185,7 +185,8 @@ namespace NMF.Models.Meta
 
             public override void RegisterDependencies()
             {
-                Require(Rule<RefinedReferenceCollectionClassGenerator>(), (scope, reference) => reference.UpperBound != 1 && !reference.IsUnique);
+                Require(Rule<RefinedReferenceCollectionClassGenerator>(), (scope, reference) => 
+                reference.UpperBound != 1 && !reference.IsUnique);
             }
         }
     }

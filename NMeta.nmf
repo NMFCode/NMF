@@ -10,12 +10,11 @@
    <Attributes IsOrdered="True" Name="Values" Type="#//String/" UpperBound="-1"/>
    <References ReferenceType="#//Attribute/" LowerBound="1" Name="Constrains" />
  </Types>
- <Types xsi:type="nmeta:Class" BaseTypes="#//ReferenceType/" Name="Class" Summary="Represents a group of instances with common properties like attributes or references">
+ <Types xsi:type="nmeta:Class" BaseTypes="#//ReferenceType/" Name="Class" Summary="Represents a group of instances with common properties like attributes or references" Instantiates="#//ModelElement">
    <Attributes DefaultValue="false" Type="#//Boolean/" LowerBound="1" Name="IsInterface" Summary="Determines whether this class is an interface" />
    <Attributes DefaultValue="false" Type="#//Boolean/" LowerBound="1" Name="IsAbstract" />
    <References UpperBound="-1" ReferenceType="#//Class/" Name="BaseTypes" />
-   <References UpperBound="1" ReferenceType="#//Class/" Name="InstanceOf" Opposite="#//Class/Instantiates" />
-   <References UpperBound="1" ReferenceType="#//Class/" Name="Instantiates" Opposite="#//Class/InstanceOf" />
+   <References UpperBound="1" ReferenceType="#//Class/" Name="InstanceOf" />
    <References ReferenceType="#//Attribute/" Name="Identifier" />
    <References IsContainment="True" Opposite="#//AttributeConstraint/DeclaringType/" UpperBound="-1" ReferenceType="#//AttributeConstraint/" Name="AttributeConstraints" />
    <References IsContainment="True" Opposite="#//ReferenceConstraint/DeclaringType/" UpperBound="-1" ReferenceType="#//ReferenceConstraint/" Name="ReferenceConstraints" />
@@ -45,7 +44,7 @@
    <Attributes Type="#//Uri/" Name="ModelUri" />
    <References IsContainment="True" UpperBound="-1" ReferenceType="#//ModelElement/" Name="RootElements" />
  </Types>
- <Types xsi:type="nmeta:Class" IsAbstract="True" Name="ModelElement">
+ <Types xsi:type="nmeta:Class" IsAbstract="True" Name="ModelElement" InstanceOf="#//Class">
    <Attributes LowerBound="1" Type="#//Uri/" Name="AbsoluteUri" />
    <Attributes LowerBound="1" Type="#//Uri/" Name="RelativeUri" />
    <References IsContainment="True" Opposite="#//ModelElementExtension/ExtendedElement/" UpperBound="-1" ReferenceType="#//ModelElementExtension/" Name="Extensions" />

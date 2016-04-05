@@ -50,6 +50,11 @@ namespace NMF.Models.Meta
         /// Gets fired when the ExtendedElement property changed its value
         /// </summary>
         event EventHandler<ValueChangedEventArgs> ExtendedElementChanged;
+        
+        /// <summary>
+        /// Gets the Extension for this model element
+        /// </summary>
+        IExtension GetExtension();
     }
 }
 

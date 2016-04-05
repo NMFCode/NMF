@@ -36,14 +36,20 @@ namespace NMF.Models.Meta
             public override CodeTypeDeclaration CreateOutput(IClass input, ITransformationContext context)
             {
                 var generatedType = base.CreateOutput(input, context);
-                var mapping = input.GetExtension<MappedType>();
+                SetTypeReferenceForMappedType(input, generatedType.GetReferenceForType());
+                return generatedType;
+            }
+
+            private static bool SetTypeReferenceForMappedType(IClass type, CodeTypeReference reference)
+            {
+                var mapping = type.GetExtension<MappedType>();
                 if (mapping != null)
                 {
-                    var reference = generatedType.GetReferenceForType();
                     reference.BaseType = mapping.SystemType.Name;
                     reference.SetNamespace(mapping.SystemType.Namespace);
+                    return true;
                 }
-                return generatedType;
+                return false;
             }
 
             protected override bool ShouldContainMembers(CodeTypeDeclaration generatedType, CodeTypeReference baseType)
@@ -105,25 +111,61 @@ namespace NMF.Models.Meta
 
                 generatedType.WriteDocumentation(input.Summary ?? string.Format("The default implementation of the {0} class", input.Name), input.Remarks);
 
+                var members = generatedType.Members;
+                if (input.InstanceOf != null)
+                {
+                    AddIfNotNull(members, CreateAbstractGetClassMethod(input.InstanceOf, context));
+
+                    var referenceImplementations = input.InstanceOf.MostSpecificRefinement(ModelExtensions.ReferenceTypeReferencesReference);
+                    if (!referenceImplementations.Contains(ModelExtensions.ReferenceTypeReferencesReference))
+                    {
+                        foreach (var referenceImplementation in referenceImplementations)
+                        {
+                            AddIfNotNull(members, CreateAbstractReferenceImplementation(input.InstanceOf, referenceImplementation, context));
+                        }
+                    }
+                }
+
                 base.Transform(input, generatedType, context);
 
                 AdjustTypeReference(input, generatedType, context);
 
                 generatedType.BaseTypes.Add(typeof(IModelElement).Name);
-
-                var members = generatedType.Members;
                 
                 AddIfNotNull(members, CreateChildren(input, generatedType, context));
                 AddIfNotNull(members, CreateGetRelativePathForNonIdentifiedChild(input, generatedType, context));
                 AddIfNotNull(members, CreateGetModelElementForReference(input, generatedType, context));
                 AddIfNotNull(members, CreateReferencesProperty(input, generatedType, context));
-                AddIfNotNull(members, CreateGetClass(input));
                 AddIfNotNull(members, CreateGetAttributeValue(input, generatedType, context));
                 AddIfNotNull(members, CreateGetCollectionForFeature(input, generatedType, context));
                 AddIfNotNull(members, CreateSetFeature(input, generatedType, context));
                 AddIfNotNull(members, CreateGetExpressionForAttribute(input, generatedType, context));
                 AddIfNotNull(members, CreateGetExpressionForReference(input, generatedType, context));
                 AddIfNotNull(members, CreateClassInstance(input));
+                
+                var baseClasses = input.Closure(cl => cl.BaseTypes);
+                var isModelElementContained = false;
+                foreach (var cl in baseClasses)
+                {
+                    if (cl == ModelExtensions.ClassModelElement) isModelElementContained = true;
+                    if (cl.InstanceOf != null && cl != input)
+                    {
+                        AddIfNotNull(members, CreateOverriddenGetClassMethod(input, cl.InstanceOf, context));
+
+                        var referenceImplementations = cl.InstanceOf.MostSpecificRefinement(ModelExtensions.ReferenceTypeReferencesReference);
+                        if (!referenceImplementations.Contains(ModelExtensions.ReferenceTypeReferencesReference))
+                        {
+                            foreach (var referenceImplementation in referenceImplementations)
+                            {
+                                AddIfNotNull(members, CreateOverriddenReferenceImplementation(input, cl, referenceImplementation, context));
+                            }
+                        }
+                    }
+                }
+                if (!isModelElementContained)
+                {
+                    AddIfNotNull(members, CreateOverriddenGetClassMethod(input, ModelExtensions.ClassModelElement.InstanceOf, context));
+                }
 
                 ImplementIdentifier(input, generatedType);
 
@@ -135,6 +177,133 @@ namespace NMF.Models.Meta
                         context.GetRootClasses(true).Add(input);
                     }
                 }
+            }
+
+            private CodeTypeMember CreateOverriddenReferenceImplementation(IClass currentType, IClass scope, IReference referenceImplementation, ITransformationContext context)
+            {
+                var referenceType = referenceImplementation.ReferenceType as IClass;
+                if (referenceType == null) return null;
+
+                var upperBound = referenceType.GetUpperBoundConstraintValue();
+
+                if (upperBound.HasValue && upperBound.Value == 1)
+                {
+                    // We know that the reference is single-valued
+                    IReferenceType referencedType = FindTargetTypeForReferenceClass(referenceType);
+
+                    var overriddenReferenceImplementation = new CodeMemberMethod()
+                    {
+                        Attributes = MemberAttributes.Public,
+                        Name = "Get" + referenceImplementation.Name.ToPascalCase() + "Value",
+                        ReturnType = CreateReference(referencedType, true, context)
+                    };
+                    if (true) // if current implementation type implements the scope
+                    {
+                        overriddenReferenceImplementation.Attributes |= MemberAttributes.Override;
+                    }
+                    overriddenReferenceImplementation.Parameters.Add(new CodeParameterDeclarationExpression(CreateReference(referenceImplementation.ReferenceType, true, context), "reference"));
+                    overriddenReferenceImplementation.WriteDocumentation(string.Format("Gets the referenced value for a {0} of the enclosing {1}.", referenceImplementation.Name, scope.InstanceOf.Name));
+
+                    overriddenReferenceImplementation.Statements.Add(new CodeMethodReturnStatement(new CodeCastExpression(overriddenReferenceImplementation.ReturnType,
+                        new CodeMethodInvokeExpression(new CodeThisReferenceExpression(), "GetReferencedElement", new CodeArgumentReferenceExpression("reference")))));
+
+                    return overriddenReferenceImplementation;
+                }
+                return null;
+            }
+
+            private CodeTypeMember CreateAbstractReferenceImplementation(IClass instanceOf, IReference referenceImplementation, ITransformationContext context)
+            {
+                var referenceType = referenceImplementation.ReferenceType as IClass;
+                if (referenceType == null) return null;
+
+                var upperBound = referenceType.GetUpperBoundConstraintValue();
+                
+                if (upperBound.HasValue && upperBound.Value == 1)
+                {
+                    // We know that the reference is single-valued
+                    IReferenceType referencedType = FindTargetTypeForReferenceClass(referenceType);
+
+                    var abstractReferenceImplementation = new CodeMemberMethod()
+                    {
+                        Attributes = MemberAttributes.Public | MemberAttributes.Abstract,
+                        Name = "Get" + referenceImplementation.Name.ToPascalCase() + "Value",
+                        ReturnType = CreateReference(referencedType, true, context)
+                    };
+                    abstractReferenceImplementation.Parameters.Add(new CodeParameterDeclarationExpression(CreateReference(referenceImplementation.ReferenceType, true, context), "reference"));
+                    abstractReferenceImplementation.WriteDocumentation(string.Format("Gets the referenced value for a {0} of the enclosing {1}.", referenceImplementation.Name, instanceOf.Name));
+                    return abstractReferenceImplementation;
+                }
+                return null;
+            }
+
+            private static IReferenceType FindTargetTypeForReferenceClass(IClass referenceType)
+            {
+                // First look if there is a suitable constraint
+                var referencedType = referenceType.GetReferenceTypeConstraintValue();
+                // If not, search whether we can conclude on constrained base types
+                if (referencedType == null)
+                {
+                    var targetTypeReferences = referenceType.MostSpecificRefinement(ModelExtensions.ReferenceReferenceTypeReference);
+                    if (targetTypeReferences.Count == 1)
+                    {
+                        var targetType = targetTypeReferences.First().ReferenceType as IClass;
+                        if (targetType != null)
+                        {
+                            var constrainedBaseTypes = targetType.GetReferenceConstraintValue(ModelExtensions.ClassBaseTypesReference);
+                            if (constrainedBaseTypes != null)
+                            {
+                                // TODO: It would be better to use the most specific of these here, though we hardly expect more than one
+                                referencedType = constrainedBaseTypes.OfType<IClass>().FirstOrDefault();
+                            }
+                        }
+                    }
+                }
+                return referencedType;
+            }
+
+            protected virtual CodeMemberMethod CreateOverriddenGetClassMethod(IClass input, IClass instantiating, ITransformationContext context)
+            {
+                var targetType = new CodeTypeReference();
+                if (!SetTypeReferenceForMappedType(instantiating, targetType))
+                {
+                    targetType.BaseType = "I" + input.Name.ToPascalCase();
+                }
+                else
+                {
+                    targetType.BaseType = "I" + targetType.BaseType;
+                }
+                var getClass = new CodeMemberMethod()
+                {
+                    Name = "Get" + instantiating.Name.ToPascalCase(),
+                    ReturnType = targetType,
+                    Attributes = MemberAttributes.Public | MemberAttributes.Override
+                };
+                var absoluteUri = input.AbsoluteUri;
+                if (absoluteUri != null && absoluteUri.IsAbsoluteUri)
+                {
+                    var repositoryRef = new CodePropertyReferenceExpression(new CodeTypeReferenceExpression(typeof(MetaRepository)), "Instance");
+                    var classRef = new CodeMethodInvokeExpression(repositoryRef, "Resolve", new CodePrimitiveExpression(absoluteUri.AbsoluteUri));
+                    getClass.Statements.Add(new CodeMethodReturnStatement(new CodeCastExpression(targetType, classRef)));
+                }
+                else
+                {
+                    getClass.ThrowException<NotSupportedException>();
+                }
+                getClass.WriteDocumentation(string.Format("Gets the {0} for this model element", instantiating.Name));
+                return getClass;
+            }
+
+            protected virtual CodeMemberMethod CreateAbstractGetClassMethod(IClass input, ITransformationContext context)
+            {
+                var abstractGetClass = new CodeMemberMethod()
+                {
+                    Attributes = MemberAttributes.Public | MemberAttributes.Abstract,
+                    Name = "Get" + input.Name.ToPascalCase(),
+                    ReturnType = context.Trace.ResolveIn(this, input).GetReferenceForType()
+                };
+                abstractGetClass.WriteDocumentation(string.Format("Gets the {0} for this model element", input.Name));
+                return abstractGetClass;
             }
 
             private static void AddIfNotNull(CodeTypeMemberCollection members, CodeTypeMember member)
@@ -655,10 +824,13 @@ namespace NMF.Models.Meta
                 {
                     foreach (var reference in bcl.References)
                     {
-                        var property = context.Trace.ResolveIn(r2p, reference);
-                        if (typeDeclaration.Members.Contains(property))
+                        if (!containmentsOnly || reference.IsContainment)
                         {
-                            initial = action(initial, reference);
+                            var property = context.Trace.ResolveIn(r2p, reference);
+                            if (typeDeclaration.Members.Contains(property))
+                            {
+                                initial = action(initial, reference);
+                            }
                         }
                     }
                 }

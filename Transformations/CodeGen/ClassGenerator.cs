@@ -231,9 +231,8 @@ namespace NMF.CodeGen
 
         private void RecursivelyAddDependentMembers(IList members, IList constructorStatements, CodeTypeMember current, HashSet<CodeTypeMember> shadows)
         {
-            if (!shadows.Contains(current))
+            if (shadows.Add(current))
             {
-                shadows.Add(current);
                 members.Add(current);
                 var conStmts = current.ImpliedConstructorStatements(false);
                 if (conStmts != null)
@@ -258,7 +257,7 @@ namespace NMF.CodeGen
         {
             foreach (CodeTypeMember item in generatedType.Members)
             {
-                if ((item.Attributes & (MemberAttributes.Public | MemberAttributes.Abstract | MemberAttributes.Override)) == MemberAttributes.Public)
+                if ((item.Attributes & (MemberAttributes.Public | MemberAttributes.Override)) == MemberAttributes.Public)
                 {
                     var property = item as CodeMemberProperty;
                     if (property != null)

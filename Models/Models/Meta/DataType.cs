@@ -51,11 +51,11 @@ namespace NMF.Models.Meta
         }
         
         /// <summary>
-        /// Gets the Class element that describes the structure of the current model element
+        /// Gets the Class for this model element
         /// </summary>
-        public override NMF.Models.Meta.IClass GetClass()
+        public override IClass GetClass()
         {
-            return NMF.Models.Repository.MetaRepository.Instance.ResolveClass("http://nmf.codeplex.com/nmeta/#//DataType/");
+            return ((IClass)(NMF.Models.Repository.MetaRepository.Instance.Resolve("http://nmf.codeplex.com/nmeta/#//DataType/")));
         }
     }
 }

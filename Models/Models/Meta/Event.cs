@@ -182,51 +182,6 @@ namespace NMF.Models.Meta
         }
         
         /// <summary>
-        /// Gets the relative URI fragment for the given child model element
-        /// </summary>
-        /// <returns>A fragment of the relative URI</returns>
-        /// <param name="element">The element that should be looked for</param>
-        protected override string GetRelativePathForNonIdentifiedChild(IModelElement element)
-        {
-            if ((element == this.Type))
-            {
-                return ModelHelper.CreatePath("Type");
-            }
-            if ((element == this.DeclaringType))
-            {
-                return ModelHelper.CreatePath("DeclaringType");
-            }
-            return base.GetRelativePathForNonIdentifiedChild(element);
-        }
-        
-        /// <summary>
-        /// Resolves the given URI to a child model element
-        /// </summary>
-        /// <returns>The model element or null if it could not be found</returns>
-        /// <param name="reference">The requested reference name</param>
-        /// <param name="index">The index of this reference</param>
-        protected override IModelElement GetModelElementForReference(string reference, int index)
-        {
-            if ((reference == "TYPE"))
-            {
-                return this.Type;
-            }
-            if ((reference == "DECLARINGTYPE"))
-            {
-                return this.DeclaringType;
-            }
-            return base.GetModelElementForReference(reference, index);
-        }
-        
-        /// <summary>
-        /// Gets the Class element that describes the structure of the current model element
-        /// </summary>
-        public override NMF.Models.Meta.IClass GetClass()
-        {
-            return NMF.Models.Repository.MetaRepository.Instance.ResolveClass("http://nmf.codeplex.com/nmeta/#//Event/");
-        }
-        
-        /// <summary>
         /// Sets a value to the given feature
         /// </summary>
         /// <param name="feature">The requested feature</param>
@@ -280,6 +235,14 @@ namespace NMF.Models.Meta
                 return new DeclaringTypeProxy(this);
             }
             return base.GetExpressionForReference(reference);
+        }
+        
+        /// <summary>
+        /// Gets the Class for this model element
+        /// </summary>
+        public override IClass GetClass()
+        {
+            return ((IClass)(NMF.Models.Repository.MetaRepository.Instance.Resolve("http://nmf.codeplex.com/nmeta/#//Event/")));
         }
         
         /// <summary>

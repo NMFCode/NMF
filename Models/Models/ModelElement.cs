@@ -292,7 +292,10 @@ namespace NMF.Models
             {
                 if (current == null) return null;
                 var segmentDecoded = Uri.UnescapeDataString(segments[i]);
-                current = current.GetModelElementForPathSegment(segmentDecoded) as ModelElement;
+                if (!string.IsNullOrEmpty(segmentDecoded))
+                {
+                    current = current.GetModelElementForPathSegment(segmentDecoded) as ModelElement;
+                }
             }
             return current;
         }

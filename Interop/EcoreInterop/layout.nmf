@@ -1,13 +1,13 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <nmeta:Namespace xmi:version="2.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" Uri="http://www.emftext.org/commons/layout" Prefix="layout" Name="layout" xmlns:xmi="http://www.omg.org/XMI" xmlns:nmeta="http://nmf.codeplex.com/nmeta/">
   <Types xsi:type="nmeta:Class" IsAbstract="True" Name="LayoutInformation">
-    <Attributes IsOrdered="True" LowerBound="1" Type="$3" Name="startOffset" />
-    <Attributes IsOrdered="True" LowerBound="1" Type="$5" Name="hiddenTokenText" />
-    <Attributes IsOrdered="True" LowerBound="1" Type="$5" Name="visibleTokenText" />
-    <Attributes IsOrdered="True" LowerBound="1" Type="$5" Name="syntaxElementID" />
+    <Attributes IsOrdered="True" LowerBound="1" Type="http://www.eclipse.org/emf/2002/Ecore#//EInt" Name="startOffset" />
+    <Attributes IsOrdered="True" LowerBound="1" Type="http://www.eclipse.org/emf/2002/Ecore#//EString" Name="hiddenTokenText" />
+    <Attributes IsOrdered="True" LowerBound="1" Type="http://www.eclipse.org/emf/2002/Ecore#//EString" Name="visibleTokenText" />
+    <Attributes IsOrdered="True" LowerBound="1" Type="http://www.eclipse.org/emf/2002/Ecore#//EString" Name="syntaxElementID" />
   </Types>
   <Types xsi:type="nmeta:Class" BaseTypes="#//LayoutInformation/" Name="ReferenceLayoutInformation">
-    <References ReferenceType="$10" IsOrdered="True" LowerBound="1" Name="object" />
+    <References ReferenceType="http://www.eclipse.org/emf/2002/Ecore#//EObject" IsOrdered="True" LowerBound="1" Name="object" />
   </Types>
   <Types xsi:type="nmeta:Class" BaseTypes="#//LayoutInformation/" Name="AttributeLayoutInformation" />
   <Types xsi:type="nmeta:Class" BaseTypes="#//LayoutInformation/" Name="KeywordLayoutInformation" />

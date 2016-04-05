@@ -69,9 +69,14 @@
     <Compile Include="Meta\RefinedReferenceCollectionClassGenerator.cs" />
     <Compile Include="Meta\RefinedReferenceGenerator.cs" />
     <Compile Include="Meta\Type2Type.cs" />
+    <Compile Include="ModelExtensions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\Analysis\Layering\Layering.csproj">
+      <Project>{a44583a6-d3dd-4798-a82f-93f54ef1431d}</Project>
+      <Name>Layering</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\Expressions\Expressions.Linq\Expressions.Linq.csproj">
       <Project>{e82d72a1-90f6-4341-a82d-d6b40349df63}</Project>
       <Name>Expressions.Linq</Name>
