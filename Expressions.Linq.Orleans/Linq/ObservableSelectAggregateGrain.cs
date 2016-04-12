@@ -1,6 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq.Expressions;
+using System.Linq;
 using System.Threading.Tasks;
 using NMF.Expressions.Linq.Orleans.Interfaces;
 using NMF.Expressions.Linq.Orleans.Linq.Interfaces;
@@ -11,23 +10,40 @@ using Orleans.Streams.Linq.Aggregates;
 
 namespace NMF.Expressions.Linq.Orleans
 {
-    public class ObservableSelectAggregateGrain<TSource, TResult> : StreamProcessorAggregate<ContainerElement<TSource>, ContainerElement<TResult>>, IObservableSelectAggregateGrain<TSource, TResult>
+    public class ObservableSelectAggregateGrain<TSource, TResult> :
+        StreamProcessorAggregate<ContainerElement<TSource>, ContainerElement<TResult>, IObservableSelectNodeGrain<TSource, TResult>>,
+        IObservableSelectAggregateGrain<TSource, TResult>
     {
         private SerializableFunc<TSource, TResult> _observingFunc;
 
-        protected override async Task<IStreamProcessorNodeGrain<ContainerElement<TSource>, ContainerElement<TResult>>> InitializeNode(StreamIdentity identity)
+        public async Task<Guid> EnumerateToStream(params StreamIdentity[] streamIdentities)
         {
-            var node = GrainFactory.GetGrain<IObservableSelectNodeGrain<TSource, TResult>>(Guid.NewGuid());
-            await node.SetObservingFunc(_observingFunc);
-            await node.SetInput(identity);
+            var tId = Guid.NewGuid();
+            var streamNodeTuples = streamIdentities.Zip(ProcessorNodes.Repeat(), (identity, processorNode) => new Tuple<StreamIdentity, IElementEnumeratorNode<TResult>>(identity, processorNode));
+            await Task.WhenAll(streamNodeTuples.Select(t => t.Item2.EnumerateToStream(t.Item1, tId)));
+            return tId;
+        }
 
-            return node;
+        public async Task<Guid> EnumerateToSubscribers(int batchSize = 2147483647)
+        {
+            var tId = Guid.NewGuid();
+            await Task.WhenAll(ProcessorNodes.Select(n => n.EnumerateToSubscribers(tId)));
+            return tId;
         }
 
         public Task SetObservingFunc(SerializableFunc<TSource, TResult> observingFunc)
         {
             _observingFunc = observingFunc;
             return TaskDone.Done;
+        }
+
+        protected override async Task<IObservableSelectNodeGrain<TSource, TResult>> InitializeNode(StreamIdentity identity)
+        {
+            var node = GrainFactory.GetGrain<IObservableSelectNodeGrain<TSource, TResult>>(Guid.NewGuid());
+            await node.SetObservingFunc(_observingFunc);
+            await node.SetInput(identity);
+
+            return node;
         }
     }
 }

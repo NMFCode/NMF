@@ -11,6 +11,7 @@ using Orleans;
 using Orleans.Collections;
 using Orleans.Collections.Observable;
 using Orleans.Streams;
+using Orleans.Streams.Endpoints;
 using Orleans.Streams.Linq.Nodes;
 using Orleans.Streams.Messages;
 using SL = System.Linq.Enumerable;
@@ -47,6 +48,7 @@ namespace NMF.Expressions.Linq.Orleans
         {
             base.RegisterMessages();
             StreamMessageDispatchReceiver.Register<ItemPropertyChangedMessage>(_propertyChangedProcessor.ProcessItemPropertyChangedMessage);
+            StreamMessageDispatchReceiver.Register<ItemPropertyChangedMessage>(message => StreamMessageSender.SendMessagesFromQueue());
         }
 
         protected override async Task ProcessItemMessage(ItemMessage<ContainerElement<TSource>> itemMessage)
@@ -57,8 +59,8 @@ namespace NMF.Expressions.Linq.Orleans
                 await CalculateResult(item);
             }
 
-            dynamic x = itemMessage.Items.First();
-            x.Item.Value = 20;
+            //dynamic x = itemMessage.Items.First();
+            //x.Item.Value = 20;
 
             await StreamMessageSender.SendMessagesFromQueue();
         }
@@ -143,18 +145,8 @@ namespace NMF.Expressions.Linq.Orleans
         {
             if (e == null) throw new ArgumentNullException("e");
             TResult result = (TResult)e.NewValue;
-            //TResult oldResult = (TResult)e.OldValue;
-
-            // Use tag to store item offset
-            // TODO send property changed
-            var changedResult = result as IContainerElementNotifyPropertyChanged;
-            //            _outputMessages.Enqueue(new ItemPropertyChangedMessage(new ContainerElementPropertyChangedEventArgs(e.)));
-            //StreamTransactionSender.SendItem(new ContainerElement<TResult>(value.Tag, _resultElements[value.Tag]));
-            // why multiple times?
-            //for (int i = 0; i < value.Tag; i++)
-            //{
-            //    OnUpdateItem(result, oldResult);
-            //}
+            _resultElements.SetElement(value.Tag, (TResult) e.NewValue);
+            StreamTransactionSender.EnqueueItemsForSending(_resultElements[value.Tag]);
         }
 
         public Task SetObservingFunc(SerializableFunc<TSource, TResult> observingFunc)
