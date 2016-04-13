@@ -47,7 +47,7 @@ namespace Expressions.Linq.Orleans.Test
 
             await collection.SetInput(new List<StreamIdentity>() { await sender.GetStreamIdentity() });
 
-            var selectNodeGrain = GrainClient.GrainFactory.GetGrain<IObservableSelectNodeGrain<int, string>>(Guid.NewGuid());
+            var selectNodeGrain = GrainClient.GrainFactory.GetGrain<IIncrementalSelectNodeGrain<int, string>>(Guid.NewGuid());
             await selectNodeGrain.SetObservingFunc(new SerializableFunc<int, string>(i => i.ToString()));
 
             await selectNodeGrain.SetInput((await collection.GetStreamIdentities()).First());
@@ -67,7 +67,7 @@ namespace Expressions.Linq.Orleans.Test
         {
             var collection = GrainClient.GrainFactory.GetGrain<IObservableContainerGrain<int>>(Guid.NewGuid());
 
-            var selectNodeGrain = GrainClient.GrainFactory.GetGrain<IObservableSelectNodeGrain<int, string>>(Guid.NewGuid());
+            var selectNodeGrain = GrainClient.GrainFactory.GetGrain<IIncrementalSelectNodeGrain<int, string>>(Guid.NewGuid());
             await selectNodeGrain.SetObservingFunc(new SerializableFunc<int, string>(i => i.ToString()));
 
             await selectNodeGrain.SetInput((await collection.GetStreamIdentities()).First());
@@ -96,7 +96,7 @@ namespace Expressions.Linq.Orleans.Test
         {
             var collection = GrainClient.GrainFactory.GetGrain<IObservableContainerGrain<TestObjectWithPropertyChange>>(Guid.NewGuid());
 
-            var selectNodeGrain = GrainClient.GrainFactory.GetGrain<IObservableSelectNodeGrain<TestObjectWithPropertyChange, int>>(Guid.NewGuid());
+            var selectNodeGrain = GrainClient.GrainFactory.GetGrain<IIncrementalSelectNodeGrain<TestObjectWithPropertyChange, int>>(Guid.NewGuid());
             await selectNodeGrain.SetInput((await collection.GetStreamIdentities()).First());
             await selectNodeGrain.SetObservingFunc(new SerializableFunc<TestObjectWithPropertyChange, int>(o => o.Value));
 
@@ -133,7 +133,7 @@ namespace Expressions.Linq.Orleans.Test
 
             await collection.SetInput(await provider.GetStreamIdentities());
 
-            var selectAggregateGrain = GrainClient.GrainFactory.GetGrain<IObservableSelectAggregateGrain<int, string>>(Guid.NewGuid());
+            var selectAggregateGrain = GrainClient.GrainFactory.GetGrain<IIncrementalSelectAggregateGrain<int, string>>(Guid.NewGuid());
             await selectAggregateGrain.SetObservingFunc(new SerializableFunc<int, string>(i => i.ToString()));
 
             await selectAggregateGrain.SetInput(await collection.GetStreamIdentities());
@@ -147,5 +147,47 @@ namespace Expressions.Linq.Orleans.Test
             Assert.AreEqual(items.Count, consumer.Items.Count);
             CollectionAssert.AreEquivalent(items, consumer.Items.Select(x => int.Parse(x.Item)).ToList());
         }
+
+        #region WHERE
+        [TestMethod]
+        public async Task TestObservableWhereNodeGrainAddRemove()
+        {
+            var collection = GrainClient.GrainFactory.GetGrain<IObservableContainerGrain<TestObjectWithPropertyChange>>(Guid.NewGuid());
+
+            var whereNodeGrain = GrainClient.GrainFactory.GetGrain<IIncrementalWhereNodeGrain<TestObjectWithPropertyChange>>(Guid.NewGuid());
+            await whereNodeGrain.SetInput((await collection.GetStreamIdentities()).First());
+            await whereNodeGrain.SetObservingFunc(new SerializableFunc<TestObjectWithPropertyChange, bool>(i => i.Value >= 42));
+
+            var clientConsumer = new MultiStreamListConsumer<ContainerElement<TestObjectWithPropertyChange>>(_provider,
+                (containerElement1, containerElement2) => containerElement1.Reference.Equals(containerElement2.Reference));
+            await clientConsumer.SetInput(new List<StreamIdentity> { await whereNodeGrain.GetStreamIdentity() });
+
+            var itemsMeetingCondition = new List<int> { 42, 57 };
+            var itemsViolatingCondition = new List<int> {1, 5, 10, 41};
+            var allItems = itemsViolatingCondition.Concat(itemsMeetingCondition).Select(i => new TestObjectWithPropertyChange(i)).ToList();
+            var elementReferences = await collection.BatchAdd(allItems);
+
+            Assert.AreEqual(itemsMeetingCondition.Count, clientConsumer.Items.Count);
+            CollectionAssert.AreEquivalent(itemsMeetingCondition, clientConsumer.Items.Select(x => x.Item.Value).ToList());
+
+            // Update value
+            var updatedReference = elementReferences.First();
+            await collection.ExecuteSync(o => { o.Value = 50; }, updatedReference);
+            itemsMeetingCondition.Add(50);
+            Assert.AreEqual(itemsMeetingCondition.Count, clientConsumer.Items.Count);
+            CollectionAssert.AreEquivalent(itemsMeetingCondition, clientConsumer.Items.Select(i => i.Item.Value).ToList());
+
+            // Remove value
+            await collection.Remove(updatedReference);
+            itemsMeetingCondition.Remove(50);
+            clientConsumer.Items.Clear();
+
+            await whereNodeGrain.EnumerateToSubscribers();
+
+            Assert.AreEqual(itemsMeetingCondition.Count, clientConsumer.Items.Count);
+            CollectionAssert.AreEquivalent(itemsMeetingCondition, clientConsumer.Items.Select(i => i.Item.Value).ToList());
+        }
+#endregion
+
     }
 }

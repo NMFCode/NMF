@@ -11,7 +11,7 @@ using Orleans.Streams.Messages;
 
 namespace NMF.Expressions.Linq.Orleans
 {
-    public abstract class ObservableNodeGrainBase<TSource, TResult> : StreamProcessorNodeGrain<ContainerElement<TSource>, ContainerElement<TResult>>
+    public abstract class IncrementalNodeGrainBase<TSource, TResult> : StreamProcessorNodeGrain<ContainerElement<TSource>, ContainerElement<TResult>>
     {
         protected DistributedPropertyChangedProcessor<ContainerElement<TSource>> PropertyChangedProcessor;
         protected Dictionary<ContainerElementReference<TSource>, TSource> InputList;
@@ -31,7 +31,7 @@ namespace NMF.Expressions.Linq.Orleans
             throw new NotImplementedException();
         }
 
-        public async Task<Guid> EnumerateToSubscribers(Guid? transactionId = null)
+        public virtual async Task<Guid> EnumerateToSubscribers(Guid? transactionId = null)
         {
             return await StreamTransactionSender.SendItems(ResultElements.ToList(), true, transactionId);
         }
@@ -51,14 +51,14 @@ namespace NMF.Expressions.Linq.Orleans
             if (itemKnown && !hostedItem.Reference.Exists)
             {
                 InputList.Remove(hostedItem.Reference);
-                ItemDeleted(hostedItem);
+                InputItemDeleted(hostedItem);
             }
 
             // Insert
             else if (!itemKnown)
             {
                 InputList.Add(hostedItem.Reference, hostedItem.Item);
-                ItemAdded(hostedItem);
+                InputItemAdded(hostedItem);
             }
 
             // Update
@@ -68,9 +68,9 @@ namespace NMF.Expressions.Linq.Orleans
             }
         }
 
-        protected abstract void ItemAdded(ContainerElement<TSource> hostedItem);
+        protected abstract void InputItemAdded(ContainerElement<TSource> hostedItem);
 
-        protected abstract void ItemDeleted(ContainerElement<TSource> hostedItem);
+        protected abstract void InputItemDeleted(ContainerElement<TSource> hostedItem);
 
         protected override async Task ProcessItemMessage(ItemMessage<ContainerElement<TSource>> itemMessage)
         {

@@ -10,9 +10,9 @@ using Orleans.Streams.Linq.Aggregates;
 
 namespace NMF.Expressions.Linq.Orleans
 {
-    public class ObservableSelectAggregateGrain<TSource, TResult> :
-        StreamProcessorAggregate<ContainerElement<TSource>, ContainerElement<TResult>, IObservableSelectNodeGrain<TSource, TResult>>,
-        IObservableSelectAggregateGrain<TSource, TResult>
+    public class IncrementalSelectAggregateGrain<TSource, TResult> :
+        StreamProcessorAggregate<ContainerElement<TSource>, ContainerElement<TResult>, IIncrementalSelectNodeGrain<TSource, TResult>>,
+        IIncrementalSelectAggregateGrain<TSource, TResult>
     {
         private SerializableFunc<TSource, TResult> _observingFunc;
 
@@ -37,9 +37,9 @@ namespace NMF.Expressions.Linq.Orleans
             return TaskDone.Done;
         }
 
-        protected override async Task<IObservableSelectNodeGrain<TSource, TResult>> InitializeNode(StreamIdentity identity)
+        protected override async Task<IIncrementalSelectNodeGrain<TSource, TResult>> InitializeNode(StreamIdentity identity)
         {
-            var node = GrainFactory.GetGrain<IObservableSelectNodeGrain<TSource, TResult>>(Guid.NewGuid());
+            var node = GrainFactory.GetGrain<IIncrementalSelectNodeGrain<TSource, TResult>>(Guid.NewGuid());
             await node.SetObservingFunc(_observingFunc);
             await node.SetInput(identity);
 

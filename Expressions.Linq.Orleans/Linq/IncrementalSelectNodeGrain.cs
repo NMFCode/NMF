@@ -1,44 +1,40 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.Specialized;
-using System.ComponentModel;
-using System.Linq;
-using System.Linq.Expressions;
-using System.Runtime.InteropServices;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using NMF.Expressions.Linq.Orleans.Interfaces;
 using Orleans;
 using Orleans.Collections;
-using Orleans.Collections.Observable;
 using Orleans.Streams;
-using Orleans.Streams.Endpoints;
-using Orleans.Streams.Linq.Nodes;
-using Orleans.Streams.Messages;
 using SL = System.Linq.Enumerable;
 
 namespace NMF.Expressions.Linq.Orleans
 {
-    internal sealed class ObservableSelectNodeGrain<TSource, TResult> : ObservableNodeGrainBase<TSource, TResult>, IObservableSelectNodeGrain<TSource, TResult>
+    internal sealed class IncrementalSelectNodeGrain<TSource, TResult> : IncrementalNodeGrainBase<TSource, TResult>,
+        IIncrementalSelectNodeGrain<TSource, TResult>
     {
+        private readonly Dictionary<TSource, TaggedObservableValue<TResult, ContainerElementReference<TResult>>> lambdas =
+            new Dictionary<TSource, TaggedObservableValue<TResult, ContainerElementReference<TResult>>>();
 
         private ObservingFunc<TSource, TResult> _lambda;
-        public ObservingFunc<TSource, TResult> Lambda => _lambda;
 
-        private Dictionary<TSource, TaggedObservableValue<TResult, ContainerElementReference<TResult>>> lambdas = new Dictionary<TSource, TaggedObservableValue<TResult, ContainerElementReference<TResult>>>();
-
-
-        private void DetachItem(TSource item, INotifyValue<TResult> lambdaValue)
+        public Task SetObservingFunc(SerializableFunc<TSource, TResult> observingFunc)
         {
-            lambdaValue.Detach();
+            _lambda = new ObservingFunc<TSource, TResult>(observingFunc.Value);
+            return TaskDone.Done;
         }
 
-        protected override void ItemAdded(ContainerElement<TSource> hostedItem)
+        public override Task TearDown()
+        {
+            DetachSource();
+            return base.TearDown();
+        }
+
+        protected override void InputItemAdded(ContainerElement<TSource> hostedItem)
         {
             var lambdaResult = AttachItem(hostedItem);
             StreamTransactionSender.EnqueueItemsForSending(new ContainerElement<TResult>(lambdaResult.Tag, lambdaResult.Value));
         }
 
-        protected override void ItemDeleted(ContainerElement<TSource> hostedItem)
+        protected override void InputItemDeleted(ContainerElement<TSource> hostedItem)
         {
             TaggedObservableValue<TResult, ContainerElementReference<TResult>> lambdaResult;
             var item = hostedItem.Item;
@@ -52,10 +48,9 @@ namespace NMF.Expressions.Linq.Orleans
             }
         }
 
-        public override Task TearDown()
+        private void DetachItem(TSource item, INotifyValue<TResult> lambdaValue)
         {
-            DetachSource();
-            return base.TearDown();
+            lambdaValue.Detach();
         }
 
         private void DetachSource()
@@ -73,12 +68,12 @@ namespace NMF.Expressions.Linq.Orleans
             if (!lambdas.TryGetValue(element.Item, out lambdaResult))
             {
                 lambdaResult = _lambda.InvokeTagged<ContainerElementReference<TResult>>(element.Item);
-                var resultReference = ResultElements.AddRange(new List<TResult> { lambdaResult.Value }).First();
+                var resultReference = ResultElements.Add(lambdaResult.Value);
                 lambdaResult.Tag = resultReference;
                 lambdaResult.ValueChanged += LambdaChanged;
                 lambdas.Add(element.Item, lambdaResult);
             }
-            //lambdaResult.Tag++;
+
             return lambdaResult;
         }
 
@@ -89,17 +84,8 @@ namespace NMF.Expressions.Linq.Orleans
 
         private void OnLambdaValueChanged(TaggedObservableValue<TResult, ContainerElementReference<TResult>> value, ValueChangedEventArgs e)
         {
-            if (e == null) throw new ArgumentNullException("e");
-            TResult result = (TResult)e.NewValue;
             ResultElements.SetElement(value.Tag, (TResult) e.NewValue);
             StreamTransactionSender.EnqueueItemsForSending(ResultElements[value.Tag]);
         }
-
-        public Task SetObservingFunc(SerializableFunc<TSource, TResult> observingFunc)
-        {
-            _lambda = new ObservingFunc<TSource, TResult>(observingFunc.Value);
-            return TaskDone.Done;
-        }
-
     }
 }

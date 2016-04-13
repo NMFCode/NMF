@@ -1,12 +1,27 @@
-﻿using System;
-using System.Linq.Expressions;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Orleans.Streams;
 
 namespace NMF.Expressions.Linq.Orleans
 {
-    public interface IObservingFuncProcessor<TSource, TResult>
+    /// <summary>
+    /// Uses the following function to observe its results.
+    /// </summary>
+    /// <typeparam name="T1"></typeparam>
+    /// <typeparam name="TResult"></typeparam>
+    public interface IObservingFuncProcessor<T1, TResult>
     {
-        Task SetObservingFunc(SerializableFunc<TSource, TResult> observingFunc);
+        Task SetObservingFunc(SerializableFunc<T1, TResult> observingFunc);
     }
+
+    /// <summary>
+    /// Uses the following function to observe its results.
+    /// </summary>
+    /// <typeparam name="T1"></typeparam>
+    /// <typeparam name="T2"></typeparam>
+    /// <typeparam name="TResult"></typeparam>
+    public interface IObservingFuncProcessor<T1, T2, TResult>
+    {
+        Task SetObservingFunc(SerializableFunc<T1, T2, TResult> observingFunc);
+    }
+
 }
