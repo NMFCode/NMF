@@ -87,6 +87,7 @@
     <Compile Include="Linq\Interfaces\IObservableSelectAggregateGrain.cs" />
     <Compile Include="Linq\Interfaces\IObservableSelectNodeGrain.cs" />
     <Compile Include="Linq\Interfaces\IObservingFuncProcessor.cs" />
+    <Compile Include="Linq\ObservableNodeGrainBase.cs" />
     <Compile Include="Linq\ObservableSelectAggregateGrain.cs" />
     <Compile Include="Linq\ObservableSelectNodeGrain.cs" />
     <Compile Include="Linq\TaggedObservableValueWithPosition.cs" />
