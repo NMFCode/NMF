@@ -31,7 +31,7 @@ namespace NMF.Expressions.Linq.Orleans
         protected override void InputItemAdded(ContainerElement<TSource> hostedItem)
         {
             var lambdaResult = AttachItem(hostedItem);
-            StreamTransactionSender.EnqueueItemsForSending(new ContainerElement<TResult>(lambdaResult.Tag, lambdaResult.Value));
+            StreamSender.EnqueueAddItems(new ContainerElement<TResult>(lambdaResult.Tag, lambdaResult.Value).SingleValueToList());
         }
 
         protected override void InputItemDeleted(ContainerElement<TSource> hostedItem)
@@ -43,8 +43,8 @@ namespace NMF.Expressions.Linq.Orleans
             {
                 lambdas.Remove(item);
                 lambdaResult.ValueChanged -= LambdaChanged;
-                var removedReference = ResultElements.Remove(lambdaResult.Value);
-                StreamTransactionSender.EnqueueItemsForSending(new ContainerElement<TResult>(removedReference, lambdaResult.Value));
+                ResultElements.Remove(lambdaResult.Value);
+                StreamSender.EnqueueRemoveItems(ResultElements[lambdaResult.Tag].SingleValueToList());
             }
         }
 
@@ -85,7 +85,7 @@ namespace NMF.Expressions.Linq.Orleans
         private void OnLambdaValueChanged(TaggedObservableValue<TResult, ContainerElementReference<TResult>> value, ValueChangedEventArgs e)
         {
             ResultElements.SetElement(value.Tag, (TResult) e.NewValue);
-            StreamTransactionSender.EnqueueItemsForSending(ResultElements[value.Tag]);
+            StreamSender.EnqueueUpdateItems(ResultElements[value.Tag].SingleValueToList());
         }
     }
 }

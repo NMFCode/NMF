@@ -11,25 +11,10 @@ using Orleans.Streams.Linq.Aggregates;
 namespace NMF.Expressions.Linq.Orleans
 {
     public class IncrementalSelectAggregateGrain<TSource, TResult> :
-        StreamProcessorAggregate<ContainerElement<TSource>, ContainerElement<TResult>, IIncrementalSelectNodeGrain<TSource, TResult>>,
+        IncrementalStreamProcessorAggregate<ContainerElement<TSource>, ContainerElement<TResult>, IIncrementalSelectNodeGrain<TSource, TResult>>,
         IIncrementalSelectAggregateGrain<TSource, TResult>
     {
         private SerializableFunc<TSource, TResult> _observingFunc;
-
-        public async Task<Guid> EnumerateToStream(params StreamIdentity[] streamIdentities)
-        {
-            var tId = Guid.NewGuid();
-            var streamNodeTuples = streamIdentities.Zip(ProcessorNodes.Repeat(), (identity, processorNode) => new Tuple<StreamIdentity, IElementEnumeratorNode<TResult>>(identity, processorNode));
-            await Task.WhenAll(streamNodeTuples.Select(t => t.Item2.EnumerateToStream(t.Item1, tId)));
-            return tId;
-        }
-
-        public async Task<Guid> EnumerateToSubscribers(int batchSize = 2147483647)
-        {
-            var tId = Guid.NewGuid();
-            await Task.WhenAll(ProcessorNodes.Select(n => n.EnumerateToSubscribers(tId)));
-            return tId;
-        }
 
         public Task SetObservingFunc(SerializableFunc<TSource, TResult> observingFunc)
         {

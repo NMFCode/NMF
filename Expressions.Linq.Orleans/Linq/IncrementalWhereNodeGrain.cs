@@ -33,8 +33,7 @@ namespace NMF.Expressions.Linq.Orleans
                 lambdaResult.Detach(); // TODO test and copy to select node grain
                 if (lambdaResult.Value)
                 {
-                    hostedItem.Reference.Exists = false;
-                    StreamTransactionSender.EnqueueItemsForSending(hostedItem);
+                    StreamSender.EnqueueRemoveItems(hostedItem.SingleValueToList());
                 }
             }
         }
@@ -67,7 +66,7 @@ namespace NMF.Expressions.Linq.Orleans
                 lambdaResult = _lambda.InvokeTagged<ContainerElement<TSource>>(element.Item, element);
                 if (lambdaResult.Value)
                 {
-                    StreamTransactionSender.EnqueueItemsForSending(lambdaResult.Tag);
+                    StreamSender.EnqueueAddItems(lambdaResult.Tag.SingleValueToList());
                 }
                 lambdaResult.ValueChanged += LambdaChanged;
                 lambdas.Add(element.Reference, lambdaResult);
@@ -76,10 +75,14 @@ namespace NMF.Expressions.Linq.Orleans
             return lambdaResult;
         }
 
-        public override Task<Guid> EnumerateToSubscribers(Guid? transactionId = null)
+        public override async Task<Guid> EnumerateToSubscribers(Guid? transactionId = null)
         {
+            var tId = TransactionGenerator.GenerateTransactionId(transactionId);
+            await StreamSender.StartTransaction(tId);
             var itemsToSend = lambdas.Values.Where(i => i.Value).Select(i => i.Tag).ToList();
-            return StreamTransactionSender.SendItems(itemsToSend, true, transactionId);
+            await StreamSender.SendAddItems(itemsToSend);
+            await StreamSender.EndTransaction(tId);
+            return tId;
         }
 
         private void LambdaChanged(object sender, ValueChangedEventArgs e)
@@ -91,13 +94,11 @@ namespace NMF.Expressions.Linq.Orleans
         {
             if (value.Value)
             {
-                StreamTransactionSender.EnqueueItemsForSending(value.Tag);
+                StreamSender.EnqueueAddItems(value.Tag.SingleValueToList());
             }
             else
             {
-                value.Tag.Reference.Exists = false;
-                StreamTransactionSender.EnqueueItemsForSending(value.Tag);
-                value.Tag.Reference.Exists = true;
+                StreamSender.EnqueueRemoveItems(value.Tag.SingleValueToList());
             }
         }
 

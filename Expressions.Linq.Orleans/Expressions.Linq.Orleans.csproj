@@ -84,9 +84,12 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Linq\IncrementalStreamProcessorAggregate.cs" />
+    <Compile Include="Linq\IncrementalWhereAggregateGrain.cs" />
     <Compile Include="Linq\IncrementalWhereNodeGrain.cs" />
     <Compile Include="Linq\Interfaces\IIncrementalSelectAggregateGrain.cs" />
     <Compile Include="Linq\Interfaces\IIncrementalSelectNodeGrain.cs" />
+    <Compile Include="Linq\Interfaces\IIncrementalWhereAggregateGrain.cs" />
     <Compile Include="Linq\Interfaces\IIncrementalWhereNodeGrain.cs" />
     <Compile Include="Linq\Interfaces\IObservingFuncProcessor.cs">
       <AutoGen>True</AutoGen>

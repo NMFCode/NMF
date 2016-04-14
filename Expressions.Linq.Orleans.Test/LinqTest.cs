@@ -8,6 +8,7 @@ using NMF.Expressions.Linq.Orleans.Interfaces;
 using NMF.Expressions.Linq.Orleans.Linq.Interfaces;
 using Orleans;
 using Orleans.Collections;
+using Orleans.Collections.Endpoints;
 using Orleans.Collections.Observable;
 using Orleans.Collections.Utilities;
 using Orleans.Streams;
@@ -41,21 +42,21 @@ namespace Expressions.Linq.Orleans.Test
         public async Task TestObservableSelectNodeGrainAddNewItemsViaInputStream()
         {
             var sender = new StreamMessageSender(_provider);
-            var provider = new SingleStreamTransactionSender<int>(sender);
+            var provider = new StreamMessageSenderFacade<int>(sender);
 
             var collection = GrainClient.GrainFactory.GetGrain<IObservableContainerGrain<int>>(Guid.NewGuid());
 
-            await collection.SetInput(new List<StreamIdentity>() { await sender.GetStreamIdentity() });
+            await collection.SetInput(new List<StreamIdentity>() {await sender.GetStreamIdentity()});
 
             var selectNodeGrain = GrainClient.GrainFactory.GetGrain<IIncrementalSelectNodeGrain<int, string>>(Guid.NewGuid());
             await selectNodeGrain.SetObservingFunc(new SerializableFunc<int, string>(i => i.ToString()));
 
             await selectNodeGrain.SetInput((await collection.GetStreamIdentities()).First());
 
-            var consumer = new MultiStreamListConsumer<ContainerElement<string>>(_provider);
-            await consumer.SetInput(new List<StreamIdentity> { await selectNodeGrain.GetStreamIdentity() });
+            var consumer = new ContainerElementListConsumer<string>(_provider);
+            await consumer.SetInput(new List<StreamIdentity> {await selectNodeGrain.GetStreamIdentity()});
 
-            var items = new List<int>() { 1, 2, 5 };
+            var items = new List<int>() {1, 2, 5};
             await provider.SendItems(items);
 
             Assert.AreEqual(items.Count, consumer.Items.Count);
@@ -72,10 +73,10 @@ namespace Expressions.Linq.Orleans.Test
 
             await selectNodeGrain.SetInput((await collection.GetStreamIdentities()).First());
 
-            var clientConsumer = new MultiStreamListConsumer<ContainerElement<string>>(_provider);
-            await clientConsumer.SetInput(new List<StreamIdentity> { await selectNodeGrain.GetStreamIdentity() });
+            var clientConsumer = new ContainerElementListConsumer<string>(_provider);
+            await clientConsumer.SetInput(new List<StreamIdentity> {await selectNodeGrain.GetStreamIdentity()});
 
-            var items = new List<int>() { 1, 2, 5 }.ToList();
+            var items = new List<int>() {1, 2, 5}.ToList();
             var elementReferences = await collection.BatchAdd(items);
 
             Assert.AreEqual(items.Count, clientConsumer.Items.Count);
@@ -100,11 +101,10 @@ namespace Expressions.Linq.Orleans.Test
             await selectNodeGrain.SetInput((await collection.GetStreamIdentities()).First());
             await selectNodeGrain.SetObservingFunc(new SerializableFunc<TestObjectWithPropertyChange, int>(o => o.Value));
 
-            var clientConsumer = new MultiStreamListConsumer<ContainerElement<int>>(_provider, 
-                (containerElement1, containerElement2) => containerElement1.Reference.Equals(containerElement2.Reference));
-            await clientConsumer.SetInput(new List<StreamIdentity> { await selectNodeGrain.GetStreamIdentity() });
+            var clientConsumer = new ContainerElementListConsumer<int>(_provider);
+            await clientConsumer.SetInput(new List<StreamIdentity> {await selectNodeGrain.GetStreamIdentity()});
 
-            var items = new List<int> { 1, 5, 10 }.Select(i => new TestObjectWithPropertyChange(i)).ToList();
+            var items = new List<int> {1, 5, 10}.Select(i => new TestObjectWithPropertyChange(i)).ToList();
             var elementReferences = await collection.BatchAdd(items);
 
             Assert.AreEqual(items.Count, clientConsumer.Items.Count);
@@ -114,13 +114,13 @@ namespace Expressions.Linq.Orleans.Test
             var updatedReference = elementReferences.First();
             await collection.ExecuteSync(o => { o.Value = 42; }, updatedReference);
             Assert.AreEqual(items.Count, clientConsumer.Items.Count);
-            CollectionAssert.AreEquivalent(new List<int> { 42, 5, 10 }, clientConsumer.Items.Select(i => i.Item).ToList());
+            CollectionAssert.AreEquivalent(new List<int> {42, 5, 10}, clientConsumer.Items.Select(i => i.Item).ToList());
 
             clientConsumer.Items.Clear();
             await selectNodeGrain.EnumerateToSubscribers();
 
             Assert.AreEqual(items.Count, clientConsumer.Items.Count);
-            CollectionAssert.AreEquivalent(new List<int> { 42, 5, 10 }, clientConsumer.Items.Select(i => i.Item).ToList());
+            CollectionAssert.AreEquivalent(new List<int> {42, 5, 10}, clientConsumer.Items.Select(i => i.Item).ToList());
         }
 
         [TestMethod]
@@ -138,7 +138,7 @@ namespace Expressions.Linq.Orleans.Test
 
             await selectAggregateGrain.SetInput(await collection.GetStreamIdentities());
 
-            var consumer = new MultiStreamListConsumer<ContainerElement<string>>(_provider);
+            var consumer = new ContainerElementListConsumer<string>(_provider);
             await consumer.SetInput(await selectAggregateGrain.GetStreamIdentities());
 
             var items = Enumerable.Range(0, 10000).ToList();
@@ -149,6 +149,7 @@ namespace Expressions.Linq.Orleans.Test
         }
 
         #region WHERE
+
         [TestMethod]
         public async Task TestObservableWhereNodeGrainAddRemove()
         {
@@ -158,11 +159,10 @@ namespace Expressions.Linq.Orleans.Test
             await whereNodeGrain.SetInput((await collection.GetStreamIdentities()).First());
             await whereNodeGrain.SetObservingFunc(new SerializableFunc<TestObjectWithPropertyChange, bool>(i => i.Value >= 42));
 
-            var clientConsumer = new MultiStreamListConsumer<ContainerElement<TestObjectWithPropertyChange>>(_provider,
-                (containerElement1, containerElement2) => containerElement1.Reference.Equals(containerElement2.Reference));
-            await clientConsumer.SetInput(new List<StreamIdentity> { await whereNodeGrain.GetStreamIdentity() });
+            var clientConsumer = new ContainerElementListConsumer<TestObjectWithPropertyChange>(_provider);
+            await clientConsumer.SetInput((await whereNodeGrain.GetStreamIdentity()).SingleValueToList());
 
-            var itemsMeetingCondition = new List<int> { 42, 57 };
+            var itemsMeetingCondition = new List<int> {42, 57};
             var itemsViolatingCondition = new List<int> {1, 5, 10, 41};
             var allItems = itemsViolatingCondition.Concat(itemsMeetingCondition).Select(i => new TestObjectWithPropertyChange(i)).ToList();
             var elementReferences = await collection.BatchAdd(allItems);
@@ -187,7 +187,32 @@ namespace Expressions.Linq.Orleans.Test
             Assert.AreEqual(itemsMeetingCondition.Count, clientConsumer.Items.Count);
             CollectionAssert.AreEquivalent(itemsMeetingCondition, clientConsumer.Items.Select(i => i.Item.Value).ToList());
         }
-#endregion
 
+        [TestMethod]
+        public async Task TestObservableSelectWhereAggregateGrainAddNewItemsViaInputStream()
+        {
+            var provider = new MultiStreamProvider<int>(_provider, 4);
+
+            var collection = GrainClient.GrainFactory.GetGrain<IObservableContainerGrain<int>>(Guid.NewGuid());
+            await collection.SetNumberOfNodes(4);
+
+            await collection.SetInput(await provider.GetStreamIdentities());
+
+            var selectAggregateGrain = GrainClient.GrainFactory.GetGrain<IIncrementalWhereAggregateGrain<int>>(Guid.NewGuid());
+            await selectAggregateGrain.SetObservingFunc(new SerializableFunc<int, bool>(i => i <= 42));
+
+            await selectAggregateGrain.SetInput(await collection.GetStreamIdentities());
+
+            var consumer = new ContainerElementListConsumer<int>(_provider);
+            await consumer.SetInput(await selectAggregateGrain.GetStreamIdentities());
+
+            var items = Enumerable.Range(0, 10000).ToList();
+            await provider.SendItems(items);
+
+            CollectionAssert.AreEquivalent(items.Where(i => i <= 42).ToList(), consumer.Items.Select(x => x.Item).ToList());
+
+            #endregion
+
+        }
     }
 }
