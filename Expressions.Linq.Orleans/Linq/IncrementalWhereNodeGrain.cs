@@ -9,12 +9,12 @@ using Orleans.Streams;
 
 namespace NMF.Expressions.Linq.Orleans
 {
-    public class IncrementalWhereNodeGrain<TSource> : IncrementalNodeGrainBase<TSource, TSource>, IIncrementalWhereNodeGrain<TSource>
+    public class IncrementalWhereNodeGrain<TSource> : IncrementalNodeGrainBase<ContainerElement<TSource>, ContainerElement<TSource>, TSource, TSource>, IIncrementalWhereNodeGrain<TSource>
     {
         private SerializableFunc<TSource, bool> _observingFunc;
 
         private Dictionary<ContainerElementReference<TSource>, TaggedObservableValue<bool, ContainerElement<TSource>>> lambdas = new Dictionary<ContainerElementReference<TSource>, TaggedObservableValue<bool, ContainerElement<TSource>>>();
-        private ObservingFunc<TSource, bool> _lambda;
+        private ObservingFunc<ContainerElement<TSource>, bool> _lambda;
 
         protected override void InputItemAdded(ContainerElement<TSource> hostedItem)
         {
@@ -63,7 +63,7 @@ namespace NMF.Expressions.Linq.Orleans
             TaggedObservableValue<bool, ContainerElement<TSource>> lambdaResult;
             if (!lambdas.TryGetValue(element.Reference, out lambdaResult))
             {
-                lambdaResult = _lambda.InvokeTagged<ContainerElement<TSource>>(element.Item, element);
+                lambdaResult = _lambda.InvokeTagged<ContainerElement<TSource>>(element, element);
                 if (lambdaResult.Value)
                 {
                     StreamSender.EnqueueAddItems(lambdaResult.Tag.SingleValueToList());
@@ -102,9 +102,9 @@ namespace NMF.Expressions.Linq.Orleans
             }
         }
 
-        public Task SetObservingFunc(SerializableFunc<TSource, bool> observingFunc)
+        public Task SetObservingFunc(SerializableFunc<ContainerElement<TSource>, bool> observingFunc)
         {
-            _lambda = new ObservingFunc<TSource, bool>(observingFunc.Value);
+            _lambda = new ObservingFunc<ContainerElement<TSource>, bool>(observingFunc.Value);
             return TaskDone.Done;
         }
     }

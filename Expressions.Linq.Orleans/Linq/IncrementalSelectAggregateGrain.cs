@@ -11,12 +11,12 @@ using Orleans.Streams.Linq.Aggregates;
 namespace NMF.Expressions.Linq.Orleans
 {
     public class IncrementalSelectAggregateGrain<TSource, TResult> :
-        IncrementalStreamProcessorAggregate<ContainerElement<TSource>, ContainerElement<TResult>, IIncrementalSelectNodeGrain<TSource, TResult>>,
+        IncrementalStreamProcessorAggregate<TSource, ContainerElement<TResult>, IIncrementalSelectNodeGrain<TSource, TResult>>,
         IIncrementalSelectAggregateGrain<TSource, TResult>
     {
-        private SerializableFunc<TSource, TResult> _observingFunc;
+        private SerializableFunc<ContainerElement<TSource>, TResult> _observingFunc;
 
-        public Task SetObservingFunc(SerializableFunc<TSource, TResult> observingFunc)
+        public Task SetObservingFunc(SerializableFunc<ContainerElement<TSource>, TResult> observingFunc)
         {
             _observingFunc = observingFunc;
             return TaskDone.Done;

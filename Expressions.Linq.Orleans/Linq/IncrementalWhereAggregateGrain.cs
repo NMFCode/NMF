@@ -13,7 +13,7 @@ namespace NMF.Expressions.Linq.Orleans
         IncrementalStreamProcessorAggregate<ContainerElement<TSource>, ContainerElement<TSource>, IIncrementalWhereNodeGrain<TSource>>,
                 IIncrementalWhereAggregateGrain<TSource> 
     {
-        private SerializableFunc<TSource, bool> _observingFunc;
+        private SerializableFunc<ContainerElement<TSource>, bool> _observingFunc;
 
         protected override async Task<IIncrementalWhereNodeGrain<TSource>> InitializeNode(StreamIdentity identity)
         {
@@ -24,7 +24,7 @@ namespace NMF.Expressions.Linq.Orleans
             return node;
         }
 
-        public Task SetObservingFunc(SerializableFunc<TSource, bool> observingFunc)
+        public Task SetObservingFunc(SerializableFunc<ContainerElement<TSource>, bool> observingFunc)
         {
             _observingFunc = observingFunc;
             return TaskDone.Done;

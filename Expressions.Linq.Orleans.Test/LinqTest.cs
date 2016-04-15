@@ -49,7 +49,7 @@ namespace Expressions.Linq.Orleans.Test
             await collection.SetInput(new List<StreamIdentity>() {await sender.GetStreamIdentity()});
 
             var selectNodeGrain = GrainClient.GrainFactory.GetGrain<IIncrementalSelectNodeGrain<int, string>>(Guid.NewGuid());
-            await selectNodeGrain.SetObservingFunc(new SerializableFunc<int, string>(i => i.ToString()));
+            await selectNodeGrain.SetObservingFunc(new SerializableFunc<ContainerElement<int>, string>(element => element.Item.ToString()));
 
             await selectNodeGrain.SetInput((await collection.GetStreamIdentities()).First());
 
@@ -69,7 +69,7 @@ namespace Expressions.Linq.Orleans.Test
             var collection = GrainClient.GrainFactory.GetGrain<IObservableContainerGrain<int>>(Guid.NewGuid());
 
             var selectNodeGrain = GrainClient.GrainFactory.GetGrain<IIncrementalSelectNodeGrain<int, string>>(Guid.NewGuid());
-            await selectNodeGrain.SetObservingFunc(new SerializableFunc<int, string>(i => i.ToString()));
+            await selectNodeGrain.SetObservingFunc(new SerializableFunc<ContainerElement<int>, string>(element => element.Item.ToString()));
 
             await selectNodeGrain.SetInput((await collection.GetStreamIdentities()).First());
 
@@ -99,7 +99,7 @@ namespace Expressions.Linq.Orleans.Test
 
             var selectNodeGrain = GrainClient.GrainFactory.GetGrain<IIncrementalSelectNodeGrain<TestObjectWithPropertyChange, int>>(Guid.NewGuid());
             await selectNodeGrain.SetInput((await collection.GetStreamIdentities()).First());
-            await selectNodeGrain.SetObservingFunc(new SerializableFunc<TestObjectWithPropertyChange, int>(o => o.Value));
+            await selectNodeGrain.SetObservingFunc(new SerializableFunc<ContainerElement<TestObjectWithPropertyChange>, int>(o => o.Item.Value));
 
             var clientConsumer = new ContainerElementListConsumer<int>(_provider);
             await clientConsumer.SetInput(new List<StreamIdentity> {await selectNodeGrain.GetStreamIdentity()});
@@ -134,7 +134,7 @@ namespace Expressions.Linq.Orleans.Test
             await collection.SetInput(await provider.GetStreamIdentities());
 
             var selectAggregateGrain = GrainClient.GrainFactory.GetGrain<IIncrementalSelectAggregateGrain<int, string>>(Guid.NewGuid());
-            await selectAggregateGrain.SetObservingFunc(new SerializableFunc<int, string>(i => i.ToString()));
+            await selectAggregateGrain.SetObservingFunc(new SerializableFunc<ContainerElement<int>, string>(element => element.Item.ToString()));
 
             await selectAggregateGrain.SetInput(await collection.GetStreamIdentities());
 
@@ -157,7 +157,7 @@ namespace Expressions.Linq.Orleans.Test
 
             var whereNodeGrain = GrainClient.GrainFactory.GetGrain<IIncrementalWhereNodeGrain<TestObjectWithPropertyChange>>(Guid.NewGuid());
             await whereNodeGrain.SetInput((await collection.GetStreamIdentities()).First());
-            await whereNodeGrain.SetObservingFunc(new SerializableFunc<TestObjectWithPropertyChange, bool>(i => i.Value >= 42));
+            await whereNodeGrain.SetObservingFunc(new SerializableFunc<ContainerElement<TestObjectWithPropertyChange>, bool>(i => i.Item.Value >= 42));
 
             var clientConsumer = new ContainerElementListConsumer<TestObjectWithPropertyChange>(_provider);
             await clientConsumer.SetInput((await whereNodeGrain.GetStreamIdentity()).SingleValueToList());
@@ -199,7 +199,7 @@ namespace Expressions.Linq.Orleans.Test
             await collection.SetInput(await provider.GetStreamIdentities());
 
             var selectAggregateGrain = GrainClient.GrainFactory.GetGrain<IIncrementalWhereAggregateGrain<int>>(Guid.NewGuid());
-            await selectAggregateGrain.SetObservingFunc(new SerializableFunc<int, bool>(i => i <= 42));
+            await selectAggregateGrain.SetObservingFunc(new SerializableFunc<ContainerElement<int>, bool>(i => i.Item <= 42));
 
             await selectAggregateGrain.SetInput(await collection.GetStreamIdentities());
 

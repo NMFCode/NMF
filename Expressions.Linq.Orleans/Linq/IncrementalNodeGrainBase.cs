@@ -11,7 +11,12 @@ using Orleans.Streams.Linq.Nodes;
 
 namespace NMF.Expressions.Linq.Orleans
 {
-    public abstract class IncrementalNodeGrainBase<TSource, TResult> : StreamProcessorNodeGrain<ContainerElement<TSource>, ContainerElement<TResult>>
+    /// <summary>
+    /// Abstract base class for SQOs with incremental operations.
+    /// </summary>
+    /// <typeparam name="TSource">Type of data to deal with. Assume data is wrapped in ContainerElement.</typeparam>
+    /// <typeparam name="TResult"></typeparam>
+    public abstract class IncrementalNodeGrainBase<TCSource, TCResult, TSource, TResult> : StreamProcessorNodeGrain<ContainerElement<TSource>, ContainerElement<TResult>> where TCSource : ContainerElement<TSource> where TCResult : ContainerElement<TResult>
     {
         protected Dictionary<ContainerElementReference<TSource>, TSource> InputList;
         protected DistributedPropertyChangedProcessor<ContainerElement<TSource>> PropertyChangedProcessor;

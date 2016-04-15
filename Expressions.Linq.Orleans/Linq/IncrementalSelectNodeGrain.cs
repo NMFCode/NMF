@@ -8,17 +8,16 @@ using SL = System.Linq.Enumerable;
 
 namespace NMF.Expressions.Linq.Orleans
 {
-    internal sealed class IncrementalSelectNodeGrain<TSource, TResult> : IncrementalNodeGrainBase<TSource, TResult>,
+    internal sealed class IncrementalSelectNodeGrain<TSource, TResult> : IncrementalNodeGrainBase<ContainerElement<TSource>, ContainerElement<TResult>, TSource, TResult>,
         IIncrementalSelectNodeGrain<TSource, TResult>
     {
-        private readonly Dictionary<TSource, TaggedObservableValue<TResult, ContainerElementReference<TResult>>> lambdas =
-            new Dictionary<TSource, TaggedObservableValue<TResult, ContainerElementReference<TResult>>>();
+        private readonly Dictionary<ContainerElement<TSource>, TaggedObservableValue<TResult, ContainerElementReference<TResult>>> lambdas = new Dictionary<ContainerElement<TSource>, TaggedObservableValue<TResult, ContainerElementReference<TResult>>>();
 
-        private ObservingFunc<TSource, TResult> _lambda;
+        private ObservingFunc<ContainerElement<TSource>, TResult> _lambda;
 
-        public Task SetObservingFunc(SerializableFunc<TSource, TResult> observingFunc)
+        public Task SetObservingFunc(SerializableFunc<ContainerElement<TSource>, TResult> observingFunc)
         {
-            _lambda = new ObservingFunc<TSource, TResult>(observingFunc.Value);
+            _lambda = new ObservingFunc<ContainerElement<TSource>, TResult>(observingFunc.Value);
             return TaskDone.Done;
         }
 
@@ -37,18 +36,17 @@ namespace NMF.Expressions.Linq.Orleans
         protected override void InputItemDeleted(ContainerElement<TSource> hostedItem)
         {
             TaggedObservableValue<TResult, ContainerElementReference<TResult>> lambdaResult;
-            var item = hostedItem.Item;
             InputList.Remove(hostedItem.Reference);
-            if (lambdas.TryGetValue(item, out lambdaResult))
+            if (lambdas.TryGetValue(hostedItem, out lambdaResult))
             {
-                lambdas.Remove(item);
+                lambdas.Remove(hostedItem);
                 lambdaResult.ValueChanged -= LambdaChanged;
                 ResultElements.Remove(lambdaResult.Value);
                 StreamSender.EnqueueRemoveItems(ResultElements[lambdaResult.Tag].SingleValueToList());
             }
         }
 
-        private void DetachItem(TSource item, INotifyValue<TResult> lambdaValue)
+        private void DetachItem(ContainerElement<TSource> item, INotifyValue<TResult> lambdaValue)
         {
             lambdaValue.Detach();
         }
@@ -62,16 +60,16 @@ namespace NMF.Expressions.Linq.Orleans
             lambdas.Clear();
         }
 
-        private TaggedObservableValue<TResult, ContainerElementReference<TResult>> AttachItem(ContainerElement<TSource> element)
+        private TaggedObservableValue<TResult, ContainerElementReference<TResult>> AttachItem(ContainerElement<TSource> hostedItem)
         {
             TaggedObservableValue<TResult, ContainerElementReference<TResult>> lambdaResult;
-            if (!lambdas.TryGetValue(element.Item, out lambdaResult))
+            if (!lambdas.TryGetValue(hostedItem, out lambdaResult))
             {
-                lambdaResult = _lambda.InvokeTagged<ContainerElementReference<TResult>>(element.Item);
+                lambdaResult = _lambda.InvokeTagged<ContainerElementReference<TResult>>(hostedItem);
                 var resultReference = ResultElements.Add(lambdaResult.Value);
                 lambdaResult.Tag = resultReference;
                 lambdaResult.ValueChanged += LambdaChanged;
-                lambdas.Add(element.Item, lambdaResult);
+                lambdas.Add(hostedItem, lambdaResult);
             }
 
             return lambdaResult;
