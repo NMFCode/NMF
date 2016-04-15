@@ -90,6 +90,7 @@
   </Choose>
   <ItemGroup>
     <Compile Include="LinqTest.cs" />
+    <Compile Include="SqoGrainTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
