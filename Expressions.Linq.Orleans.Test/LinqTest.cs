@@ -45,17 +45,29 @@ namespace Expressions.Linq.Orleans.Test
         {
             var collection = GrainClient.GrainFactory.GetGrain<IObservableContainerGrain<int>>(Guid.NewGuid());
 
-            //var resultContainer = await collection.SelectIncremental(i => i.Item.ToString(), _factory).ToContainer();
-            var result = await collection.SelectIncremental(i => i.Item.ToString(), _factory);
-
-            var consumer = new ContainerElementListConsumer<string>(_provider);
-            await consumer.SetInput(await result.GetStreamIdentities());
+            var resultConsumer = await collection.SelectIncremental(i => i.Item.ToString(), _factory).ToListConsumer();
 
             var items = new List<int>() { 1, 2, 5 };
             await collection.BatchAdd(items);
 
-            CollectionAssert.AreEqual(items.Select(i => i.ToString()).ToList(), consumer.Items.Select(e => e.Item).ToList());
+            CollectionAssert.AreEqual(items.Select(i => i.ToString()).ToList(), resultConsumer.Items.Select(e => e.Item).ToList());
         }
-         
+
+
+        [TestMethod]
+        public async Task TestOneLevelWhereDataFilter()
+        {
+            var collection = GrainClient.GrainFactory.GetGrain<IObservableContainerGrain<int>>(Guid.NewGuid());
+
+            var resultConsumer = await collection.WhereIncremental(i => i.Item >= 42, _factory).ToListConsumer();
+
+            var itemsSatisfyingCriteria = new List<int> { 42, 232130, 123, 58 };
+            var itemsViolatingCriteria = new List<int> {1, -500, 23 };
+
+            await collection.BatchAdd(itemsSatisfyingCriteria.Concat(itemsViolatingCriteria).ToList());
+
+            CollectionAssert.AreEqual(itemsSatisfyingCriteria, resultConsumer.Items.Select(e => e.Item).ToList());
+        }
+
     }
 }

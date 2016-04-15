@@ -28,14 +28,14 @@ namespace NMF.Expressions.Linq.Orleans
             return processorAggregate;
         }
 
-        //public async Task<IStreamProcessorAggregate<ContainerElement<TIn>, TIn>> CreateWhere<TIn>(Expression<Func<ContainerElement<TIn>, bool>> filterFunc, IList<StreamIdentity> streamIdentities)
-        //{
-        //    var processorAggregate = GrainFactory.GetGrain<IIncrementalWhereAggregateGrain<TIn>>(Guid.NewGuid());
+        public async Task<IIncrementalWhereAggregateGrain<TIn>> CreateWhere<TIn>(Expression<Func<ContainerElement<TIn>, bool>> filterFunc, IList<StreamIdentity> streamIdentities)
+        {
+            var processorAggregate = GrainFactory.GetGrain<IIncrementalWhereAggregateGrain<TIn>>(Guid.NewGuid());
 
-        //    await processorAggregate.SetObservingFunc(filterFunc);
-        //    await processorAggregate.SetInput(streamIdentities);
+            await processorAggregate.SetObservingFunc(filterFunc);
+            await processorAggregate.SetInput(streamIdentities);
 
-        //    return processorAggregate;
-        //}
+            return processorAggregate;
+        }
     }
 }
