@@ -1,0 +1,50 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<nmeta:Namespace xmi:version="2.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" Uri="http://www.semanticweb.org/ontologies/2015/ttc/trainbenchmark" Prefix="hu.bme.mit.trainbenchmark" Name="railway" xmlns:xmi="http://www.omg.org/XMI" xmlns:nmeta="http://nmf.codeplex.com/nmeta/">
+  <Types xsi:type="nmeta:Class" BaseTypes="#//TrackElement/" Name="Segment">
+    <Attributes IsOrdered="True" LowerBound="1" Type="$3" Name="length" />
+  </Types>
+  <Types xsi:type="nmeta:Class" IsAbstract="True" BaseTypes="#//RailwayElement/" Name="TrackElement">
+    <References Opposite="#//Sensor/elements/" ReferenceType="#//Sensor/" IsOrdered="True" Name="sensor" />
+    <References ReferenceType="#//TrackElement/" IsOrdered="True" UpperBound="-1" Name="connectsTo" />
+  </Types>
+  <Types xsi:type="nmeta:Class" BaseTypes="#//TrackElement/" Name="Switch">
+    <References Opposite="#//SwitchPosition/switch/" ReferenceType="#//SwitchPosition/" IsOrdered="True" UpperBound="-1" Name="positions" />
+    <Attributes IsOrdered="True" LowerBound="1" Type="#//Position/" Name="currentPosition" />
+  </Types>
+  <Types xsi:type="nmeta:Class" BaseTypes="#//RailwayElement/" Name="Route">
+    <References ReferenceType="#//Semaphore/" IsOrdered="True" LowerBound="1" Name="entry" />
+    <References IsContainment="True" Opposite="#//SwitchPosition/route/" ReferenceType="#//SwitchPosition/" IsOrdered="True" UpperBound="-1" Name="follows" />
+    <References ReferenceType="#//Semaphore/" IsOrdered="True" LowerBound="1" Name="exit" />
+    <References IsContainment="True" ReferenceType="#//Sensor/" IsOrdered="True" LowerBound="2" UpperBound="-1" Name="definedBy" />
+  </Types>
+  <Types xsi:type="nmeta:Class" BaseTypes="#//RailwayElement/" Name="Semaphore">
+    <Attributes IsOrdered="True" LowerBound="1" Type="#//Signal/" Name="signal" />
+  </Types>
+  <Types xsi:type="nmeta:Class" BaseTypes="#//RailwayElement/" Name="SwitchPosition">
+    <References Opposite="#//Switch/positions/" ReferenceType="#//Switch/" IsOrdered="True" LowerBound="1" Name="switch" />
+    <References Opposite="#//Route/follows/" ReferenceType="#//Route/" IsOrdered="True" LowerBound="1" Name="route" />
+    <Attributes IsOrdered="True" LowerBound="1" Type="#//Position/" Name="position" />
+  </Types>
+  <Types xsi:type="nmeta:Class" IsAbstract="True" Name="RailwayElement">
+    <Attributes IsOrdered="True" Type="$3" Name="id" />
+  </Types>
+  <Types xsi:type="nmeta:Class" BaseTypes="#//RailwayElement/" Name="Sensor">
+    <References IsContainment="True" Opposite="#//TrackElement/sensor/" ReferenceType="#//TrackElement/" IsOrdered="True" UpperBound="-1" Name="elements" />
+  </Types>
+  <Types xsi:type="nmeta:Enumeration" Name="Signal">
+    <Literals Value="1" Name="FAILURE" />
+    <Literals Name="STOP" />
+    <Literals Value="2" Name="GO" />
+  </Types>
+  <Types xsi:type="nmeta:Enumeration" Name="Position">
+    <Literals Name="FAILURE" />
+    <Literals Value="1" Name="LEFT" />
+    <Literals Value="2" Name="RIGHT" />
+    <Literals Value="3" Name="STRAIGHT" />
+  </Types>
+  <Types xsi:type="nmeta:Class" Name="RailwayContainer">
+    <References IsContainment="True" ReferenceType="#//RailwayElement/" IsOrdered="True" UpperBound="-1" Name="invalids" />
+    <References IsContainment="True" ReferenceType="#//Semaphore/" IsOrdered="True" UpperBound="-1" Name="semaphores" />
+    <References IsContainment="True" ReferenceType="#//Route/" IsOrdered="True" UpperBound="-1" Name="routes" />
+  </Types>
+</nmeta:Namespace>

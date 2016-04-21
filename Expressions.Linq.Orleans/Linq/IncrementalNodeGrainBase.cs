@@ -1,13 +1,17 @@
 using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.Linq;
 using System.Threading.Tasks;
+using NMF.Expressions.Linq.Orleans.Message;
+using NMF.Expressions.Linq.Orleans.Model;
 using Orleans;
 using Orleans.Collections;
 using Orleans.Collections.Messages;
 using Orleans.Collections.Observable;
 using Orleans.Streams;
 using Orleans.Streams.Linq.Nodes;
+using Orleans.Streams.Messages;
 
 namespace NMF.Expressions.Linq.Orleans
 {
@@ -16,18 +20,49 @@ namespace NMF.Expressions.Linq.Orleans
     /// </summary>
     /// <typeparam name="TSource">Type of data to deal with. Assume data is wrapped in ContainerElement.</typeparam>
     /// <typeparam name="TResult"></typeparam>
-    public abstract class IncrementalNodeGrainBase<TCSource, TCResult, TSource, TResult> : StreamProcessorNodeGrain<ContainerElement<TSource>, ContainerElement<TResult>> where TCSource : ContainerElement<TSource> where TCResult : ContainerElement<TResult>
+    public abstract class IncrementalNodeGrainBase<TSource, TResult> : ModelProcessingNodeGrain<TSource, TResult>, IElementEnumeratorNode<TResult>
     {
-        protected Dictionary<ContainerElementReference<TSource>, TSource> InputList;
-        protected DistributedPropertyChangedProcessor<ContainerElement<TSource>> PropertyChangedProcessor;
-        protected ContainerElementList<TResult> ResultElements;
+        protected NotifyCollection<TSource> InputList;
+        protected INotifyEnumerable<TResult> ResultEnumerable; 
 
         public override async Task OnActivateAsync()
         {
-            PropertyChangedProcessor = new DistributedPropertyChangedProcessor<ContainerElement<TSource>>();
-            InputList = new Dictionary<ContainerElementReference<TSource>, TSource>();
-            ResultElements = new ContainerElementList<TResult>(this.GetPrimaryKey(), null, null);
+            InputList = new NotifyCollection<TSource>();
             await base.OnActivateAsync();
+        }
+
+        protected void AttachToResult()
+        {
+            ResultEnumerable.CollectionChanged += ResultEnumerable_CollectionChanged;
+        }
+
+        private void ResultEnumerable_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
+            IStreamMessage message = null;
+            var items = new List<IModelRemoteValue<TResult>>();
+            switch (e.Action)
+            {
+                case NotifyCollectionChangedAction.Add:
+                    foreach (var newItem in e.NewItems)
+                    {
+                        items.Add(ModelRemoteValueFactory.CreateModelChangeValue<TResult>((TResult) newItem));
+                    }
+                    message = new ModelItemAddMessage<TResult>(items);
+
+                    break;
+                case NotifyCollectionChangedAction.Remove:
+                    foreach (var removeItem in e.OldItems)
+                    {
+                        items.Add(ModelRemoteValueFactory.CreateModelChangeValue<TResult>((TResult)removeItem));
+                    }
+                    message = new ModelItemRemoveMessage<TResult>(items);
+                    break;
+                default:
+                    throw new NotImplementedException();
+
+            }
+
+            StreamSender.EnqueueMessage(message);
         }
 
         public Task<Guid> EnumerateToStream(StreamIdentity streamIdentity, Guid transactionId)
@@ -40,7 +75,7 @@ namespace NMF.Expressions.Linq.Orleans
         {
             var tId = TransactionGenerator.GenerateTransactionId(transactionId);
             await StreamSender.StartTransaction(tId);
-            await StreamSender.SendItems(ResultElements.ToList());
+            await StreamSender.SendItems(ResultEnumerable);
             await StreamSender.EndTransaction(tId);
             return tId;
         }
@@ -48,56 +83,27 @@ namespace NMF.Expressions.Linq.Orleans
         protected override void RegisterMessages()
         {
             base.RegisterMessages();
-            StreamMessageDispatchReceiver.Register<ItemUpdateMessage<ContainerElement<TSource>>>(ProcessItemUpdateMessage);
-            StreamMessageDispatchReceiver.Register<ItemRemoveMessage<ContainerElement<TSource>>>(ProcessItemRemoveMessage);
-            StreamMessageDispatchReceiver.Register<ItemPropertyChangedMessage>(PropertyChangedProcessor.ProcessItemPropertyChangedMessage);
-            StreamMessageDispatchReceiver.Register<ItemPropertyChangedMessage>(message => StreamSender.FlushQueue());
+            StreamMessageDispatchReceiver.Register<ModelItemAddMessage<TSource>>(ProcessItemAddMessage);
+            StreamMessageDispatchReceiver.Register<ModelItemRemoveMessage<TSource>>(ProcessItemRemoveMessage);
         }
 
-        protected override async Task ProcessItemAddMessage(ItemAddMessage<ContainerElement<TSource>> itemMessage)
+        protected async Task ProcessItemAddMessage(ModelItemAddMessage<TSource> itemMessage)
         {
-            await PropertyChangedProcessor.ProcessItemAddMessage(itemMessage);
             foreach (var item in itemMessage.Items)
             {
-                if (InputList.ContainsKey(item.Reference))
-                {
-                    throw new InvalidOperationException("Cannot add item that is already added.");
-                }
-                InputList.Add(item.Reference, item.Item);
-                InputItemAdded(item);
+                var localItem = item.Retrieve(Model);
+                InputList.Add(localItem);
             }
 
             await StreamSender.FlushQueue();
         }
 
-        protected abstract void InputItemAdded(ContainerElement<TSource> hostedItem);
-
-        protected abstract void InputItemDeleted(ContainerElement<TSource> hostedItem);
-
-        private async Task ProcessItemUpdateMessage(ItemUpdateMessage<ContainerElement<TSource>> message)
+        private async Task ProcessItemRemoveMessage(ModelItemRemoveMessage<TSource> message)
         {
             foreach (var item in message.Items)
             {
-                if (!InputList.ContainsKey(item.Reference))
-                {
-                    throw new InvalidOperationException("Cannot update unknown item.");
-                }
-                InputList[item.Reference] = item.Item;
-            }
-
-            await StreamSender.FlushQueue();
-        }
-
-        private async Task ProcessItemRemoveMessage(ItemRemoveMessage<ContainerElement<TSource>> message)
-        {
-            foreach (var item in message.Items)
-            {
-                if (!InputList.ContainsKey(item.Reference))
-                {
-                    throw new InvalidOperationException("Cannot remove unknown item.");
-                }
-                InputList.Remove(item.Reference);
-                InputItemDeleted(item);
+                var localItem = item.Retrieve(Model);
+                InputList.Remove(localItem);
             }
 
             await StreamSender.FlushQueue();

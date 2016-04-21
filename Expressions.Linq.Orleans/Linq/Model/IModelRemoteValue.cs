@@ -1,0 +1,83 @@
+﻿using System;
+using NMF.Models;
+
+namespace NMF.Expressions.Linq.Orleans.Model
+{
+    public static class ModelRemoteValueFactory
+    {
+        // TODO check if name factory works
+        public static IModelRemoteValue CreateModelChangeValue(object obj)
+        {
+            if (obj is IModelElement)
+                return new ModelRemoteValueAbsoluteUri<IModelElement>(((IModelElement)obj).AbsoluteUri);
+            else
+                return new ModelRemoteValueObject<object>(obj);
+        }
+
+        public static IModelRemoteValue<T> CreateModelChangeValue<T>(T obj)
+        {
+            if (obj is ModelElement)
+            {
+                var type = typeof (ModelRemoteValueAbsoluteUri<>);
+                var genericType = type.MakeGenericType(new Type[] {typeof (T)});
+                return (IModelRemoteValue<T>) Activator.CreateInstance(genericType, new object[] {obj});
+            }
+            else
+            {
+                return new ModelRemoteValueObject<T>(obj);
+            }
+        }
+    }
+
+    [Serializable]
+    public class ModelRemoteValueObject<T> : IModelRemoteValue<T>
+    {
+        public ModelRemoteValueObject(T value)
+        {
+            Value = value;
+        }
+
+        public T Value { get; private set; }
+
+        public T Retrieve(Models.Model lookupModel)
+        {
+            return Value;
+        }
+
+        object IModelRemoteValue.Retrieve(Models.Model lookupModel)
+        {
+            return Retrieve(lookupModel);
+        }
+    }
+
+    [Serializable]
+    public class ModelRemoteValueAbsoluteUri<T> : IModelRemoteValue<T> where T : IModelElement
+    {
+        public ModelRemoteValueAbsoluteUri(Uri absoluteUri)
+        {
+            AbsoluteUri = absoluteUri;
+        }
+
+        public Uri AbsoluteUri { get; private set; }
+
+        public T Retrieve(Models.Model lookupModel)
+        {
+            return (T) lookupModel.Resolve(AbsoluteUri);
+        }
+
+        object IModelRemoteValue.Retrieve(Models.Model lookupModel)
+        {
+            return Retrieve(lookupModel);
+        }
+    }
+
+    public interface IModelRemoteValue<T> : IModelRemoteValue
+    {
+        new T Retrieve(Models.Model lookupModel);
+    }
+
+    public interface IModelRemoteValue
+    {
+        object Retrieve(Models.Model lookupModel);
+    }
+}

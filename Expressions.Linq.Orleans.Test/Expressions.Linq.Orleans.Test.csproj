@@ -90,11 +90,38 @@
   </Choose>
   <ItemGroup>
     <Compile Include="LinqTest.cs" />
+    <Compile Include="metamodel\IRailwayContainer.cs" />
+    <Compile Include="metamodel\IRailwayElement.cs" />
+    <Compile Include="metamodel\IRoute.cs" />
+    <Compile Include="metamodel\ISegment.cs" />
+    <Compile Include="metamodel\ISemaphore.cs" />
+    <Compile Include="metamodel\ISensor.cs" />
+    <Compile Include="metamodel\ISwitch.cs" />
+    <Compile Include="metamodel\ISwitchPosition.cs" />
+    <Compile Include="metamodel\ITrackElement.cs" />
+    <Compile Include="metamodel\Position.cs" />
+    <Compile Include="metamodel\RailwayContainer.cs" />
+    <Compile Include="metamodel\RailwayElement.cs" />
+    <Compile Include="metamodel\Route.cs" />
+    <Compile Include="metamodel\RouteFollowsCollection.cs" />
+    <Compile Include="metamodel\Segment.cs" />
+    <Compile Include="metamodel\Semaphore.cs" />
+    <Compile Include="metamodel\Sensor.cs" />
+    <Compile Include="metamodel\SensorElementsCollection.cs" />
+    <Compile Include="metamodel\Signal.cs" />
+    <Compile Include="metamodel\Switch.cs" />
+    <Compile Include="metamodel\SwitchPosition.cs" />
+    <Compile Include="metamodel\SwitchPositionsCollection.cs" />
+    <Compile Include="metamodel\TrackElement.cs" />
+    <Compile Include="ModelConsumerTest.cs" />
     <Compile Include="SqoGrainTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
+    <None Include="models\railway-1.xmi">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
@@ -107,14 +134,37 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Collections\Collections\Collections.csproj">
+      <Project>{6f57aa50-fb70-4de8-beab-e3ae58b225d3}</Project>
+      <Name>Collections</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Expressions.Linq.Orleans\Expressions.Linq.Orleans.csproj">
       <Project>{89424f14-5c6c-4f14-8c4b-47f741c3e792}</Project>
       <Name>Expressions.Linq.Orleans</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Expressions\Expressions.Linq\Expressions.Linq.csproj">
+      <Project>{E82D72A1-90F6-4341-A82D-D6B40349DF63}</Project>
+      <Name>Expressions.Linq</Name>
     </ProjectReference>
     <ProjectReference Include="..\Expressions\Expressions\Expressions.csproj">
       <Project>{afca9d1d-26a6-482a-a5ab-0827ad0fd677}</Project>
       <Name>Expressions</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Models\Models\Models.csproj">
+      <Project>{e42ac7b6-8120-40b5-8cd3-c4139b940897}</Project>
+      <Name>Models</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Models\Serialization\Serialization.csproj">
+      <Project>{c24ef2ac-49d3-4542-bc40-5d62e12c7ded}</Project>
+      <Name>Serialization</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Tools\Utilities\Utilities.csproj">
+      <Project>{868226d4-bc8b-4b91-bd09-8f63d3c9debe}</Project>
+      <Name>Utilities</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="testgrains\" />
   </ItemGroup>
   <Choose>
     <When Condition="'$(VisualStudioVersion)' == '10.0' And '$(IsCodedUITest)' == 'True'">
