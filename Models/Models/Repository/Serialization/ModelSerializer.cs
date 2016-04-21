@@ -228,8 +228,15 @@ namespace NMF.Models.Repository.Serialization
             return model;
         }
 
-        protected override object SelectRoot(object graph)
+        /// <summary>
+        /// Gets the serialization root element
+        /// </summary>
+        /// <param name="graph">The base element that should be serialized</param>
+        /// <param name="fragment">A value indicating whether only a fragment should be written</param>
+        /// <returns>The root element for serialization</returns>
+        protected override object SelectRoot(object graph, bool fragment)
         {
+            if (fragment) return graph;
             var modelElement = graph as IModelElement;
             if (modelElement != null)
             {
@@ -254,7 +261,12 @@ namespace NMF.Models.Repository.Serialization
 
         public void Serialize(Model model, Stream target)
         {
-            base.Serialize(model, target);
+            base.Serialize(model, target, false);
+        }
+
+        public void SerializeFragment(ModelElement element, Stream target)
+        {
+            base.Serialize(element, target, true);
         }
     }
 }

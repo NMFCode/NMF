@@ -467,12 +467,13 @@ namespace NMF.Serialization
         /// Serializes the given object
         /// </summary>
         /// <param name="path">The path for the resulting Xml-file</param>
-        /// <param name="o">The object to be serialized</param>
-        public void Serialize(object obj, string path)
+        /// <param name="obj">The object to be serialized</param>
+        /// <param name="fragment">A value that indicates whether the serializer should write a document definition</param>
+        public void Serialize(object obj, string path, bool fragment = false)
         {
             using (FileStream fs = new FileStream(path, FileMode.Create, FileAccess.ReadWrite, FileShare.None))
             {
-                Serialize(obj, fs);
+                Serialize(obj, fs, fragment);
             }
         }
 
@@ -480,12 +481,13 @@ namespace NMF.Serialization
         /// Serializes the given object
         /// </summary>
         /// <param name="stream">The stream for the resulting Xml-code</param>
-        /// <param name="o">The object to be serialized</param>
-        public void Serialize(object source, Stream stream)
+        /// <param name="source">The object to be serialized</param>
+        /// <param name="fragment">A value that indicates whether the serializer should write a document definition</param>
+        public void Serialize(object source, Stream stream, bool fragment = false)
         {
             using (var sw = new StreamWriter(stream, Encoding.UTF8))
             {
-                Serialize(source, sw);
+                Serialize(source, sw, fragment);
             }
         }
 
@@ -532,7 +534,7 @@ namespace NMF.Serialization
         public void Serialize(object source, XmlWriter target, bool fragment)
         {
             if (!fragment) target.WriteStartDocument();
-            source = SelectRoot(source);
+            source = SelectRoot(source, fragment);
             var info = GetSerializationInfo(source.GetType(), true);
             WriteBeginRootElement(target, source, info);
             XmlSerializationContext context = CreateSerializationContext(source);
@@ -541,7 +543,13 @@ namespace NMF.Serialization
             if (!fragment) target.WriteEndDocument();
         }
 
-        protected virtual object SelectRoot(object graph)
+        /// <summary>
+        /// Gets the serialization root element
+        /// </summary>
+        /// <param name="graph">The base element that should be serialized</param>
+        /// <param name="fragment">A value indicating whether only a fragment should be written</param>
+        /// <returns>The root element for serialization</returns>
+        protected virtual object SelectRoot(object graph, bool fragment)
         {
             return graph;
         }
