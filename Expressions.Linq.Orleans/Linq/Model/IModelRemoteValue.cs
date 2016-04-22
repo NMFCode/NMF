@@ -9,7 +9,7 @@ namespace NMF.Expressions.Linq.Orleans.Model
         public static IModelRemoteValue CreateModelChangeValue(object obj)
         {
             if (obj is IModelElement)
-                return new ModelRemoteValueAbsoluteUri<IModelElement>(((IModelElement)obj).AbsoluteUri);
+                return new ModelRemoteValueUri<IModelElement>((IModelElement)obj);
             else
                 return new ModelRemoteValueObject<object>(obj);
         }
@@ -18,7 +18,7 @@ namespace NMF.Expressions.Linq.Orleans.Model
         {
             if (obj is ModelElement)
             {
-                var type = typeof (ModelRemoteValueAbsoluteUri<>);
+                var type = typeof (ModelRemoteValueUri<>);
                 var genericType = type.MakeGenericType(new Type[] {typeof (T)});
                 return (IModelRemoteValue<T>) Activator.CreateInstance(genericType, new object[] {obj});
             }
@@ -51,18 +51,18 @@ namespace NMF.Expressions.Linq.Orleans.Model
     }
 
     [Serializable]
-    public class ModelRemoteValueAbsoluteUri<T> : IModelRemoteValue<T> where T : IModelElement
+    public class ModelRemoteValueUri<T> : IModelRemoteValue<T> where T : IModelElement
     {
-        public ModelRemoteValueAbsoluteUri(Uri absoluteUri)
+        public ModelRemoteValueUri(IModelElement modelElement)
         {
-            AbsoluteUri = absoluteUri;
+            RootRelativeUri = modelElement.RelativeUri;
         }
 
-        public Uri AbsoluteUri { get; private set; }
+        public Uri RootRelativeUri { get; private set; }
 
         public T Retrieve(Models.Model lookupModel)
         {
-            return (T) lookupModel.Resolve(AbsoluteUri);
+            return (T) lookupModel.Resolve(RootRelativeUri);
         }
 
         object IModelRemoteValue.Retrieve(Models.Model lookupModel)

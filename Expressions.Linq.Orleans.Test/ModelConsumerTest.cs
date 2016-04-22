@@ -3,6 +3,7 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NMF.Expressions.Linq;
 using NMF.Expressions.Linq.Orleans;
 using NMF.Expressions.Linq.Orleans.Message;
 using NMF.Expressions.Linq.Orleans.Model;
@@ -87,30 +88,35 @@ namespace Expressions.Linq.Orleans.Test
             Func<Model, IModelElement> modelSelectorFunc = new Func<Model, IModelElement>((model) =>
             {
                 var railwayContainer = model.RootElements.Single() as RailwayContainer;
-                return railwayContainer.Routes.First();
+                return railwayContainer;
             });
 
             Assert.IsTrue(await CurrentModelsMatch(modelSelectorFunc, modelContainerGrain, consumerGrain));
 
-            receiver.Register<ModelPropertyChangedMessage>(message =>
-            {
-                Console.WriteLine(message);
-                return TaskDone.Done;
-            });
-
+            // Property Changed test to null
             await modelContainerGrain.ExecuteSync((model) =>
             {
                 var railwayContainer = model.RootElements.Single() as RailwayContainer;
                 railwayContainer.Routes.First().Entry = null;
             });
-
             Assert.IsTrue(await CurrentModelsMatch(modelSelectorFunc, modelContainerGrain, consumerGrain));
 
-            var afterChangeString = await modelContainerGrain.ModelToString((model) =>
+            // Property Changed test to known object
+            await modelContainerGrain.ExecuteSync((model) =>
             {
                 var railwayContainer = model.RootElements.Single() as RailwayContainer;
-                return railwayContainer.Routes.First();
+                railwayContainer.Routes.First().Entry = railwayContainer.Semaphores[2];
             });
+            Assert.IsTrue(await CurrentModelsMatch(modelSelectorFunc, modelContainerGrain, consumerGrain));
+
+            // Property Changed test to native type
+            await modelContainerGrain.ExecuteSync((model) =>
+            {
+                var railwayContainer = model.RootElements.Single() as RailwayContainer;
+                var segmentToModify = railwayContainer.Descendants().OfType<Segment>().First();
+                segmentToModify.Length = 42;
+            });
+            Assert.IsTrue(await CurrentModelsMatch(modelSelectorFunc, modelContainerGrain, consumerGrain));
 
 
         }
