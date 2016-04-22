@@ -5,15 +5,12 @@ using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using NMF.Expressions.Linq;
 using NMF.Expressions.Linq.Orleans;
-using NMF.Expressions.Linq.Orleans.Message;
 using NMF.Expressions.Linq.Orleans.Model;
 using NMF.Expressions.Linq.Orleans.TestGrains;
 using NMF.Models;
 using NMF.Models.Repository;
 using Orleans;
 using Orleans.Streams;
-using Orleans.Streams.Endpoints;
-using Orleans.Streams.Messages;
 using Orleans.TestingHost;
 using TTC2015.TrainBenchmark.Railway;
 
@@ -22,8 +19,18 @@ namespace Expressions.Linq.Orleans.Test
     [TestClass]
     public class ModelConsumerTest : TestingSiloHost
     {
-        private IStreamProvider _provider;
         private IncrementalStreamProcessorAggregateFactory _factory;
+
+        private readonly Func<Model> _modelLoadingFunc = () =>
+        {
+            var repository = new ModelRepository();
+            var train = repository.Resolve(new Uri(new FileInfo("models/railway-1.xmi").FullName));
+            var railwayContainer = train.Model.RootElements.Single() as RailwayContainer;
+
+            return train.Model;
+        };
+
+        private IStreamProvider _provider;
 
         [TestInitialize]
         public void TestInitialize()
@@ -48,7 +55,7 @@ namespace Expressions.Linq.Orleans.Test
             //var train = repository.Resolve(new Uri(new FileInfo("models/railway-1.xmi").FullName));
             //var railwayContainer = train.Model.RootElements.Single() as RailwayContainer;
 
-            var grain = GrainFactory.GetGrain<IModelContainerGrain<NMF.Models.Model>>(Guid.NewGuid());
+            var grain = GrainFactory.GetGrain<IModelContainerGrain<Model>>(Guid.NewGuid());
             await grain.LoadModel(() =>
             {
                 var repository = new ModelRepository();
@@ -60,41 +67,22 @@ namespace Expressions.Linq.Orleans.Test
         }
 
         [TestMethod]
-        public async Task ModelUpdateSucceeded()
+        public async Task ModelPropertyChange()
         {
-            //var repository = new ModelRepository();
-            //var train = repository.Resolve(new Uri(new FileInfo("models/railway-1.xmi").FullName));
-            //var railwayContainer = train.Model.RootElements.Single() as RailwayContainer;
+            var modelContainerGrain = await LoadModelContainer();
 
-            Func<NMF.Models.Model> modelLoadingFunc = new Func<Model>(() =>
-            {
-                var repository = new ModelRepository();
-                var train = repository.Resolve(new Uri(new FileInfo("models/railway-1.xmi").FullName));
-                var railwayContainer = train.Model.RootElements.Single() as RailwayContainer;
+            var consumerGrain = await LoadAndAttachModelTestConsumer(modelContainerGrain);
 
-                return train.Model;
-            });
-
-            var modelContainerGrain = GrainFactory.GetGrain<IModelContainerGrain<NMF.Models.Model>>(Guid.NewGuid());
-            await modelContainerGrain.LoadModel(modelLoadingFunc);
-
-            var consumerGrain = GrainFactory.GetGrain<ITestModelProcessingNodeGrain<NMF.Models.Model, int>>(Guid.NewGuid());
-            await consumerGrain.LoadModel(modelLoadingFunc);
-            await consumerGrain.SetModelContainer(modelContainerGrain);
-
-            StreamMessageDispatchReceiver receiver = new StreamMessageDispatchReceiver(_provider);
-            await receiver.Subscribe(await modelContainerGrain.GetStreamIdentity());
-
-            Func<Model, IModelElement> modelSelectorFunc = new Func<Model, IModelElement>((model) =>
+            Func<Model, IModelElement> modelSelectorFunc = model =>
             {
                 var railwayContainer = model.RootElements.Single() as RailwayContainer;
                 return railwayContainer;
-            });
+            };
 
             Assert.IsTrue(await CurrentModelsMatch(modelSelectorFunc, modelContainerGrain, consumerGrain));
 
             // Property Changed test to null
-            await modelContainerGrain.ExecuteSync((model) =>
+            await modelContainerGrain.ExecuteSync(model =>
             {
                 var railwayContainer = model.RootElements.Single() as RailwayContainer;
                 railwayContainer.Routes.First().Entry = null;
@@ -102,7 +90,7 @@ namespace Expressions.Linq.Orleans.Test
             Assert.IsTrue(await CurrentModelsMatch(modelSelectorFunc, modelContainerGrain, consumerGrain));
 
             // Property Changed test to known object
-            await modelContainerGrain.ExecuteSync((model) =>
+            await modelContainerGrain.ExecuteSync(model =>
             {
                 var railwayContainer = model.RootElements.Single() as RailwayContainer;
                 railwayContainer.Routes.First().Entry = railwayContainer.Semaphores[2];
@@ -110,24 +98,78 @@ namespace Expressions.Linq.Orleans.Test
             Assert.IsTrue(await CurrentModelsMatch(modelSelectorFunc, modelContainerGrain, consumerGrain));
 
             // Property Changed test to native type
-            await modelContainerGrain.ExecuteSync((model) =>
+            await modelContainerGrain.ExecuteSync(model =>
             {
                 var railwayContainer = model.RootElements.Single() as RailwayContainer;
                 var segmentToModify = railwayContainer.Descendants().OfType<Segment>().First();
                 segmentToModify.Length = 42;
             });
             Assert.IsTrue(await CurrentModelsMatch(modelSelectorFunc, modelContainerGrain, consumerGrain));
-
-
         }
 
-        private async Task<bool> CurrentModelsMatch<T>(Func<Model, IModelElement> elementSelectorFunc, IModelLoader<T> loader1, IModelLoader<T> loader2) where T : Model
+        [TestMethod]
+        public async Task ModelCollectionChange()
+        {
+            var modelContainerGrain = await LoadModelContainer();
+
+            var consumerGrain = await LoadAndAttachModelTestConsumer(modelContainerGrain);
+
+            Func<Model, IModelElement> modelSelectorFunc = model =>
+            {
+                var railwayContainer = model.RootElements.Single() as RailwayContainer;
+                return railwayContainer;
+            };
+
+            Assert.IsTrue(await CurrentModelsMatch(modelSelectorFunc, modelContainerGrain, consumerGrain));
+
+            // Collection changed add known object
+            await modelContainerGrain.ExecuteSync(model =>
+            {
+                var railwayContainer = model.RootElements.Single() as RailwayContainer;
+                var routeToChange = railwayContainer.Routes.First().DefinedBy;
+
+                var otherRoute = railwayContainer.Descendants().OfType<Route>().Where(r => !r.Equals(routeToChange)).First();
+                var sensorToAdd = otherRoute.DefinedBy.First();
+
+                routeToChange.Add(sensorToAdd);
+            });
+            Assert.IsTrue(await CurrentModelsMatch(modelSelectorFunc, modelContainerGrain, consumerGrain));
+
+            // TODO
+            //// Property Changed test to native type
+            //await modelContainerGrain.ExecuteSync(model =>
+            //{
+            //    var railwayContainer = model.RootElements.Single() as RailwayContainer;
+            //    var segmentToModify = railwayContainer.Descendants().OfType<Segment>().First();
+            //    segmentToModify.Length = 42;
+            //});
+            //Assert.IsTrue(await CurrentModelsMatch(modelSelectorFunc, modelContainerGrain, consumerGrain));
+        }
+
+        private async Task<IModelContainerGrain<Model>> LoadModelContainer()
+        {
+            var modelContainerGrain = GrainFactory.GetGrain<IModelContainerGrain<Model>>(Guid.NewGuid());
+            await modelContainerGrain.LoadModel(_modelLoadingFunc);
+
+            return modelContainerGrain;
+        }
+
+        private async Task<ITestModelProcessingNodeGrain<Model, int>> LoadAndAttachModelTestConsumer(IModelContainerGrain<Model> modelContainerGrain)
+        {
+            var consumerGrain = GrainFactory.GetGrain<ITestModelProcessingNodeGrain<Model, int>>(Guid.NewGuid());
+            await consumerGrain.LoadModel(_modelLoadingFunc);
+            await consumerGrain.SetModelContainer(modelContainerGrain);
+
+            return consumerGrain;
+        }
+
+        private async Task<bool> CurrentModelsMatch<T>(Func<Model, IModelElement> elementSelectorFunc, IModelLoader<T> loader1,
+            IModelLoader<T> loader2) where T : Model
         {
             var s1 = await loader1.ModelToString(elementSelectorFunc);
             var s2 = await loader2.ModelToString(elementSelectorFunc);
 
             return s1.Equals(s2);
         }
-
     }
 }
