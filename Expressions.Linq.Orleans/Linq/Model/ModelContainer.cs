@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.IO;
 using System.Text;
@@ -8,12 +9,13 @@ using NMF.Expressions.Linq.Orleans.Message;
 using NMF.Models;
 using NMF.Models.Repository;
 using Orleans;
+using Orleans.Collections;
 using Orleans.Streams;
 using Orleans.Streams.Endpoints;
 
 namespace NMF.Expressions.Linq.Orleans.Model
 {
-    public class ModelContainer<T> : Grain, IModelContainerGrain<T> where T : Models.Model
+    public class ModelContainer<T> : Grain, IElementEnumeratorNode<T>, IModelContainerGrain<T> where T : Models.Model
     {
         private const string StreamProviderName = "CollectionStreamProvider";
         protected T Model;
@@ -118,6 +120,19 @@ namespace NMF.Expressions.Linq.Orleans.Model
             }
 
             return changes;
+        }
+
+        public Task<Guid> EnumerateToStream(StreamIdentity streamIdentity, Guid transactionId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public async Task<Guid> EnumerateToSubscribers(Guid? transactionId = null)
+        {
+            var remoteModelValue = ModelRemoteValueFactory.CreateModelChangeValue(Model);
+            var message = new ModelItemAddMessage<T>(new List<IModelRemoteValue<T>> { remoteModelValue });
+            await OutputProducer.SendMessage(message);
+            return transactionId.Value;
         }
     }
 }
