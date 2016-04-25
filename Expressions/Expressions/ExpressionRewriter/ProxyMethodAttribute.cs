@@ -14,17 +14,9 @@ namespace NMF.Expressions
             MethodName = methodName;
         }
 
-        public bool IsInitialized
+        public bool InitializeProxyMethod(MethodInfo sourceMethod, Type[] types, out MethodInfo proxyMethod)
         {
-            get
-            {
-                return ProxyMethod != null;
-            }
-        }
-
-        public MethodInfo InitializeProxyMethod(MethodInfo sourceMethod)
-        {
-            if (ProxyMethod != null) return ProxyMethod;
+            if (types == null) throw new ArgumentNullException("types");
             var proxyTypeArgs = new List<Type>();
             if (ReflectionHelper.IsGenericType(sourceMethod.DeclaringType))
             {
@@ -35,35 +27,51 @@ namespace NMF.Expressions
                 proxyTypeArgs.AddRange(sourceMethod.GetGenericArguments());
             }
             var typeArrayPointer = 0;
-            if (ProxyType.IsGenericTypeDefinition)
+            var proxyType = this.ProxyType;
+            if (proxyType.IsGenericTypeDefinition)
             {
-                var typeArgs = new Type[ProxyType.GetGenericArguments().Length];
+                var typeArgs = new Type[proxyType.GetGenericArguments().Length];
                 for (int i = 0; i < typeArgs.Length; i++)
                 {
                     typeArgs[i] = proxyTypeArgs[typeArrayPointer];
                     typeArrayPointer++;
                 }
-                ProxyType = ProxyType.MakeGenericType(typeArgs);
+                proxyType = proxyType.MakeGenericType(typeArgs);
             }
-            var proxyMethod = ProxyType.GetMethod(MethodName);
-            if (proxyMethod.IsGenericMethodDefinition)
+            if (proxyTypeArgs.Count > typeArrayPointer)
             {
-                var typeArgs = new Type[proxyMethod.GetGenericArguments().Length];
-                for (int i = 0; i < typeArgs.Length; i++)
+                var methodParamArgs = new Type[proxyTypeArgs.Count - typeArrayPointer];
+                for (int i = 0; i < methodParamArgs.Length; i++)
                 {
-                    typeArgs[i] = proxyTypeArgs[typeArrayPointer];
-                    typeArrayPointer++;
+                    methodParamArgs[i] = proxyTypeArgs[i + typeArrayPointer];
                 }
-                proxyMethod = proxyMethod.MakeGenericMethod(typeArgs);
+                proxyMethod = proxyType.GetMethods().Select(m =>
+                {
+                    if (m.IsGenericMethodDefinition && m.Name == MethodName)
+                    {
+                        var methodTypeParameters = m.GetGenericArguments();
+                        if (methodTypeParameters.Length != methodParamArgs.Length) return null;
+                        var genericMethod = m.MakeGenericMethod(methodParamArgs);
+                        var parameters = genericMethod.GetParameters();
+                        if (parameters.Length != types.Length) return null;
+                        for (int i = 0; i < parameters.Length; i++)
+                        {
+                            if (parameters[i].ParameterType != types[i]) return null;
+                        }
+                        return genericMethod;
+                    }
+                    return null;
+                }).FirstOrDefault(m => m != null);
             }
-            ProxyMethod = proxyMethod;
-            return proxyMethod;
+            else
+            {
+                proxyMethod = proxyType.GetMethod(MethodName, types);
+            }
+            return proxyMethod != null;
         }
 
         public Type ProxyType { get; private set; }
 
         public string MethodName { get; private set; }
-
-        public MethodInfo ProxyMethod { get; private set; }
     }
 }

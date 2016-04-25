@@ -70,6 +70,11 @@
     <Compile Include="ExpressionRewriter\ExpressionCompileRewriterAttribute.cs" />
     <Compile Include="ExpressionRewriter\SetExpressionRewriterAttribute.cs" />
     <Compile Include="ExpressionRewriter\SetExpressionRewriter.cs" />
+    <Compile Include="ObservableSimpleMethodProxyCall.cs">
+      <DependentUpon>ObservableSimpleMethodProxyCall.tt</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+    </Compile>
     <Compile Include="Public\ConstantValue.cs" />
     <Compile Include="Public\INotifyExpression.cs" />
     <Compile Include="Public\INotifyReversableExpression.cs" />
@@ -188,6 +193,12 @@
   </ItemGroup>
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="ObservableSimpleMethodProxyCall.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>ObservableSimpleMethodProxyCall.cs</LastGenOutput>
+    </None>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

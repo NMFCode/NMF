@@ -6,9 +6,9 @@
     <ProjectGuid>{31EC737E-E2A9-4FFD-A62B-94C0E4546DBA}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Models.Tests</RootNamespace>
-    <AssemblyName>Models.Tests</AssemblyName>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <RootNamespace>NMF.Models.Tests</RootNamespace>
+    <AssemblyName>NMF.Models.Tests</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{3AC096D0-A1C2-E12C-1390-A8335801FDAB};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
@@ -20,6 +20,7 @@
     <SccLocalPath>SAK</SccLocalPath>
     <SccAuxPath>SAK</SccAuxPath>
     <SccProvider>SAK</SccProvider>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -49,21 +50,51 @@
     </When>
     <Otherwise>
       <ItemGroup>
-        <Reference Include="Microsoft.VisualStudio.QualityTools.UnitTestFramework" />
+        <Reference Include="Microsoft.VisualStudio.QualityTools.UnitTestFramework">
+          <Private>False</Private>
+        </Reference>
       </ItemGroup>
     </Otherwise>
   </Choose>
   <ItemGroup>
+    <Compile Include="Metamodel\IRailwayContainer.cs" />
+    <Compile Include="Metamodel\IRailwayElement.cs" />
+    <Compile Include="Metamodel\IRoute.cs" />
+    <Compile Include="Metamodel\ISegment.cs" />
+    <Compile Include="Metamodel\ISemaphore.cs" />
+    <Compile Include="Metamodel\ISensor.cs" />
+    <Compile Include="Metamodel\ISwitch.cs" />
+    <Compile Include="Metamodel\ISwitchPosition.cs" />
+    <Compile Include="Metamodel\ITrackElement.cs" />
+    <Compile Include="Metamodel\Position.cs" />
+    <Compile Include="Metamodel\RailwayContainer.cs" />
+    <Compile Include="Metamodel\RailwayElement.cs" />
+    <Compile Include="Metamodel\Route.cs" />
+    <Compile Include="Metamodel\RouteFollowsCollection.cs" />
+    <Compile Include="Metamodel\Segment.cs" />
+    <Compile Include="Metamodel\Semaphore.cs" />
+    <Compile Include="Metamodel\Sensor.cs" />
+    <Compile Include="Metamodel\SensorElementsCollection.cs" />
+    <Compile Include="Metamodel\Signal.cs" />
+    <Compile Include="Metamodel\Switch.cs" />
+    <Compile Include="Metamodel\SwitchPosition.cs" />
+    <Compile Include="Metamodel\SwitchPositionsCollection.cs" />
+    <Compile Include="Metamodel\TrackElement.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ResolveTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Collections\Collections\Collections.csproj">
       <Project>{6f57aa50-fb70-4de8-beab-e3ae58b225d3}</Project>
       <Name>Collections</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\Transformations\Models.Transformations\Models.Transformations.csproj">
-      <Project>{c9fa4b20-4325-460b-8fdf-8ac577090473}</Project>
-      <Name>Models.Transformations</Name>
+    <ProjectReference Include="..\..\Expressions\Expressions.Linq\Expressions.Linq.csproj">
+      <Project>{e82d72a1-90f6-4341-a82d-d6b40349df63}</Project>
+      <Name>Expressions.Linq</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Expressions\Expressions\Expressions.csproj">
+      <Project>{afca9d1d-26a6-482a-a5ab-0827ad0fd677}</Project>
+      <Name>Expressions</Name>
     </ProjectReference>
     <ProjectReference Include="..\Models\Models.csproj">
       <Project>{e42ac7b6-8120-40b5-8cd3-c4139b940897}</Project>
@@ -77,18 +108,16 @@
       <Project>{a73b97dd-f870-48d0-86ae-713457b47e2b}</Project>
       <Name>Tests</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\Transformations\Transformations.Core\Transformations.Core.csproj">
-      <Project>{9a62c452-44e3-4263-a91d-8b480259270d}</Project>
-      <Name>Transformations.Core</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\Transformations\Transformations\Transformations.csproj">
-      <Project>{235646f1-1f85-47c9-8bd2-a3e854ac38eb}</Project>
-      <Name>Transformations</Name>
-    </ProjectReference>
     <ProjectReference Include="..\..\Tools\Utilities\Utilities.csproj">
       <Project>{868226d4-bc8b-4b91-bd09-8f63d3c9debe}</Project>
       <Name>Utilities</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="railway.nmf" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="railway.railway" />
   </ItemGroup>
   <Choose>
     <When Condition="'$(VisualStudioVersion)' == '10.0' And '$(IsCodedUITest)' == 'True'">

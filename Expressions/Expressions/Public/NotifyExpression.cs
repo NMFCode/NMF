@@ -38,6 +38,17 @@ namespace NMF.Expressions
         }
 
         /// <summary>
+        /// Gets the current value as object
+        /// </summary>
+        public object ValueObject
+        {
+            get
+            {
+                return Value;
+            }
+        }
+
+        /// <summary>
         /// Gets the type of this incremental expression
         /// </summary>
         public sealed override Type Type

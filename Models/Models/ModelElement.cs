@@ -166,7 +166,7 @@ namespace NMF.Models
             {
                 if (fragment != null)
                 {
-                    fragment = path + fragment;
+                    fragment = path + "/" + fragment;
                 }
                 else
                 {
@@ -271,7 +271,7 @@ namespace NMF.Models
         /// <returns>The corresponding child element or null, if no such was found</returns>
         public IModelElement Resolve(Uri relativeUri)
         {
-            if (relativeUri == null) return null;
+            if (relativeUri == null) return this;
             if (relativeUri.IsAbsoluteUri) throw new ArgumentException("The uri is not a relative Uri", "relativeUri");
             return Resolve(relativeUri.OriginalString);
         }

@@ -237,7 +237,7 @@ namespace Ecore2Code
 
             if (packages.Count == 0)
             {
-                return null;
+                throw new InvalidOperationException("No package could be found.");
             }
             else if (packages.Count == 1)
             {

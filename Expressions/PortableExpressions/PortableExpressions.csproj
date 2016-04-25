@@ -338,6 +338,9 @@
     <Compile Include="..\Expressions\ObservableReversableExpression.cs">
       <Link>ObservableReversableExpression.cs</Link>
     </Compile>
+    <Compile Include="..\Expressions\ObservableSimpleMethodProxyCall.cs">
+      <Link>ObservableSimpleMethodProxyCall.cs</Link>
+    </Compile>
     <Compile Include="..\Expressions\ObservableStaticMethodCall.cs">
       <Link>ObservableStaticMethodCall.cs</Link>
     </Compile>

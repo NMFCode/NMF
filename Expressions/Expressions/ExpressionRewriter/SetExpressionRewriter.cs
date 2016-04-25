@@ -9,6 +9,16 @@ namespace NMF.Expressions
 {
     public class SetExpressionRewriter : ExpressionVisitor
     {
+        private static readonly Type[] actionTypes =
+        {
+            typeof(Action<>),
+            typeof(Action<,>),
+            typeof(Action<,,>),
+            typeof(Action<,,,>),
+            typeof(Action<,,,,>),
+            typeof(Action<,,,,,>)
+        };
+
         public static Expression<Action<TValue>> CreateSetter<TValue>(Expression<Func<TValue>> getter)
         {
             if (getter == null) throw new ArgumentNullException("getter");
@@ -27,6 +37,26 @@ namespace NMF.Expressions
             var body = visitor.Visit(getter.Body);
             if (body == null) return null;
             return Expression.Lambda<Action<T, TValue>>(body, getter.Parameters[0], p);
+        }
+
+        public static LambdaExpression CreateSetter(LambdaExpression getter)
+        {
+            if (getter == null) throw new ArgumentNullException("getter");
+            var valueParameter = Expression.Parameter(getter.ReturnType);
+            var visitor = new SetExpressionRewriter(valueParameter);
+            var body = visitor.Visit(getter.Body);
+            if (body == null) return null;
+            var parameters = new ParameterExpression[getter.Parameters.Count + 1];
+            getter.Parameters.CopyTo(parameters, 0);
+            parameters[parameters.Length - 1] = valueParameter;
+            var typeParameters = new Type[getter.Parameters.Count + 1];
+            for (int i = 0; i < getter.Parameters.Count; i++)
+            {
+                typeParameters[i] = getter.Parameters[i].Type;
+            }
+            typeParameters[typeParameters.Length - 1] = getter.ReturnType;
+            var delegateType = actionTypes[getter.Parameters.Count].MakeGenericType(typeParameters);
+            return Expression.Lambda(delegateType, body, parameters);
         }
 
         public Expression Value { get; set; }
@@ -285,8 +315,12 @@ namespace NMF.Expressions
                 var proxyAttribute = attributes.FirstOrDefault() as SetExpressionRewriterAttribute;
                 if (proxyAttribute != null)
                 {
-                    var proxyMethod = proxyAttribute.InitializeProxyMethod(node.Method);
-                    if (proxyMethod != null && proxyMethod.IsStatic && proxyMethod.ReturnType == typeof(Expression))
+                    MethodInfo proxyMethod;
+                    if (!proxyAttribute.InitializeProxyMethod(node.Method, new Type[] { typeof(MethodCallExpression), typeof(SetExpressionRewriter) }, out proxyMethod))
+                    {
+                        throw new InvalidOperationException(string.Format("The given expression rewriter method for method {0} has the wrong signature. It must accept parameters of type MethodCallExpression and SetExpressionRewriter.", node.Method.Name));
+                    }
+                    else if (proxyMethod != null && proxyMethod.IsStatic && proxyMethod.ReturnType == typeof(Expression))
                     {
                         var func = ReflectionHelper.CreateDelegate<Func<MethodCallExpression, SetExpressionRewriter, Expression>>(proxyMethod);
                         return func(node, this);

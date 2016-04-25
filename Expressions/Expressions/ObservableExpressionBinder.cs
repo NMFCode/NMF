@@ -15,115 +15,141 @@ namespace NMF.Expressions
         private bool compress;
         private Dictionary<string, object> parameters;
 
-        private static Type[] newTypes = {
-                                             typeof(ObservableNewExpression<,>),
-                                             typeof(ObservableNewExpression<,,>),
-                                             typeof(ObservableNewExpression<,,,>),
-                                             typeof(ObservableNewExpression<,,,,>),
-                                             typeof(ObservableNewExpression<,,,,,>),
-                                             typeof(ObservableNewExpression<,,,,,,>),
-                                             typeof(ObservableNewExpression<,,,,,,,>),
-                                             typeof(ObservableNewExpression<,,,,,,,,>),
-                                             typeof(ObservableNewExpression<,,,,,,,,,>),
-                                             typeof(ObservableNewExpression<,,,,,,,,,,>),
-                                             typeof(ObservableNewExpression<,,,,,,,,,,,>),
-                                             typeof(ObservableNewExpression<,,,,,,,,,,,,>),
-                                             typeof(ObservableNewExpression<,,,,,,,,,,,,,>),
-                                             typeof(ObservableNewExpression<,,,,,,,,,,,,,,>),
-                                             typeof(ObservableNewExpression<,,,,,,,,,,,,,,,>)
-                                         };
+        private static Type[] newTypes =
+        {
+            typeof(ObservableNewExpression<,>),
+            typeof(ObservableNewExpression<,,>),
+            typeof(ObservableNewExpression<,,,>),
+            typeof(ObservableNewExpression<,,,,>),
+            typeof(ObservableNewExpression<,,,,,>),
+            typeof(ObservableNewExpression<,,,,,,>),
+            typeof(ObservableNewExpression<,,,,,,,>),
+            typeof(ObservableNewExpression<,,,,,,,,>),
+            typeof(ObservableNewExpression<,,,,,,,,,>),
+            typeof(ObservableNewExpression<,,,,,,,,,,>),
+            typeof(ObservableNewExpression<,,,,,,,,,,,>),
+            typeof(ObservableNewExpression<,,,,,,,,,,,,>),
+            typeof(ObservableNewExpression<,,,,,,,,,,,,,>),
+            typeof(ObservableNewExpression<,,,,,,,,,,,,,,>),
+            typeof(ObservableNewExpression<,,,,,,,,,,,,,,,>)
+        };
 
-        private static Type[] staticMethodTypes = {
-                                                      typeof(ObservableStaticMethodCall<,>),
-                                                      typeof(ObservableStaticMethodCall<,,>),
-                                                      typeof(ObservableStaticMethodCall<,,,>),
-                                                      typeof(ObservableStaticMethodCall<,,,,>),
-                                                      typeof(ObservableStaticMethodCall<,,,,,>),
-                                                      typeof(ObservableStaticMethodCall<,,,,,,>),
-                                                      typeof(ObservableStaticMethodCall<,,,,,,,>),
-                                                      typeof(ObservableStaticMethodCall<,,,,,,,,>),
-                                                      typeof(ObservableStaticMethodCall<,,,,,,,,,>),
-                                                      typeof(ObservableStaticMethodCall<,,,,,,,,,,>),
-                                                      typeof(ObservableStaticMethodCall<,,,,,,,,,,,>),
-                                                      typeof(ObservableStaticMethodCall<,,,,,,,,,,,,>),
-                                                      typeof(ObservableStaticMethodCall<,,,,,,,,,,,,,>),
-                                                      typeof(ObservableStaticMethodCall<,,,,,,,,,,,,,,>),
-                                                      typeof(ObservableStaticMethodCall<,,,,,,,,,,,,,,,>)
-                                                  };
+        private static Type[] staticMethodTypes =
+        {
+            typeof(ObservableStaticMethodCall<,>),
+            typeof(ObservableStaticMethodCall<,,>),
+            typeof(ObservableStaticMethodCall<,,,>),
+            typeof(ObservableStaticMethodCall<,,,,>),
+            typeof(ObservableStaticMethodCall<,,,,,>),
+            typeof(ObservableStaticMethodCall<,,,,,,>),
+            typeof(ObservableStaticMethodCall<,,,,,,,>),
+            typeof(ObservableStaticMethodCall<,,,,,,,,>),
+            typeof(ObservableStaticMethodCall<,,,,,,,,,>),
+            typeof(ObservableStaticMethodCall<,,,,,,,,,,>),
+            typeof(ObservableStaticMethodCall<,,,,,,,,,,,>),
+            typeof(ObservableStaticMethodCall<,,,,,,,,,,,,>),
+            typeof(ObservableStaticMethodCall<,,,,,,,,,,,,,>),
+            typeof(ObservableStaticMethodCall<,,,,,,,,,,,,,,>),
+            typeof(ObservableStaticMethodCall<,,,,,,,,,,,,,,,>)
+        };
 
-        private static Type[] memberMethodTypes = {
-                                                      typeof(ObservableMethodCall<,>),
-                                                      typeof(ObservableMethodCall<,,>),
-                                                      typeof(ObservableMethodCall<,,,>),
-                                                      typeof(ObservableMethodCall<,,,,>),
-                                                      typeof(ObservableMethodCall<,,,,,>),
-                                                      typeof(ObservableMethodCall<,,,,,,>),
-                                                      typeof(ObservableMethodCall<,,,,,,,>),
-                                                      typeof(ObservableMethodCall<,,,,,,,,>),
-                                                      typeof(ObservableMethodCall<,,,,,,,,,>),
-                                                      typeof(ObservableMethodCall<,,,,,,,,,,>),
-                                                      typeof(ObservableMethodCall<,,,,,,,,,,,>),
-                                                      typeof(ObservableMethodCall<,,,,,,,,,,,,>),
-                                                      typeof(ObservableMethodCall<,,,,,,,,,,,,,>),
-                                                      typeof(ObservableMethodCall<,,,,,,,,,,,,,,>),
-                                                      typeof(ObservableMethodCall<,,,,,,,,,,,,,,,>),
-                                                      typeof(ObservableMethodCall<,,,,,,,,,,,,,,,,>)
-                                                  };
+        private static Type[] memberMethodTypes =
+        {
+            typeof(ObservableMethodCall<,>),
+            typeof(ObservableMethodCall<,,>),
+            typeof(ObservableMethodCall<,,,>),
+            typeof(ObservableMethodCall<,,,,>),
+            typeof(ObservableMethodCall<,,,,,>),
+            typeof(ObservableMethodCall<,,,,,,>),
+            typeof(ObservableMethodCall<,,,,,,,>),
+            typeof(ObservableMethodCall<,,,,,,,,>),
+            typeof(ObservableMethodCall<,,,,,,,,,>),
+            typeof(ObservableMethodCall<,,,,,,,,,,>),
+            typeof(ObservableMethodCall<,,,,,,,,,,,>),
+            typeof(ObservableMethodCall<,,,,,,,,,,,,>),
+            typeof(ObservableMethodCall<,,,,,,,,,,,,,>),
+            typeof(ObservableMethodCall<,,,,,,,,,,,,,,>),
+            typeof(ObservableMethodCall<,,,,,,,,,,,,,,,>),
+            typeof(ObservableMethodCall<,,,,,,,,,,,,,,,,>)
+        };
 
-        private static Type[] staticProxyCallTypes = {
-                                               typeof(ObservableStaticProxyCall<,>),
-                                               typeof(ObservableStaticProxyCall<,,>),
-                                               typeof(ObservableStaticProxyCall<,,,>),
-                                               typeof(ObservableStaticProxyCall<,,,,>),
-                                               typeof(ObservableStaticProxyCall<,,,,,>),
-                                               typeof(ObservableStaticProxyCall<,,,,,,>),
-                                               typeof(ObservableStaticProxyCall<,,,,,,,>),
-                                               typeof(ObservableStaticProxyCall<,,,,,,,,>),
-                                               typeof(ObservableStaticProxyCall<,,,,,,,,,>),
-                                               typeof(ObservableStaticProxyCall<,,,,,,,,,,>),
-                                               typeof(ObservableStaticProxyCall<,,,,,,,,,,,>),
-                                               typeof(ObservableStaticProxyCall<,,,,,,,,,,,,>),
-                                               typeof(ObservableStaticProxyCall<,,,,,,,,,,,,,>),
-                                               typeof(ObservableStaticProxyCall<,,,,,,,,,,,,,,>),
-                                               typeof(ObservableStaticProxyCall<,,,,,,,,,,,,,,,>)
-                                           };
+        private static Type[] staticProxyCallTypes =
+        {
+            typeof(ObservableStaticProxyCall<,>),
+            typeof(ObservableStaticProxyCall<,,>),
+            typeof(ObservableStaticProxyCall<,,,>),
+            typeof(ObservableStaticProxyCall<,,,,>),
+            typeof(ObservableStaticProxyCall<,,,,,>),
+            typeof(ObservableStaticProxyCall<,,,,,,>),
+            typeof(ObservableStaticProxyCall<,,,,,,,>),
+            typeof(ObservableStaticProxyCall<,,,,,,,,>),
+            typeof(ObservableStaticProxyCall<,,,,,,,,,>),
+            typeof(ObservableStaticProxyCall<,,,,,,,,,,>),
+            typeof(ObservableStaticProxyCall<,,,,,,,,,,,>),
+            typeof(ObservableStaticProxyCall<,,,,,,,,,,,,>),
+            typeof(ObservableStaticProxyCall<,,,,,,,,,,,,,>),
+            typeof(ObservableStaticProxyCall<,,,,,,,,,,,,,,>),
+            typeof(ObservableStaticProxyCall<,,,,,,,,,,,,,,,>)
+        };
 
-        private static Type[] memberProxyCallTypes = {
-                                                         typeof(ObservableMethodProxyCall<,>),
-                                                         typeof(ObservableMethodProxyCall<,,>),
-                                                         typeof(ObservableMethodProxyCall<,,,>),
-                                                         typeof(ObservableMethodProxyCall<,,,,>),
-                                                         typeof(ObservableMethodProxyCall<,,,,,>),
-                                                         typeof(ObservableMethodProxyCall<,,,,,,>),
-                                                         typeof(ObservableMethodProxyCall<,,,,,,,>),
-                                                         typeof(ObservableMethodProxyCall<,,,,,,,,>),
-                                                         typeof(ObservableMethodProxyCall<,,,,,,,,,>),
-                                                         typeof(ObservableMethodProxyCall<,,,,,,,,,,>),
-                                                         typeof(ObservableMethodProxyCall<,,,,,,,,,,,>),
-                                                         typeof(ObservableMethodProxyCall<,,,,,,,,,,,,>),
-                                                         typeof(ObservableMethodProxyCall<,,,,,,,,,,,,,>),
-                                                         typeof(ObservableMethodProxyCall<,,,,,,,,,,,,,,>),
-                                                         typeof(ObservableMethodProxyCall<,,,,,,,,,,,,,,,>),
-                                                         typeof(ObservableMethodProxyCall<,,,,,,,,,,,,,,,,>),
-                                                     };
+        private static Type[] memberProxyCallTypes =
+        {
+            typeof(ObservableMethodProxyCall<,>),
+            typeof(ObservableMethodProxyCall<,,>),
+            typeof(ObservableMethodProxyCall<,,,>),
+            typeof(ObservableMethodProxyCall<,,,,>),
+            typeof(ObservableMethodProxyCall<,,,,,>),
+            typeof(ObservableMethodProxyCall<,,,,,,>),
+            typeof(ObservableMethodProxyCall<,,,,,,,>),
+            typeof(ObservableMethodProxyCall<,,,,,,,,>),
+            typeof(ObservableMethodProxyCall<,,,,,,,,,>),
+            typeof(ObservableMethodProxyCall<,,,,,,,,,,>),
+            typeof(ObservableMethodProxyCall<,,,,,,,,,,,>),
+            typeof(ObservableMethodProxyCall<,,,,,,,,,,,,>),
+            typeof(ObservableMethodProxyCall<,,,,,,,,,,,,,>),
+            typeof(ObservableMethodProxyCall<,,,,,,,,,,,,,,>),
+            typeof(ObservableMethodProxyCall<,,,,,,,,,,,,,,,>),
+            typeof(ObservableMethodProxyCall<,,,,,,,,,,,,,,,,>),
+        };
 
-        private static Type[] funcTypes = {
-                                               typeof(ObservingFunc<,>),
-                                               typeof(ObservingFunc<,,>),
-                                               typeof(ObservingFunc<,,,>),
-                                               typeof(ObservingFunc<,,,,>),
-                                               typeof(ObservingFunc<,,,,,>),
-                                               typeof(ObservingFunc<,,,,,,>),
-                                               typeof(ObservingFunc<,,,,,,,>),
-                                               typeof(ObservingFunc<,,,,,,,,>),
-                                               typeof(ObservingFunc<,,,,,,,,,>),
-                                               typeof(ObservingFunc<,,,,,,,,,,>),
-                                               typeof(ObservingFunc<,,,,,,,,,,,>),
-                                               typeof(ObservingFunc<,,,,,,,,,,,,>),
-                                               typeof(ObservingFunc<,,,,,,,,,,,,,>),
-                                               typeof(ObservingFunc<,,,,,,,,,,,,,,>),
-                                               typeof(ObservingFunc<,,,,,,,,,,,,,,,>)
-                                           };
+        private static Type[] funcTypes =
+        {
+            typeof(ObservingFunc<,>),
+            typeof(ObservingFunc<,,>),
+            typeof(ObservingFunc<,,,>),
+            typeof(ObservingFunc<,,,,>),
+            typeof(ObservingFunc<,,,,,>),
+            typeof(ObservingFunc<,,,,,,>),
+            typeof(ObservingFunc<,,,,,,,>),
+            typeof(ObservingFunc<,,,,,,,,>),
+            typeof(ObservingFunc<,,,,,,,,,>),
+            typeof(ObservingFunc<,,,,,,,,,,>),
+            typeof(ObservingFunc<,,,,,,,,,,,>),
+            typeof(ObservingFunc<,,,,,,,,,,,,>),
+            typeof(ObservingFunc<,,,,,,,,,,,,,>),
+            typeof(ObservingFunc<,,,,,,,,,,,,,,>),
+            typeof(ObservingFunc<,,,,,,,,,,,,,,,>)
+        };
+
+        private static Type[] memberSimpleProxyTypes =
+        {
+            typeof(ObservableSimpleMethodProxyCall<,>),
+            typeof(ObservableSimpleMethodProxyCall<,,>),
+            typeof(ObservableSimpleMethodProxyCall<,,,>),
+            typeof(ObservableSimpleMethodProxyCall<,,,,>),
+            typeof(ObservableSimpleMethodProxyCall<,,,,,>),
+            typeof(ObservableSimpleMethodProxyCall<,,,,,,>),
+            typeof(ObservableSimpleMethodProxyCall<,,,,,,,>),
+            typeof(ObservableSimpleMethodProxyCall<,,,,,,,,>),
+            typeof(ObservableSimpleMethodProxyCall<,,,,,,,,,>),
+            typeof(ObservableSimpleMethodProxyCall<,,,,,,,,,,>),
+            typeof(ObservableSimpleMethodProxyCall<,,,,,,,,,,,>),
+            typeof(ObservableSimpleMethodProxyCall<,,,,,,,,,,,,>),
+            typeof(ObservableSimpleMethodProxyCall<,,,,,,,,,,,,,>),
+            typeof(ObservableSimpleMethodProxyCall<,,,,,,,,,,,,,,>),
+            typeof(ObservableSimpleMethodProxyCall<,,,,,,,,,,,,,,,>),
+            typeof(ObservableSimpleMethodProxyCall<,,,,,,,,,,,,,,,,>)
+        };
 
         private static MethodInfo memberBindingCreateProperty = ReflectionHelper.GetFunc<MemberAssignment, ObservableExpressionBinder, INotifyExpression<object>, ObservableMemberBinding<object>>((node, binder, target) => CreateProperty<object, object>(node, binder, target)).GetGenericMethodDefinition();
 
@@ -579,7 +605,7 @@ namespace NMF.Expressions
         }
 
         protected override Expression VisitListInit(ListInitExpression node)
-		{
+        {
             if (node.Initializers.Count == 0) return Visit(node.NewExpression);
             return System.Activator.CreateInstance(typeof(ObservableListInit<>).MakeGenericType(node.Type), node, this) as Expression;
         }
@@ -674,14 +700,27 @@ namespace NMF.Expressions
             }
 
             var types = new Type[typesLength];
+
+            var typesArg = new Type[node.Arguments.Count];
+            var typesArgInc = new Type[node.Arguments.Count];
+            var typesArgStatic = new Type[node.Arguments.Count + typeOffset];
+            var typesArgStaticInc = new Type[node.Arguments.Count + typeOffset];
+            var incType = typeof(INotifyValue<>);
             if (!staticMethod)
             {
                 types[0] = node.Object.Type;
+                typesArgStatic[0] = node.Object.Type;
+                typesArgStaticInc[0] = incType.MakeGenericType(node.Object.Type);
             }
             var parameters = node.Method.GetParameters();
             for (int i = 0; i < node.Arguments.Count; i++)
             {
-                types[i + typeOffset] = parameters[i].ParameterType;
+                var t = parameters[i].ParameterType;
+                types[i + typeOffset] = t;
+                typesArg[i] = t;
+                typesArgInc[i] = incType.MakeGenericType(t);
+                typesArgStatic[i + typeOffset] = t;
+                typesArgStaticInc[i + typeOffset] = typesArgInc[i];
             }
             types[node.Arguments.Count + typeOffset] = node.Method.ReturnType;
 
@@ -691,78 +730,76 @@ namespace NMF.Expressions
                 var proxyAttribute = proxyTypes.FirstOrDefault() as ObservableProxyAttribute;
                 if (proxyAttribute != null)
                 {
-                    if (!proxyAttribute.IsInitialized)
+                    MethodInfo proxyMethod;
+                    if (!staticMethod && proxyAttribute.InitializeProxyMethod(node.Method, typesArgInc, out proxyMethod))
                     {
-                        proxyAttribute.InitializeProxyMethod(node.Method);
-                    }
-                    var proxyMethod = proxyAttribute.ProxyMethod;
-                    var proxyMethodParameters = proxyMethod.GetParameters();
-                    if (proxyMethodParameters == null || proxyMethodParameters.Length != types.Length - 1)
-                    {
-                        throw new InvalidOperationException(string.Format("Proxy method has wrong number of arguments, expected {0} but proxy method has {1} parameters", types.Length - 1, proxyMethodParameters != null ? proxyMethodParameters.Length : 0));
-                    }
-                    bool simples = false;
-                    bool monads = false;
-                    for (int i = 0; i < proxyMethodParameters.Length; i++)
-                    {
-                        if (!IsNotifyValue(proxyMethodParameters[i].ParameterType, types[i]))
+                        if (!proxyMethod.IsStatic)
                         {
-                            if (ReflectionHelper.IsAssignableFrom(types[i], proxyMethodParameters[i].ParameterType))
+                            throw new InvalidOperationException("The provided proxy method must not be static or the target parameter must be provided.");
+                        }
+                        CheckForOutParameter(proxyMethod.GetParameters());
+                        CheckReturnTypeIsCorrect(node, proxyMethod);
+                        var target = Visit(node.Object) as INotifyExpression;
+                        if (target.IsConstant)
+                        {
+                            var args = new Object[node.Arguments.Count];
+                            for (int i = 0; i < node.Arguments.Count; i++)
                             {
-                                simples = true;
+                                args[i] = Visit(node.Arguments[i]);
                             }
-                            else
-                            {
-                                throw new InvalidOperationException(string.Format("The parameter '{0}' has a wrong type. Expected either {1} or INotifyValue[{1}] but detected {2}.", proxyMethodParameters[i].Name, types[i].FullName, proxyMethodParameters[i].ParameterType.FullName));
-                            }
+                            return proxyMethod.Invoke(target.ValueObject, args) as Expression;
                         }
                         else
                         {
-                            monads = true;
+
                         }
-                        if (proxyMethodParameters[i].IsOut)
+                    }
+                    else if (!staticMethod && proxyAttribute.InitializeProxyMethod(node.Method, typesArg, out proxyMethod))
+                    {
+                        if (!proxyMethod.IsStatic)
                         {
-                            throw new NotSupportedException(string.Format("'{0}' is an Out-parameter. Out parameters are not supported.", proxyMethodParameters[i].Name));
+                            throw new InvalidOperationException("The provided proxy method must not be static or the target parameter must be provided.");
                         }
+                        CheckForOutParameter(proxyMethod.GetParameters());
+                        CheckReturnTypeIsCorrect(node, proxyMethod);
+                        return System.Activator.CreateInstance(memberProxyCallTypes[typesLength - 2].MakeGenericType(types), node, this, proxyMethod) as Expression;
                     }
-                    if (monads && simples)
+                    else if (proxyAttribute.InitializeProxyMethod(node.Method, typesArgStaticInc, out proxyMethod))
                     {
-                        throw new NotSupportedException("NMF Expressions does not support mixed proxies. The proxy method must either have the actual parameter list or turned into the INotifyValue monad.");
-                    }
-                    if (monads)
-                    {
-                        var proxyArgs = new Object[node.Arguments.Count];
+                        if (!proxyMethod.IsStatic)
+                        {
+                            throw new InvalidOperationException("The provided proxy method must be static or the target parameter must be omitted.");
+                        }
+                        CheckForOutParameter(proxyMethod.GetParameters());
+                        CheckReturnTypeIsCorrect(node, proxyMethod);
+                        var proxyArgs = new Object[node.Arguments.Count + typeOffset];
+                        if (!staticMethod)
+                        {
+                            proxyArgs[0] = Visit(node.Object);
+                        }
                         for (int i = 0; i < node.Arguments.Count; i++)
                         {
-                            proxyArgs[i] = Visit(node.Arguments[i]);
+                            proxyArgs[i + typeOffset] = Visit(node.Arguments[i]);
                         }
-                        object proxy;
-                        if (proxyMethod.IsStatic)
-                        {
-                            proxy = proxyMethod.Invoke(null, proxyArgs);
-                        }
-                        else
-                        {
-                            proxy = proxyMethod.Invoke(Visit(node.Object), proxyArgs);
-                        }
+                        object proxy = proxyMethod.Invoke(null, proxyArgs);
                         var proxyExp = proxy as Expression;
                         if (proxyExp != null) return proxyExp;
                         return System.Activator.CreateInstance(typeof(ObservableProxyExpression<>).MakeGenericType(node.Method.ReturnType), proxy) as Expression;
                     }
-                    if (!IsNotifyValue(proxyMethod.ReturnType, node.Method.ReturnType))
+                    else if (proxyAttribute.InitializeProxyMethod(node.Method, typesArgStatic, out proxyMethod))
                     {
-                        throw new InvalidOperationException(string.Format("The proxy method has the wrong return type. Expected return type INotifyValue[{0}] but detected {1}.", node.Method.ReturnType, proxyMethod.ReturnType));
-                    }
-                    Type[] proxyArray;
-                    if (proxyMethod.IsStatic)
-                    {
-                        proxyArray = staticProxyCallTypes;
+                        if (!proxyMethod.IsStatic)
+                        {
+                            throw new InvalidOperationException("The provided proxy method must be static or the target parameter must be omitted.");
+                        }
+                        CheckForOutParameter(proxyMethod.GetParameters());
+                        CheckReturnTypeIsCorrect(node, proxyMethod);
+                        return System.Activator.CreateInstance(staticProxyCallTypes[typesLength - 2].MakeGenericType(types), node, this, proxyMethod) as Expression;
                     }
                     else
                     {
-                        proxyArray = memberProxyCallTypes;
+                        throw new NotSupportedException("The parameters of the proxy method are invalid. Parameters must match the original method or all parameters must be converted to monads.");
                     }
-                    return System.Activator.CreateInstance(proxyArray[typesLength - 2].MakeGenericType(types), node, this, proxyMethod) as Expression;
                 }
             }
             Type[] methodArray;
@@ -775,6 +812,25 @@ namespace NMF.Expressions
                 methodArray = memberMethodTypes;
             }
             return System.Activator.CreateInstance(methodArray[typesLength - 2].MakeGenericType(types), node, this) as Expression;
+        }
+
+        private void CheckReturnTypeIsCorrect(MethodCallExpression node, MethodInfo proxyMethod)
+        {
+            if (!IsNotifyValue(proxyMethod.ReturnType, node.Method.ReturnType))
+            {
+                throw new InvalidOperationException(string.Format("The proxy method has the wrong return type. Expected return type INotifyValue[{0}] but detected {1}.", node.Method.ReturnType, proxyMethod.ReturnType));
+            }
+        }
+
+        private static void CheckForOutParameter(ParameterInfo[] proxyMethodParameters)
+        {
+            for (int i = 0; i < proxyMethodParameters.Length; i++)
+            {
+                if (proxyMethodParameters[i].IsOut)
+                {
+                    throw new NotSupportedException(string.Format("'{0}' is an Out-parameter. Out parameters are not supported.", proxyMethodParameters[i].Name));
+                }
+            }
         }
 
         private bool IsNotifyValue(Type actual, Type spec)
@@ -799,12 +855,12 @@ namespace NMF.Expressions
 
         protected override Expression VisitNewArray(NewArrayExpression node)
         {
-			if (node.NodeType == ExpressionType.NewArrayInit)
-			{
+            if (node.NodeType == ExpressionType.NewArrayInit)
+            {
                 return Activator.CreateInstance(typeof(ObservableArrayInitializationExpression<>).MakeGenericType(node.Type.GetElementType()), node, this) as Expression;
-			}
-			else if (node.NodeType == ExpressionType.NewArrayBounds)
-			{
+            }
+            else if (node.NodeType == ExpressionType.NewArrayBounds)
+            {
                 switch (node.Expressions.Count)
                 {
                     case 1:
@@ -819,11 +875,11 @@ namespace NMF.Expressions
                     default:
                         throw new NotSupportedException();
                 }
-			}
-			else 
-			{
+            }
+            else
+            {
                 throw new InvalidOperationException();
-			}
+            }
         }
 
         protected override Expression VisitParameter(ParameterExpression node)

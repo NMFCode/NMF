@@ -230,6 +230,14 @@ namespace NMF.Expressions
             get { return Inner.IsParameterFree; }
         }
 
+        public object ValueObject
+        {
+            get
+            {
+                return Value;
+            }
+        }
+
         public INotifyExpression<T> ApplyParameters(IDictionary<string, object> parameters)
         {
             return new ReversableProxyExpression<T>(Inner.ApplyParameters(parameters), UpdateHandler);

@@ -18,12 +18,12 @@ namespace NMF.Expressions
     for(int i = 0; i <= 15; i++)
     {
 #>
-    internal sealed class ObservableMethodProxyCall<T, <# for (int j = 1; j <= i; j++) { #>T<#= j #>, <# } #>TResult> : ObservableProxyCallBase<TResult>
+    internal sealed class ObservableSimpleMethodProxyCall<T, <# for (int j = 1; j <= i; j++) { #>T<#= j #>, <# } #>TResult> : ObservableProxyCallBase<TResult>
     {
-        public ObservableMethodProxyCall(MethodCallExpression node, ObservableExpressionBinder binder, MethodInfo proxyMethod)
+        public ObservableSimpleMethodProxyCall(MethodCallExpression node, ObservableExpressionBinder binder, MethodInfo proxyMethod)
             : this(binder.VisitObservable<T>(ExpressionHelper.GetArg(node, 0)), proxyMethod<# for (int j = 1; j <= i; j++) { #>, binder.VisitObservable<T<#= j #>>(ExpressionHelper.GetArg(node, <#= j #>))<# } #>) { }
 
-        public ObservableMethodProxyCall(INotifyExpression<T> target, MethodInfo proxyFunction<# for (int j = 1; j <= i; j++) { #>, INotifyExpression<T<#= j #>> arg<#= j #><# } #>)
+        public ObservableSimpleMethodProxyCall(INotifyExpression<T> target, MethodInfo proxyFunction<# for (int j = 1; j <= i; j++) { #>, INotifyExpression<T<#= j #>> arg<#= j #><# } #>)
         {
 			if (target == null) throw new ArgumentNullException("target");
             if (proxyFunction == null) throw new ArgumentNullException("proxyFunction");
@@ -53,27 +53,25 @@ namespace NMF.Expressions
 		public INotifyExpression<T<#= j #>> Argument<#= j #> { get; private set; }
 <# } #>
 
-        public Func<<# for (int j = 1; j <= i; j++) { #>T<#= j #>, <# } #>INotifyValue<TResult>> ProxyFunction { get; private set; }
+        public Func<<# for (int j = 1; j <= i; j++) { #>INotifyValue<T<#= j #>>, <# } #>INotifyValue<TResult>> ProxyFunction { get; private set; }
 
 		public MethodInfo ProxyMethod { get; private set; }
 
 		private void RenewProxyFunction()
 		{
-			ProxyFunction = ReflectionHelper.CreateDelegate(typeof(Func<<# for (int j = 1; j <= i; j++) { #>T<#= j #>, <# } #>INotifyValue<TResult>>), Target.Value, ProxyMethod) as Func<<# for (int j = 1; j <= i; j++) { #>T<#= j #>, <# } #>INotifyValue<TResult>>;
+			ProxyFunction = ReflectionHelper.CreateDelegate(typeof(Func<<# for (int j = 1; j <= i; j++) { #>INotifyValue<T<#= j #>>, <# } #>INotifyValue<TResult>>), Target.Value, ProxyMethod) as Func<<# for (int j = 1; j <= i; j++) { #>INotifyValue<T<#= j #>>, <# } #>INotifyValue<TResult>>;
 		}
 
         protected override INotifyValue<TResult> CreateProxy()
         {
-            return ProxyFunction(<# if (i > 0) { #>Argument1.Value<# } for (int j = 2; j <= i; j++) { #>, Argument<#= j #>.Value<# } #>);
+            return ProxyFunction(<# if (i > 0) { #>Argument1<# } for (int j = 2; j <= i; j++) { #>, Argument<#= j #><# } #>);
         }
 
         protected override void AttachCore()
         {
-            var argChanged = new EventHandler<ValueChangedEventArgs>(ArgumentChanged);
 			Target.Attach();
 <# for (int j = 1; j <= i; j++) { #>
 			Argument<#= j #>.Attach();
-            Argument<#= j #>.ValueChanged += argChanged;
 <# } #>
 			RenewProxyFunction();
             base.AttachCore();
@@ -82,10 +80,8 @@ namespace NMF.Expressions
         protected override void DetachCore()
         {
             base.DetachCore();
-            var argChanged = new EventHandler<ValueChangedEventArgs>(ArgumentChanged);
 			Target.Detach();
 <# for (int j = 1; j <= i; j++) { #>
-            Argument<#= j #>.ValueChanged -= argChanged;
 			Argument<#= j #>.Detach();
 <# } #>
         }
@@ -97,7 +93,7 @@ namespace NMF.Expressions
 
         public override INotifyExpression<TResult> ApplyParameters(IDictionary<string, object> parameters)
         {
-            return new ObservableMethodProxyCall<T, <# for (int j = 1; j <= i; j++) { #>T<#= j #>, <# } #>TResult>(Target.ApplyParameters(parameters), ProxyMethod<# for (int j = 1; j <= i; j++) { #>, Argument<#= j #>.ApplyParameters(parameters)<# } #>);
+            return new ObservableSimpleMethodProxyCall<T, <# for (int j = 1; j <= i; j++) { #>T<#= j #>, <# } #>TResult>(Target.ApplyParameters(parameters), ProxyMethod<# for (int j = 1; j <= i; j++) { #>, Argument<#= j #>.ApplyParameters(parameters)<# } #>);
         }
     }
 <#

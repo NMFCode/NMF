@@ -76,6 +76,14 @@ namespace NMF.Expressions
             }
         }
 
+        public object ValueObject
+        {
+            get
+            {
+                return Value;
+            }
+        }
+
         protected abstract void SetValue(INotifyReversableExpression<TInner> inner, TOuter value);
 
         public bool IsReversable

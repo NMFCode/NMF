@@ -1815,8 +1815,22 @@ namespace NMF.Expressions.Linq
                 if (arg1.NodeType == ExpressionType.Quote)
                 {
                     var argUnary = arg1 as UnaryExpression;
-                    var filterExpression = argUnary.Operand;
-                    return Expression.Call(null, alternativeMethod, node.Arguments[0], arg1, filterExpression);
+                    var getter = argUnary.Operand;
+                    return Expression.Call(null, alternativeMethod, node.Arguments[0], arg1, getter);
+                }
+                return node;
+            }
+
+            private static Expression RewriteSinglePredicateWithSetter(MethodCallExpression node, System.Reflection.MethodInfo alternativeMethod)
+            {
+                var arg1 = node.Arguments[1];
+                if (arg1.NodeType == ExpressionType.Quote)
+                {
+                    var argUnary = arg1 as UnaryExpression;
+                    var getter = argUnary.Operand;
+                    Expression setter = SetExpressionRewriter.CreateSetter(getter as LambdaExpression);
+                    if (setter == null) setter = Expression.Constant(null, alternativeMethod.GetParameters()[3].ParameterType);
+                    return Expression.Call(null, alternativeMethod, node.Arguments[0], arg1, getter, setter);
                 }
                 return node;
             }
@@ -1830,7 +1844,7 @@ namespace NMF.Expressions.Linq
             public static Expression RewriteWhereCollection<T>(MethodCallExpression node)
             {
                 var where = ReflectionHelper.GetFunc((ICollectionExpression<T> source, Expression<Func<T, bool>> predicate, Func<T, bool> predicateGetter, Action<T, bool> predicateSetter) => Where(source, predicate, predicateGetter, predicateSetter));
-                return RewriteSinglePredicate(node, where);
+                return RewriteSinglePredicateWithSetter(node, where);
             }
 
             public static Expression LambdaMaxRewrite<TSource, TResult>(MethodCallExpression node)

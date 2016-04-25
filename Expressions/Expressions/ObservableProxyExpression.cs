@@ -39,6 +39,14 @@ namespace NMF.Expressions
             get { return value.Value; }
         }
 
+        public object ValueObject
+        {
+            get
+            {
+                return Value;
+            }
+        }
+
         public override bool CanReduce
         {
             get

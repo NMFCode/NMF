@@ -95,6 +95,14 @@ namespace NMF.Expressions
             }
         }
 
+        public object ValueObject
+        {
+            get
+            {
+                return Value;
+            }
+        }
+
         protected abstract void SetLeftValue(INotifyReversableExpression<TLeft> left, TRight right, TResult result);
 
         protected abstract void SetRightValue(INotifyReversableExpression<TRight> right, TLeft left, TResult result);

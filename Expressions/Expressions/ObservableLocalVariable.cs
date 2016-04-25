@@ -59,6 +59,14 @@ namespace NMF.Expressions
             get { return Inner.Value; }
         }
 
+        public object ValueObject
+        {
+            get
+            {
+                return Value;
+            }
+        }
+
         public event EventHandler<ValueChangedEventArgs> ValueChanged
         {
             add

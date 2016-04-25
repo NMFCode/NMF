@@ -13,6 +13,7 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Text;
+using System.Collections.Specialized;
 
 namespace NMF.Models.Meta
 {
@@ -77,10 +78,33 @@ namespace NMF.Models.Meta
                     generatedProperty.MarkCollectionProperty();
 
                     var createEmptyCollection = new CodeAssignStatement(fieldRef, new CodeObjectCreateExpression(fieldType));
-                    generatedProperty.ImpliedConstructorStatements(true).Add(createEmptyCollection);
+                    var constructorStmts = generatedProperty.ImpliedConstructorStatements(true);
+                    constructorStmts.Add(createEmptyCollection);
+                    constructorStmts.Add(new CodeAttachEventStatement(fieldRef, "CollectionChanged", GenerateCollectionBubbleHandler(generatedProperty)));
                 }
 
                 GenerateSerializationAttributes(input, generatedProperty, context);
+            }
+
+            private CodeMethodReferenceExpression GenerateCollectionBubbleHandler(CodeMemberProperty property)
+            {
+                var collectionBubbleHandler = new CodeMemberMethod()
+                {
+                    Name = property.Name + "CollectionChanged",
+                    Attributes = MemberAttributes.Private
+                };
+                collectionBubbleHandler.Parameters.Add(new CodeParameterDeclarationExpression(typeof(object), "sender"));
+                collectionBubbleHandler.Parameters.Add(new CodeParameterDeclarationExpression(typeof(NotifyCollectionChangedEventArgs), "e"));
+                collectionBubbleHandler.Statements.Add(new CodeMethodInvokeExpression(
+                    new CodeThisReferenceExpression(), "OnCollectionChanged",
+                    new CodePrimitiveExpression(property.Name), new CodeArgumentReferenceExpression("e")));
+                collectionBubbleHandler.WriteDocumentation(string.Format("Forwards change notifications for the {0} property to the parent model element", property.Name), null,
+                    new Dictionary<string, string>() {
+                    { "sender", "The collection that raised the change" },
+                    { "e", "The original event data" }});
+
+                property.DependentMembers(true).Add(collectionBubbleHandler);
+                return new CodeMethodReferenceExpression(new CodeThisReferenceExpression(), collectionBubbleHandler.Name);
             }
 
             /// <summary>

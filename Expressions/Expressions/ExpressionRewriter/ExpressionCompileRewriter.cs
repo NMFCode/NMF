@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Reflection;
 using System.Text;
 
 namespace NMF.Expressions
@@ -23,8 +24,11 @@ namespace NMF.Expressions
             if (rewriterAttributes != null && rewriterAttributes.Length == 1)
             {
                 var rewriteAtt = rewriterAttributes[0];
-                
-                var rewriter = rewriteAtt.InitializeProxyMethod(node.Method);
+                MethodInfo rewriter;
+                if (!rewriteAtt.InitializeProxyMethod(node.Method, new Type[] { typeof(MethodCallExpression) }, out rewriter))
+                {
+                    throw new InvalidOperationException("The rewriter method had the wrong signature. It must be a method taking a MethodCallExpression as parameter.");
+                }
                 var rewriterDelegate = ReflectionHelper.CreateDelegate<Func<MethodCallExpression, Expression>>(rewriter);
                 return rewriterDelegate.Invoke(node);
             }

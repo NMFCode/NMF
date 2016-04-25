@@ -25,5 +25,13 @@ namespace NMF.Expressions
                 SetValue(value);
             }
         }
+
+        public object ValueObject
+        {
+            get
+            {
+                return Value;
+            }
+        }
     }
 }

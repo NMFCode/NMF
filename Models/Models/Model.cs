@@ -64,14 +64,14 @@ namespace NMF.Models
         {
             if (RootElements.Count == 1)
             {
-                return string.Empty;
+                return null;
             }
             else
             {
                 var index = RootElements.IndexOf(child);
                 if (index != -1)
                 {
-                    return ModelHelper.CreatePath("#", index);
+                    return "/" + index.ToString();
                 }
                 else
                 {
@@ -82,13 +82,29 @@ namespace NMF.Models
 
         protected internal override Uri CreateUriWithFragment(string fragment, bool absolute)
         {
-            if (ModelUri == null || !absolute || !ModelUri.IsAbsoluteUri)
+            if (fragment != null)
             {
-                return new Uri("//" + fragment, UriKind.Relative);
+                var leftPad = fragment == string.Empty ?
+                    "/" : string.Empty;
+                if (ModelUri == null || !absolute || !ModelUri.IsAbsoluteUri)
+                {
+                    return new Uri("/" + leftPad + fragment, UriKind.Relative);
+                }
+                else
+                {
+                    return new Uri(ModelUri, "#/" + leftPad + fragment);
+                }
             }
             else
             {
-                return new Uri(ModelUri, "#//" + fragment);
+                if (absolute)
+                {
+                    return ModelUri;
+                }
+                else
+                {
+                    return null;
+                }
             }
         }
 

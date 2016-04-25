@@ -14,17 +14,9 @@ namespace NMF.Expressions
             MethodName = methodName;
         }
 
-        public bool IsInitialized
+        public bool InitializeProxyMethod(MethodInfo sourceMethod, Type[] types, out MethodInfo proxyMethod)
         {
-            get
-            {
-                return ProxyMethod != null;
-            }
-        }
-
-        public MethodInfo InitializeProxyMethod(MethodInfo sourceMethod)
-        {
-            if (ProxyMethod != null) return ProxyMethod;
+            if (types == null) throw new ArgumentOutOfRangeException("types");
             var proxyTypeArgs = new List<Type>();
             if (ReflectionHelper.IsGenericType(sourceMethod.DeclaringType))
             {
@@ -45,7 +37,8 @@ namespace NMF.Expressions
                 }
                 ProxyType = ProxyType.MakeGenericType(typeArgs).GetTypeInfo();
             }
-            var proxyMethod = ProxyType.GetDeclaredMethod(MethodName);
+            proxyMethod = ProxyType.GetDeclaredMethods(MethodName).FirstOrDefault(m => CheckTypes(m.GetParameters(), types));
+            if (proxyMethod == null) return false;
             if (proxyMethod.IsGenericMethodDefinition)
             {
                 var typeArgs = new Type[proxyMethod.GetGenericArguments().Length];
@@ -56,14 +49,21 @@ namespace NMF.Expressions
                 }
                 proxyMethod = proxyMethod.MakeGenericMethod(typeArgs);
             }
-            ProxyMethod = proxyMethod;
-            return proxyMethod;
+            return true;
+        }
+
+        private bool CheckTypes(ParameterInfo[] parameterInfo, Type[] types)
+        {
+            if (parameterInfo.Length != types.Length) return false;
+            for (int i = 0; i < parameterInfo.Length; i++)
+            {
+                if (parameterInfo[i].ParameterType != types[i]) return false;
+            }
+            return true;
         }
 
         public TypeInfo ProxyType { get; private set; }
 
         public string MethodName { get; private set; }
-
-        public MethodInfo ProxyMethod { get; private set; }
     }
 }
