@@ -15,7 +15,7 @@ using Orleans.Streams.Endpoints;
 
 namespace NMF.Expressions.Linq.Orleans.Model
 {
-    public class ModelContainer<T> : Grain, IElementEnumeratorNode<T>, IModelContainerGrain<T> where T : Models.Model
+    public class ModelContainer<T> : Grain, IModelContainerGrain<T> where T : Models.Model
     {
         private const string StreamProviderName = "CollectionStreamProvider";
         protected T Model;
@@ -24,7 +24,7 @@ namespace NMF.Expressions.Linq.Orleans.Model
         public override Task OnActivateAsync()
         {
             base.OnActivateAsync();
-            OutputProducer = new StreamMessageSender(GetStreamProvider(StreamProviderName), this.GetPrimaryKey());
+            OutputProducer =  new StreamMessageSender(GetStreamProvider(StreamProviderName), this.GetPrimaryKey());
             return TaskDone.Done;
         }
 
@@ -131,7 +131,11 @@ namespace NMF.Expressions.Linq.Orleans.Model
         {
             var remoteModelValue = ModelRemoteValueFactory.CreateModelChangeValue(Model);
             var message = new ModelItemAddMessage<T>(new List<IModelRemoteValue<T>> { remoteModelValue });
+
+            var tId = TransactionGenerator.GenerateTransactionId(transactionId);
+            await OutputProducer.StartTransaction(tId);
             await OutputProducer.SendMessage(message);
+            await OutputProducer.EndTransaction(tId);
             return transactionId.Value;
         }
     }

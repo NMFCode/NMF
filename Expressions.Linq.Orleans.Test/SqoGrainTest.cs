@@ -12,7 +12,6 @@ using NMF.Models;
 using Orleans;
 using Orleans.Collections;
 using Orleans.Collections.Endpoints;
-using Orleans.Collections.Observable;
 using Orleans.Collections.Utilities;
 using Orleans.Streams;
 using Orleans.Streams.Endpoints;
@@ -54,6 +53,30 @@ namespace Expressions.Linq.Orleans.Test
             await selectNodeGrain.LoadModel(ModelTestUtil.ModelLoadingFunc);
 
             var consumer = new MultiStreamListConsumer<Model>(_provider);
+            await consumer.SetInput(new List<StreamIdentity> { await selectNodeGrain.GetStreamIdentity() });
+
+            await modelGrain.EnumerateToSubscribers(Guid.NewGuid());
+
+            Assert.AreEqual(1, consumer.Items.Count);
+            var model1 = await modelGrain.ModelToString(model => model);
+            var model2 = consumer.Items[0].ToXmlString();
+
+            Assert.AreEqual(model1, model2);
+
+        }
+
+        [TestMethod]
+        public async Task TestObservableSimpleSelectManyNodeGrainRetrieveItems()
+        {
+            var modelGrain = await ModelTestUtil.LoadModelContainer(GrainFactory);
+
+            var selectNodeGrain = GrainFactory.GetGrain<IIncrementalSimpleSelectManyNodeGrain<Model, IRoute>>(Guid.NewGuid());
+            await selectNodeGrain.SetInput(await modelGrain.GetStreamIdentity());
+            await selectNodeGrain.SetModelContainer(modelGrain);
+            await selectNodeGrain.SetSelector(new SerializableFunc<Model, IEnumerable<IRoute>>(model => (model.RootElements.Single() as RailwayContainer).Routes));
+            await selectNodeGrain.LoadModel(ModelTestUtil.ModelLoadingFunc);
+
+            var consumer = new MultiStreamListConsumer<IRoute>(_provider);
             await consumer.SetInput(new List<StreamIdentity> { await selectNodeGrain.GetStreamIdentity() });
 
             await modelGrain.EnumerateToSubscribers(Guid.NewGuid());

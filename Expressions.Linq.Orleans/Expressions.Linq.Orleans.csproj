@@ -92,6 +92,7 @@
     <Compile Include="Linq\IncrementalWhereNodeGrain.cs" />
     <Compile Include="Linq\Interfaces\IIncrementalSelectAggregateGrain.cs" />
     <Compile Include="Linq\Interfaces\IIncrementalSelectNodeGrain.cs" />
+    <Compile Include="Linq\Interfaces\IIncrementalSimpleSelectManyNodeGrain.cs" />
     <Compile Include="Linq\Interfaces\IIncrementalWhereAggregateGrain.cs" />
     <Compile Include="Linq\Interfaces\IIncrementalWhereNodeGrain.cs" />
     <Compile Include="Linq\Interfaces\IObservingFuncProcessor.cs">
@@ -107,15 +108,19 @@
     <Compile Include="Linq\Message\ModelItemAddMessage.cs" />
     <Compile Include="Linq\Message\ModelPropertyChangedMessage.cs" />
     <Compile Include="Linq\Message\ModelStreamMessage.cs" />
+    <Compile Include="Linq\Model\IModelConsumer.cs" />
     <Compile Include="Linq\Model\IModelContainerGrain.cs" />
     <Compile Include="Linq\Model\IModelLoader.cs" />
+    <Compile Include="Linq\Model\IModelProcessingAggregateGrain.cs" />
     <Compile Include="Linq\Model\IModelProcessingNodeGrain.cs" />
     <Compile Include="Linq\Model\IModelRemoteValue.cs" />
     <Compile Include="Linq\Model\ModelContainer.cs" />
     <Compile Include="Linq\Model\ModelExtensions.cs" />
+    <Compile Include="Linq\Model\ModelProcessingAggregateGrain.cs" />
     <Compile Include="Linq\Model\ModelProcessingNodeGrain.cs" />
     <Compile Include="Linq\Model\NonImplicitDisposableMemoryStream.cs" />
     <Compile Include="Linq\TaggedObservableValueWithPosition.cs" />
+    <Compile Include="Linq\IncrementalSimpleSelectManyNodeNodeGrain.cs" />
     <Compile Include="Linq\TestGrains\TestModelProcessingNodeGrain.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Properties\orleans.codegen.cs" />

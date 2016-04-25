@@ -6,8 +6,8 @@ using Orleans.Streams;
 
 namespace NMF.Expressions.Linq.Orleans.Model
 {
-    public interface IModelProcessingNodeGrain<TIn, TOut, TModel> : IStreamProcessorNodeGrain<TIn, TOut>, IModelLoader<TModel> where TModel : Models.Model
+    public interface IModelProcessingNodeGrain<TIn, TOut, TModel> : IStreamProcessorNodeGrain<TIn, TOut>, IModelConsumer<TModel>, IModelLoader<TModel> where TModel : Models.Model
     {
-        Task SetModelContainer(IModelContainerGrain<TModel> modelContainer);
+
     }
 }

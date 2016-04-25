@@ -18,7 +18,7 @@ namespace NMF.Expressions.Linq.Orleans
         }
 
         public IGrainFactory GrainFactory { get; }
-        public async Task<IIncrementalSelectAggregateGrain<TIn, TOut>> CreateSelect<TIn, TOut>(Expression<Func<ContainerElement<TIn>, TOut>> selectionFunc, IList<StreamIdentity> streamIdentities)
+        public async Task<IIncrementalSelectAggregateGrain<TIn, TOut>> CreateSelect<TIn, TOut>(Expression<Func<TIn, TOut>> selectionFunc, IList<StreamIdentity> streamIdentities)
         {
             var processorAggregate = GrainFactory.GetGrain<IIncrementalSelectAggregateGrain<TIn, TOut>>(Guid.NewGuid());
 
