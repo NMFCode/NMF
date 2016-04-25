@@ -1,128 +1,128 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <nmeta:Namespace xmi:version="2.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" Uri="http://www.eclipse.org/emf/2002/Ecore" Prefix="ecore" Name="ecore" xmlns:xmi="http://www.omg.org/XMI" xmlns:nmeta="http://nmf.codeplex.com/nmeta/">
   <Types xsi:type="nmeta:Class" BaseTypes="#//EStructuralFeature/" Name="EAttribute">
-    <Attributes IsOrdered="True" Type="#//Boolean/" Name="iD" />
+    <Attributes IsOrdered="True" Type="#//EBoolean/" Name="iD" />
   </Types>
   <Types xsi:type="nmeta:Class" BaseTypes="#//EModelElement/" Name="EAnnotation">
     <References IsContainment="True" ReferenceType="#//EStringToStringMapEntry/" IsOrdered="True" UpperBound="-1" Name="details" />
     <References Opposite="#//EModelElement/eAnnotations/" ReferenceType="#//EModelElement/" IsOrdered="True" Name="eModelElement" />
     <References IsContainment="True" ReferenceType="#//EObject/" IsOrdered="True" UpperBound="-1" Name="contents" />
     <References ReferenceType="#//EObject/" IsOrdered="True" UpperBound="-1" Name="references" />
-    <Attributes IsOrdered="True" Type="#//String/" Name="source" />
+    <Attributes IsOrdered="True" Type="#//EString/" Name="source" />
   </Types>
   <Types xsi:type="nmeta:Class" BaseTypes="#//EClassifier/" Name="EClass">
     <References ReferenceType="#//EClass/" IsOrdered="True" UpperBound="-1" Name="eSuperTypes" />
     <References IsContainment="True" Opposite="#//EOperation/eContainingClass/" ReferenceType="#//EOperation/" IsOrdered="True" UpperBound="-1" Name="eOperations" />
     <References IsContainment="True" Opposite="#//EStructuralFeature/eContainingClass/" ReferenceType="#//EStructuralFeature/" IsOrdered="True" UpperBound="-1" Name="eStructuralFeatures" />
     <References IsContainment="True" ReferenceType="#//EGenericType/" IsOrdered="True" UpperBound="-1" Name="eGenericSuperTypes" />
-    <Operations IsOrdered="True" Type="#//Boolean/" Name="isSuperTypeOf">
+    <Operations IsOrdered="True" Type="#//EBoolean/" Name="isSuperTypeOf">
       <Parameters IsOrdered="True" Type="#//EClass/" Name="someClass" />
     </Operations>
-    <Operations IsOrdered="True" Type="#//Int/" Name="getFeatureCount" />
+    <Operations IsOrdered="True" Type="#//EInt/" Name="getFeatureCount" />
     <Operations IsOrdered="True" Type="#//EStructuralFeature/" Name="getEStructuralFeature">
-      <Parameters IsOrdered="True" Type="#//Int/" Name="featureID" />
+      <Parameters IsOrdered="True" Type="#//EInt/" Name="featureID" />
     </Operations>
-    <Operations IsOrdered="True" Type="#//Int/" Name="getFeatureID">
+    <Operations IsOrdered="True" Type="#//EInt/" Name="getFeatureID">
       <Parameters IsOrdered="True" Type="#//EStructuralFeature/" Name="feature" />
     </Operations>
     <Operations IsOrdered="True" Type="#//EStructuralFeature/" Name="getEStructuralFeature">
-      <Parameters IsOrdered="True" Type="#//String/" Name="featureName" />
+      <Parameters IsOrdered="True" Type="#//EString/" Name="featureName" />
     </Operations>
-    <Operations IsOrdered="True" Type="#//Int/" Name="getOperationCount" />
+    <Operations IsOrdered="True" Type="#//EInt/" Name="getOperationCount" />
     <Operations IsOrdered="True" Type="#//EOperation/" Name="getEOperation">
-      <Parameters IsOrdered="True" Type="#//Int/" Name="operationID" />
+      <Parameters IsOrdered="True" Type="#//EInt/" Name="operationID" />
     </Operations>
-    <Operations IsOrdered="True" Type="#//Int/" Name="getOperationID">
+    <Operations IsOrdered="True" Type="#//EInt/" Name="getOperationID">
       <Parameters IsOrdered="True" Type="#//EOperation/" Name="operation" />
     </Operations>
     <Operations IsOrdered="True" Type="#//EOperation/" Name="getOverride">
       <Parameters IsOrdered="True" Type="#//EOperation/" Name="operation" />
     </Operations>
-    <Attributes IsOrdered="True" Type="#//Boolean/" Name="abstract" />
-    <Attributes IsOrdered="True" Type="#//Boolean/" Name="interface" />
+    <Attributes IsOrdered="True" Type="#//EBoolean/" Name="abstract" />
+    <Attributes IsOrdered="True" Type="#//EBoolean/" Name="interface" />
   </Types>
   <Types xsi:type="nmeta:Class" IsAbstract="True" BaseTypes="#//ENamedElement/" Name="EClassifier">
     <References Opposite="#//EPackage/eClassifiers/" ReferenceType="#//EPackage/" IsOrdered="True" Name="ePackage" />
     <References IsContainment="True" ReferenceType="#//ETypeParameter/" IsOrdered="True" UpperBound="-1" Name="eTypeParameters" />
-    <Operations IsOrdered="True" Type="#//Boolean/" Name="isInstance">
-      <Parameters IsOrdered="True" Type="#//JavaObject/" Name="object" />
+    <Operations IsOrdered="True" Type="#//EBoolean/" Name="isInstance">
+      <Parameters IsOrdered="True" Type="#//EJavaObject/" Name="object" />
     </Operations>
-    <Operations IsOrdered="True" Type="#//Int/" Name="getClassifierID" />
-    <Attributes IsOrdered="True" Type="#//String/" Name="instanceClassName" />
-    <Attributes IsOrdered="True" Type="#//String/" Name="instanceTypeName" />
+    <Operations IsOrdered="True" Type="#//EInt/" Name="getClassifierID" />
+    <Attributes IsOrdered="True" Type="#//EString/" Name="instanceClassName" />
+    <Attributes IsOrdered="True" Type="#//EString/" Name="instanceTypeName" />
   </Types>
   <Types xsi:type="nmeta:Class" BaseTypes="#//EClassifier/" Name="EDataType">
-    <Attributes DefaultValue="true" IsOrdered="True" Type="#//Boolean/" Name="serializable" />
+    <Attributes DefaultValue="true" IsOrdered="True" Type="#//EBoolean/" Name="serializable" />
   </Types>
   <Types xsi:type="nmeta:Class" BaseTypes="#//EDataType/" Name="EEnum">
     <References IsContainment="True" Opposite="#//EEnumLiteral/eEnum/" ReferenceType="#//EEnumLiteral/" IsOrdered="True" UpperBound="-1" Name="eLiterals" />
     <Operations IsOrdered="True" Type="#//EEnumLiteral/" Name="getEEnumLiteral">
-      <Parameters IsOrdered="True" Type="#//String/" Name="name" />
+      <Parameters IsOrdered="True" Type="#//EString/" Name="name" />
     </Operations>
     <Operations IsOrdered="True" Type="#//EEnumLiteral/" Name="getEEnumLiteral">
-      <Parameters IsOrdered="True" Type="#//Int/" Name="value" />
+      <Parameters IsOrdered="True" Type="#//EInt/" Name="value" />
     </Operations>
     <Operations IsOrdered="True" Type="#//EEnumLiteral/" Name="getEEnumLiteralByLiteral">
-      <Parameters IsOrdered="True" Type="#//String/" Name="literal" />
+      <Parameters IsOrdered="True" Type="#//EString/" Name="literal" />
     </Operations>
   </Types>
   <Types xsi:type="nmeta:Class" BaseTypes="#//ENamedElement/" Name="EEnumLiteral">
     <References Opposite="#//EEnum/eLiterals/" ReferenceType="#//EEnum/" IsOrdered="True" Name="eEnum" />
-    <Attributes IsOrdered="True" Type="#//Int/" Name="value" />
-    <Attributes IsOrdered="True" Type="#//Enumerator/" Name="instance" />
-    <Attributes IsOrdered="True" Type="#//String/" Name="literal" />
+    <Attributes IsOrdered="True" Type="#//EInt/" Name="value" />
+    <Attributes IsOrdered="True" Type="#//EEnumerator/" Name="instance" />
+    <Attributes IsOrdered="True" Type="#//EString/" Name="literal" />
   </Types>
   <Types xsi:type="nmeta:Class" BaseTypes="#//EModelElement/" Name="EFactory">
     <References Opposite="#//EPackage/eFactoryInstance/" ReferenceType="#//EPackage/" IsOrdered="True" LowerBound="1" Name="ePackage" />
     <Operations IsOrdered="True" Type="#//EObject/" Name="create">
       <Parameters IsOrdered="True" Type="#//EClass/" Name="eClass" />
     </Operations>
-    <Operations IsOrdered="True" Type="#//JavaObject/" Name="createFromString">
+    <Operations IsOrdered="True" Type="#//EJavaObject/" Name="createFromString">
       <Parameters IsOrdered="True" Type="#//EDataType/" Name="eDataType" />
-      <Parameters IsOrdered="True" Type="#//String/" Name="literalValue" />
+      <Parameters IsOrdered="True" Type="#//EString/" Name="literalValue" />
     </Operations>
-    <Operations IsOrdered="True" Type="#//String/" Name="convertToString">
+    <Operations IsOrdered="True" Type="#//EString/" Name="convertToString">
       <Parameters IsOrdered="True" Type="#//EDataType/" Name="eDataType" />
-      <Parameters IsOrdered="True" Type="#//JavaObject/" Name="instanceValue" />
+      <Parameters IsOrdered="True" Type="#//EJavaObject/" Name="instanceValue" />
     </Operations>
   </Types>
   <Types xsi:type="nmeta:Class" IsAbstract="True" Name="EModelElement">
     <References IsContainment="True" Opposite="#//EAnnotation/eModelElement/" ReferenceType="#//EAnnotation/" IsOrdered="True" UpperBound="-1" Name="eAnnotations" />
     <Operations IsOrdered="True" Type="#//EAnnotation/" Name="getEAnnotation">
-      <Parameters IsOrdered="True" Type="#//String/" Name="source" />
+      <Parameters IsOrdered="True" Type="#//EString/" Name="source" />
     </Operations>
   </Types>
   <Types xsi:type="nmeta:Class" IsAbstract="True" BaseTypes="#//EModelElement/" Identifier="#//ENamedElement/name/" Name="ENamedElement">
-    <Attributes IsOrdered="True" Type="#//String/" Name="name" />
+    <Attributes IsOrdered="True" Type="#//EString/" Name="name" />
   </Types>
   <Types xsi:type="nmeta:Class" Name="EObject">
     <Operations IsOrdered="True" Type="#//EClass/" Name="eClass" />
-    <Operations IsOrdered="True" Type="#//Boolean/" Name="eIsProxy" />
-    <Operations IsOrdered="True" Type="#//Resource/" Name="eResource" />
+    <Operations IsOrdered="True" Type="#//EBoolean/" Name="eIsProxy" />
+    <Operations IsOrdered="True" Type="#//EResource/" Name="eResource" />
     <Operations IsOrdered="True" Type="#//EObject/" Name="eContainer" />
     <Operations IsOrdered="True" Type="#//EStructuralFeature/" Name="eContainingFeature" />
     <Operations IsOrdered="True" Type="#//EReference/" Name="eContainmentFeature" />
     <Operations IsOrdered="True" Name="eContents" />
     <Operations IsOrdered="True" Name="eAllContents" />
     <Operations IsOrdered="True" Name="eCrossReferences" />
-    <Operations IsOrdered="True" Type="#//JavaObject/" Name="eGet">
+    <Operations IsOrdered="True" Type="#//EJavaObject/" Name="eGet">
       <Parameters IsOrdered="True" Type="#//EStructuralFeature/" Name="feature" />
     </Operations>
-    <Operations IsOrdered="True" Type="#//JavaObject/" Name="eGet">
+    <Operations IsOrdered="True" Type="#//EJavaObject/" Name="eGet">
       <Parameters IsOrdered="True" Type="#//EStructuralFeature/" Name="feature" />
-      <Parameters IsOrdered="True" Type="#//Boolean/" Name="resolve" />
+      <Parameters IsOrdered="True" Type="#//EBoolean/" Name="resolve" />
     </Operations>
     <Operations IsOrdered="True" Name="eSet">
       <Parameters IsOrdered="True" Type="#//EStructuralFeature/" Name="feature" />
-      <Parameters IsOrdered="True" Type="#//JavaObject/" Name="newValue" />
+      <Parameters IsOrdered="True" Type="#//EJavaObject/" Name="newValue" />
     </Operations>
-    <Operations IsOrdered="True" Type="#//Boolean/" Name="eIsSet">
+    <Operations IsOrdered="True" Type="#//EBoolean/" Name="eIsSet">
       <Parameters IsOrdered="True" Type="#//EStructuralFeature/" Name="feature" />
     </Operations>
     <Operations IsOrdered="True" Name="eUnset">
       <Parameters IsOrdered="True" Type="#//EStructuralFeature/" Name="feature" />
     </Operations>
-    <Operations IsOrdered="True" Type="#//JavaObject/" Name="eInvoke">
+    <Operations IsOrdered="True" Type="#//EJavaObject/" Name="eInvoke">
       <Parameters IsOrdered="True" Type="#//EOperation/" Name="operation" />
       <Parameters IsOrdered="True" Name="arguments" />
     </Operations>
@@ -133,8 +133,8 @@
     <References IsContainment="True" Opposite="#//EParameter/eOperation/" ReferenceType="#//EParameter/" IsOrdered="True" UpperBound="-1" Name="eParameters" />
     <References ReferenceType="#//EClassifier/" IsOrdered="True" UpperBound="-1" Name="eExceptions" />
     <References IsContainment="True" ReferenceType="#//EGenericType/" IsOrdered="True" UpperBound="-1" Name="eGenericExceptions" />
-    <Operations IsOrdered="True" Type="#//Int/" Name="getOperationID" />
-    <Operations IsOrdered="True" Type="#//Boolean/" Name="isOverrideOf">
+    <Operations IsOrdered="True" Type="#//EInt/" Name="getOperationID" />
+    <Operations IsOrdered="True" Type="#//EBoolean/" Name="isOverrideOf">
       <Parameters IsOrdered="True" Type="#//EOperation/" Name="someOperation" />
     </Operations>
   </Types>
@@ -144,10 +144,10 @@
     <References IsContainment="True" Opposite="#//EPackage/eSuperPackage/" ReferenceType="#//EPackage/" IsOrdered="True" UpperBound="-1" Name="eSubpackages" />
     <References Opposite="#//EPackage/eSubpackages/" ReferenceType="#//EPackage/" IsOrdered="True" Name="eSuperPackage" />
     <Operations IsOrdered="True" Type="#//EClassifier/" Name="getEClassifier">
-      <Parameters IsOrdered="True" Type="#//String/" Name="name" />
+      <Parameters IsOrdered="True" Type="#//EString/" Name="name" />
     </Operations>
-    <Attributes IsOrdered="True" Type="#//String/" Name="nsURI" />
-    <Attributes IsOrdered="True" Type="#//String/" Name="nsPrefix" />
+    <Attributes IsOrdered="True" Type="#//EString/" Name="nsURI" />
+    <Attributes IsOrdered="True" Type="#//EString/" Name="nsPrefix" />
   </Types>
   <Types xsi:type="nmeta:Class" BaseTypes="#//ETypedElement/" Name="EParameter">
     <References Opposite="#//EOperation/eParameters/" ReferenceType="#//EOperation/" IsOrdered="True" Name="eOperation" />
@@ -155,64 +155,64 @@
   <Types xsi:type="nmeta:Class" BaseTypes="#//EStructuralFeature/" Name="EReference">
     <References ReferenceType="#//EReference/" IsOrdered="True" Name="eOpposite" />
     <References ReferenceType="#//EAttribute/" IsOrdered="True" UpperBound="-1" Name="eKeys" />
-    <Attributes IsOrdered="True" Type="#//Boolean/" Name="containment" />
-    <Attributes DefaultValue="true" IsOrdered="True" Type="#//Boolean/" Name="resolveProxies" />
+    <Attributes IsOrdered="True" Type="#//EBoolean/" Name="containment" />
+    <Attributes DefaultValue="true" IsOrdered="True" Type="#//EBoolean/" Name="resolveProxies" />
   </Types>
   <Types xsi:type="nmeta:Class" IsAbstract="True" BaseTypes="#//ETypedElement/" Name="EStructuralFeature">
     <References Opposite="#//EClass/eStructuralFeatures/" ReferenceType="#//EClass/" IsOrdered="True" Name="eContainingClass" />
-    <Operations IsOrdered="True" Type="#//Int/" Name="getFeatureID" />
+    <Operations IsOrdered="True" Type="#//EInt/" Name="getFeatureID" />
     <Operations IsOrdered="True" Name="getContainerClass" />
-    <Attributes DefaultValue="true" IsOrdered="True" Type="#//Boolean/" Name="changeable" />
-    <Attributes IsOrdered="True" Type="#//Boolean/" Name="volatile" />
-    <Attributes IsOrdered="True" Type="#//Boolean/" Name="transient" />
-    <Attributes IsOrdered="True" Type="#//String/" Name="defaultValueLiteral" />
-    <Attributes IsOrdered="True" Type="#//Boolean/" Name="unsettable" />
-    <Attributes IsOrdered="True" Type="#//Boolean/" Name="derived" />
+    <Attributes DefaultValue="true" IsOrdered="True" Type="#//EBoolean/" Name="changeable" />
+    <Attributes IsOrdered="True" Type="#//EBoolean/" Name="volatile" />
+    <Attributes IsOrdered="True" Type="#//EBoolean/" Name="transient" />
+    <Attributes IsOrdered="True" Type="#//EString/" Name="defaultValueLiteral" />
+    <Attributes IsOrdered="True" Type="#//EBoolean/" Name="unsettable" />
+    <Attributes IsOrdered="True" Type="#//EBoolean/" Name="derived" />
   </Types>
   <Types xsi:type="nmeta:Class" IsAbstract="True" BaseTypes="#//ENamedElement/" Name="ETypedElement">
     <References ReferenceType="#//EClassifier/" IsOrdered="True" Name="eType" />
     <References IsContainment="True" ReferenceType="#//EGenericType/" IsOrdered="True" Name="eGenericType" />
-    <Attributes DefaultValue="true" IsOrdered="True" Type="#//Boolean/" Name="ordered" />
-    <Attributes DefaultValue="true" IsOrdered="True" Type="#//Boolean/" Name="unique" />
-    <Attributes IsOrdered="True" Type="#//Int/" Name="lowerBound" />
-    <Attributes DefaultValue="1" IsOrdered="True" Type="#//Int/" Name="upperBound" />
+    <Attributes DefaultValue="true" IsOrdered="True" Type="#//EBoolean/" Name="ordered" />
+    <Attributes DefaultValue="true" IsOrdered="True" Type="#//EBoolean/" Name="unique" />
+    <Attributes IsOrdered="True" Type="#//EInt/" Name="lowerBound" />
+    <Attributes DefaultValue="1" IsOrdered="True" Type="#//EInt/" Name="upperBound" />
   </Types>
-  <Types xsi:type="nmeta:PrimitiveType" SystemType="System.Object" Name="BigDecimal" />
-  <Types xsi:type="nmeta:PrimitiveType" SystemType="System.Object" Name="BigInteger" />
-  <Types xsi:type="nmeta:PrimitiveType" SystemType="System.Boolean" Name="Boolean" />
-  <Types xsi:type="nmeta:PrimitiveType" SystemType="System.Boolean" Name="BooleanObject" />
-  <Types xsi:type="nmeta:PrimitiveType" SystemType="System.Byte" Name="Byte" />
-  <Types xsi:type="nmeta:PrimitiveType" SystemType="System.Byte[]" Name="ByteArray" />
-  <Types xsi:type="nmeta:PrimitiveType" SystemType="System.Byte" Name="ByteObject" />
-  <Types xsi:type="nmeta:PrimitiveType" SystemType="System.Char" Name="Char" />
-  <Types xsi:type="nmeta:PrimitiveType" SystemType="System.Char" Name="CharacterObject" />
-  <Types xsi:type="nmeta:PrimitiveType" SystemType="DateTime" Name="Date" />
-  <Types xsi:type="nmeta:PrimitiveType" SystemType="System.Object" Name="DiagnosticChain" />
-  <Types xsi:type="nmeta:PrimitiveType" SystemType="System.Double" Name="Double" />
-  <Types xsi:type="nmeta:PrimitiveType" SystemType="System.Double" Name="DoubleObject" />
-  <Types xsi:type="nmeta:PrimitiveType" SystemType="System.Object" Name="EList" />
-  <Types xsi:type="nmeta:PrimitiveType" SystemType="System.Object" Name="Enumerator" />
-  <Types xsi:type="nmeta:PrimitiveType" SystemType="System.Object" Name="FeatureMap" />
-  <Types xsi:type="nmeta:PrimitiveType" SystemType="System.Object" Name="FeatureMapEntry" />
-  <Types xsi:type="nmeta:PrimitiveType" SystemType="System.Single" Name="Float" />
-  <Types xsi:type="nmeta:PrimitiveType" SystemType="System.Single" Name="FloatObject" />
-  <Types xsi:type="nmeta:PrimitiveType" SystemType="System.Int32" Name="Int" />
-  <Types xsi:type="nmeta:PrimitiveType" SystemType="System.Int32" Name="IntegerObject" />
-  <Types xsi:type="nmeta:PrimitiveType" SystemType="System.Object" Name="JavaClass" />
-  <Types xsi:type="nmeta:PrimitiveType" SystemType="System.Object" Name="JavaObject" />
-  <Types xsi:type="nmeta:PrimitiveType" SystemType="System.Int64" Name="Long" />
-  <Types xsi:type="nmeta:PrimitiveType" SystemType="System.Int64" Name="LongObject" />
-  <Types xsi:type="nmeta:PrimitiveType" SystemType="System.Object" Name="Map" />
-  <Types xsi:type="nmeta:PrimitiveType" SystemType="System.Object" Name="Resource" />
-  <Types xsi:type="nmeta:PrimitiveType" SystemType="System.Object" Name="ResourceSet" />
-  <Types xsi:type="nmeta:PrimitiveType" SystemType="System.Int16" Name="Short" />
-  <Types xsi:type="nmeta:PrimitiveType" SystemType="System.Int16" Name="ShortObject" />
-  <Types xsi:type="nmeta:PrimitiveType" SystemType="System.String" Name="String" />
+  <Types xsi:type="nmeta:PrimitiveType" SystemType="System.Object" Name="EBigDecimal" />
+  <Types xsi:type="nmeta:PrimitiveType" SystemType="System.Object" Name="EBigInteger" />
+  <Types xsi:type="nmeta:PrimitiveType" SystemType="System.Boolean" Name="EBoolean" />
+  <Types xsi:type="nmeta:PrimitiveType" SystemType="System.Boolean" Name="EBooleanObject" />
+  <Types xsi:type="nmeta:PrimitiveType" SystemType="System.Byte" Name="EByte" />
+  <Types xsi:type="nmeta:PrimitiveType" SystemType="System.Byte[]" Name="EByteArray" />
+  <Types xsi:type="nmeta:PrimitiveType" SystemType="System.Byte" Name="EByteObject" />
+  <Types xsi:type="nmeta:PrimitiveType" SystemType="System.Char" Name="EChar" />
+  <Types xsi:type="nmeta:PrimitiveType" SystemType="System.Char" Name="ECharacterObject" />
+  <Types xsi:type="nmeta:PrimitiveType" SystemType="DateTime" Name="EDate" />
+  <Types xsi:type="nmeta:PrimitiveType" SystemType="System.Object" Name="EDiagnosticChain" />
+  <Types xsi:type="nmeta:PrimitiveType" SystemType="System.Double" Name="EDouble" />
+  <Types xsi:type="nmeta:PrimitiveType" SystemType="System.Double" Name="EDoubleObject" />
+  <Types xsi:type="nmeta:PrimitiveType" SystemType="System.Object" Name="EEList" />
+  <Types xsi:type="nmeta:PrimitiveType" SystemType="System.Object" Name="EEnumerator" />
+  <Types xsi:type="nmeta:PrimitiveType" SystemType="System.Object" Name="EFeatureMap" />
+  <Types xsi:type="nmeta:PrimitiveType" SystemType="System.Object" Name="EFeatureMapEntry" />
+  <Types xsi:type="nmeta:PrimitiveType" SystemType="System.Single" Name="EFloat" />
+  <Types xsi:type="nmeta:PrimitiveType" SystemType="System.Single" Name="EFloatObject" />
+  <Types xsi:type="nmeta:PrimitiveType" SystemType="System.Int32" Name="EInt" />
+  <Types xsi:type="nmeta:PrimitiveType" SystemType="System.Int32" Name="EIntegerObject" />
+  <Types xsi:type="nmeta:PrimitiveType" SystemType="System.Object" Name="EJavaClass" />
+  <Types xsi:type="nmeta:PrimitiveType" SystemType="System.Object" Name="EJavaObject" />
+  <Types xsi:type="nmeta:PrimitiveType" SystemType="System.Int64" Name="ELong" />
+  <Types xsi:type="nmeta:PrimitiveType" SystemType="System.Int64" Name="ELongObject" />
+  <Types xsi:type="nmeta:PrimitiveType" SystemType="System.Object" Name="EMap" />
+  <Types xsi:type="nmeta:PrimitiveType" SystemType="System.Object" Name="EResource" />
+  <Types xsi:type="nmeta:PrimitiveType" SystemType="System.Object" Name="EResourceSet" />
+  <Types xsi:type="nmeta:PrimitiveType" SystemType="System.Int16" Name="EShort" />
+  <Types xsi:type="nmeta:PrimitiveType" SystemType="System.Int16" Name="EShortObject" />
+  <Types xsi:type="nmeta:PrimitiveType" SystemType="System.String" Name="EString" />
   <Types xsi:type="nmeta:Class" Name="EStringToStringMapEntry">
-    <Attributes IsOrdered="True" Type="#//String/" Name="key" />
-    <Attributes IsOrdered="True" Type="#//String/" Name="value" />
+    <Attributes IsOrdered="True" Type="#//EString/" Name="key" />
+    <Attributes IsOrdered="True" Type="#//EString/" Name="value" />
   </Types>
-  <Types xsi:type="nmeta:PrimitiveType" SystemType="System.Object" Name="TreeIterator" />
+  <Types xsi:type="nmeta:PrimitiveType" SystemType="System.Object" Name="ETreeIterator" />
   <Types xsi:type="nmeta:Class" Name="EGenericType">
     <References IsContainment="True" ReferenceType="#//EGenericType/" IsOrdered="True" Name="eUpperBound" />
     <References IsContainment="True" ReferenceType="#//EGenericType/" IsOrdered="True" UpperBound="-1" Name="eTypeArguments" />
@@ -223,5 +223,5 @@
   <Types xsi:type="nmeta:Class" BaseTypes="#//ENamedElement/" Name="ETypeParameter">
     <References IsContainment="True" ReferenceType="#//EGenericType/" IsOrdered="True" UpperBound="-1" Name="eBounds" />
   </Types>
-  <Types xsi:type="nmeta:PrimitiveType" SystemType="System.Object" Name="InvocationTargetException" />
+  <Types xsi:type="nmeta:PrimitiveType" SystemType="System.Object" Name="EInvocationTargetException" />
 </nmeta:Namespace>

@@ -24,37 +24,38 @@ namespace NMF.Interop.Ecore
 
         static EcoreInterop()
         {
-            resourceLocator = new ResourceMapLocator(typeof(EcoreInterop).Assembly);
-            resourceLocator.Mappings.Add(new Uri("http://www.eclipse.org/emf/2002/Ecore", UriKind.Absolute), "NMF.Interop.Ecore.Ecore.ecore");
-            resourceLocator.Mappings.Add(new Uri("platform:/plugin/org.emftext.commons.layout/metamodel/layout.ecore", UriKind.Absolute), "NMF.Interop.Ecore.layout.ecore");
-            repository.Locators.Add(resourceLocator);
+            using (var ecoreModel = typeof(EcoreInterop).Assembly.GetManifestResourceStream("NMF.Interop.Ecore.Ecore.ecore"))
+            {
+                repository.Serializer.Deserialize(ecoreModel, new Uri("http://www.eclipse.org/emf/2002/Ecore", UriKind.Absolute), repository, true);
+            }
+            using (var layoutModel = typeof(EcoreInterop).Assembly.GetManifestResourceStream("NMF.Interop.Ecore.layout.ecore"))
+            {
+                repository.Serializer.Deserialize(layoutModel, new Uri("platform:/plugin/org.emftext.commons.layout/metamodel/layout.ecore", UriKind.Absolute), repository, true);
+            }
+        }
+
+        public static IModelRepository Repository
+        {
+            get
+            {
+                return repository;
+            }
         }
 
         public static EPackage LoadPackageFromFile(string path)
         {
-            if (!Path.IsPathRooted(path))
-            {
-                path = Path.Combine(Environment.CurrentDirectory, path);
-            }
             return LoadPackageFromUri(new Uri(path));
         }
 
         public static EPackage LoadPackageFromUri(Uri uri)
         {
-            var modelElement = repository.Resolve(uri);
+            var tempRepository = new ModelRepository(repository);
+            var modelElement = tempRepository.Resolve(uri);
 
             var package = modelElement as EPackage;
             if (package != null) return package;
 
             return modelElement.Model.RootElements.OfType<EPackage>().FirstOrDefault();
-        }
-
-        public static IModelLocator EcoreLocator
-        {
-            get
-            {
-                return resourceLocator;
-            }
         }
 
         public static INamespace Transform2Meta(EPackage package)
