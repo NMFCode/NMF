@@ -26,6 +26,7 @@ namespace NMF.Expressions.Linq.Orleans
         {
             var node = GrainFactory.GetGrain<IIncrementalSelectNodeGrain<TSource, TResult>>(Guid.NewGuid());
             await node.SetObservingFunc(_observingFunc);
+            await node.SetModelContainer(ModelContainer);
             await node.SetInput(identity);
 
             return node;

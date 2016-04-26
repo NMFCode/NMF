@@ -14,6 +14,7 @@ namespace NMF.Expressions.Linq.Orleans.Model
     public class ModelProcessingNodeGrain<TIn, TOut> : StreamProcessorNodeGrain<TIn, TOut>, IModelProcessingNodeGrain<TIn, TOut, Models.Model>
     {
         protected Models.Model Model { get; private set; }
+        protected IModelContainerGrain<Models.Model> ModelContainer { get; private set; }
 
         public Task LoadModel(Func<Models.Model> modelLoadingFunc)
         {
@@ -39,7 +40,8 @@ namespace NMF.Expressions.Linq.Orleans.Model
 
         public async Task SetModelContainer(IModelContainerGrain<Models.Model> modelContainer)
         {
-            await SetInput(await modelContainer.GetStreamIdentity());
+            ModelContainer = modelContainer;
+            await SetInput(await modelContainer.GetModelUpdateStream());
         }
 
         protected override void RegisterMessages()

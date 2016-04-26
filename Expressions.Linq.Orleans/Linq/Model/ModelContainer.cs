@@ -20,11 +20,13 @@ namespace NMF.Expressions.Linq.Orleans.Model
         private const string StreamProviderName = "CollectionStreamProvider";
         protected T Model;
         protected StreamMessageSender OutputProducer;
+        protected StreamMessageSender ModelUpdateSender;
 
         public override Task OnActivateAsync()
         {
             base.OnActivateAsync();
-            OutputProducer =  new StreamMessageSender(GetStreamProvider(StreamProviderName), this.GetPrimaryKey());
+            OutputProducer = new StreamMessageSender(GetStreamProvider(StreamProviderName), this.GetPrimaryKey());
+            ModelUpdateSender = new StreamMessageSender(GetStreamProvider(StreamProviderName), new StreamIdentity("ModelUpdate", this.GetPrimaryKey()));
             return TaskDone.Done;
         }
 
@@ -32,7 +34,14 @@ namespace NMF.Expressions.Linq.Orleans.Model
         public async Task ExecuteSync(Action<T> action)
         {
             action(Model);
+
+            await ModelUpdateSender.SendMessagesFromQueue();
             await OutputProducer.SendMessagesFromQueue();
+        }
+
+        public Task<StreamIdentity> GetModelUpdateStream()
+        {
+            return ModelUpdateSender.GetStreamIdentity();
         }
 
         public Task<string> ModelToString(Func<Models.Model, IModelElement> elementSelectorFunc)
@@ -64,14 +73,15 @@ namespace NMF.Expressions.Linq.Orleans.Model
             return OutputProducer.GetStreamIdentity();
         }
 
-        public Task<bool> IsTearedDown()
+        public async Task<bool> IsTearedDown()
         {
-            return OutputProducer.IsTearedDown();
+            return await OutputProducer.IsTearedDown() && await ModelUpdateSender.IsTearedDown();
         }
 
-        public Task TearDown()
+        public async Task TearDown()
         {
-            return OutputProducer.TearDown();
+            await OutputProducer.TearDown();
+            await ModelUpdateSender.TearDown();
         }
 
         private void ModelBubbledChange(object sender, BubbledChangeEventArgs e)
@@ -97,7 +107,7 @@ namespace NMF.Expressions.Linq.Orleans.Model
                         throw new NotImplementedException();
                 }
 
-                OutputProducer.AddToMessageQueue(message);
+                ModelUpdateSender.AddToMessageQueue(message);
             }
             else if (e.IsValueChangedEvent)
             {
@@ -107,7 +117,7 @@ namespace NMF.Expressions.Linq.Orleans.Model
                 var modelChangeValue = ModelRemoteValueFactory.CreateModelChangeValue(propertyValue);
 
                 var message = new ModelPropertyChangedMessage(modelChangeValue, sourceUri, propertyName);
-                OutputProducer.AddToMessageQueue(message);
+                ModelUpdateSender.AddToMessageQueue(message);
             }
         }
 

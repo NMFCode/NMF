@@ -90,29 +90,6 @@
   </Choose>
   <ItemGroup>
     <Compile Include="LinqTest.cs" />
-    <Compile Include="metamodel\IRailwayContainer.cs" />
-    <Compile Include="metamodel\IRailwayElement.cs" />
-    <Compile Include="metamodel\IRoute.cs" />
-    <Compile Include="metamodel\ISegment.cs" />
-    <Compile Include="metamodel\ISemaphore.cs" />
-    <Compile Include="metamodel\ISensor.cs" />
-    <Compile Include="metamodel\ISwitch.cs" />
-    <Compile Include="metamodel\ISwitchPosition.cs" />
-    <Compile Include="metamodel\ITrackElement.cs" />
-    <Compile Include="metamodel\Position.cs" />
-    <Compile Include="metamodel\RailwayContainer.cs" />
-    <Compile Include="metamodel\RailwayElement.cs" />
-    <Compile Include="metamodel\Route.cs" />
-    <Compile Include="metamodel\RouteFollowsCollection.cs" />
-    <Compile Include="metamodel\Segment.cs" />
-    <Compile Include="metamodel\Semaphore.cs" />
-    <Compile Include="metamodel\Sensor.cs" />
-    <Compile Include="metamodel\SensorElementsCollection.cs" />
-    <Compile Include="metamodel\Signal.cs" />
-    <Compile Include="metamodel\Switch.cs" />
-    <Compile Include="metamodel\SwitchPosition.cs" />
-    <Compile Include="metamodel\SwitchPositionsCollection.cs" />
-    <Compile Include="metamodel\TrackElement.cs" />
     <Compile Include="ModelConsumerTest.cs" />
     <Compile Include="SqoGrainTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -150,6 +127,10 @@
     <ProjectReference Include="..\Expressions\Expressions\Expressions.csproj">
       <Project>{afca9d1d-26a6-482a-a5ab-0827ad0fd677}</Project>
       <Name>Expressions</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Models\Models.Tests\Models.Tests.csproj">
+      <Project>{31ec737e-e2a9-4ffd-a62b-94c0e4546dba}</Project>
+      <Name>Models.Tests</Name>
     </ProjectReference>
     <ProjectReference Include="..\Models\Models\Models.csproj">
       <Project>{e42ac7b6-8120-40b5-8cd3-c4139b940897}</Project>

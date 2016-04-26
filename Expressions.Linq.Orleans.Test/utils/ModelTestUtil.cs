@@ -5,8 +5,8 @@ using System.Threading.Tasks;
 using NMF.Expressions.Linq.Orleans.Model;
 using NMF.Models;
 using NMF.Models.Repository;
+using NMF.Models.Tests.Railway;
 using Orleans;
-using TTC2015.TrainBenchmark.Railway;
 
 namespace Expressions.Linq.Orleans.Test.utils
 {

@@ -11,5 +11,7 @@ namespace NMF.Expressions.Linq.Orleans.Model
     public interface IModelContainerGrain<T> : IGrainWithGuidKey, ITransactionalStreamProvider, IElementEnumeratorNode<T>, IModelLoader<T> where T : Models.Model
     {
         Task ExecuteSync(Action<T> action);
+
+        Task<StreamIdentity> GetModelUpdateStream();
     }
 }

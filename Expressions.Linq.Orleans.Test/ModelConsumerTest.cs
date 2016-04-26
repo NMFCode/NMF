@@ -10,10 +10,10 @@ using NMF.Expressions.Linq.Orleans.Model;
 using NMF.Expressions.Linq.Orleans.TestGrains;
 using NMF.Models;
 using NMF.Models.Repository;
+using NMF.Models.Tests.Railway;
 using Orleans;
 using Orleans.Streams;
 using Orleans.TestingHost;
-using TTC2015.TrainBenchmark.Railway;
 
 namespace Expressions.Linq.Orleans.Test
 {
