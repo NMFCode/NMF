@@ -85,7 +85,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ExtensionMethods.cs" />
-    <Compile Include="IIncrementalStreamProcessorAggregateFactory.cs" />
     <Compile Include="IncrementalStreamProcessorAggregateFactory.cs" />
     <Compile Include="Linq\IncrementalStreamProcessorAggregate.cs" />
     <Compile Include="Linq\IncrementalWhereAggregateGrain.cs" />

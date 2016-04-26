@@ -20,15 +20,12 @@ namespace Expressions.Linq.Orleans.Test
     [TestClass]
     public class ModelConsumerTest : TestingSiloHost
     {
-        private IncrementalStreamProcessorAggregateFactory _factory;
-
         private IStreamProvider _provider;
 
         [TestInitialize]
         public void TestInitialize()
         {
-            _provider = GrainClient.GetStreamProvider("CollectionStreamProvider");
-            _factory = new IncrementalStreamProcessorAggregateFactory(GrainFactory);
+            _provider = GrainClient.GetStreamProvider("CollectionStreamProvider"); 
         }
 
         [ClassCleanup]

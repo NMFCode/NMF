@@ -54,7 +54,7 @@ namespace Expressions.Linq.Orleans.Test
             await selectGrain.LoadModel(ModelTestUtil.ModelLoadingFunc);
 
             var consumer = new MultiStreamModelConsumer<Model>(_provider, ModelTestUtil.ModelLoadingFunc);
-            await consumer.SetInput(await selectGrain.GetStreamIdentities());
+            await consumer.SetInput(await selectGrain.GetOutputStreams());
 
             await modelGrain.EnumerateToSubscribers(Guid.NewGuid());
 

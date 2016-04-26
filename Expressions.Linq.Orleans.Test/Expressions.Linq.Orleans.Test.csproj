@@ -93,6 +93,7 @@
     <Compile Include="ModelConsumerTest.cs" />
     <Compile Include="SqoGrainTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SqoTest.cs" />
     <Compile Include="utils\ModelTestUtil.cs" />
   </ItemGroup>
   <ItemGroup>
