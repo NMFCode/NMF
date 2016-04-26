@@ -28,7 +28,7 @@ namespace NMF.Expressions.Linq.Orleans
             return processorAggregate;
         }
 
-        public async Task<IIncrementalWhereAggregateGrain<TIn>> CreateWhere<TIn>(Expression<Func<ContainerElement<TIn>, bool>> filterFunc, IList<StreamIdentity> streamIdentities)
+        public async Task<IIncrementalWhereAggregateGrain<TIn>> CreateWhere<TIn>(Expression<Func<TIn, bool>> filterFunc, IList<StreamIdentity> streamIdentities)
         {
             var processorAggregate = GrainFactory.GetGrain<IIncrementalWhereAggregateGrain<TIn>>(Guid.NewGuid());
 

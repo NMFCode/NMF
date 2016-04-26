@@ -1,12 +1,9 @@
-﻿using Orleans.Collections;
-using Orleans.Streams;
-using Orleans.Streams.Linq.Aggregates;
+﻿using NMF.Expressions.Linq.Orleans.Model;
 
 namespace NMF.Expressions.Linq.Orleans.Linq.Interfaces
 {
-    public interface IIncrementalWhereAggregateGrain<TSource> : IStreamProcessorAggregate<ContainerElement<TSource>, ContainerElement<TSource>>, IObservingFuncProcessor<ContainerElement<TSource>, bool>,
-        IElementEnumerator<ContainerElement<TSource>>
+    public interface IIncrementalWhereAggregateGrain<TSource> : IModelProcessingAggregateGrain<TSource, TSource, Models.Model>,
+        IObservingFuncProcessor<TSource, bool>
     {
-         
     }
 }

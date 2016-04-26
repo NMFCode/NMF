@@ -7,6 +7,7 @@ using NMF.Expressions.Linq.Orleans.Message;
 using NMF.Models;
 using NMF.Models.Repository;
 using Orleans;
+using Orleans.Streams;
 using Orleans.Streams.Linq.Nodes;
 
 namespace NMF.Expressions.Linq.Orleans.Model
@@ -41,7 +42,7 @@ namespace NMF.Expressions.Linq.Orleans.Model
         public async Task SetModelContainer(IModelContainerGrain<Models.Model> modelContainer)
         {
             ModelContainer = modelContainer;
-            await SetInput(await modelContainer.GetModelUpdateStream());
+            await SubscribeToStreams((await modelContainer.GetModelUpdateStream()).SingleValueToList());
         }
 
         protected override void RegisterMessages()

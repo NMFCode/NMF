@@ -68,9 +68,9 @@ namespace NMF.Expressions.Linq.Orleans.Model
             return TaskDone.Done;
         }
 
-        public Task<StreamIdentity> GetStreamIdentity()
+        public async Task<IList<StreamIdentity>> GetOutputStreams()
         {
-            return OutputProducer.GetStreamIdentity();
+            return new List<StreamIdentity> { await OutputProducer.GetStreamIdentity() };
         }
 
         public async Task<bool> IsTearedDown()
