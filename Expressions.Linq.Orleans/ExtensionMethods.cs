@@ -34,42 +34,42 @@ namespace NMF.Expressions.Linq.Orleans
 
         #endregion
 
-        #region Select
+        //#region Select
 
-        public static async Task<StreamProcessorChain<TIn, TOut, TFactory>> SelectIncremental<TIn, TOut, TFactory>
-            (
-            this ITransactionalStreamProvider<TIn> source, Expression<Func<TIn, TOut>> selectionFunc,
-            TFactory factory) where TFactory : IStreamProcessorAggregateFactory
-        {
-            var processorAggregate = await factory.CreateSelect(selectionFunc, await source.GetOutputStreams());
-            var processorChain = new StreamProcessorChainStart<TIn, TOut, TFactory>(processorAggregate, source,
-                factory);
+        //public static async Task<StreamProcessorChain<TIn, TOut, TFactory>> SelectIncremental<TIn, TOut, TFactory>
+        //    (
+        //    this ITransactionalStreamProvider<TIn> source, Expression<Func<TIn, TOut>> selectionFunc,
+        //    TFactory factory) where TFactory : IStreamProcessorAggregateFactory
+        //{
+        //    var processorAggregate = await factory.CreateSelect(selectionFunc, await source.GetOutputStreams());
+        //    var processorChain = new StreamProcessorChainStart<TIn, TOut, TFactory>(processorAggregate, source,
+        //        factory);
 
-            return processorChain;
-        }
+        //    return processorChain;
+        //}
 
-        public static async Task<StreamProcessorChain<TIn, TOut, TFactory>> SelectIncremental
-            <TOldIn, TIn, TOut, TFactory>(
-            this StreamProcessorChain<TOldIn, TIn, TFactory> previousNode,
-            Expression<Func<TIn, TOut>> selectionFunc) where TFactory : IStreamProcessorAggregateFactory
-        {
-            var processorAggregate =
-                await previousNode.Factory.CreateSelect(selectionFunc, await previousNode.Aggregate.GetOutputStreams());
-            var processorChain = new StreamProcessorChain<TIn, TOut, TFactory>(processorAggregate, previousNode);
+        //public static async Task<StreamProcessorChain<TIn, TOut, TFactory>> SelectIncremental
+        //    <TOldIn, TIn, TOut, TFactory>(
+        //    this StreamProcessorChain<TOldIn, TIn, TFactory> previousNode,
+        //    Expression<Func<TIn, TOut>> selectionFunc) where TFactory : IStreamProcessorAggregateFactory
+        //{
+        //    var processorAggregate =
+        //        await previousNode.Factory.CreateSelect(selectionFunc, await previousNode.Aggregate.GetOutputStreams());
+        //    var processorChain = new StreamProcessorChain<TIn, TOut, TFactory>(processorAggregate, previousNode);
 
-            return processorChain;
-        }
+        //    return processorChain;
+        //}
 
-        public static async Task<StreamProcessorChain<TIn, TOut, TFactory>> SelectIncremental
-            <TOldIn, TIn, TOut, TFactory>(
-            this Task<StreamProcessorChain<TOldIn, TIn, TFactory>> previousNodeTask,
-            Expression<Func<TIn, TOut>> selectionFunc) where TFactory : IStreamProcessorAggregateFactory
-        {
-            var previousNode = await previousNodeTask;
-            return await SelectIncremental(previousNode, selectionFunc);
-        }
+        //public static async Task<StreamProcessorChain<TIn, TOut, TFactory>> SelectIncremental
+        //    <TOldIn, TIn, TOut, TFactory>(
+        //    this Task<StreamProcessorChain<TOldIn, TIn, TFactory>> previousNodeTask,
+        //    Expression<Func<TIn, TOut>> selectionFunc) where TFactory : IStreamProcessorAggregateFactory
+        //{
+        //    var previousNode = await previousNodeTask;
+        //    return await SelectIncremental(previousNode, selectionFunc);
+        //}
 
-        #endregion
+        //#endregion
 
         #region Where
 

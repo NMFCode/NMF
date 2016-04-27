@@ -12,7 +12,7 @@ using Orleans.Streams.Linq.Aggregates;
 
 namespace NMF.Expressions.Linq.Orleans
 {
-    public class IncrementalWhereAggregateGrain<TSource, TModel> : ModelProcessingAggregateGrain<TSource, TSource, IIncrementalWhereNodeGrain<TSource, TModel>, TModel>,
+    public class IncrementalWhereAggregateGrain<TSource, TModel> : IncrementalAggregateGrainBase<TSource, TSource, IIncrementalWhereNodeGrain<TSource, TModel>, TModel>,
         IIncrementalWhereAggregateGrain<TSource, TModel> where TModel : IResolvableModel
     {
         private SerializableFunc<TSource, bool> _observingFunc;

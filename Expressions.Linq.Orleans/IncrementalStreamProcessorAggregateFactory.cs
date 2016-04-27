@@ -22,6 +22,17 @@ namespace NMF.Expressions.Linq.Orleans
 
         public IModelContainerGrain<TModel> ModelContainerGrain { get; private set; }
 
+        public async Task<IStreamProcessorAggregate<TIn, TOut>> CreateSimpleSelectMany<TIn, TOut>(Expression<Func<TIn, IEnumerable<TOut>>> selectionFunc, IList<StreamIdentity> streamIdentities)
+        {
+            var processorAggregate = GrainFactory.GetGrain<IIncrementalSimpleSelectManyAggregateGrain<TIn, TOut, TModel>>(Guid.NewGuid());
+
+            await processorAggregate.SetObservingFunc(selectionFunc);
+            await processorAggregate.SetModelContainer(ModelContainerGrain);
+            await processorAggregate.SetInput(streamIdentities);
+
+            return processorAggregate;
+        }
+
         public IGrainFactory GrainFactory { get; }
 
         public async Task<IStreamProcessorAggregate<TIn, TOut>> CreateSelect<TIn, TOut>(Expression<Func<TIn, TOut>> selectionFunc, IList<StreamIdentity> streamIdentities)

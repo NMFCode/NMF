@@ -9,7 +9,7 @@ using Orleans.Streams.Linq.Aggregates;
 
 namespace NMF.Expressions.Linq.Orleans.Model
 {
-    public abstract class ModelProcessingAggregateGrain<TSource, TResult, TNode, TModel> : StreamProcessorAggregate<TSource, TResult, TNode>, IModelProcessingAggregateGrain<TSource, TResult, TModel>
+    public abstract class IncrementalAggregateGrainBase<TSource, TResult, TNode, TModel> : StreamProcessorAggregate<TSource, TResult, TNode>, IModelProcessingAggregateGrain<TSource, TResult, TModel>
          where TNode : IModelProcessingNodeGrain<TSource, TResult, TModel> where TModel : IResolvableModel
     {
         protected IModelContainerGrain<TModel> ModelContainer;

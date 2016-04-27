@@ -86,9 +86,11 @@
   <ItemGroup>
     <Compile Include="ExtensionMethods.cs" />
     <Compile Include="IncrementalStreamProcessorAggregateFactory.cs" />
+    <Compile Include="Linq\IncrementalSimpleSelectManyAggregateGrain.cs" />
     <Compile Include="Linq\IncrementalStreamProcessorAggregate.cs" />
-    <Compile Include="Linq\IncrementalWhereAggregateGrain.cs" />
+    <Compile Include="Linq\IncrementalWhereAggregateGrainBase.cs" />
     <Compile Include="Linq\IncrementalWhereNodeGrain.cs" />
+    <Compile Include="Linq\Interfaces\IIncrementalSimpleSelectManyAggregateGrain.cs" />
     <Compile Include="Linq\Interfaces\IIncrementalSelectAggregateGrain.cs" />
     <Compile Include="Linq\Interfaces\IIncrementalSelectNodeGrain.cs" />
     <Compile Include="Linq\Interfaces\IIncrementalSimpleSelectManyNodeGrain.cs" />
@@ -115,12 +117,12 @@
     <Compile Include="Linq\Model\IModelRemoteValue.cs" />
     <Compile Include="Linq\Model\ModelContainer.cs" />
     <Compile Include="Linq\Model\ModelExtensions.cs" />
-    <Compile Include="Linq\Model\ModelProcessingAggregateGrain.cs" />
+    <Compile Include="Linq\Model\IncrementalAggregateGrainBase.cs" />
     <Compile Include="Linq\Model\ModelProcessingNodeGrain.cs" />
     <Compile Include="Linq\Model\NonImplicitDisposableMemoryStream.cs" />
     <Compile Include="Linq\MultiStreamModelConsumer.cs" />
     <Compile Include="Linq\TaggedObservableValueWithPosition.cs" />
-    <Compile Include="Linq\IncrementalSimpleSelectManyNodeNodeGrain.cs" />
+    <Compile Include="Linq\IncrementalSimpleSelectManyNodeGrain.cs" />
     <Compile Include="Linq\TestGrains\TestModelProcessingNodeGrain.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Properties\orleans.codegen.cs" />

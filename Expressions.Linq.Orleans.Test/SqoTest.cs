@@ -4,8 +4,10 @@ using Expressions.Linq.Orleans.Test.utils;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using NMF.Expressions.Linq.Orleans;
 using NMF.Expressions.Linq.Orleans.Model;
+using NMF.Models.Tests.Railway;
 using Orleans;
 using Orleans.Streams;
+using Orleans.Streams.Linq;
 using Orleans.TestingHost;
 
 namespace Expressions.Linq.Orleans.Test
@@ -34,20 +36,36 @@ namespace Expressions.Linq.Orleans.Test
         [TestMethod]
         public async Task SelectTest()
         {
-            
             var localModel = ModelTestUtil.ModelLoadingFunc();
             var modelContainer = await ModelTestUtil.LoadModelContainer(GrainFactory);
             var factory = new IncrementalStreamProcessorAggregateFactory<NMF.Models.Model>(GrainFactory, modelContainer);
 
-            // TODO implement here
-            var query = await modelContainer.SelectIncremental(x => x, factory);
+            var query = await modelContainer.Select(x => x, factory);
             var resultConsumer = await query.ToModelConsumer(ModelTestUtil.ModelLoadingFunc);
 
             Assert.AreEqual(0, resultConsumer.Items.Count);
 
             await modelContainer.EnumerateToSubscribers();
 
-            Assert.AreEqual(localModel.ToXmlString(), resultConsumer.Items.First().ToXmlString());
+            ModelTestUtil.AssertXmlEquals(localModel.SingleValueToList(), resultConsumer.Items);
+        }
+
+        [TestMethod]
+        public async Task SelectManyTest()
+        {
+            var localModel = ModelTestUtil.ModelLoadingFunc();
+            var modelContainer = await ModelTestUtil.LoadModelContainer(GrainFactory);
+            var factory = new IncrementalStreamProcessorAggregateFactory<NMF.Models.Model>(GrainFactory, modelContainer);
+
+            var query = await modelContainer.SimpleSelectMany(model => (model.RootElements.Single() as RailwayContainer).Semaphores, factory);
+            var resultConsumer = await query.ToModelConsumer(ModelTestUtil.ModelLoadingFunc);
+
+            Assert.AreEqual(0, resultConsumer.Items.Count);
+
+            await modelContainer.EnumerateToSubscribers();
+
+            var localResults = (localModel.RootElements.Single() as RailwayContainer).Semaphores; 
+            ModelTestUtil.AssertXmlEquals(localResults, resultConsumer.Items);
         }
     }
 }

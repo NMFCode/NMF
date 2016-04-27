@@ -96,7 +96,7 @@ namespace Expressions.Linq.Orleans.Test
 
             var selectNodeGrain = GrainFactory.GetGrain<IIncrementalSimpleSelectManyNodeGrain<Model, ISemaphore, Model>>(Guid.NewGuid());
             await selectNodeGrain.SetModelContainer(modelGrain);
-            await selectNodeGrain.SetSelector(new SerializableFunc<Model, IEnumerable<ISemaphore>>(model => (model.RootElements.Single() as RailwayContainer).Semaphores));
+            await selectNodeGrain.SetObservingFunc(new SerializableFunc<Model, IEnumerable<ISemaphore>>(model => (model.RootElements.Single() as RailwayContainer).Semaphores));
             await selectNodeGrain.LoadModel(ModelTestUtil.ModelLoadingFunc);
             await selectNodeGrain.SubscribeToStreams(await modelGrain.GetOutputStreams());
 

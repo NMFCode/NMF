@@ -10,11 +10,11 @@ using SL = System.Linq.Enumerable;
 
 namespace NMF.Expressions.Linq.Orleans
 {
-    internal sealed class IncrementalSimpleSelectManyNodeNodeGrain<TSource, TResult, TModel> : IncrementalNodeGrainBase<TSource, TResult, TModel>,
+    internal sealed class IncrementalSimpleSelectManyNodeGrain<TSource, TResult, TModel> : IncrementalNodeGrainBase<TSource, TResult, TModel>,
         IIncrementalSimpleSelectManyNodeGrain<TSource, TResult, TModel> where TModel : IResolvableModel
     {
 
-        public Task SetSelector(SerializableFunc<TSource, IEnumerable<TResult>> selector)
+        public Task SetObservingFunc(SerializableFunc<TSource, IEnumerable<TResult>> selector)
         {
             ResultEnumerable = InputList.SelectMany(selector.Value);
             AttachToResult();
