@@ -12,18 +12,18 @@ using Orleans.Streams.Linq.Nodes;
 
 namespace NMF.Expressions.Linq.Orleans.Model
 {
-    public class ModelProcessingNodeGrain<TIn, TOut> : StreamProcessorNodeGrain<TIn, TOut>, IModelProcessingNodeGrain<TIn, TOut, Models.Model>
+    public class ModelProcessingNodeGrain<TIn, TOut, TModel> : StreamProcessorNodeGrain<TIn, TOut>, IModelProcessingNodeGrain<TIn, TOut, TModel> where TModel : IResolvableModel
     {
-        protected Models.Model Model { get; private set; }
-        protected IModelContainerGrain<Models.Model> ModelContainer { get; private set; }
+        protected TModel Model { get; private set; }
+        protected IModelContainerGrain<TModel> ModelContainer { get; private set; }
 
-        public Task LoadModel(Func<Models.Model> modelLoadingFunc)
+        public Task LoadModel(Func<TModel> modelLoadingFunc)
         {
             Model = modelLoadingFunc();
             return TaskDone.Done;
         }
 
-        public Task<string> ModelToString(Func<Models.Model, IModelElement> elementSelectorFunc)
+        public Task<string> ModelToString(Func<TModel, IModelElement> elementSelectorFunc)
         {
             var element = elementSelectorFunc(Model);
 
@@ -39,10 +39,18 @@ namespace NMF.Expressions.Linq.Orleans.Model
             return Task.FromResult(result);
         }
 
-        public async Task SetModelContainer(IModelContainerGrain<Models.Model> modelContainer)
+        public async Task SetModelContainer(IModelContainerGrain<TModel> modelContainer)
         {
             ModelContainer = modelContainer;
-            await SubscribeToStreams((await modelContainer.GetModelUpdateStream()).SingleValueToList());
+            var loadModelTask = LoadModel(await modelContainer.GetModelLoadingFunc());
+            var subscribeTask = SubscribeToStreams((await modelContainer.GetModelUpdateStream()).SingleValueToList());
+
+            await Task.WhenAll(loadModelTask, subscribeTask);
+        }
+
+        public Task<IModelContainerGrain<TModel>> GetModelContainer()
+        {
+            return Task.FromResult(ModelContainer);
         }
 
         protected override void RegisterMessages()

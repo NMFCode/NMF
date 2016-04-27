@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using NMF.Expressions.Linq.Orleans.Interfaces;
 using NMF.Expressions.Linq.Orleans.Linq.Interfaces;
 using NMF.Expressions.Linq.Orleans.Model;
+using NMF.Models;
 using Orleans;
 using Orleans.Collections;
 using Orleans.Streams;
@@ -11,8 +12,8 @@ using Orleans.Streams.Linq.Aggregates;
 
 namespace NMF.Expressions.Linq.Orleans
 {
-    public class IncrementalSelectAggregateGrain<TSource, TResult> : ModelProcessingAggregateGrain<TSource, TResult, IIncrementalSelectNodeGrain<TSource, TResult>>,
-        IIncrementalSelectAggregateGrain<TSource, TResult>
+    public class IncrementalSelectAggregateGrain<TSource, TResult, TModel> : ModelProcessingAggregateGrain<TSource, TResult, IIncrementalSelectNodeGrain<TSource, TResult, TModel>, TModel>,
+        IIncrementalSelectAggregateGrain<TSource, TResult, TModel> where TModel : IResolvableModel
     {
         private SerializableFunc<TSource, TResult> _observingFunc;
 
@@ -22,9 +23,9 @@ namespace NMF.Expressions.Linq.Orleans
             return TaskDone.Done;
         }
 
-        protected override async Task<IIncrementalSelectNodeGrain<TSource, TResult>> InitializeNode(StreamIdentity identity)
+        protected override async Task<IIncrementalSelectNodeGrain<TSource, TResult, TModel>> InitializeNode(StreamIdentity identity)
         {
-            var node = GrainFactory.GetGrain<IIncrementalSelectNodeGrain<TSource, TResult>>(Guid.NewGuid());
+            var node = GrainFactory.GetGrain<IIncrementalSelectNodeGrain<TSource, TResult, TModel>>(Guid.NewGuid());
             await node.SetObservingFunc(_observingFunc);
             await node.SetModelContainer(ModelContainer);
             await node.SubscribeToStreams(identity.SingleValueToList());

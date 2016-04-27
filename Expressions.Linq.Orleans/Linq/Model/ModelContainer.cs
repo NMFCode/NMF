@@ -15,12 +15,13 @@ using Orleans.Streams.Endpoints;
 
 namespace NMF.Expressions.Linq.Orleans.Model
 {
-    public class ModelContainer<T> : Grain, IModelContainerGrain<T> where T : Models.Model
+    public class ModelContainer<T> : Grain, IModelContainerGrain<T> where T : IModelElement
     {
         private const string StreamProviderName = "CollectionStreamProvider";
         protected T Model;
         protected StreamMessageSender OutputProducer;
         protected StreamMessageSender ModelUpdateSender;
+        private Func<T> _modelLoadingFunc;
 
         public override Task OnActivateAsync()
         {
@@ -44,7 +45,12 @@ namespace NMF.Expressions.Linq.Orleans.Model
             return ModelUpdateSender.GetStreamIdentity();
         }
 
-        public Task<string> ModelToString(Func<Models.Model, IModelElement> elementSelectorFunc)
+        public Task<Func<T>> GetModelLoadingFunc()
+        {
+            return Task.FromResult(_modelLoadingFunc);
+        }
+
+        public Task<string> ModelToString(Func<T, IModelElement> elementSelectorFunc)
         {
             var element = elementSelectorFunc(Model);
 
@@ -64,6 +70,8 @@ namespace NMF.Expressions.Linq.Orleans.Model
         {
             Model = modelLoadingFunc();
             Model.BubbledChange += ModelBubbledChange;
+
+            _modelLoadingFunc = modelLoadingFunc;
 
             return TaskDone.Done;
         }
@@ -146,7 +154,7 @@ namespace NMF.Expressions.Linq.Orleans.Model
             await OutputProducer.StartTransaction(tId);
             await OutputProducer.SendMessage(message);
             await OutputProducer.EndTransaction(tId);
-            return transactionId.Value;
+            return tId;
         }
     }
 }

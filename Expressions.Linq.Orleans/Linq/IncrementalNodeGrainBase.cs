@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using NMF.Expressions.Linq.Orleans.Message;
 using NMF.Expressions.Linq.Orleans.Model;
+using NMF.Models;
 using Orleans;
 using Orleans.Collections;
 using Orleans.Collections.Messages;
@@ -19,7 +20,8 @@ namespace NMF.Expressions.Linq.Orleans
     /// </summary>
     /// <typeparam name="TSource">Type of data to deal with. Assume data is wrapped in ContainerElement.</typeparam>
     /// <typeparam name="TResult"></typeparam>
-    public abstract class IncrementalNodeGrainBase<TSource, TResult> : ModelProcessingNodeGrain<TSource, TResult>, IElementEnumeratorNode<TResult>
+    /// <typeparam name="TModel"></typeparam>
+    public abstract class IncrementalNodeGrainBase<TSource, TResult, TModel> : ModelProcessingNodeGrain<TSource, TResult, TModel>, IElementEnumeratorNode<TResult> where TModel : IResolvableModel
     {
         protected NotifyCollection<TSource> InputList;
         protected INotifyEnumerable<TResult> ResultEnumerable; 

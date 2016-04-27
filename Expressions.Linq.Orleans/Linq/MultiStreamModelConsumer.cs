@@ -8,7 +8,7 @@ using Orleans.Streams.Endpoints;
 
 namespace NMF.Expressions.Linq.Orleans
 {
-    public class MultiStreamModelConsumer<T> : MultiStreamListConsumer<T> where T : IModelElement
+    public class MultiStreamModelConsumer<T> : MultiStreamListConsumer<T>
     {
         protected Models.Model Model;
 

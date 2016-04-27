@@ -39,12 +39,12 @@ namespace NMF.Expressions.Linq.Orleans.Model
 
         public T Value { get; private set; }
 
-        public T Retrieve(Models.Model lookupModel)
+        public T Retrieve(IResolvableModel lookupModel)
         {
             return Value;
         }
 
-        object IModelRemoteValue.Retrieve(Models.Model lookupModel)
+        object IModelRemoteValue.Retrieve(IResolvableModel lookupModel)
         {
             return Retrieve(lookupModel);
         }
@@ -60,12 +60,12 @@ namespace NMF.Expressions.Linq.Orleans.Model
 
         public Uri RootRelativeUri { get; private set; }
 
-        public T Retrieve(Models.Model lookupModel)
+        public T Retrieve(IResolvableModel lookupModel)
         {
             return (T) lookupModel.Resolve(RootRelativeUri);
         }
 
-        object IModelRemoteValue.Retrieve(Models.Model lookupModel)
+        object IModelRemoteValue.Retrieve(IResolvableModel lookupModel)
         {
             return Retrieve(lookupModel);
         }
@@ -73,11 +73,11 @@ namespace NMF.Expressions.Linq.Orleans.Model
 
     public interface IModelRemoteValue<T> : IModelRemoteValue
     {
-        new T Retrieve(Models.Model lookupModel);
+        new T Retrieve(IResolvableModel lookupModel);
     }
 
     public interface IModelRemoteValue
     {
-        object Retrieve(Models.Model lookupModel);
+        object Retrieve(IResolvableModel lookupModel);
     }
 }

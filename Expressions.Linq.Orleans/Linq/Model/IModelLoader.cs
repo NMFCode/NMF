@@ -5,10 +5,10 @@ using NMF.Models.Repository;
 
 namespace NMF.Expressions.Linq.Orleans.Model
 {
-    public interface IModelLoader<T> where T : Models.Model
+    public interface IModelLoader<T>
     {
         Task LoadModel(Func<T> modelLoadingFunc);
 
-        Task<string> ModelToString(Func<Models.Model, IModelElement> elementSelectorFunc);
+        Task<string> ModelToString(Func<T, IModelElement> elementSelectorFunc);
     }
 }

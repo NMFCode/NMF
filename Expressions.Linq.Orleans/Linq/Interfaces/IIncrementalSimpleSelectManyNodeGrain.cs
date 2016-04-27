@@ -1,12 +1,14 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using NMF.Expressions.Linq.Orleans.Model;
+using NMF.Models;
 using Orleans.Collections;
 using Orleans.Streams;
 
 namespace NMF.Expressions.Linq.Orleans.Linq.Interfaces
 {
-    public interface IIncrementalSimpleSelectManyNodeGrain<TSource, TResult> : IModelProcessingNodeGrain<TSource, TResult, NMF.Models.Model>, IElementEnumeratorNode<TResult>
+    public interface IIncrementalSimpleSelectManyNodeGrain<TSource, TResult, TModel> : IModelProcessingNodeGrain<TSource, TResult, TModel>,
+        IElementEnumeratorNode<TResult> where TModel : IResolvableModel
     {
         Task SetSelector(SerializableFunc<TSource, IEnumerable<TResult>> selector);
     }

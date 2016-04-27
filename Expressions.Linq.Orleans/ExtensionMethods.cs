@@ -12,21 +12,21 @@ namespace NMF.Expressions.Linq.Orleans
 {
     public static class ExtensionMethods
     {
-        #region ClientConsumer
+        #region ModelConsumer
 
-        public static async Task<MultiStreamListConsumer<TIn>> ToListConsumer<TOldIn, TIn, TFactory>(
-            this Task<StreamProcessorChain<TOldIn, TIn, TFactory>> previousNodeTask)
+        public static async Task<MultiStreamListConsumer<TIn>> ToModelConsumer<TOldIn, TIn, TFactory>(
+            this Task<StreamProcessorChain<TOldIn, TIn, TFactory>> previousNodeTask, Func<Models.Model> modelLoadingFunc)
             where TFactory : IStreamProcessorAggregateFactory
         {
             var previousNode = await previousNodeTask;
-            return await ToListConsumer(previousNode);
+            return await ToModelConsumer(previousNode, modelLoadingFunc);
         }
 
-        public static async Task<MultiStreamListConsumer<TIn>> ToListConsumer<ToldIn, TIn, TFactory>(
-            this StreamProcessorChain<ToldIn, TIn, TFactory> previousNode)
+        public static async Task<MultiStreamListConsumer<TIn>> ToModelConsumer<TOldIn, TIn, TFactory>(
+            this StreamProcessorChain<TOldIn, TIn, TFactory> previousNode, Func<Models.Model> modelLoadingFunc)
             where TFactory : IStreamProcessorAggregateFactory
         {
-            var clientConsumer = new MultiStreamListConsumer<TIn>(GrainClient.GetStreamProvider("CollectionStreamProvider"));
+            var clientConsumer = new MultiStreamModelConsumer<TIn>(GrainClient.GetStreamProvider("CollectionStreamProvider"), modelLoadingFunc);
             await clientConsumer.SetInput(await previousNode.GetOutputStreams());
 
             return clientConsumer;
@@ -39,7 +39,7 @@ namespace NMF.Expressions.Linq.Orleans
         public static async Task<StreamProcessorChain<TIn, TOut, TFactory>> SelectIncremental<TIn, TOut, TFactory>
             (
             this ITransactionalStreamProvider<TIn> source, Expression<Func<TIn, TOut>> selectionFunc,
-            TFactory factory) where TFactory : IncrementalStreamProcessorAggregateFactory
+            TFactory factory) where TFactory : IStreamProcessorAggregateFactory
         {
             var processorAggregate = await factory.CreateSelect(selectionFunc, await source.GetOutputStreams());
             var processorChain = new StreamProcessorChainStart<TIn, TOut, TFactory>(processorAggregate, source,
@@ -51,7 +51,7 @@ namespace NMF.Expressions.Linq.Orleans
         public static async Task<StreamProcessorChain<TIn, TOut, TFactory>> SelectIncremental
             <TOldIn, TIn, TOut, TFactory>(
             this StreamProcessorChain<TOldIn, TIn, TFactory> previousNode,
-            Expression<Func<TIn, TOut>> selectionFunc) where TFactory : IncrementalStreamProcessorAggregateFactory
+            Expression<Func<TIn, TOut>> selectionFunc) where TFactory : IStreamProcessorAggregateFactory
         {
             var processorAggregate =
                 await previousNode.Factory.CreateSelect(selectionFunc, await previousNode.Aggregate.GetOutputStreams());
@@ -63,7 +63,7 @@ namespace NMF.Expressions.Linq.Orleans
         public static async Task<StreamProcessorChain<TIn, TOut, TFactory>> SelectIncremental
             <TOldIn, TIn, TOut, TFactory>(
             this Task<StreamProcessorChain<TOldIn, TIn, TFactory>> previousNodeTask,
-            Expression<Func<TIn, TOut>> selectionFunc) where TFactory : IncrementalStreamProcessorAggregateFactory
+            Expression<Func<TIn, TOut>> selectionFunc) where TFactory : IStreamProcessorAggregateFactory
         {
             var previousNode = await previousNodeTask;
             return await SelectIncremental(previousNode, selectionFunc);
@@ -71,7 +71,7 @@ namespace NMF.Expressions.Linq.Orleans
 
         #endregion
 
-        //#region Where
+        #region Where
 
         //public static async Task<StreamProcessorChain<ContainerElement<TIn>, ContainerElement<TIn>, TFactory>> WhereIncremental<TIn, TFactory>
         //    (

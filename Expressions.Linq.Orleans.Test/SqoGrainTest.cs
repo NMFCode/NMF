@@ -47,11 +47,10 @@ namespace Expressions.Linq.Orleans.Test
         {
             var modelGrain = await ModelTestUtil.LoadModelContainer(GrainFactory);
 
-            var selectGrain = GrainFactory.GetGrain<IIncrementalSelectAggregateGrain<Model, Model>>(Guid.NewGuid());
+            var selectGrain = GrainFactory.GetGrain<IIncrementalSelectAggregateGrain<Model, Model, Model>>(Guid.NewGuid());
             await selectGrain.SetModelContainer(modelGrain);
             await selectGrain.SetObservingFunc(new SerializableFunc<Model, Model>(_ => _));
             await selectGrain.SetInput(await modelGrain.GetOutputStreams());
-            await selectGrain.LoadModel(ModelTestUtil.ModelLoadingFunc);
 
             var consumer = new MultiStreamModelConsumer<Model>(_provider, ModelTestUtil.ModelLoadingFunc);
             await consumer.SetInput(await selectGrain.GetOutputStreams());
@@ -70,7 +69,7 @@ namespace Expressions.Linq.Orleans.Test
         {
             var modelGrain = await ModelTestUtil.LoadModelContainer(GrainFactory);
 
-            var selectNodeGrain = GrainFactory.GetGrain<IIncrementalSelectNodeGrain<Model, Model>>(Guid.NewGuid());
+            var selectNodeGrain = GrainFactory.GetGrain<IIncrementalSelectNodeGrain<Model, Model, Model>>(Guid.NewGuid());
             await selectNodeGrain.SetModelContainer(modelGrain);
             await selectNodeGrain.SubscribeToStreams(await modelGrain.GetOutputStreams());
             await selectNodeGrain.SetObservingFunc(new SerializableFunc<Model, Model>(_ => _));
@@ -95,7 +94,7 @@ namespace Expressions.Linq.Orleans.Test
 
             var localModel = ModelTestUtil.ModelLoadingFunc();
 
-            var selectNodeGrain = GrainFactory.GetGrain<IIncrementalSimpleSelectManyNodeGrain<Model, ISemaphore>>(Guid.NewGuid());
+            var selectNodeGrain = GrainFactory.GetGrain<IIncrementalSimpleSelectManyNodeGrain<Model, ISemaphore, Model>>(Guid.NewGuid());
             await selectNodeGrain.SetModelContainer(modelGrain);
             await selectNodeGrain.SetSelector(new SerializableFunc<Model, IEnumerable<ISemaphore>>(model => (model.RootElements.Single() as RailwayContainer).Semaphores));
             await selectNodeGrain.LoadModel(ModelTestUtil.ModelLoadingFunc);
@@ -125,7 +124,7 @@ namespace Expressions.Linq.Orleans.Test
 
             var localModel = ModelTestUtil.ModelLoadingFunc();
 
-            var selectNodeGrain = GrainFactory.GetGrain<IIncrementalWhereNodeGrain<Model>>(Guid.NewGuid());
+            var selectNodeGrain = GrainFactory.GetGrain<IIncrementalWhereNodeGrain<Model, Model>>(Guid.NewGuid());
             await selectNodeGrain.SetModelContainer(modelGrain);
             await selectNodeGrain.SetObservingFunc(new SerializableFunc<Model, bool>(model => (model.RootElements.Single() as RailwayContainer).Semaphores.Count == 5));
             await selectNodeGrain.LoadModel(ModelTestUtil.ModelLoadingFunc);

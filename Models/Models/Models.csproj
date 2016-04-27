@@ -65,6 +65,7 @@
     <Compile Include="Evolution\ModelTransaction.cs" />
     <Compile Include="IModelElement.cs" />
     <Compile Include="IModelValidationLog.cs" />
+    <Compile Include="IResolvableModel.cs" />
     <Compile Include="Meta\Attribute.cs" />
     <Compile Include="Meta\AttributeConstraint.cs" />
     <Compile Include="Meta\ClassAttributeConstraintsCollection.cs" />

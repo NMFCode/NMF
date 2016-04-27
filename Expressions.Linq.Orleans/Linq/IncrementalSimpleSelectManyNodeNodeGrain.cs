@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using NMF.Expressions.Linq.Orleans.Interfaces;
 using NMF.Expressions.Linq.Orleans.Linq.Interfaces;
+using NMF.Models;
 using Orleans;
 using Orleans.Collections;
 using Orleans.Streams;
@@ -9,8 +10,8 @@ using SL = System.Linq.Enumerable;
 
 namespace NMF.Expressions.Linq.Orleans
 {
-    internal sealed class IncrementalSimpleSelectManyNodeNodeGrain<TSource, TResult> : IncrementalNodeGrainBase<TSource, TResult>,
-        IIncrementalSimpleSelectManyNodeGrain<TSource, TResult>
+    internal sealed class IncrementalSimpleSelectManyNodeNodeGrain<TSource, TResult, TModel> : IncrementalNodeGrainBase<TSource, TResult, TModel>,
+        IIncrementalSimpleSelectManyNodeGrain<TSource, TResult, TModel> where TModel : IResolvableModel
     {
 
         public Task SetSelector(SerializableFunc<TSource, IEnumerable<TResult>> selector)

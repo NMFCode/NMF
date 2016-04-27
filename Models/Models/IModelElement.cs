@@ -10,7 +10,7 @@ namespace NMF.Models
     /// <summary>
     /// Defines the interface of a model element in NMF
     /// </summary>
-    public interface IModelElement : INotifyPropertyChanged
+    public interface IModelElement : INotifyPropertyChanged, IResolvableModel
     {
         /// <summary>
         /// Deletes the current model element
