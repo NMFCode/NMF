@@ -13,6 +13,9 @@ using Orleans.Streams.Linq.Aggregates;
 namespace NMF.Expressions.Linq.Orleans
 {
 
+    /// <summary>
+    /// Factory for NMF models. Used for Extension method ToNmfModelConsumer() in order to not make the caller specify all generic arguments.
+    /// </summary>
     public class IncrementalNmfModelStreamProcessorAggregateFactory : IncrementalStreamProcessorAggregateFactory<Models.Model>
     {
         public IncrementalNmfModelStreamProcessorAggregateFactory(IGrainFactory factory, IModelContainerGrain<Models.Model> modelContainer) : base(factory, modelContainer)

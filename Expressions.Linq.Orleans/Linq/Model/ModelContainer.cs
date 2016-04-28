@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.IO;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using NMF.Expressions.Linq.Orleans.Message;
@@ -21,7 +22,8 @@ namespace NMF.Expressions.Linq.Orleans.Model
         protected T Model;
         protected StreamMessageSender OutputProducer;
         protected StreamMessageSender ModelUpdateSender;
-        private Func<T> _modelLoadingFunc;
+        private Func<string, T> _modelLoadingFunc;
+        private string _modelPath;
 
         public override Task OnActivateAsync()
         {
@@ -45,7 +47,12 @@ namespace NMF.Expressions.Linq.Orleans.Model
             return ModelUpdateSender.GetStreamIdentity();
         }
 
-        public Task<Func<T>> GetModelLoadingFunc()
+        public Task<string> GetModelPath()
+        {
+            return Task.FromResult(_modelPath);
+        }
+
+        public Task<Func<string, T>> GetModelLoadingFunc()
         {
             return Task.FromResult(_modelLoadingFunc);
         }
@@ -66,12 +73,19 @@ namespace NMF.Expressions.Linq.Orleans.Model
             return Task.FromResult(result);
         }
 
-        public Task LoadModel(Func<T> modelLoadingFunc)
+        public Task LoadModelFromPath(Func<string, T> modelLoaderFunc, string modelPath)
         {
-            Model = modelLoadingFunc();
+            _modelPath = modelPath;
+            //_modelLoadingFunc = modelLoaderFunc;
+
+            var repository = new ModelRepository();
+            var train = repository.Resolve(new Uri(new FileInfo(modelPath).FullName));
+            IModelElement m = train.Model;
+            Model = (T)m;
+            //Model = modelLoaderFunc(modelPath);
             Model.BubbledChange += ModelBubbledChange;
 
-            _modelLoadingFunc = modelLoadingFunc;
+
 
             return TaskDone.Done;
         }

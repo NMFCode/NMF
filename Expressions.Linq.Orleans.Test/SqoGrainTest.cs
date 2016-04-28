@@ -52,7 +52,7 @@ namespace Expressions.Linq.Orleans.Test
             await selectGrain.SetObservingFunc(new SerializableFunc<Model, Model>(_ => _));
             await selectGrain.SetInput(await modelGrain.GetOutputStreams());
 
-            var consumer = new MultiStreamModelConsumer<Model, Model>(_provider, ModelTestUtil.ModelLoadingFunc);
+            var consumer = new MultiStreamModelConsumer<Model, Model>(_provider, ModelTestUtil.ModelLoadingFunc(ModelTestUtil.ModelPath));
             await consumer.SetInput(await selectGrain.GetOutputStreams());
 
             await modelGrain.EnumerateToSubscribers(Guid.NewGuid());
@@ -73,9 +73,9 @@ namespace Expressions.Linq.Orleans.Test
             await selectNodeGrain.SetModelContainer(modelGrain);
             await selectNodeGrain.SubscribeToStreams(await modelGrain.GetOutputStreams());
             await selectNodeGrain.SetObservingFunc(new SerializableFunc<Model, Model>(_ => _));
-            await selectNodeGrain.LoadModel(ModelTestUtil.ModelLoadingFunc);
+            await selectNodeGrain.LoadModelFromPath(ModelTestUtil.ModelLoadingFunc, ModelTestUtil.ModelPath);
 
-            var consumer = new MultiStreamModelConsumer<Model, Model>(_provider, ModelTestUtil.ModelLoadingFunc);
+            var consumer = new MultiStreamModelConsumer<Model, Model>(_provider, ModelTestUtil.ModelLoadingFunc(ModelTestUtil.ModelPath));
             await consumer.SetInput(await selectNodeGrain.GetOutputStreams());
 
             await modelGrain.EnumerateToSubscribers(Guid.NewGuid());
@@ -92,15 +92,15 @@ namespace Expressions.Linq.Orleans.Test
         {
             var modelGrain = await ModelTestUtil.LoadModelContainer(GrainFactory);
 
-            var localModel = ModelTestUtil.ModelLoadingFunc();
+            var localModel = ModelTestUtil.ModelLoadingFunc(ModelTestUtil.ModelPath);
 
             var selectNodeGrain = GrainFactory.GetGrain<IIncrementalSimpleSelectManyNodeGrain<Model, ISemaphore, Model>>(Guid.NewGuid());
             await selectNodeGrain.SetModelContainer(modelGrain);
             await selectNodeGrain.SetObservingFunc(new SerializableFunc<Model, IEnumerable<ISemaphore>>(model => (model.RootElements.Single() as RailwayContainer).Semaphores));
-            await selectNodeGrain.LoadModel(ModelTestUtil.ModelLoadingFunc);
+            await selectNodeGrain.LoadModelFromPath(ModelTestUtil.ModelLoadingFunc, ModelTestUtil.ModelPath);
             await selectNodeGrain.SubscribeToStreams(await modelGrain.GetOutputStreams());
 
-            var consumer = new MultiStreamModelConsumer<ISemaphore, Model>(_provider, ModelTestUtil.ModelLoadingFunc);
+            var consumer = new MultiStreamModelConsumer<ISemaphore, Model>(_provider, ModelTestUtil.ModelLoadingFunc(ModelTestUtil.ModelPath));
             await consumer.SetInput(await selectNodeGrain.GetOutputStreams());
 
             await modelGrain.EnumerateToSubscribers(Guid.NewGuid());
@@ -122,15 +122,15 @@ namespace Expressions.Linq.Orleans.Test
         {
             var modelGrain = await ModelTestUtil.LoadModelContainer(GrainFactory);
 
-            var localModel = ModelTestUtil.ModelLoadingFunc();
+            var localModel = ModelTestUtil.ModelLoadingFunc(ModelTestUtil.ModelPath);
 
             var selectNodeGrain = GrainFactory.GetGrain<IIncrementalWhereNodeGrain<Model, Model>>(Guid.NewGuid());
             await selectNodeGrain.SetModelContainer(modelGrain);
             await selectNodeGrain.SetObservingFunc(new SerializableFunc<Model, bool>(model => (model.RootElements.Single() as RailwayContainer).Semaphores.Count == 5));
-            await selectNodeGrain.LoadModel(ModelTestUtil.ModelLoadingFunc);
+            await selectNodeGrain.LoadModelFromPath(ModelTestUtil.ModelLoadingFunc, ModelTestUtil.ModelPath);
             await selectNodeGrain.SubscribeToStreams(await modelGrain.GetOutputStreams());
 
-            var consumer = new MultiStreamModelConsumer<Model, Model>(_provider, ModelTestUtil.ModelLoadingFunc);
+            var consumer = new MultiStreamModelConsumer<Model, Model>(_provider, ModelTestUtil.ModelLoadingFunc(ModelTestUtil.ModelPath));
             await consumer.SetInput(await selectNodeGrain.GetOutputStreams());
 
             await modelGrain.EnumerateToSubscribers(Guid.NewGuid());

@@ -1,5 +1,4 @@
 ﻿using System;
-using NMF.Models;
 
 namespace NMF.Models
 {

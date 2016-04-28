@@ -35,4 +35,4 @@ using NMF.Models;
 // [assembly: AssemblyVersion("1.0.*")]
 [assembly: AssemblyVersion("1.0.0.0")]
 [assembly: AssemblyFileVersion("1.0.0.0")]
-[assembly: ModelMetadata("http://www.semanticweb.org/ontologies/2015/ttc/trainbenchmark", "TTC2015.TrainBenchmark.railway.nmf")]
+[assembly: ModelMetadata("http://www.semanticweb.org/ontologies/2015/ttc/trainbenchmark", "NMF.Models.Test.railway.nmf")]

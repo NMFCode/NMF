@@ -119,6 +119,7 @@
     <Compile Include="Linq\Model\ModelExtensions.cs" />
     <Compile Include="Linq\Model\IncrementalAggregateGrainBase.cs" />
     <Compile Include="Linq\Model\ModelProcessingNodeGrain.cs" />
+    <Compile Include="Linq\Model\ModelUtil.cs" />
     <Compile Include="Linq\Model\NonImplicitDisposableMemoryStream.cs" />
     <Compile Include="Linq\MultiStreamModelConsumer.cs" />
     <Compile Include="Linq\TaggedObservableValueWithPosition.cs" />

@@ -149,7 +149,7 @@ namespace Expressions.Linq.Orleans.Test
         private async Task<ITestModelProcessingNodeGrain<Model, int>> LoadAndAttachModelTestConsumer(IModelContainerGrain<Model> modelContainerGrain)
         {
             var consumerGrain = GrainFactory.GetGrain<ITestModelProcessingNodeGrain<Model, int>>(Guid.NewGuid());
-            await consumerGrain.LoadModel(ModelTestUtil.ModelLoadingFunc);
+            await consumerGrain.LoadModelFromPath(ModelTestUtil.ModelLoadingFunc, ModelTestUtil.ModelPath);
             await consumerGrain.SetModelContainer(modelContainerGrain);
 
             return consumerGrain;

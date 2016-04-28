@@ -21,10 +21,12 @@ namespace Expressions.Linq.Orleans.Test.utils
             return railwayContainer;
         };
 
-        public static readonly Func<Model> ModelLoadingFunc = () =>
+        public static readonly string ModelPath = "models/railway-1.xmi";
+
+        public static readonly Func<string, Model> ModelLoadingFunc = (path) =>
         {
             var repository = new ModelRepository();
-            var train = repository.Resolve(new Uri(new FileInfo("models/railway-1.xmi").FullName));
+            var train = repository.Resolve(new Uri(new FileInfo(path).FullName));
             var railwayContainer = train.Model.RootElements.Single() as RailwayContainer;
 
             return train.Model;
@@ -33,7 +35,7 @@ namespace Expressions.Linq.Orleans.Test.utils
         public static async Task<IModelContainerGrain<Model>> LoadModelContainer(IGrainFactory factory)
         {
             var modelContainerGrain = factory.GetGrain<IModelContainerGrain<Model>>(Guid.NewGuid());
-            await modelContainerGrain.LoadModel(ModelLoadingFunc);
+            await modelContainerGrain.LoadModelFromPath(ModelLoadingFunc, ModelPath);
 
             return modelContainerGrain;
         }

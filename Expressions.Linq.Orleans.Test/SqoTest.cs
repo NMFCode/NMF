@@ -5,6 +5,7 @@ using Expressions.Linq.Orleans.Test.utils;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using NMF.Expressions.Linq.Orleans;
 using NMF.Expressions.Linq.Orleans.Model;
+using NMF.Models;
 using NMF.Models.Tests.Railway;
 using Orleans;
 using Orleans.Streams;
@@ -37,7 +38,7 @@ namespace Expressions.Linq.Orleans.Test
         [TestMethod]
         public async Task SelectTest()
         {
-            var localModel = ModelTestUtil.ModelLoadingFunc();
+            var localModel = ModelTestUtil.ModelLoadingFunc(ModelTestUtil.ModelPath);
             var modelContainer = await ModelTestUtil.LoadModelContainer(GrainFactory);
             var factory = new IncrementalNmfModelStreamProcessorAggregateFactory(GrainFactory, modelContainer);
 
@@ -54,7 +55,7 @@ namespace Expressions.Linq.Orleans.Test
         [TestMethod]
         public async Task SelectManyTest()
         {
-            var localModel = ModelTestUtil.ModelLoadingFunc();
+            var localModel = ModelTestUtil.ModelLoadingFunc(ModelTestUtil.ModelPath);
             var modelContainer = await ModelTestUtil.LoadModelContainer(GrainFactory);
             var factory = new IncrementalNmfModelStreamProcessorAggregateFactory(GrainFactory, modelContainer);
 
@@ -72,7 +73,7 @@ namespace Expressions.Linq.Orleans.Test
         [TestMethod]
         public async Task WhereSelectManyTest()
         {
-            var localModel = ModelTestUtil.ModelLoadingFunc();
+            var localModel = ModelTestUtil.ModelLoadingFunc(ModelTestUtil.ModelPath);
             var modelContainer = await ModelTestUtil.LoadModelContainer(GrainFactory);
             var factory = new IncrementalNmfModelStreamProcessorAggregateFactory(GrainFactory, modelContainer);
 

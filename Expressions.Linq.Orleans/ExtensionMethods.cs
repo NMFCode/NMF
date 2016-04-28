@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
+using NMF.Expressions.Linq.Orleans.Model;
 using NMF.Models;
 using Orleans;
 using Orleans.Collections;
@@ -49,7 +50,8 @@ namespace NMF.Expressions.Linq.Orleans
             where TFactory : IncrementalStreamProcessorAggregateFactory<TModel> where TModel : IResolvableModel
         {
             var modelLoadingFunc = await previousNode.Factory.ModelContainerGrain.GetModelLoadingFunc();
-            var clientConsumer = new MultiStreamModelConsumer<TIn, TModel>(GrainClient.GetStreamProvider("CollectionStreamProvider"), modelLoadingFunc);
+            var modelPath = await previousNode.Factory.ModelContainerGrain.GetModelPath();
+            var clientConsumer = new MultiStreamModelConsumer<TIn, TModel>(GrainClient.GetStreamProvider("CollectionStreamProvider"), modelLoadingFunc(modelPath));
             await clientConsumer.SetInput(await previousNode.GetOutputStreams());
 
             return clientConsumer;

@@ -12,9 +12,9 @@ namespace NMF.Expressions.Linq.Orleans
     {
         protected TModel Model;
 
-        public MultiStreamModelConsumer(IStreamProvider streamProvider, Func<TModel> modelLoadingFunc) : base(streamProvider)
+        public MultiStreamModelConsumer(IStreamProvider streamProvider, TModel model) : base(streamProvider)
         {
-            Model = modelLoadingFunc();
+            Model = model;
         }
 
         protected override void SetupMessageDispatcher(StreamMessageDispatchReceiver dispatcher)

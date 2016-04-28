@@ -14,6 +14,8 @@ namespace NMF.Expressions.Linq.Orleans.Model
 
         Task<StreamIdentity> GetModelUpdateStream();
 
-        Task<Func<T>> GetModelLoadingFunc();
+        Task<string> GetModelPath();
+
+        Task<Func<string, T>> GetModelLoadingFunc();
     }
 }
