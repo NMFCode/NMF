@@ -57,24 +57,21 @@ namespace Expressions.Linq.Orleans.Test
             // Property Changed test to null
             await modelContainerGrain.ExecuteSync(model =>
             {
-                var railwayContainer = model.RootElements.Single() as RailwayContainer;
-                railwayContainer.Routes.First().Entry = null;
+                model.Routes.First().Entry = null;
             });
             Assert.IsTrue(await ModelTestUtil.CurrentModelsMatch(modelContainerGrain, consumerGrain));
 
             // Property Changed test to known object
             await modelContainerGrain.ExecuteSync(model =>
             {
-                var railwayContainer = model.RootElements.Single() as RailwayContainer;
-                railwayContainer.Routes.First().Entry = railwayContainer.Semaphores[2];
+                model.Routes.First().Entry = model.Semaphores[2];
             });
             Assert.IsTrue(await ModelTestUtil.CurrentModelsMatch(modelContainerGrain, consumerGrain));
 
             // Property Changed test to native type
             await modelContainerGrain.ExecuteSync(model =>
             {
-                var railwayContainer = model.RootElements.Single() as RailwayContainer;
-                var segmentToModify = railwayContainer.Descendants().OfType<Segment>().First();
+                var segmentToModify = model.Descendants().OfType<Segment>().First();
                 segmentToModify.Length = 42;
             });
             Assert.IsTrue(await ModelTestUtil.CurrentModelsMatch(modelContainerGrain, consumerGrain));
@@ -146,10 +143,10 @@ namespace Expressions.Linq.Orleans.Test
             //Assert.IsTrue(await CurrentModelsMatch(modelSelectorFunc, modelContainerGrain, consumerGrain));
         }
 
-        private async Task<ITestModelProcessingNodeGrain<Model, int>> LoadAndAttachModelTestConsumer(IModelContainerGrain<Model> modelContainerGrain)
+        private async Task<ITestModelProcessingNodeGrain<RailwayContainer, int, RailwayContainer>> LoadAndAttachModelTestConsumer(IModelContainerGrain<RailwayContainer> modelContainerGrain)
         {
-            var consumerGrain = GrainFactory.GetGrain<ITestModelProcessingNodeGrain<Model, int>>(Guid.NewGuid());
-            await consumerGrain.LoadModelFromPath(ModelTestUtil.ModelLoadingFunc, ModelTestUtil.ModelPath);
+            var consumerGrain = GrainFactory.GetGrain<ITestModelProcessingNodeGrain<RailwayContainer, int, RailwayContainer>>(Guid.NewGuid());
+            await consumerGrain.LoadModelFromPath(ModelTestUtil.ModelPath);
             await consumerGrain.SetModelContainer(modelContainerGrain);
 
             return consumerGrain;

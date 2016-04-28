@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using NMF.Expressions.Linq.Orleans.Message;
 using NMF.Models;
 using NMF.Models.Repository;
+using NMF.Models.Tests.Railway;
 using Orleans;
 using Orleans.Collections;
 using Orleans.Streams;
@@ -52,11 +53,6 @@ namespace NMF.Expressions.Linq.Orleans.Model
             return Task.FromResult(_modelPath);
         }
 
-        public Task<Func<string, T>> GetModelLoadingFunc()
-        {
-            return Task.FromResult(_modelLoadingFunc);
-        }
-
         public Task<string> ModelToString(Func<T, IModelElement> elementSelectorFunc)
         {
             var element = elementSelectorFunc(Model);
@@ -73,19 +69,12 @@ namespace NMF.Expressions.Linq.Orleans.Model
             return Task.FromResult(result);
         }
 
-        public Task LoadModelFromPath(Func<string, T> modelLoaderFunc, string modelPath)
+        public Task LoadModelFromPath(string modelPath)
         {
             _modelPath = modelPath;
-            //_modelLoadingFunc = modelLoaderFunc;
 
-            var repository = new ModelRepository();
-            var train = repository.Resolve(new Uri(new FileInfo(modelPath).FullName));
-            IModelElement m = train.Model;
-            Model = (T)m;
-            //Model = modelLoaderFunc(modelPath);
+            Model = ModelUtil.LoadModelFromPath<T>(modelPath);
             Model.BubbledChange += ModelBubbledChange;
-
-
 
             return TaskDone.Done;
         }

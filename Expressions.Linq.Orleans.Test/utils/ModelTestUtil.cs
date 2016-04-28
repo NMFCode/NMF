@@ -15,39 +15,38 @@ namespace Expressions.Linq.Orleans.Test.utils
     public static class ModelTestUtil
     {
 
-        public static readonly Func<Model, IModelElement> DefaultModelSelectorFunc = model =>
+        private static Func<T, IModelElement> DefaultModelSelectorFunc<T>() where T : IModelElement
         {
-            var railwayContainer = model.RootElements.Single() as RailwayContainer;
-            return railwayContainer;
-        };
+            return new Func<T, IModelElement>(_ => _);
+        }
 
         public static readonly string ModelPath = "models/railway-1.xmi";
 
-        public static readonly Func<string, Model> ModelLoadingFunc = (path) =>
+        public static readonly Func<string, RailwayContainer> ModelLoadingFunc = (path) =>
         {
             var repository = new ModelRepository();
             var train = repository.Resolve(new Uri(new FileInfo(path).FullName));
             var railwayContainer = train.Model.RootElements.Single() as RailwayContainer;
 
-            return train.Model;
+            return railwayContainer;
         };
 
-        public static async Task<IModelContainerGrain<Model>> LoadModelContainer(IGrainFactory factory)
+        public static async Task<IModelContainerGrain<RailwayContainer>> LoadModelContainer(IGrainFactory factory)
         {
-            var modelContainerGrain = factory.GetGrain<IModelContainerGrain<Model>>(Guid.NewGuid());
-            await modelContainerGrain.LoadModelFromPath(ModelLoadingFunc, ModelPath);
+            var modelContainerGrain = factory.GetGrain<IModelContainerGrain<RailwayContainer>>(Guid.NewGuid());
+            await modelContainerGrain.LoadModelFromPath(ModelPath);
 
             return modelContainerGrain;
         }
 
         public static async Task<bool> CurrentModelsMatch<T>(IModelLoader<T> loader1,
-IModelLoader<T> loader2) where T : Model
+IModelLoader<T> loader2) where T : IModelElement
         {
-            return await CurrentModelsMatch(loader1, loader2, DefaultModelSelectorFunc);
+            return await CurrentModelsMatch(loader1, loader2, DefaultModelSelectorFunc<T>());
         }
 
         public static async Task<bool> CurrentModelsMatch<T>(IModelLoader<T> loader1,
-    IModelLoader<T> loader2, Func<Model, IModelElement> elementSelectorFunc) where T : Model
+    IModelLoader<T> loader2, Func<T, IModelElement> elementSelectorFunc) where T : IModelElement
         {
             var s1 = await loader1.ModelToString(elementSelectorFunc);
             var s2 = await loader2.ModelToString(elementSelectorFunc);

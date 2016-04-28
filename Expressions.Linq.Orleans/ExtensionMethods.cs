@@ -3,6 +3,7 @@ using System.Linq.Expressions;
 using System.Threading.Tasks;
 using NMF.Expressions.Linq.Orleans.Model;
 using NMF.Models;
+using NMF.Models.Tests.Railway;
 using Orleans;
 using Orleans.Collections;
 using Orleans.Collections.Endpoints;
@@ -21,14 +22,14 @@ namespace NMF.Expressions.Linq.Orleans
     where TFactory : IncrementalNmfModelStreamProcessorAggregateFactory
         {
             var previousNode = await previousNodeTask;
-            return await ToModelConsumer<TOldIn, TIn, TFactory, NMF.Models.Model>(previousNode);
+            return await ToModelConsumer<TOldIn, TIn, TFactory, RailwayContainer>(previousNode);
         }
 
         public static Task<MultiStreamListConsumer<TIn>> ToNmfModelConsumer<TOldIn, TIn, TFactory>(
             this StreamProcessorChain<TOldIn, TIn, TFactory> previousNode)
             where TFactory : IncrementalNmfModelStreamProcessorAggregateFactory
         {
-            return ToModelConsumer<TOldIn, TIn, TFactory, NMF.Models.Model>(previousNode);
+            return ToModelConsumer<TOldIn, TIn, TFactory, RailwayContainer>(previousNode);
         }
 
 
@@ -49,9 +50,8 @@ namespace NMF.Expressions.Linq.Orleans
             this StreamProcessorChain<TOldIn, TIn, TFactory> previousNode)
             where TFactory : IncrementalStreamProcessorAggregateFactory<TModel> where TModel : IResolvableModel
         {
-            var modelLoadingFunc = await previousNode.Factory.ModelContainerGrain.GetModelLoadingFunc();
             var modelPath = await previousNode.Factory.ModelContainerGrain.GetModelPath();
-            var clientConsumer = new MultiStreamModelConsumer<TIn, TModel>(GrainClient.GetStreamProvider("CollectionStreamProvider"), modelLoadingFunc(modelPath));
+            var clientConsumer = new MultiStreamModelConsumer<TIn, TModel>(GrainClient.GetStreamProvider("CollectionStreamProvider"), ModelUtil.LoadModelFromPath<TModel>(modelPath));
             await clientConsumer.SetInput(await previousNode.GetOutputStreams());
 
             return clientConsumer;

@@ -59,14 +59,14 @@ namespace Expressions.Linq.Orleans.Test
             var modelContainer = await ModelTestUtil.LoadModelContainer(GrainFactory);
             var factory = new IncrementalNmfModelStreamProcessorAggregateFactory(GrainFactory, modelContainer);
 
-            var query = await modelContainer.SimpleSelectMany(model => (model.RootElements.Single() as RailwayContainer).Semaphores, factory);
+            var query = await modelContainer.SimpleSelectMany(model => model.Semaphores, factory);
             var resultConsumer = await query.ToNmfModelConsumer();
 
             Assert.AreEqual(0, resultConsumer.Items.Count);
 
             await modelContainer.EnumerateToSubscribers();
 
-            var localResults = (localModel.RootElements.Single() as RailwayContainer).Semaphores; 
+            var localResults = localModel.Semaphores; 
             ModelTestUtil.AssertXmlEquals(localResults, resultConsumer.Items);
         }
 
@@ -78,7 +78,7 @@ namespace Expressions.Linq.Orleans.Test
             var factory = new IncrementalNmfModelStreamProcessorAggregateFactory(GrainFactory, modelContainer);
 
             var query =
-                modelContainer.SimpleSelectMany(model => (model.RootElements.Single() as RailwayContainer).Semaphores, factory)
+                modelContainer.SimpleSelectMany(model => model.Semaphores, factory)
                     .Where(s => s.Signal == Signal.GO);
             var resultConsumer = await query.ToNmfModelConsumer();
 
@@ -86,7 +86,7 @@ namespace Expressions.Linq.Orleans.Test
 
             await modelContainer.EnumerateToSubscribers();
 
-            var localResults = (localModel.RootElements.Single() as RailwayContainer).Semaphores.Where(s => s.Signal == Signal.GO);
+            var localResults = localModel.Semaphores.Where(s => s.Signal == Signal.GO);
             ModelTestUtil.AssertXmlEquals(localResults, resultConsumer.Items);
         }
         

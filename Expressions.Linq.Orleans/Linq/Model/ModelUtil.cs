@@ -8,14 +8,14 @@ namespace NMF.Expressions.Linq.Orleans.Model
 {
     public static class ModelUtil
     {
-        //public static T LoadModelFromPath<T>(string modelPath) where T : IResolvableModel
-        //{
-        //    var repository = new ModelRepository();
-        //    var train = repository.Resolve(new Uri(new FileInfo(modelPath).FullName));
+        public static T LoadModelFromPath<T>(string modelPath) where T : IResolvableModel
+        {
+            var repository = new ModelRepository();
+            var train = repository.Resolve(new Uri(new FileInfo(modelPath).FullName));
 
-        //    var model = (IModelElement) train.Model;
+            var model = (IModelElement)train.Model.RootElements.Single();
 
-        //    return (T) model;
-        //}
+            return (T)model;
+        }
     }
 }

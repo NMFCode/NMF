@@ -17,9 +17,9 @@ namespace NMF.Expressions.Linq.Orleans.Model
         protected TModel Model { get; private set; }
         protected IModelContainerGrain<TModel> ModelContainer { get; private set; }
 
-        public Task LoadModelFromPath(Func<string, TModel> modelLoaderFunc, string modelPath)
+        public Task LoadModelFromPath(string modelPath)
         {
-            Model = modelLoaderFunc(modelPath);
+            Model = ModelUtil.LoadModelFromPath<TModel>(modelPath);
             return TaskDone.Done;
         }
 
@@ -42,7 +42,7 @@ namespace NMF.Expressions.Linq.Orleans.Model
         public async Task SetModelContainer(IModelContainerGrain<TModel> modelContainer)
         {
             ModelContainer = modelContainer;
-            var loadModelTask = LoadModelFromPath(await modelContainer.GetModelLoadingFunc(), await modelContainer.GetModelPath());
+            var loadModelTask = LoadModelFromPath(await modelContainer.GetModelPath());
             var subscribeTask = SubscribeToStreams((await modelContainer.GetModelUpdateStream()).SingleValueToList());
 
             await Task.WhenAll(loadModelTask, subscribeTask);

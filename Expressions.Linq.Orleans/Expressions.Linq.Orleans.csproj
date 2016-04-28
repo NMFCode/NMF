@@ -48,6 +48,9 @@
       <HintPath>..\packages\Newtonsoft.Json.7.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="NMF.Models.Tests">
+      <HintPath>..\Models\Models.Tests\bin\Debug\NMF.Models.Tests.dll</HintPath>
+    </Reference>
     <Reference Include="Orleans, Version=1.2.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.Orleans.Core.1.2.1-alpha1\lib\net451\Orleans.dll</HintPath>
       <Private>True</Private>

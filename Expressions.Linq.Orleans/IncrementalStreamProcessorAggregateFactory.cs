@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using NMF.Expressions.Linq.Orleans.Linq.Interfaces;
 using NMF.Expressions.Linq.Orleans.Model;
 using NMF.Models;
+using NMF.Models.Tests.Railway;
 using Orleans;
 using Orleans.Collections;
 using Orleans.Streams;
@@ -16,9 +17,9 @@ namespace NMF.Expressions.Linq.Orleans
     /// <summary>
     /// Factory for NMF models. Used for Extension method ToNmfModelConsumer() in order to not make the caller specify all generic arguments.
     /// </summary>
-    public class IncrementalNmfModelStreamProcessorAggregateFactory : IncrementalStreamProcessorAggregateFactory<Models.Model>
+    public class IncrementalNmfModelStreamProcessorAggregateFactory : IncrementalStreamProcessorAggregateFactory<RailwayContainer>
     {
-        public IncrementalNmfModelStreamProcessorAggregateFactory(IGrainFactory factory, IModelContainerGrain<Models.Model> modelContainer) : base(factory, modelContainer)
+        public IncrementalNmfModelStreamProcessorAggregateFactory(IGrainFactory factory, IModelContainerGrain<RailwayContainer> modelContainer) : base(factory, modelContainer)
         {
         }
     }
