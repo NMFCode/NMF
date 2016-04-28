@@ -10,9 +10,6 @@ namespace NMF.Expressions.Linq.Orleans.Model
 {
     public static class ModelExtensions
     {
-        //public static ModelCollectionChangedMessage CreateInstanceBinder(this NotifyCollectionChangedEventArgs args)
-
-
         public static string ToXmlString(this IModelElement element)
         {
             var serializer = MetaRepository.Instance.Serializer;

@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
 using Expressions.Linq.Orleans.Test.utils;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -38,10 +39,10 @@ namespace Expressions.Linq.Orleans.Test
         {
             var localModel = ModelTestUtil.ModelLoadingFunc();
             var modelContainer = await ModelTestUtil.LoadModelContainer(GrainFactory);
-            var factory = new IncrementalStreamProcessorAggregateFactory<NMF.Models.Model>(GrainFactory, modelContainer);
+            var factory = new IncrementalNmfModelStreamProcessorAggregateFactory(GrainFactory, modelContainer);
 
             var query = await modelContainer.Select(x => x, factory);
-            var resultConsumer = await query.ToModelConsumer(ModelTestUtil.ModelLoadingFunc);
+            var resultConsumer = await query.ToNmfModelConsumer();
 
             Assert.AreEqual(0, resultConsumer.Items.Count);
 
@@ -55,10 +56,10 @@ namespace Expressions.Linq.Orleans.Test
         {
             var localModel = ModelTestUtil.ModelLoadingFunc();
             var modelContainer = await ModelTestUtil.LoadModelContainer(GrainFactory);
-            var factory = new IncrementalStreamProcessorAggregateFactory<NMF.Models.Model>(GrainFactory, modelContainer);
+            var factory = new IncrementalNmfModelStreamProcessorAggregateFactory(GrainFactory, modelContainer);
 
             var query = await modelContainer.SimpleSelectMany(model => (model.RootElements.Single() as RailwayContainer).Semaphores, factory);
-            var resultConsumer = await query.ToModelConsumer(ModelTestUtil.ModelLoadingFunc);
+            var resultConsumer = await query.ToNmfModelConsumer();
 
             Assert.AreEqual(0, resultConsumer.Items.Count);
 
@@ -67,5 +68,26 @@ namespace Expressions.Linq.Orleans.Test
             var localResults = (localModel.RootElements.Single() as RailwayContainer).Semaphores; 
             ModelTestUtil.AssertXmlEquals(localResults, resultConsumer.Items);
         }
+
+        [TestMethod]
+        public async Task WhereSelectManyTest()
+        {
+            var localModel = ModelTestUtil.ModelLoadingFunc();
+            var modelContainer = await ModelTestUtil.LoadModelContainer(GrainFactory);
+            var factory = new IncrementalNmfModelStreamProcessorAggregateFactory(GrainFactory, modelContainer);
+
+            var query =
+                modelContainer.SimpleSelectMany(model => (model.RootElements.Single() as RailwayContainer).Semaphores, factory)
+                    .Where(s => s.Signal == Signal.GO);
+            var resultConsumer = await query.ToNmfModelConsumer();
+
+            Assert.AreEqual(0, resultConsumer.Items.Count);
+
+            await modelContainer.EnumerateToSubscribers();
+
+            var localResults = (localModel.RootElements.Single() as RailwayContainer).Semaphores.Where(s => s.Signal == Signal.GO);
+            ModelTestUtil.AssertXmlEquals(localResults, resultConsumer.Items);
+        }
+        
     }
 }

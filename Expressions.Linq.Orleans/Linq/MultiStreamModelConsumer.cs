@@ -8,11 +8,11 @@ using Orleans.Streams.Endpoints;
 
 namespace NMF.Expressions.Linq.Orleans
 {
-    public class MultiStreamModelConsumer<T> : MultiStreamListConsumer<T>
+    public class MultiStreamModelConsumer<T, TModel> : MultiStreamListConsumer<T> where TModel : IResolvableModel
     {
-        protected Models.Model Model;
+        protected TModel Model;
 
-        public MultiStreamModelConsumer(IStreamProvider streamProvider, Func<Models.Model> modelLoadingFunc) : base(streamProvider)
+        public MultiStreamModelConsumer(IStreamProvider streamProvider, Func<TModel> modelLoadingFunc) : base(streamProvider)
         {
             Model = modelLoadingFunc();
         }

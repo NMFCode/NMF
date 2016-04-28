@@ -52,7 +52,7 @@ namespace Expressions.Linq.Orleans.Test
             await selectGrain.SetObservingFunc(new SerializableFunc<Model, Model>(_ => _));
             await selectGrain.SetInput(await modelGrain.GetOutputStreams());
 
-            var consumer = new MultiStreamModelConsumer<Model>(_provider, ModelTestUtil.ModelLoadingFunc);
+            var consumer = new MultiStreamModelConsumer<Model, Model>(_provider, ModelTestUtil.ModelLoadingFunc);
             await consumer.SetInput(await selectGrain.GetOutputStreams());
 
             await modelGrain.EnumerateToSubscribers(Guid.NewGuid());
@@ -75,7 +75,7 @@ namespace Expressions.Linq.Orleans.Test
             await selectNodeGrain.SetObservingFunc(new SerializableFunc<Model, Model>(_ => _));
             await selectNodeGrain.LoadModel(ModelTestUtil.ModelLoadingFunc);
 
-            var consumer = new MultiStreamModelConsumer<Model>(_provider, ModelTestUtil.ModelLoadingFunc);
+            var consumer = new MultiStreamModelConsumer<Model, Model>(_provider, ModelTestUtil.ModelLoadingFunc);
             await consumer.SetInput(await selectNodeGrain.GetOutputStreams());
 
             await modelGrain.EnumerateToSubscribers(Guid.NewGuid());
@@ -100,7 +100,7 @@ namespace Expressions.Linq.Orleans.Test
             await selectNodeGrain.LoadModel(ModelTestUtil.ModelLoadingFunc);
             await selectNodeGrain.SubscribeToStreams(await modelGrain.GetOutputStreams());
 
-            var consumer = new MultiStreamModelConsumer<ISemaphore>(_provider, ModelTestUtil.ModelLoadingFunc);
+            var consumer = new MultiStreamModelConsumer<ISemaphore, Model>(_provider, ModelTestUtil.ModelLoadingFunc);
             await consumer.SetInput(await selectNodeGrain.GetOutputStreams());
 
             await modelGrain.EnumerateToSubscribers(Guid.NewGuid());
@@ -130,7 +130,7 @@ namespace Expressions.Linq.Orleans.Test
             await selectNodeGrain.LoadModel(ModelTestUtil.ModelLoadingFunc);
             await selectNodeGrain.SubscribeToStreams(await modelGrain.GetOutputStreams());
 
-            var consumer = new MultiStreamModelConsumer<Model>(_provider, ModelTestUtil.ModelLoadingFunc);
+            var consumer = new MultiStreamModelConsumer<Model, Model>(_provider, ModelTestUtil.ModelLoadingFunc);
             await consumer.SetInput(await selectNodeGrain.GetOutputStreams());
 
             await modelGrain.EnumerateToSubscribers(Guid.NewGuid());

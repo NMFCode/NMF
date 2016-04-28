@@ -5,7 +5,6 @@ namespace NMF.Expressions.Linq.Orleans.Model
 {
     public static class ModelRemoteValueFactory
     {
-        // TODO check if name factory works
         public static IModelRemoteValue CreateModelChangeValue(object obj)
         {
             if (obj is IModelElement)

@@ -12,6 +12,14 @@ using Orleans.Streams.Linq.Aggregates;
 
 namespace NMF.Expressions.Linq.Orleans
 {
+
+    public class IncrementalNmfModelStreamProcessorAggregateFactory : IncrementalStreamProcessorAggregateFactory<Models.Model>
+    {
+        public IncrementalNmfModelStreamProcessorAggregateFactory(IGrainFactory factory, IModelContainerGrain<Models.Model> modelContainer) : base(factory, modelContainer)
+        {
+        }
+    }
+
     public class IncrementalStreamProcessorAggregateFactory<TModel> : IStreamProcessorAggregateFactory where TModel : IResolvableModel
     {
         public IncrementalStreamProcessorAggregateFactory(IGrainFactory factory, IModelContainerGrain<TModel> modelContainer)

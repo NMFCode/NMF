@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
+using NMF.Models;
 using Orleans;
 using Orleans.Collections;
 using Orleans.Collections.Endpoints;
@@ -12,21 +13,43 @@ namespace NMF.Expressions.Linq.Orleans
 {
     public static class ExtensionMethods
     {
-        #region ModelConsumer
+        #region ModelConsumer for NMF - hack to walk around two-level type inference issues.
 
-        public static async Task<MultiStreamListConsumer<TIn>> ToModelConsumer<TOldIn, TIn, TFactory>(
-            this Task<StreamProcessorChain<TOldIn, TIn, TFactory>> previousNodeTask, Func<Models.Model> modelLoadingFunc)
-            where TFactory : IStreamProcessorAggregateFactory
+        public static async Task<MultiStreamListConsumer<TIn>> ToNmfModelConsumer<TOldIn, TIn, TFactory>(
+    this Task<StreamProcessorChain<TOldIn, TIn, TFactory>> previousNodeTask)
+    where TFactory : IncrementalNmfModelStreamProcessorAggregateFactory
         {
             var previousNode = await previousNodeTask;
-            return await ToModelConsumer(previousNode, modelLoadingFunc);
+            return await ToModelConsumer<TOldIn, TIn, TFactory, NMF.Models.Model>(previousNode);
         }
 
-        public static async Task<MultiStreamListConsumer<TIn>> ToModelConsumer<TOldIn, TIn, TFactory>(
-            this StreamProcessorChain<TOldIn, TIn, TFactory> previousNode, Func<Models.Model> modelLoadingFunc)
-            where TFactory : IStreamProcessorAggregateFactory
+        public static Task<MultiStreamListConsumer<TIn>> ToNmfModelConsumer<TOldIn, TIn, TFactory>(
+            this StreamProcessorChain<TOldIn, TIn, TFactory> previousNode)
+            where TFactory : IncrementalNmfModelStreamProcessorAggregateFactory
         {
-            var clientConsumer = new MultiStreamModelConsumer<TIn>(GrainClient.GetStreamProvider("CollectionStreamProvider"), modelLoadingFunc);
+            return ToModelConsumer<TOldIn, TIn, TFactory, NMF.Models.Model>(previousNode);
+        }
+
+
+        #endregion
+
+
+            #region ModelConsumer
+
+        public static async Task<MultiStreamListConsumer<TIn>> ToModelConsumer<TOldIn, TIn, TFactory, TModel>(
+            this Task<StreamProcessorChain<TOldIn, TIn, TFactory>> previousNodeTask)
+            where TFactory : IncrementalStreamProcessorAggregateFactory<TModel> where TModel : IResolvableModel
+        {
+            var previousNode = await previousNodeTask;
+            return await ToModelConsumer<TOldIn, TIn, TFactory, TModel>(previousNode);
+        }
+
+        public static async Task<MultiStreamListConsumer<TIn>> ToModelConsumer<TOldIn, TIn, TFactory, TModel>(
+            this StreamProcessorChain<TOldIn, TIn, TFactory> previousNode)
+            where TFactory : IncrementalStreamProcessorAggregateFactory<TModel> where TModel : IResolvableModel
+        {
+            var modelLoadingFunc = await previousNode.Factory.ModelContainerGrain.GetModelLoadingFunc();
+            var clientConsumer = new MultiStreamModelConsumer<TIn, TModel>(GrainClient.GetStreamProvider("CollectionStreamProvider"), modelLoadingFunc);
             await clientConsumer.SetInput(await previousNode.GetOutputStreams());
 
             return clientConsumer;
