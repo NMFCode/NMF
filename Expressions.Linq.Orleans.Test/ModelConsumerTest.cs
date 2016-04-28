@@ -143,10 +143,9 @@ namespace Expressions.Linq.Orleans.Test
             //Assert.IsTrue(await CurrentModelsMatch(modelSelectorFunc, modelContainerGrain, consumerGrain));
         }
 
-        private async Task<ITestModelProcessingNodeGrain<RailwayContainer, int, RailwayContainer>> LoadAndAttachModelTestConsumer(IModelContainerGrain<RailwayContainer> modelContainerGrain)
+        private async Task<ITestModelProcessingNodeGrain<RailwayContainer, int>> LoadAndAttachModelTestConsumer(IModelContainerGrain<RailwayContainer> modelContainerGrain)
         {
-            var consumerGrain = GrainFactory.GetGrain<ITestModelProcessingNodeGrain<RailwayContainer, int, RailwayContainer>>(Guid.NewGuid());
-            await consumerGrain.LoadModelFromPath(ModelTestUtil.ModelPath);
+            var consumerGrain = GrainFactory.GetGrain<ITestModelProcessingNodeGrain<RailwayContainer, int>>(Guid.NewGuid());
             await consumerGrain.SetModelContainer(modelContainerGrain);
 
             return consumerGrain;
