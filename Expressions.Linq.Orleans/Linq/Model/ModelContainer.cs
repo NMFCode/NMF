@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using NMF.Expressions.Linq.Orleans.Message;
@@ -43,6 +44,14 @@ namespace NMF.Expressions.Linq.Orleans.Model
             await OutputProducer.SendMessagesFromQueue();
         }
 
+        public async Task ExecuteSync(Action<T, object> action, object state)
+        {
+            action(Model, state);
+
+            await ModelUpdateSender.SendMessagesFromQueue();
+            await OutputProducer.SendMessagesFromQueue();
+        }
+
         public Task<StreamIdentity> GetModelUpdateStream()
         {
             return ModelUpdateSender.GetStreamIdentity();
@@ -71,6 +80,7 @@ namespace NMF.Expressions.Linq.Orleans.Model
 
         public Task LoadModelFromPath(string modelPath)
         {
+            Assembly.LoadFrom("NMF.Models.Tests.dll");
             _modelPath = modelPath;
 
             Model = ModelUtil.LoadModelFromPath<T>(modelPath);

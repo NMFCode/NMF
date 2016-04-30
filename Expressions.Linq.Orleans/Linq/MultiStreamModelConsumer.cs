@@ -21,6 +21,7 @@ namespace NMF.Expressions.Linq.Orleans
         {
             base.SetupMessageDispatcher(dispatcher);
             dispatcher.Register<ModelItemAddMessage<T>>(ProcessModelItemAddMessage);
+            dispatcher.Register<ModelItemRemoveMessage<T>>(ProcessModelItemRemoveMessage);
         }
 
         private Task ProcessModelItemAddMessage(ModelItemAddMessage<T> message)
@@ -29,6 +30,17 @@ namespace NMF.Expressions.Linq.Orleans
             {
                 var resultItem = item.Retrieve(Model);
                 Items.Add(resultItem);
+            }
+
+            return TaskDone.Done;
+        }
+
+        private Task ProcessModelItemRemoveMessage(ModelItemRemoveMessage<T> message)
+        {
+            foreach (var item in message.Items)
+            {
+                var resultItem = item.Retrieve(Model);
+                Items.Remove(resultItem);
             }
 
             return TaskDone.Done;

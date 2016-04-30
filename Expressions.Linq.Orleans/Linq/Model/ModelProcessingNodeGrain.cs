@@ -60,16 +60,17 @@ namespace NMF.Expressions.Linq.Orleans.Model
             StreamMessageDispatchReceiver.Register<ModelPropertyChangedMessage>(ProcessModelPropertyChangedMessage);
         }
 
-        private Task ProcessModelPropertyChangedMessage(ModelPropertyChangedMessage message)
+        private async Task ProcessModelPropertyChangedMessage(ModelPropertyChangedMessage message)
         {
             var sourceItem = Model.Resolve(message.RelativeRootUri);
             var newValue = message.Value.Retrieve(Model);
 
             sourceItem.GetType().GetProperty(message.PropertyName).GetSetMethod(true).Invoke(sourceItem, new[] {newValue});
-            return TaskDone.Done;
+
+            await StreamSender.FlushQueue();
         }
 
-        private Task ProcessModelCollectionChangedMessage(ModelCollectionChangedMessage message)
+        private async Task ProcessModelCollectionChangedMessage(ModelCollectionChangedMessage message)
         {
             var sourceItem = (IList) Model.Resolve(message.RelativeRootUri);
 
@@ -94,7 +95,8 @@ namespace NMF.Expressions.Linq.Orleans.Model
                     throw new NotImplementedException();
             }
 
-            return TaskDone.Done;
+            // TODO maybe in the feature just apply changes if necessary because updated item might or might not be removed
+            await StreamSender.FlushQueue();
         }
     }
 }
