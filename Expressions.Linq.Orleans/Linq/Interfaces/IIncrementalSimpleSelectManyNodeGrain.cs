@@ -7,7 +7,8 @@ using Orleans.Streams;
 
 namespace NMF.Expressions.Linq.Orleans.Linq.Interfaces
 {
-    public interface IIncrementalSimpleSelectManyNodeGrain<TSource, TResult, TModel> : IModelProcessingNodeGrain<TSource, TResult, TModel>, IObservingFuncProcessor<TSource, IEnumerable<TResult>>,
+    public interface IIncrementalSimpleSelectManyNodeGrain<TSource, TResult, TModel> : IModelProcessingNodeGrain<TSource, TResult, TModel>,
+        IObservingFuncProcessor<TSource, IEnumerable<TResult>>, ITransactionalMultiplexingStreamProvider<TResult>,
         IElementEnumeratorNode<TResult> where TModel : IResolvableModel
     {
     }

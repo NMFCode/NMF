@@ -22,17 +22,22 @@ namespace NMF.Expressions.Linq.Orleans.Model
     {
         private const string StreamProviderName = "CollectionStreamProvider";
         protected T Model;
-        protected StreamMessageSender OutputProducer;
-        protected StreamMessageSender ModelUpdateSender;
+        protected StreamMessageSender<T> OutputProducer;
+        protected StreamMessageSender<T> ModelUpdateSender;
         private Func<string, T> _modelLoadingFunc;
         private string _modelPath;
 
-        public override Task OnActivateAsync()
+        public override async Task OnActivateAsync()
         {
-            base.OnActivateAsync();
-            OutputProducer = new StreamMessageSender(GetStreamProvider(StreamProviderName), this.GetPrimaryKey());
-            ModelUpdateSender = new StreamMessageSender(GetStreamProvider(StreamProviderName), new StreamIdentity("ModelUpdate", this.GetPrimaryKey()));
-            return TaskDone.Done;
+            await base.OnActivateAsync();
+            OutputProducer = new StreamMessageSender<T>(GetStreamProvider(StreamProviderName), this.GetPrimaryKey());
+            ModelUpdateSender = new StreamMessageSender<T>(GetStreamProvider(StreamProviderName), new StreamIdentity("ModelUpdate", this.GetPrimaryKey()));
+        }
+
+        private async Task SendAllQueuedMessages()
+        {
+            await OutputProducer.FlushQueue();
+            await ModelUpdateSender.FlushQueue();
         }
 
 
@@ -40,21 +45,19 @@ namespace NMF.Expressions.Linq.Orleans.Model
         {
             action(Model);
 
-            await ModelUpdateSender.SendMessagesFromQueue();
-            await OutputProducer.SendMessagesFromQueue();
+            await SendAllQueuedMessages();
         }
 
         public async Task ExecuteSync(Action<T, object> action, object state)
         {
             action(Model, state);
 
-            await ModelUpdateSender.SendMessagesFromQueue();
-            await OutputProducer.SendMessagesFromQueue();
+            await SendAllQueuedMessages();
         }
 
-        public Task<StreamIdentity> GetModelUpdateStream()
+        public async Task<StreamIdentity> GetModelUpdateStream()
         {
-            return ModelUpdateSender.GetStreamIdentity();
+            return (await ModelUpdateSender.GetOutputStreams()).First();
         }
 
         public Task<string> GetModelPath()
@@ -91,7 +94,7 @@ namespace NMF.Expressions.Linq.Orleans.Model
 
         public async Task<IList<StreamIdentity>> GetOutputStreams()
         {
-            return new List<StreamIdentity> { await OutputProducer.GetStreamIdentity() };
+            return await OutputProducer.GetOutputStreams();
         }
 
         public async Task<bool> IsTearedDown()
@@ -128,7 +131,7 @@ namespace NMF.Expressions.Linq.Orleans.Model
                         throw new NotImplementedException();
                 }
 
-                ModelUpdateSender.AddToMessageQueue(message);
+                ModelUpdateSender.EnqueueMessage(message);
             }
             else if (e.IsValueChangedEvent)
             {
@@ -138,7 +141,7 @@ namespace NMF.Expressions.Linq.Orleans.Model
                 var modelChangeValue = ModelRemoteValueFactory.CreateModelChangeValue(propertyValue);
 
                 var message = new ModelPropertyChangedMessage(modelChangeValue, sourceUri, propertyName);
-                ModelUpdateSender.AddToMessageQueue(message);
+                ModelUpdateSender.EnqueueMessage(message);
             }
         }
 

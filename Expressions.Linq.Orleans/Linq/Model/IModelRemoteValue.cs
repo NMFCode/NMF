@@ -43,6 +43,8 @@ namespace NMF.Expressions.Linq.Orleans.Model
             return Value;
         }
 
+        public object ReferenceComparable => Value;
+
         object IModelRemoteValue.Retrieve(IResolvableModel lookupModel)
         {
             return Retrieve(lookupModel);
@@ -52,8 +54,12 @@ namespace NMF.Expressions.Linq.Orleans.Model
     [Serializable]
     public class ModelRemoteValueUri<T> : IModelRemoteValue<T> where T : IModelElement
     {
+        [NonSerialized]
+        private readonly IModelElement _modelElement;
+
         public ModelRemoteValueUri(IModelElement modelElement)
         {
+            _modelElement = modelElement;
             RootRelativeUri = modelElement.RelativeUri;
         }
 
@@ -63,6 +69,8 @@ namespace NMF.Expressions.Linq.Orleans.Model
         {
             return (T) lookupModel.Resolve(RootRelativeUri);
         }
+
+        public object ReferenceComparable => _modelElement;
 
         object IModelRemoteValue.Retrieve(IResolvableModel lookupModel)
         {
@@ -78,5 +86,7 @@ namespace NMF.Expressions.Linq.Orleans.Model
     public interface IModelRemoteValue
     {
         object Retrieve(IResolvableModel lookupModel);
+
+        object ReferenceComparable { get; }
     }
 }

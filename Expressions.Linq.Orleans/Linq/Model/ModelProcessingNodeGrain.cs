@@ -17,6 +17,18 @@ namespace NMF.Expressions.Linq.Orleans.Model
         protected TModel Model { get; private set; }
         protected IModelContainerGrain<TModel> ModelContainer { get; private set; }
 
+        public override async Task OnActivateAsync()
+        {
+            await base.OnActivateAsync();
+            StreamSender = null;
+        }
+
+        protected new MappingStreamMessageSenderComposite<TOut> StreamSender
+        {
+            get { return (MappingStreamMessageSenderComposite<TOut>)base.StreamSender; }
+            set { base.StreamSender = value; }
+        }
+
         public Task LoadModelFromPath(string modelPath)
         {
             Model = ModelUtil.LoadModelFromPath<TModel>(modelPath);
@@ -97,6 +109,17 @@ namespace NMF.Expressions.Linq.Orleans.Model
 
             // TODO maybe in the feature just apply changes if necessary because updated item might or might not be removed
             await StreamSender.FlushQueue();
+        }
+
+
+        public Task SetOutputMultiplex(uint factor = 1)
+        {
+            if (StreamSender != null)
+            {
+                throw new InvalidOperationException("Output stream was already initialized.");
+            }
+            StreamSender = new MappingStreamMessageSenderComposite<TOut>(GetStreamProvider(StreamProviderNamespace), (int)factor);
+            return TaskDone.Done;
         }
     }
 }

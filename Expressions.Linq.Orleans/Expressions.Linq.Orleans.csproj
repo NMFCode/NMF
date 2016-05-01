@@ -107,6 +107,7 @@
     <Compile Include="Linq\IncrementalNodeGrainBase.cs" />
     <Compile Include="Linq\IncrementalSelectAggregateGrain.cs" />
     <Compile Include="Linq\IncrementalSelectNodeGrain.cs" />
+    <Compile Include="Linq\MappingStreamMessageSenderComposite.cs" />
     <Compile Include="Linq\Message\ModelCollectionChangedMessage.cs" />
     <Compile Include="Linq\Message\ModelItemRemoveMessage.cs" />
     <Compile Include="Linq\Message\ModelItemAddMessage.cs" />

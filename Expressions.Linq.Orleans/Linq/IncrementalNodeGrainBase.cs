@@ -24,12 +24,12 @@ namespace NMF.Expressions.Linq.Orleans
     public abstract class IncrementalNodeGrainBase<TSource, TResult, TModel> : ModelProcessingNodeGrain<TSource, TResult, TModel>, IElementEnumeratorNode<TResult> where TModel : IResolvableModel
     {
         protected NotifyCollection<TSource> InputList;
-        protected INotifyEnumerable<TResult> ResultEnumerable; 
+        protected INotifyEnumerable<TResult> ResultEnumerable;
 
         public override async Task OnActivateAsync()
         {
-            InputList = new NotifyCollection<TSource>();
             await base.OnActivateAsync();
+            InputList = new NotifyCollection<TSource>();
         }
 
         protected void AttachToResult()
@@ -39,7 +39,6 @@ namespace NMF.Expressions.Linq.Orleans
 
         private void ResultEnumerable_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
         {
-            IStreamMessage message = null;
             var items = new List<IModelRemoteValue<TResult>>();
             switch (e.Action)
             {
@@ -48,22 +47,19 @@ namespace NMF.Expressions.Linq.Orleans
                     {
                         items.Add(ModelRemoteValueFactory.CreateModelChangeValue<TResult>((TResult) newItem));
                     }
-                    message = new ModelItemAddMessage<TResult>(items);
-
+                    StreamSender.EnqueueAddModelItems(items);
                     break;
                 case NotifyCollectionChangedAction.Remove:
                     foreach (var removeItem in e.OldItems)
                     {
                         items.Add(ModelRemoteValueFactory.CreateModelChangeValue<TResult>((TResult)removeItem));
                     }
-                    message = new ModelItemRemoveMessage<TResult>(items);
+                    StreamSender.EnqueueRemoveModelItems(items);
                     break;
                 default:
                     throw new NotImplementedException();
 
             }
-
-            StreamSender.EnqueueMessage(message);
         }
 
         public Task<Guid> EnumerateToStream(StreamIdentity streamIdentity, Guid transactionId)

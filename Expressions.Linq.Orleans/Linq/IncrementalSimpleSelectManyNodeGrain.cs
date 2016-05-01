@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using NMF.Expressions.Linq.Orleans.Interfaces;
 using NMF.Expressions.Linq.Orleans.Linq.Interfaces;
@@ -13,7 +14,6 @@ namespace NMF.Expressions.Linq.Orleans
     internal sealed class IncrementalSimpleSelectManyNodeGrain<TSource, TResult, TModel> : IncrementalNodeGrainBase<TSource, TResult, TModel>,
         IIncrementalSimpleSelectManyNodeGrain<TSource, TResult, TModel> where TModel : IResolvableModel
     {
-
         public Task SetObservingFunc(SerializableFunc<TSource, IEnumerable<TResult>> selector)
         {
             ResultEnumerable = InputList.SelectMany(selector.Value);
