@@ -72,7 +72,10 @@ namespace NMF.Models
                         {
                             if (oldParent != oldModel)
                             {
-                                oldModel.RootElements.Add(this);
+                                if (EnforceModels)
+                                {
+                                    oldModel.RootElements.Add(this);
+                                }
                             }
                             else
                             {
@@ -83,6 +86,14 @@ namespace NMF.Models
                 }
                 if (newParent != null)
                 {
+                    if (EnforceModels && newParent.Model == null)
+                    {
+                        var oldModel = oldParent.Model;
+                        if (oldModel != null)
+                        {
+                            oldModel.RootElements.Add(newParent);
+                        }
+                    }
                     newParent.Deleted += CascadeDelete;
                 }
 
@@ -203,6 +214,11 @@ namespace NMF.Models
             }
             return result;
         }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether a correct model containment should be enforced
+        /// </summary>
+        public static bool EnforceModels { get; set; }
 
         /// <summary>
         /// Gets or sets whether identifiers should be preferred in the serialization
