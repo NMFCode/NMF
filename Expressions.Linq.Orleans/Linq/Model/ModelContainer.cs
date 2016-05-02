@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.Specialized;
+using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -109,19 +110,20 @@ namespace NMF.Expressions.Linq.Orleans.Model
 
         private void ModelBubbledChange(object sender, BubbledChangeEventArgs e)
         {
-            var sourceUri = e.SourceElement.RelativeUri;
+            var sourceUri = e.Element.RelativeUri;
             if (e.IsCollectionChangeEvent)
             {
                 ModelCollectionChangedMessage message = null;
-                switch (e.OriginalEventArgs.Action)
+                var eventArgs = (NotifyCollectionChangedEventArgs) e.OriginalEventArgs;
+                switch (eventArgs.Action)
                 {
                     case NotifyCollectionChangedAction.Add:
                         message = new ModelCollectionChangedMessage(NotifyCollectionChangedAction.Add, sourceUri,
-                            CreateModelChanges(e.OriginalEventArgs.NewItems));
+                            CreateModelChanges(eventArgs.NewItems));
                         break;
                     case NotifyCollectionChangedAction.Remove:
                         message = new ModelCollectionChangedMessage(NotifyCollectionChangedAction.Remove, sourceUri,
-                            CreateModelChanges(e.OriginalEventArgs.OldItems));
+                            CreateModelChanges(eventArgs.OldItems));
                         break;
                     case NotifyCollectionChangedAction.Reset:
                         message = new ModelCollectionChangedMessage(NotifyCollectionChangedAction.Reset, sourceUri, null);
@@ -132,10 +134,11 @@ namespace NMF.Expressions.Linq.Orleans.Model
 
                 ModelUpdateSender.EnqueueMessage(message);
             }
-            else if (e.IsValueChangedEvent)
+            else if (e.IsPropertyChangedEvent)
             {
+                var eventArgs = (ValueChangedEventArgs) e.OriginalEventArgs;
                 var propertyName = e.PropertyName;
-                var propertyValue = e.SourceElement.GetType().GetProperty(propertyName).GetGetMethod(true).Invoke(e.SourceElement, null);
+                var propertyValue = eventArgs.NewValue;
 
                 var modelChangeValue = ModelRemoteValueFactory.CreateModelChangeValue(propertyValue);
 
