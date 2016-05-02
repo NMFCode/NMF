@@ -43,7 +43,8 @@ namespace NMF.Interop.Ecore
 
         public static EPackage LoadPackageFromFile(string path)
         {
-            return LoadPackageFromUri(new Uri(path));
+            var fileInfo = new FileInfo(path);
+            return LoadPackageFromUri(new Uri(fileInfo.FullName));
         }
 
         public static EPackage LoadPackageFromUri(Uri uri)

@@ -51,13 +51,6 @@ namespace NMF.Interop.Ecore.Tests
             var boolean = metaNamespace.Resolve(new Uri("Boolean", UriKind.Relative));
             var isInterface = metaNamespace.Resolve(new Uri("Class/IsInterface", UriKind.Relative)) as IAttribute;
 
-            //var serializer = new ModelSerializer();
-            //serializer.RootPrefix = "nmeta";
-            //using (var sw = new FileStream(@"C:\Projekte\NMF\NMeta.nmf", FileMode.OpenOrCreate))
-            //{
-            //    serializer.Serialize(metaNamespace.Model, sw);
-            //}
-
             Assert.IsNotNull(metaNamespace);
 
             Assert.AreEqual(20, metaNamespace.Types.OfType<IClass>().Count());
