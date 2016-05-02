@@ -1267,7 +1267,7 @@ namespace NMF.Expressions.Linq
         /// <returns>A collection with the elements contained in the current collection sorted by the given predicate</returns>
         public static IOrderableEnumerableExpression<TItem> OrderByDescending<TItem, TKey>(this IEnumerableExpression<TItem> source, Expression<Func<TItem, TKey>> keySelector, IComparer<TKey> comparer)
         {
-            return new OrderByExpression<TItem, TKey>(source, keySelector, null, comparer);
+            return new OrderByExpression<TItem, TKey>(source, keySelector, null, new ReverseComparer<TKey>(comparer));
         }
 
         /// <summary>

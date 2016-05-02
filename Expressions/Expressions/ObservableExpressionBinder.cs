@@ -733,7 +733,7 @@ namespace NMF.Expressions
                     MethodInfo proxyMethod;
                     if (!staticMethod && proxyAttribute.InitializeProxyMethod(node.Method, typesArgInc, out proxyMethod))
                     {
-                        if (!proxyMethod.IsStatic)
+                        if (proxyMethod.IsStatic)
                         {
                             throw new InvalidOperationException("The provided proxy method must not be static or the target parameter must be provided.");
                         }
@@ -751,12 +751,12 @@ namespace NMF.Expressions
                         }
                         else
                         {
-
+                            return System.Activator.CreateInstance(memberSimpleProxyTypes[node.Arguments.Count].MakeGenericType(types), node, this, proxyMethod) as Expression;
                         }
                     }
                     else if (!staticMethod && proxyAttribute.InitializeProxyMethod(node.Method, typesArg, out proxyMethod))
                     {
-                        if (!proxyMethod.IsStatic)
+                        if (proxyMethod.IsStatic)
                         {
                             throw new InvalidOperationException("The provided proxy method must not be static or the target parameter must be provided.");
                         }
