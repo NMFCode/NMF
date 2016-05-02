@@ -28,8 +28,8 @@ namespace NMF.Expressions.Linq.Orleans
         {
             var node = GrainFactory.GetGrain<IIncrementalSimpleSelectManyNodeGrain<TSource, TResult, TModel>>(Guid.NewGuid());
             await node.SetObservingFunc(_observingFunc);
-            await node.SetModelContainer(ModelContainer);
             await node.SetOutputMultiplex(OutputMultiplexFactor);
+            await node.SetModelContainer(ModelContainer);
             await node.SubscribeToStreams(identity.SingleValueToList());
 
             return node;

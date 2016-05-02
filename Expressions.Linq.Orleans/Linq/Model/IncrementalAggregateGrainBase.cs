@@ -12,7 +12,7 @@ namespace NMF.Expressions.Linq.Orleans.Model
     {
         protected IModelContainerGrain<TModel> ModelContainer;
 
-        protected uint OutputMultiplexFactor { get; set; }
+        protected uint OutputMultiplexFactor { get; set; } = 1;
 
         public Task<IModelContainerGrain<TModel>> GetModelContainer()
         {
