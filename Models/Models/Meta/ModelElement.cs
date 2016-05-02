@@ -85,8 +85,9 @@ namespace NMF.Models.Meta
                 {
                     Uri old = this._absoluteUri;
                     this._absoluteUri = value;
-                    this.OnAbsoluteUriChanged(new ValueChangedEventArgs(old, value));
-                    this.OnPropertyChanged("AbsoluteUri");
+                    ValueChangedEventArgs e = new ValueChangedEventArgs(old, value);
+                    this.OnAbsoluteUriChanged(e);
+                    this.OnPropertyChanged("AbsoluteUri", e);
                 }
             }
         }
@@ -107,8 +108,9 @@ namespace NMF.Models.Meta
                 {
                     Uri old = this._relativeUri;
                     this._relativeUri = value;
-                    this.OnRelativeUriChanged(new ValueChangedEventArgs(old, value));
-                    this.OnPropertyChanged("RelativeUri");
+                    ValueChangedEventArgs e = new ValueChangedEventArgs(old, value);
+                    this.OnRelativeUriChanged(e);
+                    this.OnPropertyChanged("RelativeUri", e);
                 }
             }
         }
@@ -153,8 +155,9 @@ namespace NMF.Models.Meta
                     {
                         value.Deleted += this.OnResetParent;
                     }
-                    this.OnPropertyChanged("Parent");
-                    this.OnParentChanged(new ValueChangedEventArgs(old, value));
+                    ValueChangedEventArgs e = new ValueChangedEventArgs(old, value);
+                    this.OnParentChanged(e);
+                    this.OnPropertyChanged("Parent", e);
                 }
             }
         }
@@ -183,8 +186,9 @@ namespace NMF.Models.Meta
                     {
                         value.Deleted += this.OnResetType;
                     }
-                    this.OnPropertyChanged("Type");
-                    this.OnTypeChanged(new ValueChangedEventArgs(old, value));
+                    ValueChangedEventArgs e = new ValueChangedEventArgs(old, value);
+                    this.OnTypeChanged(e);
+                    this.OnPropertyChanged("Type", e);
                 }
             }
         }
@@ -426,14 +430,6 @@ namespace NMF.Models.Meta
                 return new TypeProxy(this);
             }
             return base.GetExpressionForReference(reference);
-        }
-        
-        /// <summary>
-        /// Gets the Class for this model element
-        /// </summary>
-        public override IClass GetClass()
-        {
-            return ((IClass)(NMF.Models.Repository.MetaRepository.Instance.Resolve("http://nmf.codeplex.com/nmeta/#//ModelElement/")));
         }
         
         /// <summary>

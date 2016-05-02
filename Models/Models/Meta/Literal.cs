@@ -60,8 +60,9 @@ namespace NMF.Models.Meta
                 {
                     Nullable<int> old = this._value;
                     this._value = value;
-                    this.OnValueChanged(new ValueChangedEventArgs(old, value));
-                    this.OnPropertyChanged("Value");
+                    ValueChangedEventArgs e = new ValueChangedEventArgs(old, value);
+                    this.OnValueChanged(e);
+                    this.OnPropertyChanged("Value", e);
                 }
             }
         }
@@ -159,8 +160,9 @@ namespace NMF.Models.Meta
             {
                 newEnumeration.Literals.Add(this);
             }
-            this.OnPropertyChanged("Enumeration");
-            this.OnEnumerationChanged(new ValueChangedEventArgs(oldEnumeration, newEnumeration));
+            ValueChangedEventArgs e = new ValueChangedEventArgs(oldEnumeration, newEnumeration);
+            this.OnEnumerationChanged(e);
+            this.OnPropertyChanged("Enumeration", e);
         }
         
         /// <summary>

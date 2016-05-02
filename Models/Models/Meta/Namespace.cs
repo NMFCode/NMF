@@ -83,8 +83,9 @@ namespace NMF.Models.Meta
                 {
                     Uri old = this._uri;
                     this._uri = value;
-                    this.OnUriChanged(new ValueChangedEventArgs(old, value));
-                    this.OnPropertyChanged("Uri");
+                    ValueChangedEventArgs e = new ValueChangedEventArgs(old, value);
+                    this.OnUriChanged(e);
+                    this.OnPropertyChanged("Uri", e);
                 }
             }
         }
@@ -105,8 +106,9 @@ namespace NMF.Models.Meta
                 {
                     string old = this._prefix;
                     this._prefix = value;
-                    this.OnPrefixChanged(new ValueChangedEventArgs(old, value));
-                    this.OnPropertyChanged("Prefix");
+                    ValueChangedEventArgs e = new ValueChangedEventArgs(old, value);
+                    this.OnPrefixChanged(e);
+                    this.OnPropertyChanged("Prefix", e);
                 }
             }
         }
@@ -265,8 +267,9 @@ namespace NMF.Models.Meta
             {
                 newParentNamespace.ChildNamespaces.Add(this);
             }
-            this.OnPropertyChanged("ParentNamespace");
-            this.OnParentNamespaceChanged(new ValueChangedEventArgs(oldParentNamespace, newParentNamespace));
+            ValueChangedEventArgs e = new ValueChangedEventArgs(oldParentNamespace, newParentNamespace);
+            this.OnParentNamespaceChanged(e);
+            this.OnPropertyChanged("ParentNamespace", e);
         }
         
         /// <summary>

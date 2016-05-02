@@ -65,8 +65,9 @@ namespace NMF.Models.Meta
                 {
                     string old = this._defaultValue;
                     this._defaultValue = value;
-                    this.OnDefaultValueChanged(new ValueChangedEventArgs(old, value));
-                    this.OnPropertyChanged("DefaultValue");
+                    ValueChangedEventArgs e = new ValueChangedEventArgs(old, value);
+                    this.OnDefaultValueChanged(e);
+                    this.OnPropertyChanged("DefaultValue", e);
                 }
             }
         }
@@ -113,8 +114,9 @@ namespace NMF.Models.Meta
                     {
                         value.Deleted += this.OnResetRefines;
                     }
-                    this.OnPropertyChanged("Refines");
-                    this.OnRefinesChanged(new ValueChangedEventArgs(old, value));
+                    ValueChangedEventArgs e = new ValueChangedEventArgs(old, value);
+                    this.OnRefinesChanged(e);
+                    this.OnPropertyChanged("Refines", e);
                 }
             }
         }
@@ -199,8 +201,9 @@ namespace NMF.Models.Meta
             {
                 newDeclaringType.Attributes.Add(this);
             }
-            this.OnPropertyChanged("DeclaringType");
-            this.OnDeclaringTypeChanged(new ValueChangedEventArgs(oldDeclaringType, newDeclaringType));
+            ValueChangedEventArgs e = new ValueChangedEventArgs(oldDeclaringType, newDeclaringType);
+            this.OnDeclaringTypeChanged(e);
+            this.OnPropertyChanged("DeclaringType", e);
         }
         
         /// <summary>

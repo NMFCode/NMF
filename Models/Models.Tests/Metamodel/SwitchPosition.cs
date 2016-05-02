@@ -66,8 +66,9 @@ namespace NMF.Models.Tests.Railway
                 {
                     Position old = this._position;
                     this._position = value;
-                    this.OnPositionChanged(new ValueChangedEventArgs(old, value));
-                    this.OnPropertyChanged("Position");
+                    ValueChangedEventArgs e = new ValueChangedEventArgs(old, value);
+                    this.OnPositionChanged(e);
+                    this.OnPropertyChanged("Position", e);
                 }
             }
         }
@@ -103,8 +104,9 @@ namespace NMF.Models.Tests.Railway
                         }
                         value.Deleted += this.OnResetSwitch;
                     }
-                    this.OnPropertyChanged("Switch");
-                    this.OnSwitchChanged(new ValueChangedEventArgs(old, value));
+                    ValueChangedEventArgs e = new ValueChangedEventArgs(old, value);
+                    this.OnSwitchChanged(e);
+                    this.OnPropertyChanged("Switch", e);
                 }
             }
         }
@@ -231,8 +233,9 @@ namespace NMF.Models.Tests.Railway
             {
                 newRoute.Follows.Add(this);
             }
-            this.OnPropertyChanged("Route");
-            this.OnRouteChanged(new ValueChangedEventArgs(oldRoute, newRoute));
+            ValueChangedEventArgs e = new ValueChangedEventArgs(oldRoute, newRoute);
+            this.OnRouteChanged(e);
+            this.OnPropertyChanged("Route", e);
         }
         
         /// <summary>

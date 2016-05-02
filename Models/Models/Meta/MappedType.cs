@@ -65,8 +65,9 @@ namespace NMF.Models.Meta
                 {
                     System.Type old = this._systemType;
                     this._systemType = value;
-                    this.OnSystemTypeChanged(new ValueChangedEventArgs(old, value));
-                    this.OnPropertyChanged("SystemType");
+                    ValueChangedEventArgs e = new ValueChangedEventArgs(old, value);
+                    this.OnSystemTypeChanged(e);
+                    this.OnPropertyChanged("SystemType", e);
                 }
             }
         }

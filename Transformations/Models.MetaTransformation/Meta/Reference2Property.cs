@@ -129,11 +129,16 @@ namespace NMF.Models.Meta
                 onParentChanged.Statements.Add(new CodeConditionStatement(
                     new CodeBinaryOperatorExpression(newElementVar, CodeBinaryOperatorType.IdentityInequality, nullRef), setNew));
 
-                onParentChanged.Statements.Add(new CodeMethodInvokeExpression(new CodeThisReferenceExpression(), "OnPropertyChanged",
-                    new CodePrimitiveExpression(property.Name)));
                 var valueChangedEvArgs = new CodeTypeReference(typeof(ValueChangedEventArgs).Name);
-                onParentChanged.Statements.Add(property.CreateOnChangedEventPattern(valueChangedEvArgs,
-                    new CodeObjectCreateExpression(valueChangedEvArgs, oldElementVar, newElementVar)));
+                var valueChangeDef = new CodeVariableDeclarationStatement(valueChangedEvArgs, "e",
+                    new CodeObjectCreateExpression(valueChangedEvArgs, oldElementVar, newElementVar));
+                var valueChangeRef = new CodeVariableReferenceExpression(valueChangeDef.Name);
+
+                onParentChanged.Statements.Add(valueChangeDef);
+
+                onParentChanged.Statements.Add(property.CreateOnChangedEventPattern(valueChangedEvArgs, valueChangeRef));
+                onParentChanged.Statements.Add(new CodeMethodInvokeExpression(new CodeThisReferenceExpression(), "OnPropertyChanged",
+                    new CodePrimitiveExpression(property.Name), valueChangeRef));
 
                 onParentChanged.WriteDocumentation("Gets called when the parent model element of the current model element changes",
                     null, new Dictionary<string, string>() {
@@ -285,11 +290,18 @@ namespace NMF.Models.Meta
                     ifStmt.TrueStatements.Add(assignment);
                 }
 
-                ifStmt.TrueStatements.Add(new CodeMethodInvokeExpression(new CodeThisReferenceExpression(), "OnPropertyChanged",
-                        new CodePrimitiveExpression(codeProperty.Name)));
+                var valueChangeTypeRef = new CodeTypeReference(typeof(ValueChangedEventArgs).Name);
+                var valueChangeDef = new CodeVariableDeclarationStatement(valueChangeTypeRef, "e",
+                    new CodeObjectCreateExpression(typeof(ValueChangedEventArgs).Name, oldRef, val));
+                var valueChangeRef = new CodeVariableReferenceExpression(valueChangeDef.Name);
+
+                ifStmt.TrueStatements.Add(valueChangeDef);
 
                 ifStmt.TrueStatements.Add(codeProperty.CreateOnChangedEventPattern(new CodeTypeReference(typeof(ValueChangedEventArgs).Name),
-                    new CodeObjectCreateExpression(typeof(ValueChangedEventArgs).Name, oldRef, val)));
+                    valueChangeRef));
+
+                ifStmt.TrueStatements.Add(new CodeMethodInvokeExpression(new CodeThisReferenceExpression(), "OnPropertyChanged",
+                        new CodePrimitiveExpression(codeProperty.Name), valueChangeRef));
 
                 codeProperty.SetStatements.Add(ifStmt);
                 codeProperty.HasSet = true;

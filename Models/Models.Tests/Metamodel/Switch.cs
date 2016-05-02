@@ -72,8 +72,9 @@ namespace NMF.Models.Tests.Railway
                 {
                     Position old = this._currentPosition;
                     this._currentPosition = value;
-                    this.OnCurrentPositionChanged(new ValueChangedEventArgs(old, value));
-                    this.OnPropertyChanged("CurrentPosition");
+                    ValueChangedEventArgs e = new ValueChangedEventArgs(old, value);
+                    this.OnCurrentPositionChanged(e);
+                    this.OnPropertyChanged("CurrentPosition", e);
                 }
             }
         }

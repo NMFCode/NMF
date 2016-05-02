@@ -147,7 +147,7 @@ namespace NMF.Models.Meta
                 var isModelElementContained = false;
                 foreach (var cl in baseClasses)
                 {
-                    if (cl == ModelExtensions.ClassModelElement) isModelElementContained = true;
+                    if (cl.RelativeUri == ModelExtensions.ClassModelElement.RelativeUri) isModelElementContained = true;
                     if (cl.InstanceOf != null && cl != input)
                     {
                         AddIfNotNull(members, CreateOverriddenGetClassMethod(input, cl.InstanceOf, context));
@@ -267,7 +267,7 @@ namespace NMF.Models.Meta
                 var targetType = new CodeTypeReference();
                 if (!SetTypeReferenceForMappedType(instantiating, targetType))
                 {
-                    targetType.BaseType = "I" + input.Name.ToPascalCase();
+                    targetType.BaseType = "I" + instantiating.Name.ToPascalCase();
                 }
                 else
                 {
@@ -339,34 +339,6 @@ namespace NMF.Models.Meta
                         }
                     }
                 }
-            }
-
-            /// <summary>
-            /// Creates the GetClass method that obtains the class structure of the generated type
-            /// </summary>
-            /// <param name="input">The NMeta class</param>
-            /// <returns>A code method definition for the GetClass method</returns>
-            protected virtual CodeMemberMethod CreateGetClass(IClass input)
-            {
-                var getClass = new CodeMemberMethod()
-                {
-                    Name = "GetClass",
-                    ReturnType = new CodeTypeReference(typeof(IClass)),
-                    Attributes = MemberAttributes.Public | MemberAttributes.Override
-                };
-                var absoluteUri = input.AbsoluteUri;
-                if (absoluteUri != null && absoluteUri.IsAbsoluteUri)
-                {
-                    var repositoryRef = new CodePropertyReferenceExpression(new CodeTypeReferenceExpression(typeof(MetaRepository)), "Instance");
-                    var classRef = new CodeMethodInvokeExpression(repositoryRef, "ResolveClass", new CodePrimitiveExpression(absoluteUri.AbsoluteUri));
-                    getClass.Statements.Add(new CodeMethodReturnStatement(classRef));
-                }
-                else
-                {
-                    getClass.ThrowException<NotSupportedException>();
-                }
-                getClass.WriteDocumentation("Gets the Class element that describes the structure of the current model element");
-                return getClass;
             }
 
             /// <summary>

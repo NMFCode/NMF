@@ -113,8 +113,9 @@ namespace NMF.Models.Meta
                     {
                         value.Deleted += this.OnResetRefines;
                     }
-                    this.OnPropertyChanged("Refines");
-                    this.OnRefinesChanged(new ValueChangedEventArgs(old, value));
+                    ValueChangedEventArgs e = new ValueChangedEventArgs(old, value);
+                    this.OnRefinesChanged(e);
+                    this.OnPropertyChanged("Refines", e);
                 }
             }
         }
@@ -202,8 +203,9 @@ namespace NMF.Models.Meta
             {
                 newDeclaringType.Operations.Add(this);
             }
-            this.OnPropertyChanged("DeclaringType");
-            this.OnDeclaringTypeChanged(new ValueChangedEventArgs(oldDeclaringType, newDeclaringType));
+            ValueChangedEventArgs e = new ValueChangedEventArgs(oldDeclaringType, newDeclaringType);
+            this.OnDeclaringTypeChanged(e);
+            this.OnPropertyChanged("DeclaringType", e);
         }
         
         /// <summary>

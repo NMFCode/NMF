@@ -70,8 +70,9 @@ namespace NMF.Models.Meta
                 {
                     Uri old = this._modelUri;
                     this._modelUri = value;
-                    this.OnModelUriChanged(new ValueChangedEventArgs(old, value));
-                    this.OnPropertyChanged("ModelUri");
+                    ValueChangedEventArgs e = new ValueChangedEventArgs(old, value);
+                    this.OnModelUriChanged(e);
+                    this.OnPropertyChanged("ModelUri", e);
                 }
             }
         }

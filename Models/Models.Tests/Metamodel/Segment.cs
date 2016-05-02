@@ -61,8 +61,9 @@ namespace NMF.Models.Tests.Railway
                 {
                     int old = this._length;
                     this._length = value;
-                    this.OnLengthChanged(new ValueChangedEventArgs(old, value));
-                    this.OnPropertyChanged("Length");
+                    ValueChangedEventArgs e = new ValueChangedEventArgs(old, value);
+                    this.OnLengthChanged(e);
+                    this.OnPropertyChanged("Length", e);
                 }
             }
         }

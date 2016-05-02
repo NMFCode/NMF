@@ -51,6 +51,7 @@ namespace NMF.Models.Meta
         public AttributeConstraint()
         {
             this._values = new ObservableList<string>();
+            this._values.CollectionChanged += this.ValuesCollectionChanged;
         }
         
         /// <summary>
@@ -109,8 +110,9 @@ namespace NMF.Models.Meta
                     {
                         value.Deleted += this.OnResetConstrains;
                     }
-                    this.OnPropertyChanged("Constrains");
-                    this.OnConstrainsChanged(new ValueChangedEventArgs(old, value));
+                    ValueChangedEventArgs e = new ValueChangedEventArgs(old, value);
+                    this.OnConstrainsChanged(e);
+                    this.OnPropertyChanged("Constrains", e);
                 }
             }
         }
@@ -148,6 +150,16 @@ namespace NMF.Models.Meta
         public event EventHandler<ValueChangedEventArgs> ConstrainsChanged;
         
         /// <summary>
+        /// Forwards change notifications for the Values property to the parent model element
+        /// </summary>
+        /// <param name="sender">The collection that raised the change</param>
+        /// <param name="e">The original event data</param>
+        private void ValuesCollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
+            this.OnCollectionChanged("Values", e);
+        }
+        
+        /// <summary>
         /// Raises the DeclaringTypeChanged event
         /// </summary>
         /// <param name="eventArgs">The event data</param>
@@ -177,8 +189,9 @@ namespace NMF.Models.Meta
             {
                 newDeclaringType.AttributeConstraints.Add(this);
             }
-            this.OnPropertyChanged("DeclaringType");
-            this.OnDeclaringTypeChanged(new ValueChangedEventArgs(oldDeclaringType, newDeclaringType));
+            ValueChangedEventArgs e = new ValueChangedEventArgs(oldDeclaringType, newDeclaringType);
+            this.OnDeclaringTypeChanged(e);
+            this.OnPropertyChanged("DeclaringType", e);
         }
         
         /// <summary>

@@ -19,7 +19,6 @@ namespace NMF.Interop.Ecore
     public static class EcoreInterop
     {
         private static ModelRepository repository = new ModelRepository();
-        private static ResourceMapLocator resourceLocator;
         private static Ecore2MetaTransformation ecore2Meta = new Ecore2MetaTransformation();
 
         static EcoreInterop()

@@ -114,8 +114,9 @@ namespace NMF.Models.Meta
             {
                 newNamespace.Types.Add(this);
             }
-            this.OnPropertyChanged("Namespace");
-            this.OnNamespaceChanged(new ValueChangedEventArgs(oldNamespace, newNamespace));
+            ValueChangedEventArgs e = new ValueChangedEventArgs(oldNamespace, newNamespace);
+            this.OnNamespaceChanged(e);
+            this.OnPropertyChanged("Namespace", e);
         }
         
         /// <summary>

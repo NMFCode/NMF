@@ -61,15 +61,25 @@ namespace NMF.Models.Meta
                 if (input.UpperBound == 1)
                 {
                     generatedProperty.Type = fieldType;
-                    var callOnPropertyChanged = new CodeMethodInvokeExpression(new CodeThisReferenceExpression(), "OnPropertyChanged", new CodePrimitiveExpression(generatedProperty.Name));
+
                     var oldDef = new CodeVariableDeclarationStatement(fieldType, "old", fieldRef);
                     var oldRef = new CodeVariableReferenceExpression("old");
                     var value = new CodePropertySetValueReferenceExpression();
+
+                    var valueChangeTypeRef = new CodeTypeReference(typeof(ValueChangedEventArgs).Name);
+                    var valueChangeDef = new CodeVariableDeclarationStatement(valueChangeTypeRef, "e",
+                        new CodeObjectCreateExpression(typeof(ValueChangedEventArgs).Name, oldRef, value));
+                    var valueChangeRef = new CodeVariableReferenceExpression(valueChangeDef.Name);
+
+                    var callOnPropertyChanged = new CodeMethodInvokeExpression(
+                        new CodeThisReferenceExpression(), "OnPropertyChanged", 
+                        new CodePrimitiveExpression(generatedProperty.Name), valueChangeRef);
+
                     generatedProperty.SetStatements.Add(new CodeConditionStatement(new CodeBinaryOperatorExpression(fieldRef, CodeBinaryOperatorType.IdentityInequality, value),
                         oldDef,
                         new CodeAssignStatement(fieldRef, value),
-                        generatedProperty.CreateOnChangedEventPattern(new CodeTypeReference(typeof(ValueChangedEventArgs).Name),
-                             new CodeObjectCreateExpression(typeof(ValueChangedEventArgs).Name, oldRef, value)),
+                        valueChangeDef,
+                        generatedProperty.CreateOnChangedEventPattern(valueChangeTypeRef, valueChangeRef),
                         new CodeExpressionStatement(callOnPropertyChanged)));
                 }
                 else

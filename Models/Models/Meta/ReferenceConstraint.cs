@@ -110,8 +110,9 @@ namespace NMF.Models.Meta
                     {
                         value.Deleted += this.OnResetConstrains;
                     }
-                    this.OnPropertyChanged("Constrains");
-                    this.OnConstrainsChanged(new ValueChangedEventArgs(old, value));
+                    ValueChangedEventArgs e = new ValueChangedEventArgs(old, value);
+                    this.OnConstrainsChanged(e);
+                    this.OnPropertyChanged("Constrains", e);
                 }
             }
         }
@@ -178,8 +179,9 @@ namespace NMF.Models.Meta
             {
                 newDeclaringType.ReferenceConstraints.Add(this);
             }
-            this.OnPropertyChanged("DeclaringType");
-            this.OnDeclaringTypeChanged(new ValueChangedEventArgs(oldDeclaringType, newDeclaringType));
+            ValueChangedEventArgs e = new ValueChangedEventArgs(oldDeclaringType, newDeclaringType);
+            this.OnDeclaringTypeChanged(e);
+            this.OnPropertyChanged("DeclaringType", e);
         }
         
         /// <summary>

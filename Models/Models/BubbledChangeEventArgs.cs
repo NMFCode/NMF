@@ -17,9 +17,9 @@ namespace NMF.Models
         /// </summary>
         /// <param name="source">The source model element</param>
         /// <param name="propertyName">The property that has been changed</param>
-        public BubbledChangeEventArgs(IModelElement source, string propertyName)
+        public BubbledChangeEventArgs(IModelElement source, string propertyName, ValueChangedEventArgs valueChangeEvent)
         {
-            SourceElement = source;
+            Element = source;
             PropertyName = propertyName;
         }
 
@@ -28,28 +28,52 @@ namespace NMF.Models
         /// </summary>
         /// <param name="source">The source model element</param>
         /// <param name="propertyName">The name of the property that has changed</param>
-        /// <param name="collectionChanged">The original collection change event data</param>
-        public BubbledChangeEventArgs(IModelElement source, string propertyName, NotifyCollectionChangedEventArgs collectionChanged)
+        /// <param name="collectionChangedEvent">The original collection change event data</param>
+        public BubbledChangeEventArgs(IModelElement source, string propertyName, NotifyCollectionChangedEventArgs collectionChangedEvent)
         {
-            SourceElement = source;
+            Element = source;
             PropertyName = propertyName;
-            OriginalEventArgs = collectionChanged;
+            OriginalEventArgs = collectionChangedEvent;
         }
 
-        public IModelElement SourceElement { get; private set; }
+        /// <summary>
+        /// Creates a bubbled change event for the given elementary item creation event
+        /// </summary>
+        /// <param name="newElement">The model element that has been created</param>
+        public BubbledChangeEventArgs(IModelElement newElement)
+        {
+            Element = newElement;
+        }
 
+        /// <summary>
+        /// The original model element directly affected by this change
+        /// </summary>
+        public IModelElement Element { get; private set; }
+
+        /// <summary>
+        /// The name of the affected property or null, if no specific property was affected
+        /// </summary>
         public string PropertyName { get; private set; }
 
-        public NotifyCollectionChangedEventArgs OriginalEventArgs { get; private set; }
+        /// <summary>
+        /// The original event arguments
+        /// </summary>
+        public EventArgs OriginalEventArgs { get; private set; }
 
+        /// <summary>
+        /// Gets a value indicating whether the underlying change has been a elementary collection change
+        /// </summary>
         public bool IsCollectionChangeEvent
         {
-            get { return OriginalEventArgs != null; }
+            get { return OriginalEventArgs is NotifyCollectionChangedEventArgs; }
         }
 
-        public bool IsValueChangedEvent
+        /// <summary>
+        /// Gets a value indicating whether the underlying change was a changed property value
+        /// </summary>
+        public bool IsPropertyChangedEvent
         {
-            get { return OriginalEventArgs == null; }
+            get { return OriginalEventArgs is ValueChangedEventArgs; }
         }
     }
 }

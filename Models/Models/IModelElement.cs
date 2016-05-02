@@ -91,16 +91,39 @@ namespace NMF.Models
         /// <returns>The class of the model element</returns>
         IClass GetClass();
 
-
+        /// <summary>
+        /// Gets the value for the given attribute and index
+        /// </summary>
+        /// <param name="attribute">The attribute</param>
+        /// <param name="index">The index within the attribute</param>
+        /// <returns>The value for the given attribute. If this is a collection and the index parameter is specified, the method returns the value at the given index</returns>
         object GetAttributeValue(IAttribute attribute, int index = 0);
 
-
+        /// <summary>
+        /// Gets the values of the given attribute as a list
+        /// </summary>
+        /// <param name="attribute">The attribute</param>
+        /// <returns>A non-generic list of values</returns>
         IList GetAttributeValues(IAttribute attribute);
 
+        /// <summary>
+        /// Gets the referenced model element for the given reference and index
+        /// </summary>
+        /// <param name="reference">The reference</param>
+        /// <param name="index">The index within the reference</param>
+        /// <returns>The value for the given reference. If this is a collection and the index parameter is specified, the method returns the referenced element at the given index</returns>
         IModelElement GetReferencedElement(IReference reference, int index = 0);
 
+        /// <summary>
+        /// Gets the referen
+        /// </summary>
+        /// <param name="reference"></param>
+        /// <returns></returns>
         IList GetReferencedElements(IReference reference);
 
+        /// <summary>
+        /// Gets fired when an elementary change happens in the composition hierarchy rooted at the current element. The original elementary change can be retrieved in the event data
+        /// </summary>
         event EventHandler<BubbledChangeEventArgs> BubbledChange;
     }
 }

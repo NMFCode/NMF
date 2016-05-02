@@ -101,8 +101,9 @@ namespace NMF.Models.Meta
                 {
                     bool old = this._isInterface;
                     this._isInterface = value;
-                    this.OnIsInterfaceChanged(new ValueChangedEventArgs(old, value));
-                    this.OnPropertyChanged("IsInterface");
+                    ValueChangedEventArgs e = new ValueChangedEventArgs(old, value);
+                    this.OnIsInterfaceChanged(e);
+                    this.OnPropertyChanged("IsInterface", e);
                 }
             }
         }
@@ -124,8 +125,9 @@ namespace NMF.Models.Meta
                 {
                     bool old = this._isAbstract;
                     this._isAbstract = value;
-                    this.OnIsAbstractChanged(new ValueChangedEventArgs(old, value));
-                    this.OnPropertyChanged("IsAbstract");
+                    ValueChangedEventArgs e = new ValueChangedEventArgs(old, value);
+                    this.OnIsAbstractChanged(e);
+                    this.OnPropertyChanged("IsAbstract", e);
                 }
             }
         }
@@ -168,8 +170,9 @@ namespace NMF.Models.Meta
                     {
                         value.Deleted += this.OnResetInstanceOf;
                     }
-                    this.OnPropertyChanged("InstanceOf");
-                    this.OnInstanceOfChanged(new ValueChangedEventArgs(old, value));
+                    ValueChangedEventArgs e = new ValueChangedEventArgs(old, value);
+                    this.OnInstanceOfChanged(e);
+                    this.OnPropertyChanged("InstanceOf", e);
                 }
             }
         }
@@ -198,8 +201,9 @@ namespace NMF.Models.Meta
                     {
                         value.Deleted += this.OnResetIdentifier;
                     }
-                    this.OnPropertyChanged("Identifier");
-                    this.OnIdentifierChanged(new ValueChangedEventArgs(old, value));
+                    ValueChangedEventArgs e = new ValueChangedEventArgs(old, value);
+                    this.OnIdentifierChanged(e);
+                    this.OnPropertyChanged("Identifier", e);
                 }
             }
         }

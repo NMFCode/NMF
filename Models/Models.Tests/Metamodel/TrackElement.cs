@@ -141,8 +141,9 @@ namespace NMF.Models.Tests.Railway
             {
                 newSensor.Elements.Add(this);
             }
-            this.OnPropertyChanged("Sensor");
-            this.OnSensorChanged(new ValueChangedEventArgs(oldSensor, newSensor));
+            ValueChangedEventArgs e = new ValueChangedEventArgs(oldSensor, newSensor);
+            this.OnSensorChanged(e);
+            this.OnPropertyChanged("Sensor", e);
         }
         
         /// <summary>

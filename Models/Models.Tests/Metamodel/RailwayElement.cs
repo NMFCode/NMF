@@ -61,8 +61,9 @@ namespace NMF.Models.Tests.Railway
                 {
                     Nullable<int> old = this._id;
                     this._id = value;
-                    this.OnIdChanged(new ValueChangedEventArgs(old, value));
-                    this.OnPropertyChanged("Id");
+                    ValueChangedEventArgs e = new ValueChangedEventArgs(old, value);
+                    this.OnIdChanged(e);
+                    this.OnPropertyChanged("Id", e);
                 }
             }
         }

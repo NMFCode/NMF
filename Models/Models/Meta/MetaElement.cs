@@ -72,8 +72,9 @@ namespace NMF.Models.Meta
                 {
                     string old = this._name;
                     this._name = value;
-                    this.OnNameChanged(new ValueChangedEventArgs(old, value));
-                    this.OnPropertyChanged("Name");
+                    ValueChangedEventArgs e = new ValueChangedEventArgs(old, value);
+                    this.OnNameChanged(e);
+                    this.OnPropertyChanged("Name", e);
                 }
             }
         }
@@ -94,8 +95,9 @@ namespace NMF.Models.Meta
                 {
                     string old = this._summary;
                     this._summary = value;
-                    this.OnSummaryChanged(new ValueChangedEventArgs(old, value));
-                    this.OnPropertyChanged("Summary");
+                    ValueChangedEventArgs e = new ValueChangedEventArgs(old, value);
+                    this.OnSummaryChanged(e);
+                    this.OnPropertyChanged("Summary", e);
                 }
             }
         }
@@ -116,8 +118,9 @@ namespace NMF.Models.Meta
                 {
                     string old = this._remarks;
                     this._remarks = value;
-                    this.OnRemarksChanged(new ValueChangedEventArgs(old, value));
-                    this.OnPropertyChanged("Remarks");
+                    ValueChangedEventArgs e = new ValueChangedEventArgs(old, value);
+                    this.OnRemarksChanged(e);
+                    this.OnPropertyChanged("Remarks", e);
                 }
             }
         }

@@ -92,8 +92,9 @@ namespace NMF.Models.Tests.Railway
                     {
                         value.Deleted += this.OnResetEntry;
                     }
-                    this.OnPropertyChanged("Entry");
-                    this.OnEntryChanged(new ValueChangedEventArgs(old, value));
+                    ValueChangedEventArgs e = new ValueChangedEventArgs(old, value);
+                    this.OnEntryChanged(e);
+                    this.OnPropertyChanged("Entry", e);
                 }
             }
         }
@@ -140,8 +141,9 @@ namespace NMF.Models.Tests.Railway
                     {
                         value.Deleted += this.OnResetExit;
                     }
-                    this.OnPropertyChanged("Exit");
-                    this.OnExitChanged(new ValueChangedEventArgs(old, value));
+                    ValueChangedEventArgs e = new ValueChangedEventArgs(old, value);
+                    this.OnExitChanged(e);
+                    this.OnPropertyChanged("Exit", e);
                 }
             }
         }

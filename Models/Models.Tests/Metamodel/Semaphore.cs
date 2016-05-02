@@ -61,8 +61,9 @@ namespace NMF.Models.Tests.Railway
                 {
                     Signal old = this._signal;
                     this._signal = value;
-                    this.OnSignalChanged(new ValueChangedEventArgs(old, value));
-                    this.OnPropertyChanged("Signal");
+                    ValueChangedEventArgs e = new ValueChangedEventArgs(old, value);
+                    this.OnSignalChanged(e);
+                    this.OnPropertyChanged("Signal", e);
                 }
             }
         }

@@ -109,8 +109,9 @@ namespace NMF.Models.Meta
                 {
                     bool old = this._isContainment;
                     this._isContainment = value;
-                    this.OnIsContainmentChanged(new ValueChangedEventArgs(old, value));
-                    this.OnPropertyChanged("IsContainment");
+                    ValueChangedEventArgs e = new ValueChangedEventArgs(old, value);
+                    this.OnIsContainmentChanged(e);
+                    this.OnPropertyChanged("IsContainment", e);
                 }
             }
         }
@@ -160,8 +161,9 @@ namespace NMF.Models.Meta
                         value.Opposite = this;
                         value.Deleted += this.OnResetOpposite;
                     }
-                    this.OnPropertyChanged("Opposite");
-                    this.OnOppositeChanged(new ValueChangedEventArgs(old, value));
+                    ValueChangedEventArgs e = new ValueChangedEventArgs(old, value);
+                    this.OnOppositeChanged(e);
+                    this.OnPropertyChanged("Opposite", e);
                 }
             }
         }
@@ -190,8 +192,9 @@ namespace NMF.Models.Meta
                     {
                         value.Deleted += this.OnResetReferenceType;
                     }
-                    this.OnPropertyChanged("ReferenceType");
-                    this.OnReferenceTypeChanged(new ValueChangedEventArgs(old, value));
+                    ValueChangedEventArgs e = new ValueChangedEventArgs(old, value);
+                    this.OnReferenceTypeChanged(e);
+                    this.OnPropertyChanged("ReferenceType", e);
                 }
             }
         }
@@ -220,8 +223,9 @@ namespace NMF.Models.Meta
                     {
                         value.Deleted += this.OnResetRefines;
                     }
-                    this.OnPropertyChanged("Refines");
-                    this.OnRefinesChanged(new ValueChangedEventArgs(old, value));
+                    ValueChangedEventArgs e = new ValueChangedEventArgs(old, value);
+                    this.OnRefinesChanged(e);
+                    this.OnPropertyChanged("Refines", e);
                 }
             }
         }
@@ -274,8 +278,9 @@ namespace NMF.Models.Meta
                 {
                     bool old = this._isOrdered;
                     this._isOrdered = value;
-                    this.OnIsOrderedChanged(new ValueChangedEventArgs(old, value));
-                    this.OnPropertyChanged("IsOrdered");
+                    ValueChangedEventArgs e = new ValueChangedEventArgs(old, value);
+                    this.OnIsOrderedChanged(e);
+                    this.OnPropertyChanged("IsOrdered", e);
                 }
             }
         }
@@ -296,8 +301,9 @@ namespace NMF.Models.Meta
                 {
                     bool old = this._isUnique;
                     this._isUnique = value;
-                    this.OnIsUniqueChanged(new ValueChangedEventArgs(old, value));
-                    this.OnPropertyChanged("IsUnique");
+                    ValueChangedEventArgs e = new ValueChangedEventArgs(old, value);
+                    this.OnIsUniqueChanged(e);
+                    this.OnPropertyChanged("IsUnique", e);
                 }
             }
         }
@@ -319,8 +325,9 @@ namespace NMF.Models.Meta
                 {
                     int old = this._lowerBound;
                     this._lowerBound = value;
-                    this.OnLowerBoundChanged(new ValueChangedEventArgs(old, value));
-                    this.OnPropertyChanged("LowerBound");
+                    ValueChangedEventArgs e = new ValueChangedEventArgs(old, value);
+                    this.OnLowerBoundChanged(e);
+                    this.OnPropertyChanged("LowerBound", e);
                 }
             }
         }
@@ -342,8 +349,9 @@ namespace NMF.Models.Meta
                 {
                     int old = this._upperBound;
                     this._upperBound = value;
-                    this.OnUpperBoundChanged(new ValueChangedEventArgs(old, value));
-                    this.OnPropertyChanged("UpperBound");
+                    ValueChangedEventArgs e = new ValueChangedEventArgs(old, value);
+                    this.OnUpperBoundChanged(e);
+                    this.OnPropertyChanged("UpperBound", e);
                 }
             }
         }
@@ -458,8 +466,9 @@ namespace NMF.Models.Meta
             {
                 newDeclaringType.References.Add(this);
             }
-            this.OnPropertyChanged("DeclaringType");
-            this.OnDeclaringTypeChanged(new ValueChangedEventArgs(oldDeclaringType, newDeclaringType));
+            ValueChangedEventArgs e = new ValueChangedEventArgs(oldDeclaringType, newDeclaringType);
+            this.OnDeclaringTypeChanged(e);
+            this.OnPropertyChanged("DeclaringType", e);
         }
         
         /// <summary>

@@ -68,8 +68,9 @@ namespace NMF.Models.Meta
                     {
                         value.Deleted += this.OnResetAdornedClass;
                     }
-                    this.OnPropertyChanged("AdornedClass");
-                    this.OnAdornedClassChanged(new ValueChangedEventArgs(old, value));
+                    ValueChangedEventArgs e = new ValueChangedEventArgs(old, value);
+                    this.OnAdornedClassChanged(e);
+                    this.OnPropertyChanged("AdornedClass", e);
                 }
             }
         }

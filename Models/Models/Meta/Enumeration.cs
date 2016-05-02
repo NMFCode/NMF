@@ -71,8 +71,9 @@ namespace NMF.Models.Meta
                 {
                     bool old = this._isFlagged;
                     this._isFlagged = value;
-                    this.OnIsFlaggedChanged(new ValueChangedEventArgs(old, value));
-                    this.OnPropertyChanged("IsFlagged");
+                    ValueChangedEventArgs e = new ValueChangedEventArgs(old, value);
+                    this.OnIsFlaggedChanged(e);
+                    this.OnPropertyChanged("IsFlagged", e);
                 }
             }
         }

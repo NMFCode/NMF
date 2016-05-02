@@ -84,6 +84,14 @@ namespace NMF.Models
                         }
                     }
                 }
+                else
+                {
+                    var newParentME = newParent as ModelElement;
+                    if (newParentME != null)
+                    {
+                        newParentME.OnChildCreated(this);
+                    }
+                }
                 if (newParent != null)
                 {
                     if (EnforceModels && newParent.Model == null)
@@ -99,6 +107,16 @@ namespace NMF.Models
 
                 OnParentChanged(newParent, oldParent);
             }
+        }
+
+        /// <summary>
+        /// Gets called when a new model element is added as a child of the current model element
+        /// </summary>
+        /// <param name="child">The child element</param>
+        /// <remarks>This method is not called if an existing model element is moved in the composition hierarchy</remarks>
+        protected virtual void OnChildCreated(IModelElement child)
+        {
+
         }
 
         /// <summary>
@@ -515,11 +533,11 @@ namespace NMF.Models
         /// Gets called when the PropertyChanged event is fired
         /// </summary>
         /// <param name="propertyName">The name of the changed property</param>
-        /// 
-        protected virtual void OnPropertyChanged(string propertyName)
+        /// <param name="valueChangedEvent">The original event data</param>
+        protected virtual void OnPropertyChanged(string propertyName, ValueChangedEventArgs valueChangedEvent)
         {
             if (PropertyChanged != null) PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
-            OnBubbledChange(new BubbledChangeEventArgs(this, propertyName));
+            OnBubbledChange(new BubbledChangeEventArgs(this, propertyName, valueChangedEvent));
         }
 
 

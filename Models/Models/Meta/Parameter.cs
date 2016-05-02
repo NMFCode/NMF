@@ -60,8 +60,9 @@ namespace NMF.Models.Meta
                 {
                     Direction old = this._direction;
                     this._direction = value;
-                    this.OnDirectionChanged(new ValueChangedEventArgs(old, value));
-                    this.OnPropertyChanged("Direction");
+                    ValueChangedEventArgs e = new ValueChangedEventArgs(old, value);
+                    this.OnDirectionChanged(e);
+                    this.OnPropertyChanged("Direction", e);
                 }
             }
         }
@@ -159,8 +160,9 @@ namespace NMF.Models.Meta
             {
                 newOperation.Parameters.Add(this);
             }
-            this.OnPropertyChanged("Operation");
-            this.OnOperationChanged(new ValueChangedEventArgs(oldOperation, newOperation));
+            ValueChangedEventArgs e = new ValueChangedEventArgs(oldOperation, newOperation);
+            this.OnOperationChanged(e);
+            this.OnPropertyChanged("Operation", e);
         }
         
         /// <summary>

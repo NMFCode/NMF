@@ -118,8 +118,9 @@ namespace NMF.Models.Meta
             {
                 newExtendedElement.Extensions.Add(this);
             }
-            this.OnPropertyChanged("ExtendedElement");
-            this.OnExtendedElementChanged(new ValueChangedEventArgs(oldExtendedElement, newExtendedElement));
+            ValueChangedEventArgs e = new ValueChangedEventArgs(oldExtendedElement, newExtendedElement);
+            this.OnExtendedElementChanged(e);
+            this.OnPropertyChanged("ExtendedElement", e);
         }
         
         /// <summary>
