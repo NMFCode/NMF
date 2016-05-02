@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using NMF.Models;
 using Orleans;
 using Orleans.Streams.Linq.Aggregates;
@@ -26,6 +27,10 @@ namespace NMF.Expressions.Linq.Orleans.Model
 
         public Task SetOutputMultiplex(uint factor = 1)
         {
+            if (ProcessorNodes.Count != 0)
+            {
+                throw new InvalidOperationException("Setting the value for output multiplexing must happen before processor nodes are initialized.");
+            }
             OutputMultiplexFactor = factor;
             return TaskDone.Done;
         }

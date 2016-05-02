@@ -24,7 +24,6 @@ namespace NMF.Expressions.Linq.Orleans.Model
         protected T Model;
         protected StreamMessageSender<T> OutputProducer;
         protected StreamMessageSender<T> ModelUpdateSender;
-        private Func<string, T> _modelLoadingFunc;
         private string _modelPath;
 
         public override async Task OnActivateAsync()

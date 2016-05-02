@@ -20,7 +20,7 @@ namespace NMF.Expressions.Linq.Orleans.Model
         public override async Task OnActivateAsync()
         {
             await base.OnActivateAsync();
-            StreamSender = null;
+            StreamSender = new MappingStreamMessageSenderComposite<TOut>(GetStreamProvider(StreamProviderNamespace));
         }
 
         protected new MappingStreamMessageSenderComposite<TOut> StreamSender
@@ -114,9 +114,9 @@ namespace NMF.Expressions.Linq.Orleans.Model
 
         public Task SetOutputMultiplex(uint factor = 1)
         {
-            if (StreamSender != null)
+            if (StreamMessageDispatchReceiver.SubscriptionCount != 0)
             {
-                throw new InvalidOperationException("Output stream was already initialized.");
+                throw new InvalidOperationException("Input stream was already set.");
             }
             StreamSender = new MappingStreamMessageSenderComposite<TOut>(GetStreamProvider(StreamProviderNamespace), (int)factor);
             return TaskDone.Done;
