@@ -17,10 +17,12 @@ namespace NMF.Models
         /// </summary>
         /// <param name="source">The source model element</param>
         /// <param name="propertyName">The property that has been changed</param>
+        /// <param name="valueChangeEvent">The original value change event data</param>
         public BubbledChangeEventArgs(IModelElement source, string propertyName, ValueChangedEventArgs valueChangeEvent)
         {
             Element = source;
             PropertyName = propertyName;
+            OriginalEventArgs = valueChangeEvent;
         }
 
         /// <summary>
