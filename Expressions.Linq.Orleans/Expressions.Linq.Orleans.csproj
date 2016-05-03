@@ -109,6 +109,7 @@
     <Compile Include="Linq\IncrementalSelectNodeGrain.cs" />
     <Compile Include="Linq\MappingStreamMessageSenderComposite.cs" />
     <Compile Include="Linq\Message\ModelCollectionChangedMessage.cs" />
+    <Compile Include="Linq\Message\ModelExecuteActionMessage.cs" />
     <Compile Include="Linq\Message\ModelItemRemoveMessage.cs" />
     <Compile Include="Linq\Message\ModelItemAddMessage.cs" />
     <Compile Include="Linq\Message\ModelPropertyChangedMessage.cs" />

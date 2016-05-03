@@ -10,8 +10,8 @@ namespace NMF.Expressions.Linq.Orleans.Model
 {
     public interface IModelContainerGrain<T> : IGrainWithGuidKey, ITransactionalStreamProvider<T>, IElementEnumeratorNode<T>, IModelLoader<T> where T : IResolvableModel
     {
-        Task ExecuteSync(Action<T> action);
-        Task ExecuteSync(Action<T, object> action, object state);
+        Task ExecuteSync(Action<T> action, bool newModelElementCreated = false);
+        Task ExecuteSync(Action<T, object> action, object state, bool newModelElementCreated = false);
 
         Task<StreamIdentity> GetModelUpdateStream();
 

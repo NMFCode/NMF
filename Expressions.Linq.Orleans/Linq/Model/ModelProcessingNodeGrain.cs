@@ -70,6 +70,10 @@ namespace NMF.Expressions.Linq.Orleans.Model
             base.RegisterMessages();
             StreamMessageDispatchReceiver.Register<ModelCollectionChangedMessage>(ProcessModelCollectionChangedMessage);
             StreamMessageDispatchReceiver.Register<ModelPropertyChangedMessage>(ProcessModelPropertyChangedMessage);
+
+            StreamMessageDispatchReceiver.Register<ModelExecuteActionMessage<TModel>>(message => { message.Execute(Model);
+                                                                                                     return TaskDone.Done;
+            });
         }
 
         private async Task ProcessModelPropertyChangedMessage(ModelPropertyChangedMessage message)

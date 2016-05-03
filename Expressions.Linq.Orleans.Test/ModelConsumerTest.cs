@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using Expressions.Linq.Orleans.Test.utils;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using NMF.Expressions.Linq;
-using NMF.Expressions.Linq.Orleans;
+using NMF.Expressions.Linq.Orleans.Message;
 using NMF.Expressions.Linq.Orleans.Model;
 using NMF.Expressions.Linq.Orleans.TestGrains;
 using NMF.Models;
@@ -13,6 +13,7 @@ using NMF.Models.Repository;
 using NMF.Models.Tests.Railway;
 using Orleans;
 using Orleans.Streams;
+using Orleans.Streams.Endpoints;
 using Orleans.TestingHost;
 
 namespace Expressions.Linq.Orleans.Test
@@ -25,7 +26,7 @@ namespace Expressions.Linq.Orleans.Test
         [TestInitialize]
         public void TestInitialize()
         {
-            _provider = GrainClient.GetStreamProvider("CollectionStreamProvider"); 
+            _provider = GrainClient.GetStreamProvider("CollectionStreamProvider");
         }
 
         [ClassCleanup]
@@ -51,21 +52,14 @@ namespace Expressions.Linq.Orleans.Test
             var consumerGrain = await LoadAndAttachModelTestConsumer(modelContainerGrain);
 
 
-
             Assert.IsTrue(await ModelTestUtil.CurrentModelsMatch(modelContainerGrain, consumerGrain));
 
             // Property Changed test to null
-            await modelContainerGrain.ExecuteSync(model =>
-            {
-                model.Routes.First().Entry = null;
-            });
+            await modelContainerGrain.ExecuteSync(model => { model.Routes.First().Entry = null; });
             Assert.IsTrue(await ModelTestUtil.CurrentModelsMatch(modelContainerGrain, consumerGrain));
 
             // Property Changed test to known object
-            await modelContainerGrain.ExecuteSync(model =>
-            {
-                model.Routes.First().Entry = model.Semaphores[2];
-            });
+            await modelContainerGrain.ExecuteSync(model => { model.Routes.First().Entry = model.Semaphores[2]; });
             Assert.IsTrue(await ModelTestUtil.CurrentModelsMatch(modelContainerGrain, consumerGrain));
 
             // Property Changed test to native type
@@ -78,31 +72,56 @@ namespace Expressions.Linq.Orleans.Test
         }
 
         [TestMethod]
+        public async Task ModelNewModelElementCreatedNotForwarded()
+        {
+            var modelContainerGrain = await ModelTestUtil.LoadModelContainer(GrainFactory);
+
+            var consumerGrain = await LoadAndAttachModelTestConsumer(modelContainerGrain);
+
+            await modelContainerGrain.ExecuteSync(container =>
+            {
+                var switchToUpdate = container.Descendants().OfType<ISwitch>().First(sw => sw.Sensor == null);
+                switchToUpdate.Sensor = new Sensor();
+            }, false);
+
+            Assert.IsFalse(await ModelTestUtil.CurrentModelsMatch(modelContainerGrain, consumerGrain));
+        }
+
+        [TestMethod]
+        public async Task ModelNewModelElementCreatedForwarded()
+        {
+            var modelContainerGrain = await ModelTestUtil.LoadModelContainer(GrainFactory);
+
+            var consumerGrain = await LoadAndAttachModelTestConsumer(modelContainerGrain);
+
+            await modelContainerGrain.ExecuteSync(container =>
+            {
+                var switchToUpdate = container.Descendants().OfType<ISwitch>().First(sw => sw.Sensor == null);
+                switchToUpdate.Sensor = new Sensor();
+            }, true);
+
+            Assert.IsTrue(await ModelTestUtil.CurrentModelsMatch(modelContainerGrain, consumerGrain));
+        }
+
+        [TestMethod]
         public async Task ModelCollectionChange()
         {
             var repository = new ModelRepository();
             var train = repository.Resolve(new Uri(new FileInfo("models/railway-1.xmi").FullName));
             var rc = train.Model.RootElements.Single() as RailwayContainer;
 
-            train.Model.BubbledChange += (sender, args) =>
-            {
-                Console.WriteLine("foo");
-            };
+            train.Model.BubbledChange += (sender, args) => { Console.WriteLine("foo"); };
 
             var routeToChange = rc.Routes.First().DefinedBy;
 
             var otherRoute = rc.Descendants().OfType<Route>().Where(r => !r.Equals(routeToChange)).First();
             var foo = routeToChange.AsNotifiable();
-            foo.CollectionChanged += (sender, args) =>
-            {
-                Console.WriteLine("Asdasdasdas");
-            };
+            foo.CollectionChanged += (sender, args) => { Console.WriteLine("Asdasdasdas"); };
             var sensorToAdd = otherRoute.DefinedBy.First();
 
             routeToChange.Add(sensorToAdd); // Does not fire BubbledChange
 
             rc.Routes.First().Entry = rc.Semaphores[2]; // fires BubbledChange
-
 
 
             // END
@@ -143,14 +162,13 @@ namespace Expressions.Linq.Orleans.Test
             //Assert.IsTrue(await CurrentModelsMatch(modelSelectorFunc, modelContainerGrain, consumerGrain));
         }
 
-        private async Task<ITestModelProcessingNodeGrain<RailwayContainer, int>> LoadAndAttachModelTestConsumer(IModelContainerGrain<RailwayContainer> modelContainerGrain)
+        private async Task<ITestModelProcessingNodeGrain<RailwayContainer, int>> LoadAndAttachModelTestConsumer(
+            IModelContainerGrain<RailwayContainer> modelContainerGrain)
         {
             var consumerGrain = GrainFactory.GetGrain<ITestModelProcessingNodeGrain<RailwayContainer, int>>(Guid.NewGuid());
             await consumerGrain.SetModelContainer(modelContainerGrain);
 
             return consumerGrain;
         }
-
-
     }
 }

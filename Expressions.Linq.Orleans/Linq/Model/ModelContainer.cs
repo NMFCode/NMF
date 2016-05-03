@@ -41,16 +41,34 @@ namespace NMF.Expressions.Linq.Orleans.Model
         }
 
 
-        public async Task ExecuteSync(Action<T> action)
+        public async Task ExecuteSync(Action<T> action, bool newModelElementCreated = false)
         {
+            if (newModelElementCreated)
+                Model.BubbledChange -= ModelBubbledChange;
+
             action(Model);
+
+            if (newModelElementCreated)
+            {
+                Model.BubbledChange += ModelBubbledChange;
+                ModelUpdateSender.EnqueueMessage(new ModelExecuteActionMessage<T>(action));
+            }
 
             await SendAllQueuedMessages();
         }
 
-        public async Task ExecuteSync(Action<T, object> action, object state)
+        public async Task ExecuteSync(Action<T, object> action, object state, bool newModelElementCreated = false)
         {
+            if (newModelElementCreated)
+                Model.BubbledChange -= ModelBubbledChange;
+
             action(Model, state);
+
+            if (newModelElementCreated)
+            {
+                Model.BubbledChange += ModelBubbledChange;
+                ModelUpdateSender.EnqueueMessage(new ModelExecuteActionMessage<T>(action, state));
+            }
 
             await SendAllQueuedMessages();
         }
