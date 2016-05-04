@@ -72,7 +72,9 @@ namespace Expressions.Linq.Orleans.Test
             Assert.IsTrue(await ModelTestUtil.CurrentModelsMatch(modelContainerGrain, consumerGrain));
         }
 
+
         [TestMethod]
+        [ExpectedException(typeof(NullReferenceException))]
         public async Task ModelNewModelElementCreatedNotForwarded()
         {
             var modelContainerGrain = await ModelTestUtil.LoadModelContainer(GrainFactory);
@@ -85,8 +87,6 @@ namespace Expressions.Linq.Orleans.Test
                 var switchToUpdate = container.Descendants().OfType<ISwitch>().First(sw => sw.Sensor == null);
                 switchToUpdate.Sensor = new Sensor();
             }, false);
-
-            Assert.IsFalse(await ModelTestUtil.CurrentModelsMatch(modelContainerGrain, consumerGrain));
         }
 
         [TestMethod]
