@@ -10,12 +10,13 @@ namespace NMF.Expressions.Linq.Orleans.Model
     {
         public static T LoadModelFromPath<T>(string modelPath) where T : IResolvableModel
         {
+            ModelElement.EnforceModels = false; // TODO remove once bug is fixed
             var repository = new ModelRepository();
-            var train = repository.Resolve(new Uri(new FileInfo(modelPath).FullName));
+            var rootModelElement = repository.Resolve(new Uri(new FileInfo(modelPath).FullName));
+            ModelElement.EnforceModels = true;
 
-            var model = (IModelElement)train.Model.RootElements.Single();
-
-            return (T)model;
+            IResolvableModel model = rootModelElement.Model;
+            return (T) model;
         }
     }
 }

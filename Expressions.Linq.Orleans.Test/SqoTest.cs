@@ -7,6 +7,7 @@ using NMF.Expressions.Linq.Orleans;
 using NMF.Expressions.Linq.Orleans.Model;
 using NMF.Models;
 using NMF.Models.Tests.Railway;
+using NMF.Utilities;
 using Orleans;
 using Orleans.Streams;
 using Orleans.Streams.Linq;
@@ -59,14 +60,14 @@ namespace Expressions.Linq.Orleans.Test
             var modelContainer = await ModelTestUtil.LoadModelContainer(GrainFactory);
             var factory = new IncrementalNmfModelStreamProcessorAggregateFactory(GrainFactory, modelContainer);
 
-            var query = await modelContainer.SimpleSelectMany(model => model.Semaphores, factory);
+            var query = await modelContainer.SimpleSelectMany(model => model.RootElements.Single().As<RailwayContainer>().Semaphores, factory);
             var resultConsumer = await query.ToNmfModelConsumer();
 
             Assert.AreEqual(0, resultConsumer.Items.Count);
 
             await modelContainer.EnumerateToSubscribers();
 
-            var localResults = localModel.Semaphores; 
+            var localResults = localModel.RootElements.Single().As<RailwayContainer>().Semaphores; 
             ModelTestUtil.AssertXmlEquals(localResults, resultConsumer.Items);
         }
 
@@ -78,7 +79,7 @@ namespace Expressions.Linq.Orleans.Test
             var factory = new IncrementalNmfModelStreamProcessorAggregateFactory(GrainFactory, modelContainer);
 
             var query =
-                modelContainer.SimpleSelectMany(model => model.Semaphores, factory)
+                modelContainer.SimpleSelectMany(model => model.RootElements.Single().As<RailwayContainer>().Semaphores, factory)
                     .Where(s => s.Signal == Signal.GO);
             var resultConsumer = await query.ToNmfModelConsumer();
 
@@ -86,7 +87,7 @@ namespace Expressions.Linq.Orleans.Test
 
             await modelContainer.EnumerateToSubscribers();
 
-            var localResults = localModel.Semaphores.Where(s => s.Signal == Signal.GO);
+            var localResults = localModel.RootElements.Single().As<RailwayContainer>().Semaphores.Where(s => s.Signal == Signal.GO);
             ModelTestUtil.AssertXmlEquals(localResults, resultConsumer.Items);
         }
         

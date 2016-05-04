@@ -1,6 +1,9 @@
 ﻿using System;
+using System.ComponentModel;
+using System.Linq;
 using System.Threading.Tasks;
 using NMF.Expressions.Linq.Orleans.Message;
+using NMF.Expressions.Linq.Orleans.Model;
 using NMF.Models;
 using Orleans;
 using Orleans.Streams;
@@ -15,6 +18,18 @@ namespace NMF.Expressions.Linq.Orleans
         public MultiStreamModelConsumer(IStreamProvider streamProvider, TModel model) : base(streamProvider)
         {
             Model = model;
+            ModelElement.EnforceModels = true;
+        }
+
+        public async Task SetModelContainer(IModelContainerGrain<TModel> modelContainer)
+        {
+            var dispatcher = MessageDispatchers.First();
+            await dispatcher.Subscribe(await modelContainer.GetModelUpdateStream());
+            dispatcher.Register<ModelExecuteActionMessage<TModel>>(message =>
+            {
+                message.Execute(Model);
+                return TaskDone.Done;
+            });
         }
 
         protected override void SetupMessageDispatcher(StreamMessageDispatchReceiver dispatcher)

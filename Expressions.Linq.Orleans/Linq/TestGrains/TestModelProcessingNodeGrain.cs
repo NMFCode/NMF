@@ -8,12 +8,12 @@ using NMF.Models.Tests.Railway;
 
 namespace NMF.Expressions.Linq.Orleans.TestGrains
 {
-    public class TestModelProcessingNodeGrain<TIn, TOut> : ModelProcessingNodeGrain<TIn, TOut, RailwayContainer>, ITestModelProcessingNodeGrain<TIn, TOut>
+    public class TestModelProcessingNodeGrain<TIn, TOut> : ModelProcessingNodeGrain<TIn, TOut, NMF.Models.Model>, ITestModelProcessingNodeGrain<TIn, TOut>
     {
 
     }
 
-    public interface ITestModelProcessingNodeGrain<TIn, TOut> : IModelProcessingNodeGrain<TIn, TOut, RailwayContainer>
+    public interface ITestModelProcessingNodeGrain<TIn, TOut> : IModelProcessingNodeGrain<TIn, TOut, NMF.Models.Model>
     {
          
     }

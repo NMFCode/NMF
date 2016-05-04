@@ -22,18 +22,18 @@ namespace Expressions.Linq.Orleans.Test.utils
 
         public static readonly string ModelPath = "models/railway-1.xmi";
 
-        public static readonly Func<string, RailwayContainer> ModelLoadingFunc = (path) =>
+        public static readonly Func<string, NMF.Models.Model> ModelLoadingFunc = (path) =>
         {
             var repository = new ModelRepository();
+            ModelElement.EnforceModels = false; // TODO remove once bug fixed
             var train = repository.Resolve(new Uri(new FileInfo(path).FullName));
-            var railwayContainer = train.Model.RootElements.Single() as RailwayContainer;
-
-            return railwayContainer;
+            ModelElement.EnforceModels = true;
+            return train.Model;
         };
 
-        public static async Task<IModelContainerGrain<RailwayContainer>> LoadModelContainer(IGrainFactory factory)
+        public static async Task<IModelContainerGrain<NMF.Models.Model>> LoadModelContainer(IGrainFactory factory)
         {
-            var modelContainerGrain = factory.GetGrain<IModelContainerGrain<RailwayContainer>>(Guid.NewGuid());
+            var modelContainerGrain = factory.GetGrain<IModelContainerGrain<NMF.Models.Model>>(Guid.NewGuid());
             await modelContainerGrain.LoadModelFromPath(ModelPath);
 
             return modelContainerGrain;

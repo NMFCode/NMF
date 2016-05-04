@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using NMF.Models;
 using NMF.Models.Repository;
+using NMF.Models.Tests.Railway;
 using Orleans;
 using Orleans.Collections;
 using Orleans.Streams;
@@ -16,5 +17,8 @@ namespace NMF.Expressions.Linq.Orleans.Model
         Task<StreamIdentity> GetModelUpdateStream();
 
         Task<string> GetModelPath();
+
+        // This method is just here to ensure assembly loading of RailwayContainer by Orleans. To be removed once NMF assembly registration has been changed.
+        Task<RailwayContainer> NeverCallMe();
     }
 }

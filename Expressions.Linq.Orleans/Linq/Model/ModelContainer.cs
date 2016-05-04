@@ -16,22 +16,24 @@ using Orleans;
 using Orleans.Collections;
 using Orleans.Streams;
 using Orleans.Streams.Endpoints;
+using Orleans.Streams.Messages;
 
 namespace NMF.Expressions.Linq.Orleans.Model
 {
-    public class ModelContainer<T> : Grain, IModelContainerGrain<T> where T : IModelElement
-    {
+    public class ModelContainer<T> : Grain, IModelContainerGrain<T> where T : IResolvableModel, IModelElement
+    { 
+
         private const string StreamProviderName = "CollectionStreamProvider";
         protected T Model;
-        protected StreamMessageSender<T> OutputProducer;
-        protected StreamMessageSender<T> ModelUpdateSender;
+        protected StreamMessageSender<Models.Model> OutputProducer;
+        protected StreamMessageSender<Models.Model> ModelUpdateSender;
         private string _modelPath;
 
         public override async Task OnActivateAsync()
         {
             await base.OnActivateAsync();
-            OutputProducer = new StreamMessageSender<T>(GetStreamProvider(StreamProviderName), this.GetPrimaryKey());
-            ModelUpdateSender = new StreamMessageSender<T>(GetStreamProvider(StreamProviderName), new StreamIdentity("ModelUpdate", this.GetPrimaryKey()));
+            OutputProducer = new StreamMessageSender<Models.Model>(GetStreamProvider(StreamProviderName), this.GetPrimaryKey());
+            ModelUpdateSender = new StreamMessageSender<Models.Model>(GetStreamProvider(StreamProviderName), new StreamIdentity("ModelUpdate", this.GetPrimaryKey()));
         }
 
         private async Task SendAllQueuedMessages()
@@ -71,6 +73,10 @@ namespace NMF.Expressions.Linq.Orleans.Model
             }
 
             await SendAllQueuedMessages();
+
+            // No flush pipeline
+
+            await OutputProducer.SendMessage(new FlushMessage());
         }
 
         public async Task<StreamIdentity> GetModelUpdateStream()
@@ -83,18 +89,18 @@ namespace NMF.Expressions.Linq.Orleans.Model
             return Task.FromResult(_modelPath);
         }
 
+        public Task<RailwayContainer> NeverCallMe()
+        {
+            throw new InvalidOperationException();
+        }
+
         public Task<string> ModelToString(Func<T, IModelElement> elementSelectorFunc)
         {
             var element = elementSelectorFunc(Model);
 
-            var serializer = MetaRepository.Instance.Serializer;
-
-            var stream = new NonImplicitDisposableMemoryStream();
-            serializer.SerializeFragment(element, stream);
-
-            var result = System.Text.Encoding.UTF8.GetString(stream.ToArray(), 0, (int) stream.Length);
-            stream.CanDispose = true;
-            stream.Dispose();
+            ModelElement.EnforceModels = false; // TODO remove once bug fixed
+            var result = element.ToXmlString();
+            ModelElement.EnforceModels = true;
 
             return Task.FromResult(result);
         }
@@ -104,7 +110,9 @@ namespace NMF.Expressions.Linq.Orleans.Model
             Assembly.LoadFrom("NMF.Models.Tests.dll");
             _modelPath = modelPath;
 
+            ModelElement.EnforceModels = false;
             Model = ModelUtil.LoadModelFromPath<T>(modelPath);
+            ModelElement.EnforceModels = true;
             Model.BubbledChange += ModelBubbledChange;
 
             return TaskDone.Done;

@@ -11,6 +11,7 @@ using NMF.Expressions.Linq.Orleans.TestGrains;
 using NMF.Models;
 using NMF.Models.Repository;
 using NMF.Models.Tests.Railway;
+using NMF.Utilities;
 using Orleans;
 using Orleans.Streams;
 using Orleans.Streams.Endpoints;
@@ -55,11 +56,11 @@ namespace Expressions.Linq.Orleans.Test
             Assert.IsTrue(await ModelTestUtil.CurrentModelsMatch(modelContainerGrain, consumerGrain));
 
             // Property Changed test to null
-            await modelContainerGrain.ExecuteSync(model => { model.Routes.First().Entry = null; });
+            await modelContainerGrain.ExecuteSync(model => { ((RailwayContainer) model.RootElements.Single()).Routes.First().Entry = null; });
             Assert.IsTrue(await ModelTestUtil.CurrentModelsMatch(modelContainerGrain, consumerGrain));
 
             // Property Changed test to known object
-            await modelContainerGrain.ExecuteSync(model => { model.Routes.First().Entry = model.Semaphores[2]; });
+            await modelContainerGrain.ExecuteSync(model => { ((RailwayContainer)model.RootElements.Single()).Routes.First().Entry = ((RailwayContainer)model.RootElements.Single()).Semaphores[2]; });
             Assert.IsTrue(await ModelTestUtil.CurrentModelsMatch(modelContainerGrain, consumerGrain));
 
             // Property Changed test to native type
@@ -78,6 +79,7 @@ namespace Expressions.Linq.Orleans.Test
 
             var consumerGrain = await LoadAndAttachModelTestConsumer(modelContainerGrain);
 
+            ModelElement.EnforceModels = true;
             await modelContainerGrain.ExecuteSync(container =>
             {
                 var switchToUpdate = container.Descendants().OfType<ISwitch>().First(sw => sw.Sensor == null);
@@ -94,9 +96,10 @@ namespace Expressions.Linq.Orleans.Test
 
             var consumerGrain = await LoadAndAttachModelTestConsumer(modelContainerGrain);
 
+            ModelElement.EnforceModels = true;
             await modelContainerGrain.ExecuteSync(container =>
             {
-                var switchToUpdate = container.Descendants().OfType<ISwitch>().First(sw => sw.Sensor == null);
+                var switchToUpdate = container.RootElements.Single().As<RailwayContainer>().Descendants().OfType<ISwitch>().First(sw => sw.Sensor == null);
                 switchToUpdate.Sensor = new Sensor();
             }, true);
 
@@ -162,10 +165,10 @@ namespace Expressions.Linq.Orleans.Test
             //Assert.IsTrue(await CurrentModelsMatch(modelSelectorFunc, modelContainerGrain, consumerGrain));
         }
 
-        private async Task<ITestModelProcessingNodeGrain<RailwayContainer, int>> LoadAndAttachModelTestConsumer(
-            IModelContainerGrain<RailwayContainer> modelContainerGrain)
+        private async Task<ITestModelProcessingNodeGrain<NMF.Models.Model, int>> LoadAndAttachModelTestConsumer(
+            IModelContainerGrain<NMF.Models.Model> modelContainerGrain)
         {
-            var consumerGrain = GrainFactory.GetGrain<ITestModelProcessingNodeGrain<RailwayContainer, int>>(Guid.NewGuid());
+            var consumerGrain = GrainFactory.GetGrain<ITestModelProcessingNodeGrain<NMF.Models.Model, int>>(Guid.NewGuid());
             await consumerGrain.SetModelContainer(modelContainerGrain);
 
             return consumerGrain;

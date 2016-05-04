@@ -22,14 +22,14 @@ namespace NMF.Expressions.Linq.Orleans
     where TFactory : IncrementalNmfModelStreamProcessorAggregateFactory
         {
             var previousNode = await previousNodeTask;
-            return await ToModelConsumer<TOldIn, TIn, TFactory, RailwayContainer>(previousNode);
+            return await ToModelConsumer<TOldIn, TIn, TFactory, NMF.Models.Model>(previousNode);
         }
 
         public static Task<MultiStreamListConsumer<TIn>> ToNmfModelConsumer<TOldIn, TIn, TFactory>(
             this StreamProcessorChain<TOldIn, TIn, TFactory> previousNode)
             where TFactory : IncrementalNmfModelStreamProcessorAggregateFactory
         {
-            return ToModelConsumer<TOldIn, TIn, TFactory, RailwayContainer>(previousNode);
+            return ToModelConsumer<TOldIn, TIn, TFactory, NMF.Models.Model>(previousNode);
         }
 
 
@@ -53,6 +53,7 @@ namespace NMF.Expressions.Linq.Orleans
             var modelPath = await previousNode.Factory.ModelContainerGrain.GetModelPath();
             var clientConsumer = new MultiStreamModelConsumer<TIn, TModel>(GrainClient.GetStreamProvider("CollectionStreamProvider"), ModelUtil.LoadModelFromPath<TModel>(modelPath));
             await clientConsumer.SetInput(await previousNode.GetOutputStreams());
+            await clientConsumer.SetModelContainer(previousNode.Factory.ModelContainerGrain);
 
             return clientConsumer;
         }

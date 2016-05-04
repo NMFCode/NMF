@@ -17,9 +17,9 @@ namespace NMF.Expressions.Linq.Orleans
     /// <summary>
     /// Factory for NMF models. Used for Extension method ToNmfModelConsumer() in order to not make the caller specify all generic arguments.
     /// </summary>
-    public class IncrementalNmfModelStreamProcessorAggregateFactory : IncrementalStreamProcessorAggregateFactory<RailwayContainer>
+    public class IncrementalNmfModelStreamProcessorAggregateFactory : IncrementalStreamProcessorAggregateFactory<NMF.Models.Model>
     {
-        public IncrementalNmfModelStreamProcessorAggregateFactory(IGrainFactory factory, IModelContainerGrain<RailwayContainer> modelContainer) : base(factory, modelContainer)
+        public IncrementalNmfModelStreamProcessorAggregateFactory(IGrainFactory factory, IModelContainerGrain<NMF.Models.Model> modelContainer) : base(factory, modelContainer)
         {
         }
     }

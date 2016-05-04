@@ -12,7 +12,8 @@ using Orleans.Streams.Linq.Nodes;
 
 namespace NMF.Expressions.Linq.Orleans.Model
 {
-    public class ModelProcessingNodeGrain<TIn, TOut, TModel> : StreamProcessorNodeGrain<TIn, TOut>, IModelProcessingNodeGrain<TIn, TOut, TModel> where TModel : IResolvableModel
+    public class ModelProcessingNodeGrain<TIn, TOut, TModel> : StreamProcessorNodeGrain<TIn, TOut>, IModelProcessingNodeGrain<TIn, TOut, TModel>
+        where TModel : IResolvableModel
     {
         protected TModel Model { get; private set; }
         protected IModelContainerGrain<TModel> ModelContainer { get; private set; }
@@ -25,13 +26,15 @@ namespace NMF.Expressions.Linq.Orleans.Model
 
         protected new MappingStreamMessageSenderComposite<TOut> StreamSender
         {
-            get { return (MappingStreamMessageSenderComposite<TOut>)base.StreamSender; }
+            get { return (MappingStreamMessageSenderComposite<TOut>) base.StreamSender; }
             set { base.StreamSender = value; }
         }
 
         public Task LoadModelFromPath(string modelPath)
         {
+            ModelElement.EnforceModels = false;
             Model = ModelUtil.LoadModelFromPath<TModel>(modelPath);
+            ModelElement.EnforceModels = true;
             return TaskDone.Done;
         }
 
@@ -39,14 +42,9 @@ namespace NMF.Expressions.Linq.Orleans.Model
         {
             var element = elementSelectorFunc(Model);
 
-            var serializer = MetaRepository.Instance.Serializer;
-
-            var stream = new NonImplicitDisposableMemoryStream();
-            serializer.SerializeFragment(element, stream);
-
-            var result = Encoding.UTF8.GetString(stream.ToArray(), 0, (int) stream.Length);
-            stream.CanDispose = true;
-            stream.Dispose();
+            ModelElement.EnforceModels = false; // TODO remove once bug fixed
+            var result = element.ToXmlString();
+            ModelElement.EnforceModels = true;
 
             return Task.FromResult(result);
         }
@@ -71,8 +69,10 @@ namespace NMF.Expressions.Linq.Orleans.Model
             StreamMessageDispatchReceiver.Register<ModelCollectionChangedMessage>(ProcessModelCollectionChangedMessage);
             StreamMessageDispatchReceiver.Register<ModelPropertyChangedMessage>(ProcessModelPropertyChangedMessage);
 
-            StreamMessageDispatchReceiver.Register<ModelExecuteActionMessage<TModel>>(message => { message.Execute(Model);
-                                                                                                     return TaskDone.Done;
+            StreamMessageDispatchReceiver.Register<ModelExecuteActionMessage<TModel>>(async message =>
+            {
+                message.Execute(Model);
+                //await StreamSender.FlushQueue();
             });
         }
 
@@ -122,7 +122,7 @@ namespace NMF.Expressions.Linq.Orleans.Model
             {
                 throw new InvalidOperationException("Input stream was already set.");
             }
-            StreamSender = new MappingStreamMessageSenderComposite<TOut>(GetStreamProvider(StreamProviderNamespace), (int)factor);
+            StreamSender = new MappingStreamMessageSenderComposite<TOut>(GetStreamProvider(StreamProviderNamespace), (int) factor);
             return TaskDone.Done;
         }
     }

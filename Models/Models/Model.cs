@@ -12,7 +12,7 @@ using System.Text;
 namespace NMF.Models
 {
     [DebuggerDisplayAttribute("Model {ModelUri}")]
-    public class Model : ModelElement
+    public class Model : ModelElement, IResolvableModel
     {
         public Model()
         {
