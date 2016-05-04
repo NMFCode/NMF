@@ -66,7 +66,11 @@ namespace NMF.Models.Repository.Serialization
             {
                 foreach (var element in model.RootElements)
                 {
-                    Serialize(element, writer, null, true, XmlIdentificationMode.FullObject, context);
+                    if (element == null) continue;
+                    var typeInfo = GetSerializationInfo(element.GetType(), true);
+                    WriteBeginRootElement(writer, element, typeInfo);
+                    Serialize(element, writer, null, false, XmlIdentificationMode.FullObject, context);
+                    WriteEndRootElement(writer, element, typeInfo);
                 }
             }
         }

@@ -1,8 +1,10 @@
 ﻿using System;
+using System.IO;
 using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using NMF.Models.Repository;
 using NMF.Models.Tests.Railway;
+using NMF.Utilities;
 
 namespace NMF.Models.Tests
 {
@@ -82,6 +84,37 @@ namespace NMF.Models.Tests
             Assert.AreEqual(BaseUri + "#//0/@routes.0", route.AbsoluteUri.AbsoluteUri);
             Assert.AreSame(route, railwayModel.Resolve(route.RelativeUri));
             Assert.AreSame(route, repository.Resolve(route.AbsoluteUri));
+        }
+
+        [TestMethod]
+        public void ToXmlTest()
+        {
+            var element = railwayModel;
+            var serializer = MetaRepository.Instance.Serializer;
+
+            ModelElement.EnforceModels = true;
+            
+            var stream = new MemoryStream();
+            serializer.SerializeFragment(element, stream);
+
+            var switchToUpdate = railwayModel.RootElements.Single().As<RailwayContainer>().Descendants().OfType<ISwitch>().First(sw => sw.Sensor == null);
+            switchToUpdate.Sensor = new Sensor();
+
+            stream = new MemoryStream();
+            serializer.SerializeFragment(element, stream); 
+        }
+
+        [TestMethod]
+        public void LoadCrashTest()
+        {
+            var repository = new ModelRepository();
+            var rootModelElement = repository.Resolve(new Uri(BaseUri), "..\\..\\railway.railway");
+
+            ModelElement.EnforceModels = true;
+
+            repository = new ModelRepository();
+            rootModelElement = repository.Resolve(new Uri(BaseUri), "..\\..\\railway.railway");
+
         }
     }
 }

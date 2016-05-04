@@ -94,7 +94,7 @@ namespace NMF.Models
                 }
                 if (newParent != null)
                 {
-                    if (EnforceModels && newParent.Model == null)
+                    if (EnforceModels && newParent.Model == null && oldParent != null)
                     {
                         var oldModel = oldParent.Model;
                         if (oldModel != null)
