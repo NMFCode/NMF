@@ -9,13 +9,13 @@ using Orleans.Streams.Endpoints;
 
 namespace NMF.Expressions.Linq.Orleans
 {
-    public class MultiStreamModelConsumer<T, TModel> : MultiStreamListConsumer<T> where TModel : IResolvableModel
+    public class TransactionalStreamModelConsumer<T, TModel> : TransactionalStreamListConsumer<T> where TModel : IResolvableModel
     {
         protected TModel Model;
 
         public LocalResolveContext ResolveContext { get; }
 
-        public MultiStreamModelConsumer(IStreamProvider streamProvider, TModel model) : base(streamProvider)
+        public TransactionalStreamModelConsumer(IStreamProvider streamProvider, TModel model) : base(streamProvider)
         {
             Model = model;
             ResolveContext = new LocalResolveContext(model);
@@ -24,9 +24,8 @@ namespace NMF.Expressions.Linq.Orleans
 
         public async Task SetModelContainer(IModelContainerGrain<TModel> modelContainer)
         {
-            var dispatcher = MessageDispatchers.First();
-            await dispatcher.Subscribe(await modelContainer.GetModelUpdateStream());
-            dispatcher.Register<ModelExecuteActionMessage<TModel>>(message =>
+            await MessageDispatcher.Subscribe(await modelContainer.GetModelUpdateStream());
+            MessageDispatcher.Register<ModelExecuteActionMessage<TModel>>(message =>
             {
                 message.Execute(Model);
                 return TaskDone.Done;

@@ -47,7 +47,7 @@ namespace Expressions.Linq.Orleans.Test
             await selectGrain.SetObservingFunc(new SerializableFunc<NMF.Models.Model, NMF.Models.Model>(_ => _));
             await selectGrain.SetInput(await modelGrain.GetOutputStreams());
 
-            var consumer = new MultiStreamModelConsumer<NMF.Models.Model, NMF.Models.Model>(_provider,
+            var consumer = new TransactionalStreamModelConsumer<NMF.Models.Model, NMF.Models.Model>(_provider,
                 ModelTestUtil.ModelLoadingFunc(ModelTestUtil.ModelPath));
             await consumer.SetInput(await selectGrain.GetOutputStreams());
 
@@ -73,7 +73,7 @@ namespace Expressions.Linq.Orleans.Test
             await selectNodeGrain.SetObservingFunc(new SerializableFunc<NMF.Models.Model, NMF.Models.Model>(_ => _));
             await selectNodeGrain.LoadModelFromPath(ModelTestUtil.ModelPath);
 
-            var consumer = new MultiStreamModelConsumer<NMF.Models.Model, NMF.Models.Model>(_provider,
+            var consumer = new TransactionalStreamModelConsumer<NMF.Models.Model, NMF.Models.Model>(_provider,
                 ModelTestUtil.ModelLoadingFunc(ModelTestUtil.ModelPath));
             await consumer.SetInput(await selectNodeGrain.GetOutputStreams());
 
@@ -113,7 +113,7 @@ namespace Expressions.Linq.Orleans.Test
             await selectNodeGrain.LoadModelFromPath(ModelTestUtil.ModelPath);
             await selectNodeGrain.SubscribeToStreams(await modelGrain.GetOutputStreams());
 
-            var consumer = new MultiStreamModelConsumer<NMF.Models.Model, NMF.Models.Model>(_provider,
+            var consumer = new TransactionalStreamModelConsumer<NMF.Models.Model, NMF.Models.Model>(_provider,
                 ModelTestUtil.ModelLoadingFunc(ModelTestUtil.ModelPath));
             await consumer.SetInput(await selectNodeGrain.GetOutputStreams());
 
@@ -141,7 +141,7 @@ namespace Expressions.Linq.Orleans.Test
             await selectNodeGrain.LoadModelFromPath(ModelTestUtil.ModelPath);
             await selectNodeGrain.SubscribeToStreams(await modelGrain.GetOutputStreams());
 
-            var consumer = new MultiStreamModelConsumer<ISemaphore, NMF.Models.Model>(_provider,
+            var consumer = new TransactionalStreamModelConsumer<ISemaphore, NMF.Models.Model>(_provider,
                 ModelTestUtil.ModelLoadingFunc(ModelTestUtil.ModelPath));
             var streams = await selectNodeGrain.GetOutputStreams();
 

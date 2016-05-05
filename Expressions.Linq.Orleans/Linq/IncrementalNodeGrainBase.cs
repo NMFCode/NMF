@@ -80,8 +80,8 @@ namespace NMF.Expressions.Linq.Orleans
         protected override void RegisterMessages()
         {
             base.RegisterMessages();
-            StreamMessageDispatchReceiver.Register<ModelItemAddMessage<TSource>>(ProcessItemAddMessage);
-            StreamMessageDispatchReceiver.Register<ModelItemRemoveMessage<TSource>>(ProcessItemRemoveMessage);
+            StreamConsumer.MessageDispatcher.Register<ModelItemAddMessage<TSource>>(ProcessItemAddMessage);
+            StreamConsumer.MessageDispatcher.Register<ModelItemRemoveMessage<TSource>>(ProcessItemRemoveMessage);
         }
 
         protected async Task ProcessItemAddMessage(ModelItemAddMessage<TSource> itemMessage)

@@ -69,10 +69,10 @@ namespace NMF.Expressions.Linq.Orleans.Model
         protected override void RegisterMessages()
         {
             base.RegisterMessages();
-            StreamMessageDispatchReceiver.Register<ModelCollectionChangedMessage>(ProcessModelCollectionChangedMessage);
-            StreamMessageDispatchReceiver.Register<ModelPropertyChangedMessage>(ProcessModelPropertyChangedMessage);
+            StreamConsumer.MessageDispatcher.Register<ModelCollectionChangedMessage>(ProcessModelCollectionChangedMessage);
+            StreamConsumer.MessageDispatcher.Register<ModelPropertyChangedMessage>(ProcessModelPropertyChangedMessage);
 
-            StreamMessageDispatchReceiver.Register<ModelExecuteActionMessage<TModel>>(async message =>
+            StreamConsumer.MessageDispatcher.Register<ModelExecuteActionMessage<TModel>>(async message =>
             {
                 message.Execute(Model);
                 //await StreamSender.FlushQueue();
@@ -121,7 +121,7 @@ namespace NMF.Expressions.Linq.Orleans.Model
 
         public Task SetOutputMultiplex(uint factor = 1)
         {
-            if (StreamMessageDispatchReceiver.SubscriptionCount != 0)
+            if (StreamConsumer.MessageDispatcher.SubscriptionCount != 0)
             {
                 throw new InvalidOperationException("Input stream was already set.");
             }

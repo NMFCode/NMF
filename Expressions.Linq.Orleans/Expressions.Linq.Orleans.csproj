@@ -137,7 +137,7 @@
     <Compile Include="Linq\Model\RemoteValue\ModelRemoteValueFactory.cs" />
     <Compile Include="Linq\Model\RemoteValue\ModelRemoteValueTuple.cs" />
     <Compile Include="Linq\Model\RemoteValue\ModelRemoteValueUri.cs" />
-    <Compile Include="Linq\MultiStreamModelConsumer.cs" />
+    <Compile Include="Linq\TransactionalStreamModelConsumer.cs" />
     <Compile Include="Linq\TaggedObservableValueWithPosition.cs" />
     <Compile Include="Linq\IncrementalSimpleSelectManyNodeGrain.cs" />
     <Compile Include="Linq\TestGrains\TestModelProcessingNodeGrain.cs" />
