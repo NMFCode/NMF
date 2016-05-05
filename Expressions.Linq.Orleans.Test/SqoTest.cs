@@ -90,6 +90,29 @@ namespace Expressions.Linq.Orleans.Test
             var localResults = localModel.RootElements.Single().As<RailwayContainer>().Semaphores.Where(s => s.Signal == Signal.GO);
             ModelTestUtil.AssertXmlEquals(localResults, resultConsumer.Items);
         }
-        
+
+        [Ignore]
+        [TestMethod]
+        public async Task TestCompilerGeneratedClassContainingModelElements()
+        {
+            var localModel = ModelTestUtil.ModelLoadingFunc(ModelTestUtil.ModelPath);
+            var modelContainer = await ModelTestUtil.LoadModelContainer(GrainFactory);
+            var factory = new IncrementalNmfModelStreamProcessorAggregateFactory(GrainFactory, modelContainer);
+
+            var query =
+                modelContainer.SimpleSelectMany(model => model.RootElements.Single().As<RailwayContainer>().Semaphores, factory)
+                    .Select(semaphore => new { Signal = semaphore.Signal, Uri = semaphore.RelativeUri});
+            var resultConsumer = await query.ToNmfModelConsumer();
+
+            Assert.AreEqual(0, resultConsumer.Items.Count);
+
+            await modelContainer.EnumerateToSubscribers();
+
+            var localResults = localModel.RootElements.Single().As<RailwayContainer>().Semaphores
+                .Select(semaphore => new { Signal = semaphore.Signal, Uri = semaphore.RelativeUri });
+            
+            CollectionAssert.AreEqual(localResults.OrderBy(x => x.Uri).ToList(), resultConsumer.Items.OrderBy(x => x.Uri).ToList());
+        }
+
     }
 }
