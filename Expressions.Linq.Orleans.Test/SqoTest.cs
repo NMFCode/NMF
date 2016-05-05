@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
 using Expressions.Linq.Orleans.Test.utils;
@@ -91,27 +92,29 @@ namespace Expressions.Linq.Orleans.Test
             ModelTestUtil.AssertXmlEquals(localResults, resultConsumer.Items);
         }
 
-        [Ignore]
         [TestMethod]
-        public async Task TestCompilerGeneratedClassContainingModelElements()
+        public async Task TestTupleClassSelectMany()
         {
             var localModel = ModelTestUtil.ModelLoadingFunc(ModelTestUtil.ModelPath);
             var modelContainer = await ModelTestUtil.LoadModelContainer(GrainFactory);
             var factory = new IncrementalNmfModelStreamProcessorAggregateFactory(GrainFactory, modelContainer);
 
             var query =
-                modelContainer.SimpleSelectMany(model => model.RootElements.Single().As<RailwayContainer>().Semaphores, factory)
-                    .Select(semaphore => new { Signal = semaphore.Signal, Uri = semaphore.RelativeUri});
+                modelContainer.SimpleSelectMany(model => model.RootElements.Single().Descendants().OfType<ISwitchPosition>(), factory)
+                    .Select(swp => new ModelElementTuple<ISwitchPosition, IRoute>(swp, swp.Route));
             var resultConsumer = await query.ToNmfModelConsumer();
 
             Assert.AreEqual(0, resultConsumer.Items.Count);
 
             await modelContainer.EnumerateToSubscribers();
 
-            var localResults = localModel.RootElements.Single().As<RailwayContainer>().Semaphores
-                .Select(semaphore => new { Signal = semaphore.Signal, Uri = semaphore.RelativeUri });
-            
-            CollectionAssert.AreEqual(localResults.OrderBy(x => x.Uri).ToList(), resultConsumer.Items.OrderBy(x => x.Uri).ToList());
+            var localQuery = localModel.RootElements.Single().Descendants().OfType<ISwitchPosition>()
+                .Select(swp => new ModelElementTuple<ISwitchPosition, IRoute>(swp, swp.Route));
+
+            var localResults = localQuery.OrderBy(x => x.Item1.RelativeUri.ToString()).ToList();
+            var remoteResults = resultConsumer.Items.OrderBy(x => x.Item1.RelativeUri.ToString()).ToList();
+            CollectionAssert.AreEqual(localResults.Select(x => x.Item1.RelativeUri).ToList(), remoteResults.Select(x => x.Item1.RelativeUri).ToList());
+            CollectionAssert.AreEqual(localResults.Select(x => x.Item2.RelativeUri).ToList(), remoteResults.Select(x => x.Item2.RelativeUri).ToList());
         }
 
     }

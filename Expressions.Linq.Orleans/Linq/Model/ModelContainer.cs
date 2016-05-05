@@ -33,7 +33,7 @@ namespace NMF.Expressions.Linq.Orleans.Model
         {
             await base.OnActivateAsync();
             OutputProducer = new StreamMessageSender<Models.Model>(GetStreamProvider(StreamProviderName), this.GetPrimaryKey());
-            ModelUpdateSender = new StreamMessageSender<Models.Model>(GetStreamProvider(StreamProviderName), new StreamIdentity("ModelUpdate", this.GetPrimaryKey()));
+            ModelUpdateSender = new StreamMessageSender<Models.Model>(GetStreamProvider(StreamProviderName), new StreamIdentity(this.GetPrimaryKey(), "ModelUpdate"));
         }
 
         private async Task SendAllQueuedMessages()

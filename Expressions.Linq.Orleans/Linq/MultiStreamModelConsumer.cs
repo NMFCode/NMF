@@ -1,6 +1,4 @@
-﻿using System;
-using System.ComponentModel;
-using System.Linq;
+﻿using System.Linq;
 using System.Threading.Tasks;
 using NMF.Expressions.Linq.Orleans.Message;
 using NMF.Expressions.Linq.Orleans.Model;
@@ -15,9 +13,12 @@ namespace NMF.Expressions.Linq.Orleans
     {
         protected TModel Model;
 
+        public LocalResolveContext ResolveContext { get; }
+
         public MultiStreamModelConsumer(IStreamProvider streamProvider, TModel model) : base(streamProvider)
         {
             Model = model;
+            ResolveContext = new LocalResolveContext(model);
             ModelElement.EnforceModels = true;
         }
 
@@ -43,7 +44,7 @@ namespace NMF.Expressions.Linq.Orleans
         {
             foreach (var item in message.Items)
             {
-                var resultItem = item.Retrieve(Model);
+                var resultItem = item.Retrieve(ResolveContext);
                 Items.Add(resultItem);
             }
 
@@ -54,7 +55,7 @@ namespace NMF.Expressions.Linq.Orleans
         {
             foreach (var item in message.Items)
             {
-                var resultItem = item.Retrieve(Model);
+                var resultItem = item.Retrieve(ResolveContext);
                 Items.Remove(resultItem);
             }
 

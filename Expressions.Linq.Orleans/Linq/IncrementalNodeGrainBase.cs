@@ -88,7 +88,11 @@ namespace NMF.Expressions.Linq.Orleans
         {
             foreach (var item in itemMessage.Items)
             {
-                var localItem = item.Retrieve(Model);
+                var localItem = item.Retrieve(ResolveContext);
+
+                if (item.GlobalIdentifier != null && !ResolveContext.ObjectLookup.ContainsKey(item.GlobalIdentifier))
+                    ResolveContext.ObjectLookup.Add(item.GlobalIdentifier, localItem);
+
                 InputList.Add(localItem);
             }
 
@@ -99,7 +103,11 @@ namespace NMF.Expressions.Linq.Orleans
         {
             foreach (var item in message.Items)
             {
-                var localItem = item.Retrieve(Model);
+                var localItem = item.Retrieve(ResolveContext);
+
+                if (item.GlobalIdentifier != null && ResolveContext.ObjectLookup.ContainsKey(item.GlobalIdentifier))
+                    ResolveContext.ObjectLookup.Remove(item.GlobalIdentifier);
+
                 InputList.Remove(localItem);
             }
 

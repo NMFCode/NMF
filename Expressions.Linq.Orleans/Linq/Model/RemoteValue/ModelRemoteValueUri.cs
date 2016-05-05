@@ -17,16 +17,23 @@ namespace NMF.Expressions.Linq.Orleans.Model
 
         public Uri RootRelativeUri { get; private set; }
 
-        public T Retrieve(IResolvableModel lookupModel)
+        public T Retrieve(ILocalResolveContext resolveContext)
         {
-            return (T)lookupModel.Resolve(RootRelativeUri);
+            if (GlobalIdentifier != null && resolveContext.ObjectLookup.ContainsKey(GlobalIdentifier))
+            {
+                return (T)resolveContext.ObjectLookup[GlobalIdentifier];
+            }
+
+            return (T)resolveContext.LookupModel.Resolve(RootRelativeUri);
         }
 
         public object ReferenceComparable => _modelElement;
 
-        object IModelRemoteValue.Retrieve(IResolvableModel lookupModel)
+        public object GlobalIdentifier => RootRelativeUri;
+
+        object IModelRemoteValue.Retrieve(ILocalResolveContext resolveContext)
         {
-            return Retrieve(lookupModel);
+            return Retrieve(resolveContext);
         }
     }
 }

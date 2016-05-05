@@ -18,6 +18,8 @@ namespace NMF.Expressions.Linq.Orleans.Model
         protected TModel Model { get; private set; }
         protected IModelContainerGrain<TModel> ModelContainer { get; private set; }
 
+        protected ILocalResolveContext ResolveContext;
+
         public override async Task OnActivateAsync()
         {
             await base.OnActivateAsync();
@@ -35,6 +37,7 @@ namespace NMF.Expressions.Linq.Orleans.Model
             ModelElement.EnforceModels = false;
             Model = ModelUtil.LoadModelFromPath<TModel>(modelPath);
             ModelElement.EnforceModels = true;
+            ResolveContext = new LocalResolveContext(Model);
             return TaskDone.Done;
         }
 
@@ -79,7 +82,7 @@ namespace NMF.Expressions.Linq.Orleans.Model
         private async Task ProcessModelPropertyChangedMessage(ModelPropertyChangedMessage message)
         {
             var sourceItem = Model.Resolve(message.RelativeRootUri);
-            var newValue = message.Value.Retrieve(Model);
+            var newValue = message.Value.Retrieve(ResolveContext);
 
             sourceItem.GetType().GetProperty(message.PropertyName).GetSetMethod(true).Invoke(sourceItem, new[] {newValue});
 
@@ -95,13 +98,13 @@ namespace NMF.Expressions.Linq.Orleans.Model
                 case NotifyCollectionChangedAction.Add:
                     foreach (var itemToAdd in message.Elements)
                     {
-                        sourceItem.Add(itemToAdd.Retrieve(Model));
+                        sourceItem.Add(itemToAdd.Retrieve(ResolveContext));
                     }
                     break;
                 case NotifyCollectionChangedAction.Remove:
                     foreach (var itemToRemove in message.Elements)
                     {
-                        sourceItem.Remove(itemToRemove.Retrieve(Model));
+                        sourceItem.Remove(itemToRemove.Retrieve(ResolveContext));
                     }
                     break;
                 case NotifyCollectionChangedAction.Reset:

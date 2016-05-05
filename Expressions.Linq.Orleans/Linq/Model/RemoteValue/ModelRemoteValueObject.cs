@@ -10,21 +10,27 @@ namespace NMF.Expressions.Linq.Orleans.Model
         public ModelRemoteValueObject(T value)
         {
             Value = value;
+            GlobalIdentifier = Guid.NewGuid();
         }
 
         public T Value { get; private set; }
 
-        public T Retrieve(IResolvableModel lookupModel)
+        object IModelRemoteValue.Retrieve(ILocalResolveContext resolveContext)
+        {
+            return Retrieve(resolveContext);
+        }
+
+        public T Retrieve(ILocalResolveContext resolveContext)
         {
             return Value;
         }
 
         public object ReferenceComparable => Value;
 
-        object IModelRemoteValue.Retrieve(IResolvableModel lookupModel)
-        {
-            return Retrieve(lookupModel);
-        }
+        /// <summary>
+        /// Can be used to identify objects in a global scope.
+        /// </summary>
+        public object GlobalIdentifier { get; }
     }
 
 

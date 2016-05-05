@@ -9,6 +9,8 @@ namespace NMF.Expressions.Linq.Orleans.Model
         {
             if (obj is IModelElement)
                 return new ModelRemoteValueUri<IModelElement>((IModelElement)obj);
+            if (obj is IModelElementTuple)
+                return new ModelRemoteValueTuple<IModelElementTuple>((IModelElementTuple) obj);
             else
                 return new ModelRemoteValueObject<object>(obj);
         }
@@ -18,6 +20,12 @@ namespace NMF.Expressions.Linq.Orleans.Model
             if (obj is ModelElement)
             {
                 var type = typeof(ModelRemoteValueUri<>);
+                var genericType = type.MakeGenericType(new Type[] { typeof(T) });
+                return (IModelRemoteValue<T>)Activator.CreateInstance(genericType, new object[] { obj });
+            }
+            if (obj is IModelElementTuple)
+            {
+                var type = typeof(ModelRemoteValueTuple<>);
                 var genericType = type.MakeGenericType(new Type[] { typeof(T) });
                 return (IModelRemoteValue<T>)Activator.CreateInstance(genericType, new object[] { obj });
             }
