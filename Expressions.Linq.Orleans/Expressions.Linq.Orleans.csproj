@@ -119,6 +119,7 @@
     <Compile Include="Linq\Message\ModelPropertyChangedMessage.cs" />
     <Compile Include="Linq\Message\ModelStreamMessage.cs" />
     <Compile Include="Linq\ModelElementTuple.cs" />
+    <Compile Include="Linq\Model\IContainsModel.cs" />
     <Compile Include="Linq\Model\IModelConsumer.cs" />
     <Compile Include="Linq\Model\IModelContainerGrain.cs" />
     <Compile Include="Linq\Model\IModelLoader.cs" />

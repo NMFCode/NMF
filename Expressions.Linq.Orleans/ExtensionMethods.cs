@@ -17,7 +17,7 @@ namespace NMF.Expressions.Linq.Orleans
     {
         #region ModelConsumer for NMF - hack to walk around two-level type inference issues.
 
-        public static async Task<TransactionalStreamListConsumer<TIn>> ToNmfModelConsumer<TOldIn, TIn, TFactory>(
+        public static async Task<TransactionalStreamModelConsumer<TIn, NMF.Models.Model>> ToNmfModelConsumer<TOldIn, TIn, TFactory>(
     this Task<StreamProcessorChain<TOldIn, TIn, TFactory>> previousNodeTask)
     where TFactory : IncrementalNmfModelStreamProcessorAggregateFactory
         {
@@ -25,7 +25,7 @@ namespace NMF.Expressions.Linq.Orleans
             return await ToModelConsumer<TOldIn, TIn, TFactory, NMF.Models.Model>(previousNode);
         }
 
-        public static Task<TransactionalStreamListConsumer<TIn>> ToNmfModelConsumer<TOldIn, TIn, TFactory>(
+        public static Task<TransactionalStreamModelConsumer<TIn, NMF.Models.Model>> ToNmfModelConsumer<TOldIn, TIn, TFactory>(
             this StreamProcessorChain<TOldIn, TIn, TFactory> previousNode)
             where TFactory : IncrementalNmfModelStreamProcessorAggregateFactory
         {
@@ -38,7 +38,7 @@ namespace NMF.Expressions.Linq.Orleans
 
             #region ModelConsumer
 
-        public static async Task<TransactionalStreamListConsumer<TIn>> ToModelConsumer<TOldIn, TIn, TFactory, TModel>(
+        public static async Task<TransactionalStreamModelConsumer<TIn, TModel>> ToModelConsumer<TOldIn, TIn, TFactory, TModel>(
             this Task<StreamProcessorChain<TOldIn, TIn, TFactory>> previousNodeTask)
             where TFactory : IncrementalStreamProcessorAggregateFactory<TModel> where TModel : IResolvableModel
         {
@@ -46,14 +46,13 @@ namespace NMF.Expressions.Linq.Orleans
             return await ToModelConsumer<TOldIn, TIn, TFactory, TModel>(previousNode);
         }
 
-        public static async Task<TransactionalStreamListConsumer<TIn>> ToModelConsumer<TOldIn, TIn, TFactory, TModel>(
+        public static async Task<TransactionalStreamModelConsumer<TIn, TModel>> ToModelConsumer<TOldIn, TIn, TFactory, TModel>(
             this StreamProcessorChain<TOldIn, TIn, TFactory> previousNode)
             where TFactory : IncrementalStreamProcessorAggregateFactory<TModel> where TModel : IResolvableModel
         {
-            var modelPath = await previousNode.Factory.ModelContainerGrain.GetModelPath();
-            var clientConsumer = new TransactionalStreamModelConsumer<TIn, TModel>(GrainClient.GetStreamProvider("CollectionStreamProvider"), ModelUtil.LoadModelFromPath<TModel>(modelPath));
-            await clientConsumer.SetInput(await previousNode.GetOutputStreams());
+            var clientConsumer = new TransactionalStreamModelConsumer<TIn, TModel>(GrainClient.GetStreamProvider("CollectionStreamProvider"));
             await clientConsumer.SetModelContainer(previousNode.Factory.ModelContainerGrain);
+            await clientConsumer.SetInput(await previousNode.GetOutputStreams());
 
             return clientConsumer;
         }

@@ -30,6 +30,8 @@ namespace NMF.Expressions.Linq.Orleans
         {
             await base.OnActivateAsync();
             InputList = new NotifyCollection<TSource>();
+            StreamConsumer = new TransactionalStreamModelConsumer<TSource, TModel>(GetStreamProvider(StreamProviderNamespace), InputList);
+            StreamConsumer.MessageDispatcher.PostProcessedMessageFunc = async () => await StreamSender.FlushQueue();
         }
 
         protected void AttachToResult()
@@ -77,33 +79,5 @@ namespace NMF.Expressions.Linq.Orleans
             return tId;
         }
 
-        protected override void RegisterMessages()
-        {
-            base.RegisterMessages();
-            StreamConsumer.MessageDispatcher.Register<ModelItemAddMessage<TSource>>(ProcessItemAddMessage);
-            StreamConsumer.MessageDispatcher.Register<ModelItemRemoveMessage<TSource>>(ProcessItemRemoveMessage);
-        }
-
-        protected async Task ProcessItemAddMessage(ModelItemAddMessage<TSource> itemMessage)
-        {
-            foreach (var item in itemMessage.Items)
-            {
-                var localItem = item.Retrieve(ReceiveContext, ReceiveAction.Insert);
-                InputList.Add(localItem);
-            }
-
-            await StreamSender.FlushQueue();
-        }
-
-        private async Task ProcessItemRemoveMessage(ModelItemRemoveMessage<TSource> message)
-        {
-            foreach (var item in message.Items)
-            {
-                var localItem = item.Retrieve(ReceiveContext, ReceiveAction.Delete);
-                InputList.Remove(localItem);
-            }
-
-            await StreamSender.FlushQueue();
-        }
     }
 }

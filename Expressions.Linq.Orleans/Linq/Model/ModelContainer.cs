@@ -109,12 +109,12 @@ namespace NMF.Expressions.Linq.Orleans.Model
 
         public Task LoadModelFromPath(string modelPath)
         {
+            ModelElement.EnforceModels = true;
             Assembly.LoadFrom("NMF.Models.Tests.dll");
             _modelPath = modelPath;
 
-            ModelElement.EnforceModels = false;
             Model = ModelUtil.LoadModelFromPath<T>(modelPath);
-            ModelElement.EnforceModels = true;
+
             Model.BubbledChange += ModelBubbledChange;
 
             return TaskDone.Done;
@@ -138,7 +138,7 @@ namespace NMF.Expressions.Linq.Orleans.Model
 
         private void ModelBubbledChange(object sender, BubbledChangeEventArgs e)
         {
-            var sourceUri = e.Element.RelativeUri;
+            var sourceElement = ModelRemoteValueFactory.CreateModelRemoteValue(e.Element, _sendContext);
             if (e.IsCollectionChangeEvent)
             {
                 ModelCollectionChangedMessage message = null;
@@ -146,15 +146,15 @@ namespace NMF.Expressions.Linq.Orleans.Model
                 switch (eventArgs.Action)
                 {
                     case NotifyCollectionChangedAction.Add:
-                        message = new ModelCollectionChangedMessage(NotifyCollectionChangedAction.Add, sourceUri,
+                        message = new ModelCollectionChangedMessage(NotifyCollectionChangedAction.Add, sourceElement,
                             CreateModelChanges(eventArgs.NewItems));
                         break;
                     case NotifyCollectionChangedAction.Remove:
-                        message = new ModelCollectionChangedMessage(NotifyCollectionChangedAction.Remove, sourceUri,
+                        message = new ModelCollectionChangedMessage(NotifyCollectionChangedAction.Remove, sourceElement,
                             CreateModelChanges(eventArgs.OldItems));
                         break;
                     case NotifyCollectionChangedAction.Reset:
-                        message = new ModelCollectionChangedMessage(NotifyCollectionChangedAction.Reset, sourceUri, null);
+                        message = new ModelCollectionChangedMessage(NotifyCollectionChangedAction.Reset, sourceElement, null);
                         break;
                     default:
                         throw new NotImplementedException();
@@ -171,7 +171,7 @@ namespace NMF.Expressions.Linq.Orleans.Model
                 var modelChangeValue = ModelRemoteValueFactory.CreateModelRemoteValue(propertyValue, _sendContext);
                 var oldValue = ModelRemoteValueFactory.CreateModelRemoteValue(eventArgs.OldValue, _sendContext);
 
-                var message = new ModelPropertyChangedMessage(modelChangeValue, oldValue, sourceUri, propertyName);
+                var message = new ModelPropertyChangedMessage(modelChangeValue, oldValue, sourceElement, propertyName);
                 ModelUpdateSender.EnqueueMessage(message);
             }
         }

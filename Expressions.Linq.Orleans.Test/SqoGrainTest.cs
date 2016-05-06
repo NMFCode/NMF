@@ -9,6 +9,7 @@ using NMF.Expressions.Linq.Orleans.Interfaces;
 using NMF.Expressions.Linq.Orleans.Linq.Interfaces;
 using NMF.Expressions.Linq.Orleans.Model;
 using NMF.Models.Tests.Railway;
+using NMF.Utilities;
 using Orleans;
 using Orleans.Streams;
 using Orleans.TestingHost;
@@ -42,13 +43,12 @@ namespace Expressions.Linq.Orleans.Test
 
             var selectGrain =
                 GrainFactory.GetGrain<IIncrementalSelectAggregateGrain<NMF.Models.Model, NMF.Models.Model, NMF.Models.Model>>(Guid.NewGuid());
-            await selectGrain.SetOutputMultiplex(1);
-            await selectGrain.SetModelContainer(modelGrain);
+            await selectGrain.Setup(modelGrain);
             await selectGrain.SetObservingFunc(new SerializableFunc<NMF.Models.Model, NMF.Models.Model>(_ => _));
             await selectGrain.SetInput(await modelGrain.GetOutputStreams());
 
-            var consumer = new TransactionalStreamModelConsumer<NMF.Models.Model, NMF.Models.Model>(_provider,
-                ModelTestUtil.ModelLoadingFunc(ModelTestUtil.ModelPath));
+            var consumer = new TransactionalStreamModelConsumer<NMF.Models.Model, NMF.Models.Model>(_provider);
+            await consumer.SetModelContainer(modelGrain);
             await consumer.SetInput(await selectGrain.GetOutputStreams());
 
             await modelGrain.EnumerateToSubscribers(Guid.NewGuid());
@@ -67,14 +67,11 @@ namespace Expressions.Linq.Orleans.Test
 
             var selectNodeGrain =
                 GrainFactory.GetGrain<IIncrementalSelectNodeGrain<NMF.Models.Model, NMF.Models.Model, NMF.Models.Model>>(Guid.NewGuid());
-            await selectNodeGrain.SetOutputMultiplex(1);
-            await selectNodeGrain.SetModelContainer(modelGrain);
-            await selectNodeGrain.SubscribeToStreams(await modelGrain.GetOutputStreams());
+            await selectNodeGrain.Setup(modelGrain, await modelGrain.GetOutputStreams());
             await selectNodeGrain.SetObservingFunc(new SerializableFunc<NMF.Models.Model, NMF.Models.Model>(_ => _));
-            await selectNodeGrain.LoadModelFromPath(ModelTestUtil.ModelPath);
 
-            var consumer = new TransactionalStreamModelConsumer<NMF.Models.Model, NMF.Models.Model>(_provider,
-                ModelTestUtil.ModelLoadingFunc(ModelTestUtil.ModelPath));
+            var consumer = new TransactionalStreamModelConsumer<NMF.Models.Model, NMF.Models.Model>(_provider);
+            await consumer.SetModelContainer(modelGrain); ;
             await consumer.SetInput(await selectNodeGrain.GetOutputStreams());
 
             await modelGrain.EnumerateToSubscribers(Guid.NewGuid());
@@ -84,6 +81,39 @@ namespace Expressions.Linq.Orleans.Test
             var model2 = consumer.Items[0].ToXmlString();
 
             Assert.AreEqual(model1, model2);
+        }
+
+        [TestMethod]
+        public async Task TestIncrementalSimpleSelectManyNodeGrain_ObjectUpdate()
+        {
+            var modelGrain = await ModelTestUtil.LoadModelContainer(GrainFactory);
+
+            var localModel = ModelTestUtil.ModelLoadingFunc(ModelTestUtil.ModelPath);
+
+            var selectNodeGrain =
+                GrainFactory.GetGrain<IIncrementalSelectNodeGrain<NMF.Models.Model, Signal, NMF.Models.Model>>(Guid.NewGuid());
+            await selectNodeGrain.Setup(modelGrain, await modelGrain.GetOutputStreams());
+            await selectNodeGrain.SetObservingFunc(new SerializableFunc<NMF.Models.Model, Signal>(model => ((RailwayContainer)model.RootElements.Single()).Semaphores[0].Signal));
+
+            var consumer = new TransactionalStreamModelConsumer<Signal, NMF.Models.Model>(_provider);
+            await consumer.SetModelContainer(modelGrain);
+            var streams = await selectNodeGrain.GetOutputStreams();
+
+            await consumer.SetInput(streams);
+
+            await modelGrain.EnumerateToSubscribers(Guid.NewGuid());
+
+            var localSignal = ((RailwayContainer) localModel.RootElements.Single()).Semaphores[0].Signal;
+
+            Assert.AreEqual(Signal.GO, localSignal);
+            Assert.AreEqual(1, consumer.Items.Count);
+            Assert.AreEqual(localSignal, consumer.Items[0]);
+
+            // Update signal
+            await modelGrain.ExecuteSync(model => model.RootElements.Single().As<RailwayContainer>().Semaphores[0].Signal = Signal.STOP);
+            
+            Assert.AreEqual(1, consumer.Items.Count);
+            Assert.AreEqual(Signal.STOP, consumer.Items[0]);
         }
 
         [TestMethod]
@@ -107,14 +137,11 @@ namespace Expressions.Linq.Orleans.Test
             var localModel = ModelTestUtil.ModelLoadingFunc(ModelTestUtil.ModelPath);
 
             var selectNodeGrain = GrainFactory.GetGrain<IIncrementalWhereNodeGrain<NMF.Models.Model, NMF.Models.Model>>(Guid.NewGuid());
-            await selectNodeGrain.SetOutputMultiplex(1);
-            await selectNodeGrain.SetModelContainer(modelGrain);
+            await selectNodeGrain.Setup(modelGrain, await modelGrain.GetOutputStreams());
             await selectNodeGrain.SetObservingFunc(new SerializableFunc<NMF.Models.Model, bool>(model => ((RailwayContainer)model.RootElements.Single()).Semaphores.Count == 5));
-            await selectNodeGrain.LoadModelFromPath(ModelTestUtil.ModelPath);
-            await selectNodeGrain.SubscribeToStreams(await modelGrain.GetOutputStreams());
 
-            var consumer = new TransactionalStreamModelConsumer<NMF.Models.Model, NMF.Models.Model>(_provider,
-                ModelTestUtil.ModelLoadingFunc(ModelTestUtil.ModelPath));
+            var consumer = new TransactionalStreamModelConsumer<NMF.Models.Model, NMF.Models.Model>(_provider);
+            await consumer.SetModelContainer(modelGrain);
             await consumer.SetInput(await selectNodeGrain.GetOutputStreams());
 
             await modelGrain.EnumerateToSubscribers(Guid.NewGuid());
@@ -135,14 +162,11 @@ namespace Expressions.Linq.Orleans.Test
 
             var selectNodeGrain =
                 GrainFactory.GetGrain<IIncrementalSimpleSelectManyNodeGrain<NMF.Models.Model, ISemaphore, NMF.Models.Model>>(Guid.NewGuid());
-            await selectNodeGrain.SetOutputMultiplex((uint) multiplexingFactor);
-            await selectNodeGrain.SetModelContainer(modelGrain);
+            await selectNodeGrain.Setup(modelGrain, await modelGrain.GetOutputStreams(), multiplexingFactor);
             await selectNodeGrain.SetObservingFunc(new SerializableFunc<NMF.Models.Model, IEnumerable<ISemaphore>>(model => ((RailwayContainer) model.RootElements.Single()).Semaphores));
-            await selectNodeGrain.LoadModelFromPath(ModelTestUtil.ModelPath);
-            await selectNodeGrain.SubscribeToStreams(await modelGrain.GetOutputStreams());
 
-            var consumer = new TransactionalStreamModelConsumer<ISemaphore, NMF.Models.Model>(_provider,
-                ModelTestUtil.ModelLoadingFunc(ModelTestUtil.ModelPath));
+            var consumer = new TransactionalStreamModelConsumer<ISemaphore, NMF.Models.Model>(_provider);
+            await consumer.SetModelContainer(modelGrain);
             var streams = await selectNodeGrain.GetOutputStreams();
 
             Assert.AreEqual(multiplexingFactor, streams.Count);

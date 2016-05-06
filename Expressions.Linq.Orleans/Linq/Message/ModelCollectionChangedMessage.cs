@@ -12,7 +12,7 @@ namespace NMF.Expressions.Linq.Orleans.Message
         public NotifyCollectionChangedAction Action { get; private set; }
         public IObjectRemoteValue[] Elements { get; private set; }
 
-        public ModelCollectionChangedMessage(NotifyCollectionChangedAction action, Uri relativeRootUri, IObjectRemoteValue[] elements) : base(relativeRootUri)
+        public ModelCollectionChangedMessage(NotifyCollectionChangedAction action, IObjectRemoteValue sourceElement, IObjectRemoteValue[] elements) : base(sourceElement)
         {
             Action = action;
             Elements = elements;

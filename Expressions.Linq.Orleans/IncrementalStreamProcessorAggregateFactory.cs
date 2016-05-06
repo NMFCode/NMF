@@ -39,7 +39,7 @@ namespace NMF.Expressions.Linq.Orleans
             var processorAggregate = GrainFactory.GetGrain<IIncrementalSimpleSelectManyAggregateGrain<TIn, TOut, TModel>>(Guid.NewGuid());
 
             await processorAggregate.SetObservingFunc(selectionFunc);
-            await processorAggregate.SetModelContainer(ModelContainerGrain);
+            await processorAggregate.Setup(ModelContainerGrain);
             await processorAggregate.SetInput(streamIdentities);
 
             return processorAggregate;
@@ -52,7 +52,7 @@ namespace NMF.Expressions.Linq.Orleans
             var processorAggregate = GrainFactory.GetGrain<IIncrementalSelectAggregateGrain<TIn, TOut, TModel>>(Guid.NewGuid());
 
             await processorAggregate.SetObservingFunc(selectionFunc);
-            await processorAggregate.SetModelContainer(ModelContainerGrain);
+            await processorAggregate.Setup(ModelContainerGrain);
             await processorAggregate.SetInput(streamIdentities);
 
             return processorAggregate;
@@ -63,7 +63,7 @@ namespace NMF.Expressions.Linq.Orleans
             var processorAggregate = GrainFactory.GetGrain<IIncrementalWhereAggregateGrain<TIn, TModel>>(Guid.NewGuid());
 
             await processorAggregate.SetObservingFunc(filterFunc);
-            await processorAggregate.SetModelContainer(ModelContainerGrain);
+            await processorAggregate.Setup(ModelContainerGrain);
             await processorAggregate.SetInput(streamIdentities);
 
             return processorAggregate;

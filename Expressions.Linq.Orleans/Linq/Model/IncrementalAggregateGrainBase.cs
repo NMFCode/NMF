@@ -12,26 +12,18 @@ namespace NMF.Expressions.Linq.Orleans.Model
     {
         protected IModelContainerGrain<TModel> ModelContainer;
 
-        protected uint OutputMultiplexFactor { get; set; } = 1;
+        protected int OutputMultiplexFactor { get; set; } = 1;
 
         public Task<IModelContainerGrain<TModel>> GetModelContainer()
         {
             return Task.FromResult(ModelContainer);
         }
 
-        public Task SetModelContainer(IModelContainerGrain<TModel> modelContainer)
+        public Task Setup(IModelContainerGrain<TModel> modelContainer, int outputMultiplexFactor = 1)
         {
             ModelContainer = modelContainer;
-            return TaskDone.Done;
-        }
+            OutputMultiplexFactor = outputMultiplexFactor;
 
-        public Task SetOutputMultiplex(uint factor = 1)
-        {
-            if (ProcessorNodes.Count != 0)
-            {
-                throw new InvalidOperationException("Setting the value for output multiplexing must happen before processor nodes are initialized.");
-            }
-            OutputMultiplexFactor = factor;
             return TaskDone.Done;
         }
     }

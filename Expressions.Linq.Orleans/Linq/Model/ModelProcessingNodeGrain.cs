@@ -1,67 +1,35 @@
 ﻿using System;
-using System.Collections;
-using System.Collections.Specialized;
-using System.Text;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
-using NMF.Expressions.Linq.Orleans.Message;
 using NMF.Models;
-using NMF.Models.Repository;
 using Orleans;
 using Orleans.Collections;
 using Orleans.Streams;
-using Orleans.Streams.Linq.Nodes;
 
 namespace NMF.Expressions.Linq.Orleans.Model
 {
-    public class ModelProcessingNodeGrain<TIn, TOut, TModel> : StreamProcessorNodeGrain<TIn, TOut>, IModelProcessingNodeGrain<TIn, TOut, TModel>
+    public abstract class ModelProcessingNodeGrain<TIn, TOut, TModel> : Grain, IModelProcessingNodeGrain<TIn, TOut, TModel>
         where TModel : IResolvableModel
     {
-        protected TModel Model { get; private set; }
-        protected IModelContainerGrain<TModel> ModelContainer { get; private set; }
+        protected const string StreamProviderNamespace = "CollectionStreamProvider"; // TODO replace with config value
 
         protected LocalModelReceiveContext ReceiveContext;
         protected ILocalSendContext SendContext;
 
-        public override async Task OnActivateAsync()
-        {
-            await base.OnActivateAsync();
-            StreamSender = new MappingStreamMessageSenderComposite<TOut>(GetStreamProvider(StreamProviderNamespace));
-            SendContext = new LocalSendContext();
-        }
+        protected TransactionalStreamModelConsumer<TIn, TModel> StreamConsumer;
 
-        protected new MappingStreamMessageSenderComposite<TOut> StreamSender
-        {
-            get { return (MappingStreamMessageSenderComposite<TOut>) base.StreamSender; }
-            set { base.StreamSender = value; }
-        }
+        protected MappingStreamMessageSenderComposite<TOut> StreamSender;
+        protected IModelContainerGrain<TModel> ModelContainer { get; private set; }
 
-        public Task LoadModelFromPath(string modelPath)
-        {
-            ModelElement.EnforceModels = false;
-            Model = ModelUtil.LoadModelFromPath<TModel>(modelPath);
-            ModelElement.EnforceModels = true;
-            ReceiveContext = new LocalModelReceiveContext(Model);
-            return TaskDone.Done;
-        }
+        public int OutputMultiplexFactor { get; set; }
 
         public Task<string> ModelToString(Func<TModel, IModelElement> elementSelectorFunc)
         {
-            var element = elementSelectorFunc(Model);
-
-            ModelElement.EnforceModels = false; // TODO remove once bug fixed
+            var element = elementSelectorFunc(StreamConsumer.Model);
             var result = element.ToXmlString();
-            ModelElement.EnforceModels = true;
 
             return Task.FromResult(result);
-        }
-
-        public async Task SetModelContainer(IModelContainerGrain<TModel> modelContainer)
-        {
-            ModelContainer = modelContainer;
-            var loadModelTask = LoadModelFromPath(await modelContainer.GetModelPath());
-            var subscribeTask = SubscribeToStreams((await modelContainer.GetModelUpdateStream()).SingleValueToList());
-
-            await Task.WhenAll(loadModelTask, subscribeTask);
         }
 
         public Task<IModelContainerGrain<TModel>> GetModelContainer()
@@ -69,68 +37,70 @@ namespace NMF.Expressions.Linq.Orleans.Model
             return Task.FromResult(ModelContainer);
         }
 
-        protected override void RegisterMessages()
+        public virtual async Task Setup(IModelContainerGrain<TModel> modelContainer, IEnumerable<StreamIdentity> inputStreams = null,
+            int outputMultiplexFactor = 1)
         {
-            base.RegisterMessages();
-            StreamConsumer.MessageDispatcher.Register<ModelCollectionChangedMessage>(ProcessModelCollectionChangedMessage);
-            StreamConsumer.MessageDispatcher.Register<ModelPropertyChangedMessage>(ProcessModelPropertyChangedMessage);
+            await StreamConsumer.SetModelContainer(modelContainer);
+            OutputMultiplexFactor = outputMultiplexFactor;
 
-            StreamConsumer.MessageDispatcher.Register<ModelExecuteActionMessage<TModel>>(async message =>
-            {
-                message.Execute(Model);
-                //await StreamSender.FlushQueue();
-            });
+            int inputStreamCount = inputStreams?.Count() ?? 0;
+            if (inputStreamCount > 0)
+                await Task.WhenAll(inputStreams.Select(s => StreamConsumer.MessageDispatcher.Subscribe(s)));
+
+            StreamSender = new MappingStreamMessageSenderComposite<TOut>(GetStreamProvider(StreamProviderNamespace),
+                OutputMultiplexFactor * inputStreamCount);
         }
 
-        private async Task ProcessModelPropertyChangedMessage(ModelPropertyChangedMessage message)
+        public async Task SubscribeToStreams(IEnumerable<StreamIdentity> inputStreams)
         {
-            var sourceItem = Model.Resolve(message.RelativeRootUri);
-            var newValue = message.Value.Retrieve(ReceiveContext, ReceiveAction.Insert);
-            var oldValue = message.Value.Retrieve(ReceiveContext, ReceiveAction.Delete); // Remove old value from lookup
-
-            sourceItem.GetType().GetProperty(message.PropertyName).GetSetMethod(true).Invoke(sourceItem, new[] {newValue});
-
-            await StreamSender.FlushQueue();
+            await StreamSender.SetNumberOfSenders(inputStreams.Count() * OutputMultiplexFactor);
+            await Task.WhenAll(inputStreams.Select(s => StreamConsumer.MessageDispatcher.Subscribe(s)));
         }
 
-        private async Task ProcessModelCollectionChangedMessage(ModelCollectionChangedMessage message)
+        public async Task TransactionComplete(Guid transactionId)
         {
-            var sourceItem = (IList) Model.Resolve(message.RelativeRootUri);
+            await StreamConsumer.TransactionComplete(transactionId);
+        }
 
-            switch (message.Action)
+        public async Task<IList<StreamIdentity>> GetOutputStreams()
+        {
+            return await StreamSender.GetOutputStreams();
+        }
+
+        public async Task<bool> IsTearedDown()
+        {
+            var consumerTearDownState = (StreamConsumer == null) || await StreamConsumer.IsTearedDown();
+            var providerTearDownState = (StreamSender == null) || await StreamSender.IsTearedDown();
+
+            return consumerTearDownState && providerTearDownState;
+        }
+
+        public async Task TearDown()
+        {
+            if (StreamConsumer != null)
             {
-                case NotifyCollectionChangedAction.Add:
-                    foreach (var itemToAdd in message.Elements)
-                    {
-                        sourceItem.Add(itemToAdd.Retrieve(ReceiveContext, ReceiveAction.Insert));
-                    }
-                    break;
-                case NotifyCollectionChangedAction.Remove:
-                    foreach (var itemToRemove in message.Elements)
-                    {
-                        sourceItem.Remove(itemToRemove.Retrieve(ReceiveContext, ReceiveAction.Delete));
-                    }
-                    break;
-                case NotifyCollectionChangedAction.Reset:
-                    sourceItem.Clear();
-                    break;
-                default:
-                    throw new NotImplementedException();
+                await StreamConsumer.TearDown();
+                StreamConsumer = null;
             }
 
-            // TODO maybe in the feature just apply changes if necessary because updated item might or might not be removed
-            await StreamSender.FlushQueue();
+            if (StreamSender != null)
+            {
+                await StreamSender.TearDown();
+                StreamSender = null;
+            }
         }
 
-
-        public Task SetOutputMultiplex(uint factor = 1)
+        public override async Task OnActivateAsync()
         {
-            if (StreamConsumer.MessageDispatcher.SubscriptionCount != 0)
-            {
-                throw new InvalidOperationException("Input stream was already set.");
-            }
-            StreamSender = new MappingStreamMessageSenderComposite<TOut>(GetStreamProvider(StreamProviderNamespace), (int) factor);
-            return TaskDone.Done;
+            await base.OnActivateAsync();
+            ModelElement.EnforceModels = true;
+            StreamSender = new MappingStreamMessageSenderComposite<TOut>(GetStreamProvider(StreamProviderNamespace));
+            SendContext = new LocalSendContext();
+        }
+
+        public async Task SetModelContainer(IModelContainerGrain<TModel> modelContainer)
+        {
+            await StreamConsumer.SetModelContainer(modelContainer);
         }
     }
 }

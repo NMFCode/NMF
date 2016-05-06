@@ -39,14 +39,14 @@ namespace Expressions.Linq.Orleans.Test.utils
             return modelContainerGrain;
         }
 
-        public static async Task<bool> CurrentModelsMatch<T>(IModelLoader<T> loader1,
-IModelLoader<T> loader2) where T : IModelElement
+        public static async Task<bool> CurrentModelsMatch<T>(IContainsModel<T> loader1,
+IContainsModel<T> loader2) where T : IModelElement
         {
             return await CurrentModelsMatch(loader1, loader2, DefaultModelSelectorFunc<T>());
         }
 
-        public static async Task<bool> CurrentModelsMatch<T>(IModelLoader<T> loader1,
-    IModelLoader<T> loader2, Func<T, IModelElement> elementSelectorFunc) where T : IModelElement
+        public static async Task<bool> CurrentModelsMatch<T>(IContainsModel<T> loader1,
+    IContainsModel<T> loader2, Func<T, IModelElement> elementSelectorFunc) where T : IModelElement
         {
             var s1 = await loader1.ModelToString(elementSelectorFunc);
             var s2 = await loader2.ModelToString(elementSelectorFunc);

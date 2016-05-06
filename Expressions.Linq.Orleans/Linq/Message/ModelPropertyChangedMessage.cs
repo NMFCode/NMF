@@ -11,8 +11,8 @@ namespace NMF.Expressions.Linq.Orleans.Message
         public string PropertyName { get; private set; }
         public IObjectRemoteValue OldValue { get; set; }
 
-        public ModelPropertyChangedMessage(IObjectRemoteValue value, IObjectRemoteValue oldValue, Uri relativeRootUri, string propertyName)
-            : base(relativeRootUri)
+        public ModelPropertyChangedMessage(IObjectRemoteValue value, IObjectRemoteValue oldValue, IObjectRemoteValue elementAffected, string propertyName)
+            : base(elementAffected)
         {
             Value = value;
             OldValue = oldValue;

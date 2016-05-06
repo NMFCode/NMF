@@ -9,7 +9,5 @@ namespace NMF.Expressions.Linq.Orleans.Model
     public interface IModelLoader<T>
     {
         Task LoadModelFromPath(string modelPath);
-        
-        Task<string> ModelToString(Func<T, IModelElement> elementSelectorFunc);
     }
 }

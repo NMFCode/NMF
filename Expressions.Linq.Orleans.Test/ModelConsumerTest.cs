@@ -169,7 +169,7 @@ namespace Expressions.Linq.Orleans.Test
             IModelContainerGrain<NMF.Models.Model> modelContainerGrain)
         {
             var consumerGrain = GrainFactory.GetGrain<ITestModelProcessingNodeGrain<NMF.Models.Model, int>>(Guid.NewGuid());
-            await consumerGrain.SetModelContainer(modelContainerGrain);
+            await consumerGrain.Setup(modelContainerGrain);
 
             return consumerGrain;
         }

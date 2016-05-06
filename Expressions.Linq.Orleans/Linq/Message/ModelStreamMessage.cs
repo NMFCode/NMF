@@ -1,17 +1,18 @@
 ﻿using System;
 using System.ComponentModel;
 using NMF.Models;
+using Orleans.Collections;
 using Orleans.Streams.Messages;
 
 namespace NMF.Expressions.Linq.Orleans.Message
 {
     public class ModelStreamMessage : IStreamMessage
     {
-        public Uri RelativeRootUri { get; private set; }
+        public IObjectRemoteValue ElementAffected { get; private set; }
 
-        public ModelStreamMessage(Uri relativeRootUri)
+        public ModelStreamMessage(IObjectRemoteValue elementAffected)
         {
-            RelativeRootUri = relativeRootUri;
+            ElementAffected = elementAffected;
         }
     }
 }
