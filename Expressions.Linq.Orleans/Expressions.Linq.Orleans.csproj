@@ -124,9 +124,7 @@
     <Compile Include="Linq\Model\IModelLoader.cs" />
     <Compile Include="Linq\Model\IModelProcessingAggregateGrain.cs" />
     <Compile Include="Linq\Model\IModelProcessingNodeGrain.cs" />
-    <Compile Include="Linq\Model\RemoteValue\ILocalResolveContext.cs" />
-    <Compile Include="Linq\Model\RemoteValue\IModelRemoteValue.cs" />
-    <Compile Include="Linq\Model\RemoteValue\LocalResolveContext.cs" />
+    <Compile Include="Linq\Model\RemoteValue\LocalModelReceiveContext.cs" />
     <Compile Include="Linq\Model\RemoteValue\ModelRemoteValueObject.cs" />
     <Compile Include="Linq\Model\ModelContainer.cs" />
     <Compile Include="Linq\Model\ModelExtensions.cs" />

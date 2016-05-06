@@ -7,6 +7,7 @@ using NMF.Expressions.Linq.Orleans.Message;
 using NMF.Models;
 using NMF.Models.Repository;
 using Orleans;
+using Orleans.Collections;
 using Orleans.Streams;
 using Orleans.Streams.Linq.Nodes;
 
@@ -18,12 +19,14 @@ namespace NMF.Expressions.Linq.Orleans.Model
         protected TModel Model { get; private set; }
         protected IModelContainerGrain<TModel> ModelContainer { get; private set; }
 
-        protected ILocalResolveContext ResolveContext;
+        protected LocalModelReceiveContext ReceiveContext;
+        protected ILocalSendContext SendContext;
 
         public override async Task OnActivateAsync()
         {
             await base.OnActivateAsync();
             StreamSender = new MappingStreamMessageSenderComposite<TOut>(GetStreamProvider(StreamProviderNamespace));
+            SendContext = new LocalSendContext();
         }
 
         protected new MappingStreamMessageSenderComposite<TOut> StreamSender
@@ -37,7 +40,7 @@ namespace NMF.Expressions.Linq.Orleans.Model
             ModelElement.EnforceModels = false;
             Model = ModelUtil.LoadModelFromPath<TModel>(modelPath);
             ModelElement.EnforceModels = true;
-            ResolveContext = new LocalResolveContext(Model);
+            ReceiveContext = new LocalModelReceiveContext(Model);
             return TaskDone.Done;
         }
 
@@ -82,7 +85,8 @@ namespace NMF.Expressions.Linq.Orleans.Model
         private async Task ProcessModelPropertyChangedMessage(ModelPropertyChangedMessage message)
         {
             var sourceItem = Model.Resolve(message.RelativeRootUri);
-            var newValue = message.Value.Retrieve(ResolveContext);
+            var newValue = message.Value.Retrieve(ReceiveContext, ReceiveAction.Insert);
+            var oldValue = message.Value.Retrieve(ReceiveContext, ReceiveAction.Delete); // Remove old value from lookup
 
             sourceItem.GetType().GetProperty(message.PropertyName).GetSetMethod(true).Invoke(sourceItem, new[] {newValue});
 
@@ -98,13 +102,13 @@ namespace NMF.Expressions.Linq.Orleans.Model
                 case NotifyCollectionChangedAction.Add:
                     foreach (var itemToAdd in message.Elements)
                     {
-                        sourceItem.Add(itemToAdd.Retrieve(ResolveContext));
+                        sourceItem.Add(itemToAdd.Retrieve(ReceiveContext, ReceiveAction.Insert));
                     }
                     break;
                 case NotifyCollectionChangedAction.Remove:
                     foreach (var itemToRemove in message.Elements)
                     {
-                        sourceItem.Remove(itemToRemove.Retrieve(ResolveContext));
+                        sourceItem.Remove(itemToRemove.Retrieve(ReceiveContext, ReceiveAction.Delete));
                     }
                     break;
                 case NotifyCollectionChangedAction.Reset:

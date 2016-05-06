@@ -27,11 +27,13 @@ namespace NMF.Expressions.Linq.Orleans.Model
         protected T Model;
         protected StreamMessageSender<Models.Model> OutputProducer;
         protected StreamMessageSender<Models.Model> ModelUpdateSender;
+        private ILocalSendContext _sendContext;
         private string _modelPath;
 
         public override async Task OnActivateAsync()
         {
             await base.OnActivateAsync();
+            _sendContext = new LocalSendContext();
             OutputProducer = new StreamMessageSender<Models.Model>(GetStreamProvider(StreamProviderName), this.GetPrimaryKey());
             ModelUpdateSender = new StreamMessageSender<Models.Model>(GetStreamProvider(StreamProviderName), new StreamIdentity(this.GetPrimaryKey(), "ModelUpdate"));
         }
@@ -166,19 +168,20 @@ namespace NMF.Expressions.Linq.Orleans.Model
                 var propertyName = e.PropertyName;
                 var propertyValue = eventArgs.NewValue;
 
-                var modelChangeValue = ModelRemoteValueFactory.CreateModelChangeValue(propertyValue);
+                var modelChangeValue = ModelRemoteValueFactory.CreateModelRemoteValue(propertyValue, _sendContext);
+                var oldValue = ModelRemoteValueFactory.CreateModelRemoteValue(eventArgs.OldValue, _sendContext);
 
-                var message = new ModelPropertyChangedMessage(modelChangeValue, sourceUri, propertyName);
+                var message = new ModelPropertyChangedMessage(modelChangeValue, oldValue, sourceUri, propertyName);
                 ModelUpdateSender.EnqueueMessage(message);
             }
         }
 
-        private IModelRemoteValue[] CreateModelChanges(IList modelElements)
+        private IObjectRemoteValue[] CreateModelChanges(IList modelElements)
         {
-            var changes = new IModelRemoteValue[modelElements.Count];
+            var changes = new IObjectRemoteValue[modelElements.Count];
             for (var i = 0; i < modelElements.Count; i++)
             {
-                changes[i] = ModelRemoteValueFactory.CreateModelChangeValue(modelElements[i]);
+                changes[i] = ModelRemoteValueFactory.CreateModelRemoteValue(modelElements[i], _sendContext);
             }
 
             return changes;
@@ -191,8 +194,8 @@ namespace NMF.Expressions.Linq.Orleans.Model
 
         public async Task<Guid> EnumerateToSubscribers(Guid? transactionId = null)
         {
-            var remoteModelValue = ModelRemoteValueFactory.CreateModelChangeValue(Model);
-            var message = new ModelItemAddMessage<T>(new List<IModelRemoteValue<T>> { remoteModelValue });
+            var remoteModelValue = ModelRemoteValueFactory.CreateModelRemoteValue(Model, _sendContext);
+            var message = new ModelItemAddMessage<T>(new List<IObjectRemoteValue<T>> { remoteModelValue });
 
             var tId = TransactionGenerator.GenerateTransactionId(transactionId);
             await OutputProducer.StartTransaction(tId);

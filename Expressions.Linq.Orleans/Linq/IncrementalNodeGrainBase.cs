@@ -39,20 +39,20 @@ namespace NMF.Expressions.Linq.Orleans
 
         private void ResultEnumerable_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
         {
-            var items = new List<IModelRemoteValue<TResult>>();
+            var items = new List<IObjectRemoteValue<TResult>>();
             switch (e.Action)
             {
                 case NotifyCollectionChangedAction.Add:
                     foreach (var newItem in e.NewItems)
                     {
-                        items.Add(ModelRemoteValueFactory.CreateModelChangeValue<TResult>((TResult) newItem));
+                        items.Add(ModelRemoteValueFactory.CreateModelRemoteValue<TResult>((TResult) newItem, SendContext));
                     }
                     StreamSender.EnqueueAddModelItems(items);
                     break;
                 case NotifyCollectionChangedAction.Remove:
                     foreach (var removeItem in e.OldItems)
                     {
-                        items.Add(ModelRemoteValueFactory.CreateModelChangeValue<TResult>((TResult)removeItem));
+                        items.Add(ModelRemoteValueFactory.CreateModelRemoteValue<TResult>((TResult)removeItem, SendContext));
                     }
                     StreamSender.EnqueueRemoveModelItems(items);
                     break;
@@ -88,11 +88,7 @@ namespace NMF.Expressions.Linq.Orleans
         {
             foreach (var item in itemMessage.Items)
             {
-                var localItem = item.Retrieve(ResolveContext);
-
-                if (item.GlobalIdentifier != null && !ResolveContext.ObjectLookup.ContainsKey(item.GlobalIdentifier))
-                    ResolveContext.ObjectLookup.Add(item.GlobalIdentifier, localItem);
-
+                var localItem = item.Retrieve(ReceiveContext, ReceiveAction.Insert);
                 InputList.Add(localItem);
             }
 
@@ -103,11 +99,7 @@ namespace NMF.Expressions.Linq.Orleans
         {
             foreach (var item in message.Items)
             {
-                var localItem = item.Retrieve(ResolveContext);
-
-                if (item.GlobalIdentifier != null && ResolveContext.ObjectLookup.ContainsKey(item.GlobalIdentifier))
-                    ResolveContext.ObjectLookup.Remove(item.GlobalIdentifier);
-
+                var localItem = item.Retrieve(ReceiveContext, ReceiveAction.Delete);
                 InputList.Remove(localItem);
             }
 

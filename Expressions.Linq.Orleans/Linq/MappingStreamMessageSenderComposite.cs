@@ -5,6 +5,7 @@ using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using NMF.Expressions.Linq.Orleans.Message;
 using NMF.Expressions.Linq.Orleans.Model;
+using Orleans.Collections;
 using Orleans.Streams;
 using Orleans.Streams.Endpoints;
 
@@ -25,7 +26,7 @@ namespace NMF.Expressions.Linq.Orleans
             _currentSenderIndex = 0;
         }
 
-        public void EnqueueAddModelItems(IList<IModelRemoteValue<T>> remoteValues)
+        public void EnqueueAddModelItems(IList<IObjectRemoteValue<T>> remoteValues)
         {
             var senderGrouping = remoteValues.GroupBy(GetSenderForValue);
             foreach (var group in senderGrouping)
@@ -35,7 +36,7 @@ namespace NMF.Expressions.Linq.Orleans
             }
         }
 
-        public void EnqueueRemoveModelItems(IList<IModelRemoteValue<T>> remoteValues)
+        public void EnqueueRemoveModelItems(IList<IObjectRemoteValue<T>> remoteValues)
         {
             var senderGrouping = remoteValues.GroupBy(GetSenderForValue);
             foreach (var group in senderGrouping)
@@ -45,7 +46,7 @@ namespace NMF.Expressions.Linq.Orleans
             }
         }
 
-        private StreamMessageSender<T> GetSenderForValue(IModelRemoteValue<T> remoteValue)
+        private StreamMessageSender<T> GetSenderForValue(IObjectRemoteValue<T> remoteValue)
         {
             StreamMessageSender<T> sender;
             if (ObjectToSenderMapping.TryGetValue(remoteValue.ReferenceComparable, out sender))

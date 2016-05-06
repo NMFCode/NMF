@@ -1,58 +1,45 @@
 ﻿using System;
 using System.Collections.Generic;
 using NMF.Models;
+using Orleans.Collections;
 
 namespace NMF.Expressions.Linq.Orleans.Model
 {
     [Serializable]
-    public class ModelRemoteValueTuple<TTuple> : IModelRemoteValue<TTuple> where TTuple : IModelElementTuple
+    public class ModelRemoteValueTuple<TTuple> : ObjectRemoteValueBase<TTuple> where TTuple : IModelElementTuple
     {
-        public ModelRemoteValueTuple(TTuple tuple)
+        public ModelRemoteValueTuple(TTuple tuple, ILocalSendContext sendContext)
         {
             _tuple = tuple;
-            _items = new List<IModelRemoteValue>();
+            _items = new List<IObjectRemoteValue>();
             foreach (var item in tuple)
             {
-                _items.Add(ModelRemoteValueFactory.CreateModelChangeValue(item));
+                _items.Add(ModelRemoteValueFactory.CreateModelRemoteValue(item, sendContext));
             }
-            _tupleIdentifier = tuple.Identifier;
+            GlobalIdentifier = tuple.Identifier;
         }
 
-        private List<IModelRemoteValue> _items;
-        private Guid _tupleIdentifier;
+        private List<IObjectRemoteValue> _items;
 
         [NonSerialized]
         private TTuple _tuple;
 
-        object IModelRemoteValue.Retrieve(ILocalResolveContext resolveContext)
+        protected override TTuple CreateLocalObject(ILocalReceiveContext resolveContext, ReceiveAction receiveAction)
         {
-            return Retrieve(resolveContext);
-        }
-
-        public object ReferenceComparable => _tuple;
-
-        public TTuple Retrieve(ILocalResolveContext resolveContext)
-        {
-            if (resolveContext.ObjectLookup.ContainsKey(_tupleIdentifier))
-            {
-                return (TTuple) resolveContext.ObjectLookup[_tupleIdentifier];
-            }
-
-            // Unknown, so resolve each element individually and register.
             var localElements = new List<IModelElement>();
             foreach (var item in _items)
             {
-                localElements.Add((IModelElement) item.Retrieve(resolveContext));
+                localElements.Add((IModelElement)item.Retrieve(resolveContext, receiveAction));
             }
 
-            var resultTuple =  ModelElementTupleFactory.CreateTuple<TTuple>(localElements);
-            resultTuple.Identifier = _tupleIdentifier;
-
-            resolveContext.ObjectLookup.Add(_tupleIdentifier, resultTuple);
+            var resultTuple = ModelElementTupleFactory.CreateTuple<TTuple>(localElements);
+            resultTuple.Identifier = GlobalIdentifier;
 
             return resultTuple;
         }
 
-        public object GlobalIdentifier => _tupleIdentifier;
+        public override object ReferenceComparable => _tuple;
+
+        public override Guid GlobalIdentifier { get; }
     }
 }

@@ -1,10 +1,11 @@
 ﻿using System;
 using NMF.Models;
+using Orleans.Collections;
 
 namespace NMF.Expressions.Linq.Orleans.Model
 {
     [Serializable]
-    public class ModelRemoteValueUri<T> : IModelRemoteValue<T> where T : IModelElement
+    public class ModelRemoteValueUri<T> : ObjectRemoteValueBase<T> where T : IModelElement
     {
         [NonSerialized]
         private readonly IModelElement _modelElement;
@@ -13,27 +14,20 @@ namespace NMF.Expressions.Linq.Orleans.Model
         {
             _modelElement = modelElement;
             RootRelativeUri = modelElement.RelativeUri;
+            GlobalIdentifier = Guid.NewGuid();
         }
 
         public Uri RootRelativeUri { get; private set; }
 
-        public T Retrieve(ILocalResolveContext resolveContext)
+        protected override T CreateLocalObject(ILocalReceiveContext resolveContext, ReceiveAction receiveAction)
         {
-            if (GlobalIdentifier != null && resolveContext.ObjectLookup.ContainsKey(GlobalIdentifier))
-            {
-                return (T)resolveContext.ObjectLookup[GlobalIdentifier];
-            }
-
-            return (T)resolveContext.LookupModel.Resolve(RootRelativeUri);
+            return (T)(resolveContext as LocalModelReceiveContext).LookupModel.Resolve(RootRelativeUri);
         }
 
-        public object ReferenceComparable => _modelElement;
+        public override object ReferenceComparable => _modelElement;
 
-        public object GlobalIdentifier => RootRelativeUri;
+        public override Guid GlobalIdentifier { get; }
 
-        object IModelRemoteValue.Retrieve(ILocalResolveContext resolveContext)
-        {
-            return Retrieve(resolveContext);
-        }
+
     }
 }

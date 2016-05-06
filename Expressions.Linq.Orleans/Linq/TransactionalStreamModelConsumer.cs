@@ -4,6 +4,7 @@ using NMF.Expressions.Linq.Orleans.Message;
 using NMF.Expressions.Linq.Orleans.Model;
 using NMF.Models;
 using Orleans;
+using Orleans.Collections;
 using Orleans.Streams;
 using Orleans.Streams.Endpoints;
 
@@ -13,12 +14,12 @@ namespace NMF.Expressions.Linq.Orleans
     {
         protected TModel Model;
 
-        public LocalResolveContext ResolveContext { get; }
+        public LocalModelReceiveContext ModelReceiveContext { get; }
 
         public TransactionalStreamModelConsumer(IStreamProvider streamProvider, TModel model) : base(streamProvider)
         {
             Model = model;
-            ResolveContext = new LocalResolveContext(model);
+            ModelReceiveContext = new LocalModelReceiveContext(model);
             ModelElement.EnforceModels = true;
         }
 
@@ -43,7 +44,7 @@ namespace NMF.Expressions.Linq.Orleans
         {
             foreach (var item in message.Items)
             {
-                var resultItem = item.Retrieve(ResolveContext);
+                var resultItem = item.Retrieve(ModelReceiveContext, ReceiveAction.Insert);
                 Items.Add(resultItem);
             }
 
@@ -54,7 +55,7 @@ namespace NMF.Expressions.Linq.Orleans
         {
             foreach (var item in message.Items)
             {
-                var resultItem = item.Retrieve(ResolveContext);
+                var resultItem = item.Retrieve(ModelReceiveContext, ReceiveAction.Delete);
                 Items.Remove(resultItem);
             }
 
