@@ -93,13 +93,17 @@
   <ItemGroup>
     <Compile Include="ExtensionMethods.cs" />
     <Compile Include="IncrementalStreamProcessorAggregateFactory.cs" />
+    <Compile Include="Linq\IncrementalSimpleSelectManyAggregateGrain - Copy.cs" />
     <Compile Include="Linq\IncrementalSimpleSelectManyAggregateGrain.cs" />
+    <Compile Include="Linq\IncrementalSelectManyNodeGrain.cs" />
     <Compile Include="Linq\IncrementalStreamProcessorAggregate.cs" />
     <Compile Include="Linq\IncrementalWhereAggregateGrainBase.cs" />
     <Compile Include="Linq\IncrementalWhereNodeGrain.cs" />
+    <Compile Include="Linq\Interfaces\IIncrementalSelectManyAggregateGrain.cs" />
     <Compile Include="Linq\Interfaces\IIncrementalSimpleSelectManyAggregateGrain.cs" />
     <Compile Include="Linq\Interfaces\IIncrementalSelectAggregateGrain.cs" />
     <Compile Include="Linq\Interfaces\IIncrementalSelectNodeGrain.cs" />
+    <Compile Include="Linq\Interfaces\IIncrementalSelectManyNodeGrain.cs" />
     <Compile Include="Linq\Interfaces\IIncrementalSimpleSelectManyNodeGrain.cs" />
     <Compile Include="Linq\Interfaces\IIncrementalWhereAggregateGrain.cs" />
     <Compile Include="Linq\Interfaces\IIncrementalWhereNodeGrain.cs" />

@@ -55,7 +55,7 @@ namespace Expressions.Linq.Orleans.Test
         }
 
         [TestMethod]
-        public async Task SelectManyTest()
+        public async Task SimpleSelectManyTest()
         {
             var localModel = ModelTestUtil.ModelLoadingFunc(ModelTestUtil.ModelPath);
             var modelContainer = await ModelTestUtil.LoadModelContainer(GrainFactory);
@@ -70,6 +70,31 @@ namespace Expressions.Linq.Orleans.Test
 
             var localResults = localModel.RootElements.Single().As<RailwayContainer>().Semaphores; 
             ModelTestUtil.AssertXmlEquals(localResults, resultConsumer.Items);
+        }
+
+        [TestMethod]
+        public async Task SelectManyTest()
+        {
+            var localModel = ModelTestUtil.ModelLoadingFunc(ModelTestUtil.ModelPath);
+            var modelContainer = await ModelTestUtil.LoadModelContainer(GrainFactory);
+            var factory = new IncrementalNmfModelStreamProcessorAggregateFactory(GrainFactory, modelContainer);
+
+            var query = await modelContainer.SimpleSelectMany(model => model.RootElements.Single().As<RailwayContainer>().Descendants().OfType<IRoute>(), factory);
+            var query2 = await query.SelectMany(route => route.DefinedBy, (route, sensor) => route.DefinedBy.Count > 20); 
+            var resultConsumer = await query2.ToNmfModelConsumer();
+
+            Assert.AreEqual(0, resultConsumer.Items.Count);
+
+            await modelContainer.EnumerateToSubscribers();
+
+            var localResults = localModel.RootElements.Single()
+                .As<RailwayContainer>()
+                .Descendants()
+                .OfType<IRoute>()
+                .SelectMany(r => r.DefinedBy, (route, sensor) => route.DefinedBy.Count > 20);
+
+
+            CollectionAssert.AreEqual(localResults.ToList(), resultConsumer.Items.ToList());
         }
 
         [TestMethod]

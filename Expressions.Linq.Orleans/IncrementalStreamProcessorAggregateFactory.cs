@@ -45,6 +45,17 @@ namespace NMF.Expressions.Linq.Orleans
             return processorAggregate;
         }
 
+        public async Task<IStreamProcessorAggregate<TIn, TOut>> CreateSelectMany<TIn, TIntermediate, TOut>(Expression<Func<TIn, IEnumerable<TIntermediate>>> collectionSelectorFunc, Expression<Func<TIn, TIntermediate, TOut>> resultSelectorFunc, IList<StreamIdentity> streamIdentities)
+        {
+            var processorAggregate = GrainFactory.GetGrain<IIncrementalSelectManyAggregateGrain<TIn, TIntermediate, TOut, TModel>>(Guid.NewGuid());
+
+            await processorAggregate.SetObservingFunc(collectionSelectorFunc, resultSelectorFunc);
+            await processorAggregate.Setup(ModelContainerGrain);
+            await processorAggregate.SetInput(streamIdentities);
+
+            return processorAggregate;
+        }
+
         public IGrainFactory GrainFactory { get; }
 
         public async Task<IStreamProcessorAggregate<TIn, TOut>> CreateSelect<TIn, TOut>(Expression<Func<TIn, TOut>> selectionFunc, IList<StreamIdentity> streamIdentities)
