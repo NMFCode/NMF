@@ -34,48 +34,48 @@ namespace NMF.Expressions.Linq.Orleans
 
         public IModelContainerGrain<TModel> ModelContainerGrain { get; private set; }
 
-        public async Task<IStreamProcessorAggregate<TIn, TOut>> CreateSimpleSelectMany<TIn, TOut>(Expression<Func<TIn, IEnumerable<TOut>>> selectionFunc, IList<StreamIdentity> streamIdentities)
+        public async Task<IStreamProcessorAggregate<TIn, TOut>> CreateSimpleSelectMany<TIn, TOut>(Expression<Func<TIn, IEnumerable<TOut>>> selectionFunc, StreamProcessorAggregateConfiguration configuration)
         {
             var processorAggregate = GrainFactory.GetGrain<IIncrementalSimpleSelectManyAggregateGrain<TIn, TOut, TModel>>(Guid.NewGuid());
 
             await processorAggregate.SetObservingFunc(selectionFunc);
-            await processorAggregate.Setup(ModelContainerGrain);
-            await processorAggregate.SetInput(streamIdentities);
+            await processorAggregate.Setup(ModelContainerGrain, configuration.ScatterFactor);
+            await processorAggregate.SetInput(configuration.InputStreams);
 
             return processorAggregate;
         }
 
-        public async Task<IStreamProcessorAggregate<TIn, TOut>> CreateSelectMany<TIn, TIntermediate, TOut>(Expression<Func<TIn, IEnumerable<TIntermediate>>> collectionSelectorFunc, Expression<Func<TIn, TIntermediate, TOut>> resultSelectorFunc, IList<StreamIdentity> streamIdentities)
+        public async Task<IStreamProcessorAggregate<TIn, TOut>> CreateSelectMany<TIn, TIntermediate, TOut>(Expression<Func<TIn, IEnumerable<TIntermediate>>> collectionSelectorFunc, Expression<Func<TIn, TIntermediate, TOut>> resultSelectorFunc, StreamProcessorAggregateConfiguration configuration)
         {
             var processorAggregate = GrainFactory.GetGrain<IIncrementalSelectManyAggregateGrain<TIn, TIntermediate, TOut, TModel>>(Guid.NewGuid());
 
             await processorAggregate.SetObservingFunc(collectionSelectorFunc, resultSelectorFunc);
-            await processorAggregate.Setup(ModelContainerGrain);
-            await processorAggregate.SetInput(streamIdentities);
+            await processorAggregate.Setup(ModelContainerGrain, configuration.ScatterFactor);
+            await processorAggregate.SetInput(configuration.InputStreams);
 
             return processorAggregate;
         }
 
         public IGrainFactory GrainFactory { get; }
 
-        public async Task<IStreamProcessorAggregate<TIn, TOut>> CreateSelect<TIn, TOut>(Expression<Func<TIn, TOut>> selectionFunc, IList<StreamIdentity> streamIdentities)
+        public async Task<IStreamProcessorAggregate<TIn, TOut>> CreateSelect<TIn, TOut>(Expression<Func<TIn, TOut>> selectionFunc, StreamProcessorAggregateConfiguration configuration)
         {
             var processorAggregate = GrainFactory.GetGrain<IIncrementalSelectAggregateGrain<TIn, TOut, TModel>>(Guid.NewGuid());
 
             await processorAggregate.SetObservingFunc(selectionFunc);
-            await processorAggregate.Setup(ModelContainerGrain);
-            await processorAggregate.SetInput(streamIdentities);
+            await processorAggregate.Setup(ModelContainerGrain, configuration.ScatterFactor);
+            await processorAggregate.SetInput(configuration.InputStreams);
 
             return processorAggregate;
         }
 
-        public async Task<IStreamProcessorAggregate<TIn, TIn>> CreateWhere<TIn>(Expression<Func<TIn, bool>> filterFunc, IList<StreamIdentity> streamIdentities)
+        public async Task<IStreamProcessorAggregate<TIn, TIn>> CreateWhere<TIn>(Expression<Func<TIn, bool>> filterFunc, StreamProcessorAggregateConfiguration configuration)
         {
             var processorAggregate = GrainFactory.GetGrain<IIncrementalWhereAggregateGrain<TIn, TModel>>(Guid.NewGuid());
 
             await processorAggregate.SetObservingFunc(filterFunc);
-            await processorAggregate.Setup(ModelContainerGrain);
-            await processorAggregate.SetInput(streamIdentities);
+            await processorAggregate.Setup(ModelContainerGrain, configuration.ScatterFactor);
+            await processorAggregate.SetInput(configuration.InputStreams);
 
             return processorAggregate;
         }

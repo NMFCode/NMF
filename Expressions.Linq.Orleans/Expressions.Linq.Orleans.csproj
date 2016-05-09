@@ -93,7 +93,7 @@
   <ItemGroup>
     <Compile Include="ExtensionMethods.cs" />
     <Compile Include="IncrementalStreamProcessorAggregateFactory.cs" />
-    <Compile Include="Linq\IncrementalSimpleSelectManyAggregateGrain - Copy.cs" />
+    <Compile Include="Linq\IncrementalSelectManyAggregateGrain.cs" />
     <Compile Include="Linq\IncrementalSimpleSelectManyAggregateGrain.cs" />
     <Compile Include="Linq\IncrementalSelectManyNodeGrain.cs" />
     <Compile Include="Linq\IncrementalStreamProcessorAggregate.cs" />

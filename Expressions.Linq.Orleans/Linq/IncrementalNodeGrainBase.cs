@@ -32,7 +32,11 @@ namespace NMF.Expressions.Linq.Orleans
             InputList = new NotifyCollection<TSource>();
             StreamConsumer = new TransactionalStreamModelConsumer<TSource, TModel>(GetStreamProvider(StreamProviderNamespace), InputList);
             StreamConsumer.MessageDispatcher.PostProcessedMessageFunc = async () => await StreamSender.FlushQueue();
+
+            StreamConsumer.MessageDispatcher.Register<FlushMessage>(ProcessFlushMessage);
+            StreamConsumer.MessageDispatcher.Register<TransactionMessage>(ProcessTransactionMessage);
         }
+
 
         protected void AttachToResult()
         {
@@ -77,6 +81,18 @@ namespace NMF.Expressions.Linq.Orleans
             await StreamSender.SendItems(ResultEnumerable);
             await StreamSender.EndTransaction(tId);
             return tId;
+        }
+
+        protected async Task ProcessTransactionMessage(TransactionMessage transactionMessage)
+        {
+            // TODO: Make sure all items prior to sending the end message are processed when implementing methods not running on grain thread.
+            await StreamSender.SendMessage(transactionMessage);
+        }
+
+        private async Task ProcessFlushMessage(FlushMessage message)
+        {
+            await StreamSender.FlushQueue();
+            await StreamSender.SendMessage(message);
         }
 
     }
