@@ -10,6 +10,11 @@ namespace NMF.Expressions.Linq.Orleans.Model
 {
     public static class ModelExtensions
     {
+        /// <summary>
+        /// Transforms a model element into its XML representation.
+        /// </summary>
+        /// <param name="element"></param>
+        /// <returns></returns>
         public static string ToXmlString(this IModelElement element)
         {
             var serializer = MetaRepository.Instance.Serializer;

@@ -8,12 +8,17 @@ namespace NMF.Expressions.Linq.Orleans.Model
 {
     public static class ModelUtil
     {
+        /// <summary>
+        /// Loads a model from a path.
+        /// </summary>
+        /// <typeparam name="T">Type of the model.</typeparam>
+        /// <param name="modelPath">Path to the model.</param>
+        /// <returns></returns>
         public static T LoadModelFromPath<T>(string modelPath) where T : IResolvableModel
         {
-            ModelElement.EnforceModels = false; // TODO remove once bug is fixed
+            ModelElement.EnforceModels = true;
             var repository = new ModelRepository();
             var rootModelElement = repository.Resolve(new Uri(new FileInfo(modelPath).FullName));
-            ModelElement.EnforceModels = true;
 
             IResolvableModel model = rootModelElement.Model;
             return (T) model;

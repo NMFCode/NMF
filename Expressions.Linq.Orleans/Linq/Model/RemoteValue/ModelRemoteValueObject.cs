@@ -1,5 +1,6 @@
 ﻿using System;
 using Orleans.Collections;
+using Orleans.Streams.Stateful;
 
 namespace NMF.Expressions.Linq.Orleans.Model
 {
@@ -21,8 +22,7 @@ namespace NMF.Expressions.Linq.Orleans.Model
             GlobalIdentifier = Guid.NewGuid();
         }
 
-
-        protected override T CreateLocalObject(ILocalReceiveContext resolveContext, ReceiveAction receiveAction)
+        protected override T CreateLocalObject(ILocalReceiveContext receiveContext, LocalContextAction localContextAction)
         {
             return Value;
         }

@@ -12,15 +12,16 @@ using Orleans.Collections.Messages;
 using Orleans.Streams;
 using Orleans.Streams.Linq.Nodes;
 using Orleans.Streams.Messages;
+using Orleans.Streams.Stateful;
 
 namespace NMF.Expressions.Linq.Orleans
 {
     /// <summary>
     /// Abstract base class for SQOs with incremental operations.
     /// </summary>
-    /// <typeparam name="TSource">Type of data to deal with. Assume data is wrapped in ContainerElement.</typeparam>
-    /// <typeparam name="TResult"></typeparam>
-    /// <typeparam name="TModel"></typeparam>
+    /// <typeparam name="TSource">Type of data to deal with.</typeparam>
+    /// <typeparam name="TResult">Type of result data.</typeparam>
+    /// <typeparam name="TModel">Type of the model.</typeparam>
     public abstract class IncrementalNodeGrainBase<TSource, TResult, TModel> : ModelProcessingNodeGrain<TSource, TResult, TModel>, IElementEnumeratorNode<TResult> where TModel : IResolvableModel
     {
         protected NotifyCollection<TSource> InputList;
@@ -41,6 +42,7 @@ namespace NMF.Expressions.Linq.Orleans
         protected void AttachToResult()
         {
             ResultEnumerable.CollectionChanged += ResultEnumerable_CollectionChanged;
+            // TODO maybe add detach method
         }
 
         private void ResultEnumerable_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
@@ -53,14 +55,14 @@ namespace NMF.Expressions.Linq.Orleans
                     {
                         items.Add(ModelRemoteValueFactory.CreateModelRemoteValue<TResult>((TResult) newItem, SendContext));
                     }
-                    StreamSender.EnqueueAddModelItems(items);
+                    StreamSender.EnqueueAddRemoteItems(items);
                     break;
                 case NotifyCollectionChangedAction.Remove:
                     foreach (var removeItem in e.OldItems)
                     {
                         items.Add(ModelRemoteValueFactory.CreateModelRemoteValue<TResult>((TResult)removeItem, SendContext));
                     }
-                    StreamSender.EnqueueRemoveModelItems(items);
+                    StreamSender.EnqueueRemoveRemoteItems(items);
                     break;
                 default:
                     throw new NotImplementedException();
@@ -70,7 +72,6 @@ namespace NMF.Expressions.Linq.Orleans
 
         public Task<Guid> EnumerateToStream(StreamIdentity streamIdentity, Guid transactionId)
         {
-            // TODO
             throw new NotImplementedException();
         }
 

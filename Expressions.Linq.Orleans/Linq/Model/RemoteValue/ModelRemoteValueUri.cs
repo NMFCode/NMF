@@ -1,6 +1,7 @@
 ﻿using System;
 using NMF.Models;
 using Orleans.Collections;
+using Orleans.Streams.Stateful;
 
 namespace NMF.Expressions.Linq.Orleans.Model
 {
@@ -19,9 +20,9 @@ namespace NMF.Expressions.Linq.Orleans.Model
 
         public Uri RootRelativeUri { get; private set; }
 
-        protected override T CreateLocalObject(ILocalReceiveContext resolveContext, ReceiveAction receiveAction)
+        protected override T CreateLocalObject(ILocalReceiveContext receiveContext, LocalContextAction localContextAction)
         {
-            return (T)(resolveContext as LocalModelReceiveContext).LookupModel.Resolve(RootRelativeUri);
+            return (T)((LocalModelReceiveContext)receiveContext).LookupModel.Resolve(RootRelativeUri);
         }
 
         public override object ReferenceComparable => _modelElement;

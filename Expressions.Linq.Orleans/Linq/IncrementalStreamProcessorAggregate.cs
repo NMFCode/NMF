@@ -4,11 +4,12 @@ using System.Threading.Tasks;
 using Orleans.Collections;
 using Orleans.Streams;
 using Orleans.Streams.Linq.Aggregates;
+using Orleans.Streams.Stateful;
 
 namespace NMF.Expressions.Linq.Orleans
 {
     public abstract class IncrementalStreamProcessorAggregate<TSource, TResult, TNode> : StreamProcessorAggregate<TSource, TResult, TNode>,
-        IElementEnumerator<ContainerElement<TResult>> where TNode : IStreamProcessorNodeGrain<TSource, TResult>, IElementEnumeratorNode<TResult>
+        IElementEnumerator<TResult> where TNode : IStreamProcessorNodeGrain<TSource, TResult>, IElementEnumeratorNode<TResult>
     {
         public async Task<Guid> EnumerateToStream(params StreamIdentity[] streamIdentities)
         {

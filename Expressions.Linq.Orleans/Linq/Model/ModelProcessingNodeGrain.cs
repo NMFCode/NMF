@@ -6,9 +6,13 @@ using NMF.Models;
 using Orleans;
 using Orleans.Collections;
 using Orleans.Streams;
+using Orleans.Streams.Stateful;
 
 namespace NMF.Expressions.Linq.Orleans.Model
 {
+    /// <summary>
+    ///     Executes operations on streaming data based on a model and forwards it to its output stream.
+    /// </summary>
     public abstract class ModelProcessingNodeGrain<TIn, TOut, TModel> : Grain, IModelProcessingNodeGrain<TIn, TOut, TModel>
         where TModel : IResolvableModel
     {
@@ -21,9 +25,13 @@ namespace NMF.Expressions.Linq.Orleans.Model
 
         protected MappingStreamMessageSenderComposite<TOut> StreamSender;
         protected IModelContainerGrain<TModel> ModelContainer { get; private set; }
+        protected int OutputMultiplexFactor { get; set; }
 
-        public int OutputMultiplexFactor { get; set; }
-
+        /// <summary>
+        /// Transform the model into an xml string.
+        /// </summary>
+        /// <param name="elementSelectorFunc">Element to start serializing from.</param>
+        /// <returns>XML serialization of the model.</returns>
         public Task<string> ModelToString(Func<TModel, IModelElement> elementSelectorFunc)
         {
             var element = elementSelectorFunc(StreamConsumer.Model);
@@ -32,28 +40,23 @@ namespace NMF.Expressions.Linq.Orleans.Model
             return Task.FromResult(result);
         }
 
-        public Task<IModelContainerGrain<TModel>> GetModelContainer()
-        {
-            return Task.FromResult(ModelContainer);
-        }
-
         public virtual async Task Setup(IModelContainerGrain<TModel> modelContainer, IEnumerable<StreamIdentity> inputStreams = null,
             int outputMultiplexFactor = 1)
         {
             await StreamConsumer.SetModelContainer(modelContainer);
             OutputMultiplexFactor = outputMultiplexFactor;
 
-            int inputStreamCount = inputStreams?.Count() ?? 0;
+            var inputStreamCount = inputStreams?.Count() ?? 0;
             if (inputStreamCount > 0)
                 await Task.WhenAll(inputStreams.Select(s => StreamConsumer.MessageDispatcher.Subscribe(s)));
 
             StreamSender = new MappingStreamMessageSenderComposite<TOut>(GetStreamProvider(StreamProviderNamespace),
-                OutputMultiplexFactor * inputStreamCount);
+                OutputMultiplexFactor*inputStreamCount);
         }
 
         public async Task SubscribeToStreams(IEnumerable<StreamIdentity> inputStreams)
         {
-            await StreamSender.SetNumberOfSenders(inputStreams.Count() * OutputMultiplexFactor);
+            await StreamSender.SetNumberOfSenders(inputStreams.Count()*OutputMultiplexFactor);
             await Task.WhenAll(inputStreams.Select(s => StreamConsumer.MessageDispatcher.Subscribe(s)));
         }
 

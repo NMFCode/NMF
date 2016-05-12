@@ -15,6 +15,7 @@ using NMF.Utilities;
 using Orleans;
 using Orleans.Streams;
 using Orleans.Streams.Endpoints;
+using Orleans.Streams.Stateful;
 using Orleans.TestingHost;
 
 namespace Expressions.Linq.Orleans.Test

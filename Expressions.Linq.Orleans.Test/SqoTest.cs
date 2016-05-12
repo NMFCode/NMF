@@ -15,6 +15,7 @@ using Orleans;
 using Orleans.Streams;
 using Orleans.Streams.Endpoints;
 using Orleans.Streams.Linq;
+using Orleans.Streams.Stateful.Messages;
 using Orleans.TestingHost;
 
 namespace Expressions.Linq.Orleans.Test
@@ -174,7 +175,7 @@ namespace Expressions.Linq.Orleans.Test
                 int curPos = i;
                 funcCalls.Add(0);
                 var receiver = new StreamMessageDispatchReceiver(_provider);
-                receiver.Register<ModelItemAddMessage<ModelElementTuple<ISwitchPosition, ISwitchPosition>>>(message =>
+                receiver.Register<RemoteItemAddMessage<ModelElementTuple<ISwitchPosition, ISwitchPosition>>>(message =>
                 {
                     funcCalls[curPos] += message.Items.Count;
                     return TaskDone.Done;

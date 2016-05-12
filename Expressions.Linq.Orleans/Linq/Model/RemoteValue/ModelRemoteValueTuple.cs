@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using NMF.Models;
 using Orleans.Collections;
+using Orleans.Streams.Stateful;
 
 namespace NMF.Expressions.Linq.Orleans.Model
 {
@@ -19,23 +20,40 @@ namespace NMF.Expressions.Linq.Orleans.Model
             GlobalIdentifier = tuple.Identifier;
         }
 
-        private List<IObjectRemoteValue> _items;
+        private readonly List<IObjectRemoteValue> _items;
 
         [NonSerialized]
-        private TTuple _tuple;
+        private readonly TTuple _tuple;
 
-        protected override TTuple CreateLocalObject(ILocalReceiveContext resolveContext, ReceiveAction receiveAction)
+        protected override TTuple CreateLocalObject(ILocalReceiveContext receiveContext, LocalContextAction localContextAction)
         {
             var localElements = new List<IModelElement>();
             foreach (var item in _items)
             {
-                localElements.Add((IModelElement)item.Retrieve(resolveContext, receiveAction));
+                localElements.Add((IModelElement)item.Retrieve(receiveContext, localContextAction));
             }
 
-            var resultTuple = ModelElementTupleFactory.CreateTuple<TTuple>(localElements);
+            var resultTuple = CreateTuple<TTuple>(localElements);
             resultTuple.Identifier = GlobalIdentifier;
 
             return resultTuple;
+        }
+
+        private static T CreateTuple<T>(IList<IModelElement> items) where T : IModelElementTuple
+        {
+            var genericTupleType = typeof(T).GenericTypeArguments;
+            if (genericTupleType.Length != items.Count)
+                throw new ArgumentException($"Cannot create tuple of size {genericTupleType.Length} with {items.Count} items.");
+
+            // Match types and create parameters
+            object[] invocationArgs = new object[items.Count];
+            for (int i = 0; i < items.Count; i++)
+            {
+                var castedArg = (dynamic)items[i];
+                invocationArgs[i] = castedArg;
+            }
+
+            return (T)Activator.CreateInstance(typeof(T), invocationArgs);
         }
 
         public override object ReferenceComparable => _tuple;

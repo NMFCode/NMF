@@ -13,7 +13,7 @@ using Orleans.Streams.Linq.Aggregates;
 
 namespace NMF.Expressions.Linq.Orleans
 {
-    public class IncrementalSelectManyAggregateGrain<TSource, TIntermediate, TResult, TModel> : IncrementalAggregateGrainBase<TSource, TResult, IIncrementalSelectManyNodeGrain<TSource, TIntermediate, TResult, TModel>, TModel>,
+    public class IncrementalSelectManyAggregateGrain<TSource, TIntermediate, TResult, TModel> : ModelAggregateGrainBase<TSource, TResult, IIncrementalSelectManyNodeGrain<TSource, TIntermediate, TResult, TModel>, TModel>,
         IIncrementalSelectManyAggregateGrain<TSource, TIntermediate, TResult, TModel> where TModel : IResolvableModel
     {
         private SerializableFunc<TSource, IEnumerable<TIntermediate>> _collectionSelectorFunc;

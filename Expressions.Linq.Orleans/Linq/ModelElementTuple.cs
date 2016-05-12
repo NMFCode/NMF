@@ -75,6 +75,9 @@ namespace NMF.Expressions.Linq.Orleans
         }
     }
 
+    /// <summary>
+    /// Tuple consisting of model elements.
+    /// </summary>
     [Serializable]
     public abstract class ModelElementTupleBase : IModelElementTuple
     {
@@ -103,27 +106,9 @@ namespace NMF.Expressions.Linq.Orleans
         public Guid Identifier { get; set; }
     }
 
-    public static class ModelElementTupleFactory
-    {
-        public static T CreateTuple<T>(IList<IModelElement> items) where T : IModelElementTuple
-        {
-            var genericTupleType = typeof(T).GenericTypeArguments;
-            if (genericTupleType.Length != items.Count)
-                throw new ArgumentException($"Cannot create tuple of size {genericTupleType.Length} with {items.Count} items.");
-
-            // Match types and create parameters
-            object[] invocationArgs = new object[items.Count];
-            for (int i = 0; i < items.Count; i++)
-            {
-                var castedArg = (dynamic) items[i];
-                invocationArgs[i] = castedArg;
-            }
-
-            return (T) Activator.CreateInstance(typeof(T), invocationArgs);
-        }
-    }
-
-    // Marker interface
+    /// <summary>
+    /// Interface for a tuple consisting of model elements.
+    /// </summary>
     public interface IModelElementTuple : IEnumerable<IModelElement>
     {
         Guid Identifier { get; set; }

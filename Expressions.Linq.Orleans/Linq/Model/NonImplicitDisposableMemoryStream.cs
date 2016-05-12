@@ -2,7 +2,7 @@
 
 namespace NMF.Expressions.Linq.Orleans.Model
 {
-    public class NonImplicitDisposableMemoryStream : MemoryStream
+    internal class NonImplicitDisposableMemoryStream : MemoryStream
     {
         public bool CanDispose { get; set; } = false;
         protected override void Dispose(bool disposing)

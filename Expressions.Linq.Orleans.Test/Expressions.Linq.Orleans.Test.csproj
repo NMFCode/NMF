@@ -52,35 +52,34 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="Orleans, Version=1.3.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.Orleans.Core.1.2.2-alpha6\lib\net451\Orleans.dll</HintPath>
+      <HintPath>..\packages\Microsoft.Orleans.Core.1.3.0\lib\net451\Orleans.dll</HintPath>
       <Private>True</Private>
-    </Reference>
-    <Reference Include="Orleans.Collections, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\Documents\Visual Studio 2015\Projects\Orleans.Containers\Orleans.Containers\bin\Debug\Orleans.Collections.dll</HintPath>
     </Reference>
     <Reference Include="Orleans.Streams, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\..\Documents\Visual Studio 2015\Projects\Orleans.Containers\Orleans.Streams\bin\Debug\Orleans.Streams.dll</HintPath>
     </Reference>
+    <Reference Include="Orleans.Streams.Stateful">
+      <HintPath>..\..\..\..\Documents\Visual Studio 2015\Projects\Orleans.Containers\Orleans.Streams.Stateful\bin\Debug\Orleans.Streams.Stateful.dll</HintPath>
+    </Reference>
     <Reference Include="OrleansCodeGenerator, Version=1.3.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.Orleans.OrleansCodeGenerator.1.2.2-alpha6\lib\net451\OrleansCodeGenerator.dll</HintPath>
+      <HintPath>..\packages\Microsoft.Orleans.OrleansCodeGenerator.1.3.0\lib\net451\OrleansCodeGenerator.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="OrleansDependencyInjection, Version=1.3.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.Orleans.OrleansRuntime.1.2.2-alpha6\lib\net451\OrleansDependencyInjection.dll</HintPath>
+      <HintPath>..\packages\Microsoft.Orleans.OrleansRuntime.1.3.0\lib\net451\OrleansDependencyInjection.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="OrleansProviders, Version=1.3.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.Orleans.OrleansProviders.1.2.2-alpha6\lib\net451\OrleansProviders.dll</HintPath>
+      <HintPath>..\packages\Microsoft.Orleans.OrleansProviders.1.3.0\lib\net451\OrleansProviders.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="OrleansRuntime, Version=1.3.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.Orleans.OrleansRuntime.1.2.2-alpha6\lib\net451\OrleansRuntime.dll</HintPath>
+      <HintPath>..\packages\Microsoft.Orleans.OrleansRuntime.1.3.0\lib\net451\OrleansRuntime.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="OrleansTestingHost, Version=1.3.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.Orleans.TestingHost.1.2.2-alpha6\lib\net451\OrleansTestingHost.dll</HintPath>
+      <HintPath>..\packages\Microsoft.Orleans.TestingHost.1.3.0\lib\net451\OrleansTestingHost.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="System" />
