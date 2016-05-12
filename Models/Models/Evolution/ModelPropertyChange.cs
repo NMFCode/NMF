@@ -1,45 +1,45 @@
-﻿using System;
+﻿using NMF.Models.Repository;
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 
 namespace NMF.Models.Evolution
 {
     public class ModelPropertyChange : IModelChange
     {
-        public ModelPropertyChange(IModelElement element, string reference, object value)
-        {
-            if (element == null) throw new ArgumentNullException("element");
-            if (reference == null) throw new ArgumentNullException("reference");
-
-            Element = element;
-            Reference = reference;
-            NewValue = value;
-        }
-
-        public IModelElement Element { get; private set; }
-
-        public string Reference { get; private set; }
+        public string PropertyName { get; private set; }
 
         public object NewValue { get; private set; }
 
-        public void Do()
+        public object OldValue { get; private set; }
+
+        public Uri AbsoluteUri { get; private set; }
+        
+        public ModelPropertyChange(Uri absoluteUri, string propertyName, object newValue, object oldValue)
         {
-            var prop = Element.GetType().GetProperty(Reference);
-            if (prop != null)
-            {
-                prop.SetValue(Element, NewValue, null);
-            }
+            if (absoluteUri == null)
+                throw new ArgumentNullException(nameof(absoluteUri));
+            if (string.IsNullOrEmpty(propertyName))
+                throw new ArgumentNullException(nameof(propertyName));
+
+            AbsoluteUri = absoluteUri;
+            PropertyName = propertyName;
+            NewValue = newValue;
+            OldValue = oldValue;
         }
 
-        public virtual void Undo()
+        public void Apply()
         {
-            throw new NotSupportedException();
+            var parent = MetaRepository.Instance.Resolve(AbsoluteUri);
+            parent?.GetType().GetProperty(PropertyName)?.SetValue(parent, NewValue, null);
         }
 
-        public virtual bool CanUndo
+        public void Undo()
         {
-            get { return false; }
+            var parent = MetaRepository.Instance.Resolve(AbsoluteUri);
+            parent?.GetType().GetProperty(PropertyName)?.SetValue(parent, OldValue, null);
         }
     }
 }
