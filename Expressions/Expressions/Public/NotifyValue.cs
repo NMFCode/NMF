@@ -8,7 +8,7 @@ namespace NMF.Expressions
     public class NotifyValue<T> : INotifyValue<T>, INotifyPropertyChanged
     {
         public NotifyValue(Expression<Func<T>> expression, IDictionary<string, object> parameterMappings = null)
-            : this(NotifySystem.CreateExpression<T>(expression.Body, parameterMappings: parameterMappings)) { }
+            : this(NotifySystem.CreateExpression<T>(expression.Body, null, parameterMappings: parameterMappings)) { }
 
         internal INotifyExpression<T> Expression { get; private set; }
 
@@ -70,7 +70,7 @@ namespace NMF.Expressions
         internal INotifyReversableExpression<T> Expression { get; private set; }
 
         public NotifyReversableValue(Expression<Func<T>> expression, IDictionary<string, object> parameterMappings = null)
-            : this(NotifySystem.CreateReversableExpression<T>(expression.Body, parameterMappings)) { }
+            : this(NotifySystem.CreateReversableExpression<T>(expression.Body, null, parameterMappings)) { }
 
         internal NotifyReversableValue(INotifyReversableExpression<T> expression)
         {

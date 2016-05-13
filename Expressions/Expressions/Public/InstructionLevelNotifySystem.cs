@@ -11,6 +11,18 @@ namespace NMF.Expressions
     {
         private int counter = 1;
         private static ObservableExpressionBinder binder = new ObservableExpressionBinder();
+        private static InstructionLevelNotifySystem defaultSystem = new InstructionLevelNotifySystem();
+
+        /// <summary>
+        /// Gets the default instruction-level-incremental system
+        /// </summary>
+        public static InstructionLevelNotifySystem Instance
+        {
+            get
+            {
+                return defaultSystem;
+            }
+        }
 
         /// <summary>
         /// Creates a local variable expression for the given expression and the given local variable
@@ -35,8 +47,9 @@ namespace NMF.Expressions
         /// <typeparam name="T">The type of the expression</typeparam>
         /// <param name="expression">The expression from which to create an incremental expression</param>
         /// <param name="parameterMappings">A given mapping of parameters</param>
+        /// <param name="parameters">The parameters of the expression</param>
         /// <returns>An incremental expression object</returns>
-        public INotifyExpression<T> CreateExpression<T>(Expression expression, IDictionary<string, object> parameterMappings)
+        public INotifyExpression<T> CreateExpression<T>(Expression expression, IEnumerable<ParameterExpression> parameters, IDictionary<string, object> parameterMappings)
         {
             if (expression == null) throw new ArgumentNullException("expression");
 
@@ -57,8 +70,9 @@ namespace NMF.Expressions
         /// <typeparam name="T">The type of the expression</typeparam>
         /// <param name="expression">The expression from which to create an incremental expression</param>
         /// <param name="parameterMappings">A given mapping of parameters</param>
+        /// <param name="parameters">The parameters of the expression</param>
         /// <returns>An incremental expression object</returns>
-        public INotifyReversableExpression<T> CreateReversableExpression<T>(Expression expression, IDictionary<string, object> parameterMappings)
+        public INotifyReversableExpression<T> CreateReversableExpression<T>(Expression expression, IEnumerable<ParameterExpression> parameters, IDictionary<string, object> parameterMappings)
         {
             if (expression == null) throw new ArgumentNullException("expression");
 
@@ -74,6 +88,29 @@ namespace NMF.Expressions
             }
             if (exp == null) throw new InvalidOperationException("The given expression could not be reversed!");
             return exp;
+        }
+
+        /// <summary>
+        /// Creates an incremental expression for the given code expression
+        /// </summary>
+        /// <typeparam name="T">The type of the expression</typeparam>
+        /// <param name="expression">The expression from which to create an incremental expression</param>
+        /// <param name="parameterMappings">A given mapping of parameters</param>
+        /// <param name="parameters">The parameters of the expression</param>
+        /// <returns>An incremental expression object</returns>
+        public INotifyExpression CreateExpression(Expression expression, IEnumerable<ParameterExpression> parameters, IDictionary<string, object> parameterMappings)
+        {
+            if (expression == null) throw new ArgumentNullException("expression");
+
+            if (parameterMappings == null)
+            {
+                return binder.VisitObservable(expression, false);
+            }
+            else
+            {
+                var newBinder = new ObservableExpressionBinder(false, parameterMappings);
+                return newBinder.VisitObservable(expression, false);
+            }
         }
     }
 }

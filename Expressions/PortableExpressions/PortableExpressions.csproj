@@ -275,6 +275,9 @@
     <Compile Include="..\Expressions\ExpressionRewriter\SetExpressionRewriterAttribute.cs">
       <Link>ExpressionRewriter\SetExpressionRewriterAttribute.cs</Link>
     </Compile>
+    <Compile Include="..\Expressions\ExpressionVisitorBase.cs">
+      <Link>ExpressionVisitorBase.cs</Link>
+    </Compile>
     <Compile Include="..\Expressions\ObservableArrayIndex.cs">
       <Link>ObservableArrayIndex.cs</Link>
     </Compile>

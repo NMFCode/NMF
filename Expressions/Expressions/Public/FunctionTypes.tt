@@ -42,7 +42,7 @@ public partial class ObservingFunc<<# for (int j = 1; j <= i; j++) { #>T<#= j #>
 <# for(int j = 1; j <= i; j++) { #>
 		    this.parameter<#= j #>Name = expression.Parameters[<#= j-1 #>].Name;
 <# } #>
-	        this.expression = NotifySystem.CreateExpression<TResult>(expression.Body);
+	        this.expression = NotifySystem.CreateExpression<TResult>(expression.Body, expression.Parameters);
             this.isParameterFree = this.expression.IsParameterFree;
         }
 

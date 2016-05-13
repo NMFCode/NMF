@@ -8,7 +8,7 @@
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>NMF.Expressions</RootNamespace>
-    <AssemblyName>NMF.Expressions</AssemblyName>
+    <AssemblyName>NMF.Expressions.Models</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
@@ -39,21 +39,65 @@
     <Compile Include="..\..\CommonAssemblyInfo.cs">
       <Link>CommonAssemblyInfo.cs</Link>
     </Compile>
-    <Compile Include="GeneralizingExpressionVisitor.cs" />
-    <Compile Include="GeneralizingNotifySystem.cs" />
-    <Compile Include="ParameterReplacingVisitor.cs" />
+    <Compile Include="AugmentationNotifySystem.cs" />
+    <Compile Include="ObservablePromotionMethodCall.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>ObservablePromotionMethodCall.tt</DependentUpon>
+    </Compile>
+    <Compile Include="ParameterCollector.cs" />
+    <Compile Include="PromotionExpressionVisitor.cs" />
+    <Compile Include="ConfiguredNotifySystem.cs" />
+    <Compile Include="ParameterExtraction.cs" />
+    <Compile Include="IncrementalizationConfiguration\Configuration.cs" />
+    <Compile Include="IncrementalizationConfiguration\IConfiguration.cs" />
+    <Compile Include="IncrementalizationConfiguration\IMethodConfiguration.cs" />
+    <Compile Include="IncrementalizationConfiguration\IncrementalizationStrategy.cs" />
+    <Compile Include="IncrementalizationConfiguration\MethodConfiguration.cs" />
+    <Compile Include="PromotionNotifySystem.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="PropertyPath.cs" />
+    <Compile Include="RecordingNotifySystem.cs" />
+    <Compile Include="RepositoryChangeNotifyFunc.cs" />
+    <Compile Include="RepositoryChangeNotifyValue.cs" />
+    <Compile Include="RepositoryChangeNotificationSystem.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\Collections\Collections\Collections.csproj">
+      <Project>{6f57aa50-fb70-4de8-beab-e3ae58b225d3}</Project>
+      <Name>Collections</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\Models\Models\Models.csproj">
       <Project>{e42ac7b6-8120-40b5-8cd3-c4139b940897}</Project>
       <Name>Models</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Models\Serialization\Serialization.csproj">
+      <Project>{c24ef2ac-49d3-4542-bc40-5d62e12c7ded}</Project>
+      <Name>Serialization</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Tools\Utilities\Utilities.csproj">
+      <Project>{868226d4-bc8b-4b91-bd09-8f63d3c9debe}</Project>
+      <Name>Utilities</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Expressions.Linq\Expressions.Linq.csproj">
+      <Project>{e82d72a1-90f6-4341-a82d-d6b40349df63}</Project>
+      <Name>Expressions.Linq</Name>
     </ProjectReference>
     <ProjectReference Include="..\Expressions\Expressions.csproj">
       <Project>{afca9d1d-26a6-482a-a5ab-0827ad0fd677}</Project>
       <Name>Expressions</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="IncrementalizationConfiguration.nmf" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="ObservablePromotionMethodCall.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>ObservablePromotionMethodCall.cs</LastGenOutput>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

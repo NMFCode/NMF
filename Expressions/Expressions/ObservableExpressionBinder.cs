@@ -822,7 +822,7 @@ namespace NMF.Expressions
             }
         }
 
-        private static void CheckForOutParameter(ParameterInfo[] proxyMethodParameters)
+        private static void CheckForOutParameter(System.Reflection.ParameterInfo[] proxyMethodParameters)
         {
             for (int i = 0; i < proxyMethodParameters.Length; i++)
             {
@@ -1010,6 +1010,21 @@ namespace NMF.Expressions
             if (candidate == null && !allowNull)
             {
                 throw new InvalidOperationException(string.Format("The expression {0} cannot be interpreted as {1}.", expression.ToString(), typeof(T).Name));
+            }
+            return candidate;
+        }
+
+        public INotifyExpression VisitObservable(Expression expression, bool allowNull = false)
+        {
+            var result = Visit(expression);
+            if (compress && result != null)
+            {
+                result = result.Reduce();
+            }
+            var candidate = result as INotifyExpression;
+            if (candidate == null && !allowNull)
+            {
+                throw new InvalidOperationException(string.Format("The expression {0} is invalid.", expression.ToString()));
             }
             return candidate;
         }

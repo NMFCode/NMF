@@ -1,0 +1,125 @@
+﻿<#@ template debug="false" hostspecific="false" language="C#" #>
+<#@ assembly name="System.Core" #>
+<#@ import namespace="System.Linq" #>
+<#@ import namespace="System.Text" #>
+<#@ import namespace="System.Collections.Generic" #>
+<#@ output extension=".cs" #>
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using NMF.Models;
+
+namespace NMF.Expressions
+{
+<# for (int i = 1; i <= 15; i++) { #>
+    internal class ObservablePromotionMethodCall<<# for (int j = 1; j <= i; j++) { #>T<#= j #>, <# } #>TResult> : ObservableStaticMethodCall<<# for (int j = 1; j <= i; j++) { #>T<#= j #>, <# } #>TResult>
+    {
+<# for (int j = 1; j <= i; j++) { #>
+        public ICollection<string> Arg<#= j #>Properties { get; private set; }
+        public bool Arg<#= j #>Composition { get; private set; }
+<# } #>
+
+        public ObservablePromotionMethodCall(Func<<# for (int j = 1; j <= i; j++) { #>T<#= j #>, <# } #>TResult> func<# for (int j = 1; j <= i; j++) { #>, INotifyExpression<T<#= j #>> argument<#= j #>, ICollection<string> arg<#= j #>Properties, bool arg<#= j #>Composition<# } #>)
+            : base(func<# for (int j = 1; j <= i; j++) { #>, argument<#= j #><# } #>)
+        {
+<# for (int j = 1; j <= i; j++) { #>
+            Arg<#= j #>Properties = arg<#= j #>Properties;
+			Arg<#= j #>Composition = arg<#= j #>Composition;
+<# } #>
+        }
+
+        protected override void AttachCore()
+        {
+<# for (int j = 1; j <= i; j++) { #>
+            Argument<#= j #>.Attach();
+            Argument<#= j #>.ValueChanged += Argument<#= j #>Changed;
+            if (Arg<#= j #>Properties != null)
+            {
+                RegisterArg<#= j #>BubbledChange((IModelElement)Argument<#= j #>.Value);
+            }
+<# } #>
+        }
+		
+<# for (int j = 1; j <= i; j++) { #>
+        private void RegisterArg<#= j #>BubbledChange(IModelElement arg<#= j #>)
+        {
+            if (arg<#= j #> != null)
+            {
+                if (Arg<#= j #>Composition)
+                {
+                    arg<#= j #>.BubbledChange += Arg<#= j #>BubbledChange;
+                }
+                else
+                {
+                    arg<#= j #>.PropertyChanged += Arg<#= j #>PropertyChanged;
+                }
+            }
+        }
+
+        private void UnregisterArg<#= j #>BubbledChange(IModelElement arg<#= j #>)
+        {
+            if (arg<#= j #> != null)
+            {
+                if (Arg<#= j #>Composition)
+                {
+                    arg<#= j #>.BubbledChange -= Arg<#= j #>BubbledChange;
+                }
+                else
+                {
+                    arg<#= j #>.PropertyChanged -= Arg<#= j #>PropertyChanged;
+                }
+            }
+        }
+
+        private void Arg<#= j #>BubbledChange(object sender, BubbledChangeEventArgs e)
+        {
+            if (IsAttached && Arg<#= j #>Properties.Contains(e.PropertyName))
+            {
+                Refresh();
+            }
+        }
+
+        private void Arg<#= j #>PropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            if (IsAttached && Arg<#= j #>Properties.Contains(e.PropertyName))
+            {
+                Refresh();
+            }
+        }
+
+        private void Argument<#= j #>Changed(object sender, ValueChangedEventArgs e)
+        {
+            if (Arg<#= j #>Properties != null && IsAttached)
+            {
+                var oldValue = e.OldValue as IModelElement;
+                var newValue = e.NewValue as IModelElement;
+                UnregisterArg<#= j #>BubbledChange(oldValue);
+                Refresh();
+                RegisterArg<#= j #>BubbledChange(newValue);
+            }
+            else
+            {
+                Refresh();
+            }
+        }
+<# } #>
+
+        protected override void DetachCore()
+        {
+<# for (int j = 1; j <= i; j++) { #>
+            Argument<#= j #>.Detach();
+            Argument<#= j #>.ValueChanged -= Argument<#= j #>Changed;
+            if (Arg<#= j #>Properties != null)
+            {
+                UnregisterArg<#= j #>BubbledChange((IModelElement)Argument<#= j #>.Value);
+            }
+<# } #>
+        }
+
+        public override INotifyExpression<TResult> ApplyParameters(IDictionary<string, object> parameters)
+        {
+            return new ObservablePromotionMethodCall<<# for (int j = 1; j <= i; j++) { #>T<#= j #>, <# } #>TResult>(Function<# for (int j = 1; j <= i; j++) { #>, Argument<#= j #>.ApplyParameters(parameters), Arg<#= j #>Properties, Arg<#= j #>Composition<# } #>);
+        }
+    }
+<# } #>
+}
