@@ -26,17 +26,16 @@ namespace NMF.Models.Evolution
             Element = element;
         }
 
-        public void Apply()
+        public void Apply(IModelRepository repository)
         {
-            var parent = MetaRepository.Instance.Resolve(AbsoluteUri);
+            var parent = repository.Resolve(AbsoluteUri);
             var property = parent.GetType().GetProperty(PropertyName);
             property.SetValue(parent, Element, null);
-            Element.Parent = parent;
         }
 
-        public void Undo()
+        public void Undo(IModelRepository repository)
         {
-            new ModelDeletion(AbsoluteUri, PropertyName, Element).Apply();
+            new ModelDeletion(AbsoluteUri, PropertyName, Element).Apply(repository);
         }
     }
 }

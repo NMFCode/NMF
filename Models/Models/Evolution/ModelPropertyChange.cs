@@ -30,15 +30,15 @@ namespace NMF.Models.Evolution
             OldValue = oldValue;
         }
 
-        public void Apply()
+        public void Apply(IModelRepository repository)
         {
-            var parent = MetaRepository.Instance.Resolve(AbsoluteUri);
+            var parent = repository.Resolve(AbsoluteUri);
             parent?.GetType().GetProperty(PropertyName)?.SetValue(parent, NewValue, null);
         }
 
-        public void Undo()
+        public void Undo(IModelRepository repository)
         {
-            var parent = MetaRepository.Instance.Resolve(AbsoluteUri);
+            var parent = repository.Resolve(AbsoluteUri);
             parent?.GetType().GetProperty(PropertyName)?.SetValue(parent, OldValue, null);
         }
     }

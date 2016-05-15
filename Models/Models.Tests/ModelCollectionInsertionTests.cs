@@ -12,6 +12,7 @@ namespace NMF.Models.Tests
     [TestClass]
     public class ModelCollectionInsertionTests
     {
+        private ModelRepository repository;
         private RailwayContainer railway;
 
         private const string BaseUri = "http://github.com/NMFCode/NMF/Models/Models.Test/railway.railway";
@@ -19,7 +20,7 @@ namespace NMF.Models.Tests
         [TestInitialize]
         public void LoadRailwayModel()
         {
-            var repository = new ModelRepository(MetaRepository.Instance);
+            repository = new ModelRepository();
             var railwayModel = repository.Resolve(new Uri(BaseUri), "..\\..\\railway.railway").Model;
             Assert.IsNotNull(railwayModel);
             railway = railwayModel.RootElements.Single() as RailwayContainer;
@@ -32,7 +33,7 @@ namespace NMF.Models.Tests
             var toInsert = new Route();
             var change = new ModelCollectionInsertion(railway.AbsoluteUri, "Routes", toInsert, 0);
 
-            change.Apply();
+            change.Apply(repository);
             
             Assert.AreEqual(toInsert, railway.Routes.First());
         }

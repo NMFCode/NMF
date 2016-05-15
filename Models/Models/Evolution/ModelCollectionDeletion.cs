@@ -29,18 +29,21 @@ namespace NMF.Models.Evolution
 
         public IModelElement Element { get; private set; }
 
-        public void Apply()
+        public void Apply(IModelRepository repository)
         {
-            var parent = MetaRepository.Instance.Resolve(AbsoluteUri);
-            var collection = parent.GetType().GetProperty(CollectionPropertyName)?.GetValue(parent, null) as ICollection<IModelElement>;
-            //TODO error handling if collection is null
-            collection.Remove(Element);
-            //TODO Element.Parent = null;
+            var parent = repository.Resolve(AbsoluteUri);
+            var property = parent.GetType().GetProperty(CollectionPropertyName);
+            object collection = property.GetValue(parent, null);
+
+            //TODO same uglyness as in ModelCollectionInsertion
+
+            var iCollection = property.PropertyType.GetInterfaces().FirstOrDefault(i => i.Name.StartsWith("ICollection"));
+            iCollection.GetMethod("Remove").Invoke(collection, new[] { Element });
         }
 
-        public void Undo()
+        public void Undo(IModelRepository repository)
         {
-            new ModelCollectionInsertion(AbsoluteUri, CollectionPropertyName, Element, Index).Apply();
+            new ModelCollectionInsertion(AbsoluteUri, CollectionPropertyName, Element, Index).Apply(repository);
         }
     }
 }

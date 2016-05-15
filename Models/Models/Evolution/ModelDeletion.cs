@@ -26,15 +26,16 @@ namespace NMF.Models.Evolution
             Element = element;
         }
 
-        public void Apply()
+        public void Apply(IModelRepository repository)
         {
-            //TODO or set property to default?
-            Element.Delete();
+            var parent = repository.Resolve(AbsoluteUri);
+            var property = parent.GetType().GetProperty(PropertyName);
+            property.SetValue(parent, default(IModelElement), null);
         }
 
-        public void Undo()
+        public void Undo(IModelRepository repository)
         {
-            new ModelCreation(AbsoluteUri, PropertyName, Element).Apply();
+            new ModelCreation(AbsoluteUri, PropertyName, Element).Apply(repository);
         }
     }
 }

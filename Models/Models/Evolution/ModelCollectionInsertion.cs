@@ -29,22 +29,37 @@ namespace NMF.Models.Evolution
 
         public IModelElement Element { get; private set; }
 
-        public void Apply()
+        public void Apply(IModelRepository repository)
         {
-            var parent = MetaRepository.Instance.Resolve(AbsoluteUri);
-            var collection = parent.GetType().GetProperty(CollectionPropertyName)?.GetValue(parent, null) as ICollection<IModelElement>;
-            //TODO error handling if collection is null
-            var list = collection as IList<IModelElement>;
-            if (list != null)
-                list.Insert(Index, Element);
+            var parent = repository.Resolve(AbsoluteUri);
+            var property = parent.GetType().GetProperty(CollectionPropertyName);
+            object collection = property.GetValue(parent, null);
+
+            /* TODO ugly! Check if the collection type implements an interface
+             * starting with "IList". We cannot check this directly, because runtime
+             * types of generic types have dynamic names like "IList`1". If it is
+             * a list we'll use its "Insert" method. Otherwise the collection must
+             * be an instance of "ICollection<T>", so we use the "Add" method.
+             * This would be a lot easier if the collection would implement
+             * "ICollection" in addition to its generic variant, since we could
+             * simply cast our collection instance and avoid reflection.
+             */
+            
+            var iList = property.PropertyType.GetInterfaces().FirstOrDefault(i => i.Name.StartsWith("IList"));
+            if (iList != null)
+            {
+                iList.GetMethod("Insert").Invoke(collection, new object[] { Index, Element });
+            }
             else
-                collection.Add(Element);
-            //TODO Element.Parent = parent;
+            {
+                var iCollection = property.PropertyType.GetInterfaces().FirstOrDefault(i => i.Name.StartsWith("ICollection"));
+                iCollection.GetMethod("Add").Invoke(collection, new[] { Element });
+            }
         }
 
-        public void Undo()
+        public void Undo(IModelRepository repository)
         {
-            new ModelCollectionDeletion(AbsoluteUri, CollectionPropertyName, Element, Index).Apply();
+            new ModelCollectionDeletion(AbsoluteUri, CollectionPropertyName, Element, Index).Apply(repository);
         }
     }
 }
