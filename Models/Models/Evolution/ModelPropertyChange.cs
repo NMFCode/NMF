@@ -41,5 +41,19 @@ namespace NMF.Models.Evolution
             var parent = repository.Resolve(AbsoluteUri);
             parent?.GetType().GetProperty(PropertyName)?.SetValue(parent, OldValue, null);
         }
+
+        public override bool Equals(object obj)
+        {
+            if (ReferenceEquals(this, obj))
+                return true;
+            var other = obj as ModelPropertyChange;
+            if (other == null)
+                return false;
+            else
+                return this.AbsoluteUri.Equals(other.AbsoluteUri)
+                    && this.NewValue.Equals(other.NewValue)
+                    && this.OldValue.Equals(other.OldValue)
+                    && this.PropertyName.Equals(other.PropertyName);
+        }
     }
 }

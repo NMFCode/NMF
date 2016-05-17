@@ -57,6 +57,7 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
+    <Compile Include="ModelChangeRecorderTests.cs" />
     <Compile Include="ModelCollectionInsertionTests.cs" />
     <Compile Include="ModelCollectionDeletionTests.cs" />
     <Compile Include="ModelPropertyChangeTests.cs" />

@@ -8,7 +8,7 @@ namespace NMF.Models.Evolution
 {
     public class ModelCollectionDeletion : IModelChange
     {
-        public ModelCollectionDeletion(Uri absoluteUri, string collectionPropertyName, IModelElement elementToDelete, int index)
+        public ModelCollectionDeletion(Uri absoluteUri, string collectionPropertyName, object elementToDelete, int index)
         {
             if (absoluteUri == null)
                 throw new ArgumentNullException(nameof(absoluteUri));
@@ -27,7 +27,7 @@ namespace NMF.Models.Evolution
 
         public int Index { get; private set; }
 
-        public IModelElement Element { get; private set; }
+        public object Element { get; private set; }
 
         public void Apply(IModelRepository repository)
         {
@@ -44,6 +44,20 @@ namespace NMF.Models.Evolution
         public void Undo(IModelRepository repository)
         {
             new ModelCollectionInsertion(AbsoluteUri, CollectionPropertyName, Element, Index).Apply(repository);
+        }
+
+        public override bool Equals(object obj)
+        {
+            if (ReferenceEquals(this, obj))
+                return true;
+            var other = obj as ModelCollectionDeletion;
+            if (other == null)
+                return false;
+            else
+                return this.AbsoluteUri.Equals(other.AbsoluteUri)
+                    && this.CollectionPropertyName.Equals(other.CollectionPropertyName)
+                    && this.Element.Equals(other.Element)
+                    && this.Index.Equals(other.Index);
         }
     }
 }

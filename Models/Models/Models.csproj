@@ -60,6 +60,7 @@
     <Compile Include="Collections\CompositionOrderedSet.cs" />
     <Compile Include="Collections\CompositionSet.cs" />
     <Compile Include="Collections\DescendantsCollection.cs" />
+    <Compile Include="Evolution\ModelChangeRecorder.cs" />
     <Compile Include="Evolution\ModelChangeTransaction.cs" />
     <Compile Include="Evolution\ModelCollectionDeletion.cs" />
     <Compile Include="IModelElement.cs" />
