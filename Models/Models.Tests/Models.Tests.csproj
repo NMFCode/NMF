@@ -57,12 +57,10 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
-    <Compile Include="ModelChangeRecorderTests.cs" />
-    <Compile Include="ModelCollectionInsertionTests.cs" />
-    <Compile Include="ModelCollectionDeletionTests.cs" />
-    <Compile Include="ModelPropertyChangeTests.cs" />
-    <Compile Include="ModelCreationTests.cs" />
-    <Compile Include="ModelDeletionTests.cs" />
+    <Compile Include="Evolution\ModelChangeRecorderTests.cs" />
+    <Compile Include="Evolution\CollectionInsertionTests.cs" />
+    <Compile Include="Evolution\CollectionDeletionTests.cs" />
+    <Compile Include="Evolution\PropertyChangeTests.cs" />
     <Compile Include="Metamodel\IRailwayContainer.cs" />
     <Compile Include="Metamodel\IRailwayElement.cs" />
     <Compile Include="Metamodel\IRoute.cs" />

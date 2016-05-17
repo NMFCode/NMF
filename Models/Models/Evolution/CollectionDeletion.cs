@@ -6,9 +6,9 @@ using NMF.Models.Repository;
 
 namespace NMF.Models.Evolution
 {
-    public class ModelCollectionDeletion : IModelChange
+    public class CollectionDeletion : IModelChange
     {
-        public ModelCollectionDeletion(Uri absoluteUri, string collectionPropertyName, object elementToDelete, int index)
+        public CollectionDeletion(Uri absoluteUri, string collectionPropertyName, object elementToDelete, int index)
         {
             if (absoluteUri == null)
                 throw new ArgumentNullException(nameof(absoluteUri));
@@ -43,14 +43,14 @@ namespace NMF.Models.Evolution
 
         public void Undo(IModelRepository repository)
         {
-            new ModelCollectionInsertion(AbsoluteUri, CollectionPropertyName, Element, Index).Apply(repository);
+            new CollectionInsertion(AbsoluteUri, CollectionPropertyName, Element, Index).Apply(repository);
         }
 
         public override bool Equals(object obj)
         {
             if (ReferenceEquals(this, obj))
                 return true;
-            var other = obj as ModelCollectionDeletion;
+            var other = obj as CollectionDeletion;
             if (other == null)
                 return false;
             else
@@ -58,6 +58,14 @@ namespace NMF.Models.Evolution
                     && this.CollectionPropertyName.Equals(other.CollectionPropertyName)
                     && this.Element.Equals(other.Element)
                     && this.Index.Equals(other.Index);
+        }
+
+        public override int GetHashCode()
+        {
+            return AbsoluteUri.GetHashCode()
+                ^ CollectionPropertyName.GetHashCode()
+                ^ Element.GetHashCode()
+                ^ Index.GetHashCode();
         }
     }
 }

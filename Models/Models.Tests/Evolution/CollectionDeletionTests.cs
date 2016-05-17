@@ -7,10 +7,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace NMF.Models.Tests
+namespace NMF.Models.Tests.Evolution
 {
     [TestClass]
-    public class ModelCollectionInsertionTests
+    public class CollectionDeletionTests
     {
         private ModelRepository repository;
         private RailwayContainer railway;
@@ -28,14 +28,15 @@ namespace NMF.Models.Tests
         }
 
         [TestMethod]
-        public void ModelCollectionInsertionSucceeds()
+        public void ModelCollectionDeletionSucceeds()
         {
-            var toInsert = new Route();
-            var change = new ModelCollectionInsertion(railway.AbsoluteUri, "Routes", toInsert, 0);
+            var toDelete = railway.Routes.First();
+            var change = new CollectionDeletion(railway.AbsoluteUri, "Routes", toDelete, 0);
 
             change.Apply(repository);
             
-            Assert.AreEqual(toInsert, railway.Routes.First());
+            Assert.AreNotEqual(toDelete, railway.Routes.FirstOrDefault());
+            CollectionAssert.DoesNotContain(railway.Routes.ToList(), toDelete);
         }
     }
 }

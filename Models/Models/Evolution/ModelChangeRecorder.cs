@@ -47,7 +47,7 @@ namespace NMF.Models.Evolution
 
         private void HandlePropertyChanged(IModelElement parent, string propertyName, ValueChangedEventArgs args)
         {
-            RecordedChanges.Add(new ModelPropertyChange(parent.AbsoluteUri, propertyName, args.NewValue, args.OldValue));
+            RecordedChanges.Add(new PropertyChange(parent.AbsoluteUri, propertyName, args.NewValue, args.OldValue));
         }
 
         private void HandleElementCreated(IModelElement newElement)
@@ -74,7 +74,7 @@ namespace NMF.Models.Evolution
         {
             for (int i = 0; i < newItems.Count; i++)
             {
-                RecordedChanges.Add(new ModelCollectionInsertion(parent.AbsoluteUri, propertyName, newItems[i], startingIndex + i));
+                RecordedChanges.Add(new CollectionInsertion(parent.AbsoluteUri, propertyName, newItems[i], startingIndex + i));
             }
         }
 
@@ -82,7 +82,7 @@ namespace NMF.Models.Evolution
         {
             for (int i = deletedItems.Count - 1; i >= 0; i--)
             {
-                RecordedChanges.Add(new ModelCollectionDeletion(parent.AbsoluteUri, propertyName, deletedItems[i], startingIndex + i));
+                RecordedChanges.Add(new CollectionDeletion(parent.AbsoluteUri, propertyName, deletedItems[i], startingIndex + i));
             }
         }
     }

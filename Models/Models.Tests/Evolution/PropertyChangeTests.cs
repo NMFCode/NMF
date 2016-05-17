@@ -7,10 +7,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace NMF.Models.Tests
+namespace NMF.Models.Tests.Evolution
 {
     [TestClass]
-    public class ModelCollectionDeletionTests
+    public class PropertyChangeTests
     {
         private ModelRepository repository;
         private RailwayContainer railway;
@@ -28,15 +28,15 @@ namespace NMF.Models.Tests
         }
 
         [TestMethod]
-        public void ModelCollectionDeletionSucceeds()
+        public void ModelPropertyChangeSucceeds()
         {
-            var toDelete = railway.Routes.First();
-            var change = new ModelCollectionDeletion(railway.AbsoluteUri, "Routes", toDelete, 0);
+            var parent = railway.Routes.First().Entry;
+            var newValue = Signal.FAILURE;
+            var change = new PropertyChange(parent.AbsoluteUri, "Signal", newValue, parent.Signal);
 
             change.Apply(repository);
-            
-            Assert.AreNotEqual(toDelete, railway.Routes.FirstOrDefault());
-            CollectionAssert.DoesNotContain(railway.Routes.ToList(), toDelete);
+
+            Assert.AreEqual(newValue, parent.Signal);
         }
     }
 }

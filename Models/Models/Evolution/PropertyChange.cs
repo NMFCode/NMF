@@ -7,7 +7,7 @@ using System.Text;
 
 namespace NMF.Models.Evolution
 {
-    public class ModelPropertyChange : IModelChange
+    public class PropertyChange : IModelChange
     {
         public string PropertyName { get; private set; }
 
@@ -17,7 +17,7 @@ namespace NMF.Models.Evolution
 
         public Uri AbsoluteUri { get; private set; }
         
-        public ModelPropertyChange(Uri absoluteUri, string propertyName, object newValue, object oldValue)
+        public PropertyChange(Uri absoluteUri, string propertyName, object newValue, object oldValue)
         {
             if (absoluteUri == null)
                 throw new ArgumentNullException(nameof(absoluteUri));
@@ -46,7 +46,7 @@ namespace NMF.Models.Evolution
         {
             if (ReferenceEquals(this, obj))
                 return true;
-            var other = obj as ModelPropertyChange;
+            var other = obj as PropertyChange;
             if (other == null)
                 return false;
             else
@@ -54,6 +54,14 @@ namespace NMF.Models.Evolution
                     && this.NewValue.Equals(other.NewValue)
                     && this.OldValue.Equals(other.OldValue)
                     && this.PropertyName.Equals(other.PropertyName);
+        }
+
+        public override int GetHashCode()
+        {
+            return AbsoluteUri.GetHashCode()
+                ^ NewValue.GetHashCode()
+                ^ OldValue.GetHashCode()
+                ^ PropertyName.GetHashCode();
         }
     }
 }
