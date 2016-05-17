@@ -11,9 +11,9 @@ namespace NMF.Models.Evolution
     {
         public string PropertyName { get; private set; }
 
-        public object NewValue { get; private set; }
+        public object NewValue { get; set; }
 
-        public object OldValue { get; private set; }
+        public object OldValue { get; set; }
 
         public Uri AbsoluteUri { get; private set; }
         

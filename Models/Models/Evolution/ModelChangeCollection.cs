@@ -1,18 +1,38 @@
-﻿using System;
+﻿using NMF.Models.Evolution.Minimizing;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace NMF.Models.Evolution
 {
     public class ModelChangeCollection : IList<IModelChange>
     {
-        private readonly List<IModelChange> list = new List<IModelChange>();
+        private readonly List<IModelChange> list;
 
-        public ModelChangeCollection Minify()
+        public ModelChangeCollection() : this(new List<IModelChange>()) { }
+
+        internal ModelChangeCollection(List<IModelChange> list)
         {
-            throw new NotImplementedException();
+            this.list = list;
+        }
+
+        public ModelChangeCollection Minimize()
+        {
+            var strategies = new[] { new MultiplePropertyChanges() };
+
+            var localList = list.ToList();
+            foreach (var strat in strategies)
+                localList = strat.Execute(localList);
+
+            return new ModelChangeCollection(localList);
+        }
+
+        public Task<ModelChangeCollection> MinimizeAsync()
+        {
+            return Task.Factory.StartNew(Minimize);
         }
 
         #region IList implementation

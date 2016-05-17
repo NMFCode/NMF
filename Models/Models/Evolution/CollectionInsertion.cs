@@ -25,9 +25,9 @@ namespace NMF.Models.Evolution
 
         public string CollectionPropertyName { get; private set; }
 
-        public int Index { get; private set; }
+        public int Index { get; set; }
 
-        public object Element { get; private set; }
+        public object Element { get; set; }
 
         public void Apply(IModelRepository repository)
         {

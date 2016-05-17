@@ -14,11 +14,11 @@ namespace NMF.Models.Evolution
 
         public IModelElement AttachedElement { get; private set; }
 
-        public List<IModelChange> RecordedChanges { get; private set; }
+        public ModelChangeCollection RecordedChanges { get; private set; }
 
         public ModelChangeRecorder()
         {
-            RecordedChanges = new List<IModelChange>();
+            RecordedChanges = new ModelChangeCollection();
         }
 
         public void Start(IModelElement element)
