@@ -41,7 +41,11 @@ namespace NMF.Expressions.Linq.Orleans
         protected override void SetupMessageDispatcher(StreamMessageDispatchReceiver dispatcher)
         {
             base.SetupMessageDispatcher(dispatcher);
-            dispatcher.Register<ModelExecuteActionMessage<TModel>>(async message => { message.Execute(Model); });
+            dispatcher.Register<ModelExecuteActionMessage<TModel>>(message =>
+            {
+                message.Execute(Model);
+                return TaskDone.Done;
+            });
         }
 
     }

@@ -30,6 +30,18 @@ namespace NMF.Expressions.Linq.Orleans.Model
         Task<string> GetModelPath();
 
         /// <summary>
+        /// Start a model update transaction.
+        /// </summary>
+        /// <returns></returns>
+        Task<Guid> StartModelUpdate();
+
+        /// <summary>
+        /// End a model update transaction.
+        /// </summary>
+        /// <returns></returns>
+        Task EndModelUpdate(Guid tid);
+
+        /// <summary>
         /// Executes an action on the model. If a new model element is created forwarding of changes is done via forwarding the action
         /// and not via messages.
         /// </summary>

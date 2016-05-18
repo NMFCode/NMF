@@ -1,6 +1,8 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using NMF.Models;
 using Orleans;
+using Orleans.Streams;
 using Orleans.Streams.Linq;
 
 namespace NMF.Expressions.Linq.Orleans
@@ -61,6 +63,40 @@ namespace NMF.Expressions.Linq.Orleans
             await clientConsumer.SetInput(await previousNode.GetOutputStreams());
 
             return clientConsumer;
+        }
+
+        #endregion
+
+        #region Processor
+
+        public static async Task<StreamProcessorChain<TIn, TOut, TFactory>> ProcessDistributed<TIn, TOut, TFactory>(
+            this ITransactionalStreamProvider<TIn> source, Func<INotifyEnumerable<TIn>, INotifyEnumerable<TOut>> processingFunc, TFactory factory,
+            int scatterFactor = 1) where TFactory : IncrementalNmfModelStreamProcessorAggregateFactory
+        {
+            var aggregateConfiguration = new StreamProcessorAggregateConfiguration(await source.GetOutputStreams(), scatterFactor);
+            var processorAggregate = await factory.CreateProcessor(processingFunc, aggregateConfiguration);
+            var processorChain = new StreamProcessorChainStart<TIn, TOut, TFactory>(processorAggregate, source, factory);
+
+            return processorChain;
+        }
+
+        public static async Task<StreamProcessorChain<TIn, TOut, TFactory>> ProcessDistributed<TOldIn, TIn, TOut, TFactory>(
+            this StreamProcessorChain<TOldIn, TIn, TFactory> previousNode, Func<INotifyEnumerable<TIn>, INotifyEnumerable<TOut>> processingFunc,
+            int scatterFactor = 1) where TFactory : IncrementalNmfModelStreamProcessorAggregateFactory
+        {
+            var aggregateConfiguration = new StreamProcessorAggregateConfiguration(await previousNode.Aggregate.GetOutputStreams(), scatterFactor);
+            var processorAggregate = await previousNode.Factory.CreateProcessor(processingFunc, aggregateConfiguration);
+            var processorChain = new StreamProcessorChain<TIn, TOut, TFactory>(processorAggregate, previousNode.Factory);
+
+            return processorChain;
+        }
+
+        public static async Task<StreamProcessorChain<TIn, TOut, TFactory>> ProcessDistributed<TOldIn, TIn, TOut, TFactory>(
+            this Task<StreamProcessorChain<TOldIn, TIn, TFactory>> previousNodeTask,
+            Func<INotifyEnumerable<TIn>, INotifyEnumerable<TOut>> processingFunc, int scatterFactor = 1)
+            where TFactory : IncrementalNmfModelStreamProcessorAggregateFactory
+        {
+            return await ProcessDistributed(await previousNodeTask, processingFunc, scatterFactor);
         }
 
         #endregion

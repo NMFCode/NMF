@@ -79,5 +79,17 @@ namespace NMF.Expressions.Linq.Orleans
 
             return processorAggregate;
         }
+
+        public async Task<IStreamProcessorAggregate<TIn, TOut>> CreateProcessor<TIn, TOut>(
+            Func<INotifyEnumerable<TIn>, INotifyEnumerable<TOut>> processingFunc, StreamProcessorAggregateConfiguration configuration)
+        {
+            var processorAggregate = GrainFactory.GetGrain<IIncrementalFunctionAggregateGrain<TIn, TOut, TModel>>(Guid.NewGuid());
+
+            await processorAggregate.SetIncrementalFunc(processingFunc);
+            await processorAggregate.Setup(ModelContainerGrain, configuration.ScatterFactor);
+            await processorAggregate.SetInput(configuration.InputStreams);
+
+            return processorAggregate;
+        }
     }
 }

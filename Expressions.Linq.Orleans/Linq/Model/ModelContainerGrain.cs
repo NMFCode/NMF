@@ -39,7 +39,6 @@ namespace NMF.Expressions.Linq.Orleans.Model
         {
             var element = elementSelectorFunc(Model);
 
-            ModelElement.EnforceModels = false; // TODO remove once bug fixed
             var result = element.ToXmlString();
             ModelElement.EnforceModels = true;
 
@@ -73,6 +72,27 @@ namespace NMF.Expressions.Linq.Orleans.Model
         }
 
         /// <summary>
+        /// Start a model update transaction.
+        /// </summary>
+        /// <returns></returns>
+        public async Task<Guid> StartModelUpdate()
+        {
+            var tid = Guid.NewGuid();
+            await OutputProducer.StartTransaction(tid);
+            return tid;
+        }
+
+        /// <summary>
+        /// End a model update transaction.
+        /// </summary>
+        /// <returns></returns>
+        public async Task EndModelUpdate(Guid tid)
+        {
+            await SendAllQueuedMessages();
+            await OutputProducer.EndTransaction(tid);
+        }
+
+        /// <summary>
         /// Executes an action on the model. If a new model element is created forwarding of changes is done via forwarding the action
         /// and not via messages.
         /// </summary>
@@ -89,10 +109,11 @@ namespace NMF.Expressions.Linq.Orleans.Model
             if (newModelElementCreated)
             {
                 Model.BubbledChange += ModelBubbledChange;
-                ModelUpdateSender.EnqueueMessage(new ModelExecuteActionMessage<T>(action));
+                ModelUpdateSender.EnqueueMessageBroadcast(new ModelExecuteActionMessage<T>(action));
             }
 
             await SendAllQueuedMessages();
+            await OutputProducer.SendMessage(new FlushMessage());
         }
 
         /// <summary>
@@ -113,14 +134,10 @@ namespace NMF.Expressions.Linq.Orleans.Model
             if (newModelElementCreated)
             {
                 Model.BubbledChange += ModelBubbledChange;
-                ModelUpdateSender.EnqueueMessage(new ModelExecuteActionMessage<T>(action, state));
+                ModelUpdateSender.EnqueueMessageBroadcast(new ModelExecuteActionMessage<T>(action, state));
             }
 
-            await SendAllQueuedMessages();
-
-            // No flush pipeline
-
-            await OutputProducer.SendMessage(new FlushMessage());
+            SendAllQueuedMessages();
         }
 
         /// <summary>
@@ -186,8 +203,8 @@ namespace NMF.Expressions.Linq.Orleans.Model
 
         private async Task SendAllQueuedMessages()
         {
-            await OutputProducer.FlushQueue();
-            await ModelUpdateSender.FlushQueue();
+            await OutputProducer.AwaitSendingComplete();
+            await ModelUpdateSender.AwaitSendingComplete();
         }
 
         private void ModelBubbledChange(object sender, BubbledChangeEventArgs e)
@@ -214,7 +231,7 @@ namespace NMF.Expressions.Linq.Orleans.Model
                         throw new NotImplementedException();
                 }
 
-                ModelUpdateSender.EnqueueMessage(message);
+                ModelUpdateSender.EnqueueMessageBroadcast(message);
             }
             else if (e.IsPropertyChangedEvent)
             {
@@ -226,7 +243,7 @@ namespace NMF.Expressions.Linq.Orleans.Model
                 var oldValue = ModelRemoteValueFactory.CreateModelRemoteValue(eventArgs.OldValue, _sendContext);
 
                 var message = new RemotePropertyChangedMessage(modelChangeValue, oldValue, sourceElement, propertyName);
-                ModelUpdateSender.EnqueueMessage(message);
+                ModelUpdateSender.EnqueueMessageBroadcast(message);
             }
         }
 

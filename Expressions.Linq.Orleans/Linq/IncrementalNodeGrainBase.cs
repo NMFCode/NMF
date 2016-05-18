@@ -1,16 +1,10 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
-using System.Linq;
 using System.Threading.Tasks;
-using NMF.Expressions.Linq.Orleans.Message;
 using NMF.Expressions.Linq.Orleans.Model;
 using NMF.Models;
-using Orleans;
-using Orleans.Collections;
-using Orleans.Collections.Messages;
 using Orleans.Streams;
-using Orleans.Streams.Linq.Nodes;
 using Orleans.Streams.Messages;
 using Orleans.Streams.Stateful;
 
@@ -32,7 +26,6 @@ namespace NMF.Expressions.Linq.Orleans
             await base.OnActivateAsync();
             InputList = new NotifyCollection<TSource>();
             StreamConsumer = new TransactionalStreamModelConsumer<TSource, TModel>(GetStreamProvider(StreamProviderNamespace), InputList);
-            StreamConsumer.MessageDispatcher.PostProcessedMessageFunc = async () => await StreamSender.FlushQueue();
 
             StreamConsumer.MessageDispatcher.Register<FlushMessage>(ProcessFlushMessage);
             StreamConsumer.MessageDispatcher.Register<TransactionMessage>(ProcessTransactionMessage);
@@ -77,23 +70,26 @@ namespace NMF.Expressions.Linq.Orleans
 
         public virtual async Task<Guid> EnumerateToSubscribers(Guid? transactionId = null)
         {
-            var tId = TransactionGenerator.GenerateTransactionId(transactionId);
-            await StreamSender.StartTransaction(tId);
-            await StreamSender.SendItems(ResultEnumerable);
-            await StreamSender.EndTransaction(tId);
-            return tId;
+            //var tId = TransactionGenerator.GenerateTransactionId(transactionId);
+            //await StreamSender.StartTransaction(tId);
+            //await StreamSender.SendItems(ResultEnumerable);
+            //await StreamSender.EndTransaction(tId);
+            //return tId;
+            throw new NotImplementedException();
         }
 
         protected async Task ProcessTransactionMessage(TransactionMessage transactionMessage)
         {
-            // TODO: Make sure all items prior to sending the end message are processed when implementing methods not running on grain thread.
-            await StreamSender.SendMessage(transactionMessage);
+            if(transactionMessage.State == TransactionState.End)
+                await StreamSender.AwaitSendingComplete();
+
+            await StreamSender.SendMessageThroughAllOutputs(transactionMessage);
         }
 
         private async Task ProcessFlushMessage(FlushMessage message)
         {
-            await StreamSender.FlushQueue();
-            await StreamSender.SendMessage(message);
+            await StreamSender.AwaitSendingComplete();
+            await StreamSender.SendMessageThroughAllOutputs(message);
         }
 
     }
