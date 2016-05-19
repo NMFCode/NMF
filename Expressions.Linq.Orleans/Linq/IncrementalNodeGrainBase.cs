@@ -83,13 +83,13 @@ namespace NMF.Expressions.Linq.Orleans
             if(transactionMessage.State == TransactionState.End)
                 await StreamSender.AwaitSendingComplete();
 
-            await StreamSender.SendMessageThroughAllOutputs(transactionMessage);
+            await StreamSender.SendMessageBroadcast(transactionMessage);
         }
 
         private async Task ProcessFlushMessage(FlushMessage message)
         {
             await StreamSender.AwaitSendingComplete();
-            await StreamSender.SendMessageThroughAllOutputs(message);
+            await StreamSender.SendMessageBroadcast(message);
         }
 
     }

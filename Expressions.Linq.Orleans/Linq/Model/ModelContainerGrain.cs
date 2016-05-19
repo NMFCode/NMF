@@ -219,14 +219,14 @@ namespace NMF.Expressions.Linq.Orleans.Model
                 {
                     case NotifyCollectionChangedAction.Add:
                         message = new RemoteCollectionChangedMessage(NotifyCollectionChangedAction.Add, sourceElement,
-                            CreateModelChanges(eventArgs.NewItems));
+                            CreateModelChanges(eventArgs.NewItems), e.PropertyName);
                         break;
                     case NotifyCollectionChangedAction.Remove:
                         message = new RemoteCollectionChangedMessage(NotifyCollectionChangedAction.Remove, sourceElement,
-                            CreateModelChanges(eventArgs.OldItems));
+                            CreateModelChanges(eventArgs.OldItems), e.PropertyName);
                         break;
                     case NotifyCollectionChangedAction.Reset:
-                        message = new RemoteCollectionChangedMessage(NotifyCollectionChangedAction.Reset, sourceElement, null);
+                        message = new RemoteCollectionChangedMessage(NotifyCollectionChangedAction.Reset, sourceElement, null, e.PropertyName);
                         break;
                     default:
                         throw new NotImplementedException();
