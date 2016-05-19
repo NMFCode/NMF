@@ -37,7 +37,7 @@ namespace NMF.Models.Tests
             semaphore.Signal = Signal.FAILURE;
 
             var expected = new PropertyChange(semaphore.AbsoluteUri, "Signal", Signal.FAILURE, Signal.GO);
-            Assert.AreEqual(expected, rec.RecordedChanges[0]);
+            CollectionAssert.Contains(rec.RecordedChanges, expected);
         }
 
         [TestMethod]
@@ -50,7 +50,7 @@ namespace NMF.Models.Tests
             railway.Semaphores.RemoveAt(0);
 
             var expected = new CollectionDeletion(railway.AbsoluteUri, "Semaphores", semaphore, 0);
-            Assert.AreEqual(expected, rec.RecordedChanges[0]);
+            CollectionAssert.Contains(rec.RecordedChanges, expected);
         }
 
         [TestMethod]
@@ -63,7 +63,7 @@ namespace NMF.Models.Tests
             railway.Semaphores.Insert(0, semaphore);
 
             var expected = new CollectionInsertion(railway.AbsoluteUri, "Semaphores", semaphore, 0);
-            Assert.AreEqual(expected, rec.RecordedChanges[0]);
+            CollectionAssert.Contains(rec.RecordedChanges, expected);
         }
     }
 }

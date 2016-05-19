@@ -1,4 +1,5 @@
 ﻿using NMF.Models.Evolution.Minimizing;
+using NMF.Models.Repository;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -8,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace NMF.Models.Evolution
 {
-    public class ModelChangeCollection : IList<IModelChange>
+    public class ModelChangeCollection : IList<IModelChange>, ICollection
     {
         private readonly List<IModelChange> list;
 
@@ -35,7 +36,13 @@ namespace NMF.Models.Evolution
             return Task.Factory.StartNew(Minimize);
         }
 
-        #region IList implementation
+        public void Apply(IModelRepository repository)
+        {
+            foreach (var change in list)
+                change.Apply(repository);
+        }
+
+        #region Interface implementation
 
         public IModelChange this[int index]
         {
@@ -46,6 +53,22 @@ namespace NMF.Models.Evolution
         public int Count { get { return list.Count; } }
 
         public bool IsReadOnly { get { return false; } }
+
+        public object SyncRoot
+        {
+            get
+            {
+                return ((ICollection)list).SyncRoot;
+            }
+        }
+
+        public bool IsSynchronized
+        {
+            get
+            {
+                return ((ICollection)list).IsSynchronized;
+            }
+        }
 
         public void Add(IModelChange item)
         {
@@ -95,6 +118,11 @@ namespace NMF.Models.Evolution
         IEnumerator IEnumerable.GetEnumerator()
         {
             return list.GetEnumerator();
+        }
+
+        public void CopyTo(Array array, int index)
+        {
+            ((ICollection)list).CopyTo(array, index);
         }
 
         #endregion

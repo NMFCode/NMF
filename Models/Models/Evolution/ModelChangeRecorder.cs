@@ -43,7 +43,23 @@ namespace NMF.Models.Evolution
                 case ChangeType.PropertyChanged:
                     HandlePropertyChanged(e.Element, e.PropertyName, (ValueChangedEventArgs)e.OriginalEventArgs);
                     break;
+                case ChangeType.ModelElementCreated:
+                    HandleElementCreated(e.Element);
+                    break;
+                case ChangeType.ModelElementDeleted:
+                    HandleElementDeleted(e.Element);
+                    break;
             }
+        }
+
+        private void HandleElementCreated(IModelElement createdElement)
+        {
+            RecordedChanges.Add(new ElementCreation(createdElement));
+        }
+
+        private void HandleElementDeleted(IModelElement deletedElement)
+        {
+            RecordedChanges.Add(new ElementDeletion(deletedElement));
         }
 
         private void HandlePropertyChanged(IModelElement parent, string propertyName, ValueChangedEventArgs args)
