@@ -99,7 +99,7 @@ namespace NMF.Expressions.Linq.Orleans.Model
         /// <param name="action">Action to execute on the model.</param>
         /// <param name="newModelElementCreated">Needs to be set to true if a new model element is created during the action.</param>
         /// <returns></returns>
-        public async Task ExecuteSync(Action<T> action, bool newModelElementCreated = false)
+        public Task ExecuteSync(Action<T> action, bool newModelElementCreated = false)
         {
             if (newModelElementCreated)
                 Model.BubbledChange -= ModelBubbledChange;
@@ -112,8 +112,8 @@ namespace NMF.Expressions.Linq.Orleans.Model
                 ModelUpdateSender.EnqueueMessageBroadcast(new ModelExecuteActionMessage<T>(action));
             }
 
-            await SendAllQueuedMessages();
-            await OutputProducer.SendMessage(new FlushMessage());
+            SendAllQueuedMessages();
+            return TaskDone.Done;
         }
 
         /// <summary>
@@ -124,7 +124,7 @@ namespace NMF.Expressions.Linq.Orleans.Model
         /// <param name="state">State that is passed through the action.</param>
         /// <param name="newModelElementCreated">Needs to be set to true if a new model element is created during the action.</param>
         /// <returns></returns>
-        public async Task ExecuteSync(Action<T, object> action, object state, bool newModelElementCreated = false)
+        public Task ExecuteSync(Action<T, object> action, object state, bool newModelElementCreated = false)
         {
             if (newModelElementCreated)
                 Model.BubbledChange -= ModelBubbledChange;
@@ -138,6 +138,7 @@ namespace NMF.Expressions.Linq.Orleans.Model
             }
 
             SendAllQueuedMessages();
+            return TaskDone.Done;
         }
 
         /// <summary>
