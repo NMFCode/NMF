@@ -87,7 +87,7 @@ namespace NMF.Models
 
             return new BubbledChangeEventArgs
             {
-                ChangeType = ChangeType.ModelElementDeleted,
+                ChangeType = ChangeType.PropertyChanged,
                 Element = source,
                 OriginalEventArgs = args,
                 PropertyName = propertyName
@@ -112,7 +112,7 @@ namespace NMF.Models
 
             return new BubbledChangeEventArgs
             {
-                ChangeType = ChangeType.ModelElementDeleted,
+                ChangeType = ChangeType.CollectionChanged,
                 Element = source,
                 OriginalEventArgs = args,
                 PropertyName = propertyName
