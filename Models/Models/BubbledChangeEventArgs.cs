@@ -36,6 +36,30 @@ namespace NMF.Models
         public ChangeType ChangeType { get; private set; }
 
         /// <summary>
+        /// Gets a value indicating whether the underlying change has been a elementary collection change
+        /// </summary>
+        public bool IsCollectionChangeEvent
+        {
+            get { return ChangeType == ChangeType.CollectionChanged; }
+        }
+
+        /// <summary>
+        /// Gets a value indicating whether the underlying change was a changed property value
+        /// </summary>
+        public bool IsPropertyChangedEvent
+        {
+            get { return ChangeType == ChangeType.PropertyChanged; }
+        }
+
+        /// <summary>
+        /// Gets a value indicating whether the change was that a new element was created
+        /// </summary>
+        public bool IsElementCreated
+        {
+            get { return ChangeType == ChangeType.ModelElementCreated; }
+        }
+
+        /// <summary>
         /// Creates an instance of BubbledChangeEventArgs describing the creation of the given model element.
         /// </summary>
         /// <param name="createdElement">The new model element.</param>
