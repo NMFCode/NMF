@@ -246,7 +246,7 @@ namespace NMF.Models.Repository.Serialization
             {
                 var model = modelElement.Model;
                 if (model == null) return graph;
-                if (model.RootElements.Count == 1) return model.RootElements[0];
+                if (model.RootElements.Count == 1 && Model.PromoteSingleRootElement) return model.RootElements[0];
                 return model;
             }
             else

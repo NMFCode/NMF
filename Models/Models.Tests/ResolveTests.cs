@@ -20,11 +20,18 @@ namespace NMF.Models.Tests
         [TestInitialize]
         public void LoadRailwayModel()
         {
+            Model.PromoteSingleRootElement = true;
             repository = new ModelRepository();
             railwayModel = repository.Resolve(new Uri(BaseUri), "..\\..\\railway.railway").Model;
             Assert.IsNotNull(railwayModel);
             railway = railwayModel.RootElements.Single() as RailwayContainer;
             Assert.IsNotNull(railway);
+        }
+
+        [TestCleanup]
+        public void ResetGlobalSettings()
+        {
+            Model.PromoteSingleRootElement = true;
         }
 
         [TestMethod]
@@ -87,6 +94,61 @@ namespace NMF.Models.Tests
         }
 
         [TestMethod]
+        public void RootUriCanBeResolvedWhenRootPromotionDisabled()
+        {
+            Model.PromoteSingleRootElement = false;
+            Assert.AreEqual("//0", railway.RelativeUri.ToString());
+            Assert.AreEqual(BaseUri + "#//0", railway.AbsoluteUri.AbsoluteUri);
+            Assert.AreSame(railway, railway.Model.Resolve(railway.RelativeUri));
+            Assert.AreSame(railway, repository.Resolve(railway.AbsoluteUri));
+        }
+
+        [TestMethod]
+        public void RouteCanBeResolvedWhenRootPromotionDisabled()
+        {
+            Model.PromoteSingleRootElement = false;
+            var route = railway.Routes[0];
+            Assert.AreEqual("//0/@routes.0", route.RelativeUri.ToString());
+            Assert.AreEqual(BaseUri + "#//0/@routes.0", route.AbsoluteUri.AbsoluteUri);
+            Assert.AreSame(route, railwayModel.Resolve(route.RelativeUri));
+            Assert.AreSame(route, repository.Resolve(route.AbsoluteUri));
+        }
+
+        [TestMethod]
+        public void SensorCanBeResolvedWhenRootPromotionDisabled()
+        {
+            Model.PromoteSingleRootElement = false;
+            var sensor = railway.Routes[0].DefinedBy[0];
+            Assert.AreEqual("//0/@routes.0/@definedBy.0", sensor.RelativeUri.ToString());
+            Assert.AreEqual(BaseUri + "#//0/@routes.0/@definedBy.0", sensor.AbsoluteUri.AbsoluteUri);
+            Assert.AreSame(sensor, railwayModel.Resolve(sensor.RelativeUri));
+            Assert.AreSame(sensor, repository.Resolve(sensor.AbsoluteUri));
+        }
+
+        [TestMethod]
+        public void RootUriCanBeResolvedIfTwoRootsPresentWhenRootPromotionDisabled()
+        {
+            Model.PromoteSingleRootElement = false;
+            railwayModel.RootElements.Add(new Segment());
+            Assert.AreEqual("//0", railway.RelativeUri.ToString());
+            Assert.AreEqual(BaseUri + "#//0", railway.AbsoluteUri.AbsoluteUri);
+            Assert.AreSame(railway, railway.Model.Resolve(railway.RelativeUri));
+            Assert.AreSame(railway, repository.Resolve(railway.AbsoluteUri));
+        }
+
+        [TestMethod]
+        public void RouteCanBeResolvedIfTwoRootsPresentWhenRootPromotionDisabled()
+        {
+            Model.PromoteSingleRootElement = false;
+            railwayModel.RootElements.Add(new Segment());
+            var route = railway.Routes[0];
+            Assert.AreEqual("//0/@routes.0", route.RelativeUri.ToString());
+            Assert.AreEqual(BaseUri + "#//0/@routes.0", route.AbsoluteUri.AbsoluteUri);
+            Assert.AreSame(route, railwayModel.Resolve(route.RelativeUri));
+            Assert.AreSame(route, repository.Resolve(route.AbsoluteUri));
+        }
+
+        [TestMethod]
         public void ToXmlTest()
         {
             var element = railwayModel;
@@ -101,7 +163,46 @@ namespace NMF.Models.Tests
             switchToUpdate.Sensor = new Sensor();
 
             stream = new MemoryStream();
-            serializer.SerializeFragment(element, stream); 
+            serializer.SerializeFragment(element, stream);
+        }
+
+        [TestMethod]
+        public void ToXmlTestWhenRootPromotionDisabled()
+        {
+            Model.PromoteSingleRootElement = false;
+
+            var element = railwayModel;
+            var serializer = MetaRepository.Instance.Serializer;
+
+            ModelElement.EnforceModels = true;
+
+            var tempFile = Path.GetTempFileName();
+            using (var fs = new FileStream(tempFile, FileMode.Create))
+            {
+                serializer.SerializeFragment(element, fs);
+            }
+
+            AssertFileContentsMatch(tempFile, "RailwayModelWithXmi.xmi");
+
+            var test = File.ReadAllText(tempFile);
+            
+            var switchToUpdate = railwayModel.RootElements.Single().As<RailwayContainer>().Descendants().OfType<ISwitch>().First(sw => sw.Sensor == null);
+            switchToUpdate.Sensor = new Sensor();
+
+            var stream = new MemoryStream();
+            serializer.SerializeFragment(element, stream);
+        }
+
+        private void AssertFileContentsMatch(string path1, string path2)
+        {
+            var file1Contents = File.ReadAllLines(path1);
+            var file2Contents = File.ReadAllLines(path2);
+
+            Assert.AreEqual(file1Contents.Length, file2Contents.Length);
+            for (int i = 0; i < file1Contents.Length; i++)
+            {
+                Assert.AreEqual(file1Contents[i], file2Contents[i]);
+            }
         }
 
         [TestMethod]
