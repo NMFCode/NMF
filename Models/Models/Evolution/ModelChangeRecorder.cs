@@ -35,24 +35,20 @@ namespace NMF.Models.Evolution
 
         private void AttachedElementBubbledChange(object sender, BubbledChangeEventArgs e)
         {
-            if (e.IsPropertyChangedEvent)
-                HandlePropertyChanged(e.Element, e.PropertyName, (ValueChangedEventArgs)e.OriginalEventArgs);
-            else if (e.IsElementCreated)
-                HandleElementCreated(e.Element);
-            else if (e.IsCollectionChangeEvent)
-                HandleCollectionChanged(e.Element, e.PropertyName, (NotifyCollectionChangedEventArgs)e.OriginalEventArgs);
-            else
-                throw new InvalidOperationException("A BubbledChange must be either a PropertyChange, a ElementCreated or a CollectionChanged.");
+            switch (e.ChangeType)
+            {
+                case ChangeType.CollectionChanged:
+                    HandleCollectionChanged(e.Element, e.PropertyName, (NotifyCollectionChangedEventArgs)e.OriginalEventArgs);
+                    break;
+                case ChangeType.PropertyChanged:
+                    HandlePropertyChanged(e.Element, e.PropertyName, (ValueChangedEventArgs)e.OriginalEventArgs);
+                    break;
+            }
         }
 
         private void HandlePropertyChanged(IModelElement parent, string propertyName, ValueChangedEventArgs args)
         {
             RecordedChanges.Add(new PropertyChange(parent.AbsoluteUri, propertyName, args.NewValue, args.OldValue));
-        }
-
-        private void HandleElementCreated(IModelElement newElement)
-        {
-            //TODO happens automatically? Same with delete?
         }
 
         private void HandleCollectionChanged(IModelElement parent, string propertyName, NotifyCollectionChangedEventArgs args)
