@@ -116,7 +116,7 @@ namespace NMF.Models
         /// <remarks>This method is not called if an existing model element is moved in the composition hierarchy</remarks>
         protected virtual void OnChildCreated(IModelElement child)
         {
-            OnBubbledChange(new BubbledChangeEventArgs(child));
+            OnBubbledChange(BubbledChangeEventArgs.ElementCreated(child));
         }
 
         /// <summary>
@@ -537,7 +537,7 @@ namespace NMF.Models
         protected virtual void OnPropertyChanged(string propertyName, ValueChangedEventArgs valueChangedEvent)
         {
             if (PropertyChanged != null) PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
-            OnBubbledChange(new BubbledChangeEventArgs(this, propertyName, valueChangedEvent));
+            OnBubbledChange(BubbledChangeEventArgs.PropertyChanged(this, propertyName, valueChangedEvent));
         }
 
 
@@ -561,6 +561,7 @@ namespace NMF.Models
             {
                 handler(this, e);
             }
+            OnBubbledChange(BubbledChangeEventArgs.ElementDeleted(this));
             SetParent(null);
         }
 
@@ -687,7 +688,7 @@ namespace NMF.Models
         /// <param name="e">The event data</param>
         protected void OnCollectionChanged(string propertyName, NotifyCollectionChangedEventArgs e)
         {
-            OnBubbledChange(new BubbledChangeEventArgs(this, propertyName, e));
+            OnBubbledChange(BubbledChangeEventArgs.CollectionChanged(this, propertyName, e));
         }
 
         /// <summary>

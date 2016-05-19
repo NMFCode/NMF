@@ -12,50 +12,7 @@ namespace NMF.Models
     /// </summary>
     public class BubbledChangeEventArgs : EventArgs
     {
-        /// <summary>
-        /// Creates a bubbled change event for the given elementary model change event
-        /// </summary>
-        /// <param name="source">The source model element</param>
-        /// <param name="propertyName">The property that has been changed</param>
-        /// <param name="valueChangeEvent">The original value change event data</param>
-        public BubbledChangeEventArgs(IModelElement source, string propertyName, ValueChangedEventArgs valueChangeEvent)
-        {
-            if (source == null) throw new ArgumentNullException("source");
-            if (propertyName == null) throw new ArgumentNullException("propertyName");
-            if (valueChangeEvent == null) throw new ArgumentNullException("valueChangeEvent");
-
-            Element = source;
-            PropertyName = propertyName;
-            OriginalEventArgs = valueChangeEvent;
-        }
-
-        /// <summary>
-        /// Creates a bubbled change event for the given elementary collection change event
-        /// </summary>
-        /// <param name="source">The source model element</param>
-        /// <param name="propertyName">The name of the property that has changed</param>
-        /// <param name="collectionChangedEvent">The original collection change event data</param>
-        public BubbledChangeEventArgs(IModelElement source, string propertyName, NotifyCollectionChangedEventArgs collectionChangedEvent)
-        {
-            if (source == null) throw new ArgumentNullException("source");
-            if (propertyName == null) throw new ArgumentNullException("propertyName");
-            if (collectionChangedEvent == null) throw new ArgumentNullException("collectionChangedEvent");
-
-            Element = source;
-            PropertyName = propertyName;
-            OriginalEventArgs = collectionChangedEvent;
-        }
-
-        /// <summary>
-        /// Creates a bubbled change event for the given elementary item creation event
-        /// </summary>
-        /// <param name="newElement">The model element that has been created</param>
-        public BubbledChangeEventArgs(IModelElement newElement)
-        {
-            if (newElement == null) throw new ArgumentNullException("newElement");
-
-            Element = newElement;
-        }
+        private BubbledChangeEventArgs() { }
 
         /// <summary>
         /// The original model element directly affected by this change
@@ -73,27 +30,104 @@ namespace NMF.Models
         public EventArgs OriginalEventArgs { get; private set; }
 
         /// <summary>
-        /// Gets a value indicating whether the underlying change has been a elementary collection change
+        /// Gets the type of change that occured. This defines the type of OriginalEventArgs
+        /// and whether PropertyName is used.
         /// </summary>
-        public bool IsCollectionChangeEvent
+        public ChangeType ChangeType { get; private set; }
+
+        /// <summary>
+        /// Creates an instance of BubbledChangeEventArgs describing the creation of the given model element.
+        /// </summary>
+        /// <param name="createdElement">The new model element.</param>
+        /// <returns></returns>
+        public static BubbledChangeEventArgs ElementCreated(IModelElement createdElement)
         {
-            get { return OriginalEventArgs is NotifyCollectionChangedEventArgs; }
+            if (createdElement == null)
+                throw new ArgumentNullException(nameof(createdElement));
+
+            return new BubbledChangeEventArgs
+            {
+                ChangeType = ChangeType.ModelElementCreated,
+                Element = createdElement
+            };
         }
 
         /// <summary>
-        /// Gets a value indicating whether the underlying change was a changed property value
+        /// Creates an instance of BubbledChangeEventArgs describing the deletion of the given model element.
         /// </summary>
-        public bool IsPropertyChangedEvent
+        /// <param name="deletedElement">The deleted model element.</param>
+        /// <returns></returns>
+        public static BubbledChangeEventArgs ElementDeleted(IModelElement deletedElement)
         {
-            get { return OriginalEventArgs is ValueChangedEventArgs; }
+            if (deletedElement == null)
+                throw new ArgumentNullException(nameof(deletedElement));
+
+            return new BubbledChangeEventArgs
+            {
+                ChangeType = ChangeType.ModelElementDeleted,
+                Element = deletedElement
+            };
         }
 
         /// <summary>
-        /// Gets a value indicating whether the change was that a new element was created
+        /// Creates an instance of BubbledChangeEventArgs describing a change of a property value.
         /// </summary>
-        public bool IsElementCreated
+        /// <param name="source">The model element containing the property.</param>
+        /// <param name="propertyName">The property name.</param>
+        /// <param name="args">The original ValueChangedEventArgs.</param>
+        /// <returns></returns>
+        public static BubbledChangeEventArgs PropertyChanged(IModelElement source, string propertyName, ValueChangedEventArgs args)
         {
-            get { return OriginalEventArgs == null && PropertyName == null; }
+            if (source == null)
+                throw new ArgumentNullException(nameof(source));
+            if (string.IsNullOrEmpty(propertyName))
+                throw new ArgumentNullException(nameof(propertyName));
+            if (args == null)
+                throw new ArgumentNullException(nameof(args));
+
+            return new BubbledChangeEventArgs
+            {
+                ChangeType = ChangeType.ModelElementDeleted,
+                Element = source,
+                OriginalEventArgs = args,
+                PropertyName = propertyName
+            };
         }
+
+        /// <summary>
+        /// Creates an instance of BubbledChangeEventArgs describing a change in a collection.
+        /// </summary>
+        /// <param name="source">The model element containing the collection.</param>
+        /// <param name="propertyName">The name of the collection property.</param>
+        /// <param name="args">The original NotifyCollectionChangedEventArgs.</param>
+        /// <returns></returns>
+        public static BubbledChangeEventArgs CollectionChanged(IModelElement source, string propertyName, NotifyCollectionChangedEventArgs args)
+        {
+            if (source == null)
+                throw new ArgumentNullException(nameof(source));
+            if (string.IsNullOrEmpty(propertyName))
+                throw new ArgumentNullException(nameof(propertyName));
+            if (args == null)
+                throw new ArgumentNullException(nameof(args));
+
+            return new BubbledChangeEventArgs
+            {
+                ChangeType = ChangeType.ModelElementDeleted,
+                Element = source,
+                OriginalEventArgs = args,
+                PropertyName = propertyName
+            };
+        }
+    }
+
+    /// <summary>
+    /// Describes what kind of change a BubbledChangeEvent wraps.
+    /// </summary>
+    public enum ChangeType
+    {
+        ModelElementCreated,
+        ModelElementDeleted,
+        PropertyChanged,
+        CollectionChanged
     }
 }
