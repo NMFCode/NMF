@@ -38,6 +38,7 @@ namespace NMF.Models
         /// <summary>
         /// Gets a value indicating whether the underlying change has been a elementary collection change
         /// </summary>
+        [Obsolete("Use ChangeType instead.")]
         public bool IsCollectionChangeEvent
         {
             get { return ChangeType == ChangeType.CollectionChanged; }
@@ -46,6 +47,7 @@ namespace NMF.Models
         /// <summary>
         /// Gets a value indicating whether the underlying change was a changed property value
         /// </summary>
+        [Obsolete("Use ChangeType instead.")]
         public bool IsPropertyChangedEvent
         {
             get { return ChangeType == ChangeType.PropertyChanged; }
@@ -54,6 +56,7 @@ namespace NMF.Models
         /// <summary>
         /// Gets a value indicating whether the change was that a new element was created
         /// </summary>
+        [Obsolete("Use ChangeType instead.")]
         public bool IsElementCreated
         {
             get { return ChangeType == ChangeType.ModelElementCreated; }
