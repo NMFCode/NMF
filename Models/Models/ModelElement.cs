@@ -58,6 +58,9 @@ namespace NMF.Models
         {
             if (newParent != parent)
             {
+                if (newParent == null)
+                    OnBubbledChange(BubbledChangeEventArgs.ElementDeleted(this));
+
                 var oldParent = parent;
                 parent = newParent;
 
@@ -561,7 +564,6 @@ namespace NMF.Models
             {
                 handler(this, e);
             }
-            OnBubbledChange(BubbledChangeEventArgs.ElementDeleted(this));
             SetParent(null);
         }
 
