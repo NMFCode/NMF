@@ -8,3 +8,4 @@ using System.Runtime.CompilerServices;
 [assembly: CLSCompliant(true)]
 [assembly: InternalsVisibleTo("NMF.Expressions.Linq")]
 [assembly: InternalsVisibleTo("NMF.Expressions.Linq.Orleans")]
+[assembly: InternalsVisibleTo("NMF.Expressions.Models")]

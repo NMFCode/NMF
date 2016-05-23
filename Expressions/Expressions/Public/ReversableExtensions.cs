@@ -7,11 +7,6 @@ namespace NMF.Expressions
     /// </summary>
     public static class ReversableExtensions
     {
-        public static T AsReversable<T>(this T value, Action<T> reversableHandler)
-        {
-            return value;
-        }
-
         public static INotifyValue<T> AsReversable<T>(this INotifyValue<T> value, Action<T> reversableHandler)
         {
             if (reversableHandler == null) throw new ArgumentNullException("reversableHandler");

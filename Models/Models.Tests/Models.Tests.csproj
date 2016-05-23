@@ -117,7 +117,14 @@
     <EmbeddedResource Include="railway.nmf" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="railway.railway" />
+    <None Include="railway.railway">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="RailwayModelWithXmi.xmi">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
   <Choose>
     <When Condition="'$(VisualStudioVersion)' == '10.0' And '$(IsCodedUITest)' == 'True'">

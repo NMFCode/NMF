@@ -22,7 +22,7 @@ namespace NMF.Expressions
         public ObservableStaticMethodCall(MethodCallExpression expression, ObservableExpressionBinder binder)
             : this(expression.Method<# for (int j = 1; j <= i; j++) { #>, binder.VisitObservable<T<#= j #>>(expression.Arguments[<#= j-1 #>])<# } #>) { }
 
-        public ObservableStaticMethodCall(MethodInfo method<# for (int j = 1; j <= i; j++) { #>, IObservableExpression<T<#= j #>> arg<#= j #><# } #>)
+        public ObservableStaticMethodCall(MethodInfo method<# for (int j = 1; j <= i; j++) { #>, INotifyExpression<T<#= j #>> arg<#= j #><# } #>)
             : base(method)
         {
 <# for (int j = 1; j <= i; j++) { #>
@@ -34,7 +34,7 @@ namespace NMF.Expressions
 <# } #>
         }
 
-        public ObservableStaticMethodCall(Func<<# for (int j = 1; j <= i; j++) { #>T<#= j #>, <# } #>TResult> function<# for (int j = 1; j <= i; j++) { #>, IObservableExpression<T<#= j #>> arg<#= j #><# } #>)
+        public ObservableStaticMethodCall(Func<<# for (int j = 1; j <= i; j++) { #>T<#= j #>, <# } #>TResult> function<# for (int j = 1; j <= i; j++) { #>, INotifyExpression<T<#= j #>> arg<#= j #><# } #>)
             : base(function)
         {
 <# for (int j = 1; j <= i; j++) { #>
@@ -47,7 +47,7 @@ namespace NMF.Expressions
         }
 
 <# for (int j = 1; j <= i; j++) { #>
-        public IObservableExpression<T<#= j #>> Argument<#= j #> { get; private set; }
+        public INotifyExpression<T<#= j #>> Argument<#= j #> { get; private set; }
 <# } #>
 
         protected override TResult GetValue()
@@ -83,10 +83,10 @@ namespace NMF.Expressions
 
         public override bool IsParameterFree
         {
-            get { return Argument1.IsParameterFree<# for (int j = 1; j <= i; j++) { #> && Argument<#= j #>.IsParameterFree<# } #>; }
+            get { return Argument1.IsParameterFree<# for (int j = 2; j <= i; j++) { #> && Argument<#= j #>.IsParameterFree<# } #>; }
         }
 
-        public override IObservableExpression<TResult> ApplyParameters(IDictionary<string, object> parameters)
+        public override INotifyExpression<TResult> ApplyParameters(IDictionary<string, object> parameters)
         {
             return new ObservableStaticMethodCall<<# for (int j = 1; j <= i; j++) { #>T<#= j #>, <# } #>TResult>(Function<# for (int j = 1; j <= i; j++) { #>, Argument<#= j #>.ApplyParameters(parameters)<# } #>);
         }

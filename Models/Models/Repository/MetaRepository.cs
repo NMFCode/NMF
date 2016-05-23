@@ -8,12 +8,18 @@ using NMF.Models.Meta;
 
 namespace NMF.Models.Repository
 {
-    public class MetaRepository : IModelRepository
+    public sealed class MetaRepository : IModelRepository
     {
         private static MetaRepository instance = new MetaRepository();
         private Dictionary<Uri, Model> entries = new Dictionary<Uri, Model>();
         private ModelSerializer serializer = new ModelSerializer();
         private HashSet<Assembly> modelAssemblies = new HashSet<Assembly>();
+
+        event EventHandler<BubbledChangeEventArgs> IModelRepository.BubbledChange
+        {
+            add { }
+            remove { }
+        }
 
         public static MetaRepository Instance
         {

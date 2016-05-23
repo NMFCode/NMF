@@ -49,17 +49,17 @@ namespace NMF.Expressions
             Argument1.Detach();
         }
 
-        public override bool CanBeConstant
+        public override bool IsConstant
         {
             get
             {
-                return Argument1.CanBeConstant;
+                return Argument1.IsConstant;
             }
         }
 
         public override bool IsParameterFree
         {
-            get { return Argument1.IsParameterFree && Argument1.IsParameterFree; }
+            get { return Argument1.IsParameterFree; }
         }
 
         public override INotifyExpression<TResult> ApplyParameters(IDictionary<string, object> parameters)
@@ -118,17 +118,17 @@ namespace NMF.Expressions
             Argument2.Detach();
         }
 
-        public override bool CanBeConstant
+        public override bool IsConstant
         {
             get
             {
-                return Argument1.CanBeConstant && Argument2.CanBeConstant;
+                return Argument1.IsConstant && Argument2.IsConstant;
             }
         }
 
         public override bool IsParameterFree
         {
-            get { return Argument1.IsParameterFree && Argument1.IsParameterFree && Argument2.IsParameterFree; }
+            get { return Argument1.IsParameterFree && Argument2.IsParameterFree; }
         }
 
         public override INotifyExpression<TResult> ApplyParameters(IDictionary<string, object> parameters)
@@ -196,17 +196,17 @@ namespace NMF.Expressions
             Argument3.Detach();
         }
 
-        public override bool CanBeConstant
+        public override bool IsConstant
         {
             get
             {
-                return Argument1.CanBeConstant && Argument2.CanBeConstant && Argument3.CanBeConstant;
+                return Argument1.IsConstant && Argument2.IsConstant && Argument3.IsConstant;
             }
         }
 
         public override bool IsParameterFree
         {
-            get { return Argument1.IsParameterFree && Argument1.IsParameterFree && Argument2.IsParameterFree && Argument3.IsParameterFree; }
+            get { return Argument1.IsParameterFree && Argument2.IsParameterFree && Argument3.IsParameterFree; }
         }
 
         public override INotifyExpression<TResult> ApplyParameters(IDictionary<string, object> parameters)
@@ -283,17 +283,17 @@ namespace NMF.Expressions
             Argument4.Detach();
         }
 
-        public override bool CanBeConstant
+        public override bool IsConstant
         {
             get
             {
-                return Argument1.CanBeConstant && Argument2.CanBeConstant && Argument3.CanBeConstant && Argument4.CanBeConstant;
+                return Argument1.IsConstant && Argument2.IsConstant && Argument3.IsConstant && Argument4.IsConstant;
             }
         }
 
         public override bool IsParameterFree
         {
-            get { return Argument1.IsParameterFree && Argument1.IsParameterFree && Argument2.IsParameterFree && Argument3.IsParameterFree && Argument4.IsParameterFree; }
+            get { return Argument1.IsParameterFree && Argument2.IsParameterFree && Argument3.IsParameterFree && Argument4.IsParameterFree; }
         }
 
         public override INotifyExpression<TResult> ApplyParameters(IDictionary<string, object> parameters)
@@ -379,17 +379,17 @@ namespace NMF.Expressions
             Argument5.Detach();
         }
 
-        public override bool CanBeConstant
+        public override bool IsConstant
         {
             get
             {
-                return Argument1.CanBeConstant && Argument2.CanBeConstant && Argument3.CanBeConstant && Argument4.CanBeConstant && Argument5.CanBeConstant;
+                return Argument1.IsConstant && Argument2.IsConstant && Argument3.IsConstant && Argument4.IsConstant && Argument5.IsConstant;
             }
         }
 
         public override bool IsParameterFree
         {
-            get { return Argument1.IsParameterFree && Argument1.IsParameterFree && Argument2.IsParameterFree && Argument3.IsParameterFree && Argument4.IsParameterFree && Argument5.IsParameterFree; }
+            get { return Argument1.IsParameterFree && Argument2.IsParameterFree && Argument3.IsParameterFree && Argument4.IsParameterFree && Argument5.IsParameterFree; }
         }
 
         public override INotifyExpression<TResult> ApplyParameters(IDictionary<string, object> parameters)
@@ -484,17 +484,17 @@ namespace NMF.Expressions
             Argument6.Detach();
         }
 
-        public override bool CanBeConstant
+        public override bool IsConstant
         {
             get
             {
-                return Argument1.CanBeConstant && Argument2.CanBeConstant && Argument3.CanBeConstant && Argument4.CanBeConstant && Argument5.CanBeConstant && Argument6.CanBeConstant;
+                return Argument1.IsConstant && Argument2.IsConstant && Argument3.IsConstant && Argument4.IsConstant && Argument5.IsConstant && Argument6.IsConstant;
             }
         }
 
         public override bool IsParameterFree
         {
-            get { return Argument1.IsParameterFree && Argument1.IsParameterFree && Argument2.IsParameterFree && Argument3.IsParameterFree && Argument4.IsParameterFree && Argument5.IsParameterFree && Argument6.IsParameterFree; }
+            get { return Argument1.IsParameterFree && Argument2.IsParameterFree && Argument3.IsParameterFree && Argument4.IsParameterFree && Argument5.IsParameterFree && Argument6.IsParameterFree; }
         }
 
         public override INotifyExpression<TResult> ApplyParameters(IDictionary<string, object> parameters)
@@ -598,17 +598,17 @@ namespace NMF.Expressions
             Argument7.Detach();
         }
 
-        public override bool CanBeConstant
+        public override bool IsConstant
         {
             get
             {
-                return Argument1.CanBeConstant && Argument2.CanBeConstant && Argument3.CanBeConstant && Argument4.CanBeConstant && Argument5.CanBeConstant && Argument6.CanBeConstant && Argument7.CanBeConstant;
+                return Argument1.IsConstant && Argument2.IsConstant && Argument3.IsConstant && Argument4.IsConstant && Argument5.IsConstant && Argument6.IsConstant && Argument7.IsConstant;
             }
         }
 
         public override bool IsParameterFree
         {
-            get { return Argument1.IsParameterFree && Argument1.IsParameterFree && Argument2.IsParameterFree && Argument3.IsParameterFree && Argument4.IsParameterFree && Argument5.IsParameterFree && Argument6.IsParameterFree && Argument7.IsParameterFree; }
+            get { return Argument1.IsParameterFree && Argument2.IsParameterFree && Argument3.IsParameterFree && Argument4.IsParameterFree && Argument5.IsParameterFree && Argument6.IsParameterFree && Argument7.IsParameterFree; }
         }
 
         public override INotifyExpression<TResult> ApplyParameters(IDictionary<string, object> parameters)
@@ -721,17 +721,17 @@ namespace NMF.Expressions
             Argument8.Detach();
         }
 
-        public override bool CanBeConstant
+        public override bool IsConstant
         {
             get
             {
-                return Argument1.CanBeConstant && Argument2.CanBeConstant && Argument3.CanBeConstant && Argument4.CanBeConstant && Argument5.CanBeConstant && Argument6.CanBeConstant && Argument7.CanBeConstant && Argument8.CanBeConstant;
+                return Argument1.IsConstant && Argument2.IsConstant && Argument3.IsConstant && Argument4.IsConstant && Argument5.IsConstant && Argument6.IsConstant && Argument7.IsConstant && Argument8.IsConstant;
             }
         }
 
         public override bool IsParameterFree
         {
-            get { return Argument1.IsParameterFree && Argument1.IsParameterFree && Argument2.IsParameterFree && Argument3.IsParameterFree && Argument4.IsParameterFree && Argument5.IsParameterFree && Argument6.IsParameterFree && Argument7.IsParameterFree && Argument8.IsParameterFree; }
+            get { return Argument1.IsParameterFree && Argument2.IsParameterFree && Argument3.IsParameterFree && Argument4.IsParameterFree && Argument5.IsParameterFree && Argument6.IsParameterFree && Argument7.IsParameterFree && Argument8.IsParameterFree; }
         }
 
         public override INotifyExpression<TResult> ApplyParameters(IDictionary<string, object> parameters)
@@ -853,17 +853,17 @@ namespace NMF.Expressions
             Argument9.Detach();
         }
 
-        public override bool CanBeConstant
+        public override bool IsConstant
         {
             get
             {
-                return Argument1.CanBeConstant && Argument2.CanBeConstant && Argument3.CanBeConstant && Argument4.CanBeConstant && Argument5.CanBeConstant && Argument6.CanBeConstant && Argument7.CanBeConstant && Argument8.CanBeConstant && Argument9.CanBeConstant;
+                return Argument1.IsConstant && Argument2.IsConstant && Argument3.IsConstant && Argument4.IsConstant && Argument5.IsConstant && Argument6.IsConstant && Argument7.IsConstant && Argument8.IsConstant && Argument9.IsConstant;
             }
         }
 
         public override bool IsParameterFree
         {
-            get { return Argument1.IsParameterFree && Argument1.IsParameterFree && Argument2.IsParameterFree && Argument3.IsParameterFree && Argument4.IsParameterFree && Argument5.IsParameterFree && Argument6.IsParameterFree && Argument7.IsParameterFree && Argument8.IsParameterFree && Argument9.IsParameterFree; }
+            get { return Argument1.IsParameterFree && Argument2.IsParameterFree && Argument3.IsParameterFree && Argument4.IsParameterFree && Argument5.IsParameterFree && Argument6.IsParameterFree && Argument7.IsParameterFree && Argument8.IsParameterFree && Argument9.IsParameterFree; }
         }
 
         public override INotifyExpression<TResult> ApplyParameters(IDictionary<string, object> parameters)
@@ -994,17 +994,17 @@ namespace NMF.Expressions
             Argument10.Detach();
         }
 
-        public override bool CanBeConstant
+        public override bool IsConstant
         {
             get
             {
-                return Argument1.CanBeConstant && Argument2.CanBeConstant && Argument3.CanBeConstant && Argument4.CanBeConstant && Argument5.CanBeConstant && Argument6.CanBeConstant && Argument7.CanBeConstant && Argument8.CanBeConstant && Argument9.CanBeConstant && Argument10.CanBeConstant;
+                return Argument1.IsConstant && Argument2.IsConstant && Argument3.IsConstant && Argument4.IsConstant && Argument5.IsConstant && Argument6.IsConstant && Argument7.IsConstant && Argument8.IsConstant && Argument9.IsConstant && Argument10.IsConstant;
             }
         }
 
         public override bool IsParameterFree
         {
-            get { return Argument1.IsParameterFree && Argument1.IsParameterFree && Argument2.IsParameterFree && Argument3.IsParameterFree && Argument4.IsParameterFree && Argument5.IsParameterFree && Argument6.IsParameterFree && Argument7.IsParameterFree && Argument8.IsParameterFree && Argument9.IsParameterFree && Argument10.IsParameterFree; }
+            get { return Argument1.IsParameterFree && Argument2.IsParameterFree && Argument3.IsParameterFree && Argument4.IsParameterFree && Argument5.IsParameterFree && Argument6.IsParameterFree && Argument7.IsParameterFree && Argument8.IsParameterFree && Argument9.IsParameterFree && Argument10.IsParameterFree; }
         }
 
         public override INotifyExpression<TResult> ApplyParameters(IDictionary<string, object> parameters)
@@ -1144,17 +1144,17 @@ namespace NMF.Expressions
             Argument11.Detach();
         }
 
-        public override bool CanBeConstant
+        public override bool IsConstant
         {
             get
             {
-                return Argument1.CanBeConstant && Argument2.CanBeConstant && Argument3.CanBeConstant && Argument4.CanBeConstant && Argument5.CanBeConstant && Argument6.CanBeConstant && Argument7.CanBeConstant && Argument8.CanBeConstant && Argument9.CanBeConstant && Argument10.CanBeConstant && Argument11.CanBeConstant;
+                return Argument1.IsConstant && Argument2.IsConstant && Argument3.IsConstant && Argument4.IsConstant && Argument5.IsConstant && Argument6.IsConstant && Argument7.IsConstant && Argument8.IsConstant && Argument9.IsConstant && Argument10.IsConstant && Argument11.IsConstant;
             }
         }
 
         public override bool IsParameterFree
         {
-            get { return Argument1.IsParameterFree && Argument1.IsParameterFree && Argument2.IsParameterFree && Argument3.IsParameterFree && Argument4.IsParameterFree && Argument5.IsParameterFree && Argument6.IsParameterFree && Argument7.IsParameterFree && Argument8.IsParameterFree && Argument9.IsParameterFree && Argument10.IsParameterFree && Argument11.IsParameterFree; }
+            get { return Argument1.IsParameterFree && Argument2.IsParameterFree && Argument3.IsParameterFree && Argument4.IsParameterFree && Argument5.IsParameterFree && Argument6.IsParameterFree && Argument7.IsParameterFree && Argument8.IsParameterFree && Argument9.IsParameterFree && Argument10.IsParameterFree && Argument11.IsParameterFree; }
         }
 
         public override INotifyExpression<TResult> ApplyParameters(IDictionary<string, object> parameters)
@@ -1303,17 +1303,17 @@ namespace NMF.Expressions
             Argument12.Detach();
         }
 
-        public override bool CanBeConstant
+        public override bool IsConstant
         {
             get
             {
-                return Argument1.CanBeConstant && Argument2.CanBeConstant && Argument3.CanBeConstant && Argument4.CanBeConstant && Argument5.CanBeConstant && Argument6.CanBeConstant && Argument7.CanBeConstant && Argument8.CanBeConstant && Argument9.CanBeConstant && Argument10.CanBeConstant && Argument11.CanBeConstant && Argument12.CanBeConstant;
+                return Argument1.IsConstant && Argument2.IsConstant && Argument3.IsConstant && Argument4.IsConstant && Argument5.IsConstant && Argument6.IsConstant && Argument7.IsConstant && Argument8.IsConstant && Argument9.IsConstant && Argument10.IsConstant && Argument11.IsConstant && Argument12.IsConstant;
             }
         }
 
         public override bool IsParameterFree
         {
-            get { return Argument1.IsParameterFree && Argument1.IsParameterFree && Argument2.IsParameterFree && Argument3.IsParameterFree && Argument4.IsParameterFree && Argument5.IsParameterFree && Argument6.IsParameterFree && Argument7.IsParameterFree && Argument8.IsParameterFree && Argument9.IsParameterFree && Argument10.IsParameterFree && Argument11.IsParameterFree && Argument12.IsParameterFree; }
+            get { return Argument1.IsParameterFree && Argument2.IsParameterFree && Argument3.IsParameterFree && Argument4.IsParameterFree && Argument5.IsParameterFree && Argument6.IsParameterFree && Argument7.IsParameterFree && Argument8.IsParameterFree && Argument9.IsParameterFree && Argument10.IsParameterFree && Argument11.IsParameterFree && Argument12.IsParameterFree; }
         }
 
         public override INotifyExpression<TResult> ApplyParameters(IDictionary<string, object> parameters)
@@ -1471,17 +1471,17 @@ namespace NMF.Expressions
             Argument13.Detach();
         }
 
-        public override bool CanBeConstant
+        public override bool IsConstant
         {
             get
             {
-                return Argument1.CanBeConstant && Argument2.CanBeConstant && Argument3.CanBeConstant && Argument4.CanBeConstant && Argument5.CanBeConstant && Argument6.CanBeConstant && Argument7.CanBeConstant && Argument8.CanBeConstant && Argument9.CanBeConstant && Argument10.CanBeConstant && Argument11.CanBeConstant && Argument12.CanBeConstant && Argument13.CanBeConstant;
+                return Argument1.IsConstant && Argument2.IsConstant && Argument3.IsConstant && Argument4.IsConstant && Argument5.IsConstant && Argument6.IsConstant && Argument7.IsConstant && Argument8.IsConstant && Argument9.IsConstant && Argument10.IsConstant && Argument11.IsConstant && Argument12.IsConstant && Argument13.IsConstant;
             }
         }
 
         public override bool IsParameterFree
         {
-            get { return Argument1.IsParameterFree && Argument1.IsParameterFree && Argument2.IsParameterFree && Argument3.IsParameterFree && Argument4.IsParameterFree && Argument5.IsParameterFree && Argument6.IsParameterFree && Argument7.IsParameterFree && Argument8.IsParameterFree && Argument9.IsParameterFree && Argument10.IsParameterFree && Argument11.IsParameterFree && Argument12.IsParameterFree && Argument13.IsParameterFree; }
+            get { return Argument1.IsParameterFree && Argument2.IsParameterFree && Argument3.IsParameterFree && Argument4.IsParameterFree && Argument5.IsParameterFree && Argument6.IsParameterFree && Argument7.IsParameterFree && Argument8.IsParameterFree && Argument9.IsParameterFree && Argument10.IsParameterFree && Argument11.IsParameterFree && Argument12.IsParameterFree && Argument13.IsParameterFree; }
         }
 
         public override INotifyExpression<TResult> ApplyParameters(IDictionary<string, object> parameters)
@@ -1648,17 +1648,17 @@ namespace NMF.Expressions
             Argument14.Detach();
         }
 
-        public override bool CanBeConstant
+        public override bool IsConstant
         {
             get
             {
-                return Argument1.CanBeConstant && Argument2.CanBeConstant && Argument3.CanBeConstant && Argument4.CanBeConstant && Argument5.CanBeConstant && Argument6.CanBeConstant && Argument7.CanBeConstant && Argument8.CanBeConstant && Argument9.CanBeConstant && Argument10.CanBeConstant && Argument11.CanBeConstant && Argument12.CanBeConstant && Argument13.CanBeConstant && Argument14.CanBeConstant;
+                return Argument1.IsConstant && Argument2.IsConstant && Argument3.IsConstant && Argument4.IsConstant && Argument5.IsConstant && Argument6.IsConstant && Argument7.IsConstant && Argument8.IsConstant && Argument9.IsConstant && Argument10.IsConstant && Argument11.IsConstant && Argument12.IsConstant && Argument13.IsConstant && Argument14.IsConstant;
             }
         }
 
         public override bool IsParameterFree
         {
-            get { return Argument1.IsParameterFree && Argument1.IsParameterFree && Argument2.IsParameterFree && Argument3.IsParameterFree && Argument4.IsParameterFree && Argument5.IsParameterFree && Argument6.IsParameterFree && Argument7.IsParameterFree && Argument8.IsParameterFree && Argument9.IsParameterFree && Argument10.IsParameterFree && Argument11.IsParameterFree && Argument12.IsParameterFree && Argument13.IsParameterFree && Argument14.IsParameterFree; }
+            get { return Argument1.IsParameterFree && Argument2.IsParameterFree && Argument3.IsParameterFree && Argument4.IsParameterFree && Argument5.IsParameterFree && Argument6.IsParameterFree && Argument7.IsParameterFree && Argument8.IsParameterFree && Argument9.IsParameterFree && Argument10.IsParameterFree && Argument11.IsParameterFree && Argument12.IsParameterFree && Argument13.IsParameterFree && Argument14.IsParameterFree; }
         }
 
         public override INotifyExpression<TResult> ApplyParameters(IDictionary<string, object> parameters)
@@ -1834,17 +1834,17 @@ namespace NMF.Expressions
             Argument15.Detach();
         }
 
-        public override bool CanBeConstant
+        public override bool IsConstant
         {
             get
             {
-                return Argument1.CanBeConstant && Argument2.CanBeConstant && Argument3.CanBeConstant && Argument4.CanBeConstant && Argument5.CanBeConstant && Argument6.CanBeConstant && Argument7.CanBeConstant && Argument8.CanBeConstant && Argument9.CanBeConstant && Argument10.CanBeConstant && Argument11.CanBeConstant && Argument12.CanBeConstant && Argument13.CanBeConstant && Argument14.CanBeConstant && Argument15.CanBeConstant;
+                return Argument1.IsConstant && Argument2.IsConstant && Argument3.IsConstant && Argument4.IsConstant && Argument5.IsConstant && Argument6.IsConstant && Argument7.IsConstant && Argument8.IsConstant && Argument9.IsConstant && Argument10.IsConstant && Argument11.IsConstant && Argument12.IsConstant && Argument13.IsConstant && Argument14.IsConstant && Argument15.IsConstant;
             }
         }
 
         public override bool IsParameterFree
         {
-            get { return Argument1.IsParameterFree && Argument1.IsParameterFree && Argument2.IsParameterFree && Argument3.IsParameterFree && Argument4.IsParameterFree && Argument5.IsParameterFree && Argument6.IsParameterFree && Argument7.IsParameterFree && Argument8.IsParameterFree && Argument9.IsParameterFree && Argument10.IsParameterFree && Argument11.IsParameterFree && Argument12.IsParameterFree && Argument13.IsParameterFree && Argument14.IsParameterFree && Argument15.IsParameterFree; }
+            get { return Argument1.IsParameterFree && Argument2.IsParameterFree && Argument3.IsParameterFree && Argument4.IsParameterFree && Argument5.IsParameterFree && Argument6.IsParameterFree && Argument7.IsParameterFree && Argument8.IsParameterFree && Argument9.IsParameterFree && Argument10.IsParameterFree && Argument11.IsParameterFree && Argument12.IsParameterFree && Argument13.IsParameterFree && Argument14.IsParameterFree && Argument15.IsParameterFree; }
         }
 
         public override INotifyExpression<TResult> ApplyParameters(IDictionary<string, object> parameters)

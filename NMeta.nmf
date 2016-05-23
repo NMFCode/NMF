@@ -78,7 +78,8 @@
    <References Opposite="#//ReferenceType/References/" LowerBound="1" ReferenceType="#//ReferenceType/" Name="DeclaringType" />
    <References Opposite="#//Reference/Opposite/" ReferenceType="#//Reference/" Name="Opposite" />
    <References ReferenceType="#//ReferenceType" Name="ReferenceType" Refines="#//TypedElement/Type"/>
-   <References ReferenceType="#//Reference/" Name="Refines" />
+   <References ReferenceType="#//Reference/" Name="Refines" Summary="The reference that is refined by the current reference, only applicable if the reference is part of a class" />
+   <References ReferenceType="#//Class/" Name="Anchor" Summary="The least common anchestor of an instance and its referenced element, if statically known" />
  </Types>
  <Types xsi:type="nmeta:Class" Name="ReferenceConstraint">
    <References Opposite="#//Class/ReferenceConstraints/" LowerBound="1" ReferenceType="#//Class/" Name="DeclaringType" />

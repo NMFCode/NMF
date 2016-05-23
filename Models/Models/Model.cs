@@ -14,6 +14,13 @@ namespace NMF.Models
     [DebuggerDisplayAttribute("Model {ModelUri}")]
     public class Model : ModelElement, IResolvableModel
     {
+        static Model()
+        {
+            PromoteSingleRootElement = true;
+        }
+
+        public static bool PromoteSingleRootElement { get; set; }
+
         public Model()
         {
             RootElements = new ObservableCompositionOrderedSet<IModelElement>(this);
@@ -62,7 +69,7 @@ namespace NMF.Models
 
         protected override string GetRelativePathForNonIdentifiedChild(IModelElement child)
         {
-            if (RootElements.Count == 1)
+            if (RootElements.Count == 1 && PromoteSingleRootElement)
             {
                 return null;
             }
@@ -113,7 +120,7 @@ namespace NMF.Models
             if (string.IsNullOrEmpty(path)) return this;
             if (path.StartsWith("//")) path = path.Substring(2);
             if (path.StartsWith("#//")) path = path.Substring(3);
-            if (RootElements.Count == 1)
+            if (RootElements.Count == 1 && PromoteSingleRootElement)
             {
                 var root = RootElements[0] as ModelElement;
                 if (root != null)
@@ -127,7 +134,7 @@ namespace NMF.Models
 
         protected override string GetRelativePathForChild(IModelElement child)
         {
-            if (RootElements.Count == 1 && child == RootElements[0])
+            if (PromoteSingleRootElement && RootElements.Count == 1 && child == RootElements[0])
             {
                 return string.Empty;
             }

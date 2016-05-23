@@ -26,7 +26,7 @@ namespace NMF.Expressions
 			compiled = expression.Compile();
 			
 		    this.parameter1Name = expression.Parameters[0].Name;
-	        this.expression = NotifySystem.CreateExpression<TResult>(expression.Body);
+	        this.expression = NotifySystem.CreateExpression<TResult>(expression.Body, expression.Parameters);
             this.isParameterFree = this.expression.IsParameterFree;
         }
 
@@ -183,7 +183,7 @@ namespace NMF.Expressions
 			
 		    this.parameter1Name = expression.Parameters[0].Name;
 		    this.parameter2Name = expression.Parameters[1].Name;
-	        this.expression = NotifySystem.CreateExpression<TResult>(expression.Body);
+	        this.expression = NotifySystem.CreateExpression<TResult>(expression.Body, expression.Parameters);
             this.isParameterFree = this.expression.IsParameterFree;
         }
 
@@ -376,7 +376,7 @@ namespace NMF.Expressions
 		    this.parameter1Name = expression.Parameters[0].Name;
 		    this.parameter2Name = expression.Parameters[1].Name;
 		    this.parameter3Name = expression.Parameters[2].Name;
-	        this.expression = NotifySystem.CreateExpression<TResult>(expression.Body);
+	        this.expression = NotifySystem.CreateExpression<TResult>(expression.Body, expression.Parameters);
             this.isParameterFree = this.expression.IsParameterFree;
         }
 
@@ -608,7 +608,7 @@ namespace NMF.Expressions
 		    this.parameter2Name = expression.Parameters[1].Name;
 		    this.parameter3Name = expression.Parameters[2].Name;
 		    this.parameter4Name = expression.Parameters[3].Name;
-	        this.expression = NotifySystem.CreateExpression<TResult>(expression.Body);
+	        this.expression = NotifySystem.CreateExpression<TResult>(expression.Body, expression.Parameters);
             this.isParameterFree = this.expression.IsParameterFree;
         }
 
@@ -882,7 +882,7 @@ namespace NMF.Expressions
 		    this.parameter3Name = expression.Parameters[2].Name;
 		    this.parameter4Name = expression.Parameters[3].Name;
 		    this.parameter5Name = expression.Parameters[4].Name;
-	        this.expression = NotifySystem.CreateExpression<TResult>(expression.Body);
+	        this.expression = NotifySystem.CreateExpression<TResult>(expression.Body, expression.Parameters);
             this.isParameterFree = this.expression.IsParameterFree;
         }
 
@@ -1201,7 +1201,7 @@ namespace NMF.Expressions
 		    this.parameter4Name = expression.Parameters[3].Name;
 		    this.parameter5Name = expression.Parameters[4].Name;
 		    this.parameter6Name = expression.Parameters[5].Name;
-	        this.expression = NotifySystem.CreateExpression<TResult>(expression.Body);
+	        this.expression = NotifySystem.CreateExpression<TResult>(expression.Body, expression.Parameters);
             this.isParameterFree = this.expression.IsParameterFree;
         }
 
@@ -1568,7 +1568,7 @@ namespace NMF.Expressions
 		    this.parameter5Name = expression.Parameters[4].Name;
 		    this.parameter6Name = expression.Parameters[5].Name;
 		    this.parameter7Name = expression.Parameters[6].Name;
-	        this.expression = NotifySystem.CreateExpression<TResult>(expression.Body);
+	        this.expression = NotifySystem.CreateExpression<TResult>(expression.Body, expression.Parameters);
             this.isParameterFree = this.expression.IsParameterFree;
         }
 
@@ -1986,7 +1986,7 @@ namespace NMF.Expressions
 		    this.parameter6Name = expression.Parameters[5].Name;
 		    this.parameter7Name = expression.Parameters[6].Name;
 		    this.parameter8Name = expression.Parameters[7].Name;
-	        this.expression = NotifySystem.CreateExpression<TResult>(expression.Body);
+	        this.expression = NotifySystem.CreateExpression<TResult>(expression.Body, expression.Parameters);
             this.isParameterFree = this.expression.IsParameterFree;
         }
 
@@ -2458,7 +2458,7 @@ namespace NMF.Expressions
 		    this.parameter7Name = expression.Parameters[6].Name;
 		    this.parameter8Name = expression.Parameters[7].Name;
 		    this.parameter9Name = expression.Parameters[8].Name;
-	        this.expression = NotifySystem.CreateExpression<TResult>(expression.Body);
+	        this.expression = NotifySystem.CreateExpression<TResult>(expression.Body, expression.Parameters);
             this.isParameterFree = this.expression.IsParameterFree;
         }
 
@@ -2987,7 +2987,7 @@ namespace NMF.Expressions
 		    this.parameter8Name = expression.Parameters[7].Name;
 		    this.parameter9Name = expression.Parameters[8].Name;
 		    this.parameter10Name = expression.Parameters[9].Name;
-	        this.expression = NotifySystem.CreateExpression<TResult>(expression.Body);
+	        this.expression = NotifySystem.CreateExpression<TResult>(expression.Body, expression.Parameters);
             this.isParameterFree = this.expression.IsParameterFree;
         }
 
@@ -3576,7 +3576,7 @@ namespace NMF.Expressions
 		    this.parameter9Name = expression.Parameters[8].Name;
 		    this.parameter10Name = expression.Parameters[9].Name;
 		    this.parameter11Name = expression.Parameters[10].Name;
-	        this.expression = NotifySystem.CreateExpression<TResult>(expression.Body);
+	        this.expression = NotifySystem.CreateExpression<TResult>(expression.Body, expression.Parameters);
             this.isParameterFree = this.expression.IsParameterFree;
         }
 
@@ -4228,7 +4228,7 @@ namespace NMF.Expressions
 		    this.parameter10Name = expression.Parameters[9].Name;
 		    this.parameter11Name = expression.Parameters[10].Name;
 		    this.parameter12Name = expression.Parameters[11].Name;
-	        this.expression = NotifySystem.CreateExpression<TResult>(expression.Body);
+	        this.expression = NotifySystem.CreateExpression<TResult>(expression.Body, expression.Parameters);
             this.isParameterFree = this.expression.IsParameterFree;
         }
 
@@ -4946,7 +4946,7 @@ namespace NMF.Expressions
 		    this.parameter11Name = expression.Parameters[10].Name;
 		    this.parameter12Name = expression.Parameters[11].Name;
 		    this.parameter13Name = expression.Parameters[12].Name;
-	        this.expression = NotifySystem.CreateExpression<TResult>(expression.Body);
+	        this.expression = NotifySystem.CreateExpression<TResult>(expression.Body, expression.Parameters);
             this.isParameterFree = this.expression.IsParameterFree;
         }
 
@@ -5733,7 +5733,7 @@ namespace NMF.Expressions
 		    this.parameter12Name = expression.Parameters[11].Name;
 		    this.parameter13Name = expression.Parameters[12].Name;
 		    this.parameter14Name = expression.Parameters[13].Name;
-	        this.expression = NotifySystem.CreateExpression<TResult>(expression.Body);
+	        this.expression = NotifySystem.CreateExpression<TResult>(expression.Body, expression.Parameters);
             this.isParameterFree = this.expression.IsParameterFree;
         }
 
@@ -6592,7 +6592,7 @@ namespace NMF.Expressions
 		    this.parameter13Name = expression.Parameters[12].Name;
 		    this.parameter14Name = expression.Parameters[13].Name;
 		    this.parameter15Name = expression.Parameters[14].Name;
-	        this.expression = NotifySystem.CreateExpression<TResult>(expression.Body);
+	        this.expression = NotifySystem.CreateExpression<TResult>(expression.Body, expression.Parameters);
             this.isParameterFree = this.expression.IsParameterFree;
         }
 
