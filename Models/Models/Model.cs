@@ -129,7 +129,17 @@ namespace NMF.Models
                     if (resolved != null) return resolved;
                 }
             }
-            return base.Resolve(path);
+            var baseResolve = base.Resolve(path);
+            if (baseResolve != null || !PromoteSingleRootElement || RootElements.Count != 1) return baseResolve;
+            var rootCasted = RootElements[0] as ModelElement;
+            if (rootCasted != null)
+            {
+                return rootCasted.Resolve(path);
+            }
+            else
+            {
+                return null;
+            }
         }
 
         protected override string GetRelativePathForChild(IModelElement child)
