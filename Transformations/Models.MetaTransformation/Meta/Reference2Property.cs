@@ -287,6 +287,7 @@ namespace NMF.Models.Meta
                 }
                 else
                 {
+                    // TODO: Refine?
                     ifStmt.TrueStatements.Add(assignment);
                 }
 

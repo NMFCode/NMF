@@ -16,6 +16,7 @@ namespace NMF.Expressions
 
         public bool InitializeProxyMethod(MethodInfo sourceMethod, Type[] types, out MethodInfo proxyMethod)
         {
+            var proxyType = this.ProxyType;
             if (types == null) throw new ArgumentOutOfRangeException("types");
             var proxyTypeArgs = new List<Type>();
             if (ReflectionHelper.IsGenericType(sourceMethod.DeclaringType))
@@ -27,28 +28,43 @@ namespace NMF.Expressions
                 proxyTypeArgs.AddRange(sourceMethod.GetGenericArguments());
             }
             var typeArrayPointer = 0;
-            if (ProxyType.IsGenericTypeDefinition)
+            if (proxyType.IsGenericTypeDefinition)
             {
-                var typeArgs = new Type[ProxyType.GenericTypeParameters.Length];
+                var typeArgs = new Type[proxyType.GenericTypeParameters.Length];
                 for (int i = 0; i < typeArgs.Length; i++)
                 {
                     typeArgs[i] = proxyTypeArgs[typeArrayPointer];
                     typeArrayPointer++;
                 }
-                ProxyType = ProxyType.MakeGenericType(typeArgs).GetTypeInfo();
+                proxyType = proxyType.MakeGenericType(typeArgs).GetTypeInfo();
             }
-            proxyMethod = ProxyType.GetDeclaredMethods(MethodName).FirstOrDefault(m => CheckTypes(m.GetParameters(), types));
+            if (proxyTypeArgs.Count == typeArrayPointer)
+            {
+                proxyMethod = proxyType.GetDeclaredMethods(MethodName).FirstOrDefault(m => CheckTypes(m.GetParameters(), types));
+            }
+            else
+            {
+                var typeArgs = new Type[proxyTypeArgs.Count - typeArrayPointer];
+                for (int i = 0; i < typeArgs.Length; i++)
+                {
+                    typeArgs[i] = proxyTypeArgs[typeArrayPointer];
+                    typeArrayPointer++;
+                }
+                proxyMethod = proxyType.GetDeclaredMethods(MethodName).FirstOrDefault(m =>
+                {
+                    if (!m.IsGenericMethodDefinition || m.GetGenericArguments().Length != typeArgs.Length) return false;
+
+                    var genericMethod = m.MakeGenericMethod(typeArgs);
+
+                    return CheckTypes(genericMethod.GetParameters(), types);
+                });
+                if (proxyMethod != null)
+                {
+                    proxyMethod = proxyMethod.MakeGenericMethod(typeArgs);
+                    return true;
+                }
+            }
             if (proxyMethod == null) return false;
-            if (proxyMethod.IsGenericMethodDefinition)
-            {
-                var typeArgs = new Type[proxyMethod.GetGenericArguments().Length];
-                for (int i = 0; i < typeArgs.Length; i++)
-                {
-                    typeArgs[i] = proxyTypeArgs[typeArrayPointer];
-                    typeArrayPointer++;
-                }
-                proxyMethod = proxyMethod.MakeGenericMethod(typeArgs);
-            }
             return true;
         }
 
