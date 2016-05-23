@@ -6,7 +6,7 @@ using System.Text;
 
 namespace NMF.Expressions
 {
-    public class PromotionNotifySystem : INotifySystem
+    public class AugmentationNotifySystem : INotifySystem
     {
         public INotifyExpression CreateExpression(Expression expression, IEnumerable<ParameterExpression> parameters, IDictionary<string, object> parameterMappings)
         {
@@ -20,7 +20,7 @@ namespace NMF.Expressions
 
         public INotifyReversableExpression<T> CreateReversableExpression<T>(Expression expression, IEnumerable<ParameterExpression> parameters, IDictionary<string, object> parameterMappings)
         {
-            throw new NotSupportedException();
+            throw new NotImplementedException();
         }
     }
 }

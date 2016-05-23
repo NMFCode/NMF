@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ecore:EPackage xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" name="IncrementalizationConfiguration" nsURI="http://nmf.codeplex.com/incrementalizationConfig"
+    nsPrefix="conf">
+  <eClassifiers xsi:type="ecore:EClass" name="Configuration">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="methodConfigurations" upperBound="-1"
+        eType="#//MethodConfiguration"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="MethodConfiguration">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="methodIdentifier" lowerBound="1"
+        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="strategy" lowerBound="1"
+        eType="#//IncrementalizationStrategy"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="allowedStrategies" lowerBound="1"
+        upperBound="-1" eType="#//IncrementalizationStrategy"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EEnum" name="IncrementalizationStrategy">
+    <eLiterals name="InstructionLevel"/>
+    <eLiterals name="ArgumentPromotion" value="1"/>
+    <eLiterals name="ListenRepositoryChanges" value="2"/>
+    <eLiterals name="UseAugmentation" value="3"/>
+  </eClassifiers>
+</ecore:EPackage>

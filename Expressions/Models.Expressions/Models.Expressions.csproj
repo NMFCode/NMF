@@ -40,6 +40,7 @@
       <Link>CommonAssemblyInfo.cs</Link>
     </Compile>
     <Compile Include="AugmentationNotifySystem.cs" />
+    <Compile Include="ModelFuncExpressionVisitor.cs" />
     <Compile Include="ObservablePromotionMethodCall.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>

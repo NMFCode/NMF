@@ -8,7 +8,7 @@ namespace NMF.Expressions.Linq.Tests
         [TestInitialize]
         public virtual void Setup()
         {
-            NotifySystem.DefaultSystem = new GeneralizingNotifySystem(new InstructionLevelNotifySystem());
+            NotifySystem.DefaultSystem = new InstructionLevelNotifySystem();
         }
     }
 }

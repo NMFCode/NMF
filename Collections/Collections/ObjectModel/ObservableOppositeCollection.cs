@@ -118,12 +118,12 @@ namespace NMF.Collections.ObjectModel
             {
                 var elements = this.ToArray();
                 base.ClearItems();
+                noModification = true;
                 foreach (var item in elements)
                 {
-                    noModification = true;
                     SetOpposite(item, default(TParent));
-                    noModification = false;
                 }
+                noModification = false;
             }
         }
 
