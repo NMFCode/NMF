@@ -158,7 +158,7 @@ namespace NMF.Expressions.Linq.Orleans.Model
         public Task LoadModelFromPath(string modelPath)
         {
             ModelElement.EnforceModels = true;
-            Models.Model.PromoteSingleRootElement = true;
+            Models.Model.PromoteSingleRootElement = false;
             _modelPath = modelPath;
 
             Model = ModelUtil.LoadModelFromPath<T>(modelPath);
