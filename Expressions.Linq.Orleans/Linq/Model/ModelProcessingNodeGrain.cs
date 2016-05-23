@@ -91,6 +91,7 @@ namespace NMF.Expressions.Linq.Orleans.Model
                 await StreamSender.TearDown();
                 StreamSender = null;
             }
+            DeactivateOnIdle();
         }
 
         public override async Task OnActivateAsync()

@@ -25,7 +25,7 @@ namespace NMF.Expressions.Linq.Orleans
         {
             await base.OnActivateAsync();
             InputList = new NotifyCollection<TSource>();
-            StreamConsumer = new TransactionalStreamModelConsumer<TSource, TModel>(GetStreamProvider(StreamProviderNamespace), InputList);
+            StreamConsumer = new TransactionalStreamModelConsumer<TSource, TModel>(GetStreamProvider(StreamProviderNamespace), TearDown, InputList);
 
             StreamConsumer.MessageDispatcher.Register<FlushMessage>(ProcessFlushMessage);
             StreamConsumer.MessageDispatcher.Register<TransactionMessage>(ProcessTransactionMessage);

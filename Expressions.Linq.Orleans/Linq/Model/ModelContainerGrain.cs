@@ -191,6 +191,7 @@ namespace NMF.Expressions.Linq.Orleans.Model
         {
             await OutputProducer.TearDown();
             await ModelUpdateSender.TearDown();
+            DeactivateOnIdle();
         }
 
         public override async Task OnActivateAsync()

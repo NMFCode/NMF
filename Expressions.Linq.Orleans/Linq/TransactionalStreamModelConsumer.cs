@@ -24,8 +24,8 @@ namespace NMF.Expressions.Linq.Orleans
     public class TransactionalStreamModelConsumer<T, TModel> : TransactionalStreamRemoteObjectConsumer<T> where TModel : IResolvableModel
     {
         public TModel Model { get; private set; }
-
-        public TransactionalStreamModelConsumer(IStreamProvider streamProvider, IList<T> items = null) : base(streamProvider, null, items)
+ 
+        public TransactionalStreamModelConsumer(IStreamProvider streamProvider, Func<Task> tearDownFunc = null, IList<T> items = null) : base(streamProvider, null, tearDownFunc, items)
         {
             ModelElement.EnforceModels = true;
         }
