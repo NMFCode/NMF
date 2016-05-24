@@ -18,9 +18,14 @@ namespace NMF.Models
         void Delete();
 
         /// <summary>
-        /// This event is fired when the model element is deleted
+        /// This event is fired after the model element is deleted
         /// </summary>
         event EventHandler Deleted;
+
+        /// <summary>
+        /// This event is fired before the model element is deleted
+        /// </summary>
+        event EventHandler Deleting;
 
         /// <summary>
         /// Gets a value indicating whether this item can be identified through its ToString value

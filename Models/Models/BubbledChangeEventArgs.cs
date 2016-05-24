@@ -35,6 +35,11 @@ namespace NMF.Models
         /// </summary>
         public ChangeType ChangeType { get; private set; }
 
+        public override string ToString()
+        {
+            return "BubbledChange: " + ChangeType + " in " + Element;
+        }
+
         /// <summary>
         /// Gets a value indicating whether the underlying change has been a elementary collection change
         /// </summary>
@@ -76,6 +81,18 @@ namespace NMF.Models
             {
                 ChangeType = ChangeType.ModelElementCreated,
                 Element = createdElement
+            };
+        }
+
+        public static BubbledChangeEventArgs ElementDeleting(IModelElement deletingElement)
+        {
+            if (deletingElement == null)
+                throw new ArgumentNullException(nameof(deletingElement));
+
+            return new BubbledChangeEventArgs
+            {
+                ChangeType = ChangeType.ModelElementDeleting,
+                Element = deletingElement
             };
         }
 
@@ -153,8 +170,11 @@ namespace NMF.Models
     public enum ChangeType
     {
         ModelElementCreated,
+        ModelElementDeleting,
         ModelElementDeleted,
+        PropertyChanging,
         PropertyChanged,
+        CollectionChanging,
         CollectionChanged
     }
 }

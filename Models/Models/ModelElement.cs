@@ -602,9 +602,20 @@ namespace NMF.Models
         /// </summary>
         public virtual void Delete()
         {
+            OnDeleting(EventArgs.Empty);
             OnDeleted(EventArgs.Empty);
         }
 
+        
+        /// <summary>
+        /// Gets called before the model element gets deleted
+        /// </summary>
+        /// <param name="e"></param>
+        protected virtual void OnDeleting(EventArgs e)
+        {
+            Deleting?.Invoke(this, e);
+            OnBubbledChange(BubbledChangeEventArgs.ElementDeleting(this));
+        }
 
         /// <summary>
         /// Gets called when the model element gets deleted
@@ -612,11 +623,9 @@ namespace NMF.Models
         /// <param name="e">The event data</param>
         protected virtual void OnDeleted(EventArgs e)
         {
-            var handler = Interlocked.Exchange(ref Deleted, null);
-            if (handler != null)
-            {
-                handler(this, e);
-            }
+            // The corresponding bubbled change event gets fired in SetParent,
+            // because the parent must not be null for the bubbled change to work.
+            Deleted?.Invoke(this, e);
             SetParent(null);
         }
 
@@ -633,9 +642,15 @@ namespace NMF.Models
 
 
         /// <summary>
-        /// Gets fired when the model element gets deleted
+        /// Gets fired after the model element has been deleted
         /// </summary>
         public event EventHandler Deleted;
+
+
+        /// <summary>
+        /// Gets fired before the model element gets deleted
+        /// </summary>
+        public event EventHandler Deleting;
 
 
         /// <summary>
