@@ -10,7 +10,7 @@ using System.Diagnostics;
 namespace NMF.Collections.ObjectModel
 {
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1710:IdentifiersShouldHaveCorrectSuffix"), DebuggerDisplay("Count = {Count}"), DebuggerTypeProxy(typeof(EnumerableDebuggerProxy<>))]
-    public class ObservableOrderedSet<T> : OrderedSet<T>, INotifyCollectionChanged, INotifyEnumerable<T>, INotifyPropertyChanged, INotifyCollection<T>, IOrderedSetExpression<T>
+    public class ObservableOrderedSet<T> : OrderedSet<T>, INotifyCollectionChanged, INotifyCollectionChanging, INotifyEnumerable<T>, INotifyPropertyChanged, INotifyCollection<T>, IOrderedSetExpression<T>
     {
         protected void OnPropertyChanged(string property)
         {
@@ -24,9 +24,28 @@ namespace NMF.Collections.ObjectModel
             if (CollectionChanged != null) CollectionChanged(this, e);
         }
 
+        protected void OnCollectionChanging(NotifyCollectionChangingEventArgs e)
+        {
+            CollectionChanging?.Invoke(this, e);
+        }
+
+        protected override void OnClearing(ref bool cancel)
+        {
+            base.OnClearing(ref cancel);
+            if (!cancel)
+                OnCollectionChanging(new NotifyCollectionChangingEventArgs(NotifyCollectionChangedAction.Reset));
+        }
+
         protected override void OnCleared()
         {
             OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
+        }
+
+        protected override void OnInsertingItem(T item, ref bool cancel)
+        {
+            base.OnInsertingItem(item, ref cancel);
+            if (!cancel)
+                OnCollectionChanging(new NotifyCollectionChangingEventArgs(NotifyCollectionChangedAction.Add));
         }
 
         protected override void OnInsertItem(T item)
@@ -34,9 +53,23 @@ namespace NMF.Collections.ObjectModel
             OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, item));
         }
 
+        protected override void OnRemovingItem(T item, ref bool cancel)
+        {
+            base.OnRemovingItem(item, ref cancel);
+            if (!cancel)
+                OnCollectionChanging(new NotifyCollectionChangingEventArgs(NotifyCollectionChangedAction.Remove));
+        }
+
         protected override void OnRemoveItem(T item)
         {
             OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Remove, item));
+        }
+
+        protected override void OnReplacingItem(T oldItem, T newItem, ref bool cancel)
+        {
+            base.OnReplacingItem(oldItem, newItem, ref cancel);
+            if (!cancel)
+                OnCollectionChanging(new NotifyCollectionChangingEventArgs(NotifyCollectionChangedAction.Replace));
         }
 
         protected override void OnReplaceItem(T oldItem, T newItem)
@@ -45,6 +78,8 @@ namespace NMF.Collections.ObjectModel
         }
 
         public event NotifyCollectionChangedEventHandler CollectionChanged;
+
+        public event EventHandler<NotifyCollectionChangingEventArgs> CollectionChanging;
 
         void INotifyEnumerable.Attach() { }
 
