@@ -62,6 +62,10 @@ namespace NMF.Models.Meta
                 {
                     generatedProperty.Type = fieldType;
 
+                    var callOnPropertyChanging = new CodeMethodInvokeExpression(
+                        new CodeThisReferenceExpression(), "OnPropertyChanging",
+                        new CodePrimitiveExpression(generatedProperty.Name));
+
                     var oldDef = new CodeVariableDeclarationStatement(fieldType, "old", fieldRef);
                     var oldRef = new CodeVariableReferenceExpression("old");
                     var value = new CodePropertySetValueReferenceExpression();
@@ -76,6 +80,8 @@ namespace NMF.Models.Meta
                         new CodePrimitiveExpression(generatedProperty.Name), valueChangeRef);
 
                     generatedProperty.SetStatements.Add(new CodeConditionStatement(new CodeBinaryOperatorExpression(fieldRef, CodeBinaryOperatorType.IdentityInequality, value),
+                        generatedProperty.CreateOnChangingEventPattern(),
+                        new CodeExpressionStatement(callOnPropertyChanging),
                         oldDef,
                         new CodeAssignStatement(fieldRef, value),
                         valueChangeDef,
