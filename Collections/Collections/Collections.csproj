@@ -48,6 +48,9 @@
     <Compile Include="Generic\EnumerableDebuggerProxy.cs" />
     <Compile Include="Generic\IOrderedSet.cs" />
     <Compile Include="GlobalSuppressions.cs" />
+    <Compile Include="ObjectModel\NotifyCollectionChangingEventArgs.cs" />
+    <Compile Include="ObjectModel\INotifyCollectionChanging.cs" />
+    <Compile Include="ObjectModel\ObservableCollectionExtended.cs" />
     <Compile Include="ObjectModel\ObservableList.cs" />
     <Compile Include="ObjectModel\ObservableOppositeCollection.cs" />
     <Compile Include="ObjectModel\ObservableOrderedSet.cs" />

@@ -11,8 +11,6 @@ namespace NMF.Collections.Generic
     {
         private static EmptyList<T> instance = new EmptyList<T>();
 
-        public event NotifyCollectionChangedEventHandler CollectionChanged;
-
         public static EmptyList<T> Instance
         {
             get
