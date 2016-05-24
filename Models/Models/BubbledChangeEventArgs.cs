@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Linq;
 using System.Text;
+using NMF.Collections.ObjectModel;
 
 namespace NMF.Models
 {
@@ -84,6 +85,11 @@ namespace NMF.Models
             };
         }
 
+        /// <summary>
+        /// Creates an instance of BubbledChangeEventArgs describing the upcoming deletion of the given model element.
+        /// </summary>
+        /// <param name="deletedElement">The deleted model element.</param>
+        /// <returns></returns>
         public static BubbledChangeEventArgs ElementDeleting(IModelElement deletingElement)
         {
             if (deletingElement == null)
@@ -114,6 +120,27 @@ namespace NMF.Models
         }
 
         /// <summary>
+        /// Create an instance of BubbledChangeEventArgs describing an upcoming change of a property value.
+        /// </summary>
+        /// <param name="source">The model element containing the property.</param>
+        /// <param name="propertyName">The property name.</param>
+        /// <returns></returns>
+        public static BubbledChangeEventArgs PropertyChanging(IModelElement source, string propertyName)
+        {
+            if (source == null)
+                throw new ArgumentNullException(nameof(source));
+            if (string.IsNullOrEmpty(propertyName))
+                throw new ArgumentNullException(nameof(propertyName));
+
+            return new BubbledChangeEventArgs
+            {
+                ChangeType = ChangeType.PropertyChanging,
+                Element = source,
+                PropertyName = propertyName
+            };
+        }
+
+        /// <summary>
         /// Creates an instance of BubbledChangeEventArgs describing a change of a property value.
         /// </summary>
         /// <param name="source">The model element containing the property.</param>
@@ -132,6 +159,31 @@ namespace NMF.Models
             return new BubbledChangeEventArgs
             {
                 ChangeType = ChangeType.PropertyChanged,
+                Element = source,
+                OriginalEventArgs = args,
+                PropertyName = propertyName
+            };
+        }
+
+        /// <summary>
+        /// Creates an instance of BubbledChangeEventArgs describing an upcoming change in a collection.
+        /// </summary>
+        /// <param name="source">The model element containing the collection.</param>
+        /// <param name="propertyName">The name of the collection property.</param>
+        /// <param name="args">The original NotifyCollectionChangingEventArgs.</param>
+        /// <returns></returns>
+        public static BubbledChangeEventArgs CollectionChanging(IModelElement source, string propertyName, NotifyCollectionChangingEventArgs args)
+        {
+            if (source == null)
+                throw new ArgumentNullException(nameof(source));
+            if (string.IsNullOrEmpty(propertyName))
+                throw new ArgumentNullException(nameof(propertyName));
+            if (args == null)
+                throw new ArgumentNullException(nameof(args));
+
+            return new BubbledChangeEventArgs
+            {
+                ChangeType = ChangeType.CollectionChanging,
                 Element = source,
                 OriginalEventArgs = args,
                 PropertyName = propertyName

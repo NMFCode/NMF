@@ -21,7 +21,7 @@ namespace NMF.Models
     /// Defines the base class for a model element implementation
     /// </summary>
     [ModelRepresentationClassAttribute("http://nmf.codeplex.com/nmeta/#//ModelElement/")]
-    public abstract class ModelElement : IModelElement, INotifyPropertyChanged
+    public abstract class ModelElement : IModelElement, INotifyPropertyChanged, INotifyPropertyChanging
     {
         private IModelElement parent;
         private ObservableList<ModelElementExtension> extensions;
@@ -598,6 +598,17 @@ namespace NMF.Models
 
 
         /// <summary>
+        /// Gets called when the PropertyChanging event is fired
+        /// </summary>
+        /// <param name="propertyName">The name of the changed property</param>
+        protected virtual void OnPropertyChanging(string propertyName)
+        {
+            PropertyChanging?.Invoke(this, new PropertyChangingEventArgs(propertyName));
+            OnBubbledChange(BubbledChangeEventArgs.PropertyChanging(this, propertyName));
+        }
+
+
+        /// <summary>
         /// Deletes the current model element
         /// </summary>
         public virtual void Delete()
@@ -639,6 +650,12 @@ namespace NMF.Models
         /// Gets fired when a property value changes
         /// </summary>
         public event PropertyChangedEventHandler PropertyChanged;
+
+
+        /// <summary>
+        /// Gets fired before a property value changes
+        /// </summary>
+        public event PropertyChangingEventHandler PropertyChanging;
 
 
         /// <summary>
@@ -759,6 +776,16 @@ namespace NMF.Models
         protected void OnCollectionChanged(string propertyName, NotifyCollectionChangedEventArgs e)
         {
             OnBubbledChange(BubbledChangeEventArgs.CollectionChanged(this, propertyName, e));
+        }
+
+        /// <summary>
+        /// Raises the Bubbled Change event for the given upcoming collection change
+        /// </summary>
+        /// <param name="propertyName">The name of the property that has changed</param>
+        /// <param name="e">The event data</param>
+        protected void OnCollectionChanging(string propertyName, NotifyCollectionChangingEventArgs e)
+        {
+            OnBubbledChange(BubbledChangeEventArgs.CollectionChanging(this, propertyName, e));
         }
 
         /// <summary>
