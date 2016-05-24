@@ -238,6 +238,10 @@ namespace NMF.Models.Meta
 
                 var assignment = new CodeAssignStatement(fieldReference, val);
 
+                ifStmt.TrueStatements.Add(codeProperty.CreateOnChangingEventPattern());
+                ifStmt.TrueStatements.Add(new CodeMethodInvokeExpression(new CodeThisReferenceExpression(), "OnPropertyChanging",
+                        new CodePrimitiveExpression(codeProperty.Name)));
+
                 var oldDef = new CodeVariableDeclarationStatement(codeProperty.Type, "old", fieldReference);
                 var oldRef = new CodeVariableReferenceExpression("old");
 

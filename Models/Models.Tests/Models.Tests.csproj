@@ -62,6 +62,7 @@
     <Compile Include="Evolution\CollectionDeletionTests.cs" />
     <Compile Include="Evolution\MultiplePropertyChangesTests.cs" />
     <Compile Include="Evolution\PropertyChangeTests.cs" />
+    <Compile Include="Evolution\TempTests.cs" />
     <Compile Include="Metamodel\IRailwayContainer.cs" />
     <Compile Include="Metamodel\IRailwayElement.cs" />
     <Compile Include="Metamodel\IRoute.cs" />
