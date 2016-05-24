@@ -1,5 +1,6 @@
 ﻿using NMF.CodeGen;
 using NMF.Collections.Generic;
+using NMF.Collections.ObjectModel;
 using NMF.Expressions;
 using NMF.Models.Collections;
 using NMF.Models.Meta;
@@ -198,23 +199,26 @@ namespace NMF.Models.Meta
                     var createEmptyCollection = new CodeAssignStatement(fieldRef, newCollection);
                     var constructorStmts = codeProperty.ImpliedConstructorStatements(true);
                     constructorStmts.Add(createEmptyCollection);
-                    constructorStmts.Add(new CodeAttachEventStatement(fieldRef, "CollectionChanged", GenerateCollectionBubbleHandler(codeProperty)));
+                    constructorStmts.Add(new CodeAttachEventStatement(fieldRef, "CollectionChanging",
+                        GenerateCollectionBubbleHandler(codeProperty, "CollectionChanging", typeof(NotifyCollectionChangingEventArgs))));
+                    constructorStmts.Add(new CodeAttachEventStatement(fieldRef, "CollectionChanged",
+                        GenerateCollectionBubbleHandler(codeProperty, "CollectionChanged", typeof(NotifyCollectionChangedEventArgs))));
                 }
             }
 
-            private CodeMethodReferenceExpression GenerateCollectionBubbleHandler(CodeMemberProperty property)
+            private CodeMethodReferenceExpression GenerateCollectionBubbleHandler(CodeMemberProperty property, string suffix, System.Type eventArgsType)
             {
                 var collectionBubbleHandler = new CodeMemberMethod()
                 {
-                    Name = property.Name + "CollectionChanged",
+                    Name = property.Name + suffix,
                     Attributes = MemberAttributes.Private
                 };
                 collectionBubbleHandler.Parameters.Add(new CodeParameterDeclarationExpression(typeof(object), "sender"));
-                collectionBubbleHandler.Parameters.Add(new CodeParameterDeclarationExpression(typeof(NotifyCollectionChangedEventArgs), "e"));
+                collectionBubbleHandler.Parameters.Add(new CodeParameterDeclarationExpression(eventArgsType, "e"));
                 collectionBubbleHandler.Statements.Add(new CodeMethodInvokeExpression(
-                    new CodeThisReferenceExpression(), "OnCollectionChanged", 
+                    new CodeThisReferenceExpression(), "On" + suffix,
                     new CodePrimitiveExpression(property.Name), new CodeArgumentReferenceExpression("e")));
-                collectionBubbleHandler.WriteDocumentation(string.Format("Forwards change notifications for the {0} property to the parent model element", property.Name), null,
+                collectionBubbleHandler.WriteDocumentation(string.Format("Forwards " + suffix + " notifications for the {0} property to the parent model element", property.Name), null,
                     new Dictionary<string, string>() {
                     { "sender", "The collection that raised the change" },
                     { "e", "The original event data" }});
