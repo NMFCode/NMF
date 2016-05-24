@@ -88,7 +88,7 @@ namespace NMF.Expressions.Linq.Orleans.Model
         /// <returns></returns>
         public async Task EndModelUpdate(Guid tid)
         {
-            await SendAllQueuedMessages();
+            await AwaitAllQueuedMessages();
             await OutputProducer.EndTransaction(tid);
         }
 
@@ -112,7 +112,6 @@ namespace NMF.Expressions.Linq.Orleans.Model
                 ModelUpdateSender.EnqueueMessageBroadcast(new ModelExecuteActionMessage<T>(action));
             }
 
-            SendAllQueuedMessages();
             return TaskDone.Done;
         }
 
@@ -137,7 +136,6 @@ namespace NMF.Expressions.Linq.Orleans.Model
                 ModelUpdateSender.EnqueueMessageBroadcast(new ModelExecuteActionMessage<T>(action, state));
             }
 
-            SendAllQueuedMessages();
             return TaskDone.Done;
         }
 
@@ -157,11 +155,9 @@ namespace NMF.Expressions.Linq.Orleans.Model
         /// <returns></returns>
         public Task LoadModelFromPath(string modelPath)
         {
-            ModelElement.EnforceModels = true;
-            Models.Model.PromoteSingleRootElement = false;
             _modelPath = modelPath;
 
-            Model = ModelUtil.LoadModelFromPath<T>(modelPath);
+            Model = ModelLoader.Instance.LoadModel<T>(modelPath);
 
             Model.BubbledChange += ModelBubbledChange;
 
@@ -204,7 +200,7 @@ namespace NMF.Expressions.Linq.Orleans.Model
                 new StreamIdentity(this.GetPrimaryKey(), "ModelUpdate"));
         }
 
-        private async Task SendAllQueuedMessages()
+        private async Task AwaitAllQueuedMessages()
         {
             await OutputProducer.AwaitSendingComplete();
             await ModelUpdateSender.AwaitSendingComplete();

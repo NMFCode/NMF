@@ -57,19 +57,25 @@ namespace Expressions.Linq.Orleans.Test
             Assert.IsTrue(await ModelTestUtil.CurrentModelsMatch(modelContainerGrain, consumerGrain));
 
             // Property Changed test to null
+            var guid = await modelContainerGrain.StartModelUpdate();
             await modelContainerGrain.ExecuteSync(model => { ((RailwayContainer) model.RootElements.Single()).Routes.First().Entry = null; });
+            await modelContainerGrain.EndModelUpdate(guid);
             Assert.IsTrue(await ModelTestUtil.CurrentModelsMatch(modelContainerGrain, consumerGrain));
 
             // Property Changed test to known object
+            guid = await modelContainerGrain.StartModelUpdate();
             await modelContainerGrain.ExecuteSync(model => { ((RailwayContainer)model.RootElements.Single()).Routes.First().Entry = ((RailwayContainer)model.RootElements.Single()).Semaphores[2]; });
+            await modelContainerGrain.EndModelUpdate(guid);
             Assert.IsTrue(await ModelTestUtil.CurrentModelsMatch(modelContainerGrain, consumerGrain));
 
             // Property Changed test to native type
+            guid = await modelContainerGrain.StartModelUpdate();
             await modelContainerGrain.ExecuteSync(model =>
             {
                 var segmentToModify = model.Descendants().OfType<Segment>().First();
                 segmentToModify.Length = 42;
             });
+            await modelContainerGrain.EndModelUpdate(guid);
             Assert.IsTrue(await ModelTestUtil.CurrentModelsMatch(modelContainerGrain, consumerGrain));
         }
 
@@ -83,11 +89,13 @@ namespace Expressions.Linq.Orleans.Test
             var consumerGrain = await LoadAndAttachModelTestConsumer(modelContainerGrain);
 
             ModelElement.EnforceModels = true;
+            var guid = await modelContainerGrain.StartModelUpdate();
             await modelContainerGrain.ExecuteSync(container =>
             {
                 var switchToUpdate = container.Descendants().OfType<ISwitch>().First(sw => sw.Sensor == null);
                 switchToUpdate.Sensor = new Sensor();
             }, false);
+            await modelContainerGrain.EndModelUpdate(guid);
         }
 
         [TestMethod]
@@ -98,11 +106,13 @@ namespace Expressions.Linq.Orleans.Test
             var consumerGrain = await LoadAndAttachModelTestConsumer(modelContainerGrain);
 
             ModelElement.EnforceModels = true;
+            var guid = await modelContainerGrain.StartModelUpdate();
             await modelContainerGrain.ExecuteSync(container =>
             {
                 var switchToUpdate = container.RootElements.Single().As<RailwayContainer>().Descendants().OfType<ISwitch>().First(sw => sw.Sensor == null);
                 switchToUpdate.Sensor = new Sensor();
             }, true);
+            await modelContainerGrain.EndModelUpdate(guid);
 
             Assert.IsTrue(await ModelTestUtil.CurrentModelsMatch(modelContainerGrain, consumerGrain));
         }

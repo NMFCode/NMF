@@ -130,7 +130,7 @@ namespace NMF.Models
                 }
             }
             var baseResolve = base.Resolve(path);
-            if (baseResolve != null || !PromoteSingleRootElement || RootElements.Count != 1) return baseResolve;
+            if (baseResolve != null || PromoteSingleRootElement || RootElements.Count != 1) return baseResolve;
             var rootCasted = RootElements[0] as ModelElement;
             if (rootCasted != null)
             {

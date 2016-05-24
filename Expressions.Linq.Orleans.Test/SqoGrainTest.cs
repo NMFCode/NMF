@@ -110,7 +110,9 @@ namespace Expressions.Linq.Orleans.Test
             Assert.AreEqual(localSignal, consumer.Items[0]);
 
             // Update signal
+            var guid = await modelGrain.StartModelUpdate();
             await modelGrain.ExecuteSync(model => model.RootElements.Single().As<RailwayContainer>().Semaphores[0].Signal = Signal.STOP);
+            await modelGrain.EndModelUpdate(guid);
             
             Assert.AreEqual(1, consumer.Items.Count);
             Assert.AreEqual(Signal.STOP, consumer.Items[0]);

@@ -27,14 +27,12 @@ namespace NMF.Expressions.Linq.Orleans
  
         public TransactionalStreamModelConsumer(IStreamProvider streamProvider, Func<Task> tearDownFunc = null, IList<T> items = null) : base(streamProvider, null, tearDownFunc, items)
         {
-            ModelElement.EnforceModels = true;
-            Models.Model.PromoteSingleRootElement = false;
         }
 
         public async Task SetModelContainer(IModelContainerGrain<TModel> modelContainer)
         {
             var modelPath = await modelContainer.GetModelPath();
-            Model = ModelUtil.LoadModelFromPath<TModel>(modelPath);
+            Model = ModelLoader.Instance.LoadModel<TModel>(modelPath);
             ReceiveContext = new LocalModelReceiveContext(Model);
             await MessageDispatcher.Subscribe(await modelContainer.GetModelUpdateStream());
         }

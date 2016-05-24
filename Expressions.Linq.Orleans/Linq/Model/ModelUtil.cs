@@ -6,6 +6,38 @@ using NMF.Models.Repository;
 
 namespace NMF.Expressions.Linq.Orleans.Model
 {
+    public class ModelLoader
+    {
+        private static IModelLoader _instance;
+
+        public static IModelLoader Instance
+        {
+
+            get { return _instance ?? (_instance = new FullPathModelLoader()); }
+            set { _instance = value; }
+        }
+
+    }
+
+    public interface IModelLoader
+    {
+        T LoadModel<T>(string modelPath) where T : IResolvableModel;
+    }
+
+    public class FullPathModelLoader : IModelLoader
+    {
+        public T LoadModel<T>(string modelPath) where T : IResolvableModel
+        {
+            ModelElement.EnforceModels = true;
+            Models.Model.PromoteSingleRootElement = true;
+            var repository = new ModelRepository();
+            var rootModelElement = repository.Resolve(new Uri(new FileInfo(modelPath).FullName));
+
+            IResolvableModel model = rootModelElement.Model;
+            return (T)model;
+        }
+    }
+
     public static class ModelUtil
     {
         /// <summary>
@@ -17,6 +49,8 @@ namespace NMF.Expressions.Linq.Orleans.Model
         public static T LoadModelFromPath<T>(string modelPath) where T : IResolvableModel
         {
             ModelElement.EnforceModels = true;
+            Models.Model.PromoteSingleRootElement = false;
+
             var repository = new ModelRepository();
             var rootModelElement = repository.Resolve(new Uri(new FileInfo(modelPath).FullName));
 
