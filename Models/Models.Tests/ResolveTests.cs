@@ -206,6 +206,24 @@ namespace NMF.Models.Tests
         }
 
         [TestMethod]
+        public void IndependentUrisChangeTest()
+        {
+            ModelElement.EnforceModels = true;
+            Model.PromoteSingleRootElement = false;
+
+            var switchUris = railwayModel.Descendants().OfType<ISwitch>().Where(sw => sw.Sensor == null).Select(s => s.RelativeUri).ToList();
+            var uriToUpdate = switchUris.First();
+            var switchToUpdate = (ISwitch) railwayModel.Resolve(uriToUpdate);  
+            switchToUpdate.Sensor = new Sensor();
+
+            switchUris.Remove(uriToUpdate);
+
+            var switchUrisUpdated = railwayModel.Descendants().OfType<ISwitch>().Where(sw => sw.Sensor == null).Select(s => s.RelativeUri).ToList();
+
+            CollectionAssert.AreEqual(switchUris, switchUrisUpdated);
+        }
+
+        [TestMethod]
         public void LoadCrashTest()
         {
             var repository = new ModelRepository();

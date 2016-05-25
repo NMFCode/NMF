@@ -1,0 +1,32 @@
+﻿<#@ template debug="false" hostspecific="false" language="C#" #>
+<#@ assembly name="System.Core" #>
+<#@ import namespace="System.Linq" #>
+<#@ import namespace="System.Text" #>
+<#@ import namespace="System.Collections.Generic" #>
+<#@ output extension=".cs" #>
+using System.Threading.Tasks;
+using Orleans.Streams;
+
+namespace NMF.Expressions.Linq.Orleans
+{
+<#
+    for(int i = 1; i <= 2; i++)
+    {
+#>
+    /// <summary>
+    /// Uses the following function to observe its results.
+    /// </summary>
+<# for(int j = 1; j <= i; j++)
+	{ #>
+    /// <typeparam name="T<#= j #>"></typeparam>
+<# } #>
+    /// <typeparam name="TResult"></typeparam>
+    public interface IObservingFuncProcessor<<#= string.Join(", ", Enumerable.Range(1, i).Select(j => "T" + j)) #>, TResult>
+    {
+        Task SetObservingFunc(SerializableFunc<<#= string.Join(", ", Enumerable.Range(1, i).Select(j => "T" + j)) #>, TResult> observingFunc);
+    }
+
+<#
+	}
+#>
+}
