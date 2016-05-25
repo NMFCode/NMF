@@ -12,8 +12,13 @@ namespace NMF.Expressions.Linq.Orleans.Model
 
         public static IModelLoader Instance
         {
+            get
+            {
+                if(_instance == null)
+                    _instance = new FullPathModelLoader();
 
-            get { return _instance ?? (_instance = new FullPathModelLoader()); }
+                return _instance;
+            }
             set { _instance = value; }
         }
 
@@ -26,6 +31,10 @@ namespace NMF.Expressions.Linq.Orleans.Model
 
     public class FullPathModelLoader : IModelLoader
     {
+        public FullPathModelLoader()
+        {
+        }
+
         public T LoadModel<T>(string modelPath) where T : IResolvableModel
         {
             ModelElement.EnforceModels = true;

@@ -32,8 +32,8 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="MetaLinq, Version=1.0.8.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\MetaLinq.1.0.8\lib\portable-net45+win+wpa81+wp80\MetaLinq.dll</HintPath>
+    <Reference Include="MetaLinq, Version=1.0.10.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\MetaLinq.1.0.10\lib\portable45-net45+win8+wp8+wpa81\MetaLinq.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="Microsoft.CodeAnalysis, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
@@ -99,7 +99,7 @@
     <Compile Include="Linq\IncrementalSimpleSelectManyAggregateGrain.cs" />
     <Compile Include="Linq\IncrementalSelectManyNodeGrain.cs" />
     <Compile Include="Linq\IncrementalStreamProcessorAggregate.cs" />
-    <Compile Include="Linq\IncrementalWhereAggregateGrainBase.cs" />
+    <Compile Include="Linq\IncrementalWhereAggregateGrain.cs" />
     <Compile Include="Linq\IncrementalWhereNodeGrain.cs" />
     <Compile Include="Linq\Interfaces\IIncrementalFunctionNodeGrain.cs" />
     <Compile Include="Linq\Interfaces\IIncrementalFunctionAggregateGrain.cs" />

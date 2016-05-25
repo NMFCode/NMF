@@ -209,6 +209,7 @@ namespace NMF.Models.Tests
         public void IndependentUrisChangeTest()
         {
             ModelElement.EnforceModels = true;
+            Model.PromoteSingleRootElement = false;
 
             var switchUris = railwayModel.Descendants().OfType<ISwitch>().Where(sw => sw.Sensor == null).Select(s => s.RelativeUri).ToList();
             var uriToUpdate = switchUris.First();
