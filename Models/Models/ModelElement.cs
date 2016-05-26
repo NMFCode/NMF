@@ -25,6 +25,7 @@ namespace NMF.Models
     {
         private IModelElement parent;
         private ObservableList<ModelElementExtension> extensions;
+        private bool deleting = false;
 
         /// <summary>
         /// Gets the model that contains the current model element
@@ -59,9 +60,6 @@ namespace NMF.Models
         {
             if (newParent != parent)
             {
-                if (newParent == null)
-                    OnBubbledChange(BubbledChangeEventArgs.ElementDeleted(this));
-
                 var oldParent = parent;
                 parent = newParent;
                 if (newParent != null)
@@ -158,7 +156,10 @@ namespace NMF.Models
             }
             set
             {
-                SetParent(value);
+                if (value == null)
+                    Delete();
+                else
+                    SetParent(value);
             }
         }
 
@@ -613,8 +614,13 @@ namespace NMF.Models
         /// </summary>
         public virtual void Delete()
         {
-            OnDeleting(EventArgs.Empty);
-            OnDeleted(EventArgs.Empty);
+            if (!deleting)
+            {
+                deleting = true;
+                OnDeleting(EventArgs.Empty);
+                OnDeleted(EventArgs.Empty);
+                SetParent(null);
+            }
         }
 
         
@@ -634,10 +640,8 @@ namespace NMF.Models
         /// <param name="e">The event data</param>
         protected virtual void OnDeleted(EventArgs e)
         {
-            // The corresponding bubbled change event gets fired in SetParent,
-            // because the parent must not be null for the bubbled change to work.
             Deleted?.Invoke(this, e);
-            SetParent(null);
+            OnBubbledChange(BubbledChangeEventArgs.ElementDeleted(this));
         }
 
         internal void CascadeDelete(object sender, EventArgs e)

@@ -31,7 +31,6 @@ namespace NMF.Models.Collections
                         item.Deleted -= RemoveItem;
                         if (item.Parent == Parent)
                         {
-                            item.Parent = null;
                             item.Delete();
                         }
                     }
@@ -65,7 +64,6 @@ namespace NMF.Models.Collections
                     item.Deleted -= RemoveItem;
                     if (item.Parent == Parent)
                     {
-                        item.Parent = null;
                         item.Delete();
                     }
                 }
@@ -92,7 +90,6 @@ namespace NMF.Models.Collections
                     base.SetItem(index, item);
                     if (oldItem != null && oldItem.Parent == Parent)
                     {
-                        oldItem.Parent = null;
                         oldItem.Delete();
                     }
                     if (item != null)
@@ -135,7 +132,6 @@ namespace NMF.Models.Collections
                         item.Deleted -= RemoveItem;
                         if (item.Parent == Parent)
                         {
-                            item.Parent = null;
                             item.Delete();
                         }
                     }
@@ -169,7 +165,6 @@ namespace NMF.Models.Collections
                     item.Deleted -= RemoveItem;
                     if (item.Parent == Parent)
                     {
-                        item.Parent = null;
                         item.Delete();
                     }
                 }
@@ -197,7 +192,6 @@ namespace NMF.Models.Collections
 
                     if (oldItem != null && oldItem.Parent == Parent)
                     {
-                        oldItem.Parent = null;
                         oldItem.Delete();
                     }
                     if (item != null)
