@@ -11,8 +11,11 @@
       <Provider Type="Orleans.Providers.Streams.SimpleMessageStream.SimpleMessageStreamProvider" Name="SimpleStreamProvider"/>
       <Provider Type="Orleans.Providers.Streams.SimpleMessageStream.SimpleMessageStreamProvider" Name="CollectionStreamProvider" FireAndForgetDelivery="false" OptimizeForImmutableData="false"/>
     </StreamProviders>
+    <BootstrapProviders>
+      <Provider Type="Orleans.Streams.Partitioning.PartitionGrainBootstrapProvider" Name="PartitionGrain" />
+    </BootstrapProviders>
     <SeedNode Address="localhost" Port="22222"/>
-    <Messaging ResponseTimeout="600s"/>
+    <Messaging ResponseTimeout="300s"/>
   </Globals>
   <Defaults>
     <Networking Address="localhost" Port="22222"/>

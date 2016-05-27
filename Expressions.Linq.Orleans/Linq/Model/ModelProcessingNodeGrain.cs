@@ -40,18 +40,11 @@ namespace NMF.Expressions.Linq.Orleans.Model
             return Task.FromResult(result);
         }
 
-        public virtual async Task Setup(IModelContainerGrain<TModel> modelContainer, IEnumerable<StreamIdentity> inputStreams = null,
+        public virtual async Task Setup(IModelContainerGrain<TModel> modelContainer,
             int outputMultiplexFactor = 1)
         {
             await StreamConsumer.SetModelContainer(modelContainer);
             OutputMultiplexFactor = outputMultiplexFactor;
-
-            var inputStreamCount = inputStreams?.Count() ?? 0;
-            if (inputStreamCount > 0)
-                await Task.WhenAll(inputStreams.Select(s => StreamConsumer.MessageDispatcher.Subscribe(s)));
-
-            StreamSender = new MappingStreamMessageSenderComposite<TOut>(GetStreamProvider(StreamProviderNamespace),
-                OutputMultiplexFactor*inputStreamCount);
         }
 
         public async Task SubscribeToStreams(IEnumerable<StreamIdentity> inputStreams)
@@ -76,6 +69,12 @@ namespace NMF.Expressions.Linq.Orleans.Model
             var providerTearDownState = (StreamSender == null) || await StreamSender.IsTearedDown();
 
             return consumerTearDownState && providerTearDownState;
+        }
+
+        public async Task<IList<SiloLocationStreamIdentity>> GetOutputStreamsWithSourceLocation()
+        {
+            var outputStreams = await GetOutputStreams();
+            return outputStreams.Select(os => new SiloLocationStreamIdentity(os.Guid, os.Namespace, RuntimeIdentity)).ToList();
         }
 
         public async Task TearDown()

@@ -23,11 +23,12 @@ namespace NMF.Expressions.Linq.Orleans
             return TaskDone.Done;
         }
 
-        protected override async Task<IIncrementalWhereNodeGrain<TSource, TModel>> InitializeNode(StreamIdentity identity)
+        protected override async Task<IIncrementalWhereNodeGrain<TSource, TModel>> InitializeNode(Tuple<IIncrementalWhereNodeGrain<TSource, TModel>, StreamIdentity> nodeStreamPair)
         {
-            var node = GrainFactory.GetGrain<IIncrementalWhereNodeGrain<TSource, TModel>>(Guid.NewGuid());
+            var node = nodeStreamPair.Item1;
             await node.SetObservingFunc(_observingFunc);
-            await node.Setup(ModelContainer, identity.SingleValueToList(), OutputMultiplexFactor);
+            await node.Setup(ModelContainer, OutputMultiplexFactor);
+            await node.SubscribeToStreams(nodeStreamPair.Item2.SingleValueToList());
 
             return node;
         }

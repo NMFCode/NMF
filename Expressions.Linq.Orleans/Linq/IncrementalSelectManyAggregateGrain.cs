@@ -20,11 +20,12 @@ namespace NMF.Expressions.Linq.Orleans
         private SerializableFunc<TSource, TIntermediate, TResult> _resultSelectorFunc;
 
 
-        protected override async Task<IIncrementalSelectManyNodeGrain<TSource, TIntermediate, TResult, TModel>> InitializeNode(StreamIdentity identity)
+        protected override async Task<IIncrementalSelectManyNodeGrain<TSource, TIntermediate, TResult, TModel>> InitializeNode(Tuple<IIncrementalSelectManyNodeGrain<TSource, TIntermediate, TResult, TModel>, StreamIdentity> nodeStreamPair)
         {
-            var node = GrainFactory.GetGrain<IIncrementalSelectManyNodeGrain<TSource, TIntermediate, TResult, TModel>>(Guid.NewGuid());
+            var node = nodeStreamPair.Item1;
             await node.SetObservingFunc(_collectionSelectorFunc, _resultSelectorFunc);
-            await node.Setup(ModelContainer, identity.SingleValueToList(), OutputMultiplexFactor);
+            await node.Setup(ModelContainer, OutputMultiplexFactor);
+            await node.SubscribeToStreams(nodeStreamPair.Item2.SingleValueToList());
 
             return node;
         }

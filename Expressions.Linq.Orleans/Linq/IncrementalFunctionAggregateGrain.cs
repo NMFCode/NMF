@@ -9,16 +9,19 @@ using Orleans.Streams;
 
 namespace NMF.Expressions.Linq.Orleans
 {
-    public class IncrementalFunctionAggregateGrain<TSource, TResult, TModel> : ModelAggregateGrainBase<TSource, TResult, IIncrementalFunctionNodeGrain<TSource, TResult, TModel>, TModel>,
+    public class IncrementalFunctionAggregateGrain<TSource, TResult, TModel> :
+        ModelAggregateGrainBase<TSource, TResult, IIncrementalFunctionNodeGrain<TSource, TResult, TModel>, TModel>,
         IIncrementalFunctionAggregateGrain<TSource, TResult, TModel> where TModel : IResolvableModel
     {
         private Func<INotifyEnumerable<TSource>, INotifyEnumerable<TResult>> _incrementalFunc;
 
-        protected override async Task<IIncrementalFunctionNodeGrain<TSource, TResult, TModel>> InitializeNode(StreamIdentity identity)
+        protected override async Task<IIncrementalFunctionNodeGrain<TSource, TResult, TModel>> InitializeNode(
+            Tuple<IIncrementalFunctionNodeGrain<TSource, TResult, TModel>, StreamIdentity> nodeStreamPair)
         {
-            var node = GrainFactory.GetGrain<IIncrementalFunctionNodeGrain<TSource, TResult, TModel>>(Guid.NewGuid());
+            var node = nodeStreamPair.Item1;
             await node.SetIncrementalFunc(_incrementalFunc);
-            await node.Setup(ModelContainer, identity.SingleValueToList(), OutputMultiplexFactor);
+            await node.Setup(ModelContainer, OutputMultiplexFactor);
+            await node.SubscribeToStreams(nodeStreamPair.Item2.SingleValueToList());
 
             return node;
         }

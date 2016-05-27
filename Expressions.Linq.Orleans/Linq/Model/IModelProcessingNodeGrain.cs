@@ -16,9 +16,8 @@ namespace NMF.Expressions.Linq.Orleans.Model
         /// Setup the node.
         /// </summary>
         /// <param name="modelContainer">Model container to use.</param>
-        /// <param name="inputStreams">Input streams to subscribe to.</param>
         /// <param name="outputMultiplexFactor">Multiplexing from input to output streams. Values in range [1, int32.max] are allowed.</param>
         /// <returns></returns>
-        Task Setup(IModelContainerGrain<TModel> modelContainer, IEnumerable<StreamIdentity> inputStreams = null, int outputMultiplexFactor = 1);
+        Task Setup(IModelContainerGrain<TModel> modelContainer, int outputMultiplexFactor = 1);
     }
 }
