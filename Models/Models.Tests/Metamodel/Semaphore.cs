@@ -60,6 +60,8 @@ namespace NMF.Models.Tests.Railway
             {
                 if ((this._signal != value))
                 {
+                    this.OnSignalChanging(EventArgs.Empty);
+                    this.OnPropertyChanging("Signal");
                     Signal old = this._signal;
                     this._signal = value;
                     ValueChangedEventArgs e = new ValueChangedEventArgs(old, value);
@@ -81,9 +83,27 @@ namespace NMF.Models.Tests.Railway
         }
         
         /// <summary>
+        /// Gets fired before the Signal property changes its value
+        /// </summary>
+        public event EventHandler SignalChanging;
+        
+        /// <summary>
         /// Gets fired when the Signal property changed its value
         /// </summary>
         public event EventHandler<ValueChangedEventArgs> SignalChanged;
+        
+        /// <summary>
+        /// Raises the SignalChanging event
+        /// </summary>
+        /// <param name="eventArgs">The event data</param>
+        protected virtual void OnSignalChanging(EventArgs eventArgs)
+        {
+            EventHandler handler = this.SignalChanging;
+            if ((handler != null))
+            {
+                handler.Invoke(this, eventArgs);
+            }
+        }
         
         /// <summary>
         /// Raises the SignalChanged event

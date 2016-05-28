@@ -48,6 +48,11 @@ namespace NMF.Models.Tests.Railway
         }
         
         /// <summary>
+        /// Gets fired before the Length property changes its value
+        /// </summary>
+        event EventHandler LengthChanging;
+        
+        /// <summary>
         /// Gets fired when the Length property changed its value
         /// </summary>
         event EventHandler<ValueChangedEventArgs> LengthChanged;

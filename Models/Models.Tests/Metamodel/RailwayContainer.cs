@@ -58,10 +58,13 @@ namespace NMF.Models.Tests.Railway
         public RailwayContainer()
         {
             this._invalids = new ObservableCompositionList<IRailwayElement>(this);
+            this._invalids.CollectionChanging += this.InvalidsCollectionChanging;
             this._invalids.CollectionChanged += this.InvalidsCollectionChanged;
             this._semaphores = new ObservableCompositionList<ISemaphore>(this);
+            this._semaphores.CollectionChanging += this.SemaphoresCollectionChanging;
             this._semaphores.CollectionChanged += this.SemaphoresCollectionChanged;
             this._routes = new ObservableCompositionList<IRoute>(this);
+            this._routes.CollectionChanging += this.RoutesCollectionChanging;
             this._routes.CollectionChanged += this.RoutesCollectionChanged;
         }
         
@@ -148,7 +151,17 @@ namespace NMF.Models.Tests.Railway
         }
         
         /// <summary>
-        /// Forwards change notifications for the Invalids property to the parent model element
+        /// Forwards CollectionChanging notifications for the Invalids property to the parent model element
+        /// </summary>
+        /// <param name="sender">The collection that raised the change</param>
+        /// <param name="e">The original event data</param>
+        private void InvalidsCollectionChanging(object sender, NMF.Collections.ObjectModel.NotifyCollectionChangingEventArgs e)
+        {
+            this.OnCollectionChanging("Invalids", e);
+        }
+        
+        /// <summary>
+        /// Forwards CollectionChanged notifications for the Invalids property to the parent model element
         /// </summary>
         /// <param name="sender">The collection that raised the change</param>
         /// <param name="e">The original event data</param>
@@ -158,7 +171,17 @@ namespace NMF.Models.Tests.Railway
         }
         
         /// <summary>
-        /// Forwards change notifications for the Semaphores property to the parent model element
+        /// Forwards CollectionChanging notifications for the Semaphores property to the parent model element
+        /// </summary>
+        /// <param name="sender">The collection that raised the change</param>
+        /// <param name="e">The original event data</param>
+        private void SemaphoresCollectionChanging(object sender, NMF.Collections.ObjectModel.NotifyCollectionChangingEventArgs e)
+        {
+            this.OnCollectionChanging("Semaphores", e);
+        }
+        
+        /// <summary>
+        /// Forwards CollectionChanged notifications for the Semaphores property to the parent model element
         /// </summary>
         /// <param name="sender">The collection that raised the change</param>
         /// <param name="e">The original event data</param>
@@ -168,7 +191,17 @@ namespace NMF.Models.Tests.Railway
         }
         
         /// <summary>
-        /// Forwards change notifications for the Routes property to the parent model element
+        /// Forwards CollectionChanging notifications for the Routes property to the parent model element
+        /// </summary>
+        /// <param name="sender">The collection that raised the change</param>
+        /// <param name="e">The original event data</param>
+        private void RoutesCollectionChanging(object sender, NMF.Collections.ObjectModel.NotifyCollectionChangingEventArgs e)
+        {
+            this.OnCollectionChanging("Routes", e);
+        }
+        
+        /// <summary>
+        /// Forwards CollectionChanged notifications for the Routes property to the parent model element
         /// </summary>
         /// <param name="sender">The collection that raised the change</param>
         /// <param name="e">The original event data</param>

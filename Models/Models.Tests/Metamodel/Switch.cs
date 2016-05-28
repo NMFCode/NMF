@@ -53,6 +53,7 @@ namespace NMF.Models.Tests.Railway
         public Switch()
         {
             this._positions = new SwitchPositionsCollection(this);
+            this._positions.CollectionChanging += this.PositionsCollectionChanging;
             this._positions.CollectionChanged += this.PositionsCollectionChanged;
         }
         
@@ -71,6 +72,8 @@ namespace NMF.Models.Tests.Railway
             {
                 if ((this._currentPosition != value))
                 {
+                    this.OnCurrentPositionChanging(EventArgs.Empty);
+                    this.OnPropertyChanging("CurrentPosition");
                     Position old = this._currentPosition;
                     this._currentPosition = value;
                     ValueChangedEventArgs e = new ValueChangedEventArgs(old, value);
@@ -119,9 +122,27 @@ namespace NMF.Models.Tests.Railway
         }
         
         /// <summary>
+        /// Gets fired before the CurrentPosition property changes its value
+        /// </summary>
+        public event EventHandler CurrentPositionChanging;
+        
+        /// <summary>
         /// Gets fired when the CurrentPosition property changed its value
         /// </summary>
         public event EventHandler<ValueChangedEventArgs> CurrentPositionChanged;
+        
+        /// <summary>
+        /// Raises the CurrentPositionChanging event
+        /// </summary>
+        /// <param name="eventArgs">The event data</param>
+        protected virtual void OnCurrentPositionChanging(EventArgs eventArgs)
+        {
+            EventHandler handler = this.CurrentPositionChanging;
+            if ((handler != null))
+            {
+                handler.Invoke(this, eventArgs);
+            }
+        }
         
         /// <summary>
         /// Raises the CurrentPositionChanged event
@@ -137,7 +158,17 @@ namespace NMF.Models.Tests.Railway
         }
         
         /// <summary>
-        /// Forwards change notifications for the Positions property to the parent model element
+        /// Forwards CollectionChanging notifications for the Positions property to the parent model element
+        /// </summary>
+        /// <param name="sender">The collection that raised the change</param>
+        /// <param name="e">The original event data</param>
+        private void PositionsCollectionChanging(object sender, NMF.Collections.ObjectModel.NotifyCollectionChangingEventArgs e)
+        {
+            this.OnCollectionChanging("Positions", e);
+        }
+        
+        /// <summary>
+        /// Forwards CollectionChanged notifications for the Positions property to the parent model element
         /// </summary>
         /// <param name="sender">The collection that raised the change</param>
         /// <param name="e">The original event data</param>

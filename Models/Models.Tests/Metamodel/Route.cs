@@ -63,8 +63,10 @@ namespace NMF.Models.Tests.Railway
         public Route()
         {
             this._follows = new RouteFollowsCollection(this);
+            this._follows.CollectionChanging += this.FollowsCollectionChanging;
             this._follows.CollectionChanged += this.FollowsCollectionChanged;
             this._definedBy = new ObservableCompositionList<ISensor>(this);
+            this._definedBy.CollectionChanging += this.DefinedByCollectionChanging;
             this._definedBy.CollectionChanged += this.DefinedByCollectionChanged;
         }
         
@@ -83,6 +85,8 @@ namespace NMF.Models.Tests.Railway
             {
                 if ((this._entry != value))
                 {
+                    this.OnEntryChanging(EventArgs.Empty);
+                    this.OnPropertyChanging("Entry");
                     ISemaphore old = this._entry;
                     this._entry = value;
                     if ((old != null))
@@ -132,6 +136,8 @@ namespace NMF.Models.Tests.Railway
             {
                 if ((this._exit != value))
                 {
+                    this.OnExitChanging(EventArgs.Empty);
+                    this.OnPropertyChanging("Exit");
                     ISemaphore old = this._exit;
                     this._exit = value;
                     if ((old != null))
@@ -200,14 +206,37 @@ namespace NMF.Models.Tests.Railway
         }
         
         /// <summary>
+        /// Gets fired before the Entry property changes its value
+        /// </summary>
+        public event EventHandler EntryChanging;
+        
+        /// <summary>
         /// Gets fired when the Entry property changed its value
         /// </summary>
         public event EventHandler<ValueChangedEventArgs> EntryChanged;
         
         /// <summary>
+        /// Gets fired before the Exit property changes its value
+        /// </summary>
+        public event EventHandler ExitChanging;
+        
+        /// <summary>
         /// Gets fired when the Exit property changed its value
         /// </summary>
         public event EventHandler<ValueChangedEventArgs> ExitChanged;
+        
+        /// <summary>
+        /// Raises the EntryChanging event
+        /// </summary>
+        /// <param name="eventArgs">The event data</param>
+        protected virtual void OnEntryChanging(EventArgs eventArgs)
+        {
+            EventHandler handler = this.EntryChanging;
+            if ((handler != null))
+            {
+                handler.Invoke(this, eventArgs);
+            }
+        }
         
         /// <summary>
         /// Raises the EntryChanged event
@@ -233,13 +262,36 @@ namespace NMF.Models.Tests.Railway
         }
         
         /// <summary>
-        /// Forwards change notifications for the Follows property to the parent model element
+        /// Forwards CollectionChanging notifications for the Follows property to the parent model element
+        /// </summary>
+        /// <param name="sender">The collection that raised the change</param>
+        /// <param name="e">The original event data</param>
+        private void FollowsCollectionChanging(object sender, NMF.Collections.ObjectModel.NotifyCollectionChangingEventArgs e)
+        {
+            this.OnCollectionChanging("Follows", e);
+        }
+        
+        /// <summary>
+        /// Forwards CollectionChanged notifications for the Follows property to the parent model element
         /// </summary>
         /// <param name="sender">The collection that raised the change</param>
         /// <param name="e">The original event data</param>
         private void FollowsCollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
         {
             this.OnCollectionChanged("Follows", e);
+        }
+        
+        /// <summary>
+        /// Raises the ExitChanging event
+        /// </summary>
+        /// <param name="eventArgs">The event data</param>
+        protected virtual void OnExitChanging(EventArgs eventArgs)
+        {
+            EventHandler handler = this.ExitChanging;
+            if ((handler != null))
+            {
+                handler.Invoke(this, eventArgs);
+            }
         }
         
         /// <summary>
@@ -266,7 +318,17 @@ namespace NMF.Models.Tests.Railway
         }
         
         /// <summary>
-        /// Forwards change notifications for the DefinedBy property to the parent model element
+        /// Forwards CollectionChanging notifications for the DefinedBy property to the parent model element
+        /// </summary>
+        /// <param name="sender">The collection that raised the change</param>
+        /// <param name="e">The original event data</param>
+        private void DefinedByCollectionChanging(object sender, NMF.Collections.ObjectModel.NotifyCollectionChangingEventArgs e)
+        {
+            this.OnCollectionChanging("DefinedBy", e);
+        }
+        
+        /// <summary>
+        /// Forwards CollectionChanged notifications for the DefinedBy property to the parent model element
         /// </summary>
         /// <param name="sender">The collection that raised the change</param>
         /// <param name="e">The original event data</param>

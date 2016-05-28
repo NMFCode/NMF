@@ -48,6 +48,11 @@ namespace NMF.Models.Tests.Railway
         }
         
         /// <summary>
+        /// Gets fired before the Id property changes its value
+        /// </summary>
+        event EventHandler IdChanging;
+        
+        /// <summary>
         /// Gets fired when the Id property changed its value
         /// </summary>
         event EventHandler<ValueChangedEventArgs> IdChanged;

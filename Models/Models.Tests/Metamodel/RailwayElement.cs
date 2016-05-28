@@ -62,6 +62,8 @@ namespace NMF.Models.Tests.Railway
             {
                 if ((this._id != value))
                 {
+                    this.OnIdChanging(EventArgs.Empty);
+                    this.OnPropertyChanging("Id");
                     Nullable<int> old = this._id;
                     this._id = value;
                     ValueChangedEventArgs e = new ValueChangedEventArgs(old, value);
@@ -94,9 +96,27 @@ namespace NMF.Models.Tests.Railway
         }
         
         /// <summary>
+        /// Gets fired before the Id property changes its value
+        /// </summary>
+        public event EventHandler IdChanging;
+        
+        /// <summary>
         /// Gets fired when the Id property changed its value
         /// </summary>
         public event EventHandler<ValueChangedEventArgs> IdChanged;
+        
+        /// <summary>
+        /// Raises the IdChanging event
+        /// </summary>
+        /// <param name="eventArgs">The event data</param>
+        protected virtual void OnIdChanging(EventArgs eventArgs)
+        {
+            EventHandler handler = this.IdChanging;
+            if ((handler != null))
+            {
+                handler.Invoke(this, eventArgs);
+            }
+        }
         
         /// <summary>
         /// Raises the IdChanged event

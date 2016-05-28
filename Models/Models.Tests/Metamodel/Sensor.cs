@@ -48,6 +48,7 @@ namespace NMF.Models.Tests.Railway
         public Sensor()
         {
             this._elements = new SensorElementsCollection(this);
+            this._elements.CollectionChanging += this.ElementsCollectionChanging;
             this._elements.CollectionChanged += this.ElementsCollectionChanged;
         }
         
@@ -102,7 +103,17 @@ namespace NMF.Models.Tests.Railway
         }
         
         /// <summary>
-        /// Forwards change notifications for the Elements property to the parent model element
+        /// Forwards CollectionChanging notifications for the Elements property to the parent model element
+        /// </summary>
+        /// <param name="sender">The collection that raised the change</param>
+        /// <param name="e">The original event data</param>
+        private void ElementsCollectionChanging(object sender, NMF.Collections.ObjectModel.NotifyCollectionChangingEventArgs e)
+        {
+            this.OnCollectionChanging("Elements", e);
+        }
+        
+        /// <summary>
+        /// Forwards CollectionChanged notifications for the Elements property to the parent model element
         /// </summary>
         /// <param name="sender">The collection that raised the change</param>
         /// <param name="e">The original event data</param>
