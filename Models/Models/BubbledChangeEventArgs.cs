@@ -13,12 +13,21 @@ namespace NMF.Models
     /// </summary>
     public class BubbledChangeEventArgs : EventArgs
     {
-        private BubbledChangeEventArgs() { }
+        private BubbledChangeEventArgs(IModelElement element)
+        {
+            Element = element;
+            AbsoluteUri = Element.AbsoluteUri;
+        }
 
         /// <summary>
         /// The original model element directly affected by this change
         /// </summary>
         public IModelElement Element { get; private set; }
+
+        /// <summary>
+        /// Absolute URI of the model element at the time of the event
+        /// </summary>
+        public Uri AbsoluteUri { get; private set; }
 
         /// <summary>
         /// The name of the affected property or null, if no specific property was affected
@@ -38,7 +47,7 @@ namespace NMF.Models
 
         public override string ToString()
         {
-            return "BubbledChange: " + ChangeType + " in " + Element;
+            return "BubbledChange: " + ChangeType + " in " + Element + " " + AbsoluteUri;
         }
 
         /// <summary>
@@ -78,10 +87,9 @@ namespace NMF.Models
             if (createdElement == null)
                 throw new ArgumentNullException(nameof(createdElement));
 
-            return new BubbledChangeEventArgs
+            return new BubbledChangeEventArgs(createdElement)
             {
-                ChangeType = ChangeType.ModelElementCreated,
-                Element = createdElement
+                ChangeType = ChangeType.ModelElementCreated
             };
         }
 
@@ -90,15 +98,15 @@ namespace NMF.Models
         /// </summary>
         /// <param name="deletedElement">The deleted model element.</param>
         /// <returns></returns>
-        public static BubbledChangeEventArgs ElementDeleting(IModelElement deletingElement)
+        public static BubbledChangeEventArgs ElementDeleting(IModelElement deletingElement, Uri originalAbsoluteUri)
         {
             if (deletingElement == null)
                 throw new ArgumentNullException(nameof(deletingElement));
 
-            return new BubbledChangeEventArgs
+            return new BubbledChangeEventArgs(deletingElement)
             {
                 ChangeType = ChangeType.ModelElementDeleting,
-                Element = deletingElement
+                AbsoluteUri = originalAbsoluteUri
             };
         }
 
@@ -107,15 +115,15 @@ namespace NMF.Models
         /// </summary>
         /// <param name="deletedElement">The deleted model element.</param>
         /// <returns></returns>
-        public static BubbledChangeEventArgs ElementDeleted(IModelElement deletedElement)
+        public static BubbledChangeEventArgs ElementDeleted(IModelElement deletedElement, Uri originalAbsoluteUri)
         {
             if (deletedElement == null)
                 throw new ArgumentNullException(nameof(deletedElement));
 
-            return new BubbledChangeEventArgs
+            return new BubbledChangeEventArgs(deletedElement)
             {
                 ChangeType = ChangeType.ModelElementDeleted,
-                Element = deletedElement
+                AbsoluteUri = originalAbsoluteUri
             };
         }
 
@@ -132,10 +140,9 @@ namespace NMF.Models
             if (string.IsNullOrEmpty(propertyName))
                 throw new ArgumentNullException(nameof(propertyName));
 
-            return new BubbledChangeEventArgs
+            return new BubbledChangeEventArgs(source)
             {
                 ChangeType = ChangeType.PropertyChanging,
-                Element = source,
                 PropertyName = propertyName
             };
         }
@@ -156,10 +163,9 @@ namespace NMF.Models
             if (args == null)
                 throw new ArgumentNullException(nameof(args));
 
-            return new BubbledChangeEventArgs
+            return new BubbledChangeEventArgs(source)
             {
                 ChangeType = ChangeType.PropertyChanged,
-                Element = source,
                 OriginalEventArgs = args,
                 PropertyName = propertyName
             };
@@ -181,10 +187,9 @@ namespace NMF.Models
             if (args == null)
                 throw new ArgumentNullException(nameof(args));
 
-            return new BubbledChangeEventArgs
+            return new BubbledChangeEventArgs(source)
             {
                 ChangeType = ChangeType.CollectionChanging,
-                Element = source,
                 OriginalEventArgs = args,
                 PropertyName = propertyName
             };
@@ -206,10 +211,9 @@ namespace NMF.Models
             if (args == null)
                 throw new ArgumentNullException(nameof(args));
 
-            return new BubbledChangeEventArgs
+            return new BubbledChangeEventArgs(source)
             {
                 ChangeType = ChangeType.CollectionChanged,
-                Element = source,
                 OriginalEventArgs = args,
                 PropertyName = propertyName
             };

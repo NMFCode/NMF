@@ -27,7 +27,7 @@ namespace NMF.Models.Tests.Evolution
         }
         
         [TestMethod]
-        public void DeletedEventBubblesLast()
+        public void BubbledChangeListHasCorrectTreeForm()
         {
             var allUris = railway.Descendants().Select(e => e.RelativeUri).ToList();
 
@@ -39,23 +39,40 @@ namespace NMF.Models.Tests.Evolution
                 var element = railway.Resolve(uri);
                 element.Delete();
 
-                Assert.AreEqual(ChangeType.ModelElementDeleting, args.First().ChangeType, "URI: " + uri.ToString());
-                Assert.AreEqual(ChangeType.ModelElementDeleted, args.Last().ChangeType, "URI: " + uri.ToString());
-                Assert.AreEqual(args.First().Element.RelativeUri, args.Last().Element.RelativeUri);
+                CollectionAssert.AllItemsAreNotNull(args.Select(a => a.AbsoluteUri).ToList());
+                AssertCorrectTreeForm(args, 0);
             }
         }
 
-        [TestMethod]
-        public void SettingParentToNullCausesAllProperEvents()
+        private int AssertCorrectTreeForm(List<BubbledChangeEventArgs> list, int startingIndex)
         {
-            var args = new List<BubbledChangeEventArgs>();
-            railway.BubbledChange += (obj, e) => args.Add(e);
-            railway.Routes[0].DefinedBy[0].Elements[0].Sensor = null;
+            int i = 1;
+            var current = list[startingIndex];
+            while (startingIndex + i < list.Count)
+            {
+                var other = list[startingIndex + i];
+                if (((current.ChangeType == ChangeType.CollectionChanging && other.ChangeType == ChangeType.CollectionChanged) ||
+                    (current.ChangeType == ChangeType.ModelElementDeleting && other.ChangeType == ChangeType.ModelElementDeleted) ||
+                    (current.ChangeType == ChangeType.PropertyChanging && other.ChangeType == ChangeType.PropertyChanged))
+                    && current.AbsoluteUri == other.AbsoluteUri)
+                {
+                    return i;
+                }
+                else if (other.ChangeType == ChangeType.CollectionChanging ||
+                    other.ChangeType == ChangeType.ModelElementDeleting || 
+                    other.ChangeType == ChangeType.PropertyChanging)
+                {
+                    i += AssertCorrectTreeForm(list, startingIndex + i);
+                }
+                else if(other.ChangeType != ChangeType.ModelElementCreated)
+                {
+                    Assert.Fail("Found " + other.ChangeType + " without previously encountering the corresponding -ing event. URI: " + other.AbsoluteUri);
+                }
 
-            CollectionAssert.Contains(args.Select(e => e.ChangeType).ToList(), ChangeType.PropertyChanging);
-            CollectionAssert.Contains(args.Select(e => e.ChangeType).ToList(), ChangeType.PropertyChanged);
-            CollectionAssert.Contains(args.Select(e => e.ChangeType).ToList(), ChangeType.ModelElementDeleting);
-            CollectionAssert.Contains(args.Select(e => e.ChangeType).ToList(), ChangeType.ModelElementDeleted);
+                i++;
+            }
+            Assert.Fail("No corresponding -ed event found for " + current.ChangeType + ". URI: " + current.AbsoluteUri);
+            return -1;
         }
     }
 }
