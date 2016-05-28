@@ -125,6 +125,10 @@
     <Compile Include="Linq\Model\IModelContainerGrain.cs" />
     <Compile Include="Linq\Model\IModelProcessingAggregateGrain.cs" />
     <Compile Include="Linq\Model\IModelProcessingNodeGrain.cs" />
+    <Compile Include="Linq\Model\IModelSiloGrain.cs" />
+    <Compile Include="Linq\Model\IModelSiloGrainManagerGrain.cs" />
+    <Compile Include="Linq\Model\ModelSiloGrain.cs" />
+    <Compile Include="Linq\Model\ModelSiloGrainManagerGrain.cs" />
     <Compile Include="Linq\Model\RemoteValue\LocalModelReceiveContext.cs" />
     <Compile Include="Linq\Model\RemoteValue\ModelRemoteValueObject.cs" />
     <Compile Include="Linq\Model\ModelContainerGrain.cs" />

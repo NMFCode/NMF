@@ -37,6 +37,12 @@ namespace NMF.Expressions.Linq.Orleans
             await MessageDispatcher.Subscribe(await modelContainer.GetModelUpdateStream());
         }
 
+        public async Task SetLocalModel(IModelSiloGrain<TModel> localModel)
+        {
+            Model = (await localModel.GetModel()).Value;
+            ReceiveContext = new LocalModelReceiveContext(Model);
+        }
+
         protected override void SetupMessageDispatcher(StreamMessageDispatchReceiver dispatcher)
         {
             base.SetupMessageDispatcher(dispatcher);

@@ -12,6 +12,7 @@ using Orleans.Collections;
 using Orleans.Streams;
 using Orleans.Streams.Endpoints;
 using Orleans.Streams.Messages;
+using Orleans.Streams.Partitioning;
 using Orleans.Streams.Stateful;
 using Orleans.Streams.Stateful.Messages;
 

@@ -18,7 +18,6 @@ namespace NMF.Expressions.Linq.Orleans.Model
     {
         protected const string StreamProviderNamespace = "CollectionStreamProvider"; // TODO replace with config value
 
-        protected LocalModelReceiveContext ReceiveContext;
         protected ILocalSendContext SendContext;
 
         protected TransactionalStreamModelConsumer<TIn, TModel> StreamConsumer;
@@ -43,7 +42,13 @@ namespace NMF.Expressions.Linq.Orleans.Model
         public virtual async Task Setup(IModelContainerGrain<TModel> modelContainer,
             int outputMultiplexFactor = 1)
         {
-            await StreamConsumer.SetModelContainer(modelContainer);
+            var managementKey = modelContainer.GetPrimaryKey();
+            var siloModelManagerGrain = GrainFactory.GetGrain<IModelSiloGrainManagerGrain<TModel>>(managementKey);
+            var localModelGrain = await siloModelManagerGrain.GetModelSiloGrainForSilo(RuntimeIdentity);
+
+            var identity = await localModelGrain.GetIdentity();
+            await StreamConsumer.SetLocalModel(localModelGrain);
+            //await StreamConsumer.SetModelContainer(modelContainer);
             OutputMultiplexFactor = outputMultiplexFactor;
         }
 
