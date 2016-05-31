@@ -74,9 +74,18 @@ namespace NMF.Models.Meta
         }
         
         /// <summary>
-        /// The Refines property
+        /// The reference that is refined by the current reference, only applicable if the reference is part of a class
         /// </summary>
         IReference Refines
+        {
+            get;
+            set;
+        }
+        
+        /// <summary>
+        /// The least common anchestor of an instance and its referenced element, if statically known
+        /// </summary>
+        IClass Anchor
         {
             get;
             set;
@@ -106,6 +115,11 @@ namespace NMF.Models.Meta
         /// Gets fired when the Refines property changed its value
         /// </summary>
         event EventHandler<ValueChangedEventArgs> RefinesChanged;
+        
+        /// <summary>
+        /// Gets fired when the Anchor property changed its value
+        /// </summary>
+        event EventHandler<ValueChangedEventArgs> AnchorChanged;
     }
 }
 

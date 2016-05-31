@@ -445,11 +445,24 @@ namespace NMF.Models.Meta
                     }
                     toIdentifierString.Statements.Add(new CodeMethodReturnStatement(toString));
                     generatedType.Members.Add(toIdentifierString);
+
+                    if (@class.IdentifierScope == IdentifierScope.Global)
+                    {
+                        var createUriWithFragment = new CodeMemberMethod();
+                        createUriWithFragment.Name = "CreateUriWithFragment";
+                        createUriWithFragment.ReturnType = new CodeTypeReference(typeof(Uri).Name);
+                        createUriWithFragment.Attributes = MemberAttributes.Family | MemberAttributes.Override;
+                        createUriWithFragment.Parameters.Add(new CodeParameterDeclarationExpression(typeof(string), "fragment"));
+                        createUriWithFragment.Parameters.Add(new CodeParameterDeclarationExpression(typeof(bool), "absolute"));
+                        createUriWithFragment.Statements.Add(new CodeMethodReturnStatement(new CodeMethodInvokeExpression(
+                            new CodeThisReferenceExpression(), "CreateUriFromGlobalIdentifier",
+                            new CodeArgumentReferenceExpression("fragment"), new CodeArgumentReferenceExpression("absolute"))));
+                    }
                 }
 
                 var identifier = @class.RetrieveIdentifier();
-                if (identifier == null || generatedType.IsInterface) return;
-                generatedType.AddAttribute(typeof(DebuggerDisplayAttribute), string.Format("{0} {{{1}}}", generatedType.Name, identifier.Name.ToPascalCase()));
+                if (identifier.Identifier == null || generatedType.IsInterface) return;
+                generatedType.AddAttribute(typeof(DebuggerDisplayAttribute), string.Format("{0} {{{1}}}", generatedType.Name, identifier.Identifier.Name.ToPascalCase()));
             }
 
             /// <summary>

@@ -75,6 +75,8 @@
     <Compile Include="Meta\IAttributeConstraint.cs" />
     <Compile Include="Meta\IClass.cs" />
     <Compile Include="Meta\IDataType.cs" />
+    <Compile Include="Meta\IdentifierScope.cs" />
+    <Compile Include="Meta\IdentifierScopeExtensions.cs" />
     <Compile Include="Meta\IEnumeration.cs" />
     <Compile Include="Meta\IEvent.cs" />
     <Compile Include="Meta\IExtension.cs" />
@@ -147,6 +149,7 @@
     <Compile Include="Repository\Serialization\ModelSerializer.cs" />
     <Compile Include="Repository\Serialization\XmlModel.cs" />
     <Compile Include="Repository\UnresolvedModelElementEventArgs.cs" />
+    <Compile Include="ScopedIdentifier.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Collections\Collections\Collections.csproj">

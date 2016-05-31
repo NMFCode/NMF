@@ -50,6 +50,7 @@
     <Compile Include="Extensions.cs" />
     <Compile Include="ItemEqualityArray.cs" />
     <Compile Include="ItemEqualityComparer.cs" />
+    <Compile Include="MemoizedFunc.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

@@ -233,6 +233,20 @@ namespace NMF.Models
             return result;
         }
 
+        protected Uri CreateUriFromGlobalIdentifier(string fragment, bool absolute)
+        {
+            var id = ToIdentifierString();
+            if (absolute)
+            {
+                var model = Model;
+                if (model != null)
+                {
+                    return new Uri(model.ModelUri, "#" + id);
+                }
+            }
+            return new Uri(id, UriKind.Relative);
+        }
+
         /// <summary>
         /// Gets or sets a value indicating whether a correct model containment should be enforced
         /// </summary>

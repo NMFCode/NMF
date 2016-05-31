@@ -94,8 +94,7 @@ namespace NMF.Interop.Ecore.Transformations
         {
             public override void Transform(IEClass input, IClass output, ITransformationContext context)
             {
-                output.IsAbstract = input.Abstract.GetValueOrDefault();
-                output.IsInterface = input.Interface.GetValueOrDefault();
+                output.IsAbstract = input.Abstract.GetValueOrDefault() || input.Interface.GetValueOrDefault();
 
                 var identifier = input.EStructuralFeatures.OfType<EAttribute>().FirstOrDefault(att => att.ID.GetValueOrDefault());
                 if (identifier != null)

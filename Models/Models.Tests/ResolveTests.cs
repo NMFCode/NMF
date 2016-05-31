@@ -160,7 +160,7 @@ namespace NMF.Models.Tests
             serializer.SerializeFragment(element, stream);
 
             var switchToUpdate = railwayModel.RootElements.Single().As<RailwayContainer>().Descendants().OfType<ISwitch>().First(sw => sw.Sensor == null);
-            switchToUpdate.Sensor = new Sensor();
+            switchToUpdate.Sensor = new Sensor() { Id = 0815 };
 
             stream = new MemoryStream();
             serializer.SerializeFragment(element, stream);
@@ -187,7 +187,7 @@ namespace NMF.Models.Tests
             var test = File.ReadAllText(tempFile);
             
             var switchToUpdate = railwayModel.RootElements.Single().As<RailwayContainer>().Descendants().OfType<ISwitch>().First(sw => sw.Sensor == null);
-            switchToUpdate.Sensor = new Sensor();
+            switchToUpdate.Sensor = new Sensor() { Id = 0815 };
 
             var stream = new MemoryStream();
             serializer.SerializeFragment(element, stream);
