@@ -175,6 +175,14 @@ namespace NMF.Expressions.Linq.Orleans.Model
             throw new InvalidOperationException();
         }
 
+        public Task FixSegmentLength(Uri uri)
+        {
+            var localSegment = (ISegment) ((IResolvableModel) Model).Resolve(uri);
+            localSegment.Length = -localSegment.Length + 1;
+            ModelUpdateSender.EnqueueMessageBroadcast(new PosLengthFixMessage(uri));
+            return TaskDone.Done;
+        }
+
         public async Task<IList<StreamIdentity>> GetOutputStreams()
         {
             return await OutputProducer.GetOutputStreams();

@@ -1,5 +1,6 @@
 ﻿using System;
 using NMF.Models;
+using NMF.Models.Tests.Railway;
 using Orleans.Collections;
 using Orleans.Streams.Stateful;
 
@@ -22,7 +23,7 @@ namespace NMF.Expressions.Linq.Orleans.Model
 
         protected override T CreateLocalObject(ILocalReceiveContext receiveContext, LocalContextAction localContextAction)
         {
-            return (T)((LocalModelReceiveContext)receiveContext).LookupModel.Resolve(RootRelativeUri);
+            return (T) ((LocalModelReceiveContext) receiveContext).RetrieveWithCache(RootRelativeUri);
         }
 
         public override object ReferenceComparable => _modelElement;

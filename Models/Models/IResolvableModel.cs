@@ -1,8 +1,10 @@
 ﻿using System;
+using NMF.Expressions;
+using NMF.Utilities;
 
 namespace NMF.Models
 {
-    public interface IResolvableModel
+    public interface IResolvableModel : IModelElement
     {
         IModelElement Resolve(string uriString);
 

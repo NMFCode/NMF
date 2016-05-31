@@ -1,5 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using NMF.Models;
+using NMF.Utilities;
 using Orleans.Collections;
 using Orleans.Streams.Stateful;
 
@@ -25,6 +28,7 @@ namespace NMF.Expressions.Linq.Orleans.Model
             {
                 var type = typeof(ModelRemoteValueUri<>);
                 var genericType = type.MakeGenericType(typeof(T));
+              
                 return (IObjectRemoteValue<T>)Activator.CreateInstance(genericType, new object[] { obj });
             }
             if (obj is IModelElementTuple)
@@ -35,6 +39,36 @@ namespace NMF.Expressions.Linq.Orleans.Model
             }
 
             return new ModelRemoteValueObject<T>(obj);
+        }
+
+        public static ModelRemoteValueFactory<T> CreateFactory<T>()
+        {
+            if (typeof(IModelElement).IsAssignableFrom(typeof(T)))
+            {
+                var type = typeof(ModelRemoteValueUri<>);
+                var genericType = type.MakeGenericType(typeof(T));
+                var constructorInfo = genericType.GetConstructors().First();
+
+                var activator = ObjectActivation.GetActivator<IObjectRemoteValue<T>>(constructorInfo);
+                return new ModelRemoteValueFactory<T>(activator);
+            }
+
+            throw new ArgumentException();
+        }
+    }
+
+    public class ModelRemoteValueFactory<T>
+    {
+        private ObjectActivator<IObjectRemoteValue<T>> _activator;
+
+        public ModelRemoteValueFactory(ObjectActivator<IObjectRemoteValue<T>> activator)
+        {
+            _activator = activator;
+        }
+
+        public IObjectRemoteValue<T> CreateModelRemoteValue(T obj, ILocalSendContext sendContext)
+        {
+            return _activator(obj, sendContext);
         }
     }
 }

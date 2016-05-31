@@ -1,4 +1,5 @@
 ﻿using System.Threading.Tasks;
+using NMF.Expressions.Linq.Orleans.Message;
 using NMF.Models;
 using Orleans;
 using Orleans.Concurrency;
@@ -31,6 +32,11 @@ namespace NMF.Expressions.Linq.Orleans.Model
         public async Task SetModelContainer(IModelContainerGrain<T> modelContainer)
         {
             await _streamConsumer.SetModelContainer(modelContainer);
+            _streamConsumer.MessageDispatcher.Register<PosLengthFixMessage>(message =>
+            {
+                message.Execute(_streamConsumer.Model as Models.Model);
+                return TaskDone.Done;
+            });
         }
 
         public Task<string> GetIdentity()

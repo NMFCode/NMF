@@ -33,14 +33,18 @@ namespace NMF.Expressions.Linq.Orleans
         {
             var modelPath = await modelContainer.GetModelPath();
             Model = ModelLoader.Instance.LoadModel<TModel>(modelPath);
-            ReceiveContext = new LocalModelReceiveContext(Model);
+            var receiveContext = new LocalModelReceiveContext(Model);
+            receiveContext.BuildCache(Model.Descendants().OfType<T>());
+            ReceiveContext = receiveContext;
             await MessageDispatcher.Subscribe(await modelContainer.GetModelUpdateStream());
         }
 
         public async Task SetLocalModel(IModelSiloGrain<TModel> localModel)
         {
             Model = (await localModel.GetModel()).Value;
-            ReceiveContext = new LocalModelReceiveContext(Model);
+            var receiveContext = new LocalModelReceiveContext(Model);
+            receiveContext.BuildCache(Model.Descendants().OfType<T>());
+            ReceiveContext = receiveContext;
         }
 
         protected override void SetupMessageDispatcher(StreamMessageDispatchReceiver dispatcher)

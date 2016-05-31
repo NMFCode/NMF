@@ -38,7 +38,7 @@ namespace NMF.Expressions.Linq.Orleans.Model
         public T LoadModel<T>(string modelPath) where T : IResolvableModel
         {
             ModelElement.EnforceModels = true;
-            Models.Model.PromoteSingleRootElement = true;
+            Models.Model.PromoteSingleRootElement = false;
             var repository = new ModelRepository();
             var rootModelElement = repository.Resolve(new Uri(new FileInfo(modelPath).FullName));
 

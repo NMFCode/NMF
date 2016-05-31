@@ -72,5 +72,7 @@ namespace NMF.Expressions.Linq.Orleans.Model
         /// </summary>
         /// <returns></returns>
         Task<RailwayContainer> NeverCallMe();
+
+        Task FixSegmentLength(Uri uri);
     }
 }
