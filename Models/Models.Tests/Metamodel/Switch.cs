@@ -36,6 +36,7 @@ namespace NMF.Models.Tests.Railway
     [XmlNamespaceAttribute("http://www.semanticweb.org/ontologies/2015/ttc/trainbenchmark")]
     [XmlNamespacePrefixAttribute("hu.bme.mit.trainbenchmark")]
     [ModelRepresentationClassAttribute("http://www.semanticweb.org/ontologies/2015/ttc/trainbenchmark#//Switch/")]
+    [DebuggerDisplayAttribute("Switch {Id}")]
     public class Switch : TrackElement, ISwitch, IModelElement
     {
         

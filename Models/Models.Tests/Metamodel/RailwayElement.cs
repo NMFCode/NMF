@@ -33,9 +33,11 @@ namespace NMF.Models.Tests.Railway
     /// <summary>
     /// The default implementation of the RailwayElement class
     /// </summary>
+    [XmlIdentifierAttribute("id")]
     [XmlNamespaceAttribute("http://www.semanticweb.org/ontologies/2015/ttc/trainbenchmark")]
     [XmlNamespacePrefixAttribute("hu.bme.mit.trainbenchmark")]
     [ModelRepresentationClassAttribute("http://www.semanticweb.org/ontologies/2015/ttc/trainbenchmark#//RailwayElement/")]
+    [DebuggerDisplayAttribute("RailwayElement {Id}")]
     public abstract class RailwayElement : ModelElement, IRailwayElement, IModelElement
     {
         
@@ -48,6 +50,7 @@ namespace NMF.Models.Tests.Railway
         /// The id property
         /// </summary>
         [XmlElementNameAttribute("id")]
+        [IdAttribute()]
         [XmlAttributeAttribute(true)]
         public virtual Nullable<int> Id
         {
@@ -76,6 +79,17 @@ namespace NMF.Models.Tests.Railway
             get
             {
                 return NMF.Models.Repository.MetaRepository.Instance.ResolveClass("http://www.semanticweb.org/ontologies/2015/ttc/trainbenchmark#//RailwayElement/");
+            }
+        }
+        
+        /// <summary>
+        /// Gets a value indicating whether the current model element can be identified by an attribute value
+        /// </summary>
+        public override bool IsIdentified
+        {
+            get
+            {
+                return true;
             }
         }
         
@@ -133,6 +147,15 @@ namespace NMF.Models.Tests.Railway
         public override IClass GetClass()
         {
             return ((IClass)(NMF.Models.Repository.MetaRepository.Instance.Resolve("http://www.semanticweb.org/ontologies/2015/ttc/trainbenchmark#//RailwayElement/")));
+        }
+        
+        /// <summary>
+        /// Gets the identifier string for this model element
+        /// </summary>
+        /// <returns>The identifier string</returns>
+        public override string ToIdentifierString()
+        {
+            return this.Id.ToString();
         }
         
         /// <summary>
