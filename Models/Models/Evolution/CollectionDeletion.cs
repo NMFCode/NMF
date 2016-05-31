@@ -3,12 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using NMF.Models.Repository;
+using System.Collections;
 
 namespace NMF.Models.Evolution
 {
     public class CollectionDeletion : IModelChange
     {
-        public CollectionDeletion(Uri absoluteUri, string collectionPropertyName, object elementToDelete, int index)
+        public CollectionDeletion(Uri absoluteUri, string collectionPropertyName, IEnumerable elementsToDelete, int index)
         {
             if (absoluteUri == null)
                 throw new ArgumentNullException(nameof(absoluteUri));
@@ -17,7 +18,7 @@ namespace NMF.Models.Evolution
 
             AbsoluteUri = absoluteUri;
             CollectionPropertyName = collectionPropertyName;
-            Element = elementToDelete;
+            Elements = elementsToDelete.Cast<object>().ToList();
             Index = index;
         }
 
@@ -27,7 +28,7 @@ namespace NMF.Models.Evolution
 
         public int Index { get; set; }
 
-        public object Element { get; set; }
+        public IEnumerable<object> Elements { get; set; }
 
         public void Apply(IModelRepository repository)
         {
@@ -38,12 +39,14 @@ namespace NMF.Models.Evolution
             //TODO same uglyness as in ModelCollectionInsertion
 
             var iCollection = property.PropertyType.GetInterfaces().FirstOrDefault(i => i.Name.StartsWith("ICollection"));
-            iCollection.GetMethod("Remove").Invoke(collection, new[] { Element });
+            var removeMethod = iCollection.GetMethod("Remove");
+            foreach (var item in Elements)
+                removeMethod.Invoke(collection, new[] { item });
         }
 
         public void Undo(IModelRepository repository)
         {
-            new CollectionInsertion(AbsoluteUri, CollectionPropertyName, Element, Index).Apply(repository);
+            new CollectionInsertion(AbsoluteUri, CollectionPropertyName, Elements, Index).Apply(repository);
         }
 
         public override bool Equals(object obj)
@@ -56,7 +59,7 @@ namespace NMF.Models.Evolution
             else
                 return this.AbsoluteUri.Equals(other.AbsoluteUri)
                     && this.CollectionPropertyName.Equals(other.CollectionPropertyName)
-                    && this.Element.Equals(other.Element)
+                    && this.Elements.SequenceEqual(other.Elements)
                     && this.Index.Equals(other.Index);
         }
 
@@ -64,7 +67,7 @@ namespace NMF.Models.Evolution
         {
             return AbsoluteUri.GetHashCode()
                 ^ CollectionPropertyName.GetHashCode()
-                ^ Element.GetHashCode()
+                ^ Elements.GetHashCode()
                 ^ Index.GetHashCode();
         }
     }

@@ -3,12 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using NMF.Models.Repository;
+using System.Collections;
 
 namespace NMF.Models.Evolution
 {
     public class CollectionInsertion : IModelChange
     {
-        public CollectionInsertion(Uri absoluteUri, string collectionPropertyName, object newElement, int index)
+        public CollectionInsertion(Uri absoluteUri, string collectionPropertyName, IEnumerable newElements, int index)
         {
             if (absoluteUri == null)
                 throw new ArgumentNullException(nameof(absoluteUri));
@@ -17,7 +18,7 @@ namespace NMF.Models.Evolution
 
             AbsoluteUri = absoluteUri;
             CollectionPropertyName = collectionPropertyName;
-            Element = newElement;
+            Elements = newElements.Cast<object>().ToList();
             Index = index;
         }
 
@@ -27,7 +28,7 @@ namespace NMF.Models.Evolution
 
         public int Index { get; set; }
 
-        public object Element { get; set; }
+        public List<object> Elements { get; set; }
 
         public void Apply(IModelRepository repository)
         {
@@ -44,22 +45,28 @@ namespace NMF.Models.Evolution
              * "ICollection" in addition to its generic variant, since we could
              * simply cast our collection instance and avoid reflection.
              */
-            
-            var iList = property.PropertyType.GetInterfaces().FirstOrDefault(i => i.Name.StartsWith("IList"));
+
+            var interfaces = property.PropertyType.GetInterfaces();
+            var iList = interfaces.FirstOrDefault(i => i.Name.StartsWith("IList"));
             if (iList != null)
             {
-                iList.GetMethod("Insert").Invoke(collection, new object[] { Index, Element });
+                var insertMethod = iList.GetMethod("Insert");
+                int offset = 0;
+                foreach (var item in Elements)
+                    insertMethod.Invoke(collection, new object[] { Index + offset++, item });
             }
             else
             {
-                var iCollection = property.PropertyType.GetInterfaces().FirstOrDefault(i => i.Name.StartsWith("ICollection"));
-                iCollection.GetMethod("Add").Invoke(collection, new[] { Element });
+                var iCollection = interfaces.FirstOrDefault(i => i.Name.StartsWith("ICollection"));
+                var addMethod = iCollection.GetMethod("Add");
+                foreach (var item in Elements)
+                    addMethod.Invoke(collection, new[] { item });
             }
         }
 
         public void Undo(IModelRepository repository)
         {
-            new CollectionDeletion(AbsoluteUri, CollectionPropertyName, Element, Index).Apply(repository);
+            new CollectionDeletion(AbsoluteUri, CollectionPropertyName, Elements, Index).Apply(repository);
         }
 
         public override bool Equals(object obj)
@@ -72,7 +79,7 @@ namespace NMF.Models.Evolution
             else
                 return this.AbsoluteUri.Equals(other.AbsoluteUri)
                     && this.CollectionPropertyName.Equals(other.CollectionPropertyName)
-                    && this.Element.Equals(other.Element)
+                    && this.Elements.SequenceEqual(other.Elements)
                     && this.Index.Equals(other.Index);
         }
 
@@ -80,7 +87,7 @@ namespace NMF.Models.Evolution
         {
             return AbsoluteUri.GetHashCode()
                 ^ CollectionPropertyName.GetHashCode()
-                ^ Element.GetHashCode()
+                ^ Elements.GetHashCode()
                 ^ Index.GetHashCode()
                 ^ -1; // so it's not the same as CollectionDeletion
         }

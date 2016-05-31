@@ -30,7 +30,7 @@ namespace NMF.Models.Tests.Evolution
         [TestMethod]
         public void ModelCollectionDeletionSucceeds()
         {
-            var toDelete = railway.Routes.First();
+            var toDelete = railway.Routes.Take(1).ToList();
             var change = new CollectionDeletion(railway.AbsoluteUri, "Routes", toDelete, 0);
 
             change.Apply(repository);

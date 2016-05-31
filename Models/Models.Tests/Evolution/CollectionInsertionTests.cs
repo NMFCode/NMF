@@ -31,7 +31,7 @@ namespace NMF.Models.Tests.Evolution
         public void ModelCollectionInsertionSucceeds()
         {
             var toInsert = new Route();
-            var change = new CollectionInsertion(railway.AbsoluteUri, "Routes", toInsert, 0);
+            var change = new CollectionInsertion(railway.AbsoluteUri, "Routes", new[] { toInsert }, 0);
 
             change.Apply(repository);
             
