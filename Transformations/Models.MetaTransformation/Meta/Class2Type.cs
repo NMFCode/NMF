@@ -457,6 +457,28 @@ namespace NMF.Models.Meta
                         createUriWithFragment.Statements.Add(new CodeMethodReturnStatement(new CodeMethodInvokeExpression(
                             new CodeThisReferenceExpression(), "CreateUriFromGlobalIdentifier",
                             new CodeArgumentReferenceExpression("fragment"), new CodeArgumentReferenceExpression("absolute"))));
+
+                        generatedType.Members.Add(createUriWithFragment);
+
+                        var propagateNewModel = new CodeMemberMethod();
+                        propagateNewModel.Name = "PropagateNewModel";
+                        propagateNewModel.Attributes = MemberAttributes.Family | MemberAttributes.Override;
+                        propagateNewModel.Parameters.Add(new CodeParameterDeclarationExpression(typeof(Model).Name, "newModel"));
+                        propagateNewModel.Parameters.Add(new CodeParameterDeclarationExpression(typeof(Model).Name, "oldModel"));
+                        propagateNewModel.Parameters.Add(new CodeParameterDeclarationExpression(typeof(IModelElement).Name, "subtreeRoot"));
+                        var oldModelRef = new CodeArgumentReferenceExpression("oldModel");
+                        var newModelRef = new CodeArgumentReferenceExpression("newModel");
+                        var nullRef = new CodePrimitiveExpression(null);
+                        var thisRef = new CodeThisReferenceExpression();
+                        propagateNewModel.Statements.Add(new CodeVariableDeclarationStatement(typeof(string), "id", new CodeMethodInvokeExpression(thisRef, "ToIdentifierString")));
+                        var idRef = new CodeVariableReferenceExpression("id");
+                        propagateNewModel.Statements.Add(new CodeConditionStatement(new CodeBinaryOperatorExpression(oldModelRef, CodeBinaryOperatorType.IdentityInequality, nullRef),
+                            new CodeExpressionStatement(new CodeMethodInvokeExpression(oldModelRef, "UnregisterId", idRef))));
+                        propagateNewModel.Statements.Add(new CodeConditionStatement(new CodeBinaryOperatorExpression(newModelRef, CodeBinaryOperatorType.IdentityInequality, nullRef),
+                            new CodeExpressionStatement(new CodeMethodInvokeExpression(newModelRef, "RegisterId", idRef, thisRef))));
+                        propagateNewModel.Statements.Add(new CodeMethodInvokeExpression(new CodeBaseReferenceExpression(), "PropagateNewModel", newModelRef, oldModelRef, new CodeArgumentReferenceExpression("subtreeRoot")));
+
+                        generatedType.Members.Add(propagateNewModel);
                     }
                 }
 
