@@ -233,7 +233,20 @@ namespace NMF.Models.Tests
 
             repository = new ModelRepository();
             rootModelElement = repository.Resolve(new Uri(BaseUri), "..\\..\\railway.railway");
-
         }
+
+        [TestMethod]
+        public void ResolveWorking()
+        {
+            var l = railwayModel.Descendants().OfType<ISwitch>().ToList();
+
+            foreach (var sw in l)
+            {
+                var uri = new Uri(sw.ToIdentifierString(), UriKind.Relative); // gueltig
+                var resolved = railwayModel.Resolve(uri); // hier null, da railwayModel.IdStore == null
+                Assert.AreEqual(sw, resolved);
+            }
+        }
+
     }
 }

@@ -8,12 +8,19 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Text;
+using System.Threading;
 
 namespace NMF.Models
 {
+    [XmlElementName("XMI")]
+    [XmlNamespaceAttribute("http://www.omg.org/XMI")]
+    [XmlNamespacePrefixAttribute("xmi")]
+    [ModelRepresentationClassAttribute("http://www.omg.org/XMI")]
     [DebuggerDisplayAttribute("Model {ModelUri}")]
     public class Model : ModelElement, IResolvableModel
     {
+        private Dictionary<string, ModelElement> IdStore;
+
         static Model()
         {
             PromoteSingleRootElement = true;
@@ -115,30 +122,87 @@ namespace NMF.Models
             }
         }
 
-        public override IModelElement Resolve(string path)
+        public bool RegisterId(string id, ModelElement element)
         {
-            if (string.IsNullOrEmpty(path)) return this;
-            if (path.StartsWith("//")) path = path.Substring(2);
-            if (path.StartsWith("#//")) path = path.Substring(3);
-            if (RootElements.Count == 1 && PromoteSingleRootElement)
+            var idStore = IdStore;
+            if (idStore == null)
             {
-                var root = RootElements[0] as ModelElement;
-                if (root != null)
-                {
-                    var resolved = root.Resolve(path);
-                    if (resolved != null) return resolved;
-                }
+                idStore = Interlocked.CompareExchange(ref IdStore, new Dictionary<string, ModelElement>(), null) ?? IdStore;
             }
-            var baseResolve = base.Resolve(path);
-            if (baseResolve != null || PromoteSingleRootElement || RootElements.Count != 1) return baseResolve;
-            var rootCasted = RootElements[0] as ModelElement;
-            if (rootCasted != null)
+            if (idStore.ContainsKey(id))
             {
-                return rootCasted.Resolve(path);
+                return false;
             }
             else
             {
+                idStore.Add(id, element);
+                return true;
+            }
+        }
+
+        public bool UnregisterId(string id)
+        {
+            if (IdStore == null)
+            {
+                return false;
+            }
+            else
+            {
+                return IdStore.Remove(id);
+            }
+        }
+
+        public override IModelElement Resolve(string path)
+        {
+            if (path == null) return this;
+            if (path.StartsWith("#"))
+            {
+                path = path.Substring(1);
+            }
+            if (path == string.Empty) return this;
+            if (!path.StartsWith("//"))
+            {
+                var index = path.IndexOf('/');
+                if (IdStore != null)
+                {
+                    ModelElement element;
+                    if (IdStore.TryGetValue(index == -1 ? path : path.Substring(0, index), out element))
+                    {
+                        if (index == -1)
+                        {
+                            return element;
+                        }
+                        else
+                        {
+                            return element.Resolve(path.Substring(index + 1));
+                        }
+                    }
+                }
                 return null;
+            }
+            else
+            {
+                path = path.Substring(2);
+                if (RootElements.Count == 1 && PromoteSingleRootElement)
+                {
+                    var root = RootElements[0] as ModelElement;
+                    if (root != null)
+                    {
+                        var resolved = root.Resolve(path);
+                        if (resolved != null) return resolved;
+                    }
+                }
+                var baseResolve = base.Resolve(path);
+                if (baseResolve != null || PromoteSingleRootElement || RootElements.Count != 1) return baseResolve;
+                var rootCasted = RootElements[0] as ModelElement;
+                if (rootCasted != null)
+                {
+                    return rootCasted.Resolve(path);
+                }
+                else
+                {
+                    return null;
+                }
             }
         }
 

@@ -177,20 +177,15 @@ namespace NMF.Models.Repository.Serialization
             return base.GetAttributeValue(value, info, context);
         }
 
-        protected virtual XmlModel CreateModelForRoot(object root)
+        protected virtual Model CreateModelForRoot(object root)
         {
             var modelElement = root as ModelElement;
             if (modelElement != null)
             {
-                var model = modelElement.Model as XmlModel;
+                var model = modelElement.Model;
                 if (model == null)
                 {
-                    model = new XmlModel();
-                    var oldModel = modelElement.Model;
-                    if (oldModel != null)
-                    {
-                        model.ModelUri = oldModel.ModelUri;
-                    }
+                    model = new Model();
                     model.RootElements.Add(modelElement);
                 }
                 return model;
@@ -212,19 +207,14 @@ namespace NMF.Models.Repository.Serialization
             var context = new ModelSerializationContext(repository, model);
 
             Initialize(reader, root, context);
-
-            var idStore = new Dictionary<string, IModelElement>();
+            
             foreach (var pair in context.IDs)
             {
-                var modelElement = pair.Value as IModelElement;
-                if (modelElement != null && !idStore.ContainsKey(pair.Key))
+                var modelElement = pair.Value as ModelElement;
+                if (modelElement != null)
                 {
-                    idStore.Add(pair.Key, modelElement);
+                    model.RegisterId(pair.Key, modelElement);
                 }
-            }
-            if (idStore.Count > 0)
-            {
-                model.IdStore = idStore;
             }
 
             context.Cleanup();
