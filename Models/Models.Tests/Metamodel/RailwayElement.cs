@@ -104,13 +104,27 @@ namespace NMF.Models.Tests.Railway
         /// <param name="eventArgs">The event data</param>
         protected virtual void OnIdChanged(ValueChangedEventArgs eventArgs)
         {
+            PropagateNewId(eventArgs);
             EventHandler<ValueChangedEventArgs> handler = this.IdChanged;
             if ((handler != null))
             {
                 handler.Invoke(this, eventArgs);
             }
         }
-        
+
+        /// <summary>
+        /// Propagates through the composition hierarchy that an entire subtree has been added to a new model
+        /// </summary>
+        /// <param name="newModel">The new model that will host the subtree</param>
+        /// <param name="oldModel">The old model of the subtree</param>
+        /// <param name="subtreeRoot">The root element of the inserted subtree</param>
+        protected override void PropagateNewModel(Model newModel, Model oldModel, IModelElement subtreeRoot)
+        {
+            if (oldModel != null) oldModel.UnregisterId(ToIdentifierString());
+            if (newModel != null) newModel.RegisterId(ToIdentifierString(), this);
+            base.PropagateNewModel(newModel, oldModel, subtreeRoot);
+        }
+
         /// <summary>
         /// Resolves the given attribute name
         /// </summary>
