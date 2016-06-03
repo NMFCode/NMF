@@ -7,5 +7,7 @@ namespace NMF.Expressions.Linq.Orleans.Model
     public interface IModelSiloGrainManagerGrain<T> : IGrainWithGuidKey where T : IResolvableModel
     {
         Task<IModelSiloGrain<T>> GetModelSiloGrainForSilo(string siloIdentity);
+
+        Task TearDownModelSiloGrain(string siloIdentity);
     }
 }

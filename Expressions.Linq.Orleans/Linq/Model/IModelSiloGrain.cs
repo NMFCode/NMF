@@ -12,5 +12,7 @@ namespace NMF.Expressions.Linq.Orleans.Model
         Task SetModelContainer(IModelContainerGrain<T> modelContainer);
 
         Task<string> GetIdentity();
+
+        Task TearDown();
     }
 }

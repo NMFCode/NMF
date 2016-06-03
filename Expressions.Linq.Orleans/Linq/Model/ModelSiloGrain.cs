@@ -43,5 +43,11 @@ namespace NMF.Expressions.Linq.Orleans.Model
         {
             return Task.FromResult(RuntimeIdentity);
         }
+
+        public async Task TearDown()
+        {
+            await _streamConsumer.TearDown();
+            DeactivateOnIdle();
+        }
     }
 }

@@ -57,5 +57,10 @@ namespace NMF.Expressions.Linq.Orleans
             });
         }
 
+        public override Task TearDown()
+        {
+            Model = default(TModel);
+            return base.TearDown();
+        }
     }
 }

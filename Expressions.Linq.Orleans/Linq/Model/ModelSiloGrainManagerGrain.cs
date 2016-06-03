@@ -44,5 +44,14 @@ namespace NMF.Expressions.Linq.Orleans.Model
 
             return modelGrain;
         }
+
+        public async Task TearDownModelSiloGrain(string siloIdentity)
+        {
+            if (_slaveModels.ContainsKey(siloIdentity))
+            {
+                await _slaveModels[siloIdentity].TearDown();
+                _slaveModels.Remove(siloIdentity);
+            }
+        }
     }
 }
