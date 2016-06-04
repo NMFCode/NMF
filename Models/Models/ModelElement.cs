@@ -67,7 +67,7 @@ namespace NMF.Models
                     if (oldParent != null)
                     {
                         oldParent.Deleted -= CascadeDelete;
-                        if (EnforceModels && oldModel != null && oldModel == oldParent.Parent)
+                        if (EnforceModels && oldModel != null && oldModel == oldParent.Parent && oldModel != newModel)
                         {
                             oldModel.RootElements.Add(newParent);
                         }
