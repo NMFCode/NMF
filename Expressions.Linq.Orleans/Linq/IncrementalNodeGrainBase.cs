@@ -51,17 +51,17 @@ namespace NMF.Expressions.Linq.Orleans
                 case NotifyCollectionChangedAction.Add:
 
                     long startTicks = DateTime.Now.Ticks;
-                    if (typeof(TResult) == typeof(ISegment))
-                    {
-                        var tmp = new List<int>();
-                        foreach (var newItem in e.NewItems)
-                        {
-tmp.Add(((IRailwayElement) newItem).Id.Value);
-                        }
+                    //if (typeof(TResult) == typeof(ISegment))
+                    //{
+                    //    var tmp = new List<Uri>();
+                    //    foreach (var newItem in e.NewItems)
+                    //    {
+                    //        tmp.Add(new Uri(((IModelElement) newItem).ToIdentifierString(), UriKind.Relative));
+                    //    }
 
-                        long endTicks = DateTime.Now.Ticks;
-                        _millisLast = (endTicks - startTicks)/TimeSpan.TicksPerMillisecond;
-                    }
+                    //    long endTicks = DateTime.Now.Ticks;
+                    //    _millisLast = (endTicks - startTicks)/TimeSpan.TicksPerMillisecond;
+                    //}
                     foreach (var newItem in e.NewItems)
                     {
                         // TODO validate performance
@@ -70,6 +70,8 @@ tmp.Add(((IRailwayElement) newItem).Id.Value);
                         //for(int i = 0; i <= 5; i++) 
                         StreamSender.EnqueueAddRemoteItem(remoteValue);
                     }
+                    long endTicks = DateTime.Now.Ticks;
+                    _millisLast = (endTicks - startTicks) / TimeSpan.TicksPerMillisecond;
 
 
 

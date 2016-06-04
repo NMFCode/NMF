@@ -58,7 +58,6 @@ namespace NMF.Expressions.Linq.Orleans
             this StreamProcessorChain<TOldIn, TIn, TFactory> previousNode)
             where TFactory : IncrementalStreamProcessorAggregateFactory<TModel> where TModel : IResolvableModel
         {
-            // TODO use tearDownFunc?
             var clientConsumer = new TransactionalStreamModelConsumer<TIn, TModel>(GrainClient.GetStreamProvider("CollectionStreamProvider"));
             await clientConsumer.SetModelContainer(previousNode.Factory.ModelContainerGrain);
             await clientConsumer.SetInput(await previousNode.GetOutputStreams());

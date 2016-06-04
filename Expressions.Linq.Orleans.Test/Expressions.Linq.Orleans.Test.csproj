@@ -57,10 +57,11 @@
     </Reference>
     <Reference Include="Orleans.Streams, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\Documents\Visual Studio 2015\Projects\Orleans.Containers\Orleans.Streams\bin\Debug\Orleans.Streams.dll</HintPath>
+      <HintPath>..\..\..\..\Documents\Visual Studio 2015\Projects\Orleans.Containers\Orleans.Streams\bin\Release\Orleans.Streams.dll</HintPath>
     </Reference>
-    <Reference Include="Orleans.Streams.Stateful">
-      <HintPath>..\..\..\..\Documents\Visual Studio 2015\Projects\Orleans.Containers\Orleans.Streams.Stateful\bin\Debug\Orleans.Streams.Stateful.dll</HintPath>
+    <Reference Include="Orleans.Streams.Stateful, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\Documents\Visual Studio 2015\Projects\Orleans.Containers\Orleans.Streams.Stateful\bin\Release\Orleans.Streams.Stateful.dll</HintPath>
     </Reference>
     <Reference Include="OrleansCodeGenerator, Version=1.3.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.Orleans.OrleansCodeGenerator.1.3.0\lib\net451\OrleansCodeGenerator.dll</HintPath>
@@ -121,9 +122,6 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="packages.config" />
-    <EmbeddedResource Include="railway.nmf">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
     <Content Include="ClientConfigurationForTesting.xml">

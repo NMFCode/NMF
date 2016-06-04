@@ -15,7 +15,8 @@ namespace NMF.Expressions.Linq.Orleans.Model
         public ModelRemoteValueUri(IModelElement modelElement)
         {
             _modelElement = modelElement;
-            RootRelativeUri = modelElement.RelativeUri;
+            var identifier = modelElement.ToIdentifierString();
+            RootRelativeUri = (identifier == null) ? null : new Uri(modelElement.ToIdentifierString(), UriKind.Relative);  //modelElement.RelativeUri;
             GlobalIdentifier = Guid.NewGuid();
         }
 

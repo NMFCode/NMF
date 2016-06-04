@@ -24,6 +24,7 @@ namespace NMF.Expressions.Linq.Orleans.Model
 
         protected MappingStreamMessageSenderComposite<TOut> StreamSender;
         protected IModelContainerGrain<TModel> ModelContainer { get; private set; }
+        private IModelSiloGrainManagerGrain<TModel> _localModelManagerGrain = null;
         protected int OutputMultiplexFactor { get; set; }
 
         /// <summary>
@@ -45,6 +46,7 @@ namespace NMF.Expressions.Linq.Orleans.Model
             var managementKey = modelContainer.GetPrimaryKey();
             var siloModelManagerGrain = GrainFactory.GetGrain<IModelSiloGrainManagerGrain<TModel>>(managementKey);
             var localModelGrain = await siloModelManagerGrain.GetModelSiloGrainForSilo(RuntimeIdentity);
+            _localModelManagerGrain = siloModelManagerGrain;
 
             var identity = await localModelGrain.GetIdentity();
             await StreamConsumer.SetLocalModel(localModelGrain);
@@ -94,6 +96,10 @@ namespace NMF.Expressions.Linq.Orleans.Model
             {
                 await StreamSender.TearDown();
                 StreamSender = null;
+            }
+            if (_localModelManagerGrain != null)
+            {
+                await _localModelManagerGrain.TearDownModelSiloGrain(RuntimeIdentity);
             }
             DeactivateOnIdle();
         }

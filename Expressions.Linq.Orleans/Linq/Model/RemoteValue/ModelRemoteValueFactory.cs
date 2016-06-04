@@ -52,6 +52,15 @@ namespace NMF.Expressions.Linq.Orleans.Model
                 var activator = ObjectActivation.GetActivator<IObjectRemoteValue<T>>(constructorInfo);
                 return new ModelRemoteValueFactory<T>(activator);
             }
+            if (typeof(IModelElementTuple).IsAssignableFrom(typeof(T)))
+            {
+                var type = typeof(ModelRemoteValueTuple<>);
+                var genericType = type.MakeGenericType(typeof(T));
+                var constructorInfo = genericType.GetConstructors().First();
+
+                var activator = ObjectActivation.GetActivator<IObjectRemoteValue<T>>(constructorInfo);
+                return new ModelRemoteValueFactory<T>(activator);
+            }
 
             throw new ArgumentException();
         }
