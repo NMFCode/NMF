@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using NMF.Models.Repository;
 using System.Collections;
+using NMF.Serialization;
 
 namespace NMF.Models.Evolution
 {
@@ -22,13 +23,16 @@ namespace NMF.Models.Evolution
             Index = index;
         }
 
-        public Uri AbsoluteUri { get; private set; }
+        [XmlAttribute(true)]
+        public Uri AbsoluteUri { get; set; }
 
-        public string CollectionPropertyName { get; private set; }
+        [XmlAttribute(true)]
+        public string CollectionPropertyName { get; set; }
 
+        [XmlAttribute(true)]
         public int Index { get; set; }
 
-        public IEnumerable<object> Elements { get; set; }
+        public List<object> Elements { get; set; }
 
         public void Apply(IModelRepository repository)
         {

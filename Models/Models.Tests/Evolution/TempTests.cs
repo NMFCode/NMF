@@ -1,8 +1,11 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NMF.Models.Evolution;
 using NMF.Models.Repository;
 using NMF.Models.Tests.Railway;
+using NMF.Serialization.Xmi;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 
@@ -73,6 +76,24 @@ namespace NMF.Models.Tests.Evolution
             }
             Assert.Fail("No corresponding -ed event found for " + current.ChangeType + ". URI: " + current.AbsoluteUri);
             return -1;
+        }
+
+        [TestMethod]
+        public void Test()
+        {
+            var rec = new ModelChangeRecorder();
+            rec.Start(railway);
+            railway.Semaphores[0].Delete();
+            railway.Semaphores[1].Delete();
+            var changes = rec.GetModelChanges();
+
+            var ser = new XmiSerializer();
+            string result;
+            using (var writer = new StringWriter())
+            {
+                ser.Serialize(changes, writer);
+                result = writer.ToString();
+            }
         }
     }
 }

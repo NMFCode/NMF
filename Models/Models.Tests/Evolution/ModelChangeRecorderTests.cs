@@ -37,7 +37,7 @@ namespace NMF.Models.Tests
             semaphore.Signal = Signal.FAILURE;
 
             var expected = new PropertyChange(semaphore.AbsoluteUri, "Signal", Signal.FAILURE, Signal.GO);
-            var actual = rec.GetModelChanges()[0];
+            var actual = rec.GetModelChanges().Changes[0];
             Assert.AreEqual(expected, actual);
         }
 
@@ -51,7 +51,7 @@ namespace NMF.Models.Tests
             railway.Semaphores.RemoveAt(0);
 
             var expected = new CollectionDeletion(railway.AbsoluteUri, "Semaphores", semaphore, 0);
-            var actual = rec.GetModelChanges()[0];
+            var actual = rec.GetModelChanges().Changes[0];
             Assert.AreEqual(expected, actual);
         }
 
@@ -69,7 +69,7 @@ namespace NMF.Models.Tests
                 new ElementCreation(semaphore),
                 new CollectionInsertion(railway.AbsoluteUri, "Semaphores", new[] { semaphore }, 0)
             };
-            var actual = rec.GetModelChanges();
+            var actual = rec.GetModelChanges().Changes;
             CollectionAssert.AreEqual(expected, actual);
         }
 
@@ -83,7 +83,7 @@ namespace NMF.Models.Tests
             toDelete.Delete();
 
             var expected = new ElementDeletion(toDelete);
-            var actual = ((ChangeTransaction)rec.GetModelChanges()[0]).SourceChange;
+            var actual = ((ChangeTransaction)rec.GetModelChanges().Changes[0]).SourceChange;
             Assert.AreEqual(expected, actual);
         }
     }

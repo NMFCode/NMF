@@ -10,7 +10,7 @@ namespace NMF.Models.Evolution
     {
         public Uri AbsoluteUri { get { return Element.AbsoluteUri; } }
 
-        public IModelElement Element { get; private set; }
+        public IModelElement Element { get; set; }
 
         public ElementCreation(IModelElement createdElement)
         {
@@ -43,8 +43,7 @@ namespace NMF.Models.Evolution
 
         public override int GetHashCode()
         {
-            return AbsoluteUri.GetHashCode()
-                ^ Element.GetHashCode();
+            return Element.GetHashCode();
         }
     }
 }

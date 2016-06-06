@@ -9,10 +9,10 @@ namespace NMF.Models.Evolution
     public class ChangeTransaction : IModelChange
     {
         public Uri AbsoluteUri { get { return SourceChange.AbsoluteUri; } }
-
-        public IModelChange SourceChange { get; private set; }
-
-        public List<IModelChange> NestedChanges { get; private set; }
+        
+        public IModelChange SourceChange { get; set; }
+        
+        public List<IModelChange> NestedChanges { get; set; }
 
         public ChangeTransaction(IModelChange sourceChange, IEnumerable<IModelChange> nestedChanges)
         {

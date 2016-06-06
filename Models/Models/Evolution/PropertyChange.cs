@@ -1,4 +1,5 @@
 ﻿using NMF.Models.Repository;
+using NMF.Serialization;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,13 +10,15 @@ namespace NMF.Models.Evolution
 {
     public class PropertyChange : IModelChange
     {
-        public string PropertyName { get; private set; }
-
+        [XmlAttribute(true)]
+        public string PropertyName { get; set; }
+    
         public object NewValue { get; set; }
-
+    
         public object OldValue { get; set; }
 
-        public Uri AbsoluteUri { get; private set; }
+        [XmlAttribute(true)]
+        public Uri AbsoluteUri { get; set; }
         
         public PropertyChange(Uri absoluteUri, string propertyName, object newValue, object oldValue)
         {
@@ -59,8 +62,8 @@ namespace NMF.Models.Evolution
         public override int GetHashCode()
         {
             return AbsoluteUri.GetHashCode()
-                ^ NewValue.GetHashCode()
-                ^ OldValue.GetHashCode()
+                ^ (NewValue ?? 0).GetHashCode()
+                ^ (OldValue ?? 0).GetHashCode()
                 ^ PropertyName.GetHashCode();
         }
     }

@@ -10,22 +10,46 @@ using System.Threading.Tasks;
 
 namespace NMF.Models.Evolution
 {
+    /// <summary>
+    /// Represents a recorder for changes to a model.
+    /// </summary>
     public class ModelChangeRecorder
     {
         private List<BubbledChangeEventArgs> recordedEvents = new List<BubbledChangeEventArgs>();
 
+        /// <summary>
+        /// Checks whether the recorder is attached to a model element.
+        /// </summary>
         public bool IsRecording { get { return AttachedElement != null; } }
 
+        /// <summary>
+        /// Gets the attached model element or null, if the recorder is not attached.
+        /// </summary>
         public IModelElement AttachedElement { get; private set; }
         
+        /// <summary>
+        /// Attaches the recorder to the given model element. The recorder will track all
+        /// changes made to the given element and every element further down in the
+        /// containment hierarchy.
+        /// </summary>
+        /// <param name="element"></param>
         public void Start(IModelElement element)
         {
+            if (IsRecording)
+                throw new InvalidOperationException("The recorder is still attached.");
+
             AttachedElement = element;
             element.BubbledChange += OnBubbledChange;
         }
 
+        /// <summary>
+        /// Detaches the recorder, stopping the change tracking.
+        /// </summary>
         public void Stop()
         {
+            if (!IsRecording)
+                throw new InvalidOperationException("The recorder is not attached.");
+
             AttachedElement.BubbledChange -= OnBubbledChange;
             AttachedElement = null;
         }
@@ -35,14 +59,18 @@ namespace NMF.Models.Evolution
             recordedEvents.Add(e);
         }
 
-        public Task<List<IModelChange>> GetModelChangesAsync()
+        public Task<ModelChangeCollection> GetModelChangesAsync()
         {
             return Task.Factory.StartNew(GetModelChanges);
         }
 
-        public List<IModelChange> GetModelChanges()
+        /// <summary>
+        /// Returns previously recorded changes in a tree hierarchy.
+        /// </summary>
+        /// <returns></returns>
+        public ModelChangeCollection GetModelChanges()
         {
-            return Minimize(ParseChangeList());
+            return new ModelChangeCollection(ParseChangeList());
         }
 
         private List<IModelChange> ParseChangeList()
@@ -132,17 +160,6 @@ namespace NMF.Models.Evolution
                 default:
                     throw new InvalidOperationException("The " + e.ChangeType + " event cannot be the base of a model change. Use after-events only.");
             }
-        }
-
-        private List<IModelChange> Minimize(List<IModelChange> changeList)
-        {
-            var strategies = new[] { new MultiplePropertyChanges() };
-
-            var localList = changeList;
-            foreach (var strat in strategies)
-                localList = strat.Execute(localList);
-
-            return localList;
         }
     }
 }
