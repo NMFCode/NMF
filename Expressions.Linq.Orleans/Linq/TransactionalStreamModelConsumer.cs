@@ -29,13 +29,15 @@ namespace NMF.Expressions.Linq.Orleans
         {
         }
 
-        public async Task SetModelContainer(IModelContainerGrain<TModel> modelContainer)
+        public async Task SetModelContainer(IModelContainerGrain<TModel> modelContainer, string modelPath = "")
         {
-            var modelPath = await modelContainer.GetModelPath();
+            if(modelPath == "")
+                modelPath = await modelContainer.GetModelPath();
             Model = ModelLoader.Instance.LoadModel<TModel>(modelPath);
             var receiveContext = new LocalModelReceiveContext(Model);
             receiveContext.BuildCache(Model.Descendants().OfType<T>());
             ReceiveContext = receiveContext;
+            await modelContainer.ModelIsLoaded();
             await MessageDispatcher.Subscribe(await modelContainer.GetModelUpdateStream());
         }
 

@@ -29,9 +29,9 @@ namespace NMF.Expressions.Linq.Orleans.Model
             return base.OnActivateAsync();
         }
 
-        public async Task SetModelContainer(IModelContainerGrain<T> modelContainer)
+        public async Task SetModelContainer(IModelContainerGrain<T> modelContainer, string modelPath = "")
         {
-            await _streamConsumer.SetModelContainer(modelContainer);
+            await _streamConsumer.SetModelContainer(modelContainer, modelPath);
             _streamConsumer.MessageDispatcher.Register<PosLengthFixMessage>(message =>
             {
                 message.Execute(_streamConsumer.Model as Models.Model);
@@ -48,6 +48,11 @@ namespace NMF.Expressions.Linq.Orleans.Model
         {
             await _streamConsumer.TearDown();
             DeactivateOnIdle();
+        }
+
+        public Task<bool> IsTearedDown()
+        {
+            return Task.FromResult(false);
         }
     }
 }

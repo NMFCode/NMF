@@ -9,6 +9,7 @@ using NMF.Models;
 using NMF.Models.Tests.Railway;
 using Orleans;
 using Orleans.Collections;
+using Orleans.Concurrency;
 using Orleans.Streams;
 using Orleans.Streams.Endpoints;
 using Orleans.Streams.Messages;
@@ -30,6 +31,7 @@ namespace NMF.Expressions.Linq.Orleans.Model
         protected StreamMessageSender<Models.Model> ModelUpdateSender;
         private ILocalSendContext _sendContext;
         private string _modelPath;
+        private bool _modelLoaded;
 
         /// <summary>
         /// Transform the model into an xml string.
@@ -161,7 +163,7 @@ namespace NMF.Expressions.Linq.Orleans.Model
             Model = ModelLoader.Instance.LoadModel<T>(modelPath);
 
             Model.BubbledChange += ModelBubbledChange;
-
+            _modelLoaded = true;
             return TaskDone.Done;
         }
 
@@ -183,6 +185,11 @@ namespace NMF.Expressions.Linq.Orleans.Model
             return TaskDone.Done;
         }
 
+        public Task<bool> ModelIsLoaded()
+        {
+            return Task.FromResult(_modelLoaded);
+        }
+
         public async Task<IList<StreamIdentity>> GetOutputStreams()
         {
             return await OutputProducer.GetOutputStreams();
@@ -197,12 +204,14 @@ namespace NMF.Expressions.Linq.Orleans.Model
         {
             await OutputProducer.TearDown();
             await ModelUpdateSender.TearDown();
+            Model = default(T);
             DeactivateOnIdle();
         }
 
         public override async Task OnActivateAsync()
         {
             await base.OnActivateAsync();
+            _modelLoaded = false;
             _sendContext = new LocalSendContext();
             OutputProducer = new StreamMessageSender<Models.Model>(GetStreamProvider(StreamProviderName), this.GetPrimaryKey());
             ModelUpdateSender = new StreamMessageSender<Models.Model>(GetStreamProvider(StreamProviderName),
@@ -264,6 +273,21 @@ namespace NMF.Expressions.Linq.Orleans.Model
             }
 
             return changes;
+        }
+
+        public Task<Immutable<T>> GetModel()
+        {
+            return Task.FromResult(new Immutable<T>(Model));
+        }
+
+        public Task SetModelContainer(IModelContainerGrain<T> modelContainer, string modelPath = "")
+        {
+            throw new NotSupportedException();
+        }
+
+        public Task<string> GetIdentity()
+        {
+            return Task.FromResult(RuntimeIdentity);
         }
     }
 }

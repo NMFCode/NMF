@@ -14,7 +14,7 @@ namespace NMF.Expressions.Linq.Orleans.Model
     /// Contains and owns a model instance.
     /// </summary>
     /// <typeparam name="T">Type of the model.</typeparam>
-    public interface IModelContainerGrain<T> : IGrainWithGuidKey, ITransactionalStreamProvider<T>, IElementEnumeratorNode<T>, IContainsModel<T> where T : IResolvableModel
+    public interface IModelContainerGrain<T> : IGrainWithGuidKey, IModelSiloGrain<T>, ITransactionalStreamProvider<T>, IElementEnumeratorNode<T>, IContainsModel<T> where T : IResolvableModel
     {
         /// <summary>
         /// Loads a model from the given path.
@@ -74,5 +74,7 @@ namespace NMF.Expressions.Linq.Orleans.Model
         Task<RailwayContainer> NeverCallMe();
 
         Task FixSegmentLength(Uri uri);
+
+        Task<bool> ModelIsLoaded();
     }
 }
