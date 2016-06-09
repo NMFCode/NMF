@@ -66,14 +66,29 @@ namespace NMF.Models.Meta
         }
         
         /// <summary>
+        /// Gets fired before the Name property changes its value
+        /// </summary>
+        event EventHandler NameChanging;
+        
+        /// <summary>
         /// Gets fired when the Name property changed its value
         /// </summary>
         event EventHandler<ValueChangedEventArgs> NameChanged;
         
         /// <summary>
+        /// Gets fired before the Summary property changes its value
+        /// </summary>
+        event EventHandler SummaryChanging;
+        
+        /// <summary>
         /// Gets fired when the Summary property changed its value
         /// </summary>
         event EventHandler<ValueChangedEventArgs> SummaryChanged;
+        
+        /// <summary>
+        /// Gets fired before the Remarks property changes its value
+        /// </summary>
+        event EventHandler RemarksChanging;
         
         /// <summary>
         /// Gets fired when the Remarks property changed its value

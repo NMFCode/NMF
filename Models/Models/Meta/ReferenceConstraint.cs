@@ -54,6 +54,7 @@ namespace NMF.Models.Meta
         public ReferenceConstraint()
         {
             this._references = new ObservableAssociationList<IModelElement>();
+            this._references.CollectionChanging += this.ReferencesCollectionChanging;
             this._references.CollectionChanged += this.ReferencesCollectionChanged;
         }
         
@@ -103,6 +104,8 @@ namespace NMF.Models.Meta
             {
                 if ((this._constrains != value))
                 {
+                    this.OnConstrainsChanging(EventArgs.Empty);
+                    this.OnPropertyChanging("Constrains");
                     IReference old = this._constrains;
                     this._constrains = value;
                     if ((old != null))
@@ -152,6 +155,11 @@ namespace NMF.Models.Meta
         public event EventHandler<ValueChangedEventArgs> DeclaringTypeChanged;
         
         /// <summary>
+        /// Gets fired before the Constrains property changes its value
+        /// </summary>
+        public event EventHandler ConstrainsChanging;
+        
+        /// <summary>
         /// Gets fired when the Constrains property changed its value
         /// </summary>
         public event EventHandler<ValueChangedEventArgs> ConstrainsChanged;
@@ -192,13 +200,36 @@ namespace NMF.Models.Meta
         }
         
         /// <summary>
-        /// Forwards change notifications for the References property to the parent model element
+        /// Forwards CollectionChanging notifications for the References property to the parent model element
+        /// </summary>
+        /// <param name="sender">The collection that raised the change</param>
+        /// <param name="e">The original event data</param>
+        private void ReferencesCollectionChanging(object sender, NMF.Collections.ObjectModel.NotifyCollectionChangingEventArgs e)
+        {
+            this.OnCollectionChanging("References", e);
+        }
+        
+        /// <summary>
+        /// Forwards CollectionChanged notifications for the References property to the parent model element
         /// </summary>
         /// <param name="sender">The collection that raised the change</param>
         /// <param name="e">The original event data</param>
         private void ReferencesCollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
         {
             this.OnCollectionChanged("References", e);
+        }
+        
+        /// <summary>
+        /// Raises the ConstrainsChanging event
+        /// </summary>
+        /// <param name="eventArgs">The event data</param>
+        protected virtual void OnConstrainsChanging(EventArgs eventArgs)
+        {
+            EventHandler handler = this.ConstrainsChanging;
+            if ((handler != null))
+            {
+                handler.Invoke(this, eventArgs);
+            }
         }
         
         /// <summary>

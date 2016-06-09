@@ -100,6 +100,19 @@ namespace NMF.Models.Meta
                 _this_Reference.ReferenceTypeChanged -= value;
             }
         }
+        event EventHandler ITypedElement.TypeChanging
+        {
+            add
+            {
+                IReference _this_Reference = this;
+                _this_Reference.ReferenceTypeChanging += value;
+            }
+            remove
+            {
+                IReference _this_Reference = this;
+                _this_Reference.ReferenceTypeChanging -= value;
+            }
+        }
         
         /// <summary>
         /// The IsContainment property
@@ -115,6 +128,8 @@ namespace NMF.Models.Meta
             {
                 if ((this._isContainment != value))
                 {
+                    this.OnIsContainmentChanging(EventArgs.Empty);
+                    this.OnPropertyChanging("IsContainment");
                     bool old = this._isContainment;
                     this._isContainment = value;
                     ValueChangedEventArgs e = new ValueChangedEventArgs(old, value);
@@ -157,6 +172,8 @@ namespace NMF.Models.Meta
             {
                 if ((this._opposite != value))
                 {
+                    this.OnOppositeChanging(EventArgs.Empty);
+                    this.OnPropertyChanging("Opposite");
                     IReference old = this._opposite;
                     this._opposite = value;
                     if ((old != null))
@@ -190,6 +207,8 @@ namespace NMF.Models.Meta
             {
                 if ((this._referenceType != value))
                 {
+                    this.OnReferenceTypeChanging(EventArgs.Empty);
+                    this.OnPropertyChanging("ReferenceType");
                     IReferenceType old = this._referenceType;
                     this._referenceType = value;
                     if ((old != null))
@@ -221,6 +240,8 @@ namespace NMF.Models.Meta
             {
                 if ((this._refines != value))
                 {
+                    this.OnRefinesChanging(EventArgs.Empty);
+                    this.OnPropertyChanging("Refines");
                     IReference old = this._refines;
                     this._refines = value;
                     if ((old != null))
@@ -252,6 +273,8 @@ namespace NMF.Models.Meta
             {
                 if ((this._anchor != value))
                 {
+                    this.OnAnchorChanging(EventArgs.Empty);
+                    this.OnPropertyChanging("Anchor");
                     IClass old = this._anchor;
                     this._anchor = value;
                     if ((old != null))
@@ -315,6 +338,8 @@ namespace NMF.Models.Meta
             {
                 if ((this._isOrdered != value))
                 {
+                    this.OnIsOrderedChanging(EventArgs.Empty);
+                    this.OnPropertyChanging("IsOrdered");
                     bool old = this._isOrdered;
                     this._isOrdered = value;
                     ValueChangedEventArgs e = new ValueChangedEventArgs(old, value);
@@ -338,6 +363,8 @@ namespace NMF.Models.Meta
             {
                 if ((this._isUnique != value))
                 {
+                    this.OnIsUniqueChanging(EventArgs.Empty);
+                    this.OnPropertyChanging("IsUnique");
                     bool old = this._isUnique;
                     this._isUnique = value;
                     ValueChangedEventArgs e = new ValueChangedEventArgs(old, value);
@@ -362,6 +389,8 @@ namespace NMF.Models.Meta
             {
                 if ((this._lowerBound != value))
                 {
+                    this.OnLowerBoundChanging(EventArgs.Empty);
+                    this.OnPropertyChanging("LowerBound");
                     int old = this._lowerBound;
                     this._lowerBound = value;
                     ValueChangedEventArgs e = new ValueChangedEventArgs(old, value);
@@ -386,6 +415,8 @@ namespace NMF.Models.Meta
             {
                 if ((this._upperBound != value))
                 {
+                    this.OnUpperBoundChanging(EventArgs.Empty);
+                    this.OnPropertyChanging("UpperBound");
                     int old = this._upperBound;
                     this._upperBound = value;
                     ValueChangedEventArgs e = new ValueChangedEventArgs(old, value);
@@ -422,6 +453,11 @@ namespace NMF.Models.Meta
         }
         
         /// <summary>
+        /// Gets fired before the IsContainment property changes its value
+        /// </summary>
+        public event EventHandler IsContainmentChanging;
+        
+        /// <summary>
         /// Gets fired when the IsContainment property changed its value
         /// </summary>
         public event EventHandler<ValueChangedEventArgs> IsContainmentChanged;
@@ -432,9 +468,19 @@ namespace NMF.Models.Meta
         public event EventHandler<ValueChangedEventArgs> DeclaringTypeChanged;
         
         /// <summary>
+        /// Gets fired before the Opposite property changes its value
+        /// </summary>
+        public event EventHandler OppositeChanging;
+        
+        /// <summary>
         /// Gets fired when the Opposite property changed its value
         /// </summary>
         public event EventHandler<ValueChangedEventArgs> OppositeChanged;
+        
+        /// <summary>
+        /// Gets fired before the ReferenceType property changes its value
+        /// </summary>
+        public event EventHandler ReferenceTypeChanging;
         
         /// <summary>
         /// Gets fired when the ReferenceType property changed its value
@@ -442,9 +488,19 @@ namespace NMF.Models.Meta
         public event EventHandler<ValueChangedEventArgs> ReferenceTypeChanged;
         
         /// <summary>
+        /// Gets fired before the Refines property changes its value
+        /// </summary>
+        public event EventHandler RefinesChanging;
+        
+        /// <summary>
         /// Gets fired when the Refines property changed its value
         /// </summary>
         public event EventHandler<ValueChangedEventArgs> RefinesChanged;
+        
+        /// <summary>
+        /// Gets fired before the Anchor property changes its value
+        /// </summary>
+        public event EventHandler AnchorChanging;
         
         /// <summary>
         /// Gets fired when the Anchor property changed its value
@@ -452,9 +508,19 @@ namespace NMF.Models.Meta
         public event EventHandler<ValueChangedEventArgs> AnchorChanged;
         
         /// <summary>
+        /// Gets fired before the IsOrdered property changes its value
+        /// </summary>
+        public event EventHandler IsOrderedChanging;
+        
+        /// <summary>
         /// Gets fired when the IsOrdered property changed its value
         /// </summary>
         public event EventHandler<ValueChangedEventArgs> IsOrderedChanged;
+        
+        /// <summary>
+        /// Gets fired before the IsUnique property changes its value
+        /// </summary>
+        public event EventHandler IsUniqueChanging;
         
         /// <summary>
         /// Gets fired when the IsUnique property changed its value
@@ -462,14 +528,37 @@ namespace NMF.Models.Meta
         public event EventHandler<ValueChangedEventArgs> IsUniqueChanged;
         
         /// <summary>
+        /// Gets fired before the LowerBound property changes its value
+        /// </summary>
+        public event EventHandler LowerBoundChanging;
+        
+        /// <summary>
         /// Gets fired when the LowerBound property changed its value
         /// </summary>
         public event EventHandler<ValueChangedEventArgs> LowerBoundChanged;
         
         /// <summary>
+        /// Gets fired before the UpperBound property changes its value
+        /// </summary>
+        public event EventHandler UpperBoundChanging;
+        
+        /// <summary>
         /// Gets fired when the UpperBound property changed its value
         /// </summary>
         public event EventHandler<ValueChangedEventArgs> UpperBoundChanged;
+        
+        /// <summary>
+        /// Raises the IsContainmentChanging event
+        /// </summary>
+        /// <param name="eventArgs">The event data</param>
+        protected virtual void OnIsContainmentChanging(EventArgs eventArgs)
+        {
+            EventHandler handler = this.IsContainmentChanging;
+            if ((handler != null))
+            {
+                handler.Invoke(this, eventArgs);
+            }
+        }
         
         /// <summary>
         /// Raises the IsContainmentChanged event
@@ -520,6 +609,19 @@ namespace NMF.Models.Meta
         }
         
         /// <summary>
+        /// Raises the OppositeChanging event
+        /// </summary>
+        /// <param name="eventArgs">The event data</param>
+        protected virtual void OnOppositeChanging(EventArgs eventArgs)
+        {
+            EventHandler handler = this.OppositeChanging;
+            if ((handler != null))
+            {
+                handler.Invoke(this, eventArgs);
+            }
+        }
+        
+        /// <summary>
         /// Raises the OppositeChanged event
         /// </summary>
         /// <param name="eventArgs">The event data</param>
@@ -540,6 +642,19 @@ namespace NMF.Models.Meta
         private void OnResetOpposite(object sender, System.EventArgs eventArgs)
         {
             this.Opposite = null;
+        }
+        
+        /// <summary>
+        /// Raises the ReferenceTypeChanging event
+        /// </summary>
+        /// <param name="eventArgs">The event data</param>
+        protected virtual void OnReferenceTypeChanging(EventArgs eventArgs)
+        {
+            EventHandler handler = this.ReferenceTypeChanging;
+            if ((handler != null))
+            {
+                handler.Invoke(this, eventArgs);
+            }
         }
         
         /// <summary>
@@ -566,6 +681,19 @@ namespace NMF.Models.Meta
         }
         
         /// <summary>
+        /// Raises the RefinesChanging event
+        /// </summary>
+        /// <param name="eventArgs">The event data</param>
+        protected virtual void OnRefinesChanging(EventArgs eventArgs)
+        {
+            EventHandler handler = this.RefinesChanging;
+            if ((handler != null))
+            {
+                handler.Invoke(this, eventArgs);
+            }
+        }
+        
+        /// <summary>
         /// Raises the RefinesChanged event
         /// </summary>
         /// <param name="eventArgs">The event data</param>
@@ -586,6 +714,19 @@ namespace NMF.Models.Meta
         private void OnResetRefines(object sender, System.EventArgs eventArgs)
         {
             this.Refines = null;
+        }
+        
+        /// <summary>
+        /// Raises the AnchorChanging event
+        /// </summary>
+        /// <param name="eventArgs">The event data</param>
+        protected virtual void OnAnchorChanging(EventArgs eventArgs)
+        {
+            EventHandler handler = this.AnchorChanging;
+            if ((handler != null))
+            {
+                handler.Invoke(this, eventArgs);
+            }
         }
         
         /// <summary>
@@ -612,12 +753,38 @@ namespace NMF.Models.Meta
         }
         
         /// <summary>
+        /// Raises the IsOrderedChanging event
+        /// </summary>
+        /// <param name="eventArgs">The event data</param>
+        protected virtual void OnIsOrderedChanging(EventArgs eventArgs)
+        {
+            EventHandler handler = this.IsOrderedChanging;
+            if ((handler != null))
+            {
+                handler.Invoke(this, eventArgs);
+            }
+        }
+        
+        /// <summary>
         /// Raises the IsOrderedChanged event
         /// </summary>
         /// <param name="eventArgs">The event data</param>
         protected virtual void OnIsOrderedChanged(ValueChangedEventArgs eventArgs)
         {
             EventHandler<ValueChangedEventArgs> handler = this.IsOrderedChanged;
+            if ((handler != null))
+            {
+                handler.Invoke(this, eventArgs);
+            }
+        }
+        
+        /// <summary>
+        /// Raises the IsUniqueChanging event
+        /// </summary>
+        /// <param name="eventArgs">The event data</param>
+        protected virtual void OnIsUniqueChanging(EventArgs eventArgs)
+        {
+            EventHandler handler = this.IsUniqueChanging;
             if ((handler != null))
             {
                 handler.Invoke(this, eventArgs);
@@ -638,12 +805,38 @@ namespace NMF.Models.Meta
         }
         
         /// <summary>
+        /// Raises the LowerBoundChanging event
+        /// </summary>
+        /// <param name="eventArgs">The event data</param>
+        protected virtual void OnLowerBoundChanging(EventArgs eventArgs)
+        {
+            EventHandler handler = this.LowerBoundChanging;
+            if ((handler != null))
+            {
+                handler.Invoke(this, eventArgs);
+            }
+        }
+        
+        /// <summary>
         /// Raises the LowerBoundChanged event
         /// </summary>
         /// <param name="eventArgs">The event data</param>
         protected virtual void OnLowerBoundChanged(ValueChangedEventArgs eventArgs)
         {
             EventHandler<ValueChangedEventArgs> handler = this.LowerBoundChanged;
+            if ((handler != null))
+            {
+                handler.Invoke(this, eventArgs);
+            }
+        }
+        
+        /// <summary>
+        /// Raises the UpperBoundChanging event
+        /// </summary>
+        /// <param name="eventArgs">The event data</param>
+        protected virtual void OnUpperBoundChanging(EventArgs eventArgs)
+        {
+            EventHandler handler = this.UpperBoundChanging;
             if ((handler != null))
             {
                 handler.Invoke(this, eventArgs);

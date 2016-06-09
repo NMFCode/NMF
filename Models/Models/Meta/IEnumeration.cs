@@ -56,6 +56,11 @@ namespace NMF.Models.Meta
         }
         
         /// <summary>
+        /// Gets fired before the IsFlagged property changes its value
+        /// </summary>
+        event EventHandler IsFlaggedChanging;
+        
+        /// <summary>
         /// Gets fired when the IsFlagged property changed its value
         /// </summary>
         event EventHandler<ValueChangedEventArgs> IsFlaggedChanged;

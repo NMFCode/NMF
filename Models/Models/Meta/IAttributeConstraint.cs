@@ -70,6 +70,11 @@ namespace NMF.Models.Meta
         event EventHandler<ValueChangedEventArgs> DeclaringTypeChanged;
         
         /// <summary>
+        /// Gets fired before the Constrains property changes its value
+        /// </summary>
+        event EventHandler ConstrainsChanging;
+        
+        /// <summary>
         /// Gets fired when the Constrains property changed its value
         /// </summary>
         event EventHandler<ValueChangedEventArgs> ConstrainsChanged;

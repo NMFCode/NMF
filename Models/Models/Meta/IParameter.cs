@@ -57,6 +57,11 @@ namespace NMF.Models.Meta
         }
         
         /// <summary>
+        /// Gets fired before the Direction property changes its value
+        /// </summary>
+        event EventHandler DirectionChanging;
+        
+        /// <summary>
         /// Gets fired when the Direction property changed its value
         /// </summary>
         event EventHandler<ValueChangedEventArgs> DirectionChanged;

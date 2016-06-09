@@ -81,6 +81,8 @@ namespace NMF.Models.Meta
             {
                 if ((this._isOrdered != value))
                 {
+                    this.OnIsOrderedChanging(EventArgs.Empty);
+                    this.OnPropertyChanging("IsOrdered");
                     bool old = this._isOrdered;
                     this._isOrdered = value;
                     ValueChangedEventArgs e = new ValueChangedEventArgs(old, value);
@@ -104,6 +106,8 @@ namespace NMF.Models.Meta
             {
                 if ((this._isUnique != value))
                 {
+                    this.OnIsUniqueChanging(EventArgs.Empty);
+                    this.OnPropertyChanging("IsUnique");
                     bool old = this._isUnique;
                     this._isUnique = value;
                     ValueChangedEventArgs e = new ValueChangedEventArgs(old, value);
@@ -128,6 +132,8 @@ namespace NMF.Models.Meta
             {
                 if ((this._lowerBound != value))
                 {
+                    this.OnLowerBoundChanging(EventArgs.Empty);
+                    this.OnPropertyChanging("LowerBound");
                     int old = this._lowerBound;
                     this._lowerBound = value;
                     ValueChangedEventArgs e = new ValueChangedEventArgs(old, value);
@@ -152,6 +158,8 @@ namespace NMF.Models.Meta
             {
                 if ((this._upperBound != value))
                 {
+                    this.OnUpperBoundChanging(EventArgs.Empty);
+                    this.OnPropertyChanging("UpperBound");
                     int old = this._upperBound;
                     this._upperBound = value;
                     ValueChangedEventArgs e = new ValueChangedEventArgs(old, value);
@@ -175,6 +183,8 @@ namespace NMF.Models.Meta
             {
                 if ((this._type != value))
                 {
+                    this.OnTypeChanging(EventArgs.Empty);
+                    this.OnPropertyChanging("Type");
                     IType old = this._type;
                     this._type = value;
                     if ((old != null))
@@ -219,9 +229,19 @@ namespace NMF.Models.Meta
         }
         
         /// <summary>
+        /// Gets fired before the IsOrdered property changes its value
+        /// </summary>
+        public event EventHandler IsOrderedChanging;
+        
+        /// <summary>
         /// Gets fired when the IsOrdered property changed its value
         /// </summary>
         public event EventHandler<ValueChangedEventArgs> IsOrderedChanged;
+        
+        /// <summary>
+        /// Gets fired before the IsUnique property changes its value
+        /// </summary>
+        public event EventHandler IsUniqueChanging;
         
         /// <summary>
         /// Gets fired when the IsUnique property changed its value
@@ -229,9 +249,19 @@ namespace NMF.Models.Meta
         public event EventHandler<ValueChangedEventArgs> IsUniqueChanged;
         
         /// <summary>
+        /// Gets fired before the LowerBound property changes its value
+        /// </summary>
+        public event EventHandler LowerBoundChanging;
+        
+        /// <summary>
         /// Gets fired when the LowerBound property changed its value
         /// </summary>
         public event EventHandler<ValueChangedEventArgs> LowerBoundChanged;
+        
+        /// <summary>
+        /// Gets fired before the UpperBound property changes its value
+        /// </summary>
+        public event EventHandler UpperBoundChanging;
         
         /// <summary>
         /// Gets fired when the UpperBound property changed its value
@@ -239,9 +269,27 @@ namespace NMF.Models.Meta
         public event EventHandler<ValueChangedEventArgs> UpperBoundChanged;
         
         /// <summary>
+        /// Gets fired before the Type property changes its value
+        /// </summary>
+        public event EventHandler TypeChanging;
+        
+        /// <summary>
         /// Gets fired when the Type property changed its value
         /// </summary>
         public event EventHandler<ValueChangedEventArgs> TypeChanged;
+        
+        /// <summary>
+        /// Raises the IsOrderedChanging event
+        /// </summary>
+        /// <param name="eventArgs">The event data</param>
+        protected virtual void OnIsOrderedChanging(EventArgs eventArgs)
+        {
+            EventHandler handler = this.IsOrderedChanging;
+            if ((handler != null))
+            {
+                handler.Invoke(this, eventArgs);
+            }
+        }
         
         /// <summary>
         /// Raises the IsOrderedChanged event
@@ -250,6 +298,19 @@ namespace NMF.Models.Meta
         protected virtual void OnIsOrderedChanged(ValueChangedEventArgs eventArgs)
         {
             EventHandler<ValueChangedEventArgs> handler = this.IsOrderedChanged;
+            if ((handler != null))
+            {
+                handler.Invoke(this, eventArgs);
+            }
+        }
+        
+        /// <summary>
+        /// Raises the IsUniqueChanging event
+        /// </summary>
+        /// <param name="eventArgs">The event data</param>
+        protected virtual void OnIsUniqueChanging(EventArgs eventArgs)
+        {
+            EventHandler handler = this.IsUniqueChanging;
             if ((handler != null))
             {
                 handler.Invoke(this, eventArgs);
@@ -270,6 +331,19 @@ namespace NMF.Models.Meta
         }
         
         /// <summary>
+        /// Raises the LowerBoundChanging event
+        /// </summary>
+        /// <param name="eventArgs">The event data</param>
+        protected virtual void OnLowerBoundChanging(EventArgs eventArgs)
+        {
+            EventHandler handler = this.LowerBoundChanging;
+            if ((handler != null))
+            {
+                handler.Invoke(this, eventArgs);
+            }
+        }
+        
+        /// <summary>
         /// Raises the LowerBoundChanged event
         /// </summary>
         /// <param name="eventArgs">The event data</param>
@@ -283,12 +357,38 @@ namespace NMF.Models.Meta
         }
         
         /// <summary>
+        /// Raises the UpperBoundChanging event
+        /// </summary>
+        /// <param name="eventArgs">The event data</param>
+        protected virtual void OnUpperBoundChanging(EventArgs eventArgs)
+        {
+            EventHandler handler = this.UpperBoundChanging;
+            if ((handler != null))
+            {
+                handler.Invoke(this, eventArgs);
+            }
+        }
+        
+        /// <summary>
         /// Raises the UpperBoundChanged event
         /// </summary>
         /// <param name="eventArgs">The event data</param>
         protected virtual void OnUpperBoundChanged(ValueChangedEventArgs eventArgs)
         {
             EventHandler<ValueChangedEventArgs> handler = this.UpperBoundChanged;
+            if ((handler != null))
+            {
+                handler.Invoke(this, eventArgs);
+            }
+        }
+        
+        /// <summary>
+        /// Raises the TypeChanging event
+        /// </summary>
+        /// <param name="eventArgs">The event data</param>
+        protected virtual void OnTypeChanging(EventArgs eventArgs)
+        {
+            EventHandler handler = this.TypeChanging;
             if ((handler != null))
             {
                 handler.Invoke(this, eventArgs);

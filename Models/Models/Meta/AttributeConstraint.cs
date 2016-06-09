@@ -54,6 +54,7 @@ namespace NMF.Models.Meta
         public AttributeConstraint()
         {
             this._values = new ObservableList<string>();
+            this._values.CollectionChanging += this.ValuesCollectionChanging;
             this._values.CollectionChanged += this.ValuesCollectionChanged;
         }
         
@@ -103,6 +104,8 @@ namespace NMF.Models.Meta
             {
                 if ((this._constrains != value))
                 {
+                    this.OnConstrainsChanging(EventArgs.Empty);
+                    this.OnPropertyChanging("Constrains");
                     IAttribute old = this._constrains;
                     this._constrains = value;
                     if ((old != null))
@@ -152,12 +155,27 @@ namespace NMF.Models.Meta
         public event EventHandler<ValueChangedEventArgs> DeclaringTypeChanged;
         
         /// <summary>
+        /// Gets fired before the Constrains property changes its value
+        /// </summary>
+        public event EventHandler ConstrainsChanging;
+        
+        /// <summary>
         /// Gets fired when the Constrains property changed its value
         /// </summary>
         public event EventHandler<ValueChangedEventArgs> ConstrainsChanged;
         
         /// <summary>
-        /// Forwards change notifications for the Values property to the parent model element
+        /// Forwards CollectionChanging notifications for the Values property to the parent model element
+        /// </summary>
+        /// <param name="sender">The collection that raised the change</param>
+        /// <param name="e">The original event data</param>
+        private void ValuesCollectionChanging(object sender, NMF.Collections.ObjectModel.NotifyCollectionChangingEventArgs e)
+        {
+            this.OnCollectionChanging("Values", e);
+        }
+        
+        /// <summary>
+        /// Forwards CollectionChanged notifications for the Values property to the parent model element
         /// </summary>
         /// <param name="sender">The collection that raised the change</param>
         /// <param name="e">The original event data</param>
@@ -199,6 +217,19 @@ namespace NMF.Models.Meta
             ValueChangedEventArgs e = new ValueChangedEventArgs(oldDeclaringType, newDeclaringType);
             this.OnDeclaringTypeChanged(e);
             this.OnPropertyChanged("DeclaringType", e);
+        }
+        
+        /// <summary>
+        /// Raises the ConstrainsChanging event
+        /// </summary>
+        /// <param name="eventArgs">The event data</param>
+        protected virtual void OnConstrainsChanging(EventArgs eventArgs)
+        {
+            EventHandler handler = this.ConstrainsChanging;
+            if ((handler != null))
+            {
+                handler.Invoke(this, eventArgs);
+            }
         }
         
         /// <summary>

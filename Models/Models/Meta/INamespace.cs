@@ -82,9 +82,19 @@ namespace NMF.Models.Meta
         }
         
         /// <summary>
+        /// Gets fired before the Uri property changes its value
+        /// </summary>
+        event EventHandler UriChanging;
+        
+        /// <summary>
         /// Gets fired when the Uri property changed its value
         /// </summary>
         event EventHandler<ValueChangedEventArgs> UriChanged;
+        
+        /// <summary>
+        /// Gets fired before the Prefix property changes its value
+        /// </summary>
+        event EventHandler PrefixChanging;
         
         /// <summary>
         /// Gets fired when the Prefix property changed its value

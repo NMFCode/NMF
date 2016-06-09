@@ -98,7 +98,7 @@ namespace NMF.Models.Meta
                     constructorStmts.Add(createEmptyCollection);
                     constructorStmts.Add(new CodeAttachEventStatement(fieldRef, "CollectionChanging",
                         GenerateCollectionBubbleHandler(generatedProperty, "CollectionChanging", typeof(NotifyCollectionChangingEventArgs))));
-                    constructorStmts.Add(new CodeAttachEventStatement(fieldRef, "CollectionChanging",
+                    constructorStmts.Add(new CodeAttachEventStatement(fieldRef, "CollectionChanged",
                         GenerateCollectionBubbleHandler(generatedProperty, "CollectionChanged", typeof(NotifyCollectionChangedEventArgs))));
                 }
 

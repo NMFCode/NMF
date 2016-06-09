@@ -84,9 +84,19 @@ namespace NMF.Models.Meta
         }
         
         /// <summary>
+        /// Gets fired before the IsOrdered property changes its value
+        /// </summary>
+        event EventHandler IsOrderedChanging;
+        
+        /// <summary>
         /// Gets fired when the IsOrdered property changed its value
         /// </summary>
         event EventHandler<ValueChangedEventArgs> IsOrderedChanged;
+        
+        /// <summary>
+        /// Gets fired before the IsUnique property changes its value
+        /// </summary>
+        event EventHandler IsUniqueChanging;
         
         /// <summary>
         /// Gets fired when the IsUnique property changed its value
@@ -94,14 +104,29 @@ namespace NMF.Models.Meta
         event EventHandler<ValueChangedEventArgs> IsUniqueChanged;
         
         /// <summary>
+        /// Gets fired before the LowerBound property changes its value
+        /// </summary>
+        event EventHandler LowerBoundChanging;
+        
+        /// <summary>
         /// Gets fired when the LowerBound property changed its value
         /// </summary>
         event EventHandler<ValueChangedEventArgs> LowerBoundChanged;
         
         /// <summary>
+        /// Gets fired before the UpperBound property changes its value
+        /// </summary>
+        event EventHandler UpperBoundChanging;
+        
+        /// <summary>
         /// Gets fired when the UpperBound property changed its value
         /// </summary>
         event EventHandler<ValueChangedEventArgs> UpperBoundChanged;
+        
+        /// <summary>
+        /// Gets fired before the Type property changes its value
+        /// </summary>
+        event EventHandler TypeChanging;
         
         /// <summary>
         /// Gets fired when the Type property changed its value

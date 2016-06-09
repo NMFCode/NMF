@@ -66,6 +66,8 @@ namespace NMF.Models.Meta
             {
                 if ((this._systemType != value))
                 {
+                    this.OnSystemTypeChanging(EventArgs.Empty);
+                    this.OnPropertyChanging("SystemType");
                     System.Type old = this._systemType;
                     this._systemType = value;
                     ValueChangedEventArgs e = new ValueChangedEventArgs(old, value);
@@ -76,9 +78,27 @@ namespace NMF.Models.Meta
         }
         
         /// <summary>
+        /// Gets fired before the SystemType property changes its value
+        /// </summary>
+        public event EventHandler SystemTypeChanging;
+        
+        /// <summary>
         /// Gets fired when the SystemType property changed its value
         /// </summary>
         public event EventHandler<ValueChangedEventArgs> SystemTypeChanged;
+        
+        /// <summary>
+        /// Raises the SystemTypeChanging event
+        /// </summary>
+        /// <param name="eventArgs">The event data</param>
+        protected virtual void OnSystemTypeChanging(EventArgs eventArgs)
+        {
+            EventHandler handler = this.SystemTypeChanging;
+            if ((handler != null))
+            {
+                handler.Invoke(this, eventArgs);
+            }
+        }
         
         /// <summary>
         /// Raises the SystemTypeChanged event

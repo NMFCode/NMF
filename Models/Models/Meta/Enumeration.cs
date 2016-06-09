@@ -55,6 +55,7 @@ namespace NMF.Models.Meta
         public Enumeration()
         {
             this._literals = new EnumerationLiteralsCollection(this);
+            this._literals.CollectionChanging += this.LiteralsCollectionChanging;
             this._literals.CollectionChanged += this.LiteralsCollectionChanged;
         }
         
@@ -72,6 +73,8 @@ namespace NMF.Models.Meta
             {
                 if ((this._isFlagged != value))
                 {
+                    this.OnIsFlaggedChanging(EventArgs.Empty);
+                    this.OnPropertyChanging("IsFlagged");
                     bool old = this._isFlagged;
                     this._isFlagged = value;
                     ValueChangedEventArgs e = new ValueChangedEventArgs(old, value);
@@ -135,9 +138,27 @@ namespace NMF.Models.Meta
         }
         
         /// <summary>
+        /// Gets fired before the IsFlagged property changes its value
+        /// </summary>
+        public event EventHandler IsFlaggedChanging;
+        
+        /// <summary>
         /// Gets fired when the IsFlagged property changed its value
         /// </summary>
         public event EventHandler<ValueChangedEventArgs> IsFlaggedChanged;
+        
+        /// <summary>
+        /// Raises the IsFlaggedChanging event
+        /// </summary>
+        /// <param name="eventArgs">The event data</param>
+        protected virtual void OnIsFlaggedChanging(EventArgs eventArgs)
+        {
+            EventHandler handler = this.IsFlaggedChanging;
+            if ((handler != null))
+            {
+                handler.Invoke(this, eventArgs);
+            }
+        }
         
         /// <summary>
         /// Raises the IsFlaggedChanged event
@@ -153,7 +174,17 @@ namespace NMF.Models.Meta
         }
         
         /// <summary>
-        /// Forwards change notifications for the Literals property to the parent model element
+        /// Forwards CollectionChanging notifications for the Literals property to the parent model element
+        /// </summary>
+        /// <param name="sender">The collection that raised the change</param>
+        /// <param name="e">The original event data</param>
+        private void LiteralsCollectionChanging(object sender, NMF.Collections.ObjectModel.NotifyCollectionChangingEventArgs e)
+        {
+            this.OnCollectionChanging("Literals", e);
+        }
+        
+        /// <summary>
+        /// Forwards CollectionChanged notifications for the Literals property to the parent model element
         /// </summary>
         /// <param name="sender">The collection that raised the change</param>
         /// <param name="e">The original event data</param>
