@@ -48,6 +48,11 @@ namespace NMF.Interop.Ecore
         }
         
         /// <summary>
+        /// Gets fired before the EPackage property changes its value
+        /// </summary>
+        event EventHandler EPackageChanging;
+        
+        /// <summary>
         /// Gets fired when the EPackage property changed its value
         /// </summary>
         event EventHandler<ValueChangedEventArgs> EPackageChanged;

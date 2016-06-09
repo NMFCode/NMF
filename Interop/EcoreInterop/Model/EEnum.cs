@@ -48,6 +48,7 @@ namespace NMF.Interop.Ecore
         public EEnum()
         {
             this._eLiterals = new EEnumELiteralsCollection(this);
+            this._eLiterals.CollectionChanging += this.ELiteralsCollectionChanging;
             this._eLiterals.CollectionChanged += this.ELiteralsCollectionChanged;
         }
         
@@ -102,7 +103,17 @@ namespace NMF.Interop.Ecore
         }
         
         /// <summary>
-        /// Forwards change notifications for the ELiterals property to the parent model element
+        /// Forwards CollectionChanging notifications for the ELiterals property to the parent model element
+        /// </summary>
+        /// <param name="sender">The collection that raised the change</param>
+        /// <param name="e">The original event data</param>
+        private void ELiteralsCollectionChanging(object sender, NMF.Collections.ObjectModel.NotifyCollectionChangingEventArgs e)
+        {
+            this.OnCollectionChanging("ELiterals", e);
+        }
+        
+        /// <summary>
+        /// Forwards CollectionChanged notifications for the ELiterals property to the parent model element
         /// </summary>
         /// <param name="sender">The collection that raised the change</param>
         /// <param name="e">The original event data</param>

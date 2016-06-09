@@ -68,8 +68,10 @@ namespace NMF.Interop.Ecore
         public EPackage()
         {
             this._eClassifiers = new EPackageEClassifiersCollection(this);
+            this._eClassifiers.CollectionChanging += this.EClassifiersCollectionChanging;
             this._eClassifiers.CollectionChanged += this.EClassifiersCollectionChanged;
             this._eSubpackages = new EPackageESubpackagesCollection(this);
+            this._eSubpackages.CollectionChanging += this.ESubpackagesCollectionChanging;
             this._eSubpackages.CollectionChanged += this.ESubpackagesCollectionChanged;
         }
         
@@ -88,6 +90,8 @@ namespace NMF.Interop.Ecore
             {
                 if ((this._nsURI != value))
                 {
+                    this.OnNsURIChanging(EventArgs.Empty);
+                    this.OnPropertyChanging("NsURI");
                     string old = this._nsURI;
                     this._nsURI = value;
                     ValueChangedEventArgs e = new ValueChangedEventArgs(old, value);
@@ -112,6 +116,8 @@ namespace NMF.Interop.Ecore
             {
                 if ((this._nsPrefix != value))
                 {
+                    this.OnNsPrefixChanging(EventArgs.Empty);
+                    this.OnPropertyChanging("NsPrefix");
                     string old = this._nsPrefix;
                     this._nsPrefix = value;
                     ValueChangedEventArgs e = new ValueChangedEventArgs(old, value);
@@ -137,6 +143,8 @@ namespace NMF.Interop.Ecore
             {
                 if ((this._eFactoryInstance != value))
                 {
+                    this.OnEFactoryInstanceChanging(EventArgs.Empty);
+                    this.OnPropertyChanging("EFactoryInstance");
                     IEFactory old = this._eFactoryInstance;
                     this._eFactoryInstance = value;
                     if ((old != null))
@@ -243,14 +251,29 @@ namespace NMF.Interop.Ecore
         }
         
         /// <summary>
+        /// Gets fired before the NsURI property changes its value
+        /// </summary>
+        public event EventHandler NsURIChanging;
+        
+        /// <summary>
         /// Gets fired when the NsURI property changed its value
         /// </summary>
         public event EventHandler<ValueChangedEventArgs> NsURIChanged;
         
         /// <summary>
+        /// Gets fired before the NsPrefix property changes its value
+        /// </summary>
+        public event EventHandler NsPrefixChanging;
+        
+        /// <summary>
         /// Gets fired when the NsPrefix property changed its value
         /// </summary>
         public event EventHandler<ValueChangedEventArgs> NsPrefixChanged;
+        
+        /// <summary>
+        /// Gets fired before the EFactoryInstance property changes its value
+        /// </summary>
+        public event EventHandler EFactoryInstanceChanging;
         
         /// <summary>
         /// Gets fired when the EFactoryInstance property changed its value
@@ -261,6 +284,19 @@ namespace NMF.Interop.Ecore
         /// Gets fired when the ESuperPackage property changed its value
         /// </summary>
         public event EventHandler<ValueChangedEventArgs> ESuperPackageChanged;
+        
+        /// <summary>
+        /// Raises the NsURIChanging event
+        /// </summary>
+        /// <param name="eventArgs">The event data</param>
+        protected virtual void OnNsURIChanging(EventArgs eventArgs)
+        {
+            EventHandler handler = this.NsURIChanging;
+            if ((handler != null))
+            {
+                handler.Invoke(this, eventArgs);
+            }
+        }
         
         /// <summary>
         /// Raises the NsURIChanged event
@@ -276,12 +312,38 @@ namespace NMF.Interop.Ecore
         }
         
         /// <summary>
+        /// Raises the NsPrefixChanging event
+        /// </summary>
+        /// <param name="eventArgs">The event data</param>
+        protected virtual void OnNsPrefixChanging(EventArgs eventArgs)
+        {
+            EventHandler handler = this.NsPrefixChanging;
+            if ((handler != null))
+            {
+                handler.Invoke(this, eventArgs);
+            }
+        }
+        
+        /// <summary>
         /// Raises the NsPrefixChanged event
         /// </summary>
         /// <param name="eventArgs">The event data</param>
         protected virtual void OnNsPrefixChanged(ValueChangedEventArgs eventArgs)
         {
             EventHandler<ValueChangedEventArgs> handler = this.NsPrefixChanged;
+            if ((handler != null))
+            {
+                handler.Invoke(this, eventArgs);
+            }
+        }
+        
+        /// <summary>
+        /// Raises the EFactoryInstanceChanging event
+        /// </summary>
+        /// <param name="eventArgs">The event data</param>
+        protected virtual void OnEFactoryInstanceChanging(EventArgs eventArgs)
+        {
+            EventHandler handler = this.EFactoryInstanceChanging;
             if ((handler != null))
             {
                 handler.Invoke(this, eventArgs);
@@ -312,7 +374,17 @@ namespace NMF.Interop.Ecore
         }
         
         /// <summary>
-        /// Forwards change notifications for the EClassifiers property to the parent model element
+        /// Forwards CollectionChanging notifications for the EClassifiers property to the parent model element
+        /// </summary>
+        /// <param name="sender">The collection that raised the change</param>
+        /// <param name="e">The original event data</param>
+        private void EClassifiersCollectionChanging(object sender, NMF.Collections.ObjectModel.NotifyCollectionChangingEventArgs e)
+        {
+            this.OnCollectionChanging("EClassifiers", e);
+        }
+        
+        /// <summary>
+        /// Forwards CollectionChanged notifications for the EClassifiers property to the parent model element
         /// </summary>
         /// <param name="sender">The collection that raised the change</param>
         /// <param name="e">The original event data</param>
@@ -322,7 +394,17 @@ namespace NMF.Interop.Ecore
         }
         
         /// <summary>
-        /// Forwards change notifications for the ESubpackages property to the parent model element
+        /// Forwards CollectionChanging notifications for the ESubpackages property to the parent model element
+        /// </summary>
+        /// <param name="sender">The collection that raised the change</param>
+        /// <param name="e">The original event data</param>
+        private void ESubpackagesCollectionChanging(object sender, NMF.Collections.ObjectModel.NotifyCollectionChangingEventArgs e)
+        {
+            this.OnCollectionChanging("ESubpackages", e);
+        }
+        
+        /// <summary>
+        /// Forwards CollectionChanged notifications for the ESubpackages property to the parent model element
         /// </summary>
         /// <param name="sender">The collection that raised the change</param>
         /// <param name="e">The original event data</param>

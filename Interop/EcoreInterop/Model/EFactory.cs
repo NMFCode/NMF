@@ -60,6 +60,8 @@ namespace NMF.Interop.Ecore
             {
                 if ((this._ePackage != value))
                 {
+                    this.OnEPackageChanging(EventArgs.Empty);
+                    this.OnPropertyChanging("EPackage");
                     IEPackage old = this._ePackage;
                     this._ePackage = value;
                     if ((old != null))
@@ -102,9 +104,27 @@ namespace NMF.Interop.Ecore
         }
         
         /// <summary>
+        /// Gets fired before the EPackage property changes its value
+        /// </summary>
+        public event EventHandler EPackageChanging;
+        
+        /// <summary>
         /// Gets fired when the EPackage property changed its value
         /// </summary>
         public event EventHandler<ValueChangedEventArgs> EPackageChanged;
+        
+        /// <summary>
+        /// Raises the EPackageChanging event
+        /// </summary>
+        /// <param name="eventArgs">The event data</param>
+        protected virtual void OnEPackageChanging(EventArgs eventArgs)
+        {
+            EventHandler handler = this.EPackageChanging;
+            if ((handler != null))
+            {
+                handler.Invoke(this, eventArgs);
+            }
+        }
         
         /// <summary>
         /// Raises the EPackageChanged event

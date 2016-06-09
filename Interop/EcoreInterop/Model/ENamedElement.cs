@@ -62,6 +62,8 @@ namespace NMF.Interop.Ecore
             {
                 if ((this._name != value))
                 {
+                    this.OnNameChanging(EventArgs.Empty);
+                    this.OnPropertyChanging("Name");
                     string old = this._name;
                     this._name = value;
                     ValueChangedEventArgs e = new ValueChangedEventArgs(old, value);
@@ -94,9 +96,27 @@ namespace NMF.Interop.Ecore
         }
         
         /// <summary>
+        /// Gets fired before the Name property changes its value
+        /// </summary>
+        public event EventHandler NameChanging;
+        
+        /// <summary>
         /// Gets fired when the Name property changed its value
         /// </summary>
         public event EventHandler<ValueChangedEventArgs> NameChanged;
+        
+        /// <summary>
+        /// Raises the NameChanging event
+        /// </summary>
+        /// <param name="eventArgs">The event data</param>
+        protected virtual void OnNameChanging(EventArgs eventArgs)
+        {
+            EventHandler handler = this.NameChanging;
+            if ((handler != null))
+            {
+                handler.Invoke(this, eventArgs);
+            }
+        }
         
         /// <summary>
         /// Raises the NameChanged event
@@ -155,6 +175,10 @@ namespace NMF.Interop.Ecore
         /// <returns>The identifier string</returns>
         public override string ToIdentifierString()
         {
+            if ((this.Name == null))
+            {
+                return null;
+            }
             return this.Name.ToString();
         }
         

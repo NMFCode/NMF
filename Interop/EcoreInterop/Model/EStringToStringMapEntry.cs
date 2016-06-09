@@ -64,6 +64,8 @@ namespace NMF.Interop.Ecore
             {
                 if ((this._key != value))
                 {
+                    this.OnKeyChanging(EventArgs.Empty);
+                    this.OnPropertyChanging("Key");
                     string old = this._key;
                     this._key = value;
                     ValueChangedEventArgs e = new ValueChangedEventArgs(old, value);
@@ -88,6 +90,8 @@ namespace NMF.Interop.Ecore
             {
                 if ((this._value != value))
                 {
+                    this.OnValueChanging(EventArgs.Empty);
+                    this.OnPropertyChanging("Value");
                     string old = this._value;
                     this._value = value;
                     ValueChangedEventArgs e = new ValueChangedEventArgs(old, value);
@@ -109,14 +113,37 @@ namespace NMF.Interop.Ecore
         }
         
         /// <summary>
+        /// Gets fired before the Key property changes its value
+        /// </summary>
+        public event EventHandler KeyChanging;
+        
+        /// <summary>
         /// Gets fired when the Key property changed its value
         /// </summary>
         public event EventHandler<ValueChangedEventArgs> KeyChanged;
         
         /// <summary>
+        /// Gets fired before the Value property changes its value
+        /// </summary>
+        public event EventHandler ValueChanging;
+        
+        /// <summary>
         /// Gets fired when the Value property changed its value
         /// </summary>
         public event EventHandler<ValueChangedEventArgs> ValueChanged;
+        
+        /// <summary>
+        /// Raises the KeyChanging event
+        /// </summary>
+        /// <param name="eventArgs">The event data</param>
+        protected virtual void OnKeyChanging(EventArgs eventArgs)
+        {
+            EventHandler handler = this.KeyChanging;
+            if ((handler != null))
+            {
+                handler.Invoke(this, eventArgs);
+            }
+        }
         
         /// <summary>
         /// Raises the KeyChanged event
@@ -125,6 +152,19 @@ namespace NMF.Interop.Ecore
         protected virtual void OnKeyChanged(ValueChangedEventArgs eventArgs)
         {
             EventHandler<ValueChangedEventArgs> handler = this.KeyChanged;
+            if ((handler != null))
+            {
+                handler.Invoke(this, eventArgs);
+            }
+        }
+        
+        /// <summary>
+        /// Raises the ValueChanging event
+        /// </summary>
+        /// <param name="eventArgs">The event data</param>
+        protected virtual void OnValueChanging(EventArgs eventArgs)
+        {
+            EventHandler handler = this.ValueChanging;
             if ((handler != null))
             {
                 handler.Invoke(this, eventArgs);

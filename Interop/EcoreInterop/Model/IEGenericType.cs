@@ -83,9 +83,19 @@ namespace NMF.Interop.Ecore
         }
         
         /// <summary>
+        /// Gets fired before the EUpperBound property changes its value
+        /// </summary>
+        event EventHandler EUpperBoundChanging;
+        
+        /// <summary>
         /// Gets fired when the EUpperBound property changed its value
         /// </summary>
         event EventHandler<ValueChangedEventArgs> EUpperBoundChanged;
+        
+        /// <summary>
+        /// Gets fired before the ELowerBound property changes its value
+        /// </summary>
+        event EventHandler ELowerBoundChanging;
         
         /// <summary>
         /// Gets fired when the ELowerBound property changed its value
@@ -93,9 +103,19 @@ namespace NMF.Interop.Ecore
         event EventHandler<ValueChangedEventArgs> ELowerBoundChanged;
         
         /// <summary>
+        /// Gets fired before the ETypeParameter property changes its value
+        /// </summary>
+        event EventHandler ETypeParameterChanging;
+        
+        /// <summary>
         /// Gets fired when the ETypeParameter property changed its value
         /// </summary>
         event EventHandler<ValueChangedEventArgs> ETypeParameterChanged;
+        
+        /// <summary>
+        /// Gets fired before the EClassifier property changes its value
+        /// </summary>
+        event EventHandler EClassifierChanging;
         
         /// <summary>
         /// Gets fired when the EClassifier property changed its value

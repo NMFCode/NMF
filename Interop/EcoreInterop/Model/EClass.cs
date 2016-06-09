@@ -73,12 +73,16 @@ namespace NMF.Interop.Ecore
         public EClass()
         {
             this._eSuperTypes = new ObservableAssociationList<IEClass>();
+            this._eSuperTypes.CollectionChanging += this.ESuperTypesCollectionChanging;
             this._eSuperTypes.CollectionChanged += this.ESuperTypesCollectionChanged;
             this._eOperations = new EClassEOperationsCollection(this);
+            this._eOperations.CollectionChanging += this.EOperationsCollectionChanging;
             this._eOperations.CollectionChanged += this.EOperationsCollectionChanged;
             this._eStructuralFeatures = new EClassEStructuralFeaturesCollection(this);
+            this._eStructuralFeatures.CollectionChanging += this.EStructuralFeaturesCollectionChanging;
             this._eStructuralFeatures.CollectionChanged += this.EStructuralFeaturesCollectionChanged;
             this._eGenericSuperTypes = new ObservableCompositionList<IEGenericType>(this);
+            this._eGenericSuperTypes.CollectionChanging += this.EGenericSuperTypesCollectionChanging;
             this._eGenericSuperTypes.CollectionChanged += this.EGenericSuperTypesCollectionChanged;
         }
         
@@ -97,6 +101,8 @@ namespace NMF.Interop.Ecore
             {
                 if ((this._abstract != value))
                 {
+                    this.OnAbstractChanging(EventArgs.Empty);
+                    this.OnPropertyChanging("Abstract");
                     Nullable<bool> old = this._abstract;
                     this._abstract = value;
                     ValueChangedEventArgs e = new ValueChangedEventArgs(old, value);
@@ -121,6 +127,8 @@ namespace NMF.Interop.Ecore
             {
                 if ((this._interface != value))
                 {
+                    this.OnInterfaceChanging(EventArgs.Empty);
+                    this.OnPropertyChanging("Interface");
                     Nullable<bool> old = this._interface;
                     this._interface = value;
                     ValueChangedEventArgs e = new ValueChangedEventArgs(old, value);
@@ -229,14 +237,37 @@ namespace NMF.Interop.Ecore
         }
         
         /// <summary>
+        /// Gets fired before the Abstract property changes its value
+        /// </summary>
+        public event EventHandler AbstractChanging;
+        
+        /// <summary>
         /// Gets fired when the Abstract property changed its value
         /// </summary>
         public event EventHandler<ValueChangedEventArgs> AbstractChanged;
         
         /// <summary>
+        /// Gets fired before the Interface property changes its value
+        /// </summary>
+        public event EventHandler InterfaceChanging;
+        
+        /// <summary>
         /// Gets fired when the Interface property changed its value
         /// </summary>
         public event EventHandler<ValueChangedEventArgs> InterfaceChanged;
+        
+        /// <summary>
+        /// Raises the AbstractChanging event
+        /// </summary>
+        /// <param name="eventArgs">The event data</param>
+        protected virtual void OnAbstractChanging(EventArgs eventArgs)
+        {
+            EventHandler handler = this.AbstractChanging;
+            if ((handler != null))
+            {
+                handler.Invoke(this, eventArgs);
+            }
+        }
         
         /// <summary>
         /// Raises the AbstractChanged event
@@ -245,6 +276,19 @@ namespace NMF.Interop.Ecore
         protected virtual void OnAbstractChanged(ValueChangedEventArgs eventArgs)
         {
             EventHandler<ValueChangedEventArgs> handler = this.AbstractChanged;
+            if ((handler != null))
+            {
+                handler.Invoke(this, eventArgs);
+            }
+        }
+        
+        /// <summary>
+        /// Raises the InterfaceChanging event
+        /// </summary>
+        /// <param name="eventArgs">The event data</param>
+        protected virtual void OnInterfaceChanging(EventArgs eventArgs)
+        {
+            EventHandler handler = this.InterfaceChanging;
             if ((handler != null))
             {
                 handler.Invoke(this, eventArgs);
@@ -265,7 +309,17 @@ namespace NMF.Interop.Ecore
         }
         
         /// <summary>
-        /// Forwards change notifications for the ESuperTypes property to the parent model element
+        /// Forwards CollectionChanging notifications for the ESuperTypes property to the parent model element
+        /// </summary>
+        /// <param name="sender">The collection that raised the change</param>
+        /// <param name="e">The original event data</param>
+        private void ESuperTypesCollectionChanging(object sender, NMF.Collections.ObjectModel.NotifyCollectionChangingEventArgs e)
+        {
+            this.OnCollectionChanging("ESuperTypes", e);
+        }
+        
+        /// <summary>
+        /// Forwards CollectionChanged notifications for the ESuperTypes property to the parent model element
         /// </summary>
         /// <param name="sender">The collection that raised the change</param>
         /// <param name="e">The original event data</param>
@@ -275,7 +329,17 @@ namespace NMF.Interop.Ecore
         }
         
         /// <summary>
-        /// Forwards change notifications for the EOperations property to the parent model element
+        /// Forwards CollectionChanging notifications for the EOperations property to the parent model element
+        /// </summary>
+        /// <param name="sender">The collection that raised the change</param>
+        /// <param name="e">The original event data</param>
+        private void EOperationsCollectionChanging(object sender, NMF.Collections.ObjectModel.NotifyCollectionChangingEventArgs e)
+        {
+            this.OnCollectionChanging("EOperations", e);
+        }
+        
+        /// <summary>
+        /// Forwards CollectionChanged notifications for the EOperations property to the parent model element
         /// </summary>
         /// <param name="sender">The collection that raised the change</param>
         /// <param name="e">The original event data</param>
@@ -285,7 +349,17 @@ namespace NMF.Interop.Ecore
         }
         
         /// <summary>
-        /// Forwards change notifications for the EStructuralFeatures property to the parent model element
+        /// Forwards CollectionChanging notifications for the EStructuralFeatures property to the parent model element
+        /// </summary>
+        /// <param name="sender">The collection that raised the change</param>
+        /// <param name="e">The original event data</param>
+        private void EStructuralFeaturesCollectionChanging(object sender, NMF.Collections.ObjectModel.NotifyCollectionChangingEventArgs e)
+        {
+            this.OnCollectionChanging("EStructuralFeatures", e);
+        }
+        
+        /// <summary>
+        /// Forwards CollectionChanged notifications for the EStructuralFeatures property to the parent model element
         /// </summary>
         /// <param name="sender">The collection that raised the change</param>
         /// <param name="e">The original event data</param>
@@ -295,7 +369,17 @@ namespace NMF.Interop.Ecore
         }
         
         /// <summary>
-        /// Forwards change notifications for the EGenericSuperTypes property to the parent model element
+        /// Forwards CollectionChanging notifications for the EGenericSuperTypes property to the parent model element
+        /// </summary>
+        /// <param name="sender">The collection that raised the change</param>
+        /// <param name="e">The original event data</param>
+        private void EGenericSuperTypesCollectionChanging(object sender, NMF.Collections.ObjectModel.NotifyCollectionChangingEventArgs e)
+        {
+            this.OnCollectionChanging("EGenericSuperTypes", e);
+        }
+        
+        /// <summary>
+        /// Forwards CollectionChanged notifications for the EGenericSuperTypes property to the parent model element
         /// </summary>
         /// <param name="sender">The collection that raised the change</param>
         /// <param name="e">The original event data</param>

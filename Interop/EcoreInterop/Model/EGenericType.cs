@@ -67,6 +67,7 @@ namespace NMF.Interop.Ecore
         public EGenericType()
         {
             this._eTypeArguments = new ObservableCompositionList<IEGenericType>(this);
+            this._eTypeArguments.CollectionChanging += this.ETypeArgumentsCollectionChanging;
             this._eTypeArguments.CollectionChanged += this.ETypeArgumentsCollectionChanged;
         }
         
@@ -86,6 +87,8 @@ namespace NMF.Interop.Ecore
             {
                 if ((this._eUpperBound != value))
                 {
+                    this.OnEUpperBoundChanging(EventArgs.Empty);
+                    this.OnPropertyChanging("EUpperBound");
                     IEGenericType old = this._eUpperBound;
                     this._eUpperBound = value;
                     if ((old != null))
@@ -137,6 +140,8 @@ namespace NMF.Interop.Ecore
             {
                 if ((this._eLowerBound != value))
                 {
+                    this.OnELowerBoundChanging(EventArgs.Empty);
+                    this.OnPropertyChanging("ELowerBound");
                     IEGenericType old = this._eLowerBound;
                     this._eLowerBound = value;
                     if ((old != null))
@@ -171,6 +176,8 @@ namespace NMF.Interop.Ecore
             {
                 if ((this._eTypeParameter != value))
                 {
+                    this.OnETypeParameterChanging(EventArgs.Empty);
+                    this.OnPropertyChanging("ETypeParameter");
                     IETypeParameter old = this._eTypeParameter;
                     this._eTypeParameter = value;
                     if ((old != null))
@@ -203,6 +210,8 @@ namespace NMF.Interop.Ecore
             {
                 if ((this._eClassifier != value))
                 {
+                    this.OnEClassifierChanging(EventArgs.Empty);
+                    this.OnPropertyChanging("EClassifier");
                     IEClassifier old = this._eClassifier;
                     this._eClassifier = value;
                     if ((old != null))
@@ -254,9 +263,19 @@ namespace NMF.Interop.Ecore
         }
         
         /// <summary>
+        /// Gets fired before the EUpperBound property changes its value
+        /// </summary>
+        public event EventHandler EUpperBoundChanging;
+        
+        /// <summary>
         /// Gets fired when the EUpperBound property changed its value
         /// </summary>
         public event EventHandler<ValueChangedEventArgs> EUpperBoundChanged;
+        
+        /// <summary>
+        /// Gets fired before the ELowerBound property changes its value
+        /// </summary>
+        public event EventHandler ELowerBoundChanging;
         
         /// <summary>
         /// Gets fired when the ELowerBound property changed its value
@@ -264,14 +283,37 @@ namespace NMF.Interop.Ecore
         public event EventHandler<ValueChangedEventArgs> ELowerBoundChanged;
         
         /// <summary>
+        /// Gets fired before the ETypeParameter property changes its value
+        /// </summary>
+        public event EventHandler ETypeParameterChanging;
+        
+        /// <summary>
         /// Gets fired when the ETypeParameter property changed its value
         /// </summary>
         public event EventHandler<ValueChangedEventArgs> ETypeParameterChanged;
         
         /// <summary>
+        /// Gets fired before the EClassifier property changes its value
+        /// </summary>
+        public event EventHandler EClassifierChanging;
+        
+        /// <summary>
         /// Gets fired when the EClassifier property changed its value
         /// </summary>
         public event EventHandler<ValueChangedEventArgs> EClassifierChanged;
+        
+        /// <summary>
+        /// Raises the EUpperBoundChanging event
+        /// </summary>
+        /// <param name="eventArgs">The event data</param>
+        protected virtual void OnEUpperBoundChanging(EventArgs eventArgs)
+        {
+            EventHandler handler = this.EUpperBoundChanging;
+            if ((handler != null))
+            {
+                handler.Invoke(this, eventArgs);
+            }
+        }
         
         /// <summary>
         /// Raises the EUpperBoundChanged event
@@ -297,13 +339,36 @@ namespace NMF.Interop.Ecore
         }
         
         /// <summary>
-        /// Forwards change notifications for the ETypeArguments property to the parent model element
+        /// Forwards CollectionChanging notifications for the ETypeArguments property to the parent model element
+        /// </summary>
+        /// <param name="sender">The collection that raised the change</param>
+        /// <param name="e">The original event data</param>
+        private void ETypeArgumentsCollectionChanging(object sender, NMF.Collections.ObjectModel.NotifyCollectionChangingEventArgs e)
+        {
+            this.OnCollectionChanging("ETypeArguments", e);
+        }
+        
+        /// <summary>
+        /// Forwards CollectionChanged notifications for the ETypeArguments property to the parent model element
         /// </summary>
         /// <param name="sender">The collection that raised the change</param>
         /// <param name="e">The original event data</param>
         private void ETypeArgumentsCollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
         {
             this.OnCollectionChanged("ETypeArguments", e);
+        }
+        
+        /// <summary>
+        /// Raises the ELowerBoundChanging event
+        /// </summary>
+        /// <param name="eventArgs">The event data</param>
+        protected virtual void OnELowerBoundChanging(EventArgs eventArgs)
+        {
+            EventHandler handler = this.ELowerBoundChanging;
+            if ((handler != null))
+            {
+                handler.Invoke(this, eventArgs);
+            }
         }
         
         /// <summary>
@@ -330,6 +395,19 @@ namespace NMF.Interop.Ecore
         }
         
         /// <summary>
+        /// Raises the ETypeParameterChanging event
+        /// </summary>
+        /// <param name="eventArgs">The event data</param>
+        protected virtual void OnETypeParameterChanging(EventArgs eventArgs)
+        {
+            EventHandler handler = this.ETypeParameterChanging;
+            if ((handler != null))
+            {
+                handler.Invoke(this, eventArgs);
+            }
+        }
+        
+        /// <summary>
         /// Raises the ETypeParameterChanged event
         /// </summary>
         /// <param name="eventArgs">The event data</param>
@@ -350,6 +428,19 @@ namespace NMF.Interop.Ecore
         private void OnResetETypeParameter(object sender, EventArgs eventArgs)
         {
             this.ETypeParameter = null;
+        }
+        
+        /// <summary>
+        /// Raises the EClassifierChanging event
+        /// </summary>
+        /// <param name="eventArgs">The event data</param>
+        protected virtual void OnEClassifierChanging(EventArgs eventArgs)
+        {
+            EventHandler handler = this.EClassifierChanging;
+            if ((handler != null))
+            {
+                handler.Invoke(this, eventArgs);
+            }
         }
         
         /// <summary>

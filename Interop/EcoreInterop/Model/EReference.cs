@@ -63,6 +63,7 @@ namespace NMF.Interop.Ecore
         public EReference()
         {
             this._eKeys = new ObservableAssociationList<IEAttribute>();
+            this._eKeys.CollectionChanging += this.EKeysCollectionChanging;
             this._eKeys.CollectionChanged += this.EKeysCollectionChanged;
         }
         
@@ -81,6 +82,8 @@ namespace NMF.Interop.Ecore
             {
                 if ((this._containment != value))
                 {
+                    this.OnContainmentChanging(EventArgs.Empty);
+                    this.OnPropertyChanging("Containment");
                     Nullable<bool> old = this._containment;
                     this._containment = value;
                     ValueChangedEventArgs e = new ValueChangedEventArgs(old, value);
@@ -105,6 +108,8 @@ namespace NMF.Interop.Ecore
             {
                 if ((this._resolveProxies != value))
                 {
+                    this.OnResolveProxiesChanging(EventArgs.Empty);
+                    this.OnPropertyChanging("ResolveProxies");
                     Nullable<bool> old = this._resolveProxies;
                     this._resolveProxies = value;
                     ValueChangedEventArgs e = new ValueChangedEventArgs(old, value);
@@ -129,6 +134,8 @@ namespace NMF.Interop.Ecore
             {
                 if ((this._eOpposite != value))
                 {
+                    this.OnEOppositeChanging(EventArgs.Empty);
+                    this.OnPropertyChanging("EOpposite");
                     IEReference old = this._eOpposite;
                     this._eOpposite = value;
                     if ((old != null))
@@ -184,9 +191,19 @@ namespace NMF.Interop.Ecore
         }
         
         /// <summary>
+        /// Gets fired before the Containment property changes its value
+        /// </summary>
+        public event EventHandler ContainmentChanging;
+        
+        /// <summary>
         /// Gets fired when the Containment property changed its value
         /// </summary>
         public event EventHandler<ValueChangedEventArgs> ContainmentChanged;
+        
+        /// <summary>
+        /// Gets fired before the ResolveProxies property changes its value
+        /// </summary>
+        public event EventHandler ResolveProxiesChanging;
         
         /// <summary>
         /// Gets fired when the ResolveProxies property changed its value
@@ -194,9 +211,27 @@ namespace NMF.Interop.Ecore
         public event EventHandler<ValueChangedEventArgs> ResolveProxiesChanged;
         
         /// <summary>
+        /// Gets fired before the EOpposite property changes its value
+        /// </summary>
+        public event EventHandler EOppositeChanging;
+        
+        /// <summary>
         /// Gets fired when the EOpposite property changed its value
         /// </summary>
         public event EventHandler<ValueChangedEventArgs> EOppositeChanged;
+        
+        /// <summary>
+        /// Raises the ContainmentChanging event
+        /// </summary>
+        /// <param name="eventArgs">The event data</param>
+        protected virtual void OnContainmentChanging(EventArgs eventArgs)
+        {
+            EventHandler handler = this.ContainmentChanging;
+            if ((handler != null))
+            {
+                handler.Invoke(this, eventArgs);
+            }
+        }
         
         /// <summary>
         /// Raises the ContainmentChanged event
@@ -212,12 +247,38 @@ namespace NMF.Interop.Ecore
         }
         
         /// <summary>
+        /// Raises the ResolveProxiesChanging event
+        /// </summary>
+        /// <param name="eventArgs">The event data</param>
+        protected virtual void OnResolveProxiesChanging(EventArgs eventArgs)
+        {
+            EventHandler handler = this.ResolveProxiesChanging;
+            if ((handler != null))
+            {
+                handler.Invoke(this, eventArgs);
+            }
+        }
+        
+        /// <summary>
         /// Raises the ResolveProxiesChanged event
         /// </summary>
         /// <param name="eventArgs">The event data</param>
         protected virtual void OnResolveProxiesChanged(ValueChangedEventArgs eventArgs)
         {
             EventHandler<ValueChangedEventArgs> handler = this.ResolveProxiesChanged;
+            if ((handler != null))
+            {
+                handler.Invoke(this, eventArgs);
+            }
+        }
+        
+        /// <summary>
+        /// Raises the EOppositeChanging event
+        /// </summary>
+        /// <param name="eventArgs">The event data</param>
+        protected virtual void OnEOppositeChanging(EventArgs eventArgs)
+        {
+            EventHandler handler = this.EOppositeChanging;
             if ((handler != null))
             {
                 handler.Invoke(this, eventArgs);
@@ -248,7 +309,17 @@ namespace NMF.Interop.Ecore
         }
         
         /// <summary>
-        /// Forwards change notifications for the EKeys property to the parent model element
+        /// Forwards CollectionChanging notifications for the EKeys property to the parent model element
+        /// </summary>
+        /// <param name="sender">The collection that raised the change</param>
+        /// <param name="e">The original event data</param>
+        private void EKeysCollectionChanging(object sender, NMF.Collections.ObjectModel.NotifyCollectionChangingEventArgs e)
+        {
+            this.OnCollectionChanging("EKeys", e);
+        }
+        
+        /// <summary>
+        /// Forwards CollectionChanged notifications for the EKeys property to the parent model element
         /// </summary>
         /// <param name="sender">The collection that raised the change</param>
         /// <param name="e">The original event data</param>

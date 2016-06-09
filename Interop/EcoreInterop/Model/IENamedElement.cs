@@ -48,6 +48,11 @@ namespace NMF.Interop.Ecore
         }
         
         /// <summary>
+        /// Gets fired before the Name property changes its value
+        /// </summary>
+        event EventHandler NameChanging;
+        
+        /// <summary>
         /// Gets fired when the Name property changed its value
         /// </summary>
         event EventHandler<ValueChangedEventArgs> NameChanged;

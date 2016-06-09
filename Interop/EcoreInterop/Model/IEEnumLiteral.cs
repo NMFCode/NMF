@@ -75,14 +75,29 @@ namespace NMF.Interop.Ecore
         }
         
         /// <summary>
+        /// Gets fired before the Value property changes its value
+        /// </summary>
+        event EventHandler ValueChanging;
+        
+        /// <summary>
         /// Gets fired when the Value property changed its value
         /// </summary>
         event EventHandler<ValueChangedEventArgs> ValueChanged;
         
         /// <summary>
+        /// Gets fired before the Instance property changes its value
+        /// </summary>
+        event EventHandler InstanceChanging;
+        
+        /// <summary>
         /// Gets fired when the Instance property changed its value
         /// </summary>
         event EventHandler<ValueChangedEventArgs> InstanceChanged;
+        
+        /// <summary>
+        /// Gets fired before the Literal property changes its value
+        /// </summary>
+        event EventHandler LiteralChanging;
         
         /// <summary>
         /// Gets fired when the Literal property changed its value

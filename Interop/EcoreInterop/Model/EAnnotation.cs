@@ -62,10 +62,13 @@ namespace NMF.Interop.Ecore
         public EAnnotation()
         {
             this._details = new ObservableCompositionList<IEStringToStringMapEntry>(this);
+            this._details.CollectionChanging += this.DetailsCollectionChanging;
             this._details.CollectionChanged += this.DetailsCollectionChanged;
             this._contents = new ObservableCompositionList<IEObject>(this);
+            this._contents.CollectionChanging += this.ContentsCollectionChanging;
             this._contents.CollectionChanged += this.ContentsCollectionChanged;
             this._references = new ObservableAssociationList<IEObject>();
+            this._references.CollectionChanging += this.ReferencesCollectionChanging;
             this._references.CollectionChanged += this.ReferencesCollectionChanged;
         }
         
@@ -84,6 +87,8 @@ namespace NMF.Interop.Ecore
             {
                 if ((this._source != value))
                 {
+                    this.OnSourceChanging(EventArgs.Empty);
+                    this.OnPropertyChanging("Source");
                     string old = this._source;
                     this._source = value;
                     ValueChangedEventArgs e = new ValueChangedEventArgs(old, value);
@@ -193,6 +198,11 @@ namespace NMF.Interop.Ecore
         }
         
         /// <summary>
+        /// Gets fired before the Source property changes its value
+        /// </summary>
+        public event EventHandler SourceChanging;
+        
+        /// <summary>
         /// Gets fired when the Source property changed its value
         /// </summary>
         public event EventHandler<ValueChangedEventArgs> SourceChanged;
@@ -201,6 +211,19 @@ namespace NMF.Interop.Ecore
         /// Gets fired when the EModelElement property changed its value
         /// </summary>
         public event EventHandler<ValueChangedEventArgs> EModelElementChanged;
+        
+        /// <summary>
+        /// Raises the SourceChanging event
+        /// </summary>
+        /// <param name="eventArgs">The event data</param>
+        protected virtual void OnSourceChanging(EventArgs eventArgs)
+        {
+            EventHandler handler = this.SourceChanging;
+            if ((handler != null))
+            {
+                handler.Invoke(this, eventArgs);
+            }
+        }
         
         /// <summary>
         /// Raises the SourceChanged event
@@ -216,7 +239,17 @@ namespace NMF.Interop.Ecore
         }
         
         /// <summary>
-        /// Forwards change notifications for the Details property to the parent model element
+        /// Forwards CollectionChanging notifications for the Details property to the parent model element
+        /// </summary>
+        /// <param name="sender">The collection that raised the change</param>
+        /// <param name="e">The original event data</param>
+        private void DetailsCollectionChanging(object sender, NMF.Collections.ObjectModel.NotifyCollectionChangingEventArgs e)
+        {
+            this.OnCollectionChanging("Details", e);
+        }
+        
+        /// <summary>
+        /// Forwards CollectionChanged notifications for the Details property to the parent model element
         /// </summary>
         /// <param name="sender">The collection that raised the change</param>
         /// <param name="e">The original event data</param>
@@ -261,7 +294,17 @@ namespace NMF.Interop.Ecore
         }
         
         /// <summary>
-        /// Forwards change notifications for the Contents property to the parent model element
+        /// Forwards CollectionChanging notifications for the Contents property to the parent model element
+        /// </summary>
+        /// <param name="sender">The collection that raised the change</param>
+        /// <param name="e">The original event data</param>
+        private void ContentsCollectionChanging(object sender, NMF.Collections.ObjectModel.NotifyCollectionChangingEventArgs e)
+        {
+            this.OnCollectionChanging("Contents", e);
+        }
+        
+        /// <summary>
+        /// Forwards CollectionChanged notifications for the Contents property to the parent model element
         /// </summary>
         /// <param name="sender">The collection that raised the change</param>
         /// <param name="e">The original event data</param>
@@ -271,7 +314,17 @@ namespace NMF.Interop.Ecore
         }
         
         /// <summary>
-        /// Forwards change notifications for the References property to the parent model element
+        /// Forwards CollectionChanging notifications for the References property to the parent model element
+        /// </summary>
+        /// <param name="sender">The collection that raised the change</param>
+        /// <param name="e">The original event data</param>
+        private void ReferencesCollectionChanging(object sender, NMF.Collections.ObjectModel.NotifyCollectionChangingEventArgs e)
+        {
+            this.OnCollectionChanging("References", e);
+        }
+        
+        /// <summary>
+        /// Forwards CollectionChanged notifications for the References property to the parent model element
         /// </summary>
         /// <param name="sender">The collection that raised the change</param>
         /// <param name="e">The original event data</param>

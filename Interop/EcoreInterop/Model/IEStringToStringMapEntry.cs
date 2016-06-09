@@ -57,9 +57,19 @@ namespace NMF.Interop.Ecore
         }
         
         /// <summary>
+        /// Gets fired before the Key property changes its value
+        /// </summary>
+        event EventHandler KeyChanging;
+        
+        /// <summary>
         /// Gets fired when the Key property changed its value
         /// </summary>
         event EventHandler<ValueChangedEventArgs> KeyChanged;
+        
+        /// <summary>
+        /// Gets fired before the Value property changes its value
+        /// </summary>
+        event EventHandler ValueChanging;
         
         /// <summary>
         /// Gets fired when the Value property changed its value
