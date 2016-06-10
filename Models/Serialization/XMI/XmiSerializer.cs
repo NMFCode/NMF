@@ -130,13 +130,19 @@ namespace NMF.Serialization.Xmi
                         {
                             writer.WriteStartElement(pi.NamespacePrefix, pi.ElementName, pi.Namespace);
                             var itemType = item.GetType();
+                            var itemInfo = GetSerializationInfo(itemType, true);
                             if (itemType != collectionType)
                             {
-                                var itemInfo = GetSerializationInfo(itemType, true);
-
                                 WriteTypeQualifier(writer, itemInfo);
                             }
-                            Serialize(item, writer, pi, false, pi.IdentificationMode, context);
+                            if (itemInfo.IsStringConvertible)
+                            {
+                                writer.WriteString(itemInfo.ConvertToString(item));
+                            }
+                            else
+                            {
+                                Serialize(item, writer, pi, false, pi.IdentificationMode, context);
+                            }
                             writer.WriteEndElement();
                         }
                     }

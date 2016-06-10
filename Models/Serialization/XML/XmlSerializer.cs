@@ -182,7 +182,14 @@ namespace NMF.Serialization
 
             string identifier = null;
             XmlPropertySerializationInfo[] constructorInfos = null;
-            info.ElementName = Settings.GetPersistanceString(type.Name);
+            if (type.IsGenericType)
+            {
+                var genericTypes = type.GetGenericArguments().Select(t => t.Name).Aggregate((a, b) => a + "-" + b);
+                var sanitizedTypeName = type.Name.Substring(0, type.Name.IndexOf('`'));
+                info.ElementName = sanitizedTypeName + "_" + genericTypes + "_";
+            }
+            else
+                info.ElementName = Settings.GetPersistanceString(type.Name);
             info.Namespace = Settings.DefaultNamespace;
 
             foreach (object att in type.GetCustomAttributes(typeof(XmlElementNameAttribute), false))
@@ -225,7 +232,11 @@ namespace NMF.Serialization
                     {
                         Type collType = i.GetGenericArguments()[0];
                         info.CollectionType = i;
-                        info.CollectionItemType = GetSerializationInfo(collType, true);
+                        var converter = GetTypeConverter(collType);
+                        if (converter == null || !converter.CanConvertFrom(typeof(string)) || !converter.CanConvertTo(typeof(string)))
+                            info.CollectionItemType = GetSerializationInfo(collType, true);
+                        else
+                            info.CollectionItemType = new StringConvertibleType(converter, collType);
                         break;
                     }
                 }
@@ -327,7 +338,7 @@ namespace NMF.Serialization
             }
             else
             {
-                p.PropertyType = new StringConvertibleType(p.Converter);
+                p.PropertyType = new StringConvertibleType(p.Converter, pd.PropertyType);
 
                 var defaultValue = Fetch(FetchAttribute<DefaultValueAttribute>(pd, true), dva => dva.Value);
                 if (defaultValue != null)
@@ -420,16 +431,22 @@ namespace NMF.Serialization
                 }
                 catch (Exception) { }
             }
+
+            return GetTypeConverter(pd.PropertyType);
+        }
+
+        private static TypeConverter GetTypeConverter(Type type)
+        {
             TypeConverter converter;
-            if (!standardTypes.TryGetValue(pd.PropertyType, out converter))
+            if (!standardTypes.TryGetValue(type, out converter))
             {
-                if (pd.PropertyType.IsEnum)
+                if (type.IsEnum)
                 {
-                    converter = new EnumConverter(pd.PropertyType);
+                    converter = new EnumConverter(type);
                 }
                 else
                 {
-                    converterTypeString = Fetch(FetchAttribute<TypeConverterAttribute>(pd.PropertyType, true), att => att.ConverterTypeName);
+                    var converterTypeString = Fetch(FetchAttribute<TypeConverterAttribute>(type, true), att => att.ConverterTypeName);
                     if (converterTypeString != null)
                     {
                         try
@@ -439,7 +456,7 @@ namespace NMF.Serialization
                         catch (Exception) { }
                     }
                 }
-                standardTypes.Add(pd.PropertyType, converter);
+                standardTypes.Add(type, converter);
             }
             return converter;
         }
@@ -485,10 +502,9 @@ namespace NMF.Serialization
         /// <param name="fragment">A value that indicates whether the serializer should write a document definition</param>
         public void Serialize(object source, Stream stream, bool fragment = false)
         {
-            using (var sw = new StreamWriter(stream, Encoding.UTF8))
-            {
-                Serialize(source, sw, fragment);
-            }
+            var sw = new StreamWriter(stream, Encoding.UTF8);
+            Serialize(source, sw, fragment);
+            sw.Flush();
         }
 
         /// <summary>
