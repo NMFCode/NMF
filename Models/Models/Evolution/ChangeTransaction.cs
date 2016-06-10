@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using NMF.Models.Repository;
+using NMF.Serialization;
+using System.ComponentModel;
 
 namespace NMF.Models.Evolution
 {
@@ -13,6 +15,12 @@ namespace NMF.Models.Evolution
         public IModelChange SourceChange { get; set; }
         
         public List<IModelChange> NestedChanges { get; set; }
+        
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public ChangeTransaction()
+        {
+            NestedChanges = new List<IModelChange>();
+        }
 
         public ChangeTransaction(IModelChange sourceChange, IEnumerable<IModelChange> nestedChanges)
         {
@@ -34,9 +42,21 @@ namespace NMF.Models.Evolution
                 change.Apply(repository);
         }
 
-        public void Undo(IModelRepository repository)
+        public override bool Equals(object obj)
         {
-            throw new NotImplementedException();
+            if (ReferenceEquals(this, obj))
+                return true;
+            var other = obj as ChangeTransaction;
+            if (other == null)
+                return false;
+            return this.SourceChange.Equals(other.SourceChange)
+                && this.NestedChanges.SequenceEqual(other.NestedChanges);
+        }
+
+        public override int GetHashCode()
+        {
+            return SourceChange?.GetHashCode() ?? 0
+                ^ NestedChanges.GetHashCode();
         }
     }
 }

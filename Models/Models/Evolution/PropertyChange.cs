@@ -2,25 +2,30 @@
 using NMF.Serialization;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Reflection;
 using System.Text;
 
 namespace NMF.Models.Evolution
 {
-    public class PropertyChange : IModelChange
+    [XmlConstructor(2)]
+    public class PropertyChange<T> : IModelChange
     {
         [XmlAttribute(true)]
-        public string PropertyName { get; set; }
-    
-        public object NewValue { get; set; }
-    
-        public object OldValue { get; set; }
+        [XmlConstructorParameter(0)]
+        public Uri AbsoluteUri { get; set; }
 
         [XmlAttribute(true)]
-        public Uri AbsoluteUri { get; set; }
-        
-        public PropertyChange(Uri absoluteUri, string propertyName, object newValue, object oldValue)
+        [XmlConstructorParameter(1)]
+        public string PropertyName { get; set; }
+
+        public T OldValue { get; set; }
+
+        public T NewValue { get; set; }
+
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public PropertyChange(Uri absoluteUri, string propertyName)
         {
             if (absoluteUri == null)
                 throw new ArgumentNullException(nameof(absoluteUri));
@@ -29,42 +34,41 @@ namespace NMF.Models.Evolution
 
             AbsoluteUri = absoluteUri;
             PropertyName = propertyName;
-            NewValue = newValue;
-            OldValue = oldValue;
         }
 
+        public PropertyChange(Uri absoluteUri, string propertyName, T oldValue, T newValue)
+            : this(absoluteUri, propertyName)
+        {
+            OldValue = oldValue;
+            NewValue = newValue;
+        }
+        
         public void Apply(IModelRepository repository)
         {
             var parent = repository.Resolve(AbsoluteUri);
             parent?.GetType().GetProperty(PropertyName)?.SetValue(parent, NewValue, null);
         }
-
-        public void Undo(IModelRepository repository)
-        {
-            var parent = repository.Resolve(AbsoluteUri);
-            parent?.GetType().GetProperty(PropertyName)?.SetValue(parent, OldValue, null);
-        }
-
+        
         public override bool Equals(object obj)
         {
             if (ReferenceEquals(this, obj))
                 return true;
-            var other = obj as PropertyChange;
+            var other = obj as PropertyChange<T>;
             if (other == null)
                 return false;
             else
-                return this.AbsoluteUri.Equals(other.AbsoluteUri)
-                    && this.NewValue.Equals(other.NewValue)
-                    && this.OldValue.Equals(other.OldValue)
-                    && this.PropertyName.Equals(other.PropertyName);
+                return Equals(this.AbsoluteUri, other.AbsoluteUri)
+                    && Equals(this.NewValue, other.NewValue)
+                    && Equals(this.OldValue, other.OldValue)
+                    && Equals(this.PropertyName, other.PropertyName);
         }
 
         public override int GetHashCode()
         {
-            return AbsoluteUri.GetHashCode()
-                ^ (NewValue ?? 0).GetHashCode()
-                ^ (OldValue ?? 0).GetHashCode()
-                ^ PropertyName.GetHashCode();
+            return AbsoluteUri?.GetHashCode() ?? 0
+                ^ NewValue?.GetHashCode() ?? 0
+                ^ OldValue?.GetHashCode() ?? 0
+                ^ PropertyName?.GetHashCode() ?? 0;
         }
     }
 }

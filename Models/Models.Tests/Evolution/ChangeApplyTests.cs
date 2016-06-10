@@ -10,7 +10,7 @@ using System.Text;
 namespace NMF.Models.Tests.Evolution
 {
     [TestClass]
-    public class PropertyChangeTests
+    public class ChangeApplyTests
     {
         private ModelRepository repository;
         private RailwayContainer railway;
@@ -28,11 +28,34 @@ namespace NMF.Models.Tests.Evolution
         }
 
         [TestMethod]
-        public void ModelPropertyChangeSucceeds()
+        public void ApplyListDeletion()
+        {
+            var toDelete = railway.Routes.Take(1).ToList();
+            var change = new ListDeletion(railway.AbsoluteUri, "Routes", 0, 1);
+
+            change.Apply(repository);
+            
+            Assert.AreNotEqual(toDelete, railway.Routes.FirstOrDefault());
+            CollectionAssert.DoesNotContain(railway.Routes.ToList(), toDelete);
+        }
+
+        [TestMethod]
+        public void ApplyListInsertion()
+        {
+            var toInsert = new Route();
+            var change = new ListInsertion<IRoute>(railway.AbsoluteUri, "Routes", 0, new[] { toInsert });
+
+            change.Apply(repository);
+
+            Assert.AreEqual(toInsert, railway.Routes.First());
+        }
+
+        [TestMethod]
+        public void ApplyPropertyChange()
         {
             var parent = railway.Routes.First().Entry;
             var newValue = Signal.FAILURE;
-            var change = new PropertyChange(parent.AbsoluteUri, "Signal", newValue, parent.Signal);
+            var change = new PropertyChange<Signal>(parent.AbsoluteUri, "Signal", parent.Signal, newValue);
 
             change.Apply(repository);
 

@@ -11,19 +11,20 @@ namespace NMF.Models.Tests.Evolution
     [TestClass]
     public class MultiplePropertyChangesTests
     {
+        private static readonly Uri uri = new Uri("http://TestUri/");
+        private static readonly string property = "TestProperty";
+
         [TestMethod]
         public void Minimize3To1()
         {
-            var uri = new Uri("//TestUri");
-            var property = "TestProperty";
             var changes = new List<IModelChange>
             {
-                new PropertyChange(uri, property, 2, 1),
-                new PropertyChange(uri, property, 3, 2),
-                new PropertyChange(uri, property, 4, 3)
+                new PropertyChange<int>(uri, property, 1, 2),
+                new PropertyChange<int>(uri, property, 2, 3),
+                new PropertyChange<int>(uri, property, 3, 4)
             };
             var strategy = new MultiplePropertyChanges();
-            var expected = new List<IModelChange>() { new PropertyChange(uri, property, 4, 1) };
+            var expected = new List<IModelChange>() { new PropertyChange<int>(uri, property, 1, 4) };
 
             var actual = strategy.Execute(changes);
 
@@ -33,21 +34,19 @@ namespace NMF.Models.Tests.Evolution
         [TestMethod]
         public void Minimize4To2()
         {
-            var uri = new Uri("//TestUri");
-            var property = "TestProperty";
             var property2 = "SomeOtherProperty";
             var changes = new List<IModelChange>
             {
-                new PropertyChange(uri, property, 2, 1),
-                new PropertyChange(uri, property2, "hi", "hello"),
-                new PropertyChange(uri, property2, "welcome", "hi"),
-                new PropertyChange(uri, property, 3, 2)
+                new PropertyChange<int>(uri, property, 1, 2),
+                new PropertyChange<string>(uri, property2, "hello", "hi"),
+                new PropertyChange<string>(uri, property2, "hi", "welcome"),
+                new PropertyChange<int>(uri, property, 2, 3)
             };
             var strategy = new MultiplePropertyChanges();
             var expected = new List<IModelChange>()
             {
-                new PropertyChange(uri, property, 3, 1),
-                new PropertyChange(uri, property2, "welcome", "hello"),
+                new PropertyChange<int>(uri, property, 1, 3),
+                new PropertyChange<string>(uri, property2, "hello", "welcome"),
             };
 
             var actual = strategy.Execute(changes);

@@ -28,7 +28,7 @@ namespace NMF.Models.Tests
         }
 
         [TestMethod]
-        public void PropertyChange()
+        public void RecordPropertyChange()
         {
             var semaphore = railway.Semaphores[0];
             var rec = new ModelChangeRecorder();
@@ -36,27 +36,26 @@ namespace NMF.Models.Tests
 
             semaphore.Signal = Signal.FAILURE;
 
-            var expected = new PropertyChange(semaphore.AbsoluteUri, "Signal", Signal.FAILURE, Signal.GO);
+            var expected = new PropertyChange<Signal>(semaphore.AbsoluteUri, "Signal", Signal.GO, Signal.FAILURE);
             var actual = rec.GetModelChanges().Changes[0];
             Assert.AreEqual(expected, actual);
         }
 
         [TestMethod]
-        public void CollectionDeletion()
+        public void RecordListDeletion()
         {
-            var semaphore = railway.Semaphores.Take(1).ToList();
             var rec = new ModelChangeRecorder();
             rec.Start(railway);
 
             railway.Semaphores.RemoveAt(0);
 
-            var expected = new CollectionDeletion(railway.AbsoluteUri, "Semaphores", semaphore, 0);
+            var expected = new ListDeletion(railway.AbsoluteUri, "Semaphores", 0, 1);
             var actual = rec.GetModelChanges().Changes[0];
             Assert.AreEqual(expected, actual);
         }
 
         [TestMethod]
-        public void CollectionInsertion()
+        public void RecordListInsertion()
         {
             var semaphore = new Semaphore { Signal = Signal.STOP };
             var rec = new ModelChangeRecorder();
@@ -67,22 +66,22 @@ namespace NMF.Models.Tests
             var expected = new List<IModelChange>()
             {
                 new ElementCreation(semaphore),
-                new CollectionInsertion(railway.AbsoluteUri, "Semaphores", new[] { semaphore }, 0)
+                new ListInsertion<ISemaphore>(railway.AbsoluteUri, "Semaphores", 0, new[] { semaphore })
             };
             var actual = rec.GetModelChanges().Changes;
             CollectionAssert.AreEqual(expected, actual);
         }
 
         [TestMethod]
-        public void ElementDeletion()
+        public void RecordElementDeletion()
         {
             var toDelete = railway.Routes[0];
+            var expected = new ElementDeletion(toDelete.AbsoluteUri);
             var rec = new ModelChangeRecorder();
             rec.Start(railway);
 
             toDelete.Delete();
 
-            var expected = new ElementDeletion(toDelete);
             var actual = ((ChangeTransaction)rec.GetModelChanges().Changes[0]).SourceChange;
             Assert.AreEqual(expected, actual);
         }

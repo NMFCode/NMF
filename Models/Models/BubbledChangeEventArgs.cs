@@ -5,12 +5,14 @@ using System.Collections.Specialized;
 using System.Linq;
 using System.Text;
 using NMF.Collections.ObjectModel;
+using System.Diagnostics;
 
 namespace NMF.Models
 {
     /// <summary>
     /// Describes that an elementary change in the model elements containment hierarchy has happened
     /// </summary>
+    [DebuggerDisplay("BubbledChange: {ChangeType} in {Element} {AbsoluteUri}")]
     public class BubbledChangeEventArgs : EventArgs
     {
         private BubbledChangeEventArgs(IModelElement element)
@@ -44,11 +46,6 @@ namespace NMF.Models
         /// and whether PropertyName is used.
         /// </summary>
         public ChangeType ChangeType { get; private set; }
-
-        public override string ToString()
-        {
-            return "BubbledChange: " + ChangeType + " in " + Element + " " + AbsoluteUri;
-        }
 
         /// <summary>
         /// Gets a value indicating whether the underlying change has been a elementary collection change

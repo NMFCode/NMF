@@ -59,10 +59,9 @@
   </Choose>
   <ItemGroup>
     <Compile Include="Evolution\ModelChangeRecorderTests.cs" />
-    <Compile Include="Evolution\CollectionInsertionTests.cs" />
-    <Compile Include="Evolution\CollectionDeletionTests.cs" />
+    <Compile Include="Evolution\ChangeApplyTests.cs" />
     <Compile Include="Evolution\MultiplePropertyChangesTests.cs" />
-    <Compile Include="Evolution\PropertyChangeTests.cs" />
+    <Compile Include="Evolution\SerializationTests.cs" />
     <Compile Include="Metamodel\IRailwayContainer.cs" />
     <Compile Include="Metamodel\IRailwayElement.cs" />
     <Compile Include="Metamodel\IRoute.cs" />

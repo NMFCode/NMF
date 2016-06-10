@@ -67,7 +67,7 @@
     <Compile Include="Evolution\Minimizing\MultiplePropertyChanges.cs" />
     <Compile Include="Evolution\ModelChangeCollection.cs" />
     <Compile Include="Evolution\ModelChangeRecorder.cs" />
-    <Compile Include="Evolution\CollectionDeletion.cs" />
+    <Compile Include="Evolution\ListDeletion.cs" />
     <Compile Include="IModelElement.cs" />
     <Compile Include="IModelValidationLog.cs" />
     <Compile Include="Meta\Attribute.cs" />
@@ -134,7 +134,7 @@
     <Compile Include="Meta\ITypedElement.cs" />
     <Compile Include="Model.cs" />
     <Compile Include="Evolution\IModelChange.cs" />
-    <Compile Include="Evolution\CollectionInsertion.cs" />
+    <Compile Include="Evolution\ListInsertion.cs" />
     <Compile Include="ModelElement.cs" />
     <Compile Include="ModelElementExtension.cs" />
     <Compile Include="Evolution\PropertyChange.cs" />

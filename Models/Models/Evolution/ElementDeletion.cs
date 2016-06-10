@@ -3,32 +3,29 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using NMF.Models.Repository;
+using NMF.Serialization;
+using System.ComponentModel;
 
 namespace NMF.Models.Evolution
 {
+    [XmlConstructor(1)]
     public class ElementDeletion : IModelChange
     {
-        public Uri AbsoluteUri { get { return Element.AbsoluteUri; } }
+        [XmlConstructorParameter(0)]
+        public Uri AbsoluteUri { get; set; }
 
-        public IModelElement Element { get; set; }
-
-        public ElementDeletion(IModelElement deletedElement)
+        public ElementDeletion(Uri absoluteUri)
         {
-            if (deletedElement == null)
-                throw new ArgumentNullException(nameof(deletedElement));
+            if (absoluteUri == null)
+                throw new ArgumentException(nameof(absoluteUri));
 
-            Element = deletedElement;
+            AbsoluteUri = absoluteUri;
         }
 
         public void Apply(IModelRepository repository)
         {
             var element = repository.Resolve(AbsoluteUri);
             element.Delete();
-        }
-
-        public void Undo(IModelRepository repository)
-        {
-            new ElementCreation(Element).Apply(repository);
         }
 
         public override bool Equals(object obj)
@@ -39,12 +36,12 @@ namespace NMF.Models.Evolution
             if (other == null)
                 return false;
             else
-                return this.Element.Equals(other.Element);
+                return this.AbsoluteUri.Equals(other.AbsoluteUri);
         }
 
         public override int GetHashCode()
         {
-            return Element.GetHashCode()
+            return AbsoluteUri?.GetHashCode() ?? 0
                 ^ -1; // so it's not the same as ElementCreation
         }
     }

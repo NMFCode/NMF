@@ -3,31 +3,31 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using NMF.Models.Repository;
+using NMF.Serialization;
+using System.ComponentModel;
 
 namespace NMF.Models.Evolution
 {
     public class ElementCreation : IModelChange
     {
         public Uri AbsoluteUri { get { return Element.AbsoluteUri; } }
-
+        
         public IModelElement Element { get; set; }
+
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public ElementCreation() { }
 
         public ElementCreation(IModelElement createdElement)
         {
             if (createdElement == null)
                 throw new ArgumentNullException(nameof(createdElement));
-
+            
             Element = createdElement;
         }
 
         public void Apply(IModelRepository repository)
         {
             throw new NotImplementedException();
-        }
-
-        public void Undo(IModelRepository repository)
-        {
-            new ElementDeletion(Element).Apply(repository);
         }
 
         public override bool Equals(object obj)
@@ -43,7 +43,7 @@ namespace NMF.Models.Evolution
 
         public override int GetHashCode()
         {
-            return Element.GetHashCode();
+            return Element?.GetHashCode() ?? 0;
         }
     }
 }

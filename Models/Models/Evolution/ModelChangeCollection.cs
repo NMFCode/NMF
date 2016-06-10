@@ -1,5 +1,6 @@
 ﻿using NMF.Models.Evolution.Minimizing;
 using NMF.Models.Repository;
+using NMF.Serialization.Xmi;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -67,6 +68,41 @@ namespace NMF.Models.Evolution
         {
             foreach (var change in Changes)
                 change.Apply(repository);
+        }
+
+        public IEnumerable<IModelChange> TraverseFlat()
+        {
+            return TraverseFlat(Changes);
+        }
+
+        private static IEnumerable<IModelChange> TraverseFlat(IEnumerable<IModelChange> baseList)
+        {
+            foreach (var change in baseList)
+            {
+                yield return change;
+                var transaction = change as ChangeTransaction;
+                if (transaction != null)
+                {
+                    yield return transaction.SourceChange;
+                    foreach (var nested in TraverseFlat(transaction.NestedChanges))
+                        yield return nested;
+                }
+            }
+        }
+
+        public override bool Equals(object obj)
+        {
+            if (ReferenceEquals(this, obj))
+                return true;
+            var other = obj as ModelChangeCollection;
+            if (other == null)
+                return false;
+            return this.Changes.SequenceEqual(other.Changes);
+        }
+
+        public override int GetHashCode()
+        {
+            return Changes.GetHashCode();
         }
     }
 }

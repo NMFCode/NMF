@@ -1,5 +1,4 @@
 ﻿using NMF.Expressions;
-using NMF.Models.Evolution.Minimizing;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -139,26 +138,62 @@ namespace NMF.Models.Evolution
                 case ChangeType.ModelElementCreated:
                     return new ElementCreation(e.Element);
                 case ChangeType.ModelElementDeleted:
-                    return new ElementDeletion(e.Element);
+                    return new ElementDeletion(e.AbsoluteUri);
                 case ChangeType.PropertyChanged:
                     var valueChangeArgs = (ValueChangedEventArgs)e.OriginalEventArgs;
-                    return new PropertyChange(e.AbsoluteUri, e.PropertyName, valueChangeArgs.NewValue, valueChangeArgs.OldValue);
+                    return CreatePropertyChange(e.Element, e.AbsoluteUri, e.PropertyName, valueChangeArgs.OldValue, valueChangeArgs.NewValue);
                 case ChangeType.CollectionChanged:
                     var collectionChangeArgs = (NotifyCollectionChangedEventArgs)e.OriginalEventArgs;
                     switch (collectionChangeArgs.Action)
                     {
                         case NotifyCollectionChangedAction.Add:
-                            return new CollectionInsertion(e.AbsoluteUri, e.PropertyName, collectionChangeArgs.NewItems, collectionChangeArgs.NewStartingIndex);
+                            return CreateListInsertion(e.Element, e.AbsoluteUri, e.PropertyName, collectionChangeArgs.NewStartingIndex, collectionChangeArgs.NewItems);
                         case NotifyCollectionChangedAction.Remove:
-                            return new CollectionDeletion(e.AbsoluteUri, e.PropertyName, collectionChangeArgs.OldItems, collectionChangeArgs.OldStartingIndex);
+                            return new ListDeletion(e.AbsoluteUri, e.PropertyName, collectionChangeArgs.OldStartingIndex, collectionChangeArgs.OldItems.Count);
                         case NotifyCollectionChangedAction.Reset:
-                            //TODO
+                            //TODO reset == list.Clear()
                             throw new NotImplementedException();
                         default:
                             throw new NotSupportedException("The CollectionChanged action " + collectionChangeArgs.Action + " is not supported.");
                     }
                 default:
                     throw new InvalidOperationException("The " + e.ChangeType + " event cannot be the base of a model change. Use after-events only.");
+            }
+        }
+
+        private IModelChange CreatePropertyChange(IModelElement element, Uri absoluteUri, string propertyName, object oldValue, object newValue)
+        {
+            var propertyType = element.GetType().GetProperty(propertyName).PropertyType;
+            var genericType = typeof(PropertyChange<>).MakeGenericType(propertyType);
+            return (IModelChange)Activator.CreateInstance(genericType, absoluteUri, propertyName, oldValue, newValue);
+        }
+
+        private IModelChange CreateListInsertion(IModelElement element, Uri absoluteUri, string propertyName, int startingIndex, IList newItems)
+        {
+            var collectionType = element.GetType().GetProperty(propertyName).PropertyType;
+            var itemType = GetCollectionItemType(collectionType);
+
+            var listType = typeof(List<>).MakeGenericType(itemType);
+            var list = Activator.CreateInstance(listType) as IList;
+            foreach (var item in newItems)
+                list.Add(item);
+
+            var genericType = typeof(ListInsertion<>).MakeGenericType(itemType);
+            return (IModelChange)Activator.CreateInstance(genericType, absoluteUri, propertyName, startingIndex, list);
+        }
+
+        private static Type GetCollectionItemType(Type collectionType)
+        {
+            if (collectionType.IsArray)
+                return collectionType.GetElementType();
+            else
+            {
+                var interfaces = collectionType.GetInterfaces();
+                var icollection = interfaces.FirstOrDefault(i => i.FullName.StartsWith("System.Collections.Generic.ICollection") && i.IsGenericType);
+                if (icollection == null)
+                    return typeof(object);
+                else
+                    return icollection.GetGenericArguments()[0];
             }
         }
     }
