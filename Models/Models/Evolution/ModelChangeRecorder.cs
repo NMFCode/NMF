@@ -188,12 +188,9 @@ namespace NMF.Models.Evolution
                 return collectionType.GetElementType();
             else
             {
-                var interfaces = collectionType.GetInterfaces();
-                var icollection = interfaces.FirstOrDefault(i => i.FullName.StartsWith("System.Collections.Generic.ICollection") && i.IsGenericType);
-                if (icollection == null)
-                    return typeof(object);
-                else
-                    return icollection.GetGenericArguments()[0];
+                return collectionType.GetInterfaces()
+                    .FirstOrDefault(i => i.IsGenericType && i.GetGenericTypeDefinition() == typeof(ICollection<>))
+                    ?.GetGenericArguments()[0] ?? typeof(object);
             }
         }
     }
