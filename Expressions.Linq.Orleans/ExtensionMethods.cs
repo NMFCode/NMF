@@ -69,7 +69,7 @@ namespace NMF.Expressions.Linq.Orleans
 
         #region Processor
 
-        public static async Task<StreamProcessorChain<TIn, TOut, TFactory>> ProcessDistributed<TIn, TOut, TFactory>(
+        public static async Task<StreamProcessorChain<TIn, TOut, TFactory>> ProcessLocal<TIn, TOut, TFactory>(
             this ITransactionalStreamProvider<TIn> source, Func<INotifyEnumerable<TIn>, INotifyEnumerable<TOut>> processingFunc, TFactory factory,
             int scatterFactor = 1) where TFactory : IncrementalNmfModelStreamProcessorAggregateFactory
         {
@@ -80,7 +80,7 @@ namespace NMF.Expressions.Linq.Orleans
             return processorChain;
         }
 
-        public static async Task<StreamProcessorChain<TIn, TOut, TFactory>> ProcessDistributed<TOldIn, TIn, TOut, TFactory>(
+        public static async Task<StreamProcessorChain<TIn, TOut, TFactory>> ProcessLocal<TOldIn, TIn, TOut, TFactory>(
             this StreamProcessorChain<TOldIn, TIn, TFactory> previousNode, Func<INotifyEnumerable<TIn>, INotifyEnumerable<TOut>> processingFunc,
             int scatterFactor = 1) where TFactory : IncrementalNmfModelStreamProcessorAggregateFactory
         {
@@ -91,12 +91,12 @@ namespace NMF.Expressions.Linq.Orleans
             return processorChain;
         }
 
-        public static async Task<StreamProcessorChain<TIn, TOut, TFactory>> ProcessDistributed<TOldIn, TIn, TOut, TFactory>(
+        public static async Task<StreamProcessorChain<TIn, TOut, TFactory>> ProcessLocal<TOldIn, TIn, TOut, TFactory>(
             this Task<StreamProcessorChain<TOldIn, TIn, TFactory>> previousNodeTask,
             Func<INotifyEnumerable<TIn>, INotifyEnumerable<TOut>> processingFunc, int scatterFactor = 1)
             where TFactory : IncrementalNmfModelStreamProcessorAggregateFactory
         {
-            return await ProcessDistributed(await previousNodeTask, processingFunc, scatterFactor);
+            return await ProcessLocal(await previousNodeTask, processingFunc, scatterFactor);
         }
 
         #endregion
