@@ -258,7 +258,7 @@ namespace NMF.Models.Repository.Serialization
             base.Serialize(model, target, false);
         }
 
-        public void SerializeFragment(ModelElement element, Stream target)
+        public void SerializeFragment(IModelElement element, Stream target)
         {
             base.Serialize(element, target, true);
         }
