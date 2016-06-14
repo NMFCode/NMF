@@ -35,7 +35,7 @@ namespace NMF.Models.Tests.Railway
         
         FAILURE = 1,
         
-        STOP = 2,
+        STOP = 3,
         
         GO = 2,
     }

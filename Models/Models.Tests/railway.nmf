@@ -33,7 +33,7 @@
   </Types>
   <Types xsi:type="nmeta:Enumeration" Name="Signal">
     <Literals Value="1" Name="FAILURE" />
-    <Literals Name="STOP" />
+    <Literals Value="3" Name="STOP" />
     <Literals Value="2" Name="GO" />
   </Types>
   <Types xsi:type="nmeta:Enumeration" Name="Position">
