@@ -32,6 +32,12 @@ namespace NMF.Models
         public Uri AbsoluteUri { get; private set; }
 
         /// <summary>
+        /// If the change introduces new or changed model elements, this list
+        /// contains their URIs in the same order as their parent collection.
+        /// </summary>
+        public List<Uri> ChildrenUris { get; private set; }
+
+        /// <summary>
         /// The name of the affected property or null, if no specific property was affected
         /// </summary>
         public string PropertyName { get; private set; }
@@ -160,11 +166,14 @@ namespace NMF.Models
             if (args == null)
                 throw new ArgumentNullException(nameof(args));
 
+            var newValueUri = (args.NewValue as IModelElement)?.AbsoluteUri;
+
             return new BubbledChangeEventArgs(source)
             {
                 ChangeType = ChangeType.PropertyChanged,
                 OriginalEventArgs = args,
-                PropertyName = propertyName
+                PropertyName = propertyName,
+                ChildrenUris = new List<Uri>() { newValueUri }
             };
         }
 

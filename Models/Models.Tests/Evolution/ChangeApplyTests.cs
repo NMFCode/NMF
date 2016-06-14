@@ -51,15 +51,27 @@ namespace NMF.Models.Tests.Evolution
         }
 
         [TestMethod]
-        public void ApplyPropertyChange()
+        public void ApplyPropertyChangeAttribute()
         {
             var parent = railway.Routes.First().Entry;
             var newValue = Signal.FAILURE;
-            var change = new PropertyChange<Signal>(parent.AbsoluteUri, "Signal", parent.Signal, newValue);
+            var change = new PropertyChangeAttribute<Signal>(parent.AbsoluteUri, "Signal", newValue);
 
             change.Apply(repository);
 
             Assert.AreEqual(newValue, parent.Signal);
+        }
+
+        [TestMethod]
+        public void ApplyPropertyChangeReference()
+        {
+            var parent = railway.Routes[0];
+            var newValue = railway.Semaphores[0];
+            var change = new PropertyChangeReference<Semaphore>(parent.AbsoluteUri, "Entry", newValue.AbsoluteUri);
+
+            change.Apply(repository);
+
+            Assert.AreSame(newValue, parent.Entry);
         }
     }
 }

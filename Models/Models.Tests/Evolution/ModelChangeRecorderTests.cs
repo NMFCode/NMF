@@ -28,7 +28,7 @@ namespace NMF.Models.Tests
         }
 
         [TestMethod]
-        public void RecordPropertyChange()
+        public void RecordPropertyChangeAttribute()
         {
             var semaphore = railway.Semaphores[0];
             var rec = new ModelChangeRecorder();
@@ -36,7 +36,21 @@ namespace NMF.Models.Tests
 
             semaphore.Signal = Signal.FAILURE;
 
-            var expected = new PropertyChange<Signal>(semaphore.AbsoluteUri, "Signal", Signal.GO, Signal.FAILURE);
+            var expected = new PropertyChangeAttribute<Signal>(semaphore.AbsoluteUri, "Signal", Signal.FAILURE);
+            var actual = rec.GetModelChanges().Changes[0];
+            Assert.AreEqual(expected, actual);
+        }
+
+        [TestMethod]
+        public void RecordPropertyChangeReference()
+        {
+            var parent = railway.Routes[0];
+            var rec = new ModelChangeRecorder();
+            rec.Start(railway);
+
+            parent.Entry = railway.Semaphores[0];
+
+            var expected = new PropertyChangeReference<ISemaphore>(parent.AbsoluteUri, "Entry", railway.Semaphores[0].AbsoluteUri);
             var actual = rec.GetModelChanges().Changes[0];
             Assert.AreEqual(expected, actual);
         }

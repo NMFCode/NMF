@@ -18,9 +18,16 @@ namespace NMF.Models.Tests.Evolution
         private static readonly string property = "TestProperty";
 
         [TestMethod]
-        public void SerializePropertyChange()
+        public void SerializePropertyChangeAttribute()
         {
-            var change = new PropertyChange<Signal>(uri, property, Signal.GO, Signal.FAILURE);
+            var change = new PropertyChangeAttribute<Signal>(uri, property, Signal.FAILURE);
+            SerializeAndAssert(change);
+        }
+
+        [TestMethod]
+        public void SerializePropertyChangeReference()
+        {
+            var change = new PropertyChangeReference<Semaphore>(uri, property, new Uri("http://ReferenceUri"));
             SerializeAndAssert(change);
         }
 

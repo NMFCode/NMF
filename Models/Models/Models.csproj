@@ -63,8 +63,6 @@
     <Compile Include="Evolution\ChangeTransaction.cs" />
     <Compile Include="Evolution\ElementCreation.cs" />
     <Compile Include="Evolution\ElementDeletion.cs" />
-    <Compile Include="Evolution\Minimizing\IMinimizingStrategy.cs" />
-    <Compile Include="Evolution\Minimizing\MultiplePropertyChanges.cs" />
     <Compile Include="Evolution\ModelChangeCollection.cs" />
     <Compile Include="Evolution\ModelChangeRecorder.cs" />
     <Compile Include="Evolution\ListDeletion.cs" />

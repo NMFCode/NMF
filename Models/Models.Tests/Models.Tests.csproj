@@ -60,7 +60,6 @@
   <ItemGroup>
     <Compile Include="Evolution\ModelChangeRecorderTests.cs" />
     <Compile Include="Evolution\ChangeApplyTests.cs" />
-    <Compile Include="Evolution\MultiplePropertyChangesTests.cs" />
     <Compile Include="Evolution\SerializationTests.cs" />
     <Compile Include="Metamodel\IRailwayContainer.cs" />
     <Compile Include="Metamodel\IRailwayElement.cs" />
