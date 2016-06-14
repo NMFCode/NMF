@@ -221,7 +221,7 @@ namespace Ecore2Code
                         Console.WriteLine("An error occurred reading the Ecore file. The error message was: " + ex.Message);
                     }
                 }
-                else if (Path.GetExtension(ecoreFile) == ".nmf")
+                else if (Path.GetExtension(ecoreFile) == ".nmf" || Path.GetExtension(ecoreFile) == ".nmeta")
                 {
                     try
                     {
