@@ -10,7 +10,7 @@ using System.ComponentModel;
 namespace NMF.Models.Evolution
 {
     [XmlConstructor(3)]
-    public class ListInsertion<T> : IModelChange
+    public abstract class ListInsertionBase<T> : IModelChange
     {
         [XmlAttribute(true)]
         [XmlConstructorParameter(0)]
@@ -24,18 +24,7 @@ namespace NMF.Models.Evolution
         [XmlConstructorParameter(2)]
         public int StartingIndex { get; set; }
         
-        public List<T> Elements { get; set; }
-
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        public ListInsertion(Uri absoluteUri, string collectionPropertyName, int startingIndex)
-        {
-            AbsoluteUri = absoluteUri;
-            CollectionPropertyName = collectionPropertyName;
-            StartingIndex = startingIndex;
-            Elements = new List<T>();
-        }
-
-        public ListInsertion(Uri absoluteUri, string collectionPropertyName, int startingIndex, IEnumerable<T> newElements)
+        public ListInsertionBase(Uri absoluteUri, string collectionPropertyName, int startingIndex)
         {
             if (absoluteUri == null)
                 throw new ArgumentNullException(nameof(absoluteUri));
@@ -44,34 +33,60 @@ namespace NMF.Models.Evolution
 
             AbsoluteUri = absoluteUri;
             CollectionPropertyName = collectionPropertyName;
-            Elements = newElements.ToList();
             StartingIndex = startingIndex;
         }
-
+        
         public void Apply(IModelRepository repository)
         {
             var parent = repository.Resolve(AbsoluteUri);
             var property = parent.GetType().GetProperty(CollectionPropertyName);
             var list = property.GetValue(parent, null) as IList<T>;
-            
-            for (int i = 0; i < Elements.Count; i++)
+            var newElements = GetNewElements(repository);
+
+            for (int i = 0; i < newElements.Count; i++)
             {
-                list.Insert(StartingIndex + i, Elements[i]);
+                list.Insert(StartingIndex + i, newElements[i]);
             }
         }
 
+        protected abstract List<T> GetNewElements(IModelRepository repository);
+    }
+
+    [XmlConstructor(3)]
+    public class ListInsertionContainment<T> : ListInsertionBase<T>
+    {
+        public List<T> NewElements { get; set; }
+
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public ListInsertionContainment(Uri absoluteUri, string collectionPropertyName, int startingIndex)
+            : base(absoluteUri, collectionPropertyName, startingIndex)
+        {
+            NewElements = new List<T>();
+        }
+
+        public ListInsertionContainment(Uri absoluteUri, string collectionPropertyName, int startingIndex, List<T> newElements)
+            : base(absoluteUri, collectionPropertyName, startingIndex)
+        {
+            NewElements = newElements;
+        }
+
+        protected override List<T> GetNewElements(IModelRepository repository)
+        {
+            return NewElements;
+        }
+        
         public override bool Equals(object obj)
         {
             if (ReferenceEquals(this, obj))
                 return true;
-            var other = obj as ListInsertion<T>;
+            var other = obj as ListInsertionContainment<T>;
             if (other == null)
                 return false;
             else
                 return this.AbsoluteUri.Equals(other.AbsoluteUri)
                     && this.CollectionPropertyName.Equals(other.CollectionPropertyName)
                     && this.StartingIndex.Equals(other.StartingIndex)
-                    && this.Elements.SequenceEqual(other.Elements);
+                    && this.NewElements.SequenceEqual(other.NewElements);
         }
 
         public override int GetHashCode()
@@ -79,7 +94,53 @@ namespace NMF.Models.Evolution
             return AbsoluteUri?.GetHashCode() ?? 0
                 ^ CollectionPropertyName?.GetHashCode() ?? 0
                 ^ StartingIndex.GetHashCode()
-                ^ Elements.GetHashCode();
+                ^ NewElements.GetHashCode();
+        }
+    }
+
+    [XmlConstructor(3)]
+    public class ListInsertionReference<T> : ListInsertionBase<T> where T : class, IModelElement
+    {
+        public List<Uri> NewElementUris { get; set; }
+
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public ListInsertionReference(Uri absoluteUri, string collectionPropertyName, int startingIndex)
+            : base(absoluteUri, collectionPropertyName, startingIndex)
+        {
+            NewElementUris = new List<Uri>();
+        }
+
+        public ListInsertionReference(Uri absoluteUri, string collectionPropertyName, int startingIndex, List<Uri> newElementUris)
+            : base(absoluteUri, collectionPropertyName, startingIndex)
+        {
+            NewElementUris = newElementUris;
+        }
+
+        protected override List<T> GetNewElements(IModelRepository repository)
+        {
+            return NewElementUris.Select(u => repository.Resolve(u)).Cast<T>().ToList();
+        }
+
+        public override bool Equals(object obj)
+        {
+            if (ReferenceEquals(this, obj))
+                return true;
+            var other = obj as ListInsertionReference<T>;
+            if (other == null)
+                return false;
+            else
+                return this.AbsoluteUri.Equals(other.AbsoluteUri)
+                    && this.CollectionPropertyName.Equals(other.CollectionPropertyName)
+                    && this.StartingIndex.Equals(other.StartingIndex)
+                    && this.NewElementUris.SequenceEqual(other.NewElementUris);
+        }
+
+        public override int GetHashCode()
+        {
+            return AbsoluteUri?.GetHashCode() ?? 0
+                ^ CollectionPropertyName?.GetHashCode() ?? 0
+                ^ StartingIndex.GetHashCode()
+                ^ NewElementUris.GetHashCode();
         }
     }
 }

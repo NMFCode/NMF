@@ -217,11 +217,16 @@ namespace NMF.Models
             if (args == null)
                 throw new ArgumentNullException(nameof(args));
 
+            List<Uri> childrenUris = null;
+            if (args.Action == NotifyCollectionChangedAction.Add)
+                childrenUris = args.NewItems.OfType<IModelElement>().Select(e => e.AbsoluteUri).ToList();
+
             return new BubbledChangeEventArgs(source)
             {
                 ChangeType = ChangeType.CollectionChanged,
                 OriginalEventArgs = args,
-                PropertyName = propertyName
+                PropertyName = propertyName,
+                ChildrenUris = childrenUris
             };
         }
     }

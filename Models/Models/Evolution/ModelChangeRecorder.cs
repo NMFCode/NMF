@@ -147,7 +147,7 @@ namespace NMF.Models.Evolution
                     switch (collectionChangeArgs.Action)
                     {
                         case NotifyCollectionChangedAction.Add:
-                            return CreateListInsertion(e.Element, e.AbsoluteUri, e.PropertyName, collectionChangeArgs.NewStartingIndex, collectionChangeArgs.NewItems);
+                            return CreateListInsertion(e.Element, e.AbsoluteUri, e.PropertyName, collectionChangeArgs.NewStartingIndex, collectionChangeArgs.NewItems, e.ChildrenUris);
                         case NotifyCollectionChangedAction.Remove:
                             return new ListDeletion(e.AbsoluteUri, e.PropertyName, collectionChangeArgs.OldStartingIndex, collectionChangeArgs.OldItems.Count);
                         case NotifyCollectionChangedAction.Reset:
@@ -166,10 +166,10 @@ namespace NMF.Models.Evolution
             var propertyType = element.GetType().GetProperty(propertyName).PropertyType;
             if (!propertyType.GetInterfaces().Contains(typeof(IModelElement))) // only model elements can be references
                 return CreatePropertyChangeAttribute(propertyType, absoluteUri, propertyName, newValue);
-            else if (element.GetClass().Attributes.Any(a => a.Name == propertyName)) // a recently created model element
-                return CreatePropertyChangeAttribute(propertyType, absoluteUri, propertyName, newValue);
-            else // a reference
+            else if (GetAllReferences(element.GetClass()).Any(a => a.Name.Equals(propertyName, StringComparison.OrdinalIgnoreCase))) // a reference
                 return CreatePropertyChangeReference(propertyType, absoluteUri, propertyName, newValueUri);
+            else // a recently created model element
+                return CreatePropertyChangeAttribute(propertyType, absoluteUri, propertyName, newValue);
         }
 
         private IModelChange CreatePropertyChangeAttribute(Type propertyType, Uri absoluteUri, string propertyName, object newValue)
@@ -184,7 +184,25 @@ namespace NMF.Models.Evolution
             return (IModelChange)Activator.CreateInstance(genericType, absoluteUri, propertyName, newValueUri);
         }
 
-        private IModelChange CreateListInsertion(IModelElement element, Uri absoluteUri, string propertyName, int startingIndex, IList newItems)
+        private IModelChange CreateListInsertion(IModelElement element, Uri absoluteUri, string propertyName, int startingIndex, IList newItems, List<Uri> newItemsUris)
+        {
+            var reference = GetAllReferences(element.GetClass()).First(r => r.Name.Equals(propertyName, StringComparison.OrdinalIgnoreCase));
+            if (reference.IsContainment)
+                return CreateListInsertionContainment(element, absoluteUri, propertyName, startingIndex, newItems);
+            else
+                return CreateListInsertionReference(element, absoluteUri, propertyName, startingIndex, newItemsUris);
+        }
+
+        private IModelChange CreateListInsertionReference(IModelElement element, Uri absoluteUri, string propertyName, int startingIndex, List<Uri> newItemsUris)
+        {
+            var collectionType = element.GetType().GetProperty(propertyName).PropertyType;
+            var itemType = GetCollectionItemType(collectionType);
+
+            var genericType = typeof(ListInsertionReference<>).MakeGenericType(itemType);
+            return (IModelChange)Activator.CreateInstance(genericType, absoluteUri, propertyName, startingIndex, newItemsUris);
+        }
+
+        private IModelChange CreateListInsertionContainment(IModelElement element, Uri absoluteUri, string propertyName, int startingIndex, IList newItems)
         {
             var collectionType = element.GetType().GetProperty(propertyName).PropertyType;
             var itemType = GetCollectionItemType(collectionType);
@@ -194,7 +212,7 @@ namespace NMF.Models.Evolution
             foreach (var item in newItems)
                 list.Add(item);
 
-            var genericType = typeof(ListInsertion<>).MakeGenericType(itemType);
+            var genericType = typeof(ListInsertionContainment<>).MakeGenericType(itemType);
             return (IModelChange)Activator.CreateInstance(genericType, absoluteUri, propertyName, startingIndex, list);
         }
 
@@ -208,6 +226,16 @@ namespace NMF.Models.Evolution
                     .FirstOrDefault(i => i.IsGenericType && i.GetGenericTypeDefinition() == typeof(ICollection<>))
                     ?.GetGenericArguments()[0] ?? typeof(object);
             }
+        }
+
+        private static IEnumerable<Meta.IReference> GetAllReferences(Meta.IClass c)
+        {
+            foreach (var r in c.References)
+                yield return r;
+
+            foreach (var t in c.BaseTypes)
+                foreach (var r in GetAllReferences(t))
+                    yield return r;
         }
     }
 }

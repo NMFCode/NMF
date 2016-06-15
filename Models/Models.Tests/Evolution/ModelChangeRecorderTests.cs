@@ -69,7 +69,7 @@ namespace NMF.Models.Tests
         }
 
         [TestMethod]
-        public void RecordListInsertion()
+        public void RecordListInsertionContainment()
         {
             var semaphore = new Semaphore { Signal = Signal.STOP };
             var rec = new ModelChangeRecorder();
@@ -80,7 +80,25 @@ namespace NMF.Models.Tests
             var expected = new List<IModelChange>()
             {
                 new ElementCreation(semaphore),
-                new ListInsertion<ISemaphore>(railway.AbsoluteUri, "Semaphores", 0, new[] { semaphore })
+                new ListInsertionContainment<ISemaphore>(railway.AbsoluteUri, "Semaphores", 0, new List<ISemaphore>() { semaphore })
+            };
+            var actual = rec.GetModelChanges().Changes;
+            CollectionAssert.AreEqual(expected, actual);
+        }
+
+        [TestMethod]
+        public void RecordListInsertionReference()
+        {
+            var parent = railway.Routes[0].DefinedBy[0].Elements[0];
+            var newItem = railway.Routes[0].DefinedBy[1].Elements[0];
+            var rec = new ModelChangeRecorder();
+            rec.Start(railway);
+
+            parent.ConnectsTo.Insert(0, newItem);
+
+            var expected = new List<IModelChange>()
+            {
+                new ListInsertionReference<ITrackElement>(parent.AbsoluteUri, "ConnectsTo", 0, new List<Uri>() { newItem.AbsoluteUri })
             };
             var actual = rec.GetModelChanges().Changes;
             CollectionAssert.AreEqual(expected, actual);

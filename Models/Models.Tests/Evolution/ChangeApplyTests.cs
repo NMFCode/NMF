@@ -40,14 +40,26 @@ namespace NMF.Models.Tests.Evolution
         }
 
         [TestMethod]
-        public void ApplyListInsertion()
+        public void ApplyListInsertionContainment()
         {
             var toInsert = new Route();
-            var change = new ListInsertion<IRoute>(railway.AbsoluteUri, "Routes", 0, new[] { toInsert });
+            var change = new ListInsertionContainment<IRoute>(railway.AbsoluteUri, "Routes", 0, new List<IRoute>() { toInsert });
 
             change.Apply(repository);
 
             Assert.AreEqual(toInsert, railway.Routes.First());
+        }
+
+        [TestMethod]
+        public void ApplyListInsertionReference()
+        {
+            var parent = railway.Routes[0].DefinedBy[0].Elements[0];
+            var toInsert = railway.Routes[0].DefinedBy[1].Elements[0];
+            var change = new ListInsertionReference<ITrackElement>(parent.AbsoluteUri, "ConnectsTo", 0, new List<Uri>() { toInsert.AbsoluteUri });
+
+            change.Apply(repository);
+
+            Assert.AreSame(toInsert, parent.ConnectsTo[0]);
         }
 
         [TestMethod]
