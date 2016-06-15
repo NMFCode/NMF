@@ -47,7 +47,7 @@ namespace NMF.Models.Evolution
             var property = parent.GetType().GetProperty(CollectionPropertyName);
             var list = property.GetValue(parent, null) as IList;
             
-            for (int i = StartingIndex + Count - 1; i >= StartingIndex; i--)
+            for (int i = Math.Min(StartingIndex + Count - 1, list.Count - 1); i >= StartingIndex; i--)
             {
                 list.RemoveAt(i);
             }

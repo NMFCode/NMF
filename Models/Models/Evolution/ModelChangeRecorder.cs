@@ -151,8 +151,7 @@ namespace NMF.Models.Evolution
                         case NotifyCollectionChangedAction.Remove:
                             return new ListDeletion(e.AbsoluteUri, e.PropertyName, collectionChangeArgs.OldStartingIndex, collectionChangeArgs.OldItems.Count);
                         case NotifyCollectionChangedAction.Reset:
-                            //TODO reset == list.Clear()
-                            throw new NotImplementedException();
+                            return new ListDeletion(e.AbsoluteUri, e.PropertyName, 0, int.MaxValue);
                         default:
                             throw new NotSupportedException("The CollectionChanged action " + collectionChangeArgs.Action + " is not supported.");
                     }

@@ -40,6 +40,16 @@ namespace NMF.Models.Tests.Evolution
         }
 
         [TestMethod]
+        public void ApplyListClear()
+        {
+            var change = new ListDeletion(railway.AbsoluteUri, "Semaphores", 0, int.MaxValue);
+
+            change.Apply(repository);
+
+            Assert.AreEqual(0, railway.Semaphores.Count);
+        }
+
+        [TestMethod]
         public void ApplyListInsertionContainment()
         {
             var toInsert = new Route();

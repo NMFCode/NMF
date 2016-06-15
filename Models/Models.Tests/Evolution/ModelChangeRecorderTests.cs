@@ -69,6 +69,20 @@ namespace NMF.Models.Tests
         }
 
         [TestMethod]
+        public void RecordListClear()
+        {
+            var parent = railway.Routes[0].DefinedBy[0].Elements[0];
+            var rec = new ModelChangeRecorder();
+            rec.Start(railway);
+
+            parent.ConnectsTo.Clear();
+
+            var expected = new ListDeletion(parent.AbsoluteUri, "ConnectsTo", 0, int.MaxValue);
+            var actual = rec.GetModelChanges().Changes[0];
+            Assert.AreEqual(expected, actual);
+        }
+
+        [TestMethod]
         public void RecordListInsertionContainment()
         {
             var semaphore = new Semaphore { Signal = Signal.STOP };
