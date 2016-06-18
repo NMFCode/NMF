@@ -39,16 +39,16 @@ namespace NMF.Models.Tests.Evolution
         }
 
         [TestMethod]
-        public void SerializeListInsertionContainment()
+        public void SerializeListInsertionComposition()
         {
-            var change = new ListInsertionContainment<int>(uri, property, 0, new List<int>() { 23, 42 });
+            var change = new ListInsertionComposition<int>(uri, property, 0, new List<int>() { 23, 42 });
             SerializeAndAssert(change);
         }
 
         [TestMethod]
-        public void SerializeListInsertionReference()
+        public void SerializeListInsertionAssociation()
         {
-            var change = new ListInsertionReference<IRoute>(uri, property, 0, new List<Uri>() { new Uri("http://ReferenceUri1"), new Uri("http://ReferenceUri2") });
+            var change = new ListInsertionAssociation<IRoute>(uri, property, 0, new List<Uri>() { new Uri("http://ReferenceUri1"), new Uri("http://ReferenceUri2") });
             SerializeAndAssert(change);
         }
 

@@ -197,7 +197,7 @@ namespace NMF.Models.Evolution
             var collectionType = element.GetType().GetProperty(propertyName).PropertyType;
             var itemType = GetCollectionItemType(collectionType);
 
-            var genericType = typeof(ListInsertionReference<>).MakeGenericType(itemType);
+            var genericType = typeof(ListInsertionAssociation<>).MakeGenericType(itemType);
             return (IModelChange)Activator.CreateInstance(genericType, absoluteUri, propertyName, startingIndex, newItemsUris);
         }
 
@@ -211,7 +211,7 @@ namespace NMF.Models.Evolution
             foreach (var item in newItems)
                 list.Add(item);
 
-            var genericType = typeof(ListInsertionContainment<>).MakeGenericType(itemType);
+            var genericType = typeof(ListInsertionComposition<>).MakeGenericType(itemType);
             return (IModelChange)Activator.CreateInstance(genericType, absoluteUri, propertyName, startingIndex, list);
         }
 

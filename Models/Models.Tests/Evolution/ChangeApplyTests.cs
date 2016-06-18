@@ -50,10 +50,10 @@ namespace NMF.Models.Tests.Evolution
         }
 
         [TestMethod]
-        public void ApplyListInsertionContainment()
+        public void ApplyListInsertionComposition()
         {
             var toInsert = new Route();
-            var change = new ListInsertionContainment<IRoute>(railway.AbsoluteUri, "Routes", 0, new List<IRoute>() { toInsert });
+            var change = new ListInsertionComposition<IRoute>(railway.AbsoluteUri, "Routes", 0, new List<IRoute>() { toInsert });
 
             change.Apply(repository);
 
@@ -61,11 +61,11 @@ namespace NMF.Models.Tests.Evolution
         }
 
         [TestMethod]
-        public void ApplyListInsertionReference()
+        public void ApplyListInsertionAssociation()
         {
             var parent = railway.Routes[0].DefinedBy[0].Elements[0];
             var toInsert = railway.Routes[0].DefinedBy[1].Elements[0];
-            var change = new ListInsertionReference<ITrackElement>(parent.AbsoluteUri, "ConnectsTo", 0, new List<Uri>() { toInsert.AbsoluteUri });
+            var change = new ListInsertionAssociation<ITrackElement>(parent.AbsoluteUri, "ConnectsTo", 0, new List<Uri>() { toInsert.AbsoluteUri });
 
             change.Apply(repository);
 

@@ -53,18 +53,18 @@ namespace NMF.Models.Evolution
     }
 
     [XmlConstructor(3)]
-    public class ListInsertionContainment<T> : ListInsertionBase<T>
+    public class ListInsertionComposition<T> : ListInsertionBase<T>
     {
         public List<T> NewElements { get; set; }
 
         [EditorBrowsable(EditorBrowsableState.Never)]
-        public ListInsertionContainment(Uri absoluteUri, string collectionPropertyName, int startingIndex)
+        public ListInsertionComposition(Uri absoluteUri, string collectionPropertyName, int startingIndex)
             : base(absoluteUri, collectionPropertyName, startingIndex)
         {
             NewElements = new List<T>();
         }
 
-        public ListInsertionContainment(Uri absoluteUri, string collectionPropertyName, int startingIndex, List<T> newElements)
+        public ListInsertionComposition(Uri absoluteUri, string collectionPropertyName, int startingIndex, List<T> newElements)
             : base(absoluteUri, collectionPropertyName, startingIndex)
         {
             NewElements = newElements;
@@ -79,7 +79,7 @@ namespace NMF.Models.Evolution
         {
             if (ReferenceEquals(this, obj))
                 return true;
-            var other = obj as ListInsertionContainment<T>;
+            var other = obj as ListInsertionComposition<T>;
             if (other == null)
                 return false;
             else
@@ -99,18 +99,18 @@ namespace NMF.Models.Evolution
     }
 
     [XmlConstructor(3)]
-    public class ListInsertionReference<T> : ListInsertionBase<T> where T : class, IModelElement
+    public class ListInsertionAssociation<T> : ListInsertionBase<T> where T : class, IModelElement
     {
         public List<Uri> NewElementUris { get; set; }
 
         [EditorBrowsable(EditorBrowsableState.Never)]
-        public ListInsertionReference(Uri absoluteUri, string collectionPropertyName, int startingIndex)
+        public ListInsertionAssociation(Uri absoluteUri, string collectionPropertyName, int startingIndex)
             : base(absoluteUri, collectionPropertyName, startingIndex)
         {
             NewElementUris = new List<Uri>();
         }
 
-        public ListInsertionReference(Uri absoluteUri, string collectionPropertyName, int startingIndex, List<Uri> newElementUris)
+        public ListInsertionAssociation(Uri absoluteUri, string collectionPropertyName, int startingIndex, List<Uri> newElementUris)
             : base(absoluteUri, collectionPropertyName, startingIndex)
         {
             NewElementUris = newElementUris;
@@ -125,7 +125,7 @@ namespace NMF.Models.Evolution
         {
             if (ReferenceEquals(this, obj))
                 return true;
-            var other = obj as ListInsertionReference<T>;
+            var other = obj as ListInsertionAssociation<T>;
             if (other == null)
                 return false;
             else

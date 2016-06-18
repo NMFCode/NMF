@@ -117,13 +117,16 @@ namespace NMF.Collections.ObjectModel
             if (!noModification)
             {
                 var elements = this.ToArray();
-                base.ClearItems();
-                noModification = true;
-                foreach (var item in elements)
+                beforeCollectionChangedAction = () =>
                 {
-                    SetOpposite(item, default(TParent));
-                }
-                noModification = false;
+                    noModification = true;
+                    foreach (var item in elements)
+                    {
+                        SetOpposite(item, default(TParent));
+                    }
+                    noModification = false;
+                };
+                base.ClearItems();
             }
         }
 
@@ -131,10 +134,13 @@ namespace NMF.Collections.ObjectModel
         {
             if (!noModification)
             {
+                beforeCollectionChangedAction = () =>
+                {
+                    noModification = true;
+                    SetOpposite(item, Parent);
+                    noModification = false;
+                };
                 base.InsertItem(index, item);
-                noModification = true;
-                SetOpposite(item, Parent);
-                noModification = false;
             }
         }
 
@@ -143,10 +149,13 @@ namespace NMF.Collections.ObjectModel
             if (!noModification)
             {
                 var item = this[index];
+                beforeCollectionChangedAction = () =>
+                {
+                    noModification = true;
+                    SetOpposite(item, default(TParent));
+                    noModification = false;
+                };
                 base.RemoveItem(index);
-                noModification = true;
-                SetOpposite(item, default(TParent));
-                noModification = false;
             }
         }
 
@@ -155,14 +164,17 @@ namespace NMF.Collections.ObjectModel
             if (!noModification)
             {
                 var old = this[index];
-                base.SetItem(index, item);
-                if (!object.Equals(old, item))
+                beforeCollectionChangedAction = () =>
                 {
-                    noModification = true;
-                    SetOpposite(this[index], default(TParent));
-                    SetOpposite(item, Parent);
-                    noModification = false;
-                }
+                    if (!object.Equals(old, item))
+                    {
+                        noModification = true;
+                        SetOpposite(this[index], default(TParent));
+                        SetOpposite(item, Parent);
+                        noModification = false;
+                    }
+                };
+                base.SetItem(index, item);
             }
         }
     }

@@ -64,7 +64,7 @@ namespace NMF.Models.Tests
             railway.Semaphores.RemoveAt(0);
 
             var expected = new ListDeletion(railway.AbsoluteUri, "Semaphores", 0, 1);
-            var actual = rec.GetModelChanges().Changes[0];
+            var actual = ((ChangeTransaction)rec.GetModelChanges().Changes[0]).SourceChange;
             Assert.AreEqual(expected, actual);
         }
 
@@ -83,7 +83,7 @@ namespace NMF.Models.Tests
         }
 
         [TestMethod]
-        public void RecordListInsertionContainment()
+        public void RecordListInsertionComposition()
         {
             var semaphore = new Semaphore { Signal = Signal.STOP };
             var rec = new ModelChangeRecorder();
@@ -91,17 +91,17 @@ namespace NMF.Models.Tests
 
             railway.Semaphores.Insert(0, semaphore);
 
-            var expected = new List<IModelChange>()
+            var expected = new ChangeTransaction()
             {
-                new ElementCreation(semaphore),
-                new ListInsertionContainment<ISemaphore>(railway.AbsoluteUri, "Semaphores", 0, new List<ISemaphore>() { semaphore })
+                SourceChange = new ListInsertionComposition<ISemaphore>(railway.AbsoluteUri, "Semaphores", 0, new List<ISemaphore>() { semaphore }),
+                NestedChanges = new List<IModelChange>() { new ElementCreation(semaphore) }
             };
-            var actual = rec.GetModelChanges().Changes;
-            CollectionAssert.AreEqual(expected, actual);
+            var actual = rec.GetModelChanges().Changes[0];
+            Assert.AreEqual(expected, actual);
         }
 
         [TestMethod]
-        public void RecordListInsertionReference()
+        public void RecordListInsertionAssociation()
         {
             var parent = railway.Routes[0].DefinedBy[0].Elements[0];
             var newItem = railway.Routes[0].DefinedBy[1].Elements[0];
@@ -112,7 +112,7 @@ namespace NMF.Models.Tests
 
             var expected = new List<IModelChange>()
             {
-                new ListInsertionReference<ITrackElement>(parent.AbsoluteUri, "ConnectsTo", 0, new List<Uri>() { newItem.AbsoluteUri })
+                new ListInsertionAssociation<ITrackElement>(parent.AbsoluteUri, "ConnectsTo", 0, new List<Uri>() { newItem.AbsoluteUri })
             };
             var actual = rec.GetModelChanges().Changes;
             CollectionAssert.AreEqual(expected, actual);
