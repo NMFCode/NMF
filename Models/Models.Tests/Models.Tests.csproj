@@ -58,6 +58,7 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
+    <Compile Include="Evolution\IntegrationTests.cs" />
     <Compile Include="Evolution\ModelChangeRecorderTests.cs" />
     <Compile Include="Evolution\ChangeApplyTests.cs" />
     <Compile Include="Evolution\SerializationTests.cs" />

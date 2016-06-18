@@ -37,9 +37,8 @@ namespace NMF.Models.Evolution
 
         public void Apply(IModelRepository repository)
         {
+            ///NMF automatically propagates the nested changes
             SourceChange.Apply(repository);
-            foreach (var change in NestedChanges)
-                change.Apply(repository);
         }
 
         public override bool Equals(object obj)

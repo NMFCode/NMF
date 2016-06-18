@@ -27,7 +27,7 @@ namespace NMF.Models.Evolution
 
         public void Apply(IModelRepository repository)
         {
-            throw new NotImplementedException();
+            //NMF does this automatically when adding a new element to a parent
         }
 
         public override bool Equals(object obj)
