@@ -95,5 +95,16 @@ namespace NMF.Models.Tests.Evolution
 
             Assert.AreSame(newValue, parent.Entry);
         }
+
+        [TestMethod]
+        public void ApplyElementDeletion()
+        {
+            var toDelete = railway.Semaphores[0];
+            var change = new ElementDeletion(toDelete.AbsoluteUri);
+
+            change.Apply(repository);
+
+            CollectionAssert.DoesNotContain(railway.Semaphores.ToArray(), toDelete);
+        }
     }
 }
