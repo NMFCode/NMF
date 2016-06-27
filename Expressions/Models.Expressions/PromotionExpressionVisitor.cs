@@ -7,6 +7,7 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using System.ComponentModel;
+using NMF.Utilities;
 using System.Runtime.CompilerServices;
 
 namespace NMF.Expressions
@@ -245,6 +246,7 @@ namespace NMF.Expressions
         private Expression VisitRemappedMethodCall(MethodCallExpression node, MethodInfo method, ArgumentApplicationAttribute[] remaps)
         {
             var parametersSaved = new Dictionary<string, ParameterExtraction>(parameters);
+            var methodParameters = method.GetParameters();
             var changed = false;
             var arguments = new Expression[node.Arguments.Count];
             var extractionCounts = new int[node.Arguments.Count + 1];
@@ -271,7 +273,24 @@ namespace NMF.Expressions
                             var extraction = ExtractParameter(node, out pInfo);
                             return extraction;
                         }
-
+                        ParameterInfo argumentInfo;
+                        var argumentName = methodParameters[remap.ArgumentParameterIndex].Name;
+                        if (!parameterInfo.TryGetValue(argumentName, out argumentInfo))
+                        {
+                            argumentInfo = new ParameterInfo(true);
+                            parameterInfo.Add(argumentName, argumentInfo);
+                        }
+                        var function = FindLambdaExpression(node, remap.FunctionParameterIndex);
+                        ParameterInfo functionParameterInfo;
+                        if (parameterInfo.TryGetValue(function.Parameters[remap.FunctionIndexParameter].Name, out functionParameterInfo))
+                        {
+                            argumentInfo.Properties.AddRange(functionParameterInfo.Properties);
+                            if (!argumentInfo.NeedContainments)
+                            {
+                                argumentInfo.NeedContainments = true;
+                                parameterInfo[argumentName] = argumentInfo;
+                            }
+                        }
                     }
                     catch (IndexOutOfRangeException)
                     {

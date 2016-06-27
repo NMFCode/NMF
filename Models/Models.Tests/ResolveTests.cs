@@ -23,7 +23,7 @@ namespace NMF.Models.Tests
         {
             Model.PromoteSingleRootElement = true;
             repository = new ModelRepository();
-            railwayModel = repository.Resolve(new Uri(BaseUri), "..\\..\\railway.railway").Model;
+            railwayModel = repository.Resolve(new Uri(BaseUri), "railway.railway").Model;
             Assert.IsNotNull(railwayModel);
             railway = railwayModel.RootElements.Single() as RailwayContainer;
             Assert.IsNotNull(railway);
@@ -210,12 +210,12 @@ namespace NMF.Models.Tests
         public void LoadCrashTest()
         {
             var repository = new ModelRepository();
-            var rootModelElement = repository.Resolve(new Uri(BaseUri), "..\\..\\railway.railway");
+            var rootModelElement = repository.Resolve(new Uri(BaseUri), "railway.railway");
 
             ModelElement.EnforceModels = true;
 
             repository = new ModelRepository();
-            rootModelElement = repository.Resolve(new Uri(BaseUri), "..\\..\\railway.railway");
+            rootModelElement = repository.Resolve(new Uri(BaseUri), "railway.railway");
         }
 
     }

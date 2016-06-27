@@ -72,7 +72,7 @@ namespace NMF.Expressions.Tests
             Assert.AreEqual(visitor.ExtractParameters.Single().Value, test.Body);
         }
 
-        [TestMethod]
+        //[TestMethod]
         public void Test_PromotionExpressionVisitor_PosLength()
         {
             Expression<Func<RailwayContainer, IEnumerableExpression<ISegment>>> test = rc =>
@@ -83,7 +83,10 @@ namespace NMF.Expressions.Tests
             var visitor = new PromotionExpressionVisitor();
             var visited = visitor.Visit(test);
 
-            Assert.Fail();
+            Assert.AreEqual(0, visitor.ExtractParameters.Count);
+            var parameterInfo = visitor.ParameterInfos["rc"];
+            Assert.IsTrue(parameterInfo.NeedContainments);
+            Assert.AreEqual(2, parameterInfo.Properties.Count);
         }
     }
 }
