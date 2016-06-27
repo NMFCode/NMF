@@ -10,7 +10,6 @@ namespace NMF.Expressions
     internal class ModelFuncExpressionVisitor : ExpressionVisitorBase
     {
         private Dictionary<string, ParameterExtraction> parameters = new Dictionary<string, ParameterExtraction>();
-        private HashSet<ParameterExpression> removeParameters = new HashSet<ParameterExpression>();
 
         public ICollection<ParameterExtraction> ExtractParameters
         {
@@ -20,60 +19,36 @@ namespace NMF.Expressions
             }
         }
 
-        public ICollection<ParameterExpression> RemoveParameters
-        {
-            get
-            {
-                return removeParameters;
-            }
-        }
-
         protected override Expression VisitMember(MemberExpression node)
         {
-            var memberStack = new Stack<MemberExpression>();
-            var currentMem = node;
-            ParameterExpression parameter = null;
-            while (parameter == null)
+            if (typeof(IModelElement).IsAssignableFrom(node.Type) && !typeof(IModelElement).IsAssignableFrom(node.Expression.Type))
             {
-                memberStack.Push(currentMem);
-                switch (currentMem.Expression.NodeType)
-                {
-                    case ExpressionType.MemberAccess:
-                        currentMem = currentMem.Expression as MemberExpression;
-                        break;
-                    case ExpressionType.Parameter:
-                        parameter = currentMem.Expression as ParameterExpression;
-                        break;
-                    default:
-                        return base.VisitMember(node);
-                }
-            }
-            while (memberStack.Count > 0 && !(typeof(IModelElement).IsAssignableFrom(memberStack.Peek().Type)))
-            {
-                memberStack.Pop();
-            }
-            if (memberStack.Count > 0)
-            {
-                removeParameters.Add(parameter);
-                var replaceMember = memberStack.Pop();
-                var replaceMemberId = replaceMember.ToString();
+                var replaceMemberId = node.ToString();
                 ParameterExtraction extraction;
                 if (!parameters.TryGetValue(replaceMemberId, out extraction))
                 {
-                    extraction = new ParameterExtraction(Expression.Parameter(replaceMember.Type, "model_par_" + parameters.Count.ToString()), replaceMember);
+                    extraction = new ParameterExtraction(Expression.Parameter(node.Type, "model_par_" + parameters.Count.ToString()), node);
                     parameters.Add(replaceMemberId, extraction);
                 }
-                Expression returnExp = extraction.Parameter;
-                while (memberStack.Count > 0)
-                {
-                    returnExp = memberStack.Pop().Update(returnExp);
-                }
-                return returnExp;
+                return extraction.Parameter;
             }
-            else
+            return base.VisitMember(node);
+        }
+
+        protected override Expression VisitMethodCall(MethodCallExpression node)
+        {
+            if (typeof(IModelElement).IsAssignableFrom(node.Type) && node.Arguments.Any(arg => !typeof(IModelElement).IsAssignableFrom(arg.Type)))
             {
-                return node;
+                var replaceMemberId = node.ToString();
+                ParameterExtraction extraction;
+                if (!parameters.TryGetValue(replaceMemberId, out extraction))
+                {
+                    extraction = new ParameterExtraction(Expression.Parameter(node.Type, "model_par_" + parameters.Count.ToString()), node);
+                    parameters.Add(replaceMemberId, extraction);
+                }
+                return extraction.Parameter;
             }
+            return base.VisitMethodCall(node);
         }
     }
 }

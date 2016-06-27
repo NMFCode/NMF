@@ -362,6 +362,9 @@
     <Compile Include="..\Expressions\Properties\AssemblyInfo.cs">
       <Link>AssemblyInfo.cs</Link>
     </Compile>
+    <Compile Include="..\Expressions\Public\ArgumentApplicationAttribute.cs">
+      <Link>Facade\ArgumentApplicationAttribute.cs</Link>
+    </Compile>
     <Compile Include="..\Expressions\Public\ConstantValue.cs">
       <Link>Facade\ConstantValue.cs</Link>
     </Compile>

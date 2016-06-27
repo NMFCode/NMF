@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -201,7 +202,7 @@ namespace NMF.Models.Tests
             Assert.AreEqual(file1Contents.Length, file2Contents.Length);
             for (int i = 0; i < file1Contents.Length; i++)
             {
-                Assert.AreEqual(file1Contents[i], file2Contents[i]);
+                Assert.AreEqual(file1Contents[i], file2Contents[i], string.Format("Line {0} does not match: '{1}' != '{2}'", i, file1Contents[i], file2Contents[i]));
             }
         }
 

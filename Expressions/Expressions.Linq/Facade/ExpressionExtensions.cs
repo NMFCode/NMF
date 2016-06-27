@@ -22,6 +22,7 @@ namespace NMF.Expressions.Linq
         /// <param name="predicate">A custom predicate that is applied to all items in the collection</param>
         /// <returns>True, if all items in the collection match the given predicate</returns>
         /// <remarks>This method has an observable proxy, i.e. it can be used in a observable expression</remarks>
+        [ArgumentApplication(0, false, 1, 0)]
         [ObservableProxy(typeof(ObservableAll<>), "CreateExpression")]
         public static bool All<TSource>(this IEnumerableExpression<TSource> source, Expression<Func<TSource, bool>> predicate)
         {
@@ -50,6 +51,7 @@ namespace NMF.Expressions.Linq
         /// <param name="predicate">A custom predicate that is checked for every item</param>
         /// <returns>True, if there is an item that matches the givn criteria, otherwise false</returns>
         /// <remarks>This method has an observable proxy, i.e. it can be used in a observable expression</remarks>
+        [ArgumentApplication(0, false, 1, 0)]
         [ObservableProxy(typeof(ObservableLambdaAny<>), "CreateExpression")]
         public static bool Any<TSource>(this IEnumerableExpression<TSource> source, Expression<Func<TSource, bool>> predicate)
         {
@@ -184,6 +186,7 @@ namespace NMF.Expressions.Linq
         /// <param name="source">The source collection</param>
         /// <param name="predicate">The feature of the source items that should be averaged</param>
         /// <remarks>This method has an observable proxy, i.e. it can be used in a observable expression</remarks>
+        [ArgumentApplication(0, false, 1, 0)]
         [ObservableProxy(typeof(ObservableAverage), "CreateIntExpression")]
         public static double Average<TSource>(this IEnumerableExpression<TSource> source, Expression<Func<TSource, int>> predicate)
         {
@@ -198,6 +201,7 @@ namespace NMF.Expressions.Linq
         /// <param name="source">The source collection</param>
         /// <param name="predicate">The feature of the source items that should be averaged</param>
         /// <remarks>This method has an observable proxy, i.e. it can be used in a observable expression</remarks>
+        [ArgumentApplication(0, false, 1, 0)]
         [ObservableProxy(typeof(ObservableAverage), "CreateLongExpression")]
         public static double Average<TSource>(this IEnumerableExpression<TSource> source, Expression<Func<TSource, long>> predicate)
         {
@@ -212,6 +216,7 @@ namespace NMF.Expressions.Linq
         /// <param name="source">The source collection</param>
         /// <param name="predicate">The feature of the source items that should be averaged</param>
         /// <remarks>This method has an observable proxy, i.e. it can be used in a observable expression</remarks>
+        [ArgumentApplication(0, false, 1, 0)]
         [ObservableProxy(typeof(ObservableAverage), "CreateFloatExpression")]
         public static float Average<TSource>(this IEnumerableExpression<TSource> source, Expression<Func<TSource, float>> predicate)
         {
@@ -226,6 +231,7 @@ namespace NMF.Expressions.Linq
         /// <param name="source">The source collection</param>
         /// <param name="predicate">The feature of the source items that should be averaged</param>
         /// <remarks>This method has an observable proxy, i.e. it can be used in a observable expression</remarks>
+        [ArgumentApplication(0, false, 1, 0)]
         [ObservableProxy(typeof(ObservableAverage), "CreateDoubleExpression")]
         public static double Average<TSource>(this IEnumerableExpression<TSource> source, Expression<Func<TSource, double>> predicate)
         {
@@ -240,6 +246,7 @@ namespace NMF.Expressions.Linq
         /// <param name="source">The source collection</param>
         /// <param name="predicate">The feature of the source items that should be averaged</param>
         /// <remarks>This method has an observable proxy, i.e. it can be used in a observable expression</remarks>
+        [ArgumentApplication(0, false, 1, 0)]
         [ObservableProxy(typeof(ObservableAverage), "CreateDecimalExpression")]
         public static decimal Average<TSource>(this IEnumerableExpression<TSource> source, Expression<Func<TSource, decimal>> predicate)
         {
@@ -254,6 +261,7 @@ namespace NMF.Expressions.Linq
         /// <param name="source">The source collection</param>
         /// <param name="predicate">The feature of the source items that should be averaged</param>
         /// <remarks>This method has an observable proxy, i.e. it can be used in a observable expression</remarks>
+        [ArgumentApplication(0, false, 1, 0)]
         [ObservableProxy(typeof(ObservableAverage), "CreateNullableIntExpression")]
         public static double? Average<TSource>(this IEnumerableExpression<TSource> source, Expression<Func<TSource, int?>> predicate)
         {
@@ -268,6 +276,7 @@ namespace NMF.Expressions.Linq
         /// <param name="source">The source collection</param>
         /// <param name="predicate">The feature of the source items that should be averaged</param>
         /// <remarks>This method has an observable proxy, i.e. it can be used in a observable expression</remarks>
+        [ArgumentApplication(0, false, 1, 0)]
         [ObservableProxy(typeof(ObservableAverage), "CreateNullableLongExpression")]
         public static double? Average<TSource>(this IEnumerableExpression<TSource> source, Expression<Func<TSource, long?>> predicate)
         {
@@ -282,6 +291,7 @@ namespace NMF.Expressions.Linq
         /// <param name="source">The source collection</param>
         /// <param name="predicate">The feature of the source items that should be averaged</param>
         /// <remarks>This method has an observable proxy, i.e. it can be used in a observable expression</remarks>
+        [ArgumentApplication(0, false, 1, 0)]
         [ObservableProxy(typeof(ObservableAverage), "CreateNullableFloatExpression")]
         public static float? Average<TSource>(this IEnumerableExpression<TSource> source, Expression<Func<TSource, float?>> predicate)
         {
@@ -296,6 +306,7 @@ namespace NMF.Expressions.Linq
         /// <param name="source">The source collection</param>
         /// <param name="predicate">The feature of the source items that should be averaged</param>
         /// <remarks>This method has an observable proxy, i.e. it can be used in a observable expression</remarks>
+        [ArgumentApplication(0, false, 1, 0)]
         [ObservableProxy(typeof(ObservableAverage), "CreateNullableDoubleExpression")]
         public static double? Average<TSource>(this IEnumerableExpression<TSource> source, Expression<Func<TSource, double?>> predicate)
         {
@@ -310,6 +321,7 @@ namespace NMF.Expressions.Linq
         /// <param name="source">The source collection</param>
         /// <param name="predicate">The feature of the source items that should be averaged</param>
         /// <remarks>This method has an observable proxy, i.e. it can be used in a observable expression</remarks>
+        [ArgumentApplication(0, false, 1, 0)]
         [ObservableProxy(typeof(ObservableAverage), "CreateNullableDecimalExpression")]
         public static decimal? Average<TSource>(this IEnumerableExpression<TSource> source, Expression<Func<TSource, decimal?>> predicate)
         {
@@ -392,6 +404,7 @@ namespace NMF.Expressions.Linq
         /// <param name="predicate">The predicate that is to be checked for each item</param>
         /// <returns>The amount of elements in the source collection that match the given predicate</returns>
         /// <remarks>This method has an observable proxy, i.e. it can be used in a observable expression</remarks>
+        [ArgumentApplication(0, false, 1, 0)]
         [ObservableProxy(typeof(ObservableCount<>), "CreateExpressionWithComparer")]
         public static int Count<TSource>(this IEnumerableExpression<TSource> source, Expression<Func<TSource, bool>> predicate)
         {
@@ -473,6 +486,7 @@ namespace NMF.Expressions.Linq
         /// <param name="predicate">The filter predicate</param>
         /// <returns>The first item of the collection that matches the predicate or the type default value</returns>
         /// <remarks>This method has an observable proxy, i.e. it can be used in a observable expression</remarks>
+        [ArgumentApplication(0, false, 1, 0)]
         [ObservableProxy(typeof(ObservableFirstOrDefault<>), "CreateExpressionForPredicate")]
         [SetExpressionRewriter(typeof(ObservableFirstOrDefault<>), "CreateSetExpressionWithPredicate")]
         public static TSource FirstOrDefault<TSource>(this IEnumerableExpression<TSource> source, Expression<Func<TSource, bool>> predicate)
@@ -489,6 +503,7 @@ namespace NMF.Expressions.Linq
         /// <param name="source">The source collection</param>
         /// <param name="keySelector">The predicate expression selecting the keys for grouping</param>
         /// <returns>A collection of groups</returns>
+        [ArgumentApplication(0, false, 1, 0)]
         public static IEnumerableExpression<IGroupingExpression<TKey, TSource>> GroupBy<TSource, TKey>(this IEnumerableExpression<TSource> source, Expression<Func<TSource, TKey>> keySelector)
         {
             return GroupBy<TSource, TKey>(source, keySelector, null);
@@ -503,6 +518,7 @@ namespace NMF.Expressions.Linq
         /// <param name="keySelector">The predicate expression selecting the keys for grouping</param>
         /// <param name="comparer">A comparer that decides whether items are identical</param>
         /// <returns>A collection of groups</returns>
+        [ArgumentApplication(0, false, 1, 0)]
         public static IEnumerableExpression<IGroupingExpression<TKey, TSource>> GroupBy<TSource, TKey>(this IEnumerableExpression<TSource> source, Expression<Func<TSource, TKey>> keySelector, IEqualityComparer<TKey> comparer)
         {
             return new GroupByExpression<TSource, TKey>(source, keySelector, null, comparer);
@@ -517,6 +533,9 @@ namespace NMF.Expressions.Linq
         /// <param name="source">The source collection</param>
         /// <param name="keySelector">The predicate expression selecting the keys for grouping</param>
         /// <returns>A collection of groups</returns>
+        [ArgumentApplication(0, false, 1, 0)]
+        [ArgumentApplication(1, true, 2, 0)]
+        [ArgumentApplication(0, false, 2, 1)]
         public static IEnumerableExpression<TResult> GroupBy<TSource, TKey, TResult>(this IEnumerableExpression<TSource> source, Expression<Func<TSource, TKey>> keySelector, Expression<Func<TKey, IEnumerable<TSource>, TResult>> resultSelector)
         {
             return GroupBy<TSource, TKey, TResult>(source, keySelector, resultSelector, null);
@@ -532,6 +551,9 @@ namespace NMF.Expressions.Linq
         /// <param name="keySelector">The predicate expression selecting the keys for grouping</param>
         /// <param name="comparer">A comparer that decides whether items are identical</param>
         /// <returns>A collection of groups</returns>
+        [ArgumentApplication(0, false, 1, 0)]
+        [ArgumentApplication(1, true, 2, 0)]
+        [ArgumentApplication(0, false, 2, 1)]
         public static IEnumerableExpression<TResult> GroupBy<TSource, TKey, TResult>(this IEnumerableExpression<TSource> source, Expression<Func<TSource, TKey>> keySelector, Expression<Func<TKey, IEnumerable<TSource>, TResult>> resultSelector, IEqualityComparer<TKey> comparer)
         {
             var newP = Expression.Parameter(typeof(INotifyGrouping<TKey, TSource>));
@@ -556,6 +578,10 @@ namespace NMF.Expressions.Linq
         /// <param name="innerKeySelector">A predicate that returns the key for each inner item</param>
         /// <param name="resultSelector">A function that creates a result for each group of an outer item and a group of inner items</param>
         /// <returns>A collection of grouped results</returns>
+        [ArgumentApplication(0, false, 2, 0)]
+        [ArgumentApplication(1, false, 3, 0)]
+        [ArgumentApplication(0, false, 4, 0)]
+        [ArgumentApplication(1, false, 4, 1)]
         public static IEnumerableExpression<TResult> GroupJoin<TOuter, TInner, TKey, TResult>(this IEnumerableExpression<TOuter> outer, IEnumerable<TInner> inner, Expression<Func<TOuter, TKey>> outerKeySelector, Expression<Func<TInner, TKey>> innerKeySelector, Expression<Func<TOuter, IEnumerable<TInner>, TResult>> resultSelector)
         {
             return GroupJoin(outer, inner, outerKeySelector, innerKeySelector, resultSelector, null);
@@ -575,6 +601,10 @@ namespace NMF.Expressions.Linq
         /// <param name="comparer">A comparer to decide when two items are equal</param>
         /// <param name="resultSelector">A function that creates a result for each group of an outer item and a group of inner items</param>
         /// <returns>A collection of grouped results</returns>
+        [ArgumentApplication(0, false, 2, 0)]
+        [ArgumentApplication(1, false, 3, 0)]
+        [ArgumentApplication(0, false, 4, 0)]
+        [ArgumentApplication(1, false, 4, 1)]
         public static IEnumerableExpression<TResult> GroupJoin<TOuter, TInner, TKey, TResult>(this IEnumerableExpression<TOuter> outer, IEnumerable<TInner> inner, Expression<Func<TOuter, TKey>> outerKeySelector, Expression<Func<TInner, TKey>> innerKeySelector, Expression<Func<TOuter, IEnumerable<TInner>, TResult>> resultSelector, IEqualityComparer<TKey> comparer)
         {
             return new GroupJoinExpression<TOuter, TInner, TKey, TResult>(outer, inner, outerKeySelector, null, innerKeySelector, null, resultSelector, null, comparer);
@@ -740,6 +770,10 @@ namespace NMF.Expressions.Linq
         /// <param name="innerKeySelector">A lambda expression to select the key for the given other collections items</param>
         /// <param name="resultSelector">A lambda expression to select the result for a given pair of elements</param>
         /// <returns>A joined collection</returns>
+        [ArgumentApplication(0, false, 2, 0)]
+        [ArgumentApplication(1, false, 3, 0)]
+        [ArgumentApplication(0, false, 4, 0)]
+        [ArgumentApplication(1, false, 4, 1)]
         public static IEnumerableExpression<TResult> Join<TOuter, TInner, TKey, TResult>(this IEnumerableExpression<TOuter> outerSource, IEnumerable<TInner> innerSource, Expression<Func<TOuter, TKey>> outerKeySelector, Expression<Func<TInner, TKey>> innerKeySelector, Expression<Func<TOuter, TInner, TResult>> resultSelector)
         {
             return Join(outerSource, innerSource, outerKeySelector, innerKeySelector, resultSelector, null);
@@ -759,6 +793,10 @@ namespace NMF.Expressions.Linq
         /// <param name="resultSelector">A lambda expression to select the result for a given pair of elements</param>
         /// <param name="comparer">An equality comparer to define when two keys are equivalent</param>
         /// <returns>A joined collection</returns>
+        [ArgumentApplication(0, false, 2, 0)]
+        [ArgumentApplication(1, false, 3, 0)]
+        [ArgumentApplication(0, false, 4, 0)]
+        [ArgumentApplication(1, false, 4, 1)]
         public static IEnumerableExpression<TResult> Join<TOuter, TInner, TKey, TResult>(this IEnumerableExpression<TOuter> outerSource, IEnumerable<TInner> innerSource, Expression<Func<TOuter, TKey>> outerKeySelector, Expression<Func<TInner, TKey>> innerKeySelector, Expression<Func<TOuter, TInner, TResult>> resultSelector, IEqualityComparer<TKey> comparer)
         {
             return new JoinExpression<TOuter, TInner, TKey, TResult>(outerSource, innerSource, outerKeySelector, null, innerKeySelector, null, resultSelector, null, comparer);
@@ -821,6 +859,7 @@ namespace NMF.Expressions.Linq
         /// <param name="source">The collection</param>
         /// <returns>An elements feature which is maximal</returns>
         /// <remarks>This method has an observable proxy, i.e. it can be used in a observable expression</remarks>
+        [ArgumentApplication(0, false, 1, 0)]
         [ObservableProxy(typeof(ObservableComparisons), "LambdaMaxExpression")]
         [ExpressionCompileRewriter(typeof(Rewrites), "LambdaMaxRewrite")]
         public static TResult Max<TSource, TResult>(this IEnumerableExpression<TSource> source, Expression<Func<TSource, TResult>> selector)
@@ -839,6 +878,7 @@ namespace NMF.Expressions.Linq
         /// <param name="source">The collection</param>
         /// <returns>An elements feature which is maximal</returns>
         /// <remarks>This method has an observable proxy, i.e. it can be used in a observable expression</remarks>
+        [ArgumentApplication(0, false, 1, 0)]
         [ObservableProxy(typeof(ObservableComparisons), "LambdaMaxExpressionCompiled")]
         public static TResult Max<TSource, TResult>(this IEnumerableExpression<TSource> source, Expression<Func<TSource, TResult>> selector, Func<TSource, TResult> selectorCompiled)
             where TResult : IComparable<TResult>
@@ -857,6 +897,7 @@ namespace NMF.Expressions.Linq
         /// <param name="comparer">A comparer for custom comparison</param>
         /// <returns>An elements feature which is maximal</returns>
         /// <remarks>This method has an observable proxy, i.e. it can be used in a observable expression</remarks>
+        [ArgumentApplication(0, false, 1, 0)]
         [ObservableProxy(typeof(ObservableComparisons), "LambdaMaxExpressionWithComparer")]
         public static TResult Max<TSource, TResult>(this IEnumerableExpression<TSource> source, Expression<Func<TSource, TResult>> selector, IComparer<TResult> comparer)
         {
@@ -945,6 +986,7 @@ namespace NMF.Expressions.Linq
         /// <param name="source">The collection</param>
         /// <returns>An elements feature which is maximal</returns>
         /// <remarks>This method has an observable proxy, i.e. it can be used in a observable expression</remarks>
+        [ArgumentApplication(0, false, 1, 0)]
         [ObservableProxy(typeof(ObservableComparisons), "LambdaNullableMaxExpression")]
         public static TResult? Max<TSource, TResult>(this IEnumerableExpression<TSource> source, Expression<Func<TSource, TResult?>> selector)
             where TResult : struct, IComparable<TResult>
@@ -961,6 +1003,7 @@ namespace NMF.Expressions.Linq
         /// <param name="comparer">A comparer for custom comparison</param>
         /// <returns>An elements feature which is maximal</returns>
         /// <remarks>This method has an observable proxy, i.e. it can be used in a observable expression</remarks>
+        [ArgumentApplication(0, false, 1, 0)]
         [ObservableProxy(typeof(ObservableComparisons), "LambdaNullableMaxExpressionWithComparer")]
         public static TResult? Max<TSource, TResult>(this IEnumerableExpression<TSource> source, Expression<Func<TSource, TResult?>> selector, IComparer<TResult> comparer)
             where TResult : struct
@@ -1051,6 +1094,7 @@ namespace NMF.Expressions.Linq
         /// <param name="source">The collection</param>
         /// <returns>An elements feature which is minimal</returns>
         /// <remarks>This method has an observable proxy, i.e. it can be used in a observable expression</remarks>
+        [ArgumentApplication(0, false, 1, 0)]
         [ObservableProxy(typeof(ObservableComparisons), "LambdaMinExpression")]
         public static TResult Min<TSource, TResult>(this IEnumerableExpression<TSource> source, Expression<Func<TSource, TResult>> selector)
             where TResult : IComparable<TResult>
@@ -1068,6 +1112,7 @@ namespace NMF.Expressions.Linq
         /// <param name="comparer">A comparer for custom comparison</param>
         /// <returns>An elements feature which is minimal</returns>
         /// <remarks>This method has an observable proxy, i.e. it can be used in a observable expression</remarks>
+        [ArgumentApplication(0, false, 1, 0)]
         [ObservableProxy(typeof(ObservableComparisons), "LambdaMinExpressionWithComparer")]
         public static TResult Min<TSource, TResult>(this IEnumerableExpression<TSource> source, Expression<Func<TSource, TResult>> selector, IComparer<TResult> comparer)
         {
@@ -1156,6 +1201,7 @@ namespace NMF.Expressions.Linq
         /// <param name="source">The collection</param>
         /// <returns>An elements feature which is minimal</returns>
         /// <remarks>This method has an observable proxy, i.e. it can be used in a observable expression</remarks>
+        [ArgumentApplication(0, false, 1, 0)]
         [ObservableProxy(typeof(ObservableComparisons), "LambdaNullableMinExpression")]
         public static TResult? Min<TSource, TResult>(this IEnumerableExpression<TSource> source, Expression<Func<TSource, TResult?>> selector)
             where TResult : struct, IComparable<TResult>
@@ -1172,6 +1218,7 @@ namespace NMF.Expressions.Linq
         /// <param name="comparer">A comparer for custom comparison</param>
         /// <returns>An elements feature which is minimal</returns>
         /// <remarks>This method has an observable proxy, i.e. it can be used in a observable expression</remarks>
+        [ArgumentApplication(0, false, 1, 0)]
         [ObservableProxy(typeof(ObservableComparisons), "LambdaNullableMinExpressionWithComparer")]
         public static TResult? Min<TSource, TResult>(this IEnumerableExpression<TSource> source, Expression<Func<TSource, TResult?>> selector, IComparer<TResult> comparer)
             where TResult : struct
@@ -1224,6 +1271,7 @@ namespace NMF.Expressions.Linq
         /// <param name="source">The collection that should be sorted</param>
         /// <param name="keySelector">A lambda expression selecting the sorting keys for the given collection</param>
         /// <returns>A collection with the elements contained in the current collection sorted by the given predicate</returns>
+        [ArgumentApplication(0, false, 1, 0)]
         public static IOrderableEnumerableExpression<TItem> OrderBy<TItem, TKey>(this IEnumerableExpression<TItem> source, Expression<Func<TItem, TKey>> keySelector)
         {
             return OrderBy(source, keySelector, null);
@@ -1238,6 +1286,7 @@ namespace NMF.Expressions.Linq
         /// <param name="keySelector">A lambda expression selecting the sorting keys for the given collection</param>
         /// <param name="comparer">A comparer for custom comparison</param>
         /// <returns>A collection with the elements contained in the current collection sorted by the given predicate</returns>
+        [ArgumentApplication(0, false, 1, 0)]
         public static IOrderableEnumerableExpression<TItem> OrderBy<TItem, TKey>(this IEnumerableExpression<TItem> source, Expression<Func<TItem, TKey>> keySelector, IComparer<TKey> comparer)
         {
             return new OrderByExpression<TItem, TKey>(source, keySelector, null, comparer);
@@ -1251,6 +1300,7 @@ namespace NMF.Expressions.Linq
         /// <param name="source">The collection that should be sorted</param>
         /// <param name="keySelector">A lambda expression selecting the sorting keys for the given collection</param>
         /// <returns>A collection with the elements contained in the current collection sorted by the given predicate</returns>
+        [ArgumentApplication(0, false, 1, 0)]
         public static IOrderableEnumerableExpression<TItem> OrderByDescending<TItem, TKey>(this IEnumerableExpression<TItem> source, Expression<Func<TItem, TKey>> keySelector)
         {
             return OrderByDescending(source, keySelector, null);
@@ -1265,6 +1315,7 @@ namespace NMF.Expressions.Linq
         /// <param name="keySelector">A lambda expression selecting the sorting keys for the given collection</param>
         /// <param name="comparer">A comparer for custom comparison</param>
         /// <returns>A collection with the elements contained in the current collection sorted by the given predicate</returns>
+        [ArgumentApplication(0, false, 1, 0)]
         public static IOrderableEnumerableExpression<TItem> OrderByDescending<TItem, TKey>(this IEnumerableExpression<TItem> source, Expression<Func<TItem, TKey>> keySelector, IComparer<TKey> comparer)
         {
             return new OrderByExpression<TItem, TKey>(source, keySelector, null, new ReverseComparer<TKey>(comparer));
@@ -1278,6 +1329,7 @@ namespace NMF.Expressions.Linq
         /// <param name="source">The current collection</param>
         /// <param name="selector">A lambda expression representing the mapping result for a given item</param>
         /// <returns>A collection with the mapping results</returns>
+        [ArgumentApplication(0, false, 1, 0)]
         [ExpressionCompileRewriter(typeof(Rewrites), "RewriteSelect")]
         public static IEnumerableExpression<TResult> Select<TSource, TResult>(this IEnumerableExpression<TSource> source, Expression<Func<TSource, TResult>> selector)
         {
@@ -1292,6 +1344,7 @@ namespace NMF.Expressions.Linq
         /// <param name="source">The current collection</param>
         /// <param name="selector">A lambda expression representing the mapping result for a given item</param>
         /// <returns>A collection with the mapping results</returns>
+        [ArgumentApplication(0, false, 1, 0)]
         public static IEnumerableExpression<TResult> Select<TSource, TResult>(this IEnumerableExpression<TSource> source, Expression<Func<TSource, TResult>> selector, Func<TSource, TResult> selectorCompiled)
         {
             return new SelectExpression<TSource, TResult>(source, selector, selectorCompiled);
@@ -1307,6 +1360,9 @@ namespace NMF.Expressions.Linq
         /// <param name="func">A lambda expression to select subsequent collections</param>
         /// <param name="selector">A lambda expression that determines the result element given the element of the source collection and the element of the subsequent collection</param>
         /// <returns>A collection with the results</returns>
+        [ArgumentApplication(0, false, 1, 0)]
+        [ArgumentApplication(0, false, 2, 0)]
+        [ArgumentApplication(1, true, 2, 1)]
         public static IEnumerableExpression<TResult> SelectMany<TSource, TIntermediate, TResult>(this IEnumerableExpression<TSource> source, Expression<Func<TSource, IEnumerable<TIntermediate>>> func, Expression<Func<TSource, TIntermediate, TResult>> selector)
         {
             return new SelectManyExpression<TSource, TIntermediate, TResult>(source, func, null, selector, null);
@@ -1320,6 +1376,7 @@ namespace NMF.Expressions.Linq
         /// <param name="source">The current collection</param>
         /// <param name="func">A lambda expression to select subsequent collections</param>
         /// <returns>A collection with the results</returns>
+        [ArgumentApplication(0, false, 1, 0)]
         public static IEnumerableExpression<TResult> SelectMany<TSource, TResult>(this IEnumerableExpression<TSource> source, Expression<Func<TSource, IEnumerable<TResult>>> selector)
         {
             return new SimpleSelectManyExpression<TSource, TResult>(source, selector, null);
@@ -1382,6 +1439,7 @@ namespace NMF.Expressions.Linq
         /// <param name="predicate">The filter predicate</param>
         /// <returns>The first item of the collection that matches the predicate or the type default value</returns>
         /// <remarks>This method has an observable proxy, i.e. it can be used in a observable expression</remarks>
+        [ArgumentApplication(0, false, 1, 0)]
         [ObservableProxy(typeof(ObservableSingleOrDefault<>), "CreateExpressionForPredicate")]
         [SetExpressionRewriter(typeof(ObservableSingleOrDefault<>), "CreateSetExpressionWithPredicate")]
         [ExpressionCompileRewriter(typeof(Rewrites), "RewriteSingleOrDefault")]
@@ -1400,6 +1458,7 @@ namespace NMF.Expressions.Linq
         /// <param name="predicateCompiled">The filter predicate precompiled</param>
         /// <returns>The first item of the collection that matches the predicate or the type default value</returns>
         /// <remarks>This method has an observable proxy, i.e. it can be used in a observable expression</remarks>
+        [ArgumentApplication(0, false, 1, 0)]
         [ObservableProxy(typeof(ObservableSingleOrDefault<>), "CreateExpressionForPredicate2")]
         [SetExpressionRewriter(typeof(ObservableSingleOrDefault<>), "CreateSetExpressionWithPredicate2")]
         public static TSource SingleOrDefault<TSource>(this IEnumerableExpression<TSource> source, Expression<Func<TSource, bool>> predicate, Func<TSource, bool> predicateCompiled)
@@ -1536,6 +1595,7 @@ namespace NMF.Expressions.Linq
         /// <param name="selector">A lambda expression to represent the feature to be summed up</param>
         /// <returns>The sum of the numbers contained in this collection elements features</returns>
         /// <remarks>This method has an observable proxy, i.e. it can be used in a observable expression</remarks>
+        [ArgumentApplication(0, false, 1, 0)]
         [ObservableProxy(typeof(ObservableSum), "SumLambdaIntExpression")]
         public static int Sum<TSource>(this IEnumerableExpression<TSource> source, Expression<Func<TSource, int>> selector)
         {
@@ -1550,6 +1610,7 @@ namespace NMF.Expressions.Linq
         /// <param name="selector">A lambda expression to represent the feature to be summed up</param>
         /// <returns>The sum of the numbers contained in this collection elements features</returns>
         /// <remarks>This method has an observable proxy, i.e. it can be used in a observable expression</remarks>
+        [ArgumentApplication(0, false, 1, 0)]
         [ObservableProxy(typeof(ObservableSum), "SumLambdaLongExpression")]
         public static long Sum<TSource>(this IEnumerableExpression<TSource> source, Expression<Func<TSource, long>> selector)
         {
@@ -1564,6 +1625,7 @@ namespace NMF.Expressions.Linq
         /// <param name="selector">A lambda expression to represent the feature to be summed up</param>
         /// <returns>The sum of the numbers contained in this collection elements features</returns>
         /// <remarks>This method has an observable proxy, i.e. it can be used in a observable expression</remarks>
+        [ArgumentApplication(0, false, 1, 0)]
         [ObservableProxy(typeof(ObservableSum), "SumLambdaFloatExpression")]
         public static float Sum<TSource>(this IEnumerableExpression<TSource> source, Expression<Func<TSource, float>> selector)
         {
@@ -1578,6 +1640,7 @@ namespace NMF.Expressions.Linq
         /// <param name="selector">A lambda expression to represent the feature to be summed up</param>
         /// <returns>The sum of the numbers contained in this collection elements features</returns>
         /// <remarks>This method has an observable proxy, i.e. it can be used in a observable expression</remarks>
+        [ArgumentApplication(0, false, 1, 0)]
         [ObservableProxy(typeof(ObservableSum), "SumLambdaDoubleExpression")]
         public static double Sum<TSource>(this IEnumerableExpression<TSource> source, Expression<Func<TSource, double>> selector)
         {
@@ -1592,6 +1655,7 @@ namespace NMF.Expressions.Linq
         /// <param name="selector">A lambda expression to represent the feature to be summed up</param>
         /// <returns>The sum of the numbers contained in this collection elements features</returns>
         /// <remarks>This method has an observable proxy, i.e. it can be used in a observable expression</remarks>
+        [ArgumentApplication(0, false, 1, 0)]
         [ObservableProxy(typeof(ObservableSum), "SumLambdaDecimalExpression")]
         public static decimal Sum<TSource>(this IEnumerableExpression<TSource> source, Expression<Func<TSource, decimal>> selector)
         {
@@ -1606,6 +1670,7 @@ namespace NMF.Expressions.Linq
         /// <param name="selector">A lambda expression to represent the feature to be summed up</param>
         /// <returns>The sum of the numbers contained in this collection elements features</returns>
         /// <remarks>This method has an observable proxy, i.e. it can be used in a observable expression</remarks>
+        [ArgumentApplication(0, false, 1, 0)]
         [ObservableProxy(typeof(ObservableSum), "SumLambdaNullableIntExpression")]
         public static int? Sum<TSource>(this IEnumerableExpression<TSource> source, Expression<Func<TSource, int?>> selector)
         {
@@ -1620,6 +1685,7 @@ namespace NMF.Expressions.Linq
         /// <param name="selector">A lambda expression to represent the feature to be summed up</param>
         /// <returns>The sum of the numbers contained in this collection elements features</returns>
         /// <remarks>This method has an observable proxy, i.e. it can be used in a observable expression</remarks>
+        [ArgumentApplication(0, false, 1, 0)]
         [ObservableProxy(typeof(ObservableSum), "SumLambdaNullableLongExpression")]
         public static long? Sum<TSource>(this IEnumerableExpression<TSource> source, Expression<Func<TSource, long?>> selector)
         {
@@ -1634,6 +1700,7 @@ namespace NMF.Expressions.Linq
         /// <param name="selector">A lambda expression to represent the feature to be summed up</param>
         /// <returns>The sum of the numbers contained in this collection elements features</returns>
         /// <remarks>This method has an observable proxy, i.e. it can be used in a observable expression</remarks>
+        [ArgumentApplication(0, false, 1, 0)]
         [ObservableProxy(typeof(ObservableSum), "SumLambdaNullableFloatExpression")]
         public static float? Sum<TSource>(this IEnumerableExpression<TSource> source, Expression<Func<TSource, float?>> selector)
         {
@@ -1648,6 +1715,7 @@ namespace NMF.Expressions.Linq
         /// <param name="selector">A lambda expression to represent the feature to be summed up</param>
         /// <returns>The sum of the numbers contained in this collection elements features</returns>
         /// <remarks>This method has an observable proxy, i.e. it can be used in a observable expression</remarks>
+        [ArgumentApplication(0, false, 1, 0)]
         [ObservableProxy(typeof(ObservableSum), "SumLambdaNullableDoubleExpression")]
         public static double? Sum<TSource>(this IEnumerableExpression<TSource> source, Expression<Func<TSource, double?>> selector)
         {
@@ -1662,6 +1730,7 @@ namespace NMF.Expressions.Linq
         /// <param name="selector">A lambda expression to represent the feature to be summed up</param>
         /// <returns>The sum of the numbers contained in this collection elements features</returns>
         /// <remarks>This method has an observable proxy, i.e. it can be used in a observable expression</remarks>
+        [ArgumentApplication(0, false, 1, 0)]
         [ObservableProxy(typeof(ObservableSum), "SumLambdaNullableDecimalExpression")]
         public static decimal? Sum<TSource>(this IEnumerableExpression<TSource> source, Expression<Func<TSource, decimal?>> selector)
         {
@@ -1677,6 +1746,7 @@ namespace NMF.Expressions.Linq
         /// <param name="source">The current collection</param>
         /// <param name="keySelector">A lambda expression to select the features used for ordering</param>
         /// <returns>A collection with the elements of the current collection but ordered in lower priority for the given predicate</returns>
+        [ArgumentApplication(0, false, 1, 0)]
         public static IOrderableEnumerableExpression<TItem> ThenBy<TItem, TKey>(this IOrderableEnumerableExpression<TItem> source, Expression<Func<TItem, TKey>> keySelector)
         {
             return ThenBy(source, keySelector, null);
@@ -1691,6 +1761,7 @@ namespace NMF.Expressions.Linq
         /// <param name="keySelector">A lambda expression to select the features used for ordering</param>
         /// <param name="comparer">A comparer to determine comparison</param>
         /// <returns>A collection with the elements of the current collection but ordered in lower priority for the given predicate</returns>
+        [ArgumentApplication(0, false, 1, 0)]
         public static IOrderableEnumerableExpression<TItem> ThenBy<TItem, TKey>(this IOrderableEnumerableExpression<TItem> source, Expression<Func<TItem, TKey>> keySelector, IComparer<TKey> comparer)
         {
             return new ThenByExpression<TItem, TKey>(source, keySelector, null, comparer);
@@ -1704,6 +1775,7 @@ namespace NMF.Expressions.Linq
         /// <param name="source">The current collection</param>
         /// <param name="keySelector">A lambda expression to select the features used for ordering</param>
         /// <returns>A collection with the elements of the current collection but ordered in lower priority for the given predicate</returns>
+        [ArgumentApplication(0, false, 1, 0)]
         public static IOrderableEnumerableExpression<TItem> ThenByDescending<TItem, TKey>(this IOrderableEnumerableExpression<TItem> source, Expression<Func<TItem, TKey>> keySelector)
         {
             return ThenByDescending(source, keySelector, null);
@@ -1718,6 +1790,7 @@ namespace NMF.Expressions.Linq
         /// <param name="keySelector">A lambda expression to select the features used for ordering</param>
         /// <param name="comparer">A comparer to determine comparison</param>
         /// <returns>A collection with the elements of the current collection but ordered in lower priority for the given predicate</returns>
+        [ArgumentApplication(0, false, 1, 0)]
         public static IOrderableEnumerableExpression<TItem> ThenByDescending<TItem, TKey>(this IOrderableEnumerableExpression<TItem> source, Expression<Func<TItem, TKey>> keySelector, IComparer<TKey> comparer)
         {
             return new ThenByExpression<TItem, TKey>(source, keySelector, null, new ReverseComparer<TKey>(comparer));
@@ -1755,6 +1828,7 @@ namespace NMF.Expressions.Linq
         /// <param name="source">The current collection</param>
         /// <param name="filter">The predicate used for filtering</param>
         /// <returns>A collection containing the elements that passed the filter</returns>
+        [ArgumentApplication(0, false, 1, 0)]
         [ExpressionCompileRewriter(typeof(Rewrites), "RewriteWhereEnumerable")]
         public static IEnumerableExpression<T> Where<T>(this IEnumerableExpression<T> source, Expression<Func<T, bool>> filter)
         {
@@ -1769,6 +1843,7 @@ namespace NMF.Expressions.Linq
         /// <param name="filter">The predicate used for filtering</param>
         /// <param name="filterCompiled">The filter predicate precompiled</param>
         /// <returns>A collection containing the elements that passed the filter</returns>
+        [ArgumentApplication(0, false, 1, 0)]
         public static IEnumerableExpression<T> Where<T>(this IEnumerableExpression<T> source, Expression<Func<T, bool>> filter, Func<T, bool> filterCompiled)
         {
             return new WhereExpression<T>(source, filter, filterCompiled);
@@ -1781,6 +1856,7 @@ namespace NMF.Expressions.Linq
         /// <param name="source">The current collection</param>
         /// <param name="filter">The predicate used for filtering</param>
         /// <returns>A collection containing the elements that passed the filter</returns>
+        [ArgumentApplication(0, false, 1, 0)]
         [ExpressionCompileRewriter(typeof(Rewrites), "RewriteWhereCollection")]
         public static ICollectionExpression<T> Where<T>(this ICollectionExpression<T> source, Expression<Func<T, bool>> filter)
         {
@@ -1796,6 +1872,7 @@ namespace NMF.Expressions.Linq
         /// <param name="filterGetter">A precompiled filter getter</param>
         /// <param name="filterSetter">A precompiled filter setter</param>
         /// <returns>A collection containing the elements that passed the filter</returns>
+        [ArgumentApplication(0, false, 1, 0)]
         public static ICollectionExpression<T> Where<T>(this ICollectionExpression<T> source, Expression<Func<T, bool>> filter, Func<T, bool> filterGetter, Action<T, bool> filterSetter)
         {
             return new WhereCollectionExpression<T>(source, filter, filterGetter, filterSetter);
