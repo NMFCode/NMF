@@ -12,6 +12,7 @@ namespace NMF.Expressions.Linq
         
         private INotifyEnumerable<TSource> source;
         private ObservingFunc<TSource, TResult> lambda;
+        private TaggedObservableValue<TResult, int> nullLambda;
 
         public ObservingFunc<TSource, TResult> Lambda
         {
@@ -42,11 +43,6 @@ namespace NMF.Expressions.Linq
             Attach();
         }
 
-        private void DetachItem(TSource item, INotifyValue<TResult> lambdaValue)
-        {
-            lambdaValue.Detach();
-        }
-
         private void SourceCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
             if (e.Action == NotifyCollectionChangedAction.Move) return;
@@ -57,21 +53,34 @@ namespace NMF.Expressions.Linq
                     var removed = new List<TResult>();
                     foreach (TSource item in e.OldItems)
                     {
-                        TaggedObservableValue<TResult, int> lambdaResult;
-                        if (lambdas.TryGetValue(item, out lambdaResult))
+                        if (item != null)
                         {
-                            lambdaResult.Tag--;
-                            if (lambdaResult.Tag == 0)
+                            TaggedObservableValue<TResult, int> lambdaResult;
+                            if (lambdas.TryGetValue(item, out lambdaResult))
                             {
-                                lambdas.Remove(item);
-                                lambdaResult.ValueChanged -= LambdaChanged;
+                                lambdaResult.Tag--;
+                                if (lambdaResult.Tag == 0)
+                                {
+                                    lambdas.Remove(item);
+                                    lambdaResult.ValueChanged -= LambdaChanged;
+                                    lambdaResult.Detach();
+                                }
+                                removed.Add(lambdaResult.Value);
                             }
-                            DetachItem(item, lambdaResult);
-                            removed.Add(lambdaResult.Value);
+                            else
+                            {
+                                throw new InvalidOperationException();
+                            }
                         }
-                        else
+                        else if (nullLambda != null)
                         {
-                            //throw new InvalidOperationException();
+                            nullLambda.Tag--;
+                            if (nullLambda.Tag == 0)
+                            {
+                                nullLambda.ValueChanged -= LambdaChanged;
+                                nullLambda.Detach();
+                                nullLambda = null;
+                            }
                         }
                     }
                     OnRemoveItems(removed, e.OldStartingIndex);
@@ -96,24 +105,37 @@ namespace NMF.Expressions.Linq
 
         private void DetachSource()
         {
-            foreach (var pair in lambdas)
+            foreach (var value in lambdas.Values)
             {
-                DetachItem(pair.Key, pair.Value);
+                value.Detach();
             }
             lambdas.Clear(); 
         }
 
         private TaggedObservableValue<TResult, int> AttachItem(TSource item)
         {
-            TaggedObservableValue<TResult, int> lambdaResult;
-            if (!lambdas.TryGetValue(item, out lambdaResult))
+            if (item != null)
             {
-                lambdaResult = lambda.InvokeTagged<int>(item, 0);
-                lambdaResult.ValueChanged += LambdaChanged;
-                lambdas.Add(item, lambdaResult);
+                TaggedObservableValue<TResult, int> lambdaResult;
+                if (!lambdas.TryGetValue(item, out lambdaResult))
+                {
+                    lambdaResult = lambda.InvokeTagged<int>(item, 0);
+                    lambdaResult.ValueChanged += LambdaChanged;
+                    lambdas.Add(item, lambdaResult);
+                }
+                lambdaResult.Tag++;
+                return lambdaResult;
             }
-            lambdaResult.Tag++;
-            return lambdaResult;
+            else
+            {
+                if (nullLambda == null)
+                {
+                    nullLambda = lambda.InvokeTagged(item, 0);
+                    nullLambda.ValueChanged += LambdaChanged;
+                }
+                nullLambda.Tag++;
+                return nullLambda;
+            }
         }
 
         private void LambdaChanged(object sender, ValueChangedEventArgs e)

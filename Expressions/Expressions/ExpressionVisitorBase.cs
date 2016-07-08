@@ -103,6 +103,7 @@ namespace NMF.Expressions
                 var argument = Visit(arg);
                 arguments[i] = argument;
                 changed |= argument != arg;
+                i++;
             }
             var obj = Visit(node.Expression);
             changed |= obj != node.Expression;
@@ -235,6 +236,7 @@ namespace NMF.Expressions
                 var argument = Visit(arg);
                 arguments[i] = argument;
                 changed |= argument != arg;
+                i++;
             }
             var obj = Visit(node.Object);
             changed |= obj != node.Object;

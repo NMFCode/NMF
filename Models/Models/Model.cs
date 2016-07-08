@@ -163,6 +163,10 @@ namespace NMF.Models
             if (!path.StartsWith("//"))
             {
                 var index = path.IndexOf('/');
+                if (index == 0)
+                {
+                    return ResolveNonIdentified(path.Substring(1));
+                }
                 if (IdStore != null)
                 {
                     ModelElement element;
@@ -182,27 +186,31 @@ namespace NMF.Models
             }
             else
             {
-                path = path.Substring(2);
-                if (RootElements.Count == 1 && PromoteSingleRootElement)
+                return ResolveNonIdentified(path.Substring(2));
+            }
+        }
+
+        private IModelElement ResolveNonIdentified(string path)
+        {
+            if (RootElements.Count == 1 && PromoteSingleRootElement)
+            {
+                var root = RootElements[0] as ModelElement;
+                if (root != null)
                 {
-                    var root = RootElements[0] as ModelElement;
-                    if (root != null)
-                    {
-                        var resolved = root.Resolve(path);
-                        if (resolved != null) return resolved;
-                    }
+                    var resolved = root.Resolve(path);
+                    if (resolved != null) return resolved;
                 }
-                var baseResolve = base.Resolve(path);
-                if (baseResolve != null || PromoteSingleRootElement || RootElements.Count != 1) return baseResolve;
-                var rootCasted = RootElements[0] as ModelElement;
-                if (rootCasted != null)
-                {
-                    return rootCasted.Resolve(path);
-                }
-                else
-                {
-                    return null;
-                }
+            }
+            var baseResolve = base.Resolve(path);
+            if (baseResolve != null || PromoteSingleRootElement || RootElements.Count != 1) return baseResolve;
+            var rootCasted = RootElements[0] as ModelElement;
+            if (rootCasted != null)
+            {
+                return rootCasted.Resolve(path);
+            }
+            else
+            {
+                return null;
             }
         }
 

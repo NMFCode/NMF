@@ -177,6 +177,18 @@ namespace NMF.Models.Repository.Serialization
             return base.GetAttributeValue(value, info, context);
         }
 
+        protected override bool IsPropertyElement(XmlReader reader, IPropertySerializationInfo p)
+        {
+            if (string.IsNullOrEmpty(reader.Prefix))
+            {
+                if (string.IsNullOrEmpty(p.Namespace) && reader.LocalName == p.ElementName)
+                {
+                    return true;
+                }
+            }
+            return base.IsPropertyElement(reader, p);
+        }
+
         protected virtual Model CreateModelForRoot(object root)
         {
             var modelElement = root as ModelElement;

@@ -13,6 +13,7 @@ using NMF.Models.Meta;
 using NMF.Models;
 using NMF.Models.Repository;
 using NMF.Models.Repository.Serialization;
+using NMF.Utilities;
 
 namespace NMF.Interop.Ecore
 {
@@ -69,6 +70,19 @@ namespace NMF.Interop.Ecore
                 model.ModelUri = modelUri;
             }
             return rootPackage;
+        }
+
+        public static IEnumerable<INamespace> Transform2Meta(IEnumerable<EPackage> packages)
+        {
+            var model = new Model();
+            var rootPackages = TransformationEngine.TransformMany<IEPackage, INamespace>(packages, ecore2Meta);
+            model.RootElements.AddRange(rootPackages);
+            Uri modelUri;
+            if (packages.Count() > 0 && Uri.TryCreate(packages.First().NsURI, UriKind.Absolute, out modelUri))
+            {
+                model.ModelUri = modelUri;
+            }
+            return rootPackages;
         }
 
     }

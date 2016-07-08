@@ -19,10 +19,17 @@ namespace NMF.Models
         public static void Serialize(this IModelSerializer serializer, IModelElement element, string path)
         {
             Uri uri;
-            if (!Uri.TryCreate(path, UriKind.Absolute, out uri))
+            Model model = element.Model;
+            if (model == null || model.ModelUri == null)
             {
-                var file = new FileInfo(path);
-                uri = new Uri(file.FullName);
+                if (!Uri.TryCreate(path, UriKind.Absolute, out uri))
+                {
+                    uri = new Uri(Path.GetFullPath(path));
+                }
+            }
+            else
+            {
+                uri = model.ModelUri;
             }
             serializer.Serialize(element, path, uri);
         }

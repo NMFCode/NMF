@@ -8,6 +8,8 @@ namespace NMF.Utilities
     public class MemoizedFunc<T, TResult>
     {
         private Dictionary<T, TResult> savedResults = new Dictionary<T, TResult>();
+        private TResult nullResult;
+        private bool nullResultSet;
         private Func<T, TResult> func;
 
         public MemoizedFunc(Func<T, TResult> func)
@@ -19,28 +21,55 @@ namespace NMF.Utilities
         {
             get
             {
-                TResult result;
-                if (!savedResults.TryGetValue(arg, out result))
+                if (arg != null)
                 {
-                    result = func(arg);
-                    savedResults.Add(arg, result);
-                    return result;
+                    TResult result;
+                    if (!savedResults.TryGetValue(arg, out result))
+                    {
+                        result = func(arg);
+                        savedResults.Add(arg, result);
+                        return result;
+                    }
+                    else
+                    {
+                        return result;
+                    }
                 }
                 else
                 {
-                    return result;
+                    if (!nullResultSet)
+                    {
+                        nullResult = func(arg);
+                        nullResultSet = true;
+                    }
+                    return nullResult;
                 }
             }
         }
 
         public void Forget(T arg)
         {
-            savedResults.Remove(arg);
+            if (arg != null)
+            {
+                savedResults.Remove(arg);
+            }
+            else
+            {
+                nullResultSet = false;
+                nullResult = default(TResult);
+            }
         }
 
         public bool IsMemoized(T arg)
         {
-            return savedResults.ContainsKey(arg);
+            if (arg != null)
+            {
+                return savedResults.ContainsKey(arg);
+            }
+            else
+            {
+                return nullResultSet;
+            }
         }
     }
 

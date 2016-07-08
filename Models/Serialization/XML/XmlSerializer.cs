@@ -1071,18 +1071,20 @@ namespace NMF.Serialization
 
         protected virtual void InitializeAttributeProperties(XmlReader reader, object obj, ITypeSerializationInfo info, XmlSerializationContext context)
         {
-            foreach (IPropertySerializationInfo p in info.AttributeProperties)
+            var cont = reader.MoveToFirstAttribute();
+            while (cont)
             {
-                string attr = reader.GetAttribute(p.ElementName, p.Namespace);
-                if (attr == null)
+                foreach (IPropertySerializationInfo p in info.AttributeProperties)
                 {
-                    attr = reader.GetAttribute(p.ElementName);
+                    if (IsPropertyElement(reader, p))
+                    {
+                        InitializePropertyFromText(p, obj, reader.Value, context);
+                        break;
+                    }
                 }
-                if (attr != null)
-                {
-                    InitializePropertyFromText(p, obj, attr, context);
-                }
+                cont = reader.MoveToNextAttribute();
             }
+            reader.MoveToElement();
         }
 
         protected virtual bool HandleException(Exception ex)

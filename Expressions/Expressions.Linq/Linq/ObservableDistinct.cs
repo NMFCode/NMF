@@ -11,6 +11,7 @@ namespace NMF.Expressions.Linq
     {
         private INotifyEnumerable<TSource> source;
         private Dictionary<TSource, int> occurences;
+        private int nullOccurences = 0;
 
         public ObservableDistinct(INotifyEnumerable<TSource> source, IEqualityComparer<TSource> comparer)
         {
@@ -81,36 +82,52 @@ namespace NMF.Expressions.Linq
 
         private bool AddItem(TSource item)
         {
-            int current;
-            if (occurences.TryGetValue(item, out current))
+            if (item != null)
             {
-                occurences[item] = current + 1;
-                return false;
+                int current;
+                if (occurences.TryGetValue(item, out current))
+                {
+                    occurences[item] = current + 1;
+                    return false;
+                }
+                else
+                {
+                    occurences.Add(item, 1);
+                    return true;
+                }
             }
             else
             {
-                occurences.Add(item, 1);
-                return true;
+                nullOccurences += 1;
+                return nullOccurences == 1;
             }
         }
 
         private bool RemoveItem(TSource item)
         {
-            int current;
-            if (occurences.TryGetValue(item, out current))
+            if (item != null)
             {
-                current--;
-                if (current == 0)
+                int current;
+                if (occurences.TryGetValue(item, out current))
                 {
-                    occurences.Remove(item);
-                    return true;
+                    current--;
+                    if (current == 0)
+                    {
+                        occurences.Remove(item);
+                        return true;
+                    }
+                    else
+                    {
+                        occurences[item] = current;
+                    }
                 }
-                else
-                {
-                    occurences[item] = current;
-                }
+                return false;
             }
-            return false;
+            else
+            {
+                nullOccurences--;
+                return nullOccurences == 0;
+            }
         }
 
         protected override void DetachCore()

@@ -272,6 +272,10 @@ namespace NMF.Models.Meta
                 else
                 {
                     targetType.BaseType = "I" + targetType.BaseType;
+                    if (input.Namespace.Types.Any(t => t.Name == instantiating.Name))
+                    {
+                        targetType.BaseType = targetType.Namespace() + "." + targetType.BaseType;
+                    }
                 }
                 var getClass = new CodeMemberMethod()
                 {
