@@ -8,12 +8,19 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Text;
+using System.Threading;
 
 namespace NMF.Models
 {
+    [XmlElementName("XMI")]
+    [XmlNamespaceAttribute("http://www.omg.org/XMI")]
+    [XmlNamespacePrefixAttribute("xmi")]
+    [ModelRepresentationClassAttribute("http://www.omg.org/XMI")]
     [DebuggerDisplayAttribute("Model {ModelUri}")]
     public class Model : ModelElement
     {
+        private Dictionary<string, ModelElement> IdStore;
+
         static Model()
         {
             PromoteSingleRootElement = true;
@@ -115,11 +122,76 @@ namespace NMF.Models
             }
         }
 
+        public bool RegisterId(string id, ModelElement element)
+        {
+            var idStore = IdStore;
+            if (idStore == null)
+            {
+                idStore = Interlocked.CompareExchange(ref IdStore, new Dictionary<string, ModelElement>(), null) ?? IdStore;
+            }
+            if (idStore.ContainsKey(id))
+            {
+                return false;
+            }
+            else
+            {
+                idStore.Add(id, element);
+                return true;
+            }
+        }
+
+        public bool UnregisterId(string id)
+        {
+            if (IdStore == null)
+            {
+                return false;
+            }
+            else
+            {
+                return IdStore.Remove(id);
+            }
+        }
+
         public override IModelElement Resolve(string path)
         {
-            if (string.IsNullOrEmpty(path)) return this;
-            if (path.StartsWith("//")) path = path.Substring(2);
-            if (path.StartsWith("#//")) path = path.Substring(3);
+            if (path == null) return this;
+            if (path.StartsWith("#"))
+            {
+                path = path.Substring(1);
+            }
+            if (path == string.Empty) return this;
+            if (!path.StartsWith("//"))
+            {
+                var index = path.IndexOf('/');
+                if (index == 0)
+                {
+                    return ResolveNonIdentified(path.Substring(1));
+                }
+                if (IdStore != null)
+                {
+                    ModelElement element;
+                    if (IdStore.TryGetValue(index == -1 ? path : path.Substring(0, index), out element))
+                    {
+                        if (index == -1)
+                        {
+                            return element;
+                        }
+                        else
+                        {
+                            return element.Resolve(path.Substring(index + 1));
+                        }
+                    }
+                }
+                return null;
+            }
+            else
+            {
+                return ResolveNonIdentified(path.Substring(2));
+            }
+        }
+
+        private IModelElement ResolveNonIdentified(string path)
+        {
             if (RootElements.Count == 1 && PromoteSingleRootElement)
             {
                 var root = RootElements[0] as ModelElement;

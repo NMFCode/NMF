@@ -60,6 +60,11 @@ namespace NMF.Models.Meta
         private IReference _refines;
         
         /// <summary>
+        /// The backing field for the Anchor property
+        /// </summary>
+        private IClass _anchor;
+        
+        /// <summary>
         /// The backing field for the IsOrdered property
         /// </summary>
         private bool _isOrdered;
@@ -200,7 +205,7 @@ namespace NMF.Models.Meta
         }
         
         /// <summary>
-        /// The Refines property
+        /// The reference that is refined by the current reference, only applicable if the reference is part of a class
         /// </summary>
         [XmlAttributeAttribute(true)]
         public virtual IReference Refines
@@ -226,6 +231,37 @@ namespace NMF.Models.Meta
                     ValueChangedEventArgs e = new ValueChangedEventArgs(old, value);
                     this.OnRefinesChanged(e);
                     this.OnPropertyChanged("Refines", e);
+                }
+            }
+        }
+        
+        /// <summary>
+        /// The least common anchestor of an instance and its referenced element, if statically known
+        /// </summary>
+        [XmlAttributeAttribute(true)]
+        public virtual IClass Anchor
+        {
+            get
+            {
+                return this._anchor;
+            }
+            set
+            {
+                if ((this._anchor != value))
+                {
+                    IClass old = this._anchor;
+                    this._anchor = value;
+                    if ((old != null))
+                    {
+                        old.Deleted -= this.OnResetAnchor;
+                    }
+                    if ((value != null))
+                    {
+                        value.Deleted += this.OnResetAnchor;
+                    }
+                    ValueChangedEventArgs e = new ValueChangedEventArgs(old, value);
+                    this.OnAnchorChanged(e);
+                    this.OnPropertyChanged("Anchor", e);
                 }
             }
         }
@@ -404,6 +440,11 @@ namespace NMF.Models.Meta
         public event EventHandler<ValueChangedEventArgs> RefinesChanged;
         
         /// <summary>
+        /// Gets fired when the Anchor property changed its value
+        /// </summary>
+        public event EventHandler<ValueChangedEventArgs> AnchorChanged;
+        
+        /// <summary>
         /// Gets fired when the IsOrdered property changed its value
         /// </summary>
         public event EventHandler<ValueChangedEventArgs> IsOrderedChanged;
@@ -541,6 +582,29 @@ namespace NMF.Models.Meta
         }
         
         /// <summary>
+        /// Raises the AnchorChanged event
+        /// </summary>
+        /// <param name="eventArgs">The event data</param>
+        protected virtual void OnAnchorChanged(ValueChangedEventArgs eventArgs)
+        {
+            EventHandler<ValueChangedEventArgs> handler = this.AnchorChanged;
+            if ((handler != null))
+            {
+                handler.Invoke(this, eventArgs);
+            }
+        }
+        
+        /// <summary>
+        /// Handles the event that the Anchor property must reset
+        /// </summary>
+        /// <param name="sender">The object that sent this reset request</param>
+        /// <param name="eventArgs">The event data for the reset event</param>
+        private void OnResetAnchor(object sender, EventArgs eventArgs)
+        {
+            this.Anchor = null;
+        }
+        
+        /// <summary>
         /// Raises the IsOrderedChanged event
         /// </summary>
         /// <param name="eventArgs">The event data</param>
@@ -650,6 +714,11 @@ namespace NMF.Models.Meta
                 this.Refines = ((IReference)(value));
                 return;
             }
+            if ((feature == "ANCHOR"))
+            {
+                this.Anchor = ((IClass)(value));
+                return;
+            }
             if ((feature == "ISCONTAINMENT"))
             {
                 this.IsContainment = ((bool)(value));
@@ -701,6 +770,10 @@ namespace NMF.Models.Meta
             {
                 return new RefinesProxy(this);
             }
+            if ((attribute == "ANCHOR"))
+            {
+                return new AnchorProxy(this);
+            }
             return base.GetExpressionForAttribute(attribute);
         }
         
@@ -726,6 +799,10 @@ namespace NMF.Models.Meta
             if ((reference == "REFINES"))
             {
                 return new RefinesProxy(this);
+            }
+            if ((reference == "ANCHOR"))
+            {
+                return new AnchorProxy(this);
             }
             return base.GetExpressionForReference(reference);
         }
@@ -778,6 +855,10 @@ namespace NMF.Models.Meta
                     {
                         count = (count + 1);
                     }
+                    if ((this._parent.Anchor != null))
+                    {
+                        count = (count + 1);
+                    }
                     return count;
                 }
             }
@@ -788,6 +869,7 @@ namespace NMF.Models.Meta
                 this._parent.OppositeChanged += this.PropagateValueChanges;
                 this._parent.ReferenceTypeChanged += this.PropagateValueChanges;
                 this._parent.RefinesChanged += this.PropagateValueChanges;
+                this._parent.AnchorChanged += this.PropagateValueChanges;
             }
             
             protected override void DetachCore()
@@ -796,6 +878,7 @@ namespace NMF.Models.Meta
                 this._parent.OppositeChanged -= this.PropagateValueChanges;
                 this._parent.ReferenceTypeChanged -= this.PropagateValueChanges;
                 this._parent.RefinesChanged -= this.PropagateValueChanges;
+                this._parent.AnchorChanged -= this.PropagateValueChanges;
             }
             
             /// <summary>
@@ -840,6 +923,15 @@ namespace NMF.Models.Meta
                         return;
                     }
                 }
+                if ((this._parent.Anchor == null))
+                {
+                    IClass anchorCasted = item.As<IClass>();
+                    if ((anchorCasted != null))
+                    {
+                        this._parent.Anchor = anchorCasted;
+                        return;
+                    }
+                }
             }
             
             /// <summary>
@@ -851,6 +943,7 @@ namespace NMF.Models.Meta
                 this._parent.Opposite = null;
                 this._parent.ReferenceType = null;
                 this._parent.Refines = null;
+                this._parent.Anchor = null;
             }
             
             /// <summary>
@@ -873,6 +966,10 @@ namespace NMF.Models.Meta
                     return true;
                 }
                 if ((item == this._parent.Refines))
+                {
+                    return true;
+                }
+                if ((item == this._parent.Anchor))
                 {
                     return true;
                 }
@@ -906,6 +1003,11 @@ namespace NMF.Models.Meta
                     array[arrayIndex] = this._parent.Refines;
                     arrayIndex = (arrayIndex + 1);
                 }
+                if ((this._parent.Anchor != null))
+                {
+                    array[arrayIndex] = this._parent.Anchor;
+                    arrayIndex = (arrayIndex + 1);
+                }
             }
             
             /// <summary>
@@ -935,6 +1037,11 @@ namespace NMF.Models.Meta
                     this._parent.Refines = null;
                     return true;
                 }
+                if ((this._parent.Anchor == item))
+                {
+                    this._parent.Anchor = null;
+                    return true;
+                }
                 return false;
             }
             
@@ -944,7 +1051,7 @@ namespace NMF.Models.Meta
             /// <returns>A generic enumerator</returns>
             public override IEnumerator<IModelElement> GetEnumerator()
             {
-                return Enumerable.Empty<IModelElement>().Concat(this._parent.DeclaringType).Concat(this._parent.Opposite).Concat(this._parent.ReferenceType).Concat(this._parent.Refines).GetEnumerator();
+                return Enumerable.Empty<IModelElement>().Concat(this._parent.DeclaringType).Concat(this._parent.Opposite).Concat(this._parent.ReferenceType).Concat(this._parent.Refines).Concat(this._parent.Anchor).GetEnumerator();
             }
         }
         
@@ -1190,6 +1297,55 @@ namespace NMF.Models.Meta
             protected override void UnregisterChangeEventHandler(System.EventHandler<NMF.Expressions.ValueChangedEventArgs> handler)
             {
                 this.ModelElement.RefinesChanged -= handler;
+            }
+        }
+        
+        /// <summary>
+        /// Represents a proxy to represent an incremental access to the Anchor property
+        /// </summary>
+        private sealed class AnchorProxy : ModelPropertyChange<IReference, IClass>
+        {
+            
+            /// <summary>
+            /// Creates a new observable property access proxy
+            /// </summary>
+            /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
+            public AnchorProxy(IReference modelElement) : 
+                    base(modelElement)
+            {
+            }
+            
+            /// <summary>
+            /// Gets or sets the value of this expression
+            /// </summary>
+            public override IClass Value
+            {
+                get
+                {
+                    return this.ModelElement.Anchor;
+                }
+                set
+                {
+                    this.ModelElement.Anchor = value;
+                }
+            }
+            
+            /// <summary>
+            /// Registers an event handler to subscribe specifically on the changed event for this property
+            /// </summary>
+            /// <param name="handler">The handler that should be subscribed to the property change event</param>
+            protected override void RegisterChangeEventHandler(System.EventHandler<NMF.Expressions.ValueChangedEventArgs> handler)
+            {
+                this.ModelElement.AnchorChanged += handler;
+            }
+            
+            /// <summary>
+            /// Registers an event handler to subscribe specifically on the changed event for this property
+            /// </summary>
+            /// <param name="handler">The handler that should be unsubscribed from the property change event</param>
+            protected override void UnregisterChangeEventHandler(System.EventHandler<NMF.Expressions.ValueChangedEventArgs> handler)
+            {
+                this.ModelElement.AnchorChanged -= handler;
             }
         }
         

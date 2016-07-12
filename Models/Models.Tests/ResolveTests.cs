@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -22,7 +23,7 @@ namespace NMF.Models.Tests
         {
             Model.PromoteSingleRootElement = true;
             repository = new ModelRepository();
-            railwayModel = repository.Resolve(new Uri(BaseUri), "..\\..\\railway.railway").Model;
+            railwayModel = repository.Resolve(new Uri(BaseUri), "railway.railway").Model;
             Assert.IsNotNull(railwayModel);
             railway = railwayModel.RootElements.Single() as RailwayContainer;
             Assert.IsNotNull(railway);
@@ -160,7 +161,7 @@ namespace NMF.Models.Tests
             serializer.SerializeFragment(element, stream);
 
             var switchToUpdate = railwayModel.RootElements.Single().As<RailwayContainer>().Descendants().OfType<ISwitch>().First(sw => sw.Sensor == null);
-            switchToUpdate.Sensor = new Sensor();
+            switchToUpdate.Sensor = new Sensor() { Id = 0815 };
 
             stream = new MemoryStream();
             serializer.SerializeFragment(element, stream);
@@ -187,7 +188,7 @@ namespace NMF.Models.Tests
             var test = File.ReadAllText(tempFile);
             
             var switchToUpdate = railwayModel.RootElements.Single().As<RailwayContainer>().Descendants().OfType<ISwitch>().First(sw => sw.Sensor == null);
-            switchToUpdate.Sensor = new Sensor();
+            switchToUpdate.Sensor = new Sensor() { Id = 0815 };
 
             var stream = new MemoryStream();
             serializer.SerializeFragment(element, stream);
@@ -201,7 +202,7 @@ namespace NMF.Models.Tests
             Assert.AreEqual(file1Contents.Length, file2Contents.Length);
             for (int i = 0; i < file1Contents.Length; i++)
             {
-                Assert.AreEqual(file1Contents[i], file2Contents[i]);
+                Assert.AreEqual(file1Contents[i], file2Contents[i], string.Format("Line {0} does not match: '{1}' != '{2}'", i, file1Contents[i], file2Contents[i]));
             }
         }
 
@@ -209,13 +210,13 @@ namespace NMF.Models.Tests
         public void LoadCrashTest()
         {
             var repository = new ModelRepository();
-            var rootModelElement = repository.Resolve(new Uri(BaseUri), "..\\..\\railway.railway");
+            var rootModelElement = repository.Resolve(new Uri(BaseUri), "railway.railway");
 
             ModelElement.EnforceModels = true;
 
             repository = new ModelRepository();
-            rootModelElement = repository.Resolve(new Uri(BaseUri), "..\\..\\railway.railway");
-
+            rootModelElement = repository.Resolve(new Uri(BaseUri), "railway.railway");
         }
+
     }
 }

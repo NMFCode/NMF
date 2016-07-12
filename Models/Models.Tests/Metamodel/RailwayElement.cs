@@ -33,9 +33,11 @@ namespace NMF.Models.Tests.Railway
     /// <summary>
     /// The default implementation of the RailwayElement class
     /// </summary>
+    [XmlIdentifierAttribute("id")]
     [XmlNamespaceAttribute("http://www.semanticweb.org/ontologies/2015/ttc/trainbenchmark")]
     [XmlNamespacePrefixAttribute("hu.bme.mit.trainbenchmark")]
     [ModelRepresentationClassAttribute("http://www.semanticweb.org/ontologies/2015/ttc/trainbenchmark#//RailwayElement/")]
+    [DebuggerDisplayAttribute("RailwayElement {Id}")]
     public abstract class RailwayElement : ModelElement, IRailwayElement, IModelElement
     {
         
@@ -48,6 +50,7 @@ namespace NMF.Models.Tests.Railway
         /// The id property
         /// </summary>
         [XmlElementNameAttribute("id")]
+        [IdAttribute()]
         [XmlAttributeAttribute(true)]
         public virtual Nullable<int> Id
         {
@@ -80,6 +83,17 @@ namespace NMF.Models.Tests.Railway
         }
         
         /// <summary>
+        /// Gets a value indicating whether the current model element can be identified by an attribute value
+        /// </summary>
+        public override bool IsIdentified
+        {
+            get
+            {
+                return true;
+            }
+        }
+        
+        /// <summary>
         /// Gets fired when the Id property changed its value
         /// </summary>
         public event EventHandler<ValueChangedEventArgs> IdChanged;
@@ -90,13 +104,27 @@ namespace NMF.Models.Tests.Railway
         /// <param name="eventArgs">The event data</param>
         protected virtual void OnIdChanged(ValueChangedEventArgs eventArgs)
         {
+            PropagateNewId(eventArgs);
             EventHandler<ValueChangedEventArgs> handler = this.IdChanged;
             if ((handler != null))
             {
                 handler.Invoke(this, eventArgs);
             }
         }
-        
+
+        /// <summary>
+        /// Propagates through the composition hierarchy that an entire subtree has been added to a new model
+        /// </summary>
+        /// <param name="newModel">The new model that will host the subtree</param>
+        /// <param name="oldModel">The old model of the subtree</param>
+        /// <param name="subtreeRoot">The root element of the inserted subtree</param>
+        protected override void PropagateNewModel(Model newModel, Model oldModel, IModelElement subtreeRoot)
+        {
+            if (oldModel != null) oldModel.UnregisterId(ToIdentifierString());
+            if (newModel != null) newModel.RegisterId(ToIdentifierString(), this);
+            base.PropagateNewModel(newModel, oldModel, subtreeRoot);
+        }
+
         /// <summary>
         /// Resolves the given attribute name
         /// </summary>
@@ -133,6 +161,15 @@ namespace NMF.Models.Tests.Railway
         public override IClass GetClass()
         {
             return ((IClass)(NMF.Models.Repository.MetaRepository.Instance.Resolve("http://www.semanticweb.org/ontologies/2015/ttc/trainbenchmark#//RailwayElement/")));
+        }
+        
+        /// <summary>
+        /// Gets the identifier string for this model element
+        /// </summary>
+        /// <returns>The identifier string</returns>
+        public override string ToIdentifierString()
+        {
+            return this.Id.ToString();
         }
         
         /// <summary>

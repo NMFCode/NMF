@@ -15,7 +15,6 @@ using NMF.Expressions.Linq;
 using NMF.Models;
 using NMF.Models.Collections;
 using NMF.Models.Expressions;
-using NMF.Models.Meta;
 using NMF.Serialization;
 using NMF.Utilities;
 using System;
@@ -26,18 +25,18 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
 
-namespace NMF.Models.Tests.Railway
+namespace NMF.Models.Meta
 {
     
     
-    public enum Signal
+    public enum IdentifierScope
     {
         
-        FAILURE = 1,
+        Inherit = 0,
         
-        STOP = 3,
+        Local = 1,
         
-        GO = 2,
+        Global = 2,
     }
 }
 

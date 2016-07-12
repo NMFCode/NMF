@@ -272,6 +272,10 @@ namespace NMF.Models.Meta
                 else
                 {
                     targetType.BaseType = "I" + targetType.BaseType;
+                    if (input.Namespace.Types.Any(t => t.Name == instantiating.Name))
+                    {
+                        targetType.BaseType = targetType.Namespace() + "." + targetType.BaseType;
+                    }
                 }
                 var getClass = new CodeMemberMethod()
                 {
@@ -445,11 +449,46 @@ namespace NMF.Models.Meta
                     }
                     toIdentifierString.Statements.Add(new CodeMethodReturnStatement(toString));
                     generatedType.Members.Add(toIdentifierString);
+
+                    if (@class.IdentifierScope == IdentifierScope.Global)
+                    {
+                        var createUriWithFragment = new CodeMemberMethod();
+                        createUriWithFragment.Name = "CreateUriWithFragment";
+                        createUriWithFragment.ReturnType = new CodeTypeReference(typeof(Uri).Name);
+                        createUriWithFragment.Attributes = MemberAttributes.Family | MemberAttributes.Override;
+                        createUriWithFragment.Parameters.Add(new CodeParameterDeclarationExpression(typeof(string), "fragment"));
+                        createUriWithFragment.Parameters.Add(new CodeParameterDeclarationExpression(typeof(bool), "absolute"));
+                        createUriWithFragment.Statements.Add(new CodeMethodReturnStatement(new CodeMethodInvokeExpression(
+                            new CodeThisReferenceExpression(), "CreateUriFromGlobalIdentifier",
+                            new CodeArgumentReferenceExpression("fragment"), new CodeArgumentReferenceExpression("absolute"))));
+
+                        generatedType.Members.Add(createUriWithFragment);
+
+                        var propagateNewModel = new CodeMemberMethod();
+                        propagateNewModel.Name = "PropagateNewModel";
+                        propagateNewModel.Attributes = MemberAttributes.Family | MemberAttributes.Override;
+                        propagateNewModel.Parameters.Add(new CodeParameterDeclarationExpression(typeof(Model).Name, "newModel"));
+                        propagateNewModel.Parameters.Add(new CodeParameterDeclarationExpression(typeof(Model).Name, "oldModel"));
+                        propagateNewModel.Parameters.Add(new CodeParameterDeclarationExpression(typeof(IModelElement).Name, "subtreeRoot"));
+                        var oldModelRef = new CodeArgumentReferenceExpression("oldModel");
+                        var newModelRef = new CodeArgumentReferenceExpression("newModel");
+                        var nullRef = new CodePrimitiveExpression(null);
+                        var thisRef = new CodeThisReferenceExpression();
+                        propagateNewModel.Statements.Add(new CodeVariableDeclarationStatement(typeof(string), "id", new CodeMethodInvokeExpression(thisRef, "ToIdentifierString")));
+                        var idRef = new CodeVariableReferenceExpression("id");
+                        propagateNewModel.Statements.Add(new CodeConditionStatement(new CodeBinaryOperatorExpression(oldModelRef, CodeBinaryOperatorType.IdentityInequality, nullRef),
+                            new CodeExpressionStatement(new CodeMethodInvokeExpression(oldModelRef, "UnregisterId", idRef))));
+                        propagateNewModel.Statements.Add(new CodeConditionStatement(new CodeBinaryOperatorExpression(newModelRef, CodeBinaryOperatorType.IdentityInequality, nullRef),
+                            new CodeExpressionStatement(new CodeMethodInvokeExpression(newModelRef, "RegisterId", idRef, thisRef))));
+                        propagateNewModel.Statements.Add(new CodeMethodInvokeExpression(new CodeBaseReferenceExpression(), "PropagateNewModel", newModelRef, oldModelRef, new CodeArgumentReferenceExpression("subtreeRoot")));
+
+                        generatedType.Members.Add(propagateNewModel);
+                    }
                 }
 
                 var identifier = @class.RetrieveIdentifier();
-                if (identifier == null || generatedType.IsInterface) return;
-                generatedType.AddAttribute(typeof(DebuggerDisplayAttribute), string.Format("{0} {{{1}}}", generatedType.Name, identifier.Name.ToPascalCase()));
+                if (identifier.Identifier == null || generatedType.IsInterface) return;
+                generatedType.AddAttribute(typeof(DebuggerDisplayAttribute), string.Format("{0} {{{1}}}", generatedType.Name, identifier.Identifier.Name.ToPascalCase()));
             }
 
             /// <summary>

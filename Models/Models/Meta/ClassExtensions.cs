@@ -60,20 +60,24 @@ namespace NMF.Models.Meta
             return reference.Opposite != null && reference.Opposite.IsContainment;
         }
 
-        public static IAttribute RetrieveIdentifier(this IClass @class)
+        public static ScopedIdentifier RetrieveIdentifier(this IClass @class)
         {
-            if (@class.Identifier != null) return @class.Identifier;
-            foreach (var baseType in @class.BaseTypes.Where(b => !b.IsInterface))
+            if (@class.Identifier != null)
             {
-                var ident = baseType.RetrieveIdentifier();
-                if (ident != null) return ident;
+                return new ScopedIdentifier(@class.Identifier, @class.IdentifierScope.GetActual(IdentifierScope.Local));
             }
-            foreach (var baseType in @class.BaseTypes.Where(b => b.IsInterface))
+            else
             {
-                var ident = baseType.RetrieveIdentifier();
-                if (ident != null) return ident;
+                foreach (var baseType in @class.BaseTypes)
+                {
+                    var id = baseType.RetrieveIdentifier();
+                    if (id.Identifier != null)
+                    {
+                        return id;
+                    }
+                }
             }
-            return null;
+            return new ScopedIdentifier();
         }
 
         public static bool IsAssignableFrom(this IClass @class, IClass specificType)

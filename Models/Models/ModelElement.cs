@@ -63,14 +63,36 @@ namespace NMF.Models
 
                 var oldParent = parent;
                 parent = newParent;
-
-                if (oldParent != null)
+                if (newParent != null)
                 {
-                    oldParent.Deleted -= CascadeDelete;
-
-                    if (newParent == null)
+                    var newModel = newParent.Model;
+                    var oldModel = oldParent != null ? oldParent.Model : null;
+                    if (oldParent != null)
+                    {
+                        oldParent.Deleted -= CascadeDelete;
+                        if (EnforceModels && oldModel != null && oldModel == oldParent.Parent && oldModel != newModel)
+                        {
+                            oldModel.RootElements.Add(newParent);
+                        }
+                    }
+                    newParent.Deleted += CascadeDelete;
+                    var newParentME = newParent as ModelElement;
+                    if (newParentME != null)
+                    {
+                        newParentME.OnChildCreated(this);
+                    }
+                    if (newModel != oldModel)
+                    {
+                        PropagateNewModel(newModel, oldModel, this);
+                    }
+                }
+                else
+                {
+                    if (oldParent != null)
                     {
                         var oldModel = oldParent.Model;
+                        oldParent.Deleted -= CascadeDelete;
+
                         if (oldModel != null)
                         {
                             if (oldParent != oldModel)
@@ -84,31 +106,25 @@ namespace NMF.Models
                             {
                                 oldModel.RootElements.Remove(this);
                             }
+                            PropagateNewModel(null, oldModel, this);
                         }
                     }
                 }
-                else
-                {
-                    var newParentME = newParent as ModelElement;
-                    if (newParentME != null)
-                    {
-                        newParentME.OnChildCreated(this);
-                    }
-                }
-                if (newParent != null)
-                {
-                    if (EnforceModels && newParent.Model == null && oldParent != null)
-                    {
-                        var oldModel = oldParent.Model;
-                        if (oldModel != null)
-                        {
-                            oldModel.RootElements.Add(newParent);
-                        }
-                    }
-                    newParent.Deleted += CascadeDelete;
-                }
-
                 OnParentChanged(newParent, oldParent);
+            }
+        }
+
+        /// <summary>
+        /// Propagates through the composition hierarchy that an entire subtree has been added to a new model
+        /// </summary>
+        /// <param name="newModel">The new model that will host the subtree</param>
+        /// <param name="oldModel">The old model of the subtree</param>
+        /// <param name="subtreeRoot">The root element of the inserted subtree</param>
+        protected virtual void PropagateNewModel(Model newModel, Model oldModel, IModelElement subtreeRoot)
+        {
+            foreach (var child in Children.OfType<ModelElement>())
+            {
+                child.PropagateNewModel(newModel, oldModel, subtreeRoot);
             }
         }
 
@@ -234,6 +250,42 @@ namespace NMF.Models
                 }
             }
             return result;
+        }
+
+        /// <summary>
+        /// Creates a uri with the given fragment
+        /// </summary>
+        /// <param name="fragment">The fragment</param>
+        /// <param name="absolute">True when the Uri should be absolute, otherwise False</param>
+        /// <returns>A uri with the given fragment</returns>
+        protected Uri CreateUriFromGlobalIdentifier(string fragment, bool absolute)
+        {
+            var id = ToIdentifierString();
+            if (fragment != null)
+            {
+                id += "/" + fragment;
+            }
+            if (absolute)
+            {
+                var model = Model;
+                if (model != null && model.ModelUri != null)
+                {
+                    return new Uri(model.ModelUri, "#" + id);
+                }
+            }
+            return new Uri(id, UriKind.Relative);
+        }
+
+        /// <summary>
+        /// Informs the model that the current model element has a new id
+        /// </summary>
+        /// <param name="e">The event data for the value change of the identifier</param>
+        protected void PropagateNewId(ValueChangedEventArgs e)
+        {
+            var model = Model;
+            if (model == null) return;
+            if (e.OldValue != null) model.UnregisterId(e.OldValue.ToString());
+            if (e.NewValue != null) model.RegisterId(e.NewValue.ToString(), this);
         }
 
         /// <summary>

@@ -38,18 +38,19 @@ namespace NMF.Models.Meta
     {
         
         /// <summary>
-        /// Determines whether this class is an interface
+        /// The IsAbstract property
         /// </summary>
-        bool IsInterface
+        bool IsAbstract
         {
             get;
             set;
         }
         
         /// <summary>
-        /// The IsAbstract property
+        /// Specifies whether the identifier is valid only in the scope of its container or on a global scope.
         /// </summary>
-        bool IsAbstract
+        /// <remarks>This attribute is ignored when this class is not identified.</remarks>
+        IdentifierScope IdentifierScope
         {
             get;
             set;
@@ -73,7 +74,7 @@ namespace NMF.Models.Meta
         }
         
         /// <summary>
-        /// The Identifier property
+        /// Gets or sets the attribute that will identify instances of this class
         /// </summary>
         IAttribute Identifier
         {
@@ -98,14 +99,14 @@ namespace NMF.Models.Meta
         }
         
         /// <summary>
-        /// Gets fired when the IsInterface property changed its value
-        /// </summary>
-        event EventHandler<ValueChangedEventArgs> IsInterfaceChanged;
-        
-        /// <summary>
         /// Gets fired when the IsAbstract property changed its value
         /// </summary>
         event EventHandler<ValueChangedEventArgs> IsAbstractChanged;
+        
+        /// <summary>
+        /// Gets fired when the IdentifierScope property changed its value
+        /// </summary>
+        event EventHandler<ValueChangedEventArgs> IdentifierScopeChanged;
         
         /// <summary>
         /// Gets fired when the InstanceOf property changed its value

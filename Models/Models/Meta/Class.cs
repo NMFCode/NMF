@@ -40,14 +40,14 @@ namespace NMF.Models.Meta
     {
         
         /// <summary>
-        /// The backing field for the IsInterface property
-        /// </summary>
-        private bool _isInterface = false;
-        
-        /// <summary>
         /// The backing field for the IsAbstract property
         /// </summary>
         private bool _isAbstract = false;
+        
+        /// <summary>
+        /// The backing field for the IdentifierScope property
+        /// </summary>
+        private IdentifierScope _identifierScope;
         
         /// <summary>
         /// The backing field for the BaseTypes property
@@ -85,30 +85,6 @@ namespace NMF.Models.Meta
         }
         
         /// <summary>
-        /// Determines whether this class is an interface
-        /// </summary>
-        [DefaultValueAttribute(false)]
-        [XmlAttributeAttribute(true)]
-        public virtual bool IsInterface
-        {
-            get
-            {
-                return this._isInterface;
-            }
-            set
-            {
-                if ((this._isInterface != value))
-                {
-                    bool old = this._isInterface;
-                    this._isInterface = value;
-                    ValueChangedEventArgs e = new ValueChangedEventArgs(old, value);
-                    this.OnIsInterfaceChanged(e);
-                    this.OnPropertyChanged("IsInterface", e);
-                }
-            }
-        }
-        
-        /// <summary>
         /// The IsAbstract property
         /// </summary>
         [DefaultValueAttribute(false)]
@@ -128,6 +104,30 @@ namespace NMF.Models.Meta
                     ValueChangedEventArgs e = new ValueChangedEventArgs(old, value);
                     this.OnIsAbstractChanged(e);
                     this.OnPropertyChanged("IsAbstract", e);
+                }
+            }
+        }
+        
+        /// <summary>
+        /// Specifies whether the identifier is valid only in the scope of its container or on a global scope.
+        /// </summary>
+        /// <remarks>This attribute is ignored when this class is not identified.</remarks>
+        [XmlAttributeAttribute(true)]
+        public virtual IdentifierScope IdentifierScope
+        {
+            get
+            {
+                return this._identifierScope;
+            }
+            set
+            {
+                if ((this._identifierScope != value))
+                {
+                    IdentifierScope old = this._identifierScope;
+                    this._identifierScope = value;
+                    ValueChangedEventArgs e = new ValueChangedEventArgs(old, value);
+                    this.OnIdentifierScopeChanged(e);
+                    this.OnPropertyChanged("IdentifierScope", e);
                 }
             }
         }
@@ -178,7 +178,7 @@ namespace NMF.Models.Meta
         }
         
         /// <summary>
-        /// The Identifier property
+        /// Gets or sets the attribute that will identify instances of this class
         /// </summary>
         [XmlAttributeAttribute(true)]
         public virtual IAttribute Identifier
@@ -274,14 +274,14 @@ namespace NMF.Models.Meta
         }
         
         /// <summary>
-        /// Gets fired when the IsInterface property changed its value
-        /// </summary>
-        public event EventHandler<ValueChangedEventArgs> IsInterfaceChanged;
-        
-        /// <summary>
         /// Gets fired when the IsAbstract property changed its value
         /// </summary>
         public event EventHandler<ValueChangedEventArgs> IsAbstractChanged;
+        
+        /// <summary>
+        /// Gets fired when the IdentifierScope property changed its value
+        /// </summary>
+        public event EventHandler<ValueChangedEventArgs> IdentifierScopeChanged;
         
         /// <summary>
         /// Gets fired when the InstanceOf property changed its value
@@ -294,12 +294,12 @@ namespace NMF.Models.Meta
         public event EventHandler<ValueChangedEventArgs> IdentifierChanged;
         
         /// <summary>
-        /// Raises the IsInterfaceChanged event
+        /// Raises the IsAbstractChanged event
         /// </summary>
         /// <param name="eventArgs">The event data</param>
-        protected virtual void OnIsInterfaceChanged(ValueChangedEventArgs eventArgs)
+        protected virtual void OnIsAbstractChanged(ValueChangedEventArgs eventArgs)
         {
-            EventHandler<ValueChangedEventArgs> handler = this.IsInterfaceChanged;
+            EventHandler<ValueChangedEventArgs> handler = this.IsAbstractChanged;
             if ((handler != null))
             {
                 handler.Invoke(this, eventArgs);
@@ -307,12 +307,12 @@ namespace NMF.Models.Meta
         }
         
         /// <summary>
-        /// Raises the IsAbstractChanged event
+        /// Raises the IdentifierScopeChanged event
         /// </summary>
         /// <param name="eventArgs">The event data</param>
-        protected virtual void OnIsAbstractChanged(ValueChangedEventArgs eventArgs)
+        protected virtual void OnIdentifierScopeChanged(ValueChangedEventArgs eventArgs)
         {
-            EventHandler<ValueChangedEventArgs> handler = this.IsAbstractChanged;
+            EventHandler<ValueChangedEventArgs> handler = this.IdentifierScopeChanged;
             if ((handler != null))
             {
                 handler.Invoke(this, eventArgs);
@@ -403,13 +403,13 @@ namespace NMF.Models.Meta
         /// <param name="index">The index of this attribute</param>
         protected override object GetAttributeValue(string attribute, int index)
         {
-            if ((attribute == "ISINTERFACE"))
-            {
-                return this.IsInterface;
-            }
             if ((attribute == "ISABSTRACT"))
             {
                 return this.IsAbstract;
+            }
+            if ((attribute == "IDENTIFIERSCOPE"))
+            {
+                return this.IdentifierScope;
             }
             return base.GetAttributeValue(attribute, index);
         }
@@ -453,14 +453,14 @@ namespace NMF.Models.Meta
                 this.Identifier = ((IAttribute)(value));
                 return;
             }
-            if ((feature == "ISINTERFACE"))
-            {
-                this.IsInterface = ((bool)(value));
-                return;
-            }
             if ((feature == "ISABSTRACT"))
             {
                 this.IsAbstract = ((bool)(value));
+                return;
+            }
+            if ((feature == "IDENTIFIERSCOPE"))
+            {
+                this.IdentifierScope = ((IdentifierScope)(value));
                 return;
             }
             base.SetFeature(feature, value);
@@ -921,55 +921,6 @@ namespace NMF.Models.Meta
         }
         
         /// <summary>
-        /// Represents a proxy to represent an incremental access to the IsInterface property
-        /// </summary>
-        private sealed class IsInterfaceProxy : ModelPropertyChange<IClass, bool>
-        {
-            
-            /// <summary>
-            /// Creates a new observable property access proxy
-            /// </summary>
-            /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
-            public IsInterfaceProxy(IClass modelElement) : 
-                    base(modelElement)
-            {
-            }
-            
-            /// <summary>
-            /// Gets or sets the value of this expression
-            /// </summary>
-            public override bool Value
-            {
-                get
-                {
-                    return this.ModelElement.IsInterface;
-                }
-                set
-                {
-                    this.ModelElement.IsInterface = value;
-                }
-            }
-            
-            /// <summary>
-            /// Registers an event handler to subscribe specifically on the changed event for this property
-            /// </summary>
-            /// <param name="handler">The handler that should be subscribed to the property change event</param>
-            protected override void RegisterChangeEventHandler(System.EventHandler<NMF.Expressions.ValueChangedEventArgs> handler)
-            {
-                this.ModelElement.IsInterfaceChanged += handler;
-            }
-            
-            /// <summary>
-            /// Registers an event handler to subscribe specifically on the changed event for this property
-            /// </summary>
-            /// <param name="handler">The handler that should be unsubscribed from the property change event</param>
-            protected override void UnregisterChangeEventHandler(System.EventHandler<NMF.Expressions.ValueChangedEventArgs> handler)
-            {
-                this.ModelElement.IsInterfaceChanged -= handler;
-            }
-        }
-        
-        /// <summary>
         /// Represents a proxy to represent an incremental access to the IsAbstract property
         /// </summary>
         private sealed class IsAbstractProxy : ModelPropertyChange<IClass, bool>
@@ -1015,6 +966,55 @@ namespace NMF.Models.Meta
             protected override void UnregisterChangeEventHandler(System.EventHandler<NMF.Expressions.ValueChangedEventArgs> handler)
             {
                 this.ModelElement.IsAbstractChanged -= handler;
+            }
+        }
+        
+        /// <summary>
+        /// Represents a proxy to represent an incremental access to the IdentifierScope property
+        /// </summary>
+        private sealed class IdentifierScopeProxy : ModelPropertyChange<IClass, IdentifierScope>
+        {
+            
+            /// <summary>
+            /// Creates a new observable property access proxy
+            /// </summary>
+            /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
+            public IdentifierScopeProxy(IClass modelElement) : 
+                    base(modelElement)
+            {
+            }
+            
+            /// <summary>
+            /// Gets or sets the value of this expression
+            /// </summary>
+            public override IdentifierScope Value
+            {
+                get
+                {
+                    return this.ModelElement.IdentifierScope;
+                }
+                set
+                {
+                    this.ModelElement.IdentifierScope = value;
+                }
+            }
+            
+            /// <summary>
+            /// Registers an event handler to subscribe specifically on the changed event for this property
+            /// </summary>
+            /// <param name="handler">The handler that should be subscribed to the property change event</param>
+            protected override void RegisterChangeEventHandler(System.EventHandler<NMF.Expressions.ValueChangedEventArgs> handler)
+            {
+                this.ModelElement.IdentifierScopeChanged += handler;
+            }
+            
+            /// <summary>
+            /// Registers an event handler to subscribe specifically on the changed event for this property
+            /// </summary>
+            /// <param name="handler">The handler that should be unsubscribed from the property change event</param>
+            protected override void UnregisterChangeEventHandler(System.EventHandler<NMF.Expressions.ValueChangedEventArgs> handler)
+            {
+                this.ModelElement.IdentifierScopeChanged -= handler;
             }
         }
         

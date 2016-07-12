@@ -266,6 +266,11 @@ namespace NMF.Models.Meta
                                 newCheck.TrueStatements.Add(ifNotContains);
                             }
                         }
+
+                        if (property.Opposite.IsContainment)
+                        {
+                            ifStmt.TrueStatements.Add(new CodeAssignStatement(new CodePropertyReferenceExpression(thisRef, "Parent"), val));
+                        }
                     }
 
                     if (property.IsContainment)

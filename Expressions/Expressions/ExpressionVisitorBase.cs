@@ -11,8 +11,8 @@ namespace NMF.Expressions
 
         protected override Expression VisitBinary(BinaryExpression node)
         {
-            var left = Visit(node.Left);
             var right = Visit(node.Right);
+            var left = Visit(node.Left);
             var conversion = node.Conversion != null ? Visit(node.Conversion) : null;
             if (left != node.Left || right != node.Right || conversion != node.Conversion)
             {
@@ -103,6 +103,7 @@ namespace NMF.Expressions
                 var argument = Visit(arg);
                 arguments[i] = argument;
                 changed |= argument != arg;
+                i++;
             }
             var obj = Visit(node.Expression);
             changed |= obj != node.Expression;
@@ -235,6 +236,7 @@ namespace NMF.Expressions
                 var argument = Visit(arg);
                 arguments[i] = argument;
                 changed |= argument != arg;
+                i++;
             }
             var obj = Visit(node.Object);
             changed |= obj != node.Object;

@@ -10,12 +10,12 @@
    <Attributes IsOrdered="True" Name="Values" Type="#//String/" UpperBound="-1"/>
    <References ReferenceType="#//Attribute/" LowerBound="1" Name="Constrains" />
  </Types>
- <Types xsi:type="nmeta:Class" BaseTypes="#//ReferenceType/" Name="Class" Summary="Represents a group of instances with common properties like attributes or references" Instantiates="#//ModelElement">
-   <Attributes DefaultValue="false" Type="#//Boolean/" LowerBound="1" Name="IsInterface" Summary="Determines whether this class is an interface" />
+ <Types xsi:type="nmeta:Class" BaseTypes="#//ReferenceType/" Name="Class" Summary="Represents a group of instances with common properties like attributes or references">
    <Attributes DefaultValue="false" Type="#//Boolean/" LowerBound="1" Name="IsAbstract" />
+   <Attributes Type="#//IdentifierScope" LowerBound="1" Name="IdentifierScope" Summary="Specifies whether the identifier is valid only in the scope of its container or on a global scope." Remarks="This attribute is ignored when this class is not identified." />
    <References UpperBound="-1" ReferenceType="#//Class/" Name="BaseTypes" />
    <References UpperBound="1" ReferenceType="#//Class/" Name="InstanceOf" />
-   <References ReferenceType="#//Attribute/" Name="Identifier" />
+   <References ReferenceType="#//Attribute/" Name="Identifier" Summary="Gets or sets the attribute that will identify instances of this class" />
    <References IsContainment="True" Opposite="#//AttributeConstraint/DeclaringType/" UpperBound="-1" ReferenceType="#//AttributeConstraint/" Name="AttributeConstraints" />
    <References IsContainment="True" Opposite="#//ReferenceConstraint/DeclaringType/" UpperBound="-1" ReferenceType="#//ReferenceConstraint/" Name="ReferenceConstraints" />
  </Types>
@@ -111,6 +111,11 @@
    <Literals Name="In" />
    <Literals Value="1" Name="Out" />
    <Literals Value="2" Name="InOut" />
+ </Types>
+ <Types xsi:type="nmeta:Enumeration" Name="IdentifierScope">
+   <Literals Name="Inherit"  />
+   <Literals Name="Local" Value="1" />
+   <Literals Name="Global" Value="2" />
  </Types>
  <Types xsi:type="nmeta:PrimitiveType" SystemType="System.Boolean" Name="Boolean" />
  <Types xsi:type="nmeta:PrimitiveType" SystemType="System.Byte" Name="Byte" />

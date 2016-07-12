@@ -1374,11 +1374,11 @@
       <elements xsi:type="hu.bme.mit.trainbenchmark:Segment" length="899" connectsTo="//0/@invalids.0/@definedBy.5/@elements.5" id="1309" />
     </invalids>
     <invalids xsi:type="hu.bme.mit.trainbenchmark:Switch" currentPosition="STRAIGHT" positions="//0/@routes.0/@follows.5" connectsTo="//0/@routes.0/@definedBy.12/@elements.0" id="1267" />
-    <semaphores signal="STOP" id="1" />
-    <semaphores signal="STOP" id="2" />
-    <semaphores signal="STOP" id="406" />
-    <semaphores signal="STOP" id="672" />
-    <semaphores signal="STOP" id="880" />
+    <semaphores signal="GO" id="1" />
+    <semaphores signal="GO" id="2" />
+    <semaphores signal="GO" id="406" />
+    <semaphores signal="GO" id="672" />
+    <semaphores signal="GO" id="880" />
     <routes entry="//0/@semaphores.4" exit="//0/@semaphores.0" id="1184">
       <follows position="RIGHT" switch="//0/@routes.0/@definedBy.1/@elements.5" id="1198" />
       <follows switch="//0/@routes.0/@definedBy.2/@elements.5" id="1206" />
