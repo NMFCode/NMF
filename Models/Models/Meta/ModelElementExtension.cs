@@ -44,11 +44,11 @@ namespace NMF.Models.Meta
         [DesignerSerializationVisibilityAttribute(DesignerSerializationVisibility.Hidden)]
         [XmlAttributeAttribute(true)]
         [XmlOppositeAttribute("Extensions")]
-        public virtual NMF.Models.Meta.IModelElement ExtendedElement
+        public virtual NMF.Models.IModelElement ExtendedElement
         {
             get
             {
-                return ModelHelper.CastAs<NMF.Models.Meta.IModelElement>(this.Parent);
+                return ModelHelper.CastAs<NMF.Models.IModelElement>(this.Parent);
             }
             set
             {
@@ -108,8 +108,8 @@ namespace NMF.Models.Meta
         /// <param name="newParent">The new parent model element</param>
         protected override void OnParentChanged(IModelElement newParent, IModelElement oldParent)
         {
-            NMF.Models.Meta.IModelElement oldExtendedElement = ModelHelper.CastAs<NMF.Models.Meta.IModelElement>(oldParent);
-            NMF.Models.Meta.IModelElement newExtendedElement = ModelHelper.CastAs<NMF.Models.Meta.IModelElement>(newParent);
+            NMF.Models.IModelElement oldExtendedElement = ModelHelper.CastAs<NMF.Models.IModelElement>(oldParent);
+            NMF.Models.IModelElement newExtendedElement = ModelHelper.CastAs<NMF.Models.IModelElement>(newParent);
             if ((oldExtendedElement != null))
             {
                 oldExtendedElement.Extensions.Remove(this);

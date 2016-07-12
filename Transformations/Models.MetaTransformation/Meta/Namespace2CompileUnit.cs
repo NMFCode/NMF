@@ -92,9 +92,7 @@ namespace NMF.Models.Meta
             }
             else
             {
-                var model = n.Model;
-                if (model == null) return true;
-                var uri = model.ModelUri;
+                var uri = n.Uri;
                 if (uri == null) return true;
                 return !MetaRepository.Instance.Models.ContainsKey(uri);
             }

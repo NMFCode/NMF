@@ -40,6 +40,7 @@ namespace NMF.Models.Repository
         private MetaRepository()
         {
             serializer.KnownTypes.Add(typeof(INamespace));
+            serializer.KnownTypes.Add(typeof(Model));
 
             var domain = AppDomain.CurrentDomain;
             domain.AssemblyLoad += domain_AssemblyLoad;
@@ -50,19 +51,19 @@ namespace NMF.Models.Repository
             }
         }
 
-        public IClass ResolveClass(string uriString)
+        public IType ResolveType(string uriString)
         {
-            return Resolve(new Uri(uriString, UriKind.Absolute)) as IClass;
+            return Resolve(new Uri(uriString, UriKind.Absolute)) as IType;
         }
 
-        public IClass ResolveClass(System.Type systemType)
+        public IType ResolveClass(System.Type systemType)
         {
             if (systemType == null) throw new ArgumentNullException("systemType");
             var modelAtt = systemType.GetCustomAttributes(typeof(ModelRepresentationClassAttribute), false);
             if (modelAtt != null && modelAtt.Length > 0)
             {
                 var representation = (ModelRepresentationClassAttribute)modelAtt[0];
-                return ResolveClass(representation.UriString);
+                return ResolveType(representation.UriString);
             }
             return null;
         }
@@ -115,11 +116,15 @@ namespace NMF.Models.Repository
                 }
                 for (int i = 0; i < saveMapping.Count; i++)
                 {
-                    var cls = ResolveClass(saveMapping[i].Key);
+                    var cls = ResolveType(saveMapping[i].Key);
                     if (cls != null)
                     {
                         var typeExtension = MappedType.FromType(cls);
                         typeExtension.SystemType = saveMapping[i].Value;
+                    }
+                    else
+                    {
+                        throw new InvalidOperationException(string.Format("The class {0} could not be resolved.", saveMapping[i].Key));
                     }
                 }
             }

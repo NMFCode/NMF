@@ -76,7 +76,7 @@ namespace NMF.Models.Meta
                 var parentRef = new CodePropertyReferenceExpression(new CodeThisReferenceExpression(), "Parent");
 
                 generatedProperty.GetStatements.Add(new CodeMethodReturnStatement(new CodeMethodInvokeExpression(
-                    new CodeMethodReferenceExpression(new CodeTypeReferenceExpression(typeof(ModelHelper).Name), "CastAs", generatedProperty.Type), parentRef)));
+                    new CodeMethodReferenceExpression(new CodeTypeReferenceExpression(typeof(ModelHelper).ToTypeReference()), "CastAs", generatedProperty.Type), parentRef)));
 
                 generatedProperty.SetStatements.Add(new CodeAssignStatement(parentRef, new CodePropertySetValueReferenceExpression()));
 
@@ -91,13 +91,15 @@ namespace NMF.Models.Meta
                     Attributes = MemberAttributes.Family | MemberAttributes.Override,
                     ReturnType = new CodeTypeReference(typeof(void))
                 };
-                onParentChanged.Parameters.Add(new CodeParameterDeclarationExpression(typeof(IModelElement).Name, "newParent"));
-                onParentChanged.Parameters.Add(new CodeParameterDeclarationExpression(typeof(IModelElement).Name, "oldParent"));
+                onParentChanged.Parameters.Add(new CodeParameterDeclarationExpression(typeof(IModelElement).ToTypeReference(), "newParent"));
+                onParentChanged.Parameters.Add(new CodeParameterDeclarationExpression(typeof(IModelElement).ToTypeReference(), "oldParent"));
 
-                var oldElementVar = new CodeVariableReferenceExpression("old" + property.Name);
-                var newElementVar = new CodeVariableReferenceExpression("new" + property.Name);
+                var appendix = property.Name.ToPascalCase();
+                if (appendix == "Parent") appendix += "Reference";
+                var oldElementVar = new CodeVariableReferenceExpression("old" + appendix);
+                var newElementVar = new CodeVariableReferenceExpression("new" + appendix);
 
-                var castRef = new CodeMethodReferenceExpression(new CodeTypeReferenceExpression(typeof(ModelHelper).Name), "CastAs", property.Type);
+                var castRef = new CodeMethodReferenceExpression(new CodeTypeReferenceExpression(typeof(ModelHelper).ToTypeReference()), "CastAs", property.Type);
                 var nullRef = new CodePrimitiveExpression(null);
                 var thisRef = new CodeThisReferenceExpression();
 
@@ -129,7 +131,7 @@ namespace NMF.Models.Meta
                 onParentChanged.Statements.Add(new CodeConditionStatement(
                     new CodeBinaryOperatorExpression(newElementVar, CodeBinaryOperatorType.IdentityInequality, nullRef), setNew));
 
-                var valueChangedEvArgs = new CodeTypeReference(typeof(ValueChangedEventArgs).Name);
+                var valueChangedEvArgs = typeof(ValueChangedEventArgs).ToTypeReference();
                 var valueChangeDef = new CodeVariableDeclarationStatement(valueChangedEvArgs, "e",
                     new CodeObjectCreateExpression(valueChangedEvArgs, oldElementVar, newElementVar));
                 var valueChangeRef = new CodeVariableReferenceExpression(valueChangeDef.Name);
@@ -149,6 +151,25 @@ namespace NMF.Models.Meta
                             "newParent", "The new parent model element"
                         }
                     });
+
+                onParentChanged.SetMerge(other =>
+                {
+                    var mergedOnParent = new CodeMemberMethod()
+                    {
+                        Name = "OnParentChanged",
+                        Attributes = MemberAttributes.Family | MemberAttributes.Override,
+                        ReturnType = new CodeTypeReference(typeof(void))
+                    };
+                    for (int i = 0; i < onParentChanged.Parameters.Count; i++)
+                    {
+                        mergedOnParent.Parameters.Add(onParentChanged.Parameters[i]);
+                    }
+                    var otherCasted = other as CodeMemberMethod;
+                    mergedOnParent.Statements.AddRange(otherCasted.Statements);
+                    mergedOnParent.Statements.AddRange(onParentChanged.Statements);
+                    mergedOnParent.Statements.Remove(valueChangeDef);
+                    return mergedOnParent;
+                });
 
                 property.DependentMembers(true).Add(onParentChanged);
             }
@@ -296,14 +317,14 @@ namespace NMF.Models.Meta
                     ifStmt.TrueStatements.Add(assignment);
                 }
 
-                var valueChangeTypeRef = new CodeTypeReference(typeof(ValueChangedEventArgs).Name);
+                var valueChangeTypeRef = typeof(ValueChangedEventArgs).ToTypeReference();
                 var valueChangeDef = new CodeVariableDeclarationStatement(valueChangeTypeRef, "e",
-                    new CodeObjectCreateExpression(typeof(ValueChangedEventArgs).Name, oldRef, val));
+                    new CodeObjectCreateExpression(typeof(ValueChangedEventArgs).ToTypeReference(), oldRef, val));
                 var valueChangeRef = new CodeVariableReferenceExpression(valueChangeDef.Name);
 
                 ifStmt.TrueStatements.Add(valueChangeDef);
 
-                ifStmt.TrueStatements.Add(codeProperty.CreateOnChangedEventPattern(new CodeTypeReference(typeof(ValueChangedEventArgs).Name),
+                ifStmt.TrueStatements.Add(codeProperty.CreateOnChangedEventPattern(typeof(ValueChangedEventArgs).ToTypeReference(),
                     valueChangeRef));
 
                 ifStmt.TrueStatements.Add(new CodeMethodInvokeExpression(new CodeThisReferenceExpression(), "OnPropertyChanged",
@@ -323,7 +344,7 @@ namespace NMF.Models.Meta
                     ReturnType = new CodeTypeReference(typeof(void))
                 };
                 resetMember.Parameters.Add(new CodeParameterDeclarationExpression(typeof(object), "sender"));
-                resetMember.Parameters.Add(new CodeParameterDeclarationExpression(typeof(EventArgs).Name, "eventArgs"));
+                resetMember.Parameters.Add(new CodeParameterDeclarationExpression(typeof(EventArgs).ToTypeReference(), "eventArgs"));
 
                 resetMember.Statements.Add(new CodeAssignStatement(new CodePropertyReferenceExpression(
                     new CodeThisReferenceExpression(), generatedProperty.Name), new CodePrimitiveExpression(null)));
@@ -355,20 +376,20 @@ namespace NMF.Models.Meta
                     {
                         if (input.UpperBound == 1)
                         {
-                            output.CustomAttributes.Add(new CodeAttributeDeclaration(new CodeTypeReference(typeof(DesignerSerializationVisibilityAttribute).Name), new CodeAttributeArgument(
-                                new CodeFieldReferenceExpression(new CodeTypeReferenceExpression(typeof(DesignerSerializationVisibility).Name), DesignerSerializationVisibility.Hidden.ToString()))));
+                            output.CustomAttributes.Add(new CodeAttributeDeclaration(typeof(DesignerSerializationVisibilityAttribute).ToTypeReference(), new CodeAttributeArgument(
+                                new CodeFieldReferenceExpression(new CodeTypeReferenceExpression(typeof(DesignerSerializationVisibility).ToTypeReference()), DesignerSerializationVisibility.Hidden.ToString()))));
                         }
                         else
                         {
                             var attDecl = output.CustomAttributes.OfType<CodeAttributeDeclaration>().FirstOrDefault(att => att.AttributeType.BaseType == typeof(DesignerSerializationVisibilityAttribute).Name);
                             if (attDecl == null)
                             {
-                                output.CustomAttributes.Add(new CodeAttributeDeclaration(new CodeTypeReference(typeof(DesignerSerializationVisibilityAttribute).Name), new CodeAttributeArgument(
-                                    new CodeFieldReferenceExpression(new CodeTypeReferenceExpression(typeof(DesignerSerializationVisibility).Name), DesignerSerializationVisibility.Hidden.ToString()))));
+                                output.CustomAttributes.Add(new CodeAttributeDeclaration(typeof(DesignerSerializationVisibilityAttribute).ToTypeReference(), new CodeAttributeArgument(
+                                    new CodeFieldReferenceExpression(new CodeTypeReferenceExpression(typeof(DesignerSerializationVisibility).ToTypeReference()), DesignerSerializationVisibility.Hidden.ToString()))));
                             }
                             else
                             {
-                                attDecl.Arguments[0].Value = new CodeFieldReferenceExpression(new CodeTypeReferenceExpression(typeof(DesignerSerializationVisibility).Name), DesignerSerializationVisibility.Hidden.ToString());
+                                attDecl.Arguments[0].Value = new CodeFieldReferenceExpression(new CodeTypeReferenceExpression(typeof(DesignerSerializationVisibility).ToTypeReference()), DesignerSerializationVisibility.Hidden.ToString());
                             }
                         }
                     }

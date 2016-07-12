@@ -20,6 +20,7 @@ namespace NMF.Models
     /// <summary>
     /// Defines the base class for a model element implementation
     /// </summary>
+    [ModelRepresentationClassAttribute("http://nmf.codeplex.com/nmeta/#//ModelElement/")]
     public abstract class ModelElement : IModelElement, INotifyPropertyChanged
     {
         private IModelElement parent;
@@ -648,7 +649,7 @@ namespace NMF.Models
         {
             get
             {
-                return MetaRepository.Instance.ResolveClass("http://nmf.codeplex.com/nmeta/#//ModelElement/");
+                return (Meta.IClass)MetaRepository.Instance.ResolveType("http://nmf.codeplex.com/nmeta/#//ModelElement/");
             }
         }
 

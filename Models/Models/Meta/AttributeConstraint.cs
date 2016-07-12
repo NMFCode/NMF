@@ -135,7 +135,7 @@ namespace NMF.Models.Meta
         {
             get
             {
-                return NMF.Models.Repository.MetaRepository.Instance.ResolveClass("http://nmf.codeplex.com/nmeta/#//AttributeConstraint/");
+                return (IClass)NMF.Models.Repository.MetaRepository.Instance.ResolveType("http://nmf.codeplex.com/nmeta/#//AttributeConstraint/");
             }
         }
         

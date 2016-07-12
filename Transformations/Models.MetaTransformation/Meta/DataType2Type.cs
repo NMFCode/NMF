@@ -49,7 +49,7 @@ namespace NMF.Models.Meta
 
                 generatedType.WriteDocumentation(input.Summary ?? string.Format("The {0} type", input.Name), input.Remarks);
 
-                generatedType.CustomAttributes.Add(new CodeAttributeDeclaration(new CodeTypeReference(typeof(SerializableAttribute))));
+                generatedType.CustomAttributes.Add(new CodeAttributeDeclaration(typeof(SerializableAttribute).ToTypeReference()));
 
                 generatedType.BaseTypes.Add(new CodeTypeReference(typeof(IEquatable<>).Name, new CodeTypeReference(generatedType.Name)));
 

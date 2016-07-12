@@ -44,6 +44,7 @@ namespace NMF.Models.Meta
             /// <param name="context">The transformation context</param>
             public override void Transform(IEnumeration input, CodeTypeDeclaration output, ITransformationContext context)
             {
+                SetTypeReferenceForMappedType(input, CodeDomHelper.GetReferenceForType(output));
                 base.Transform(input, output, context);
                 output.WriteDocumentation(input.Summary, input.Remarks);
             }

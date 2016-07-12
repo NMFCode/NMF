@@ -1074,17 +1074,27 @@ namespace NMF.Serialization
             var cont = reader.MoveToFirstAttribute();
             while (cont)
             {
+                var foundAttribute = false;
                 foreach (IPropertySerializationInfo p in info.AttributeProperties)
                 {
                     if (IsPropertyElement(reader, p))
                     {
                         InitializePropertyFromText(p, obj, reader.Value, context);
+                        foundAttribute = true;
                         break;
                     }
+                }
+                if (!foundAttribute)
+                {
+                    HandleUnknownAttribute(reader, obj, info, context);
                 }
                 cont = reader.MoveToNextAttribute();
             }
             reader.MoveToElement();
+        }
+
+        protected virtual void HandleUnknownAttribute(XmlReader reader, object obj, ITypeSerializationInfo info, XmlSerializationContext context)
+        {
         }
 
         protected virtual bool HandleException(Exception ex)

@@ -25,6 +25,7 @@ namespace NMF.CodeGen
         internal static object ClassKey = new object();
         internal static object BackingFieldKey = new object();
         internal static object BackingFieldRefKey = new object();
+        internal static object MergeKey = new object();
 
         /// <summary>
         /// Gets the namespace associated with the given type reference
@@ -901,6 +902,70 @@ namespace NMF.CodeGen
         public static CodeConstructor GetOrCreateDefaultConstructor(this CodeTypeDeclaration generatedType, Func<CodeConstructor> constructorCreator = null)
         {
             return GetOrCreateUserItem<CodeConstructor>(generatedType, CodeDomHelper.ConstructorKey, constructorCreator);
+        }
+
+        /// <summary>
+        /// Creates a code type reference for the given type
+        /// </summary>
+        /// <param name="type">The given system type for which to generate a type reference</param>
+        /// <returns>A code reference with namespace set accordingly</returns>
+        public static CodeTypeReference ToTypeReference(this Type type)
+        {
+            var reference = new CodeTypeReference(type.Name);
+            reference.SetNamespace(type.Namespace);
+            return reference;
+        }
+
+
+        /// <summary>
+        /// Creates a code type reference for the given type
+        /// </summary>
+        /// <param name="type">The given system type for which to generate a type reference</param>
+        /// <param name="parameters">The type arguments</param>
+        /// <returns>A code reference with namespace set accordingly</returns>
+        public static CodeTypeReference ToTypeReference(this Type type, params CodeTypeReference[] parameters)
+        {
+            var reference = new CodeTypeReference(type.Name, parameters);
+            reference.SetNamespace(type.Namespace);
+            return reference;
+        }
+
+        /// <summary>
+        /// Defines the action that should be executed when the given member needs to be nerged with another member with the same name
+        /// </summary>
+        /// <param name="member">The code member</param>
+        /// <param name="mergeAction">The action that should be performed in that case</param>
+        public static void SetMerge(this CodeTypeMember member, Func<CodeTypeMember, CodeTypeMember> mergeAction)
+        {
+            if (mergeAction == null) throw new ArgumentNullException("mergeAction");
+            member.UserData[MergeKey] = mergeAction;
+        }
+
+        /// <summary>
+        /// Merges the given members
+        /// </summary>
+        /// <param name="member">The first code member</param>
+        /// <param name="other">The second code member</param>
+        /// <returns>A merged member</returns>
+        public static CodeTypeMember Merge(this CodeTypeMember member, CodeTypeMember other)
+        {
+            if (other.UserData.Contains(MergeKey))
+            {
+                Func<CodeTypeMember, CodeTypeMember> mergeAction = other.UserData[MergeKey] as Func<CodeTypeMember, CodeTypeMember>;
+                if (mergeAction != null)
+                {
+                    return mergeAction(member);
+                }
+            }
+            if (member.UserData.Contains(MergeKey))
+            {
+                Func<CodeTypeMember, CodeTypeMember> mergeAction = member.UserData[MergeKey] as Func<CodeTypeMember, CodeTypeMember>;
+                if (mergeAction != null)
+                {
+                    return mergeAction(other);
+                }
+            }
+            throw new NotSupportedException("Neither of the given members supports merge.");
         }
     }
 }

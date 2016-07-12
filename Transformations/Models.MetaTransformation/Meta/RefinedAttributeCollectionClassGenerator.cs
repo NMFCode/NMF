@@ -182,7 +182,7 @@ namespace NMF.Models.Meta
                 var collectionChangedEvent = new CodeMemberEvent()
                 {
                     Name = "CollectionChanged",
-                    Type = new CodeTypeReference(typeof(NotifyCollectionChangedEventHandler)),
+                    Type = typeof(NotifyCollectionChangedEventHandler).ToTypeReference(),
                     Attributes = MemberAttributes.Public
                 };
                 collectionChangedEvent.WriteDocumentation("Gets fired when the contents of this collection changes");
@@ -512,7 +512,7 @@ namespace NMF.Models.Meta
                 }
                 else
                 {
-                    currentExpression = new CodeMethodInvokeExpression(new CodeMethodReferenceExpression(new CodeTypeReferenceExpression(typeof(Enumerable).Name), "Empty", elementType));
+                    currentExpression = new CodeMethodInvokeExpression(new CodeMethodReferenceExpression(new CodeTypeReferenceExpression(typeof(Enumerable).ToTypeReference()), "Empty", elementType));
                 }
                 foreach (var attrib in implementingAttributes)
                 {
@@ -785,7 +785,7 @@ namespace NMF.Models.Meta
                     Name = "AsNotifiable",
                     Attributes = MemberAttributes.Private,
                     ReturnType = new CodeTypeReference(typeof(INotifyEnumerable<>).Name, elementType),
-                    PrivateImplementationType = new CodeTypeReference(typeof(IEnumerableExpression).Name, elementType)
+                    PrivateImplementationType = typeof(IEnumerableExpression).ToTypeReference(elementType)
                 };
                 asNotifiable.Statements.Add(new CodeMethodReturnStatement(new CodeThisReferenceExpression()));
                 asNotifiable.WriteDocumentation("Gets an observable version of this collection");
@@ -798,8 +798,8 @@ namespace NMF.Models.Meta
                 {
                     Name = "AsNotifiable",
                     Attributes = MemberAttributes.Private,
-                    ReturnType = new CodeTypeReference(typeof(INotifyEnumerable).Name),
-                    PrivateImplementationType = new CodeTypeReference(typeof(IEnumerableExpression))
+                    ReturnType = typeof(INotifyEnumerable).ToTypeReference(),
+                    PrivateImplementationType = typeof(IEnumerableExpression).ToTypeReference()
                 };
                 asNotifiable.Statements.Add(new CodeMethodReturnStatement(new CodeThisReferenceExpression()));
                 asNotifiable.WriteDocumentation("Gets an observable version of this collection");

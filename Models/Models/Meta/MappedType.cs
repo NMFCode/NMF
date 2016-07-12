@@ -24,14 +24,16 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
+using NMF.Models.Repository;
 
 namespace NMF.Models.Meta
 {
-    
-    
+
+
     /// <summary>
     /// The MappedType extension
     /// </summary>
+    [ModelRepresentationClassAttribute("http://nmf.codeplex.com/nmeta/#//MappedType/")]
     public class MappedType : ModelElementExtension<IType>
     {
         
@@ -109,6 +111,11 @@ namespace NMF.Models.Meta
             extension = new MappedType(parent);
             parent.Extensions.Add(extension);
             return extension;
+        }
+
+        public override IExtension GetExtension()
+        {
+            return (IExtension)MetaRepository.Instance.ResolveType("http://nmf.codeplex.com/nmeta/#//MappedType/");
         }
     }
 }

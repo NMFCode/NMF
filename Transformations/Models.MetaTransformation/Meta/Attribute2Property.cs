@@ -66,9 +66,9 @@ namespace NMF.Models.Meta
                     var oldRef = new CodeVariableReferenceExpression("old");
                     var value = new CodePropertySetValueReferenceExpression();
 
-                    var valueChangeTypeRef = new CodeTypeReference(typeof(ValueChangedEventArgs).Name);
+                    var valueChangeTypeRef = typeof(ValueChangedEventArgs).ToTypeReference();
                     var valueChangeDef = new CodeVariableDeclarationStatement(valueChangeTypeRef, "e",
-                        new CodeObjectCreateExpression(typeof(ValueChangedEventArgs).Name, oldRef, value));
+                        new CodeObjectCreateExpression(typeof(ValueChangedEventArgs).ToTypeReference(), oldRef, value));
                     var valueChangeRef = new CodeVariableReferenceExpression(valueChangeDef.Name);
 
                     var callOnPropertyChanged = new CodeMethodInvokeExpression(
@@ -146,7 +146,7 @@ namespace NMF.Models.Meta
                 IClass ownedClass = input.DeclaringType as IClass;
                 if (ownedClass != null && input == ownedClass.Identifier)
                 {
-                    output.CustomAttributes.Add(new CodeAttributeDeclaration(new CodeTypeReference(typeof(IdAttribute).Name)));
+                    output.CustomAttributes.Add(new CodeAttributeDeclaration(typeof(IdAttribute).ToTypeReference()));
                     var declaration = context.Trace.ResolveIn(Rule<Class2Type>(), input.DeclaringType as IClass);
                     if (!declaration.IsInterface)
                     {

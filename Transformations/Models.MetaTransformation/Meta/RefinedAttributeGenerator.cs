@@ -27,6 +27,11 @@ namespace NMF.Models.Meta
             /// <param name="context">The transformation context</param>
             public override void Transform(IClass scope, IAttribute attribute, CodeMemberProperty property, ITransformationContext context)
             {
+                if (!scope.Closure(c => c.BaseTypes).Contains((IClass)attribute.DeclaringType))
+                {
+                    throw new System.InvalidOperationException(string.Format("The attribute {0} cannot be refined in the scope of class {1} because {1} does not inherit from its declaring class.", attribute.Name, scope.Name));
+                }
+
                 var classDeclaration = context.Trace.ResolveIn(Rule<Type2Type>(), scope);
                 var originalAttribute = context.Trace.ResolveIn(Rule<Attribute2Property>(), attribute);
 

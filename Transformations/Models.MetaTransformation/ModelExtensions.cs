@@ -198,6 +198,6 @@ namespace NMF.Models.Meta
         public static readonly IReference ReferenceTypeReferencesReference = (IReference)MetaRepository.Instance.Resolve("http://nmf.codeplex.com/nmeta/#//ReferenceType/References");
         public static readonly IReference StructuredTypeAttributesReference = (IReference)MetaRepository.Instance.Resolve("http://nmf.codeplex.com/nmeta/#//StructuredType/Attributes");
         public static readonly IReference ClassBaseTypesReference = (IReference)MetaRepository.Instance.Resolve("http://nmf.codeplex.com/nmeta/#//Class/BaseTypes");
-        public static readonly IClass ClassModelElement = MetaRepository.Instance.ResolveClass("http://nmf.codeplex.com/nmeta/#//ModelElement/");
+        public static readonly IClass ClassModelElement = (IClass)MetaRepository.Instance.ResolveType("http://nmf.codeplex.com/nmeta/#//ModelElement/");
     }
 }

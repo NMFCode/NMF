@@ -114,7 +114,7 @@ namespace NMF.Models.Meta
                     ReturnType = new CodeTypeReference(typeof(void))
                 };
                 onItemDeleted.Parameters.Add(new CodeParameterDeclarationExpression(typeof(object), "sender"));
-                onItemDeleted.Parameters.Add(new CodeParameterDeclarationExpression(typeof(EventArgs).Name, "e"));
+                onItemDeleted.Parameters.Add(new CodeParameterDeclarationExpression(typeof(EventArgs).ToTypeReference(), "e"));
                 onItemDeleted.Statements.Add(new CodeMethodInvokeExpression(
                     thisRef, "Remove", new CodeCastExpression(elementTypeReference, new CodeArgumentReferenceExpression("sender"))));
                 output.Members.Add(onItemDeleted);

@@ -81,6 +81,7 @@
     <Compile Include="Meta\IExtension.cs" />
     <Compile Include="Meta\ILiteral.cs" />
     <Compile Include="Meta\IMetaElement.cs" />
+    <Compile Include="Meta\IModelElementExtension.cs" />
     <Compile Include="Meta\INamespace.cs" />
     <Compile Include="Meta\IOperation.cs" />
     <Compile Include="Meta\IParameter.cs" />

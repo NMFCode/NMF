@@ -2,14 +2,37 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using NMF.Expressions;
+using NMF.Models.Meta;
 
 namespace NMF.Models
 {
-    public abstract class ModelElementExtension : ModelElement
+
+    [ModelRepresentationClassAttribute("http://nmf.codeplex.com/nmeta/#//ModelElementExtension/")]
+    public abstract class ModelElementExtension : ModelElement, Meta.IModelElementExtension
     {
         protected internal ModelElementExtension(IModelElement extended)
         {
             if (extended == null) throw new ArgumentNullException("extended");
+        }
+
+        protected abstract IModelElement ExtendedElementInternal
+        {
+            get;
+        }
+
+        public event EventHandler<ValueChangedEventArgs> ExtendedElementChanged
+        {
+            add { }
+            remove { }
+        }
+
+        public abstract IExtension GetExtension();
+
+        IModelElement Meta.IModelElementExtension.ExtendedElement
+        {
+            get { return ExtendedElementInternal; }
+            set { }
         }
     }
 
@@ -32,6 +55,14 @@ namespace NMF.Models
         public override Meta.IClass GetClass()
         {
             return ExtendedElement.GetClass();
+        }
+
+        protected override IModelElement ExtendedElementInternal
+        {
+            get
+            {
+                return ExtendedElement;
+            }
         }
     }
 }

@@ -96,7 +96,7 @@ namespace NMF.Interop.Ecore
         {
             get
             {
-                return NMF.Models.Repository.MetaRepository.Instance.ResolveClass("http://www.eclipse.org/emf/2002/Ecore#//ETypeParameter/");
+                return (IClass)NMF.Models.Repository.MetaRepository.Instance.ResolveType("http://www.eclipse.org/emf/2002/Ecore#//ETypeParameter/");
             }
         }
         

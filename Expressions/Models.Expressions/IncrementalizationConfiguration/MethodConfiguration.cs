@@ -131,7 +131,7 @@ namespace NMF.Expressions.IncrementalizationConfiguration
         {
             get
             {
-                return NMF.Models.Repository.MetaRepository.Instance.ResolveClass("http://nmf.codeplex.com/incrementalizationConfig#//MethodConfiguration/");
+                return (IClass)NMF.Models.Repository.MetaRepository.Instance.ResolveType("http://nmf.codeplex.com/incrementalizationConfig#//MethodConfiguration/");
             }
         }
         

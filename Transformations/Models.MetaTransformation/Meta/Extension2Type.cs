@@ -7,6 +7,7 @@ using System.CodeDom;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using NMF.Models.Repository;
 
 namespace NMF.Models.Meta
 {
@@ -35,6 +36,7 @@ namespace NMF.Models.Meta
             /// <param name="context">The transformation context</param>
             public override void Transform(IExtension input, CodeTypeDeclaration generatedType, ITransformationContext context)
             {
+                SetTypeReferenceForMappedType(input, generatedType.GetReferenceForType());
                 base.Transform(input, generatedType, context);
                 generatedType.IsClass = true;
                 generatedType.BaseTypes.Add(new CodeTypeReference(typeof(ModelElementExtension<>).Name, CreateReference(input.AdornedClass, true, context)));
@@ -42,6 +44,7 @@ namespace NMF.Models.Meta
 
                 CreateConstructor(input, generatedType, context);
                 CreateFromMethod(input, generatedType, context);
+                CreateGetExtension(input, generatedType, context);
             }
 
             /// <summary>
@@ -104,6 +107,40 @@ namespace NMF.Models.Meta
                         {"parent", "The parent model element that may hold the extension"}
                     });
                 generatedType.Members.Add(fromMethod);
+            }
+
+            /// <summary>
+            /// Creates a method to return the extension type of the current instance
+            /// </summary>
+            /// <param name="extension">The extension</param>
+            /// <param name="generatedType">The type generated for the given extension</param>
+            /// <param name="context">The transformation context in which the code is generated</param>
+            protected virtual void CreateGetExtension(IExtension extension, CodeTypeDeclaration generatedType, ITransformationContext context)
+            {
+                var getExtension = new CodeMemberMethod()
+                {
+                    Name = "GetExtension",
+                    Attributes = MemberAttributes.Public | MemberAttributes.Override,
+                    ReturnType = typeof(IExtension).ToTypeReference()
+                };
+
+                var uri = extension.AbsoluteUri;
+                if (uri != null && uri.IsAbsoluteUri)
+                {
+                    var extensionType = new CodeMemberField(typeof(IExtension).ToTypeReference(), "_extensionType");
+                    extensionType.Attributes = MemberAttributes.Private | MemberAttributes.Static;
+                    extensionType.InitExpression = new CodeCastExpression(extensionType.Type, new CodeMethodInvokeExpression(
+                        new CodePropertyReferenceExpression(new CodeTypeReferenceExpression(typeof(MetaRepository).ToTypeReference()), "Instance"),
+                        "ResolveType",
+                        new CodePrimitiveExpression(extension.AbsoluteUri.AbsoluteUri)));
+                    generatedType.Members.Add(extensionType);
+                    getExtension.Statements.Add(new CodeMethodReturnStatement(new CodeFieldReferenceExpression(new CodeThisReferenceExpression(), extensionType.Name)));
+                }
+                else
+                {
+                    getExtension.ThrowException<NotSupportedException>(new CodePrimitiveExpression(string.Format("The extension {0} has no absolute Uri and can therefore not be reflected.", extension)));
+                }
+                generatedType.Members.Add(getExtension);
             }
 
             /// <summary>

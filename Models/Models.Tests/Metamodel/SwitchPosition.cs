@@ -149,7 +149,7 @@ namespace NMF.Models.Tests.Railway
         {
             get
             {
-                return NMF.Models.Repository.MetaRepository.Instance.ResolveClass("http://www.semanticweb.org/ontologies/2015/ttc/trainbenchmark#//SwitchPosition/");
+                return (IClass)NMF.Models.Repository.MetaRepository.Instance.ResolveType("http://www.semanticweb.org/ontologies/2015/ttc/trainbenchmark#//SwitchPosition/");
             }
         }
         

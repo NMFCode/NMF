@@ -37,7 +37,7 @@ namespace NMF.Models.Meta
             /// <param name="context">The transformation context</param>
             public override void Transform(IEvent input, CodeTypeDeclaration output, ITransformationContext context)
             {
-                output.BaseTypes.Add(new CodeTypeReference(typeof(EventArgs).Name));
+                output.BaseTypes.Add(typeof(EventArgs).ToTypeReference());
 
                 output.WriteDocumentation(string.Format("The event arguments for the {0} event", input.Name));
 

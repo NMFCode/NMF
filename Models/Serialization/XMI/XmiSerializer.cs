@@ -231,6 +231,18 @@ namespace NMF.Serialization.Xmi
             return false;
         }
 
+        protected override void HandleUnknownAttribute(XmlReader reader, object obj, ITypeSerializationInfo info, XmlSerializationContext context)
+        {
+            if (reader.NamespaceURI == XmiArtificialIdAttribute.Instance.Namespace && reader.LocalName == XmiArtificialIdAttribute.Instance.ElementName)
+            {
+                XmiArtificialIdAttribute.Instance.SetValue(obj, reader.Value, context);
+            }
+            else
+            {
+                base.HandleUnknownAttribute(reader, obj, info, context);
+            }
+        }
+
         protected virtual void OnUnknownElement(UnknownElementEventArgs e)
         {
             if (UnknownElement != null) UnknownElement(this, e);

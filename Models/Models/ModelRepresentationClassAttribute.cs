@@ -6,7 +6,7 @@ using System.Text;
 
 namespace NMF.Models
 {
-    [AttributeUsage(AttributeTargets.Class | AttributeTargets.Interface)]
+    [AttributeUsage(AttributeTargets.Class | AttributeTargets.Interface | AttributeTargets.Enum)]
     public class ModelRepresentationClassAttribute : Attribute
     {
         public ModelRepresentationClassAttribute(string uriString)

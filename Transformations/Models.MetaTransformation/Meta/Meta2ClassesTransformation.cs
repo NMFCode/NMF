@@ -48,8 +48,8 @@ namespace NMF.Models.Meta
             {
                 if (attributePersistor != null)
                 {
-                    if (typedElement.LowerBound > 0) attributePersistor(new CodeAttributeDeclaration(new CodeTypeReference(typeof(LowerBoundAttribute).Name), new CodeAttributeArgument(new CodePrimitiveExpression(typedElement.LowerBound))));
-                    if (typedElement.UpperBound > 1) attributePersistor(new CodeAttributeDeclaration(new CodeTypeReference(typeof(UpperBoundAttribute).Name), new CodeAttributeArgument(new CodePrimitiveExpression(typedElement.UpperBound))));
+                    if (typedElement.LowerBound > 0) attributePersistor(new CodeAttributeDeclaration(typeof(LowerBoundAttribute).ToTypeReference(), new CodeAttributeArgument(new CodePrimitiveExpression(typedElement.LowerBound))));
+                    if (typedElement.UpperBound > 1) attributePersistor(new CodeAttributeDeclaration(typeof(UpperBoundAttribute).ToTypeReference(), new CodeAttributeArgument(new CodePrimitiveExpression(typedElement.UpperBound))));
                 }
                 if (getCollectionType == null)
                 {
@@ -126,7 +126,7 @@ namespace NMF.Models.Meta
             }
             if (isReference)
             {
-                return new CodeTypeReference(typeof(IModelElement).Name);
+                return typeof(IModelElement).ToTypeReference();
             }
             else
             {

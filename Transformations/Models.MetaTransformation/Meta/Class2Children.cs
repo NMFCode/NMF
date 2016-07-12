@@ -59,7 +59,7 @@ namespace NMF.Models.Meta
                 var parent = new CodeMemberField(new CodeTypeReference(scopeDeclaration.Name), "_parent");
                 parent.Attributes = MemberAttributes.Private;
                 generatedType.Members.Add(parent);
-                generatedType.BaseTypes.Add(typeof(ReferenceCollection).Name);
+                generatedType.BaseTypes.Add(typeof(ReferenceCollection).ToTypeReference());
 
                 generatedType.WriteDocumentation(string.Format("The collection class to to represent the children of the {0} class", scope.Name));
 
@@ -393,7 +393,7 @@ namespace NMF.Models.Meta
                     ReturnType = new CodeTypeReference(typeof(IEnumerator<>).Name, elementType)
                 };
                 CodeExpression currentExpression;
-                currentExpression = new CodeMethodInvokeExpression(new CodeMethodReferenceExpression(new CodeTypeReferenceExpression(typeof(Enumerable).Name), "Empty", elementType));
+                currentExpression = new CodeMethodInvokeExpression(new CodeMethodReferenceExpression(new CodeTypeReferenceExpression(typeof(Enumerable).ToTypeReference()), "Empty", elementType));
                 foreach (var reference in implementingReferences)
                 {
                     currentExpression = new CodeMethodInvokeExpression(currentExpression, "Concat", GetPropertyReference(reference));

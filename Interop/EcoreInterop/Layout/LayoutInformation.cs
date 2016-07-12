@@ -163,7 +163,7 @@ namespace NMF.Interop.Layout
         {
             get
             {
-                return NMF.Models.Repository.MetaRepository.Instance.ResolveClass("http://www.emftext.org/commons/layout#//LayoutInformation/");
+                return (IClass)NMF.Models.Repository.MetaRepository.Instance.ResolveType("http://www.emftext.org/commons/layout#//LayoutInformation/");
             }
         }
         

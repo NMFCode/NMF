@@ -55,20 +55,15 @@ namespace NMF.CodeGen
         /// <param name="context">The transformation context</param>
         public override void Transform(T input, CodeNamespace output, ITransformationContext context)
         {
-            var imports = new List<string>(DefaultImports);
-
-            foreach (var item in imports)
+            foreach (var item in DefaultImports)
             {
                 output.Imports.Add(new CodeNamespaceImport(item));
             }
 
+            Dictionary<string, string> nameConflicts = LoadOrGenerateNameConflicts(context);
             var usings = new HashSet<string>();
-
-            var initialTypeCount = output.Types.Count;
-            for (int i = 0; i < initialTypeCount; i++)
-            {
-                RecursivelyAddTypes(output.Types[i], output, usings);
-            }
+        
+            VisitNamespace(output, reference => CorrectNamespace(reference, output, usings, nameConflicts));
 
             usings.Remove(output.Name);
             foreach (var item in usings)
@@ -77,84 +72,198 @@ namespace NMF.CodeGen
             }
         }
 
-        private void RecursivelyAddTypes(CodeTypeMember member, CodeNamespace output, HashSet<string> usings)
+        private CodeTypeReference CorrectNamespace(CodeTypeReference reference, CodeNamespace output, HashSet<string> usings, Dictionary<string, string> nameConflicts)
         {
-            var codeType = member as CodeTypeDeclaration;
-            if (codeType != null)
+            var refNs = reference.Namespace();
+            if (refNs != null)
             {
-                FixClassNamespaces(output, usings, codeType);
-                var iFace = CodeDomHelper.GetOrCreateUserItem<CodeTypeDeclaration>(codeType, CodeDomHelper.InterfaceKey);
-                if (iFace != null)
+                string chosenNs;
+                if (refNs != output.Name)
                 {
-                    FixClassNamespaces(output, usings, iFace);
-                }
-            }
-
-            var dependentMembers = CodeDomHelper.DependentMembers(member, false);
-            if (dependentMembers != null)
-            {
-                foreach (var dependent in dependentMembers)
-                {
-                    RecursivelyAddTypes(dependent, output, usings);
-                }
-            }
-
-            var dependentTypes = CodeDomHelper.DependentTypes(member, false);
-            if (dependentTypes != null)
-            {
-                foreach (var dependentType in dependentTypes)
-                {
-                    if (!output.Types.Contains(dependentType))
+                    if (nameConflicts.TryGetValue(reference.BaseType, out chosenNs) && chosenNs != refNs)
                     {
-                        AddType(output, dependentType);
+                        // We are in a namespace conflict and need to fully qualify the reference
+                        reference.BaseType = refNs + "." + reference.BaseType;
                     }
+                    else
+                    {
+                        usings.Add(refNs);
+                    }
+                }
+            }
+            for (int i = 0; i < reference.TypeArguments.Count; i++)
+            {
+                reference.TypeArguments[i] = CorrectNamespace(reference.TypeArguments[i], output, usings, nameConflicts);
+            }
+            return reference;
+        }
+
+        protected virtual object GetNamespaceConflictsIdentifier()
+        {
+            return typeof(NamespaceGenerator<>);
+        }
+
+        private Dictionary<string, string> LoadOrGenerateNameConflicts(ITransformationContext context)
+        {
+            object nameConflictsObject;
+            object key = GetNamespaceConflictsIdentifier() ?? typeof(NamespaceGenerator<>);
+            Dictionary<string, string> nameConflicts;
+            if (context.Data.TryGetValue(key, out nameConflictsObject))
+            {
+                nameConflicts = nameConflictsObject as Dictionary<string, string>;
+                if (nameConflicts == null)
+                {
+                    lock (key)
+                    {
+                        nameConflicts = context.Data[key] as Dictionary<string, string>;
+                        if (nameConflicts == null)
+                        {
+                            nameConflicts = GenerateNameConflicts(context);
+                            context.Data[key] = nameConflicts;
+                        }
+                    }
+                }
+            }
+            else
+            {
+                lock (key)
+                {
+                    if (context.Data.TryGetValue(key, out nameConflictsObject))
+                    {
+                        nameConflicts = nameConflictsObject as Dictionary<string, string>;
+                        if (nameConflicts == null)
+                        {
+                            nameConflicts = GenerateNameConflicts(context);
+                            context.Data[key] = nameConflicts;
+                        }
+                    }
+                    else
+                    {
+                        nameConflicts = GenerateNameConflicts(context);
+                        context.Data.Add(key, nameConflicts);
+                    }
+                }
+            }
+
+            return nameConflicts;
+        }
+
+        private Dictionary<string, string> GenerateNameConflicts(ITransformationContext context)
+        {
+            var nameDict = new Dictionary<string, string>();
+            var rules = context.Transformation.Rules.OfType<NamespaceGenerator<T>>().ToList();
+            foreach (var rule in rules)
+            {
+                foreach (var codeNs in context.Trace.FindAllIn(rule))
+                {
+                    VisitNamespace(codeNs, reference =>
+                    {
+                        RegisterConflicts(reference, nameDict);
+                        for (int i = 0; i < reference.TypeArguments.Count; i++)
+                        {
+                            RegisterConflicts(reference.TypeArguments[i], nameDict);
+                        }
+                        return reference;
+                    });
+                }
+            }
+            return nameDict;
+        }
+
+        private void RegisterConflicts(CodeTypeReference reference, Dictionary<string, string> nameDict)
+        {
+            var refNs = reference.Namespace();
+            if (refNs != null)
+            {
+                string chosenClass;
+                if (nameDict.TryGetValue(reference.BaseType, out chosenClass))
+                {
+                    if (refNs != chosenClass)
+                    {
+                        nameDict[reference.BaseType] = null;
+                    }
+                }
+                else
+                {
+                    nameDict.Add(reference.BaseType, IsSystemNameConflict(reference.BaseType) ? null : refNs);
                 }
             }
         }
 
-        private void FixClassNamespaces(CodeNamespace output, HashSet<string> usings, CodeTypeDeclaration type)
+        protected virtual bool IsSystemNameConflict(string typeName)
+        {
+            foreach (var ass in AssembliesToCheck)
+            {
+                foreach (var defaultNamespace in DefaultImports)
+                {
+                    if (Type.GetType(defaultNamespace + "." + typeName, false) != null)
+                    {
+                        return true;
+                    }
+                }
+            }
+            return false;
+        }
+
+        protected virtual IEnumerable<System.Reflection.Assembly> AssembliesToCheck
+        {
+            get
+            {
+                yield return typeof(object).Assembly;
+            }
+        }
+
+        private void VisitNamespace(CodeNamespace ns, Func<CodeTypeReference, CodeTypeReference> referenceConversion)
+        {
+            for (int i = 0; i < ns.Types.Count; i++)
+            {
+                VisitClass(ns.Types[i], referenceConversion);
+            }
+        }
+
+        private void VisitClass(CodeTypeDeclaration type, Func<CodeTypeReference, CodeTypeReference> referenceConversion)
         {
             for (int i = 0; i < type.BaseTypes.Count; i++)
             {
                 var baseRef = type.BaseTypes[i];
-                type.BaseTypes[i] = AddNamespaceUse(baseRef, output, usings);
+                type.BaseTypes[i] = referenceConversion(baseRef);
             }
 
             for (int i = 0; i < type.Members.Count; i++)
             {
                 var childMember = type.Members[i];
-                AddMemberUses(childMember, output, usings);
+                VisitMember(childMember, referenceConversion);
             }
         }
 
-        private void AddMemberUses(CodeTypeMember member, CodeNamespace ns, HashSet<string> usings)
+        private void VisitMember(CodeTypeMember member, Func<CodeTypeReference, CodeTypeReference> referenceConversion)
         {
             var memberProperty = member as CodeMemberProperty;
             if (memberProperty != null)
             {
-                memberProperty.Type = AddNamespaceUse(memberProperty.Type, ns, usings);
+                memberProperty.Type = referenceConversion(memberProperty.Type);
                 return;
             }
             var memberField = member as CodeMemberField;
             if (memberField != null)
             {
-                memberField.Type = AddNamespaceUse(memberField.Type, ns, usings);
+                memberField.Type = referenceConversion(memberField.Type);
                 return;
             }
             var memberMethod = member as CodeMemberMethod;
             if (memberMethod != null)
             {
-                memberMethod.ReturnType = AddNamespaceUse(memberMethod.ReturnType, ns, usings);
+                memberMethod.ReturnType = referenceConversion(memberMethod.ReturnType);
                 for (int j = 0; j < memberMethod.Parameters.Count; j++)
                 {
-                    memberMethod.Parameters[j].Type = AddNamespaceUse(memberMethod.Parameters[j].Type, ns, usings);
+                    memberMethod.Parameters[j].Type = referenceConversion(memberMethod.Parameters[j].Type);
                 }
                 return;
             }
             var memberEvent = member as CodeMemberEvent;
             if (memberEvent != null)
             {
-                memberEvent.Type = AddNamespaceUse(memberEvent.Type, ns, usings);
+                memberEvent.Type = referenceConversion(memberEvent.Type);
                 return;
             }
             var nestedType = member as CodeTypeDeclaration;
@@ -162,35 +271,8 @@ namespace NMF.CodeGen
             {
                 for (int i = 0; i < nestedType.Members.Count; i++)
                 {
-                    AddMemberUses(nestedType.Members[i], ns, usings);
+                    VisitMember(nestedType.Members[i], referenceConversion);
                 }
-            }
-        }
-
-        private CodeTypeReference AddNamespaceUse(CodeTypeReference typeRef, CodeNamespace ns , HashSet<string> usings)
-        {
-            if (typeRef == null) return null;
-            var refns = CodeDomHelper.Namespace(typeRef);
-            if (typeRef.TypeArguments.Count == 0)
-            {
-                if (IsNamespaceConflict(typeRef.BaseType, ns) && refns != null)
-                {
-                    return new CodeTypeReference(refns + "." + typeRef.BaseType);
-                }
-                else
-                {
-                    if (refns != null) usings.Add(refns);
-                    return typeRef;
-                }
-            }
-            else
-            {
-                var newRef = new CodeTypeReference(typeRef.BaseType);
-                for (int i = 0; i < typeRef.TypeArguments.Count; i++)
-                {
-                    newRef.TypeArguments.Add(AddNamespaceUse(typeRef.TypeArguments[i], ns, usings));
-                }
-                return newRef;
             }
         }
 

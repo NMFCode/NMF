@@ -18,6 +18,18 @@ namespace NMF.Models.Meta
 {
     public partial class Meta2ClassesTransformation
     {
+        private static bool SetTypeReferenceForMappedType(IType type, CodeTypeReference reference)
+        {
+            var mapping = type.GetExtension<MappedType>();
+            if (mapping != null)
+            {
+                reference.BaseType = mapping.SystemType.Name;
+                reference.SetNamespace(mapping.SystemType.Namespace);
+                return true;
+            }
+            return false;
+        }
+
         /// <summary>
         /// Represents the transformation rule to transform classes
         /// </summary>
@@ -38,18 +50,6 @@ namespace NMF.Models.Meta
                 var generatedType = base.CreateOutput(input, context);
                 SetTypeReferenceForMappedType(input, generatedType.GetReferenceForType());
                 return generatedType;
-            }
-
-            private static bool SetTypeReferenceForMappedType(IClass type, CodeTypeReference reference)
-            {
-                var mapping = type.GetExtension<MappedType>();
-                if (mapping != null)
-                {
-                    reference.BaseType = mapping.SystemType.Name;
-                    reference.SetNamespace(mapping.SystemType.Namespace);
-                    return true;
-                }
-                return false;
             }
 
             protected override bool ShouldContainMembers(CodeTypeDeclaration generatedType, CodeTypeReference baseType)
@@ -130,7 +130,7 @@ namespace NMF.Models.Meta
 
                 AdjustTypeReference(input, generatedType, context);
 
-                generatedType.BaseTypes.Add(typeof(IModelElement).Name);
+                generatedType.BaseTypes.Add(typeof(IModelElement).ToTypeReference());
                 
                 AddIfNotNull(members, CreateChildren(input, generatedType, context));
                 AddIfNotNull(members, CreateGetRelativePathForNonIdentifiedChild(input, generatedType, context));
@@ -142,7 +142,8 @@ namespace NMF.Models.Meta
                 AddIfNotNull(members, CreateGetExpressionForAttribute(input, generatedType, context));
                 AddIfNotNull(members, CreateGetExpressionForReference(input, generatedType, context));
                 AddIfNotNull(members, CreateClassInstance(input));
-                
+
+                CodeMemberField codeField;
                 var baseClasses = input.Closure(cl => cl.BaseTypes);
                 var isModelElementContained = false;
                 foreach (var cl in baseClasses)
@@ -150,7 +151,8 @@ namespace NMF.Models.Meta
                     if (cl.RelativeUri == ModelExtensions.ClassModelElement.RelativeUri) isModelElementContained = true;
                     if (cl.InstanceOf != null && cl != input)
                     {
-                        AddIfNotNull(members, CreateOverriddenGetClassMethod(input, cl.InstanceOf, context));
+                        AddIfNotNull(members, CreateOverriddenGetClassMethod(input, cl.InstanceOf, context, out codeField));
+                        AddIfNotNull(members, codeField);
 
                         var referenceImplementations = cl.InstanceOf.MostSpecificRefinement(ModelExtensions.ReferenceTypeReferencesReference);
                         if (!referenceImplementations.Contains(ModelExtensions.ReferenceTypeReferencesReference))
@@ -164,7 +166,8 @@ namespace NMF.Models.Meta
                 }
                 if (!isModelElementContained)
                 {
-                    AddIfNotNull(members, CreateOverriddenGetClassMethod(input, ModelExtensions.ClassModelElement.InstanceOf, context));
+                    AddIfNotNull(members, CreateOverriddenGetClassMethod(input, ModelExtensions.ClassModelElement.InstanceOf, context, out codeField));
+                    AddIfNotNull(members, codeField);
                 }
 
                 ImplementIdentifier(input, generatedType);
@@ -262,8 +265,9 @@ namespace NMF.Models.Meta
                 return referencedType;
             }
 
-            protected virtual CodeMemberMethod CreateOverriddenGetClassMethod(IClass input, IClass instantiating, ITransformationContext context)
+            protected virtual CodeMemberMethod CreateOverriddenGetClassMethod(IClass input, IClass instantiating, ITransformationContext context, out CodeMemberField classField)
             {
+                classField = null;
                 var targetType = new CodeTypeReference();
                 if (!SetTypeReferenceForMappedType(instantiating, targetType))
                 {
@@ -272,10 +276,6 @@ namespace NMF.Models.Meta
                 else
                 {
                     targetType.BaseType = "I" + targetType.BaseType;
-                    if (input.Namespace.Types.Any(t => t.Name == instantiating.Name))
-                    {
-                        targetType.BaseType = targetType.Namespace() + "." + targetType.BaseType;
-                    }
                 }
                 var getClass = new CodeMemberMethod()
                 {
@@ -288,7 +288,11 @@ namespace NMF.Models.Meta
                 {
                     var repositoryRef = new CodePropertyReferenceExpression(new CodeTypeReferenceExpression(typeof(MetaRepository)), "Instance");
                     var classRef = new CodeMethodInvokeExpression(repositoryRef, "Resolve", new CodePrimitiveExpression(absoluteUri.AbsoluteUri));
-                    getClass.Statements.Add(new CodeMethodReturnStatement(new CodeCastExpression(targetType, classRef)));
+                    classField = new CodeMemberField(targetType, "_" + instantiating.Name.ToCamelCase() + "Instance");
+                    classField.Attributes = MemberAttributes.Private | MemberAttributes.Static;
+                    classField.InitExpression = new CodeCastExpression(targetType, classRef);
+
+                    getClass.Statements.Add(new CodeMethodReturnStatement(new CodeFieldReferenceExpression(null, classField.Name)));
                 }
                 else
                 {
@@ -361,7 +365,7 @@ namespace NMF.Models.Meta
                     Attributes = MemberAttributes.Public,
                     IsInterface = true
                 };
-                iface.BaseTypes.Add(typeof(IModelElement).Name);
+                iface.BaseTypes.Add(typeof(IModelElement).ToTypeReference());
                 iface.AddAttribute(typeof(DefaultImplementationTypeAttribute), new CodeTypeOfExpression(generatedType.Name));
                 iface.AddAttribute(typeof(XmlDefaultImplementationTypeAttribute), new CodeTypeOfExpression(generatedType.Name));
                 iface.WriteDocumentation("The public interface for " + input.Name);
@@ -374,7 +378,7 @@ namespace NMF.Models.Meta
             /// <param name="generatedType">The generated type</param>
             protected override void AddImplementationBaseClass(CodeTypeDeclaration generatedType)
             {
-                generatedType.BaseTypes.Insert(0, new CodeTypeReference(typeof(ModelElement).Name));
+                generatedType.BaseTypes.Insert(0, typeof(ModelElement).ToTypeReference());
             }
 
             /// <summary>
@@ -393,7 +397,7 @@ namespace NMF.Models.Meta
                 var referencedProperty = new CodeMemberProperty()
                 {
                     Attributes = MemberAttributes.Public | MemberAttributes.Override,
-                    Type = new CodeTypeReference(typeof(IEnumerableExpression<>).Name, new CodeTypeReference(typeof(IModelElement).Name)),
+                    Type = new CodeTypeReference(typeof(IEnumerableExpression<>).Name, typeof(IModelElement).ToTypeReference()),
                     HasGet = true,
                     HasSet = false,
                     Name = "ReferencedElements"
@@ -407,7 +411,7 @@ namespace NMF.Models.Meta
 
             private static CodeExpression AddReference(CodeExpression expression, IReference reference)
             {
-                return new CodeMethodInvokeExpression(new CodeMethodReferenceExpression(expression, "Concat", new CodeTypeReference(typeof(IModelElement).Name)),
+                return new CodeMethodInvokeExpression(new CodeMethodReferenceExpression(expression, "Concat", typeof(IModelElement).ToTypeReference()),
                     new CodePropertyReferenceExpression(new CodeThisReferenceExpression(), reference.Name.ToPascalCase()));
             }
 
@@ -454,7 +458,7 @@ namespace NMF.Models.Meta
                     {
                         var createUriWithFragment = new CodeMemberMethod();
                         createUriWithFragment.Name = "CreateUriWithFragment";
-                        createUriWithFragment.ReturnType = new CodeTypeReference(typeof(Uri).Name);
+                        createUriWithFragment.ReturnType = typeof(Uri).ToTypeReference();
                         createUriWithFragment.Attributes = MemberAttributes.Family | MemberAttributes.Override;
                         createUriWithFragment.Parameters.Add(new CodeParameterDeclarationExpression(typeof(string), "fragment"));
                         createUriWithFragment.Parameters.Add(new CodeParameterDeclarationExpression(typeof(bool), "absolute"));
@@ -467,9 +471,9 @@ namespace NMF.Models.Meta
                         var propagateNewModel = new CodeMemberMethod();
                         propagateNewModel.Name = "PropagateNewModel";
                         propagateNewModel.Attributes = MemberAttributes.Family | MemberAttributes.Override;
-                        propagateNewModel.Parameters.Add(new CodeParameterDeclarationExpression(typeof(Model).Name, "newModel"));
-                        propagateNewModel.Parameters.Add(new CodeParameterDeclarationExpression(typeof(Model).Name, "oldModel"));
-                        propagateNewModel.Parameters.Add(new CodeParameterDeclarationExpression(typeof(IModelElement).Name, "subtreeRoot"));
+                        propagateNewModel.Parameters.Add(new CodeParameterDeclarationExpression(typeof(Model).ToTypeReference(), "newModel"));
+                        propagateNewModel.Parameters.Add(new CodeParameterDeclarationExpression(typeof(Model).ToTypeReference(), "oldModel"));
+                        propagateNewModel.Parameters.Add(new CodeParameterDeclarationExpression(typeof(IModelElement).ToTypeReference(), "subtreeRoot"));
                         var oldModelRef = new CodeArgumentReferenceExpression("oldModel");
                         var newModelRef = new CodeArgumentReferenceExpression("newModel");
                         var nullRef = new CodePrimitiveExpression(null);
@@ -503,7 +507,7 @@ namespace NMF.Models.Meta
                 var getModelElementForUri = new CodeMemberMethod()
                 {
                     Name = "GetModelElementForReference",
-                    ReturnType = new CodeTypeReference(typeof(IModelElement).Name),
+                    ReturnType = typeof(IModelElement).ToTypeReference(),
                     Attributes = MemberAttributes.Family | MemberAttributes.Override
                 };
                 getModelElementForUri.Parameters.Add(new CodeParameterDeclarationExpression(typeof(string), "reference"));
@@ -754,14 +758,12 @@ namespace NMF.Models.Meta
                 {
                     Name = "ClassInstance",
                     Attributes = MemberAttributes.Public | MemberAttributes.Final | MemberAttributes.Static | MemberAttributes.New,
-                    Type = new CodeTypeReference(typeof(IClass))
+                    Type = typeof(IClass).ToTypeReference()
                 };
                 var absoluteUri = input.AbsoluteUri;
                 if (absoluteUri != null && absoluteUri.IsAbsoluteUri)
                 {
-                    var repositoryRef = new CodePropertyReferenceExpression(new CodeTypeReferenceExpression(typeof(MetaRepository)), "Instance");
-                    var classRef = new CodeMethodInvokeExpression(repositoryRef, "ResolveClass", new CodePrimitiveExpression(absoluteUri.AbsoluteUri));
-                    classInstance.GetStatements.Add(new CodeMethodReturnStatement(classRef));
+                    classInstance.GetStatements.Add(new CodeMethodReturnStatement(new CodeFieldReferenceExpression(null, "_classInstance")));
                 }
                 else
                 {
@@ -786,7 +788,7 @@ namespace NMF.Models.Meta
                     ReturnType = new CodeTypeReference(typeof(string)),
                     Attributes = MemberAttributes.Family | MemberAttributes.Override
                 };
-                getRelativeUriForChild.Parameters.Add(new CodeParameterDeclarationExpression(typeof(IModelElement).Name, "element"));
+                getRelativeUriForChild.Parameters.Add(new CodeParameterDeclarationExpression(typeof(IModelElement).ToTypeReference(), "element"));
                 getRelativeUriForChild.WriteDocumentation("Gets the relative URI fragment for the given child model element", "A fragment of the relative URI", new Dictionary<string, string>() 
                     {
                         {
@@ -816,7 +818,7 @@ namespace NMF.Models.Meta
                 var childrenProperty = new CodeMemberProperty()
                 {
                     Attributes = MemberAttributes.Public | MemberAttributes.Override,
-                    Type = new CodeTypeReference(typeof(IEnumerableExpression<>).Name, new CodeTypeReference(typeof(IModelElement).Name)),
+                    Type = new CodeTypeReference(typeof(IEnumerableExpression<>).Name, typeof(IModelElement).ToTypeReference()),
                     HasGet = true,
                     HasSet = false,
                     Name = "Children"
@@ -875,7 +877,7 @@ namespace NMF.Models.Meta
                             CodeBinaryOperatorType.IdentityEquality,
                             new CodePropertyReferenceExpression(new CodeThisReferenceExpression(), containment.Name.ToPascalCase())));
 
-                    ifIdentical.TrueStatements.Add(new CodeMethodReturnStatement(new CodeMethodInvokeExpression(new CodeTypeReferenceExpression(typeof(ModelHelper).Name), "CreatePath",
+                    ifIdentical.TrueStatements.Add(new CodeMethodReturnStatement(new CodeMethodInvokeExpression(new CodeTypeReferenceExpression(typeof(ModelHelper).ToTypeReference()), "CreatePath",
                         new CodePrimitiveExpression(containment.Name.ToPascalCase()))));
 
                     method.Statements.Add(ifIdentical);
@@ -883,12 +885,12 @@ namespace NMF.Models.Meta
                 else if (containment.IsOrdered)
                 {
                     var idxVarName = containment.Name.ToCamelCase() + "Index";
-                    var idxVar = new CodeVariableDeclarationStatement(typeof(int), idxVarName, new CodeMethodInvokeExpression(new CodeTypeReferenceExpression(typeof(ModelHelper).Name), "IndexOfReference",
+                    var idxVar = new CodeVariableDeclarationStatement(typeof(int), idxVarName, new CodeMethodInvokeExpression(new CodeTypeReferenceExpression(typeof(ModelHelper).ToTypeReference()), "IndexOfReference",
                         new CodePropertyReferenceExpression(new CodeThisReferenceExpression(), containment.Name.ToPascalCase()), new CodeArgumentReferenceExpression("element")));
                     var idxRef = new CodeVariableReferenceExpression(idxVarName);
 
                     var ifContained = new CodeConditionStatement(new CodeBinaryOperatorExpression(idxRef, CodeBinaryOperatorType.IdentityInequality, new CodePrimitiveExpression(-1)));
-                    ifContained.TrueStatements.Add(new CodeMethodReturnStatement(new CodeMethodInvokeExpression(new CodeTypeReferenceExpression(typeof(ModelHelper).Name), "CreatePath",
+                    ifContained.TrueStatements.Add(new CodeMethodReturnStatement(new CodeMethodInvokeExpression(new CodeTypeReferenceExpression(typeof(ModelHelper).ToTypeReference()), "CreatePath",
                         new CodePrimitiveExpression(containment.Name),
                         idxRef)));
 

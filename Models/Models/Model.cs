@@ -15,8 +15,8 @@ namespace NMF.Models
     [XmlElementName("XMI")]
     [XmlNamespaceAttribute("http://www.omg.org/XMI")]
     [XmlNamespacePrefixAttribute("xmi")]
-    [ModelRepresentationClassAttribute("http://www.omg.org/XMI")]
     [DebuggerDisplayAttribute("Model {ModelUri}")]
+    [ModelRepresentationClass("http://nmf.codeplex.com/nmeta/#//Model/")]
     public class Model : ModelElement
     {
         private Dictionary<string, ModelElement> IdStore;
@@ -225,7 +225,7 @@ namespace NMF.Models
 
         public override Meta.IClass GetClass()
         {
-            return NMF.Models.Repository.MetaRepository.Instance.ResolveClass("http://nmf.codeplex.com/nmeta/#//NMeta/Model/");
+            return (Meta.IClass)NMF.Models.Repository.MetaRepository.Instance.ResolveType("http://nmf.codeplex.com/nmeta/#//NMeta/Model/");
         }
     }
 }

@@ -57,7 +57,6 @@
     <Compile Include="Meta\Meta2ClassesTransformation.cs" />
     <Compile Include="Meta\MetaFacade.cs" />
     <Compile Include="Meta\Namespace2CompileUnit.cs" />
-    <Compile Include="Meta\Namespace2ModelRegistrationClass.cs" />
     <Compile Include="Meta\Namespace2Namespace.cs" />
     <Compile Include="Meta\Operation2Method.cs" />
     <Compile Include="Meta\Parameter2Parameter.cs" />

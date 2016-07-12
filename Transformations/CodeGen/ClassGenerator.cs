@@ -233,7 +233,16 @@ namespace NMF.CodeGen
         {
             if (shadows.Add(current))
             {
-                members.Add(current);
+                var conflict = members.Cast<CodeTypeMember>().FirstOrDefault(member => AreConflicting(member, current));
+                if (conflict == null)
+                {
+                    members.Add(current);
+                }
+                else
+                {
+                    members.Remove(conflict);
+                    members.Add(conflict.Merge(current));
+                }
                 var conStmts = current.ImpliedConstructorStatements(false);
                 if (conStmts != null)
                 {
@@ -251,6 +260,30 @@ namespace NMF.CodeGen
                     }
                 }
             }
+        }
+
+        private bool AreConflicting(CodeTypeMember member, CodeTypeMember current)
+        {
+            if (member.Name != current.Name) return false;
+
+            if (member.GetType() != current.GetType()) return false;
+
+            if (member is CodeSnippetTypeMember || current is CodeSnippetTypeMember) return false;
+
+            var memberMethod = member as CodeMemberMethod;
+            var currentMethod = current as CodeMemberMethod;
+
+            if (memberMethod != null && currentMethod != null)
+            {
+                if (memberMethod.Parameters.Count != currentMethod.Parameters.Count) return false;
+                if (memberMethod.TypeParameters.Count != currentMethod.TypeParameters.Count) return false;
+
+                for (int i = 0; i < memberMethod.Parameters.Count; i++)
+                {
+                    if (memberMethod.Parameters[i].Type.BaseType != currentMethod.Parameters[i].Type.BaseType) return false;
+                }
+            }
+            return true;
         }
 
         protected virtual void CreateInterfaceMembers(CodeTypeDeclaration generatedType, CodeTypeDeclaration interfaceDecl)
