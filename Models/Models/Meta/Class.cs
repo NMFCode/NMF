@@ -74,6 +74,8 @@ namespace NMF.Models.Meta
         /// </summary>
         private ClassReferenceConstraintsCollection _referenceConstraints;
         
+        private static IClass _classInstance = ((IClass)(NMF.Models.Repository.MetaRepository.Instance.Resolve("http://nmf.codeplex.com/nmeta/#//Class/")));
+        
         public Class()
         {
             this._baseTypes = new ObservableAssociationList<IClass>();
@@ -265,11 +267,11 @@ namespace NMF.Models.Meta
         /// <summary>
         /// Gets the Class element that describes the structure of this type
         /// </summary>
-        public new static NMF.Models.Meta.IClass ClassInstance
+        public new static IClass ClassInstance
         {
             get
             {
-                return (IClass)NMF.Models.Repository.MetaRepository.Instance.ResolveType("http://nmf.codeplex.com/nmeta/#//Class/");
+                return _classInstance;
             }
         }
         
@@ -347,7 +349,7 @@ namespace NMF.Models.Meta
         /// </summary>
         /// <param name="sender">The object that sent this reset request</param>
         /// <param name="eventArgs">The event data for the reset event</param>
-        private void OnResetInstanceOf(object sender, EventArgs eventArgs)
+        private void OnResetInstanceOf(object sender, System.EventArgs eventArgs)
         {
             this.InstanceOf = null;
         }
@@ -370,7 +372,7 @@ namespace NMF.Models.Meta
         /// </summary>
         /// <param name="sender">The object that sent this reset request</param>
         /// <param name="eventArgs">The event data for the reset event</param>
-        private void OnResetIdentifier(object sender, EventArgs eventArgs)
+        private void OnResetIdentifier(object sender, System.EventArgs eventArgs)
         {
             this.Identifier = null;
         }
@@ -507,7 +509,7 @@ namespace NMF.Models.Meta
         /// </summary>
         public override IClass GetClass()
         {
-            return ((IClass)(NMF.Models.Repository.MetaRepository.Instance.Resolve("http://nmf.codeplex.com/nmeta/#//Class/")));
+            return _classInstance;
         }
         
         /// <summary>

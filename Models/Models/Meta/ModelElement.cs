@@ -35,7 +35,7 @@ namespace NMF.Models.Meta
     [XmlNamespaceAttribute("http://nmf.codeplex.com/nmeta/")]
     [XmlNamespacePrefixAttribute("nmeta")]
     [ModelRepresentationClassAttribute("http://nmf.codeplex.com/nmeta/#//ModelElement/")]
-    public abstract class ModelElement : ModelElement, NMF.Models.Meta.IModelElement, IModelElement
+    public abstract class ModelElement : NMF.Models.ModelElement, NMF.Models.Meta.IModelElement, IModelElement
     {
         
         /// <summary>
@@ -218,11 +218,11 @@ namespace NMF.Models.Meta
         /// <summary>
         /// Gets the Class element that describes the structure of this type
         /// </summary>
-        public new static NMF.Models.Meta.IClass ClassInstance
+        public new static IClass ClassInstance
         {
             get
             {
-                return NMF.Models.Repository.MetaRepository.Instance.ResolveClass("http://nmf.codeplex.com/nmeta/#//ModelElement/");
+                return _classInstance;
             }
         }
         
@@ -305,7 +305,7 @@ namespace NMF.Models.Meta
         /// </summary>
         /// <param name="sender">The object that sent this reset request</param>
         /// <param name="eventArgs">The event data for the reset event</param>
-        private void OnResetParent(object sender, EventArgs eventArgs)
+        private void OnResetParent(object sender, System.EventArgs eventArgs)
         {
             this.Parent = null;
         }
@@ -328,7 +328,7 @@ namespace NMF.Models.Meta
         /// </summary>
         /// <param name="sender">The object that sent this reset request</param>
         /// <param name="eventArgs">The event data for the reset event</param>
-        private void OnResetType(object sender, EventArgs eventArgs)
+        private void OnResetType(object sender, System.EventArgs eventArgs)
         {
             this.Type = null;
         }

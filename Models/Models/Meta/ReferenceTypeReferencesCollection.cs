@@ -37,7 +37,7 @@ namespace NMF.Models.Meta
         {
         }
         
-        private void OnItemDeleted(object sender, EventArgs e)
+        private void OnItemDeleted(object sender, System.EventArgs e)
         {
             this.Remove(((IReference)(sender)));
         }

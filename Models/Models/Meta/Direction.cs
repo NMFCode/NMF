@@ -28,7 +28,7 @@ using System.Linq;
 namespace NMF.Models.Meta
 {
     
-    [ModelRepresentationClassAttribute("http://nmf.codeplex.com/nmeta/#//Direction/")]
+    
     public enum Direction
     {
         

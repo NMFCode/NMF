@@ -84,6 +84,8 @@ namespace NMF.Models.Meta
         /// </summary>
         private int _upperBound = 1;
         
+        private static IClass _classInstance = ((IClass)(NMF.Models.Repository.MetaRepository.Instance.Resolve("http://nmf.codeplex.com/nmeta/#//Reference/")));
+        
         event EventHandler<ValueChangedEventArgs> ITypedElement.TypeChanged
         {
             add
@@ -406,11 +408,11 @@ namespace NMF.Models.Meta
         /// <summary>
         /// Gets the Class element that describes the structure of this type
         /// </summary>
-        public new static NMF.Models.Meta.IClass ClassInstance
+        public new static IClass ClassInstance
         {
             get
             {
-                return (IClass)NMF.Models.Repository.MetaRepository.Instance.ResolveType("http://nmf.codeplex.com/nmeta/#//Reference/");
+                return _classInstance;
             }
         }
         
@@ -530,7 +532,7 @@ namespace NMF.Models.Meta
         /// </summary>
         /// <param name="sender">The object that sent this reset request</param>
         /// <param name="eventArgs">The event data for the reset event</param>
-        private void OnResetOpposite(object sender, EventArgs eventArgs)
+        private void OnResetOpposite(object sender, System.EventArgs eventArgs)
         {
             this.Opposite = null;
         }
@@ -553,7 +555,7 @@ namespace NMF.Models.Meta
         /// </summary>
         /// <param name="sender">The object that sent this reset request</param>
         /// <param name="eventArgs">The event data for the reset event</param>
-        private void OnResetReferenceType(object sender, EventArgs eventArgs)
+        private void OnResetReferenceType(object sender, System.EventArgs eventArgs)
         {
             this.ReferenceType = null;
         }
@@ -576,7 +578,7 @@ namespace NMF.Models.Meta
         /// </summary>
         /// <param name="sender">The object that sent this reset request</param>
         /// <param name="eventArgs">The event data for the reset event</param>
-        private void OnResetRefines(object sender, EventArgs eventArgs)
+        private void OnResetRefines(object sender, System.EventArgs eventArgs)
         {
             this.Refines = null;
         }
@@ -599,7 +601,7 @@ namespace NMF.Models.Meta
         /// </summary>
         /// <param name="sender">The object that sent this reset request</param>
         /// <param name="eventArgs">The event data for the reset event</param>
-        private void OnResetAnchor(object sender, EventArgs eventArgs)
+        private void OnResetAnchor(object sender, System.EventArgs eventArgs)
         {
             this.Anchor = null;
         }
@@ -812,7 +814,7 @@ namespace NMF.Models.Meta
         /// </summary>
         public override IClass GetClass()
         {
-            return ((IClass)(NMF.Models.Repository.MetaRepository.Instance.Resolve("http://nmf.codeplex.com/nmeta/#//Reference/")));
+            return _classInstance;
         }
         
         /// <summary>

@@ -49,6 +49,8 @@ namespace NMF.Models.Meta
         /// </summary>
         private IAttribute _refines;
         
+        private static IClass _classInstance = ((IClass)(NMF.Models.Repository.MetaRepository.Instance.Resolve("http://nmf.codeplex.com/nmeta/#//Attribute/")));
+        
         /// <summary>
         /// The default value for this attribute
         /// </summary>
@@ -135,11 +137,11 @@ namespace NMF.Models.Meta
         /// <summary>
         /// Gets the Class element that describes the structure of this type
         /// </summary>
-        public new static NMF.Models.Meta.IClass ClassInstance
+        public new static IClass ClassInstance
         {
             get
             {
-                return (IClass)NMF.Models.Repository.MetaRepository.Instance.ResolveType("http://nmf.codeplex.com/nmeta/#//Attribute/");
+                return _classInstance;
             }
         }
         
@@ -224,7 +226,7 @@ namespace NMF.Models.Meta
         /// </summary>
         /// <param name="sender">The object that sent this reset request</param>
         /// <param name="eventArgs">The event data for the reset event</param>
-        private void OnResetRefines(object sender, EventArgs eventArgs)
+        private void OnResetRefines(object sender, System.EventArgs eventArgs)
         {
             this.Refines = null;
         }
@@ -310,7 +312,7 @@ namespace NMF.Models.Meta
         /// </summary>
         public override IClass GetClass()
         {
-            return ((IClass)(NMF.Models.Repository.MetaRepository.Instance.Resolve("http://nmf.codeplex.com/nmeta/#//Attribute/")));
+            return _classInstance;
         }
         
         /// <summary>

@@ -28,12 +28,11 @@ using NMF.Models.Repository;
 
 namespace NMF.Models.Meta
 {
-
-
+    
+    
     /// <summary>
     /// The MappedType extension
     /// </summary>
-    [ModelRepresentationClassAttribute("http://nmf.codeplex.com/nmeta/#//MappedType/")]
     public class MappedType : ModelElementExtension<IType>
     {
         
@@ -41,6 +40,8 @@ namespace NMF.Models.Meta
         /// The backing field for the SystemType property
         /// </summary>
         private System.Type _systemType;
+        
+        private static IExtension _extensionType = ((IExtension)(MetaRepository.Instance.ResolveType("http://nmf.codeplex.com/nmeta/#//MappedType/")));
         
         /// <summary>
         /// Creates a new extension instance for the given parent
@@ -112,10 +113,10 @@ namespace NMF.Models.Meta
             parent.Extensions.Add(extension);
             return extension;
         }
-
+        
         public override IExtension GetExtension()
         {
-            return (IExtension)MetaRepository.Instance.ResolveType("http://nmf.codeplex.com/nmeta/#//MappedType/");
+            return _extensionType;
         }
     }
 }

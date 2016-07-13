@@ -40,7 +40,7 @@ namespace NMF.Models.Meta
         /// <summary>
         /// The ExtendedElement property
         /// </summary>
-        NMF.Models.IModelElement ExtendedElement
+        IModelElement ExtendedElement
         {
             get;
             set;
