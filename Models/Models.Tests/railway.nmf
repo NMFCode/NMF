@@ -25,7 +25,7 @@
     <References Opposite="//Route//follows/" ReferenceType="//Route/" IsOrdered="True" LowerBound="1" Name="route" />
     <Attributes IsOrdered="True" LowerBound="1" Type="//Position/" Name="position" />
   </Types>
-  <Types xsi:type="nmeta:Class" IsAbstract="True" Name="RailwayElement" Identifier="#//RailwayElement/id" IdentifierScope="Local">
+  <Types xsi:type="nmeta:Class" IsAbstract="True" Name="RailwayElement" Identifier="#//RailwayElement/id" IdentifierScope="Global">
     <Attributes IsOrdered="True" Type="http://nmf.codeplex.com/nmeta/#//Integer/" Name="id" />
   </Types>
   <Types xsi:type="nmeta:Class" BaseTypes="//RailwayElement/" Name="Sensor">

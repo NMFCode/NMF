@@ -16,8 +16,12 @@ namespace NMF.Models
     [XmlNamespaceAttribute("http://www.omg.org/XMI")]
     [XmlNamespacePrefixAttribute("xmi")]
     [DebuggerDisplayAttribute("Model {ModelUri}")]
+<<<<<<< HEAD
     [ModelRepresentationClass("http://nmf.codeplex.com/nmeta/#//Model/")]
     public class Model : ModelElement
+=======
+    public class Model : ModelElement, IResolvableModel
+>>>>>>> 7703d3f7b58a6b2880a3be28b306ee6a06e3d62c
     {
         private Dictionary<string, ModelElement> IdStore;
 

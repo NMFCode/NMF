@@ -10,7 +10,7 @@ namespace NMF.Models.Repository
     {
         void Serialize(Model model, Stream target);
 
-        void SerializeFragment(ModelElement element, Stream target);
+        void SerializeFragment(IModelElement element, Stream target);
 
         Model Deserialize(Stream source, Uri modelUri, IModelRepository repository, bool addToRepository);
     }

@@ -145,5 +145,27 @@ namespace NMF.Expressions.Linq.Tests
             Assert.IsTrue(update);
             Assert.IsTrue(Sys.Contains(test, "42"));
         }
+
+
+        [TestMethod]
+        public void Select_ObservableIteam_Update()
+        {
+            var update = false;
+            ICollection<Dummy<string>> coll = new List<Dummy<string>>();
+            var dummy = new ObservableDummy<string>() { Item = "23" };
+            coll.Add(dummy);
+
+            var test = coll.WithUpdates().Select(d => d.Item);
+
+            test.CollectionChanged += (o, e) =>
+            {
+                update = true;
+//                Assert.AreEqual("23", e.OldItems[0]);
+            };
+
+            dummy.Item = "42";
+
+
+        }
     }
 }
