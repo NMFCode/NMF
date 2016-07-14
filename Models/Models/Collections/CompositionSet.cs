@@ -34,7 +34,6 @@ namespace NMF.Models.Collections
             foreach (var item in this)
             {
                 item.Deleted -= RemoveItem;
-                item.Parent = null;
                 item.Delete();
             }
             base.Clear();
@@ -45,7 +44,6 @@ namespace NMF.Models.Collections
             if (item != null && base.Remove(item))
             {
                 item.Deleted -= RemoveItem;
-                item.Parent = null;
                 item.Delete();
                 return true;
             }
@@ -88,7 +86,6 @@ namespace NMF.Models.Collections
             foreach (var item in this)
             {
                 item.Deleted -= RemoveItem;
-                item.Parent = null;
                 item.Delete();
             }
             base.Clear();
@@ -99,7 +96,6 @@ namespace NMF.Models.Collections
             if (item != null && base.Remove(item))
             {
                 item.Deleted -= RemoveItem;
-                item.Parent = null;
                 item.Delete();
                 return true;
             }

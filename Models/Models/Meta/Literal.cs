@@ -61,6 +61,8 @@ namespace NMF.Models.Meta
             {
                 if ((this._value != value))
                 {
+                    this.OnValueChanging(EventArgs.Empty);
+                    this.OnPropertyChanging("Value");
                     Nullable<int> old = this._value;
                     this._value = value;
                     ValueChangedEventArgs e = new ValueChangedEventArgs(old, value);
@@ -115,6 +117,11 @@ namespace NMF.Models.Meta
         }
         
         /// <summary>
+        /// Gets fired before the Value property changes its value
+        /// </summary>
+        public event EventHandler ValueChanging;
+        
+        /// <summary>
         /// Gets fired when the Value property changed its value
         /// </summary>
         public event EventHandler<ValueChangedEventArgs> ValueChanged;
@@ -123,6 +130,19 @@ namespace NMF.Models.Meta
         /// Gets fired when the Enumeration property changed its value
         /// </summary>
         public event EventHandler<ValueChangedEventArgs> EnumerationChanged;
+        
+        /// <summary>
+        /// Raises the ValueChanging event
+        /// </summary>
+        /// <param name="eventArgs">The event data</param>
+        protected virtual void OnValueChanging(EventArgs eventArgs)
+        {
+            EventHandler handler = this.ValueChanging;
+            if ((handler != null))
+            {
+                handler.Invoke(this, eventArgs);
+            }
+        }
         
         /// <summary>
         /// Raises the ValueChanged event

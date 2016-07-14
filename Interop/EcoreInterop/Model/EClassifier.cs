@@ -58,6 +58,7 @@ namespace NMF.Interop.Ecore
         public EClassifier()
         {
             this._eTypeParameters = new ObservableCompositionList<IETypeParameter>(this);
+            this._eTypeParameters.CollectionChanging += this.ETypeParametersCollectionChanging;
             this._eTypeParameters.CollectionChanged += this.ETypeParametersCollectionChanged;
         }
         
@@ -76,6 +77,8 @@ namespace NMF.Interop.Ecore
             {
                 if ((this._instanceClassName != value))
                 {
+                    this.OnInstanceClassNameChanging(EventArgs.Empty);
+                    this.OnPropertyChanging("InstanceClassName");
                     string old = this._instanceClassName;
                     this._instanceClassName = value;
                     ValueChangedEventArgs e = new ValueChangedEventArgs(old, value);
@@ -100,6 +103,8 @@ namespace NMF.Interop.Ecore
             {
                 if ((this._instanceTypeName != value))
                 {
+                    this.OnInstanceTypeNameChanging(EventArgs.Empty);
+                    this.OnPropertyChanging("InstanceTypeName");
                     string old = this._instanceTypeName;
                     this._instanceTypeName = value;
                     ValueChangedEventArgs e = new ValueChangedEventArgs(old, value);
@@ -178,9 +183,19 @@ namespace NMF.Interop.Ecore
         }
         
         /// <summary>
+        /// Gets fired before the InstanceClassName property changes its value
+        /// </summary>
+        public event EventHandler InstanceClassNameChanging;
+        
+        /// <summary>
         /// Gets fired when the InstanceClassName property changed its value
         /// </summary>
         public event EventHandler<ValueChangedEventArgs> InstanceClassNameChanged;
+        
+        /// <summary>
+        /// Gets fired before the InstanceTypeName property changes its value
+        /// </summary>
+        public event EventHandler InstanceTypeNameChanging;
         
         /// <summary>
         /// Gets fired when the InstanceTypeName property changed its value
@@ -193,12 +208,38 @@ namespace NMF.Interop.Ecore
         public event EventHandler<ValueChangedEventArgs> EPackageChanged;
         
         /// <summary>
+        /// Raises the InstanceClassNameChanging event
+        /// </summary>
+        /// <param name="eventArgs">The event data</param>
+        protected virtual void OnInstanceClassNameChanging(EventArgs eventArgs)
+        {
+            EventHandler handler = this.InstanceClassNameChanging;
+            if ((handler != null))
+            {
+                handler.Invoke(this, eventArgs);
+            }
+        }
+        
+        /// <summary>
         /// Raises the InstanceClassNameChanged event
         /// </summary>
         /// <param name="eventArgs">The event data</param>
         protected virtual void OnInstanceClassNameChanged(ValueChangedEventArgs eventArgs)
         {
             EventHandler<ValueChangedEventArgs> handler = this.InstanceClassNameChanged;
+            if ((handler != null))
+            {
+                handler.Invoke(this, eventArgs);
+            }
+        }
+        
+        /// <summary>
+        /// Raises the InstanceTypeNameChanging event
+        /// </summary>
+        /// <param name="eventArgs">The event data</param>
+        protected virtual void OnInstanceTypeNameChanging(EventArgs eventArgs)
+        {
+            EventHandler handler = this.InstanceTypeNameChanging;
             if ((handler != null))
             {
                 handler.Invoke(this, eventArgs);
@@ -254,7 +295,17 @@ namespace NMF.Interop.Ecore
         }
         
         /// <summary>
-        /// Forwards change notifications for the ETypeParameters property to the parent model element
+        /// Forwards CollectionChanging notifications for the ETypeParameters property to the parent model element
+        /// </summary>
+        /// <param name="sender">The collection that raised the change</param>
+        /// <param name="e">The original event data</param>
+        private void ETypeParametersCollectionChanging(object sender, NMF.Collections.ObjectModel.NotifyCollectionChangingEventArgs e)
+        {
+            this.OnCollectionChanging("ETypeParameters", e);
+        }
+        
+        /// <summary>
+        /// Forwards CollectionChanged notifications for the ETypeParameters property to the parent model element
         /// </summary>
         /// <param name="sender">The collection that raised the change</param>
         /// <param name="e">The original event data</param>

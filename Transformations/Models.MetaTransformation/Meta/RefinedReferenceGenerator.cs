@@ -138,7 +138,8 @@ namespace NMF.Models.Meta
                         property.SetStatements.Add(ifNotDefault);
                     }
 
-                    CreateChangeEvent(property, implementations, context);
+                    CreateChangeEvent(property, implementations, context, "EventHandler<ValueChangedEventArgs>", "Changed");
+                    CreateChangeEvent(property, implementations, context, "EventHandler", "Changing");
                 }
                 else
                 {
@@ -157,9 +158,9 @@ namespace NMF.Models.Meta
                 }
             }
 
-            private void CreateChangeEvent(CodeMemberProperty property, List<IReference> implementations, ITransformationContext context)
+            private void CreateChangeEvent(CodeMemberProperty property, List<IReference> implementations, ITransformationContext context, string eventHandler, string eventNameSuffix)
             {
-                var eventSnippet = @"        event EventHandler<ValueChangedEventArgs> {0}.{1}
+                var eventSnippet = @"        event {4} {0}.{1}
         {{
             add
             {{{2}
@@ -174,7 +175,7 @@ namespace NMF.Models.Meta
                 foreach (var impl in implementations)
                 {
                     var implTypeRef = CreateReference(impl.DeclaringType, true, context);
-                    var name = impl.Name.ToPascalCase() + "Changed";
+                    var name = impl.Name.ToPascalCase() + eventNameSuffix;
                     if (casts.Add(implTypeRef.BaseType))
                     {
                         var thisDeclaration = string.Format("\r\n                I{0} _this_{0} = this;", implTypeRef.BaseType);
@@ -184,7 +185,7 @@ namespace NMF.Models.Meta
                     addEvents += string.Format("\r\n                _this_{1}.{0} += value;", name, implTypeRef.BaseType);
                     removeEvents += string.Format("\r\n                _this_{1}.{0} -= value;", name, implTypeRef.BaseType);
                 }
-                eventSnippet = string.Format(eventSnippet, property.PrivateImplementationType.BaseType, property.Name + "Changed", addEvents, removeEvents);
+                eventSnippet = string.Format(eventSnippet, property.PrivateImplementationType.BaseType, property.Name + eventNameSuffix, addEvents, removeEvents, eventHandler);
                 property.DependentMembers(true).Add(new CodeSnippetTypeMember(eventSnippet));
             }
 

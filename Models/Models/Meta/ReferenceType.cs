@@ -55,8 +55,10 @@ namespace NMF.Models.Meta
         public ReferenceType()
         {
             this._events = new ReferenceTypeEventsCollection(this);
+            this._events.CollectionChanging += this.EventsCollectionChanging;
             this._events.CollectionChanged += this.EventsCollectionChanged;
             this._references = new ReferenceTypeReferencesCollection(this);
+            this._references.CollectionChanging += this.ReferencesCollectionChanging;
             this._references.CollectionChanged += this.ReferencesCollectionChanged;
         }
         
@@ -130,7 +132,17 @@ namespace NMF.Models.Meta
         }
         
         /// <summary>
-        /// Forwards change notifications for the Events property to the parent model element
+        /// Forwards CollectionChanging notifications for the Events property to the parent model element
+        /// </summary>
+        /// <param name="sender">The collection that raised the change</param>
+        /// <param name="e">The original event data</param>
+        private void EventsCollectionChanging(object sender, NMF.Collections.ObjectModel.NotifyCollectionChangingEventArgs e)
+        {
+            this.OnCollectionChanging("Events", e);
+        }
+        
+        /// <summary>
+        /// Forwards CollectionChanged notifications for the Events property to the parent model element
         /// </summary>
         /// <param name="sender">The collection that raised the change</param>
         /// <param name="e">The original event data</param>
@@ -140,7 +152,17 @@ namespace NMF.Models.Meta
         }
         
         /// <summary>
-        /// Forwards change notifications for the References property to the parent model element
+        /// Forwards CollectionChanging notifications for the References property to the parent model element
+        /// </summary>
+        /// <param name="sender">The collection that raised the change</param>
+        /// <param name="e">The original event data</param>
+        private void ReferencesCollectionChanging(object sender, NMF.Collections.ObjectModel.NotifyCollectionChangingEventArgs e)
+        {
+            this.OnCollectionChanging("References", e);
+        }
+        
+        /// <summary>
+        /// Forwards CollectionChanged notifications for the References property to the parent model element
         /// </summary>
         /// <param name="sender">The collection that raised the change</param>
         /// <param name="e">The original event data</param>

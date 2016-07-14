@@ -102,9 +102,19 @@ namespace NMF.Interop.Ecore
         }
         
         /// <summary>
+        /// Gets fired before the Changeable property changes its value
+        /// </summary>
+        event EventHandler ChangeableChanging;
+        
+        /// <summary>
         /// Gets fired when the Changeable property changed its value
         /// </summary>
         event EventHandler<ValueChangedEventArgs> ChangeableChanged;
+        
+        /// <summary>
+        /// Gets fired before the Volatile property changes its value
+        /// </summary>
+        event EventHandler VolatileChanging;
         
         /// <summary>
         /// Gets fired when the Volatile property changed its value
@@ -112,9 +122,19 @@ namespace NMF.Interop.Ecore
         event EventHandler<ValueChangedEventArgs> VolatileChanged;
         
         /// <summary>
+        /// Gets fired before the Transient property changes its value
+        /// </summary>
+        event EventHandler TransientChanging;
+        
+        /// <summary>
         /// Gets fired when the Transient property changed its value
         /// </summary>
         event EventHandler<ValueChangedEventArgs> TransientChanged;
+        
+        /// <summary>
+        /// Gets fired before the DefaultValueLiteral property changes its value
+        /// </summary>
+        event EventHandler DefaultValueLiteralChanging;
         
         /// <summary>
         /// Gets fired when the DefaultValueLiteral property changed its value
@@ -122,9 +142,19 @@ namespace NMF.Interop.Ecore
         event EventHandler<ValueChangedEventArgs> DefaultValueLiteralChanged;
         
         /// <summary>
+        /// Gets fired before the Unsettable property changes its value
+        /// </summary>
+        event EventHandler UnsettableChanging;
+        
+        /// <summary>
         /// Gets fired when the Unsettable property changed its value
         /// </summary>
         event EventHandler<ValueChangedEventArgs> UnsettableChanged;
+        
+        /// <summary>
+        /// Gets fired before the Derived property changes its value
+        /// </summary>
+        event EventHandler DerivedChanging;
         
         /// <summary>
         /// Gets fired when the Derived property changed its value

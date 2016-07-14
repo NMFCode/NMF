@@ -48,6 +48,11 @@ namespace NMF.Models.Meta
         }
         
         /// <summary>
+        /// Gets fired before the SystemType property changes its value
+        /// </summary>
+        event EventHandler SystemTypeChanging;
+        
+        /// <summary>
         /// Gets fired when the SystemType property changed its value
         /// </summary>
         event EventHandler<ValueChangedEventArgs> SystemTypeChanged;

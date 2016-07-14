@@ -83,9 +83,19 @@ namespace NMF.Models.Meta
         }
         
         /// <summary>
+        /// Gets fired before the AbsoluteUri property changes its value
+        /// </summary>
+        event EventHandler AbsoluteUriChanging;
+        
+        /// <summary>
         /// Gets fired when the AbsoluteUri property changed its value
         /// </summary>
         event EventHandler<ValueChangedEventArgs> AbsoluteUriChanged;
+        
+        /// <summary>
+        /// Gets fired before the RelativeUri property changes its value
+        /// </summary>
+        event EventHandler RelativeUriChanging;
         
         /// <summary>
         /// Gets fired when the RelativeUri property changed its value
@@ -93,9 +103,19 @@ namespace NMF.Models.Meta
         event EventHandler<ValueChangedEventArgs> RelativeUriChanged;
         
         /// <summary>
+        /// Gets fired before the Parent property changes its value
+        /// </summary>
+        event EventHandler ParentChanging;
+        
+        /// <summary>
         /// Gets fired when the Parent property changed its value
         /// </summary>
         event EventHandler<ValueChangedEventArgs> ParentChanged;
+        
+        /// <summary>
+        /// Gets fired before the Type property changes its value
+        /// </summary>
+        event EventHandler TypeChanging;
         
         /// <summary>
         /// Gets fired when the Type property changed its value

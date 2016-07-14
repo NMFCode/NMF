@@ -21,10 +21,11 @@ namespace NMF.Models
     /// Defines the base class for a model element implementation
     /// </summary>
     [ModelRepresentationClassAttribute("http://nmf.codeplex.com/nmeta/#//ModelElement/")]
-    public abstract class ModelElement : IModelElement, INotifyPropertyChanged
+    public abstract class ModelElement : IModelElement, INotifyPropertyChanged, INotifyPropertyChanging
     {
         private IModelElement parent;
         private ObservableList<ModelElementExtension> extensions;
+        private bool deleting = false;
 
         /// <summary>
         /// Gets the model that contains the current model element
@@ -59,9 +60,6 @@ namespace NMF.Models
         {
             if (newParent != parent)
             {
-                if (newParent == null)
-                    OnBubbledChange(BubbledChangeEventArgs.ElementDeleted(this));
-
                 var oldParent = parent;
                 parent = newParent;
                 if (newParent != null)
@@ -158,7 +156,10 @@ namespace NMF.Models
             }
             set
             {
-                SetParent(value);
+                if (value == null)
+                    Delete();
+                else
+                    SetParent(value);
             }
         }
 
@@ -592,8 +593,21 @@ namespace NMF.Models
         /// <param name="valueChangedEvent">The original event data</param>
         protected virtual void OnPropertyChanged(string propertyName, ValueChangedEventArgs valueChangedEvent)
         {
-            if (PropertyChanged != null) PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
-            OnBubbledChange(BubbledChangeEventArgs.PropertyChanged(this, propertyName, valueChangedEvent));
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+            if (!deleting)
+                OnBubbledChange(BubbledChangeEventArgs.PropertyChanged(this, propertyName, valueChangedEvent));
+        }
+
+
+        /// <summary>
+        /// Gets called when the PropertyChanging event is fired
+        /// </summary>
+        /// <param name="propertyName">The name of the changed property</param>
+        protected virtual void OnPropertyChanging(string propertyName)
+        {
+            PropertyChanging?.Invoke(this, new PropertyChangingEventArgs(propertyName));
+            if (!deleting)
+                OnBubbledChange(BubbledChangeEventArgs.PropertyChanging(this, propertyName));
         }
 
 
@@ -602,22 +616,35 @@ namespace NMF.Models
         /// </summary>
         public virtual void Delete()
         {
-            OnDeleted(EventArgs.Empty);
+            if (!deleting)
+            {
+                deleting = true;
+                var originalAbsoluteUri = AbsoluteUri;
+                OnDeleting(EventArgs.Empty, originalAbsoluteUri);
+                OnDeleted(EventArgs.Empty, originalAbsoluteUri);
+                SetParent(null);
+            }
         }
 
+        
+        /// <summary>
+        /// Gets called before the model element gets deleted
+        /// </summary>
+        /// <param name="e"></param>
+        protected virtual void OnDeleting(EventArgs e, Uri originalAbsoluteUri)
+        {
+            Deleting?.Invoke(this, e);
+            OnBubbledChange(BubbledChangeEventArgs.ElementDeleting(this, originalAbsoluteUri));
+        }
 
         /// <summary>
         /// Gets called when the model element gets deleted
         /// </summary>
         /// <param name="e">The event data</param>
-        protected virtual void OnDeleted(EventArgs e)
+        protected virtual void OnDeleted(EventArgs e, Uri originalAbsoluteUri)
         {
-            var handler = Interlocked.Exchange(ref Deleted, null);
-            if (handler != null)
-            {
-                handler(this, e);
-            }
-            SetParent(null);
+            Deleted?.Invoke(this, e);
+            OnBubbledChange(BubbledChangeEventArgs.ElementDeleted(this, originalAbsoluteUri));
         }
 
         internal void CascadeDelete(object sender, EventArgs e)
@@ -633,9 +660,21 @@ namespace NMF.Models
 
 
         /// <summary>
-        /// Gets fired when the model element gets deleted
+        /// Gets fired before a property value changes
+        /// </summary>
+        public event PropertyChangingEventHandler PropertyChanging;
+
+
+        /// <summary>
+        /// Gets fired after the model element has been deleted
         /// </summary>
         public event EventHandler Deleted;
+
+
+        /// <summary>
+        /// Gets fired before the model element gets deleted
+        /// </summary>
+        public event EventHandler Deleting;
 
 
         /// <summary>
@@ -743,7 +782,19 @@ namespace NMF.Models
         /// <param name="e">The event data</param>
         protected void OnCollectionChanged(string propertyName, NotifyCollectionChangedEventArgs e)
         {
-            OnBubbledChange(BubbledChangeEventArgs.CollectionChanged(this, propertyName, e));
+            if (!deleting)
+                OnBubbledChange(BubbledChangeEventArgs.CollectionChanged(this, propertyName, e));
+        }
+
+        /// <summary>
+        /// Raises the Bubbled Change event for the given upcoming collection change
+        /// </summary>
+        /// <param name="propertyName">The name of the property that has changed</param>
+        /// <param name="e">The event data</param>
+        protected void OnCollectionChanging(string propertyName, NotifyCollectionChangingEventArgs e)
+        {
+            if (!deleting)
+                OnBubbledChange(BubbledChangeEventArgs.CollectionChanging(this, propertyName, e));
         }
 
         /// <summary>

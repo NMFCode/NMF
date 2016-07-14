@@ -54,6 +54,7 @@ namespace NMF.Models.Meta
         public Model()
         {
             this._rootElements = new ObservableCompositionList<NMF.Models.Meta.IModelElement>(this);
+            this._rootElements.CollectionChanging += this.RootElementsCollectionChanging;
             this._rootElements.CollectionChanged += this.RootElementsCollectionChanged;
         }
         
@@ -71,6 +72,8 @@ namespace NMF.Models.Meta
             {
                 if ((this._modelUri != value))
                 {
+                    this.OnModelUriChanging(EventArgs.Empty);
+                    this.OnPropertyChanging("ModelUri");
                     Uri old = this._modelUri;
                     this._modelUri = value;
                     ValueChangedEventArgs e = new ValueChangedEventArgs(old, value);
@@ -133,9 +136,27 @@ namespace NMF.Models.Meta
         }
         
         /// <summary>
+        /// Gets fired before the ModelUri property changes its value
+        /// </summary>
+        public event EventHandler ModelUriChanging;
+        
+        /// <summary>
         /// Gets fired when the ModelUri property changed its value
         /// </summary>
         public event EventHandler<ValueChangedEventArgs> ModelUriChanged;
+        
+        /// <summary>
+        /// Raises the ModelUriChanging event
+        /// </summary>
+        /// <param name="eventArgs">The event data</param>
+        protected virtual void OnModelUriChanging(EventArgs eventArgs)
+        {
+            EventHandler handler = this.ModelUriChanging;
+            if ((handler != null))
+            {
+                handler.Invoke(this, eventArgs);
+            }
+        }
         
         /// <summary>
         /// Raises the ModelUriChanged event
@@ -151,7 +172,17 @@ namespace NMF.Models.Meta
         }
         
         /// <summary>
-        /// Forwards change notifications for the RootElements property to the parent model element
+        /// Forwards CollectionChanging notifications for the RootElements property to the parent model element
+        /// </summary>
+        /// <param name="sender">The collection that raised the change</param>
+        /// <param name="e">The original event data</param>
+        private void RootElementsCollectionChanging(object sender, NMF.Collections.ObjectModel.NotifyCollectionChangingEventArgs e)
+        {
+            this.OnCollectionChanging("RootElements", e);
+        }
+        
+        /// <summary>
+        /// Forwards CollectionChanged notifications for the RootElements property to the parent model element
         /// </summary>
         /// <param name="sender">The collection that raised the change</param>
         /// <param name="e">The original event data</param>

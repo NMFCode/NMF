@@ -93,6 +93,11 @@ namespace NMF.Models.Meta
         }
         
         /// <summary>
+        /// Gets fired before the IsContainment property changes its value
+        /// </summary>
+        event EventHandler IsContainmentChanging;
+        
+        /// <summary>
         /// Gets fired when the IsContainment property changed its value
         /// </summary>
         event EventHandler<ValueChangedEventArgs> IsContainmentChanged;
@@ -103,9 +108,19 @@ namespace NMF.Models.Meta
         event EventHandler<ValueChangedEventArgs> DeclaringTypeChanged;
         
         /// <summary>
+        /// Gets fired before the Opposite property changes its value
+        /// </summary>
+        event EventHandler OppositeChanging;
+        
+        /// <summary>
         /// Gets fired when the Opposite property changed its value
         /// </summary>
         event EventHandler<ValueChangedEventArgs> OppositeChanged;
+        
+        /// <summary>
+        /// Gets fired before the ReferenceType property changes its value
+        /// </summary>
+        event EventHandler ReferenceTypeChanging;
         
         /// <summary>
         /// Gets fired when the ReferenceType property changed its value
@@ -113,9 +128,19 @@ namespace NMF.Models.Meta
         event EventHandler<ValueChangedEventArgs> ReferenceTypeChanged;
         
         /// <summary>
+        /// Gets fired before the Refines property changes its value
+        /// </summary>
+        event EventHandler RefinesChanging;
+        
+        /// <summary>
         /// Gets fired when the Refines property changed its value
         /// </summary>
         event EventHandler<ValueChangedEventArgs> RefinesChanged;
+        
+        /// <summary>
+        /// Gets fired before the Anchor property changes its value
+        /// </summary>
+        event EventHandler AnchorChanging;
         
         /// <summary>
         /// Gets fired when the Anchor property changed its value

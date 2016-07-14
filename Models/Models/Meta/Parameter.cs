@@ -61,6 +61,8 @@ namespace NMF.Models.Meta
             {
                 if ((this._direction != value))
                 {
+                    this.OnDirectionChanging(EventArgs.Empty);
+                    this.OnPropertyChanging("Direction");
                     Direction old = this._direction;
                     this._direction = value;
                     ValueChangedEventArgs e = new ValueChangedEventArgs(old, value);
@@ -115,6 +117,11 @@ namespace NMF.Models.Meta
         }
         
         /// <summary>
+        /// Gets fired before the Direction property changes its value
+        /// </summary>
+        public event EventHandler DirectionChanging;
+        
+        /// <summary>
         /// Gets fired when the Direction property changed its value
         /// </summary>
         public event EventHandler<ValueChangedEventArgs> DirectionChanged;
@@ -123,6 +130,19 @@ namespace NMF.Models.Meta
         /// Gets fired when the Operation property changed its value
         /// </summary>
         public event EventHandler<ValueChangedEventArgs> OperationChanged;
+        
+        /// <summary>
+        /// Raises the DirectionChanging event
+        /// </summary>
+        /// <param name="eventArgs">The event data</param>
+        protected virtual void OnDirectionChanging(EventArgs eventArgs)
+        {
+            EventHandler handler = this.DirectionChanging;
+            if ((handler != null))
+            {
+                handler.Invoke(this, eventArgs);
+            }
+        }
         
         /// <summary>
         /// Raises the DirectionChanged event

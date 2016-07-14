@@ -100,9 +100,19 @@ namespace NMF.Models.Meta
         }
         
         /// <summary>
+        /// Gets fired before the IsAbstract property changes its value
+        /// </summary>
+        event EventHandler IsAbstractChanging;
+        
+        /// <summary>
         /// Gets fired when the IsAbstract property changed its value
         /// </summary>
         event EventHandler<ValueChangedEventArgs> IsAbstractChanged;
+        
+        /// <summary>
+        /// Gets fired before the IdentifierScope property changes its value
+        /// </summary>
+        event EventHandler IdentifierScopeChanging;
         
         /// <summary>
         /// Gets fired when the IdentifierScope property changed its value
@@ -110,9 +120,19 @@ namespace NMF.Models.Meta
         event EventHandler<ValueChangedEventArgs> IdentifierScopeChanged;
         
         /// <summary>
+        /// Gets fired before the InstanceOf property changes its value
+        /// </summary>
+        event EventHandler InstanceOfChanging;
+        
+        /// <summary>
         /// Gets fired when the InstanceOf property changed its value
         /// </summary>
         event EventHandler<ValueChangedEventArgs> InstanceOfChanged;
+        
+        /// <summary>
+        /// Gets fired before the Identifier property changes its value
+        /// </summary>
+        event EventHandler IdentifierChanging;
         
         /// <summary>
         /// Gets fired when the Identifier property changed its value

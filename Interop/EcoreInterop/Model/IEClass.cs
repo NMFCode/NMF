@@ -89,9 +89,19 @@ namespace NMF.Interop.Ecore
         }
         
         /// <summary>
+        /// Gets fired before the Abstract property changes its value
+        /// </summary>
+        event EventHandler AbstractChanging;
+        
+        /// <summary>
         /// Gets fired when the Abstract property changed its value
         /// </summary>
         event EventHandler<ValueChangedEventArgs> AbstractChanged;
+        
+        /// <summary>
+        /// Gets fired before the Interface property changes its value
+        /// </summary>
+        event EventHandler InterfaceChanging;
         
         /// <summary>
         /// Gets fired when the Interface property changed its value

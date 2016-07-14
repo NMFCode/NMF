@@ -1,4 +1,6 @@
-﻿using System;
+﻿using NMF.Models.Repository;
+using NMF.Serialization;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -7,9 +9,8 @@ namespace NMF.Models.Evolution
 {
     public interface IModelChange
     {
-        void Do();
-        void Undo();
+        Uri AbsoluteUri { get; }
 
-        bool CanUndo { get; }
+        void Apply(IModelRepository repository);
     }
 }

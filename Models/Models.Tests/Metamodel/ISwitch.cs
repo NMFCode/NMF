@@ -56,6 +56,11 @@ namespace NMF.Models.Tests.Railway
         }
         
         /// <summary>
+        /// Gets fired before the CurrentPosition property changes its value
+        /// </summary>
+        event EventHandler CurrentPositionChanging;
+        
+        /// <summary>
         /// Gets fired when the CurrentPosition property changed its value
         /// </summary>
         event EventHandler<ValueChangedEventArgs> CurrentPositionChanged;

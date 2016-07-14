@@ -81,6 +81,11 @@ namespace NMF.Interop.Ecore
         }
         
         /// <summary>
+        /// Gets fired before the Source property changes its value
+        /// </summary>
+        event EventHandler SourceChanging;
+        
+        /// <summary>
         /// Gets fired when the Source property changed its value
         /// </summary>
         event EventHandler<ValueChangedEventArgs> SourceChanged;

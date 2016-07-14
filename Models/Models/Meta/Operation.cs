@@ -55,6 +55,7 @@ namespace NMF.Models.Meta
         public Operation()
         {
             this._parameters = new OperationParametersCollection(this);
+            this._parameters.CollectionChanging += this.ParametersCollectionChanging;
             this._parameters.CollectionChanged += this.ParametersCollectionChanged;
         }
         
@@ -106,6 +107,8 @@ namespace NMF.Models.Meta
             {
                 if ((this._refines != value))
                 {
+                    this.OnRefinesChanging(EventArgs.Empty);
+                    this.OnPropertyChanging("Refines");
                     IOperation old = this._refines;
                     this._refines = value;
                     if ((old != null))
@@ -166,12 +169,27 @@ namespace NMF.Models.Meta
         public event EventHandler<ValueChangedEventArgs> DeclaringTypeChanged;
         
         /// <summary>
+        /// Gets fired before the Refines property changes its value
+        /// </summary>
+        public event EventHandler RefinesChanging;
+        
+        /// <summary>
         /// Gets fired when the Refines property changed its value
         /// </summary>
         public event EventHandler<ValueChangedEventArgs> RefinesChanged;
         
         /// <summary>
-        /// Forwards change notifications for the Parameters property to the parent model element
+        /// Forwards CollectionChanging notifications for the Parameters property to the parent model element
+        /// </summary>
+        /// <param name="sender">The collection that raised the change</param>
+        /// <param name="e">The original event data</param>
+        private void ParametersCollectionChanging(object sender, NMF.Collections.ObjectModel.NotifyCollectionChangingEventArgs e)
+        {
+            this.OnCollectionChanging("Parameters", e);
+        }
+        
+        /// <summary>
+        /// Forwards CollectionChanged notifications for the Parameters property to the parent model element
         /// </summary>
         /// <param name="sender">The collection that raised the change</param>
         /// <param name="e">The original event data</param>
@@ -213,6 +231,19 @@ namespace NMF.Models.Meta
             ValueChangedEventArgs e = new ValueChangedEventArgs(oldDeclaringType, newDeclaringType);
             this.OnDeclaringTypeChanged(e);
             this.OnPropertyChanged("DeclaringType", e);
+        }
+        
+        /// <summary>
+        /// Raises the RefinesChanging event
+        /// </summary>
+        /// <param name="eventArgs">The event data</param>
+        protected virtual void OnRefinesChanging(EventArgs eventArgs)
+        {
+            EventHandler handler = this.RefinesChanging;
+            if ((handler != null))
+            {
+                handler.Invoke(this, eventArgs);
+            }
         }
         
         /// <summary>

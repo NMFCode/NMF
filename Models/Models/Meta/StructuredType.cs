@@ -55,8 +55,10 @@ namespace NMF.Models.Meta
         public StructuredType()
         {
             this._operations = new StructuredTypeOperationsCollection(this);
+            this._operations.CollectionChanging += this.OperationsCollectionChanging;
             this._operations.CollectionChanged += this.OperationsCollectionChanged;
             this._attributes = new StructuredTypeAttributesCollection(this);
+            this._attributes.CollectionChanging += this.AttributesCollectionChanging;
             this._attributes.CollectionChanged += this.AttributesCollectionChanged;
         }
         
@@ -130,7 +132,17 @@ namespace NMF.Models.Meta
         }
         
         /// <summary>
-        /// Forwards change notifications for the Operations property to the parent model element
+        /// Forwards CollectionChanging notifications for the Operations property to the parent model element
+        /// </summary>
+        /// <param name="sender">The collection that raised the change</param>
+        /// <param name="e">The original event data</param>
+        private void OperationsCollectionChanging(object sender, NMF.Collections.ObjectModel.NotifyCollectionChangingEventArgs e)
+        {
+            this.OnCollectionChanging("Operations", e);
+        }
+        
+        /// <summary>
+        /// Forwards CollectionChanged notifications for the Operations property to the parent model element
         /// </summary>
         /// <param name="sender">The collection that raised the change</param>
         /// <param name="e">The original event data</param>
@@ -140,7 +152,17 @@ namespace NMF.Models.Meta
         }
         
         /// <summary>
-        /// Forwards change notifications for the Attributes property to the parent model element
+        /// Forwards CollectionChanging notifications for the Attributes property to the parent model element
+        /// </summary>
+        /// <param name="sender">The collection that raised the change</param>
+        /// <param name="e">The original event data</param>
+        private void AttributesCollectionChanging(object sender, NMF.Collections.ObjectModel.NotifyCollectionChangingEventArgs e)
+        {
+            this.OnCollectionChanging("Attributes", e);
+        }
+        
+        /// <summary>
+        /// Forwards CollectionChanged notifications for the Attributes property to the parent model element
         /// </summary>
         /// <param name="sender">The collection that raised the change</param>
         /// <param name="e">The original event data</param>

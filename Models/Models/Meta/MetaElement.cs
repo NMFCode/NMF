@@ -73,6 +73,8 @@ namespace NMF.Models.Meta
             {
                 if ((this._name != value))
                 {
+                    this.OnNameChanging(EventArgs.Empty);
+                    this.OnPropertyChanging("Name");
                     string old = this._name;
                     this._name = value;
                     ValueChangedEventArgs e = new ValueChangedEventArgs(old, value);
@@ -96,6 +98,8 @@ namespace NMF.Models.Meta
             {
                 if ((this._summary != value))
                 {
+                    this.OnSummaryChanging(EventArgs.Empty);
+                    this.OnPropertyChanging("Summary");
                     string old = this._summary;
                     this._summary = value;
                     ValueChangedEventArgs e = new ValueChangedEventArgs(old, value);
@@ -119,6 +123,8 @@ namespace NMF.Models.Meta
             {
                 if ((this._remarks != value))
                 {
+                    this.OnRemarksChanging(EventArgs.Empty);
+                    this.OnPropertyChanging("Remarks");
                     string old = this._remarks;
                     this._remarks = value;
                     ValueChangedEventArgs e = new ValueChangedEventArgs(old, value);
@@ -155,9 +161,19 @@ namespace NMF.Models.Meta
         }
         
         /// <summary>
+        /// Gets fired before the Name property changes its value
+        /// </summary>
+        public event EventHandler NameChanging;
+        
+        /// <summary>
         /// Gets fired when the Name property changed its value
         /// </summary>
         public event EventHandler<ValueChangedEventArgs> NameChanged;
+        
+        /// <summary>
+        /// Gets fired before the Summary property changes its value
+        /// </summary>
+        public event EventHandler SummaryChanging;
         
         /// <summary>
         /// Gets fired when the Summary property changed its value
@@ -165,9 +181,27 @@ namespace NMF.Models.Meta
         public event EventHandler<ValueChangedEventArgs> SummaryChanged;
         
         /// <summary>
+        /// Gets fired before the Remarks property changes its value
+        /// </summary>
+        public event EventHandler RemarksChanging;
+        
+        /// <summary>
         /// Gets fired when the Remarks property changed its value
         /// </summary>
         public event EventHandler<ValueChangedEventArgs> RemarksChanged;
+        
+        /// <summary>
+        /// Raises the NameChanging event
+        /// </summary>
+        /// <param name="eventArgs">The event data</param>
+        protected virtual void OnNameChanging(EventArgs eventArgs)
+        {
+            EventHandler handler = this.NameChanging;
+            if ((handler != null))
+            {
+                handler.Invoke(this, eventArgs);
+            }
+        }
         
         /// <summary>
         /// Raises the NameChanged event
@@ -183,12 +217,38 @@ namespace NMF.Models.Meta
         }
         
         /// <summary>
+        /// Raises the SummaryChanging event
+        /// </summary>
+        /// <param name="eventArgs">The event data</param>
+        protected virtual void OnSummaryChanging(EventArgs eventArgs)
+        {
+            EventHandler handler = this.SummaryChanging;
+            if ((handler != null))
+            {
+                handler.Invoke(this, eventArgs);
+            }
+        }
+        
+        /// <summary>
         /// Raises the SummaryChanged event
         /// </summary>
         /// <param name="eventArgs">The event data</param>
         protected virtual void OnSummaryChanged(ValueChangedEventArgs eventArgs)
         {
             EventHandler<ValueChangedEventArgs> handler = this.SummaryChanged;
+            if ((handler != null))
+            {
+                handler.Invoke(this, eventArgs);
+            }
+        }
+        
+        /// <summary>
+        /// Raises the RemarksChanging event
+        /// </summary>
+        /// <param name="eventArgs">The event data</param>
+        protected virtual void OnRemarksChanging(EventArgs eventArgs)
+        {
+            EventHandler handler = this.RemarksChanging;
             if ((handler != null))
             {
                 handler.Invoke(this, eventArgs);
@@ -274,6 +334,10 @@ namespace NMF.Models.Meta
         /// <returns>The identifier string</returns>
         public override string ToIdentifierString()
         {
+            if ((this.Name == null))
+            {
+                return null;
+            }
             return this.Name.ToString();
         }
         

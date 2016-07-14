@@ -70,6 +70,8 @@ namespace NMF.Interop.Ecore
             {
                 if ((this._value != value))
                 {
+                    this.OnValueChanging(EventArgs.Empty);
+                    this.OnPropertyChanging("Value");
                     Nullable<int> old = this._value;
                     this._value = value;
                     ValueChangedEventArgs e = new ValueChangedEventArgs(old, value);
@@ -94,6 +96,8 @@ namespace NMF.Interop.Ecore
             {
                 if ((this._instance != value))
                 {
+                    this.OnInstanceChanging(EventArgs.Empty);
+                    this.OnPropertyChanging("Instance");
                     object old = this._instance;
                     this._instance = value;
                     ValueChangedEventArgs e = new ValueChangedEventArgs(old, value);
@@ -118,6 +122,8 @@ namespace NMF.Interop.Ecore
             {
                 if ((this._literal != value))
                 {
+                    this.OnLiteralChanging(EventArgs.Empty);
+                    this.OnPropertyChanging("Literal");
                     string old = this._literal;
                     this._literal = value;
                     ValueChangedEventArgs e = new ValueChangedEventArgs(old, value);
@@ -169,14 +175,29 @@ namespace NMF.Interop.Ecore
         }
         
         /// <summary>
+        /// Gets fired before the Value property changes its value
+        /// </summary>
+        public event EventHandler ValueChanging;
+        
+        /// <summary>
         /// Gets fired when the Value property changed its value
         /// </summary>
         public event EventHandler<ValueChangedEventArgs> ValueChanged;
         
         /// <summary>
+        /// Gets fired before the Instance property changes its value
+        /// </summary>
+        public event EventHandler InstanceChanging;
+        
+        /// <summary>
         /// Gets fired when the Instance property changed its value
         /// </summary>
         public event EventHandler<ValueChangedEventArgs> InstanceChanged;
+        
+        /// <summary>
+        /// Gets fired before the Literal property changes its value
+        /// </summary>
+        public event EventHandler LiteralChanging;
         
         /// <summary>
         /// Gets fired when the Literal property changed its value
@@ -187,6 +208,19 @@ namespace NMF.Interop.Ecore
         /// Gets fired when the EEnum property changed its value
         /// </summary>
         public event EventHandler<ValueChangedEventArgs> EEnumChanged;
+        
+        /// <summary>
+        /// Raises the ValueChanging event
+        /// </summary>
+        /// <param name="eventArgs">The event data</param>
+        protected virtual void OnValueChanging(EventArgs eventArgs)
+        {
+            EventHandler handler = this.ValueChanging;
+            if ((handler != null))
+            {
+                handler.Invoke(this, eventArgs);
+            }
+        }
         
         /// <summary>
         /// Raises the ValueChanged event
@@ -202,12 +236,38 @@ namespace NMF.Interop.Ecore
         }
         
         /// <summary>
+        /// Raises the InstanceChanging event
+        /// </summary>
+        /// <param name="eventArgs">The event data</param>
+        protected virtual void OnInstanceChanging(EventArgs eventArgs)
+        {
+            EventHandler handler = this.InstanceChanging;
+            if ((handler != null))
+            {
+                handler.Invoke(this, eventArgs);
+            }
+        }
+        
+        /// <summary>
         /// Raises the InstanceChanged event
         /// </summary>
         /// <param name="eventArgs">The event data</param>
         protected virtual void OnInstanceChanged(ValueChangedEventArgs eventArgs)
         {
             EventHandler<ValueChangedEventArgs> handler = this.InstanceChanged;
+            if ((handler != null))
+            {
+                handler.Invoke(this, eventArgs);
+            }
+        }
+        
+        /// <summary>
+        /// Raises the LiteralChanging event
+        /// </summary>
+        /// <param name="eventArgs">The event data</param>
+        protected virtual void OnLiteralChanging(EventArgs eventArgs)
+        {
+            EventHandler handler = this.LiteralChanging;
             if ((handler != null))
             {
                 handler.Invoke(this, eventArgs);

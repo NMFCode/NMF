@@ -80,10 +80,13 @@ namespace NMF.Models.Meta
         public Class()
         {
             this._baseTypes = new ObservableAssociationList<IClass>();
+            this._baseTypes.CollectionChanging += this.BaseTypesCollectionChanging;
             this._baseTypes.CollectionChanged += this.BaseTypesCollectionChanged;
             this._attributeConstraints = new ClassAttributeConstraintsCollection(this);
+            this._attributeConstraints.CollectionChanging += this.AttributeConstraintsCollectionChanging;
             this._attributeConstraints.CollectionChanged += this.AttributeConstraintsCollectionChanged;
             this._referenceConstraints = new ClassReferenceConstraintsCollection(this);
+            this._referenceConstraints.CollectionChanging += this.ReferenceConstraintsCollectionChanging;
             this._referenceConstraints.CollectionChanged += this.ReferenceConstraintsCollectionChanged;
         }
         
@@ -102,6 +105,8 @@ namespace NMF.Models.Meta
             {
                 if ((this._isAbstract != value))
                 {
+                    this.OnIsAbstractChanging(EventArgs.Empty);
+                    this.OnPropertyChanging("IsAbstract");
                     bool old = this._isAbstract;
                     this._isAbstract = value;
                     ValueChangedEventArgs e = new ValueChangedEventArgs(old, value);
@@ -126,6 +131,8 @@ namespace NMF.Models.Meta
             {
                 if ((this._identifierScope != value))
                 {
+                    this.OnIdentifierScopeChanging(EventArgs.Empty);
+                    this.OnPropertyChanging("IdentifierScope");
                     IdentifierScope old = this._identifierScope;
                     this._identifierScope = value;
                     ValueChangedEventArgs e = new ValueChangedEventArgs(old, value);
@@ -163,6 +170,8 @@ namespace NMF.Models.Meta
             {
                 if ((this._instanceOf != value))
                 {
+                    this.OnInstanceOfChanging(EventArgs.Empty);
+                    this.OnPropertyChanging("InstanceOf");
                     IClass old = this._instanceOf;
                     this._instanceOf = value;
                     if ((old != null))
@@ -194,6 +203,8 @@ namespace NMF.Models.Meta
             {
                 if ((this._identifier != value))
                 {
+                    this.OnIdentifierChanging(EventArgs.Empty);
+                    this.OnPropertyChanging("Identifier");
                     IAttribute old = this._identifier;
                     this._identifier = value;
                     if ((old != null))
@@ -281,9 +292,19 @@ namespace NMF.Models.Meta
         }
         
         /// <summary>
+        /// Gets fired before the IsAbstract property changes its value
+        /// </summary>
+        public event EventHandler IsAbstractChanging;
+        
+        /// <summary>
         /// Gets fired when the IsAbstract property changed its value
         /// </summary>
         public event EventHandler<ValueChangedEventArgs> IsAbstractChanged;
+        
+        /// <summary>
+        /// Gets fired before the IdentifierScope property changes its value
+        /// </summary>
+        public event EventHandler IdentifierScopeChanging;
         
         /// <summary>
         /// Gets fired when the IdentifierScope property changed its value
@@ -291,14 +312,37 @@ namespace NMF.Models.Meta
         public event EventHandler<ValueChangedEventArgs> IdentifierScopeChanged;
         
         /// <summary>
+        /// Gets fired before the InstanceOf property changes its value
+        /// </summary>
+        public event EventHandler InstanceOfChanging;
+        
+        /// <summary>
         /// Gets fired when the InstanceOf property changed its value
         /// </summary>
         public event EventHandler<ValueChangedEventArgs> InstanceOfChanged;
         
         /// <summary>
+        /// Gets fired before the Identifier property changes its value
+        /// </summary>
+        public event EventHandler IdentifierChanging;
+        
+        /// <summary>
         /// Gets fired when the Identifier property changed its value
         /// </summary>
         public event EventHandler<ValueChangedEventArgs> IdentifierChanged;
+        
+        /// <summary>
+        /// Raises the IsAbstractChanging event
+        /// </summary>
+        /// <param name="eventArgs">The event data</param>
+        protected virtual void OnIsAbstractChanging(EventArgs eventArgs)
+        {
+            EventHandler handler = this.IsAbstractChanging;
+            if ((handler != null))
+            {
+                handler.Invoke(this, eventArgs);
+            }
+        }
         
         /// <summary>
         /// Raises the IsAbstractChanged event
@@ -307,6 +351,19 @@ namespace NMF.Models.Meta
         protected virtual void OnIsAbstractChanged(ValueChangedEventArgs eventArgs)
         {
             EventHandler<ValueChangedEventArgs> handler = this.IsAbstractChanged;
+            if ((handler != null))
+            {
+                handler.Invoke(this, eventArgs);
+            }
+        }
+        
+        /// <summary>
+        /// Raises the IdentifierScopeChanging event
+        /// </summary>
+        /// <param name="eventArgs">The event data</param>
+        protected virtual void OnIdentifierScopeChanging(EventArgs eventArgs)
+        {
+            EventHandler handler = this.IdentifierScopeChanging;
             if ((handler != null))
             {
                 handler.Invoke(this, eventArgs);
@@ -327,13 +384,36 @@ namespace NMF.Models.Meta
         }
         
         /// <summary>
-        /// Forwards change notifications for the BaseTypes property to the parent model element
+        /// Forwards CollectionChanging notifications for the BaseTypes property to the parent model element
+        /// </summary>
+        /// <param name="sender">The collection that raised the change</param>
+        /// <param name="e">The original event data</param>
+        private void BaseTypesCollectionChanging(object sender, NMF.Collections.ObjectModel.NotifyCollectionChangingEventArgs e)
+        {
+            this.OnCollectionChanging("BaseTypes", e);
+        }
+        
+        /// <summary>
+        /// Forwards CollectionChanged notifications for the BaseTypes property to the parent model element
         /// </summary>
         /// <param name="sender">The collection that raised the change</param>
         /// <param name="e">The original event data</param>
         private void BaseTypesCollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
         {
             this.OnCollectionChanged("BaseTypes", e);
+        }
+        
+        /// <summary>
+        /// Raises the InstanceOfChanging event
+        /// </summary>
+        /// <param name="eventArgs">The event data</param>
+        protected virtual void OnInstanceOfChanging(EventArgs eventArgs)
+        {
+            EventHandler handler = this.InstanceOfChanging;
+            if ((handler != null))
+            {
+                handler.Invoke(this, eventArgs);
+            }
         }
         
         /// <summary>
@@ -360,6 +440,19 @@ namespace NMF.Models.Meta
         }
         
         /// <summary>
+        /// Raises the IdentifierChanging event
+        /// </summary>
+        /// <param name="eventArgs">The event data</param>
+        protected virtual void OnIdentifierChanging(EventArgs eventArgs)
+        {
+            EventHandler handler = this.IdentifierChanging;
+            if ((handler != null))
+            {
+                handler.Invoke(this, eventArgs);
+            }
+        }
+        
+        /// <summary>
         /// Raises the IdentifierChanged event
         /// </summary>
         /// <param name="eventArgs">The event data</param>
@@ -383,7 +476,17 @@ namespace NMF.Models.Meta
         }
         
         /// <summary>
-        /// Forwards change notifications for the AttributeConstraints property to the parent model element
+        /// Forwards CollectionChanging notifications for the AttributeConstraints property to the parent model element
+        /// </summary>
+        /// <param name="sender">The collection that raised the change</param>
+        /// <param name="e">The original event data</param>
+        private void AttributeConstraintsCollectionChanging(object sender, NMF.Collections.ObjectModel.NotifyCollectionChangingEventArgs e)
+        {
+            this.OnCollectionChanging("AttributeConstraints", e);
+        }
+        
+        /// <summary>
+        /// Forwards CollectionChanged notifications for the AttributeConstraints property to the parent model element
         /// </summary>
         /// <param name="sender">The collection that raised the change</param>
         /// <param name="e">The original event data</param>
@@ -393,7 +496,17 @@ namespace NMF.Models.Meta
         }
         
         /// <summary>
-        /// Forwards change notifications for the ReferenceConstraints property to the parent model element
+        /// Forwards CollectionChanging notifications for the ReferenceConstraints property to the parent model element
+        /// </summary>
+        /// <param name="sender">The collection that raised the change</param>
+        /// <param name="e">The original event data</param>
+        private void ReferenceConstraintsCollectionChanging(object sender, NMF.Collections.ObjectModel.NotifyCollectionChangingEventArgs e)
+        {
+            this.OnCollectionChanging("ReferenceConstraints", e);
+        }
+        
+        /// <summary>
+        /// Forwards CollectionChanged notifications for the ReferenceConstraints property to the parent model element
         /// </summary>
         /// <param name="sender">The collection that raised the change</param>
         /// <param name="e">The original event data</param>

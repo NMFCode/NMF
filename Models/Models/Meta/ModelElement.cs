@@ -69,6 +69,7 @@ namespace NMF.Models.Meta
         public ModelElement()
         {
             this._extensions = new ModelElementExtensionsCollection(this);
+            this._extensions.CollectionChanging += this.ExtensionsCollectionChanging;
             this._extensions.CollectionChanged += this.ExtensionsCollectionChanged;
         }
         
@@ -86,6 +87,8 @@ namespace NMF.Models.Meta
             {
                 if ((this._absoluteUri != value))
                 {
+                    this.OnAbsoluteUriChanging(EventArgs.Empty);
+                    this.OnPropertyChanging("AbsoluteUri");
                     Uri old = this._absoluteUri;
                     this._absoluteUri = value;
                     ValueChangedEventArgs e = new ValueChangedEventArgs(old, value);
@@ -109,6 +112,8 @@ namespace NMF.Models.Meta
             {
                 if ((this._relativeUri != value))
                 {
+                    this.OnRelativeUriChanging(EventArgs.Empty);
+                    this.OnPropertyChanging("RelativeUri");
                     Uri old = this._relativeUri;
                     this._relativeUri = value;
                     ValueChangedEventArgs e = new ValueChangedEventArgs(old, value);
@@ -148,6 +153,8 @@ namespace NMF.Models.Meta
             {
                 if ((this._parent != value))
                 {
+                    this.OnParentChanging(EventArgs.Empty);
+                    this.OnPropertyChanging("Parent");
                     NMF.Models.Meta.IModelElement old = this._parent;
                     this._parent = value;
                     if ((old != null))
@@ -179,6 +186,8 @@ namespace NMF.Models.Meta
             {
                 if ((this._type != value))
                 {
+                    this.OnTypeChanging(EventArgs.Empty);
+                    this.OnPropertyChanging("Type");
                     IReferenceType old = this._type;
                     this._type = value;
                     if ((old != null))
@@ -219,9 +228,19 @@ namespace NMF.Models.Meta
         }
         
         /// <summary>
+        /// Gets fired before the AbsoluteUri property changes its value
+        /// </summary>
+        public event EventHandler AbsoluteUriChanging;
+        
+        /// <summary>
         /// Gets fired when the AbsoluteUri property changed its value
         /// </summary>
         public event EventHandler<ValueChangedEventArgs> AbsoluteUriChanged;
+        
+        /// <summary>
+        /// Gets fired before the RelativeUri property changes its value
+        /// </summary>
+        public event EventHandler RelativeUriChanging;
         
         /// <summary>
         /// Gets fired when the RelativeUri property changed its value
@@ -229,9 +248,19 @@ namespace NMF.Models.Meta
         public event EventHandler<ValueChangedEventArgs> RelativeUriChanged;
         
         /// <summary>
+        /// Gets fired before the Parent property changes its value
+        /// </summary>
+        public event EventHandler ParentChanging;
+        
+        /// <summary>
         /// Gets fired when the Parent property changed its value
         /// </summary>
         public event EventHandler<ValueChangedEventArgs> ParentChanged;
+        
+        /// <summary>
+        /// Gets fired before the Type property changes its value
+        /// </summary>
+        public event EventHandler TypeChanging;
         
         /// <summary>
         /// Gets fired when the Type property changed its value
@@ -244,12 +273,38 @@ namespace NMF.Models.Meta
         public abstract IClass GetClass();
         
         /// <summary>
+        /// Raises the AbsoluteUriChanging event
+        /// </summary>
+        /// <param name="eventArgs">The event data</param>
+        protected virtual void OnAbsoluteUriChanging(EventArgs eventArgs)
+        {
+            EventHandler handler = this.AbsoluteUriChanging;
+            if ((handler != null))
+            {
+                handler.Invoke(this, eventArgs);
+            }
+        }
+        
+        /// <summary>
         /// Raises the AbsoluteUriChanged event
         /// </summary>
         /// <param name="eventArgs">The event data</param>
         protected virtual void OnAbsoluteUriChanged(ValueChangedEventArgs eventArgs)
         {
             EventHandler<ValueChangedEventArgs> handler = this.AbsoluteUriChanged;
+            if ((handler != null))
+            {
+                handler.Invoke(this, eventArgs);
+            }
+        }
+        
+        /// <summary>
+        /// Raises the RelativeUriChanging event
+        /// </summary>
+        /// <param name="eventArgs">The event data</param>
+        protected virtual void OnRelativeUriChanging(EventArgs eventArgs)
+        {
+            EventHandler handler = this.RelativeUriChanging;
             if ((handler != null))
             {
                 handler.Invoke(this, eventArgs);
@@ -270,13 +325,36 @@ namespace NMF.Models.Meta
         }
         
         /// <summary>
-        /// Forwards change notifications for the Extensions property to the parent model element
+        /// Forwards CollectionChanging notifications for the Extensions property to the parent model element
+        /// </summary>
+        /// <param name="sender">The collection that raised the change</param>
+        /// <param name="e">The original event data</param>
+        private void ExtensionsCollectionChanging(object sender, NMF.Collections.ObjectModel.NotifyCollectionChangingEventArgs e)
+        {
+            this.OnCollectionChanging("Extensions", e);
+        }
+        
+        /// <summary>
+        /// Forwards CollectionChanged notifications for the Extensions property to the parent model element
         /// </summary>
         /// <param name="sender">The collection that raised the change</param>
         /// <param name="e">The original event data</param>
         private void ExtensionsCollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
         {
             this.OnCollectionChanged("Extensions", e);
+        }
+        
+        /// <summary>
+        /// Raises the ParentChanging event
+        /// </summary>
+        /// <param name="eventArgs">The event data</param>
+        protected virtual void OnParentChanging(EventArgs eventArgs)
+        {
+            EventHandler handler = this.ParentChanging;
+            if ((handler != null))
+            {
+                handler.Invoke(this, eventArgs);
+            }
         }
         
         /// <summary>
@@ -300,6 +378,19 @@ namespace NMF.Models.Meta
         private void OnResetParent(object sender, System.EventArgs eventArgs)
         {
             this.Parent = null;
+        }
+        
+        /// <summary>
+        /// Raises the TypeChanging event
+        /// </summary>
+        /// <param name="eventArgs">The event data</param>
+        protected virtual void OnTypeChanging(EventArgs eventArgs)
+        {
+            EventHandler handler = this.TypeChanging;
+            if ((handler != null))
+            {
+                handler.Invoke(this, eventArgs);
+            }
         }
         
         /// <summary>

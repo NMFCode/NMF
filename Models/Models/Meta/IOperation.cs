@@ -70,6 +70,11 @@ namespace NMF.Models.Meta
         event EventHandler<ValueChangedEventArgs> DeclaringTypeChanged;
         
         /// <summary>
+        /// Gets fired before the Refines property changes its value
+        /// </summary>
+        event EventHandler RefinesChanging;
+        
+        /// <summary>
         /// Gets fired when the Refines property changed its value
         /// </summary>
         event EventHandler<ValueChangedEventArgs> RefinesChanged;

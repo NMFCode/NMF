@@ -65,8 +65,10 @@ namespace NMF.Models.Meta
         public Namespace()
         {
             this._childNamespaces = new NamespaceChildNamespacesCollection(this);
+            this._childNamespaces.CollectionChanging += this.ChildNamespacesCollectionChanging;
             this._childNamespaces.CollectionChanged += this.ChildNamespacesCollectionChanged;
             this._types = new NamespaceTypesCollection(this);
+            this._types.CollectionChanging += this.TypesCollectionChanging;
             this._types.CollectionChanged += this.TypesCollectionChanged;
         }
         
@@ -84,6 +86,8 @@ namespace NMF.Models.Meta
             {
                 if ((this._uri != value))
                 {
+                    this.OnUriChanging(EventArgs.Empty);
+                    this.OnPropertyChanging("Uri");
                     Uri old = this._uri;
                     this._uri = value;
                     ValueChangedEventArgs e = new ValueChangedEventArgs(old, value);
@@ -107,6 +111,8 @@ namespace NMF.Models.Meta
             {
                 if ((this._prefix != value))
                 {
+                    this.OnPrefixChanging(EventArgs.Empty);
+                    this.OnPropertyChanging("Prefix");
                     string old = this._prefix;
                     this._prefix = value;
                     ValueChangedEventArgs e = new ValueChangedEventArgs(old, value);
@@ -204,9 +210,19 @@ namespace NMF.Models.Meta
         }
         
         /// <summary>
+        /// Gets fired before the Uri property changes its value
+        /// </summary>
+        public event EventHandler UriChanging;
+        
+        /// <summary>
         /// Gets fired when the Uri property changed its value
         /// </summary>
         public event EventHandler<ValueChangedEventArgs> UriChanged;
+        
+        /// <summary>
+        /// Gets fired before the Prefix property changes its value
+        /// </summary>
+        public event EventHandler PrefixChanging;
         
         /// <summary>
         /// Gets fired when the Prefix property changed its value
@@ -219,12 +235,38 @@ namespace NMF.Models.Meta
         public event EventHandler<ValueChangedEventArgs> ParentNamespaceChanged;
         
         /// <summary>
+        /// Raises the UriChanging event
+        /// </summary>
+        /// <param name="eventArgs">The event data</param>
+        protected virtual void OnUriChanging(EventArgs eventArgs)
+        {
+            EventHandler handler = this.UriChanging;
+            if ((handler != null))
+            {
+                handler.Invoke(this, eventArgs);
+            }
+        }
+        
+        /// <summary>
         /// Raises the UriChanged event
         /// </summary>
         /// <param name="eventArgs">The event data</param>
         protected virtual void OnUriChanged(ValueChangedEventArgs eventArgs)
         {
             EventHandler<ValueChangedEventArgs> handler = this.UriChanged;
+            if ((handler != null))
+            {
+                handler.Invoke(this, eventArgs);
+            }
+        }
+        
+        /// <summary>
+        /// Raises the PrefixChanging event
+        /// </summary>
+        /// <param name="eventArgs">The event data</param>
+        protected virtual void OnPrefixChanging(EventArgs eventArgs)
+        {
+            EventHandler handler = this.PrefixChanging;
             if ((handler != null))
             {
                 handler.Invoke(this, eventArgs);
@@ -280,7 +322,17 @@ namespace NMF.Models.Meta
         }
         
         /// <summary>
-        /// Forwards change notifications for the ChildNamespaces property to the parent model element
+        /// Forwards CollectionChanging notifications for the ChildNamespaces property to the parent model element
+        /// </summary>
+        /// <param name="sender">The collection that raised the change</param>
+        /// <param name="e">The original event data</param>
+        private void ChildNamespacesCollectionChanging(object sender, NMF.Collections.ObjectModel.NotifyCollectionChangingEventArgs e)
+        {
+            this.OnCollectionChanging("ChildNamespaces", e);
+        }
+        
+        /// <summary>
+        /// Forwards CollectionChanged notifications for the ChildNamespaces property to the parent model element
         /// </summary>
         /// <param name="sender">The collection that raised the change</param>
         /// <param name="e">The original event data</param>
@@ -290,7 +342,17 @@ namespace NMF.Models.Meta
         }
         
         /// <summary>
-        /// Forwards change notifications for the Types property to the parent model element
+        /// Forwards CollectionChanging notifications for the Types property to the parent model element
+        /// </summary>
+        /// <param name="sender">The collection that raised the change</param>
+        /// <param name="e">The original event data</param>
+        private void TypesCollectionChanging(object sender, NMF.Collections.ObjectModel.NotifyCollectionChangingEventArgs e)
+        {
+            this.OnCollectionChanging("Types", e);
+        }
+        
+        /// <summary>
+        /// Forwards CollectionChanged notifications for the Types property to the parent model element
         /// </summary>
         /// <param name="sender">The collection that raised the change</param>
         /// <param name="e">The original event data</param>

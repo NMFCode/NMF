@@ -62,6 +62,10 @@ namespace NMF.Models.Meta
                 {
                     generatedProperty.Type = fieldType;
 
+                    var callOnPropertyChanging = new CodeMethodInvokeExpression(
+                        new CodeThisReferenceExpression(), "OnPropertyChanging",
+                        new CodePrimitiveExpression(generatedProperty.Name));
+
                     var oldDef = new CodeVariableDeclarationStatement(fieldType, "old", fieldRef);
                     var oldRef = new CodeVariableReferenceExpression("old");
                     var value = new CodePropertySetValueReferenceExpression();
@@ -76,6 +80,8 @@ namespace NMF.Models.Meta
                         new CodePrimitiveExpression(generatedProperty.Name), valueChangeRef);
 
                     generatedProperty.SetStatements.Add(new CodeConditionStatement(new CodeBinaryOperatorExpression(fieldRef, CodeBinaryOperatorType.IdentityInequality, value),
+                        generatedProperty.CreateOnChangingEventPattern(),
+                        new CodeExpressionStatement(callOnPropertyChanging),
                         oldDef,
                         new CodeAssignStatement(fieldRef, value),
                         valueChangeDef,
@@ -90,25 +96,28 @@ namespace NMF.Models.Meta
                     var createEmptyCollection = new CodeAssignStatement(fieldRef, new CodeObjectCreateExpression(fieldType));
                     var constructorStmts = generatedProperty.ImpliedConstructorStatements(true);
                     constructorStmts.Add(createEmptyCollection);
-                    constructorStmts.Add(new CodeAttachEventStatement(fieldRef, "CollectionChanged", GenerateCollectionBubbleHandler(generatedProperty)));
+                    constructorStmts.Add(new CodeAttachEventStatement(fieldRef, "CollectionChanging",
+                        GenerateCollectionBubbleHandler(generatedProperty, "CollectionChanging", typeof(NotifyCollectionChangingEventArgs))));
+                    constructorStmts.Add(new CodeAttachEventStatement(fieldRef, "CollectionChanged",
+                        GenerateCollectionBubbleHandler(generatedProperty, "CollectionChanged", typeof(NotifyCollectionChangedEventArgs))));
                 }
 
                 GenerateSerializationAttributes(input, generatedProperty, context);
             }
 
-            private CodeMethodReferenceExpression GenerateCollectionBubbleHandler(CodeMemberProperty property)
+            private CodeMethodReferenceExpression GenerateCollectionBubbleHandler(CodeMemberProperty property, string suffix, System.Type eventArgsType)
             {
                 var collectionBubbleHandler = new CodeMemberMethod()
                 {
-                    Name = property.Name + "CollectionChanged",
+                    Name = property.Name + suffix,
                     Attributes = MemberAttributes.Private
                 };
                 collectionBubbleHandler.Parameters.Add(new CodeParameterDeclarationExpression(typeof(object), "sender"));
-                collectionBubbleHandler.Parameters.Add(new CodeParameterDeclarationExpression(typeof(NotifyCollectionChangedEventArgs), "e"));
+                collectionBubbleHandler.Parameters.Add(new CodeParameterDeclarationExpression(eventArgsType, "e"));
                 collectionBubbleHandler.Statements.Add(new CodeMethodInvokeExpression(
-                    new CodeThisReferenceExpression(), "OnCollectionChanged",
+                    new CodeThisReferenceExpression(), "On" + suffix,
                     new CodePrimitiveExpression(property.Name), new CodeArgumentReferenceExpression("e")));
-                collectionBubbleHandler.WriteDocumentation(string.Format("Forwards change notifications for the {0} property to the parent model element", property.Name), null,
+                collectionBubbleHandler.WriteDocumentation(string.Format("Forwards " + suffix + " notifications for the {0} property to the parent model element", property.Name), null,
                     new Dictionary<string, string>() {
                     { "sender", "The collection that raised the change" },
                     { "e", "The original event data" }});

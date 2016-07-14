@@ -56,6 +56,11 @@ namespace NMF.Models.Meta
         }
         
         /// <summary>
+        /// Gets fired before the ModelUri property changes its value
+        /// </summary>
+        event EventHandler ModelUriChanging;
+        
+        /// <summary>
         /// Gets fired when the ModelUri property changed its value
         /// </summary>
         event EventHandler<ValueChangedEventArgs> ModelUriChanged;

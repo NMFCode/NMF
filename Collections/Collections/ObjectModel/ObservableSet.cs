@@ -12,12 +12,14 @@ using System.Text;
 namespace NMF.Collections.ObjectModel
 {
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1710:IdentifiersShouldHaveCorrectSuffix"), DebuggerDisplay("Count = {Count}"), DebuggerTypeProxy(typeof(EnumerableDebuggerProxy<>))]
-    public class ObservableSet<T> : DecoratedSet<T>, ISet<T>, ICollection<T>, IEnumerable<T>, ICollection, IEnumerable, INotifyCollectionChanged, INotifyEnumerable<T>, INotifyPropertyChanged, INotifyCollection<T>, ISetExpression<T>
+    public class ObservableSet<T> : DecoratedSet<T>, ISet<T>, ICollection<T>, IEnumerable<T>, ICollection, IEnumerable, INotifyCollectionChanged, INotifyCollectionChanging, INotifyEnumerable<T>, INotifyPropertyChanged, INotifyCollection<T>, ISetExpression<T>
     {
         public override bool Add(T item)
         {
-            if (base.Add(item))
+            if (item != null && !base.Contains(item))
             {
+                OnCollectionChanging(new NotifyCollectionChangingEventArgs(NotifyCollectionChangedAction.Add));
+                base.Add(item);
                 OnInsertItem(item);
                 return true;
             }
@@ -26,14 +28,17 @@ namespace NMF.Collections.ObjectModel
 
         public override void Clear()
         {
+            OnCollectionChanging(new NotifyCollectionChangingEventArgs(NotifyCollectionChangedAction.Reset));
             base.Clear();
             OnClear();
         }
 
         public override bool Remove(T item)
         {
-            if (base.Remove(item))
+            if (item != null && base.Contains(item))
             {
+                OnCollectionChanging(new NotifyCollectionChangingEventArgs(NotifyCollectionChangedAction.Remove));
+                base.Remove(item);
                 OnRemoveItem(item);
                 return true;
             }
@@ -41,6 +46,8 @@ namespace NMF.Collections.ObjectModel
         }
 
         public event NotifyCollectionChangedEventHandler CollectionChanged;
+
+        public event EventHandler<NotifyCollectionChangingEventArgs> CollectionChanging;
 
         protected void OnPropertyChanged(string property)
         {
@@ -51,6 +58,11 @@ namespace NMF.Collections.ObjectModel
         {
             OnPropertyChanged("Count");
             if (CollectionChanged != null) CollectionChanged(this, e);
+        }
+
+        protected void OnCollectionChanging(NotifyCollectionChangingEventArgs e)
+        {
+            CollectionChanging?.Invoke(this, e);
         }
 
         protected virtual void OnClear()

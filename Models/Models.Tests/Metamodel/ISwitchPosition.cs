@@ -66,9 +66,19 @@ namespace NMF.Models.Tests.Railway
         }
         
         /// <summary>
+        /// Gets fired before the Position property changes its value
+        /// </summary>
+        event EventHandler PositionChanging;
+        
+        /// <summary>
         /// Gets fired when the Position property changed its value
         /// </summary>
         event EventHandler<ValueChangedEventArgs> PositionChanged;
+        
+        /// <summary>
+        /// Gets fired before the Switch property changes its value
+        /// </summary>
+        event EventHandler SwitchChanging;
         
         /// <summary>
         /// Gets fired when the Switch property changed its value

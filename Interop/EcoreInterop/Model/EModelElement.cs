@@ -47,6 +47,7 @@ namespace NMF.Interop.Ecore
         public EModelElement()
         {
             this._eAnnotations = new EModelElementEAnnotationsCollection(this);
+            this._eAnnotations.CollectionChanging += this.EAnnotationsCollectionChanging;
             this._eAnnotations.CollectionChanged += this.EAnnotationsCollectionChanged;
         }
         
@@ -101,7 +102,17 @@ namespace NMF.Interop.Ecore
         }
         
         /// <summary>
-        /// Forwards change notifications for the EAnnotations property to the parent model element
+        /// Forwards CollectionChanging notifications for the EAnnotations property to the parent model element
+        /// </summary>
+        /// <param name="sender">The collection that raised the change</param>
+        /// <param name="e">The original event data</param>
+        private void EAnnotationsCollectionChanging(object sender, NMF.Collections.ObjectModel.NotifyCollectionChangingEventArgs e)
+        {
+            this.OnCollectionChanging("EAnnotations", e);
+        }
+        
+        /// <summary>
+        /// Forwards CollectionChanged notifications for the EAnnotations property to the parent model element
         /// </summary>
         /// <param name="sender">The collection that raised the change</param>
         /// <param name="e">The original event data</param>

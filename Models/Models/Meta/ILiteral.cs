@@ -57,6 +57,11 @@ namespace NMF.Models.Meta
         }
         
         /// <summary>
+        /// Gets fired before the Value property changes its value
+        /// </summary>
+        event EventHandler ValueChanging;
+        
+        /// <summary>
         /// Gets fired when the Value property changed its value
         /// </summary>
         event EventHandler<ValueChangedEventArgs> ValueChanged;

@@ -60,6 +60,8 @@ namespace NMF.Interop.Ecore
             {
                 if ((this._iD != value))
                 {
+                    this.OnIDChanging(EventArgs.Empty);
+                    this.OnPropertyChanging("ID");
                     Nullable<bool> old = this._iD;
                     this._iD = value;
                     ValueChangedEventArgs e = new ValueChangedEventArgs(old, value);
@@ -81,9 +83,27 @@ namespace NMF.Interop.Ecore
         }
         
         /// <summary>
+        /// Gets fired before the ID property changes its value
+        /// </summary>
+        public event EventHandler IDChanging;
+        
+        /// <summary>
         /// Gets fired when the ID property changed its value
         /// </summary>
         public event EventHandler<ValueChangedEventArgs> IDChanged;
+        
+        /// <summary>
+        /// Raises the IDChanging event
+        /// </summary>
+        /// <param name="eventArgs">The event data</param>
+        protected virtual void OnIDChanging(EventArgs eventArgs)
+        {
+            EventHandler handler = this.IDChanging;
+            if ((handler != null))
+            {
+                handler.Invoke(this, eventArgs);
+            }
+        }
         
         /// <summary>
         /// Raises the IDChanged event

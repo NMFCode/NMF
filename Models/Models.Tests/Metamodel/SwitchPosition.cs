@@ -65,6 +65,8 @@ namespace NMF.Models.Tests.Railway
             {
                 if ((this._position != value))
                 {
+                    this.OnPositionChanging(EventArgs.Empty);
+                    this.OnPropertyChanging("Position");
                     Position old = this._position;
                     this._position = value;
                     ValueChangedEventArgs e = new ValueChangedEventArgs(old, value);
@@ -90,6 +92,8 @@ namespace NMF.Models.Tests.Railway
             {
                 if ((this._switch != value))
                 {
+                    this.OnSwitchChanging(EventArgs.Empty);
+                    this.OnPropertyChanging("Switch");
                     ISwitch old = this._switch;
                     this._switch = value;
                     if ((old != null))
@@ -154,9 +158,19 @@ namespace NMF.Models.Tests.Railway
         }
         
         /// <summary>
+        /// Gets fired before the Position property changes its value
+        /// </summary>
+        public event EventHandler PositionChanging;
+        
+        /// <summary>
         /// Gets fired when the Position property changed its value
         /// </summary>
         public event EventHandler<ValueChangedEventArgs> PositionChanged;
+        
+        /// <summary>
+        /// Gets fired before the Switch property changes its value
+        /// </summary>
+        public event EventHandler SwitchChanging;
         
         /// <summary>
         /// Gets fired when the Switch property changed its value
@@ -169,12 +183,38 @@ namespace NMF.Models.Tests.Railway
         public event EventHandler<ValueChangedEventArgs> RouteChanged;
         
         /// <summary>
+        /// Raises the PositionChanging event
+        /// </summary>
+        /// <param name="eventArgs">The event data</param>
+        protected virtual void OnPositionChanging(EventArgs eventArgs)
+        {
+            EventHandler handler = this.PositionChanging;
+            if ((handler != null))
+            {
+                handler.Invoke(this, eventArgs);
+            }
+        }
+        
+        /// <summary>
         /// Raises the PositionChanged event
         /// </summary>
         /// <param name="eventArgs">The event data</param>
         protected virtual void OnPositionChanged(ValueChangedEventArgs eventArgs)
         {
             EventHandler<ValueChangedEventArgs> handler = this.PositionChanged;
+            if ((handler != null))
+            {
+                handler.Invoke(this, eventArgs);
+            }
+        }
+        
+        /// <summary>
+        /// Raises the SwitchChanging event
+        /// </summary>
+        /// <param name="eventArgs">The event data</param>
+        protected virtual void OnSwitchChanging(EventArgs eventArgs)
+        {
+            EventHandler handler = this.SwitchChanging;
             if ((handler != null))
             {
                 handler.Invoke(this, eventArgs);

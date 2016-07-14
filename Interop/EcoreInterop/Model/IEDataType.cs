@@ -48,6 +48,11 @@ namespace NMF.Interop.Ecore
         }
         
         /// <summary>
+        /// Gets fired before the Serializable property changes its value
+        /// </summary>
+        event EventHandler SerializableChanging;
+        
+        /// <summary>
         /// Gets fired when the Serializable property changed its value
         /// </summary>
         event EventHandler<ValueChangedEventArgs> SerializableChanged;

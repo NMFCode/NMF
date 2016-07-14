@@ -57,6 +57,11 @@ namespace NMF.Models.Meta
         }
         
         /// <summary>
+        /// Gets fired before the Type property changes its value
+        /// </summary>
+        event EventHandler TypeChanging;
+        
+        /// <summary>
         /// Gets fired when the Type property changed its value
         /// </summary>
         event EventHandler<ValueChangedEventArgs> TypeChanged;

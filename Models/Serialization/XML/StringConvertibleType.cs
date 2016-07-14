@@ -9,12 +9,15 @@ namespace NMF.Serialization
     internal class StringConvertibleType : ITypeSerializationInfo
     {
         private TypeConverter converter;
+        private Type sourceType;
 
-        public StringConvertibleType(TypeConverter converter)
+        public StringConvertibleType(TypeConverter converter, Type sourceType)
         {
-            if (converter == null) throw new ArgumentNullException("converter");
+            if (converter == null) throw new ArgumentNullException(nameof(converter));
+            if (sourceType == null) throw new ArgumentNullException(nameof(sourceType));
 
             this.converter = converter;
+            this.sourceType = sourceType;
         }
 
         public string ElementName
@@ -49,7 +52,7 @@ namespace NMF.Serialization
 
         public Type Type
         {
-            get { return null; }
+            get { return sourceType; }
         }
 
         public IPropertySerializationInfo[] ConstructorProperties

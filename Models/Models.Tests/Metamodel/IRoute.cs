@@ -73,9 +73,19 @@ namespace NMF.Models.Tests.Railway
         }
         
         /// <summary>
+        /// Gets fired before the Entry property changes its value
+        /// </summary>
+        event EventHandler EntryChanging;
+        
+        /// <summary>
         /// Gets fired when the Entry property changed its value
         /// </summary>
         event EventHandler<ValueChangedEventArgs> EntryChanged;
+        
+        /// <summary>
+        /// Gets fired before the Exit property changes its value
+        /// </summary>
+        event EventHandler ExitChanging;
         
         /// <summary>
         /// Gets fired when the Exit property changed its value

@@ -4,20 +4,38 @@ using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Linq;
 using System.Text;
+using NMF.Collections.ObjectModel;
+using System.Diagnostics;
 
 namespace NMF.Models
 {
     /// <summary>
     /// Describes that an elementary change in the model elements containment hierarchy has happened
     /// </summary>
+    [DebuggerDisplay("BubbledChange: {ChangeType} in {Element} {AbsoluteUri}")]
     public class BubbledChangeEventArgs : EventArgs
     {
-        private BubbledChangeEventArgs() { }
+        private BubbledChangeEventArgs(IModelElement element)
+        {
+            Element = element;
+            AbsoluteUri = Element.AbsoluteUri;
+        }
 
         /// <summary>
         /// The original model element directly affected by this change
         /// </summary>
         public IModelElement Element { get; private set; }
+
+        /// <summary>
+        /// Absolute URI of the model element at the time of the event
+        /// </summary>
+        public Uri AbsoluteUri { get; private set; }
+
+        /// <summary>
+        /// If the change introduces new or changed model elements, this list
+        /// contains their URIs in the same order as their parent collection.
+        /// </summary>
+        public List<Uri> ChildrenUris { get; private set; }
 
         /// <summary>
         /// The name of the affected property or null, if no specific property was affected
@@ -72,10 +90,26 @@ namespace NMF.Models
             if (createdElement == null)
                 throw new ArgumentNullException(nameof(createdElement));
 
-            return new BubbledChangeEventArgs
+            return new BubbledChangeEventArgs(createdElement)
             {
-                ChangeType = ChangeType.ModelElementCreated,
-                Element = createdElement
+                ChangeType = ChangeType.ModelElementCreated
+            };
+        }
+
+        /// <summary>
+        /// Creates an instance of BubbledChangeEventArgs describing the upcoming deletion of the given model element.
+        /// </summary>
+        /// <param name="deletedElement">The deleted model element.</param>
+        /// <returns></returns>
+        public static BubbledChangeEventArgs ElementDeleting(IModelElement deletingElement, Uri originalAbsoluteUri)
+        {
+            if (deletingElement == null)
+                throw new ArgumentNullException(nameof(deletingElement));
+
+            return new BubbledChangeEventArgs(deletingElement)
+            {
+                ChangeType = ChangeType.ModelElementDeleting,
+                AbsoluteUri = originalAbsoluteUri
             };
         }
 
@@ -84,15 +118,35 @@ namespace NMF.Models
         /// </summary>
         /// <param name="deletedElement">The deleted model element.</param>
         /// <returns></returns>
-        public static BubbledChangeEventArgs ElementDeleted(IModelElement deletedElement)
+        public static BubbledChangeEventArgs ElementDeleted(IModelElement deletedElement, Uri originalAbsoluteUri)
         {
             if (deletedElement == null)
                 throw new ArgumentNullException(nameof(deletedElement));
 
-            return new BubbledChangeEventArgs
+            return new BubbledChangeEventArgs(deletedElement)
             {
                 ChangeType = ChangeType.ModelElementDeleted,
-                Element = deletedElement
+                AbsoluteUri = originalAbsoluteUri
+            };
+        }
+
+        /// <summary>
+        /// Create an instance of BubbledChangeEventArgs describing an upcoming change of a property value.
+        /// </summary>
+        /// <param name="source">The model element containing the property.</param>
+        /// <param name="propertyName">The property name.</param>
+        /// <returns></returns>
+        public static BubbledChangeEventArgs PropertyChanging(IModelElement source, string propertyName)
+        {
+            if (source == null)
+                throw new ArgumentNullException(nameof(source));
+            if (string.IsNullOrEmpty(propertyName))
+                throw new ArgumentNullException(nameof(propertyName));
+
+            return new BubbledChangeEventArgs(source)
+            {
+                ChangeType = ChangeType.PropertyChanging,
+                PropertyName = propertyName
             };
         }
 
@@ -112,10 +166,36 @@ namespace NMF.Models
             if (args == null)
                 throw new ArgumentNullException(nameof(args));
 
-            return new BubbledChangeEventArgs
+            var newValueUri = (args.NewValue as IModelElement)?.AbsoluteUri;
+
+            return new BubbledChangeEventArgs(source)
             {
                 ChangeType = ChangeType.PropertyChanged,
-                Element = source,
+                OriginalEventArgs = args,
+                PropertyName = propertyName,
+                ChildrenUris = new List<Uri>() { newValueUri }
+            };
+        }
+
+        /// <summary>
+        /// Creates an instance of BubbledChangeEventArgs describing an upcoming change in a collection.
+        /// </summary>
+        /// <param name="source">The model element containing the collection.</param>
+        /// <param name="propertyName">The name of the collection property.</param>
+        /// <param name="args">The original NotifyCollectionChangingEventArgs.</param>
+        /// <returns></returns>
+        public static BubbledChangeEventArgs CollectionChanging(IModelElement source, string propertyName, NotifyCollectionChangingEventArgs args)
+        {
+            if (source == null)
+                throw new ArgumentNullException(nameof(source));
+            if (string.IsNullOrEmpty(propertyName))
+                throw new ArgumentNullException(nameof(propertyName));
+            if (args == null)
+                throw new ArgumentNullException(nameof(args));
+
+            return new BubbledChangeEventArgs(source)
+            {
+                ChangeType = ChangeType.CollectionChanging,
                 OriginalEventArgs = args,
                 PropertyName = propertyName
             };
@@ -137,12 +217,16 @@ namespace NMF.Models
             if (args == null)
                 throw new ArgumentNullException(nameof(args));
 
-            return new BubbledChangeEventArgs
+            List<Uri> childrenUris = null;
+            if (args.Action == NotifyCollectionChangedAction.Add)
+                childrenUris = args.NewItems.OfType<IModelElement>().Select(e => e.AbsoluteUri).ToList();
+
+            return new BubbledChangeEventArgs(source)
             {
                 ChangeType = ChangeType.CollectionChanged,
-                Element = source,
                 OriginalEventArgs = args,
-                PropertyName = propertyName
+                PropertyName = propertyName,
+                ChildrenUris = childrenUris
             };
         }
     }
@@ -153,8 +237,11 @@ namespace NMF.Models
     public enum ChangeType
     {
         ModelElementCreated,
+        ModelElementDeleting,
         ModelElementDeleted,
+        PropertyChanging,
         PropertyChanged,
+        CollectionChanging,
         CollectionChanged
     }
 }

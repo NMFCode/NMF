@@ -48,6 +48,7 @@ namespace NMF.Models.Tests.Railway
         public TrackElement()
         {
             this._connectsTo = new ObservableAssociationList<ITrackElement>();
+            this._connectsTo.CollectionChanging += this.ConnectsToCollectionChanging;
             this._connectsTo.CollectionChanged += this.ConnectsToCollectionChanged;
         }
         
@@ -148,7 +149,17 @@ namespace NMF.Models.Tests.Railway
         }
         
         /// <summary>
-        /// Forwards change notifications for the ConnectsTo property to the parent model element
+        /// Forwards CollectionChanging notifications for the ConnectsTo property to the parent model element
+        /// </summary>
+        /// <param name="sender">The collection that raised the change</param>
+        /// <param name="e">The original event data</param>
+        private void ConnectsToCollectionChanging(object sender, NMF.Collections.ObjectModel.NotifyCollectionChangingEventArgs e)
+        {
+            this.OnCollectionChanging("ConnectsTo", e);
+        }
+        
+        /// <summary>
+        /// Forwards CollectionChanged notifications for the ConnectsTo property to the parent model element
         /// </summary>
         /// <param name="sender">The collection that raised the change</param>
         /// <param name="e">The original event data</param>

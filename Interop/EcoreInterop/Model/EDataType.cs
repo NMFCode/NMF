@@ -60,6 +60,8 @@ namespace NMF.Interop.Ecore
             {
                 if ((this._serializable != value))
                 {
+                    this.OnSerializableChanging(EventArgs.Empty);
+                    this.OnPropertyChanging("Serializable");
                     Nullable<bool> old = this._serializable;
                     this._serializable = value;
                     ValueChangedEventArgs e = new ValueChangedEventArgs(old, value);
@@ -81,9 +83,27 @@ namespace NMF.Interop.Ecore
         }
         
         /// <summary>
+        /// Gets fired before the Serializable property changes its value
+        /// </summary>
+        public event EventHandler SerializableChanging;
+        
+        /// <summary>
         /// Gets fired when the Serializable property changed its value
         /// </summary>
         public event EventHandler<ValueChangedEventArgs> SerializableChanged;
+        
+        /// <summary>
+        /// Raises the SerializableChanging event
+        /// </summary>
+        /// <param name="eventArgs">The event data</param>
+        protected virtual void OnSerializableChanging(EventArgs eventArgs)
+        {
+            EventHandler handler = this.SerializableChanging;
+            if ((handler != null))
+            {
+                handler.Invoke(this, eventArgs);
+            }
+        }
         
         /// <summary>
         /// Raises the SerializableChanged event

@@ -60,6 +60,8 @@ namespace NMF.Models.Tests.Railway
             {
                 if ((this._length != value))
                 {
+                    this.OnLengthChanging(EventArgs.Empty);
+                    this.OnPropertyChanging("Length");
                     int old = this._length;
                     this._length = value;
                     ValueChangedEventArgs e = new ValueChangedEventArgs(old, value);
@@ -81,9 +83,27 @@ namespace NMF.Models.Tests.Railway
         }
         
         /// <summary>
+        /// Gets fired before the Length property changes its value
+        /// </summary>
+        public event EventHandler LengthChanging;
+        
+        /// <summary>
         /// Gets fired when the Length property changed its value
         /// </summary>
         public event EventHandler<ValueChangedEventArgs> LengthChanged;
+        
+        /// <summary>
+        /// Raises the LengthChanging event
+        /// </summary>
+        /// <param name="eventArgs">The event data</param>
+        protected virtual void OnLengthChanging(EventArgs eventArgs)
+        {
+            EventHandler handler = this.LengthChanging;
+            if ((handler != null))
+            {
+                handler.Invoke(this, eventArgs);
+            }
+        }
         
         /// <summary>
         /// Raises the LengthChanged event

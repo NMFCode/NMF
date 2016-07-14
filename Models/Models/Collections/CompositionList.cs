@@ -31,7 +31,6 @@ namespace NMF.Models.Collections
                         item.Deleted -= RemoveItem;
                         if (item.Parent == Parent)
                         {
-                            item.Parent = null;
                             item.Delete();
                         }
                     }
@@ -65,7 +64,6 @@ namespace NMF.Models.Collections
                     item.Deleted -= RemoveItem;
                     if (item.Parent == Parent)
                     {
-                        item.Parent = null;
                         item.Delete();
                     }
                 }
@@ -92,7 +90,6 @@ namespace NMF.Models.Collections
                     base.SetItem(index, item);
                     if (oldItem != null && oldItem.Parent == Parent)
                     {
-                        oldItem.Parent = null;
                         oldItem.Delete();
                     }
                     if (item != null)
@@ -127,19 +124,22 @@ namespace NMF.Models.Collections
         {
             if (!silent)
             {
-                silent = true;
-                foreach (var item in this)
+                var elements = this.ToArray();
+                beforeCollectionChangedAction = () =>
                 {
-                    if (item != null)
+                    silent = true;
+                    foreach (var item in elements)
                     {
-                        item.Deleted -= RemoveItem;
-                        if (item.Parent == Parent)
+                        if (item != null)
                         {
-                            item.Parent = null;
-                            item.Delete();
+                            item.Deleted -= RemoveItem;
+                            if (item.Parent == Parent)
+                            {
+                                item.Delete();
+                            }
                         }
                     }
-                }
+                };
                 base.ClearItems();
                 silent = false;
             }
@@ -149,11 +149,14 @@ namespace NMF.Models.Collections
         {
             if (!silent && item != null)
             {
-                silent = true;
-                item.Deleted += RemoveItem;
-                item.Parent = Parent;
+                beforeCollectionChangedAction = () =>
+                {
+                    silent = true;
+                    item.Deleted += RemoveItem;
+                    item.Parent = Parent;
+                    silent = false;
+                };
                 base.InsertItem(index, item);
-                silent = false;
             }
         }
 
@@ -161,19 +164,21 @@ namespace NMF.Models.Collections
         {
             if (!silent)
             {
-                silent = true;
                 var item = this[index];
-                base.RemoveItem(index);
-                if (item != null)
+                beforeCollectionChangedAction = () =>
                 {
-                    item.Deleted -= RemoveItem;
-                    if (item.Parent == Parent)
+                    silent = true;
+                    if (item != null)
                     {
-                        item.Parent = null;
-                        item.Delete();
+                        item.Deleted -= RemoveItem;
+                        if (item.Parent == Parent)
+                        {
+                            item.Delete();
+                        }
                     }
-                }
-                silent = false;
+                    silent = false;
+                };
+                base.RemoveItem(index);
             }
         }
 
@@ -181,29 +186,31 @@ namespace NMF.Models.Collections
         {
             if (!silent)
             {
-                silent = true;
                 var oldItem = this[index];
+                silent = true;
                 if (oldItem != item)
                 {
-                    if (item != null)
+                    beforeCollectionChangedAction = () =>
                     {
-                        item.Deleted += RemoveItem;
-                    }
-                    if (oldItem != null)
-                    {
-                        oldItem.Deleted -= RemoveItem;
-                    }
-                    base.SetItem(index, item);
+                        if (item != null)
+                        {
+                            item.Deleted += RemoveItem;
+                        }
+                        if (oldItem != null)
+                        {
+                            oldItem.Deleted -= RemoveItem;
+                        }
 
-                    if (oldItem != null && oldItem.Parent == Parent)
-                    {
-                        oldItem.Parent = null;
-                        oldItem.Delete();
-                    }
-                    if (item != null)
-                    {
-                        item.Parent = Parent;
-                    }
+                        if (oldItem != null && oldItem.Parent == Parent)
+                        {
+                            oldItem.Delete();
+                        }
+                        if (item != null)
+                        {
+                            item.Parent = Parent;
+                        }
+                    };
+                    base.SetItem(index, item);
                 }
                 silent = false;
             }

@@ -63,12 +63,16 @@ namespace NMF.Interop.Ecore
         public EOperation()
         {
             this._eTypeParameters = new ObservableCompositionList<IETypeParameter>(this);
+            this._eTypeParameters.CollectionChanging += this.ETypeParametersCollectionChanging;
             this._eTypeParameters.CollectionChanged += this.ETypeParametersCollectionChanged;
             this._eParameters = new EOperationEParametersCollection(this);
+            this._eParameters.CollectionChanging += this.EParametersCollectionChanging;
             this._eParameters.CollectionChanged += this.EParametersCollectionChanged;
             this._eExceptions = new ObservableAssociationList<IEClassifier>();
+            this._eExceptions.CollectionChanging += this.EExceptionsCollectionChanging;
             this._eExceptions.CollectionChanged += this.EExceptionsCollectionChanged;
             this._eGenericExceptions = new ObservableCompositionList<IEGenericType>(this);
+            this._eGenericExceptions.CollectionChanging += this.EGenericExceptionsCollectionChanging;
             this._eGenericExceptions.CollectionChanged += this.EGenericExceptionsCollectionChanged;
         }
         
@@ -229,7 +233,17 @@ namespace NMF.Interop.Ecore
         }
         
         /// <summary>
-        /// Forwards change notifications for the ETypeParameters property to the parent model element
+        /// Forwards CollectionChanging notifications for the ETypeParameters property to the parent model element
+        /// </summary>
+        /// <param name="sender">The collection that raised the change</param>
+        /// <param name="e">The original event data</param>
+        private void ETypeParametersCollectionChanging(object sender, NMF.Collections.ObjectModel.NotifyCollectionChangingEventArgs e)
+        {
+            this.OnCollectionChanging("ETypeParameters", e);
+        }
+        
+        /// <summary>
+        /// Forwards CollectionChanged notifications for the ETypeParameters property to the parent model element
         /// </summary>
         /// <param name="sender">The collection that raised the change</param>
         /// <param name="e">The original event data</param>
@@ -239,7 +253,17 @@ namespace NMF.Interop.Ecore
         }
         
         /// <summary>
-        /// Forwards change notifications for the EParameters property to the parent model element
+        /// Forwards CollectionChanging notifications for the EParameters property to the parent model element
+        /// </summary>
+        /// <param name="sender">The collection that raised the change</param>
+        /// <param name="e">The original event data</param>
+        private void EParametersCollectionChanging(object sender, NMF.Collections.ObjectModel.NotifyCollectionChangingEventArgs e)
+        {
+            this.OnCollectionChanging("EParameters", e);
+        }
+        
+        /// <summary>
+        /// Forwards CollectionChanged notifications for the EParameters property to the parent model element
         /// </summary>
         /// <param name="sender">The collection that raised the change</param>
         /// <param name="e">The original event data</param>
@@ -249,7 +273,17 @@ namespace NMF.Interop.Ecore
         }
         
         /// <summary>
-        /// Forwards change notifications for the EExceptions property to the parent model element
+        /// Forwards CollectionChanging notifications for the EExceptions property to the parent model element
+        /// </summary>
+        /// <param name="sender">The collection that raised the change</param>
+        /// <param name="e">The original event data</param>
+        private void EExceptionsCollectionChanging(object sender, NMF.Collections.ObjectModel.NotifyCollectionChangingEventArgs e)
+        {
+            this.OnCollectionChanging("EExceptions", e);
+        }
+        
+        /// <summary>
+        /// Forwards CollectionChanged notifications for the EExceptions property to the parent model element
         /// </summary>
         /// <param name="sender">The collection that raised the change</param>
         /// <param name="e">The original event data</param>
@@ -259,7 +293,17 @@ namespace NMF.Interop.Ecore
         }
         
         /// <summary>
-        /// Forwards change notifications for the EGenericExceptions property to the parent model element
+        /// Forwards CollectionChanging notifications for the EGenericExceptions property to the parent model element
+        /// </summary>
+        /// <param name="sender">The collection that raised the change</param>
+        /// <param name="e">The original event data</param>
+        private void EGenericExceptionsCollectionChanging(object sender, NMF.Collections.ObjectModel.NotifyCollectionChangingEventArgs e)
+        {
+            this.OnCollectionChanging("EGenericExceptions", e);
+        }
+        
+        /// <summary>
+        /// Forwards CollectionChanged notifications for the EGenericExceptions property to the parent model element
         /// </summary>
         /// <param name="sender">The collection that raised the change</param>
         /// <param name="e">The original event data</param>

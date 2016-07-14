@@ -74,9 +74,19 @@ namespace NMF.Interop.Ecore
         }
         
         /// <summary>
+        /// Gets fired before the InstanceClassName property changes its value
+        /// </summary>
+        event EventHandler InstanceClassNameChanging;
+        
+        /// <summary>
         /// Gets fired when the InstanceClassName property changed its value
         /// </summary>
         event EventHandler<ValueChangedEventArgs> InstanceClassNameChanged;
+        
+        /// <summary>
+        /// Gets fired before the InstanceTypeName property changes its value
+        /// </summary>
+        event EventHandler InstanceTypeNameChanging;
         
         /// <summary>
         /// Gets fired when the InstanceTypeName property changed its value

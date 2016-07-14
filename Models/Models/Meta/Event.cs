@@ -61,6 +61,8 @@ namespace NMF.Models.Meta
             {
                 if ((this._type != value))
                 {
+                    this.OnTypeChanging(EventArgs.Empty);
+                    this.OnPropertyChanging("Type");
                     IDataType old = this._type;
                     this._type = value;
                     if ((old != null))
@@ -123,6 +125,11 @@ namespace NMF.Models.Meta
         }
         
         /// <summary>
+        /// Gets fired before the Type property changes its value
+        /// </summary>
+        public event EventHandler TypeChanging;
+        
+        /// <summary>
         /// Gets fired when the Type property changed its value
         /// </summary>
         public event EventHandler<ValueChangedEventArgs> TypeChanged;
@@ -131,6 +138,19 @@ namespace NMF.Models.Meta
         /// Gets fired when the DeclaringType property changed its value
         /// </summary>
         public event EventHandler<ValueChangedEventArgs> DeclaringTypeChanged;
+        
+        /// <summary>
+        /// Raises the TypeChanging event
+        /// </summary>
+        /// <param name="eventArgs">The event data</param>
+        protected virtual void OnTypeChanging(EventArgs eventArgs)
+        {
+            EventHandler handler = this.TypeChanging;
+            if ((handler != null))
+            {
+                handler.Invoke(this, eventArgs);
+            }
+        }
         
         /// <summary>
         /// Raises the TypeChanged event

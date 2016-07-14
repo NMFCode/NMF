@@ -48,6 +48,7 @@ namespace NMF.Interop.Ecore
         public ETypeParameter()
         {
             this._eBounds = new ObservableCompositionList<IEGenericType>(this);
+            this._eBounds.CollectionChanging += this.EBoundsCollectionChanging;
             this._eBounds.CollectionChanged += this.EBoundsCollectionChanged;
         }
         
@@ -101,7 +102,17 @@ namespace NMF.Interop.Ecore
         }
         
         /// <summary>
-        /// Forwards change notifications for the EBounds property to the parent model element
+        /// Forwards CollectionChanging notifications for the EBounds property to the parent model element
+        /// </summary>
+        /// <param name="sender">The collection that raised the change</param>
+        /// <param name="e">The original event data</param>
+        private void EBoundsCollectionChanging(object sender, NMF.Collections.ObjectModel.NotifyCollectionChangingEventArgs e)
+        {
+            this.OnCollectionChanging("EBounds", e);
+        }
+        
+        /// <summary>
+        /// Forwards CollectionChanged notifications for the EBounds property to the parent model element
         /// </summary>
         /// <param name="sender">The collection that raised the change</param>
         /// <param name="e">The original event data</param>

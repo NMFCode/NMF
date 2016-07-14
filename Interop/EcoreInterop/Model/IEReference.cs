@@ -74,14 +74,29 @@ namespace NMF.Interop.Ecore
         }
         
         /// <summary>
+        /// Gets fired before the Containment property changes its value
+        /// </summary>
+        event EventHandler ContainmentChanging;
+        
+        /// <summary>
         /// Gets fired when the Containment property changed its value
         /// </summary>
         event EventHandler<ValueChangedEventArgs> ContainmentChanged;
         
         /// <summary>
+        /// Gets fired before the ResolveProxies property changes its value
+        /// </summary>
+        event EventHandler ResolveProxiesChanging;
+        
+        /// <summary>
         /// Gets fired when the ResolveProxies property changed its value
         /// </summary>
         event EventHandler<ValueChangedEventArgs> ResolveProxiesChanged;
+        
+        /// <summary>
+        /// Gets fired before the EOpposite property changes its value
+        /// </summary>
+        event EventHandler EOppositeChanging;
         
         /// <summary>
         /// Gets fired when the EOpposite property changed its value

@@ -41,6 +41,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
+    <Reference Include="System.XML" />
   </ItemGroup>
   <Choose>
     <When Condition="('$(VisualStudioVersion)' == '10.0' or '$(VisualStudioVersion)' == '') and '$(TargetFrameworkVersion)' == 'v3.5'">
@@ -57,6 +58,10 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
+    <Compile Include="Evolution\IntegrationTests.cs" />
+    <Compile Include="Evolution\ModelChangeRecorderTests.cs" />
+    <Compile Include="Evolution\ChangeApplyTests.cs" />
+    <Compile Include="Evolution\SerializationTests.cs" />
     <Compile Include="Metamodel\IRailwayContainer.cs" />
     <Compile Include="Metamodel\IRailwayElement.cs" />
     <Compile Include="Metamodel\IRoute.cs" />

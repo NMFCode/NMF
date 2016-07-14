@@ -406,6 +406,37 @@ namespace NMF.CodeGen
         }
 
         /// <summary>
+        /// Generates an OnChanging-pattern for the given property
+        /// </summary>
+        /// <param name="property">The code property</param>
+        /// <returns></returns>
+        public static CodeStatement CreateOnChangingEventPattern(this CodeMemberProperty property)
+        {
+            var changingEvent = new CodeMemberEvent()
+            {
+                Name = property.Name + "Changing",
+                Type = new CodeTypeReference(typeof(EventHandler).Name),
+                Attributes = MemberAttributes.Public | MemberAttributes.Final
+            };
+
+            changingEvent.WriteDocumentation(string.Format("Gets fired before the {0} property changes its value", property.Name));
+
+            var eventType = new CodeTypeReference(typeof(EventArgs).Name);
+            var eventData = new CodeFieldReferenceExpression(new CodeTypeReferenceExpression(eventType), "Empty");
+
+            var onChanging = CreateOnChangedMethod(changingEvent, eventType);
+
+            var dependent = property.DependentMembers(true);
+
+            dependent.Add(onChanging);
+            dependent.Add(changingEvent);
+
+            var onChangedRef = new CodeMethodReferenceExpression(new CodeThisReferenceExpression(), onChanging.Name);
+
+            return new CodeExpressionStatement(new CodeMethodInvokeExpression(onChangedRef, eventData));
+        }
+
+        /// <summary>
         /// Generates an OnChanged-pattern for the given property
         /// </summary>
         /// <param name="property">The code property</param>

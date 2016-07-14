@@ -496,7 +496,7 @@ namespace NMF.Models.Meta
                     var identifiedObject = new CodePropertyReferenceExpression(new CodeThisReferenceExpression(), @class.Identifier.Name.ToPascalCase());
                     var toString = new CodeMethodInvokeExpression(identifiedObject, "ToString");
                     var t = Transformation as Meta2ClassesTransformation;
-                    if (!IsString(@class.Identifier.Type) && t != null && !t.IsValueType(@class.Identifier.Type))
+                    if (t != null && !t.IsValueType(@class.Identifier.Type))
                     {
                         var nullRef = new CodePrimitiveExpression(null);
                         toIdentifierString.Statements.Add(new CodeConditionStatement(

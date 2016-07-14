@@ -48,6 +48,11 @@ namespace NMF.Models.Meta
         }
         
         /// <summary>
+        /// Gets fired before the AdornedClass property changes its value
+        /// </summary>
+        event EventHandler AdornedClassChanging;
+        
+        /// <summary>
         /// Gets fired when the AdornedClass property changed its value
         /// </summary>
         event EventHandler<ValueChangedEventArgs> AdornedClassChanged;

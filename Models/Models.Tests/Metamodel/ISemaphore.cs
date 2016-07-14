@@ -48,6 +48,11 @@ namespace NMF.Models.Tests.Railway
         }
         
         /// <summary>
+        /// Gets fired before the Signal property changes its value
+        /// </summary>
+        event EventHandler SignalChanging;
+        
+        /// <summary>
         /// Gets fired when the Signal property changed its value
         /// </summary>
         event EventHandler<ValueChangedEventArgs> SignalChanged;

@@ -61,6 +61,8 @@ namespace NMF.Models.Meta
             {
                 if ((this._adornedClass != value))
                 {
+                    this.OnAdornedClassChanging(EventArgs.Empty);
+                    this.OnPropertyChanging("AdornedClass");
                     IClass old = this._adornedClass;
                     this._adornedClass = value;
                     if ((old != null))
@@ -105,9 +107,27 @@ namespace NMF.Models.Meta
         }
         
         /// <summary>
+        /// Gets fired before the AdornedClass property changes its value
+        /// </summary>
+        public event EventHandler AdornedClassChanging;
+        
+        /// <summary>
         /// Gets fired when the AdornedClass property changed its value
         /// </summary>
         public event EventHandler<ValueChangedEventArgs> AdornedClassChanged;
+        
+        /// <summary>
+        /// Raises the AdornedClassChanging event
+        /// </summary>
+        /// <param name="eventArgs">The event data</param>
+        protected virtual void OnAdornedClassChanging(EventArgs eventArgs)
+        {
+            EventHandler handler = this.AdornedClassChanging;
+            if ((handler != null))
+            {
+                handler.Invoke(this, eventArgs);
+            }
+        }
         
         /// <summary>
         /// Raises the AdornedClassChanged event
