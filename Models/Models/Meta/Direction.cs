@@ -15,6 +15,7 @@ using NMF.Expressions.Linq;
 using NMF.Models;
 using NMF.Models.Collections;
 using NMF.Models.Expressions;
+using NMF.Models.Repository;
 using NMF.Serialization;
 using NMF.Utilities;
 using System;
@@ -28,7 +29,7 @@ using System.Linq;
 namespace NMF.Models.Meta
 {
     
-    [ModelRepresentationClassAttribute("http://nmf.codeplex.com/nmeta/#//Direction/")]
+    
     public enum Direction
     {
         

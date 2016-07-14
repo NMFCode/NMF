@@ -15,6 +15,7 @@ using NMF.Expressions.Linq;
 using NMF.Models;
 using NMF.Models.Collections;
 using NMF.Models.Expressions;
+using NMF.Models.Repository;
 using NMF.Serialization;
 using NMF.Utilities;
 using System;
@@ -36,13 +37,15 @@ namespace NMF.Models.Meta
     [XmlNamespacePrefixAttribute("nmeta")]
     [ModelRepresentationClassAttribute("http://nmf.codeplex.com/nmeta/#//PrimitiveType/")]
     [DebuggerDisplayAttribute("PrimitiveType {Name}")]
-    public class PrimitiveType : NMF.Models.Meta.Type, IPrimitiveType, IModelElement
+    public class PrimitiveType : Type, IPrimitiveType, IModelElement
     {
         
         /// <summary>
         /// The backing field for the SystemType property
         /// </summary>
         private string _systemType;
+        
+        private static IClass _classInstance;
         
         /// <summary>
         /// The SystemType property
@@ -68,13 +71,17 @@ namespace NMF.Models.Meta
         }
         
         /// <summary>
-        /// Gets the Class element that describes the structure of this type
+        /// Gets the Class model for this type
         /// </summary>
-        public new static NMF.Models.Meta.IClass ClassInstance
+        public new static IClass ClassInstance
         {
             get
             {
-                return (IClass)NMF.Models.Repository.MetaRepository.Instance.ResolveType("http://nmf.codeplex.com/nmeta/#//PrimitiveType/");
+                if ((_classInstance == null))
+                {
+                    _classInstance = ((IClass)(MetaRepository.Instance.Resolve("http://nmf.codeplex.com/nmeta/#//PrimitiveType/")));
+                }
+                return _classInstance;
             }
         }
         
@@ -131,7 +138,11 @@ namespace NMF.Models.Meta
         /// </summary>
         public override IClass GetClass()
         {
-            return ((IClass)(NMF.Models.Repository.MetaRepository.Instance.Resolve("http://nmf.codeplex.com/nmeta/#//PrimitiveType/")));
+            if ((_classInstance == null))
+            {
+                _classInstance = ((IClass)(MetaRepository.Instance.Resolve("http://nmf.codeplex.com/nmeta/#//PrimitiveType/")));
+            }
+            return _classInstance;
         }
         
         /// <summary>

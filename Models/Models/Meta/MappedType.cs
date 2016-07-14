@@ -15,6 +15,7 @@ using NMF.Expressions.Linq;
 using NMF.Models;
 using NMF.Models.Collections;
 using NMF.Models.Expressions;
+using NMF.Models.Repository;
 using NMF.Serialization;
 using NMF.Utilities;
 using System;
@@ -24,16 +25,14 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
-using NMF.Models.Repository;
 
 namespace NMF.Models.Meta
 {
-
-
+    
+    
     /// <summary>
     /// The MappedType extension
     /// </summary>
-    [ModelRepresentationClassAttribute("http://nmf.codeplex.com/nmeta/#//MappedType/")]
     public class MappedType : ModelElementExtension<IType>
     {
         
@@ -41,6 +40,8 @@ namespace NMF.Models.Meta
         /// The backing field for the SystemType property
         /// </summary>
         private System.Type _systemType;
+        
+        private static IExtension _extensionType;
         
         /// <summary>
         /// Creates a new extension instance for the given parent
@@ -112,10 +113,17 @@ namespace NMF.Models.Meta
             parent.Extensions.Add(extension);
             return extension;
         }
-
+        
+        /// <summary>
+        /// Gets the extension model element for the given model extension class
+        /// </summary>
         public override IExtension GetExtension()
         {
-            return (IExtension)MetaRepository.Instance.ResolveType("http://nmf.codeplex.com/nmeta/#//MappedType/");
+            if ((_extensionType == null))
+            {
+                _extensionType = ((IExtension)(MetaRepository.Instance.Resolve("http://nmf.codeplex.com/nmeta/#//MappedType/")));
+            }
+            return _extensionType;
         }
     }
 }

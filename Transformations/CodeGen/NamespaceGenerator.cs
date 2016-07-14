@@ -278,12 +278,15 @@ namespace NMF.CodeGen
             if (memberProperty != null)
             {
                 memberProperty.Type = referenceConversion(memberProperty.Type);
+                VisitStatements(memberProperty.GetStatements, referenceConversion);
+                VisitStatements(memberProperty.SetStatements, referenceConversion);
                 return;
             }
             var memberField = member as CodeMemberField;
             if (memberField != null)
             {
                 memberField.Type = referenceConversion(memberField.Type);
+                VisitExpression(memberField.InitExpression, referenceConversion);
                 return;
             }
             var memberMethod = member as CodeMemberMethod;
@@ -294,6 +297,7 @@ namespace NMF.CodeGen
                 {
                     memberMethod.Parameters[j].Type = referenceConversion(memberMethod.Parameters[j].Type);
                 }
+                VisitStatements(memberMethod.Statements, referenceConversion);
                 return;
             }
             var memberEvent = member as CodeMemberEvent;
@@ -314,6 +318,7 @@ namespace NMF.CodeGen
 
         private void VisitStatements(CodeStatementCollection statements, Func<CodeTypeReference, CodeTypeReference> referenceConversion)
         {
+            if (statements == null) return;
             for (int i = 0; i < statements.Count; i++)
             {
                 var statement = statements[i];
@@ -321,6 +326,7 @@ namespace NMF.CodeGen
                 if (expressionStatement != null)
                 {
                     VisitExpression(expressionStatement.Expression, referenceConversion);
+                    continue;
                 }
                 var ifStmt = statement as CodeConditionStatement;
                 if (ifStmt != null)
@@ -328,21 +334,63 @@ namespace NMF.CodeGen
                     VisitExpression(ifStmt.Condition, referenceConversion);
                     VisitStatements(ifStmt.TrueStatements, referenceConversion);
                     VisitStatements(ifStmt.FalseStatements, referenceConversion);
+                    continue;
+                }
+                var decl = statement as CodeVariableDeclarationStatement;
+                if (decl != null)
+                {
+                    VisitExpression(decl.InitExpression, referenceConversion);
+                    continue;
+                }
+                var assign = statement as CodeAssignStatement;
+                if (assign != null)
+                {
+                    VisitExpression(assign.Left, referenceConversion);
+                    VisitExpression(assign.Right, referenceConversion);
+                    continue;
                 }
             }
         }
 
         private void VisitExpression(CodeExpression expression, Func<CodeTypeReference, CodeTypeReference> referenceConversion)
         {
+            if (expression == null) return;
             var mce = expression as CodeMethodInvokeExpression;
             if (mce != null)
             {
                 VisitExpression(mce.Method.TargetObject, referenceConversion);
+                return;
             }
             var tre = expression as CodeTypeReferenceExpression;
             if (tre != null)
             {
                 tre.Type = referenceConversion(tre.Type);
+                return;
+            }
+            var cast = expression as CodeCastExpression;
+            if (cast != null)
+            {
+                cast.TargetType = referenceConversion(cast.TargetType);
+                VisitExpression(cast.Expression, referenceConversion);
+                return;
+            }
+            var typeExp = expression as CodeTypeReferenceExpression;
+            if (typeExp != null)
+            {
+                typeExp.Type = referenceConversion(typeExp.Type);
+                return;
+            }
+            var propertyRef = expression as CodePropertyReferenceExpression;
+            if (propertyRef != null)
+            {
+                VisitExpression(propertyRef.TargetObject, referenceConversion);
+                return;
+            }
+            var fieldRef = expression as CodeFieldReferenceExpression;
+            if (fieldRef != null)
+            {
+                VisitExpression(fieldRef.TargetObject, referenceConversion);
+                return;
             }
         }
 

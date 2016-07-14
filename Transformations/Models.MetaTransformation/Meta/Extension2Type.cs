@@ -127,14 +127,17 @@ namespace NMF.Models.Meta
                 var uri = extension.AbsoluteUri;
                 if (uri != null && uri.IsAbsoluteUri)
                 {
-                    var extensionType = new CodeMemberField(typeof(IExtension).ToTypeReference(), "_extensionType");
+                    var extensionType = new CodeMemberField(getExtension.ReturnType, "_extensionType");
                     extensionType.Attributes = MemberAttributes.Private | MemberAttributes.Static;
-                    extensionType.InitExpression = new CodeCastExpression(extensionType.Type, new CodeMethodInvokeExpression(
-                        new CodePropertyReferenceExpression(new CodeTypeReferenceExpression(typeof(MetaRepository).ToTypeReference()), "Instance"),
-                        "ResolveType",
-                        new CodePrimitiveExpression(extension.AbsoluteUri.AbsoluteUri)));
+                    var extensionTypeRef = new CodeFieldReferenceExpression(null, extensionType.Name);
                     generatedType.Members.Add(extensionType);
-                    getExtension.Statements.Add(new CodeMethodReturnStatement(new CodeFieldReferenceExpression(null, extensionType.Name)));
+                    var nullRef = new CodePrimitiveExpression(null);
+                    getExtension.Statements.Add(new CodeConditionStatement(new CodeBinaryOperatorExpression(extensionTypeRef, CodeBinaryOperatorType.IdentityEquality, nullRef),
+                        new CodeAssignStatement(extensionTypeRef, new CodeCastExpression(extensionType.Type, new CodeMethodInvokeExpression(
+                        new CodePropertyReferenceExpression(new CodeTypeReferenceExpression(typeof(MetaRepository).ToTypeReference()), "Instance"),
+                        "Resolve",
+                        new CodePrimitiveExpression(uri.AbsoluteUri))))));
+                    getExtension.Statements.Add(new CodeMethodReturnStatement(extensionTypeRef));
                 }
                 else
                 {

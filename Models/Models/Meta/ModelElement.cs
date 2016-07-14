@@ -15,6 +15,7 @@ using NMF.Expressions.Linq;
 using NMF.Models;
 using NMF.Models.Collections;
 using NMF.Models.Expressions;
+using NMF.Models.Repository;
 using NMF.Serialization;
 using NMF.Utilities;
 using System;
@@ -35,7 +36,7 @@ namespace NMF.Models.Meta
     [XmlNamespaceAttribute("http://nmf.codeplex.com/nmeta/")]
     [XmlNamespacePrefixAttribute("nmeta")]
     [ModelRepresentationClassAttribute("http://nmf.codeplex.com/nmeta/#//ModelElement/")]
-    public abstract class ModelElement : ModelElement, NMF.Models.Meta.IModelElement, IModelElement
+    public abstract class ModelElement : NMF.Models.ModelElement, NMF.Models.Meta.IModelElement, IModelElement
     {
         
         /// <summary>
@@ -62,6 +63,8 @@ namespace NMF.Models.Meta
         /// The backing field for the Type property
         /// </summary>
         private IReferenceType _type;
+        
+        private static IClass _classInstance;
         
         public ModelElement()
         {
@@ -216,17 +219,6 @@ namespace NMF.Models.Meta
         }
         
         /// <summary>
-        /// Gets the Class element that describes the structure of this type
-        /// </summary>
-        public new static NMF.Models.Meta.IClass ClassInstance
-        {
-            get
-            {
-                return NMF.Models.Repository.MetaRepository.Instance.ResolveClass("http://nmf.codeplex.com/nmeta/#//ModelElement/");
-            }
-        }
-        
-        /// <summary>
         /// Gets fired when the AbsoluteUri property changed its value
         /// </summary>
         public event EventHandler<ValueChangedEventArgs> AbsoluteUriChanged;
@@ -305,7 +297,7 @@ namespace NMF.Models.Meta
         /// </summary>
         /// <param name="sender">The object that sent this reset request</param>
         /// <param name="eventArgs">The event data for the reset event</param>
-        private void OnResetParent(object sender, EventArgs eventArgs)
+        private void OnResetParent(object sender, System.EventArgs eventArgs)
         {
             this.Parent = null;
         }
@@ -328,7 +320,7 @@ namespace NMF.Models.Meta
         /// </summary>
         /// <param name="sender">The object that sent this reset request</param>
         /// <param name="eventArgs">The event data for the reset event</param>
-        private void OnResetType(object sender, EventArgs eventArgs)
+        private void OnResetType(object sender, System.EventArgs eventArgs)
         {
             this.Type = null;
         }
