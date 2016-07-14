@@ -35,10 +35,8 @@ namespace NMF.Models.Meta
     [XmlNamespaceAttribute("http://nmf.codeplex.com/nmeta/")]
     [XmlNamespacePrefixAttribute("nmeta")]
     [ModelRepresentationClassAttribute("http://nmf.codeplex.com/nmeta/#//ModelElementExtension/")]
-    public abstract class ModelElementExtension : NMF.Models.ModelElement, IModelElementExtension, IModelElement
+    public abstract class ModelElementExtension : ModelElement, IModelElementExtension, IModelElement
     {
-        
-        private static IClass _classInstance = ((IClass)(NMF.Models.Repository.MetaRepository.Instance.Resolve("http://nmf.codeplex.com/nmeta/#//ModelElementExtension/")));
         
         /// <summary>
         /// The ExtendedElement property
@@ -46,11 +44,11 @@ namespace NMF.Models.Meta
         [DesignerSerializationVisibilityAttribute(DesignerSerializationVisibility.Hidden)]
         [XmlAttributeAttribute(true)]
         [XmlOppositeAttribute("Extensions")]
-        public virtual NMF.Models.Meta.IModelElement ExtendedElement
+        public virtual NMF.Models.IModelElement ExtendedElement
         {
             get
             {
-                return ModelHelper.CastAs<NMF.Models.Meta.IModelElement>(this.Parent);
+                return ModelHelper.CastAs<NMF.Models.IModelElement>(this.Parent);
             }
             set
             {
@@ -72,11 +70,11 @@ namespace NMF.Models.Meta
         /// <summary>
         /// Gets the Class element that describes the structure of this type
         /// </summary>
-        public new static IClass ClassInstance
+        public new static NMF.Models.Meta.IClass ClassInstance
         {
             get
             {
-                return _classInstance;
+                return NMF.Models.Repository.MetaRepository.Instance.ResolveClass("http://nmf.codeplex.com/nmeta/#//ModelElementExtension/");
             }
         }
         
@@ -110,8 +108,8 @@ namespace NMF.Models.Meta
         /// <param name="newParent">The new parent model element</param>
         protected override void OnParentChanged(IModelElement newParent, IModelElement oldParent)
         {
-            NMF.Models.Meta.IModelElement oldExtendedElement = ModelHelper.CastAs<NMF.Models.Meta.IModelElement>(oldParent);
-            NMF.Models.Meta.IModelElement newExtendedElement = ModelHelper.CastAs<NMF.Models.Meta.IModelElement>(newParent);
+            NMF.Models.IModelElement oldExtendedElement = ModelHelper.CastAs<NMF.Models.IModelElement>(oldParent);
+            NMF.Models.IModelElement newExtendedElement = ModelHelper.CastAs<NMF.Models.IModelElement>(newParent);
             if ((oldExtendedElement != null))
             {
                 oldExtendedElement.Extensions.Remove(this);
@@ -173,7 +171,7 @@ namespace NMF.Models.Meta
         /// </summary>
         public override IClass GetClass()
         {
-            return _classInstance;
+            return ((IClass)(NMF.Models.Repository.MetaRepository.Instance.Resolve("http://nmf.codeplex.com/nmeta/#//ModelElementExtension/")));
         }
         
         /// <summary>

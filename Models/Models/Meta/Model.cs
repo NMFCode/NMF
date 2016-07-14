@@ -48,8 +48,6 @@ namespace NMF.Models.Meta
         /// </summary>
         private ObservableCompositionList<NMF.Models.Meta.IModelElement> _rootElements;
         
-        private static IClass _classInstance = ((IClass)(NMF.Models.Repository.MetaRepository.Instance.Resolve("http://nmf.codeplex.com/nmeta/#//Model/")));
-        
         public Model()
         {
             this._rootElements = new ObservableCompositionList<NMF.Models.Meta.IModelElement>(this);
@@ -119,11 +117,11 @@ namespace NMF.Models.Meta
         /// <summary>
         /// Gets the Class element that describes the structure of this type
         /// </summary>
-        public new static IClass ClassInstance
+        public new static NMF.Models.Meta.IClass ClassInstance
         {
             get
             {
-                return _classInstance;
+                return NMF.Models.Repository.MetaRepository.Instance.ResolveClass("http://nmf.codeplex.com/nmeta/#//Model/");
             }
         }
         
@@ -204,7 +202,7 @@ namespace NMF.Models.Meta
         /// </summary>
         public override IClass GetClass()
         {
-            return _classInstance;
+            return ((IClass)(NMF.Models.Repository.MetaRepository.Instance.Resolve("http://nmf.codeplex.com/nmeta/#//Model/")));
         }
         
         /// <summary>

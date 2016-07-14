@@ -39,16 +39,14 @@ namespace NMF.Models.Meta
     public class DataType : StructuredType, IDataType, IModelElement
     {
         
-        private static IClass _classInstance = ((IClass)(NMF.Models.Repository.MetaRepository.Instance.Resolve("http://nmf.codeplex.com/nmeta/#//DataType/")));
-        
         /// <summary>
         /// Gets the Class element that describes the structure of this type
         /// </summary>
-        public new static IClass ClassInstance
+        public new static NMF.Models.Meta.IClass ClassInstance
         {
             get
             {
-                return _classInstance;
+                return (IClass)NMF.Models.Repository.MetaRepository.Instance.ResolveType("http://nmf.codeplex.com/nmeta/#//DataType/");
             }
         }
         
@@ -57,7 +55,7 @@ namespace NMF.Models.Meta
         /// </summary>
         public override IClass GetClass()
         {
-            return _classInstance;
+            return ((IClass)(NMF.Models.Repository.MetaRepository.Instance.Resolve("http://nmf.codeplex.com/nmeta/#//DataType/")));
         }
     }
 }

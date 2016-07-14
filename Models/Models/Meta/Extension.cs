@@ -44,8 +44,6 @@ namespace NMF.Models.Meta
         /// </summary>
         private IClass _adornedClass;
         
-        private static IClass _classInstance = ((IClass)(NMF.Models.Repository.MetaRepository.Instance.Resolve("http://nmf.codeplex.com/nmeta/#//Extension/")));
-        
         /// <summary>
         /// The AdornedClass property
         /// </summary>
@@ -91,11 +89,11 @@ namespace NMF.Models.Meta
         /// <summary>
         /// Gets the Class element that describes the structure of this type
         /// </summary>
-        public new static IClass ClassInstance
+        public new static NMF.Models.Meta.IClass ClassInstance
         {
             get
             {
-                return _classInstance;
+                return (IClass)NMF.Models.Repository.MetaRepository.Instance.ResolveType("http://nmf.codeplex.com/nmeta/#//Extension/");
             }
         }
         
@@ -122,7 +120,7 @@ namespace NMF.Models.Meta
         /// </summary>
         /// <param name="sender">The object that sent this reset request</param>
         /// <param name="eventArgs">The event data for the reset event</param>
-        private void OnResetAdornedClass(object sender, System.EventArgs eventArgs)
+        private void OnResetAdornedClass(object sender, EventArgs eventArgs)
         {
             this.AdornedClass = null;
         }
@@ -175,7 +173,7 @@ namespace NMF.Models.Meta
         /// </summary>
         public override IClass GetClass()
         {
-            return _classInstance;
+            return ((IClass)(NMF.Models.Repository.MetaRepository.Instance.Resolve("http://nmf.codeplex.com/nmeta/#//Extension/")));
         }
         
         /// <summary>

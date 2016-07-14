@@ -134,13 +134,12 @@ namespace NMF.Models.Meta
                         "ResolveType",
                         new CodePrimitiveExpression(extension.AbsoluteUri.AbsoluteUri)));
                     generatedType.Members.Add(extensionType);
-                    getExtension.Statements.Add(new CodeMethodReturnStatement(new CodeFieldReferenceExpression(null, extensionType.Name)));
+                    getExtension.Statements.Add(new CodeMethodReturnStatement(new CodeFieldReferenceExpression(new CodeThisReferenceExpression(), extensionType.Name)));
                 }
                 else
                 {
                     getExtension.ThrowException<NotSupportedException>(new CodePrimitiveExpression(string.Format("The extension {0} has no absolute Uri and can therefore not be reflected.", extension)));
                 }
-                getExtension.WriteDocumentation("Gets the extension model element for the given model extension class");
                 generatedType.Members.Add(getExtension);
             }
 
