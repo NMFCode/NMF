@@ -62,13 +62,37 @@ namespace NMF.CodeGen
 
             Dictionary<string, string> nameConflicts = LoadOrGenerateNameConflicts(context);
             var usings = new HashSet<string>();
-        
+
             VisitNamespace(output, reference => CorrectNamespace(reference, output, usings, nameConflicts));
 
             usings.Remove(output.Name);
             foreach (var item in usings)
             {
                 output.Imports.Add(new CodeNamespaceImport(item));
+            }
+        }
+
+        private void RecursivelyAddTypes(CodeTypeMember member, CodeNamespace output)
+        {
+            var dependentMembers = CodeDomHelper.DependentMembers(member, false);
+            if (dependentMembers != null)
+            {
+                foreach (var dependent in dependentMembers)
+                {
+                    RecursivelyAddTypes(dependent, output);
+                }
+            }
+
+            var dependentTypes = CodeDomHelper.DependentTypes(member, false);
+            if (dependentTypes != null)
+            {
+                foreach (var dependentType in dependentTypes)
+                {
+                    if (!output.Types.Contains(dependentType))
+                    {
+                        AddType(output, dependentType);
+                    }
+                }
             }
         }
 
@@ -152,6 +176,18 @@ namespace NMF.CodeGen
         {
             var nameDict = new Dictionary<string, string>();
             var rules = context.Transformation.Rules.OfType<NamespaceGenerator<T>>().ToList();
+            // First pass: Add all dependent types
+            foreach (var rule in rules)
+            {
+                foreach (var codeNs in context.Trace.FindAllIn(rule))
+                {
+                    for (int i = 0; i < codeNs.Types.Count; i++)
+                    {
+                        RecursivelyAddTypes(codeNs.Types[i], codeNs);
+                    }
+                }
+            }
+            // Second pass: Populate name conflicts
             foreach (var rule in rules)
             {
                 foreach (var codeNs in context.Trace.FindAllIn(rule))
@@ -273,6 +309,40 @@ namespace NMF.CodeGen
                 {
                     VisitMember(nestedType.Members[i], referenceConversion);
                 }
+            }
+        }
+
+        private void VisitStatements(CodeStatementCollection statements, Func<CodeTypeReference, CodeTypeReference> referenceConversion)
+        {
+            for (int i = 0; i < statements.Count; i++)
+            {
+                var statement = statements[i];
+                var expressionStatement = statement as CodeExpressionStatement;
+                if (expressionStatement != null)
+                {
+                    VisitExpression(expressionStatement.Expression, referenceConversion);
+                }
+                var ifStmt = statement as CodeConditionStatement;
+                if (ifStmt != null)
+                {
+                    VisitExpression(ifStmt.Condition, referenceConversion);
+                    VisitStatements(ifStmt.TrueStatements, referenceConversion);
+                    VisitStatements(ifStmt.FalseStatements, referenceConversion);
+                }
+            }
+        }
+
+        private void VisitExpression(CodeExpression expression, Func<CodeTypeReference, CodeTypeReference> referenceConversion)
+        {
+            var mce = expression as CodeMethodInvokeExpression;
+            if (mce != null)
+            {
+                VisitExpression(mce.Method.TargetObject, referenceConversion);
+            }
+            var tre = expression as CodeTypeReferenceExpression;
+            if (tre != null)
+            {
+                tre.Type = referenceConversion(tre.Type);
             }
         }
 

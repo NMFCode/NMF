@@ -104,6 +104,9 @@ namespace NMF.Models.Repository
                     Uri modelUri;
                     if (metadata != null && names.Contains(metadata.ResourceName) && Uri.TryCreate(metadata.ModelUri, UriKind.Absolute, out modelUri))
                     {
+#if DEBUG
+                        serializer.Deserialize(assembly.GetManifestResourceStream(metadata.ResourceName), modelUri, this, true);
+#else
                         try
                         {
                             serializer.Deserialize(assembly.GetManifestResourceStream(metadata.ResourceName), modelUri, this, true);
@@ -112,6 +115,7 @@ namespace NMF.Models.Repository
                         {
                             Console.Error.WriteLine(ex.Message);
                         }
+#endif
                     }
                 }
                 for (int i = 0; i < saveMapping.Count; i++)
