@@ -141,9 +141,9 @@ namespace NMF.Models.Meta
                 AddIfNotNull(members, CreateSetFeature(input, generatedType, context));
                 AddIfNotNull(members, CreateGetExpressionForAttribute(input, generatedType, context));
                 AddIfNotNull(members, CreateGetExpressionForReference(input, generatedType, context));
-                AddIfNotNull(members, CreateClassInstance(input));
 
-                CodeMemberField codeField;
+                CodeMemberField codeField = CreateClassField(input);
+                AddIfNotNull(members, codeField);
                 var baseClasses = input.Closure(cl => cl.BaseTypes);
                 var isModelElementContained = false;
                 foreach (var cl in baseClasses)
@@ -151,8 +151,8 @@ namespace NMF.Models.Meta
                     if (cl.RelativeUri == ModelExtensions.ClassModelElement.RelativeUri) isModelElementContained = true;
                     if (cl.InstanceOf != null && cl != input)
                     {
-                        AddIfNotNull(members, CreateOverriddenGetClassMethod(input, cl.InstanceOf, context, out codeField));
-                        AddIfNotNull(members, codeField);
+                        AddIfNotNull(members, CreateOverriddenGetClassMethod(input, cl.InstanceOf, context, codeField));
+                        AddIfNotNull(members, CreateClassInstanceProperty(input, cl.InstanceOf, context, codeField));
 
                         var referenceImplementations = cl.InstanceOf.MostSpecificRefinement(ModelExtensions.ReferenceTypeReferencesReference);
                         if (!referenceImplementations.Contains(ModelExtensions.ReferenceTypeReferencesReference))
@@ -166,8 +166,8 @@ namespace NMF.Models.Meta
                 }
                 if (!isModelElementContained)
                 {
-                    AddIfNotNull(members, CreateOverriddenGetClassMethod(input, ModelExtensions.ClassModelElement.InstanceOf, context, out codeField));
-                    AddIfNotNull(members, codeField);
+                    AddIfNotNull(members, CreateOverriddenGetClassMethod(input, ModelExtensions.ClassModelElement.InstanceOf, context, codeField));
+                    AddIfNotNull(members, CreateClassInstanceProperty(input, ModelExtensions.ClassModelElement.InstanceOf, context, codeField));
                 }
 
                 ImplementIdentifier(input, generatedType);
@@ -265,9 +265,8 @@ namespace NMF.Models.Meta
                 return referencedType;
             }
 
-            protected virtual CodeMemberMethod CreateOverriddenGetClassMethod(IClass input, IClass instantiating, ITransformationContext context, out CodeMemberField classField)
+            protected virtual CodeTypeReference GetInterfaceType(IClass instantiating, ITransformationContext context)
             {
-                classField = null;
                 var targetType = new CodeTypeReference();
                 if (!SetTypeReferenceForMappedType(instantiating, targetType))
                 {
@@ -277,22 +276,29 @@ namespace NMF.Models.Meta
                 {
                     targetType.BaseType = "I" + targetType.BaseType;
                 }
+                return targetType;
+            }
+
+            private CodeMemberField CreateClassField(IClass input)
+            {
+                var classField = new CodeMemberField(typeof(IClass).ToTypeReference(), "_classInstance");
+                classField.Attributes = MemberAttributes.Private | MemberAttributes.Static;
+                return classField;
+            }
+
+            protected virtual CodeMemberMethod CreateOverriddenGetClassMethod(IClass input, IClass instantiating, ITransformationContext context, CodeMemberField classField)
+            {
+                var type = GetInterfaceType(instantiating, context);
                 var getClass = new CodeMemberMethod()
                 {
                     Name = "Get" + instantiating.Name.ToPascalCase(),
-                    ReturnType = targetType,
+                    ReturnType = type,
                     Attributes = MemberAttributes.Public | MemberAttributes.Override
                 };
                 var absoluteUri = input.AbsoluteUri;
-                if (absoluteUri != null && absoluteUri.IsAbsoluteUri)
+                if (classField != null && absoluteUri != null && absoluteUri.IsAbsoluteUri)
                 {
-                    var repositoryRef = new CodePropertyReferenceExpression(new CodeTypeReferenceExpression(typeof(MetaRepository)), "Instance");
-                    var classRef = new CodeMethodInvokeExpression(repositoryRef, "Resolve", new CodePrimitiveExpression(absoluteUri.AbsoluteUri));
-                    classField = new CodeMemberField(targetType, "_" + instantiating.Name.ToCamelCase() + "Instance");
-                    classField.Attributes = MemberAttributes.Private | MemberAttributes.Static;
-                    classField.InitExpression = new CodeCastExpression(targetType, classRef);
-
-                    getClass.Statements.Add(new CodeMethodReturnStatement(new CodeFieldReferenceExpression(null, classField.Name)));
+                    GenerateClassFieldReferenceAndInitialization(instantiating, classField, type, getClass.Statements, absoluteUri);
                 }
                 else
                 {
@@ -301,6 +307,44 @@ namespace NMF.Models.Meta
                 getClass.WriteDocumentation(string.Format("Gets the {0} for this model element", instantiating.Name));
                 return getClass;
             }
+
+            private static void GenerateClassFieldReferenceAndInitialization(IClass instantiating, CodeMemberField classField, CodeTypeReference type, CodeStatementCollection statements, Uri absoluteUri)
+            {
+                var repositoryRef = new CodePropertyReferenceExpression(new CodeTypeReferenceExpression(typeof(MetaRepository)), "Instance");
+                CodeExpression classRef = new CodeMethodInvokeExpression(repositoryRef, "Resolve", new CodePrimitiveExpression(absoluteUri.AbsoluteUri));
+                if (instantiating.Name != typeof(Class).Name)
+                {
+                    classRef = new CodeCastExpression(typeof(IClass).ToTypeReference(), classRef);
+                }
+                var classFieldRef = new CodeFieldReferenceExpression(null, classField.Name);
+                var nullRef = new CodePrimitiveExpression(null);
+                statements.Add(new CodeConditionStatement(new CodeBinaryOperatorExpression(classFieldRef, CodeBinaryOperatorType.IdentityEquality, nullRef),
+                    new CodeAssignStatement(classFieldRef, classRef)));
+                statements.Add(new CodeMethodReturnStatement(new CodeCastExpression(type, new CodeFieldReferenceExpression(null, classField.Name))));
+            }
+
+            protected virtual CodeMemberProperty CreateClassInstanceProperty(IClass input, IClass instantiating, ITransformationContext context, CodeMemberField classField)
+            {
+                var absoluteUri = input.AbsoluteUri;
+                if (classField != null && absoluteUri != null && absoluteUri.IsAbsoluteUri)
+                {
+                    var type = GetInterfaceType(instantiating, context);
+                    var classInstanceProperty = new CodeMemberProperty()
+                    {
+                        Name = instantiating.Name.ToPascalCase(),
+                        Type = type,
+                        Attributes = MemberAttributes.Public | MemberAttributes.Static
+                    };
+                    classInstanceProperty.HasGet = true;
+                    classInstanceProperty.HasSet = false;
+                    GenerateClassFieldReferenceAndInitialization(instantiating, classField, type, classInstanceProperty.GetStatements, absoluteUri);
+                    return classInstanceProperty;
+                }
+                else
+                {
+                    return null;
+                }
+            }    
 
             protected virtual CodeMemberMethod CreateAbstractGetClassMethod(IClass input, ITransformationContext context)
             {
@@ -745,32 +789,6 @@ namespace NMF.Models.Meta
                     method.Statements.Add(ifStmt);
                 }
                 return method;
-            }
-
-            /// <summary>
-            /// Generates the ClassInstance property
-            /// </summary>
-            /// <param name="input">The class for which to generate the property</param>
-            /// <returns>The ClassInatsnce property</returns>
-            protected virtual CodeMemberProperty CreateClassInstance(IClass input)
-            {
-                var classInstance = new CodeMemberProperty()
-                {
-                    Name = "ClassInstance",
-                    Attributes = MemberAttributes.Public | MemberAttributes.Final | MemberAttributes.Static | MemberAttributes.New,
-                    Type = typeof(IClass).ToTypeReference()
-                };
-                var absoluteUri = input.AbsoluteUri;
-                if (absoluteUri != null && absoluteUri.IsAbsoluteUri)
-                {
-                    classInstance.GetStatements.Add(new CodeMethodReturnStatement(new CodeFieldReferenceExpression(null, "_classInstance")));
-                }
-                else
-                {
-                    return null;
-                }
-                classInstance.WriteDocumentation("Gets the Class element that describes the structure of this type");
-                return classInstance;
             }
 
             /// <summary>
