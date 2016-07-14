@@ -21,7 +21,7 @@ namespace NMF.Models.Tests
         public void LoadRailwayModel()
         {
             repository = new ModelRepository();
-            var railwayModel = repository.Resolve(new Uri(BaseUri), "..\\..\\railway.railway").Model;
+            var railwayModel = repository.Resolve(new Uri(BaseUri), "railway.railway").Model;
             Assert.IsNotNull(railwayModel);
             railway = railwayModel.RootElements.Single() as RailwayContainer;
             Assert.IsNotNull(railway);

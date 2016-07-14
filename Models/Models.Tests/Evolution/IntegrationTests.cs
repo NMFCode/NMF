@@ -76,7 +76,7 @@ namespace NMF.Models.Tests.Evolution
 
         private RailwayContainer LoadRailwayModel(ModelRepository repository)
         {
-            var railwayModel = repository.Resolve(new Uri(BaseUri), "..\\..\\railway.railway").Model;
+            var railwayModel = repository.Resolve(new Uri(BaseUri), "railway.railway").Model;
             Assert.IsNotNull(railwayModel);
             var railway = railwayModel.RootElements.Single() as RailwayContainer;
             Assert.IsNotNull(railway);
