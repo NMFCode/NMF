@@ -42,6 +42,7 @@ namespace NMF.Expressions
         {
             var visitor = new PromotionExpressionVisitor();
             var visited = visitor.Visit(expression);
+            var collectedParameterInfos = visitor.CollectParameterInfos();
             var parameterCollector = new ParameterCollector();
             parameterCollector.Visit(visited);
             var parametersNew = parameterCollector.Parameters.ToList();
@@ -67,10 +68,10 @@ namespace NMF.Expressions
                     args[3 * i + 1] = InstructionLevelNotifySystem.Instance.CreateExpression(extraction.Value, parameters, parameterMappings);
                 }
                 PromotionExpressionVisitor.ParameterInfo parInfo;
-                if (visitor.ParameterInfos.TryGetValue(parameter.Name, out parInfo))
+                if (collectedParameterInfos.TryGetValue(parameter, out parInfo))
                 {
                     args[3 * i + 2] = parInfo.Properties;
-                    args[3 * i + 3] = parInfo.NeedContainments;
+                    args[3 * i + 3] = parInfo.NeedsContainment;
                 }
                 else
                 {
@@ -99,7 +100,7 @@ namespace NMF.Expressions
             }
             else
             {
-                var parameterType = typeof(ObservableParameter<>);
+                var parameterType = typeof(ObservableParameter<>).MakeGenericType(type);
                 return Activator.CreateInstance(parameterType, new object[] { name });
             }
         }

@@ -47,6 +47,7 @@
     <Compile Include="Generic\EmptyList.cs" />
     <Compile Include="Generic\EnumerableDebuggerProxy.cs" />
     <Compile Include="Generic\IOrderedSet.cs" />
+    <Compile Include="Generic\LooselyLinkedListNode.cs" />
     <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="ObjectModel\NotifyCollectionChangingEventArgs.cs" />
     <Compile Include="ObjectModel\INotifyCollectionChanging.cs" />

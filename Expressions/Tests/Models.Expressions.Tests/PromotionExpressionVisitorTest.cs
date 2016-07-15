@@ -17,11 +17,12 @@ namespace NMF.Expressions.Tests
 
             var visitor = new PromotionExpressionVisitor();
             var visited = visitor.Visit(test);
+            var collectedParameters = visitor.CollectParameterInfos();
 
             Assert.AreEqual(1, visitor.ExtractParameters.Count);
             ParameterAssertions.AssertOnlyParameters(visited, visitor.ExtractParameters.Single().Parameter);
-            Assert.AreEqual(1, visitor.ParameterInfos.Count);
-            Assert.AreEqual("Signal", visitor.ParameterInfos.Single().Value.Properties.Single());
+            Assert.AreEqual(1, collectedParameters.Count);
+            Assert.AreEqual("Signal", collectedParameters.Single().Value.Properties.Single());
         }
 
         [TestMethod]
@@ -31,12 +32,13 @@ namespace NMF.Expressions.Tests
 
             var visitor = new PromotionExpressionVisitor();
             var visited = visitor.Visit(test);
+            var collectedParameters = visitor.CollectParameterInfos();
 
             Assert.AreEqual(1, visitor.ExtractParameters.Count);
             ParameterAssertions.AssertOnlyParameters(visited, test.Parameters[0], visitor.ExtractParameters.Single().Parameter);
-            Assert.AreEqual(2, visitor.ParameterInfos.Count);
-            Assert.AreEqual("Position", visitor.ParameterInfos["swP"].Properties.Single());
-            Assert.AreEqual("CurrentPosition", visitor.ParameterInfos[visitor.ExtractParameters.Single().Parameter.Name].Properties.Single());
+            Assert.AreEqual(2, collectedParameters.Count);
+            Assert.AreEqual("Position", collectedParameters[test.Parameters.Single()].Properties.Single());
+            Assert.AreEqual("CurrentPosition", collectedParameters[visitor.ExtractParameters.Single().Parameter].Properties.Single());
         }
 
         [TestMethod]
@@ -46,12 +48,13 @@ namespace NMF.Expressions.Tests
 
             var visitor = new PromotionExpressionVisitor();
             var visited = visitor.Visit(test);
+            var collectedParameters = visitor.CollectParameterInfos();
 
             Assert.AreEqual(1, visitor.ExtractParameters.Count);
             ParameterAssertions.AssertOnlyParameters(visited, test.Parameters[0], visitor.ExtractParameters.Single().Parameter);
-            Assert.AreEqual(2, visitor.ParameterInfos.Count);
-            Assert.AreEqual("DefinedBy", visitor.ParameterInfos["r"].Properties.Single());
-            Assert.AreEqual("Sensor", visitor.ParameterInfos[visitor.ExtractParameters.Single().Parameter.Name].Properties.Single());
+            Assert.AreEqual(2, collectedParameters.Count);
+            Assert.AreEqual("DefinedBy", collectedParameters[test.Parameters[0]].Properties.Single());
+            Assert.AreEqual("Sensor", collectedParameters[visitor.ExtractParameters.Single().Parameter].Properties.Single());
         }
 
         [TestMethod]
@@ -66,13 +69,12 @@ namespace NMF.Expressions.Tests
 
             var visitor = new PromotionExpressionVisitor();
             var visited = visitor.Visit(test);
+            var collectedParameters = visitor.CollectParameterInfos();
 
             Assert.AreEqual(1, visitor.ExtractParameters.Count);
-            Assert.AreEqual(visitor.ExtractParameters.Single().Parameter, (visited as LambdaExpression).Body);
-            Assert.AreEqual(visitor.ExtractParameters.Single().Value, test.Body);
         }
 
-        //[TestMethod]
+        [TestMethod]
         public void Test_PromotionExpressionVisitor_PosLength()
         {
             Expression<Func<RailwayContainer, IEnumerableExpression<ISegment>>> test = rc =>
@@ -82,10 +84,11 @@ namespace NMF.Expressions.Tests
 
             var visitor = new PromotionExpressionVisitor();
             var visited = visitor.Visit(test);
+            var collectedParameters = visitor.CollectParameterInfos();
 
             Assert.AreEqual(0, visitor.ExtractParameters.Count);
-            var parameterInfo = visitor.ParameterInfos["rc"];
-            Assert.IsTrue(parameterInfo.NeedContainments);
+            var parameterInfo = collectedParameters[test.Parameters[0]];
+            Assert.IsTrue(parameterInfo.NeedsContainment);
             Assert.AreEqual(2, parameterInfo.Properties.Count);
         }
     }

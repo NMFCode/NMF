@@ -9,40 +9,60 @@ using System.Threading.Tasks;
 using System.ComponentModel;
 using NMF.Utilities;
 using System.Runtime.CompilerServices;
+using NMF.Collections.Generic;
 
 namespace NMF.Expressions
 {
     internal class PromotionExpressionVisitor : ExpressionVisitorBase
     {
-        public struct ParameterInfo
+        public struct PropertyAccess
         {
-            public ParameterInfo(bool needsContainment) : this()
+            public PropertyAccess(ParameterExpression parameter, string propertyName, bool isCrossReference, bool isRecursive) : this()
             {
-                NeedContainments = needsContainment;
-                Properties = new HashSet<string>();
+                Parameter = parameter;
+                PropertyName = propertyName;
+                IsCrossReference = isCrossReference;
+                IsRecursive = isRecursive;
             }
 
-            public HashSet<string> Properties { get; set; }
+            public ParameterExpression Parameter { get; private set; }
 
-            public bool NeedContainments { get; set; }
+            public string PropertyName { get; private set; }
+
+            public bool IsCrossReference { get; private set; }
+
+            public bool IsRecursive { get; private set; }
+
+            public bool IsNested { get; private set; }
+
+            internal PropertyAccess ForParameter(ParameterExpression p)
+            {
+                return new PropertyAccess(p, PropertyName, IsCrossReference, true);
+            }
         }
 
-        private Dictionary<string, ParameterExtraction> parameters = new Dictionary<string, ParameterExtraction>();
-        private Dictionary<string, ParameterInfo> parameterInfo = new Dictionary<string, ParameterInfo>();
+        public struct ParameterInfo
+        {
+            public ParameterInfo(List<string> properties, bool needsContainment)
+            {
+                NeedsContainment = needsContainment;
+                Properties = properties;
+            }
+
+            public bool NeedsContainment { get; set; }
+
+            public List<string> Properties { get; private set; }
+        }
+
+        private Dictionary<string, ParameterExtraction> parameterextractions = new Dictionary<string, ParameterExtraction>();
+        private LooselyLinkedList<PropertyAccess> propertyAccesses = new LooselyLinkedList<PropertyAccess>();
+        private LooselyLinkedList<ParameterExpression> parameterExpressions = new LooselyLinkedList<ParameterExpression>();
         
         public ICollection<ParameterExtraction> ExtractParameters
         {
             get
             {
-                return parameters.Values;
-            }
-        }
-
-        public IDictionary<string, ParameterInfo> ParameterInfos
-        {
-            get
-            {
-                return parameterInfo;
+                return parameterextractions.Values;
             }
         }
 
@@ -102,28 +122,6 @@ namespace NMF.Expressions
             return HasAttribute(property, typeof(ContainmentAttribute), true);
         }
 
-        protected virtual IEnumerable<ParameterExpression> GetContainmentParameterDependencies(Expression expression)
-        {
-            // Look up along property tree
-            var current = expression as MemberExpression;
-            if (current != null)
-            {
-                var currentProperty = current.Member as PropertyInfo;
-                while (currentProperty != null && IsContainmentProperty(currentProperty))
-                {
-                    var parameter = current.Expression as ParameterExpression;
-                    if (parameter != null)
-                    {
-                        return new ParameterExpression[] { parameter };
-                    }
-                    current = current.Expression as MemberExpression;
-                    if (current == null) return null;
-                    currentProperty = current.Member as PropertyInfo;
-                }
-            }
-            return null;
-        }
-
         private static bool HasAttribute(MemberInfo member, Type attributeType, bool inherit)
         {
             var attributes = member.GetCustomAttributes(attributeType, inherit);
@@ -133,105 +131,272 @@ namespace NMF.Expressions
         protected override Expression VisitMember(MemberExpression node)
         {
             ParameterExtraction extraction;
-            if (parameters.TryGetValue(node.ToString(), out extraction))
+            if (parameterextractions.TryGetValue(node.ToString(), out extraction))
             {
                 return extraction.Parameter;
             }
             var property = node.Member as PropertyInfo;
             if (property != null)
             {
-                var para = node.Expression as ParameterExpression;
-                if (para == null)
+                var newExpression = Visit(node.Expression);
+                var isContainment = IsContainmentProperty(property);
+                var isCrossReference = !isContainment && typeof(IModelElement).IsAssignableFrom(property.PropertyType);
+                foreach (var parameter in parameterExpressions)
                 {
-                    var containmentParameterDependencies = GetContainmentParameterDependencies(node.Expression);
-                    if (containmentParameterDependencies != null)
+                    if (IsCrossreferenced(parameter) && node.Expression != parameter)
                     {
-                        foreach (var par in containmentParameterDependencies)
-                        {
-                            RegisterProperty(property, par, true);
-                        }
+                        var extract = ExtractParameter(node.Expression);
+                        propertyAccesses.Clear();
+                        parameterExpressions.Clear();
+                        parameterExpressions.Add(extract);
+                        propertyAccesses.Add(new PropertyAccess(extract, property.Name, isCrossReference, false));
+                        return Expression.MakeMemberAccess(extract, property);
                     }
                     else
                     {
-                        ParameterInfo pInfo;
-                        var par = ExtractParameter(node.Expression, out pInfo);
-                        pInfo.Properties.Add(property.Name);
-                        return node.Update(par);
+                        propertyAccesses.Add(new PropertyAccess(parameter, property.Name, isCrossReference, false));
                     }
                 }
-                else
+                if (newExpression != node.Expression)
                 {
-                    RegisterProperty(property, para, false);
+                    return node.Update(newExpression);
                 }
+                return node;
             }
-            return base.VisitMember(node);
+            else
+            {
+                return base.VisitMember(node);
+            }
         }
 
-        private Expression ExtractParameter(Expression node, out ParameterInfo pInfo)
+        private bool IsCrossreferenced(ParameterExpression parameter)
+        {
+            foreach (var access in propertyAccesses)
+            {
+                if (access.Parameter == parameter && access.IsCrossReference)
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        private ParameterExpression ExtractParameter(Expression node)
         {
             ParameterExtraction par;
             var id = node.ToString();
-            if (!parameters.TryGetValue(id, out par))
+            if (!parameterextractions.TryGetValue(id, out par))
             {
-                var parameter = Expression.Parameter(node.Type, "promotion_arg_" + parameters.Count.ToString());
+                var parameter = Expression.Parameter(node.Type, "promotion_arg_" + parameterextractions.Count.ToString());
                 par = new ParameterExtraction(parameter, node);
-                parameters.Add(id, par);
-            }
-            if (!parameterInfo.TryGetValue(par.Parameter.Name, out pInfo))
-            {
-                pInfo = new ParameterInfo(false);
-                parameterInfo.Add(par.Parameter.Name, pInfo);
+                parameterextractions.Add(id, par);
             }
             return par.Parameter;
         }
 
-        private void RegisterProperty(PropertyInfo property, ParameterExpression parameter, bool needsContainment)
+        protected override Expression VisitConditional(ConditionalExpression node)
         {
-            ParameterInfo properties;
-            if (!parameterInfo.TryGetValue(parameter.Name, out properties))
+            var test = Visit(node.Test);
+            var testPropertyAccesses = propertyAccesses.First.Next;
+            var testParameters = parameterExpressions.First.Next;
+            propertyAccesses.Clear();
+            parameterExpressions.Clear();
+            var ifTrue = Visit(node.IfTrue);
+            var truePropertyAccesses = propertyAccesses.First.Next;
+            var trueParameters = parameterExpressions.First.Next;
+            var ifFalse = Visit(node.IfFalse);
+            if (truePropertyAccesses != null) propertyAccesses.AddFirst(truePropertyAccesses);
+            if (testPropertyAccesses != null) propertyAccesses.AddFirst(testPropertyAccesses);
+            if (trueParameters != null) parameterExpressions.AddFirst(trueParameters);
+            if (testParameters != null) parameterExpressions.AddFirst(testParameters);
+            if (test != node.Test || ifTrue != node.IfTrue || ifFalse != node.IfFalse)
             {
-                properties = new ParameterInfo(needsContainment);
-                parameterInfo.Add(parameter.Name, properties);
+                return node.Update(test, ifTrue, ifFalse);
             }
-            else if (needsContainment && !properties.NeedContainments)
+            return node;
+        }
+
+        protected override Expression VisitBinary(BinaryExpression node)
+        {
+            var right = Visit(node.Right);
+            var rightPropertyAccesses = propertyAccesses.First.Next;
+            var rightParameters = parameterExpressions.First.Next;
+            propertyAccesses.Clear();
+            parameterExpressions.Clear();
+            var left = Visit(node.Left);
+            var leftPropertyAccesses = propertyAccesses.First.Next;
+            var leftParameters = parameterExpressions.First.Next;
+            propertyAccesses.Clear();
+            parameterExpressions.Clear();
+            var conversion = node.Conversion != null ? Visit(node.Conversion) : null;
+            if (leftPropertyAccesses != null) propertyAccesses.AddFirst(leftPropertyAccesses);
+            if (rightPropertyAccesses != null) propertyAccesses.AddFirst(rightPropertyAccesses);
+            if (leftParameters != null) parameterExpressions.AddFirst(leftParameters);
+            if (rightParameters != null) parameterExpressions.AddFirst(rightParameters);
+            if (left != node.Left || right != node.Right || conversion != node.Conversion)
             {
-                properties.NeedContainments = true;
-                parameterInfo[parameter.Name] = properties;
+                return node.Update(left, node.Conversion, right);
             }
-            properties.Properties.Add(property.Name);
+            return node;
+        }
+
+        protected override Expression VisitParameter(ParameterExpression node)
+        {
+            parameterExpressions.Add(node);
+            return base.VisitParameter(node);
         }
 
         protected override Expression VisitMethodCall(MethodCallExpression node)
         {
-            if (!IsImmutableMethod(node.Method))
-            {
-                var argumentRemaps = ReflectionHelper.GetCustomAttributes<ArgumentApplicationAttribute>(node.Method, true);
-                if (argumentRemaps != null && argumentRemaps.Length > 0)
-                {
-                    return VisitRemappedMethodCall(node, node.Method, argumentRemaps);
-                }
-                else
-                {
-                    System.Diagnostics.Debug.WriteLine("Missing attribute for method {0}. Was this intended?", node.Method);
-                }
-            }
-
+            var extractionsSaved = new Dictionary<string, ParameterExtraction>(parameterextractions);
+            var remaps = ReflectionHelper.GetCustomAttributes<ParameterDataflowAttribute>(node.Method, true);
+            var method = node.Method;
+            var parametersSaved = new Dictionary<string, ParameterExtraction>(parameterextractions);
+            var methodParameters = method.GetParameters();
             var changed = false;
             var arguments = new Expression[node.Arguments.Count];
+            var propertyAccessArray = new LooselyLinkedListNode<PropertyAccess>[node.Arguments.Count];
+            var parameterUsageArray = new LooselyLinkedListNode<ParameterExpression>[node.Arguments.Count];
             for (int i = 0; i < node.Arguments.Count; i++)
             {
                 var arg = node.Arguments[i];
                 var argument = Visit(arg);
                 arguments[i] = argument;
                 changed |= argument != arg;
+                propertyAccessArray[i] = propertyAccesses.First.Next;
+                propertyAccesses.Clear();
+                parameterUsageArray[i] = parameterExpressions.First.Next;
+                parameterExpressions.Clear();
             }
-            var obj = Visit(node.Object);
-            changed |= obj != node.Object;
+            Expression obj = node.Object;
+            if (obj != null)
+            {
+                obj = Visit(node.Object);
+                changed |= obj != node.Object;
+            }
+            var objectPropertyAccesses = propertyAccesses.First.Next;
+            var objectParameters = parameterExpressions.First.Next;
+            propertyAccesses.Clear();
+            parameterExpressions.Clear();
+            var defaultList = Enumerable.Range(0, node.Arguments.Count).ToList();
+            for (int i = 0; i < node.Arguments.Count; i++)
+            {
+                var accesses = propertyAccessArray[i];
+                if (accesses == null) continue;
+                defaultList[i] = -2;
+                var lambda = FindLambdaExpression(node.Arguments[i]);
+                if (lambda != null)
+                {
+                    var remapsforLambda = remaps.Where(a => a.FunctionIndex == i);
+                    var argumentMaps = new List<int>[lambda.Parameters.Count];
+                    foreach (var remap in remapsforLambda)
+                    {
+                        List<int> remapForArgument = argumentMaps[remap.SourceIndex];
+                        if (remapForArgument == null)
+                        {
+                            remapForArgument = new List<int>();
+                            argumentMaps[remap.SourceIndex] = remapForArgument;
+                        }
+                        remapForArgument.Add(remap.FunctionParameterIndex);
+                    }
+                    for (int j = 0; j < lambda.Parameters.Count; j++)
+                    {
+                        var parameter = lambda.Parameters[j];
+                        var dependencies = argumentMaps[j] ?? defaultList;
+                        var dummy = LooselyLinkedListNode<PropertyAccess>.CreateDummyFor(accesses);
+                        var current = dummy;
+                        while (current.Next != null)
+                        {
+                            if (current.Next.Value.Parameter == parameter)
+                            {
+                                var access = current.Next.Value;
+                                current.CutNext();
+                                foreach (var dependency in dependencies)
+                                {
+                                    if (dependency == -2) continue;
+                                    LooselyLinkedListNode<ParameterExpression> dependentParameters;
+                                    if (dependency == ParameterDataflowAttribute.TargetObjectIndex)
+                                    {
+                                        dependentParameters = objectParameters;
+                                    }
+                                    else
+                                    {
+                                        dependentParameters = parameterUsageArray[dependency];
+                                    }
+                                    foreach (var p in dependentParameters.FromHere)
+                                    {
+                                        var newNode = new LooselyLinkedListNode<PropertyAccess>(access.ForParameter(p));
+                                        propertyAccesses.AddAfter(current, newNode);
+                                        current = newNode;
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                current = current.Next;
+                            }
+                        }
+                        accesses = dummy.Next;
+                        propertyAccessArray[i] = accesses;
+                    }
+                    // Check extractions
+                    if (!CheckConflictingExtractions(extractionsSaved, lambda))
+                    {
+                        parameterextractions = extractionsSaved;
+                        var extraction = ExtractParameter(node);
+                        parameterExpressions.Add(extraction);
+                        return extraction;
+                    }
+                }
+                defaultList[i] = i;
+            }
+            if (objectPropertyAccesses != null)
+            {
+                propertyAccesses.AddFirst(objectPropertyAccesses);
+            }
+            if (objectParameters != null)
+            {
+                parameterExpressions.AddFirst(objectParameters);
+            }
+            for (int i = node.Arguments.Count - 1; i >= 0 ; i--)
+            {
+                if (propertyAccessArray[i] != null)
+                {
+                    propertyAccesses.AddFirst(propertyAccessArray[i]);
+                }
+                if (parameterUsageArray[i] != null)
+                {
+                    parameterExpressions.AddFirst(parameterUsageArray[i]);
+                }
+            }
             if (changed)
             {
                 return node.Update(obj, arguments);
             }
             return node;
+        }
+
+        private bool CheckConflictingExtractions(Dictionary<string, ParameterExtraction> extractionsSaved, LambdaExpression lambda)
+        {
+            if (parameterextractions.Count > extractionsSaved.Count)
+            {
+                foreach (var extraction in parameterextractions)
+                {
+                    if (!extractionsSaved.ContainsKey(extraction.Key))
+                    {
+                        var parametersUsed = new ParameterCollector();
+                        parametersUsed.Visit(extraction.Value.Value);
+                        foreach (var parameter in lambda.Parameters)
+                        {
+                            if (parametersUsed.Parameters.Contains(parameter))
+                            {
+                                return false;
+                            }
+                        }
+                    }
+                }
+            }
+            return true;
         }
 
         private int FindParameter(MethodInfo method, System.Reflection.ParameterInfo[] parameters, string name)
@@ -243,98 +408,43 @@ namespace NMF.Expressions
             throw new InvalidOperationException(string.Format("The function {0} does not contain a parameter named {1}.", method.Name, name));
         }
 
-        private Expression VisitRemappedMethodCall(MethodCallExpression node, MethodInfo method, ArgumentApplicationAttribute[] remaps)
+        private LambdaExpression FindLambdaExpression(Expression expression)
         {
-            var parametersSaved = new Dictionary<string, ParameterExtraction>(parameters);
-            var methodParameters = method.GetParameters();
-            var changed = false;
-            var arguments = new Expression[node.Arguments.Count];
-            var extractionCounts = new int[node.Arguments.Count + 1];
-            for (int i = 0; i < node.Arguments.Count; i++)
+            switch (expression.NodeType)
             {
-                extractionCounts[i] = ExtractParameters.Count;
-                var arg = node.Arguments[i];
-                var argument = Visit(arg);
-                arguments[i] = argument;
-                changed |= argument != arg;
-            }
-            extractionCounts[node.Arguments.Count] = ExtractParameters.Count;
-            for (int i = 0; i < remaps.Length; i++)
-            {
-                var remap = remaps[i];
-                if (!remap.ArgumentIsFunction)
-                {
-                    try
+                case ExpressionType.Lambda:
+                    return (LambdaExpression)expression;
+                case ExpressionType.Quote:
+                    var quote = (UnaryExpression)expression;
+                    while (quote.Operand.NodeType == ExpressionType.Quote)
                     {
-                        if (extractionCounts[remap.FunctionIndexParameter] != extractionCounts[remap.FunctionIndexParameter + 1])
-                        {
-                            parameters = parametersSaved;
-                            ParameterInfo pInfo;
-                            var extraction = ExtractParameter(node, out pInfo);
-                            return extraction;
-                        }
-                        ParameterInfo argumentInfo;
-                        var argumentName = methodParameters[remap.ArgumentParameterIndex].Name;
-                        if (!parameterInfo.TryGetValue(argumentName, out argumentInfo))
-                        {
-                            argumentInfo = new ParameterInfo(true);
-                            parameterInfo.Add(argumentName, argumentInfo);
-                        }
-                        var function = FindLambdaExpression(node, remap.FunctionParameterIndex);
-                        ParameterInfo functionParameterInfo;
-                        if (parameterInfo.TryGetValue(function.Parameters[remap.FunctionIndexParameter].Name, out functionParameterInfo))
-                        {
-                            argumentInfo.Properties.AddRange(functionParameterInfo.Properties);
-                            if (!argumentInfo.NeedContainments)
-                            {
-                                argumentInfo.NeedContainments = true;
-                                parameterInfo[argumentName] = argumentInfo;
-                            }
-                        }
+                        quote = (UnaryExpression)quote.Operand;
                     }
-                    catch (IndexOutOfRangeException)
-                    {
-                        throw new InvalidOperationException(string.Format("The method {0} does not have an argument with index {1}.", node.Method, remap.FunctionIndexParameter));
-                    }
-                }
-                else
-                {
-                    throw new NotImplementedException();
-                }
+                    return (LambdaExpression)quote.Operand;
+                default:
+                    return null;
             }
-            var obj = Visit(node.Object);
-            changed |= obj != node.Object;
-            if (changed)
-            {
-                return node.Update(obj, arguments);
-            }
-            return node;
         }
 
-        private LambdaExpression FindLambdaExpression(MethodCallExpression node, int argumentIndex)
+        public Dictionary<ParameterExpression, ParameterInfo> CollectParameterInfos()
         {
-            try
+            var dict = new Dictionary<ParameterExpression, ParameterInfo>();
+            foreach (var access in propertyAccesses)
             {
-                var expression = node.Arguments[argumentIndex];
-                switch (expression.NodeType)
+                ParameterInfo parameterInfo;
+                if (!dict.TryGetValue(access.Parameter, out parameterInfo))
                 {
-                    case ExpressionType.Lambda:
-                        return (LambdaExpression)expression;
-                    case ExpressionType.Quote:
-                        var quote = (UnaryExpression)expression;
-                        while (quote.Operand.NodeType == ExpressionType.Quote)
-                        {
-                            quote = (UnaryExpression)quote.Operand;
-                        }
-                        return (LambdaExpression)quote.Operand;
-                    default:
-                        throw new InvalidOperationException(string.Format("The argument {0} is not a function.", expression));
+                    parameterInfo = new ParameterInfo(new List<string>(), false);
+                    dict.Add(access.Parameter, parameterInfo);
                 }
+                if (!parameterInfo.NeedsContainment && access.IsRecursive)
+                {
+                    parameterInfo.NeedsContainment = true;
+                    dict[access.Parameter] = parameterInfo;
+                }
+                parameterInfo.Properties.Add(access.PropertyName);
             }
-            catch (IndexOutOfRangeException)
-            {
-                throw new InvalidOperationException(string.Format("Invalid argument specification: The function {0} does not have an argument with index {1}.", node.Method.Name, argumentIndex));
-            }
+            return dict;
         }
     }
 }

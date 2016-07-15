@@ -57,6 +57,7 @@
     <Compile Include="ParameterAssertions.cs" />
     <Compile Include="PromotionExpressionVisitorTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="PromotionNotifySystemTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\Collections\Collections\Collections.csproj">
@@ -99,6 +100,12 @@
       <Project>{b597948e-4470-4f98-b018-9bf66244de76}</Project>
       <Name>Expressions.Test</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\..\Models\Models.Tests\railway.railway">
+      <Link>railway.railway</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
   <Choose>
     <When Condition="'$(VisualStudioVersion)' == '10.0' And '$(IsCodedUITest)' == 'True'">

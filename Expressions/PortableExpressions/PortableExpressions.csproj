@@ -362,9 +362,6 @@
     <Compile Include="..\Expressions\Properties\AssemblyInfo.cs">
       <Link>AssemblyInfo.cs</Link>
     </Compile>
-    <Compile Include="..\Expressions\Public\ArgumentApplicationAttribute.cs">
-      <Link>Facade\ArgumentApplicationAttribute.cs</Link>
-    </Compile>
     <Compile Include="..\Expressions\Public\ConstantValue.cs">
       <Link>Facade\ConstantValue.cs</Link>
     </Compile>
@@ -409,6 +406,9 @@
     </Compile>
     <Compile Include="..\Expressions\Public\ObservableProxyAttribute.cs">
       <Link>Facade\ObservableProxyAttribute.cs</Link>
+    </Compile>
+    <Compile Include="..\Expressions\Public\ParameterDataflowAttribute.cs">
+      <Link>Facade\ParameterDataflowAttribute.cs</Link>
     </Compile>
     <Compile Include="..\Expressions\Public\ReversableExtensions.cs">
       <Link>Facade\ReversableExtensions.cs</Link>
