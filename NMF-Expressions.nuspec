@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
+    <metadata>
+        <id>NMF-Expressions</id>
+        <version>$version$</version>
+        <title>NMF Expressions</title>
+        <authors>Georg Hinkel</authors>
+        <licenseUrl>http://nmf.codeplex.com/license</licenseUrl>
+        <projectUrl>http://github.com/NMFCode/NMF</projectUrl>
+        <requireLicenseAcceptance>false</requireLicenseAcceptance>
+        <developmentDependency>true</developmentDependency>
+        <description>This package allows an incrementalization of arbitrary expressions based on change notifications via INotifyPropertyChanged and INotifyCollectionChanged interfaces.</description>
+        <summary>This package allows an incrementalization of arbitrary expressions based on change notifications via INotifyPropertyChanged and INotifyCollectionChanged interfaces.</summary>
+        <copyright>Copyright © Georg Hinkel 2013</copyright>
+        <language>en</language>
+        <tags>Incremental; LINQ;</tags>
+    </metadata>
+  <files>
+    <file src="Expressions\Expressions.Linq\bin\Release\NMF.Expressions.dll" target="lib\net40"/>
+    <file src="Expressions\Expressions.Linq\bin\Release\NMF.Expressions.Linq.dll" target="lib\net40"/>
+    <file src="Expressions\PortableExpressions\bin\Release\NMF.Expressions.dll" target="lib\portable-net45+wp8+win8" />
+  </files>
+</package>

@@ -1,0 +1,32 @@
+<?xml version="1.0"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
+    <metadata>
+        <id>NMF-Basics</id>
+        <version>$version$</version>
+        <title>NMF Basics</title>
+        <authors>Georg Hinkel</authors>
+        <owners>Georg Hinkel</owners>
+        <licenseUrl>http://nmf.codeplex.com/license</licenseUrl>
+        <projectUrl>http://github.com/NMFCode/NMF</projectUrl>
+        <requireLicenseAcceptance>false</requireLicenseAcceptance>
+        <developmentDependency>true</developmentDependency>
+        <description>This package contains the basic libraries for a model-driven project using the .NET Modelling Framework (NMF).</description>
+        <summary>This package contains the basic libraries for a model-driven project using the .NET Modelling Framework (NMF).</summary>
+        <copyright>Copyright © Georg Hinkel 2015</copyright>
+        <language>en</language>
+        <tags>Model-driven; MDE; EMF; XMI; MDSD; Ecore</tags>
+        <dependencies>
+            <dependency id="NMF-Expressions" version="$version$" />
+            <dependency id="NMF-Repository" version="$version$" />
+        </dependencies>
+        <frameworkAssemblies>
+            <frameworkAssembly assemblyName="System" targetFramework="" />
+            <frameworkAssembly assemblyName="System.Xml" targetFramework="" />
+            <frameworkAssembly assemblyName="System.Core" targetFramework="" />
+        </frameworkAssemblies>
+    </metadata>
+  <files>
+    <file src="Tools\Ecore2Code\bin\Release\*.dll" target="tools" />
+    <file src="Tools\Ecore2Code\bin\Release\Ecore2Code.exe" target="tools" />
+  </files>
+</package>
