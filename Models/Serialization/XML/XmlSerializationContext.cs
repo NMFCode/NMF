@@ -77,6 +77,7 @@ namespace NMF.Serialization
 
         private void RegisterId(string id, object value, Type type)
         {
+            if (id == null) return;
             Dictionary<string, object> dict;
             if (!idStore.TryGetValue(type, out dict))
             {
@@ -97,6 +98,7 @@ namespace NMF.Serialization
 
         public virtual bool ContainsId(string id, Type type)
         {
+            if (id == null) return false;
             Dictionary<string, object> dict;
             if (idStore.TryGetValue(type, out dict))
             {
@@ -118,6 +120,7 @@ namespace NMF.Serialization
 
         public virtual object Resolve(string id, Type type)
         {
+            if (id == null) return null;
             Dictionary<string, object> dict;
             object obj;
             if (idStore.TryGetValue(type, out dict) && dict.TryGetValue(id, out obj))
