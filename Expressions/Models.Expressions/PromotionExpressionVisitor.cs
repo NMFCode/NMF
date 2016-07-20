@@ -66,6 +66,14 @@ namespace NMF.Expressions
             }
         }
 
+        public IEnumerable<ParameterExpression> UsedParameters
+        {
+            get
+            {
+                return parameterExpressions;
+            }
+        }
+
         private static bool IsImmutableMethod(MethodInfo method)
         {
             var immutableMethodAttributes = method.GetCustomAttributes(typeof(ImmutableMethodAttribute), true);
@@ -251,7 +259,6 @@ namespace NMF.Expressions
             var extractionsSaved = new Dictionary<string, ParameterExtraction>(parameterextractions);
             var remaps = ReflectionHelper.GetCustomAttributes<ParameterDataflowAttribute>(node.Method, true);
             var method = node.Method;
-            var parametersSaved = new Dictionary<string, ParameterExtraction>(parameterextractions);
             var methodParameters = method.GetParameters();
             var changed = false;
             var arguments = new Expression[node.Arguments.Count];
@@ -336,8 +343,22 @@ namespace NMF.Expressions
                                 current = current.Next;
                             }
                         }
-                        accesses = dummy.Next;
-                        propertyAccessArray[i] = accesses;
+                        propertyAccessArray[i] = dummy.Next;
+                        // Clean parameters
+                        var parameterDummy = LooselyLinkedListNode<ParameterExpression>.CreateDummyFor(parameterUsageArray[i]);
+                        var currentP = parameterDummy;
+                        while (currentP.Next != null)
+                        {
+                            if (currentP.Next.Value == parameter)
+                            {
+                                currentP.CutNext();
+                            }
+                            else
+                            {
+                                currentP = currentP.Next;
+                            }
+                        }
+                        parameterUsageArray[i] = parameterDummy.Next;
                     }
                     // Check extractions
                     if (!CheckConflictingExtractions(extractionsSaved, lambda))

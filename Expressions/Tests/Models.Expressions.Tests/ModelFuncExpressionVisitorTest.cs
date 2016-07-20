@@ -6,19 +6,20 @@ using NMF.Models.Tests.Railway;
 
 namespace NMF.Expressions.Tests
 {
+    internal struct TestTuple
+    {
+        public Route Route { get; set; }
+        public int Severity { get; set; }
+    }
+
+    internal struct TestTuple2
+    {
+        public TestTuple Inner { get; set; }
+    }
+
     [TestClass]
     public class ModelFuncExpressionVisitorTest
     {
-        private struct TestTuple
-        {
-            public Route Route { get; set; }
-            public int Severity { get; set; }
-        }
-
-        private struct TestTuple2
-        {
-            public TestTuple Inner { get; set; }
-        }
 
         private static Route GetRoute(TestTuple t)
         {
@@ -36,7 +37,7 @@ namespace NMF.Expressions.Tests
             Expression<Func<Route, bool>> test = r => r.Entry != null && r.Entry.Signal == Signal.GO;
 
             var visitor = new ModelFuncExpressionVisitor();
-            var visited = visitor.Visit(test);
+            var visited = visitor.Visit(test.Body);
 
             Assert.AreEqual(0, visitor.ExtractParameters.Count);
             ParameterAssertions.AssertOnlyParameters(visited, test.Parameters[0]);
@@ -48,9 +49,9 @@ namespace NMF.Expressions.Tests
             Expression<Func<TestTuple, bool>> test = t => t.Route.Entry != null && t.Route.Entry.Signal == Signal.GO;
 
             var visitor = new ModelFuncExpressionVisitor();
-            var visited = visitor.Visit(test);
+            var visited = visitor.Visit(test.Body);
 
-            Assert.AreNotSame(test, visited);
+            Assert.AreNotSame(test.Body, visited);
             Assert.AreEqual(1, visitor.ExtractParameters.Count);
             ParameterAssertions.AssertOnlyParameters(visited, visitor.ExtractParameters.Single().Parameter);
 
@@ -63,9 +64,9 @@ namespace NMF.Expressions.Tests
             Expression<Func<TestTuple2, bool>> test = t => t.Inner.Route.Entry != null && t.Inner.Route.Entry.Signal == Signal.GO;
 
             var visitor = new ModelFuncExpressionVisitor();
-            var visited = visitor.Visit(test);
+            var visited = visitor.Visit(test.Body);
 
-            Assert.AreNotSame(test, visited);
+            Assert.AreNotSame(test.Body, visited);
             Assert.AreEqual(1, visitor.ExtractParameters.Count);
             ParameterAssertions.AssertOnlyParameters(visited, visitor.ExtractParameters.Single().Parameter);
 
@@ -78,9 +79,9 @@ namespace NMF.Expressions.Tests
             Expression<Func<Route, bool>> test = r => GetEntry(r) != null && GetEntry(r).Signal == Signal.GO;
 
             var visitor = new ModelFuncExpressionVisitor();
-            var visited = visitor.Visit(test);
+            var visited = visitor.Visit(test.Body);
 
-            Assert.AreSame(test, visited);
+            Assert.AreSame(test.Body, visited);
             Assert.AreEqual(0, visitor.ExtractParameters.Count);
             ParameterAssertions.AssertOnlyParameters(visited, test.Parameters[0]);
         }
@@ -91,9 +92,9 @@ namespace NMF.Expressions.Tests
             Expression<Func<TestTuple, bool>> test = t => t.Route.Entry != null && t.Route.Entry.Signal == Signal.GO && t.Severity > 0;
 
             var visitor = new ModelFuncExpressionVisitor();
-            var visited = visitor.Visit(test);
+            var visited = visitor.Visit(test.Body);
 
-            Assert.AreNotSame(test, visited);
+            Assert.AreNotSame(test.Body, visited);
             Assert.AreEqual(1, visitor.ExtractParameters.Count);
             ParameterAssertions.AssertOnlyParameters(visited, test.Parameters[0], visitor.ExtractParameters.Single().Parameter);
 
@@ -106,9 +107,9 @@ namespace NMF.Expressions.Tests
             Expression<Func<TestTuple, bool>> test = t => GetRoute(t).Entry != null && GetRoute(t).Entry.Signal == Signal.GO;
 
             var visitor = new ModelFuncExpressionVisitor();
-            var visited = visitor.Visit(test);
+            var visited = visitor.Visit(test.Body);
 
-            Assert.AreNotSame(visited, test);
+            Assert.AreNotSame(visited, test.Body);
             Assert.AreEqual(1, visitor.ExtractParameters.Count);
             ParameterAssertions.AssertOnlyParameters(visited, visitor.ExtractParameters.Single().Parameter);
 
@@ -121,13 +122,25 @@ namespace NMF.Expressions.Tests
             Expression<Func<TestTuple, bool>> test = t => GetEntry(GetRoute(t)) != null && GetEntry(GetRoute(t)).Signal == Signal.GO;
 
             var visitor = new ModelFuncExpressionVisitor();
-            var visited = visitor.Visit(test);
+            var visited = visitor.Visit(test.Body);
 
-            Assert.AreNotSame(visited, test);
+            Assert.AreNotSame(visited, test.Body);
             Assert.AreEqual(1, visitor.ExtractParameters.Count);
             ParameterAssertions.AssertOnlyParameters(visited, visitor.ExtractParameters.Single().Parameter);
 
             Assert.AreEqual("GetRoute(t)", visitor.ExtractParameters.Single().Value.ToString());
+        }
+
+        [TestMethod]
+        public void Test_ModelFuncExpressionVisitor_NonModelProperty()
+        {
+            Expression<Func<Route, int>> test = r => r.AbsoluteUri.AbsoluteUri.Length;
+
+            var visitor = new ModelFuncExpressionVisitor();
+            var visited = visitor.Visit(test.Body);
+
+            Assert.AreEqual(0, visitor.ExtractParameters.Count);
+            ParameterAssertions.AssertOnlyParameters(visited, test.Parameters[0]);
         }
     }
 }

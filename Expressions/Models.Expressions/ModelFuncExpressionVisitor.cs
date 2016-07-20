@@ -10,6 +10,7 @@ namespace NMF.Expressions
     internal class ModelFuncExpressionVisitor : ExpressionVisitorBase
     {
         private Dictionary<string, ParameterExtraction> parameters = new Dictionary<string, ParameterExtraction>();
+        private List<ParameterExpression> lambdaParameters = new List<ParameterExpression>();
 
         public ICollection<ParameterExtraction> ExtractParameters
         {
@@ -23,6 +24,10 @@ namespace NMF.Expressions
         {
             if (typeof(IModelElement).IsAssignableFrom(node.Type) && !typeof(IModelElement).IsAssignableFrom(node.Expression.Type))
             {
+                var parameterCollector = new ParameterCollector();
+                parameterCollector.Visit(node);
+                parameterCollector.Parameters.IntersectWith(lambdaParameters);
+                if (parameterCollector.Parameters.Count > 0) return node;
                 var replaceMemberId = node.ToString();
                 ParameterExtraction extraction;
                 if (!parameters.TryGetValue(replaceMemberId, out extraction))
@@ -33,6 +38,20 @@ namespace NMF.Expressions
                 return extraction.Parameter;
             }
             return base.VisitMember(node);
+        }
+
+        protected override Expression VisitLambda<T>(Expression<T> node)
+        {
+            foreach (var p in node.Parameters)
+            {
+                lambdaParameters.Add(p);
+            }
+            var result = base.VisitLambda<T>(node);
+            foreach (var p in node.Parameters)
+            {
+                lambdaParameters.Remove(p);
+            }
+            return result;
         }
 
         protected override Expression VisitMethodCall(MethodCallExpression node)

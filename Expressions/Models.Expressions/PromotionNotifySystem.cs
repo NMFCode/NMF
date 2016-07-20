@@ -4,6 +4,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
 using System.Text;
+using NMF.Models;
 
 namespace NMF.Expressions
 {
@@ -40,49 +41,97 @@ namespace NMF.Expressions
 
         private object CreateExpressionInternal(Expression expression, IEnumerable<ParameterExpression> parameters, IDictionary<string, object> parameterMappings, Type returnType)
         {
-            var visitor = new PromotionExpressionVisitor();
-            var visited = visitor.Visit(expression);
-            var collectedParameterInfos = visitor.CollectParameterInfos();
-            var parameterCollector = new ParameterCollector();
-            parameterCollector.Visit(visited);
-            var parametersNew = parameterCollector.Parameters.ToList();
+            var modelFuncVisitor = new ModelFuncExpressionVisitor();
+            var modelFunc = modelFuncVisitor.Visit(expression);
 
-            var newExpression = Expression.Lambda(visited, parametersNew);
-            var newExpressionCompiled = newExpression.Compile();
-
-            var types = new Type[parametersNew.Count + 1];
-            var args = new object[3 * parametersNew.Count + 1];
-            args[0] = newExpressionCompiled;
-            for (int i = 0; i < parametersNew.Count; i++)
+            if (modelFuncVisitor.ExtractParameters.Count == 0)
             {
-                var parameter = parametersNew[i];
-                types[i] = parameter.Type;
-                var extraction = visitor.ExtractParameters.FirstOrDefault(ex => ex.Parameter == parameter);
-                if (extraction.Parameter == null)
-                {
-                    // The parameter is an original parameter
-                    args[3 * i + 1] = CreateNotifyValue(parameter.Name, parameterMappings, parameter.Type);
-                }
-                else
-                {
-                    args[3 * i + 1] = InstructionLevelNotifySystem.Instance.CreateExpression(extraction.Value, parameters, parameterMappings);
-                }
-                PromotionExpressionVisitor.ParameterInfo parInfo;
-                if (collectedParameterInfos.TryGetValue(parameter, out parInfo))
-                {
-                    args[3 * i + 2] = parInfo.Properties;
-                    args[3 * i + 3] = parInfo.NeedsContainment;
-                }
-                else
-                {
-                    args[3 * i + 2] = null;
-                    args[3 * i + 3] = false;
-                }
-            }
-            types[types.Length - 1] = returnType;
+                var promotionVisitor = new PromotionExpressionVisitor();
+                var promotionExpression = promotionVisitor.Visit(modelFunc);
+                var collectedParameterInfos = promotionVisitor.CollectParameterInfos();
+                var parametersNew = promotionVisitor.UsedParameters.Distinct().ToList();
 
-            var promotionMethodCallType = promotionMethodCallTypes[types.Length - 2].MakeGenericType(types);
-            return Activator.CreateInstance(promotionMethodCallType, args);
+                var newExpression = Expression.Lambda(promotionExpression, parametersNew);
+                var newExpressionCompiled = newExpression.Compile();
+
+                var types = new Type[parametersNew.Count + 1];
+                var args = new object[3 * parametersNew.Count + 1];
+                args[0] = newExpressionCompiled;
+                for (int i = 0; i < parametersNew.Count; i++)
+                {
+                    var parameter = parametersNew[i];
+                    types[i] = parameter.Type;
+                    var extraction = promotionVisitor.ExtractParameters.FirstOrDefault(ex => ex.Parameter == parameter);
+                    if (extraction.Parameter == null)
+                    {
+                        // The parameter is an original parameter
+                        args[3 * i + 1] = CreateNotifyValue(parameter.Name, parameterMappings, parameter.Type);
+                    }
+                    else
+                    {
+                        if (!typeof(IModelElement).IsAssignableFrom(extraction.Value.Type))
+                        {
+                            throw new NotSupportedException("Currently, only extraction of parameters typed as model elements is supported.");
+                        }
+                        args[3 * i + 1] = InstructionLevelNotifySystem.Instance.CreateExpression(extraction.Value, parameters, parameterMappings);
+                    }
+                    PromotionExpressionVisitor.ParameterInfo parInfo;
+                    if (collectedParameterInfos.TryGetValue(parameter, out parInfo))
+                    {
+                        args[3 * i + 2] = parInfo.Properties;
+                        args[3 * i + 3] = parInfo.NeedsContainment;
+                    }
+                    else
+                    {
+                        args[3 * i + 2] = null;
+                        args[3 * i + 3] = false;
+                    }
+                }
+                types[types.Length - 1] = returnType;
+
+                var promotionMethodCallType = promotionMethodCallTypes[types.Length - 2].MakeGenericType(types);
+                return Activator.CreateInstance(promotionMethodCallType, args);
+            }
+            else
+            {
+                /*
+                var baseParameters = parameters.ToList();
+                var types = new Type[baseParameters.Count + parametersNew.Count + 1];
+                var args = new object[baseParameters.Count + 3 * parametersNew.Count + 1];
+                args[args.Length - 1] = newExpressionCompiled;
+                for (int i = 0; i < baseParameters.Count; i++)
+                {
+                }
+                for (int i = 0; i < parametersNew.Count; i++)
+                {
+                    var parameter = parametersNew[i];
+                    types[i] = parameter.Type;
+                    var extraction = promotionVisitor.ExtractParameters.FirstOrDefault(ex => ex.Parameter == parameter);
+                    if (extraction.Parameter == null)
+                    {
+                        // The parameter is an original parameter
+                        args[3 * i + 1] = CreateNotifyValue(parameter.Name, parameterMappings, parameter.Type);
+                    }
+                    else
+                    {
+                        args[3 * i + 1] = InstructionLevelNotifySystem.Instance.CreateExpression(extraction.Value, parameters, parameterMappings);
+                    }
+                    PromotionExpressionVisitor.ParameterInfo parInfo;
+                    if (collectedParameterInfos.TryGetValue(parameter, out parInfo))
+                    {
+                        args[3 * i + 2] = parInfo.Properties;
+                        args[3 * i + 3] = parInfo.NeedsContainment;
+                    }
+                    else
+                    {
+                        args[3 * i + 2] = null;
+                        args[3 * i + 3] = false;
+                    }
+                }
+                types[types.Length - 1] = returnType;
+                */
+                throw new NotImplementedException();
+            }
         }
 
         private object CreateNotifyValue(string name, IDictionary<string, object> parameterMappings, Type type)

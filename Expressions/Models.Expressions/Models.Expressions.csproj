@@ -41,10 +41,25 @@
     </Compile>
     <Compile Include="AugmentationNotifySystem.cs" />
     <Compile Include="ModelFuncExpressionVisitor.cs" />
+    <Compile Include="ModelFuncExtractionParameter.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>ModelFuncExtractionParameter.tt</DependentUpon>
+    </Compile>
+    <Compile Include="ObservableModelFuncProxyCall.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>ObservableModelFuncProxyCall.tt</DependentUpon>
+    </Compile>
     <Compile Include="ObservablePromotionMethodCall.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>ObservablePromotionMethodCall.tt</DependentUpon>
+    </Compile>
+    <Compile Include="ObservablePromotionModelFuncProxyCall.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>ObservablePromotionModelFuncProxyCall.tt</DependentUpon>
     </Compile>
     <Compile Include="ParameterCollector.cs" />
     <Compile Include="PromotionExpressionVisitor.cs" />
@@ -92,9 +107,21 @@
     <EmbeddedResource Include="IncrementalizationConfiguration.nmf" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="ModelFuncExtractionParameter.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>ModelFuncExtractionParameter.cs</LastGenOutput>
+    </Content>
+    <Content Include="ObservableModelFuncProxyCall.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>ObservableModelFuncProxyCall.cs</LastGenOutput>
+    </Content>
     <Content Include="ObservablePromotionMethodCall.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>ObservablePromotionMethodCall.cs</LastGenOutput>
+    </Content>
+    <Content Include="ObservablePromotionModelFuncProxyCall.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>ObservablePromotionModelFuncProxyCall.cs</LastGenOutput>
     </Content>
   </ItemGroup>
   <ItemGroup>
