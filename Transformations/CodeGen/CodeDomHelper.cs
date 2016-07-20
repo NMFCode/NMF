@@ -335,6 +335,8 @@ namespace NMF.CodeGen
             if (value == null) return new CodePrimitiveExpression(null);
             if (type == null) throw new ArgumentNullException("type");
 
+            if (type.BaseType.Contains("Nullable`1") && type.TypeArguments.Count == 1) type = type.TypeArguments[0];
+            if (type == null) return null;
             if (type.BaseType == typeof(int).FullName)
             {
                 int val;

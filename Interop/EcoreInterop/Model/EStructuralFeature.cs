@@ -16,6 +16,7 @@ using NMF.Models;
 using NMF.Models.Collections;
 using NMF.Models.Expressions;
 using NMF.Models.Meta;
+using NMF.Models.Repository;
 using NMF.Serialization;
 using NMF.Utilities;
 using System;
@@ -43,7 +44,7 @@ namespace NMF.Interop.Ecore
         /// <summary>
         /// The backing field for the Changeable property
         /// </summary>
-        private Nullable<bool> _changeable;
+        private Nullable<bool> _changeable = true;
         
         /// <summary>
         /// The backing field for the Volatile property
@@ -70,9 +71,12 @@ namespace NMF.Interop.Ecore
         /// </summary>
         private Nullable<bool> _derived;
         
+        private static IClass _classInstance;
+        
         /// <summary>
         /// The changeable property
         /// </summary>
+        [DefaultValueAttribute(true)]
         [XmlElementNameAttribute("changeable")]
         [XmlAttributeAttribute(true)]
         public virtual Nullable<bool> Changeable
@@ -257,13 +261,17 @@ namespace NMF.Interop.Ecore
         }
         
         /// <summary>
-        /// Gets the Class element that describes the structure of this type
+        /// Gets the Class model for this type
         /// </summary>
-        public new static NMF.Models.Meta.IClass ClassInstance
+        public new static IClass ClassInstance
         {
             get
             {
-                return (IClass)NMF.Models.Repository.MetaRepository.Instance.ResolveType("http://www.eclipse.org/emf/2002/Ecore#//EStructuralFeature/");
+                if ((_classInstance == null))
+                {
+                    _classInstance = ((IClass)(MetaRepository.Instance.Resolve("http://www.eclipse.org/emf/2002/Ecore#//EStructuralFeature/")));
+                }
+                return _classInstance;
             }
         }
         
@@ -636,7 +644,11 @@ namespace NMF.Interop.Ecore
         /// </summary>
         public override IClass GetClass()
         {
-            return ((IClass)(NMF.Models.Repository.MetaRepository.Instance.Resolve("http://www.eclipse.org/emf/2002/Ecore#//EStructuralFeature/")));
+            if ((_classInstance == null))
+            {
+                _classInstance = ((IClass)(MetaRepository.Instance.Resolve("http://www.eclipse.org/emf/2002/Ecore#//EStructuralFeature/")));
+            }
+            return _classInstance;
         }
         
         /// <summary>

@@ -16,6 +16,7 @@ using NMF.Models;
 using NMF.Models.Collections;
 using NMF.Models.Expressions;
 using NMF.Models.Meta;
+using NMF.Models.Repository;
 using NMF.Serialization;
 using NMF.Utilities;
 using System;
@@ -48,7 +49,7 @@ namespace NMF.Interop.Ecore
         /// <summary>
         /// The backing field for the ResolveProxies property
         /// </summary>
-        private Nullable<bool> _resolveProxies;
+        private Nullable<bool> _resolveProxies = true;
         
         /// <summary>
         /// The backing field for the EOpposite property
@@ -59,6 +60,8 @@ namespace NMF.Interop.Ecore
         /// The backing field for the EKeys property
         /// </summary>
         private ObservableAssociationList<IEAttribute> _eKeys;
+        
+        private static IClass _classInstance;
         
         public EReference()
         {
@@ -96,6 +99,7 @@ namespace NMF.Interop.Ecore
         /// <summary>
         /// The resolveProxies property
         /// </summary>
+        [DefaultValueAttribute(true)]
         [XmlElementNameAttribute("resolveProxies")]
         [XmlAttributeAttribute(true)]
         public virtual Nullable<bool> ResolveProxies
@@ -180,13 +184,17 @@ namespace NMF.Interop.Ecore
         }
         
         /// <summary>
-        /// Gets the Class element that describes the structure of this type
+        /// Gets the Class model for this type
         /// </summary>
-        public new static NMF.Models.Meta.IClass ClassInstance
+        public new static IClass ClassInstance
         {
             get
             {
-                return (IClass)NMF.Models.Repository.MetaRepository.Instance.ResolveType("http://www.eclipse.org/emf/2002/Ecore#//EReference/");
+                if ((_classInstance == null))
+                {
+                    _classInstance = ((IClass)(MetaRepository.Instance.Resolve("http://www.eclipse.org/emf/2002/Ecore#//EReference/")));
+                }
+                return _classInstance;
             }
         }
         
@@ -303,7 +311,7 @@ namespace NMF.Interop.Ecore
         /// </summary>
         /// <param name="sender">The object that sent this reset request</param>
         /// <param name="eventArgs">The event data for the reset event</param>
-        private void OnResetEOpposite(object sender, EventArgs eventArgs)
+        private void OnResetEOpposite(object sender, System.EventArgs eventArgs)
         {
             this.EOpposite = null;
         }
@@ -419,7 +427,11 @@ namespace NMF.Interop.Ecore
         /// </summary>
         public override IClass GetClass()
         {
-            return ((IClass)(NMF.Models.Repository.MetaRepository.Instance.Resolve("http://www.eclipse.org/emf/2002/Ecore#//EReference/")));
+            if ((_classInstance == null))
+            {
+                _classInstance = ((IClass)(MetaRepository.Instance.Resolve("http://www.eclipse.org/emf/2002/Ecore#//EReference/")));
+            }
+            return _classInstance;
         }
         
         /// <summary>

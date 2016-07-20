@@ -16,6 +16,7 @@ using NMF.Models;
 using NMF.Models.Collections;
 using NMF.Models.Expressions;
 using NMF.Models.Meta;
+using NMF.Models.Repository;
 using NMF.Serialization;
 using NMF.Utilities;
 using System;
@@ -43,12 +44,12 @@ namespace NMF.Interop.Ecore
         /// <summary>
         /// The backing field for the Ordered property
         /// </summary>
-        private Nullable<bool> _ordered;
+        private Nullable<bool> _ordered = true;
         
         /// <summary>
         /// The backing field for the Unique property
         /// </summary>
-        private Nullable<bool> _unique;
+        private Nullable<bool> _unique = true;
         
         /// <summary>
         /// The backing field for the LowerBound property
@@ -58,7 +59,7 @@ namespace NMF.Interop.Ecore
         /// <summary>
         /// The backing field for the UpperBound property
         /// </summary>
-        private Nullable<int> _upperBound;
+        private Nullable<int> _upperBound = 1;
         
         /// <summary>
         /// The backing field for the EType property
@@ -70,9 +71,12 @@ namespace NMF.Interop.Ecore
         /// </summary>
         private IEGenericType _eGenericType;
         
+        private static IClass _classInstance;
+        
         /// <summary>
         /// The ordered property
         /// </summary>
+        [DefaultValueAttribute(true)]
         [XmlElementNameAttribute("ordered")]
         [XmlAttributeAttribute(true)]
         public virtual Nullable<bool> Ordered
@@ -99,6 +103,7 @@ namespace NMF.Interop.Ecore
         /// <summary>
         /// The unique property
         /// </summary>
+        [DefaultValueAttribute(true)]
         [XmlElementNameAttribute("unique")]
         [XmlAttributeAttribute(true)]
         public virtual Nullable<bool> Unique
@@ -151,6 +156,7 @@ namespace NMF.Interop.Ecore
         /// <summary>
         /// The upperBound property
         /// </summary>
+        [DefaultValueAttribute(1)]
         [XmlElementNameAttribute("upperBound")]
         [XmlAttributeAttribute(true)]
         public virtual Nullable<int> UpperBound
@@ -268,13 +274,17 @@ namespace NMF.Interop.Ecore
         }
         
         /// <summary>
-        /// Gets the Class element that describes the structure of this type
+        /// Gets the Class model for this type
         /// </summary>
-        public new static NMF.Models.Meta.IClass ClassInstance
+        public new static IClass ClassInstance
         {
             get
             {
-                return (IClass)NMF.Models.Repository.MetaRepository.Instance.ResolveType("http://www.eclipse.org/emf/2002/Ecore#//ETypedElement/");
+                if ((_classInstance == null))
+                {
+                    _classInstance = ((IClass)(MetaRepository.Instance.Resolve("http://www.eclipse.org/emf/2002/Ecore#//ETypedElement/")));
+                }
+                return _classInstance;
             }
         }
         
@@ -473,7 +483,7 @@ namespace NMF.Interop.Ecore
         /// </summary>
         /// <param name="sender">The object that sent this reset request</param>
         /// <param name="eventArgs">The event data for the reset event</param>
-        private void OnResetEType(object sender, EventArgs eventArgs)
+        private void OnResetEType(object sender, System.EventArgs eventArgs)
         {
             this.EType = null;
         }
@@ -509,7 +519,7 @@ namespace NMF.Interop.Ecore
         /// </summary>
         /// <param name="sender">The object that sent this reset request</param>
         /// <param name="eventArgs">The event data for the reset event</param>
-        private void OnResetEGenericType(object sender, EventArgs eventArgs)
+        private void OnResetEGenericType(object sender, System.EventArgs eventArgs)
         {
             this.EGenericType = null;
         }
@@ -651,7 +661,11 @@ namespace NMF.Interop.Ecore
         /// </summary>
         public override IClass GetClass()
         {
-            return ((IClass)(NMF.Models.Repository.MetaRepository.Instance.Resolve("http://www.eclipse.org/emf/2002/Ecore#//ETypedElement/")));
+            if ((_classInstance == null))
+            {
+                _classInstance = ((IClass)(MetaRepository.Instance.Resolve("http://www.eclipse.org/emf/2002/Ecore#//ETypedElement/")));
+            }
+            return _classInstance;
         }
         
         /// <summary>

@@ -16,6 +16,7 @@ using NMF.Models;
 using NMF.Models.Collections;
 using NMF.Models.Expressions;
 using NMF.Models.Meta;
+using NMF.Models.Repository;
 using NMF.Serialization;
 using NMF.Utilities;
 using System;
@@ -54,6 +55,8 @@ namespace NMF.Interop.Ecore
         /// The backing field for the ETypeParameters property
         /// </summary>
         private ObservableCompositionList<IETypeParameter> _eTypeParameters;
+        
+        private static IClass _classInstance;
         
         public EClassifier()
         {
@@ -172,13 +175,17 @@ namespace NMF.Interop.Ecore
         }
         
         /// <summary>
-        /// Gets the Class element that describes the structure of this type
+        /// Gets the Class model for this type
         /// </summary>
-        public new static NMF.Models.Meta.IClass ClassInstance
+        public new static IClass ClassInstance
         {
             get
             {
-                return (IClass)NMF.Models.Repository.MetaRepository.Instance.ResolveType("http://www.eclipse.org/emf/2002/Ecore#//EClassifier/");
+                if ((_classInstance == null))
+                {
+                    _classInstance = ((IClass)(MetaRepository.Instance.Resolve("http://www.eclipse.org/emf/2002/Ecore#//EClassifier/")));
+                }
+                return _classInstance;
             }
         }
         
@@ -442,7 +449,11 @@ namespace NMF.Interop.Ecore
         /// </summary>
         public override IClass GetClass()
         {
-            return ((IClass)(NMF.Models.Repository.MetaRepository.Instance.Resolve("http://www.eclipse.org/emf/2002/Ecore#//EClassifier/")));
+            if ((_classInstance == null))
+            {
+                _classInstance = ((IClass)(MetaRepository.Instance.Resolve("http://www.eclipse.org/emf/2002/Ecore#//EClassifier/")));
+            }
+            return _classInstance;
         }
         
         /// <summary>
