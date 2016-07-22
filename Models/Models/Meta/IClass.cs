@@ -102,42 +102,42 @@ namespace NMF.Models.Meta
         /// <summary>
         /// Gets fired before the IsAbstract property changes its value
         /// </summary>
-        event EventHandler IsAbstractChanging;
+        event System.EventHandler<ValueChangedEventArgs> IsAbstractChanging;
         
         /// <summary>
         /// Gets fired when the IsAbstract property changed its value
         /// </summary>
-        event EventHandler<ValueChangedEventArgs> IsAbstractChanged;
+        event System.EventHandler<ValueChangedEventArgs> IsAbstractChanged;
         
         /// <summary>
         /// Gets fired before the IdentifierScope property changes its value
         /// </summary>
-        event EventHandler IdentifierScopeChanging;
+        event System.EventHandler<ValueChangedEventArgs> IdentifierScopeChanging;
         
         /// <summary>
         /// Gets fired when the IdentifierScope property changed its value
         /// </summary>
-        event EventHandler<ValueChangedEventArgs> IdentifierScopeChanged;
+        event System.EventHandler<ValueChangedEventArgs> IdentifierScopeChanged;
         
         /// <summary>
         /// Gets fired before the InstanceOf property changes its value
         /// </summary>
-        event EventHandler InstanceOfChanging;
+        event System.EventHandler<ValueChangedEventArgs> InstanceOfChanging;
         
         /// <summary>
         /// Gets fired when the InstanceOf property changed its value
         /// </summary>
-        event EventHandler<ValueChangedEventArgs> InstanceOfChanged;
+        event System.EventHandler<ValueChangedEventArgs> InstanceOfChanged;
         
         /// <summary>
         /// Gets fired before the Identifier property changes its value
         /// </summary>
-        event EventHandler IdentifierChanging;
+        event System.EventHandler<ValueChangedEventArgs> IdentifierChanging;
         
         /// <summary>
         /// Gets fired when the Identifier property changed its value
         /// </summary>
-        event EventHandler<ValueChangedEventArgs> IdentifierChanged;
+        event System.EventHandler<ValueChangedEventArgs> IdentifierChanged;
     }
 }
 

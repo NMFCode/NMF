@@ -66,11 +66,11 @@ namespace NMF.Models.Meta
             {
                 if ((this._defaultValue != value))
                 {
-                    this.OnDefaultValueChanging(EventArgs.Empty);
-                    this.OnPropertyChanging("DefaultValue");
                     string old = this._defaultValue;
-                    this._defaultValue = value;
                     ValueChangedEventArgs e = new ValueChangedEventArgs(old, value);
+                    this.OnDefaultValueChanging(e);
+                    this.OnPropertyChanging("DefaultValue", e);
+                    this._defaultValue = value;
                     this.OnDefaultValueChanged(e);
                     this.OnPropertyChanged("DefaultValue", e);
                 }
@@ -109,9 +109,10 @@ namespace NMF.Models.Meta
             {
                 if ((this._refines != value))
                 {
-                    this.OnRefinesChanging(EventArgs.Empty);
-                    this.OnPropertyChanging("Refines");
                     IAttribute old = this._refines;
+                    ValueChangedEventArgs e = new ValueChangedEventArgs(old, value);
+                    this.OnRefinesChanging(e);
+                    this.OnPropertyChanging("Refines", e);
                     this._refines = value;
                     if ((old != null))
                     {
@@ -121,7 +122,6 @@ namespace NMF.Models.Meta
                     {
                         value.Deleted += this.OnResetRefines;
                     }
-                    ValueChangedEventArgs e = new ValueChangedEventArgs(old, value);
                     this.OnRefinesChanged(e);
                     this.OnPropertyChanged("Refines", e);
                 }
@@ -157,35 +157,40 @@ namespace NMF.Models.Meta
         /// <summary>
         /// Gets fired before the DefaultValue property changes its value
         /// </summary>
-        public event EventHandler DefaultValueChanging;
+        public event System.EventHandler<ValueChangedEventArgs> DefaultValueChanging;
         
         /// <summary>
         /// Gets fired when the DefaultValue property changed its value
         /// </summary>
-        public event EventHandler<ValueChangedEventArgs> DefaultValueChanged;
+        public event System.EventHandler<ValueChangedEventArgs> DefaultValueChanged;
+        
+        /// <summary>
+        /// Gets fired before the DeclaringType property changes its value
+        /// </summary>
+        public event System.EventHandler<ValueChangedEventArgs> DeclaringTypeChanging;
         
         /// <summary>
         /// Gets fired when the DeclaringType property changed its value
         /// </summary>
-        public event EventHandler<ValueChangedEventArgs> DeclaringTypeChanged;
+        public event System.EventHandler<ValueChangedEventArgs> DeclaringTypeChanged;
         
         /// <summary>
         /// Gets fired before the Refines property changes its value
         /// </summary>
-        public event EventHandler RefinesChanging;
+        public event System.EventHandler<ValueChangedEventArgs> RefinesChanging;
         
         /// <summary>
         /// Gets fired when the Refines property changed its value
         /// </summary>
-        public event EventHandler<ValueChangedEventArgs> RefinesChanged;
+        public event System.EventHandler<ValueChangedEventArgs> RefinesChanged;
         
         /// <summary>
         /// Raises the DefaultValueChanging event
         /// </summary>
         /// <param name="eventArgs">The event data</param>
-        protected virtual void OnDefaultValueChanging(EventArgs eventArgs)
+        protected virtual void OnDefaultValueChanging(ValueChangedEventArgs eventArgs)
         {
-            EventHandler handler = this.DefaultValueChanging;
+            System.EventHandler<ValueChangedEventArgs> handler = this.DefaultValueChanging;
             if ((handler != null))
             {
                 handler.Invoke(this, eventArgs);
@@ -198,11 +203,38 @@ namespace NMF.Models.Meta
         /// <param name="eventArgs">The event data</param>
         protected virtual void OnDefaultValueChanged(ValueChangedEventArgs eventArgs)
         {
-            EventHandler<ValueChangedEventArgs> handler = this.DefaultValueChanged;
+            System.EventHandler<ValueChangedEventArgs> handler = this.DefaultValueChanged;
             if ((handler != null))
             {
                 handler.Invoke(this, eventArgs);
             }
+        }
+        
+        /// <summary>
+        /// Raises the DeclaringTypeChanging event
+        /// </summary>
+        /// <param name="eventArgs">The event data</param>
+        protected virtual void OnDeclaringTypeChanging(ValueChangedEventArgs eventArgs)
+        {
+            System.EventHandler<ValueChangedEventArgs> handler = this.DeclaringTypeChanging;
+            if ((handler != null))
+            {
+                handler.Invoke(this, eventArgs);
+            }
+        }
+        
+        /// <summary>
+        /// Gets called when the parent model element of the current model element is about to change
+        /// </summary>
+        /// <param name="oldParent">The old parent model element</param>
+        /// <param name="newParent">The new parent model element</param>
+        protected override void OnParentChanging(IModelElement newParent, IModelElement oldParent)
+        {
+            IStructuredType oldDeclaringType = ModelHelper.CastAs<IStructuredType>(oldParent);
+            IStructuredType newDeclaringType = ModelHelper.CastAs<IStructuredType>(newParent);
+            ValueChangedEventArgs e = new ValueChangedEventArgs(oldDeclaringType, newDeclaringType);
+            this.OnDeclaringTypeChanging(e);
+            this.OnPropertyChanging("DeclaringType");
         }
         
         /// <summary>
@@ -211,7 +243,7 @@ namespace NMF.Models.Meta
         /// <param name="eventArgs">The event data</param>
         protected virtual void OnDeclaringTypeChanged(ValueChangedEventArgs eventArgs)
         {
-            EventHandler<ValueChangedEventArgs> handler = this.DeclaringTypeChanged;
+            System.EventHandler<ValueChangedEventArgs> handler = this.DeclaringTypeChanged;
             if ((handler != null))
             {
                 handler.Invoke(this, eventArgs);
@@ -244,9 +276,9 @@ namespace NMF.Models.Meta
         /// Raises the RefinesChanging event
         /// </summary>
         /// <param name="eventArgs">The event data</param>
-        protected virtual void OnRefinesChanging(EventArgs eventArgs)
+        protected virtual void OnRefinesChanging(ValueChangedEventArgs eventArgs)
         {
-            EventHandler handler = this.RefinesChanging;
+            System.EventHandler<ValueChangedEventArgs> handler = this.RefinesChanging;
             if ((handler != null))
             {
                 handler.Invoke(this, eventArgs);
@@ -259,7 +291,7 @@ namespace NMF.Models.Meta
         /// <param name="eventArgs">The event data</param>
         protected virtual void OnRefinesChanged(ValueChangedEventArgs eventArgs)
         {
-            EventHandler<ValueChangedEventArgs> handler = this.RefinesChanged;
+            System.EventHandler<ValueChangedEventArgs> handler = this.RefinesChanged;
             if ((handler != null))
             {
                 handler.Invoke(this, eventArgs);

@@ -86,11 +86,11 @@ namespace NMF.Models.Meta
             {
                 if ((this._uri != value))
                 {
-                    this.OnUriChanging(EventArgs.Empty);
-                    this.OnPropertyChanging("Uri");
                     Uri old = this._uri;
-                    this._uri = value;
                     ValueChangedEventArgs e = new ValueChangedEventArgs(old, value);
+                    this.OnUriChanging(e);
+                    this.OnPropertyChanging("Uri", e);
+                    this._uri = value;
                     this.OnUriChanged(e);
                     this.OnPropertyChanged("Uri", e);
                 }
@@ -111,11 +111,11 @@ namespace NMF.Models.Meta
             {
                 if ((this._prefix != value))
                 {
-                    this.OnPrefixChanging(EventArgs.Empty);
-                    this.OnPropertyChanging("Prefix");
                     string old = this._prefix;
-                    this._prefix = value;
                     ValueChangedEventArgs e = new ValueChangedEventArgs(old, value);
+                    this.OnPrefixChanging(e);
+                    this.OnPropertyChanging("Prefix", e);
+                    this._prefix = value;
                     this.OnPrefixChanged(e);
                     this.OnPropertyChanged("Prefix", e);
                 }
@@ -212,35 +212,40 @@ namespace NMF.Models.Meta
         /// <summary>
         /// Gets fired before the Uri property changes its value
         /// </summary>
-        public event EventHandler UriChanging;
+        public event System.EventHandler<ValueChangedEventArgs> UriChanging;
         
         /// <summary>
         /// Gets fired when the Uri property changed its value
         /// </summary>
-        public event EventHandler<ValueChangedEventArgs> UriChanged;
+        public event System.EventHandler<ValueChangedEventArgs> UriChanged;
         
         /// <summary>
         /// Gets fired before the Prefix property changes its value
         /// </summary>
-        public event EventHandler PrefixChanging;
+        public event System.EventHandler<ValueChangedEventArgs> PrefixChanging;
         
         /// <summary>
         /// Gets fired when the Prefix property changed its value
         /// </summary>
-        public event EventHandler<ValueChangedEventArgs> PrefixChanged;
+        public event System.EventHandler<ValueChangedEventArgs> PrefixChanged;
+        
+        /// <summary>
+        /// Gets fired before the ParentNamespace property changes its value
+        /// </summary>
+        public event System.EventHandler<ValueChangedEventArgs> ParentNamespaceChanging;
         
         /// <summary>
         /// Gets fired when the ParentNamespace property changed its value
         /// </summary>
-        public event EventHandler<ValueChangedEventArgs> ParentNamespaceChanged;
+        public event System.EventHandler<ValueChangedEventArgs> ParentNamespaceChanged;
         
         /// <summary>
         /// Raises the UriChanging event
         /// </summary>
         /// <param name="eventArgs">The event data</param>
-        protected virtual void OnUriChanging(EventArgs eventArgs)
+        protected virtual void OnUriChanging(ValueChangedEventArgs eventArgs)
         {
-            EventHandler handler = this.UriChanging;
+            System.EventHandler<ValueChangedEventArgs> handler = this.UriChanging;
             if ((handler != null))
             {
                 handler.Invoke(this, eventArgs);
@@ -253,7 +258,7 @@ namespace NMF.Models.Meta
         /// <param name="eventArgs">The event data</param>
         protected virtual void OnUriChanged(ValueChangedEventArgs eventArgs)
         {
-            EventHandler<ValueChangedEventArgs> handler = this.UriChanged;
+            System.EventHandler<ValueChangedEventArgs> handler = this.UriChanged;
             if ((handler != null))
             {
                 handler.Invoke(this, eventArgs);
@@ -264,9 +269,9 @@ namespace NMF.Models.Meta
         /// Raises the PrefixChanging event
         /// </summary>
         /// <param name="eventArgs">The event data</param>
-        protected virtual void OnPrefixChanging(EventArgs eventArgs)
+        protected virtual void OnPrefixChanging(ValueChangedEventArgs eventArgs)
         {
-            EventHandler handler = this.PrefixChanging;
+            System.EventHandler<ValueChangedEventArgs> handler = this.PrefixChanging;
             if ((handler != null))
             {
                 handler.Invoke(this, eventArgs);
@@ -279,11 +284,38 @@ namespace NMF.Models.Meta
         /// <param name="eventArgs">The event data</param>
         protected virtual void OnPrefixChanged(ValueChangedEventArgs eventArgs)
         {
-            EventHandler<ValueChangedEventArgs> handler = this.PrefixChanged;
+            System.EventHandler<ValueChangedEventArgs> handler = this.PrefixChanged;
             if ((handler != null))
             {
                 handler.Invoke(this, eventArgs);
             }
+        }
+        
+        /// <summary>
+        /// Raises the ParentNamespaceChanging event
+        /// </summary>
+        /// <param name="eventArgs">The event data</param>
+        protected virtual void OnParentNamespaceChanging(ValueChangedEventArgs eventArgs)
+        {
+            System.EventHandler<ValueChangedEventArgs> handler = this.ParentNamespaceChanging;
+            if ((handler != null))
+            {
+                handler.Invoke(this, eventArgs);
+            }
+        }
+        
+        /// <summary>
+        /// Gets called when the parent model element of the current model element is about to change
+        /// </summary>
+        /// <param name="oldParent">The old parent model element</param>
+        /// <param name="newParent">The new parent model element</param>
+        protected override void OnParentChanging(IModelElement newParent, IModelElement oldParent)
+        {
+            INamespace oldParentNamespace = ModelHelper.CastAs<INamespace>(oldParent);
+            INamespace newParentNamespace = ModelHelper.CastAs<INamespace>(newParent);
+            ValueChangedEventArgs e = new ValueChangedEventArgs(oldParentNamespace, newParentNamespace);
+            this.OnParentNamespaceChanging(e);
+            this.OnPropertyChanging("ParentNamespace");
         }
         
         /// <summary>
@@ -292,7 +324,7 @@ namespace NMF.Models.Meta
         /// <param name="eventArgs">The event data</param>
         protected virtual void OnParentNamespaceChanged(ValueChangedEventArgs eventArgs)
         {
-            EventHandler<ValueChangedEventArgs> handler = this.ParentNamespaceChanged;
+            System.EventHandler<ValueChangedEventArgs> handler = this.ParentNamespaceChanged;
             if ((handler != null))
             {
                 handler.Invoke(this, eventArgs);

@@ -48,9 +48,14 @@ namespace NMF.Models.Meta
         }
         
         /// <summary>
+        /// Gets fired before the ExtendedElement property changes its value
+        /// </summary>
+        event System.EventHandler<ValueChangedEventArgs> ExtendedElementChanging;
+        
+        /// <summary>
         /// Gets fired when the ExtendedElement property changed its value
         /// </summary>
-        event EventHandler<ValueChangedEventArgs> ExtendedElementChanged;
+        event System.EventHandler<ValueChangedEventArgs> ExtendedElementChanged;
         
         /// <summary>
         /// Gets the Extension for this model element

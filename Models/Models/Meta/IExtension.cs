@@ -50,12 +50,12 @@ namespace NMF.Models.Meta
         /// <summary>
         /// Gets fired before the AdornedClass property changes its value
         /// </summary>
-        event EventHandler AdornedClassChanging;
+        event System.EventHandler<ValueChangedEventArgs> AdornedClassChanging;
         
         /// <summary>
         /// Gets fired when the AdornedClass property changed its value
         /// </summary>
-        event EventHandler<ValueChangedEventArgs> AdornedClassChanged;
+        event System.EventHandler<ValueChangedEventArgs> AdornedClassChanged;
     }
 }
 

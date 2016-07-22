@@ -68,32 +68,32 @@ namespace NMF.Models.Meta
         /// <summary>
         /// Gets fired before the Name property changes its value
         /// </summary>
-        event EventHandler NameChanging;
+        event System.EventHandler<ValueChangedEventArgs> NameChanging;
         
         /// <summary>
         /// Gets fired when the Name property changed its value
         /// </summary>
-        event EventHandler<ValueChangedEventArgs> NameChanged;
+        event System.EventHandler<ValueChangedEventArgs> NameChanged;
         
         /// <summary>
         /// Gets fired before the Summary property changes its value
         /// </summary>
-        event EventHandler SummaryChanging;
+        event System.EventHandler<ValueChangedEventArgs> SummaryChanging;
         
         /// <summary>
         /// Gets fired when the Summary property changed its value
         /// </summary>
-        event EventHandler<ValueChangedEventArgs> SummaryChanged;
+        event System.EventHandler<ValueChangedEventArgs> SummaryChanged;
         
         /// <summary>
         /// Gets fired before the Remarks property changes its value
         /// </summary>
-        event EventHandler RemarksChanging;
+        event System.EventHandler<ValueChangedEventArgs> RemarksChanging;
         
         /// <summary>
         /// Gets fired when the Remarks property changed its value
         /// </summary>
-        event EventHandler<ValueChangedEventArgs> RemarksChanged;
+        event System.EventHandler<ValueChangedEventArgs> RemarksChanged;
     }
 }
 

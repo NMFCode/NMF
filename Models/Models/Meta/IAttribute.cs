@@ -68,27 +68,32 @@ namespace NMF.Models.Meta
         /// <summary>
         /// Gets fired before the DefaultValue property changes its value
         /// </summary>
-        event EventHandler DefaultValueChanging;
+        event System.EventHandler<ValueChangedEventArgs> DefaultValueChanging;
         
         /// <summary>
         /// Gets fired when the DefaultValue property changed its value
         /// </summary>
-        event EventHandler<ValueChangedEventArgs> DefaultValueChanged;
+        event System.EventHandler<ValueChangedEventArgs> DefaultValueChanged;
+        
+        /// <summary>
+        /// Gets fired before the DeclaringType property changes its value
+        /// </summary>
+        event System.EventHandler<ValueChangedEventArgs> DeclaringTypeChanging;
         
         /// <summary>
         /// Gets fired when the DeclaringType property changed its value
         /// </summary>
-        event EventHandler<ValueChangedEventArgs> DeclaringTypeChanged;
+        event System.EventHandler<ValueChangedEventArgs> DeclaringTypeChanged;
         
         /// <summary>
         /// Gets fired before the Refines property changes its value
         /// </summary>
-        event EventHandler RefinesChanging;
+        event System.EventHandler<ValueChangedEventArgs> RefinesChanging;
         
         /// <summary>
         /// Gets fired when the Refines property changed its value
         /// </summary>
-        event EventHandler<ValueChangedEventArgs> RefinesChanged;
+        event System.EventHandler<ValueChangedEventArgs> RefinesChanged;
     }
 }
 

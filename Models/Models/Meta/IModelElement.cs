@@ -85,42 +85,42 @@ namespace NMF.Models.Meta
         /// <summary>
         /// Gets fired before the AbsoluteUri property changes its value
         /// </summary>
-        event EventHandler AbsoluteUriChanging;
+        event System.EventHandler<ValueChangedEventArgs> AbsoluteUriChanging;
         
         /// <summary>
         /// Gets fired when the AbsoluteUri property changed its value
         /// </summary>
-        event EventHandler<ValueChangedEventArgs> AbsoluteUriChanged;
+        event System.EventHandler<ValueChangedEventArgs> AbsoluteUriChanged;
         
         /// <summary>
         /// Gets fired before the RelativeUri property changes its value
         /// </summary>
-        event EventHandler RelativeUriChanging;
+        event System.EventHandler<ValueChangedEventArgs> RelativeUriChanging;
         
         /// <summary>
         /// Gets fired when the RelativeUri property changed its value
         /// </summary>
-        event EventHandler<ValueChangedEventArgs> RelativeUriChanged;
+        event System.EventHandler<ValueChangedEventArgs> RelativeUriChanged;
         
         /// <summary>
         /// Gets fired before the Parent property changes its value
         /// </summary>
-        event EventHandler ParentChanging;
+        event System.EventHandler<ValueChangedEventArgs> ParentChanging;
         
         /// <summary>
         /// Gets fired when the Parent property changed its value
         /// </summary>
-        event EventHandler<ValueChangedEventArgs> ParentChanged;
+        event System.EventHandler<ValueChangedEventArgs> ParentChanged;
         
         /// <summary>
         /// Gets fired before the Type property changes its value
         /// </summary>
-        event EventHandler TypeChanging;
+        event System.EventHandler<ValueChangedEventArgs> TypeChanging;
         
         /// <summary>
         /// Gets fired when the Type property changed its value
         /// </summary>
-        event EventHandler<ValueChangedEventArgs> TypeChanged;
+        event System.EventHandler<ValueChangedEventArgs> TypeChanged;
         
         /// <summary>
         /// Gets the Class for this model element

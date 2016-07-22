@@ -87,9 +87,41 @@ namespace NMF.Models.Meta
         }
         
         /// <summary>
+        /// Gets fired before the Namespace property changes its value
+        /// </summary>
+        public event System.EventHandler<ValueChangedEventArgs> NamespaceChanging;
+        
+        /// <summary>
         /// Gets fired when the Namespace property changed its value
         /// </summary>
-        public event EventHandler<ValueChangedEventArgs> NamespaceChanged;
+        public event System.EventHandler<ValueChangedEventArgs> NamespaceChanged;
+        
+        /// <summary>
+        /// Raises the NamespaceChanging event
+        /// </summary>
+        /// <param name="eventArgs">The event data</param>
+        protected virtual void OnNamespaceChanging(ValueChangedEventArgs eventArgs)
+        {
+            System.EventHandler<ValueChangedEventArgs> handler = this.NamespaceChanging;
+            if ((handler != null))
+            {
+                handler.Invoke(this, eventArgs);
+            }
+        }
+        
+        /// <summary>
+        /// Gets called when the parent model element of the current model element is about to change
+        /// </summary>
+        /// <param name="oldParent">The old parent model element</param>
+        /// <param name="newParent">The new parent model element</param>
+        protected override void OnParentChanging(IModelElement newParent, IModelElement oldParent)
+        {
+            INamespace oldNamespace = ModelHelper.CastAs<INamespace>(oldParent);
+            INamespace newNamespace = ModelHelper.CastAs<INamespace>(newParent);
+            ValueChangedEventArgs e = new ValueChangedEventArgs(oldNamespace, newNamespace);
+            this.OnNamespaceChanging(e);
+            this.OnPropertyChanging("Namespace");
+        }
         
         /// <summary>
         /// Raises the NamespaceChanged event
@@ -97,7 +129,7 @@ namespace NMF.Models.Meta
         /// <param name="eventArgs">The event data</param>
         protected virtual void OnNamespaceChanged(ValueChangedEventArgs eventArgs)
         {
-            EventHandler<ValueChangedEventArgs> handler = this.NamespaceChanged;
+            System.EventHandler<ValueChangedEventArgs> handler = this.NamespaceChanged;
             if ((handler != null))
             {
                 handler.Invoke(this, eventArgs);

@@ -61,11 +61,11 @@ namespace NMF.Models.Meta
             {
                 if ((this._direction != value))
                 {
-                    this.OnDirectionChanging(EventArgs.Empty);
-                    this.OnPropertyChanging("Direction");
                     Direction old = this._direction;
-                    this._direction = value;
                     ValueChangedEventArgs e = new ValueChangedEventArgs(old, value);
+                    this.OnDirectionChanging(e);
+                    this.OnPropertyChanging("Direction", e);
+                    this._direction = value;
                     this.OnDirectionChanged(e);
                     this.OnPropertyChanged("Direction", e);
                 }
@@ -119,25 +119,30 @@ namespace NMF.Models.Meta
         /// <summary>
         /// Gets fired before the Direction property changes its value
         /// </summary>
-        public event EventHandler DirectionChanging;
+        public event System.EventHandler<ValueChangedEventArgs> DirectionChanging;
         
         /// <summary>
         /// Gets fired when the Direction property changed its value
         /// </summary>
-        public event EventHandler<ValueChangedEventArgs> DirectionChanged;
+        public event System.EventHandler<ValueChangedEventArgs> DirectionChanged;
+        
+        /// <summary>
+        /// Gets fired before the Operation property changes its value
+        /// </summary>
+        public event System.EventHandler<ValueChangedEventArgs> OperationChanging;
         
         /// <summary>
         /// Gets fired when the Operation property changed its value
         /// </summary>
-        public event EventHandler<ValueChangedEventArgs> OperationChanged;
+        public event System.EventHandler<ValueChangedEventArgs> OperationChanged;
         
         /// <summary>
         /// Raises the DirectionChanging event
         /// </summary>
         /// <param name="eventArgs">The event data</param>
-        protected virtual void OnDirectionChanging(EventArgs eventArgs)
+        protected virtual void OnDirectionChanging(ValueChangedEventArgs eventArgs)
         {
-            EventHandler handler = this.DirectionChanging;
+            System.EventHandler<ValueChangedEventArgs> handler = this.DirectionChanging;
             if ((handler != null))
             {
                 handler.Invoke(this, eventArgs);
@@ -150,11 +155,38 @@ namespace NMF.Models.Meta
         /// <param name="eventArgs">The event data</param>
         protected virtual void OnDirectionChanged(ValueChangedEventArgs eventArgs)
         {
-            EventHandler<ValueChangedEventArgs> handler = this.DirectionChanged;
+            System.EventHandler<ValueChangedEventArgs> handler = this.DirectionChanged;
             if ((handler != null))
             {
                 handler.Invoke(this, eventArgs);
             }
+        }
+        
+        /// <summary>
+        /// Raises the OperationChanging event
+        /// </summary>
+        /// <param name="eventArgs">The event data</param>
+        protected virtual void OnOperationChanging(ValueChangedEventArgs eventArgs)
+        {
+            System.EventHandler<ValueChangedEventArgs> handler = this.OperationChanging;
+            if ((handler != null))
+            {
+                handler.Invoke(this, eventArgs);
+            }
+        }
+        
+        /// <summary>
+        /// Gets called when the parent model element of the current model element is about to change
+        /// </summary>
+        /// <param name="oldParent">The old parent model element</param>
+        /// <param name="newParent">The new parent model element</param>
+        protected override void OnParentChanging(IModelElement newParent, IModelElement oldParent)
+        {
+            IOperation oldOperation = ModelHelper.CastAs<IOperation>(oldParent);
+            IOperation newOperation = ModelHelper.CastAs<IOperation>(newParent);
+            ValueChangedEventArgs e = new ValueChangedEventArgs(oldOperation, newOperation);
+            this.OnOperationChanging(e);
+            this.OnPropertyChanging("Operation");
         }
         
         /// <summary>
@@ -163,7 +195,7 @@ namespace NMF.Models.Meta
         /// <param name="eventArgs">The event data</param>
         protected virtual void OnOperationChanged(ValueChangedEventArgs eventArgs)
         {
-            EventHandler<ValueChangedEventArgs> handler = this.OperationChanged;
+            System.EventHandler<ValueChangedEventArgs> handler = this.OperationChanged;
             if ((handler != null))
             {
                 handler.Invoke(this, eventArgs);

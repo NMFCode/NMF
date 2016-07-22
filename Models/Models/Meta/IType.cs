@@ -48,9 +48,14 @@ namespace NMF.Models.Meta
         }
         
         /// <summary>
+        /// Gets fired before the Namespace property changes its value
+        /// </summary>
+        event System.EventHandler<ValueChangedEventArgs> NamespaceChanging;
+        
+        /// <summary>
         /// Gets fired when the Namespace property changed its value
         /// </summary>
-        event EventHandler<ValueChangedEventArgs> NamespaceChanged;
+        event System.EventHandler<ValueChangedEventArgs> NamespaceChanged;
     }
 }
 

@@ -21,7 +21,13 @@ namespace NMF.Models
             get;
         }
 
-        public event EventHandler<ValueChangedEventArgs> ExtendedElementChanged
+        event EventHandler<ValueChangedEventArgs> Meta.IModelElementExtension.ExtendedElementChanged
+        {
+            add { }
+            remove { }
+        }
+
+        event EventHandler<ValueChangedEventArgs> Meta.IModelElementExtension.ExtendedElementChanging
         {
             add { }
             remove { }

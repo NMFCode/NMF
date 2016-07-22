@@ -61,11 +61,11 @@ namespace NMF.Models.Meta
             {
                 if ((this._value != value))
                 {
-                    this.OnValueChanging(EventArgs.Empty);
-                    this.OnPropertyChanging("Value");
                     Nullable<int> old = this._value;
-                    this._value = value;
                     ValueChangedEventArgs e = new ValueChangedEventArgs(old, value);
+                    this.OnValueChanging(e);
+                    this.OnPropertyChanging("Value", e);
+                    this._value = value;
                     this.OnValueChanged(e);
                     this.OnPropertyChanged("Value", e);
                 }
@@ -119,25 +119,30 @@ namespace NMF.Models.Meta
         /// <summary>
         /// Gets fired before the Value property changes its value
         /// </summary>
-        public event EventHandler ValueChanging;
+        public event System.EventHandler<ValueChangedEventArgs> ValueChanging;
         
         /// <summary>
         /// Gets fired when the Value property changed its value
         /// </summary>
-        public event EventHandler<ValueChangedEventArgs> ValueChanged;
+        public event System.EventHandler<ValueChangedEventArgs> ValueChanged;
+        
+        /// <summary>
+        /// Gets fired before the Enumeration property changes its value
+        /// </summary>
+        public event System.EventHandler<ValueChangedEventArgs> EnumerationChanging;
         
         /// <summary>
         /// Gets fired when the Enumeration property changed its value
         /// </summary>
-        public event EventHandler<ValueChangedEventArgs> EnumerationChanged;
+        public event System.EventHandler<ValueChangedEventArgs> EnumerationChanged;
         
         /// <summary>
         /// Raises the ValueChanging event
         /// </summary>
         /// <param name="eventArgs">The event data</param>
-        protected virtual void OnValueChanging(EventArgs eventArgs)
+        protected virtual void OnValueChanging(ValueChangedEventArgs eventArgs)
         {
-            EventHandler handler = this.ValueChanging;
+            System.EventHandler<ValueChangedEventArgs> handler = this.ValueChanging;
             if ((handler != null))
             {
                 handler.Invoke(this, eventArgs);
@@ -150,11 +155,38 @@ namespace NMF.Models.Meta
         /// <param name="eventArgs">The event data</param>
         protected virtual void OnValueChanged(ValueChangedEventArgs eventArgs)
         {
-            EventHandler<ValueChangedEventArgs> handler = this.ValueChanged;
+            System.EventHandler<ValueChangedEventArgs> handler = this.ValueChanged;
             if ((handler != null))
             {
                 handler.Invoke(this, eventArgs);
             }
+        }
+        
+        /// <summary>
+        /// Raises the EnumerationChanging event
+        /// </summary>
+        /// <param name="eventArgs">The event data</param>
+        protected virtual void OnEnumerationChanging(ValueChangedEventArgs eventArgs)
+        {
+            System.EventHandler<ValueChangedEventArgs> handler = this.EnumerationChanging;
+            if ((handler != null))
+            {
+                handler.Invoke(this, eventArgs);
+            }
+        }
+        
+        /// <summary>
+        /// Gets called when the parent model element of the current model element is about to change
+        /// </summary>
+        /// <param name="oldParent">The old parent model element</param>
+        /// <param name="newParent">The new parent model element</param>
+        protected override void OnParentChanging(IModelElement newParent, IModelElement oldParent)
+        {
+            IEnumeration oldEnumeration = ModelHelper.CastAs<IEnumeration>(oldParent);
+            IEnumeration newEnumeration = ModelHelper.CastAs<IEnumeration>(newParent);
+            ValueChangedEventArgs e = new ValueChangedEventArgs(oldEnumeration, newEnumeration);
+            this.OnEnumerationChanging(e);
+            this.OnPropertyChanging("Enumeration");
         }
         
         /// <summary>
@@ -163,7 +195,7 @@ namespace NMF.Models.Meta
         /// <param name="eventArgs">The event data</param>
         protected virtual void OnEnumerationChanged(ValueChangedEventArgs eventArgs)
         {
-            EventHandler<ValueChangedEventArgs> handler = this.EnumerationChanged;
+            System.EventHandler<ValueChangedEventArgs> handler = this.EnumerationChanged;
             if ((handler != null))
             {
                 handler.Invoke(this, eventArgs);

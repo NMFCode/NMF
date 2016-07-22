@@ -59,17 +59,22 @@ namespace NMF.Models.Meta
         /// <summary>
         /// Gets fired before the Direction property changes its value
         /// </summary>
-        event EventHandler DirectionChanging;
+        event System.EventHandler<ValueChangedEventArgs> DirectionChanging;
         
         /// <summary>
         /// Gets fired when the Direction property changed its value
         /// </summary>
-        event EventHandler<ValueChangedEventArgs> DirectionChanged;
+        event System.EventHandler<ValueChangedEventArgs> DirectionChanged;
+        
+        /// <summary>
+        /// Gets fired before the Operation property changes its value
+        /// </summary>
+        event System.EventHandler<ValueChangedEventArgs> OperationChanging;
         
         /// <summary>
         /// Gets fired when the Operation property changed its value
         /// </summary>
-        event EventHandler<ValueChangedEventArgs> OperationChanged;
+        event System.EventHandler<ValueChangedEventArgs> OperationChanged;
     }
 }
 

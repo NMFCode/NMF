@@ -95,57 +95,62 @@ namespace NMF.Models.Meta
         /// <summary>
         /// Gets fired before the IsContainment property changes its value
         /// </summary>
-        event EventHandler IsContainmentChanging;
+        event System.EventHandler<ValueChangedEventArgs> IsContainmentChanging;
         
         /// <summary>
         /// Gets fired when the IsContainment property changed its value
         /// </summary>
-        event EventHandler<ValueChangedEventArgs> IsContainmentChanged;
+        event System.EventHandler<ValueChangedEventArgs> IsContainmentChanged;
+        
+        /// <summary>
+        /// Gets fired before the DeclaringType property changes its value
+        /// </summary>
+        event System.EventHandler<ValueChangedEventArgs> DeclaringTypeChanging;
         
         /// <summary>
         /// Gets fired when the DeclaringType property changed its value
         /// </summary>
-        event EventHandler<ValueChangedEventArgs> DeclaringTypeChanged;
+        event System.EventHandler<ValueChangedEventArgs> DeclaringTypeChanged;
         
         /// <summary>
         /// Gets fired before the Opposite property changes its value
         /// </summary>
-        event EventHandler OppositeChanging;
+        event System.EventHandler<ValueChangedEventArgs> OppositeChanging;
         
         /// <summary>
         /// Gets fired when the Opposite property changed its value
         /// </summary>
-        event EventHandler<ValueChangedEventArgs> OppositeChanged;
+        event System.EventHandler<ValueChangedEventArgs> OppositeChanged;
         
         /// <summary>
         /// Gets fired before the ReferenceType property changes its value
         /// </summary>
-        event EventHandler ReferenceTypeChanging;
+        event System.EventHandler<ValueChangedEventArgs> ReferenceTypeChanging;
         
         /// <summary>
         /// Gets fired when the ReferenceType property changed its value
         /// </summary>
-        event EventHandler<ValueChangedEventArgs> ReferenceTypeChanged;
+        event System.EventHandler<ValueChangedEventArgs> ReferenceTypeChanged;
         
         /// <summary>
         /// Gets fired before the Refines property changes its value
         /// </summary>
-        event EventHandler RefinesChanging;
+        event System.EventHandler<ValueChangedEventArgs> RefinesChanging;
         
         /// <summary>
         /// Gets fired when the Refines property changed its value
         /// </summary>
-        event EventHandler<ValueChangedEventArgs> RefinesChanged;
+        event System.EventHandler<ValueChangedEventArgs> RefinesChanged;
         
         /// <summary>
         /// Gets fired before the Anchor property changes its value
         /// </summary>
-        event EventHandler AnchorChanging;
+        event System.EventHandler<ValueChangedEventArgs> AnchorChanging;
         
         /// <summary>
         /// Gets fired when the Anchor property changed its value
         /// </summary>
-        event EventHandler<ValueChangedEventArgs> AnchorChanged;
+        event System.EventHandler<ValueChangedEventArgs> AnchorChanged;
     }
 }
 

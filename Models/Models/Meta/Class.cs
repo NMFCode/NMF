@@ -105,11 +105,11 @@ namespace NMF.Models.Meta
             {
                 if ((this._isAbstract != value))
                 {
-                    this.OnIsAbstractChanging(EventArgs.Empty);
-                    this.OnPropertyChanging("IsAbstract");
                     bool old = this._isAbstract;
-                    this._isAbstract = value;
                     ValueChangedEventArgs e = new ValueChangedEventArgs(old, value);
+                    this.OnIsAbstractChanging(e);
+                    this.OnPropertyChanging("IsAbstract", e);
+                    this._isAbstract = value;
                     this.OnIsAbstractChanged(e);
                     this.OnPropertyChanged("IsAbstract", e);
                 }
@@ -131,11 +131,11 @@ namespace NMF.Models.Meta
             {
                 if ((this._identifierScope != value))
                 {
-                    this.OnIdentifierScopeChanging(EventArgs.Empty);
-                    this.OnPropertyChanging("IdentifierScope");
                     IdentifierScope old = this._identifierScope;
-                    this._identifierScope = value;
                     ValueChangedEventArgs e = new ValueChangedEventArgs(old, value);
+                    this.OnIdentifierScopeChanging(e);
+                    this.OnPropertyChanging("IdentifierScope", e);
+                    this._identifierScope = value;
                     this.OnIdentifierScopeChanged(e);
                     this.OnPropertyChanged("IdentifierScope", e);
                 }
@@ -170,9 +170,10 @@ namespace NMF.Models.Meta
             {
                 if ((this._instanceOf != value))
                 {
-                    this.OnInstanceOfChanging(EventArgs.Empty);
-                    this.OnPropertyChanging("InstanceOf");
                     IClass old = this._instanceOf;
+                    ValueChangedEventArgs e = new ValueChangedEventArgs(old, value);
+                    this.OnInstanceOfChanging(e);
+                    this.OnPropertyChanging("InstanceOf", e);
                     this._instanceOf = value;
                     if ((old != null))
                     {
@@ -182,7 +183,6 @@ namespace NMF.Models.Meta
                     {
                         value.Deleted += this.OnResetInstanceOf;
                     }
-                    ValueChangedEventArgs e = new ValueChangedEventArgs(old, value);
                     this.OnInstanceOfChanged(e);
                     this.OnPropertyChanged("InstanceOf", e);
                 }
@@ -203,9 +203,10 @@ namespace NMF.Models.Meta
             {
                 if ((this._identifier != value))
                 {
-                    this.OnIdentifierChanging(EventArgs.Empty);
-                    this.OnPropertyChanging("Identifier");
                     IAttribute old = this._identifier;
+                    ValueChangedEventArgs e = new ValueChangedEventArgs(old, value);
+                    this.OnIdentifierChanging(e);
+                    this.OnPropertyChanging("Identifier", e);
                     this._identifier = value;
                     if ((old != null))
                     {
@@ -215,7 +216,6 @@ namespace NMF.Models.Meta
                     {
                         value.Deleted += this.OnResetIdentifier;
                     }
-                    ValueChangedEventArgs e = new ValueChangedEventArgs(old, value);
                     this.OnIdentifierChanged(e);
                     this.OnPropertyChanged("Identifier", e);
                 }
@@ -294,50 +294,50 @@ namespace NMF.Models.Meta
         /// <summary>
         /// Gets fired before the IsAbstract property changes its value
         /// </summary>
-        public event EventHandler IsAbstractChanging;
+        public event System.EventHandler<ValueChangedEventArgs> IsAbstractChanging;
         
         /// <summary>
         /// Gets fired when the IsAbstract property changed its value
         /// </summary>
-        public event EventHandler<ValueChangedEventArgs> IsAbstractChanged;
+        public event System.EventHandler<ValueChangedEventArgs> IsAbstractChanged;
         
         /// <summary>
         /// Gets fired before the IdentifierScope property changes its value
         /// </summary>
-        public event EventHandler IdentifierScopeChanging;
+        public event System.EventHandler<ValueChangedEventArgs> IdentifierScopeChanging;
         
         /// <summary>
         /// Gets fired when the IdentifierScope property changed its value
         /// </summary>
-        public event EventHandler<ValueChangedEventArgs> IdentifierScopeChanged;
+        public event System.EventHandler<ValueChangedEventArgs> IdentifierScopeChanged;
         
         /// <summary>
         /// Gets fired before the InstanceOf property changes its value
         /// </summary>
-        public event EventHandler InstanceOfChanging;
+        public event System.EventHandler<ValueChangedEventArgs> InstanceOfChanging;
         
         /// <summary>
         /// Gets fired when the InstanceOf property changed its value
         /// </summary>
-        public event EventHandler<ValueChangedEventArgs> InstanceOfChanged;
+        public event System.EventHandler<ValueChangedEventArgs> InstanceOfChanged;
         
         /// <summary>
         /// Gets fired before the Identifier property changes its value
         /// </summary>
-        public event EventHandler IdentifierChanging;
+        public event System.EventHandler<ValueChangedEventArgs> IdentifierChanging;
         
         /// <summary>
         /// Gets fired when the Identifier property changed its value
         /// </summary>
-        public event EventHandler<ValueChangedEventArgs> IdentifierChanged;
+        public event System.EventHandler<ValueChangedEventArgs> IdentifierChanged;
         
         /// <summary>
         /// Raises the IsAbstractChanging event
         /// </summary>
         /// <param name="eventArgs">The event data</param>
-        protected virtual void OnIsAbstractChanging(EventArgs eventArgs)
+        protected virtual void OnIsAbstractChanging(ValueChangedEventArgs eventArgs)
         {
-            EventHandler handler = this.IsAbstractChanging;
+            System.EventHandler<ValueChangedEventArgs> handler = this.IsAbstractChanging;
             if ((handler != null))
             {
                 handler.Invoke(this, eventArgs);
@@ -350,7 +350,7 @@ namespace NMF.Models.Meta
         /// <param name="eventArgs">The event data</param>
         protected virtual void OnIsAbstractChanged(ValueChangedEventArgs eventArgs)
         {
-            EventHandler<ValueChangedEventArgs> handler = this.IsAbstractChanged;
+            System.EventHandler<ValueChangedEventArgs> handler = this.IsAbstractChanged;
             if ((handler != null))
             {
                 handler.Invoke(this, eventArgs);
@@ -361,9 +361,9 @@ namespace NMF.Models.Meta
         /// Raises the IdentifierScopeChanging event
         /// </summary>
         /// <param name="eventArgs">The event data</param>
-        protected virtual void OnIdentifierScopeChanging(EventArgs eventArgs)
+        protected virtual void OnIdentifierScopeChanging(ValueChangedEventArgs eventArgs)
         {
-            EventHandler handler = this.IdentifierScopeChanging;
+            System.EventHandler<ValueChangedEventArgs> handler = this.IdentifierScopeChanging;
             if ((handler != null))
             {
                 handler.Invoke(this, eventArgs);
@@ -376,7 +376,7 @@ namespace NMF.Models.Meta
         /// <param name="eventArgs">The event data</param>
         protected virtual void OnIdentifierScopeChanged(ValueChangedEventArgs eventArgs)
         {
-            EventHandler<ValueChangedEventArgs> handler = this.IdentifierScopeChanged;
+            System.EventHandler<ValueChangedEventArgs> handler = this.IdentifierScopeChanged;
             if ((handler != null))
             {
                 handler.Invoke(this, eventArgs);
@@ -407,9 +407,9 @@ namespace NMF.Models.Meta
         /// Raises the InstanceOfChanging event
         /// </summary>
         /// <param name="eventArgs">The event data</param>
-        protected virtual void OnInstanceOfChanging(EventArgs eventArgs)
+        protected virtual void OnInstanceOfChanging(ValueChangedEventArgs eventArgs)
         {
-            EventHandler handler = this.InstanceOfChanging;
+            System.EventHandler<ValueChangedEventArgs> handler = this.InstanceOfChanging;
             if ((handler != null))
             {
                 handler.Invoke(this, eventArgs);
@@ -422,7 +422,7 @@ namespace NMF.Models.Meta
         /// <param name="eventArgs">The event data</param>
         protected virtual void OnInstanceOfChanged(ValueChangedEventArgs eventArgs)
         {
-            EventHandler<ValueChangedEventArgs> handler = this.InstanceOfChanged;
+            System.EventHandler<ValueChangedEventArgs> handler = this.InstanceOfChanged;
             if ((handler != null))
             {
                 handler.Invoke(this, eventArgs);
@@ -443,9 +443,9 @@ namespace NMF.Models.Meta
         /// Raises the IdentifierChanging event
         /// </summary>
         /// <param name="eventArgs">The event data</param>
-        protected virtual void OnIdentifierChanging(EventArgs eventArgs)
+        protected virtual void OnIdentifierChanging(ValueChangedEventArgs eventArgs)
         {
-            EventHandler handler = this.IdentifierChanging;
+            System.EventHandler<ValueChangedEventArgs> handler = this.IdentifierChanging;
             if ((handler != null))
             {
                 handler.Invoke(this, eventArgs);
@@ -458,7 +458,7 @@ namespace NMF.Models.Meta
         /// <param name="eventArgs">The event data</param>
         protected virtual void OnIdentifierChanged(ValueChangedEventArgs eventArgs)
         {
-            EventHandler<ValueChangedEventArgs> handler = this.IdentifierChanged;
+            System.EventHandler<ValueChangedEventArgs> handler = this.IdentifierChanged;
             if ((handler != null))
             {
                 handler.Invoke(this, eventArgs);

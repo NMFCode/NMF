@@ -84,27 +84,32 @@ namespace NMF.Models.Meta
         /// <summary>
         /// Gets fired before the Uri property changes its value
         /// </summary>
-        event EventHandler UriChanging;
+        event System.EventHandler<ValueChangedEventArgs> UriChanging;
         
         /// <summary>
         /// Gets fired when the Uri property changed its value
         /// </summary>
-        event EventHandler<ValueChangedEventArgs> UriChanged;
+        event System.EventHandler<ValueChangedEventArgs> UriChanged;
         
         /// <summary>
         /// Gets fired before the Prefix property changes its value
         /// </summary>
-        event EventHandler PrefixChanging;
+        event System.EventHandler<ValueChangedEventArgs> PrefixChanging;
         
         /// <summary>
         /// Gets fired when the Prefix property changed its value
         /// </summary>
-        event EventHandler<ValueChangedEventArgs> PrefixChanged;
+        event System.EventHandler<ValueChangedEventArgs> PrefixChanged;
+        
+        /// <summary>
+        /// Gets fired before the ParentNamespace property changes its value
+        /// </summary>
+        event System.EventHandler<ValueChangedEventArgs> ParentNamespaceChanging;
         
         /// <summary>
         /// Gets fired when the ParentNamespace property changed its value
         /// </summary>
-        event EventHandler<ValueChangedEventArgs> ParentNamespaceChanged;
+        event System.EventHandler<ValueChangedEventArgs> ParentNamespaceChanged;
     }
 }
 

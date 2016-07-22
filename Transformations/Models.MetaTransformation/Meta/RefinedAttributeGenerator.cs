@@ -141,7 +141,7 @@ namespace NMF.Models.Meta
 
             private static void CreateChangeEvent(CodeMemberProperty property, List<IAttribute> implementations, ITransformationContext context, string eventNameSuffix)
             {
-                var eventSnippet = @"        event EventHandler<ValueChangedEvent> {0}.{1}
+                var eventSnippet = @"        event EventHandler<ValueChangedEventArgs> {0}.{1}
         {{
             add
             {{{2}

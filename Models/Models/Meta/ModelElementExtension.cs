@@ -86,9 +86,14 @@ namespace NMF.Models.Meta
         }
         
         /// <summary>
+        /// Gets fired before the ExtendedElement property changes its value
+        /// </summary>
+        public event System.EventHandler<ValueChangedEventArgs> ExtendedElementChanging;
+        
+        /// <summary>
         /// Gets fired when the ExtendedElement property changed its value
         /// </summary>
-        public event EventHandler<ValueChangedEventArgs> ExtendedElementChanged;
+        public event System.EventHandler<ValueChangedEventArgs> ExtendedElementChanged;
         
         /// <summary>
         /// Gets the Extension for this model element
@@ -96,12 +101,39 @@ namespace NMF.Models.Meta
         public abstract IExtension GetExtension();
         
         /// <summary>
+        /// Raises the ExtendedElementChanging event
+        /// </summary>
+        /// <param name="eventArgs">The event data</param>
+        protected virtual void OnExtendedElementChanging(ValueChangedEventArgs eventArgs)
+        {
+            System.EventHandler<ValueChangedEventArgs> handler = this.ExtendedElementChanging;
+            if ((handler != null))
+            {
+                handler.Invoke(this, eventArgs);
+            }
+        }
+        
+        /// <summary>
+        /// Gets called when the parent model element of the current model element is about to change
+        /// </summary>
+        /// <param name="oldParent">The old parent model element</param>
+        /// <param name="newParent">The new parent model element</param>
+        protected override void OnParentChanging(IModelElement newParent, IModelElement oldParent)
+        {
+            NMF.Models.Meta.IModelElement oldExtendedElement = ModelHelper.CastAs<NMF.Models.Meta.IModelElement>(oldParent);
+            NMF.Models.Meta.IModelElement newExtendedElement = ModelHelper.CastAs<NMF.Models.Meta.IModelElement>(newParent);
+            ValueChangedEventArgs e = new ValueChangedEventArgs(oldExtendedElement, newExtendedElement);
+            this.OnExtendedElementChanging(e);
+            this.OnPropertyChanging("ExtendedElement");
+        }
+        
+        /// <summary>
         /// Raises the ExtendedElementChanged event
         /// </summary>
         /// <param name="eventArgs">The event data</param>
         protected virtual void OnExtendedElementChanged(ValueChangedEventArgs eventArgs)
         {
-            EventHandler<ValueChangedEventArgs> handler = this.ExtendedElementChanged;
+            System.EventHandler<ValueChangedEventArgs> handler = this.ExtendedElementChanged;
             if ((handler != null))
             {
                 handler.Invoke(this, eventArgs);

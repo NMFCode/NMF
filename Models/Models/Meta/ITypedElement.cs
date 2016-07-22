@@ -86,52 +86,52 @@ namespace NMF.Models.Meta
         /// <summary>
         /// Gets fired before the IsOrdered property changes its value
         /// </summary>
-        event EventHandler IsOrderedChanging;
+        event System.EventHandler<ValueChangedEventArgs> IsOrderedChanging;
         
         /// <summary>
         /// Gets fired when the IsOrdered property changed its value
         /// </summary>
-        event EventHandler<ValueChangedEventArgs> IsOrderedChanged;
+        event System.EventHandler<ValueChangedEventArgs> IsOrderedChanged;
         
         /// <summary>
         /// Gets fired before the IsUnique property changes its value
         /// </summary>
-        event EventHandler IsUniqueChanging;
+        event System.EventHandler<ValueChangedEventArgs> IsUniqueChanging;
         
         /// <summary>
         /// Gets fired when the IsUnique property changed its value
         /// </summary>
-        event EventHandler<ValueChangedEventArgs> IsUniqueChanged;
+        event System.EventHandler<ValueChangedEventArgs> IsUniqueChanged;
         
         /// <summary>
         /// Gets fired before the LowerBound property changes its value
         /// </summary>
-        event EventHandler LowerBoundChanging;
+        event System.EventHandler<ValueChangedEventArgs> LowerBoundChanging;
         
         /// <summary>
         /// Gets fired when the LowerBound property changed its value
         /// </summary>
-        event EventHandler<ValueChangedEventArgs> LowerBoundChanged;
+        event System.EventHandler<ValueChangedEventArgs> LowerBoundChanged;
         
         /// <summary>
         /// Gets fired before the UpperBound property changes its value
         /// </summary>
-        event EventHandler UpperBoundChanging;
+        event System.EventHandler<ValueChangedEventArgs> UpperBoundChanging;
         
         /// <summary>
         /// Gets fired when the UpperBound property changed its value
         /// </summary>
-        event EventHandler<ValueChangedEventArgs> UpperBoundChanged;
+        event System.EventHandler<ValueChangedEventArgs> UpperBoundChanged;
         
         /// <summary>
         /// Gets fired before the Type property changes its value
         /// </summary>
-        event EventHandler TypeChanging;
+        event System.EventHandler<ValueChangedEventArgs> TypeChanging;
         
         /// <summary>
         /// Gets fired when the Type property changed its value
         /// </summary>
-        event EventHandler<ValueChangedEventArgs> TypeChanged;
+        event System.EventHandler<ValueChangedEventArgs> TypeChanged;
     }
 }
 

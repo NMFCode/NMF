@@ -59,17 +59,22 @@ namespace NMF.Models.Meta
         /// <summary>
         /// Gets fired before the Value property changes its value
         /// </summary>
-        event EventHandler ValueChanging;
+        event System.EventHandler<ValueChangedEventArgs> ValueChanging;
         
         /// <summary>
         /// Gets fired when the Value property changed its value
         /// </summary>
-        event EventHandler<ValueChangedEventArgs> ValueChanged;
+        event System.EventHandler<ValueChangedEventArgs> ValueChanged;
+        
+        /// <summary>
+        /// Gets fired before the Enumeration property changes its value
+        /// </summary>
+        event System.EventHandler<ValueChangedEventArgs> EnumerationChanging;
         
         /// <summary>
         /// Gets fired when the Enumeration property changed its value
         /// </summary>
-        event EventHandler<ValueChangedEventArgs> EnumerationChanged;
+        event System.EventHandler<ValueChangedEventArgs> EnumerationChanged;
     }
 }
 

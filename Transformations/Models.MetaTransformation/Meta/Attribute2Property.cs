@@ -80,9 +80,9 @@ namespace NMF.Models.Meta
                         new CodePrimitiveExpression(generatedProperty.Name), valueChangeRef);
 
                     generatedProperty.SetStatements.Add(new CodeConditionStatement(new CodeBinaryOperatorExpression(fieldRef, CodeBinaryOperatorType.IdentityInequality, value),
-                        generatedProperty.CreateOnChangingEventPattern(typeof(ValueChangedEventArgs).ToTypeReference(), valueChangeRef),
                         oldDef,
                         valueChangeDef,
+                        generatedProperty.CreateOnChangingEventPattern(valueChangeTypeRef, valueChangeRef),
                         new CodeExpressionStatement(callOnPropertyChanging),
                         new CodeAssignStatement(fieldRef, value),
                         generatedProperty.CreateOnChangedEventPattern(valueChangeTypeRef, valueChangeRef),

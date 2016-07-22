@@ -58,12 +58,12 @@ namespace NMF.Models.Meta
         /// <summary>
         /// Gets fired before the IsFlagged property changes its value
         /// </summary>
-        event EventHandler IsFlaggedChanging;
+        event System.EventHandler<ValueChangedEventArgs> IsFlaggedChanging;
         
         /// <summary>
         /// Gets fired when the IsFlagged property changed its value
         /// </summary>
-        event EventHandler<ValueChangedEventArgs> IsFlaggedChanged;
+        event System.EventHandler<ValueChangedEventArgs> IsFlaggedChanged;
     }
 }
 

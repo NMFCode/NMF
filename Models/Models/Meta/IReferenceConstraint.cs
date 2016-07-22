@@ -65,19 +65,24 @@ namespace NMF.Models.Meta
         }
         
         /// <summary>
+        /// Gets fired before the DeclaringType property changes its value
+        /// </summary>
+        event System.EventHandler<ValueChangedEventArgs> DeclaringTypeChanging;
+        
+        /// <summary>
         /// Gets fired when the DeclaringType property changed its value
         /// </summary>
-        event EventHandler<ValueChangedEventArgs> DeclaringTypeChanged;
+        event System.EventHandler<ValueChangedEventArgs> DeclaringTypeChanged;
         
         /// <summary>
         /// Gets fired before the Constrains property changes its value
         /// </summary>
-        event EventHandler ConstrainsChanging;
+        event System.EventHandler<ValueChangedEventArgs> ConstrainsChanging;
         
         /// <summary>
         /// Gets fired when the Constrains property changed its value
         /// </summary>
-        event EventHandler<ValueChangedEventArgs> ConstrainsChanged;
+        event System.EventHandler<ValueChangedEventArgs> ConstrainsChanged;
     }
 }
 

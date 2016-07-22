@@ -66,11 +66,11 @@ namespace NMF.Models.Meta
             {
                 if ((this._systemType != value))
                 {
-                    this.OnSystemTypeChanging(EventArgs.Empty);
-                    this.OnPropertyChanging("SystemType");
                     System.Type old = this._systemType;
-                    this._systemType = value;
                     ValueChangedEventArgs e = new ValueChangedEventArgs(old, value);
+                    this.OnSystemTypeChanging(e);
+                    this.OnPropertyChanging("SystemType", e);
+                    this._systemType = value;
                     this.OnSystemTypeChanged(e);
                     this.OnPropertyChanged("SystemType", e);
                 }
@@ -80,20 +80,20 @@ namespace NMF.Models.Meta
         /// <summary>
         /// Gets fired before the SystemType property changes its value
         /// </summary>
-        public event EventHandler SystemTypeChanging;
+        public event System.EventHandler<ValueChangedEventArgs> SystemTypeChanging;
         
         /// <summary>
         /// Gets fired when the SystemType property changed its value
         /// </summary>
-        public event EventHandler<ValueChangedEventArgs> SystemTypeChanged;
+        public event System.EventHandler<ValueChangedEventArgs> SystemTypeChanged;
         
         /// <summary>
         /// Raises the SystemTypeChanging event
         /// </summary>
         /// <param name="eventArgs">The event data</param>
-        protected virtual void OnSystemTypeChanging(EventArgs eventArgs)
+        protected virtual void OnSystemTypeChanging(ValueChangedEventArgs eventArgs)
         {
-            EventHandler handler = this.SystemTypeChanging;
+            System.EventHandler<ValueChangedEventArgs> handler = this.SystemTypeChanging;
             if ((handler != null))
             {
                 handler.Invoke(this, eventArgs);
@@ -106,7 +106,7 @@ namespace NMF.Models.Meta
         /// <param name="eventArgs">The event data</param>
         protected virtual void OnSystemTypeChanged(ValueChangedEventArgs eventArgs)
         {
-            EventHandler<ValueChangedEventArgs> handler = this.SystemTypeChanged;
+            System.EventHandler<ValueChangedEventArgs> handler = this.SystemTypeChanged;
             if ((handler != null))
             {
                 handler.Invoke(this, eventArgs);

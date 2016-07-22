@@ -611,7 +611,7 @@ namespace NMF.Models
         /// Gets called when the PropertyChanging event is fired
         /// </summary>
         /// <param name="propertyName">The name of the changed property</param>
-        protected virtual void OnPropertyChanging(string propertyName)
+        protected virtual void OnPropertyChanging(string propertyName, ValueChangedEventArgs e = null)
         {
             PropertyChanging?.Invoke(this, new PropertyChangingEventArgs(propertyName));
             if (!deleting)

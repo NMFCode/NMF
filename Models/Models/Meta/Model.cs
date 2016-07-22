@@ -72,11 +72,11 @@ namespace NMF.Models.Meta
             {
                 if ((this._modelUri != value))
                 {
-                    this.OnModelUriChanging(EventArgs.Empty);
-                    this.OnPropertyChanging("ModelUri");
                     Uri old = this._modelUri;
-                    this._modelUri = value;
                     ValueChangedEventArgs e = new ValueChangedEventArgs(old, value);
+                    this.OnModelUriChanging(e);
+                    this.OnPropertyChanging("ModelUri", e);
+                    this._modelUri = value;
                     this.OnModelUriChanged(e);
                     this.OnPropertyChanged("ModelUri", e);
                 }
@@ -138,20 +138,20 @@ namespace NMF.Models.Meta
         /// <summary>
         /// Gets fired before the ModelUri property changes its value
         /// </summary>
-        public event EventHandler ModelUriChanging;
+        public event System.EventHandler<ValueChangedEventArgs> ModelUriChanging;
         
         /// <summary>
         /// Gets fired when the ModelUri property changed its value
         /// </summary>
-        public event EventHandler<ValueChangedEventArgs> ModelUriChanged;
+        public event System.EventHandler<ValueChangedEventArgs> ModelUriChanged;
         
         /// <summary>
         /// Raises the ModelUriChanging event
         /// </summary>
         /// <param name="eventArgs">The event data</param>
-        protected virtual void OnModelUriChanging(EventArgs eventArgs)
+        protected virtual void OnModelUriChanging(ValueChangedEventArgs eventArgs)
         {
-            EventHandler handler = this.ModelUriChanging;
+            System.EventHandler<ValueChangedEventArgs> handler = this.ModelUriChanging;
             if ((handler != null))
             {
                 handler.Invoke(this, eventArgs);
@@ -164,7 +164,7 @@ namespace NMF.Models.Meta
         /// <param name="eventArgs">The event data</param>
         protected virtual void OnModelUriChanged(ValueChangedEventArgs eventArgs)
         {
-            EventHandler<ValueChangedEventArgs> handler = this.ModelUriChanged;
+            System.EventHandler<ValueChangedEventArgs> handler = this.ModelUriChanged;
             if ((handler != null))
             {
                 handler.Invoke(this, eventArgs);

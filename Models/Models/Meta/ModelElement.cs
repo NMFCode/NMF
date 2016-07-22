@@ -87,11 +87,11 @@ namespace NMF.Models.Meta
             {
                 if ((this._absoluteUri != value))
                 {
-                    this.OnAbsoluteUriChanging(EventArgs.Empty);
-                    this.OnPropertyChanging("AbsoluteUri");
                     Uri old = this._absoluteUri;
-                    this._absoluteUri = value;
                     ValueChangedEventArgs e = new ValueChangedEventArgs(old, value);
+                    this.OnAbsoluteUriChanging(e);
+                    this.OnPropertyChanging("AbsoluteUri", e);
+                    this._absoluteUri = value;
                     this.OnAbsoluteUriChanged(e);
                     this.OnPropertyChanged("AbsoluteUri", e);
                 }
@@ -112,11 +112,11 @@ namespace NMF.Models.Meta
             {
                 if ((this._relativeUri != value))
                 {
-                    this.OnRelativeUriChanging(EventArgs.Empty);
-                    this.OnPropertyChanging("RelativeUri");
                     Uri old = this._relativeUri;
-                    this._relativeUri = value;
                     ValueChangedEventArgs e = new ValueChangedEventArgs(old, value);
+                    this.OnRelativeUriChanging(e);
+                    this.OnPropertyChanging("RelativeUri", e);
+                    this._relativeUri = value;
                     this.OnRelativeUriChanged(e);
                     this.OnPropertyChanged("RelativeUri", e);
                 }
@@ -153,9 +153,10 @@ namespace NMF.Models.Meta
             {
                 if ((this._parent != value))
                 {
-                    this.OnParentChanging(EventArgs.Empty);
-                    this.OnPropertyChanging("Parent");
                     NMF.Models.Meta.IModelElement old = this._parent;
+                    ValueChangedEventArgs e = new ValueChangedEventArgs(old, value);
+                    this.OnParentChanging(e);
+                    this.OnPropertyChanging("Parent", e);
                     this._parent = value;
                     if ((old != null))
                     {
@@ -165,7 +166,6 @@ namespace NMF.Models.Meta
                     {
                         value.Deleted += this.OnResetParent;
                     }
-                    ValueChangedEventArgs e = new ValueChangedEventArgs(old, value);
                     this.OnParentChanged(e);
                     this.OnPropertyChanged("Parent", e);
                 }
@@ -186,9 +186,10 @@ namespace NMF.Models.Meta
             {
                 if ((this._type != value))
                 {
-                    this.OnTypeChanging(EventArgs.Empty);
-                    this.OnPropertyChanging("Type");
                     IReferenceType old = this._type;
+                    ValueChangedEventArgs e = new ValueChangedEventArgs(old, value);
+                    this.OnTypeChanging(e);
+                    this.OnPropertyChanging("Type", e);
                     this._type = value;
                     if ((old != null))
                     {
@@ -198,7 +199,6 @@ namespace NMF.Models.Meta
                     {
                         value.Deleted += this.OnResetType;
                     }
-                    ValueChangedEventArgs e = new ValueChangedEventArgs(old, value);
                     this.OnTypeChanged(e);
                     this.OnPropertyChanged("Type", e);
                 }
@@ -230,42 +230,42 @@ namespace NMF.Models.Meta
         /// <summary>
         /// Gets fired before the AbsoluteUri property changes its value
         /// </summary>
-        public event EventHandler AbsoluteUriChanging;
+        public event System.EventHandler<ValueChangedEventArgs> AbsoluteUriChanging;
         
         /// <summary>
         /// Gets fired when the AbsoluteUri property changed its value
         /// </summary>
-        public event EventHandler<ValueChangedEventArgs> AbsoluteUriChanged;
+        public event System.EventHandler<ValueChangedEventArgs> AbsoluteUriChanged;
         
         /// <summary>
         /// Gets fired before the RelativeUri property changes its value
         /// </summary>
-        public event EventHandler RelativeUriChanging;
+        public event System.EventHandler<ValueChangedEventArgs> RelativeUriChanging;
         
         /// <summary>
         /// Gets fired when the RelativeUri property changed its value
         /// </summary>
-        public event EventHandler<ValueChangedEventArgs> RelativeUriChanged;
+        public event System.EventHandler<ValueChangedEventArgs> RelativeUriChanged;
         
         /// <summary>
         /// Gets fired before the Parent property changes its value
         /// </summary>
-        public event EventHandler ParentChanging;
+        public event System.EventHandler<ValueChangedEventArgs> ParentChanging;
         
         /// <summary>
         /// Gets fired when the Parent property changed its value
         /// </summary>
-        public event EventHandler<ValueChangedEventArgs> ParentChanged;
+        public event System.EventHandler<ValueChangedEventArgs> ParentChanged;
         
         /// <summary>
         /// Gets fired before the Type property changes its value
         /// </summary>
-        public event EventHandler TypeChanging;
+        public event System.EventHandler<ValueChangedEventArgs> TypeChanging;
         
         /// <summary>
         /// Gets fired when the Type property changed its value
         /// </summary>
-        public event EventHandler<ValueChangedEventArgs> TypeChanged;
+        public event System.EventHandler<ValueChangedEventArgs> TypeChanged;
         
         /// <summary>
         /// Gets the Class for this model element
@@ -276,9 +276,9 @@ namespace NMF.Models.Meta
         /// Raises the AbsoluteUriChanging event
         /// </summary>
         /// <param name="eventArgs">The event data</param>
-        protected virtual void OnAbsoluteUriChanging(EventArgs eventArgs)
+        protected virtual void OnAbsoluteUriChanging(ValueChangedEventArgs eventArgs)
         {
-            EventHandler handler = this.AbsoluteUriChanging;
+            System.EventHandler<ValueChangedEventArgs> handler = this.AbsoluteUriChanging;
             if ((handler != null))
             {
                 handler.Invoke(this, eventArgs);
@@ -291,7 +291,7 @@ namespace NMF.Models.Meta
         /// <param name="eventArgs">The event data</param>
         protected virtual void OnAbsoluteUriChanged(ValueChangedEventArgs eventArgs)
         {
-            EventHandler<ValueChangedEventArgs> handler = this.AbsoluteUriChanged;
+            System.EventHandler<ValueChangedEventArgs> handler = this.AbsoluteUriChanged;
             if ((handler != null))
             {
                 handler.Invoke(this, eventArgs);
@@ -302,9 +302,9 @@ namespace NMF.Models.Meta
         /// Raises the RelativeUriChanging event
         /// </summary>
         /// <param name="eventArgs">The event data</param>
-        protected virtual void OnRelativeUriChanging(EventArgs eventArgs)
+        protected virtual void OnRelativeUriChanging(ValueChangedEventArgs eventArgs)
         {
-            EventHandler handler = this.RelativeUriChanging;
+            System.EventHandler<ValueChangedEventArgs> handler = this.RelativeUriChanging;
             if ((handler != null))
             {
                 handler.Invoke(this, eventArgs);
@@ -317,7 +317,7 @@ namespace NMF.Models.Meta
         /// <param name="eventArgs">The event data</param>
         protected virtual void OnRelativeUriChanged(ValueChangedEventArgs eventArgs)
         {
-            EventHandler<ValueChangedEventArgs> handler = this.RelativeUriChanged;
+            System.EventHandler<ValueChangedEventArgs> handler = this.RelativeUriChanged;
             if ((handler != null))
             {
                 handler.Invoke(this, eventArgs);
@@ -348,9 +348,9 @@ namespace NMF.Models.Meta
         /// Raises the ParentChanging event
         /// </summary>
         /// <param name="eventArgs">The event data</param>
-        protected virtual void OnParentChanging(EventArgs eventArgs)
+        protected virtual void OnParentChanging(ValueChangedEventArgs eventArgs)
         {
-            EventHandler handler = this.ParentChanging;
+            System.EventHandler<ValueChangedEventArgs> handler = this.ParentChanging;
             if ((handler != null))
             {
                 handler.Invoke(this, eventArgs);
@@ -363,7 +363,7 @@ namespace NMF.Models.Meta
         /// <param name="eventArgs">The event data</param>
         protected virtual void OnParentChanged(ValueChangedEventArgs eventArgs)
         {
-            EventHandler<ValueChangedEventArgs> handler = this.ParentChanged;
+            System.EventHandler<ValueChangedEventArgs> handler = this.ParentChanged;
             if ((handler != null))
             {
                 handler.Invoke(this, eventArgs);
@@ -384,9 +384,9 @@ namespace NMF.Models.Meta
         /// Raises the TypeChanging event
         /// </summary>
         /// <param name="eventArgs">The event data</param>
-        protected virtual void OnTypeChanging(EventArgs eventArgs)
+        protected virtual void OnTypeChanging(ValueChangedEventArgs eventArgs)
         {
-            EventHandler handler = this.TypeChanging;
+            System.EventHandler<ValueChangedEventArgs> handler = this.TypeChanging;
             if ((handler != null))
             {
                 handler.Invoke(this, eventArgs);
@@ -399,7 +399,7 @@ namespace NMF.Models.Meta
         /// <param name="eventArgs">The event data</param>
         protected virtual void OnTypeChanged(ValueChangedEventArgs eventArgs)
         {
-            EventHandler<ValueChangedEventArgs> handler = this.TypeChanged;
+            System.EventHandler<ValueChangedEventArgs> handler = this.TypeChanged;
             if ((handler != null))
             {
                 handler.Invoke(this, eventArgs);

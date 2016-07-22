@@ -100,7 +100,7 @@ namespace NMF.Models.Meta
                 _this_Reference.ReferenceTypeChanged -= value;
             }
         }
-        event EventHandler ITypedElement.TypeChanging
+        event EventHandler<ValueChangedEventArgs> ITypedElement.TypeChanging
         {
             add
             {
@@ -128,11 +128,11 @@ namespace NMF.Models.Meta
             {
                 if ((this._isContainment != value))
                 {
-                    this.OnIsContainmentChanging(EventArgs.Empty);
-                    this.OnPropertyChanging("IsContainment");
                     bool old = this._isContainment;
-                    this._isContainment = value;
                     ValueChangedEventArgs e = new ValueChangedEventArgs(old, value);
+                    this.OnIsContainmentChanging(e);
+                    this.OnPropertyChanging("IsContainment", e);
+                    this._isContainment = value;
                     this.OnIsContainmentChanged(e);
                     this.OnPropertyChanged("IsContainment", e);
                 }
@@ -172,9 +172,10 @@ namespace NMF.Models.Meta
             {
                 if ((this._opposite != value))
                 {
-                    this.OnOppositeChanging(EventArgs.Empty);
-                    this.OnPropertyChanging("Opposite");
                     IReference old = this._opposite;
+                    ValueChangedEventArgs e = new ValueChangedEventArgs(old, value);
+                    this.OnOppositeChanging(e);
+                    this.OnPropertyChanging("Opposite", e);
                     this._opposite = value;
                     if ((old != null))
                     {
@@ -186,7 +187,6 @@ namespace NMF.Models.Meta
                         value.Opposite = this;
                         value.Deleted += this.OnResetOpposite;
                     }
-                    ValueChangedEventArgs e = new ValueChangedEventArgs(old, value);
                     this.OnOppositeChanged(e);
                     this.OnPropertyChanged("Opposite", e);
                 }
@@ -207,9 +207,10 @@ namespace NMF.Models.Meta
             {
                 if ((this._referenceType != value))
                 {
-                    this.OnReferenceTypeChanging(EventArgs.Empty);
-                    this.OnPropertyChanging("ReferenceType");
                     IReferenceType old = this._referenceType;
+                    ValueChangedEventArgs e = new ValueChangedEventArgs(old, value);
+                    this.OnReferenceTypeChanging(e);
+                    this.OnPropertyChanging("ReferenceType", e);
                     this._referenceType = value;
                     if ((old != null))
                     {
@@ -219,7 +220,6 @@ namespace NMF.Models.Meta
                     {
                         value.Deleted += this.OnResetReferenceType;
                     }
-                    ValueChangedEventArgs e = new ValueChangedEventArgs(old, value);
                     this.OnReferenceTypeChanged(e);
                     this.OnPropertyChanged("ReferenceType", e);
                 }
@@ -240,9 +240,10 @@ namespace NMF.Models.Meta
             {
                 if ((this._refines != value))
                 {
-                    this.OnRefinesChanging(EventArgs.Empty);
-                    this.OnPropertyChanging("Refines");
                     IReference old = this._refines;
+                    ValueChangedEventArgs e = new ValueChangedEventArgs(old, value);
+                    this.OnRefinesChanging(e);
+                    this.OnPropertyChanging("Refines", e);
                     this._refines = value;
                     if ((old != null))
                     {
@@ -252,7 +253,6 @@ namespace NMF.Models.Meta
                     {
                         value.Deleted += this.OnResetRefines;
                     }
-                    ValueChangedEventArgs e = new ValueChangedEventArgs(old, value);
                     this.OnRefinesChanged(e);
                     this.OnPropertyChanged("Refines", e);
                 }
@@ -273,9 +273,10 @@ namespace NMF.Models.Meta
             {
                 if ((this._anchor != value))
                 {
-                    this.OnAnchorChanging(EventArgs.Empty);
-                    this.OnPropertyChanging("Anchor");
                     IClass old = this._anchor;
+                    ValueChangedEventArgs e = new ValueChangedEventArgs(old, value);
+                    this.OnAnchorChanging(e);
+                    this.OnPropertyChanging("Anchor", e);
                     this._anchor = value;
                     if ((old != null))
                     {
@@ -285,7 +286,6 @@ namespace NMF.Models.Meta
                     {
                         value.Deleted += this.OnResetAnchor;
                     }
-                    ValueChangedEventArgs e = new ValueChangedEventArgs(old, value);
                     this.OnAnchorChanged(e);
                     this.OnPropertyChanged("Anchor", e);
                 }
@@ -338,11 +338,11 @@ namespace NMF.Models.Meta
             {
                 if ((this._isOrdered != value))
                 {
-                    this.OnIsOrderedChanging(EventArgs.Empty);
-                    this.OnPropertyChanging("IsOrdered");
                     bool old = this._isOrdered;
-                    this._isOrdered = value;
                     ValueChangedEventArgs e = new ValueChangedEventArgs(old, value);
+                    this.OnIsOrderedChanging(e);
+                    this.OnPropertyChanging("IsOrdered", e);
+                    this._isOrdered = value;
                     this.OnIsOrderedChanged(e);
                     this.OnPropertyChanged("IsOrdered", e);
                 }
@@ -363,11 +363,11 @@ namespace NMF.Models.Meta
             {
                 if ((this._isUnique != value))
                 {
-                    this.OnIsUniqueChanging(EventArgs.Empty);
-                    this.OnPropertyChanging("IsUnique");
                     bool old = this._isUnique;
-                    this._isUnique = value;
                     ValueChangedEventArgs e = new ValueChangedEventArgs(old, value);
+                    this.OnIsUniqueChanging(e);
+                    this.OnPropertyChanging("IsUnique", e);
+                    this._isUnique = value;
                     this.OnIsUniqueChanged(e);
                     this.OnPropertyChanged("IsUnique", e);
                 }
@@ -389,11 +389,11 @@ namespace NMF.Models.Meta
             {
                 if ((this._lowerBound != value))
                 {
-                    this.OnLowerBoundChanging(EventArgs.Empty);
-                    this.OnPropertyChanging("LowerBound");
                     int old = this._lowerBound;
-                    this._lowerBound = value;
                     ValueChangedEventArgs e = new ValueChangedEventArgs(old, value);
+                    this.OnLowerBoundChanging(e);
+                    this.OnPropertyChanging("LowerBound", e);
+                    this._lowerBound = value;
                     this.OnLowerBoundChanged(e);
                     this.OnPropertyChanged("LowerBound", e);
                 }
@@ -415,11 +415,11 @@ namespace NMF.Models.Meta
             {
                 if ((this._upperBound != value))
                 {
-                    this.OnUpperBoundChanging(EventArgs.Empty);
-                    this.OnPropertyChanging("UpperBound");
                     int old = this._upperBound;
-                    this._upperBound = value;
                     ValueChangedEventArgs e = new ValueChangedEventArgs(old, value);
+                    this.OnUpperBoundChanging(e);
+                    this.OnPropertyChanging("UpperBound", e);
+                    this._upperBound = value;
                     this.OnUpperBoundChanged(e);
                     this.OnPropertyChanged("UpperBound", e);
                 }
@@ -455,105 +455,110 @@ namespace NMF.Models.Meta
         /// <summary>
         /// Gets fired before the IsContainment property changes its value
         /// </summary>
-        public event EventHandler IsContainmentChanging;
+        public event System.EventHandler<ValueChangedEventArgs> IsContainmentChanging;
         
         /// <summary>
         /// Gets fired when the IsContainment property changed its value
         /// </summary>
-        public event EventHandler<ValueChangedEventArgs> IsContainmentChanged;
+        public event System.EventHandler<ValueChangedEventArgs> IsContainmentChanged;
+        
+        /// <summary>
+        /// Gets fired before the DeclaringType property changes its value
+        /// </summary>
+        public event System.EventHandler<ValueChangedEventArgs> DeclaringTypeChanging;
         
         /// <summary>
         /// Gets fired when the DeclaringType property changed its value
         /// </summary>
-        public event EventHandler<ValueChangedEventArgs> DeclaringTypeChanged;
+        public event System.EventHandler<ValueChangedEventArgs> DeclaringTypeChanged;
         
         /// <summary>
         /// Gets fired before the Opposite property changes its value
         /// </summary>
-        public event EventHandler OppositeChanging;
+        public event System.EventHandler<ValueChangedEventArgs> OppositeChanging;
         
         /// <summary>
         /// Gets fired when the Opposite property changed its value
         /// </summary>
-        public event EventHandler<ValueChangedEventArgs> OppositeChanged;
+        public event System.EventHandler<ValueChangedEventArgs> OppositeChanged;
         
         /// <summary>
         /// Gets fired before the ReferenceType property changes its value
         /// </summary>
-        public event EventHandler ReferenceTypeChanging;
+        public event System.EventHandler<ValueChangedEventArgs> ReferenceTypeChanging;
         
         /// <summary>
         /// Gets fired when the ReferenceType property changed its value
         /// </summary>
-        public event EventHandler<ValueChangedEventArgs> ReferenceTypeChanged;
+        public event System.EventHandler<ValueChangedEventArgs> ReferenceTypeChanged;
         
         /// <summary>
         /// Gets fired before the Refines property changes its value
         /// </summary>
-        public event EventHandler RefinesChanging;
+        public event System.EventHandler<ValueChangedEventArgs> RefinesChanging;
         
         /// <summary>
         /// Gets fired when the Refines property changed its value
         /// </summary>
-        public event EventHandler<ValueChangedEventArgs> RefinesChanged;
+        public event System.EventHandler<ValueChangedEventArgs> RefinesChanged;
         
         /// <summary>
         /// Gets fired before the Anchor property changes its value
         /// </summary>
-        public event EventHandler AnchorChanging;
+        public event System.EventHandler<ValueChangedEventArgs> AnchorChanging;
         
         /// <summary>
         /// Gets fired when the Anchor property changed its value
         /// </summary>
-        public event EventHandler<ValueChangedEventArgs> AnchorChanged;
+        public event System.EventHandler<ValueChangedEventArgs> AnchorChanged;
         
         /// <summary>
         /// Gets fired before the IsOrdered property changes its value
         /// </summary>
-        public event EventHandler IsOrderedChanging;
+        public event System.EventHandler<ValueChangedEventArgs> IsOrderedChanging;
         
         /// <summary>
         /// Gets fired when the IsOrdered property changed its value
         /// </summary>
-        public event EventHandler<ValueChangedEventArgs> IsOrderedChanged;
+        public event System.EventHandler<ValueChangedEventArgs> IsOrderedChanged;
         
         /// <summary>
         /// Gets fired before the IsUnique property changes its value
         /// </summary>
-        public event EventHandler IsUniqueChanging;
+        public event System.EventHandler<ValueChangedEventArgs> IsUniqueChanging;
         
         /// <summary>
         /// Gets fired when the IsUnique property changed its value
         /// </summary>
-        public event EventHandler<ValueChangedEventArgs> IsUniqueChanged;
+        public event System.EventHandler<ValueChangedEventArgs> IsUniqueChanged;
         
         /// <summary>
         /// Gets fired before the LowerBound property changes its value
         /// </summary>
-        public event EventHandler LowerBoundChanging;
+        public event System.EventHandler<ValueChangedEventArgs> LowerBoundChanging;
         
         /// <summary>
         /// Gets fired when the LowerBound property changed its value
         /// </summary>
-        public event EventHandler<ValueChangedEventArgs> LowerBoundChanged;
+        public event System.EventHandler<ValueChangedEventArgs> LowerBoundChanged;
         
         /// <summary>
         /// Gets fired before the UpperBound property changes its value
         /// </summary>
-        public event EventHandler UpperBoundChanging;
+        public event System.EventHandler<ValueChangedEventArgs> UpperBoundChanging;
         
         /// <summary>
         /// Gets fired when the UpperBound property changed its value
         /// </summary>
-        public event EventHandler<ValueChangedEventArgs> UpperBoundChanged;
+        public event System.EventHandler<ValueChangedEventArgs> UpperBoundChanged;
         
         /// <summary>
         /// Raises the IsContainmentChanging event
         /// </summary>
         /// <param name="eventArgs">The event data</param>
-        protected virtual void OnIsContainmentChanging(EventArgs eventArgs)
+        protected virtual void OnIsContainmentChanging(ValueChangedEventArgs eventArgs)
         {
-            EventHandler handler = this.IsContainmentChanging;
+            System.EventHandler<ValueChangedEventArgs> handler = this.IsContainmentChanging;
             if ((handler != null))
             {
                 handler.Invoke(this, eventArgs);
@@ -566,11 +571,38 @@ namespace NMF.Models.Meta
         /// <param name="eventArgs">The event data</param>
         protected virtual void OnIsContainmentChanged(ValueChangedEventArgs eventArgs)
         {
-            EventHandler<ValueChangedEventArgs> handler = this.IsContainmentChanged;
+            System.EventHandler<ValueChangedEventArgs> handler = this.IsContainmentChanged;
             if ((handler != null))
             {
                 handler.Invoke(this, eventArgs);
             }
+        }
+        
+        /// <summary>
+        /// Raises the DeclaringTypeChanging event
+        /// </summary>
+        /// <param name="eventArgs">The event data</param>
+        protected virtual void OnDeclaringTypeChanging(ValueChangedEventArgs eventArgs)
+        {
+            System.EventHandler<ValueChangedEventArgs> handler = this.DeclaringTypeChanging;
+            if ((handler != null))
+            {
+                handler.Invoke(this, eventArgs);
+            }
+        }
+        
+        /// <summary>
+        /// Gets called when the parent model element of the current model element is about to change
+        /// </summary>
+        /// <param name="oldParent">The old parent model element</param>
+        /// <param name="newParent">The new parent model element</param>
+        protected override void OnParentChanging(IModelElement newParent, IModelElement oldParent)
+        {
+            IReferenceType oldDeclaringType = ModelHelper.CastAs<IReferenceType>(oldParent);
+            IReferenceType newDeclaringType = ModelHelper.CastAs<IReferenceType>(newParent);
+            ValueChangedEventArgs e = new ValueChangedEventArgs(oldDeclaringType, newDeclaringType);
+            this.OnDeclaringTypeChanging(e);
+            this.OnPropertyChanging("DeclaringType");
         }
         
         /// <summary>
@@ -579,7 +611,7 @@ namespace NMF.Models.Meta
         /// <param name="eventArgs">The event data</param>
         protected virtual void OnDeclaringTypeChanged(ValueChangedEventArgs eventArgs)
         {
-            EventHandler<ValueChangedEventArgs> handler = this.DeclaringTypeChanged;
+            System.EventHandler<ValueChangedEventArgs> handler = this.DeclaringTypeChanged;
             if ((handler != null))
             {
                 handler.Invoke(this, eventArgs);
@@ -612,9 +644,9 @@ namespace NMF.Models.Meta
         /// Raises the OppositeChanging event
         /// </summary>
         /// <param name="eventArgs">The event data</param>
-        protected virtual void OnOppositeChanging(EventArgs eventArgs)
+        protected virtual void OnOppositeChanging(ValueChangedEventArgs eventArgs)
         {
-            EventHandler handler = this.OppositeChanging;
+            System.EventHandler<ValueChangedEventArgs> handler = this.OppositeChanging;
             if ((handler != null))
             {
                 handler.Invoke(this, eventArgs);
@@ -627,7 +659,7 @@ namespace NMF.Models.Meta
         /// <param name="eventArgs">The event data</param>
         protected virtual void OnOppositeChanged(ValueChangedEventArgs eventArgs)
         {
-            EventHandler<ValueChangedEventArgs> handler = this.OppositeChanged;
+            System.EventHandler<ValueChangedEventArgs> handler = this.OppositeChanged;
             if ((handler != null))
             {
                 handler.Invoke(this, eventArgs);
@@ -648,9 +680,9 @@ namespace NMF.Models.Meta
         /// Raises the ReferenceTypeChanging event
         /// </summary>
         /// <param name="eventArgs">The event data</param>
-        protected virtual void OnReferenceTypeChanging(EventArgs eventArgs)
+        protected virtual void OnReferenceTypeChanging(ValueChangedEventArgs eventArgs)
         {
-            EventHandler handler = this.ReferenceTypeChanging;
+            System.EventHandler<ValueChangedEventArgs> handler = this.ReferenceTypeChanging;
             if ((handler != null))
             {
                 handler.Invoke(this, eventArgs);
@@ -663,7 +695,7 @@ namespace NMF.Models.Meta
         /// <param name="eventArgs">The event data</param>
         protected virtual void OnReferenceTypeChanged(ValueChangedEventArgs eventArgs)
         {
-            EventHandler<ValueChangedEventArgs> handler = this.ReferenceTypeChanged;
+            System.EventHandler<ValueChangedEventArgs> handler = this.ReferenceTypeChanged;
             if ((handler != null))
             {
                 handler.Invoke(this, eventArgs);
@@ -684,9 +716,9 @@ namespace NMF.Models.Meta
         /// Raises the RefinesChanging event
         /// </summary>
         /// <param name="eventArgs">The event data</param>
-        protected virtual void OnRefinesChanging(EventArgs eventArgs)
+        protected virtual void OnRefinesChanging(ValueChangedEventArgs eventArgs)
         {
-            EventHandler handler = this.RefinesChanging;
+            System.EventHandler<ValueChangedEventArgs> handler = this.RefinesChanging;
             if ((handler != null))
             {
                 handler.Invoke(this, eventArgs);
@@ -699,7 +731,7 @@ namespace NMF.Models.Meta
         /// <param name="eventArgs">The event data</param>
         protected virtual void OnRefinesChanged(ValueChangedEventArgs eventArgs)
         {
-            EventHandler<ValueChangedEventArgs> handler = this.RefinesChanged;
+            System.EventHandler<ValueChangedEventArgs> handler = this.RefinesChanged;
             if ((handler != null))
             {
                 handler.Invoke(this, eventArgs);
@@ -720,9 +752,9 @@ namespace NMF.Models.Meta
         /// Raises the AnchorChanging event
         /// </summary>
         /// <param name="eventArgs">The event data</param>
-        protected virtual void OnAnchorChanging(EventArgs eventArgs)
+        protected virtual void OnAnchorChanging(ValueChangedEventArgs eventArgs)
         {
-            EventHandler handler = this.AnchorChanging;
+            System.EventHandler<ValueChangedEventArgs> handler = this.AnchorChanging;
             if ((handler != null))
             {
                 handler.Invoke(this, eventArgs);
@@ -735,7 +767,7 @@ namespace NMF.Models.Meta
         /// <param name="eventArgs">The event data</param>
         protected virtual void OnAnchorChanged(ValueChangedEventArgs eventArgs)
         {
-            EventHandler<ValueChangedEventArgs> handler = this.AnchorChanged;
+            System.EventHandler<ValueChangedEventArgs> handler = this.AnchorChanged;
             if ((handler != null))
             {
                 handler.Invoke(this, eventArgs);
@@ -756,9 +788,9 @@ namespace NMF.Models.Meta
         /// Raises the IsOrderedChanging event
         /// </summary>
         /// <param name="eventArgs">The event data</param>
-        protected virtual void OnIsOrderedChanging(EventArgs eventArgs)
+        protected virtual void OnIsOrderedChanging(ValueChangedEventArgs eventArgs)
         {
-            EventHandler handler = this.IsOrderedChanging;
+            System.EventHandler<ValueChangedEventArgs> handler = this.IsOrderedChanging;
             if ((handler != null))
             {
                 handler.Invoke(this, eventArgs);
@@ -771,7 +803,7 @@ namespace NMF.Models.Meta
         /// <param name="eventArgs">The event data</param>
         protected virtual void OnIsOrderedChanged(ValueChangedEventArgs eventArgs)
         {
-            EventHandler<ValueChangedEventArgs> handler = this.IsOrderedChanged;
+            System.EventHandler<ValueChangedEventArgs> handler = this.IsOrderedChanged;
             if ((handler != null))
             {
                 handler.Invoke(this, eventArgs);
@@ -782,9 +814,9 @@ namespace NMF.Models.Meta
         /// Raises the IsUniqueChanging event
         /// </summary>
         /// <param name="eventArgs">The event data</param>
-        protected virtual void OnIsUniqueChanging(EventArgs eventArgs)
+        protected virtual void OnIsUniqueChanging(ValueChangedEventArgs eventArgs)
         {
-            EventHandler handler = this.IsUniqueChanging;
+            System.EventHandler<ValueChangedEventArgs> handler = this.IsUniqueChanging;
             if ((handler != null))
             {
                 handler.Invoke(this, eventArgs);
@@ -797,7 +829,7 @@ namespace NMF.Models.Meta
         /// <param name="eventArgs">The event data</param>
         protected virtual void OnIsUniqueChanged(ValueChangedEventArgs eventArgs)
         {
-            EventHandler<ValueChangedEventArgs> handler = this.IsUniqueChanged;
+            System.EventHandler<ValueChangedEventArgs> handler = this.IsUniqueChanged;
             if ((handler != null))
             {
                 handler.Invoke(this, eventArgs);
@@ -808,9 +840,9 @@ namespace NMF.Models.Meta
         /// Raises the LowerBoundChanging event
         /// </summary>
         /// <param name="eventArgs">The event data</param>
-        protected virtual void OnLowerBoundChanging(EventArgs eventArgs)
+        protected virtual void OnLowerBoundChanging(ValueChangedEventArgs eventArgs)
         {
-            EventHandler handler = this.LowerBoundChanging;
+            System.EventHandler<ValueChangedEventArgs> handler = this.LowerBoundChanging;
             if ((handler != null))
             {
                 handler.Invoke(this, eventArgs);
@@ -823,7 +855,7 @@ namespace NMF.Models.Meta
         /// <param name="eventArgs">The event data</param>
         protected virtual void OnLowerBoundChanged(ValueChangedEventArgs eventArgs)
         {
-            EventHandler<ValueChangedEventArgs> handler = this.LowerBoundChanged;
+            System.EventHandler<ValueChangedEventArgs> handler = this.LowerBoundChanged;
             if ((handler != null))
             {
                 handler.Invoke(this, eventArgs);
@@ -834,9 +866,9 @@ namespace NMF.Models.Meta
         /// Raises the UpperBoundChanging event
         /// </summary>
         /// <param name="eventArgs">The event data</param>
-        protected virtual void OnUpperBoundChanging(EventArgs eventArgs)
+        protected virtual void OnUpperBoundChanging(ValueChangedEventArgs eventArgs)
         {
-            EventHandler handler = this.UpperBoundChanging;
+            System.EventHandler<ValueChangedEventArgs> handler = this.UpperBoundChanging;
             if ((handler != null))
             {
                 handler.Invoke(this, eventArgs);
@@ -849,7 +881,7 @@ namespace NMF.Models.Meta
         /// <param name="eventArgs">The event data</param>
         protected virtual void OnUpperBoundChanged(ValueChangedEventArgs eventArgs)
         {
-            EventHandler<ValueChangedEventArgs> handler = this.UpperBoundChanged;
+            System.EventHandler<ValueChangedEventArgs> handler = this.UpperBoundChanged;
             if ((handler != null))
             {
                 handler.Invoke(this, eventArgs);

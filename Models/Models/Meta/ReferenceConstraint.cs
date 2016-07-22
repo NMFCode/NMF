@@ -104,9 +104,10 @@ namespace NMF.Models.Meta
             {
                 if ((this._constrains != value))
                 {
-                    this.OnConstrainsChanging(EventArgs.Empty);
-                    this.OnPropertyChanging("Constrains");
                     IReference old = this._constrains;
+                    ValueChangedEventArgs e = new ValueChangedEventArgs(old, value);
+                    this.OnConstrainsChanging(e);
+                    this.OnPropertyChanging("Constrains", e);
                     this._constrains = value;
                     if ((old != null))
                     {
@@ -116,7 +117,6 @@ namespace NMF.Models.Meta
                     {
                         value.Deleted += this.OnResetConstrains;
                     }
-                    ValueChangedEventArgs e = new ValueChangedEventArgs(old, value);
                     this.OnConstrainsChanged(e);
                     this.OnPropertyChanged("Constrains", e);
                 }
@@ -150,19 +150,51 @@ namespace NMF.Models.Meta
         }
         
         /// <summary>
+        /// Gets fired before the DeclaringType property changes its value
+        /// </summary>
+        public event System.EventHandler<ValueChangedEventArgs> DeclaringTypeChanging;
+        
+        /// <summary>
         /// Gets fired when the DeclaringType property changed its value
         /// </summary>
-        public event EventHandler<ValueChangedEventArgs> DeclaringTypeChanged;
+        public event System.EventHandler<ValueChangedEventArgs> DeclaringTypeChanged;
         
         /// <summary>
         /// Gets fired before the Constrains property changes its value
         /// </summary>
-        public event EventHandler ConstrainsChanging;
+        public event System.EventHandler<ValueChangedEventArgs> ConstrainsChanging;
         
         /// <summary>
         /// Gets fired when the Constrains property changed its value
         /// </summary>
-        public event EventHandler<ValueChangedEventArgs> ConstrainsChanged;
+        public event System.EventHandler<ValueChangedEventArgs> ConstrainsChanged;
+        
+        /// <summary>
+        /// Raises the DeclaringTypeChanging event
+        /// </summary>
+        /// <param name="eventArgs">The event data</param>
+        protected virtual void OnDeclaringTypeChanging(ValueChangedEventArgs eventArgs)
+        {
+            System.EventHandler<ValueChangedEventArgs> handler = this.DeclaringTypeChanging;
+            if ((handler != null))
+            {
+                handler.Invoke(this, eventArgs);
+            }
+        }
+        
+        /// <summary>
+        /// Gets called when the parent model element of the current model element is about to change
+        /// </summary>
+        /// <param name="oldParent">The old parent model element</param>
+        /// <param name="newParent">The new parent model element</param>
+        protected override void OnParentChanging(IModelElement newParent, IModelElement oldParent)
+        {
+            IClass oldDeclaringType = ModelHelper.CastAs<IClass>(oldParent);
+            IClass newDeclaringType = ModelHelper.CastAs<IClass>(newParent);
+            ValueChangedEventArgs e = new ValueChangedEventArgs(oldDeclaringType, newDeclaringType);
+            this.OnDeclaringTypeChanging(e);
+            this.OnPropertyChanging("DeclaringType");
+        }
         
         /// <summary>
         /// Raises the DeclaringTypeChanged event
@@ -170,7 +202,7 @@ namespace NMF.Models.Meta
         /// <param name="eventArgs">The event data</param>
         protected virtual void OnDeclaringTypeChanged(ValueChangedEventArgs eventArgs)
         {
-            EventHandler<ValueChangedEventArgs> handler = this.DeclaringTypeChanged;
+            System.EventHandler<ValueChangedEventArgs> handler = this.DeclaringTypeChanged;
             if ((handler != null))
             {
                 handler.Invoke(this, eventArgs);
@@ -223,9 +255,9 @@ namespace NMF.Models.Meta
         /// Raises the ConstrainsChanging event
         /// </summary>
         /// <param name="eventArgs">The event data</param>
-        protected virtual void OnConstrainsChanging(EventArgs eventArgs)
+        protected virtual void OnConstrainsChanging(ValueChangedEventArgs eventArgs)
         {
-            EventHandler handler = this.ConstrainsChanging;
+            System.EventHandler<ValueChangedEventArgs> handler = this.ConstrainsChanging;
             if ((handler != null))
             {
                 handler.Invoke(this, eventArgs);
@@ -238,7 +270,7 @@ namespace NMF.Models.Meta
         /// <param name="eventArgs">The event data</param>
         protected virtual void OnConstrainsChanged(ValueChangedEventArgs eventArgs)
         {
-            EventHandler<ValueChangedEventArgs> handler = this.ConstrainsChanged;
+            System.EventHandler<ValueChangedEventArgs> handler = this.ConstrainsChanged;
             if ((handler != null))
             {
                 handler.Invoke(this, eventArgs);

@@ -73,11 +73,11 @@ namespace NMF.Models.Meta
             {
                 if ((this._isFlagged != value))
                 {
-                    this.OnIsFlaggedChanging(EventArgs.Empty);
-                    this.OnPropertyChanging("IsFlagged");
                     bool old = this._isFlagged;
-                    this._isFlagged = value;
                     ValueChangedEventArgs e = new ValueChangedEventArgs(old, value);
+                    this.OnIsFlaggedChanging(e);
+                    this.OnPropertyChanging("IsFlagged", e);
+                    this._isFlagged = value;
                     this.OnIsFlaggedChanged(e);
                     this.OnPropertyChanged("IsFlagged", e);
                 }
@@ -140,20 +140,20 @@ namespace NMF.Models.Meta
         /// <summary>
         /// Gets fired before the IsFlagged property changes its value
         /// </summary>
-        public event EventHandler IsFlaggedChanging;
+        public event System.EventHandler<ValueChangedEventArgs> IsFlaggedChanging;
         
         /// <summary>
         /// Gets fired when the IsFlagged property changed its value
         /// </summary>
-        public event EventHandler<ValueChangedEventArgs> IsFlaggedChanged;
+        public event System.EventHandler<ValueChangedEventArgs> IsFlaggedChanged;
         
         /// <summary>
         /// Raises the IsFlaggedChanging event
         /// </summary>
         /// <param name="eventArgs">The event data</param>
-        protected virtual void OnIsFlaggedChanging(EventArgs eventArgs)
+        protected virtual void OnIsFlaggedChanging(ValueChangedEventArgs eventArgs)
         {
-            EventHandler handler = this.IsFlaggedChanging;
+            System.EventHandler<ValueChangedEventArgs> handler = this.IsFlaggedChanging;
             if ((handler != null))
             {
                 handler.Invoke(this, eventArgs);
@@ -166,7 +166,7 @@ namespace NMF.Models.Meta
         /// <param name="eventArgs">The event data</param>
         protected virtual void OnIsFlaggedChanged(ValueChangedEventArgs eventArgs)
         {
-            EventHandler<ValueChangedEventArgs> handler = this.IsFlaggedChanged;
+            System.EventHandler<ValueChangedEventArgs> handler = this.IsFlaggedChanged;
             if ((handler != null))
             {
                 handler.Invoke(this, eventArgs);

@@ -59,17 +59,22 @@ namespace NMF.Models.Meta
         /// <summary>
         /// Gets fired before the Type property changes its value
         /// </summary>
-        event EventHandler TypeChanging;
+        event System.EventHandler<ValueChangedEventArgs> TypeChanging;
         
         /// <summary>
         /// Gets fired when the Type property changed its value
         /// </summary>
-        event EventHandler<ValueChangedEventArgs> TypeChanged;
+        event System.EventHandler<ValueChangedEventArgs> TypeChanged;
+        
+        /// <summary>
+        /// Gets fired before the DeclaringType property changes its value
+        /// </summary>
+        event System.EventHandler<ValueChangedEventArgs> DeclaringTypeChanging;
         
         /// <summary>
         /// Gets fired when the DeclaringType property changed its value
         /// </summary>
-        event EventHandler<ValueChangedEventArgs> DeclaringTypeChanged;
+        event System.EventHandler<ValueChangedEventArgs> DeclaringTypeChanged;
     }
 }
 

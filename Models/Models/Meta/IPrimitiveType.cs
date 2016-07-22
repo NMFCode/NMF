@@ -50,12 +50,12 @@ namespace NMF.Models.Meta
         /// <summary>
         /// Gets fired before the SystemType property changes its value
         /// </summary>
-        event EventHandler SystemTypeChanging;
+        event System.EventHandler<ValueChangedEventArgs> SystemTypeChanging;
         
         /// <summary>
         /// Gets fired when the SystemType property changed its value
         /// </summary>
-        event EventHandler<ValueChangedEventArgs> SystemTypeChanged;
+        event System.EventHandler<ValueChangedEventArgs> SystemTypeChanged;
     }
 }
 
