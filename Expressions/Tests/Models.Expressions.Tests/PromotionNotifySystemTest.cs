@@ -137,7 +137,7 @@ namespace NMF.Expressions.Tests
             //Assert.IsFalse(test.Value);
         }
 
-        [TestMethod]
+        //[TestMethod]
         public void Test_Promotion_SwitchSet()
         {
             ObservingFunc<RailwayContainer, IEnumerableExpression<SwitchPosition>> func = new ObservingFunc<RailwayContainer, IEnumerableExpression<SwitchPosition>>(
