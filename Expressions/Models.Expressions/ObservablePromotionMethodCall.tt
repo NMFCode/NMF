@@ -15,6 +15,10 @@ namespace NMF.Expressions
     internal class ObservablePromotionMethodCall<<# for (int j = 1; j <= i; j++) { #>T<#= j #>, <# } #>TResult> : ObservableStaticMethodCall<<# for (int j = 1; j <= i; j++) { #>T<#= j #>, <# } #>TResult>
     {
 <# for (int j = 1; j <= i; j++) { #>
+        private static bool isT<#= j #>Collection = typeof(INotifyEnumerable).IsAssignableFrom(typeof(T<#= j #>));
+<# } #>
+
+<# for (int j = 1; j <= i; j++) { #>
         public ICollection<string> Arg<#= j #>Properties { get; private set; }
         public bool Arg<#= j #>Composition { get; private set; }
 <# } #>
@@ -35,7 +39,14 @@ namespace NMF.Expressions
             Argument<#= j #>.ValueChanged += Argument<#= j #>Changed;
             if (Arg<#= j #>Properties != null)
             {
-                RegisterArg<#= j #>BubbledChange((IModelElement)Argument<#= j #>.Value);
+			    if (isT<#= j #>Collection)
+				{
+				    throw new NotImplementedException();
+				}
+				else
+				{
+                    RegisterArg<#= j #>BubbledChange((IModelElement)Argument<#= j #>.Value);
+				}
             }
 <# } #>
         }
@@ -93,9 +104,16 @@ namespace NMF.Expressions
             {
                 var oldValue = e.OldValue as IModelElement;
                 var newValue = e.NewValue as IModelElement;
-                UnregisterArg<#= j #>BubbledChange(oldValue);
-                Refresh();
-                RegisterArg<#= j #>BubbledChange(newValue);
+			    if (isT<#= j #>Collection)
+				{
+				    throw new NotImplementedException();
+				}
+				else
+				{
+                    UnregisterArg<#= j #>BubbledChange(oldValue);
+                    Refresh();
+                    RegisterArg<#= j #>BubbledChange((IModelElement)Argument<#= j #>.Value);
+				}
             }
             else
             {
@@ -111,7 +129,14 @@ namespace NMF.Expressions
             Argument<#= j #>.ValueChanged -= Argument<#= j #>Changed;
             if (Arg<#= j #>Properties != null)
             {
-                UnregisterArg<#= j #>BubbledChange((IModelElement)Argument<#= j #>.Value);
+			    if (isT<#= j #>Collection)
+				{
+				    throw new NotImplementedException();
+				}
+				else
+				{
+                    UnregisterArg<#= j #>BubbledChange((IModelElement)Argument<#= j #>.Value);
+				}
             }
 <# } #>
         }

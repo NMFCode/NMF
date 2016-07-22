@@ -7,6 +7,8 @@ namespace NMF.Expressions
 {
     internal class ObservablePromotionMethodCall<T1, TResult> : ObservableStaticMethodCall<T1, TResult>
     {
+        private static bool isT1Collection = typeof(INotifyEnumerable).IsAssignableFrom(typeof(T1));
+
         public ICollection<string> Arg1Properties { get; private set; }
         public bool Arg1Composition { get; private set; }
 
@@ -23,7 +25,14 @@ namespace NMF.Expressions
             Argument1.ValueChanged += Argument1Changed;
             if (Arg1Properties != null)
             {
-                RegisterArg1BubbledChange((IModelElement)Argument1.Value);
+			    if (isT1Collection)
+				{
+				    throw new NotImplementedException();
+				}
+				else
+				{
+                    RegisterArg1BubbledChange((IModelElement)Argument1.Value);
+				}
             }
         }
 		
@@ -79,9 +88,16 @@ namespace NMF.Expressions
             {
                 var oldValue = e.OldValue as IModelElement;
                 var newValue = e.NewValue as IModelElement;
-                UnregisterArg1BubbledChange(oldValue);
-                Refresh();
-                RegisterArg1BubbledChange(newValue);
+			    if (isT1Collection)
+				{
+				    throw new NotImplementedException();
+				}
+				else
+				{
+                    UnregisterArg1BubbledChange(oldValue);
+                    Refresh();
+                    RegisterArg1BubbledChange((IModelElement)Argument1.Value);
+				}
             }
             else
             {
@@ -95,7 +111,14 @@ namespace NMF.Expressions
             Argument1.ValueChanged -= Argument1Changed;
             if (Arg1Properties != null)
             {
-                UnregisterArg1BubbledChange((IModelElement)Argument1.Value);
+			    if (isT1Collection)
+				{
+				    throw new NotImplementedException();
+				}
+				else
+				{
+                    UnregisterArg1BubbledChange((IModelElement)Argument1.Value);
+				}
             }
         }
 
@@ -106,6 +129,9 @@ namespace NMF.Expressions
     }
     internal class ObservablePromotionMethodCall<T1, T2, TResult> : ObservableStaticMethodCall<T1, T2, TResult>
     {
+        private static bool isT1Collection = typeof(INotifyEnumerable).IsAssignableFrom(typeof(T1));
+        private static bool isT2Collection = typeof(INotifyEnumerable).IsAssignableFrom(typeof(T2));
+
         public ICollection<string> Arg1Properties { get; private set; }
         public bool Arg1Composition { get; private set; }
         public ICollection<string> Arg2Properties { get; private set; }
@@ -126,13 +152,27 @@ namespace NMF.Expressions
             Argument1.ValueChanged += Argument1Changed;
             if (Arg1Properties != null)
             {
-                RegisterArg1BubbledChange((IModelElement)Argument1.Value);
+			    if (isT1Collection)
+				{
+				    throw new NotImplementedException();
+				}
+				else
+				{
+                    RegisterArg1BubbledChange((IModelElement)Argument1.Value);
+				}
             }
             Argument2.Attach();
             Argument2.ValueChanged += Argument2Changed;
             if (Arg2Properties != null)
             {
-                RegisterArg2BubbledChange((IModelElement)Argument2.Value);
+			    if (isT2Collection)
+				{
+				    throw new NotImplementedException();
+				}
+				else
+				{
+                    RegisterArg2BubbledChange((IModelElement)Argument2.Value);
+				}
             }
         }
 		
@@ -188,9 +228,16 @@ namespace NMF.Expressions
             {
                 var oldValue = e.OldValue as IModelElement;
                 var newValue = e.NewValue as IModelElement;
-                UnregisterArg1BubbledChange(oldValue);
-                Refresh();
-                RegisterArg1BubbledChange(newValue);
+			    if (isT1Collection)
+				{
+				    throw new NotImplementedException();
+				}
+				else
+				{
+                    UnregisterArg1BubbledChange(oldValue);
+                    Refresh();
+                    RegisterArg1BubbledChange((IModelElement)Argument1.Value);
+				}
             }
             else
             {
@@ -249,9 +296,16 @@ namespace NMF.Expressions
             {
                 var oldValue = e.OldValue as IModelElement;
                 var newValue = e.NewValue as IModelElement;
-                UnregisterArg2BubbledChange(oldValue);
-                Refresh();
-                RegisterArg2BubbledChange(newValue);
+			    if (isT2Collection)
+				{
+				    throw new NotImplementedException();
+				}
+				else
+				{
+                    UnregisterArg2BubbledChange(oldValue);
+                    Refresh();
+                    RegisterArg2BubbledChange((IModelElement)Argument2.Value);
+				}
             }
             else
             {
@@ -265,13 +319,27 @@ namespace NMF.Expressions
             Argument1.ValueChanged -= Argument1Changed;
             if (Arg1Properties != null)
             {
-                UnregisterArg1BubbledChange((IModelElement)Argument1.Value);
+			    if (isT1Collection)
+				{
+				    throw new NotImplementedException();
+				}
+				else
+				{
+                    UnregisterArg1BubbledChange((IModelElement)Argument1.Value);
+				}
             }
             Argument2.Detach();
             Argument2.ValueChanged -= Argument2Changed;
             if (Arg2Properties != null)
             {
-                UnregisterArg2BubbledChange((IModelElement)Argument2.Value);
+			    if (isT2Collection)
+				{
+				    throw new NotImplementedException();
+				}
+				else
+				{
+                    UnregisterArg2BubbledChange((IModelElement)Argument2.Value);
+				}
             }
         }
 
@@ -282,6 +350,10 @@ namespace NMF.Expressions
     }
     internal class ObservablePromotionMethodCall<T1, T2, T3, TResult> : ObservableStaticMethodCall<T1, T2, T3, TResult>
     {
+        private static bool isT1Collection = typeof(INotifyEnumerable).IsAssignableFrom(typeof(T1));
+        private static bool isT2Collection = typeof(INotifyEnumerable).IsAssignableFrom(typeof(T2));
+        private static bool isT3Collection = typeof(INotifyEnumerable).IsAssignableFrom(typeof(T3));
+
         public ICollection<string> Arg1Properties { get; private set; }
         public bool Arg1Composition { get; private set; }
         public ICollection<string> Arg2Properties { get; private set; }
@@ -306,19 +378,40 @@ namespace NMF.Expressions
             Argument1.ValueChanged += Argument1Changed;
             if (Arg1Properties != null)
             {
-                RegisterArg1BubbledChange((IModelElement)Argument1.Value);
+			    if (isT1Collection)
+				{
+				    throw new NotImplementedException();
+				}
+				else
+				{
+                    RegisterArg1BubbledChange((IModelElement)Argument1.Value);
+				}
             }
             Argument2.Attach();
             Argument2.ValueChanged += Argument2Changed;
             if (Arg2Properties != null)
             {
-                RegisterArg2BubbledChange((IModelElement)Argument2.Value);
+			    if (isT2Collection)
+				{
+				    throw new NotImplementedException();
+				}
+				else
+				{
+                    RegisterArg2BubbledChange((IModelElement)Argument2.Value);
+				}
             }
             Argument3.Attach();
             Argument3.ValueChanged += Argument3Changed;
             if (Arg3Properties != null)
             {
-                RegisterArg3BubbledChange((IModelElement)Argument3.Value);
+			    if (isT3Collection)
+				{
+				    throw new NotImplementedException();
+				}
+				else
+				{
+                    RegisterArg3BubbledChange((IModelElement)Argument3.Value);
+				}
             }
         }
 		
@@ -374,9 +467,16 @@ namespace NMF.Expressions
             {
                 var oldValue = e.OldValue as IModelElement;
                 var newValue = e.NewValue as IModelElement;
-                UnregisterArg1BubbledChange(oldValue);
-                Refresh();
-                RegisterArg1BubbledChange(newValue);
+			    if (isT1Collection)
+				{
+				    throw new NotImplementedException();
+				}
+				else
+				{
+                    UnregisterArg1BubbledChange(oldValue);
+                    Refresh();
+                    RegisterArg1BubbledChange((IModelElement)Argument1.Value);
+				}
             }
             else
             {
@@ -435,9 +535,16 @@ namespace NMF.Expressions
             {
                 var oldValue = e.OldValue as IModelElement;
                 var newValue = e.NewValue as IModelElement;
-                UnregisterArg2BubbledChange(oldValue);
-                Refresh();
-                RegisterArg2BubbledChange(newValue);
+			    if (isT2Collection)
+				{
+				    throw new NotImplementedException();
+				}
+				else
+				{
+                    UnregisterArg2BubbledChange(oldValue);
+                    Refresh();
+                    RegisterArg2BubbledChange((IModelElement)Argument2.Value);
+				}
             }
             else
             {
@@ -496,9 +603,16 @@ namespace NMF.Expressions
             {
                 var oldValue = e.OldValue as IModelElement;
                 var newValue = e.NewValue as IModelElement;
-                UnregisterArg3BubbledChange(oldValue);
-                Refresh();
-                RegisterArg3BubbledChange(newValue);
+			    if (isT3Collection)
+				{
+				    throw new NotImplementedException();
+				}
+				else
+				{
+                    UnregisterArg3BubbledChange(oldValue);
+                    Refresh();
+                    RegisterArg3BubbledChange((IModelElement)Argument3.Value);
+				}
             }
             else
             {
@@ -512,19 +626,40 @@ namespace NMF.Expressions
             Argument1.ValueChanged -= Argument1Changed;
             if (Arg1Properties != null)
             {
-                UnregisterArg1BubbledChange((IModelElement)Argument1.Value);
+			    if (isT1Collection)
+				{
+				    throw new NotImplementedException();
+				}
+				else
+				{
+                    UnregisterArg1BubbledChange((IModelElement)Argument1.Value);
+				}
             }
             Argument2.Detach();
             Argument2.ValueChanged -= Argument2Changed;
             if (Arg2Properties != null)
             {
-                UnregisterArg2BubbledChange((IModelElement)Argument2.Value);
+			    if (isT2Collection)
+				{
+				    throw new NotImplementedException();
+				}
+				else
+				{
+                    UnregisterArg2BubbledChange((IModelElement)Argument2.Value);
+				}
             }
             Argument3.Detach();
             Argument3.ValueChanged -= Argument3Changed;
             if (Arg3Properties != null)
             {
-                UnregisterArg3BubbledChange((IModelElement)Argument3.Value);
+			    if (isT3Collection)
+				{
+				    throw new NotImplementedException();
+				}
+				else
+				{
+                    UnregisterArg3BubbledChange((IModelElement)Argument3.Value);
+				}
             }
         }
 
@@ -535,6 +670,11 @@ namespace NMF.Expressions
     }
     internal class ObservablePromotionMethodCall<T1, T2, T3, T4, TResult> : ObservableStaticMethodCall<T1, T2, T3, T4, TResult>
     {
+        private static bool isT1Collection = typeof(INotifyEnumerable).IsAssignableFrom(typeof(T1));
+        private static bool isT2Collection = typeof(INotifyEnumerable).IsAssignableFrom(typeof(T2));
+        private static bool isT3Collection = typeof(INotifyEnumerable).IsAssignableFrom(typeof(T3));
+        private static bool isT4Collection = typeof(INotifyEnumerable).IsAssignableFrom(typeof(T4));
+
         public ICollection<string> Arg1Properties { get; private set; }
         public bool Arg1Composition { get; private set; }
         public ICollection<string> Arg2Properties { get; private set; }
@@ -563,25 +703,53 @@ namespace NMF.Expressions
             Argument1.ValueChanged += Argument1Changed;
             if (Arg1Properties != null)
             {
-                RegisterArg1BubbledChange((IModelElement)Argument1.Value);
+			    if (isT1Collection)
+				{
+				    throw new NotImplementedException();
+				}
+				else
+				{
+                    RegisterArg1BubbledChange((IModelElement)Argument1.Value);
+				}
             }
             Argument2.Attach();
             Argument2.ValueChanged += Argument2Changed;
             if (Arg2Properties != null)
             {
-                RegisterArg2BubbledChange((IModelElement)Argument2.Value);
+			    if (isT2Collection)
+				{
+				    throw new NotImplementedException();
+				}
+				else
+				{
+                    RegisterArg2BubbledChange((IModelElement)Argument2.Value);
+				}
             }
             Argument3.Attach();
             Argument3.ValueChanged += Argument3Changed;
             if (Arg3Properties != null)
             {
-                RegisterArg3BubbledChange((IModelElement)Argument3.Value);
+			    if (isT3Collection)
+				{
+				    throw new NotImplementedException();
+				}
+				else
+				{
+                    RegisterArg3BubbledChange((IModelElement)Argument3.Value);
+				}
             }
             Argument4.Attach();
             Argument4.ValueChanged += Argument4Changed;
             if (Arg4Properties != null)
             {
-                RegisterArg4BubbledChange((IModelElement)Argument4.Value);
+			    if (isT4Collection)
+				{
+				    throw new NotImplementedException();
+				}
+				else
+				{
+                    RegisterArg4BubbledChange((IModelElement)Argument4.Value);
+				}
             }
         }
 		
@@ -637,9 +805,16 @@ namespace NMF.Expressions
             {
                 var oldValue = e.OldValue as IModelElement;
                 var newValue = e.NewValue as IModelElement;
-                UnregisterArg1BubbledChange(oldValue);
-                Refresh();
-                RegisterArg1BubbledChange(newValue);
+			    if (isT1Collection)
+				{
+				    throw new NotImplementedException();
+				}
+				else
+				{
+                    UnregisterArg1BubbledChange(oldValue);
+                    Refresh();
+                    RegisterArg1BubbledChange((IModelElement)Argument1.Value);
+				}
             }
             else
             {
@@ -698,9 +873,16 @@ namespace NMF.Expressions
             {
                 var oldValue = e.OldValue as IModelElement;
                 var newValue = e.NewValue as IModelElement;
-                UnregisterArg2BubbledChange(oldValue);
-                Refresh();
-                RegisterArg2BubbledChange(newValue);
+			    if (isT2Collection)
+				{
+				    throw new NotImplementedException();
+				}
+				else
+				{
+                    UnregisterArg2BubbledChange(oldValue);
+                    Refresh();
+                    RegisterArg2BubbledChange((IModelElement)Argument2.Value);
+				}
             }
             else
             {
@@ -759,9 +941,16 @@ namespace NMF.Expressions
             {
                 var oldValue = e.OldValue as IModelElement;
                 var newValue = e.NewValue as IModelElement;
-                UnregisterArg3BubbledChange(oldValue);
-                Refresh();
-                RegisterArg3BubbledChange(newValue);
+			    if (isT3Collection)
+				{
+				    throw new NotImplementedException();
+				}
+				else
+				{
+                    UnregisterArg3BubbledChange(oldValue);
+                    Refresh();
+                    RegisterArg3BubbledChange((IModelElement)Argument3.Value);
+				}
             }
             else
             {
@@ -820,9 +1009,16 @@ namespace NMF.Expressions
             {
                 var oldValue = e.OldValue as IModelElement;
                 var newValue = e.NewValue as IModelElement;
-                UnregisterArg4BubbledChange(oldValue);
-                Refresh();
-                RegisterArg4BubbledChange(newValue);
+			    if (isT4Collection)
+				{
+				    throw new NotImplementedException();
+				}
+				else
+				{
+                    UnregisterArg4BubbledChange(oldValue);
+                    Refresh();
+                    RegisterArg4BubbledChange((IModelElement)Argument4.Value);
+				}
             }
             else
             {
@@ -836,25 +1032,53 @@ namespace NMF.Expressions
             Argument1.ValueChanged -= Argument1Changed;
             if (Arg1Properties != null)
             {
-                UnregisterArg1BubbledChange((IModelElement)Argument1.Value);
+			    if (isT1Collection)
+				{
+				    throw new NotImplementedException();
+				}
+				else
+				{
+                    UnregisterArg1BubbledChange((IModelElement)Argument1.Value);
+				}
             }
             Argument2.Detach();
             Argument2.ValueChanged -= Argument2Changed;
             if (Arg2Properties != null)
             {
-                UnregisterArg2BubbledChange((IModelElement)Argument2.Value);
+			    if (isT2Collection)
+				{
+				    throw new NotImplementedException();
+				}
+				else
+				{
+                    UnregisterArg2BubbledChange((IModelElement)Argument2.Value);
+				}
             }
             Argument3.Detach();
             Argument3.ValueChanged -= Argument3Changed;
             if (Arg3Properties != null)
             {
-                UnregisterArg3BubbledChange((IModelElement)Argument3.Value);
+			    if (isT3Collection)
+				{
+				    throw new NotImplementedException();
+				}
+				else
+				{
+                    UnregisterArg3BubbledChange((IModelElement)Argument3.Value);
+				}
             }
             Argument4.Detach();
             Argument4.ValueChanged -= Argument4Changed;
             if (Arg4Properties != null)
             {
-                UnregisterArg4BubbledChange((IModelElement)Argument4.Value);
+			    if (isT4Collection)
+				{
+				    throw new NotImplementedException();
+				}
+				else
+				{
+                    UnregisterArg4BubbledChange((IModelElement)Argument4.Value);
+				}
             }
         }
 
@@ -865,6 +1089,12 @@ namespace NMF.Expressions
     }
     internal class ObservablePromotionMethodCall<T1, T2, T3, T4, T5, TResult> : ObservableStaticMethodCall<T1, T2, T3, T4, T5, TResult>
     {
+        private static bool isT1Collection = typeof(INotifyEnumerable).IsAssignableFrom(typeof(T1));
+        private static bool isT2Collection = typeof(INotifyEnumerable).IsAssignableFrom(typeof(T2));
+        private static bool isT3Collection = typeof(INotifyEnumerable).IsAssignableFrom(typeof(T3));
+        private static bool isT4Collection = typeof(INotifyEnumerable).IsAssignableFrom(typeof(T4));
+        private static bool isT5Collection = typeof(INotifyEnumerable).IsAssignableFrom(typeof(T5));
+
         public ICollection<string> Arg1Properties { get; private set; }
         public bool Arg1Composition { get; private set; }
         public ICollection<string> Arg2Properties { get; private set; }
@@ -897,31 +1127,66 @@ namespace NMF.Expressions
             Argument1.ValueChanged += Argument1Changed;
             if (Arg1Properties != null)
             {
-                RegisterArg1BubbledChange((IModelElement)Argument1.Value);
+			    if (isT1Collection)
+				{
+				    throw new NotImplementedException();
+				}
+				else
+				{
+                    RegisterArg1BubbledChange((IModelElement)Argument1.Value);
+				}
             }
             Argument2.Attach();
             Argument2.ValueChanged += Argument2Changed;
             if (Arg2Properties != null)
             {
-                RegisterArg2BubbledChange((IModelElement)Argument2.Value);
+			    if (isT2Collection)
+				{
+				    throw new NotImplementedException();
+				}
+				else
+				{
+                    RegisterArg2BubbledChange((IModelElement)Argument2.Value);
+				}
             }
             Argument3.Attach();
             Argument3.ValueChanged += Argument3Changed;
             if (Arg3Properties != null)
             {
-                RegisterArg3BubbledChange((IModelElement)Argument3.Value);
+			    if (isT3Collection)
+				{
+				    throw new NotImplementedException();
+				}
+				else
+				{
+                    RegisterArg3BubbledChange((IModelElement)Argument3.Value);
+				}
             }
             Argument4.Attach();
             Argument4.ValueChanged += Argument4Changed;
             if (Arg4Properties != null)
             {
-                RegisterArg4BubbledChange((IModelElement)Argument4.Value);
+			    if (isT4Collection)
+				{
+				    throw new NotImplementedException();
+				}
+				else
+				{
+                    RegisterArg4BubbledChange((IModelElement)Argument4.Value);
+				}
             }
             Argument5.Attach();
             Argument5.ValueChanged += Argument5Changed;
             if (Arg5Properties != null)
             {
-                RegisterArg5BubbledChange((IModelElement)Argument5.Value);
+			    if (isT5Collection)
+				{
+				    throw new NotImplementedException();
+				}
+				else
+				{
+                    RegisterArg5BubbledChange((IModelElement)Argument5.Value);
+				}
             }
         }
 		
@@ -977,9 +1242,16 @@ namespace NMF.Expressions
             {
                 var oldValue = e.OldValue as IModelElement;
                 var newValue = e.NewValue as IModelElement;
-                UnregisterArg1BubbledChange(oldValue);
-                Refresh();
-                RegisterArg1BubbledChange(newValue);
+			    if (isT1Collection)
+				{
+				    throw new NotImplementedException();
+				}
+				else
+				{
+                    UnregisterArg1BubbledChange(oldValue);
+                    Refresh();
+                    RegisterArg1BubbledChange((IModelElement)Argument1.Value);
+				}
             }
             else
             {
@@ -1038,9 +1310,16 @@ namespace NMF.Expressions
             {
                 var oldValue = e.OldValue as IModelElement;
                 var newValue = e.NewValue as IModelElement;
-                UnregisterArg2BubbledChange(oldValue);
-                Refresh();
-                RegisterArg2BubbledChange(newValue);
+			    if (isT2Collection)
+				{
+				    throw new NotImplementedException();
+				}
+				else
+				{
+                    UnregisterArg2BubbledChange(oldValue);
+                    Refresh();
+                    RegisterArg2BubbledChange((IModelElement)Argument2.Value);
+				}
             }
             else
             {
@@ -1099,9 +1378,16 @@ namespace NMF.Expressions
             {
                 var oldValue = e.OldValue as IModelElement;
                 var newValue = e.NewValue as IModelElement;
-                UnregisterArg3BubbledChange(oldValue);
-                Refresh();
-                RegisterArg3BubbledChange(newValue);
+			    if (isT3Collection)
+				{
+				    throw new NotImplementedException();
+				}
+				else
+				{
+                    UnregisterArg3BubbledChange(oldValue);
+                    Refresh();
+                    RegisterArg3BubbledChange((IModelElement)Argument3.Value);
+				}
             }
             else
             {
@@ -1160,9 +1446,16 @@ namespace NMF.Expressions
             {
                 var oldValue = e.OldValue as IModelElement;
                 var newValue = e.NewValue as IModelElement;
-                UnregisterArg4BubbledChange(oldValue);
-                Refresh();
-                RegisterArg4BubbledChange(newValue);
+			    if (isT4Collection)
+				{
+				    throw new NotImplementedException();
+				}
+				else
+				{
+                    UnregisterArg4BubbledChange(oldValue);
+                    Refresh();
+                    RegisterArg4BubbledChange((IModelElement)Argument4.Value);
+				}
             }
             else
             {
@@ -1221,9 +1514,16 @@ namespace NMF.Expressions
             {
                 var oldValue = e.OldValue as IModelElement;
                 var newValue = e.NewValue as IModelElement;
-                UnregisterArg5BubbledChange(oldValue);
-                Refresh();
-                RegisterArg5BubbledChange(newValue);
+			    if (isT5Collection)
+				{
+				    throw new NotImplementedException();
+				}
+				else
+				{
+                    UnregisterArg5BubbledChange(oldValue);
+                    Refresh();
+                    RegisterArg5BubbledChange((IModelElement)Argument5.Value);
+				}
             }
             else
             {
@@ -1237,31 +1537,66 @@ namespace NMF.Expressions
             Argument1.ValueChanged -= Argument1Changed;
             if (Arg1Properties != null)
             {
-                UnregisterArg1BubbledChange((IModelElement)Argument1.Value);
+			    if (isT1Collection)
+				{
+				    throw new NotImplementedException();
+				}
+				else
+				{
+                    UnregisterArg1BubbledChange((IModelElement)Argument1.Value);
+				}
             }
             Argument2.Detach();
             Argument2.ValueChanged -= Argument2Changed;
             if (Arg2Properties != null)
             {
-                UnregisterArg2BubbledChange((IModelElement)Argument2.Value);
+			    if (isT2Collection)
+				{
+				    throw new NotImplementedException();
+				}
+				else
+				{
+                    UnregisterArg2BubbledChange((IModelElement)Argument2.Value);
+				}
             }
             Argument3.Detach();
             Argument3.ValueChanged -= Argument3Changed;
             if (Arg3Properties != null)
             {
-                UnregisterArg3BubbledChange((IModelElement)Argument3.Value);
+			    if (isT3Collection)
+				{
+				    throw new NotImplementedException();
+				}
+				else
+				{
+                    UnregisterArg3BubbledChange((IModelElement)Argument3.Value);
+				}
             }
             Argument4.Detach();
             Argument4.ValueChanged -= Argument4Changed;
             if (Arg4Properties != null)
             {
-                UnregisterArg4BubbledChange((IModelElement)Argument4.Value);
+			    if (isT4Collection)
+				{
+				    throw new NotImplementedException();
+				}
+				else
+				{
+                    UnregisterArg4BubbledChange((IModelElement)Argument4.Value);
+				}
             }
             Argument5.Detach();
             Argument5.ValueChanged -= Argument5Changed;
             if (Arg5Properties != null)
             {
-                UnregisterArg5BubbledChange((IModelElement)Argument5.Value);
+			    if (isT5Collection)
+				{
+				    throw new NotImplementedException();
+				}
+				else
+				{
+                    UnregisterArg5BubbledChange((IModelElement)Argument5.Value);
+				}
             }
         }
 
@@ -1272,6 +1607,13 @@ namespace NMF.Expressions
     }
     internal class ObservablePromotionMethodCall<T1, T2, T3, T4, T5, T6, TResult> : ObservableStaticMethodCall<T1, T2, T3, T4, T5, T6, TResult>
     {
+        private static bool isT1Collection = typeof(INotifyEnumerable).IsAssignableFrom(typeof(T1));
+        private static bool isT2Collection = typeof(INotifyEnumerable).IsAssignableFrom(typeof(T2));
+        private static bool isT3Collection = typeof(INotifyEnumerable).IsAssignableFrom(typeof(T3));
+        private static bool isT4Collection = typeof(INotifyEnumerable).IsAssignableFrom(typeof(T4));
+        private static bool isT5Collection = typeof(INotifyEnumerable).IsAssignableFrom(typeof(T5));
+        private static bool isT6Collection = typeof(INotifyEnumerable).IsAssignableFrom(typeof(T6));
+
         public ICollection<string> Arg1Properties { get; private set; }
         public bool Arg1Composition { get; private set; }
         public ICollection<string> Arg2Properties { get; private set; }
@@ -1308,37 +1650,79 @@ namespace NMF.Expressions
             Argument1.ValueChanged += Argument1Changed;
             if (Arg1Properties != null)
             {
-                RegisterArg1BubbledChange((IModelElement)Argument1.Value);
+			    if (isT1Collection)
+				{
+				    throw new NotImplementedException();
+				}
+				else
+				{
+                    RegisterArg1BubbledChange((IModelElement)Argument1.Value);
+				}
             }
             Argument2.Attach();
             Argument2.ValueChanged += Argument2Changed;
             if (Arg2Properties != null)
             {
-                RegisterArg2BubbledChange((IModelElement)Argument2.Value);
+			    if (isT2Collection)
+				{
+				    throw new NotImplementedException();
+				}
+				else
+				{
+                    RegisterArg2BubbledChange((IModelElement)Argument2.Value);
+				}
             }
             Argument3.Attach();
             Argument3.ValueChanged += Argument3Changed;
             if (Arg3Properties != null)
             {
-                RegisterArg3BubbledChange((IModelElement)Argument3.Value);
+			    if (isT3Collection)
+				{
+				    throw new NotImplementedException();
+				}
+				else
+				{
+                    RegisterArg3BubbledChange((IModelElement)Argument3.Value);
+				}
             }
             Argument4.Attach();
             Argument4.ValueChanged += Argument4Changed;
             if (Arg4Properties != null)
             {
-                RegisterArg4BubbledChange((IModelElement)Argument4.Value);
+			    if (isT4Collection)
+				{
+				    throw new NotImplementedException();
+				}
+				else
+				{
+                    RegisterArg4BubbledChange((IModelElement)Argument4.Value);
+				}
             }
             Argument5.Attach();
             Argument5.ValueChanged += Argument5Changed;
             if (Arg5Properties != null)
             {
-                RegisterArg5BubbledChange((IModelElement)Argument5.Value);
+			    if (isT5Collection)
+				{
+				    throw new NotImplementedException();
+				}
+				else
+				{
+                    RegisterArg5BubbledChange((IModelElement)Argument5.Value);
+				}
             }
             Argument6.Attach();
             Argument6.ValueChanged += Argument6Changed;
             if (Arg6Properties != null)
             {
-                RegisterArg6BubbledChange((IModelElement)Argument6.Value);
+			    if (isT6Collection)
+				{
+				    throw new NotImplementedException();
+				}
+				else
+				{
+                    RegisterArg6BubbledChange((IModelElement)Argument6.Value);
+				}
             }
         }
 		
@@ -1394,9 +1778,16 @@ namespace NMF.Expressions
             {
                 var oldValue = e.OldValue as IModelElement;
                 var newValue = e.NewValue as IModelElement;
-                UnregisterArg1BubbledChange(oldValue);
-                Refresh();
-                RegisterArg1BubbledChange(newValue);
+			    if (isT1Collection)
+				{
+				    throw new NotImplementedException();
+				}
+				else
+				{
+                    UnregisterArg1BubbledChange(oldValue);
+                    Refresh();
+                    RegisterArg1BubbledChange((IModelElement)Argument1.Value);
+				}
             }
             else
             {
@@ -1455,9 +1846,16 @@ namespace NMF.Expressions
             {
                 var oldValue = e.OldValue as IModelElement;
                 var newValue = e.NewValue as IModelElement;
-                UnregisterArg2BubbledChange(oldValue);
-                Refresh();
-                RegisterArg2BubbledChange(newValue);
+			    if (isT2Collection)
+				{
+				    throw new NotImplementedException();
+				}
+				else
+				{
+                    UnregisterArg2BubbledChange(oldValue);
+                    Refresh();
+                    RegisterArg2BubbledChange((IModelElement)Argument2.Value);
+				}
             }
             else
             {
@@ -1516,9 +1914,16 @@ namespace NMF.Expressions
             {
                 var oldValue = e.OldValue as IModelElement;
                 var newValue = e.NewValue as IModelElement;
-                UnregisterArg3BubbledChange(oldValue);
-                Refresh();
-                RegisterArg3BubbledChange(newValue);
+			    if (isT3Collection)
+				{
+				    throw new NotImplementedException();
+				}
+				else
+				{
+                    UnregisterArg3BubbledChange(oldValue);
+                    Refresh();
+                    RegisterArg3BubbledChange((IModelElement)Argument3.Value);
+				}
             }
             else
             {
@@ -1577,9 +1982,16 @@ namespace NMF.Expressions
             {
                 var oldValue = e.OldValue as IModelElement;
                 var newValue = e.NewValue as IModelElement;
-                UnregisterArg4BubbledChange(oldValue);
-                Refresh();
-                RegisterArg4BubbledChange(newValue);
+			    if (isT4Collection)
+				{
+				    throw new NotImplementedException();
+				}
+				else
+				{
+                    UnregisterArg4BubbledChange(oldValue);
+                    Refresh();
+                    RegisterArg4BubbledChange((IModelElement)Argument4.Value);
+				}
             }
             else
             {
@@ -1638,9 +2050,16 @@ namespace NMF.Expressions
             {
                 var oldValue = e.OldValue as IModelElement;
                 var newValue = e.NewValue as IModelElement;
-                UnregisterArg5BubbledChange(oldValue);
-                Refresh();
-                RegisterArg5BubbledChange(newValue);
+			    if (isT5Collection)
+				{
+				    throw new NotImplementedException();
+				}
+				else
+				{
+                    UnregisterArg5BubbledChange(oldValue);
+                    Refresh();
+                    RegisterArg5BubbledChange((IModelElement)Argument5.Value);
+				}
             }
             else
             {
@@ -1699,9 +2118,16 @@ namespace NMF.Expressions
             {
                 var oldValue = e.OldValue as IModelElement;
                 var newValue = e.NewValue as IModelElement;
-                UnregisterArg6BubbledChange(oldValue);
-                Refresh();
-                RegisterArg6BubbledChange(newValue);
+			    if (isT6Collection)
+				{
+				    throw new NotImplementedException();
+				}
+				else
+				{
+                    UnregisterArg6BubbledChange(oldValue);
+                    Refresh();
+                    RegisterArg6BubbledChange((IModelElement)Argument6.Value);
+				}
             }
             else
             {
@@ -1715,37 +2141,79 @@ namespace NMF.Expressions
             Argument1.ValueChanged -= Argument1Changed;
             if (Arg1Properties != null)
             {
-                UnregisterArg1BubbledChange((IModelElement)Argument1.Value);
+			    if (isT1Collection)
+				{
+				    throw new NotImplementedException();
+				}
+				else
+				{
+                    UnregisterArg1BubbledChange((IModelElement)Argument1.Value);
+				}
             }
             Argument2.Detach();
             Argument2.ValueChanged -= Argument2Changed;
             if (Arg2Properties != null)
             {
-                UnregisterArg2BubbledChange((IModelElement)Argument2.Value);
+			    if (isT2Collection)
+				{
+				    throw new NotImplementedException();
+				}
+				else
+				{
+                    UnregisterArg2BubbledChange((IModelElement)Argument2.Value);
+				}
             }
             Argument3.Detach();
             Argument3.ValueChanged -= Argument3Changed;
             if (Arg3Properties != null)
             {
-                UnregisterArg3BubbledChange((IModelElement)Argument3.Value);
+			    if (isT3Collection)
+				{
+				    throw new NotImplementedException();
+				}
+				else
+				{
+                    UnregisterArg3BubbledChange((IModelElement)Argument3.Value);
+				}
             }
             Argument4.Detach();
             Argument4.ValueChanged -= Argument4Changed;
             if (Arg4Properties != null)
             {
-                UnregisterArg4BubbledChange((IModelElement)Argument4.Value);
+			    if (isT4Collection)
+				{
+				    throw new NotImplementedException();
+				}
+				else
+				{
+                    UnregisterArg4BubbledChange((IModelElement)Argument4.Value);
+				}
             }
             Argument5.Detach();
             Argument5.ValueChanged -= Argument5Changed;
             if (Arg5Properties != null)
             {
-                UnregisterArg5BubbledChange((IModelElement)Argument5.Value);
+			    if (isT5Collection)
+				{
+				    throw new NotImplementedException();
+				}
+				else
+				{
+                    UnregisterArg5BubbledChange((IModelElement)Argument5.Value);
+				}
             }
             Argument6.Detach();
             Argument6.ValueChanged -= Argument6Changed;
             if (Arg6Properties != null)
             {
-                UnregisterArg6BubbledChange((IModelElement)Argument6.Value);
+			    if (isT6Collection)
+				{
+				    throw new NotImplementedException();
+				}
+				else
+				{
+                    UnregisterArg6BubbledChange((IModelElement)Argument6.Value);
+				}
             }
         }
 
@@ -1756,6 +2224,14 @@ namespace NMF.Expressions
     }
     internal class ObservablePromotionMethodCall<T1, T2, T3, T4, T5, T6, T7, TResult> : ObservableStaticMethodCall<T1, T2, T3, T4, T5, T6, T7, TResult>
     {
+        private static bool isT1Collection = typeof(INotifyEnumerable).IsAssignableFrom(typeof(T1));
+        private static bool isT2Collection = typeof(INotifyEnumerable).IsAssignableFrom(typeof(T2));
+        private static bool isT3Collection = typeof(INotifyEnumerable).IsAssignableFrom(typeof(T3));
+        private static bool isT4Collection = typeof(INotifyEnumerable).IsAssignableFrom(typeof(T4));
+        private static bool isT5Collection = typeof(INotifyEnumerable).IsAssignableFrom(typeof(T5));
+        private static bool isT6Collection = typeof(INotifyEnumerable).IsAssignableFrom(typeof(T6));
+        private static bool isT7Collection = typeof(INotifyEnumerable).IsAssignableFrom(typeof(T7));
+
         public ICollection<string> Arg1Properties { get; private set; }
         public bool Arg1Composition { get; private set; }
         public ICollection<string> Arg2Properties { get; private set; }
@@ -1796,43 +2272,92 @@ namespace NMF.Expressions
             Argument1.ValueChanged += Argument1Changed;
             if (Arg1Properties != null)
             {
-                RegisterArg1BubbledChange((IModelElement)Argument1.Value);
+			    if (isT1Collection)
+				{
+				    throw new NotImplementedException();
+				}
+				else
+				{
+                    RegisterArg1BubbledChange((IModelElement)Argument1.Value);
+				}
             }
             Argument2.Attach();
             Argument2.ValueChanged += Argument2Changed;
             if (Arg2Properties != null)
             {
-                RegisterArg2BubbledChange((IModelElement)Argument2.Value);
+			    if (isT2Collection)
+				{
+				    throw new NotImplementedException();
+				}
+				else
+				{
+                    RegisterArg2BubbledChange((IModelElement)Argument2.Value);
+				}
             }
             Argument3.Attach();
             Argument3.ValueChanged += Argument3Changed;
             if (Arg3Properties != null)
             {
-                RegisterArg3BubbledChange((IModelElement)Argument3.Value);
+			    if (isT3Collection)
+				{
+				    throw new NotImplementedException();
+				}
+				else
+				{
+                    RegisterArg3BubbledChange((IModelElement)Argument3.Value);
+				}
             }
             Argument4.Attach();
             Argument4.ValueChanged += Argument4Changed;
             if (Arg4Properties != null)
             {
-                RegisterArg4BubbledChange((IModelElement)Argument4.Value);
+			    if (isT4Collection)
+				{
+				    throw new NotImplementedException();
+				}
+				else
+				{
+                    RegisterArg4BubbledChange((IModelElement)Argument4.Value);
+				}
             }
             Argument5.Attach();
             Argument5.ValueChanged += Argument5Changed;
             if (Arg5Properties != null)
             {
-                RegisterArg5BubbledChange((IModelElement)Argument5.Value);
+			    if (isT5Collection)
+				{
+				    throw new NotImplementedException();
+				}
+				else
+				{
+                    RegisterArg5BubbledChange((IModelElement)Argument5.Value);
+				}
             }
             Argument6.Attach();
             Argument6.ValueChanged += Argument6Changed;
             if (Arg6Properties != null)
             {
-                RegisterArg6BubbledChange((IModelElement)Argument6.Value);
+			    if (isT6Collection)
+				{
+				    throw new NotImplementedException();
+				}
+				else
+				{
+                    RegisterArg6BubbledChange((IModelElement)Argument6.Value);
+				}
             }
             Argument7.Attach();
             Argument7.ValueChanged += Argument7Changed;
             if (Arg7Properties != null)
             {
-                RegisterArg7BubbledChange((IModelElement)Argument7.Value);
+			    if (isT7Collection)
+				{
+				    throw new NotImplementedException();
+				}
+				else
+				{
+                    RegisterArg7BubbledChange((IModelElement)Argument7.Value);
+				}
             }
         }
 		
@@ -1888,9 +2413,16 @@ namespace NMF.Expressions
             {
                 var oldValue = e.OldValue as IModelElement;
                 var newValue = e.NewValue as IModelElement;
-                UnregisterArg1BubbledChange(oldValue);
-                Refresh();
-                RegisterArg1BubbledChange(newValue);
+			    if (isT1Collection)
+				{
+				    throw new NotImplementedException();
+				}
+				else
+				{
+                    UnregisterArg1BubbledChange(oldValue);
+                    Refresh();
+                    RegisterArg1BubbledChange((IModelElement)Argument1.Value);
+				}
             }
             else
             {
@@ -1949,9 +2481,16 @@ namespace NMF.Expressions
             {
                 var oldValue = e.OldValue as IModelElement;
                 var newValue = e.NewValue as IModelElement;
-                UnregisterArg2BubbledChange(oldValue);
-                Refresh();
-                RegisterArg2BubbledChange(newValue);
+			    if (isT2Collection)
+				{
+				    throw new NotImplementedException();
+				}
+				else
+				{
+                    UnregisterArg2BubbledChange(oldValue);
+                    Refresh();
+                    RegisterArg2BubbledChange((IModelElement)Argument2.Value);
+				}
             }
             else
             {
@@ -2010,9 +2549,16 @@ namespace NMF.Expressions
             {
                 var oldValue = e.OldValue as IModelElement;
                 var newValue = e.NewValue as IModelElement;
-                UnregisterArg3BubbledChange(oldValue);
-                Refresh();
-                RegisterArg3BubbledChange(newValue);
+			    if (isT3Collection)
+				{
+				    throw new NotImplementedException();
+				}
+				else
+				{
+                    UnregisterArg3BubbledChange(oldValue);
+                    Refresh();
+                    RegisterArg3BubbledChange((IModelElement)Argument3.Value);
+				}
             }
             else
             {
@@ -2071,9 +2617,16 @@ namespace NMF.Expressions
             {
                 var oldValue = e.OldValue as IModelElement;
                 var newValue = e.NewValue as IModelElement;
-                UnregisterArg4BubbledChange(oldValue);
-                Refresh();
-                RegisterArg4BubbledChange(newValue);
+			    if (isT4Collection)
+				{
+				    throw new NotImplementedException();
+				}
+				else
+				{
+                    UnregisterArg4BubbledChange(oldValue);
+                    Refresh();
+                    RegisterArg4BubbledChange((IModelElement)Argument4.Value);
+				}
             }
             else
             {
@@ -2132,9 +2685,16 @@ namespace NMF.Expressions
             {
                 var oldValue = e.OldValue as IModelElement;
                 var newValue = e.NewValue as IModelElement;
-                UnregisterArg5BubbledChange(oldValue);
-                Refresh();
-                RegisterArg5BubbledChange(newValue);
+			    if (isT5Collection)
+				{
+				    throw new NotImplementedException();
+				}
+				else
+				{
+                    UnregisterArg5BubbledChange(oldValue);
+                    Refresh();
+                    RegisterArg5BubbledChange((IModelElement)Argument5.Value);
+				}
             }
             else
             {
@@ -2193,9 +2753,16 @@ namespace NMF.Expressions
             {
                 var oldValue = e.OldValue as IModelElement;
                 var newValue = e.NewValue as IModelElement;
-                UnregisterArg6BubbledChange(oldValue);
-                Refresh();
-                RegisterArg6BubbledChange(newValue);
+			    if (isT6Collection)
+				{
+				    throw new NotImplementedException();
+				}
+				else
+				{
+                    UnregisterArg6BubbledChange(oldValue);
+                    Refresh();
+                    RegisterArg6BubbledChange((IModelElement)Argument6.Value);
+				}
             }
             else
             {
@@ -2254,9 +2821,16 @@ namespace NMF.Expressions
             {
                 var oldValue = e.OldValue as IModelElement;
                 var newValue = e.NewValue as IModelElement;
-                UnregisterArg7BubbledChange(oldValue);
-                Refresh();
-                RegisterArg7BubbledChange(newValue);
+			    if (isT7Collection)
+				{
+				    throw new NotImplementedException();
+				}
+				else
+				{
+                    UnregisterArg7BubbledChange(oldValue);
+                    Refresh();
+                    RegisterArg7BubbledChange((IModelElement)Argument7.Value);
+				}
             }
             else
             {
@@ -2270,43 +2844,92 @@ namespace NMF.Expressions
             Argument1.ValueChanged -= Argument1Changed;
             if (Arg1Properties != null)
             {
-                UnregisterArg1BubbledChange((IModelElement)Argument1.Value);
+			    if (isT1Collection)
+				{
+				    throw new NotImplementedException();
+				}
+				else
+				{
+                    UnregisterArg1BubbledChange((IModelElement)Argument1.Value);
+				}
             }
             Argument2.Detach();
             Argument2.ValueChanged -= Argument2Changed;
             if (Arg2Properties != null)
             {
-                UnregisterArg2BubbledChange((IModelElement)Argument2.Value);
+			    if (isT2Collection)
+				{
+				    throw new NotImplementedException();
+				}
+				else
+				{
+                    UnregisterArg2BubbledChange((IModelElement)Argument2.Value);
+				}
             }
             Argument3.Detach();
             Argument3.ValueChanged -= Argument3Changed;
             if (Arg3Properties != null)
             {
-                UnregisterArg3BubbledChange((IModelElement)Argument3.Value);
+			    if (isT3Collection)
+				{
+				    throw new NotImplementedException();
+				}
+				else
+				{
+                    UnregisterArg3BubbledChange((IModelElement)Argument3.Value);
+				}
             }
             Argument4.Detach();
             Argument4.ValueChanged -= Argument4Changed;
             if (Arg4Properties != null)
             {
-                UnregisterArg4BubbledChange((IModelElement)Argument4.Value);
+			    if (isT4Collection)
+				{
+				    throw new NotImplementedException();
+				}
+				else
+				{
+                    UnregisterArg4BubbledChange((IModelElement)Argument4.Value);
+				}
             }
             Argument5.Detach();
             Argument5.ValueChanged -= Argument5Changed;
             if (Arg5Properties != null)
             {
-                UnregisterArg5BubbledChange((IModelElement)Argument5.Value);
+			    if (isT5Collection)
+				{
+				    throw new NotImplementedException();
+				}
+				else
+				{
+                    UnregisterArg5BubbledChange((IModelElement)Argument5.Value);
+				}
             }
             Argument6.Detach();
             Argument6.ValueChanged -= Argument6Changed;
             if (Arg6Properties != null)
             {
-                UnregisterArg6BubbledChange((IModelElement)Argument6.Value);
+			    if (isT6Collection)
+				{
+				    throw new NotImplementedException();
+				}
+				else
+				{
+                    UnregisterArg6BubbledChange((IModelElement)Argument6.Value);
+				}
             }
             Argument7.Detach();
             Argument7.ValueChanged -= Argument7Changed;
             if (Arg7Properties != null)
             {
-                UnregisterArg7BubbledChange((IModelElement)Argument7.Value);
+			    if (isT7Collection)
+				{
+				    throw new NotImplementedException();
+				}
+				else
+				{
+                    UnregisterArg7BubbledChange((IModelElement)Argument7.Value);
+				}
             }
         }
 
@@ -2317,6 +2940,15 @@ namespace NMF.Expressions
     }
     internal class ObservablePromotionMethodCall<T1, T2, T3, T4, T5, T6, T7, T8, TResult> : ObservableStaticMethodCall<T1, T2, T3, T4, T5, T6, T7, T8, TResult>
     {
+        private static bool isT1Collection = typeof(INotifyEnumerable).IsAssignableFrom(typeof(T1));
+        private static bool isT2Collection = typeof(INotifyEnumerable).IsAssignableFrom(typeof(T2));
+        private static bool isT3Collection = typeof(INotifyEnumerable).IsAssignableFrom(typeof(T3));
+        private static bool isT4Collection = typeof(INotifyEnumerable).IsAssignableFrom(typeof(T4));
+        private static bool isT5Collection = typeof(INotifyEnumerable).IsAssignableFrom(typeof(T5));
+        private static bool isT6Collection = typeof(INotifyEnumerable).IsAssignableFrom(typeof(T6));
+        private static bool isT7Collection = typeof(INotifyEnumerable).IsAssignableFrom(typeof(T7));
+        private static bool isT8Collection = typeof(INotifyEnumerable).IsAssignableFrom(typeof(T8));
+
         public ICollection<string> Arg1Properties { get; private set; }
         public bool Arg1Composition { get; private set; }
         public ICollection<string> Arg2Properties { get; private set; }
@@ -2361,49 +2993,105 @@ namespace NMF.Expressions
             Argument1.ValueChanged += Argument1Changed;
             if (Arg1Properties != null)
             {
-                RegisterArg1BubbledChange((IModelElement)Argument1.Value);
+			    if (isT1Collection)
+				{
+				    throw new NotImplementedException();
+				}
+				else
+				{
+                    RegisterArg1BubbledChange((IModelElement)Argument1.Value);
+				}
             }
             Argument2.Attach();
             Argument2.ValueChanged += Argument2Changed;
             if (Arg2Properties != null)
             {
-                RegisterArg2BubbledChange((IModelElement)Argument2.Value);
+			    if (isT2Collection)
+				{
+				    throw new NotImplementedException();
+				}
+				else
+				{
+                    RegisterArg2BubbledChange((IModelElement)Argument2.Value);
+				}
             }
             Argument3.Attach();
             Argument3.ValueChanged += Argument3Changed;
             if (Arg3Properties != null)
             {
-                RegisterArg3BubbledChange((IModelElement)Argument3.Value);
+			    if (isT3Collection)
+				{
+				    throw new NotImplementedException();
+				}
+				else
+				{
+                    RegisterArg3BubbledChange((IModelElement)Argument3.Value);
+				}
             }
             Argument4.Attach();
             Argument4.ValueChanged += Argument4Changed;
             if (Arg4Properties != null)
             {
-                RegisterArg4BubbledChange((IModelElement)Argument4.Value);
+			    if (isT4Collection)
+				{
+				    throw new NotImplementedException();
+				}
+				else
+				{
+                    RegisterArg4BubbledChange((IModelElement)Argument4.Value);
+				}
             }
             Argument5.Attach();
             Argument5.ValueChanged += Argument5Changed;
             if (Arg5Properties != null)
             {
-                RegisterArg5BubbledChange((IModelElement)Argument5.Value);
+			    if (isT5Collection)
+				{
+				    throw new NotImplementedException();
+				}
+				else
+				{
+                    RegisterArg5BubbledChange((IModelElement)Argument5.Value);
+				}
             }
             Argument6.Attach();
             Argument6.ValueChanged += Argument6Changed;
             if (Arg6Properties != null)
             {
-                RegisterArg6BubbledChange((IModelElement)Argument6.Value);
+			    if (isT6Collection)
+				{
+				    throw new NotImplementedException();
+				}
+				else
+				{
+                    RegisterArg6BubbledChange((IModelElement)Argument6.Value);
+				}
             }
             Argument7.Attach();
             Argument7.ValueChanged += Argument7Changed;
             if (Arg7Properties != null)
             {
-                RegisterArg7BubbledChange((IModelElement)Argument7.Value);
+			    if (isT7Collection)
+				{
+				    throw new NotImplementedException();
+				}
+				else
+				{
+                    RegisterArg7BubbledChange((IModelElement)Argument7.Value);
+				}
             }
             Argument8.Attach();
             Argument8.ValueChanged += Argument8Changed;
             if (Arg8Properties != null)
             {
-                RegisterArg8BubbledChange((IModelElement)Argument8.Value);
+			    if (isT8Collection)
+				{
+				    throw new NotImplementedException();
+				}
+				else
+				{
+                    RegisterArg8BubbledChange((IModelElement)Argument8.Value);
+				}
             }
         }
 		
@@ -2459,9 +3147,16 @@ namespace NMF.Expressions
             {
                 var oldValue = e.OldValue as IModelElement;
                 var newValue = e.NewValue as IModelElement;
-                UnregisterArg1BubbledChange(oldValue);
-                Refresh();
-                RegisterArg1BubbledChange(newValue);
+			    if (isT1Collection)
+				{
+				    throw new NotImplementedException();
+				}
+				else
+				{
+                    UnregisterArg1BubbledChange(oldValue);
+                    Refresh();
+                    RegisterArg1BubbledChange((IModelElement)Argument1.Value);
+				}
             }
             else
             {
@@ -2520,9 +3215,16 @@ namespace NMF.Expressions
             {
                 var oldValue = e.OldValue as IModelElement;
                 var newValue = e.NewValue as IModelElement;
-                UnregisterArg2BubbledChange(oldValue);
-                Refresh();
-                RegisterArg2BubbledChange(newValue);
+			    if (isT2Collection)
+				{
+				    throw new NotImplementedException();
+				}
+				else
+				{
+                    UnregisterArg2BubbledChange(oldValue);
+                    Refresh();
+                    RegisterArg2BubbledChange((IModelElement)Argument2.Value);
+				}
             }
             else
             {
@@ -2581,9 +3283,16 @@ namespace NMF.Expressions
             {
                 var oldValue = e.OldValue as IModelElement;
                 var newValue = e.NewValue as IModelElement;
-                UnregisterArg3BubbledChange(oldValue);
-                Refresh();
-                RegisterArg3BubbledChange(newValue);
+			    if (isT3Collection)
+				{
+				    throw new NotImplementedException();
+				}
+				else
+				{
+                    UnregisterArg3BubbledChange(oldValue);
+                    Refresh();
+                    RegisterArg3BubbledChange((IModelElement)Argument3.Value);
+				}
             }
             else
             {
@@ -2642,9 +3351,16 @@ namespace NMF.Expressions
             {
                 var oldValue = e.OldValue as IModelElement;
                 var newValue = e.NewValue as IModelElement;
-                UnregisterArg4BubbledChange(oldValue);
-                Refresh();
-                RegisterArg4BubbledChange(newValue);
+			    if (isT4Collection)
+				{
+				    throw new NotImplementedException();
+				}
+				else
+				{
+                    UnregisterArg4BubbledChange(oldValue);
+                    Refresh();
+                    RegisterArg4BubbledChange((IModelElement)Argument4.Value);
+				}
             }
             else
             {
@@ -2703,9 +3419,16 @@ namespace NMF.Expressions
             {
                 var oldValue = e.OldValue as IModelElement;
                 var newValue = e.NewValue as IModelElement;
-                UnregisterArg5BubbledChange(oldValue);
-                Refresh();
-                RegisterArg5BubbledChange(newValue);
+			    if (isT5Collection)
+				{
+				    throw new NotImplementedException();
+				}
+				else
+				{
+                    UnregisterArg5BubbledChange(oldValue);
+                    Refresh();
+                    RegisterArg5BubbledChange((IModelElement)Argument5.Value);
+				}
             }
             else
             {
@@ -2764,9 +3487,16 @@ namespace NMF.Expressions
             {
                 var oldValue = e.OldValue as IModelElement;
                 var newValue = e.NewValue as IModelElement;
-                UnregisterArg6BubbledChange(oldValue);
-                Refresh();
-                RegisterArg6BubbledChange(newValue);
+			    if (isT6Collection)
+				{
+				    throw new NotImplementedException();
+				}
+				else
+				{
+                    UnregisterArg6BubbledChange(oldValue);
+                    Refresh();
+                    RegisterArg6BubbledChange((IModelElement)Argument6.Value);
+				}
             }
             else
             {
@@ -2825,9 +3555,16 @@ namespace NMF.Expressions
             {
                 var oldValue = e.OldValue as IModelElement;
                 var newValue = e.NewValue as IModelElement;
-                UnregisterArg7BubbledChange(oldValue);
-                Refresh();
-                RegisterArg7BubbledChange(newValue);
+			    if (isT7Collection)
+				{
+				    throw new NotImplementedException();
+				}
+				else
+				{
+                    UnregisterArg7BubbledChange(oldValue);
+                    Refresh();
+                    RegisterArg7BubbledChange((IModelElement)Argument7.Value);
+				}
             }
             else
             {
@@ -2886,9 +3623,16 @@ namespace NMF.Expressions
             {
                 var oldValue = e.OldValue as IModelElement;
                 var newValue = e.NewValue as IModelElement;
-                UnregisterArg8BubbledChange(oldValue);
-                Refresh();
-                RegisterArg8BubbledChange(newValue);
+			    if (isT8Collection)
+				{
+				    throw new NotImplementedException();
+				}
+				else
+				{
+                    UnregisterArg8BubbledChange(oldValue);
+                    Refresh();
+                    RegisterArg8BubbledChange((IModelElement)Argument8.Value);
+				}
             }
             else
             {
@@ -2902,49 +3646,105 @@ namespace NMF.Expressions
             Argument1.ValueChanged -= Argument1Changed;
             if (Arg1Properties != null)
             {
-                UnregisterArg1BubbledChange((IModelElement)Argument1.Value);
+			    if (isT1Collection)
+				{
+				    throw new NotImplementedException();
+				}
+				else
+				{
+                    UnregisterArg1BubbledChange((IModelElement)Argument1.Value);
+				}
             }
             Argument2.Detach();
             Argument2.ValueChanged -= Argument2Changed;
             if (Arg2Properties != null)
             {
-                UnregisterArg2BubbledChange((IModelElement)Argument2.Value);
+			    if (isT2Collection)
+				{
+				    throw new NotImplementedException();
+				}
+				else
+				{
+                    UnregisterArg2BubbledChange((IModelElement)Argument2.Value);
+				}
             }
             Argument3.Detach();
             Argument3.ValueChanged -= Argument3Changed;
             if (Arg3Properties != null)
             {
-                UnregisterArg3BubbledChange((IModelElement)Argument3.Value);
+			    if (isT3Collection)
+				{
+				    throw new NotImplementedException();
+				}
+				else
+				{
+                    UnregisterArg3BubbledChange((IModelElement)Argument3.Value);
+				}
             }
             Argument4.Detach();
             Argument4.ValueChanged -= Argument4Changed;
             if (Arg4Properties != null)
             {
-                UnregisterArg4BubbledChange((IModelElement)Argument4.Value);
+			    if (isT4Collection)
+				{
+				    throw new NotImplementedException();
+				}
+				else
+				{
+                    UnregisterArg4BubbledChange((IModelElement)Argument4.Value);
+				}
             }
             Argument5.Detach();
             Argument5.ValueChanged -= Argument5Changed;
             if (Arg5Properties != null)
             {
-                UnregisterArg5BubbledChange((IModelElement)Argument5.Value);
+			    if (isT5Collection)
+				{
+				    throw new NotImplementedException();
+				}
+				else
+				{
+                    UnregisterArg5BubbledChange((IModelElement)Argument5.Value);
+				}
             }
             Argument6.Detach();
             Argument6.ValueChanged -= Argument6Changed;
             if (Arg6Properties != null)
             {
-                UnregisterArg6BubbledChange((IModelElement)Argument6.Value);
+			    if (isT6Collection)
+				{
+				    throw new NotImplementedException();
+				}
+				else
+				{
+                    UnregisterArg6BubbledChange((IModelElement)Argument6.Value);
+				}
             }
             Argument7.Detach();
             Argument7.ValueChanged -= Argument7Changed;
             if (Arg7Properties != null)
             {
-                UnregisterArg7BubbledChange((IModelElement)Argument7.Value);
+			    if (isT7Collection)
+				{
+				    throw new NotImplementedException();
+				}
+				else
+				{
+                    UnregisterArg7BubbledChange((IModelElement)Argument7.Value);
+				}
             }
             Argument8.Detach();
             Argument8.ValueChanged -= Argument8Changed;
             if (Arg8Properties != null)
             {
-                UnregisterArg8BubbledChange((IModelElement)Argument8.Value);
+			    if (isT8Collection)
+				{
+				    throw new NotImplementedException();
+				}
+				else
+				{
+                    UnregisterArg8BubbledChange((IModelElement)Argument8.Value);
+				}
             }
         }
 
@@ -2955,6 +3755,16 @@ namespace NMF.Expressions
     }
     internal class ObservablePromotionMethodCall<T1, T2, T3, T4, T5, T6, T7, T8, T9, TResult> : ObservableStaticMethodCall<T1, T2, T3, T4, T5, T6, T7, T8, T9, TResult>
     {
+        private static bool isT1Collection = typeof(INotifyEnumerable).IsAssignableFrom(typeof(T1));
+        private static bool isT2Collection = typeof(INotifyEnumerable).IsAssignableFrom(typeof(T2));
+        private static bool isT3Collection = typeof(INotifyEnumerable).IsAssignableFrom(typeof(T3));
+        private static bool isT4Collection = typeof(INotifyEnumerable).IsAssignableFrom(typeof(T4));
+        private static bool isT5Collection = typeof(INotifyEnumerable).IsAssignableFrom(typeof(T5));
+        private static bool isT6Collection = typeof(INotifyEnumerable).IsAssignableFrom(typeof(T6));
+        private static bool isT7Collection = typeof(INotifyEnumerable).IsAssignableFrom(typeof(T7));
+        private static bool isT8Collection = typeof(INotifyEnumerable).IsAssignableFrom(typeof(T8));
+        private static bool isT9Collection = typeof(INotifyEnumerable).IsAssignableFrom(typeof(T9));
+
         public ICollection<string> Arg1Properties { get; private set; }
         public bool Arg1Composition { get; private set; }
         public ICollection<string> Arg2Properties { get; private set; }
@@ -3003,55 +3813,118 @@ namespace NMF.Expressions
             Argument1.ValueChanged += Argument1Changed;
             if (Arg1Properties != null)
             {
-                RegisterArg1BubbledChange((IModelElement)Argument1.Value);
+			    if (isT1Collection)
+				{
+				    throw new NotImplementedException();
+				}
+				else
+				{
+                    RegisterArg1BubbledChange((IModelElement)Argument1.Value);
+				}
             }
             Argument2.Attach();
             Argument2.ValueChanged += Argument2Changed;
             if (Arg2Properties != null)
             {
-                RegisterArg2BubbledChange((IModelElement)Argument2.Value);
+			    if (isT2Collection)
+				{
+				    throw new NotImplementedException();
+				}
+				else
+				{
+                    RegisterArg2BubbledChange((IModelElement)Argument2.Value);
+				}
             }
             Argument3.Attach();
             Argument3.ValueChanged += Argument3Changed;
             if (Arg3Properties != null)
             {
-                RegisterArg3BubbledChange((IModelElement)Argument3.Value);
+			    if (isT3Collection)
+				{
+				    throw new NotImplementedException();
+				}
+				else
+				{
+                    RegisterArg3BubbledChange((IModelElement)Argument3.Value);
+				}
             }
             Argument4.Attach();
             Argument4.ValueChanged += Argument4Changed;
             if (Arg4Properties != null)
             {
-                RegisterArg4BubbledChange((IModelElement)Argument4.Value);
+			    if (isT4Collection)
+				{
+				    throw new NotImplementedException();
+				}
+				else
+				{
+                    RegisterArg4BubbledChange((IModelElement)Argument4.Value);
+				}
             }
             Argument5.Attach();
             Argument5.ValueChanged += Argument5Changed;
             if (Arg5Properties != null)
             {
-                RegisterArg5BubbledChange((IModelElement)Argument5.Value);
+			    if (isT5Collection)
+				{
+				    throw new NotImplementedException();
+				}
+				else
+				{
+                    RegisterArg5BubbledChange((IModelElement)Argument5.Value);
+				}
             }
             Argument6.Attach();
             Argument6.ValueChanged += Argument6Changed;
             if (Arg6Properties != null)
             {
-                RegisterArg6BubbledChange((IModelElement)Argument6.Value);
+			    if (isT6Collection)
+				{
+				    throw new NotImplementedException();
+				}
+				else
+				{
+                    RegisterArg6BubbledChange((IModelElement)Argument6.Value);
+				}
             }
             Argument7.Attach();
             Argument7.ValueChanged += Argument7Changed;
             if (Arg7Properties != null)
             {
-                RegisterArg7BubbledChange((IModelElement)Argument7.Value);
+			    if (isT7Collection)
+				{
+				    throw new NotImplementedException();
+				}
+				else
+				{
+                    RegisterArg7BubbledChange((IModelElement)Argument7.Value);
+				}
             }
             Argument8.Attach();
             Argument8.ValueChanged += Argument8Changed;
             if (Arg8Properties != null)
             {
-                RegisterArg8BubbledChange((IModelElement)Argument8.Value);
+			    if (isT8Collection)
+				{
+				    throw new NotImplementedException();
+				}
+				else
+				{
+                    RegisterArg8BubbledChange((IModelElement)Argument8.Value);
+				}
             }
             Argument9.Attach();
             Argument9.ValueChanged += Argument9Changed;
             if (Arg9Properties != null)
             {
-                RegisterArg9BubbledChange((IModelElement)Argument9.Value);
+			    if (isT9Collection)
+				{
+				    throw new NotImplementedException();
+				}
+				else
+				{
+                    RegisterArg9BubbledChange((IModelElement)Argument9.Value);
+				}
             }
         }
 		
@@ -3107,9 +3980,16 @@ namespace NMF.Expressions
             {
                 var oldValue = e.OldValue as IModelElement;
                 var newValue = e.NewValue as IModelElement;
-                UnregisterArg1BubbledChange(oldValue);
-                Refresh();
-                RegisterArg1BubbledChange(newValue);
+			    if (isT1Collection)
+				{
+				    throw new NotImplementedException();
+				}
+				else
+				{
+                    UnregisterArg1BubbledChange(oldValue);
+                    Refresh();
+                    RegisterArg1BubbledChange((IModelElement)Argument1.Value);
+				}
             }
             else
             {
@@ -3168,9 +4048,16 @@ namespace NMF.Expressions
             {
                 var oldValue = e.OldValue as IModelElement;
                 var newValue = e.NewValue as IModelElement;
-                UnregisterArg2BubbledChange(oldValue);
-                Refresh();
-                RegisterArg2BubbledChange(newValue);
+			    if (isT2Collection)
+				{
+				    throw new NotImplementedException();
+				}
+				else
+				{
+                    UnregisterArg2BubbledChange(oldValue);
+                    Refresh();
+                    RegisterArg2BubbledChange((IModelElement)Argument2.Value);
+				}
             }
             else
             {
@@ -3229,9 +4116,16 @@ namespace NMF.Expressions
             {
                 var oldValue = e.OldValue as IModelElement;
                 var newValue = e.NewValue as IModelElement;
-                UnregisterArg3BubbledChange(oldValue);
-                Refresh();
-                RegisterArg3BubbledChange(newValue);
+			    if (isT3Collection)
+				{
+				    throw new NotImplementedException();
+				}
+				else
+				{
+                    UnregisterArg3BubbledChange(oldValue);
+                    Refresh();
+                    RegisterArg3BubbledChange((IModelElement)Argument3.Value);
+				}
             }
             else
             {
@@ -3290,9 +4184,16 @@ namespace NMF.Expressions
             {
                 var oldValue = e.OldValue as IModelElement;
                 var newValue = e.NewValue as IModelElement;
-                UnregisterArg4BubbledChange(oldValue);
-                Refresh();
-                RegisterArg4BubbledChange(newValue);
+			    if (isT4Collection)
+				{
+				    throw new NotImplementedException();
+				}
+				else
+				{
+                    UnregisterArg4BubbledChange(oldValue);
+                    Refresh();
+                    RegisterArg4BubbledChange((IModelElement)Argument4.Value);
+				}
             }
             else
             {
@@ -3351,9 +4252,16 @@ namespace NMF.Expressions
             {
                 var oldValue = e.OldValue as IModelElement;
                 var newValue = e.NewValue as IModelElement;
-                UnregisterArg5BubbledChange(oldValue);
-                Refresh();
-                RegisterArg5BubbledChange(newValue);
+			    if (isT5Collection)
+				{
+				    throw new NotImplementedException();
+				}
+				else
+				{
+                    UnregisterArg5BubbledChange(oldValue);
+                    Refresh();
+                    RegisterArg5BubbledChange((IModelElement)Argument5.Value);
+				}
             }
             else
             {
@@ -3412,9 +4320,16 @@ namespace NMF.Expressions
             {
                 var oldValue = e.OldValue as IModelElement;
                 var newValue = e.NewValue as IModelElement;
-                UnregisterArg6BubbledChange(oldValue);
-                Refresh();
-                RegisterArg6BubbledChange(newValue);
+			    if (isT6Collection)
+				{
+				    throw new NotImplementedException();
+				}
+				else
+				{
+                    UnregisterArg6BubbledChange(oldValue);
+                    Refresh();
+                    RegisterArg6BubbledChange((IModelElement)Argument6.Value);
+				}
             }
             else
             {
@@ -3473,9 +4388,16 @@ namespace NMF.Expressions
             {
                 var oldValue = e.OldValue as IModelElement;
                 var newValue = e.NewValue as IModelElement;
-                UnregisterArg7BubbledChange(oldValue);
-                Refresh();
-                RegisterArg7BubbledChange(newValue);
+			    if (isT7Collection)
+				{
+				    throw new NotImplementedException();
+				}
+				else
+				{
+                    UnregisterArg7BubbledChange(oldValue);
+                    Refresh();
+                    RegisterArg7BubbledChange((IModelElement)Argument7.Value);
+				}
             }
             else
             {
@@ -3534,9 +4456,16 @@ namespace NMF.Expressions
             {
                 var oldValue = e.OldValue as IModelElement;
                 var newValue = e.NewValue as IModelElement;
-                UnregisterArg8BubbledChange(oldValue);
-                Refresh();
-                RegisterArg8BubbledChange(newValue);
+			    if (isT8Collection)
+				{
+				    throw new NotImplementedException();
+				}
+				else
+				{
+                    UnregisterArg8BubbledChange(oldValue);
+                    Refresh();
+                    RegisterArg8BubbledChange((IModelElement)Argument8.Value);
+				}
             }
             else
             {
@@ -3595,9 +4524,16 @@ namespace NMF.Expressions
             {
                 var oldValue = e.OldValue as IModelElement;
                 var newValue = e.NewValue as IModelElement;
-                UnregisterArg9BubbledChange(oldValue);
-                Refresh();
-                RegisterArg9BubbledChange(newValue);
+			    if (isT9Collection)
+				{
+				    throw new NotImplementedException();
+				}
+				else
+				{
+                    UnregisterArg9BubbledChange(oldValue);
+                    Refresh();
+                    RegisterArg9BubbledChange((IModelElement)Argument9.Value);
+				}
             }
             else
             {
@@ -3611,55 +4547,118 @@ namespace NMF.Expressions
             Argument1.ValueChanged -= Argument1Changed;
             if (Arg1Properties != null)
             {
-                UnregisterArg1BubbledChange((IModelElement)Argument1.Value);
+			    if (isT1Collection)
+				{
+				    throw new NotImplementedException();
+				}
+				else
+				{
+                    UnregisterArg1BubbledChange((IModelElement)Argument1.Value);
+				}
             }
             Argument2.Detach();
             Argument2.ValueChanged -= Argument2Changed;
             if (Arg2Properties != null)
             {
-                UnregisterArg2BubbledChange((IModelElement)Argument2.Value);
+			    if (isT2Collection)
+				{
+				    throw new NotImplementedException();
+				}
+				else
+				{
+                    UnregisterArg2BubbledChange((IModelElement)Argument2.Value);
+				}
             }
             Argument3.Detach();
             Argument3.ValueChanged -= Argument3Changed;
             if (Arg3Properties != null)
             {
-                UnregisterArg3BubbledChange((IModelElement)Argument3.Value);
+			    if (isT3Collection)
+				{
+				    throw new NotImplementedException();
+				}
+				else
+				{
+                    UnregisterArg3BubbledChange((IModelElement)Argument3.Value);
+				}
             }
             Argument4.Detach();
             Argument4.ValueChanged -= Argument4Changed;
             if (Arg4Properties != null)
             {
-                UnregisterArg4BubbledChange((IModelElement)Argument4.Value);
+			    if (isT4Collection)
+				{
+				    throw new NotImplementedException();
+				}
+				else
+				{
+                    UnregisterArg4BubbledChange((IModelElement)Argument4.Value);
+				}
             }
             Argument5.Detach();
             Argument5.ValueChanged -= Argument5Changed;
             if (Arg5Properties != null)
             {
-                UnregisterArg5BubbledChange((IModelElement)Argument5.Value);
+			    if (isT5Collection)
+				{
+				    throw new NotImplementedException();
+				}
+				else
+				{
+                    UnregisterArg5BubbledChange((IModelElement)Argument5.Value);
+				}
             }
             Argument6.Detach();
             Argument6.ValueChanged -= Argument6Changed;
             if (Arg6Properties != null)
             {
-                UnregisterArg6BubbledChange((IModelElement)Argument6.Value);
+			    if (isT6Collection)
+				{
+				    throw new NotImplementedException();
+				}
+				else
+				{
+                    UnregisterArg6BubbledChange((IModelElement)Argument6.Value);
+				}
             }
             Argument7.Detach();
             Argument7.ValueChanged -= Argument7Changed;
             if (Arg7Properties != null)
             {
-                UnregisterArg7BubbledChange((IModelElement)Argument7.Value);
+			    if (isT7Collection)
+				{
+				    throw new NotImplementedException();
+				}
+				else
+				{
+                    UnregisterArg7BubbledChange((IModelElement)Argument7.Value);
+				}
             }
             Argument8.Detach();
             Argument8.ValueChanged -= Argument8Changed;
             if (Arg8Properties != null)
             {
-                UnregisterArg8BubbledChange((IModelElement)Argument8.Value);
+			    if (isT8Collection)
+				{
+				    throw new NotImplementedException();
+				}
+				else
+				{
+                    UnregisterArg8BubbledChange((IModelElement)Argument8.Value);
+				}
             }
             Argument9.Detach();
             Argument9.ValueChanged -= Argument9Changed;
             if (Arg9Properties != null)
             {
-                UnregisterArg9BubbledChange((IModelElement)Argument9.Value);
+			    if (isT9Collection)
+				{
+				    throw new NotImplementedException();
+				}
+				else
+				{
+                    UnregisterArg9BubbledChange((IModelElement)Argument9.Value);
+				}
             }
         }
 
@@ -3670,6 +4669,17 @@ namespace NMF.Expressions
     }
     internal class ObservablePromotionMethodCall<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, TResult> : ObservableStaticMethodCall<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, TResult>
     {
+        private static bool isT1Collection = typeof(INotifyEnumerable).IsAssignableFrom(typeof(T1));
+        private static bool isT2Collection = typeof(INotifyEnumerable).IsAssignableFrom(typeof(T2));
+        private static bool isT3Collection = typeof(INotifyEnumerable).IsAssignableFrom(typeof(T3));
+        private static bool isT4Collection = typeof(INotifyEnumerable).IsAssignableFrom(typeof(T4));
+        private static bool isT5Collection = typeof(INotifyEnumerable).IsAssignableFrom(typeof(T5));
+        private static bool isT6Collection = typeof(INotifyEnumerable).IsAssignableFrom(typeof(T6));
+        private static bool isT7Collection = typeof(INotifyEnumerable).IsAssignableFrom(typeof(T7));
+        private static bool isT8Collection = typeof(INotifyEnumerable).IsAssignableFrom(typeof(T8));
+        private static bool isT9Collection = typeof(INotifyEnumerable).IsAssignableFrom(typeof(T9));
+        private static bool isT10Collection = typeof(INotifyEnumerable).IsAssignableFrom(typeof(T10));
+
         public ICollection<string> Arg1Properties { get; private set; }
         public bool Arg1Composition { get; private set; }
         public ICollection<string> Arg2Properties { get; private set; }
@@ -3722,61 +4732,131 @@ namespace NMF.Expressions
             Argument1.ValueChanged += Argument1Changed;
             if (Arg1Properties != null)
             {
-                RegisterArg1BubbledChange((IModelElement)Argument1.Value);
+			    if (isT1Collection)
+				{
+				    throw new NotImplementedException();
+				}
+				else
+				{
+                    RegisterArg1BubbledChange((IModelElement)Argument1.Value);
+				}
             }
             Argument2.Attach();
             Argument2.ValueChanged += Argument2Changed;
             if (Arg2Properties != null)
             {
-                RegisterArg2BubbledChange((IModelElement)Argument2.Value);
+			    if (isT2Collection)
+				{
+				    throw new NotImplementedException();
+				}
+				else
+				{
+                    RegisterArg2BubbledChange((IModelElement)Argument2.Value);
+				}
             }
             Argument3.Attach();
             Argument3.ValueChanged += Argument3Changed;
             if (Arg3Properties != null)
             {
-                RegisterArg3BubbledChange((IModelElement)Argument3.Value);
+			    if (isT3Collection)
+				{
+				    throw new NotImplementedException();
+				}
+				else
+				{
+                    RegisterArg3BubbledChange((IModelElement)Argument3.Value);
+				}
             }
             Argument4.Attach();
             Argument4.ValueChanged += Argument4Changed;
             if (Arg4Properties != null)
             {
-                RegisterArg4BubbledChange((IModelElement)Argument4.Value);
+			    if (isT4Collection)
+				{
+				    throw new NotImplementedException();
+				}
+				else
+				{
+                    RegisterArg4BubbledChange((IModelElement)Argument4.Value);
+				}
             }
             Argument5.Attach();
             Argument5.ValueChanged += Argument5Changed;
             if (Arg5Properties != null)
             {
-                RegisterArg5BubbledChange((IModelElement)Argument5.Value);
+			    if (isT5Collection)
+				{
+				    throw new NotImplementedException();
+				}
+				else
+				{
+                    RegisterArg5BubbledChange((IModelElement)Argument5.Value);
+				}
             }
             Argument6.Attach();
             Argument6.ValueChanged += Argument6Changed;
             if (Arg6Properties != null)
             {
-                RegisterArg6BubbledChange((IModelElement)Argument6.Value);
+			    if (isT6Collection)
+				{
+				    throw new NotImplementedException();
+				}
+				else
+				{
+                    RegisterArg6BubbledChange((IModelElement)Argument6.Value);
+				}
             }
             Argument7.Attach();
             Argument7.ValueChanged += Argument7Changed;
             if (Arg7Properties != null)
             {
-                RegisterArg7BubbledChange((IModelElement)Argument7.Value);
+			    if (isT7Collection)
+				{
+				    throw new NotImplementedException();
+				}
+				else
+				{
+                    RegisterArg7BubbledChange((IModelElement)Argument7.Value);
+				}
             }
             Argument8.Attach();
             Argument8.ValueChanged += Argument8Changed;
             if (Arg8Properties != null)
             {
-                RegisterArg8BubbledChange((IModelElement)Argument8.Value);
+			    if (isT8Collection)
+				{
+				    throw new NotImplementedException();
+				}
+				else
+				{
+                    RegisterArg8BubbledChange((IModelElement)Argument8.Value);
+				}
             }
             Argument9.Attach();
             Argument9.ValueChanged += Argument9Changed;
             if (Arg9Properties != null)
             {
-                RegisterArg9BubbledChange((IModelElement)Argument9.Value);
+			    if (isT9Collection)
+				{
+				    throw new NotImplementedException();
+				}
+				else
+				{
+                    RegisterArg9BubbledChange((IModelElement)Argument9.Value);
+				}
             }
             Argument10.Attach();
             Argument10.ValueChanged += Argument10Changed;
             if (Arg10Properties != null)
             {
-                RegisterArg10BubbledChange((IModelElement)Argument10.Value);
+			    if (isT10Collection)
+				{
+				    throw new NotImplementedException();
+				}
+				else
+				{
+                    RegisterArg10BubbledChange((IModelElement)Argument10.Value);
+				}
             }
         }
 		
@@ -3832,9 +4912,16 @@ namespace NMF.Expressions
             {
                 var oldValue = e.OldValue as IModelElement;
                 var newValue = e.NewValue as IModelElement;
-                UnregisterArg1BubbledChange(oldValue);
-                Refresh();
-                RegisterArg1BubbledChange(newValue);
+			    if (isT1Collection)
+				{
+				    throw new NotImplementedException();
+				}
+				else
+				{
+                    UnregisterArg1BubbledChange(oldValue);
+                    Refresh();
+                    RegisterArg1BubbledChange((IModelElement)Argument1.Value);
+				}
             }
             else
             {
@@ -3893,9 +4980,16 @@ namespace NMF.Expressions
             {
                 var oldValue = e.OldValue as IModelElement;
                 var newValue = e.NewValue as IModelElement;
-                UnregisterArg2BubbledChange(oldValue);
-                Refresh();
-                RegisterArg2BubbledChange(newValue);
+			    if (isT2Collection)
+				{
+				    throw new NotImplementedException();
+				}
+				else
+				{
+                    UnregisterArg2BubbledChange(oldValue);
+                    Refresh();
+                    RegisterArg2BubbledChange((IModelElement)Argument2.Value);
+				}
             }
             else
             {
@@ -3954,9 +5048,16 @@ namespace NMF.Expressions
             {
                 var oldValue = e.OldValue as IModelElement;
                 var newValue = e.NewValue as IModelElement;
-                UnregisterArg3BubbledChange(oldValue);
-                Refresh();
-                RegisterArg3BubbledChange(newValue);
+			    if (isT3Collection)
+				{
+				    throw new NotImplementedException();
+				}
+				else
+				{
+                    UnregisterArg3BubbledChange(oldValue);
+                    Refresh();
+                    RegisterArg3BubbledChange((IModelElement)Argument3.Value);
+				}
             }
             else
             {
@@ -4015,9 +5116,16 @@ namespace NMF.Expressions
             {
                 var oldValue = e.OldValue as IModelElement;
                 var newValue = e.NewValue as IModelElement;
-                UnregisterArg4BubbledChange(oldValue);
-                Refresh();
-                RegisterArg4BubbledChange(newValue);
+			    if (isT4Collection)
+				{
+				    throw new NotImplementedException();
+				}
+				else
+				{
+                    UnregisterArg4BubbledChange(oldValue);
+                    Refresh();
+                    RegisterArg4BubbledChange((IModelElement)Argument4.Value);
+				}
             }
             else
             {
@@ -4076,9 +5184,16 @@ namespace NMF.Expressions
             {
                 var oldValue = e.OldValue as IModelElement;
                 var newValue = e.NewValue as IModelElement;
-                UnregisterArg5BubbledChange(oldValue);
-                Refresh();
-                RegisterArg5BubbledChange(newValue);
+			    if (isT5Collection)
+				{
+				    throw new NotImplementedException();
+				}
+				else
+				{
+                    UnregisterArg5BubbledChange(oldValue);
+                    Refresh();
+                    RegisterArg5BubbledChange((IModelElement)Argument5.Value);
+				}
             }
             else
             {
@@ -4137,9 +5252,16 @@ namespace NMF.Expressions
             {
                 var oldValue = e.OldValue as IModelElement;
                 var newValue = e.NewValue as IModelElement;
-                UnregisterArg6BubbledChange(oldValue);
-                Refresh();
-                RegisterArg6BubbledChange(newValue);
+			    if (isT6Collection)
+				{
+				    throw new NotImplementedException();
+				}
+				else
+				{
+                    UnregisterArg6BubbledChange(oldValue);
+                    Refresh();
+                    RegisterArg6BubbledChange((IModelElement)Argument6.Value);
+				}
             }
             else
             {
@@ -4198,9 +5320,16 @@ namespace NMF.Expressions
             {
                 var oldValue = e.OldValue as IModelElement;
                 var newValue = e.NewValue as IModelElement;
-                UnregisterArg7BubbledChange(oldValue);
-                Refresh();
-                RegisterArg7BubbledChange(newValue);
+			    if (isT7Collection)
+				{
+				    throw new NotImplementedException();
+				}
+				else
+				{
+                    UnregisterArg7BubbledChange(oldValue);
+                    Refresh();
+                    RegisterArg7BubbledChange((IModelElement)Argument7.Value);
+				}
             }
             else
             {
@@ -4259,9 +5388,16 @@ namespace NMF.Expressions
             {
                 var oldValue = e.OldValue as IModelElement;
                 var newValue = e.NewValue as IModelElement;
-                UnregisterArg8BubbledChange(oldValue);
-                Refresh();
-                RegisterArg8BubbledChange(newValue);
+			    if (isT8Collection)
+				{
+				    throw new NotImplementedException();
+				}
+				else
+				{
+                    UnregisterArg8BubbledChange(oldValue);
+                    Refresh();
+                    RegisterArg8BubbledChange((IModelElement)Argument8.Value);
+				}
             }
             else
             {
@@ -4320,9 +5456,16 @@ namespace NMF.Expressions
             {
                 var oldValue = e.OldValue as IModelElement;
                 var newValue = e.NewValue as IModelElement;
-                UnregisterArg9BubbledChange(oldValue);
-                Refresh();
-                RegisterArg9BubbledChange(newValue);
+			    if (isT9Collection)
+				{
+				    throw new NotImplementedException();
+				}
+				else
+				{
+                    UnregisterArg9BubbledChange(oldValue);
+                    Refresh();
+                    RegisterArg9BubbledChange((IModelElement)Argument9.Value);
+				}
             }
             else
             {
@@ -4381,9 +5524,16 @@ namespace NMF.Expressions
             {
                 var oldValue = e.OldValue as IModelElement;
                 var newValue = e.NewValue as IModelElement;
-                UnregisterArg10BubbledChange(oldValue);
-                Refresh();
-                RegisterArg10BubbledChange(newValue);
+			    if (isT10Collection)
+				{
+				    throw new NotImplementedException();
+				}
+				else
+				{
+                    UnregisterArg10BubbledChange(oldValue);
+                    Refresh();
+                    RegisterArg10BubbledChange((IModelElement)Argument10.Value);
+				}
             }
             else
             {
@@ -4397,61 +5547,131 @@ namespace NMF.Expressions
             Argument1.ValueChanged -= Argument1Changed;
             if (Arg1Properties != null)
             {
-                UnregisterArg1BubbledChange((IModelElement)Argument1.Value);
+			    if (isT1Collection)
+				{
+				    throw new NotImplementedException();
+				}
+				else
+				{
+                    UnregisterArg1BubbledChange((IModelElement)Argument1.Value);
+				}
             }
             Argument2.Detach();
             Argument2.ValueChanged -= Argument2Changed;
             if (Arg2Properties != null)
             {
-                UnregisterArg2BubbledChange((IModelElement)Argument2.Value);
+			    if (isT2Collection)
+				{
+				    throw new NotImplementedException();
+				}
+				else
+				{
+                    UnregisterArg2BubbledChange((IModelElement)Argument2.Value);
+				}
             }
             Argument3.Detach();
             Argument3.ValueChanged -= Argument3Changed;
             if (Arg3Properties != null)
             {
-                UnregisterArg3BubbledChange((IModelElement)Argument3.Value);
+			    if (isT3Collection)
+				{
+				    throw new NotImplementedException();
+				}
+				else
+				{
+                    UnregisterArg3BubbledChange((IModelElement)Argument3.Value);
+				}
             }
             Argument4.Detach();
             Argument4.ValueChanged -= Argument4Changed;
             if (Arg4Properties != null)
             {
-                UnregisterArg4BubbledChange((IModelElement)Argument4.Value);
+			    if (isT4Collection)
+				{
+				    throw new NotImplementedException();
+				}
+				else
+				{
+                    UnregisterArg4BubbledChange((IModelElement)Argument4.Value);
+				}
             }
             Argument5.Detach();
             Argument5.ValueChanged -= Argument5Changed;
             if (Arg5Properties != null)
             {
-                UnregisterArg5BubbledChange((IModelElement)Argument5.Value);
+			    if (isT5Collection)
+				{
+				    throw new NotImplementedException();
+				}
+				else
+				{
+                    UnregisterArg5BubbledChange((IModelElement)Argument5.Value);
+				}
             }
             Argument6.Detach();
             Argument6.ValueChanged -= Argument6Changed;
             if (Arg6Properties != null)
             {
-                UnregisterArg6BubbledChange((IModelElement)Argument6.Value);
+			    if (isT6Collection)
+				{
+				    throw new NotImplementedException();
+				}
+				else
+				{
+                    UnregisterArg6BubbledChange((IModelElement)Argument6.Value);
+				}
             }
             Argument7.Detach();
             Argument7.ValueChanged -= Argument7Changed;
             if (Arg7Properties != null)
             {
-                UnregisterArg7BubbledChange((IModelElement)Argument7.Value);
+			    if (isT7Collection)
+				{
+				    throw new NotImplementedException();
+				}
+				else
+				{
+                    UnregisterArg7BubbledChange((IModelElement)Argument7.Value);
+				}
             }
             Argument8.Detach();
             Argument8.ValueChanged -= Argument8Changed;
             if (Arg8Properties != null)
             {
-                UnregisterArg8BubbledChange((IModelElement)Argument8.Value);
+			    if (isT8Collection)
+				{
+				    throw new NotImplementedException();
+				}
+				else
+				{
+                    UnregisterArg8BubbledChange((IModelElement)Argument8.Value);
+				}
             }
             Argument9.Detach();
             Argument9.ValueChanged -= Argument9Changed;
             if (Arg9Properties != null)
             {
-                UnregisterArg9BubbledChange((IModelElement)Argument9.Value);
+			    if (isT9Collection)
+				{
+				    throw new NotImplementedException();
+				}
+				else
+				{
+                    UnregisterArg9BubbledChange((IModelElement)Argument9.Value);
+				}
             }
             Argument10.Detach();
             Argument10.ValueChanged -= Argument10Changed;
             if (Arg10Properties != null)
             {
-                UnregisterArg10BubbledChange((IModelElement)Argument10.Value);
+			    if (isT10Collection)
+				{
+				    throw new NotImplementedException();
+				}
+				else
+				{
+                    UnregisterArg10BubbledChange((IModelElement)Argument10.Value);
+				}
             }
         }
 
@@ -4462,6 +5682,18 @@ namespace NMF.Expressions
     }
     internal class ObservablePromotionMethodCall<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, TResult> : ObservableStaticMethodCall<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, TResult>
     {
+        private static bool isT1Collection = typeof(INotifyEnumerable).IsAssignableFrom(typeof(T1));
+        private static bool isT2Collection = typeof(INotifyEnumerable).IsAssignableFrom(typeof(T2));
+        private static bool isT3Collection = typeof(INotifyEnumerable).IsAssignableFrom(typeof(T3));
+        private static bool isT4Collection = typeof(INotifyEnumerable).IsAssignableFrom(typeof(T4));
+        private static bool isT5Collection = typeof(INotifyEnumerable).IsAssignableFrom(typeof(T5));
+        private static bool isT6Collection = typeof(INotifyEnumerable).IsAssignableFrom(typeof(T6));
+        private static bool isT7Collection = typeof(INotifyEnumerable).IsAssignableFrom(typeof(T7));
+        private static bool isT8Collection = typeof(INotifyEnumerable).IsAssignableFrom(typeof(T8));
+        private static bool isT9Collection = typeof(INotifyEnumerable).IsAssignableFrom(typeof(T9));
+        private static bool isT10Collection = typeof(INotifyEnumerable).IsAssignableFrom(typeof(T10));
+        private static bool isT11Collection = typeof(INotifyEnumerable).IsAssignableFrom(typeof(T11));
+
         public ICollection<string> Arg1Properties { get; private set; }
         public bool Arg1Composition { get; private set; }
         public ICollection<string> Arg2Properties { get; private set; }
@@ -4518,67 +5750,144 @@ namespace NMF.Expressions
             Argument1.ValueChanged += Argument1Changed;
             if (Arg1Properties != null)
             {
-                RegisterArg1BubbledChange((IModelElement)Argument1.Value);
+			    if (isT1Collection)
+				{
+				    throw new NotImplementedException();
+				}
+				else
+				{
+                    RegisterArg1BubbledChange((IModelElement)Argument1.Value);
+				}
             }
             Argument2.Attach();
             Argument2.ValueChanged += Argument2Changed;
             if (Arg2Properties != null)
             {
-                RegisterArg2BubbledChange((IModelElement)Argument2.Value);
+			    if (isT2Collection)
+				{
+				    throw new NotImplementedException();
+				}
+				else
+				{
+                    RegisterArg2BubbledChange((IModelElement)Argument2.Value);
+				}
             }
             Argument3.Attach();
             Argument3.ValueChanged += Argument3Changed;
             if (Arg3Properties != null)
             {
-                RegisterArg3BubbledChange((IModelElement)Argument3.Value);
+			    if (isT3Collection)
+				{
+				    throw new NotImplementedException();
+				}
+				else
+				{
+                    RegisterArg3BubbledChange((IModelElement)Argument3.Value);
+				}
             }
             Argument4.Attach();
             Argument4.ValueChanged += Argument4Changed;
             if (Arg4Properties != null)
             {
-                RegisterArg4BubbledChange((IModelElement)Argument4.Value);
+			    if (isT4Collection)
+				{
+				    throw new NotImplementedException();
+				}
+				else
+				{
+                    RegisterArg4BubbledChange((IModelElement)Argument4.Value);
+				}
             }
             Argument5.Attach();
             Argument5.ValueChanged += Argument5Changed;
             if (Arg5Properties != null)
             {
-                RegisterArg5BubbledChange((IModelElement)Argument5.Value);
+			    if (isT5Collection)
+				{
+				    throw new NotImplementedException();
+				}
+				else
+				{
+                    RegisterArg5BubbledChange((IModelElement)Argument5.Value);
+				}
             }
             Argument6.Attach();
             Argument6.ValueChanged += Argument6Changed;
             if (Arg6Properties != null)
             {
-                RegisterArg6BubbledChange((IModelElement)Argument6.Value);
+			    if (isT6Collection)
+				{
+				    throw new NotImplementedException();
+				}
+				else
+				{
+                    RegisterArg6BubbledChange((IModelElement)Argument6.Value);
+				}
             }
             Argument7.Attach();
             Argument7.ValueChanged += Argument7Changed;
             if (Arg7Properties != null)
             {
-                RegisterArg7BubbledChange((IModelElement)Argument7.Value);
+			    if (isT7Collection)
+				{
+				    throw new NotImplementedException();
+				}
+				else
+				{
+                    RegisterArg7BubbledChange((IModelElement)Argument7.Value);
+				}
             }
             Argument8.Attach();
             Argument8.ValueChanged += Argument8Changed;
             if (Arg8Properties != null)
             {
-                RegisterArg8BubbledChange((IModelElement)Argument8.Value);
+			    if (isT8Collection)
+				{
+				    throw new NotImplementedException();
+				}
+				else
+				{
+                    RegisterArg8BubbledChange((IModelElement)Argument8.Value);
+				}
             }
             Argument9.Attach();
             Argument9.ValueChanged += Argument9Changed;
             if (Arg9Properties != null)
             {
-                RegisterArg9BubbledChange((IModelElement)Argument9.Value);
+			    if (isT9Collection)
+				{
+				    throw new NotImplementedException();
+				}
+				else
+				{
+                    RegisterArg9BubbledChange((IModelElement)Argument9.Value);
+				}
             }
             Argument10.Attach();
             Argument10.ValueChanged += Argument10Changed;
             if (Arg10Properties != null)
             {
-                RegisterArg10BubbledChange((IModelElement)Argument10.Value);
+			    if (isT10Collection)
+				{
+				    throw new NotImplementedException();
+				}
+				else
+				{
+                    RegisterArg10BubbledChange((IModelElement)Argument10.Value);
+				}
             }
             Argument11.Attach();
             Argument11.ValueChanged += Argument11Changed;
             if (Arg11Properties != null)
             {
-                RegisterArg11BubbledChange((IModelElement)Argument11.Value);
+			    if (isT11Collection)
+				{
+				    throw new NotImplementedException();
+				}
+				else
+				{
+                    RegisterArg11BubbledChange((IModelElement)Argument11.Value);
+				}
             }
         }
 		
@@ -4634,9 +5943,16 @@ namespace NMF.Expressions
             {
                 var oldValue = e.OldValue as IModelElement;
                 var newValue = e.NewValue as IModelElement;
-                UnregisterArg1BubbledChange(oldValue);
-                Refresh();
-                RegisterArg1BubbledChange(newValue);
+			    if (isT1Collection)
+				{
+				    throw new NotImplementedException();
+				}
+				else
+				{
+                    UnregisterArg1BubbledChange(oldValue);
+                    Refresh();
+                    RegisterArg1BubbledChange((IModelElement)Argument1.Value);
+				}
             }
             else
             {
@@ -4695,9 +6011,16 @@ namespace NMF.Expressions
             {
                 var oldValue = e.OldValue as IModelElement;
                 var newValue = e.NewValue as IModelElement;
-                UnregisterArg2BubbledChange(oldValue);
-                Refresh();
-                RegisterArg2BubbledChange(newValue);
+			    if (isT2Collection)
+				{
+				    throw new NotImplementedException();
+				}
+				else
+				{
+                    UnregisterArg2BubbledChange(oldValue);
+                    Refresh();
+                    RegisterArg2BubbledChange((IModelElement)Argument2.Value);
+				}
             }
             else
             {
@@ -4756,9 +6079,16 @@ namespace NMF.Expressions
             {
                 var oldValue = e.OldValue as IModelElement;
                 var newValue = e.NewValue as IModelElement;
-                UnregisterArg3BubbledChange(oldValue);
-                Refresh();
-                RegisterArg3BubbledChange(newValue);
+			    if (isT3Collection)
+				{
+				    throw new NotImplementedException();
+				}
+				else
+				{
+                    UnregisterArg3BubbledChange(oldValue);
+                    Refresh();
+                    RegisterArg3BubbledChange((IModelElement)Argument3.Value);
+				}
             }
             else
             {
@@ -4817,9 +6147,16 @@ namespace NMF.Expressions
             {
                 var oldValue = e.OldValue as IModelElement;
                 var newValue = e.NewValue as IModelElement;
-                UnregisterArg4BubbledChange(oldValue);
-                Refresh();
-                RegisterArg4BubbledChange(newValue);
+			    if (isT4Collection)
+				{
+				    throw new NotImplementedException();
+				}
+				else
+				{
+                    UnregisterArg4BubbledChange(oldValue);
+                    Refresh();
+                    RegisterArg4BubbledChange((IModelElement)Argument4.Value);
+				}
             }
             else
             {
@@ -4878,9 +6215,16 @@ namespace NMF.Expressions
             {
                 var oldValue = e.OldValue as IModelElement;
                 var newValue = e.NewValue as IModelElement;
-                UnregisterArg5BubbledChange(oldValue);
-                Refresh();
-                RegisterArg5BubbledChange(newValue);
+			    if (isT5Collection)
+				{
+				    throw new NotImplementedException();
+				}
+				else
+				{
+                    UnregisterArg5BubbledChange(oldValue);
+                    Refresh();
+                    RegisterArg5BubbledChange((IModelElement)Argument5.Value);
+				}
             }
             else
             {
@@ -4939,9 +6283,16 @@ namespace NMF.Expressions
             {
                 var oldValue = e.OldValue as IModelElement;
                 var newValue = e.NewValue as IModelElement;
-                UnregisterArg6BubbledChange(oldValue);
-                Refresh();
-                RegisterArg6BubbledChange(newValue);
+			    if (isT6Collection)
+				{
+				    throw new NotImplementedException();
+				}
+				else
+				{
+                    UnregisterArg6BubbledChange(oldValue);
+                    Refresh();
+                    RegisterArg6BubbledChange((IModelElement)Argument6.Value);
+				}
             }
             else
             {
@@ -5000,9 +6351,16 @@ namespace NMF.Expressions
             {
                 var oldValue = e.OldValue as IModelElement;
                 var newValue = e.NewValue as IModelElement;
-                UnregisterArg7BubbledChange(oldValue);
-                Refresh();
-                RegisterArg7BubbledChange(newValue);
+			    if (isT7Collection)
+				{
+				    throw new NotImplementedException();
+				}
+				else
+				{
+                    UnregisterArg7BubbledChange(oldValue);
+                    Refresh();
+                    RegisterArg7BubbledChange((IModelElement)Argument7.Value);
+				}
             }
             else
             {
@@ -5061,9 +6419,16 @@ namespace NMF.Expressions
             {
                 var oldValue = e.OldValue as IModelElement;
                 var newValue = e.NewValue as IModelElement;
-                UnregisterArg8BubbledChange(oldValue);
-                Refresh();
-                RegisterArg8BubbledChange(newValue);
+			    if (isT8Collection)
+				{
+				    throw new NotImplementedException();
+				}
+				else
+				{
+                    UnregisterArg8BubbledChange(oldValue);
+                    Refresh();
+                    RegisterArg8BubbledChange((IModelElement)Argument8.Value);
+				}
             }
             else
             {
@@ -5122,9 +6487,16 @@ namespace NMF.Expressions
             {
                 var oldValue = e.OldValue as IModelElement;
                 var newValue = e.NewValue as IModelElement;
-                UnregisterArg9BubbledChange(oldValue);
-                Refresh();
-                RegisterArg9BubbledChange(newValue);
+			    if (isT9Collection)
+				{
+				    throw new NotImplementedException();
+				}
+				else
+				{
+                    UnregisterArg9BubbledChange(oldValue);
+                    Refresh();
+                    RegisterArg9BubbledChange((IModelElement)Argument9.Value);
+				}
             }
             else
             {
@@ -5183,9 +6555,16 @@ namespace NMF.Expressions
             {
                 var oldValue = e.OldValue as IModelElement;
                 var newValue = e.NewValue as IModelElement;
-                UnregisterArg10BubbledChange(oldValue);
-                Refresh();
-                RegisterArg10BubbledChange(newValue);
+			    if (isT10Collection)
+				{
+				    throw new NotImplementedException();
+				}
+				else
+				{
+                    UnregisterArg10BubbledChange(oldValue);
+                    Refresh();
+                    RegisterArg10BubbledChange((IModelElement)Argument10.Value);
+				}
             }
             else
             {
@@ -5244,9 +6623,16 @@ namespace NMF.Expressions
             {
                 var oldValue = e.OldValue as IModelElement;
                 var newValue = e.NewValue as IModelElement;
-                UnregisterArg11BubbledChange(oldValue);
-                Refresh();
-                RegisterArg11BubbledChange(newValue);
+			    if (isT11Collection)
+				{
+				    throw new NotImplementedException();
+				}
+				else
+				{
+                    UnregisterArg11BubbledChange(oldValue);
+                    Refresh();
+                    RegisterArg11BubbledChange((IModelElement)Argument11.Value);
+				}
             }
             else
             {
@@ -5260,67 +6646,144 @@ namespace NMF.Expressions
             Argument1.ValueChanged -= Argument1Changed;
             if (Arg1Properties != null)
             {
-                UnregisterArg1BubbledChange((IModelElement)Argument1.Value);
+			    if (isT1Collection)
+				{
+				    throw new NotImplementedException();
+				}
+				else
+				{
+                    UnregisterArg1BubbledChange((IModelElement)Argument1.Value);
+				}
             }
             Argument2.Detach();
             Argument2.ValueChanged -= Argument2Changed;
             if (Arg2Properties != null)
             {
-                UnregisterArg2BubbledChange((IModelElement)Argument2.Value);
+			    if (isT2Collection)
+				{
+				    throw new NotImplementedException();
+				}
+				else
+				{
+                    UnregisterArg2BubbledChange((IModelElement)Argument2.Value);
+				}
             }
             Argument3.Detach();
             Argument3.ValueChanged -= Argument3Changed;
             if (Arg3Properties != null)
             {
-                UnregisterArg3BubbledChange((IModelElement)Argument3.Value);
+			    if (isT3Collection)
+				{
+				    throw new NotImplementedException();
+				}
+				else
+				{
+                    UnregisterArg3BubbledChange((IModelElement)Argument3.Value);
+				}
             }
             Argument4.Detach();
             Argument4.ValueChanged -= Argument4Changed;
             if (Arg4Properties != null)
             {
-                UnregisterArg4BubbledChange((IModelElement)Argument4.Value);
+			    if (isT4Collection)
+				{
+				    throw new NotImplementedException();
+				}
+				else
+				{
+                    UnregisterArg4BubbledChange((IModelElement)Argument4.Value);
+				}
             }
             Argument5.Detach();
             Argument5.ValueChanged -= Argument5Changed;
             if (Arg5Properties != null)
             {
-                UnregisterArg5BubbledChange((IModelElement)Argument5.Value);
+			    if (isT5Collection)
+				{
+				    throw new NotImplementedException();
+				}
+				else
+				{
+                    UnregisterArg5BubbledChange((IModelElement)Argument5.Value);
+				}
             }
             Argument6.Detach();
             Argument6.ValueChanged -= Argument6Changed;
             if (Arg6Properties != null)
             {
-                UnregisterArg6BubbledChange((IModelElement)Argument6.Value);
+			    if (isT6Collection)
+				{
+				    throw new NotImplementedException();
+				}
+				else
+				{
+                    UnregisterArg6BubbledChange((IModelElement)Argument6.Value);
+				}
             }
             Argument7.Detach();
             Argument7.ValueChanged -= Argument7Changed;
             if (Arg7Properties != null)
             {
-                UnregisterArg7BubbledChange((IModelElement)Argument7.Value);
+			    if (isT7Collection)
+				{
+				    throw new NotImplementedException();
+				}
+				else
+				{
+                    UnregisterArg7BubbledChange((IModelElement)Argument7.Value);
+				}
             }
             Argument8.Detach();
             Argument8.ValueChanged -= Argument8Changed;
             if (Arg8Properties != null)
             {
-                UnregisterArg8BubbledChange((IModelElement)Argument8.Value);
+			    if (isT8Collection)
+				{
+				    throw new NotImplementedException();
+				}
+				else
+				{
+                    UnregisterArg8BubbledChange((IModelElement)Argument8.Value);
+				}
             }
             Argument9.Detach();
             Argument9.ValueChanged -= Argument9Changed;
             if (Arg9Properties != null)
             {
-                UnregisterArg9BubbledChange((IModelElement)Argument9.Value);
+			    if (isT9Collection)
+				{
+				    throw new NotImplementedException();
+				}
+				else
+				{
+                    UnregisterArg9BubbledChange((IModelElement)Argument9.Value);
+				}
             }
             Argument10.Detach();
             Argument10.ValueChanged -= Argument10Changed;
             if (Arg10Properties != null)
             {
-                UnregisterArg10BubbledChange((IModelElement)Argument10.Value);
+			    if (isT10Collection)
+				{
+				    throw new NotImplementedException();
+				}
+				else
+				{
+                    UnregisterArg10BubbledChange((IModelElement)Argument10.Value);
+				}
             }
             Argument11.Detach();
             Argument11.ValueChanged -= Argument11Changed;
             if (Arg11Properties != null)
             {
-                UnregisterArg11BubbledChange((IModelElement)Argument11.Value);
+			    if (isT11Collection)
+				{
+				    throw new NotImplementedException();
+				}
+				else
+				{
+                    UnregisterArg11BubbledChange((IModelElement)Argument11.Value);
+				}
             }
         }
 
@@ -5331,6 +6794,19 @@ namespace NMF.Expressions
     }
     internal class ObservablePromotionMethodCall<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, TResult> : ObservableStaticMethodCall<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, TResult>
     {
+        private static bool isT1Collection = typeof(INotifyEnumerable).IsAssignableFrom(typeof(T1));
+        private static bool isT2Collection = typeof(INotifyEnumerable).IsAssignableFrom(typeof(T2));
+        private static bool isT3Collection = typeof(INotifyEnumerable).IsAssignableFrom(typeof(T3));
+        private static bool isT4Collection = typeof(INotifyEnumerable).IsAssignableFrom(typeof(T4));
+        private static bool isT5Collection = typeof(INotifyEnumerable).IsAssignableFrom(typeof(T5));
+        private static bool isT6Collection = typeof(INotifyEnumerable).IsAssignableFrom(typeof(T6));
+        private static bool isT7Collection = typeof(INotifyEnumerable).IsAssignableFrom(typeof(T7));
+        private static bool isT8Collection = typeof(INotifyEnumerable).IsAssignableFrom(typeof(T8));
+        private static bool isT9Collection = typeof(INotifyEnumerable).IsAssignableFrom(typeof(T9));
+        private static bool isT10Collection = typeof(INotifyEnumerable).IsAssignableFrom(typeof(T10));
+        private static bool isT11Collection = typeof(INotifyEnumerable).IsAssignableFrom(typeof(T11));
+        private static bool isT12Collection = typeof(INotifyEnumerable).IsAssignableFrom(typeof(T12));
+
         public ICollection<string> Arg1Properties { get; private set; }
         public bool Arg1Composition { get; private set; }
         public ICollection<string> Arg2Properties { get; private set; }
@@ -5391,73 +6867,157 @@ namespace NMF.Expressions
             Argument1.ValueChanged += Argument1Changed;
             if (Arg1Properties != null)
             {
-                RegisterArg1BubbledChange((IModelElement)Argument1.Value);
+			    if (isT1Collection)
+				{
+				    throw new NotImplementedException();
+				}
+				else
+				{
+                    RegisterArg1BubbledChange((IModelElement)Argument1.Value);
+				}
             }
             Argument2.Attach();
             Argument2.ValueChanged += Argument2Changed;
             if (Arg2Properties != null)
             {
-                RegisterArg2BubbledChange((IModelElement)Argument2.Value);
+			    if (isT2Collection)
+				{
+				    throw new NotImplementedException();
+				}
+				else
+				{
+                    RegisterArg2BubbledChange((IModelElement)Argument2.Value);
+				}
             }
             Argument3.Attach();
             Argument3.ValueChanged += Argument3Changed;
             if (Arg3Properties != null)
             {
-                RegisterArg3BubbledChange((IModelElement)Argument3.Value);
+			    if (isT3Collection)
+				{
+				    throw new NotImplementedException();
+				}
+				else
+				{
+                    RegisterArg3BubbledChange((IModelElement)Argument3.Value);
+				}
             }
             Argument4.Attach();
             Argument4.ValueChanged += Argument4Changed;
             if (Arg4Properties != null)
             {
-                RegisterArg4BubbledChange((IModelElement)Argument4.Value);
+			    if (isT4Collection)
+				{
+				    throw new NotImplementedException();
+				}
+				else
+				{
+                    RegisterArg4BubbledChange((IModelElement)Argument4.Value);
+				}
             }
             Argument5.Attach();
             Argument5.ValueChanged += Argument5Changed;
             if (Arg5Properties != null)
             {
-                RegisterArg5BubbledChange((IModelElement)Argument5.Value);
+			    if (isT5Collection)
+				{
+				    throw new NotImplementedException();
+				}
+				else
+				{
+                    RegisterArg5BubbledChange((IModelElement)Argument5.Value);
+				}
             }
             Argument6.Attach();
             Argument6.ValueChanged += Argument6Changed;
             if (Arg6Properties != null)
             {
-                RegisterArg6BubbledChange((IModelElement)Argument6.Value);
+			    if (isT6Collection)
+				{
+				    throw new NotImplementedException();
+				}
+				else
+				{
+                    RegisterArg6BubbledChange((IModelElement)Argument6.Value);
+				}
             }
             Argument7.Attach();
             Argument7.ValueChanged += Argument7Changed;
             if (Arg7Properties != null)
             {
-                RegisterArg7BubbledChange((IModelElement)Argument7.Value);
+			    if (isT7Collection)
+				{
+				    throw new NotImplementedException();
+				}
+				else
+				{
+                    RegisterArg7BubbledChange((IModelElement)Argument7.Value);
+				}
             }
             Argument8.Attach();
             Argument8.ValueChanged += Argument8Changed;
             if (Arg8Properties != null)
             {
-                RegisterArg8BubbledChange((IModelElement)Argument8.Value);
+			    if (isT8Collection)
+				{
+				    throw new NotImplementedException();
+				}
+				else
+				{
+                    RegisterArg8BubbledChange((IModelElement)Argument8.Value);
+				}
             }
             Argument9.Attach();
             Argument9.ValueChanged += Argument9Changed;
             if (Arg9Properties != null)
             {
-                RegisterArg9BubbledChange((IModelElement)Argument9.Value);
+			    if (isT9Collection)
+				{
+				    throw new NotImplementedException();
+				}
+				else
+				{
+                    RegisterArg9BubbledChange((IModelElement)Argument9.Value);
+				}
             }
             Argument10.Attach();
             Argument10.ValueChanged += Argument10Changed;
             if (Arg10Properties != null)
             {
-                RegisterArg10BubbledChange((IModelElement)Argument10.Value);
+			    if (isT10Collection)
+				{
+				    throw new NotImplementedException();
+				}
+				else
+				{
+                    RegisterArg10BubbledChange((IModelElement)Argument10.Value);
+				}
             }
             Argument11.Attach();
             Argument11.ValueChanged += Argument11Changed;
             if (Arg11Properties != null)
             {
-                RegisterArg11BubbledChange((IModelElement)Argument11.Value);
+			    if (isT11Collection)
+				{
+				    throw new NotImplementedException();
+				}
+				else
+				{
+                    RegisterArg11BubbledChange((IModelElement)Argument11.Value);
+				}
             }
             Argument12.Attach();
             Argument12.ValueChanged += Argument12Changed;
             if (Arg12Properties != null)
             {
-                RegisterArg12BubbledChange((IModelElement)Argument12.Value);
+			    if (isT12Collection)
+				{
+				    throw new NotImplementedException();
+				}
+				else
+				{
+                    RegisterArg12BubbledChange((IModelElement)Argument12.Value);
+				}
             }
         }
 		
@@ -5513,9 +7073,16 @@ namespace NMF.Expressions
             {
                 var oldValue = e.OldValue as IModelElement;
                 var newValue = e.NewValue as IModelElement;
-                UnregisterArg1BubbledChange(oldValue);
-                Refresh();
-                RegisterArg1BubbledChange(newValue);
+			    if (isT1Collection)
+				{
+				    throw new NotImplementedException();
+				}
+				else
+				{
+                    UnregisterArg1BubbledChange(oldValue);
+                    Refresh();
+                    RegisterArg1BubbledChange((IModelElement)Argument1.Value);
+				}
             }
             else
             {
@@ -5574,9 +7141,16 @@ namespace NMF.Expressions
             {
                 var oldValue = e.OldValue as IModelElement;
                 var newValue = e.NewValue as IModelElement;
-                UnregisterArg2BubbledChange(oldValue);
-                Refresh();
-                RegisterArg2BubbledChange(newValue);
+			    if (isT2Collection)
+				{
+				    throw new NotImplementedException();
+				}
+				else
+				{
+                    UnregisterArg2BubbledChange(oldValue);
+                    Refresh();
+                    RegisterArg2BubbledChange((IModelElement)Argument2.Value);
+				}
             }
             else
             {
@@ -5635,9 +7209,16 @@ namespace NMF.Expressions
             {
                 var oldValue = e.OldValue as IModelElement;
                 var newValue = e.NewValue as IModelElement;
-                UnregisterArg3BubbledChange(oldValue);
-                Refresh();
-                RegisterArg3BubbledChange(newValue);
+			    if (isT3Collection)
+				{
+				    throw new NotImplementedException();
+				}
+				else
+				{
+                    UnregisterArg3BubbledChange(oldValue);
+                    Refresh();
+                    RegisterArg3BubbledChange((IModelElement)Argument3.Value);
+				}
             }
             else
             {
@@ -5696,9 +7277,16 @@ namespace NMF.Expressions
             {
                 var oldValue = e.OldValue as IModelElement;
                 var newValue = e.NewValue as IModelElement;
-                UnregisterArg4BubbledChange(oldValue);
-                Refresh();
-                RegisterArg4BubbledChange(newValue);
+			    if (isT4Collection)
+				{
+				    throw new NotImplementedException();
+				}
+				else
+				{
+                    UnregisterArg4BubbledChange(oldValue);
+                    Refresh();
+                    RegisterArg4BubbledChange((IModelElement)Argument4.Value);
+				}
             }
             else
             {
@@ -5757,9 +7345,16 @@ namespace NMF.Expressions
             {
                 var oldValue = e.OldValue as IModelElement;
                 var newValue = e.NewValue as IModelElement;
-                UnregisterArg5BubbledChange(oldValue);
-                Refresh();
-                RegisterArg5BubbledChange(newValue);
+			    if (isT5Collection)
+				{
+				    throw new NotImplementedException();
+				}
+				else
+				{
+                    UnregisterArg5BubbledChange(oldValue);
+                    Refresh();
+                    RegisterArg5BubbledChange((IModelElement)Argument5.Value);
+				}
             }
             else
             {
@@ -5818,9 +7413,16 @@ namespace NMF.Expressions
             {
                 var oldValue = e.OldValue as IModelElement;
                 var newValue = e.NewValue as IModelElement;
-                UnregisterArg6BubbledChange(oldValue);
-                Refresh();
-                RegisterArg6BubbledChange(newValue);
+			    if (isT6Collection)
+				{
+				    throw new NotImplementedException();
+				}
+				else
+				{
+                    UnregisterArg6BubbledChange(oldValue);
+                    Refresh();
+                    RegisterArg6BubbledChange((IModelElement)Argument6.Value);
+				}
             }
             else
             {
@@ -5879,9 +7481,16 @@ namespace NMF.Expressions
             {
                 var oldValue = e.OldValue as IModelElement;
                 var newValue = e.NewValue as IModelElement;
-                UnregisterArg7BubbledChange(oldValue);
-                Refresh();
-                RegisterArg7BubbledChange(newValue);
+			    if (isT7Collection)
+				{
+				    throw new NotImplementedException();
+				}
+				else
+				{
+                    UnregisterArg7BubbledChange(oldValue);
+                    Refresh();
+                    RegisterArg7BubbledChange((IModelElement)Argument7.Value);
+				}
             }
             else
             {
@@ -5940,9 +7549,16 @@ namespace NMF.Expressions
             {
                 var oldValue = e.OldValue as IModelElement;
                 var newValue = e.NewValue as IModelElement;
-                UnregisterArg8BubbledChange(oldValue);
-                Refresh();
-                RegisterArg8BubbledChange(newValue);
+			    if (isT8Collection)
+				{
+				    throw new NotImplementedException();
+				}
+				else
+				{
+                    UnregisterArg8BubbledChange(oldValue);
+                    Refresh();
+                    RegisterArg8BubbledChange((IModelElement)Argument8.Value);
+				}
             }
             else
             {
@@ -6001,9 +7617,16 @@ namespace NMF.Expressions
             {
                 var oldValue = e.OldValue as IModelElement;
                 var newValue = e.NewValue as IModelElement;
-                UnregisterArg9BubbledChange(oldValue);
-                Refresh();
-                RegisterArg9BubbledChange(newValue);
+			    if (isT9Collection)
+				{
+				    throw new NotImplementedException();
+				}
+				else
+				{
+                    UnregisterArg9BubbledChange(oldValue);
+                    Refresh();
+                    RegisterArg9BubbledChange((IModelElement)Argument9.Value);
+				}
             }
             else
             {
@@ -6062,9 +7685,16 @@ namespace NMF.Expressions
             {
                 var oldValue = e.OldValue as IModelElement;
                 var newValue = e.NewValue as IModelElement;
-                UnregisterArg10BubbledChange(oldValue);
-                Refresh();
-                RegisterArg10BubbledChange(newValue);
+			    if (isT10Collection)
+				{
+				    throw new NotImplementedException();
+				}
+				else
+				{
+                    UnregisterArg10BubbledChange(oldValue);
+                    Refresh();
+                    RegisterArg10BubbledChange((IModelElement)Argument10.Value);
+				}
             }
             else
             {
@@ -6123,9 +7753,16 @@ namespace NMF.Expressions
             {
                 var oldValue = e.OldValue as IModelElement;
                 var newValue = e.NewValue as IModelElement;
-                UnregisterArg11BubbledChange(oldValue);
-                Refresh();
-                RegisterArg11BubbledChange(newValue);
+			    if (isT11Collection)
+				{
+				    throw new NotImplementedException();
+				}
+				else
+				{
+                    UnregisterArg11BubbledChange(oldValue);
+                    Refresh();
+                    RegisterArg11BubbledChange((IModelElement)Argument11.Value);
+				}
             }
             else
             {
@@ -6184,9 +7821,16 @@ namespace NMF.Expressions
             {
                 var oldValue = e.OldValue as IModelElement;
                 var newValue = e.NewValue as IModelElement;
-                UnregisterArg12BubbledChange(oldValue);
-                Refresh();
-                RegisterArg12BubbledChange(newValue);
+			    if (isT12Collection)
+				{
+				    throw new NotImplementedException();
+				}
+				else
+				{
+                    UnregisterArg12BubbledChange(oldValue);
+                    Refresh();
+                    RegisterArg12BubbledChange((IModelElement)Argument12.Value);
+				}
             }
             else
             {
@@ -6200,73 +7844,157 @@ namespace NMF.Expressions
             Argument1.ValueChanged -= Argument1Changed;
             if (Arg1Properties != null)
             {
-                UnregisterArg1BubbledChange((IModelElement)Argument1.Value);
+			    if (isT1Collection)
+				{
+				    throw new NotImplementedException();
+				}
+				else
+				{
+                    UnregisterArg1BubbledChange((IModelElement)Argument1.Value);
+				}
             }
             Argument2.Detach();
             Argument2.ValueChanged -= Argument2Changed;
             if (Arg2Properties != null)
             {
-                UnregisterArg2BubbledChange((IModelElement)Argument2.Value);
+			    if (isT2Collection)
+				{
+				    throw new NotImplementedException();
+				}
+				else
+				{
+                    UnregisterArg2BubbledChange((IModelElement)Argument2.Value);
+				}
             }
             Argument3.Detach();
             Argument3.ValueChanged -= Argument3Changed;
             if (Arg3Properties != null)
             {
-                UnregisterArg3BubbledChange((IModelElement)Argument3.Value);
+			    if (isT3Collection)
+				{
+				    throw new NotImplementedException();
+				}
+				else
+				{
+                    UnregisterArg3BubbledChange((IModelElement)Argument3.Value);
+				}
             }
             Argument4.Detach();
             Argument4.ValueChanged -= Argument4Changed;
             if (Arg4Properties != null)
             {
-                UnregisterArg4BubbledChange((IModelElement)Argument4.Value);
+			    if (isT4Collection)
+				{
+				    throw new NotImplementedException();
+				}
+				else
+				{
+                    UnregisterArg4BubbledChange((IModelElement)Argument4.Value);
+				}
             }
             Argument5.Detach();
             Argument5.ValueChanged -= Argument5Changed;
             if (Arg5Properties != null)
             {
-                UnregisterArg5BubbledChange((IModelElement)Argument5.Value);
+			    if (isT5Collection)
+				{
+				    throw new NotImplementedException();
+				}
+				else
+				{
+                    UnregisterArg5BubbledChange((IModelElement)Argument5.Value);
+				}
             }
             Argument6.Detach();
             Argument6.ValueChanged -= Argument6Changed;
             if (Arg6Properties != null)
             {
-                UnregisterArg6BubbledChange((IModelElement)Argument6.Value);
+			    if (isT6Collection)
+				{
+				    throw new NotImplementedException();
+				}
+				else
+				{
+                    UnregisterArg6BubbledChange((IModelElement)Argument6.Value);
+				}
             }
             Argument7.Detach();
             Argument7.ValueChanged -= Argument7Changed;
             if (Arg7Properties != null)
             {
-                UnregisterArg7BubbledChange((IModelElement)Argument7.Value);
+			    if (isT7Collection)
+				{
+				    throw new NotImplementedException();
+				}
+				else
+				{
+                    UnregisterArg7BubbledChange((IModelElement)Argument7.Value);
+				}
             }
             Argument8.Detach();
             Argument8.ValueChanged -= Argument8Changed;
             if (Arg8Properties != null)
             {
-                UnregisterArg8BubbledChange((IModelElement)Argument8.Value);
+			    if (isT8Collection)
+				{
+				    throw new NotImplementedException();
+				}
+				else
+				{
+                    UnregisterArg8BubbledChange((IModelElement)Argument8.Value);
+				}
             }
             Argument9.Detach();
             Argument9.ValueChanged -= Argument9Changed;
             if (Arg9Properties != null)
             {
-                UnregisterArg9BubbledChange((IModelElement)Argument9.Value);
+			    if (isT9Collection)
+				{
+				    throw new NotImplementedException();
+				}
+				else
+				{
+                    UnregisterArg9BubbledChange((IModelElement)Argument9.Value);
+				}
             }
             Argument10.Detach();
             Argument10.ValueChanged -= Argument10Changed;
             if (Arg10Properties != null)
             {
-                UnregisterArg10BubbledChange((IModelElement)Argument10.Value);
+			    if (isT10Collection)
+				{
+				    throw new NotImplementedException();
+				}
+				else
+				{
+                    UnregisterArg10BubbledChange((IModelElement)Argument10.Value);
+				}
             }
             Argument11.Detach();
             Argument11.ValueChanged -= Argument11Changed;
             if (Arg11Properties != null)
             {
-                UnregisterArg11BubbledChange((IModelElement)Argument11.Value);
+			    if (isT11Collection)
+				{
+				    throw new NotImplementedException();
+				}
+				else
+				{
+                    UnregisterArg11BubbledChange((IModelElement)Argument11.Value);
+				}
             }
             Argument12.Detach();
             Argument12.ValueChanged -= Argument12Changed;
             if (Arg12Properties != null)
             {
-                UnregisterArg12BubbledChange((IModelElement)Argument12.Value);
+			    if (isT12Collection)
+				{
+				    throw new NotImplementedException();
+				}
+				else
+				{
+                    UnregisterArg12BubbledChange((IModelElement)Argument12.Value);
+				}
             }
         }
 
@@ -6277,6 +8005,20 @@ namespace NMF.Expressions
     }
     internal class ObservablePromotionMethodCall<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, TResult> : ObservableStaticMethodCall<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, TResult>
     {
+        private static bool isT1Collection = typeof(INotifyEnumerable).IsAssignableFrom(typeof(T1));
+        private static bool isT2Collection = typeof(INotifyEnumerable).IsAssignableFrom(typeof(T2));
+        private static bool isT3Collection = typeof(INotifyEnumerable).IsAssignableFrom(typeof(T3));
+        private static bool isT4Collection = typeof(INotifyEnumerable).IsAssignableFrom(typeof(T4));
+        private static bool isT5Collection = typeof(INotifyEnumerable).IsAssignableFrom(typeof(T5));
+        private static bool isT6Collection = typeof(INotifyEnumerable).IsAssignableFrom(typeof(T6));
+        private static bool isT7Collection = typeof(INotifyEnumerable).IsAssignableFrom(typeof(T7));
+        private static bool isT8Collection = typeof(INotifyEnumerable).IsAssignableFrom(typeof(T8));
+        private static bool isT9Collection = typeof(INotifyEnumerable).IsAssignableFrom(typeof(T9));
+        private static bool isT10Collection = typeof(INotifyEnumerable).IsAssignableFrom(typeof(T10));
+        private static bool isT11Collection = typeof(INotifyEnumerable).IsAssignableFrom(typeof(T11));
+        private static bool isT12Collection = typeof(INotifyEnumerable).IsAssignableFrom(typeof(T12));
+        private static bool isT13Collection = typeof(INotifyEnumerable).IsAssignableFrom(typeof(T13));
+
         public ICollection<string> Arg1Properties { get; private set; }
         public bool Arg1Composition { get; private set; }
         public ICollection<string> Arg2Properties { get; private set; }
@@ -6341,79 +8083,170 @@ namespace NMF.Expressions
             Argument1.ValueChanged += Argument1Changed;
             if (Arg1Properties != null)
             {
-                RegisterArg1BubbledChange((IModelElement)Argument1.Value);
+			    if (isT1Collection)
+				{
+				    throw new NotImplementedException();
+				}
+				else
+				{
+                    RegisterArg1BubbledChange((IModelElement)Argument1.Value);
+				}
             }
             Argument2.Attach();
             Argument2.ValueChanged += Argument2Changed;
             if (Arg2Properties != null)
             {
-                RegisterArg2BubbledChange((IModelElement)Argument2.Value);
+			    if (isT2Collection)
+				{
+				    throw new NotImplementedException();
+				}
+				else
+				{
+                    RegisterArg2BubbledChange((IModelElement)Argument2.Value);
+				}
             }
             Argument3.Attach();
             Argument3.ValueChanged += Argument3Changed;
             if (Arg3Properties != null)
             {
-                RegisterArg3BubbledChange((IModelElement)Argument3.Value);
+			    if (isT3Collection)
+				{
+				    throw new NotImplementedException();
+				}
+				else
+				{
+                    RegisterArg3BubbledChange((IModelElement)Argument3.Value);
+				}
             }
             Argument4.Attach();
             Argument4.ValueChanged += Argument4Changed;
             if (Arg4Properties != null)
             {
-                RegisterArg4BubbledChange((IModelElement)Argument4.Value);
+			    if (isT4Collection)
+				{
+				    throw new NotImplementedException();
+				}
+				else
+				{
+                    RegisterArg4BubbledChange((IModelElement)Argument4.Value);
+				}
             }
             Argument5.Attach();
             Argument5.ValueChanged += Argument5Changed;
             if (Arg5Properties != null)
             {
-                RegisterArg5BubbledChange((IModelElement)Argument5.Value);
+			    if (isT5Collection)
+				{
+				    throw new NotImplementedException();
+				}
+				else
+				{
+                    RegisterArg5BubbledChange((IModelElement)Argument5.Value);
+				}
             }
             Argument6.Attach();
             Argument6.ValueChanged += Argument6Changed;
             if (Arg6Properties != null)
             {
-                RegisterArg6BubbledChange((IModelElement)Argument6.Value);
+			    if (isT6Collection)
+				{
+				    throw new NotImplementedException();
+				}
+				else
+				{
+                    RegisterArg6BubbledChange((IModelElement)Argument6.Value);
+				}
             }
             Argument7.Attach();
             Argument7.ValueChanged += Argument7Changed;
             if (Arg7Properties != null)
             {
-                RegisterArg7BubbledChange((IModelElement)Argument7.Value);
+			    if (isT7Collection)
+				{
+				    throw new NotImplementedException();
+				}
+				else
+				{
+                    RegisterArg7BubbledChange((IModelElement)Argument7.Value);
+				}
             }
             Argument8.Attach();
             Argument8.ValueChanged += Argument8Changed;
             if (Arg8Properties != null)
             {
-                RegisterArg8BubbledChange((IModelElement)Argument8.Value);
+			    if (isT8Collection)
+				{
+				    throw new NotImplementedException();
+				}
+				else
+				{
+                    RegisterArg8BubbledChange((IModelElement)Argument8.Value);
+				}
             }
             Argument9.Attach();
             Argument9.ValueChanged += Argument9Changed;
             if (Arg9Properties != null)
             {
-                RegisterArg9BubbledChange((IModelElement)Argument9.Value);
+			    if (isT9Collection)
+				{
+				    throw new NotImplementedException();
+				}
+				else
+				{
+                    RegisterArg9BubbledChange((IModelElement)Argument9.Value);
+				}
             }
             Argument10.Attach();
             Argument10.ValueChanged += Argument10Changed;
             if (Arg10Properties != null)
             {
-                RegisterArg10BubbledChange((IModelElement)Argument10.Value);
+			    if (isT10Collection)
+				{
+				    throw new NotImplementedException();
+				}
+				else
+				{
+                    RegisterArg10BubbledChange((IModelElement)Argument10.Value);
+				}
             }
             Argument11.Attach();
             Argument11.ValueChanged += Argument11Changed;
             if (Arg11Properties != null)
             {
-                RegisterArg11BubbledChange((IModelElement)Argument11.Value);
+			    if (isT11Collection)
+				{
+				    throw new NotImplementedException();
+				}
+				else
+				{
+                    RegisterArg11BubbledChange((IModelElement)Argument11.Value);
+				}
             }
             Argument12.Attach();
             Argument12.ValueChanged += Argument12Changed;
             if (Arg12Properties != null)
             {
-                RegisterArg12BubbledChange((IModelElement)Argument12.Value);
+			    if (isT12Collection)
+				{
+				    throw new NotImplementedException();
+				}
+				else
+				{
+                    RegisterArg12BubbledChange((IModelElement)Argument12.Value);
+				}
             }
             Argument13.Attach();
             Argument13.ValueChanged += Argument13Changed;
             if (Arg13Properties != null)
             {
-                RegisterArg13BubbledChange((IModelElement)Argument13.Value);
+			    if (isT13Collection)
+				{
+				    throw new NotImplementedException();
+				}
+				else
+				{
+                    RegisterArg13BubbledChange((IModelElement)Argument13.Value);
+				}
             }
         }
 		
@@ -6469,9 +8302,16 @@ namespace NMF.Expressions
             {
                 var oldValue = e.OldValue as IModelElement;
                 var newValue = e.NewValue as IModelElement;
-                UnregisterArg1BubbledChange(oldValue);
-                Refresh();
-                RegisterArg1BubbledChange(newValue);
+			    if (isT1Collection)
+				{
+				    throw new NotImplementedException();
+				}
+				else
+				{
+                    UnregisterArg1BubbledChange(oldValue);
+                    Refresh();
+                    RegisterArg1BubbledChange((IModelElement)Argument1.Value);
+				}
             }
             else
             {
@@ -6530,9 +8370,16 @@ namespace NMF.Expressions
             {
                 var oldValue = e.OldValue as IModelElement;
                 var newValue = e.NewValue as IModelElement;
-                UnregisterArg2BubbledChange(oldValue);
-                Refresh();
-                RegisterArg2BubbledChange(newValue);
+			    if (isT2Collection)
+				{
+				    throw new NotImplementedException();
+				}
+				else
+				{
+                    UnregisterArg2BubbledChange(oldValue);
+                    Refresh();
+                    RegisterArg2BubbledChange((IModelElement)Argument2.Value);
+				}
             }
             else
             {
@@ -6591,9 +8438,16 @@ namespace NMF.Expressions
             {
                 var oldValue = e.OldValue as IModelElement;
                 var newValue = e.NewValue as IModelElement;
-                UnregisterArg3BubbledChange(oldValue);
-                Refresh();
-                RegisterArg3BubbledChange(newValue);
+			    if (isT3Collection)
+				{
+				    throw new NotImplementedException();
+				}
+				else
+				{
+                    UnregisterArg3BubbledChange(oldValue);
+                    Refresh();
+                    RegisterArg3BubbledChange((IModelElement)Argument3.Value);
+				}
             }
             else
             {
@@ -6652,9 +8506,16 @@ namespace NMF.Expressions
             {
                 var oldValue = e.OldValue as IModelElement;
                 var newValue = e.NewValue as IModelElement;
-                UnregisterArg4BubbledChange(oldValue);
-                Refresh();
-                RegisterArg4BubbledChange(newValue);
+			    if (isT4Collection)
+				{
+				    throw new NotImplementedException();
+				}
+				else
+				{
+                    UnregisterArg4BubbledChange(oldValue);
+                    Refresh();
+                    RegisterArg4BubbledChange((IModelElement)Argument4.Value);
+				}
             }
             else
             {
@@ -6713,9 +8574,16 @@ namespace NMF.Expressions
             {
                 var oldValue = e.OldValue as IModelElement;
                 var newValue = e.NewValue as IModelElement;
-                UnregisterArg5BubbledChange(oldValue);
-                Refresh();
-                RegisterArg5BubbledChange(newValue);
+			    if (isT5Collection)
+				{
+				    throw new NotImplementedException();
+				}
+				else
+				{
+                    UnregisterArg5BubbledChange(oldValue);
+                    Refresh();
+                    RegisterArg5BubbledChange((IModelElement)Argument5.Value);
+				}
             }
             else
             {
@@ -6774,9 +8642,16 @@ namespace NMF.Expressions
             {
                 var oldValue = e.OldValue as IModelElement;
                 var newValue = e.NewValue as IModelElement;
-                UnregisterArg6BubbledChange(oldValue);
-                Refresh();
-                RegisterArg6BubbledChange(newValue);
+			    if (isT6Collection)
+				{
+				    throw new NotImplementedException();
+				}
+				else
+				{
+                    UnregisterArg6BubbledChange(oldValue);
+                    Refresh();
+                    RegisterArg6BubbledChange((IModelElement)Argument6.Value);
+				}
             }
             else
             {
@@ -6835,9 +8710,16 @@ namespace NMF.Expressions
             {
                 var oldValue = e.OldValue as IModelElement;
                 var newValue = e.NewValue as IModelElement;
-                UnregisterArg7BubbledChange(oldValue);
-                Refresh();
-                RegisterArg7BubbledChange(newValue);
+			    if (isT7Collection)
+				{
+				    throw new NotImplementedException();
+				}
+				else
+				{
+                    UnregisterArg7BubbledChange(oldValue);
+                    Refresh();
+                    RegisterArg7BubbledChange((IModelElement)Argument7.Value);
+				}
             }
             else
             {
@@ -6896,9 +8778,16 @@ namespace NMF.Expressions
             {
                 var oldValue = e.OldValue as IModelElement;
                 var newValue = e.NewValue as IModelElement;
-                UnregisterArg8BubbledChange(oldValue);
-                Refresh();
-                RegisterArg8BubbledChange(newValue);
+			    if (isT8Collection)
+				{
+				    throw new NotImplementedException();
+				}
+				else
+				{
+                    UnregisterArg8BubbledChange(oldValue);
+                    Refresh();
+                    RegisterArg8BubbledChange((IModelElement)Argument8.Value);
+				}
             }
             else
             {
@@ -6957,9 +8846,16 @@ namespace NMF.Expressions
             {
                 var oldValue = e.OldValue as IModelElement;
                 var newValue = e.NewValue as IModelElement;
-                UnregisterArg9BubbledChange(oldValue);
-                Refresh();
-                RegisterArg9BubbledChange(newValue);
+			    if (isT9Collection)
+				{
+				    throw new NotImplementedException();
+				}
+				else
+				{
+                    UnregisterArg9BubbledChange(oldValue);
+                    Refresh();
+                    RegisterArg9BubbledChange((IModelElement)Argument9.Value);
+				}
             }
             else
             {
@@ -7018,9 +8914,16 @@ namespace NMF.Expressions
             {
                 var oldValue = e.OldValue as IModelElement;
                 var newValue = e.NewValue as IModelElement;
-                UnregisterArg10BubbledChange(oldValue);
-                Refresh();
-                RegisterArg10BubbledChange(newValue);
+			    if (isT10Collection)
+				{
+				    throw new NotImplementedException();
+				}
+				else
+				{
+                    UnregisterArg10BubbledChange(oldValue);
+                    Refresh();
+                    RegisterArg10BubbledChange((IModelElement)Argument10.Value);
+				}
             }
             else
             {
@@ -7079,9 +8982,16 @@ namespace NMF.Expressions
             {
                 var oldValue = e.OldValue as IModelElement;
                 var newValue = e.NewValue as IModelElement;
-                UnregisterArg11BubbledChange(oldValue);
-                Refresh();
-                RegisterArg11BubbledChange(newValue);
+			    if (isT11Collection)
+				{
+				    throw new NotImplementedException();
+				}
+				else
+				{
+                    UnregisterArg11BubbledChange(oldValue);
+                    Refresh();
+                    RegisterArg11BubbledChange((IModelElement)Argument11.Value);
+				}
             }
             else
             {
@@ -7140,9 +9050,16 @@ namespace NMF.Expressions
             {
                 var oldValue = e.OldValue as IModelElement;
                 var newValue = e.NewValue as IModelElement;
-                UnregisterArg12BubbledChange(oldValue);
-                Refresh();
-                RegisterArg12BubbledChange(newValue);
+			    if (isT12Collection)
+				{
+				    throw new NotImplementedException();
+				}
+				else
+				{
+                    UnregisterArg12BubbledChange(oldValue);
+                    Refresh();
+                    RegisterArg12BubbledChange((IModelElement)Argument12.Value);
+				}
             }
             else
             {
@@ -7201,9 +9118,16 @@ namespace NMF.Expressions
             {
                 var oldValue = e.OldValue as IModelElement;
                 var newValue = e.NewValue as IModelElement;
-                UnregisterArg13BubbledChange(oldValue);
-                Refresh();
-                RegisterArg13BubbledChange(newValue);
+			    if (isT13Collection)
+				{
+				    throw new NotImplementedException();
+				}
+				else
+				{
+                    UnregisterArg13BubbledChange(oldValue);
+                    Refresh();
+                    RegisterArg13BubbledChange((IModelElement)Argument13.Value);
+				}
             }
             else
             {
@@ -7217,79 +9141,170 @@ namespace NMF.Expressions
             Argument1.ValueChanged -= Argument1Changed;
             if (Arg1Properties != null)
             {
-                UnregisterArg1BubbledChange((IModelElement)Argument1.Value);
+			    if (isT1Collection)
+				{
+				    throw new NotImplementedException();
+				}
+				else
+				{
+                    UnregisterArg1BubbledChange((IModelElement)Argument1.Value);
+				}
             }
             Argument2.Detach();
             Argument2.ValueChanged -= Argument2Changed;
             if (Arg2Properties != null)
             {
-                UnregisterArg2BubbledChange((IModelElement)Argument2.Value);
+			    if (isT2Collection)
+				{
+				    throw new NotImplementedException();
+				}
+				else
+				{
+                    UnregisterArg2BubbledChange((IModelElement)Argument2.Value);
+				}
             }
             Argument3.Detach();
             Argument3.ValueChanged -= Argument3Changed;
             if (Arg3Properties != null)
             {
-                UnregisterArg3BubbledChange((IModelElement)Argument3.Value);
+			    if (isT3Collection)
+				{
+				    throw new NotImplementedException();
+				}
+				else
+				{
+                    UnregisterArg3BubbledChange((IModelElement)Argument3.Value);
+				}
             }
             Argument4.Detach();
             Argument4.ValueChanged -= Argument4Changed;
             if (Arg4Properties != null)
             {
-                UnregisterArg4BubbledChange((IModelElement)Argument4.Value);
+			    if (isT4Collection)
+				{
+				    throw new NotImplementedException();
+				}
+				else
+				{
+                    UnregisterArg4BubbledChange((IModelElement)Argument4.Value);
+				}
             }
             Argument5.Detach();
             Argument5.ValueChanged -= Argument5Changed;
             if (Arg5Properties != null)
             {
-                UnregisterArg5BubbledChange((IModelElement)Argument5.Value);
+			    if (isT5Collection)
+				{
+				    throw new NotImplementedException();
+				}
+				else
+				{
+                    UnregisterArg5BubbledChange((IModelElement)Argument5.Value);
+				}
             }
             Argument6.Detach();
             Argument6.ValueChanged -= Argument6Changed;
             if (Arg6Properties != null)
             {
-                UnregisterArg6BubbledChange((IModelElement)Argument6.Value);
+			    if (isT6Collection)
+				{
+				    throw new NotImplementedException();
+				}
+				else
+				{
+                    UnregisterArg6BubbledChange((IModelElement)Argument6.Value);
+				}
             }
             Argument7.Detach();
             Argument7.ValueChanged -= Argument7Changed;
             if (Arg7Properties != null)
             {
-                UnregisterArg7BubbledChange((IModelElement)Argument7.Value);
+			    if (isT7Collection)
+				{
+				    throw new NotImplementedException();
+				}
+				else
+				{
+                    UnregisterArg7BubbledChange((IModelElement)Argument7.Value);
+				}
             }
             Argument8.Detach();
             Argument8.ValueChanged -= Argument8Changed;
             if (Arg8Properties != null)
             {
-                UnregisterArg8BubbledChange((IModelElement)Argument8.Value);
+			    if (isT8Collection)
+				{
+				    throw new NotImplementedException();
+				}
+				else
+				{
+                    UnregisterArg8BubbledChange((IModelElement)Argument8.Value);
+				}
             }
             Argument9.Detach();
             Argument9.ValueChanged -= Argument9Changed;
             if (Arg9Properties != null)
             {
-                UnregisterArg9BubbledChange((IModelElement)Argument9.Value);
+			    if (isT9Collection)
+				{
+				    throw new NotImplementedException();
+				}
+				else
+				{
+                    UnregisterArg9BubbledChange((IModelElement)Argument9.Value);
+				}
             }
             Argument10.Detach();
             Argument10.ValueChanged -= Argument10Changed;
             if (Arg10Properties != null)
             {
-                UnregisterArg10BubbledChange((IModelElement)Argument10.Value);
+			    if (isT10Collection)
+				{
+				    throw new NotImplementedException();
+				}
+				else
+				{
+                    UnregisterArg10BubbledChange((IModelElement)Argument10.Value);
+				}
             }
             Argument11.Detach();
             Argument11.ValueChanged -= Argument11Changed;
             if (Arg11Properties != null)
             {
-                UnregisterArg11BubbledChange((IModelElement)Argument11.Value);
+			    if (isT11Collection)
+				{
+				    throw new NotImplementedException();
+				}
+				else
+				{
+                    UnregisterArg11BubbledChange((IModelElement)Argument11.Value);
+				}
             }
             Argument12.Detach();
             Argument12.ValueChanged -= Argument12Changed;
             if (Arg12Properties != null)
             {
-                UnregisterArg12BubbledChange((IModelElement)Argument12.Value);
+			    if (isT12Collection)
+				{
+				    throw new NotImplementedException();
+				}
+				else
+				{
+                    UnregisterArg12BubbledChange((IModelElement)Argument12.Value);
+				}
             }
             Argument13.Detach();
             Argument13.ValueChanged -= Argument13Changed;
             if (Arg13Properties != null)
             {
-                UnregisterArg13BubbledChange((IModelElement)Argument13.Value);
+			    if (isT13Collection)
+				{
+				    throw new NotImplementedException();
+				}
+				else
+				{
+                    UnregisterArg13BubbledChange((IModelElement)Argument13.Value);
+				}
             }
         }
 
@@ -7300,6 +9315,21 @@ namespace NMF.Expressions
     }
     internal class ObservablePromotionMethodCall<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, TResult> : ObservableStaticMethodCall<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, TResult>
     {
+        private static bool isT1Collection = typeof(INotifyEnumerable).IsAssignableFrom(typeof(T1));
+        private static bool isT2Collection = typeof(INotifyEnumerable).IsAssignableFrom(typeof(T2));
+        private static bool isT3Collection = typeof(INotifyEnumerable).IsAssignableFrom(typeof(T3));
+        private static bool isT4Collection = typeof(INotifyEnumerable).IsAssignableFrom(typeof(T4));
+        private static bool isT5Collection = typeof(INotifyEnumerable).IsAssignableFrom(typeof(T5));
+        private static bool isT6Collection = typeof(INotifyEnumerable).IsAssignableFrom(typeof(T6));
+        private static bool isT7Collection = typeof(INotifyEnumerable).IsAssignableFrom(typeof(T7));
+        private static bool isT8Collection = typeof(INotifyEnumerable).IsAssignableFrom(typeof(T8));
+        private static bool isT9Collection = typeof(INotifyEnumerable).IsAssignableFrom(typeof(T9));
+        private static bool isT10Collection = typeof(INotifyEnumerable).IsAssignableFrom(typeof(T10));
+        private static bool isT11Collection = typeof(INotifyEnumerable).IsAssignableFrom(typeof(T11));
+        private static bool isT12Collection = typeof(INotifyEnumerable).IsAssignableFrom(typeof(T12));
+        private static bool isT13Collection = typeof(INotifyEnumerable).IsAssignableFrom(typeof(T13));
+        private static bool isT14Collection = typeof(INotifyEnumerable).IsAssignableFrom(typeof(T14));
+
         public ICollection<string> Arg1Properties { get; private set; }
         public bool Arg1Composition { get; private set; }
         public ICollection<string> Arg2Properties { get; private set; }
@@ -7368,85 +9398,183 @@ namespace NMF.Expressions
             Argument1.ValueChanged += Argument1Changed;
             if (Arg1Properties != null)
             {
-                RegisterArg1BubbledChange((IModelElement)Argument1.Value);
+			    if (isT1Collection)
+				{
+				    throw new NotImplementedException();
+				}
+				else
+				{
+                    RegisterArg1BubbledChange((IModelElement)Argument1.Value);
+				}
             }
             Argument2.Attach();
             Argument2.ValueChanged += Argument2Changed;
             if (Arg2Properties != null)
             {
-                RegisterArg2BubbledChange((IModelElement)Argument2.Value);
+			    if (isT2Collection)
+				{
+				    throw new NotImplementedException();
+				}
+				else
+				{
+                    RegisterArg2BubbledChange((IModelElement)Argument2.Value);
+				}
             }
             Argument3.Attach();
             Argument3.ValueChanged += Argument3Changed;
             if (Arg3Properties != null)
             {
-                RegisterArg3BubbledChange((IModelElement)Argument3.Value);
+			    if (isT3Collection)
+				{
+				    throw new NotImplementedException();
+				}
+				else
+				{
+                    RegisterArg3BubbledChange((IModelElement)Argument3.Value);
+				}
             }
             Argument4.Attach();
             Argument4.ValueChanged += Argument4Changed;
             if (Arg4Properties != null)
             {
-                RegisterArg4BubbledChange((IModelElement)Argument4.Value);
+			    if (isT4Collection)
+				{
+				    throw new NotImplementedException();
+				}
+				else
+				{
+                    RegisterArg4BubbledChange((IModelElement)Argument4.Value);
+				}
             }
             Argument5.Attach();
             Argument5.ValueChanged += Argument5Changed;
             if (Arg5Properties != null)
             {
-                RegisterArg5BubbledChange((IModelElement)Argument5.Value);
+			    if (isT5Collection)
+				{
+				    throw new NotImplementedException();
+				}
+				else
+				{
+                    RegisterArg5BubbledChange((IModelElement)Argument5.Value);
+				}
             }
             Argument6.Attach();
             Argument6.ValueChanged += Argument6Changed;
             if (Arg6Properties != null)
             {
-                RegisterArg6BubbledChange((IModelElement)Argument6.Value);
+			    if (isT6Collection)
+				{
+				    throw new NotImplementedException();
+				}
+				else
+				{
+                    RegisterArg6BubbledChange((IModelElement)Argument6.Value);
+				}
             }
             Argument7.Attach();
             Argument7.ValueChanged += Argument7Changed;
             if (Arg7Properties != null)
             {
-                RegisterArg7BubbledChange((IModelElement)Argument7.Value);
+			    if (isT7Collection)
+				{
+				    throw new NotImplementedException();
+				}
+				else
+				{
+                    RegisterArg7BubbledChange((IModelElement)Argument7.Value);
+				}
             }
             Argument8.Attach();
             Argument8.ValueChanged += Argument8Changed;
             if (Arg8Properties != null)
             {
-                RegisterArg8BubbledChange((IModelElement)Argument8.Value);
+			    if (isT8Collection)
+				{
+				    throw new NotImplementedException();
+				}
+				else
+				{
+                    RegisterArg8BubbledChange((IModelElement)Argument8.Value);
+				}
             }
             Argument9.Attach();
             Argument9.ValueChanged += Argument9Changed;
             if (Arg9Properties != null)
             {
-                RegisterArg9BubbledChange((IModelElement)Argument9.Value);
+			    if (isT9Collection)
+				{
+				    throw new NotImplementedException();
+				}
+				else
+				{
+                    RegisterArg9BubbledChange((IModelElement)Argument9.Value);
+				}
             }
             Argument10.Attach();
             Argument10.ValueChanged += Argument10Changed;
             if (Arg10Properties != null)
             {
-                RegisterArg10BubbledChange((IModelElement)Argument10.Value);
+			    if (isT10Collection)
+				{
+				    throw new NotImplementedException();
+				}
+				else
+				{
+                    RegisterArg10BubbledChange((IModelElement)Argument10.Value);
+				}
             }
             Argument11.Attach();
             Argument11.ValueChanged += Argument11Changed;
             if (Arg11Properties != null)
             {
-                RegisterArg11BubbledChange((IModelElement)Argument11.Value);
+			    if (isT11Collection)
+				{
+				    throw new NotImplementedException();
+				}
+				else
+				{
+                    RegisterArg11BubbledChange((IModelElement)Argument11.Value);
+				}
             }
             Argument12.Attach();
             Argument12.ValueChanged += Argument12Changed;
             if (Arg12Properties != null)
             {
-                RegisterArg12BubbledChange((IModelElement)Argument12.Value);
+			    if (isT12Collection)
+				{
+				    throw new NotImplementedException();
+				}
+				else
+				{
+                    RegisterArg12BubbledChange((IModelElement)Argument12.Value);
+				}
             }
             Argument13.Attach();
             Argument13.ValueChanged += Argument13Changed;
             if (Arg13Properties != null)
             {
-                RegisterArg13BubbledChange((IModelElement)Argument13.Value);
+			    if (isT13Collection)
+				{
+				    throw new NotImplementedException();
+				}
+				else
+				{
+                    RegisterArg13BubbledChange((IModelElement)Argument13.Value);
+				}
             }
             Argument14.Attach();
             Argument14.ValueChanged += Argument14Changed;
             if (Arg14Properties != null)
             {
-                RegisterArg14BubbledChange((IModelElement)Argument14.Value);
+			    if (isT14Collection)
+				{
+				    throw new NotImplementedException();
+				}
+				else
+				{
+                    RegisterArg14BubbledChange((IModelElement)Argument14.Value);
+				}
             }
         }
 		
@@ -7502,9 +9630,16 @@ namespace NMF.Expressions
             {
                 var oldValue = e.OldValue as IModelElement;
                 var newValue = e.NewValue as IModelElement;
-                UnregisterArg1BubbledChange(oldValue);
-                Refresh();
-                RegisterArg1BubbledChange(newValue);
+			    if (isT1Collection)
+				{
+				    throw new NotImplementedException();
+				}
+				else
+				{
+                    UnregisterArg1BubbledChange(oldValue);
+                    Refresh();
+                    RegisterArg1BubbledChange((IModelElement)Argument1.Value);
+				}
             }
             else
             {
@@ -7563,9 +9698,16 @@ namespace NMF.Expressions
             {
                 var oldValue = e.OldValue as IModelElement;
                 var newValue = e.NewValue as IModelElement;
-                UnregisterArg2BubbledChange(oldValue);
-                Refresh();
-                RegisterArg2BubbledChange(newValue);
+			    if (isT2Collection)
+				{
+				    throw new NotImplementedException();
+				}
+				else
+				{
+                    UnregisterArg2BubbledChange(oldValue);
+                    Refresh();
+                    RegisterArg2BubbledChange((IModelElement)Argument2.Value);
+				}
             }
             else
             {
@@ -7624,9 +9766,16 @@ namespace NMF.Expressions
             {
                 var oldValue = e.OldValue as IModelElement;
                 var newValue = e.NewValue as IModelElement;
-                UnregisterArg3BubbledChange(oldValue);
-                Refresh();
-                RegisterArg3BubbledChange(newValue);
+			    if (isT3Collection)
+				{
+				    throw new NotImplementedException();
+				}
+				else
+				{
+                    UnregisterArg3BubbledChange(oldValue);
+                    Refresh();
+                    RegisterArg3BubbledChange((IModelElement)Argument3.Value);
+				}
             }
             else
             {
@@ -7685,9 +9834,16 @@ namespace NMF.Expressions
             {
                 var oldValue = e.OldValue as IModelElement;
                 var newValue = e.NewValue as IModelElement;
-                UnregisterArg4BubbledChange(oldValue);
-                Refresh();
-                RegisterArg4BubbledChange(newValue);
+			    if (isT4Collection)
+				{
+				    throw new NotImplementedException();
+				}
+				else
+				{
+                    UnregisterArg4BubbledChange(oldValue);
+                    Refresh();
+                    RegisterArg4BubbledChange((IModelElement)Argument4.Value);
+				}
             }
             else
             {
@@ -7746,9 +9902,16 @@ namespace NMF.Expressions
             {
                 var oldValue = e.OldValue as IModelElement;
                 var newValue = e.NewValue as IModelElement;
-                UnregisterArg5BubbledChange(oldValue);
-                Refresh();
-                RegisterArg5BubbledChange(newValue);
+			    if (isT5Collection)
+				{
+				    throw new NotImplementedException();
+				}
+				else
+				{
+                    UnregisterArg5BubbledChange(oldValue);
+                    Refresh();
+                    RegisterArg5BubbledChange((IModelElement)Argument5.Value);
+				}
             }
             else
             {
@@ -7807,9 +9970,16 @@ namespace NMF.Expressions
             {
                 var oldValue = e.OldValue as IModelElement;
                 var newValue = e.NewValue as IModelElement;
-                UnregisterArg6BubbledChange(oldValue);
-                Refresh();
-                RegisterArg6BubbledChange(newValue);
+			    if (isT6Collection)
+				{
+				    throw new NotImplementedException();
+				}
+				else
+				{
+                    UnregisterArg6BubbledChange(oldValue);
+                    Refresh();
+                    RegisterArg6BubbledChange((IModelElement)Argument6.Value);
+				}
             }
             else
             {
@@ -7868,9 +10038,16 @@ namespace NMF.Expressions
             {
                 var oldValue = e.OldValue as IModelElement;
                 var newValue = e.NewValue as IModelElement;
-                UnregisterArg7BubbledChange(oldValue);
-                Refresh();
-                RegisterArg7BubbledChange(newValue);
+			    if (isT7Collection)
+				{
+				    throw new NotImplementedException();
+				}
+				else
+				{
+                    UnregisterArg7BubbledChange(oldValue);
+                    Refresh();
+                    RegisterArg7BubbledChange((IModelElement)Argument7.Value);
+				}
             }
             else
             {
@@ -7929,9 +10106,16 @@ namespace NMF.Expressions
             {
                 var oldValue = e.OldValue as IModelElement;
                 var newValue = e.NewValue as IModelElement;
-                UnregisterArg8BubbledChange(oldValue);
-                Refresh();
-                RegisterArg8BubbledChange(newValue);
+			    if (isT8Collection)
+				{
+				    throw new NotImplementedException();
+				}
+				else
+				{
+                    UnregisterArg8BubbledChange(oldValue);
+                    Refresh();
+                    RegisterArg8BubbledChange((IModelElement)Argument8.Value);
+				}
             }
             else
             {
@@ -7990,9 +10174,16 @@ namespace NMF.Expressions
             {
                 var oldValue = e.OldValue as IModelElement;
                 var newValue = e.NewValue as IModelElement;
-                UnregisterArg9BubbledChange(oldValue);
-                Refresh();
-                RegisterArg9BubbledChange(newValue);
+			    if (isT9Collection)
+				{
+				    throw new NotImplementedException();
+				}
+				else
+				{
+                    UnregisterArg9BubbledChange(oldValue);
+                    Refresh();
+                    RegisterArg9BubbledChange((IModelElement)Argument9.Value);
+				}
             }
             else
             {
@@ -8051,9 +10242,16 @@ namespace NMF.Expressions
             {
                 var oldValue = e.OldValue as IModelElement;
                 var newValue = e.NewValue as IModelElement;
-                UnregisterArg10BubbledChange(oldValue);
-                Refresh();
-                RegisterArg10BubbledChange(newValue);
+			    if (isT10Collection)
+				{
+				    throw new NotImplementedException();
+				}
+				else
+				{
+                    UnregisterArg10BubbledChange(oldValue);
+                    Refresh();
+                    RegisterArg10BubbledChange((IModelElement)Argument10.Value);
+				}
             }
             else
             {
@@ -8112,9 +10310,16 @@ namespace NMF.Expressions
             {
                 var oldValue = e.OldValue as IModelElement;
                 var newValue = e.NewValue as IModelElement;
-                UnregisterArg11BubbledChange(oldValue);
-                Refresh();
-                RegisterArg11BubbledChange(newValue);
+			    if (isT11Collection)
+				{
+				    throw new NotImplementedException();
+				}
+				else
+				{
+                    UnregisterArg11BubbledChange(oldValue);
+                    Refresh();
+                    RegisterArg11BubbledChange((IModelElement)Argument11.Value);
+				}
             }
             else
             {
@@ -8173,9 +10378,16 @@ namespace NMF.Expressions
             {
                 var oldValue = e.OldValue as IModelElement;
                 var newValue = e.NewValue as IModelElement;
-                UnregisterArg12BubbledChange(oldValue);
-                Refresh();
-                RegisterArg12BubbledChange(newValue);
+			    if (isT12Collection)
+				{
+				    throw new NotImplementedException();
+				}
+				else
+				{
+                    UnregisterArg12BubbledChange(oldValue);
+                    Refresh();
+                    RegisterArg12BubbledChange((IModelElement)Argument12.Value);
+				}
             }
             else
             {
@@ -8234,9 +10446,16 @@ namespace NMF.Expressions
             {
                 var oldValue = e.OldValue as IModelElement;
                 var newValue = e.NewValue as IModelElement;
-                UnregisterArg13BubbledChange(oldValue);
-                Refresh();
-                RegisterArg13BubbledChange(newValue);
+			    if (isT13Collection)
+				{
+				    throw new NotImplementedException();
+				}
+				else
+				{
+                    UnregisterArg13BubbledChange(oldValue);
+                    Refresh();
+                    RegisterArg13BubbledChange((IModelElement)Argument13.Value);
+				}
             }
             else
             {
@@ -8295,9 +10514,16 @@ namespace NMF.Expressions
             {
                 var oldValue = e.OldValue as IModelElement;
                 var newValue = e.NewValue as IModelElement;
-                UnregisterArg14BubbledChange(oldValue);
-                Refresh();
-                RegisterArg14BubbledChange(newValue);
+			    if (isT14Collection)
+				{
+				    throw new NotImplementedException();
+				}
+				else
+				{
+                    UnregisterArg14BubbledChange(oldValue);
+                    Refresh();
+                    RegisterArg14BubbledChange((IModelElement)Argument14.Value);
+				}
             }
             else
             {
@@ -8311,85 +10537,183 @@ namespace NMF.Expressions
             Argument1.ValueChanged -= Argument1Changed;
             if (Arg1Properties != null)
             {
-                UnregisterArg1BubbledChange((IModelElement)Argument1.Value);
+			    if (isT1Collection)
+				{
+				    throw new NotImplementedException();
+				}
+				else
+				{
+                    UnregisterArg1BubbledChange((IModelElement)Argument1.Value);
+				}
             }
             Argument2.Detach();
             Argument2.ValueChanged -= Argument2Changed;
             if (Arg2Properties != null)
             {
-                UnregisterArg2BubbledChange((IModelElement)Argument2.Value);
+			    if (isT2Collection)
+				{
+				    throw new NotImplementedException();
+				}
+				else
+				{
+                    UnregisterArg2BubbledChange((IModelElement)Argument2.Value);
+				}
             }
             Argument3.Detach();
             Argument3.ValueChanged -= Argument3Changed;
             if (Arg3Properties != null)
             {
-                UnregisterArg3BubbledChange((IModelElement)Argument3.Value);
+			    if (isT3Collection)
+				{
+				    throw new NotImplementedException();
+				}
+				else
+				{
+                    UnregisterArg3BubbledChange((IModelElement)Argument3.Value);
+				}
             }
             Argument4.Detach();
             Argument4.ValueChanged -= Argument4Changed;
             if (Arg4Properties != null)
             {
-                UnregisterArg4BubbledChange((IModelElement)Argument4.Value);
+			    if (isT4Collection)
+				{
+				    throw new NotImplementedException();
+				}
+				else
+				{
+                    UnregisterArg4BubbledChange((IModelElement)Argument4.Value);
+				}
             }
             Argument5.Detach();
             Argument5.ValueChanged -= Argument5Changed;
             if (Arg5Properties != null)
             {
-                UnregisterArg5BubbledChange((IModelElement)Argument5.Value);
+			    if (isT5Collection)
+				{
+				    throw new NotImplementedException();
+				}
+				else
+				{
+                    UnregisterArg5BubbledChange((IModelElement)Argument5.Value);
+				}
             }
             Argument6.Detach();
             Argument6.ValueChanged -= Argument6Changed;
             if (Arg6Properties != null)
             {
-                UnregisterArg6BubbledChange((IModelElement)Argument6.Value);
+			    if (isT6Collection)
+				{
+				    throw new NotImplementedException();
+				}
+				else
+				{
+                    UnregisterArg6BubbledChange((IModelElement)Argument6.Value);
+				}
             }
             Argument7.Detach();
             Argument7.ValueChanged -= Argument7Changed;
             if (Arg7Properties != null)
             {
-                UnregisterArg7BubbledChange((IModelElement)Argument7.Value);
+			    if (isT7Collection)
+				{
+				    throw new NotImplementedException();
+				}
+				else
+				{
+                    UnregisterArg7BubbledChange((IModelElement)Argument7.Value);
+				}
             }
             Argument8.Detach();
             Argument8.ValueChanged -= Argument8Changed;
             if (Arg8Properties != null)
             {
-                UnregisterArg8BubbledChange((IModelElement)Argument8.Value);
+			    if (isT8Collection)
+				{
+				    throw new NotImplementedException();
+				}
+				else
+				{
+                    UnregisterArg8BubbledChange((IModelElement)Argument8.Value);
+				}
             }
             Argument9.Detach();
             Argument9.ValueChanged -= Argument9Changed;
             if (Arg9Properties != null)
             {
-                UnregisterArg9BubbledChange((IModelElement)Argument9.Value);
+			    if (isT9Collection)
+				{
+				    throw new NotImplementedException();
+				}
+				else
+				{
+                    UnregisterArg9BubbledChange((IModelElement)Argument9.Value);
+				}
             }
             Argument10.Detach();
             Argument10.ValueChanged -= Argument10Changed;
             if (Arg10Properties != null)
             {
-                UnregisterArg10BubbledChange((IModelElement)Argument10.Value);
+			    if (isT10Collection)
+				{
+				    throw new NotImplementedException();
+				}
+				else
+				{
+                    UnregisterArg10BubbledChange((IModelElement)Argument10.Value);
+				}
             }
             Argument11.Detach();
             Argument11.ValueChanged -= Argument11Changed;
             if (Arg11Properties != null)
             {
-                UnregisterArg11BubbledChange((IModelElement)Argument11.Value);
+			    if (isT11Collection)
+				{
+				    throw new NotImplementedException();
+				}
+				else
+				{
+                    UnregisterArg11BubbledChange((IModelElement)Argument11.Value);
+				}
             }
             Argument12.Detach();
             Argument12.ValueChanged -= Argument12Changed;
             if (Arg12Properties != null)
             {
-                UnregisterArg12BubbledChange((IModelElement)Argument12.Value);
+			    if (isT12Collection)
+				{
+				    throw new NotImplementedException();
+				}
+				else
+				{
+                    UnregisterArg12BubbledChange((IModelElement)Argument12.Value);
+				}
             }
             Argument13.Detach();
             Argument13.ValueChanged -= Argument13Changed;
             if (Arg13Properties != null)
             {
-                UnregisterArg13BubbledChange((IModelElement)Argument13.Value);
+			    if (isT13Collection)
+				{
+				    throw new NotImplementedException();
+				}
+				else
+				{
+                    UnregisterArg13BubbledChange((IModelElement)Argument13.Value);
+				}
             }
             Argument14.Detach();
             Argument14.ValueChanged -= Argument14Changed;
             if (Arg14Properties != null)
             {
-                UnregisterArg14BubbledChange((IModelElement)Argument14.Value);
+			    if (isT14Collection)
+				{
+				    throw new NotImplementedException();
+				}
+				else
+				{
+                    UnregisterArg14BubbledChange((IModelElement)Argument14.Value);
+				}
             }
         }
 
@@ -8400,6 +10724,22 @@ namespace NMF.Expressions
     }
     internal class ObservablePromotionMethodCall<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, TResult> : ObservableStaticMethodCall<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, TResult>
     {
+        private static bool isT1Collection = typeof(INotifyEnumerable).IsAssignableFrom(typeof(T1));
+        private static bool isT2Collection = typeof(INotifyEnumerable).IsAssignableFrom(typeof(T2));
+        private static bool isT3Collection = typeof(INotifyEnumerable).IsAssignableFrom(typeof(T3));
+        private static bool isT4Collection = typeof(INotifyEnumerable).IsAssignableFrom(typeof(T4));
+        private static bool isT5Collection = typeof(INotifyEnumerable).IsAssignableFrom(typeof(T5));
+        private static bool isT6Collection = typeof(INotifyEnumerable).IsAssignableFrom(typeof(T6));
+        private static bool isT7Collection = typeof(INotifyEnumerable).IsAssignableFrom(typeof(T7));
+        private static bool isT8Collection = typeof(INotifyEnumerable).IsAssignableFrom(typeof(T8));
+        private static bool isT9Collection = typeof(INotifyEnumerable).IsAssignableFrom(typeof(T9));
+        private static bool isT10Collection = typeof(INotifyEnumerable).IsAssignableFrom(typeof(T10));
+        private static bool isT11Collection = typeof(INotifyEnumerable).IsAssignableFrom(typeof(T11));
+        private static bool isT12Collection = typeof(INotifyEnumerable).IsAssignableFrom(typeof(T12));
+        private static bool isT13Collection = typeof(INotifyEnumerable).IsAssignableFrom(typeof(T13));
+        private static bool isT14Collection = typeof(INotifyEnumerable).IsAssignableFrom(typeof(T14));
+        private static bool isT15Collection = typeof(INotifyEnumerable).IsAssignableFrom(typeof(T15));
+
         public ICollection<string> Arg1Properties { get; private set; }
         public bool Arg1Composition { get; private set; }
         public ICollection<string> Arg2Properties { get; private set; }
@@ -8472,91 +10812,196 @@ namespace NMF.Expressions
             Argument1.ValueChanged += Argument1Changed;
             if (Arg1Properties != null)
             {
-                RegisterArg1BubbledChange((IModelElement)Argument1.Value);
+			    if (isT1Collection)
+				{
+				    throw new NotImplementedException();
+				}
+				else
+				{
+                    RegisterArg1BubbledChange((IModelElement)Argument1.Value);
+				}
             }
             Argument2.Attach();
             Argument2.ValueChanged += Argument2Changed;
             if (Arg2Properties != null)
             {
-                RegisterArg2BubbledChange((IModelElement)Argument2.Value);
+			    if (isT2Collection)
+				{
+				    throw new NotImplementedException();
+				}
+				else
+				{
+                    RegisterArg2BubbledChange((IModelElement)Argument2.Value);
+				}
             }
             Argument3.Attach();
             Argument3.ValueChanged += Argument3Changed;
             if (Arg3Properties != null)
             {
-                RegisterArg3BubbledChange((IModelElement)Argument3.Value);
+			    if (isT3Collection)
+				{
+				    throw new NotImplementedException();
+				}
+				else
+				{
+                    RegisterArg3BubbledChange((IModelElement)Argument3.Value);
+				}
             }
             Argument4.Attach();
             Argument4.ValueChanged += Argument4Changed;
             if (Arg4Properties != null)
             {
-                RegisterArg4BubbledChange((IModelElement)Argument4.Value);
+			    if (isT4Collection)
+				{
+				    throw new NotImplementedException();
+				}
+				else
+				{
+                    RegisterArg4BubbledChange((IModelElement)Argument4.Value);
+				}
             }
             Argument5.Attach();
             Argument5.ValueChanged += Argument5Changed;
             if (Arg5Properties != null)
             {
-                RegisterArg5BubbledChange((IModelElement)Argument5.Value);
+			    if (isT5Collection)
+				{
+				    throw new NotImplementedException();
+				}
+				else
+				{
+                    RegisterArg5BubbledChange((IModelElement)Argument5.Value);
+				}
             }
             Argument6.Attach();
             Argument6.ValueChanged += Argument6Changed;
             if (Arg6Properties != null)
             {
-                RegisterArg6BubbledChange((IModelElement)Argument6.Value);
+			    if (isT6Collection)
+				{
+				    throw new NotImplementedException();
+				}
+				else
+				{
+                    RegisterArg6BubbledChange((IModelElement)Argument6.Value);
+				}
             }
             Argument7.Attach();
             Argument7.ValueChanged += Argument7Changed;
             if (Arg7Properties != null)
             {
-                RegisterArg7BubbledChange((IModelElement)Argument7.Value);
+			    if (isT7Collection)
+				{
+				    throw new NotImplementedException();
+				}
+				else
+				{
+                    RegisterArg7BubbledChange((IModelElement)Argument7.Value);
+				}
             }
             Argument8.Attach();
             Argument8.ValueChanged += Argument8Changed;
             if (Arg8Properties != null)
             {
-                RegisterArg8BubbledChange((IModelElement)Argument8.Value);
+			    if (isT8Collection)
+				{
+				    throw new NotImplementedException();
+				}
+				else
+				{
+                    RegisterArg8BubbledChange((IModelElement)Argument8.Value);
+				}
             }
             Argument9.Attach();
             Argument9.ValueChanged += Argument9Changed;
             if (Arg9Properties != null)
             {
-                RegisterArg9BubbledChange((IModelElement)Argument9.Value);
+			    if (isT9Collection)
+				{
+				    throw new NotImplementedException();
+				}
+				else
+				{
+                    RegisterArg9BubbledChange((IModelElement)Argument9.Value);
+				}
             }
             Argument10.Attach();
             Argument10.ValueChanged += Argument10Changed;
             if (Arg10Properties != null)
             {
-                RegisterArg10BubbledChange((IModelElement)Argument10.Value);
+			    if (isT10Collection)
+				{
+				    throw new NotImplementedException();
+				}
+				else
+				{
+                    RegisterArg10BubbledChange((IModelElement)Argument10.Value);
+				}
             }
             Argument11.Attach();
             Argument11.ValueChanged += Argument11Changed;
             if (Arg11Properties != null)
             {
-                RegisterArg11BubbledChange((IModelElement)Argument11.Value);
+			    if (isT11Collection)
+				{
+				    throw new NotImplementedException();
+				}
+				else
+				{
+                    RegisterArg11BubbledChange((IModelElement)Argument11.Value);
+				}
             }
             Argument12.Attach();
             Argument12.ValueChanged += Argument12Changed;
             if (Arg12Properties != null)
             {
-                RegisterArg12BubbledChange((IModelElement)Argument12.Value);
+			    if (isT12Collection)
+				{
+				    throw new NotImplementedException();
+				}
+				else
+				{
+                    RegisterArg12BubbledChange((IModelElement)Argument12.Value);
+				}
             }
             Argument13.Attach();
             Argument13.ValueChanged += Argument13Changed;
             if (Arg13Properties != null)
             {
-                RegisterArg13BubbledChange((IModelElement)Argument13.Value);
+			    if (isT13Collection)
+				{
+				    throw new NotImplementedException();
+				}
+				else
+				{
+                    RegisterArg13BubbledChange((IModelElement)Argument13.Value);
+				}
             }
             Argument14.Attach();
             Argument14.ValueChanged += Argument14Changed;
             if (Arg14Properties != null)
             {
-                RegisterArg14BubbledChange((IModelElement)Argument14.Value);
+			    if (isT14Collection)
+				{
+				    throw new NotImplementedException();
+				}
+				else
+				{
+                    RegisterArg14BubbledChange((IModelElement)Argument14.Value);
+				}
             }
             Argument15.Attach();
             Argument15.ValueChanged += Argument15Changed;
             if (Arg15Properties != null)
             {
-                RegisterArg15BubbledChange((IModelElement)Argument15.Value);
+			    if (isT15Collection)
+				{
+				    throw new NotImplementedException();
+				}
+				else
+				{
+                    RegisterArg15BubbledChange((IModelElement)Argument15.Value);
+				}
             }
         }
 		
@@ -8612,9 +11057,16 @@ namespace NMF.Expressions
             {
                 var oldValue = e.OldValue as IModelElement;
                 var newValue = e.NewValue as IModelElement;
-                UnregisterArg1BubbledChange(oldValue);
-                Refresh();
-                RegisterArg1BubbledChange(newValue);
+			    if (isT1Collection)
+				{
+				    throw new NotImplementedException();
+				}
+				else
+				{
+                    UnregisterArg1BubbledChange(oldValue);
+                    Refresh();
+                    RegisterArg1BubbledChange((IModelElement)Argument1.Value);
+				}
             }
             else
             {
@@ -8673,9 +11125,16 @@ namespace NMF.Expressions
             {
                 var oldValue = e.OldValue as IModelElement;
                 var newValue = e.NewValue as IModelElement;
-                UnregisterArg2BubbledChange(oldValue);
-                Refresh();
-                RegisterArg2BubbledChange(newValue);
+			    if (isT2Collection)
+				{
+				    throw new NotImplementedException();
+				}
+				else
+				{
+                    UnregisterArg2BubbledChange(oldValue);
+                    Refresh();
+                    RegisterArg2BubbledChange((IModelElement)Argument2.Value);
+				}
             }
             else
             {
@@ -8734,9 +11193,16 @@ namespace NMF.Expressions
             {
                 var oldValue = e.OldValue as IModelElement;
                 var newValue = e.NewValue as IModelElement;
-                UnregisterArg3BubbledChange(oldValue);
-                Refresh();
-                RegisterArg3BubbledChange(newValue);
+			    if (isT3Collection)
+				{
+				    throw new NotImplementedException();
+				}
+				else
+				{
+                    UnregisterArg3BubbledChange(oldValue);
+                    Refresh();
+                    RegisterArg3BubbledChange((IModelElement)Argument3.Value);
+				}
             }
             else
             {
@@ -8795,9 +11261,16 @@ namespace NMF.Expressions
             {
                 var oldValue = e.OldValue as IModelElement;
                 var newValue = e.NewValue as IModelElement;
-                UnregisterArg4BubbledChange(oldValue);
-                Refresh();
-                RegisterArg4BubbledChange(newValue);
+			    if (isT4Collection)
+				{
+				    throw new NotImplementedException();
+				}
+				else
+				{
+                    UnregisterArg4BubbledChange(oldValue);
+                    Refresh();
+                    RegisterArg4BubbledChange((IModelElement)Argument4.Value);
+				}
             }
             else
             {
@@ -8856,9 +11329,16 @@ namespace NMF.Expressions
             {
                 var oldValue = e.OldValue as IModelElement;
                 var newValue = e.NewValue as IModelElement;
-                UnregisterArg5BubbledChange(oldValue);
-                Refresh();
-                RegisterArg5BubbledChange(newValue);
+			    if (isT5Collection)
+				{
+				    throw new NotImplementedException();
+				}
+				else
+				{
+                    UnregisterArg5BubbledChange(oldValue);
+                    Refresh();
+                    RegisterArg5BubbledChange((IModelElement)Argument5.Value);
+				}
             }
             else
             {
@@ -8917,9 +11397,16 @@ namespace NMF.Expressions
             {
                 var oldValue = e.OldValue as IModelElement;
                 var newValue = e.NewValue as IModelElement;
-                UnregisterArg6BubbledChange(oldValue);
-                Refresh();
-                RegisterArg6BubbledChange(newValue);
+			    if (isT6Collection)
+				{
+				    throw new NotImplementedException();
+				}
+				else
+				{
+                    UnregisterArg6BubbledChange(oldValue);
+                    Refresh();
+                    RegisterArg6BubbledChange((IModelElement)Argument6.Value);
+				}
             }
             else
             {
@@ -8978,9 +11465,16 @@ namespace NMF.Expressions
             {
                 var oldValue = e.OldValue as IModelElement;
                 var newValue = e.NewValue as IModelElement;
-                UnregisterArg7BubbledChange(oldValue);
-                Refresh();
-                RegisterArg7BubbledChange(newValue);
+			    if (isT7Collection)
+				{
+				    throw new NotImplementedException();
+				}
+				else
+				{
+                    UnregisterArg7BubbledChange(oldValue);
+                    Refresh();
+                    RegisterArg7BubbledChange((IModelElement)Argument7.Value);
+				}
             }
             else
             {
@@ -9039,9 +11533,16 @@ namespace NMF.Expressions
             {
                 var oldValue = e.OldValue as IModelElement;
                 var newValue = e.NewValue as IModelElement;
-                UnregisterArg8BubbledChange(oldValue);
-                Refresh();
-                RegisterArg8BubbledChange(newValue);
+			    if (isT8Collection)
+				{
+				    throw new NotImplementedException();
+				}
+				else
+				{
+                    UnregisterArg8BubbledChange(oldValue);
+                    Refresh();
+                    RegisterArg8BubbledChange((IModelElement)Argument8.Value);
+				}
             }
             else
             {
@@ -9100,9 +11601,16 @@ namespace NMF.Expressions
             {
                 var oldValue = e.OldValue as IModelElement;
                 var newValue = e.NewValue as IModelElement;
-                UnregisterArg9BubbledChange(oldValue);
-                Refresh();
-                RegisterArg9BubbledChange(newValue);
+			    if (isT9Collection)
+				{
+				    throw new NotImplementedException();
+				}
+				else
+				{
+                    UnregisterArg9BubbledChange(oldValue);
+                    Refresh();
+                    RegisterArg9BubbledChange((IModelElement)Argument9.Value);
+				}
             }
             else
             {
@@ -9161,9 +11669,16 @@ namespace NMF.Expressions
             {
                 var oldValue = e.OldValue as IModelElement;
                 var newValue = e.NewValue as IModelElement;
-                UnregisterArg10BubbledChange(oldValue);
-                Refresh();
-                RegisterArg10BubbledChange(newValue);
+			    if (isT10Collection)
+				{
+				    throw new NotImplementedException();
+				}
+				else
+				{
+                    UnregisterArg10BubbledChange(oldValue);
+                    Refresh();
+                    RegisterArg10BubbledChange((IModelElement)Argument10.Value);
+				}
             }
             else
             {
@@ -9222,9 +11737,16 @@ namespace NMF.Expressions
             {
                 var oldValue = e.OldValue as IModelElement;
                 var newValue = e.NewValue as IModelElement;
-                UnregisterArg11BubbledChange(oldValue);
-                Refresh();
-                RegisterArg11BubbledChange(newValue);
+			    if (isT11Collection)
+				{
+				    throw new NotImplementedException();
+				}
+				else
+				{
+                    UnregisterArg11BubbledChange(oldValue);
+                    Refresh();
+                    RegisterArg11BubbledChange((IModelElement)Argument11.Value);
+				}
             }
             else
             {
@@ -9283,9 +11805,16 @@ namespace NMF.Expressions
             {
                 var oldValue = e.OldValue as IModelElement;
                 var newValue = e.NewValue as IModelElement;
-                UnregisterArg12BubbledChange(oldValue);
-                Refresh();
-                RegisterArg12BubbledChange(newValue);
+			    if (isT12Collection)
+				{
+				    throw new NotImplementedException();
+				}
+				else
+				{
+                    UnregisterArg12BubbledChange(oldValue);
+                    Refresh();
+                    RegisterArg12BubbledChange((IModelElement)Argument12.Value);
+				}
             }
             else
             {
@@ -9344,9 +11873,16 @@ namespace NMF.Expressions
             {
                 var oldValue = e.OldValue as IModelElement;
                 var newValue = e.NewValue as IModelElement;
-                UnregisterArg13BubbledChange(oldValue);
-                Refresh();
-                RegisterArg13BubbledChange(newValue);
+			    if (isT13Collection)
+				{
+				    throw new NotImplementedException();
+				}
+				else
+				{
+                    UnregisterArg13BubbledChange(oldValue);
+                    Refresh();
+                    RegisterArg13BubbledChange((IModelElement)Argument13.Value);
+				}
             }
             else
             {
@@ -9405,9 +11941,16 @@ namespace NMF.Expressions
             {
                 var oldValue = e.OldValue as IModelElement;
                 var newValue = e.NewValue as IModelElement;
-                UnregisterArg14BubbledChange(oldValue);
-                Refresh();
-                RegisterArg14BubbledChange(newValue);
+			    if (isT14Collection)
+				{
+				    throw new NotImplementedException();
+				}
+				else
+				{
+                    UnregisterArg14BubbledChange(oldValue);
+                    Refresh();
+                    RegisterArg14BubbledChange((IModelElement)Argument14.Value);
+				}
             }
             else
             {
@@ -9466,9 +12009,16 @@ namespace NMF.Expressions
             {
                 var oldValue = e.OldValue as IModelElement;
                 var newValue = e.NewValue as IModelElement;
-                UnregisterArg15BubbledChange(oldValue);
-                Refresh();
-                RegisterArg15BubbledChange(newValue);
+			    if (isT15Collection)
+				{
+				    throw new NotImplementedException();
+				}
+				else
+				{
+                    UnregisterArg15BubbledChange(oldValue);
+                    Refresh();
+                    RegisterArg15BubbledChange((IModelElement)Argument15.Value);
+				}
             }
             else
             {
@@ -9482,91 +12032,196 @@ namespace NMF.Expressions
             Argument1.ValueChanged -= Argument1Changed;
             if (Arg1Properties != null)
             {
-                UnregisterArg1BubbledChange((IModelElement)Argument1.Value);
+			    if (isT1Collection)
+				{
+				    throw new NotImplementedException();
+				}
+				else
+				{
+                    UnregisterArg1BubbledChange((IModelElement)Argument1.Value);
+				}
             }
             Argument2.Detach();
             Argument2.ValueChanged -= Argument2Changed;
             if (Arg2Properties != null)
             {
-                UnregisterArg2BubbledChange((IModelElement)Argument2.Value);
+			    if (isT2Collection)
+				{
+				    throw new NotImplementedException();
+				}
+				else
+				{
+                    UnregisterArg2BubbledChange((IModelElement)Argument2.Value);
+				}
             }
             Argument3.Detach();
             Argument3.ValueChanged -= Argument3Changed;
             if (Arg3Properties != null)
             {
-                UnregisterArg3BubbledChange((IModelElement)Argument3.Value);
+			    if (isT3Collection)
+				{
+				    throw new NotImplementedException();
+				}
+				else
+				{
+                    UnregisterArg3BubbledChange((IModelElement)Argument3.Value);
+				}
             }
             Argument4.Detach();
             Argument4.ValueChanged -= Argument4Changed;
             if (Arg4Properties != null)
             {
-                UnregisterArg4BubbledChange((IModelElement)Argument4.Value);
+			    if (isT4Collection)
+				{
+				    throw new NotImplementedException();
+				}
+				else
+				{
+                    UnregisterArg4BubbledChange((IModelElement)Argument4.Value);
+				}
             }
             Argument5.Detach();
             Argument5.ValueChanged -= Argument5Changed;
             if (Arg5Properties != null)
             {
-                UnregisterArg5BubbledChange((IModelElement)Argument5.Value);
+			    if (isT5Collection)
+				{
+				    throw new NotImplementedException();
+				}
+				else
+				{
+                    UnregisterArg5BubbledChange((IModelElement)Argument5.Value);
+				}
             }
             Argument6.Detach();
             Argument6.ValueChanged -= Argument6Changed;
             if (Arg6Properties != null)
             {
-                UnregisterArg6BubbledChange((IModelElement)Argument6.Value);
+			    if (isT6Collection)
+				{
+				    throw new NotImplementedException();
+				}
+				else
+				{
+                    UnregisterArg6BubbledChange((IModelElement)Argument6.Value);
+				}
             }
             Argument7.Detach();
             Argument7.ValueChanged -= Argument7Changed;
             if (Arg7Properties != null)
             {
-                UnregisterArg7BubbledChange((IModelElement)Argument7.Value);
+			    if (isT7Collection)
+				{
+				    throw new NotImplementedException();
+				}
+				else
+				{
+                    UnregisterArg7BubbledChange((IModelElement)Argument7.Value);
+				}
             }
             Argument8.Detach();
             Argument8.ValueChanged -= Argument8Changed;
             if (Arg8Properties != null)
             {
-                UnregisterArg8BubbledChange((IModelElement)Argument8.Value);
+			    if (isT8Collection)
+				{
+				    throw new NotImplementedException();
+				}
+				else
+				{
+                    UnregisterArg8BubbledChange((IModelElement)Argument8.Value);
+				}
             }
             Argument9.Detach();
             Argument9.ValueChanged -= Argument9Changed;
             if (Arg9Properties != null)
             {
-                UnregisterArg9BubbledChange((IModelElement)Argument9.Value);
+			    if (isT9Collection)
+				{
+				    throw new NotImplementedException();
+				}
+				else
+				{
+                    UnregisterArg9BubbledChange((IModelElement)Argument9.Value);
+				}
             }
             Argument10.Detach();
             Argument10.ValueChanged -= Argument10Changed;
             if (Arg10Properties != null)
             {
-                UnregisterArg10BubbledChange((IModelElement)Argument10.Value);
+			    if (isT10Collection)
+				{
+				    throw new NotImplementedException();
+				}
+				else
+				{
+                    UnregisterArg10BubbledChange((IModelElement)Argument10.Value);
+				}
             }
             Argument11.Detach();
             Argument11.ValueChanged -= Argument11Changed;
             if (Arg11Properties != null)
             {
-                UnregisterArg11BubbledChange((IModelElement)Argument11.Value);
+			    if (isT11Collection)
+				{
+				    throw new NotImplementedException();
+				}
+				else
+				{
+                    UnregisterArg11BubbledChange((IModelElement)Argument11.Value);
+				}
             }
             Argument12.Detach();
             Argument12.ValueChanged -= Argument12Changed;
             if (Arg12Properties != null)
             {
-                UnregisterArg12BubbledChange((IModelElement)Argument12.Value);
+			    if (isT12Collection)
+				{
+				    throw new NotImplementedException();
+				}
+				else
+				{
+                    UnregisterArg12BubbledChange((IModelElement)Argument12.Value);
+				}
             }
             Argument13.Detach();
             Argument13.ValueChanged -= Argument13Changed;
             if (Arg13Properties != null)
             {
-                UnregisterArg13BubbledChange((IModelElement)Argument13.Value);
+			    if (isT13Collection)
+				{
+				    throw new NotImplementedException();
+				}
+				else
+				{
+                    UnregisterArg13BubbledChange((IModelElement)Argument13.Value);
+				}
             }
             Argument14.Detach();
             Argument14.ValueChanged -= Argument14Changed;
             if (Arg14Properties != null)
             {
-                UnregisterArg14BubbledChange((IModelElement)Argument14.Value);
+			    if (isT14Collection)
+				{
+				    throw new NotImplementedException();
+				}
+				else
+				{
+                    UnregisterArg14BubbledChange((IModelElement)Argument14.Value);
+				}
             }
             Argument15.Detach();
             Argument15.ValueChanged -= Argument15Changed;
             if (Arg15Properties != null)
             {
-                UnregisterArg15BubbledChange((IModelElement)Argument15.Value);
+			    if (isT15Collection)
+				{
+				    throw new NotImplementedException();
+				}
+				else
+				{
+                    UnregisterArg15BubbledChange((IModelElement)Argument15.Value);
+				}
             }
         }
 

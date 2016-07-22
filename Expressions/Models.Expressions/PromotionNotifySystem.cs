@@ -69,11 +69,16 @@ namespace NMF.Expressions
                     }
                     else
                     {
-                        if (!typeof(IModelElement).IsAssignableFrom(extraction.Value.Type))
+                        var val = extraction.Value;
+                        if (typeof(IEnumerableExpression).IsAssignableFrom(extraction.Value.Type))
                         {
-                            throw new NotSupportedException("Currently, only extraction of parameters typed as model elements is supported.");
+                            val = Expression.Call(extraction.Value, typeof(IEnumerableExpression).GetMethod("AsNotifiable"));
                         }
-                        args[3 * i + 1] = InstructionLevelNotifySystem.Instance.CreateExpression(extraction.Value, parameters, parameterMappings);
+                        if (!typeof(IModelElement).IsAssignableFrom(val.Type) && !typeof(INotifyEnumerable).IsAssignableFrom(val.Type))
+                        {
+                            throw new NotSupportedException("Currently, only extraction of parameters typed as model elements or notifiable collections is supported.");
+                        }
+                        args[3 * i + 1] = InstructionLevelNotifySystem.Instance.CreateExpression(val, parameters, parameterMappings);
                     }
                     PromotionExpressionVisitor.ParameterInfo parInfo;
                     if (collectedParameterInfos.TryGetValue(parameter, out parInfo))
