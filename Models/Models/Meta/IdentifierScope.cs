@@ -28,8 +28,9 @@ using System.Linq;
 
 namespace NMF.Models.Meta
 {
-    
-    
+
+
+    [ModelRepresentationClassAttribute("http://nmf.codeplex.com/nmeta/#//IdentifierScope/")]
     public enum IdentifierScope
     {
         

@@ -46,6 +46,10 @@ namespace NMF.Models.Meta
             {
                 SetTypeReferenceForMappedType(input, CodeDomHelper.GetReferenceForType(output));
                 base.Transform(input, output, context);
+                if (input.AbsoluteUri != null)
+                {
+                    output.AddAttribute(typeof(ModelRepresentationClassAttribute), input.AbsoluteUri.AbsoluteUri);
+                }
                 output.WriteDocumentation(input.Summary, input.Remarks);
             }
 

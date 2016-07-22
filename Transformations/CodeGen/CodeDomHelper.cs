@@ -127,7 +127,7 @@ namespace NMF.CodeGen
         /// </summary>
         /// <param name="name">The initial name of the type declaration</param>
         /// <returns>The generated type declaration</returns>
-        public static CodeTypeDeclaration CreateTypeDeclarationWithReference(string name)
+        public static CodeTypeDeclaration CreateTypeDeclarationWithReference(string name, bool autoAssignNamespace)
         {
             var typeDeclaration = new CodeTypeDeclaration()
             {
@@ -136,6 +136,10 @@ namespace NMF.CodeGen
             };
             var reference = new CodeTypeReference(name);
             SetUserItem(typeDeclaration, TypeReferenceKey, reference);
+            if (autoAssignNamespace)
+            {
+                SetUserItem(reference, NamespaceKey, null);
+            }
             SetUserItem(reference, ClassKey, typeDeclaration);
             return typeDeclaration;
         }
@@ -213,7 +217,7 @@ namespace NMF.CodeGen
         /// <param name="memberEvent">The event that is to be raised</param>
         /// <param name="eventDataType">The event arguments type</param>
         /// <returns>A code method that raises the event</returns>
-        public static CodeMemberMethod CreateOnChangedMethod(this CodeMemberEvent memberEvent, CodeTypeReference eventDataType)
+        public static CodeMemberMethod CreateRaiseMethod(this CodeMemberEvent memberEvent, CodeTypeReference eventDataType)
         {
             var onChangedMethod = new CodeMemberMethod()
             {
@@ -330,14 +334,20 @@ namespace NMF.CodeGen
         /// <param name="value">The serialized value</param>
         /// <param name="type">The type for the primitive expression</param>
         /// <returns>A code expression that represents the value as a code expression or null if there is no such expression</returns>
-        public static CodeExpression CreatePrimitiveExpression(string value, CodeTypeReference type)
+        public static CodeExpression CreatePrimitiveExpression(string value, CodeTypeReference type, bool isEnum)
         {
             if (value == null) return new CodePrimitiveExpression(null);
             if (type == null) throw new ArgumentNullException("type");
 
             if (type.BaseType.Contains("Nullable`1") && type.TypeArguments.Count == 1) type = type.TypeArguments[0];
             if (type == null) return null;
-            if (type.BaseType == typeof(int).FullName)
+            if (isEnum)
+            {
+                var literal = value.ToPascalCase();
+                if (literal == "") return null;
+                return new CodeFieldReferenceExpression(new CodeTypeReferenceExpression(type), literal);
+            }
+            else if (type.BaseType == typeof(int).FullName)
             {
                 int val;
                 if (int.TryParse(value, out val))
@@ -407,6 +417,7 @@ namespace NMF.CodeGen
             return CreateOnChangedEventPattern(property, null, null);
         }
 
+
         /// <summary>
         /// Generates an OnChanging-pattern for the given property
         /// </summary>
@@ -414,19 +425,42 @@ namespace NMF.CodeGen
         /// <returns></returns>
         public static CodeStatement CreateOnChangingEventPattern(this CodeMemberProperty property)
         {
+            return CreateOnChangingEventPattern(property, null, null);
+        }
+
+        /// <summary>
+        /// Generates an OnChanging-pattern for the given property
+        /// </summary>
+        /// <param name="property">The code property</param>
+        /// <returns></returns>
+        public static CodeStatement CreateOnChangingEventPattern(this CodeMemberProperty property, CodeTypeReference eventType, CodeExpression eventData)
+        {
+            CodeTypeReference handlerType;
+            if (eventType == null)
+            {
+                handlerType = typeof(EventHandler).ToTypeReference();
+            }
+            else
+            {
+                handlerType = typeof(EventHandler<>).ToTypeReference(eventType);
+            }
+
             var changingEvent = new CodeMemberEvent()
             {
                 Name = property.Name + "Changing",
-                Type = new CodeTypeReference(typeof(EventHandler).Name),
+                Type = handlerType,
                 Attributes = MemberAttributes.Public | MemberAttributes.Final
             };
 
             changingEvent.WriteDocumentation(string.Format("Gets fired before the {0} property changes its value", property.Name));
 
-            var eventType = new CodeTypeReference(typeof(EventArgs).Name);
-            var eventData = new CodeFieldReferenceExpression(new CodeTypeReferenceExpression(eventType), "Empty");
+            if (eventType == null)
+            {
+                eventType = new CodeTypeReference(typeof(EventArgs).Name);
+                eventData = new CodeFieldReferenceExpression(new CodeTypeReferenceExpression(eventType), "Empty");
+            }
 
-            var onChanging = CreateOnChangedMethod(changingEvent, eventType);
+            var onChanging = CreateRaiseMethod(changingEvent, eventType);
 
             var dependent = property.DependentMembers(true);
 
@@ -448,11 +482,11 @@ namespace NMF.CodeGen
             CodeTypeReference handlerType;
             if (eventType == null)
             {
-                handlerType = new CodeTypeReference(typeof(EventHandler).Name);
+                handlerType = typeof(EventHandler).ToTypeReference();
             }
             else
             {
-                handlerType = new CodeTypeReference(typeof(EventHandler<>).Name, eventType);
+                handlerType = typeof(EventHandler<>).ToTypeReference(eventType);
             }
             var changedEvent = new CodeMemberEvent()
             {
@@ -468,7 +502,7 @@ namespace NMF.CodeGen
                 eventType = new CodeTypeReference(typeof(EventArgs).Name);
                 eventData = new CodeFieldReferenceExpression(new CodeTypeReferenceExpression(eventType), "Empty");
             }
-            var onChanged = CodeDomHelper.CreateOnChangedMethod(changedEvent, eventType);
+            var onChanged = CodeDomHelper.CreateRaiseMethod(changedEvent, eventType);
 
             var dependent = property.DependentMembers(true);
 

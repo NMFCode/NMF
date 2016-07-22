@@ -38,7 +38,7 @@ namespace NMF.Models.Meta
                 output.Name = input.Name.ToPascalCase();
                 output.Attributes = MemberAttributes.Public | MemberAttributes.Final;
                 output.Type = CreateTypeReference(input, null, GetCollectionType, context);
-                var initValue = input.DefaultValue == null ? null : CodeDomHelper.CreatePrimitiveExpression(input.DefaultValue, output.Type);
+                var initValue = input.DefaultValue == null ? null : CodeDomHelper.CreatePrimitiveExpression(input.DefaultValue, output.Type, input.Type is IEnumeration);
                 var fieldRef = output.CreateBackingField(output.Type, initValue);
                 output.ImplementGetter(fieldRef);
             }

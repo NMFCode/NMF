@@ -81,7 +81,78 @@ namespace NMF.Models.Meta
 
                 generatedProperty.SetStatements.Add(new CodeAssignStatement(parentRef, new CodePropertySetValueReferenceExpression()));
 
+                GenerateOnParentChangingMethod(input, generatedProperty);
                 GenerateOnParentChangedMethod(input, generatedProperty);
+            }
+
+            private void GenerateOnParentChangingMethod(IReference input, CodeMemberProperty property)
+            {
+                var onParentChanging = new CodeMemberMethod()
+                {
+                    Name = "OnParentChanging",
+                    Attributes = MemberAttributes.Family | MemberAttributes.Override,
+                    ReturnType = new CodeTypeReference(typeof(void))
+                };
+                onParentChanging.Parameters.Add(new CodeParameterDeclarationExpression(typeof(IModelElement).ToTypeReference(), "newParent"));
+                onParentChanging.Parameters.Add(new CodeParameterDeclarationExpression(typeof(IModelElement).ToTypeReference(), "oldParent"));
+
+                var appendix = property.Name.ToPascalCase();
+                if (appendix == "Parent") appendix += "Reference";
+                var oldElementVar = new CodeVariableReferenceExpression("old" + appendix);
+                var newElementVar = new CodeVariableReferenceExpression("new" + appendix);
+
+                var castRef = new CodeMethodReferenceExpression(new CodeTypeReferenceExpression(typeof(ModelHelper).ToTypeReference()), "CastAs", property.Type);
+                var nullRef = new CodePrimitiveExpression(null);
+                var thisRef = new CodeThisReferenceExpression();
+
+                onParentChanging.Statements.Add(new CodeVariableDeclarationStatement(property.Type, oldElementVar.VariableName,
+                    new CodeMethodInvokeExpression(castRef, new CodeArgumentReferenceExpression("oldParent"))));
+                onParentChanging.Statements.Add(new CodeVariableDeclarationStatement(property.Type, newElementVar.VariableName,
+                    new CodeMethodInvokeExpression(castRef, new CodeArgumentReferenceExpression("newParent"))));
+
+                string oppositeName = input.Opposite.Name.ToPascalCase();
+                
+                var valueChangedEvArgs = typeof(ValueChangedEventArgs).ToTypeReference();
+                var valueChangeDef = new CodeVariableDeclarationStatement(valueChangedEvArgs, "e",
+                    new CodeObjectCreateExpression(valueChangedEvArgs, oldElementVar, newElementVar));
+                var valueChangeRef = new CodeVariableReferenceExpression(valueChangeDef.Name);
+
+                onParentChanging.Statements.Add(valueChangeDef);
+
+                onParentChanging.Statements.Add(property.CreateOnChangingEventPattern(valueChangedEvArgs, valueChangeRef));
+                onParentChanging.Statements.Add(new CodeMethodInvokeExpression(new CodeThisReferenceExpression(), "OnPropertyChanging",
+                    new CodePrimitiveExpression(property.Name)));
+
+                onParentChanging.WriteDocumentation("Gets called when the parent model element of the current model element is about to change",
+                    null, new Dictionary<string, string>() {
+                        {
+                            "oldParent", "The old parent model element"
+                        },
+                        {
+                            "newParent", "The new parent model element"
+                        }
+                    });
+
+                onParentChanging.SetMerge(other =>
+                {
+                    var mergedOnParent = new CodeMemberMethod()
+                    {
+                        Name = "OnParentChanging",
+                        Attributes = MemberAttributes.Family | MemberAttributes.Override,
+                        ReturnType = new CodeTypeReference(typeof(void))
+                    };
+                    for (int i = 0; i < onParentChanging.Parameters.Count; i++)
+                    {
+                        mergedOnParent.Parameters.Add(onParentChanging.Parameters[i]);
+                    }
+                    var otherCasted = other as CodeMemberMethod;
+                    mergedOnParent.Statements.AddRange(otherCasted.Statements);
+                    mergedOnParent.Statements.AddRange(onParentChanging.Statements);
+                    mergedOnParent.Statements.Remove(valueChangeDef);
+                    return mergedOnParent;
+                });
+
+                property.DependentMembers(true).Add(onParentChanging);
             }
 
             private void GenerateOnParentChangedMethod(IReference input, CodeMemberProperty property)
@@ -242,14 +313,21 @@ namespace NMF.Models.Meta
 
                 var assignment = new CodeAssignStatement(fieldReference, val);
 
-                ifStmt.TrueStatements.Add(codeProperty.CreateOnChangingEventPattern());
-                ifStmt.TrueStatements.Add(new CodeMethodInvokeExpression(new CodeThisReferenceExpression(), "OnPropertyChanging",
-                        new CodePrimitiveExpression(codeProperty.Name)));
-
                 var oldDef = new CodeVariableDeclarationStatement(codeProperty.Type, "old", fieldReference);
                 var oldRef = new CodeVariableReferenceExpression("old");
 
                 ifStmt.TrueStatements.Add(oldDef);
+
+                var valueChangeTypeRef = typeof(ValueChangedEventArgs).ToTypeReference();
+                var valueChangeDef = new CodeVariableDeclarationStatement(valueChangeTypeRef, "e",
+                    new CodeObjectCreateExpression(typeof(ValueChangedEventArgs).ToTypeReference(), oldRef, val));
+                var valueChangeRef = new CodeVariableReferenceExpression(valueChangeDef.Name);
+
+                ifStmt.TrueStatements.Add(valueChangeDef);
+                
+                ifStmt.TrueStatements.Add(codeProperty.CreateOnChangingEventPattern(typeof(ValueChangedEventArgs).ToTypeReference(), valueChangeRef));
+                ifStmt.TrueStatements.Add(new CodeMethodInvokeExpression(new CodeThisReferenceExpression(), "OnPropertyChanging",
+                        new CodePrimitiveExpression(codeProperty.Name), valueChangeRef));
 
                 var targetClass = property.Type;
                 if (targetClass != null)
@@ -323,14 +401,7 @@ namespace NMF.Models.Meta
                 {
                     // TODO: Refine?
                     ifStmt.TrueStatements.Add(assignment);
-                }
-
-                var valueChangeTypeRef = typeof(ValueChangedEventArgs).ToTypeReference();
-                var valueChangeDef = new CodeVariableDeclarationStatement(valueChangeTypeRef, "e",
-                    new CodeObjectCreateExpression(typeof(ValueChangedEventArgs).ToTypeReference(), oldRef, val));
-                var valueChangeRef = new CodeVariableReferenceExpression(valueChangeDef.Name);
-
-                ifStmt.TrueStatements.Add(valueChangeDef);
+                };
 
                 ifStmt.TrueStatements.Add(codeProperty.CreateOnChangedEventPattern(typeof(ValueChangedEventArgs).ToTypeReference(),
                     valueChangeRef));

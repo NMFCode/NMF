@@ -29,7 +29,7 @@ namespace NMF.Models.Meta
             /// <returns>The newly created code type declaration</returns>
             public override CodeTypeDeclaration CreateOutput(IClass scope, IReference reference, ITransformationContext context)
             {
-                return CodeDomHelper.CreateTypeDeclarationWithReference(scope.Name.ToPascalCase() + reference.Name.ToPascalCase() + "Collection");
+                return CodeDomHelper.CreateTypeDeclarationWithReference(scope.Name.ToPascalCase() + reference.Name.ToPascalCase() + "Collection", false);
             }
 
             private CodeFieldReferenceExpression parentRef = new CodeFieldReferenceExpression(new CodeThisReferenceExpression(), "_parent");
@@ -139,7 +139,7 @@ namespace NMF.Models.Meta
                 handler.Parameters.Add(new CodeParameterDeclarationExpression(typeof(ValueChangedEventArgs), "eventArgs"));
 
                 var argsRef = new CodeArgumentReferenceExpression("eventArgs");
-                var eDef = new CodeVariableDeclarationStatement(typeof(NotifyCollectionChangedEventArgs), "collectionEvent");
+                var eDef = new CodeVariableDeclarationStatement(typeof(NotifyCollectionChangedEventArgs), "collectionEvent", new CodePrimitiveExpression(null));
                 handler.Statements.Add(eDef);
                 var eRef = new CodeVariableReferenceExpression(eDef.Name);
 

@@ -9,6 +9,8 @@ using NMF.CodeGen;
 using NMF.Models.Repository;
 using NMF.Collections.Generic;
 using NMF.Transformations.Core;
+using System;
+using NMF.Analysis;
 
 namespace NMF.Models.Meta
 {
@@ -26,7 +28,9 @@ namespace NMF.Models.Meta
 
             public override void Transform(IClass scope, IReference reference, CodeMemberProperty property, Transformations.Core.ITransformationContext context)
             {
-                if (!scope.Closure(c => c.BaseTypes).Contains((IClass)reference.DeclaringType))
+                var baseTypes = Layering<IClass>.CreateLayers(scope, c => c.BaseTypes).Select(c => c.Single()).ToList();
+
+                if (!baseTypes.Contains((IClass)reference.DeclaringType))
                 {
                     throw new System.InvalidOperationException(string.Format("The reference {0} cannot be refined in the scope of class {1} because {1} does not inherit from its declaring class.", reference.Name, scope.Name));
                 }
@@ -45,17 +49,29 @@ namespace NMF.Models.Meta
                     classDeclaration.DependentMembers(true).Add(property);
                 }
 
-                var implementations = scope.References.Where(r => r.Refines == reference).ToList();
-                var constraint = scope.ReferenceConstraints.FirstOrDefault(r => r.Constrains == reference);
+                var implementations = baseTypes.SelectMany(s => s.References).Where(r => r.Refines == reference).ToList();
+                var constraints = baseTypes.SelectMany(s => s.ReferenceConstraints).Where(rc => rc.Constrains == reference);
 
-                if (implementations.Count == 0 && constraint == null) throw new System.InvalidOperationException();
+                foreach (var declClass in implementations.Select(a => a.DeclaringType).OfType<IClass>().Distinct())
+                {
+                    if (declClass != scope)
+                    {
+                        var refinedReference = context.Trace.ResolveIn(this, declClass, reference);
+                        if (refinedReference != null)
+                        {
+                            property.Shadows(true).Add(refinedReference);
+                        }
+                    }
+                }
+
+                if (implementations.Count == 0 && !constraints.Any()) throw new System.InvalidOperationException();
 
                 var referenceType = CreateReference(reference.Type, true, context);
 
                 if (reference.UpperBound == 1)
                 {
                     var nullRef = new CodePrimitiveExpression(null);
-                    if (constraint == null)
+                    if (!constraints.Any())
                     {
                         var castedThisVariable = new CodeVariableDeclarationStatement(classDeclaration.GetReferenceForType(), "_this", new CodeThisReferenceExpression());
                         var castedThisVariableRef = new CodeVariableReferenceExpression("_this");
@@ -112,6 +128,7 @@ namespace NMF.Models.Meta
                     }
                     else
                     {
+                        var constraint = constraints.Last();
                         var ifNotDefault = new CodeConditionStatement();
                         ifNotDefault.TrueStatements.Add(new CodeThrowExceptionStatement(new CodeObjectCreateExpression(typeof(System.NotSupportedException))));
                         CodeExpression value;
@@ -138,14 +155,14 @@ namespace NMF.Models.Meta
                         property.SetStatements.Add(ifNotDefault);
                     }
 
-                    CreateChangeEvent(property, implementations, context, "EventHandler<ValueChangedEventArgs>", "Changed");
-                    CreateChangeEvent(property, implementations, context, "EventHandler", "Changing");
+                    CreateChangeEvent(property, implementations, context, "Changed");
+                    CreateChangeEvent(property, implementations, context, "Changing");
                 }
                 else
                 {
                     if (reference.IsUnique) throw new System.InvalidOperationException("Unique references must not be refined!");
 
-                    if (implementations.Count > 0 || (constraint != null && constraint.References.Count > 0))
+                    if (implementations.Count > 0 || constraints.Sum(c => c.References.Count) == 0)
                     {
                         var collectionType = context.Trace.ResolveIn(Rule<RefinedReferenceCollectionClassGenerator>(), scope, reference);
                         property.GetStatements.Add(new CodeMethodReturnStatement(new CodeObjectCreateExpression(collectionType.GetReferenceForType(), new CodeThisReferenceExpression())));
@@ -158,9 +175,9 @@ namespace NMF.Models.Meta
                 }
             }
 
-            private void CreateChangeEvent(CodeMemberProperty property, List<IReference> implementations, ITransformationContext context, string eventHandler, string eventNameSuffix)
+            private void CreateChangeEvent(CodeMemberProperty property, List<IReference> implementations, ITransformationContext context, string eventNameSuffix)
             {
-                var eventSnippet = @"        event {4} {0}.{1}
+                var eventSnippet = @"        event EventHandler<ValueChangedEvent> {0}.{1}
         {{
             add
             {{{2}
@@ -185,7 +202,7 @@ namespace NMF.Models.Meta
                     addEvents += string.Format("\r\n                _this_{1}.{0} += value;", name, implTypeRef.BaseType);
                     removeEvents += string.Format("\r\n                _this_{1}.{0} -= value;", name, implTypeRef.BaseType);
                 }
-                eventSnippet = string.Format(eventSnippet, property.PrivateImplementationType.BaseType, property.Name + eventNameSuffix, addEvents, removeEvents, eventHandler);
+                eventSnippet = string.Format(eventSnippet, property.PrivateImplementationType.BaseType, property.Name + eventNameSuffix, addEvents, removeEvents);
                 property.DependentMembers(true).Add(new CodeSnippetTypeMember(eventSnippet));
             }
 

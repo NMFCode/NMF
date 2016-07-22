@@ -62,10 +62,6 @@ namespace NMF.Models.Meta
                 {
                     generatedProperty.Type = fieldType;
 
-                    var callOnPropertyChanging = new CodeMethodInvokeExpression(
-                        new CodeThisReferenceExpression(), "OnPropertyChanging",
-                        new CodePrimitiveExpression(generatedProperty.Name));
-
                     var oldDef = new CodeVariableDeclarationStatement(fieldType, "old", fieldRef);
                     var oldRef = new CodeVariableReferenceExpression("old");
                     var value = new CodePropertySetValueReferenceExpression();
@@ -75,16 +71,20 @@ namespace NMF.Models.Meta
                         new CodeObjectCreateExpression(typeof(ValueChangedEventArgs).ToTypeReference(), oldRef, value));
                     var valueChangeRef = new CodeVariableReferenceExpression(valueChangeDef.Name);
 
+                    var callOnPropertyChanging = new CodeMethodInvokeExpression(
+                        new CodeThisReferenceExpression(), "OnPropertyChanging",
+                        new CodePrimitiveExpression(generatedProperty.Name), valueChangeRef);
+
                     var callOnPropertyChanged = new CodeMethodInvokeExpression(
                         new CodeThisReferenceExpression(), "OnPropertyChanged", 
                         new CodePrimitiveExpression(generatedProperty.Name), valueChangeRef);
 
                     generatedProperty.SetStatements.Add(new CodeConditionStatement(new CodeBinaryOperatorExpression(fieldRef, CodeBinaryOperatorType.IdentityInequality, value),
-                        generatedProperty.CreateOnChangingEventPattern(),
-                        new CodeExpressionStatement(callOnPropertyChanging),
+                        generatedProperty.CreateOnChangingEventPattern(typeof(ValueChangedEventArgs).ToTypeReference(), valueChangeRef),
                         oldDef,
-                        new CodeAssignStatement(fieldRef, value),
                         valueChangeDef,
+                        new CodeExpressionStatement(callOnPropertyChanging),
+                        new CodeAssignStatement(fieldRef, value),
                         generatedProperty.CreateOnChangedEventPattern(valueChangeTypeRef, valueChangeRef),
                         new CodeExpressionStatement(callOnPropertyChanged)));
                 }
@@ -137,7 +137,7 @@ namespace NMF.Models.Meta
             {
                 if (input.DefaultValue == null) return null;
 
-                var expression = CodeDomHelper.CreatePrimitiveExpression(input.DefaultValue, fieldType);
+                var expression = CodeDomHelper.CreatePrimitiveExpression(input.DefaultValue, fieldType, input.Type is IEnumeration);
                 if (expression != null)
                 {
                     generatedProperty.AddAttribute(typeof(DefaultValueAttribute), expression);

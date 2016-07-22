@@ -60,6 +60,7 @@ namespace NMF.Models
         {
             if (newParent != parent)
             {
+                OnParentChanging(newParent, parent);
                 var oldParent = parent;
                 parent = newParent;
                 if (newParent != null)
@@ -136,6 +137,13 @@ namespace NMF.Models
         {
             OnBubbledChange(BubbledChangeEventArgs.ElementCreated(child));
         }
+
+        /// <summary>
+        /// Gets called when the parent element of the current element changes
+        /// </summary>
+        /// <param name="newParent">The new parent element</param>
+        /// <param name="oldParent">The old parent element</param>
+        protected virtual void OnParentChanging(IModelElement newParent, IModelElement oldParent) { }
 
         /// <summary>
         /// Gets called when the parent element of the current element changes

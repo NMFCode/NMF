@@ -181,7 +181,7 @@ namespace NMF.CodeGen
             {
                 foreach (var codeNs in context.Trace.FindAllIn(rule))
                 {
-                    for (int i = 0; i < codeNs.Types.Count; i++)
+                    for (int i = codeNs.Types.Count - 1; i >= 0 ; i--)
                     {
                         RecursivelyAddTypes(codeNs.Types[i], codeNs);
                     }
@@ -286,7 +286,7 @@ namespace NMF.CodeGen
             if (memberField != null)
             {
                 memberField.Type = referenceConversion(memberField.Type);
-                VisitExpression(memberField.InitExpression, referenceConversion);
+                VisitExpression(memberField.InitExpression, referenceConversion, true);
                 return;
             }
             var memberMethod = member as CodeMemberMethod;
@@ -349,16 +349,56 @@ namespace NMF.CodeGen
                     VisitExpression(assign.Right, referenceConversion);
                     continue;
                 }
+                var attach = statement as CodeAttachEventStatement;
+                if (attach != null)
+                {
+                    VisitExpression(attach.Event, referenceConversion);
+                    VisitExpression(attach.Listener, referenceConversion);
+                    continue;
+                }
+                var detach = statement as CodeRemoveEventStatement;
+                if (detach != null)
+                {
+                    VisitExpression(detach.Event, referenceConversion);
+                    VisitExpression(detach.Listener, referenceConversion);
+                    continue;
+                }
+                var ret = statement as CodeMethodReturnStatement;
+                if (ret != null)
+                {
+                    VisitExpression(ret.Expression, referenceConversion, true);
+                    continue;
+                }
+                var throwE = statement as CodeThrowExceptionStatement;
+                if (throwE != null)
+                {
+                    VisitExpression(throwE.ToThrow, referenceConversion);
+                    continue;
+                }
             }
         }
 
-        private void VisitExpression(CodeExpression expression, Func<CodeTypeReference, CodeTypeReference> referenceConversion)
+        private void VisitExpression(CodeExpression expression, Func<CodeTypeReference, CodeTypeReference> referenceConversion, bool mayBeNull = false)
         {
-            if (expression == null) return;
+            if (expression == null)
+            {
+                if (!mayBeNull)
+                {
+
+                }
+                return;
+            }
             var mce = expression as CodeMethodInvokeExpression;
             if (mce != null)
             {
                 VisitExpression(mce.Method.TargetObject, referenceConversion);
+                return;
+            }
+            var bin = expression as CodeBinaryOperatorExpression;
+            if (bin != null)
+            {
+                VisitExpression(bin.Left, referenceConversion);
+                VisitExpression(bin.Right, referenceConversion);
                 return;
             }
             var tre = expression as CodeTypeReferenceExpression;
@@ -389,7 +429,40 @@ namespace NMF.CodeGen
             var fieldRef = expression as CodeFieldReferenceExpression;
             if (fieldRef != null)
             {
-                VisitExpression(fieldRef.TargetObject, referenceConversion);
+                VisitExpression(fieldRef.TargetObject, referenceConversion, true);
+                return;
+            }
+            var dce = expression as CodeDelegateCreateExpression;
+            if (dce != null)
+            {
+                VisitExpression(dce.TargetObject, referenceConversion, true);
+                dce.DelegateType = referenceConversion(dce.DelegateType);
+                return;
+            }
+            var die = expression as CodeDelegateInvokeExpression;
+            if (die != null)
+            {
+                VisitExpression(die.TargetObject, referenceConversion, true);
+                for (int i = 0; i < die.Parameters.Count; i++)
+                {
+                    VisitExpression(die.Parameters[i], referenceConversion);
+                }
+                return;
+            }
+            var typeOf = expression as CodeTypeOfExpression;
+            if (typeOf != null)
+            {
+                typeOf.Type = referenceConversion(typeOf.Type);
+                return;
+            }
+            var objectCreate = expression as CodeObjectCreateExpression;
+            if (objectCreate != null)
+            {
+                objectCreate.CreateType = referenceConversion(objectCreate.CreateType);
+                for (int i = 0; i < objectCreate.Parameters.Count; i++)
+                {
+                    VisitExpression(objectCreate.Parameters[i] as CodeExpression, referenceConversion, true);
+                }
                 return;
             }
         }
@@ -416,7 +489,7 @@ namespace NMF.CodeGen
             var name = CreateNewValidName(ns, type.Name);
             var typeRef = type.GetReferenceForType();
             var isSelfPointing = false;
-            if (typeRef != null)
+            if (typeRef != null && typeRef.UserData.Contains(CodeDomHelper.NamespaceKey))
             {
                 isSelfPointing = typeRef.BaseType == type.Name;
                 if (CodeDomHelper.Namespace(typeRef) == null)

@@ -458,6 +458,21 @@ namespace NMF.Models.Meta
                 var referenced = new CodeObjectCreateExpression(referencedClass.GetReferenceForType(), thisRef);
                 var baseReferenced = new CodePropertyReferenceExpression(new CodeBaseReferenceExpression(), "ReferencedElements");
                 referencedProperty.GetStatements.Add(new CodeMethodReturnStatement(new CodeMethodInvokeExpression(baseReferenced, "Concat", referenced)));
+                referencedProperty.SetMerge(other =>
+                {
+                    var newReferences = new CodeMemberProperty()
+                    {
+                        Attributes = referencedProperty.Attributes,
+                        Type = referencedProperty.Type,
+                        HasGet = referencedProperty.HasGet,
+                        HasSet = referencedProperty.HasSet,
+                        Name = referencedProperty.Name
+                    };
+                    newReferences.WriteDocumentation("Gets the referenced model elements of this model element");
+                    var otherExpression = ((other as CodeMemberProperty).GetStatements[0] as CodeMethodReturnStatement).Expression;
+                    newReferences.GetStatements.Add(new CodeMethodReturnStatement(new CodeMethodInvokeExpression(otherExpression, "Concat", referenced)));
+                    return newReferences;
+                });
                 return referencedProperty;
             }
 

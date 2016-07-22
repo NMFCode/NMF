@@ -38,7 +38,7 @@ namespace NMF.Models.Meta
             public override CodeTypeDeclaration CreateOutput(IClass scope, ITransformationContext context)
             {
                 if (!scope.References.Any()) return null;
-                return CodeDomHelper.CreateTypeDeclarationWithReference(scope.Name.ToPascalCase() + "ReferencedElementsCollection");
+                return CodeDomHelper.CreateTypeDeclarationWithReference(scope.Name.ToPascalCase() + "ReferencedElementsCollection", false);
             }
         }
     }

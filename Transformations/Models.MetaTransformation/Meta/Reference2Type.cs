@@ -28,7 +28,7 @@ namespace NMF.Models.Meta
             /// <returns>A new code type declaration</returns>
             public override CodeTypeDeclaration CreateOutput(IReference input, ITransformationContext context)
             {
-                return CodeDomHelper.CreateTypeDeclarationWithReference(input.DeclaringType.Name.ToPascalCase() + input.Name.ToPascalCase() + "Collection");
+                return CodeDomHelper.CreateTypeDeclarationWithReference(input.DeclaringType.Name.ToPascalCase() + input.Name.ToPascalCase() + "Collection", false);
             }
 
             /// <summary>

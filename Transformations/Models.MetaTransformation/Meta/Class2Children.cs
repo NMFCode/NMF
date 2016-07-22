@@ -29,7 +29,7 @@ namespace NMF.Models.Meta
             public override CodeTypeDeclaration CreateOutput(IClass scope, ITransformationContext context)
             {
                 if (!scope.References.Any(r => r.IsContainment)) return null;
-                return CodeDomHelper.CreateTypeDeclarationWithReference(scope.Name.ToPascalCase() + "ChildrenCollection");
+                return CodeDomHelper.CreateTypeDeclarationWithReference(scope.Name.ToPascalCase() + "ChildrenCollection", false);
             }
 
             protected virtual List<IReference> GetImplementingReferences(IClass scope, ITransformationContext context)

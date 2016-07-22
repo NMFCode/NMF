@@ -29,7 +29,7 @@ namespace NMF.Models.Meta
             /// <returns>The uninitialized code type declaration</returns>
             public override CodeTypeDeclaration CreateOutput(IClass scope, IAttribute attribute, ITransformationContext context)
             {
-                return CodeDomHelper.CreateTypeDeclarationWithReference(scope.Name.ToPascalCase() + attribute.Name.ToPascalCase() + "Collection");
+                return CodeDomHelper.CreateTypeDeclarationWithReference(scope.Name.ToPascalCase() + attribute.Name.ToPascalCase() + "Collection", false);
             }
 
             private CodeFieldReferenceExpression parentRef = new CodeFieldReferenceExpression(new CodeThisReferenceExpression(), "_parent");
@@ -71,7 +71,7 @@ namespace NMF.Models.Meta
                     CodeExpression[] initializers = new CodeExpression[constraint.Values.Count];
                     for (int i = 0; i < constraint.Values.Count; i++)
                     {
-                        initializers[i] = CodeDomHelper.CreatePrimitiveExpression(constraint.Values[i], elementType);
+                        initializers[i] = CodeDomHelper.CreatePrimitiveExpression(constraint.Values[i], elementType, attribute.Type is IEnumeration);
                     }
                     var arrayType = new CodeTypeReference(elementType, 1);
                     var standardValues = new CodeMemberField(arrayType, "_standardValues");

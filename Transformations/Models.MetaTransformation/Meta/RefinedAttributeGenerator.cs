@@ -8,6 +8,7 @@ using NMF.CodeGen;
 using NMF.Utilities;
 using NMF.Collections.Generic;
 using NMF.Transformations.Core;
+using System;
 
 namespace NMF.Models.Meta
 {
@@ -27,9 +28,11 @@ namespace NMF.Models.Meta
             /// <param name="context">The transformation context</param>
             public override void Transform(IClass scope, IAttribute attribute, CodeMemberProperty property, ITransformationContext context)
             {
-                if (!scope.Closure(c => c.BaseTypes).Contains((IClass)attribute.DeclaringType))
+                var baseTypes = scope.Closure(c => c.BaseTypes).ToList();
+
+                if (!baseTypes.Contains((IClass)attribute.DeclaringType))
                 {
-                    throw new System.InvalidOperationException(string.Format("The attribute {0} cannot be refined in the scope of class {1} because {1} does not inherit from its declaring class.", attribute.Name, scope.Name));
+                    throw new InvalidOperationException(string.Format("The attribute {0} cannot be refined in the scope of class {1} because {1} does not inherit from its declaring class.", attribute.Name, scope.Name));
                 }
 
                 var classDeclaration = context.Trace.ResolveIn(Rule<Type2Type>(), scope);
@@ -45,10 +48,30 @@ namespace NMF.Models.Meta
                     classDeclaration.DependentMembers(true).Add(property);
                 }
 
-                var implementations = scope.Attributes.Where(att => att.Refines == attribute).ToList();
-                var constraint = scope.AttributeConstraints.Where(c => c.Constrains == attribute).FirstOrDefault();
+                var implementations = baseTypes.SelectMany(s => s.Attributes).Where(att => att.Refines == attribute).ToList();
+                IAttributeConstraint constraint;
+                try
+                {
+                    constraint = baseTypes.SelectMany(s => s.AttributeConstraints).Where(c => c.Constrains == attribute).SingleOrDefault();
+                }
+                catch (InvalidOperationException)
+                {
+                    throw new InvalidOperationException(string.Format("Multiple constraints have been defined for attribute {0}", attribute.Name));
+                }
 
-                if (implementations.Count == 0 && constraint == null) throw new System.InvalidOperationException("The RefinedAttributeGenerator rule was called irregularily as the attribute in question was not refined!");
+                foreach (var declClass in implementations.Select(a => a.DeclaringType).OfType<IClass>().Distinct())
+                {
+                    if (declClass != scope)
+                    {
+                        var refinedAttribute = context.Trace.ResolveIn(this, declClass, attribute);
+                        if (refinedAttribute != null)
+                        {
+                            property.Shadows(true).Add(refinedAttribute);
+                        }
+                    }
+                }
+
+                if (implementations.Count == 0 && constraint == null) throw new InvalidOperationException("The RefinedAttributeGenerator rule was called irregularily as the attribute in question was not refined!");
 
                 var attributeType = CreateReference(attribute.Type, false, context);
 
@@ -85,15 +108,19 @@ namespace NMF.Models.Meta
                         }
                         else
                         {
-                            value = CodeDomHelper.CreatePrimitiveExpression(constraint.Values[0], attributeType);
+                            value = CodeDomHelper.CreatePrimitiveExpression(constraint.Values[0], attributeType, attribute.Type is IEnumeration);
+                            if (value == null)
+                            {
+                                throw new InvalidOperationException(string.Format("The value {0} could not be serialized as a value for {1}", constraint.Values[0], attribute));
+                            }
                         }
                         property.GetStatements.Add(new CodeMethodReturnStatement(value));
                         ifNotDefault.Condition = new CodeBinaryOperatorExpression(new CodePropertySetValueReferenceExpression(), CodeBinaryOperatorType.IdentityInequality, value);
                         property.SetStatements.Add(ifNotDefault);
                     }
 
-                    CreateChangeEvent(property, implementations, context, "EventHandler<ValueChangedEventArgs>", "Changed");
-                    CreateChangeEvent(property, implementations, context, "EventHandler", "Changing");
+                    CreateChangeEvent(property, implementations, context, "Changed");
+                    CreateChangeEvent(property, implementations, context, "Changing");
                 }
                 else
                 {
@@ -112,9 +139,9 @@ namespace NMF.Models.Meta
                 }
             }
 
-            private static void CreateChangeEvent(CodeMemberProperty property, List<IAttribute> implementations, ITransformationContext context, string eventHandler, string eventNameSuffix)
+            private static void CreateChangeEvent(CodeMemberProperty property, List<IAttribute> implementations, ITransformationContext context, string eventNameSuffix)
             {
-                var eventSnippet = @"        event {4} {0}.{1}
+                var eventSnippet = @"        event EventHandler<ValueChangedEvent> {0}.{1}
         {{
             add
             {{{2}
@@ -139,7 +166,7 @@ namespace NMF.Models.Meta
                     addEvents += string.Format("\r\n                _this_{1}.{0} += value;", name, implTypeRef.BaseType);
                     removeEvents += string.Format("\r\n                _this_{1}.{0} -= value;", name, implTypeRef.BaseType);
                 }
-                eventSnippet = string.Format(eventSnippet, property.PrivateImplementationType.BaseType, property.Name + eventNameSuffix, addEvents, removeEvents, eventHandler);
+                eventSnippet = string.Format(eventSnippet, property.PrivateImplementationType.BaseType, property.Name + eventNameSuffix, addEvents, removeEvents);
                 property.DependentMembers(true).Add(new CodeSnippetTypeMember(eventSnippet));
             }
 

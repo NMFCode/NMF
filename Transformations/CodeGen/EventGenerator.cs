@@ -63,7 +63,7 @@ namespace NMF.CodeGen
                 output.Type = new CodeTypeReference(typeof(EventHandler).Name);
             }
 
-            var onChangedMethod = CodeDomHelper.CreateOnChangedMethod(output, eventArgsType);
+            var onChangedMethod = CodeDomHelper.CreateRaiseMethod(output, eventArgsType);
 
             output.DependentMembers(true).Add(onChangedMethod);
         }

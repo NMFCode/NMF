@@ -27,7 +27,7 @@ namespace NMF.CodeGen
         /// <returns>A new code type declaration with set reference that references back to the code declaration</returns>
         public override CodeTypeDeclaration CreateOutput(T input, ITransformationContext context)
         {
-            return CodeDomHelper.CreateTypeDeclarationWithReference(GetName(input));
+            return CodeDomHelper.CreateTypeDeclarationWithReference(GetName(input), true);
         }
 
         /// <summary>
@@ -258,6 +258,11 @@ namespace NMF.CodeGen
                     {
                         RecursivelyAddDependentMembers(members, constructorStatements, item, shadows);
                     }
+                }
+                var shadowing = CodeDomHelper.Shadows(current, false);
+                if (shadowing != null)
+                {
+                    shadows.AddRange(shadowing);
                 }
             }
         }

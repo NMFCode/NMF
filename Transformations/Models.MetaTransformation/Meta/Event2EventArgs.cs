@@ -26,7 +26,7 @@ namespace NMF.Models.Meta
             /// <returns>The generated code type declaration</returns>
             public override CodeTypeDeclaration CreateOutput(IEvent input, ITransformationContext context)
             {
-                return CodeDomHelper.CreateTypeDeclarationWithReference(input.Name.ToPascalCase() + "EventArgs");
+                return CodeDomHelper.CreateTypeDeclarationWithReference(input.Name.ToPascalCase() + "EventArgs", false);
             }
 
             /// <summary>
