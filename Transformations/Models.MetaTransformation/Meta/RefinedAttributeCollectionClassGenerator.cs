@@ -10,6 +10,7 @@ using System.Text;
 using System.Collections;
 using NMF.Expressions;
 using System.Collections.Specialized;
+using NMF.Analysis;
 
 namespace NMF.Models.Meta
 {
@@ -43,14 +44,16 @@ namespace NMF.Models.Meta
             /// <param name="context">The transformation context</param>
             public override void Transform(IClass scope, IAttribute attribute, CodeTypeDeclaration generatedType, ITransformationContext context)
             {
+                var baseTypes = Layering<IClass>.CreateLayers(scope, c => c.BaseTypes).Select(c => c.Single()).ToList();
+
+                var implementations = baseTypes.SelectMany(s => s.Attributes).Where(att => att.Refines == attribute).ToList();
+                var constraintValues = baseTypes.SelectMany(s => s.AttributeConstraints).Where(rc => rc.Constrains == attribute).SelectMany(c => c.Values).ToList();
+
                 var scopeDeclaration = context.Trace.ResolveIn(Rule<Class2Type>(), scope);
                 var elementType = CreateReference(attribute.Type, false, context);
                 var parent = new CodeMemberField(scopeDeclaration.GetReferenceForType(), "_parent");
                 parent.Attributes = MemberAttributes.Private;
                 generatedType.Members.Add(parent);
-
-                var implementingAttributes = scope.Attributes.Where(att => att.Refines == attribute).ToList();
-                var constraint = scope.AttributeConstraints.FirstOrDefault(c => c.Constrains == attribute);
 
                 generatedType.WriteDocumentation(string.Format("The collection class to implement the refined {0} attribute for the {1} class", attribute.Name, scope.Name));
 
@@ -60,18 +63,18 @@ namespace NMF.Models.Meta
                 var constrParentRef = new CodeArgumentReferenceExpression("parent");
                 constructor.Statements.Add(new CodeAssignStatement(parentRef, constrParentRef));
 
-                ImplementNotifications(generatedType, implementingAttributes, constructor, constrParentRef);
+                ImplementNotifications(generatedType, implementations, constructor, constrParentRef);
 
                 constructor.WriteDocumentation("Creates a new instance");
 
                 CodeExpression standardValuesRef = null;
 
-                if (constraint != null)
+                if (constraintValues.Any())
                 {
-                    CodeExpression[] initializers = new CodeExpression[constraint.Values.Count];
-                    for (int i = 0; i < constraint.Values.Count; i++)
+                    CodeExpression[] initializers = new CodeExpression[constraintValues.Count];
+                    for (int i = 0; i < constraintValues.Count; i++)
                     {
-                        initializers[i] = CodeDomHelper.CreatePrimitiveExpression(constraint.Values[i], elementType, attribute.Type is IEnumeration);
+                        initializers[i] = CodeDomHelper.CreatePrimitiveExpression(constraintValues[i], elementType, attribute.Type is IEnumeration);
                     }
                     var arrayType = new CodeTypeReference(elementType, 1);
                     var standardValues = new CodeMemberField(arrayType, "_standardValues");
@@ -82,11 +85,11 @@ namespace NMF.Models.Meta
                 }
 
                 generatedType.Members.Add(constructor);
-                ImplementCollection(generatedType, elementType, standardValuesRef, implementingAttributes, constraint);
+                ImplementCollection(generatedType, elementType, standardValuesRef, implementations, constraintValues);
 
-                if (implementingAttributes.All(att => att.IsOrdered || att.UpperBound == 1))
+                if (implementations.All(att => att.IsOrdered || att.UpperBound == 1))
                 {
-                    ImplementList(generatedType, elementType, standardValuesRef, implementingAttributes, constraint);
+                    ImplementList(generatedType, elementType, standardValuesRef, implementations, constraintValues);
                 }
 
                 ImplementNotifiable(generatedType, elementType);
@@ -214,13 +217,13 @@ namespace NMF.Models.Meta
             /// <param name="generatedType">The generated code type declaration</param>
             /// <param name="elementType">The element tyoe reference</param>
             /// <param name="implementingAttributes">The attributes implementing the collection</param>
-            protected virtual void ImplementList(CodeTypeDeclaration generatedType, CodeTypeReference elementType, CodeExpression standardValuesRef, List<IAttribute> implementingAttributes, IAttributeConstraint constraint)
+            protected virtual void ImplementList(CodeTypeDeclaration generatedType, CodeTypeReference elementType, CodeExpression standardValuesRef, List<IAttribute> implementingAttributes, List<string> constraintValues)
             {
                 generatedType.BaseTypes.Add(new CodeTypeReference(typeof(IList<>).Name, elementType));
-                generatedType.Members.Add(GenerateIndexOf(implementingAttributes, constraint, elementType, standardValuesRef));
-                generatedType.Members.Add(GenerateInsert(implementingAttributes, constraint, elementType));
-                generatedType.Members.Add(GenerateRemoveAt(implementingAttributes, constraint, elementType));
-                generatedType.Members.Add(GenerateIndexer(implementingAttributes, constraint, elementType, standardValuesRef));
+                generatedType.Members.Add(GenerateIndexOf(implementingAttributes, constraintValues, elementType, standardValuesRef));
+                generatedType.Members.Add(GenerateInsert(implementingAttributes, constraintValues, elementType));
+                generatedType.Members.Add(GenerateRemoveAt(implementingAttributes, constraintValues, elementType));
+                generatedType.Members.Add(GenerateIndexer(implementingAttributes, constraintValues, elementType, standardValuesRef));
             }
 
             /// <summary>
@@ -229,18 +232,18 @@ namespace NMF.Models.Meta
             /// <param name="generatedType">The generated code type declaration</param>
             /// <param name="elementType">The element type reference</param>
             /// <param name="implementingAttributes">The attributes implementing the collection</param>
-            protected virtual void ImplementCollection(CodeTypeDeclaration generatedType, CodeTypeReference elementType, CodeExpression standardValuesRef, List<IAttribute> implementingAttributes, IAttributeConstraint constraint)
+            protected virtual void ImplementCollection(CodeTypeDeclaration generatedType, CodeTypeReference elementType, CodeExpression standardValuesRef, List<IAttribute> implementingAttributes, List<string> constraintValues)
             {
 
                 generatedType.BaseTypes.Add(new CodeTypeReference(typeof(ICollection<>).Name, elementType));
                 generatedType.Members.Add(GenerateAdd(implementingAttributes, elementType));
                 generatedType.Members.Add(GenerateClear(implementingAttributes));
-                generatedType.Members.Add(GenerateContains(implementingAttributes, constraint, elementType, standardValuesRef));
-                generatedType.Members.Add(GenerateCopyTo(implementingAttributes, constraint, elementType, standardValuesRef));
-                generatedType.Members.Add(GenerateCount(implementingAttributes, constraint));
+                generatedType.Members.Add(GenerateContains(implementingAttributes, constraintValues, elementType, standardValuesRef));
+                generatedType.Members.Add(GenerateCopyTo(implementingAttributes, constraintValues, elementType, standardValuesRef));
+                generatedType.Members.Add(GenerateCount(implementingAttributes, constraintValues));
                 generatedType.Members.Add(GenerateIsReadOnly(implementingAttributes.Count == 0));
                 generatedType.Members.Add(GenerateRemove(implementingAttributes, elementType));
-                generatedType.Members.Add(GenerateGenericGetEnumerator(implementingAttributes, constraint, elementType, standardValuesRef));
+                generatedType.Members.Add(GenerateGenericGetEnumerator(implementingAttributes, constraintValues, elementType, standardValuesRef));
                 generatedType.Members.Add(GenerateObjectGetEnumerator());
             }
 
@@ -331,7 +334,7 @@ namespace NMF.Models.Meta
                 return new CodePropertyReferenceExpression(parentRef, attrib.Name.ToPascalCase());
             }
 
-            private CodeMemberMethod GenerateContains(IEnumerable<IAttribute> implementingAttributes, IAttributeConstraint constraint, CodeTypeReference elementType, CodeExpression standardValuesRef)
+            private CodeMemberMethod GenerateContains(IEnumerable<IAttribute> implementingAttributes, List<string> constraintValues, CodeTypeReference elementType, CodeExpression standardValuesRef)
             {
                 var contains = new CodeMemberMethod()
                 {
@@ -341,7 +344,7 @@ namespace NMF.Models.Meta
                 };
                 contains.Parameters.Add(new CodeParameterDeclarationExpression(elementType, "item"));
                 var itemRef = new CodeArgumentReferenceExpression("item");
-                if (constraint != null)
+                if (constraintValues.Any())
                 {
                     var constraintIf = new CodeConditionStatement();
                     constraintIf.Condition = new CodeMethodInvokeExpression(standardValuesRef, "Contains", itemRef);
@@ -370,7 +373,7 @@ namespace NMF.Models.Meta
                 return contains;
             }
 
-            private CodeMemberMethod GenerateCopyTo(IEnumerable<IAttribute> implementingAttributes, IAttributeConstraint constraint, CodeTypeReference elementType, CodeExpression standardValuesRef)
+            private CodeMemberMethod GenerateCopyTo(IEnumerable<IAttribute> implementingAttributes, List<string> constraintValues, CodeTypeReference elementType, CodeExpression standardValuesRef)
             {
                 var copyTo = new CodeMemberMethod()
                 {
@@ -382,10 +385,10 @@ namespace NMF.Models.Meta
                 copyTo.Parameters.Add(new CodeParameterDeclarationExpression(typeof(int), "arrayIndex"));
                 var arrayRef = new CodeArgumentReferenceExpression("array");
                 var arrayIndexRef = new CodeArgumentReferenceExpression("arrayIndex");
-                if (constraint != null)
+                if (constraintValues.Any())
                 {
                     copyTo.Statements.Add(new CodeMethodInvokeExpression(standardValuesRef, "CopyTo", arrayRef, arrayIndexRef));
-                    copyTo.Statements.Add(new CodeAssignStatement(arrayIndexRef, new CodeBinaryOperatorExpression(arrayIndexRef, CodeBinaryOperatorType.Add, new CodePrimitiveExpression(constraint.Values.Count))));
+                    copyTo.Statements.Add(new CodeAssignStatement(arrayIndexRef, new CodeBinaryOperatorExpression(arrayIndexRef, CodeBinaryOperatorType.Add, new CodePrimitiveExpression(constraintValues.Count))));
                 }
                 foreach (var attrib in implementingAttributes)
                 {
@@ -411,7 +414,7 @@ namespace NMF.Models.Meta
                 return copyTo;
             }
 
-            private CodeMemberProperty GenerateCount(IEnumerable<IAttribute> implementingAttributes, IAttributeConstraint constraint)
+            private CodeMemberProperty GenerateCount(IEnumerable<IAttribute> implementingAttributes, List<string> constraintValues)
             {
                 var count = new CodeMemberProperty()
                 {
@@ -421,7 +424,7 @@ namespace NMF.Models.Meta
                     HasGet = true,
                     HasSet = false
                 };
-                count.GetStatements.Add(new CodeVariableDeclarationStatement(typeof(int), "count", new CodePrimitiveExpression(constraint != null ? constraint.Values.Count : 0)));
+                count.GetStatements.Add(new CodeVariableDeclarationStatement(typeof(int), "count", new CodePrimitiveExpression(constraintValues.Count)));
                 var countRef = new CodeVariableReferenceExpression("count");
                 foreach (var attrib in implementingAttributes)
                 {
@@ -497,7 +500,7 @@ namespace NMF.Models.Meta
                 return remove;
             }
 
-            private CodeMemberMethod GenerateGenericGetEnumerator(IEnumerable<IAttribute> implementingAttributes, IAttributeConstraint constraint, CodeTypeReference elementType, CodeExpression standardValuesRef)
+            private CodeMemberMethod GenerateGenericGetEnumerator(IEnumerable<IAttribute> implementingAttributes, List<string> constraintValues, CodeTypeReference elementType, CodeExpression standardValuesRef)
             {
                 var getEnumerator = new CodeMemberMethod()
                 {
@@ -506,7 +509,7 @@ namespace NMF.Models.Meta
                     ReturnType = new CodeTypeReference(typeof(IEnumerator<>).Name, elementType)
                 };
                 CodeExpression currentExpression;
-                if (constraint != null)
+                if (constraintValues.Any())
                 {
                     currentExpression = new CodeMethodInvokeExpression(new CodeMethodReferenceExpression(standardValuesRef, "Cast", elementType));
                 }
@@ -539,7 +542,7 @@ namespace NMF.Models.Meta
                 return getEnumerator;
             }
 
-            private CodeMemberMethod GenerateIndexOf(IEnumerable<IAttribute> implementingAttributes, IAttributeConstraint constraint, CodeTypeReference elementType, CodeExpression standardValuesRef)
+            private CodeMemberMethod GenerateIndexOf(IEnumerable<IAttribute> implementingAttributes, List<string> constraintValues, CodeTypeReference elementType, CodeExpression standardValuesRef)
             {
                 var indexOf = new CodeMemberMethod()
                 {
@@ -550,17 +553,17 @@ namespace NMF.Models.Meta
                 indexOf.Parameters.Add(new CodeParameterDeclarationExpression(elementType, "item"));
                 var itemRef = new CodeArgumentReferenceExpression("item");
                 int runningIndexInit = 0;
-                if (constraint != null && constraint.Values.Count > 0)
+                if (constraintValues.Count > 0)
                 {
                     var iterateStandards = new CodeIterationStatement();
                     iterateStandards.InitStatement = new CodeVariableDeclarationStatement(typeof(int), "i", new CodePrimitiveExpression(0));
                     var iRef = new CodeVariableReferenceExpression("i");
-                    iterateStandards.TestExpression = new CodeBinaryOperatorExpression(iRef, CodeBinaryOperatorType.LessThan, new CodePrimitiveExpression(constraint.Values.Count));
+                    iterateStandards.TestExpression = new CodeBinaryOperatorExpression(iRef, CodeBinaryOperatorType.LessThan, new CodePrimitiveExpression(constraintValues.Count));
                     iterateStandards.IncrementStatement = new CodeAssignStatement(iRef, new CodeBinaryOperatorExpression(iRef, CodeBinaryOperatorType.Add, new CodePrimitiveExpression(1)));
                     iterateStandards.Statements.Add(new CodeConditionStatement(new CodeBinaryOperatorExpression(new CodeArrayIndexerExpression(standardValuesRef, iRef), CodeBinaryOperatorType.ValueEquality, itemRef),
                         new CodeMethodReturnStatement(iRef)));
                     indexOf.Statements.Add(iterateStandards);
-                    runningIndexInit = constraint.Values.Count;
+                    runningIndexInit = constraintValues.Count;
                 }
                 indexOf.Statements.Add(new CodeVariableDeclarationStatement(typeof(int), "runningIndex", new CodePrimitiveExpression(runningIndexInit)));
                 indexOf.Statements.Add(new CodeVariableDeclarationStatement(typeof(int), "index"));
@@ -596,7 +599,7 @@ namespace NMF.Models.Meta
                 return indexOf;
             }
 
-            private CodeMemberMethod GenerateInsert(IEnumerable<IAttribute> implementingAttributes, IAttributeConstraint constraint, CodeTypeReference elementType)
+            private CodeMemberMethod GenerateInsert(IEnumerable<IAttribute> implementingAttributes, List<string> constraintValues, CodeTypeReference elementType)
             {
                 var insert = new CodeMemberMethod()
                 {
@@ -606,7 +609,7 @@ namespace NMF.Models.Meta
                 };
                 insert.Parameters.Add(new CodeParameterDeclarationExpression(typeof(int), "index"));
                 insert.Parameters.Add(new CodeParameterDeclarationExpression(elementType, "item"));
-                insert.Statements.Add(new CodeVariableDeclarationStatement(typeof(int), "runningIndex", new CodePrimitiveExpression(constraint != null ? constraint.Values.Count : 0)));
+                insert.Statements.Add(new CodeVariableDeclarationStatement(typeof(int), "runningIndex", new CodePrimitiveExpression(constraintValues.Count)));
                 var runningIndexRef = new CodeVariableReferenceExpression("runningIndex");
                 var indexRef = new CodeArgumentReferenceExpression("index");
                 var itemRef = new CodeArgumentReferenceExpression("item");
@@ -643,7 +646,7 @@ namespace NMF.Models.Meta
                 return insert;
             }
 
-            private CodeMemberMethod GenerateRemoveAt(IEnumerable<IAttribute> implementingAttributes, IAttributeConstraint constraint, CodeTypeReference elementType)
+            private CodeMemberMethod GenerateRemoveAt(IEnumerable<IAttribute> implementingAttributes, List<string> constraintValues, CodeTypeReference elementType)
             {
                 var removeAt = new CodeMemberMethod()
                 {
@@ -652,7 +655,7 @@ namespace NMF.Models.Meta
                     ReturnType = null
                 };
                 removeAt.Parameters.Add(new CodeParameterDeclarationExpression(typeof(int), "index"));
-                removeAt.Statements.Add(new CodeVariableDeclarationStatement(typeof(int), "runningIndex", new CodePrimitiveExpression(constraint != null ? constraint.Values.Count : 0)));
+                removeAt.Statements.Add(new CodeVariableDeclarationStatement(typeof(int), "runningIndex", new CodePrimitiveExpression(constraintValues.Count)));
                 var runningIndexRef = new CodeVariableReferenceExpression("runningIndex");
                 var indexRef = new CodeArgumentReferenceExpression("index");
                 foreach (var attrib in implementingAttributes)
@@ -688,7 +691,7 @@ namespace NMF.Models.Meta
                 return removeAt;
             }
 
-            private CodeMemberProperty GenerateIndexer(IEnumerable<IAttribute> implementingAttributes, IAttributeConstraint constraint, CodeTypeReference elementType, CodeExpression standardValuesRef)
+            private CodeMemberProperty GenerateIndexer(IEnumerable<IAttribute> implementingAttributes, List<string> constraintValues, CodeTypeReference elementType, CodeExpression standardValuesRef)
             {
                 var indexer = new CodeMemberProperty()
                 {
@@ -699,11 +702,11 @@ namespace NMF.Models.Meta
                 indexer.Parameters.Add(new CodeParameterDeclarationExpression(typeof(int), "index"));
                 var indexRef = new CodeArgumentReferenceExpression("index");
                 int runningIndexInit = 0;
-                if (constraint != null && constraint.Values.Count > 0)
+                if (constraintValues.Count > 0)
                 {
-                    indexer.GetStatements.Add(new CodeConditionStatement(new CodeBinaryOperatorExpression(indexRef, CodeBinaryOperatorType.LessThan, new CodePrimitiveExpression(constraint.Values.Count)),
+                    indexer.GetStatements.Add(new CodeConditionStatement(new CodeBinaryOperatorExpression(indexRef, CodeBinaryOperatorType.LessThan, new CodePrimitiveExpression(constraintValues.Count)),
                         new CodeMethodReturnStatement(new CodeArrayIndexerExpression(standardValuesRef, indexRef))));
-                    runningIndexInit = constraint.Values.Count;
+                    runningIndexInit = constraintValues.Count;
                 }
                 var defineRunningIndex = new CodeVariableDeclarationStatement(typeof(int), "runningIndex", new CodePrimitiveExpression(runningIndexInit));
                 indexer.GetStatements.Add(defineRunningIndex);

@@ -32,7 +32,7 @@ namespace NMF.Models.Meta
 
                 if (!baseTypes.Contains((IClass)reference.DeclaringType))
                 {
-                    throw new System.InvalidOperationException(string.Format("The reference {0} cannot be refined in the scope of class {1} because {1} does not inherit from its declaring class.", reference.Name, scope.Name));
+                    throw new InvalidOperationException(string.Format("The reference {0} cannot be refined in the scope of class {1} because {1} does not inherit from its declaring class.", reference.Name, scope.Name));
                 }
 
                 var classDeclaration = context.Trace.ResolveIn(Rule<Type2Type>(), scope);
@@ -52,7 +52,7 @@ namespace NMF.Models.Meta
                 var implementations = baseTypes.SelectMany(s => s.References).Where(r => r.Refines == reference).ToList();
                 var constraints = baseTypes.SelectMany(s => s.ReferenceConstraints).Where(rc => rc.Constrains == reference);
 
-                foreach (var declClass in implementations.Select(a => a.DeclaringType).OfType<IClass>().Distinct())
+                foreach (var declClass in implementations.Select(a => a.DeclaringType).OfType<IClass>().Concat(constraints.Select(c => c.DeclaringType)).Distinct())
                 {
                     if (declClass != scope)
                     {
@@ -64,7 +64,12 @@ namespace NMF.Models.Meta
                     }
                 }
 
-                if (implementations.Count == 0 && !constraints.Any()) throw new System.InvalidOperationException();
+                if (implementations.Count == 0 && !constraints.Any())
+                {
+                    throw new InvalidOperationException(
+                        string.Format("The reference {0} can not be refined in the scope of class {1} because no reference refines it. ", reference, scope)
+                    );
+                }
 
                 var referenceType = CreateReference(reference.Type, true, context);
 
@@ -162,7 +167,7 @@ namespace NMF.Models.Meta
                 {
                     if (reference.IsUnique) throw new System.InvalidOperationException("Unique references must not be refined!");
 
-                    if (implementations.Count > 0 || constraints.Sum(c => c.References.Count) == 0)
+                    if (implementations.Count > 0 || constraints.Any(c => c.References.Any()))
                     {
                         var collectionType = context.Trace.ResolveIn(Rule<RefinedReferenceCollectionClassGenerator>(), scope, reference);
                         property.GetStatements.Add(new CodeMethodReturnStatement(new CodeObjectCreateExpression(collectionType.GetReferenceForType(), new CodeThisReferenceExpression())));

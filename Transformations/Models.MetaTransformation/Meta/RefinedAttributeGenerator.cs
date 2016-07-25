@@ -9,6 +9,7 @@ using NMF.Utilities;
 using NMF.Collections.Generic;
 using NMF.Transformations.Core;
 using System;
+using NMF.Analysis;
 
 namespace NMF.Models.Meta
 {
@@ -28,7 +29,7 @@ namespace NMF.Models.Meta
             /// <param name="context">The transformation context</param>
             public override void Transform(IClass scope, IAttribute attribute, CodeMemberProperty property, ITransformationContext context)
             {
-                var baseTypes = scope.Closure(c => c.BaseTypes).ToList();
+                var baseTypes = Layering<IClass>.CreateLayers(scope, c => c.BaseTypes).Select(c => c.Single()).ToList();
 
                 if (!baseTypes.Contains((IClass)attribute.DeclaringType))
                 {
@@ -49,17 +50,9 @@ namespace NMF.Models.Meta
                 }
 
                 var implementations = baseTypes.SelectMany(s => s.Attributes).Where(att => att.Refines == attribute).ToList();
-                IAttributeConstraint constraint;
-                try
-                {
-                    constraint = baseTypes.SelectMany(s => s.AttributeConstraints).Where(c => c.Constrains == attribute).SingleOrDefault();
-                }
-                catch (InvalidOperationException)
-                {
-                    throw new InvalidOperationException(string.Format("Multiple constraints have been defined for attribute {0}", attribute.Name));
-                }
+                var constraints = baseTypes.SelectMany(s => s.AttributeConstraints).Where(rc => rc.Constrains == attribute);
 
-                foreach (var declClass in implementations.Select(a => a.DeclaringType).OfType<IClass>().Distinct())
+                foreach (var declClass in implementations.Select(a => a.DeclaringType).OfType<IClass>().Concat(constraints.Select(c => c.DeclaringType)).Distinct())
                 {
                     if (declClass != scope)
                     {
@@ -71,7 +64,12 @@ namespace NMF.Models.Meta
                     }
                 }
 
-                if (implementations.Count == 0 && constraint == null) throw new InvalidOperationException("The RefinedAttributeGenerator rule was called irregularily as the attribute in question was not refined!");
+                if (implementations.Count == 0 && !constraints.Any())
+                {
+                    throw new InvalidOperationException(
+                        string.Format("The attribute {0} can not be refined in the scope of class {1} because no reference refines it. ", attribute, scope)
+                    );
+                }
 
                 var attributeType = CreateReference(attribute.Type, false, context);
 
@@ -85,7 +83,7 @@ namespace NMF.Models.Meta
                     }
                     else if (implementations.Count == 1)
                     {
-                        if (constraint != null) throw new System.InvalidOperationException("A single values attribute must not be constrained and implemented at the same time!");
+                        if (constraints.Any()) throw new System.InvalidOperationException("A single values attribute must not be constrained and implemented at the same time!");
                         if (implementations[0].Type != attribute.Type) throw new System.InvalidOperationException("The refining attribute has a different type than the original attribute. Covariance is not supported for attributes!");
 
                         var castedThisVariable = new CodeVariableDeclarationStatement(classDeclaration.GetReferenceForType(), "_this", new CodeThisReferenceExpression());
@@ -99,10 +97,11 @@ namespace NMF.Models.Meta
                     }
                     else
                     {
+                        var constraint = constraints.Last();
                         var ifNotDefault = new CodeConditionStatement();
                         ifNotDefault.TrueStatements.Add(new CodeThrowExceptionStatement(new CodeObjectCreateExpression(typeof(System.NotSupportedException))));
                         CodeExpression value;
-                        if (constraint.Values.Count == 0)
+                        if (constraints.Sum(c => c.Values.Count) == 0)
                         {
                             value = new CodeDefaultValueExpression(attributeType);
                         }
@@ -126,7 +125,7 @@ namespace NMF.Models.Meta
                 {
                     if (attribute.IsUnique) throw new System.InvalidOperationException("Unique attributes must not be refined.");
 
-                    if (implementations.Count > 0 || (constraint != null && constraint.Values.Count > 0))
+                    if (implementations.Count > 0 || constraints.Any(c => c.Values.Any()))
                     {
                         var collectionType = context.Trace.ResolveIn(Rule<RefinedAttributeCollectionClassGenerator>(), scope, attribute);
                         property.GetStatements.Add(new CodeMethodReturnStatement(new CodeObjectCreateExpression(collectionType.GetReferenceForType(), new CodeThisReferenceExpression())));

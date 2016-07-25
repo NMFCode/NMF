@@ -241,7 +241,14 @@ namespace NMF.CodeGen
                 else
                 {
                     members.Remove(conflict);
-                    members.Add(conflict.Merge(current));
+                    try
+                    {
+                        members.Add(conflict.Merge(current));
+                    }
+                    catch (Exception e)
+                    {
+                        throw new InvalidOperationException(string.Format("Exception joining two members {0} and {1}: {2}", current.Name, conflict.Name, e.Message), e);
+                    }
                 }
                 var conStmts = current.ImpliedConstructorStatements(false);
                 if (conStmts != null)

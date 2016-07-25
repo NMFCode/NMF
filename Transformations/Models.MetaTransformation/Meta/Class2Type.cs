@@ -57,6 +57,114 @@ namespace NMF.Models.Meta
                 return baseType.BaseType != "IModelElement";
             }
 
+            private IEnumerable<Tuple<IClass, IReference>> FindReferencesToOverride(IClass current)
+            {
+                if (current.BaseTypes.Count <= 1)
+                {
+                    return Enumerable.Empty<Tuple<IClass, IReference>>();
+                }
+
+                var refinedReferencesList = new List<HashSet<IReference>>();
+                foreach (var baseType in current.BaseTypes)
+                {
+                    var refinements = new HashSet<IReference>();
+                    refinedReferencesList.Add(refinements);
+                    PickUpRefinedReferences(baseType, refinements);
+                }
+
+                var toRefine = new HashSet<IReference>();
+                for (int i = 0; i < refinedReferencesList.Count; i++)
+                {
+                    for (int j = i + 1; j < refinedReferencesList.Count; j++)
+                    {
+                        foreach (var reference in refinedReferencesList[i])
+                        {
+                            if (refinedReferencesList[j].Remove(reference))
+                            {
+                                toRefine.Add(reference);
+                            }
+                        }
+                    }
+                }
+
+                return toRefine.Select(r => Tuple.Create(current, r));
+            }
+
+            private IEnumerable<Tuple<IClass, IAttribute>> FindAttributesToOverride(IClass current)
+            {
+                if (current.BaseTypes.Count <= 1)
+                {
+                    return Enumerable.Empty<Tuple<IClass, IAttribute>>();
+                }
+
+                var refinedAttributesList = new List<HashSet<IAttribute>>();
+                foreach (var baseType in current.BaseTypes)
+                {
+                    var refinements = new HashSet<IAttribute>();
+                    refinedAttributesList.Add(refinements);
+                    PickUpRefinedAttributes(baseType, refinements);
+                }
+
+                var toRefine = new HashSet<IAttribute>();
+                for (int i = 0; i < refinedAttributesList.Count; i++)
+                {
+                    for (int j = i + 1; j < refinedAttributesList.Count; j++)
+                    {
+                        foreach (var attribute in refinedAttributesList[i])
+                        {
+                            if (refinedAttributesList[j].Remove(attribute))
+                            {
+                                toRefine.Add(attribute);
+                            }
+                        }
+                    }
+                }
+
+                return toRefine.Select(r => Tuple.Create(current, r));
+            }
+
+            private static void PickUpRefinedReferences(IClass scope, HashSet<IReference> references)
+            {
+                foreach (var constraint in scope.ReferenceConstraints)
+                {
+                    references.Add(constraint.Constrains);
+                }
+
+                foreach (var reference in scope.References)
+                {
+                    if (reference.Refines != null)
+                    {
+                        references.Add(reference.Refines);
+                    }
+                }
+
+                foreach (var baseType in scope.BaseTypes)
+                {
+                    PickUpRefinedReferences(baseType, references);
+                }
+            }
+
+            private static void PickUpRefinedAttributes(IClass scope, HashSet<IAttribute> references)
+            {
+                foreach (var constraint in scope.AttributeConstraints)
+                {
+                    references.Add(constraint.Constrains);
+                }
+
+                foreach (var attribute in scope.Attributes)
+                {
+                    if (attribute.Refines != null)
+                    {
+                        references.Add(attribute.Refines);
+                    }
+                }
+
+                foreach (var baseType in scope.BaseTypes)
+                {
+                    PickUpRefinedAttributes(baseType, references);
+                }
+            }
+
             /// <summary>
             /// Registers the dependencies: Marks the rule instantiating for Type2Type and requires to generate members and base classes
             /// </summary>
@@ -75,8 +183,16 @@ namespace NMF.Models.Meta
                 RequireGenerateProperties(Rule<Attribute2Property>(), cl => cl.Attributes);
                 RequireGenerateProperties(Rule<Reference2Property>(), cl => cl.References);
 
-                RequireMany(Rule<RefinedReferenceGenerator>(), cl => cl.ReferenceConstraints.Select(c => Tuple.Create(cl, c.Constrains)));
-                RequireMany(Rule<RefinedAttributeGenerator>(), cl => cl.AttributeConstraints.Select(c => Tuple.Create(cl, c.Constrains)));
+                RequireMany(Rule<RefinedReferenceGenerator>(), cl =>
+                {
+                    return cl.ReferenceConstraints.Select(c => Tuple.Create(cl, c.Constrains))
+                            .Concat(FindReferencesToOverride(cl));
+                });
+                RequireMany(Rule<RefinedAttributeGenerator>(), cl =>
+                {
+                    return cl.AttributeConstraints.Select(c => Tuple.Create(cl, c.Constrains))
+                            .Concat(FindAttributesToOverride(cl));
+                });
 
                 RequireMany(Rule<Feature2Proxy>(), cl => cl.Attributes.Where(a => a.UpperBound == 1), (cl, proxies) => cl.DependentMembers(true).AddRange(proxies));
                 RequireMany(Rule<Feature2Proxy>(), cl => cl.References.Where(r => r.UpperBound == 1), (cl, proxies) => cl.DependentMembers(true).AddRange(proxies));
@@ -93,7 +209,7 @@ namespace NMF.Models.Meta
             /// <param name="context">The transformation context</param>
             public override void Transform(IClass input, CodeTypeDeclaration generatedType, ITransformationContext context)
             {
-                if (input.IsAbstract) generatedType.TypeAttributes = System.Reflection.TypeAttributes.Abstract | System.Reflection.TypeAttributes.Public;
+                if (input.IsAbstract) generatedType.TypeAttributes = TypeAttributes.Abstract | TypeAttributes.Public;
 
                 if (input.Namespace.Uri != null)
                 {
