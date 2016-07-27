@@ -70,11 +70,7 @@ namespace NMF.Expressions
                     else
                     {
                         var val = extraction.Value;
-                        if (typeof(IEnumerableExpression).IsAssignableFrom(extraction.Value.Type))
-                        {
-                            val = Expression.Call(extraction.Value, typeof(IEnumerableExpression).GetMethod("AsNotifiable"));
-                        }
-                        if (!typeof(IModelElement).IsAssignableFrom(val.Type) && !typeof(INotifyEnumerable).IsAssignableFrom(val.Type))
+                        if (!typeof(IModelElement).IsAssignableFrom(val.Type) && !typeof(IEnumerableExpression).IsAssignableFrom(val.Type) && !typeof(INotifyEnumerable).IsAssignableFrom(val.Type))
                         {
                             throw new NotSupportedException("Currently, only extraction of parameters typed as model elements or notifiable collections is supported.");
                         }
@@ -95,7 +91,14 @@ namespace NMF.Expressions
                 types[types.Length - 1] = returnType;
 
                 var promotionMethodCallType = promotionMethodCallTypes[types.Length - 2].MakeGenericType(types);
-                return Activator.CreateInstance(promotionMethodCallType, args);
+                var constructor = promotionMethodCallType.GetConstructors()[0];
+#if DEBUG
+                if (constructor == null)
+                {
+                    System.Diagnostics.Debugger.Break();
+                }
+#endif
+                return constructor.Invoke(args);
             }
             else
             {

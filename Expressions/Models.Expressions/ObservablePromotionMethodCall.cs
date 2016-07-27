@@ -7,7 +7,7 @@ namespace NMF.Expressions
 {
     internal class ObservablePromotionMethodCall<T1, TResult> : ObservableStaticMethodCall<T1, TResult>
     {
-        private static bool isT1Collection = typeof(INotifyEnumerable).IsAssignableFrom(typeof(T1));
+        private static bool isT1Collection = typeof(INotifyEnumerable).IsAssignableFrom(typeof(T1)) || typeof(IEnumerableExpression).IsAssignableFrom(typeof(T1));
 
         public ICollection<string> Arg1Properties { get; private set; }
         public bool Arg1Composition { get; private set; }
@@ -129,8 +129,8 @@ namespace NMF.Expressions
     }
     internal class ObservablePromotionMethodCall<T1, T2, TResult> : ObservableStaticMethodCall<T1, T2, TResult>
     {
-        private static bool isT1Collection = typeof(INotifyEnumerable).IsAssignableFrom(typeof(T1));
-        private static bool isT2Collection = typeof(INotifyEnumerable).IsAssignableFrom(typeof(T2));
+        private static bool isT1Collection = typeof(INotifyEnumerable).IsAssignableFrom(typeof(T1)) || typeof(IEnumerableExpression).IsAssignableFrom(typeof(T1));
+        private static bool isT2Collection = typeof(INotifyEnumerable).IsAssignableFrom(typeof(T2)) || typeof(IEnumerableExpression).IsAssignableFrom(typeof(T2));
 
         public ICollection<string> Arg1Properties { get; private set; }
         public bool Arg1Composition { get; private set; }
@@ -350,9 +350,9 @@ namespace NMF.Expressions
     }
     internal class ObservablePromotionMethodCall<T1, T2, T3, TResult> : ObservableStaticMethodCall<T1, T2, T3, TResult>
     {
-        private static bool isT1Collection = typeof(INotifyEnumerable).IsAssignableFrom(typeof(T1));
-        private static bool isT2Collection = typeof(INotifyEnumerable).IsAssignableFrom(typeof(T2));
-        private static bool isT3Collection = typeof(INotifyEnumerable).IsAssignableFrom(typeof(T3));
+        private static bool isT1Collection = typeof(INotifyEnumerable).IsAssignableFrom(typeof(T1)) || typeof(IEnumerableExpression).IsAssignableFrom(typeof(T1));
+        private static bool isT2Collection = typeof(INotifyEnumerable).IsAssignableFrom(typeof(T2)) || typeof(IEnumerableExpression).IsAssignableFrom(typeof(T2));
+        private static bool isT3Collection = typeof(INotifyEnumerable).IsAssignableFrom(typeof(T3)) || typeof(IEnumerableExpression).IsAssignableFrom(typeof(T3));
 
         public ICollection<string> Arg1Properties { get; private set; }
         public bool Arg1Composition { get; private set; }
@@ -670,10 +670,10 @@ namespace NMF.Expressions
     }
     internal class ObservablePromotionMethodCall<T1, T2, T3, T4, TResult> : ObservableStaticMethodCall<T1, T2, T3, T4, TResult>
     {
-        private static bool isT1Collection = typeof(INotifyEnumerable).IsAssignableFrom(typeof(T1));
-        private static bool isT2Collection = typeof(INotifyEnumerable).IsAssignableFrom(typeof(T2));
-        private static bool isT3Collection = typeof(INotifyEnumerable).IsAssignableFrom(typeof(T3));
-        private static bool isT4Collection = typeof(INotifyEnumerable).IsAssignableFrom(typeof(T4));
+        private static bool isT1Collection = typeof(INotifyEnumerable).IsAssignableFrom(typeof(T1)) || typeof(IEnumerableExpression).IsAssignableFrom(typeof(T1));
+        private static bool isT2Collection = typeof(INotifyEnumerable).IsAssignableFrom(typeof(T2)) || typeof(IEnumerableExpression).IsAssignableFrom(typeof(T2));
+        private static bool isT3Collection = typeof(INotifyEnumerable).IsAssignableFrom(typeof(T3)) || typeof(IEnumerableExpression).IsAssignableFrom(typeof(T3));
+        private static bool isT4Collection = typeof(INotifyEnumerable).IsAssignableFrom(typeof(T4)) || typeof(IEnumerableExpression).IsAssignableFrom(typeof(T4));
 
         public ICollection<string> Arg1Properties { get; private set; }
         public bool Arg1Composition { get; private set; }
@@ -1089,11 +1089,11 @@ namespace NMF.Expressions
     }
     internal class ObservablePromotionMethodCall<T1, T2, T3, T4, T5, TResult> : ObservableStaticMethodCall<T1, T2, T3, T4, T5, TResult>
     {
-        private static bool isT1Collection = typeof(INotifyEnumerable).IsAssignableFrom(typeof(T1));
-        private static bool isT2Collection = typeof(INotifyEnumerable).IsAssignableFrom(typeof(T2));
-        private static bool isT3Collection = typeof(INotifyEnumerable).IsAssignableFrom(typeof(T3));
-        private static bool isT4Collection = typeof(INotifyEnumerable).IsAssignableFrom(typeof(T4));
-        private static bool isT5Collection = typeof(INotifyEnumerable).IsAssignableFrom(typeof(T5));
+        private static bool isT1Collection = typeof(INotifyEnumerable).IsAssignableFrom(typeof(T1)) || typeof(IEnumerableExpression).IsAssignableFrom(typeof(T1));
+        private static bool isT2Collection = typeof(INotifyEnumerable).IsAssignableFrom(typeof(T2)) || typeof(IEnumerableExpression).IsAssignableFrom(typeof(T2));
+        private static bool isT3Collection = typeof(INotifyEnumerable).IsAssignableFrom(typeof(T3)) || typeof(IEnumerableExpression).IsAssignableFrom(typeof(T3));
+        private static bool isT4Collection = typeof(INotifyEnumerable).IsAssignableFrom(typeof(T4)) || typeof(IEnumerableExpression).IsAssignableFrom(typeof(T4));
+        private static bool isT5Collection = typeof(INotifyEnumerable).IsAssignableFrom(typeof(T5)) || typeof(IEnumerableExpression).IsAssignableFrom(typeof(T5));
 
         public ICollection<string> Arg1Properties { get; private set; }
         public bool Arg1Composition { get; private set; }
@@ -1607,12 +1607,12 @@ namespace NMF.Expressions
     }
     internal class ObservablePromotionMethodCall<T1, T2, T3, T4, T5, T6, TResult> : ObservableStaticMethodCall<T1, T2, T3, T4, T5, T6, TResult>
     {
-        private static bool isT1Collection = typeof(INotifyEnumerable).IsAssignableFrom(typeof(T1));
-        private static bool isT2Collection = typeof(INotifyEnumerable).IsAssignableFrom(typeof(T2));
-        private static bool isT3Collection = typeof(INotifyEnumerable).IsAssignableFrom(typeof(T3));
-        private static bool isT4Collection = typeof(INotifyEnumerable).IsAssignableFrom(typeof(T4));
-        private static bool isT5Collection = typeof(INotifyEnumerable).IsAssignableFrom(typeof(T5));
-        private static bool isT6Collection = typeof(INotifyEnumerable).IsAssignableFrom(typeof(T6));
+        private static bool isT1Collection = typeof(INotifyEnumerable).IsAssignableFrom(typeof(T1)) || typeof(IEnumerableExpression).IsAssignableFrom(typeof(T1));
+        private static bool isT2Collection = typeof(INotifyEnumerable).IsAssignableFrom(typeof(T2)) || typeof(IEnumerableExpression).IsAssignableFrom(typeof(T2));
+        private static bool isT3Collection = typeof(INotifyEnumerable).IsAssignableFrom(typeof(T3)) || typeof(IEnumerableExpression).IsAssignableFrom(typeof(T3));
+        private static bool isT4Collection = typeof(INotifyEnumerable).IsAssignableFrom(typeof(T4)) || typeof(IEnumerableExpression).IsAssignableFrom(typeof(T4));
+        private static bool isT5Collection = typeof(INotifyEnumerable).IsAssignableFrom(typeof(T5)) || typeof(IEnumerableExpression).IsAssignableFrom(typeof(T5));
+        private static bool isT6Collection = typeof(INotifyEnumerable).IsAssignableFrom(typeof(T6)) || typeof(IEnumerableExpression).IsAssignableFrom(typeof(T6));
 
         public ICollection<string> Arg1Properties { get; private set; }
         public bool Arg1Composition { get; private set; }
@@ -2224,13 +2224,13 @@ namespace NMF.Expressions
     }
     internal class ObservablePromotionMethodCall<T1, T2, T3, T4, T5, T6, T7, TResult> : ObservableStaticMethodCall<T1, T2, T3, T4, T5, T6, T7, TResult>
     {
-        private static bool isT1Collection = typeof(INotifyEnumerable).IsAssignableFrom(typeof(T1));
-        private static bool isT2Collection = typeof(INotifyEnumerable).IsAssignableFrom(typeof(T2));
-        private static bool isT3Collection = typeof(INotifyEnumerable).IsAssignableFrom(typeof(T3));
-        private static bool isT4Collection = typeof(INotifyEnumerable).IsAssignableFrom(typeof(T4));
-        private static bool isT5Collection = typeof(INotifyEnumerable).IsAssignableFrom(typeof(T5));
-        private static bool isT6Collection = typeof(INotifyEnumerable).IsAssignableFrom(typeof(T6));
-        private static bool isT7Collection = typeof(INotifyEnumerable).IsAssignableFrom(typeof(T7));
+        private static bool isT1Collection = typeof(INotifyEnumerable).IsAssignableFrom(typeof(T1)) || typeof(IEnumerableExpression).IsAssignableFrom(typeof(T1));
+        private static bool isT2Collection = typeof(INotifyEnumerable).IsAssignableFrom(typeof(T2)) || typeof(IEnumerableExpression).IsAssignableFrom(typeof(T2));
+        private static bool isT3Collection = typeof(INotifyEnumerable).IsAssignableFrom(typeof(T3)) || typeof(IEnumerableExpression).IsAssignableFrom(typeof(T3));
+        private static bool isT4Collection = typeof(INotifyEnumerable).IsAssignableFrom(typeof(T4)) || typeof(IEnumerableExpression).IsAssignableFrom(typeof(T4));
+        private static bool isT5Collection = typeof(INotifyEnumerable).IsAssignableFrom(typeof(T5)) || typeof(IEnumerableExpression).IsAssignableFrom(typeof(T5));
+        private static bool isT6Collection = typeof(INotifyEnumerable).IsAssignableFrom(typeof(T6)) || typeof(IEnumerableExpression).IsAssignableFrom(typeof(T6));
+        private static bool isT7Collection = typeof(INotifyEnumerable).IsAssignableFrom(typeof(T7)) || typeof(IEnumerableExpression).IsAssignableFrom(typeof(T7));
 
         public ICollection<string> Arg1Properties { get; private set; }
         public bool Arg1Composition { get; private set; }
@@ -2940,14 +2940,14 @@ namespace NMF.Expressions
     }
     internal class ObservablePromotionMethodCall<T1, T2, T3, T4, T5, T6, T7, T8, TResult> : ObservableStaticMethodCall<T1, T2, T3, T4, T5, T6, T7, T8, TResult>
     {
-        private static bool isT1Collection = typeof(INotifyEnumerable).IsAssignableFrom(typeof(T1));
-        private static bool isT2Collection = typeof(INotifyEnumerable).IsAssignableFrom(typeof(T2));
-        private static bool isT3Collection = typeof(INotifyEnumerable).IsAssignableFrom(typeof(T3));
-        private static bool isT4Collection = typeof(INotifyEnumerable).IsAssignableFrom(typeof(T4));
-        private static bool isT5Collection = typeof(INotifyEnumerable).IsAssignableFrom(typeof(T5));
-        private static bool isT6Collection = typeof(INotifyEnumerable).IsAssignableFrom(typeof(T6));
-        private static bool isT7Collection = typeof(INotifyEnumerable).IsAssignableFrom(typeof(T7));
-        private static bool isT8Collection = typeof(INotifyEnumerable).IsAssignableFrom(typeof(T8));
+        private static bool isT1Collection = typeof(INotifyEnumerable).IsAssignableFrom(typeof(T1)) || typeof(IEnumerableExpression).IsAssignableFrom(typeof(T1));
+        private static bool isT2Collection = typeof(INotifyEnumerable).IsAssignableFrom(typeof(T2)) || typeof(IEnumerableExpression).IsAssignableFrom(typeof(T2));
+        private static bool isT3Collection = typeof(INotifyEnumerable).IsAssignableFrom(typeof(T3)) || typeof(IEnumerableExpression).IsAssignableFrom(typeof(T3));
+        private static bool isT4Collection = typeof(INotifyEnumerable).IsAssignableFrom(typeof(T4)) || typeof(IEnumerableExpression).IsAssignableFrom(typeof(T4));
+        private static bool isT5Collection = typeof(INotifyEnumerable).IsAssignableFrom(typeof(T5)) || typeof(IEnumerableExpression).IsAssignableFrom(typeof(T5));
+        private static bool isT6Collection = typeof(INotifyEnumerable).IsAssignableFrom(typeof(T6)) || typeof(IEnumerableExpression).IsAssignableFrom(typeof(T6));
+        private static bool isT7Collection = typeof(INotifyEnumerable).IsAssignableFrom(typeof(T7)) || typeof(IEnumerableExpression).IsAssignableFrom(typeof(T7));
+        private static bool isT8Collection = typeof(INotifyEnumerable).IsAssignableFrom(typeof(T8)) || typeof(IEnumerableExpression).IsAssignableFrom(typeof(T8));
 
         public ICollection<string> Arg1Properties { get; private set; }
         public bool Arg1Composition { get; private set; }
@@ -3755,15 +3755,15 @@ namespace NMF.Expressions
     }
     internal class ObservablePromotionMethodCall<T1, T2, T3, T4, T5, T6, T7, T8, T9, TResult> : ObservableStaticMethodCall<T1, T2, T3, T4, T5, T6, T7, T8, T9, TResult>
     {
-        private static bool isT1Collection = typeof(INotifyEnumerable).IsAssignableFrom(typeof(T1));
-        private static bool isT2Collection = typeof(INotifyEnumerable).IsAssignableFrom(typeof(T2));
-        private static bool isT3Collection = typeof(INotifyEnumerable).IsAssignableFrom(typeof(T3));
-        private static bool isT4Collection = typeof(INotifyEnumerable).IsAssignableFrom(typeof(T4));
-        private static bool isT5Collection = typeof(INotifyEnumerable).IsAssignableFrom(typeof(T5));
-        private static bool isT6Collection = typeof(INotifyEnumerable).IsAssignableFrom(typeof(T6));
-        private static bool isT7Collection = typeof(INotifyEnumerable).IsAssignableFrom(typeof(T7));
-        private static bool isT8Collection = typeof(INotifyEnumerable).IsAssignableFrom(typeof(T8));
-        private static bool isT9Collection = typeof(INotifyEnumerable).IsAssignableFrom(typeof(T9));
+        private static bool isT1Collection = typeof(INotifyEnumerable).IsAssignableFrom(typeof(T1)) || typeof(IEnumerableExpression).IsAssignableFrom(typeof(T1));
+        private static bool isT2Collection = typeof(INotifyEnumerable).IsAssignableFrom(typeof(T2)) || typeof(IEnumerableExpression).IsAssignableFrom(typeof(T2));
+        private static bool isT3Collection = typeof(INotifyEnumerable).IsAssignableFrom(typeof(T3)) || typeof(IEnumerableExpression).IsAssignableFrom(typeof(T3));
+        private static bool isT4Collection = typeof(INotifyEnumerable).IsAssignableFrom(typeof(T4)) || typeof(IEnumerableExpression).IsAssignableFrom(typeof(T4));
+        private static bool isT5Collection = typeof(INotifyEnumerable).IsAssignableFrom(typeof(T5)) || typeof(IEnumerableExpression).IsAssignableFrom(typeof(T5));
+        private static bool isT6Collection = typeof(INotifyEnumerable).IsAssignableFrom(typeof(T6)) || typeof(IEnumerableExpression).IsAssignableFrom(typeof(T6));
+        private static bool isT7Collection = typeof(INotifyEnumerable).IsAssignableFrom(typeof(T7)) || typeof(IEnumerableExpression).IsAssignableFrom(typeof(T7));
+        private static bool isT8Collection = typeof(INotifyEnumerable).IsAssignableFrom(typeof(T8)) || typeof(IEnumerableExpression).IsAssignableFrom(typeof(T8));
+        private static bool isT9Collection = typeof(INotifyEnumerable).IsAssignableFrom(typeof(T9)) || typeof(IEnumerableExpression).IsAssignableFrom(typeof(T9));
 
         public ICollection<string> Arg1Properties { get; private set; }
         public bool Arg1Composition { get; private set; }
@@ -4669,16 +4669,16 @@ namespace NMF.Expressions
     }
     internal class ObservablePromotionMethodCall<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, TResult> : ObservableStaticMethodCall<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, TResult>
     {
-        private static bool isT1Collection = typeof(INotifyEnumerable).IsAssignableFrom(typeof(T1));
-        private static bool isT2Collection = typeof(INotifyEnumerable).IsAssignableFrom(typeof(T2));
-        private static bool isT3Collection = typeof(INotifyEnumerable).IsAssignableFrom(typeof(T3));
-        private static bool isT4Collection = typeof(INotifyEnumerable).IsAssignableFrom(typeof(T4));
-        private static bool isT5Collection = typeof(INotifyEnumerable).IsAssignableFrom(typeof(T5));
-        private static bool isT6Collection = typeof(INotifyEnumerable).IsAssignableFrom(typeof(T6));
-        private static bool isT7Collection = typeof(INotifyEnumerable).IsAssignableFrom(typeof(T7));
-        private static bool isT8Collection = typeof(INotifyEnumerable).IsAssignableFrom(typeof(T8));
-        private static bool isT9Collection = typeof(INotifyEnumerable).IsAssignableFrom(typeof(T9));
-        private static bool isT10Collection = typeof(INotifyEnumerable).IsAssignableFrom(typeof(T10));
+        private static bool isT1Collection = typeof(INotifyEnumerable).IsAssignableFrom(typeof(T1)) || typeof(IEnumerableExpression).IsAssignableFrom(typeof(T1));
+        private static bool isT2Collection = typeof(INotifyEnumerable).IsAssignableFrom(typeof(T2)) || typeof(IEnumerableExpression).IsAssignableFrom(typeof(T2));
+        private static bool isT3Collection = typeof(INotifyEnumerable).IsAssignableFrom(typeof(T3)) || typeof(IEnumerableExpression).IsAssignableFrom(typeof(T3));
+        private static bool isT4Collection = typeof(INotifyEnumerable).IsAssignableFrom(typeof(T4)) || typeof(IEnumerableExpression).IsAssignableFrom(typeof(T4));
+        private static bool isT5Collection = typeof(INotifyEnumerable).IsAssignableFrom(typeof(T5)) || typeof(IEnumerableExpression).IsAssignableFrom(typeof(T5));
+        private static bool isT6Collection = typeof(INotifyEnumerable).IsAssignableFrom(typeof(T6)) || typeof(IEnumerableExpression).IsAssignableFrom(typeof(T6));
+        private static bool isT7Collection = typeof(INotifyEnumerable).IsAssignableFrom(typeof(T7)) || typeof(IEnumerableExpression).IsAssignableFrom(typeof(T7));
+        private static bool isT8Collection = typeof(INotifyEnumerable).IsAssignableFrom(typeof(T8)) || typeof(IEnumerableExpression).IsAssignableFrom(typeof(T8));
+        private static bool isT9Collection = typeof(INotifyEnumerable).IsAssignableFrom(typeof(T9)) || typeof(IEnumerableExpression).IsAssignableFrom(typeof(T9));
+        private static bool isT10Collection = typeof(INotifyEnumerable).IsAssignableFrom(typeof(T10)) || typeof(IEnumerableExpression).IsAssignableFrom(typeof(T10));
 
         public ICollection<string> Arg1Properties { get; private set; }
         public bool Arg1Composition { get; private set; }
@@ -5682,17 +5682,17 @@ namespace NMF.Expressions
     }
     internal class ObservablePromotionMethodCall<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, TResult> : ObservableStaticMethodCall<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, TResult>
     {
-        private static bool isT1Collection = typeof(INotifyEnumerable).IsAssignableFrom(typeof(T1));
-        private static bool isT2Collection = typeof(INotifyEnumerable).IsAssignableFrom(typeof(T2));
-        private static bool isT3Collection = typeof(INotifyEnumerable).IsAssignableFrom(typeof(T3));
-        private static bool isT4Collection = typeof(INotifyEnumerable).IsAssignableFrom(typeof(T4));
-        private static bool isT5Collection = typeof(INotifyEnumerable).IsAssignableFrom(typeof(T5));
-        private static bool isT6Collection = typeof(INotifyEnumerable).IsAssignableFrom(typeof(T6));
-        private static bool isT7Collection = typeof(INotifyEnumerable).IsAssignableFrom(typeof(T7));
-        private static bool isT8Collection = typeof(INotifyEnumerable).IsAssignableFrom(typeof(T8));
-        private static bool isT9Collection = typeof(INotifyEnumerable).IsAssignableFrom(typeof(T9));
-        private static bool isT10Collection = typeof(INotifyEnumerable).IsAssignableFrom(typeof(T10));
-        private static bool isT11Collection = typeof(INotifyEnumerable).IsAssignableFrom(typeof(T11));
+        private static bool isT1Collection = typeof(INotifyEnumerable).IsAssignableFrom(typeof(T1)) || typeof(IEnumerableExpression).IsAssignableFrom(typeof(T1));
+        private static bool isT2Collection = typeof(INotifyEnumerable).IsAssignableFrom(typeof(T2)) || typeof(IEnumerableExpression).IsAssignableFrom(typeof(T2));
+        private static bool isT3Collection = typeof(INotifyEnumerable).IsAssignableFrom(typeof(T3)) || typeof(IEnumerableExpression).IsAssignableFrom(typeof(T3));
+        private static bool isT4Collection = typeof(INotifyEnumerable).IsAssignableFrom(typeof(T4)) || typeof(IEnumerableExpression).IsAssignableFrom(typeof(T4));
+        private static bool isT5Collection = typeof(INotifyEnumerable).IsAssignableFrom(typeof(T5)) || typeof(IEnumerableExpression).IsAssignableFrom(typeof(T5));
+        private static bool isT6Collection = typeof(INotifyEnumerable).IsAssignableFrom(typeof(T6)) || typeof(IEnumerableExpression).IsAssignableFrom(typeof(T6));
+        private static bool isT7Collection = typeof(INotifyEnumerable).IsAssignableFrom(typeof(T7)) || typeof(IEnumerableExpression).IsAssignableFrom(typeof(T7));
+        private static bool isT8Collection = typeof(INotifyEnumerable).IsAssignableFrom(typeof(T8)) || typeof(IEnumerableExpression).IsAssignableFrom(typeof(T8));
+        private static bool isT9Collection = typeof(INotifyEnumerable).IsAssignableFrom(typeof(T9)) || typeof(IEnumerableExpression).IsAssignableFrom(typeof(T9));
+        private static bool isT10Collection = typeof(INotifyEnumerable).IsAssignableFrom(typeof(T10)) || typeof(IEnumerableExpression).IsAssignableFrom(typeof(T10));
+        private static bool isT11Collection = typeof(INotifyEnumerable).IsAssignableFrom(typeof(T11)) || typeof(IEnumerableExpression).IsAssignableFrom(typeof(T11));
 
         public ICollection<string> Arg1Properties { get; private set; }
         public bool Arg1Composition { get; private set; }
@@ -6794,18 +6794,18 @@ namespace NMF.Expressions
     }
     internal class ObservablePromotionMethodCall<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, TResult> : ObservableStaticMethodCall<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, TResult>
     {
-        private static bool isT1Collection = typeof(INotifyEnumerable).IsAssignableFrom(typeof(T1));
-        private static bool isT2Collection = typeof(INotifyEnumerable).IsAssignableFrom(typeof(T2));
-        private static bool isT3Collection = typeof(INotifyEnumerable).IsAssignableFrom(typeof(T3));
-        private static bool isT4Collection = typeof(INotifyEnumerable).IsAssignableFrom(typeof(T4));
-        private static bool isT5Collection = typeof(INotifyEnumerable).IsAssignableFrom(typeof(T5));
-        private static bool isT6Collection = typeof(INotifyEnumerable).IsAssignableFrom(typeof(T6));
-        private static bool isT7Collection = typeof(INotifyEnumerable).IsAssignableFrom(typeof(T7));
-        private static bool isT8Collection = typeof(INotifyEnumerable).IsAssignableFrom(typeof(T8));
-        private static bool isT9Collection = typeof(INotifyEnumerable).IsAssignableFrom(typeof(T9));
-        private static bool isT10Collection = typeof(INotifyEnumerable).IsAssignableFrom(typeof(T10));
-        private static bool isT11Collection = typeof(INotifyEnumerable).IsAssignableFrom(typeof(T11));
-        private static bool isT12Collection = typeof(INotifyEnumerable).IsAssignableFrom(typeof(T12));
+        private static bool isT1Collection = typeof(INotifyEnumerable).IsAssignableFrom(typeof(T1)) || typeof(IEnumerableExpression).IsAssignableFrom(typeof(T1));
+        private static bool isT2Collection = typeof(INotifyEnumerable).IsAssignableFrom(typeof(T2)) || typeof(IEnumerableExpression).IsAssignableFrom(typeof(T2));
+        private static bool isT3Collection = typeof(INotifyEnumerable).IsAssignableFrom(typeof(T3)) || typeof(IEnumerableExpression).IsAssignableFrom(typeof(T3));
+        private static bool isT4Collection = typeof(INotifyEnumerable).IsAssignableFrom(typeof(T4)) || typeof(IEnumerableExpression).IsAssignableFrom(typeof(T4));
+        private static bool isT5Collection = typeof(INotifyEnumerable).IsAssignableFrom(typeof(T5)) || typeof(IEnumerableExpression).IsAssignableFrom(typeof(T5));
+        private static bool isT6Collection = typeof(INotifyEnumerable).IsAssignableFrom(typeof(T6)) || typeof(IEnumerableExpression).IsAssignableFrom(typeof(T6));
+        private static bool isT7Collection = typeof(INotifyEnumerable).IsAssignableFrom(typeof(T7)) || typeof(IEnumerableExpression).IsAssignableFrom(typeof(T7));
+        private static bool isT8Collection = typeof(INotifyEnumerable).IsAssignableFrom(typeof(T8)) || typeof(IEnumerableExpression).IsAssignableFrom(typeof(T8));
+        private static bool isT9Collection = typeof(INotifyEnumerable).IsAssignableFrom(typeof(T9)) || typeof(IEnumerableExpression).IsAssignableFrom(typeof(T9));
+        private static bool isT10Collection = typeof(INotifyEnumerable).IsAssignableFrom(typeof(T10)) || typeof(IEnumerableExpression).IsAssignableFrom(typeof(T10));
+        private static bool isT11Collection = typeof(INotifyEnumerable).IsAssignableFrom(typeof(T11)) || typeof(IEnumerableExpression).IsAssignableFrom(typeof(T11));
+        private static bool isT12Collection = typeof(INotifyEnumerable).IsAssignableFrom(typeof(T12)) || typeof(IEnumerableExpression).IsAssignableFrom(typeof(T12));
 
         public ICollection<string> Arg1Properties { get; private set; }
         public bool Arg1Composition { get; private set; }
@@ -8005,19 +8005,19 @@ namespace NMF.Expressions
     }
     internal class ObservablePromotionMethodCall<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, TResult> : ObservableStaticMethodCall<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, TResult>
     {
-        private static bool isT1Collection = typeof(INotifyEnumerable).IsAssignableFrom(typeof(T1));
-        private static bool isT2Collection = typeof(INotifyEnumerable).IsAssignableFrom(typeof(T2));
-        private static bool isT3Collection = typeof(INotifyEnumerable).IsAssignableFrom(typeof(T3));
-        private static bool isT4Collection = typeof(INotifyEnumerable).IsAssignableFrom(typeof(T4));
-        private static bool isT5Collection = typeof(INotifyEnumerable).IsAssignableFrom(typeof(T5));
-        private static bool isT6Collection = typeof(INotifyEnumerable).IsAssignableFrom(typeof(T6));
-        private static bool isT7Collection = typeof(INotifyEnumerable).IsAssignableFrom(typeof(T7));
-        private static bool isT8Collection = typeof(INotifyEnumerable).IsAssignableFrom(typeof(T8));
-        private static bool isT9Collection = typeof(INotifyEnumerable).IsAssignableFrom(typeof(T9));
-        private static bool isT10Collection = typeof(INotifyEnumerable).IsAssignableFrom(typeof(T10));
-        private static bool isT11Collection = typeof(INotifyEnumerable).IsAssignableFrom(typeof(T11));
-        private static bool isT12Collection = typeof(INotifyEnumerable).IsAssignableFrom(typeof(T12));
-        private static bool isT13Collection = typeof(INotifyEnumerable).IsAssignableFrom(typeof(T13));
+        private static bool isT1Collection = typeof(INotifyEnumerable).IsAssignableFrom(typeof(T1)) || typeof(IEnumerableExpression).IsAssignableFrom(typeof(T1));
+        private static bool isT2Collection = typeof(INotifyEnumerable).IsAssignableFrom(typeof(T2)) || typeof(IEnumerableExpression).IsAssignableFrom(typeof(T2));
+        private static bool isT3Collection = typeof(INotifyEnumerable).IsAssignableFrom(typeof(T3)) || typeof(IEnumerableExpression).IsAssignableFrom(typeof(T3));
+        private static bool isT4Collection = typeof(INotifyEnumerable).IsAssignableFrom(typeof(T4)) || typeof(IEnumerableExpression).IsAssignableFrom(typeof(T4));
+        private static bool isT5Collection = typeof(INotifyEnumerable).IsAssignableFrom(typeof(T5)) || typeof(IEnumerableExpression).IsAssignableFrom(typeof(T5));
+        private static bool isT6Collection = typeof(INotifyEnumerable).IsAssignableFrom(typeof(T6)) || typeof(IEnumerableExpression).IsAssignableFrom(typeof(T6));
+        private static bool isT7Collection = typeof(INotifyEnumerable).IsAssignableFrom(typeof(T7)) || typeof(IEnumerableExpression).IsAssignableFrom(typeof(T7));
+        private static bool isT8Collection = typeof(INotifyEnumerable).IsAssignableFrom(typeof(T8)) || typeof(IEnumerableExpression).IsAssignableFrom(typeof(T8));
+        private static bool isT9Collection = typeof(INotifyEnumerable).IsAssignableFrom(typeof(T9)) || typeof(IEnumerableExpression).IsAssignableFrom(typeof(T9));
+        private static bool isT10Collection = typeof(INotifyEnumerable).IsAssignableFrom(typeof(T10)) || typeof(IEnumerableExpression).IsAssignableFrom(typeof(T10));
+        private static bool isT11Collection = typeof(INotifyEnumerable).IsAssignableFrom(typeof(T11)) || typeof(IEnumerableExpression).IsAssignableFrom(typeof(T11));
+        private static bool isT12Collection = typeof(INotifyEnumerable).IsAssignableFrom(typeof(T12)) || typeof(IEnumerableExpression).IsAssignableFrom(typeof(T12));
+        private static bool isT13Collection = typeof(INotifyEnumerable).IsAssignableFrom(typeof(T13)) || typeof(IEnumerableExpression).IsAssignableFrom(typeof(T13));
 
         public ICollection<string> Arg1Properties { get; private set; }
         public bool Arg1Composition { get; private set; }
@@ -9315,20 +9315,20 @@ namespace NMF.Expressions
     }
     internal class ObservablePromotionMethodCall<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, TResult> : ObservableStaticMethodCall<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, TResult>
     {
-        private static bool isT1Collection = typeof(INotifyEnumerable).IsAssignableFrom(typeof(T1));
-        private static bool isT2Collection = typeof(INotifyEnumerable).IsAssignableFrom(typeof(T2));
-        private static bool isT3Collection = typeof(INotifyEnumerable).IsAssignableFrom(typeof(T3));
-        private static bool isT4Collection = typeof(INotifyEnumerable).IsAssignableFrom(typeof(T4));
-        private static bool isT5Collection = typeof(INotifyEnumerable).IsAssignableFrom(typeof(T5));
-        private static bool isT6Collection = typeof(INotifyEnumerable).IsAssignableFrom(typeof(T6));
-        private static bool isT7Collection = typeof(INotifyEnumerable).IsAssignableFrom(typeof(T7));
-        private static bool isT8Collection = typeof(INotifyEnumerable).IsAssignableFrom(typeof(T8));
-        private static bool isT9Collection = typeof(INotifyEnumerable).IsAssignableFrom(typeof(T9));
-        private static bool isT10Collection = typeof(INotifyEnumerable).IsAssignableFrom(typeof(T10));
-        private static bool isT11Collection = typeof(INotifyEnumerable).IsAssignableFrom(typeof(T11));
-        private static bool isT12Collection = typeof(INotifyEnumerable).IsAssignableFrom(typeof(T12));
-        private static bool isT13Collection = typeof(INotifyEnumerable).IsAssignableFrom(typeof(T13));
-        private static bool isT14Collection = typeof(INotifyEnumerable).IsAssignableFrom(typeof(T14));
+        private static bool isT1Collection = typeof(INotifyEnumerable).IsAssignableFrom(typeof(T1)) || typeof(IEnumerableExpression).IsAssignableFrom(typeof(T1));
+        private static bool isT2Collection = typeof(INotifyEnumerable).IsAssignableFrom(typeof(T2)) || typeof(IEnumerableExpression).IsAssignableFrom(typeof(T2));
+        private static bool isT3Collection = typeof(INotifyEnumerable).IsAssignableFrom(typeof(T3)) || typeof(IEnumerableExpression).IsAssignableFrom(typeof(T3));
+        private static bool isT4Collection = typeof(INotifyEnumerable).IsAssignableFrom(typeof(T4)) || typeof(IEnumerableExpression).IsAssignableFrom(typeof(T4));
+        private static bool isT5Collection = typeof(INotifyEnumerable).IsAssignableFrom(typeof(T5)) || typeof(IEnumerableExpression).IsAssignableFrom(typeof(T5));
+        private static bool isT6Collection = typeof(INotifyEnumerable).IsAssignableFrom(typeof(T6)) || typeof(IEnumerableExpression).IsAssignableFrom(typeof(T6));
+        private static bool isT7Collection = typeof(INotifyEnumerable).IsAssignableFrom(typeof(T7)) || typeof(IEnumerableExpression).IsAssignableFrom(typeof(T7));
+        private static bool isT8Collection = typeof(INotifyEnumerable).IsAssignableFrom(typeof(T8)) || typeof(IEnumerableExpression).IsAssignableFrom(typeof(T8));
+        private static bool isT9Collection = typeof(INotifyEnumerable).IsAssignableFrom(typeof(T9)) || typeof(IEnumerableExpression).IsAssignableFrom(typeof(T9));
+        private static bool isT10Collection = typeof(INotifyEnumerable).IsAssignableFrom(typeof(T10)) || typeof(IEnumerableExpression).IsAssignableFrom(typeof(T10));
+        private static bool isT11Collection = typeof(INotifyEnumerable).IsAssignableFrom(typeof(T11)) || typeof(IEnumerableExpression).IsAssignableFrom(typeof(T11));
+        private static bool isT12Collection = typeof(INotifyEnumerable).IsAssignableFrom(typeof(T12)) || typeof(IEnumerableExpression).IsAssignableFrom(typeof(T12));
+        private static bool isT13Collection = typeof(INotifyEnumerable).IsAssignableFrom(typeof(T13)) || typeof(IEnumerableExpression).IsAssignableFrom(typeof(T13));
+        private static bool isT14Collection = typeof(INotifyEnumerable).IsAssignableFrom(typeof(T14)) || typeof(IEnumerableExpression).IsAssignableFrom(typeof(T14));
 
         public ICollection<string> Arg1Properties { get; private set; }
         public bool Arg1Composition { get; private set; }
@@ -10724,21 +10724,21 @@ namespace NMF.Expressions
     }
     internal class ObservablePromotionMethodCall<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, TResult> : ObservableStaticMethodCall<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, TResult>
     {
-        private static bool isT1Collection = typeof(INotifyEnumerable).IsAssignableFrom(typeof(T1));
-        private static bool isT2Collection = typeof(INotifyEnumerable).IsAssignableFrom(typeof(T2));
-        private static bool isT3Collection = typeof(INotifyEnumerable).IsAssignableFrom(typeof(T3));
-        private static bool isT4Collection = typeof(INotifyEnumerable).IsAssignableFrom(typeof(T4));
-        private static bool isT5Collection = typeof(INotifyEnumerable).IsAssignableFrom(typeof(T5));
-        private static bool isT6Collection = typeof(INotifyEnumerable).IsAssignableFrom(typeof(T6));
-        private static bool isT7Collection = typeof(INotifyEnumerable).IsAssignableFrom(typeof(T7));
-        private static bool isT8Collection = typeof(INotifyEnumerable).IsAssignableFrom(typeof(T8));
-        private static bool isT9Collection = typeof(INotifyEnumerable).IsAssignableFrom(typeof(T9));
-        private static bool isT10Collection = typeof(INotifyEnumerable).IsAssignableFrom(typeof(T10));
-        private static bool isT11Collection = typeof(INotifyEnumerable).IsAssignableFrom(typeof(T11));
-        private static bool isT12Collection = typeof(INotifyEnumerable).IsAssignableFrom(typeof(T12));
-        private static bool isT13Collection = typeof(INotifyEnumerable).IsAssignableFrom(typeof(T13));
-        private static bool isT14Collection = typeof(INotifyEnumerable).IsAssignableFrom(typeof(T14));
-        private static bool isT15Collection = typeof(INotifyEnumerable).IsAssignableFrom(typeof(T15));
+        private static bool isT1Collection = typeof(INotifyEnumerable).IsAssignableFrom(typeof(T1)) || typeof(IEnumerableExpression).IsAssignableFrom(typeof(T1));
+        private static bool isT2Collection = typeof(INotifyEnumerable).IsAssignableFrom(typeof(T2)) || typeof(IEnumerableExpression).IsAssignableFrom(typeof(T2));
+        private static bool isT3Collection = typeof(INotifyEnumerable).IsAssignableFrom(typeof(T3)) || typeof(IEnumerableExpression).IsAssignableFrom(typeof(T3));
+        private static bool isT4Collection = typeof(INotifyEnumerable).IsAssignableFrom(typeof(T4)) || typeof(IEnumerableExpression).IsAssignableFrom(typeof(T4));
+        private static bool isT5Collection = typeof(INotifyEnumerable).IsAssignableFrom(typeof(T5)) || typeof(IEnumerableExpression).IsAssignableFrom(typeof(T5));
+        private static bool isT6Collection = typeof(INotifyEnumerable).IsAssignableFrom(typeof(T6)) || typeof(IEnumerableExpression).IsAssignableFrom(typeof(T6));
+        private static bool isT7Collection = typeof(INotifyEnumerable).IsAssignableFrom(typeof(T7)) || typeof(IEnumerableExpression).IsAssignableFrom(typeof(T7));
+        private static bool isT8Collection = typeof(INotifyEnumerable).IsAssignableFrom(typeof(T8)) || typeof(IEnumerableExpression).IsAssignableFrom(typeof(T8));
+        private static bool isT9Collection = typeof(INotifyEnumerable).IsAssignableFrom(typeof(T9)) || typeof(IEnumerableExpression).IsAssignableFrom(typeof(T9));
+        private static bool isT10Collection = typeof(INotifyEnumerable).IsAssignableFrom(typeof(T10)) || typeof(IEnumerableExpression).IsAssignableFrom(typeof(T10));
+        private static bool isT11Collection = typeof(INotifyEnumerable).IsAssignableFrom(typeof(T11)) || typeof(IEnumerableExpression).IsAssignableFrom(typeof(T11));
+        private static bool isT12Collection = typeof(INotifyEnumerable).IsAssignableFrom(typeof(T12)) || typeof(IEnumerableExpression).IsAssignableFrom(typeof(T12));
+        private static bool isT13Collection = typeof(INotifyEnumerable).IsAssignableFrom(typeof(T13)) || typeof(IEnumerableExpression).IsAssignableFrom(typeof(T13));
+        private static bool isT14Collection = typeof(INotifyEnumerable).IsAssignableFrom(typeof(T14)) || typeof(IEnumerableExpression).IsAssignableFrom(typeof(T14));
+        private static bool isT15Collection = typeof(INotifyEnumerable).IsAssignableFrom(typeof(T15)) || typeof(IEnumerableExpression).IsAssignableFrom(typeof(T15));
 
         public ICollection<string> Arg1Properties { get; private set; }
         public bool Arg1Composition { get; private set; }

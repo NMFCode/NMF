@@ -17,12 +17,13 @@ namespace NMF.Expressions
     {
         public struct PropertyAccess
         {
-            public PropertyAccess(ParameterExpression parameter, string propertyName, bool isCrossReference, bool isRecursive) : this()
+            public PropertyAccess(ParameterExpression parameter, string propertyName, bool isCrossReference, bool isRecursive, bool isModelProperty) : this()
             {
                 Parameter = parameter;
                 PropertyName = propertyName;
                 IsCrossReference = isCrossReference;
                 IsRecursive = isRecursive;
+                IsModelProperty = isModelProperty;
             }
 
             public ParameterExpression Parameter { get; private set; }
@@ -35,9 +36,11 @@ namespace NMF.Expressions
 
             public bool IsNested { get; private set; }
 
+            public bool IsModelProperty { get; set; }
+
             internal PropertyAccess ForParameter(ParameterExpression p)
             {
-                return new PropertyAccess(p, PropertyName, IsCrossReference, true);
+                return new PropertyAccess(p, PropertyName, IsCrossReference, true, IsModelProperty);
             }
         }
 
@@ -157,12 +160,12 @@ namespace NMF.Expressions
                         propertyAccesses.Clear();
                         parameterExpressions.Clear();
                         parameterExpressions.Add(extract);
-                        propertyAccesses.Add(new PropertyAccess(extract, property.Name, isCrossReference, false));
+                        propertyAccesses.Add(new PropertyAccess(extract, property.Name, isCrossReference, false, IsModelProperty(property)));
                         return Expression.MakeMemberAccess(extract, property);
                     }
                     else
                     {
-                        propertyAccesses.Add(new PropertyAccess(parameter, property.Name, isCrossReference, false));
+                        propertyAccesses.Add(new PropertyAccess(parameter, property.Name, isCrossReference, false, IsModelProperty(property)));
                     }
                 }
                 if (newExpression != node.Expression)
@@ -175,6 +178,30 @@ namespace NMF.Expressions
             {
                 return base.VisitMember(node);
             }
+        }
+
+        protected virtual bool IsModelProperty(PropertyInfo property)
+        {
+            if (property == null) throw new ArgumentNullException("property");
+
+            return typeof(IModelElement).IsAssignableFrom(property.DeclaringType);
+        }
+
+
+        private bool IsGenericEnumerableExpression(Type type)
+        {
+            return type.IsInterface && type.IsGenericType && type.GetGenericTypeDefinition() == typeof(IEnumerableExpression<>);
+        }
+
+        private Type FindEnumerableExpressionType(Type type)
+        {
+            // Could be generic enumerable expression itself
+            if (IsGenericEnumerableExpression(type))
+            {
+                return type;
+            }
+            // Otherwise, IEnumerableExpression is one of its implemented interfaces
+            return type.GetInterfaces().FirstOrDefault(IsGenericEnumerableExpression);
         }
 
         private bool IsCrossreferenced(ParameterExpression parameter)
@@ -452,6 +479,10 @@ namespace NMF.Expressions
             var dict = new Dictionary<ParameterExpression, ParameterInfo>();
             foreach (var access in propertyAccesses)
             {
+                if (!access.IsModelProperty)
+                {
+                    continue;
+                }
                 ParameterInfo parameterInfo;
                 if (!dict.TryGetValue(access.Parameter, out parameterInfo))
                 {
