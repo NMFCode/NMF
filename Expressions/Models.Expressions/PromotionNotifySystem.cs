@@ -49,7 +49,7 @@ namespace NMF.Expressions
                 var promotionVisitor = new PromotionExpressionVisitor();
                 var promotionExpression = promotionVisitor.Visit(modelFunc);
                 var collectedParameterInfos = promotionVisitor.CollectParameterInfos();
-                var parametersNew = promotionVisitor.UsedParameters.Distinct().ToList();
+                var parametersNew = promotionVisitor.ListParameters();
 
                 var newExpression = Expression.Lambda(promotionExpression, parametersNew);
                 var newExpressionCompiled = newExpression.Compile();

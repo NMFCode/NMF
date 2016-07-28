@@ -1,14 +1,14 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{25183C1B-5A1D-4535-AE62-90105C00BEAF}</ProjectGuid>
+    <ProjectGuid>{CE312AFB-2FB6-4436-89D6-33242D26E2A3}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>NMF.Expressions</RootNamespace>
-    <AssemblyName>NMF.Expressions.Models</AssemblyName>
+    <AssemblyName>NMF.Expressions.Configuration</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
@@ -34,48 +34,26 @@
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="..\..\CommonAssemblyInfo.cs">
       <Link>CommonAssemblyInfo.cs</Link>
     </Compile>
-    <Compile Include="AugmentationNotifySystem.cs" />
-    <Compile Include="ModelFuncExpressionVisitor.cs" />
-    <Compile Include="ModelFuncExtractionParameter.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>ModelFuncExtractionParameter.tt</DependentUpon>
-    </Compile>
-    <Compile Include="ObservableModelFuncProxyCall.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>ObservableModelFuncProxyCall.tt</DependentUpon>
-    </Compile>
-    <Compile Include="ObservablePromotionMethodCall.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>ObservablePromotionMethodCall.tt</DependentUpon>
-    </Compile>
-    <Compile Include="ObservablePromotionModelFuncProxyCall.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>ObservablePromotionModelFuncProxyCall.tt</DependentUpon>
-    </Compile>
-    <Compile Include="ParameterCollector.cs" />
-    <Compile Include="PromotionExpressionVisitor.cs" />
     <Compile Include="ConfiguredNotifySystem.cs" />
-    <Compile Include="ParameterExtraction.cs" />
     <Compile Include="IncrementalizationConfiguration\Configuration.cs" />
     <Compile Include="IncrementalizationConfiguration\IConfiguration.cs" />
     <Compile Include="IncrementalizationConfiguration\IMethodConfiguration.cs" />
     <Compile Include="IncrementalizationConfiguration\IncrementalizationStrategy.cs" />
     <Compile Include="IncrementalizationConfiguration\MethodConfiguration.cs" />
-    <Compile Include="PromotionNotifySystem.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RecordingNotifySystem.cs" />
+    <Compile Include="RepositoryChangeNotificationSystem.cs" />
     <Compile Include="RepositoryChangeNotifyFunc.cs" />
     <Compile Include="RepositoryChangeNotifyValue.cs" />
-    <Compile Include="RepositoryChangeNotificationSystem.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="IncrementalizationConfiguration.nmf" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Collections\Collections\Collections.csproj">
@@ -102,30 +80,10 @@
       <Project>{afca9d1d-26a6-482a-a5ab-0827ad0fd677}</Project>
       <Name>Expressions</Name>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="IncrementalizationConfiguration.nmf" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="ModelFuncExtractionParameter.tt">
-      <Generator>TextTemplatingFileGenerator</Generator>
-      <LastGenOutput>ModelFuncExtractionParameter.cs</LastGenOutput>
-    </Content>
-    <Content Include="ObservableModelFuncProxyCall.tt">
-      <Generator>TextTemplatingFileGenerator</Generator>
-      <LastGenOutput>ObservableModelFuncProxyCall.cs</LastGenOutput>
-    </Content>
-    <Content Include="ObservablePromotionMethodCall.tt">
-      <Generator>TextTemplatingFileGenerator</Generator>
-      <LastGenOutput>ObservablePromotionMethodCall.cs</LastGenOutput>
-    </Content>
-    <Content Include="ObservablePromotionModelFuncProxyCall.tt">
-      <Generator>TextTemplatingFileGenerator</Generator>
-      <LastGenOutput>ObservablePromotionModelFuncProxyCall.cs</LastGenOutput>
-    </Content>
-  </ItemGroup>
-  <ItemGroup>
-    <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
+    <ProjectReference Include="..\Models.Expressions\Expressions.Models.csproj">
+      <Project>{25183c1b-5a1d-4535-ae62-90105c00beaf}</Project>
+      <Name>Expressions.Models</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

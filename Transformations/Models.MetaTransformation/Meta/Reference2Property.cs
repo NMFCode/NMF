@@ -493,6 +493,11 @@ namespace NMF.Models.Meta
                 {
                     output.AddAttribute(typeof(ConstantAttribute));
                 }
+
+                if (input.Anchor != null)
+                {
+                    output.AddAttribute(typeof(AnchorAttribute), new CodeTypeOfExpression(CreateReference(input.Anchor, true, context)));
+                }
             }
 
 

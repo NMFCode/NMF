@@ -46,6 +46,7 @@
     <Compile Include="..\..\CommonAssemblyInfo.cs">
       <Link>CommonAssemblyInfo.cs</Link>
     </Compile>
+    <Compile Include="AnchorAttribute.cs" />
     <Compile Include="Attributes\ContainmentAttribute.cs" />
     <Compile Include="Attributes\IdAttribute.cs" />
     <Compile Include="Attributes\LowerBoundAttribute.cs" />

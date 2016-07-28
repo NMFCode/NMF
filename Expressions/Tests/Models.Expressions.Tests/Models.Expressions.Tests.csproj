@@ -88,9 +88,9 @@
       <Project>{afca9d1d-26a6-482a-a5ab-0827ad0fd677}</Project>
       <Name>Expressions</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\Models.Expressions\Models.Expressions.csproj">
+    <ProjectReference Include="..\..\Models.Expressions\Expressions.Models.csproj">
       <Project>{25183c1b-5a1d-4535-ae62-90105c00beaf}</Project>
-      <Name>Models.Expressions</Name>
+      <Name>Expressions.Models</Name>
     </ProjectReference>
     <ProjectReference Include="..\Expressions.Linq.Tests\Expressions.Linq.Test.csproj">
       <Project>{fcb61e3f-2624-4146-bb83-9d2b539d99f9}</Project>

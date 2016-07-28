@@ -56,6 +56,19 @@ namespace NMF.Collections.Generic
             }
         }
 
+        public IEnumerable<LooselyLinkedListNode<T>> Nodes
+        {
+            get
+            {
+                var current = first.Next;
+                while (current != null)
+                {
+                    yield return current;
+                    current = current.Next;
+                }
+            }
+        }
+
         public void Add(T item)
         {
             var newNode = new LooselyLinkedListNode<T>(item);
@@ -207,7 +220,7 @@ namespace NMF.Collections.Generic
 
         public T Value { get; set; }
 
-        public LooselyLinkedListNode<T> Next { get; internal set; }
+        public LooselyLinkedListNode<T> Next { get; set; }
 
         public IEnumerable<T> FromHere
         {

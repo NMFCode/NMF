@@ -6,7 +6,7 @@ using System.Text;
 
 namespace NMF.Expressions
 {
-    internal class ApplyParametersVisitor : ExpressionVisitorBase
+    public class ApplyParametersVisitor : ExpressionVisitorBase
     {
         private IDictionary<string, object> parameterMappings;
 
