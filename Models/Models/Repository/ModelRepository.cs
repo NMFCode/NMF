@@ -13,7 +13,7 @@ namespace NMF.Models.Repository
     /// </summary>
     public class ModelRepository : IModelRepository
     {
-        private ModelCollection models;
+        private ModelRepositoryModelCollection models;
 
         /// <summary>
         /// Gets the parent model repository.
@@ -42,7 +42,7 @@ namespace NMF.Models.Repository
         /// <remarks>If no parent repository is provided, the meta repository is used as parent repository</remarks>
         public ModelRepository(IModelRepository parent)
         {
-            models = new ModelCollection(this);
+            models = new ModelRepositoryModelCollection(this);
             Locators = new List<IModelLocator>();
             Locators.Add(FileLocator.Instance);
             Parent = parent ?? MetaRepository.Instance;
@@ -237,125 +237,24 @@ namespace NMF.Models.Repository
         /// <summary>
         /// Gets a dictionary of the models loaded to this repository
         /// </summary>
-        public IDictionary<Uri, Model> Models
+        public ModelCollection Models
         {
             get { return models; }
         }
 
-        private class ModelCollection : IDictionary<Uri, Model>
+        protected class ModelRepositoryModelCollection : ModelCollection
         {
-            private Dictionary<Uri, Model> items = new Dictionary<Uri, Model>();
-            private ModelRepository parent;
+            public ModelRepositoryModelCollection(ModelRepository repo) : base(repo) { }
 
-            public ModelCollection(ModelRepository repo)
+            public override void Add(Uri key, Model value)
             {
-                parent = repo;
-            }
-
-            public Model this[Uri key]
-            {
-                get
-                {
-                    return items[key];
-                }
-
-                set
-                {
-                    throw new InvalidOperationException("Loaded models must not be exchanged once loaded. Please create a new repository");
-                }
-            }
-
-            public int Count
-            {
-                get
-                {
-                    return items.Count;
-                }
-            }
-
-            public bool IsReadOnly
-            {
-                get
-                {
-                    return false;
-                }
-            }
-
-            public ICollection<Uri> Keys
-            {
-                get
-                {
-                    return items.Keys;
-                }
-            }
-
-            public ICollection<Model> Values
-            {
-                get
-                {
-                    return items.Values;
-                }
-            }
-
-            public void Add(KeyValuePair<Uri, Model> item)
-            {
-                Add(item.Key, item.Value);
-            }
-
-            public void Add(Uri key, Model value)
-            {
-                items.Add(key, value);
+                base.Add(key, value);
                 value.BubbledChange += ModelBubbledChange;
             }
 
             private void ModelBubbledChange(object sender, BubbledChangeEventArgs e)
             {
-                parent.OnBubbledChange(e);
-            }
-
-            public void Clear()
-            {
-                throw new InvalidOperationException("Repository must not be cleared. Please create a new one.");
-            }
-
-            public bool Contains(KeyValuePair<Uri, Model> item)
-            {
-                return items.ContainsKey(item.Key);
-            }
-
-            public bool ContainsKey(Uri key)
-            {
-                return items.ContainsKey(key);
-            }
-
-            public void CopyTo(KeyValuePair<Uri, Model>[] array, int arrayIndex)
-            {
-                (items as IDictionary<Uri, Model>).CopyTo(array, arrayIndex);
-            }
-
-            public IEnumerator<KeyValuePair<Uri, Model>> GetEnumerator()
-            {
-                return items.GetEnumerator();
-            }
-
-            public bool Remove(KeyValuePair<Uri, Model> item)
-            {
-                return items.Remove(item.Key);
-            }
-
-            public bool Remove(Uri key)
-            {
-                return items.Remove(key);
-            }
-
-            public bool TryGetValue(Uri key, out Model value)
-            {
-                return items.TryGetValue(key, out value);
-            }
-
-            IEnumerator IEnumerable.GetEnumerator()
-            {
-                return GetEnumerator();
+                ((ModelRepository)Repository).OnBubbledChange(e);
             }
         }
     }

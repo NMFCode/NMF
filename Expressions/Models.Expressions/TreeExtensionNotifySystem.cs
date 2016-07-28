@@ -6,7 +6,7 @@ using System.Text;
 
 namespace NMF.Expressions
 {
-    public class AugmentationNotifySystem : INotifySystem
+    public class TreeExtensionNotifySystem : INotifySystem
     {
         public INotifyExpression CreateExpression(Expression expression, IEnumerable<ParameterExpression> parameters, IDictionary<string, object> parameterMappings)
         {

@@ -20,6 +20,10 @@ namespace NMF.Expressions
             public abstract bool ContainsCrossReference();
 
             public abstract PropertyChainNode Rebase(PropertyChainNode newBase);
+
+            public abstract Type Type { get; }
+
+            public abstract PropertyChainNode Base { get; }
         }
 
         public class ParameterReference : PropertyChainNode
@@ -31,11 +35,27 @@ namespace NMF.Expressions
                 this.parameter = parameter;
             }
 
+            public override PropertyChainNode Base
+            {
+                get
+                {
+                    return null;
+                }
+            }
+
             public override ParameterExpression Parameter
             {
                 get
                 {
                     return parameter;
+                }
+            }
+
+            public override Type Type
+            {
+                get
+                {
+                    return parameter.Type;
                 }
             }
 
@@ -54,12 +74,20 @@ namespace NMF.Expressions
         {
             public PropertyAccess(PropertyChainNode baseNode, PropertyInfo property, bool isCrossReference)
             {
-                Base = baseNode;
+                this.baseNode = baseNode;
                 Property = property;
                 IsCrossReference = isCrossReference;
             }
 
-            public PropertyChainNode Base { get; private set; }
+            private PropertyChainNode baseNode;
+
+            public override PropertyChainNode Base
+            {
+                get
+                {
+                    return baseNode;
+                }
+            }
 
             public override ParameterExpression Parameter
             {
@@ -83,9 +111,58 @@ namespace NMF.Expressions
 
             public bool IsNested { get; private set; }
 
+            public override Type Type
+            {
+                get
+                {
+                    var collectionType = FindEnumerableExpressionType(Property.PropertyType);
+                    if (collectionType != null)
+                    {
+                        return collectionType.GetGenericArguments()[0];
+                    }
+                    else
+                    {
+                        return Property.PropertyType;
+                    }
+                }
+            }
+
+            public Type Anchor
+            {
+                get
+                {
+                    var anchorAttributes = Property.GetCustomAttributes(typeof(AnchorAttribute), true);
+                    if (anchorAttributes != null && anchorAttributes.Length > 0)
+                    {
+                        return ((AnchorAttribute)anchorAttributes[0]).AnchorType;
+                    }
+                    else
+                    {
+                        return null;
+                    }
+                }
+            }
+
             public override bool ContainsCrossReference()
             {
-                return IsCrossReference || Base.ContainsCrossReference();
+                if (IsCrossReference)
+                {
+                    var anchor = Anchor;
+                    if (anchor != null)
+                    {
+                        var current = Base;
+                        while (current != null)
+                        {
+                            if (anchor.IsAssignableFrom(current.Type))
+                            {
+                                return Base.ContainsCrossReference();
+                            }
+                            current = current.Base;
+                        }
+                    }
+                    return true;
+                }
+                return Base.ContainsCrossReference();
             }
 
             public override PropertyChainNode Rebase(PropertyChainNode newBase)
@@ -98,21 +175,16 @@ namespace NMF.Expressions
         {
             return propertyAccesses.Select(a => a.Parameter).Distinct().ToList();
         }
-
-        public struct ParameterInfo
-        {
-            public ParameterInfo(List<string> properties, bool needsContainment)
-            {
-                NeedsContainment = needsContainment;
-                Properties = properties;
-            }
-
-            public bool NeedsContainment { get; set; }
-
-            public List<string> Properties { get; private set; }
-        }
         
-        protected readonly LooselyLinkedList<PropertyChainNode> propertyAccesses = new LooselyLinkedList<PropertyChainNode>();
+        private readonly LooselyLinkedList<PropertyChainNode> propertyAccesses = new LooselyLinkedList<PropertyChainNode>();
+
+        protected ICollection<PropertyChainNode> PropertyAccesses
+        {
+            get
+            {
+                return propertyAccesses;
+            }
+        }
 
         private static bool IsImmutableMethod(MethodInfo method)
         {
@@ -224,12 +296,12 @@ namespace NMF.Expressions
         }
 
 
-        private bool IsGenericEnumerableExpression(Type type)
+        private static bool IsGenericEnumerableExpression(Type type)
         {
             return type.IsInterface && type.IsGenericType && type.GetGenericTypeDefinition() == typeof(IEnumerableExpression<>);
         }
 
-        private Type FindEnumerableExpressionType(Type type)
+        private static Type FindEnumerableExpressionType(Type type)
         {
             // Could be generic enumerable expression itself
             if (IsGenericEnumerableExpression(type))

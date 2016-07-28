@@ -11,7 +11,7 @@ namespace NMF.Models.Repository
     public sealed class MetaRepository : IModelRepository
     {
         private static MetaRepository instance = new MetaRepository();
-        private Dictionary<Uri, Model> entries = new Dictionary<Uri, Model>();
+        private ModelCollection entries;
         private ModelSerializer serializer = new ModelSerializer();
         private HashSet<Assembly> modelAssemblies = new HashSet<Assembly>();
 
@@ -39,6 +39,7 @@ namespace NMF.Models.Repository
 
         private MetaRepository()
         {
+            entries = new ModelCollection(this);
             serializer.KnownTypes.Add(typeof(INamespace));
             serializer.KnownTypes.Add(typeof(Model));
 
@@ -154,7 +155,7 @@ namespace NMF.Models.Repository
             return Resolve(new Uri(uriString, UriKind.Absolute));
         }
 
-        public IDictionary<Uri, Model> Models
+        public ModelCollection Models
         {
             get { return entries; }
         }

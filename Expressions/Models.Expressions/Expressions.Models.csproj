@@ -39,7 +39,9 @@
     <Compile Include="..\..\CommonAssemblyInfo.cs">
       <Link>CommonAssemblyInfo.cs</Link>
     </Compile>
-    <Compile Include="AugmentationNotifySystem.cs" />
+    <Compile Include="BubbledChangeFetcher.cs" />
+    <Compile Include="TreeExtensionExpressionVisitor.cs" />
+    <Compile Include="TreeExtensionNotifySystem.cs" />
     <Compile Include="ModelFuncExpressionVisitor.cs" />
     <Compile Include="ModelFuncExtractionParameter.cs">
       <AutoGen>True</AutoGen>

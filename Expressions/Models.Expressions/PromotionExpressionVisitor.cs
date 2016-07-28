@@ -15,6 +15,19 @@ namespace NMF.Expressions
 {
     internal class PromotionExpressionVisitor : ModelExpressionVisitorBase<Dictionary<string, ParameterExtraction>>
     {
+        public struct ParameterInfo
+        {
+            public ParameterInfo(List<string> properties, bool needsContainment)
+            {
+                NeedsContainment = needsContainment;
+                Properties = properties;
+            }
+
+            public bool NeedsContainment { get; set; }
+
+            public List<string> Properties { get; private set; }
+        }
+
         private Dictionary<string, ParameterExtraction> parameterextractions = new Dictionary<string, ParameterExtraction>();
         
         public ICollection<ParameterExtraction> ExtractParameters
@@ -28,8 +41,8 @@ namespace NMF.Expressions
         protected override bool ResetForCrossReference(Expression targetExpression, PropertyInfo property, bool isCrossReference, out Expression returnValue)
         {
             var extract = ExtractParameter(targetExpression);
-            propertyAccesses.Clear();
-            propertyAccesses.Add(new PropertyAccess(new ParameterReference(extract), property, isCrossReference));
+            PropertyAccesses.Clear();
+            PropertyAccesses.Add(new PropertyAccess(new ParameterReference(extract), property, isCrossReference));
             returnValue = Expression.MakeMemberAccess(extract, property);
             return true;
         }
@@ -51,7 +64,7 @@ namespace NMF.Expressions
         {
             parameterextractions = extractionsSaved;
             var extraction = ExtractParameter(node);
-            propertyAccesses.Add(new ParameterReference(extraction));
+            PropertyAccesses.Add(new ParameterReference(extraction));
             return extraction;
         }
 
@@ -91,7 +104,7 @@ namespace NMF.Expressions
         public Dictionary<ParameterExpression, ParameterInfo> CollectParameterInfos()
         {
             var dict = new Dictionary<ParameterExpression, ParameterInfo>();
-            foreach (var access in propertyAccesses.OfType<PropertyAccess>())
+            foreach (var access in PropertyAccesses.OfType<PropertyAccess>())
             {
                 if (!IsModelProperty(access.Property))
                 {
