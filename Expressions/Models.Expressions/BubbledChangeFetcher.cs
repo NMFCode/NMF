@@ -6,28 +6,32 @@ using System.Text;
 
 namespace NMF.Expressions
 {
-    internal class BubbledChangeFetcher<T>
+    internal class BubbledChangeFetcher
     {
-        public IModelElement Element { get; private set; }
+        public IModelElement Element { get; set; }
 
-        public BubbledChangeFetcher<T> Child { get; private set; }
+        public Type Type { get; private set; }
 
-        public BubbledChangeFetcher<T> Parent { get; private set; }
+        public BubbledChangeFetcher Child { get; private set; }
 
-        public BubbledChangeFetcher(BubbledChangeFetcher<T> parent)
+        public BubbledChangeFetcher Parent { get; private set; }
+
+        public BubbledChangeFetcher(BubbledChangeFetcher parent)
         {
             Element = parent.Element.Parent;
             Parent = parent;
+            Type = parent.Type;
         }
 
-        protected BubbledChangeFetcher(IModelElement element)
+        protected BubbledChangeFetcher(IModelElement element, Type type)
         {
             Element = element;
+            Type = type;
         }
 
         public void Attach()
         {
-            if (Element is T)
+            if (Type.IsInstanceOfType(Element))
             {
                 Element.BubbledChange += Element_BubbledChange;
             }
@@ -50,7 +54,7 @@ namespace NMF.Expressions
             }
             else
             {
-                Child = new BubbledChangeFetcher<T>(this);
+                Child = new BubbledChangeFetcher(this);
                 Child.Attach();
             }
         }
@@ -76,7 +80,7 @@ namespace NMF.Expressions
 
         public void Detach()
         {
-            if (Element is T)
+            if (Type.IsInstanceOfType(Element))
             {
                 Element.BubbledChange -= Element_BubbledChange;
             }
@@ -91,9 +95,9 @@ namespace NMF.Expressions
         }
     }
 
-    internal class BubbledChangeListener<T> : BubbledChangeFetcher<T>
+    internal class BubbledChangeListener : BubbledChangeFetcher
     {
-        public BubbledChangeListener(IModelElement element) : base(element)
+        public BubbledChangeListener(IModelElement element, Type type) : base(element, type)
         {
         }
 

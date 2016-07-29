@@ -40,6 +40,11 @@
       <Link>CommonAssemblyInfo.cs</Link>
     </Compile>
     <Compile Include="BubbledChangeFetcher.cs" />
+    <Compile Include="ObservableTreeExtensionCall.cs">
+      <DependentUpon>ObservableTreeExtensionCall.tt</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+    </Compile>
     <Compile Include="TreeExtensionExpressionVisitor.cs" />
     <Compile Include="TreeExtensionNotifySystem.cs" />
     <Compile Include="ModelFuncExpressionVisitor.cs" />
@@ -104,6 +109,10 @@
     <Content Include="ObservableModelFuncProxyCall.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>ObservableModelFuncProxyCall.cs</LastGenOutput>
+    </Content>
+    <Content Include="ObservableTreeExtensionCall.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>ObservableTreeExtensionCall.cs</LastGenOutput>
     </Content>
     <Content Include="ObservablePromotionMethodCall.tt">
       <Generator>TextTemplatingFileGenerator</Generator>

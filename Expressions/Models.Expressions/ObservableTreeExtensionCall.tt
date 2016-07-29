@@ -1,0 +1,90 @@
+﻿<#@ template debug="false" hostspecific="false" language="C#" #>
+<#@ assembly name="System.Core" #>
+<#@ import namespace="System.Linq" #>
+<#@ import namespace="System.Text" #>
+<#@ import namespace="System.Collections.Generic" #>
+<#@ output extension=".cs" #>
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using NMF.Models;
+
+<# int maxParameters = 15; #>
+
+namespace NMF.Expressions
+{
+<# for (int i = 1; i <= maxParameters; i++) { #>
+    class ObservableTreeExtensionCall<<# for (int j = 1; j <= i; j++) { #>T<#= j #>, <# } #>TResult> : ObservableStaticMethodCall<<# for (int j = 1; j <= i; j++) { #>T<#= j #>, <# } #>TResult>
+<# for (int j = 1; j <= i; j++) { #>
+        where T<#= j #> : IModelElement
+<# } #>
+    {
+<# for (int j = 1; j <= i; j++) { #>
+        private List<BubbledChangeListener> anchor<#= j #>Listener;
+<# } #>
+
+<# for (int j = 1; j <= i; j++) { #>
+        public ICollection<string> Arg<#= j #>Properties { get; set; }
+<# } #>
+
+        public ObservableTreeExtensionCall(Func<<# for (int j = 1; j <= i; j++) { #>T<#= j #>, <# } #>TResult> function<# for (int j = 1; j <= i; j++) { #>, INotifyExpression<T<#= j #>> arg<#= j #>, IEnumerable<Type> anchors<#= j #>, ICollection<string> arg<#= j #>Properties<# } #>) : base(function<# for (int j = 1; j <= i; j++) { #>, arg<#= j #><# } #>)
+        {
+<# for (int j = 1; j <= i; j++) { #>
+            anchor<#= j #>Listener = anchors<#= j #>.Select(t => new BubbledChangeListener(null, t)).ToList();
+<# } #>
+
+<# for (int j = 1; j <= i; j++) { #>
+            Arg<#= j #>Properties = arg<#= j #>Properties;
+<# } #>
+        }
+
+        protected override void AttachCore()
+        {
+            base.AttachCore();
+            EventHandler<BubbledChangeEventArgs> handler = Listener_BubbledChange;
+<# for (int j = 1; j <= i; j++) { #>
+            foreach (var listener in anchor<#= j #>Listener)
+            {
+                listener.Element = Argument<#= j #>.Value;
+                listener.BubbledChange += handler;
+                listener.Attach();
+            }
+<# } #>
+        }
+
+        protected override void DetachCore()
+        {
+            EventHandler<BubbledChangeEventArgs> handler = Listener_BubbledChange;
+<# for (int j = 1; j <= i; j++) { #>
+            foreach (var listener in anchor<#= j #>Listener)
+            {
+                listener.BubbledChange -= handler;
+                listener.Detach();
+            }
+<# } #>
+            base.DetachCore();
+        }
+
+        private void Listener_BubbledChange(object sender, BubbledChangeEventArgs e)
+        {
+            if (IsAttached)
+            {
+                Refresh();
+            }
+        }
+
+        public override INotifyExpression<TResult> ApplyParameters(IDictionary<string, object> parameters)
+        {
+            return new ObservableTreeExtensionCall<<# for (int j = 1; j <= i; j++) { #>T<#= j #>, <# } #>TResult>(Function, 
+<# for (int j = 1; j < i; j++) { #>
+                Argument<#= j #>.ApplyParameters(parameters), anchor<#= j #>Listener.Select(l => l.Type), Arg<#= j #>Properties, 
+<# } #>
+                Argument<#= i #>.ApplyParameters(parameters), anchor<#= i #>Listener.Select(l => l.Type), Arg<#= i #>Properties);
+        }
+    }
+<# } #>
+    internal static class ObservableTreeExtensionCallTypes
+	{
+		public static readonly Type[] Types = { typeof(ObservableTreeExtensionCall<,>)<# for (int i = 2; i <= maxParameters; i++) { #>, typeof(ObservableTreeExtensionCall<<#= new string(',', i) #>>)<# } #> };
+	}
+}
