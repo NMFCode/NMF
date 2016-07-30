@@ -54,10 +54,12 @@
   </Choose>
   <ItemGroup>
     <Compile Include="ModelFuncExpressionVisitorTest.cs" />
+    <Compile Include="NotifySystemTests.cs" />
     <Compile Include="ParameterAssertions.cs" />
     <Compile Include="PromotionExpressionVisitorTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="PromotionNotifySystemTest.cs" />
+    <Compile Include="TreeExtensionNotifySystemTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\Collections\Collections\Collections.csproj">

@@ -97,7 +97,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Transformations.Tests", "Tr
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Expressions.Models", "Expressions\Models.Expressions\Expressions.Models.csproj", "{25183C1B-5A1D-4535-AE62-90105C00BEAF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Models.Expressions.Tests", "Expressions\Tests\Models.Expressions.Tests\Models.Expressions.Tests.csproj", "{CE4F8D70-E17A-4C51-9C9E-BFB42978B5E8}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Expressions.Models.Tests", "Expressions\Tests\Models.Expressions.Tests\Expressions.Models.Tests.csproj", "{CE4F8D70-E17A-4C51-9C9E-BFB42978B5E8}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Benchmarks", "Analysis\Benchmarks\Benchmarks.csproj", "{AFF77CC1-3907-4AD0-B072-B838DB793280}"
 EndProject

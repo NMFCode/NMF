@@ -1,4 +1,5 @@
 ﻿using NMF.Models;
+using NMF.Models.Repository;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -6,15 +7,24 @@ using System.Text;
 
 namespace NMF.Expressions
 {
-    internal class BubbledChangeFetcher
+    internal interface IBubbledChangeFetcher
+    {
+        void PropagateBubbledChange(BubbledChangeEventArgs e);
+
+        void Attach();
+
+        void Detach();
+    }
+
+    internal class BubbledChangeFetcher : IBubbledChangeFetcher
     {
         public IModelElement Element { get; set; }
 
         public Type Type { get; private set; }
 
-        public BubbledChangeFetcher Child { get; private set; }
+        public IBubbledChangeFetcher Child { get; private set; }
 
-        public BubbledChangeFetcher Parent { get; private set; }
+        public IBubbledChangeFetcher Parent { get; private set; }
 
         public BubbledChangeFetcher(BubbledChangeFetcher parent)
         {
@@ -42,15 +52,17 @@ namespace NMF.Expressions
             }
         }
 
-        private void RenewChild()
+        protected virtual void RenewChild()
         {
-            if (Element.Parent == null)
+            var model = Element as Model;
+            if (model != null && model.Repository != null)
+            {
+                Child = new BubbledChangeRepositoryFetcher(model.Repository, this);
+                Child.Attach();
+            }
+            else if (Element.Parent == null)
             {
                 Child = null;
-            }
-            else if (Element.Parent is Model)
-            {
-                throw new NotImplementedException();
             }
             else
             {
@@ -92,6 +104,39 @@ namespace NMF.Expressions
                 }
                 Element.ParentChanged -= Element_ParentChanged;
             }
+        }
+    }
+
+    internal class BubbledChangeRepositoryFetcher : IBubbledChangeFetcher
+    {
+        public IModelRepository Repository { get; private set; }
+
+        public IBubbledChangeFetcher Parent { get; private set; }
+
+        public BubbledChangeRepositoryFetcher(IModelRepository repository, IBubbledChangeFetcher parent)
+        {
+            Repository = repository;
+            Parent = parent;
+        }
+
+        public void Attach()
+        {
+            Repository.BubbledChange += Repository_BubbledChange;
+        }
+
+        private void Repository_BubbledChange(object sender, BubbledChangeEventArgs e)
+        {
+            Parent.PropagateBubbledChange(e);
+        }
+
+        public void Detach()
+        {
+            Repository.BubbledChange -= Repository_BubbledChange;
+        }
+
+        public void PropagateBubbledChange(BubbledChangeEventArgs e)
+        {
+            Parent.PropagateBubbledChange(e);
         }
     }
 

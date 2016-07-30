@@ -109,8 +109,6 @@ namespace NMF.Expressions
 
             public bool IsCrossReference { get; private set; }
 
-            public bool IsNested { get; private set; }
-
             public override Type Type
             {
                 get
@@ -143,24 +141,32 @@ namespace NMF.Expressions
                 }
             }
 
+            public bool IsAnchorEffective(Type anchor)
+            {
+                if (anchor != null)
+                {
+                    var current = Base;
+                    while (current != null)
+                    {
+                        if (anchor.IsAssignableFrom(current.Type))
+                        {
+                            return false;
+                        }
+                        current = current.Base;
+                    }
+                }
+                return true;
+            }
+
             public override bool ContainsCrossReference()
             {
                 if (IsCrossReference)
                 {
                     var anchor = Anchor;
-                    if (anchor != null)
+                    if (anchor == null || !IsAnchorEffective(anchor))
                     {
-                        var current = Base;
-                        while (current != null)
-                        {
-                            if (anchor.IsAssignableFrom(current.Type))
-                            {
-                                return Base.ContainsCrossReference();
-                            }
-                            current = current.Base;
-                        }
+                        return true;
                     }
-                    return true;
                 }
                 return Base.ContainsCrossReference();
             }

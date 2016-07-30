@@ -101,6 +101,26 @@ namespace NMF.Expressions
             return true;
         }
 
+        protected override bool ResetForLambdaExpression(Dictionary<string, ParameterExtraction> state, MethodCallExpression methodCall, LambdaExpression lambda, out Expression returnValue)
+        {
+            if (!CheckConflictingExtractions(state, lambda))
+            {
+                returnValue = ExtractLambda(methodCall, state);
+                return true;
+            }
+            else
+            {
+                returnValue = null;
+                return false;
+            }
+        }
+
+        protected override Dictionary<string, ParameterExtraction> SaveState()
+        {
+            return new Dictionary<string, ParameterExtraction>(parameterextractions);
+        }
+
+
         public Dictionary<ParameterExpression, ParameterInfo> CollectParameterInfos()
         {
             var dict = new Dictionary<ParameterExpression, ParameterInfo>();
@@ -134,25 +154,6 @@ namespace NMF.Expressions
                 }
             }
             return dict;
-        }
-
-        protected override bool ResetForLambdaExpression(Dictionary<string, ParameterExtraction> state, MethodCallExpression methodCall, LambdaExpression lambda, out Expression returnValue)
-        {
-            if (!CheckConflictingExtractions(state, lambda))
-            {
-                returnValue = ExtractLambda(methodCall, state);
-                return true;
-            }
-            else
-            {
-                returnValue = null;
-                return false;
-            }
-        }
-
-        protected override Dictionary<string, ParameterExtraction> SaveState()
-        {
-            return new Dictionary<string, ParameterExtraction>(parameterextractions);
         }
     }
 }
