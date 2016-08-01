@@ -54,20 +54,10 @@
       <DependentUpon>ModelFuncExtractionParameter.tt</DependentUpon>
     </Compile>
     <Compile Include="ModelExpressionVisitorBase.cs" />
-    <Compile Include="ObservableModelFuncProxyCall.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>ObservableModelFuncProxyCall.tt</DependentUpon>
-    </Compile>
     <Compile Include="ObservablePromotionMethodCall.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>ObservablePromotionMethodCall.tt</DependentUpon>
-    </Compile>
-    <Compile Include="ObservablePromotionModelFuncProxyCall.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>ObservablePromotionModelFuncProxyCall.tt</DependentUpon>
     </Compile>
     <Compile Include="ParameterCollector.cs" />
     <Compile Include="PromotionExpressionVisitor.cs" />
@@ -106,10 +96,6 @@
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>ModelFuncExtractionParameter.cs</LastGenOutput>
     </Content>
-    <Content Include="ObservableModelFuncProxyCall.tt">
-      <Generator>TextTemplatingFileGenerator</Generator>
-      <LastGenOutput>ObservableModelFuncProxyCall.cs</LastGenOutput>
-    </Content>
     <Content Include="ObservableTreeExtensionCall.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>ObservableTreeExtensionCall.cs</LastGenOutput>
@@ -117,10 +103,6 @@
     <Content Include="ObservablePromotionMethodCall.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>ObservablePromotionMethodCall.cs</LastGenOutput>
-    </Content>
-    <Content Include="ObservablePromotionModelFuncProxyCall.tt">
-      <Generator>TextTemplatingFileGenerator</Generator>
-      <LastGenOutput>ObservablePromotionModelFuncProxyCall.cs</LastGenOutput>
     </Content>
   </ItemGroup>
   <ItemGroup>

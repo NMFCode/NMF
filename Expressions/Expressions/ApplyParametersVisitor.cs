@@ -20,7 +20,18 @@ namespace NMF.Expressions
             object argument;
             if (parameterMappings.TryGetValue(node.Name, out argument))
             {
-                return Expression.Constant(argument);
+                if (ReflectionHelper.IsInstanceOf(node.Type, argument))
+                {
+                    return Expression.Constant(argument);
+                }
+                else if (argument is Expression)
+                {
+                    return (Expression)argument;
+                }
+                else
+                {
+                    throw new InvalidOperationException(string.Format("The provided value {0} for parameter {1} is not valid.", argument, node.Type));
+                }
             }
             else
             {

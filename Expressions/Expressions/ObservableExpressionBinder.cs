@@ -887,11 +887,28 @@ namespace NMF.Expressions
             object value;
             if (parameters.TryGetValue(node.Name, out value))
             {
-                return System.Activator.CreateInstance(typeof(ObservableConstant<>).MakeGenericType(node.Type), value) as Expression;
+                if (ReflectionHelper.IsInstanceOf(node.Type, value) || value == null)
+                {
+                    var createType = typeof(ObservableConstant<>).MakeGenericType(node.Type);
+                    return (Expression)(ReflectionHelper.GetConstructor(createType).Invoke(new object[] { value }));
+                }
+                else
+                {
+                    var expression = value as Expression;
+                    if (expression != null)
+                    {
+                        return expression;
+                    }
+                    else
+                    {
+                        throw new InvalidOperationException(string.Format("The provided value {0} for parameter {1} is not valid.", value, node.Type));
+                    }
+                }
             }
             else
             {
-                return Activator.CreateInstance(typeof(ObservableParameter<>).MakeGenericType(node.Type), node.Name) as Expression;
+                var createType = typeof(ObservableParameter<>).MakeGenericType(node.Type);
+                return (Expression)(ReflectionHelper.GetConstructor(createType).Invoke(new object[] { node.Name }));
             }
         }
 

@@ -60,6 +60,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="PromotionNotifySystemTest.cs" />
     <Compile Include="TreeExtensionNotifySystemTests.cs" />
+    <Compile Include="TreeExtensionVisitorTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\Collections\Collections\Collections.csproj">
