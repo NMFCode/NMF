@@ -53,6 +53,9 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
+    <Compile Include="..\Models.Expressions.Tests\NotifySystemTests.cs">
+      <Link>NotifySystemTests.cs</Link>
+    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RecordingNotifySystemTests.cs" />
     <Compile Include="ConfigurationNotifySystemTests.cs" />
@@ -94,10 +97,6 @@
     <ProjectReference Include="..\..\Models.Expressions\Expressions.Models.csproj">
       <Project>{25183c1b-5a1d-4535-ae62-90105c00beaf}</Project>
       <Name>Expressions.Models</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Models.Expressions.Tests\Expressions.Models.Tests.csproj">
-      <Project>{ce4f8d70-e17a-4c51-9c9e-bfb42978b5e8}</Project>
-      <Name>Expressions.Models.Tests</Name>
     </ProjectReference>
   </ItemGroup>
   <Choose>
