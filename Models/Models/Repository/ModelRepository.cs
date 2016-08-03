@@ -123,18 +123,25 @@ namespace NMF.Models.Repository
                 }
             }
 
-            var element = model.Resolve(uri.Fragment);
-
-            if (element == null)
+            if (uri.IsAbsoluteUri)
             {
-                if (parentResolved != null) return parentResolved;
+                var element = model.Resolve(uri.Fragment);
 
-                var e = new UnresolvedModelElementEventArgs(uri);
-                OnUnresolvedModelElement(e);
-                element = e.ModelElement;
+                if (element == null)
+                {
+                    if (parentResolved != null) return parentResolved;
+
+                    var e = new UnresolvedModelElementEventArgs(uri);
+                    OnUnresolvedModelElement(e);
+                    element = e.ModelElement;
+                }
+
+                return element;
             }
-
-            return element;
+            else
+            {
+                return model;
+            }
         }
 
         /// <summary>
