@@ -52,7 +52,16 @@ namespace NMF.Synchronizations
 
             public override void Transform()
             {
-                ((SynchronizationRule<TLeft, TRight>)SynchronizationRule).Synchronize(Input, Opposite.Input, SynchronizationDirection.LeftToRight, TransformationContext as ISynchronizationContext);
+                ((SynchronizationRule<TLeft, TRight>)SynchronizationRule).Synchronize(this, SynchronizationDirection.LeftToRight, TransformationContext as ISynchronizationContext);
+            }
+
+            protected override void OnOutputInitialized(EventArgs e)
+            {
+                base.OnOutputInitialized(e);
+                if (Output != null)
+                {
+                    ((SynchronizationRule<TLeft, TRight>)SynchronizationRule).InitializeOutput(this);
+                }
             }
 
             public override object CreateOutput(IEnumerable context)
