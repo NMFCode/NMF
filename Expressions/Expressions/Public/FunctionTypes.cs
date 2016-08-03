@@ -143,6 +143,7 @@ namespace NMF.Expressions
         /// <returns>An observable function</returns>
         public static ObservingFunc<T1,  TResult> FromExpression(Expression<Func<T1,  TResult>> expression)
         {
+		    if (expression == null) return null;
             return new ObservingFunc<T1,  TResult>(expression);
         }
 
@@ -333,6 +334,7 @@ namespace NMF.Expressions
         /// <returns>An observable function</returns>
         public static ObservingFunc<T1, T2,  TResult> FromExpression(Expression<Func<T1, T2,  TResult>> expression)
         {
+		    if (expression == null) return null;
             return new ObservingFunc<T1, T2,  TResult>(expression);
         }
 
@@ -562,6 +564,7 @@ namespace NMF.Expressions
         /// <returns>An observable function</returns>
         public static ObservingFunc<T1, T2, T3,  TResult> FromExpression(Expression<Func<T1, T2, T3,  TResult>> expression)
         {
+		    if (expression == null) return null;
             return new ObservingFunc<T1, T2, T3,  TResult>(expression);
         }
 
@@ -833,6 +836,7 @@ namespace NMF.Expressions
         /// <returns>An observable function</returns>
         public static ObservingFunc<T1, T2, T3, T4,  TResult> FromExpression(Expression<Func<T1, T2, T3, T4,  TResult>> expression)
         {
+		    if (expression == null) return null;
             return new ObservingFunc<T1, T2, T3, T4,  TResult>(expression);
         }
 
@@ -1149,6 +1153,7 @@ namespace NMF.Expressions
         /// <returns>An observable function</returns>
         public static ObservingFunc<T1, T2, T3, T4, T5,  TResult> FromExpression(Expression<Func<T1, T2, T3, T4, T5,  TResult>> expression)
         {
+		    if (expression == null) return null;
             return new ObservingFunc<T1, T2, T3, T4, T5,  TResult>(expression);
         }
 
@@ -1513,6 +1518,7 @@ namespace NMF.Expressions
         /// <returns>An observable function</returns>
         public static ObservingFunc<T1, T2, T3, T4, T5, T6,  TResult> FromExpression(Expression<Func<T1, T2, T3, T4, T5, T6,  TResult>> expression)
         {
+		    if (expression == null) return null;
             return new ObservingFunc<T1, T2, T3, T4, T5, T6,  TResult>(expression);
         }
 
@@ -1928,6 +1934,7 @@ namespace NMF.Expressions
         /// <returns>An observable function</returns>
         public static ObservingFunc<T1, T2, T3, T4, T5, T6, T7,  TResult> FromExpression(Expression<Func<T1, T2, T3, T4, T5, T6, T7,  TResult>> expression)
         {
+		    if (expression == null) return null;
             return new ObservingFunc<T1, T2, T3, T4, T5, T6, T7,  TResult>(expression);
         }
 
@@ -2397,6 +2404,7 @@ namespace NMF.Expressions
         /// <returns>An observable function</returns>
         public static ObservingFunc<T1, T2, T3, T4, T5, T6, T7, T8,  TResult> FromExpression(Expression<Func<T1, T2, T3, T4, T5, T6, T7, T8,  TResult>> expression)
         {
+		    if (expression == null) return null;
             return new ObservingFunc<T1, T2, T3, T4, T5, T6, T7, T8,  TResult>(expression);
         }
 
@@ -2923,6 +2931,7 @@ namespace NMF.Expressions
         /// <returns>An observable function</returns>
         public static ObservingFunc<T1, T2, T3, T4, T5, T6, T7, T8, T9,  TResult> FromExpression(Expression<Func<T1, T2, T3, T4, T5, T6, T7, T8, T9,  TResult>> expression)
         {
+		    if (expression == null) return null;
             return new ObservingFunc<T1, T2, T3, T4, T5, T6, T7, T8, T9,  TResult>(expression);
         }
 
@@ -3509,6 +3518,7 @@ namespace NMF.Expressions
         /// <returns>An observable function</returns>
         public static ObservingFunc<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10,  TResult> FromExpression(Expression<Func<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10,  TResult>> expression)
         {
+		    if (expression == null) return null;
             return new ObservingFunc<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10,  TResult>(expression);
         }
 
@@ -4158,6 +4168,7 @@ namespace NMF.Expressions
         /// <returns>An observable function</returns>
         public static ObservingFunc<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11,  TResult> FromExpression(Expression<Func<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11,  TResult>> expression)
         {
+		    if (expression == null) return null;
             return new ObservingFunc<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11,  TResult>(expression);
         }
 
@@ -4873,6 +4884,7 @@ namespace NMF.Expressions
         /// <returns>An observable function</returns>
         public static ObservingFunc<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12,  TResult> FromExpression(Expression<Func<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12,  TResult>> expression)
         {
+		    if (expression == null) return null;
             return new ObservingFunc<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12,  TResult>(expression);
         }
 
@@ -5657,6 +5669,7 @@ namespace NMF.Expressions
         /// <returns>An observable function</returns>
         public static ObservingFunc<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13,  TResult> FromExpression(Expression<Func<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13,  TResult>> expression)
         {
+		    if (expression == null) return null;
             return new ObservingFunc<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13,  TResult>(expression);
         }
 
@@ -6513,6 +6526,7 @@ namespace NMF.Expressions
         /// <returns>An observable function</returns>
         public static ObservingFunc<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14,  TResult> FromExpression(Expression<Func<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14,  TResult>> expression)
         {
+		    if (expression == null) return null;
             return new ObservingFunc<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14,  TResult>(expression);
         }
 
@@ -7444,6 +7458,7 @@ namespace NMF.Expressions
         /// <returns>An observable function</returns>
         public static ObservingFunc<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15,  TResult> FromExpression(Expression<Func<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15,  TResult>> expression)
         {
+		    if (expression == null) return null;
             return new ObservingFunc<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15,  TResult>(expression);
         }
 
