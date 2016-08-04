@@ -15,6 +15,11 @@ namespace NMF.Expressions
             return t.GetTypeInfo().IsValueType;
         }
 
+        public static ConstructorInfo GetConstructor(Type type)
+        {
+            return type.GetTypeInfo().DeclaredConstructors.Single();
+        }
+
         public static bool IsValueType<T>()
         {
             return typeof(T).GetTypeInfo().IsValueType;

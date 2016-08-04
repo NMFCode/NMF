@@ -214,6 +214,9 @@ namespace NMF.Models.Meta
                 onParentChanged.Statements.Add(new CodeMethodInvokeExpression(new CodeThisReferenceExpression(), "OnPropertyChanged",
                     new CodePrimitiveExpression(property.Name), valueChangeRef));
 
+                onParentChanged.Statements.Add(new CodeMethodInvokeExpression(new CodeBaseReferenceExpression(),
+                    onParentChanged.Name, new CodeArgumentReferenceExpression("newParent"), new CodeArgumentReferenceExpression("oldParent")));
+
                 onParentChanged.WriteDocumentation("Gets called when the parent model element of the current model element changes",
                     null, new Dictionary<string, string>() {
                         {
@@ -238,6 +241,7 @@ namespace NMF.Models.Meta
                     }
                     var otherCasted = other as CodeMemberMethod;
                     mergedOnParent.Statements.AddRange(otherCasted.Statements);
+                    mergedOnParent.Statements.RemoveAt(mergedOnParent.Statements.Count - 1);
                     mergedOnParent.Statements.AddRange(onParentChanged.Statements);
                     mergedOnParent.Statements.Remove(valueChangeDef);
                     return mergedOnParent;
@@ -492,6 +496,11 @@ namespace NMF.Models.Meta
                 if (input.UpperBound != 1)
                 {
                     output.AddAttribute(typeof(ConstantAttribute));
+                }
+
+                if (input.Anchor != null)
+                {
+                    output.AddAttribute(typeof(AnchorAttribute), new CodeTypeOfExpression(CreateReference(input.Anchor, true, context)));
                 }
             }
 

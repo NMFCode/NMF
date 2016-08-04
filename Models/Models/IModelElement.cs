@@ -66,6 +66,11 @@ namespace NMF.Models
         IModelElement Parent { get; set; }
 
         /// <summary>
+        /// Gets fired when the container of the current model element has changed
+        /// </summary>
+        event EventHandler<ValueChangedEventArgs> ParentChanged;
+
+        /// <summary>
         /// Gets the children of the current model element
         /// </summary>
         [Constant]
