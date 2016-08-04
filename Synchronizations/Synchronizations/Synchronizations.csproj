@@ -48,6 +48,7 @@
       <Link>CommonAssemblyInfo.cs</Link>
     </Compile>
     <Compile Include="Converter.cs" />
+    <Compile Include="InstantiationMonitorJob.cs" />
     <Compile Include="ISynchronizationContext.cs" />
     <Compile Include="ISynchronizationTransformationRule.cs" />
     <Compile Include="LeftToRightRule.cs" />

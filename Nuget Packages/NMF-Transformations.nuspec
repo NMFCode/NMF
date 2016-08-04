@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
+    <metadata>
+        <id>NMF-Transformations</id>
+        <version>$version$</version>
+        <title>NMF Transformations</title>
+        <authors>Georg Hinkel</authors>
+        <owners>Georg Hinkel</owners>
+        <licenseUrl>http://nmf.codeplex.com/license</licenseUrl>
+        <projectUrl>http://github.com/NMFCode/NMF</projectUrl>
+        <requireLicenseAcceptance>false</requireLicenseAcceptance>
+        <developmentDependency>true</developmentDependency>
+        <description>This package contains NMF Transformations, a framework and internal DSL to specify model transformations in C#. It consists of a generic framework for model transformations, an execution engine based on this framework and an internal DSL on top of it.</description>
+        <summary>The model transformation language and engine used in NMF</summary>
+        <copyright>Copyright © Georg Hinkel 2013</copyright>
+        <language>en</language>
+        <tags>Model-driven; MDE; MDSD;</tags>
+        <dependencies>
+            <dependency id="NMF-Expressions" version="$version$" />
+            <dependency id="NMF-Utilities" version="$version$" />
+        </dependencies>
+    </metadata>
+  <files>
+    <file src="..\Transformations\Transformations\bin\Release\NMF.Transformations.dll" target="lib\net40" />
+    <file src="..\Transformations\Transformations\bin\Release\NMF.Transformations.Core.dll" target="lib\net40" />
+  </files>
+</package>

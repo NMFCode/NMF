@@ -93,8 +93,9 @@ namespace NMF.Models.Meta
             else
             {
                 var uri = n.Uri;
-                if (uri == null) return true;
-                return !MetaRepository.Instance.Models.ContainsKey(uri);
+                var absoluteUri = n.AbsoluteUri;
+                return uri != null && (!MetaRepository.Instance.Models.ContainsKey(uri))
+                    && (absoluteUri == null || !MetaRepository.Instance.Models.ContainsKey(absoluteUri));
             }
         }
     }

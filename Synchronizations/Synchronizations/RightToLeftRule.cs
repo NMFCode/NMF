@@ -51,7 +51,7 @@ namespace NMF.Synchronizations
 
             public override void Transform()
             {
-                ((SynchronizationRule<TLeft, TRight>)SynchronizationRule).Synchronize(Opposite.Input, Input, SynchronizationDirection.RightToLeft, TransformationContext as ISynchronizationContext);
+                ((SynchronizationRule<TLeft, TRight>)SynchronizationRule).Synchronize(Opposite, SynchronizationDirection.RightToLeft, TransformationContext as ISynchronizationContext);
             }
 
             public override object CreateOutput(IEnumerable context)
@@ -61,6 +61,15 @@ namespace NMF.Synchronizations
                 var result = rule.CreateLeftOutputInternal(Input, context, SynchronizationContext, out existing);
                 OmitCandidateSearch = !existing;
                 return result;
+            }
+
+            protected override void OnOutputInitialized(EventArgs e)
+            {
+                base.OnOutputInitialized(e);
+                if (Output != null)
+                {
+                    ((SynchronizationRule<TLeft, TRight>)SynchronizationRule).InitializeOutput(Opposite);
+                }
             }
         }
 
