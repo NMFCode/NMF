@@ -48,6 +48,7 @@
     <Compile Include="IncrementalizationConfiguration\MethodConfiguration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RecordingNotifySystem.cs" />
+    <Compile Include="RepositoryChangeApplyParametersVisitor.cs" />
     <Compile Include="RepositoryChangeNotificationSystem.cs" />
     <Compile Include="RepositoryChangeNotifyFunc.cs" />
     <Compile Include="RepositoryChangeNotifyValue.cs" />
