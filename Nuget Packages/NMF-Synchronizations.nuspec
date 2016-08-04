@@ -22,6 +22,6 @@
         </dependencies>
     </metadata>
   <files>
-    <file src="Synchronizations\Synchronizations\bin\Release\NMF.Synchronizations.dll" target="lib\net40" />
+    <file src="..\Synchronizations\Synchronizations\bin\Release\NMF.Synchronizations.dll" target="lib\net40" />
   </files>
 </package>

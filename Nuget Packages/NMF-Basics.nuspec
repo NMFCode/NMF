@@ -26,7 +26,7 @@
         </frameworkAssemblies>
     </metadata>
   <files>
-    <file src="Tools\Ecore2Code\bin\Release\*.dll" target="tools" />
-    <file src="Tools\Ecore2Code\bin\Release\Ecore2Code.exe" target="tools" />
+    <file src="..\Tools\Ecore2Code\bin\Release\*.dll" target="tools" />
+    <file src="..\Tools\Ecore2Code\bin\Release\Ecore2Code.exe" target="tools" />
   </files>
 </package>
