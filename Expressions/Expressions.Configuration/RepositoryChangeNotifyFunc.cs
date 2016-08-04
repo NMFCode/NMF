@@ -13,6 +13,8 @@ namespace NMF.Expressions
         public List<ParameterExpression> Parameters { get; private set; }
         public IModelRepository Repository { get; private set; }
 
+        public List<IChangeInfo> ChangeInfos { get; private set; }
+
         public T Value
         {
             get
@@ -61,7 +63,9 @@ namespace NMF.Expressions
             }
         }
 
-        public RepositoryAffectedNotifyFunc(IModelRepository repository, Expression body, IEnumerable<ParameterExpression> parameters)
+        public RepositoryAffectedNotifyFunc(IModelRepository repository, Expression body, IEnumerable<ParameterExpression> parameters) : this(repository, body, parameters, null) { }
+
+        protected RepositoryAffectedNotifyFunc(IModelRepository repository, Expression body, IEnumerable<ParameterExpression> parameters, List<IChangeInfo> changeInfos)
         {
             if (repository == null) throw new ArgumentNullException("repository");
             if (body == null) throw new ArgumentNullException("body");
@@ -70,6 +74,7 @@ namespace NMF.Expressions
             Repository = repository;
             Body = body;
             Parameters = new List<ParameterExpression>(parameters);
+            ChangeInfos = changeInfos;
         }
 
         public event EventHandler<ValueChangedEventArgs> ValueChanged
@@ -82,17 +87,38 @@ namespace NMF.Expressions
         {
             if (parameters == null) throw new ArgumentNullException("parameters");
 
-            var applyParameters = new ApplyParametersVisitor(parameters);
+            var applyParameters = new RepositoryChangeApplyParametersVisitor(parameters);
             var newBody = applyParameters.Visit(Body);
+
+            var changeInfos = ChangeInfos;
+            if (applyParameters.Recorders != null)
+            {
+                if (changeInfos == null)
+                {
+                    changeInfos = applyParameters.Recorders;
+                }
+                else
+                {
+                    changeInfos = new List<IChangeInfo>(changeInfos);
+                    changeInfos.AddRange(applyParameters.Recorders);
+                }
+            }
 
             if (parameters.Count == Parameters.Count)
             {
                 var lambda = Expression.Lambda<Func<T>>(newBody);
-                return new RepositoryAffectedNotifyValue<T>(Repository, lambda.Compile());
+                if (changeInfos == null)
+                {
+                    return new RepositoryAffectedNotifyValue<T>(Repository, lambda.Compile());
+                }
+                else
+                {
+                    return new RepositoryAffectedDependentNotifyValue<T>(Repository, lambda.Compile(), changeInfos);
+                }
             }
             else
             {
-                return new RepositoryAffectedNotifyFunc<T>(Repository, newBody, Parameters.Where(p => !parameters.ContainsKey(p.Name)));
+                return new RepositoryAffectedNotifyFunc<T>(Repository, newBody, Parameters.Where(p => !parameters.ContainsKey(p.Name)), changeInfos);
             }
         }
 
@@ -121,6 +147,9 @@ namespace NMF.Expressions
         public RepositoryAffectedReversableNotifyFunc(IModelRepository repository, Expression body, IEnumerable<ParameterExpression> parameters)
             : base(repository, body, parameters)
         { }
+        private RepositoryAffectedReversableNotifyFunc(IModelRepository repository, Expression body, IEnumerable<ParameterExpression> parameters, List<IChangeInfo> changeInfos)
+            : base(repository, body, parameters, changeInfos)
+        { }
 
         public bool IsReversable
         {
@@ -147,19 +176,40 @@ namespace NMF.Expressions
         {
             if (parameters == null) throw new ArgumentNullException("parameters");
 
-            var applyParameters = new ApplyParametersVisitor(parameters);
+            var applyParameters = new RepositoryChangeApplyParametersVisitor(parameters);
             var newBody = applyParameters.Visit(Body);
+
+            var changeInfos = ChangeInfos;
+            if (applyParameters.Recorders != null)
+            {
+                if (changeInfos == null)
+                {
+                    changeInfos = applyParameters.Recorders;
+                }
+                else
+                {
+                    changeInfos = new List<IChangeInfo>(changeInfos);
+                    changeInfos.AddRange(applyParameters.Recorders);
+                }
+            }
 
             if (parameters.Count == Parameters.Count)
             {
                 var lambda = Expression.Lambda<Func<T>>(newBody);
                 var setter = SetExpressionRewriter.CreateSetter(lambda);
                 if (setter == null) throw new InvalidOperationException(string.Format("The lambda expression {0} could not be reversed.", newBody));
-                return new RepositoryAffectedReversableNotifyValue<T>(Repository, lambda.Compile(), setter.Compile());
+                if (changeInfos == null)
+                {
+                    return new RepositoryAffectedReversableNotifyValue<T>(Repository, lambda.Compile(), setter.Compile());
+                }
+                else
+                {
+                    return new RepositoryAffectedDependentReversableNotofyValue<T>(Repository, lambda.Compile(), setter.Compile(), changeInfos);
+                }
             }
             else
             {
-                return new RepositoryAffectedReversableNotifyFunc<T>(Repository, newBody, Parameters.Where(p => !parameters.ContainsKey(p.Name)));
+                return new RepositoryAffectedReversableNotifyFunc<T>(Repository, newBody, Parameters.Where(p => !parameters.ContainsKey(p.Name)), changeInfos);
             }
         }
     }
