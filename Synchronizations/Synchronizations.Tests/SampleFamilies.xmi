@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<xmi:XMI xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.eclipse.org/atl/atlTransformations/Families"
+  xsi:schemaLocation="Families Families.ecore#/0">
+  <Family lastName="March">
+    <father firstName="Jim"/>
+    <mother firstName="Cindy"/>
+    <sons firstName="Brandon"/>
+    <daughters firstName="Brenda"/>
+  </Family>
+  <Family lastName="Sailor">
+    <father firstName="Peter"/>
+    <mother firstName="Jackie"/>
+    <sons firstName="David"/>
+    <sons firstName="Dylan"/>
+    <daughters firstName="Kelly"/>
+  </Family>
+</xmi:XMI>

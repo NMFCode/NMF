@@ -1,0 +1,18 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<nmeta:Namespace xmi:version="2.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" Uri="http://www.eclipse.org/atl/atlTransformations/Families" Prefix="Families" Name="Families" xmlns:xmi="http://www.omg.org/XMI" xmlns:nmeta="http://nmf.codeplex.com/nmeta/">
+  <Types xsi:type="nmeta:Class" BaseTypes="//FamElem/" Name="Family">
+    <References IsContainment="True" Opposite="//Member//familyFather/" ReferenceType="//Member/" IsUnique="True" LowerBound="1" Name="father" />
+    <References IsContainment="True" Opposite="//Member//familyMother/" ReferenceType="//Member/" IsUnique="True" LowerBound="1" Name="mother" />
+    <References IsContainment="True" Opposite="//Member//familySon/" ReferenceType="//Member/" IsUnique="True" UpperBound="-1" Name="sons" />
+    <References IsContainment="True" Opposite="//Member//familyDaughter/" ReferenceType="//Member/" IsUnique="True" UpperBound="-1" Name="daughters" />
+    <Attributes LowerBound="1" Type="http://nmf.codeplex.com/nmeta/#//String/" Name="lastName" />
+  </Types>
+  <Types xsi:type="nmeta:Class" BaseTypes="//FamElem/" Name="Member">
+    <References Opposite="//Family//father/" ReferenceType="//Family/" IsUnique="True" Name="familyFather" />
+    <References Opposite="//Family//mother/" ReferenceType="//Family/" IsUnique="True" Name="familyMother" />
+    <References Opposite="//Family//sons/" ReferenceType="//Family/" IsUnique="True" Name="familySon" />
+    <References Opposite="//Family//daughters/" ReferenceType="//Family/" IsUnique="True" Name="familyDaughter" />
+    <Attributes LowerBound="1" Type="http://nmf.codeplex.com/nmeta/#//String/" Name="firstName" />
+  </Types>
+  <Types xsi:type="nmeta:Class" IsAbstract="True" Name="FamElem" />
+</nmeta:Namespace>

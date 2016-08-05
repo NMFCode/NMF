@@ -8,9 +8,9 @@
     <ProjectGuid>{DC65E4BA-5983-47CB-8D6E-1947C7F15973}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Transformations.Sample</RootNamespace>
-    <AssemblyName>NMF.Transformations.Sample</AssemblyName>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <RootNamespace>NMF.Transformations.Example</RootNamespace>
+    <AssemblyName>NMF.Transformations.Example</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <SccProjectName>SAK</SccProjectName>
     <SccLocalPath>SAK</SccLocalPath>

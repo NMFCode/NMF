@@ -4,9 +4,39 @@ using System.Linq;
 using System.Text;
 using NMF.Expressions;
 using NMF.Transformations;
+using NMF.Transformations.Core;
 
 namespace NMF.Synchronizations
 {
+    internal static class InstantiationHelper
+    {
+        public static LinkedListNode<Computation> RearrangeComputations(IEnumerable<Computation> computations, Computation origin)
+        {
+            var linked = new LinkedList<Computation>();
+            var originNode = new LinkedListNode<Computation>(origin);
+            linked.AddFirst(originNode);
+            var changed = true;
+            while (changed)
+            {
+                changed = false;
+                foreach (var c in computations)
+                {
+                    if (c.TransformationRule.BaseRule == linked.Last.Value.TransformationRule)
+                    {
+                        linked.AddLast(c);
+                        changed = true;
+                    }
+                    else if (linked.First.Value.TransformationRule.BaseRule == c.TransformationRule)
+                    {
+                        linked.AddFirst(c);
+                        changed = true;
+                    }
+                }
+            }
+            return originNode;
+        }
+    }
+
     internal class LeftInstantiationMonitorJob<TLeft, TRight> : ISynchronizationJob<TLeft, TRight>
         where TLeft : class
         where TRight : class
@@ -70,6 +100,26 @@ namespace NMF.Synchronizations
                 if ((bool)e.NewValue) throw new InvalidOperationException();
 
                 // Instantiation Path of the current computation is wrong
+
+                var context = Computation.SynchronizationContext;
+
+                // First collect all affected computations
+                var allComputations = context.Trace.Trace(Computation.Input).OfType<ComputationBase>();
+                var rearranged = InstantiationHelper.RearrangeComputations(allComputations, Computation);
+                var firstSaved = rearranged.Previous;
+
+                var instantiationPath = context.Transformation.ComputeInstantiatingTransformationRulePath(firstSaved.Value);
+                
+                var newComputations = new List<Computation>();
+                var input = Computation.CreateInputArray();
+
+                while (instantiationPath.Count > 0)
+                {
+                    newComputations.Add(instantiationPath.Pop().CreateComputation(input, null));
+                }
+                
+
+
                 throw new NotImplementedException();
             }
         }

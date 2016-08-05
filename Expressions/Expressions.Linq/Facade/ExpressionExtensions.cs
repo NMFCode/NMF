@@ -1263,6 +1263,19 @@ namespace NMF.Expressions.Linq
             return new OfTypeExpression<TResult>(source);
         }
 
+
+        /// <summary>
+        /// Filters the given collection for elements of the given type
+        /// </summary>
+        /// <typeparam name="TResult">The result type</typeparam>
+        /// <param name="source">The current collection</param>
+        /// <returns>A collection containing the elements of the given type</returns>
+        public static ICollectionExpression<TResult> OfType<TSource, TResult>(this ICollectionExpression<TSource> source)
+            where TResult : TSource
+        {
+            return new OfTypeCollectionExpression<TSource, TResult>(source);
+        }
+
         /// <summary>
         /// Orders the given collection ascending by the given predicate
         /// </summary>

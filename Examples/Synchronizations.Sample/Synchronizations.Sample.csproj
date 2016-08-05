@@ -7,14 +7,15 @@
     <ProjectGuid>{DE054DF8-C249-4222-9EE7-A44B0442E0CD}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Synchronizations.Sample</RootNamespace>
-    <AssemblyName>Synchronizations.Sample</AssemblyName>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <RootNamespace>NMF.Synchronizations.Example</RootNamespace>
+    <AssemblyName>NMF.Synchronizations.Example</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <SccProjectName>SAK</SccProjectName>
     <SccLocalPath>SAK</SccLocalPath>
     <SccAuxPath>SAK</SccAuxPath>
     <SccProvider>SAK</SccProvider>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -39,6 +40,9 @@
     <Reference Include="Microsoft.CSharp" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="FamiliesToPersons\Families.cs" />
+    <Compile Include="FamiliesToPersons\FamiliesToPersons.cs" />
+    <Compile Include="FamiliesToPersons\Persons.cs" />
     <Compile Include="FSM2PN\FSM.cs" />
     <Compile Include="FSM2PN\FSM2PN.cs" />
     <Compile Include="FSM2PN\PN.cs" />
@@ -61,6 +65,10 @@
       <Project>{e42ac7b6-8120-40b5-8cd3-c4139b940897}</Project>
       <Name>Models</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\Models\Serialization\Serialization.csproj">
+      <Project>{c24ef2ac-49d3-4542-bc40-5d62e12c7ded}</Project>
+      <Name>Serialization</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\Synchronizations\Synchronizations\Synchronizations.csproj">
       <Project>{b3e047f9-7648-4969-842b-405701fb274a}</Project>
       <Name>Synchronizations</Name>
@@ -77,6 +85,12 @@
       <Project>{235646f1-1f85-47c9-8bd2-a3e854ac38eb}</Project>
       <Name>Transformations</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Families.nmf" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Persons.nmf" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

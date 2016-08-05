@@ -9,7 +9,12 @@ using NMF.Expressions;
 
 namespace NMF.Synchronizations
 {
-    public abstract class SynchronizationComputation<TIn, TOut> : Computation, INotifyValue<TOut>
+    internal interface IOutputAccept<in T>
+    {
+        void AcceptNewOutput(T value);
+    }
+
+    public abstract class SynchronizationComputation<TIn, TOut> : Computation, INotifyValue<TOut>, IOutputAccept<TOut>
         where TIn : class
         where TOut : class
     {
@@ -115,6 +120,11 @@ namespace NMF.Synchronizations
         void INotifyValue<TOut>.Detach() { }
 
         void INotifyValue<TOut>.Attach() { }
+
+        public void AcceptNewOutput(TOut value)
+        {
+            Opposite.Input = value;
+        }
 
         protected sealed override object OutputCore
         {

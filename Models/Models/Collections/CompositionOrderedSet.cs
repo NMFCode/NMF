@@ -83,7 +83,7 @@ namespace NMF.Models.Collections
 
         public override void Clear()
         {
-            foreach (var item in this)
+            foreach (var item in this.ToArray())
             {
                 item.Deleted -= RemoveItem;
                 item.Delete();

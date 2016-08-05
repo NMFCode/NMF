@@ -214,6 +214,91 @@ namespace NMF.Synchronizations
         }
     }
 
+    public class OneWayPropertySynchronizationJob<TSource, TTarget, TValue>
+        where TSource : class
+        where TTarget : class
+    {
+        private ObservingFunc<TSource, TValue> sourceFunc;
+
+        private Func<TSource, TValue> sourceGetter;
+        private Action<TTarget, TValue> targetSetter;
+
+        private bool isEarly;
+
+        public OneWayPropertySynchronizationJob(Expression<Func<TSource, TValue>> sourceGetter, Action<TTarget, TValue> targetSetter, bool isEarly)
+        {
+            if (sourceGetter == null) throw new ArgumentNullException("leftSelector");
+            if (targetSetter == null) throw new ArgumentNullException("rightSelector");
+
+            sourceFunc = new ObservingFunc<TSource, TValue>(sourceGetter);
+
+            this.sourceGetter = sourceGetter.Compile();
+            this.targetSetter = targetSetter;
+
+            this.isEarly = isEarly;
+        }
+
+        public bool IsEarly
+        {
+            get
+            {
+                return isEarly;
+            }
+        }
+
+        public void Perform(SynchronizationComputation<TSource, TTarget> computation, ISynchronizationContext context)
+        {
+            var source = computation.Input;
+            var target = computation.Opposite.Input;
+            targetSetter(target, sourceGetter(source));
+            switch (context.ChangePropagation)
+            {
+                case NMF.Transformations.ChangePropagationMode.None:
+                    break;
+                case NMF.Transformations.ChangePropagationMode.OneWay:
+                case NMF.Transformations.ChangePropagationMode.TwoWay:
+                    computation.Dependencies.Enqueue(new PropertySynchronization<TValue>(sourceFunc.Observe(source), val => targetSetter(target, val)));
+                    break;
+                default:
+                    throw new InvalidOperationException("Change propagation mode is not supported");
+            }
+        }
+    }
+
+    internal class LeftToRightPropertySynchronizationJob<TLeft, TRight, TValue> : OneWayPropertySynchronizationJob<TLeft, TRight, TValue>, ISynchronizationJob<TLeft, TRight>
+        where TLeft : class
+        where TRight : class
+    {
+        public LeftToRightPropertySynchronizationJob(Expression<Func<TLeft, TValue>> leftGetter, Action<TRight, TValue> rightSetter, bool isEarly)
+            : base(leftGetter, rightSetter, isEarly)
+        { }
+        
+        public void Perform(SynchronizationComputation<TLeft, TRight> computation, SynchronizationDirection direction, ISynchronizationContext context)
+        {
+            if (direction == SynchronizationDirection.LeftToRight || direction == SynchronizationDirection.LeftToRightForced || direction == SynchronizationDirection.LeftWins)
+            {
+                Perform(computation, context);
+            }
+        }
+    }
+
+    internal class RightToLeftPropertySynchronizationJob<TLeft, TRight, TValue> : OneWayPropertySynchronizationJob<TRight, TLeft, TValue>, ISynchronizationJob<TLeft, TRight>
+        where TLeft : class
+        where TRight : class
+    {
+        public RightToLeftPropertySynchronizationJob(Action<TLeft, TValue> leftSetter, Expression<Func<TRight, TValue>> rightGetter, bool isEarly)
+            : base(rightGetter, leftSetter, isEarly)
+        { }
+
+        public void Perform(SynchronizationComputation<TLeft, TRight> computation, SynchronizationDirection direction, ISynchronizationContext context)
+        {
+            if (direction == SynchronizationDirection.LeftToRight || direction == SynchronizationDirection.LeftToRightForced || direction == SynchronizationDirection.LeftWins)
+            {
+                Perform(computation.Opposite, context);
+            }
+        }
+    }
+
     internal class PropertySynchronization<T> : IDisposable
     {
         public INotifyValue<T> Source { get; private set; }

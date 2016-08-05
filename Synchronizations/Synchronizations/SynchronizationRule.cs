@@ -231,12 +231,88 @@ namespace NMF.Synchronizations
 
         public void SynchronizeLate<TValue>(Expression<Func<TLeft, TValue>> leftSelector, Expression<Func<TRight, TValue>> rightSelector)
         {
-            SynchronizationJobs.Add(new PropertySynchronizationJob<TLeft, TRight, TValue>(leftSelector, rightSelector, true));
+            SynchronizationJobs.Add(new PropertySynchronizationJob<TLeft, TRight, TValue>(leftSelector, rightSelector, false));
         }
 
         public void Synchronize<TValue>(Expression<Func<TLeft, TValue>> leftSelector, Expression<Func<TRight, TValue>> rightSelector)
         {
-            SynchronizationJobs.Add(new PropertySynchronizationJob<TLeft, TRight, TValue>(leftSelector, rightSelector, false));
+            SynchronizationJobs.Add(new PropertySynchronizationJob<TLeft, TRight, TValue>(leftSelector, rightSelector, true));
+        }
+
+        public void SynchronizeLeftToRightOnly<TValue>(Expression<Func<TLeft, TValue>> leftSelector, Expression<Func<TRight, TValue>> rightSelector)
+        {
+            if (rightSelector == null) throw new ArgumentNullException("rightSelector");
+
+            var rightSetter = SetExpressionRewriter.CreateSetter(rightSelector);
+
+            if (rightSetter == null) throw new ArgumentException(string.Format("The expression {0} cannot be inverted.", rightSelector), "rightSelector");
+
+            SynchronizeLeftToRightOnly(leftSelector, rightSetter.Compile());
+        }
+
+        public void SynchronizeLeftToRightOnly<TValue>(Expression<Func<TLeft, TValue>> leftSelector, Action<TRight, TValue> rightSetter)
+        {
+            if (leftSelector == null) throw new ArgumentNullException("leftSelector");
+            if (rightSetter == null) throw new ArgumentNullException("rightSetter");
+
+            SynchronizationJobs.Add(new LeftToRightPropertySynchronizationJob<TLeft, TRight, TValue>(leftSelector, rightSetter, true));
+        }
+
+        public void SynchronizeLateLeftToRightOnly<TValue>(Expression<Func<TLeft, TValue>> leftSelector, Expression<Func<TRight, TValue>> rightSelector)
+        {
+            if (rightSelector == null) throw new ArgumentNullException("rightSelector");
+
+            var rightSetter = SetExpressionRewriter.CreateSetter(rightSelector);
+
+            if (rightSetter == null) throw new ArgumentException(string.Format("The expression {0} cannot be inverted.", rightSelector), "rightSelector");
+
+            SynchronizeLateLeftToRightOnly(leftSelector, rightSetter.Compile());
+        }
+
+        public void SynchronizeLateLeftToRightOnly<TValue>(Expression<Func<TLeft, TValue>> leftSelector, Action<TRight, TValue> rightSetter)
+        {
+            if (leftSelector == null) throw new ArgumentNullException("leftSelector");
+            if (rightSetter == null) throw new ArgumentNullException("rightSetter");
+
+            SynchronizationJobs.Add(new LeftToRightPropertySynchronizationJob<TLeft, TRight, TValue>(leftSelector, rightSetter, false));
+        }
+
+        public void SynchronizeRightToLeftOnly<TValue>(Expression<Func<TLeft, TValue>> leftSelector, Expression<Func<TRight, TValue>> rightSelector)
+        {
+            if (leftSelector == null) throw new ArgumentNullException("leftSelector");
+
+            var leftSetter = SetExpressionRewriter.CreateSetter(leftSelector);
+
+            if (leftSetter == null) throw new ArgumentException(string.Format("The expression {0} cannot be inverted.", rightSelector), "leftSelector");
+
+            SynchronizeRightToLeftOnly(leftSetter.Compile(), rightSelector);
+        }
+
+        public void SynchronizeRightToLeftOnly<TValue>(Action<TLeft, TValue> leftSetter, Expression<Func<TRight, TValue>> rightSelector)
+        {
+            if (rightSelector == null) throw new ArgumentNullException("rightSelector");
+            if (leftSetter == null) throw new ArgumentNullException("leftSetter");
+
+            SynchronizationJobs.Add(new RightToLeftPropertySynchronizationJob<TLeft, TRight, TValue>(leftSetter, rightSelector, true));
+        }
+
+        public void SynchronizeLateRightToLeftOnly<TValue>(Expression<Func<TLeft, TValue>> leftSelector, Expression<Func<TRight, TValue>> rightSelector)
+        {
+            if (leftSelector == null) throw new ArgumentNullException("leftSelector");
+
+            var leftSetter = SetExpressionRewriter.CreateSetter(leftSelector);
+
+            if (leftSetter == null) throw new ArgumentException(string.Format("The expression {0} cannot be inverted.", rightSelector), "rightSelector");
+
+            SynchronizeLateRightToLeftOnly(leftSetter.Compile(), rightSelector);
+        }
+
+        public void SynchronizeLateRightToLeftOnly<TValue>(Action<TLeft, TValue> leftSetter, Expression<Func<TRight, TValue>> rightSelector)
+        {
+            if (rightSelector == null) throw new ArgumentNullException("rightSelector");
+            if (leftSetter == null) throw new ArgumentNullException("leftSetter");
+
+            SynchronizationJobs.Add(new RightToLeftPropertySynchronizationJob<TLeft, TRight, TValue>(leftSetter, rightSelector, false));
         }
 
         public void SynchronizeOpaque(Action<TLeft, TRight, SynchronizationDirection, ISynchronizationContext> action)
