@@ -150,7 +150,10 @@ namespace NMF.Models
         /// </summary>
         /// <param name="newParent">The new parent element</param>
         /// <param name="oldParent">The old parent element</param>
-        protected virtual void OnParentChanged(IModelElement newParent, IModelElement oldParent) { }
+        protected virtual void OnParentChanged(IModelElement newParent, IModelElement oldParent)
+        {
+            ParentChanged?.Invoke(this, new ValueChangedEventArgs(oldParent, newParent));
+        }
 
         /// <summary>
         /// Gets or sets the parent element for the current model element
@@ -827,6 +830,11 @@ namespace NMF.Models
         /// Is fired when an element in the below containment hierarchy has changed
         /// </summary>
         public event EventHandler<BubbledChangeEventArgs> BubbledChange;
+
+        /// <summary>
+        /// Gets fired when the container of the current model element has changed
+        /// </summary>
+        public event EventHandler<ValueChangedEventArgs> ParentChanged;
 
         private class ModelElementProxy
         {

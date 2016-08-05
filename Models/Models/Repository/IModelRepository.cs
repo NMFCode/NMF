@@ -9,7 +9,7 @@ namespace NMF.Models.Repository
     {
         IModelElement Resolve(Uri uri);
 
-        IDictionary<Uri, Model> Models { get; }
+        ModelCollection Models { get; }
 
         event EventHandler<BubbledChangeEventArgs> BubbledChange;
     }

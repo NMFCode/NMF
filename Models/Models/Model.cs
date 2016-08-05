@@ -2,6 +2,7 @@
 using NMF.Expressions;
 using NMF.Expressions.Linq;
 using NMF.Models.Collections;
+using NMF.Models.Repository;
 using NMF.Serialization;
 using System;
 using System.Collections.Generic;
@@ -38,6 +39,8 @@ namespace NMF.Models
             get;
             set;
         }
+
+        public IModelRepository Repository { get; internal set; }
 
         public IOrderedSetExpression<IModelElement> RootElements { get; private set; }
 

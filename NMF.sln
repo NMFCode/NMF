@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
-VisualStudioVersion = 14.0.23107.0
+VisualStudioVersion = 14.0.24720.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Analysis", "Analysis", "{DB96042F-8815-430D-8345-362F4266F0FE}"
 EndProject
@@ -95,9 +95,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{AB4705A4
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Transformations.Tests", "Transformations\Transformations.Tests\Transformations.Tests.csproj", "{9E9F2CC8-8190-42B2-8D44-CCC28AC4292A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Models.Expressions", "Expressions\Models.Expressions\Models.Expressions.csproj", "{25183C1B-5A1D-4535-AE62-90105C00BEAF}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Expressions.Models", "Expressions\Models.Expressions\Expressions.Models.csproj", "{25183C1B-5A1D-4535-AE62-90105C00BEAF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Models.Expressions.Tests", "Expressions\Tests\Models.Expressions.Tests\Models.Expressions.Tests.csproj", "{CE4F8D70-E17A-4C51-9C9E-BFB42978B5E8}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Expressions.Models.Tests", "Expressions\Tests\Models.Expressions.Tests\Expressions.Models.Tests.csproj", "{CE4F8D70-E17A-4C51-9C9E-BFB42978B5E8}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Benchmarks", "Analysis\Benchmarks\Benchmarks.csproj", "{AFF77CC1-3907-4AD0-B072-B838DB793280}"
 EndProject
@@ -107,6 +107,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Layering", "Analysis\Layering\Layering.csproj", "{A44583A6-D3DD-4798-A82F-93F54EF1431D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Expressions.Configuration", "Expressions\Expressions.Configuration\Expressions.Configuration.csproj", "{CE312AFB-2FB6-4436-89D6-33242D26E2A3}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -258,6 +260,10 @@ Global
 		{A44583A6-D3DD-4798-A82F-93F54EF1431D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A44583A6-D3DD-4798-A82F-93F54EF1431D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A44583A6-D3DD-4798-A82F-93F54EF1431D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CE312AFB-2FB6-4436-89D6-33242D26E2A3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CE312AFB-2FB6-4436-89D6-33242D26E2A3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CE312AFB-2FB6-4436-89D6-33242D26E2A3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CE312AFB-2FB6-4436-89D6-33242D26E2A3}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -304,5 +310,6 @@ Global
 		{CE4F8D70-E17A-4C51-9C9E-BFB42978B5E8} = {0B9F756F-763B-4BEB-A592-78DBD370B3A9}
 		{AFF77CC1-3907-4AD0-B072-B838DB793280} = {DB96042F-8815-430D-8345-362F4266F0FE}
 		{A44583A6-D3DD-4798-A82F-93F54EF1431D} = {DB96042F-8815-430D-8345-362F4266F0FE}
+		{CE312AFB-2FB6-4436-89D6-33242D26E2A3} = {A75E4BA2-EC03-4074-B5A9-1BA2636658E9}
 	EndGlobalSection
 EndGlobal

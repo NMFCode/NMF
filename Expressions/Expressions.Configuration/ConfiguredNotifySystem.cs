@@ -16,7 +16,7 @@ namespace NMF.Expressions
 
         private static InstructionLevelNotifySystem instructionLevel = InstructionLevelNotifySystem.Instance;
         private RepositoryChangeNotificationSystem repositoryChange;
-        private AugmentationNotifySystem augmentation = new AugmentationNotifySystem();
+        private TreeExtensionNotifySystem augmentation = new TreeExtensionNotifySystem();
         private PromotionNotifySystem promotion = new PromotionNotifySystem();
 
         public ConfiguredNotifySystem(IModelRepository repository, Configuration configuration, IncrementalizationStrategy defaultStrategy = IncrementalizationStrategy.InstructionLevel)

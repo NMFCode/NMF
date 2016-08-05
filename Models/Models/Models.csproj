@@ -46,6 +46,7 @@
     <Compile Include="..\..\CommonAssemblyInfo.cs">
       <Link>CommonAssemblyInfo.cs</Link>
     </Compile>
+    <Compile Include="AnchorAttribute.cs" />
     <Compile Include="Attributes\ContainmentAttribute.cs" />
     <Compile Include="Attributes\IdAttribute.cs" />
     <Compile Include="Attributes\LowerBoundAttribute.cs" />
@@ -137,6 +138,7 @@
     <Compile Include="ModelElementExtension.cs" />
     <Compile Include="Evolution\PropertyChange.cs" />
     <Compile Include="Repository\MetaRepository.cs" />
+    <Compile Include="Repository\ModelCollection.cs" />
     <Compile Include="Repository\ModelRepository.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ModelHelper.cs" />

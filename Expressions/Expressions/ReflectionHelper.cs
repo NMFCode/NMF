@@ -21,6 +21,11 @@ namespace NMF.Expressions
             return typeof(T).IsValueType;
         }
 
+        public static ConstructorInfo GetConstructor(Type type)
+        {
+            return type.GetConstructors()[0];
+        }
+
         internal static Action<T, TField> CreateDynamicFieldSetter<T, TField>(FieldInfo field)
         {
             var setMethod = new DynamicMethod("_set_" + field.Name, typeof(void), new Type[] { field.DeclaringType, field.FieldType }, field.DeclaringType);
