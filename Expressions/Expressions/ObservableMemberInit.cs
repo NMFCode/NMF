@@ -31,7 +31,7 @@ namespace NMF.Expressions
             {
                 list = memberBindings.ToList();
             }
-            MemberBindings = new ReadOnlyCollection<ObservableMemberBinding<T>>(list);
+            MemberBindings = list.AsReadOnly();
         }
 
         public override ExpressionType NodeType
