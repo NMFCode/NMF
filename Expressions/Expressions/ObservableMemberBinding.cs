@@ -1,5 +1,8 @@
-﻿using System;
+﻿using NMF.Expressions.Execution;
+using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Linq;
 using System.Linq.Expressions;
@@ -8,15 +11,52 @@ using System.Text;
 
 namespace NMF.Expressions
 {
-	internal abstract class ObservableMemberBinding<T>
-	{
-		public abstract void Attach();
+    internal abstract class ObservableMemberBinding<T> : INotifiable
+    {
+        public int TotalVisits { get; set; }
 
-		public abstract void Detach();
+        public int RemainingVisits { get; set; }
+
+        private readonly ShortList<INotifiable> successors = new ShortList<INotifiable>();
+
+        public ObservableMemberBinding()
+        {
+            successors.CollectionChanged += (obj, e) =>
+            {
+                if (successors.Count == 0)
+                    Detach();
+                else if (e.Action == NotifyCollectionChangedAction.Add && successors.Count == 1)
+                    Attach();
+            };
+        }
+
+        public IList<INotifiable> Successors { get { return successors; } }
 
         public abstract bool IsParameterFree { get; }
+        
+        public abstract IEnumerable<INotifiable> Dependencies { get; }
+
+        private void Attach()
+        {
+            OnAttach();
+            foreach (var dep in Dependencies)
+                dep.Successors.Add(this);
+        }
+
+        private void Detach()
+        {
+            OnDetach();
+            foreach (var dep in Dependencies)
+                dep.Successors.Remove(this);
+        }
+
+        protected virtual void OnAttach() { }
+
+        protected virtual void OnDetach() { }
 
         public abstract ObservableMemberBinding<T> ApplyParameters(INotifyExpression<T> newTarget, IDictionary<string, object> parameters);
+
+        public abstract bool Notify(IEnumerable<INotifiable> sources);
     }
 
     internal class ObservablePropertyMemberBinding<T, TMember> : ObservableMemberBinding<T>
@@ -39,51 +79,52 @@ namespace NMF.Expressions
             Target = target;
         }
 
-        private void ValueChanged(object sender, ValueChangedEventArgs e)
-        {
-            Apply();
-        }
-
         public INotifyExpression<TMember> Value { get; private set; }
 
         public Action<T, TMember> Member { get; private set; }
 
         public INotifyExpression<T> Target { get; private set; }
 
-        public void Apply()
-        {
-            Member(Target.Value, Value.Value);
-        }
-
-        public override void Attach()
-        {
-            Value.Attach();
-            Apply();
-            Target.ValueChanged += ValueChanged;
-            Value.ValueChanged += ValueChanged;
-            Apply();
-        }
-
-        public override void Detach()
-        {
-            Value.Detach();
-            Target.ValueChanged -= ValueChanged;
-            Value.ValueChanged -= ValueChanged;
-        }
-
         public override bool IsParameterFree
         {
             get { return Value.IsParameterFree; }
+        }
+
+        public override IEnumerable<INotifiable> Dependencies
+        {
+            get
+            {
+                yield return Value;
+                yield return Target;
+            }
+        }
+
+        public void Apply()
+        {
+            Member(Target.Value, Value.Value);
         }
 
         public override ObservableMemberBinding<T> ApplyParameters(INotifyExpression<T> newTarget, IDictionary<string, object> parameters)
         {
             return new ObservablePropertyMemberBinding<T, TMember>(newTarget, Member, Value.ApplyParameters(parameters));
         }
+
+        public override bool Notify(IEnumerable<INotifiable> sources)
+        {
+            Apply();
+            return true;
+        }
+
+        protected override void OnAttach()
+        {
+            Apply();
+        }
     }
 
     internal class ObservableReversablePropertyMemberBinding<T, TMember> : ObservableMemberBinding<T>
     {
+        private T targetValue;
+
         public ObservableReversablePropertyMemberBinding(INotifyExpression<T> target, string memberName, Func<T, TMember> memberGet, Action<T, TMember> memberSet, INotifyReversableExpression<TMember> value)
         {
             if (value == null) throw new ArgumentNullException("value");
@@ -99,11 +140,6 @@ namespace NMF.Expressions
             Target = target;
         }
 
-        private void ValueChanged(object sender, ValueChangedEventArgs e)
-        {
-            Apply();
-        }
-
         public INotifyReversableExpression<TMember> Value { get; private set; }
 
         public Action<T, TMember> MemberSet { get; private set; }
@@ -114,57 +150,68 @@ namespace NMF.Expressions
 
         public INotifyExpression<T> Target { get; private set; }
 
-        public void Apply()
-        {
-            MemberSet(Target.Value, Value.Value);
-        }
-
-        public override void Attach()
-        {
-            Value.Attach();
-            Apply();
-            Target.ValueChanged += TargetValueChanged;
-            Value.ValueChanged += ValueChanged;
-            var target = Target.Value as INotifyPropertyChanged;
-            if (target != null)
-            {
-                target.PropertyChanged += TargetPropertyChanged;
-            }
-            Apply();
-        }
-
-        private void TargetPropertyChanged(object sender, PropertyChangedEventArgs e)
-        {
-            if (e.PropertyName == MemberName)
-            {
-                Value.Value = MemberGet(Target.Value);
-            }
-        }
-
-        private void TargetValueChanged(object sender, ValueChangedEventArgs e)
-        {
-            var old = e.OldValue as INotifyPropertyChanged;
-            if (old != null) old.PropertyChanged -= TargetPropertyChanged;
-            var newValue = e.NewValue as INotifyPropertyChanged;
-            if (newValue != null) newValue.PropertyChanged += TargetPropertyChanged;
-            Apply();
-        }
-
-        public override void Detach()
-        {
-            Value.Detach();
-            Target.ValueChanged -= ValueChanged;
-            Value.ValueChanged -= ValueChanged;
-        }
-
         public override bool IsParameterFree
         {
             get { return Value.IsParameterFree; }
         }
 
+        public override IEnumerable<INotifiable> Dependencies
+        {
+            get
+            {
+                yield return Value;
+                yield return Target;
+            }
+        }
+
+        public void Apply()
+        {
+            MemberSet(Target.Value, Value.Value);
+        }
+
         public override ObservableMemberBinding<T> ApplyParameters(INotifyExpression<T> newTarget, IDictionary<string, object> parameters)
         {
             return new ObservablePropertyMemberBinding<T, TMember>(newTarget, MemberSet, Value.ApplyParameters(parameters));
+        }
+
+        public override bool Notify(IEnumerable<INotifiable> sources)
+        {
+            if (!targetValue.Equals(Target.Value))
+            {
+                DetachPropertyChangeListener();
+                targetValue = Target.Value;
+                AttachPropertyChangeListener();
+            }
+
+            Apply();
+            Value.Value = MemberGet(Target.Value);
+            return true;
+        }
+
+        protected override void OnAttach()
+        {
+            targetValue = Target.Value;
+            AttachPropertyChangeListener();
+        }
+
+        protected override void OnDetach()
+        {
+            DetachPropertyChangeListener();
+            targetValue = default(T);
+        }
+
+        private void AttachPropertyChangeListener()
+        {
+            var newTarget = targetValue as INotifyPropertyChanged;
+            if (newTarget != null)
+                ExecutionEngine.Current.AddChangeListener(this, newTarget, MemberName);
+        }
+
+        private void DetachPropertyChangeListener()
+        {
+            var oldTarget = targetValue as INotifyPropertyChanged;
+            if (oldTarget != null)
+                ExecutionEngine.Current.RemoveChangeListener(this, oldTarget, MemberName);
         }
     }
 }

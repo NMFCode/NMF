@@ -17,7 +17,7 @@ namespace NMF.Expressions
             : this(expression, binder, binder.VisitObservable<T>(expression.NewExpression)) { }
 
         private ObservableMemberInit(MemberInitExpression expression, ObservableExpressionBinder binder, INotifyExpression<T> inner)
-            : this(inner, expression.Bindings.Select(m => binder.VisitMemberBinding<T>(m, inner))) { }
+            : this(inner, expression.Bindings.Select(m => binder.VisitMemberBinding(m, inner))) { }
 
         public ObservableMemberInit(INotifyExpression<T> innerExpression, IEnumerable<ObservableMemberBinding<T>> memberBindings)
         {
@@ -25,42 +25,13 @@ namespace NMF.Expressions
             if (memberBindings == null) throw new ArgumentNullException("memberBindings");
 
             InnerExpression = innerExpression;
-            innerExpression.ValueChanged += InnerValueChanged;
+            
             var list = memberBindings as List<ObservableMemberBinding<T>>;
             if (list == null)
             {
                 list = memberBindings.ToList();
             }
-            MemberBindings = new ReadOnlyCollection<ObservableMemberBinding<T>>(list);
-        }
-
-        private void InnerValueChanged(object sender, ValueChangedEventArgs e)
-        {
-            if (!IsAttached) return;
-            Refresh();
-        }
-
-        protected override T GetValue()
-        {
-            return InnerExpression.Value;
-        }
-
-        protected override void DetachCore()
-        {
-            InnerExpression.Detach();
-            foreach (var binding in MemberBindings)
-            {
-                binding.Detach();
-            }
-        }
-
-        protected override void AttachCore()
-        {
-            InnerExpression.Attach();
-            foreach (var binding in MemberBindings)
-            {
-                binding.Attach();
-            }
+            MemberBindings = list.AsReadOnly();
         }
 
         public override ExpressionType NodeType
@@ -74,6 +45,21 @@ namespace NMF.Expressions
         public override bool IsParameterFree
         {
             get { return InnerExpression.IsParameterFree && MemberBindings.All(m => m.IsParameterFree); }
+        }
+
+        public override IEnumerable<INotifiable> Dependencies
+        {
+            get
+            {
+                yield return InnerExpression;
+                foreach (var memberBinding in MemberBindings)
+                    yield return memberBinding;
+            }
+        }
+
+        protected override T GetValue()
+        {
+            return InnerExpression.Value;
         }
 
         public override INotifyExpression<T> ApplyParameters(IDictionary<string, object> parameters)

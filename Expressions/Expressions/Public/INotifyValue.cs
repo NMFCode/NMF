@@ -6,7 +6,7 @@ namespace NMF.Expressions
     /// Represents a simple incremental value
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    public interface INotifyValue<out T>
+    public interface INotifyValue<out T> : INotifiable
     {
         /// <summary>
         /// Gets the current value
@@ -17,21 +17,6 @@ namespace NMF.Expressions
         /// Gets fired when the value changed
         /// </summary>
         event EventHandler<ValueChangedEventArgs> ValueChanged;
-
-        /// <summary>
-        /// Attach a listener to this value
-        /// </summary>
-        void Detach();
-
-        /// <summary>
-        /// Detach a listener to this value
-        /// </summary>
-        void Attach();
-
-        /// <summary>
-        /// Returns whether this value listens for changes
-        /// </summary>
-        bool IsAttached { get; }
     }
 
     /// <summary>

@@ -1,6 +1,7 @@
 ﻿using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace NMF.Expressions.Test
 {
@@ -168,21 +169,26 @@ namespace NMF.Expressions.Test
                 }
             }
 
+            public bool Notify(IEnumerable<INotifiable> sources)
+            {
+                throw new NotImplementedException();
+            }
+
             public event EventHandler<ValueChangedEventArgs> ValueChanged;
-
-            public void Detach() { }
-
-            public void Attach() { }
-
+            
             public T Value
             {
                 get { return value; }
             }
 
-            public bool IsAttached
-            {
-                get { return true; }
-            }
+            private List<INotifiable> successors = new List<INotifiable>();
+            public IList<INotifiable> Successors { get { return successors; } }
+
+            public IEnumerable<INotifiable> Dependencies { get { return Enumerable.Empty<INotifiable>(); } }
+
+            public int TotalVisits { get; set; }
+
+            public int RemainingVisits { get; set; }
         }
 
         private class TestProxy : TestProxy<int>, IDisposable

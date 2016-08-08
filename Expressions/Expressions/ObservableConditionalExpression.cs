@@ -25,54 +25,36 @@ namespace NMF.Expressions
             Test = test;
             True = truePart;
             False = falsePart;
-
-            Test.ValueChanged += TestChanged;
-            True.ValueChanged += TruePartChanged;
-            False.ValueChanged += FalsePartChanged;
         }
 
-        private void FalsePartChanged(object sender, EventArgs e)
-        {
-            if (!IsAttached) return;
-            if (!(bool)Test.Value) Refresh();
-        }
-
-        private void TruePartChanged(object sender, EventArgs e)
-        {
-            if (!IsAttached) return;
-            if ((bool)Test.Value) Refresh();
-        }
-
-        private void TestChanged(object sender, EventArgs e)
-        {
-            if (!IsAttached) return;
-            if (Test.Value)
-            {
-                True.Attach();
-                False.Detach();
-            }
-            else
-            {
-                True.Detach();
-                False.Attach();
-            }
-            Refresh();
-        }
-
-        public override ExpressionType NodeType
-        {
-            get
-            {
-                return ExpressionType.Conditional;
-            }
-        }
+        public override ExpressionType NodeType { get { return ExpressionType.Conditional; } }
 
         public override bool CanBeConstant
         {
             get
             {
-                return (Test.IsConstant && ((bool)Test.Value ? True.IsConstant : False.IsConstant))
+                return (Test.IsConstant && (Test.Value ? True.IsConstant : False.IsConstant))
                     || (True.IsConstant && False.IsConstant && object.Equals(True.Value, False.Value)); 
+            }
+        }
+
+        public INotifyExpression<bool> Test { get; set; }
+
+        public INotifyExpression<T> True { get; set; }
+
+        public INotifyExpression<T> False { get; set; }
+
+        public override bool IsParameterFree
+        {
+            get { return Test.IsParameterFree && True.IsParameterFree && False.IsParameterFree; }
+        }
+
+        public override IEnumerable<INotifiable> Dependencies
+        {
+            get
+            {
+                yield return Test;
+                yield return Test.Value ? True : False;
             }
         }
 
@@ -80,7 +62,7 @@ namespace NMF.Expressions
         {
             if (Test.CanBeConstant)
             {
-                if ((bool)Test.Value)
+                if (Test.Value)
                 {
                     return True.Reduce();
                 }
@@ -102,14 +84,6 @@ namespace NMF.Expressions
             }
         }
 
-        private Type TypeCore { get; set; }
-
-        public INotifyExpression<bool> Test { get; set; }
-
-        public INotifyExpression<T> True { get; set; }
-
-        public INotifyExpression<T> False { get; set; }
-
         protected override T GetValue()
         {
             if (Test.Value)
@@ -122,41 +96,28 @@ namespace NMF.Expressions
             }
         }
 
-        protected override void DetachCore()
-        {
-            var currentTest = Test.Value;
-            Test.Detach();
-            if (currentTest)
-            {
-                True.Detach();
-            }
-            else
-            {
-                False.Detach();
-            }
-        }
-
-        protected override void AttachCore()
-        {
-            Test.Attach();
-            if (Test.Value)
-            {
-                True.Attach();
-            }
-            else
-            {
-                False.Attach();
-            }
-        }
-
-        public override bool IsParameterFree
-        {
-            get { return Test.IsParameterFree && True.IsParameterFree && False.IsParameterFree; }
-        }
-
         public override INotifyExpression<T> ApplyParameters(IDictionary<string, object> parameters)
         {
             return new ObservableConditionalExpression<T>(Test.ApplyParameters(parameters), True.ApplyParameters(parameters), False.ApplyParameters(parameters));
+        }
+
+        public override bool Notify(IEnumerable<INotifiable> sources)
+        {
+            if (sources.Contains(Test))
+            {
+                if (Test.Value)
+                {
+                    True.Successors.Add(this);
+                    False.Successors.Remove(this);
+                }
+                else
+                {
+                    True.Successors.Remove(this);
+                    False.Successors.Add(this);
+                }
+            }
+
+            return base.Notify(sources);
         }
     }
 }

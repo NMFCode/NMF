@@ -54,41 +54,7 @@ namespace NMF.Expressions.Test
                 Assert.AreEqual(42, result.Value);
             }
         }
-
-        [TestMethod]
-        public void AddChecked_Int_Observable_NoUpdateWhenDetached()
-        {
-            checked
-            {
-                var updated = false;
-                var dummy = new ObservableDummy<int>() { Item = 5 };
-
-                var result = Observable.Expression(() => dummy.Item + 7);
-
-                result.ValueChanged += (o, e) => updated = true;
-
-                Assert.AreEqual(12, result.Value);
-                Assert.IsFalse(updated);
-
-                result.Detach();
-
-                dummy.Item = 35;
-
-                Assert.AreEqual(12, result.Value);
-                Assert.IsFalse(updated);
-
-                result.Attach();
-
-                Assert.IsTrue(updated);
-                Assert.AreEqual(42, result.Value);
-
-                updated = false;
-                dummy.Item = 5;
-
-                Assert.IsTrue(updated);
-            }
-        }
-
+        
         [TestMethod]
         public void AddChecked_Long_NoObservable_NoUpdate()
         {
@@ -138,41 +104,7 @@ namespace NMF.Expressions.Test
                 Assert.AreEqual(42L, result.Value);
             }
         }
-
-        [TestMethod]
-        public void AddChecked_Long_Observable_NoUpdateWhenDetached()
-        {
-            checked
-            {
-                var updated = false;
-                var dummy = new ObservableDummy<long>() { Item = 5 };
-
-                var result = Observable.Expression(() => dummy.Item + 7);
-
-                result.ValueChanged += (o, e) => updated = true;
-
-                Assert.AreEqual(12L, result.Value);
-                Assert.IsFalse(updated);
-
-                result.Detach();
-
-                dummy.Item = 35;
-
-                Assert.AreEqual(12L, result.Value);
-                Assert.IsFalse(updated);
-
-                result.Attach();
-
-                Assert.IsTrue(updated);
-                Assert.AreEqual(42, result.Value);
-
-                updated = false;
-                dummy.Item = 5;
-
-                Assert.IsTrue(updated);
-            }
-        }
-
+        
         [TestMethod]
         public void AddChecked_UInt_NoObservable_NoUpdate()
         {
@@ -220,41 +152,7 @@ namespace NMF.Expressions.Test
                 Assert.AreEqual(42u, result.Value);
             }
         }
-
-        [TestMethod]
-        public void AddChecked_UInt_Observable_NoUpdateWhenDetached()
-        {
-            checked
-            {
-                var updated = false;
-                var dummy = new ObservableDummy<uint>() { Item = 5 };
-
-                var result = Observable.Expression(() => dummy.Item + 7);
-
-                result.ValueChanged += (o, e) => updated = true;
-
-                Assert.AreEqual(12u, result.Value);
-                Assert.IsFalse(updated);
-
-                result.Detach();
-
-                dummy.Item = 35;
-
-                Assert.AreEqual(12u, result.Value);
-                Assert.IsFalse(updated);
-
-                result.Attach();
-
-                Assert.IsTrue(updated);
-                Assert.AreEqual(42u, result.Value);
-
-                updated = false;
-                dummy.Item = 5;
-
-                Assert.IsTrue(updated);
-            }
-        }
-
+        
         [TestMethod]
         public void AddChecked_ULong_NoObservable_NoUpdate()
         {
@@ -302,41 +200,7 @@ namespace NMF.Expressions.Test
                 Assert.AreEqual(42ul, result.Value);
             }
         }
-
-        [TestMethod]
-        public void AddChecked_ULong_Observable_NoUpdateWhenDetached()
-        {
-            checked
-            {
-                var updated = false;
-                var dummy = new ObservableDummy<ulong>() { Item = 5 };
-
-                var result = Observable.Expression(() => dummy.Item + 7);
-
-                result.ValueChanged += (o, e) => updated = true;
-
-                Assert.AreEqual(12ul, result.Value);
-                Assert.IsFalse(updated);
-
-                result.Detach();
-
-                dummy.Item = 35;
-
-                Assert.AreEqual(12ul, result.Value);
-                Assert.IsFalse(updated);
-
-                result.Attach();
-
-                Assert.IsTrue(updated);
-                Assert.AreEqual(42ul, result.Value);
-
-                updated = false;
-                dummy.Item = 5;
-
-                Assert.IsTrue(updated);
-            }
-        }
-
+        
         [TestMethod]
         public void Add_Int_NoObservable_NoUpdate()
         {
@@ -384,41 +248,7 @@ namespace NMF.Expressions.Test
                 Assert.AreEqual(42, result.Value);
             }
         }
-
-        [TestMethod]
-        public void Add_Int_Observable_NoUpdateWhenDetached()
-        {
-            unchecked
-            {
-                var updated = false;
-                var dummy = new ObservableDummy<int>() { Item = 5 };
-
-                var result = Observable.Expression(() => dummy.Item + 7);
-
-                result.ValueChanged += (o, e) => updated = true;
-
-                Assert.AreEqual(12, result.Value);
-                Assert.IsFalse(updated);
-
-                result.Detach();
-
-                dummy.Item = 35;
-
-                Assert.AreEqual(12, result.Value);
-                Assert.IsFalse(updated);
-
-                result.Attach();
-
-                Assert.IsTrue(updated);
-                Assert.AreEqual(42, result.Value);
-
-                updated = false;
-                dummy.Item = 5;
-
-                Assert.IsTrue(updated);
-            }
-        }
-
+        
         [TestMethod]
         public void Add_Long_NoObservable_NoUpdate()
         {
@@ -466,41 +296,7 @@ namespace NMF.Expressions.Test
                 Assert.AreEqual(42L, result.Value);
             }
         }
-
-        [TestMethod]
-        public void Add_Long_Observable_NoUpdateWhenDetached()
-        {
-            unchecked
-            {
-                var updated = false;
-                var dummy = new ObservableDummy<long>() { Item = 5 };
-
-                var result = Observable.Expression(() => dummy.Item + 7);
-
-                result.ValueChanged += (o, e) => updated = true;
-
-                Assert.AreEqual(12L, result.Value);
-                Assert.IsFalse(updated);
-
-                result.Detach();
-
-                dummy.Item = 35;
-
-                Assert.AreEqual(12L, result.Value);
-                Assert.IsFalse(updated);
-
-                result.Attach();
-
-                Assert.IsTrue(updated);
-                Assert.AreEqual(42, result.Value);
-
-                updated = false;
-                dummy.Item = 5;
-
-                Assert.IsTrue(updated);
-            }
-        }
-
+        
         [TestMethod]
         public void Add_Float_NoObservable_NoUpdate()
         {
@@ -548,41 +344,7 @@ namespace NMF.Expressions.Test
                 Assert.AreEqual(42.0f, result.Value);
             }
         }
-
-        [TestMethod]
-        public void Add_Float_Observable_NoUpdateWhenDetached()
-        {
-            unchecked
-            {
-                var updated = false;
-                var dummy = new ObservableDummy<float>() { Item = 5 };
-
-                var result = Observable.Expression(() => dummy.Item + 7);
-
-                result.ValueChanged += (o, e) => updated = true;
-
-                Assert.AreEqual(12, result.Value);
-                Assert.IsFalse(updated);
-
-                result.Detach();
-
-                dummy.Item = 35;
-
-                Assert.AreEqual(12, result.Value);
-                Assert.IsFalse(updated);
-
-                result.Attach();
-
-                Assert.IsTrue(updated);
-                Assert.AreEqual(42, result.Value);
-
-                updated = false;
-                dummy.Item = 5;
-
-                Assert.IsTrue(updated);
-            }
-        }
-
+        
         [TestMethod]
         public void Add_Double_NoObservable_NoUpdate()
         {
@@ -630,41 +392,7 @@ namespace NMF.Expressions.Test
                 Assert.AreEqual(42.0, result.Value);
             }
         }
-
-        [TestMethod]
-        public void Add_Double_Observable_NoUpdateWhenDetached()
-        {
-            unchecked
-            {
-                var updated = false;
-                var dummy = new ObservableDummy<double>() { Item = 5 };
-
-                var result = Observable.Expression(() => dummy.Item + 7);
-
-                result.ValueChanged += (o, e) => updated = true;
-
-                Assert.AreEqual(12.0, result.Value);
-                Assert.IsFalse(updated);
-
-                result.Detach();
-
-                dummy.Item = 35;
-
-                Assert.AreEqual(12, result.Value);
-                Assert.IsFalse(updated);
-
-                result.Attach();
-
-                Assert.IsTrue(updated);
-                Assert.AreEqual(42, result.Value);
-
-                updated = false;
-                dummy.Item = 5;
-
-                Assert.IsTrue(updated);
-            }
-        }
-
+        
         [TestMethod]
         public void Add_UInt_NoObservable_NoUpdate()
         {
@@ -712,41 +440,7 @@ namespace NMF.Expressions.Test
                 Assert.AreEqual(42u, result.Value);
             }
         }
-
-        [TestMethod]
-        public void Add_UInt_Observable_NoUpdateWhenDetached()
-        {
-            unchecked
-            {
-                var updated = false;
-                var dummy = new ObservableDummy<uint>() { Item = 5 };
-
-                var result = Observable.Expression(() => dummy.Item + 7);
-
-                result.ValueChanged += (o, e) => updated = true;
-
-                Assert.AreEqual(12u, result.Value);
-                Assert.IsFalse(updated);
-
-                result.Detach();
-
-                dummy.Item = 35;
-
-                Assert.AreEqual(12u, result.Value);
-                Assert.IsFalse(updated);
-
-                result.Attach();
-
-                Assert.IsTrue(updated);
-                Assert.AreEqual(42u, result.Value);
-
-                updated = false;
-                dummy.Item = 5;
-
-                Assert.IsTrue(updated);
-            }
-        }
-
+        
         [TestMethod]
         public void Add_ULong_NoObservable_NoUpdate()
         {
@@ -794,41 +488,7 @@ namespace NMF.Expressions.Test
                 Assert.AreEqual(42ul, result.Value);
             }
         }
-
-        [TestMethod]
-        public void Add_ULong_Observable_NoUpdateWhenDetached()
-        {
-            unchecked
-            {
-                var updated = false;
-                var dummy = new ObservableDummy<ulong>() { Item = 5 };
-
-                var result = Observable.Expression(() => dummy.Item + 7);
-
-                result.ValueChanged += (o, e) => updated = true;
-
-                Assert.AreEqual(12ul, result.Value);
-                Assert.IsFalse(updated);
-
-                result.Detach();
-
-                dummy.Item = 35;
-
-                Assert.AreEqual(12ul, result.Value);
-                Assert.IsFalse(updated);
-
-                result.Attach();
-
-                Assert.IsTrue(updated);
-                Assert.AreEqual(42ul, result.Value);
-
-                updated = false;
-                dummy.Item = 5;
-
-                Assert.IsTrue(updated);
-            }
-        }
-
+        
         [TestMethod]
         public void Add_Decimal_NoObservable_NoUpdate()
         {
@@ -869,37 +529,6 @@ namespace NMF.Expressions.Test
 
             Assert.IsTrue(updated);
             Assert.AreEqual(42, result.Value);
-        }
-
-        [TestMethod]
-        public void Add_Decimal_Observable_NoUpdateWhenDetached()
-        {
-            var updated = false;
-            var dummy = new ObservableDummy<decimal>() { Item = 5 };
-
-            var result = Observable.Expression(() => dummy.Item + 7);
-
-            result.ValueChanged += (o, e) => updated = true;
-
-            Assert.AreEqual(12, result.Value);
-            Assert.IsFalse(updated);
-
-            result.Detach();
-
-            dummy.Item = 35;
-
-            Assert.AreEqual(12, result.Value);
-            Assert.IsFalse(updated);
-
-            result.Attach();
-
-            Assert.IsTrue(updated);
-            Assert.AreEqual(42, result.Value);
-
-            updated = false;
-            dummy.Item = 5;
-
-            Assert.IsTrue(updated);
         }
     }
 }

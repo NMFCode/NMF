@@ -1,4 +1,5 @@
-﻿using System;
+﻿using NMF.Expressions.Execution;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
@@ -12,6 +13,8 @@ namespace NMF.Expressions
     internal abstract class ObservableMethodBase<T, TDelegate, TResult> : NotifyExpression<TResult>
         where TDelegate : class
     {
+        private T targetValue;
+        
         public ObservableMethodBase(INotifyExpression<T> target, MethodInfo method)
         {
             if (method == null) throw new ArgumentNullException("method");
@@ -19,65 +22,13 @@ namespace NMF.Expressions
 
             Target = target;
             Method = method;
-
-            target.ValueChanged += TargetChanged;
-        }
-
-        private void RenewFunction()
-        {
-            Function = ReflectionHelper.CreateDelegate(typeof(TDelegate), Target.Value, Method) as TDelegate;
         }
 
         public MethodInfo Method { get; private set; }
 
         public TDelegate Function { get; private set; }
 
-        private void TargetChanged(object sender, ValueChangedEventArgs e)
-        {
-            if (!IsAttached) return;
-            var oldNotifier = e.OldValue as INotifyCollectionChanged;
-            var newNotifier = e.NewValue as INotifyCollectionChanged;
-            if (oldNotifier != null)
-            {
-                oldNotifier.CollectionChanged -= TargetCollectionChanged;
-            }
-            if (newNotifier != null)
-            {
-                newNotifier.CollectionChanged += TargetCollectionChanged;
-            }
-            RenewFunction();
-            Refresh();
-        }
-
-        private void TargetCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
-        {
-            if (!IsAttached) return;
-            Refresh();
-        }
-
-        protected override void OnValueChanged(ValueChangedEventArgs e)
-        {
-            base.OnValueChanged(e);
-            var disposable = e.OldValue as IDisposable;
-            if (disposable != null)
-            {
-                disposable.Dispose();
-            }
-        }
-
-        protected void ArgumentChanged(object sender, ValueChangedEventArgs e)
-        {
-            if (!IsAttached) return;
-            Refresh();
-        }
-
-        public override ExpressionType NodeType
-        {
-            get
-            {
-                return ExpressionType.Invoke;
-            }
-        }
+        public override ExpressionType NodeType { get { return ExpressionType.Invoke; } }
 
         public override bool CanBeConstant
         {
@@ -89,26 +40,59 @@ namespace NMF.Expressions
 
         public INotifyExpression<T> Target { get; private set; }
 
-        protected override void AttachCore()
+        private void RenewFunction()
         {
-            Target.Attach();
-            var targetNotifier = Target.Value as INotifyCollectionChanged;
-            if (targetNotifier != null)
-            {
-                targetNotifier.CollectionChanged += TargetCollectionChanged;
-            }
+            Function = ReflectionHelper.CreateDelegate(typeof(TDelegate), Target.Value, Method) as TDelegate;
+        }
+        
+        protected override void OnAttach()
+        {
+            targetValue = Target.Value;
+            AttachCollectionChangeListener();
             RenewFunction();
         }
 
-        protected override void DetachCore()
+        protected override void OnDetach()
         {
-            Target.Detach();
-            var targetNotifier = Target.Value as INotifyCollectionChanged;
-            if (targetNotifier != null)
+            DetachCollectionChangeListener();
+            targetValue = default(T);
+        }
+
+        public override bool Notify(IEnumerable<INotifiable> sources)
+        {
+            if (sources.Contains(Target))
             {
-                targetNotifier.CollectionChanged -= TargetCollectionChanged;
+                DetachCollectionChangeListener();
+                targetValue = Target.Value;
+                AttachCollectionChangeListener();
+                RenewFunction();
             }
+
+            var oldValue = Value;
+            bool result = base.Notify(sources);
+
+            if (result)
+            {
+                var disposable = oldValue as IDisposable;
+                if (disposable != null)
+                    disposable.Dispose();
+            }
+
+            return result;
+        }
+
+        private void AttachCollectionChangeListener()
+        {
+            var newTarget = targetValue as INotifyCollectionChanged;
+            if (newTarget != null)
+                ExecutionEngine.Current.AddChangeListener(this, newTarget);
+        }
+
+        private void DetachCollectionChangeListener()
+        {
+            var oldTarget = targetValue as INotifyCollectionChanged;
+            if (oldTarget != null)
+                ExecutionEngine.Current.RemoveChangeListener(this, oldTarget);
         }
     }
-
 }

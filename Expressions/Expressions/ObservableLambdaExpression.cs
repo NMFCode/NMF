@@ -31,6 +31,8 @@ namespace NMF.Expressions
             }
         }
 
+	public override IEnumerable<INotifiable> Dependencies { get { return Enumerable.Empty<INotifiable>(); } }
+
         public override INotifyExpression<Expression<T>> ApplyParameters(IDictionary<string, object> parameters)
         {
             var visitor = new ApplyLambdaParametersVisitor(parameters);

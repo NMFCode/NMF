@@ -50,29 +50,6 @@ namespace NMF.Expressions
         public INotifyExpression<T<#= j #>> Argument<#= j #> { get; private set; }
 <# } #>
 
-        protected override TResult GetValue()
-        {
-            return Function(Argument1.Value<# for (int j = 2; j <= i; j++) { #>, Argument<#= j #>.Value<# } #>);
-        }
-
-        protected override void AttachCore()
-        {
-            var argChanged = new EventHandler<ValueChangedEventArgs>(ArgumentChanged);
-<# for (int j = 1; j <= i; j++) { #>
-            Argument<#= j #>.Attach();
-            Argument<#= j #>.ValueChanged += argChanged;
-<# } #>
-        }
-
-        protected override void DetachCore()
-        {
-            var argChanged = new EventHandler<ValueChangedEventArgs>(ArgumentChanged);
-<# for (int j = 1; j <= i; j++) { #>
-            Argument<#= j #>.ValueChanged -= argChanged;
-            Argument<#= j #>.Detach();
-<# } #>
-        }
-
         public override bool IsConstant
         {
             get
@@ -84,6 +61,21 @@ namespace NMF.Expressions
         public override bool IsParameterFree
         {
             get { return Argument1.IsParameterFree<# for (int j = 2; j <= i; j++) { #> && Argument<#= j #>.IsParameterFree<# } #>; }
+        }
+
+        public override IEnumerable<INotifiable> Dependencies
+        {
+            get
+            {
+<# for (int j = 1; j <= i; j++) { #>
+                yield return Argument<#= j #>;
+<# } #>
+            }
+        }
+
+        protected override TResult GetValue()
+        {
+            return Function(Argument1.Value<# for (int j = 2; j <= i; j++) { #>, Argument<#= j #>.Value<# } #>);
         }
 
         public override INotifyExpression<TResult> ApplyParameters(IDictionary<string, object> parameters)

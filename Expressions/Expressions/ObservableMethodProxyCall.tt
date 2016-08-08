@@ -25,69 +25,49 @@ namespace NMF.Expressions
 
         public ObservableMethodProxyCall(INotifyExpression<T> target, MethodInfo proxyFunction<# for (int j = 1; j <= i; j++) { #>, INotifyExpression<T<#= j #>> arg<#= j #><# } #>)
         {
-			if (target == null) throw new ArgumentNullException("target");
+            if (target == null) throw new ArgumentNullException("target");
             if (proxyFunction == null) throw new ArgumentNullException("proxyFunction");
 <# for (int j = 1; j <= i; j++) { #>
-			if (arg<#= j #> == null) throw new ArgumentNullException("arg<#= j #>");
+            if (arg<#= j #> == null) throw new ArgumentNullException("arg<#= j #>");
 <# } #>
 
-			Target = target;
-			ProxyMethod = proxyFunction;
+            Target = target;
+            ProxyMethod = proxyFunction;
 <# for (int j = 1; j <= i; j++) { #>
-			Argument<#= j #> = arg<#= j #>;
+            Argument<#= j #> = arg<#= j #>;
 <# } #>
-			
-			Target.ValueChanged += TargetChanged;
-		}
+        }
 
-		private void TargetChanged(object sender, ValueChangedEventArgs e)
-        {
-            if (!IsAttached) return;
-			RenewProxyFunction();
-			RenewProxy();
-			Refresh();
-		}
-
-		public INotifyExpression<T> Target { get; private set; }
+        public INotifyExpression<T> Target { get; private set; }
 <# for (int j = 1; j <= i; j++) { #>
-		public INotifyExpression<T<#= j #>> Argument<#= j #> { get; private set; }
+        public INotifyExpression<T<#= j #>> Argument<#= j #> { get; private set; }
 <# } #>
 
         public Func<<# for (int j = 1; j <= i; j++) { #>T<#= j #>, <# } #>INotifyValue<TResult>> ProxyFunction { get; private set; }
 
-		public MethodInfo ProxyMethod { get; private set; }
+        public MethodInfo ProxyMethod { get; private set; }
 
-		private void RenewProxyFunction()
-		{
-			ProxyFunction = ReflectionHelper.CreateDelegate(typeof(Func<<# for (int j = 1; j <= i; j++) { #>T<#= j #>, <# } #>INotifyValue<TResult>>), Target.Value, ProxyMethod) as Func<<# for (int j = 1; j <= i; j++) { #>T<#= j #>, <# } #>INotifyValue<TResult>>;
-		}
+        public override IEnumerable<INotifiable> Dependencies
+        {
+            get
+            {
+                foreach (var dep in base.Dependencies)
+                    yield return dep;
+
+<# for (int j = 1; j <= i; j++) { #>
+                yield return Argument<#= j #>;
+<# } #>
+            }
+        }
+
+        private void RenewProxyFunction()
+        {
+            ProxyFunction = ReflectionHelper.CreateDelegate(typeof(Func<<# for (int j = 1; j <= i; j++) { #>T<#= j #>, <# } #>INotifyValue<TResult>>), Target.Value, ProxyMethod) as Func<<# for (int j = 1; j <= i; j++) { #>T<#= j #>, <# } #>INotifyValue<TResult>>;
+        }
 
         protected override INotifyValue<TResult> CreateProxy()
         {
             return ProxyFunction(<# if (i > 0) { #>Argument1.Value<# } for (int j = 2; j <= i; j++) { #>, Argument<#= j #>.Value<# } #>);
-        }
-
-        protected override void AttachCore()
-        {
-            var argChanged = new EventHandler<ValueChangedEventArgs>(ArgumentChanged);
-			Target.Attach();
-<# for (int j = 1; j <= i; j++) { #>
-			Argument<#= j #>.Attach();
-            Argument<#= j #>.ValueChanged += argChanged;
-<# } #>
-			RenewProxyFunction();
-            base.AttachCore();
-        }
-
-        protected override void DetachCore()
-        {
-            base.DetachCore();
-            var argChanged = new EventHandler<ValueChangedEventArgs>(ArgumentChanged);
-			Target.Detach();
-<# for (int j = 1; j <= i; j++) { #>
-            Argument<#= j #>.ValueChanged -= argChanged;
-			Argument<#= j #>.Detach();
-<# } #>
         }
 
         public override bool IsParameterFree
@@ -116,6 +96,18 @@ namespace NMF.Expressions
         public override INotifyExpression<TResult> ApplyParameters(IDictionary<string, object> parameters)
         {
             return new ObservableMethodProxyCall<T, <# for (int j = 1; j <= i; j++) { #>T<#= j #>, <# } #>TResult>(Target.ApplyParameters(parameters), ProxyMethod<# for (int j = 1; j <= i; j++) { #>, Argument<#= j #>.ApplyParameters(parameters)<# } #>);
+        }
+
+        public override bool Notify(IEnumerable<INotifiable> sources)
+        {
+            RenewProxyFunction();
+            return base.Notify(sources);
+        }
+
+        protected override void OnAttach()
+        {
+            RenewProxyFunction();
+            base.OnAttach();
         }
     }
 <#

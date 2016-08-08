@@ -17,17 +17,17 @@ namespace NMF.Expressions
     /// <summary>
     /// Represents an observable expression with <#= i #> input parameters
     /// </summary>
-	<# for(int j = 1; j <= i; j++) { #>
+    <# for(int j = 1; j <= i; j++) { #>
 /// <typeparam name="T<#= j #>">The type of the input parameter <#= j #></typeparam>
-	<# } #>
+    <# } #>
 public partial class ObservingFunc<<# for (int j = 1; j <= i; j++) { #>T<#= j #>, <# } #>TResult>
     {
         internal INotifyExpression<TResult> expression;
-		internal Func<<# for (int j = 1; j <= i; j++) { #>T<#= j #>, <# } #> TResult> compiled;
+        internal Func<<# for (int j = 1; j <= i; j++) { #>T<#= j #>, <# } #> TResult> compiled;
 <# for(int j = 1; j <= i; j++) { #>
-		internal string parameter<#= j #>Name;
+        internal string parameter<#= j #>Name;
 <# } #>
-	    internal bool isParameterFree;
+        internal bool isParameterFree;
 
         /// <summary>
         /// Creates a new observable expression for the given expression
@@ -37,12 +37,12 @@ public partial class ObservingFunc<<# for (int j = 1; j <= i; j++) { #>T<#= j #>
         {
             if (expression == null) throw new ArgumentNullException("expression");
 
-			compiled = expression.Compile();
-			
+            compiled = expression.Compile();
+            
 <# for(int j = 1; j <= i; j++) { #>
-		    this.parameter<#= j #>Name = expression.Parameters[<#= j-1 #>].Name;
+            this.parameter<#= j #>Name = expression.Parameters[<#= j-1 #>].Name;
 <# } #>
-	        this.expression = NotifySystem.CreateExpression<TResult>(expression.Body, expression.Parameters);
+            this.expression = NotifySystem.CreateExpression<TResult>(expression.Body, expression.Parameters);
             this.isParameterFree = this.expression.IsParameterFree;
         }
 
@@ -53,8 +53,8 @@ public partial class ObservingFunc<<# for (int j = 1; j <= i; j++) { #>T<#= j #>
         internal ObservingFunc(INotifyExpression<TResult> expression, bool isParameterFree)
         {
             if (expression == null) throw new ArgumentNullException("expression");
-			
-	        this.expression = expression;
+            
+            this.expression = expression;
             this.isParameterFree = isParameterFree;
         }
 
@@ -62,11 +62,11 @@ public partial class ObservingFunc<<# for (int j = 1; j <= i; j++) { #>T<#= j #>
         /// Invokes the expression
         /// </summary>
 <# for(int j = 1; j <= i; j++) { #>
-		/// <param name="in<#= j #>">The input parameter <#= j #></param>
+        /// <param name="in<#= j #>">The input parameter <#= j #></param>
 <# } #>
-		/// <returns>An observable value that keeps track of any changes</returns>
+        /// <returns>An observable value that keeps track of any changes</returns>
         [ObservableProxy(typeof(ObservingFunc<<# for (int j = 1; j <= i; j++) { #>,<# } #>>), "Observe")]
-		public TResult Evaluate(<# for (int j = 1; j < i; j++) { #>T<#= j #> in<#= j #>, <# } #>T<#= i #> in<#= i #>)
+        public TResult Evaluate(<# for (int j = 1; j < i; j++) { #>T<#= j #> in<#= j #>, <# } #>T<#= i #> in<#= i #>)
         {
             return compiled.Invoke(<# for (int j = 1; j < i; j++) { #>in<#= j #>, <# } #>in<#= i #>);
         }
@@ -75,47 +75,43 @@ public partial class ObservingFunc<<# for (int j = 1; j <= i; j++) { #>T<#= j #>
         /// Invokes the expression
         /// </summary>
 <# for(int j = 1; j <= i; j++) { #>
-		/// <param name="in<#= j #>">The input parameter <#= j #></param>
+        /// <param name="in<#= j #>">The input parameter <#= j #></param>
 <# } #>
-	    /// <returns>An observable value that keeps track of any changes</returns>
+        /// <returns>An observable value that keeps track of any changes</returns>
         public INotifyValue<TResult> Observe(<# for (int j = 1; j < i; j++) { #>T<#= j #> in<#= j #>, <# } #>T<#= i #> in<#= i #>)
         {
             if (isParameterFree)
-			{
-				expression.Attach();
-				return expression;
-			}
+            {
+                return expression;
+            }
             var parameters = new Dictionary<string, object>();
 <# for(int j = 1; j <= i; j++) { #>
-		    parameters.Add(parameter<#= j #>Name, in<#= j #>);
+            parameters.Add(parameter<#= j #>Name, in<#= j #>);
 <# } #>
-	        var result = expression.ApplyParameters(parameters);
-			result.Attach();
-			return result;
+            var result = expression.ApplyParameters(parameters);
+            return result;
         }
 
         /// <summary>
         /// Invokes the expression
         /// </summary>
 <# for(int j = 1; j <= i; j++) { #>
-		/// <param name="in<#= j #>">The input parameter <#= j #></param>
+        /// <param name="in<#= j #>">The input parameter <#= j #></param>
 <# } #>
-	    /// <returns>An observable value that keeps track of any changes</returns>
+        /// <returns>An observable value that keeps track of any changes</returns>
         public INotifyValue<TResult> Observe(<# for (int j = 1; j < i; j++) { #>INotifyValue<T<#= j #>> in<#= j #>, <# } #>INotifyValue<T<#= i #>> in<#= i #>)
         {
-		    var autoAttach = in1.IsAttached<# for (int j = 1; j < i; j++) { #> && in<#= j #>.IsAttached<# } #>;
+            var autoAttach = in1.IsAttached<# for (int j = 1; j < i; j++) { #> && in<#= j #>.IsAttached<# } #>;
             if (isParameterFree)
-			{
-				if (autoAttach) expression.Attach();
-				return expression;
-			}
+            {
+                return expression;
+            }
             var parameters = new Dictionary<string, object>();
 <# for(int j = 1; j <= i; j++) { #>
-		    parameters.Add(parameter<#= j #>Name, in<#= j #>);
+            parameters.Add(parameter<#= j #>Name, in<#= j #>);
 <# } #>
-	        var result = expression.ApplyParameters(parameters);
-			if (autoAttach) result.Attach();
-			return result;
+            var result = expression.ApplyParameters(parameters);
+            return result;
         }
 
 <# for(int k = 1; k < i; k++) { #>
@@ -123,30 +119,30 @@ public partial class ObservingFunc<<# for (int j = 1; j <= i; j++) { #>T<#= j #>
         /// Invokes the expression partially
         /// </summary>
 <# for(int j = 1; j <= k; j++) { #>
-		/// <param name="in<#= j #>">The input parameter <#= j #></param>
+        /// <param name="in<#= j #>">The input parameter <#= j #></param>
 <# } #>
-		/// <returns>An observable value that keeps track of any changes</returns>
+        /// <returns>An observable value that keeps track of any changes</returns>
         [ObservableProxy(typeof(ObservingFunc<<# for (int j = 1; j <= i; j++) { #>,<# } #>>), "ObservePartial")]
-		public Func<<# for (int j = k+1; j <= i; j++) { #>T<#= j #>, <# } #>TResult> EvaluatePartial(<# for (int j = 1; j < k; j++) { #>T<#= j #> in<#= j #>, <# } #>T<#= k #> in<#= k #>)
+        public Func<<# for (int j = k+1; j <= i; j++) { #>T<#= j #>, <# } #>TResult> EvaluatePartial(<# for (int j = 1; j < k; j++) { #>T<#= j #> in<#= j #>, <# } #>T<#= k #> in<#= k #>)
         {
-			return (<# for (int j = k+1; j < i; j++) { #>in<#= j #>, <# } #>in<#= i #>) => Evaluate(<# for (int j = 1; j < i; j++) { #>in<#= j #>, <# } #>in<#= i #>);
+            return (<# for (int j = k+1; j < i; j++) { #>in<#= j #>, <# } #>in<#= i #>) => Evaluate(<# for (int j = 1; j < i; j++) { #>in<#= j #>, <# } #>in<#= i #>);
         }
 
         /// <summary>
         /// Invokes the expression partially
         /// </summary>
 <# for(int j = 1; j <= k; j++) { #>
-		/// <param name="in<#= j #>">The input parameter <#= j #></param>
+        /// <param name="in<#= j #>">The input parameter <#= j #></param>
 <# } #>
-	    /// <returns>An observable value that keeps track of any changes</returns>
+        /// <returns>An observable value that keeps track of any changes</returns>
         public ObservingFunc<<# for (int j = k+1; j <= i; j++) { #>T<#= j #>, <# } #>TResult> ObservePartial(<# for (int j = 1; j < k; j++) { #>INotifyValue<T<#= j #>> in<#= j #>, <# } #>INotifyValue<T<#= k #>> in<#= k #>)
         {
             if (isParameterFree) return new ObservingFunc<<# for (int j = k+1; j <= i; j++) { #>T<#= j #>, <# } #>TResult>(expression, true);
             var parameters = new Dictionary<string, object>();
 <# for(int j = 1; j <= k; j++) { #>
-		    parameters.Add(parameter<#= j #>Name, in<#= j #>);
+            parameters.Add(parameter<#= j #>Name, in<#= j #>);
 <# } #>
-	        var result = expression.ApplyParameters(parameters);
+            var result = expression.ApplyParameters(parameters);
             return new ObservingFunc<<# for (int j = k+1; j <= i; j++) { #>T<#= j #>, <# } #>TResult>(result, result.IsParameterFree);
         }
 <# } #>
@@ -155,40 +151,36 @@ public partial class ObservingFunc<<# for (int j = 1; j <= i; j++) { #>T<#= j #>
         /// Invokes the expression
         /// </summary>
 <# for(int j = 1; j <= i; j++) { #>
-		/// <param name="in<#= j #>">The input parameter <#= j #></param>
+        /// <param name="in<#= j #>">The input parameter <#= j #></param>
 <# } #>
-	    /// <returns>An observable value that keeps track of any changes</returns>
+        /// <returns>An observable value that keeps track of any changes</returns>
         public virtual INotifyReversableValue<TResult> InvokeReversable(<# for (int j = 1; j < i; j++) { #>T<#= j #> in<#= j #>, <# } #>T<#= i #> in<#= i #>)
         {
             if (!IsReversable) throw new InvalidOperationException("Expression is not reversable");
             if (isParameterFree) return expression as INotifyReversableExpression<TResult>;
             var parameters = new Dictionary<string, object>();
 <# for(int j = 1; j <= i; j++) { #>
-		    parameters.Add(parameter<#= j #>Name, in<#= j #>);
+            parameters.Add(parameter<#= j #>Name, in<#= j #>);
 <# } #>
-	        var result = expression.ApplyParameters(parameters) as INotifyReversableExpression<TResult>;
-			result.Attach();
-			return result;
+            return expression.ApplyParameters(parameters) as INotifyReversableExpression<TResult>;
         }
 
         /// <summary>
         /// Invokes the expression
         /// </summary>
 <# for(int j = 1; j <= i; j++) { #>
-		/// <param name="in<#= j #>">The input parameter <#= j #></param>
+        /// <param name="in<#= j #>">The input parameter <#= j #></param>
 <# } #>
-	    /// <returns>An observable value that keeps track of any changes</returns>
+        /// <returns>An observable value that keeps track of any changes</returns>
         public virtual INotifyReversableValue<TResult> InvokeReversable(<# for (int j = 1; j < i; j++) { #>INotifyValue<T<#= j #>> in<#= j #>, <# } #>INotifyValue<T<#= i #>> in<#= i #>)
         {
             if (!IsReversable) throw new InvalidOperationException("Expression is not reversable");
             if (isParameterFree) return expression as INotifyReversableExpression<TResult>;
             var parameters = new Dictionary<string, object>();
 <# for(int j = 1; j <= i; j++) { #>
-		    parameters.Add(parameter<#= j #>Name, in<#= j #>);
+            parameters.Add(parameter<#= j #>Name, in<#= j #>);
 <# } #>
-	        var result = expression.ApplyParameters(parameters) as INotifyReversableExpression<TResult>;
-			result.Attach();
-			return result;
+            return expression.ApplyParameters(parameters) as INotifyReversableExpression<TResult>;
         }
 
 
@@ -210,7 +202,7 @@ public partial class ObservingFunc<<# for (int j = 1; j <= i; j++) { #>T<#= j #>
         /// <returns>An observable function</returns>
         public static ObservingFunc<<# for (int j = 1; j <= i; j++) { #>T<#= j #>, <# } #> TResult> FromExpression(Expression<Func<<# for (int j = 1; j <= i; j++) { #>T<#= j #>, <# } #> TResult>> expression)
         {
-		    if (expression == null) return null;
+            if (expression == null) return null;
             return new ObservingFunc<<# for (int j = 1; j <= i; j++) { #>T<#= j #>, <# } #> TResult>(expression);
         }
 

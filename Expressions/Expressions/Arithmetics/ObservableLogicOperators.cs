@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 
 namespace NMF.Expressions.Arithmetics
@@ -79,6 +80,8 @@ namespace NMF.Expressions.Arithmetics
 
     internal class ObservableLogicAndAlso : ObservableBinaryExpressionBase<bool, bool, bool>
     {
+        private bool leftValue;
+		
         protected override string Format
         {
             get
@@ -86,54 +89,56 @@ namespace NMF.Expressions.Arithmetics
                 return "({0} && {1})";
             }
         }
-
+		
         public ObservableLogicAndAlso(INotifyExpression<bool> left, INotifyExpression<bool> right)
             : base(left, right) { }
 
-        protected override void AttachCore()
+        public override ExpressionType NodeType
         {
-            Left.Attach();
-            if (Left.Value)
+            get { return ExpressionType.AndAlso; }
+        }
+
+        public override IEnumerable<INotifiable> Dependencies
+        {
+            get
             {
-                Right.Attach();
+                yield return Left;
+                if (leftValue)
+                    yield return Right;
             }
         }
-
-        protected override void DetachCore()
-        {
-            Left.Detach();
-            if (Right.IsAttached) Right.Detach();
-        }
-
+        
         protected override bool GetValue()
         {
-            if (!Left.Value) return false;
-            if (!Right.IsAttached) Right.Attach();
-            return Right.Value;
-        }
+            if (leftValue != Left.Value)
+            {
+                if (leftValue)
+                    Right.Successors.Remove(this);
+                else
+                    Right.Successors.Add(this);
+                leftValue = Left.Value;
+            }
 
-        protected override void LeftChanged(object sender, ValueChangedEventArgs e)
-        {
-            if (!IsAttached) return;
-            if (Left.Value)
-            {
-                Right.Attach();
-            }
-            else
-            {
-                Right.Detach();
-            }
-            Refresh();
+            if (!leftValue)
+                return false;
+            return Right.Value;
         }
 
         public override INotifyExpression<bool> ApplyParameters(IDictionary<string, object> parameters)
         {
             return new ObservableLogicAndAlso(Left.ApplyParameters(parameters), Right.ApplyParameters(parameters));
         }
+
+        protected override void OnAttach()
+        {
+            leftValue = Left.Value;
+        }
     }
 
     internal class ObservableLogicOrElse : ObservableBinaryExpressionBase<bool, bool, bool>
     {
+        private bool leftValue;
+		
         protected override string Format
         {
             get
@@ -141,49 +146,49 @@ namespace NMF.Expressions.Arithmetics
                 return "({0} || {1})";
             }
         }
-
+		
         public ObservableLogicOrElse(INotifyExpression<bool> left, INotifyExpression<bool> right)
             : base(left, right) { }
 
-        protected override void AttachCore()
+        public override ExpressionType NodeType
         {
-            Left.Attach();
-            if (!Left.Value)
-            {
-                Right.Attach();
-            }
+            get { return ExpressionType.OrElse; }
         }
 
-        protected override void DetachCore()
+        public override IEnumerable<INotifiable> Dependencies
         {
-            Left.Detach();
-            if (Right.IsAttached) Right.Detach();
+            get
+            {
+                yield return Left;
+                if (!leftValue)
+                    yield return Right;
+            }
         }
 
         protected override bool GetValue()
         {
-            if (Left.Value) return true;
-            if (!Right.IsAttached) Right.Attach();
-            return Right.Value;
-        }
+            if (leftValue != Left.Value)
+            {
+                if (leftValue)
+                    Right.Successors.Add(this);
+                else
+                    Right.Successors.Remove(this);
+                leftValue = Left.Value;
+            }
 
-        protected override void LeftChanged(object sender, ValueChangedEventArgs e)
-        {
-            if (!IsAttached) return;
-            if (Left.Value)
-            {
-                Right.Detach();
-            }
-            else
-            {
-                Right.Attach();
-            }
-            Refresh();
+            if (leftValue)
+                return true;
+            return Right.Value;
         }
 
         public override INotifyExpression<bool> ApplyParameters(IDictionary<string, object> parameters)
         {
             return new ObservableLogicOrElse(Left.ApplyParameters(parameters), Right.ApplyParameters(parameters));
+        }
+
+        protected override void OnAttach()
+        {
+            leftValue = Left.Value;
         }
     }
 

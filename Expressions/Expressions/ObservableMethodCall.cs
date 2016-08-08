@@ -8,7 +8,7 @@ using System.Text;
 
 namespace NMF.Expressions
 {
-	internal class ObservableMethodCall<T, TResult> : ObservableMethodBase<T, Func<TResult>, TResult>
+    internal class ObservableMethodCall<T, TResult> : ObservableMethodBase<T, Func<TResult>, TResult>
     {
         public ObservableMethodCall(MethodCallExpression node, ObservableExpressionBinder binder)
             : this(binder.VisitObservable<T>(node.Object), node.Method) { }
@@ -20,28 +20,11 @@ namespace NMF.Expressions
         }
 
 
-        protected override TResult GetValue()
-        {
-            return Function();
-        }
-
-        protected override void AttachCore()
-        {
-            base.AttachCore();
-            var argChanged = new EventHandler<ValueChangedEventArgs>(ArgumentChanged);
-        }
-
-        protected override void DetachCore()
-        {
-            base.DetachCore();
-            var argChanged = new EventHandler<ValueChangedEventArgs>(ArgumentChanged);
-        }
-
-        public override bool CanBeConstant
+        public override bool IsConstant
         {
             get
             {
-                return base.CanBeConstant;
+                return Target.IsConstant;
             }
         }
 
@@ -50,12 +33,25 @@ namespace NMF.Expressions
             get { return Target.IsParameterFree; }
         }
 
+        public override IEnumerable<INotifiable> Dependencies
+        {
+            get
+            {
+                yield return Target;
+            }
+        }
+
+        protected override TResult GetValue()
+        {
+            return Function();
+        }
+
         public override INotifyExpression<TResult> ApplyParameters(IDictionary<string, object> parameters)
         {
             return new ObservableMethodCall<T, TResult>(Target.ApplyParameters(parameters), Method);
         }
     }
-	internal class ObservableMethodCall<T, T1, TResult> : ObservableMethodBase<T, Func<T1, TResult>, TResult>
+    internal class ObservableMethodCall<T, T1, TResult> : ObservableMethodBase<T, Func<T1, TResult>, TResult>
     {
         public ObservableMethodCall(MethodCallExpression node, ObservableExpressionBinder binder)
             : this(binder.VisitObservable<T>(node.Object), node.Method, binder.VisitObservable<T1>(node.Arguments[0])) { }
@@ -70,32 +66,11 @@ namespace NMF.Expressions
 
         public INotifyExpression<T1> Argument1 { get; private set; }
 
-        protected override TResult GetValue()
-        {
-            return Function(Argument1.Value);
-        }
-
-        protected override void AttachCore()
-        {
-            base.AttachCore();
-            var argChanged = new EventHandler<ValueChangedEventArgs>(ArgumentChanged);
-            Argument1.Attach();
-            Argument1.ValueChanged += argChanged;
-        }
-
-        protected override void DetachCore()
-        {
-            base.DetachCore();
-            var argChanged = new EventHandler<ValueChangedEventArgs>(ArgumentChanged);
-            Argument1.ValueChanged -= argChanged;
-            Argument1.Detach();
-        }
-
-        public override bool CanBeConstant
+        public override bool IsConstant
         {
             get
             {
-                return base.CanBeConstant && Argument1.IsConstant;
+                return Target.IsConstant && Argument1.IsConstant;
             }
         }
 
@@ -104,12 +79,26 @@ namespace NMF.Expressions
             get { return Target.IsParameterFree && Argument1.IsParameterFree; }
         }
 
+        public override IEnumerable<INotifiable> Dependencies
+        {
+            get
+            {
+                yield return Target;
+                yield return Argument1;
+            }
+        }
+
+        protected override TResult GetValue()
+        {
+            return Function(Argument1.Value);
+        }
+
         public override INotifyExpression<TResult> ApplyParameters(IDictionary<string, object> parameters)
         {
             return new ObservableMethodCall<T, T1, TResult>(Target.ApplyParameters(parameters), Method, Argument1.ApplyParameters(parameters));
         }
     }
-	internal class ObservableMethodCall<T, T1, T2, TResult> : ObservableMethodBase<T, Func<T1, T2, TResult>, TResult>
+    internal class ObservableMethodCall<T, T1, T2, TResult> : ObservableMethodBase<T, Func<T1, T2, TResult>, TResult>
     {
         public ObservableMethodCall(MethodCallExpression node, ObservableExpressionBinder binder)
             : this(binder.VisitObservable<T>(node.Object), node.Method, binder.VisitObservable<T1>(node.Arguments[0]), binder.VisitObservable<T2>(node.Arguments[1])) { }
@@ -127,36 +116,11 @@ namespace NMF.Expressions
         public INotifyExpression<T1> Argument1 { get; private set; }
         public INotifyExpression<T2> Argument2 { get; private set; }
 
-        protected override TResult GetValue()
-        {
-            return Function(Argument1.Value, Argument2.Value);
-        }
-
-        protected override void AttachCore()
-        {
-            base.AttachCore();
-            var argChanged = new EventHandler<ValueChangedEventArgs>(ArgumentChanged);
-            Argument1.Attach();
-            Argument1.ValueChanged += argChanged;
-            Argument2.Attach();
-            Argument2.ValueChanged += argChanged;
-        }
-
-        protected override void DetachCore()
-        {
-            base.DetachCore();
-            var argChanged = new EventHandler<ValueChangedEventArgs>(ArgumentChanged);
-            Argument1.ValueChanged -= argChanged;
-            Argument1.Detach();
-            Argument2.ValueChanged -= argChanged;
-            Argument2.Detach();
-        }
-
-        public override bool CanBeConstant
+        public override bool IsConstant
         {
             get
             {
-                return base.CanBeConstant && Argument1.IsConstant && Argument2.IsConstant;
+                return Target.IsConstant && Argument1.IsConstant && Argument2.IsConstant;
             }
         }
 
@@ -165,12 +129,27 @@ namespace NMF.Expressions
             get { return Target.IsParameterFree && Argument1.IsParameterFree && Argument2.IsParameterFree; }
         }
 
+        public override IEnumerable<INotifiable> Dependencies
+        {
+            get
+            {
+                yield return Target;
+                yield return Argument1;
+                yield return Argument2;
+            }
+        }
+
+        protected override TResult GetValue()
+        {
+            return Function(Argument1.Value, Argument2.Value);
+        }
+
         public override INotifyExpression<TResult> ApplyParameters(IDictionary<string, object> parameters)
         {
             return new ObservableMethodCall<T, T1, T2, TResult>(Target.ApplyParameters(parameters), Method, Argument1.ApplyParameters(parameters), Argument2.ApplyParameters(parameters));
         }
     }
-	internal class ObservableMethodCall<T, T1, T2, T3, TResult> : ObservableMethodBase<T, Func<T1, T2, T3, TResult>, TResult>
+    internal class ObservableMethodCall<T, T1, T2, T3, TResult> : ObservableMethodBase<T, Func<T1, T2, T3, TResult>, TResult>
     {
         public ObservableMethodCall(MethodCallExpression node, ObservableExpressionBinder binder)
             : this(binder.VisitObservable<T>(node.Object), node.Method, binder.VisitObservable<T1>(node.Arguments[0]), binder.VisitObservable<T2>(node.Arguments[1]), binder.VisitObservable<T3>(node.Arguments[2])) { }
@@ -191,40 +170,11 @@ namespace NMF.Expressions
         public INotifyExpression<T2> Argument2 { get; private set; }
         public INotifyExpression<T3> Argument3 { get; private set; }
 
-        protected override TResult GetValue()
-        {
-            return Function(Argument1.Value, Argument2.Value, Argument3.Value);
-        }
-
-        protected override void AttachCore()
-        {
-            base.AttachCore();
-            var argChanged = new EventHandler<ValueChangedEventArgs>(ArgumentChanged);
-            Argument1.Attach();
-            Argument1.ValueChanged += argChanged;
-            Argument2.Attach();
-            Argument2.ValueChanged += argChanged;
-            Argument3.Attach();
-            Argument3.ValueChanged += argChanged;
-        }
-
-        protected override void DetachCore()
-        {
-            base.DetachCore();
-            var argChanged = new EventHandler<ValueChangedEventArgs>(ArgumentChanged);
-            Argument1.ValueChanged -= argChanged;
-            Argument1.Detach();
-            Argument2.ValueChanged -= argChanged;
-            Argument2.Detach();
-            Argument3.ValueChanged -= argChanged;
-            Argument3.Detach();
-        }
-
-        public override bool CanBeConstant
+        public override bool IsConstant
         {
             get
             {
-                return base.CanBeConstant && Argument1.IsConstant && Argument2.IsConstant && Argument3.IsConstant;
+                return Target.IsConstant && Argument1.IsConstant && Argument2.IsConstant && Argument3.IsConstant;
             }
         }
 
@@ -233,12 +183,28 @@ namespace NMF.Expressions
             get { return Target.IsParameterFree && Argument1.IsParameterFree && Argument2.IsParameterFree && Argument3.IsParameterFree; }
         }
 
+        public override IEnumerable<INotifiable> Dependencies
+        {
+            get
+            {
+                yield return Target;
+                yield return Argument1;
+                yield return Argument2;
+                yield return Argument3;
+            }
+        }
+
+        protected override TResult GetValue()
+        {
+            return Function(Argument1.Value, Argument2.Value, Argument3.Value);
+        }
+
         public override INotifyExpression<TResult> ApplyParameters(IDictionary<string, object> parameters)
         {
             return new ObservableMethodCall<T, T1, T2, T3, TResult>(Target.ApplyParameters(parameters), Method, Argument1.ApplyParameters(parameters), Argument2.ApplyParameters(parameters), Argument3.ApplyParameters(parameters));
         }
     }
-	internal class ObservableMethodCall<T, T1, T2, T3, T4, TResult> : ObservableMethodBase<T, Func<T1, T2, T3, T4, TResult>, TResult>
+    internal class ObservableMethodCall<T, T1, T2, T3, T4, TResult> : ObservableMethodBase<T, Func<T1, T2, T3, T4, TResult>, TResult>
     {
         public ObservableMethodCall(MethodCallExpression node, ObservableExpressionBinder binder)
             : this(binder.VisitObservable<T>(node.Object), node.Method, binder.VisitObservable<T1>(node.Arguments[0]), binder.VisitObservable<T2>(node.Arguments[1]), binder.VisitObservable<T3>(node.Arguments[2]), binder.VisitObservable<T4>(node.Arguments[3])) { }
@@ -262,44 +228,11 @@ namespace NMF.Expressions
         public INotifyExpression<T3> Argument3 { get; private set; }
         public INotifyExpression<T4> Argument4 { get; private set; }
 
-        protected override TResult GetValue()
-        {
-            return Function(Argument1.Value, Argument2.Value, Argument3.Value, Argument4.Value);
-        }
-
-        protected override void AttachCore()
-        {
-            base.AttachCore();
-            var argChanged = new EventHandler<ValueChangedEventArgs>(ArgumentChanged);
-            Argument1.Attach();
-            Argument1.ValueChanged += argChanged;
-            Argument2.Attach();
-            Argument2.ValueChanged += argChanged;
-            Argument3.Attach();
-            Argument3.ValueChanged += argChanged;
-            Argument4.Attach();
-            Argument4.ValueChanged += argChanged;
-        }
-
-        protected override void DetachCore()
-        {
-            base.DetachCore();
-            var argChanged = new EventHandler<ValueChangedEventArgs>(ArgumentChanged);
-            Argument1.ValueChanged -= argChanged;
-            Argument1.Detach();
-            Argument2.ValueChanged -= argChanged;
-            Argument2.Detach();
-            Argument3.ValueChanged -= argChanged;
-            Argument3.Detach();
-            Argument4.ValueChanged -= argChanged;
-            Argument4.Detach();
-        }
-
-        public override bool CanBeConstant
+        public override bool IsConstant
         {
             get
             {
-                return base.CanBeConstant && Argument1.IsConstant && Argument2.IsConstant && Argument3.IsConstant && Argument4.IsConstant;
+                return Target.IsConstant && Argument1.IsConstant && Argument2.IsConstant && Argument3.IsConstant && Argument4.IsConstant;
             }
         }
 
@@ -308,12 +241,29 @@ namespace NMF.Expressions
             get { return Target.IsParameterFree && Argument1.IsParameterFree && Argument2.IsParameterFree && Argument3.IsParameterFree && Argument4.IsParameterFree; }
         }
 
+        public override IEnumerable<INotifiable> Dependencies
+        {
+            get
+            {
+                yield return Target;
+                yield return Argument1;
+                yield return Argument2;
+                yield return Argument3;
+                yield return Argument4;
+            }
+        }
+
+        protected override TResult GetValue()
+        {
+            return Function(Argument1.Value, Argument2.Value, Argument3.Value, Argument4.Value);
+        }
+
         public override INotifyExpression<TResult> ApplyParameters(IDictionary<string, object> parameters)
         {
             return new ObservableMethodCall<T, T1, T2, T3, T4, TResult>(Target.ApplyParameters(parameters), Method, Argument1.ApplyParameters(parameters), Argument2.ApplyParameters(parameters), Argument3.ApplyParameters(parameters), Argument4.ApplyParameters(parameters));
         }
     }
-	internal class ObservableMethodCall<T, T1, T2, T3, T4, T5, TResult> : ObservableMethodBase<T, Func<T1, T2, T3, T4, T5, TResult>, TResult>
+    internal class ObservableMethodCall<T, T1, T2, T3, T4, T5, TResult> : ObservableMethodBase<T, Func<T1, T2, T3, T4, T5, TResult>, TResult>
     {
         public ObservableMethodCall(MethodCallExpression node, ObservableExpressionBinder binder)
             : this(binder.VisitObservable<T>(node.Object), node.Method, binder.VisitObservable<T1>(node.Arguments[0]), binder.VisitObservable<T2>(node.Arguments[1]), binder.VisitObservable<T3>(node.Arguments[2]), binder.VisitObservable<T4>(node.Arguments[3]), binder.VisitObservable<T5>(node.Arguments[4])) { }
@@ -340,48 +290,11 @@ namespace NMF.Expressions
         public INotifyExpression<T4> Argument4 { get; private set; }
         public INotifyExpression<T5> Argument5 { get; private set; }
 
-        protected override TResult GetValue()
-        {
-            return Function(Argument1.Value, Argument2.Value, Argument3.Value, Argument4.Value, Argument5.Value);
-        }
-
-        protected override void AttachCore()
-        {
-            base.AttachCore();
-            var argChanged = new EventHandler<ValueChangedEventArgs>(ArgumentChanged);
-            Argument1.Attach();
-            Argument1.ValueChanged += argChanged;
-            Argument2.Attach();
-            Argument2.ValueChanged += argChanged;
-            Argument3.Attach();
-            Argument3.ValueChanged += argChanged;
-            Argument4.Attach();
-            Argument4.ValueChanged += argChanged;
-            Argument5.Attach();
-            Argument5.ValueChanged += argChanged;
-        }
-
-        protected override void DetachCore()
-        {
-            base.DetachCore();
-            var argChanged = new EventHandler<ValueChangedEventArgs>(ArgumentChanged);
-            Argument1.ValueChanged -= argChanged;
-            Argument1.Detach();
-            Argument2.ValueChanged -= argChanged;
-            Argument2.Detach();
-            Argument3.ValueChanged -= argChanged;
-            Argument3.Detach();
-            Argument4.ValueChanged -= argChanged;
-            Argument4.Detach();
-            Argument5.ValueChanged -= argChanged;
-            Argument5.Detach();
-        }
-
-        public override bool CanBeConstant
+        public override bool IsConstant
         {
             get
             {
-                return base.CanBeConstant && Argument1.IsConstant && Argument2.IsConstant && Argument3.IsConstant && Argument4.IsConstant && Argument5.IsConstant;
+                return Target.IsConstant && Argument1.IsConstant && Argument2.IsConstant && Argument3.IsConstant && Argument4.IsConstant && Argument5.IsConstant;
             }
         }
 
@@ -390,12 +303,30 @@ namespace NMF.Expressions
             get { return Target.IsParameterFree && Argument1.IsParameterFree && Argument2.IsParameterFree && Argument3.IsParameterFree && Argument4.IsParameterFree && Argument5.IsParameterFree; }
         }
 
+        public override IEnumerable<INotifiable> Dependencies
+        {
+            get
+            {
+                yield return Target;
+                yield return Argument1;
+                yield return Argument2;
+                yield return Argument3;
+                yield return Argument4;
+                yield return Argument5;
+            }
+        }
+
+        protected override TResult GetValue()
+        {
+            return Function(Argument1.Value, Argument2.Value, Argument3.Value, Argument4.Value, Argument5.Value);
+        }
+
         public override INotifyExpression<TResult> ApplyParameters(IDictionary<string, object> parameters)
         {
             return new ObservableMethodCall<T, T1, T2, T3, T4, T5, TResult>(Target.ApplyParameters(parameters), Method, Argument1.ApplyParameters(parameters), Argument2.ApplyParameters(parameters), Argument3.ApplyParameters(parameters), Argument4.ApplyParameters(parameters), Argument5.ApplyParameters(parameters));
         }
     }
-	internal class ObservableMethodCall<T, T1, T2, T3, T4, T5, T6, TResult> : ObservableMethodBase<T, Func<T1, T2, T3, T4, T5, T6, TResult>, TResult>
+    internal class ObservableMethodCall<T, T1, T2, T3, T4, T5, T6, TResult> : ObservableMethodBase<T, Func<T1, T2, T3, T4, T5, T6, TResult>, TResult>
     {
         public ObservableMethodCall(MethodCallExpression node, ObservableExpressionBinder binder)
             : this(binder.VisitObservable<T>(node.Object), node.Method, binder.VisitObservable<T1>(node.Arguments[0]), binder.VisitObservable<T2>(node.Arguments[1]), binder.VisitObservable<T3>(node.Arguments[2]), binder.VisitObservable<T4>(node.Arguments[3]), binder.VisitObservable<T5>(node.Arguments[4]), binder.VisitObservable<T6>(node.Arguments[5])) { }
@@ -425,52 +356,11 @@ namespace NMF.Expressions
         public INotifyExpression<T5> Argument5 { get; private set; }
         public INotifyExpression<T6> Argument6 { get; private set; }
 
-        protected override TResult GetValue()
-        {
-            return Function(Argument1.Value, Argument2.Value, Argument3.Value, Argument4.Value, Argument5.Value, Argument6.Value);
-        }
-
-        protected override void AttachCore()
-        {
-            base.AttachCore();
-            var argChanged = new EventHandler<ValueChangedEventArgs>(ArgumentChanged);
-            Argument1.Attach();
-            Argument1.ValueChanged += argChanged;
-            Argument2.Attach();
-            Argument2.ValueChanged += argChanged;
-            Argument3.Attach();
-            Argument3.ValueChanged += argChanged;
-            Argument4.Attach();
-            Argument4.ValueChanged += argChanged;
-            Argument5.Attach();
-            Argument5.ValueChanged += argChanged;
-            Argument6.Attach();
-            Argument6.ValueChanged += argChanged;
-        }
-
-        protected override void DetachCore()
-        {
-            base.DetachCore();
-            var argChanged = new EventHandler<ValueChangedEventArgs>(ArgumentChanged);
-            Argument1.ValueChanged -= argChanged;
-            Argument1.Detach();
-            Argument2.ValueChanged -= argChanged;
-            Argument2.Detach();
-            Argument3.ValueChanged -= argChanged;
-            Argument3.Detach();
-            Argument4.ValueChanged -= argChanged;
-            Argument4.Detach();
-            Argument5.ValueChanged -= argChanged;
-            Argument5.Detach();
-            Argument6.ValueChanged -= argChanged;
-            Argument6.Detach();
-        }
-
-        public override bool CanBeConstant
+        public override bool IsConstant
         {
             get
             {
-                return base.CanBeConstant && Argument1.IsConstant && Argument2.IsConstant && Argument3.IsConstant && Argument4.IsConstant && Argument5.IsConstant && Argument6.IsConstant;
+                return Target.IsConstant && Argument1.IsConstant && Argument2.IsConstant && Argument3.IsConstant && Argument4.IsConstant && Argument5.IsConstant && Argument6.IsConstant;
             }
         }
 
@@ -479,12 +369,31 @@ namespace NMF.Expressions
             get { return Target.IsParameterFree && Argument1.IsParameterFree && Argument2.IsParameterFree && Argument3.IsParameterFree && Argument4.IsParameterFree && Argument5.IsParameterFree && Argument6.IsParameterFree; }
         }
 
+        public override IEnumerable<INotifiable> Dependencies
+        {
+            get
+            {
+                yield return Target;
+                yield return Argument1;
+                yield return Argument2;
+                yield return Argument3;
+                yield return Argument4;
+                yield return Argument5;
+                yield return Argument6;
+            }
+        }
+
+        protected override TResult GetValue()
+        {
+            return Function(Argument1.Value, Argument2.Value, Argument3.Value, Argument4.Value, Argument5.Value, Argument6.Value);
+        }
+
         public override INotifyExpression<TResult> ApplyParameters(IDictionary<string, object> parameters)
         {
             return new ObservableMethodCall<T, T1, T2, T3, T4, T5, T6, TResult>(Target.ApplyParameters(parameters), Method, Argument1.ApplyParameters(parameters), Argument2.ApplyParameters(parameters), Argument3.ApplyParameters(parameters), Argument4.ApplyParameters(parameters), Argument5.ApplyParameters(parameters), Argument6.ApplyParameters(parameters));
         }
     }
-	internal class ObservableMethodCall<T, T1, T2, T3, T4, T5, T6, T7, TResult> : ObservableMethodBase<T, Func<T1, T2, T3, T4, T5, T6, T7, TResult>, TResult>
+    internal class ObservableMethodCall<T, T1, T2, T3, T4, T5, T6, T7, TResult> : ObservableMethodBase<T, Func<T1, T2, T3, T4, T5, T6, T7, TResult>, TResult>
     {
         public ObservableMethodCall(MethodCallExpression node, ObservableExpressionBinder binder)
             : this(binder.VisitObservable<T>(node.Object), node.Method, binder.VisitObservable<T1>(node.Arguments[0]), binder.VisitObservable<T2>(node.Arguments[1]), binder.VisitObservable<T3>(node.Arguments[2]), binder.VisitObservable<T4>(node.Arguments[3]), binder.VisitObservable<T5>(node.Arguments[4]), binder.VisitObservable<T6>(node.Arguments[5]), binder.VisitObservable<T7>(node.Arguments[6])) { }
@@ -517,56 +426,11 @@ namespace NMF.Expressions
         public INotifyExpression<T6> Argument6 { get; private set; }
         public INotifyExpression<T7> Argument7 { get; private set; }
 
-        protected override TResult GetValue()
-        {
-            return Function(Argument1.Value, Argument2.Value, Argument3.Value, Argument4.Value, Argument5.Value, Argument6.Value, Argument7.Value);
-        }
-
-        protected override void AttachCore()
-        {
-            base.AttachCore();
-            var argChanged = new EventHandler<ValueChangedEventArgs>(ArgumentChanged);
-            Argument1.Attach();
-            Argument1.ValueChanged += argChanged;
-            Argument2.Attach();
-            Argument2.ValueChanged += argChanged;
-            Argument3.Attach();
-            Argument3.ValueChanged += argChanged;
-            Argument4.Attach();
-            Argument4.ValueChanged += argChanged;
-            Argument5.Attach();
-            Argument5.ValueChanged += argChanged;
-            Argument6.Attach();
-            Argument6.ValueChanged += argChanged;
-            Argument7.Attach();
-            Argument7.ValueChanged += argChanged;
-        }
-
-        protected override void DetachCore()
-        {
-            base.DetachCore();
-            var argChanged = new EventHandler<ValueChangedEventArgs>(ArgumentChanged);
-            Argument1.ValueChanged -= argChanged;
-            Argument1.Detach();
-            Argument2.ValueChanged -= argChanged;
-            Argument2.Detach();
-            Argument3.ValueChanged -= argChanged;
-            Argument3.Detach();
-            Argument4.ValueChanged -= argChanged;
-            Argument4.Detach();
-            Argument5.ValueChanged -= argChanged;
-            Argument5.Detach();
-            Argument6.ValueChanged -= argChanged;
-            Argument6.Detach();
-            Argument7.ValueChanged -= argChanged;
-            Argument7.Detach();
-        }
-
-        public override bool CanBeConstant
+        public override bool IsConstant
         {
             get
             {
-                return base.CanBeConstant && Argument1.IsConstant && Argument2.IsConstant && Argument3.IsConstant && Argument4.IsConstant && Argument5.IsConstant && Argument6.IsConstant && Argument7.IsConstant;
+                return Target.IsConstant && Argument1.IsConstant && Argument2.IsConstant && Argument3.IsConstant && Argument4.IsConstant && Argument5.IsConstant && Argument6.IsConstant && Argument7.IsConstant;
             }
         }
 
@@ -575,12 +439,32 @@ namespace NMF.Expressions
             get { return Target.IsParameterFree && Argument1.IsParameterFree && Argument2.IsParameterFree && Argument3.IsParameterFree && Argument4.IsParameterFree && Argument5.IsParameterFree && Argument6.IsParameterFree && Argument7.IsParameterFree; }
         }
 
+        public override IEnumerable<INotifiable> Dependencies
+        {
+            get
+            {
+                yield return Target;
+                yield return Argument1;
+                yield return Argument2;
+                yield return Argument3;
+                yield return Argument4;
+                yield return Argument5;
+                yield return Argument6;
+                yield return Argument7;
+            }
+        }
+
+        protected override TResult GetValue()
+        {
+            return Function(Argument1.Value, Argument2.Value, Argument3.Value, Argument4.Value, Argument5.Value, Argument6.Value, Argument7.Value);
+        }
+
         public override INotifyExpression<TResult> ApplyParameters(IDictionary<string, object> parameters)
         {
             return new ObservableMethodCall<T, T1, T2, T3, T4, T5, T6, T7, TResult>(Target.ApplyParameters(parameters), Method, Argument1.ApplyParameters(parameters), Argument2.ApplyParameters(parameters), Argument3.ApplyParameters(parameters), Argument4.ApplyParameters(parameters), Argument5.ApplyParameters(parameters), Argument6.ApplyParameters(parameters), Argument7.ApplyParameters(parameters));
         }
     }
-	internal class ObservableMethodCall<T, T1, T2, T3, T4, T5, T6, T7, T8, TResult> : ObservableMethodBase<T, Func<T1, T2, T3, T4, T5, T6, T7, T8, TResult>, TResult>
+    internal class ObservableMethodCall<T, T1, T2, T3, T4, T5, T6, T7, T8, TResult> : ObservableMethodBase<T, Func<T1, T2, T3, T4, T5, T6, T7, T8, TResult>, TResult>
     {
         public ObservableMethodCall(MethodCallExpression node, ObservableExpressionBinder binder)
             : this(binder.VisitObservable<T>(node.Object), node.Method, binder.VisitObservable<T1>(node.Arguments[0]), binder.VisitObservable<T2>(node.Arguments[1]), binder.VisitObservable<T3>(node.Arguments[2]), binder.VisitObservable<T4>(node.Arguments[3]), binder.VisitObservable<T5>(node.Arguments[4]), binder.VisitObservable<T6>(node.Arguments[5]), binder.VisitObservable<T7>(node.Arguments[6]), binder.VisitObservable<T8>(node.Arguments[7])) { }
@@ -616,60 +500,11 @@ namespace NMF.Expressions
         public INotifyExpression<T7> Argument7 { get; private set; }
         public INotifyExpression<T8> Argument8 { get; private set; }
 
-        protected override TResult GetValue()
-        {
-            return Function(Argument1.Value, Argument2.Value, Argument3.Value, Argument4.Value, Argument5.Value, Argument6.Value, Argument7.Value, Argument8.Value);
-        }
-
-        protected override void AttachCore()
-        {
-            base.AttachCore();
-            var argChanged = new EventHandler<ValueChangedEventArgs>(ArgumentChanged);
-            Argument1.Attach();
-            Argument1.ValueChanged += argChanged;
-            Argument2.Attach();
-            Argument2.ValueChanged += argChanged;
-            Argument3.Attach();
-            Argument3.ValueChanged += argChanged;
-            Argument4.Attach();
-            Argument4.ValueChanged += argChanged;
-            Argument5.Attach();
-            Argument5.ValueChanged += argChanged;
-            Argument6.Attach();
-            Argument6.ValueChanged += argChanged;
-            Argument7.Attach();
-            Argument7.ValueChanged += argChanged;
-            Argument8.Attach();
-            Argument8.ValueChanged += argChanged;
-        }
-
-        protected override void DetachCore()
-        {
-            base.DetachCore();
-            var argChanged = new EventHandler<ValueChangedEventArgs>(ArgumentChanged);
-            Argument1.ValueChanged -= argChanged;
-            Argument1.Detach();
-            Argument2.ValueChanged -= argChanged;
-            Argument2.Detach();
-            Argument3.ValueChanged -= argChanged;
-            Argument3.Detach();
-            Argument4.ValueChanged -= argChanged;
-            Argument4.Detach();
-            Argument5.ValueChanged -= argChanged;
-            Argument5.Detach();
-            Argument6.ValueChanged -= argChanged;
-            Argument6.Detach();
-            Argument7.ValueChanged -= argChanged;
-            Argument7.Detach();
-            Argument8.ValueChanged -= argChanged;
-            Argument8.Detach();
-        }
-
-        public override bool CanBeConstant
+        public override bool IsConstant
         {
             get
             {
-                return base.CanBeConstant && Argument1.IsConstant && Argument2.IsConstant && Argument3.IsConstant && Argument4.IsConstant && Argument5.IsConstant && Argument6.IsConstant && Argument7.IsConstant && Argument8.IsConstant;
+                return Target.IsConstant && Argument1.IsConstant && Argument2.IsConstant && Argument3.IsConstant && Argument4.IsConstant && Argument5.IsConstant && Argument6.IsConstant && Argument7.IsConstant && Argument8.IsConstant;
             }
         }
 
@@ -678,12 +513,33 @@ namespace NMF.Expressions
             get { return Target.IsParameterFree && Argument1.IsParameterFree && Argument2.IsParameterFree && Argument3.IsParameterFree && Argument4.IsParameterFree && Argument5.IsParameterFree && Argument6.IsParameterFree && Argument7.IsParameterFree && Argument8.IsParameterFree; }
         }
 
+        public override IEnumerable<INotifiable> Dependencies
+        {
+            get
+            {
+                yield return Target;
+                yield return Argument1;
+                yield return Argument2;
+                yield return Argument3;
+                yield return Argument4;
+                yield return Argument5;
+                yield return Argument6;
+                yield return Argument7;
+                yield return Argument8;
+            }
+        }
+
+        protected override TResult GetValue()
+        {
+            return Function(Argument1.Value, Argument2.Value, Argument3.Value, Argument4.Value, Argument5.Value, Argument6.Value, Argument7.Value, Argument8.Value);
+        }
+
         public override INotifyExpression<TResult> ApplyParameters(IDictionary<string, object> parameters)
         {
             return new ObservableMethodCall<T, T1, T2, T3, T4, T5, T6, T7, T8, TResult>(Target.ApplyParameters(parameters), Method, Argument1.ApplyParameters(parameters), Argument2.ApplyParameters(parameters), Argument3.ApplyParameters(parameters), Argument4.ApplyParameters(parameters), Argument5.ApplyParameters(parameters), Argument6.ApplyParameters(parameters), Argument7.ApplyParameters(parameters), Argument8.ApplyParameters(parameters));
         }
     }
-	internal class ObservableMethodCall<T, T1, T2, T3, T4, T5, T6, T7, T8, T9, TResult> : ObservableMethodBase<T, Func<T1, T2, T3, T4, T5, T6, T7, T8, T9, TResult>, TResult>
+    internal class ObservableMethodCall<T, T1, T2, T3, T4, T5, T6, T7, T8, T9, TResult> : ObservableMethodBase<T, Func<T1, T2, T3, T4, T5, T6, T7, T8, T9, TResult>, TResult>
     {
         public ObservableMethodCall(MethodCallExpression node, ObservableExpressionBinder binder)
             : this(binder.VisitObservable<T>(node.Object), node.Method, binder.VisitObservable<T1>(node.Arguments[0]), binder.VisitObservable<T2>(node.Arguments[1]), binder.VisitObservable<T3>(node.Arguments[2]), binder.VisitObservable<T4>(node.Arguments[3]), binder.VisitObservable<T5>(node.Arguments[4]), binder.VisitObservable<T6>(node.Arguments[5]), binder.VisitObservable<T7>(node.Arguments[6]), binder.VisitObservable<T8>(node.Arguments[7]), binder.VisitObservable<T9>(node.Arguments[8])) { }
@@ -722,64 +578,11 @@ namespace NMF.Expressions
         public INotifyExpression<T8> Argument8 { get; private set; }
         public INotifyExpression<T9> Argument9 { get; private set; }
 
-        protected override TResult GetValue()
-        {
-            return Function(Argument1.Value, Argument2.Value, Argument3.Value, Argument4.Value, Argument5.Value, Argument6.Value, Argument7.Value, Argument8.Value, Argument9.Value);
-        }
-
-        protected override void AttachCore()
-        {
-            base.AttachCore();
-            var argChanged = new EventHandler<ValueChangedEventArgs>(ArgumentChanged);
-            Argument1.Attach();
-            Argument1.ValueChanged += argChanged;
-            Argument2.Attach();
-            Argument2.ValueChanged += argChanged;
-            Argument3.Attach();
-            Argument3.ValueChanged += argChanged;
-            Argument4.Attach();
-            Argument4.ValueChanged += argChanged;
-            Argument5.Attach();
-            Argument5.ValueChanged += argChanged;
-            Argument6.Attach();
-            Argument6.ValueChanged += argChanged;
-            Argument7.Attach();
-            Argument7.ValueChanged += argChanged;
-            Argument8.Attach();
-            Argument8.ValueChanged += argChanged;
-            Argument9.Attach();
-            Argument9.ValueChanged += argChanged;
-        }
-
-        protected override void DetachCore()
-        {
-            base.DetachCore();
-            var argChanged = new EventHandler<ValueChangedEventArgs>(ArgumentChanged);
-            Argument1.ValueChanged -= argChanged;
-            Argument1.Detach();
-            Argument2.ValueChanged -= argChanged;
-            Argument2.Detach();
-            Argument3.ValueChanged -= argChanged;
-            Argument3.Detach();
-            Argument4.ValueChanged -= argChanged;
-            Argument4.Detach();
-            Argument5.ValueChanged -= argChanged;
-            Argument5.Detach();
-            Argument6.ValueChanged -= argChanged;
-            Argument6.Detach();
-            Argument7.ValueChanged -= argChanged;
-            Argument7.Detach();
-            Argument8.ValueChanged -= argChanged;
-            Argument8.Detach();
-            Argument9.ValueChanged -= argChanged;
-            Argument9.Detach();
-        }
-
-        public override bool CanBeConstant
+        public override bool IsConstant
         {
             get
             {
-                return base.CanBeConstant && Argument1.IsConstant && Argument2.IsConstant && Argument3.IsConstant && Argument4.IsConstant && Argument5.IsConstant && Argument6.IsConstant && Argument7.IsConstant && Argument8.IsConstant && Argument9.IsConstant;
+                return Target.IsConstant && Argument1.IsConstant && Argument2.IsConstant && Argument3.IsConstant && Argument4.IsConstant && Argument5.IsConstant && Argument6.IsConstant && Argument7.IsConstant && Argument8.IsConstant && Argument9.IsConstant;
             }
         }
 
@@ -788,12 +591,34 @@ namespace NMF.Expressions
             get { return Target.IsParameterFree && Argument1.IsParameterFree && Argument2.IsParameterFree && Argument3.IsParameterFree && Argument4.IsParameterFree && Argument5.IsParameterFree && Argument6.IsParameterFree && Argument7.IsParameterFree && Argument8.IsParameterFree && Argument9.IsParameterFree; }
         }
 
+        public override IEnumerable<INotifiable> Dependencies
+        {
+            get
+            {
+                yield return Target;
+                yield return Argument1;
+                yield return Argument2;
+                yield return Argument3;
+                yield return Argument4;
+                yield return Argument5;
+                yield return Argument6;
+                yield return Argument7;
+                yield return Argument8;
+                yield return Argument9;
+            }
+        }
+
+        protected override TResult GetValue()
+        {
+            return Function(Argument1.Value, Argument2.Value, Argument3.Value, Argument4.Value, Argument5.Value, Argument6.Value, Argument7.Value, Argument8.Value, Argument9.Value);
+        }
+
         public override INotifyExpression<TResult> ApplyParameters(IDictionary<string, object> parameters)
         {
             return new ObservableMethodCall<T, T1, T2, T3, T4, T5, T6, T7, T8, T9, TResult>(Target.ApplyParameters(parameters), Method, Argument1.ApplyParameters(parameters), Argument2.ApplyParameters(parameters), Argument3.ApplyParameters(parameters), Argument4.ApplyParameters(parameters), Argument5.ApplyParameters(parameters), Argument6.ApplyParameters(parameters), Argument7.ApplyParameters(parameters), Argument8.ApplyParameters(parameters), Argument9.ApplyParameters(parameters));
         }
     }
-	internal class ObservableMethodCall<T, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, TResult> : ObservableMethodBase<T, Func<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, TResult>, TResult>
+    internal class ObservableMethodCall<T, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, TResult> : ObservableMethodBase<T, Func<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, TResult>, TResult>
     {
         public ObservableMethodCall(MethodCallExpression node, ObservableExpressionBinder binder)
             : this(binder.VisitObservable<T>(node.Object), node.Method, binder.VisitObservable<T1>(node.Arguments[0]), binder.VisitObservable<T2>(node.Arguments[1]), binder.VisitObservable<T3>(node.Arguments[2]), binder.VisitObservable<T4>(node.Arguments[3]), binder.VisitObservable<T5>(node.Arguments[4]), binder.VisitObservable<T6>(node.Arguments[5]), binder.VisitObservable<T7>(node.Arguments[6]), binder.VisitObservable<T8>(node.Arguments[7]), binder.VisitObservable<T9>(node.Arguments[8]), binder.VisitObservable<T10>(node.Arguments[9])) { }
@@ -835,68 +660,11 @@ namespace NMF.Expressions
         public INotifyExpression<T9> Argument9 { get; private set; }
         public INotifyExpression<T10> Argument10 { get; private set; }
 
-        protected override TResult GetValue()
-        {
-            return Function(Argument1.Value, Argument2.Value, Argument3.Value, Argument4.Value, Argument5.Value, Argument6.Value, Argument7.Value, Argument8.Value, Argument9.Value, Argument10.Value);
-        }
-
-        protected override void AttachCore()
-        {
-            base.AttachCore();
-            var argChanged = new EventHandler<ValueChangedEventArgs>(ArgumentChanged);
-            Argument1.Attach();
-            Argument1.ValueChanged += argChanged;
-            Argument2.Attach();
-            Argument2.ValueChanged += argChanged;
-            Argument3.Attach();
-            Argument3.ValueChanged += argChanged;
-            Argument4.Attach();
-            Argument4.ValueChanged += argChanged;
-            Argument5.Attach();
-            Argument5.ValueChanged += argChanged;
-            Argument6.Attach();
-            Argument6.ValueChanged += argChanged;
-            Argument7.Attach();
-            Argument7.ValueChanged += argChanged;
-            Argument8.Attach();
-            Argument8.ValueChanged += argChanged;
-            Argument9.Attach();
-            Argument9.ValueChanged += argChanged;
-            Argument10.Attach();
-            Argument10.ValueChanged += argChanged;
-        }
-
-        protected override void DetachCore()
-        {
-            base.DetachCore();
-            var argChanged = new EventHandler<ValueChangedEventArgs>(ArgumentChanged);
-            Argument1.ValueChanged -= argChanged;
-            Argument1.Detach();
-            Argument2.ValueChanged -= argChanged;
-            Argument2.Detach();
-            Argument3.ValueChanged -= argChanged;
-            Argument3.Detach();
-            Argument4.ValueChanged -= argChanged;
-            Argument4.Detach();
-            Argument5.ValueChanged -= argChanged;
-            Argument5.Detach();
-            Argument6.ValueChanged -= argChanged;
-            Argument6.Detach();
-            Argument7.ValueChanged -= argChanged;
-            Argument7.Detach();
-            Argument8.ValueChanged -= argChanged;
-            Argument8.Detach();
-            Argument9.ValueChanged -= argChanged;
-            Argument9.Detach();
-            Argument10.ValueChanged -= argChanged;
-            Argument10.Detach();
-        }
-
-        public override bool CanBeConstant
+        public override bool IsConstant
         {
             get
             {
-                return base.CanBeConstant && Argument1.IsConstant && Argument2.IsConstant && Argument3.IsConstant && Argument4.IsConstant && Argument5.IsConstant && Argument6.IsConstant && Argument7.IsConstant && Argument8.IsConstant && Argument9.IsConstant && Argument10.IsConstant;
+                return Target.IsConstant && Argument1.IsConstant && Argument2.IsConstant && Argument3.IsConstant && Argument4.IsConstant && Argument5.IsConstant && Argument6.IsConstant && Argument7.IsConstant && Argument8.IsConstant && Argument9.IsConstant && Argument10.IsConstant;
             }
         }
 
@@ -905,12 +673,35 @@ namespace NMF.Expressions
             get { return Target.IsParameterFree && Argument1.IsParameterFree && Argument2.IsParameterFree && Argument3.IsParameterFree && Argument4.IsParameterFree && Argument5.IsParameterFree && Argument6.IsParameterFree && Argument7.IsParameterFree && Argument8.IsParameterFree && Argument9.IsParameterFree && Argument10.IsParameterFree; }
         }
 
+        public override IEnumerable<INotifiable> Dependencies
+        {
+            get
+            {
+                yield return Target;
+                yield return Argument1;
+                yield return Argument2;
+                yield return Argument3;
+                yield return Argument4;
+                yield return Argument5;
+                yield return Argument6;
+                yield return Argument7;
+                yield return Argument8;
+                yield return Argument9;
+                yield return Argument10;
+            }
+        }
+
+        protected override TResult GetValue()
+        {
+            return Function(Argument1.Value, Argument2.Value, Argument3.Value, Argument4.Value, Argument5.Value, Argument6.Value, Argument7.Value, Argument8.Value, Argument9.Value, Argument10.Value);
+        }
+
         public override INotifyExpression<TResult> ApplyParameters(IDictionary<string, object> parameters)
         {
             return new ObservableMethodCall<T, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, TResult>(Target.ApplyParameters(parameters), Method, Argument1.ApplyParameters(parameters), Argument2.ApplyParameters(parameters), Argument3.ApplyParameters(parameters), Argument4.ApplyParameters(parameters), Argument5.ApplyParameters(parameters), Argument6.ApplyParameters(parameters), Argument7.ApplyParameters(parameters), Argument8.ApplyParameters(parameters), Argument9.ApplyParameters(parameters), Argument10.ApplyParameters(parameters));
         }
     }
-	internal class ObservableMethodCall<T, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, TResult> : ObservableMethodBase<T, Func<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, TResult>, TResult>
+    internal class ObservableMethodCall<T, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, TResult> : ObservableMethodBase<T, Func<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, TResult>, TResult>
     {
         public ObservableMethodCall(MethodCallExpression node, ObservableExpressionBinder binder)
             : this(binder.VisitObservable<T>(node.Object), node.Method, binder.VisitObservable<T1>(node.Arguments[0]), binder.VisitObservable<T2>(node.Arguments[1]), binder.VisitObservable<T3>(node.Arguments[2]), binder.VisitObservable<T4>(node.Arguments[3]), binder.VisitObservable<T5>(node.Arguments[4]), binder.VisitObservable<T6>(node.Arguments[5]), binder.VisitObservable<T7>(node.Arguments[6]), binder.VisitObservable<T8>(node.Arguments[7]), binder.VisitObservable<T9>(node.Arguments[8]), binder.VisitObservable<T10>(node.Arguments[9]), binder.VisitObservable<T11>(node.Arguments[10])) { }
@@ -955,72 +746,11 @@ namespace NMF.Expressions
         public INotifyExpression<T10> Argument10 { get; private set; }
         public INotifyExpression<T11> Argument11 { get; private set; }
 
-        protected override TResult GetValue()
-        {
-            return Function(Argument1.Value, Argument2.Value, Argument3.Value, Argument4.Value, Argument5.Value, Argument6.Value, Argument7.Value, Argument8.Value, Argument9.Value, Argument10.Value, Argument11.Value);
-        }
-
-        protected override void AttachCore()
-        {
-            base.AttachCore();
-            var argChanged = new EventHandler<ValueChangedEventArgs>(ArgumentChanged);
-            Argument1.Attach();
-            Argument1.ValueChanged += argChanged;
-            Argument2.Attach();
-            Argument2.ValueChanged += argChanged;
-            Argument3.Attach();
-            Argument3.ValueChanged += argChanged;
-            Argument4.Attach();
-            Argument4.ValueChanged += argChanged;
-            Argument5.Attach();
-            Argument5.ValueChanged += argChanged;
-            Argument6.Attach();
-            Argument6.ValueChanged += argChanged;
-            Argument7.Attach();
-            Argument7.ValueChanged += argChanged;
-            Argument8.Attach();
-            Argument8.ValueChanged += argChanged;
-            Argument9.Attach();
-            Argument9.ValueChanged += argChanged;
-            Argument10.Attach();
-            Argument10.ValueChanged += argChanged;
-            Argument11.Attach();
-            Argument11.ValueChanged += argChanged;
-        }
-
-        protected override void DetachCore()
-        {
-            base.DetachCore();
-            var argChanged = new EventHandler<ValueChangedEventArgs>(ArgumentChanged);
-            Argument1.ValueChanged -= argChanged;
-            Argument1.Detach();
-            Argument2.ValueChanged -= argChanged;
-            Argument2.Detach();
-            Argument3.ValueChanged -= argChanged;
-            Argument3.Detach();
-            Argument4.ValueChanged -= argChanged;
-            Argument4.Detach();
-            Argument5.ValueChanged -= argChanged;
-            Argument5.Detach();
-            Argument6.ValueChanged -= argChanged;
-            Argument6.Detach();
-            Argument7.ValueChanged -= argChanged;
-            Argument7.Detach();
-            Argument8.ValueChanged -= argChanged;
-            Argument8.Detach();
-            Argument9.ValueChanged -= argChanged;
-            Argument9.Detach();
-            Argument10.ValueChanged -= argChanged;
-            Argument10.Detach();
-            Argument11.ValueChanged -= argChanged;
-            Argument11.Detach();
-        }
-
-        public override bool CanBeConstant
+        public override bool IsConstant
         {
             get
             {
-                return base.CanBeConstant && Argument1.IsConstant && Argument2.IsConstant && Argument3.IsConstant && Argument4.IsConstant && Argument5.IsConstant && Argument6.IsConstant && Argument7.IsConstant && Argument8.IsConstant && Argument9.IsConstant && Argument10.IsConstant && Argument11.IsConstant;
+                return Target.IsConstant && Argument1.IsConstant && Argument2.IsConstant && Argument3.IsConstant && Argument4.IsConstant && Argument5.IsConstant && Argument6.IsConstant && Argument7.IsConstant && Argument8.IsConstant && Argument9.IsConstant && Argument10.IsConstant && Argument11.IsConstant;
             }
         }
 
@@ -1029,12 +759,36 @@ namespace NMF.Expressions
             get { return Target.IsParameterFree && Argument1.IsParameterFree && Argument2.IsParameterFree && Argument3.IsParameterFree && Argument4.IsParameterFree && Argument5.IsParameterFree && Argument6.IsParameterFree && Argument7.IsParameterFree && Argument8.IsParameterFree && Argument9.IsParameterFree && Argument10.IsParameterFree && Argument11.IsParameterFree; }
         }
 
+        public override IEnumerable<INotifiable> Dependencies
+        {
+            get
+            {
+                yield return Target;
+                yield return Argument1;
+                yield return Argument2;
+                yield return Argument3;
+                yield return Argument4;
+                yield return Argument5;
+                yield return Argument6;
+                yield return Argument7;
+                yield return Argument8;
+                yield return Argument9;
+                yield return Argument10;
+                yield return Argument11;
+            }
+        }
+
+        protected override TResult GetValue()
+        {
+            return Function(Argument1.Value, Argument2.Value, Argument3.Value, Argument4.Value, Argument5.Value, Argument6.Value, Argument7.Value, Argument8.Value, Argument9.Value, Argument10.Value, Argument11.Value);
+        }
+
         public override INotifyExpression<TResult> ApplyParameters(IDictionary<string, object> parameters)
         {
             return new ObservableMethodCall<T, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, TResult>(Target.ApplyParameters(parameters), Method, Argument1.ApplyParameters(parameters), Argument2.ApplyParameters(parameters), Argument3.ApplyParameters(parameters), Argument4.ApplyParameters(parameters), Argument5.ApplyParameters(parameters), Argument6.ApplyParameters(parameters), Argument7.ApplyParameters(parameters), Argument8.ApplyParameters(parameters), Argument9.ApplyParameters(parameters), Argument10.ApplyParameters(parameters), Argument11.ApplyParameters(parameters));
         }
     }
-	internal class ObservableMethodCall<T, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, TResult> : ObservableMethodBase<T, Func<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, TResult>, TResult>
+    internal class ObservableMethodCall<T, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, TResult> : ObservableMethodBase<T, Func<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, TResult>, TResult>
     {
         public ObservableMethodCall(MethodCallExpression node, ObservableExpressionBinder binder)
             : this(binder.VisitObservable<T>(node.Object), node.Method, binder.VisitObservable<T1>(node.Arguments[0]), binder.VisitObservable<T2>(node.Arguments[1]), binder.VisitObservable<T3>(node.Arguments[2]), binder.VisitObservable<T4>(node.Arguments[3]), binder.VisitObservable<T5>(node.Arguments[4]), binder.VisitObservable<T6>(node.Arguments[5]), binder.VisitObservable<T7>(node.Arguments[6]), binder.VisitObservable<T8>(node.Arguments[7]), binder.VisitObservable<T9>(node.Arguments[8]), binder.VisitObservable<T10>(node.Arguments[9]), binder.VisitObservable<T11>(node.Arguments[10]), binder.VisitObservable<T12>(node.Arguments[11])) { }
@@ -1082,76 +836,11 @@ namespace NMF.Expressions
         public INotifyExpression<T11> Argument11 { get; private set; }
         public INotifyExpression<T12> Argument12 { get; private set; }
 
-        protected override TResult GetValue()
-        {
-            return Function(Argument1.Value, Argument2.Value, Argument3.Value, Argument4.Value, Argument5.Value, Argument6.Value, Argument7.Value, Argument8.Value, Argument9.Value, Argument10.Value, Argument11.Value, Argument12.Value);
-        }
-
-        protected override void AttachCore()
-        {
-            base.AttachCore();
-            var argChanged = new EventHandler<ValueChangedEventArgs>(ArgumentChanged);
-            Argument1.Attach();
-            Argument1.ValueChanged += argChanged;
-            Argument2.Attach();
-            Argument2.ValueChanged += argChanged;
-            Argument3.Attach();
-            Argument3.ValueChanged += argChanged;
-            Argument4.Attach();
-            Argument4.ValueChanged += argChanged;
-            Argument5.Attach();
-            Argument5.ValueChanged += argChanged;
-            Argument6.Attach();
-            Argument6.ValueChanged += argChanged;
-            Argument7.Attach();
-            Argument7.ValueChanged += argChanged;
-            Argument8.Attach();
-            Argument8.ValueChanged += argChanged;
-            Argument9.Attach();
-            Argument9.ValueChanged += argChanged;
-            Argument10.Attach();
-            Argument10.ValueChanged += argChanged;
-            Argument11.Attach();
-            Argument11.ValueChanged += argChanged;
-            Argument12.Attach();
-            Argument12.ValueChanged += argChanged;
-        }
-
-        protected override void DetachCore()
-        {
-            base.DetachCore();
-            var argChanged = new EventHandler<ValueChangedEventArgs>(ArgumentChanged);
-            Argument1.ValueChanged -= argChanged;
-            Argument1.Detach();
-            Argument2.ValueChanged -= argChanged;
-            Argument2.Detach();
-            Argument3.ValueChanged -= argChanged;
-            Argument3.Detach();
-            Argument4.ValueChanged -= argChanged;
-            Argument4.Detach();
-            Argument5.ValueChanged -= argChanged;
-            Argument5.Detach();
-            Argument6.ValueChanged -= argChanged;
-            Argument6.Detach();
-            Argument7.ValueChanged -= argChanged;
-            Argument7.Detach();
-            Argument8.ValueChanged -= argChanged;
-            Argument8.Detach();
-            Argument9.ValueChanged -= argChanged;
-            Argument9.Detach();
-            Argument10.ValueChanged -= argChanged;
-            Argument10.Detach();
-            Argument11.ValueChanged -= argChanged;
-            Argument11.Detach();
-            Argument12.ValueChanged -= argChanged;
-            Argument12.Detach();
-        }
-
-        public override bool CanBeConstant
+        public override bool IsConstant
         {
             get
             {
-                return base.CanBeConstant && Argument1.IsConstant && Argument2.IsConstant && Argument3.IsConstant && Argument4.IsConstant && Argument5.IsConstant && Argument6.IsConstant && Argument7.IsConstant && Argument8.IsConstant && Argument9.IsConstant && Argument10.IsConstant && Argument11.IsConstant && Argument12.IsConstant;
+                return Target.IsConstant && Argument1.IsConstant && Argument2.IsConstant && Argument3.IsConstant && Argument4.IsConstant && Argument5.IsConstant && Argument6.IsConstant && Argument7.IsConstant && Argument8.IsConstant && Argument9.IsConstant && Argument10.IsConstant && Argument11.IsConstant && Argument12.IsConstant;
             }
         }
 
@@ -1160,12 +849,37 @@ namespace NMF.Expressions
             get { return Target.IsParameterFree && Argument1.IsParameterFree && Argument2.IsParameterFree && Argument3.IsParameterFree && Argument4.IsParameterFree && Argument5.IsParameterFree && Argument6.IsParameterFree && Argument7.IsParameterFree && Argument8.IsParameterFree && Argument9.IsParameterFree && Argument10.IsParameterFree && Argument11.IsParameterFree && Argument12.IsParameterFree; }
         }
 
+        public override IEnumerable<INotifiable> Dependencies
+        {
+            get
+            {
+                yield return Target;
+                yield return Argument1;
+                yield return Argument2;
+                yield return Argument3;
+                yield return Argument4;
+                yield return Argument5;
+                yield return Argument6;
+                yield return Argument7;
+                yield return Argument8;
+                yield return Argument9;
+                yield return Argument10;
+                yield return Argument11;
+                yield return Argument12;
+            }
+        }
+
+        protected override TResult GetValue()
+        {
+            return Function(Argument1.Value, Argument2.Value, Argument3.Value, Argument4.Value, Argument5.Value, Argument6.Value, Argument7.Value, Argument8.Value, Argument9.Value, Argument10.Value, Argument11.Value, Argument12.Value);
+        }
+
         public override INotifyExpression<TResult> ApplyParameters(IDictionary<string, object> parameters)
         {
             return new ObservableMethodCall<T, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, TResult>(Target.ApplyParameters(parameters), Method, Argument1.ApplyParameters(parameters), Argument2.ApplyParameters(parameters), Argument3.ApplyParameters(parameters), Argument4.ApplyParameters(parameters), Argument5.ApplyParameters(parameters), Argument6.ApplyParameters(parameters), Argument7.ApplyParameters(parameters), Argument8.ApplyParameters(parameters), Argument9.ApplyParameters(parameters), Argument10.ApplyParameters(parameters), Argument11.ApplyParameters(parameters), Argument12.ApplyParameters(parameters));
         }
     }
-	internal class ObservableMethodCall<T, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, TResult> : ObservableMethodBase<T, Func<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, TResult>, TResult>
+    internal class ObservableMethodCall<T, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, TResult> : ObservableMethodBase<T, Func<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, TResult>, TResult>
     {
         public ObservableMethodCall(MethodCallExpression node, ObservableExpressionBinder binder)
             : this(binder.VisitObservable<T>(node.Object), node.Method, binder.VisitObservable<T1>(node.Arguments[0]), binder.VisitObservable<T2>(node.Arguments[1]), binder.VisitObservable<T3>(node.Arguments[2]), binder.VisitObservable<T4>(node.Arguments[3]), binder.VisitObservable<T5>(node.Arguments[4]), binder.VisitObservable<T6>(node.Arguments[5]), binder.VisitObservable<T7>(node.Arguments[6]), binder.VisitObservable<T8>(node.Arguments[7]), binder.VisitObservable<T9>(node.Arguments[8]), binder.VisitObservable<T10>(node.Arguments[9]), binder.VisitObservable<T11>(node.Arguments[10]), binder.VisitObservable<T12>(node.Arguments[11]), binder.VisitObservable<T13>(node.Arguments[12])) { }
@@ -1216,80 +930,11 @@ namespace NMF.Expressions
         public INotifyExpression<T12> Argument12 { get; private set; }
         public INotifyExpression<T13> Argument13 { get; private set; }
 
-        protected override TResult GetValue()
-        {
-            return Function(Argument1.Value, Argument2.Value, Argument3.Value, Argument4.Value, Argument5.Value, Argument6.Value, Argument7.Value, Argument8.Value, Argument9.Value, Argument10.Value, Argument11.Value, Argument12.Value, Argument13.Value);
-        }
-
-        protected override void AttachCore()
-        {
-            base.AttachCore();
-            var argChanged = new EventHandler<ValueChangedEventArgs>(ArgumentChanged);
-            Argument1.Attach();
-            Argument1.ValueChanged += argChanged;
-            Argument2.Attach();
-            Argument2.ValueChanged += argChanged;
-            Argument3.Attach();
-            Argument3.ValueChanged += argChanged;
-            Argument4.Attach();
-            Argument4.ValueChanged += argChanged;
-            Argument5.Attach();
-            Argument5.ValueChanged += argChanged;
-            Argument6.Attach();
-            Argument6.ValueChanged += argChanged;
-            Argument7.Attach();
-            Argument7.ValueChanged += argChanged;
-            Argument8.Attach();
-            Argument8.ValueChanged += argChanged;
-            Argument9.Attach();
-            Argument9.ValueChanged += argChanged;
-            Argument10.Attach();
-            Argument10.ValueChanged += argChanged;
-            Argument11.Attach();
-            Argument11.ValueChanged += argChanged;
-            Argument12.Attach();
-            Argument12.ValueChanged += argChanged;
-            Argument13.Attach();
-            Argument13.ValueChanged += argChanged;
-        }
-
-        protected override void DetachCore()
-        {
-            base.DetachCore();
-            var argChanged = new EventHandler<ValueChangedEventArgs>(ArgumentChanged);
-            Argument1.ValueChanged -= argChanged;
-            Argument1.Detach();
-            Argument2.ValueChanged -= argChanged;
-            Argument2.Detach();
-            Argument3.ValueChanged -= argChanged;
-            Argument3.Detach();
-            Argument4.ValueChanged -= argChanged;
-            Argument4.Detach();
-            Argument5.ValueChanged -= argChanged;
-            Argument5.Detach();
-            Argument6.ValueChanged -= argChanged;
-            Argument6.Detach();
-            Argument7.ValueChanged -= argChanged;
-            Argument7.Detach();
-            Argument8.ValueChanged -= argChanged;
-            Argument8.Detach();
-            Argument9.ValueChanged -= argChanged;
-            Argument9.Detach();
-            Argument10.ValueChanged -= argChanged;
-            Argument10.Detach();
-            Argument11.ValueChanged -= argChanged;
-            Argument11.Detach();
-            Argument12.ValueChanged -= argChanged;
-            Argument12.Detach();
-            Argument13.ValueChanged -= argChanged;
-            Argument13.Detach();
-        }
-
-        public override bool CanBeConstant
+        public override bool IsConstant
         {
             get
             {
-                return base.CanBeConstant && Argument1.IsConstant && Argument2.IsConstant && Argument3.IsConstant && Argument4.IsConstant && Argument5.IsConstant && Argument6.IsConstant && Argument7.IsConstant && Argument8.IsConstant && Argument9.IsConstant && Argument10.IsConstant && Argument11.IsConstant && Argument12.IsConstant && Argument13.IsConstant;
+                return Target.IsConstant && Argument1.IsConstant && Argument2.IsConstant && Argument3.IsConstant && Argument4.IsConstant && Argument5.IsConstant && Argument6.IsConstant && Argument7.IsConstant && Argument8.IsConstant && Argument9.IsConstant && Argument10.IsConstant && Argument11.IsConstant && Argument12.IsConstant && Argument13.IsConstant;
             }
         }
 
@@ -1298,12 +943,38 @@ namespace NMF.Expressions
             get { return Target.IsParameterFree && Argument1.IsParameterFree && Argument2.IsParameterFree && Argument3.IsParameterFree && Argument4.IsParameterFree && Argument5.IsParameterFree && Argument6.IsParameterFree && Argument7.IsParameterFree && Argument8.IsParameterFree && Argument9.IsParameterFree && Argument10.IsParameterFree && Argument11.IsParameterFree && Argument12.IsParameterFree && Argument13.IsParameterFree; }
         }
 
+        public override IEnumerable<INotifiable> Dependencies
+        {
+            get
+            {
+                yield return Target;
+                yield return Argument1;
+                yield return Argument2;
+                yield return Argument3;
+                yield return Argument4;
+                yield return Argument5;
+                yield return Argument6;
+                yield return Argument7;
+                yield return Argument8;
+                yield return Argument9;
+                yield return Argument10;
+                yield return Argument11;
+                yield return Argument12;
+                yield return Argument13;
+            }
+        }
+
+        protected override TResult GetValue()
+        {
+            return Function(Argument1.Value, Argument2.Value, Argument3.Value, Argument4.Value, Argument5.Value, Argument6.Value, Argument7.Value, Argument8.Value, Argument9.Value, Argument10.Value, Argument11.Value, Argument12.Value, Argument13.Value);
+        }
+
         public override INotifyExpression<TResult> ApplyParameters(IDictionary<string, object> parameters)
         {
             return new ObservableMethodCall<T, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, TResult>(Target.ApplyParameters(parameters), Method, Argument1.ApplyParameters(parameters), Argument2.ApplyParameters(parameters), Argument3.ApplyParameters(parameters), Argument4.ApplyParameters(parameters), Argument5.ApplyParameters(parameters), Argument6.ApplyParameters(parameters), Argument7.ApplyParameters(parameters), Argument8.ApplyParameters(parameters), Argument9.ApplyParameters(parameters), Argument10.ApplyParameters(parameters), Argument11.ApplyParameters(parameters), Argument12.ApplyParameters(parameters), Argument13.ApplyParameters(parameters));
         }
     }
-	internal class ObservableMethodCall<T, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, TResult> : ObservableMethodBase<T, Func<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, TResult>, TResult>
+    internal class ObservableMethodCall<T, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, TResult> : ObservableMethodBase<T, Func<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, TResult>, TResult>
     {
         public ObservableMethodCall(MethodCallExpression node, ObservableExpressionBinder binder)
             : this(binder.VisitObservable<T>(node.Object), node.Method, binder.VisitObservable<T1>(node.Arguments[0]), binder.VisitObservable<T2>(node.Arguments[1]), binder.VisitObservable<T3>(node.Arguments[2]), binder.VisitObservable<T4>(node.Arguments[3]), binder.VisitObservable<T5>(node.Arguments[4]), binder.VisitObservable<T6>(node.Arguments[5]), binder.VisitObservable<T7>(node.Arguments[6]), binder.VisitObservable<T8>(node.Arguments[7]), binder.VisitObservable<T9>(node.Arguments[8]), binder.VisitObservable<T10>(node.Arguments[9]), binder.VisitObservable<T11>(node.Arguments[10]), binder.VisitObservable<T12>(node.Arguments[11]), binder.VisitObservable<T13>(node.Arguments[12]), binder.VisitObservable<T14>(node.Arguments[13])) { }
@@ -1357,84 +1028,11 @@ namespace NMF.Expressions
         public INotifyExpression<T13> Argument13 { get; private set; }
         public INotifyExpression<T14> Argument14 { get; private set; }
 
-        protected override TResult GetValue()
-        {
-            return Function(Argument1.Value, Argument2.Value, Argument3.Value, Argument4.Value, Argument5.Value, Argument6.Value, Argument7.Value, Argument8.Value, Argument9.Value, Argument10.Value, Argument11.Value, Argument12.Value, Argument13.Value, Argument14.Value);
-        }
-
-        protected override void AttachCore()
-        {
-            base.AttachCore();
-            var argChanged = new EventHandler<ValueChangedEventArgs>(ArgumentChanged);
-            Argument1.Attach();
-            Argument1.ValueChanged += argChanged;
-            Argument2.Attach();
-            Argument2.ValueChanged += argChanged;
-            Argument3.Attach();
-            Argument3.ValueChanged += argChanged;
-            Argument4.Attach();
-            Argument4.ValueChanged += argChanged;
-            Argument5.Attach();
-            Argument5.ValueChanged += argChanged;
-            Argument6.Attach();
-            Argument6.ValueChanged += argChanged;
-            Argument7.Attach();
-            Argument7.ValueChanged += argChanged;
-            Argument8.Attach();
-            Argument8.ValueChanged += argChanged;
-            Argument9.Attach();
-            Argument9.ValueChanged += argChanged;
-            Argument10.Attach();
-            Argument10.ValueChanged += argChanged;
-            Argument11.Attach();
-            Argument11.ValueChanged += argChanged;
-            Argument12.Attach();
-            Argument12.ValueChanged += argChanged;
-            Argument13.Attach();
-            Argument13.ValueChanged += argChanged;
-            Argument14.Attach();
-            Argument14.ValueChanged += argChanged;
-        }
-
-        protected override void DetachCore()
-        {
-            base.DetachCore();
-            var argChanged = new EventHandler<ValueChangedEventArgs>(ArgumentChanged);
-            Argument1.ValueChanged -= argChanged;
-            Argument1.Detach();
-            Argument2.ValueChanged -= argChanged;
-            Argument2.Detach();
-            Argument3.ValueChanged -= argChanged;
-            Argument3.Detach();
-            Argument4.ValueChanged -= argChanged;
-            Argument4.Detach();
-            Argument5.ValueChanged -= argChanged;
-            Argument5.Detach();
-            Argument6.ValueChanged -= argChanged;
-            Argument6.Detach();
-            Argument7.ValueChanged -= argChanged;
-            Argument7.Detach();
-            Argument8.ValueChanged -= argChanged;
-            Argument8.Detach();
-            Argument9.ValueChanged -= argChanged;
-            Argument9.Detach();
-            Argument10.ValueChanged -= argChanged;
-            Argument10.Detach();
-            Argument11.ValueChanged -= argChanged;
-            Argument11.Detach();
-            Argument12.ValueChanged -= argChanged;
-            Argument12.Detach();
-            Argument13.ValueChanged -= argChanged;
-            Argument13.Detach();
-            Argument14.ValueChanged -= argChanged;
-            Argument14.Detach();
-        }
-
-        public override bool CanBeConstant
+        public override bool IsConstant
         {
             get
             {
-                return base.CanBeConstant && Argument1.IsConstant && Argument2.IsConstant && Argument3.IsConstant && Argument4.IsConstant && Argument5.IsConstant && Argument6.IsConstant && Argument7.IsConstant && Argument8.IsConstant && Argument9.IsConstant && Argument10.IsConstant && Argument11.IsConstant && Argument12.IsConstant && Argument13.IsConstant && Argument14.IsConstant;
+                return Target.IsConstant && Argument1.IsConstant && Argument2.IsConstant && Argument3.IsConstant && Argument4.IsConstant && Argument5.IsConstant && Argument6.IsConstant && Argument7.IsConstant && Argument8.IsConstant && Argument9.IsConstant && Argument10.IsConstant && Argument11.IsConstant && Argument12.IsConstant && Argument13.IsConstant && Argument14.IsConstant;
             }
         }
 
@@ -1443,12 +1041,39 @@ namespace NMF.Expressions
             get { return Target.IsParameterFree && Argument1.IsParameterFree && Argument2.IsParameterFree && Argument3.IsParameterFree && Argument4.IsParameterFree && Argument5.IsParameterFree && Argument6.IsParameterFree && Argument7.IsParameterFree && Argument8.IsParameterFree && Argument9.IsParameterFree && Argument10.IsParameterFree && Argument11.IsParameterFree && Argument12.IsParameterFree && Argument13.IsParameterFree && Argument14.IsParameterFree; }
         }
 
+        public override IEnumerable<INotifiable> Dependencies
+        {
+            get
+            {
+                yield return Target;
+                yield return Argument1;
+                yield return Argument2;
+                yield return Argument3;
+                yield return Argument4;
+                yield return Argument5;
+                yield return Argument6;
+                yield return Argument7;
+                yield return Argument8;
+                yield return Argument9;
+                yield return Argument10;
+                yield return Argument11;
+                yield return Argument12;
+                yield return Argument13;
+                yield return Argument14;
+            }
+        }
+
+        protected override TResult GetValue()
+        {
+            return Function(Argument1.Value, Argument2.Value, Argument3.Value, Argument4.Value, Argument5.Value, Argument6.Value, Argument7.Value, Argument8.Value, Argument9.Value, Argument10.Value, Argument11.Value, Argument12.Value, Argument13.Value, Argument14.Value);
+        }
+
         public override INotifyExpression<TResult> ApplyParameters(IDictionary<string, object> parameters)
         {
             return new ObservableMethodCall<T, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, TResult>(Target.ApplyParameters(parameters), Method, Argument1.ApplyParameters(parameters), Argument2.ApplyParameters(parameters), Argument3.ApplyParameters(parameters), Argument4.ApplyParameters(parameters), Argument5.ApplyParameters(parameters), Argument6.ApplyParameters(parameters), Argument7.ApplyParameters(parameters), Argument8.ApplyParameters(parameters), Argument9.ApplyParameters(parameters), Argument10.ApplyParameters(parameters), Argument11.ApplyParameters(parameters), Argument12.ApplyParameters(parameters), Argument13.ApplyParameters(parameters), Argument14.ApplyParameters(parameters));
         }
     }
-	internal class ObservableMethodCall<T, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, TResult> : ObservableMethodBase<T, Func<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, TResult>, TResult>
+    internal class ObservableMethodCall<T, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, TResult> : ObservableMethodBase<T, Func<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, TResult>, TResult>
     {
         public ObservableMethodCall(MethodCallExpression node, ObservableExpressionBinder binder)
             : this(binder.VisitObservable<T>(node.Object), node.Method, binder.VisitObservable<T1>(node.Arguments[0]), binder.VisitObservable<T2>(node.Arguments[1]), binder.VisitObservable<T3>(node.Arguments[2]), binder.VisitObservable<T4>(node.Arguments[3]), binder.VisitObservable<T5>(node.Arguments[4]), binder.VisitObservable<T6>(node.Arguments[5]), binder.VisitObservable<T7>(node.Arguments[6]), binder.VisitObservable<T8>(node.Arguments[7]), binder.VisitObservable<T9>(node.Arguments[8]), binder.VisitObservable<T10>(node.Arguments[9]), binder.VisitObservable<T11>(node.Arguments[10]), binder.VisitObservable<T12>(node.Arguments[11]), binder.VisitObservable<T13>(node.Arguments[12]), binder.VisitObservable<T14>(node.Arguments[13]), binder.VisitObservable<T15>(node.Arguments[14])) { }
@@ -1505,94 +1130,45 @@ namespace NMF.Expressions
         public INotifyExpression<T14> Argument14 { get; private set; }
         public INotifyExpression<T15> Argument15 { get; private set; }
 
-        protected override TResult GetValue()
-        {
-            return Function(Argument1.Value, Argument2.Value, Argument3.Value, Argument4.Value, Argument5.Value, Argument6.Value, Argument7.Value, Argument8.Value, Argument9.Value, Argument10.Value, Argument11.Value, Argument12.Value, Argument13.Value, Argument14.Value, Argument15.Value);
-        }
-
-        protected override void AttachCore()
-        {
-            base.AttachCore();
-            var argChanged = new EventHandler<ValueChangedEventArgs>(ArgumentChanged);
-            Argument1.Attach();
-            Argument1.ValueChanged += argChanged;
-            Argument2.Attach();
-            Argument2.ValueChanged += argChanged;
-            Argument3.Attach();
-            Argument3.ValueChanged += argChanged;
-            Argument4.Attach();
-            Argument4.ValueChanged += argChanged;
-            Argument5.Attach();
-            Argument5.ValueChanged += argChanged;
-            Argument6.Attach();
-            Argument6.ValueChanged += argChanged;
-            Argument7.Attach();
-            Argument7.ValueChanged += argChanged;
-            Argument8.Attach();
-            Argument8.ValueChanged += argChanged;
-            Argument9.Attach();
-            Argument9.ValueChanged += argChanged;
-            Argument10.Attach();
-            Argument10.ValueChanged += argChanged;
-            Argument11.Attach();
-            Argument11.ValueChanged += argChanged;
-            Argument12.Attach();
-            Argument12.ValueChanged += argChanged;
-            Argument13.Attach();
-            Argument13.ValueChanged += argChanged;
-            Argument14.Attach();
-            Argument14.ValueChanged += argChanged;
-            Argument15.Attach();
-            Argument15.ValueChanged += argChanged;
-        }
-
-        protected override void DetachCore()
-        {
-            base.DetachCore();
-            var argChanged = new EventHandler<ValueChangedEventArgs>(ArgumentChanged);
-            Argument1.ValueChanged -= argChanged;
-            Argument1.Detach();
-            Argument2.ValueChanged -= argChanged;
-            Argument2.Detach();
-            Argument3.ValueChanged -= argChanged;
-            Argument3.Detach();
-            Argument4.ValueChanged -= argChanged;
-            Argument4.Detach();
-            Argument5.ValueChanged -= argChanged;
-            Argument5.Detach();
-            Argument6.ValueChanged -= argChanged;
-            Argument6.Detach();
-            Argument7.ValueChanged -= argChanged;
-            Argument7.Detach();
-            Argument8.ValueChanged -= argChanged;
-            Argument8.Detach();
-            Argument9.ValueChanged -= argChanged;
-            Argument9.Detach();
-            Argument10.ValueChanged -= argChanged;
-            Argument10.Detach();
-            Argument11.ValueChanged -= argChanged;
-            Argument11.Detach();
-            Argument12.ValueChanged -= argChanged;
-            Argument12.Detach();
-            Argument13.ValueChanged -= argChanged;
-            Argument13.Detach();
-            Argument14.ValueChanged -= argChanged;
-            Argument14.Detach();
-            Argument15.ValueChanged -= argChanged;
-            Argument15.Detach();
-        }
-
-        public override bool CanBeConstant
+        public override bool IsConstant
         {
             get
             {
-                return base.CanBeConstant && Argument1.IsConstant && Argument2.IsConstant && Argument3.IsConstant && Argument4.IsConstant && Argument5.IsConstant && Argument6.IsConstant && Argument7.IsConstant && Argument8.IsConstant && Argument9.IsConstant && Argument10.IsConstant && Argument11.IsConstant && Argument12.IsConstant && Argument13.IsConstant && Argument14.IsConstant && Argument15.IsConstant;
+                return Target.IsConstant && Argument1.IsConstant && Argument2.IsConstant && Argument3.IsConstant && Argument4.IsConstant && Argument5.IsConstant && Argument6.IsConstant && Argument7.IsConstant && Argument8.IsConstant && Argument9.IsConstant && Argument10.IsConstant && Argument11.IsConstant && Argument12.IsConstant && Argument13.IsConstant && Argument14.IsConstant && Argument15.IsConstant;
             }
         }
 
         public override bool IsParameterFree
         {
             get { return Target.IsParameterFree && Argument1.IsParameterFree && Argument2.IsParameterFree && Argument3.IsParameterFree && Argument4.IsParameterFree && Argument5.IsParameterFree && Argument6.IsParameterFree && Argument7.IsParameterFree && Argument8.IsParameterFree && Argument9.IsParameterFree && Argument10.IsParameterFree && Argument11.IsParameterFree && Argument12.IsParameterFree && Argument13.IsParameterFree && Argument14.IsParameterFree && Argument15.IsParameterFree; }
+        }
+
+        public override IEnumerable<INotifiable> Dependencies
+        {
+            get
+            {
+                yield return Target;
+                yield return Argument1;
+                yield return Argument2;
+                yield return Argument3;
+                yield return Argument4;
+                yield return Argument5;
+                yield return Argument6;
+                yield return Argument7;
+                yield return Argument8;
+                yield return Argument9;
+                yield return Argument10;
+                yield return Argument11;
+                yield return Argument12;
+                yield return Argument13;
+                yield return Argument14;
+                yield return Argument15;
+            }
+        }
+
+        protected override TResult GetValue()
+        {
+            return Function(Argument1.Value, Argument2.Value, Argument3.Value, Argument4.Value, Argument5.Value, Argument6.Value, Argument7.Value, Argument8.Value, Argument9.Value, Argument10.Value, Argument11.Value, Argument12.Value, Argument13.Value, Argument14.Value, Argument15.Value);
         }
 
         public override INotifyExpression<TResult> ApplyParameters(IDictionary<string, object> parameters)

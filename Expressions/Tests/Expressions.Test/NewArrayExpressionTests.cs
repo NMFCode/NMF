@@ -48,36 +48,6 @@ namespace NMF.Expressions.Test
         }
 
         [TestMethod]
-        public void ArrayCreation_Observable_NoUpdatesWhenDetached()
-        {
-            var update = false;
-            var dummy = new ObservableDummy<int>() { Item = 23 };
-
-            var test = new NotifyValue<int[]>(() => new int[dummy.Item]);
-
-            test.ValueChanged += (o, e) => update = true;
-
-            Assert.AreEqual(23, (test.Value as int[]).Length);
-            Assert.IsFalse(update);
-
-            test.Detach();
-
-            dummy.Item = 42;
-
-            Assert.IsFalse(update);
-
-            test.Attach();
-
-            Assert.IsTrue(update);
-            Assert.AreEqual(42, test.Value.Length);
-            update = false;
-
-            dummy.Item = 2;
-
-            Assert.IsTrue(update);
-        }
-
-        [TestMethod]
         public void ArrayInitialization_NoObservable_NoUpdates()
         {
             var update = false;
@@ -115,35 +85,6 @@ namespace NMF.Expressions.Test
             dummy.Item = 42;
 
             Assert.IsTrue(update);
-        }
-
-        [TestMethod]
-        public void ArrayInitialization_Observable_NoUpdatesWhenDetached()
-        {
-            var update = false;
-            var dummy = new ObservableDummy<int>() { Item = 23 };
-
-            var test = new NotifyValue<int[]>(() => new int[] { dummy.Item });
-
-            test.ValueChanged += (o, e) => update = true;
-
-            Assert.AreEqual(23, (test.Value as int[])[0]);
-            Assert.IsFalse(update);
-
-            test.Detach();
-
-            dummy.Item = 42;
-
-            Assert.IsFalse(update);
-
-            test.Attach();
-
-            Assert.AreEqual(42, test.Value[0]);
-            update = true;
-
-            dummy.Item = 1;
-
-            Assert.AreEqual(1, test.Value[0]);
         }
     }
 }

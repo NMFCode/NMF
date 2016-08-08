@@ -49,36 +49,6 @@ namespace NMF.Expressions.Test
         }
 
         [TestMethod]
-        public void Cast_String_Observable_NoUpdatesWhenDetached()
-        {
-            var update = false;
-            var dummy = new ObservableDummy<object>() { Item = "23" };
-
-            var test = new NotifyValue<string>(() => (string)dummy.Item);
-
-            test.ValueChanged += (o, e) => update = true;
-
-            Assert.AreEqual("23", test.Value);
-            Assert.IsFalse(update);
-
-            test.Detach();
-
-            dummy.Item = "42";
-
-            Assert.IsFalse(update);
-
-            test.Attach();
-
-            Assert.IsTrue(update);
-            Assert.AreEqual("42", test.Value);
-            update = false;
-
-            dummy.Item = "1";
-
-            Assert.IsTrue(update);
-        }
-
-        [TestMethod]
         public void Cast_Int_NoObservable_NoUpdates()
         {
             var update = false;

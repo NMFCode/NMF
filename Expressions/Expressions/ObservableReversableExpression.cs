@@ -26,7 +26,7 @@ namespace NMF.Expressions
             }
         }
 
-        public object ValueObject
+        public new object ValueObject
         {
             get
             {

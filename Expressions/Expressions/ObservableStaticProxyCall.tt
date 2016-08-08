@@ -23,48 +23,41 @@ namespace NMF.Expressions
         public ObservableStaticProxyCall(MethodCallExpression node, ObservableExpressionBinder binder, MethodInfo proxyMethod)
             : this(ReflectionHelper.CreateDelegate<Func<<# for (int j = 1; j <= i; j++) { #>T<#= j #>, <# } #>INotifyValue<TResult>>>(proxyMethod)<# for (int j = 0; j < i; j++) { #>, binder.VisitObservable<T<#= j+1 #>>(ExpressionHelper.GetArg(node, <#= j #>))<# } #>) { }
 
-        public ObservableStaticProxyCall(Func<<# for (int j = 1; j <= i; j++) { #>T<#= j #>, <# } #>INotifyValue<TResult>> proxyFunction<# for (int j = 1; j <= i; j++) { #>, IObservableExpression<T<#= j #>> arg<#= j #><# } #>)
+        public ObservableStaticProxyCall(Func<<# for (int j = 1; j <= i; j++) { #>T<#= j #>, <# } #>INotifyValue<TResult>> proxyFunction<# for (int j = 1; j <= i; j++) { #>, INotifyExpression<T<#= j #>> arg<#= j #><# } #>)
         {
             if (proxyFunction == null) throw new ArgumentNullException("proxyFunction");
 <# for (int j = 1; j <= i; j++) { #>
-			if (arg<#= j #> == null) throw new ArgumentNullException("arg<#= j #>");
+            if (arg<#= j #> == null) throw new ArgumentNullException("arg<#= j #>");
 <# } #>
 
             ProxyFunction = proxyFunction;
 <# for (int j = 1; j <= i; j++) { #>
-			Argument<#= j #> = arg<#= j #>;
+            Argument<#= j #> = arg<#= j #>;
 <# } #>
-		}
+        }
 
 <# for (int j = 1; j <= i; j++) { #>
-		public IObservableExpression<T<#= j #>> Argument<#= j #> { get; private set; }
+        public INotifyExpression<T<#= j #>> Argument<#= j #> { get; private set; }
 <# } #>
 
         public Func<<# for (int j = 1; j <= i; j++) { #>T<#= j #>, <# } #>INotifyValue<TResult>> ProxyFunction { get; private set; }
 
+        public override IEnumerable<INotifiable> Dependencies
+        {
+            get
+            {
+                foreach (var dep in base.Dependencies)
+                    yield return dep;
+
+<# for (int j = 1; j <= i; j++) { #>
+                yield return Argument<#= j #>;
+<# } #>
+            }
+        }
+
         protected override INotifyValue<TResult> CreateProxy()
         {
             return ProxyFunction(Argument1.Value<# for (int j = 2; j <= i; j++) { #>, Argument<#= j #>.Value<# } #>);
-        }
-
-        protected override void AttachCore()
-        {
-            var argChanged = new EventHandler<ValueChangedEventArgs>(ArgumentChanged);
-<# for (int j = 1; j <= i; j++) { #>
-			Argument<#= j #>.Attach();
-            Argument<#= j #>.ValueChanged += argChanged;
-<# } #>
-            base.AttachCore();
-        }
-
-        protected override void DetachCore()
-        {
-            base.DetachCore();
-            var argChanged = new EventHandler<ValueChangedEventArgs>(ArgumentChanged);
-<# for (int j = 1; j <= i; j++) { #>
-            Argument<#= j #>.ValueChanged -= argChanged;
-			Argument<#= j #>.Detach();
-<# } #>
         }
 
         public override bool IsParameterFree
@@ -72,7 +65,7 @@ namespace NMF.Expressions
             get { return Argument1.IsParameterFree<# for (int j = 2; j <= i; j++) { #> && Argument<#= j #>.IsParameterFree<# } #>; }
         }
 
-        public override IObservableExpression<TResult> ApplyParameters(IDictionary<string, object> parameters)
+        public override INotifyExpression<TResult> ApplyParameters(IDictionary<string, object> parameters)
         {
             return new ObservableStaticProxyCall<<# for (int j = 1; j <= i; j++) { #>T<#= j #>, <# } #>TResult>(ProxyFunction<# for (int j = 1; j <= i; j++) { #>, Argument<#= j #>.ApplyParameters(parameters)<# } #>);
         }

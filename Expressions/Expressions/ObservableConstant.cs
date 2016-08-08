@@ -15,41 +15,21 @@ namespace NMF.Expressions
 
         public ObservableConstant(T value) : base(value) { }
 
-        public override ExpressionType NodeType
-        {
-            get
-            {
-                return ExpressionType.Constant;
-            }
-        }
+        public override ExpressionType NodeType { get { return ExpressionType.Constant; } }
 
-        public override bool CanReduce
-        {
-            get
-            {
-                return false;
-            }
-        }
+        public override bool CanReduce { get { return false; } }
 
-        public override INotifyExpression<T> Reduce()
+        public override bool CanBeConstant { get { return true; } }
+
+        public override bool IsConstant { get { return true; } }
+
+        public override bool IsParameterFree { get { return true; } }
+
+        public override IEnumerable<INotifiable> Dependencies { get { return Enumerable.Empty<INotifiable>(); } }
+
+        public override INotifyExpression<T> ApplyParameters(IDictionary<string, object> parameters)
         {
             return this;
-        }
-
-        public override bool CanBeConstant
-        {
-            get
-            {
-                return true;
-            }
-        }
-
-        public override bool IsConstant
-        {
-            get
-            {
-                return true;
-            }
         }
 
         protected override T GetValue()
@@ -57,19 +37,14 @@ namespace NMF.Expressions
             return Value;
         }
 
-        public override void Refresh() { }
-
-        protected override void DetachCore() { }
-        protected override void AttachCore() { }
-
-        public override bool IsParameterFree
-        {
-            get { return true; }
-        }
-
-        public override INotifyExpression<T> ApplyParameters(IDictionary<string, object> parameters)
+        public override INotifyExpression<T> Reduce()
         {
             return this;
+        }
+
+        public override bool Notify(IEnumerable<INotifiable> sources)
+        {
+            throw new InvalidOperationException("A constant cannot have a dependency and therefore cannot be notified of a dependency change.");
         }
     }
 }

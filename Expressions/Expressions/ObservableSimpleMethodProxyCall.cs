@@ -15,50 +15,37 @@ namespace NMF.Expressions
 
         public ObservableSimpleMethodProxyCall(INotifyExpression<T> target, MethodInfo proxyFunction)
         {
-			if (target == null) throw new ArgumentNullException("target");
+            if (target == null) throw new ArgumentNullException("target");
             if (proxyFunction == null) throw new ArgumentNullException("proxyFunction");
 
-			Target = target;
-			ProxyMethod = proxyFunction;
-			
-			Target.ValueChanged += TargetChanged;
-		}
+            Target = target;
+            ProxyMethod = proxyFunction;
+        }
 
-		private void TargetChanged(object sender, ValueChangedEventArgs e)
-        {
-            if (!IsAttached) return;
-			RenewProxyFunction();
-			RenewProxy();
-			Refresh();
-		}
-
-		public INotifyExpression<T> Target { get; private set; }
+        public INotifyExpression<T> Target { get; private set; }
 
         public Func<INotifyValue<TResult>> ProxyFunction { get; private set; }
 
-		public MethodInfo ProxyMethod { get; private set; }
+        public MethodInfo ProxyMethod { get; private set; }
 
-		private void RenewProxyFunction()
-		{
-			ProxyFunction = ReflectionHelper.CreateDelegate(typeof(Func<INotifyValue<TResult>>), Target.Value, ProxyMethod) as Func<INotifyValue<TResult>>;
-		}
+        public override IEnumerable<INotifiable> Dependencies
+        {
+            get
+            {
+                foreach (var dep in base.Dependencies)
+                    yield return dep;
+
+            }
+        }
+
+        private void RenewProxyFunction()
+        {
+            ProxyFunction = ReflectionHelper.CreateDelegate(typeof(Func<INotifyValue<TResult>>), Target.Value, ProxyMethod) as Func<INotifyValue<TResult>>;
+        }
 
         protected override INotifyValue<TResult> CreateProxy()
         {
             return ProxyFunction();
-        }
-
-        protected override void AttachCore()
-        {
-			Target.Attach();
-			RenewProxyFunction();
-            base.AttachCore();
-        }
-
-        protected override void DetachCore()
-        {
-            base.DetachCore();
-			Target.Detach();
         }
 
         public override bool IsParameterFree
@@ -70,6 +57,18 @@ namespace NMF.Expressions
         {
             return new ObservableSimpleMethodProxyCall<T, TResult>(Target.ApplyParameters(parameters), ProxyMethod);
         }
+
+        public override bool Notify(IEnumerable<INotifiable> sources)
+        {
+            RenewProxyFunction();
+            return base.Notify(sources);
+        }
+
+        protected override void OnAttach()
+        {
+            RenewProxyFunction();
+            base.OnAttach();
+        }
     }
     internal sealed class ObservableSimpleMethodProxyCall<T, T1, TResult> : ObservableProxyCallBase<TResult>
     {
@@ -78,55 +77,41 @@ namespace NMF.Expressions
 
         public ObservableSimpleMethodProxyCall(INotifyExpression<T> target, MethodInfo proxyFunction, INotifyExpression<T1> arg1)
         {
-			if (target == null) throw new ArgumentNullException("target");
+            if (target == null) throw new ArgumentNullException("target");
             if (proxyFunction == null) throw new ArgumentNullException("proxyFunction");
-			if (arg1 == null) throw new ArgumentNullException("arg1");
+            if (arg1 == null) throw new ArgumentNullException("arg1");
 
-			Target = target;
-			ProxyMethod = proxyFunction;
-			Argument1 = arg1;
-			
-			Target.ValueChanged += TargetChanged;
-		}
+            Target = target;
+            ProxyMethod = proxyFunction;
+            Argument1 = arg1;
+        }
 
-		private void TargetChanged(object sender, ValueChangedEventArgs e)
-        {
-            if (!IsAttached) return;
-			RenewProxyFunction();
-			RenewProxy();
-			Refresh();
-		}
-
-		public INotifyExpression<T> Target { get; private set; }
-		public INotifyExpression<T1> Argument1 { get; private set; }
+        public INotifyExpression<T> Target { get; private set; }
+        public INotifyExpression<T1> Argument1 { get; private set; }
 
         public Func<INotifyValue<T1>, INotifyValue<TResult>> ProxyFunction { get; private set; }
 
-		public MethodInfo ProxyMethod { get; private set; }
+        public MethodInfo ProxyMethod { get; private set; }
 
-		private void RenewProxyFunction()
-		{
-			ProxyFunction = ReflectionHelper.CreateDelegate(typeof(Func<INotifyValue<T1>, INotifyValue<TResult>>), Target.Value, ProxyMethod) as Func<INotifyValue<T1>, INotifyValue<TResult>>;
-		}
+        public override IEnumerable<INotifiable> Dependencies
+        {
+            get
+            {
+                foreach (var dep in base.Dependencies)
+                    yield return dep;
+
+                yield return Argument1;
+            }
+        }
+
+        private void RenewProxyFunction()
+        {
+            ProxyFunction = ReflectionHelper.CreateDelegate(typeof(Func<INotifyValue<T1>, INotifyValue<TResult>>), Target.Value, ProxyMethod) as Func<INotifyValue<T1>, INotifyValue<TResult>>;
+        }
 
         protected override INotifyValue<TResult> CreateProxy()
         {
             return ProxyFunction(Argument1);
-        }
-
-        protected override void AttachCore()
-        {
-			Target.Attach();
-			Argument1.Attach();
-			RenewProxyFunction();
-            base.AttachCore();
-        }
-
-        protected override void DetachCore()
-        {
-            base.DetachCore();
-			Target.Detach();
-			Argument1.Detach();
         }
 
         public override bool IsParameterFree
@@ -138,6 +123,18 @@ namespace NMF.Expressions
         {
             return new ObservableSimpleMethodProxyCall<T, T1, TResult>(Target.ApplyParameters(parameters), ProxyMethod, Argument1.ApplyParameters(parameters));
         }
+
+        public override bool Notify(IEnumerable<INotifiable> sources)
+        {
+            RenewProxyFunction();
+            return base.Notify(sources);
+        }
+
+        protected override void OnAttach()
+        {
+            RenewProxyFunction();
+            base.OnAttach();
+        }
     }
     internal sealed class ObservableSimpleMethodProxyCall<T, T1, T2, TResult> : ObservableProxyCallBase<TResult>
     {
@@ -146,60 +143,45 @@ namespace NMF.Expressions
 
         public ObservableSimpleMethodProxyCall(INotifyExpression<T> target, MethodInfo proxyFunction, INotifyExpression<T1> arg1, INotifyExpression<T2> arg2)
         {
-			if (target == null) throw new ArgumentNullException("target");
+            if (target == null) throw new ArgumentNullException("target");
             if (proxyFunction == null) throw new ArgumentNullException("proxyFunction");
-			if (arg1 == null) throw new ArgumentNullException("arg1");
-			if (arg2 == null) throw new ArgumentNullException("arg2");
+            if (arg1 == null) throw new ArgumentNullException("arg1");
+            if (arg2 == null) throw new ArgumentNullException("arg2");
 
-			Target = target;
-			ProxyMethod = proxyFunction;
-			Argument1 = arg1;
-			Argument2 = arg2;
-			
-			Target.ValueChanged += TargetChanged;
-		}
+            Target = target;
+            ProxyMethod = proxyFunction;
+            Argument1 = arg1;
+            Argument2 = arg2;
+        }
 
-		private void TargetChanged(object sender, ValueChangedEventArgs e)
-        {
-            if (!IsAttached) return;
-			RenewProxyFunction();
-			RenewProxy();
-			Refresh();
-		}
-
-		public INotifyExpression<T> Target { get; private set; }
-		public INotifyExpression<T1> Argument1 { get; private set; }
-		public INotifyExpression<T2> Argument2 { get; private set; }
+        public INotifyExpression<T> Target { get; private set; }
+        public INotifyExpression<T1> Argument1 { get; private set; }
+        public INotifyExpression<T2> Argument2 { get; private set; }
 
         public Func<INotifyValue<T1>, INotifyValue<T2>, INotifyValue<TResult>> ProxyFunction { get; private set; }
 
-		public MethodInfo ProxyMethod { get; private set; }
+        public MethodInfo ProxyMethod { get; private set; }
 
-		private void RenewProxyFunction()
-		{
-			ProxyFunction = ReflectionHelper.CreateDelegate(typeof(Func<INotifyValue<T1>, INotifyValue<T2>, INotifyValue<TResult>>), Target.Value, ProxyMethod) as Func<INotifyValue<T1>, INotifyValue<T2>, INotifyValue<TResult>>;
-		}
+        public override IEnumerable<INotifiable> Dependencies
+        {
+            get
+            {
+                foreach (var dep in base.Dependencies)
+                    yield return dep;
+
+                yield return Argument1;
+                yield return Argument2;
+            }
+        }
+
+        private void RenewProxyFunction()
+        {
+            ProxyFunction = ReflectionHelper.CreateDelegate(typeof(Func<INotifyValue<T1>, INotifyValue<T2>, INotifyValue<TResult>>), Target.Value, ProxyMethod) as Func<INotifyValue<T1>, INotifyValue<T2>, INotifyValue<TResult>>;
+        }
 
         protected override INotifyValue<TResult> CreateProxy()
         {
             return ProxyFunction(Argument1, Argument2);
-        }
-
-        protected override void AttachCore()
-        {
-			Target.Attach();
-			Argument1.Attach();
-			Argument2.Attach();
-			RenewProxyFunction();
-            base.AttachCore();
-        }
-
-        protected override void DetachCore()
-        {
-            base.DetachCore();
-			Target.Detach();
-			Argument1.Detach();
-			Argument2.Detach();
         }
 
         public override bool IsParameterFree
@@ -211,6 +193,18 @@ namespace NMF.Expressions
         {
             return new ObservableSimpleMethodProxyCall<T, T1, T2, TResult>(Target.ApplyParameters(parameters), ProxyMethod, Argument1.ApplyParameters(parameters), Argument2.ApplyParameters(parameters));
         }
+
+        public override bool Notify(IEnumerable<INotifiable> sources)
+        {
+            RenewProxyFunction();
+            return base.Notify(sources);
+        }
+
+        protected override void OnAttach()
+        {
+            RenewProxyFunction();
+            base.OnAttach();
+        }
     }
     internal sealed class ObservableSimpleMethodProxyCall<T, T1, T2, T3, TResult> : ObservableProxyCallBase<TResult>
     {
@@ -219,65 +213,49 @@ namespace NMF.Expressions
 
         public ObservableSimpleMethodProxyCall(INotifyExpression<T> target, MethodInfo proxyFunction, INotifyExpression<T1> arg1, INotifyExpression<T2> arg2, INotifyExpression<T3> arg3)
         {
-			if (target == null) throw new ArgumentNullException("target");
+            if (target == null) throw new ArgumentNullException("target");
             if (proxyFunction == null) throw new ArgumentNullException("proxyFunction");
-			if (arg1 == null) throw new ArgumentNullException("arg1");
-			if (arg2 == null) throw new ArgumentNullException("arg2");
-			if (arg3 == null) throw new ArgumentNullException("arg3");
+            if (arg1 == null) throw new ArgumentNullException("arg1");
+            if (arg2 == null) throw new ArgumentNullException("arg2");
+            if (arg3 == null) throw new ArgumentNullException("arg3");
 
-			Target = target;
-			ProxyMethod = proxyFunction;
-			Argument1 = arg1;
-			Argument2 = arg2;
-			Argument3 = arg3;
-			
-			Target.ValueChanged += TargetChanged;
-		}
+            Target = target;
+            ProxyMethod = proxyFunction;
+            Argument1 = arg1;
+            Argument2 = arg2;
+            Argument3 = arg3;
+        }
 
-		private void TargetChanged(object sender, ValueChangedEventArgs e)
-        {
-            if (!IsAttached) return;
-			RenewProxyFunction();
-			RenewProxy();
-			Refresh();
-		}
-
-		public INotifyExpression<T> Target { get; private set; }
-		public INotifyExpression<T1> Argument1 { get; private set; }
-		public INotifyExpression<T2> Argument2 { get; private set; }
-		public INotifyExpression<T3> Argument3 { get; private set; }
+        public INotifyExpression<T> Target { get; private set; }
+        public INotifyExpression<T1> Argument1 { get; private set; }
+        public INotifyExpression<T2> Argument2 { get; private set; }
+        public INotifyExpression<T3> Argument3 { get; private set; }
 
         public Func<INotifyValue<T1>, INotifyValue<T2>, INotifyValue<T3>, INotifyValue<TResult>> ProxyFunction { get; private set; }
 
-		public MethodInfo ProxyMethod { get; private set; }
+        public MethodInfo ProxyMethod { get; private set; }
 
-		private void RenewProxyFunction()
-		{
-			ProxyFunction = ReflectionHelper.CreateDelegate(typeof(Func<INotifyValue<T1>, INotifyValue<T2>, INotifyValue<T3>, INotifyValue<TResult>>), Target.Value, ProxyMethod) as Func<INotifyValue<T1>, INotifyValue<T2>, INotifyValue<T3>, INotifyValue<TResult>>;
-		}
+        public override IEnumerable<INotifiable> Dependencies
+        {
+            get
+            {
+                foreach (var dep in base.Dependencies)
+                    yield return dep;
+
+                yield return Argument1;
+                yield return Argument2;
+                yield return Argument3;
+            }
+        }
+
+        private void RenewProxyFunction()
+        {
+            ProxyFunction = ReflectionHelper.CreateDelegate(typeof(Func<INotifyValue<T1>, INotifyValue<T2>, INotifyValue<T3>, INotifyValue<TResult>>), Target.Value, ProxyMethod) as Func<INotifyValue<T1>, INotifyValue<T2>, INotifyValue<T3>, INotifyValue<TResult>>;
+        }
 
         protected override INotifyValue<TResult> CreateProxy()
         {
             return ProxyFunction(Argument1, Argument2, Argument3);
-        }
-
-        protected override void AttachCore()
-        {
-			Target.Attach();
-			Argument1.Attach();
-			Argument2.Attach();
-			Argument3.Attach();
-			RenewProxyFunction();
-            base.AttachCore();
-        }
-
-        protected override void DetachCore()
-        {
-            base.DetachCore();
-			Target.Detach();
-			Argument1.Detach();
-			Argument2.Detach();
-			Argument3.Detach();
         }
 
         public override bool IsParameterFree
@@ -289,6 +267,18 @@ namespace NMF.Expressions
         {
             return new ObservableSimpleMethodProxyCall<T, T1, T2, T3, TResult>(Target.ApplyParameters(parameters), ProxyMethod, Argument1.ApplyParameters(parameters), Argument2.ApplyParameters(parameters), Argument3.ApplyParameters(parameters));
         }
+
+        public override bool Notify(IEnumerable<INotifiable> sources)
+        {
+            RenewProxyFunction();
+            return base.Notify(sources);
+        }
+
+        protected override void OnAttach()
+        {
+            RenewProxyFunction();
+            base.OnAttach();
+        }
     }
     internal sealed class ObservableSimpleMethodProxyCall<T, T1, T2, T3, T4, TResult> : ObservableProxyCallBase<TResult>
     {
@@ -297,70 +287,53 @@ namespace NMF.Expressions
 
         public ObservableSimpleMethodProxyCall(INotifyExpression<T> target, MethodInfo proxyFunction, INotifyExpression<T1> arg1, INotifyExpression<T2> arg2, INotifyExpression<T3> arg3, INotifyExpression<T4> arg4)
         {
-			if (target == null) throw new ArgumentNullException("target");
+            if (target == null) throw new ArgumentNullException("target");
             if (proxyFunction == null) throw new ArgumentNullException("proxyFunction");
-			if (arg1 == null) throw new ArgumentNullException("arg1");
-			if (arg2 == null) throw new ArgumentNullException("arg2");
-			if (arg3 == null) throw new ArgumentNullException("arg3");
-			if (arg4 == null) throw new ArgumentNullException("arg4");
+            if (arg1 == null) throw new ArgumentNullException("arg1");
+            if (arg2 == null) throw new ArgumentNullException("arg2");
+            if (arg3 == null) throw new ArgumentNullException("arg3");
+            if (arg4 == null) throw new ArgumentNullException("arg4");
 
-			Target = target;
-			ProxyMethod = proxyFunction;
-			Argument1 = arg1;
-			Argument2 = arg2;
-			Argument3 = arg3;
-			Argument4 = arg4;
-			
-			Target.ValueChanged += TargetChanged;
-		}
+            Target = target;
+            ProxyMethod = proxyFunction;
+            Argument1 = arg1;
+            Argument2 = arg2;
+            Argument3 = arg3;
+            Argument4 = arg4;
+        }
 
-		private void TargetChanged(object sender, ValueChangedEventArgs e)
-        {
-            if (!IsAttached) return;
-			RenewProxyFunction();
-			RenewProxy();
-			Refresh();
-		}
-
-		public INotifyExpression<T> Target { get; private set; }
-		public INotifyExpression<T1> Argument1 { get; private set; }
-		public INotifyExpression<T2> Argument2 { get; private set; }
-		public INotifyExpression<T3> Argument3 { get; private set; }
-		public INotifyExpression<T4> Argument4 { get; private set; }
+        public INotifyExpression<T> Target { get; private set; }
+        public INotifyExpression<T1> Argument1 { get; private set; }
+        public INotifyExpression<T2> Argument2 { get; private set; }
+        public INotifyExpression<T3> Argument3 { get; private set; }
+        public INotifyExpression<T4> Argument4 { get; private set; }
 
         public Func<INotifyValue<T1>, INotifyValue<T2>, INotifyValue<T3>, INotifyValue<T4>, INotifyValue<TResult>> ProxyFunction { get; private set; }
 
-		public MethodInfo ProxyMethod { get; private set; }
+        public MethodInfo ProxyMethod { get; private set; }
 
-		private void RenewProxyFunction()
-		{
-			ProxyFunction = ReflectionHelper.CreateDelegate(typeof(Func<INotifyValue<T1>, INotifyValue<T2>, INotifyValue<T3>, INotifyValue<T4>, INotifyValue<TResult>>), Target.Value, ProxyMethod) as Func<INotifyValue<T1>, INotifyValue<T2>, INotifyValue<T3>, INotifyValue<T4>, INotifyValue<TResult>>;
-		}
+        public override IEnumerable<INotifiable> Dependencies
+        {
+            get
+            {
+                foreach (var dep in base.Dependencies)
+                    yield return dep;
+
+                yield return Argument1;
+                yield return Argument2;
+                yield return Argument3;
+                yield return Argument4;
+            }
+        }
+
+        private void RenewProxyFunction()
+        {
+            ProxyFunction = ReflectionHelper.CreateDelegate(typeof(Func<INotifyValue<T1>, INotifyValue<T2>, INotifyValue<T3>, INotifyValue<T4>, INotifyValue<TResult>>), Target.Value, ProxyMethod) as Func<INotifyValue<T1>, INotifyValue<T2>, INotifyValue<T3>, INotifyValue<T4>, INotifyValue<TResult>>;
+        }
 
         protected override INotifyValue<TResult> CreateProxy()
         {
             return ProxyFunction(Argument1, Argument2, Argument3, Argument4);
-        }
-
-        protected override void AttachCore()
-        {
-			Target.Attach();
-			Argument1.Attach();
-			Argument2.Attach();
-			Argument3.Attach();
-			Argument4.Attach();
-			RenewProxyFunction();
-            base.AttachCore();
-        }
-
-        protected override void DetachCore()
-        {
-            base.DetachCore();
-			Target.Detach();
-			Argument1.Detach();
-			Argument2.Detach();
-			Argument3.Detach();
-			Argument4.Detach();
         }
 
         public override bool IsParameterFree
@@ -372,6 +345,18 @@ namespace NMF.Expressions
         {
             return new ObservableSimpleMethodProxyCall<T, T1, T2, T3, T4, TResult>(Target.ApplyParameters(parameters), ProxyMethod, Argument1.ApplyParameters(parameters), Argument2.ApplyParameters(parameters), Argument3.ApplyParameters(parameters), Argument4.ApplyParameters(parameters));
         }
+
+        public override bool Notify(IEnumerable<INotifiable> sources)
+        {
+            RenewProxyFunction();
+            return base.Notify(sources);
+        }
+
+        protected override void OnAttach()
+        {
+            RenewProxyFunction();
+            base.OnAttach();
+        }
     }
     internal sealed class ObservableSimpleMethodProxyCall<T, T1, T2, T3, T4, T5, TResult> : ObservableProxyCallBase<TResult>
     {
@@ -380,75 +365,57 @@ namespace NMF.Expressions
 
         public ObservableSimpleMethodProxyCall(INotifyExpression<T> target, MethodInfo proxyFunction, INotifyExpression<T1> arg1, INotifyExpression<T2> arg2, INotifyExpression<T3> arg3, INotifyExpression<T4> arg4, INotifyExpression<T5> arg5)
         {
-			if (target == null) throw new ArgumentNullException("target");
+            if (target == null) throw new ArgumentNullException("target");
             if (proxyFunction == null) throw new ArgumentNullException("proxyFunction");
-			if (arg1 == null) throw new ArgumentNullException("arg1");
-			if (arg2 == null) throw new ArgumentNullException("arg2");
-			if (arg3 == null) throw new ArgumentNullException("arg3");
-			if (arg4 == null) throw new ArgumentNullException("arg4");
-			if (arg5 == null) throw new ArgumentNullException("arg5");
+            if (arg1 == null) throw new ArgumentNullException("arg1");
+            if (arg2 == null) throw new ArgumentNullException("arg2");
+            if (arg3 == null) throw new ArgumentNullException("arg3");
+            if (arg4 == null) throw new ArgumentNullException("arg4");
+            if (arg5 == null) throw new ArgumentNullException("arg5");
 
-			Target = target;
-			ProxyMethod = proxyFunction;
-			Argument1 = arg1;
-			Argument2 = arg2;
-			Argument3 = arg3;
-			Argument4 = arg4;
-			Argument5 = arg5;
-			
-			Target.ValueChanged += TargetChanged;
-		}
+            Target = target;
+            ProxyMethod = proxyFunction;
+            Argument1 = arg1;
+            Argument2 = arg2;
+            Argument3 = arg3;
+            Argument4 = arg4;
+            Argument5 = arg5;
+        }
 
-		private void TargetChanged(object sender, ValueChangedEventArgs e)
-        {
-            if (!IsAttached) return;
-			RenewProxyFunction();
-			RenewProxy();
-			Refresh();
-		}
-
-		public INotifyExpression<T> Target { get; private set; }
-		public INotifyExpression<T1> Argument1 { get; private set; }
-		public INotifyExpression<T2> Argument2 { get; private set; }
-		public INotifyExpression<T3> Argument3 { get; private set; }
-		public INotifyExpression<T4> Argument4 { get; private set; }
-		public INotifyExpression<T5> Argument5 { get; private set; }
+        public INotifyExpression<T> Target { get; private set; }
+        public INotifyExpression<T1> Argument1 { get; private set; }
+        public INotifyExpression<T2> Argument2 { get; private set; }
+        public INotifyExpression<T3> Argument3 { get; private set; }
+        public INotifyExpression<T4> Argument4 { get; private set; }
+        public INotifyExpression<T5> Argument5 { get; private set; }
 
         public Func<INotifyValue<T1>, INotifyValue<T2>, INotifyValue<T3>, INotifyValue<T4>, INotifyValue<T5>, INotifyValue<TResult>> ProxyFunction { get; private set; }
 
-		public MethodInfo ProxyMethod { get; private set; }
+        public MethodInfo ProxyMethod { get; private set; }
 
-		private void RenewProxyFunction()
-		{
-			ProxyFunction = ReflectionHelper.CreateDelegate(typeof(Func<INotifyValue<T1>, INotifyValue<T2>, INotifyValue<T3>, INotifyValue<T4>, INotifyValue<T5>, INotifyValue<TResult>>), Target.Value, ProxyMethod) as Func<INotifyValue<T1>, INotifyValue<T2>, INotifyValue<T3>, INotifyValue<T4>, INotifyValue<T5>, INotifyValue<TResult>>;
-		}
+        public override IEnumerable<INotifiable> Dependencies
+        {
+            get
+            {
+                foreach (var dep in base.Dependencies)
+                    yield return dep;
+
+                yield return Argument1;
+                yield return Argument2;
+                yield return Argument3;
+                yield return Argument4;
+                yield return Argument5;
+            }
+        }
+
+        private void RenewProxyFunction()
+        {
+            ProxyFunction = ReflectionHelper.CreateDelegate(typeof(Func<INotifyValue<T1>, INotifyValue<T2>, INotifyValue<T3>, INotifyValue<T4>, INotifyValue<T5>, INotifyValue<TResult>>), Target.Value, ProxyMethod) as Func<INotifyValue<T1>, INotifyValue<T2>, INotifyValue<T3>, INotifyValue<T4>, INotifyValue<T5>, INotifyValue<TResult>>;
+        }
 
         protected override INotifyValue<TResult> CreateProxy()
         {
             return ProxyFunction(Argument1, Argument2, Argument3, Argument4, Argument5);
-        }
-
-        protected override void AttachCore()
-        {
-			Target.Attach();
-			Argument1.Attach();
-			Argument2.Attach();
-			Argument3.Attach();
-			Argument4.Attach();
-			Argument5.Attach();
-			RenewProxyFunction();
-            base.AttachCore();
-        }
-
-        protected override void DetachCore()
-        {
-            base.DetachCore();
-			Target.Detach();
-			Argument1.Detach();
-			Argument2.Detach();
-			Argument3.Detach();
-			Argument4.Detach();
-			Argument5.Detach();
         }
 
         public override bool IsParameterFree
@@ -460,6 +427,18 @@ namespace NMF.Expressions
         {
             return new ObservableSimpleMethodProxyCall<T, T1, T2, T3, T4, T5, TResult>(Target.ApplyParameters(parameters), ProxyMethod, Argument1.ApplyParameters(parameters), Argument2.ApplyParameters(parameters), Argument3.ApplyParameters(parameters), Argument4.ApplyParameters(parameters), Argument5.ApplyParameters(parameters));
         }
+
+        public override bool Notify(IEnumerable<INotifiable> sources)
+        {
+            RenewProxyFunction();
+            return base.Notify(sources);
+        }
+
+        protected override void OnAttach()
+        {
+            RenewProxyFunction();
+            base.OnAttach();
+        }
     }
     internal sealed class ObservableSimpleMethodProxyCall<T, T1, T2, T3, T4, T5, T6, TResult> : ObservableProxyCallBase<TResult>
     {
@@ -468,80 +447,61 @@ namespace NMF.Expressions
 
         public ObservableSimpleMethodProxyCall(INotifyExpression<T> target, MethodInfo proxyFunction, INotifyExpression<T1> arg1, INotifyExpression<T2> arg2, INotifyExpression<T3> arg3, INotifyExpression<T4> arg4, INotifyExpression<T5> arg5, INotifyExpression<T6> arg6)
         {
-			if (target == null) throw new ArgumentNullException("target");
+            if (target == null) throw new ArgumentNullException("target");
             if (proxyFunction == null) throw new ArgumentNullException("proxyFunction");
-			if (arg1 == null) throw new ArgumentNullException("arg1");
-			if (arg2 == null) throw new ArgumentNullException("arg2");
-			if (arg3 == null) throw new ArgumentNullException("arg3");
-			if (arg4 == null) throw new ArgumentNullException("arg4");
-			if (arg5 == null) throw new ArgumentNullException("arg5");
-			if (arg6 == null) throw new ArgumentNullException("arg6");
+            if (arg1 == null) throw new ArgumentNullException("arg1");
+            if (arg2 == null) throw new ArgumentNullException("arg2");
+            if (arg3 == null) throw new ArgumentNullException("arg3");
+            if (arg4 == null) throw new ArgumentNullException("arg4");
+            if (arg5 == null) throw new ArgumentNullException("arg5");
+            if (arg6 == null) throw new ArgumentNullException("arg6");
 
-			Target = target;
-			ProxyMethod = proxyFunction;
-			Argument1 = arg1;
-			Argument2 = arg2;
-			Argument3 = arg3;
-			Argument4 = arg4;
-			Argument5 = arg5;
-			Argument6 = arg6;
-			
-			Target.ValueChanged += TargetChanged;
-		}
+            Target = target;
+            ProxyMethod = proxyFunction;
+            Argument1 = arg1;
+            Argument2 = arg2;
+            Argument3 = arg3;
+            Argument4 = arg4;
+            Argument5 = arg5;
+            Argument6 = arg6;
+        }
 
-		private void TargetChanged(object sender, ValueChangedEventArgs e)
-        {
-            if (!IsAttached) return;
-			RenewProxyFunction();
-			RenewProxy();
-			Refresh();
-		}
-
-		public INotifyExpression<T> Target { get; private set; }
-		public INotifyExpression<T1> Argument1 { get; private set; }
-		public INotifyExpression<T2> Argument2 { get; private set; }
-		public INotifyExpression<T3> Argument3 { get; private set; }
-		public INotifyExpression<T4> Argument4 { get; private set; }
-		public INotifyExpression<T5> Argument5 { get; private set; }
-		public INotifyExpression<T6> Argument6 { get; private set; }
+        public INotifyExpression<T> Target { get; private set; }
+        public INotifyExpression<T1> Argument1 { get; private set; }
+        public INotifyExpression<T2> Argument2 { get; private set; }
+        public INotifyExpression<T3> Argument3 { get; private set; }
+        public INotifyExpression<T4> Argument4 { get; private set; }
+        public INotifyExpression<T5> Argument5 { get; private set; }
+        public INotifyExpression<T6> Argument6 { get; private set; }
 
         public Func<INotifyValue<T1>, INotifyValue<T2>, INotifyValue<T3>, INotifyValue<T4>, INotifyValue<T5>, INotifyValue<T6>, INotifyValue<TResult>> ProxyFunction { get; private set; }
 
-		public MethodInfo ProxyMethod { get; private set; }
+        public MethodInfo ProxyMethod { get; private set; }
 
-		private void RenewProxyFunction()
-		{
-			ProxyFunction = ReflectionHelper.CreateDelegate(typeof(Func<INotifyValue<T1>, INotifyValue<T2>, INotifyValue<T3>, INotifyValue<T4>, INotifyValue<T5>, INotifyValue<T6>, INotifyValue<TResult>>), Target.Value, ProxyMethod) as Func<INotifyValue<T1>, INotifyValue<T2>, INotifyValue<T3>, INotifyValue<T4>, INotifyValue<T5>, INotifyValue<T6>, INotifyValue<TResult>>;
-		}
+        public override IEnumerable<INotifiable> Dependencies
+        {
+            get
+            {
+                foreach (var dep in base.Dependencies)
+                    yield return dep;
+
+                yield return Argument1;
+                yield return Argument2;
+                yield return Argument3;
+                yield return Argument4;
+                yield return Argument5;
+                yield return Argument6;
+            }
+        }
+
+        private void RenewProxyFunction()
+        {
+            ProxyFunction = ReflectionHelper.CreateDelegate(typeof(Func<INotifyValue<T1>, INotifyValue<T2>, INotifyValue<T3>, INotifyValue<T4>, INotifyValue<T5>, INotifyValue<T6>, INotifyValue<TResult>>), Target.Value, ProxyMethod) as Func<INotifyValue<T1>, INotifyValue<T2>, INotifyValue<T3>, INotifyValue<T4>, INotifyValue<T5>, INotifyValue<T6>, INotifyValue<TResult>>;
+        }
 
         protected override INotifyValue<TResult> CreateProxy()
         {
             return ProxyFunction(Argument1, Argument2, Argument3, Argument4, Argument5, Argument6);
-        }
-
-        protected override void AttachCore()
-        {
-			Target.Attach();
-			Argument1.Attach();
-			Argument2.Attach();
-			Argument3.Attach();
-			Argument4.Attach();
-			Argument5.Attach();
-			Argument6.Attach();
-			RenewProxyFunction();
-            base.AttachCore();
-        }
-
-        protected override void DetachCore()
-        {
-            base.DetachCore();
-			Target.Detach();
-			Argument1.Detach();
-			Argument2.Detach();
-			Argument3.Detach();
-			Argument4.Detach();
-			Argument5.Detach();
-			Argument6.Detach();
         }
 
         public override bool IsParameterFree
@@ -553,6 +513,18 @@ namespace NMF.Expressions
         {
             return new ObservableSimpleMethodProxyCall<T, T1, T2, T3, T4, T5, T6, TResult>(Target.ApplyParameters(parameters), ProxyMethod, Argument1.ApplyParameters(parameters), Argument2.ApplyParameters(parameters), Argument3.ApplyParameters(parameters), Argument4.ApplyParameters(parameters), Argument5.ApplyParameters(parameters), Argument6.ApplyParameters(parameters));
         }
+
+        public override bool Notify(IEnumerable<INotifiable> sources)
+        {
+            RenewProxyFunction();
+            return base.Notify(sources);
+        }
+
+        protected override void OnAttach()
+        {
+            RenewProxyFunction();
+            base.OnAttach();
+        }
     }
     internal sealed class ObservableSimpleMethodProxyCall<T, T1, T2, T3, T4, T5, T6, T7, TResult> : ObservableProxyCallBase<TResult>
     {
@@ -561,85 +533,65 @@ namespace NMF.Expressions
 
         public ObservableSimpleMethodProxyCall(INotifyExpression<T> target, MethodInfo proxyFunction, INotifyExpression<T1> arg1, INotifyExpression<T2> arg2, INotifyExpression<T3> arg3, INotifyExpression<T4> arg4, INotifyExpression<T5> arg5, INotifyExpression<T6> arg6, INotifyExpression<T7> arg7)
         {
-			if (target == null) throw new ArgumentNullException("target");
+            if (target == null) throw new ArgumentNullException("target");
             if (proxyFunction == null) throw new ArgumentNullException("proxyFunction");
-			if (arg1 == null) throw new ArgumentNullException("arg1");
-			if (arg2 == null) throw new ArgumentNullException("arg2");
-			if (arg3 == null) throw new ArgumentNullException("arg3");
-			if (arg4 == null) throw new ArgumentNullException("arg4");
-			if (arg5 == null) throw new ArgumentNullException("arg5");
-			if (arg6 == null) throw new ArgumentNullException("arg6");
-			if (arg7 == null) throw new ArgumentNullException("arg7");
+            if (arg1 == null) throw new ArgumentNullException("arg1");
+            if (arg2 == null) throw new ArgumentNullException("arg2");
+            if (arg3 == null) throw new ArgumentNullException("arg3");
+            if (arg4 == null) throw new ArgumentNullException("arg4");
+            if (arg5 == null) throw new ArgumentNullException("arg5");
+            if (arg6 == null) throw new ArgumentNullException("arg6");
+            if (arg7 == null) throw new ArgumentNullException("arg7");
 
-			Target = target;
-			ProxyMethod = proxyFunction;
-			Argument1 = arg1;
-			Argument2 = arg2;
-			Argument3 = arg3;
-			Argument4 = arg4;
-			Argument5 = arg5;
-			Argument6 = arg6;
-			Argument7 = arg7;
-			
-			Target.ValueChanged += TargetChanged;
-		}
+            Target = target;
+            ProxyMethod = proxyFunction;
+            Argument1 = arg1;
+            Argument2 = arg2;
+            Argument3 = arg3;
+            Argument4 = arg4;
+            Argument5 = arg5;
+            Argument6 = arg6;
+            Argument7 = arg7;
+        }
 
-		private void TargetChanged(object sender, ValueChangedEventArgs e)
-        {
-            if (!IsAttached) return;
-			RenewProxyFunction();
-			RenewProxy();
-			Refresh();
-		}
-
-		public INotifyExpression<T> Target { get; private set; }
-		public INotifyExpression<T1> Argument1 { get; private set; }
-		public INotifyExpression<T2> Argument2 { get; private set; }
-		public INotifyExpression<T3> Argument3 { get; private set; }
-		public INotifyExpression<T4> Argument4 { get; private set; }
-		public INotifyExpression<T5> Argument5 { get; private set; }
-		public INotifyExpression<T6> Argument6 { get; private set; }
-		public INotifyExpression<T7> Argument7 { get; private set; }
+        public INotifyExpression<T> Target { get; private set; }
+        public INotifyExpression<T1> Argument1 { get; private set; }
+        public INotifyExpression<T2> Argument2 { get; private set; }
+        public INotifyExpression<T3> Argument3 { get; private set; }
+        public INotifyExpression<T4> Argument4 { get; private set; }
+        public INotifyExpression<T5> Argument5 { get; private set; }
+        public INotifyExpression<T6> Argument6 { get; private set; }
+        public INotifyExpression<T7> Argument7 { get; private set; }
 
         public Func<INotifyValue<T1>, INotifyValue<T2>, INotifyValue<T3>, INotifyValue<T4>, INotifyValue<T5>, INotifyValue<T6>, INotifyValue<T7>, INotifyValue<TResult>> ProxyFunction { get; private set; }
 
-		public MethodInfo ProxyMethod { get; private set; }
+        public MethodInfo ProxyMethod { get; private set; }
 
-		private void RenewProxyFunction()
-		{
-			ProxyFunction = ReflectionHelper.CreateDelegate(typeof(Func<INotifyValue<T1>, INotifyValue<T2>, INotifyValue<T3>, INotifyValue<T4>, INotifyValue<T5>, INotifyValue<T6>, INotifyValue<T7>, INotifyValue<TResult>>), Target.Value, ProxyMethod) as Func<INotifyValue<T1>, INotifyValue<T2>, INotifyValue<T3>, INotifyValue<T4>, INotifyValue<T5>, INotifyValue<T6>, INotifyValue<T7>, INotifyValue<TResult>>;
-		}
+        public override IEnumerable<INotifiable> Dependencies
+        {
+            get
+            {
+                foreach (var dep in base.Dependencies)
+                    yield return dep;
+
+                yield return Argument1;
+                yield return Argument2;
+                yield return Argument3;
+                yield return Argument4;
+                yield return Argument5;
+                yield return Argument6;
+                yield return Argument7;
+            }
+        }
+
+        private void RenewProxyFunction()
+        {
+            ProxyFunction = ReflectionHelper.CreateDelegate(typeof(Func<INotifyValue<T1>, INotifyValue<T2>, INotifyValue<T3>, INotifyValue<T4>, INotifyValue<T5>, INotifyValue<T6>, INotifyValue<T7>, INotifyValue<TResult>>), Target.Value, ProxyMethod) as Func<INotifyValue<T1>, INotifyValue<T2>, INotifyValue<T3>, INotifyValue<T4>, INotifyValue<T5>, INotifyValue<T6>, INotifyValue<T7>, INotifyValue<TResult>>;
+        }
 
         protected override INotifyValue<TResult> CreateProxy()
         {
             return ProxyFunction(Argument1, Argument2, Argument3, Argument4, Argument5, Argument6, Argument7);
-        }
-
-        protected override void AttachCore()
-        {
-			Target.Attach();
-			Argument1.Attach();
-			Argument2.Attach();
-			Argument3.Attach();
-			Argument4.Attach();
-			Argument5.Attach();
-			Argument6.Attach();
-			Argument7.Attach();
-			RenewProxyFunction();
-            base.AttachCore();
-        }
-
-        protected override void DetachCore()
-        {
-            base.DetachCore();
-			Target.Detach();
-			Argument1.Detach();
-			Argument2.Detach();
-			Argument3.Detach();
-			Argument4.Detach();
-			Argument5.Detach();
-			Argument6.Detach();
-			Argument7.Detach();
         }
 
         public override bool IsParameterFree
@@ -651,6 +603,18 @@ namespace NMF.Expressions
         {
             return new ObservableSimpleMethodProxyCall<T, T1, T2, T3, T4, T5, T6, T7, TResult>(Target.ApplyParameters(parameters), ProxyMethod, Argument1.ApplyParameters(parameters), Argument2.ApplyParameters(parameters), Argument3.ApplyParameters(parameters), Argument4.ApplyParameters(parameters), Argument5.ApplyParameters(parameters), Argument6.ApplyParameters(parameters), Argument7.ApplyParameters(parameters));
         }
+
+        public override bool Notify(IEnumerable<INotifiable> sources)
+        {
+            RenewProxyFunction();
+            return base.Notify(sources);
+        }
+
+        protected override void OnAttach()
+        {
+            RenewProxyFunction();
+            base.OnAttach();
+        }
     }
     internal sealed class ObservableSimpleMethodProxyCall<T, T1, T2, T3, T4, T5, T6, T7, T8, TResult> : ObservableProxyCallBase<TResult>
     {
@@ -659,90 +623,69 @@ namespace NMF.Expressions
 
         public ObservableSimpleMethodProxyCall(INotifyExpression<T> target, MethodInfo proxyFunction, INotifyExpression<T1> arg1, INotifyExpression<T2> arg2, INotifyExpression<T3> arg3, INotifyExpression<T4> arg4, INotifyExpression<T5> arg5, INotifyExpression<T6> arg6, INotifyExpression<T7> arg7, INotifyExpression<T8> arg8)
         {
-			if (target == null) throw new ArgumentNullException("target");
+            if (target == null) throw new ArgumentNullException("target");
             if (proxyFunction == null) throw new ArgumentNullException("proxyFunction");
-			if (arg1 == null) throw new ArgumentNullException("arg1");
-			if (arg2 == null) throw new ArgumentNullException("arg2");
-			if (arg3 == null) throw new ArgumentNullException("arg3");
-			if (arg4 == null) throw new ArgumentNullException("arg4");
-			if (arg5 == null) throw new ArgumentNullException("arg5");
-			if (arg6 == null) throw new ArgumentNullException("arg6");
-			if (arg7 == null) throw new ArgumentNullException("arg7");
-			if (arg8 == null) throw new ArgumentNullException("arg8");
+            if (arg1 == null) throw new ArgumentNullException("arg1");
+            if (arg2 == null) throw new ArgumentNullException("arg2");
+            if (arg3 == null) throw new ArgumentNullException("arg3");
+            if (arg4 == null) throw new ArgumentNullException("arg4");
+            if (arg5 == null) throw new ArgumentNullException("arg5");
+            if (arg6 == null) throw new ArgumentNullException("arg6");
+            if (arg7 == null) throw new ArgumentNullException("arg7");
+            if (arg8 == null) throw new ArgumentNullException("arg8");
 
-			Target = target;
-			ProxyMethod = proxyFunction;
-			Argument1 = arg1;
-			Argument2 = arg2;
-			Argument3 = arg3;
-			Argument4 = arg4;
-			Argument5 = arg5;
-			Argument6 = arg6;
-			Argument7 = arg7;
-			Argument8 = arg8;
-			
-			Target.ValueChanged += TargetChanged;
-		}
+            Target = target;
+            ProxyMethod = proxyFunction;
+            Argument1 = arg1;
+            Argument2 = arg2;
+            Argument3 = arg3;
+            Argument4 = arg4;
+            Argument5 = arg5;
+            Argument6 = arg6;
+            Argument7 = arg7;
+            Argument8 = arg8;
+        }
 
-		private void TargetChanged(object sender, ValueChangedEventArgs e)
-        {
-            if (!IsAttached) return;
-			RenewProxyFunction();
-			RenewProxy();
-			Refresh();
-		}
-
-		public INotifyExpression<T> Target { get; private set; }
-		public INotifyExpression<T1> Argument1 { get; private set; }
-		public INotifyExpression<T2> Argument2 { get; private set; }
-		public INotifyExpression<T3> Argument3 { get; private set; }
-		public INotifyExpression<T4> Argument4 { get; private set; }
-		public INotifyExpression<T5> Argument5 { get; private set; }
-		public INotifyExpression<T6> Argument6 { get; private set; }
-		public INotifyExpression<T7> Argument7 { get; private set; }
-		public INotifyExpression<T8> Argument8 { get; private set; }
+        public INotifyExpression<T> Target { get; private set; }
+        public INotifyExpression<T1> Argument1 { get; private set; }
+        public INotifyExpression<T2> Argument2 { get; private set; }
+        public INotifyExpression<T3> Argument3 { get; private set; }
+        public INotifyExpression<T4> Argument4 { get; private set; }
+        public INotifyExpression<T5> Argument5 { get; private set; }
+        public INotifyExpression<T6> Argument6 { get; private set; }
+        public INotifyExpression<T7> Argument7 { get; private set; }
+        public INotifyExpression<T8> Argument8 { get; private set; }
 
         public Func<INotifyValue<T1>, INotifyValue<T2>, INotifyValue<T3>, INotifyValue<T4>, INotifyValue<T5>, INotifyValue<T6>, INotifyValue<T7>, INotifyValue<T8>, INotifyValue<TResult>> ProxyFunction { get; private set; }
 
-		public MethodInfo ProxyMethod { get; private set; }
+        public MethodInfo ProxyMethod { get; private set; }
 
-		private void RenewProxyFunction()
-		{
-			ProxyFunction = ReflectionHelper.CreateDelegate(typeof(Func<INotifyValue<T1>, INotifyValue<T2>, INotifyValue<T3>, INotifyValue<T4>, INotifyValue<T5>, INotifyValue<T6>, INotifyValue<T7>, INotifyValue<T8>, INotifyValue<TResult>>), Target.Value, ProxyMethod) as Func<INotifyValue<T1>, INotifyValue<T2>, INotifyValue<T3>, INotifyValue<T4>, INotifyValue<T5>, INotifyValue<T6>, INotifyValue<T7>, INotifyValue<T8>, INotifyValue<TResult>>;
-		}
+        public override IEnumerable<INotifiable> Dependencies
+        {
+            get
+            {
+                foreach (var dep in base.Dependencies)
+                    yield return dep;
+
+                yield return Argument1;
+                yield return Argument2;
+                yield return Argument3;
+                yield return Argument4;
+                yield return Argument5;
+                yield return Argument6;
+                yield return Argument7;
+                yield return Argument8;
+            }
+        }
+
+        private void RenewProxyFunction()
+        {
+            ProxyFunction = ReflectionHelper.CreateDelegate(typeof(Func<INotifyValue<T1>, INotifyValue<T2>, INotifyValue<T3>, INotifyValue<T4>, INotifyValue<T5>, INotifyValue<T6>, INotifyValue<T7>, INotifyValue<T8>, INotifyValue<TResult>>), Target.Value, ProxyMethod) as Func<INotifyValue<T1>, INotifyValue<T2>, INotifyValue<T3>, INotifyValue<T4>, INotifyValue<T5>, INotifyValue<T6>, INotifyValue<T7>, INotifyValue<T8>, INotifyValue<TResult>>;
+        }
 
         protected override INotifyValue<TResult> CreateProxy()
         {
             return ProxyFunction(Argument1, Argument2, Argument3, Argument4, Argument5, Argument6, Argument7, Argument8);
-        }
-
-        protected override void AttachCore()
-        {
-			Target.Attach();
-			Argument1.Attach();
-			Argument2.Attach();
-			Argument3.Attach();
-			Argument4.Attach();
-			Argument5.Attach();
-			Argument6.Attach();
-			Argument7.Attach();
-			Argument8.Attach();
-			RenewProxyFunction();
-            base.AttachCore();
-        }
-
-        protected override void DetachCore()
-        {
-            base.DetachCore();
-			Target.Detach();
-			Argument1.Detach();
-			Argument2.Detach();
-			Argument3.Detach();
-			Argument4.Detach();
-			Argument5.Detach();
-			Argument6.Detach();
-			Argument7.Detach();
-			Argument8.Detach();
         }
 
         public override bool IsParameterFree
@@ -754,6 +697,18 @@ namespace NMF.Expressions
         {
             return new ObservableSimpleMethodProxyCall<T, T1, T2, T3, T4, T5, T6, T7, T8, TResult>(Target.ApplyParameters(parameters), ProxyMethod, Argument1.ApplyParameters(parameters), Argument2.ApplyParameters(parameters), Argument3.ApplyParameters(parameters), Argument4.ApplyParameters(parameters), Argument5.ApplyParameters(parameters), Argument6.ApplyParameters(parameters), Argument7.ApplyParameters(parameters), Argument8.ApplyParameters(parameters));
         }
+
+        public override bool Notify(IEnumerable<INotifiable> sources)
+        {
+            RenewProxyFunction();
+            return base.Notify(sources);
+        }
+
+        protected override void OnAttach()
+        {
+            RenewProxyFunction();
+            base.OnAttach();
+        }
     }
     internal sealed class ObservableSimpleMethodProxyCall<T, T1, T2, T3, T4, T5, T6, T7, T8, T9, TResult> : ObservableProxyCallBase<TResult>
     {
@@ -762,95 +717,73 @@ namespace NMF.Expressions
 
         public ObservableSimpleMethodProxyCall(INotifyExpression<T> target, MethodInfo proxyFunction, INotifyExpression<T1> arg1, INotifyExpression<T2> arg2, INotifyExpression<T3> arg3, INotifyExpression<T4> arg4, INotifyExpression<T5> arg5, INotifyExpression<T6> arg6, INotifyExpression<T7> arg7, INotifyExpression<T8> arg8, INotifyExpression<T9> arg9)
         {
-			if (target == null) throw new ArgumentNullException("target");
+            if (target == null) throw new ArgumentNullException("target");
             if (proxyFunction == null) throw new ArgumentNullException("proxyFunction");
-			if (arg1 == null) throw new ArgumentNullException("arg1");
-			if (arg2 == null) throw new ArgumentNullException("arg2");
-			if (arg3 == null) throw new ArgumentNullException("arg3");
-			if (arg4 == null) throw new ArgumentNullException("arg4");
-			if (arg5 == null) throw new ArgumentNullException("arg5");
-			if (arg6 == null) throw new ArgumentNullException("arg6");
-			if (arg7 == null) throw new ArgumentNullException("arg7");
-			if (arg8 == null) throw new ArgumentNullException("arg8");
-			if (arg9 == null) throw new ArgumentNullException("arg9");
+            if (arg1 == null) throw new ArgumentNullException("arg1");
+            if (arg2 == null) throw new ArgumentNullException("arg2");
+            if (arg3 == null) throw new ArgumentNullException("arg3");
+            if (arg4 == null) throw new ArgumentNullException("arg4");
+            if (arg5 == null) throw new ArgumentNullException("arg5");
+            if (arg6 == null) throw new ArgumentNullException("arg6");
+            if (arg7 == null) throw new ArgumentNullException("arg7");
+            if (arg8 == null) throw new ArgumentNullException("arg8");
+            if (arg9 == null) throw new ArgumentNullException("arg9");
 
-			Target = target;
-			ProxyMethod = proxyFunction;
-			Argument1 = arg1;
-			Argument2 = arg2;
-			Argument3 = arg3;
-			Argument4 = arg4;
-			Argument5 = arg5;
-			Argument6 = arg6;
-			Argument7 = arg7;
-			Argument8 = arg8;
-			Argument9 = arg9;
-			
-			Target.ValueChanged += TargetChanged;
-		}
+            Target = target;
+            ProxyMethod = proxyFunction;
+            Argument1 = arg1;
+            Argument2 = arg2;
+            Argument3 = arg3;
+            Argument4 = arg4;
+            Argument5 = arg5;
+            Argument6 = arg6;
+            Argument7 = arg7;
+            Argument8 = arg8;
+            Argument9 = arg9;
+        }
 
-		private void TargetChanged(object sender, ValueChangedEventArgs e)
-        {
-            if (!IsAttached) return;
-			RenewProxyFunction();
-			RenewProxy();
-			Refresh();
-		}
-
-		public INotifyExpression<T> Target { get; private set; }
-		public INotifyExpression<T1> Argument1 { get; private set; }
-		public INotifyExpression<T2> Argument2 { get; private set; }
-		public INotifyExpression<T3> Argument3 { get; private set; }
-		public INotifyExpression<T4> Argument4 { get; private set; }
-		public INotifyExpression<T5> Argument5 { get; private set; }
-		public INotifyExpression<T6> Argument6 { get; private set; }
-		public INotifyExpression<T7> Argument7 { get; private set; }
-		public INotifyExpression<T8> Argument8 { get; private set; }
-		public INotifyExpression<T9> Argument9 { get; private set; }
+        public INotifyExpression<T> Target { get; private set; }
+        public INotifyExpression<T1> Argument1 { get; private set; }
+        public INotifyExpression<T2> Argument2 { get; private set; }
+        public INotifyExpression<T3> Argument3 { get; private set; }
+        public INotifyExpression<T4> Argument4 { get; private set; }
+        public INotifyExpression<T5> Argument5 { get; private set; }
+        public INotifyExpression<T6> Argument6 { get; private set; }
+        public INotifyExpression<T7> Argument7 { get; private set; }
+        public INotifyExpression<T8> Argument8 { get; private set; }
+        public INotifyExpression<T9> Argument9 { get; private set; }
 
         public Func<INotifyValue<T1>, INotifyValue<T2>, INotifyValue<T3>, INotifyValue<T4>, INotifyValue<T5>, INotifyValue<T6>, INotifyValue<T7>, INotifyValue<T8>, INotifyValue<T9>, INotifyValue<TResult>> ProxyFunction { get; private set; }
 
-		public MethodInfo ProxyMethod { get; private set; }
+        public MethodInfo ProxyMethod { get; private set; }
 
-		private void RenewProxyFunction()
-		{
-			ProxyFunction = ReflectionHelper.CreateDelegate(typeof(Func<INotifyValue<T1>, INotifyValue<T2>, INotifyValue<T3>, INotifyValue<T4>, INotifyValue<T5>, INotifyValue<T6>, INotifyValue<T7>, INotifyValue<T8>, INotifyValue<T9>, INotifyValue<TResult>>), Target.Value, ProxyMethod) as Func<INotifyValue<T1>, INotifyValue<T2>, INotifyValue<T3>, INotifyValue<T4>, INotifyValue<T5>, INotifyValue<T6>, INotifyValue<T7>, INotifyValue<T8>, INotifyValue<T9>, INotifyValue<TResult>>;
-		}
+        public override IEnumerable<INotifiable> Dependencies
+        {
+            get
+            {
+                foreach (var dep in base.Dependencies)
+                    yield return dep;
+
+                yield return Argument1;
+                yield return Argument2;
+                yield return Argument3;
+                yield return Argument4;
+                yield return Argument5;
+                yield return Argument6;
+                yield return Argument7;
+                yield return Argument8;
+                yield return Argument9;
+            }
+        }
+
+        private void RenewProxyFunction()
+        {
+            ProxyFunction = ReflectionHelper.CreateDelegate(typeof(Func<INotifyValue<T1>, INotifyValue<T2>, INotifyValue<T3>, INotifyValue<T4>, INotifyValue<T5>, INotifyValue<T6>, INotifyValue<T7>, INotifyValue<T8>, INotifyValue<T9>, INotifyValue<TResult>>), Target.Value, ProxyMethod) as Func<INotifyValue<T1>, INotifyValue<T2>, INotifyValue<T3>, INotifyValue<T4>, INotifyValue<T5>, INotifyValue<T6>, INotifyValue<T7>, INotifyValue<T8>, INotifyValue<T9>, INotifyValue<TResult>>;
+        }
 
         protected override INotifyValue<TResult> CreateProxy()
         {
             return ProxyFunction(Argument1, Argument2, Argument3, Argument4, Argument5, Argument6, Argument7, Argument8, Argument9);
-        }
-
-        protected override void AttachCore()
-        {
-			Target.Attach();
-			Argument1.Attach();
-			Argument2.Attach();
-			Argument3.Attach();
-			Argument4.Attach();
-			Argument5.Attach();
-			Argument6.Attach();
-			Argument7.Attach();
-			Argument8.Attach();
-			Argument9.Attach();
-			RenewProxyFunction();
-            base.AttachCore();
-        }
-
-        protected override void DetachCore()
-        {
-            base.DetachCore();
-			Target.Detach();
-			Argument1.Detach();
-			Argument2.Detach();
-			Argument3.Detach();
-			Argument4.Detach();
-			Argument5.Detach();
-			Argument6.Detach();
-			Argument7.Detach();
-			Argument8.Detach();
-			Argument9.Detach();
         }
 
         public override bool IsParameterFree
@@ -862,6 +795,18 @@ namespace NMF.Expressions
         {
             return new ObservableSimpleMethodProxyCall<T, T1, T2, T3, T4, T5, T6, T7, T8, T9, TResult>(Target.ApplyParameters(parameters), ProxyMethod, Argument1.ApplyParameters(parameters), Argument2.ApplyParameters(parameters), Argument3.ApplyParameters(parameters), Argument4.ApplyParameters(parameters), Argument5.ApplyParameters(parameters), Argument6.ApplyParameters(parameters), Argument7.ApplyParameters(parameters), Argument8.ApplyParameters(parameters), Argument9.ApplyParameters(parameters));
         }
+
+        public override bool Notify(IEnumerable<INotifiable> sources)
+        {
+            RenewProxyFunction();
+            return base.Notify(sources);
+        }
+
+        protected override void OnAttach()
+        {
+            RenewProxyFunction();
+            base.OnAttach();
+        }
     }
     internal sealed class ObservableSimpleMethodProxyCall<T, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, TResult> : ObservableProxyCallBase<TResult>
     {
@@ -870,100 +815,77 @@ namespace NMF.Expressions
 
         public ObservableSimpleMethodProxyCall(INotifyExpression<T> target, MethodInfo proxyFunction, INotifyExpression<T1> arg1, INotifyExpression<T2> arg2, INotifyExpression<T3> arg3, INotifyExpression<T4> arg4, INotifyExpression<T5> arg5, INotifyExpression<T6> arg6, INotifyExpression<T7> arg7, INotifyExpression<T8> arg8, INotifyExpression<T9> arg9, INotifyExpression<T10> arg10)
         {
-			if (target == null) throw new ArgumentNullException("target");
+            if (target == null) throw new ArgumentNullException("target");
             if (proxyFunction == null) throw new ArgumentNullException("proxyFunction");
-			if (arg1 == null) throw new ArgumentNullException("arg1");
-			if (arg2 == null) throw new ArgumentNullException("arg2");
-			if (arg3 == null) throw new ArgumentNullException("arg3");
-			if (arg4 == null) throw new ArgumentNullException("arg4");
-			if (arg5 == null) throw new ArgumentNullException("arg5");
-			if (arg6 == null) throw new ArgumentNullException("arg6");
-			if (arg7 == null) throw new ArgumentNullException("arg7");
-			if (arg8 == null) throw new ArgumentNullException("arg8");
-			if (arg9 == null) throw new ArgumentNullException("arg9");
-			if (arg10 == null) throw new ArgumentNullException("arg10");
+            if (arg1 == null) throw new ArgumentNullException("arg1");
+            if (arg2 == null) throw new ArgumentNullException("arg2");
+            if (arg3 == null) throw new ArgumentNullException("arg3");
+            if (arg4 == null) throw new ArgumentNullException("arg4");
+            if (arg5 == null) throw new ArgumentNullException("arg5");
+            if (arg6 == null) throw new ArgumentNullException("arg6");
+            if (arg7 == null) throw new ArgumentNullException("arg7");
+            if (arg8 == null) throw new ArgumentNullException("arg8");
+            if (arg9 == null) throw new ArgumentNullException("arg9");
+            if (arg10 == null) throw new ArgumentNullException("arg10");
 
-			Target = target;
-			ProxyMethod = proxyFunction;
-			Argument1 = arg1;
-			Argument2 = arg2;
-			Argument3 = arg3;
-			Argument4 = arg4;
-			Argument5 = arg5;
-			Argument6 = arg6;
-			Argument7 = arg7;
-			Argument8 = arg8;
-			Argument9 = arg9;
-			Argument10 = arg10;
-			
-			Target.ValueChanged += TargetChanged;
-		}
+            Target = target;
+            ProxyMethod = proxyFunction;
+            Argument1 = arg1;
+            Argument2 = arg2;
+            Argument3 = arg3;
+            Argument4 = arg4;
+            Argument5 = arg5;
+            Argument6 = arg6;
+            Argument7 = arg7;
+            Argument8 = arg8;
+            Argument9 = arg9;
+            Argument10 = arg10;
+        }
 
-		private void TargetChanged(object sender, ValueChangedEventArgs e)
-        {
-            if (!IsAttached) return;
-			RenewProxyFunction();
-			RenewProxy();
-			Refresh();
-		}
-
-		public INotifyExpression<T> Target { get; private set; }
-		public INotifyExpression<T1> Argument1 { get; private set; }
-		public INotifyExpression<T2> Argument2 { get; private set; }
-		public INotifyExpression<T3> Argument3 { get; private set; }
-		public INotifyExpression<T4> Argument4 { get; private set; }
-		public INotifyExpression<T5> Argument5 { get; private set; }
-		public INotifyExpression<T6> Argument6 { get; private set; }
-		public INotifyExpression<T7> Argument7 { get; private set; }
-		public INotifyExpression<T8> Argument8 { get; private set; }
-		public INotifyExpression<T9> Argument9 { get; private set; }
-		public INotifyExpression<T10> Argument10 { get; private set; }
+        public INotifyExpression<T> Target { get; private set; }
+        public INotifyExpression<T1> Argument1 { get; private set; }
+        public INotifyExpression<T2> Argument2 { get; private set; }
+        public INotifyExpression<T3> Argument3 { get; private set; }
+        public INotifyExpression<T4> Argument4 { get; private set; }
+        public INotifyExpression<T5> Argument5 { get; private set; }
+        public INotifyExpression<T6> Argument6 { get; private set; }
+        public INotifyExpression<T7> Argument7 { get; private set; }
+        public INotifyExpression<T8> Argument8 { get; private set; }
+        public INotifyExpression<T9> Argument9 { get; private set; }
+        public INotifyExpression<T10> Argument10 { get; private set; }
 
         public Func<INotifyValue<T1>, INotifyValue<T2>, INotifyValue<T3>, INotifyValue<T4>, INotifyValue<T5>, INotifyValue<T6>, INotifyValue<T7>, INotifyValue<T8>, INotifyValue<T9>, INotifyValue<T10>, INotifyValue<TResult>> ProxyFunction { get; private set; }
 
-		public MethodInfo ProxyMethod { get; private set; }
+        public MethodInfo ProxyMethod { get; private set; }
 
-		private void RenewProxyFunction()
-		{
-			ProxyFunction = ReflectionHelper.CreateDelegate(typeof(Func<INotifyValue<T1>, INotifyValue<T2>, INotifyValue<T3>, INotifyValue<T4>, INotifyValue<T5>, INotifyValue<T6>, INotifyValue<T7>, INotifyValue<T8>, INotifyValue<T9>, INotifyValue<T10>, INotifyValue<TResult>>), Target.Value, ProxyMethod) as Func<INotifyValue<T1>, INotifyValue<T2>, INotifyValue<T3>, INotifyValue<T4>, INotifyValue<T5>, INotifyValue<T6>, INotifyValue<T7>, INotifyValue<T8>, INotifyValue<T9>, INotifyValue<T10>, INotifyValue<TResult>>;
-		}
+        public override IEnumerable<INotifiable> Dependencies
+        {
+            get
+            {
+                foreach (var dep in base.Dependencies)
+                    yield return dep;
+
+                yield return Argument1;
+                yield return Argument2;
+                yield return Argument3;
+                yield return Argument4;
+                yield return Argument5;
+                yield return Argument6;
+                yield return Argument7;
+                yield return Argument8;
+                yield return Argument9;
+                yield return Argument10;
+            }
+        }
+
+        private void RenewProxyFunction()
+        {
+            ProxyFunction = ReflectionHelper.CreateDelegate(typeof(Func<INotifyValue<T1>, INotifyValue<T2>, INotifyValue<T3>, INotifyValue<T4>, INotifyValue<T5>, INotifyValue<T6>, INotifyValue<T7>, INotifyValue<T8>, INotifyValue<T9>, INotifyValue<T10>, INotifyValue<TResult>>), Target.Value, ProxyMethod) as Func<INotifyValue<T1>, INotifyValue<T2>, INotifyValue<T3>, INotifyValue<T4>, INotifyValue<T5>, INotifyValue<T6>, INotifyValue<T7>, INotifyValue<T8>, INotifyValue<T9>, INotifyValue<T10>, INotifyValue<TResult>>;
+        }
 
         protected override INotifyValue<TResult> CreateProxy()
         {
             return ProxyFunction(Argument1, Argument2, Argument3, Argument4, Argument5, Argument6, Argument7, Argument8, Argument9, Argument10);
-        }
-
-        protected override void AttachCore()
-        {
-			Target.Attach();
-			Argument1.Attach();
-			Argument2.Attach();
-			Argument3.Attach();
-			Argument4.Attach();
-			Argument5.Attach();
-			Argument6.Attach();
-			Argument7.Attach();
-			Argument8.Attach();
-			Argument9.Attach();
-			Argument10.Attach();
-			RenewProxyFunction();
-            base.AttachCore();
-        }
-
-        protected override void DetachCore()
-        {
-            base.DetachCore();
-			Target.Detach();
-			Argument1.Detach();
-			Argument2.Detach();
-			Argument3.Detach();
-			Argument4.Detach();
-			Argument5.Detach();
-			Argument6.Detach();
-			Argument7.Detach();
-			Argument8.Detach();
-			Argument9.Detach();
-			Argument10.Detach();
         }
 
         public override bool IsParameterFree
@@ -975,6 +897,18 @@ namespace NMF.Expressions
         {
             return new ObservableSimpleMethodProxyCall<T, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, TResult>(Target.ApplyParameters(parameters), ProxyMethod, Argument1.ApplyParameters(parameters), Argument2.ApplyParameters(parameters), Argument3.ApplyParameters(parameters), Argument4.ApplyParameters(parameters), Argument5.ApplyParameters(parameters), Argument6.ApplyParameters(parameters), Argument7.ApplyParameters(parameters), Argument8.ApplyParameters(parameters), Argument9.ApplyParameters(parameters), Argument10.ApplyParameters(parameters));
         }
+
+        public override bool Notify(IEnumerable<INotifiable> sources)
+        {
+            RenewProxyFunction();
+            return base.Notify(sources);
+        }
+
+        protected override void OnAttach()
+        {
+            RenewProxyFunction();
+            base.OnAttach();
+        }
     }
     internal sealed class ObservableSimpleMethodProxyCall<T, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, TResult> : ObservableProxyCallBase<TResult>
     {
@@ -983,105 +917,81 @@ namespace NMF.Expressions
 
         public ObservableSimpleMethodProxyCall(INotifyExpression<T> target, MethodInfo proxyFunction, INotifyExpression<T1> arg1, INotifyExpression<T2> arg2, INotifyExpression<T3> arg3, INotifyExpression<T4> arg4, INotifyExpression<T5> arg5, INotifyExpression<T6> arg6, INotifyExpression<T7> arg7, INotifyExpression<T8> arg8, INotifyExpression<T9> arg9, INotifyExpression<T10> arg10, INotifyExpression<T11> arg11)
         {
-			if (target == null) throw new ArgumentNullException("target");
+            if (target == null) throw new ArgumentNullException("target");
             if (proxyFunction == null) throw new ArgumentNullException("proxyFunction");
-			if (arg1 == null) throw new ArgumentNullException("arg1");
-			if (arg2 == null) throw new ArgumentNullException("arg2");
-			if (arg3 == null) throw new ArgumentNullException("arg3");
-			if (arg4 == null) throw new ArgumentNullException("arg4");
-			if (arg5 == null) throw new ArgumentNullException("arg5");
-			if (arg6 == null) throw new ArgumentNullException("arg6");
-			if (arg7 == null) throw new ArgumentNullException("arg7");
-			if (arg8 == null) throw new ArgumentNullException("arg8");
-			if (arg9 == null) throw new ArgumentNullException("arg9");
-			if (arg10 == null) throw new ArgumentNullException("arg10");
-			if (arg11 == null) throw new ArgumentNullException("arg11");
+            if (arg1 == null) throw new ArgumentNullException("arg1");
+            if (arg2 == null) throw new ArgumentNullException("arg2");
+            if (arg3 == null) throw new ArgumentNullException("arg3");
+            if (arg4 == null) throw new ArgumentNullException("arg4");
+            if (arg5 == null) throw new ArgumentNullException("arg5");
+            if (arg6 == null) throw new ArgumentNullException("arg6");
+            if (arg7 == null) throw new ArgumentNullException("arg7");
+            if (arg8 == null) throw new ArgumentNullException("arg8");
+            if (arg9 == null) throw new ArgumentNullException("arg9");
+            if (arg10 == null) throw new ArgumentNullException("arg10");
+            if (arg11 == null) throw new ArgumentNullException("arg11");
 
-			Target = target;
-			ProxyMethod = proxyFunction;
-			Argument1 = arg1;
-			Argument2 = arg2;
-			Argument3 = arg3;
-			Argument4 = arg4;
-			Argument5 = arg5;
-			Argument6 = arg6;
-			Argument7 = arg7;
-			Argument8 = arg8;
-			Argument9 = arg9;
-			Argument10 = arg10;
-			Argument11 = arg11;
-			
-			Target.ValueChanged += TargetChanged;
-		}
+            Target = target;
+            ProxyMethod = proxyFunction;
+            Argument1 = arg1;
+            Argument2 = arg2;
+            Argument3 = arg3;
+            Argument4 = arg4;
+            Argument5 = arg5;
+            Argument6 = arg6;
+            Argument7 = arg7;
+            Argument8 = arg8;
+            Argument9 = arg9;
+            Argument10 = arg10;
+            Argument11 = arg11;
+        }
 
-		private void TargetChanged(object sender, ValueChangedEventArgs e)
-        {
-            if (!IsAttached) return;
-			RenewProxyFunction();
-			RenewProxy();
-			Refresh();
-		}
-
-		public INotifyExpression<T> Target { get; private set; }
-		public INotifyExpression<T1> Argument1 { get; private set; }
-		public INotifyExpression<T2> Argument2 { get; private set; }
-		public INotifyExpression<T3> Argument3 { get; private set; }
-		public INotifyExpression<T4> Argument4 { get; private set; }
-		public INotifyExpression<T5> Argument5 { get; private set; }
-		public INotifyExpression<T6> Argument6 { get; private set; }
-		public INotifyExpression<T7> Argument7 { get; private set; }
-		public INotifyExpression<T8> Argument8 { get; private set; }
-		public INotifyExpression<T9> Argument9 { get; private set; }
-		public INotifyExpression<T10> Argument10 { get; private set; }
-		public INotifyExpression<T11> Argument11 { get; private set; }
+        public INotifyExpression<T> Target { get; private set; }
+        public INotifyExpression<T1> Argument1 { get; private set; }
+        public INotifyExpression<T2> Argument2 { get; private set; }
+        public INotifyExpression<T3> Argument3 { get; private set; }
+        public INotifyExpression<T4> Argument4 { get; private set; }
+        public INotifyExpression<T5> Argument5 { get; private set; }
+        public INotifyExpression<T6> Argument6 { get; private set; }
+        public INotifyExpression<T7> Argument7 { get; private set; }
+        public INotifyExpression<T8> Argument8 { get; private set; }
+        public INotifyExpression<T9> Argument9 { get; private set; }
+        public INotifyExpression<T10> Argument10 { get; private set; }
+        public INotifyExpression<T11> Argument11 { get; private set; }
 
         public Func<INotifyValue<T1>, INotifyValue<T2>, INotifyValue<T3>, INotifyValue<T4>, INotifyValue<T5>, INotifyValue<T6>, INotifyValue<T7>, INotifyValue<T8>, INotifyValue<T9>, INotifyValue<T10>, INotifyValue<T11>, INotifyValue<TResult>> ProxyFunction { get; private set; }
 
-		public MethodInfo ProxyMethod { get; private set; }
+        public MethodInfo ProxyMethod { get; private set; }
 
-		private void RenewProxyFunction()
-		{
-			ProxyFunction = ReflectionHelper.CreateDelegate(typeof(Func<INotifyValue<T1>, INotifyValue<T2>, INotifyValue<T3>, INotifyValue<T4>, INotifyValue<T5>, INotifyValue<T6>, INotifyValue<T7>, INotifyValue<T8>, INotifyValue<T9>, INotifyValue<T10>, INotifyValue<T11>, INotifyValue<TResult>>), Target.Value, ProxyMethod) as Func<INotifyValue<T1>, INotifyValue<T2>, INotifyValue<T3>, INotifyValue<T4>, INotifyValue<T5>, INotifyValue<T6>, INotifyValue<T7>, INotifyValue<T8>, INotifyValue<T9>, INotifyValue<T10>, INotifyValue<T11>, INotifyValue<TResult>>;
-		}
+        public override IEnumerable<INotifiable> Dependencies
+        {
+            get
+            {
+                foreach (var dep in base.Dependencies)
+                    yield return dep;
+
+                yield return Argument1;
+                yield return Argument2;
+                yield return Argument3;
+                yield return Argument4;
+                yield return Argument5;
+                yield return Argument6;
+                yield return Argument7;
+                yield return Argument8;
+                yield return Argument9;
+                yield return Argument10;
+                yield return Argument11;
+            }
+        }
+
+        private void RenewProxyFunction()
+        {
+            ProxyFunction = ReflectionHelper.CreateDelegate(typeof(Func<INotifyValue<T1>, INotifyValue<T2>, INotifyValue<T3>, INotifyValue<T4>, INotifyValue<T5>, INotifyValue<T6>, INotifyValue<T7>, INotifyValue<T8>, INotifyValue<T9>, INotifyValue<T10>, INotifyValue<T11>, INotifyValue<TResult>>), Target.Value, ProxyMethod) as Func<INotifyValue<T1>, INotifyValue<T2>, INotifyValue<T3>, INotifyValue<T4>, INotifyValue<T5>, INotifyValue<T6>, INotifyValue<T7>, INotifyValue<T8>, INotifyValue<T9>, INotifyValue<T10>, INotifyValue<T11>, INotifyValue<TResult>>;
+        }
 
         protected override INotifyValue<TResult> CreateProxy()
         {
             return ProxyFunction(Argument1, Argument2, Argument3, Argument4, Argument5, Argument6, Argument7, Argument8, Argument9, Argument10, Argument11);
-        }
-
-        protected override void AttachCore()
-        {
-			Target.Attach();
-			Argument1.Attach();
-			Argument2.Attach();
-			Argument3.Attach();
-			Argument4.Attach();
-			Argument5.Attach();
-			Argument6.Attach();
-			Argument7.Attach();
-			Argument8.Attach();
-			Argument9.Attach();
-			Argument10.Attach();
-			Argument11.Attach();
-			RenewProxyFunction();
-            base.AttachCore();
-        }
-
-        protected override void DetachCore()
-        {
-            base.DetachCore();
-			Target.Detach();
-			Argument1.Detach();
-			Argument2.Detach();
-			Argument3.Detach();
-			Argument4.Detach();
-			Argument5.Detach();
-			Argument6.Detach();
-			Argument7.Detach();
-			Argument8.Detach();
-			Argument9.Detach();
-			Argument10.Detach();
-			Argument11.Detach();
         }
 
         public override bool IsParameterFree
@@ -1093,6 +1003,18 @@ namespace NMF.Expressions
         {
             return new ObservableSimpleMethodProxyCall<T, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, TResult>(Target.ApplyParameters(parameters), ProxyMethod, Argument1.ApplyParameters(parameters), Argument2.ApplyParameters(parameters), Argument3.ApplyParameters(parameters), Argument4.ApplyParameters(parameters), Argument5.ApplyParameters(parameters), Argument6.ApplyParameters(parameters), Argument7.ApplyParameters(parameters), Argument8.ApplyParameters(parameters), Argument9.ApplyParameters(parameters), Argument10.ApplyParameters(parameters), Argument11.ApplyParameters(parameters));
         }
+
+        public override bool Notify(IEnumerable<INotifiable> sources)
+        {
+            RenewProxyFunction();
+            return base.Notify(sources);
+        }
+
+        protected override void OnAttach()
+        {
+            RenewProxyFunction();
+            base.OnAttach();
+        }
     }
     internal sealed class ObservableSimpleMethodProxyCall<T, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, TResult> : ObservableProxyCallBase<TResult>
     {
@@ -1101,110 +1023,85 @@ namespace NMF.Expressions
 
         public ObservableSimpleMethodProxyCall(INotifyExpression<T> target, MethodInfo proxyFunction, INotifyExpression<T1> arg1, INotifyExpression<T2> arg2, INotifyExpression<T3> arg3, INotifyExpression<T4> arg4, INotifyExpression<T5> arg5, INotifyExpression<T6> arg6, INotifyExpression<T7> arg7, INotifyExpression<T8> arg8, INotifyExpression<T9> arg9, INotifyExpression<T10> arg10, INotifyExpression<T11> arg11, INotifyExpression<T12> arg12)
         {
-			if (target == null) throw new ArgumentNullException("target");
+            if (target == null) throw new ArgumentNullException("target");
             if (proxyFunction == null) throw new ArgumentNullException("proxyFunction");
-			if (arg1 == null) throw new ArgumentNullException("arg1");
-			if (arg2 == null) throw new ArgumentNullException("arg2");
-			if (arg3 == null) throw new ArgumentNullException("arg3");
-			if (arg4 == null) throw new ArgumentNullException("arg4");
-			if (arg5 == null) throw new ArgumentNullException("arg5");
-			if (arg6 == null) throw new ArgumentNullException("arg6");
-			if (arg7 == null) throw new ArgumentNullException("arg7");
-			if (arg8 == null) throw new ArgumentNullException("arg8");
-			if (arg9 == null) throw new ArgumentNullException("arg9");
-			if (arg10 == null) throw new ArgumentNullException("arg10");
-			if (arg11 == null) throw new ArgumentNullException("arg11");
-			if (arg12 == null) throw new ArgumentNullException("arg12");
+            if (arg1 == null) throw new ArgumentNullException("arg1");
+            if (arg2 == null) throw new ArgumentNullException("arg2");
+            if (arg3 == null) throw new ArgumentNullException("arg3");
+            if (arg4 == null) throw new ArgumentNullException("arg4");
+            if (arg5 == null) throw new ArgumentNullException("arg5");
+            if (arg6 == null) throw new ArgumentNullException("arg6");
+            if (arg7 == null) throw new ArgumentNullException("arg7");
+            if (arg8 == null) throw new ArgumentNullException("arg8");
+            if (arg9 == null) throw new ArgumentNullException("arg9");
+            if (arg10 == null) throw new ArgumentNullException("arg10");
+            if (arg11 == null) throw new ArgumentNullException("arg11");
+            if (arg12 == null) throw new ArgumentNullException("arg12");
 
-			Target = target;
-			ProxyMethod = proxyFunction;
-			Argument1 = arg1;
-			Argument2 = arg2;
-			Argument3 = arg3;
-			Argument4 = arg4;
-			Argument5 = arg5;
-			Argument6 = arg6;
-			Argument7 = arg7;
-			Argument8 = arg8;
-			Argument9 = arg9;
-			Argument10 = arg10;
-			Argument11 = arg11;
-			Argument12 = arg12;
-			
-			Target.ValueChanged += TargetChanged;
-		}
+            Target = target;
+            ProxyMethod = proxyFunction;
+            Argument1 = arg1;
+            Argument2 = arg2;
+            Argument3 = arg3;
+            Argument4 = arg4;
+            Argument5 = arg5;
+            Argument6 = arg6;
+            Argument7 = arg7;
+            Argument8 = arg8;
+            Argument9 = arg9;
+            Argument10 = arg10;
+            Argument11 = arg11;
+            Argument12 = arg12;
+        }
 
-		private void TargetChanged(object sender, ValueChangedEventArgs e)
-        {
-            if (!IsAttached) return;
-			RenewProxyFunction();
-			RenewProxy();
-			Refresh();
-		}
-
-		public INotifyExpression<T> Target { get; private set; }
-		public INotifyExpression<T1> Argument1 { get; private set; }
-		public INotifyExpression<T2> Argument2 { get; private set; }
-		public INotifyExpression<T3> Argument3 { get; private set; }
-		public INotifyExpression<T4> Argument4 { get; private set; }
-		public INotifyExpression<T5> Argument5 { get; private set; }
-		public INotifyExpression<T6> Argument6 { get; private set; }
-		public INotifyExpression<T7> Argument7 { get; private set; }
-		public INotifyExpression<T8> Argument8 { get; private set; }
-		public INotifyExpression<T9> Argument9 { get; private set; }
-		public INotifyExpression<T10> Argument10 { get; private set; }
-		public INotifyExpression<T11> Argument11 { get; private set; }
-		public INotifyExpression<T12> Argument12 { get; private set; }
+        public INotifyExpression<T> Target { get; private set; }
+        public INotifyExpression<T1> Argument1 { get; private set; }
+        public INotifyExpression<T2> Argument2 { get; private set; }
+        public INotifyExpression<T3> Argument3 { get; private set; }
+        public INotifyExpression<T4> Argument4 { get; private set; }
+        public INotifyExpression<T5> Argument5 { get; private set; }
+        public INotifyExpression<T6> Argument6 { get; private set; }
+        public INotifyExpression<T7> Argument7 { get; private set; }
+        public INotifyExpression<T8> Argument8 { get; private set; }
+        public INotifyExpression<T9> Argument9 { get; private set; }
+        public INotifyExpression<T10> Argument10 { get; private set; }
+        public INotifyExpression<T11> Argument11 { get; private set; }
+        public INotifyExpression<T12> Argument12 { get; private set; }
 
         public Func<INotifyValue<T1>, INotifyValue<T2>, INotifyValue<T3>, INotifyValue<T4>, INotifyValue<T5>, INotifyValue<T6>, INotifyValue<T7>, INotifyValue<T8>, INotifyValue<T9>, INotifyValue<T10>, INotifyValue<T11>, INotifyValue<T12>, INotifyValue<TResult>> ProxyFunction { get; private set; }
 
-		public MethodInfo ProxyMethod { get; private set; }
+        public MethodInfo ProxyMethod { get; private set; }
 
-		private void RenewProxyFunction()
-		{
-			ProxyFunction = ReflectionHelper.CreateDelegate(typeof(Func<INotifyValue<T1>, INotifyValue<T2>, INotifyValue<T3>, INotifyValue<T4>, INotifyValue<T5>, INotifyValue<T6>, INotifyValue<T7>, INotifyValue<T8>, INotifyValue<T9>, INotifyValue<T10>, INotifyValue<T11>, INotifyValue<T12>, INotifyValue<TResult>>), Target.Value, ProxyMethod) as Func<INotifyValue<T1>, INotifyValue<T2>, INotifyValue<T3>, INotifyValue<T4>, INotifyValue<T5>, INotifyValue<T6>, INotifyValue<T7>, INotifyValue<T8>, INotifyValue<T9>, INotifyValue<T10>, INotifyValue<T11>, INotifyValue<T12>, INotifyValue<TResult>>;
-		}
+        public override IEnumerable<INotifiable> Dependencies
+        {
+            get
+            {
+                foreach (var dep in base.Dependencies)
+                    yield return dep;
+
+                yield return Argument1;
+                yield return Argument2;
+                yield return Argument3;
+                yield return Argument4;
+                yield return Argument5;
+                yield return Argument6;
+                yield return Argument7;
+                yield return Argument8;
+                yield return Argument9;
+                yield return Argument10;
+                yield return Argument11;
+                yield return Argument12;
+            }
+        }
+
+        private void RenewProxyFunction()
+        {
+            ProxyFunction = ReflectionHelper.CreateDelegate(typeof(Func<INotifyValue<T1>, INotifyValue<T2>, INotifyValue<T3>, INotifyValue<T4>, INotifyValue<T5>, INotifyValue<T6>, INotifyValue<T7>, INotifyValue<T8>, INotifyValue<T9>, INotifyValue<T10>, INotifyValue<T11>, INotifyValue<T12>, INotifyValue<TResult>>), Target.Value, ProxyMethod) as Func<INotifyValue<T1>, INotifyValue<T2>, INotifyValue<T3>, INotifyValue<T4>, INotifyValue<T5>, INotifyValue<T6>, INotifyValue<T7>, INotifyValue<T8>, INotifyValue<T9>, INotifyValue<T10>, INotifyValue<T11>, INotifyValue<T12>, INotifyValue<TResult>>;
+        }
 
         protected override INotifyValue<TResult> CreateProxy()
         {
             return ProxyFunction(Argument1, Argument2, Argument3, Argument4, Argument5, Argument6, Argument7, Argument8, Argument9, Argument10, Argument11, Argument12);
-        }
-
-        protected override void AttachCore()
-        {
-			Target.Attach();
-			Argument1.Attach();
-			Argument2.Attach();
-			Argument3.Attach();
-			Argument4.Attach();
-			Argument5.Attach();
-			Argument6.Attach();
-			Argument7.Attach();
-			Argument8.Attach();
-			Argument9.Attach();
-			Argument10.Attach();
-			Argument11.Attach();
-			Argument12.Attach();
-			RenewProxyFunction();
-            base.AttachCore();
-        }
-
-        protected override void DetachCore()
-        {
-            base.DetachCore();
-			Target.Detach();
-			Argument1.Detach();
-			Argument2.Detach();
-			Argument3.Detach();
-			Argument4.Detach();
-			Argument5.Detach();
-			Argument6.Detach();
-			Argument7.Detach();
-			Argument8.Detach();
-			Argument9.Detach();
-			Argument10.Detach();
-			Argument11.Detach();
-			Argument12.Detach();
         }
 
         public override bool IsParameterFree
@@ -1216,6 +1113,18 @@ namespace NMF.Expressions
         {
             return new ObservableSimpleMethodProxyCall<T, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, TResult>(Target.ApplyParameters(parameters), ProxyMethod, Argument1.ApplyParameters(parameters), Argument2.ApplyParameters(parameters), Argument3.ApplyParameters(parameters), Argument4.ApplyParameters(parameters), Argument5.ApplyParameters(parameters), Argument6.ApplyParameters(parameters), Argument7.ApplyParameters(parameters), Argument8.ApplyParameters(parameters), Argument9.ApplyParameters(parameters), Argument10.ApplyParameters(parameters), Argument11.ApplyParameters(parameters), Argument12.ApplyParameters(parameters));
         }
+
+        public override bool Notify(IEnumerable<INotifiable> sources)
+        {
+            RenewProxyFunction();
+            return base.Notify(sources);
+        }
+
+        protected override void OnAttach()
+        {
+            RenewProxyFunction();
+            base.OnAttach();
+        }
     }
     internal sealed class ObservableSimpleMethodProxyCall<T, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, TResult> : ObservableProxyCallBase<TResult>
     {
@@ -1224,115 +1133,89 @@ namespace NMF.Expressions
 
         public ObservableSimpleMethodProxyCall(INotifyExpression<T> target, MethodInfo proxyFunction, INotifyExpression<T1> arg1, INotifyExpression<T2> arg2, INotifyExpression<T3> arg3, INotifyExpression<T4> arg4, INotifyExpression<T5> arg5, INotifyExpression<T6> arg6, INotifyExpression<T7> arg7, INotifyExpression<T8> arg8, INotifyExpression<T9> arg9, INotifyExpression<T10> arg10, INotifyExpression<T11> arg11, INotifyExpression<T12> arg12, INotifyExpression<T13> arg13)
         {
-			if (target == null) throw new ArgumentNullException("target");
+            if (target == null) throw new ArgumentNullException("target");
             if (proxyFunction == null) throw new ArgumentNullException("proxyFunction");
-			if (arg1 == null) throw new ArgumentNullException("arg1");
-			if (arg2 == null) throw new ArgumentNullException("arg2");
-			if (arg3 == null) throw new ArgumentNullException("arg3");
-			if (arg4 == null) throw new ArgumentNullException("arg4");
-			if (arg5 == null) throw new ArgumentNullException("arg5");
-			if (arg6 == null) throw new ArgumentNullException("arg6");
-			if (arg7 == null) throw new ArgumentNullException("arg7");
-			if (arg8 == null) throw new ArgumentNullException("arg8");
-			if (arg9 == null) throw new ArgumentNullException("arg9");
-			if (arg10 == null) throw new ArgumentNullException("arg10");
-			if (arg11 == null) throw new ArgumentNullException("arg11");
-			if (arg12 == null) throw new ArgumentNullException("arg12");
-			if (arg13 == null) throw new ArgumentNullException("arg13");
+            if (arg1 == null) throw new ArgumentNullException("arg1");
+            if (arg2 == null) throw new ArgumentNullException("arg2");
+            if (arg3 == null) throw new ArgumentNullException("arg3");
+            if (arg4 == null) throw new ArgumentNullException("arg4");
+            if (arg5 == null) throw new ArgumentNullException("arg5");
+            if (arg6 == null) throw new ArgumentNullException("arg6");
+            if (arg7 == null) throw new ArgumentNullException("arg7");
+            if (arg8 == null) throw new ArgumentNullException("arg8");
+            if (arg9 == null) throw new ArgumentNullException("arg9");
+            if (arg10 == null) throw new ArgumentNullException("arg10");
+            if (arg11 == null) throw new ArgumentNullException("arg11");
+            if (arg12 == null) throw new ArgumentNullException("arg12");
+            if (arg13 == null) throw new ArgumentNullException("arg13");
 
-			Target = target;
-			ProxyMethod = proxyFunction;
-			Argument1 = arg1;
-			Argument2 = arg2;
-			Argument3 = arg3;
-			Argument4 = arg4;
-			Argument5 = arg5;
-			Argument6 = arg6;
-			Argument7 = arg7;
-			Argument8 = arg8;
-			Argument9 = arg9;
-			Argument10 = arg10;
-			Argument11 = arg11;
-			Argument12 = arg12;
-			Argument13 = arg13;
-			
-			Target.ValueChanged += TargetChanged;
-		}
+            Target = target;
+            ProxyMethod = proxyFunction;
+            Argument1 = arg1;
+            Argument2 = arg2;
+            Argument3 = arg3;
+            Argument4 = arg4;
+            Argument5 = arg5;
+            Argument6 = arg6;
+            Argument7 = arg7;
+            Argument8 = arg8;
+            Argument9 = arg9;
+            Argument10 = arg10;
+            Argument11 = arg11;
+            Argument12 = arg12;
+            Argument13 = arg13;
+        }
 
-		private void TargetChanged(object sender, ValueChangedEventArgs e)
-        {
-            if (!IsAttached) return;
-			RenewProxyFunction();
-			RenewProxy();
-			Refresh();
-		}
-
-		public INotifyExpression<T> Target { get; private set; }
-		public INotifyExpression<T1> Argument1 { get; private set; }
-		public INotifyExpression<T2> Argument2 { get; private set; }
-		public INotifyExpression<T3> Argument3 { get; private set; }
-		public INotifyExpression<T4> Argument4 { get; private set; }
-		public INotifyExpression<T5> Argument5 { get; private set; }
-		public INotifyExpression<T6> Argument6 { get; private set; }
-		public INotifyExpression<T7> Argument7 { get; private set; }
-		public INotifyExpression<T8> Argument8 { get; private set; }
-		public INotifyExpression<T9> Argument9 { get; private set; }
-		public INotifyExpression<T10> Argument10 { get; private set; }
-		public INotifyExpression<T11> Argument11 { get; private set; }
-		public INotifyExpression<T12> Argument12 { get; private set; }
-		public INotifyExpression<T13> Argument13 { get; private set; }
+        public INotifyExpression<T> Target { get; private set; }
+        public INotifyExpression<T1> Argument1 { get; private set; }
+        public INotifyExpression<T2> Argument2 { get; private set; }
+        public INotifyExpression<T3> Argument3 { get; private set; }
+        public INotifyExpression<T4> Argument4 { get; private set; }
+        public INotifyExpression<T5> Argument5 { get; private set; }
+        public INotifyExpression<T6> Argument6 { get; private set; }
+        public INotifyExpression<T7> Argument7 { get; private set; }
+        public INotifyExpression<T8> Argument8 { get; private set; }
+        public INotifyExpression<T9> Argument9 { get; private set; }
+        public INotifyExpression<T10> Argument10 { get; private set; }
+        public INotifyExpression<T11> Argument11 { get; private set; }
+        public INotifyExpression<T12> Argument12 { get; private set; }
+        public INotifyExpression<T13> Argument13 { get; private set; }
 
         public Func<INotifyValue<T1>, INotifyValue<T2>, INotifyValue<T3>, INotifyValue<T4>, INotifyValue<T5>, INotifyValue<T6>, INotifyValue<T7>, INotifyValue<T8>, INotifyValue<T9>, INotifyValue<T10>, INotifyValue<T11>, INotifyValue<T12>, INotifyValue<T13>, INotifyValue<TResult>> ProxyFunction { get; private set; }
 
-		public MethodInfo ProxyMethod { get; private set; }
+        public MethodInfo ProxyMethod { get; private set; }
 
-		private void RenewProxyFunction()
-		{
-			ProxyFunction = ReflectionHelper.CreateDelegate(typeof(Func<INotifyValue<T1>, INotifyValue<T2>, INotifyValue<T3>, INotifyValue<T4>, INotifyValue<T5>, INotifyValue<T6>, INotifyValue<T7>, INotifyValue<T8>, INotifyValue<T9>, INotifyValue<T10>, INotifyValue<T11>, INotifyValue<T12>, INotifyValue<T13>, INotifyValue<TResult>>), Target.Value, ProxyMethod) as Func<INotifyValue<T1>, INotifyValue<T2>, INotifyValue<T3>, INotifyValue<T4>, INotifyValue<T5>, INotifyValue<T6>, INotifyValue<T7>, INotifyValue<T8>, INotifyValue<T9>, INotifyValue<T10>, INotifyValue<T11>, INotifyValue<T12>, INotifyValue<T13>, INotifyValue<TResult>>;
-		}
+        public override IEnumerable<INotifiable> Dependencies
+        {
+            get
+            {
+                foreach (var dep in base.Dependencies)
+                    yield return dep;
+
+                yield return Argument1;
+                yield return Argument2;
+                yield return Argument3;
+                yield return Argument4;
+                yield return Argument5;
+                yield return Argument6;
+                yield return Argument7;
+                yield return Argument8;
+                yield return Argument9;
+                yield return Argument10;
+                yield return Argument11;
+                yield return Argument12;
+                yield return Argument13;
+            }
+        }
+
+        private void RenewProxyFunction()
+        {
+            ProxyFunction = ReflectionHelper.CreateDelegate(typeof(Func<INotifyValue<T1>, INotifyValue<T2>, INotifyValue<T3>, INotifyValue<T4>, INotifyValue<T5>, INotifyValue<T6>, INotifyValue<T7>, INotifyValue<T8>, INotifyValue<T9>, INotifyValue<T10>, INotifyValue<T11>, INotifyValue<T12>, INotifyValue<T13>, INotifyValue<TResult>>), Target.Value, ProxyMethod) as Func<INotifyValue<T1>, INotifyValue<T2>, INotifyValue<T3>, INotifyValue<T4>, INotifyValue<T5>, INotifyValue<T6>, INotifyValue<T7>, INotifyValue<T8>, INotifyValue<T9>, INotifyValue<T10>, INotifyValue<T11>, INotifyValue<T12>, INotifyValue<T13>, INotifyValue<TResult>>;
+        }
 
         protected override INotifyValue<TResult> CreateProxy()
         {
             return ProxyFunction(Argument1, Argument2, Argument3, Argument4, Argument5, Argument6, Argument7, Argument8, Argument9, Argument10, Argument11, Argument12, Argument13);
-        }
-
-        protected override void AttachCore()
-        {
-			Target.Attach();
-			Argument1.Attach();
-			Argument2.Attach();
-			Argument3.Attach();
-			Argument4.Attach();
-			Argument5.Attach();
-			Argument6.Attach();
-			Argument7.Attach();
-			Argument8.Attach();
-			Argument9.Attach();
-			Argument10.Attach();
-			Argument11.Attach();
-			Argument12.Attach();
-			Argument13.Attach();
-			RenewProxyFunction();
-            base.AttachCore();
-        }
-
-        protected override void DetachCore()
-        {
-            base.DetachCore();
-			Target.Detach();
-			Argument1.Detach();
-			Argument2.Detach();
-			Argument3.Detach();
-			Argument4.Detach();
-			Argument5.Detach();
-			Argument6.Detach();
-			Argument7.Detach();
-			Argument8.Detach();
-			Argument9.Detach();
-			Argument10.Detach();
-			Argument11.Detach();
-			Argument12.Detach();
-			Argument13.Detach();
         }
 
         public override bool IsParameterFree
@@ -1344,6 +1227,18 @@ namespace NMF.Expressions
         {
             return new ObservableSimpleMethodProxyCall<T, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, TResult>(Target.ApplyParameters(parameters), ProxyMethod, Argument1.ApplyParameters(parameters), Argument2.ApplyParameters(parameters), Argument3.ApplyParameters(parameters), Argument4.ApplyParameters(parameters), Argument5.ApplyParameters(parameters), Argument6.ApplyParameters(parameters), Argument7.ApplyParameters(parameters), Argument8.ApplyParameters(parameters), Argument9.ApplyParameters(parameters), Argument10.ApplyParameters(parameters), Argument11.ApplyParameters(parameters), Argument12.ApplyParameters(parameters), Argument13.ApplyParameters(parameters));
         }
+
+        public override bool Notify(IEnumerable<INotifiable> sources)
+        {
+            RenewProxyFunction();
+            return base.Notify(sources);
+        }
+
+        protected override void OnAttach()
+        {
+            RenewProxyFunction();
+            base.OnAttach();
+        }
     }
     internal sealed class ObservableSimpleMethodProxyCall<T, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, TResult> : ObservableProxyCallBase<TResult>
     {
@@ -1352,120 +1247,93 @@ namespace NMF.Expressions
 
         public ObservableSimpleMethodProxyCall(INotifyExpression<T> target, MethodInfo proxyFunction, INotifyExpression<T1> arg1, INotifyExpression<T2> arg2, INotifyExpression<T3> arg3, INotifyExpression<T4> arg4, INotifyExpression<T5> arg5, INotifyExpression<T6> arg6, INotifyExpression<T7> arg7, INotifyExpression<T8> arg8, INotifyExpression<T9> arg9, INotifyExpression<T10> arg10, INotifyExpression<T11> arg11, INotifyExpression<T12> arg12, INotifyExpression<T13> arg13, INotifyExpression<T14> arg14)
         {
-			if (target == null) throw new ArgumentNullException("target");
+            if (target == null) throw new ArgumentNullException("target");
             if (proxyFunction == null) throw new ArgumentNullException("proxyFunction");
-			if (arg1 == null) throw new ArgumentNullException("arg1");
-			if (arg2 == null) throw new ArgumentNullException("arg2");
-			if (arg3 == null) throw new ArgumentNullException("arg3");
-			if (arg4 == null) throw new ArgumentNullException("arg4");
-			if (arg5 == null) throw new ArgumentNullException("arg5");
-			if (arg6 == null) throw new ArgumentNullException("arg6");
-			if (arg7 == null) throw new ArgumentNullException("arg7");
-			if (arg8 == null) throw new ArgumentNullException("arg8");
-			if (arg9 == null) throw new ArgumentNullException("arg9");
-			if (arg10 == null) throw new ArgumentNullException("arg10");
-			if (arg11 == null) throw new ArgumentNullException("arg11");
-			if (arg12 == null) throw new ArgumentNullException("arg12");
-			if (arg13 == null) throw new ArgumentNullException("arg13");
-			if (arg14 == null) throw new ArgumentNullException("arg14");
+            if (arg1 == null) throw new ArgumentNullException("arg1");
+            if (arg2 == null) throw new ArgumentNullException("arg2");
+            if (arg3 == null) throw new ArgumentNullException("arg3");
+            if (arg4 == null) throw new ArgumentNullException("arg4");
+            if (arg5 == null) throw new ArgumentNullException("arg5");
+            if (arg6 == null) throw new ArgumentNullException("arg6");
+            if (arg7 == null) throw new ArgumentNullException("arg7");
+            if (arg8 == null) throw new ArgumentNullException("arg8");
+            if (arg9 == null) throw new ArgumentNullException("arg9");
+            if (arg10 == null) throw new ArgumentNullException("arg10");
+            if (arg11 == null) throw new ArgumentNullException("arg11");
+            if (arg12 == null) throw new ArgumentNullException("arg12");
+            if (arg13 == null) throw new ArgumentNullException("arg13");
+            if (arg14 == null) throw new ArgumentNullException("arg14");
 
-			Target = target;
-			ProxyMethod = proxyFunction;
-			Argument1 = arg1;
-			Argument2 = arg2;
-			Argument3 = arg3;
-			Argument4 = arg4;
-			Argument5 = arg5;
-			Argument6 = arg6;
-			Argument7 = arg7;
-			Argument8 = arg8;
-			Argument9 = arg9;
-			Argument10 = arg10;
-			Argument11 = arg11;
-			Argument12 = arg12;
-			Argument13 = arg13;
-			Argument14 = arg14;
-			
-			Target.ValueChanged += TargetChanged;
-		}
+            Target = target;
+            ProxyMethod = proxyFunction;
+            Argument1 = arg1;
+            Argument2 = arg2;
+            Argument3 = arg3;
+            Argument4 = arg4;
+            Argument5 = arg5;
+            Argument6 = arg6;
+            Argument7 = arg7;
+            Argument8 = arg8;
+            Argument9 = arg9;
+            Argument10 = arg10;
+            Argument11 = arg11;
+            Argument12 = arg12;
+            Argument13 = arg13;
+            Argument14 = arg14;
+        }
 
-		private void TargetChanged(object sender, ValueChangedEventArgs e)
-        {
-            if (!IsAttached) return;
-			RenewProxyFunction();
-			RenewProxy();
-			Refresh();
-		}
-
-		public INotifyExpression<T> Target { get; private set; }
-		public INotifyExpression<T1> Argument1 { get; private set; }
-		public INotifyExpression<T2> Argument2 { get; private set; }
-		public INotifyExpression<T3> Argument3 { get; private set; }
-		public INotifyExpression<T4> Argument4 { get; private set; }
-		public INotifyExpression<T5> Argument5 { get; private set; }
-		public INotifyExpression<T6> Argument6 { get; private set; }
-		public INotifyExpression<T7> Argument7 { get; private set; }
-		public INotifyExpression<T8> Argument8 { get; private set; }
-		public INotifyExpression<T9> Argument9 { get; private set; }
-		public INotifyExpression<T10> Argument10 { get; private set; }
-		public INotifyExpression<T11> Argument11 { get; private set; }
-		public INotifyExpression<T12> Argument12 { get; private set; }
-		public INotifyExpression<T13> Argument13 { get; private set; }
-		public INotifyExpression<T14> Argument14 { get; private set; }
+        public INotifyExpression<T> Target { get; private set; }
+        public INotifyExpression<T1> Argument1 { get; private set; }
+        public INotifyExpression<T2> Argument2 { get; private set; }
+        public INotifyExpression<T3> Argument3 { get; private set; }
+        public INotifyExpression<T4> Argument4 { get; private set; }
+        public INotifyExpression<T5> Argument5 { get; private set; }
+        public INotifyExpression<T6> Argument6 { get; private set; }
+        public INotifyExpression<T7> Argument7 { get; private set; }
+        public INotifyExpression<T8> Argument8 { get; private set; }
+        public INotifyExpression<T9> Argument9 { get; private set; }
+        public INotifyExpression<T10> Argument10 { get; private set; }
+        public INotifyExpression<T11> Argument11 { get; private set; }
+        public INotifyExpression<T12> Argument12 { get; private set; }
+        public INotifyExpression<T13> Argument13 { get; private set; }
+        public INotifyExpression<T14> Argument14 { get; private set; }
 
         public Func<INotifyValue<T1>, INotifyValue<T2>, INotifyValue<T3>, INotifyValue<T4>, INotifyValue<T5>, INotifyValue<T6>, INotifyValue<T7>, INotifyValue<T8>, INotifyValue<T9>, INotifyValue<T10>, INotifyValue<T11>, INotifyValue<T12>, INotifyValue<T13>, INotifyValue<T14>, INotifyValue<TResult>> ProxyFunction { get; private set; }
 
-		public MethodInfo ProxyMethod { get; private set; }
+        public MethodInfo ProxyMethod { get; private set; }
 
-		private void RenewProxyFunction()
-		{
-			ProxyFunction = ReflectionHelper.CreateDelegate(typeof(Func<INotifyValue<T1>, INotifyValue<T2>, INotifyValue<T3>, INotifyValue<T4>, INotifyValue<T5>, INotifyValue<T6>, INotifyValue<T7>, INotifyValue<T8>, INotifyValue<T9>, INotifyValue<T10>, INotifyValue<T11>, INotifyValue<T12>, INotifyValue<T13>, INotifyValue<T14>, INotifyValue<TResult>>), Target.Value, ProxyMethod) as Func<INotifyValue<T1>, INotifyValue<T2>, INotifyValue<T3>, INotifyValue<T4>, INotifyValue<T5>, INotifyValue<T6>, INotifyValue<T7>, INotifyValue<T8>, INotifyValue<T9>, INotifyValue<T10>, INotifyValue<T11>, INotifyValue<T12>, INotifyValue<T13>, INotifyValue<T14>, INotifyValue<TResult>>;
-		}
+        public override IEnumerable<INotifiable> Dependencies
+        {
+            get
+            {
+                foreach (var dep in base.Dependencies)
+                    yield return dep;
+
+                yield return Argument1;
+                yield return Argument2;
+                yield return Argument3;
+                yield return Argument4;
+                yield return Argument5;
+                yield return Argument6;
+                yield return Argument7;
+                yield return Argument8;
+                yield return Argument9;
+                yield return Argument10;
+                yield return Argument11;
+                yield return Argument12;
+                yield return Argument13;
+                yield return Argument14;
+            }
+        }
+
+        private void RenewProxyFunction()
+        {
+            ProxyFunction = ReflectionHelper.CreateDelegate(typeof(Func<INotifyValue<T1>, INotifyValue<T2>, INotifyValue<T3>, INotifyValue<T4>, INotifyValue<T5>, INotifyValue<T6>, INotifyValue<T7>, INotifyValue<T8>, INotifyValue<T9>, INotifyValue<T10>, INotifyValue<T11>, INotifyValue<T12>, INotifyValue<T13>, INotifyValue<T14>, INotifyValue<TResult>>), Target.Value, ProxyMethod) as Func<INotifyValue<T1>, INotifyValue<T2>, INotifyValue<T3>, INotifyValue<T4>, INotifyValue<T5>, INotifyValue<T6>, INotifyValue<T7>, INotifyValue<T8>, INotifyValue<T9>, INotifyValue<T10>, INotifyValue<T11>, INotifyValue<T12>, INotifyValue<T13>, INotifyValue<T14>, INotifyValue<TResult>>;
+        }
 
         protected override INotifyValue<TResult> CreateProxy()
         {
             return ProxyFunction(Argument1, Argument2, Argument3, Argument4, Argument5, Argument6, Argument7, Argument8, Argument9, Argument10, Argument11, Argument12, Argument13, Argument14);
-        }
-
-        protected override void AttachCore()
-        {
-			Target.Attach();
-			Argument1.Attach();
-			Argument2.Attach();
-			Argument3.Attach();
-			Argument4.Attach();
-			Argument5.Attach();
-			Argument6.Attach();
-			Argument7.Attach();
-			Argument8.Attach();
-			Argument9.Attach();
-			Argument10.Attach();
-			Argument11.Attach();
-			Argument12.Attach();
-			Argument13.Attach();
-			Argument14.Attach();
-			RenewProxyFunction();
-            base.AttachCore();
-        }
-
-        protected override void DetachCore()
-        {
-            base.DetachCore();
-			Target.Detach();
-			Argument1.Detach();
-			Argument2.Detach();
-			Argument3.Detach();
-			Argument4.Detach();
-			Argument5.Detach();
-			Argument6.Detach();
-			Argument7.Detach();
-			Argument8.Detach();
-			Argument9.Detach();
-			Argument10.Detach();
-			Argument11.Detach();
-			Argument12.Detach();
-			Argument13.Detach();
-			Argument14.Detach();
         }
 
         public override bool IsParameterFree
@@ -1477,6 +1345,18 @@ namespace NMF.Expressions
         {
             return new ObservableSimpleMethodProxyCall<T, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, TResult>(Target.ApplyParameters(parameters), ProxyMethod, Argument1.ApplyParameters(parameters), Argument2.ApplyParameters(parameters), Argument3.ApplyParameters(parameters), Argument4.ApplyParameters(parameters), Argument5.ApplyParameters(parameters), Argument6.ApplyParameters(parameters), Argument7.ApplyParameters(parameters), Argument8.ApplyParameters(parameters), Argument9.ApplyParameters(parameters), Argument10.ApplyParameters(parameters), Argument11.ApplyParameters(parameters), Argument12.ApplyParameters(parameters), Argument13.ApplyParameters(parameters), Argument14.ApplyParameters(parameters));
         }
+
+        public override bool Notify(IEnumerable<INotifiable> sources)
+        {
+            RenewProxyFunction();
+            return base.Notify(sources);
+        }
+
+        protected override void OnAttach()
+        {
+            RenewProxyFunction();
+            base.OnAttach();
+        }
     }
     internal sealed class ObservableSimpleMethodProxyCall<T, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, TResult> : ObservableProxyCallBase<TResult>
     {
@@ -1485,125 +1365,97 @@ namespace NMF.Expressions
 
         public ObservableSimpleMethodProxyCall(INotifyExpression<T> target, MethodInfo proxyFunction, INotifyExpression<T1> arg1, INotifyExpression<T2> arg2, INotifyExpression<T3> arg3, INotifyExpression<T4> arg4, INotifyExpression<T5> arg5, INotifyExpression<T6> arg6, INotifyExpression<T7> arg7, INotifyExpression<T8> arg8, INotifyExpression<T9> arg9, INotifyExpression<T10> arg10, INotifyExpression<T11> arg11, INotifyExpression<T12> arg12, INotifyExpression<T13> arg13, INotifyExpression<T14> arg14, INotifyExpression<T15> arg15)
         {
-			if (target == null) throw new ArgumentNullException("target");
+            if (target == null) throw new ArgumentNullException("target");
             if (proxyFunction == null) throw new ArgumentNullException("proxyFunction");
-			if (arg1 == null) throw new ArgumentNullException("arg1");
-			if (arg2 == null) throw new ArgumentNullException("arg2");
-			if (arg3 == null) throw new ArgumentNullException("arg3");
-			if (arg4 == null) throw new ArgumentNullException("arg4");
-			if (arg5 == null) throw new ArgumentNullException("arg5");
-			if (arg6 == null) throw new ArgumentNullException("arg6");
-			if (arg7 == null) throw new ArgumentNullException("arg7");
-			if (arg8 == null) throw new ArgumentNullException("arg8");
-			if (arg9 == null) throw new ArgumentNullException("arg9");
-			if (arg10 == null) throw new ArgumentNullException("arg10");
-			if (arg11 == null) throw new ArgumentNullException("arg11");
-			if (arg12 == null) throw new ArgumentNullException("arg12");
-			if (arg13 == null) throw new ArgumentNullException("arg13");
-			if (arg14 == null) throw new ArgumentNullException("arg14");
-			if (arg15 == null) throw new ArgumentNullException("arg15");
+            if (arg1 == null) throw new ArgumentNullException("arg1");
+            if (arg2 == null) throw new ArgumentNullException("arg2");
+            if (arg3 == null) throw new ArgumentNullException("arg3");
+            if (arg4 == null) throw new ArgumentNullException("arg4");
+            if (arg5 == null) throw new ArgumentNullException("arg5");
+            if (arg6 == null) throw new ArgumentNullException("arg6");
+            if (arg7 == null) throw new ArgumentNullException("arg7");
+            if (arg8 == null) throw new ArgumentNullException("arg8");
+            if (arg9 == null) throw new ArgumentNullException("arg9");
+            if (arg10 == null) throw new ArgumentNullException("arg10");
+            if (arg11 == null) throw new ArgumentNullException("arg11");
+            if (arg12 == null) throw new ArgumentNullException("arg12");
+            if (arg13 == null) throw new ArgumentNullException("arg13");
+            if (arg14 == null) throw new ArgumentNullException("arg14");
+            if (arg15 == null) throw new ArgumentNullException("arg15");
 
-			Target = target;
-			ProxyMethod = proxyFunction;
-			Argument1 = arg1;
-			Argument2 = arg2;
-			Argument3 = arg3;
-			Argument4 = arg4;
-			Argument5 = arg5;
-			Argument6 = arg6;
-			Argument7 = arg7;
-			Argument8 = arg8;
-			Argument9 = arg9;
-			Argument10 = arg10;
-			Argument11 = arg11;
-			Argument12 = arg12;
-			Argument13 = arg13;
-			Argument14 = arg14;
-			Argument15 = arg15;
-			
-			Target.ValueChanged += TargetChanged;
-		}
+            Target = target;
+            ProxyMethod = proxyFunction;
+            Argument1 = arg1;
+            Argument2 = arg2;
+            Argument3 = arg3;
+            Argument4 = arg4;
+            Argument5 = arg5;
+            Argument6 = arg6;
+            Argument7 = arg7;
+            Argument8 = arg8;
+            Argument9 = arg9;
+            Argument10 = arg10;
+            Argument11 = arg11;
+            Argument12 = arg12;
+            Argument13 = arg13;
+            Argument14 = arg14;
+            Argument15 = arg15;
+        }
 
-		private void TargetChanged(object sender, ValueChangedEventArgs e)
-        {
-            if (!IsAttached) return;
-			RenewProxyFunction();
-			RenewProxy();
-			Refresh();
-		}
-
-		public INotifyExpression<T> Target { get; private set; }
-		public INotifyExpression<T1> Argument1 { get; private set; }
-		public INotifyExpression<T2> Argument2 { get; private set; }
-		public INotifyExpression<T3> Argument3 { get; private set; }
-		public INotifyExpression<T4> Argument4 { get; private set; }
-		public INotifyExpression<T5> Argument5 { get; private set; }
-		public INotifyExpression<T6> Argument6 { get; private set; }
-		public INotifyExpression<T7> Argument7 { get; private set; }
-		public INotifyExpression<T8> Argument8 { get; private set; }
-		public INotifyExpression<T9> Argument9 { get; private set; }
-		public INotifyExpression<T10> Argument10 { get; private set; }
-		public INotifyExpression<T11> Argument11 { get; private set; }
-		public INotifyExpression<T12> Argument12 { get; private set; }
-		public INotifyExpression<T13> Argument13 { get; private set; }
-		public INotifyExpression<T14> Argument14 { get; private set; }
-		public INotifyExpression<T15> Argument15 { get; private set; }
+        public INotifyExpression<T> Target { get; private set; }
+        public INotifyExpression<T1> Argument1 { get; private set; }
+        public INotifyExpression<T2> Argument2 { get; private set; }
+        public INotifyExpression<T3> Argument3 { get; private set; }
+        public INotifyExpression<T4> Argument4 { get; private set; }
+        public INotifyExpression<T5> Argument5 { get; private set; }
+        public INotifyExpression<T6> Argument6 { get; private set; }
+        public INotifyExpression<T7> Argument7 { get; private set; }
+        public INotifyExpression<T8> Argument8 { get; private set; }
+        public INotifyExpression<T9> Argument9 { get; private set; }
+        public INotifyExpression<T10> Argument10 { get; private set; }
+        public INotifyExpression<T11> Argument11 { get; private set; }
+        public INotifyExpression<T12> Argument12 { get; private set; }
+        public INotifyExpression<T13> Argument13 { get; private set; }
+        public INotifyExpression<T14> Argument14 { get; private set; }
+        public INotifyExpression<T15> Argument15 { get; private set; }
 
         public Func<INotifyValue<T1>, INotifyValue<T2>, INotifyValue<T3>, INotifyValue<T4>, INotifyValue<T5>, INotifyValue<T6>, INotifyValue<T7>, INotifyValue<T8>, INotifyValue<T9>, INotifyValue<T10>, INotifyValue<T11>, INotifyValue<T12>, INotifyValue<T13>, INotifyValue<T14>, INotifyValue<T15>, INotifyValue<TResult>> ProxyFunction { get; private set; }
 
-		public MethodInfo ProxyMethod { get; private set; }
+        public MethodInfo ProxyMethod { get; private set; }
 
-		private void RenewProxyFunction()
-		{
-			ProxyFunction = ReflectionHelper.CreateDelegate(typeof(Func<INotifyValue<T1>, INotifyValue<T2>, INotifyValue<T3>, INotifyValue<T4>, INotifyValue<T5>, INotifyValue<T6>, INotifyValue<T7>, INotifyValue<T8>, INotifyValue<T9>, INotifyValue<T10>, INotifyValue<T11>, INotifyValue<T12>, INotifyValue<T13>, INotifyValue<T14>, INotifyValue<T15>, INotifyValue<TResult>>), Target.Value, ProxyMethod) as Func<INotifyValue<T1>, INotifyValue<T2>, INotifyValue<T3>, INotifyValue<T4>, INotifyValue<T5>, INotifyValue<T6>, INotifyValue<T7>, INotifyValue<T8>, INotifyValue<T9>, INotifyValue<T10>, INotifyValue<T11>, INotifyValue<T12>, INotifyValue<T13>, INotifyValue<T14>, INotifyValue<T15>, INotifyValue<TResult>>;
-		}
+        public override IEnumerable<INotifiable> Dependencies
+        {
+            get
+            {
+                foreach (var dep in base.Dependencies)
+                    yield return dep;
+
+                yield return Argument1;
+                yield return Argument2;
+                yield return Argument3;
+                yield return Argument4;
+                yield return Argument5;
+                yield return Argument6;
+                yield return Argument7;
+                yield return Argument8;
+                yield return Argument9;
+                yield return Argument10;
+                yield return Argument11;
+                yield return Argument12;
+                yield return Argument13;
+                yield return Argument14;
+                yield return Argument15;
+            }
+        }
+
+        private void RenewProxyFunction()
+        {
+            ProxyFunction = ReflectionHelper.CreateDelegate(typeof(Func<INotifyValue<T1>, INotifyValue<T2>, INotifyValue<T3>, INotifyValue<T4>, INotifyValue<T5>, INotifyValue<T6>, INotifyValue<T7>, INotifyValue<T8>, INotifyValue<T9>, INotifyValue<T10>, INotifyValue<T11>, INotifyValue<T12>, INotifyValue<T13>, INotifyValue<T14>, INotifyValue<T15>, INotifyValue<TResult>>), Target.Value, ProxyMethod) as Func<INotifyValue<T1>, INotifyValue<T2>, INotifyValue<T3>, INotifyValue<T4>, INotifyValue<T5>, INotifyValue<T6>, INotifyValue<T7>, INotifyValue<T8>, INotifyValue<T9>, INotifyValue<T10>, INotifyValue<T11>, INotifyValue<T12>, INotifyValue<T13>, INotifyValue<T14>, INotifyValue<T15>, INotifyValue<TResult>>;
+        }
 
         protected override INotifyValue<TResult> CreateProxy()
         {
             return ProxyFunction(Argument1, Argument2, Argument3, Argument4, Argument5, Argument6, Argument7, Argument8, Argument9, Argument10, Argument11, Argument12, Argument13, Argument14, Argument15);
-        }
-
-        protected override void AttachCore()
-        {
-			Target.Attach();
-			Argument1.Attach();
-			Argument2.Attach();
-			Argument3.Attach();
-			Argument4.Attach();
-			Argument5.Attach();
-			Argument6.Attach();
-			Argument7.Attach();
-			Argument8.Attach();
-			Argument9.Attach();
-			Argument10.Attach();
-			Argument11.Attach();
-			Argument12.Attach();
-			Argument13.Attach();
-			Argument14.Attach();
-			Argument15.Attach();
-			RenewProxyFunction();
-            base.AttachCore();
-        }
-
-        protected override void DetachCore()
-        {
-            base.DetachCore();
-			Target.Detach();
-			Argument1.Detach();
-			Argument2.Detach();
-			Argument3.Detach();
-			Argument4.Detach();
-			Argument5.Detach();
-			Argument6.Detach();
-			Argument7.Detach();
-			Argument8.Detach();
-			Argument9.Detach();
-			Argument10.Detach();
-			Argument11.Detach();
-			Argument12.Detach();
-			Argument13.Detach();
-			Argument14.Detach();
-			Argument15.Detach();
         }
 
         public override bool IsParameterFree
@@ -1614,6 +1466,18 @@ namespace NMF.Expressions
         public override INotifyExpression<TResult> ApplyParameters(IDictionary<string, object> parameters)
         {
             return new ObservableSimpleMethodProxyCall<T, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, TResult>(Target.ApplyParameters(parameters), ProxyMethod, Argument1.ApplyParameters(parameters), Argument2.ApplyParameters(parameters), Argument3.ApplyParameters(parameters), Argument4.ApplyParameters(parameters), Argument5.ApplyParameters(parameters), Argument6.ApplyParameters(parameters), Argument7.ApplyParameters(parameters), Argument8.ApplyParameters(parameters), Argument9.ApplyParameters(parameters), Argument10.ApplyParameters(parameters), Argument11.ApplyParameters(parameters), Argument12.ApplyParameters(parameters), Argument13.ApplyParameters(parameters), Argument14.ApplyParameters(parameters), Argument15.ApplyParameters(parameters));
+        }
+
+        public override bool Notify(IEnumerable<INotifiable> sources)
+        {
+            RenewProxyFunction();
+            return base.Notify(sources);
+        }
+
+        protected override void OnAttach()
+        {
+            RenewProxyFunction();
+            base.OnAttach();
         }
     }
 }

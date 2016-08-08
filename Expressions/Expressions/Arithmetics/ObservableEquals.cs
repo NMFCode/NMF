@@ -31,6 +31,14 @@ namespace NMF.Expressions.Arithmetics
         {
             return new ObservableEquals<T>(Left.ApplyParameters(parameters), Right.ApplyParameters(parameters));
         }
+
+        public override ExpressionType NodeType
+        {
+            get
+            {
+                return ExpressionType.Equal;
+            }
+        }
     }
 
     internal class ObservableNotEquals<T> : ObservableBinaryExpressionBase<T, T, bool>
@@ -57,6 +65,14 @@ namespace NMF.Expressions.Arithmetics
         public override INotifyExpression<bool> ApplyParameters(IDictionary<string, object> parameters)
         {
             return new ObservableNotEquals<T>(Left.ApplyParameters(parameters), Right.ApplyParameters(parameters));
+        }
+
+        public override ExpressionType NodeType
+        {
+            get
+            {
+                return ExpressionType.NotEqual;
+            }
         }
     }
 

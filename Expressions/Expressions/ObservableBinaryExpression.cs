@@ -16,9 +16,6 @@ namespace NMF.Expressions
 
             Left = left;
             Right = right;
-
-            Right.ValueChanged += RightChanged;
-            Left.ValueChanged += LeftChanged;
         }
 
         protected abstract string Format { get; }
@@ -26,18 +23,6 @@ namespace NMF.Expressions
         public override string ToString()
         {
             return string.Format(Format, Left.ToString(), Right.ToString()) + "{" + (Value != null ? Value.ToString() : "(null)") + "}";
-        }
-
-        protected virtual void RightChanged(object sender, ValueChangedEventArgs e)
-        {
-            if (!IsAttached) return;
-            Refresh();
-        }
-
-        protected virtual void LeftChanged(object sender, ValueChangedEventArgs e)
-        {
-            if (!IsAttached) return;
-            Refresh();
         }
 
         public override bool CanBeConstant
@@ -52,21 +37,18 @@ namespace NMF.Expressions
 
         public INotifyExpression<TRight> Right { get; private set; }
 
-        protected override void DetachCore()
-        {
-            Left.Detach();
-            Right.Detach();
-        }
-
-        protected override void AttachCore()
-        {
-            Left.Attach();
-            Right.Attach();
-        }
-
         public override bool IsParameterFree
         {
             get { return Left.IsParameterFree && Right.IsParameterFree; }
+        }
+
+        public override IEnumerable<INotifiable> Dependencies
+        {
+            get
+            {
+                yield return Left;
+                yield return Right;
+            }
         }
     }
 
@@ -110,7 +92,7 @@ namespace NMF.Expressions
         {
             get
             {
-                if (IsAttached)
+                if (Successors.Count > 0)
                 {
                     var leftReversable = Left as INotifyReversableExpression<TLeft>;
                     if (leftReversable != null)

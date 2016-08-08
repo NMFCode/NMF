@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.Linq.Expressions;
 
 namespace NMF.Expressions
@@ -10,84 +12,118 @@ namespace NMF.Expressions
     /// <typeparam name="T"></typeparam>
     public abstract class NotifyExpression<T> : NotifyExpressionBase, INotifyExpression<T>
     {
+        public int TotalVisits { get; set; }
+
+        public int RemainingVisits { get; set; }
+
         /// <summary>
         /// Creates a new incremental expression
         /// </summary>
-        protected NotifyExpression() { }
+        protected NotifyExpression()
+        {
+            successors.CollectionChanged += (obj, e) =>
+            {
+                if (successors.Count == 0)
+                    Detach();
+                else if (e.Action == NotifyCollectionChangedAction.Add && successors.Count == 1)
+                    Attach();
+            };
+        }
 
         /// <summary>
         /// Creates a new incremental expression with the given initial value
         /// </summary>
         /// <param name="value">The initial value</param>
-        protected NotifyExpression(T value)
+        protected NotifyExpression(T value) : this()
         {
             this.value = value;
         }
 
+        private readonly ShortList<INotifiable> successors = new ShortList<INotifiable>();
         private T value;
+
+        public event EventHandler<ValueChangedEventArgs> ValueChanged;
 
         /// <summary>
         /// Gets the current value of this expression
         /// </summary>
-        public T Value
-        {
-            get
-            {
-                return value;
-            }
-        }
+        public T Value { get { return value; } }
 
         /// <summary>
         /// Gets the current value as object
         /// </summary>
-        public object ValueObject
-        {
-            get
-            {
-                return Value;
-            }
-        }
+        public object ValueObject { get { return Value; } }
 
         /// <summary>
         /// Gets the type of this incremental expression
         /// </summary>
-        public sealed override Type Type
-        {
-            get
-            {
-                return typeof(T);
-            }
-        }
-
-        /// <summary>
-        /// Gets fired when the current value of this expression changes
-        /// </summary>
-        public event EventHandler<ValueChangedEventArgs> ValueChanged;
-
-        /// <summary>
-        /// Refreshes the current value
-        /// </summary>
-        public virtual void Refresh()
-        {
-            var newVal = GetValue();
-            if (!EqualityComparer<T>.Default.Equals(value, newVal))
-            {
-                var oldVal = value;
-                value = newVal;
-                OnValueChanged(oldVal, newVal);
-            }
-        }
+        public sealed override Type Type { get { return typeof(T); } }
 
         /// <summary>
         /// Determines whether this expression can be reduced
         /// </summary>
-        public override bool CanReduce
+        public override bool CanReduce { get { return CanBeConstant; } }
+
+        /// <summary>
+        /// Returns whether the current expression can be constant
+        /// </summary>
+        public virtual bool CanBeConstant { get { return false; } }
+
+        /// <summary>
+        /// Gets the value of the current incremental expression
+        /// </summary>
+        /// <returns>The current value</returns>
+        protected abstract T GetValue();
+
+        /// <summary>
+        /// Returns whether this expression is parameter free
+        /// </summary>
+        public abstract bool IsParameterFree { get; }
+
+        /// <summary>
+        /// Returns whether this expression is a constant value
+        /// </summary>
+        public virtual bool IsConstant
         {
-            get
-            {
-                return CanBeConstant;
-            }
+            get { return false; }
         }
+
+        public IList<INotifiable> Successors { get { return successors; } }
+
+        public abstract IEnumerable<INotifiable> Dependencies { get; }
+        
+        /// <summary>
+        /// Applies the given set of parameters to the expression
+        /// </summary>
+        /// <param name="parameters">A set of parameter values</param>
+        /// <returns>A new expression with all parameter placeholders replaced with the parameter values</returns>
+        /// <remarks>In case that the current expression is parameter free, it simply returns itself</remarks>
+        public abstract INotifyExpression<T> ApplyParameters(IDictionary<string, object> parameters);
+
+        private void Attach()
+        {
+            OnAttach();
+            foreach (var dep in Dependencies)
+                dep.Successors.Add(this);
+            value = GetValue();
+        }
+
+        private void Detach()
+        {
+            OnDetach();
+            foreach (var dep in Dependencies)
+                dep.Successors.Remove(this);
+        }
+
+        /// <summary>
+        /// Occurs when this node gets (re)attached to another node for the first time
+        /// </summary>
+        protected virtual void OnAttach() { }
+
+        /// <summary>
+        /// Occurs when the last successor of this node gets removed
+        /// </summary>
+        protected virtual void OnDetach() { }
 
         /// <summary>
         /// Simplifies the current expression
@@ -109,7 +145,7 @@ namespace NMF.Expressions
         /// <summary>
         /// Simplifies the current expression
         /// </summary>
-        /// <returns>A simpler expression repüresenting the same incremental value (e.g. a constant if this expression can be constant), otherwise itself</returns>
+        /// <returns>A simpler expression representing the same incremental value (e.g. a constant if this expression can be constant), otherwise itself</returns>
         protected override Expression BaseReduce()
         {
             Attach();
@@ -147,63 +183,26 @@ namespace NMF.Expressions
             }
         }
 
-        /// <summary>
-        /// Returns whether the current expression can be constant
-        /// </summary>
-        public virtual bool CanBeConstant { get { return false; } }
-
-        /// <summary>
-        /// Gets the value of the current incremental expression
-        /// </summary>
-        /// <returns>The current value</returns>
-        protected abstract T GetValue();
-
-        /// <summary>
-        /// Returns whether the expression is currently olistening to changes
-        /// </summary>
-        public bool IsAttached { get; private set; }
-
-        /// <summary>
-        /// Detaches a client from the incremental expression
-        /// </summary>
-        public void Detach()
+        protected virtual void OnValueChanged(T oldValue, T newValue)
         {
-            if (IsAttached)
-            {
-                IsAttached = false;
-                DetachCore();
-            }
+            if (ValueChanged != null)
+                ValueChanged(this, new ValueChangedEventArgs(oldValue, newValue));
         }
 
         /// <summary>
-        /// Attaches a client to the incremental expression
+        /// Refreshes the current value
         /// </summary>
-        public void Attach()
+        public virtual bool Notify(IEnumerable<INotifiable> sources)
         {
-            if (!IsAttached)
+            var newVal = GetValue();
+            if (!EqualityComparer<T>.Default.Equals(value, newVal))
             {
-                AttachCore();
-                IsAttached = true;
-                Refresh();
+                var oldVal = value;
+                value = newVal;
+                OnValueChanged(oldVal, newVal);
+                return true;
             }
-        }
-
-        /// <summary>
-        /// Detach this incremental expression from listening to changes
-        /// </summary>
-        protected abstract void DetachCore();
-
-        /// <summary>
-        /// Attach this incremental client to listening to changes
-        /// </summary>
-        protected abstract void AttachCore();
-
-        /// <summary>
-        /// Returns whether this expression is parameter free
-        /// </summary>
-        public abstract bool IsParameterFree
-        {
-            get;
+            return false;
         }
 
         /// <summary>
@@ -217,14 +216,6 @@ namespace NMF.Expressions
         INotifyExpression INotifyExpression.ApplyParameters(IDictionary<string, object> parameters)
         {
             return ApplyParameters(parameters);
-        }
-
-        /// <summary>
-        /// Returns whether this expression is a constant value
-        /// </summary>
-        public virtual bool IsConstant
-        {
-            get { return false; }
         }
     }
 }
