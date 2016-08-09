@@ -42,6 +42,7 @@
     </Compile>
     <Compile Include="ConfiguredNotifySystem.cs" />
     <Compile Include="IncrementalizationConfiguration\Configuration.cs" />
+    <Compile Include="IncrementalizationConfiguration\ConfigurationExtensions.cs" />
     <Compile Include="IncrementalizationConfiguration\IConfiguration.cs" />
     <Compile Include="IncrementalizationConfiguration\IMethodConfiguration.cs" />
     <Compile Include="IncrementalizationConfiguration\IncrementalizationStrategy.cs" />
