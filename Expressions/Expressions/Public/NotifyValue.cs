@@ -46,11 +46,16 @@ namespace NMF.Expressions
             };
         }
 
-        public virtual bool Notify(IEnumerable<INotifiable> sources)
+        public virtual INotificationResult Notify(IList<INotificationResult> sources)
         {
-            OnValueChanged(default(T), Value);
-            OnPropertyChanged("Value");
-            return true;
+            if (sources.Count > 0)
+            {
+                var oldValue = ((ValueChangedNotificationResult<T>)sources[0]).OldValue;
+                OnValueChanged(oldValue, Value);
+                OnPropertyChanged("Value");
+                return new ValueChangedNotificationResult<T>(this, oldValue, Value);
+            }
+            return new UnchangedNotificationResult(this);
         }
 
         protected virtual void OnValueChanged(T oldValue, T newValue)
@@ -155,10 +160,16 @@ namespace NMF.Expressions
                 PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
         }
 
-        public bool Notify(IEnumerable<INotifiable> sources)
+        public virtual INotificationResult Notify(IList<INotificationResult> sources)
         {
-            OnPropertyChanged("Value");
-            return true;
+            if (sources.Count > 0)
+            {
+                var oldValue = ((ValueChangedNotificationResult<T>)sources[0]).OldValue;
+                OnValueChanged(oldValue, Value);
+                OnPropertyChanged("Value");
+                return new ValueChangedNotificationResult<T>(this, oldValue, Value);
+            }
+            return new UnchangedNotificationResult(this);
         }
 
         private void Attach()
@@ -265,10 +276,15 @@ namespace NMF.Expressions
                 ValueChanged(this, new ValueChangedEventArgs(oldValue, newValue));
         }
 
-        public virtual bool Notify(IEnumerable<INotifiable> sources)
+        public virtual INotificationResult Notify(IList<INotificationResult> sources)
         {
-            OnValueChanged(default(T), Value);
-            return true;
+            if (sources.Count > 0)
+            {
+                var oldValue = ((ValueChangedNotificationResult<T>)sources[0]).OldValue;
+                OnValueChanged(oldValue, Value);
+                return new ValueChangedNotificationResult<T>(this, oldValue, Value);
+            }
+            return new UnchangedNotificationResult(this);
         }
 
         private void Attach()

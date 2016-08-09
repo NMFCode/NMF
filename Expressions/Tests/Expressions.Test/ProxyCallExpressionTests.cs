@@ -169,7 +169,7 @@ namespace NMF.Expressions.Test
                 }
             }
 
-            public bool Notify(IEnumerable<INotifiable> sources)
+            public INotificationResult Notify(IList<INotificationResult> sources)
             {
                 throw new NotImplementedException();
             }

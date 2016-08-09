@@ -22,11 +22,11 @@ namespace NMF.Expressions
         IEnumerable<INotifiable> Dependencies { get; }
 
         /// <summary>
-        /// Gets called when one of the dependencies signal a notification.
+        /// Gets called when one of the dependencies signals a notification.
         /// </summary>
-        /// <param name="sources">The nodes that triggered the notification.</param>
-        /// <returns>Whether the successors of this node should be notified.r</returns>
-        bool Notify(IEnumerable<INotifiable> sources);
+        /// <param name="source">Contains information about what triggered this notification.</param>
+        /// <returns>An object describing the changes that happened in this notification.</returns>
+        INotificationResult Notify(IList<INotificationResult> sources);
 
         int TotalVisits { get; set; }
 

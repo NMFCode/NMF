@@ -56,7 +56,7 @@ namespace NMF.Expressions
 
         public abstract ObservableMemberBinding<T> ApplyParameters(INotifyExpression<T> newTarget, IDictionary<string, object> parameters);
 
-        public abstract bool Notify(IEnumerable<INotifiable> sources);
+        public abstract INotificationResult Notify(IList<INotificationResult> sources);
     }
 
     internal class ObservablePropertyMemberBinding<T, TMember> : ObservableMemberBinding<T>
@@ -109,10 +109,11 @@ namespace NMF.Expressions
             return new ObservablePropertyMemberBinding<T, TMember>(newTarget, Member, Value.ApplyParameters(parameters));
         }
 
-        public override bool Notify(IEnumerable<INotifiable> sources)
+        public override INotificationResult Notify(IList<INotificationResult> sources)
         {
+            T oldValue = Target.Value;
             Apply();
-            return true;
+            return new ValueChangedNotificationResult<T>(this, oldValue, Target.Value);
         }
 
         protected override void OnAttach()
@@ -123,8 +124,6 @@ namespace NMF.Expressions
 
     internal class ObservableReversablePropertyMemberBinding<T, TMember> : ObservableMemberBinding<T>
     {
-        private T targetValue;
-
         public ObservableReversablePropertyMemberBinding(INotifyExpression<T> target, string memberName, Func<T, TMember> memberGet, Action<T, TMember> memberSet, INotifyReversableExpression<TMember> value)
         {
             if (value == null) throw new ArgumentNullException("value");
@@ -174,42 +173,40 @@ namespace NMF.Expressions
             return new ObservablePropertyMemberBinding<T, TMember>(newTarget, MemberSet, Value.ApplyParameters(parameters));
         }
 
-        public override bool Notify(IEnumerable<INotifiable> sources)
+        public override INotificationResult Notify(IList<INotificationResult> sources)
         {
-            if (!targetValue.Equals(Target.Value))
+            var targetChange = sources.FirstOrDefault(c => c.Source == Target) as ValueChangedNotificationResult<T>;
+            if (targetChange != null)
             {
-                DetachPropertyChangeListener();
-                targetValue = Target.Value;
-                AttachPropertyChangeListener();
+                DetachPropertyChangeListener(targetChange.OldValue);
+                AttachPropertyChangeListener(targetChange.NewValue);
             }
 
             Apply();
             Value.Value = MemberGet(Target.Value);
-            return true;
+            return new ValueChangedNotificationResult<T>(this, targetChange.OldValue, targetChange.NewValue);
         }
 
         protected override void OnAttach()
         {
-            targetValue = Target.Value;
-            AttachPropertyChangeListener();
+            AttachPropertyChangeListener(Target.Value);
         }
 
         protected override void OnDetach()
         {
-            DetachPropertyChangeListener();
-            targetValue = default(T);
+            DetachPropertyChangeListener(Target.Value);
         }
 
-        private void AttachPropertyChangeListener()
+        private void AttachPropertyChangeListener(object target)
         {
-            var newTarget = targetValue as INotifyPropertyChanged;
+            var newTarget = target as INotifyPropertyChanged;
             if (newTarget != null)
                 ExecutionEngine.Current.AddChangeListener(this, newTarget, MemberName);
         }
 
-        private void DetachPropertyChangeListener()
+        private void DetachPropertyChangeListener(object target)
         {
-            var oldTarget = targetValue as INotifyPropertyChanged;
+            var oldTarget = target as INotifyPropertyChanged;
             if (oldTarget != null)
                 ExecutionEngine.Current.RemoveChangeListener(this, oldTarget, MemberName);
         }

@@ -13,8 +13,6 @@ namespace NMF.Expressions
     internal abstract class ObservableMethodBase<T, TDelegate, TResult> : NotifyExpression<TResult>
         where TDelegate : class
     {
-        private T targetValue;
-        
         public ObservableMethodBase(INotifyExpression<T> target, MethodInfo method)
         {
             if (method == null) throw new ArgumentNullException("method");
@@ -47,31 +45,29 @@ namespace NMF.Expressions
         
         protected override void OnAttach()
         {
-            targetValue = Target.Value;
-            AttachCollectionChangeListener();
+            AttachCollectionChangeListener(Target.Value);
             RenewFunction();
         }
 
         protected override void OnDetach()
         {
-            DetachCollectionChangeListener();
-            targetValue = default(T);
+            DetachCollectionChangeListener(Target.Value);
         }
 
-        public override bool Notify(IEnumerable<INotifiable> sources)
+        public override INotificationResult Notify(IList<INotificationResult> sources)
         {
-            if (sources.Contains(Target))
+            var targetChange = sources.FirstOrDefault(c => c.Source == Target) as ValueChangedNotificationResult<T>;
+            if (targetChange != null)
             {
-                DetachCollectionChangeListener();
-                targetValue = Target.Value;
-                AttachCollectionChangeListener();
+                DetachCollectionChangeListener(targetChange.OldValue);
+                AttachCollectionChangeListener(targetChange.NewValue);
                 RenewFunction();
             }
 
             var oldValue = Value;
-            bool result = base.Notify(sources);
+            var result = base.Notify(sources);
 
-            if (result)
+            if (result.Changed)
             {
                 var disposable = oldValue as IDisposable;
                 if (disposable != null)
@@ -81,16 +77,16 @@ namespace NMF.Expressions
             return result;
         }
 
-        private void AttachCollectionChangeListener()
+        private void AttachCollectionChangeListener(object target)
         {
-            var newTarget = targetValue as INotifyCollectionChanged;
+            var newTarget = target as INotifyCollectionChanged;
             if (newTarget != null)
                 ExecutionEngine.Current.AddChangeListener(this, newTarget);
         }
 
-        private void DetachCollectionChangeListener()
+        private void DetachCollectionChangeListener(object target)
         {
-            var oldTarget = targetValue as INotifyCollectionChanged;
+            var oldTarget = target as INotifyCollectionChanged;
             if (oldTarget != null)
                 ExecutionEngine.Current.RemoveChangeListener(this, oldTarget);
         }

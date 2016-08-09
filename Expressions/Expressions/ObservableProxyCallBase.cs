@@ -87,7 +87,7 @@ namespace NMF.Expressions
 
         protected abstract INotifyValue<TResult> CreateProxy();
         
-        public override bool Notify(IEnumerable<INotifiable> sources)
+        public override INotificationResult Notify(IList<INotificationResult> sources)
         {
             RenewProxy();
             return base.Notify(sources);

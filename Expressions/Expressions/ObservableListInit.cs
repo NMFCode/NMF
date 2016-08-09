@@ -19,9 +19,6 @@ namespace NMF.Expressions
 
     internal class ObservableListInitializer<T, TElement> : ObservableMemberBinding<T>
     {
-        private T targetValue;
-        private TElement valueValue;
-
         public INotifyExpression<T> Target { get; private set; }
 
         public INotifyExpression<TElement> Value { get; private set; }
@@ -90,37 +87,43 @@ namespace NMF.Expressions
             return new ObservableListInitializer<T, TElement>(newTarget, Value.ApplyParameters(parameters), AddAction, RemoveAction);
         }
 
-        public override bool Notify(IEnumerable<INotifiable> sources)
+        public override INotificationResult Notify(IList<INotificationResult> sources)
         {
-            var newTargetValue = Target.Value;
-            var newValueValue = Value.Value;
-
-            if (!newTargetValue.Equals(targetValue))
+            var targetChange = sources.FirstOrDefault(c => c.Source == Target) as ValueChangedNotificationResult<T>;
+            var valueChange = sources.FirstOrDefault(c => c.Source == Value) as ValueChangedNotificationResult<TElement>;
+            
+            if (targetChange != null && valueChange != null)
             {
-                RemoveAction(targetValue, valueValue);
-                AddAction(newTargetValue, newValueValue);
-                targetValue = newTargetValue;
+                RemoveAction(targetChange.OldValue, valueChange.OldValue);
+                AddAction(targetChange.NewValue, valueChange.NewValue);
+                return new ValueChangedNotificationResult<T>(this, targetChange.OldValue, targetChange.NewValue);
             }
-            else if (!newValueValue.Equals(valueValue))
+            else if (targetChange != null)
             {
-                RemoveAction(targetValue, valueValue);
-                AddAction(targetValue, newValueValue);
-                valueValue = newValueValue;
+                RemoveAction(targetChange.OldValue, Value.Value);
+                AddAction(targetChange.NewValue, Value.Value);
+                return new ValueChangedNotificationResult<T>(this, targetChange.OldValue, targetChange.NewValue);
             }
-
-            return true;
+            else if (valueChange != null)
+            {
+                RemoveAction(Target.Value, valueChange.OldValue);
+                AddAction(Target.Value, valueChange.NewValue);
+                return new ValueChangedNotificationResult<T>(this, Target.Value, Target.Value);
+            }
+            else
+            {
+                return new UnchangedNotificationResult(this);
+            }
         }
 
         protected override void OnAttach()
         {
-            targetValue = Target.Value;
-            valueValue = Value.Value;
-            AddAction(targetValue, valueValue);
+            AddAction(Target.Value, Value.Value);
         }
 
         protected override void OnDetach()
         {
-            RemoveAction(targetValue, valueValue);
+            RemoveAction(Target.Value, Value.Value);
         }
     }
 

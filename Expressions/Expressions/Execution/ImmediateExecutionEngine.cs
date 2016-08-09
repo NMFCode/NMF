@@ -17,11 +17,17 @@ namespace NMF.Expressions.Execution
         private void NotifyLoop(INotifiable source)
         {
             var node = source;
-            while (node != null)
-            {
-                var result = node.Notify(Enumerable.Empty<INotifiable>());
+            INotificationResult lastResult = null;
 
-                if (result && node.Successors.Count > 0)
+            while (true)
+            {
+                var list = new ShortList<INotificationResult>();
+                if (lastResult != null)
+                    list.Add(lastResult);
+                
+                lastResult = node.Notify(list);
+
+                if (lastResult.Changed && node.Successors.Count > 0)
                     node = node.Successors[0];
                 else
                     break;

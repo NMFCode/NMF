@@ -28,12 +28,12 @@ namespace NMF.Expressions
 
         public override ExpressionType NodeType { get { return ExpressionType.Invoke; } }
         
-        public override bool Notify(IEnumerable<INotifiable> sources)
+        public override INotificationResult Notify(IList<INotificationResult> sources)
         {
             var oldValue = Value;
             var result = base.Notify(sources);
 
-            if (result)
+            if (result.Changed)
             {
                 var disposable = oldValue as IDisposable;
                 if (disposable != null)

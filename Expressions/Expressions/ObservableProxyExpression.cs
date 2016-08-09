@@ -105,11 +105,16 @@ namespace NMF.Expressions
             return this;
         }
 
-        public bool Notify(IEnumerable<INotifiable> sources)
+        public INotificationResult Notify(IList<INotificationResult> sources)
         {
-            if (ValueChanged != null)
-                ValueChanged(this, new ValueChangedEventArgs(default(T), Value));
-            return true;
+            if (sources.Count > 0)
+            {
+                var change = (ValueChangedNotificationResult<T>)sources[0];
+                if (ValueChanged != null)
+                    ValueChanged(this, new ValueChangedEventArgs(change.OldValue, Value));
+                return new ValueChangedNotificationResult<T>(this, change.OldValue, Value);
+            }
+            return new ValueChangedNotificationResult<T>(this, Value, Value);
         }
 
         INotifyExpression INotifyExpression.ApplyParameters(IDictionary<string, object> parameters)

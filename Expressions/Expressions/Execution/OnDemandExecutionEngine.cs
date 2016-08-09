@@ -24,6 +24,7 @@ namespace NMF.Expressions.Execution
 
         private void NotifyLoop(HashSet<INotifiable> sources)
         {
+            throw new NotImplementedException("OnDemand will not work until introduction of ExecutionContext.");
             MarkAffectedNodes(sources);
 
             foreach (var source in sources)
@@ -39,7 +40,8 @@ namespace NMF.Expressions.Execution
                     {
                         if (reevaluating)
                         {
-                            reevaluating = node.Notify(Enumerable.Empty<INotifiable>());
+                            var result = node.Notify(null);
+                            reevaluating = result.Changed;
                             currentValue = node.TotalVisits;
                             node.TotalVisits = 0;
                         }

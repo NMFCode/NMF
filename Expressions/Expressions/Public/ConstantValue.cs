@@ -30,7 +30,7 @@ namespace NMF.Expressions
             get { return value; }
         }
 
-        public bool Notify(IEnumerable<INotifiable> sources)
+        public INotificationResult Notify(IList<INotificationResult> sources)
         {
             throw new InvalidOperationException("A constant cannot have a dependency and therefore cannot be notified of a dependency change.");
         }

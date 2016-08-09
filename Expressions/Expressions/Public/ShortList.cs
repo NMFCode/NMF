@@ -32,6 +32,13 @@ namespace NMF.Expressions
 
         public bool IsReadOnly { get { return false; } }
 
+        public ShortList() { }
+
+        public ShortList(T item)
+        {
+            head = item;
+        }
+
         public void Add(T item)
         {
             Insert(Count, item);

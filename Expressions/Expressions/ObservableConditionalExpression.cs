@@ -101,9 +101,9 @@ namespace NMF.Expressions
             return new ObservableConditionalExpression<T>(Test.ApplyParameters(parameters), True.ApplyParameters(parameters), False.ApplyParameters(parameters));
         }
 
-        public override bool Notify(IEnumerable<INotifiable> sources)
+        public override INotificationResult Notify(IList<INotificationResult> sources)
         {
-            if (sources.Contains(Test))
+            if (sources.Any(c => c.Source == Test))
             {
                 if (Test.Value)
                 {

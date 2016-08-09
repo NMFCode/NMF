@@ -192,7 +192,7 @@ namespace NMF.Expressions
         /// <summary>
         /// Refreshes the current value
         /// </summary>
-        public virtual bool Notify(IEnumerable<INotifiable> sources)
+        public virtual INotificationResult Notify(IList<INotificationResult> sources)
         {
             var newVal = GetValue();
             if (!EqualityComparer<T>.Default.Equals(value, newVal))
@@ -200,9 +200,9 @@ namespace NMF.Expressions
                 var oldVal = value;
                 value = newVal;
                 OnValueChanged(oldVal, newVal);
-                return true;
+                return new ValueChangedNotificationResult<T>(this, oldVal, newVal);
             }
-            return false;
+            return new UnchangedNotificationResult(this);
         }
 
         /// <summary>

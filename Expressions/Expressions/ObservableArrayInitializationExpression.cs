@@ -56,16 +56,19 @@ namespace NMF.Expressions
             return new ObservableArrayInitializationExpression<T>(Expressions.Select(e => e.ApplyParameters(parameters)));
         }
 
-        public override bool Notify(IEnumerable<INotifiable> sources)
+        public override INotificationResult Notify(IList<INotificationResult> sources)
         {
-            for (int i = 0; i < Expressions.Count; i++)
+            if (sources.Count > 0)
             {
-                if (sources.Contains(Expressions[i]))
+                foreach (ValueChangedNotificationResult<T> change in sources)
                 {
-                    Value[i] = Expressions[i].Value;
+                    var index = Expressions.IndexOf((INotifyExpression<T>)change.Source);
+                    Value[index] = change.NewValue;
                 }
+                //TODO CollectionChangedNotificationResult?
+                return new ValueChangedNotificationResult<T[]>(this, Value, Value);
             }
-            return true;
+            return new UnchangedNotificationResult(this);
         }
 
         protected override void OnAttach()

@@ -99,11 +99,16 @@ namespace NMF.Expressions
             return new ObservableLocalVariable<T, TVar>(Inner.ApplyParameters(parameters), applied, ParameterName);
         }
 
-        public bool Notify(IEnumerable<INotifiable> sources)
+        public INotificationResult Notify(IList<INotificationResult> sources)
         {
-            if (ValueChanged != null)
-                ValueChanged(this, new ValueChangedEventArgs(default(T), Value));
-            return true;
+            var innerChange = sources.FirstOrDefault(c => c.Source == Inner) as ValueChangedNotificationResult<T>;
+            if (innerChange != null)
+            {
+                if (ValueChanged != null)
+                    ValueChanged(this, new ValueChangedEventArgs(innerChange.OldValue, Value));
+                return new ValueChangedNotificationResult<T>(this, innerChange.OldValue, innerChange.NewValue);
+            }
+            return new ValueChangedNotificationResult<T>(this, Inner.Value, Inner.Value);
         }
 
         INotifyExpression INotifyExpression.ApplyParameters(IDictionary<string, object> parameters)
