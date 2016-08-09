@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
+    <metadata>
+        <id>NMF-CodeGen</id>
+        <version>$version$</version>
+        <title>NMF Code Generator Templates</title>
+        <authors>Georg Hinkel</authors>
+        <owners>Georg Hinkel</owners>
+        <licenseUrl>http://nmf.codeplex.com/license</licenseUrl>
+        <projectUrl>http://github.com/NMFCode/NMF</projectUrl>
+        <requireLicenseAcceptance>false</requireLicenseAcceptance>
+        <developmentDependency>true</developmentDependency>
+        <description>A library for code generators.</description>
+        <summary>This package contains a set of transformation rule templates that can be useful for code generators.</summary>
+        <copyright>Copyright © Georg Hinkel 2014</copyright>
+        <language>en</language>
+        <tags>Model-driven; MDE; MDSD;</tags>
+        <dependencies>
+            <dependency id="NMF-Expressions" version="$version$" />
+            <dependency id="NMF-Transformations" version="$version$" />
+            <dependency id="NMF-Layering" version="$version$" />
+            <dependency id="NMF-Utilities" version="$version$" />
+        </dependencies>
+    </metadata>
+  <files>
+    <file src="..\Transformations\CodeGen\bin\Release\NMF.CodeGen.dll" target="lib\net40" />
+  </files>
+</package>

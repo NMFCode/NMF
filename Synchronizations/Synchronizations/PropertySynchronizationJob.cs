@@ -9,6 +9,8 @@ using System.Threading.Tasks;
 namespace NMF.Synchronizations
 {
     public class PropertySynchronizationJob<TLeft, TRight, TValue> : ISynchronizationJob<TLeft, TRight>
+        where TLeft : class
+        where TRight : class
     {
         private ObservingFunc<TLeft, TValue> leftFunc;
         private ObservingFunc<TRight, TValue> rightFunc;
@@ -61,25 +63,7 @@ namespace NMF.Synchronizations
             }
         }
 
-        public void Perform(TLeft left, TRight right, SynchronizationDirection direction, ISynchronizationContext context)
-        {
-            switch (context.ChangePropagation)
-            {
-                case NMF.Transformations.ChangePropagationMode.None:
-                    PerformNoChangePropagation(left, right, direction);
-                    break;
-                case NMF.Transformations.ChangePropagationMode.OneWay:
-                    PerformOneWay(left, right, context);
-                    break;
-                case NMF.Transformations.ChangePropagationMode.TwoWay:
-                    PerformTwoWay(left, right, context);
-                    return;
-                default:
-                    throw new InvalidOperationException();
-            }
-        }
-
-        private void PerformTwoWay(TLeft left, TRight right, ISynchronizationContext context)
+        private void PerformTwoWay(TLeft left, TRight right, ISynchronizationContext context, Queue<IDisposable> dependencies)
         {
             var leftEx3 = leftFunc.InvokeReversable(left);
             var rightEx3 = rightFunc.InvokeReversable(right);
@@ -116,50 +100,53 @@ namespace NMF.Synchronizations
                 default:
                     throw new InvalidOperationException();
             }
-            leftEx3.ValueChanged += (o, e) => rightEx3.Value = leftEx3.Value;
-            rightEx3.ValueChanged += (o, e) => leftEx3.Value = rightEx3.Value;
+            dependencies.Enqueue(new BidirectionalPropertySynchronization<TValue>(leftEx3, rightEx3));
         }
 
-        private void PerformOneWay(TLeft left, TRight right, ISynchronizationContext context)
+        private void PerformOneWay(TLeft left, TRight right, ISynchronizationContext context, Queue<IDisposable> dependencies)
         {
             switch (context.Direction)
             {
                 case SynchronizationDirection.LeftToRight:
                 case SynchronizationDirection.LeftToRightForced:
                     var leftEx1 = leftFunc.Observe(left);
-                    var rightEx1 = rightFunc.InvokeReversable(right);
-                    rightEx1.Value = leftEx1.Value;
-                    leftEx1.ValueChanged += (o, e) => rightEx1.Value = leftEx1.Value;
+                    rightSetter(right, leftEx1.Value);
+                    dependencies.Enqueue(new PropertySynchronization<TValue>(leftEx1, val => rightSetter(right, val)));
                     break;
                 case SynchronizationDirection.RightToLeft:
                 case SynchronizationDirection.RightToLeftForced:
-                    var leftEx2 = leftFunc.InvokeReversable(left);
                     var rightEx2 = rightFunc.Observe(right);
-                    leftEx2.Value = rightEx2.Value;
-                    rightEx2.ValueChanged += (o, e) => leftEx2.Value = rightEx2.Value;
+                    leftSetter(left, rightEx2.Value);
+                    dependencies.Enqueue(new PropertySynchronization<TValue>(rightEx2, val => leftSetter(left, val)));
                     break;
                 case SynchronizationDirection.LeftWins:
                 case SynchronizationDirection.RightWins:
-                    var leftEx4 = leftFunc.InvokeReversable(left);
-                    var rightEx4 = rightFunc.InvokeReversable(right);
-                    var test = context.Direction == SynchronizationDirection.LeftWins ?
-                        typeof(TValue).IsValueType || leftEx4.Value != null :
-                        !typeof(TValue).IsValueType && rightEx4.Value == null;
-                    if (test)
-                    {
-                        rightEx4.Value = leftEx4.Value;
-                    }
-                    else
-                    {
-                        leftEx4.Value = rightEx4.Value;
-                    }
+                    TValue leftVal;
+                    TValue rightVal;
                     if (context.Direction == SynchronizationDirection.LeftWins)
                     {
-                        leftEx4.ValueChanged += (o, e) => rightEx4.Value = leftEx4.Value;
+                        var leftEx4 = leftFunc.Observe(left);
+                        leftVal = leftEx4.Value;
+                        rightVal = rightGetter(right);
+                        dependencies.Enqueue(new PropertySynchronization<TValue>(leftEx4, val => rightSetter(right, val)));
                     }
                     else
                     {
-                        rightEx4.ValueChanged += (o, e) => leftEx4.Value = rightEx4.Value;
+                        var rightEx4 = rightFunc.Observe(right);
+                        leftVal = leftGetter(left);
+                        rightVal = rightEx4.Value;
+                        dependencies.Enqueue(new PropertySynchronization<TValue>(rightEx4, val => leftSetter(left, val)));
+                    }
+                    var test = context.Direction == SynchronizationDirection.LeftWins ?
+                        typeof(TValue).IsValueType || leftVal != null :
+                        !(typeof(TValue).IsValueType || rightVal != null);
+                    if (test)
+                    {
+                        rightSetter(right, leftVal);
+                    }
+                    else
+                    {
+                        leftSetter(left, rightVal);
                     }
                     break;
                 default:
@@ -204,6 +191,81 @@ namespace NMF.Synchronizations
                 default:
                     throw new InvalidOperationException();
             }
+        }
+
+        public void Perform(SynchronizationComputation<TLeft, TRight> computation, SynchronizationDirection direction, ISynchronizationContext context)
+        {
+            var left = computation.Input;
+            var right = computation.Opposite.Input;
+            switch (context.ChangePropagation)
+            {
+                case NMF.Transformations.ChangePropagationMode.None:
+                    PerformNoChangePropagation(left, right, direction);
+                    break;
+                case NMF.Transformations.ChangePropagationMode.OneWay:
+                    PerformOneWay(left, right, context, computation.Dependencies);
+                    break;
+                case NMF.Transformations.ChangePropagationMode.TwoWay:
+                    PerformTwoWay(left, right, context, computation.Dependencies);
+                    return;
+                default:
+                    throw new InvalidOperationException();
+            }
+        }
+    }
+
+    internal class PropertySynchronization<T> : IDisposable
+    {
+        public INotifyValue<T> Source { get; private set; }
+        public Action<T> Target { get; private set; }
+
+        public PropertySynchronization(INotifyValue<T> source, Action<T> target)
+        {
+            Source = source;
+            Target = target;
+
+            Source.ValueChanged += Source_ValueChanged;
+        }
+
+        private void Source_ValueChanged(object sender, ValueChangedEventArgs e)
+        {
+            Target(Source.Value);
+        }
+
+        public void Dispose()
+        {
+            Source.ValueChanged -= Source_ValueChanged;
+        }
+    }
+
+    internal class BidirectionalPropertySynchronization<T> : IDisposable
+    {
+        public INotifyReversableValue<T> Source1 { get; private set; }
+        public INotifyReversableValue<T> Source2 { get; private set; }
+
+        public BidirectionalPropertySynchronization(INotifyReversableValue<T> source1, INotifyReversableValue<T> source2)
+        {
+            Source1 = source1;
+            Source2 = source2;
+
+            Source1.ValueChanged += Source1_ValueChanged;
+            Source2.ValueChanged += Source2_ValueChanged;
+        }
+
+        private void Source2_ValueChanged(object sender, ValueChangedEventArgs e)
+        {
+            Source1.Value = Source2.Value;
+        }
+
+        private void Source1_ValueChanged(object sender, ValueChangedEventArgs e)
+        {
+            Source2.Value = Source1.Value;
+        }
+
+        public void Dispose()
+        {
+            Source1.ValueChanged -= Source1_ValueChanged;
+            Source2.ValueChanged -= Source2_ValueChanged;
         }
     }
 }

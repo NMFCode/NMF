@@ -32,7 +32,7 @@ namespace NMF.Expressions.Tests
         }
 
         [TestMethod]
-        public void Test_ModelFuncExpressionVisitor_Property()
+        public void ModelFuncExpressionVisitor_Property()
         {
             Expression<Func<Route, bool>> test = r => r.Entry != null && r.Entry.Signal == Signal.GO;
 
@@ -44,7 +44,7 @@ namespace NMF.Expressions.Tests
         }
 
         [TestMethod]
-        public void Test_ModelFuncExpressionVisitor_Struct()
+        public void ModelFuncExpressionVisitor_Struct()
         {
             Expression<Func<TestTuple, bool>> test = t => t.Route.Entry != null && t.Route.Entry.Signal == Signal.GO;
 
@@ -59,7 +59,7 @@ namespace NMF.Expressions.Tests
         }
 
         [TestMethod]
-        public void Test_ModelFuncExpressionVisitor_InnerStruct()
+        public void ModelFuncExpressionVisitor_InnerStruct()
         {
             Expression<Func<TestTuple2, bool>> test = t => t.Inner.Route.Entry != null && t.Inner.Route.Entry.Signal == Signal.GO;
 
@@ -74,7 +74,7 @@ namespace NMF.Expressions.Tests
         }
 
         [TestMethod]
-        public void Test_ModelFuncExpressionVisitor_ModelMethod()
+        public void ModelFuncExpressionVisitor_ModelMethod()
         {
             Expression<Func<Route, bool>> test = r => GetEntry(r) != null && GetEntry(r).Signal == Signal.GO;
 
@@ -87,7 +87,7 @@ namespace NMF.Expressions.Tests
         }
 
         [TestMethod]
-        public void Test_ModelFuncExpressionVisitor_KeepParameterWhenNeeded()
+        public void ModelFuncExpressionVisitor_KeepParameterWhenNeeded()
         {
             Expression<Func<TestTuple, bool>> test = t => t.Route.Entry != null && t.Route.Entry.Signal == Signal.GO && t.Severity > 0;
 
@@ -102,7 +102,7 @@ namespace NMF.Expressions.Tests
         }
 
         [TestMethod]
-        public void Test_ModelFuncExpressionVisitor_NonModelMethod()
+        public void ModelFuncExpressionVisitor_NonModelMethod()
         {
             Expression<Func<TestTuple, bool>> test = t => GetRoute(t).Entry != null && GetRoute(t).Entry.Signal == Signal.GO;
 
@@ -117,7 +117,7 @@ namespace NMF.Expressions.Tests
         }
 
         [TestMethod]
-        public void Test_ModelFuncExpressionVisitor_ModelNonModelMethod()
+        public void ModelFuncExpressionVisitor_ModelNonModelMethod()
         {
             Expression<Func<TestTuple, bool>> test = t => GetEntry(GetRoute(t)) != null && GetEntry(GetRoute(t)).Signal == Signal.GO;
 
@@ -132,7 +132,7 @@ namespace NMF.Expressions.Tests
         }
 
         [TestMethod]
-        public void Test_ModelFuncExpressionVisitor_NonModelProperty()
+        public void ModelFuncExpressionVisitor_NonModelProperty()
         {
             Expression<Func<Route, int>> test = r => r.AbsoluteUri.AbsoluteUri.Length;
 

@@ -7,6 +7,8 @@ using System.Threading.Tasks;
 namespace NMF.Synchronizations
 {
     public class OpaqueSynchronizationJob<TLeft, TRight> : ISynchronizationJob<TLeft, TRight>
+        where TLeft : class
+        where TRight : class
     {
         public Action<TLeft, TRight, SynchronizationDirection, ISynchronizationContext> Action { get; private set;}
 
@@ -20,6 +22,14 @@ namespace NMF.Synchronizations
             if (Action != null)
             {
                 Action(left, right, direction, context);
+            }
+        }
+
+        public void Perform(SynchronizationComputation<TLeft, TRight> computation, SynchronizationDirection direction, ISynchronizationContext context)
+        {
+            if (Action != null)
+            {
+                Action(computation.Input, computation.Opposite.Input, direction, context);
             }
         }
 

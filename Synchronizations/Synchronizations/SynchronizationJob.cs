@@ -8,9 +8,11 @@ using System.Threading.Tasks;
 namespace NMF.Synchronizations
 {
     public interface ISynchronizationJob<TLeft, TRight>
+        where TLeft : class
+        where TRight : class
     {
         bool IsEarly { get; }
 
-        void Perform(TLeft left, TRight right, SynchronizationDirection direction, ISynchronizationContext context);
+        void Perform(SynchronizationComputation<TLeft, TRight> computation, SynchronizationDirection direction, ISynchronizationContext context);
     }
 }

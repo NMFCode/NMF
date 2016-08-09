@@ -70,7 +70,7 @@ namespace NMF.Synchronizations
             var input = GetLefts(syncComputation.Input, syncComputation.SynchronizationContext.ChangePropagation != ChangePropagationMode.None);
             syncComputation.DoWhenOutputIsAvailable((inp, outp) =>
             {
-                SynchronizeLTRCollections(input, GetRights(outp, syncComputation.SynchronizationContext.ChangePropagation == ChangePropagationMode.TwoWay), syncComputation.SynchronizationContext, syncComputation.OmitCandidateSearch);
+                SynchronizeLTRCollections(input, GetRights(outp, syncComputation.SynchronizationContext.ChangePropagation == ChangePropagationMode.TwoWay), syncComputation.SynchronizationContext, syncComputation.OmitCandidateSearch, syncComputation.Dependencies);
             });
         }
 
@@ -80,11 +80,11 @@ namespace NMF.Synchronizations
             var input = GetRights(syncComputation.Input, syncComputation.SynchronizationContext.ChangePropagation != ChangePropagationMode.None);
             syncComputation.DoWhenOutputIsAvailable((inp, outp) =>
             {
-                SynchronizeRTLCollections(GetLefts(outp, syncComputation.SynchronizationContext.ChangePropagation == ChangePropagationMode.TwoWay), input, syncComputation.SynchronizationContext, syncComputation.OmitCandidateSearch);
+                SynchronizeRTLCollections(GetLefts(outp, syncComputation.SynchronizationContext.ChangePropagation == ChangePropagationMode.TwoWay), input, syncComputation.SynchronizationContext, syncComputation.OmitCandidateSearch, syncComputation.Dependencies);
             });
         }
 
-        private void SynchronizeLTRCollections(ICollection<TDepLeft> lefts, ICollection<TDepRight> rights, ISynchronizationContext context, bool ignoreCandidates)
+        private void SynchronizeLTRCollections(ICollection<TDepLeft> lefts, ICollection<TDepRight> rights, ISynchronizationContext context, bool ignoreCandidates, Queue<IDisposable> dependencies)
         {
             if (rights != null)
             {
@@ -119,7 +119,7 @@ namespace NMF.Synchronizations
                         AddCorrespondingToLefts(lefts, context, item);
                     }
                 }
-                RegisterLeftChangePropagationHooks(lefts, rights, context);
+                RegisterLeftChangePropagationHooks(lefts, rights, context, dependencies);
             }
             else
             {
@@ -127,45 +127,50 @@ namespace NMF.Synchronizations
             }
         }
 
-        private void RegisterLeftChangePropagationHooks(ICollection<TDepLeft> lefts, ICollection<TDepRight> rights, ISynchronizationContext context)
+        private void RegisterLeftChangePropagationHooks(ICollection<TDepLeft> lefts, ICollection<TDepRight> rights, ISynchronizationContext context, Queue<IDisposable> dependencies)
         {
             if (context.ChangePropagation == ChangePropagationMode.OneWay)
             {
-                var notifier = lefts as INotifyCollectionChanged;
-                if (notifier != null)
+                if (lefts is INotifyCollectionChanged)
                 {
-                    notifier.CollectionChanged += (o, e) => ProcessLeftChangesForRights(lefts, rights, context, e);
+                    dependencies.Enqueue(new LeftToRightHook(lefts, rights, context, this));
                 }
             }
-            RegisterTwoWayChangePropagation(lefts, rights, context);
+            RegisterTwoWayChangePropagation(lefts, rights, context, dependencies);
         }
 
-        private void RegisterRightChangePropagationHooks(ICollection<TDepLeft> lefts, ICollection<TDepRight> rights, ISynchronizationContext context)
+        private void RegisterRightChangePropagationHooks(ICollection<TDepLeft> lefts, ICollection<TDepRight> rights, ISynchronizationContext context, Queue<IDisposable> dependencies)
         {
             if (context.ChangePropagation == ChangePropagationMode.OneWay)
             {
-                var notifier = rights as INotifyCollectionChanged;
-                if (notifier != null)
+                if (rights is INotifyCollectionChanged)
                 {
-                    notifier.CollectionChanged += (o, e) => ProcessRightChangesForLefts(lefts, rights, context, e);
+                    dependencies.Enqueue(new RightToLeftHook(lefts, rights, context, this));
                 }
             }
-            RegisterTwoWayChangePropagation(lefts, rights, context);
+            RegisterTwoWayChangePropagation(lefts, rights, context, dependencies);
         }
 
-        private void RegisterTwoWayChangePropagation(ICollection<TDepLeft> lefts, ICollection<TDepRight> rights, ISynchronizationContext context)
+        private void RegisterTwoWayChangePropagation(ICollection<TDepLeft> lefts, ICollection<TDepRight> rights, ISynchronizationContext context, Queue<IDisposable> dependencies)
         {
             if (context.ChangePropagation == ChangePropagationMode.TwoWay)
             {
-                var leftNotifier = lefts as INotifyCollectionChanged;
-                var rightNotifier = rights as INotifyCollectionChanged;
-                if (leftNotifier != null)
+                var leftNotifier = lefts is INotifyCollectionChanged;
+                var rightNotifier = rights is INotifyCollectionChanged;
+                if (leftNotifier)
                 {
-                    leftNotifier.CollectionChanged += (o, e) => ProcessLeftChangesForRights(lefts, rights, context, e);
+                    if (rightNotifier)
+                    {
+                        dependencies.Enqueue(new BidirectionalHook(lefts, rights, context, this));
+                    }
+                    else
+                    {
+                        dependencies.Enqueue(new LeftToRightHook(lefts, rights, context, this));
+                    }
                 }
-                if (rightNotifier != null)
+                else if (rightNotifier)
                 {
-                    rightNotifier.CollectionChanged += (o, e) => ProcessRightChangesForLefts(lefts, rights, context, e);
+                    dependencies.Enqueue(new RightToLeftHook(lefts, rights, context, this));
                 }
             }
         }
@@ -260,7 +265,7 @@ namespace NMF.Synchronizations
             });
         }
 
-        private void SynchronizeRTLCollections(ICollection<TDepLeft> lefts, ICollection<TDepRight> rights, ISynchronizationContext context, bool ignoreCandidates)
+        private void SynchronizeRTLCollections(ICollection<TDepLeft> lefts, ICollection<TDepRight> rights, ISynchronizationContext context, bool ignoreCandidates, Queue<IDisposable> dependencies)
         {
             if (lefts != null)
             {
@@ -295,7 +300,7 @@ namespace NMF.Synchronizations
                         AddCorrespondingToRights(rights, context, item);
                     }
                 }
-                RegisterRightChangePropagationHooks(lefts, rights, context);
+                RegisterRightChangePropagationHooks(lefts, rights, context, dependencies);
             }
             else
             {
@@ -340,6 +345,120 @@ namespace NMF.Synchronizations
             protected override void HandleReadyComputation(Computation computation)
             {
                 parent.HandleRightToLeftDependency(computation);
+            }
+        }
+
+        private abstract class NotificationHook : IDisposable
+        {
+            public ICollection<TDepLeft> Lefts { get; private set; }
+            public ICollection<TDepRight> Rights { get; private set; }
+            public ISynchronizationContext Context { get; private set; }
+            public SynchronizationMultipleDependency<TLeft, TRight, TDepLeft, TDepRight> Parent { get; private set; }
+
+            public NotificationHook(ICollection<TDepLeft> lefts, ICollection<TDepRight> rights, ISynchronizationContext context, SynchronizationMultipleDependency<TLeft, TRight, TDepLeft, TDepRight> parent)
+            {
+                Lefts = lefts;
+                Rights = rights;
+                Context = context;
+                Parent = parent;
+            }
+
+            public abstract void Dispose();
+        }
+
+        private class LeftToRightHook : NotificationHook
+        {
+            public LeftToRightHook(ICollection<TDepLeft> lefts, ICollection<TDepRight> rights, ISynchronizationContext context, SynchronizationMultipleDependency<TLeft, TRight, TDepLeft, TDepRight> parent)
+                : base(lefts, rights, context, parent)
+            {
+                var notifier = lefts as INotifyCollectionChanged;
+                if (notifier != null)
+                {
+                    notifier.CollectionChanged += LeftsChanged;
+                }
+            }
+
+            private void LeftsChanged(object sender, NotifyCollectionChangedEventArgs e)
+            {
+                Parent.ProcessLeftChangesForRights(Lefts, Rights, Context, e);
+            }
+
+            public override void Dispose()
+            {
+                var notifier = Lefts as INotifyCollectionChanged;
+                if (notifier != null)
+                {
+                    notifier.CollectionChanged -= LeftsChanged;
+                }
+            }
+        }
+
+        private class RightToLeftHook : NotificationHook
+        {
+            public RightToLeftHook(ICollection<TDepLeft> lefts, ICollection<TDepRight> rights, ISynchronizationContext context, SynchronizationMultipleDependency<TLeft, TRight, TDepLeft, TDepRight> parent)
+                : base(lefts, rights, context, parent)
+            {
+                var notifier = rights as INotifyCollectionChanged;
+                if (notifier != null)
+                {
+                    notifier.CollectionChanged += RightsChanged;
+                }
+            }
+
+            private void RightsChanged(object sender, NotifyCollectionChangedEventArgs e)
+            {
+                Parent.ProcessRightChangesForLefts(Lefts, Rights, Context, e);
+            }
+
+            public override void Dispose()
+            {
+                var notifier = Lefts as INotifyCollectionChanged;
+                if (notifier != null)
+                {
+                    notifier.CollectionChanged -= RightsChanged;
+                }
+            }
+        }
+
+        private class BidirectionalHook : NotificationHook
+        {
+            public BidirectionalHook(ICollection<TDepLeft> lefts, ICollection<TDepRight> rights, ISynchronizationContext context, SynchronizationMultipleDependency<TLeft, TRight, TDepLeft, TDepRight> parent)
+                : base(lefts, rights, context, parent)
+            {
+                var leftNotifier = lefts as INotifyCollectionChanged;
+                var rightNotifier = rights as INotifyCollectionChanged;
+                if (leftNotifier != null)
+                {
+                    leftNotifier.CollectionChanged += LeftsChanged;
+                }
+                if (rightNotifier != null)
+                {
+                    rightNotifier.CollectionChanged += RightsChanged;
+                }
+            }
+
+            private void LeftsChanged(object sender, NotifyCollectionChangedEventArgs e)
+            {
+                Parent.ProcessLeftChangesForRights(Lefts, Rights, Context, e);
+            }
+
+            private void RightsChanged(object sender, NotifyCollectionChangedEventArgs e)
+            {
+                Parent.ProcessRightChangesForLefts(Lefts, Rights, Context, e);
+            }
+
+            public override void Dispose()
+            {
+                var leftNotifier = Lefts as INotifyCollectionChanged;
+                var rightNotifier = Rights as INotifyCollectionChanged;
+                if (leftNotifier != null)
+                {
+                    leftNotifier.CollectionChanged -= LeftsChanged;
+                }
+                if (rightNotifier != null)
+                {
+                    rightNotifier.CollectionChanged -= RightsChanged;
+                }
             }
         }
     }

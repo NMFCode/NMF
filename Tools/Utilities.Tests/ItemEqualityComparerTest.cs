@@ -10,7 +10,7 @@ namespace NMF.Utilities.Tests
     public class ItemEqualityComparerTest
     {
         [TestMethod]
-        public void Test_ItemEqualityComparer_Equals1()
+        public void ItemEqualityComparer_Equals1()
         {
             AssertEqual(CreateArray("a", "b"), CreateArray("a", "b"));
             AssertEqual(CreateArray("a"), CreateArray("a"));
@@ -19,7 +19,7 @@ namespace NMF.Utilities.Tests
         }
 
         [TestMethod]
-        public void Test_ItemEqualityComparer_Equals2()
+        public void ItemEqualityComparer_Equals2()
         {
             AssertNotEqual(CreateArray("a"), CreateArray("a", "b"));
             AssertNotEqual(CreateArray("a", "b"), CreateArray("a", "b", "c"));
@@ -28,7 +28,7 @@ namespace NMF.Utilities.Tests
         }
 
         [TestMethod]
-        public void Test_ItemEqualityComparer_Equals3()
+        public void ItemEqualityComparer_Equals3()
         {
             AssertNotEqual(CreateArray("a"), CreateArray("b"));
             AssertNotEqual(CreateArray(1), CreateArray(2));
@@ -37,7 +37,7 @@ namespace NMF.Utilities.Tests
         }
 
         [TestMethod]
-        public void Test_ItemEqualityComparer_Equals4()
+        public void ItemEqualityComparer_Equals4()
         {
             AssertNotEqual(CreateArray("a"), null);
             AssertNotEqual(CreateArray(1), null);

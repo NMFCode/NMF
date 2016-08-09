@@ -11,7 +11,7 @@ namespace NMF.Expressions.Tests
     public class PromotionExpressionVisitorTest
     {
         [TestMethod]
-        public void Test_PromotionExpressionVisitor_CheckEntrySemaphore()
+        public void PromotionExpressionVisitor_CheckEntrySemaphore()
         {
             Expression<Func<Route, bool>> test = r => r.Entry != null && r.Entry.Signal == Signal.GO;
 
@@ -26,7 +26,7 @@ namespace NMF.Expressions.Tests
         }
 
         [TestMethod]
-        public void Test_PromotionExpressionVisitor_CheckSwitchPosition()
+        public void PromotionExpressionVisitor_CheckSwitchPosition()
         {
             Expression<Func<SwitchPosition, bool>> test = swP => swP.Switch.CurrentPosition == swP.Position;
 
@@ -42,7 +42,7 @@ namespace NMF.Expressions.Tests
         }
 
         [TestMethod]
-        public void Test_PromotionExpressionVisitor_CheckSwitchPositionSensor()
+        public void PromotionExpressionVisitor_CheckSwitchPositionSensor()
         {
             Expression<Func<Route, SwitchPosition, bool>> test = (r, swP) => swP.Switch.Sensor != null && !r.DefinedBy.Contains(swP.Switch.Sensor);
 
@@ -58,7 +58,7 @@ namespace NMF.Expressions.Tests
         }
 
         [TestMethod]
-        public void Test_PromotionExpressionVisitor_SwitchSet()
+        public void PromotionExpressionVisitor_SwitchSet()
         {
             Expression<Func<RailwayContainer, IEnumerableExpression<SwitchPosition>>> test = rc =>
                 from route in rc.Routes
@@ -75,7 +75,7 @@ namespace NMF.Expressions.Tests
         }
 
         [TestMethod]
-        public void Test_PromotionExpressionVisitor_PosLength()
+        public void PromotionExpressionVisitor_PosLength()
         {
             Expression<Func<RailwayContainer, IEnumerableExpression<ISegment>>> test = rc =>
                 from seg in rc.Invalids.OfType<Segment>()

@@ -84,11 +84,20 @@ namespace NMF.Synchronizations
             }
         }
 
-        internal void Synchronize(TLeft left, TRight right, SynchronizationDirection direction, ISynchronizationContext context)
+        internal void InitializeOutput(SynchronizationComputation<TLeft, TRight> computation)
+        {
+            var context = computation.SynchronizationContext;
+            foreach (var job in SynchronizationJobs.Where(j => j.IsEarly))
+            {
+                job.Perform(computation, context.Direction, context);
+            }
+        }
+
+        internal void Synchronize(SynchronizationComputation<TLeft, TRight> computation, SynchronizationDirection direction, ISynchronizationContext context)
         {
             foreach (var job in SynchronizationJobs.Where(j => !j.IsEarly))
             {
-                job.Perform(left, right, direction, context);
+                job.Perform(computation, direction, context);
             }
         }
 
@@ -185,28 +194,12 @@ namespace NMF.Synchronizations
 
         internal object CreateRightOutputInternal(TLeft input, IEnumerable candidates, ISynchronizationContext context, out bool existing)
         {
-            var output = CreateRightOutput(input, candidates != null ? candidates.OfType<TRight>() : null, context, out existing);
-            if (output != null)
-            {
-                foreach (var job in SynchronizationJobs.Where(j => j.IsEarly))
-                {
-                    job.Perform(input, output, SynchronizationDirection.LeftToRight, context);
-                }
-            }
-            return output;
+            return CreateRightOutput(input, candidates != null ? candidates.OfType<TRight>() : null, context, out existing);
         }
 
         internal object CreateLeftOutputInternal(TRight input, IEnumerable candidates, ISynchronizationContext context, out bool existing)
         {
-            var output = CreateLeftOutput(input, candidates != null ? candidates.OfType<TLeft>() : null, context, out existing);
-            if (output != null)
-            {
-                foreach (var job in SynchronizationJobs.Where(j => j.IsEarly))
-                {
-                    job.Perform(output, input, SynchronizationDirection.RightToLeft, context);
-                }
-            }
-            return output;
+            return CreateLeftOutput(input, candidates != null ? candidates.OfType<TLeft>() : null, context, out existing);
         }
 
         protected virtual TRight CreateRightOutput(TLeft input, IEnumerable<TRight> candidates, ISynchronizationContext context, out bool existing)
@@ -263,7 +256,7 @@ namespace NMF.Synchronizations
             return output;
         }
 
-        public void MarkInstantiatingFor(SynchronizationRuleBase synchronizationRule)
+        public void MarkInstantiatingFor(SynchronizationRuleBase synchronizationRule, Expression<Func<TLeft, bool>> leftPredicate = null, Expression<Func<TRight, bool>> rightPredicate = null)
         {
             if (synchronizationRule == null) throw new ArgumentNullException("synchronizationRule");
 
@@ -275,9 +268,57 @@ namespace NMF.Synchronizations
             {
                 throw new ArgumentException("The right types do not conform. The right type of the current rule must be an assignable of the given synchronization rules right type.", "synchronizationRule");
             }
+            leftPredicate = SimplifyPredicate(leftPredicate);
+            rightPredicate = SimplifyPredicate(rightPredicate);
 
-            LeftToRight.MarkInstantiatingFor(synchronizationRule.LTR);
-            RightToLeft.MarkInstantiatingFor(synchronizationRule.RTL);
+            ObservingFunc<TLeft, bool> leftFunc = ObservingFunc<TLeft, bool>.FromExpression(leftPredicate);
+            ObservingFunc<TRight, bool> rightFunc = ObservingFunc<TRight, bool>.FromExpression(rightPredicate);
+
+            if (leftFunc != null)
+            {
+                LeftToRight.MarkInstantiatingFor(synchronizationRule.LTR, leftFunc.Evaluate);
+                SynchronizationJobs.Add(new LeftInstantiationMonitorJob<TLeft, TRight>(leftFunc));
+            }
+            else
+            {
+                LeftToRight.MarkInstantiatingFor(synchronizationRule.LTR);
+            }
+            if (rightFunc != null)
+            {
+                RightToLeft.MarkInstantiatingFor(synchronizationRule.RTL, rightFunc.Evaluate);
+                SynchronizationJobs.Add(new RightInstantiationMonitorJob<TLeft, TRight>(rightFunc));
+            }
+            else
+            {
+                RightToLeft.MarkInstantiatingFor(synchronizationRule.RTL);
+            }
+        }
+
+        private static Expression<Func<T, bool>> SimplifyPredicate<T>(Expression<Func<T, bool>> predicate)
+        {
+            if (predicate != null)
+            {
+                var body = predicate.Body;
+                while (body.CanReduce)
+                {
+                    body = body.Reduce();
+                }
+                predicate.Update(body, predicate.Parameters);
+                if (predicate.Body.NodeType == ExpressionType.Constant)
+                {
+                    var constant = (ConstantExpression)predicate.Body;
+                    if ((bool)constant.Value)
+                    {
+                        return null;
+                    }
+                    else
+                    {
+                        throw new ArgumentException("The left predicate is always false", "leftPredicate");
+                    }
+                }
+            }
+
+            return predicate;
         }
     }
 }

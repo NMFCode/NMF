@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
+    <metadata>
+        <id>NMF-Repository</id>
+        <version>$version$</version>
+        <title>NMF Model Repository</title>
+        <authors>Georg Hinkel</authors>
+        <owners>Georg Hinkel</owners>
+        <licenseUrl>http://nmf.codeplex.com/license</licenseUrl>
+        <projectUrl>http://github.com/NMFCode/NMF</projectUrl>
+        <requireLicenseAcceptance>false</requireLicenseAcceptance>
+        <developmentDependency>true</developmentDependency>
+        <description>This package contains a set of classes to create NMF model repositories.</description>
+        <summary>This package contains a set of classes to create NMF model repositories.</summary>
+        <copyright>Copyright © Georg Hinkel 2014</copyright>
+        <language>en</language>
+        <tags>Model-driven; MDE; MDSD;</tags>
+        <dependencies>
+            <dependency id="NMF-Expressions" version="$version$" />
+            <dependency id="NMF-Utilities" version="$version$" />
+        </dependencies>
+    </metadata>
+  <files>
+    <file src="..\Models\Models\bin\Release\NMF.Serialization.dll" target="lib\net40" />
+    <file src="..\Models\Models\bin\Release\NMF.Collections.dll" target="lib\net40" />
+    <file src="..\Models\Models\bin\Release\NMF.Models.dll" target="lib\net40" />
+  </files>
+</package>

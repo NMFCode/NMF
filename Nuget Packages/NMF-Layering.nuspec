@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
+    <metadata>
+        <id>NMF-Layering</id>
+        <version>$version$</version>
+        <title>NMF Layering</title>
+        <authors>Georg Hinkel</authors>
+        <owners>Georg Hinkel</owners>
+        <licenseUrl>http://nmf.codeplex.com/license</licenseUrl>
+        <projectUrl>http://github.com/NMFCode/NMF</projectUrl>
+        <requireLicenseAcceptance>false</requireLicenseAcceptance>
+        <developmentDependency>true</developmentDependency>
+        <description>A simple implementation of Tarjans algorithm that creates a topological order for a given graph</description>
+        <summary>A simple implementation of Tarjans algorithm that creates a topological order for a given graph</summary>
+        <copyright>Copyright © Georg Hinkel 2016</copyright>
+        <language>en</language>
+        <tags>Model-driven; MDE; MDSD;</tags>
+    </metadata>
+  <files>
+    <file src="..\Analysis\Layering\bin\Release\NMF.Layering.dll" target="lib\net40" />
+  </files>
+</package>
