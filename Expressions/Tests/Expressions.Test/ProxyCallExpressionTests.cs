@@ -186,9 +186,7 @@ namespace NMF.Expressions.Test
 
             public IEnumerable<INotifiable> Dependencies { get { return Enumerable.Empty<INotifiable>(); } }
 
-            public int TotalVisits { get; set; }
-
-            public int RemainingVisits { get; set; }
+            public object ExecutionMetaData { get; set; }
         }
 
         private class TestProxy : TestProxy<int>, IDisposable

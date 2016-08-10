@@ -13,10 +13,6 @@ namespace NMF.Expressions
 {
     internal abstract class ObservableMemberBinding<T> : INotifiable
     {
-        public int TotalVisits { get; set; }
-
-        public int RemainingVisits { get; set; }
-
         private readonly ShortList<INotifiable> successors = new ShortList<INotifiable>();
 
         public ObservableMemberBinding()
@@ -35,6 +31,8 @@ namespace NMF.Expressions
         public abstract bool IsParameterFree { get; }
         
         public abstract IEnumerable<INotifiable> Dependencies { get; }
+
+        public object ExecutionMetaData { get; set; }
 
         private void Attach()
         {
@@ -124,7 +122,9 @@ namespace NMF.Expressions
 
     internal class ObservableReversablePropertyMemberBinding<T, TMember> : ObservableMemberBinding<T>
     {
-        public ObservableReversablePropertyMemberBinding(INotifyExpression<T> target, string memberName, Func<T, TMember> memberGet, Action<T, TMember> memberSet, INotifyReversableExpression<TMember> value)
+        private readonly IExecutionContext context;
+
+        public ObservableReversablePropertyMemberBinding(INotifyExpression<T> target, string memberName, Func<T, TMember> memberGet, Action<T, TMember> memberSet, INotifyReversableExpression<TMember> value, IExecutionContext context)
         {
             if (value == null) throw new ArgumentNullException("value");
             if (memberName == null) throw new ArgumentNullException("memberName");
@@ -137,6 +137,7 @@ namespace NMF.Expressions
             MemberGet = memberGet;
             MemberSet = memberSet;
             Target = target;
+            this.context = context;
         }
 
         public INotifyReversableExpression<TMember> Value { get; private set; }
@@ -201,14 +202,14 @@ namespace NMF.Expressions
         {
             var newTarget = target as INotifyPropertyChanged;
             if (newTarget != null)
-                ExecutionEngine.Current.AddChangeListener(this, newTarget, MemberName);
+                context.AddChangeListener(this, newTarget, MemberName);
         }
 
         private void DetachPropertyChangeListener(object target)
         {
             var oldTarget = target as INotifyPropertyChanged;
             if (oldTarget != null)
-                ExecutionEngine.Current.RemoveChangeListener(this, oldTarget, MemberName);
+                context.RemoveChangeListener(this, oldTarget, MemberName);
         }
     }
 }

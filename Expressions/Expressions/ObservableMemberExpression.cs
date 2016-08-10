@@ -13,12 +13,12 @@ namespace NMF.Expressions
 {
     internal class ObservableMemberExpression<TTarget, TMember> : NotifyExpression<TMember>
     {
-        private TTarget targetValue;
+        private readonly IExecutionContext context;
 
         public ObservableMemberExpression(MemberExpression expression, ObservableExpressionBinder binder, string name, Func<TTarget, TMember> getter)
-            : this(binder.VisitObservable<TTarget>(expression.Expression, true), name, getter) { }
+            : this(binder.VisitObservable<TTarget>(expression.Expression, true), name, getter, binder.Context) { }
 
-        public ObservableMemberExpression(INotifyExpression<TTarget> target, string memberName, Func<TTarget, TMember> memberGet)
+        public ObservableMemberExpression(INotifyExpression<TTarget> target, string memberName, Func<TTarget, TMember> memberGet, IExecutionContext context)
         {
             if (memberGet == null) throw new ArgumentNullException("memberGet");
             if (memberName == null) throw new ArgumentNullException("memberName");
@@ -26,6 +26,7 @@ namespace NMF.Expressions
             Target = target;
             MemberGet = memberGet;
             MemberName = memberName;
+            this.context = context;
         }
         
         public override ExpressionType NodeType { get { return ExpressionType.MemberAccess; } }
@@ -60,16 +61,7 @@ namespace NMF.Expressions
         {
             if (Target != null)
             {
-                if (!EqualityComparer<TTarget>.Default.Equals(targetValue, Target.Value))
-                {
-                    DetachPropertyChangeListener();
-                    targetValue = Target.Value;
-                    AttachPropertyChangeListener();
-                }
-
-                if (targetValue == null)
-                    return default(TMember);
-                return MemberGet(targetValue);
+                return MemberGet(Target.Value);
             }
             else
             {
@@ -89,47 +81,58 @@ namespace NMF.Expressions
 
         public override INotifyExpression<TMember> ApplyParameters(IDictionary<string, object> parameters)
         {
-            return new ObservableMemberExpression<TTarget, TMember>(Target.ApplyParameters(parameters), MemberName, MemberGet);
+            return new ObservableMemberExpression<TTarget, TMember>(Target.ApplyParameters(parameters), MemberName, MemberGet, context);
+        }
+
+        public override INotificationResult Notify(IList<INotificationResult> sources)
+        {
+            if (sources.Count > 0)
+            {
+                var oldValue = ((ValueChangedNotificationResult<TTarget>)sources[0]).OldValue;
+                DetachPropertyChangeListener(oldValue);
+                AttachPropertyChangeListener(Target.Value);
+            }
+            return base.Notify(sources);
         }
 
         protected override void OnAttach()
         {
-            targetValue = Target == null ? default(TTarget) : Target.Value;
-            AttachPropertyChangeListener();
+            if (Target != null)
+                AttachPropertyChangeListener(Target.Value);
         }
 
         protected override void OnDetach()
         {
-            DetachPropertyChangeListener();
-            targetValue = default(TTarget);
+            if (Target != null)
+                DetachPropertyChangeListener(Target.Value);
         }
 
-        private void AttachPropertyChangeListener()
+        private void AttachPropertyChangeListener(object target)
         {
-            var newTarget = targetValue as INotifyPropertyChanged;
+            var newTarget = target as INotifyPropertyChanged;
             if (newTarget != null)
-                ExecutionEngine.Current.AddChangeListener(this, newTarget, MemberName);
+                context.AddChangeListener(this, newTarget, MemberName);
         }
 
-        private void DetachPropertyChangeListener()
+        private void DetachPropertyChangeListener(object target)
         {
-            var oldTarget = targetValue as INotifyPropertyChanged;
+            var oldTarget = target as INotifyPropertyChanged;
             if (oldTarget != null)
-                ExecutionEngine.Current.RemoveChangeListener(this, oldTarget, MemberName);
+                context.RemoveChangeListener(this, oldTarget, MemberName);
         }
     }
 
     internal class ObservableReversableMemberExpression<TTarget, TMember> : ObservableReversableExpression<TMember>
     {
-        private TTarget targetValue;
+        private readonly IExecutionContext context;
 
         public ObservableReversableMemberExpression(MemberExpression expression, ObservableExpressionBinder binder, string name, FieldInfo field)
-            : this(binder.VisitObservable<TTarget>(expression.Expression, true), name, ReflectionHelper.CreateDynamicFieldGetter<TTarget, TMember>(field), ReflectionHelper.CreateDynamicFieldSetter<TTarget, TMember>(field)) { }
+            : this(binder.VisitObservable<TTarget>(expression.Expression, true), name, ReflectionHelper.CreateDynamicFieldGetter<TTarget, TMember>(field), ReflectionHelper.CreateDynamicFieldSetter<TTarget, TMember>(field), binder.Context) { }
 
         public ObservableReversableMemberExpression(MemberExpression expression, ObservableExpressionBinder binder, string name, Func<TTarget, TMember> getter, Action<TTarget, TMember> setter)
-            : this(binder.VisitObservable<TTarget>(expression.Expression, true), name, getter, setter) { }
+            : this(binder.VisitObservable<TTarget>(expression.Expression, true), name, getter, setter, binder.Context) { }
 
-        public ObservableReversableMemberExpression(INotifyExpression<TTarget> target, string memberName, Func<TTarget, TMember> memberGet, Action<TTarget, TMember> memberSet)
+        public ObservableReversableMemberExpression(INotifyExpression<TTarget> target, string memberName, Func<TTarget, TMember> memberGet, Action<TTarget, TMember> memberSet, IExecutionContext context)
         {
             if (memberGet == null) throw new ArgumentNullException("memberGet");
             if (memberSet == null) throw new ArgumentNullException("memberSet");
@@ -139,6 +142,7 @@ namespace NMF.Expressions
             MemberGet = memberGet;
             MemberSet = memberSet;
             MemberName = memberName;
+            this.context = context;
         }
         
         public override ExpressionType NodeType { get { return ExpressionType.MemberAccess; } }
@@ -180,15 +184,6 @@ namespace NMF.Expressions
         {
             if (Target != null)
             {
-                if (!EqualityComparer<TTarget>.Default.Equals(targetValue, Target.Value))
-                {
-                    DetachPropertyChangeListener();
-                    targetValue = Target.Value;
-                    AttachPropertyChangeListener();
-                }
-
-                if (Target.Value == null)
-                    return default(TMember);
                 return MemberGet(Target.Value);
             }
             else
@@ -218,33 +213,44 @@ namespace NMF.Expressions
 
         public override INotifyExpression<TMember> ApplyParameters(IDictionary<string, object> parameters)
         {
-            return new ObservableReversableMemberExpression<TTarget, TMember>(Target.ApplyParameters(parameters), MemberName, MemberGet, MemberSet);
+            return new ObservableReversableMemberExpression<TTarget, TMember>(Target.ApplyParameters(parameters), MemberName, MemberGet, MemberSet, context);
+        }
+
+        public override INotificationResult Notify(IList<INotificationResult> sources)
+        {
+            if (sources.Count > 0)
+            {
+                var oldValue = ((ValueChangedNotificationResult<TTarget>)sources[0]).OldValue;
+                DetachPropertyChangeListener(oldValue);
+                AttachPropertyChangeListener(Target.Value);
+            }
+            return base.Notify(sources);
         }
 
         protected override void OnAttach()
         {
-            targetValue = Target == null ? default(TTarget) : Target.Value;
-            AttachPropertyChangeListener();
+            if (Target != null)
+                AttachPropertyChangeListener(Target.Value);
         }
 
         protected override void OnDetach()
         {
-            DetachPropertyChangeListener();
-            targetValue = default(TTarget);
+            if (Target != null)
+                DetachPropertyChangeListener(Target.Value);
         }
 
-        private void AttachPropertyChangeListener()
+        private void AttachPropertyChangeListener(object target)
         {
-            var newTarget = targetValue as INotifyPropertyChanged;
+            var newTarget = target as INotifyPropertyChanged;
             if (newTarget != null)
-                ExecutionEngine.Current.AddChangeListener(this, newTarget, MemberName);
+                context.AddChangeListener(this, newTarget, MemberName);
         }
 
-        private void DetachPropertyChangeListener()
+        private void DetachPropertyChangeListener(object target)
         {
-            var oldTarget = targetValue as INotifyPropertyChanged;
+            var oldTarget = target as INotifyPropertyChanged;
             if (oldTarget != null)
-                ExecutionEngine.Current.RemoveChangeListener(this, oldTarget, MemberName);
+                context.RemoveChangeListener(this, oldTarget, MemberName);
         }
     }
 }

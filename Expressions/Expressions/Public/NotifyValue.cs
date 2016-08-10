@@ -10,10 +10,6 @@ namespace NMF.Expressions
 {
     public class NotifyValue<T> : INotifyValue<T>, INotifyPropertyChanged
     {
-        public int TotalVisits { get; set; }
-
-        public int RemainingVisits { get; set; }
-
         internal INotifyExpression<T> Expression { get; private set; }
 
         public T Value { get { return Expression.Value; } }
@@ -27,6 +23,8 @@ namespace NMF.Expressions
 
         public virtual IEnumerable<INotifiable> Dependencies { get { yield return Expression; } }
 
+        public object ExecutionMetaData { get; set; }
+
         public NotifyValue(Expression<Func<T>> expression, IDictionary<string, object> parameterMappings = null)
             : this(NotifySystem.CreateExpression<T>(expression.Body, null, parameterMappings: parameterMappings)) { }
         
@@ -35,7 +33,6 @@ namespace NMF.Expressions
             if (expression == null) throw new ArgumentNullException("expression");
 
             Expression = expression;
-            Expression.Successors.Add(this);
 
             successors.CollectionChanged += (obj, e) =>
             {
@@ -97,10 +94,6 @@ namespace NMF.Expressions
 
     public class NotifyReversableValue<T> : INotifyReversableValue<T>, INotifyPropertyChanged
     {
-        public int TotalVisits { get; set; }
-
-        public int RemainingVisits { get; set; }
-
         internal INotifyReversableExpression<T> Expression { get; private set; }
 
         public T Value
@@ -124,6 +117,8 @@ namespace NMF.Expressions
 
         public IEnumerable<INotifiable> Dependencies { get { yield return Expression; } }
 
+        public object ExecutionMetaData { get; set; }
+
         public NotifyReversableValue(Expression<Func<T>> expression, IDictionary<string, object> parameterMappings = null)
             : this(NotifySystem.CreateReversableExpression<T>(expression.Body, null, parameterMappings)) { }
 
@@ -132,7 +127,6 @@ namespace NMF.Expressions
             if (expression == null) throw new ArgumentNullException("expression");
 
             Expression = expression;
-            Expression.Successors.Add(this);
 
             successors.CollectionChanged += (obj, e) =>
             {
@@ -199,10 +193,6 @@ namespace NMF.Expressions
 
     internal class ReversableProxyValue<T, TExpression> : INotifyReversableValue<T> where TExpression : class, INotifyValue<T>
     {
-        public int TotalVisits { get; set; }
-
-        public int RemainingVisits { get; set; }
-
         private TExpression inner;
         public TExpression Inner
         {
@@ -246,6 +236,8 @@ namespace NMF.Expressions
             }
         }
 
+        public object ExecutionMetaData { get; set; }
+
         public bool IsReversable
         {
             get { return true; }
@@ -258,8 +250,6 @@ namespace NMF.Expressions
 
             Inner = inner;
             UpdateHandler = updateHandler;
-
-            inner.Successors.Add(this);
 
             successors.CollectionChanged += (obj, e) =>
             {

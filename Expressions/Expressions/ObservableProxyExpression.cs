@@ -10,10 +10,6 @@ namespace NMF.Expressions
 {
     class ObservableProxyExpression<T> : Expression, INotifyExpression<T>
     {
-        public int TotalVisits { get; set; }
-
-        public int RemainingVisits { get; set; }
-
         private readonly ShortList<INotifiable> successors = new ShortList<INotifiable>();
         protected INotifyValue<T> value;
 
@@ -94,6 +90,8 @@ namespace NMF.Expressions
         {
             get { return successors; }
         }
+
+        public object ExecutionMetaData { get; set; }
 
         public INotifyExpression<T> ApplyParameters(IDictionary<string, object> parameters)
         {

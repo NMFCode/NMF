@@ -12,10 +12,6 @@ namespace NMF.Expressions
     /// <typeparam name="T"></typeparam>
     public abstract class NotifyExpression<T> : NotifyExpressionBase, INotifyExpression<T>
     {
-        public int TotalVisits { get; set; }
-
-        public int RemainingVisits { get; set; }
-
         /// <summary>
         /// Creates a new incremental expression
         /// </summary>
@@ -91,7 +87,9 @@ namespace NMF.Expressions
         public IList<INotifiable> Successors { get { return successors; } }
 
         public abstract IEnumerable<INotifiable> Dependencies { get; }
-        
+
+        public object ExecutionMetaData { get; set; }
+
         /// <summary>
         /// Applies the given set of parameters to the expression
         /// </summary>
@@ -102,10 +100,10 @@ namespace NMF.Expressions
 
         private void Attach()
         {
-            OnAttach();
             foreach (var dep in Dependencies)
                 dep.Successors.Add(this);
             value = GetValue();
+            OnAttach();
         }
 
         private void Detach()

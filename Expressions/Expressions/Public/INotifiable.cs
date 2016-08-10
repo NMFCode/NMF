@@ -28,8 +28,9 @@ namespace NMF.Expressions
         /// <returns>An object describing the changes that happened in this notification.</returns>
         INotificationResult Notify(IList<INotificationResult> sources);
 
-        int TotalVisits { get; set; }
-
-        int RemainingVisits { get; set; }
+        /// <summary>
+        /// Can be used by the execution engine during incremental execution. Should be null otherwise.
+        /// </summary>
+        object ExecutionMetaData { get; set; }
     }
 }

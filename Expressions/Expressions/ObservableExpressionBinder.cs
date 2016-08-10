@@ -14,6 +14,7 @@ namespace NMF.Expressions
     {
         private bool compress;
         private Dictionary<string, object> parameters;
+        private readonly IExecutionContext context;
 
         private static Type[] newTypes =
         {
@@ -153,8 +154,11 @@ namespace NMF.Expressions
 
         private static MethodInfo memberBindingCreateProperty = ReflectionHelper.GetFunc<MemberAssignment, ObservableExpressionBinder, INotifyExpression<object>, ObservableMemberBinding<object>>((node, binder, target) => CreateProperty<object, object>(node, binder, target)).GetGenericMethodDefinition();
 
-        public ObservableExpressionBinder(bool compress = false, IDictionary<string, object> parameterMappings = null)
+        public IExecutionContext Context { get { return context; } }
+
+        public ObservableExpressionBinder(IExecutionContext context, bool compress = false, IDictionary<string, object> parameterMappings = null)
         {
+            this.context = context;
             this.compress = compress;
             this.parameters = parameterMappings != null ? new Dictionary<string, object>(parameterMappings) : new Dictionary<string, object>();
         }
@@ -1098,7 +1102,7 @@ namespace NMF.Expressions
                 return new ObservableReversablePropertyMemberBinding<T, TMember>(target, node.Member.Name,
                     ReflectionHelper.CreateDelegate(typeof(Func<T, TMember>), ReflectionHelper.GetGetter(property)) as Func<T, TMember>,
                     ReflectionHelper.CreateDelegate(typeof(Action<T, TMember>), ReflectionHelper.GetSetter(property)) as Action<T, TMember>,
-                    reversable);
+                    reversable, binder.Context);
             }
             return new ObservablePropertyMemberBinding<T, TMember>(target,
                 ReflectionHelper.CreateDelegate(typeof(Action<T, TMember>), ReflectionHelper.GetSetter(property)) as Action<T, TMember>, value);

@@ -24,7 +24,6 @@ namespace NMF.Expressions.Execution
 
         private void NotifyLoop(HashSet<INotifiable> sources)
         {
-            throw new NotImplementedException("OnDemand will not work until introduction of ExecutionContext.");
             MarkAffectedNodes(sources);
 
             foreach (var source in sources)
@@ -35,20 +34,24 @@ namespace NMF.Expressions.Execution
 
                 while (node != null)
                 {
-                    node.RemainingVisits -= currentValue;
-                    if (node.RemainingVisits == 0)
+                    var metaData = (OnDemandMetaData)node.ExecutionMetaData;
+                    metaData.RemainingVisits -= currentValue;
+                    if (metaData.RemainingVisits == 0)
                     {
+                        INotificationResult result = null;
                         if (reevaluating)
                         {
-                            var result = node.Notify(null);
+                            result = node.Notify(metaData.Sources);
                             reevaluating = result.Changed;
-                            currentValue = node.TotalVisits;
-                            node.TotalVisits = 0;
+                            currentValue = metaData.TotalVisits;
+                            node.ExecutionMetaData = null;
                         }
 
                         if (node.Successors.Count == 0)
                             break;
                         node = node.Successors[0];
+                        if (result != null)
+                            ((OnDemandMetaData)node.ExecutionMetaData).Sources.Add(result);
                     }
                     else
                         break;
@@ -63,12 +66,30 @@ namespace NMF.Expressions.Execution
             while (stack.Count > 0)
             {
                 var node = stack.Pop();
-                node.TotalVisits++;
-                node.RemainingVisits++;
+                if (node.ExecutionMetaData == null)
+                    node.ExecutionMetaData = new OnDemandMetaData { RemainingVisits = 1, TotalVisits = 1 };
+                else
+                {
+                    var metaData = (OnDemandMetaData)node.ExecutionMetaData;
+                    metaData.TotalVisits++;
+                    metaData.RemainingVisits++;
+                }
 
                 if (node.Successors.Count == 0)
                     break;
                 stack.Push(node.Successors[0]);
+            }
+        }
+
+        private class OnDemandMetaData
+        {
+            public int TotalVisits { get; set; }
+            public int RemainingVisits { get; set; }
+            public List<INotificationResult> Sources { get; private set; }
+
+            public OnDemandMetaData()
+            {
+                Sources = new List<INotificationResult>();
             }
         }
     }

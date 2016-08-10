@@ -13,13 +13,16 @@ namespace NMF.Expressions
     internal abstract class ObservableMethodBase<T, TDelegate, TResult> : NotifyExpression<TResult>
         where TDelegate : class
     {
-        public ObservableMethodBase(INotifyExpression<T> target, MethodInfo method)
+        protected readonly IExecutionContext context;
+
+        public ObservableMethodBase(INotifyExpression<T> target, MethodInfo method, IExecutionContext context)
         {
             if (method == null) throw new ArgumentNullException("method");
             if (target == null) throw new ArgumentNullException("target");
 
             Target = target;
             Method = method;
+            this.context = context;
         }
 
         public MethodInfo Method { get; private set; }
@@ -81,14 +84,14 @@ namespace NMF.Expressions
         {
             var newTarget = target as INotifyCollectionChanged;
             if (newTarget != null)
-                ExecutionEngine.Current.AddChangeListener(this, newTarget);
+                context.AddChangeListener(this, newTarget);
         }
 
         private void DetachCollectionChangeListener(object target)
         {
             var oldTarget = target as INotifyCollectionChanged;
             if (oldTarget != null)
-                ExecutionEngine.Current.RemoveChangeListener(this, oldTarget);
+                context.RemoveChangeListener(this, oldTarget);
         }
     }
 }

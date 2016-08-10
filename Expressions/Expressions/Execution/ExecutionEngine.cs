@@ -7,7 +7,7 @@ using System.Text;
 
 namespace NMF.Expressions.Execution
 {
-    public abstract class ExecutionEngine : IExecutionEngine
+    public abstract class ExecutionEngine : IExecutionContext
     {
         private readonly Dictionary<INotifyPropertyChanged, Dictionary<string, HashSet<INotifiable>>> propertyChangedListener = new Dictionary<INotifyPropertyChanged, Dictionary<string, HashSet<INotifiable>>>();
 
@@ -76,8 +76,8 @@ namespace NMF.Expressions.Execution
 
         protected abstract void OnPropertyChanged(HashSet<INotifiable> handler);
 
-        private static IExecutionEngine current = new ImmediateExecutionEngine();
-        public static IExecutionEngine Current
+        private static ExecutionEngine current = new ImmediateExecutionEngine();
+        public static ExecutionEngine Current
         {
             get { return current; }
             set { current = value; }

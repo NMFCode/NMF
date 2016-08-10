@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -30,7 +31,9 @@ namespace EngineBenchmark
             var dummy = new Dummy<int>(42);
 
             var watch = Stopwatch.StartNew();
-            var test = Observable.Expression(() => dummy.Item == dummy.Item && (AppDomain.CurrentDomain.IsFullyTrusted && dummy.Item == 42));
+            Expression<Func<bool>> expression = () => dummy.Item == dummy.Item && (AppDomain.CurrentDomain.IsFullyTrusted && dummy.Item == 42);
+            var test = NotifySystem.CreateExpression<bool>(expression.Body, null);
+            test.Successors.Add(null);
             watch.Stop();
             if (write)
                 Console.WriteLine("On Demand initialize: " + watch.Elapsed.TotalMilliseconds + "ms");
@@ -38,9 +41,7 @@ namespace EngineBenchmark
             watch.Restart();
             for (int i = 0; i < Repeats; i++)
             {
-                //watch.Stop();
                 dummy.Item = 42 - dummy.Item;
-                //watch.Start();
                 engine.Execute();
                 if (test.Value == ((i & 1) == 0))
                     Console.WriteLine("Wrong result!");
@@ -56,7 +57,9 @@ namespace EngineBenchmark
             var dummy = new Dummy<int>(42);
 
             var watch = Stopwatch.StartNew();
-            var test = Observable.Expression(() => dummy.Item == dummy.Item && (AppDomain.CurrentDomain.IsFullyTrusted && dummy.Item == 42));
+            Expression<Func<bool>> expression = () => dummy.Item == dummy.Item && (AppDomain.CurrentDomain.IsFullyTrusted && dummy.Item == 42);
+            var test = NotifySystem.CreateExpression<bool>(expression.Body, null);
+            test.Successors.Add(null);
             watch.Stop();
             if (write)
                 Console.WriteLine("Immediate initialize: " + watch.Elapsed.TotalMilliseconds + "ms");

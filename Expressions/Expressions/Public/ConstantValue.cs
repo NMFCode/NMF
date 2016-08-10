@@ -6,10 +6,6 @@ namespace NMF.Expressions
 {
     public sealed class ConstantValue<T> : INotifyValue<T>
     {
-        public int TotalVisits { get; set; }
-
-        public int RemainingVisits { get; set; }
-
         private T value;
 
         public ConstantValue(T value)
@@ -24,6 +20,8 @@ namespace NMF.Expressions
         public event EventHandler<ValueChangedEventArgs> ValueChanged { add { } remove { } }
 
         public IList<INotifiable> Successors { get { return successors; } }
+
+        public object ExecutionMetaData { get; set; }
 
         public T Value
         {

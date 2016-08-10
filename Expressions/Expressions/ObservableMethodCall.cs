@@ -11,10 +11,10 @@ namespace NMF.Expressions
     internal class ObservableMethodCall<T, TResult> : ObservableMethodBase<T, Func<TResult>, TResult>
     {
         public ObservableMethodCall(MethodCallExpression node, ObservableExpressionBinder binder)
-            : this(binder.VisitObservable<T>(node.Object), node.Method) { }
+            : this(binder.VisitObservable<T>(node.Object), node.Method, binder.Context) { }
 
-        public ObservableMethodCall(INotifyExpression<T> target, MethodInfo method)
-            : base(target, method)
+        public ObservableMethodCall(INotifyExpression<T> target, MethodInfo method, IExecutionContext context)
+            : base(target, method, context)
         {
 
         }
@@ -48,16 +48,16 @@ namespace NMF.Expressions
 
         public override INotifyExpression<TResult> ApplyParameters(IDictionary<string, object> parameters)
         {
-            return new ObservableMethodCall<T, TResult>(Target.ApplyParameters(parameters), Method);
+            return new ObservableMethodCall<T, TResult>(Target.ApplyParameters(parameters), Method, context);
         }
     }
     internal class ObservableMethodCall<T, T1, TResult> : ObservableMethodBase<T, Func<T1, TResult>, TResult>
     {
         public ObservableMethodCall(MethodCallExpression node, ObservableExpressionBinder binder)
-            : this(binder.VisitObservable<T>(node.Object), node.Method, binder.VisitObservable<T1>(node.Arguments[0])) { }
+            : this(binder.VisitObservable<T>(node.Object), node.Method, binder.VisitObservable<T1>(node.Arguments[0]), binder.Context) { }
 
-        public ObservableMethodCall(INotifyExpression<T> target, MethodInfo method, INotifyExpression<T1> arg1)
-            : base(target, method)
+        public ObservableMethodCall(INotifyExpression<T> target, MethodInfo method, INotifyExpression<T1> arg1, IExecutionContext context)
+            : base(target, method, context)
         {
             if (arg1 == null) throw new ArgumentNullException("arg1");
 
@@ -95,16 +95,16 @@ namespace NMF.Expressions
 
         public override INotifyExpression<TResult> ApplyParameters(IDictionary<string, object> parameters)
         {
-            return new ObservableMethodCall<T, T1, TResult>(Target.ApplyParameters(parameters), Method, Argument1.ApplyParameters(parameters));
+            return new ObservableMethodCall<T, T1, TResult>(Target.ApplyParameters(parameters), Method, Argument1.ApplyParameters(parameters), context);
         }
     }
     internal class ObservableMethodCall<T, T1, T2, TResult> : ObservableMethodBase<T, Func<T1, T2, TResult>, TResult>
     {
         public ObservableMethodCall(MethodCallExpression node, ObservableExpressionBinder binder)
-            : this(binder.VisitObservable<T>(node.Object), node.Method, binder.VisitObservable<T1>(node.Arguments[0]), binder.VisitObservable<T2>(node.Arguments[1])) { }
+            : this(binder.VisitObservable<T>(node.Object), node.Method, binder.VisitObservable<T1>(node.Arguments[0]), binder.VisitObservable<T2>(node.Arguments[1]), binder.Context) { }
 
-        public ObservableMethodCall(INotifyExpression<T> target, MethodInfo method, INotifyExpression<T1> arg1, INotifyExpression<T2> arg2)
-            : base(target, method)
+        public ObservableMethodCall(INotifyExpression<T> target, MethodInfo method, INotifyExpression<T1> arg1, INotifyExpression<T2> arg2, IExecutionContext context)
+            : base(target, method, context)
         {
             if (arg1 == null) throw new ArgumentNullException("arg1");
             if (arg2 == null) throw new ArgumentNullException("arg2");
@@ -146,16 +146,16 @@ namespace NMF.Expressions
 
         public override INotifyExpression<TResult> ApplyParameters(IDictionary<string, object> parameters)
         {
-            return new ObservableMethodCall<T, T1, T2, TResult>(Target.ApplyParameters(parameters), Method, Argument1.ApplyParameters(parameters), Argument2.ApplyParameters(parameters));
+            return new ObservableMethodCall<T, T1, T2, TResult>(Target.ApplyParameters(parameters), Method, Argument1.ApplyParameters(parameters), Argument2.ApplyParameters(parameters), context);
         }
     }
     internal class ObservableMethodCall<T, T1, T2, T3, TResult> : ObservableMethodBase<T, Func<T1, T2, T3, TResult>, TResult>
     {
         public ObservableMethodCall(MethodCallExpression node, ObservableExpressionBinder binder)
-            : this(binder.VisitObservable<T>(node.Object), node.Method, binder.VisitObservable<T1>(node.Arguments[0]), binder.VisitObservable<T2>(node.Arguments[1]), binder.VisitObservable<T3>(node.Arguments[2])) { }
+            : this(binder.VisitObservable<T>(node.Object), node.Method, binder.VisitObservable<T1>(node.Arguments[0]), binder.VisitObservable<T2>(node.Arguments[1]), binder.VisitObservable<T3>(node.Arguments[2]), binder.Context) { }
 
-        public ObservableMethodCall(INotifyExpression<T> target, MethodInfo method, INotifyExpression<T1> arg1, INotifyExpression<T2> arg2, INotifyExpression<T3> arg3)
-            : base(target, method)
+        public ObservableMethodCall(INotifyExpression<T> target, MethodInfo method, INotifyExpression<T1> arg1, INotifyExpression<T2> arg2, INotifyExpression<T3> arg3, IExecutionContext context)
+            : base(target, method, context)
         {
             if (arg1 == null) throw new ArgumentNullException("arg1");
             if (arg2 == null) throw new ArgumentNullException("arg2");
@@ -201,16 +201,16 @@ namespace NMF.Expressions
 
         public override INotifyExpression<TResult> ApplyParameters(IDictionary<string, object> parameters)
         {
-            return new ObservableMethodCall<T, T1, T2, T3, TResult>(Target.ApplyParameters(parameters), Method, Argument1.ApplyParameters(parameters), Argument2.ApplyParameters(parameters), Argument3.ApplyParameters(parameters));
+            return new ObservableMethodCall<T, T1, T2, T3, TResult>(Target.ApplyParameters(parameters), Method, Argument1.ApplyParameters(parameters), Argument2.ApplyParameters(parameters), Argument3.ApplyParameters(parameters), context);
         }
     }
     internal class ObservableMethodCall<T, T1, T2, T3, T4, TResult> : ObservableMethodBase<T, Func<T1, T2, T3, T4, TResult>, TResult>
     {
         public ObservableMethodCall(MethodCallExpression node, ObservableExpressionBinder binder)
-            : this(binder.VisitObservable<T>(node.Object), node.Method, binder.VisitObservable<T1>(node.Arguments[0]), binder.VisitObservable<T2>(node.Arguments[1]), binder.VisitObservable<T3>(node.Arguments[2]), binder.VisitObservable<T4>(node.Arguments[3])) { }
+            : this(binder.VisitObservable<T>(node.Object), node.Method, binder.VisitObservable<T1>(node.Arguments[0]), binder.VisitObservable<T2>(node.Arguments[1]), binder.VisitObservable<T3>(node.Arguments[2]), binder.VisitObservable<T4>(node.Arguments[3]), binder.Context) { }
 
-        public ObservableMethodCall(INotifyExpression<T> target, MethodInfo method, INotifyExpression<T1> arg1, INotifyExpression<T2> arg2, INotifyExpression<T3> arg3, INotifyExpression<T4> arg4)
-            : base(target, method)
+        public ObservableMethodCall(INotifyExpression<T> target, MethodInfo method, INotifyExpression<T1> arg1, INotifyExpression<T2> arg2, INotifyExpression<T3> arg3, INotifyExpression<T4> arg4, IExecutionContext context)
+            : base(target, method, context)
         {
             if (arg1 == null) throw new ArgumentNullException("arg1");
             if (arg2 == null) throw new ArgumentNullException("arg2");
@@ -260,16 +260,16 @@ namespace NMF.Expressions
 
         public override INotifyExpression<TResult> ApplyParameters(IDictionary<string, object> parameters)
         {
-            return new ObservableMethodCall<T, T1, T2, T3, T4, TResult>(Target.ApplyParameters(parameters), Method, Argument1.ApplyParameters(parameters), Argument2.ApplyParameters(parameters), Argument3.ApplyParameters(parameters), Argument4.ApplyParameters(parameters));
+            return new ObservableMethodCall<T, T1, T2, T3, T4, TResult>(Target.ApplyParameters(parameters), Method, Argument1.ApplyParameters(parameters), Argument2.ApplyParameters(parameters), Argument3.ApplyParameters(parameters), Argument4.ApplyParameters(parameters), context);
         }
     }
     internal class ObservableMethodCall<T, T1, T2, T3, T4, T5, TResult> : ObservableMethodBase<T, Func<T1, T2, T3, T4, T5, TResult>, TResult>
     {
         public ObservableMethodCall(MethodCallExpression node, ObservableExpressionBinder binder)
-            : this(binder.VisitObservable<T>(node.Object), node.Method, binder.VisitObservable<T1>(node.Arguments[0]), binder.VisitObservable<T2>(node.Arguments[1]), binder.VisitObservable<T3>(node.Arguments[2]), binder.VisitObservable<T4>(node.Arguments[3]), binder.VisitObservable<T5>(node.Arguments[4])) { }
+            : this(binder.VisitObservable<T>(node.Object), node.Method, binder.VisitObservable<T1>(node.Arguments[0]), binder.VisitObservable<T2>(node.Arguments[1]), binder.VisitObservable<T3>(node.Arguments[2]), binder.VisitObservable<T4>(node.Arguments[3]), binder.VisitObservable<T5>(node.Arguments[4]), binder.Context) { }
 
-        public ObservableMethodCall(INotifyExpression<T> target, MethodInfo method, INotifyExpression<T1> arg1, INotifyExpression<T2> arg2, INotifyExpression<T3> arg3, INotifyExpression<T4> arg4, INotifyExpression<T5> arg5)
-            : base(target, method)
+        public ObservableMethodCall(INotifyExpression<T> target, MethodInfo method, INotifyExpression<T1> arg1, INotifyExpression<T2> arg2, INotifyExpression<T3> arg3, INotifyExpression<T4> arg4, INotifyExpression<T5> arg5, IExecutionContext context)
+            : base(target, method, context)
         {
             if (arg1 == null) throw new ArgumentNullException("arg1");
             if (arg2 == null) throw new ArgumentNullException("arg2");
@@ -323,16 +323,16 @@ namespace NMF.Expressions
 
         public override INotifyExpression<TResult> ApplyParameters(IDictionary<string, object> parameters)
         {
-            return new ObservableMethodCall<T, T1, T2, T3, T4, T5, TResult>(Target.ApplyParameters(parameters), Method, Argument1.ApplyParameters(parameters), Argument2.ApplyParameters(parameters), Argument3.ApplyParameters(parameters), Argument4.ApplyParameters(parameters), Argument5.ApplyParameters(parameters));
+            return new ObservableMethodCall<T, T1, T2, T3, T4, T5, TResult>(Target.ApplyParameters(parameters), Method, Argument1.ApplyParameters(parameters), Argument2.ApplyParameters(parameters), Argument3.ApplyParameters(parameters), Argument4.ApplyParameters(parameters), Argument5.ApplyParameters(parameters), context);
         }
     }
     internal class ObservableMethodCall<T, T1, T2, T3, T4, T5, T6, TResult> : ObservableMethodBase<T, Func<T1, T2, T3, T4, T5, T6, TResult>, TResult>
     {
         public ObservableMethodCall(MethodCallExpression node, ObservableExpressionBinder binder)
-            : this(binder.VisitObservable<T>(node.Object), node.Method, binder.VisitObservable<T1>(node.Arguments[0]), binder.VisitObservable<T2>(node.Arguments[1]), binder.VisitObservable<T3>(node.Arguments[2]), binder.VisitObservable<T4>(node.Arguments[3]), binder.VisitObservable<T5>(node.Arguments[4]), binder.VisitObservable<T6>(node.Arguments[5])) { }
+            : this(binder.VisitObservable<T>(node.Object), node.Method, binder.VisitObservable<T1>(node.Arguments[0]), binder.VisitObservable<T2>(node.Arguments[1]), binder.VisitObservable<T3>(node.Arguments[2]), binder.VisitObservable<T4>(node.Arguments[3]), binder.VisitObservable<T5>(node.Arguments[4]), binder.VisitObservable<T6>(node.Arguments[5]), binder.Context) { }
 
-        public ObservableMethodCall(INotifyExpression<T> target, MethodInfo method, INotifyExpression<T1> arg1, INotifyExpression<T2> arg2, INotifyExpression<T3> arg3, INotifyExpression<T4> arg4, INotifyExpression<T5> arg5, INotifyExpression<T6> arg6)
-            : base(target, method)
+        public ObservableMethodCall(INotifyExpression<T> target, MethodInfo method, INotifyExpression<T1> arg1, INotifyExpression<T2> arg2, INotifyExpression<T3> arg3, INotifyExpression<T4> arg4, INotifyExpression<T5> arg5, INotifyExpression<T6> arg6, IExecutionContext context)
+            : base(target, method, context)
         {
             if (arg1 == null) throw new ArgumentNullException("arg1");
             if (arg2 == null) throw new ArgumentNullException("arg2");
@@ -390,16 +390,16 @@ namespace NMF.Expressions
 
         public override INotifyExpression<TResult> ApplyParameters(IDictionary<string, object> parameters)
         {
-            return new ObservableMethodCall<T, T1, T2, T3, T4, T5, T6, TResult>(Target.ApplyParameters(parameters), Method, Argument1.ApplyParameters(parameters), Argument2.ApplyParameters(parameters), Argument3.ApplyParameters(parameters), Argument4.ApplyParameters(parameters), Argument5.ApplyParameters(parameters), Argument6.ApplyParameters(parameters));
+            return new ObservableMethodCall<T, T1, T2, T3, T4, T5, T6, TResult>(Target.ApplyParameters(parameters), Method, Argument1.ApplyParameters(parameters), Argument2.ApplyParameters(parameters), Argument3.ApplyParameters(parameters), Argument4.ApplyParameters(parameters), Argument5.ApplyParameters(parameters), Argument6.ApplyParameters(parameters), context);
         }
     }
     internal class ObservableMethodCall<T, T1, T2, T3, T4, T5, T6, T7, TResult> : ObservableMethodBase<T, Func<T1, T2, T3, T4, T5, T6, T7, TResult>, TResult>
     {
         public ObservableMethodCall(MethodCallExpression node, ObservableExpressionBinder binder)
-            : this(binder.VisitObservable<T>(node.Object), node.Method, binder.VisitObservable<T1>(node.Arguments[0]), binder.VisitObservable<T2>(node.Arguments[1]), binder.VisitObservable<T3>(node.Arguments[2]), binder.VisitObservable<T4>(node.Arguments[3]), binder.VisitObservable<T5>(node.Arguments[4]), binder.VisitObservable<T6>(node.Arguments[5]), binder.VisitObservable<T7>(node.Arguments[6])) { }
+            : this(binder.VisitObservable<T>(node.Object), node.Method, binder.VisitObservable<T1>(node.Arguments[0]), binder.VisitObservable<T2>(node.Arguments[1]), binder.VisitObservable<T3>(node.Arguments[2]), binder.VisitObservable<T4>(node.Arguments[3]), binder.VisitObservable<T5>(node.Arguments[4]), binder.VisitObservable<T6>(node.Arguments[5]), binder.VisitObservable<T7>(node.Arguments[6]), binder.Context) { }
 
-        public ObservableMethodCall(INotifyExpression<T> target, MethodInfo method, INotifyExpression<T1> arg1, INotifyExpression<T2> arg2, INotifyExpression<T3> arg3, INotifyExpression<T4> arg4, INotifyExpression<T5> arg5, INotifyExpression<T6> arg6, INotifyExpression<T7> arg7)
-            : base(target, method)
+        public ObservableMethodCall(INotifyExpression<T> target, MethodInfo method, INotifyExpression<T1> arg1, INotifyExpression<T2> arg2, INotifyExpression<T3> arg3, INotifyExpression<T4> arg4, INotifyExpression<T5> arg5, INotifyExpression<T6> arg6, INotifyExpression<T7> arg7, IExecutionContext context)
+            : base(target, method, context)
         {
             if (arg1 == null) throw new ArgumentNullException("arg1");
             if (arg2 == null) throw new ArgumentNullException("arg2");
@@ -461,16 +461,16 @@ namespace NMF.Expressions
 
         public override INotifyExpression<TResult> ApplyParameters(IDictionary<string, object> parameters)
         {
-            return new ObservableMethodCall<T, T1, T2, T3, T4, T5, T6, T7, TResult>(Target.ApplyParameters(parameters), Method, Argument1.ApplyParameters(parameters), Argument2.ApplyParameters(parameters), Argument3.ApplyParameters(parameters), Argument4.ApplyParameters(parameters), Argument5.ApplyParameters(parameters), Argument6.ApplyParameters(parameters), Argument7.ApplyParameters(parameters));
+            return new ObservableMethodCall<T, T1, T2, T3, T4, T5, T6, T7, TResult>(Target.ApplyParameters(parameters), Method, Argument1.ApplyParameters(parameters), Argument2.ApplyParameters(parameters), Argument3.ApplyParameters(parameters), Argument4.ApplyParameters(parameters), Argument5.ApplyParameters(parameters), Argument6.ApplyParameters(parameters), Argument7.ApplyParameters(parameters), context);
         }
     }
     internal class ObservableMethodCall<T, T1, T2, T3, T4, T5, T6, T7, T8, TResult> : ObservableMethodBase<T, Func<T1, T2, T3, T4, T5, T6, T7, T8, TResult>, TResult>
     {
         public ObservableMethodCall(MethodCallExpression node, ObservableExpressionBinder binder)
-            : this(binder.VisitObservable<T>(node.Object), node.Method, binder.VisitObservable<T1>(node.Arguments[0]), binder.VisitObservable<T2>(node.Arguments[1]), binder.VisitObservable<T3>(node.Arguments[2]), binder.VisitObservable<T4>(node.Arguments[3]), binder.VisitObservable<T5>(node.Arguments[4]), binder.VisitObservable<T6>(node.Arguments[5]), binder.VisitObservable<T7>(node.Arguments[6]), binder.VisitObservable<T8>(node.Arguments[7])) { }
+            : this(binder.VisitObservable<T>(node.Object), node.Method, binder.VisitObservable<T1>(node.Arguments[0]), binder.VisitObservable<T2>(node.Arguments[1]), binder.VisitObservable<T3>(node.Arguments[2]), binder.VisitObservable<T4>(node.Arguments[3]), binder.VisitObservable<T5>(node.Arguments[4]), binder.VisitObservable<T6>(node.Arguments[5]), binder.VisitObservable<T7>(node.Arguments[6]), binder.VisitObservable<T8>(node.Arguments[7]), binder.Context) { }
 
-        public ObservableMethodCall(INotifyExpression<T> target, MethodInfo method, INotifyExpression<T1> arg1, INotifyExpression<T2> arg2, INotifyExpression<T3> arg3, INotifyExpression<T4> arg4, INotifyExpression<T5> arg5, INotifyExpression<T6> arg6, INotifyExpression<T7> arg7, INotifyExpression<T8> arg8)
-            : base(target, method)
+        public ObservableMethodCall(INotifyExpression<T> target, MethodInfo method, INotifyExpression<T1> arg1, INotifyExpression<T2> arg2, INotifyExpression<T3> arg3, INotifyExpression<T4> arg4, INotifyExpression<T5> arg5, INotifyExpression<T6> arg6, INotifyExpression<T7> arg7, INotifyExpression<T8> arg8, IExecutionContext context)
+            : base(target, method, context)
         {
             if (arg1 == null) throw new ArgumentNullException("arg1");
             if (arg2 == null) throw new ArgumentNullException("arg2");
@@ -536,16 +536,16 @@ namespace NMF.Expressions
 
         public override INotifyExpression<TResult> ApplyParameters(IDictionary<string, object> parameters)
         {
-            return new ObservableMethodCall<T, T1, T2, T3, T4, T5, T6, T7, T8, TResult>(Target.ApplyParameters(parameters), Method, Argument1.ApplyParameters(parameters), Argument2.ApplyParameters(parameters), Argument3.ApplyParameters(parameters), Argument4.ApplyParameters(parameters), Argument5.ApplyParameters(parameters), Argument6.ApplyParameters(parameters), Argument7.ApplyParameters(parameters), Argument8.ApplyParameters(parameters));
+            return new ObservableMethodCall<T, T1, T2, T3, T4, T5, T6, T7, T8, TResult>(Target.ApplyParameters(parameters), Method, Argument1.ApplyParameters(parameters), Argument2.ApplyParameters(parameters), Argument3.ApplyParameters(parameters), Argument4.ApplyParameters(parameters), Argument5.ApplyParameters(parameters), Argument6.ApplyParameters(parameters), Argument7.ApplyParameters(parameters), Argument8.ApplyParameters(parameters), context);
         }
     }
     internal class ObservableMethodCall<T, T1, T2, T3, T4, T5, T6, T7, T8, T9, TResult> : ObservableMethodBase<T, Func<T1, T2, T3, T4, T5, T6, T7, T8, T9, TResult>, TResult>
     {
         public ObservableMethodCall(MethodCallExpression node, ObservableExpressionBinder binder)
-            : this(binder.VisitObservable<T>(node.Object), node.Method, binder.VisitObservable<T1>(node.Arguments[0]), binder.VisitObservable<T2>(node.Arguments[1]), binder.VisitObservable<T3>(node.Arguments[2]), binder.VisitObservable<T4>(node.Arguments[3]), binder.VisitObservable<T5>(node.Arguments[4]), binder.VisitObservable<T6>(node.Arguments[5]), binder.VisitObservable<T7>(node.Arguments[6]), binder.VisitObservable<T8>(node.Arguments[7]), binder.VisitObservable<T9>(node.Arguments[8])) { }
+            : this(binder.VisitObservable<T>(node.Object), node.Method, binder.VisitObservable<T1>(node.Arguments[0]), binder.VisitObservable<T2>(node.Arguments[1]), binder.VisitObservable<T3>(node.Arguments[2]), binder.VisitObservable<T4>(node.Arguments[3]), binder.VisitObservable<T5>(node.Arguments[4]), binder.VisitObservable<T6>(node.Arguments[5]), binder.VisitObservable<T7>(node.Arguments[6]), binder.VisitObservable<T8>(node.Arguments[7]), binder.VisitObservable<T9>(node.Arguments[8]), binder.Context) { }
 
-        public ObservableMethodCall(INotifyExpression<T> target, MethodInfo method, INotifyExpression<T1> arg1, INotifyExpression<T2> arg2, INotifyExpression<T3> arg3, INotifyExpression<T4> arg4, INotifyExpression<T5> arg5, INotifyExpression<T6> arg6, INotifyExpression<T7> arg7, INotifyExpression<T8> arg8, INotifyExpression<T9> arg9)
-            : base(target, method)
+        public ObservableMethodCall(INotifyExpression<T> target, MethodInfo method, INotifyExpression<T1> arg1, INotifyExpression<T2> arg2, INotifyExpression<T3> arg3, INotifyExpression<T4> arg4, INotifyExpression<T5> arg5, INotifyExpression<T6> arg6, INotifyExpression<T7> arg7, INotifyExpression<T8> arg8, INotifyExpression<T9> arg9, IExecutionContext context)
+            : base(target, method, context)
         {
             if (arg1 == null) throw new ArgumentNullException("arg1");
             if (arg2 == null) throw new ArgumentNullException("arg2");
@@ -615,16 +615,16 @@ namespace NMF.Expressions
 
         public override INotifyExpression<TResult> ApplyParameters(IDictionary<string, object> parameters)
         {
-            return new ObservableMethodCall<T, T1, T2, T3, T4, T5, T6, T7, T8, T9, TResult>(Target.ApplyParameters(parameters), Method, Argument1.ApplyParameters(parameters), Argument2.ApplyParameters(parameters), Argument3.ApplyParameters(parameters), Argument4.ApplyParameters(parameters), Argument5.ApplyParameters(parameters), Argument6.ApplyParameters(parameters), Argument7.ApplyParameters(parameters), Argument8.ApplyParameters(parameters), Argument9.ApplyParameters(parameters));
+            return new ObservableMethodCall<T, T1, T2, T3, T4, T5, T6, T7, T8, T9, TResult>(Target.ApplyParameters(parameters), Method, Argument1.ApplyParameters(parameters), Argument2.ApplyParameters(parameters), Argument3.ApplyParameters(parameters), Argument4.ApplyParameters(parameters), Argument5.ApplyParameters(parameters), Argument6.ApplyParameters(parameters), Argument7.ApplyParameters(parameters), Argument8.ApplyParameters(parameters), Argument9.ApplyParameters(parameters), context);
         }
     }
     internal class ObservableMethodCall<T, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, TResult> : ObservableMethodBase<T, Func<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, TResult>, TResult>
     {
         public ObservableMethodCall(MethodCallExpression node, ObservableExpressionBinder binder)
-            : this(binder.VisitObservable<T>(node.Object), node.Method, binder.VisitObservable<T1>(node.Arguments[0]), binder.VisitObservable<T2>(node.Arguments[1]), binder.VisitObservable<T3>(node.Arguments[2]), binder.VisitObservable<T4>(node.Arguments[3]), binder.VisitObservable<T5>(node.Arguments[4]), binder.VisitObservable<T6>(node.Arguments[5]), binder.VisitObservable<T7>(node.Arguments[6]), binder.VisitObservable<T8>(node.Arguments[7]), binder.VisitObservable<T9>(node.Arguments[8]), binder.VisitObservable<T10>(node.Arguments[9])) { }
+            : this(binder.VisitObservable<T>(node.Object), node.Method, binder.VisitObservable<T1>(node.Arguments[0]), binder.VisitObservable<T2>(node.Arguments[1]), binder.VisitObservable<T3>(node.Arguments[2]), binder.VisitObservable<T4>(node.Arguments[3]), binder.VisitObservable<T5>(node.Arguments[4]), binder.VisitObservable<T6>(node.Arguments[5]), binder.VisitObservable<T7>(node.Arguments[6]), binder.VisitObservable<T8>(node.Arguments[7]), binder.VisitObservable<T9>(node.Arguments[8]), binder.VisitObservable<T10>(node.Arguments[9]), binder.Context) { }
 
-        public ObservableMethodCall(INotifyExpression<T> target, MethodInfo method, INotifyExpression<T1> arg1, INotifyExpression<T2> arg2, INotifyExpression<T3> arg3, INotifyExpression<T4> arg4, INotifyExpression<T5> arg5, INotifyExpression<T6> arg6, INotifyExpression<T7> arg7, INotifyExpression<T8> arg8, INotifyExpression<T9> arg9, INotifyExpression<T10> arg10)
-            : base(target, method)
+        public ObservableMethodCall(INotifyExpression<T> target, MethodInfo method, INotifyExpression<T1> arg1, INotifyExpression<T2> arg2, INotifyExpression<T3> arg3, INotifyExpression<T4> arg4, INotifyExpression<T5> arg5, INotifyExpression<T6> arg6, INotifyExpression<T7> arg7, INotifyExpression<T8> arg8, INotifyExpression<T9> arg9, INotifyExpression<T10> arg10, IExecutionContext context)
+            : base(target, method, context)
         {
             if (arg1 == null) throw new ArgumentNullException("arg1");
             if (arg2 == null) throw new ArgumentNullException("arg2");
@@ -698,16 +698,16 @@ namespace NMF.Expressions
 
         public override INotifyExpression<TResult> ApplyParameters(IDictionary<string, object> parameters)
         {
-            return new ObservableMethodCall<T, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, TResult>(Target.ApplyParameters(parameters), Method, Argument1.ApplyParameters(parameters), Argument2.ApplyParameters(parameters), Argument3.ApplyParameters(parameters), Argument4.ApplyParameters(parameters), Argument5.ApplyParameters(parameters), Argument6.ApplyParameters(parameters), Argument7.ApplyParameters(parameters), Argument8.ApplyParameters(parameters), Argument9.ApplyParameters(parameters), Argument10.ApplyParameters(parameters));
+            return new ObservableMethodCall<T, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, TResult>(Target.ApplyParameters(parameters), Method, Argument1.ApplyParameters(parameters), Argument2.ApplyParameters(parameters), Argument3.ApplyParameters(parameters), Argument4.ApplyParameters(parameters), Argument5.ApplyParameters(parameters), Argument6.ApplyParameters(parameters), Argument7.ApplyParameters(parameters), Argument8.ApplyParameters(parameters), Argument9.ApplyParameters(parameters), Argument10.ApplyParameters(parameters), context);
         }
     }
     internal class ObservableMethodCall<T, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, TResult> : ObservableMethodBase<T, Func<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, TResult>, TResult>
     {
         public ObservableMethodCall(MethodCallExpression node, ObservableExpressionBinder binder)
-            : this(binder.VisitObservable<T>(node.Object), node.Method, binder.VisitObservable<T1>(node.Arguments[0]), binder.VisitObservable<T2>(node.Arguments[1]), binder.VisitObservable<T3>(node.Arguments[2]), binder.VisitObservable<T4>(node.Arguments[3]), binder.VisitObservable<T5>(node.Arguments[4]), binder.VisitObservable<T6>(node.Arguments[5]), binder.VisitObservable<T7>(node.Arguments[6]), binder.VisitObservable<T8>(node.Arguments[7]), binder.VisitObservable<T9>(node.Arguments[8]), binder.VisitObservable<T10>(node.Arguments[9]), binder.VisitObservable<T11>(node.Arguments[10])) { }
+            : this(binder.VisitObservable<T>(node.Object), node.Method, binder.VisitObservable<T1>(node.Arguments[0]), binder.VisitObservable<T2>(node.Arguments[1]), binder.VisitObservable<T3>(node.Arguments[2]), binder.VisitObservable<T4>(node.Arguments[3]), binder.VisitObservable<T5>(node.Arguments[4]), binder.VisitObservable<T6>(node.Arguments[5]), binder.VisitObservable<T7>(node.Arguments[6]), binder.VisitObservable<T8>(node.Arguments[7]), binder.VisitObservable<T9>(node.Arguments[8]), binder.VisitObservable<T10>(node.Arguments[9]), binder.VisitObservable<T11>(node.Arguments[10]), binder.Context) { }
 
-        public ObservableMethodCall(INotifyExpression<T> target, MethodInfo method, INotifyExpression<T1> arg1, INotifyExpression<T2> arg2, INotifyExpression<T3> arg3, INotifyExpression<T4> arg4, INotifyExpression<T5> arg5, INotifyExpression<T6> arg6, INotifyExpression<T7> arg7, INotifyExpression<T8> arg8, INotifyExpression<T9> arg9, INotifyExpression<T10> arg10, INotifyExpression<T11> arg11)
-            : base(target, method)
+        public ObservableMethodCall(INotifyExpression<T> target, MethodInfo method, INotifyExpression<T1> arg1, INotifyExpression<T2> arg2, INotifyExpression<T3> arg3, INotifyExpression<T4> arg4, INotifyExpression<T5> arg5, INotifyExpression<T6> arg6, INotifyExpression<T7> arg7, INotifyExpression<T8> arg8, INotifyExpression<T9> arg9, INotifyExpression<T10> arg10, INotifyExpression<T11> arg11, IExecutionContext context)
+            : base(target, method, context)
         {
             if (arg1 == null) throw new ArgumentNullException("arg1");
             if (arg2 == null) throw new ArgumentNullException("arg2");
@@ -785,16 +785,16 @@ namespace NMF.Expressions
 
         public override INotifyExpression<TResult> ApplyParameters(IDictionary<string, object> parameters)
         {
-            return new ObservableMethodCall<T, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, TResult>(Target.ApplyParameters(parameters), Method, Argument1.ApplyParameters(parameters), Argument2.ApplyParameters(parameters), Argument3.ApplyParameters(parameters), Argument4.ApplyParameters(parameters), Argument5.ApplyParameters(parameters), Argument6.ApplyParameters(parameters), Argument7.ApplyParameters(parameters), Argument8.ApplyParameters(parameters), Argument9.ApplyParameters(parameters), Argument10.ApplyParameters(parameters), Argument11.ApplyParameters(parameters));
+            return new ObservableMethodCall<T, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, TResult>(Target.ApplyParameters(parameters), Method, Argument1.ApplyParameters(parameters), Argument2.ApplyParameters(parameters), Argument3.ApplyParameters(parameters), Argument4.ApplyParameters(parameters), Argument5.ApplyParameters(parameters), Argument6.ApplyParameters(parameters), Argument7.ApplyParameters(parameters), Argument8.ApplyParameters(parameters), Argument9.ApplyParameters(parameters), Argument10.ApplyParameters(parameters), Argument11.ApplyParameters(parameters), context);
         }
     }
     internal class ObservableMethodCall<T, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, TResult> : ObservableMethodBase<T, Func<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, TResult>, TResult>
     {
         public ObservableMethodCall(MethodCallExpression node, ObservableExpressionBinder binder)
-            : this(binder.VisitObservable<T>(node.Object), node.Method, binder.VisitObservable<T1>(node.Arguments[0]), binder.VisitObservable<T2>(node.Arguments[1]), binder.VisitObservable<T3>(node.Arguments[2]), binder.VisitObservable<T4>(node.Arguments[3]), binder.VisitObservable<T5>(node.Arguments[4]), binder.VisitObservable<T6>(node.Arguments[5]), binder.VisitObservable<T7>(node.Arguments[6]), binder.VisitObservable<T8>(node.Arguments[7]), binder.VisitObservable<T9>(node.Arguments[8]), binder.VisitObservable<T10>(node.Arguments[9]), binder.VisitObservable<T11>(node.Arguments[10]), binder.VisitObservable<T12>(node.Arguments[11])) { }
+            : this(binder.VisitObservable<T>(node.Object), node.Method, binder.VisitObservable<T1>(node.Arguments[0]), binder.VisitObservable<T2>(node.Arguments[1]), binder.VisitObservable<T3>(node.Arguments[2]), binder.VisitObservable<T4>(node.Arguments[3]), binder.VisitObservable<T5>(node.Arguments[4]), binder.VisitObservable<T6>(node.Arguments[5]), binder.VisitObservable<T7>(node.Arguments[6]), binder.VisitObservable<T8>(node.Arguments[7]), binder.VisitObservable<T9>(node.Arguments[8]), binder.VisitObservable<T10>(node.Arguments[9]), binder.VisitObservable<T11>(node.Arguments[10]), binder.VisitObservable<T12>(node.Arguments[11]), binder.Context) { }
 
-        public ObservableMethodCall(INotifyExpression<T> target, MethodInfo method, INotifyExpression<T1> arg1, INotifyExpression<T2> arg2, INotifyExpression<T3> arg3, INotifyExpression<T4> arg4, INotifyExpression<T5> arg5, INotifyExpression<T6> arg6, INotifyExpression<T7> arg7, INotifyExpression<T8> arg8, INotifyExpression<T9> arg9, INotifyExpression<T10> arg10, INotifyExpression<T11> arg11, INotifyExpression<T12> arg12)
-            : base(target, method)
+        public ObservableMethodCall(INotifyExpression<T> target, MethodInfo method, INotifyExpression<T1> arg1, INotifyExpression<T2> arg2, INotifyExpression<T3> arg3, INotifyExpression<T4> arg4, INotifyExpression<T5> arg5, INotifyExpression<T6> arg6, INotifyExpression<T7> arg7, INotifyExpression<T8> arg8, INotifyExpression<T9> arg9, INotifyExpression<T10> arg10, INotifyExpression<T11> arg11, INotifyExpression<T12> arg12, IExecutionContext context)
+            : base(target, method, context)
         {
             if (arg1 == null) throw new ArgumentNullException("arg1");
             if (arg2 == null) throw new ArgumentNullException("arg2");
@@ -876,16 +876,16 @@ namespace NMF.Expressions
 
         public override INotifyExpression<TResult> ApplyParameters(IDictionary<string, object> parameters)
         {
-            return new ObservableMethodCall<T, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, TResult>(Target.ApplyParameters(parameters), Method, Argument1.ApplyParameters(parameters), Argument2.ApplyParameters(parameters), Argument3.ApplyParameters(parameters), Argument4.ApplyParameters(parameters), Argument5.ApplyParameters(parameters), Argument6.ApplyParameters(parameters), Argument7.ApplyParameters(parameters), Argument8.ApplyParameters(parameters), Argument9.ApplyParameters(parameters), Argument10.ApplyParameters(parameters), Argument11.ApplyParameters(parameters), Argument12.ApplyParameters(parameters));
+            return new ObservableMethodCall<T, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, TResult>(Target.ApplyParameters(parameters), Method, Argument1.ApplyParameters(parameters), Argument2.ApplyParameters(parameters), Argument3.ApplyParameters(parameters), Argument4.ApplyParameters(parameters), Argument5.ApplyParameters(parameters), Argument6.ApplyParameters(parameters), Argument7.ApplyParameters(parameters), Argument8.ApplyParameters(parameters), Argument9.ApplyParameters(parameters), Argument10.ApplyParameters(parameters), Argument11.ApplyParameters(parameters), Argument12.ApplyParameters(parameters), context);
         }
     }
     internal class ObservableMethodCall<T, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, TResult> : ObservableMethodBase<T, Func<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, TResult>, TResult>
     {
         public ObservableMethodCall(MethodCallExpression node, ObservableExpressionBinder binder)
-            : this(binder.VisitObservable<T>(node.Object), node.Method, binder.VisitObservable<T1>(node.Arguments[0]), binder.VisitObservable<T2>(node.Arguments[1]), binder.VisitObservable<T3>(node.Arguments[2]), binder.VisitObservable<T4>(node.Arguments[3]), binder.VisitObservable<T5>(node.Arguments[4]), binder.VisitObservable<T6>(node.Arguments[5]), binder.VisitObservable<T7>(node.Arguments[6]), binder.VisitObservable<T8>(node.Arguments[7]), binder.VisitObservable<T9>(node.Arguments[8]), binder.VisitObservable<T10>(node.Arguments[9]), binder.VisitObservable<T11>(node.Arguments[10]), binder.VisitObservable<T12>(node.Arguments[11]), binder.VisitObservable<T13>(node.Arguments[12])) { }
+            : this(binder.VisitObservable<T>(node.Object), node.Method, binder.VisitObservable<T1>(node.Arguments[0]), binder.VisitObservable<T2>(node.Arguments[1]), binder.VisitObservable<T3>(node.Arguments[2]), binder.VisitObservable<T4>(node.Arguments[3]), binder.VisitObservable<T5>(node.Arguments[4]), binder.VisitObservable<T6>(node.Arguments[5]), binder.VisitObservable<T7>(node.Arguments[6]), binder.VisitObservable<T8>(node.Arguments[7]), binder.VisitObservable<T9>(node.Arguments[8]), binder.VisitObservable<T10>(node.Arguments[9]), binder.VisitObservable<T11>(node.Arguments[10]), binder.VisitObservable<T12>(node.Arguments[11]), binder.VisitObservable<T13>(node.Arguments[12]), binder.Context) { }
 
-        public ObservableMethodCall(INotifyExpression<T> target, MethodInfo method, INotifyExpression<T1> arg1, INotifyExpression<T2> arg2, INotifyExpression<T3> arg3, INotifyExpression<T4> arg4, INotifyExpression<T5> arg5, INotifyExpression<T6> arg6, INotifyExpression<T7> arg7, INotifyExpression<T8> arg8, INotifyExpression<T9> arg9, INotifyExpression<T10> arg10, INotifyExpression<T11> arg11, INotifyExpression<T12> arg12, INotifyExpression<T13> arg13)
-            : base(target, method)
+        public ObservableMethodCall(INotifyExpression<T> target, MethodInfo method, INotifyExpression<T1> arg1, INotifyExpression<T2> arg2, INotifyExpression<T3> arg3, INotifyExpression<T4> arg4, INotifyExpression<T5> arg5, INotifyExpression<T6> arg6, INotifyExpression<T7> arg7, INotifyExpression<T8> arg8, INotifyExpression<T9> arg9, INotifyExpression<T10> arg10, INotifyExpression<T11> arg11, INotifyExpression<T12> arg12, INotifyExpression<T13> arg13, IExecutionContext context)
+            : base(target, method, context)
         {
             if (arg1 == null) throw new ArgumentNullException("arg1");
             if (arg2 == null) throw new ArgumentNullException("arg2");
@@ -971,16 +971,16 @@ namespace NMF.Expressions
 
         public override INotifyExpression<TResult> ApplyParameters(IDictionary<string, object> parameters)
         {
-            return new ObservableMethodCall<T, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, TResult>(Target.ApplyParameters(parameters), Method, Argument1.ApplyParameters(parameters), Argument2.ApplyParameters(parameters), Argument3.ApplyParameters(parameters), Argument4.ApplyParameters(parameters), Argument5.ApplyParameters(parameters), Argument6.ApplyParameters(parameters), Argument7.ApplyParameters(parameters), Argument8.ApplyParameters(parameters), Argument9.ApplyParameters(parameters), Argument10.ApplyParameters(parameters), Argument11.ApplyParameters(parameters), Argument12.ApplyParameters(parameters), Argument13.ApplyParameters(parameters));
+            return new ObservableMethodCall<T, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, TResult>(Target.ApplyParameters(parameters), Method, Argument1.ApplyParameters(parameters), Argument2.ApplyParameters(parameters), Argument3.ApplyParameters(parameters), Argument4.ApplyParameters(parameters), Argument5.ApplyParameters(parameters), Argument6.ApplyParameters(parameters), Argument7.ApplyParameters(parameters), Argument8.ApplyParameters(parameters), Argument9.ApplyParameters(parameters), Argument10.ApplyParameters(parameters), Argument11.ApplyParameters(parameters), Argument12.ApplyParameters(parameters), Argument13.ApplyParameters(parameters), context);
         }
     }
     internal class ObservableMethodCall<T, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, TResult> : ObservableMethodBase<T, Func<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, TResult>, TResult>
     {
         public ObservableMethodCall(MethodCallExpression node, ObservableExpressionBinder binder)
-            : this(binder.VisitObservable<T>(node.Object), node.Method, binder.VisitObservable<T1>(node.Arguments[0]), binder.VisitObservable<T2>(node.Arguments[1]), binder.VisitObservable<T3>(node.Arguments[2]), binder.VisitObservable<T4>(node.Arguments[3]), binder.VisitObservable<T5>(node.Arguments[4]), binder.VisitObservable<T6>(node.Arguments[5]), binder.VisitObservable<T7>(node.Arguments[6]), binder.VisitObservable<T8>(node.Arguments[7]), binder.VisitObservable<T9>(node.Arguments[8]), binder.VisitObservable<T10>(node.Arguments[9]), binder.VisitObservable<T11>(node.Arguments[10]), binder.VisitObservable<T12>(node.Arguments[11]), binder.VisitObservable<T13>(node.Arguments[12]), binder.VisitObservable<T14>(node.Arguments[13])) { }
+            : this(binder.VisitObservable<T>(node.Object), node.Method, binder.VisitObservable<T1>(node.Arguments[0]), binder.VisitObservable<T2>(node.Arguments[1]), binder.VisitObservable<T3>(node.Arguments[2]), binder.VisitObservable<T4>(node.Arguments[3]), binder.VisitObservable<T5>(node.Arguments[4]), binder.VisitObservable<T6>(node.Arguments[5]), binder.VisitObservable<T7>(node.Arguments[6]), binder.VisitObservable<T8>(node.Arguments[7]), binder.VisitObservable<T9>(node.Arguments[8]), binder.VisitObservable<T10>(node.Arguments[9]), binder.VisitObservable<T11>(node.Arguments[10]), binder.VisitObservable<T12>(node.Arguments[11]), binder.VisitObservable<T13>(node.Arguments[12]), binder.VisitObservable<T14>(node.Arguments[13]), binder.Context) { }
 
-        public ObservableMethodCall(INotifyExpression<T> target, MethodInfo method, INotifyExpression<T1> arg1, INotifyExpression<T2> arg2, INotifyExpression<T3> arg3, INotifyExpression<T4> arg4, INotifyExpression<T5> arg5, INotifyExpression<T6> arg6, INotifyExpression<T7> arg7, INotifyExpression<T8> arg8, INotifyExpression<T9> arg9, INotifyExpression<T10> arg10, INotifyExpression<T11> arg11, INotifyExpression<T12> arg12, INotifyExpression<T13> arg13, INotifyExpression<T14> arg14)
-            : base(target, method)
+        public ObservableMethodCall(INotifyExpression<T> target, MethodInfo method, INotifyExpression<T1> arg1, INotifyExpression<T2> arg2, INotifyExpression<T3> arg3, INotifyExpression<T4> arg4, INotifyExpression<T5> arg5, INotifyExpression<T6> arg6, INotifyExpression<T7> arg7, INotifyExpression<T8> arg8, INotifyExpression<T9> arg9, INotifyExpression<T10> arg10, INotifyExpression<T11> arg11, INotifyExpression<T12> arg12, INotifyExpression<T13> arg13, INotifyExpression<T14> arg14, IExecutionContext context)
+            : base(target, method, context)
         {
             if (arg1 == null) throw new ArgumentNullException("arg1");
             if (arg2 == null) throw new ArgumentNullException("arg2");
@@ -1070,16 +1070,16 @@ namespace NMF.Expressions
 
         public override INotifyExpression<TResult> ApplyParameters(IDictionary<string, object> parameters)
         {
-            return new ObservableMethodCall<T, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, TResult>(Target.ApplyParameters(parameters), Method, Argument1.ApplyParameters(parameters), Argument2.ApplyParameters(parameters), Argument3.ApplyParameters(parameters), Argument4.ApplyParameters(parameters), Argument5.ApplyParameters(parameters), Argument6.ApplyParameters(parameters), Argument7.ApplyParameters(parameters), Argument8.ApplyParameters(parameters), Argument9.ApplyParameters(parameters), Argument10.ApplyParameters(parameters), Argument11.ApplyParameters(parameters), Argument12.ApplyParameters(parameters), Argument13.ApplyParameters(parameters), Argument14.ApplyParameters(parameters));
+            return new ObservableMethodCall<T, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, TResult>(Target.ApplyParameters(parameters), Method, Argument1.ApplyParameters(parameters), Argument2.ApplyParameters(parameters), Argument3.ApplyParameters(parameters), Argument4.ApplyParameters(parameters), Argument5.ApplyParameters(parameters), Argument6.ApplyParameters(parameters), Argument7.ApplyParameters(parameters), Argument8.ApplyParameters(parameters), Argument9.ApplyParameters(parameters), Argument10.ApplyParameters(parameters), Argument11.ApplyParameters(parameters), Argument12.ApplyParameters(parameters), Argument13.ApplyParameters(parameters), Argument14.ApplyParameters(parameters), context);
         }
     }
     internal class ObservableMethodCall<T, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, TResult> : ObservableMethodBase<T, Func<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, TResult>, TResult>
     {
         public ObservableMethodCall(MethodCallExpression node, ObservableExpressionBinder binder)
-            : this(binder.VisitObservable<T>(node.Object), node.Method, binder.VisitObservable<T1>(node.Arguments[0]), binder.VisitObservable<T2>(node.Arguments[1]), binder.VisitObservable<T3>(node.Arguments[2]), binder.VisitObservable<T4>(node.Arguments[3]), binder.VisitObservable<T5>(node.Arguments[4]), binder.VisitObservable<T6>(node.Arguments[5]), binder.VisitObservable<T7>(node.Arguments[6]), binder.VisitObservable<T8>(node.Arguments[7]), binder.VisitObservable<T9>(node.Arguments[8]), binder.VisitObservable<T10>(node.Arguments[9]), binder.VisitObservable<T11>(node.Arguments[10]), binder.VisitObservable<T12>(node.Arguments[11]), binder.VisitObservable<T13>(node.Arguments[12]), binder.VisitObservable<T14>(node.Arguments[13]), binder.VisitObservable<T15>(node.Arguments[14])) { }
+            : this(binder.VisitObservable<T>(node.Object), node.Method, binder.VisitObservable<T1>(node.Arguments[0]), binder.VisitObservable<T2>(node.Arguments[1]), binder.VisitObservable<T3>(node.Arguments[2]), binder.VisitObservable<T4>(node.Arguments[3]), binder.VisitObservable<T5>(node.Arguments[4]), binder.VisitObservable<T6>(node.Arguments[5]), binder.VisitObservable<T7>(node.Arguments[6]), binder.VisitObservable<T8>(node.Arguments[7]), binder.VisitObservable<T9>(node.Arguments[8]), binder.VisitObservable<T10>(node.Arguments[9]), binder.VisitObservable<T11>(node.Arguments[10]), binder.VisitObservable<T12>(node.Arguments[11]), binder.VisitObservable<T13>(node.Arguments[12]), binder.VisitObservable<T14>(node.Arguments[13]), binder.VisitObservable<T15>(node.Arguments[14]), binder.Context) { }
 
-        public ObservableMethodCall(INotifyExpression<T> target, MethodInfo method, INotifyExpression<T1> arg1, INotifyExpression<T2> arg2, INotifyExpression<T3> arg3, INotifyExpression<T4> arg4, INotifyExpression<T5> arg5, INotifyExpression<T6> arg6, INotifyExpression<T7> arg7, INotifyExpression<T8> arg8, INotifyExpression<T9> arg9, INotifyExpression<T10> arg10, INotifyExpression<T11> arg11, INotifyExpression<T12> arg12, INotifyExpression<T13> arg13, INotifyExpression<T14> arg14, INotifyExpression<T15> arg15)
-            : base(target, method)
+        public ObservableMethodCall(INotifyExpression<T> target, MethodInfo method, INotifyExpression<T1> arg1, INotifyExpression<T2> arg2, INotifyExpression<T3> arg3, INotifyExpression<T4> arg4, INotifyExpression<T5> arg5, INotifyExpression<T6> arg6, INotifyExpression<T7> arg7, INotifyExpression<T8> arg8, INotifyExpression<T9> arg9, INotifyExpression<T10> arg10, INotifyExpression<T11> arg11, INotifyExpression<T12> arg12, INotifyExpression<T13> arg13, INotifyExpression<T14> arg14, INotifyExpression<T15> arg15, IExecutionContext context)
+            : base(target, method, context)
         {
             if (arg1 == null) throw new ArgumentNullException("arg1");
             if (arg2 == null) throw new ArgumentNullException("arg2");
@@ -1173,7 +1173,7 @@ namespace NMF.Expressions
 
         public override INotifyExpression<TResult> ApplyParameters(IDictionary<string, object> parameters)
         {
-            return new ObservableMethodCall<T, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, TResult>(Target.ApplyParameters(parameters), Method, Argument1.ApplyParameters(parameters), Argument2.ApplyParameters(parameters), Argument3.ApplyParameters(parameters), Argument4.ApplyParameters(parameters), Argument5.ApplyParameters(parameters), Argument6.ApplyParameters(parameters), Argument7.ApplyParameters(parameters), Argument8.ApplyParameters(parameters), Argument9.ApplyParameters(parameters), Argument10.ApplyParameters(parameters), Argument11.ApplyParameters(parameters), Argument12.ApplyParameters(parameters), Argument13.ApplyParameters(parameters), Argument14.ApplyParameters(parameters), Argument15.ApplyParameters(parameters));
+            return new ObservableMethodCall<T, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, TResult>(Target.ApplyParameters(parameters), Method, Argument1.ApplyParameters(parameters), Argument2.ApplyParameters(parameters), Argument3.ApplyParameters(parameters), Argument4.ApplyParameters(parameters), Argument5.ApplyParameters(parameters), Argument6.ApplyParameters(parameters), Argument7.ApplyParameters(parameters), Argument8.ApplyParameters(parameters), Argument9.ApplyParameters(parameters), Argument10.ApplyParameters(parameters), Argument11.ApplyParameters(parameters), Argument12.ApplyParameters(parameters), Argument13.ApplyParameters(parameters), Argument14.ApplyParameters(parameters), Argument15.ApplyParameters(parameters), context);
         }
     }
 }
