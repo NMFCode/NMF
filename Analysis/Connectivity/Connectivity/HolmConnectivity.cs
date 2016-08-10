@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace NMF.Analysis
+namespace NMF.Analyses
 {
     public class HolmConnectivity<T> : Connectivity<T>
     {

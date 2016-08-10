@@ -10,7 +10,7 @@ using System.Text;
 using System.Collections;
 using NMF.Expressions;
 using System.Collections.Specialized;
-using NMF.Analysis;
+using NMF.Analyses;
 
 namespace NMF.Models.Meta
 {

@@ -9,9 +9,10 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>NMF.Incerator</RootNamespace>
     <AssemblyName>Incerator</AssemblyName>
-    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -34,7 +35,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="CommandLine, Version=1.9.71.2, Culture=neutral, PublicKeyToken=de6f01bd326f8c32, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\CommandLineParser.1.9.71\lib\net45\CommandLine.dll</HintPath>
+      <HintPath>..\..\packages\CommandLineParser.1.9.71\lib\net40\CommandLine.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="System" />
@@ -52,6 +53,10 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\Analysis\Analysis\Analysis.csproj">
+      <Project>{09761c44-d1f2-4db7-b33c-fcdbf260388c}</Project>
+      <Name>Analysis</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\Collections\Collections\Collections.csproj">
       <Project>{6f57aa50-fb70-4de8-beab-e3ae58b225d3}</Project>
       <Name>Collections</Name>
@@ -59,6 +64,10 @@
     <ProjectReference Include="..\..\Expressions\Expressions.Configuration\Expressions.Configuration.csproj">
       <Project>{ce312afb-2fb6-4436-89d6-33242d26e2a3}</Project>
       <Name>Expressions.Configuration</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Expressions\Expressions.Linq\Expressions.Linq.csproj">
+      <Project>{E82D72A1-90F6-4341-A82D-D6B40349DF63}</Project>
+      <Name>Expressions.Linq</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\Expressions\Expressions\Expressions.csproj">
       <Project>{afca9d1d-26a6-482a-a5ab-0827ad0fd677}</Project>

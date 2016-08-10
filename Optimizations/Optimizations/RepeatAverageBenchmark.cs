@@ -23,10 +23,13 @@ namespace NMF.Optimizations
 
         public IDictionary<string, double> MeasureConfiguration(T configuration)
         {
-            Dictionary<string, double> dict = new Dictionary<string, double>(Inner.MeasureConfiguration(configuration));
+            var initial = Inner.MeasureConfiguration(configuration);
+            if (initial == null) return null;
+            Dictionary<string, double> dict = new Dictionary<string, double>(initial);
             for (int i = 0; i < N - 1; i++)
             {
                 var newMeasurements = Inner.MeasureConfiguration(configuration);
+                if (newMeasurements == null) return null;
                 foreach (var measurement in newMeasurements)
                 {
                     dict[measurement.Key] += measurement.Value;

@@ -7,8 +7,8 @@
     <ProjectGuid>{09761C44-D1F2-4DB7-B33C-FCDBF260388C}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>NMF.Analysis</RootNamespace>
-    <AssemblyName>NMF.Analysis</AssemblyName>
+    <RootNamespace>NMF.Analyses</RootNamespace>
+    <AssemblyName>NMF.Analyses</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />

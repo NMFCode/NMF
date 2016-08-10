@@ -10,7 +10,7 @@ using NMF.Models.Repository;
 using NMF.Collections.Generic;
 using NMF.Transformations.Core;
 using System;
-using NMF.Analysis;
+using NMF.Analyses;
 
 namespace NMF.Models.Meta
 {

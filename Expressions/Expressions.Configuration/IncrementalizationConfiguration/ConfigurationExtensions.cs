@@ -25,7 +25,7 @@ namespace NMF.Expressions.IncrementalizationConfiguration
             return conf;
         }
 
-        public static IEnumerable<Configuration> GetAllPossibilities(Configuration baseConfiguration)
+        public static IEnumerable<Configuration> GetAllPossibilities(this Configuration baseConfiguration)
         {
             var nextIndices = new int[baseConfiguration.MethodConfigurations.Count];
             var nextToIncrease = nextIndices.GetUpperBound(0);

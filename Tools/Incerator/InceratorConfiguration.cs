@@ -10,11 +10,12 @@ namespace NMF.Incerator
 {
     public class InceratorConfiguration
     {
-        [Option('m', "model", HelpText = "The model on which incerator should operate", Required = true)]
-        public string Model { get; set; }
-
-        [Option('s', "change-sequence", HelpText = "The change sequence for which the analysis should be optimized", Required = true)]
-        public string ChangeSequence { get; set; }
+        public InceratorConfiguration()
+        {
+            Method = OptimizationAlgorithm.Full;
+            Repetitions = 5;
+            Mode = OperationMode.Record;
+        }
 
         [Option('c', "configuration", HelpText = "The change configuration", Required = true)]
         public string Configuration { get; set; }
@@ -24,6 +25,12 @@ namespace NMF.Incerator
 
         [Option('t', "type", HelpText = "The analysis type that should be optímized", Required = true)]
         public string Type { get; set; }
+
+        [Option('m', "method", HelpText = "The method how the analysis should be optimized. Allowed values are Full or NSGAII.", Required = false, DefaultValue = OptimizationAlgorithm.Full)]
+        public OptimizationAlgorithm Method { get; set; }
+
+        [Option('n', "repetitions", HelpText = "A number specifying how often each measurement should be repeated", Required = false, DefaultValue = 5)]
+        public int Repetitions { get; set; }
 
         [ValueOption(0)]
         public OperationMode Mode { get; set; }
@@ -37,7 +44,13 @@ namespace NMF.Incerator
 
     public enum OperationMode
     {
-        Record,
+        Record = 0,
         Optimize
+    }
+
+    public enum OptimizationAlgorithm
+    {
+        Full = 0,
+        NSGAII
     }
 }

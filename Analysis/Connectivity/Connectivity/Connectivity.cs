@@ -6,7 +6,7 @@ using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace NMF.Analysis
+namespace NMF.Analyses
 {
     public abstract class Connectivity<T>
     {
