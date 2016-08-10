@@ -1,0 +1,124 @@
+﻿<#@ template debug="false" hostspecific="false" language="C#" #>
+<#@ assembly name="System.Core" #>
+<#@ import namespace="System.Linq" #>
+<#@ import namespace="System.Text" #>
+<#@ import namespace="System.Collections.Generic" #>
+<#@ output extension=".cs" #>
+using System;
+using System.Collections.Generic;
+using System.Linq.Expressions;
+
+namespace NMF.Expressions
+{
+<# for (int i = 1; i <= 10; i++) { #>
+    /// <summary>
+    /// Represents a function class which tracks any calls
+    /// </summary>
+<# for (int j = 1; j <= i; j++) { #>
+    /// <typeparam name="T<#= j #>">The type of argument <#= j #></typeparam>
+<# } #>
+    /// <typeparam name="TResult">The result type</typeparam>
+    public class IncrementalFunc<<# for (int j = 1; j <= i; j++) { #>T<#= j #>, <# } #>TResult>
+    {
+        /// <summary>
+        /// This structure serves as a helper in order to save multiple items at once, since there are no real tuple types in .NET 4
+        /// </summary>
+        private struct Key : IEquatable<Key>
+        {
+<# for (int j = 1; j <= i; j++) { #>
+            private T<#= j #> arg<#= j #>;
+<# } #>
+
+            public Key(T1 arg1<# for (int j = 2; j <= i; j++) { #>, T<#= j #> arg<#= j #><# } #>)
+            {
+<# for (int j = 1; j <= i; j++) { #>
+                this.arg<#= j #> = arg<#= j #>;
+<# } #>
+            }
+
+            public bool Equals(Key other)
+            {
+                return EqualityComparer<T1>.Default.Equals(arg1, other.arg1)<# for (int j = 2; j <= i; j++) { #> && EqualityComparer<T<#= j #>>.Default.Equals(arg<#= j #>, other.arg<#= j #>)<# } #>;
+            }
+
+            public override bool Equals(object obj)
+            {
+                if (obj is Key)
+                {
+                    return Equals((Key)obj);
+                }
+                return false;
+            }
+
+            public override int GetHashCode()
+            {
+                var hash = 0;
+<# for (int j = 1; j <= i; j++) { #>
+                if (arg<#= j #> != null) hash ^= arg<#= j #>.GetHashCode();
+<# } #>
+                return hash;
+            }
+        }
+
+        private ObservingFunc<<# for (int j = 1; j <= i; j++) { #>T<#= j #>, <# } #>TResult> func;
+        private Dictionary<Key, INotifyValue<TResult>> savedArgs = new Dictionary<Key, INotifyValue<TResult>>();
+
+        /// <summary>
+        /// Create an incremental func for the given expression
+        /// </summary>
+        /// <param name="func">The expression that should be observed</param>
+        public IncrementalFunc(Expression<Func<<# for (int j = 1; j <= i; j++) { #>T<#= j #>, <# } #>TResult>> func) : this(ObservingFunc<<# for (int j = 1; j <= i; j++) { #>T<#= j #>, <# } #>TResult>.FromExpression(func)) { }
+
+        /// <summary>
+        /// Create an incremental func for the given expression
+        /// </summary>
+        /// <param name="func">The expression that should be observed</param>
+        public IncrementalFunc(ObservingFunc<<# for (int j = 1; j <= i; j++) { #>T<#= j #>, <# } #>TResult> func)
+        {
+            this.func = func;
+        }
+
+        /// <summary>
+        /// Gets the function value for the given arguments
+        /// </summary>
+<# for (int j = 1; j <= i; j++) { #>
+        /// <param name="arg<#= j #>">Input argument <#= j #></param>
+<# } #>
+        /// <returns>The current function valur for the provided argument</returns>
+        public TResult this[T1 arg1<# for (int j = 2; j <= i; j++) { #>, T<#= j #> arg<#= j #><# } #>]
+        {
+            [ObservableProxy(typeof(IncrementalFunc<,>), "GetNotifyValue")]
+            get
+            {
+                INotifyValue<TResult> saved;
+                Key key = new Key(arg1<# for (int j = 2; j <= i; j++) { #>, arg<#= j #><# } #>);
+                if (!savedArgs.TryGetValue(key, out saved))
+                {
+                    saved = func.Observe(arg1<# for (int j = 2; j <= i; j++) { #>, arg<#= j #><# } #>);
+                    savedArgs.Add(key, saved);
+                }
+                return saved.Value;
+            }
+        }
+
+        /// <summary>
+        /// Gets the changable value for the given arguments
+        /// </summary>
+<# for (int j = 1; j <= i; j++) { #>
+        /// <param name="arg<#= j #>">Argument <#= j #></param>
+<# } #>
+        /// <returns>A changable function value</returns>
+        public INotifyValue<TResult> GetNotifyValue(T1 arg1<# for (int j = 2; j <= i; j++) { #>, T<#= j #> arg<#= j #><# } #>)
+        {
+            INotifyValue<TResult> saved;
+            Key key = new Key(arg1<# for (int j = 2; j <= i; j++) { #>, arg<#= j #><# } #>);
+            if (!savedArgs.TryGetValue(key, out saved))
+            {
+                saved = func.Observe(arg1<# for (int j = 2; j <= i; j++) { #>, arg<#= j #><# } #>);
+                savedArgs.Add(key, saved);
+            }
+			return saved;
+        }
+    }
+<# } #>
+}
