@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
+    <metadata>
+        <id>NMF-Expressions-Utilities</id>
+        <version>$version$</version>
+        <title>NMF Expressions Utilities</title>
+        <authors>Georg Hinkel</authors>
+        <licenseUrl>http://nmf.codeplex.com/license</licenseUrl>
+        <projectUrl>http://github.com/NMFCode/NMF</projectUrl>
+        <requireLicenseAcceptance>false</requireLicenseAcceptance>
+        <developmentDependency>true</developmentDependency>
+        <description>This package contains some utility classes for NMF Expressions</description>
+        <summary>This package contains some utility classes for NMF Expressions</summary>
+        <copyright>Copyright © Georg Hinkel 2016</copyright>
+        <language>en</language>
+        <tags>Incremental; LINQ;</tags>
+        <dependencies>
+            <dependency id="NMF-Expressions" version="$version$" />
+        </dependencies>
+    </metadata>
+  <files>
+    <file src="..\Expressions\Expressions.Utilities\bin\Release\NMF.Expressions.Utilities.dll" target="lib\net40"/>
+  </files>
+</package>
