@@ -1,4 +1,5 @@
-﻿using System;
+﻿using NMF.Expressions.Execution;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq.Expressions;
@@ -11,7 +12,7 @@ namespace NMF.Expressions
     public class InstructionLevelNotifySystem : INotifySystem
     {
         private int counter = 1;
-        private static ObservableExpressionBinder binder = new ObservableExpressionBinder();
+        private static ObservableExpressionBinder binder = new ObservableExpressionBinder(ExecutionEngine.Current);
         private static InstructionLevelNotifySystem defaultSystem = new InstructionLevelNotifySystem();
 
         /// <summary>
@@ -61,7 +62,7 @@ namespace NMF.Expressions
             }
             else
             {
-                var newBinder = new ObservableExpressionBinder(parameters == null, parameterMappings);
+                var newBinder = new ObservableExpressionBinder(ExecutionEngine.Current, parameters == null, parameterMappings);
                 return newBinder.VisitObservable<T>(expression, false);
             }
         }
@@ -86,7 +87,7 @@ namespace NMF.Expressions
             }
             else
             {
-                var newBinder = new ObservableExpressionBinder(parameters == null, parameterMappings);
+                var newBinder = new ObservableExpressionBinder(ExecutionEngine.Current, parameters == null, parameterMappings);
                 exp = newBinder.VisitObservable<T>(expression, false) as INotifyReversableExpression<T>;
             }
             if (exp == null) throw new InvalidOperationException("The given expression could not be reversed!");
@@ -111,7 +112,7 @@ namespace NMF.Expressions
             }
             else
             {
-                var newBinder = new ObservableExpressionBinder(false, parameterMappings);
+                var newBinder = new ObservableExpressionBinder(ExecutionEngine.Current, false, parameterMappings);
                 return newBinder.VisitObservable(expression, false);
             }
         }

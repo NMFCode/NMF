@@ -5,9 +5,9 @@ using System.ComponentModel;
 using System.Linq;
 using System.Text;
 
-namespace NMF.Expressions.Execution
+namespace NMF.Expressions
 {
-    public interface IExecutionEngine
+    internal interface IExecutionContext
     {
         void AddChangeListener(INotifiable node, INotifyPropertyChanged element, string propertyName);
 

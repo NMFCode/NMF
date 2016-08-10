@@ -19,7 +19,7 @@ namespace NMF.Expressions.Execution
             var node = source;
             INotificationResult lastResult = null;
 
-            while (true)
+            while (node != null)
             {
                 var list = new ShortList<INotificationResult>();
                 if (lastResult != null)

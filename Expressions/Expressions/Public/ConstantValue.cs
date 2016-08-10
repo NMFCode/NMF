@@ -21,6 +21,8 @@ namespace NMF.Expressions
 
         public ExecutionMetaData ExecutionMetaData { get; } = new ExecutionMetaData();
 
+        public object ExecutionMetaData { get; set; }
+
         public T Value
         {
             get { return value; }
