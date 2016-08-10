@@ -88,7 +88,7 @@ namespace NMF.Expressions
 
         public abstract IEnumerable<INotifiable> Dependencies { get; }
 
-        public object ExecutionMetaData { get; set; }
+        public ExecutionMetaData ExecutionMetaData { get; } = new ExecutionMetaData();
 
         /// <summary>
         /// Applies the given set of parameters to the expression

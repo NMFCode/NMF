@@ -91,7 +91,7 @@ namespace NMF.Expressions
             get { return successors; }
         }
 
-        public object ExecutionMetaData { get; set; }
+        public ExecutionMetaData ExecutionMetaData { get; } = new ExecutionMetaData();
 
         public INotifyExpression<T> ApplyParameters(IDictionary<string, object> parameters)
         {

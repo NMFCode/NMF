@@ -81,6 +81,7 @@
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
     </Compile>
+    <Compile Include="Public\ExecutionMetaData.cs" />
     <Compile Include="Public\INotifiable.cs" />
     <Compile Include="Public\INotificationResult.cs" />
     <Compile Include="Public\ParameterDataflowAttribute.cs" />

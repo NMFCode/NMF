@@ -32,7 +32,7 @@ namespace NMF.Expressions
         
         public abstract IEnumerable<INotifiable> Dependencies { get; }
 
-        public object ExecutionMetaData { get; set; }
+        public ExecutionMetaData ExecutionMetaData { get; } = new ExecutionMetaData();
 
         private void Attach()
         {

@@ -34,24 +34,24 @@ namespace NMF.Expressions.Execution
 
                 while (node != null)
                 {
-                    var metaData = (OnDemandMetaData)node.ExecutionMetaData;
-                    metaData.RemainingVisits -= currentValue;
-                    if (metaData.RemainingVisits == 0)
+                    node.ExecutionMetaData.RemainingVisits -= currentValue;
+                    if (node.ExecutionMetaData.RemainingVisits == 0)
                     {
                         INotificationResult result = null;
                         if (reevaluating)
                         {
-                            result = node.Notify(metaData.Sources);
+                            result = node.Notify(node.ExecutionMetaData.Sources);
                             reevaluating = result.Changed;
-                            currentValue = metaData.TotalVisits;
-                            node.ExecutionMetaData = null;
+                            currentValue = node.ExecutionMetaData.TotalVisits;
+                            node.ExecutionMetaData.TotalVisits = 0;
+                            node.ExecutionMetaData.Sources.Clear();
                         }
 
                         if (node.Successors.Count == 0)
                             break;
                         node = node.Successors[0];
                         if (node != null && result != null && reevaluating)
-                            ((OnDemandMetaData)node.ExecutionMetaData).Sources.Add(result);
+                            node.ExecutionMetaData.Sources.Add(result);
                     }
                     else
                         break;
@@ -61,39 +61,20 @@ namespace NMF.Expressions.Execution
 
         private void MarkAffectedNodes(HashSet<INotifiable> sources)
         {
-            var stack = new Stack<INotifiable>(sources);
-            
-            while (stack.Count > 0)
-            {
-                var node = stack.Pop();
-                if (node == null)
-                    continue;
-
-                if (node.ExecutionMetaData == null)
-                    node.ExecutionMetaData = new OnDemandMetaData { RemainingVisits = 1, TotalVisits = 1 };
-                else
-                {
-                    var metaData = (OnDemandMetaData)node.ExecutionMetaData;
-                    metaData.TotalVisits++;
-                    metaData.RemainingVisits++;
-                }
-
-                if (node.Successors.Count == 0)
-                    break;
-                stack.Push(node.Successors[0]);
-            }
+            foreach (var node in sources)
+                MarkNode(node);
         }
 
-        private class OnDemandMetaData
+        private void MarkNode(INotifiable node)
         {
-            public int TotalVisits { get; set; }
-            public int RemainingVisits { get; set; }
-            public List<INotificationResult> Sources { get; private set; }
+            if (node == null)
+                return;
 
-            public OnDemandMetaData()
-            {
-                Sources = new List<INotificationResult>();
-            }
+            node.ExecutionMetaData.TotalVisits++;
+            node.ExecutionMetaData.RemainingVisits++;
+
+            if (node.Successors.Count > 0)
+                MarkNode(node.Successors[0]);
         }
     }
 }

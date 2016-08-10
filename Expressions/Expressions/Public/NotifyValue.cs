@@ -23,7 +23,7 @@ namespace NMF.Expressions
 
         public virtual IEnumerable<INotifiable> Dependencies { get { yield return Expression; } }
 
-        public object ExecutionMetaData { get; set; }
+        public ExecutionMetaData ExecutionMetaData { get; } = new ExecutionMetaData();
 
         public NotifyValue(Expression<Func<T>> expression, IDictionary<string, object> parameterMappings = null)
             : this(NotifySystem.CreateExpression<T>(expression.Body, null, parameterMappings: parameterMappings)) { }
@@ -117,7 +117,7 @@ namespace NMF.Expressions
 
         public IEnumerable<INotifiable> Dependencies { get { yield return Expression; } }
 
-        public object ExecutionMetaData { get; set; }
+        public ExecutionMetaData ExecutionMetaData { get; } = new ExecutionMetaData();
 
         public NotifyReversableValue(Expression<Func<T>> expression, IDictionary<string, object> parameterMappings = null)
             : this(NotifySystem.CreateReversableExpression<T>(expression.Body, null, parameterMappings)) { }
@@ -236,7 +236,7 @@ namespace NMF.Expressions
             }
         }
 
-        public object ExecutionMetaData { get; set; }
+        public ExecutionMetaData ExecutionMetaData { get; } = new ExecutionMetaData();
 
         public bool IsReversable
         {

@@ -29,8 +29,8 @@ namespace NMF.Expressions
         INotificationResult Notify(IList<INotificationResult> sources);
 
         /// <summary>
-        /// Can be used by the execution engine during incremental execution. Should be null otherwise.
+        /// Used by the execution engine during incremental execution.
         /// </summary>
-        object ExecutionMetaData { get; set; }
+        ExecutionMetaData ExecutionMetaData { get; }
     }
 }

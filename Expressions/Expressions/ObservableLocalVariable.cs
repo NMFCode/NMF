@@ -79,7 +79,7 @@ namespace NMF.Expressions
 
         public IList<INotifiable> Successors { get { return successors; } }
 
-        public object ExecutionMetaData { get; set; }
+        public ExecutionMetaData ExecutionMetaData { get; } = new ExecutionMetaData();
 
         public INotifyExpression<T> Reduce()
         {
