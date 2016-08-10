@@ -9,26 +9,18 @@ namespace NMF.Expressions.Execution
 {
     public abstract class ExecutionEngine : IExecutionContext
     {
-        private readonly Dictionary<INotifyPropertyChanged, Dictionary<string, HashSet<INotifiable>>> propertyChangedListener = new Dictionary<INotifyPropertyChanged, Dictionary<string, HashSet<INotifiable>>>();
+        private Dictionary<Tuple<INotifiable, INotifyPropertyChanged, string>, PropertyChangedEventHandler> propertyChangedHandler = new Dictionary<Tuple<INotifiable, INotifyPropertyChanged, string>, PropertyChangedEventHandler>();
 
         public void AddChangeListener(INotifiable node, INotifyPropertyChanged element, string propertyName)
         {
-            Dictionary<string, HashSet<INotifiable>> dict;
-            if (!propertyChangedListener.TryGetValue(element, out dict))
+            PropertyChangedEventHandler handler = (obj, e) =>
             {
-                dict = new Dictionary<string, HashSet<INotifiable>>();
-                propertyChangedListener[element] = dict;
-                element.PropertyChanged += OnPropertyChanged;
-            }
+                if (e.PropertyName == propertyName)
+                    SetInvalidNode(node);
+            };
 
-            HashSet<INotifiable> set;
-            if (!dict.TryGetValue(propertyName, out set))
-            {
-                set = new HashSet<INotifiable>();
-                dict[propertyName] = set;
-            }
-
-            set.Add(node);
+            element.PropertyChanged += handler;
+            propertyChangedHandler[new Tuple<INotifiable, INotifyPropertyChanged, string>(node, element, propertyName)] = handler;
         }
 
         public void AddChangeListener(INotifiable node, INotifyCollectionChanged collection)
@@ -38,24 +30,10 @@ namespace NMF.Expressions.Execution
 
         public void RemoveChangeListener(INotifiable node, INotifyPropertyChanged element, string propertyName)
         {
-            Dictionary<string, HashSet<INotifiable>> dict;
-            if (propertyChangedListener.TryGetValue(element, out dict))
-            {
-                HashSet<INotifiable> set;
-                if (dict.TryGetValue(propertyName, out set))
-                {
-                    set.Remove(node);
-                    if (set.Count == 0)
-                    {
-                        dict.Remove(propertyName);
-                        if (dict.Count == 0)
-                        {
-                            propertyChangedListener.Remove(element);
-                            element.PropertyChanged -= OnPropertyChanged;
-                        }
-                    }
-                }
-            }
+            var key = new Tuple<INotifiable, INotifyPropertyChanged, string>(node, element, propertyName);
+            var handler = propertyChangedHandler[key];
+            element.PropertyChanged -= handler;
+            propertyChangedHandler.Remove(key);
         }
 
         public void RemoveChangeListener(INotifiable node, INotifyCollectionChanged collection)
@@ -63,24 +41,14 @@ namespace NMF.Expressions.Execution
             throw new NotImplementedException();
         }
 
-        private void OnPropertyChanged(object sender, PropertyChangedEventArgs args)
+        private void OnPropertyChanged(PropertyChangedEventArgs e, INotifiable node, string propertyName)
         {
-            var element = sender as INotifyPropertyChanged;
-            if (element != null)
-            {
-                HashSet<INotifiable> handler;
-                if (propertyChangedListener[element].TryGetValue(args.PropertyName, out handler))
-                    OnPropertyChanged(handler);
-            }
+            if (e.PropertyName == propertyName)
+                SetInvalidNode(node);
         }
 
-        protected abstract void OnPropertyChanged(HashSet<INotifiable> handler);
-
-        private static ExecutionEngine current = new ImmediateExecutionEngine();
-        public static ExecutionEngine Current
-        {
-            get { return current; }
-            set { current = value; }
-        }
+        protected abstract void SetInvalidNode(INotifiable node);
+        
+        public static ExecutionEngine Current { get; set; } = new ImmediateExecutionEngine();
     }
 }

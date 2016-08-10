@@ -8,18 +8,17 @@ namespace NMF.Expressions.Execution
 {
     public class OnDemandExecutionEngine : ExecutionEngine
     {
-        private HashSet<INotifiable> changeSources = new HashSet<INotifiable>();
+        private HashSet<INotifiable> invalidNodes = new HashSet<INotifiable>();
 
         public void Execute()
         {
-            NotifyLoop(changeSources);
-            changeSources.Clear();
+            NotifyLoop(invalidNodes);
+            invalidNodes.Clear();
         }
 
-        protected override void OnPropertyChanged(HashSet<INotifiable> handler)
+        protected override void SetInvalidNode(INotifiable node)
         {
-            foreach (var source in handler)
-                changeSources.Add(source);
+            invalidNodes.Add(node);
         }
 
         private void NotifyLoop(HashSet<INotifiable> sources)

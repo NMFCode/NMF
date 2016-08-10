@@ -8,10 +8,9 @@ namespace NMF.Expressions.Execution
 {
     public class ImmediateExecutionEngine : ExecutionEngine
     {
-        protected override void OnPropertyChanged(HashSet<INotifiable> handler)
+        protected override void SetInvalidNode(INotifiable node)
         {
-            foreach (var node in handler.ToList())
-                NotifyLoop(node);
+            NotifyLoop(node);
         }
 
         private void NotifyLoop(INotifiable source)
