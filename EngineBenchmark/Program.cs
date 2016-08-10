@@ -18,8 +18,8 @@ namespace EngineBenchmark
 
         static void Main(string[] args)
         {
-            //Immediate(false);
-            //Immediate(true);
+            Immediate(false);
+            Immediate(true);
             ExecutionEngine.Current = new OnDemandExecutionEngine();
             OnDemand(false);
             OnDemand(true);

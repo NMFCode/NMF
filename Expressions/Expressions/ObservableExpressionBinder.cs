@@ -7,6 +7,7 @@ using NMF.Expressions.Arithmetics;
 using System.Reflection;
 using System.Reflection.Emit;
 using System.ComponentModel;
+using NMF.Expressions.Execution;
 
 namespace NMF.Expressions
 {
@@ -14,7 +15,6 @@ namespace NMF.Expressions
     {
         private bool compress;
         private Dictionary<string, object> parameters;
-        private readonly IExecutionContext context;
 
         private static Type[] newTypes =
         {
@@ -154,11 +154,10 @@ namespace NMF.Expressions
 
         private static MethodInfo memberBindingCreateProperty = ReflectionHelper.GetFunc<MemberAssignment, ObservableExpressionBinder, INotifyExpression<object>, ObservableMemberBinding<object>>((node, binder, target) => CreateProperty<object, object>(node, binder, target)).GetGenericMethodDefinition();
 
-        public IExecutionContext Context { get { return context; } }
+        public IExecutionContext Context { get { return ExecutionEngine.Current; } }
 
-        public ObservableExpressionBinder(IExecutionContext context, bool compress = false, IDictionary<string, object> parameterMappings = null)
+        public ObservableExpressionBinder(bool compress = false, IDictionary<string, object> parameterMappings = null)
         {
-            this.context = context;
             this.compress = compress;
             this.parameters = parameterMappings != null ? new Dictionary<string, object>(parameterMappings) : new Dictionary<string, object>();
         }
