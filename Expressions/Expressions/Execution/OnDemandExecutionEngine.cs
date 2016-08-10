@@ -37,18 +37,19 @@ namespace NMF.Expressions.Execution
             if (node == null)
                 return;
 
-            node.ExecutionMetaData.RemainingVisits -= currentValue;
-            if (node.ExecutionMetaData.RemainingVisits > 0)
+            var metaData = node.ExecutionMetaData;
+            metaData.RemainingVisits -= currentValue;
+            if (metaData.RemainingVisits > 0)
                 return;
             
             INotificationResult result = null;
             if (evaluating)
             {
-                result = node.Notify(node.ExecutionMetaData.Sources);
+                result = node.Notify(metaData.Sources);
                 evaluating = result.Changed;
-                currentValue = node.ExecutionMetaData.TotalVisits;
-                node.ExecutionMetaData.TotalVisits = 0;
-                node.ExecutionMetaData.Sources.Clear();
+                currentValue = metaData.TotalVisits;
+                metaData.TotalVisits = 0;
+                metaData.Sources.Clear();
             }
 
             var nextNode = node.Successors[0];
@@ -69,13 +70,13 @@ namespace NMF.Expressions.Execution
 
         private void MarkNode(INotifiable node)
         {
-            if (node == null)
-                return;
+            var metaData = node.ExecutionMetaData;
+            metaData.TotalVisits++;
+            metaData.RemainingVisits++;
 
-            node.ExecutionMetaData.TotalVisits++;
-            node.ExecutionMetaData.RemainingVisits++;
-            
-            MarkNode(node.Successors[0]);
+            var nextNode = node.Successors[0];
+            if (nextNode != null)
+                MarkNode(nextNode);
         }
     }
 }
