@@ -9,11 +9,6 @@ namespace NMF.Expressions
     {
         public int TotalVisits { get; set; }
         public int RemainingVisits { get; set; }
-        public List<INotificationResult> Sources { get; private set; }
-
-        public ExecutionMetaData()
-        {
-            Sources = new List<INotificationResult>();
-        }
+        public ShortList<INotificationResult> Sources { get; } = new ShortList<INotificationResult>();
     }
 }

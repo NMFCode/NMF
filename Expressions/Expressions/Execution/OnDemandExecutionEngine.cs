@@ -46,9 +46,7 @@ namespace NMF.Expressions.Execution
                             node.ExecutionMetaData.TotalVisits = 0;
                             node.ExecutionMetaData.Sources.Clear();
                         }
-
-                        if (node.Successors.Count == 0)
-                            break;
+                        
                         node = node.Successors[0];
                         if (node != null && result != null && reevaluating)
                             node.ExecutionMetaData.Sources.Add(result);
@@ -72,9 +70,8 @@ namespace NMF.Expressions.Execution
 
             node.ExecutionMetaData.TotalVisits++;
             node.ExecutionMetaData.RemainingVisits++;
-
-            if (node.Successors.Count > 0)
-                MarkNode(node.Successors[0]);
+            
+            MarkNode(node.Successors[0]);
         }
     }
 }
