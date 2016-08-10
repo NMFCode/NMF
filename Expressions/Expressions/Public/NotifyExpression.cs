@@ -92,7 +92,7 @@ namespace NMF.Expressions
         /// <summary>
         /// Simplifies the current expression
         /// </summary>
-        /// <returns>A simpler expression repüresenting the same incremental value (e.g. a constant if this expression can be constant), otherwise itself</returns>
+        /// <returns>A simpler expression representing the same incremental value (e.g. a constant if this expression can be constant), otherwise itself</returns>
         public new virtual INotifyExpression<T> Reduce()
         {
             Attach();

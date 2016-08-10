@@ -68,6 +68,24 @@ namespace NMF.Expressions
             get { return Target.IsParameterFree; }
         }
 
+        public override INotifyExpression<TResult> Reduce()
+        {
+            Attach();
+            if (Target.IsConstant)
+            {
+                var proxyCasted = Proxy as INotifyExpression<TResult>;
+                if (proxyCasted != null)
+                {
+                    return proxyCasted;
+                }
+                else
+                {
+                    return new ObservableProxyExpression<TResult>(Proxy);
+                }
+            }
+            return this;
+        }
+
         public override INotifyExpression<TResult> ApplyParameters(IDictionary<string, object> parameters)
         {
             return new ObservableMethodProxyCall<T, TResult>(Target.ApplyParameters(parameters), ProxyMethod);
@@ -138,6 +156,24 @@ namespace NMF.Expressions
         public override bool IsParameterFree
         {
             get { return Target.IsParameterFree && Argument1.IsParameterFree; }
+        }
+
+        public override INotifyExpression<TResult> Reduce()
+        {
+            Attach();
+            if (Target.IsConstant && Argument1.IsConstant)
+            {
+                var proxyCasted = Proxy as INotifyExpression<TResult>;
+                if (proxyCasted != null)
+                {
+                    return proxyCasted;
+                }
+                else
+                {
+                    return new ObservableProxyExpression<TResult>(Proxy);
+                }
+            }
+            return this;
         }
 
         public override INotifyExpression<TResult> ApplyParameters(IDictionary<string, object> parameters)
@@ -217,6 +253,24 @@ namespace NMF.Expressions
         public override bool IsParameterFree
         {
             get { return Target.IsParameterFree && Argument1.IsParameterFree && Argument2.IsParameterFree; }
+        }
+
+        public override INotifyExpression<TResult> Reduce()
+        {
+            Attach();
+            if (Target.IsConstant && Argument1.IsConstant && Argument2.IsConstant)
+            {
+                var proxyCasted = Proxy as INotifyExpression<TResult>;
+                if (proxyCasted != null)
+                {
+                    return proxyCasted;
+                }
+                else
+                {
+                    return new ObservableProxyExpression<TResult>(Proxy);
+                }
+            }
+            return this;
         }
 
         public override INotifyExpression<TResult> ApplyParameters(IDictionary<string, object> parameters)
@@ -303,6 +357,24 @@ namespace NMF.Expressions
         public override bool IsParameterFree
         {
             get { return Target.IsParameterFree && Argument1.IsParameterFree && Argument2.IsParameterFree && Argument3.IsParameterFree; }
+        }
+
+        public override INotifyExpression<TResult> Reduce()
+        {
+            Attach();
+            if (Target.IsConstant && Argument1.IsConstant && Argument2.IsConstant && Argument3.IsConstant)
+            {
+                var proxyCasted = Proxy as INotifyExpression<TResult>;
+                if (proxyCasted != null)
+                {
+                    return proxyCasted;
+                }
+                else
+                {
+                    return new ObservableProxyExpression<TResult>(Proxy);
+                }
+            }
+            return this;
         }
 
         public override INotifyExpression<TResult> ApplyParameters(IDictionary<string, object> parameters)
@@ -396,6 +468,24 @@ namespace NMF.Expressions
         public override bool IsParameterFree
         {
             get { return Target.IsParameterFree && Argument1.IsParameterFree && Argument2.IsParameterFree && Argument3.IsParameterFree && Argument4.IsParameterFree; }
+        }
+
+        public override INotifyExpression<TResult> Reduce()
+        {
+            Attach();
+            if (Target.IsConstant && Argument1.IsConstant && Argument2.IsConstant && Argument3.IsConstant && Argument4.IsConstant)
+            {
+                var proxyCasted = Proxy as INotifyExpression<TResult>;
+                if (proxyCasted != null)
+                {
+                    return proxyCasted;
+                }
+                else
+                {
+                    return new ObservableProxyExpression<TResult>(Proxy);
+                }
+            }
+            return this;
         }
 
         public override INotifyExpression<TResult> ApplyParameters(IDictionary<string, object> parameters)
@@ -496,6 +586,24 @@ namespace NMF.Expressions
         public override bool IsParameterFree
         {
             get { return Target.IsParameterFree && Argument1.IsParameterFree && Argument2.IsParameterFree && Argument3.IsParameterFree && Argument4.IsParameterFree && Argument5.IsParameterFree; }
+        }
+
+        public override INotifyExpression<TResult> Reduce()
+        {
+            Attach();
+            if (Target.IsConstant && Argument1.IsConstant && Argument2.IsConstant && Argument3.IsConstant && Argument4.IsConstant && Argument5.IsConstant)
+            {
+                var proxyCasted = Proxy as INotifyExpression<TResult>;
+                if (proxyCasted != null)
+                {
+                    return proxyCasted;
+                }
+                else
+                {
+                    return new ObservableProxyExpression<TResult>(Proxy);
+                }
+            }
+            return this;
         }
 
         public override INotifyExpression<TResult> ApplyParameters(IDictionary<string, object> parameters)
@@ -603,6 +711,24 @@ namespace NMF.Expressions
         public override bool IsParameterFree
         {
             get { return Target.IsParameterFree && Argument1.IsParameterFree && Argument2.IsParameterFree && Argument3.IsParameterFree && Argument4.IsParameterFree && Argument5.IsParameterFree && Argument6.IsParameterFree; }
+        }
+
+        public override INotifyExpression<TResult> Reduce()
+        {
+            Attach();
+            if (Target.IsConstant && Argument1.IsConstant && Argument2.IsConstant && Argument3.IsConstant && Argument4.IsConstant && Argument5.IsConstant && Argument6.IsConstant)
+            {
+                var proxyCasted = Proxy as INotifyExpression<TResult>;
+                if (proxyCasted != null)
+                {
+                    return proxyCasted;
+                }
+                else
+                {
+                    return new ObservableProxyExpression<TResult>(Proxy);
+                }
+            }
+            return this;
         }
 
         public override INotifyExpression<TResult> ApplyParameters(IDictionary<string, object> parameters)
@@ -717,6 +843,24 @@ namespace NMF.Expressions
         public override bool IsParameterFree
         {
             get { return Target.IsParameterFree && Argument1.IsParameterFree && Argument2.IsParameterFree && Argument3.IsParameterFree && Argument4.IsParameterFree && Argument5.IsParameterFree && Argument6.IsParameterFree && Argument7.IsParameterFree; }
+        }
+
+        public override INotifyExpression<TResult> Reduce()
+        {
+            Attach();
+            if (Target.IsConstant && Argument1.IsConstant && Argument2.IsConstant && Argument3.IsConstant && Argument4.IsConstant && Argument5.IsConstant && Argument6.IsConstant && Argument7.IsConstant)
+            {
+                var proxyCasted = Proxy as INotifyExpression<TResult>;
+                if (proxyCasted != null)
+                {
+                    return proxyCasted;
+                }
+                else
+                {
+                    return new ObservableProxyExpression<TResult>(Proxy);
+                }
+            }
+            return this;
         }
 
         public override INotifyExpression<TResult> ApplyParameters(IDictionary<string, object> parameters)
@@ -838,6 +982,24 @@ namespace NMF.Expressions
         public override bool IsParameterFree
         {
             get { return Target.IsParameterFree && Argument1.IsParameterFree && Argument2.IsParameterFree && Argument3.IsParameterFree && Argument4.IsParameterFree && Argument5.IsParameterFree && Argument6.IsParameterFree && Argument7.IsParameterFree && Argument8.IsParameterFree; }
+        }
+
+        public override INotifyExpression<TResult> Reduce()
+        {
+            Attach();
+            if (Target.IsConstant && Argument1.IsConstant && Argument2.IsConstant && Argument3.IsConstant && Argument4.IsConstant && Argument5.IsConstant && Argument6.IsConstant && Argument7.IsConstant && Argument8.IsConstant)
+            {
+                var proxyCasted = Proxy as INotifyExpression<TResult>;
+                if (proxyCasted != null)
+                {
+                    return proxyCasted;
+                }
+                else
+                {
+                    return new ObservableProxyExpression<TResult>(Proxy);
+                }
+            }
+            return this;
         }
 
         public override INotifyExpression<TResult> ApplyParameters(IDictionary<string, object> parameters)
@@ -966,6 +1128,24 @@ namespace NMF.Expressions
         public override bool IsParameterFree
         {
             get { return Target.IsParameterFree && Argument1.IsParameterFree && Argument2.IsParameterFree && Argument3.IsParameterFree && Argument4.IsParameterFree && Argument5.IsParameterFree && Argument6.IsParameterFree && Argument7.IsParameterFree && Argument8.IsParameterFree && Argument9.IsParameterFree; }
+        }
+
+        public override INotifyExpression<TResult> Reduce()
+        {
+            Attach();
+            if (Target.IsConstant && Argument1.IsConstant && Argument2.IsConstant && Argument3.IsConstant && Argument4.IsConstant && Argument5.IsConstant && Argument6.IsConstant && Argument7.IsConstant && Argument8.IsConstant && Argument9.IsConstant)
+            {
+                var proxyCasted = Proxy as INotifyExpression<TResult>;
+                if (proxyCasted != null)
+                {
+                    return proxyCasted;
+                }
+                else
+                {
+                    return new ObservableProxyExpression<TResult>(Proxy);
+                }
+            }
+            return this;
         }
 
         public override INotifyExpression<TResult> ApplyParameters(IDictionary<string, object> parameters)
@@ -1101,6 +1281,24 @@ namespace NMF.Expressions
         public override bool IsParameterFree
         {
             get { return Target.IsParameterFree && Argument1.IsParameterFree && Argument2.IsParameterFree && Argument3.IsParameterFree && Argument4.IsParameterFree && Argument5.IsParameterFree && Argument6.IsParameterFree && Argument7.IsParameterFree && Argument8.IsParameterFree && Argument9.IsParameterFree && Argument10.IsParameterFree; }
+        }
+
+        public override INotifyExpression<TResult> Reduce()
+        {
+            Attach();
+            if (Target.IsConstant && Argument1.IsConstant && Argument2.IsConstant && Argument3.IsConstant && Argument4.IsConstant && Argument5.IsConstant && Argument6.IsConstant && Argument7.IsConstant && Argument8.IsConstant && Argument9.IsConstant && Argument10.IsConstant)
+            {
+                var proxyCasted = Proxy as INotifyExpression<TResult>;
+                if (proxyCasted != null)
+                {
+                    return proxyCasted;
+                }
+                else
+                {
+                    return new ObservableProxyExpression<TResult>(Proxy);
+                }
+            }
+            return this;
         }
 
         public override INotifyExpression<TResult> ApplyParameters(IDictionary<string, object> parameters)
@@ -1243,6 +1441,24 @@ namespace NMF.Expressions
         public override bool IsParameterFree
         {
             get { return Target.IsParameterFree && Argument1.IsParameterFree && Argument2.IsParameterFree && Argument3.IsParameterFree && Argument4.IsParameterFree && Argument5.IsParameterFree && Argument6.IsParameterFree && Argument7.IsParameterFree && Argument8.IsParameterFree && Argument9.IsParameterFree && Argument10.IsParameterFree && Argument11.IsParameterFree; }
+        }
+
+        public override INotifyExpression<TResult> Reduce()
+        {
+            Attach();
+            if (Target.IsConstant && Argument1.IsConstant && Argument2.IsConstant && Argument3.IsConstant && Argument4.IsConstant && Argument5.IsConstant && Argument6.IsConstant && Argument7.IsConstant && Argument8.IsConstant && Argument9.IsConstant && Argument10.IsConstant && Argument11.IsConstant)
+            {
+                var proxyCasted = Proxy as INotifyExpression<TResult>;
+                if (proxyCasted != null)
+                {
+                    return proxyCasted;
+                }
+                else
+                {
+                    return new ObservableProxyExpression<TResult>(Proxy);
+                }
+            }
+            return this;
         }
 
         public override INotifyExpression<TResult> ApplyParameters(IDictionary<string, object> parameters)
@@ -1392,6 +1608,24 @@ namespace NMF.Expressions
         public override bool IsParameterFree
         {
             get { return Target.IsParameterFree && Argument1.IsParameterFree && Argument2.IsParameterFree && Argument3.IsParameterFree && Argument4.IsParameterFree && Argument5.IsParameterFree && Argument6.IsParameterFree && Argument7.IsParameterFree && Argument8.IsParameterFree && Argument9.IsParameterFree && Argument10.IsParameterFree && Argument11.IsParameterFree && Argument12.IsParameterFree; }
+        }
+
+        public override INotifyExpression<TResult> Reduce()
+        {
+            Attach();
+            if (Target.IsConstant && Argument1.IsConstant && Argument2.IsConstant && Argument3.IsConstant && Argument4.IsConstant && Argument5.IsConstant && Argument6.IsConstant && Argument7.IsConstant && Argument8.IsConstant && Argument9.IsConstant && Argument10.IsConstant && Argument11.IsConstant && Argument12.IsConstant)
+            {
+                var proxyCasted = Proxy as INotifyExpression<TResult>;
+                if (proxyCasted != null)
+                {
+                    return proxyCasted;
+                }
+                else
+                {
+                    return new ObservableProxyExpression<TResult>(Proxy);
+                }
+            }
+            return this;
         }
 
         public override INotifyExpression<TResult> ApplyParameters(IDictionary<string, object> parameters)
@@ -1548,6 +1782,24 @@ namespace NMF.Expressions
         public override bool IsParameterFree
         {
             get { return Target.IsParameterFree && Argument1.IsParameterFree && Argument2.IsParameterFree && Argument3.IsParameterFree && Argument4.IsParameterFree && Argument5.IsParameterFree && Argument6.IsParameterFree && Argument7.IsParameterFree && Argument8.IsParameterFree && Argument9.IsParameterFree && Argument10.IsParameterFree && Argument11.IsParameterFree && Argument12.IsParameterFree && Argument13.IsParameterFree; }
+        }
+
+        public override INotifyExpression<TResult> Reduce()
+        {
+            Attach();
+            if (Target.IsConstant && Argument1.IsConstant && Argument2.IsConstant && Argument3.IsConstant && Argument4.IsConstant && Argument5.IsConstant && Argument6.IsConstant && Argument7.IsConstant && Argument8.IsConstant && Argument9.IsConstant && Argument10.IsConstant && Argument11.IsConstant && Argument12.IsConstant && Argument13.IsConstant)
+            {
+                var proxyCasted = Proxy as INotifyExpression<TResult>;
+                if (proxyCasted != null)
+                {
+                    return proxyCasted;
+                }
+                else
+                {
+                    return new ObservableProxyExpression<TResult>(Proxy);
+                }
+            }
+            return this;
         }
 
         public override INotifyExpression<TResult> ApplyParameters(IDictionary<string, object> parameters)
@@ -1711,6 +1963,24 @@ namespace NMF.Expressions
         public override bool IsParameterFree
         {
             get { return Target.IsParameterFree && Argument1.IsParameterFree && Argument2.IsParameterFree && Argument3.IsParameterFree && Argument4.IsParameterFree && Argument5.IsParameterFree && Argument6.IsParameterFree && Argument7.IsParameterFree && Argument8.IsParameterFree && Argument9.IsParameterFree && Argument10.IsParameterFree && Argument11.IsParameterFree && Argument12.IsParameterFree && Argument13.IsParameterFree && Argument14.IsParameterFree; }
+        }
+
+        public override INotifyExpression<TResult> Reduce()
+        {
+            Attach();
+            if (Target.IsConstant && Argument1.IsConstant && Argument2.IsConstant && Argument3.IsConstant && Argument4.IsConstant && Argument5.IsConstant && Argument6.IsConstant && Argument7.IsConstant && Argument8.IsConstant && Argument9.IsConstant && Argument10.IsConstant && Argument11.IsConstant && Argument12.IsConstant && Argument13.IsConstant && Argument14.IsConstant)
+            {
+                var proxyCasted = Proxy as INotifyExpression<TResult>;
+                if (proxyCasted != null)
+                {
+                    return proxyCasted;
+                }
+                else
+                {
+                    return new ObservableProxyExpression<TResult>(Proxy);
+                }
+            }
+            return this;
         }
 
         public override INotifyExpression<TResult> ApplyParameters(IDictionary<string, object> parameters)
@@ -1881,6 +2151,24 @@ namespace NMF.Expressions
         public override bool IsParameterFree
         {
             get { return Target.IsParameterFree && Argument1.IsParameterFree && Argument2.IsParameterFree && Argument3.IsParameterFree && Argument4.IsParameterFree && Argument5.IsParameterFree && Argument6.IsParameterFree && Argument7.IsParameterFree && Argument8.IsParameterFree && Argument9.IsParameterFree && Argument10.IsParameterFree && Argument11.IsParameterFree && Argument12.IsParameterFree && Argument13.IsParameterFree && Argument14.IsParameterFree && Argument15.IsParameterFree; }
+        }
+
+        public override INotifyExpression<TResult> Reduce()
+        {
+            Attach();
+            if (Target.IsConstant && Argument1.IsConstant && Argument2.IsConstant && Argument3.IsConstant && Argument4.IsConstant && Argument5.IsConstant && Argument6.IsConstant && Argument7.IsConstant && Argument8.IsConstant && Argument9.IsConstant && Argument10.IsConstant && Argument11.IsConstant && Argument12.IsConstant && Argument13.IsConstant && Argument14.IsConstant && Argument15.IsConstant)
+            {
+                var proxyCasted = Proxy as INotifyExpression<TResult>;
+                if (proxyCasted != null)
+                {
+                    return proxyCasted;
+                }
+                else
+                {
+                    return new ObservableProxyExpression<TResult>(Proxy);
+                }
+            }
+            return this;
         }
 
         public override INotifyExpression<TResult> ApplyParameters(IDictionary<string, object> parameters)

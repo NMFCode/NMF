@@ -37,11 +37,11 @@ namespace NMF.Expressions
             var argChanged = new EventHandler<ValueChangedEventArgs>(ArgumentChanged);
         }
 
-        public override bool IsConstant
+        public override bool CanBeConstant
         {
             get
             {
-                return Target.IsConstant;
+                return base.CanBeConstant;
             }
         }
 
@@ -91,11 +91,11 @@ namespace NMF.Expressions
             Argument1.Detach();
         }
 
-        public override bool IsConstant
+        public override bool CanBeConstant
         {
             get
             {
-                return Target.IsConstant && Argument1.IsConstant;
+                return base.CanBeConstant && Argument1.IsConstant;
             }
         }
 
@@ -152,11 +152,11 @@ namespace NMF.Expressions
             Argument2.Detach();
         }
 
-        public override bool IsConstant
+        public override bool CanBeConstant
         {
             get
             {
-                return Target.IsConstant && Argument1.IsConstant && Argument2.IsConstant;
+                return base.CanBeConstant && Argument1.IsConstant && Argument2.IsConstant;
             }
         }
 
@@ -220,11 +220,11 @@ namespace NMF.Expressions
             Argument3.Detach();
         }
 
-        public override bool IsConstant
+        public override bool CanBeConstant
         {
             get
             {
-                return Target.IsConstant && Argument1.IsConstant && Argument2.IsConstant && Argument3.IsConstant;
+                return base.CanBeConstant && Argument1.IsConstant && Argument2.IsConstant && Argument3.IsConstant;
             }
         }
 
@@ -295,11 +295,11 @@ namespace NMF.Expressions
             Argument4.Detach();
         }
 
-        public override bool IsConstant
+        public override bool CanBeConstant
         {
             get
             {
-                return Target.IsConstant && Argument1.IsConstant && Argument2.IsConstant && Argument3.IsConstant && Argument4.IsConstant;
+                return base.CanBeConstant && Argument1.IsConstant && Argument2.IsConstant && Argument3.IsConstant && Argument4.IsConstant;
             }
         }
 
@@ -377,11 +377,11 @@ namespace NMF.Expressions
             Argument5.Detach();
         }
 
-        public override bool IsConstant
+        public override bool CanBeConstant
         {
             get
             {
-                return Target.IsConstant && Argument1.IsConstant && Argument2.IsConstant && Argument3.IsConstant && Argument4.IsConstant && Argument5.IsConstant;
+                return base.CanBeConstant && Argument1.IsConstant && Argument2.IsConstant && Argument3.IsConstant && Argument4.IsConstant && Argument5.IsConstant;
             }
         }
 
@@ -466,11 +466,11 @@ namespace NMF.Expressions
             Argument6.Detach();
         }
 
-        public override bool IsConstant
+        public override bool CanBeConstant
         {
             get
             {
-                return Target.IsConstant && Argument1.IsConstant && Argument2.IsConstant && Argument3.IsConstant && Argument4.IsConstant && Argument5.IsConstant && Argument6.IsConstant;
+                return base.CanBeConstant && Argument1.IsConstant && Argument2.IsConstant && Argument3.IsConstant && Argument4.IsConstant && Argument5.IsConstant && Argument6.IsConstant;
             }
         }
 
@@ -562,11 +562,11 @@ namespace NMF.Expressions
             Argument7.Detach();
         }
 
-        public override bool IsConstant
+        public override bool CanBeConstant
         {
             get
             {
-                return Target.IsConstant && Argument1.IsConstant && Argument2.IsConstant && Argument3.IsConstant && Argument4.IsConstant && Argument5.IsConstant && Argument6.IsConstant && Argument7.IsConstant;
+                return base.CanBeConstant && Argument1.IsConstant && Argument2.IsConstant && Argument3.IsConstant && Argument4.IsConstant && Argument5.IsConstant && Argument6.IsConstant && Argument7.IsConstant;
             }
         }
 
@@ -665,11 +665,11 @@ namespace NMF.Expressions
             Argument8.Detach();
         }
 
-        public override bool IsConstant
+        public override bool CanBeConstant
         {
             get
             {
-                return Target.IsConstant && Argument1.IsConstant && Argument2.IsConstant && Argument3.IsConstant && Argument4.IsConstant && Argument5.IsConstant && Argument6.IsConstant && Argument7.IsConstant && Argument8.IsConstant;
+                return base.CanBeConstant && Argument1.IsConstant && Argument2.IsConstant && Argument3.IsConstant && Argument4.IsConstant && Argument5.IsConstant && Argument6.IsConstant && Argument7.IsConstant && Argument8.IsConstant;
             }
         }
 
@@ -775,11 +775,11 @@ namespace NMF.Expressions
             Argument9.Detach();
         }
 
-        public override bool IsConstant
+        public override bool CanBeConstant
         {
             get
             {
-                return Target.IsConstant && Argument1.IsConstant && Argument2.IsConstant && Argument3.IsConstant && Argument4.IsConstant && Argument5.IsConstant && Argument6.IsConstant && Argument7.IsConstant && Argument8.IsConstant && Argument9.IsConstant;
+                return base.CanBeConstant && Argument1.IsConstant && Argument2.IsConstant && Argument3.IsConstant && Argument4.IsConstant && Argument5.IsConstant && Argument6.IsConstant && Argument7.IsConstant && Argument8.IsConstant && Argument9.IsConstant;
             }
         }
 
@@ -892,11 +892,11 @@ namespace NMF.Expressions
             Argument10.Detach();
         }
 
-        public override bool IsConstant
+        public override bool CanBeConstant
         {
             get
             {
-                return Target.IsConstant && Argument1.IsConstant && Argument2.IsConstant && Argument3.IsConstant && Argument4.IsConstant && Argument5.IsConstant && Argument6.IsConstant && Argument7.IsConstant && Argument8.IsConstant && Argument9.IsConstant && Argument10.IsConstant;
+                return base.CanBeConstant && Argument1.IsConstant && Argument2.IsConstant && Argument3.IsConstant && Argument4.IsConstant && Argument5.IsConstant && Argument6.IsConstant && Argument7.IsConstant && Argument8.IsConstant && Argument9.IsConstant && Argument10.IsConstant;
             }
         }
 
@@ -1016,11 +1016,11 @@ namespace NMF.Expressions
             Argument11.Detach();
         }
 
-        public override bool IsConstant
+        public override bool CanBeConstant
         {
             get
             {
-                return Target.IsConstant && Argument1.IsConstant && Argument2.IsConstant && Argument3.IsConstant && Argument4.IsConstant && Argument5.IsConstant && Argument6.IsConstant && Argument7.IsConstant && Argument8.IsConstant && Argument9.IsConstant && Argument10.IsConstant && Argument11.IsConstant;
+                return base.CanBeConstant && Argument1.IsConstant && Argument2.IsConstant && Argument3.IsConstant && Argument4.IsConstant && Argument5.IsConstant && Argument6.IsConstant && Argument7.IsConstant && Argument8.IsConstant && Argument9.IsConstant && Argument10.IsConstant && Argument11.IsConstant;
             }
         }
 
@@ -1147,11 +1147,11 @@ namespace NMF.Expressions
             Argument12.Detach();
         }
 
-        public override bool IsConstant
+        public override bool CanBeConstant
         {
             get
             {
-                return Target.IsConstant && Argument1.IsConstant && Argument2.IsConstant && Argument3.IsConstant && Argument4.IsConstant && Argument5.IsConstant && Argument6.IsConstant && Argument7.IsConstant && Argument8.IsConstant && Argument9.IsConstant && Argument10.IsConstant && Argument11.IsConstant && Argument12.IsConstant;
+                return base.CanBeConstant && Argument1.IsConstant && Argument2.IsConstant && Argument3.IsConstant && Argument4.IsConstant && Argument5.IsConstant && Argument6.IsConstant && Argument7.IsConstant && Argument8.IsConstant && Argument9.IsConstant && Argument10.IsConstant && Argument11.IsConstant && Argument12.IsConstant;
             }
         }
 
@@ -1285,11 +1285,11 @@ namespace NMF.Expressions
             Argument13.Detach();
         }
 
-        public override bool IsConstant
+        public override bool CanBeConstant
         {
             get
             {
-                return Target.IsConstant && Argument1.IsConstant && Argument2.IsConstant && Argument3.IsConstant && Argument4.IsConstant && Argument5.IsConstant && Argument6.IsConstant && Argument7.IsConstant && Argument8.IsConstant && Argument9.IsConstant && Argument10.IsConstant && Argument11.IsConstant && Argument12.IsConstant && Argument13.IsConstant;
+                return base.CanBeConstant && Argument1.IsConstant && Argument2.IsConstant && Argument3.IsConstant && Argument4.IsConstant && Argument5.IsConstant && Argument6.IsConstant && Argument7.IsConstant && Argument8.IsConstant && Argument9.IsConstant && Argument10.IsConstant && Argument11.IsConstant && Argument12.IsConstant && Argument13.IsConstant;
             }
         }
 
@@ -1430,11 +1430,11 @@ namespace NMF.Expressions
             Argument14.Detach();
         }
 
-        public override bool IsConstant
+        public override bool CanBeConstant
         {
             get
             {
-                return Target.IsConstant && Argument1.IsConstant && Argument2.IsConstant && Argument3.IsConstant && Argument4.IsConstant && Argument5.IsConstant && Argument6.IsConstant && Argument7.IsConstant && Argument8.IsConstant && Argument9.IsConstant && Argument10.IsConstant && Argument11.IsConstant && Argument12.IsConstant && Argument13.IsConstant && Argument14.IsConstant;
+                return base.CanBeConstant && Argument1.IsConstant && Argument2.IsConstant && Argument3.IsConstant && Argument4.IsConstant && Argument5.IsConstant && Argument6.IsConstant && Argument7.IsConstant && Argument8.IsConstant && Argument9.IsConstant && Argument10.IsConstant && Argument11.IsConstant && Argument12.IsConstant && Argument13.IsConstant && Argument14.IsConstant;
             }
         }
 
@@ -1582,11 +1582,11 @@ namespace NMF.Expressions
             Argument15.Detach();
         }
 
-        public override bool IsConstant
+        public override bool CanBeConstant
         {
             get
             {
-                return Target.IsConstant && Argument1.IsConstant && Argument2.IsConstant && Argument3.IsConstant && Argument4.IsConstant && Argument5.IsConstant && Argument6.IsConstant && Argument7.IsConstant && Argument8.IsConstant && Argument9.IsConstant && Argument10.IsConstant && Argument11.IsConstant && Argument12.IsConstant && Argument13.IsConstant && Argument14.IsConstant && Argument15.IsConstant;
+                return base.CanBeConstant && Argument1.IsConstant && Argument2.IsConstant && Argument3.IsConstant && Argument4.IsConstant && Argument5.IsConstant && Argument6.IsConstant && Argument7.IsConstant && Argument8.IsConstant && Argument9.IsConstant && Argument10.IsConstant && Argument11.IsConstant && Argument12.IsConstant && Argument13.IsConstant && Argument14.IsConstant && Argument15.IsConstant;
             }
         }
 

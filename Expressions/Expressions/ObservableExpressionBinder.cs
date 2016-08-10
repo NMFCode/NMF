@@ -159,6 +159,18 @@ namespace NMF.Expressions
             this.parameters = parameterMappings != null ? new Dictionary<string, object>(parameterMappings) : new Dictionary<string, object>();
         }
 
+        public bool Compress
+        {
+            get
+            {
+                return compress;
+            }
+            set
+            {
+                compress = value;
+            }
+        }
+
         protected override Expression VisitBinary(BinaryExpression node)
         {
             if (node.Method != null)
@@ -1019,14 +1031,14 @@ namespace NMF.Expressions
         public INotifyExpression<T> VisitObservable<T>(Expression expression, bool allowNull = false)
         {
             var result = Visit(expression);
-            if (compress && result != null)
-            {
-                result = result.Reduce();
-            }
             var candidate = result as INotifyExpression<T>;
             if (candidate == null && !allowNull)
             {
                 throw new InvalidOperationException(string.Format("The expression {0} cannot be interpreted as {1}.", expression.ToString(), typeof(T).Name));
+            }
+            if (compress)
+            {
+                candidate = candidate.Reduce();
             }
             return candidate;
         }

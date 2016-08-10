@@ -79,15 +79,16 @@ namespace NMF.Expressions
 	    /// <returns>An observable value that keeps track of any changes</returns>
         public INotifyValue<TResult> Observe(INotifyValue<T1> in1)
         {
+		    var autoAttach = in1.IsAttached;
             if (isParameterFree)
 			{
-				expression.Attach();
+				if (autoAttach) expression.Attach();
 				return expression;
 			}
             var parameters = new Dictionary<string, object>();
 		    parameters.Add(parameter1Name, in1);
 	        var result = expression.ApplyParameters(parameters);
-			result.Attach();
+			if (autoAttach) result.Attach();
 			return result;
         }
 
@@ -241,16 +242,17 @@ namespace NMF.Expressions
 	    /// <returns>An observable value that keeps track of any changes</returns>
         public INotifyValue<TResult> Observe(INotifyValue<T1> in1, INotifyValue<T2> in2)
         {
+		    var autoAttach = in1.IsAttached && in1.IsAttached;
             if (isParameterFree)
 			{
-				expression.Attach();
+				if (autoAttach) expression.Attach();
 				return expression;
 			}
             var parameters = new Dictionary<string, object>();
 		    parameters.Add(parameter1Name, in1);
 		    parameters.Add(parameter2Name, in2);
 	        var result = expression.ApplyParameters(parameters);
-			result.Attach();
+			if (autoAttach) result.Attach();
 			return result;
         }
 
@@ -439,9 +441,10 @@ namespace NMF.Expressions
 	    /// <returns>An observable value that keeps track of any changes</returns>
         public INotifyValue<TResult> Observe(INotifyValue<T1> in1, INotifyValue<T2> in2, INotifyValue<T3> in3)
         {
+		    var autoAttach = in1.IsAttached && in1.IsAttached && in2.IsAttached;
             if (isParameterFree)
 			{
-				expression.Attach();
+				if (autoAttach) expression.Attach();
 				return expression;
 			}
             var parameters = new Dictionary<string, object>();
@@ -449,7 +452,7 @@ namespace NMF.Expressions
 		    parameters.Add(parameter2Name, in2);
 		    parameters.Add(parameter3Name, in3);
 	        var result = expression.ApplyParameters(parameters);
-			result.Attach();
+			if (autoAttach) result.Attach();
 			return result;
         }
 
@@ -676,9 +679,10 @@ namespace NMF.Expressions
 	    /// <returns>An observable value that keeps track of any changes</returns>
         public INotifyValue<TResult> Observe(INotifyValue<T1> in1, INotifyValue<T2> in2, INotifyValue<T3> in3, INotifyValue<T4> in4)
         {
+		    var autoAttach = in1.IsAttached && in1.IsAttached && in2.IsAttached && in3.IsAttached;
             if (isParameterFree)
 			{
-				expression.Attach();
+				if (autoAttach) expression.Attach();
 				return expression;
 			}
             var parameters = new Dictionary<string, object>();
@@ -687,7 +691,7 @@ namespace NMF.Expressions
 		    parameters.Add(parameter3Name, in3);
 		    parameters.Add(parameter4Name, in4);
 	        var result = expression.ApplyParameters(parameters);
-			result.Attach();
+			if (autoAttach) result.Attach();
 			return result;
         }
 
@@ -955,9 +959,10 @@ namespace NMF.Expressions
 	    /// <returns>An observable value that keeps track of any changes</returns>
         public INotifyValue<TResult> Observe(INotifyValue<T1> in1, INotifyValue<T2> in2, INotifyValue<T3> in3, INotifyValue<T4> in4, INotifyValue<T5> in5)
         {
+		    var autoAttach = in1.IsAttached && in1.IsAttached && in2.IsAttached && in3.IsAttached && in4.IsAttached;
             if (isParameterFree)
 			{
-				expression.Attach();
+				if (autoAttach) expression.Attach();
 				return expression;
 			}
             var parameters = new Dictionary<string, object>();
@@ -967,7 +972,7 @@ namespace NMF.Expressions
 		    parameters.Add(parameter4Name, in4);
 		    parameters.Add(parameter5Name, in5);
 	        var result = expression.ApplyParameters(parameters);
-			result.Attach();
+			if (autoAttach) result.Attach();
 			return result;
         }
 
@@ -1279,9 +1284,10 @@ namespace NMF.Expressions
 	    /// <returns>An observable value that keeps track of any changes</returns>
         public INotifyValue<TResult> Observe(INotifyValue<T1> in1, INotifyValue<T2> in2, INotifyValue<T3> in3, INotifyValue<T4> in4, INotifyValue<T5> in5, INotifyValue<T6> in6)
         {
+		    var autoAttach = in1.IsAttached && in1.IsAttached && in2.IsAttached && in3.IsAttached && in4.IsAttached && in5.IsAttached;
             if (isParameterFree)
 			{
-				expression.Attach();
+				if (autoAttach) expression.Attach();
 				return expression;
 			}
             var parameters = new Dictionary<string, object>();
@@ -1292,7 +1298,7 @@ namespace NMF.Expressions
 		    parameters.Add(parameter5Name, in5);
 		    parameters.Add(parameter6Name, in6);
 	        var result = expression.ApplyParameters(parameters);
-			result.Attach();
+			if (autoAttach) result.Attach();
 			return result;
         }
 
@@ -1651,9 +1657,10 @@ namespace NMF.Expressions
 	    /// <returns>An observable value that keeps track of any changes</returns>
         public INotifyValue<TResult> Observe(INotifyValue<T1> in1, INotifyValue<T2> in2, INotifyValue<T3> in3, INotifyValue<T4> in4, INotifyValue<T5> in5, INotifyValue<T6> in6, INotifyValue<T7> in7)
         {
+		    var autoAttach = in1.IsAttached && in1.IsAttached && in2.IsAttached && in3.IsAttached && in4.IsAttached && in5.IsAttached && in6.IsAttached;
             if (isParameterFree)
 			{
-				expression.Attach();
+				if (autoAttach) expression.Attach();
 				return expression;
 			}
             var parameters = new Dictionary<string, object>();
@@ -1665,7 +1672,7 @@ namespace NMF.Expressions
 		    parameters.Add(parameter6Name, in6);
 		    parameters.Add(parameter7Name, in7);
 	        var result = expression.ApplyParameters(parameters);
-			result.Attach();
+			if (autoAttach) result.Attach();
 			return result;
         }
 
@@ -2074,9 +2081,10 @@ namespace NMF.Expressions
 	    /// <returns>An observable value that keeps track of any changes</returns>
         public INotifyValue<TResult> Observe(INotifyValue<T1> in1, INotifyValue<T2> in2, INotifyValue<T3> in3, INotifyValue<T4> in4, INotifyValue<T5> in5, INotifyValue<T6> in6, INotifyValue<T7> in7, INotifyValue<T8> in8)
         {
+		    var autoAttach = in1.IsAttached && in1.IsAttached && in2.IsAttached && in3.IsAttached && in4.IsAttached && in5.IsAttached && in6.IsAttached && in7.IsAttached;
             if (isParameterFree)
 			{
-				expression.Attach();
+				if (autoAttach) expression.Attach();
 				return expression;
 			}
             var parameters = new Dictionary<string, object>();
@@ -2089,7 +2097,7 @@ namespace NMF.Expressions
 		    parameters.Add(parameter7Name, in7);
 		    parameters.Add(parameter8Name, in8);
 	        var result = expression.ApplyParameters(parameters);
-			result.Attach();
+			if (autoAttach) result.Attach();
 			return result;
         }
 
@@ -2551,9 +2559,10 @@ namespace NMF.Expressions
 	    /// <returns>An observable value that keeps track of any changes</returns>
         public INotifyValue<TResult> Observe(INotifyValue<T1> in1, INotifyValue<T2> in2, INotifyValue<T3> in3, INotifyValue<T4> in4, INotifyValue<T5> in5, INotifyValue<T6> in6, INotifyValue<T7> in7, INotifyValue<T8> in8, INotifyValue<T9> in9)
         {
+		    var autoAttach = in1.IsAttached && in1.IsAttached && in2.IsAttached && in3.IsAttached && in4.IsAttached && in5.IsAttached && in6.IsAttached && in7.IsAttached && in8.IsAttached;
             if (isParameterFree)
 			{
-				expression.Attach();
+				if (autoAttach) expression.Attach();
 				return expression;
 			}
             var parameters = new Dictionary<string, object>();
@@ -2567,7 +2576,7 @@ namespace NMF.Expressions
 		    parameters.Add(parameter8Name, in8);
 		    parameters.Add(parameter9Name, in9);
 	        var result = expression.ApplyParameters(parameters);
-			result.Attach();
+			if (autoAttach) result.Attach();
 			return result;
         }
 
@@ -3085,9 +3094,10 @@ namespace NMF.Expressions
 	    /// <returns>An observable value that keeps track of any changes</returns>
         public INotifyValue<TResult> Observe(INotifyValue<T1> in1, INotifyValue<T2> in2, INotifyValue<T3> in3, INotifyValue<T4> in4, INotifyValue<T5> in5, INotifyValue<T6> in6, INotifyValue<T7> in7, INotifyValue<T8> in8, INotifyValue<T9> in9, INotifyValue<T10> in10)
         {
+		    var autoAttach = in1.IsAttached && in1.IsAttached && in2.IsAttached && in3.IsAttached && in4.IsAttached && in5.IsAttached && in6.IsAttached && in7.IsAttached && in8.IsAttached && in9.IsAttached;
             if (isParameterFree)
 			{
-				expression.Attach();
+				if (autoAttach) expression.Attach();
 				return expression;
 			}
             var parameters = new Dictionary<string, object>();
@@ -3102,7 +3112,7 @@ namespace NMF.Expressions
 		    parameters.Add(parameter9Name, in9);
 		    parameters.Add(parameter10Name, in10);
 	        var result = expression.ApplyParameters(parameters);
-			result.Attach();
+			if (autoAttach) result.Attach();
 			return result;
         }
 
@@ -3679,9 +3689,10 @@ namespace NMF.Expressions
 	    /// <returns>An observable value that keeps track of any changes</returns>
         public INotifyValue<TResult> Observe(INotifyValue<T1> in1, INotifyValue<T2> in2, INotifyValue<T3> in3, INotifyValue<T4> in4, INotifyValue<T5> in5, INotifyValue<T6> in6, INotifyValue<T7> in7, INotifyValue<T8> in8, INotifyValue<T9> in9, INotifyValue<T10> in10, INotifyValue<T11> in11)
         {
+		    var autoAttach = in1.IsAttached && in1.IsAttached && in2.IsAttached && in3.IsAttached && in4.IsAttached && in5.IsAttached && in6.IsAttached && in7.IsAttached && in8.IsAttached && in9.IsAttached && in10.IsAttached;
             if (isParameterFree)
 			{
-				expression.Attach();
+				if (autoAttach) expression.Attach();
 				return expression;
 			}
             var parameters = new Dictionary<string, object>();
@@ -3697,7 +3708,7 @@ namespace NMF.Expressions
 		    parameters.Add(parameter10Name, in10);
 		    parameters.Add(parameter11Name, in11);
 	        var result = expression.ApplyParameters(parameters);
-			result.Attach();
+			if (autoAttach) result.Attach();
 			return result;
         }
 
@@ -4336,9 +4347,10 @@ namespace NMF.Expressions
 	    /// <returns>An observable value that keeps track of any changes</returns>
         public INotifyValue<TResult> Observe(INotifyValue<T1> in1, INotifyValue<T2> in2, INotifyValue<T3> in3, INotifyValue<T4> in4, INotifyValue<T5> in5, INotifyValue<T6> in6, INotifyValue<T7> in7, INotifyValue<T8> in8, INotifyValue<T9> in9, INotifyValue<T10> in10, INotifyValue<T11> in11, INotifyValue<T12> in12)
         {
+		    var autoAttach = in1.IsAttached && in1.IsAttached && in2.IsAttached && in3.IsAttached && in4.IsAttached && in5.IsAttached && in6.IsAttached && in7.IsAttached && in8.IsAttached && in9.IsAttached && in10.IsAttached && in11.IsAttached;
             if (isParameterFree)
 			{
-				expression.Attach();
+				if (autoAttach) expression.Attach();
 				return expression;
 			}
             var parameters = new Dictionary<string, object>();
@@ -4355,7 +4367,7 @@ namespace NMF.Expressions
 		    parameters.Add(parameter11Name, in11);
 		    parameters.Add(parameter12Name, in12);
 	        var result = expression.ApplyParameters(parameters);
-			result.Attach();
+			if (autoAttach) result.Attach();
 			return result;
         }
 
@@ -5059,9 +5071,10 @@ namespace NMF.Expressions
 	    /// <returns>An observable value that keeps track of any changes</returns>
         public INotifyValue<TResult> Observe(INotifyValue<T1> in1, INotifyValue<T2> in2, INotifyValue<T3> in3, INotifyValue<T4> in4, INotifyValue<T5> in5, INotifyValue<T6> in6, INotifyValue<T7> in7, INotifyValue<T8> in8, INotifyValue<T9> in9, INotifyValue<T10> in10, INotifyValue<T11> in11, INotifyValue<T12> in12, INotifyValue<T13> in13)
         {
+		    var autoAttach = in1.IsAttached && in1.IsAttached && in2.IsAttached && in3.IsAttached && in4.IsAttached && in5.IsAttached && in6.IsAttached && in7.IsAttached && in8.IsAttached && in9.IsAttached && in10.IsAttached && in11.IsAttached && in12.IsAttached;
             if (isParameterFree)
 			{
-				expression.Attach();
+				if (autoAttach) expression.Attach();
 				return expression;
 			}
             var parameters = new Dictionary<string, object>();
@@ -5079,7 +5092,7 @@ namespace NMF.Expressions
 		    parameters.Add(parameter12Name, in12);
 		    parameters.Add(parameter13Name, in13);
 	        var result = expression.ApplyParameters(parameters);
-			result.Attach();
+			if (autoAttach) result.Attach();
 			return result;
         }
 
@@ -5851,9 +5864,10 @@ namespace NMF.Expressions
 	    /// <returns>An observable value that keeps track of any changes</returns>
         public INotifyValue<TResult> Observe(INotifyValue<T1> in1, INotifyValue<T2> in2, INotifyValue<T3> in3, INotifyValue<T4> in4, INotifyValue<T5> in5, INotifyValue<T6> in6, INotifyValue<T7> in7, INotifyValue<T8> in8, INotifyValue<T9> in9, INotifyValue<T10> in10, INotifyValue<T11> in11, INotifyValue<T12> in12, INotifyValue<T13> in13, INotifyValue<T14> in14)
         {
+		    var autoAttach = in1.IsAttached && in1.IsAttached && in2.IsAttached && in3.IsAttached && in4.IsAttached && in5.IsAttached && in6.IsAttached && in7.IsAttached && in8.IsAttached && in9.IsAttached && in10.IsAttached && in11.IsAttached && in12.IsAttached && in13.IsAttached;
             if (isParameterFree)
 			{
-				expression.Attach();
+				if (autoAttach) expression.Attach();
 				return expression;
 			}
             var parameters = new Dictionary<string, object>();
@@ -5872,7 +5886,7 @@ namespace NMF.Expressions
 		    parameters.Add(parameter13Name, in13);
 		    parameters.Add(parameter14Name, in14);
 	        var result = expression.ApplyParameters(parameters);
-			result.Attach();
+			if (autoAttach) result.Attach();
 			return result;
         }
 
@@ -6715,9 +6729,10 @@ namespace NMF.Expressions
 	    /// <returns>An observable value that keeps track of any changes</returns>
         public INotifyValue<TResult> Observe(INotifyValue<T1> in1, INotifyValue<T2> in2, INotifyValue<T3> in3, INotifyValue<T4> in4, INotifyValue<T5> in5, INotifyValue<T6> in6, INotifyValue<T7> in7, INotifyValue<T8> in8, INotifyValue<T9> in9, INotifyValue<T10> in10, INotifyValue<T11> in11, INotifyValue<T12> in12, INotifyValue<T13> in13, INotifyValue<T14> in14, INotifyValue<T15> in15)
         {
+		    var autoAttach = in1.IsAttached && in1.IsAttached && in2.IsAttached && in3.IsAttached && in4.IsAttached && in5.IsAttached && in6.IsAttached && in7.IsAttached && in8.IsAttached && in9.IsAttached && in10.IsAttached && in11.IsAttached && in12.IsAttached && in13.IsAttached && in14.IsAttached;
             if (isParameterFree)
 			{
-				expression.Attach();
+				if (autoAttach) expression.Attach();
 				return expression;
 			}
             var parameters = new Dictionary<string, object>();
@@ -6737,7 +6752,7 @@ namespace NMF.Expressions
 		    parameters.Add(parameter14Name, in14);
 		    parameters.Add(parameter15Name, in15);
 	        var result = expression.ApplyParameters(parameters);
-			result.Attach();
+			if (autoAttach) result.Attach();
 			return result;
         }
 

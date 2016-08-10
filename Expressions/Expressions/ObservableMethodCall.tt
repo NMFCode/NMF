@@ -23,7 +23,7 @@ namespace NMF.Expressions
         public ObservableMethodCall(MethodCallExpression node, ObservableExpressionBinder binder)
             : this(binder.VisitObservable<T>(node.Object), node.Method<# for (int j = 1; j <= i; j++) { #>, binder.VisitObservable<T<#= j #>>(node.Arguments[<#= j-1 #>])<# } #>) { }
 
-        public ObservableMethodCall(IObservableExpression<T> target, MethodInfo method<# for (int j = 1; j <= i; j++) { #>, IObservableExpression<T<#= j #>> arg<#= j #><# } #>)
+        public ObservableMethodCall(INotifyExpression<T> target, MethodInfo method<# for (int j = 1; j <= i; j++) { #>, INotifyExpression<T<#= j #>> arg<#= j #><# } #>)
             : base(target, method)
         {
 <# for (int j = 1; j <= i; j++) { #>
@@ -36,7 +36,7 @@ namespace NMF.Expressions
         }
 
 <# for (int j = 1; j <= i; j++) { #>
-        public IObservableExpression<T<#= j #>> Argument<#= j #> { get; private set; }
+        public INotifyExpression<T<#= j #>> Argument<#= j #> { get; private set; }
 <# } #>
 
         protected override TResult GetValue()
@@ -64,11 +64,11 @@ namespace NMF.Expressions
 <# } #>
         }
 
-        public override bool IsConstant
+        public override bool CanBeConstant
         {
             get
             {
-                return Target.IsConstant<# for (int j = 1; j <= i; j++) { #> && Argument<#= j #>.IsConstant<# } #>;
+                return base.CanBeConstant<# for (int j = 1; j <= i; j++) { #> && Argument<#= j #>.IsConstant<# } #>;
             }
         }
 
@@ -77,7 +77,7 @@ namespace NMF.Expressions
             get { return Target.IsParameterFree<# for (int j = 1; j <= i; j++) { #> && Argument<#= j #>.IsParameterFree<# } #>; }
         }
 
-        public override IObservableExpression<TResult> ApplyParameters(IDictionary<string, object> parameters)
+        public override INotifyExpression<TResult> ApplyParameters(IDictionary<string, object> parameters)
         {
             return new ObservableMethodCall<T, <# for (int j = 1; j <= i; j++) { #>T<#= j #>, <# } #>TResult>(Target.ApplyParameters(parameters), Method<# for (int j = 1; j <= i; j++) { #>, Argument<#= j #>.ApplyParameters(parameters)<# } #>);
         }

@@ -95,6 +95,24 @@ namespace NMF.Expressions
             get { return Target.IsParameterFree<# for (int j = 1; j <= i; j++) { #> && Argument<#= j #>.IsParameterFree<# } #>; }
         }
 
+        public override INotifyExpression<TResult> Reduce()
+        {
+            Attach();
+            if (Target.IsConstant<# for (int j = 1; j <= i; j++) { #> && Argument<#= j #>.IsConstant<# } #>)
+            {
+                var proxyCasted = Proxy as INotifyExpression<TResult>;
+                if (proxyCasted != null)
+                {
+                    return proxyCasted;
+                }
+                else
+                {
+                    return new ObservableProxyExpression<TResult>(Proxy);
+                }
+            }
+            return this;
+        }
+
         public override INotifyExpression<TResult> ApplyParameters(IDictionary<string, object> parameters)
         {
             return new ObservableMethodProxyCall<T, <# for (int j = 1; j <= i; j++) { #>T<#= j #>, <# } #>TResult>(Target.ApplyParameters(parameters), ProxyMethod<# for (int j = 1; j <= i; j++) { #>, Argument<#= j #>.ApplyParameters(parameters)<# } #>);

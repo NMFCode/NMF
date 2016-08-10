@@ -65,7 +65,7 @@ namespace NMF.Expressions
             get
             {
                 if (Target == null) return true;
-                if (!Target.CanBeConstant) return false;
+                if (!Target.IsConstant) return false;
                 return Target.Value == null ||
                     !(Target.Value is INotifyPropertyChanged);
             }

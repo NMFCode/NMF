@@ -27,42 +27,125 @@ namespace NMF.Expressions
         }
     }
 
-    internal class TaggedObservableValue<T, TTag> : NotifyValue<T>, INotifyReversableValue<T>
+    internal class TaggedObservableValue<T, TTag> : INotifyReversableExpression<T>
     {
+        public INotifyExpression<T> Expression { get; set; }
         public TTag Tag { get; set; }
 
-        public TaggedObservableValue(INotifyExpression<T> expression, TTag tag)
-            : base(expression)
-        {
-            Tag = tag;
-        }
-
-        public new T Value
+        T INotifyValue<T>.Value
         {
             get
             {
-                return base.Value;
+                return Expression.Value;
             }
+        }
+
+        public bool IsAttached
+        {
+            get
+            {
+                return Expression.IsAttached;
+            }
+        }
+
+        public bool CanBeConstant
+        {
+            get
+            {
+                return Expression.CanBeConstant;
+            }
+        }
+
+        public bool IsConstant
+        {
+            get
+            {
+                return Expression.IsConstant;
+            }
+        }
+
+        public bool IsParameterFree
+        {
+            get
+            {
+                return Expression.IsParameterFree;
+            }
+        }
+
+        public object ValueObject
+        {
+            get
+            {
+                return Expression.ValueObject;
+            }
+        }
+
+        public T Value
+        {
+            get
+            {
+                return Expression.Value;
+            }
+
             set
             {
-                var reversable = Expression as INotifyReversableValue<T>;
-                if (reversable != null)
+                var expression = Expression as INotifyReversableExpression<T>;
+                if (expression != null)
                 {
-                    reversable.Value = value;
+                    expression.Value = value;
                 }
                 else
                 {
-                    throw new InvalidOperationException();
+                    throw new InvalidOperationException("The expression is read-only.");
                 }
             }
         }
 
         public bool IsReversable
         {
-            get {
-                var reversable = Expression as INotifyReversableValue<T>;
-                return reversable != null && reversable.IsReversable;
+            get
+            {
+                var expression = Expression as INotifyReversableExpression<T>;
+                return expression != null && expression.IsReversable;
             }
+        }
+
+        public TaggedObservableValue(INotifyExpression<T> expression, TTag tag)
+        {
+            if (expression == null) throw new ArgumentNullException("expression");
+
+            Expression = expression;
+            Tag = tag;
+
+            expression.Attach();
+            expression.ValueChanged += (o, e) => ValueChanged?.Invoke(this, e);
+        }
+
+        public event EventHandler<ValueChangedEventArgs> ValueChanged;
+
+        public INotifyExpression<T> ApplyParameters(IDictionary<string, object> parameters)
+        {
+            return new TaggedObservableValue<T, TTag>(Expression.ApplyParameters(parameters), Tag);
+        }
+
+        public INotifyExpression<T> Reduce()
+        {
+            return this;
+        }
+
+        public void Detach()
+        {
+            Expression.Detach();
+        }
+
+        public void Attach()
+        {
+            Expression.Attach();
+        }
+
+        public void Refresh()
+        {
+            Expression.Refresh();
         }
     }
 

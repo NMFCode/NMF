@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using NMF.Models;
 using NMF.Expressions.Linq;
 using NMF.Utilities;
+using NMF.Expressions;
 
 namespace NMF.Synchronizations.Example
 {
@@ -17,14 +18,14 @@ namespace NMF.Synchronizations.Example
             {
                 SynchronizeManyLeftToRightOnly(SyncRule<Member2Male>(),
                     familyModel => familyModel.Descendants()
-                                              .OfType<Families.Family>()
-                                              .SelectMany(fam => fam.Sons.Concat(fam.Father)),
+                                              .OfType<Families.Member>()
+                                              .Where(member => !member.IsFemale()),
                     personModel => personModel.RootElements.OfType<IModelElement, Persons.Male>());
 
                 SynchronizeManyLeftToRightOnly(SyncRule<Member2Female>(),
                     familyModel => familyModel.Descendants()
-                                              .OfType<Families.Family>()
-                                              .SelectMany(fam => fam.Daughters.Concat(fam.Mother)),
+                                              .OfType<Families.Member>()
+                                              .Where(member => member.IsFemale()),
                     personModel => personModel.RootElements.OfType<IModelElement, Persons.Female>());
             }
         }
@@ -46,6 +47,25 @@ namespace NMF.Synchronizations.Example
                 SynchronizeLeftToRightOnly(
                     member => member.FirstName + " " + (member.Parent as Families.Family).LastName,
                     person => person.FullName);
+            }
+        }
+    }
+
+    public static class Helpers
+    {
+        [ObservableProxy(typeof(Proxies), "IsFemale")]
+        public static bool IsFemale(this Families.Member member)
+        {
+            return member.FamilyMother != null ? true : member.FamilyDaughter != null;
+        }
+
+        private class Proxies
+        {
+            private static ObservingFunc<Families.Member, bool> isFemaleFunc = new ObservingFunc<Families.Member, bool>(member => member.FamilyMother != null ? true : member.FamilyDaughter != null);
+
+            public static INotifyValue<bool> IsFemale(INotifyValue<Families.Member> member)
+            {
+                return isFemaleFunc.Observe(member);
             }
         }
     }
