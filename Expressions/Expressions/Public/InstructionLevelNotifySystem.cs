@@ -11,7 +11,7 @@ namespace NMF.Expressions
     public class InstructionLevelNotifySystem : INotifySystem
     {
         private int counter = 1;
-        private static ObservableExpressionBinder binder = new ObservableExpressionBinder(ExecutionEngine.Current);
+        private static ObservableExpressionBinder binder = new ObservableExpressionBinder();
         private static InstructionLevelNotifySystem defaultSystem = new InstructionLevelNotifySystem();
 
         /// <summary>
@@ -111,7 +111,7 @@ namespace NMF.Expressions
             }
             else
             {
-                var newBinder = new ObservableExpressionBinder(ExecutionEngine.Current, false, parameterMappings);
+                var newBinder = new ObservableExpressionBinder(false, parameterMappings);
                 return newBinder.VisitObservable(expression, false);
             }
         }
