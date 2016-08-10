@@ -28,32 +28,36 @@ namespace NMF.Expressions.Execution
 
             foreach (var source in sources)
             {
-                int currentValue = 1;
-                bool reevaluating = true;
-                var node = source;
+                NotifyNode(source, 1, true);
+            }
+        }
 
-                while (node != null)
-                {
-                    node.ExecutionMetaData.RemainingVisits -= currentValue;
-                    if (node.ExecutionMetaData.RemainingVisits == 0)
-                    {
-                        INotificationResult result = null;
-                        if (reevaluating)
-                        {
-                            result = node.Notify(node.ExecutionMetaData.Sources);
-                            reevaluating = result.Changed;
-                            currentValue = node.ExecutionMetaData.TotalVisits;
-                            node.ExecutionMetaData.TotalVisits = 0;
-                            node.ExecutionMetaData.Sources.Clear();
-                        }
-                        
-                        node = node.Successors[0];
-                        if (node != null && result != null && reevaluating)
-                            node.ExecutionMetaData.Sources.Add(result);
-                    }
-                    else
-                        break;
-                }
+        private void NotifyNode(INotifiable node, int currentValue, bool evaluating)
+        {
+            if (node == null)
+                return;
+
+            node.ExecutionMetaData.RemainingVisits -= currentValue;
+            if (node.ExecutionMetaData.RemainingVisits > 0)
+                return;
+            
+            INotificationResult result = null;
+            if (evaluating)
+            {
+                result = node.Notify(node.ExecutionMetaData.Sources);
+                evaluating = result.Changed;
+                currentValue = node.ExecutionMetaData.TotalVisits;
+                node.ExecutionMetaData.TotalVisits = 0;
+                node.ExecutionMetaData.Sources.Clear();
+            }
+
+            var nextNode = node.Successors[0];
+            if (nextNode != null)
+            {
+                if (result != null && evaluating)
+                    nextNode.ExecutionMetaData.Sources.Add(result);
+
+                NotifyNode(nextNode, currentValue, evaluating);
             }
         }
 
