@@ -18,16 +18,16 @@ namespace EngineBenchmark
 
         static void Main(string[] args)
         {
-            Immediate(false);
-            Immediate(true);
+            //Immediate(false);
+            //Immediate(true);
+            ExecutionEngine.Current = new OnDemandExecutionEngine();
             OnDemand(false);
             OnDemand(true);
         }
 
         public static void OnDemand(bool write)
         {
-            var engine = new OnDemandExecutionEngine();
-            ExecutionEngine.Current = engine;
+            var engine = ExecutionEngine.Current as OnDemandExecutionEngine;
             var dummy = new Dummy<int>(42);
 
             var watch = Stopwatch.StartNew();
@@ -47,13 +47,13 @@ namespace EngineBenchmark
                     Console.WriteLine("Wrong result!");
             }
             watch.Stop();
+            test.Successors.Clear();
             if (write)
                 Console.WriteLine("On Demand increment: " + watch.Elapsed.TotalMilliseconds / Repeats + "ms");
         }
         
         public static void Immediate(bool write)
         {
-            ExecutionEngine.Current = new ImmediateExecutionEngine();
             var dummy = new Dummy<int>(42);
 
             var watch = Stopwatch.StartNew();
@@ -72,6 +72,7 @@ namespace EngineBenchmark
                     Console.WriteLine("Wrong result!");
             }
             watch.Stop();
+            test.Successors.Clear();
             if (write)
                 Console.WriteLine("Immediate increment: " + watch.Elapsed.TotalMilliseconds / Repeats + "ms");
         }

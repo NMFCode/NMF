@@ -50,7 +50,7 @@ namespace NMF.Expressions.Execution
                         if (node.Successors.Count == 0)
                             break;
                         node = node.Successors[0];
-                        if (result != null)
+                        if (node != null && result != null && reevaluating)
                             ((OnDemandMetaData)node.ExecutionMetaData).Sources.Add(result);
                     }
                     else
@@ -66,6 +66,9 @@ namespace NMF.Expressions.Execution
             while (stack.Count > 0)
             {
                 var node = stack.Pop();
+                if (node == null)
+                    continue;
+
                 if (node.ExecutionMetaData == null)
                     node.ExecutionMetaData = new OnDemandMetaData { RemainingVisits = 1, TotalVisits = 1 };
                 else
