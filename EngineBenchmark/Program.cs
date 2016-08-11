@@ -14,67 +14,46 @@ namespace EngineBenchmark
 {
     class Program
     {
-        const int Repeats = 1000000;
-
         static void Main(string[] args)
         {
-            Immediate(false);
-            Immediate(true);
-            ExecutionEngine.Current = new OnDemandExecutionEngine();
-            OnDemand(false);
-            OnDemand(true);
+            const int Repeats = 1000000;
+
+            Benchmark(false, false, 1);
+            Benchmark(false, true, Repeats);
+
+            Benchmark(true, false, 1);
+            Benchmark(true, true, Repeats);
         }
 
-        public static void OnDemand(bool write)
+        public static void Benchmark(bool useTransaction, bool write, int repeats)
         {
-            var engine = ExecutionEngine.Current as OnDemandExecutionEngine;
             var dummy = new Dummy<int>(42);
 
             var watch = Stopwatch.StartNew();
-            Expression<Func<bool>> expression = () => dummy.Item == dummy.Item && (AppDomain.CurrentDomain.IsFullyTrusted && dummy.Item == 42);
-            var test = NotifySystem.CreateExpression<bool>(expression.Body, null);
-            test.Successors.Add(null);
+            var test = Observable.Expression(() => dummy.Item == dummy.Item && (AppDomain.CurrentDomain.IsFullyTrusted && dummy.Item == 42));
             watch.Stop();
+
             if (write)
-                Console.WriteLine("On Demand initialize: " + watch.Elapsed.TotalMilliseconds + "ms");
+                Console.WriteLine((useTransaction ? "Transaction" : "Immediate") + " initialize: " + watch.Elapsed.TotalMilliseconds + "ms");
 
             watch.Restart();
-            for (int i = 0; i < Repeats; i++)
+            for (int i = 0; i < repeats; i++)
             {
+                if (useTransaction)
+                    ExecutionEngine.Current.BeginTransaction();
+
                 dummy.Item = 42 - dummy.Item;
-                engine.Execute();
+
+                if (useTransaction)
+                    ExecutionEngine.Current.CommitTransaction();
+
                 if (test.Value == ((i & 1) == 0))
                     Console.WriteLine("Wrong result!");
             }
             watch.Stop();
             test.Successors.Clear();
             if (write)
-                Console.WriteLine("On Demand increment: " + watch.Elapsed.TotalMilliseconds / Repeats + "ms");
-        }
-        
-        public static void Immediate(bool write)
-        {
-            var dummy = new Dummy<int>(42);
-
-            var watch = Stopwatch.StartNew();
-            Expression<Func<bool>> expression = () => dummy.Item == dummy.Item && (AppDomain.CurrentDomain.IsFullyTrusted && dummy.Item == 42);
-            var test = NotifySystem.CreateExpression<bool>(expression.Body, null);
-            test.Successors.Add(null);
-            watch.Stop();
-            if (write)
-                Console.WriteLine("Immediate initialize: " + watch.Elapsed.TotalMilliseconds + "ms");
-
-            watch.Restart();
-            for (int i = 0; i < Repeats; i++)
-            {
-                dummy.Item = 42 - dummy.Item;
-                if (test.Value == ((i & 1) == 0))
-                    Console.WriteLine("Wrong result!");
-            }
-            watch.Stop();
-            test.Successors.Clear();
-            if (write)
-                Console.WriteLine("Immediate increment: " + watch.Elapsed.TotalMilliseconds / Repeats + "ms");
+                Console.WriteLine((useTransaction ? "Transaction" : "Immediate") + " increment: " + watch.Elapsed.TotalMilliseconds / repeats + "ms");
         }
     }
 

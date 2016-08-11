@@ -154,7 +154,7 @@ namespace NMF.Expressions
 
         private static MethodInfo memberBindingCreateProperty = ReflectionHelper.GetFunc<MemberAssignment, ObservableExpressionBinder, INotifyExpression<object>, ObservableMemberBinding<object>>((node, binder, target) => CreateProperty<object, object>(node, binder, target)).GetGenericMethodDefinition();
 
-        public IExecutionContext Context { get { return ExecutionEngine.Current; } }
+        public IExecutionContext Context { get { return ExecutionEngine.Current.Context; } }
 
         public ObservableExpressionBinder(bool compress = false, IDictionary<string, object> parameterMappings = null)
         {

@@ -6,29 +6,35 @@ using System.Text;
 
 namespace NMF.Expressions.Execution
 {
-    public class OnDemandExecutionEngine : ExecutionEngine
+    public class SequentialExecutionEngine : ExecutionEngine
     {
-        private HashSet<INotifiable> invalidNodes = new HashSet<INotifiable>();
-
-        public void Execute()
+        protected override void ExecuteSingle(INotifiable source)
         {
-            NotifyLoop(invalidNodes);
-            invalidNodes.Clear();
-        }
+            var node = source;
+            INotificationResult lastResult = null;
 
-        protected override void SetInvalidNode(INotifiable node)
-        {
-            invalidNodes.Add(node);
-        }
-
-        private void NotifyLoop(HashSet<INotifiable> sources)
-        {
-            MarkAffectedNodes(sources);
-
-            foreach (var source in sources)
+            while (node != null)
             {
-                NotifyNode(source, 1, true);
+                if (lastResult != null)
+                    node.ExecutionMetaData.Sources.Add(lastResult);
+
+                lastResult = node.Notify(node.ExecutionMetaData.Sources);
+                node.ExecutionMetaData.Sources.Clear();
+
+                if (lastResult.Changed && node.Successors.Count > 0)
+                    node = node.Successors[0];
+                else
+                    break;
             }
+        }
+
+        protected override void Execute(IEnumerable<INotifiable> nodes)
+        {
+            foreach (var node in nodes)
+                MarkNode(node);
+
+            foreach (var source in nodes)
+                NotifyNode(source, 1, true);
         }
 
         private void NotifyNode(INotifiable node, int currentValue, bool evaluating)
@@ -59,12 +65,6 @@ namespace NMF.Expressions.Execution
 
                 NotifyNode(nextNode, currentValue, evaluating);
             }
-        }
-
-        private void MarkAffectedNodes(HashSet<INotifiable> sources)
-        {
-            foreach (var node in sources)
-                MarkNode(node);
         }
 
         private void MarkNode(INotifiable node)
