@@ -61,7 +61,7 @@ namespace NMF.Expressions
             }
             else
             {
-                var newBinder = new ObservableExpressionBinder(ExecutionEngine.Current, parameters == null, parameterMappings);
+                var newBinder = new ObservableExpressionBinder(parameters == null, parameterMappings);
                 return newBinder.VisitObservable<T>(expression, false);
             }
         }
@@ -86,7 +86,7 @@ namespace NMF.Expressions
             }
             else
             {
-                var newBinder = new ObservableExpressionBinder(ExecutionEngine.Current, parameters == null, parameterMappings);
+                var newBinder = new ObservableExpressionBinder(parameters == null, parameterMappings);
                 exp = newBinder.VisitObservable<T>(expression, false) as INotifyReversableExpression<T>;
             }
             if (exp == null) throw new InvalidOperationException("The given expression could not be reversed!");
