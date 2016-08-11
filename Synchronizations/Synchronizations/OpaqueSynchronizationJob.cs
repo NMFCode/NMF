@@ -10,26 +10,22 @@ namespace NMF.Synchronizations
         where TLeft : class
         where TRight : class
     {
-        public Action<TLeft, TRight, SynchronizationDirection, ISynchronizationContext> Action { get; private set;}
+        public Func<TLeft, TRight, SynchronizationDirection, ISynchronizationContext, IDisposable> Action { get; private set;}
 
-        public OpaqueSynchronizationJob(Action<TLeft, TRight, SynchronizationDirection, ISynchronizationContext> action)
+        public OpaqueSynchronizationJob(Func<TLeft, TRight, SynchronizationDirection, ISynchronizationContext, IDisposable> action)
         {
             Action = action;
         }
 
-        public void Perform(TLeft left, TRight right, SynchronizationDirection direction, ISynchronizationContext context)
+        public IDisposable Perform(SynchronizationComputation<TLeft, TRight> computation, SynchronizationDirection direction, ISynchronizationContext context)
         {
             if (Action != null)
             {
-                Action(left, right, direction, context);
+                return Action(computation.Input, computation.Opposite.Input, direction, context);
             }
-        }
-
-        public void Perform(SynchronizationComputation<TLeft, TRight> computation, SynchronizationDirection direction, ISynchronizationContext context)
-        {
-            if (Action != null)
+            else
             {
-                Action(computation.Input, computation.Opposite.Input, direction, context);
+                return null;
             }
         }
 

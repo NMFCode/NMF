@@ -63,7 +63,7 @@ namespace NMF.Synchronizations
             }
         }
 
-        private void PerformTwoWay(TLeft left, TRight right, ISynchronizationContext context, Queue<IDisposable> dependencies)
+        protected IDisposable PerformTwoWay(TLeft left, TRight right, ISynchronizationContext context)
         {
             var leftEx3 = leftFunc.InvokeReversable(left);
             var rightEx3 = rightFunc.InvokeReversable(right);
@@ -100,24 +100,26 @@ namespace NMF.Synchronizations
                 default:
                     throw new InvalidOperationException();
             }
-            dependencies.Enqueue(new BidirectionalPropertySynchronization<TValue>(leftEx3, rightEx3));
+            var dependency = new BidirectionalPropertySynchronization<TValue>(leftEx3, rightEx3);
+            return dependency;
         }
 
-        private void PerformOneWay(TLeft left, TRight right, ISynchronizationContext context, Queue<IDisposable> dependencies)
+        protected IDisposable PerformOneWay(TLeft left, TRight right, ISynchronizationContext context)
         {
+            IDisposable dependency = null;
             switch (context.Direction)
             {
                 case SynchronizationDirection.LeftToRight:
                 case SynchronizationDirection.LeftToRightForced:
                     var leftEx1 = leftFunc.Observe(left);
                     rightSetter(right, leftEx1.Value);
-                    dependencies.Enqueue(new PropertySynchronization<TValue>(leftEx1, val => rightSetter(right, val)));
+                    dependency = new PropertySynchronization<TValue>(leftEx1, val => rightSetter(right, val));
                     break;
                 case SynchronizationDirection.RightToLeft:
                 case SynchronizationDirection.RightToLeftForced:
                     var rightEx2 = rightFunc.Observe(right);
                     leftSetter(left, rightEx2.Value);
-                    dependencies.Enqueue(new PropertySynchronization<TValue>(rightEx2, val => leftSetter(left, val)));
+                    dependency = new PropertySynchronization<TValue>(rightEx2, val => leftSetter(left, val));
                     break;
                 case SynchronizationDirection.LeftWins:
                 case SynchronizationDirection.RightWins:
@@ -128,14 +130,14 @@ namespace NMF.Synchronizations
                         var leftEx4 = leftFunc.Observe(left);
                         leftVal = leftEx4.Value;
                         rightVal = rightGetter(right);
-                        dependencies.Enqueue(new PropertySynchronization<TValue>(leftEx4, val => rightSetter(right, val)));
+                        dependency = new PropertySynchronization<TValue>(leftEx4, val => rightSetter(right, val));
                     }
                     else
                     {
                         var rightEx4 = rightFunc.Observe(right);
                         leftVal = leftGetter(left);
                         rightVal = rightEx4.Value;
-                        dependencies.Enqueue(new PropertySynchronization<TValue>(rightEx4, val => leftSetter(left, val)));
+                        dependency = new PropertySynchronization<TValue>(rightEx4, val => leftSetter(left, val));
                     }
                     var test = context.Direction == SynchronizationDirection.LeftWins ?
                         typeof(TValue).IsValueType || leftVal != null :
@@ -152,9 +154,10 @@ namespace NMF.Synchronizations
                 default:
                     throw new InvalidOperationException();
             }
+            return dependency;
         }
 
-        private void PerformNoChangePropagation(TLeft left, TRight right, SynchronizationDirection direction)
+        protected void PerformNoChangePropagation(TLeft left, TRight right, SynchronizationDirection direction)
         {
             switch (direction)
             {
@@ -193,7 +196,7 @@ namespace NMF.Synchronizations
             }
         }
 
-        public void Perform(SynchronizationComputation<TLeft, TRight> computation, SynchronizationDirection direction, ISynchronizationContext context)
+        public IDisposable Perform(SynchronizationComputation<TLeft, TRight> computation, SynchronizationDirection direction, ISynchronizationContext context)
         {
             var left = computation.Input;
             var right = computation.Opposite.Input;
@@ -201,13 +204,11 @@ namespace NMF.Synchronizations
             {
                 case NMF.Transformations.ChangePropagationMode.None:
                     PerformNoChangePropagation(left, right, direction);
-                    break;
+                    return null;
                 case NMF.Transformations.ChangePropagationMode.OneWay:
-                    PerformOneWay(left, right, context, computation.Dependencies);
-                    break;
+                    return PerformOneWay(left, right, context);
                 case NMF.Transformations.ChangePropagationMode.TwoWay:
-                    PerformTwoWay(left, right, context, computation.Dependencies);
-                    return;
+                    return PerformTwoWay(left, right, context);
                 default:
                     throw new InvalidOperationException();
             }
@@ -246,19 +247,16 @@ namespace NMF.Synchronizations
             }
         }
 
-        public void Perform(SynchronizationComputation<TSource, TTarget> computation, ISynchronizationContext context)
+        protected IDisposable Perform(TSource source, TTarget target, ISynchronizationContext context)
         {
-            var source = computation.Input;
-            var target = computation.Opposite.Input;
             targetSetter(target, sourceGetter(source));
             switch (context.ChangePropagation)
             {
                 case NMF.Transformations.ChangePropagationMode.None:
-                    break;
+                    return null;
                 case NMF.Transformations.ChangePropagationMode.OneWay:
                 case NMF.Transformations.ChangePropagationMode.TwoWay:
-                    computation.Dependencies.Enqueue(new PropertySynchronization<TValue>(sourceFunc.Observe(source), val => targetSetter(target, val)));
-                    break;
+                    return new PropertySynchronization<TValue>(sourceFunc.Observe(source), val => targetSetter(target, val));
                 default:
                     throw new InvalidOperationException("Change propagation mode is not supported");
             }
@@ -273,11 +271,15 @@ namespace NMF.Synchronizations
             : base(leftGetter, rightSetter, isEarly)
         { }
         
-        public void Perform(SynchronizationComputation<TLeft, TRight> computation, SynchronizationDirection direction, ISynchronizationContext context)
+        public virtual IDisposable Perform(SynchronizationComputation<TLeft, TRight> computation, SynchronizationDirection direction, ISynchronizationContext context)
         {
-            if (direction == SynchronizationDirection.LeftToRight || direction == SynchronizationDirection.LeftToRightForced || direction == SynchronizationDirection.LeftWins)
+            if (direction.IsLeftToRight())
             {
-                Perform(computation, context);
+                return Perform(computation.Input, computation.Opposite.Input, context);
+            }
+            else
+            {
+                return null;
             }
         }
     }
@@ -290,11 +292,15 @@ namespace NMF.Synchronizations
             : base(rightGetter, leftSetter, isEarly)
         { }
 
-        public void Perform(SynchronizationComputation<TLeft, TRight> computation, SynchronizationDirection direction, ISynchronizationContext context)
+        public virtual IDisposable Perform(SynchronizationComputation<TLeft, TRight> computation, SynchronizationDirection direction, ISynchronizationContext context)
         {
-            if (direction == SynchronizationDirection.LeftToRight || direction == SynchronizationDirection.LeftToRightForced || direction == SynchronizationDirection.LeftWins)
+            if (direction.IsRightToLeft())
             {
-                Perform(computation.Opposite, context);
+                return Perform(computation.Opposite.Input, computation.Input, context);
+            }
+            else
+            {
+                return null;
             }
         }
     }

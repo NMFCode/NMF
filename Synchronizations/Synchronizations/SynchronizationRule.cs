@@ -87,17 +87,27 @@ namespace NMF.Synchronizations
         internal void InitializeOutput(SynchronizationComputation<TLeft, TRight> computation)
         {
             var context = computation.SynchronizationContext;
+            var dependencies = computation.Dependencies;
             foreach (var job in SynchronizationJobs.Where(j => j.IsEarly))
             {
-                job.Perform(computation, context.Direction, context);
+                var dependency = job.Perform(computation, context.Direction, context);
+                if (dependency != null)
+                {
+                    dependencies.Add(dependency);
+                }
             }
         }
 
         internal void Synchronize(SynchronizationComputation<TLeft, TRight> computation, SynchronizationDirection direction, ISynchronizationContext context)
         {
+            var dependencies = computation.Dependencies;
             foreach (var job in SynchronizationJobs.Where(j => !j.IsEarly))
             {
-                job.Perform(computation, direction, context);
+                var dependency = job.Perform(computation, direction, context);
+                if (dependency != null)
+                {
+                    dependencies.Add(dependency);
+                }
             }
         }
 
@@ -234,6 +244,19 @@ namespace NMF.Synchronizations
             SynchronizationJobs.Add(new PropertySynchronizationJob<TLeft, TRight, TValue>(leftSelector, rightSelector, false));
         }
 
+        public void Synchronize<TValue>(Expression<Func<TLeft, TValue>> leftSelector, Expression<Func<TRight, TValue>> rightSelector, Expression<Func<TLeft, TRight, bool>> guard)
+        {
+            var job = new PropertySynchronizationJob<TLeft, TRight, TValue>(leftSelector, rightSelector, false);
+            if (guard == null)
+            {
+                SynchronizationJobs.Add(job);
+            }
+            else
+            {
+                SynchronizationJobs.Add(new BothGuardedSynchronizationJob<TLeft, TRight>(job, guard));
+            }
+        }
+
         public void Synchronize<TValue>(Expression<Func<TLeft, TValue>> leftSelector, Expression<Func<TRight, TValue>> rightSelector)
         {
             SynchronizationJobs.Add(new PropertySynchronizationJob<TLeft, TRight, TValue>(leftSelector, rightSelector, true));
@@ -277,6 +300,36 @@ namespace NMF.Synchronizations
             SynchronizationJobs.Add(new LeftToRightPropertySynchronizationJob<TLeft, TRight, TValue>(leftSelector, rightSetter, false));
         }
 
+        public void SynchronizeLeftToRightOnly<TValue>(Expression<Func<TLeft, TValue>> leftSelector, Expression<Func<TRight, TValue>> rightSelector, Expression<Func<TLeft, bool>> guard)
+        {
+            if (rightSelector == null) throw new ArgumentNullException("rightSelector");
+
+            var rightSetter = SetExpressionRewriter.CreateSetter(rightSelector);
+
+            if (rightSetter == null) throw new ArgumentException(string.Format("The expression {0} cannot be inverted.", rightSelector), "rightSelector");
+
+            SynchronizeLeftToRightOnly(leftSelector, rightSetter.Compile(), guard);
+        }
+
+        public void SynchronizeLeftToRightOnly<TValue>(Expression<Func<TLeft, TValue>> leftSelector, Action<TRight, TValue> rightSetter, Expression<Func<TLeft, bool>> guard)
+        {
+            if (leftSelector == null) throw new ArgumentNullException("leftSelector");
+            if (rightSetter == null) throw new ArgumentNullException("rightSetter");
+
+            guard = SimplifyPredicate(guard);
+
+            var job = new LeftToRightPropertySynchronizationJob<TLeft, TRight, TValue>(leftSelector, rightSetter, false);
+
+            if (guard == null)
+            {
+                SynchronizationJobs.Add(job);
+            }
+            else
+            {
+                SynchronizationJobs.Add(new LeftGuardedSynchronizationJob<TLeft, TRight>(job, guard));
+            }
+        }
+
         public void SynchronizeRightToLeftOnly<TValue>(Expression<Func<TLeft, TValue>> leftSelector, Expression<Func<TRight, TValue>> rightSelector)
         {
             if (leftSelector == null) throw new ArgumentNullException("leftSelector");
@@ -315,7 +368,37 @@ namespace NMF.Synchronizations
             SynchronizationJobs.Add(new RightToLeftPropertySynchronizationJob<TLeft, TRight, TValue>(leftSetter, rightSelector, false));
         }
 
-        public void SynchronizeOpaque(Action<TLeft, TRight, SynchronizationDirection, ISynchronizationContext> action)
+        public void SynchronizeRightToLeftOnly<TValue>(Expression<Func<TLeft, TValue>> leftSelector, Expression<Func<TRight, TValue>> rightSelector, Expression<Func<TRight, bool>> guard)
+        {
+            if (leftSelector == null) throw new ArgumentNullException("leftSelector");
+
+            var leftSetter = SetExpressionRewriter.CreateSetter(leftSelector);
+
+            if (leftSetter == null) throw new ArgumentException(string.Format("The expression {0} cannot be inverted.", rightSelector), "rightSelector");
+
+            SynchronizeRightToLeftOnly(leftSetter.Compile(), rightSelector, guard);
+        }
+
+        public void SynchronizeRightToLeftOnly<TValue>(Action<TLeft, TValue> leftSetter, Expression<Func<TRight, TValue>> rightSelector, Expression<Func<TRight, bool>> guard)
+        {
+            if (rightSelector == null) throw new ArgumentNullException("rightSelector");
+            if (leftSetter == null) throw new ArgumentNullException("leftSetter");
+
+            guard = SimplifyPredicate(guard);
+
+            var job = new RightToLeftPropertySynchronizationJob<TLeft, TRight, TValue>(leftSetter, rightSelector, false);
+
+            if (guard == null)
+            {
+                SynchronizationJobs.Add(job);
+            }
+            else
+            {
+                SynchronizationJobs.Add(new RightGuardedSynchronizationJob<TLeft, TRight>(job, guard));
+            }
+        }
+
+        public void SynchronizeOpaque(Func<TLeft, TRight, SynchronizationDirection, ISynchronizationContext, IDisposable> action)
         {
             SynchronizationJobs.Add(new OpaqueSynchronizationJob<TLeft, TRight>(action));
         }
@@ -441,7 +524,7 @@ namespace NMF.Synchronizations
                     }
                     else
                     {
-                        throw new ArgumentException("The left predicate is always false", "leftPredicate");
+                        throw new InvalidOperationException(string.Format("The predicate {0} is always false", predicate));
                     }
                 }
             }

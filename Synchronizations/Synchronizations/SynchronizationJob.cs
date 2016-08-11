@@ -13,6 +13,6 @@ namespace NMF.Synchronizations
     {
         bool IsEarly { get; }
 
-        void Perform(SynchronizationComputation<TLeft, TRight> computation, SynchronizationDirection direction, ISynchronizationContext context);
+        IDisposable Perform(SynchronizationComputation<TLeft, TRight> computation, SynchronizationDirection direction, ISynchronizationContext context);
     }
 }

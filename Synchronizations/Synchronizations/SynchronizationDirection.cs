@@ -15,4 +15,17 @@ namespace NMF.Synchronizations
         LeftWins,
         RightWins
     }
+
+    public static class SynchronizationDirectionExtensions
+    {
+        public static bool IsLeftToRight(this SynchronizationDirection direction)
+        {
+            return direction == SynchronizationDirection.LeftToRight || direction == SynchronizationDirection.LeftToRightForced || direction == SynchronizationDirection.LeftWins;
+        }
+
+        public static bool IsRightToLeft(this SynchronizationDirection direction)
+        {
+            return direction == SynchronizationDirection.RightToLeft || direction == SynchronizationDirection.RightToLeftForced || direction == SynchronizationDirection.RightWins;
+        }
+    }
 }

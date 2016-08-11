@@ -50,10 +50,11 @@ namespace NMF.Synchronizations
                         TransformationContext.Trace.RevokeEntry(this);
                     }
                     var disposal = Dependencies;
-                    while (disposal.Count > 0)
+                    foreach (var item in disposal)
                     {
-                        disposal.Dequeue().Dispose();
+                        item.Dispose();
                     }
+                    disposal.Clear();
                     input = value;
                     if (input != null)
                     {
@@ -178,7 +179,7 @@ namespace NMF.Synchronizations
             }
         }
 
-        public virtual Queue<IDisposable> Dependencies
+        public virtual ICollection<IDisposable> Dependencies
         {
             get
             {
@@ -188,9 +189,9 @@ namespace NMF.Synchronizations
 
         private class OppositeComputation : SynchronizationComputation<TOut, TIn>
         {
-            private Queue<IDisposable> dependencies = new Queue<IDisposable>();
+            private List<IDisposable> dependencies = new List<IDisposable>();
 
-            public override Queue<IDisposable> Dependencies
+            public override ICollection<IDisposable> Dependencies
             {
                 get
                 {

@@ -56,16 +56,16 @@ namespace NMF.Synchronizations
             }
         }
 
-        public void Perform(SynchronizationComputation<TLeft, TRight> computation, SynchronizationDirection direction, ISynchronizationContext context)
+        public IDisposable Perform(SynchronizationComputation<TLeft, TRight> computation, SynchronizationDirection direction, ISynchronizationContext context)
         {
             switch (context.ChangePropagation)
             {
                 case ChangePropagationMode.None:
-                    return;
+                    return null;
                 case ChangePropagationMode.OneWay:
                     if (direction != SynchronizationDirection.LeftToRight && direction != SynchronizationDirection.LeftToRightForced && direction != SynchronizationDirection.LeftWins)
                     {
-                        return;
+                        return null;
                     }
                     break;
                 case ChangePropagationMode.TwoWay:
@@ -77,9 +77,10 @@ namespace NMF.Synchronizations
             var instantiationMonitor = Predicate.Observe(computation.Input);
             var monitor = new Monitor(instantiationMonitor, computation);
             monitor.StartMonitoring();
+            return monitor;
         }
 
-        private class Monitor
+        private class Monitor : IDisposable
         {
             public INotifyValue<bool> InstantiationMonitor { get; private set; }
             public SynchronizationComputation<TLeft, TRight> Computation { get; private set; }
@@ -122,6 +123,12 @@ namespace NMF.Synchronizations
 
                 throw new NotImplementedException();
             }
+
+            public void Dispose()
+            {
+                InstantiationMonitor.ValueChanged -= InstantiationChanged;
+                InstantiationMonitor.Detach();
+            }
         }
     }
 
@@ -144,16 +151,16 @@ namespace NMF.Synchronizations
             }
         }
 
-        public void Perform(SynchronizationComputation<TLeft, TRight> computation, SynchronizationDirection direction, ISynchronizationContext context)
+        public IDisposable Perform(SynchronizationComputation<TLeft, TRight> computation, SynchronizationDirection direction, ISynchronizationContext context)
         {
             switch (context.ChangePropagation)
             {
                 case ChangePropagationMode.None:
-                    return;
+                    return null;
                 case ChangePropagationMode.OneWay:
-                    if (direction != SynchronizationDirection.RightToLeft && direction != SynchronizationDirection.RightToLeftForced && direction != SynchronizationDirection.RightWins)
+                    if (!direction.IsRightToLeft())
                     {
-                        return;
+                        return null;
                     }
                     break;
                 case ChangePropagationMode.TwoWay:
@@ -165,9 +172,10 @@ namespace NMF.Synchronizations
             var instantiationMonitor = Predicate.Observe(computation.Opposite.Input);
             var monitor = new Monitor(instantiationMonitor, computation);
             monitor.StartMonitoring();
+            return monitor;
         }
 
-        private class Monitor
+        private class Monitor : IDisposable
         {
             public INotifyValue<bool> InstantiationMonitor { get; private set; }
             public SynchronizationComputation<TLeft, TRight> Computation { get; private set; }
@@ -189,6 +197,12 @@ namespace NMF.Synchronizations
 
                 // Instantiation Path of the current computation is wrong
                 throw new NotImplementedException();
+            }
+
+            public void Dispose()
+            {
+                InstantiationMonitor.ValueChanged -= InstantiationChanged;
+                InstantiationMonitor.Detach();
             }
         }
     }
