@@ -55,7 +55,6 @@ namespace NMF.Expressions
 
         public override INotifyExpression<TResult> Reduce()
         {
-            Attach();
             if (Target.IsConstant)
             {
                 var proxyCasted = Proxy as INotifyExpression<TResult>;
@@ -138,7 +137,6 @@ namespace NMF.Expressions
 
         public override INotifyExpression<TResult> Reduce()
         {
-            Attach();
             if (Target.IsConstant && Argument1.IsConstant)
             {
                 var proxyCasted = Proxy as INotifyExpression<TResult>;
@@ -224,7 +222,6 @@ namespace NMF.Expressions
 
         public override INotifyExpression<TResult> Reduce()
         {
-            Attach();
             if (Target.IsConstant && Argument1.IsConstant && Argument2.IsConstant)
             {
                 var proxyCasted = Proxy as INotifyExpression<TResult>;
@@ -313,7 +310,6 @@ namespace NMF.Expressions
 
         public override INotifyExpression<TResult> Reduce()
         {
-            Attach();
             if (Target.IsConstant && Argument1.IsConstant && Argument2.IsConstant && Argument3.IsConstant)
             {
                 var proxyCasted = Proxy as INotifyExpression<TResult>;
@@ -405,7 +401,6 @@ namespace NMF.Expressions
 
         public override INotifyExpression<TResult> Reduce()
         {
-            Attach();
             if (Target.IsConstant && Argument1.IsConstant && Argument2.IsConstant && Argument3.IsConstant && Argument4.IsConstant)
             {
                 var proxyCasted = Proxy as INotifyExpression<TResult>;
@@ -500,7 +495,6 @@ namespace NMF.Expressions
 
         public override INotifyExpression<TResult> Reduce()
         {
-            Attach();
             if (Target.IsConstant && Argument1.IsConstant && Argument2.IsConstant && Argument3.IsConstant && Argument4.IsConstant && Argument5.IsConstant)
             {
                 var proxyCasted = Proxy as INotifyExpression<TResult>;
@@ -598,7 +592,6 @@ namespace NMF.Expressions
 
         public override INotifyExpression<TResult> Reduce()
         {
-            Attach();
             if (Target.IsConstant && Argument1.IsConstant && Argument2.IsConstant && Argument3.IsConstant && Argument4.IsConstant && Argument5.IsConstant && Argument6.IsConstant)
             {
                 var proxyCasted = Proxy as INotifyExpression<TResult>;
@@ -699,7 +692,6 @@ namespace NMF.Expressions
 
         public override INotifyExpression<TResult> Reduce()
         {
-            Attach();
             if (Target.IsConstant && Argument1.IsConstant && Argument2.IsConstant && Argument3.IsConstant && Argument4.IsConstant && Argument5.IsConstant && Argument6.IsConstant && Argument7.IsConstant)
             {
                 var proxyCasted = Proxy as INotifyExpression<TResult>;
@@ -803,7 +795,6 @@ namespace NMF.Expressions
 
         public override INotifyExpression<TResult> Reduce()
         {
-            Attach();
             if (Target.IsConstant && Argument1.IsConstant && Argument2.IsConstant && Argument3.IsConstant && Argument4.IsConstant && Argument5.IsConstant && Argument6.IsConstant && Argument7.IsConstant && Argument8.IsConstant)
             {
                 var proxyCasted = Proxy as INotifyExpression<TResult>;
@@ -910,7 +901,6 @@ namespace NMF.Expressions
 
         public override INotifyExpression<TResult> Reduce()
         {
-            Attach();
             if (Target.IsConstant && Argument1.IsConstant && Argument2.IsConstant && Argument3.IsConstant && Argument4.IsConstant && Argument5.IsConstant && Argument6.IsConstant && Argument7.IsConstant && Argument8.IsConstant && Argument9.IsConstant)
             {
                 var proxyCasted = Proxy as INotifyExpression<TResult>;
@@ -1020,7 +1010,6 @@ namespace NMF.Expressions
 
         public override INotifyExpression<TResult> Reduce()
         {
-            Attach();
             if (Target.IsConstant && Argument1.IsConstant && Argument2.IsConstant && Argument3.IsConstant && Argument4.IsConstant && Argument5.IsConstant && Argument6.IsConstant && Argument7.IsConstant && Argument8.IsConstant && Argument9.IsConstant && Argument10.IsConstant)
             {
                 var proxyCasted = Proxy as INotifyExpression<TResult>;
@@ -1133,7 +1122,6 @@ namespace NMF.Expressions
 
         public override INotifyExpression<TResult> Reduce()
         {
-            Attach();
             if (Target.IsConstant && Argument1.IsConstant && Argument2.IsConstant && Argument3.IsConstant && Argument4.IsConstant && Argument5.IsConstant && Argument6.IsConstant && Argument7.IsConstant && Argument8.IsConstant && Argument9.IsConstant && Argument10.IsConstant && Argument11.IsConstant)
             {
                 var proxyCasted = Proxy as INotifyExpression<TResult>;
@@ -1249,7 +1237,6 @@ namespace NMF.Expressions
 
         public override INotifyExpression<TResult> Reduce()
         {
-            Attach();
             if (Target.IsConstant && Argument1.IsConstant && Argument2.IsConstant && Argument3.IsConstant && Argument4.IsConstant && Argument5.IsConstant && Argument6.IsConstant && Argument7.IsConstant && Argument8.IsConstant && Argument9.IsConstant && Argument10.IsConstant && Argument11.IsConstant && Argument12.IsConstant)
             {
                 var proxyCasted = Proxy as INotifyExpression<TResult>;
@@ -1368,7 +1355,6 @@ namespace NMF.Expressions
 
         public override INotifyExpression<TResult> Reduce()
         {
-            Attach();
             if (Target.IsConstant && Argument1.IsConstant && Argument2.IsConstant && Argument3.IsConstant && Argument4.IsConstant && Argument5.IsConstant && Argument6.IsConstant && Argument7.IsConstant && Argument8.IsConstant && Argument9.IsConstant && Argument10.IsConstant && Argument11.IsConstant && Argument12.IsConstant && Argument13.IsConstant)
             {
                 var proxyCasted = Proxy as INotifyExpression<TResult>;
@@ -1490,7 +1476,6 @@ namespace NMF.Expressions
 
         public override INotifyExpression<TResult> Reduce()
         {
-            Attach();
             if (Target.IsConstant && Argument1.IsConstant && Argument2.IsConstant && Argument3.IsConstant && Argument4.IsConstant && Argument5.IsConstant && Argument6.IsConstant && Argument7.IsConstant && Argument8.IsConstant && Argument9.IsConstant && Argument10.IsConstant && Argument11.IsConstant && Argument12.IsConstant && Argument13.IsConstant && Argument14.IsConstant)
             {
                 var proxyCasted = Proxy as INotifyExpression<TResult>;
@@ -1615,7 +1600,6 @@ namespace NMF.Expressions
 
         public override INotifyExpression<TResult> Reduce()
         {
-            Attach();
             if (Target.IsConstant && Argument1.IsConstant && Argument2.IsConstant && Argument3.IsConstant && Argument4.IsConstant && Argument5.IsConstant && Argument6.IsConstant && Argument7.IsConstant && Argument8.IsConstant && Argument9.IsConstant && Argument10.IsConstant && Argument11.IsConstant && Argument12.IsConstant && Argument13.IsConstant && Argument14.IsConstant && Argument15.IsConstant)
             {
                 var proxyCasted = Proxy as INotifyExpression<TResult>;

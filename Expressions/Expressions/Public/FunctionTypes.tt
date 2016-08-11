@@ -104,7 +104,6 @@ public partial class ObservingFunc<<# for (int j = 1; j <= i; j++) { #>T<#= j #>
         /// <returns>An observable value that keeps track of any changes</returns>
         public INotifyValue<TResult> Observe(<# for (int j = 1; j < i; j++) { #>INotifyValue<T<#= j #>> in<#= j #>, <# } #>INotifyValue<T<#= i #>> in<#= i #>)
         {
-            var autoAttach = in1.IsAttached<# for (int j = 1; j < i; j++) { #> && in<#= j #>.IsAttached<# } #>;
             if (isParameterFree)
             {
                 if (this.expression.Successors.Count == 0)

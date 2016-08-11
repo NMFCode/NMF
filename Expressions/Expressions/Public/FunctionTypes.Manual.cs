@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 
 namespace NMF.Expressions
 {
@@ -31,54 +32,14 @@ namespace NMF.Expressions
     {
         public INotifyExpression<T> Expression { get; set; }
         public TTag Tag { get; set; }
+        
+        public bool CanBeConstant { get { return Expression.CanBeConstant; } }
 
-        T INotifyValue<T>.Value
-        {
-            get
-            {
-                return Expression.Value;
-            }
-        }
+        public bool IsConstant { get { return Expression.IsConstant; } }
 
-        public bool IsAttached
-        {
-            get
-            {
-                return Expression.IsAttached;
-            }
-        }
+        public bool IsParameterFree { get { return Expression.IsParameterFree; } }
 
-        public bool CanBeConstant
-        {
-            get
-            {
-                return Expression.CanBeConstant;
-            }
-        }
-
-        public bool IsConstant
-        {
-            get
-            {
-                return Expression.IsConstant;
-            }
-        }
-
-        public bool IsParameterFree
-        {
-            get
-            {
-                return Expression.IsParameterFree;
-            }
-        }
-
-        public object ValueObject
-        {
-            get
-            {
-                return Expression.ValueObject;
-            }
-        }
+        public object ValueObject { get { return Expression.ValueObject; } }
 
         public T Value
         {
@@ -110,6 +71,19 @@ namespace NMF.Expressions
             }
         }
 
+        private readonly ShortList<INotifiable> successors = new ShortList<INotifiable>();
+        public IList<INotifiable> Successors { get { return successors; } }
+
+        public IEnumerable<INotifiable> Dependencies
+        {
+            get
+            {
+                yield return Expression;
+            }
+        }
+
+        public ExecutionMetaData ExecutionMetaData { get; } = new ExecutionMetaData();
+
         public TaggedObservableValue(INotifyExpression<T> expression, TTag tag)
         {
             if (expression == null) throw new ArgumentNullException("expression");
@@ -117,8 +91,19 @@ namespace NMF.Expressions
             Expression = expression;
             Tag = tag;
 
-            expression.Attach();
-            expression.ValueChanged += (o, e) => ValueChanged?.Invoke(this, e);
+            successors.CollectionChanged += (obj, e) =>
+            {
+                if (successors.Count == 0)
+                {
+                    foreach (var dep in Dependencies)
+                        dep.Successors.Remove(this);
+                }
+                else if (e.Action == NotifyCollectionChangedAction.Add && successors.Count == 1)
+                {
+                    foreach (var dep in Dependencies)
+                        dep.Successors.Add(this);
+                }
+            };
         }
 
         public event EventHandler<ValueChangedEventArgs> ValueChanged;
@@ -133,19 +118,14 @@ namespace NMF.Expressions
             return this;
         }
 
-        public void Detach()
+        public INotificationResult Notify(IList<INotificationResult> sources)
         {
-            Expression.Detach();
+            return new ValueChangedNotificationResult<T>(this, Value, Value);
         }
 
-        public void Attach()
+        public void Dispose()
         {
-            Expression.Attach();
-        }
-
-        public void Refresh()
-        {
-            Expression.Refresh();
+            Successors.Clear();
         }
 
         INotifyExpression INotifyExpression.ApplyParameters(IDictionary<string, object> parameters)

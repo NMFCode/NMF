@@ -76,7 +76,6 @@ namespace NMF.Expressions
 
         public override INotifyExpression<TResult> Reduce()
         {
-            Attach();
             if (Target.IsConstant<# for (int j = 1; j <= i; j++) { #> && Argument<#= j #>.IsConstant<# } #>)
             {
                 var proxyCasted = Proxy as INotifyExpression<TResult>;

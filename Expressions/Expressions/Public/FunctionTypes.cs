@@ -80,7 +80,6 @@ namespace NMF.Expressions
         /// <returns>An observable value that keeps track of any changes</returns>
         public INotifyValue<TResult> Observe(INotifyValue<T1> in1)
         {
-            var autoAttach = in1.IsAttached;
             if (isParameterFree)
             {
                 if (this.expression.Successors.Count == 0)
@@ -241,7 +240,6 @@ namespace NMF.Expressions
         /// <returns>An observable value that keeps track of any changes</returns>
         public INotifyValue<TResult> Observe(INotifyValue<T1> in1, INotifyValue<T2> in2)
         {
-            var autoAttach = in1.IsAttached && in1.IsAttached;
             if (isParameterFree)
             {
                 if (this.expression.Successors.Count == 0)
@@ -438,7 +436,6 @@ namespace NMF.Expressions
         /// <returns>An observable value that keeps track of any changes</returns>
         public INotifyValue<TResult> Observe(INotifyValue<T1> in1, INotifyValue<T2> in2, INotifyValue<T3> in3)
         {
-            var autoAttach = in1.IsAttached && in1.IsAttached && in2.IsAttached;
             if (isParameterFree)
             {
                 if (this.expression.Successors.Count == 0)
@@ -674,7 +671,6 @@ namespace NMF.Expressions
         /// <returns>An observable value that keeps track of any changes</returns>
         public INotifyValue<TResult> Observe(INotifyValue<T1> in1, INotifyValue<T2> in2, INotifyValue<T3> in3, INotifyValue<T4> in4)
         {
-            var autoAttach = in1.IsAttached && in1.IsAttached && in2.IsAttached && in3.IsAttached;
             if (isParameterFree)
             {
                 if (this.expression.Successors.Count == 0)
@@ -952,7 +948,6 @@ namespace NMF.Expressions
         /// <returns>An observable value that keeps track of any changes</returns>
         public INotifyValue<TResult> Observe(INotifyValue<T1> in1, INotifyValue<T2> in2, INotifyValue<T3> in3, INotifyValue<T4> in4, INotifyValue<T5> in5)
         {
-            var autoAttach = in1.IsAttached && in1.IsAttached && in2.IsAttached && in3.IsAttached && in4.IsAttached;
             if (isParameterFree)
             {
                 if (this.expression.Successors.Count == 0)
@@ -1275,7 +1270,6 @@ namespace NMF.Expressions
         /// <returns>An observable value that keeps track of any changes</returns>
         public INotifyValue<TResult> Observe(INotifyValue<T1> in1, INotifyValue<T2> in2, INotifyValue<T3> in3, INotifyValue<T4> in4, INotifyValue<T5> in5, INotifyValue<T6> in6)
         {
-            var autoAttach = in1.IsAttached && in1.IsAttached && in2.IsAttached && in3.IsAttached && in4.IsAttached && in5.IsAttached;
             if (isParameterFree)
             {
                 if (this.expression.Successors.Count == 0)
@@ -1646,7 +1640,6 @@ namespace NMF.Expressions
         /// <returns>An observable value that keeps track of any changes</returns>
         public INotifyValue<TResult> Observe(INotifyValue<T1> in1, INotifyValue<T2> in2, INotifyValue<T3> in3, INotifyValue<T4> in4, INotifyValue<T5> in5, INotifyValue<T6> in6, INotifyValue<T7> in7)
         {
-            var autoAttach = in1.IsAttached && in1.IsAttached && in2.IsAttached && in3.IsAttached && in4.IsAttached && in5.IsAttached && in6.IsAttached;
             if (isParameterFree)
             {
                 if (this.expression.Successors.Count == 0)
@@ -2068,7 +2061,6 @@ namespace NMF.Expressions
         /// <returns>An observable value that keeps track of any changes</returns>
         public INotifyValue<TResult> Observe(INotifyValue<T1> in1, INotifyValue<T2> in2, INotifyValue<T3> in3, INotifyValue<T4> in4, INotifyValue<T5> in5, INotifyValue<T6> in6, INotifyValue<T7> in7, INotifyValue<T8> in8)
         {
-            var autoAttach = in1.IsAttached && in1.IsAttached && in2.IsAttached && in3.IsAttached && in4.IsAttached && in5.IsAttached && in6.IsAttached && in7.IsAttached;
             if (isParameterFree)
             {
                 if (this.expression.Successors.Count == 0)
@@ -2544,7 +2536,6 @@ namespace NMF.Expressions
         /// <returns>An observable value that keeps track of any changes</returns>
         public INotifyValue<TResult> Observe(INotifyValue<T1> in1, INotifyValue<T2> in2, INotifyValue<T3> in3, INotifyValue<T4> in4, INotifyValue<T5> in5, INotifyValue<T6> in6, INotifyValue<T7> in7, INotifyValue<T8> in8, INotifyValue<T9> in9)
         {
-            var autoAttach = in1.IsAttached && in1.IsAttached && in2.IsAttached && in3.IsAttached && in4.IsAttached && in5.IsAttached && in6.IsAttached && in7.IsAttached && in8.IsAttached;
             if (isParameterFree)
             {
                 if (this.expression.Successors.Count == 0)
@@ -3077,7 +3068,6 @@ namespace NMF.Expressions
         /// <returns>An observable value that keeps track of any changes</returns>
         public INotifyValue<TResult> Observe(INotifyValue<T1> in1, INotifyValue<T2> in2, INotifyValue<T3> in3, INotifyValue<T4> in4, INotifyValue<T5> in5, INotifyValue<T6> in6, INotifyValue<T7> in7, INotifyValue<T8> in8, INotifyValue<T9> in9, INotifyValue<T10> in10)
         {
-            var autoAttach = in1.IsAttached && in1.IsAttached && in2.IsAttached && in3.IsAttached && in4.IsAttached && in5.IsAttached && in6.IsAttached && in7.IsAttached && in8.IsAttached && in9.IsAttached;
             if (isParameterFree)
             {
                 if (this.expression.Successors.Count == 0)
@@ -3670,7 +3660,6 @@ namespace NMF.Expressions
         /// <returns>An observable value that keeps track of any changes</returns>
         public INotifyValue<TResult> Observe(INotifyValue<T1> in1, INotifyValue<T2> in2, INotifyValue<T3> in3, INotifyValue<T4> in4, INotifyValue<T5> in5, INotifyValue<T6> in6, INotifyValue<T7> in7, INotifyValue<T8> in8, INotifyValue<T9> in9, INotifyValue<T10> in10, INotifyValue<T11> in11)
         {
-            var autoAttach = in1.IsAttached && in1.IsAttached && in2.IsAttached && in3.IsAttached && in4.IsAttached && in5.IsAttached && in6.IsAttached && in7.IsAttached && in8.IsAttached && in9.IsAttached && in10.IsAttached;
             if (isParameterFree)
             {
                 if (this.expression.Successors.Count == 0)
@@ -4326,7 +4315,6 @@ namespace NMF.Expressions
         /// <returns>An observable value that keeps track of any changes</returns>
         public INotifyValue<TResult> Observe(INotifyValue<T1> in1, INotifyValue<T2> in2, INotifyValue<T3> in3, INotifyValue<T4> in4, INotifyValue<T5> in5, INotifyValue<T6> in6, INotifyValue<T7> in7, INotifyValue<T8> in8, INotifyValue<T9> in9, INotifyValue<T10> in10, INotifyValue<T11> in11, INotifyValue<T12> in12)
         {
-            var autoAttach = in1.IsAttached && in1.IsAttached && in2.IsAttached && in3.IsAttached && in4.IsAttached && in5.IsAttached && in6.IsAttached && in7.IsAttached && in8.IsAttached && in9.IsAttached && in10.IsAttached && in11.IsAttached;
             if (isParameterFree)
             {
                 if (this.expression.Successors.Count == 0)
@@ -5048,7 +5036,6 @@ namespace NMF.Expressions
         /// <returns>An observable value that keeps track of any changes</returns>
         public INotifyValue<TResult> Observe(INotifyValue<T1> in1, INotifyValue<T2> in2, INotifyValue<T3> in3, INotifyValue<T4> in4, INotifyValue<T5> in5, INotifyValue<T6> in6, INotifyValue<T7> in7, INotifyValue<T8> in8, INotifyValue<T9> in9, INotifyValue<T10> in10, INotifyValue<T11> in11, INotifyValue<T12> in12, INotifyValue<T13> in13)
         {
-            var autoAttach = in1.IsAttached && in1.IsAttached && in2.IsAttached && in3.IsAttached && in4.IsAttached && in5.IsAttached && in6.IsAttached && in7.IsAttached && in8.IsAttached && in9.IsAttached && in10.IsAttached && in11.IsAttached && in12.IsAttached;
             if (isParameterFree)
             {
                 if (this.expression.Successors.Count == 0)
@@ -5839,7 +5826,6 @@ namespace NMF.Expressions
         /// <returns>An observable value that keeps track of any changes</returns>
         public INotifyValue<TResult> Observe(INotifyValue<T1> in1, INotifyValue<T2> in2, INotifyValue<T3> in3, INotifyValue<T4> in4, INotifyValue<T5> in5, INotifyValue<T6> in6, INotifyValue<T7> in7, INotifyValue<T8> in8, INotifyValue<T9> in9, INotifyValue<T10> in10, INotifyValue<T11> in11, INotifyValue<T12> in12, INotifyValue<T13> in13, INotifyValue<T14> in14)
         {
-            var autoAttach = in1.IsAttached && in1.IsAttached && in2.IsAttached && in3.IsAttached && in4.IsAttached && in5.IsAttached && in6.IsAttached && in7.IsAttached && in8.IsAttached && in9.IsAttached && in10.IsAttached && in11.IsAttached && in12.IsAttached && in13.IsAttached;
             if (isParameterFree)
             {
                 if (this.expression.Successors.Count == 0)
@@ -6702,7 +6688,6 @@ namespace NMF.Expressions
         /// <returns>An observable value that keeps track of any changes</returns>
         public INotifyValue<TResult> Observe(INotifyValue<T1> in1, INotifyValue<T2> in2, INotifyValue<T3> in3, INotifyValue<T4> in4, INotifyValue<T5> in5, INotifyValue<T6> in6, INotifyValue<T7> in7, INotifyValue<T8> in8, INotifyValue<T9> in9, INotifyValue<T10> in10, INotifyValue<T11> in11, INotifyValue<T12> in12, INotifyValue<T13> in13, INotifyValue<T14> in14, INotifyValue<T15> in15)
         {
-            var autoAttach = in1.IsAttached && in1.IsAttached && in2.IsAttached && in3.IsAttached && in4.IsAttached && in5.IsAttached && in6.IsAttached && in7.IsAttached && in8.IsAttached && in9.IsAttached && in10.IsAttached && in11.IsAttached && in12.IsAttached && in13.IsAttached && in14.IsAttached;
             if (isParameterFree)
             {
                 if (this.expression.Successors.Count == 0)
