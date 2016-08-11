@@ -7,7 +7,6 @@ using NMF.Expressions.Arithmetics;
 using System.Reflection;
 using System.Reflection.Emit;
 using System.ComponentModel;
-using NMF.Expressions.Execution;
 
 namespace NMF.Expressions
 {
