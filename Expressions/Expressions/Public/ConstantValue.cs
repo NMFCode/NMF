@@ -32,5 +32,10 @@ namespace NMF.Expressions
         {
             throw new InvalidOperationException("A constant cannot have a dependency and therefore cannot be notified of a dependency change.");
         }
+
+        public void Dispose()
+        {
+            Successors.Clear();
+        }
     }
 }

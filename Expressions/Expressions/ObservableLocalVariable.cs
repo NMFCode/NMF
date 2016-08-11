@@ -97,6 +97,11 @@ namespace NMF.Expressions
             return new ObservableLocalVariable<T, TVar>(Inner.ApplyParameters(parameters), applied, ParameterName);
         }
 
+        public void Dispose()
+        {
+            Successors.Clear();
+        }
+
         public INotificationResult Notify(IList<INotificationResult> sources)
         {
             if (sources.Count > 0)

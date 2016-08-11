@@ -50,7 +50,7 @@ namespace EngineBenchmark
                     Console.WriteLine("Wrong result!");
             }
             watch.Stop();
-            test.Successors.Clear();
+            test.Dispose();
             if (write)
                 Console.WriteLine((useTransaction ? "Transaction" : "Immediate") + " increment: " + watch.Elapsed.TotalMilliseconds / repeats + "ms");
         }

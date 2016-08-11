@@ -9,7 +9,7 @@ namespace NMF.Expressions
     /// Represents a node in a graph which can notify its successors
     /// and gets notified by its dependencies.
     /// </summary>
-    public interface INotifiable
+    public interface INotifiable : IDisposable
     {
         /// <summary>
         /// The nodes that will get notified by this node.

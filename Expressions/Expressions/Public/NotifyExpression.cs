@@ -98,6 +98,11 @@ namespace NMF.Expressions
         /// <remarks>In case that the current expression is parameter free, it simply returns itself</remarks>
         public abstract INotifyExpression<T> ApplyParameters(IDictionary<string, object> parameters);
 
+        public void Dispose()
+        {
+            Successors.Clear();
+        }
+
         private void Attach()
         {
             foreach (var dep in Dependencies)

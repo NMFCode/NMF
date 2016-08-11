@@ -55,6 +55,11 @@ namespace NMF.Expressions
             return new UnchangedNotificationResult(this);
         }
 
+        public void Dispose()
+        {
+            Successors.Clear();
+        }
+
         protected virtual void OnValueChanged(T oldValue, T newValue)
         {
             if (ValueChanged != null)
@@ -166,6 +171,11 @@ namespace NMF.Expressions
             return new UnchangedNotificationResult(this);
         }
 
+        public void Dispose()
+        {
+            Successors.Clear();
+        }
+
         private void Attach()
         {
             foreach (var dep in Dependencies)
@@ -275,6 +285,11 @@ namespace NMF.Expressions
                 return new ValueChangedNotificationResult<T>(this, oldValue, Value);
             }
             return new UnchangedNotificationResult(this);
+        }
+
+        public void Dispose()
+        {
+            Successors.Clear();
         }
 
         private void Attach()

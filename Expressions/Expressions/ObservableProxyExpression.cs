@@ -103,6 +103,11 @@ namespace NMF.Expressions
             return this;
         }
 
+        public void Dispose()
+        {
+            Successors.Clear();
+        }
+
         public INotificationResult Notify(IList<INotificationResult> sources)
         {
             if (sources.Count > 0)

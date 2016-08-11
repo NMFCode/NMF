@@ -141,6 +141,11 @@ namespace NMF.Expressions.Test
             public IEnumerable<INotifiable> Dependencies { get { return Enumerable.Empty<INotifiable>(); } }
 
             public ExecutionMetaData ExecutionMetaData { get; } = new ExecutionMetaData();
+
+            public void Dispose()
+            {
+                Successors.Clear();
+            }
         }
 
         private class TestProxy : TestProxy<int>, IDisposable

@@ -33,6 +33,11 @@ namespace NMF.Expressions
 
         public ExecutionMetaData ExecutionMetaData { get; } = new ExecutionMetaData();
 
+        public void Dispose()
+        {
+            Successors.Clear();
+        }
+
         private void Attach()
         {
             foreach (var dep in Dependencies)
