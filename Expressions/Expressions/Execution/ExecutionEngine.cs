@@ -7,9 +7,9 @@ using System.Text;
 
 namespace NMF.Expressions
 {
-    public abstract class ExecutionEngine
+    public abstract class ExecutionEngine : IDisposable
     {
-        private readonly IExecutionContext context;
+        private readonly ExecutionContext context;
         private HashSet<INotifiable> invalidNodes = new HashSet<INotifiable>();
 
         internal IExecutionContext Context { get { return context; } }
@@ -41,13 +41,32 @@ namespace NMF.Expressions
                 ExecuteSingle(node);
         }
 
-        protected abstract void Execute(IEnumerable<INotifiable> nodes);
+        protected abstract void Execute(HashSet<INotifiable> nodes);
 
         protected abstract void ExecuteSingle(INotifiable node);
-        
-        public static ExecutionEngine Current { get; set; } = new SequentialExecutionEngine();
 
-        private class ExecutionContext : IExecutionContext
+        public void Dispose()
+        {
+            context.Dispose();
+            invalidNodes.Clear();
+            GC.SuppressFinalize(this);
+        }
+
+        private static ExecutionEngine current = new SequentialExecutionEngine();
+        public static ExecutionEngine Current
+        {
+            get { return current; }
+            set
+            {
+                if (value != null)
+                {
+                    current.Dispose();
+                    current = value;
+                }
+            }
+        }
+
+        private class ExecutionContext : IExecutionContext, IDisposable
         {
             private readonly ExecutionEngine engine;
             private readonly Dictionary<Tuple<INotifiable, INotifyPropertyChanged, string>, PropertyChangedEventHandler> propertyChangedHandler = new Dictionary<Tuple<INotifiable, INotifyPropertyChanged, string>, PropertyChangedEventHandler>();
@@ -80,17 +99,36 @@ namespace NMF.Expressions
             public void RemoveChangeListener(INotifiable node, INotifyPropertyChanged element, string propertyName)
             {
                 var key = new Tuple<INotifiable, INotifyPropertyChanged, string>(node, element, propertyName);
-                var handler = propertyChangedHandler[key];
-                element.PropertyChanged -= handler;
-                propertyChangedHandler.Remove(key);
+                PropertyChangedEventHandler handler;
+                if (propertyChangedHandler.TryGetValue(key, out handler))
+                {
+                    element.PropertyChanged -= handler;
+                    propertyChangedHandler.Remove(key);
+                }
             }
 
             public void RemoveChangeListener(INotifiable node, INotifyCollectionChanged collection)
             {
                 var key = new Tuple<INotifiable, INotifyCollectionChanged>(node, collection);
-                var handler = collectionChangedHandler[key];
-                collection.CollectionChanged -= handler;
-                collectionChangedHandler.Remove(key);
+                NotifyCollectionChangedEventHandler handler;
+                if (collectionChangedHandler.TryGetValue(key, out handler))
+                {
+                    collection.CollectionChanged -= handler;
+                    collectionChangedHandler.Remove(key);
+                }
+            }
+
+            public void Dispose()
+            {
+                foreach (var kvp in propertyChangedHandler)
+                    kvp.Key.Item2.PropertyChanged -= kvp.Value;
+                propertyChangedHandler.Clear();
+
+                foreach (var kvp in collectionChangedHandler)
+                    kvp.Key.Item2.CollectionChanged -= kvp.Value;
+                collectionChangedHandler.Clear();
+
+                GC.SuppressFinalize(this);
             }
         }
     }

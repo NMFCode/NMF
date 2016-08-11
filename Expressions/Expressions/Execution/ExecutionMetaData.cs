@@ -7,8 +7,8 @@ namespace NMF.Expressions
 {
     public class ExecutionMetaData
     {
-        public int TotalVisits { get; set; }
-        public int RemainingVisits { get; set; }
-        public ShortList<INotificationResult> Sources { get; } = new ShortList<INotificationResult>();
+        internal int TotalVisits { get; set; }
+        internal int RemainingVisits { get; set; }
+        internal ShortList<INotificationResult> Sources { get; } = new ShortList<INotificationResult>();
     }
 }

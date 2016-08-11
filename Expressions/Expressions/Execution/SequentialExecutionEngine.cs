@@ -28,7 +28,7 @@ namespace NMF.Expressions
             }
         }
 
-        protected override void Execute(IEnumerable<INotifiable> nodes)
+        protected override void Execute(HashSet<INotifiable> nodes)
         {
             foreach (var node in nodes)
                 MarkNode(node);
