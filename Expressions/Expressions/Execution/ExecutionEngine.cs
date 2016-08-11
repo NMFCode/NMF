@@ -7,48 +7,91 @@ using System.Text;
 
 namespace NMF.Expressions.Execution
 {
-    public abstract class ExecutionEngine : IExecutionContext
+    public abstract class ExecutionEngine
     {
-        private readonly Dictionary<Tuple<INotifiable, INotifyPropertyChanged, string>, PropertyChangedEventHandler> propertyChangedHandler = new Dictionary<Tuple<INotifiable, INotifyPropertyChanged, string>, PropertyChangedEventHandler>();
-        private readonly Dictionary<Tuple<INotifiable, INotifyCollectionChanged>, NotifyCollectionChangedEventHandler> collectionChangedHandler = new Dictionary<Tuple<INotifiable, INotifyCollectionChanged>, NotifyCollectionChangedEventHandler>();
+        private readonly IExecutionContext context;
+        private HashSet<INotifiable> invalidNodes = new HashSet<INotifiable>();
 
-        public void AddChangeListener(INotifiable node, INotifyPropertyChanged element, string propertyName)
+        internal IExecutionContext Context { get { return context; } }
+
+        public bool TransactionActive { get; private set; }
+
+        public ExecutionEngine()
         {
-            PropertyChangedEventHandler handler = (obj, e) =>
-            {
-                if (e.PropertyName == propertyName)
-                    SetInvalidNode(node);
-            };
-
-            element.PropertyChanged += handler;
-            propertyChangedHandler[new Tuple<INotifiable, INotifyPropertyChanged, string>(node, element, propertyName)] = handler;
+            context = new ExecutionContext(this);
         }
 
-        public void AddChangeListener(INotifiable node, INotifyCollectionChanged collection)
+        public void BeginTransaction()
         {
-            NotifyCollectionChangedEventHandler handler = (obj, e) => SetInvalidNode(node);
-            collection.CollectionChanged += handler;
-            collectionChangedHandler[new Tuple<INotifiable, INotifyCollectionChanged>(node, collection)] = handler;
+            TransactionActive = true;
         }
 
-        public void RemoveChangeListener(INotifiable node, INotifyPropertyChanged element, string propertyName)
+        public void CommitTransaction()
         {
-            var key = new Tuple<INotifiable, INotifyPropertyChanged, string>(node, element, propertyName);
-            var handler = propertyChangedHandler[key];
-            element.PropertyChanged -= handler;
-            propertyChangedHandler.Remove(key);
+            Execute(invalidNodes);
+            invalidNodes.Clear();
+            TransactionActive = false;
         }
 
-        public void RemoveChangeListener(INotifiable node, INotifyCollectionChanged collection)
+        private void SetInvalidNode(INotifiable node)
         {
-            var key = new Tuple<INotifiable, INotifyCollectionChanged>(node, collection);
-            var handler = collectionChangedHandler[key];
-            collection.CollectionChanged -= handler;
-            collectionChangedHandler.Remove(key);
+            if (TransactionActive)
+                invalidNodes.Add(node);
+            else
+                ExecuteSingle(node);
         }
 
-        protected abstract void SetInvalidNode(INotifiable node);
+        protected abstract void Execute(IEnumerable<INotifiable> nodes);
+
+        protected abstract void ExecuteSingle(INotifiable node);
         
-        public static ExecutionEngine Current { get; set; } = new ImmediateExecutionEngine();
+        public static ExecutionEngine Current { get; set; } = new SequentialExecutionEngine();
+
+        private class ExecutionContext : IExecutionContext
+        {
+            private readonly ExecutionEngine engine;
+            private readonly Dictionary<Tuple<INotifiable, INotifyPropertyChanged, string>, PropertyChangedEventHandler> propertyChangedHandler = new Dictionary<Tuple<INotifiable, INotifyPropertyChanged, string>, PropertyChangedEventHandler>();
+            private readonly Dictionary<Tuple<INotifiable, INotifyCollectionChanged>, NotifyCollectionChangedEventHandler> collectionChangedHandler = new Dictionary<Tuple<INotifiable, INotifyCollectionChanged>, NotifyCollectionChangedEventHandler>();
+
+            public ExecutionContext(ExecutionEngine engine)
+            {
+                this.engine = engine;
+            }
+
+            public void AddChangeListener(INotifiable node, INotifyPropertyChanged element, string propertyName)
+            {
+                PropertyChangedEventHandler handler = (obj, e) =>
+                {
+                    if (e.PropertyName == propertyName)
+                        engine.SetInvalidNode(node);
+                };
+
+                element.PropertyChanged += handler;
+                propertyChangedHandler[new Tuple<INotifiable, INotifyPropertyChanged, string>(node, element, propertyName)] = handler;
+            }
+
+            public void AddChangeListener(INotifiable node, INotifyCollectionChanged collection)
+            {
+                NotifyCollectionChangedEventHandler handler = (obj, e) => engine.SetInvalidNode(node);
+                collection.CollectionChanged += handler;
+                collectionChangedHandler[new Tuple<INotifiable, INotifyCollectionChanged>(node, collection)] = handler;
+            }
+
+            public void RemoveChangeListener(INotifiable node, INotifyPropertyChanged element, string propertyName)
+            {
+                var key = new Tuple<INotifiable, INotifyPropertyChanged, string>(node, element, propertyName);
+                var handler = propertyChangedHandler[key];
+                element.PropertyChanged -= handler;
+                propertyChangedHandler.Remove(key);
+            }
+
+            public void RemoveChangeListener(INotifiable node, INotifyCollectionChanged collection)
+            {
+                var key = new Tuple<INotifiable, INotifyCollectionChanged>(node, collection);
+                var handler = collectionChangedHandler[key];
+                collection.CollectionChanged -= handler;
+                collectionChangedHandler.Remove(key);
+            }
+        }
     }
 }

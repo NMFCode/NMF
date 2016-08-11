@@ -60,11 +60,11 @@ namespace NMF.Expressions
         public override INotificationResult Notify(IList<INotificationResult> sources)
         {
             ValueChangedNotificationResult<T> targetChange = null;
-            foreach (ValueChangedNotificationResult<T> change in sources)
+            foreach (var change in sources)
             {
                 if (change.Source == Target)
                 {
-                    targetChange = change;
+                    targetChange = change as ValueChangedNotificationResult<T>;
                     break;
                 }
             }
