@@ -142,7 +142,7 @@ namespace NMF.Expressions.Test
 
             public ExecutionMetaData ExecutionMetaData { get; } = new ExecutionMetaData();
 
-            public void Dispose()
+            public virtual void Dispose()
             {
                 Successors.Clear();
             }
@@ -163,8 +163,9 @@ namespace NMF.Expressions.Test
                 Assert.AreEqual(42, argument);
             }
 
-            public void Dispose()
+            public override void Dispose()
             {
+                base.Dispose();
                 Disposed = true;
             }
         }
