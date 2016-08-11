@@ -4,7 +4,7 @@ using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using NMF.Analysis;
+using NMF.Analyses;
 using NMF.Models.Repository;
 
 namespace NMF.Models.Meta

@@ -84,4 +84,70 @@ namespace NMF.Expressions
             }
         }
     }
+
+    internal class RepositoryAffectedDependentNotifyValue<T> : RepositoryAffectedNotifyValue<T>
+    {
+        public IEnumerable<IChangeInfo> ChangeInfos { get; private set; }
+
+        public RepositoryAffectedDependentNotifyValue(IModelRepository repository, Func<T> getter, IEnumerable<IChangeInfo> changeInfos) : base(repository, getter)
+        {
+            ChangeInfos = changeInfos;
+        }
+
+        protected override void AttachCore()
+        {
+            base.AttachCore();
+            foreach (var changeInfo in ChangeInfos)
+            {
+                changeInfo.ChangeCaptured += ChangeInfo_ChangeCaptured;
+            }
+        }
+
+        private void ChangeInfo_ChangeCaptured(object sender, EventArgs e)
+        {
+            Refresh();
+        }
+
+        protected override void DetachCore()
+        {
+            base.DetachCore();
+            foreach (var changeInfo in ChangeInfos)
+            {
+                changeInfo.ChangeCaptured -= ChangeInfo_ChangeCaptured;
+            }
+        }
+    }
+
+    internal class RepositoryAffectedDependentReversableNotofyValue<T> : RepositoryAffectedReversableNotifyValue<T>
+    {
+        public IEnumerable<IChangeInfo> ChangeInfos { get; private set; }
+
+        public RepositoryAffectedDependentReversableNotofyValue(IModelRepository repository, Func<T> getter, Action<T> setter, IEnumerable<IChangeInfo> changeInfos) : base(repository, getter, setter)
+        {
+            ChangeInfos = changeInfos;
+        }
+
+        protected override void AttachCore()
+        {
+            base.AttachCore();
+            foreach (var changeInfo in ChangeInfos)
+            {
+                changeInfo.ChangeCaptured += ChangeInfo_ChangeCaptured;
+            }
+        }
+
+        private void ChangeInfo_ChangeCaptured(object sender, EventArgs e)
+        {
+            Refresh();
+        }
+
+        protected override void DetachCore()
+        {
+            base.DetachCore();
+            foreach (var changeInfo in ChangeInfos)
+            {
+                changeInfo.ChangeCaptured -= ChangeInfo_ChangeCaptured;
+            }
+        }
+    }
 }

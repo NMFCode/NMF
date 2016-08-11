@@ -30,6 +30,11 @@ namespace NMF.Expressions
                 }
                 else
                 {
+                    var notifyValueType = typeof(INotifyValue<>).MakeGenericType(node.Type);
+                    if (ReflectionHelper.IsInstanceOf(notifyValueType, argument))
+                    {
+                        throw new NotImplementedException();
+                    }
                     throw new InvalidOperationException(string.Format("The provided value {0} for parameter {1} is not valid.", argument, node.Type));
                 }
             }
