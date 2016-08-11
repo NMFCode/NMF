@@ -116,7 +116,7 @@ namespace NMF.Expressions
         /// <summary>
         /// Creates a new change-aware dictionary
         /// </summary>
-        public ChangeAwareDictionary() : this(null) { }
+        public ChangeAwareDictionary() : this((IEqualityComparer<TKey>)null) { }
 
         /// <summary>
         /// Creates a new change-aware dictionary
@@ -125,6 +125,22 @@ namespace NMF.Expressions
         public ChangeAwareDictionary(IEqualityComparer<TKey> comparer)
         {
             inner = new Dictionary<TKey, Entry>(comparer);
+        }
+
+        /// <summary>
+        /// Creates a new change-aware dictionary based on a template
+        /// </summary>
+        /// <param name="template">The template dictionary</param>
+        public ChangeAwareDictionary(ChangeAwareDictionary<TKey, TValue> template)
+        {
+            if (template == null)
+            {
+                inner = new Dictionary<TKey, Entry>();
+            }
+            else
+            {
+                inner = new Dictionary<TKey, Entry>(template.inner, template.inner.Comparer);
+            }
         }
 
         /// <summary>
