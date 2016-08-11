@@ -41,12 +41,6 @@ namespace NMF.Expressions.Execution
             throw new NotImplementedException();
         }
 
-        private void OnPropertyChanged(PropertyChangedEventArgs e, INotifiable node, string propertyName)
-        {
-            if (e.PropertyName == propertyName)
-                SetInvalidNode(node);
-        }
-
         protected abstract void SetInvalidNode(INotifiable node);
         
         public static ExecutionEngine Current { get; set; } = new ImmediateExecutionEngine();

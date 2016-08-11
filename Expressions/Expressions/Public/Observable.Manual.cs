@@ -18,7 +18,9 @@ namespace NMF.Expressions
         /// <returns>A notify value</returns>
         public static INotifyValue<T> Expression<T>(Expression<Func<T>> expression)
         {
-            return NotifySystem.CreateExpression<T>(expression.Body, null, null);
+            var result = NotifySystem.CreateExpression<T>(expression.Body, expression.Parameters);
+            result.Successors.Add(null);
+            return result;
         }
 
         /// <summary>
@@ -29,7 +31,16 @@ namespace NMF.Expressions
         /// <returns>A reversable notify value</returns>
         public static INotifyReversableValue<T> Reversable<T>(Expression<Func<T>> expression)
         {
-            return NotifySystem.CreateReversableExpression<T>(expression.Body, null, null);
+            try
+            {
+                var result = NotifySystem.CreateReversableExpression<T>(expression.Body, expression.Parameters);
+                result.Successors.Add(null);
+                return result;
+            }
+            catch (InvalidCastException)
+            {
+                throw new ArgumentException("The expression is not reversable.", "expression");
+            }
         }
 
         /// <summary>

@@ -82,6 +82,8 @@ public partial class ObservingFunc<<# for (int j = 1; j <= i; j++) { #>T<#= j #>
         {
             if (isParameterFree)
             {
+                if (this.expression.Successors.Count == 0)
+                    this.expression.Successors.Add(null);
                 return expression;
             }
             var parameters = new Dictionary<string, object>();
@@ -89,6 +91,7 @@ public partial class ObservingFunc<<# for (int j = 1; j <= i; j++) { #>T<#= j #>
             parameters.Add(parameter<#= j #>Name, in<#= j #>);
 <# } #>
             var result = expression.ApplyParameters(parameters);
+            result.Successors.Add(null);
             return result;
         }
 
@@ -104,6 +107,8 @@ public partial class ObservingFunc<<# for (int j = 1; j <= i; j++) { #>T<#= j #>
             var autoAttach = in1.IsAttached<# for (int j = 1; j < i; j++) { #> && in<#= j #>.IsAttached<# } #>;
             if (isParameterFree)
             {
+                if (this.expression.Successors.Count == 0)
+                    this.expression.Successors.Add(null);
                 return expression;
             }
             var parameters = new Dictionary<string, object>();
@@ -111,6 +116,7 @@ public partial class ObservingFunc<<# for (int j = 1; j <= i; j++) { #>T<#= j #>
             parameters.Add(parameter<#= j #>Name, in<#= j #>);
 <# } #>
             var result = expression.ApplyParameters(parameters);
+            result.Successors.Add(null);
             return result;
         }
 

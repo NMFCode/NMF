@@ -102,8 +102,8 @@ namespace NMF.Expressions
         {
             foreach (var dep in Dependencies)
                 dep.Successors.Add(this);
-            value = GetValue();
             OnAttach();
+            value = GetValue();
         }
 
         private void Detach()
