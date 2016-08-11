@@ -73,7 +73,7 @@ namespace NMF.Expressions
 
         public IEnumerator<T> GetEnumerator()
         {
-            throw new NotImplementedException();
+            return new Enumerator(this);
         }
 
         public int IndexOf(T item)
@@ -141,13 +141,58 @@ namespace NMF.Expressions
 
         IEnumerator IEnumerable.GetEnumerator()
         {
-            throw new NotImplementedException();
+            return GetEnumerator();
         }
 
         private void RaiseCollectionChanged(NotifyCollectionChangedEventArgs args)
         {
             if (CollectionChanged != null)
                 CollectionChanged(this, args);
+        }
+
+        private class Enumerator : IEnumerator<T>
+        {
+            private readonly ShortList<T> parent;
+            private int currentIndex = -1;
+
+            public Enumerator(ShortList<T> parent)
+            {
+                this.parent = parent;
+            }
+
+            public T Current
+            {
+                get
+                {
+                    if (currentIndex >= 0 && currentIndex < parent.Count)
+                        return parent[currentIndex];
+                    return default(T);
+                }
+            }
+
+            object IEnumerator.Current
+            {
+                get
+                {
+                    return Current;
+                }
+            }
+
+            public void Dispose()
+            {
+                
+            }
+
+            public bool MoveNext()
+            {
+                currentIndex++;
+                return currentIndex < parent.Count;
+            }
+
+            public void Reset()
+            {
+                currentIndex = -1;
+            }
         }
     }
 }
