@@ -12,7 +12,7 @@ namespace NMF.Expressions.Test
             var update = false;
             var dummy = new Dummy<object>() { Item = "23" };
 
-            var test = new NotifyValue<string>(() => (string)dummy.Item);
+            var test = Observable.Expression<string>(() => (string)dummy.Item);
 
             test.ValueChanged += (o, e) => update = true;
 
@@ -30,7 +30,7 @@ namespace NMF.Expressions.Test
             var update = false;
             var dummy = new ObservableDummy<object>() { Item = "23" };
 
-            var test = new NotifyValue<string>(() => (string)dummy.Item);
+            var test = Observable.Expression<string>(() => (string)dummy.Item);
 
             test.ValueChanged += (o, e) =>
             {
@@ -54,7 +54,7 @@ namespace NMF.Expressions.Test
             var update = false;
             var dummy = new Dummy<object>() { Item = 23 };
 
-            var test = new NotifyValue<int>(() => (int)dummy.Item);
+            var test = Observable.Expression<int>(() => (int)dummy.Item);
 
             test.ValueChanged += (o, e) => update = true;
 
@@ -72,7 +72,7 @@ namespace NMF.Expressions.Test
             var update = false;
             var dummy = new ObservableDummy<object>() { Item = 23 };
 
-            var test = new NotifyValue<int>(() => (int)dummy.Item);
+            var test = Observable.Expression<int>(() => (int)dummy.Item);
 
             test.ValueChanged += (o, e) =>
             {
@@ -96,7 +96,7 @@ namespace NMF.Expressions.Test
             var update = false;
             var dummy = new Dummy<int>() { Item = 23 };
 
-            var test = new NotifyValue<int>(() => -dummy.Item);
+            var test = Observable.Expression<int>(() => -dummy.Item);
 
             test.ValueChanged += (o, e) => update = true;
 
@@ -114,7 +114,7 @@ namespace NMF.Expressions.Test
             var update = false;
             var dummy = new ObservableDummy<int>() { Item = 23 };
 
-            var test = new NotifyValue<int>(() => -dummy.Item);
+            var test = Observable.Expression<int>(() => -dummy.Item);
 
             test.ValueChanged += (o, e) =>
             {
@@ -138,7 +138,7 @@ namespace NMF.Expressions.Test
             var update = false;
             var dummy = new Dummy<long>() { Item = 23 };
 
-            var test = new NotifyValue<long>(() => -dummy.Item);
+            var test = Observable.Expression<long>(() => -dummy.Item);
 
             test.ValueChanged += (o, e) => update = true;
 
@@ -156,7 +156,7 @@ namespace NMF.Expressions.Test
             var update = false;
             var dummy = new ObservableDummy<long>() { Item = 23 };
 
-            var test = new NotifyValue<long>(() => -dummy.Item);
+            var test = Observable.Expression<long>(() => -dummy.Item);
 
             test.ValueChanged += (o, e) =>
             {
@@ -180,7 +180,7 @@ namespace NMF.Expressions.Test
             var update = false;
             var dummy = new Dummy<double>() { Item = 23 };
 
-            var test = new NotifyValue<double>(() => -dummy.Item);
+            var test = Observable.Expression<double>(() => -dummy.Item);
 
             test.ValueChanged += (o, e) => update = true;
 
@@ -198,7 +198,7 @@ namespace NMF.Expressions.Test
             var update = false;
             var dummy = new ObservableDummy<double>() { Item = 23 };
 
-            var test = new NotifyValue<double>(() => -dummy.Item);
+            var test = Observable.Expression<double>(() => -dummy.Item);
 
             test.ValueChanged += (o, e) =>
             {
@@ -222,7 +222,7 @@ namespace NMF.Expressions.Test
             var update = false;
             var dummy = new Dummy<float>() { Item = 23 };
 
-            var test = new NotifyValue<float>(() => -dummy.Item);
+            var test = Observable.Expression<float>(() => -dummy.Item);
 
             test.ValueChanged += (o, e) => update = true;
 
@@ -240,7 +240,7 @@ namespace NMF.Expressions.Test
             var update = false;
             var dummy = new ObservableDummy<float>() { Item = 23 };
 
-            var test = new NotifyValue<float>(() => -dummy.Item);
+            var test = Observable.Expression<float>(() => -dummy.Item);
 
             test.ValueChanged += (o, e) =>
             {
@@ -264,7 +264,7 @@ namespace NMF.Expressions.Test
             var update = false;
             var dummy = new Dummy<decimal>() { Item = 23 };
 
-            var test = new NotifyValue<decimal>(() => -dummy.Item);
+            var test = Observable.Expression<decimal>(() => -dummy.Item);
 
             test.ValueChanged += (o, e) => update = true;
 
@@ -282,7 +282,7 @@ namespace NMF.Expressions.Test
             var update = false;
             var dummy = new ObservableDummy<decimal>() { Item = 23 };
 
-            var test = new NotifyValue<decimal>(() => -dummy.Item);
+            var test = Observable.Expression<decimal>(() => -dummy.Item);
 
             test.ValueChanged += (o, e) =>
             {
@@ -309,7 +309,7 @@ namespace NMF.Expressions.Test
                 var update = false;
                 var dummy = new Dummy<int>() { Item = 23 };
 
-                var test = new NotifyValue<int>(() => -dummy.Item);
+                var test = Observable.Expression<int>(() => -dummy.Item);
 
                 test.ValueChanged += (o, e) => update = true;
 
@@ -330,7 +330,7 @@ namespace NMF.Expressions.Test
                 var update = false;
                 var dummy = new ObservableDummy<int>() { Item = 23 };
 
-                var test = new NotifyValue<int>(() => -dummy.Item);
+                var test = Observable.Expression<int>(() => -dummy.Item);
 
                 test.ValueChanged += (o, e) =>
                 {
@@ -357,7 +357,7 @@ namespace NMF.Expressions.Test
                 var update = false;
                 var dummy = new Dummy<long>() { Item = 23 };
 
-                var test = new NotifyValue<long>(() => -dummy.Item);
+                var test = Observable.Expression<long>(() => -dummy.Item);
 
                 test.ValueChanged += (o, e) => update = true;
 
@@ -378,7 +378,7 @@ namespace NMF.Expressions.Test
                 var update = false;
                 var dummy = new ObservableDummy<long>() { Item = 23 };
 
-                var test = new NotifyValue<long>(() => -dummy.Item);
+                var test = Observable.Expression<long>(() => -dummy.Item);
 
                 test.ValueChanged += (o, e) =>
                 {
@@ -405,7 +405,7 @@ namespace NMF.Expressions.Test
                 var update = false;
                 var dummy = new Dummy<double>() { Item = 23 };
 
-                var test = new NotifyValue<double>(() => -dummy.Item);
+                var test = Observable.Expression<double>(() => -dummy.Item);
 
                 test.ValueChanged += (o, e) => update = true;
 
@@ -426,7 +426,7 @@ namespace NMF.Expressions.Test
                 var update = false;
                 var dummy = new ObservableDummy<double>() { Item = 23 };
 
-                var test = new NotifyValue<double>(() => -dummy.Item);
+                var test = Observable.Expression<double>(() => -dummy.Item);
 
                 test.ValueChanged += (o, e) =>
                 {
@@ -453,7 +453,7 @@ namespace NMF.Expressions.Test
                 var update = false;
                 var dummy = new Dummy<float>() { Item = 23 };
 
-                var test = new NotifyValue<float>(() => -dummy.Item);
+                var test = Observable.Expression<float>(() => -dummy.Item);
 
                 test.ValueChanged += (o, e) => update = true;
 
@@ -474,7 +474,7 @@ namespace NMF.Expressions.Test
                 var update = false;
                 var dummy = new ObservableDummy<float>() { Item = 23 };
 
-                var test = new NotifyValue<float>(() => -dummy.Item);
+                var test = Observable.Expression<float>(() => -dummy.Item);
 
                 test.ValueChanged += (o, e) =>
                 {
@@ -501,7 +501,7 @@ namespace NMF.Expressions.Test
                 var update = false;
                 var dummy = new Dummy<decimal>() { Item = 23 };
 
-                var test = new NotifyValue<decimal>(() => -dummy.Item);
+                var test = Observable.Expression<decimal>(() => -dummy.Item);
 
                 test.ValueChanged += (o, e) => update = true;
 
@@ -522,7 +522,7 @@ namespace NMF.Expressions.Test
                 var update = false;
                 var dummy = new ObservableDummy<decimal>() { Item = 23 };
 
-                var test = new NotifyValue<decimal>(() => -dummy.Item);
+                var test = Observable.Expression<decimal>(() => -dummy.Item);
 
                 test.ValueChanged += (o, e) =>
                 {
@@ -547,7 +547,7 @@ namespace NMF.Expressions.Test
             var update = false;
             var dummy = new Dummy<int>() { Item = 23 };
 
-            var test = new NotifyValue<int>(() => +dummy.Item);
+            var test = Observable.Expression<int>(() => +dummy.Item);
 
             test.ValueChanged += (o, e) => update = true;
 
@@ -565,7 +565,7 @@ namespace NMF.Expressions.Test
             var update = false;
             var dummy = new ObservableDummy<int>() { Item = 23 };
 
-            var test = new NotifyValue<int>(() => +dummy.Item);
+            var test = Observable.Expression<int>(() => +dummy.Item);
 
             test.ValueChanged += (o, e) =>
             {
@@ -589,7 +589,7 @@ namespace NMF.Expressions.Test
             var update = false;
             var dummy = new Dummy<long>() { Item = 23 };
 
-            var test = new NotifyValue<long>(() => +dummy.Item);
+            var test = Observable.Expression<long>(() => +dummy.Item);
 
             test.ValueChanged += (o, e) => update = true;
 
@@ -607,7 +607,7 @@ namespace NMF.Expressions.Test
             var update = false;
             var dummy = new ObservableDummy<long>() { Item = 23 };
 
-            var test = new NotifyValue<long>(() => +dummy.Item);
+            var test = Observable.Expression<long>(() => +dummy.Item);
 
             test.ValueChanged += (o, e) =>
             {
@@ -631,7 +631,7 @@ namespace NMF.Expressions.Test
             var update = false;
             var dummy = new Dummy<double>() { Item = 23 };
 
-            var test = new NotifyValue<double>(() => +dummy.Item);
+            var test = Observable.Expression<double>(() => +dummy.Item);
 
             test.ValueChanged += (o, e) => update = true;
 
@@ -649,7 +649,7 @@ namespace NMF.Expressions.Test
             var update = false;
             var dummy = new ObservableDummy<double>() { Item = 23 };
 
-            var test = new NotifyValue<double>(() => +dummy.Item);
+            var test = Observable.Expression<double>(() => +dummy.Item);
 
             test.ValueChanged += (o, e) =>
             {
@@ -673,7 +673,7 @@ namespace NMF.Expressions.Test
             var update = false;
             var dummy = new Dummy<float>() { Item = 23 };
 
-            var test = new NotifyValue<float>(() => dummy.Item);
+            var test = Observable.Expression<float>(() => dummy.Item);
 
             test.ValueChanged += (o, e) => update = true;
 
@@ -691,7 +691,7 @@ namespace NMF.Expressions.Test
             var update = false;
             var dummy = new ObservableDummy<float>() { Item = 23 };
 
-            var test = new NotifyValue<float>(() => +dummy.Item);
+            var test = Observable.Expression<float>(() => +dummy.Item);
 
             test.ValueChanged += (o, e) =>
             {
@@ -715,7 +715,7 @@ namespace NMF.Expressions.Test
             var update = false;
             var dummy = new Dummy<decimal>() { Item = 23 };
 
-            var test = new NotifyValue<decimal>(() => +dummy.Item);
+            var test = Observable.Expression<decimal>(() => +dummy.Item);
 
             test.ValueChanged += (o, e) => update = true;
 
@@ -733,7 +733,7 @@ namespace NMF.Expressions.Test
             var update = false;
             var dummy = new ObservableDummy<decimal>() { Item = 23 };
 
-            var test = new NotifyValue<decimal>(() => +dummy.Item);
+            var test = Observable.Expression<decimal>(() => +dummy.Item);
 
             test.ValueChanged += (o, e) =>
             {
@@ -760,7 +760,7 @@ namespace NMF.Expressions.Test
                 var update = false;
                 var dummy = new Dummy<int>() { Item = 23 };
 
-                var test = new NotifyValue<int>(() => +dummy.Item);
+                var test = Observable.Expression<int>(() => +dummy.Item);
 
                 test.ValueChanged += (o, e) => update = true;
 
@@ -781,7 +781,7 @@ namespace NMF.Expressions.Test
                 var update = false;
                 var dummy = new ObservableDummy<int>() { Item = 23 };
 
-                var test = new NotifyValue<int>(() => +dummy.Item);
+                var test = Observable.Expression<int>(() => +dummy.Item);
 
                 test.ValueChanged += (o, e) =>
                 {
@@ -808,7 +808,7 @@ namespace NMF.Expressions.Test
                 var update = false;
                 var dummy = new Dummy<long>() { Item = 23 };
 
-                var test = new NotifyValue<long>(() => +dummy.Item);
+                var test = Observable.Expression<long>(() => +dummy.Item);
 
                 test.ValueChanged += (o, e) => update = true;
 
@@ -829,7 +829,7 @@ namespace NMF.Expressions.Test
                 var update = false;
                 var dummy = new ObservableDummy<long>() { Item = 23 };
 
-                var test = new NotifyValue<long>(() => +dummy.Item);
+                var test = Observable.Expression<long>(() => +dummy.Item);
 
                 test.ValueChanged += (o, e) =>
                 {
@@ -856,7 +856,7 @@ namespace NMF.Expressions.Test
                 var update = false;
                 var dummy = new Dummy<double>() { Item = 23 };
 
-                var test = new NotifyValue<double>(() => +dummy.Item);
+                var test = Observable.Expression<double>(() => +dummy.Item);
 
                 test.ValueChanged += (o, e) => update = true;
 
@@ -877,7 +877,7 @@ namespace NMF.Expressions.Test
                 var update = false;
                 var dummy = new ObservableDummy<double>() { Item = 23 };
 
-                var test = new NotifyValue<double>(() => +dummy.Item);
+                var test = Observable.Expression<double>(() => +dummy.Item);
 
                 test.ValueChanged += (o, e) =>
                 {
@@ -904,7 +904,7 @@ namespace NMF.Expressions.Test
                 var update = false;
                 var dummy = new Dummy<float>() { Item = 23 };
 
-                var test = new NotifyValue<float>(() => +dummy.Item);
+                var test = Observable.Expression<float>(() => +dummy.Item);
 
                 test.ValueChanged += (o, e) => update = true;
 
@@ -925,7 +925,7 @@ namespace NMF.Expressions.Test
                 var update = false;
                 var dummy = new ObservableDummy<float>() { Item = 23 };
 
-                var test = new NotifyValue<float>(() => +dummy.Item);
+                var test = Observable.Expression<float>(() => +dummy.Item);
 
                 test.ValueChanged += (o, e) =>
                 {
@@ -952,7 +952,7 @@ namespace NMF.Expressions.Test
                 var update = false;
                 var dummy = new Dummy<decimal>() { Item = 23 };
 
-                var test = new NotifyValue<decimal>(() => +dummy.Item);
+                var test = Observable.Expression<decimal>(() => +dummy.Item);
 
                 test.ValueChanged += (o, e) => update = true;
 
@@ -973,7 +973,7 @@ namespace NMF.Expressions.Test
                 var update = false;
                 var dummy = new ObservableDummy<decimal>() { Item = 23 };
 
-                var test = new NotifyValue<decimal>(() => +dummy.Item);
+                var test = Observable.Expression<decimal>(() => +dummy.Item);
 
                 test.ValueChanged += (o, e) =>
                 {
@@ -998,7 +998,7 @@ namespace NMF.Expressions.Test
             var update = false;
             var dummy = new Dummy<bool>() { Item = true };
 
-            var test = new NotifyValue<bool>(() => !dummy.Item);
+            var test = Observable.Expression<bool>(() => !dummy.Item);
 
             test.ValueChanged += (o, e) => update = true;
 
@@ -1016,7 +1016,7 @@ namespace NMF.Expressions.Test
             var update = false;
             var dummy = new ObservableDummy<bool>() { Item = true };
 
-            var test = new NotifyValue<bool>(() => !dummy.Item);
+            var test = Observable.Expression<bool>(() => !dummy.Item);
 
             test.ValueChanged += (o, e) =>
             {

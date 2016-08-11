@@ -134,8 +134,6 @@ namespace NMF.Expressions.Arithmetics
 
     internal class ObservableLogicOrElse : ObservableBinaryExpressionBase<bool, bool, bool>
     {
-        private bool leftValue;
-		
         protected override string Format
         {
             get
@@ -157,23 +155,14 @@ namespace NMF.Expressions.Arithmetics
             get
             {
                 yield return Left;
-                if (!leftValue)
+                if (!Left.Value)
                     yield return Right;
             }
         }
 
         protected override bool GetValue()
         {
-            if (leftValue != Left.Value)
-            {
-                if (leftValue)
-                    Right.Successors.Add(this);
-                else
-                    Right.Successors.Remove(this);
-                leftValue = Left.Value;
-            }
-
-            if (leftValue)
+            if (Left.Value)
                 return true;
             return Right.Value;
         }
@@ -183,9 +172,17 @@ namespace NMF.Expressions.Arithmetics
             return new ObservableLogicOrElse(Left.ApplyParameters(parameters), Right.ApplyParameters(parameters));
         }
 
-        protected override void OnAttach()
+        public override INotificationResult Notify(IList<INotificationResult> sources)
         {
-            leftValue = Left.Value;
+            var leftChange = sources.FirstOrDefault(c => c.Source == Left) as ValueChangedNotificationResult<bool>;
+            if (leftChange != null)
+            {
+                if (leftChange.NewValue)
+                    Right.Successors.Remove(this);
+                else
+                    Right.Successors.Add(this);
+            }
+            return base.Notify(sources);
         }
     }
 

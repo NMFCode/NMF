@@ -9,7 +9,8 @@ namespace NMF.Expressions.Execution
 {
     public abstract class ExecutionEngine : IExecutionContext
     {
-        private Dictionary<Tuple<INotifiable, INotifyPropertyChanged, string>, PropertyChangedEventHandler> propertyChangedHandler = new Dictionary<Tuple<INotifiable, INotifyPropertyChanged, string>, PropertyChangedEventHandler>();
+        private readonly Dictionary<Tuple<INotifiable, INotifyPropertyChanged, string>, PropertyChangedEventHandler> propertyChangedHandler = new Dictionary<Tuple<INotifiable, INotifyPropertyChanged, string>, PropertyChangedEventHandler>();
+        private readonly Dictionary<Tuple<INotifiable, INotifyCollectionChanged>, NotifyCollectionChangedEventHandler> collectionChangedHandler = new Dictionary<Tuple<INotifiable, INotifyCollectionChanged>, NotifyCollectionChangedEventHandler>();
 
         public void AddChangeListener(INotifiable node, INotifyPropertyChanged element, string propertyName)
         {
@@ -25,7 +26,9 @@ namespace NMF.Expressions.Execution
 
         public void AddChangeListener(INotifiable node, INotifyCollectionChanged collection)
         {
-            throw new NotImplementedException();
+            NotifyCollectionChangedEventHandler handler = (obj, e) => SetInvalidNode(node);
+            collection.CollectionChanged += handler;
+            collectionChangedHandler[new Tuple<INotifiable, INotifyCollectionChanged>(node, collection)] = handler;
         }
 
         public void RemoveChangeListener(INotifiable node, INotifyPropertyChanged element, string propertyName)
@@ -38,7 +41,10 @@ namespace NMF.Expressions.Execution
 
         public void RemoveChangeListener(INotifiable node, INotifyCollectionChanged collection)
         {
-            throw new NotImplementedException();
+            var key = new Tuple<INotifiable, INotifyCollectionChanged>(node, collection);
+            var handler = collectionChangedHandler[key];
+            collection.CollectionChanged -= handler;
+            collectionChangedHandler.Remove(key);
         }
 
         protected abstract void SetInvalidNode(INotifiable node);

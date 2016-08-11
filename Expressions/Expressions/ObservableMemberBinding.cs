@@ -36,9 +36,9 @@ namespace NMF.Expressions
 
         private void Attach()
         {
-            OnAttach();
             foreach (var dep in Dependencies)
                 dep.Successors.Add(this);
+            OnAttach();
         }
 
         private void Detach()

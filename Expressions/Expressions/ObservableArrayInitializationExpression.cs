@@ -65,6 +65,7 @@ namespace NMF.Expressions
                     var index = Expressions.IndexOf((INotifyExpression<T>)change.Source);
                     Value[index] = change.NewValue;
                 }
+                OnValueChanged(Value, Value);
                 //TODO CollectionChangedNotificationResult?
                 return new ValueChangedNotificationResult<T[]>(this, Value, Value);
             }

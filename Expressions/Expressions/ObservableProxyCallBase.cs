@@ -41,8 +41,6 @@ namespace NMF.Expressions
             }
         }
 
-        public INotifyValue<TResult> Proxy { get; private set; }
-
         protected override TResult GetValue()
         {
             return Proxy.Value;
@@ -52,16 +50,6 @@ namespace NMF.Expressions
         {
             var reversable = Proxy as INotifyReversableValue<TResult>;
             reversable.Value = value;
-        }
-
-        public override bool IsReversable
-        {
-            get
-            {
-                if (Proxy == null) return true;
-                var reversable = Proxy as INotifyReversableValue<TResult>;
-                return reversable != null && reversable.IsReversable;
-            }
         }
 
         public void RenewProxy()
@@ -95,7 +83,7 @@ namespace NMF.Expressions
 
         protected override void OnAttach()
         {
-            Proxy = CreateProxy();
+            RenewProxy();
         }
     }
 }

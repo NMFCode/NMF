@@ -15,7 +15,7 @@ namespace NMF.Expressions.Test
             var coll = new List<string>();
             coll.Add("23");
 
-            var test = new NotifyValue<string>(() => coll[0]);
+            var test = Observable.Expression<string>(() => coll[0]);
 
             test.ValueChanged += (o, e) => update = true;
 
@@ -34,7 +34,7 @@ namespace NMF.Expressions.Test
             var coll = new ObservableCollection<string>();
             coll.Add("23");
 
-            var test = new NotifyValue<string>(() => coll[0]);
+            var test = Observable.Expression<string>(() => coll[0]);
 
             test.ValueChanged += (o, e) =>
             {
@@ -61,7 +61,7 @@ namespace NMF.Expressions.Test
             coll.Add("42");
             var dummy = new Dummy<int>();
 
-            var test = new NotifyValue<string>(() => coll[dummy.Item]);
+            var test = Observable.Expression<string>(() => coll[dummy.Item]);
 
             test.ValueChanged += (o, e) => update = true;
 
@@ -82,7 +82,7 @@ namespace NMF.Expressions.Test
             coll.Add("42");
             var dummy = new ObservableDummy<int>();
 
-            var test = new NotifyValue<string>(() => coll[dummy.Item]);
+            var test = Observable.Expression<string>(() => coll[dummy.Item]);
 
             test.ValueChanged += (o, e) =>
             {
@@ -107,7 +107,7 @@ namespace NMF.Expressions.Test
             var coll = new string[] { "23", "42" };
             var dummy = new Dummy<int>();
 
-            var test = new NotifyValue<string>(() => coll[dummy.Item]);
+            var test = Observable.Expression<string>(() => coll[dummy.Item]);
 
             test.ValueChanged += (o, e) => update = true;
 
@@ -126,7 +126,7 @@ namespace NMF.Expressions.Test
             var coll = new string[] { "23", "42" };
             var dummy = new ObservableDummy<int>();
 
-            var test = new NotifyValue<string>(() => coll[dummy.Item]);
+            var test = Observable.Expression<string>(() => coll[dummy.Item]);
 
             test.ValueChanged += (o, e) =>
             {
@@ -151,7 +151,7 @@ namespace NMF.Expressions.Test
             var coll = new string[,] { { "23", "42" } };
             var dummy = new Dummy<int>();
 
-            var test = new NotifyValue<string>(() => coll[0, dummy.Item]);
+            var test = Observable.Expression<string>(() => coll[0, dummy.Item]);
 
             test.ValueChanged += (o, e) => update = true;
 
@@ -170,7 +170,7 @@ namespace NMF.Expressions.Test
             var coll = new string[,] { { "23", "42" } };
             var dummy = new ObservableDummy<int>();
 
-            var test = new NotifyValue<string>(() => coll[0, dummy.Item]);
+            var test = Observable.Expression<string>(() => coll[0, dummy.Item]);
 
             test.ValueChanged += (o, e) =>
             {
@@ -195,7 +195,7 @@ namespace NMF.Expressions.Test
             var coll = new string[] { "23", "42" };
             var dummy = new Dummy<long>();
 
-            var test = new NotifyValue<string>(() => coll[dummy.Item]);
+            var test = Observable.Expression<string>(() => coll[dummy.Item]);
 
             test.ValueChanged += (o, e) => update = true;
 
@@ -214,7 +214,7 @@ namespace NMF.Expressions.Test
             var coll = new string[] { "23", "42" };
             var dummy = new ObservableDummy<long>();
 
-            var test = new NotifyValue<string>(() => coll[dummy.Item]);
+            var test = Observable.Expression<string>(() => coll[dummy.Item]);
 
             test.ValueChanged += (o, e) =>
             {
@@ -239,7 +239,7 @@ namespace NMF.Expressions.Test
             var coll = new string[,] { { "23", "42" } };
             var dummy = new Dummy<long>();
 
-            var test = new NotifyValue<string>(() => coll[0, dummy.Item]);
+            var test = Observable.Expression<string>(() => coll[0, dummy.Item]);
 
             test.ValueChanged += (o, e) => update = true;
 
@@ -258,7 +258,7 @@ namespace NMF.Expressions.Test
             var coll = new string[,] { { "23", "42" } };
             var dummy = new ObservableDummy<long>();
 
-            var test = new NotifyValue<string>(() => coll[0L, dummy.Item]);
+            var test = Observable.Expression<string>(() => coll[0L, dummy.Item]);
 
             test.ValueChanged += (o, e) =>
             {

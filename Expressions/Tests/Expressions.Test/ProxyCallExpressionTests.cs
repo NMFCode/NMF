@@ -9,29 +9,6 @@ namespace NMF.Expressions.Test
     public class ProxyCallExpressionTests
     {
         [TestMethod]
-        public void ProxyCall_GenericNoObservable_UpdateIfValueChanges()
-        {
-            var update = false;
-            var dummy = new Dummy<string>("42");
-            
-            var test = Observable.Expression(() => ProxyTest(dummy.Item));
-
-            test.ValueChanged += (o, e) => update = true;
-
-            Assert.AreEqual("42", test.Value);
-            Assert.IsFalse(update);
-
-            dummy.Item = "23";
-
-            Assert.IsFalse(update);
-
-            TestProxy<string>.SetValue("FooBar");
-
-            Assert.IsTrue(update);
-            Assert.AreEqual("FooBar", test.Value);
-        }
-
-        [TestMethod]
         public void ProxyCall_GenericObservable_Update()
         {
             var update = false;
@@ -53,29 +30,6 @@ namespace NMF.Expressions.Test
 
             Assert.IsTrue(update);
             Assert.AreEqual("23", test.Value);
-        }
-
-        [TestMethod]
-        public void ProxyCall_NonGenericNoObservable_UpdateIfValueChanges()
-        {
-            var update = false;
-            var dummy = new Dummy<int>(1);
-
-            var test = Observable.Expression(() => ProxyTest(42, dummy.Item));
-
-            test.ValueChanged += (o, e) => update = true;
-
-            Assert.AreEqual(1, test.Value);
-            Assert.IsFalse(update);
-
-            dummy.Item = 2;
-
-            Assert.IsFalse(update);
-
-            TestProxy<int>.SetValue(3);
-
-            Assert.IsTrue(update);
-            Assert.AreEqual(3, test.Value);
         }
 
         [TestMethod]

@@ -32,8 +32,8 @@ namespace NMF.Expressions
         {
             get
             {
-                foreach (var dep in base.Dependencies)
-                    yield return dep;
+                if (Proxy != null)
+                    yield return Proxy;
 
             }
         }
@@ -115,11 +115,10 @@ namespace NMF.Expressions
         {
             get
             {
-                foreach (var dep in base.Dependencies)
-                    yield return dep;
+                if (Proxy != null)
+                    yield return Proxy;
 
-                yield return Argument1;
-            }
+                yield return Argument1;            }
         }
 
         private void RenewProxyFunction()
@@ -202,12 +201,10 @@ namespace NMF.Expressions
         {
             get
             {
-                foreach (var dep in base.Dependencies)
-                    yield return dep;
+                if (Proxy != null)
+                    yield return Proxy;
 
-                yield return Argument1;
-                yield return Argument2;
-            }
+                yield return Argument1;                yield return Argument2;            }
         }
 
         private void RenewProxyFunction()
@@ -293,13 +290,10 @@ namespace NMF.Expressions
         {
             get
             {
-                foreach (var dep in base.Dependencies)
-                    yield return dep;
+                if (Proxy != null)
+                    yield return Proxy;
 
-                yield return Argument1;
-                yield return Argument2;
-                yield return Argument3;
-            }
+                yield return Argument1;                yield return Argument2;                yield return Argument3;            }
         }
 
         private void RenewProxyFunction()
@@ -388,14 +382,10 @@ namespace NMF.Expressions
         {
             get
             {
-                foreach (var dep in base.Dependencies)
-                    yield return dep;
+                if (Proxy != null)
+                    yield return Proxy;
 
-                yield return Argument1;
-                yield return Argument2;
-                yield return Argument3;
-                yield return Argument4;
-            }
+                yield return Argument1;                yield return Argument2;                yield return Argument3;                yield return Argument4;            }
         }
 
         private void RenewProxyFunction()
@@ -487,15 +477,10 @@ namespace NMF.Expressions
         {
             get
             {
-                foreach (var dep in base.Dependencies)
-                    yield return dep;
+                if (Proxy != null)
+                    yield return Proxy;
 
-                yield return Argument1;
-                yield return Argument2;
-                yield return Argument3;
-                yield return Argument4;
-                yield return Argument5;
-            }
+                yield return Argument1;                yield return Argument2;                yield return Argument3;                yield return Argument4;                yield return Argument5;            }
         }
 
         private void RenewProxyFunction()
@@ -590,16 +575,10 @@ namespace NMF.Expressions
         {
             get
             {
-                foreach (var dep in base.Dependencies)
-                    yield return dep;
+                if (Proxy != null)
+                    yield return Proxy;
 
-                yield return Argument1;
-                yield return Argument2;
-                yield return Argument3;
-                yield return Argument4;
-                yield return Argument5;
-                yield return Argument6;
-            }
+                yield return Argument1;                yield return Argument2;                yield return Argument3;                yield return Argument4;                yield return Argument5;                yield return Argument6;            }
         }
 
         private void RenewProxyFunction()
@@ -697,17 +676,10 @@ namespace NMF.Expressions
         {
             get
             {
-                foreach (var dep in base.Dependencies)
-                    yield return dep;
+                if (Proxy != null)
+                    yield return Proxy;
 
-                yield return Argument1;
-                yield return Argument2;
-                yield return Argument3;
-                yield return Argument4;
-                yield return Argument5;
-                yield return Argument6;
-                yield return Argument7;
-            }
+                yield return Argument1;                yield return Argument2;                yield return Argument3;                yield return Argument4;                yield return Argument5;                yield return Argument6;                yield return Argument7;            }
         }
 
         private void RenewProxyFunction()
@@ -808,18 +780,10 @@ namespace NMF.Expressions
         {
             get
             {
-                foreach (var dep in base.Dependencies)
-                    yield return dep;
+                if (Proxy != null)
+                    yield return Proxy;
 
-                yield return Argument1;
-                yield return Argument2;
-                yield return Argument3;
-                yield return Argument4;
-                yield return Argument5;
-                yield return Argument6;
-                yield return Argument7;
-                yield return Argument8;
-            }
+                yield return Argument1;                yield return Argument2;                yield return Argument3;                yield return Argument4;                yield return Argument5;                yield return Argument6;                yield return Argument7;                yield return Argument8;            }
         }
 
         private void RenewProxyFunction()
@@ -923,19 +887,10 @@ namespace NMF.Expressions
         {
             get
             {
-                foreach (var dep in base.Dependencies)
-                    yield return dep;
+                if (Proxy != null)
+                    yield return Proxy;
 
-                yield return Argument1;
-                yield return Argument2;
-                yield return Argument3;
-                yield return Argument4;
-                yield return Argument5;
-                yield return Argument6;
-                yield return Argument7;
-                yield return Argument8;
-                yield return Argument9;
-            }
+                yield return Argument1;                yield return Argument2;                yield return Argument3;                yield return Argument4;                yield return Argument5;                yield return Argument6;                yield return Argument7;                yield return Argument8;                yield return Argument9;            }
         }
 
         private void RenewProxyFunction()
@@ -1042,20 +997,10 @@ namespace NMF.Expressions
         {
             get
             {
-                foreach (var dep in base.Dependencies)
-                    yield return dep;
+                if (Proxy != null)
+                    yield return Proxy;
 
-                yield return Argument1;
-                yield return Argument2;
-                yield return Argument3;
-                yield return Argument4;
-                yield return Argument5;
-                yield return Argument6;
-                yield return Argument7;
-                yield return Argument8;
-                yield return Argument9;
-                yield return Argument10;
-            }
+                yield return Argument1;                yield return Argument2;                yield return Argument3;                yield return Argument4;                yield return Argument5;                yield return Argument6;                yield return Argument7;                yield return Argument8;                yield return Argument9;                yield return Argument10;            }
         }
 
         private void RenewProxyFunction()
@@ -1165,21 +1110,10 @@ namespace NMF.Expressions
         {
             get
             {
-                foreach (var dep in base.Dependencies)
-                    yield return dep;
+                if (Proxy != null)
+                    yield return Proxy;
 
-                yield return Argument1;
-                yield return Argument2;
-                yield return Argument3;
-                yield return Argument4;
-                yield return Argument5;
-                yield return Argument6;
-                yield return Argument7;
-                yield return Argument8;
-                yield return Argument9;
-                yield return Argument10;
-                yield return Argument11;
-            }
+                yield return Argument1;                yield return Argument2;                yield return Argument3;                yield return Argument4;                yield return Argument5;                yield return Argument6;                yield return Argument7;                yield return Argument8;                yield return Argument9;                yield return Argument10;                yield return Argument11;            }
         }
 
         private void RenewProxyFunction()
@@ -1292,22 +1226,10 @@ namespace NMF.Expressions
         {
             get
             {
-                foreach (var dep in base.Dependencies)
-                    yield return dep;
+                if (Proxy != null)
+                    yield return Proxy;
 
-                yield return Argument1;
-                yield return Argument2;
-                yield return Argument3;
-                yield return Argument4;
-                yield return Argument5;
-                yield return Argument6;
-                yield return Argument7;
-                yield return Argument8;
-                yield return Argument9;
-                yield return Argument10;
-                yield return Argument11;
-                yield return Argument12;
-            }
+                yield return Argument1;                yield return Argument2;                yield return Argument3;                yield return Argument4;                yield return Argument5;                yield return Argument6;                yield return Argument7;                yield return Argument8;                yield return Argument9;                yield return Argument10;                yield return Argument11;                yield return Argument12;            }
         }
 
         private void RenewProxyFunction()
@@ -1423,23 +1345,10 @@ namespace NMF.Expressions
         {
             get
             {
-                foreach (var dep in base.Dependencies)
-                    yield return dep;
+                if (Proxy != null)
+                    yield return Proxy;
 
-                yield return Argument1;
-                yield return Argument2;
-                yield return Argument3;
-                yield return Argument4;
-                yield return Argument5;
-                yield return Argument6;
-                yield return Argument7;
-                yield return Argument8;
-                yield return Argument9;
-                yield return Argument10;
-                yield return Argument11;
-                yield return Argument12;
-                yield return Argument13;
-            }
+                yield return Argument1;                yield return Argument2;                yield return Argument3;                yield return Argument4;                yield return Argument5;                yield return Argument6;                yield return Argument7;                yield return Argument8;                yield return Argument9;                yield return Argument10;                yield return Argument11;                yield return Argument12;                yield return Argument13;            }
         }
 
         private void RenewProxyFunction()
@@ -1558,24 +1467,10 @@ namespace NMF.Expressions
         {
             get
             {
-                foreach (var dep in base.Dependencies)
-                    yield return dep;
+                if (Proxy != null)
+                    yield return Proxy;
 
-                yield return Argument1;
-                yield return Argument2;
-                yield return Argument3;
-                yield return Argument4;
-                yield return Argument5;
-                yield return Argument6;
-                yield return Argument7;
-                yield return Argument8;
-                yield return Argument9;
-                yield return Argument10;
-                yield return Argument11;
-                yield return Argument12;
-                yield return Argument13;
-                yield return Argument14;
-            }
+                yield return Argument1;                yield return Argument2;                yield return Argument3;                yield return Argument4;                yield return Argument5;                yield return Argument6;                yield return Argument7;                yield return Argument8;                yield return Argument9;                yield return Argument10;                yield return Argument11;                yield return Argument12;                yield return Argument13;                yield return Argument14;            }
         }
 
         private void RenewProxyFunction()
@@ -1697,25 +1592,10 @@ namespace NMF.Expressions
         {
             get
             {
-                foreach (var dep in base.Dependencies)
-                    yield return dep;
+                if (Proxy != null)
+                    yield return Proxy;
 
-                yield return Argument1;
-                yield return Argument2;
-                yield return Argument3;
-                yield return Argument4;
-                yield return Argument5;
-                yield return Argument6;
-                yield return Argument7;
-                yield return Argument8;
-                yield return Argument9;
-                yield return Argument10;
-                yield return Argument11;
-                yield return Argument12;
-                yield return Argument13;
-                yield return Argument14;
-                yield return Argument15;
-            }
+                yield return Argument1;                yield return Argument2;                yield return Argument3;                yield return Argument4;                yield return Argument5;                yield return Argument6;                yield return Argument7;                yield return Argument8;                yield return Argument9;                yield return Argument10;                yield return Argument11;                yield return Argument12;                yield return Argument13;                yield return Argument14;                yield return Argument15;            }
         }
 
         private void RenewProxyFunction()

@@ -12,7 +12,7 @@ namespace NMF.Expressions.Test
             var update = false;
             var dummy = new Dummy<int>() { Item = 23 };
 
-            var test = new NotifyValue<string>(() => dummy.Item.ToString());
+            var test = Observable.Expression<string>(() => dummy.Item.ToString());
 
             test.ValueChanged += (o, e) => update = true;
 
@@ -30,7 +30,7 @@ namespace NMF.Expressions.Test
             var update = false;
             var dummy = new ObservableDummy<int>() { Item = 23 };
 
-            var test = new NotifyValue<string>(() => dummy.Item.ToString());
+            var test = Observable.Expression<string>(() => dummy.Item.ToString());
 
             test.ValueChanged += (o, e) =>
             {
@@ -54,7 +54,7 @@ namespace NMF.Expressions.Test
             var update = false;
             var dummy = new Dummy<string>() { Item = "23" };
 
-            var test = new NotifyValue<int>(() => int.Parse(dummy.Item));
+            var test = Observable.Expression<int>(() => int.Parse(dummy.Item));
 
             test.ValueChanged += (o, e) => update = true;
 
@@ -72,7 +72,7 @@ namespace NMF.Expressions.Test
             var update = false;
             var dummy = new ObservableDummy<string>() { Item = "23" };
 
-            var test = new NotifyValue<int>(() => int.Parse(dummy.Item));
+            var test = Observable.Expression<int>(() => int.Parse(dummy.Item));
 
             test.ValueChanged += (o, e) =>
             {
