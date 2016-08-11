@@ -59,7 +59,16 @@ namespace NMF.Expressions
 
         public override INotificationResult Notify(IList<INotificationResult> sources)
         {
-            var targetChange = sources.FirstOrDefault(c => c.Source == Target) as ValueChangedNotificationResult<T>;
+            ValueChangedNotificationResult<T> targetChange = null;
+            foreach (ValueChangedNotificationResult<T> change in sources)
+            {
+                if (change.Source == Target)
+                {
+                    targetChange = change;
+                    break;
+                }
+            }
+
             if (targetChange != null)
             {
                 DetachCollectionChangeListener(targetChange.OldValue);

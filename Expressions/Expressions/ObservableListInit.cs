@@ -89,8 +89,29 @@ namespace NMF.Expressions
 
         public override INotificationResult Notify(IList<INotificationResult> sources)
         {
-            var targetChange = sources.FirstOrDefault(c => c.Source == Target) as ValueChangedNotificationResult<T>;
-            var valueChange = sources.FirstOrDefault(c => c.Source == Value) as ValueChangedNotificationResult<TElement>;
+            ValueChangedNotificationResult<T> targetChange = null;
+            ValueChangedNotificationResult<TElement> valueChange = null;
+
+            if (sources.Count == 1)
+            {
+                if (sources[0].Source == Target)
+                    targetChange = sources[0] as ValueChangedNotificationResult<T>;
+                else
+                    valueChange = sources[0] as ValueChangedNotificationResult<TElement>;
+            }
+            else if(sources.Count == 2)
+            {
+                if (sources[0].Source == Target)
+                {
+                    targetChange = sources[0] as ValueChangedNotificationResult<T>;
+                    valueChange = sources[1] as ValueChangedNotificationResult<TElement>;
+                }
+                else
+                {
+                    targetChange = sources[1] as ValueChangedNotificationResult<T>;
+                    valueChange = sources[0] as ValueChangedNotificationResult<TElement>;
+                }
+            }
             
             if (targetChange != null && valueChange != null)
             {

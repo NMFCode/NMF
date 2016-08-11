@@ -176,7 +176,12 @@ namespace NMF.Expressions
 
         public override INotificationResult Notify(IList<INotificationResult> sources)
         {
-            var targetChange = sources.FirstOrDefault(c => c.Source == Target) as ValueChangedNotificationResult<T>;
+            ValueChangedNotificationResult<T> targetChange = null;
+            if (sources.Count >= 1 && sources[0].Source == Target)
+                targetChange = sources[0] as ValueChangedNotificationResult<T>;
+            else if (sources.Count == 2 && sources[1].Source == Target)
+                targetChange = sources[1] as ValueChangedNotificationResult<T>;
+            
             if (targetChange != null)
             {
                 DetachPropertyChangeListener(targetChange.OldValue);

@@ -99,9 +99,9 @@ namespace NMF.Expressions
 
         public INotificationResult Notify(IList<INotificationResult> sources)
         {
-            var innerChange = sources.FirstOrDefault(c => c.Source == Inner) as ValueChangedNotificationResult<T>;
-            if (innerChange != null)
+            if (sources.Count > 0)
             {
+                var innerChange = sources[0] as ValueChangedNotificationResult<T>;
                 if (ValueChanged != null)
                     ValueChanged(this, new ValueChangedEventArgs(innerChange.OldValue, Value));
                 return new ValueChangedNotificationResult<T>(this, innerChange.OldValue, innerChange.NewValue);
