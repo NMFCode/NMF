@@ -5,7 +5,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Text;
 
-namespace NMF.Expressions.Execution
+namespace NMF.Expressions
 {
     public abstract class ExecutionEngine
     {
