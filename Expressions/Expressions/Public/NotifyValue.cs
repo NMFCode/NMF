@@ -60,6 +60,11 @@ namespace NMF.Expressions
             Successors.UnsetAll();
         }
 
+        public void Dispose()
+        {
+            Successors.Clear();
+        }
+
         protected virtual void OnValueChanged(T oldValue, T newValue)
         {
             if (ValueChanged != null)
@@ -177,6 +182,11 @@ namespace NMF.Expressions
             Successors.UnsetAll();
         }
 
+        public void Dispose()
+        {
+            Successors.Clear();
+        }
+
         private void Attach()
         {
             foreach (var dep in Dependencies)
@@ -286,6 +296,11 @@ namespace NMF.Expressions
         public void Dispose()
         {
             Successors.UnsetAll();
+        }
+
+        public void Dispose()
+        {
+            Successors.Clear();
         }
 
         private void Attach()
