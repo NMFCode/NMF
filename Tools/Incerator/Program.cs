@@ -10,6 +10,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Text;
 
 namespace NMF.Incerator
 {
@@ -116,11 +117,30 @@ namespace NMF.Incerator
 
             if (results.Count == 1)
             {
-
+                repository.Save(results[0].Configuration, options.Configuration);
             }
             else
             {
-
+                using (var csv = new StreamWriter(Path.ChangeExtension(options.Configuration, "csv"), false))
+                {
+                    csv.WriteLine("Configuration;Time;Memory;VirtualMemory;PagedMemory;TotalTime;UserTime;PrivelegedTime");
+                    var index = 1;
+                    var baseName = Path.ChangeExtension(options.Configuration, null);
+                    foreach (var config in results)
+                    {
+                        var fileName = string.Format("{0}_{1}.xmi", baseName, index);
+                        var time = config.Measurements["Time"];
+                        var memory = config.Measurements["Memory"];
+                        var virtualMemory = config.Measurements["VirtualMemory"];
+                        var pagedMemory = config.Measurements["PagedMemory"];
+                        var totalTime = config.Measurements["TotalTime"];
+                        var userTime = config.Measurements["UserTime"];
+                        var privelegedTime = config.Measurements["PrivelegedTime"];
+                        csv.WriteLine("{0};{1};{2};{3};{4};{5};{6};{7}", Path.GetFileNameWithoutExtension(fileName), time, memory, virtualMemory, pagedMemory, totalTime, userTime, privelegedTime);
+                        repository.Save(config.Configuration, fileName);
+                        index++;
+                    }
+                }
             }
         }
     }
