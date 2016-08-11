@@ -2,11 +2,13 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.Specialized;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 
 namespace NMF.Expressions
 {
+    [DebuggerDisplay("Count = {Count}")]
     public class ShortList<T> : IList<T>, INotifyCollectionChanged
     {
         private static NotifyCollectionChangedEventArgs addArgs = new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, new object());
