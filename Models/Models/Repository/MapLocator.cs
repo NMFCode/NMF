@@ -15,9 +15,14 @@ namespace NMF.Models.Repository
             Mappings = new Dictionary<Uri, string>();
         }
 
+        public MapLocator(IDictionary<Uri, string> mappings)
+        {
+            Mappings = mappings;
+        }
+
         public bool CanLocate(Uri uri)
         {
-            return Mappings.ContainsKey(uri);
+            return Mappings != null && Mappings.ContainsKey(uri);
         }
 
         public Uri GetRepositoryUri(Uri uri)

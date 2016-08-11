@@ -57,6 +57,9 @@ namespace Ecore2Code
         [Option('m', "metamodel", Required=false, HelpText="Specify this argument if you want to serialize the NMeta metamodel possibly generated from Ecore")]
         public string NMeta { get; set; }
 
+        [OptionList('r', "resolve", Required=false, HelpText="A list of namespace remappings in the syntax URI=file", Separator=';')]
+        public List<string> NamespaceMappings { get; set; }
+
         public string GetHelp()
         {
             return HelpText.AutoBuild(this);
@@ -110,7 +113,29 @@ namespace Ecore2Code
             packageTransform.CreateOperations = options.Operations;
             packageTransform.DefaultNamespace = options.OverallNamespace;
 
-            var metaPackage = LoadPackageFromFiles(options.InputFiles, options.OverallNamespace);
+            Dictionary<Uri, string> mappings = null;
+            if (options.NamespaceMappings != null && options.NamespaceMappings.Count > 0)
+            {
+                mappings = new Dictionary<Uri, string>();
+                foreach (var mapping in options.NamespaceMappings)
+                {
+                    if (string.IsNullOrEmpty(mapping)) continue;
+                    var lastIdx = mapping.LastIndexOf('=');
+                    if (lastIdx == -1)
+                    {
+                        Console.WriteLine("Namespace mapping {0} is missing required separator =", mapping);
+                        continue;
+                    }
+                    Uri uri;
+                    if (!Uri.TryCreate(mapping.Substring(0, lastIdx), UriKind.Absolute, out uri))
+                    {
+                        uri = new Uri(mapping.Substring(0, lastIdx), UriKind.Relative);
+                    }
+                    mappings.Add(uri, mapping.Substring(lastIdx + 1));
+                }
+            }
+
+            var metaPackage = LoadPackageFromFiles(options.InputFiles, options.OverallNamespace, mappings);
 
             var model = metaPackage.Model;
             if (model == null)
@@ -201,37 +226,59 @@ namespace Ecore2Code
             }
         }
 
-        public static INamespace LoadPackageFromFiles(IList<string> files, string overallName)
+        public static INamespace LoadPackageFromFiles(IList<string> files, string overallName, IDictionary<Uri, string> resolveMappings)
         {
             if (files == null || files.Count == 0) return null;
 
             var packages = new List<INamespace>();
+            var repository = new ModelRepository();
+            
+            if (resolveMappings != null)
+            {
+                repository.Locators.Add(new FileMapLocator(resolveMappings));
+            }
 
             foreach (var ecoreFile in files)
             {
                 if (Path.GetExtension(ecoreFile) == ".ecore")
                 {
+#if DEBUG
+                    var ePackages = repository.Resolve(ecoreFile).RootElements.OfType<EPackage>();
+                    foreach (var ePackage in ePackages)
+                    {
+                        packages.Add(EcoreInterop.Transform2Meta(ePackage));
+                    }
+#else
                     try
                     {
-                        var package = EcoreInterop.LoadPackageFromFile(ecoreFile);
-                        if (package != null) packages.Add(EcoreInterop.Transform2Meta(package));
+                        var ePackages = repository.Resolve(ecoreFile).RootElements.OfType<EPackage>();
+                        foreach (var ePackage in ePackages)
+                        {
+                            packages.Add(EcoreInterop.Transform2Meta(ePackage));
+                        }
                     }
                     catch (Exception ex)
                     {
                         Console.WriteLine("An error occurred reading the Ecore file. The error message was: " + ex.Message);
+                        Environment.ExitCode = 1;
                     }
+#endif
                 }
                 else if (Path.GetExtension(ecoreFile) == ".nmf" || Path.GetExtension(ecoreFile) == ".nmeta")
                 {
+#if DEBUG
+                    packages.AddRange(repository.Resolve(ecoreFile).RootElements.OfType<INamespace>());
+#else
                     try
                     {
-                        var repository = new ModelRepository();
                         packages.AddRange(repository.Resolve(ecoreFile).RootElements.OfType<INamespace>());
                     }
                     catch (Exception ex)
                     {
                         Console.WriteLine("An error occurred reading the NMeta file. The error message was: " + ex.Message);
+                        Environment.ExitCode = 1;
                     }
+#endif
                 }
             }
 
