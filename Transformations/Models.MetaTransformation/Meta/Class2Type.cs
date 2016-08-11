@@ -267,7 +267,9 @@ namespace NMF.Models.Meta
                     if (cl.RelativeUri == ModelExtensions.ClassModelElement.RelativeUri) isModelElementContained = true;
                     if (cl.InstanceOf != null && cl != input)
                     {
-                        AddIfNotNull(members, CreateOverriddenGetClassMethod(input, cl.InstanceOf, context, codeField));
+                        var isOverride = !ShouldContainMembers(generatedType, CreateReference(cl, true, context));
+                        
+                        AddIfNotNull(members, CreateOverriddenGetClassMethod(input, cl.InstanceOf, context, codeField, isOverride));
                         AddIfNotNull(members, CreateClassInstanceProperty(input, cl.InstanceOf, context, codeField));
 
                         var referenceImplementations = cl.InstanceOf.MostSpecificRefinement(ModelExtensions.ReferenceTypeReferencesReference);
@@ -275,14 +277,14 @@ namespace NMF.Models.Meta
                         {
                             foreach (var referenceImplementation in referenceImplementations)
                             {
-                                AddIfNotNull(members, CreateOverriddenReferenceImplementation(input, cl, referenceImplementation, context));
+                                AddIfNotNull(members, CreateOverriddenReferenceImplementation(input, cl, referenceImplementation, context, isOverride));
                             }
                         }
                     }
                 }
                 if (!isModelElementContained)
                 {
-                    AddIfNotNull(members, CreateOverriddenGetClassMethod(input, ModelExtensions.ClassModelElement.InstanceOf, context, codeField));
+                    AddIfNotNull(members, CreateOverriddenGetClassMethod(input, ModelExtensions.ClassModelElement.InstanceOf, context, codeField, true));
                     AddIfNotNull(members, CreateClassInstanceProperty(input, ModelExtensions.ClassModelElement.InstanceOf, context, codeField));
                 }
 
@@ -298,7 +300,7 @@ namespace NMF.Models.Meta
                 }
             }
 
-            private CodeTypeMember CreateOverriddenReferenceImplementation(IClass currentType, IClass scope, IReference referenceImplementation, ITransformationContext context)
+            private CodeTypeMember CreateOverriddenReferenceImplementation(IClass currentType, IClass scope, IReference referenceImplementation, ITransformationContext context, bool isOverride)
             {
                 var referenceType = referenceImplementation.ReferenceType as IClass;
                 if (referenceType == null) return null;
@@ -316,7 +318,7 @@ namespace NMF.Models.Meta
                         Name = "Get" + referenceImplementation.Name.ToPascalCase() + "Value",
                         ReturnType = CreateReference(referencedType, true, context)
                     };
-                    if (true) // if current implementation type implements the scope
+                    if (isOverride)
                     {
                         overriddenReferenceImplementation.Attributes |= MemberAttributes.Override;
                     }
@@ -402,15 +404,19 @@ namespace NMF.Models.Meta
                 return classField;
             }
 
-            protected virtual CodeMemberMethod CreateOverriddenGetClassMethod(IClass input, IClass instantiating, ITransformationContext context, CodeMemberField classField)
+            protected virtual CodeMemberMethod CreateOverriddenGetClassMethod(IClass input, IClass instantiating, ITransformationContext context, CodeMemberField classField, bool isOverride)
             {
                 var type = GetInterfaceType(instantiating, context);
                 var getClass = new CodeMemberMethod()
                 {
                     Name = "Get" + instantiating.Name.ToPascalCase(),
                     ReturnType = type,
-                    Attributes = MemberAttributes.Public | MemberAttributes.Override
+                    Attributes = MemberAttributes.Public
                 };
+                if (isOverride)
+                {
+                    getClass.Attributes |= MemberAttributes.Override;
+                }
                 var absoluteUri = input.AbsoluteUri;
                 if (classField != null && absoluteUri != null && absoluteUri.IsAbsoluteUri)
                 {
