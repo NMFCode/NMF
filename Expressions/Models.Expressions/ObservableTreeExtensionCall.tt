@@ -30,7 +30,10 @@ namespace NMF.Expressions
         public ObservableTreeExtensionCall(Func<<# for (int j = 1; j <= i; j++) { #>T<#= j #>, <# } #>TResult> function<# for (int j = 1; j <= i; j++) { #>, INotifyExpression<T<#= j #>> arg<#= j #>, IEnumerable<Type> anchors<#= j #>, ICollection<string> arg<#= j #>Properties<# } #>) : base(function<# for (int j = 1; j <= i; j++) { #>, arg<#= j #><# } #>)
         {
 <# for (int j = 1; j <= i; j++) { #>
-            anchor<#= j #>Listener = anchors<#= j #>.Select(t => new BubbledChangeListener(null, t)).ToList();
+			if (anchors<#= j #> != null)
+			{
+                anchor<#= j #>Listener = anchors<#= j #>.Select(t => new BubbledChangeListener(null, t)).ToList();
+			}
 <# } #>
 
 <# for (int j = 1; j <= i; j++) { #>
@@ -43,12 +46,15 @@ namespace NMF.Expressions
             base.AttachCore();
             EventHandler<BubbledChangeEventArgs> handler = Listener_BubbledChange;
 <# for (int j = 1; j <= i; j++) { #>
-            foreach (var listener in anchor<#= j #>Listener)
-            {
-                listener.Element = Argument<#= j #>.Value;
-                listener.BubbledChange += handler;
-                listener.Attach();
-            }
+			if (anchor<#= j #>Listener != null)
+			{
+                foreach (var listener in anchor<#= j #>Listener)
+                {
+                    listener.Element = Argument<#= j #>.Value;
+                    listener.BubbledChange += handler;
+                    listener.Attach();
+                }
+			}
 <# } #>
         }
 
@@ -56,11 +62,14 @@ namespace NMF.Expressions
         {
             EventHandler<BubbledChangeEventArgs> handler = Listener_BubbledChange;
 <# for (int j = 1; j <= i; j++) { #>
-            foreach (var listener in anchor<#= j #>Listener)
-            {
-                listener.BubbledChange -= handler;
-                listener.Detach();
-            }
+            if (anchor<#= j #>Listener != null)
+			{
+			    foreach (var listener in anchor<#= j #>Listener)
+                {
+                    listener.BubbledChange -= handler;
+                    listener.Detach();
+                }
+			}
 <# } #>
             base.DetachCore();
         }
@@ -77,9 +86,9 @@ namespace NMF.Expressions
         {
             return new ObservableTreeExtensionCall<<# for (int j = 1; j <= i; j++) { #>T<#= j #>, <# } #>TResult>(Function, 
 <# for (int j = 1; j < i; j++) { #>
-                Argument<#= j #>.ApplyParameters(parameters), anchor<#= j #>Listener.Select(l => l.Type), Arg<#= j #>Properties, 
+                Argument<#= j #>.ApplyParameters(parameters), anchor<#= j #>Listener?.Select(l => l.Type), Arg<#= j #>Properties, 
 <# } #>
-                Argument<#= i #>.ApplyParameters(parameters), anchor<#= i #>Listener.Select(l => l.Type), Arg<#= i #>Properties);
+                Argument<#= i #>.ApplyParameters(parameters), anchor<#= i #>Listener?.Select(l => l.Type), Arg<#= i #>Properties);
         }
     }
 <# } #>

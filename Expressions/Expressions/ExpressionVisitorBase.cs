@@ -256,6 +256,7 @@ namespace NMF.Expressions
             {
                 var argument = Visit(arg);
                 arguments[i] = argument;
+                i++;
                 changed |= argument != arg;
             }
             if (changed)

@@ -8,7 +8,7 @@ using NMF.Transformations.Core;
 using NMF.Utilities;
 using System.Diagnostics;
 using System.Collections;
-using NMF.Analysis;
+using NMF.Analyses;
 
 namespace NMF.CodeGen
 {

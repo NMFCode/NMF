@@ -34,17 +34,18 @@ namespace NMF.Expressions.Tests
             public T Item { get; private set; }
         }
 
-        ModelRepository repository;
-        Model railwayModel;
-        RailwayContainer rc;
-        INotifySystem oldSystem;
+        public ModelRepository Repository { get; private set; }
+        public Model RailwayModel { get; private set; }
+        public RailwayContainer RailwayContainer { get; private set; }
+
+        private INotifySystem oldSystem;
 
         [TestInitialize]
         public void LoadRailwayModel()
         {
-            repository = new ModelRepository();
-            railwayModel = repository.Resolve("railway.railway");
-            rc = railwayModel.RootElements[0] as RailwayContainer;
+            Repository = new ModelRepository();
+            RailwayModel = Repository.Resolve("railway.railway");
+            RailwayContainer = RailwayModel.RootElements[0] as RailwayContainer;
 
             oldSystem = NotifySystem.DefaultSystem;
             NotifySystem.DefaultSystem = CreateNotifySystem();
@@ -58,11 +59,11 @@ namespace NMF.Expressions.Tests
             NotifySystem.DefaultSystem = oldSystem;
         }
         [TestMethod]
-        public void Test_NotifySystem_CheckEntrySemaphore()
+        public void NotifySystem_CheckEntrySemaphore()
         {
             ObservingFunc<IRoute, bool> func = new ObservingFunc<IRoute, bool>(r => r.Entry != null && r.Entry.Signal == Signal.GO);
 
-            var route = rc.Routes[0];
+            var route = RailwayContainer.Routes[0];
             var test = func.Observe(route);
             var resultChanged = false;
             test.ValueChanged += (o, e) =>
@@ -82,11 +83,11 @@ namespace NMF.Expressions.Tests
         }
 
         [TestMethod]
-        public void Test_NotifySystem_CheckEntrySemaphore_Struct()
+        public void NotifySystem_CheckEntrySemaphore_Struct()
         {
             ObservingFunc<Struct<IRoute>, bool> func = new ObservingFunc<Struct<IRoute>, bool>(r => r.Item.Entry != null && r.Item.Entry.Signal == Signal.GO);
 
-            var route = rc.Routes[0];
+            var route = RailwayContainer.Routes[0];
             var test = func.Observe(new Struct<IRoute>(route));
             var resultChanged = false;
             test.ValueChanged += (o, e) =>
@@ -106,11 +107,11 @@ namespace NMF.Expressions.Tests
         }
 
         [TestMethod]
-        public void Test_NotifySystem_CheckEntrySemaphore_Generated()
+        public void NotifySystem_CheckEntrySemaphore_Generated()
         {
             ObservingFunc<Generated<IRoute>, bool> func = new ObservingFunc<Generated<IRoute>, bool>(r => r.Item.Entry != null && r.Item.Entry.Signal == Signal.GO);
 
-            var route = rc.Routes[0];
+            var route = RailwayContainer.Routes[0];
             var test = func.Observe(new Generated<IRoute>(route));
             var resultChanged = false;
             test.ValueChanged += (o, e) =>
@@ -130,11 +131,11 @@ namespace NMF.Expressions.Tests
         }
 
         [TestMethod]
-        public void Test_NotifySystem_CheckSwitchPosition()
+        public void NotifySystem_CheckSwitchPosition()
         {
             ObservingFunc<ISwitchPosition, bool> func = new ObservingFunc<ISwitchPosition, bool>(swP => swP.Switch.CurrentPosition == swP.Position);
 
-            var switchPosition = rc.Routes[0].Follows.OfType<ISwitchPosition>().FirstOrDefault();
+            var switchPosition = RailwayContainer.Routes[0].Follows.OfType<ISwitchPosition>().FirstOrDefault();
             var test = func.Observe(switchPosition);
             var resultChanged = false;
             var expectedOld = true;
@@ -165,11 +166,11 @@ namespace NMF.Expressions.Tests
         }
 
         [TestMethod]
-        public void Test_NotifySystem_CheckSwitchPosition_Struct()
+        public void NotifySystem_CheckSwitchPosition_Struct()
         {
             ObservingFunc<Struct<ISwitchPosition>, bool> func = new ObservingFunc<Struct<ISwitchPosition>, bool>(swP => swP.Item.Switch.CurrentPosition == swP.Item.Position);
 
-            var switchPosition = rc.Routes[0].Follows.OfType<ISwitchPosition>().FirstOrDefault();
+            var switchPosition = RailwayContainer.Routes[0].Follows.OfType<ISwitchPosition>().FirstOrDefault();
             var test = func.Observe(new Struct<ISwitchPosition>(switchPosition));
             var resultChanged = false;
             var expectedOld = true;
@@ -200,11 +201,11 @@ namespace NMF.Expressions.Tests
         }
 
         [TestMethod]
-        public void Test_NotifySystem_CheckSwitchPosition_Generated()
+        public void NotifySystem_CheckSwitchPosition_Generated()
         {
             ObservingFunc<Generated<ISwitchPosition>, bool> func = new ObservingFunc<Generated<ISwitchPosition>, bool>(swP => swP.Item.Switch.CurrentPosition == swP.Item.Position);
 
-            var switchPosition = rc.Routes[0].Follows.OfType<ISwitchPosition>().FirstOrDefault();
+            var switchPosition = RailwayContainer.Routes[0].Follows.OfType<ISwitchPosition>().FirstOrDefault();
             var test = func.Observe(new Generated<ISwitchPosition>(switchPosition));
             var resultChanged = false;
             var expectedOld = true;
@@ -235,13 +236,13 @@ namespace NMF.Expressions.Tests
         }
 
         [TestMethod]
-        public void Test_NotifySystem_CheckSwitchPositionSensor()
+        public void NotifySystem_CheckSwitchPositionSensor()
         {
             ObservingFunc<IRoute, ISwitchPosition, bool> func = new ObservingFunc<IRoute, ISwitchPosition, bool>(
                 (r, swP) => swP.Switch.Sensor != null && !r.DefinedBy.Contains(swP.Switch.Sensor));
 
-            var route = rc.Routes[0];
-            var route2 = rc.Invalids.OfType<IRoute>().FirstOrDefault();
+            var route = RailwayContainer.Routes[0];
+            var route2 = RailwayContainer.Invalids.OfType<IRoute>().FirstOrDefault();
             var switchPosition = route.Follows.OfType<ISwitchPosition>().FirstOrDefault();
             var test = func.Observe(route, switchPosition);
             var resultChanged = false;
@@ -282,7 +283,7 @@ namespace NMF.Expressions.Tests
         }
 
         [TestMethod]
-        public void Test_NotifySystem_SwitchSet()
+        public void NotifySystem_SwitchSet()
         {
             ObservingFunc<RailwayContainer, IEnumerableExpression<SwitchPosition>> func = new ObservingFunc<RailwayContainer, IEnumerableExpression<SwitchPosition>>(
                 rc =>
@@ -292,17 +293,21 @@ namespace NMF.Expressions.Tests
                 where swP.Switch.CurrentPosition != swP.Position
                 select swP);
 
-            var switchPosition = rc.Routes[0].Follows.OfType<ISwitchPosition>().FirstOrDefault();
-            var test = func.Observe(rc);
+            var switchPosition = RailwayContainer.Routes[0].Follows.OfType<ISwitchPosition>().FirstOrDefault();
+            var test = func.Observe(RailwayContainer);
             var resultChanged = false;
             test.ValueChanged += (o, e) =>
             {
                 resultChanged = true;
             };
+
+            var testCollection = test.Value.AsNotifiable();
+            Assert.AreEqual(3, testCollection.Count());
+            Assert.IsFalse(resultChanged);
         }
 
         [TestMethod]
-        public void Test_NotifySystem_PosLength()
+        public void NotifySystem_PosLength()
         {
             ObservingFunc<RailwayContainer, IEnumerableExpression<ISegment>> func = new ObservingFunc<RailwayContainer, IEnumerableExpression<ISegment>>(
                 rc =>
@@ -310,7 +315,7 @@ namespace NMF.Expressions.Tests
                 where seg.Length <= 0
                 select seg);
 
-            var test = func.Observe(rc);
+            var test = func.Observe(RailwayContainer);
             var resultChanged = false;
             var expectedOld = true;
             var expectedNew = false;
@@ -320,6 +325,10 @@ namespace NMF.Expressions.Tests
                 Assert.AreEqual(expectedOld, e.OldValue);
                 Assert.AreEqual(expectedNew, e.NewValue);
             };
+
+            var testCollection = test.Value.AsNotifiable();
+            Assert.AreEqual(0, testCollection.Count());
+            Assert.IsFalse(resultChanged);
         }
     }
 }
