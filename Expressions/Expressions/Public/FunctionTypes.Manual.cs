@@ -120,6 +120,8 @@ namespace NMF.Expressions
 
         public INotificationResult Notify(IList<INotificationResult> sources)
         {
+            if (ValueChanged != null)
+                ValueChanged(this, new ValueChangedEventArgs(Value, Value));
             return new ValueChangedNotificationResult<T>(this, Value, Value);
         }
 
