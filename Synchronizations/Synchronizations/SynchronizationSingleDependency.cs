@@ -72,59 +72,64 @@ namespace NMF.Synchronizations
             }
         }
 
-        public void HandleLeftToRightDependency(Computation computation, bool allowRightToLeft)
+        public IDisposable CreateLeftToRightDependency(bool allowRightToLeft, SynchronizationComputation<TLeft, TRight> syncComputation)
         {
-            var syncComputation = computation as SynchronizationComputation<TLeft, TRight>;
+            IDisposable dependency = null;
             switch (syncComputation.SynchronizationContext.ChangePropagation)
             {
                 case ChangePropagationMode.None:
                     HandleStaticLTRDependency(syncComputation);
                     break;
                 case ChangePropagationMode.OneWay:
-                    HandleOneWayLTRDependency(syncComputation);
+                    dependency = HandleOneWayLTRDependency(syncComputation);
                     break;
                 case ChangePropagationMode.TwoWay:
                     if (allowRightToLeft)
                     {
-                        HandleTwoWayLTRDependency(syncComputation);
+                        dependency = HandleTwoWayLTRDependency(syncComputation);
                     }
                     else
                     {
-                        HandleOneWayLTRDependency(syncComputation);
+                        dependency = HandleOneWayLTRDependency(syncComputation);
                     }
                     break;
                 default:
                     break;
             }
+            if (dependency != null) syncComputation.Dependencies.Add(dependency);
+
+            return dependency;
         }
 
-        public void HandleRightToLeftDependency(Computation computation, bool allowLeftToRight)
+        public IDisposable CreateRightToLeftDependency(bool allowLeftToRight, SynchronizationComputation<TRight, TLeft> syncComputation)
         {
-            var syncComputation = computation as SynchronizationComputation<TRight, TLeft>;
+            IDisposable dependency = null;
             switch (syncComputation.SynchronizationContext.ChangePropagation)
             {
                 case ChangePropagationMode.None:
                     HandleStaticRTLDependency(syncComputation);
                     break;
                 case ChangePropagationMode.OneWay:
-                    HandleOneWayRTLDependency(syncComputation);
+                    dependency = HandleOneWayRTLDependency(syncComputation);
                     break;
                 case ChangePropagationMode.TwoWay:
                     if (allowLeftToRight)
                     {
-                        HandleTwoWayRTLDependency(syncComputation);
+                        dependency = HandleTwoWayRTLDependency(syncComputation);
                     }
                     else
                     {
-                        HandleOneWayRTLDependency(syncComputation);
+                        dependency = HandleOneWayRTLDependency(syncComputation);
                     }
                     break;
                 default:
                     break;
             }
+            if (dependency != null) syncComputation.Dependencies.Add(dependency);
+            return dependency;
         }
 
-        private void HandleTwoWayLTRDependency(SynchronizationComputation<TLeft, TRight> syncComputation)
+        private IDisposable HandleTwoWayLTRDependency(SynchronizationComputation<TLeft, TRight> syncComputation)
         {
             var left = leftFunc.InvokeReversable(syncComputation.Input);
             var right = rightFunc.InvokeReversable(syncComputation.Opposite.Input);
@@ -132,13 +137,10 @@ namespace NMF.Synchronizations
             Action<TRight, TDepRight> rightSetter = (r, val) => right.Value = val;
             CallLTRTransformationForInput(syncComputation, syncComputation.SynchronizationContext.Direction,
                 left.Value, right.Value, leftSetter, rightSetter);
-            left.ValueChanged += (o, e) => CallLTRTransformationForInput(syncComputation, SynchronizationDirection.LeftToRightForced,
-                left.Value, right.Value, leftSetter, rightSetter);
-            right.ValueChanged += (o, e) => CallRTLTransformationForInput(syncComputation.Opposite, SynchronizationDirection.RightToLeftForced,
-                right.Value, left.Value, leftSetter, rightSetter);
+            return new TwoWayDependency(left, right, syncComputation, this);
         }
 
-        private void HandleTwoWayRTLDependency(SynchronizationComputation<TRight, TLeft> syncComputation)
+        private IDisposable HandleTwoWayRTLDependency(SynchronizationComputation<TRight, TLeft> syncComputation)
         {
             var left = leftFunc.InvokeReversable(syncComputation.Opposite.Input);
             var right = rightFunc.InvokeReversable(syncComputation.Input);
@@ -146,17 +148,55 @@ namespace NMF.Synchronizations
             Action<TRight, TDepRight> rightSetter = (r, val) => right.Value = val;
             CallRTLTransformationForInput(syncComputation, syncComputation.SynchronizationContext.Direction,
                 right.Value, left.Value, leftSetter, rightSetter);
-            right.ValueChanged += (o, e) => CallRTLTransformationForInput(syncComputation, SynchronizationDirection.RightToLeftForced,
-                right.Value, left.Value, leftSetter, rightSetter);
-            left.ValueChanged += (o, e) => CallLTRTransformationForInput(syncComputation.Opposite, SynchronizationDirection.LeftToRightForced,
-                left.Value, right.Value, leftSetter, rightSetter);
+            return new TwoWayDependency(left, right, syncComputation.Opposite, this);
         }
 
-        private void HandleOneWayLTRDependency(SynchronizationComputation<TLeft, TRight> syncComputation)
+        private class TwoWayDependency : IDisposable
+        {
+            public INotifyReversableValue<TDepLeft> Left { get; private set; }
+            public INotifyReversableValue<TDepRight> Right { get; private set; }
+            public SynchronizationSingleDependency<TLeft, TRight, TDepLeft, TDepRight> Parent { get; private set; }
+            public SynchronizationComputation<TLeft, TRight> Computation { get; private set; }
+
+            public TwoWayDependency(INotifyReversableValue<TDepLeft> left, INotifyReversableValue<TDepRight> right, SynchronizationComputation<TLeft, TRight> computation, SynchronizationSingleDependency<TLeft, TRight, TDepLeft, TDepRight> parent)
+            {
+                Left = left;
+                Right = right;
+                Parent = parent;
+                Computation = computation;
+
+                Left.ValueChanged += Left_ValueChanged;
+                Right.ValueChanged += Right_ValueChanged;
+            }
+
+            private void Right_ValueChanged(object sender, ValueChangedEventArgs e)
+            {
+                Action<TLeft, TDepLeft> leftSetter = (l, val) => Left.Value = val;
+                Action<TRight, TDepRight> rightSetter = (r, val) => Right.Value = val;
+
+                Parent.CallRTLTransformationForInput(Computation.Opposite, SynchronizationDirection.RightToLeftForced, Right.Value, Left.Value, leftSetter, rightSetter);
+            }
+
+            private void Left_ValueChanged(object sender, ValueChangedEventArgs e)
+            {
+                Action<TLeft, TDepLeft> leftSetter = (l, val) => Left.Value = val;
+                Action<TRight, TDepRight> rightSetter = (r, val) => Right.Value = val;
+
+                Parent.CallLTRTransformationForInput(Computation, SynchronizationDirection.LeftToRightForced, Left.Value, Right.Value, leftSetter, rightSetter);
+            }
+
+            public void Dispose()
+            {
+                Left.ValueChanged -= Left_ValueChanged;
+                Right.ValueChanged -= Right_ValueChanged;
+                Left.Detach();
+                Right.Detach();
+            }
+        }
+
+        private IDisposable HandleOneWayLTRDependency(SynchronizationComputation<TLeft, TRight> syncComputation)
         {
             var input = leftFunc.Observe(syncComputation.Input);
-            var target = rightFunc.InvokeReversable(syncComputation.Opposite.Input);
-            Action<TRight, TDepRight> rightSetter = (right, val) => target.Value = val;
             Action<TLeft, TDepLeft> leftSetter = (left, val) =>
             {
                 var reversable = input as INotifyReversableValue<TDepLeft>;
@@ -170,16 +210,40 @@ namespace NMF.Synchronizations
                 }
             };
             CallLTRTransformationForInput(syncComputation, syncComputation.SynchronizationContext.Direction,
-                input.Value, target.Value, leftSetter, rightSetter);
-            input.ValueChanged += (o, e) => CallLTRTransformationForInput(syncComputation,
-                SynchronizationDirection.LeftToRightForced, input.Value, target.Value, leftSetter, rightSetter);
+                input.Value, rightGetter(syncComputation.Opposite.Input), leftSetter, rightSetter);
+            return new OneWayLTRDependency(input, syncComputation, this);
         }
 
-        private void HandleOneWayRTLDependency(SynchronizationComputation<TRight, TLeft> syncComputation)
+        private class OneWayLTRDependency : IDisposable
+        {
+            public INotifyValue<TDepLeft> Left { get; private set; }
+            public SynchronizationSingleDependency<TLeft, TRight, TDepLeft, TDepRight> Parent { get; private set; }
+            public SynchronizationComputation<TLeft, TRight> Computation { get; private set; }
+
+            public OneWayLTRDependency(INotifyValue<TDepLeft> left, SynchronizationComputation<TLeft, TRight> computation, SynchronizationSingleDependency<TLeft, TRight, TDepLeft, TDepRight> parent)
+            {
+                Left = left;
+                Parent = parent;
+                Computation = computation;
+
+                Left.ValueChanged += Left_ValueChanged;
+            }
+
+            private void Left_ValueChanged(object sender, ValueChangedEventArgs e)
+            {
+                Parent.CallLTRTransformationForInput(Computation, SynchronizationDirection.LeftToRightForced, Left.Value, Parent.rightGetter(Computation.Opposite.Input), Parent.leftSetter, Parent.rightSetter);
+            }
+
+            public void Dispose()
+            {
+                Left.ValueChanged -= Left_ValueChanged;
+                Left.Detach();
+            }
+        }
+
+        private IDisposable HandleOneWayRTLDependency(SynchronizationComputation<TRight, TLeft> syncComputation)
         {
             var input = rightFunc.Observe(syncComputation.Input);
-            var target = leftFunc.InvokeReversable(syncComputation.Opposite.Input);
-            Action<TLeft, TDepLeft> leftSetter = (left, val) => target.Value = val;
             Action<TRight, TDepRight> rightSetter = (right, val) =>
             {
                 var reversable = input as INotifyReversableValue<TDepRight>;
@@ -193,9 +257,35 @@ namespace NMF.Synchronizations
                 }
             };
             CallRTLTransformationForInput(syncComputation, syncComputation.SynchronizationContext.Direction,
-                input.Value, target.Value, leftSetter, rightSetter);
-            input.ValueChanged += (o, e) => CallRTLTransformationForInput(syncComputation, SynchronizationDirection.RightToLeftForced,
-                input.Value, target.Value, leftSetter, rightSetter);
+                input.Value, leftGetter(syncComputation.Opposite.Input), leftSetter, rightSetter);
+            return new OneWayRTLDependency(input, syncComputation, this);
+        }
+
+        private class OneWayRTLDependency : IDisposable
+        {
+            public INotifyValue<TDepRight> Right { get; private set; }
+            public SynchronizationSingleDependency<TLeft, TRight, TDepLeft, TDepRight> Parent { get; private set; }
+            public SynchronizationComputation<TRight, TLeft> Computation { get; private set; }
+
+            public OneWayRTLDependency(INotifyValue<TDepRight> right, SynchronizationComputation<TRight, TLeft> computation, SynchronizationSingleDependency<TLeft, TRight, TDepLeft, TDepRight> parent)
+            {
+                Right = right;
+                Parent = parent;
+                Computation = computation;
+
+                Right.ValueChanged += Left_ValueChanged;
+            }
+
+            private void Left_ValueChanged(object sender, ValueChangedEventArgs e)
+            {
+                Parent.CallRTLTransformationForInput(Computation, SynchronizationDirection.RightToLeftForced, Right.Value, Parent.leftGetter(Computation.Opposite.Input), Parent.leftSetter, Parent.rightSetter);
+            }
+
+            public void Dispose()
+            {
+                Right.ValueChanged -= Left_ValueChanged;
+                Right.Detach();
+            }
         }
 
         private void HandleStaticLTRDependency(SynchronizationComputation<TLeft, TRight> syncComputation)
@@ -317,7 +407,7 @@ namespace NMF.Synchronizations
 
             protected override void HandleReadyComputation(Computation computation)
             {
-                parent.HandleLeftToRightDependency(computation, true);
+                parent.CreateLeftToRightDependency(true, (SynchronizationComputation<TLeft, TRight>)computation);
             }
         }
 
@@ -332,7 +422,7 @@ namespace NMF.Synchronizations
 
             protected override void HandleReadyComputation(Computation computation)
             {
-                parent.HandleLeftToRightDependency(computation, false);
+                parent.CreateLeftToRightDependency(false, (SynchronizationComputation<TLeft, TRight>)computation);
             }
         }
 
@@ -347,7 +437,7 @@ namespace NMF.Synchronizations
 
             protected override void HandleReadyComputation(Computation computation)
             {
-                parent.HandleRightToLeftDependency(computation, true);
+                parent.CreateRightToLeftDependency(true, (SynchronizationComputation<TRight, TLeft>)computation);
             }
         }
 
@@ -362,7 +452,7 @@ namespace NMF.Synchronizations
 
             protected override void HandleReadyComputation(Computation computation)
             {
-                parent.HandleRightToLeftDependency(computation, false);
+                parent.CreateRightToLeftDependency(false, (SynchronizationComputation<TRight, TLeft>)computation);
             }
         }
     }
