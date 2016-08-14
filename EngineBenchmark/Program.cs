@@ -1,5 +1,4 @@
 ﻿using BenchmarkDotNet.Running;
-using NMF.Expressions;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
