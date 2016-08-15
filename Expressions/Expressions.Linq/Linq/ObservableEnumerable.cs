@@ -10,7 +10,18 @@ namespace NMF.Expressions.Linq
 {
     public abstract class ObservableEnumerable<T> : INotifyEnumerable<T>, ICollection<T>, IEnumerable<T>, INotifyCollectionChanged, IDisposable
     {
-        private int attachedCount;
+        private ShortList<INotifiable> successors = new ShortList<INotifiable>();
+
+        public ObservableEnumerable()
+        {
+            successors.CollectionChanged += (obj, e) =>
+            {
+                if (successors.Count == 0)
+                    Detach();
+                else if (e.Action == NotifyCollectionChangedAction.Add && successors.Count == 1)
+                    Attach();
+            };
+        }
 
         [DebuggerStepThrough]
         protected void OnAddItem(T item, int index = 0)
@@ -128,7 +139,7 @@ namespace NMF.Expressions.Linq
             IEqualityComparer<T> comparer = EqualityComparer<T>.Default;
             foreach (var element in this)
             {
-		        if (comparer.Equals(element, item))
+                if (comparer.Equals(element, item))
                 {
                     return true;
                 }
@@ -163,36 +174,31 @@ namespace NMF.Expressions.Linq
             }
         }
 
-        public void Attach()
+        public IList<INotifiable> Successors { get { return successors; } }
+
+        public abstract IEnumerable<INotifiable> Dependencies { get; }
+
+        public ExecutionMetaData ExecutionMetaData { get; } = new ExecutionMetaData();
+
+        private void Attach()
         {
-            if (attachedCount == 0)
-            {
-                AttachCore();
-                OnCleared();
-            }
-            attachedCount++;
+            foreach (var dep in Dependencies)
+                dep.Successors.Add(this);
+            OnAttach();
+            OnCleared();
         }
 
-        protected abstract void AttachCore();
-
-        protected abstract void DetachCore();
-
-        public void Detach()
+        private void Detach()
         {
-            if (attachedCount == 1)
-            {
-                DetachCore();
-            }
-            attachedCount--;
-            if (attachedCount < 0)
-            {
-                throw new InvalidOperationException("Cannot detach more often than has been attached");
-            }
+            OnDetach();
+            foreach (var dep in Dependencies)
+                dep.Successors.Remove(this);
         }
 
-        public bool IsAttached
-        {
-            get { return attachedCount > 0; }
-        }
+        protected virtual void OnAttach() { }
+
+        protected virtual void OnDetach() { }
+
+        public abstract INotificationResult Notify(IList<INotificationResult> sources);
     }
 }

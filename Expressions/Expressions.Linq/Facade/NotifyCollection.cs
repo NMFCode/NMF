@@ -8,19 +8,23 @@ namespace NMF.Expressions
 {
     public class NotifyCollection<T> : ObservableCollection<T>, INotifyEnumerable<T>, INotifyCollection<T>
     {
-        public void Attach() { }
+        private ShortList<INotifiable> successors = new ShortList<INotifiable>();
 
-        public void Detach() { }
+        public virtual IEnumerable<INotifiable> Dependencies { get { return Enumerable.Empty<INotifiable>(); } }
 
-        public bool IsAttached
-        {
-            get { return true; }
-        }
+        public ExecutionMetaData ExecutionMetaData { get; } = new ExecutionMetaData();
+
+        public IList<INotifiable> Successors { get { return successors; } }
 
         public void Dispose()
         {
             Dispose(true);
             GC.SuppressFinalize(this);
+        }
+
+        public virtual INotificationResult Notify(IList<INotificationResult> sources)
+        {
+            return new UnchangedNotificationResult(this);
         }
 
         protected virtual void Dispose(bool disposing)
