@@ -13,14 +13,14 @@ namespace NMF.Expressions.Linq
         private Dictionary<TSource, int> occurences;
         private int nullOccurences = 0;
 
+        public override IEnumerable<INotifiable> Dependencies { get { yield return source; } }
+
         public ObservableDistinct(INotifyEnumerable<TSource> source, IEqualityComparer<TSource> comparer)
         {
             if (source == null) throw new ArgumentNullException("source");
 
             this.source = source;
             occurences = new Dictionary<TSource, int>(comparer);
-
-            Attach();
         }
 
         public override IEnumerator<TSource> GetEnumerator()
@@ -28,46 +28,7 @@ namespace NMF.Expressions.Linq
             return occurences.Keys.GetEnumerator();
         }
 
-        protected override void AttachCore()
-        {
-            foreach (var item in source)
-            {
-                AddItem(item);
-            }
-            source.CollectionChanged += SourceCollectionChanged;
-        }
-
-        private void SourceCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
-        {
-            if (e.Action == NotifyCollectionChangedAction.Move) return;
-            if (e.Action != NotifyCollectionChangedAction.Reset)
-            {
-                if (e.OldItems != null)
-                {
-                    var removed = new List<TSource>();
-                    foreach (TSource item in e.OldItems)
-                    {
-                        if (RemoveItem(item))
-                        {
-                            removed.Add(item);
-                        }
-                    }
-                    if (removed.Count > 0) OnRemoveItems(removed);
-                }
-                if (e.NewItems != null)
-                {
-                    AddItems(e.NewItems);
-                }
-            }
-            else
-            {
-                occurences.Clear();
-                OnCleared();
-                AddItems(source);
-            }
-        }
-
-        private void AddItems(IEnumerable items)
+        private List<TSource> AddItems(IEnumerable items)
         {
             var added = new List<TSource>();
             foreach (TSource item in items)
@@ -77,7 +38,9 @@ namespace NMF.Expressions.Linq
                     added.Add(item);
                 }
             }
-            if (added.Count > 0) OnAddItems(added);
+            if (added.Count > 0)
+                OnAddItems(added);
+            return added;
         }
 
         private bool AddItem(TSource item)
@@ -130,10 +93,56 @@ namespace NMF.Expressions.Linq
             }
         }
 
-        protected override void DetachCore()
+        protected override void OnAttach()
+        {
+            foreach (var item in source)
+            {
+                AddItem(item);
+            }
+        }
+
+        protected override void OnDetach()
         {
             occurences.Clear();
-            source.CollectionChanged -= SourceCollectionChanged;
+        }
+
+        public override INotificationResult Notify(IList<INotificationResult> sources)
+        {
+            var change = (CollectionChangedNotificationResult<TSource>)sources[0];
+
+            if (change.IsReset)
+            {
+                occurences.Clear();
+                OnCleared();
+                AddItems(source);
+                return CollectionChangedNotificationResult<TSource>.Reset(this);
+            }
+
+            List<TSource> removed = null;
+            if (change.RemovedItems != null)
+            {
+                removed = new List<TSource>();
+                foreach (var item in change.RemovedItems)
+                {
+                    if (RemoveItem(item))
+                    {
+                        removed.Add(item);
+                    }
+                }
+                if (removed.Count > 0)
+                    OnRemoveItems(removed);
+            }
+
+            List<TSource> added = null;
+            if (change.AddedItems != null)
+            {
+                added = AddItems(change.AddedItems);
+            }
+
+            if ((removed == null || removed.Count == 0) && (added == null || added.Count == 0))
+                return new UnchangedNotificationResult(this);
+
+            return CollectionChangedNotificationResult<TSource>.AddRemove(this, added, removed);
         }
     }
 }
