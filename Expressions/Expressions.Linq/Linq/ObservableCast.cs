@@ -45,8 +45,9 @@ namespace NMF.Expressions.Linq
 
         public override INotificationResult Notify(IList<INotificationResult> sources)
         {
-            var change = (CollectionChangedNotificationResult)sources[0];
-            return change.Forward(this);
+            var change = (ICollectionChangedNotificationResult)sources[0];
+            change.Source = this;
+            return change;
         }
     }
 }

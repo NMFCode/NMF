@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using SL = System.Linq.Enumerable;
 using System.Text;
 using System.Collections.Specialized;
@@ -11,51 +12,48 @@ namespace NMF.Expressions.Linq
     {
         public INotifyEnumerable Source { get; private set; }
 
+        public override IEnumerable<INotifiable> Dependencies { get { yield return Source; } }
+
         public ObservableOfType(INotifyEnumerable source)
         {
             if (source == null) throw new ArgumentNullException("source");
 
             Source = source;
-
-            Attach();
         }
-
-        void SourceCollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
-        {
-            if (e.Action == NotifyCollectionChangedAction.Reset)
-            {
-                OnCleared();
-            }
-            else
-            {
-                if (e.OldItems != null)
-                {
-                    OnRemoveItems(SL.OfType<T>(e.OldItems));
-                }
-                if (e.NewItems != null)
-                {
-                    OnAddItems(SL.OfType<T>(e.NewItems));
-                }
-            }
-        }
-
+        
         public override IEnumerator<T> GetEnumerator()
         {
             return SL.OfType<T>(Source).GetEnumerator();
         }
 
-        protected override void AttachCore()
+        public override INotificationResult Notify(IList<INotificationResult> sources)
         {
-            Source.Attach();
+            var change = (ICollectionChangedNotificationResult)sources[0];
 
-            Source.CollectionChanged += SourceCollectionChanged;
-        }
+            if (change.IsReset)
+            {
+                OnCleared();
+                return new CollectionChangedNotificationResult<T>(this);
+            }
 
-        protected override void DetachCore()
-        {
-            Source.Detach();
+            List<T> removed = null;
+            if (change.RemovedItems != null)
+            {
+                removed = SL.OfType<T>(change.RemovedItems).ToList();
+                OnRemoveItems(removed);
+            }
 
-            Source.CollectionChanged -= SourceCollectionChanged;
+            List<T> added = null;
+            if (change.AddedItems != null)
+            {
+                added = SL.OfType<T>(change.AddedItems).ToList();
+                OnAddItems(added);
+            }
+
+            if ((removed == null || removed.Count == 0) && (added == null || added.Count == 0))
+                return new UnchangedNotificationResult(this);
+
+            return new CollectionChangedNotificationResult<T>(this, added, removed);
         }
     }
 
