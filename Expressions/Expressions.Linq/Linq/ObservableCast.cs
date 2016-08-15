@@ -41,18 +41,12 @@ namespace NMF.Expressions.Linq
             }
         }
 
-        protected override void AttachCore()
+        public override IEnumerable<INotifiable> Dependencies { get { yield return source; } }
+
+        public override INotificationResult Notify(IList<INotificationResult> sources)
         {
-            source.Attach();
-
-            source.CollectionChanged += SourceCollectionChanged;
-        }
-
-        protected override void DetachCore()
-        {
-            source.Detach();
-
-            source.CollectionChanged -= SourceCollectionChanged;
+            var change = (CollectionChangedNotificationResult)sources[0];
+            return change.Forward(this);
         }
     }
 }

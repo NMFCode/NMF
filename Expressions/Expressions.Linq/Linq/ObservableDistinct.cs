@@ -115,7 +115,7 @@ namespace NMF.Expressions.Linq
                 occurences.Clear();
                 OnCleared();
                 AddItems(source);
-                return CollectionChangedNotificationResult<TSource>.Reset(this);
+                return new CollectionChangedNotificationResult<TSource>(this);
             }
 
             List<TSource> removed = null;
@@ -142,7 +142,7 @@ namespace NMF.Expressions.Linq
             if ((removed == null || removed.Count == 0) && (added == null || added.Count == 0))
                 return new UnchangedNotificationResult(this);
 
-            return CollectionChangedNotificationResult<TSource>.AddRemove(this, added, removed);
+            return new CollectionChangedNotificationResult<TSource>(this, added, removed);
         }
     }
 }
