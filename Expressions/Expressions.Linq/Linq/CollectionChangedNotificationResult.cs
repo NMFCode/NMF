@@ -14,6 +14,10 @@ namespace NMF.Expressions.Linq
 
         IList RemovedItems { get; }
 
+        int AddedIndex { get; }
+
+        int RemovedIndex { get; }
+
         new INotifiable Source { get; set; }
     }
 
@@ -29,6 +33,10 @@ namespace NMF.Expressions.Linq
 
         public List<T> RemovedItems { get; private set; }
 
+        public int AddedIndex { get; private set; }
+
+        public int RemovedIndex { get; private set; }
+
         IList ICollectionChangedNotificationResult.AddedItems { get { return AddedItems; } }
 
         IList ICollectionChangedNotificationResult.RemovedItems { get { return RemovedItems; } }
@@ -39,7 +47,7 @@ namespace NMF.Expressions.Linq
             IsReset = isReset;
         }
 
-        public CollectionChangedNotificationResult(INotifiable source, List<T> addedItems, List<T> removedItems) : this(source, false)
+        public CollectionChangedNotificationResult(INotifiable source, List<T> addedItems, List<T> removedItems, int addedIndex = -1, int removedIndex = -1) : this(source, false)
         {
             if (addedItems != null && addedItems.Count == 0)
                 AddedItems = null;
@@ -53,6 +61,9 @@ namespace NMF.Expressions.Linq
 
             if (AddedItems == null && RemovedItems == null)
                 throw new ArgumentException("A collection change that is not a reset must have at least one add or one remove.");
+
+            AddedIndex = addedIndex;
+            RemovedIndex = removedIndex;
         }
 
         public CollectionChangedNotificationResult(INotifiable source) : this(source, true) { }
