@@ -10,6 +10,17 @@ namespace NMF.Expressions.Linq
     {
         private INotifyEnumerable<TSource> source;
         private IEnumerable<TSource> source2;
+        private INotifyEnumerable<TSource> observableSource2;
+
+        public override IEnumerable<INotifiable> Dependencies
+        {
+            get
+            {
+                yield return source;
+                if (observableSource2 != null)
+                    yield return observableSource2;
+            }
+        }
 
         public ObservableConcat(INotifyEnumerable<TSource> source, IEnumerable<TSource> source2)
         {
@@ -18,63 +29,28 @@ namespace NMF.Expressions.Linq
 
             this.source = source;
             this.source2 = source2;
-
-            Attach();
+            this.observableSource2 = source2 as INotifyEnumerable<TSource>;
         }
 
         public override IEnumerator<TSource> GetEnumerator()
         {
             return SL.Concat(source, source2).GetEnumerator();
         }
-
-        protected override void AttachCore()
+        
+        public override INotificationResult Notify(IList<INotificationResult> sources)
         {
-            source.CollectionChanged += SourceCollectionChanged;
-            var notifier = source2 as INotifyCollectionChanged;
-            if (notifier != null)
+            var change1 = (CollectionChangedNotificationResult<TSource>)sources[0];
+            if (sources.Count > 1)
             {
-                notifier.CollectionChanged += Source2CollectionChanged;
+                var change2 = (CollectionChangedNotificationResult<TSource>)sources[1];
+                change1.AddedItems.AddRange(change2.AddedItems);
+                change1.RemovedItems.AddRange(change2.RemovedItems);
+                return new CollectionChangedNotificationResult<TSource>(this, change1.AddedItems, change1.RemovedItems);
             }
-        }
-
-        private void Source2CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
-        {
-            int sourceCount = SL.Count(source);
-            switch (e.Action)
+            else
             {
-                case NotifyCollectionChangedAction.Add:
-                    e = new NotifyCollectionChangedEventArgs(e.Action, e.NewItems, sourceCount + e.NewStartingIndex);
-                    break;
-                case NotifyCollectionChangedAction.Move:
-                    e = new NotifyCollectionChangedEventArgs(e.Action, e.NewItems, sourceCount + e.NewStartingIndex, sourceCount + e.OldStartingIndex);
-                    break;
-                case NotifyCollectionChangedAction.Remove:
-                    e = new NotifyCollectionChangedEventArgs(e.Action, e.OldItems, sourceCount + e.OldStartingIndex);
-                    break;
-                case NotifyCollectionChangedAction.Replace:
-                    e = new NotifyCollectionChangedEventArgs(e.Action, e.NewItems, e.OldItems, sourceCount + e.OldStartingIndex);
-                    break;
-                case NotifyCollectionChangedAction.Reset:
-                    OnCleared();
-                    return;
-                default:
-                    throw new InvalidOperationException();
-            }
-            OnCollectionChanged(e);
-        }
-
-        private void SourceCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
-        {
-            OnCollectionChanged(e);
-        }
-
-        protected override void DetachCore()
-        {
-            source.CollectionChanged -= SourceCollectionChanged;
-            var notifier = source2 as INotifyCollectionChanged;
-            if (notifier != null)
-            {
-                notifier.CollectionChanged -= Source2CollectionChanged;
+                change1.Source = this;
+                return change1;
             }
         }
     }
