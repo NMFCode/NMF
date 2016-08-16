@@ -7,11 +7,10 @@ using System.Linq.Expressions;
 
 namespace NMF.Expressions.Linq
 {
-
     internal class ObservableSingleOrDefault<TSource> : INotifyValue<TSource>, INotifyReversableValue<TSource>
     {
+        private readonly ShortList<INotifiable> successors = new ShortList<INotifiable>();
         private TSource value;
-        private bool isAttached;
         private INotifyEnumerable<TSource> source;
 
         public static ObservableSingleOrDefault<TSource> Create(INotifyEnumerable<TSource> source)
@@ -171,27 +170,13 @@ namespace NMF.Expressions.Linq
 
             this.source = source;
 
-            Attach();
-        }
-
-        private void SourceCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
-        {
-            if (e.Action == NotifyCollectionChangedAction.Reset
-                || (e.OldItems != null && e.OldStartingIndex <= 0)
-                || (e.NewItems != null && e.NewStartingIndex <= 0))
+            successors.CollectionChanged += (obj, e) =>
             {
-                SetValue(SL.SingleOrDefault(source));
-            }
-        }
-
-        private void SetValue(TSource item)
-        {
-            if (!EqualityComparer<TSource>.Default.Equals(value, item))
-            {
-                var old = value;
-                value = item;
-                OnValueChanged(new ValueChangedEventArgs(old, item));
-            }
+                if (successors.Count == 0)
+                    Detach();
+                else if (e.Action == NotifyCollectionChangedAction.Add && successors.Count == 1)
+                    Attach();
+            };
         }
 
         public TSource Value
@@ -209,29 +194,44 @@ namespace NMF.Expressions.Linq
 
         public event EventHandler<ValueChangedEventArgs> ValueChanged;
 
-        public void Detach()
-        {
-            if (isAttached)
-            {
-                source.CollectionChanged -= SourceCollectionChanged;
-                isAttached = false;
-            }
-        }
-
         public void Attach()
         {
-            if (!isAttached)
-            {
-                value = SL.FirstOrDefault(source);
-                source.CollectionChanged += SourceCollectionChanged;
-                isAttached = true;
-            }
+            foreach (var dep in Dependencies)
+                dep.Successors.Add(this);
+            value = SL.SingleOrDefault(source);
         }
 
-
-        public bool IsAttached
+        public void Detach()
         {
-            get { return isAttached; }
+            foreach (var dep in Dependencies)
+                dep.Successors.Remove(this);
+        }
+
+        public INotificationResult Notify(IList<INotificationResult> sources)
+        {
+            var change = (CollectionChangedNotificationResult<TSource>)sources[0];
+
+            if (change.IsReset ||
+                (change.RemovedItems != null && change.RemovedIndex <= 0) ||
+                (change.AddedItems != null && change.AddedIndex <= 0))
+            {
+                var newValue = SL.SingleOrDefault(source);
+
+                if (!EqualityComparer<TSource>.Default.Equals(value, newValue))
+                {
+                    var oldValue = value;
+                    value = newValue;
+                    OnValueChanged(new ValueChangedEventArgs(oldValue, newValue));
+                    return new ValueChangedNotificationResult<TSource>(this, oldValue, newValue);
+                }
+            }
+
+            return new UnchangedNotificationResult(this);
+        }
+
+        public void Dispose()
+        {
+            Detach();
         }
 
         TSource INotifyReversableValue<TSource>.Value
@@ -280,5 +280,11 @@ namespace NMF.Expressions.Linq
                 return coll != null && !coll.IsReadOnly;
             }
         }
+
+        public IList<INotifiable> Successors { get { return successors; } }
+
+        public IEnumerable<INotifiable> Dependencies { get { yield return source; } }
+
+        public ExecutionMetaData ExecutionMetaData { get; } = new ExecutionMetaData();
     }
 }
