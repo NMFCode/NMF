@@ -172,11 +172,11 @@ namespace NMF.Expressions.Linq
 
     internal class ObservableMin<T> : INotifyValue<T>
     {
+        private readonly ShortList<INotifiable> successors = new ShortList<INotifiable>();
         private INotifyEnumerable<T> source;
         private IComparer<T> comparer;
         private bool hasValue;
         private T current;
-        private int attachedCount;
 
         public ObservableMin(INotifyEnumerable<T> source) : this(source, null) { }
 
@@ -189,6 +189,14 @@ namespace NMF.Expressions.Linq
 
             this.source = source;
             this.comparer = comparer ?? Comparer<T>.Default;
+
+            successors.CollectionChanged += (obj, e) =>
+            {
+                if (successors.Count == 0)
+                    Detach();
+                else if (e.Action == NotifyCollectionChangedAction.Add && successors.Count == 1)
+                    Attach();
+            };
         }
 
         public T Value
@@ -196,34 +204,30 @@ namespace NMF.Expressions.Linq
             get { return current; }
         }
 
-        public event EventHandler<ValueChangedEventArgs> ValueChanged;
+        public IList<INotifiable> Successors { get { return successors; } }
 
-        public void Detach()
-        {
-            attachedCount--;
-            if (attachedCount == 0)
-            {
-                source.CollectionChanged -= SourceCollectionChanged;
-            }
-        }
+        public IEnumerable<INotifiable> Dependencies { get { yield return source; } }
+
+        public ExecutionMetaData ExecutionMetaData { get; } = new ExecutionMetaData();
+
+        public event EventHandler<ValueChangedEventArgs> ValueChanged;
 
         public void Attach()
         {
-            if (attachedCount == 0)
+            foreach (var dep in Dependencies)
+                dep.Successors.Add(this);
+            
+            hasValue = false;
+            foreach (var item in source)
             {
-                hasValue = false;
-                var oldCurrent = current;
-                foreach (var item in source)
-                {
-                    AddItem(item);
-                }
-                if (hasValue)
-                {
-                    OnValueChanged(current, oldCurrent);
-                }
-                source.CollectionChanged += SourceCollectionChanged;
+                AddItem(item);
             }
-            attachedCount++;
+        }
+
+        public void Detach()
+        {
+            foreach (var dep in Dependencies)
+                dep.Successors.Remove(this);
         }
 
         private void AddItem(T item)
@@ -243,70 +247,66 @@ namespace NMF.Expressions.Linq
             }
         }
 
-        private void SourceCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        public INotificationResult Notify(IList<INotificationResult> sources)
         {
-            if (e.Action != NotifyCollectionChangedAction.Reset)
+            var change = (CollectionChangedNotificationResult<T>)sources[0];
+            var oldValue = Value;
+            var reset = false;
+
+            if (!change.IsReset)
             {
-                var oldValue = Value;
-                var reset = false;
-                if (e.OldItems != null)
+                if (change.RemovedItems != null)
                 {
-                    foreach (T item in e.OldItems)
+                    foreach (var item in change.RemovedItems)
                     {
                         if (comparer.Compare(current, item) == 0)
                         {
                             reset = true;
-                        }
-                    }
-                    if (reset)
-                    {
-                        current = default(T);
-                        hasValue = false;
-                        foreach (var item in source)
-                        {
-                            AddItem(item);
+                            break;
                         }
                     }
                 }
-                if (e.NewItems != null)
+                if (change.AddedItems != null && !reset)
                 {
-                    foreach (T item in e.NewItems)
+                    foreach (var item in change.AddedItems)
                     {
                         AddItem(item);
                     }
                 }
-                var newValue = Value;
-                if (!EqualityComparer<T>.Default.Equals(newValue, oldValue))
-                {
-                    OnValueChanged(newValue, oldValue);
-                }
             }
-            else
+
+            if (change.IsReset || reset)
             {
-                var oldValue = Value;
                 current = default(T);
                 hasValue = false;
-                if (!EqualityComparer<T>.Default.Equals(current, oldValue))
+                foreach (var item in source)
                 {
-                    OnValueChanged(current, oldValue);
+                    AddItem(item);
                 }
             }
+
+            if (!EqualityComparer<T>.Default.Equals(current, oldValue))
+            {
+                OnValueChanged(current, oldValue);
+                return new ValueChangedNotificationResult<T>(this, oldValue, current);
+            }
+
+            return new UnchangedNotificationResult(this);
         }
 
-
-        public bool IsAttached
+        public void Dispose()
         {
-            get { return attachedCount > 0; }
+            Detach();
         }
     }
 
     internal class ObservableNullableMin<T> : INotifyValue<T?>
         where T : struct
     {
+        private readonly ShortList<INotifiable> successors = new ShortList<INotifiable>();
         private INotifyEnumerable<T?> source;
         private IComparer<T> comparer;
         private T? current;
-        private int attachedCount;
 
         public ObservableNullableMin(INotifyEnumerable<T?> source) : this(source, null) { }
 
@@ -319,6 +319,14 @@ namespace NMF.Expressions.Linq
 
             this.source = source;
             this.comparer = comparer ?? Comparer<T>.Default;
+
+            successors.CollectionChanged += (obj, e) =>
+            {
+                if (successors.Count == 0)
+                    Detach();
+                else if (e.Action == NotifyCollectionChangedAction.Add && successors.Count == 1)
+                    Attach();
+            };
         }
 
         public T? Value
@@ -326,43 +334,38 @@ namespace NMF.Expressions.Linq
             get { return current; }
         }
 
-        public event EventHandler<ValueChangedEventArgs> ValueChanged;
+        public IList<INotifiable> Successors { get { return successors; } }
 
-        public void Detach()
-        {
-            attachedCount--;
-            if (attachedCount == 0)
-            {
-                source.CollectionChanged -= SourceCollectionChanged;
-            }
-        }
+        public IEnumerable<INotifiable> Dependencies { get { yield return source; } }
+
+        public ExecutionMetaData ExecutionMetaData { get; } = new ExecutionMetaData();
+
+        public event EventHandler<ValueChangedEventArgs> ValueChanged;
 
         public void Attach()
         {
-            if (attachedCount == 0)
+            foreach (var dep in Dependencies)
+                dep.Successors.Add(this);
+            
+            foreach (var item in source)
             {
-                var oldCurrent = current;
-                current = null;
-                foreach (var item in source)
-                {
-                    AddItem(item);
-                }
-                if (current.HasValue)
-                {
-                    OnValueChanged(current, oldCurrent);
-                }
-                source.CollectionChanged += SourceCollectionChanged;
+                AddItem(item);
             }
-            attachedCount++;
+        }
+
+        public void Detach()
+        {
+            foreach (var dep in Dependencies)
+                dep.Successors.Remove(this);
         }
 
         private void AddItem(T? item)
         {
-            if (!item.HasValue) return;
+            if (!item.HasValue)
+                return;
+
             if (!current.HasValue || comparer.Compare(current.Value, item.Value) > 0)
-            {
                 current = item;
-            }
         }
 
         private void OnValueChanged(T? value, T? oldValue)
@@ -373,62 +376,55 @@ namespace NMF.Expressions.Linq
             }
         }
 
-        private void SourceCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        public INotificationResult Notify(IList<INotificationResult> sources)
         {
-            if (e.Action != NotifyCollectionChangedAction.Reset)
+            var change = (CollectionChangedNotificationResult<T?>)sources[0];
+            var oldValue = Value;
+            var reset = false;
+
+            if (!change.IsReset)
             {
-                var oldValue = Value;
-                var reset = false;
-                if (e.OldItems != null)
+                if (change.RemovedItems != null)
                 {
-                    foreach (T? item in e.OldItems)
+                    foreach (var item in change.RemovedItems)
                     {
-                        if (item.HasValue)
+                        if (item.HasValue && comparer.Compare(current.Value, item.Value) == 0)
                         {
-                            if (comparer.Compare(current.Value, item.Value) == 0)
-                            {
-                                reset = true;
-                            }
-                        }
-                    }
-                    if (reset)
-                    {
-                        current = null;
-                        foreach (var item in source)
-                        {
-                            AddItem(item);
+                            reset = true;
+                            break;
                         }
                     }
                 }
-                if (e.NewItems != null)
+                if (change.AddedItems != null && !reset)
                 {
-                    foreach (T? item in e.NewItems)
+                    foreach (var item in change.AddedItems)
                     {
                         AddItem(item);
                     }
                 }
-                var newValue = Value;
-                if (!EqualityComparer<T?>.Default.Equals(newValue, oldValue))
-                {
-                    OnValueChanged(newValue, oldValue);
-                }
             }
-            else
+
+            if (change.IsReset || reset)
             {
-                var oldValue = Value;
-                current = null;
-                if (!EqualityComparer<T?>.Default.Equals(current, oldValue))
+                current = default(T);
+                foreach (var item in source)
                 {
-                    OnValueChanged(current, oldValue);
+                    AddItem(item);
                 }
             }
+
+            if (!EqualityComparer<T>.Default.Equals(current.Value, oldValue.Value))
+            {
+                OnValueChanged(current, oldValue);
+                return new ValueChangedNotificationResult<T?>(this, oldValue, current);
+            }
+
+            return new UnchangedNotificationResult(this);
         }
 
-
-        public bool IsAttached
+        public void Dispose()
         {
-            get { return attachedCount > 0; }
+            Detach();
         }
     }
-
 }
