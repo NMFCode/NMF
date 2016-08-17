@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.Specialized;
 using SL = System.Linq.Enumerable;
 using System.Text;
+using System.Linq;
 
 namespace NMF.Expressions.Linq
 {
@@ -10,7 +11,18 @@ namespace NMF.Expressions.Linq
     {
         private INotifyEnumerable<TSource> source;
         private IEnumerable<TSource> source2;
+        private INotifyEnumerable<TSource> observableSource2;
         private Dictionary<TSource, int> sourceItems;
+
+        public override IEnumerable<INotifiable> Dependencies
+        {
+            get
+            {
+                yield return source;
+                if (observableSource2 != null)
+                    yield return observableSource2;
+            }
+        }
 
         public ObservableExcept(INotifyEnumerable<TSource> source, IEnumerable<TSource> source2, IEqualityComparer<TSource> comparer)
         {
@@ -19,99 +31,13 @@ namespace NMF.Expressions.Linq
 
             this.source = source;
             this.source2 = source2;
+            this.observableSource2 = source2 as INotifyEnumerable<TSource>;
             sourceItems = new Dictionary<TSource, int>(comparer);
-
-            Attach();
         }
 
         public override IEnumerator<TSource> GetEnumerator()
         {
             return SL.Where(source, item => !sourceItems.ContainsKey(item)).GetEnumerator();
-        }
-
-        protected override void AttachCore()
-        {
-            source.CollectionChanged += SourceCollectionChanged;
-            foreach (var item in source2)
-            {
-                AddItem(item);
-            }
-            var notifier = source2 as INotifyCollectionChanged;
-            if (notifier != null)
-            {
-                notifier.CollectionChanged += Source2CollectionChanged;
-            }
-        }
-
-        private void SourceCollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
-        {
-            if (e.Action == NotifyCollectionChangedAction.Move) return;
-            if (e.Action == NotifyCollectionChangedAction.Reset)
-            {
-                OnCleared();
-                return;
-            }
-            if (e.OldItems != null)
-            {
-                var removed = new List<TSource>();
-                foreach (TSource item in e.OldItems)
-                {
-                    if (!sourceItems.ContainsKey(item))
-                    {
-                        removed.Add(item);
-                    }
-                }
-                if (removed.Count != 0) OnRemoveItems(removed);
-            }
-            if (e.NewItems != null)
-            {
-                var added = new List<TSource>();
-                foreach (TSource item in e.NewItems)
-                {
-                    if (!sourceItems.ContainsKey(item))
-                    {
-                        added.Add(item);
-                    }
-                }
-                if (added.Count != 0) OnAddItems(added);
-            }
-        }
-
-        private void Source2CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
-        {
-            if (e.Action == NotifyCollectionChangedAction.Move) return;
-            if (e.Action == NotifyCollectionChangedAction.Reset)
-            {
-                var filtered = new List<TSource>(SL.Intersect(sourceItems.Keys, source));
-                sourceItems.Clear();
-                OnAddItems(filtered);
-            }
-            if (e.OldItems != null)
-            {
-                var removed = new HashSet<TSource>(sourceItems.Comparer);
-                foreach (TSource item in e.OldItems)
-                {
-                    if (RemoveItem(item))
-                    {
-                        removed.Add(item);
-                    }
-                }
-                var changed = SL.Where(source, item => removed.Contains(item));
-                OnAddItems(changed);
-            }
-            if (e.NewItems != null)
-            {
-                var added = new HashSet<TSource>(sourceItems.Comparer);
-                foreach (TSource item in e.NewItems)
-                {
-                    if (AddItem(item))
-                    {
-                        added.Add(item);
-                    }
-                }
-                var changed = SL.Where(source, item => added.Contains(item));
-                OnRemoveItems(changed);
-            }
         }
 
         private bool AddItem(TSource item)
@@ -148,15 +74,91 @@ namespace NMF.Expressions.Linq
             return false;
         }
 
-        protected override void DetachCore()
+        protected override void OnAttach()
         {
-            source.CollectionChanged -= SourceCollectionChanged;
-            sourceItems.Clear();
-            var notifier = source2 as INotifyCollectionChanged;
-            if (notifier != null)
+            foreach (var item in source2)
             {
-                notifier.CollectionChanged -= Source2CollectionChanged;
+                AddItem(item);
             }
+        }
+
+        protected override void OnDetach()
+        {
+            sourceItems.Clear();
+        }
+
+        public override INotificationResult Notify(IList<INotificationResult> sources)
+        {
+            var change = (CollectionChangedNotificationResult<TSource>)sources[0];
+            if (sources.Count > 1 || change.IsReset)
+            {
+                sourceItems.Clear();
+                OnCleared();
+                foreach (var item in source2)
+                    AddItem(item);
+                return new CollectionChangedNotificationResult<TSource>(this);
+            }
+
+            var added = new List<TSource>();
+            var removed = new List<TSource>();
+
+            if (change.Source == source)
+            {
+                if (change.RemovedItems != null)
+                {
+                    foreach (var item in change.RemovedItems)
+                    {
+                        if (!sourceItems.ContainsKey(item))
+                        {
+                            removed.Add(item);
+                        }
+                    }
+                }
+
+                if (change.AddedItems != null)
+                {
+                    foreach (var item in change.AddedItems)
+                    {
+                        if (!sourceItems.ContainsKey(item))
+                        {
+                            added.Add(item);
+                        }
+                    }
+                }
+            }
+            else //change.Source == source2
+            {
+                if (change.RemovedItems != null)
+                {
+                    var uniqueRemoved = new HashSet<TSource>(sourceItems.Comparer);
+                    foreach (var item in change.RemovedItems)
+                    {
+                        if (RemoveItem(item))
+                        {
+                            removed.Add(item);
+                        }
+                    }
+                    added = SL.Where(source, item => removed.Contains(item)).ToList();
+                }
+                if (change.AddedItems != null)
+                {
+                    var uniqueAdded = new HashSet<TSource>(sourceItems.Comparer);
+                    foreach (var item in change.AddedItems)
+                    {
+                        if (AddItem(item))
+                        {
+                            added.Add(item);
+                        }
+                    }
+                    removed = SL.Where(source, item => added.Contains(item)).ToList();
+                }
+            }
+
+            if (removed.Count != 0)
+                OnRemoveItems(removed);
+            if (added.Count != 0)
+                OnAddItems(added);
+            return new CollectionChangedNotificationResult<TSource>(this, added, removed);
         }
     }
 }
