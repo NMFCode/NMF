@@ -35,27 +35,24 @@ namespace NMF.Expressions.Linq
 
         private INotifyEnumerable<T> source;
         private ObservingFunc<T, bool> lambda;
-        private Dictionary<T, TaggedObservableValue<bool, ItemMultiplicity>> lambdas = new Dictionary<T, TaggedObservableValue<bool, ItemMultiplicity>>();
+        private Dictionary<T, TaggedObservableValue<bool, ItemMultiplicity>> lambdaInstances = new Dictionary<T, TaggedObservableValue<bool, ItemMultiplicity>>();
         private int nulls;
         private INotifyValue<bool> nullCheck;
         private static bool isValueType = ReflectionHelper.IsValueType<T>();
 
-        public ObservingFunc<T, bool> Lambda
+        public ObservingFunc<T, bool> Lambda { get { return lambda; } }
+
+        public override IEnumerable<INotifiable> Dependencies
         {
             get
             {
-                return lambda;
+                yield return source;
+                if (nullCheck != null)
+                    yield return nullCheck;
+                foreach (var item in lambdaInstances.Values)
+                    yield return item;
             }
         }
-
-        private INotifyEnumerable<T> Source
-        {
-            get
-            {
-                return source;
-            }
-        }
-
 
         public ObservableWhere(INotifyEnumerable<T> source, ObservingFunc<T, bool> lambda)
         {
@@ -64,83 +61,6 @@ namespace NMF.Expressions.Linq
 
             this.source = source;
             this.lambda = lambda;
-
-            Attach();
-        }
-
-        private void SourceCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
-        {
-            if (e.Action == NotifyCollectionChangedAction.Move) return;
-            if (e.Action != NotifyCollectionChangedAction.Reset)
-            {
-                if (e.OldItems != null)
-                {
-                    var removed = new List<T>();
-                    foreach (T item in e.OldItems)
-                    {
-                        TaggedObservableValue<bool, ItemMultiplicity> lambdaResult;
-                        if (isValueType || item != null)
-                        {
-                            if (lambdas.TryGetValue(item, out lambdaResult))
-                            {
-                                if (lambdaResult.Value)
-                                {
-                                    removed.Add(lambdaResult.Tag.Item);
-                                }
-                                lambdaResult.Tag = lambdaResult.Tag.Decrease();
-                                if (lambdaResult.Tag.Multiplicity == 0)
-                                {
-                                    lambdaResult.ValueChanged -= LambdaChanged;
-                                    lambdaResult.Detach();
-                                    lambdas.Remove(item);
-                                }
-                            }
-                            else
-                            {
-                                //throw new InvalidOperationException();
-                            }
-                        }
-                        else
-                        {
-                            nulls--;
-                            if (nulls == 0)
-                            {
-                                nullCheck.Detach();
-                                nullCheck = null;
-                            }
-                            removed.Add(default(T));
-                        }
-                    }
-                    OnRemoveItems(removed);
-                }
-                if (e.NewItems != null)
-                {
-                    var added = new List<T>();
-                    foreach (T item in e.NewItems)
-                    {
-                        var lambdaResult = AttachItem(item);
-                        if (lambdaResult.Value)
-                        {
-                            added.Add(item);
-                        }
-                    }
-                    OnAddItems(added);
-                }
-            }
-            else
-            {
-                DetachSource();
-                OnCleared();
-            }
-        }
-
-        private void DetachSource()
-        {
-            foreach (var pair in lambdas)
-            {
-                pair.Value.Detach();
-            }
-            lambdas.Clear(); 
         }
 
         private INotifyValue<bool> AttachItem(T item)
@@ -148,11 +68,11 @@ namespace NMF.Expressions.Linq
             if (isValueType || item != null)
             {
                 TaggedObservableValue<bool, ItemMultiplicity> lambdaResult;
-                if (!lambdas.TryGetValue(item, out lambdaResult))
+                if (!lambdaInstances.TryGetValue(item, out lambdaResult))
                 {
                     lambdaResult = Lambda.InvokeTagged(item, new ItemMultiplicity(item, 1));
-                    lambdas.Add(item, lambdaResult);
-                    lambdaResult.ValueChanged += LambdaChanged;
+                    lambdaInstances.Add(item, lambdaResult);
+                    lambdaResult.Successors.Add(this);
                 }
                 else
                 {
@@ -166,63 +86,35 @@ namespace NMF.Expressions.Linq
                 if (nullCheck == null)
                 {
                     nullCheck = Lambda.Observe(default(T));
-                    nullCheck.ValueChanged += NullCheckValueChanged;
+                    nullCheck.Successors.Add(this);
                 }
                 return nullCheck;
             }
         }
 
-        private void NullCheckValueChanged(object sender, ValueChangedEventArgs e)
+        protected override void OnAttach()
         {
-            if (nullCheck.Value)
+            foreach (var item in source)
             {
-                OnAddItems(SL.Repeat(default(T), nulls));
-            }
-            else
-            {
-                OnRemoveItems(SL.Repeat(default(T), nulls));
+                AttachItem(item);
             }
         }
 
-        private void LambdaChanged(object sender, ValueChangedEventArgs e)
+        protected override void OnDetach()
         {
-            var lambdaResult = sender as TaggedObservableValue<bool, ItemMultiplicity>;
-            if (lambdaResult.Value)
-            {
-                OnAddItems(SL.Repeat(lambdaResult.Tag.Item, lambdaResult.Tag.Multiplicity));
-            }
-            else
-            {
-                OnRemoveItems(SL.Repeat(lambdaResult.Tag.Item, lambdaResult.Tag.Multiplicity));
-            }
-        }
-
-        protected override void AttachCore()
-        {
-            if (source != null)
-            {
-                foreach (var item in source)
-                {
-                    AttachItem(item);
-                }
-                source.CollectionChanged += SourceCollectionChanged;
-            }
-        }
-
-        protected override void DetachCore()
-        {
-            DetachSource();
-            Source.CollectionChanged -= SourceCollectionChanged;
+            foreach (var item in lambdaInstances.Values)
+                item.Successors.Remove(this);
+            lambdaInstances.Clear();
         }
 
         public override IEnumerator<T> GetEnumerator()
         {
-            return SL.Where(Source, item =>
+            return SL.Where(source, item =>
             {
                 if (isValueType || item != null)
                 {
                     TaggedObservableValue<bool, ItemMultiplicity> node;
-                    if (lambdas.TryGetValue(item, out node))
+                    if (lambdaInstances.TryGetValue(item, out node))
                     {
                         return node.Value;
                     }
@@ -241,7 +133,7 @@ namespace NMF.Expressions.Linq
         public override bool Contains(T item)
         {
             TaggedObservableValue<bool, ItemMultiplicity> node;
-            if (lambdas.TryGetValue(item, out node))
+            if (lambdaInstances.TryGetValue(item, out node))
             {
                 return node.Value;
             }
@@ -255,16 +147,115 @@ namespace NMF.Expressions.Linq
         {
             get
             {
-                return SL.Sum(SL.Where(lambdas.Values, lambda => lambda.Value), node => node.Tag.Multiplicity);
+                return SL.Sum(SL.Where(lambdaInstances.Values, lambda => lambda.Value), node => node.Tag.Multiplicity);
             }
         }
+        
+        public override INotificationResult Notify(IList<INotificationResult> sources)
+        {
+            var added = new List<T>();
+            var removed = new List<T>();
+
+            foreach (var change in sources)
+            {
+                if (change.Source == source)
+                {
+                    var sourceChange = (CollectionChangedNotificationResult<T>)change;
+                    if (sourceChange.IsReset)
+                    {
+                        foreach (var item in lambdaInstances.Values)
+                            item.Successors.Remove(this);
+                        lambdaInstances.Clear();
+                        foreach (var item in source)
+                            AttachItem(item);
+                        OnCleared();
+                        return new CollectionChangedNotificationResult<T>(this);
+                    }
+                    else
+                    {
+                        NotifySource(sourceChange, added, removed);
+                    }
+                }
+                else if (nullCheck != null && change.Source == nullCheck)
+                {
+                    if (nullCheck.Value)
+                    {
+                        added.AddRange(SL.Repeat(default(T), nulls));
+                    }
+                    else
+                    {
+                        removed.AddRange(SL.Repeat(default(T), nulls));
+                    }
+                }
+                else
+                {
+                    var lambdaResult = (TaggedObservableValue<bool, ItemMultiplicity>)change.Source;
+                    if (lambdaResult.Value)
+                        added.AddRange(SL.Repeat(lambdaResult.Tag.Item, lambdaResult.Tag.Multiplicity));
+                    else
+                        removed.AddRange(SL.Repeat(lambdaResult.Tag.Item, lambdaResult.Tag.Multiplicity));
+                }
+            }
+
+            OnRemoveItems(removed);
+            OnAddItems(added);
+            return new CollectionChangedNotificationResult<T>(this, added, removed);
+        }
+
+        private void NotifySource(CollectionChangedNotificationResult<T> sourceChange, List<T> added, List<T> removed)
+        {
+            if (sourceChange.RemovedItems != null)
+            {
+                foreach (var item in sourceChange.RemovedItems)
+                {
+                    if (isValueType || item != null)
+                    {
+                        var lambdaResult = lambdaInstances[item];
+                        if (lambdaResult.Value)
+                        {
+                            removed.Add(lambdaResult.Tag.Item);
+                        }
+                        lambdaResult.Tag = lambdaResult.Tag.Decrease();
+                        if (lambdaResult.Tag.Multiplicity == 0)
+                        {
+                            lambdaResult.Successors.Remove(this);
+                            lambdaInstances.Remove(item);
+                        }
+                    }
+                    else
+                    {
+                        nulls--;
+                        if (nulls == 0)
+                        {
+                            nullCheck.Successors.Remove(this);
+                            nullCheck = null;
+                        }
+                        removed.Add(default(T));
+                    }
+                }
+            }
+
+            if (sourceChange.AddedItems != null)
+            {
+                foreach (var item in sourceChange.AddedItems)
+                {
+                    var lambdaResult = AttachItem(item);
+                    if (lambdaResult.Value)
+                    {
+                        added.Add(item);
+                    }
+                }
+            }
+        }
+
+        #region ICollection methods
 
         void ICollection<T>.Add(T item)
         {
             TaggedObservableValue<bool, ItemMultiplicity> stack;
-            if (!lambdas.TryGetValue(item, out stack))
+            if (!lambdaInstances.TryGetValue(item, out stack))
             {
-                var sourceCollection = Source as INotifyCollection<T>;
+                var sourceCollection = source as INotifyCollection<T>;
                 if (sourceCollection != null && !sourceCollection.IsReadOnly)
                 {
                     sourceCollection.Add(item);
@@ -273,7 +264,7 @@ namespace NMF.Expressions.Linq
                 {
                     throw new InvalidOperationException("Source is not a collection or is read-only");
                 }
-                if (!lambdas.TryGetValue(item, out stack))
+                if (!lambdaInstances.TryGetValue(item, out stack))
                 {
                     throw new InvalidOperationException("Something is wrong with the event hookup.");
                 }
@@ -294,7 +285,7 @@ namespace NMF.Expressions.Linq
 
         void ICollection<T>.Clear()
         {
-            var coll = Source as INotifyCollection<T>;
+            var coll = source as INotifyCollection<T>;
             if (coll == null || coll.IsReadOnly) throw new InvalidOperationException("Source is not a collection or is read-only");
             var list = new List<T>(this);
             if (list.Count == coll.Count)
@@ -314,14 +305,14 @@ namespace NMF.Expressions.Linq
         {
             get
             {
-                var collection = Source as INotifyCollection<T>;
+                var collection = source as INotifyCollection<T>;
                 return !Lambda.IsReversable && (collection == null || collection.IsReadOnly);
             }
         }
 
         bool ICollection<T>.Remove(T item)
         {
-            var coll = Source as INotifyCollection<T>;
+            var coll = source as INotifyCollection<T>;
             if (coll != null && !coll.IsReadOnly)
             {
                 return coll.Remove(item);
@@ -329,7 +320,7 @@ namespace NMF.Expressions.Linq
             else
             {
                 TaggedObservableValue<bool, ItemMultiplicity> stack;
-                if (lambdas.TryGetValue(item, out stack))
+                if (lambdaInstances.TryGetValue(item, out stack))
                 {
                     if (stack.Tag.Multiplicity > 1)
                     {
@@ -343,6 +334,8 @@ namespace NMF.Expressions.Linq
             }
             return false;
         }
+
+        #endregion
     }
 
 }
