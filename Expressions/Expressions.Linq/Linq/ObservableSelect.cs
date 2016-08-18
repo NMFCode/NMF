@@ -9,28 +9,24 @@ namespace NMF.Expressions.Linq
 {
     internal sealed class ObservableSelect<TSource, TResult> : ObservableEnumerable<TResult>
     {
-        
         private INotifyEnumerable<TSource> source;
         private ObservingFunc<TSource, TResult> lambda;
         private TaggedObservableValue<TResult, int> nullLambda;
+        private Dictionary<TSource, TaggedObservableValue<TResult, int>> lambdaInstances = new Dictionary<TSource, TaggedObservableValue<TResult, int>>();
 
-        public ObservingFunc<TSource, TResult> Lambda
+        public ObservingFunc<TSource, TResult> Lambda { get { return lambda; } }
+
+        public override IEnumerable<INotifiable> Dependencies
         {
             get
             {
-                return lambda;
+                yield return source;
+                if (nullLambda != null)
+                    yield return nullLambda;
+                foreach (var child in lambdaInstances.Values)
+                    yield return child;
             }
         }
-
-        private INotifyEnumerable<TSource> Source
-        {
-            get
-            {
-                return source;
-            }
-        }
-
-        private Dictionary<TSource, TaggedObservableValue<TResult, int>> lambdas = new Dictionary<TSource, TaggedObservableValue<TResult, int>>();
 
         public ObservableSelect(INotifyEnumerable<TSource> source, ObservingFunc<TSource, TResult> lambda)
         {
@@ -39,77 +35,6 @@ namespace NMF.Expressions.Linq
 
             this.source = source;
             this.lambda = lambda;
-
-            Attach();
-        }
-
-        private void SourceCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
-        {
-            if (e.Action == NotifyCollectionChangedAction.Move) return;
-            if (e.Action != NotifyCollectionChangedAction.Reset)
-            {
-                if (e.OldItems != null)
-                {
-                    var removed = new List<TResult>();
-                    foreach (TSource item in e.OldItems)
-                    {
-                        if (item != null)
-                        {
-                            TaggedObservableValue<TResult, int> lambdaResult;
-                            if (lambdas.TryGetValue(item, out lambdaResult))
-                            {
-                                lambdaResult.Tag--;
-                                if (lambdaResult.Tag == 0)
-                                {
-                                    lambdas.Remove(item);
-                                    lambdaResult.ValueChanged -= LambdaChanged;
-                                    lambdaResult.Detach();
-                                }
-                                removed.Add(lambdaResult.Value);
-                            }
-                            else
-                            {
-                                throw new InvalidOperationException();
-                            }
-                        }
-                        else if (nullLambda != null)
-                        {
-                            nullLambda.Tag--;
-                            if (nullLambda.Tag == 0)
-                            {
-                                nullLambda.ValueChanged -= LambdaChanged;
-                                nullLambda.Detach();
-                                nullLambda = null;
-                            }
-                        }
-                    }
-                    OnRemoveItems(removed, e.OldStartingIndex);
-                }
-                if (e.NewItems != null)
-                {
-                    var added = new List<TResult>();
-                    foreach (TSource item in e.NewItems)
-                    {
-                        var lambdaResult = AttachItem(item);
-                        added.Add(lambdaResult.Value);
-                    }
-                    OnAddItems(added, e.NewStartingIndex);
-                }
-            }
-            else
-            {
-                DetachSource();
-                OnCleared();
-            }
-        }
-
-        private void DetachSource()
-        {
-            foreach (var value in lambdas.Values)
-            {
-                value.Detach();
-            }
-            lambdas.Clear(); 
         }
 
         private TaggedObservableValue<TResult, int> AttachItem(TSource item)
@@ -117,11 +42,11 @@ namespace NMF.Expressions.Linq
             if (item != null)
             {
                 TaggedObservableValue<TResult, int> lambdaResult;
-                if (!lambdas.TryGetValue(item, out lambdaResult))
+                if (!lambdaInstances.TryGetValue(item, out lambdaResult))
                 {
-                    lambdaResult = lambda.InvokeTagged<int>(item, 0);
-                    lambdaResult.ValueChanged += LambdaChanged;
-                    lambdas.Add(item, lambdaResult);
+                    lambdaResult = lambda.InvokeTagged(item, 0);
+                    lambdaResult.Successors.Add(this);
+                    lambdaInstances.Add(item, lambdaResult);
                 }
                 lambdaResult.Tag++;
                 return lambdaResult;
@@ -131,47 +56,28 @@ namespace NMF.Expressions.Linq
                 if (nullLambda == null)
                 {
                     nullLambda = lambda.InvokeTagged(item, 0);
-                    nullLambda.ValueChanged += LambdaChanged;
+                    nullLambda.Successors.Add(this);
                 }
                 nullLambda.Tag++;
                 return nullLambda;
             }
         }
 
-        private void LambdaChanged(object sender, ValueChangedEventArgs e)
+        protected override void OnAttach()
         {
-            OnLambdaValueChanged(sender as TaggedObservableValue<TResult, int>, e);
-        }
-
-        protected override void AttachCore()
-        {
-            if (source != null)
+            foreach (var item in source)
             {
-                foreach (var item in source)
-                {
-                    AttachItem(item);
-                }
-                source.CollectionChanged += SourceCollectionChanged;
+                AttachItem(item);
             }
         }
 
-        protected override void DetachCore()
+        protected override void OnDetach()
         {
-            DetachSource();
-            Source.CollectionChanged -= SourceCollectionChanged;
+            foreach (var item in lambdaInstances.Values)
+                item.Successors.Remove(this);
+            lambdaInstances.Clear();
         }
-
-        private void OnLambdaValueChanged(TaggedObservableValue<TResult, int> value, ValueChangedEventArgs e)
-        {
-            if (e == null) throw new ArgumentNullException("e");
-            TResult result = (TResult)e.NewValue;
-            TResult oldResult = (TResult)e.OldValue;
-            for (int i = 0; i < value.Tag; i++)
-            {
-                OnUpdateItem(result, oldResult);
-            }
-        }
-
+        
         public override IEnumerator<TResult> GetEnumerator()
         {
             return ItemsInternal.GetEnumerator();
@@ -181,10 +87,10 @@ namespace NMF.Expressions.Linq
         {
             get
             {
-                foreach (var item in Source)
+                foreach (var item in source)
                 {
                     TaggedObservableValue<TResult, int> lambdaResult;
-                    if (lambdas.TryGetValue(item, out lambdaResult))
+                    if (lambdaInstances.TryGetValue(item, out lambdaResult))
                     {
                         yield return lambdaResult.Value;
                     }
@@ -196,7 +102,84 @@ namespace NMF.Expressions.Linq
         {
             get
             {
-                return SL.Sum(lambdas.Values, item => item.Tag);
+                return SL.Sum(lambdaInstances.Values, item => item.Tag);
+            }
+        }
+
+        public override INotificationResult Notify(IList<INotificationResult> sources)
+        {
+            var added = new List<TResult>();
+            var removed = new List<TResult>();
+
+            foreach (var change in sources)
+            {
+                if (change.Source == source)
+                {
+                    var sourceChange = (CollectionChangedNotificationResult<TSource>)change;
+                    if (sourceChange.IsReset)
+                    {
+                        foreach (var item in lambdaInstances.Values)
+                            item.Successors.Remove(this);
+                        lambdaInstances.Clear();
+                        foreach (var item in source)
+                            AttachItem(item);
+                        OnCleared();
+                        return new CollectionChangedNotificationResult<TResult>(this);
+                    }
+                    else
+                    {
+                        NotifySource(sourceChange, added, removed);
+                    }
+                }
+                else
+                {
+                    var itemChange = (ValueChangedNotificationResult<TResult>)change;
+                    removed.Add(itemChange.OldValue);
+                    added.Add(itemChange.NewValue);
+                }
+            }
+
+            OnRemoveItems(removed);
+            OnAddItems(added);
+            return new CollectionChangedNotificationResult<TResult>(this, added, removed);
+        }
+
+        private void NotifySource(CollectionChangedNotificationResult<TSource> sourceChange, List<TResult> added, List<TResult> removed)
+        {
+            if (sourceChange.RemovedItems != null)
+            {
+                foreach (var item in sourceChange.RemovedItems)
+                {
+                    if (item != null)
+                    {
+                        var lambdaResult = lambdaInstances[item];
+                        lambdaResult.Tag--;
+                        if (lambdaResult.Tag == 0)
+                        {
+                            lambdaInstances.Remove(item);
+                            lambdaResult.Successors.Remove(this);
+                        }
+                        removed.Add(lambdaResult.Value);
+                    }
+                    else if (nullLambda != null)
+                    {
+                        nullLambda.Tag--;
+                        if (nullLambda.Tag == 0)
+                        {
+                            nullLambda.Successors.Remove(this);
+                            nullLambda = null;
+                        }
+                    }
+                }
+            }
+
+            if (sourceChange.AddedItems != null)
+            {
+                foreach (var item in sourceChange.AddedItems)
+                {
+                    var lambdaResult = AttachItem(item);
+                    added.Add(lambdaResult.Value);
+                }
             }
         }
     }
