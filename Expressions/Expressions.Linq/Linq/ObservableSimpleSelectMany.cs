@@ -12,7 +12,7 @@ namespace NMF.Expressions.Linq
         private ObservingFunc<TSource, IEnumerable<TResult>> selector;
 
         private Dictionary<TSource, Stack<INotifyValue<IEnumerable<TResult>>>> results = new Dictionary<TSource, Stack<INotifyValue<IEnumerable<TResult>>>>();
-
+        
         public ObservableSimpleSelectMany(INotifyEnumerable<TSource> source,
             ObservingFunc<TSource, IEnumerable<TResult>> selector)
         {
@@ -21,8 +21,6 @@ namespace NMF.Expressions.Linq
 
             this.source = source;
             this.selector = selector;
-
-            Attach();
         }
 
         public override IEnumerator<TResult> GetEnumerator()
@@ -50,14 +48,17 @@ namespace NMF.Expressions.Linq
             }
         }
 
-        protected override void AttachCore()
+        public override IEnumerable<INotifiable> Dependencies
         {
-            foreach (var item in source)
+            get
             {
-                AttachItem(item);
+                yield return source;
+                foreach (var stack in results.Values)
+                {
+                    foreach (var item in stack)
+                        yield return item;
+                }
             }
-
-            source.CollectionChanged += SourceCollectionChanged;
         }
 
         private IEnumerable<TResult> AttachItem(TSource item)
@@ -69,101 +70,94 @@ namespace NMF.Expressions.Linq
                 results.Add(item, stack);
             }
             var subSource = selector.Observe(item);
+            //TODO do we need to handle INotifyCollectionChanged in subSource.Value or does it do that automatically?
             stack.Push(subSource);
-            var notifier = subSource.Value as INotifyCollectionChanged;
-            if (notifier != null)
-            {
-                notifier.CollectionChanged += SubSourceCollectionChanged;
-            }
-            subSource.ValueChanged += SubSourceChanged;
+            subSource.Successors.Add(this);
             return subSource.Value;
         }
 
-        private void SourceCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        protected override void OnAttach()
         {
-            if (e.Action == NotifyCollectionChangedAction.Reset)
+            foreach (var item in source)
             {
-                DetachItems();
-                OnCleared();
-            }
-            else if (e.Action != NotifyCollectionChangedAction.Move)
-            {
-                if (e.OldItems != null)
-                {
-                    var removed = new List<TResult>();
-                    foreach (TSource item in e.OldItems)
-                    {
-                        var stack = results[item];
-                        var resultItems = stack.Pop();
-                        if (stack.Count == 0)
-                        {
-                            results.Remove(item);
-                        }
-                        removed.AddRange(resultItems.Value);
-                        var resultNotify = resultItems.Value as INotifyCollectionChanged;
-                        if (resultNotify != null)
-                        {
-                            resultNotify.CollectionChanged -= SubSourceCollectionChanged;
-                        }
-                        resultItems.ValueChanged -= SubSourceChanged;
-                        resultItems.Detach();
-                    }
-                    OnRemoveItems(removed);
-                }
-                if (e.NewItems != null)
-                {
-                    var added = new List<TResult>();
-                    foreach (TSource item in e.NewItems)
-                    {
-                        added.AddRange(AttachItem(item));
-                    }
-                    OnAddItems(added);
-                }
+                AttachItem(item);
             }
         }
 
-        private void SubSourceChanged(object sender, ValueChangedEventArgs e)
-        {
-            var oldItems = e.OldValue as IEnumerable<TResult>;
-            var newItems = e.NewValue as IEnumerable<TResult>;
-
-            var oldNotify = oldItems as INotifyCollectionChanged;
-            if (oldNotify != null)
-            {
-                oldNotify.CollectionChanged -= SubSourceCollectionChanged;
-            }
-            OnRemoveItems(oldItems);
-            var newNotify = newItems as INotifyCollectionChanged;
-            if (newNotify != null)
-            {
-                newNotify.CollectionChanged += SubSourceCollectionChanged;
-            }
-            OnAddItems(newItems);
-        }
-
-        private void SubSourceCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
-        {
-            OnCollectionChanged(e);
-        }
-
-        protected override void DetachCore()
-        {
-            DetachItems();
-
-            source.CollectionChanged -= SourceCollectionChanged;
-        }
-
-        private void DetachItems()
+        protected override void OnDetach()
         {
             foreach (var stack in results.Values)
             {
                 foreach (var result in stack)
                 {
-                    result.ValueChanged -= SubSourceChanged;
-                    result.Detach();
+                    result.Successors.Remove(this);
                 }
             }
             results.Clear();
+        }
+
+        public override INotificationResult Notify(IList<INotificationResult> sources)
+        {
+            var added = new List<TResult>();
+            var removed = new List<TResult>();
+
+            foreach (var change in sources)
+            {
+                if (change.Source == source)
+                {
+                    var sourceChange = (CollectionChangedNotificationResult<TSource>)change;
+                    if (sourceChange.IsReset)
+                    {
+                        OnDetach();
+                        OnAttach();
+                        OnCleared();
+                        return new CollectionChangedNotificationResult<TResult>(this);
+                    }
+                    else
+                    {
+                        NotifySource(sourceChange, added, removed);
+                    }
+                }
+                else
+                {
+                    var subSourceChange = (ValueChangedNotificationResult<IEnumerable<TResult>>)change;
+                    removed.AddRange(subSourceChange.OldValue);
+                    added.AddRange(subSourceChange.NewValue);
+                }
+            }
+
+            if (added.Count == 0 && removed.Count == 0)
+                return new UnchangedNotificationResult(this);
+
+            OnRemoveItems(removed);
+            OnAddItems(added);
+            return new CollectionChangedNotificationResult<TResult>(this, added, removed);
+        }
+
+        private void NotifySource(CollectionChangedNotificationResult<TSource> sourceChange, List<TResult> added, List<TResult> removed)
+        {
+            if (sourceChange.RemovedItems != null)
+            {
+                foreach (var item in sourceChange.RemovedItems)
+                {
+                    var stack = results[item];
+                    var resultItems = stack.Pop();
+                    if (stack.Count == 0)
+                    {
+                        results.Remove(item);
+                    }
+                    removed.AddRange(resultItems.Value);
+                    resultItems.Successors.Remove(this);
+                }
+            }
+
+            if (sourceChange.AddedItems != null)
+            {
+                foreach (var item in sourceChange.AddedItems)
+                {
+                    added.AddRange(AttachItem(item));
+                }
+            }
         }
     }
 
