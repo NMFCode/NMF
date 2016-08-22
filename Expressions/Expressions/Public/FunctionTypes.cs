@@ -62,15 +62,11 @@ namespace NMF.Expressions
         {
             if (isParameterFree)
             {
-                if (this.expression.Successors.Count == 0)
-                    this.expression.Successors.Add(null);
                 return expression;
             }
             var parameters = new Dictionary<string, object>();
             parameters.Add(parameter1Name, in1);
-            var result = expression.ApplyParameters(parameters);
-            result.Successors.Add(null);
-            return result;
+            return expression.ApplyParameters(parameters);
         }
 
         /// <summary>
@@ -82,15 +78,11 @@ namespace NMF.Expressions
         {
             if (isParameterFree)
             {
-                if (this.expression.Successors.Count == 0)
-                    this.expression.Successors.Add(null);
                 return expression;
             }
             var parameters = new Dictionary<string, object>();
             parameters.Add(parameter1Name, in1);
-            var result = expression.ApplyParameters(parameters);
-            result.Successors.Add(null);
-            return result;
+            return expression.ApplyParameters(parameters);
         }
 
 
@@ -220,16 +212,12 @@ namespace NMF.Expressions
         {
             if (isParameterFree)
             {
-                if (this.expression.Successors.Count == 0)
-                    this.expression.Successors.Add(null);
                 return expression;
             }
             var parameters = new Dictionary<string, object>();
             parameters.Add(parameter1Name, in1);
             parameters.Add(parameter2Name, in2);
-            var result = expression.ApplyParameters(parameters);
-            result.Successors.Add(null);
-            return result;
+            return expression.ApplyParameters(parameters);
         }
 
         /// <summary>
@@ -242,16 +230,12 @@ namespace NMF.Expressions
         {
             if (isParameterFree)
             {
-                if (this.expression.Successors.Count == 0)
-                    this.expression.Successors.Add(null);
                 return expression;
             }
             var parameters = new Dictionary<string, object>();
             parameters.Add(parameter1Name, in1);
             parameters.Add(parameter2Name, in2);
-            var result = expression.ApplyParameters(parameters);
-            result.Successors.Add(null);
-            return result;
+            return expression.ApplyParameters(parameters);
         }
 
         /// <summary>
@@ -414,17 +398,13 @@ namespace NMF.Expressions
         {
             if (isParameterFree)
             {
-                if (this.expression.Successors.Count == 0)
-                    this.expression.Successors.Add(null);
                 return expression;
             }
             var parameters = new Dictionary<string, object>();
             parameters.Add(parameter1Name, in1);
             parameters.Add(parameter2Name, in2);
             parameters.Add(parameter3Name, in3);
-            var result = expression.ApplyParameters(parameters);
-            result.Successors.Add(null);
-            return result;
+            return expression.ApplyParameters(parameters);
         }
 
         /// <summary>
@@ -438,17 +418,13 @@ namespace NMF.Expressions
         {
             if (isParameterFree)
             {
-                if (this.expression.Successors.Count == 0)
-                    this.expression.Successors.Add(null);
                 return expression;
             }
             var parameters = new Dictionary<string, object>();
             parameters.Add(parameter1Name, in1);
             parameters.Add(parameter2Name, in2);
             parameters.Add(parameter3Name, in3);
-            var result = expression.ApplyParameters(parameters);
-            result.Successors.Add(null);
-            return result;
+            return expression.ApplyParameters(parameters);
         }
 
         /// <summary>
@@ -647,8 +623,6 @@ namespace NMF.Expressions
         {
             if (isParameterFree)
             {
-                if (this.expression.Successors.Count == 0)
-                    this.expression.Successors.Add(null);
                 return expression;
             }
             var parameters = new Dictionary<string, object>();
@@ -656,9 +630,7 @@ namespace NMF.Expressions
             parameters.Add(parameter2Name, in2);
             parameters.Add(parameter3Name, in3);
             parameters.Add(parameter4Name, in4);
-            var result = expression.ApplyParameters(parameters);
-            result.Successors.Add(null);
-            return result;
+            return expression.ApplyParameters(parameters);
         }
 
         /// <summary>
@@ -673,8 +645,6 @@ namespace NMF.Expressions
         {
             if (isParameterFree)
             {
-                if (this.expression.Successors.Count == 0)
-                    this.expression.Successors.Add(null);
                 return expression;
             }
             var parameters = new Dictionary<string, object>();
@@ -682,9 +652,7 @@ namespace NMF.Expressions
             parameters.Add(parameter2Name, in2);
             parameters.Add(parameter3Name, in3);
             parameters.Add(parameter4Name, in4);
-            var result = expression.ApplyParameters(parameters);
-            result.Successors.Add(null);
-            return result;
+            return expression.ApplyParameters(parameters);
         }
 
         /// <summary>
@@ -922,8 +890,6 @@ namespace NMF.Expressions
         {
             if (isParameterFree)
             {
-                if (this.expression.Successors.Count == 0)
-                    this.expression.Successors.Add(null);
                 return expression;
             }
             var parameters = new Dictionary<string, object>();
@@ -932,9 +898,7 @@ namespace NMF.Expressions
             parameters.Add(parameter3Name, in3);
             parameters.Add(parameter4Name, in4);
             parameters.Add(parameter5Name, in5);
-            var result = expression.ApplyParameters(parameters);
-            result.Successors.Add(null);
-            return result;
+            return expression.ApplyParameters(parameters);
         }
 
         /// <summary>
@@ -950,8 +914,6 @@ namespace NMF.Expressions
         {
             if (isParameterFree)
             {
-                if (this.expression.Successors.Count == 0)
-                    this.expression.Successors.Add(null);
                 return expression;
             }
             var parameters = new Dictionary<string, object>();
@@ -960,9 +922,7 @@ namespace NMF.Expressions
             parameters.Add(parameter3Name, in3);
             parameters.Add(parameter4Name, in4);
             parameters.Add(parameter5Name, in5);
-            var result = expression.ApplyParameters(parameters);
-            result.Successors.Add(null);
-            return result;
+            return expression.ApplyParameters(parameters);
         }
 
         /// <summary>
@@ -1242,8 +1202,6 @@ namespace NMF.Expressions
         {
             if (isParameterFree)
             {
-                if (this.expression.Successors.Count == 0)
-                    this.expression.Successors.Add(null);
                 return expression;
             }
             var parameters = new Dictionary<string, object>();
@@ -1253,9 +1211,7 @@ namespace NMF.Expressions
             parameters.Add(parameter4Name, in4);
             parameters.Add(parameter5Name, in5);
             parameters.Add(parameter6Name, in6);
-            var result = expression.ApplyParameters(parameters);
-            result.Successors.Add(null);
-            return result;
+            return expression.ApplyParameters(parameters);
         }
 
         /// <summary>
@@ -1272,8 +1228,6 @@ namespace NMF.Expressions
         {
             if (isParameterFree)
             {
-                if (this.expression.Successors.Count == 0)
-                    this.expression.Successors.Add(null);
                 return expression;
             }
             var parameters = new Dictionary<string, object>();
@@ -1283,9 +1237,7 @@ namespace NMF.Expressions
             parameters.Add(parameter4Name, in4);
             parameters.Add(parameter5Name, in5);
             parameters.Add(parameter6Name, in6);
-            var result = expression.ApplyParameters(parameters);
-            result.Successors.Add(null);
-            return result;
+            return expression.ApplyParameters(parameters);
         }
 
         /// <summary>
@@ -1610,8 +1562,6 @@ namespace NMF.Expressions
         {
             if (isParameterFree)
             {
-                if (this.expression.Successors.Count == 0)
-                    this.expression.Successors.Add(null);
                 return expression;
             }
             var parameters = new Dictionary<string, object>();
@@ -1622,9 +1572,7 @@ namespace NMF.Expressions
             parameters.Add(parameter5Name, in5);
             parameters.Add(parameter6Name, in6);
             parameters.Add(parameter7Name, in7);
-            var result = expression.ApplyParameters(parameters);
-            result.Successors.Add(null);
-            return result;
+            return expression.ApplyParameters(parameters);
         }
 
         /// <summary>
@@ -1642,8 +1590,6 @@ namespace NMF.Expressions
         {
             if (isParameterFree)
             {
-                if (this.expression.Successors.Count == 0)
-                    this.expression.Successors.Add(null);
                 return expression;
             }
             var parameters = new Dictionary<string, object>();
@@ -1654,9 +1600,7 @@ namespace NMF.Expressions
             parameters.Add(parameter5Name, in5);
             parameters.Add(parameter6Name, in6);
             parameters.Add(parameter7Name, in7);
-            var result = expression.ApplyParameters(parameters);
-            result.Successors.Add(null);
-            return result;
+            return expression.ApplyParameters(parameters);
         }
 
         /// <summary>
@@ -2029,8 +1973,6 @@ namespace NMF.Expressions
         {
             if (isParameterFree)
             {
-                if (this.expression.Successors.Count == 0)
-                    this.expression.Successors.Add(null);
                 return expression;
             }
             var parameters = new Dictionary<string, object>();
@@ -2042,9 +1984,7 @@ namespace NMF.Expressions
             parameters.Add(parameter6Name, in6);
             parameters.Add(parameter7Name, in7);
             parameters.Add(parameter8Name, in8);
-            var result = expression.ApplyParameters(parameters);
-            result.Successors.Add(null);
-            return result;
+            return expression.ApplyParameters(parameters);
         }
 
         /// <summary>
@@ -2063,8 +2003,6 @@ namespace NMF.Expressions
         {
             if (isParameterFree)
             {
-                if (this.expression.Successors.Count == 0)
-                    this.expression.Successors.Add(null);
                 return expression;
             }
             var parameters = new Dictionary<string, object>();
@@ -2076,9 +2014,7 @@ namespace NMF.Expressions
             parameters.Add(parameter6Name, in6);
             parameters.Add(parameter7Name, in7);
             parameters.Add(parameter8Name, in8);
-            var result = expression.ApplyParameters(parameters);
-            result.Successors.Add(null);
-            return result;
+            return expression.ApplyParameters(parameters);
         }
 
         /// <summary>
@@ -2502,8 +2438,6 @@ namespace NMF.Expressions
         {
             if (isParameterFree)
             {
-                if (this.expression.Successors.Count == 0)
-                    this.expression.Successors.Add(null);
                 return expression;
             }
             var parameters = new Dictionary<string, object>();
@@ -2516,9 +2450,7 @@ namespace NMF.Expressions
             parameters.Add(parameter7Name, in7);
             parameters.Add(parameter8Name, in8);
             parameters.Add(parameter9Name, in9);
-            var result = expression.ApplyParameters(parameters);
-            result.Successors.Add(null);
-            return result;
+            return expression.ApplyParameters(parameters);
         }
 
         /// <summary>
@@ -2538,8 +2470,6 @@ namespace NMF.Expressions
         {
             if (isParameterFree)
             {
-                if (this.expression.Successors.Count == 0)
-                    this.expression.Successors.Add(null);
                 return expression;
             }
             var parameters = new Dictionary<string, object>();
@@ -2552,9 +2482,7 @@ namespace NMF.Expressions
             parameters.Add(parameter7Name, in7);
             parameters.Add(parameter8Name, in8);
             parameters.Add(parameter9Name, in9);
-            var result = expression.ApplyParameters(parameters);
-            result.Successors.Add(null);
-            return result;
+            return expression.ApplyParameters(parameters);
         }
 
         /// <summary>
@@ -3032,8 +2960,6 @@ namespace NMF.Expressions
         {
             if (isParameterFree)
             {
-                if (this.expression.Successors.Count == 0)
-                    this.expression.Successors.Add(null);
                 return expression;
             }
             var parameters = new Dictionary<string, object>();
@@ -3047,9 +2973,7 @@ namespace NMF.Expressions
             parameters.Add(parameter8Name, in8);
             parameters.Add(parameter9Name, in9);
             parameters.Add(parameter10Name, in10);
-            var result = expression.ApplyParameters(parameters);
-            result.Successors.Add(null);
-            return result;
+            return expression.ApplyParameters(parameters);
         }
 
         /// <summary>
@@ -3070,8 +2994,6 @@ namespace NMF.Expressions
         {
             if (isParameterFree)
             {
-                if (this.expression.Successors.Count == 0)
-                    this.expression.Successors.Add(null);
                 return expression;
             }
             var parameters = new Dictionary<string, object>();
@@ -3085,9 +3007,7 @@ namespace NMF.Expressions
             parameters.Add(parameter8Name, in8);
             parameters.Add(parameter9Name, in9);
             parameters.Add(parameter10Name, in10);
-            var result = expression.ApplyParameters(parameters);
-            result.Successors.Add(null);
-            return result;
+            return expression.ApplyParameters(parameters);
         }
 
         /// <summary>
@@ -3622,8 +3542,6 @@ namespace NMF.Expressions
         {
             if (isParameterFree)
             {
-                if (this.expression.Successors.Count == 0)
-                    this.expression.Successors.Add(null);
                 return expression;
             }
             var parameters = new Dictionary<string, object>();
@@ -3638,9 +3556,7 @@ namespace NMF.Expressions
             parameters.Add(parameter9Name, in9);
             parameters.Add(parameter10Name, in10);
             parameters.Add(parameter11Name, in11);
-            var result = expression.ApplyParameters(parameters);
-            result.Successors.Add(null);
-            return result;
+            return expression.ApplyParameters(parameters);
         }
 
         /// <summary>
@@ -3662,8 +3578,6 @@ namespace NMF.Expressions
         {
             if (isParameterFree)
             {
-                if (this.expression.Successors.Count == 0)
-                    this.expression.Successors.Add(null);
                 return expression;
             }
             var parameters = new Dictionary<string, object>();
@@ -3678,9 +3592,7 @@ namespace NMF.Expressions
             parameters.Add(parameter9Name, in9);
             parameters.Add(parameter10Name, in10);
             parameters.Add(parameter11Name, in11);
-            var result = expression.ApplyParameters(parameters);
-            result.Successors.Add(null);
-            return result;
+            return expression.ApplyParameters(parameters);
         }
 
         /// <summary>
@@ -4275,8 +4187,6 @@ namespace NMF.Expressions
         {
             if (isParameterFree)
             {
-                if (this.expression.Successors.Count == 0)
-                    this.expression.Successors.Add(null);
                 return expression;
             }
             var parameters = new Dictionary<string, object>();
@@ -4292,9 +4202,7 @@ namespace NMF.Expressions
             parameters.Add(parameter10Name, in10);
             parameters.Add(parameter11Name, in11);
             parameters.Add(parameter12Name, in12);
-            var result = expression.ApplyParameters(parameters);
-            result.Successors.Add(null);
-            return result;
+            return expression.ApplyParameters(parameters);
         }
 
         /// <summary>
@@ -4317,8 +4225,6 @@ namespace NMF.Expressions
         {
             if (isParameterFree)
             {
-                if (this.expression.Successors.Count == 0)
-                    this.expression.Successors.Add(null);
                 return expression;
             }
             var parameters = new Dictionary<string, object>();
@@ -4334,9 +4240,7 @@ namespace NMF.Expressions
             parameters.Add(parameter10Name, in10);
             parameters.Add(parameter11Name, in11);
             parameters.Add(parameter12Name, in12);
-            var result = expression.ApplyParameters(parameters);
-            result.Successors.Add(null);
-            return result;
+            return expression.ApplyParameters(parameters);
         }
 
         /// <summary>
@@ -4994,8 +4898,6 @@ namespace NMF.Expressions
         {
             if (isParameterFree)
             {
-                if (this.expression.Successors.Count == 0)
-                    this.expression.Successors.Add(null);
                 return expression;
             }
             var parameters = new Dictionary<string, object>();
@@ -5012,9 +4914,7 @@ namespace NMF.Expressions
             parameters.Add(parameter11Name, in11);
             parameters.Add(parameter12Name, in12);
             parameters.Add(parameter13Name, in13);
-            var result = expression.ApplyParameters(parameters);
-            result.Successors.Add(null);
-            return result;
+            return expression.ApplyParameters(parameters);
         }
 
         /// <summary>
@@ -5038,8 +4938,6 @@ namespace NMF.Expressions
         {
             if (isParameterFree)
             {
-                if (this.expression.Successors.Count == 0)
-                    this.expression.Successors.Add(null);
                 return expression;
             }
             var parameters = new Dictionary<string, object>();
@@ -5056,9 +4954,7 @@ namespace NMF.Expressions
             parameters.Add(parameter11Name, in11);
             parameters.Add(parameter12Name, in12);
             parameters.Add(parameter13Name, in13);
-            var result = expression.ApplyParameters(parameters);
-            result.Successors.Add(null);
-            return result;
+            return expression.ApplyParameters(parameters);
         }
 
         /// <summary>
@@ -5782,8 +5678,6 @@ namespace NMF.Expressions
         {
             if (isParameterFree)
             {
-                if (this.expression.Successors.Count == 0)
-                    this.expression.Successors.Add(null);
                 return expression;
             }
             var parameters = new Dictionary<string, object>();
@@ -5801,9 +5695,7 @@ namespace NMF.Expressions
             parameters.Add(parameter12Name, in12);
             parameters.Add(parameter13Name, in13);
             parameters.Add(parameter14Name, in14);
-            var result = expression.ApplyParameters(parameters);
-            result.Successors.Add(null);
-            return result;
+            return expression.ApplyParameters(parameters);
         }
 
         /// <summary>
@@ -5828,8 +5720,6 @@ namespace NMF.Expressions
         {
             if (isParameterFree)
             {
-                if (this.expression.Successors.Count == 0)
-                    this.expression.Successors.Add(null);
                 return expression;
             }
             var parameters = new Dictionary<string, object>();
@@ -5847,9 +5737,7 @@ namespace NMF.Expressions
             parameters.Add(parameter12Name, in12);
             parameters.Add(parameter13Name, in13);
             parameters.Add(parameter14Name, in14);
-            var result = expression.ApplyParameters(parameters);
-            result.Successors.Add(null);
-            return result;
+            return expression.ApplyParameters(parameters);
         }
 
         /// <summary>
@@ -6642,8 +6530,6 @@ namespace NMF.Expressions
         {
             if (isParameterFree)
             {
-                if (this.expression.Successors.Count == 0)
-                    this.expression.Successors.Add(null);
                 return expression;
             }
             var parameters = new Dictionary<string, object>();
@@ -6662,9 +6548,7 @@ namespace NMF.Expressions
             parameters.Add(parameter13Name, in13);
             parameters.Add(parameter14Name, in14);
             parameters.Add(parameter15Name, in15);
-            var result = expression.ApplyParameters(parameters);
-            result.Successors.Add(null);
-            return result;
+            return expression.ApplyParameters(parameters);
         }
 
         /// <summary>
@@ -6690,8 +6574,6 @@ namespace NMF.Expressions
         {
             if (isParameterFree)
             {
-                if (this.expression.Successors.Count == 0)
-                    this.expression.Successors.Add(null);
                 return expression;
             }
             var parameters = new Dictionary<string, object>();
@@ -6710,9 +6592,7 @@ namespace NMF.Expressions
             parameters.Add(parameter13Name, in13);
             parameters.Add(parameter14Name, in14);
             parameters.Add(parameter15Name, in15);
-            var result = expression.ApplyParameters(parameters);
-            result.Successors.Add(null);
-            return result;
+            return expression.ApplyParameters(parameters);
         }
 
         /// <summary>

@@ -15,6 +15,7 @@ namespace NMF.Expressions.Test
             var test = new ObservingFunc<Dummy<int>, bool>(d => d.Item < 0);
 
             var result = test.Observe(dummy);
+            result.Successors.Add(null);
 
             result.ValueChanged += (o, e) => updated = true;
 
@@ -36,6 +37,7 @@ namespace NMF.Expressions.Test
             var test = new ObservingFunc<Dummy<int>, bool>(d => d.Item < 0);
 
             var result = test.Observe(dummy);
+            result.Successors.Add(null);
 
             result.ValueChanged += (o, e) => updated = true;
 
@@ -57,6 +59,7 @@ namespace NMF.Expressions.Test
             var test = new ObservingFunc<Dummy<long>, bool>(d => d.Item < 0);
 
             var result = test.Observe(dummy);
+            result.Successors.Add(null);
 
             result.ValueChanged += (o, e) => updated = true;
 
@@ -78,6 +81,7 @@ namespace NMF.Expressions.Test
             var test = new ObservingFunc<Dummy<long>, bool>(d => d.Item < 0);
 
             var result = test.Observe(dummy);
+            result.Successors.Add(null);
 
             result.ValueChanged += (o, e) => updated = true;
 
@@ -99,6 +103,7 @@ namespace NMF.Expressions.Test
             var test = new ObservingFunc<Dummy<uint>, bool>(d => d.Item < 1);
 
             var result = test.Observe(dummy);
+            result.Successors.Add(null);
 
             result.ValueChanged += (o, e) => updated = true;
 
@@ -120,6 +125,7 @@ namespace NMF.Expressions.Test
             var test = new ObservingFunc<Dummy<uint>, bool>(d => d.Item < 1);
 
             var result = test.Observe(dummy);
+            result.Successors.Add(null);
 
             result.ValueChanged += (o, e) => updated = true;
 
@@ -141,6 +147,7 @@ namespace NMF.Expressions.Test
             var test = new ObservingFunc<Dummy<ulong>, bool>(d => d.Item < 1);
 
             var result = test.Observe(dummy);
+            result.Successors.Add(null);
 
             result.ValueChanged += (o, e) => updated = true;
 
@@ -162,6 +169,7 @@ namespace NMF.Expressions.Test
             var test = new ObservingFunc<Dummy<ulong>, bool>(d => d.Item < 1);
 
             var result = test.Observe(dummy);
+            result.Successors.Add(null);
 
             result.ValueChanged += (o, e) => updated = true;
 
@@ -183,6 +191,7 @@ namespace NMF.Expressions.Test
             var test = new ObservingFunc<Dummy<float>, bool>(d => d.Item < 0);
 
             var result = test.Observe(dummy);
+            result.Successors.Add(null);
 
             result.ValueChanged += (o, e) => updated = true;
 
@@ -204,6 +213,7 @@ namespace NMF.Expressions.Test
             var test = new ObservingFunc<Dummy<float>, bool>(d => d.Item < 0);
 
             var result = test.Observe(dummy);
+            result.Successors.Add(null);
 
             result.ValueChanged += (o, e) => updated = true;
 
@@ -225,6 +235,7 @@ namespace NMF.Expressions.Test
             var test = new ObservingFunc<Dummy<double>, bool>(d => d.Item < 0);
 
             var result = test.Observe(dummy);
+            result.Successors.Add(null);
 
             result.ValueChanged += (o, e) => updated = true;
 
@@ -246,6 +257,7 @@ namespace NMF.Expressions.Test
             var test = new ObservingFunc<Dummy<double>, bool>(d => d.Item < 0);
 
             var result = test.Observe(dummy);
+            result.Successors.Add(null);
 
             result.ValueChanged += (o, e) => updated = true;
 
@@ -267,6 +279,7 @@ namespace NMF.Expressions.Test
             var test = new ObservingFunc<Dummy<decimal>, bool>(d => d.Item < 0);
 
             var result = test.Observe(dummy);
+            result.Successors.Add(null);
 
             result.ValueChanged += (o, e) => updated = true;
 
@@ -288,6 +301,7 @@ namespace NMF.Expressions.Test
             var test = new ObservingFunc<Dummy<decimal>, bool>(d => d.Item < 0);
 
             var result = test.Observe(dummy);
+            result.Successors.Add(null);
 
             result.ValueChanged += (o, e) => updated = true;
 
