@@ -12,7 +12,20 @@ namespace NMF.Expressions.Linq
         private ObservingFunc<TItem, TKey> keySelector;
 
         private Dictionary<TKey, ObservableGroup<TKey, TItem>> groups;
-        private Dictionary<TItem, Stack<Entry>> keys = new Dictionary<TItem, Stack<Entry>>();
+        private Dictionary<TItem, INotifyValue<TKey>> keys = new Dictionary<TItem, INotifyValue<TKey>>();
+        private Dictionary<INotifyValue<TKey>, TItem> items = new Dictionary<INotifyValue<TKey>, TItem>();
+
+        public override IEnumerable<INotifiable> Dependencies
+        {
+            get
+            {
+                yield return source;
+                foreach (var keySelectorInstance in keys.Values)
+                {
+                    yield return keySelectorInstance;
+                }
+            }
+        }
 
         public ObservableGroupBy(INotifyEnumerable<TItem> source, ObservingFunc<TItem, TKey> keySelector, IEqualityComparer<TKey> comparer)
         {
@@ -23,60 +36,15 @@ namespace NMF.Expressions.Linq
 
             this.source = source;
             this.keySelector = keySelector;
-
-            Attach();
         }
 
-        private void SourceCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        private ObservableGroup<TKey, TItem> AttachItem(TItem item)
         {
-            if (e.Action != NotifyCollectionChangedAction.Reset)
-            {
-                if (e.Action == NotifyCollectionChangedAction.Remove && e.OldItems != null)
-                {
-                    foreach (TItem item in e.OldItems)
-                    {
-                        Stack<Entry> entryStack = keys[item];
-                        var entry = entryStack.Pop();
-                        if (entryStack.Count == 0) keys.Remove(item);
-                        DetachItem(item, entry);
-                    }
-                }
-                else if (e.Action == NotifyCollectionChangedAction.Add && e.NewItems != null)
-                {
-                    foreach (TItem item in e.NewItems)
-                    {
-                        var key = keySelector.Observe(item);
-                        AttachItem(item, key);
-                    }
-                }
-                else if (e.Action == NotifyCollectionChangedAction.Replace)
-                {
-                    var count = Math.Min(e.NewItems.Count, e.OldItems.Count);
-                    for (int i = 0; i < count; i++)
-                    {
-                        var oldItem = (TItem)e.OldItems[i];
-                        var newItem = (TItem)e.NewItems[i];
-                        ReplaceItem(oldItem, newItem);
-                    }
-                }
-            }
-            else
-            {
-                DetachCore();
-                OnCleared();
-            }
-        }
+            var key = keySelector.Observe(item);
+            key.Successors.Add(this);
+            keys[item] = key;
+            items[key] = item;
 
-        private void AttachItem(TItem item, INotifyValue<TKey> key)
-        {
-            var entry = new Entry(key, item, this);
-            Stack<Entry> entryStack;
-            if (!keys.TryGetValue(item, out entryStack))
-            {
-                entryStack = new Stack<Entry>();
-                keys.Add(item, entryStack);
-            }
-            entryStack.Push(entry);
             var add = false;
             ObservableGroup<TKey, TItem> group;
             if (!groups.TryGetValue(key.Value, out group))
@@ -85,80 +53,25 @@ namespace NMF.Expressions.Linq
                 groups.Add(key.Value, group);
                 add = true;
             }
-            group.ItemsInternal.Add(item);
-            key.ValueChanged += entry.KeyChanged;
-            if (add) OnAddItem(group);
+            group.Items.Add(item);
+
+            return add ? group : null;
         }
 
-        private void ReplaceItem(TItem old, TItem newItem)
+        private ObservableGroup<TKey, TItem> DetachItem(TItem item)
         {
-            Stack<Entry> entryStack = keys[old];
-            var entry = entryStack.Pop();
-            var key = keySelector.Observe(newItem);
-
-            if (EqualityComparer<TKey>.Default.Equals(entry.Key.Value, key.Value))
-            {
-                var group = groups[entry.Key.Value];
-                entry.Item = newItem;
-                int itemIdx = group.ItemsInternal.IndexOf(old);
-                group.ItemsInternal[itemIdx] = newItem;
-            }
-            else
-            {
-                DetachItem(old, entry);
-                AttachItem(newItem, key);
-            }
-        }
-
-        private void DetachItem(TItem item, Entry entry)
-        {
-            entry.Key.ValueChanged -= entry.KeyChanged;
-            var group = groups[entry.Key.Value];
-            group.ItemsInternal.Remove(item);
+            var key = keys[item];
+            key.Successors.Remove(this);
+            keys.Remove(item);
+            items.Remove(key);
+            var group = groups[key.Value];
+            group.Items.Remove(item);
             if (group.Count == 0)
             {
-                groups.Remove(entry.Key.Value);
-                OnRemoveItem(group);
+                groups.Remove(key.Value);
+                return group;
             }
-        }
-
-        private class Entry
-        {
-            public Entry(INotifyValue<TKey> key, TItem item, ObservableGroupBy<TKey, TItem> parent)
-            {
-                Key = key;
-                Item = item;
-                Parent = parent;
-            }
-
-            public INotifyValue<TKey> Key { get; private set; }
-
-            public ObservableGroupBy<TKey, TItem> Parent { get; private set; }
-
-            public TItem Item { get; set; }
-
-            public void KeyChanged(object sender, ValueChangedEventArgs e)
-            {
-                ObservableGroup<TKey, TItem> group;
-                var oldKey = (TKey)e.OldValue;
-                if (Parent.groups.TryGetValue(oldKey, out group))
-                {
-                    group.ItemsInternal.Remove(Item);
-                    if (group.Count == 0)
-                    {
-                        Parent.groups.Remove(oldKey);
-                        Parent.OnRemoveItem(group);
-                    }
-                }
-                var newKey = (TKey)e.NewValue;
-                if (!Parent.groups.TryGetValue(newKey, out group))
-                {
-                    group = new ObservableGroup<TKey, TItem>(newKey);
-                    Parent.groups.Add(newKey, group);
-                    Parent.OnAddItem(group);
-                }
-                group.ItemsInternal.Add(Item);
-            }
+            return null;
         }
 
         public override IEnumerator<ObservableGroup<TKey, TItem>> GetEnumerator()
@@ -194,37 +107,106 @@ namespace NMF.Expressions.Linq
             }
         }
 
-        public override int Count
-        {
-            get
-            {
-                return groups.Count;
-            }
-        }
-
-        protected override void AttachCore()
+        public override int Count { get { return groups.Count; } }
+        
+        protected override void OnAttach()
         {
             foreach (var item in source)
             {
-                var key = keySelector.Observe(item);
-                AttachItem(item, key);
+                AttachItem(item);
             }
-            source.CollectionChanged += SourceCollectionChanged;
         }
 
-        protected override void DetachCore()
+        protected override void OnDetach()
         {
-            foreach (var entries in keys.Values)
+            foreach (var key in keys.Values)
             {
-                foreach (var entry in entries)
+                key.Successors.Remove(this);
+            }
+
+            keys.Clear();
+            items.Clear();
+            groups.Clear();
+        }
+
+        public override INotificationResult Notify(IList<INotificationResult> sources)
+        {
+            var added = new List<ObservableGroup<TKey, TItem>>();
+            var removed = new List<ObservableGroup<TKey, TItem>>();
+
+            foreach (var change in sources)
+            {
+                if (change.Source == source)
                 {
-                    entry.Key.ValueChanged -= entry.KeyChanged;
-                    entry.Key.Detach();
+                    var sourceChange = (CollectionChangedNotificationResult<TItem>)change;
+                    if (sourceChange.IsReset)
+                    {
+                        OnDetach();
+                        OnAttach();
+                        OnCleared();
+                        return new CollectionChangedNotificationResult<ObservableGroup<TKey, TItem>>(this);
+                    }
+                    else
+                    {
+                        NotifySource(sourceChange, added, removed);
+                    }
+                }
+                else
+                {
+                    var keyChange = (ValueChangedNotificationResult<TKey>)change;
+                    var key = (INotifyValue<TKey>)keyChange.Source;
+                    var item = items[key];
+
+                    ObservableGroup<TKey, TItem> group;
+                    if (groups.TryGetValue(keyChange.OldValue, out group))
+                    {
+                        group.Items.Remove(item);
+                        if (group.Count == 0)
+                        {
+                            groups.Remove(keyChange.OldValue);
+                            removed.Add(group);
+                        }
+                    }
+                    
+                    if (!groups.TryGetValue(keyChange.NewValue, out group))
+                    {
+                        group = new ObservableGroup<TKey, TItem>(keyChange.NewValue);
+                        groups.Add(keyChange.NewValue, group);
+                        added.Add(group);
+                    }
+                    group.Items.Add(item);
                 }
             }
-            keys.Clear();
-            groups.Clear();
-            source.CollectionChanged -= SourceCollectionChanged;
+
+            if (added.Count == 0 && removed.Count == 0)
+                return new UnchangedNotificationResult(this);
+
+            OnRemoveItems(removed);
+            OnAddItems(added);
+            return new CollectionChangedNotificationResult<ObservableGroup<TKey, TItem>>(this, added, removed);
+        }
+
+        private void NotifySource(CollectionChangedNotificationResult<TItem> sourceChange, List<ObservableGroup<TKey, TItem>> added, List<ObservableGroup<TKey, TItem>> removed)
+        {
+            if (sourceChange.RemovedItems != null)
+            {
+                foreach (var item in sourceChange.RemovedItems)
+                {
+                    var group = DetachItem(item);
+                    if (group != null)
+                        removed.Add(group);
+                }
+            }
+
+            if (sourceChange.AddedItems != null)
+            {
+                foreach (var item in sourceChange.AddedItems)
+                {
+                    var group = AttachItem(item);
+                    if (group != null)
+                        added.Add(group);
+                }
+            }
         }
     }
 }

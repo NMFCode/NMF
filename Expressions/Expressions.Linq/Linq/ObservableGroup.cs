@@ -8,15 +8,10 @@ namespace NMF.Expressions.Linq
 {
     public class ObservableGroup<TKey, TItem> : ReadOnlyObservableCollection<TItem>, INotifyGrouping<TKey, TItem>, IGroupingExpression<TKey, TItem>
     {
+        private readonly ShortList<INotifiable> successors = new ShortList<INotifiable>();
         private TKey key;
 
-        internal IList<TItem> ItemsInternal
-        {
-            get
-            {
-                return Items;
-            }
-        }
+        internal new IList<TItem> Items { get { return base.Items; } }
 
         public ObservableGroup(TKey key)
             : base(new ObservableCollection<TItem>())
@@ -25,19 +20,13 @@ namespace NMF.Expressions.Linq
         }
 
 
-        public TKey Key
-        {
-            get { return key; }
-        }
+        public TKey Key { get { return key; } }
 
-        public void Attach() { }
+        public IList<INotifiable> Successors { get { return successors; } }
 
-        public void Detach() { }
+        public IEnumerable<INotifiable> Dependencies { get { return Enumerable.Empty<INotifiable>(); } }
 
-        public bool IsAttached
-        {
-            get { return true; }
-        }
+        public ExecutionMetaData ExecutionMetaData { get; } = new ExecutionMetaData();
 
         public INotifyEnumerable<TItem> AsNotifiable()
         {
@@ -48,5 +37,12 @@ namespace NMF.Expressions.Linq
         {
             return AsNotifiable();
         }
+
+        public INotificationResult Notify(IList<INotificationResult> sources)
+        {
+            throw new InvalidOperationException();
+        }
+
+        public void Dispose() { }
     }
 }
