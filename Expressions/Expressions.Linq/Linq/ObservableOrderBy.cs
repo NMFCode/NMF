@@ -9,150 +9,20 @@ namespace NMF.Expressions.Linq
 {
     internal sealed class ObservableOrderBy<TItem, TKey> : ObservableEnumerable<TItem>, IOrderableNotifyEnumerable<TItem>
     {
-
         private INotifyEnumerable<TItem> source;
         private ObservingFunc<TItem, TKey> keySelector;
         private Dictionary<TItem, TaggedObservableValue<TKey, Multiplicity<TItem>>> lambdas = new Dictionary<TItem, TaggedObservableValue<TKey, Multiplicity<TItem>>>();
-        private SortedDictionary<TKey, ObservableCollection<TItem>> searchTree;
-        private ManualObservableCollectionView<IEnumerable<TItem>> manualRaiseSequences;
+        private SortedDictionary<TKey, Collection<TItem>> searchTree;
 
-
-        private void SourceCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        public override IEnumerable<INotifiable> Dependencies
         {
-            if (e.Action == NotifyCollectionChangedAction.Move) return;
-            if (e.Action != NotifyCollectionChangedAction.Reset)
+            get
             {
-                if (e.OldItems != null)
-                {
-                    var removed = new List<TItem>();
-                    foreach (TItem item in e.OldItems)
-                    {
-                        TaggedObservableValue<TKey, Multiplicity<TItem>> lambdaResult;
-                        if (lambdas.TryGetValue(item, out lambdaResult))
-                        {
-                            ObservableCollection<TItem> sequence;
-                            if (searchTree.TryGetValue(lambdaResult.Value, out sequence))
-                            {
-                                sequence.Remove(item);
-                                if (sequence.Count == 0)
-                                {
-                                    searchTree.Remove(lambdaResult.Value);
-                                    manualRaiseSequences.NotifyRemoveItem(sequence);
-                                }
-                            }
-                            removed.Add(lambdaResult.Tag.Item);
-                            lambdaResult.Tag = new Multiplicity<TItem>(lambdaResult.Tag.Item, lambdaResult.Tag.Count - 1);
-                            if (lambdaResult.Tag.Count == 0)
-                            {
-                                lambdaResult.ValueChanged -= LambdaChanged;
-                                lambdaResult.Detach();
-                                lambdas.Remove(item);
-                            }
-                        }
-                        else
-                        {
-                            //throw new InvalidOperationException();
-                        }
-                    }
-                    OnRemoveItems(removed);
-                }
-                if (e.NewItems != null)
-                {
-                    var added = new List<TItem>();
-                    foreach (TItem item in e.NewItems)
-                    {
-                        AttachItem(item);
-                        added.Add(item);
-                    }
-                    OnAddItems(added);
-                }
-            }
-            else
-            {
-                DetachSource();
-                foreach (var item in source)
-                {
-                    AttachItem(item);
-                }
-                OnCleared();
+                yield return source;
+                foreach (var tagged in lambdas.Values)
+                    yield return tagged;
             }
         }
-
-        private void DetachSource()
-        {
-            foreach (var pair in lambdas)
-            {
-                pair.Value.Detach();
-            }
-            lambdas.Clear();
-            searchTree.Clear();
-        }
-
-        private void AttachItem(TItem item)
-        {
-            TaggedObservableValue<TKey, Multiplicity<TItem>> lambdaResult;
-            if (!lambdas.TryGetValue(item, out lambdaResult))
-            {
-                lambdaResult = keySelector.InvokeTagged<Multiplicity<TItem>>(item);
-                lambdaResult.ValueChanged += LambdaChanged;
-                lambdas.Add(item, lambdaResult);
-            }
-            lambdaResult.Tag = new Multiplicity<TItem>(item, lambdaResult.Tag.Count + 1);
-            ObservableCollection<TItem> sequence;
-            if (!searchTree.TryGetValue(lambdaResult.Value, out sequence))
-            {
-                sequence = new ObservableCollection<TItem>();
-                searchTree.Add(lambdaResult.Value, sequence);
-                manualRaiseSequences.NotifyAddItem(sequence);
-            }
-            sequence.Add(item);
-        }
-
-        private void LambdaChanged(object sender, ValueChangedEventArgs e)
-        {
-            var value = sender as TaggedObservableValue<TKey, Multiplicity<TItem>>;
-
-            TKey oldKey = (TKey)e.OldValue;
-            TKey newKey = (TKey)e.NewValue;
-
-            ObservableCollection<TItem> sequence;
-            if (searchTree.TryGetValue(oldKey, out sequence))
-            {
-                sequence.Remove(value.Tag.Item);
-                if (sequence.Count == 0)
-                {
-                    searchTree.Remove(oldKey);
-                    manualRaiseSequences.NotifyRemoveItem(sequence);
-                }
-            }
-            if (!searchTree.TryGetValue(newKey, out sequence))
-            {
-                sequence = new ObservableCollection<TItem>();
-                searchTree.Add(newKey, sequence);
-                manualRaiseSequences.NotifyAddItem(sequence);
-            }
-            sequence.Add(value.Tag.Item);
-            OnMoveItem(value.Tag.Item);
-        }
-
-        protected override void AttachCore()
-        {
-            if (source != null)
-            {
-                foreach (var item in source)
-                {
-                    AttachItem(item);
-                }
-                source.CollectionChanged += SourceCollectionChanged;
-            }
-        }
-
-        protected override void DetachCore()
-        {
-            DetachSource();
-            source.CollectionChanged -= SourceCollectionChanged;
-        }
-
 
         public ObservableOrderBy(INotifyEnumerable<TItem> source, ObservingFunc<TItem, TKey> keySelector, IComparer<TKey> comparer)
         {
@@ -162,20 +32,165 @@ namespace NMF.Expressions.Linq
             this.source = source;
             this.keySelector = keySelector;
 
-            this.searchTree = new SortedDictionary<TKey, ObservableCollection<TItem>>(comparer);
-            this.manualRaiseSequences = new ManualObservableCollectionView<IEnumerable<TItem>>(searchTree.Values);
-
-            Attach();
+            this.searchTree = new SortedDictionary<TKey, Collection<TItem>>(comparer);
         }
 
-        public INotifyEnumerable<IEnumerable<TItem>> Sequences
+        private void AttachItem(TItem item)
         {
-            get { return manualRaiseSequences; }
+            TaggedObservableValue<TKey, Multiplicity<TItem>> lambdaResult;
+            if (!lambdas.TryGetValue(item, out lambdaResult))
+            {
+                lambdaResult = keySelector.InvokeTagged<Multiplicity<TItem>>(item);
+                lambdas.Add(item, lambdaResult);
+                lambdaResult.Successors.Add(this);
+            }
+            lambdaResult.Tag = new Multiplicity<TItem>(item, lambdaResult.Tag.Count + 1);
+            Collection<TItem> sequence;
+            if (!searchTree.TryGetValue(lambdaResult.Value, out sequence))
+            {
+                sequence = new Collection<TItem>();
+                searchTree.Add(lambdaResult.Value, sequence);
+            }
+            sequence.Add(item);
+        }
+
+        public IEnumerable<IEnumerable<TItem>> Sequences
+        {
+            get { return searchTree.Values; }
         }
 
         public override IEnumerator<TItem> GetEnumerator()
         {
             return SL.SelectMany(searchTree.Values, o => o).GetEnumerator();
+        }
+
+        public IEnumerable<TItem> GetSequenceForItem(TItem item)
+        {
+            TaggedObservableValue<TKey, Multiplicity<TItem>> lambdaResult;
+            if (lambdas.TryGetValue(item, out lambdaResult))
+            {
+                Collection<TItem> sequence;
+                if (searchTree.TryGetValue(lambdaResult.Value, out sequence))
+                {
+                    return sequence;
+                }
+            }
+            return null;
+        }
+
+        protected override void OnAttach()
+        {
+            foreach (var item in source)
+            {
+                AttachItem(item);
+            }
+        }
+
+        protected override void OnDetach()
+        {
+            foreach (var tagged in lambdas.Values)
+            {
+                tagged.Successors.Remove(this);
+            }
+            lambdas.Clear();
+            searchTree.Clear();
+        }
+
+        public override INotificationResult Notify(IList<INotificationResult> sources)
+        {
+            var added = new List<TItem>();
+            var removed = new List<TItem>();
+
+            foreach (var change in sources)
+            {
+                if (change.Source == source)
+                {
+                    var sourceChange = (CollectionChangedNotificationResult<TItem>)change;
+                    if (sourceChange.IsReset)
+                    {
+                        OnDetach();
+                        OnAttach();
+                        OnCleared();
+                        return new CollectionChangedNotificationResult<TItem>(this);
+                    }
+                    else
+                    {
+                        NotifySource(sourceChange, added, removed);
+                    }
+                }
+                else
+                {
+                    var tagged = (TaggedObservableValue<TKey, Multiplicity<TItem>>)change.Source;
+                    var keyChange = (ValueChangedNotificationResult<TKey>)change;
+                    
+                    Collection<TItem> sequence;
+                    if (searchTree.TryGetValue(keyChange.OldValue, out sequence))
+                    {
+                        sequence.Remove(tagged.Tag.Item);
+                        if (sequence.Count == 0)
+                        {
+                            searchTree.Remove(keyChange.OldValue);
+                        }
+                    }
+                    if (!searchTree.TryGetValue(keyChange.NewValue, out sequence))
+                    {
+                        sequence = new Collection<TItem>();
+                        searchTree.Add(keyChange.NewValue, sequence);
+                    }
+                    sequence.Add(tagged.Tag.Item);
+
+                    //TODO use move instead of remove+add, needs to be implemented for every SQO
+                    removed.Add(tagged.Tag.Item);
+                    added.Add(tagged.Tag.Item);
+                }
+            }
+
+            if (added.Count == 0 && removed.Count == 0)
+                return new UnchangedNotificationResult(this);
+
+            OnRemoveItems(removed);
+            OnAddItems(added);
+            return new CollectionChangedNotificationResult<TItem>(this, added, removed);
+        }
+
+        private void NotifySource(CollectionChangedNotificationResult<TItem> sourceChange, List<TItem> added, List<TItem> removed)
+        {
+            if (sourceChange.RemovedItems != null)
+            {
+                foreach (var item in sourceChange.RemovedItems)
+                {
+                    var lambdaResult = lambdas[item];
+                    Collection<TItem> sequence;
+                    if (searchTree.TryGetValue(lambdaResult.Value, out sequence))
+                    {
+                        sequence.Remove(item);
+                        if (sequence.Count == 0)
+                        {
+                            searchTree.Remove(lambdaResult.Value);
+                        }
+                    }
+                    removed.Add(item);
+                        
+                    if (lambdaResult.Tag.Count == 1)
+                    {
+                        lambdas.Remove(item);
+                        lambdaResult.Successors.Remove(this);
+                    }
+                    else
+                    {
+                        lambdaResult.Tag = new Multiplicity<TItem>(lambdaResult.Tag.Item, lambdaResult.Tag.Count - 1);
+                    }
+                }
+            }
+
+            if (sourceChange.AddedItems != null)
+            {
+                foreach (var item in sourceChange.AddedItems)
+                {
+                    AttachItem(item);
+                    added.Add(item);
+                }
+            }
         }
     }
 }

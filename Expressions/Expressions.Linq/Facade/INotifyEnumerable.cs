@@ -13,7 +13,9 @@ namespace NMF.Expressions
 
     public interface IOrderableNotifyEnumerable<T> : INotifyEnumerable<T>
     {
-        INotifyEnumerable<IEnumerable<T>> Sequences { get; }
+        IEnumerable<IEnumerable<T>> Sequences { get; }
+
+        IEnumerable<T> GetSequenceForItem(T item);
     }
 
     public interface INotifyCollection<T> : INotifyEnumerable<T>, ICollection<T> { }
