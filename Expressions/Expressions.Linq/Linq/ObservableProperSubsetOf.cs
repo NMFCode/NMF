@@ -56,15 +56,15 @@ namespace NMF.Expressions.Linq
             if (isLast && removeEntry) diffCount--;
         }
 
-        protected override void OnSource1Reset(int entriesCount)
+        protected override void OnResetSource1(int entriesCount)
         {
-            base.OnSource1Reset(entriesCount);
+            base.OnResetSource1(entriesCount);
             diffCount = entriesCount;
         }
 
-        protected override void OnSource2Reset(int entriesCount)
+        protected override void OnResetSource2(int entriesCount)
         {
-            base.OnSource2Reset(entriesCount);
+            base.OnResetSource2(entriesCount);
             diffCount = 0;
         }
 
@@ -128,15 +128,15 @@ namespace NMF.Expressions.Linq
             if (isLast && removeEntry) diffCount--;
         }
 
-        protected override void OnSource2Reset(int entriesCount)
+        protected override void OnResetSource2(int entriesCount)
         {
-            base.OnSource1Reset(entriesCount);
+            base.OnResetSource1(entriesCount);
             diffCount = entriesCount;
         }
 
-        protected override void OnSource1Reset(int entriesCount)
+        protected override void OnResetSource1(int entriesCount)
         {
-            base.OnSource2Reset(entriesCount);
+            base.OnResetSource2(entriesCount);
             diffCount = 0;
         }
 

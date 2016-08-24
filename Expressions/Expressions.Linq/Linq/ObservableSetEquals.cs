@@ -33,12 +33,12 @@ namespace NMF.Expressions.Linq
         public ObservableSetEquals(INotifyEnumerable<T> source, IEnumerable<T> other, IEqualityComparer<T> comparer)
             : base(source, other, comparer) { }
 
-        protected override void OnSource1Reset(int entriesCount)
+        protected override void OnResetSource1(int entriesCount)
         {
             not_balanced = entriesCount;
         }
 
-        protected override void OnSource2Reset(int entriesCount)
+        protected override void OnResetSource2(int entriesCount)
         {
             not_balanced = entriesCount;
         }

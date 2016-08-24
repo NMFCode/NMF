@@ -1,18 +1,35 @@
-﻿   using System;
-    using System.Collections.Generic;
-    using System.Collections.Specialized;
-    using System.Linq;
-    using System.Text;
+﻿using System;
+using System.Collections.Generic;
+using System.Collections.Specialized;
+using System.Linq;
+using System.Text;
 
 namespace NMF.Expressions.Linq
 {
     internal abstract class ObservableSetComparer<T> : INotifyValue<bool>
     {
+        private readonly ShortList<INotifiable> successors = new ShortList<INotifiable>();
+
         private INotifyEnumerable<T> source1;
         private IEnumerable<T> source2;
+        private INotifyEnumerable<T> observableSource2;
 
         private Dictionary<T, Entry> entries;
         private int attachedCount;
+
+        public IList<INotifiable> Successors { get { return successors; } }
+
+        public IEnumerable<INotifiable> Dependencies
+        {
+            get
+            {
+                yield return source1;
+                if (observableSource2 != null)
+                    yield return observableSource2;
+            }
+        }
+
+        public ExecutionMetaData ExecutionMetaData { get; } = new ExecutionMetaData();
 
         protected ObservableSetComparer(INotifyEnumerable<T> source1, IEnumerable<T> source2, IEqualityComparer<T> comparer)
         {
@@ -22,127 +39,17 @@ namespace NMF.Expressions.Linq
             this.source1 = source1;
             this.source2 = source2;
 
-            if (source1 != source2)
-            {
-                this.entries = new Dictionary<T, Entry>(comparer);
-            }
+            this.observableSource2 = source2 as INotifyEnumerable<T>;
+            this.entries = new Dictionary<T, Entry>(comparer);
 
-            Attach();
+            successors.CollectionChanged += (obj, e) =>
+            {
+                if (successors.Count == 0)
+                    Detach();
+                else if (e.Action == NotifyCollectionChangedAction.Add && successors.Count == 1)
+                    Attach();
+            };
         }
-
-        private void Source2CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
-        {
-            if (e.Action == NotifyCollectionChangedAction.Move) return;
-
-            bool oldValue = Value;
-
-            if (e.Action == NotifyCollectionChangedAction.Reset)
-            {
-                List<T> toRemove = new List<T>();
-                foreach (var entry in entries)
-                {
-                    entry.Value.Source2Count = 0;
-                    if (entry.Value.Source1Count == 0)
-                    {
-                        toRemove.Add(entry.Key);
-                    }
-                }
-                foreach (var item in toRemove)
-                {
-                    entries.Remove(item);
-                }
-                OnSource2Reset(entries.Count);
-                foreach (var item in source2)
-                {
-                    AddSource2(item);
-                }
-            }
-            else
-            {
-                if (e.OldItems != null)
-                {
-                    foreach (T item in e.OldItems)
-                    {
-                        RemoveSource2(item);
-                    }
-                }
-                if (e.NewItems != null)
-                {
-                    foreach (T item in e.NewItems)
-                    {
-                        AddSource2(item);
-                    }
-                }
-            }
-
-            if (oldValue != Value)
-            {
-                OnValueChanged(new ValueChangedEventArgs(oldValue, Value));
-            }
-        }
-
-        protected abstract void OnSource1Reset(int entriesCount);
-
-        protected abstract void OnSource2Reset(int entriesCount);
-
-        private void Source1CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
-        {
-            if (e.Action == NotifyCollectionChangedAction.Move) return;
-
-            bool oldValue = Value;
-
-            if (e.Action == NotifyCollectionChangedAction.Reset)
-            {
-                List<T> toRemove = new List<T>();
-                foreach (var entry in entries)
-                {
-                    entry.Value.Source1Count = 0;
-                    if (entry.Value.Source2Count == 0)
-                    {
-                        toRemove.Add(entry.Key);
-                    }
-                }
-                foreach (var item in toRemove)
-                {
-                    entries.Remove(item);
-                }
-                OnSource1Reset(entries.Count);
-                foreach (var item in source1)
-                {
-                    AddSource1(item);
-                }
-            }
-            else
-            {
-                if (e.OldItems != null)
-                {
-                    foreach (T item in e.OldItems)
-                    {
-                        RemoveSource1(item);
-                    }
-                }
-                if (e.NewItems != null)
-                {
-                    foreach (T item in e.NewItems)
-                    {
-                        AddSource1(item);
-                    }
-                }
-            }
-
-            if (oldValue != Value)
-            {
-                OnValueChanged(new ValueChangedEventArgs(oldValue, Value));
-            }
-        }
-
-        protected abstract void OnAddSource1(bool isNew, bool isFirst);
-
-        protected abstract void OnAddSource2(bool isNew, bool isFirst);
-
-        protected abstract void OnRemoveSource1(bool isLast, bool removeEntry);
-
-        protected abstract void OnRemoveSource2(bool isLast, bool removeEntry);
 
         private void AddSource2(T item)
         {
@@ -220,10 +127,19 @@ namespace NMF.Expressions.Linq
             }
         }
 
-        public abstract bool Value
-        {
-            get;
-        }
+        public abstract bool Value { get; }
+
+        protected abstract void OnAddSource1(bool isNew, bool isFirst);
+
+        protected abstract void OnAddSource2(bool isNew, bool isFirst);
+
+        protected abstract void OnRemoveSource1(bool isLast, bool removeEntry);
+
+        protected abstract void OnRemoveSource2(bool isLast, bool removeEntry);
+
+        protected abstract void OnResetSource1(int entriesCount);
+
+        protected abstract void OnResetSource2(int entriesCount);
 
         public event EventHandler<ValueChangedEventArgs> ValueChanged;
 
@@ -232,39 +148,8 @@ namespace NMF.Expressions.Linq
             if (ValueChanged != null) ValueChanged(this, e);
         }
 
-        public void Detach()
-        {
-            if (attachedCount == 1)
-            {
-                DetachCore();
-            }
-            attachedCount--;
-        }
-
-        private void DetachCore()
-        {
-            if (entries == null) return;
-            source1.CollectionChanged -= Source1CollectionChanged;
-            var notifier = source2 as INotifyEnumerable<T>;
-            if (notifier != null)
-            {
-                notifier.CollectionChanged -= Source2CollectionChanged;
-            }
-        }
-
         public void Attach()
         {
-            if (attachedCount == 0)
-            {
-                AttachCore();
-            }
-            attachedCount++;
-        }
-
-        private void AttachCore()
-        {
-            if (entries == null) return;
-            entries.Clear();
             foreach (var item in source1)
             {
                 AddSource1(item);
@@ -274,12 +159,121 @@ namespace NMF.Expressions.Linq
             {
                 AddSource2(item);
             }
+        }
 
-            source1.CollectionChanged += Source1CollectionChanged;
-            var notifier = source2 as INotifyEnumerable<T>;
-            if (notifier != null)
+        public void Detach()
+        {
+            entries.Clear();
+        }
+
+        public void Dispose()
+        {
+            Detach();
+        }
+
+        public INotificationResult Notify(IList<INotificationResult> sources)
+        {
+            bool oldValue = Value;
+
+            foreach (CollectionChangedNotificationResult<T> change in sources)
             {
-                notifier.CollectionChanged += Source2CollectionChanged;
+                if (change.Source == source1)
+                    NotifySource1(change);
+                else
+                    NotifySource2(change);
+            }
+
+            bool newValue = Value;
+
+            if (oldValue == newValue)
+                return new UnchangedNotificationResult(this);
+            else
+                return new ValueChangedNotificationResult<bool>(this, oldValue, newValue);
+        }
+
+        private void NotifySource1(CollectionChangedNotificationResult<T> change)
+        {
+            if (change.IsReset)
+            {
+                List<T> toRemove = new List<T>();
+                foreach (var entry in entries)
+                {
+                    entry.Value.Source1Count = 0;
+                    if (entry.Value.Source2Count == 0)
+                    {
+                        toRemove.Add(entry.Key);
+                    }
+                }
+                foreach (var item in toRemove)
+                {
+                    entries.Remove(item);
+                }
+                OnResetSource1(entries.Count);
+                foreach (var item in source1)
+                {
+                    AddSource1(item);
+                }
+            }
+            else
+            {
+                if (change.RemovedItems != null)
+                {
+                    foreach (var item in change.RemovedItems)
+                    {
+                        RemoveSource1(item);
+                    }
+                }
+
+                if (change.AddedItems != null)
+                {
+                    foreach (var item in change.AddedItems)
+                    {
+                        AddSource1(item);
+                    }
+                }
+            }
+        }
+
+        private void NotifySource2(CollectionChangedNotificationResult<T> change)
+        {
+            if (change.IsReset)
+            {
+                List<T> toRemove = new List<T>();
+                foreach (var entry in entries)
+                {
+                    entry.Value.Source2Count = 0;
+                    if (entry.Value.Source1Count == 0)
+                    {
+                        toRemove.Add(entry.Key);
+                    }
+                }
+                foreach (var item in toRemove)
+                {
+                    entries.Remove(item);
+                }
+                OnResetSource2(entries.Count);
+                foreach (var item in source2)
+                {
+                    AddSource2(item);
+                }
+            }
+            else
+            {
+                if (change.RemovedItems != null)
+                {
+                    foreach (var item in change.RemovedItems)
+                    {
+                        RemoveSource2(item);
+                    }
+                }
+
+                if (change.AddedItems != null)
+                {
+                    foreach (var item in change.AddedItems)
+                    {
+                        AddSource2(item);
+                    }
+                }
             }
         }
 
@@ -288,12 +282,6 @@ namespace NMF.Expressions.Linq
             public int Source1Count { get; set; }
 
             public int Source2Count { get; set; }
-        }
-
-
-        public bool IsAttached
-        {
-            get { return attachedCount > 0; }
         }
     }
 }
