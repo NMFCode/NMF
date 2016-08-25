@@ -10,6 +10,7 @@ namespace NMF.Expressions.Linq
     {
         private INotifyEnumerable<TOuter> outerSource;
         private IEnumerable<TInner> innerSource;
+        private INotifyEnumerable<TInner> observableInnerSource;
         private ObservingFunc<TOuter, TKey> outerKeySelector;
         private ObservingFunc<TInner, TKey> innerKeySelector;
         private ObservingFunc<TOuter, IEnumerable<TInner>, TResult> resultSelector;
@@ -17,6 +18,31 @@ namespace NMF.Expressions.Linq
         private Dictionary<TKey, KeyGroup> groups;
         private Dictionary<TInner, Stack<TaggedObservableValue<TKey, TInner>>> innerValues = new Dictionary<TInner, Stack<TaggedObservableValue<TKey, TInner>>>();
         private Dictionary<TOuter, Stack<TaggedObservableValue<TKey, TOuter>>> outerValues = new Dictionary<TOuter, Stack<TaggedObservableValue<TKey, TOuter>>>();
+
+        public override IEnumerable<INotifiable> Dependencies
+        {
+            get
+            {
+                yield return outerSource;
+                if (observableInnerSource != null)
+                    yield return observableInnerSource;
+                foreach (var stack in outerValues.Values)
+                {
+                    foreach (var tagged in stack)
+                        yield return tagged;
+                }
+                foreach (var stack in innerValues.Values)
+                {
+                    foreach (var tagged in stack)
+                        yield return tagged;
+                }
+                foreach (var group in groups.Values)
+                {
+                    foreach (var result in group.OuterElements.Values)
+                        yield return result;
+                }
+            }
+        }
 
         public ObservableGroupJoin(INotifyEnumerable<TOuter> outerSource, IEnumerable<TInner> innerSource, ObservingFunc<TOuter, TKey> outerKeySelector, ObservingFunc<TInner, TKey> innerKeySelector, ObservingFunc<TOuter, IEnumerable<TInner>, TResult> resultSelector, IEqualityComparer<TKey> comparer)
         {
@@ -32,22 +58,15 @@ namespace NMF.Expressions.Linq
             this.innerKeySelector = innerKeySelector;
             this.resultSelector = resultSelector;
 
+            this.observableInnerSource = innerSource as INotifyEnumerable<TInner>;
             groups = new Dictionary<TKey, KeyGroup>(comparer);
-
-            Attach();
         }
 
         private class KeyGroup
         {
             public Dictionary<TaggedObservableValue<TKey, TOuter>, TaggedObservableValue<TResult, TOuter>> OuterElements = new Dictionary<TaggedObservableValue<TKey, TOuter>, TaggedObservableValue<TResult, TOuter>>();
             public List<TaggedObservableValue<TKey, TInner>> InnerKeys = new List<TaggedObservableValue<TKey, TInner>>();
-
-            public ManualObservableCollectionView<TInner> collectionView;
-
-            public KeyGroup()
-            {
-                collectionView = new ManualObservableCollectionView<TInner>(InnerKeys.Select(key => key.Tag));
-            }
+            public IEnumerable<TInner> InnerElements { get { return InnerKeys.Select(key => key.Tag); } }
         }
 
         public override IEnumerator<TResult> GetEnumerator()
@@ -62,54 +81,34 @@ namespace NMF.Expressions.Linq
                 return groups.Values.Sum(group => group.OuterElements.Count);
             }
         }
-
-        protected override void AttachCore()
+        
+        private TResult AttachOuter(TOuter item)
         {
-            outerSource.Attach();
-            outerSource.CollectionChanged += OuterSourceCollectionChanged;
-            var innerSourceNotifiable = innerSource as INotifyEnumerable<TInner>;
-            if (innerSourceNotifiable != null)
+            var keyValue = outerKeySelector.InvokeTagged(item, item);
+            keyValue.Successors.Add(this);
+            Stack<TaggedObservableValue<TKey, TOuter>> valueStack;
+            if (!outerValues.TryGetValue(item, out valueStack))
             {
-                innerSourceNotifiable.Attach();
-                innerSourceNotifiable.CollectionChanged += InnerSourceCollectionChanged;
+                valueStack = new Stack<TaggedObservableValue<TKey, TOuter>>();
+                outerValues.Add(item, valueStack);
             }
-            else
+            valueStack.Push(keyValue);
+            KeyGroup group;
+            if (!groups.TryGetValue(keyValue.Value, out group))
             {
-                var notifier = innerSource as INotifyCollectionChanged;
-                if (notifier != null)
-                {
-                    notifier.CollectionChanged += InnerSourceCollectionChanged;
-                }
+                group = new KeyGroup();
+                groups.Add(keyValue.Value, group);
             }
-            foreach (var item in outerSource)
-            {
-                var keyValue = outerKeySelector.InvokeTagged(item, item);
-                Stack<TaggedObservableValue<TKey, TOuter>> valueStack;
-                if (!outerValues.TryGetValue(item, out valueStack))
-                {
-                    valueStack = new Stack<TaggedObservableValue<TKey, TOuter>>();
-                    outerValues.Add(item, valueStack);
-                }
-                valueStack.Push(keyValue);
-                KeyGroup group;
-                if (!groups.TryGetValue(keyValue.Value, out group))
-                {
-                    group = new KeyGroup();
-                    groups.Add(keyValue.Value, group);
-                }
-                keyValue.ValueChanged += OuterKeyChanged;
-                var resultValue = resultSelector.InvokeTagged(item, group.InnerKeys.Select(t => t.Tag), item);
-                group.OuterElements.Add(keyValue, resultValue);
-            }
-            foreach (var item in innerSource)
-            {
-                AttachInner(item, null);
-            }
+            var resultValue = resultSelector.InvokeTagged(item, group.InnerElements, item);
+            resultValue.Successors.Add(this);
+            group.OuterElements.Add(keyValue, resultValue);
+            return resultValue.Value;
         }
 
         private void AttachInner(TInner item, ICollection<TResult> added)
         {
             var keyValue = innerKeySelector.InvokeTagged(item, item);
+            keyValue.Successors.Add(this);
             Stack<TaggedObservableValue<TKey, TInner>> valueStack;
             if (!innerValues.TryGetValue(item, out valueStack))
             {
@@ -123,9 +122,7 @@ namespace NMF.Expressions.Linq
                 group = new KeyGroup();
                 groups.Add(keyValue.Value, group);
             }
-            keyValue.ValueChanged += InnerKeyChanged;
             group.InnerKeys.Add(keyValue);
-            group.collectionView.NotifyAddItem(item);
             if (group.InnerKeys.Count == 1 && added != null)
             {
                 foreach (var result in group.OuterElements.Values)
@@ -135,249 +132,256 @@ namespace NMF.Expressions.Linq
             }
         }
 
-        private void ResultValueChanged(object sender, ValueChangedEventArgs e)
+        protected override void OnAttach()
         {
-            OnUpdateItem((TResult)e.NewValue, (TResult)e.OldValue);
+            foreach (var item in outerSource)
+            {
+                AttachOuter(item);
+            }
+            foreach (var item in innerSource)
+            {
+                AttachInner(item, null);
+            }
         }
 
-        private void OuterKeyChanged(object sender, ValueChangedEventArgs e)
+        protected override void OnDetach()
         {
-            var value = sender as TaggedObservableValue<TKey, TOuter>;
-            var oldKey = (TKey)e.OldValue;
-            var group = groups[oldKey];
+            foreach (var group in groups.Values)
+            {
+                foreach (var val in group.OuterElements)
+                {
+                    val.Key.Successors.Remove(this);
+                    val.Value.Successors.Remove(this);
+                }
+                foreach (var val in group.InnerKeys)
+                {
+                    val.Successors.Remove(this);
+                }
+            }
+
+            groups.Clear();
+            outerValues.Clear();
+            innerValues.Clear();
+        }
+
+        public override INotificationResult Notify(IList<INotificationResult> sources)
+        {
+            var added = new List<TResult>();
+            var removed = new List<TResult>();
+            bool reset = false;
+
+            foreach (var change in sources)
+            {
+                if (change.Source == outerSource)
+                {
+                    var outerChange = (CollectionChangedNotificationResult<TOuter>)change;
+                    if (outerChange.IsReset)
+                    {
+                        foreach (var group in groups.Values)
+                        {
+                            foreach (var val in group.OuterElements)
+                            {
+                                val.Key.Successors.Remove(this);
+                                val.Value.Successors.Remove(this);
+                            }
+                            group.OuterElements.Clear();
+                        }
+                        outerValues.Clear();
+
+                        if (reset) //both source collections may be reset, only return after handling both
+                        {
+                            OnCleared();
+                            return new CollectionChangedNotificationResult<TResult>(this);
+                        }
+                        reset = true;
+                    }
+                    else
+                    {
+                        NotifyOuter(outerChange, added, removed);
+                    }
+                }
+                else if (change.Source == observableInnerSource)
+                {
+                    var innerChange = (CollectionChangedNotificationResult<TInner>)change;
+                    if (innerChange.IsReset)
+                    {
+                        foreach (var group in groups.Values)
+                        {
+                            foreach (var val in group.InnerKeys)
+                            {
+                                val.Successors.Remove(this);
+                            }
+                            group.InnerKeys.Clear();
+                        }
+                        innerValues.Clear();
+
+                        if (reset) //both source collections may be reset, only return after handling both
+                        {
+                            OnCleared();
+                            return new CollectionChangedNotificationResult<TResult>(this);
+                        }
+                        reset = true;
+                    }
+                    else
+                    {
+                        NotifyInner(innerChange, added, removed);
+                    }
+                }
+                else if (change is ValueChangedNotificationResult<TKey>)
+                {
+                    var keyChange = (ValueChangedNotificationResult<TKey>)change;
+                    if (keyChange.Source is TaggedObservableValue<TKey, TOuter>)
+                        NotifyOuterKey(keyChange, added, removed);
+                    else
+                        NotifyInnerKey(keyChange, added, removed);
+                }
+                else
+                {
+                    var resultChange = (ValueChangedNotificationResult<TResult>)change;
+                    removed.Add(resultChange.OldValue);
+                    added.Add(resultChange.NewValue);
+                }
+            }
+
+            if (reset) //only one source was reset
+            {
+                OnCleared();
+                return new CollectionChangedNotificationResult<TResult>(this);
+            }
+
+            if (added.Count == 0 && removed.Count == 0)
+                return new UnchangedNotificationResult(this);
+
+            OnRemoveItems(removed);
+            OnAddItems(added);
+            return new CollectionChangedNotificationResult<TResult>(this, added, removed);
+        }
+
+        private void NotifyOuter(CollectionChangedNotificationResult<TOuter> outerChange, List<TResult> added, List<TResult> removed)
+        {
+            if (outerChange.RemovedItems != null)
+            {
+                foreach (var outer in outerChange.RemovedItems)
+                {
+                    var valueStack = outerValues[outer];
+                    var value = valueStack.Pop();
+                    if (valueStack.Count == 0)
+                    {
+                        outerValues.Remove(outer);
+                    }
+                    var group = groups[value.Value];
+                    var result = group.OuterElements[value];
+                    if (group.InnerKeys.Count == 0)
+                    {
+                        if (group.OuterElements.Count == 0)
+                        {
+                            groups.Remove(value.Value);
+                        }
+                    }
+                    else
+                    {
+                        removed.Add(result.Value);
+                    }
+                    group.OuterElements.Remove(value);
+                    value.Successors.Remove(this);
+                    result.Successors.Remove(this);
+                }
+            }
+
+            if (outerChange.AddedItems != null)
+            {
+                foreach (var outer in outerChange.AddedItems)
+                {
+                    added.Add(AttachOuter(outer));
+                }
+            }
+        }
+
+        private void NotifyInner(CollectionChangedNotificationResult<TInner> innerChange, List<TResult> added, List<TResult> removed)
+        {
+            if (innerChange.RemovedItems != null)
+            {
+                foreach (var inner in innerChange.RemovedItems)
+                {
+                    var valueStack = innerValues[inner];
+                    var value = valueStack.Pop();
+                    if (valueStack.Count == 0)
+                    {
+                        innerValues.Remove(inner);
+                    }
+                    var group = groups[value.Value];
+                    group.InnerKeys.Remove(value);
+                    if (group.InnerKeys.Count == 0)
+                    {
+                        if (group.OuterElements.Count == 0)
+                        {
+                            groups.Remove(value.Value);
+                        }
+                        else
+                        {
+                            removed.AddRange(group.OuterElements.Values.Select(r => r.Value));
+                        }
+                    }
+                    value.Successors.Remove(this);
+                }
+            }
+
+            if (innerChange.AddedItems != null)
+            {
+                foreach (var inner in innerChange.AddedItems)
+                {
+                    AttachInner(inner, added);
+                }
+            }
+        }
+
+        private void NotifyOuterKey(ValueChangedNotificationResult<TKey> keyChange, List<TResult> added, List<TResult> removed)
+        {
+            var value = (TaggedObservableValue<TKey, TOuter>)keyChange.Source;
+            var group = groups[keyChange.OldValue];
             group.OuterElements.Remove(value);
-            bool isRemoving = false;
-            TResult removed = default(TResult);
+            
             if (group.InnerKeys.Count != 0)
             {
-                isRemoving = true;
                 var result = group.OuterElements[value];
-                removed = result.Value;
-                result.ValueChanged -= ResultValueChanged;
-                result.Detach();
+                removed.Add(result.Value);
+                result.Successors.Remove(this);
             }
+
             if (!groups.TryGetValue(value.Value, out group))
             {
                 group = new KeyGroup();
                 groups.Add(value.Value, group);
             }
-            var newResult = resultSelector.InvokeTagged(value.Tag, group.collectionView, value.Tag);
-            newResult.ValueChanged += ResultValueChanged;
+
+            var newResult = resultSelector.InvokeTagged(value.Tag, group.InnerElements, value.Tag);
+            newResult.Successors.Add(this);
             group.OuterElements.Add(value, newResult);
-            if (isRemoving)
-            {
-                OnRemoveItem(removed);
-            }
             if (group.InnerKeys.Count != 0)
             {
-                OnAddItem(newResult.Value);
+                added.Add(newResult.Value);
             }
         }
 
-        private void InnerKeyChanged(object sender, ValueChangedEventArgs e)
+        private void NotifyInnerKey(ValueChangedNotificationResult<TKey> keyChange, List<TResult> added, List<TResult> removed)
         {
-            var value = sender as TaggedObservableValue<TKey, TInner>;
-            var oldKey = (TKey)e.OldValue;
-            var group = groups[oldKey];
+            var value = (TaggedObservableValue<TKey, TInner>)keyChange.Source;
+            var group = groups[keyChange.OldValue];
             group.InnerKeys.Remove(value);
-            group.collectionView.NotifyRemoveItem(value.Tag);
-            var removed = new List<TResult>();
             if (group.InnerKeys.Count == 0)
             {
                 removed.AddRange(group.OuterElements.Values.Select(r => r.Value));
             }
+
             if (!groups.TryGetValue(value.Value, out group))
             {
                 group = new KeyGroup();
                 groups.Add(value.Value, group);
             }
             group.InnerKeys.Add(value);
-            group.collectionView.NotifyAddItem(value.Tag);
-            var added = new List<TResult>();
             if (group.InnerKeys.Count == 1)
             {
                 added.AddRange(group.OuterElements.Values.Select(r => r.Value));
-            }
-            OnReplaceItems(removed, added);
-        }
-
-        private void InnerSourceCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
-        {
-            if (e.Action == NotifyCollectionChangedAction.Reset)
-            {
-                foreach (var group in groups.Values)
-                {
-                    foreach (var val in group.InnerKeys)
-                    {
-                        val.Detach();
-                        val.ValueChanged -= InnerKeyChanged;
-                    }
-                    group.InnerKeys.Clear();
-                }
-                innerValues.Clear();
-                OnCleared();
-            }
-            else if (e.Action != NotifyCollectionChangedAction.Move)
-            {
-                if (e.OldItems != null)
-                {
-                    var removed = new List<TResult>();
-                    foreach (TInner inner in e.OldItems)
-                    {
-                        var valueStack = innerValues[inner];
-                        var value = valueStack.Pop();
-                        if (valueStack.Count == 0)
-                        {
-                            innerValues.Remove(inner);
-                        }
-                        var group = groups[value.Value];
-                        group.InnerKeys.Remove(value);
-                        group.collectionView.NotifyRemoveItem(inner);
-                        if (group.InnerKeys.Count == 0)
-                        {
-                            if (group.OuterElements.Count == 0)
-                            {
-                                groups.Remove(value.Value);
-                            }
-                            else
-                            {
-                                removed.AddRange(group.OuterElements.Values.Select(r => r.Value));
-                            }
-                        }
-                        value.ValueChanged -= InnerKeyChanged;
-                        value.Detach();
-                    }
-                    OnRemoveItems(removed);
-                }
-                if (e.NewItems != null)
-                {
-                    var added = new List<TResult>();
-                    foreach (TInner inner in e.NewItems)
-                    {
-                        AttachInner(inner, added);
-                    }
-                    OnAddItems(added);
-                }
-            }
-        }
-
-        private void OuterSourceCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
-        {
-            if (e.Action == NotifyCollectionChangedAction.Reset)
-            {
-                foreach (var group in groups.Values)
-                {
-                    foreach (var val in group.OuterElements)
-                    {
-                        val.Key.Detach();
-                        val.Key.ValueChanged -= OuterKeyChanged;
-                        val.Value.Detach();
-                        val.Value.ValueChanged -= ResultValueChanged;
-                    }
-                    group.OuterElements.Clear();
-                }
-                outerValues.Clear();
-                OnCleared();
-            }
-            else if (e.Action != NotifyCollectionChangedAction.Move)
-            {
-                if (e.OldItems != null)
-                {
-                    var removed = new List<TResult>();
-                    foreach (TOuter outer in e.OldItems)
-                    {
-                        var valueStack = outerValues[outer];
-                        var value = valueStack.Pop();
-                        if (valueStack.Count == 0)
-                        {
-                            outerValues.Remove(outer);
-                        }
-                        var group = groups[value.Value];
-                        var result = group.OuterElements[value];
-                        if (group.InnerKeys.Count == 0)
-                        {
-                            if (group.OuterElements.Count == 0)
-                            {
-                                groups.Remove(value.Value);
-                            }
-                        }
-                        else
-                        {
-                            removed.Add(result.Value);
-                        }
-                        group.OuterElements.Remove(value);
-                        value.ValueChanged -= OuterKeyChanged;
-                        value.Detach();
-                        result.ValueChanged -= ResultValueChanged;
-                        result.Detach();
-                    }
-                    OnRemoveItems(removed);
-                }
-                if (e.NewItems != null)
-                {
-                    var added = new List<TResult>();
-                    foreach (TOuter outer in e.NewItems)
-                    {
-                        Stack<TaggedObservableValue<TKey, TOuter>> valueStack;
-                        if (!outerValues.TryGetValue(outer, out valueStack))
-                        {
-                            valueStack = new Stack<TaggedObservableValue<TKey, TOuter>>();
-                            outerValues.Add(outer, valueStack);
-                        }
-                        var value = outerKeySelector.InvokeTagged(outer, outer);
-                        valueStack.Push(value);
-                        KeyGroup group;
-                        if (!groups.TryGetValue(value.Value, out group))
-                        {
-                            group = new KeyGroup();
-                            groups.Add(value.Value, group);
-                        }
-                        var result = resultSelector.InvokeTagged(outer, group.collectionView, outer);
-                        group.OuterElements.Add(value, result);
-                        added.Add(result.Value);
-                        value.ValueChanged += InnerKeyChanged;
-                        result.ValueChanged += ResultValueChanged;
-                    }
-                    OnAddItems(added);
-                }
-            }
-        }
-
-        protected override void DetachCore()
-        {
-            foreach (var group in groups.Values)
-            {
-                foreach (var val in group.OuterElements)
-                {
-                    val.Key.Detach();
-                    val.Key.ValueChanged -= OuterKeyChanged;
-                    val.Value.Detach();
-                    val.Value.ValueChanged -= ResultValueChanged;
-                }
-                foreach (var val in group.InnerKeys)
-                {
-                    val.Detach();
-                    val.ValueChanged -= InnerKeyChanged;
-                }
-            }
-            groups.Clear();
-            outerSource.Detach();
-            outerValues.Clear();
-            innerValues.Clear();
-            outerSource.CollectionChanged -= OuterSourceCollectionChanged;
-            var innerSourceNotifiable = innerSource as INotifyEnumerable<TInner>;
-            if (innerSourceNotifiable != null)
-            {
-                innerSourceNotifiable.Detach();
-                innerSourceNotifiable.CollectionChanged -= InnerSourceCollectionChanged;
-            }
-            else
-            {
-                var notifier = innerSource as INotifyCollectionChanged;
-                if (notifier != null)
-                {
-                    notifier.CollectionChanged -= InnerSourceCollectionChanged;
-                }
             }
         }
     }
