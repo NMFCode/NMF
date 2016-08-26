@@ -122,7 +122,8 @@ namespace NMF.Expressions
         {
             if (ValueChanged != null)
                 ValueChanged(this, new ValueChangedEventArgs(Value, Value));
-            return new ValueChangedNotificationResult<T>(this, Value, Value);
+            var valueChange = (ValueChangedNotificationResult<T>)sources[0];
+            return new ValueChangedNotificationResult<T>(this, valueChange.OldValue, Value);
         }
 
         public void Dispose()

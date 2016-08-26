@@ -28,43 +28,6 @@ namespace NMF.Expressions.Linq
             };
         }
 
-        private void SourceCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
-        {
-            if (e.Action != NotifyCollectionChangedAction.Reset)
-            {
-                var oldValue = Value;
-                if (e.OldItems != null)
-                {
-                    foreach (TSource item in e.OldItems)
-                    {
-                        RemoveItem(item);
-                    }
-                }
-                if (e.NewItems != null)
-                {
-                    foreach (TSource item in e.NewItems)
-                    {
-                        AddItem(item);
-                    }
-                }
-                var newValue = Value;
-                if (!EqualityComparer<TResult>.Default.Equals(newValue, oldValue))
-                {
-                    OnValueChanged(new ValueChangedEventArgs(oldValue, newValue));
-                }
-            }
-            else
-            {
-                var oldValue = Value;
-                ResetAccumulator();
-                var newValue = Value;
-                if (!EqualityComparer<TResult>.Default.Equals(newValue, oldValue))
-                {
-                    OnValueChanged(new ValueChangedEventArgs(oldValue, newValue));
-                }
-            }
-        }
-
         protected INotifyEnumerable<TSource> Source
         {
             get { return source; }
@@ -110,16 +73,7 @@ namespace NMF.Expressions.Linq
 
         public INotificationResult Notify(IList<INotificationResult> sources)
         {
-            CollectionChangedNotificationResult<TSource> sourceChange = null;
-            for (int i = 0; i < sources.Count; i++)
-            {
-                if (sources[i].Source == source)
-                    sourceChange = sources[i] as CollectionChangedNotificationResult<TSource>;
-            }
-
-            if (sourceChange == null)
-                return new UnchangedNotificationResult(this);
-
+            var sourceChange = (CollectionChangedNotificationResult<TSource>)sources[0];
             var oldValue = Value;
             if (sourceChange.IsReset)
             {
