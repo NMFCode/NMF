@@ -9,6 +9,8 @@ namespace NMF.Expressions.Linq
 {
     public class OrderableList<T> : ObservableEnumerable<T>, IOrderableNotifyEnumerable<T>
     {
+        public override IEnumerable<INotifiable> Dependencies { get { return Enumerable.Empty<INotifiable>(); } }
+
         public OrderableList()
         {
             Sequences = new NotifyCollection<IEnumerable<T>>();
@@ -70,11 +72,17 @@ namespace NMF.Expressions.Linq
             return Enumerable.SelectMany(Sequences, coll => coll).GetEnumerator();
         }
 
-        protected override void AttachCore() { }
+        public override INotificationResult Notify(IList<INotificationResult> sources)
+        {
+            throw new InvalidOperationException();
+        }
 
-        protected override void DetachCore() { }
+        public IEnumerable<T> GetSequenceForItem(T item)
+        {
+            throw new InvalidOperationException();
+        }
 
-        INotifyEnumerable<IEnumerable<T>> IOrderableNotifyEnumerable<T>.Sequences
+        IEnumerable<IEnumerable<T>> IOrderableNotifyEnumerable<T>.Sequences
         {
             get { return Sequences; }
         }
