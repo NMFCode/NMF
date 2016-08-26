@@ -25,38 +25,7 @@ namespace NMF.Expressions.Linq.Tests
 
             Assert.IsFalse(update);
         }
-
-        [TestMethod]
-        public void Contains_ObservableSourceElementAdded_NoUpdateWhenDetached()
-        {
-            var update = false;
-            var coll = new NotifyCollection<int>() { 1, 2, 3 };
-
-            var test = Observable.Expression(() => coll.Contains(4));
-
-            test.ValueChanged += (o, e) => update = true;
-
-            Assert.IsFalse(test.Value);
-            Assert.IsFalse(update);
-
-            test.Detach();
-            update = false;
-
-            coll.Add(4);
-
-            Assert.IsFalse(update);
-
-            test.Attach();
-
-            Assert.IsTrue(update);
-            Assert.IsTrue(test.Value);
-            update = false;
-
-            coll.Remove(4);
-
-            Assert.IsTrue(update);
-        }
-
+        
         [TestMethod]
         public void Contains_ObservableSourceElementAdded_Update()
         {

@@ -27,37 +27,6 @@ namespace NMF.Expressions.Linq.Tests
         }
 
         [TestMethod]
-        public void Count_ObservableSourceItemAdded_NoUpdateWhenDetached()
-        {
-            var update = false;
-            var coll = new NotifyCollection<int>() { 1, 2, 3 };
-
-            var test = Observable.Expression(() => coll.WithUpdates().Count());
-
-            test.ValueChanged += (o, e) => update = true;
-
-            Assert.AreEqual(3, test.Value);
-            Assert.IsFalse(update);
-
-            test.Detach();
-
-            coll.Add(4);
-
-            Assert.IsFalse(update);
-
-            test.Attach();
-
-            Assert.IsTrue(update);
-            Assert.AreEqual(4, test.Value);
-            update = true;
-
-            coll.Add(5);
-
-            Assert.IsTrue(update);
-        }
-
-
-        [TestMethod]
         public void Count_ObservableSourceItemAdded_Update()
         {
             var update = false;
@@ -128,37 +97,6 @@ namespace NMF.Expressions.Linq.Tests
 
             Assert.IsFalse(update);
         }
-
-        [TestMethod]
-        public void CountPredicate_ObservableSourceItemAdded_NoUpdateWhenDetached()
-        {
-            var update = false;
-            var coll = new NotifyCollection<int>() { 1, 2, 3, -1, -3 };
-
-            var test = Observable.Expression(() => coll.WithUpdates().Count(i => i > 0));
-
-            test.ValueChanged += (o, e) => update = true;
-
-            Assert.AreEqual(3, test.Value);
-            Assert.IsFalse(update);
-
-            test.Detach();
-
-            coll.Add(4);
-
-            Assert.IsFalse(update);
-
-            test.Attach();
-
-            Assert.IsTrue(update);
-            Assert.AreEqual(4, test.Value);
-            update = true;
-
-            coll.Add(5);
-
-            Assert.IsTrue(update);
-        }
-
 
         [TestMethod]
         public void CountPredicate_ObservableSourceItemAdded_Update()

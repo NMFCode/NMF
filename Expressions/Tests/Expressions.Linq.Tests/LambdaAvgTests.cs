@@ -30,46 +30,6 @@ namespace NMF.Expressions.Linq.Tests
         }
 
         [TestMethod]
-        public void LambdaIntAverage_ObservableSourceItemAdded_NoUpdatesWhenDetached()
-        {
-            var update = false;
-            var coll = new NotifyCollection<Dummy<int>>() { new Dummy<int>(1), new Dummy<int>(2), new Dummy<int>(3) };
-            var testColl = coll.WithUpdates();
-
-            var test = Observable.Expression(() => testColl.Average(d => d.Item));
-
-            test.ValueChanged += (o, e) => update = true;
-
-            Assert.AreEqual(2, test.Value);
-            Assert.AreEqual(2, testColl.Average(d => d.Item));
-            Assert.IsFalse(update);
-
-            test.Detach();
-
-            var testDummy = new ObservableDummy<int>(5);
-            coll.Add(testDummy);
-
-            Assert.IsFalse(update);
-
-            testDummy.Item = 4;
-
-            Assert.IsFalse(update);
-
-            test.Attach();
-
-            Assert.IsTrue(update);
-            Assert.AreEqual(2.5, test.Value);
-            update = false;
-
-            testDummy.Item = 5;
-
-            Assert.IsTrue(update);
-            update = false;
-
-            coll.Remove(testDummy);
-        }
-
-        [TestMethod]
         public void LambdaIntAverage_ObservableSourceItemAdded_Updates()
         {
             var update = false;

@@ -30,36 +30,6 @@ namespace NMF.Expressions.Linq.Tests
         }
 
         [TestMethod]
-        public void IntAverage_ObservableSource_NoUpdatesWhenDetached()
-        {
-            var update = false;
-            var coll = new NotifyCollection<int>() { 1, 2, 3 };
-
-            var test = Observable.Expression(() => coll.Average());
-
-            test.ValueChanged += (o, e) => update = true;
-
-            Assert.AreEqual(2, test.Value);
-            Assert.IsFalse(update);
-
-            test.Detach();
-
-            coll.Add(4);
-
-            Assert.IsFalse(update);
-
-            test.Attach();
-
-            Assert.IsTrue(update);
-            Assert.AreEqual(2.5, test.Value);
-            update = false;
-
-            coll.Add(5);
-
-            Assert.IsTrue(update);
-        }
-
-        [TestMethod]
         public void IntAverage_ObservableSourceItemAdded_Updates()
         {
             var update = false;
@@ -517,38 +487,6 @@ namespace NMF.Expressions.Linq.Tests
             coll.Add(4);
 
             Assert.IsFalse(update);
-        }
-
-        [TestMethod]
-        public void NullableIntAverage_ObservableSource_NoUpdatesWhenDetached()
-        {
-            var update = false;
-            var coll = new NotifyCollection<int?>() { 1, 2, 3, null };
-            var testColl = coll.WithUpdates();
-
-            var test = Observable.Expression(() => testColl.Average());
-
-            test.ValueChanged += (o, e) => update = true;
-
-            Assert.AreEqual(2, test.Value);
-            Assert.AreEqual(2, testColl.Average());
-            Assert.IsFalse(update);
-
-            test.Detach();
-
-            coll.Add(4);
-
-            Assert.IsFalse(update);
-
-            test.Attach();
-
-            Assert.IsTrue(update);
-            Assert.AreEqual(2.5, test.Value);
-            update = false;
-
-            coll.Add(5);
-
-            Assert.IsTrue(update);
         }
 
         [TestMethod]

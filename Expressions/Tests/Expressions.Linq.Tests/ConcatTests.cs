@@ -29,42 +29,6 @@ namespace NMF.Expressions.Linq.Tests
         }
 
         [TestMethod]
-        public void Concat_ObservableSources_NoUpdateWhenDetached()
-        {
-            var update = false;
-            var coll1 = new NotifyCollection<int>() { 1, 2, 3 };
-            var coll2 = new NotifyCollection<int>() { 4, 5, 6 };
-
-            var test = coll1.Concat(coll2);
-
-            test.CollectionChanged += (o, e) => update = true;
-
-            test.AssertSequence(1, 2, 3, 4, 5, 6);
-            Assert.IsFalse(update);
-
-            test.Detach();
-            update = false;
-
-            coll1.Add(4);
-
-            Assert.IsFalse(update);
-
-            coll2.Add(7);
-
-            Assert.IsFalse(update);
-
-            test.Attach();
-
-            Assert.IsTrue(update);
-            test.AssertSequence(1, 2, 3, 4, 4, 5, 6, 7);
-            update = false;
-
-            coll1.Add(5);
-
-            Assert.IsTrue(update);
-        }
-
-        [TestMethod]
         public void Concat_ObservableSource1ItemAdded_Update()
         {
             var update = false;

@@ -69,48 +69,7 @@ namespace NMF.Expressions.Linq.Tests
             Assert.AreEqual(ShouldBeInResult(false, true), test.Contains(4));
             Assert.AreEqual(test.Contains(5), shouldUpdate);
         }
-
-        [TestMethod]
-        public void SetOperation_ObservableSource1ItemAddedUnrelated_NoUpdateWhenDetached()
-        {
-            var update = false;
-            var coll1 = new ObservableCollection<int>() { 1, 2, 3 };
-            var coll2 = new ObservableCollection<int>() { 2, 3, 4 };
-
-            var test = Operate(coll1.WithUpdates(), coll2);
-
-            var shouldUpdate = ShouldBeInResult(true, false);
-
-            test.CollectionChanged += (o, e) => update = true;
-
-            Assert.AreEqual(ShouldBeInResult(true, false), test.Contains(1));
-            Assert.AreEqual(ShouldBeInResult(true, true), test.Contains(2));
-            Assert.AreEqual(ShouldBeInResult(true, true), test.Contains(3));
-            Assert.AreEqual(ShouldBeInResult(false, true), test.Contains(4));
-            Assert.IsFalse(update);
-
-            test.Detach();
-            update = false;
-
-            coll1.Add(5);
-
-            Assert.IsFalse(update);
-
-            test.Attach();
-
-            Assert.IsTrue(update);
-            Assert.AreEqual(ShouldBeInResult(true, false), test.Contains(1));
-            Assert.AreEqual(ShouldBeInResult(true, true), test.Contains(2));
-            Assert.AreEqual(ShouldBeInResult(true, true), test.Contains(3));
-            Assert.AreEqual(ShouldBeInResult(false, true), test.Contains(4));
-            Assert.AreEqual(test.Contains(5), shouldUpdate);
-            update = false;
-
-            coll1.Remove(5);
-
-            Assert.AreEqual(shouldUpdate, update);
-        }
-
+        
         [TestMethod]
         public void SetOperation_ObservableSource1ItemAddedFromSource2_Update()
         {
@@ -196,91 +155,7 @@ namespace NMF.Expressions.Linq.Tests
             Assert.AreEqual(ShouldBeInResult(true, true), test.Contains(3));
             Assert.AreEqual(ShouldBeInResult(false, true), test.Contains(4));
         }
-
-        [TestMethod]
-        public void SetOperation_ObservableSource1ItemAddedFromSource2_NoUpdateWhenDetached()
-        {
-            var update = false;
-            var coll1 = new ObservableCollection<int>() { 1, 2, 3 };
-            var coll2 = new ObservableCollection<int>() { 2, 3, 4 };
-
-            var test = Operate(coll1.WithUpdates(), coll2);
-
-            var shouldBeContainedBefore = ShouldBeInResult(false, true);
-            var shouldBeContainedAfter = ShouldBeInResult(true, true);
-            var shouldUpdate = shouldBeContainedBefore != shouldBeContainedAfter;
-
-            test.CollectionChanged += (o, e) => update = true;
-
-            Assert.AreEqual(ShouldBeInResult(true, false), test.Contains(1));
-            Assert.AreEqual(ShouldBeInResult(true, true), test.Contains(2));
-            Assert.AreEqual(ShouldBeInResult(true, true), test.Contains(3));
-            Assert.AreEqual(ShouldBeInResult(false, true), test.Contains(4));
-            Assert.IsFalse(update);
-
-            test.Detach();
-            update = false;
-
-            coll1.Add(4);
-
-            Assert.IsFalse(update);
-
-            test.Attach();
-
-            Assert.IsTrue(update);
-            Assert.AreEqual(ShouldBeInResult(true, false), test.Contains(1));
-            Assert.AreEqual(ShouldBeInResult(true, true), test.Contains(2));
-            Assert.AreEqual(ShouldBeInResult(true, true), test.Contains(3));
-            Assert.AreEqual(ShouldBeInResult(true, true), test.Contains(4));
-            update = false;
-
-            coll1.Remove(4);
-
-            Assert.AreEqual(shouldUpdate, update);
-        }
-
-        [TestMethod]
-        public void SetOperation_ObservableSource2ItemAddedFromSource1_NoUpdateWhenDetached()
-        {
-            var update = false;
-            var coll1 = new ObservableCollection<int>() { 1, 2, 3 };
-            var coll2 = new ObservableCollection<int>() { 2, 3, 4 };
-
-            var test = Operate(coll1.WithUpdates(), coll2);
-
-            var shouldBeContainedBefore = ShouldBeInResult(true, false);
-            var shouldBeContainedAfter = ShouldBeInResult(true, true);
-            var shouldUpdate = shouldBeContainedBefore != shouldBeContainedAfter;
-
-            test.CollectionChanged += (o, e) => update = true;
-
-            Assert.AreEqual(ShouldBeInResult(true, false), test.Contains(1));
-            Assert.AreEqual(ShouldBeInResult(true, true), test.Contains(2));
-            Assert.AreEqual(ShouldBeInResult(true, true), test.Contains(3));
-            Assert.AreEqual(ShouldBeInResult(false, true), test.Contains(4));
-            Assert.IsFalse(update);
-
-            test.Detach();
-            update = false;
-
-            coll2.Add(1);
-
-            Assert.IsFalse(update);
-
-            test.Attach();
-
-            Assert.IsTrue(update);
-            Assert.AreEqual(ShouldBeInResult(true, true), test.Contains(1));
-            Assert.AreEqual(ShouldBeInResult(true, true), test.Contains(2));
-            Assert.AreEqual(ShouldBeInResult(true, true), test.Contains(3));
-            Assert.AreEqual(ShouldBeInResult(false, true), test.Contains(4));
-            update = false;
-
-            coll2.Remove(1);
-
-            Assert.AreEqual(shouldUpdate, update);
-        }
-
+        
         [TestMethod]
         public void SetOperation_ObservableSource2ItemAddedUnrelated_Update()
         {
