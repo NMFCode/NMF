@@ -78,6 +78,10 @@ namespace NMF.Expressions.Linq
             if (sourceChange.IsReset)
             {
                 ResetAccumulator();
+                foreach (var item in source)
+                {
+                    AddItem(item);
+                }
             }
             else
             {
