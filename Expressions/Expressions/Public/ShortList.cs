@@ -86,7 +86,7 @@ namespace NMF.Expressions
             return tailResult < 0 ? tailResult : tailResult + 1;
         }
 
-        public void Insert(int index, T item)
+        public virtual void Insert(int index, T item)
         {
             if (index == 0)
             {
@@ -131,8 +131,16 @@ namespace NMF.Expressions
         {
             if (index == 0)
             {
-                head = default(T);
-                usesHead = false;
+                if (tail.Count == 0)
+                {
+                    head = default(T);
+                    usesHead = false;
+                }
+                else
+                {
+                    head = tail[0];
+                    tail.RemoveAt(0);
+                }
             }
             else
             {
