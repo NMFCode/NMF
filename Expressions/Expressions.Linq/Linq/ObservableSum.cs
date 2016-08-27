@@ -10,202 +10,232 @@ namespace NMF.Expressions.Linq
     {
         public static INotifyValue<int> SumInt(INotifyEnumerable<int> source)
         {
-            return new ObservableIntSum(source);
+            var observable = new ObservableIntSum(source);
+            observable.Successors.Add(null);
+            source.Successors.Remove(null);
+            return observable;
         }
 
         public static INotifyValue<long> SumLong(INotifyEnumerable<long> source)
         {
-            return new ObservableLongSum(source);
+            var observable = new ObservableLongSum(source);
+            observable.Successors.Add(null);
+            source.Successors.Remove(null);
+            return observable;
         }
 
         public static INotifyValue<float> SumFloat(INotifyEnumerable<float> source)
         {
-            return new ObservableFloatSum(source);
+            var observable = new ObservableFloatSum(source);
+            observable.Successors.Add(null);
+            source.Successors.Remove(null);
+            return observable;
         }
 
         public static INotifyValue<double> SumDouble(INotifyEnumerable<double> source)
         {
-            return new ObservableDoubleSum(source);
+            var observable = new ObservableDoubleSum(source);
+            observable.Successors.Add(null);
+            source.Successors.Remove(null);
+            return observable;
         }
 
         public static INotifyValue<decimal> SumDecimal(INotifyEnumerable<decimal> source)
         {
-            return new ObservableDecimalSum(source);
+            var observable = new ObservableDecimalSum(source);
+            observable.Successors.Add(null);
+            source.Successors.Remove(null);
+            return observable;
         }
 
         public static INotifyValue<int?> SumNullableInt(INotifyEnumerable<int?> source)
         {
-            return new ObservableNullableIntSum(source);
+            var observable = new ObservableNullableIntSum(source);
+            observable.Successors.Add(null);
+            source.Successors.Remove(null);
+            return observable;
         }
 
         public static INotifyValue<long?> SumNullableLong(INotifyEnumerable<long?> source)
         {
-            return new ObservableNullableLongSum(source);
+            var observable = new ObservableNullableLongSum(source);
+            observable.Successors.Add(null);
+            source.Successors.Remove(null);
+            return observable;
         }
 
         public static INotifyValue<float?> SumNullableFloat(INotifyEnumerable<float?> source)
         {
-            return new ObservableNullableFloatSum(source);
+            var observable = new ObservableNullableFloatSum(source);
+            observable.Successors.Add(null);
+            source.Successors.Remove(null);
+            return observable;
         }
 
         public static INotifyValue<double?> SumNullableDouble(INotifyEnumerable<double?> source)
         {
-            return new ObservableNullableDoubleSum(source);
+            var observable = new ObservableNullableDoubleSum(source);
+            observable.Successors.Add(null);
+            source.Successors.Remove(null);
+            return observable;
         }
 
         public static INotifyValue<decimal?> SumNullableDecimal(INotifyEnumerable<decimal?> source)
         {
-            return new ObservableNullableDecimalSum(source);
+            var observable = new ObservableNullableDecimalSum(source);
+            observable.Successors.Add(null);
+            source.Successors.Remove(null);
+            return observable;
         }
 
         public static INotifyValue<int> SumLambdaInt<TSource>(INotifyEnumerable<TSource> source, Expression<Func<TSource, int>> selector) 
         {
-            return new ObservableIntSum(source.Select(selector));
+            return SumInt(source.Select(selector));
         }
 
         public static INotifyValue<long> SumLambdaLong<TSource>(INotifyEnumerable<TSource> source, Expression<Func<TSource, long>> selector)
         {
-            return new ObservableLongSum(source.Select(selector));
+            return SumLong(source.Select(selector));
         }
 
         public static INotifyValue<float> SumLambdaFloat<TSource>(INotifyEnumerable<TSource> source, Expression<Func<TSource, float>> selector)
         {
-            return new ObservableFloatSum(source.Select(selector));
+            return SumFloat(source.Select(selector));
         }
 
         public static INotifyValue<double> SumLambdaDouble<TSource>(INotifyEnumerable<TSource> source, Expression<Func<TSource, double>> selector)
         {
-            return new ObservableDoubleSum(source.Select(selector));
+            return SumDouble(source.Select(selector));
         }
 
         public static INotifyValue<decimal> SumLambdaDecimal<TSource>(INotifyEnumerable<TSource> source, Expression<Func<TSource, decimal>> selector)
         {
-            return new ObservableDecimalSum(source.Select(selector));
+            return SumDecimal(source.Select(selector));
         }
 
         public static INotifyValue<int?> SumLambdaNullableInt<TSource>(INotifyEnumerable<TSource> source, Expression<Func<TSource, int?>> selector)
         {
-            return new ObservableNullableIntSum(source.Select(selector));
+            return SumNullableInt(source.Select(selector));
         }
 
         public static INotifyValue<long?> SumLambdaNullableLong<TSource>(INotifyEnumerable<TSource> source, Expression<Func<TSource, long?>> selector)
         {
-            return new ObservableNullableLongSum(source.Select(selector));
+            return SumNullableLong(source.Select(selector));
         }
 
         public static INotifyValue<float?> SumLambdaNullableFloat<TSource>(INotifyEnumerable<TSource> source, Expression<Func<TSource, float?>> selector)
         {
-            return new ObservableNullableFloatSum(source.Select(selector));
+            return SumNullableFloat(source.Select(selector));
         }
 
         public static INotifyValue<double?> SumLambdaNullableDouble<TSource>(INotifyEnumerable<TSource> source, Expression<Func<TSource, double?>> selector)
         {
-            return new ObservableNullableDoubleSum(source.Select(selector));
+            return SumNullableDouble(source.Select(selector));
         }
 
         public static INotifyValue<decimal?> SumLambdaNullableDecimal<TSource>(INotifyEnumerable<TSource> source, Expression<Func<TSource, decimal?>> selector)
         {
-            return new ObservableNullableDecimalSum(source.Select(selector));
+            return SumNullableDecimal(source.Select(selector));
         }
 
         public static INotifyValue<int> SumIntExpression(IEnumerableExpression<int> source)
         {
-            return new ObservableIntSum(source.AsNotifiable());
+            return SumInt(source.AsNotifiable());
         }
 
         public static INotifyValue<long> SumLongExpression(IEnumerableExpression<long> source)
         {
-            return new ObservableLongSum(source.AsNotifiable());
+            return SumLong(source.AsNotifiable());
         }
 
         public static INotifyValue<float> SumFloatExpression(IEnumerableExpression<float> source)
         {
-            return new ObservableFloatSum(source.AsNotifiable());
+            return SumFloat(source.AsNotifiable());
         }
 
         public static INotifyValue<double> SumDoubleExpression(IEnumerableExpression<double> source)
         {
-            return new ObservableDoubleSum(source.AsNotifiable());
+            return SumDouble(source.AsNotifiable());
         }
 
         public static INotifyValue<decimal> SumDecimalExpression(IEnumerableExpression<decimal> source)
         {
-            return new ObservableDecimalSum(source.AsNotifiable());
+            return SumDecimal(source.AsNotifiable());
         }
 
         public static INotifyValue<int?> SumNullableIntExpression(IEnumerableExpression<int?> source)
         {
-            return new ObservableNullableIntSum(source.AsNotifiable());
+            return SumNullableInt(source.AsNotifiable());
         }
 
         public static INotifyValue<long?> SumNullableLongExpression(IEnumerableExpression<long?> source)
         {
-            return new ObservableNullableLongSum(source.AsNotifiable());
+            return SumNullableLong(source.AsNotifiable());
         }
 
         public static INotifyValue<float?> SumNullableFloatExpression(IEnumerableExpression<float?> source)
         {
-            return new ObservableNullableFloatSum(source.AsNotifiable());
+            return SumNullableFloat(source.AsNotifiable());
         }
 
         public static INotifyValue<double?> SumNullableDoubleExpression(IEnumerableExpression<double?> source)
         {
-            return new ObservableNullableDoubleSum(source.AsNotifiable());
+            return SumNullableDouble(source.AsNotifiable());
         }
 
         public static INotifyValue<decimal?> SumNullableDecimalExpression(IEnumerableExpression<decimal?> source)
         {
-            return new ObservableNullableDecimalSum(source.AsNotifiable());
+            return SumNullableDecimal(source.AsNotifiable());
         }
 
         public static INotifyValue<int> SumLambdaIntExpression<TSource>(IEnumerableExpression<TSource> source, Expression<Func<TSource, int>> selector)
         {
-            return new ObservableIntSum(source.AsNotifiable().Select(selector));
+            return SumInt(source.AsNotifiable().Select(selector));
         }
 
         public static INotifyValue<long> SumLambdaLongExpression<TSource>(IEnumerableExpression<TSource> source, Expression<Func<TSource, long>> selector)
         {
-            return new ObservableLongSum(source.AsNotifiable().Select(selector));
+            return SumLong(source.AsNotifiable().Select(selector));
         }
 
         public static INotifyValue<float> SumLambdaFloatExpression<TSource>(IEnumerableExpression<TSource> source, Expression<Func<TSource, float>> selector)
         {
-            return new ObservableFloatSum(source.AsNotifiable().Select(selector));
+            return SumFloat(source.AsNotifiable().Select(selector));
         }
 
         public static INotifyValue<double> SumLambdaDoubleExpression<TSource>(IEnumerableExpression<TSource> source, Expression<Func<TSource, double>> selector)
         {
-            return new ObservableDoubleSum(source.AsNotifiable().Select(selector));
+            return SumDouble(source.AsNotifiable().Select(selector));
         }
 
         public static INotifyValue<decimal> SumLambdaDecimalExpression<TSource>(IEnumerableExpression<TSource> source, Expression<Func<TSource, decimal>> selector)
         {
-            return new ObservableDecimalSum(source.AsNotifiable().Select(selector));
+            return SumDecimal(source.AsNotifiable().Select(selector));
         }
 
         public static INotifyValue<int?> SumLambdaNullableIntExpression<TSource>(IEnumerableExpression<TSource> source, Expression<Func<TSource, int?>> selector)
         {
-            return new ObservableNullableIntSum(source.AsNotifiable().Select(selector));
+            return SumNullableInt(source.AsNotifiable().Select(selector));
         }
 
         public static INotifyValue<long?> SumLambdaNullableLongExpression<TSource>(IEnumerableExpression<TSource> source, Expression<Func<TSource, long?>> selector)
         {
-            return new ObservableNullableLongSum(source.AsNotifiable().Select(selector));
+            return SumNullableLong(source.AsNotifiable().Select(selector));
         }
 
         public static INotifyValue<float?> SumLambdaNullableFloatExpression<TSource>(IEnumerableExpression<TSource> source, Expression<Func<TSource, float?>> selector)
         {
-            return new ObservableNullableFloatSum(source.AsNotifiable().Select(selector));
+            return SumNullableFloat(source.AsNotifiable().Select(selector));
         }
 
         public static INotifyValue<double?> SumLambdaNullableDoubleExpression<TSource>(IEnumerableExpression<TSource> source, Expression<Func<TSource, double?>> selector)
         {
-            return new ObservableNullableDoubleSum(source.AsNotifiable().Select(selector));
+            return SumNullableDouble(source.AsNotifiable().Select(selector));
         }
 
         public static INotifyValue<decimal?> SumLambdaNullableDecimalExpression<TSource>(IEnumerableExpression<TSource> source, Expression<Func<TSource, decimal?>> selector)
         {
-            return new ObservableNullableDecimalSum(source.AsNotifiable().Select(selector));
+            return SumNullableDecimal(source.AsNotifiable().Select(selector));
         }
     }
 

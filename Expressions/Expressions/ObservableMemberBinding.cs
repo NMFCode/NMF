@@ -12,7 +12,7 @@ namespace NMF.Expressions
 {
     internal abstract class ObservableMemberBinding<T> : INotifiable
     {
-        private readonly ShortList<INotifiable> successors = new ShortList<INotifiable>();
+        private readonly SuccessorList successors = new SuccessorList();
 
         public ObservableMemberBinding()
         {

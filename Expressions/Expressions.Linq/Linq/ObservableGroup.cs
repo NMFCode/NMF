@@ -8,7 +8,7 @@ namespace NMF.Expressions.Linq
 {
     public class ObservableGroup<TKey, TItem> : ReadOnlyObservableCollection<TItem>, INotifyGrouping<TKey, TItem>, IGroupingExpression<TKey, TItem>
     {
-        private readonly ShortList<INotifiable> successors = new ShortList<INotifiable>();
+        private readonly SuccessorList successors = new SuccessorList();
         private TKey key;
 
         internal new IList<TItem> Items { get { return base.Items; } }

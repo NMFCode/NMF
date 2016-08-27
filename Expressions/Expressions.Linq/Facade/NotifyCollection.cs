@@ -10,7 +10,7 @@ namespace NMF.Expressions
 {
     public class NotifyCollection<T> : ObservableCollection<T>, INotifyEnumerable<T>, INotifyCollection<T>
     {
-        private readonly ShortList<INotifiable> successors = new ShortList<INotifiable>();
+        private readonly SuccessorList successors = new SuccessorList();
         private readonly IExecutionContext context = ExecutionEngine.Current.Context;
 
         public virtual IEnumerable<INotifiable> Dependencies { get { return Enumerable.Empty<INotifiable>(); } }

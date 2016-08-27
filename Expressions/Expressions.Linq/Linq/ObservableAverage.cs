@@ -10,102 +10,102 @@ namespace NMF.Expressions.Linq
     {
         public static INotifyValue<double> CreateInt<TSource>(INotifyEnumerable<TSource> source, Expression<Func<TSource, int>> selector)
         {
-            return new ObservableIntAverage(source.Select(selector));
+            return ObservableIntAverage.Create(source.Select(selector));
         }
 
         public static INotifyValue<double> CreateLong<TSource>(this INotifyEnumerable<TSource> source, Expression<Func<TSource, long>> predicate)
         {
-            return new ObservableLongAverage(source.Select(predicate));
+            return ObservableLongAverage.Create(source.Select(predicate));
         }
 
         public static INotifyValue<float> CreateFloat<TSource>(this INotifyEnumerable<TSource> source, Expression<Func<TSource, float>> predicate)
         {
-            return new ObservableFloatAverage(source.Select(predicate));
+            return ObservableFloatAverage.Create(source.Select(predicate));
         }
 
         public static INotifyValue<double> CreateDouble<TSource>(this INotifyEnumerable<TSource> source, Expression<Func<TSource, double>> predicate)
         {
-            return new ObservableDoubleAverage(source.Select(predicate));
+            return ObservableDoubleAverage.Create(source.Select(predicate));
         }
 
         public static INotifyValue<decimal> CreateDecimal<TSource>(this INotifyEnumerable<TSource> source, Expression<Func<TSource, decimal>> predicate)
         {
-            return new ObservableDecimalAverage(source.Select(predicate));
+            return ObservableDecimalAverage.Create(source.Select(predicate));
         }
 
         public static INotifyValue<double?> CreateNullableInt<TSource>(this INotifyEnumerable<TSource> source, Expression<Func<TSource, int?>> predicate)
         {
-            return new ObservableNullableIntAverage(source.Select(predicate));
+            return ObservableNullableIntAverage.Create(source.Select(predicate));
         }
 
         public static INotifyValue<double?> CreateNullableLong<TSource>(this INotifyEnumerable<TSource> source, Expression<Func<TSource, long?>> predicate)
         {
-            return new ObservableNullableLongAverage(source.Select(predicate));
+            return ObservableNullableLongAverage.Create(source.Select(predicate));
         }
 
         public static INotifyValue<float?> CreateNullableFloat<TSource>(this INotifyEnumerable<TSource> source, Expression<Func<TSource, float?>> predicate)
         {
-            return new ObservableNullableFloatAverage(source.Select(predicate));
+            return ObservableNullableFloatAverage.Create(source.Select(predicate));
         }
 
         public static INotifyValue<double?> CreateNullableDouble<TSource>(this INotifyEnumerable<TSource> source, Expression<Func<TSource, double?>> predicate)
         {
-            return new ObservableNullableDoubleAverage(source.Select(predicate));
+            return ObservableNullableDoubleAverage.Create(source.Select(predicate));
         }
 
         public static INotifyValue<decimal?> CreateNullableDecimal<TSource>(this INotifyEnumerable<TSource> source, Expression<Func<TSource, decimal?>> predicate)
         {
-            return new ObservableNullableDecimalAverage(source.Select(predicate));
+            return ObservableNullableDecimalAverage.Create(source.Select(predicate));
         }
 
         public static INotifyValue<double> CreateIntExpression<TSource>(IEnumerableExpression<TSource> source, Expression<Func<TSource, int>> selector)
         {
-            return new ObservableIntAverage(source.AsNotifiable().Select(selector));
+            return ObservableIntAverage.Create(source.AsNotifiable().Select(selector));
         }
 
         public static INotifyValue<double> CreateLongExpression<TSource>(this IEnumerableExpression<TSource> source, Expression<Func<TSource, long>> predicate)
         {
-            return new ObservableLongAverage(source.AsNotifiable().Select(predicate));
+            return ObservableLongAverage.Create(source.AsNotifiable().Select(predicate));
         }
 
         public static INotifyValue<float> CreateFloatExpression<TSource>(this IEnumerableExpression<TSource> source, Expression<Func<TSource, float>> predicate)
         {
-            return new ObservableFloatAverage(source.AsNotifiable().Select(predicate));
+            return ObservableFloatAverage.Create(source.AsNotifiable().Select(predicate));
         }
 
         public static INotifyValue<double> CreateDoubleExpression<TSource>(this IEnumerableExpression<TSource> source, Expression<Func<TSource, double>> predicate)
         {
-            return new ObservableDoubleAverage(source.AsNotifiable().Select(predicate));
+            return ObservableDoubleAverage.Create(source.AsNotifiable().Select(predicate));
         }
 
         public static INotifyValue<decimal> CreateDecimalExpression<TSource>(this IEnumerableExpression<TSource> source, Expression<Func<TSource, decimal>> predicate)
         {
-            return new ObservableDecimalAverage(source.AsNotifiable().Select(predicate));
+            return ObservableDecimalAverage.Create(source.AsNotifiable().Select(predicate));
         }
 
         public static INotifyValue<double?> CreateNullableIntExpression<TSource>(this IEnumerableExpression<TSource> source, Expression<Func<TSource, int?>> predicate)
         {
-            return new ObservableNullableIntAverage(source.AsNotifiable().Select(predicate));
+            return ObservableNullableIntAverage.Create(source.AsNotifiable().Select(predicate));
         }
 
         public static INotifyValue<double?> CreateNullableLongExpression<TSource>(this IEnumerableExpression<TSource> source, Expression<Func<TSource, long?>> predicate)
         {
-            return new ObservableNullableLongAverage(source.AsNotifiable().Select(predicate));
+            return ObservableNullableLongAverage.Create(source.AsNotifiable().Select(predicate));
         }
 
         public static INotifyValue<float?> CreateNullableFloatExpression<TSource>(this IEnumerableExpression<TSource> source, Expression<Func<TSource, float?>> predicate)
         {
-            return new ObservableNullableFloatAverage(source.AsNotifiable().Select(predicate));
+            return ObservableNullableFloatAverage.Create(source.AsNotifiable().Select(predicate));
         }
 
         public static INotifyValue<double?> CreateNullableDoubleExpression<TSource>(this IEnumerableExpression<TSource> source, Expression<Func<TSource, double?>> predicate)
         {
-            return new ObservableNullableDoubleAverage(source.AsNotifiable().Select(predicate));
+            return ObservableNullableDoubleAverage.Create(source.AsNotifiable().Select(predicate));
         }
 
         public static INotifyValue<decimal?> CreateNullableDecimalExpression<TSource>(this IEnumerableExpression<TSource> source, Expression<Func<TSource, decimal?>> predicate)
         {
-            return new ObservableNullableDecimalAverage(source.AsNotifiable().Select(predicate));
+            return ObservableNullableDecimalAverage.Create(source.AsNotifiable().Select(predicate));
         }
     }
 
@@ -113,12 +113,15 @@ namespace NMF.Expressions.Linq
     {
         public static ObservableIntAverage Create(INotifyEnumerable<int> source)
         {
-            return new ObservableIntAverage(source);
+            var observable = new ObservableIntAverage(source);
+            observable.Successors.Add(null);
+            source.Successors.Remove(null);
+            return observable;
         }
 
         public static ObservableIntAverage CreateExpression(IEnumerableExpression<int> source)
         {
-            return new ObservableIntAverage(source.AsNotifiable());
+            return Create(source.AsNotifiable());
         }
 
         public ObservableIntAverage(INotifyEnumerable<int> source)
@@ -167,12 +170,15 @@ namespace NMF.Expressions.Linq
     {
         public static ObservableLongAverage Create(INotifyEnumerable<long> source)
         {
-            return new ObservableLongAverage(source);
+            var observable = new ObservableLongAverage(source);
+            observable.Successors.Add(null);
+            source.Successors.Remove(null);
+            return observable;
         }
 
         public static ObservableLongAverage CreateExpression(IEnumerableExpression<long> source)
         {
-            return new ObservableLongAverage(source.AsNotifiable());
+            return Create(source.AsNotifiable());
         }
 
         public ObservableLongAverage(INotifyEnumerable<long> source)
@@ -221,12 +227,15 @@ namespace NMF.Expressions.Linq
     {
         public static ObservableFloatAverage Create(INotifyEnumerable<float> source)
         {
-            return new ObservableFloatAverage(source);
+            var observable = new ObservableFloatAverage(source);
+            observable.Successors.Add(null);
+            source.Successors.Remove(null);
+            return observable;
         }
 
         public static ObservableFloatAverage CreateExpression(IEnumerableExpression<float> source)
         {
-            return new ObservableFloatAverage(source.AsNotifiable());
+            return Create(source.AsNotifiable());
         }
 
         public ObservableFloatAverage(INotifyEnumerable<float> source)
@@ -275,12 +284,15 @@ namespace NMF.Expressions.Linq
     {
         public static ObservableDoubleAverage Create(INotifyEnumerable<double> source)
         {
-            return new ObservableDoubleAverage(source);
+            var observable = new ObservableDoubleAverage(source);
+            observable.Successors.Add(null);
+            source.Successors.Remove(null);
+            return observable;
         }
 
         public static ObservableDoubleAverage CreateExpression(IEnumerableExpression<double> source)
         {
-            return new ObservableDoubleAverage(source.AsNotifiable());
+            return Create(source.AsNotifiable());
         }
 
         public ObservableDoubleAverage(INotifyEnumerable<double> source)
@@ -329,12 +341,15 @@ namespace NMF.Expressions.Linq
     {
         public static ObservableDecimalAverage Create(INotifyEnumerable<decimal> source)
         {
-            return new ObservableDecimalAverage(source);
+            var observable = new ObservableDecimalAverage(source);
+            observable.Successors.Add(null);
+            source.Successors.Remove(null);
+            return observable;
         }
 
         public static ObservableDecimalAverage CreateExpression(IEnumerableExpression<decimal> source)
         {
-            return new ObservableDecimalAverage(source.AsNotifiable());
+            return Create(source.AsNotifiable());
         }
 
         public ObservableDecimalAverage(INotifyEnumerable<decimal> source)
@@ -383,12 +398,15 @@ namespace NMF.Expressions.Linq
     {
         public static ObservableNullableIntAverage Create(INotifyEnumerable<int?> source)
         {
-            return new ObservableNullableIntAverage(source);
+            var observable = new ObservableNullableIntAverage(source);
+            observable.Successors.Add(null);
+            source.Successors.Remove(null);
+            return observable;
         }
 
         public static ObservableNullableIntAverage CreateExpression(IEnumerableExpression<int?> source)
         {
-            return new ObservableNullableIntAverage(source.AsNotifiable());
+            return Create(source.AsNotifiable());
         }
 
         public ObservableNullableIntAverage(INotifyEnumerable<int?> source)
@@ -439,12 +457,15 @@ namespace NMF.Expressions.Linq
     {
         public static ObservableNullableLongAverage Create(INotifyEnumerable<long?> source)
         {
-            return new ObservableNullableLongAverage(source);
+            var observable = new ObservableNullableLongAverage(source);
+            observable.Successors.Add(null);
+            source.Successors.Remove(null);
+            return observable;
         }
 
         public static ObservableNullableLongAverage CreateExpression(IEnumerableExpression<long?> source)
         {
-            return new ObservableNullableLongAverage(source.AsNotifiable());
+            return Create(source.AsNotifiable());
         }
 
         public ObservableNullableLongAverage(INotifyEnumerable<long?> source)
@@ -495,12 +516,15 @@ namespace NMF.Expressions.Linq
     {
         public static ObservableNullableFloatAverage Create(INotifyEnumerable<float?> source)
         {
-            return new ObservableNullableFloatAverage(source);
+            var observable = new ObservableNullableFloatAverage(source);
+            observable.Successors.Add(null);
+            source.Successors.Remove(null);
+            return observable;
         }
 
         public static ObservableNullableFloatAverage CreateExpression(IEnumerableExpression<float?> source)
         {
-            return new ObservableNullableFloatAverage(source.AsNotifiable());
+            return Create(source.AsNotifiable());
         }
 
         public ObservableNullableFloatAverage(INotifyEnumerable<float?> source)
@@ -551,12 +575,15 @@ namespace NMF.Expressions.Linq
     {
         public static ObservableNullableDoubleAverage Create(INotifyEnumerable<double?> source)
         {
-            return new ObservableNullableDoubleAverage(source);
+            var observable = new ObservableNullableDoubleAverage(source);
+            observable.Successors.Add(null);
+            source.Successors.Remove(null);
+            return observable;
         }
 
         public static ObservableNullableDoubleAverage CreateExpression(IEnumerableExpression<double?> source)
         {
-            return new ObservableNullableDoubleAverage(source.AsNotifiable());
+            return Create(source.AsNotifiable());
         }
 
         public ObservableNullableDoubleAverage(INotifyEnumerable<double?> source)
@@ -607,12 +634,15 @@ namespace NMF.Expressions.Linq
     {
         public static ObservableNullableDecimalAverage Create(INotifyEnumerable<decimal?> source)
         {
-            return new ObservableNullableDecimalAverage(source);
+            var observable = new ObservableNullableDecimalAverage(source);
+            observable.Successors.Add(null);
+            source.Successors.Remove(null);
+            return observable;
         }
 
         public static ObservableNullableDecimalAverage CreateExpression(IEnumerableExpression<decimal?> source)
         {
-            return new ObservableNullableDecimalAverage(source.AsNotifiable());
+            return Create(source.AsNotifiable());
         }
 
         public ObservableNullableDecimalAverage(INotifyEnumerable<decimal?> source)

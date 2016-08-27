@@ -16,7 +16,7 @@ namespace NMF.Expressions.Linq
 
         public static INotifyValue<T> MaxWithComparer<T>(INotifyEnumerable<T> source, IComparer<T> comparer)
         {
-            return new ObservableMin<T>(source, new ReverseComparer<T>(comparer));
+            return MinWithComparer(source, new ReverseComparer<T>(comparer));
         }
 
         public static INotifyValue<TResult> LambdaMax<TSource, TResult>(INotifyEnumerable<TSource> source, Expression<Func<TSource, TResult>> selector)
@@ -26,7 +26,7 @@ namespace NMF.Expressions.Linq
 
         public static INotifyValue<TResult> LambdaMaxWithComparer<TSource, TResult>(INotifyEnumerable<TSource> source, Expression<Func<TSource, TResult>> selector, IComparer<TResult> comparer)
         {
-            return new ObservableMin<TResult>(source.Select(selector), new ReverseComparer<TResult>(comparer));
+            return MinWithComparer(source.Select(selector), new ReverseComparer<TResult>(comparer));
         }
 
         public static INotifyValue<T?> NullableMax<T>(INotifyEnumerable<T?> source) where T : struct
@@ -36,7 +36,7 @@ namespace NMF.Expressions.Linq
 
         public static INotifyValue<T?> NullableMaxWithComparer<T>(INotifyEnumerable<T?> source, IComparer<T> comparer) where T : struct
         {
-            return new ObservableNullableMin<T>(source, new ReverseComparer<T>(comparer));
+            return NullableMinWithComparer(source, new ReverseComparer<T>(comparer));
         }
 
         public static INotifyValue<T?> LambdaNullableMax<TSource, T>(INotifyEnumerable<TSource> source, Expression<Func<TSource, T?>> selector) where T : struct
@@ -46,7 +46,7 @@ namespace NMF.Expressions.Linq
 
         public static INotifyValue<T?> LambdaNullableMaxWithComparer<TSource, T>(INotifyEnumerable<TSource> source, Expression<Func<TSource, T?>> selector, IComparer<T> comparer) where T : struct
         {
-            return new ObservableNullableMin<T>(source.Select(selector), new ReverseComparer<T>(comparer));
+            return NullableMinWithComparer(source.Select(selector), new ReverseComparer<T>(comparer));
         }
 
         public static INotifyValue<T> Min<T>(INotifyEnumerable<T> source)
@@ -56,7 +56,10 @@ namespace NMF.Expressions.Linq
 
         public static INotifyValue<T> MinWithComparer<T>(INotifyEnumerable<T> source, IComparer<T> comparer)
         {
-            return new ObservableMin<T>(source, comparer);
+            var observable = new ObservableMin<T>(source, comparer);
+            observable.Successors.Add(null);
+            source.Successors.Remove(null);
+            return observable;
         }
 
         public static INotifyValue<TResult> LambdaMin<TSource, TResult>(INotifyEnumerable<TSource> source, Expression<Func<TSource, TResult>> selector)
@@ -66,7 +69,7 @@ namespace NMF.Expressions.Linq
 
         public static INotifyValue<TResult> LambdaMinWithComparer<TSource, TResult>(INotifyEnumerable<TSource> source, Expression<Func<TSource, TResult>> selector, IComparer<TResult> comparer)
         {
-            return new ObservableMin<TResult>(source.Select(selector), comparer);
+            return MinWithComparer(source.Select(selector), comparer);
         }
 
         public static INotifyValue<T?> NullableMin<T>(INotifyEnumerable<T?> source) where T : struct
@@ -76,7 +79,10 @@ namespace NMF.Expressions.Linq
 
         public static INotifyValue<T?> NullableMinWithComparer<T>(INotifyEnumerable<T?> source, IComparer<T> comparer) where T : struct
         {
-            return new ObservableNullableMin<T>(source, comparer);
+            var observable = new ObservableNullableMin<T>(source, comparer);
+            observable.Successors.Add(null);
+            source.Successors.Remove(null);
+            return observable;
         }
 
         public static INotifyValue<T?> LambdaNullableMin<TSource, T>(INotifyEnumerable<TSource> source, Expression<Func<TSource, T?>> selector) where T : struct
@@ -86,7 +92,7 @@ namespace NMF.Expressions.Linq
 
         public static INotifyValue<T?> LambdaNullableMinWithComparer<TSource, T>(INotifyEnumerable<TSource> source, Expression<Func<TSource, T?>> selector, IComparer<T> comparer) where T : struct
         {
-            return new ObservableNullableMin<T>(source.Select(selector), comparer);
+            return NullableMinWithComparer(source.Select(selector), comparer);
         }
 
         public static INotifyValue<T> MaxExpression<T>(IEnumerableExpression<T> source)
@@ -96,7 +102,7 @@ namespace NMF.Expressions.Linq
 
         public static INotifyValue<T> MaxExpressionWithComparer<T>(IEnumerableExpression<T> source, IComparer<T> comparer)
         {
-            return new ObservableMin<T>(source.AsNotifiable(), new ReverseComparer<T>(comparer));
+            return MinWithComparer(source.AsNotifiable(), new ReverseComparer<T>(comparer));
         }
 
         public static INotifyValue<TResult> LambdaMaxExpression<TSource, TResult>(IEnumerableExpression<TSource> source, Expression<Func<TSource, TResult>> selector)
@@ -106,7 +112,7 @@ namespace NMF.Expressions.Linq
 
         public static INotifyValue<TResult> LambdaMaxExpressionWithComparer<TSource, TResult>(IEnumerableExpression<TSource> source, Expression<Func<TSource, TResult>> selector, IComparer<TResult> comparer)
         {
-            return new ObservableMin<TResult>(source.AsNotifiable().Select(selector), new ReverseComparer<TResult>(comparer));
+            return MinWithComparer(source.AsNotifiable().Select(selector), new ReverseComparer<TResult>(comparer));
         }
 
         public static INotifyValue<T?> NullableMaxExpression<T>(IEnumerableExpression<T?> source) where T : struct
@@ -116,7 +122,7 @@ namespace NMF.Expressions.Linq
 
         public static INotifyValue<T?> NullableMaxExpressionWithComparer<T>(IEnumerableExpression<T?> source, IComparer<T> comparer) where T : struct
         {
-            return new ObservableNullableMin<T>(source.AsNotifiable(), new ReverseComparer<T>(comparer));
+            return NullableMinWithComparer(source.AsNotifiable(), new ReverseComparer<T>(comparer));
         }
 
         public static INotifyValue<T?> LambdaNullableMaxExpression<TSource, T>(IEnumerableExpression<TSource> source, Expression<Func<TSource, T?>> selector) where T : struct
@@ -126,7 +132,7 @@ namespace NMF.Expressions.Linq
 
         public static INotifyValue<T?> LambdaNullableMaxExpressionWithComparer<TSource, T>(IEnumerableExpression<TSource> source, Expression<Func<TSource, T?>> selector, IComparer<T> comparer) where T : struct
         {
-            return new ObservableNullableMin<T>(source.AsNotifiable().Select(selector), new ReverseComparer<T>(comparer));
+            return NullableMinWithComparer(source.AsNotifiable().Select(selector), new ReverseComparer<T>(comparer));
         }
 
         public static INotifyValue<T> MinExpression<T>(INotifyEnumerable<T> source)
@@ -136,7 +142,7 @@ namespace NMF.Expressions.Linq
 
         public static INotifyValue<T> MinExpressionWithComparer<T>(IEnumerableExpression<T> source, IComparer<T> comparer)
         {
-            return new ObservableMin<T>(source.AsNotifiable(), comparer);
+            return MinWithComparer(source.AsNotifiable(), comparer);
         }
 
         public static INotifyValue<TResult> LambdaMinExpression<TSource, TResult>(IEnumerableExpression<TSource> source, Expression<Func<TSource, TResult>> selector)
@@ -146,7 +152,7 @@ namespace NMF.Expressions.Linq
 
         public static INotifyValue<TResult> LambdaMinExpressionWithComparer<TSource, TResult>(IEnumerableExpression<TSource> source, Expression<Func<TSource, TResult>> selector, IComparer<TResult> comparer)
         {
-            return new ObservableMin<TResult>(source.AsNotifiable().Select(selector), comparer);
+            return MinWithComparer(source.AsNotifiable().Select(selector), comparer);
         }
 
         public static INotifyValue<T?> NullableMinExpression<T>(IEnumerableExpression<T?> source) where T : struct
@@ -156,7 +162,7 @@ namespace NMF.Expressions.Linq
 
         public static INotifyValue<T?> NullableMinExpressionWithComparer<T>(IEnumerableExpression<T?> source, IComparer<T> comparer) where T : struct
         {
-            return new ObservableNullableMin<T>(source.AsNotifiable(), comparer);
+            return NullableMinWithComparer(source.AsNotifiable(), comparer);
         }
 
         public static INotifyValue<T?> LambdaNullableMinExpression<TSource, T>(IEnumerableExpression<TSource> source, Expression<Func<TSource, T?>> selector) where T : struct
@@ -166,13 +172,13 @@ namespace NMF.Expressions.Linq
 
         public static INotifyValue<T?> LambdaNullableMinExpressionWithComparer<TSource, T>(IEnumerableExpression<TSource> source, Expression<Func<TSource, T?>> selector, IComparer<T> comparer) where T : struct
         {
-            return new ObservableNullableMin<T>(source.AsNotifiable().Select(selector), comparer);
+            return NullableMinWithComparer(source.AsNotifiable().Select(selector), comparer);
         }
     }
 
     internal class ObservableMin<T> : INotifyValue<T>
     {
-        private readonly ShortList<INotifiable> successors = new ShortList<INotifiable>();
+        private readonly SuccessorList successors = new SuccessorList();
         private INotifyEnumerable<T> source;
         private IComparer<T> comparer;
         private bool hasValue;
@@ -303,7 +309,7 @@ namespace NMF.Expressions.Linq
     internal class ObservableNullableMin<T> : INotifyValue<T?>
         where T : struct
     {
-        private readonly ShortList<INotifiable> successors = new ShortList<INotifiable>();
+        private readonly SuccessorList successors = new SuccessorList();
         private INotifyEnumerable<T?> source;
         private IComparer<T> comparer;
         private T? current;

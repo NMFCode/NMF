@@ -9,22 +9,25 @@ namespace NMF.Expressions.Linq
     {
         public static ObservableContains<TSource> Create(INotifyEnumerable<TSource> source, TSource searchItem)
         {
-            return new ObservableContains<TSource>(source, searchItem);
+            return CreateWithComparer(source, searchItem, null);
         }
 
         public static ObservableContains<TSource> CreateWithComparer(INotifyEnumerable<TSource> source, TSource searchItem, IEqualityComparer<TSource> comparer)
         {
-            return new ObservableContains<TSource>(source, searchItem, comparer);
+            var observable = new ObservableContains<TSource>(source, searchItem, comparer);
+            observable.Successors.Add(null);
+            source.Successors.Remove(null);
+            return observable;
         }
 
         public static ObservableContains<TSource> CreateExpression(IEnumerableExpression<TSource> source, TSource searchItem)
         {
-            return new ObservableContains<TSource>(source.AsNotifiable(), searchItem);
+            return CreateWithComparer(source.AsNotifiable(), searchItem, null);
         }
 
         public static ObservableContains<TSource> CreateExpressionWithComparer(IEnumerableExpression<TSource> source, TSource searchItem, IEqualityComparer<TSource> comparer)
         {
-            return new ObservableContains<TSource>(source.AsNotifiable(), searchItem, comparer);
+            return CreateWithComparer(source.AsNotifiable(), searchItem, comparer);
         }
 
         private TSource searchItem;

@@ -8,7 +8,7 @@ namespace NMF.Expressions.Linq
 {
     internal abstract class ObservableSetComparer<T> : INotifyValue<bool>
     {
-        private readonly ShortList<INotifiable> successors = new ShortList<INotifiable>();
+        private readonly SuccessorList successors = new SuccessorList();
 
         private INotifyEnumerable<T> source1;
         private IEnumerable<T> source2;

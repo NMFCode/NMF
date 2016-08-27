@@ -10,22 +10,25 @@ namespace NMF.Expressions.Linq
     {
         public static ObservableCount<TSource> Create(INotifyEnumerable<TSource> source)
         {
-            return new ObservableCount<TSource>(source);
+            var observable = new ObservableCount<TSource>(source);
+            observable.Successors.Add(null);
+            source.Successors.Remove(null);
+            return observable;
         }
 
         public static ObservableCount<TSource> CreateWithComparer(INotifyEnumerable<TSource> source, Expression<Func<TSource, bool>> predicate)
         {
-            return new ObservableCount<TSource>(source.Where(predicate));
+            return Create(source.Where(predicate));
         }
 
         public static ObservableCount<TSource> CreateExpression(IEnumerableExpression<TSource> source)
         {
-            return new ObservableCount<TSource>(source.AsNotifiable());
+            return Create(source.AsNotifiable());
         }
 
         public static ObservableCount<TSource> CreateExpressionWithComparer(IEnumerableExpression<TSource> source, Expression<Func<TSource, bool>> predicate)
         {
-            return new ObservableCount<TSource>(source.AsNotifiable().Where(predicate));
+            return Create(source.AsNotifiable().Where(predicate));
         }
 
         public ObservableCount(INotifyEnumerable<TSource> source)

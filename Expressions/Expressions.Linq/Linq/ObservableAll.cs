@@ -10,12 +10,15 @@ namespace NMF.Expressions.Linq
     {
         public static ObservableAll<TItem> Create(INotifyEnumerable<TItem> source, Expression<Func<TItem, bool>> predicate)
         {
-            return new ObservableAll<TItem>(source, predicate);
+            var observable =  new ObservableAll<TItem>(source, predicate);
+            observable.Successors.Add(null);
+            source.Successors.Remove(null);
+            return observable;
         }
 
         public static ObservableAll<TItem> CreateExpression(IEnumerableExpression<TItem> source, Expression<Func<TItem, bool>> predicate)
         {
-            return new ObservableAll<TItem>(source.AsNotifiable(), predicate);
+            return Create(source.AsNotifiable(), predicate);
         }
 
         public ObservableAll(INotifyEnumerable<TItem> source, Expression<Func<TItem, bool>> predicate)

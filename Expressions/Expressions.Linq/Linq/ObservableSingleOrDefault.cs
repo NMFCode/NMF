@@ -9,35 +9,33 @@ namespace NMF.Expressions.Linq
 {
     internal class ObservableSingleOrDefault<TSource> : INotifyValue<TSource>, INotifyReversableValue<TSource>
     {
-        private readonly ShortList<INotifiable> successors = new ShortList<INotifiable>();
+        private readonly SuccessorList successors = new SuccessorList();
         private TSource value;
         private INotifyEnumerable<TSource> source;
 
         public static ObservableSingleOrDefault<TSource> Create(INotifyEnumerable<TSource> source)
         {
-            return new ObservableSingleOrDefault<TSource>(source);
+            var observable = new ObservableSingleOrDefault<TSource>(source);
+            observable.Successors.Add(null);
+            source.Successors.Remove(null);
+            return observable;
         }
 
         public static ObservableSingleOrDefault<TSource> CreateForPredicate(INotifyEnumerable<TSource> source, Expression<Func<TSource, bool>> predicate)
         {
-            return new ObservableSingleOrDefault<TSource>(source.Where(predicate));
+            return Create(source.Where(predicate));
         }
 
         public static ObservableSingleOrDefault<TSource> CreateExpression(IEnumerableExpression<TSource> source)
         {
-            return new ObservableSingleOrDefault<TSource>(source.AsNotifiable());
+            return Create(source.AsNotifiable());
         }
 
         public static ObservableSingleOrDefault<TSource> CreateExpressionForPredicate(IEnumerableExpression<TSource> source, Expression<Func<TSource, bool>> predicate)
         {
-            return new ObservableSingleOrDefault<TSource>(source.AsNotifiable().Where(predicate));
+            return Create(source.AsNotifiable().Where(predicate));
         }
-
-        public static ObservableSingleOrDefault<TSource> CreateExpressionForPredicate2(IEnumerableExpression<TSource> source, Expression<Func<TSource, bool>> predicate, Func<TSource, bool> predicateCompiled)
-        {
-            return CreateExpressionForPredicate(source, predicate);
-        }
-
+        
         public static Expression CreateSetExpression(MethodCallExpression node, SetExpressionRewriter rewriter)
         {
             if (node == null || rewriter == null) return null;

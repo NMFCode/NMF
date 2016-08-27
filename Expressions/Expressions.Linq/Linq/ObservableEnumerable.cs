@@ -10,7 +10,7 @@ namespace NMF.Expressions.Linq
 {
     public abstract class ObservableEnumerable<T> : INotifyEnumerable<T>, ICollection<T>, IEnumerable<T>, INotifyCollectionChanged, IDisposable
     {
-        private ShortList<INotifiable> successors = new ShortList<INotifiable>();
+        private SuccessorList successors = new SuccessorList();
 
         public ObservableEnumerable()
         {

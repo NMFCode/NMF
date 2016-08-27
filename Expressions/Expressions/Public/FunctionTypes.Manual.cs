@@ -71,7 +71,7 @@ namespace NMF.Expressions
             }
         }
 
-        private readonly ShortList<INotifiable> successors = new ShortList<INotifiable>();
+        private readonly SuccessorList successors = new SuccessorList();
         public IList<INotifiable> Successors { get { return successors; } }
 
         public IEnumerable<INotifiable> Dependencies

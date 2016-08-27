@@ -8,7 +8,7 @@ namespace NMF.Expressions.Linq
 {
     public abstract class ObservableAggregate<TSource, TAccumulator, TResult> : INotifyValue<TResult>
     {
-        private ShortList<INotifiable> successors = new ShortList<INotifiable>();
+        private SuccessorList successors = new SuccessorList();
         private INotifyEnumerable<TSource> source;
 
         protected TAccumulator Accumulator { get; set; }

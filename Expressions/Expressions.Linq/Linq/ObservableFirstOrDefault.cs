@@ -9,28 +9,31 @@ namespace NMF.Expressions.Linq
 {
     internal class ObservableFirstOrDefault<TSource> : INotifyValue<TSource>, INotifyReversableValue<TSource>
     {
-        private readonly ShortList<INotifiable> successors = new ShortList<INotifiable>();
+        private readonly SuccessorList successors = new SuccessorList();
         private TSource value;
         private INotifyEnumerable<TSource> source;
 
         public static ObservableFirstOrDefault<TSource> Create(INotifyEnumerable<TSource> source)
         {
-            return new ObservableFirstOrDefault<TSource>(source);
+            var observable = new ObservableFirstOrDefault<TSource>(source);
+            observable.Successors.Add(null);
+            source.Successors.Remove(null);
+            return observable;
         }
 
         public static ObservableFirstOrDefault<TSource> CreateForPredicate(INotifyEnumerable<TSource> source, Expression<Func<TSource, bool>> predicate)
         {
-            return new ObservableFirstOrDefault<TSource>(source.Where(predicate));
+            return Create(source.Where(predicate));
         }
 
         public static ObservableFirstOrDefault<TSource> CreateExpression(IEnumerableExpression<TSource> source)
         {
-            return new ObservableFirstOrDefault<TSource>(source.AsNotifiable());
+            return Create(source.AsNotifiable());
         }
 
         public static ObservableFirstOrDefault<TSource> CreateExpressionForPredicate(IEnumerableExpression<TSource> source, Expression<Func<TSource, bool>> predicate)
         {
-            return new ObservableFirstOrDefault<TSource>(source.AsNotifiable().Where(predicate));
+            return Create(source.AsNotifiable().Where(predicate));
         }
 
         public static Expression CreateSetExpression(MethodCallExpression node, SetExpressionRewriter rewriter)

@@ -10,7 +10,7 @@ namespace NMF.Expressions
 {
     internal sealed class ObservableLocalVariable<T, TVar> : INotifyExpression<T>
     {
-        private readonly ShortList<INotifiable> successors = new ShortList<INotifiable>();
+        private readonly SuccessorList successors = new SuccessorList();
 
         public event EventHandler<ValueChangedEventArgs> ValueChanged;
 
