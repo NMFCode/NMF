@@ -39,19 +39,24 @@ namespace NMF.Expressions.Linq
         
         public override INotificationResult Notify(IList<INotificationResult> sources)
         {
-            var change1 = (CollectionChangedNotificationResult<TSource>)sources[0];
-            if (sources.Count > 1)
+            var added = new List<TSource>();
+            var removed = new List<TSource>();
+
+            foreach (CollectionChangedNotificationResult<TSource> change in sources)
             {
-                var change2 = (CollectionChangedNotificationResult<TSource>)sources[1];
-                change1.AddedItems.AddRange(change2.AddedItems);
-                change1.RemovedItems.AddRange(change2.RemovedItems);
-                return new CollectionChangedNotificationResult<TSource>(this, change1.AddedItems, change1.RemovedItems);
+                if (change.IsReset)
+                {
+                    OnCleared();
+                    return new CollectionChangedNotificationResult<TSource>(this);
+                }
+
+                added.AddRange(change.AddedItems);
+                removed.AddRange(change.RemovedItems);
             }
-            else
-            {
-                change1.Source = this;
-                return change1;
-            }
+
+            OnRemoveItems(removed);
+            OnAddItems(added);
+            return new CollectionChangedNotificationResult<TSource>(this, added, removed);
         }
     }
 }
