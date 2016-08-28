@@ -6,7 +6,7 @@ using System.Text;
 
 namespace NMF.Expressions.Linq
 {
-    public sealed class ObservableCollectionProxy<T> : ObservableEnumerable<T>, INotifyCollection<T>
+    internal sealed class ObservableCollectionProxy<T> : ObservableEnumerable<T>, INotifyCollection<T>
     {
         private readonly IExecutionContext context;
         private IEnumerable<T> inner;

@@ -70,7 +70,7 @@
     <Compile Include="Linq\ObservableAny.cs" />
     <Compile Include="Linq\ObservableAverage.cs" />
     <Compile Include="Linq\ObservableCast.cs" />
-    <Compile Include="Facade\ObservableCollectionProxy.cs" />
+    <Compile Include="Linq\ObservableCollectionProxy.cs" />
     <Compile Include="Linq\ObservableConcat.cs" />
     <Compile Include="Linq\ObservableContains.cs" />
     <Compile Include="Linq\ObservableCount.cs" />
