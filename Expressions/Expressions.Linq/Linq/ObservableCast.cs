@@ -17,12 +17,7 @@ namespace NMF.Expressions.Linq
 
             this.source = source;
         }
-
-        private void SourceCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
-        {
-            OnCollectionChanged(e);
-        }
-
+        
         public override IEnumerator<TTarget> GetEnumerator()
         {
             return SL.Cast<TTarget>(source).GetEnumerator();

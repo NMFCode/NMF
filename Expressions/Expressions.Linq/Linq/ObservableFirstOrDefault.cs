@@ -199,17 +199,13 @@ namespace NMF.Expressions.Linq
         {
             var change = (CollectionChangedNotificationResult<TSource>)sources[0];
 
-            if (change.IsReset || change.RemovedItems != null || change.AddedItems != null)
+            var newValue = SL.FirstOrDefault(source);
+            if (!EqualityComparer<TSource>.Default.Equals(value, newValue))
             {
-                var newValue = SL.FirstOrDefault(source);
-
-                if (!EqualityComparer<TSource>.Default.Equals(value, newValue))
-                {
-                    var oldValue = value;
-                    value = newValue;
-                    OnValueChanged(new ValueChangedEventArgs(oldValue, newValue));
-                    return new ValueChangedNotificationResult<TSource>(this, oldValue, newValue);
-                }
+                var oldValue = value;
+                value = newValue;
+                OnValueChanged(new ValueChangedEventArgs(oldValue, newValue));
+                return new ValueChangedNotificationResult<TSource>(this, oldValue, newValue);
             }
 
             return new UnchangedNotificationResult(this);

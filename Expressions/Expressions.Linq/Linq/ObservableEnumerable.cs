@@ -83,6 +83,13 @@ namespace NMF.Expressions.Linq
         }
 
         [DebuggerStepThrough]
+        protected void OnMoveItems(IEnumerable<T> items, int oldIndex = 0, int newIndex = 0)
+        {
+            OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Move,
+                items as List<T> ?? items.ToList(), newIndex, oldIndex));
+        }
+
+        [DebuggerStepThrough]
         protected void OnCollectionChanged(NotifyCollectionChangedEventArgs e)
         {
             if (CollectionChanged != null)

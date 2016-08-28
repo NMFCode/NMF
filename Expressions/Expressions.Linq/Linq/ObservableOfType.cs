@@ -28,6 +28,9 @@ namespace NMF.Expressions.Linq
 
         public override INotificationResult Notify(IList<INotificationResult> sources)
         {
+            var added = new List<T>();
+            var removed = new List<T>();
+            var moved = new List<T>();
             var change = (ICollectionChangedNotificationResult)sources[0];
 
             if (change.IsReset)
@@ -35,25 +38,23 @@ namespace NMF.Expressions.Linq
                 OnCleared();
                 return new CollectionChangedNotificationResult<T>(this);
             }
-
-            List<T> removed = null;
+            
             if (change.RemovedItems != null)
-            {
-                removed = SL.OfType<T>(change.RemovedItems).ToList();
-                OnRemoveItems(removed);
-            }
+                removed.AddRange(SL.OfType<T>(change.RemovedItems));
 
-            List<T> added = null;
             if (change.AddedItems != null)
-            {
-                added = SL.OfType<T>(change.AddedItems).ToList();
-                OnAddItems(added);
-            }
+                added.AddRange(SL.OfType<T>(change.AddedItems));
 
-            if ((removed == null || removed.Count == 0) && (added == null || added.Count == 0))
+            if (change.MovedItems != null)
+                moved.AddRange(SL.OfType<T>(change.MovedItems));
+
+            if (removed.Count == 0 && added.Count == 0 && moved.Count == 0)
                 return new UnchangedNotificationResult(this);
 
-            return new CollectionChangedNotificationResult<T>(this, added, removed);
+            OnRemoveItems(removed);
+            OnAddItems(added);
+            OnMoveItems(moved);
+            return new CollectionChangedNotificationResult<T>(this, added, removed, moved);
         }
     }
 

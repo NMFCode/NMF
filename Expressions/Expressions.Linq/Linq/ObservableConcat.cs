@@ -41,6 +41,7 @@ namespace NMF.Expressions.Linq
         {
             var added = new List<TSource>();
             var removed = new List<TSource>();
+            var moved = new List<TSource>();
 
             foreach (CollectionChangedNotificationResult<TSource> change in sources)
             {
@@ -50,13 +51,18 @@ namespace NMF.Expressions.Linq
                     return new CollectionChangedNotificationResult<TSource>(this);
                 }
 
-                added.AddRange(change.AddedItems);
-                removed.AddRange(change.RemovedItems);
+                if (change.AddedItems != null)
+                    added.AddRange(change.AddedItems);
+                if (change.RemovedItems != null)
+                    removed.AddRange(change.RemovedItems);
+                if (change.MovedItems != null)
+                    moved.AddRange(change.MovedItems);
             }
 
             OnRemoveItems(removed);
             OnAddItems(added);
-            return new CollectionChangedNotificationResult<TSource>(this, added, removed);
+            OnMoveItems(moved);
+            return new CollectionChangedNotificationResult<TSource>(this, added, removed, moved);
         }
     }
 }
