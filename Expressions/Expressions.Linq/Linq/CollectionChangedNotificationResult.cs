@@ -14,9 +14,7 @@ namespace NMF.Expressions.Linq
 
         IList RemovedItems { get; }
 
-        int AddedIndex { get; }
-
-        int RemovedIndex { get; }
+        IList MovedItems { get; }
 
         new INotifiable Source { get; set; }
     }
@@ -33,13 +31,13 @@ namespace NMF.Expressions.Linq
 
         public List<T> RemovedItems { get; private set; }
 
-        public int AddedIndex { get; private set; }
-
-        public int RemovedIndex { get; private set; }
+        public List<T> MovedItems { get; private set; }
 
         IList ICollectionChangedNotificationResult.AddedItems { get { return AddedItems; } }
 
         IList ICollectionChangedNotificationResult.RemovedItems { get { return RemovedItems; } }
+
+        IList ICollectionChangedNotificationResult.MovedItems { get { return MovedItems; } }
 
         private CollectionChangedNotificationResult(INotifiable source, bool isReset)
         {
@@ -47,23 +45,19 @@ namespace NMF.Expressions.Linq
             IsReset = isReset;
         }
 
-        public CollectionChangedNotificationResult(INotifiable source, List<T> addedItems, List<T> removedItems, int addedIndex = -1, int removedIndex = -1) : this(source, false)
+        public CollectionChangedNotificationResult(INotifiable source, List<T> addedItems, List<T> removedItems, List<T> movedItems = null) : this(source, false)
         {
-            if (addedItems != null && addedItems.Count == 0)
-                AddedItems = null;
-            else
+            if (addedItems != null && addedItems.Count > 0)
                 AddedItems = addedItems;
 
-            if (removedItems != null && removedItems.Count == 0)
-                removedItems = null;
-            else
+            if (removedItems != null && removedItems.Count > 0)
                 RemovedItems = removedItems;
 
-            if (AddedItems == null && RemovedItems == null)
-                throw new ArgumentException("A collection change that is not a reset must have at least one add or one remove.");
+            if (movedItems != null && movedItems.Count > 0)
+                MovedItems = movedItems;
 
-            AddedIndex = addedIndex;
-            RemovedIndex = removedIndex;
+            if (AddedItems == null && RemovedItems == null && MovedItems == null)
+                throw new ArgumentException("A collection change that is not a reset must have at least one add, remove or move.");
         }
 
         public CollectionChangedNotificationResult(INotifiable source) : this(source, true) { }
