@@ -199,9 +199,7 @@ namespace NMF.Expressions.Linq
         {
             var change = (CollectionChangedNotificationResult<TSource>)sources[0];
 
-            if (change.IsReset ||
-                (change.RemovedItems != null && change.RemovedIndex <= 0) ||
-                (change.AddedItems != null && change.AddedIndex <= 0))
+            if (change.IsReset || change.RemovedItems != null || change.AddedItems != null)
             {
                 var newValue = SL.FirstOrDefault(source);
 
