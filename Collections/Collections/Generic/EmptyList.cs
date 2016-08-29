@@ -4,10 +4,12 @@ using System.Collections.Specialized;
 using System.Linq;
 using System.Text;
 using NMF.Expressions;
+using NMF.Expressions.Linq;
+using System.Collections.ObjectModel;
 
 namespace NMF.Collections.Generic
 {
-    public class EmptyList<T> : IList<T>, ICollection<T>, IEnumerableExpression<T>, ICollectionExpression<T>, INotifyEnumerable<T>, INotifyCollection<T>, IListExpression<T>
+    public class EmptyList<T> : IList<T>, ICollection<T>, IEnumerableExpression<T>, ICollectionExpression<T>, IListExpression<T>
     {
         private static EmptyList<T> instance = new EmptyList<T>();
 
@@ -18,18 +20,7 @@ namespace NMF.Collections.Generic
                 return instance;
             }
         }
-
-        event NotifyCollectionChangedEventHandler INotifyCollectionChanged.CollectionChanged
-        {
-            add
-            {
-            }
-
-            remove
-            {
-            }
-        }
-
+        
         int IList<T>.IndexOf(T item)
         {
             throw new IndexOutOfRangeException();
@@ -85,15 +76,7 @@ namespace NMF.Collections.Generic
         {
             get { return true; }
         }
-
-        bool INotifyEnumerable.IsAttached
-        {
-            get
-            {
-                return true;
-            }
-        }
-
+        
         bool ICollection<T>.Remove(T item)
         {
             return false;
@@ -109,27 +92,19 @@ namespace NMF.Collections.Generic
             return Enumerable.Empty<T>().GetEnumerator();
         }
 
-        INotifyCollection<T> ICollectionExpression<T>.AsNotifiable()
+        public INotifyCollection<T> AsNotifiable()
         {
-            return this;
+            return new Collection<T>().WithUpdates();
         }
 
         INotifyEnumerable<T> IEnumerableExpression<T>.AsNotifiable()
         {
-            return this;
+            return AsNotifiable();
         }
 
         INotifyEnumerable IEnumerableExpression.AsNotifiable()
         {
-            return this;
-        }
-
-        void INotifyEnumerable.Attach()
-        {
-        }
-
-        void INotifyEnumerable.Detach()
-        {
+            return AsNotifiable();
         }
     }
 }

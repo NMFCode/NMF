@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 
 using NMF.Expressions;
+using NMF.Expressions.Linq;
 using NMF.Collections.Generic;
 using System.ComponentModel;
 using System.Collections.Specialized;
@@ -12,7 +13,7 @@ using System.Diagnostics;
 namespace NMF.Collections.ObjectModel
 {
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1710:IdentifiersShouldHaveCorrectSuffix"), DebuggerDisplay("Count = {Count}"), DebuggerTypeProxy(typeof(EnumerableDebuggerProxy<>))]
-    public class ObservableReadOnlyOrderedSet<T> : ReadOnlyOrderedSet<T>, INotifyCollectionChanged, INotifyCollectionChanging, IEnumerableExpression<T>, INotifyEnumerable<T>, ICollectionExpression
+    public class ObservableReadOnlyOrderedSet<T> : ReadOnlyOrderedSet<T>, INotifyCollectionChanged, INotifyCollectionChanging, IEnumerableExpression<T>
     {
         public ObservableReadOnlyOrderedSet(ObservableOrderedSet<T> parent)
             : base(parent)
@@ -47,21 +48,12 @@ namespace NMF.Collections.ObjectModel
 
         public INotifyEnumerable<T> AsNotifiable()
         {
-            return this;
+            return this.WithUpdates();
         }
 
         INotifyEnumerable IEnumerableExpression.AsNotifiable()
         {
-            return this;
-        }
-
-        void INotifyEnumerable.Attach() { }
-
-        void INotifyEnumerable.Detach() { }
-
-        bool INotifyEnumerable.IsAttached
-        {
-            get { return true; }
+            return AsNotifiable();
         }
     }
 }
