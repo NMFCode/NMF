@@ -13,9 +13,8 @@ namespace NMF.Expressions.Linq.Tests
         protected abstract INotifyEnumerable<T> Operate<T>(INotifyEnumerable<T> source, IEnumerable<T> source2);
 
         protected abstract INotifyEnumerable<T> Operate<T>(INotifyEnumerable<T> source, IEnumerable<T> source2, IEqualityComparer<T> comparer);
-
-        [TestMethod]
-        public void SetOperation_NoObervableSource1ItemAdded_NoUpdate()
+        
+        protected void SetOperation_NoObervableSource1ItemAdded_NoUpdate()
         {
             var update = false;
             var coll1 = new List<int>() { 1, 2, 3 };
@@ -35,9 +34,8 @@ namespace NMF.Expressions.Linq.Tests
 
             Assert.IsFalse(update);
         }
-
-        [TestMethod]
-        public void SetOperation_ObservableSource1ItemAddedUnrelated_Update()
+        
+        protected void SetOperation_ObservableSource1ItemAddedUnrelated_Update()
         {
             var update = false;
             var coll1 = new ObservableCollection<int>() { 1, 2, 3 };
@@ -70,8 +68,7 @@ namespace NMF.Expressions.Linq.Tests
             Assert.AreEqual(test.Contains(5), shouldUpdate);
         }
         
-        [TestMethod]
-        public void SetOperation_ObservableSource1ItemAddedFromSource2_Update()
+        protected void SetOperation_ObservableSource1ItemAddedFromSource2_Update()
         {
             var update = false;
             var coll1 = new ObservableCollection<int>() { 1, 2, 3 };
@@ -112,15 +109,14 @@ namespace NMF.Expressions.Linq.Tests
             Assert.AreEqual(ShouldBeInResult(true, true), test.Contains(3));
             Assert.AreEqual(ShouldBeInResult(true, true), test.Contains(4));
         }
-
-        [TestMethod]
-        public void SetOperation_ObservableSource2ItemAddedFromSource1_Update()
+        
+        protected void SetOperation_ObservableSource2ItemAddedFromSource1_Update()
         {
             var update = false;
             var coll1 = new ObservableCollection<int>() { 1, 2, 3 };
             var coll2 = new ObservableCollection<int>() { 2, 3, 4 };
 
-            var test = Operate(coll1.WithUpdates(), coll2);
+            var test = Operate(coll1.WithUpdates(), coll2.WithUpdates());
 
             var shouldBeContainedBefore = ShouldBeInResult(true, false);
             var shouldBeContainedAfter = ShouldBeInResult(true, true);
@@ -156,14 +152,13 @@ namespace NMF.Expressions.Linq.Tests
             Assert.AreEqual(ShouldBeInResult(false, true), test.Contains(4));
         }
         
-        [TestMethod]
-        public void SetOperation_ObservableSource2ItemAddedUnrelated_Update()
+        protected void SetOperation_ObservableSource2ItemAddedUnrelated_Update()
         {
             var update = false;
             var coll1 = new ObservableCollection<int>() { 1, 2, 3 };
             var coll2 = new ObservableCollection<int>() { 2, 3, 4 };
 
-            var test = Operate(coll1.WithUpdates(), coll2);
+            var test = Operate(coll1.WithUpdates(), coll2.WithUpdates());
 
             var shouldUpdate = ShouldBeInResult(false, true);
 
@@ -189,9 +184,8 @@ namespace NMF.Expressions.Linq.Tests
             Assert.AreEqual(ShouldBeInResult(false, true), test.Contains(4));
             Assert.AreEqual(shouldUpdate, test.Contains(5));
         }
-
-        [TestMethod]
-        public void SetOperation_NoObervableSource1ItemRemoved_NoUpdate()
+        
+        protected void SetOperation_NoObervableSource1ItemRemoved_NoUpdate()
         {
             var update = false;
             var coll1 = new List<int>() { 1, 2, 3 };
@@ -211,9 +205,8 @@ namespace NMF.Expressions.Linq.Tests
 
             Assert.IsFalse(update);
         }
-
-        [TestMethod]
-        public void SetOperation_ObservableSource1ItemRemovedUnrelated_Update()
+        
+        protected void SetOperation_ObservableSource1ItemRemovedUnrelated_Update()
         {
             var update = false;
             var coll1 = new ObservableCollection<int>() { 1, 2, 3 };
@@ -243,9 +236,8 @@ namespace NMF.Expressions.Linq.Tests
             Assert.AreEqual(ShouldBeInResult(true, true), test.Contains(3));
             Assert.AreEqual(ShouldBeInResult(false, true), test.Contains(4));
         }
-
-        [TestMethod]
-        public void SetOperation_ObservableSource1ItemRemovedFromSource2_Update()
+        
+        protected void SetOperation_ObservableSource1ItemRemovedFromSource2_Update()
         {
             var update = false;
             var coll1 = new ObservableCollection<int>() { 1, 2, 3 };
@@ -273,15 +265,14 @@ namespace NMF.Expressions.Linq.Tests
             Assert.AreEqual(ShouldBeInResult(true, true), test.Contains(3));
             Assert.AreEqual(ShouldBeInResult(false, true), test.Contains(4));
         }
-
-        [TestMethod]
-        public void SetOperation_ObservableSource2ItemRemovedFromSource1_Update()
+        
+        protected void SetOperation_ObservableSource2ItemRemovedFromSource1_Update()
         {
             var update = false;
             var coll1 = new ObservableCollection<int>() { 1, 2, 3 };
             var coll2 = new ObservableCollection<int>() { 2, 3, 4 };
 
-            var test = Operate(coll1.WithUpdates(), coll2);
+            var test = Operate(coll1.WithUpdates(), coll2.WithUpdates());
 
             var shouldBeContainedBefore = ShouldBeInResult(true, true);
             var shouldBeContainedAfter = ShouldBeInResult(true, false);
@@ -316,15 +307,14 @@ namespace NMF.Expressions.Linq.Tests
             Assert.AreEqual(ShouldBeInResult(true, true), test.Contains(3));
             Assert.AreEqual(ShouldBeInResult(false, true), test.Contains(4));
         }
-
-        [TestMethod]
-        public void SetOperation_ObservableSource2ItemRemovedUnrelated_Update()
+        
+        protected void SetOperation_ObservableSource2ItemRemovedUnrelated_Update()
         {
             var update = false;
             var coll1 = new ObservableCollection<int>() { 1, 2, 3 };
             var coll2 = new ObservableCollection<int>() { 2, 3, 4 };
 
-            var test = Operate(coll1.WithUpdates(), coll2);
+            var test = Operate(coll1.WithUpdates(), coll2.WithUpdates());
 
             var shouldUpdate = ShouldBeInResult(false, true);
 
@@ -348,9 +338,8 @@ namespace NMF.Expressions.Linq.Tests
             Assert.AreEqual(ShouldBeInResult(true, true), test.Contains(2));
             Assert.AreEqual(ShouldBeInResult(true, true), test.Contains(3));
         }
-
-        [TestMethod]
-        public void SetOperationEqualityComparer_NoObervableSource1ItemAdded_NoUpdate()
+        
+        protected void SetOperationEqualityComparer_NoObervableSource1ItemAdded_NoUpdate()
         {
             var update = false;
             var coll1 = new List<int>() { 1, 2, 3 };
@@ -370,9 +359,8 @@ namespace NMF.Expressions.Linq.Tests
 
             Assert.IsFalse(update);
         }
-
-        [TestMethod]
-        public void SetOperationEqualityComparer_ObservableSource1ItemAddedUnrelated_Update()
+        
+        protected void SetOperationEqualityComparer_ObservableSource1ItemAddedUnrelated_Update()
         {
             var update = false;
             var coll1 = new ObservableCollection<int>() { 1, 2, 3 };
@@ -404,9 +392,8 @@ namespace NMF.Expressions.Linq.Tests
             Assert.AreEqual(ShouldBeInResult(false, true), test.Contains(4, new AbsoluteValueComparer()));
             Assert.AreEqual(test.Contains(5, new AbsoluteValueComparer()), shouldUpdate);
         }
-
-        [TestMethod]
-        public void SetOperationEqualityComparer_ObservableSource1ItemAddedFromSource2_Update()
+        
+        protected void SetOperationEqualityComparer_ObservableSource1ItemAddedFromSource2_Update()
         {
             var update = false;
             var coll1 = new ObservableCollection<int>() { 1, 2, 3 };
@@ -447,15 +434,14 @@ namespace NMF.Expressions.Linq.Tests
             Assert.AreEqual(ShouldBeInResult(true, true), test.Contains(3, new AbsoluteValueComparer()));
             Assert.AreEqual(ShouldBeInResult(true, true), test.Contains(4, new AbsoluteValueComparer()));
         }
-
-        [TestMethod]
-        public void SetOperationEqualityComparer_ObservableSource2ItemAddedFromSource1_Update()
+        
+        protected void SetOperationEqualityComparer_ObservableSource2ItemAddedFromSource1_Update()
         {
             var update = false;
             var coll1 = new ObservableCollection<int>() { 1, 2, 3 };
             var coll2 = new ObservableCollection<int>() { -2, -3, -4 };
 
-            var test = Operate(coll1.WithUpdates(), coll2, new AbsoluteValueComparer());
+            var test = Operate(coll1.WithUpdates(), coll2.WithUpdates(), new AbsoluteValueComparer());
 
             var shouldBeContainedBefore = ShouldBeInResult(true, false);
             var shouldBeContainedAfter = ShouldBeInResult(true, true);
@@ -490,15 +476,14 @@ namespace NMF.Expressions.Linq.Tests
             Assert.AreEqual(ShouldBeInResult(true, true), test.Contains(3, new AbsoluteValueComparer()));
             Assert.AreEqual(ShouldBeInResult(false, true), test.Contains(4, new AbsoluteValueComparer()));
         }
-
-        [TestMethod]
-        public void SetOperationEqualityComparer_ObservableSource2ItemAddedUnrelated_Update()
+        
+        protected void SetOperationEqualityComparer_ObservableSource2ItemAddedUnrelated_Update()
         {
             var update = false;
             var coll1 = new ObservableCollection<int>() { 1, 2, 3 };
             var coll2 = new ObservableCollection<int>() { -2, -3, -4 };
 
-            var test = Operate(coll1.WithUpdates(), coll2, new AbsoluteValueComparer());
+            var test = Operate(coll1.WithUpdates(), coll2.WithUpdates(), new AbsoluteValueComparer());
 
             var shouldUpdate = ShouldBeInResult(false, true);
 
@@ -524,9 +509,8 @@ namespace NMF.Expressions.Linq.Tests
             Assert.AreEqual(ShouldBeInResult(false, true), test.Contains(4, new AbsoluteValueComparer()));
             Assert.AreEqual(shouldUpdate, test.Contains(5));
         }
-
-        [TestMethod]
-        public void SetOperationEqualityComparer_NoObervableSource1ItemRemoved_NoUpdate()
+        
+        protected void SetOperationEqualityComparer_NoObervableSource1ItemRemoved_NoUpdate()
         {
             var update = false;
             var coll1 = new List<int>() { 1, 2, 3 };
@@ -546,9 +530,8 @@ namespace NMF.Expressions.Linq.Tests
 
             Assert.IsFalse(update);
         }
-
-        [TestMethod]
-        public void SetOperationEqualityComparer_ObservableSource1ItemRemovedUnrelated_Update()
+        
+        protected void SetOperationEqualityComparer_ObservableSource1ItemRemovedUnrelated_Update()
         {
             var update = false;
             var coll1 = new ObservableCollection<int>() { 1, 2, 3 };
@@ -578,9 +561,8 @@ namespace NMF.Expressions.Linq.Tests
             Assert.AreEqual(ShouldBeInResult(true, true), test.Contains(3, new AbsoluteValueComparer()));
             Assert.AreEqual(ShouldBeInResult(false, true), test.Contains(4, new AbsoluteValueComparer()));
         }
-
-        [TestMethod]
-        public void SetOperationEqualityComparer_ObservableSource1ItemRemovedFromSource2_Update()
+        
+        protected void SetOperationEqualityComparer_ObservableSource1ItemRemovedFromSource2_Update()
         {
             var update = false;
             var coll1 = new ObservableCollection<int>() { 1, 2, 3 };
@@ -608,15 +590,14 @@ namespace NMF.Expressions.Linq.Tests
             Assert.AreEqual(ShouldBeInResult(true, true), test.Contains(3, new AbsoluteValueComparer()));
             Assert.AreEqual(ShouldBeInResult(false, true), test.Contains(4, new AbsoluteValueComparer()));
         }
-
-        [TestMethod]
-        public void SetOperationEqualityComparer_ObservableSource2ItemRemovedFromSource1_Update()
+        
+        protected void SetOperationEqualityComparer_ObservableSource2ItemRemovedFromSource1_Update()
         {
             var update = false;
             var coll1 = new ObservableCollection<int>() { 1, 2, 3 };
             var coll2 = new ObservableCollection<int>() { -2, -3, -4 };
 
-            var test = Operate(coll1.WithUpdates(), coll2, new AbsoluteValueComparer());
+            var test = Operate(coll1.WithUpdates(), coll2.WithUpdates(), new AbsoluteValueComparer());
 
             var shouldBeContainedBefore = ShouldBeInResult(true, true);
             var shouldBeContainedAfter = ShouldBeInResult(true, false);
@@ -651,15 +632,14 @@ namespace NMF.Expressions.Linq.Tests
             Assert.AreEqual(ShouldBeInResult(true, true), test.Contains(3, new AbsoluteValueComparer()));
             Assert.AreEqual(ShouldBeInResult(false, true), test.Contains(4, new AbsoluteValueComparer()));
         }
-
-        [TestMethod]
-        public void SetOperationEqualityComparer_ObservableSource2ItemRemovedUnrelated_Update()
+        
+        protected void SetOperationEqualityComparer_ObservableSource2ItemRemovedUnrelated_Update()
         {
             var update = false;
             var coll1 = new ObservableCollection<int>() { 1, 2, 3 };
             var coll2 = new ObservableCollection<int>() { -2, -3, -4 };
 
-            var test = Operate(coll1.WithUpdates(), coll2, new AbsoluteValueComparer());
+            var test = Operate(coll1.WithUpdates(), coll2.WithUpdates(), new AbsoluteValueComparer());
 
             var shouldUpdate = ShouldBeInResult(false, true);
 
@@ -701,6 +681,126 @@ namespace NMF.Expressions.Linq.Tests
         protected override INotifyEnumerable<T> Operate<T>(INotifyEnumerable<T> source, IEnumerable<T> source2, IEqualityComparer<T> comparer)
         {
             return source.Union(source2, comparer);
+        }
+
+        [TestMethod]
+        public void Union_NoObervableSource1ItemAdded_NoUpdate()
+        {
+            SetOperation_NoObervableSource1ItemAdded_NoUpdate();
+        }
+
+        [TestMethod]
+        public void Union_ObservableSource1ItemAddedUnrelated_Update()
+        {
+            SetOperation_ObservableSource1ItemAddedUnrelated_Update();
+        }
+
+        [TestMethod]
+        public void Union_ObservableSource1ItemAddedFromSource2_Update()
+        {
+            SetOperation_ObservableSource1ItemAddedFromSource2_Update();
+        }
+
+        [TestMethod]
+        public void Union_ObservableSource2ItemAddedFromSource1_Update()
+        {
+            SetOperation_ObservableSource2ItemAddedFromSource1_Update();
+        }
+
+        [TestMethod]
+        public void Union_ObservableSource2ItemAddedUnrelated_Update()
+        {
+            SetOperation_ObservableSource2ItemAddedUnrelated_Update();
+        }
+
+        [TestMethod]
+        public void Union_NoObervableSource1ItemRemoved_NoUpdate()
+        {
+            SetOperation_NoObervableSource1ItemRemoved_NoUpdate();
+        }
+
+        [TestMethod]
+        public void Union_ObservableSource1ItemRemovedUnrelated_Update()
+        {
+            SetOperation_ObservableSource1ItemRemovedUnrelated_Update();
+        }
+
+        [TestMethod]
+        public void Union_ObservableSource1ItemRemovedFromSource2_Update()
+        {
+            SetOperation_ObservableSource1ItemRemovedFromSource2_Update();
+        }
+
+        [TestMethod]
+        public void Union_ObservableSource2ItemRemovedFromSource1_Update()
+        {
+            SetOperation_ObservableSource2ItemRemovedFromSource1_Update();
+        }
+
+        [TestMethod]
+        public void Union_ObservableSource2ItemRemovedUnrelated_Update()
+        {
+            SetOperation_ObservableSource2ItemRemovedUnrelated_Update();
+        }
+
+        [TestMethod]
+        public void UnionEqualityComparer_NoObervableSource1ItemAdded_NoUpdate()
+        {
+            SetOperationEqualityComparer_NoObervableSource1ItemAdded_NoUpdate();
+        }
+
+        [TestMethod]
+        public void UnionEqualityComparer_ObservableSource1ItemAddedUnrelated_Update()
+        {
+            SetOperationEqualityComparer_ObservableSource1ItemAddedUnrelated_Update();
+        }
+
+        [TestMethod]
+        public void UnionEqualityComparer_ObservableSource1ItemAddedFromSource2_Update()
+        {
+            SetOperationEqualityComparer_ObservableSource1ItemAddedFromSource2_Update();
+        }
+
+        [TestMethod]
+        public void UnionEqualityComparer_ObservableSource2ItemAddedFromSource1_Update()
+        {
+            SetOperationEqualityComparer_ObservableSource2ItemAddedFromSource1_Update();
+        }
+
+        [TestMethod]
+        public void UnionEqualityComparer_ObservableSource2ItemAddedUnrelated_Update()
+        {
+            SetOperationEqualityComparer_ObservableSource2ItemAddedUnrelated_Update();
+        }
+
+        [TestMethod]
+        public void UnionEqualityComparer_NoObervableSource1ItemRemoved_NoUpdate()
+        {
+            SetOperationEqualityComparer_NoObervableSource1ItemRemoved_NoUpdate();
+        }
+
+        [TestMethod]
+        public void UnionEqualityComparer_ObservableSource1ItemRemovedUnrelated_Update()
+        {
+            SetOperationEqualityComparer_ObservableSource1ItemRemovedUnrelated_Update();
+        }
+
+        [TestMethod]
+        public void UnionEqualityComparer_ObservableSource1ItemRemovedFromSource2_Update()
+        {
+            SetOperationEqualityComparer_ObservableSource1ItemRemovedFromSource2_Update();
+        }
+
+        [TestMethod]
+        public void UnionEqualityComparer_ObservableSource2ItemRemovedFromSource1_Update()
+        {
+            SetOperationEqualityComparer_ObservableSource2ItemRemovedFromSource1_Update();
+        }
+
+        [TestMethod]
+        public void UnionEqualityComparer_ObservableSource2ItemRemovedUnrelated_Update()
+        {
+            SetOperationEqualityComparer_ObservableSource2ItemRemovedUnrelated_Update();
         }
 
         [TestMethod]
@@ -772,7 +872,7 @@ namespace NMF.Expressions.Linq.Tests
             var coll1 = new List<int>() { 1, 2, 3 };
             var coll2 = new ObservableCollection<int>() { 2, 3, 4 };
 
-            var test = coll1.WithUpdates().Union(coll2);
+            var test = coll1.WithUpdates().Union(coll2.WithUpdates());
 
             test.CollectionChanged += (o, e) =>
             {
@@ -811,6 +911,126 @@ namespace NMF.Expressions.Linq.Tests
         }
 
         [TestMethod]
+        public void Except_NoObervableSource1ItemAdded_NoUpdate()
+        {
+            SetOperation_NoObervableSource1ItemAdded_NoUpdate();
+        }
+
+        [TestMethod]
+        public void Except_ObservableSource1ItemAddedUnrelated_Update()
+        {
+            SetOperation_ObservableSource1ItemAddedUnrelated_Update();
+        }
+
+        [TestMethod]
+        public void Except_ObservableSource1ItemAddedFromSource2_Update()
+        {
+            SetOperation_ObservableSource1ItemAddedFromSource2_Update();
+        }
+
+        [TestMethod]
+        public void Except_ObservableSource2ItemAddedFromSource1_Update()
+        {
+            SetOperation_ObservableSource2ItemAddedFromSource1_Update();
+        }
+
+        [TestMethod]
+        public void Except_ObservableSource2ItemAddedUnrelated_Update()
+        {
+            SetOperation_ObservableSource2ItemAddedUnrelated_Update();
+        }
+
+        [TestMethod]
+        public void Except_NoObervableSource1ItemRemoved_NoUpdate()
+        {
+            SetOperation_NoObervableSource1ItemRemoved_NoUpdate();
+        }
+
+        [TestMethod]
+        public void Except_ObservableSource1ItemRemovedUnrelated_Update()
+        {
+            SetOperation_ObservableSource1ItemRemovedUnrelated_Update();
+        }
+
+        [TestMethod]
+        public void Except_ObservableSource1ItemRemovedFromSource2_Update()
+        {
+            SetOperation_ObservableSource1ItemRemovedFromSource2_Update();
+        }
+
+        [TestMethod]
+        public void Except_ObservableSource2ItemRemovedFromSource1_Update()
+        {
+            SetOperation_ObservableSource2ItemRemovedFromSource1_Update();
+        }
+
+        [TestMethod]
+        public void Except_ObservableSource2ItemRemovedUnrelated_Update()
+        {
+            SetOperation_ObservableSource2ItemRemovedUnrelated_Update();
+        }
+
+        [TestMethod]
+        public void ExceptEqualityComparer_NoObervableSource1ItemAdded_NoUpdate()
+        {
+            SetOperationEqualityComparer_NoObervableSource1ItemAdded_NoUpdate();
+        }
+
+        [TestMethod]
+        public void ExceptEqualityComparer_ObservableSource1ItemAddedUnrelated_Update()
+        {
+            SetOperationEqualityComparer_ObservableSource1ItemAddedUnrelated_Update();
+        }
+
+        [TestMethod]
+        public void ExceptEqualityComparer_ObservableSource1ItemAddedFromSource2_Update()
+        {
+            SetOperationEqualityComparer_ObservableSource1ItemAddedFromSource2_Update();
+        }
+
+        [TestMethod]
+        public void ExceptEqualityComparer_ObservableSource2ItemAddedFromSource1_Update()
+        {
+            SetOperationEqualityComparer_ObservableSource2ItemAddedFromSource1_Update();
+        }
+
+        [TestMethod]
+        public void ExceptEqualityComparer_ObservableSource2ItemAddedUnrelated_Update()
+        {
+            SetOperationEqualityComparer_ObservableSource2ItemAddedUnrelated_Update();
+        }
+
+        [TestMethod]
+        public void ExceptEqualityComparer_NoObervableSource1ItemRemoved_NoUpdate()
+        {
+            SetOperationEqualityComparer_NoObervableSource1ItemRemoved_NoUpdate();
+        }
+
+        [TestMethod]
+        public void ExceptEqualityComparer_ObservableSource1ItemRemovedUnrelated_Update()
+        {
+            SetOperationEqualityComparer_ObservableSource1ItemRemovedUnrelated_Update();
+        }
+
+        [TestMethod]
+        public void ExceptEqualityComparer_ObservableSource1ItemRemovedFromSource2_Update()
+        {
+            SetOperationEqualityComparer_ObservableSource1ItemRemovedFromSource2_Update();
+        }
+
+        [TestMethod]
+        public void ExceptEqualityComparer_ObservableSource2ItemRemovedFromSource1_Update()
+        {
+            SetOperationEqualityComparer_ObservableSource2ItemRemovedFromSource1_Update();
+        }
+
+        [TestMethod]
+        public void ExceptEqualityComparer_ObservableSource2ItemRemovedUnrelated_Update()
+        {
+            SetOperationEqualityComparer_ObservableSource2ItemRemovedUnrelated_Update();
+        }
+
+        [TestMethod]
         public void Except_NoObservableSource2Reset_NoUpdate()
         {
             var update = false;
@@ -835,7 +1055,7 @@ namespace NMF.Expressions.Linq.Tests
             var coll1 = new List<int>() { 1, 2, 3 };
             var coll2 = new ObservableCollection<int>() { 2, 3, 4 };
 
-            var test = coll1.WithUpdates().Except(coll2);
+            var test = coll1.WithUpdates().Except(coll2.WithUpdates());
 
             test.CollectionChanged += (o, e) =>
             {
@@ -910,6 +1130,126 @@ namespace NMF.Expressions.Linq.Tests
         }
 
         [TestMethod]
+        public void Intersect_NoObervableSource1ItemAdded_NoUpdate()
+        {
+            SetOperation_NoObervableSource1ItemAdded_NoUpdate();
+        }
+
+        [TestMethod]
+        public void Intersect_ObservableSource1ItemAddedUnrelated_Update()
+        {
+            SetOperation_ObservableSource1ItemAddedUnrelated_Update();
+        }
+
+        [TestMethod]
+        public void Intersect_ObservableSource1ItemAddedFromSource2_Update()
+        {
+            SetOperation_ObservableSource1ItemAddedFromSource2_Update();
+        }
+
+        [TestMethod]
+        public void Intersect_ObservableSource2ItemAddedFromSource1_Update()
+        {
+            SetOperation_ObservableSource2ItemAddedFromSource1_Update();
+        }
+
+        [TestMethod]
+        public void Intersect_ObservableSource2ItemAddedUnrelated_Update()
+        {
+            SetOperation_ObservableSource2ItemAddedUnrelated_Update();
+        }
+
+        [TestMethod]
+        public void Intersect_NoObervableSource1ItemRemoved_NoUpdate()
+        {
+            SetOperation_NoObervableSource1ItemRemoved_NoUpdate();
+        }
+
+        [TestMethod]
+        public void Intersect_ObservableSource1ItemRemovedUnrelated_Update()
+        {
+            SetOperation_ObservableSource1ItemRemovedUnrelated_Update();
+        }
+
+        [TestMethod]
+        public void Intersect_ObservableSource1ItemRemovedFromSource2_Update()
+        {
+            SetOperation_ObservableSource1ItemRemovedFromSource2_Update();
+        }
+
+        [TestMethod]
+        public void Intersect_ObservableSource2ItemRemovedFromSource1_Update()
+        {
+            SetOperation_ObservableSource2ItemRemovedFromSource1_Update();
+        }
+
+        [TestMethod]
+        public void Intersect_ObservableSource2ItemRemovedUnrelated_Update()
+        {
+            SetOperation_ObservableSource2ItemRemovedUnrelated_Update();
+        }
+
+        [TestMethod]
+        public void IntersectEqualityComparer_NoObervableSource1ItemAdded_NoUpdate()
+        {
+            SetOperationEqualityComparer_NoObervableSource1ItemAdded_NoUpdate();
+        }
+
+        [TestMethod]
+        public void IntersectEqualityComparer_ObservableSource1ItemAddedUnrelated_Update()
+        {
+            SetOperationEqualityComparer_ObservableSource1ItemAddedUnrelated_Update();
+        }
+
+        [TestMethod]
+        public void IntersectEqualityComparer_ObservableSource1ItemAddedFromSource2_Update()
+        {
+            SetOperationEqualityComparer_ObservableSource1ItemAddedFromSource2_Update();
+        }
+
+        [TestMethod]
+        public void IntersectEqualityComparer_ObservableSource2ItemAddedFromSource1_Update()
+        {
+            SetOperationEqualityComparer_ObservableSource2ItemAddedFromSource1_Update();
+        }
+
+        [TestMethod]
+        public void IntersectEqualityComparer_ObservableSource2ItemAddedUnrelated_Update()
+        {
+            SetOperationEqualityComparer_ObservableSource2ItemAddedUnrelated_Update();
+        }
+
+        [TestMethod]
+        public void IntersectEqualityComparer_NoObervableSource1ItemRemoved_NoUpdate()
+        {
+            SetOperationEqualityComparer_NoObervableSource1ItemRemoved_NoUpdate();
+        }
+
+        [TestMethod]
+        public void IntersectEqualityComparer_ObservableSource1ItemRemovedUnrelated_Update()
+        {
+            SetOperationEqualityComparer_ObservableSource1ItemRemovedUnrelated_Update();
+        }
+
+        [TestMethod]
+        public void IntersectEqualityComparer_ObservableSource1ItemRemovedFromSource2_Update()
+        {
+            SetOperationEqualityComparer_ObservableSource1ItemRemovedFromSource2_Update();
+        }
+
+        [TestMethod]
+        public void IntersectEqualityComparer_ObservableSource2ItemRemovedFromSource1_Update()
+        {
+            SetOperationEqualityComparer_ObservableSource2ItemRemovedFromSource1_Update();
+        }
+
+        [TestMethod]
+        public void IntersectEqualityComparer_ObservableSource2ItemRemovedUnrelated_Update()
+        {
+            SetOperationEqualityComparer_ObservableSource2ItemRemovedUnrelated_Update();
+        }
+
+        [TestMethod]
         public void Intersect_NoObservableSource2Reset_NoUpdate()
         {
             var update = false;
@@ -934,7 +1274,7 @@ namespace NMF.Expressions.Linq.Tests
             var coll1 = new List<int>() { 1, 2, 3 };
             var coll2 = new ObservableCollection<int>() { 2, 3, 4 };
 
-            var test = coll1.WithUpdates().Intersect(coll2);
+            var test = coll1.WithUpdates().Intersect(coll2.WithUpdates());
 
             test.CollectionChanged += (o, e) =>
             {
