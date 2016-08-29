@@ -118,10 +118,6 @@ namespace NMF.Synchronizations
             }
         }
 
-        void INotifyValue<TOut>.Detach() { }
-
-        void INotifyValue<TOut>.Attach() { }
-
         public void AcceptNewOutput(TOut value)
         {
             Opposite.Input = value;
@@ -171,14 +167,6 @@ namespace NMF.Synchronizations
             }
         }
 
-        bool INotifyValue<TOut>.IsAttached
-        {
-            get
-            {
-                return true;
-            }
-        }
-
         public virtual ICollection<IDisposable> Dependencies
         {
             get
@@ -186,6 +174,20 @@ namespace NMF.Synchronizations
                 return Opposite.Dependencies;
             }
         }
+
+        private readonly SuccessorList successors = new SuccessorList();
+        public IList<INotifiable> Successors { get { return successors; } }
+
+        IEnumerable<INotifiable> INotifiable.Dependencies { get { return Enumerable.Empty<INotifiable>(); } }
+
+        public ExecutionMetaData ExecutionMetaData { get; } = new ExecutionMetaData();
+
+        public INotificationResult Notify(IList<INotificationResult> sources)
+        {
+            throw new InvalidOperationException();
+        }
+
+        public void Dispose() { }
 
         private class OppositeComputation : SynchronizationComputation<TOut, TIn>
         {

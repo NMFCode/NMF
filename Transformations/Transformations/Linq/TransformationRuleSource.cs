@@ -40,7 +40,7 @@ namespace NMF.Transformations.Linq
         }
 
         private List<TransformationComputationWrapper<TIn, TOut>> items = new List<TransformationComputationWrapper<TIn, TOut>>();
-
+        
 
         /// <summary>
         /// Gets the transformation rule this transformation rule source is responsible for
@@ -127,17 +127,16 @@ namespace NMF.Transformations.Linq
             return items.GetEnumerator();
         }
 
-        void INotifyEnumerable.Attach()
-        {
-        }
+        private readonly SuccessorList successors = new SuccessorList();
+        public IList<INotifiable> Successors { get { return successors; } }
 
-        void INotifyEnumerable.Detach()
-        {
-        }
+        public IEnumerable<INotifiable> Dependencies { get { return Enumerable.Empty<INotifiable>(); } }
 
-        bool INotifyEnumerable.IsAttached
+        public ExecutionMetaData ExecutionMetaData { get; } = new ExecutionMetaData();
+
+        public INotificationResult Notify(IList<INotificationResult> sources)
         {
-            get { return true; }
+            throw new InvalidOperationException();
         }
 
         /// <summary>
@@ -266,17 +265,16 @@ namespace NMF.Transformations.Linq
             return items.GetEnumerator();
         }
 
-        void INotifyEnumerable.Attach()
-        {
-        }
+        private readonly SuccessorList successors = new SuccessorList();
+        public IList<INotifiable> Successors { get { return successors; } }
 
-        void INotifyEnumerable.Detach()
-        {
-        }
+        public IEnumerable<INotifiable> Dependencies { get { return Enumerable.Empty<INotifiable>(); } }
 
-        bool INotifyEnumerable.IsAttached
+        public ExecutionMetaData ExecutionMetaData { get; } = new ExecutionMetaData();
+
+        public INotificationResult Notify(IList<INotificationResult> sources)
         {
-            get { return true; }
+            throw new InvalidOperationException();
         }
 
         /// <summary>
@@ -401,17 +399,16 @@ namespace NMF.Transformations.Linq
             return items.GetEnumerator();
         }
 
-        void INotifyEnumerable.Attach()
-        {
-        }
+        private readonly SuccessorList successors = new SuccessorList();
+        public IList<INotifiable> Successors { get { return successors; } }
 
-        void INotifyEnumerable.Detach()
-        {
-        }
+        public IEnumerable<INotifiable> Dependencies { get { return Enumerable.Empty<INotifiable>(); } }
 
-        bool INotifyEnumerable.IsAttached
+        public ExecutionMetaData ExecutionMetaData { get; } = new ExecutionMetaData();
+
+        public INotificationResult Notify(IList<INotificationResult> sources)
         {
-            get { return true; }
+            throw new InvalidOperationException();
         }
 
         /// <summary>
@@ -538,17 +535,16 @@ namespace NMF.Transformations.Linq
             return items.GetEnumerator();
         }
 
-        void INotifyEnumerable.Attach()
-        {
-        }
+        private readonly SuccessorList successors = new SuccessorList();
+        public IList<INotifiable> Successors { get { return successors; } }
 
-        void INotifyEnumerable.Detach()
-        {
-        }
+        public IEnumerable<INotifiable> Dependencies { get { return Enumerable.Empty<INotifiable>(); } }
 
-        bool INotifyEnumerable.IsAttached
+        public ExecutionMetaData ExecutionMetaData { get; } = new ExecutionMetaData();
+
+        public INotificationResult Notify(IList<INotificationResult> sources)
         {
-            get { return true; }
+            throw new InvalidOperationException();
         }
 
         /// <summary>

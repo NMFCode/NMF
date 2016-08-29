@@ -186,6 +186,30 @@ namespace NMF.Analyses
                 get { return currentValue; }
             }
 
+            public IList<INotifiable> Successors
+            {
+                get
+                {
+                    throw new NotImplementedException();
+                }
+            }
+
+            public IEnumerable<INotifiable> Dependencies
+            {
+                get
+                {
+                    throw new NotImplementedException();
+                }
+            }
+
+            public ExecutionMetaData ExecutionMetaData
+            {
+                get
+                {
+                    throw new NotImplementedException();
+                }
+            }
+
             protected virtual void OnValueChanged(ValueChangedEventArgs e)
             {
                 var handler = ValueChanged;
@@ -193,6 +217,15 @@ namespace NMF.Analyses
                 {
                     handler(this, e);
                 }
+            }
+
+            public INotificationResult Notify(IList<INotificationResult> sources)
+            {
+                throw new NotImplementedException();
+            }
+
+            public void Dispose()
+            {
             }
 
             public event EventHandler<ValueChangedEventArgs> ValueChanged;

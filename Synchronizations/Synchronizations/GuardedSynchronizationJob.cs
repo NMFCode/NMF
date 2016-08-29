@@ -78,7 +78,7 @@ namespace NMF.Synchronizations
                     Current.Dispose();
                 }
                 Tracker.ValueChanged -= Tracker_ValueChanged;
-                Tracker.Detach();
+                Tracker.Dispose();
             }
         }
     }

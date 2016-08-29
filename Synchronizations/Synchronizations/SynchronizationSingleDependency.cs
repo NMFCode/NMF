@@ -209,8 +209,8 @@ namespace NMF.Synchronizations
             {
                 Left.ValueChanged -= Left_ValueChanged;
                 Right.ValueChanged -= Right_ValueChanged;
-                Left.Detach();
-                Right.Detach();
+                Left.Dispose();
+                Right.Dispose();
             }
         }
 
@@ -257,7 +257,7 @@ namespace NMF.Synchronizations
             public void Dispose()
             {
                 Left.ValueChanged -= Left_ValueChanged;
-                Left.Detach();
+                Left.Dispose();
             }
         }
 
@@ -304,7 +304,7 @@ namespace NMF.Synchronizations
             public void Dispose()
             {
                 Right.ValueChanged -= Left_ValueChanged;
-                Right.Detach();
+                Right.Dispose();
             }
         }
 
@@ -679,7 +679,7 @@ namespace NMF.Synchronizations
         public void Dispose()
         {
             Guard.ValueChanged -= Guard_ValueChanged;
-            Guard.Detach();
+            Guard.Dispose();
         }
     }
 }

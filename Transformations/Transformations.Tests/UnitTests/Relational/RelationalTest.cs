@@ -68,7 +68,7 @@ namespace NMF.Transformations.Tests.UnitTests.Relational
             nextItemCalled = false;
             expectedResult = 0;
 
-            select.Detach();
+            select.Successors.Clear();
 
             source.Add("");
 

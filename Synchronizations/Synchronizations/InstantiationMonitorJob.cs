@@ -127,7 +127,7 @@ namespace NMF.Synchronizations
             public void Dispose()
             {
                 InstantiationMonitor.ValueChanged -= InstantiationChanged;
-                InstantiationMonitor.Detach();
+                InstantiationMonitor.Dispose();
             }
         }
     }
@@ -202,7 +202,7 @@ namespace NMF.Synchronizations
             public void Dispose()
             {
                 InstantiationMonitor.ValueChanged -= InstantiationChanged;
-                InstantiationMonitor.Detach();
+                InstantiationMonitor.Dispose();
             }
         }
     }
