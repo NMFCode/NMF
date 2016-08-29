@@ -79,7 +79,7 @@ namespace NMF.Expressions.Linq.Tests
             var coll1 = new ObservableCollection<int>() { 1, 2, 3 };
             var coll2 = new ObservableCollection<int>() { 4, 5, 6 };
 
-            var test = coll1.WithUpdates().Concat(coll2);
+            var test = coll1.WithUpdates().Concat(coll2.WithUpdates());
 
             test.CollectionChanged += (o, e) =>
             {
@@ -167,7 +167,7 @@ namespace NMF.Expressions.Linq.Tests
             var coll1 = new ObservableCollection<int>() { 1, 2, 3 };
             var coll2 = new ObservableCollection<int>() { 4, 5, 6 };
 
-            var test = coll1.WithUpdates().Concat(coll2);
+            var test = coll1.WithUpdates().Concat(coll2.WithUpdates());
 
             test.CollectionChanged += (o, e) =>
             {
@@ -247,7 +247,7 @@ namespace NMF.Expressions.Linq.Tests
             var coll1 = new List<int>() { 1, 2, 3 };
             var coll2 = new ObservableCollection<int>() { 4, 5, 6 };
 
-            var test = coll1.WithUpdates().Concat(coll2);
+            var test = coll1.WithUpdates().Concat(coll2.WithUpdates());
 
             test.CollectionChanged += (o, e) =>
             {
