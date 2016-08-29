@@ -85,6 +85,21 @@ namespace NMF.Expressions.Linq
             return false;
         }
 
+        private bool ReplaceItem(TItem old, TItem newItem)
+        {
+            var oldKey = keys[old];
+            var newKey = keySelector.Evaluate(newItem);
+
+            if (EqualityComparer<TKey>.Default.Equals(oldKey.Value, newKey))
+            {
+                var group = groups[newKey];
+                int itemIdx = group.Items.IndexOf(old);
+                group.Items[itemIdx] = newItem;
+                return true;
+            }
+            return false;
+        }
+
         public override IEnumerator<ObservableGroup<TKey, TItem>> GetEnumerator()
         {
             return groups.Values.GetEnumerator();
@@ -233,6 +248,24 @@ namespace NMF.Expressions.Linq
                             removed.Add(removedGroup);
                         if (AttachItem(newItem))
                             added.Add(groups[keys[newItem].Value]);
+                    }
+                }
+            }
+
+            if (sourceChange.ReplaceAddedItems != null)
+            {
+                for (int i = 0; i < sourceChange.ReplaceAddedItems.Count; i++)
+                {
+                    var oldItem = sourceChange.ReplaceRemovedItems[i];
+                    var newItem = sourceChange.ReplaceAddedItems[i];
+                    if (!ReplaceItem(oldItem, newItem))
+                    {
+                        var removedGroup = DetachItem(oldItem);
+                        if (removedGroup != null)
+                            removed.Add(removedGroup);
+                        var addedGroup = AttachItem(newItem);
+                        if (addedGroup != null)
+                            added.Add(addedGroup);
                     }
                 }
             }
