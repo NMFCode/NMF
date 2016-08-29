@@ -9,12 +9,15 @@ namespace NMF.Expressions.Linq
 {
     public class OrderableList<T> : ObservableEnumerable<T>, IOrderableNotifyEnumerable<T>
     {
-        public override IEnumerable<INotifiable> Dependencies { get { return Enumerable.Empty<INotifiable>(); } }
+        private readonly IExecutionContext context = ExecutionEngine.Current.Context;
 
+        public override IEnumerable<INotifiable> Dependencies { get { return Enumerable.Empty<INotifiable>(); } }
+        
         public OrderableList()
         {
             Sequences = new NotifyCollection<IEnumerable<T>>();
             Sequences.CollectionChanged += SequencesCollectionChanged;
+            context.AddChangeListener(this, Sequences);
         }
 
         void SequencesCollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
@@ -29,7 +32,7 @@ namespace NMF.Expressions.Linq
                         INotifyCollectionChanged notifier = sequence as INotifyCollectionChanged;
                         if (notifier != null)
                         {
-                            notifier.CollectionChanged -= SequenceCollectionChanged;
+                            context.RemoveChangeListener(this, notifier);
                         }
                     }
                 }
@@ -41,7 +44,7 @@ namespace NMF.Expressions.Linq
                         INotifyCollectionChanged notifier = sequence as INotifyCollectionChanged;
                         if (notifier != null)
                         {
-                            notifier.CollectionChanged += SequenceCollectionChanged;
+                            context.AddChangeListener(this, notifier);
                         }
                     }
                 }
@@ -72,11 +75,6 @@ namespace NMF.Expressions.Linq
             return Enumerable.SelectMany(Sequences, coll => coll).GetEnumerator();
         }
 
-        public override INotificationResult Notify(IList<INotificationResult> sources)
-        {
-            throw new InvalidOperationException();
-        }
-
         public IEnumerable<T> GetSequenceForItem(T item)
         {
             throw new InvalidOperationException();
@@ -85,6 +83,19 @@ namespace NMF.Expressions.Linq
         IEnumerable<IEnumerable<T>> IOrderableNotifyEnumerable<T>.Sequences
         {
             get { return Sequences; }
+        }
+
+        protected override void Dispose(bool disposing)
+        {
+            context.RemoveChangeListener(this, Sequences);
+            base.Dispose(disposing);
+        }
+
+        public override INotificationResult Notify(IList<INotificationResult> sources)
+        {
+            //TODO Need information from the NotifyCollectionChangedEventArgs here.
+            OnCleared();
+            return new CollectionChangedNotificationResult<T>(this);
         }
     }
 }
