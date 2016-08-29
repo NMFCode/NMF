@@ -5,7 +5,7 @@ using System.Text;
 
 namespace NMF.Expressions
 {
-    internal class SuccessorList : ShortList<INotifiable>
+    public class SuccessorList : ShortList<INotifiable>
     {
         public override void Insert(int index, INotifiable item)
         {

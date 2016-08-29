@@ -428,6 +428,9 @@
     <Compile Include="..\Expressions\Public\SingletonSuccessorList.cs">
       <Link>Facade\SingletonSuccessorList.cs</Link>
     </Compile>
+    <Compile Include="..\Expressions\Public\SuccessorList.cs">
+      <Link>Facade\SuccessorList.cs</Link>
+    </Compile>
     <Compile Include="..\Expressions\Public\ValueChangedEventArgs.cs">
       <Link>Facade\ValueChangedEventArgs.cs</Link>
     </Compile>
