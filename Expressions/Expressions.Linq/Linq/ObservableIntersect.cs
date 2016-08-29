@@ -39,76 +39,6 @@ namespace NMF.Expressions.Linq
             return SL.Where(source, item => sourceItems.ContainsKey(item)).GetEnumerator();
         }
 
-        private void SourceCollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
-        {
-            if (e.Action == NotifyCollectionChangedAction.Move) return;
-            if (e.Action == NotifyCollectionChangedAction.Reset)
-            {
-                OnCleared();
-                return;
-            }
-            if (e.OldItems != null)
-            {
-                var removed = new List<TSource>();
-                foreach (TSource item in e.OldItems)
-                {
-                    if (sourceItems.ContainsKey(item))
-                    {
-                        removed.Add(item);
-                    }
-                }
-                if (removed.Count != 0) OnRemoveItems(removed);
-            }
-            if (e.NewItems != null)
-            {
-                var added = new List<TSource>();
-                foreach (TSource item in e.NewItems)
-                {
-                    if (sourceItems.ContainsKey(item))
-                    {
-                        added.Add(item);
-                    }
-                }
-                if (added.Count != 0) OnAddItems(added);
-            }
-        }
-
-        private void Source2CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
-        {
-            if (e.Action == NotifyCollectionChangedAction.Move) return;
-            if (e.Action == NotifyCollectionChangedAction.Reset)
-            {
-                sourceItems.Clear();
-                OnCleared();
-            }
-            if (e.OldItems != null)
-            {
-                var removed = new HashSet<TSource>(sourceItems.Comparer);
-                foreach (TSource item in e.OldItems)
-                {
-                    if (RemoveItem(item))
-                    {
-                        removed.Add(item);
-                    }
-                }
-                var changed = SL.Where(source, item => removed.Contains(item));
-                OnRemoveItems(changed);
-            }
-            if (e.NewItems != null)
-            {
-                var added = new HashSet<TSource>(sourceItems.Comparer);
-                foreach (TSource item in e.NewItems)
-                {
-                    if (AddItem(item))
-                    {
-                        added.Add(item);
-                    }
-                }
-                var changed = SL.Where(source, item => added.Contains(item));
-                OnAddItems(changed);
-            }
-        }
-
         private bool AddItem(TSource item)
         {
             int count;
@@ -214,50 +144,38 @@ namespace NMF.Expressions.Linq
 
         private void NotifySource(CollectionChangedNotificationResult<TSource> change, HashSet<TSource> added, HashSet<TSource> removed)
         {
-            if (change.RemovedItems != null)
+            foreach (var item in change.AllRemovedItems)
             {
-                foreach (var item in change.RemovedItems)
+                if (sourceItems.ContainsKey(item))
                 {
-                    if (sourceItems.ContainsKey(item))
-                    {
-                        removed.Add(item);
-                    }
+                    removed.Add(item);
                 }
             }
-
-            if (change.AddedItems != null)
+                
+            foreach (var item in change.AllAddedItems)
             {
-                foreach (var item in change.AddedItems)
+                if (sourceItems.ContainsKey(item))
                 {
-                    if (sourceItems.ContainsKey(item))
-                    {
-                        added.Add(item);
-                    }
+                    added.Add(item);
                 }
             }
         }
 
         private void NotifySource2(CollectionChangedNotificationResult<TSource> change, HashSet<TSource> added, HashSet<TSource> removed)
         {
-            if (change.RemovedItems != null)
+            foreach (var item in change.AllRemovedItems)
             {
-                foreach (var item in change.RemovedItems)
+                if (RemoveItem(item) && source.Contains(item))
                 {
-                    if (RemoveItem(item) && source.Contains(item))
-                    {
-                        removed.Add(item);
-                    }
+                    removed.Add(item);
                 }
             }
-
-            if (change.AddedItems != null)
+                
+            foreach (var item in change.AllAddedItems)
             {
-                foreach (var item in change.AddedItems)
+                if (AddItem(item) && source.Contains(item))
                 {
-                    if (AddItem(item) && source.Contains(item))
-                    {
-                        added.Add(item);
-                    }
+                    added.Add(item);
                 }
             }
         }

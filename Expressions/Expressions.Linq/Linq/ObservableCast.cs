@@ -40,9 +40,7 @@ namespace NMF.Expressions.Linq
 
         public override INotificationResult Notify(IList<INotificationResult> sources)
         {
-            var change = (ICollectionChangedNotificationResult)sources[0];
-            change.Source = this;
-            return change;
+            return CollectionChangedNotificationResult<TTarget>.Transfer((ICollectionChangedNotificationResult)sources[0], this);
         }
     }
 }

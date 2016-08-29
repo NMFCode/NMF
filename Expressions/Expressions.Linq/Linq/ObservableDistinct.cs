@@ -28,21 +28,6 @@ namespace NMF.Expressions.Linq
             return occurences.Keys.GetEnumerator();
         }
 
-        private List<TSource> AddItems(IEnumerable items)
-        {
-            var added = new List<TSource>();
-            foreach (TSource item in items)
-            {
-                if (AddItem(item))
-                {
-                    added.Add(item);
-                }
-            }
-            if (added.Count > 0)
-                OnAddItems(added);
-            return added;
-        }
-
         private bool AddItem(TSource item)
         {
             if (item != null)
@@ -112,36 +97,36 @@ namespace NMF.Expressions.Linq
 
             if (change.IsReset)
             {
-                occurences.Clear();
+                OnDetach();
+                OnAttach();
                 OnCleared();
-                AddItems(source);
                 return new CollectionChangedNotificationResult<TSource>(this);
             }
 
-            List<TSource> removed = null;
-            if (change.RemovedItems != null)
+            var removed = new List<TSource>();
+            var added = new List<TSource>();
+            
+            foreach (var item in change.AllRemovedItems)
             {
-                removed = new List<TSource>();
-                foreach (var item in change.RemovedItems)
+                if (RemoveItem(item))
                 {
-                    if (RemoveItem(item))
-                    {
-                        removed.Add(item);
-                    }
+                    removed.Add(item);
                 }
-                if (removed.Count > 0)
-                    OnRemoveItems(removed);
             }
 
-            List<TSource> added = null;
-            if (change.AddedItems != null)
+            foreach (var item in change.AllAddedItems)
             {
-                added = AddItems(change.AddedItems);
+                if (AddItem(item))
+                {
+                    added.Add(item);
+                }
             }
 
-            if ((removed == null || removed.Count == 0) && (added == null || added.Count == 0))
+            if (removed.Count == 0 && added.Count == 0)
                 return new UnchangedNotificationResult(this);
 
+            OnRemoveItems(removed);
+            OnAddItems(added);
             return new CollectionChangedNotificationResult<TSource>(this, added, removed);
         }
     }

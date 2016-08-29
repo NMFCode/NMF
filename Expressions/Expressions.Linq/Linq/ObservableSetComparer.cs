@@ -216,20 +216,14 @@ namespace NMF.Expressions.Linq
             }
             else
             {
-                if (change.RemovedItems != null)
+                foreach (var item in change.AllRemovedItems)
                 {
-                    foreach (var item in change.RemovedItems)
-                    {
-                        RemoveSource1(item);
-                    }
+                    RemoveSource1(item);
                 }
-
-                if (change.AddedItems != null)
+                    
+                foreach (var item in change.AllAddedItems)
                 {
-                    foreach (var item in change.AddedItems)
-                    {
-                        AddSource1(item);
-                    }
+                    AddSource1(item);
                 }
             }
         }
@@ -259,20 +253,14 @@ namespace NMF.Expressions.Linq
             }
             else
             {
-                if (change.RemovedItems != null)
+                foreach (var item in change.AllRemovedItems)
                 {
-                    foreach (var item in change.RemovedItems)
-                    {
-                        RemoveSource2(item);
-                    }
+                    RemoveSource2(item);
                 }
 
-                if (change.AddedItems != null)
+                foreach (var item in change.AllAddedItems)
                 {
-                    foreach (var item in change.AddedItems)
-                    {
-                        AddSource2(item);
-                    }
+                    AddSource2(item);
                 }
             }
         }

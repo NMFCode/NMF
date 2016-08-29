@@ -89,76 +89,77 @@ namespace NMF.Expressions.Linq
 
         public override INotificationResult Notify(IList<INotificationResult> sources)
         {
-            var change = (CollectionChangedNotificationResult<TSource>)sources[0];
-            if (sources.Count > 1 || change.IsReset)
-            {
-                sourceItems.Clear();
-                OnCleared();
-                foreach (var item in source2)
-                    AddItem(item);
-                return new CollectionChangedNotificationResult<TSource>(this);
-            }
-
             var added = new List<TSource>();
             var removed = new List<TSource>();
 
-            if (change.Source == source)
+            foreach (CollectionChangedNotificationResult<TSource> change in sources)
             {
-                if (change.RemovedItems != null)
+                if (change.IsReset)
                 {
-                    foreach (var item in change.RemovedItems)
-                    {
-                        if (!sourceItems.ContainsKey(item))
-                        {
-                            removed.Add(item);
-                        }
-                    }
+                    OnDetach();
+                    OnAttach();
+                    OnCleared();
+                    return new CollectionChangedNotificationResult<TSource>(this);
                 }
 
-                if (change.AddedItems != null)
+                if (change.Source == source)
                 {
-                    foreach (var item in change.AddedItems)
-                    {
-                        if (!sourceItems.ContainsKey(item))
-                        {
-                            added.Add(item);
-                        }
-                    }
+                    NotifySource(change, added, removed);
                 }
-            }
-            else //change.Source == source2
-            {
-                if (change.RemovedItems != null)
+                else
                 {
-                    var uniqueRemoved = new HashSet<TSource>(sourceItems.Comparer);
-                    foreach (var item in change.RemovedItems)
-                    {
-                        if (RemoveItem(item))
-                        {
-                            removed.Add(item);
-                        }
-                    }
-                    added = SL.Where(source, item => removed.Contains(item)).ToList();
-                }
-                if (change.AddedItems != null)
-                {
-                    var uniqueAdded = new HashSet<TSource>(sourceItems.Comparer);
-                    foreach (var item in change.AddedItems)
-                    {
-                        if (AddItem(item))
-                        {
-                            added.Add(item);
-                        }
-                    }
-                    removed = SL.Where(source, item => added.Contains(item)).ToList();
+                    NotifySource2(change, added, removed);
                 }
             }
 
-            if (removed.Count != 0)
-                OnRemoveItems(removed);
-            if (added.Count != 0)
-                OnAddItems(added);
+            if (added.Count == 0 && removed.Count == 0)
+                return new UnchangedNotificationResult(this);
+
+            OnRemoveItems(removed);
+            OnAddItems(added);
             return new CollectionChangedNotificationResult<TSource>(this, added, removed);
+        }
+
+        private void NotifySource(CollectionChangedNotificationResult<TSource> change, List<TSource> added, List<TSource> removed)
+        {
+            foreach (var item in change.AllRemovedItems)
+            {
+                if (!sourceItems.ContainsKey(item))
+                {
+                    removed.Add(item);
+                }
+            }
+                
+            foreach (var item in change.AllAddedItems)
+            {
+                if (!sourceItems.ContainsKey(item))
+                {
+                    added.Add(item);
+                }
+            }
+        }
+
+        private void NotifySource2(CollectionChangedNotificationResult<TSource> change, List<TSource> added, List<TSource> removed)
+        {
+            var uniqueRemoved = new HashSet<TSource>(sourceItems.Comparer);
+            foreach (var item in change.AllRemovedItems)
+            {
+                if (RemoveItem(item))
+                {
+                    removed.Add(item);
+                }
+            }
+            added.AddRange(SL.Where(source, item => removed.Contains(item)));
+            
+            var uniqueAdded = new HashSet<TSource>(sourceItems.Comparer);
+            foreach (var item in change.AllAddedItems)
+            {
+                if (AddItem(item))
+                {
+                    added.Add(item);
+                }
+            }
+            removed.AddRange(SL.Where(source, item => added.Contains(item)));
         }
     }
 }

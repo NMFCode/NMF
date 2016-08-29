@@ -136,27 +136,21 @@ namespace NMF.Expressions.Linq
 
         private void NotifySource(CollectionChangedNotificationResult<TSource> sourceChange, List<TResult> added, List<TResult> removed)
         {
-            if (sourceChange.RemovedItems != null)
+            foreach (var item in sourceChange.AllRemovedItems)
             {
-                foreach (var item in sourceChange.RemovedItems)
+                var stack = results[item];
+                var resultItems = stack.Pop();
+                if (stack.Count == 0)
                 {
-                    var stack = results[item];
-                    var resultItems = stack.Pop();
-                    if (stack.Count == 0)
-                    {
-                        results.Remove(item);
-                    }
-                    removed.AddRange(resultItems.Value);
-                    resultItems.Successors.Remove(this);
+                    results.Remove(item);
                 }
+                removed.AddRange(resultItems.Value);
+                resultItems.Successors.Remove(this);
             }
 
-            if (sourceChange.AddedItems != null)
+            foreach (var item in sourceChange.AllAddedItems)
             {
-                foreach (var item in sourceChange.AddedItems)
-                {
-                    added.AddRange(AttachItem(item));
-                }
+                added.AddRange(AttachItem(item));
             }
         }
     }

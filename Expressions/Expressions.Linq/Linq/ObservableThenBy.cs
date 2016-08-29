@@ -167,6 +167,7 @@ namespace NMF.Expressions.Linq
         {
             var added = new List<TItem>();
             var removed = new List<TItem>();
+            var moved = new List<TItem>();
 
             foreach (var change in sources)
             {
@@ -206,49 +207,42 @@ namespace NMF.Expressions.Linq
                         searchTree.Add(keyChange.NewValue, itemSequence);
                     }
                     itemSequence.Add(lambdaResult.Tag.Item);
-
-                    //TODO use move instead of remove+add, needs to be implemented for every SQO
-                    removed.Add(lambdaResult.Tag.Item);
-                    added.Add(lambdaResult.Tag.Item);
+                    
+                    moved.Add(lambdaResult.Tag.Item);
                 }
             }
 
-            if (added.Count == 0 && removed.Count == 0)
+            if (added.Count == 0 && removed.Count == 0 && moved.Count == 0)
                 return new UnchangedNotificationResult(this);
 
             OnRemoveItems(removed);
             OnAddItems(added);
-            return new CollectionChangedNotificationResult<TItem>(this, added, removed);
+            OnMoveItems(moved);
+            return new CollectionChangedNotificationResult<TItem>(this, added, removed, moved);
         }
 
         private void NotifySource(CollectionChangedNotificationResult<TItem> sourceChange, List<TItem> added, List<TItem> removed)
         {
-            if (sourceChange.RemovedItems != null)
+            foreach (var item in sourceChange.AllRemovedItems)
             {
-                foreach (var item in sourceChange.RemovedItems)
-                {
-                    var sequence = source.GetSequenceForItem(item);
-                    var searchTree = searchTrees[sequence];
-                    DetachItem(searchTree, item);
-                }
-                removed.AddRange(sourceChange.RemovedItems);
+                var sequence = source.GetSequenceForItem(item);
+                var searchTree = searchTrees[sequence];
+                DetachItem(searchTree, item);
             }
+            removed.AddRange(sourceChange.AllRemovedItems);
 
-            if (sourceChange.AddedItems != null)
+            foreach (var item in sourceChange.AllAddedItems)
             {
-                foreach (var item in sourceChange.AddedItems)
+                var sequence = source.GetSequenceForItem(item);
+                SortedDictionary<TKey, Collection<TItem>> searchTree;
+                if (!searchTrees.TryGetValue(sequence, out searchTree))
                 {
-                    var sequence = source.GetSequenceForItem(item);
-                    SortedDictionary<TKey, Collection<TItem>> searchTree;
-                    if (!searchTrees.TryGetValue(sequence, out searchTree))
-                    {
-                        searchTree = new SortedDictionary<TKey, Collection<TItem>>(comparer);
-                        searchTrees.Add(sequence, searchTree);
-                    }
-                    AttachItem(searchTree, item);
+                    searchTree = new SortedDictionary<TKey, Collection<TItem>>(comparer);
+                    searchTrees.Add(sequence, searchTree);
                 }
-                added.AddRange(sourceChange.AddedItems);
+                AttachItem(searchTree, item);
             }
+            added.AddRange(sourceChange.AllAddedItems);
         }
     }
 }

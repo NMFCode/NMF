@@ -204,46 +204,40 @@ namespace NMF.Expressions.Linq
 
         private void NotifySource(CollectionChangedNotificationResult<T> sourceChange, List<T> added, List<T> removed)
         {
-            if (sourceChange.RemovedItems != null)
+            foreach (var item in sourceChange.AllRemovedItems)
             {
-                foreach (var item in sourceChange.RemovedItems)
+                if (isValueType || item != null)
                 {
-                    if (isValueType || item != null)
-                    {
-                        var lambdaResult = lambdaInstances[item];
-                        if (lambdaResult.Value)
-                        {
-                            removed.Add(lambdaResult.Tag.Item);
-                        }
-                        lambdaResult.Tag = lambdaResult.Tag.Decrease();
-                        if (lambdaResult.Tag.Multiplicity == 0)
-                        {
-                            lambdaResult.Successors.Remove(this);
-                            lambdaInstances.Remove(item);
-                        }
-                    }
-                    else
-                    {
-                        nulls--;
-                        if (nulls == 0)
-                        {
-                            nullCheck.Successors.Remove(this);
-                            nullCheck = null;
-                        }
-                        removed.Add(default(T));
-                    }
-                }
-            }
-
-            if (sourceChange.AddedItems != null)
-            {
-                foreach (var item in sourceChange.AddedItems)
-                {
-                    var lambdaResult = AttachItem(item);
+                    var lambdaResult = lambdaInstances[item];
                     if (lambdaResult.Value)
                     {
-                        added.Add(item);
+                        removed.Add(lambdaResult.Tag.Item);
                     }
+                    lambdaResult.Tag = lambdaResult.Tag.Decrease();
+                    if (lambdaResult.Tag.Multiplicity == 0)
+                    {
+                        lambdaResult.Successors.Remove(this);
+                        lambdaInstances.Remove(item);
+                    }
+                }
+                else
+                {
+                    nulls--;
+                    if (nulls == 0)
+                    {
+                        nullCheck.Successors.Remove(this);
+                        nullCheck = null;
+                    }
+                    removed.Add(default(T));
+                }
+            }
+            
+            foreach (var item in sourceChange.AllAddedItems)
+            {
+                var lambdaResult = AttachItem(item);
+                if (lambdaResult.Value)
+                {
+                    added.Add(item);
                 }
             }
         }

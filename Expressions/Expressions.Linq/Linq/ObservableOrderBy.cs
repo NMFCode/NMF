@@ -100,6 +100,7 @@ namespace NMF.Expressions.Linq
         {
             var added = new List<TItem>();
             var removed = new List<TItem>();
+            var moved = new List<TItem>();
 
             foreach (var change in sources)
             {
@@ -138,58 +139,51 @@ namespace NMF.Expressions.Linq
                         searchTree.Add(keyChange.NewValue, sequence);
                     }
                     sequence.Add(tagged.Tag.Item);
-
-                    //TODO use move instead of remove+add, needs to be implemented for every SQO
-                    removed.Add(tagged.Tag.Item);
-                    added.Add(tagged.Tag.Item);
+                    
+                    moved.Add(tagged.Tag.Item);
                 }
             }
 
-            if (added.Count == 0 && removed.Count == 0)
+            if (added.Count == 0 && removed.Count == 0 && moved.Count == 0)
                 return new UnchangedNotificationResult(this);
 
             OnRemoveItems(removed);
             OnAddItems(added);
-            return new CollectionChangedNotificationResult<TItem>(this, added, removed);
+            OnMoveItems(moved);
+            return new CollectionChangedNotificationResult<TItem>(this, added, removed, moved);
         }
 
         private void NotifySource(CollectionChangedNotificationResult<TItem> sourceChange, List<TItem> added, List<TItem> removed)
         {
-            if (sourceChange.RemovedItems != null)
+            foreach (var item in sourceChange.AllRemovedItems)
             {
-                foreach (var item in sourceChange.RemovedItems)
+                var lambdaResult = lambdas[item];
+                Collection<TItem> sequence;
+                if (searchTree.TryGetValue(lambdaResult.Value, out sequence))
                 {
-                    var lambdaResult = lambdas[item];
-                    Collection<TItem> sequence;
-                    if (searchTree.TryGetValue(lambdaResult.Value, out sequence))
+                    sequence.Remove(item);
+                    if (sequence.Count == 0)
                     {
-                        sequence.Remove(item);
-                        if (sequence.Count == 0)
-                        {
-                            searchTree.Remove(lambdaResult.Value);
-                        }
+                        searchTree.Remove(lambdaResult.Value);
                     }
-                    removed.Add(item);
+                }
+                removed.Add(item);
                         
-                    if (lambdaResult.Tag.Count == 1)
-                    {
-                        lambdas.Remove(item);
-                        lambdaResult.Successors.Remove(this);
-                    }
-                    else
-                    {
-                        lambdaResult.Tag = new Multiplicity<TItem>(lambdaResult.Tag.Item, lambdaResult.Tag.Count - 1);
-                    }
+                if (lambdaResult.Tag.Count == 1)
+                {
+                    lambdas.Remove(item);
+                    lambdaResult.Successors.Remove(this);
+                }
+                else
+                {
+                    lambdaResult.Tag = new Multiplicity<TItem>(lambdaResult.Tag.Item, lambdaResult.Tag.Count - 1);
                 }
             }
-
-            if (sourceChange.AddedItems != null)
+                
+            foreach (var item in sourceChange.AllAddedItems)
             {
-                foreach (var item in sourceChange.AddedItems)
-                {
-                    AttachItem(item);
-                    added.Add(item);
-                }
+                AttachItem(item);
+                added.Add(item);
             }
         }
     }

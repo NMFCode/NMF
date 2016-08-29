@@ -197,8 +197,6 @@ namespace NMF.Expressions.Linq
 
         public INotificationResult Notify(IList<INotificationResult> sources)
         {
-            var change = (CollectionChangedNotificationResult<TSource>)sources[0];
-
             var newValue = SL.FirstOrDefault(source);
             if (!EqualityComparer<TSource>.Default.Equals(value, newValue))
             {

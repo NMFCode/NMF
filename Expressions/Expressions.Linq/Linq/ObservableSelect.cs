@@ -110,6 +110,8 @@ namespace NMF.Expressions.Linq
         {
             var added = new List<TResult>();
             var removed = new List<TResult>();
+            var replaceAdded = new List<TResult>();
+            var replaceRemoved = new List<TResult>();
 
             foreach (var change in sources)
             {
@@ -134,52 +136,47 @@ namespace NMF.Expressions.Linq
                 else
                 {
                     var itemChange = (ValueChangedNotificationResult<TResult>)change;
-                    removed.Add(itemChange.OldValue);
-                    added.Add(itemChange.NewValue);
+                    replaceRemoved.Add(itemChange.OldValue);
+                    replaceAdded.Add(itemChange.NewValue);
                 }
             }
 
             OnRemoveItems(removed);
             OnAddItems(added);
-            return new CollectionChangedNotificationResult<TResult>(this, added, removed);
+            OnReplaceItems(replaceRemoved, replaceAdded);
+            return new CollectionChangedNotificationResult<TResult>(this, added, removed, replaceAdded, replaceRemoved);
         }
 
         private void NotifySource(CollectionChangedNotificationResult<TSource> sourceChange, List<TResult> added, List<TResult> removed)
         {
-            if (sourceChange.RemovedItems != null)
+            foreach (var item in sourceChange.AllRemovedItems)
             {
-                foreach (var item in sourceChange.RemovedItems)
+                if (item != null)
                 {
-                    if (item != null)
+                    var lambdaResult = lambdaInstances[item];
+                    lambdaResult.Tag--;
+                    if (lambdaResult.Tag == 0)
                     {
-                        var lambdaResult = lambdaInstances[item];
-                        lambdaResult.Tag--;
-                        if (lambdaResult.Tag == 0)
-                        {
-                            lambdaInstances.Remove(item);
-                            lambdaResult.Successors.Remove(this);
-                        }
-                        removed.Add(lambdaResult.Value);
+                        lambdaInstances.Remove(item);
+                        lambdaResult.Successors.Remove(this);
                     }
-                    else if (nullLambda != null)
+                    removed.Add(lambdaResult.Value);
+                }
+                else if (nullLambda != null)
+                {
+                    nullLambda.Tag--;
+                    if (nullLambda.Tag == 0)
                     {
-                        nullLambda.Tag--;
-                        if (nullLambda.Tag == 0)
-                        {
-                            nullLambda.Successors.Remove(this);
-                            nullLambda = null;
-                        }
+                        nullLambda.Successors.Remove(this);
+                        nullLambda = null;
                     }
                 }
             }
-
-            if (sourceChange.AddedItems != null)
+                
+            foreach (var item in sourceChange.AllAddedItems)
             {
-                foreach (var item in sourceChange.AddedItems)
-                {
-                    var lambdaResult = AttachItem(item);
-                    added.Add(lambdaResult.Value);
-                }
+                var lambdaResult = AttachItem(item);
+                added.Add(lambdaResult.Value);
             }
         }
     }
