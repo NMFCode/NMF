@@ -12,6 +12,7 @@ namespace NMF.Expressions
 {
     internal class ObservableMemberExpression<TTarget, TMember> : NotifyExpression<TMember>
     {
+        private static readonly bool memberIsNotifiableCollection = typeof(TMember).GetInterface(typeof(INotifiable).Name) != null && typeof(TMember).GetInterface(typeof(INotifyCollectionChanged).Name) != null;
         private readonly IExecutionContext context;
 
         public ObservableMemberExpression(MemberExpression expression, ObservableExpressionBinder binder, string name, Func<TTarget, TMember> getter)
@@ -52,7 +53,12 @@ namespace NMF.Expressions
             get
             {
                 if (Target != null)
+                {
                     yield return Target;
+                    if (memberIsNotifiableCollection)
+                        yield return (INotifiable)GetValue();
+                }
+                    
             }
         }
 
@@ -85,13 +91,24 @@ namespace NMF.Expressions
 
         public override INotificationResult Notify(IList<INotificationResult> sources)
         {
-            if (sources.Count > 0)
+            if (sources.Count == 2)
+            {
+                //If both target and target.Vale change, only handle target.
+                if (sources[0].Source != Target)
+                    sources[0] = sources[1];
+            }
+
+            if (sources[0].Source == Target)
             {
                 var oldValue = ((ValueChangedNotificationResult<TTarget>)sources[0]).OldValue;
                 DetachPropertyChangeListener(oldValue);
                 AttachPropertyChangeListener(Target.Value);
+                return base.Notify(sources);
             }
-            return base.Notify(sources);
+            else
+            {
+                return sources[0];
+            }
         }
 
         protected override void OnAttach()
@@ -123,6 +140,7 @@ namespace NMF.Expressions
 
     internal class ObservableReversableMemberExpression<TTarget, TMember> : ObservableReversableExpression<TMember>
     {
+        private static readonly bool memberIsNotifiableCollection = typeof(TMember).GetInterface(typeof(INotifiable).Name) != null && typeof(TMember).GetInterface(typeof(INotifyCollectionChanged).Name) != null;
         private readonly IExecutionContext context;
 
         public ObservableReversableMemberExpression(MemberExpression expression, ObservableExpressionBinder binder, string name, FieldInfo field)
@@ -175,7 +193,11 @@ namespace NMF.Expressions
             get
             {
                 if (Target != null)
+                {
                     yield return Target;
+                    if (memberIsNotifiableCollection)
+                        yield return (INotifiable)GetValue();
+                }
             }
         }
 
@@ -217,13 +239,24 @@ namespace NMF.Expressions
 
         public override INotificationResult Notify(IList<INotificationResult> sources)
         {
-            if (sources.Count > 0)
+            if (sources.Count == 2)
+            {
+                //If both target and target.Vale change, only handle target.
+                if (sources[0].Source != Target)
+                    sources[0] = sources[1];
+            }
+
+            if (sources[0].Source == Target)
             {
                 var oldValue = ((ValueChangedNotificationResult<TTarget>)sources[0]).OldValue;
                 DetachPropertyChangeListener(oldValue);
                 AttachPropertyChangeListener(Target.Value);
+                return base.Notify(sources);
             }
-            return base.Notify(sources);
+            else
+            {
+                return sources[0];
+            }
         }
 
         protected override void OnAttach()
