@@ -106,7 +106,7 @@ namespace NMF.Expressions.Tests
             var first = dict.AsNotifiable("Foo");
             var second = Observable.Expression(() => dict["Foo"]);
 
-            Assert.AreSame(first, second);
+            Assert.AreEqual(first.Value, second.Value);
         }
 
         [TestMethod]

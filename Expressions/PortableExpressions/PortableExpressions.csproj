@@ -359,9 +359,6 @@
     <Compile Include="..\Expressions\ObservableUnaryExpression.cs">
       <Link>ObservableUnaryExpression.cs</Link>
     </Compile>
-    <Compile Include="..\Expressions\SuccessorList.cs">
-      <Link>SuccessorList.cs</Link>
-    </Compile>
     <Compile Include="..\Expressions\Properties\AssemblyInfo.cs">
       <Link>AssemblyInfo.cs</Link>
     </Compile>
@@ -424,6 +421,9 @@
     </Compile>
     <Compile Include="..\Expressions\Public\ShortList.cs">
       <Link>Facade\ShortList.cs</Link>
+    </Compile>
+    <Compile Include="..\Expressions\Public\SuccessorList.cs">
+      <Link>Facade\SuccessorList.cs</Link>
     </Compile>
     <Compile Include="..\Expressions\Public\ValueChangedEventArgs.cs">
       <Link>Facade\ValueChangedEventArgs.cs</Link>
