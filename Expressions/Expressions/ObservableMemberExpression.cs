@@ -12,7 +12,7 @@ namespace NMF.Expressions
 {
     internal class ObservableMemberExpression<TTarget, TMember> : NotifyExpression<TMember>
     {
-        private static readonly bool memberIsNotifiableCollection = typeof(TMember).GetInterface(typeof(INotifiable).Name) != null && typeof(TMember).GetInterface(typeof(INotifyCollectionChanged).Name) != null;
+        private static readonly bool memberIsNotifiableCollection = typeof(TMember).Implements<INotifiable>() && typeof(TMember).Implements<INotifyCollectionChanged>();
         private readonly IExecutionContext context;
 
         public ObservableMemberExpression(MemberExpression expression, ObservableExpressionBinder binder, string name, Func<TTarget, TMember> getter)
@@ -140,7 +140,7 @@ namespace NMF.Expressions
 
     internal class ObservableReversableMemberExpression<TTarget, TMember> : ObservableReversableExpression<TMember>
     {
-        private static readonly bool memberIsNotifiableCollection = typeof(TMember).GetInterface(typeof(INotifiable).Name) != null && typeof(TMember).GetInterface(typeof(INotifyCollectionChanged).Name) != null;
+        private static readonly bool memberIsNotifiableCollection = typeof(TMember).Implements<INotifiable>() && typeof(TMember).Implements<INotifyCollectionChanged>();
         private readonly IExecutionContext context;
 
         public ObservableReversableMemberExpression(MemberExpression expression, ObservableExpressionBinder binder, string name, FieldInfo field)

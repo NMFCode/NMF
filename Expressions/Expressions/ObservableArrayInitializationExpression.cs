@@ -22,7 +22,7 @@ namespace NMF.Expressions
         {
             if (expressions == null) throw new ArgumentNullException("expressions");
 
-            Expressions = expressions.AsReadOnly();
+            Expressions = new ReadOnlyCollection<INotifyExpression<T>>(expressions);
         }
 
         public override bool CanBeConstant

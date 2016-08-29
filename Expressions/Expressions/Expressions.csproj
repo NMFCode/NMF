@@ -69,7 +69,7 @@
     <Compile Include="ExpressionRewriter\SetExpressionRewriterAttribute.cs" />
     <Compile Include="ExpressionRewriter\SetExpressionRewriter.cs" />
     <Compile Include="ExpressionVisitorBase.cs" />
-    <Compile Include="IExecutionContext.cs" />
+    <Compile Include="Execution\IExecutionContext.cs" />
     <Compile Include="ObservableDeferredProxyElement.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
