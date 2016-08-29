@@ -284,8 +284,8 @@ namespace NMF.Expressions.Linq
                 {
                     if (change.Source == SubSource)
                     {
-                        var subSourceChange = (ValueChangedNotificationResult<IEnumerable<TIntermediate>>)change;
-                        DetachSubSourceValue(subSourceChange.OldValue, removed);
+                        var subSourceChange = (IValueChangedNotificationResult)change;
+                        DetachSubSourceValue((IEnumerable<TIntermediate>)subSourceChange.OldValue, removed);
                         AttachSubSourceValue();
                         added.AddRange(SL.Select(Results.Values, res => res.Value));
                     }
@@ -301,6 +301,8 @@ namespace NMF.Expressions.Linq
                         if (subSourceValueChange.IsReset)
                         {
                             DetachSubSourceValue(SubSource.Value, removed);
+                            AttachSubSourceValue();
+                            added.AddRange(SL.Select(Results.Values, res => res.Value));
                         }
                         else
                         {

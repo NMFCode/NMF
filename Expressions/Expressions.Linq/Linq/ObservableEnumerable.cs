@@ -58,10 +58,13 @@ namespace NMF.Expressions.Linq
         [DebuggerStepThrough]
         protected void OnReplaceItems(IEnumerable<T> oldItems, IEnumerable<T> newItems, int index = 0)
         {
-            OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Replace,
-                newItems as List<T> ?? newItems.ToList(),
-                oldItems as List<T> ?? oldItems.ToList(),
-                index));
+            var added = newItems as List<T> ?? newItems.ToList();
+            var removed = oldItems as List<T> ?? oldItems.ToList();
+            if (added.Count > 0 && removed.Count > 0)
+            {
+                OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Replace,
+                    added, removed, index));
+            }
         }
 
         [DebuggerStepThrough]
