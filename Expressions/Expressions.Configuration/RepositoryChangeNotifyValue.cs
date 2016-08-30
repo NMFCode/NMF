@@ -25,22 +25,24 @@ namespace NMF.Expressions
             }
         }
 
+        public override IEnumerable<INotifiable> Dependencies { get { return Enumerable.Empty<INotifiable>(); } }
+
         public override INotifyExpression<T> ApplyParameters(IDictionary<string, object> parameters)
         {
             return this;
         }
 
-        protected override void AttachCore()
+        protected override void OnAttach()
         {
             Repository.BubbledChange += Repository_BubbledChange;
         }
 
         private void Repository_BubbledChange(object sender, Models.BubbledChangeEventArgs e)
         {
-            Refresh();
+            ExecutionEngine.Current.ManualInvalidation(this);
         }
 
-        protected override void DetachCore()
+        protected override void OnDetach()
         {
             Repository.BubbledChange -= Repository_BubbledChange;
         }
@@ -94,9 +96,9 @@ namespace NMF.Expressions
             ChangeInfos = changeInfos;
         }
 
-        protected override void AttachCore()
+        protected override void OnAttach()
         {
-            base.AttachCore();
+            base.OnAttach();
             foreach (var changeInfo in ChangeInfos)
             {
                 changeInfo.ChangeCaptured += ChangeInfo_ChangeCaptured;
@@ -105,12 +107,12 @@ namespace NMF.Expressions
 
         private void ChangeInfo_ChangeCaptured(object sender, EventArgs e)
         {
-            Refresh();
+            ExecutionEngine.Current.ManualInvalidation(this);
         }
 
-        protected override void DetachCore()
+        protected override void OnDetach()
         {
-            base.DetachCore();
+            base.OnDetach();
             foreach (var changeInfo in ChangeInfos)
             {
                 changeInfo.ChangeCaptured -= ChangeInfo_ChangeCaptured;
@@ -118,18 +120,18 @@ namespace NMF.Expressions
         }
     }
 
-    internal class RepositoryAffectedDependentReversableNotofyValue<T> : RepositoryAffectedReversableNotifyValue<T>
+    internal class RepositoryAffectedDependentReversableNotifyValue<T> : RepositoryAffectedReversableNotifyValue<T>
     {
         public IEnumerable<IChangeInfo> ChangeInfos { get; private set; }
 
-        public RepositoryAffectedDependentReversableNotofyValue(IModelRepository repository, Func<T> getter, Action<T> setter, IEnumerable<IChangeInfo> changeInfos) : base(repository, getter, setter)
+        public RepositoryAffectedDependentReversableNotifyValue(IModelRepository repository, Func<T> getter, Action<T> setter, IEnumerable<IChangeInfo> changeInfos) : base(repository, getter, setter)
         {
             ChangeInfos = changeInfos;
         }
 
-        protected override void AttachCore()
+        protected override void OnAttach()
         {
-            base.AttachCore();
+            base.OnAttach();
             foreach (var changeInfo in ChangeInfos)
             {
                 changeInfo.ChangeCaptured += ChangeInfo_ChangeCaptured;
@@ -138,12 +140,12 @@ namespace NMF.Expressions
 
         private void ChangeInfo_ChangeCaptured(object sender, EventArgs e)
         {
-            Refresh();
+            ExecutionEngine.Current.ManualInvalidation(this);
         }
 
-        protected override void DetachCore()
+        protected override void OnDetach()
         {
-            base.DetachCore();
+            base.OnDetach();
             foreach (var changeInfo in ChangeInfos)
             {
                 changeInfo.ChangeCaptured -= ChangeInfo_ChangeCaptured;
