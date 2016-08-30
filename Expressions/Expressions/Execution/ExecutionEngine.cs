@@ -33,6 +33,25 @@ namespace NMF.Expressions
             TransactionActive = false;
         }
 
+        public void ManualInvalidation(params INotifiable[] nodes)
+        {
+            if (nodes.Length == 0)
+                return;
+
+            if (TransactionActive)
+                throw new InvalidOperationException("A transaction is in progress. Commit or rollback first.");
+
+            if (nodes.Length == 1)
+                ExecuteSingle(nodes[0]);
+            else
+            {
+                BeginTransaction();
+                foreach (var node in nodes)
+                    SetInvalidNode(node);
+                CommitTransaction();
+            }
+        }
+
         private void SetInvalidNode(INotifiable node)
         {
             if (TransactionActive)
