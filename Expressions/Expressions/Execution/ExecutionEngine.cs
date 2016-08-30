@@ -100,7 +100,7 @@ namespace NMF.Expressions
             {
                 PropertyChangedEventHandler handler = (obj, e) =>
                 {
-                    if (e.PropertyName == propertyName)
+                    if (e.PropertyName.Equals(propertyName, StringComparison.OrdinalIgnoreCase))
                         engine.SetInvalidNode(node);
                 };
 
