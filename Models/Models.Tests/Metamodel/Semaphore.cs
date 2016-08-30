@@ -16,6 +16,7 @@ using NMF.Models;
 using NMF.Models.Collections;
 using NMF.Models.Expressions;
 using NMF.Models.Meta;
+using NMF.Models.Repository;
 using NMF.Serialization;
 using NMF.Utilities;
 using System;
@@ -45,6 +46,8 @@ namespace NMF.Models.Tests.Railway
         /// </summary>
         private Signal _signal;
         
+        private static IClass _classInstance;
+        
         /// <summary>
         /// The signal property
         /// </summary>
@@ -60,11 +63,11 @@ namespace NMF.Models.Tests.Railway
             {
                 if ((this._signal != value))
                 {
-                    this.OnSignalChanging(EventArgs.Empty);
-                    this.OnPropertyChanging("Signal");
                     Signal old = this._signal;
-                    this._signal = value;
                     ValueChangedEventArgs e = new ValueChangedEventArgs(old, value);
+                    this.OnSignalChanging(e);
+                    this.OnPropertyChanging("Signal", e);
+                    this._signal = value;
                     this.OnSignalChanged(e);
                     this.OnPropertyChanged("Signal", e);
                 }
@@ -72,33 +75,37 @@ namespace NMF.Models.Tests.Railway
         }
         
         /// <summary>
-        /// Gets the Class element that describes the structure of this type
+        /// Gets the Class model for this type
         /// </summary>
-        public new static NMF.Models.Meta.IClass ClassInstance
+        public new static IClass ClassInstance
         {
             get
             {
-                return (IClass)NMF.Models.Repository.MetaRepository.Instance.ResolveType("http://www.semanticweb.org/ontologies/2015/ttc/trainbenchmark#//Semaphore/");
+                if ((_classInstance == null))
+                {
+                    _classInstance = ((IClass)(MetaRepository.Instance.Resolve("http://www.semanticweb.org/ontologies/2015/ttc/trainbenchmark#//Semaphore/")));
+                }
+                return _classInstance;
             }
         }
         
         /// <summary>
         /// Gets fired before the Signal property changes its value
         /// </summary>
-        public event EventHandler SignalChanging;
+        public event System.EventHandler<ValueChangedEventArgs> SignalChanging;
         
         /// <summary>
         /// Gets fired when the Signal property changed its value
         /// </summary>
-        public event EventHandler<ValueChangedEventArgs> SignalChanged;
+        public event System.EventHandler<ValueChangedEventArgs> SignalChanged;
         
         /// <summary>
         /// Raises the SignalChanging event
         /// </summary>
         /// <param name="eventArgs">The event data</param>
-        protected virtual void OnSignalChanging(EventArgs eventArgs)
+        protected virtual void OnSignalChanging(ValueChangedEventArgs eventArgs)
         {
-            EventHandler handler = this.SignalChanging;
+            System.EventHandler<ValueChangedEventArgs> handler = this.SignalChanging;
             if ((handler != null))
             {
                 handler.Invoke(this, eventArgs);
@@ -111,7 +118,7 @@ namespace NMF.Models.Tests.Railway
         /// <param name="eventArgs">The event data</param>
         protected virtual void OnSignalChanged(ValueChangedEventArgs eventArgs)
         {
-            EventHandler<ValueChangedEventArgs> handler = this.SignalChanged;
+            System.EventHandler<ValueChangedEventArgs> handler = this.SignalChanged;
             if ((handler != null))
             {
                 handler.Invoke(this, eventArgs);
@@ -153,7 +160,11 @@ namespace NMF.Models.Tests.Railway
         /// </summary>
         public override IClass GetClass()
         {
-            return ((IClass)(NMF.Models.Repository.MetaRepository.Instance.Resolve("http://www.semanticweb.org/ontologies/2015/ttc/trainbenchmark#//Semaphore/")));
+            if ((_classInstance == null))
+            {
+                _classInstance = ((IClass)(MetaRepository.Instance.Resolve("http://www.semanticweb.org/ontologies/2015/ttc/trainbenchmark#//Semaphore/")));
+            }
+            return _classInstance;
         }
         
         /// <summary>
@@ -167,7 +178,7 @@ namespace NMF.Models.Tests.Railway
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
             public SignalProxy(ISemaphore modelElement) : 
-                    base(modelElement)
+                    base(modelElement, "signal")
             {
             }
             
@@ -184,24 +195,6 @@ namespace NMF.Models.Tests.Railway
                 {
                     this.ModelElement.Signal = value;
                 }
-            }
-            
-            /// <summary>
-            /// Registers an event handler to subscribe specifically on the changed event for this property
-            /// </summary>
-            /// <param name="handler">The handler that should be subscribed to the property change event</param>
-            protected override void RegisterChangeEventHandler(System.EventHandler<NMF.Expressions.ValueChangedEventArgs> handler)
-            {
-                this.ModelElement.SignalChanged += handler;
-            }
-            
-            /// <summary>
-            /// Registers an event handler to subscribe specifically on the changed event for this property
-            /// </summary>
-            /// <param name="handler">The handler that should be unsubscribed from the property change event</param>
-            protected override void UnregisterChangeEventHandler(System.EventHandler<NMF.Expressions.ValueChangedEventArgs> handler)
-            {
-                this.ModelElement.SignalChanged -= handler;
             }
         }
     }

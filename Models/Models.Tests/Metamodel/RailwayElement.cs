@@ -16,6 +16,7 @@ using NMF.Models;
 using NMF.Models.Collections;
 using NMF.Models.Expressions;
 using NMF.Models.Meta;
+using NMF.Models.Repository;
 using NMF.Serialization;
 using NMF.Utilities;
 using System;
@@ -46,6 +47,8 @@ namespace NMF.Models.Tests.Railway
         /// </summary>
         private Nullable<int> _id;
         
+        private static IClass _classInstance;
+        
         /// <summary>
         /// The id property
         /// </summary>
@@ -62,11 +65,11 @@ namespace NMF.Models.Tests.Railway
             {
                 if ((this._id != value))
                 {
-                    this.OnIdChanging(EventArgs.Empty);
-                    this.OnPropertyChanging("Id");
                     Nullable<int> old = this._id;
-                    this._id = value;
                     ValueChangedEventArgs e = new ValueChangedEventArgs(old, value);
+                    this.OnIdChanging(e);
+                    this.OnPropertyChanging("Id", e);
+                    this._id = value;
                     this.OnIdChanged(e);
                     this.OnPropertyChanged("Id", e);
                 }
@@ -74,13 +77,17 @@ namespace NMF.Models.Tests.Railway
         }
         
         /// <summary>
-        /// Gets the Class element that describes the structure of this type
+        /// Gets the Class model for this type
         /// </summary>
-        public new static NMF.Models.Meta.IClass ClassInstance
+        public new static IClass ClassInstance
         {
             get
             {
-                return (IClass)NMF.Models.Repository.MetaRepository.Instance.ResolveType("http://www.semanticweb.org/ontologies/2015/ttc/trainbenchmark#//RailwayElement/");
+                if ((_classInstance == null))
+                {
+                    _classInstance = ((IClass)(MetaRepository.Instance.Resolve("http://www.semanticweb.org/ontologies/2015/ttc/trainbenchmark#//RailwayElement/")));
+                }
+                return _classInstance;
             }
         }
         
@@ -98,20 +105,20 @@ namespace NMF.Models.Tests.Railway
         /// <summary>
         /// Gets fired before the Id property changes its value
         /// </summary>
-        public event EventHandler IdChanging;
+        public event System.EventHandler<ValueChangedEventArgs> IdChanging;
         
         /// <summary>
         /// Gets fired when the Id property changed its value
         /// </summary>
-        public event EventHandler<ValueChangedEventArgs> IdChanged;
+        public event System.EventHandler<ValueChangedEventArgs> IdChanged;
         
         /// <summary>
         /// Raises the IdChanging event
         /// </summary>
         /// <param name="eventArgs">The event data</param>
-        protected virtual void OnIdChanging(EventArgs eventArgs)
+        protected virtual void OnIdChanging(ValueChangedEventArgs eventArgs)
         {
-            EventHandler handler = this.IdChanging;
+            System.EventHandler<ValueChangedEventArgs> handler = this.IdChanging;
             if ((handler != null))
             {
                 handler.Invoke(this, eventArgs);
@@ -124,27 +131,13 @@ namespace NMF.Models.Tests.Railway
         /// <param name="eventArgs">The event data</param>
         protected virtual void OnIdChanged(ValueChangedEventArgs eventArgs)
         {
-            PropagateNewId(eventArgs);
-            EventHandler<ValueChangedEventArgs> handler = this.IdChanged;
+            System.EventHandler<ValueChangedEventArgs> handler = this.IdChanged;
             if ((handler != null))
             {
                 handler.Invoke(this, eventArgs);
             }
         }
-
-        /// <summary>
-        /// Propagates through the composition hierarchy that an entire subtree has been added to a new model
-        /// </summary>
-        /// <param name="newModel">The new model that will host the subtree</param>
-        /// <param name="oldModel">The old model of the subtree</param>
-        /// <param name="subtreeRoot">The root element of the inserted subtree</param>
-        protected override void PropagateNewModel(Model newModel, Model oldModel, IModelElement subtreeRoot)
-        {
-            if (oldModel != null) oldModel.UnregisterId(ToIdentifierString());
-            if (newModel != null) newModel.RegisterId(ToIdentifierString(), this);
-            base.PropagateNewModel(newModel, oldModel, subtreeRoot);
-        }
-
+        
         /// <summary>
         /// Resolves the given attribute name
         /// </summary>
@@ -180,7 +173,11 @@ namespace NMF.Models.Tests.Railway
         /// </summary>
         public override IClass GetClass()
         {
-            return ((IClass)(NMF.Models.Repository.MetaRepository.Instance.Resolve("http://www.semanticweb.org/ontologies/2015/ttc/trainbenchmark#//RailwayElement/")));
+            if ((_classInstance == null))
+            {
+                _classInstance = ((IClass)(MetaRepository.Instance.Resolve("http://www.semanticweb.org/ontologies/2015/ttc/trainbenchmark#//RailwayElement/")));
+            }
+            return _classInstance;
         }
         
         /// <summary>
@@ -203,7 +200,7 @@ namespace NMF.Models.Tests.Railway
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
             public IdProxy(IRailwayElement modelElement) : 
-                    base(modelElement)
+                    base(modelElement, "id")
             {
             }
             
@@ -220,24 +217,6 @@ namespace NMF.Models.Tests.Railway
                 {
                     this.ModelElement.Id = value;
                 }
-            }
-            
-            /// <summary>
-            /// Registers an event handler to subscribe specifically on the changed event for this property
-            /// </summary>
-            /// <param name="handler">The handler that should be subscribed to the property change event</param>
-            protected override void RegisterChangeEventHandler(System.EventHandler<NMF.Expressions.ValueChangedEventArgs> handler)
-            {
-                this.ModelElement.IdChanged += handler;
-            }
-            
-            /// <summary>
-            /// Registers an event handler to subscribe specifically on the changed event for this property
-            /// </summary>
-            /// <param name="handler">The handler that should be unsubscribed from the property change event</param>
-            protected override void UnregisterChangeEventHandler(System.EventHandler<NMF.Expressions.ValueChangedEventArgs> handler)
-            {
-                this.ModelElement.IdChanged -= handler;
             }
         }
     }

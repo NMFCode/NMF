@@ -16,6 +16,7 @@ using NMF.Models;
 using NMF.Models.Collections;
 using NMF.Models.Expressions;
 using NMF.Models.Meta;
+using NMF.Models.Repository;
 using NMF.Serialization;
 using NMF.Utilities;
 using System;
@@ -45,6 +46,8 @@ namespace NMF.Models.Tests.Railway
         /// </summary>
         private int _length;
         
+        private static IClass _classInstance;
+        
         /// <summary>
         /// The length property
         /// </summary>
@@ -60,11 +63,11 @@ namespace NMF.Models.Tests.Railway
             {
                 if ((this._length != value))
                 {
-                    this.OnLengthChanging(EventArgs.Empty);
-                    this.OnPropertyChanging("Length");
                     int old = this._length;
-                    this._length = value;
                     ValueChangedEventArgs e = new ValueChangedEventArgs(old, value);
+                    this.OnLengthChanging(e);
+                    this.OnPropertyChanging("Length", e);
+                    this._length = value;
                     this.OnLengthChanged(e);
                     this.OnPropertyChanged("Length", e);
                 }
@@ -72,33 +75,37 @@ namespace NMF.Models.Tests.Railway
         }
         
         /// <summary>
-        /// Gets the Class element that describes the structure of this type
+        /// Gets the Class model for this type
         /// </summary>
-        public new static NMF.Models.Meta.IClass ClassInstance
+        public new static IClass ClassInstance
         {
             get
             {
-                return (IClass)NMF.Models.Repository.MetaRepository.Instance.ResolveType("http://www.semanticweb.org/ontologies/2015/ttc/trainbenchmark#//Segment/");
+                if ((_classInstance == null))
+                {
+                    _classInstance = ((IClass)(MetaRepository.Instance.Resolve("http://www.semanticweb.org/ontologies/2015/ttc/trainbenchmark#//Segment/")));
+                }
+                return _classInstance;
             }
         }
         
         /// <summary>
         /// Gets fired before the Length property changes its value
         /// </summary>
-        public event EventHandler LengthChanging;
+        public event System.EventHandler<ValueChangedEventArgs> LengthChanging;
         
         /// <summary>
         /// Gets fired when the Length property changed its value
         /// </summary>
-        public event EventHandler<ValueChangedEventArgs> LengthChanged;
+        public event System.EventHandler<ValueChangedEventArgs> LengthChanged;
         
         /// <summary>
         /// Raises the LengthChanging event
         /// </summary>
         /// <param name="eventArgs">The event data</param>
-        protected virtual void OnLengthChanging(EventArgs eventArgs)
+        protected virtual void OnLengthChanging(ValueChangedEventArgs eventArgs)
         {
-            EventHandler handler = this.LengthChanging;
+            System.EventHandler<ValueChangedEventArgs> handler = this.LengthChanging;
             if ((handler != null))
             {
                 handler.Invoke(this, eventArgs);
@@ -111,7 +118,7 @@ namespace NMF.Models.Tests.Railway
         /// <param name="eventArgs">The event data</param>
         protected virtual void OnLengthChanged(ValueChangedEventArgs eventArgs)
         {
-            EventHandler<ValueChangedEventArgs> handler = this.LengthChanged;
+            System.EventHandler<ValueChangedEventArgs> handler = this.LengthChanged;
             if ((handler != null))
             {
                 handler.Invoke(this, eventArgs);
@@ -153,7 +160,11 @@ namespace NMF.Models.Tests.Railway
         /// </summary>
         public override IClass GetClass()
         {
-            return ((IClass)(NMF.Models.Repository.MetaRepository.Instance.Resolve("http://www.semanticweb.org/ontologies/2015/ttc/trainbenchmark#//Segment/")));
+            if ((_classInstance == null))
+            {
+                _classInstance = ((IClass)(MetaRepository.Instance.Resolve("http://www.semanticweb.org/ontologies/2015/ttc/trainbenchmark#//Segment/")));
+            }
+            return _classInstance;
         }
         
         /// <summary>
@@ -167,7 +178,7 @@ namespace NMF.Models.Tests.Railway
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
             public LengthProxy(ISegment modelElement) : 
-                    base(modelElement)
+                    base(modelElement, "length")
             {
             }
             
@@ -184,24 +195,6 @@ namespace NMF.Models.Tests.Railway
                 {
                     this.ModelElement.Length = value;
                 }
-            }
-            
-            /// <summary>
-            /// Registers an event handler to subscribe specifically on the changed event for this property
-            /// </summary>
-            /// <param name="handler">The handler that should be subscribed to the property change event</param>
-            protected override void RegisterChangeEventHandler(System.EventHandler<NMF.Expressions.ValueChangedEventArgs> handler)
-            {
-                this.ModelElement.LengthChanged += handler;
-            }
-            
-            /// <summary>
-            /// Registers an event handler to subscribe specifically on the changed event for this property
-            /// </summary>
-            /// <param name="handler">The handler that should be unsubscribed from the property change event</param>
-            protected override void UnregisterChangeEventHandler(System.EventHandler<NMF.Expressions.ValueChangedEventArgs> handler)
-            {
-                this.ModelElement.LengthChanged -= handler;
             }
         }
     }

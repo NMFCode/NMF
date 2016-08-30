@@ -16,6 +16,7 @@ using NMF.Models;
 using NMF.Models.Collections;
 using NMF.Models.Expressions;
 using NMF.Models.Meta;
+using NMF.Models.Repository;
 using NMF.Serialization;
 using NMF.Utilities;
 using System;
@@ -50,12 +51,12 @@ namespace NMF.Models.Tests.Railway
         /// <summary>
         /// Gets fired before the Id property changes its value
         /// </summary>
-        event EventHandler IdChanging;
+        event System.EventHandler<ValueChangedEventArgs> IdChanging;
         
         /// <summary>
         /// Gets fired when the Id property changed its value
         /// </summary>
-        event EventHandler<ValueChangedEventArgs> IdChanged;
+        event System.EventHandler<ValueChangedEventArgs> IdChanged;
     }
 }
 

@@ -16,6 +16,7 @@ using NMF.Models;
 using NMF.Models.Collections;
 using NMF.Models.Expressions;
 using NMF.Models.Meta;
+using NMF.Models.Repository;
 using NMF.Serialization;
 using NMF.Utilities;
 using System;
@@ -50,6 +51,8 @@ namespace NMF.Models.Tests.Railway
         /// </summary>
         private ISwitch _switch;
         
+        private static IClass _classInstance;
+        
         /// <summary>
         /// The position property
         /// </summary>
@@ -65,11 +68,11 @@ namespace NMF.Models.Tests.Railway
             {
                 if ((this._position != value))
                 {
-                    this.OnPositionChanging(EventArgs.Empty);
-                    this.OnPropertyChanging("Position");
                     Position old = this._position;
-                    this._position = value;
                     ValueChangedEventArgs e = new ValueChangedEventArgs(old, value);
+                    this.OnPositionChanging(e);
+                    this.OnPropertyChanging("Position", e);
+                    this._position = value;
                     this.OnPositionChanged(e);
                     this.OnPropertyChanged("Position", e);
                 }
@@ -92,9 +95,10 @@ namespace NMF.Models.Tests.Railway
             {
                 if ((this._switch != value))
                 {
-                    this.OnSwitchChanging(EventArgs.Empty);
-                    this.OnPropertyChanging("Switch");
                     ISwitch old = this._switch;
+                    ValueChangedEventArgs e = new ValueChangedEventArgs(old, value);
+                    this.OnSwitchChanging(e);
+                    this.OnPropertyChanging("Switch", e);
                     this._switch = value;
                     if ((old != null))
                     {
@@ -109,7 +113,6 @@ namespace NMF.Models.Tests.Railway
                         }
                         value.Deleted += this.OnResetSwitch;
                     }
-                    ValueChangedEventArgs e = new ValueChangedEventArgs(old, value);
                     this.OnSwitchChanged(e);
                     this.OnPropertyChanged("Switch", e);
                 }
@@ -147,48 +150,57 @@ namespace NMF.Models.Tests.Railway
         }
         
         /// <summary>
-        /// Gets the Class element that describes the structure of this type
+        /// Gets the Class model for this type
         /// </summary>
-        public new static NMF.Models.Meta.IClass ClassInstance
+        public new static IClass ClassInstance
         {
             get
             {
-                return (IClass)NMF.Models.Repository.MetaRepository.Instance.ResolveType("http://www.semanticweb.org/ontologies/2015/ttc/trainbenchmark#//SwitchPosition/");
+                if ((_classInstance == null))
+                {
+                    _classInstance = ((IClass)(MetaRepository.Instance.Resolve("http://www.semanticweb.org/ontologies/2015/ttc/trainbenchmark#//SwitchPosition/")));
+                }
+                return _classInstance;
             }
         }
         
         /// <summary>
         /// Gets fired before the Position property changes its value
         /// </summary>
-        public event EventHandler PositionChanging;
+        public event System.EventHandler<ValueChangedEventArgs> PositionChanging;
         
         /// <summary>
         /// Gets fired when the Position property changed its value
         /// </summary>
-        public event EventHandler<ValueChangedEventArgs> PositionChanged;
+        public event System.EventHandler<ValueChangedEventArgs> PositionChanged;
         
         /// <summary>
         /// Gets fired before the Switch property changes its value
         /// </summary>
-        public event EventHandler SwitchChanging;
+        public event System.EventHandler<ValueChangedEventArgs> SwitchChanging;
         
         /// <summary>
         /// Gets fired when the Switch property changed its value
         /// </summary>
-        public event EventHandler<ValueChangedEventArgs> SwitchChanged;
+        public event System.EventHandler<ValueChangedEventArgs> SwitchChanged;
+        
+        /// <summary>
+        /// Gets fired before the Route property changes its value
+        /// </summary>
+        public event System.EventHandler<ValueChangedEventArgs> RouteChanging;
         
         /// <summary>
         /// Gets fired when the Route property changed its value
         /// </summary>
-        public event EventHandler<ValueChangedEventArgs> RouteChanged;
+        public event System.EventHandler<ValueChangedEventArgs> RouteChanged;
         
         /// <summary>
         /// Raises the PositionChanging event
         /// </summary>
         /// <param name="eventArgs">The event data</param>
-        protected virtual void OnPositionChanging(EventArgs eventArgs)
+        protected virtual void OnPositionChanging(ValueChangedEventArgs eventArgs)
         {
-            EventHandler handler = this.PositionChanging;
+            System.EventHandler<ValueChangedEventArgs> handler = this.PositionChanging;
             if ((handler != null))
             {
                 handler.Invoke(this, eventArgs);
@@ -201,7 +213,7 @@ namespace NMF.Models.Tests.Railway
         /// <param name="eventArgs">The event data</param>
         protected virtual void OnPositionChanged(ValueChangedEventArgs eventArgs)
         {
-            EventHandler<ValueChangedEventArgs> handler = this.PositionChanged;
+            System.EventHandler<ValueChangedEventArgs> handler = this.PositionChanged;
             if ((handler != null))
             {
                 handler.Invoke(this, eventArgs);
@@ -212,9 +224,9 @@ namespace NMF.Models.Tests.Railway
         /// Raises the SwitchChanging event
         /// </summary>
         /// <param name="eventArgs">The event data</param>
-        protected virtual void OnSwitchChanging(EventArgs eventArgs)
+        protected virtual void OnSwitchChanging(ValueChangedEventArgs eventArgs)
         {
-            EventHandler handler = this.SwitchChanging;
+            System.EventHandler<ValueChangedEventArgs> handler = this.SwitchChanging;
             if ((handler != null))
             {
                 handler.Invoke(this, eventArgs);
@@ -227,7 +239,7 @@ namespace NMF.Models.Tests.Railway
         /// <param name="eventArgs">The event data</param>
         protected virtual void OnSwitchChanged(ValueChangedEventArgs eventArgs)
         {
-            EventHandler<ValueChangedEventArgs> handler = this.SwitchChanged;
+            System.EventHandler<ValueChangedEventArgs> handler = this.SwitchChanged;
             if ((handler != null))
             {
                 handler.Invoke(this, eventArgs);
@@ -239,9 +251,36 @@ namespace NMF.Models.Tests.Railway
         /// </summary>
         /// <param name="sender">The object that sent this reset request</param>
         /// <param name="eventArgs">The event data for the reset event</param>
-        private void OnResetSwitch(object sender, EventArgs eventArgs)
+        private void OnResetSwitch(object sender, System.EventArgs eventArgs)
         {
             this.Switch = null;
+        }
+        
+        /// <summary>
+        /// Raises the RouteChanging event
+        /// </summary>
+        /// <param name="eventArgs">The event data</param>
+        protected virtual void OnRouteChanging(ValueChangedEventArgs eventArgs)
+        {
+            System.EventHandler<ValueChangedEventArgs> handler = this.RouteChanging;
+            if ((handler != null))
+            {
+                handler.Invoke(this, eventArgs);
+            }
+        }
+        
+        /// <summary>
+        /// Gets called when the parent model element of the current model element is about to change
+        /// </summary>
+        /// <param name="oldParent">The old parent model element</param>
+        /// <param name="newParent">The new parent model element</param>
+        protected override void OnParentChanging(IModelElement newParent, IModelElement oldParent)
+        {
+            IRoute oldRoute = ModelHelper.CastAs<IRoute>(oldParent);
+            IRoute newRoute = ModelHelper.CastAs<IRoute>(newParent);
+            ValueChangedEventArgs e = new ValueChangedEventArgs(oldRoute, newRoute);
+            this.OnRouteChanging(e);
+            this.OnPropertyChanging("Route");
         }
         
         /// <summary>
@@ -250,7 +289,7 @@ namespace NMF.Models.Tests.Railway
         /// <param name="eventArgs">The event data</param>
         protected virtual void OnRouteChanged(ValueChangedEventArgs eventArgs)
         {
-            EventHandler<ValueChangedEventArgs> handler = this.RouteChanged;
+            System.EventHandler<ValueChangedEventArgs> handler = this.RouteChanged;
             if ((handler != null))
             {
                 handler.Invoke(this, eventArgs);
@@ -277,6 +316,7 @@ namespace NMF.Models.Tests.Railway
             ValueChangedEventArgs e = new ValueChangedEventArgs(oldRoute, newRoute);
             this.OnRouteChanged(e);
             this.OnPropertyChanged("Route", e);
+            base.OnParentChanged(newParent, oldParent);
         }
         
         /// <summary>
@@ -360,7 +400,11 @@ namespace NMF.Models.Tests.Railway
         /// </summary>
         public override IClass GetClass()
         {
-            return ((IClass)(NMF.Models.Repository.MetaRepository.Instance.Resolve("http://www.semanticweb.org/ontologies/2015/ttc/trainbenchmark#//SwitchPosition/")));
+            if ((_classInstance == null))
+            {
+                _classInstance = ((IClass)(MetaRepository.Instance.Resolve("http://www.semanticweb.org/ontologies/2015/ttc/trainbenchmark#//SwitchPosition/")));
+            }
+            return _classInstance;
         }
         
         /// <summary>
@@ -524,7 +568,7 @@ namespace NMF.Models.Tests.Railway
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
             public PositionProxy(ISwitchPosition modelElement) : 
-                    base(modelElement)
+                    base(modelElement, "position")
             {
             }
             
@@ -542,24 +586,6 @@ namespace NMF.Models.Tests.Railway
                     this.ModelElement.Position = value;
                 }
             }
-            
-            /// <summary>
-            /// Registers an event handler to subscribe specifically on the changed event for this property
-            /// </summary>
-            /// <param name="handler">The handler that should be subscribed to the property change event</param>
-            protected override void RegisterChangeEventHandler(System.EventHandler<NMF.Expressions.ValueChangedEventArgs> handler)
-            {
-                this.ModelElement.PositionChanged += handler;
-            }
-            
-            /// <summary>
-            /// Registers an event handler to subscribe specifically on the changed event for this property
-            /// </summary>
-            /// <param name="handler">The handler that should be unsubscribed from the property change event</param>
-            protected override void UnregisterChangeEventHandler(System.EventHandler<NMF.Expressions.ValueChangedEventArgs> handler)
-            {
-                this.ModelElement.PositionChanged -= handler;
-            }
         }
         
         /// <summary>
@@ -573,7 +599,7 @@ namespace NMF.Models.Tests.Railway
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
             public SwitchProxy(ISwitchPosition modelElement) : 
-                    base(modelElement)
+                    base(modelElement, "switch")
             {
             }
             
@@ -591,24 +617,6 @@ namespace NMF.Models.Tests.Railway
                     this.ModelElement.Switch = value;
                 }
             }
-            
-            /// <summary>
-            /// Registers an event handler to subscribe specifically on the changed event for this property
-            /// </summary>
-            /// <param name="handler">The handler that should be subscribed to the property change event</param>
-            protected override void RegisterChangeEventHandler(System.EventHandler<NMF.Expressions.ValueChangedEventArgs> handler)
-            {
-                this.ModelElement.SwitchChanged += handler;
-            }
-            
-            /// <summary>
-            /// Registers an event handler to subscribe specifically on the changed event for this property
-            /// </summary>
-            /// <param name="handler">The handler that should be unsubscribed from the property change event</param>
-            protected override void UnregisterChangeEventHandler(System.EventHandler<NMF.Expressions.ValueChangedEventArgs> handler)
-            {
-                this.ModelElement.SwitchChanged -= handler;
-            }
         }
         
         /// <summary>
@@ -622,7 +630,7 @@ namespace NMF.Models.Tests.Railway
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
             public RouteProxy(ISwitchPosition modelElement) : 
-                    base(modelElement)
+                    base(modelElement, "route")
             {
             }
             
@@ -639,24 +647,6 @@ namespace NMF.Models.Tests.Railway
                 {
                     this.ModelElement.Route = value;
                 }
-            }
-            
-            /// <summary>
-            /// Registers an event handler to subscribe specifically on the changed event for this property
-            /// </summary>
-            /// <param name="handler">The handler that should be subscribed to the property change event</param>
-            protected override void RegisterChangeEventHandler(System.EventHandler<NMF.Expressions.ValueChangedEventArgs> handler)
-            {
-                this.ModelElement.RouteChanged += handler;
-            }
-            
-            /// <summary>
-            /// Registers an event handler to subscribe specifically on the changed event for this property
-            /// </summary>
-            /// <param name="handler">The handler that should be unsubscribed from the property change event</param>
-            protected override void UnregisterChangeEventHandler(System.EventHandler<NMF.Expressions.ValueChangedEventArgs> handler)
-            {
-                this.ModelElement.RouteChanged -= handler;
             }
         }
     }
