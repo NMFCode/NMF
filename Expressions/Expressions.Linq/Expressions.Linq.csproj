@@ -63,7 +63,6 @@
     <Compile Include="Facade\NotifyCollection.cs" />
     <Compile Include="Facade\ObservableExtensions.cs" />
     <Compile Include="Facade\OrderableList.cs" />
-    <Compile Include="Linq\CollectionChangedNotificationResult.cs" />
     <Compile Include="Linq\Multiplicity.cs" />
     <Compile Include="Linq\ObservableAggregate.cs" />
     <Compile Include="Linq\ObservableAll.cs" />

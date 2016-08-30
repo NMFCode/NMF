@@ -4,9 +4,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace NMF.Expressions.Linq
+namespace NMF.Expressions
 {
-    internal interface ICollectionChangedNotificationResult : INotificationResult
+    public interface ICollectionChangedNotificationResult : INotificationResult
     {
         bool IsReset { get; }
 
@@ -21,7 +21,7 @@ namespace NMF.Expressions.Linq
         IList ReplaceRemovedItems { get; }
     }
 
-    internal class CollectionChangedNotificationResult<T> : ICollectionChangedNotificationResult
+    public class CollectionChangedNotificationResult<T> : ICollectionChangedNotificationResult
     {
         public bool Changed { get { return true; } }
 

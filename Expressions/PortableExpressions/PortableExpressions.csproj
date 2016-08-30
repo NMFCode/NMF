@@ -104,9 +104,6 @@
     <Compile Include="..\Expressions.Linq\Facade\OrderableList.cs">
       <Link>Facade\OrderableList.cs</Link>
     </Compile>
-    <Compile Include="..\Expressions.Linq\Linq\CollectionChangedNotificationResult.cs">
-      <Link>Linq\CollectionChangedNotificationResult.cs</Link>
-    </Compile>
     <Compile Include="..\Expressions.Linq\Linq\Multiplicity.cs">
       <Link>Linq\Multiplicity.cs</Link>
     </Compile>
@@ -427,6 +424,9 @@
     </Compile>
     <Compile Include="..\Expressions\Public\ValueChangedEventArgs.cs">
       <Link>Facade\ValueChangedEventArgs.cs</Link>
+    </Compile>
+    <Compile Include="..\Expressions\Execution\CollectionChangedNotificationResult.cs">
+      <Link>Execution\CollectionChangedNotificationResult.cs</Link>
     </Compile>
     <Compile Include="..\Expressions\Execution\ExecutionEngine.cs">
       <Link>Execution\ExecutionEngine.cs</Link>
