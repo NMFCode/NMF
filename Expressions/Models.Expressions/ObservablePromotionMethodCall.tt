@@ -28,29 +28,27 @@ namespace NMF.Expressions
         {
 <# for (int j = 1; j <= i; j++) { #>
             Arg<#= j #>Properties = arg<#= j #>Properties;
-			Arg<#= j #>Composition = arg<#= j #>Composition;
+            Arg<#= j #>Composition = arg<#= j #>Composition;
 <# } #>
         }
 
-        protected override void AttachCore()
+        protected override void OnAttach()
         {
 <# for (int j = 1; j <= i; j++) { #>
-            Argument<#= j #>.Attach();
-            Argument<#= j #>.ValueChanged += Argument<#= j #>Changed;
             if (Arg<#= j #>Properties != null)
             {
-			    if (isT<#= j #>Collection)
-				{
-				    throw new NotImplementedException();
-				}
-				else
-				{
+                if (isT<#= j #>Collection)
+                {
+                    throw new NotImplementedException();
+                }
+                else
+                {
                     RegisterArg<#= j #>BubbledChange((IModelElement)Argument<#= j #>.Value);
-				}
+                }
             }
 <# } #>
         }
-		
+        
 <# for (int j = 1; j <= i; j++) { #>
         private void RegisterArg<#= j #>BubbledChange(IModelElement arg<#= j #>)
         {
@@ -84,59 +82,34 @@ namespace NMF.Expressions
 
         private void Arg<#= j #>BubbledChange(object sender, BubbledChangeEventArgs e)
         {
-            if (IsAttached && Arg<#= j #>Properties.Contains(e.PropertyName))
+            if (Successors.Count > 0 && Arg<#= j #>Properties.Contains(e.PropertyName))
             {
-                Refresh();
+                ExecutionEngine.Current.ManualInvalidation(this);
             }
         }
 
         private void Arg<#= j #>PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (IsAttached && Arg<#= j #>Properties.Contains(e.PropertyName))
+            if (Successors.Count > 0 && Arg<#= j #>Properties.Contains(e.PropertyName))
             {
-                Refresh();
-            }
-        }
-
-        private void Argument<#= j #>Changed(object sender, ValueChangedEventArgs e)
-        {
-            if (Arg<#= j #>Properties != null && IsAttached)
-            {
-                var oldValue = e.OldValue as IModelElement;
-                var newValue = e.NewValue as IModelElement;
-			    if (isT<#= j #>Collection)
-				{
-				    throw new NotImplementedException();
-				}
-				else
-				{
-                    UnregisterArg<#= j #>BubbledChange(oldValue);
-                    Refresh();
-                    RegisterArg<#= j #>BubbledChange((IModelElement)Argument<#= j #>.Value);
-				}
-            }
-            else
-            {
-                Refresh();
+                ExecutionEngine.Current.ManualInvalidation(this);
             }
         }
 <# } #>
 
-        protected override void DetachCore()
+        protected override void OnDetach()
         {
 <# for (int j = 1; j <= i; j++) { #>
-            Argument<#= j #>.Detach();
-            Argument<#= j #>.ValueChanged -= Argument<#= j #>Changed;
             if (Arg<#= j #>Properties != null)
             {
-			    if (isT<#= j #>Collection)
-				{
-				    throw new NotImplementedException();
-				}
-				else
-				{
+                if (isT<#= j #>Collection)
+                {
+                    throw new NotImplementedException();
+                }
+                else
+                {
                     UnregisterArg<#= j #>BubbledChange((IModelElement)Argument<#= j #>.Value);
-				}
+                }
             }
 <# } #>
         }
@@ -144,6 +117,29 @@ namespace NMF.Expressions
         public override INotifyExpression<TResult> ApplyParameters(IDictionary<string, object> parameters)
         {
             return new ObservablePromotionMethodCall<<# for (int j = 1; j <= i; j++) { #>T<#= j #>, <# } #>TResult>(Function<# for (int j = 1; j <= i; j++) { #>, Argument<#= j #>.ApplyParameters(parameters), Arg<#= j #>Properties, Arg<#= j #>Composition<# } #>);
+        }
+
+        public override INotificationResult Notify(IList<INotificationResult> sources)
+        {
+            foreach (IValueChangedNotificationResult change in sources)
+            {
+<# for (int j = 1; j <= i; j++) { #>
+                if (change.Source == Argument<#= j #>)
+                {
+                    if (isT<#= j #>Collection)
+                    {
+                        throw new NotImplementedException();
+                    }
+                    else
+                    {
+                        UnregisterArg<#= j #>BubbledChange((IModelElement)change.OldValue);
+                        RegisterArg<#= j #>BubbledChange((IModelElement)Argument<#= j #>.Value);
+                    }
+                }
+<# } #>
+            }
+
+            return base.Notify(sources);
         }
     }
 <# } #>
