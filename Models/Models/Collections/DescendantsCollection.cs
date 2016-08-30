@@ -10,20 +10,27 @@ namespace NMF.Models.Collections
 {
     public class DescendantsCollection : IEnumerableExpression<IModelElement>, INotifyEnumerable<IModelElement>
     {
+        private readonly SuccessorList successors = new SuccessorList();
         public IModelElement Element { get; private set; }
 
         private INotifyEnumerable<IModelElement> childrenCollection;
         private Dictionary<IModelElement, INotifyEnumerable<IModelElement>> childCollections;
-        private int attachedCount = 0;
 
         public DescendantsCollection(IModelElement element)
         {
             this.Element = element;
+
+            successors.CollectionChanged += (obj, e) =>
+            {
+                if (successors.Count == 0)
+                    Detach();
+                else if (e.Action == NotifyCollectionChangedAction.Add && successors.Count == 1)
+                    Attach();
+            };
         }
 
         public INotifyEnumerable<IModelElement> AsNotifiable()
         {
-            Attach();
             return this;
         }
 
@@ -52,24 +59,19 @@ namespace NMF.Models.Collections
 
         public void Attach()
         {
-            attachedCount++;
-            if (attachedCount == 1)
-            {
-                AttachCore();
-            }
+            foreach (var dep in Dependencies)
+                dep.Successors.Add(this);
+            OnAttach();
         }
 
-        protected void AttachCore()
+        protected void OnAttach()
         {
             if (childrenCollection == null)
             {
                 childrenCollection = Element.Children.AsNotifiable();
             }
-            else
-            {
-                childrenCollection.Attach();
-            }
-            childrenCollection.CollectionChanged += ChildrenChanged;
+            childrenCollection.Successors.Add(this);
+
             if (childCollections == null)
             {
                 childCollections = new Dictionary<IModelElement, INotifyEnumerable<IModelElement>>();
@@ -77,87 +79,106 @@ namespace NMF.Models.Collections
             foreach (var child in childrenCollection)
             {
                 var descendants = child.Descendants().AsNotifiable();
-                descendants.CollectionChanged += PropagateChildChanges;
+                descendants.Successors.Add(this);
                 childCollections.Add(child, descendants);
             }
         }
 
-        private void ChildrenChanged(object sender, NotifyCollectionChangedEventArgs e)
+        public void Detach()
         {
-            if (e.Action == NotifyCollectionChangedAction.Reset)
+            OnDetach();
+            foreach (var dep in Dependencies)
+                dep.Successors.Remove(this);
+        }
+
+        protected void OnDetach()
+        {
+            foreach (var child in childCollections.Values)
             {
-                OnCollectionChanged(e);
+                child.Successors.Remove(this);
             }
-            else
+            childCollections.Clear();
+            childrenCollection.Successors.Remove(this);
+        }
+
+        public event NotifyCollectionChangedEventHandler CollectionChanged;
+
+        public IList<INotifiable> Successors { get { return successors; } }
+
+        public IEnumerable<INotifiable> Dependencies
+        {
+            get
             {
-                if (e.NewItems != null)
+                if (childrenCollection != null)
+                    yield return childrenCollection;
+                if (childCollections != null)
+                    foreach (var child in childCollections.Values)
+                        yield return child;
+            }
+        }
+
+        public ExecutionMetaData ExecutionMetaData { get; } = new ExecutionMetaData();
+
+        protected virtual void OnCollectionChanged(NotifyCollectionChangedEventArgs e)
+        {
+            if (CollectionChanged != null)
+                CollectionChanged(this, e);
+        }
+
+        public void Dispose()
+        {
+            Detach();
+        }
+
+        public INotificationResult Notify(IList<INotificationResult> sources)
+        {
+            var added = new List<IModelElement>();
+            var removed = new List<IModelElement>();
+
+            foreach (CollectionChangedNotificationResult<IModelElement> change in sources)
+            {
+                if (change.IsReset)
+                    return new CollectionChangedNotificationResult<IModelElement>(this);
+
+                if (change.Source == childrenCollection)
                 {
-                    var added = new List<IModelElement>();
-                    foreach (IModelElement child in e.NewItems)
-                    {
-                        added.Add(child);
-                        var descendants = child.Descendants().AsNotifiable();
-                        added.AddRange(descendants);
-                        childCollections.Add(child, descendants);
-                    }
-                    OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, added));
-                }
-                if (e.OldItems != null)
-                {
-                    var removed = new List<IModelElement>();
-                    foreach (IModelElement child in e.OldItems)
+                    foreach (var child in change.AllRemovedItems)
                     {
                         INotifyEnumerable<IModelElement> descendants;
                         if (child != null && childCollections.TryGetValue(child, out descendants))
                         {
                             removed.Add(child);
                             removed.AddRange(descendants);
+                            descendants.Successors.Remove(this);
                             childCollections.Remove(child);
                         }
                     }
-                    OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Remove, removed));
+                    
+                    foreach (var child in change.AllAddedItems)
+                    {
+                        added.Add(child);
+                        var descendants = child.Descendants().AsNotifiable();
+                        descendants.Successors.Add(this);
+                        added.AddRange(descendants);
+                        childCollections.Add(child, descendants);
+                    }
+                }
+                else
+                {
+                    removed.AddRange(change.AllRemovedItems);
+                    added.AddRange(change.AllAddedItems);
                 }
             }
-        }
 
-        private void PropagateChildChanges(object sender, NotifyCollectionChangedEventArgs e)
-        {
-            OnCollectionChanged(e);
-        }
+            if (added.Count == 0 && removed.Count == 0)
+                return new UnchangedNotificationResult(this);
 
-        public void Detach()
-        {
-            attachedCount--;
-            if (attachedCount == 0)
-            {
-                DetachCore();
-            }
-        }
+            if (removed.Count > 0)
+                OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Remove, removed));
+            if (added.Count > 0)
+                OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, added));
 
-        protected void DetachCore()
-        {
-            foreach (var child in childCollections.Values)
-            {
-                child.CollectionChanged -= PropagateChildChanges;
-            }
-            childCollections.Clear();
-            childrenCollection.CollectionChanged -= ChildrenChanged;
+            return new CollectionChangedNotificationResult<IModelElement>(this, added, removed);
         }
-
-        public bool IsAttached
-        {
-            get { return attachedCount > 0; }
-        }
-
-        protected virtual void OnCollectionChanged(NotifyCollectionChangedEventArgs e)
-        {
-            var handler = CollectionChanged;
-            if (handler != null)
-            {
-                handler(this, e);
-            }
-        }
-
-        public event NotifyCollectionChangedEventHandler CollectionChanged;
     }
 }

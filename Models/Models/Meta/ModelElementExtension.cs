@@ -36,7 +36,7 @@ namespace NMF.Models.Meta
     [XmlNamespaceAttribute("http://nmf.codeplex.com/nmeta/")]
     [XmlNamespacePrefixAttribute("nmeta")]
     [ModelRepresentationClassAttribute("http://nmf.codeplex.com/nmeta/#//ModelElementExtension/")]
-    public abstract class ModelElementExtension : NMF.Models.ModelElement, IModelElementExtension, IModelElement
+    public abstract class ModelElementExtension : ModelElement, IModelElementExtension, IModelElement
     {
         
         private static IClass _classInstance;
@@ -160,6 +160,7 @@ namespace NMF.Models.Meta
             ValueChangedEventArgs e = new ValueChangedEventArgs(oldExtendedElement, newExtendedElement);
             this.OnExtendedElementChanged(e);
             this.OnPropertyChanged("ExtendedElement", e);
+            base.OnParentChanged(newParent, oldParent);
         }
         
         /// <summary>
@@ -348,7 +349,7 @@ namespace NMF.Models.Meta
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
             public ExtendedElementProxy(IModelElementExtension modelElement) : 
-                    base(modelElement)
+                    base(modelElement, "ExtendedElement")
             {
             }
             
@@ -365,24 +366,6 @@ namespace NMF.Models.Meta
                 {
                     this.ModelElement.ExtendedElement = value;
                 }
-            }
-            
-            /// <summary>
-            /// Registers an event handler to subscribe specifically on the changed event for this property
-            /// </summary>
-            /// <param name="handler">The handler that should be subscribed to the property change event</param>
-            protected override void RegisterChangeEventHandler(System.EventHandler<NMF.Expressions.ValueChangedEventArgs> handler)
-            {
-                this.ModelElement.ExtendedElementChanged += handler;
-            }
-            
-            /// <summary>
-            /// Registers an event handler to subscribe specifically on the changed event for this property
-            /// </summary>
-            /// <param name="handler">The handler that should be unsubscribed from the property change event</param>
-            protected override void UnregisterChangeEventHandler(System.EventHandler<NMF.Expressions.ValueChangedEventArgs> handler)
-            {
-                this.ModelElement.ExtendedElementChanged -= handler;
             }
         }
     }

@@ -9,3 +9,4 @@ using System.Runtime.CompilerServices;
 [assembly: InternalsVisibleTo("NMF.Expressions.Linq")]
 [assembly: InternalsVisibleTo("NMF.Expressions.Utilities")]
 [assembly: InternalsVisibleTo("NMF.Expressions.Models")]
+[assembly: InternalsVisibleTo("NMF.Models")]

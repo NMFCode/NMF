@@ -1,4 +1,5 @@
 ﻿using NMF.Expressions;
+using NMF.Expressions.Linq;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -8,10 +9,8 @@ using System.Text;
 
 namespace NMF.Models.Collections
 {
-    public abstract class ReferenceCollection : ICollectionExpression<IModelElement>, INotifyCollection<IModelElement>
+    public abstract class ReferenceCollection : ICollectionExpression<IModelElement>, INotifyCollectionChanged, IDisposable
     {
-        private int attachedCount = 0;
-
         public abstract IEnumerator<IModelElement> GetEnumerator();
 
         IEnumerator IEnumerable.GetEnumerator()
@@ -19,31 +18,9 @@ namespace NMF.Models.Collections
             return GetEnumerator();
         }
 
-        public void Attach()
-        {
-            attachedCount++;
-            if (attachedCount == 1)
-            {
-                AttachCore();
-            }
-        }
-
-        public void Detach()
-        {
-            attachedCount--;
-            if (attachedCount == 0)
-            {
-                DetachCore();
-            }
-        }
-
         protected abstract void AttachCore();
-        protected abstract void DetachCore();
 
-        public bool IsAttached
-        {
-            get { return attachedCount > 0; }
-        }
+        protected abstract void DetachCore();
 
         public event NotifyCollectionChangedEventHandler CollectionChanged;
 
@@ -69,17 +46,18 @@ namespace NMF.Models.Collections
 
         public INotifyCollection<IModelElement> AsNotifiable()
         {
-            return this;
+            AttachCore();
+            return this.WithUpdates();
         }
 
         INotifyEnumerable<IModelElement> IEnumerableExpression<IModelElement>.AsNotifiable()
         {
-            return this;
+            return AsNotifiable();
         }
 
         INotifyEnumerable IEnumerableExpression.AsNotifiable()
         {
-            return this;
+            return AsNotifiable();
         }
 
         protected void PropagateCollectionChanges(object sender, NotifyCollectionChangedEventArgs e)
@@ -116,6 +94,11 @@ namespace NMF.Models.Collections
             {
                 handler(this, e);
             }
+        }
+
+        public void Dispose()
+        {
+            DetachCore();
         }
     }
 }
