@@ -14,7 +14,7 @@ using NMF.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.Web;
 using System.Collections;
-using NMF.Models.Meta;
+using NMF.Models.Collections;
 
 namespace NMF.Models
 {
@@ -291,6 +291,17 @@ namespace NMF.Models
         }
 
 
+        internal DescendantsCollection Descendants
+        {
+            get
+            {
+                if (descendants == null)
+                    descendants = new DescendantsCollection(this);
+                return descendants;
+            }
+        }
+
+
         /// <summary>
         /// Gets the relative Uri for the current model element
         /// </summary>
@@ -324,8 +335,8 @@ namespace NMF.Models
         {
             var parent = Parent as ModelElement;
             if (parent == null) return null;
-            Uri result = null;
             string path = parent.GetRelativePathForChild(this);
+            Uri result = null;
             if (path != null)
             {
                 if (fragment != null)

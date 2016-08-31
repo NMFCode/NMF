@@ -597,6 +597,37 @@ namespace NMF.Utilities
             if (items.Count > counter) return false;
             return items.Distinct().Count() == counter;
         }
+
+        /// <summary>
+        /// Flattens a tree structure by recursively projecting all elements to a collection of children.
+        /// </summary>
+        /// <typeparam name="T">The type of the elements</typeparam>
+        /// <param name="root">The root of the tree</param>
+        /// <param name="childSelector">A function which selects the children for an element</param>
+        /// <returns></returns>
+        public static IEnumerable<T> SelectRecursive<T>(T root, Func<T, IEnumerable<T>> childSelector)
+        {
+            return SelectRecursive(childSelector(root), childSelector);
+        }
+
+        /// <summary>
+        /// Flattens a tree structure by recursively projecting all elements to a collection of children.
+        /// </summary>
+        /// <typeparam name="T">The type of the elements</typeparam>
+        /// <param name="collection">The root elements to start with</param>
+        /// <param name="childSelector">A function which selects the children for an element</param>
+        /// <returns></returns>
+        public static IEnumerable<T> SelectRecursive<T>(this IEnumerable<T> collection, Func<T, IEnumerable<T>> childSelector)
+        {
+            var stack = new Stack<T>(collection);
+            while (stack.Count > 0)
+            {
+                var current = stack.Pop();
+                foreach (var child in childSelector(current))
+                    stack.Push(child);
+                yield return current;
+            }
+        }
     }
 
     /// <summary>

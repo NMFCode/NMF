@@ -1,4 +1,5 @@
 ﻿using NMF.Expressions;
+using NMF.Utilities;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -36,14 +37,7 @@ namespace NMF.Models.Collections
 
         public IEnumerator<IModelElement> GetEnumerator()
         {
-            foreach (var item in Element.Children)
-            {
-                yield return item;
-                foreach (var child in item.Descendants())
-                {
-                    yield return child;
-                }
-            }
+            return Element.Children.SelectRecursive(e => e.Children).GetEnumerator();
         }
 
         IEnumerator IEnumerable.GetEnumerator()
