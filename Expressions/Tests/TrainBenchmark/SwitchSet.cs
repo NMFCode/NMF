@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 using NMF.Expressions;
 using NMF.Models;
 
-namespace EngineBenchmark
+namespace TrainBenchmark
 {
     public class SwitchSet : TrainCase<SwitchPosition, Switch>
     {

@@ -128,7 +128,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Incerator", "Tools\Incerato
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Analysis", "Analysis\Analysis\Analysis.csproj", "{09761C44-D1F2-4DB7-B33C-FCDBF260388C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EngineBenchmark", "EngineBenchmark\EngineBenchmark.csproj", "{32068384-1495-4002-9F26-CCFF63405B92}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TrainBenchmark", "Expressions\Tests\TrainBenchmark\TrainBenchmark.csproj", "{32068384-1495-4002-9F26-CCFF63405B92}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
