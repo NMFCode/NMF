@@ -205,6 +205,8 @@ namespace NMF.Expressions
         {
             if (Target != null)
             {
+                if (Target.Value == null)
+                    return default(TMember);
                 return MemberGet(Target.Value);
             }
             else
@@ -246,7 +248,7 @@ namespace NMF.Expressions
                 {
                     if (change.Source == Target)
                     {
-                        var oldValue = ((ValueChangedNotificationResult<TTarget>)sources[0]).OldValue;
+                        var oldValue = ((IValueChangedNotificationResult)change).OldValue;
                         DetachPropertyChangeListener(oldValue);
                         AttachPropertyChangeListener(Target.Value);
                         return base.Notify(sources);
