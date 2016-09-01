@@ -10,7 +10,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace EngineBenchmark
+namespace TrainBenchmark
 {
     class Program
     {
@@ -62,34 +62,6 @@ namespace EngineBenchmark
         public int Next(int exclusiveUpperBound)
         {
             return Next() % exclusiveUpperBound;
-        }
-    }
-
-    public class Dummy<T> : INotifyPropertyChanged
-    {
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        private T item;
-        public T Item
-        {
-            get
-            {
-                return item;
-            }
-            set
-            {
-                if (!item.Equals(value))
-                {
-                    item = value;
-                    if (PropertyChanged != null)
-                        PropertyChanged(this, new PropertyChangedEventArgs("Item"));
-                }
-            }
-        }
-
-        public Dummy(T item)
-        {
-            this.item = item;
         }
     }
 }

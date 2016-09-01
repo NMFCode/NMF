@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using NMF.Expressions;
 using NMF.Expressions.Linq;
 
-namespace EngineBenchmark
+namespace TrainBenchmark
 {
     public class SemaphoreNeighbor : TrainCase<Tuple<IRoute, IRoute>, IRoute>
     {

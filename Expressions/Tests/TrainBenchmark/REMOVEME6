@@ -10,7 +10,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace EngineBenchmark
+namespace TrainBenchmark
 {
     public abstract class TrainCase<TResult, TInject>
     {
