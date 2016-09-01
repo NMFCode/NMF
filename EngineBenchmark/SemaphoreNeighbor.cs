@@ -24,8 +24,8 @@ namespace EngineBenchmark
         public override Action<Tuple<IRoute, IRoute>> Repair =>
             match => match.Item1.Entry = match.Item2.Exit;
 
-        public override Func<RailwayContainer, IEnumerable<IRoute>> InjectSelector =>
-            rc => rc.Routes.Concat(rc.Invalids.OfType<Route>()).Where(r => r.Entry != null);
+        public override Func<RailwayContainer, INotifyEnumerable<IRoute>> InjectSelector =>
+            rc => rc.Routes.Concat(rc.Invalids.OfType<Route>()).Where(r => r.Entry != null).AsNotifiable();
 
         public override Action<IRoute> Inject =>
             route => route.Entry = null;

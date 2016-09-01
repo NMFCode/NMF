@@ -21,8 +21,8 @@ namespace EngineBenchmark
         public override Action<Tuple<IRoute, ISensor>> Repair =>
             match => match.Item1.DefinedBy.Add(match.Item2);
 
-        public override Func<RailwayContainer, IEnumerable<Switch>> InjectSelector =>
-            rc => rc.Descendants().OfType<Switch>();
+        public override Func<RailwayContainer, INotifyEnumerable<Switch>> InjectSelector =>
+            rc => rc.Descendants().OfType<Switch>().AsNotifiable();
 
         public override Action<Switch> Inject =>
             sw => sw.Sensor = null;

@@ -20,76 +20,97 @@ namespace EngineBenchmark
 
         public abstract Action<TResult> Repair { get; }
 
-        public abstract Func<RailwayContainer, IEnumerable<TInject>> InjectSelector { get; }
+        public abstract Func<RailwayContainer, INotifyEnumerable<TInject>> InjectSelector { get; }
 
         public abstract Action<TInject> Inject { get; }
 
-        private readonly RailwayContainer immediateModel;
-        private readonly INotifyEnumerable<TResult> immediateTest;
-        private readonly List<TResult> immediateResult;
+        private readonly RunData immediate;
+        private readonly RunData transaction;
 
-        private readonly RailwayContainer transactionModel;
-        private readonly INotifyEnumerable<TResult> transactionTest;
-        private readonly List<TResult> transactionResult = new List<TResult>();
-
-        private readonly Random rnd = new Random();
+        private readonly XorShift128Plus rnd = new XorShift128Plus();
 
         public TrainCase()
         {
-            immediateModel = LoadRailwayModel();
-            immediateTest = Query(immediateModel);
-            immediateResult = immediateTest.ToList();
-            immediateTest.CollectionChanged += (obj, e) => UpdateResults(e, immediateResult);
-
-            transactionModel = LoadRailwayModel();
-            transactionTest = Query(transactionModel);
-            transactionResult = transactionTest.ToList();
-            transactionTest.CollectionChanged += (obj, e) => UpdateResults(e, transactionResult);
-        }
-
-        private RailwayContainer LoadRailwayModel()
-        {
-            var repository = new ModelRepository();
-            var railwayModel = repository.Resolve(new Uri(BaseUri), "railway.railway").Model;
-            return railwayModel.RootElements.Single() as RailwayContainer;
-        }
-
-        private void UpdateResults(NotifyCollectionChangedEventArgs e, List<TResult> results)
-        {
-            if (e.Action == NotifyCollectionChangedAction.Reset)
-                throw new NotImplementedException();
-
-            if (e.OldItems != null)
-            {
-                foreach (TResult result in e.OldItems)
-                    results.Remove(result);
-            }
-            if (e.NewItems != null)
-                results.AddRange(e.NewItems.Cast<TResult>());
+            immediate = new RunData(this);
+            transaction = new RunData(this);
         }
 
         [Benchmark]
         public void Immediate()
         {
-            foreach (var error in immediateResult.ToArray())
-                Repair(error);
-
-            foreach (var injectTarget in InjectSelector(immediateModel).Where(i => rnd.Next(10) == 0))
-                Inject(injectTarget);
+            DoRepair(immediate.QueryResults.ToList());
+            DoInject(immediate.InjectResults.ToList());
         }
 
         [Benchmark(Baseline = true)]
         public void Transaction()
         {
             branch::NMF.Expressions.ExecutionEngine.Current.BeginTransaction();
-            foreach (var error in transactionResult)
-                Repair(error);
+            DoRepair(transaction.QueryResults);
             branch::NMF.Expressions.ExecutionEngine.Current.CommitTransaction();
 
             branch::NMF.Expressions.ExecutionEngine.Current.BeginTransaction();
-            foreach (var injectTarget in InjectSelector(transactionModel).Where(i => rnd.Next(10) == 0))
-                Inject(injectTarget);
+            DoInject(transaction.InjectResults);
             branch::NMF.Expressions.ExecutionEngine.Current.CommitTransaction();
+        }
+
+        private void DoRepair(List<TResult> errors)
+        {
+            foreach (var error in errors)
+                Repair(error);
+        }
+
+        private void DoInject(List<TInject> injects)
+        {
+            int skip = injects.Count <= 2 ? 0 : rnd.Next(injects.Count / 2);
+            int take = rnd.Next(injects.Count - skip);
+            foreach (var injectTarget in injects.Skip(skip).Take(take))
+                Inject(injectTarget);
+        }
+
+        private class RunData
+        {
+            public RailwayContainer Model { get; } = LoadRailwayModel();
+            
+            public INotifyEnumerable<TResult> Query { get; }
+
+            public List<TResult> QueryResults { get; }
+
+            public INotifyEnumerable<TInject> Inject { get; }
+
+            public List<TInject> InjectResults { get; }
+
+            public RunData(TrainCase<TResult, TInject> test)
+            {
+                Query = test.Query(Model);
+                QueryResults = Query.ToList();
+                Query.CollectionChanged += (obj, e) => UpdateList(e, QueryResults);
+
+                Inject = test.InjectSelector(Model);
+                InjectResults = Inject.ToList();
+                Inject.CollectionChanged += (obj, e) => UpdateList(e, InjectResults);
+            }
+
+            private static void UpdateList<T>(NotifyCollectionChangedEventArgs e, List<T> list)
+            {
+                if (e.Action == NotifyCollectionChangedAction.Reset)
+                    throw new NotImplementedException();
+
+                if (e.OldItems != null)
+                {
+                    foreach (T result in e.OldItems)
+                        list.Remove(result);
+                }
+                if (e.NewItems != null)
+                    list.AddRange(e.NewItems.Cast<T>());
+            }
+
+            private static RailwayContainer LoadRailwayModel()
+            {
+                var repository = new ModelRepository();
+                var railwayModel = repository.Resolve(new Uri(BaseUri), "railway.railway").Model;
+                return railwayModel.RootElements.Single() as RailwayContainer;
+            }
         }
     }
 }

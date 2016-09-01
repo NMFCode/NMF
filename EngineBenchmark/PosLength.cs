@@ -18,8 +18,8 @@ namespace EngineBenchmark
         public override Action<Segment> Repair =>
             segment => segment.Length = 0;
 
-        public override Func<RailwayContainer, IEnumerable<Segment>> InjectSelector =>
-            rc => rc.Routes.AsEnumerable().SelectMany(r => r.DefinedBy).SelectMany(s => s.Elements).OfType<Segment>().Where(seg => seg.Length >= 0);
+        public override Func<RailwayContainer, INotifyEnumerable<Segment>> InjectSelector =>
+            rc => rc.Descendants().OfType<Segment>().Where(seg => seg.Length >= 0).AsNotifiable();
 
         public override Action<Segment> Inject =>
             segment => segment.Length = -segment.Length + 1;
