@@ -15,6 +15,8 @@ namespace TrainBenchmark
     public abstract class TrainCase<TResult, TInject>
     {
         private const string BaseUri = "http://github.com/NMFCode/NMF/Models/Models.Test/railway.railway";
+        private const double RepairPortion = 0.5;
+        private const double InjectPortion = 0.2;
 
         public abstract Func<RailwayContainer, INotifyEnumerable<TResult>> Query { get; }
 
@@ -56,14 +58,16 @@ namespace TrainBenchmark
 
         private void DoRepair(List<TResult> errors)
         {
-            foreach (var error in errors)
+            int take = Math.Min(1, (int)(RepairPortion * errors.Count));
+            int skip = errors.Count <= take ? 0 : rnd.Next(errors.Count - take);
+            foreach (var error in errors.Skip(skip).Take(take))
                 Repair(error);
         }
 
         private void DoInject(List<TInject> injects)
         {
-            int skip = injects.Count <= 2 ? 0 : rnd.Next(injects.Count / 2);
-            int take = rnd.Next(injects.Count - skip);
+            int take = Math.Min(1, (int)(InjectPortion * injects.Count));
+            int skip = injects.Count <= take ? 0 : rnd.Next(injects.Count - take);
             foreach (var injectTarget in injects.Skip(skip).Take(take))
                 Inject(injectTarget);
         }
