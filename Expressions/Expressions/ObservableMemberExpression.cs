@@ -240,18 +240,21 @@ namespace NMF.Expressions
         public override INotificationResult Notify(IList<INotificationResult> sources)
         {
             INotificationResult collectionResult = null;
-            foreach (var change in sources)
+            if (sources.Count > 0)
             {
-                if (change.Source == Target)
+                foreach (var change in sources)
                 {
-                    var oldValue = ((ValueChangedNotificationResult<TTarget>)sources[0]).OldValue;
-                    DetachPropertyChangeListener(oldValue);
-                    AttachPropertyChangeListener(Target.Value);
-                    return base.Notify(sources);
-                }
-                else //change is from the member value being an INotifyEnumerable
-                {
-                    collectionResult = change;
+                    if (change.Source == Target)
+                    {
+                        var oldValue = ((ValueChangedNotificationResult<TTarget>)sources[0]).OldValue;
+                        DetachPropertyChangeListener(oldValue);
+                        AttachPropertyChangeListener(Target.Value);
+                        return base.Notify(sources);
+                    }
+                    else //change is from the member value being an INotifyEnumerable
+                    {
+                        collectionResult = change;
+                    }
                 }
             }
 

@@ -23,39 +23,47 @@ namespace NMF.Expressions
 
     public class CollectionChangedNotificationResult<T> : ICollectionChangedNotificationResult
     {
+        private INotifiable source;
+        private readonly bool isReset;
+        private readonly List<T> addedItems;
+        private readonly List<T> removedItems;
+        private readonly List<T> movedItems;
+        private readonly List<T> replaceAddedItems;
+        private readonly List<T> replaceRemovedItems;
+
         public bool Changed { get { return true; } }
 
-        public INotifiable Source { get; set; }
+        public INotifiable Source { get { return source; } }
 
-        public bool IsReset { get; private set; }
+        public bool IsReset { get { return isReset; } }
 
-        public List<T> AddedItems { get; private set; }
+        public List<T> AddedItems { get { return addedItems; } }
 
-        public List<T> RemovedItems { get; private set; }
+        public List<T> RemovedItems { get { return removedItems; } }
 
-        public List<T> MovedItems { get; private set; }
+        public List<T> MovedItems { get { return movedItems; } }
 
-        public List<T> ReplaceAddedItems { get; private set; }
+        public List<T> ReplaceAddedItems { get { return replaceAddedItems; } }
 
-        public List<T> ReplaceRemovedItems { get; private set; }
+        public List<T> ReplaceRemovedItems { get { return replaceRemovedItems; } }
 
         public IEnumerable<T> AllAddedItems
         {
             get
             {
-                if (AddedItems == null)
+                if (addedItems == null)
                 {
-                    if (ReplaceAddedItems == null)
+                    if (replaceAddedItems == null)
                         return Enumerable.Empty<T>();
                     else
-                        return ReplaceAddedItems;
+                        return replaceAddedItems;
                 }
                 else
                 {
-                    if (ReplaceAddedItems == null)
-                        return AddedItems;
+                    if (replaceAddedItems == null)
+                        return addedItems;
                     else
-                        return AddedItems.Concat(ReplaceAddedItems);
+                        return addedItems.Concat(replaceAddedItems);
                 }
             }
         }
@@ -64,32 +72,32 @@ namespace NMF.Expressions
         {
             get
             {
-                if (RemovedItems == null)
+                if (removedItems == null)
                 {
-                    if (ReplaceRemovedItems == null)
+                    if (replaceRemovedItems == null)
                         return Enumerable.Empty<T>();
                     else
-                        return ReplaceRemovedItems;
+                        return replaceRemovedItems;
                 }
                 else
                 {
-                    if (ReplaceRemovedItems == null)
-                        return RemovedItems;
+                    if (replaceRemovedItems == null)
+                        return removedItems;
                     else
-                        return RemovedItems.Concat(ReplaceRemovedItems);
+                        return removedItems.Concat(replaceRemovedItems);
                 }
             }
         }
 
-        IList ICollectionChangedNotificationResult.AddedItems { get { return AddedItems; } }
+        IList ICollectionChangedNotificationResult.AddedItems { get { return addedItems; } }
 
-        IList ICollectionChangedNotificationResult.RemovedItems { get { return RemovedItems; } }
+        IList ICollectionChangedNotificationResult.RemovedItems { get { return removedItems; } }
 
-        IList ICollectionChangedNotificationResult.MovedItems { get { return MovedItems; } }
+        IList ICollectionChangedNotificationResult.MovedItems { get { return movedItems; } }
 
-        IList ICollectionChangedNotificationResult.ReplaceAddedItems { get { return ReplaceAddedItems; } }
+        IList ICollectionChangedNotificationResult.ReplaceAddedItems { get { return replaceAddedItems; } }
 
-        IList ICollectionChangedNotificationResult.ReplaceRemovedItems { get { return ReplaceRemovedItems; } }
+        IList ICollectionChangedNotificationResult.ReplaceRemovedItems { get { return replaceRemovedItems; } }
 
         public CollectionChangedNotificationResult(INotifiable source, List<T> addedItems, List<T> removedItems) : this(source, addedItems, removedItems, null, null, null) { }
 
@@ -99,23 +107,23 @@ namespace NMF.Expressions
 
         public CollectionChangedNotificationResult(INotifiable source, List<T> addedItems, List<T> removedItems, List<T> movedItems, List<T> replaceAddedItems, List<T> replaceRemovedItems)
         {
-            Source = source;
-            IsReset = false;
+            this.source = source;
+            this.isReset = false;
 
             if (addedItems != null && addedItems.Count > 0)
-                AddedItems = addedItems;
+                this.addedItems = addedItems;
 
             if (removedItems != null && removedItems.Count > 0)
-                RemovedItems = removedItems;
+                this.removedItems = removedItems;
 
             if (movedItems != null && movedItems.Count > 0)
-                MovedItems = movedItems;
+                this.movedItems = movedItems;
 
             if (replaceAddedItems != null && replaceAddedItems.Count > 0)
-                ReplaceAddedItems = replaceAddedItems;
+                this.replaceAddedItems = replaceAddedItems;
 
             if (replaceRemovedItems != null && replaceRemovedItems.Count > 0)
-                ReplaceRemovedItems = replaceRemovedItems;
+                this.replaceRemovedItems = replaceRemovedItems;
 
             if (ReplaceAddedItems != null || ReplaceRemovedItems != null)
             {
@@ -132,8 +140,8 @@ namespace NMF.Expressions
         
         public CollectionChangedNotificationResult(INotifiable source)
         {
-            Source = source;
-            IsReset = true;
+            this.source = source;
+            this.isReset = true;
         }
 
         public static CollectionChangedNotificationResult<T> Transfer(ICollectionChangedNotificationResult oldResult, INotifiable newSource)
@@ -141,7 +149,7 @@ namespace NMF.Expressions
             var orig = oldResult as CollectionChangedNotificationResult<T>;
             if (orig != null)
             {
-                orig.Source = newSource;
+                orig.source = newSource;
                 return orig;
             }
 

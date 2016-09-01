@@ -14,26 +14,30 @@ namespace NMF.Expressions
 
     public class ValueChangedNotificationResult<T> : IValueChangedNotificationResult
     {
+        private readonly INotifiable source;
+        private readonly T oldValue;
+        private readonly T newValue;
+
         public bool Changed { get { return true; } }
 
-        public INotifiable Source { get; private set; }
+        public INotifiable Source { get { return source; } }
 
-        public T OldValue { get; private set; }
+        public T OldValue { get { return oldValue; } }
 
-        public T NewValue { get; private set; }
+        public T NewValue { get { return newValue; } }
 
-        object IValueChangedNotificationResult.OldValue { get { return OldValue; } }
+        object IValueChangedNotificationResult.OldValue { get { return oldValue; } }
 
-        object IValueChangedNotificationResult.NewValue { get { return NewValue; } }
+        object IValueChangedNotificationResult.NewValue { get { return newValue; } }
 
         public ValueChangedNotificationResult(INotifiable source, T oldValue, T newValue)
         {
             if (source == null)
                 throw new ArgumentNullException(nameof(source));
 
-            Source = source;
-            OldValue = oldValue;
-            NewValue = newValue;
+            this.source = source;
+            this.oldValue = oldValue;
+            this.newValue = newValue;
         }
     }
 }
