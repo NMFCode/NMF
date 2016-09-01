@@ -9,7 +9,7 @@ using System.Collections.ObjectModel;
 
 namespace NMF.Collections.Generic
 {
-    public class EmptyList<T> : IList<T>, ICollection<T>, IEnumerableExpression<T>, ICollectionExpression<T>, IListExpression<T>
+    public sealed class EmptyList<T> : IList<T>, ICollection<T>, IEnumerableExpression<T>, ICollectionExpression<T>, IListExpression<T>
     {
         private static EmptyList<T> instance = new EmptyList<T>();
 

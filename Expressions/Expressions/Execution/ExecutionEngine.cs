@@ -66,9 +66,14 @@ namespace NMF.Expressions
 
         public void Dispose()
         {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
             context.Dispose();
             invalidNodes.Clear();
-            GC.SuppressFinalize(this);
         }
 
         private static ExecutionEngine current = new SequentialExecutionEngine();

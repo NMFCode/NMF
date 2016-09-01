@@ -98,6 +98,12 @@ namespace NMF.Models.Collections
 
         public void Dispose()
         {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
             DetachCore();
         }
     }

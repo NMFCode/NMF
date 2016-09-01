@@ -37,6 +37,18 @@ namespace NMF.Models
             }
         }
 
+        public static bool operator ==(ScopedIdentifier obj1, ScopedIdentifier obj2)
+        {
+            if (obj1 == null)
+                return false;
+            return obj1.Equals(obj2);
+        }
+
+        public static bool operator !=(ScopedIdentifier obj1, ScopedIdentifier obj2)
+        {
+            return !(obj1 == obj2);
+        }
+
         public override int GetHashCode()
         {
             var hash = Scope.GetHashCode();

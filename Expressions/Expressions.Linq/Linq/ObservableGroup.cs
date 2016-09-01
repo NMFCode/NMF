@@ -6,7 +6,7 @@ using System.Text;
 
 namespace NMF.Expressions.Linq
 {
-    public class ObservableGroup<TKey, TItem> : ReadOnlyObservableCollection<TItem>, INotifyGrouping<TKey, TItem>, IGroupingExpression<TKey, TItem>
+    public sealed class ObservableGroup<TKey, TItem> : ReadOnlyObservableCollection<TItem>, INotifyGrouping<TKey, TItem>, IGroupingExpression<TKey, TItem>
     {
         private readonly SuccessorList successors = new SuccessorList();
         private TKey key;

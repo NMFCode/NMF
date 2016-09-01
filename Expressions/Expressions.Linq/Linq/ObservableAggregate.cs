@@ -107,7 +107,13 @@ namespace NMF.Expressions.Linq
 
         public void Dispose()
         {
-            Detach();
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            Successors.Clear();
         }
 
         public IList<INotifiable> Successors { get { return successors; } }

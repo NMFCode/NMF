@@ -164,7 +164,13 @@ namespace NMF.Models.Expressions
 
         public void Dispose()
         {
-            Detach();
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            Successors.Clear();
         }
 
         public INotificationResult Notify(IList<INotificationResult> sources)
