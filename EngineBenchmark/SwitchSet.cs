@@ -22,8 +22,8 @@ namespace EngineBenchmark
         public override Action<SwitchPosition> Repair =>
             swP => swP.Switch.CurrentPosition = swP.Position;
 
-        public override Func<RailwayContainer, IEnumerable<Switch>> InjectSelector =>
-            rc => rc.Routes.AsEnumerable().SelectMany(r => r.DefinedBy).SelectMany(s => s.Elements).OfType<Switch>();
+        public override Func<RailwayContainer, INotifyEnumerable<Switch>> InjectSelector =>
+            rc => rc.Descendants().OfType<Switch>().AsNotifiable();
 
         public override Action<Switch> Inject =>
             sw => sw.CurrentPosition = ((Position)(((int)sw.CurrentPosition + 1) % 4));
