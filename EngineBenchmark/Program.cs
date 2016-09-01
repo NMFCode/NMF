@@ -5,6 +5,7 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Reflection;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -16,7 +17,7 @@ namespace EngineBenchmark
         static void Main(string[] args)
         {
 #if !DEBUG
-            BenchmarkRunner.Run<SequentialLambda>();
+            new BenchmarkSwitcher(Assembly.GetExecutingAssembly()).Run();
 #else
             Profile();
 #endif
@@ -24,9 +25,14 @@ namespace EngineBenchmark
 
         private static void Profile()
         {
-            var bench = new SequentialLambda();
-            for (int i=0; i<1000000; i++)
+            var bench = new SwitchSet();
+            var watch = Stopwatch.StartNew();
+            for (int i = 0; ; i++)
+            {
                 bench.Immediate();
+                if ((i & 0xFF) == 0 && watch.ElapsedMilliseconds > 5000)
+                    break;
+            }
         }
     }
 
