@@ -48,9 +48,6 @@ namespace NMF.Expressions
             {
                 if (Proxy != null)
                     yield return Proxy;
-
-<# for (int j = 1; j <= i; j++) { #>
-                yield return Argument<#= j #>;<# } #>
             }
         }
 
@@ -67,6 +64,19 @@ namespace NMF.Expressions
         public override INotifyExpression<TResult> ApplyParameters(IDictionary<string, object> parameters)
         {
             return new ObservableStaticProxyCall<<# for (int j = 1; j <= i; j++) { #>T<#= j #>, <# } #>TResult>(ProxyFunction<# for (int j = 1; j <= i; j++) { #>, Argument<#= j #>.ApplyParameters(parameters)<# } #>);
+        }
+
+        protected override void OnAttach()
+        {
+<# for (int j = 1; j <= i; j++) { #>
+            Argument<#= j #>.Successors.Add(null);
+<# } #>
+
+            RenewProxy();
+
+<# for (int j = 1; j <= i; j++) { #>
+            Argument<#= j #>.Successors.Remove(null);
+<# } #>
         }
     }
 <#

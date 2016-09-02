@@ -21,6 +21,11 @@ namespace NMF.Expressions
                 lastResult = node.Notify(node.ExecutionMetaData.Sources);
                 node.ExecutionMetaData.Sources.Clear();
 
+#if DEBUG
+                if (node.Successors.Count > 1)
+                    throw new InvalidOperationException("Node has more than one successor: This should never happen!");
+#endif
+
                 if (lastResult.Changed && node.Successors.Count > 0)
                     node = node.Successors[0];
                 else

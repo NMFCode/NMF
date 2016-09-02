@@ -32,8 +32,7 @@ namespace NMF.Expressions
             {
                 if (Proxy != null)
                     yield return Proxy;
-
-                yield return Argument1;            }
+            }
         }
 
         protected override INotifyValue<TResult> CreateProxy()
@@ -49,6 +48,15 @@ namespace NMF.Expressions
         public override INotifyExpression<TResult> ApplyParameters(IDictionary<string, object> parameters)
         {
             return new ObservableStaticProxyCall<T1, TResult>(ProxyFunction, Argument1.ApplyParameters(parameters));
+        }
+
+        protected override void OnAttach()
+        {
+            Argument1.Successors.Add(null);
+
+            RenewProxy();
+
+            Argument1.Successors.Remove(null);
         }
     }
     internal sealed class ObservableStaticProxyCall<T1, T2, TResult> : ObservableProxyCallBase<TResult>
@@ -78,8 +86,7 @@ namespace NMF.Expressions
             {
                 if (Proxy != null)
                     yield return Proxy;
-
-                yield return Argument1;                yield return Argument2;            }
+            }
         }
 
         protected override INotifyValue<TResult> CreateProxy()
@@ -95,6 +102,17 @@ namespace NMF.Expressions
         public override INotifyExpression<TResult> ApplyParameters(IDictionary<string, object> parameters)
         {
             return new ObservableStaticProxyCall<T1, T2, TResult>(ProxyFunction, Argument1.ApplyParameters(parameters), Argument2.ApplyParameters(parameters));
+        }
+
+        protected override void OnAttach()
+        {
+            Argument1.Successors.Add(null);
+            Argument2.Successors.Add(null);
+
+            RenewProxy();
+
+            Argument1.Successors.Remove(null);
+            Argument2.Successors.Remove(null);
         }
     }
     internal sealed class ObservableStaticProxyCall<T1, T2, T3, TResult> : ObservableProxyCallBase<TResult>
@@ -127,8 +145,7 @@ namespace NMF.Expressions
             {
                 if (Proxy != null)
                     yield return Proxy;
-
-                yield return Argument1;                yield return Argument2;                yield return Argument3;            }
+            }
         }
 
         protected override INotifyValue<TResult> CreateProxy()
@@ -144,6 +161,19 @@ namespace NMF.Expressions
         public override INotifyExpression<TResult> ApplyParameters(IDictionary<string, object> parameters)
         {
             return new ObservableStaticProxyCall<T1, T2, T3, TResult>(ProxyFunction, Argument1.ApplyParameters(parameters), Argument2.ApplyParameters(parameters), Argument3.ApplyParameters(parameters));
+        }
+
+        protected override void OnAttach()
+        {
+            Argument1.Successors.Add(null);
+            Argument2.Successors.Add(null);
+            Argument3.Successors.Add(null);
+
+            RenewProxy();
+
+            Argument1.Successors.Remove(null);
+            Argument2.Successors.Remove(null);
+            Argument3.Successors.Remove(null);
         }
     }
     internal sealed class ObservableStaticProxyCall<T1, T2, T3, T4, TResult> : ObservableProxyCallBase<TResult>
@@ -179,8 +209,7 @@ namespace NMF.Expressions
             {
                 if (Proxy != null)
                     yield return Proxy;
-
-                yield return Argument1;                yield return Argument2;                yield return Argument3;                yield return Argument4;            }
+            }
         }
 
         protected override INotifyValue<TResult> CreateProxy()
@@ -196,6 +225,21 @@ namespace NMF.Expressions
         public override INotifyExpression<TResult> ApplyParameters(IDictionary<string, object> parameters)
         {
             return new ObservableStaticProxyCall<T1, T2, T3, T4, TResult>(ProxyFunction, Argument1.ApplyParameters(parameters), Argument2.ApplyParameters(parameters), Argument3.ApplyParameters(parameters), Argument4.ApplyParameters(parameters));
+        }
+
+        protected override void OnAttach()
+        {
+            Argument1.Successors.Add(null);
+            Argument2.Successors.Add(null);
+            Argument3.Successors.Add(null);
+            Argument4.Successors.Add(null);
+
+            RenewProxy();
+
+            Argument1.Successors.Remove(null);
+            Argument2.Successors.Remove(null);
+            Argument3.Successors.Remove(null);
+            Argument4.Successors.Remove(null);
         }
     }
     internal sealed class ObservableStaticProxyCall<T1, T2, T3, T4, T5, TResult> : ObservableProxyCallBase<TResult>
@@ -234,8 +278,7 @@ namespace NMF.Expressions
             {
                 if (Proxy != null)
                     yield return Proxy;
-
-                yield return Argument1;                yield return Argument2;                yield return Argument3;                yield return Argument4;                yield return Argument5;            }
+            }
         }
 
         protected override INotifyValue<TResult> CreateProxy()
@@ -251,6 +294,23 @@ namespace NMF.Expressions
         public override INotifyExpression<TResult> ApplyParameters(IDictionary<string, object> parameters)
         {
             return new ObservableStaticProxyCall<T1, T2, T3, T4, T5, TResult>(ProxyFunction, Argument1.ApplyParameters(parameters), Argument2.ApplyParameters(parameters), Argument3.ApplyParameters(parameters), Argument4.ApplyParameters(parameters), Argument5.ApplyParameters(parameters));
+        }
+
+        protected override void OnAttach()
+        {
+            Argument1.Successors.Add(null);
+            Argument2.Successors.Add(null);
+            Argument3.Successors.Add(null);
+            Argument4.Successors.Add(null);
+            Argument5.Successors.Add(null);
+
+            RenewProxy();
+
+            Argument1.Successors.Remove(null);
+            Argument2.Successors.Remove(null);
+            Argument3.Successors.Remove(null);
+            Argument4.Successors.Remove(null);
+            Argument5.Successors.Remove(null);
         }
     }
     internal sealed class ObservableStaticProxyCall<T1, T2, T3, T4, T5, T6, TResult> : ObservableProxyCallBase<TResult>
@@ -292,8 +352,7 @@ namespace NMF.Expressions
             {
                 if (Proxy != null)
                     yield return Proxy;
-
-                yield return Argument1;                yield return Argument2;                yield return Argument3;                yield return Argument4;                yield return Argument5;                yield return Argument6;            }
+            }
         }
 
         protected override INotifyValue<TResult> CreateProxy()
@@ -309,6 +368,25 @@ namespace NMF.Expressions
         public override INotifyExpression<TResult> ApplyParameters(IDictionary<string, object> parameters)
         {
             return new ObservableStaticProxyCall<T1, T2, T3, T4, T5, T6, TResult>(ProxyFunction, Argument1.ApplyParameters(parameters), Argument2.ApplyParameters(parameters), Argument3.ApplyParameters(parameters), Argument4.ApplyParameters(parameters), Argument5.ApplyParameters(parameters), Argument6.ApplyParameters(parameters));
+        }
+
+        protected override void OnAttach()
+        {
+            Argument1.Successors.Add(null);
+            Argument2.Successors.Add(null);
+            Argument3.Successors.Add(null);
+            Argument4.Successors.Add(null);
+            Argument5.Successors.Add(null);
+            Argument6.Successors.Add(null);
+
+            RenewProxy();
+
+            Argument1.Successors.Remove(null);
+            Argument2.Successors.Remove(null);
+            Argument3.Successors.Remove(null);
+            Argument4.Successors.Remove(null);
+            Argument5.Successors.Remove(null);
+            Argument6.Successors.Remove(null);
         }
     }
     internal sealed class ObservableStaticProxyCall<T1, T2, T3, T4, T5, T6, T7, TResult> : ObservableProxyCallBase<TResult>
@@ -353,8 +431,7 @@ namespace NMF.Expressions
             {
                 if (Proxy != null)
                     yield return Proxy;
-
-                yield return Argument1;                yield return Argument2;                yield return Argument3;                yield return Argument4;                yield return Argument5;                yield return Argument6;                yield return Argument7;            }
+            }
         }
 
         protected override INotifyValue<TResult> CreateProxy()
@@ -370,6 +447,27 @@ namespace NMF.Expressions
         public override INotifyExpression<TResult> ApplyParameters(IDictionary<string, object> parameters)
         {
             return new ObservableStaticProxyCall<T1, T2, T3, T4, T5, T6, T7, TResult>(ProxyFunction, Argument1.ApplyParameters(parameters), Argument2.ApplyParameters(parameters), Argument3.ApplyParameters(parameters), Argument4.ApplyParameters(parameters), Argument5.ApplyParameters(parameters), Argument6.ApplyParameters(parameters), Argument7.ApplyParameters(parameters));
+        }
+
+        protected override void OnAttach()
+        {
+            Argument1.Successors.Add(null);
+            Argument2.Successors.Add(null);
+            Argument3.Successors.Add(null);
+            Argument4.Successors.Add(null);
+            Argument5.Successors.Add(null);
+            Argument6.Successors.Add(null);
+            Argument7.Successors.Add(null);
+
+            RenewProxy();
+
+            Argument1.Successors.Remove(null);
+            Argument2.Successors.Remove(null);
+            Argument3.Successors.Remove(null);
+            Argument4.Successors.Remove(null);
+            Argument5.Successors.Remove(null);
+            Argument6.Successors.Remove(null);
+            Argument7.Successors.Remove(null);
         }
     }
     internal sealed class ObservableStaticProxyCall<T1, T2, T3, T4, T5, T6, T7, T8, TResult> : ObservableProxyCallBase<TResult>
@@ -417,8 +515,7 @@ namespace NMF.Expressions
             {
                 if (Proxy != null)
                     yield return Proxy;
-
-                yield return Argument1;                yield return Argument2;                yield return Argument3;                yield return Argument4;                yield return Argument5;                yield return Argument6;                yield return Argument7;                yield return Argument8;            }
+            }
         }
 
         protected override INotifyValue<TResult> CreateProxy()
@@ -434,6 +531,29 @@ namespace NMF.Expressions
         public override INotifyExpression<TResult> ApplyParameters(IDictionary<string, object> parameters)
         {
             return new ObservableStaticProxyCall<T1, T2, T3, T4, T5, T6, T7, T8, TResult>(ProxyFunction, Argument1.ApplyParameters(parameters), Argument2.ApplyParameters(parameters), Argument3.ApplyParameters(parameters), Argument4.ApplyParameters(parameters), Argument5.ApplyParameters(parameters), Argument6.ApplyParameters(parameters), Argument7.ApplyParameters(parameters), Argument8.ApplyParameters(parameters));
+        }
+
+        protected override void OnAttach()
+        {
+            Argument1.Successors.Add(null);
+            Argument2.Successors.Add(null);
+            Argument3.Successors.Add(null);
+            Argument4.Successors.Add(null);
+            Argument5.Successors.Add(null);
+            Argument6.Successors.Add(null);
+            Argument7.Successors.Add(null);
+            Argument8.Successors.Add(null);
+
+            RenewProxy();
+
+            Argument1.Successors.Remove(null);
+            Argument2.Successors.Remove(null);
+            Argument3.Successors.Remove(null);
+            Argument4.Successors.Remove(null);
+            Argument5.Successors.Remove(null);
+            Argument6.Successors.Remove(null);
+            Argument7.Successors.Remove(null);
+            Argument8.Successors.Remove(null);
         }
     }
     internal sealed class ObservableStaticProxyCall<T1, T2, T3, T4, T5, T6, T7, T8, T9, TResult> : ObservableProxyCallBase<TResult>
@@ -484,8 +604,7 @@ namespace NMF.Expressions
             {
                 if (Proxy != null)
                     yield return Proxy;
-
-                yield return Argument1;                yield return Argument2;                yield return Argument3;                yield return Argument4;                yield return Argument5;                yield return Argument6;                yield return Argument7;                yield return Argument8;                yield return Argument9;            }
+            }
         }
 
         protected override INotifyValue<TResult> CreateProxy()
@@ -501,6 +620,31 @@ namespace NMF.Expressions
         public override INotifyExpression<TResult> ApplyParameters(IDictionary<string, object> parameters)
         {
             return new ObservableStaticProxyCall<T1, T2, T3, T4, T5, T6, T7, T8, T9, TResult>(ProxyFunction, Argument1.ApplyParameters(parameters), Argument2.ApplyParameters(parameters), Argument3.ApplyParameters(parameters), Argument4.ApplyParameters(parameters), Argument5.ApplyParameters(parameters), Argument6.ApplyParameters(parameters), Argument7.ApplyParameters(parameters), Argument8.ApplyParameters(parameters), Argument9.ApplyParameters(parameters));
+        }
+
+        protected override void OnAttach()
+        {
+            Argument1.Successors.Add(null);
+            Argument2.Successors.Add(null);
+            Argument3.Successors.Add(null);
+            Argument4.Successors.Add(null);
+            Argument5.Successors.Add(null);
+            Argument6.Successors.Add(null);
+            Argument7.Successors.Add(null);
+            Argument8.Successors.Add(null);
+            Argument9.Successors.Add(null);
+
+            RenewProxy();
+
+            Argument1.Successors.Remove(null);
+            Argument2.Successors.Remove(null);
+            Argument3.Successors.Remove(null);
+            Argument4.Successors.Remove(null);
+            Argument5.Successors.Remove(null);
+            Argument6.Successors.Remove(null);
+            Argument7.Successors.Remove(null);
+            Argument8.Successors.Remove(null);
+            Argument9.Successors.Remove(null);
         }
     }
     internal sealed class ObservableStaticProxyCall<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, TResult> : ObservableProxyCallBase<TResult>
@@ -554,8 +698,7 @@ namespace NMF.Expressions
             {
                 if (Proxy != null)
                     yield return Proxy;
-
-                yield return Argument1;                yield return Argument2;                yield return Argument3;                yield return Argument4;                yield return Argument5;                yield return Argument6;                yield return Argument7;                yield return Argument8;                yield return Argument9;                yield return Argument10;            }
+            }
         }
 
         protected override INotifyValue<TResult> CreateProxy()
@@ -571,6 +714,33 @@ namespace NMF.Expressions
         public override INotifyExpression<TResult> ApplyParameters(IDictionary<string, object> parameters)
         {
             return new ObservableStaticProxyCall<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, TResult>(ProxyFunction, Argument1.ApplyParameters(parameters), Argument2.ApplyParameters(parameters), Argument3.ApplyParameters(parameters), Argument4.ApplyParameters(parameters), Argument5.ApplyParameters(parameters), Argument6.ApplyParameters(parameters), Argument7.ApplyParameters(parameters), Argument8.ApplyParameters(parameters), Argument9.ApplyParameters(parameters), Argument10.ApplyParameters(parameters));
+        }
+
+        protected override void OnAttach()
+        {
+            Argument1.Successors.Add(null);
+            Argument2.Successors.Add(null);
+            Argument3.Successors.Add(null);
+            Argument4.Successors.Add(null);
+            Argument5.Successors.Add(null);
+            Argument6.Successors.Add(null);
+            Argument7.Successors.Add(null);
+            Argument8.Successors.Add(null);
+            Argument9.Successors.Add(null);
+            Argument10.Successors.Add(null);
+
+            RenewProxy();
+
+            Argument1.Successors.Remove(null);
+            Argument2.Successors.Remove(null);
+            Argument3.Successors.Remove(null);
+            Argument4.Successors.Remove(null);
+            Argument5.Successors.Remove(null);
+            Argument6.Successors.Remove(null);
+            Argument7.Successors.Remove(null);
+            Argument8.Successors.Remove(null);
+            Argument9.Successors.Remove(null);
+            Argument10.Successors.Remove(null);
         }
     }
     internal sealed class ObservableStaticProxyCall<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, TResult> : ObservableProxyCallBase<TResult>
@@ -627,8 +797,7 @@ namespace NMF.Expressions
             {
                 if (Proxy != null)
                     yield return Proxy;
-
-                yield return Argument1;                yield return Argument2;                yield return Argument3;                yield return Argument4;                yield return Argument5;                yield return Argument6;                yield return Argument7;                yield return Argument8;                yield return Argument9;                yield return Argument10;                yield return Argument11;            }
+            }
         }
 
         protected override INotifyValue<TResult> CreateProxy()
@@ -644,6 +813,35 @@ namespace NMF.Expressions
         public override INotifyExpression<TResult> ApplyParameters(IDictionary<string, object> parameters)
         {
             return new ObservableStaticProxyCall<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, TResult>(ProxyFunction, Argument1.ApplyParameters(parameters), Argument2.ApplyParameters(parameters), Argument3.ApplyParameters(parameters), Argument4.ApplyParameters(parameters), Argument5.ApplyParameters(parameters), Argument6.ApplyParameters(parameters), Argument7.ApplyParameters(parameters), Argument8.ApplyParameters(parameters), Argument9.ApplyParameters(parameters), Argument10.ApplyParameters(parameters), Argument11.ApplyParameters(parameters));
+        }
+
+        protected override void OnAttach()
+        {
+            Argument1.Successors.Add(null);
+            Argument2.Successors.Add(null);
+            Argument3.Successors.Add(null);
+            Argument4.Successors.Add(null);
+            Argument5.Successors.Add(null);
+            Argument6.Successors.Add(null);
+            Argument7.Successors.Add(null);
+            Argument8.Successors.Add(null);
+            Argument9.Successors.Add(null);
+            Argument10.Successors.Add(null);
+            Argument11.Successors.Add(null);
+
+            RenewProxy();
+
+            Argument1.Successors.Remove(null);
+            Argument2.Successors.Remove(null);
+            Argument3.Successors.Remove(null);
+            Argument4.Successors.Remove(null);
+            Argument5.Successors.Remove(null);
+            Argument6.Successors.Remove(null);
+            Argument7.Successors.Remove(null);
+            Argument8.Successors.Remove(null);
+            Argument9.Successors.Remove(null);
+            Argument10.Successors.Remove(null);
+            Argument11.Successors.Remove(null);
         }
     }
     internal sealed class ObservableStaticProxyCall<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, TResult> : ObservableProxyCallBase<TResult>
@@ -703,8 +901,7 @@ namespace NMF.Expressions
             {
                 if (Proxy != null)
                     yield return Proxy;
-
-                yield return Argument1;                yield return Argument2;                yield return Argument3;                yield return Argument4;                yield return Argument5;                yield return Argument6;                yield return Argument7;                yield return Argument8;                yield return Argument9;                yield return Argument10;                yield return Argument11;                yield return Argument12;            }
+            }
         }
 
         protected override INotifyValue<TResult> CreateProxy()
@@ -720,6 +917,37 @@ namespace NMF.Expressions
         public override INotifyExpression<TResult> ApplyParameters(IDictionary<string, object> parameters)
         {
             return new ObservableStaticProxyCall<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, TResult>(ProxyFunction, Argument1.ApplyParameters(parameters), Argument2.ApplyParameters(parameters), Argument3.ApplyParameters(parameters), Argument4.ApplyParameters(parameters), Argument5.ApplyParameters(parameters), Argument6.ApplyParameters(parameters), Argument7.ApplyParameters(parameters), Argument8.ApplyParameters(parameters), Argument9.ApplyParameters(parameters), Argument10.ApplyParameters(parameters), Argument11.ApplyParameters(parameters), Argument12.ApplyParameters(parameters));
+        }
+
+        protected override void OnAttach()
+        {
+            Argument1.Successors.Add(null);
+            Argument2.Successors.Add(null);
+            Argument3.Successors.Add(null);
+            Argument4.Successors.Add(null);
+            Argument5.Successors.Add(null);
+            Argument6.Successors.Add(null);
+            Argument7.Successors.Add(null);
+            Argument8.Successors.Add(null);
+            Argument9.Successors.Add(null);
+            Argument10.Successors.Add(null);
+            Argument11.Successors.Add(null);
+            Argument12.Successors.Add(null);
+
+            RenewProxy();
+
+            Argument1.Successors.Remove(null);
+            Argument2.Successors.Remove(null);
+            Argument3.Successors.Remove(null);
+            Argument4.Successors.Remove(null);
+            Argument5.Successors.Remove(null);
+            Argument6.Successors.Remove(null);
+            Argument7.Successors.Remove(null);
+            Argument8.Successors.Remove(null);
+            Argument9.Successors.Remove(null);
+            Argument10.Successors.Remove(null);
+            Argument11.Successors.Remove(null);
+            Argument12.Successors.Remove(null);
         }
     }
     internal sealed class ObservableStaticProxyCall<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, TResult> : ObservableProxyCallBase<TResult>
@@ -782,8 +1010,7 @@ namespace NMF.Expressions
             {
                 if (Proxy != null)
                     yield return Proxy;
-
-                yield return Argument1;                yield return Argument2;                yield return Argument3;                yield return Argument4;                yield return Argument5;                yield return Argument6;                yield return Argument7;                yield return Argument8;                yield return Argument9;                yield return Argument10;                yield return Argument11;                yield return Argument12;                yield return Argument13;            }
+            }
         }
 
         protected override INotifyValue<TResult> CreateProxy()
@@ -799,6 +1026,39 @@ namespace NMF.Expressions
         public override INotifyExpression<TResult> ApplyParameters(IDictionary<string, object> parameters)
         {
             return new ObservableStaticProxyCall<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, TResult>(ProxyFunction, Argument1.ApplyParameters(parameters), Argument2.ApplyParameters(parameters), Argument3.ApplyParameters(parameters), Argument4.ApplyParameters(parameters), Argument5.ApplyParameters(parameters), Argument6.ApplyParameters(parameters), Argument7.ApplyParameters(parameters), Argument8.ApplyParameters(parameters), Argument9.ApplyParameters(parameters), Argument10.ApplyParameters(parameters), Argument11.ApplyParameters(parameters), Argument12.ApplyParameters(parameters), Argument13.ApplyParameters(parameters));
+        }
+
+        protected override void OnAttach()
+        {
+            Argument1.Successors.Add(null);
+            Argument2.Successors.Add(null);
+            Argument3.Successors.Add(null);
+            Argument4.Successors.Add(null);
+            Argument5.Successors.Add(null);
+            Argument6.Successors.Add(null);
+            Argument7.Successors.Add(null);
+            Argument8.Successors.Add(null);
+            Argument9.Successors.Add(null);
+            Argument10.Successors.Add(null);
+            Argument11.Successors.Add(null);
+            Argument12.Successors.Add(null);
+            Argument13.Successors.Add(null);
+
+            RenewProxy();
+
+            Argument1.Successors.Remove(null);
+            Argument2.Successors.Remove(null);
+            Argument3.Successors.Remove(null);
+            Argument4.Successors.Remove(null);
+            Argument5.Successors.Remove(null);
+            Argument6.Successors.Remove(null);
+            Argument7.Successors.Remove(null);
+            Argument8.Successors.Remove(null);
+            Argument9.Successors.Remove(null);
+            Argument10.Successors.Remove(null);
+            Argument11.Successors.Remove(null);
+            Argument12.Successors.Remove(null);
+            Argument13.Successors.Remove(null);
         }
     }
     internal sealed class ObservableStaticProxyCall<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, TResult> : ObservableProxyCallBase<TResult>
@@ -864,8 +1124,7 @@ namespace NMF.Expressions
             {
                 if (Proxy != null)
                     yield return Proxy;
-
-                yield return Argument1;                yield return Argument2;                yield return Argument3;                yield return Argument4;                yield return Argument5;                yield return Argument6;                yield return Argument7;                yield return Argument8;                yield return Argument9;                yield return Argument10;                yield return Argument11;                yield return Argument12;                yield return Argument13;                yield return Argument14;            }
+            }
         }
 
         protected override INotifyValue<TResult> CreateProxy()
@@ -881,6 +1140,41 @@ namespace NMF.Expressions
         public override INotifyExpression<TResult> ApplyParameters(IDictionary<string, object> parameters)
         {
             return new ObservableStaticProxyCall<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, TResult>(ProxyFunction, Argument1.ApplyParameters(parameters), Argument2.ApplyParameters(parameters), Argument3.ApplyParameters(parameters), Argument4.ApplyParameters(parameters), Argument5.ApplyParameters(parameters), Argument6.ApplyParameters(parameters), Argument7.ApplyParameters(parameters), Argument8.ApplyParameters(parameters), Argument9.ApplyParameters(parameters), Argument10.ApplyParameters(parameters), Argument11.ApplyParameters(parameters), Argument12.ApplyParameters(parameters), Argument13.ApplyParameters(parameters), Argument14.ApplyParameters(parameters));
+        }
+
+        protected override void OnAttach()
+        {
+            Argument1.Successors.Add(null);
+            Argument2.Successors.Add(null);
+            Argument3.Successors.Add(null);
+            Argument4.Successors.Add(null);
+            Argument5.Successors.Add(null);
+            Argument6.Successors.Add(null);
+            Argument7.Successors.Add(null);
+            Argument8.Successors.Add(null);
+            Argument9.Successors.Add(null);
+            Argument10.Successors.Add(null);
+            Argument11.Successors.Add(null);
+            Argument12.Successors.Add(null);
+            Argument13.Successors.Add(null);
+            Argument14.Successors.Add(null);
+
+            RenewProxy();
+
+            Argument1.Successors.Remove(null);
+            Argument2.Successors.Remove(null);
+            Argument3.Successors.Remove(null);
+            Argument4.Successors.Remove(null);
+            Argument5.Successors.Remove(null);
+            Argument6.Successors.Remove(null);
+            Argument7.Successors.Remove(null);
+            Argument8.Successors.Remove(null);
+            Argument9.Successors.Remove(null);
+            Argument10.Successors.Remove(null);
+            Argument11.Successors.Remove(null);
+            Argument12.Successors.Remove(null);
+            Argument13.Successors.Remove(null);
+            Argument14.Successors.Remove(null);
         }
     }
     internal sealed class ObservableStaticProxyCall<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, TResult> : ObservableProxyCallBase<TResult>
@@ -949,8 +1243,7 @@ namespace NMF.Expressions
             {
                 if (Proxy != null)
                     yield return Proxy;
-
-                yield return Argument1;                yield return Argument2;                yield return Argument3;                yield return Argument4;                yield return Argument5;                yield return Argument6;                yield return Argument7;                yield return Argument8;                yield return Argument9;                yield return Argument10;                yield return Argument11;                yield return Argument12;                yield return Argument13;                yield return Argument14;                yield return Argument15;            }
+            }
         }
 
         protected override INotifyValue<TResult> CreateProxy()
@@ -966,6 +1259,43 @@ namespace NMF.Expressions
         public override INotifyExpression<TResult> ApplyParameters(IDictionary<string, object> parameters)
         {
             return new ObservableStaticProxyCall<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, TResult>(ProxyFunction, Argument1.ApplyParameters(parameters), Argument2.ApplyParameters(parameters), Argument3.ApplyParameters(parameters), Argument4.ApplyParameters(parameters), Argument5.ApplyParameters(parameters), Argument6.ApplyParameters(parameters), Argument7.ApplyParameters(parameters), Argument8.ApplyParameters(parameters), Argument9.ApplyParameters(parameters), Argument10.ApplyParameters(parameters), Argument11.ApplyParameters(parameters), Argument12.ApplyParameters(parameters), Argument13.ApplyParameters(parameters), Argument14.ApplyParameters(parameters), Argument15.ApplyParameters(parameters));
+        }
+
+        protected override void OnAttach()
+        {
+            Argument1.Successors.Add(null);
+            Argument2.Successors.Add(null);
+            Argument3.Successors.Add(null);
+            Argument4.Successors.Add(null);
+            Argument5.Successors.Add(null);
+            Argument6.Successors.Add(null);
+            Argument7.Successors.Add(null);
+            Argument8.Successors.Add(null);
+            Argument9.Successors.Add(null);
+            Argument10.Successors.Add(null);
+            Argument11.Successors.Add(null);
+            Argument12.Successors.Add(null);
+            Argument13.Successors.Add(null);
+            Argument14.Successors.Add(null);
+            Argument15.Successors.Add(null);
+
+            RenewProxy();
+
+            Argument1.Successors.Remove(null);
+            Argument2.Successors.Remove(null);
+            Argument3.Successors.Remove(null);
+            Argument4.Successors.Remove(null);
+            Argument5.Successors.Remove(null);
+            Argument6.Successors.Remove(null);
+            Argument7.Successors.Remove(null);
+            Argument8.Successors.Remove(null);
+            Argument9.Successors.Remove(null);
+            Argument10.Successors.Remove(null);
+            Argument11.Successors.Remove(null);
+            Argument12.Successors.Remove(null);
+            Argument13.Successors.Remove(null);
+            Argument14.Successors.Remove(null);
+            Argument15.Successors.Remove(null);
         }
     }
 }

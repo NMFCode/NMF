@@ -238,7 +238,8 @@ namespace NMF.Expressions.Linq
                 {
                     var notifiable = SubSource.Value as INotifyEnumerable<TIntermediate>;
                     if (notifiable != null)
-                        notifiable.Successors.Add(this);
+                        notifiable.Successors.Remove(null);
+
                     foreach (var element in SubSource.Value)
                     {
                         AttachResult(element);
@@ -263,14 +264,12 @@ namespace NMF.Expressions.Linq
 
             protected override void OnAttach()
             {
-                SubSource.Successors.Add(this);
                 AttachSubSourceValue();
             }
 
             protected override void OnDetach()
             {
                 DetachSubSourceValue(SubSource.Value, null);
-                SubSource.Successors.Remove(this);
             }
 
             public override INotificationResult Notify(IList<INotificationResult> sources)
@@ -286,6 +285,10 @@ namespace NMF.Expressions.Linq
                     {
                         var subSourceChange = (IValueChangedNotificationResult)change;
                         DetachSubSourceValue((IEnumerable<TIntermediate>)subSourceChange.OldValue, removed);
+
+                        var notifiable = SubSource.Value as INotifyEnumerable<TIntermediate>;
+                        if (notifiable != null)
+                            notifiable.Successors.Add(this);
                         AttachSubSourceValue();
                         added.AddRange(SL.Select(Results.Values, res => res.Value));
                     }

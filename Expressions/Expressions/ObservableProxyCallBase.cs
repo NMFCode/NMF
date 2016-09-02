@@ -56,13 +56,7 @@ namespace NMF.Expressions
         {
             if (Proxy != null)
             {
-                Proxy.Successors.Remove(this);
-                IDisposable disposable = Proxy as IDisposable;
-                if (disposable != null)
-                {
-                    disposable.Dispose();
-                }
-                Proxy = null;
+                Proxy.Dispose();
             }
             Proxy = CreateProxy();
             Proxy.Successors.Add(this);

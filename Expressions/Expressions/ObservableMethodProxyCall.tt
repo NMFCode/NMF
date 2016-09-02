@@ -55,8 +55,6 @@ namespace NMF.Expressions
                     yield return Proxy;
 
                 yield return Target;
-<# for (int j = 1; j <= i; j++) { #>
-                yield return Argument<#= j #>;<# } #>
             }
         }
 
@@ -106,7 +104,16 @@ namespace NMF.Expressions
         protected override void OnAttach()
         {
             RenewProxyFunction();
-            base.OnAttach();
+
+<# for (int j = 1; j <= i; j++) { #>
+            Argument<#= j #>.Successors.Add(null);
+<# } #>
+
+            RenewProxy();
+
+<# for (int j = 1; j <= i; j++) { #>
+            Argument<#= j #>.Successors.Remove(null);
+<# } #>
         }
     }
 <#

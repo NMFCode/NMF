@@ -85,7 +85,10 @@ namespace NMF.Expressions
         protected override void OnAttach()
         {
             RenewProxyFunction();
-            base.OnAttach();
+
+
+            RenewProxy();
+
         }
     }
     internal sealed class ObservableMethodProxyCall<T, T1, TResult> : ObservableProxyCallBase<TResult>
@@ -119,7 +122,7 @@ namespace NMF.Expressions
                     yield return Proxy;
 
                 yield return Target;
-                yield return Argument1;            }
+            }
         }
 
         private void RenewProxyFunction()
@@ -168,7 +171,12 @@ namespace NMF.Expressions
         protected override void OnAttach()
         {
             RenewProxyFunction();
-            base.OnAttach();
+
+            Argument1.Successors.Add(null);
+
+            RenewProxy();
+
+            Argument1.Successors.Remove(null);
         }
     }
     internal sealed class ObservableMethodProxyCall<T, T1, T2, TResult> : ObservableProxyCallBase<TResult>
@@ -205,7 +213,7 @@ namespace NMF.Expressions
                     yield return Proxy;
 
                 yield return Target;
-                yield return Argument1;                yield return Argument2;            }
+            }
         }
 
         private void RenewProxyFunction()
@@ -254,7 +262,14 @@ namespace NMF.Expressions
         protected override void OnAttach()
         {
             RenewProxyFunction();
-            base.OnAttach();
+
+            Argument1.Successors.Add(null);
+            Argument2.Successors.Add(null);
+
+            RenewProxy();
+
+            Argument1.Successors.Remove(null);
+            Argument2.Successors.Remove(null);
         }
     }
     internal sealed class ObservableMethodProxyCall<T, T1, T2, T3, TResult> : ObservableProxyCallBase<TResult>
@@ -294,7 +309,7 @@ namespace NMF.Expressions
                     yield return Proxy;
 
                 yield return Target;
-                yield return Argument1;                yield return Argument2;                yield return Argument3;            }
+            }
         }
 
         private void RenewProxyFunction()
@@ -343,7 +358,16 @@ namespace NMF.Expressions
         protected override void OnAttach()
         {
             RenewProxyFunction();
-            base.OnAttach();
+
+            Argument1.Successors.Add(null);
+            Argument2.Successors.Add(null);
+            Argument3.Successors.Add(null);
+
+            RenewProxy();
+
+            Argument1.Successors.Remove(null);
+            Argument2.Successors.Remove(null);
+            Argument3.Successors.Remove(null);
         }
     }
     internal sealed class ObservableMethodProxyCall<T, T1, T2, T3, T4, TResult> : ObservableProxyCallBase<TResult>
@@ -386,7 +410,7 @@ namespace NMF.Expressions
                     yield return Proxy;
 
                 yield return Target;
-                yield return Argument1;                yield return Argument2;                yield return Argument3;                yield return Argument4;            }
+            }
         }
 
         private void RenewProxyFunction()
@@ -435,7 +459,18 @@ namespace NMF.Expressions
         protected override void OnAttach()
         {
             RenewProxyFunction();
-            base.OnAttach();
+
+            Argument1.Successors.Add(null);
+            Argument2.Successors.Add(null);
+            Argument3.Successors.Add(null);
+            Argument4.Successors.Add(null);
+
+            RenewProxy();
+
+            Argument1.Successors.Remove(null);
+            Argument2.Successors.Remove(null);
+            Argument3.Successors.Remove(null);
+            Argument4.Successors.Remove(null);
         }
     }
     internal sealed class ObservableMethodProxyCall<T, T1, T2, T3, T4, T5, TResult> : ObservableProxyCallBase<TResult>
@@ -481,7 +516,7 @@ namespace NMF.Expressions
                     yield return Proxy;
 
                 yield return Target;
-                yield return Argument1;                yield return Argument2;                yield return Argument3;                yield return Argument4;                yield return Argument5;            }
+            }
         }
 
         private void RenewProxyFunction()
@@ -530,7 +565,20 @@ namespace NMF.Expressions
         protected override void OnAttach()
         {
             RenewProxyFunction();
-            base.OnAttach();
+
+            Argument1.Successors.Add(null);
+            Argument2.Successors.Add(null);
+            Argument3.Successors.Add(null);
+            Argument4.Successors.Add(null);
+            Argument5.Successors.Add(null);
+
+            RenewProxy();
+
+            Argument1.Successors.Remove(null);
+            Argument2.Successors.Remove(null);
+            Argument3.Successors.Remove(null);
+            Argument4.Successors.Remove(null);
+            Argument5.Successors.Remove(null);
         }
     }
     internal sealed class ObservableMethodProxyCall<T, T1, T2, T3, T4, T5, T6, TResult> : ObservableProxyCallBase<TResult>
@@ -579,7 +627,7 @@ namespace NMF.Expressions
                     yield return Proxy;
 
                 yield return Target;
-                yield return Argument1;                yield return Argument2;                yield return Argument3;                yield return Argument4;                yield return Argument5;                yield return Argument6;            }
+            }
         }
 
         private void RenewProxyFunction()
@@ -628,7 +676,22 @@ namespace NMF.Expressions
         protected override void OnAttach()
         {
             RenewProxyFunction();
-            base.OnAttach();
+
+            Argument1.Successors.Add(null);
+            Argument2.Successors.Add(null);
+            Argument3.Successors.Add(null);
+            Argument4.Successors.Add(null);
+            Argument5.Successors.Add(null);
+            Argument6.Successors.Add(null);
+
+            RenewProxy();
+
+            Argument1.Successors.Remove(null);
+            Argument2.Successors.Remove(null);
+            Argument3.Successors.Remove(null);
+            Argument4.Successors.Remove(null);
+            Argument5.Successors.Remove(null);
+            Argument6.Successors.Remove(null);
         }
     }
     internal sealed class ObservableMethodProxyCall<T, T1, T2, T3, T4, T5, T6, T7, TResult> : ObservableProxyCallBase<TResult>
@@ -680,7 +743,7 @@ namespace NMF.Expressions
                     yield return Proxy;
 
                 yield return Target;
-                yield return Argument1;                yield return Argument2;                yield return Argument3;                yield return Argument4;                yield return Argument5;                yield return Argument6;                yield return Argument7;            }
+            }
         }
 
         private void RenewProxyFunction()
@@ -729,7 +792,24 @@ namespace NMF.Expressions
         protected override void OnAttach()
         {
             RenewProxyFunction();
-            base.OnAttach();
+
+            Argument1.Successors.Add(null);
+            Argument2.Successors.Add(null);
+            Argument3.Successors.Add(null);
+            Argument4.Successors.Add(null);
+            Argument5.Successors.Add(null);
+            Argument6.Successors.Add(null);
+            Argument7.Successors.Add(null);
+
+            RenewProxy();
+
+            Argument1.Successors.Remove(null);
+            Argument2.Successors.Remove(null);
+            Argument3.Successors.Remove(null);
+            Argument4.Successors.Remove(null);
+            Argument5.Successors.Remove(null);
+            Argument6.Successors.Remove(null);
+            Argument7.Successors.Remove(null);
         }
     }
     internal sealed class ObservableMethodProxyCall<T, T1, T2, T3, T4, T5, T6, T7, T8, TResult> : ObservableProxyCallBase<TResult>
@@ -784,7 +864,7 @@ namespace NMF.Expressions
                     yield return Proxy;
 
                 yield return Target;
-                yield return Argument1;                yield return Argument2;                yield return Argument3;                yield return Argument4;                yield return Argument5;                yield return Argument6;                yield return Argument7;                yield return Argument8;            }
+            }
         }
 
         private void RenewProxyFunction()
@@ -833,7 +913,26 @@ namespace NMF.Expressions
         protected override void OnAttach()
         {
             RenewProxyFunction();
-            base.OnAttach();
+
+            Argument1.Successors.Add(null);
+            Argument2.Successors.Add(null);
+            Argument3.Successors.Add(null);
+            Argument4.Successors.Add(null);
+            Argument5.Successors.Add(null);
+            Argument6.Successors.Add(null);
+            Argument7.Successors.Add(null);
+            Argument8.Successors.Add(null);
+
+            RenewProxy();
+
+            Argument1.Successors.Remove(null);
+            Argument2.Successors.Remove(null);
+            Argument3.Successors.Remove(null);
+            Argument4.Successors.Remove(null);
+            Argument5.Successors.Remove(null);
+            Argument6.Successors.Remove(null);
+            Argument7.Successors.Remove(null);
+            Argument8.Successors.Remove(null);
         }
     }
     internal sealed class ObservableMethodProxyCall<T, T1, T2, T3, T4, T5, T6, T7, T8, T9, TResult> : ObservableProxyCallBase<TResult>
@@ -891,7 +990,7 @@ namespace NMF.Expressions
                     yield return Proxy;
 
                 yield return Target;
-                yield return Argument1;                yield return Argument2;                yield return Argument3;                yield return Argument4;                yield return Argument5;                yield return Argument6;                yield return Argument7;                yield return Argument8;                yield return Argument9;            }
+            }
         }
 
         private void RenewProxyFunction()
@@ -940,7 +1039,28 @@ namespace NMF.Expressions
         protected override void OnAttach()
         {
             RenewProxyFunction();
-            base.OnAttach();
+
+            Argument1.Successors.Add(null);
+            Argument2.Successors.Add(null);
+            Argument3.Successors.Add(null);
+            Argument4.Successors.Add(null);
+            Argument5.Successors.Add(null);
+            Argument6.Successors.Add(null);
+            Argument7.Successors.Add(null);
+            Argument8.Successors.Add(null);
+            Argument9.Successors.Add(null);
+
+            RenewProxy();
+
+            Argument1.Successors.Remove(null);
+            Argument2.Successors.Remove(null);
+            Argument3.Successors.Remove(null);
+            Argument4.Successors.Remove(null);
+            Argument5.Successors.Remove(null);
+            Argument6.Successors.Remove(null);
+            Argument7.Successors.Remove(null);
+            Argument8.Successors.Remove(null);
+            Argument9.Successors.Remove(null);
         }
     }
     internal sealed class ObservableMethodProxyCall<T, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, TResult> : ObservableProxyCallBase<TResult>
@@ -1001,7 +1121,7 @@ namespace NMF.Expressions
                     yield return Proxy;
 
                 yield return Target;
-                yield return Argument1;                yield return Argument2;                yield return Argument3;                yield return Argument4;                yield return Argument5;                yield return Argument6;                yield return Argument7;                yield return Argument8;                yield return Argument9;                yield return Argument10;            }
+            }
         }
 
         private void RenewProxyFunction()
@@ -1050,7 +1170,30 @@ namespace NMF.Expressions
         protected override void OnAttach()
         {
             RenewProxyFunction();
-            base.OnAttach();
+
+            Argument1.Successors.Add(null);
+            Argument2.Successors.Add(null);
+            Argument3.Successors.Add(null);
+            Argument4.Successors.Add(null);
+            Argument5.Successors.Add(null);
+            Argument6.Successors.Add(null);
+            Argument7.Successors.Add(null);
+            Argument8.Successors.Add(null);
+            Argument9.Successors.Add(null);
+            Argument10.Successors.Add(null);
+
+            RenewProxy();
+
+            Argument1.Successors.Remove(null);
+            Argument2.Successors.Remove(null);
+            Argument3.Successors.Remove(null);
+            Argument4.Successors.Remove(null);
+            Argument5.Successors.Remove(null);
+            Argument6.Successors.Remove(null);
+            Argument7.Successors.Remove(null);
+            Argument8.Successors.Remove(null);
+            Argument9.Successors.Remove(null);
+            Argument10.Successors.Remove(null);
         }
     }
     internal sealed class ObservableMethodProxyCall<T, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, TResult> : ObservableProxyCallBase<TResult>
@@ -1114,7 +1257,7 @@ namespace NMF.Expressions
                     yield return Proxy;
 
                 yield return Target;
-                yield return Argument1;                yield return Argument2;                yield return Argument3;                yield return Argument4;                yield return Argument5;                yield return Argument6;                yield return Argument7;                yield return Argument8;                yield return Argument9;                yield return Argument10;                yield return Argument11;            }
+            }
         }
 
         private void RenewProxyFunction()
@@ -1163,7 +1306,32 @@ namespace NMF.Expressions
         protected override void OnAttach()
         {
             RenewProxyFunction();
-            base.OnAttach();
+
+            Argument1.Successors.Add(null);
+            Argument2.Successors.Add(null);
+            Argument3.Successors.Add(null);
+            Argument4.Successors.Add(null);
+            Argument5.Successors.Add(null);
+            Argument6.Successors.Add(null);
+            Argument7.Successors.Add(null);
+            Argument8.Successors.Add(null);
+            Argument9.Successors.Add(null);
+            Argument10.Successors.Add(null);
+            Argument11.Successors.Add(null);
+
+            RenewProxy();
+
+            Argument1.Successors.Remove(null);
+            Argument2.Successors.Remove(null);
+            Argument3.Successors.Remove(null);
+            Argument4.Successors.Remove(null);
+            Argument5.Successors.Remove(null);
+            Argument6.Successors.Remove(null);
+            Argument7.Successors.Remove(null);
+            Argument8.Successors.Remove(null);
+            Argument9.Successors.Remove(null);
+            Argument10.Successors.Remove(null);
+            Argument11.Successors.Remove(null);
         }
     }
     internal sealed class ObservableMethodProxyCall<T, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, TResult> : ObservableProxyCallBase<TResult>
@@ -1230,7 +1398,7 @@ namespace NMF.Expressions
                     yield return Proxy;
 
                 yield return Target;
-                yield return Argument1;                yield return Argument2;                yield return Argument3;                yield return Argument4;                yield return Argument5;                yield return Argument6;                yield return Argument7;                yield return Argument8;                yield return Argument9;                yield return Argument10;                yield return Argument11;                yield return Argument12;            }
+            }
         }
 
         private void RenewProxyFunction()
@@ -1279,7 +1447,34 @@ namespace NMF.Expressions
         protected override void OnAttach()
         {
             RenewProxyFunction();
-            base.OnAttach();
+
+            Argument1.Successors.Add(null);
+            Argument2.Successors.Add(null);
+            Argument3.Successors.Add(null);
+            Argument4.Successors.Add(null);
+            Argument5.Successors.Add(null);
+            Argument6.Successors.Add(null);
+            Argument7.Successors.Add(null);
+            Argument8.Successors.Add(null);
+            Argument9.Successors.Add(null);
+            Argument10.Successors.Add(null);
+            Argument11.Successors.Add(null);
+            Argument12.Successors.Add(null);
+
+            RenewProxy();
+
+            Argument1.Successors.Remove(null);
+            Argument2.Successors.Remove(null);
+            Argument3.Successors.Remove(null);
+            Argument4.Successors.Remove(null);
+            Argument5.Successors.Remove(null);
+            Argument6.Successors.Remove(null);
+            Argument7.Successors.Remove(null);
+            Argument8.Successors.Remove(null);
+            Argument9.Successors.Remove(null);
+            Argument10.Successors.Remove(null);
+            Argument11.Successors.Remove(null);
+            Argument12.Successors.Remove(null);
         }
     }
     internal sealed class ObservableMethodProxyCall<T, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, TResult> : ObservableProxyCallBase<TResult>
@@ -1349,7 +1544,7 @@ namespace NMF.Expressions
                     yield return Proxy;
 
                 yield return Target;
-                yield return Argument1;                yield return Argument2;                yield return Argument3;                yield return Argument4;                yield return Argument5;                yield return Argument6;                yield return Argument7;                yield return Argument8;                yield return Argument9;                yield return Argument10;                yield return Argument11;                yield return Argument12;                yield return Argument13;            }
+            }
         }
 
         private void RenewProxyFunction()
@@ -1398,7 +1593,36 @@ namespace NMF.Expressions
         protected override void OnAttach()
         {
             RenewProxyFunction();
-            base.OnAttach();
+
+            Argument1.Successors.Add(null);
+            Argument2.Successors.Add(null);
+            Argument3.Successors.Add(null);
+            Argument4.Successors.Add(null);
+            Argument5.Successors.Add(null);
+            Argument6.Successors.Add(null);
+            Argument7.Successors.Add(null);
+            Argument8.Successors.Add(null);
+            Argument9.Successors.Add(null);
+            Argument10.Successors.Add(null);
+            Argument11.Successors.Add(null);
+            Argument12.Successors.Add(null);
+            Argument13.Successors.Add(null);
+
+            RenewProxy();
+
+            Argument1.Successors.Remove(null);
+            Argument2.Successors.Remove(null);
+            Argument3.Successors.Remove(null);
+            Argument4.Successors.Remove(null);
+            Argument5.Successors.Remove(null);
+            Argument6.Successors.Remove(null);
+            Argument7.Successors.Remove(null);
+            Argument8.Successors.Remove(null);
+            Argument9.Successors.Remove(null);
+            Argument10.Successors.Remove(null);
+            Argument11.Successors.Remove(null);
+            Argument12.Successors.Remove(null);
+            Argument13.Successors.Remove(null);
         }
     }
     internal sealed class ObservableMethodProxyCall<T, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, TResult> : ObservableProxyCallBase<TResult>
@@ -1471,7 +1695,7 @@ namespace NMF.Expressions
                     yield return Proxy;
 
                 yield return Target;
-                yield return Argument1;                yield return Argument2;                yield return Argument3;                yield return Argument4;                yield return Argument5;                yield return Argument6;                yield return Argument7;                yield return Argument8;                yield return Argument9;                yield return Argument10;                yield return Argument11;                yield return Argument12;                yield return Argument13;                yield return Argument14;            }
+            }
         }
 
         private void RenewProxyFunction()
@@ -1520,7 +1744,38 @@ namespace NMF.Expressions
         protected override void OnAttach()
         {
             RenewProxyFunction();
-            base.OnAttach();
+
+            Argument1.Successors.Add(null);
+            Argument2.Successors.Add(null);
+            Argument3.Successors.Add(null);
+            Argument4.Successors.Add(null);
+            Argument5.Successors.Add(null);
+            Argument6.Successors.Add(null);
+            Argument7.Successors.Add(null);
+            Argument8.Successors.Add(null);
+            Argument9.Successors.Add(null);
+            Argument10.Successors.Add(null);
+            Argument11.Successors.Add(null);
+            Argument12.Successors.Add(null);
+            Argument13.Successors.Add(null);
+            Argument14.Successors.Add(null);
+
+            RenewProxy();
+
+            Argument1.Successors.Remove(null);
+            Argument2.Successors.Remove(null);
+            Argument3.Successors.Remove(null);
+            Argument4.Successors.Remove(null);
+            Argument5.Successors.Remove(null);
+            Argument6.Successors.Remove(null);
+            Argument7.Successors.Remove(null);
+            Argument8.Successors.Remove(null);
+            Argument9.Successors.Remove(null);
+            Argument10.Successors.Remove(null);
+            Argument11.Successors.Remove(null);
+            Argument12.Successors.Remove(null);
+            Argument13.Successors.Remove(null);
+            Argument14.Successors.Remove(null);
         }
     }
     internal sealed class ObservableMethodProxyCall<T, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, TResult> : ObservableProxyCallBase<TResult>
@@ -1596,7 +1851,7 @@ namespace NMF.Expressions
                     yield return Proxy;
 
                 yield return Target;
-                yield return Argument1;                yield return Argument2;                yield return Argument3;                yield return Argument4;                yield return Argument5;                yield return Argument6;                yield return Argument7;                yield return Argument8;                yield return Argument9;                yield return Argument10;                yield return Argument11;                yield return Argument12;                yield return Argument13;                yield return Argument14;                yield return Argument15;            }
+            }
         }
 
         private void RenewProxyFunction()
@@ -1645,7 +1900,40 @@ namespace NMF.Expressions
         protected override void OnAttach()
         {
             RenewProxyFunction();
-            base.OnAttach();
+
+            Argument1.Successors.Add(null);
+            Argument2.Successors.Add(null);
+            Argument3.Successors.Add(null);
+            Argument4.Successors.Add(null);
+            Argument5.Successors.Add(null);
+            Argument6.Successors.Add(null);
+            Argument7.Successors.Add(null);
+            Argument8.Successors.Add(null);
+            Argument9.Successors.Add(null);
+            Argument10.Successors.Add(null);
+            Argument11.Successors.Add(null);
+            Argument12.Successors.Add(null);
+            Argument13.Successors.Add(null);
+            Argument14.Successors.Add(null);
+            Argument15.Successors.Add(null);
+
+            RenewProxy();
+
+            Argument1.Successors.Remove(null);
+            Argument2.Successors.Remove(null);
+            Argument3.Successors.Remove(null);
+            Argument4.Successors.Remove(null);
+            Argument5.Successors.Remove(null);
+            Argument6.Successors.Remove(null);
+            Argument7.Successors.Remove(null);
+            Argument8.Successors.Remove(null);
+            Argument9.Successors.Remove(null);
+            Argument10.Successors.Remove(null);
+            Argument11.Successors.Remove(null);
+            Argument12.Successors.Remove(null);
+            Argument13.Successors.Remove(null);
+            Argument14.Successors.Remove(null);
+            Argument15.Successors.Remove(null);
         }
     }
 }
