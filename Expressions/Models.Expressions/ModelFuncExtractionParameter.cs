@@ -7,7 +7,7 @@ namespace NMF.Expressions
 {
     internal class ModelFuncExtractionParameter<TBase1, T> : INotifyExpression<T>
     {
-        private readonly SuccessorList successors = new SuccessorList();
+        private readonly ShortList<INotifiable> successors = new ShortList<INotifiable>();
 
         public INotifyExpression<TBase1> Base1 { get; private set; }
         public Func<TBase1, T> MemberGetter { get; private set; }
@@ -112,7 +112,7 @@ namespace NMF.Expressions
     }
     internal class ModelFuncExtractionParameter<TBase1, TBase2, T> : INotifyExpression<T>
     {
-        private readonly SuccessorList successors = new SuccessorList();
+        private readonly ShortList<INotifiable> successors = new ShortList<INotifiable>();
 
         public INotifyExpression<TBase1> Base1 { get; private set; }
         public INotifyExpression<TBase2> Base2 { get; private set; }
@@ -220,7 +220,7 @@ namespace NMF.Expressions
     }
     internal class ModelFuncExtractionParameter<TBase1, TBase2, TBase3, T> : INotifyExpression<T>
     {
-        private readonly SuccessorList successors = new SuccessorList();
+        private readonly ShortList<INotifiable> successors = new ShortList<INotifiable>();
 
         public INotifyExpression<TBase1> Base1 { get; private set; }
         public INotifyExpression<TBase2> Base2 { get; private set; }
@@ -331,7 +331,7 @@ namespace NMF.Expressions
     }
     internal class ModelFuncExtractionParameter<TBase1, TBase2, TBase3, TBase4, T> : INotifyExpression<T>
     {
-        private readonly SuccessorList successors = new SuccessorList();
+        private readonly ShortList<INotifiable> successors = new ShortList<INotifiable>();
 
         public INotifyExpression<TBase1> Base1 { get; private set; }
         public INotifyExpression<TBase2> Base2 { get; private set; }
@@ -445,7 +445,7 @@ namespace NMF.Expressions
     }
     internal class ModelFuncExtractionParameter<TBase1, TBase2, TBase3, TBase4, TBase5, T> : INotifyExpression<T>
     {
-        private readonly SuccessorList successors = new SuccessorList();
+        private readonly ShortList<INotifiable> successors = new ShortList<INotifiable>();
 
         public INotifyExpression<TBase1> Base1 { get; private set; }
         public INotifyExpression<TBase2> Base2 { get; private set; }
@@ -562,7 +562,7 @@ namespace NMF.Expressions
     }
     internal class ModelFuncExtractionParameter<TBase1, TBase2, TBase3, TBase4, TBase5, TBase6, T> : INotifyExpression<T>
     {
-        private readonly SuccessorList successors = new SuccessorList();
+        private readonly ShortList<INotifiable> successors = new ShortList<INotifiable>();
 
         public INotifyExpression<TBase1> Base1 { get; private set; }
         public INotifyExpression<TBase2> Base2 { get; private set; }
@@ -682,7 +682,7 @@ namespace NMF.Expressions
     }
     internal class ModelFuncExtractionParameter<TBase1, TBase2, TBase3, TBase4, TBase5, TBase6, TBase7, T> : INotifyExpression<T>
     {
-        private readonly SuccessorList successors = new SuccessorList();
+        private readonly ShortList<INotifiable> successors = new ShortList<INotifiable>();
 
         public INotifyExpression<TBase1> Base1 { get; private set; }
         public INotifyExpression<TBase2> Base2 { get; private set; }

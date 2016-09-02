@@ -15,7 +15,7 @@ namespace NMF.Expressions
 
         public IEnumerable<INotifiable> Dependencies { get { return Enumerable.Empty<INotifiable>(); } }
 
-        private readonly SuccessorList successors = new SuccessorList();
+        private readonly ShortList<INotifiable> successors = new ShortList<INotifiable>();
 
         public event EventHandler<ValueChangedEventArgs> ValueChanged { add { } remove { } }
 

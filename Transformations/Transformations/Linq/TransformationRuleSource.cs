@@ -127,7 +127,7 @@ namespace NMF.Transformations.Linq
             return items.GetEnumerator();
         }
 
-        private readonly SuccessorList successors = new SuccessorList();
+        private readonly ShortList<INotifiable> successors = new ShortList<INotifiable>();
         public IList<INotifiable> Successors { get { return successors; } }
 
         public IEnumerable<INotifiable> Dependencies { get { return Enumerable.Empty<INotifiable>(); } }
@@ -265,7 +265,7 @@ namespace NMF.Transformations.Linq
             return items.GetEnumerator();
         }
 
-        private readonly SuccessorList successors = new SuccessorList();
+        private readonly ShortList<INotifiable> successors = new ShortList<INotifiable>();
         public IList<INotifiable> Successors { get { return successors; } }
 
         public IEnumerable<INotifiable> Dependencies { get { return Enumerable.Empty<INotifiable>(); } }
@@ -399,7 +399,7 @@ namespace NMF.Transformations.Linq
             return items.GetEnumerator();
         }
 
-        private readonly SuccessorList successors = new SuccessorList();
+        private readonly ShortList<INotifiable> successors = new ShortList<INotifiable>();
         public IList<INotifiable> Successors { get { return successors; } }
 
         public IEnumerable<INotifiable> Dependencies { get { return Enumerable.Empty<INotifiable>(); } }
@@ -535,7 +535,7 @@ namespace NMF.Transformations.Linq
             return items.GetEnumerator();
         }
 
-        private readonly SuccessorList successors = new SuccessorList();
+        private readonly ShortList<INotifiable> successors = new ShortList<INotifiable>();
         public IList<INotifiable> Successors { get { return successors; } }
 
         public IEnumerable<INotifiable> Dependencies { get { return Enumerable.Empty<INotifiable>(); } }

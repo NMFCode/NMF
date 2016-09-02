@@ -11,7 +11,7 @@ namespace NMF.Models.Collections
 {
     public class DescendantsCollection : IEnumerableExpression<IModelElement>, INotifyEnumerable<IModelElement>
     {
-        private readonly SuccessorList successors = new SuccessorList();
+        private readonly ShortList<INotifiable> successors = new ShortList<INotifiable>();
         public IModelElement Element { get; private set; }
 
         private INotifyEnumerable<IModelElement> childrenCollection;

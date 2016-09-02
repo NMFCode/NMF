@@ -9,7 +9,7 @@ namespace NMF.Expressions.Linq
 {
     internal class ObservableSingleOrDefault<TSource> : INotifyValue<TSource>, INotifyReversableValue<TSource>
     {
-        private readonly SuccessorList successors = new SuccessorList();
+        private readonly ShortList<INotifiable> successors = new ShortList<INotifiable>();
         private TSource value;
         private INotifyEnumerable<TSource> source;
 

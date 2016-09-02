@@ -46,7 +46,11 @@ namespace NMF.Expressions
             metaData.RemainingVisits -= currentValue;
             if (metaData.RemainingVisits > 0)
                 return;
-            
+#if DEBUG
+            if (metaData.RemainingVisits < 0)
+                throw new InvalidOperationException("RemainingVisits < 0: This should never happen!");
+#endif
+
             INotificationResult result = null;
             if (evaluating)
             {
@@ -57,6 +61,10 @@ namespace NMF.Expressions
                 metaData.Sources.Clear();
             }
 
+#if DEBUG
+            if (node.Successors.Count > 1)
+                throw new InvalidOperationException("Node has more than one successor: This should never happen!");
+#endif
             var nextNode = node.Successors[0];
             if (nextNode != null)
             {

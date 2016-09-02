@@ -18,7 +18,7 @@ namespace NMF.Expressions
 
         public event PropertyChangedEventHandler PropertyChanged;
 
-        private readonly SuccessorList successors = new SuccessorList();
+        private readonly ShortList<INotifiable> successors = new ShortList<INotifiable>();
         public IList<INotifiable> Successors { get { return successors; } }
 
         public virtual IEnumerable<INotifiable> Dependencies { get { yield return Expression; } }
@@ -123,7 +123,7 @@ namespace NMF.Expressions
 
         public event PropertyChangedEventHandler PropertyChanged;
 
-        private readonly SuccessorList successors = new SuccessorList();
+        private readonly ShortList<INotifiable> successors = new ShortList<INotifiable>();
         public IList<INotifiable> Successors { get { return successors; } }
 
         public IEnumerable<INotifiable> Dependencies { get { yield return Expression; } }
@@ -245,7 +245,7 @@ namespace NMF.Expressions
 
         public Action<T> UpdateHandler { get; private set; }
 
-        private readonly SuccessorList successors = new SuccessorList();
+        private readonly ShortList<INotifiable> successors = new ShortList<INotifiable>();
 
         public IList<INotifiable> Successors { get { return successors; } }
 

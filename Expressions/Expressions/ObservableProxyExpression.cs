@@ -10,7 +10,7 @@ namespace NMF.Expressions
 {
     class ObservableProxyExpression<T> : Expression, INotifyExpression<T>
     {
-        private readonly SuccessorList successors = new SuccessorList();
+        private readonly ShortList<INotifiable> successors = new ShortList<INotifiable>();
         protected INotifyValue<T> value;
 
         public event EventHandler<ValueChangedEventArgs> ValueChanged;

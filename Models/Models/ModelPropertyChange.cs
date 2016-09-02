@@ -15,7 +15,7 @@ namespace NMF.Models.Expressions
     /// <typeparam name="TProperty">The property type</typeparam>
     public abstract class ModelPropertyChange<TClass, TProperty> : INotifyReversableExpression<TProperty> where TClass : INotifyPropertyChanged
     {
-        private readonly SuccessorList successors = new SuccessorList();
+        private readonly ShortList<INotifiable> successors = new ShortList<INotifiable>();
         private readonly IExecutionContext context = ExecutionEngine.Current.Context;
         private readonly string propertyName;
         

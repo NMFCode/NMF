@@ -178,7 +178,7 @@ namespace NMF.Expressions.Linq
 
     internal class ObservableMin<T> : INotifyValue<T>
     {
-        private readonly SuccessorList successors = new SuccessorList();
+        private readonly ShortList<INotifiable> successors = new ShortList<INotifiable>();
         private INotifyEnumerable<T> source;
         private IComparer<T> comparer;
         private bool hasValue;
@@ -309,7 +309,7 @@ namespace NMF.Expressions.Linq
     internal class ObservableNullableMin<T> : INotifyValue<T?>
         where T : struct
     {
-        private readonly SuccessorList successors = new SuccessorList();
+        private readonly ShortList<INotifiable> successors = new ShortList<INotifiable>();
         private INotifyEnumerable<T?> source;
         private IComparer<T> comparer;
         private T? current;

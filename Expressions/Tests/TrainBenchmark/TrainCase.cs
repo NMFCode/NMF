@@ -29,7 +29,7 @@ namespace TrainBenchmark
         private readonly RunData immediate;
         private readonly RunData transaction;
 
-        private readonly XorShift128Plus rnd = new XorShift128Plus();
+        private readonly XorShift128Plus rnd = new XorShift128Plus(42);
 
         public TrainCase()
         {

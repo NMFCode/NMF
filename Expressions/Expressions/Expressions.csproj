@@ -170,7 +170,6 @@
     <Compile Include="Public\ValueChangedEventArgs.cs" />
     <Compile Include="Execution\ValueChangedNotificationResult.cs" />
     <Compile Include="ReflectionHelper.cs" />
-    <Compile Include="Public\SuccessorList.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Public\Observable.tt">

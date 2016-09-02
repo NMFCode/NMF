@@ -17,7 +17,7 @@ namespace NMF.Expressions
         private class Entry : INotifyReversableExpression<TValue>, INotifyPropertyChanged
         {
             private readonly IExecutionContext context = ExecutionEngine.Current.Context;
-            private readonly SuccessorList successors = new SuccessorList();
+            private readonly ShortList<INotifiable> successors = new ShortList<INotifiable>();
             private TValue value;
 
             public Entry()

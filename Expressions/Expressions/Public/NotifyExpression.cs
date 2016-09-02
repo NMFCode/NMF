@@ -35,7 +35,7 @@ namespace NMF.Expressions
             this.value = value;
         }
 
-        private readonly SuccessorList successors = new SuccessorList();
+        private readonly ShortList<INotifiable> successors = new ShortList<INotifiable>();
         private T value;
 
         public event EventHandler<ValueChangedEventArgs> ValueChanged;

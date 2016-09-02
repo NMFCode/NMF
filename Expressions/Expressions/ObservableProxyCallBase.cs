@@ -66,6 +66,7 @@ namespace NMF.Expressions
             }
             Proxy = CreateProxy();
             Proxy.Successors.Add(this);
+            Proxy.Successors.Remove(null);
         }
 
         public override string ToString()

@@ -175,7 +175,7 @@ namespace NMF.Synchronizations
             }
         }
 
-        private readonly SuccessorList successors = new SuccessorList();
+        private readonly ShortList<INotifiable> successors = new ShortList<INotifiable>();
         public IList<INotifiable> Successors { get { return successors; } }
 
         IEnumerable<INotifiable> INotifiable.Dependencies { get { return Enumerable.Empty<INotifiable>(); } }
