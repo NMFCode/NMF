@@ -75,10 +75,5 @@ namespace NMF.Expressions
                 RenewProxy();
             return base.Notify(sources);
         }
-
-        protected override void OnAttach()
-        {
-            RenewProxy();
-        }
     }
 }
