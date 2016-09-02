@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 
 namespace NMF.Expressions
@@ -99,6 +100,8 @@ namespace NMF.Expressions
             private readonly Dictionary<Tuple<INotifiable, INotifyPropertyChanged, string>, PropertyChangedEventHandler> propertyChangedHandler = new Dictionary<Tuple<INotifiable, INotifyPropertyChanged, string>, PropertyChangedEventHandler>();
             private readonly Dictionary<Tuple<INotifiable, INotifyCollectionChanged>, NotifyCollectionChangedEventHandler> collectionChangedHandler = new Dictionary<Tuple<INotifiable, INotifyCollectionChanged>, NotifyCollectionChangedEventHandler>();
 
+            //TODO make accessible for engine
+            private readonly Dictionary<INotifyCollectionChanged, ICollectionChangedNotificationResult> collectionChanges = new Dictionary<INotifyCollectionChanged, ICollectionChangedNotificationResult>();
             public ExecutionContext(ExecutionEngine engine)
             {
                 this.engine = engine;
@@ -118,10 +121,16 @@ namespace NMF.Expressions
 
             public void AddChangeListener(INotifiable node, INotifyCollectionChanged collection)
             {
-                NotifyCollectionChangedEventHandler handler = (obj, e) => engine.SetInvalidNode(node);
+                NotifyCollectionChangedEventHandler handler = (obj, e) =>
+                {
+                    engine.SetInvalidNode(node);
+                    TrackCollectionChanges(collection, e);
+                };
                 collection.CollectionChanged += handler;
                 collectionChangedHandler[new Tuple<INotifiable, INotifyCollectionChanged>(node, collection)] = handler;
             }
+
+            
 
             public void RemoveChangeListener(INotifiable node, INotifyPropertyChanged element, string propertyName)
             {
@@ -156,6 +165,91 @@ namespace NMF.Expressions
                 collectionChangedHandler.Clear();
 
                 GC.SuppressFinalize(this);
+            }
+
+            private void TrackCollectionChanges(INotifyCollectionChanged collection, NotifyCollectionChangedEventArgs e)
+            {
+                //TODO refactor into smaller pieces
+                //TODO move reflection into conditionals
+                var genericType = collection.GetType().GetGenericArguments()[0]; 
+                var genericListType = typeof(List<>).MakeGenericType(genericType);
+                var genericResultType =
+                    typeof(CollectionChangedNotificationResult<>).MakeGenericType(genericType);
+
+                ICollectionChangedNotificationResult changes;
+                if (!collectionChanges.TryGetValue(collection, out changes))
+                {
+                    object[] args =
+                    {
+                            null,
+                            Activator.CreateInstance(genericListType),
+                            Activator.CreateInstance(genericListType),
+                            Activator.CreateInstance(genericListType),
+                            Activator.CreateInstance(genericListType),
+                            Activator.CreateInstance(genericListType)
+                    };
+                    changes = (ICollectionChangedNotificationResult)Activator.CreateInstance(genericResultType, args);
+                    collectionChanges[collection] = changes;
+                }
+
+                //TODO null checks
+                //if verwenden
+                //if isReset anpassen
+                switch (e.Action)
+                {
+                    case NotifyCollectionChangedAction.Add:
+                        foreach (var item in e.NewItems)
+                        {
+                            if (changes.RemovedItems.Contains(item))
+                                changes.RemovedItems.Remove(item);
+                            else if (changes.ReplaceRemovedItems.Contains(item))
+                                changes.ReplaceRemovedItems.Remove(item);
+                            else
+                                changes.AddedItems.Add(item);
+                        }
+                        break;
+                    case NotifyCollectionChangedAction.Remove:
+                        foreach (var item in e.OldItems)
+                        {
+                            if (changes.AddedItems.Contains(item))
+                                changes.AddedItems.Remove(item);
+                            else if (changes.ReplaceAddedItems.Contains(item))
+                                changes.ReplaceAddedItems.Remove(item);
+                            else
+                                changes.RemovedItems.Add(item);
+                        }
+                        break;
+                    case NotifyCollectionChangedAction.Move:
+                        foreach (var item in e.OldItems)
+                            changes.MovedItems.Add(item);
+                        break;
+                    case NotifyCollectionChangedAction.Replace:
+                        foreach (var item in e.NewItems)
+                        {
+                            if (changes.RemovedItems.Contains(item))
+                                changes.RemovedItems.Remove(item);
+                            else if (changes.ReplaceRemovedItems.Contains(item))
+                                changes.ReplaceRemovedItems.Remove(item);
+                            else
+                                changes.ReplaceAddedItems.Add(item);
+                        }
+                        foreach (var item in e.OldItems)
+                        {
+                            if (changes.AddedItems.Contains(item))
+                                changes.AddedItems.Remove(item);
+                            else if (changes.ReplaceAddedItems.Contains(item))
+                                changes.ReplaceAddedItems.Remove(item);
+                            else
+                                changes.ReplaceRemovedItems.Add(item);
+                        } 
+                        break;
+                    case NotifyCollectionChangedAction.Reset:
+                        object[] args = { null };
+                        collectionChanges[collection] = (ICollectionChangedNotificationResult)Activator.CreateInstance(genericResultType, args);
+                        break;
+                    default:
+                        throw new ArgumentException("{e.Action} ist keine gültige Aktion für ein NotifyCollectionChanged-Event.");
+                }
             }
         }
     }
