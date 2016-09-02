@@ -65,6 +65,7 @@ namespace NMF.Models.Collections
                 childrenCollection = Element.Children.AsNotifiable();
             }
             childrenCollection.Successors.Add(this);
+            childrenCollection.Successors.Remove(null);
 
             if (childCollections == null)
             {
