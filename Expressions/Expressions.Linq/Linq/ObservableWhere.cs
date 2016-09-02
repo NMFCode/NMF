@@ -253,14 +253,11 @@ namespace NMF.Expressions.Linq
                 if (sourceCollection != null && !sourceCollection.IsReadOnly)
                 {
                     sourceCollection.Add(item);
+                    stack = (TaggedObservableValue<bool, ItemMultiplicity>)AttachItem(item);
                 }
                 else
                 {
                     throw new InvalidOperationException("Source is not a collection or is read-only");
-                }
-                if (!lambdaInstances.TryGetValue(item, out stack))
-                {
-                    throw new InvalidOperationException("Something is wrong with the event hookup.");
                 }
             }
             if (!stack.Value)
@@ -293,6 +290,8 @@ namespace NMF.Expressions.Linq
                     coll.Remove(item);
                 }
             }
+            OnDetach();
+            OnAttach();
         }
 
         bool ICollection<T>.IsReadOnly
