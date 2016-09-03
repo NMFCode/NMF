@@ -100,8 +100,7 @@ namespace NMF.Expressions
             private readonly Dictionary<Tuple<INotifiable, INotifyPropertyChanged, string>, PropertyChangedEventHandler> propertyChangedHandler = new Dictionary<Tuple<INotifiable, INotifyPropertyChanged, string>, PropertyChangedEventHandler>();
             private readonly Dictionary<Tuple<INotifiable, INotifyCollectionChanged>, NotifyCollectionChangedEventHandler> collectionChangedHandler = new Dictionary<Tuple<INotifiable, INotifyCollectionChanged>, NotifyCollectionChangedEventHandler>();
 
-            //TODO make accessible for engine
-            private readonly Dictionary<INotifyCollectionChanged, ICollectionChangedNotificationResult> collectionChanges = new Dictionary<INotifyCollectionChanged, ICollectionChangedNotificationResult>();
+            internal readonly Dictionary<INotifyCollectionChanged, ICollectionChangedNotificationResult> collectionChanges = new Dictionary<INotifyCollectionChanged, ICollectionChangedNotificationResult>();
             public ExecutionContext(ExecutionEngine engine)
             {
                 this.engine = engine;
