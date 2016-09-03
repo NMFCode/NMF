@@ -150,6 +150,9 @@ namespace NMF.Expressions.Linq
 
         public void Attach()
         {
+            foreach (var dep in Dependencies)
+                dep.Successors.Add(this);
+
             foreach (var item in source1)
             {
                 AddSource1(item);
@@ -164,6 +167,9 @@ namespace NMF.Expressions.Linq
         public void Detach()
         {
             entries.Clear();
+
+            foreach (var dep in Dependencies)
+                dep.Successors.Remove(this);
         }
 
         public void Dispose()
