@@ -146,8 +146,8 @@ namespace NMF.Expressions.Linq
 
         public override INotificationResult Notify(IList<INotificationResult> sources)
         {
-            var added = new List<ObservableGroup<TKey, TItem>>();
-            var removed = new List<ObservableGroup<TKey, TItem>>();
+            var added = new List<INotifyGrouping<TKey, TItem>>();
+            var removed = new List<INotifyGrouping<TKey, TItem>>();
 
             foreach (var change in sources)
             {
@@ -159,7 +159,7 @@ namespace NMF.Expressions.Linq
                         OnDetach();
                         OnAttach();
                         OnCleared();
-                        return new CollectionChangedNotificationResult<ObservableGroup<TKey, TItem>>(this);
+                        return new CollectionChangedNotificationResult<INotifyGrouping<TKey, TItem>>(this);
                     }
                     else
                     {
@@ -196,12 +196,12 @@ namespace NMF.Expressions.Linq
             if (added.Count == 0 && removed.Count == 0)
                 return new UnchangedNotificationResult(this);
 
-            OnRemoveItems(removed);
-            OnAddItems(added);
-            return new CollectionChangedNotificationResult<ObservableGroup<TKey, TItem>>(this, added, removed);
+            OnRemoveItems(removed.Cast<ObservableGroup<TKey, TItem>>());
+            OnAddItems(added.Cast<ObservableGroup<TKey, TItem>>());
+            return new CollectionChangedNotificationResult<INotifyGrouping<TKey, TItem>>(this, added, removed);
         }
 
-        private void NotifySource(CollectionChangedNotificationResult<TItem> sourceChange, List<ObservableGroup<TKey, TItem>> added, List<ObservableGroup<TKey, TItem>> removed)
+        private void NotifySource(CollectionChangedNotificationResult<TItem> sourceChange, List<INotifyGrouping<TKey, TItem>> added, List<INotifyGrouping<TKey, TItem>> removed)
         {
             if (sourceChange.RemovedItems != null)
             {
