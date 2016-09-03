@@ -238,7 +238,7 @@ namespace NMF.Expressions
 
             private static ICollectionChangedNotificationResult CreateNewTracker(INotifyCollectionChanged collection, bool isReset)
             {
-                var genericType = collection.GetType().GetTypeInfo().GenericTypeArguments[0];
+                var genericType = collection.GetType().GetGenericArguments()[0];
                 var genericResultType = typeof(CollectionChangedNotificationResult<>).MakeGenericType(genericType);
 
                 IList<object> argsList = new List<object>();
