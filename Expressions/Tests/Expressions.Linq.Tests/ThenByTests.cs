@@ -71,7 +71,6 @@ namespace NMF.Expressions.Linq.Tests
         public void ThenBy_ObservableSequenceExistingItemAdded_Update()
         {
             var update = false;
-            var update1Sequence = false;
             var coll = new OrderableList<int>();
             coll.Sequences.Add(new List<int>() { 6, 4, 5 });
             var list = new ObservableCollection<int>() { 3, 1, 2 };
@@ -81,6 +80,7 @@ namespace NMF.Expressions.Linq.Tests
 
             test.CollectionChanged += (o, e) =>
             {
+                Assert.AreEqual(NotifyCollectionChangedAction.Add, e.Action);
                 Assert.AreEqual(1, e.NewItems[0]);
                 Assert.IsNull(e.OldItems);
                 update = true;
@@ -89,19 +89,10 @@ namespace NMF.Expressions.Linq.Tests
             test.AssertSequence(4, 5, 6, 1, 2, 3);
             Assert.IsFalse(update);
             Assert.AreEqual(6, test.Sequences.Count());
-
-            var sequenceFor1 = test.Sequences.FirstOrDefault(s => s.Contains(1)) as INotifyCollectionChanged;
-            sequenceFor1.CollectionChanged += (o, e) =>
-            {
-                update1Sequence = true;
-                Assert.AreEqual(1, e.NewItems[0]);
-                Assert.IsNull(e.OldItems);
-            };
-
+            
             list.Add(1);
 
             Assert.IsTrue(update);
-            Assert.IsTrue(update1Sequence);
             test.AssertSequence(4, 5, 6, 1, 1, 2, 3);
             Assert.AreEqual(6, test.Sequences.Count());
         }
@@ -162,7 +153,6 @@ namespace NMF.Expressions.Linq.Tests
         public void ThenBy_ObservableSequenceDoubleRemoved_Update()
         {
             var update = false;
-            var update1Sequence = false;
             var coll = new OrderableList<int>();
             coll.Sequences.Add(new List<int>() { 6, 4, 5 });
             var list = new ObservableCollection<int>() { 3, 1, 1, 2 };
@@ -172,6 +162,7 @@ namespace NMF.Expressions.Linq.Tests
 
             test.CollectionChanged += (o, e) =>
             {
+                Assert.AreEqual(NotifyCollectionChangedAction.Remove, e.Action);
                 Assert.AreEqual(1, e.OldItems[0]);
                 Assert.IsNull(e.NewItems);
                 update = true;
@@ -180,19 +171,10 @@ namespace NMF.Expressions.Linq.Tests
             test.AssertSequence(4, 5, 6, 1, 1, 2, 3);
             Assert.IsFalse(update);
             Assert.AreEqual(6, test.Sequences.Count());
-
-            var sequenceFor1 = test.Sequences.FirstOrDefault(s => s.Contains(1)) as INotifyCollectionChanged;
-            sequenceFor1.CollectionChanged += (o, e) =>
-            {
-                update1Sequence = true;
-                Assert.AreEqual(1, e.OldItems[0]);
-                Assert.IsNull(e.NewItems);
-            };
-
+            
             list.Remove(1);
 
             Assert.IsTrue(update);
-            Assert.IsTrue(update1Sequence);
             test.AssertSequence(4, 5, 6, 1, 2, 3);
             Assert.AreEqual(6, test.Sequences.Count());
         }
@@ -396,7 +378,6 @@ namespace NMF.Expressions.Linq.Tests
         public void ThenByDescending_ObservableSequenceExistingItemAdded_Update()
         {
             var update = false;
-            var update1Sequence = false;
             var coll = new OrderableList<int>();
             var list = new ObservableCollection<int>() { 3, 1, 2 };
             coll.Sequences.Add(list);
@@ -406,6 +387,7 @@ namespace NMF.Expressions.Linq.Tests
 
             test.CollectionChanged += (o, e) =>
             {
+                Assert.AreEqual(NotifyCollectionChangedAction.Add, e.Action);
                 Assert.AreEqual(1, e.NewItems[0]);
                 Assert.IsNull(e.OldItems);
                 update = true;
@@ -414,19 +396,10 @@ namespace NMF.Expressions.Linq.Tests
             test.AssertSequence(3, 2, 1, 6, 5, 4);
             Assert.IsFalse(update);
             Assert.AreEqual(6, test.Sequences.Count());
-
-            var sequenceFor1 = test.Sequences.FirstOrDefault(s => s.Contains(1)) as INotifyCollectionChanged;
-            sequenceFor1.CollectionChanged += (o, e) =>
-            {
-                update1Sequence = true;
-                Assert.AreEqual(1, e.NewItems[0]);
-                Assert.IsNull(e.OldItems);
-            };
-
+            
             list.Add(1);
 
             Assert.IsTrue(update);
-            Assert.IsTrue(update1Sequence);
             test.AssertSequence(3, 2, 1, 1, 6, 5, 4);
             Assert.AreEqual(6, test.Sequences.Count());
         }
@@ -487,7 +460,6 @@ namespace NMF.Expressions.Linq.Tests
         public void ThenByDescending_ObservableSequenceDoubleRemoved_Update()
         {
             var update = false;
-            var update1Sequence = false;
             var coll = new OrderableList<int>();
             var list = new ObservableCollection<int>() { 3, 1, 1, 2 };
             coll.Sequences.Add(list);
@@ -497,6 +469,7 @@ namespace NMF.Expressions.Linq.Tests
 
             test.CollectionChanged += (o, e) =>
             {
+                Assert.AreEqual(NotifyCollectionChangedAction.Remove, e.Action);
                 Assert.AreEqual(1, e.OldItems[0]);
                 Assert.IsNull(e.NewItems);
                 update = true;
@@ -505,19 +478,10 @@ namespace NMF.Expressions.Linq.Tests
             test.AssertSequence(3, 2, 1, 1, 6, 5, 4);
             Assert.IsFalse(update);
             Assert.AreEqual(6, test.Sequences.Count());
-
-            var sequenceFor1 = test.Sequences.FirstOrDefault(s => s.Contains(1)) as INotifyCollectionChanged;
-            sequenceFor1.CollectionChanged += (o, e) =>
-            {
-                update1Sequence = true;
-                Assert.AreEqual(1, e.OldItems[0]);
-                Assert.IsNull(e.NewItems);
-            };
-
+            
             list.Remove(1);
 
             Assert.IsTrue(update);
-            Assert.IsTrue(update1Sequence);
             test.AssertSequence(3, 2, 1, 6, 5, 4);
             Assert.AreEqual(6, test.Sequences.Count());
         }
