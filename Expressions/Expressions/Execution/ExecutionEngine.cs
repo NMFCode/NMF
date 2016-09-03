@@ -192,9 +192,9 @@ namespace NMF.Expressions
                     collectionChanges[collection] = changes;
                 }
 
-                //TODO null checks
-                //if verwenden
-                //if isReset anpassen
+                if (changes.IsReset)
+                    return;
+
                 switch (e.Action)
                 {
                     case NotifyCollectionChangedAction.Add:
