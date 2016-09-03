@@ -52,6 +52,7 @@ namespace NMF.Expressions.Linq.Tests
             test.CollectionChanged += (o, e) =>
             {
                 update = true;
+                Assert.AreEqual(NotifyCollectionChangedAction.Add, e.Action);
                 Assert.AreEqual(2, e.NewItems.Count);
                 Assert.IsTrue(e.NewItems.Contains("Foo"));
                 Assert.IsTrue(e.NewItems.Contains("Bar"));
@@ -112,6 +113,7 @@ namespace NMF.Expressions.Linq.Tests
             test.CollectionChanged += (o, e) =>
             {
                 update = true;
+                Assert.AreEqual(NotifyCollectionChangedAction.Remove, e.Action);
                 Assert.AreEqual(1, e.OldItems.Count);
                 Assert.IsTrue(e.OldItems.Contains(null));
                 Assert.IsNull(e.NewItems);
@@ -170,6 +172,7 @@ namespace NMF.Expressions.Linq.Tests
             test.CollectionChanged += (o, e) =>
             {
                 update = true;
+                Assert.AreEqual(NotifyCollectionChangedAction.Add, e.Action);
                 Assert.AreEqual(2, e.NewItems.Count);
                 Assert.IsTrue(e.NewItems.Contains("Foo"));
                 Assert.IsTrue(e.NewItems.Contains("Bar"));
@@ -230,6 +233,7 @@ namespace NMF.Expressions.Linq.Tests
             test.CollectionChanged += (o, e) =>
             {
                 update = true;
+                Assert.AreEqual(NotifyCollectionChangedAction.Remove, e.Action);
                 Assert.AreEqual(1, e.OldItems.Count);
                 Assert.IsTrue(e.OldItems.Contains(null));
                 Assert.IsNull(e.NewItems);
@@ -518,6 +522,7 @@ namespace NMF.Expressions.Linq.Tests
             test.CollectionChanged += (o, e) =>
             {
                 update = true;
+                Assert.AreEqual(NotifyCollectionChangedAction.Add, e.Action);
                 Assert.AreEqual(2, e.NewItems.Count);
                 Assert.IsTrue(e.NewItems.Contains("Foo"));
                 Assert.IsTrue(e.NewItems.Contains("Bar"));
@@ -580,6 +585,7 @@ namespace NMF.Expressions.Linq.Tests
             test.CollectionChanged += (o, e) =>
             {
                 update = true;
+                Assert.AreEqual(NotifyCollectionChangedAction.Remove, e.Action);
                 Assert.AreEqual(1, e.OldItems.Count);
                 Assert.IsTrue(e.OldItems.Contains(null));
                 Assert.IsNull(e.NewItems);
@@ -640,6 +646,7 @@ namespace NMF.Expressions.Linq.Tests
             test.CollectionChanged += (o, e) =>
             {
                 update = true;
+                Assert.AreEqual(NotifyCollectionChangedAction.Add, e.Action);
                 Assert.AreEqual(2, e.NewItems.Count);
                 Assert.IsTrue(e.NewItems.Contains("Foo"));
                 Assert.IsTrue(e.NewItems.Contains("Bar"));
@@ -702,6 +709,7 @@ namespace NMF.Expressions.Linq.Tests
             test.CollectionChanged += (o, e) =>
             {
                 update = true;
+                Assert.AreEqual(NotifyCollectionChangedAction.Remove, e.Action);
                 Assert.AreEqual(1, e.OldItems.Count);
                 Assert.IsTrue(e.OldItems.Contains(null));
                 Assert.IsNull(e.NewItems);

@@ -9,6 +9,7 @@ using System.Collections.Generic;
 
 using NMF.Tests;
 using System.Linq.Expressions;
+using System.Collections.Specialized;
 
 namespace NMF.Transformations.Tests.UnitTests.Relational
 {
@@ -47,6 +48,7 @@ namespace NMF.Transformations.Tests.UnitTests.Relational
             var select = source.Select(s => s.Length);
             select.CollectionChanged += (o, e) =>
             {
+                Assert.AreEqual(NotifyCollectionChangedAction.Add, e.Action);
                 Assert.AreEqual(expectedResult, e.NewItems[0]);
                 nextItemCalled = true;
             };

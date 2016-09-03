@@ -40,6 +40,7 @@ namespace NMF.Expressions.Linq.Tests
 
             test.CollectionChanged += (o, e) =>
             {
+                Assert.AreEqual(NotifyCollectionChangedAction.Add, e.Action);
                 Assert.AreEqual("B", e.NewItems[0]);
                 update = true;
             };
@@ -84,6 +85,7 @@ namespace NMF.Expressions.Linq.Tests
 
             test.CollectionChanged += (o, e) =>
             {
+                Assert.AreEqual(NotifyCollectionChangedAction.Remove, e.Action);
                 Assert.AreEqual("C", e.OldItems[0]);
                 update = true;
             };
@@ -212,6 +214,7 @@ namespace NMF.Expressions.Linq.Tests
 
             test.CollectionChanged += (o, e) =>
             {
+                Assert.AreEqual(NotifyCollectionChangedAction.Add, e.Action);
                 Assert.AreEqual("B", e.NewItems[0]);
                 update = true;
             };
@@ -256,6 +259,7 @@ namespace NMF.Expressions.Linq.Tests
 
             test.CollectionChanged += (o, e) =>
             {
+                Assert.AreEqual(NotifyCollectionChangedAction.Remove, e.Action);
                 Assert.AreEqual("C", e.OldItems[0]);
                 update = true;
             };

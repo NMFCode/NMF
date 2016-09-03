@@ -41,6 +41,7 @@ namespace NMF.Expressions.Linq.Tests
 
             test.CollectionChanged += (o, e) =>
             {
+                Assert.AreEqual(NotifyCollectionChangedAction.Add, e.Action);
                 Assert.IsTrue(ContainsGroup(e.NewItems, "42"));
                 Assert.AreEqual(1, e.NewItems.Count);
                 update = true;
@@ -89,6 +90,7 @@ namespace NMF.Expressions.Linq.Tests
 
             test.CollectionChanged += (o, e) =>
             {
+                Assert.AreEqual(NotifyCollectionChangedAction.Remove, e.Action);
                 Assert.IsTrue(ContainsGroup(e.OldItems, "42"));
                 Assert.AreEqual(1, e.OldItems.Count);
                 update = true;

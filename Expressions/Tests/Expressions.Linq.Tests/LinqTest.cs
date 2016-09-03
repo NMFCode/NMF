@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using NMF.Expressions.Test;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Collections.Specialized;
 
 namespace NMF.Expressions.Linq.Tests
 {
@@ -28,6 +29,7 @@ namespace NMF.Expressions.Linq.Tests
             test.CollectionChanged += (o, e) =>
             {
                 update = true;
+                Assert.AreEqual(NotifyCollectionChangedAction.Add, e.Action);
                 Assert.AreEqual("42", e.NewItems[0]);
             };
 

@@ -4,6 +4,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using Sys = System.Linq.Enumerable;
+using System.Collections.Specialized;
 
 namespace NMF.Expressions.Linq.Tests
 {
@@ -30,7 +31,7 @@ namespace NMF.Expressions.Linq.Tests
         }
 
         [TestMethod]
-		public void Select_ObservableSourceItemAdded_Update()
+        public void Select_ObservableSourceItemAdded_Update()
         {
             var update = false;
             ICollection<Dummy<string>> coll = new ObservableCollection<Dummy<string>>();
@@ -39,6 +40,7 @@ namespace NMF.Expressions.Linq.Tests
 
             test.CollectionChanged += (o, e) =>
             {
+                Assert.AreEqual(NotifyCollectionChangedAction.Add, e.Action);
                 Assert.IsTrue(e.NewItems.Contains("42"));
                 Assert.AreEqual(1, e.NewItems.Count);
                 update = true;
@@ -54,52 +56,53 @@ namespace NMF.Expressions.Linq.Tests
             Assert.IsTrue(Sys.Contains(test, "42"));
         }
 
-		[TestMethod]
-		public void Select_NoObservableSourceItemRemoved_NoUpdate()
-		{
-			var update = false;
-			ICollection<Dummy<string>> coll = new List<Dummy<string>>();
-			var dummy = new Dummy<string>() { Item = "42" };
-			coll.Add(dummy);
+        [TestMethod]
+        public void Select_NoObservableSourceItemRemoved_NoUpdate()
+        {
+            var update = false;
+            ICollection<Dummy<string>> coll = new List<Dummy<string>>();
+            var dummy = new Dummy<string>() { Item = "42" };
+            coll.Add(dummy);
 
-			var test = coll.WithUpdates().Select(d => d.Item);
+            var test = coll.WithUpdates().Select(d => d.Item);
 
-			test.CollectionChanged += (o, e) => update = true;
+            test.CollectionChanged += (o, e) => update = true;
 
-			Assert.IsTrue(Sys.Contains(test, "42"));
-			Assert.IsFalse(update);
+            Assert.IsTrue(Sys.Contains(test, "42"));
+            Assert.IsFalse(update);
 
-			coll.Remove(dummy);
+            coll.Remove(dummy);
 
-			Assert.IsFalse(Sys.Contains(test, "42"));
-			Assert.IsFalse(update);
-		}
+            Assert.IsFalse(Sys.Contains(test, "42"));
+            Assert.IsFalse(update);
+        }
 
-		[TestMethod]
-		public void Select_ObservableSourceItemRemoved_Update()
-		{
-			var update = false;
-			ICollection<Dummy<string>> coll = new ObservableCollection<Dummy<string>>();
-			var dummy = new Dummy<string>() { Item = "42" };
-			coll.Add(dummy);
+        [TestMethod]
+        public void Select_ObservableSourceItemRemoved_Update()
+        {
+            var update = false;
+            ICollection<Dummy<string>> coll = new ObservableCollection<Dummy<string>>();
+            var dummy = new Dummy<string>() { Item = "42" };
+            coll.Add(dummy);
 
-			var test = coll.WithUpdates().Select(d => d.Item);
+            var test = coll.WithUpdates().Select(d => d.Item);
 
-			test.CollectionChanged += (o, e) =>
-			{
-				Assert.IsTrue(e.OldItems.Contains("42"));
-				Assert.AreEqual(1, e.OldItems.Count);
-				update = true;
-			};
+            test.CollectionChanged += (o, e) =>
+            {
+                Assert.AreEqual(NotifyCollectionChangedAction.Remove, e.Action);
+                Assert.IsTrue(e.OldItems.Contains("42"));
+                Assert.AreEqual(1, e.OldItems.Count);
+                update = true;
+            };
 
-			Assert.IsTrue(Sys.Contains(test, "42"));
-			Assert.IsFalse(update);
+            Assert.IsTrue(Sys.Contains(test, "42"));
+            Assert.IsFalse(update);
 
-			coll.Remove(dummy);
+            coll.Remove(dummy);
 
-			Assert.IsTrue(update);
-			Assert.IsFalse(Sys.Contains(test, "42"));
-		}
+            Assert.IsTrue(update);
+            Assert.IsFalse(Sys.Contains(test, "42"));
+        }
 
         [TestMethod]
         public void Select_NoObservableItem_NoUpdates()
