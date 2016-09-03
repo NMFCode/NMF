@@ -112,6 +112,8 @@ namespace NMF.Expressions
             RenewProxy();
 
 <# for (int j = 1; j <= i; j++) { #>
+            if (Argument<#= j #>.Successors.Count == 1)
+                Argument<#= j #>.Successors.Add(this);
             Argument<#= j #>.Successors.Remove(null);
 <# } #>
         }

@@ -12,7 +12,6 @@ namespace NMF.Expressions
 {
     internal class ObservableMemberExpression<TTarget, TMember> : NotifyExpression<TMember>
     {
-        private static readonly bool memberIsNotifiableCollection = typeof(TMember).Implements<INotifiable>() && typeof(TMember).Implements<INotifyCollectionChanged>();
         private readonly IExecutionContext context;
 
         public ObservableMemberExpression(MemberExpression expression, ObservableExpressionBinder binder, string name, Func<TTarget, TMember> getter)
@@ -53,11 +52,7 @@ namespace NMF.Expressions
             get
             {
                 if (Target != null)
-                {
                     yield return Target;
-                    if (memberIsNotifiableCollection)
-                        yield return (INotifiable)GetValue();
-                }
                     
             }
         }
@@ -91,24 +86,13 @@ namespace NMF.Expressions
 
         public override INotificationResult Notify(IList<INotificationResult> sources)
         {
-            if (sources.Count == 2)
-            {
-                //If both target and target.Vale change, only handle target.
-                if (sources[0].Source != Target)
-                    sources[0] = sources[1];
-            }
-
-            if (sources[0].Source == Target)
+            if (sources.Count > 0)
             {
                 var oldValue = ((ValueChangedNotificationResult<TTarget>)sources[0]).OldValue;
                 DetachPropertyChangeListener(oldValue);
                 AttachPropertyChangeListener(Target.Value);
-                return base.Notify(sources);
             }
-            else
-            {
-                return sources[0];
-            }
+            return base.Notify(sources);
         }
 
         protected override void OnAttach()
@@ -140,7 +124,6 @@ namespace NMF.Expressions
 
     internal class ObservableReversableMemberExpression<TTarget, TMember> : ObservableReversableExpression<TMember>
     {
-        private static readonly bool memberIsNotifiableCollection = typeof(TMember).Implements<INotifiable>() && typeof(TMember).Implements<INotifyCollectionChanged>();
         private readonly IExecutionContext context;
 
         public ObservableReversableMemberExpression(MemberExpression expression, ObservableExpressionBinder binder, string name, FieldInfo field)
@@ -193,11 +176,7 @@ namespace NMF.Expressions
             get
             {
                 if (Target != null)
-                {
                     yield return Target;
-                    if (memberIsNotifiableCollection)
-                        yield return (INotifiable)GetValue();
-                }
             }
         }
 
@@ -241,30 +220,13 @@ namespace NMF.Expressions
 
         public override INotificationResult Notify(IList<INotificationResult> sources)
         {
-            INotificationResult collectionResult = null;
             if (sources.Count > 0)
             {
-                foreach (var change in sources)
-                {
-                    if (change.Source == Target)
-                    {
-                        var oldValue = ((IValueChangedNotificationResult)change).OldValue;
-                        DetachPropertyChangeListener(oldValue);
-                        AttachPropertyChangeListener(Target.Value);
-                        return base.Notify(sources);
-                    }
-                    else //change is from the member value being an INotifyEnumerable
-                    {
-                        collectionResult = change;
-                    }
-                }
+                var oldValue = ((IValueChangedNotificationResult)sources[0]).OldValue;
+                DetachPropertyChangeListener(oldValue);
+                AttachPropertyChangeListener(Target.Value);
             }
-
-            var result = base.Notify(sources);
-            if (collectionResult == null || result.Changed)
-                return result;
-            else
-                return collectionResult;
+            return base.Notify(sources);
         }
 
         protected override void OnAttach()

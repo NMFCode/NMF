@@ -80,9 +80,7 @@ namespace NMF.Expressions
         {
             get
             {
-                //TODO remove condition when circular reference in SelectMany is resolved
-                if (!value.GetType().Name.Contains("SubSourcePair"))
-                    yield return value;
+                yield return value;
             }
         }
 

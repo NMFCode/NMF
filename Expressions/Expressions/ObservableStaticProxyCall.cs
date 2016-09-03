@@ -56,6 +56,8 @@ namespace NMF.Expressions
 
             RenewProxy();
 
+            if (Argument1.Successors.Count == 1)
+                Argument1.Successors.Add(this);
             Argument1.Successors.Remove(null);
         }
     }
@@ -111,7 +113,11 @@ namespace NMF.Expressions
 
             RenewProxy();
 
+            if (Argument1.Successors.Count == 1)
+                Argument1.Successors.Add(this);
             Argument1.Successors.Remove(null);
+            if (Argument2.Successors.Count == 1)
+                Argument2.Successors.Add(this);
             Argument2.Successors.Remove(null);
         }
     }
@@ -171,8 +177,14 @@ namespace NMF.Expressions
 
             RenewProxy();
 
+            if (Argument1.Successors.Count == 1)
+                Argument1.Successors.Add(this);
             Argument1.Successors.Remove(null);
+            if (Argument2.Successors.Count == 1)
+                Argument2.Successors.Add(this);
             Argument2.Successors.Remove(null);
+            if (Argument3.Successors.Count == 1)
+                Argument3.Successors.Add(this);
             Argument3.Successors.Remove(null);
         }
     }
@@ -236,9 +248,17 @@ namespace NMF.Expressions
 
             RenewProxy();
 
+            if (Argument1.Successors.Count == 1)
+                Argument1.Successors.Add(this);
             Argument1.Successors.Remove(null);
+            if (Argument2.Successors.Count == 1)
+                Argument2.Successors.Add(this);
             Argument2.Successors.Remove(null);
+            if (Argument3.Successors.Count == 1)
+                Argument3.Successors.Add(this);
             Argument3.Successors.Remove(null);
+            if (Argument4.Successors.Count == 1)
+                Argument4.Successors.Add(this);
             Argument4.Successors.Remove(null);
         }
     }
@@ -306,10 +326,20 @@ namespace NMF.Expressions
 
             RenewProxy();
 
+            if (Argument1.Successors.Count == 1)
+                Argument1.Successors.Add(this);
             Argument1.Successors.Remove(null);
+            if (Argument2.Successors.Count == 1)
+                Argument2.Successors.Add(this);
             Argument2.Successors.Remove(null);
+            if (Argument3.Successors.Count == 1)
+                Argument3.Successors.Add(this);
             Argument3.Successors.Remove(null);
+            if (Argument4.Successors.Count == 1)
+                Argument4.Successors.Add(this);
             Argument4.Successors.Remove(null);
+            if (Argument5.Successors.Count == 1)
+                Argument5.Successors.Add(this);
             Argument5.Successors.Remove(null);
         }
     }
@@ -381,11 +411,23 @@ namespace NMF.Expressions
 
             RenewProxy();
 
+            if (Argument1.Successors.Count == 1)
+                Argument1.Successors.Add(this);
             Argument1.Successors.Remove(null);
+            if (Argument2.Successors.Count == 1)
+                Argument2.Successors.Add(this);
             Argument2.Successors.Remove(null);
+            if (Argument3.Successors.Count == 1)
+                Argument3.Successors.Add(this);
             Argument3.Successors.Remove(null);
+            if (Argument4.Successors.Count == 1)
+                Argument4.Successors.Add(this);
             Argument4.Successors.Remove(null);
+            if (Argument5.Successors.Count == 1)
+                Argument5.Successors.Add(this);
             Argument5.Successors.Remove(null);
+            if (Argument6.Successors.Count == 1)
+                Argument6.Successors.Add(this);
             Argument6.Successors.Remove(null);
         }
     }
@@ -461,12 +503,26 @@ namespace NMF.Expressions
 
             RenewProxy();
 
+            if (Argument1.Successors.Count == 1)
+                Argument1.Successors.Add(this);
             Argument1.Successors.Remove(null);
+            if (Argument2.Successors.Count == 1)
+                Argument2.Successors.Add(this);
             Argument2.Successors.Remove(null);
+            if (Argument3.Successors.Count == 1)
+                Argument3.Successors.Add(this);
             Argument3.Successors.Remove(null);
+            if (Argument4.Successors.Count == 1)
+                Argument4.Successors.Add(this);
             Argument4.Successors.Remove(null);
+            if (Argument5.Successors.Count == 1)
+                Argument5.Successors.Add(this);
             Argument5.Successors.Remove(null);
+            if (Argument6.Successors.Count == 1)
+                Argument6.Successors.Add(this);
             Argument6.Successors.Remove(null);
+            if (Argument7.Successors.Count == 1)
+                Argument7.Successors.Add(this);
             Argument7.Successors.Remove(null);
         }
     }
@@ -546,13 +602,29 @@ namespace NMF.Expressions
 
             RenewProxy();
 
+            if (Argument1.Successors.Count == 1)
+                Argument1.Successors.Add(this);
             Argument1.Successors.Remove(null);
+            if (Argument2.Successors.Count == 1)
+                Argument2.Successors.Add(this);
             Argument2.Successors.Remove(null);
+            if (Argument3.Successors.Count == 1)
+                Argument3.Successors.Add(this);
             Argument3.Successors.Remove(null);
+            if (Argument4.Successors.Count == 1)
+                Argument4.Successors.Add(this);
             Argument4.Successors.Remove(null);
+            if (Argument5.Successors.Count == 1)
+                Argument5.Successors.Add(this);
             Argument5.Successors.Remove(null);
+            if (Argument6.Successors.Count == 1)
+                Argument6.Successors.Add(this);
             Argument6.Successors.Remove(null);
+            if (Argument7.Successors.Count == 1)
+                Argument7.Successors.Add(this);
             Argument7.Successors.Remove(null);
+            if (Argument8.Successors.Count == 1)
+                Argument8.Successors.Add(this);
             Argument8.Successors.Remove(null);
         }
     }
@@ -636,14 +708,32 @@ namespace NMF.Expressions
 
             RenewProxy();
 
+            if (Argument1.Successors.Count == 1)
+                Argument1.Successors.Add(this);
             Argument1.Successors.Remove(null);
+            if (Argument2.Successors.Count == 1)
+                Argument2.Successors.Add(this);
             Argument2.Successors.Remove(null);
+            if (Argument3.Successors.Count == 1)
+                Argument3.Successors.Add(this);
             Argument3.Successors.Remove(null);
+            if (Argument4.Successors.Count == 1)
+                Argument4.Successors.Add(this);
             Argument4.Successors.Remove(null);
+            if (Argument5.Successors.Count == 1)
+                Argument5.Successors.Add(this);
             Argument5.Successors.Remove(null);
+            if (Argument6.Successors.Count == 1)
+                Argument6.Successors.Add(this);
             Argument6.Successors.Remove(null);
+            if (Argument7.Successors.Count == 1)
+                Argument7.Successors.Add(this);
             Argument7.Successors.Remove(null);
+            if (Argument8.Successors.Count == 1)
+                Argument8.Successors.Add(this);
             Argument8.Successors.Remove(null);
+            if (Argument9.Successors.Count == 1)
+                Argument9.Successors.Add(this);
             Argument9.Successors.Remove(null);
         }
     }
@@ -731,15 +821,35 @@ namespace NMF.Expressions
 
             RenewProxy();
 
+            if (Argument1.Successors.Count == 1)
+                Argument1.Successors.Add(this);
             Argument1.Successors.Remove(null);
+            if (Argument2.Successors.Count == 1)
+                Argument2.Successors.Add(this);
             Argument2.Successors.Remove(null);
+            if (Argument3.Successors.Count == 1)
+                Argument3.Successors.Add(this);
             Argument3.Successors.Remove(null);
+            if (Argument4.Successors.Count == 1)
+                Argument4.Successors.Add(this);
             Argument4.Successors.Remove(null);
+            if (Argument5.Successors.Count == 1)
+                Argument5.Successors.Add(this);
             Argument5.Successors.Remove(null);
+            if (Argument6.Successors.Count == 1)
+                Argument6.Successors.Add(this);
             Argument6.Successors.Remove(null);
+            if (Argument7.Successors.Count == 1)
+                Argument7.Successors.Add(this);
             Argument7.Successors.Remove(null);
+            if (Argument8.Successors.Count == 1)
+                Argument8.Successors.Add(this);
             Argument8.Successors.Remove(null);
+            if (Argument9.Successors.Count == 1)
+                Argument9.Successors.Add(this);
             Argument9.Successors.Remove(null);
+            if (Argument10.Successors.Count == 1)
+                Argument10.Successors.Add(this);
             Argument10.Successors.Remove(null);
         }
     }
@@ -831,16 +941,38 @@ namespace NMF.Expressions
 
             RenewProxy();
 
+            if (Argument1.Successors.Count == 1)
+                Argument1.Successors.Add(this);
             Argument1.Successors.Remove(null);
+            if (Argument2.Successors.Count == 1)
+                Argument2.Successors.Add(this);
             Argument2.Successors.Remove(null);
+            if (Argument3.Successors.Count == 1)
+                Argument3.Successors.Add(this);
             Argument3.Successors.Remove(null);
+            if (Argument4.Successors.Count == 1)
+                Argument4.Successors.Add(this);
             Argument4.Successors.Remove(null);
+            if (Argument5.Successors.Count == 1)
+                Argument5.Successors.Add(this);
             Argument5.Successors.Remove(null);
+            if (Argument6.Successors.Count == 1)
+                Argument6.Successors.Add(this);
             Argument6.Successors.Remove(null);
+            if (Argument7.Successors.Count == 1)
+                Argument7.Successors.Add(this);
             Argument7.Successors.Remove(null);
+            if (Argument8.Successors.Count == 1)
+                Argument8.Successors.Add(this);
             Argument8.Successors.Remove(null);
+            if (Argument9.Successors.Count == 1)
+                Argument9.Successors.Add(this);
             Argument9.Successors.Remove(null);
+            if (Argument10.Successors.Count == 1)
+                Argument10.Successors.Add(this);
             Argument10.Successors.Remove(null);
+            if (Argument11.Successors.Count == 1)
+                Argument11.Successors.Add(this);
             Argument11.Successors.Remove(null);
         }
     }
@@ -936,17 +1068,41 @@ namespace NMF.Expressions
 
             RenewProxy();
 
+            if (Argument1.Successors.Count == 1)
+                Argument1.Successors.Add(this);
             Argument1.Successors.Remove(null);
+            if (Argument2.Successors.Count == 1)
+                Argument2.Successors.Add(this);
             Argument2.Successors.Remove(null);
+            if (Argument3.Successors.Count == 1)
+                Argument3.Successors.Add(this);
             Argument3.Successors.Remove(null);
+            if (Argument4.Successors.Count == 1)
+                Argument4.Successors.Add(this);
             Argument4.Successors.Remove(null);
+            if (Argument5.Successors.Count == 1)
+                Argument5.Successors.Add(this);
             Argument5.Successors.Remove(null);
+            if (Argument6.Successors.Count == 1)
+                Argument6.Successors.Add(this);
             Argument6.Successors.Remove(null);
+            if (Argument7.Successors.Count == 1)
+                Argument7.Successors.Add(this);
             Argument7.Successors.Remove(null);
+            if (Argument8.Successors.Count == 1)
+                Argument8.Successors.Add(this);
             Argument8.Successors.Remove(null);
+            if (Argument9.Successors.Count == 1)
+                Argument9.Successors.Add(this);
             Argument9.Successors.Remove(null);
+            if (Argument10.Successors.Count == 1)
+                Argument10.Successors.Add(this);
             Argument10.Successors.Remove(null);
+            if (Argument11.Successors.Count == 1)
+                Argument11.Successors.Add(this);
             Argument11.Successors.Remove(null);
+            if (Argument12.Successors.Count == 1)
+                Argument12.Successors.Add(this);
             Argument12.Successors.Remove(null);
         }
     }
@@ -1046,18 +1202,44 @@ namespace NMF.Expressions
 
             RenewProxy();
 
+            if (Argument1.Successors.Count == 1)
+                Argument1.Successors.Add(this);
             Argument1.Successors.Remove(null);
+            if (Argument2.Successors.Count == 1)
+                Argument2.Successors.Add(this);
             Argument2.Successors.Remove(null);
+            if (Argument3.Successors.Count == 1)
+                Argument3.Successors.Add(this);
             Argument3.Successors.Remove(null);
+            if (Argument4.Successors.Count == 1)
+                Argument4.Successors.Add(this);
             Argument4.Successors.Remove(null);
+            if (Argument5.Successors.Count == 1)
+                Argument5.Successors.Add(this);
             Argument5.Successors.Remove(null);
+            if (Argument6.Successors.Count == 1)
+                Argument6.Successors.Add(this);
             Argument6.Successors.Remove(null);
+            if (Argument7.Successors.Count == 1)
+                Argument7.Successors.Add(this);
             Argument7.Successors.Remove(null);
+            if (Argument8.Successors.Count == 1)
+                Argument8.Successors.Add(this);
             Argument8.Successors.Remove(null);
+            if (Argument9.Successors.Count == 1)
+                Argument9.Successors.Add(this);
             Argument9.Successors.Remove(null);
+            if (Argument10.Successors.Count == 1)
+                Argument10.Successors.Add(this);
             Argument10.Successors.Remove(null);
+            if (Argument11.Successors.Count == 1)
+                Argument11.Successors.Add(this);
             Argument11.Successors.Remove(null);
+            if (Argument12.Successors.Count == 1)
+                Argument12.Successors.Add(this);
             Argument12.Successors.Remove(null);
+            if (Argument13.Successors.Count == 1)
+                Argument13.Successors.Add(this);
             Argument13.Successors.Remove(null);
         }
     }
@@ -1161,19 +1343,47 @@ namespace NMF.Expressions
 
             RenewProxy();
 
+            if (Argument1.Successors.Count == 1)
+                Argument1.Successors.Add(this);
             Argument1.Successors.Remove(null);
+            if (Argument2.Successors.Count == 1)
+                Argument2.Successors.Add(this);
             Argument2.Successors.Remove(null);
+            if (Argument3.Successors.Count == 1)
+                Argument3.Successors.Add(this);
             Argument3.Successors.Remove(null);
+            if (Argument4.Successors.Count == 1)
+                Argument4.Successors.Add(this);
             Argument4.Successors.Remove(null);
+            if (Argument5.Successors.Count == 1)
+                Argument5.Successors.Add(this);
             Argument5.Successors.Remove(null);
+            if (Argument6.Successors.Count == 1)
+                Argument6.Successors.Add(this);
             Argument6.Successors.Remove(null);
+            if (Argument7.Successors.Count == 1)
+                Argument7.Successors.Add(this);
             Argument7.Successors.Remove(null);
+            if (Argument8.Successors.Count == 1)
+                Argument8.Successors.Add(this);
             Argument8.Successors.Remove(null);
+            if (Argument9.Successors.Count == 1)
+                Argument9.Successors.Add(this);
             Argument9.Successors.Remove(null);
+            if (Argument10.Successors.Count == 1)
+                Argument10.Successors.Add(this);
             Argument10.Successors.Remove(null);
+            if (Argument11.Successors.Count == 1)
+                Argument11.Successors.Add(this);
             Argument11.Successors.Remove(null);
+            if (Argument12.Successors.Count == 1)
+                Argument12.Successors.Add(this);
             Argument12.Successors.Remove(null);
+            if (Argument13.Successors.Count == 1)
+                Argument13.Successors.Add(this);
             Argument13.Successors.Remove(null);
+            if (Argument14.Successors.Count == 1)
+                Argument14.Successors.Add(this);
             Argument14.Successors.Remove(null);
         }
     }
@@ -1281,20 +1491,50 @@ namespace NMF.Expressions
 
             RenewProxy();
 
+            if (Argument1.Successors.Count == 1)
+                Argument1.Successors.Add(this);
             Argument1.Successors.Remove(null);
+            if (Argument2.Successors.Count == 1)
+                Argument2.Successors.Add(this);
             Argument2.Successors.Remove(null);
+            if (Argument3.Successors.Count == 1)
+                Argument3.Successors.Add(this);
             Argument3.Successors.Remove(null);
+            if (Argument4.Successors.Count == 1)
+                Argument4.Successors.Add(this);
             Argument4.Successors.Remove(null);
+            if (Argument5.Successors.Count == 1)
+                Argument5.Successors.Add(this);
             Argument5.Successors.Remove(null);
+            if (Argument6.Successors.Count == 1)
+                Argument6.Successors.Add(this);
             Argument6.Successors.Remove(null);
+            if (Argument7.Successors.Count == 1)
+                Argument7.Successors.Add(this);
             Argument7.Successors.Remove(null);
+            if (Argument8.Successors.Count == 1)
+                Argument8.Successors.Add(this);
             Argument8.Successors.Remove(null);
+            if (Argument9.Successors.Count == 1)
+                Argument9.Successors.Add(this);
             Argument9.Successors.Remove(null);
+            if (Argument10.Successors.Count == 1)
+                Argument10.Successors.Add(this);
             Argument10.Successors.Remove(null);
+            if (Argument11.Successors.Count == 1)
+                Argument11.Successors.Add(this);
             Argument11.Successors.Remove(null);
+            if (Argument12.Successors.Count == 1)
+                Argument12.Successors.Add(this);
             Argument12.Successors.Remove(null);
+            if (Argument13.Successors.Count == 1)
+                Argument13.Successors.Add(this);
             Argument13.Successors.Remove(null);
+            if (Argument14.Successors.Count == 1)
+                Argument14.Successors.Add(this);
             Argument14.Successors.Remove(null);
+            if (Argument15.Successors.Count == 1)
+                Argument15.Successors.Add(this);
             Argument15.Successors.Remove(null);
         }
     }
