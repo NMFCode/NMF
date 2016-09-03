@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 using System.Text;
@@ -166,35 +167,23 @@ namespace NMF.Expressions
                 GC.SuppressFinalize(this);
             }
 
-            private void TrackCollectionChanges(INotifyCollectionChanged collection, NotifyCollectionChangedEventArgs e)
+            private void TrackCollectionChanges(INotifyCollectionChanged collection, NotifyCollectionChangedEventArgs args)
             {
                 //TODO refactor into smaller pieces
                 ICollectionChangedNotificationResult changes;
                 if (!collectionChanges.TryGetValue(collection, out changes))
                 {
-                    var genericType = collection.GetType().GetGenericArguments()[0];
-                    var genericListType = typeof(List<>).MakeGenericType(genericType);
-                    var genericResultType = typeof(CollectionChangedNotificationResult<>).MakeGenericType(genericType);
-                    object[] args =
-                    {
-                            null,
-                            Activator.CreateInstance(genericListType),
-                            Activator.CreateInstance(genericListType),
-                            Activator.CreateInstance(genericListType),
-                            Activator.CreateInstance(genericListType),
-                            Activator.CreateInstance(genericListType)
-                    };
-                    changes = (ICollectionChangedNotificationResult)Activator.CreateInstance(genericResultType, args);
+                    changes = CreateNewTracker(collection, false);
                     collectionChanges[collection] = changes;
                 }
 
                 if (changes.IsReset)
                     return;
 
-                switch (e.Action)
+                switch (args.Action)
                 {
                     case NotifyCollectionChangedAction.Add:
-                        foreach (var item in e.NewItems)
+                        foreach (var item in args.NewItems)
                         {
                             if (changes.RemovedItems.Contains(item))
                                 changes.RemovedItems.Remove(item);
@@ -205,7 +194,7 @@ namespace NMF.Expressions
                         }
                         break;
                     case NotifyCollectionChangedAction.Remove:
-                        foreach (var item in e.OldItems)
+                        foreach (var item in args.OldItems)
                         {
                             if (changes.AddedItems.Contains(item))
                                 changes.AddedItems.Remove(item);
@@ -216,11 +205,11 @@ namespace NMF.Expressions
                         }
                         break;
                     case NotifyCollectionChangedAction.Move:
-                        foreach (var item in e.OldItems)
+                        foreach (var item in args.OldItems)
                             changes.MovedItems.Add(item);
                         break;
                     case NotifyCollectionChangedAction.Replace:
-                        foreach (var item in e.NewItems)
+                        foreach (var item in args.NewItems)
                         {
                             if (changes.RemovedItems.Contains(item))
                                 changes.RemovedItems.Remove(item);
@@ -229,7 +218,7 @@ namespace NMF.Expressions
                             else
                                 changes.ReplaceAddedItems.Add(item);
                         }
-                        foreach (var item in e.OldItems)
+                        foreach (var item in args.OldItems)
                         {
                             if (changes.AddedItems.Contains(item))
                                 changes.AddedItems.Remove(item);
@@ -240,14 +229,32 @@ namespace NMF.Expressions
                         } 
                         break;
                     case NotifyCollectionChangedAction.Reset:
-                        object[] args = { null };
-                        var genericType = collection.GetType().GetGenericArguments()[0];
-                        var genericResultType = typeof(CollectionChangedNotificationResult<>).MakeGenericType(genericType);
-                        collectionChanges[collection] = (ICollectionChangedNotificationResult)Activator.CreateInstance(genericResultType, args);
+                        collectionChanges[collection] = CreateNewTracker(collection, true);
                         break;
                     default:
-                        throw new ArgumentException("{e.Action} ist keine gültige Aktion für ein NotifyCollectionChanged-Event.");
+                        throw new ArgumentException("{args.Action} is not a valid action for a NotifyCollectionChanged event.");
                 }
+            }
+
+            private static ICollectionChangedNotificationResult CreateNewTracker(INotifyCollectionChanged collection, bool isReset)
+            {
+                var genericType = collection.GetType().GetTypeInfo().GenericTypeArguments[0];
+                var genericResultType = typeof(CollectionChangedNotificationResult<>).MakeGenericType(genericType);
+
+                IList<object> argsList = new List<object>();
+                argsList.Add(null);
+
+                if (!isReset)
+                {
+                    var genericListType = typeof(List<>).MakeGenericType(genericType);
+                    argsList.Add(Activator.CreateInstance(genericListType));
+                    argsList.Add(Activator.CreateInstance(genericListType));
+                    argsList.Add(Activator.CreateInstance(genericListType));
+                    argsList.Add(Activator.CreateInstance(genericListType));
+                    argsList.Add(Activator.CreateInstance(genericListType));
+                }
+
+                return (ICollectionChangedNotificationResult) Activator.CreateInstance(genericResultType, argsList.ToArray());
             }
         }
     }
