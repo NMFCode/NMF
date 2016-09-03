@@ -170,15 +170,12 @@ namespace NMF.Expressions
             private void TrackCollectionChanges(INotifyCollectionChanged collection, NotifyCollectionChangedEventArgs e)
             {
                 //TODO refactor into smaller pieces
-                //TODO move reflection into conditionals
-                var genericType = collection.GetType().GetGenericArguments()[0]; 
-                var genericListType = typeof(List<>).MakeGenericType(genericType);
-                var genericResultType =
-                    typeof(CollectionChangedNotificationResult<>).MakeGenericType(genericType);
-
                 ICollectionChangedNotificationResult changes;
                 if (!collectionChanges.TryGetValue(collection, out changes))
                 {
+                    var genericType = collection.GetType().GetGenericArguments()[0];
+                    var genericListType = typeof(List<>).MakeGenericType(genericType);
+                    var genericResultType = typeof(CollectionChangedNotificationResult<>).MakeGenericType(genericType);
                     object[] args =
                     {
                             null,
@@ -245,6 +242,8 @@ namespace NMF.Expressions
                         break;
                     case NotifyCollectionChangedAction.Reset:
                         object[] args = { null };
+                        var genericType = collection.GetType().GetGenericArguments()[0];
+                        var genericResultType = typeof(CollectionChangedNotificationResult<>).MakeGenericType(genericType);
                         collectionChanges[collection] = (ICollectionChangedNotificationResult)Activator.CreateInstance(genericResultType, args);
                         break;
                     default:
