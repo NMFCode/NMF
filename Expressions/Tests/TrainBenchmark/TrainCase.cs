@@ -26,33 +26,33 @@ namespace TrainBenchmark
 
         public abstract Action<TInject> Inject { get; }
 
-        private readonly RunData immediate;
-        private readonly RunData transaction;
+        public RunData ImmediateRunData { get; }
+        public RunData TransactionRunData { get; }
 
         private readonly XorShift128Plus rnd = new XorShift128Plus(42);
 
         public TrainCase()
         {
-            immediate = new RunData(this);
-            transaction = new RunData(this);
+            ImmediateRunData = new RunData(this);
+            TransactionRunData = new RunData(this);
         }
 
         [Benchmark]
         public void Immediate()
         {
-            DoRepair(immediate.QueryResults.ToList());
-            DoInject(immediate.InjectResults.ToList());
+            DoRepair(ImmediateRunData.QueryResults.ToList());
+            DoInject(ImmediateRunData.InjectResults.ToList());
         }
 
         [Benchmark(Baseline = true)]
         public void Transaction()
         {
             branch::NMF.Expressions.ExecutionEngine.Current.BeginTransaction();
-            DoRepair(transaction.QueryResults);
+            DoRepair(TransactionRunData.QueryResults);
             branch::NMF.Expressions.ExecutionEngine.Current.CommitTransaction();
 
             branch::NMF.Expressions.ExecutionEngine.Current.BeginTransaction();
-            DoInject(transaction.InjectResults);
+            DoInject(TransactionRunData.InjectResults);
             branch::NMF.Expressions.ExecutionEngine.Current.CommitTransaction();
         }
 
@@ -72,7 +72,7 @@ namespace TrainBenchmark
                 Inject(injectTarget);
         }
 
-        private class RunData
+        public class RunData
         {
             public RailwayContainer Model { get; } = LoadRailwayModel();
             

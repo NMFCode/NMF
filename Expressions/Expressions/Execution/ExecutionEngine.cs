@@ -28,8 +28,11 @@ namespace NMF.Expressions
 
         public void CommitTransaction()
         {
-            Execute(invalidNodes);
-            invalidNodes.Clear();
+            if (invalidNodes.Count > 0)
+            {
+                Execute(invalidNodes);
+                invalidNodes.Clear();
+            }
             TransactionActive = false;
         }
 
