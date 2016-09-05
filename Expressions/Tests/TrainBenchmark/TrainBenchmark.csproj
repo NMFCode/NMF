@@ -102,7 +102,7 @@
     <ProjectReference Include="..\..\Expressions\Expressions.csproj">
       <Project>{afca9d1d-26a6-482a-a5ab-0827ad0fd677}</Project>
       <Name>Expressions</Name>
-      <Aliases>branch</Aliases>
+      <Aliases>global</Aliases>
     </ProjectReference>
     <ProjectReference Include="..\..\..\Models\Models.Tests\Models.Tests.csproj">
       <Project>{31EC737E-E2A9-4FFD-A62B-94C0E4546DBA}</Project>

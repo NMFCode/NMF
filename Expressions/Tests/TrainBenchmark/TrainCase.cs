@@ -1,5 +1,4 @@
-﻿extern alias branch;
-using BenchmarkDotNet.Attributes;
+﻿using BenchmarkDotNet.Attributes;
 using NMF.Expressions;
 using NMF.Models.Repository;
 using NMF.Models.Tests.Railway;
@@ -47,13 +46,13 @@ namespace TrainBenchmark
         [Benchmark(Baseline = true)]
         public void Transaction()
         {
-            branch::NMF.Expressions.ExecutionEngine.Current.BeginTransaction();
+            ExecutionEngine.Current.BeginTransaction();
             DoRepair(TransactionRunData.QueryResults);
-            branch::NMF.Expressions.ExecutionEngine.Current.CommitTransaction();
+            ExecutionEngine.Current.CommitTransaction();
 
-            branch::NMF.Expressions.ExecutionEngine.Current.BeginTransaction();
+            ExecutionEngine.Current.BeginTransaction();
             DoInject(TransactionRunData.InjectResults);
-            branch::NMF.Expressions.ExecutionEngine.Current.CommitTransaction();
+            ExecutionEngine.Current.CommitTransaction();
         }
 
         private void DoRepair(List<TResult> errors)
