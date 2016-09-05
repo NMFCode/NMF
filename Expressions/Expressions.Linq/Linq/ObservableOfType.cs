@@ -42,7 +42,7 @@ namespace NMF.Expressions.Linq
             var replaceRemoved = change.ReplaceRemovedItems?.OfType<T>().ToList();
             
             if ((removed?.Count ?? 0) + (added?.Count ?? 0) + (moved?.Count ?? 0) + (replaceAdded?.Count ?? 0) + (replaceRemoved?.Count ?? 0) == 0)
-                return new UnchangedNotificationResult(this);
+                return UnchangedNotificationResult.Instance;
 
             OnRemoveItems(removed);
             OnAddItems(added);

@@ -102,7 +102,7 @@ namespace NMF.Expressions.Linq
                 return new ValueChangedNotificationResult<TResult>(this, oldValue, newValue);
             }
             else
-                return new UnchangedNotificationResult(this);
+                return UnchangedNotificationResult.Instance;
         }
 
         public void Dispose()

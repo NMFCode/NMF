@@ -69,7 +69,7 @@ namespace NMF.Expressions
                 //TODO CollectionChangedNotificationResult?
                 return new ValueChangedNotificationResult<T[]>(this, Value, Value);
             }
-            return new UnchangedNotificationResult(this);
+            return UnchangedNotificationResult.Instance;
         }
 
         protected override void OnAttach()

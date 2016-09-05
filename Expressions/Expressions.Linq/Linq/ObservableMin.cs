@@ -297,7 +297,7 @@ namespace NMF.Expressions.Linq
                 return new ValueChangedNotificationResult<T>(this, oldValue, current);
             }
 
-            return new UnchangedNotificationResult(this);
+            return UnchangedNotificationResult.Instance;
         }
 
         public void Dispose()
@@ -425,7 +425,7 @@ namespace NMF.Expressions.Linq
                 return new ValueChangedNotificationResult<T?>(this, oldValue, current);
             }
 
-            return new UnchangedNotificationResult(this);
+            return UnchangedNotificationResult.Instance;
         }
 
         public void Dispose()

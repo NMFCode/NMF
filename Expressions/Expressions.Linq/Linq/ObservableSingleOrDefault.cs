@@ -216,7 +216,7 @@ namespace NMF.Expressions.Linq
                 return new ValueChangedNotificationResult<TSource>(this, oldValue, newValue);
             }
 
-            return new UnchangedNotificationResult(this);
+            return UnchangedNotificationResult.Instance;
         }
 
         public void Dispose()

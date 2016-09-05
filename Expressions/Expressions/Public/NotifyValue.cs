@@ -52,7 +52,7 @@ namespace NMF.Expressions
                 OnPropertyChanged("Value");
                 return new ValueChangedNotificationResult<T>(this, oldValue, Value);
             }
-            return new UnchangedNotificationResult(this);
+            return UnchangedNotificationResult.Instance;
         }
 
         public void Dispose()
@@ -174,7 +174,7 @@ namespace NMF.Expressions
                 OnPropertyChanged("Value");
                 return new ValueChangedNotificationResult<T>(this, oldValue, Value);
             }
-            return new UnchangedNotificationResult(this);
+            return UnchangedNotificationResult.Instance;
         }
 
         public void Dispose()
@@ -296,7 +296,7 @@ namespace NMF.Expressions
                 OnValueChanged(oldValue, Value);
                 return new ValueChangedNotificationResult<T>(this, oldValue, Value);
             }
-            return new UnchangedNotificationResult(this);
+            return UnchangedNotificationResult.Instance;
         }
 
         public void Dispose()

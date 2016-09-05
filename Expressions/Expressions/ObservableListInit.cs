@@ -133,7 +133,7 @@ namespace NMF.Expressions
             }
             else
             {
-                return new UnchangedNotificationResult(this);
+                return UnchangedNotificationResult.Instance;
             }
         }
 

@@ -172,7 +172,7 @@ namespace NMF.Models.Collections
             }
 
             if (added.Count == 0 && removed.Count == 0)
-                return new UnchangedNotificationResult(this);
+                return UnchangedNotificationResult.Instance;
 
             if (removed.Count > 0)
                 OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Remove, removed));

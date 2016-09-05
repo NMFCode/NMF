@@ -194,7 +194,7 @@ namespace NMF.Expressions.Linq
             }
 
             if (added.Count == 0 && removed.Count == 0)
-                return new UnchangedNotificationResult(this);
+                return UnchangedNotificationResult.Instance;
 
             OnRemoveItems(removed.Cast<ObservableGroup<TKey, TItem>>());
             OnAddItems(added.Cast<ObservableGroup<TKey, TItem>>());

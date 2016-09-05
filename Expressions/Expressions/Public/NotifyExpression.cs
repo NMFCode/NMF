@@ -211,7 +211,7 @@ namespace NMF.Expressions
                 OnValueChanged(oldVal, newVal);
                 return new ValueChangedNotificationResult<T>(this, oldVal, newVal);
             }
-            return new UnchangedNotificationResult(this);
+            return UnchangedNotificationResult.Instance;
         }
 
         /// <summary>

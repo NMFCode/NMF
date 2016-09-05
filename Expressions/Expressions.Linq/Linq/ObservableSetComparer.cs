@@ -192,7 +192,7 @@ namespace NMF.Expressions.Linq
             bool newValue = Value;
 
             if (oldValue == newValue)
-                return new UnchangedNotificationResult(this);
+                return UnchangedNotificationResult.Instance;
             else
                 return new ValueChangedNotificationResult<bool>(this, oldValue, newValue);
         }
