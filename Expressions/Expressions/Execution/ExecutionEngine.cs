@@ -34,11 +34,10 @@ namespace NMF.Expressions
 
         public void CommitTransaction()
         {
-            if (invalidNodes.Count > 0)
-            {
-                Execute(invalidNodes);
-                invalidNodes.Clear();
-            }
+            foreach (var node in invalidNodes)
+                AggregateCollectionChanges(node);
+            Execute(invalidNodes);
+            invalidNodes.Clear();
             TransactionActive = false;
         }
 
@@ -51,7 +50,10 @@ namespace NMF.Expressions
                 throw new InvalidOperationException("A transaction is in progress. Commit or rollback first.");
 
             if (nodes.Length == 1)
+            {
+                AggregateCollectionChanges(nodes[0]);
                 ExecuteSingle(nodes[0]);
+            }
             else
             {
                 BeginTransaction();
@@ -66,7 +68,21 @@ namespace NMF.Expressions
             if (TransactionActive)
                 invalidNodes.Add(node);
             else
+            {
+                AggregateCollectionChanges(node);
                 ExecuteSingle(node);
+            }
+        }
+
+        private void AggregateCollectionChanges(INotifiable node)
+        {
+            INotifyCollectionChanged collection;
+            if (context.TrackedCollections.TryGetValue(node, out collection))
+            {
+                ExecutionContext.ICollectionChangeTracker tracker;
+                if (context.CollectionChanges.TryGetValue(collection, out tracker))
+                    node.ExecutionMetaData.Sources.Add(tracker.GetResult());
+            }
         }
 
         protected abstract void Execute(HashSet<INotifiable> nodes);
@@ -107,6 +123,7 @@ namespace NMF.Expressions
             private readonly Dictionary<Tuple<INotifiable, INotifyCollectionChanged>, NotifyCollectionChangedEventHandler> collectionChangedHandler = new Dictionary<Tuple<INotifiable, INotifyCollectionChanged>, NotifyCollectionChangedEventHandler>();
 
             public readonly Dictionary<INotifyCollectionChanged, ICollectionChangeTracker> CollectionChanges = new Dictionary<INotifyCollectionChanged, ICollectionChangeTracker>();
+            public readonly Dictionary<INotifiable, INotifyCollectionChanged> TrackedCollections = new Dictionary<INotifiable, INotifyCollectionChanged>();
             public ExecutionContext(ExecutionEngine engine)
             {
                 this.engine = engine;
@@ -135,6 +152,7 @@ namespace NMF.Expressions
                 };
                 collection.CollectionChanged += handler;
                 collectionChangedHandler[new Tuple<INotifiable, INotifyCollectionChanged>(node, collection)] = handler;
+                TrackedCollections[node] = collection;
             }
 
 
@@ -157,6 +175,13 @@ namespace NMF.Expressions
                 {
                     collection.CollectionChanged -= handler;
                     collectionChangedHandler.Remove(key);
+                }
+
+                INotifyCollectionChanged trackedColl;
+                if (TrackedCollections.TryGetValue(node, out trackedColl))
+                {
+                    if (trackedColl == collection)
+                        TrackedCollections.Remove(node);
                 }
             }
 
