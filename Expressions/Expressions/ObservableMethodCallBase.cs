@@ -92,7 +92,7 @@ namespace NMF.Expressions
         {
             var newTarget = target as INotifyCollectionChanged;
             if (newTarget != null)
-                context.AddChangeListener(this, newTarget);
+                context.AddChangeListener<T>(this, newTarget);
         }
 
         private void DetachCollectionChangeListener(object target)

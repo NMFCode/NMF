@@ -11,7 +11,7 @@ namespace NMF.Expressions
     {
         void AddChangeListener(INotifiable node, INotifyPropertyChanged element, string propertyName);
 
-        void AddChangeListener(INotifiable node, INotifyCollectionChanged collection);
+        void AddChangeListener<T>(INotifiable node, INotifyCollectionChanged collection);
 
         void RemoveChangeListener(INotifiable node, INotifyPropertyChanged element, string propertyName);
 

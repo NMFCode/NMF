@@ -44,7 +44,7 @@ namespace NMF.Expressions.Linq
                         INotifyCollectionChanged notifier = sequence as INotifyCollectionChanged;
                         if (notifier != null)
                         {
-                            context.AddChangeListener(this, notifier);
+                            context.AddChangeListener<T>(this, notifier);
                         }
                     }
                 }

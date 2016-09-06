@@ -101,7 +101,7 @@ namespace NMF.Expressions
             private readonly Dictionary<Tuple<INotifiable, INotifyPropertyChanged, string>, PropertyChangedEventHandler> propertyChangedHandler = new Dictionary<Tuple<INotifiable, INotifyPropertyChanged, string>, PropertyChangedEventHandler>();
             private readonly Dictionary<Tuple<INotifiable, INotifyCollectionChanged>, NotifyCollectionChangedEventHandler> collectionChangedHandler = new Dictionary<Tuple<INotifiable, INotifyCollectionChanged>, NotifyCollectionChangedEventHandler>();
 
-            internal readonly Dictionary<INotifyCollectionChanged, ICollectionChangedNotificationResult> collectionChanges = new Dictionary<INotifyCollectionChanged, ICollectionChangedNotificationResult>();
+            public readonly Dictionary<INotifyCollectionChanged, ICollectionChangedNotificationResult> CollectionChanges = new Dictionary<INotifyCollectionChanged, ICollectionChangedNotificationResult>();
             public ExecutionContext(ExecutionEngine engine)
             {
                 this.engine = engine;
@@ -119,12 +119,12 @@ namespace NMF.Expressions
                 propertyChangedHandler[new Tuple<INotifiable, INotifyPropertyChanged, string>(node, element, propertyName)] = handler;
             }
 
-            public void AddChangeListener(INotifiable node, INotifyCollectionChanged collection)
+            public void AddChangeListener<T>(INotifiable node, INotifyCollectionChanged collection)
             {
                 NotifyCollectionChangedEventHandler handler = (obj, e) =>
                 {
                     engine.SetInvalidNode(node);
-                    TrackCollectionChanges(collection, e);
+                    TrackCollectionChanges<T>(collection, e);
                 };
                 collection.CollectionChanged += handler;
                 collectionChangedHandler[new Tuple<INotifiable, INotifyCollectionChanged>(node, collection)] = handler;
@@ -167,14 +167,13 @@ namespace NMF.Expressions
                 GC.SuppressFinalize(this);
             }
 
-            private void TrackCollectionChanges(INotifyCollectionChanged collection, NotifyCollectionChangedEventArgs args)
+            private void TrackCollectionChanges<T>(INotifyCollectionChanged collection, NotifyCollectionChangedEventArgs args)
             {
-                //TODO refactor into smaller pieces
                 ICollectionChangedNotificationResult changes;
-                if (!collectionChanges.TryGetValue(collection, out changes))
+                if (!CollectionChanges.TryGetValue(collection, out changes))
                 {
-                    changes = CreateNewTracker(collection, false);
-                    collectionChanges[collection] = changes;
+                    changes = new CollectionChangedNotificationResult<T>(null, new List<T>(), new List<T>(), new List<T>(), new List<T>(), new List<T>());
+                    CollectionChanges[collection] = changes;
                 }
 
                 if (changes.IsReset)
@@ -229,32 +228,11 @@ namespace NMF.Expressions
                         } 
                         break;
                     case NotifyCollectionChangedAction.Reset:
-                        collectionChanges[collection] = CreateNewTracker(collection, true);
+                        CollectionChanges[collection] = new CollectionChangedNotificationResult<T>(null);
                         break;
                     default:
                         throw new ArgumentException("{args.Action} is not a valid action for a NotifyCollectionChanged event.");
                 }
-            }
-
-            private static ICollectionChangedNotificationResult CreateNewTracker(INotifyCollectionChanged collection, bool isReset)
-            {
-                var genericType = collection.GetType().GetGenericArguments()[0];
-                var genericResultType = typeof(CollectionChangedNotificationResult<>).MakeGenericType(genericType);
-
-                IList<object> argsList = new List<object>();
-                argsList.Add(null);
-
-                if (!isReset)
-                {
-                    var genericListType = typeof(List<>).MakeGenericType(genericType);
-                    argsList.Add(Activator.CreateInstance(genericListType));
-                    argsList.Add(Activator.CreateInstance(genericListType));
-                    argsList.Add(Activator.CreateInstance(genericListType));
-                    argsList.Add(Activator.CreateInstance(genericListType));
-                    argsList.Add(Activator.CreateInstance(genericListType));
-                }
-
-                return (ICollectionChangedNotificationResult) Activator.CreateInstance(genericResultType, argsList.ToArray());
             }
         }
     }

@@ -30,7 +30,7 @@ namespace NMF.Expressions.Linq
         {
             var notifiable = inner as INotifyCollectionChanged;
             if (notifiable != null)
-                context.AddChangeListener(this, notifiable);
+                context.AddChangeListener<T>(this, notifiable);
         }
 
         protected override void OnDetach()
