@@ -1,5 +1,6 @@
 ﻿using NMF.Collections.Generic;
 using NMF.Collections.ObjectModel;
+using NMF.Expressions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -23,7 +24,7 @@ namespace NMF.Models.Collections
         {
             if (item != null)
             {
-                item.Deleted += RemoveItem;
+                item.ParentChanged += RemoveItem;
                 item.Parent = Parent;
             }
             return base.Add(item);
@@ -33,7 +34,7 @@ namespace NMF.Models.Collections
         {
             foreach (var item in this)
             {
-                item.Deleted -= RemoveItem;
+                item.ParentChanged -= RemoveItem;
                 item.Delete();
             }
             base.Clear();
@@ -43,7 +44,7 @@ namespace NMF.Models.Collections
         {
             if (item != null && base.Remove(item))
             {
-                item.Deleted -= RemoveItem;
+                item.ParentChanged -= RemoveItem;
                 item.Delete();
                 return true;
             }
@@ -53,7 +54,7 @@ namespace NMF.Models.Collections
             }
         }
 
-        private void RemoveItem(object sender, EventArgs e)
+        private void RemoveItem(object sender, ValueChangedEventArgs e)
         {
             var item = sender as T;
             base.Remove(item);
@@ -75,7 +76,7 @@ namespace NMF.Models.Collections
         {
             if (item != null)
             {
-                item.Deleted += RemoveItem;
+                item.ParentChanged += RemoveItem;
                 item.Parent = Parent;
             }
             return base.Add(item);
@@ -85,7 +86,7 @@ namespace NMF.Models.Collections
         {
             foreach (var item in this)
             {
-                item.Deleted -= RemoveItem;
+                item.ParentChanged -= RemoveItem;
                 item.Delete();
             }
             base.Clear();
@@ -95,7 +96,7 @@ namespace NMF.Models.Collections
         {
             if (item != null && base.Remove(item))
             {
-                item.Deleted -= RemoveItem;
+                item.ParentChanged -= RemoveItem;
                 item.Delete();
                 return true;
             }
@@ -105,7 +106,7 @@ namespace NMF.Models.Collections
             }
         }
 
-        private void RemoveItem(object sender, EventArgs e)
+        private void RemoveItem(object sender, ValueChangedEventArgs e)
         {
             var item = sender as T;
             base.Remove(item);

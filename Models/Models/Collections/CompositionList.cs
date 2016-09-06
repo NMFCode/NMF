@@ -1,4 +1,5 @@
 ﻿using NMF.Collections.ObjectModel;
+using NMF.Expressions;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -28,7 +29,7 @@ namespace NMF.Models.Collections
                 {
                     if (item != null)
                     {
-                        item.Deleted -= RemoveItem;
+                        item.ParentChanged -= RemoveItem;
                         if (item.Parent == Parent)
                         {
                             item.Delete();
@@ -44,7 +45,7 @@ namespace NMF.Models.Collections
         {
             if (!silent && item != null)
             {
-                item.Deleted += RemoveItem;
+                item.ParentChanged += RemoveItem;
                 silent = true;
                 item.Parent = Parent;
                 base.InsertItem(index, item);
@@ -61,7 +62,7 @@ namespace NMF.Models.Collections
                 base.RemoveItem(index);
                 if (item != null)
                 {
-                    item.Deleted -= RemoveItem;
+                    item.ParentChanged -= RemoveItem;
                     if (item.Parent == Parent)
                     {
                         item.Delete();
@@ -81,11 +82,11 @@ namespace NMF.Models.Collections
                 {
                     if (item != null)
                     {
-                        item.Deleted += RemoveItem;
+                        item.ParentChanged += RemoveItem;
                     }
                     if (oldItem != null)
                     {
-                        oldItem.Deleted -= RemoveItem;
+                        oldItem.ParentChanged -= RemoveItem;
                     }
                     base.SetItem(index, item);
                     if (oldItem != null && oldItem.Parent == Parent)
@@ -101,7 +102,7 @@ namespace NMF.Models.Collections
             }
         }
 
-        private void RemoveItem(object sender, EventArgs e)
+        private void RemoveItem(object sender, ValueChangedEventArgs e)
         {
             var item = sender as T;
             Remove(item);
@@ -132,7 +133,7 @@ namespace NMF.Models.Collections
                     {
                         if (item != null)
                         {
-                            item.Deleted -= RemoveItem;
+                            item.ParentChanged -= RemoveItem;
                             if (item.Parent == Parent)
                             {
                                 item.Delete();
@@ -152,7 +153,7 @@ namespace NMF.Models.Collections
                 beforeCollectionChangedAction = () =>
                 {
                     silent = true;
-                    item.Deleted += RemoveItem;
+                    item.ParentChanged += RemoveItem;
                     item.Parent = Parent;
                     silent = false;
                 };
@@ -170,7 +171,7 @@ namespace NMF.Models.Collections
                     silent = true;
                     if (item != null)
                     {
-                        item.Deleted -= RemoveItem;
+                        item.ParentChanged -= RemoveItem;
                         if (item.Parent == Parent)
                         {
                             item.Delete();
@@ -194,11 +195,11 @@ namespace NMF.Models.Collections
                     {
                         if (item != null)
                         {
-                            item.Deleted += RemoveItem;
+                            item.ParentChanged += RemoveItem;
                         }
                         if (oldItem != null)
                         {
-                            oldItem.Deleted -= RemoveItem;
+                            oldItem.ParentChanged -= RemoveItem;
                         }
 
                         if (oldItem != null && oldItem.Parent == Parent)
@@ -216,7 +217,7 @@ namespace NMF.Models.Collections
             }
         }
 
-        private void RemoveItem(object sender, EventArgs e)
+        private void RemoveItem(object sender, ValueChangedEventArgs e)
         {
             var item = sender as T;
             Remove(item);

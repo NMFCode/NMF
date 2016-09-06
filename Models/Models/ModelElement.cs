@@ -70,7 +70,8 @@ namespace NMF.Models
                     if (oldParent != null)
                     {
                         oldParent.Deleted -= CascadeDelete;
-                        if (EnforceModels && oldModel != null && oldModel == oldParent.Parent && oldModel != newModel)
+
+                        if (EnforceModels && oldModel != null && oldModel == oldParent.Parent && newModel == null)
                         {
                             oldModel.RootElements.Add(newParent);
                         }
@@ -88,26 +89,12 @@ namespace NMF.Models
                 }
                 else
                 {
-                    if (oldParent != null)
-                    {
-                        var oldModel = oldParent.Model;
-                        oldParent.Deleted -= CascadeDelete;
+                    var oldModel = oldParent.Model;
+                    oldParent.Deleted -= CascadeDelete;
 
-                        if (oldModel != null)
-                        {
-                            if (oldParent != oldModel)
-                            {
-                                if (EnforceModels)
-                                {
-                                    oldModel.RootElements.Add(this);
-                                }
-                            }
-                            else
-                            {
-                                oldModel.RootElements.Remove(this);
-                            }
-                            PropagateNewModel(null, oldModel, this);
-                        }
+                    if (oldModel != null)
+                    {
+                        PropagateNewModel(null, oldModel, this);
                     }
                 }
                 OnParentChanged(newParent, oldParent);
@@ -168,9 +155,13 @@ namespace NMF.Models
             set
             {
                 if (value == null)
+                {
                     Delete();
+                }
                 else
+                {
                     SetParent(value);
+                }
             }
         }
 
