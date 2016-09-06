@@ -42,8 +42,7 @@ namespace NMF.Expressions.Linq
 
         public override INotificationResult Notify(IList<INotificationResult> sources)
         {
-            //TODO Need information from the NotifyCollectionChangedEventArgs here.
-            return new CollectionChangedNotificationResult<T>(this);
+            return CollectionChangedNotificationResult<T>.Transfer(sources[0] as ICollectionChangedNotificationResult, this);
         }
 
         public override bool Contains(T item)
