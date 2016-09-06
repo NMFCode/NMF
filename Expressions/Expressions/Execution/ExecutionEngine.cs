@@ -106,8 +106,7 @@ namespace NMF.Expressions
             private readonly Dictionary<Tuple<INotifiable, INotifyPropertyChanged, string>, PropertyChangedEventHandler> propertyChangedHandler = new Dictionary<Tuple<INotifiable, INotifyPropertyChanged, string>, PropertyChangedEventHandler>();
             private readonly Dictionary<Tuple<INotifiable, INotifyCollectionChanged>, NotifyCollectionChangedEventHandler> collectionChangedHandler = new Dictionary<Tuple<INotifiable, INotifyCollectionChanged>, NotifyCollectionChangedEventHandler>();
 
-            public readonly Dictionary<INotifyCollectionChanged, ICollectionChangedNotificationResult> CollectionChanges = new Dictionary<INotifyCollectionChanged, ICollectionChangedNotificationResult>();
-
+            public readonly Dictionary<INotifyCollectionChanged, ICollectionChangeTracker> CollectionChanges = new Dictionary<INotifyCollectionChanged, ICollectionChangeTracker>();
             public ExecutionContext(ExecutionEngine engine)
             {
                 this.engine = engine;
@@ -174,78 +173,45 @@ namespace NMF.Expressions
                 GC.SuppressFinalize(this);
             }
 
-            private void TrackCollectionChanges<T>(INotifyCollectionChanged collection,
-                NotifyCollectionChangedEventArgs args)
+            private void TrackCollectionChanges<T>(INotifyCollectionChanged collection, NotifyCollectionChangedEventArgs args)
             {
-                ICollectionChangedNotificationResult changes;
-                if (!CollectionChanges.TryGetValue(collection, out changes))
+                ICollectionChangeTracker temp;
+                if (!CollectionChanges.TryGetValue(collection, out temp))
                 {
-                    changes = new CollectionChangedNotificationResult<T>(null, new List<T>(), new List<T>(),
-                        new List<T>(), new List<T>(), new List<T>());
-                    CollectionChanges[collection] = changes;
+                    temp = new CollectionChangeTracker<T>();
+                    CollectionChanges[collection] = temp;
                 }
 
-                if (changes.IsReset)
-                    return;
+                var tracker = (CollectionChangeTracker<T>) temp;
 
                 switch (args.Action)
                 {
                     case NotifyCollectionChangedAction.Add:
-                        foreach (var item in args.NewItems)
-                        {
-                            if (changes.RemovedItems.Contains(item))
-                                changes.RemovedItems.Remove(item);
-                            else if (changes.ReplaceRemovedItems.Contains(item))
-                                changes.ReplaceRemovedItems.Remove(item);
-                            else
-                                changes.AddedItems.Add(item);
-                        }
+                        tracker.TrackAddAction(args.NewItems as IList<T>);
                         break;
                     case NotifyCollectionChangedAction.Remove:
-                        foreach (var item in args.OldItems)
-                        {
-                            if (changes.AddedItems.Contains(item))
-                                changes.AddedItems.Remove(item);
-                            else if (changes.ReplaceAddedItems.Contains(item))
-                                changes.ReplaceAddedItems.Remove(item);
-                            else
-                                changes.RemovedItems.Add(item);
-                        }
+                        tracker.TrackRemoveAction(args.OldItems as IList<T>);
                         break;
                     case NotifyCollectionChangedAction.Move:
-                        foreach (var item in args.OldItems)
-                            changes.MovedItems.Add(item);
+                        tracker.TrackMoveAction(args.OldItems as IList<T>);
                         break;
                     case NotifyCollectionChangedAction.Replace:
-                        foreach (var item in args.NewItems)
-                        {
-                            if (changes.RemovedItems.Contains(item))
-                                changes.RemovedItems.Remove(item);
-                            else if (changes.ReplaceRemovedItems.Contains(item))
-                                changes.ReplaceRemovedItems.Remove(item);
-                            else
-                                changes.ReplaceAddedItems.Add(item);
-                        }
-                        foreach (var item in args.OldItems)
-                        {
-                            if (changes.AddedItems.Contains(item))
-                                changes.AddedItems.Remove(item);
-                            else if (changes.ReplaceAddedItems.Contains(item))
-                                changes.ReplaceAddedItems.Remove(item);
-                            else
-                                changes.ReplaceRemovedItems.Add(item);
-                        }
+                        tracker.TrackReplaceAction(args.OldItems as IList<T>, args.NewItems as IList<T>);
                         break;
                     case NotifyCollectionChangedAction.Reset:
-                        CollectionChanges[collection] = new CollectionChangedNotificationResult<T>(null);
+                        tracker.TrackResetAction();
                         break;
                     default:
                         throw new ArgumentException(
                             "{args.Action} is not a valid action for a NotifyCollectionChanged event.");
                 }
             }
-
-            private class CollectionChangeTracker<T>
+            
+            internal interface ICollectionChangeTracker
+            {
+                ICollectionChangedNotificationResult GetResult();
+            }
+            private class CollectionChangeTracker<T> : ICollectionChangeTracker
             {
                 private bool _isReset;
                 private readonly List<T> _addedItems = new List<T>();
@@ -273,7 +239,7 @@ namespace NMF.Expressions
                         else if (_replaceRemovedItems.Contains(item))
                             _replaceRemovedItems.Remove(item);
                         else
-                            this._addedItems.Add(item);
+                            _addedItems.Add(item);
                     }
                 }
 
@@ -327,7 +293,7 @@ namespace NMF.Expressions
                     _isReset = true;
                 }
 
-                public CollectionChangedNotificationResult<T> GetResult()
+                public ICollectionChangedNotificationResult GetResult()
                 {
                     if (_isReset)
                         return new CollectionChangedNotificationResult<T>(null);
