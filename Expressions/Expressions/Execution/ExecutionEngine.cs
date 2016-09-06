@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.ComponentModel;
@@ -14,7 +15,10 @@ namespace NMF.Expressions
         private readonly ExecutionContext context;
         private HashSet<INotifiable> invalidNodes = new HashSet<INotifiable>();
 
-        internal IExecutionContext Context { get { return context; } }
+        internal IExecutionContext Context
+        {
+            get { return context; }
+        }
 
         public bool TransactionActive { get; private set; }
 
@@ -82,6 +86,7 @@ namespace NMF.Expressions
         }
 
         private static ExecutionEngine current = new SequentialExecutionEngine();
+
         public static ExecutionEngine Current
         {
             get { return current; }
@@ -102,6 +107,7 @@ namespace NMF.Expressions
             private readonly Dictionary<Tuple<INotifiable, INotifyCollectionChanged>, NotifyCollectionChangedEventHandler> collectionChangedHandler = new Dictionary<Tuple<INotifiable, INotifyCollectionChanged>, NotifyCollectionChangedEventHandler>();
 
             public readonly Dictionary<INotifyCollectionChanged, ICollectionChangedNotificationResult> CollectionChanges = new Dictionary<INotifyCollectionChanged, ICollectionChangedNotificationResult>();
+
             public ExecutionContext(ExecutionEngine engine)
             {
                 this.engine = engine;
@@ -111,12 +117,14 @@ namespace NMF.Expressions
             {
                 PropertyChangedEventHandler handler = (obj, e) =>
                 {
-                    if (e.PropertyName == propertyName || e.PropertyName.Equals(propertyName, StringComparison.OrdinalIgnoreCase))
+                    if (e.PropertyName == propertyName ||
+                        e.PropertyName.Equals(propertyName, StringComparison.OrdinalIgnoreCase))
                         engine.SetInvalidNode(node);
                 };
 
                 element.PropertyChanged += handler;
-                propertyChangedHandler[new Tuple<INotifiable, INotifyPropertyChanged, string>(node, element, propertyName)] = handler;
+                propertyChangedHandler[
+                    new Tuple<INotifiable, INotifyPropertyChanged, string>(node, element, propertyName)] = handler;
             }
 
             public void AddChangeListener<T>(INotifiable node, INotifyCollectionChanged collection)
@@ -130,7 +138,6 @@ namespace NMF.Expressions
                 collectionChangedHandler[new Tuple<INotifiable, INotifyCollectionChanged>(node, collection)] = handler;
             }
 
-            
 
             public void RemoveChangeListener(INotifiable node, INotifyPropertyChanged element, string propertyName)
             {
@@ -167,12 +174,14 @@ namespace NMF.Expressions
                 GC.SuppressFinalize(this);
             }
 
-            private void TrackCollectionChanges<T>(INotifyCollectionChanged collection, NotifyCollectionChangedEventArgs args)
+            private void TrackCollectionChanges<T>(INotifyCollectionChanged collection,
+                NotifyCollectionChangedEventArgs args)
             {
                 ICollectionChangedNotificationResult changes;
                 if (!CollectionChanges.TryGetValue(collection, out changes))
                 {
-                    changes = new CollectionChangedNotificationResult<T>(null, new List<T>(), new List<T>(), new List<T>(), new List<T>(), new List<T>());
+                    changes = new CollectionChangedNotificationResult<T>(null, new List<T>(), new List<T>(),
+                        new List<T>(), new List<T>(), new List<T>());
                     CollectionChanges[collection] = changes;
                 }
 
@@ -225,13 +234,113 @@ namespace NMF.Expressions
                                 changes.ReplaceAddedItems.Remove(item);
                             else
                                 changes.ReplaceRemovedItems.Add(item);
-                        } 
+                        }
                         break;
                     case NotifyCollectionChangedAction.Reset:
                         CollectionChanges[collection] = new CollectionChangedNotificationResult<T>(null);
                         break;
                     default:
-                        throw new ArgumentException("{args.Action} is not a valid action for a NotifyCollectionChanged event.");
+                        throw new ArgumentException(
+                            "{args.Action} is not a valid action for a NotifyCollectionChanged event.");
+                }
+            }
+
+            private class CollectionChangeTracker<T>
+            {
+                private bool _isReset;
+                private readonly List<T> _addedItems = new List<T>();
+                private readonly List<T> _removedItems = new List<T>();
+                private readonly List<T> _movedItems = new List<T>();
+                private readonly List<T> _replaceAddedItems = new List<T>();
+                private readonly List<T> _replaceRemovedItems = new List<T>();
+
+                public CollectionChangeTracker()
+                {
+                }
+
+                public CollectionChangeTracker(bool isReset)
+                {
+                    _isReset = isReset;
+                }
+
+                public void TrackAddAction(IEnumerable<T> addedItems)
+                {
+                    if (_isReset) return;
+                    foreach (var item in addedItems)
+                    {
+                        if (_removedItems.Contains(item))
+                            _removedItems.Remove(item);
+                        else if (_replaceRemovedItems.Contains(item))
+                            _replaceRemovedItems.Remove(item);
+                        else
+                            this._addedItems.Add(item);
+                    }
+                }
+
+                public void TrackRemoveAction(IEnumerable<T> removedItems)
+                {
+                    if (_isReset) return;
+                    foreach (var item in removedItems)
+                    {
+                        if (_addedItems.Contains(item))
+                            _addedItems.Remove(item);
+                        else if (_replaceAddedItems.Contains(item))
+                            _replaceAddedItems.Remove(item);
+                        else
+                            _removedItems.Add(item);
+                    }
+                }
+
+                public void TrackMoveAction(IEnumerable<T> movedItems)
+                {
+                    if (_isReset) return;
+                    foreach (var item in movedItems)
+                        _movedItems.Add(item);
+                }
+
+                public void TrackReplaceAction(IEnumerable<T> replacedItems, IEnumerable<T> replacingItems)
+                {
+                    if (_isReset) return;
+                    foreach (var item in replacingItems)
+                    {
+                        if (_removedItems.Contains(item))
+                            _removedItems.Remove(item);
+                        else if (_replaceRemovedItems.Contains(item))
+                            _replaceRemovedItems.Remove(item);
+                        else
+                            _replaceAddedItems.Add(item);
+                    }
+
+                    foreach (var item in replacedItems)
+                    {
+                        if (_addedItems.Contains(item))
+                            _addedItems.Remove(item);
+                        else if (_replaceAddedItems.Contains(item))
+                            _replaceAddedItems.Remove(item);
+                        else
+                            _replaceRemovedItems.Add(item);
+                    }
+                }
+
+                public void TrackResetAction()
+                {
+                    _isReset = true;
+                }
+
+                public CollectionChangedNotificationResult<T> GetResult()
+                {
+                    if (_isReset)
+                        return new CollectionChangedNotificationResult<T>(null);
+                    else
+                        return new CollectionChangedNotificationResult<T>
+                        (
+                            null,
+                            _addedItems,
+                            _removedItems,
+                            _movedItems,
+                            _replaceAddedItems,
+                            _replaceRemovedItems
+                        );
                 }
             }
         }
