@@ -1,5 +1,6 @@
 ﻿using NMF.CodeGen;
 using NMF.Collections.ObjectModel;
+using NMF.Expressions;
 using NMF.Models;
 using NMF.Models.Meta;
 using NMF.Transformations;
@@ -107,20 +108,24 @@ namespace NMF.Models.Meta
 
                 var targetClass = input.Type;
 
+                var eventName = input.IsContainment ? "ParentChanged" : "Deleted";
+                var eventType = input.IsContainment ? typeof(ValueChangedEventArgs).ToTypeReference() : typeof(EventArgs).ToTypeReference();
+
                 var onItemDeleted = new CodeMemberMethod()
                 {
-                    Name = "OnItemDeleted",
+                    Name = "OnItem" + eventName,
                     Attributes = MemberAttributes.Private,
                     ReturnType = new CodeTypeReference(typeof(void))
                 };
+
                 onItemDeleted.Parameters.Add(new CodeParameterDeclarationExpression(typeof(object), "sender"));
-                onItemDeleted.Parameters.Add(new CodeParameterDeclarationExpression(typeof(EventArgs).ToTypeReference(), "e"));
+                onItemDeleted.Parameters.Add(new CodeParameterDeclarationExpression(eventType, "e"));
                 onItemDeleted.Statements.Add(new CodeMethodInvokeExpression(
                     thisRef, "Remove", new CodeCastExpression(elementTypeReference, new CodeArgumentReferenceExpression("sender"))));
                 output.Members.Add(onItemDeleted);
 
-                ifNotNull.TrueStatements.Add(new CodeAttachEventStatement(item, "Deleted", new CodeMethodReferenceExpression(thisRef, "OnItemDeleted")));
-                ifNotNull.FalseStatements.Add(new CodeRemoveEventStatement(item, "Deleted", new CodeMethodReferenceExpression(thisRef, "OnItemDeleted")));
+                ifNotNull.TrueStatements.Add(new CodeAttachEventStatement(item, eventName, new CodeMethodReferenceExpression(thisRef, "OnItemDeleted")));
+                ifNotNull.FalseStatements.Add(new CodeRemoveEventStatement(item, eventName, new CodeMethodReferenceExpression(thisRef, "OnItemDeleted")));
 
 
                 if (opposite.UpperBound == 1)
