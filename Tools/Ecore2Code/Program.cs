@@ -231,7 +231,7 @@ namespace Ecore2Code
             if (files == null || files.Count == 0) return null;
 
             var packages = new List<INamespace>();
-            var repository = new ModelRepository();
+            var repository = new ModelRepository(EcoreInterop.Repository);
             
             if (resolveMappings != null)
             {
