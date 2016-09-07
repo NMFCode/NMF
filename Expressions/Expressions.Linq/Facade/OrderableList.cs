@@ -17,7 +17,7 @@ namespace NMF.Expressions.Linq
         {
             Sequences = new NotifyCollection<IEnumerable<T>>();
             Sequences.CollectionChanged += SequencesCollectionChanged;
-            context.AddChangeListener<T>(this, Sequences);
+            context.AddChangeListener<IEnumerable<T>>(this, Sequences);
         }
 
         void SequencesCollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
@@ -44,7 +44,7 @@ namespace NMF.Expressions.Linq
                         INotifyCollectionChanged notifier = sequence as INotifyCollectionChanged;
                         if (notifier != null)
                         {
-                            context.AddChangeListener<T>(this, notifier);
+                            context.AddChangeListener<IEnumerable<T>>(this, notifier);
                         }
                     }
                 }
@@ -94,7 +94,7 @@ namespace NMF.Expressions.Linq
         public override INotificationResult Notify(IList<INotificationResult> sources)
         {
             OnCleared();
-            return CollectionChangedNotificationResult<T>.Transfer(sources[0] as ICollectionChangedNotificationResult, this);
+            return CollectionChangedNotificationResult<IEnumerable<T>>.Transfer(sources[0] as ICollectionChangedNotificationResult, this);
         }
     }
 }
