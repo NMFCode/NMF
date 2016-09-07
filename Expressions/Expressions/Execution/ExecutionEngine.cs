@@ -37,6 +37,7 @@ namespace NMF.Expressions
             foreach (var node in invalidNodes)
                 AggregateCollectionChanges(node);
             Execute(invalidNodes);
+            context.CollectionChanges.Clear();
             invalidNodes.Clear();
             TransactionActive = false;
         }
@@ -53,6 +54,7 @@ namespace NMF.Expressions
             {
                 AggregateCollectionChanges(nodes[0]);
                 ExecuteSingle(nodes[0]);
+                context.CollectionChanges.Clear();
             }
             else
             {
@@ -71,6 +73,7 @@ namespace NMF.Expressions
             {
                 AggregateCollectionChanges(node);
                 ExecuteSingle(node);
+                context.CollectionChanges.Clear();
             }
         }
 
