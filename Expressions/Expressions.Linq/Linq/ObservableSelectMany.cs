@@ -325,22 +325,16 @@ namespace NMF.Expressions.Linq
 
             private void NotifySubSourceValue(List<TResult> added, List<TResult> removed, CollectionChangedNotificationResult<TIntermediate> subSourceValueChange)
             {
-                if (subSourceValueChange.AllRemovedItems != null)
+                foreach (var element in subSourceValueChange.AllRemovedItems)
                 {
-                    foreach (var element in subSourceValueChange.RemovedItems)
-                    {
-                        removed.Add(Results[element].Value);
-                        DetachResult(element);
-                    }
+                    removed.Add(Results[element].Value);
+                    DetachResult(element);
                 }
-
-                if (subSourceValueChange.AllAddedItems != null)
+                    
+                foreach (var element in subSourceValueChange.AllAddedItems)
                 {
-                    foreach (var element in subSourceValueChange.AddedItems)
-                    {
-                        AttachResult(element);
-                        added.Add(Results[element].Value);
-                    }
+                    AttachResult(element);
+                    added.Add(Results[element].Value);
                 }
             }
         }

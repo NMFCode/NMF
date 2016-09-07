@@ -197,6 +197,9 @@ namespace NMF.Expressions.Linq
                 }
             }
 
+            if (added.Count == 0 && removed.Count == 0)
+                return UnchangedNotificationResult.Instance;
+
             OnRemoveItems(removed);
             OnAddItems(added);
             return new CollectionChangedNotificationResult<T>(this, added, removed);

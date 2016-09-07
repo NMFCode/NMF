@@ -47,10 +47,9 @@ namespace NMF.Expressions.Linq.Tests
             var violation = false;
 
             var employees = new ObservableCollection<Person>();
-            var employeesWithUpdates = employees.WithUpdates();
-            var violations = from employee in employeesWithUpdates
+            var violations = from employee in employees.WithUpdates()
                              where employee.WorkItems > 2 *
-                                (from collegue in employeesWithUpdates
+                                (from collegue in employees.WithUpdates()
                                  where collegue.Team == employee.Team
                                  select collegue.WorkItems).Average()
                              select employee.Name;
