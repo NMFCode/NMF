@@ -8,6 +8,7 @@ namespace NMF.Expressions.Linq
 {
     internal sealed class ObservableIntersect<TSource> : ObservableEnumerable<TSource>
     {
+        private IEqualityComparer<TSource> comparer;
         private INotifyEnumerable<TSource> source;
         private IEnumerable<TSource> source2;
         private INotifyEnumerable<TSource> observableSource2;
@@ -31,6 +32,7 @@ namespace NMF.Expressions.Linq
             this.source = source;
             this.source2 = source2;
             this.observableSource2 = source2 as INotifyEnumerable<TSource>;
+            this.comparer = comparer ?? EqualityComparer<TSource>.Default;
             sourceItems = new Dictionary<TSource, int>(comparer);
         }
 
@@ -165,7 +167,7 @@ namespace NMF.Expressions.Linq
         {
             foreach (var item in change.AllRemovedItems)
             {
-                if (RemoveItem(item) && source.Contains(item))
+                if (RemoveItem(item) && source.Contains(item, comparer))
                 {
                     removed.Add(item);
                 }
@@ -173,7 +175,7 @@ namespace NMF.Expressions.Linq
                 
             foreach (var item in change.AllAddedItems)
             {
-                if (AddItem(item) && source.Contains(item))
+                if (AddItem(item) && source.Contains(item, comparer))
                 {
                     added.Add(item);
                 }
