@@ -17,7 +17,6 @@ namespace NMF.Expressions.Linq
         {
             Sequences = new NotifyCollection<IEnumerable<T>>();
             Sequences.CollectionChanged += SequencesCollectionChanged;
-            context.AddChangeListener<IEnumerable<T>>(this, Sequences);
         }
 
         void SequencesCollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
@@ -28,7 +27,6 @@ namespace NMF.Expressions.Linq
                 {
                     foreach (IEnumerable<T> sequence in e.OldItems)
                     {
-                        OnRemoveItems(sequence);
                         INotifyCollectionChanged notifier = sequence as INotifyCollectionChanged;
                         if (notifier != null)
                         {
@@ -40,31 +38,13 @@ namespace NMF.Expressions.Linq
                 {
                     foreach (IEnumerable<T> sequence in e.NewItems)
                     {
-                        OnAddItems(sequence);
                         INotifyCollectionChanged notifier = sequence as INotifyCollectionChanged;
                         if (notifier != null)
                         {
-                            context.AddChangeListener<IEnumerable<T>>(this, notifier);
+                            context.AddChangeListener<T>(this, notifier);
                         }
                     }
                 }
-            }
-            else
-            {
-                OnCleared();
-            }
-        }
-
-        private void SequenceCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
-        {
-            if (e.Action != NotifyCollectionChangedAction.Reset)
-            {
-                OnCollectionChanged(e);
-            }
-            else
-            {
-                OnCleared();
-                OnAddItems(this);
             }
         }
 
@@ -77,7 +57,7 @@ namespace NMF.Expressions.Linq
 
         public IEnumerable<T> GetSequenceForItem(T item)
         {
-            throw new InvalidOperationException();
+            return Sequences.FirstOrDefault(s => s.Contains(item));
         }
 
         IEnumerable<IEnumerable<T>> IOrderableNotifyEnumerable<T>.Sequences
@@ -85,16 +65,13 @@ namespace NMF.Expressions.Linq
             get { return Sequences; }
         }
 
-        protected override void Dispose(bool disposing)
-        {
-            context.RemoveChangeListener(this, Sequences);
-            base.Dispose(disposing);
-        }
-
         public override INotificationResult Notify(IList<INotificationResult> sources)
         {
             OnCleared();
-            return CollectionChangedNotificationResult<IEnumerable<T>>.Transfer(sources[0] as ICollectionChangedNotificationResult, this);
+            if (sources.Count == 0)
+                return new CollectionChangedNotificationResult<IEnumerable<T>>(this);
+            else
+                return CollectionChangedNotificationResult<T>.Transfer((ICollectionChangedNotificationResult)sources[0], this);
         }
     }
 }
