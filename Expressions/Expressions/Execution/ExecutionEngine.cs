@@ -147,8 +147,8 @@ namespace NMF.Expressions
             {
                 NotifyCollectionChangedEventHandler handler = (obj, e) =>
                 {
-                    engine.SetInvalidNode(node);
                     TrackCollectionChanges<T>(collection, e);
+                    engine.SetInvalidNode(node);
                 };
                 collection.CollectionChanged += handler;
                 collectionChangedHandler[new Tuple<INotifiable, INotifyCollectionChanged>(node, collection)] = handler;
@@ -212,16 +212,16 @@ namespace NMF.Expressions
                 switch (args.Action)
                 {
                     case NotifyCollectionChangedAction.Add:
-                        tracker.TrackAddAction(args.NewItems as IList<T>);
+                        tracker.TrackAddAction(args.NewItems.Cast<T>().ToList());
                         break;
                     case NotifyCollectionChangedAction.Remove:
-                        tracker.TrackRemoveAction(args.OldItems as IList<T>);
+                        tracker.TrackRemoveAction(args.OldItems.Cast<T>().ToList());
                         break;
                     case NotifyCollectionChangedAction.Move:
-                        tracker.TrackMoveAction(args.OldItems as IList<T>);
+                        tracker.TrackMoveAction(args.OldItems.Cast<T>().ToList());
                         break;
                     case NotifyCollectionChangedAction.Replace:
-                        tracker.TrackReplaceAction(args.OldItems as IList<T>, args.NewItems as IList<T>);
+                        tracker.TrackReplaceAction(args.OldItems.Cast<T>().ToList(), args.NewItems.Cast<T>().ToList());
                         break;
                     case NotifyCollectionChangedAction.Reset:
                         tracker.TrackResetAction();
