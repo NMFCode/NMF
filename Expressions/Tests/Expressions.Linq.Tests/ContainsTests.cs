@@ -31,8 +31,9 @@ namespace NMF.Expressions.Linq.Tests
         {
             var update = false;
             var coll = new ObservableCollection<int>() { 1, 2, 3 };
+            INotifyEnumerable<int> notifiable = coll.WithUpdates();
 
-            var test = Observable.Expression(() => coll.WithUpdates().Contains(4));
+            var test = Observable.Expression(() => notifiable.Contains(4));
 
             test.ValueChanged += (o, e) =>
             {
@@ -109,8 +110,9 @@ namespace NMF.Expressions.Linq.Tests
         {
             var update = false;
             var coll = new ObservableCollection<int>() { 1, 2, 3 };
+            INotifyEnumerable<int> notifiable = coll.WithUpdates();
 
-            var test = Observable.Expression(() => coll.WithUpdates().Contains(3));
+            var test = Observable.Expression(() => notifiable.Contains(3));
 
             test.ValueChanged += (o, e) =>
             {
