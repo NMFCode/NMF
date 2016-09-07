@@ -60,7 +60,7 @@
     <Compile Include="AbsoluteValueComparer.cs" />
     <Compile Include="AllTests.cs" />
     <Compile Include="AssertExtensions.cs" />
-    <Compile Include="Integration\UnitTest1.cs" />
+    <Compile Include="Integration\LinqIntegrationTests.cs" />
     <Compile Include="JoinTests.cs" />
     <Compile Include="OfTypeTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

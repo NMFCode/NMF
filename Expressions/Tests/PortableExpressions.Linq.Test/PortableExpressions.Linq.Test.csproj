@@ -96,8 +96,8 @@
     <Compile Include="..\Expressions.Linq.Tests\GroupByTest.cs">
       <Link>GroupByTest.cs</Link>
     </Compile>
-    <Compile Include="..\Expressions.Linq.Tests\Integration\UnitTest1.cs">
-      <Link>Integration\UnitTest1.cs</Link>
+    <Compile Include="..\Expressions.Linq.Tests\Integration\LinqIntegrationTests.cs">
+      <Link>Integration\LinqIntegrationTests.cs</Link>
     </Compile>
     <Compile Include="..\Expressions.Linq.Tests\JoinTests.cs">
       <Link>JoinTests.cs</Link>

@@ -44,10 +44,14 @@ namespace NMF.Expressions.Linq
             if ((removed?.Count ?? 0) + (added?.Count ?? 0) + (moved?.Count ?? 0) + (replaceAdded?.Count ?? 0) + (replaceRemoved?.Count ?? 0) == 0)
                 return UnchangedNotificationResult.Instance;
 
-            OnRemoveItems(removed);
-            OnAddItems(added);
-            OnMoveItems(moved);
-            OnReplaceItems(replaceRemoved, replaceAdded);
+            if (removed != null)
+                OnRemoveItems(removed);
+            if (added != null)
+                OnAddItems(added);
+            if (moved != null)
+                OnMoveItems(moved);
+            if (replaceAdded != null && replaceRemoved != null)
+                OnReplaceItems(replaceRemoved, replaceAdded);
             return new CollectionChangedNotificationResult<T>(this, added, removed, moved, replaceAdded, replaceRemoved);
         }
     }
