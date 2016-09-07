@@ -225,8 +225,7 @@ namespace NMF.Expressions.Linq
         {
             foreach (var item in sourceChange.AllRemovedItems)
             {
-                var sequence = source.GetSequenceForItem(item);
-                var searchTree = searchTrees[sequence];
+                var searchTree = lambdaResults[item].Peek().Tag.SearchTree;
                 DetachItem(searchTree, item);
             }
             removed.AddRange(sourceChange.AllRemovedItems);
