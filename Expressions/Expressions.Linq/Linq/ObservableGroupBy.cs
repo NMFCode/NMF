@@ -38,7 +38,7 @@ namespace NMF.Expressions.Linq
             this.keySelector = keySelector;
         }
 
-        private ObservableGroup<TKey, TItem> AttachItem(TItem item)
+        private bool AttachItem(TItem item)
         {
             var key = keySelector.Observe(item);
             key.Successors.Add(this);
@@ -55,7 +55,7 @@ namespace NMF.Expressions.Linq
             }
             group.Items.Add(item);
 
-            return add ? group : null;
+            return add;
         }
 
         private ObservableGroup<TKey, TItem> DetachItem(TItem item)
@@ -69,9 +69,8 @@ namespace NMF.Expressions.Linq
             if (group.Count == 0)
             {
                 groups.Remove(key.Value);
-                return group;
             }
-            return null;
+            return group;
         }
 
         private bool ReplaceItem(TItem old, TItem newItem)
@@ -208,8 +207,9 @@ namespace NMF.Expressions.Linq
                 foreach (var item in sourceChange.RemovedItems)
                 {
                     var group = DetachItem(item);
-                    if (group != null)
-                        removed.Add(group);
+                    if (groups.ContainsValue(group))
+                        added.Add(group);
+                    removed.Add(group);
                 }
             }
 
@@ -217,9 +217,11 @@ namespace NMF.Expressions.Linq
             {
                 foreach (var item in sourceChange.AddedItems)
                 {
-                    var group = AttachItem(item);
-                    if (group != null)
-                        added.Add(group);
+                    var add = AttachItem(item);
+                    var group = groups[keys[item].Value];
+                    if (!add)
+                        removed.Add(group);
+                    added.Add(group);
                 }
             }
 
@@ -232,11 +234,10 @@ namespace NMF.Expressions.Linq
                     if (!ReplaceItem(oldItem, newItem))
                     {
                         var removedGroup = DetachItem(oldItem);
-                        if (removedGroup != null)
+                        if (!groups.ContainsValue(removedGroup))
                             removed.Add(removedGroup);
-                        var addedGroup = AttachItem(newItem);
-                        if (addedGroup != null)
-                            added.Add(addedGroup);
+                        if (AttachItem(newItem))
+                            added.Add(groups[keys[newItem].Value]);
                     }
                 }
             }
