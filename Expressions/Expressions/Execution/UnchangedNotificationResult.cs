@@ -7,12 +7,12 @@ namespace NMF.Expressions
 {
     public class UnchangedNotificationResult : INotificationResult
     {
-        private static UnchangedNotificationResult instance = new UnchangedNotificationResult();
-        public static UnchangedNotificationResult Instance { get { return instance; } }
+        private static readonly UnchangedNotificationResult instance = new UnchangedNotificationResult();
+        public static UnchangedNotificationResult Instance => instance;
 
-        public bool Changed { get { return false; } }
+        public bool Changed => false;
 
-        public INotifiable Source { get { return null; } }
+        public INotifiable Source => null;
 
         private UnchangedNotificationResult() { }
     }
