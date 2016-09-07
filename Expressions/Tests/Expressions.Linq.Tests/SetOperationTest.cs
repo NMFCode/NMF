@@ -1081,9 +1081,7 @@ namespace NMF.Expressions.Linq.Tests
 
             test.CollectionChanged += (o, e) =>
             {
-                Assert.AreEqual(NotifyCollectionChangedAction.Add, e.Action);
-                Assert.IsTrue(e.NewItems.Contains(2));
-                Assert.IsTrue(e.NewItems.Contains(3));
+                Assert.AreEqual(NotifyCollectionChangedAction.Reset, e.Action);
                 update = true;
             };
 

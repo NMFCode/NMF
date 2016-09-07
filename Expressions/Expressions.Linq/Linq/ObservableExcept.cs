@@ -146,20 +146,20 @@ namespace NMF.Expressions.Linq
             {
                 if (RemoveItem(item))
                 {
-                    removed.Add(item);
+                    uniqueRemoved.Add(item);
                 }
             }
-            added.AddRange(SL.Where(source, item => removed.Contains(item)));
+            added.AddRange(SL.Where(source, item => uniqueRemoved.Contains(item)));
             
             var uniqueAdded = new HashSet<TSource>(sourceItems.Comparer);
             foreach (var item in change.AllAddedItems)
             {
                 if (AddItem(item))
                 {
-                    added.Add(item);
+                    uniqueAdded.Add(item);
                 }
             }
-            removed.AddRange(SL.Where(source, item => added.Contains(item)));
+            removed.AddRange(SL.Where(source, item => uniqueAdded.Contains(item)));
         }
     }
 }
