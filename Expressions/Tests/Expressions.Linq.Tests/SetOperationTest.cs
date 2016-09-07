@@ -627,13 +627,13 @@ namespace NMF.Expressions.Linq.Tests
                 if (shouldBeContainedBefore)
                 {
                     Assert.AreEqual(NotifyCollectionChangedAction.Remove, e.Action);
-                    Assert.AreEqual(-2, e.OldItems[0]);
+                    Assert.AreEqual(2, e.OldItems[0]);
                     Assert.IsNull(e.NewItems);
                 }
                 else
                 {
                     Assert.AreEqual(NotifyCollectionChangedAction.Add, e.Action);
-                    Assert.AreEqual(-2, e.NewItems[0]);
+                    Assert.AreEqual(2, e.NewItems[0]);
                     Assert.IsNull(e.OldItems);
                 }
                 update = true;

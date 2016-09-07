@@ -8,7 +8,6 @@ namespace NMF.Expressions.Linq
 {
     internal sealed class ObservableIntersect<TSource> : ObservableEnumerable<TSource>
     {
-        private IEqualityComparer<TSource> comparer;
         private INotifyEnumerable<TSource> source;
         private IEnumerable<TSource> source2;
         private INotifyEnumerable<TSource> observableSource2;
@@ -32,7 +31,6 @@ namespace NMF.Expressions.Linq
             this.source = source;
             this.source2 = source2;
             this.observableSource2 = source2 as INotifyEnumerable<TSource>;
-            this.comparer = comparer ?? EqualityComparer<TSource>.Default;
             sourceItems = new Dictionary<TSource, int>(comparer);
         }
 
@@ -106,8 +104,8 @@ namespace NMF.Expressions.Linq
                     source2Change = (CollectionChangedNotificationResult<TSource>)sources[1];
             }
 
-            var added = new HashSet<TSource>(sourceItems.Comparer);
-            var removed = new HashSet<TSource>(sourceItems.Comparer);
+            var added = new List<TSource>();
+            var removed = new List<TSource>();
 
             if (source2Change != null)
             {
@@ -144,7 +142,7 @@ namespace NMF.Expressions.Linq
             return new CollectionChangedNotificationResult<TSource>(this, SL.ToList(added), SL.ToList(removed));
         }
 
-        private void NotifySource(CollectionChangedNotificationResult<TSource> change, HashSet<TSource> added, HashSet<TSource> removed)
+        private void NotifySource(CollectionChangedNotificationResult<TSource> change, List<TSource> added, List<TSource> removed)
         {
             foreach (var item in change.AllRemovedItems)
             {
@@ -163,23 +161,27 @@ namespace NMF.Expressions.Linq
             }
         }
 
-        private void NotifySource2(CollectionChangedNotificationResult<TSource> change, HashSet<TSource> added, HashSet<TSource> removed)
+        private void NotifySource2(CollectionChangedNotificationResult<TSource> change, List<TSource> added, List<TSource> removed)
         {
+            var uniqueRemoved = new HashSet<TSource>(sourceItems.Comparer);
             foreach (var item in change.AllRemovedItems)
             {
-                if (RemoveItem(item) && source.Contains(item, comparer))
+                if (RemoveItem(item))
                 {
-                    removed.Add(item);
+                    uniqueRemoved.Add(item);
                 }
             }
-                
+            removed.AddRange(SL.Where(source, item => uniqueRemoved.Contains(item)));
+
+            var uniqueAdded = new HashSet<TSource>(sourceItems.Comparer);
             foreach (var item in change.AllAddedItems)
             {
-                if (AddItem(item) && source.Contains(item, comparer))
+                if (AddItem(item))
                 {
-                    added.Add(item);
+                    uniqueAdded.Add(item);
                 }
             }
+            added.AddRange(SL.Where(source, item => uniqueAdded.Contains(item)));
         }
     }
 }
