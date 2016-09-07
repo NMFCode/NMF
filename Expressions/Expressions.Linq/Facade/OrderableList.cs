@@ -23,10 +23,14 @@ namespace NMF.Expressions.Linq
         {
             if (e.Action != NotifyCollectionChangedAction.Reset)
             {
+                var removed = new List<T>();
+                var added = new List<T>();
+
                 if (e.OldItems != null)
                 {
                     foreach (IEnumerable<T> sequence in e.OldItems)
                     {
+                        removed.AddRange(sequence);
                         INotifyCollectionChanged notifier = sequence as INotifyCollectionChanged;
                         if (notifier != null)
                         {
@@ -38,6 +42,7 @@ namespace NMF.Expressions.Linq
                 {
                     foreach (IEnumerable<T> sequence in e.NewItems)
                     {
+                        added.AddRange(sequence);
                         INotifyCollectionChanged notifier = sequence as INotifyCollectionChanged;
                         if (notifier != null)
                         {
@@ -45,7 +50,10 @@ namespace NMF.Expressions.Linq
                         }
                     }
                 }
+
+                ExecutionMetaData.Sources.Add(new CollectionChangedNotificationResult<T>(this, added, removed));
             }
+            ExecutionEngine.Current.ManualInvalidation(this);
         }
 
         public NotifyCollection<IEnumerable<T>> Sequences { get; private set; }
@@ -67,11 +75,23 @@ namespace NMF.Expressions.Linq
 
         public override INotificationResult Notify(IList<INotificationResult> sources)
         {
-            OnCleared();
             if (sources.Count == 0)
-                return new CollectionChangedNotificationResult<IEnumerable<T>>(this);
+            {
+                OnCleared();
+                return new CollectionChangedNotificationResult<T>(this);
+            }
             else
-                return CollectionChangedNotificationResult<T>.Transfer((ICollectionChangedNotificationResult)sources[0], this);
+            {
+                var change = (CollectionChangedNotificationResult<T>)sources[0];
+                if (change.IsReset)
+                    OnCleared();
+                else
+                {
+                    OnRemoveItems(change.AllRemovedItems);
+                    OnAddItems(change.AllAddedItems);
+                }
+                return CollectionChangedNotificationResult<T>.Transfer(change, this);
+            }
         }
     }
 }
