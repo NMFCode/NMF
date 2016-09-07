@@ -77,12 +77,17 @@ namespace NMF.Expressions
         private void AggregateCollectionChanges(INotifiable node)
         {
             INotifyCollectionChanged collection;
-            if (context.TrackedCollections.TryGetValue(node, out collection))
-            {
-                ExecutionContext.ICollectionChangeTracker tracker;
-                if (context.CollectionChanges.TryGetValue(collection, out tracker))
-                    node.ExecutionMetaData.Sources.Add(tracker.GetResult());
-            }
+            if (!context.TrackedCollections.TryGetValue(node, out collection))
+                return;
+
+            ExecutionContext.ICollectionChangeTracker tracker;
+            if (!context.CollectionChanges.TryGetValue(collection, out tracker))
+                return;
+
+            if (tracker.HasChanges())
+                node.ExecutionMetaData.Sources.Add(tracker.GetResult());
+            else
+                node.ExecutionMetaData.Sources.Add(UnchangedNotificationResult.Instance);
         }
 
         protected abstract void Execute(HashSet<INotifiable> nodes);
@@ -235,6 +240,7 @@ namespace NMF.Expressions
             internal interface ICollectionChangeTracker
             {
                 ICollectionChangedNotificationResult GetResult();
+                bool HasChanges();
             }
             private class CollectionChangeTracker<T> : ICollectionChangeTracker
             {
@@ -332,6 +338,17 @@ namespace NMF.Expressions
                             _replaceAddedItems,
                             _replaceRemovedItems
                         );
+                }
+
+                public bool HasChanges()
+                {
+                    return 
+                        _isReset || 
+                        _addedItems.Count > 0 || 
+                        _removedItems.Count > 0 || 
+                        _movedItems.Count > 0 || 
+                        _replaceAddedItems.Count > 0 ||
+                        _replaceRemovedItems.Count > 0;
                 }
             }
         }
