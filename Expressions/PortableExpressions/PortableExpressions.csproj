@@ -386,6 +386,9 @@
     <Compile Include="..\Expressions\Public\InstructionLevelNotifySystem.cs">
       <Link>Facade\InstructionLevelNotifySystem.cs</Link>
     </Compile>
+    <Compile Include="..\Expressions\Public\ISuccessorList.cs">
+      <Link>Facade\ISuccessorList.cs</Link>
+    </Compile>
     <Compile Include="..\Expressions\Public\NotifyExpression.cs">
       <Link>Facade\NotifyExpression.cs</Link>
     </Compile>
@@ -416,8 +419,8 @@
     <Compile Include="..\Expressions\Public\ReversableFunctionTypes.cs">
       <Link>Facade\ReversableFunctionTypes.cs</Link>
     </Compile>
-    <Compile Include="..\Expressions\Public\ShortList.cs">
-      <Link>Facade\ShortList.cs</Link>
+    <Compile Include="..\Expressions\Public\SingleSuccessorList.cs">
+      <Link>Facade\SingleSuccessorList.cs</Link>
     </Compile>
     <Compile Include="..\Expressions\Public\ValueChangedEventArgs.cs">
       <Link>Facade\ValueChangedEventArgs.cs</Link>

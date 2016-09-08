@@ -186,7 +186,7 @@ namespace NMF.Analyses
                 get { return currentValue; }
             }
 
-            public IList<INotifiable> Successors
+            public ISuccessorList Successors
             {
                 get
                 {

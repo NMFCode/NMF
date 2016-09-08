@@ -53,7 +53,7 @@ namespace NMF.Expressions
 
         private void Listener_BubbledChange(object sender, BubbledChangeEventArgs e)
         {
-            if (Successors.Count > 0)
+            if (Successors.IsAttached)
             {
                 ExecutionEngine.Current.ManualInvalidation(this);
             }
@@ -137,7 +137,7 @@ namespace NMF.Expressions
 
         private void Listener_BubbledChange(object sender, BubbledChangeEventArgs e)
         {
-            if (Successors.Count > 0)
+            if (Successors.IsAttached)
             {
                 ExecutionEngine.Current.ManualInvalidation(this);
             }
@@ -247,7 +247,7 @@ namespace NMF.Expressions
 
         private void Listener_BubbledChange(object sender, BubbledChangeEventArgs e)
         {
-            if (Successors.Count > 0)
+            if (Successors.IsAttached)
             {
                 ExecutionEngine.Current.ManualInvalidation(this);
             }
@@ -383,7 +383,7 @@ namespace NMF.Expressions
 
         private void Listener_BubbledChange(object sender, BubbledChangeEventArgs e)
         {
-            if (Successors.Count > 0)
+            if (Successors.IsAttached)
             {
                 ExecutionEngine.Current.ManualInvalidation(this);
             }
@@ -545,7 +545,7 @@ namespace NMF.Expressions
 
         private void Listener_BubbledChange(object sender, BubbledChangeEventArgs e)
         {
-            if (Successors.Count > 0)
+            if (Successors.IsAttached)
             {
                 ExecutionEngine.Current.ManualInvalidation(this);
             }
@@ -733,7 +733,7 @@ namespace NMF.Expressions
 
         private void Listener_BubbledChange(object sender, BubbledChangeEventArgs e)
         {
-            if (Successors.Count > 0)
+            if (Successors.IsAttached)
             {
                 ExecutionEngine.Current.ManualInvalidation(this);
             }
@@ -947,7 +947,7 @@ namespace NMF.Expressions
 
         private void Listener_BubbledChange(object sender, BubbledChangeEventArgs e)
         {
-            if (Successors.Count > 0)
+            if (Successors.IsAttached)
             {
                 ExecutionEngine.Current.ManualInvalidation(this);
             }
@@ -1187,7 +1187,7 @@ namespace NMF.Expressions
 
         private void Listener_BubbledChange(object sender, BubbledChangeEventArgs e)
         {
-            if (Successors.Count > 0)
+            if (Successors.IsAttached)
             {
                 ExecutionEngine.Current.ManualInvalidation(this);
             }
@@ -1453,7 +1453,7 @@ namespace NMF.Expressions
 
         private void Listener_BubbledChange(object sender, BubbledChangeEventArgs e)
         {
-            if (Successors.Count > 0)
+            if (Successors.IsAttached)
             {
                 ExecutionEngine.Current.ManualInvalidation(this);
             }
@@ -1745,7 +1745,7 @@ namespace NMF.Expressions
 
         private void Listener_BubbledChange(object sender, BubbledChangeEventArgs e)
         {
-            if (Successors.Count > 0)
+            if (Successors.IsAttached)
             {
                 ExecutionEngine.Current.ManualInvalidation(this);
             }
@@ -2063,7 +2063,7 @@ namespace NMF.Expressions
 
         private void Listener_BubbledChange(object sender, BubbledChangeEventArgs e)
         {
-            if (Successors.Count > 0)
+            if (Successors.IsAttached)
             {
                 ExecutionEngine.Current.ManualInvalidation(this);
             }
@@ -2407,7 +2407,7 @@ namespace NMF.Expressions
 
         private void Listener_BubbledChange(object sender, BubbledChangeEventArgs e)
         {
-            if (Successors.Count > 0)
+            if (Successors.IsAttached)
             {
                 ExecutionEngine.Current.ManualInvalidation(this);
             }
@@ -2777,7 +2777,7 @@ namespace NMF.Expressions
 
         private void Listener_BubbledChange(object sender, BubbledChangeEventArgs e)
         {
-            if (Successors.Count > 0)
+            if (Successors.IsAttached)
             {
                 ExecutionEngine.Current.ManualInvalidation(this);
             }
@@ -3173,7 +3173,7 @@ namespace NMF.Expressions
 
         private void Listener_BubbledChange(object sender, BubbledChangeEventArgs e)
         {
-            if (Successors.Count > 0)
+            if (Successors.IsAttached)
             {
                 ExecutionEngine.Current.ManualInvalidation(this);
             }
@@ -3595,7 +3595,7 @@ namespace NMF.Expressions
 
         private void Listener_BubbledChange(object sender, BubbledChangeEventArgs e)
         {
-            if (Successors.Count > 0)
+            if (Successors.IsAttached)
             {
                 ExecutionEngine.Current.ManualInvalidation(this);
             }

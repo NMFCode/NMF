@@ -12,20 +12,15 @@ namespace NMF.Expressions
 {
     internal abstract class ObservableMemberBinding<T> : INotifiable
     {
-        private readonly ShortList<INotifiable> successors = new ShortList<INotifiable>();
+        
 
         public ObservableMemberBinding()
         {
-            successors.CollectionChanged += (obj, e) =>
-            {
-                if (successors.Count == 0)
-                    Detach();
-                else if (e.Action == NotifyCollectionChangedAction.Add && successors.Count == 1)
-                    Attach();
-            };
+            Successors.Attached += (obj, e) => Attach();
+            Successors.Detached += (obj, e) => Detach();
         }
 
-        public IList<INotifiable> Successors { get { return successors; } }
+        public ISuccessorList Successors { get; } = NotifySystem.DefaultSystem.CreateSuccessorList();
 
         public abstract bool IsParameterFree { get; }
         
@@ -35,13 +30,13 @@ namespace NMF.Expressions
 
         public void Dispose()
         {
-            Successors.Clear();
+            Successors.UnsetAll();
         }
 
         private void Attach()
         {
             foreach (var dep in Dependencies)
-                dep.Successors.Add(this);
+                dep.Successors.Set(this);
             OnAttach();
         }
 
@@ -49,7 +44,7 @@ namespace NMF.Expressions
         {
             OnDetach();
             foreach (var dep in Dependencies)
-                dep.Successors.Remove(this);
+                dep.Successors.Unset(this);
         }
 
         protected virtual void OnAttach() { }

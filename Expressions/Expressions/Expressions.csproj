@@ -84,6 +84,7 @@
     <Compile Include="Execution\ExecutionMetaData.cs" />
     <Compile Include="Public\INotifiable.cs" />
     <Compile Include="Execution\INotificationResult.cs" />
+    <Compile Include="Public\ISuccessorList.cs" />
     <Compile Include="Public\ParameterDataflowAttribute.cs" />
     <Compile Include="Public\ConstantValue.cs" />
     <Compile Include="Public\ImmutableMethodAttribute.cs" />
@@ -165,11 +166,11 @@
     <Compile Include="ObservableTypeBinaryExpression.cs" />
     <Compile Include="ObservableUnaryExpression.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Public\ShortList.cs" />
     <Compile Include="Execution\UnchangedNotificationResult.cs" />
     <Compile Include="Public\ValueChangedEventArgs.cs" />
     <Compile Include="Execution\ValueChangedNotificationResult.cs" />
     <Compile Include="ReflectionHelper.cs" />
+    <Compile Include="Public\SingleSuccessorList.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Public\Observable.tt">

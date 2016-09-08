@@ -19,7 +19,7 @@ namespace NMF.Expressions
         public static INotifyValue<T> Expression<T>(Expression<Func<T>> expression)
         {
             var result = NotifySystem.CreateExpression<T>(expression.Body, expression.Parameters);
-            result.Successors.Add(null);
+            result.Successors.SetDummy();
             return result;
         }
 
@@ -34,7 +34,7 @@ namespace NMF.Expressions
             try
             {
                 var result = NotifySystem.CreateReversableExpression<T>(expression.Body, expression.Parameters);
-                result.Successors.Add(null);
+                result.Successors.SetDummy();
                 return result;
             }
             catch (InvalidCastException)

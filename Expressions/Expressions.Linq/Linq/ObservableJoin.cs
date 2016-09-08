@@ -132,7 +132,7 @@ namespace NMF.Expressions.Linq
         private void AttachOuter(TOuter item, ICollection<TResult> added)
         {
             var keyValue = outerKeySelector.InvokeTagged(item, item);
-            keyValue.Successors.Add(this);
+            keyValue.Successors.Set(this);
             Stack<TaggedObservableValue<TKey, TOuter>> valueStack;
             if (!outerValues.TryGetValue(item, out valueStack))
             {
@@ -167,7 +167,7 @@ namespace NMF.Expressions.Linq
         private void AttachInner(TInner item, ICollection<TResult> added)
         {
             var keyValue = innerKeySelector.InvokeTagged(item, item);
-            keyValue.Successors.Add(this);
+            keyValue.Successors.Set(this);
             Stack<TaggedObservableValue<TKey, TInner>> valueStack;
             if (!innerValues.TryGetValue(item, out valueStack))
             {
@@ -208,7 +208,7 @@ namespace NMF.Expressions.Linq
                 group.Results.Add(match, resultStack);
             }
             var result = resultSelector.Observe(outer, inner);
-            result.Successors.Add(this);
+            result.Successors.Set(this);
             resultStack.Push(result);
             return result.Value;
         }
@@ -219,7 +219,7 @@ namespace NMF.Expressions.Linq
             var resultStack = group.Results[match];
             var result = resultStack.Pop();
             var value = result.Value;
-            result.Successors.Remove(this);
+            result.Successors.Unset(this);
             if (resultStack.Count == 0)
             {
                 group.Results.Remove(match);
@@ -245,17 +245,17 @@ namespace NMF.Expressions.Linq
             {
                 foreach (var val in group.OuterKeys)
                 {
-                    val.Successors.Remove(this);
+                    val.Successors.Unset(this);
                 }
                 foreach (var val in group.InnerKeys)
                 {
-                    val.Successors.Remove(this);
+                    val.Successors.Unset(this);
                 }
                 foreach (var stack in group.Results.Values)
                 {
                     foreach (var val in stack)
                     {
-                        val.Successors.Remove(this);
+                        val.Successors.Unset(this);
                     }
                 }
             }
@@ -284,7 +284,7 @@ namespace NMF.Expressions.Linq
                         {
                             foreach (var val in group.OuterKeys)
                             {
-                                val.Successors.Remove(this);
+                                val.Successors.Unset(this);
                             }
                             group.OuterKeys.Clear();
                             foreach (var stack in group.Results.Values)
@@ -292,7 +292,7 @@ namespace NMF.Expressions.Linq
                                 removed.AddRange(stack.Select(s => s.Value));
                                 foreach (var val in stack)
                                 {
-                                    val.Successors.Remove(this);
+                                    val.Successors.Unset(this);
                                 }
                             }
                             group.Results.Clear();
@@ -320,7 +320,7 @@ namespace NMF.Expressions.Linq
                         {
                             foreach (var val in group.InnerKeys)
                             {
-                                val.Successors.Remove(this);
+                                val.Successors.Unset(this);
                             }
                             group.InnerKeys.Clear();
                             foreach (var stack in group.Results.Values)
@@ -328,7 +328,7 @@ namespace NMF.Expressions.Linq
                                 removed.AddRange(stack.Select(s => s.Value));
                                 foreach (var val in stack)
                                 {
-                                    val.Successors.Remove(this);
+                                    val.Successors.Unset(this);
                                 }
                             }
                             group.Results.Clear();
@@ -398,7 +398,7 @@ namespace NMF.Expressions.Linq
                 {
                     removed.Add(DetachResult(group, outer, inner.Tag));
                 }
-                value.Successors.Remove(this);
+                value.Successors.Unset(this);
             }
                 
             foreach (var outer in outerChange.AllAddedItems)
@@ -427,7 +427,7 @@ namespace NMF.Expressions.Linq
                 {
                     removed.Add(DetachResult(group, outer.Tag, inner));
                 }
-                value.Successors.Remove(this);
+                value.Successors.Unset(this);
             }
                 
             foreach (var inner in innerChange.AllAddedItems)

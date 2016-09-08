@@ -17,9 +17,8 @@ namespace NMF.Expressions
         public event EventHandler<ValueChangedEventArgs> ValueChanged;
 
         public event PropertyChangedEventHandler PropertyChanged;
-
-        private readonly ShortList<INotifiable> successors = new ShortList<INotifiable>();
-        public IList<INotifiable> Successors { get { return successors; } }
+        
+        public ISuccessorList Successors { get; } = NotifySystem.DefaultSystem.CreateSuccessorList();
 
         public virtual IEnumerable<INotifiable> Dependencies { get { yield return Expression; } }
 
@@ -34,13 +33,8 @@ namespace NMF.Expressions
 
             Expression = expression;
 
-            successors.CollectionChanged += (obj, e) =>
-            {
-                if (successors.Count == 0)
-                    Detach();
-                else if (e.Action == NotifyCollectionChangedAction.Add && successors.Count == 1)
-                    Attach();
-            };
+            Successors.Attached += (obj, e) => Attach();
+            Successors.Detached += (obj, e) => Detach();
         }
 
         public virtual INotificationResult Notify(IList<INotificationResult> sources)
@@ -63,7 +57,7 @@ namespace NMF.Expressions
 
         protected virtual void Dispose(bool disposing)
         {
-            Successors.Clear();
+            Successors.UnsetAll();
         }
 
         protected virtual void OnValueChanged(T oldValue, T newValue)
@@ -82,14 +76,14 @@ namespace NMF.Expressions
         {
             OnAttach();
             foreach (var dep in Dependencies)
-                dep.Successors.Add(this);
+                dep.Successors.Set(this);
         }
 
         private void Detach()
         {
             OnDetach();
             foreach (var dep in Dependencies)
-                dep.Successors.Remove(this);
+                dep.Successors.Unset(this);
         }
 
         /// <summary>
@@ -123,8 +117,8 @@ namespace NMF.Expressions
 
         public event PropertyChangedEventHandler PropertyChanged;
 
-        private readonly ShortList<INotifiable> successors = new ShortList<INotifiable>();
-        public IList<INotifiable> Successors { get { return successors; } }
+        
+        public ISuccessorList Successors { get; } = NotifySystem.DefaultSystem.CreateSuccessorList();
 
         public IEnumerable<INotifiable> Dependencies { get { yield return Expression; } }
 
@@ -139,13 +133,8 @@ namespace NMF.Expressions
 
             Expression = expression;
 
-            successors.CollectionChanged += (obj, e) =>
-            {
-                if (successors.Count == 0)
-                    Detach();
-                else if (e.Action == NotifyCollectionChangedAction.Add && successors.Count == 1)
-                    Attach();
-            };
+            Successors.Attached += (obj, e) => Attach();
+            Successors.Detached += (obj, e) => Detach();
         }
 
         public bool IsReversable
@@ -185,20 +174,20 @@ namespace NMF.Expressions
 
         protected virtual void Dispose(bool disposing)
         {
-            Successors.Clear();
+            Successors.UnsetAll();
         }
 
         private void Attach()
         {
             foreach (var dep in Dependencies)
-                dep.Successors.Add(this);
+                dep.Successors.Set(this);
             OnAttach();
         }
 
         private void Detach()
         {
             foreach (var dep in Dependencies)
-                dep.Successors.Remove(this);
+                dep.Successors.Unset(this);
             OnDetach();
         }
 
@@ -227,9 +216,9 @@ namespace NMF.Expressions
                 if (inner != value)
                 {
                     if (inner != null)
-                        inner.Successors.Remove(this);
+                        inner.Successors.Unset(this);
                     if (value != null)
-                        value.Successors.Add(this);
+                        value.Successors.Set(this);
                     inner = value;
                 }
             }
@@ -245,9 +234,9 @@ namespace NMF.Expressions
 
         public Action<T> UpdateHandler { get; private set; }
 
-        private readonly ShortList<INotifiable> successors = new ShortList<INotifiable>();
+        
 
-        public IList<INotifiable> Successors { get { return successors; } }
+        public ISuccessorList Successors { get; } = NotifySystem.DefaultSystem.CreateSuccessorList();
 
         public IEnumerable<INotifiable> Dependencies
         {
@@ -273,13 +262,8 @@ namespace NMF.Expressions
             Inner = inner;
             UpdateHandler = updateHandler;
 
-            successors.CollectionChanged += (obj, e) =>
-            {
-                if (successors.Count == 0)
-                    Detach();
-                else if (e.Action == NotifyCollectionChangedAction.Add && successors.Count == 1)
-                    Attach();
-            };
+            Successors.Attached += (obj, e) => Attach();
+            Successors.Detached += (obj, e) => Detach();
         }
 
         protected virtual void OnValueChanged(T oldValue, T newValue)
@@ -301,20 +285,20 @@ namespace NMF.Expressions
 
         public void Dispose()
         {
-            Successors.Clear();
+            Successors.UnsetAll();
         }
 
         private void Attach()
         {
             foreach (var dep in Dependencies)
-                dep.Successors.Add(this);
+                dep.Successors.Set(this);
             OnAttach();
         }
 
         private void Detach()
         {
             foreach (var dep in Dependencies)
-                dep.Successors.Remove(this);
+                dep.Successors.Unset(this);
             OnDetach();
         }
 

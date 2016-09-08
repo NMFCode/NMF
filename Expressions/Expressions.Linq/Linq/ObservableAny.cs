@@ -11,8 +11,7 @@ namespace NMF.Expressions.Linq
         public static ObservableAny<TSource> Create(INotifyEnumerable<TSource> source)
         {
             var observable =  new ObservableAny<TSource>(source);
-            observable.Successors.Add(null);
-            source.Successors.Remove(null);
+            observable.Successors.SetDummy();
             return observable;
         }
 
@@ -53,8 +52,7 @@ namespace NMF.Expressions.Linq
         public static ObservableLambdaAny<TSource> Create(INotifyEnumerable<TSource> source, Expression<Func<TSource, bool>> selector)
         {
             var observable = new ObservableLambdaAny<TSource>(source, selector);
-            observable.Successors.Add(null);
-            source.Successors.Remove(null);
+            observable.Successors.SetDummy();
             return observable;
         }
 

@@ -331,8 +331,7 @@ namespace NMF.Expressions.Linq
                 return casted;
             }
             var observable = new ObservableCast<TResult>(source);
-            observable.Successors.Add(null);
-            source.Successors.Remove(null);
+            observable.Successors.SetDummy();
             return observable;
         }
 
@@ -347,11 +346,7 @@ namespace NMF.Expressions.Linq
         public static INotifyEnumerable<TSource> Concat<TSource>(this INotifyEnumerable<TSource> source, IEnumerable<TSource> source2)
         {
             var observable = new ObservableConcat<TSource>(source, source2);
-            observable.Successors.Add(null);
-            source.Successors.Remove(null);
-            var observableSource2 = source2 as INotifiable;
-            if (observableSource2 != null)
-                observableSource2.Successors.Remove(null);
+            observable.Successors.SetDummy();
             return observable;
         }
 
@@ -435,8 +430,7 @@ namespace NMF.Expressions.Linq
         public static INotifyEnumerable<TSource> Distinct<TSource>(this INotifyEnumerable<TSource> source, IEqualityComparer<TSource> comparer)
         {
             var observable = new ObservableDistinct<TSource>(source, comparer);
-            observable.Successors.Add(null);
-            source.Successors.Remove(null);
+            observable.Successors.SetDummy();
             return observable;
         }
 
@@ -465,11 +459,7 @@ namespace NMF.Expressions.Linq
         public static INotifyEnumerable<TSource> Except<TSource>(this INotifyEnumerable<TSource> source, IEnumerable<TSource> exceptions, IEqualityComparer<TSource> comparer)
         {
             var observable = new ObservableExcept<TSource>(source, exceptions, comparer);
-            observable.Successors.Add(null);
-            source.Successors.Remove(null);
-            var observableExceptions = exceptions as INotifiable;
-            if (observableExceptions != null)
-                observableExceptions.Successors.Remove(null);
+            observable.Successors.SetDummy();
             return observable;
         }
 
@@ -528,8 +518,7 @@ namespace NMF.Expressions.Linq
         public static INotifyEnumerable<INotifyGrouping<TKey, TSource>> GroupBy<TSource, TKey>(this INotifyEnumerable<TSource> source, Expression<Func<TSource, TKey>> keySelector, IEqualityComparer<TKey> comparer)
         {
             var observable = new ObservableGroupBy<TKey, TSource>(source, new ObservingFunc<TSource, TKey>(keySelector), comparer);
-            observable.Successors.Add(null);
-            source.Successors.Remove(null);
+            observable.Successors.SetDummy();
             return observable;
         }
 
@@ -603,11 +592,7 @@ namespace NMF.Expressions.Linq
         public static INotifyEnumerable<TResult> GroupJoin<TOuter, TInner, TKey, TResult>(this INotifyEnumerable<TOuter> outer, IEnumerable<TInner> inner, Expression<Func<TOuter, TKey>> outerKeySelector, Expression<Func<TInner, TKey>> innerKeySelector, Expression<Func<TOuter, IEnumerable<TInner>, TResult>> resultSelector, IEqualityComparer<TKey> comparer)
         {
             var observable = new ObservableGroupJoin<TOuter, TInner, TKey, TResult>(outer, inner, outerKeySelector, innerKeySelector, resultSelector, comparer);
-            observable.Successors.Add(null);
-            outer.Successors.Remove(null);
-            var observableInner = inner as INotifiable;
-            if (observableInner != null)
-                observableInner.Successors.Remove(null);
+            observable.Successors.SetDummy();
             return observable;
         }
 
@@ -636,11 +621,7 @@ namespace NMF.Expressions.Linq
         public static INotifyEnumerable<TSource> Intersect<TSource>(this INotifyEnumerable<TSource> source, IEnumerable<TSource> source2, IEqualityComparer<TSource> comparer)
         {
             var observable = new ObservableIntersect<TSource>(source, source2, comparer);
-            observable.Successors.Add(null);
-            source.Successors.Remove(null);
-            var observableSource2 = source2 as INotifiable;
-            if (observableSource2 != null)
-                observableSource2.Successors.Remove(null);
+            observable.Successors.SetDummy();
             return observable;
         }
 
@@ -799,11 +780,7 @@ namespace NMF.Expressions.Linq
         public static INotifyEnumerable<TResult> Join<TOuter, TInner, TKey, TResult>(this INotifyEnumerable<TOuter> outerSource, IEnumerable<TInner> innerSource, Expression<Func<TOuter, TKey>> outerKeySelector, Expression<Func<TInner, TKey>> innerKeySelector, Expression<Func<TOuter, TInner, TResult>> resultSelector, IEqualityComparer<TKey> comparer)
         {
             var observable = new ObservableJoin<TOuter, TInner, TKey, TResult>(outerSource, innerSource, outerKeySelector, innerKeySelector, resultSelector, comparer);
-            observable.Successors.Add(null);
-            outerSource.Successors.Remove(null);
-            var observableInner = innerSource as INotifiable;
-            if (observableInner != null)
-                observableInner.Successors.Remove(null);
+            observable.Successors.SetDummy();
             return observable;
         }
 
@@ -1239,8 +1216,7 @@ namespace NMF.Expressions.Linq
         public static INotifyEnumerable<TResult> OfType<TResult>(this INotifyEnumerable source)
         {
             var observable = new ObservableOfType<TResult>(source);
-            observable.Successors.Add(null);
-            source.Successors.Remove(null);
+            observable.Successors.SetDummy();
             return observable;
         }
 
@@ -1254,8 +1230,7 @@ namespace NMF.Expressions.Linq
             where TResult : TSource
         {
             var observable = new ObservableOfTypeCollection<TSource, TResult>(source);
-            observable.Successors.Add(null);
-            source.Successors.Remove(null);
+            observable.Successors.SetDummy();
             return observable;
         }
 
@@ -1284,8 +1259,7 @@ namespace NMF.Expressions.Linq
         public static IOrderableNotifyEnumerable<TItem> OrderBy<TItem, TKey>(this INotifyEnumerable<TItem> source, Expression<Func<TItem, TKey>> keySelector, IComparer<TKey> comparer)
         {
             var observable = new ObservableOrderBy<TItem, TKey>(source, keySelector, comparer);
-            observable.Successors.Add(null);
-            source.Successors.Remove(null);
+            observable.Successors.SetDummy();
             return observable;
         }
 
@@ -1327,8 +1301,7 @@ namespace NMF.Expressions.Linq
         public static INotifyEnumerable<TResult> Select<TSource, TResult>(this INotifyEnumerable<TSource> source, Expression<Func<TSource, TResult>> selector)
         {
             var observable = new ObservableSelect<TSource, TResult>(source, selector);
-            observable.Successors.Add(null);
-            source.Successors.Remove(null);
+            observable.Successors.SetDummy();
             return observable;
         }
 
@@ -1345,8 +1318,7 @@ namespace NMF.Expressions.Linq
         public static INotifyEnumerable<TResult> SelectMany<TSource, TIntermediate, TResult>(this INotifyEnumerable<TSource> source, Expression<Func<TSource, IEnumerable<TIntermediate>>> func, Expression<Func<TSource, TIntermediate, TResult>> selector)
         {
             var observable = new ObservableSelectMany<TSource, TIntermediate, TResult>(source, func, selector);
-            observable.Successors.Add(null);
-            source.Successors.Remove(null);
+            observable.Successors.SetDummy();
             return observable;
         }
 
@@ -1361,8 +1333,7 @@ namespace NMF.Expressions.Linq
         public static INotifyEnumerable<TResult> SelectMany<TSource, TResult>(this INotifyEnumerable<TSource> source, Expression<Func<TSource, IEnumerable<TResult>>> selector)
         {
             var observable = new ObservableSimpleSelectMany<TSource, TResult>(source, selector);
-            observable.Successors.Add(null);
-            source.Successors.Remove(null);
+            observable.Successors.SetDummy();
             return observable;
         }
 
@@ -1714,8 +1685,7 @@ namespace NMF.Expressions.Linq
         public static IOrderableNotifyEnumerable<TItem> ThenBy<TItem, TKey>(this IOrderableNotifyEnumerable<TItem> source, Expression<Func<TItem, TKey>> keySelector, IComparer<TKey> comparer)
         {
             var observable = new ObservableThenBy<TItem, TKey>(source, keySelector, comparer);
-            observable.Successors.Add(null);
-            source.Successors.Remove(null);
+            observable.Successors.SetDummy();
             return observable;
         }
 
@@ -1781,8 +1751,7 @@ namespace NMF.Expressions.Linq
         public static INotifyEnumerable<T> Where<T>(this INotifyEnumerable<T> source, Expression<Func<T, bool>> filter)
         {
             var observable = new ObservableWhere<T>(source, filter);
-            observable.Successors.Add(null);
-            source.Successors.Remove(null);
+            observable.Successors.SetDummy();
             return observable;
         }
 
@@ -1796,8 +1765,7 @@ namespace NMF.Expressions.Linq
         public static INotifyCollection<T> Where<T>(this INotifyCollection<T> source, Expression<Func<T, bool>> filter)
         {
             var observable = new ObservableWhere<T>(source, filter);
-            observable.Successors.Add(null);
-            source.Successors.Remove(null);
+            observable.Successors.SetDummy();
             return observable;
         }
 
@@ -1816,7 +1784,7 @@ namespace NMF.Expressions.Linq
             if (collection == null)
             {
                 var observable = new ObservableCollectionProxy<T>(source);
-                observable.Successors.Add(null);
+                observable.Successors.SetDummy();
                 return observable;
             }
             else
@@ -1839,7 +1807,7 @@ namespace NMF.Expressions.Linq
             if (collection == null)
             {
                 var observable = new ObservableCollectionProxy<T>(source);
-                observable.Successors.Add(null);
+                observable.Successors.SetDummy();
                 return observable;
             }
             else

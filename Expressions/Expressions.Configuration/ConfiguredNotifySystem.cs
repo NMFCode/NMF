@@ -75,5 +75,7 @@ namespace NMF.Expressions
         {
             return FindResponsible(expression).CreateExpression(expression, parameters, parameterMappings);
         }
+
+        public ISuccessorList CreateSuccessorList() => new SingleSuccessorList();
     }
 }

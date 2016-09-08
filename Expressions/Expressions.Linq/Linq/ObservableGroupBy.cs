@@ -41,7 +41,7 @@ namespace NMF.Expressions.Linq
         private bool AttachItem(TItem item)
         {
             var key = keySelector.Observe(item);
-            key.Successors.Add(this);
+            key.Successors.Set(this);
             keys[item] = key;
             items[key] = item;
 
@@ -61,7 +61,7 @@ namespace NMF.Expressions.Linq
         private ObservableGroup<TKey, TItem> DetachItem(TItem item)
         {
             var key = keys[item];
-            key.Successors.Remove(this);
+            key.Successors.Unset(this);
             keys.Remove(item);
             items.Remove(key);
             var group = groups[key.Value];
@@ -135,7 +135,7 @@ namespace NMF.Expressions.Linq
         {
             foreach (var key in keys.Values)
             {
-                key.Successors.Remove(this);
+                key.Successors.Unset(this);
             }
 
             keys.Clear();

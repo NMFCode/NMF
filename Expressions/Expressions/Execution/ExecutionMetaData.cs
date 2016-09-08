@@ -9,6 +9,6 @@ namespace NMF.Expressions
     {
         internal int TotalVisits { get; set; }
         internal int RemainingVisits { get; set; }
-        internal ShortList<INotificationResult> Sources { get; } = new ShortList<INotificationResult>();
+        internal List<INotificationResult> Sources { get; } = new List<INotificationResult>();
     }
 }

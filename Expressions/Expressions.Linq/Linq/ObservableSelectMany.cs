@@ -57,7 +57,7 @@ namespace NMF.Expressions.Linq
             {
                 var subSource = func.Observe(item);
                 var wrapper = new SubSourcePair(subSource, item, this);
-                wrapper.Successors.Add(this);
+                wrapper.Successors.Set(this);
                 sourceItems.Add(item, wrapper);
             }
         }
@@ -66,7 +66,7 @@ namespace NMF.Expressions.Linq
         {
             foreach (var sub in sourceItems.Values)
             {
-                sub.Successors.Remove(this);
+                sub.Successors.Unset(this);
             }
             sourceItems.Clear();
         }
@@ -128,7 +128,7 @@ namespace NMF.Expressions.Linq
                     if (sourceItems.TryGetValue(item, out wrapper))
                     {
                         removed.AddRange(wrapper);
-                        wrapper.Successors.Remove(this);
+                        wrapper.Successors.Unset(this);
                         sourceItems.Remove(item);
                     }
                 }
@@ -140,7 +140,7 @@ namespace NMF.Expressions.Linq
                 {
                     var subSource = func.Observe(item);
                     var wrapper = new SubSourcePair(subSource, item, this);
-                    wrapper.Successors.Add(this);
+                    wrapper.Successors.Set(this);
                     sourceItems.Add(item, wrapper);
                     added.AddRange(wrapper);
                 }
@@ -159,13 +159,13 @@ namespace NMF.Expressions.Linq
                     if (sourceItems.TryGetValue(oldItem, out wrapper))
                     {
                         removed.AddRange(SL.Select(wrapper.Results.Values, res => res.Value));
-                        wrapper.Successors.Remove(this);
+                        wrapper.Successors.Unset(this);
                         sourceItems.Remove(oldItem);
                     }
 
                     wrapper = new SubSourcePair(newSubSource, newItem, this);
                     sourceItems.Add(newItem, wrapper);
-                    wrapper.Successors.Add(this);
+                    wrapper.Successors.Set(this);
                     added.AddRange(SL.Select(wrapper.Results.Values, res => res.Value));
                 }
             }
@@ -212,7 +212,7 @@ namespace NMF.Expressions.Linq
                 if (!Results.TryGetValue(element, out result))
                 {
                     result = Parent.selector.InvokeTagged(Item, element, 0);
-                    result.Successors.Add(this);
+                    result.Successors.Set(this);
                     Results.Add(element, result);
                 }
                 result.Tag++;
@@ -227,7 +227,7 @@ namespace NMF.Expressions.Linq
                     if (result.Tag == 0)
                     {
                         Results.Remove(element);
-                        result.Successors.Remove(this);
+                        result.Successors.Unset(this);
                     }
                 }
             }
@@ -238,7 +238,7 @@ namespace NMF.Expressions.Linq
                 {
                     var notifiable = SubSource.Value as INotifyEnumerable<TIntermediate>;
                     if (notifiable != null)
-                        notifiable.Successors.Remove(null);
+                        notifiable.Successors.SetDummy();
 
                     foreach (var element in SubSource.Value)
                     {
@@ -253,13 +253,13 @@ namespace NMF.Expressions.Linq
                 {
                     if (removed != null)
                         removed.Add(result.Value);
-                    result.Successors.Remove(this);
+                    result.Successors.Unset(this);
                 }
                 Results.Clear();
 
                 var notifiable = oldSubSource as INotifyEnumerable<TIntermediate>;
                 if (notifiable != null)
-                    notifiable.Successors.Remove(this);
+                    notifiable.Successors.Unset(this);
             }
 
             protected override void OnAttach()
@@ -288,7 +288,7 @@ namespace NMF.Expressions.Linq
 
                         var notifiable = SubSource.Value as INotifyEnumerable<TIntermediate>;
                         if (notifiable != null)
-                            notifiable.Successors.Add(this);
+                            notifiable.Successors.Set(this);
                         AttachSubSourceValue();
                         added.AddRange(SL.Select(Results.Values, res => res.Value));
                     }

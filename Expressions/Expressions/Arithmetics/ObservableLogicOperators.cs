@@ -129,9 +129,9 @@ namespace NMF.Expressions.Arithmetics
             if (leftChange != null)
             {
                 if (leftChange.NewValue)
-                    Right.Successors.Add(this);
+                    Right.Successors.Set(this);
                 else
-                    Right.Successors.Remove(this);
+                    Right.Successors.Unset(this);
             }
             return base.Notify(sources);
         }
@@ -188,9 +188,9 @@ namespace NMF.Expressions.Arithmetics
             if (leftChange != null)
             {
                 if (leftChange.NewValue)
-                    Right.Successors.Remove(this);
+                    Right.Successors.Unset(this);
                 else
-                    Right.Successors.Add(this);
+                    Right.Successors.Set(this);
             }
             return base.Notify(sources);
         }

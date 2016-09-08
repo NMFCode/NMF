@@ -88,7 +88,7 @@ namespace NMF.Expressions.Test
                 var test = new ObservingFunc<Dummy<long>, long>(d => d.Item + 7L);
 
                 var result = test.Observe(dummy);
-            result.Successors.Add(null);
+            result.Successors.SetDummy();
 
                 result.ValueChanged += (o, e) =>
                 {

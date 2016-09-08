@@ -16,18 +16,12 @@ namespace NMF.Expressions
     {
         private class Entry : INotifyReversableExpression<TValue>, INotifyPropertyChanged
         {
-            private readonly ShortList<INotifiable> successors = new ShortList<INotifiable>();
             private TValue value;
 
             public Entry()
             {
-                successors.CollectionChanged += (obj, e) =>
-                {
-                    if (successors.Count == 0)
-                        ExecutionContext.Instance.RemoveChangeListener(this, this, "Value");
-                    else if (e.Action == NotifyCollectionChangedAction.Add && successors.Count == 1)
-                        ExecutionContext.Instance.AddChangeListener(this, this, "Value");
-                };
+                Successors.Attached += (obj, e) => ExecutionContext.Instance.AddChangeListener(this, this, "Value");
+                Successors.Detached += (obj, e) => ExecutionContext.Instance.RemoveChangeListener(this, this, "Value");
             }
 
             public IEnumerable<INotifiable> Dependencies
@@ -48,13 +42,7 @@ namespace NMF.Expressions
                 }
             }
 
-            public IList<INotifiable> Successors
-            {
-                get
-                {
-                    return successors;
-                }
-            }
+            public ISuccessorList Successors { get; } = NotifySystem.DefaultSystem.CreateSuccessorList();
 
             public TValue Value
             {
@@ -128,7 +116,7 @@ namespace NMF.Expressions
 
             public void Dispose()
             {
-                successors.Clear();
+                Successors.UnsetAll();
             }
 
             public INotificationResult Notify(IList<INotificationResult> sources)

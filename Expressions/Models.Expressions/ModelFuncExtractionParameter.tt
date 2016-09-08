@@ -14,7 +14,7 @@ namespace NMF.Expressions
 <# for (int i = 1; i < 8; i++) { #>
     internal class ModelFuncExtractionParameter<<# for (int j = 1; j <= i; j++) { #>TBase<#= j #>, <# } #>T> : INotifyExpression<T>
     {
-        private readonly ShortList<INotifiable> successors = new ShortList<INotifiable>();
+        
 
 <# for (int j = 1; j <= i; j++) { #>
         public INotifyExpression<TBase<#= j #>> Base<#= j #> { get; private set; }
@@ -31,7 +31,7 @@ namespace NMF.Expressions
             }
         }
 
-        public IList<INotifiable> Successors { get { return successors; } }
+        public ISuccessorList Successors { get; } = NotifySystem.DefaultSystem.CreateSuccessorList();
 
         public ExecutionMetaData ExecutionMetaData { get; } = new ExecutionMetaData();
 

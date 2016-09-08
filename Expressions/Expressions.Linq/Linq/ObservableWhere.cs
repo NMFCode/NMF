@@ -72,7 +72,7 @@ namespace NMF.Expressions.Linq
                 {
                     lambdaResult = Lambda.InvokeTagged(item, new ItemMultiplicity(item, 1));
                     lambdaInstances.Add(item, lambdaResult);
-                    lambdaResult.Successors.Add(this);
+                    lambdaResult.Successors.Set(this);
                 }
                 else
                 {
@@ -86,7 +86,7 @@ namespace NMF.Expressions.Linq
                 if (nullCheck == null)
                 {
                     nullCheck = Lambda.Observe(default(T));
-                    nullCheck.Successors.Add(this);
+                    nullCheck.Successors.Set(this);
                 }
                 return nullCheck;
             }
@@ -103,7 +103,7 @@ namespace NMF.Expressions.Linq
         protected override void OnDetach()
         {
             foreach (var item in lambdaInstances.Values)
-                item.Successors.Remove(this);
+                item.Successors.Unset(this);
             lambdaInstances.Clear();
         }
 
@@ -164,7 +164,7 @@ namespace NMF.Expressions.Linq
                     if (sourceChange.IsReset)
                     {
                         foreach (var item in lambdaInstances.Values)
-                            item.Successors.Remove(this);
+                            item.Successors.Unset(this);
                         lambdaInstances.Clear();
                         foreach (var item in source)
                             AttachItem(item);
@@ -219,7 +219,7 @@ namespace NMF.Expressions.Linq
                     lambdaResult.Tag = lambdaResult.Tag.Decrease();
                     if (lambdaResult.Tag.Multiplicity == 0)
                     {
-                        lambdaResult.Successors.Remove(this);
+                        lambdaResult.Successors.Unset(this);
                         lambdaInstances.Remove(item);
                     }
                 }
@@ -228,7 +228,7 @@ namespace NMF.Expressions.Linq
                     nulls--;
                     if (nulls == 0)
                     {
-                        nullCheck.Successors.Remove(this);
+                        nullCheck.Successors.Unset(this);
                         nullCheck = null;
                     }
                     removed.Add(default(T));

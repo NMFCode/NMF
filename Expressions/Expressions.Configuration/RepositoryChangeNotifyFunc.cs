@@ -17,7 +17,7 @@ namespace NMF.Expressions
 
         public IEnumerable<INotifiable> Dependencies { get { return Enumerable.Empty<INotifiable>(); } }
 
-        public IList<INotifiable> Successors { get { throw new InvalidOperationException(); } }
+        public ISuccessorList Successors { get { throw new InvalidOperationException(); } }
 
         public T Value
         {

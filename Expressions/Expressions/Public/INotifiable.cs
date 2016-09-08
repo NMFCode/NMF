@@ -14,7 +14,7 @@ namespace NMF.Expressions
         /// <summary>
         /// The nodes that will get notified by this node.
         /// </summary>
-        IList<INotifiable> Successors { get; }
+        ISuccessorList Successors { get; }
 
         /// <summary>
         /// Nodes that notify this node.

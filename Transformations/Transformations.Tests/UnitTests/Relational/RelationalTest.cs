@@ -70,7 +70,7 @@ namespace NMF.Transformations.Tests.UnitTests.Relational
             nextItemCalled = false;
             expectedResult = 0;
 
-            select.Successors.Clear();
+            select.Successors.UnsetAll();
 
             source.Add("");
 

@@ -172,13 +172,12 @@ namespace NMF.Expressions
         {
             RenewProxyFunction();
 
-            Argument1.Successors.Add(null);
+            Argument1.Successors.SetDummy();
 
             RenewProxy();
 
-            if (Argument1.Successors.Count == 1)
-                Argument1.Successors.Add(this);
-            Argument1.Successors.Remove(null);
+            if (!Argument1.Successors.HasSuccessors)
+                Argument1.Successors.Set(this);
         }
     }
     internal sealed class ObservableMethodProxyCall<T, T1, T2, TResult> : ObservableProxyCallBase<TResult>
@@ -265,17 +264,15 @@ namespace NMF.Expressions
         {
             RenewProxyFunction();
 
-            Argument1.Successors.Add(null);
-            Argument2.Successors.Add(null);
+            Argument1.Successors.SetDummy();
+            Argument2.Successors.SetDummy();
 
             RenewProxy();
 
-            if (Argument1.Successors.Count == 1)
-                Argument1.Successors.Add(this);
-            Argument1.Successors.Remove(null);
-            if (Argument2.Successors.Count == 1)
-                Argument2.Successors.Add(this);
-            Argument2.Successors.Remove(null);
+            if (!Argument1.Successors.HasSuccessors)
+                Argument1.Successors.Set(this);
+            if (!Argument2.Successors.HasSuccessors)
+                Argument2.Successors.Set(this);
         }
     }
     internal sealed class ObservableMethodProxyCall<T, T1, T2, T3, TResult> : ObservableProxyCallBase<TResult>
@@ -365,21 +362,18 @@ namespace NMF.Expressions
         {
             RenewProxyFunction();
 
-            Argument1.Successors.Add(null);
-            Argument2.Successors.Add(null);
-            Argument3.Successors.Add(null);
+            Argument1.Successors.SetDummy();
+            Argument2.Successors.SetDummy();
+            Argument3.Successors.SetDummy();
 
             RenewProxy();
 
-            if (Argument1.Successors.Count == 1)
-                Argument1.Successors.Add(this);
-            Argument1.Successors.Remove(null);
-            if (Argument2.Successors.Count == 1)
-                Argument2.Successors.Add(this);
-            Argument2.Successors.Remove(null);
-            if (Argument3.Successors.Count == 1)
-                Argument3.Successors.Add(this);
-            Argument3.Successors.Remove(null);
+            if (!Argument1.Successors.HasSuccessors)
+                Argument1.Successors.Set(this);
+            if (!Argument2.Successors.HasSuccessors)
+                Argument2.Successors.Set(this);
+            if (!Argument3.Successors.HasSuccessors)
+                Argument3.Successors.Set(this);
         }
     }
     internal sealed class ObservableMethodProxyCall<T, T1, T2, T3, T4, TResult> : ObservableProxyCallBase<TResult>
@@ -472,25 +466,21 @@ namespace NMF.Expressions
         {
             RenewProxyFunction();
 
-            Argument1.Successors.Add(null);
-            Argument2.Successors.Add(null);
-            Argument3.Successors.Add(null);
-            Argument4.Successors.Add(null);
+            Argument1.Successors.SetDummy();
+            Argument2.Successors.SetDummy();
+            Argument3.Successors.SetDummy();
+            Argument4.Successors.SetDummy();
 
             RenewProxy();
 
-            if (Argument1.Successors.Count == 1)
-                Argument1.Successors.Add(this);
-            Argument1.Successors.Remove(null);
-            if (Argument2.Successors.Count == 1)
-                Argument2.Successors.Add(this);
-            Argument2.Successors.Remove(null);
-            if (Argument3.Successors.Count == 1)
-                Argument3.Successors.Add(this);
-            Argument3.Successors.Remove(null);
-            if (Argument4.Successors.Count == 1)
-                Argument4.Successors.Add(this);
-            Argument4.Successors.Remove(null);
+            if (!Argument1.Successors.HasSuccessors)
+                Argument1.Successors.Set(this);
+            if (!Argument2.Successors.HasSuccessors)
+                Argument2.Successors.Set(this);
+            if (!Argument3.Successors.HasSuccessors)
+                Argument3.Successors.Set(this);
+            if (!Argument4.Successors.HasSuccessors)
+                Argument4.Successors.Set(this);
         }
     }
     internal sealed class ObservableMethodProxyCall<T, T1, T2, T3, T4, T5, TResult> : ObservableProxyCallBase<TResult>
@@ -586,29 +576,24 @@ namespace NMF.Expressions
         {
             RenewProxyFunction();
 
-            Argument1.Successors.Add(null);
-            Argument2.Successors.Add(null);
-            Argument3.Successors.Add(null);
-            Argument4.Successors.Add(null);
-            Argument5.Successors.Add(null);
+            Argument1.Successors.SetDummy();
+            Argument2.Successors.SetDummy();
+            Argument3.Successors.SetDummy();
+            Argument4.Successors.SetDummy();
+            Argument5.Successors.SetDummy();
 
             RenewProxy();
 
-            if (Argument1.Successors.Count == 1)
-                Argument1.Successors.Add(this);
-            Argument1.Successors.Remove(null);
-            if (Argument2.Successors.Count == 1)
-                Argument2.Successors.Add(this);
-            Argument2.Successors.Remove(null);
-            if (Argument3.Successors.Count == 1)
-                Argument3.Successors.Add(this);
-            Argument3.Successors.Remove(null);
-            if (Argument4.Successors.Count == 1)
-                Argument4.Successors.Add(this);
-            Argument4.Successors.Remove(null);
-            if (Argument5.Successors.Count == 1)
-                Argument5.Successors.Add(this);
-            Argument5.Successors.Remove(null);
+            if (!Argument1.Successors.HasSuccessors)
+                Argument1.Successors.Set(this);
+            if (!Argument2.Successors.HasSuccessors)
+                Argument2.Successors.Set(this);
+            if (!Argument3.Successors.HasSuccessors)
+                Argument3.Successors.Set(this);
+            if (!Argument4.Successors.HasSuccessors)
+                Argument4.Successors.Set(this);
+            if (!Argument5.Successors.HasSuccessors)
+                Argument5.Successors.Set(this);
         }
     }
     internal sealed class ObservableMethodProxyCall<T, T1, T2, T3, T4, T5, T6, TResult> : ObservableProxyCallBase<TResult>
@@ -707,33 +692,27 @@ namespace NMF.Expressions
         {
             RenewProxyFunction();
 
-            Argument1.Successors.Add(null);
-            Argument2.Successors.Add(null);
-            Argument3.Successors.Add(null);
-            Argument4.Successors.Add(null);
-            Argument5.Successors.Add(null);
-            Argument6.Successors.Add(null);
+            Argument1.Successors.SetDummy();
+            Argument2.Successors.SetDummy();
+            Argument3.Successors.SetDummy();
+            Argument4.Successors.SetDummy();
+            Argument5.Successors.SetDummy();
+            Argument6.Successors.SetDummy();
 
             RenewProxy();
 
-            if (Argument1.Successors.Count == 1)
-                Argument1.Successors.Add(this);
-            Argument1.Successors.Remove(null);
-            if (Argument2.Successors.Count == 1)
-                Argument2.Successors.Add(this);
-            Argument2.Successors.Remove(null);
-            if (Argument3.Successors.Count == 1)
-                Argument3.Successors.Add(this);
-            Argument3.Successors.Remove(null);
-            if (Argument4.Successors.Count == 1)
-                Argument4.Successors.Add(this);
-            Argument4.Successors.Remove(null);
-            if (Argument5.Successors.Count == 1)
-                Argument5.Successors.Add(this);
-            Argument5.Successors.Remove(null);
-            if (Argument6.Successors.Count == 1)
-                Argument6.Successors.Add(this);
-            Argument6.Successors.Remove(null);
+            if (!Argument1.Successors.HasSuccessors)
+                Argument1.Successors.Set(this);
+            if (!Argument2.Successors.HasSuccessors)
+                Argument2.Successors.Set(this);
+            if (!Argument3.Successors.HasSuccessors)
+                Argument3.Successors.Set(this);
+            if (!Argument4.Successors.HasSuccessors)
+                Argument4.Successors.Set(this);
+            if (!Argument5.Successors.HasSuccessors)
+                Argument5.Successors.Set(this);
+            if (!Argument6.Successors.HasSuccessors)
+                Argument6.Successors.Set(this);
         }
     }
     internal sealed class ObservableMethodProxyCall<T, T1, T2, T3, T4, T5, T6, T7, TResult> : ObservableProxyCallBase<TResult>
@@ -835,37 +814,30 @@ namespace NMF.Expressions
         {
             RenewProxyFunction();
 
-            Argument1.Successors.Add(null);
-            Argument2.Successors.Add(null);
-            Argument3.Successors.Add(null);
-            Argument4.Successors.Add(null);
-            Argument5.Successors.Add(null);
-            Argument6.Successors.Add(null);
-            Argument7.Successors.Add(null);
+            Argument1.Successors.SetDummy();
+            Argument2.Successors.SetDummy();
+            Argument3.Successors.SetDummy();
+            Argument4.Successors.SetDummy();
+            Argument5.Successors.SetDummy();
+            Argument6.Successors.SetDummy();
+            Argument7.Successors.SetDummy();
 
             RenewProxy();
 
-            if (Argument1.Successors.Count == 1)
-                Argument1.Successors.Add(this);
-            Argument1.Successors.Remove(null);
-            if (Argument2.Successors.Count == 1)
-                Argument2.Successors.Add(this);
-            Argument2.Successors.Remove(null);
-            if (Argument3.Successors.Count == 1)
-                Argument3.Successors.Add(this);
-            Argument3.Successors.Remove(null);
-            if (Argument4.Successors.Count == 1)
-                Argument4.Successors.Add(this);
-            Argument4.Successors.Remove(null);
-            if (Argument5.Successors.Count == 1)
-                Argument5.Successors.Add(this);
-            Argument5.Successors.Remove(null);
-            if (Argument6.Successors.Count == 1)
-                Argument6.Successors.Add(this);
-            Argument6.Successors.Remove(null);
-            if (Argument7.Successors.Count == 1)
-                Argument7.Successors.Add(this);
-            Argument7.Successors.Remove(null);
+            if (!Argument1.Successors.HasSuccessors)
+                Argument1.Successors.Set(this);
+            if (!Argument2.Successors.HasSuccessors)
+                Argument2.Successors.Set(this);
+            if (!Argument3.Successors.HasSuccessors)
+                Argument3.Successors.Set(this);
+            if (!Argument4.Successors.HasSuccessors)
+                Argument4.Successors.Set(this);
+            if (!Argument5.Successors.HasSuccessors)
+                Argument5.Successors.Set(this);
+            if (!Argument6.Successors.HasSuccessors)
+                Argument6.Successors.Set(this);
+            if (!Argument7.Successors.HasSuccessors)
+                Argument7.Successors.Set(this);
         }
     }
     internal sealed class ObservableMethodProxyCall<T, T1, T2, T3, T4, T5, T6, T7, T8, TResult> : ObservableProxyCallBase<TResult>
@@ -970,41 +942,33 @@ namespace NMF.Expressions
         {
             RenewProxyFunction();
 
-            Argument1.Successors.Add(null);
-            Argument2.Successors.Add(null);
-            Argument3.Successors.Add(null);
-            Argument4.Successors.Add(null);
-            Argument5.Successors.Add(null);
-            Argument6.Successors.Add(null);
-            Argument7.Successors.Add(null);
-            Argument8.Successors.Add(null);
+            Argument1.Successors.SetDummy();
+            Argument2.Successors.SetDummy();
+            Argument3.Successors.SetDummy();
+            Argument4.Successors.SetDummy();
+            Argument5.Successors.SetDummy();
+            Argument6.Successors.SetDummy();
+            Argument7.Successors.SetDummy();
+            Argument8.Successors.SetDummy();
 
             RenewProxy();
 
-            if (Argument1.Successors.Count == 1)
-                Argument1.Successors.Add(this);
-            Argument1.Successors.Remove(null);
-            if (Argument2.Successors.Count == 1)
-                Argument2.Successors.Add(this);
-            Argument2.Successors.Remove(null);
-            if (Argument3.Successors.Count == 1)
-                Argument3.Successors.Add(this);
-            Argument3.Successors.Remove(null);
-            if (Argument4.Successors.Count == 1)
-                Argument4.Successors.Add(this);
-            Argument4.Successors.Remove(null);
-            if (Argument5.Successors.Count == 1)
-                Argument5.Successors.Add(this);
-            Argument5.Successors.Remove(null);
-            if (Argument6.Successors.Count == 1)
-                Argument6.Successors.Add(this);
-            Argument6.Successors.Remove(null);
-            if (Argument7.Successors.Count == 1)
-                Argument7.Successors.Add(this);
-            Argument7.Successors.Remove(null);
-            if (Argument8.Successors.Count == 1)
-                Argument8.Successors.Add(this);
-            Argument8.Successors.Remove(null);
+            if (!Argument1.Successors.HasSuccessors)
+                Argument1.Successors.Set(this);
+            if (!Argument2.Successors.HasSuccessors)
+                Argument2.Successors.Set(this);
+            if (!Argument3.Successors.HasSuccessors)
+                Argument3.Successors.Set(this);
+            if (!Argument4.Successors.HasSuccessors)
+                Argument4.Successors.Set(this);
+            if (!Argument5.Successors.HasSuccessors)
+                Argument5.Successors.Set(this);
+            if (!Argument6.Successors.HasSuccessors)
+                Argument6.Successors.Set(this);
+            if (!Argument7.Successors.HasSuccessors)
+                Argument7.Successors.Set(this);
+            if (!Argument8.Successors.HasSuccessors)
+                Argument8.Successors.Set(this);
         }
     }
     internal sealed class ObservableMethodProxyCall<T, T1, T2, T3, T4, T5, T6, T7, T8, T9, TResult> : ObservableProxyCallBase<TResult>
@@ -1112,45 +1076,36 @@ namespace NMF.Expressions
         {
             RenewProxyFunction();
 
-            Argument1.Successors.Add(null);
-            Argument2.Successors.Add(null);
-            Argument3.Successors.Add(null);
-            Argument4.Successors.Add(null);
-            Argument5.Successors.Add(null);
-            Argument6.Successors.Add(null);
-            Argument7.Successors.Add(null);
-            Argument8.Successors.Add(null);
-            Argument9.Successors.Add(null);
+            Argument1.Successors.SetDummy();
+            Argument2.Successors.SetDummy();
+            Argument3.Successors.SetDummy();
+            Argument4.Successors.SetDummy();
+            Argument5.Successors.SetDummy();
+            Argument6.Successors.SetDummy();
+            Argument7.Successors.SetDummy();
+            Argument8.Successors.SetDummy();
+            Argument9.Successors.SetDummy();
 
             RenewProxy();
 
-            if (Argument1.Successors.Count == 1)
-                Argument1.Successors.Add(this);
-            Argument1.Successors.Remove(null);
-            if (Argument2.Successors.Count == 1)
-                Argument2.Successors.Add(this);
-            Argument2.Successors.Remove(null);
-            if (Argument3.Successors.Count == 1)
-                Argument3.Successors.Add(this);
-            Argument3.Successors.Remove(null);
-            if (Argument4.Successors.Count == 1)
-                Argument4.Successors.Add(this);
-            Argument4.Successors.Remove(null);
-            if (Argument5.Successors.Count == 1)
-                Argument5.Successors.Add(this);
-            Argument5.Successors.Remove(null);
-            if (Argument6.Successors.Count == 1)
-                Argument6.Successors.Add(this);
-            Argument6.Successors.Remove(null);
-            if (Argument7.Successors.Count == 1)
-                Argument7.Successors.Add(this);
-            Argument7.Successors.Remove(null);
-            if (Argument8.Successors.Count == 1)
-                Argument8.Successors.Add(this);
-            Argument8.Successors.Remove(null);
-            if (Argument9.Successors.Count == 1)
-                Argument9.Successors.Add(this);
-            Argument9.Successors.Remove(null);
+            if (!Argument1.Successors.HasSuccessors)
+                Argument1.Successors.Set(this);
+            if (!Argument2.Successors.HasSuccessors)
+                Argument2.Successors.Set(this);
+            if (!Argument3.Successors.HasSuccessors)
+                Argument3.Successors.Set(this);
+            if (!Argument4.Successors.HasSuccessors)
+                Argument4.Successors.Set(this);
+            if (!Argument5.Successors.HasSuccessors)
+                Argument5.Successors.Set(this);
+            if (!Argument6.Successors.HasSuccessors)
+                Argument6.Successors.Set(this);
+            if (!Argument7.Successors.HasSuccessors)
+                Argument7.Successors.Set(this);
+            if (!Argument8.Successors.HasSuccessors)
+                Argument8.Successors.Set(this);
+            if (!Argument9.Successors.HasSuccessors)
+                Argument9.Successors.Set(this);
         }
     }
     internal sealed class ObservableMethodProxyCall<T, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, TResult> : ObservableProxyCallBase<TResult>
@@ -1261,49 +1216,39 @@ namespace NMF.Expressions
         {
             RenewProxyFunction();
 
-            Argument1.Successors.Add(null);
-            Argument2.Successors.Add(null);
-            Argument3.Successors.Add(null);
-            Argument4.Successors.Add(null);
-            Argument5.Successors.Add(null);
-            Argument6.Successors.Add(null);
-            Argument7.Successors.Add(null);
-            Argument8.Successors.Add(null);
-            Argument9.Successors.Add(null);
-            Argument10.Successors.Add(null);
+            Argument1.Successors.SetDummy();
+            Argument2.Successors.SetDummy();
+            Argument3.Successors.SetDummy();
+            Argument4.Successors.SetDummy();
+            Argument5.Successors.SetDummy();
+            Argument6.Successors.SetDummy();
+            Argument7.Successors.SetDummy();
+            Argument8.Successors.SetDummy();
+            Argument9.Successors.SetDummy();
+            Argument10.Successors.SetDummy();
 
             RenewProxy();
 
-            if (Argument1.Successors.Count == 1)
-                Argument1.Successors.Add(this);
-            Argument1.Successors.Remove(null);
-            if (Argument2.Successors.Count == 1)
-                Argument2.Successors.Add(this);
-            Argument2.Successors.Remove(null);
-            if (Argument3.Successors.Count == 1)
-                Argument3.Successors.Add(this);
-            Argument3.Successors.Remove(null);
-            if (Argument4.Successors.Count == 1)
-                Argument4.Successors.Add(this);
-            Argument4.Successors.Remove(null);
-            if (Argument5.Successors.Count == 1)
-                Argument5.Successors.Add(this);
-            Argument5.Successors.Remove(null);
-            if (Argument6.Successors.Count == 1)
-                Argument6.Successors.Add(this);
-            Argument6.Successors.Remove(null);
-            if (Argument7.Successors.Count == 1)
-                Argument7.Successors.Add(this);
-            Argument7.Successors.Remove(null);
-            if (Argument8.Successors.Count == 1)
-                Argument8.Successors.Add(this);
-            Argument8.Successors.Remove(null);
-            if (Argument9.Successors.Count == 1)
-                Argument9.Successors.Add(this);
-            Argument9.Successors.Remove(null);
-            if (Argument10.Successors.Count == 1)
-                Argument10.Successors.Add(this);
-            Argument10.Successors.Remove(null);
+            if (!Argument1.Successors.HasSuccessors)
+                Argument1.Successors.Set(this);
+            if (!Argument2.Successors.HasSuccessors)
+                Argument2.Successors.Set(this);
+            if (!Argument3.Successors.HasSuccessors)
+                Argument3.Successors.Set(this);
+            if (!Argument4.Successors.HasSuccessors)
+                Argument4.Successors.Set(this);
+            if (!Argument5.Successors.HasSuccessors)
+                Argument5.Successors.Set(this);
+            if (!Argument6.Successors.HasSuccessors)
+                Argument6.Successors.Set(this);
+            if (!Argument7.Successors.HasSuccessors)
+                Argument7.Successors.Set(this);
+            if (!Argument8.Successors.HasSuccessors)
+                Argument8.Successors.Set(this);
+            if (!Argument9.Successors.HasSuccessors)
+                Argument9.Successors.Set(this);
+            if (!Argument10.Successors.HasSuccessors)
+                Argument10.Successors.Set(this);
         }
     }
     internal sealed class ObservableMethodProxyCall<T, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, TResult> : ObservableProxyCallBase<TResult>
@@ -1417,53 +1362,42 @@ namespace NMF.Expressions
         {
             RenewProxyFunction();
 
-            Argument1.Successors.Add(null);
-            Argument2.Successors.Add(null);
-            Argument3.Successors.Add(null);
-            Argument4.Successors.Add(null);
-            Argument5.Successors.Add(null);
-            Argument6.Successors.Add(null);
-            Argument7.Successors.Add(null);
-            Argument8.Successors.Add(null);
-            Argument9.Successors.Add(null);
-            Argument10.Successors.Add(null);
-            Argument11.Successors.Add(null);
+            Argument1.Successors.SetDummy();
+            Argument2.Successors.SetDummy();
+            Argument3.Successors.SetDummy();
+            Argument4.Successors.SetDummy();
+            Argument5.Successors.SetDummy();
+            Argument6.Successors.SetDummy();
+            Argument7.Successors.SetDummy();
+            Argument8.Successors.SetDummy();
+            Argument9.Successors.SetDummy();
+            Argument10.Successors.SetDummy();
+            Argument11.Successors.SetDummy();
 
             RenewProxy();
 
-            if (Argument1.Successors.Count == 1)
-                Argument1.Successors.Add(this);
-            Argument1.Successors.Remove(null);
-            if (Argument2.Successors.Count == 1)
-                Argument2.Successors.Add(this);
-            Argument2.Successors.Remove(null);
-            if (Argument3.Successors.Count == 1)
-                Argument3.Successors.Add(this);
-            Argument3.Successors.Remove(null);
-            if (Argument4.Successors.Count == 1)
-                Argument4.Successors.Add(this);
-            Argument4.Successors.Remove(null);
-            if (Argument5.Successors.Count == 1)
-                Argument5.Successors.Add(this);
-            Argument5.Successors.Remove(null);
-            if (Argument6.Successors.Count == 1)
-                Argument6.Successors.Add(this);
-            Argument6.Successors.Remove(null);
-            if (Argument7.Successors.Count == 1)
-                Argument7.Successors.Add(this);
-            Argument7.Successors.Remove(null);
-            if (Argument8.Successors.Count == 1)
-                Argument8.Successors.Add(this);
-            Argument8.Successors.Remove(null);
-            if (Argument9.Successors.Count == 1)
-                Argument9.Successors.Add(this);
-            Argument9.Successors.Remove(null);
-            if (Argument10.Successors.Count == 1)
-                Argument10.Successors.Add(this);
-            Argument10.Successors.Remove(null);
-            if (Argument11.Successors.Count == 1)
-                Argument11.Successors.Add(this);
-            Argument11.Successors.Remove(null);
+            if (!Argument1.Successors.HasSuccessors)
+                Argument1.Successors.Set(this);
+            if (!Argument2.Successors.HasSuccessors)
+                Argument2.Successors.Set(this);
+            if (!Argument3.Successors.HasSuccessors)
+                Argument3.Successors.Set(this);
+            if (!Argument4.Successors.HasSuccessors)
+                Argument4.Successors.Set(this);
+            if (!Argument5.Successors.HasSuccessors)
+                Argument5.Successors.Set(this);
+            if (!Argument6.Successors.HasSuccessors)
+                Argument6.Successors.Set(this);
+            if (!Argument7.Successors.HasSuccessors)
+                Argument7.Successors.Set(this);
+            if (!Argument8.Successors.HasSuccessors)
+                Argument8.Successors.Set(this);
+            if (!Argument9.Successors.HasSuccessors)
+                Argument9.Successors.Set(this);
+            if (!Argument10.Successors.HasSuccessors)
+                Argument10.Successors.Set(this);
+            if (!Argument11.Successors.HasSuccessors)
+                Argument11.Successors.Set(this);
         }
     }
     internal sealed class ObservableMethodProxyCall<T, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, TResult> : ObservableProxyCallBase<TResult>
@@ -1580,57 +1514,45 @@ namespace NMF.Expressions
         {
             RenewProxyFunction();
 
-            Argument1.Successors.Add(null);
-            Argument2.Successors.Add(null);
-            Argument3.Successors.Add(null);
-            Argument4.Successors.Add(null);
-            Argument5.Successors.Add(null);
-            Argument6.Successors.Add(null);
-            Argument7.Successors.Add(null);
-            Argument8.Successors.Add(null);
-            Argument9.Successors.Add(null);
-            Argument10.Successors.Add(null);
-            Argument11.Successors.Add(null);
-            Argument12.Successors.Add(null);
+            Argument1.Successors.SetDummy();
+            Argument2.Successors.SetDummy();
+            Argument3.Successors.SetDummy();
+            Argument4.Successors.SetDummy();
+            Argument5.Successors.SetDummy();
+            Argument6.Successors.SetDummy();
+            Argument7.Successors.SetDummy();
+            Argument8.Successors.SetDummy();
+            Argument9.Successors.SetDummy();
+            Argument10.Successors.SetDummy();
+            Argument11.Successors.SetDummy();
+            Argument12.Successors.SetDummy();
 
             RenewProxy();
 
-            if (Argument1.Successors.Count == 1)
-                Argument1.Successors.Add(this);
-            Argument1.Successors.Remove(null);
-            if (Argument2.Successors.Count == 1)
-                Argument2.Successors.Add(this);
-            Argument2.Successors.Remove(null);
-            if (Argument3.Successors.Count == 1)
-                Argument3.Successors.Add(this);
-            Argument3.Successors.Remove(null);
-            if (Argument4.Successors.Count == 1)
-                Argument4.Successors.Add(this);
-            Argument4.Successors.Remove(null);
-            if (Argument5.Successors.Count == 1)
-                Argument5.Successors.Add(this);
-            Argument5.Successors.Remove(null);
-            if (Argument6.Successors.Count == 1)
-                Argument6.Successors.Add(this);
-            Argument6.Successors.Remove(null);
-            if (Argument7.Successors.Count == 1)
-                Argument7.Successors.Add(this);
-            Argument7.Successors.Remove(null);
-            if (Argument8.Successors.Count == 1)
-                Argument8.Successors.Add(this);
-            Argument8.Successors.Remove(null);
-            if (Argument9.Successors.Count == 1)
-                Argument9.Successors.Add(this);
-            Argument9.Successors.Remove(null);
-            if (Argument10.Successors.Count == 1)
-                Argument10.Successors.Add(this);
-            Argument10.Successors.Remove(null);
-            if (Argument11.Successors.Count == 1)
-                Argument11.Successors.Add(this);
-            Argument11.Successors.Remove(null);
-            if (Argument12.Successors.Count == 1)
-                Argument12.Successors.Add(this);
-            Argument12.Successors.Remove(null);
+            if (!Argument1.Successors.HasSuccessors)
+                Argument1.Successors.Set(this);
+            if (!Argument2.Successors.HasSuccessors)
+                Argument2.Successors.Set(this);
+            if (!Argument3.Successors.HasSuccessors)
+                Argument3.Successors.Set(this);
+            if (!Argument4.Successors.HasSuccessors)
+                Argument4.Successors.Set(this);
+            if (!Argument5.Successors.HasSuccessors)
+                Argument5.Successors.Set(this);
+            if (!Argument6.Successors.HasSuccessors)
+                Argument6.Successors.Set(this);
+            if (!Argument7.Successors.HasSuccessors)
+                Argument7.Successors.Set(this);
+            if (!Argument8.Successors.HasSuccessors)
+                Argument8.Successors.Set(this);
+            if (!Argument9.Successors.HasSuccessors)
+                Argument9.Successors.Set(this);
+            if (!Argument10.Successors.HasSuccessors)
+                Argument10.Successors.Set(this);
+            if (!Argument11.Successors.HasSuccessors)
+                Argument11.Successors.Set(this);
+            if (!Argument12.Successors.HasSuccessors)
+                Argument12.Successors.Set(this);
         }
     }
     internal sealed class ObservableMethodProxyCall<T, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, TResult> : ObservableProxyCallBase<TResult>
@@ -1750,61 +1672,48 @@ namespace NMF.Expressions
         {
             RenewProxyFunction();
 
-            Argument1.Successors.Add(null);
-            Argument2.Successors.Add(null);
-            Argument3.Successors.Add(null);
-            Argument4.Successors.Add(null);
-            Argument5.Successors.Add(null);
-            Argument6.Successors.Add(null);
-            Argument7.Successors.Add(null);
-            Argument8.Successors.Add(null);
-            Argument9.Successors.Add(null);
-            Argument10.Successors.Add(null);
-            Argument11.Successors.Add(null);
-            Argument12.Successors.Add(null);
-            Argument13.Successors.Add(null);
+            Argument1.Successors.SetDummy();
+            Argument2.Successors.SetDummy();
+            Argument3.Successors.SetDummy();
+            Argument4.Successors.SetDummy();
+            Argument5.Successors.SetDummy();
+            Argument6.Successors.SetDummy();
+            Argument7.Successors.SetDummy();
+            Argument8.Successors.SetDummy();
+            Argument9.Successors.SetDummy();
+            Argument10.Successors.SetDummy();
+            Argument11.Successors.SetDummy();
+            Argument12.Successors.SetDummy();
+            Argument13.Successors.SetDummy();
 
             RenewProxy();
 
-            if (Argument1.Successors.Count == 1)
-                Argument1.Successors.Add(this);
-            Argument1.Successors.Remove(null);
-            if (Argument2.Successors.Count == 1)
-                Argument2.Successors.Add(this);
-            Argument2.Successors.Remove(null);
-            if (Argument3.Successors.Count == 1)
-                Argument3.Successors.Add(this);
-            Argument3.Successors.Remove(null);
-            if (Argument4.Successors.Count == 1)
-                Argument4.Successors.Add(this);
-            Argument4.Successors.Remove(null);
-            if (Argument5.Successors.Count == 1)
-                Argument5.Successors.Add(this);
-            Argument5.Successors.Remove(null);
-            if (Argument6.Successors.Count == 1)
-                Argument6.Successors.Add(this);
-            Argument6.Successors.Remove(null);
-            if (Argument7.Successors.Count == 1)
-                Argument7.Successors.Add(this);
-            Argument7.Successors.Remove(null);
-            if (Argument8.Successors.Count == 1)
-                Argument8.Successors.Add(this);
-            Argument8.Successors.Remove(null);
-            if (Argument9.Successors.Count == 1)
-                Argument9.Successors.Add(this);
-            Argument9.Successors.Remove(null);
-            if (Argument10.Successors.Count == 1)
-                Argument10.Successors.Add(this);
-            Argument10.Successors.Remove(null);
-            if (Argument11.Successors.Count == 1)
-                Argument11.Successors.Add(this);
-            Argument11.Successors.Remove(null);
-            if (Argument12.Successors.Count == 1)
-                Argument12.Successors.Add(this);
-            Argument12.Successors.Remove(null);
-            if (Argument13.Successors.Count == 1)
-                Argument13.Successors.Add(this);
-            Argument13.Successors.Remove(null);
+            if (!Argument1.Successors.HasSuccessors)
+                Argument1.Successors.Set(this);
+            if (!Argument2.Successors.HasSuccessors)
+                Argument2.Successors.Set(this);
+            if (!Argument3.Successors.HasSuccessors)
+                Argument3.Successors.Set(this);
+            if (!Argument4.Successors.HasSuccessors)
+                Argument4.Successors.Set(this);
+            if (!Argument5.Successors.HasSuccessors)
+                Argument5.Successors.Set(this);
+            if (!Argument6.Successors.HasSuccessors)
+                Argument6.Successors.Set(this);
+            if (!Argument7.Successors.HasSuccessors)
+                Argument7.Successors.Set(this);
+            if (!Argument8.Successors.HasSuccessors)
+                Argument8.Successors.Set(this);
+            if (!Argument9.Successors.HasSuccessors)
+                Argument9.Successors.Set(this);
+            if (!Argument10.Successors.HasSuccessors)
+                Argument10.Successors.Set(this);
+            if (!Argument11.Successors.HasSuccessors)
+                Argument11.Successors.Set(this);
+            if (!Argument12.Successors.HasSuccessors)
+                Argument12.Successors.Set(this);
+            if (!Argument13.Successors.HasSuccessors)
+                Argument13.Successors.Set(this);
         }
     }
     internal sealed class ObservableMethodProxyCall<T, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, TResult> : ObservableProxyCallBase<TResult>
@@ -1927,65 +1836,51 @@ namespace NMF.Expressions
         {
             RenewProxyFunction();
 
-            Argument1.Successors.Add(null);
-            Argument2.Successors.Add(null);
-            Argument3.Successors.Add(null);
-            Argument4.Successors.Add(null);
-            Argument5.Successors.Add(null);
-            Argument6.Successors.Add(null);
-            Argument7.Successors.Add(null);
-            Argument8.Successors.Add(null);
-            Argument9.Successors.Add(null);
-            Argument10.Successors.Add(null);
-            Argument11.Successors.Add(null);
-            Argument12.Successors.Add(null);
-            Argument13.Successors.Add(null);
-            Argument14.Successors.Add(null);
+            Argument1.Successors.SetDummy();
+            Argument2.Successors.SetDummy();
+            Argument3.Successors.SetDummy();
+            Argument4.Successors.SetDummy();
+            Argument5.Successors.SetDummy();
+            Argument6.Successors.SetDummy();
+            Argument7.Successors.SetDummy();
+            Argument8.Successors.SetDummy();
+            Argument9.Successors.SetDummy();
+            Argument10.Successors.SetDummy();
+            Argument11.Successors.SetDummy();
+            Argument12.Successors.SetDummy();
+            Argument13.Successors.SetDummy();
+            Argument14.Successors.SetDummy();
 
             RenewProxy();
 
-            if (Argument1.Successors.Count == 1)
-                Argument1.Successors.Add(this);
-            Argument1.Successors.Remove(null);
-            if (Argument2.Successors.Count == 1)
-                Argument2.Successors.Add(this);
-            Argument2.Successors.Remove(null);
-            if (Argument3.Successors.Count == 1)
-                Argument3.Successors.Add(this);
-            Argument3.Successors.Remove(null);
-            if (Argument4.Successors.Count == 1)
-                Argument4.Successors.Add(this);
-            Argument4.Successors.Remove(null);
-            if (Argument5.Successors.Count == 1)
-                Argument5.Successors.Add(this);
-            Argument5.Successors.Remove(null);
-            if (Argument6.Successors.Count == 1)
-                Argument6.Successors.Add(this);
-            Argument6.Successors.Remove(null);
-            if (Argument7.Successors.Count == 1)
-                Argument7.Successors.Add(this);
-            Argument7.Successors.Remove(null);
-            if (Argument8.Successors.Count == 1)
-                Argument8.Successors.Add(this);
-            Argument8.Successors.Remove(null);
-            if (Argument9.Successors.Count == 1)
-                Argument9.Successors.Add(this);
-            Argument9.Successors.Remove(null);
-            if (Argument10.Successors.Count == 1)
-                Argument10.Successors.Add(this);
-            Argument10.Successors.Remove(null);
-            if (Argument11.Successors.Count == 1)
-                Argument11.Successors.Add(this);
-            Argument11.Successors.Remove(null);
-            if (Argument12.Successors.Count == 1)
-                Argument12.Successors.Add(this);
-            Argument12.Successors.Remove(null);
-            if (Argument13.Successors.Count == 1)
-                Argument13.Successors.Add(this);
-            Argument13.Successors.Remove(null);
-            if (Argument14.Successors.Count == 1)
-                Argument14.Successors.Add(this);
-            Argument14.Successors.Remove(null);
+            if (!Argument1.Successors.HasSuccessors)
+                Argument1.Successors.Set(this);
+            if (!Argument2.Successors.HasSuccessors)
+                Argument2.Successors.Set(this);
+            if (!Argument3.Successors.HasSuccessors)
+                Argument3.Successors.Set(this);
+            if (!Argument4.Successors.HasSuccessors)
+                Argument4.Successors.Set(this);
+            if (!Argument5.Successors.HasSuccessors)
+                Argument5.Successors.Set(this);
+            if (!Argument6.Successors.HasSuccessors)
+                Argument6.Successors.Set(this);
+            if (!Argument7.Successors.HasSuccessors)
+                Argument7.Successors.Set(this);
+            if (!Argument8.Successors.HasSuccessors)
+                Argument8.Successors.Set(this);
+            if (!Argument9.Successors.HasSuccessors)
+                Argument9.Successors.Set(this);
+            if (!Argument10.Successors.HasSuccessors)
+                Argument10.Successors.Set(this);
+            if (!Argument11.Successors.HasSuccessors)
+                Argument11.Successors.Set(this);
+            if (!Argument12.Successors.HasSuccessors)
+                Argument12.Successors.Set(this);
+            if (!Argument13.Successors.HasSuccessors)
+                Argument13.Successors.Set(this);
+            if (!Argument14.Successors.HasSuccessors)
+                Argument14.Successors.Set(this);
         }
     }
     internal sealed class ObservableMethodProxyCall<T, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, TResult> : ObservableProxyCallBase<TResult>
@@ -2111,69 +2006,54 @@ namespace NMF.Expressions
         {
             RenewProxyFunction();
 
-            Argument1.Successors.Add(null);
-            Argument2.Successors.Add(null);
-            Argument3.Successors.Add(null);
-            Argument4.Successors.Add(null);
-            Argument5.Successors.Add(null);
-            Argument6.Successors.Add(null);
-            Argument7.Successors.Add(null);
-            Argument8.Successors.Add(null);
-            Argument9.Successors.Add(null);
-            Argument10.Successors.Add(null);
-            Argument11.Successors.Add(null);
-            Argument12.Successors.Add(null);
-            Argument13.Successors.Add(null);
-            Argument14.Successors.Add(null);
-            Argument15.Successors.Add(null);
+            Argument1.Successors.SetDummy();
+            Argument2.Successors.SetDummy();
+            Argument3.Successors.SetDummy();
+            Argument4.Successors.SetDummy();
+            Argument5.Successors.SetDummy();
+            Argument6.Successors.SetDummy();
+            Argument7.Successors.SetDummy();
+            Argument8.Successors.SetDummy();
+            Argument9.Successors.SetDummy();
+            Argument10.Successors.SetDummy();
+            Argument11.Successors.SetDummy();
+            Argument12.Successors.SetDummy();
+            Argument13.Successors.SetDummy();
+            Argument14.Successors.SetDummy();
+            Argument15.Successors.SetDummy();
 
             RenewProxy();
 
-            if (Argument1.Successors.Count == 1)
-                Argument1.Successors.Add(this);
-            Argument1.Successors.Remove(null);
-            if (Argument2.Successors.Count == 1)
-                Argument2.Successors.Add(this);
-            Argument2.Successors.Remove(null);
-            if (Argument3.Successors.Count == 1)
-                Argument3.Successors.Add(this);
-            Argument3.Successors.Remove(null);
-            if (Argument4.Successors.Count == 1)
-                Argument4.Successors.Add(this);
-            Argument4.Successors.Remove(null);
-            if (Argument5.Successors.Count == 1)
-                Argument5.Successors.Add(this);
-            Argument5.Successors.Remove(null);
-            if (Argument6.Successors.Count == 1)
-                Argument6.Successors.Add(this);
-            Argument6.Successors.Remove(null);
-            if (Argument7.Successors.Count == 1)
-                Argument7.Successors.Add(this);
-            Argument7.Successors.Remove(null);
-            if (Argument8.Successors.Count == 1)
-                Argument8.Successors.Add(this);
-            Argument8.Successors.Remove(null);
-            if (Argument9.Successors.Count == 1)
-                Argument9.Successors.Add(this);
-            Argument9.Successors.Remove(null);
-            if (Argument10.Successors.Count == 1)
-                Argument10.Successors.Add(this);
-            Argument10.Successors.Remove(null);
-            if (Argument11.Successors.Count == 1)
-                Argument11.Successors.Add(this);
-            Argument11.Successors.Remove(null);
-            if (Argument12.Successors.Count == 1)
-                Argument12.Successors.Add(this);
-            Argument12.Successors.Remove(null);
-            if (Argument13.Successors.Count == 1)
-                Argument13.Successors.Add(this);
-            Argument13.Successors.Remove(null);
-            if (Argument14.Successors.Count == 1)
-                Argument14.Successors.Add(this);
-            Argument14.Successors.Remove(null);
-            if (Argument15.Successors.Count == 1)
-                Argument15.Successors.Add(this);
-            Argument15.Successors.Remove(null);
+            if (!Argument1.Successors.HasSuccessors)
+                Argument1.Successors.Set(this);
+            if (!Argument2.Successors.HasSuccessors)
+                Argument2.Successors.Set(this);
+            if (!Argument3.Successors.HasSuccessors)
+                Argument3.Successors.Set(this);
+            if (!Argument4.Successors.HasSuccessors)
+                Argument4.Successors.Set(this);
+            if (!Argument5.Successors.HasSuccessors)
+                Argument5.Successors.Set(this);
+            if (!Argument6.Successors.HasSuccessors)
+                Argument6.Successors.Set(this);
+            if (!Argument7.Successors.HasSuccessors)
+                Argument7.Successors.Set(this);
+            if (!Argument8.Successors.HasSuccessors)
+                Argument8.Successors.Set(this);
+            if (!Argument9.Successors.HasSuccessors)
+                Argument9.Successors.Set(this);
+            if (!Argument10.Successors.HasSuccessors)
+                Argument10.Successors.Set(this);
+            if (!Argument11.Successors.HasSuccessors)
+                Argument11.Successors.Set(this);
+            if (!Argument12.Successors.HasSuccessors)
+                Argument12.Successors.Set(this);
+            if (!Argument13.Successors.HasSuccessors)
+                Argument13.Successors.Set(this);
+            if (!Argument14.Successors.HasSuccessors)
+                Argument14.Successors.Set(this);
+            if (!Argument15.Successors.HasSuccessors)
+                Argument15.Successors.Set(this);
         }
     }
 }

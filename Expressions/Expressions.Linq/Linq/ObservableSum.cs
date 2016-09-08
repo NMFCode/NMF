@@ -11,80 +11,70 @@ namespace NMF.Expressions.Linq
         public static INotifyValue<int> SumInt(INotifyEnumerable<int> source)
         {
             var observable = new ObservableIntSum(source);
-            observable.Successors.Add(null);
-            source.Successors.Remove(null);
+            observable.Successors.SetDummy();
             return observable;
         }
 
         public static INotifyValue<long> SumLong(INotifyEnumerable<long> source)
         {
             var observable = new ObservableLongSum(source);
-            observable.Successors.Add(null);
-            source.Successors.Remove(null);
+            observable.Successors.SetDummy();
             return observable;
         }
 
         public static INotifyValue<float> SumFloat(INotifyEnumerable<float> source)
         {
             var observable = new ObservableFloatSum(source);
-            observable.Successors.Add(null);
-            source.Successors.Remove(null);
+            observable.Successors.SetDummy();
             return observable;
         }
 
         public static INotifyValue<double> SumDouble(INotifyEnumerable<double> source)
         {
             var observable = new ObservableDoubleSum(source);
-            observable.Successors.Add(null);
-            source.Successors.Remove(null);
+            observable.Successors.SetDummy();
             return observable;
         }
 
         public static INotifyValue<decimal> SumDecimal(INotifyEnumerable<decimal> source)
         {
             var observable = new ObservableDecimalSum(source);
-            observable.Successors.Add(null);
-            source.Successors.Remove(null);
+            observable.Successors.SetDummy();
             return observable;
         }
 
         public static INotifyValue<int?> SumNullableInt(INotifyEnumerable<int?> source)
         {
             var observable = new ObservableNullableIntSum(source);
-            observable.Successors.Add(null);
-            source.Successors.Remove(null);
+            observable.Successors.SetDummy();
             return observable;
         }
 
         public static INotifyValue<long?> SumNullableLong(INotifyEnumerable<long?> source)
         {
             var observable = new ObservableNullableLongSum(source);
-            observable.Successors.Add(null);
-            source.Successors.Remove(null);
+            observable.Successors.SetDummy();
             return observable;
         }
 
         public static INotifyValue<float?> SumNullableFloat(INotifyEnumerable<float?> source)
         {
             var observable = new ObservableNullableFloatSum(source);
-            observable.Successors.Add(null);
-            source.Successors.Remove(null);
+            observable.Successors.SetDummy();
             return observable;
         }
 
         public static INotifyValue<double?> SumNullableDouble(INotifyEnumerable<double?> source)
         {
             var observable = new ObservableNullableDoubleSum(source);
-            observable.Successors.Add(null);
-            source.Successors.Remove(null);
+            observable.Successors.SetDummy();
             return observable;
         }
 
         public static INotifyValue<decimal?> SumNullableDecimal(INotifyEnumerable<decimal?> source)
         {
             var observable = new ObservableNullableDecimalSum(source);
-            observable.Successors.Add(null);
-            source.Successors.Remove(null);
+            observable.Successors.SetDummy();
             return observable;
         }
 

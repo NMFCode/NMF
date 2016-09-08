@@ -25,7 +25,7 @@ namespace TrainBenchmark
 
         private static void Profile()
         {
-            var bench = new SemaphoreNeighbor();
+            var bench = new RouteSensor();
             var watch = Stopwatch.StartNew();
             for (int i = 0; ; i++)
             {

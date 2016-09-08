@@ -10,17 +10,10 @@ namespace NMF.Expressions.Linq
 {
     public abstract class ObservableEnumerable<T> : INotifyEnumerable<T>, ICollection<T>, IEnumerable<T>, INotifyCollectionChanged, IDisposable
     {
-        private ShortList<INotifiable> successors = new ShortList<INotifiable>();
-
         public ObservableEnumerable()
         {
-            successors.CollectionChanged += (obj, e) =>
-            {
-                if (successors.Count == 0)
-                    Detach();
-                else if (e.Action == NotifyCollectionChangedAction.Add && successors.Count == 1)
-                    Attach();
-            };
+            Successors.Attached += (obj, e) => Attach();
+            Successors.Detached += (obj, e) => Detach();
         }
 
         [DebuggerStepThrough]
@@ -188,7 +181,7 @@ namespace NMF.Expressions.Linq
             }
         }
 
-        public IList<INotifiable> Successors { get { return successors; } }
+        public ISuccessorList Successors { get; } = NotifySystem.DefaultSystem.CreateSuccessorList();
 
         public abstract IEnumerable<INotifiable> Dependencies { get; }
 
@@ -197,7 +190,7 @@ namespace NMF.Expressions.Linq
         private void Attach()
         {
             foreach (var dep in Dependencies)
-                dep.Successors.Add(this);
+                dep.Successors.Set(this);
             OnAttach();
             OnCleared();
         }
@@ -206,7 +199,7 @@ namespace NMF.Expressions.Linq
         {
             OnDetach();
             foreach (var dep in Dependencies)
-                dep.Successors.Remove(this);
+                dep.Successors.Unset(this);
         }
 
         protected virtual void OnAttach() { }

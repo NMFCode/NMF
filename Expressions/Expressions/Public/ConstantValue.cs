@@ -15,11 +15,11 @@ namespace NMF.Expressions
 
         public IEnumerable<INotifiable> Dependencies { get { return Enumerable.Empty<INotifiable>(); } }
 
-        private readonly ShortList<INotifiable> successors = new ShortList<INotifiable>();
+        
 
         public event EventHandler<ValueChangedEventArgs> ValueChanged { add { } remove { } }
 
-        public IList<INotifiable> Successors { get { return successors; } }
+        public ISuccessorList Successors { get; } = NotifySystem.DefaultSystem.CreateSuccessorList();
 
         public ExecutionMetaData ExecutionMetaData { get; } = new ExecutionMetaData();
 
@@ -35,7 +35,7 @@ namespace NMF.Expressions
 
         public void Dispose()
         {
-            Successors.Clear();
+            Successors.UnsetAll();
         }
     }
 }

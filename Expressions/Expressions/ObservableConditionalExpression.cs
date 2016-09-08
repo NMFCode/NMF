@@ -107,13 +107,13 @@ namespace NMF.Expressions
             {
                 if (Test.Value)
                 {
-                    True.Successors.Add(this);
-                    False.Successors.Remove(this);
+                    True.Successors.Set(this);
+                    False.Successors.Unset(this);
                 }
                 else
                 {
-                    True.Successors.Remove(this);
-                    False.Successors.Add(this);
+                    True.Successors.Unset(this);
+                    False.Successors.Set(this);
                 }
             }
 

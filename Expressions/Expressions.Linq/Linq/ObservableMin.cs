@@ -57,8 +57,7 @@ namespace NMF.Expressions.Linq
         public static INotifyValue<T> MinWithComparer<T>(INotifyEnumerable<T> source, IComparer<T> comparer)
         {
             var observable = new ObservableMin<T>(source, comparer);
-            observable.Successors.Add(null);
-            source.Successors.Remove(null);
+            observable.Successors.SetDummy();
             return observable;
         }
 
@@ -80,8 +79,7 @@ namespace NMF.Expressions.Linq
         public static INotifyValue<T?> NullableMinWithComparer<T>(INotifyEnumerable<T?> source, IComparer<T> comparer) where T : struct
         {
             var observable = new ObservableNullableMin<T>(source, comparer);
-            observable.Successors.Add(null);
-            source.Successors.Remove(null);
+            observable.Successors.SetDummy();
             return observable;
         }
 
@@ -178,7 +176,7 @@ namespace NMF.Expressions.Linq
 
     internal class ObservableMin<T> : INotifyValue<T>
     {
-        private readonly ShortList<INotifiable> successors = new ShortList<INotifiable>();
+        
         private INotifyEnumerable<T> source;
         private IComparer<T> comparer;
         private bool hasValue;
@@ -196,13 +194,8 @@ namespace NMF.Expressions.Linq
             this.source = source;
             this.comparer = comparer ?? Comparer<T>.Default;
 
-            successors.CollectionChanged += (obj, e) =>
-            {
-                if (successors.Count == 0)
-                    Detach();
-                else if (e.Action == NotifyCollectionChangedAction.Add && successors.Count == 1)
-                    Attach();
-            };
+            Successors.Attached += (obj, e) => Attach();
+            Successors.Detached += (obj, e) => Detach();
         }
 
         public T Value
@@ -210,7 +203,7 @@ namespace NMF.Expressions.Linq
             get { return current; }
         }
 
-        public IList<INotifiable> Successors { get { return successors; } }
+        public ISuccessorList Successors { get; } = NotifySystem.DefaultSystem.CreateSuccessorList();
 
         public IEnumerable<INotifiable> Dependencies { get { yield return source; } }
 
@@ -221,7 +214,7 @@ namespace NMF.Expressions.Linq
         public void Attach()
         {
             foreach (var dep in Dependencies)
-                dep.Successors.Add(this);
+                dep.Successors.Set(this);
             
             hasValue = false;
             foreach (var item in source)
@@ -233,7 +226,7 @@ namespace NMF.Expressions.Linq
         public void Detach()
         {
             foreach (var dep in Dependencies)
-                dep.Successors.Remove(this);
+                dep.Successors.Unset(this);
         }
 
         private void AddItem(T item)
@@ -309,7 +302,7 @@ namespace NMF.Expressions.Linq
     internal class ObservableNullableMin<T> : INotifyValue<T?>
         where T : struct
     {
-        private readonly ShortList<INotifiable> successors = new ShortList<INotifiable>();
+        
         private INotifyEnumerable<T?> source;
         private IComparer<T> comparer;
         private T? current;
@@ -326,13 +319,8 @@ namespace NMF.Expressions.Linq
             this.source = source;
             this.comparer = comparer ?? Comparer<T>.Default;
 
-            successors.CollectionChanged += (obj, e) =>
-            {
-                if (successors.Count == 0)
-                    Detach();
-                else if (e.Action == NotifyCollectionChangedAction.Add && successors.Count == 1)
-                    Attach();
-            };
+            Successors.Attached += (obj, e) => Attach();
+            Successors.Detached += (obj, e) => Detach();
         }
 
         public T? Value
@@ -340,7 +328,7 @@ namespace NMF.Expressions.Linq
             get { return current; }
         }
 
-        public IList<INotifiable> Successors { get { return successors; } }
+        public ISuccessorList Successors { get; } = NotifySystem.DefaultSystem.CreateSuccessorList();
 
         public IEnumerable<INotifiable> Dependencies { get { yield return source; } }
 
@@ -351,7 +339,7 @@ namespace NMF.Expressions.Linq
         public void Attach()
         {
             foreach (var dep in Dependencies)
-                dep.Successors.Add(this);
+                dep.Successors.Set(this);
             
             foreach (var item in source)
             {
@@ -362,7 +350,7 @@ namespace NMF.Expressions.Linq
         public void Detach()
         {
             foreach (var dep in Dependencies)
-                dep.Successors.Remove(this);
+                dep.Successors.Unset(this);
         }
 
         private void AddItem(T? item)

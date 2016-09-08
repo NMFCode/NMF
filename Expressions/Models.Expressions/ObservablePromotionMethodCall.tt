@@ -82,7 +82,7 @@ namespace NMF.Expressions
 
         private void Arg<#= j #>BubbledChange(object sender, BubbledChangeEventArgs e)
         {
-            if (Successors.Count > 0 && Arg<#= j #>Properties.Contains(e.PropertyName))
+            if (Successors.IsAttached && Arg<#= j #>Properties.Contains(e.PropertyName))
             {
                 ExecutionEngine.Current.ManualInvalidation(this);
             }
@@ -90,7 +90,7 @@ namespace NMF.Expressions
 
         private void Arg<#= j #>PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (Successors.Count > 0 && Arg<#= j #>Properties.Contains(e.PropertyName))
+            if (Successors.IsAttached && Arg<#= j #>Properties.Contains(e.PropertyName))
             {
                 ExecutionEngine.Current.ManualInvalidation(this);
             }

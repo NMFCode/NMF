@@ -9,15 +9,14 @@ namespace NMF.Expressions.Linq
 {
     internal class ObservableSingleOrDefault<TSource> : INotifyValue<TSource>, INotifyReversableValue<TSource>
     {
-        private readonly ShortList<INotifiable> successors = new ShortList<INotifiable>();
+        
         private TSource value;
         private INotifyEnumerable<TSource> source;
 
         public static ObservableSingleOrDefault<TSource> Create(INotifyEnumerable<TSource> source)
         {
             var observable = new ObservableSingleOrDefault<TSource>(source);
-            observable.Successors.Add(null);
-            source.Successors.Remove(null);
+            observable.Successors.SetDummy();
             return observable;
         }
 
@@ -168,13 +167,8 @@ namespace NMF.Expressions.Linq
 
             this.source = source;
 
-            successors.CollectionChanged += (obj, e) =>
-            {
-                if (successors.Count == 0)
-                    Detach();
-                else if (e.Action == NotifyCollectionChangedAction.Add && successors.Count == 1)
-                    Attach();
-            };
+            Successors.Attached += (obj, e) => Attach();
+            Successors.Detached += (obj, e) => Detach();
         }
 
         public TSource Value
@@ -195,14 +189,14 @@ namespace NMF.Expressions.Linq
         public void Attach()
         {
             foreach (var dep in Dependencies)
-                dep.Successors.Add(this);
+                dep.Successors.Set(this);
             value = SL.SingleOrDefault(source);
         }
 
         public void Detach()
         {
             foreach (var dep in Dependencies)
-                dep.Successors.Remove(this);
+                dep.Successors.Unset(this);
         }
 
         public INotificationResult Notify(IList<INotificationResult> sources)
@@ -271,7 +265,7 @@ namespace NMF.Expressions.Linq
             }
         }
 
-        public IList<INotifiable> Successors { get { return successors; } }
+        public ISuccessorList Successors { get; } = NotifySystem.DefaultSystem.CreateSuccessorList();
 
         public IEnumerable<INotifiable> Dependencies { get { yield return source; } }
 

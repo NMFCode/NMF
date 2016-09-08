@@ -66,7 +66,7 @@ namespace NMF.Expressions.Tests
 
             var route = RailwayContainer.Routes[0];
             var test = func.Observe(route);
-            test.Successors.Add(null);
+            test.Successors.SetDummy();
             var resultChanged = false;
             test.ValueChanged += (o, e) =>
             {
@@ -91,7 +91,7 @@ namespace NMF.Expressions.Tests
 
             var route = RailwayContainer.Routes[0];
             var test = func.Observe(new Struct<IRoute>(route));
-            test.Successors.Add(null);
+            test.Successors.SetDummy();
             var resultChanged = false;
             test.ValueChanged += (o, e) =>
             {
@@ -116,7 +116,7 @@ namespace NMF.Expressions.Tests
 
             var route = RailwayContainer.Routes[0];
             var test = func.Observe(new Generated<IRoute>(route));
-            test.Successors.Add(null);
+            test.Successors.SetDummy();
             var resultChanged = false;
             test.ValueChanged += (o, e) =>
             {
@@ -141,7 +141,7 @@ namespace NMF.Expressions.Tests
 
             var switchPosition = RailwayContainer.Routes[0].Follows.OfType<ISwitchPosition>().FirstOrDefault();
             var test = func.Observe(switchPosition);
-            test.Successors.Add(null);
+            test.Successors.SetDummy();
             var resultChanged = false;
             var expectedOld = true;
             var expectedNew = false;
@@ -177,7 +177,7 @@ namespace NMF.Expressions.Tests
 
             var switchPosition = RailwayContainer.Routes[0].Follows.OfType<ISwitchPosition>().FirstOrDefault();
             var test = func.Observe(new Struct<ISwitchPosition>(switchPosition));
-            test.Successors.Add(null);
+            test.Successors.SetDummy();
             var resultChanged = false;
             var expectedOld = true;
             var expectedNew = false;
@@ -213,7 +213,7 @@ namespace NMF.Expressions.Tests
 
             var switchPosition = RailwayContainer.Routes[0].Follows.OfType<ISwitchPosition>().FirstOrDefault();
             var test = func.Observe(new Generated<ISwitchPosition>(switchPosition));
-            test.Successors.Add(null);
+            test.Successors.SetDummy();
             var resultChanged = false;
             var expectedOld = true;
             var expectedNew = false;
@@ -252,7 +252,7 @@ namespace NMF.Expressions.Tests
             var route2 = RailwayContainer.Invalids.OfType<IRoute>().FirstOrDefault();
             var switchPosition = route.Follows.OfType<ISwitchPosition>().FirstOrDefault();
             var test = func.Observe(route, switchPosition);
-            test.Successors.Add(null);
+            test.Successors.SetDummy();
             var resultChanged = false;
             var expectedOld = false;
             var expectedNew = true;
@@ -303,7 +303,7 @@ namespace NMF.Expressions.Tests
 
             var switchPosition = RailwayContainer.Routes[0].Follows.OfType<ISwitchPosition>().FirstOrDefault();
             var test = func.Observe(RailwayContainer);
-            test.Successors.Add(null);
+            test.Successors.SetDummy();
             var resultChanged = false;
             test.ValueChanged += (o, e) =>
             {
@@ -352,7 +352,7 @@ namespace NMF.Expressions.Tests
                 select seg);
 
             var test = func.Observe(RailwayContainer);
-            test.Successors.Add(null);
+            test.Successors.SetDummy();
             var resultChanged = false;
             test.ValueChanged += (o, e) =>
             {

@@ -48,7 +48,7 @@ namespace NMF.Models.Collections
             if (childrenCollection == null)
             {
                 childrenCollection = Element.Children.AsNotifiable();
-                childrenCollection.Successors.Add(null);
+                childrenCollection.Successors.SetDummy();
                 childrenCollection.CollectionChanged += ChildrenChanged;
             }
 
@@ -73,7 +73,7 @@ namespace NMF.Models.Collections
             childCollections.Clear();
 
             childrenCollection.CollectionChanged -= ChildrenChanged;
-            childrenCollection.Successors.Remove(null);
+            childrenCollection.Successors.UnsetAll();
         }
 
         public event NotifyCollectionChangedEventHandler CollectionChanged;

@@ -15,8 +15,7 @@ namespace NMF.Expressions.Linq
         public static ObservableContains<TSource> CreateWithComparer(INotifyEnumerable<TSource> source, TSource searchItem, IEqualityComparer<TSource> comparer)
         {
             var observable = new ObservableContains<TSource>(source, searchItem, comparer);
-            observable.Successors.Add(null);
-            source.Successors.Remove(null);
+            observable.Successors.SetDummy();
             return observable;
         }
 

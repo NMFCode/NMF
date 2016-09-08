@@ -190,7 +190,7 @@ namespace NMF.Expressions.Test
             var test = new ObservingFunc<Dummy<bool>, bool>(d => d.Item ^ false);
 
             var result = test.Observe(dummy);
-            result.Successors.Add(null);
+            result.Successors.SetDummy();
 
             result.ValueChanged += (o, e) => updated = true;
 
@@ -212,7 +212,7 @@ namespace NMF.Expressions.Test
             var test = new ObservingFunc<Dummy<bool>, bool>(d => d.Item || false);
 
             var result = test.Observe(dummy);
-            result.Successors.Add(null);
+            result.Successors.SetDummy();
 
             result.ValueChanged += (o, e) => updated = true;
 
@@ -234,7 +234,7 @@ namespace NMF.Expressions.Test
             var test = new ObservingFunc<Dummy<bool>, bool>(d => d.Item || false);
 
             var result = test.Observe(dummy);
-            result.Successors.Add(null);
+            result.Successors.SetDummy();
 
             result.ValueChanged += (o, e) => updated = true;
 

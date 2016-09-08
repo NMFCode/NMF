@@ -73,7 +73,7 @@ namespace NMF.Expressions.Linq
         private void AttachItem(SortedDictionary<TKey, Collection<TItem>> searchTree, TItem item)
         {
             var lambdaResult = keySelector.InvokeTagged(item, new SequenceInfo() { Item = item, SearchTree = searchTree });
-            lambdaResult.Successors.Add(this);
+            lambdaResult.Successors.Set(this);
             Stack<TaggedObservableValue<TKey, SequenceInfo>> lambdaStack;
             if (!lambdaResults.TryGetValue(item, out lambdaStack))
             {
@@ -97,7 +97,7 @@ namespace NMF.Expressions.Linq
             if (lambdaResults.TryGetValue(item, out lambdaStack))
             {
                 var lambdaResult = lambdaStack.Pop();
-                lambdaResult.Successors.Remove(this);
+                lambdaResult.Successors.Unset(this);
 
                 if (lambdaStack.Count == 0)
                 {
@@ -155,7 +155,7 @@ namespace NMF.Expressions.Linq
             {
                 foreach (var lambda in lambdaStack)
                 {
-                    lambda.Successors.Remove(this);
+                    lambda.Successors.Unset(this);
                 }
             }
 

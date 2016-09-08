@@ -72,7 +72,7 @@ namespace NMF.Expressions.Linq
             var subSource = selector.Observe(item);
             //TODO do we need to handle INotifyCollectionChanged in subSource.Value or does it do that automatically?
             stack.Push(subSource);
-            subSource.Successors.Add(this);
+            subSource.Successors.Set(this);
             return subSource.Value;
         }
 
@@ -90,7 +90,7 @@ namespace NMF.Expressions.Linq
             {
                 foreach (var result in stack)
                 {
-                    result.Successors.Remove(this);
+                    result.Successors.Unset(this);
                 }
             }
             results.Clear();
@@ -145,7 +145,7 @@ namespace NMF.Expressions.Linq
                     results.Remove(item);
                 }
                 removed.AddRange(resultItems.Value);
-                resultItems.Successors.Remove(this);
+                resultItems.Successors.Unset(this);
             }
 
             foreach (var item in sourceChange.AllAddedItems)

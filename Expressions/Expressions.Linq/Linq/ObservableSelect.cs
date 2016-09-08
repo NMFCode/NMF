@@ -45,7 +45,7 @@ namespace NMF.Expressions.Linq
                 if (!lambdaInstances.TryGetValue(item, out lambdaResult))
                 {
                     lambdaResult = lambda.InvokeTagged(item, 0);
-                    lambdaResult.Successors.Add(this);
+                    lambdaResult.Successors.Set(this);
                     lambdaInstances.Add(item, lambdaResult);
                 }
                 lambdaResult.Tag++;
@@ -56,7 +56,7 @@ namespace NMF.Expressions.Linq
                 if (nullLambda == null)
                 {
                     nullLambda = lambda.InvokeTagged(item, 0);
-                    nullLambda.Successors.Add(this);
+                    nullLambda.Successors.Set(this);
                 }
                 nullLambda.Tag++;
                 return nullLambda;
@@ -74,7 +74,7 @@ namespace NMF.Expressions.Linq
         protected override void OnDetach()
         {
             foreach (var item in lambdaInstances.Values)
-                item.Successors.Remove(this);
+                item.Successors.Unset(this);
             lambdaInstances.Clear();
         }
         
@@ -121,7 +121,7 @@ namespace NMF.Expressions.Linq
                     if (sourceChange.IsReset)
                     {
                         foreach (var item in lambdaInstances.Values)
-                            item.Successors.Remove(this);
+                            item.Successors.Unset(this);
                         lambdaInstances.Clear();
                         foreach (var item in source)
                             AttachItem(item);
@@ -158,7 +158,7 @@ namespace NMF.Expressions.Linq
                     if (lambdaResult.Tag == 0)
                     {
                         lambdaInstances.Remove(item);
-                        lambdaResult.Successors.Remove(this);
+                        lambdaResult.Successors.Unset(this);
                     }
                     removed.Add(lambdaResult.Value);
                 }
@@ -167,7 +167,7 @@ namespace NMF.Expressions.Linq
                     nullLambda.Tag--;
                     if (nullLambda.Tag == 0)
                     {
-                        nullLambda.Successors.Remove(this);
+                        nullLambda.Successors.Unset(this);
                         nullLambda = null;
                     }
                 }

@@ -114,8 +114,7 @@ namespace NMF.Expressions.Linq
         public static ObservableIntAverage Create(INotifyEnumerable<int> source)
         {
             var observable = new ObservableIntAverage(source);
-            observable.Successors.Add(null);
-            source.Successors.Remove(null);
+            observable.Successors.SetDummy();
             return observable;
         }
 
@@ -171,8 +170,7 @@ namespace NMF.Expressions.Linq
         public static ObservableLongAverage Create(INotifyEnumerable<long> source)
         {
             var observable = new ObservableLongAverage(source);
-            observable.Successors.Add(null);
-            source.Successors.Remove(null);
+            observable.Successors.SetDummy();
             return observable;
         }
 
@@ -228,8 +226,7 @@ namespace NMF.Expressions.Linq
         public static ObservableFloatAverage Create(INotifyEnumerable<float> source)
         {
             var observable = new ObservableFloatAverage(source);
-            observable.Successors.Add(null);
-            source.Successors.Remove(null);
+            observable.Successors.SetDummy();
             return observable;
         }
 
@@ -285,8 +282,7 @@ namespace NMF.Expressions.Linq
         public static ObservableDoubleAverage Create(INotifyEnumerable<double> source)
         {
             var observable = new ObservableDoubleAverage(source);
-            observable.Successors.Add(null);
-            source.Successors.Remove(null);
+            observable.Successors.SetDummy();
             return observable;
         }
 
@@ -342,8 +338,7 @@ namespace NMF.Expressions.Linq
         public static ObservableDecimalAverage Create(INotifyEnumerable<decimal> source)
         {
             var observable = new ObservableDecimalAverage(source);
-            observable.Successors.Add(null);
-            source.Successors.Remove(null);
+            observable.Successors.SetDummy();
             return observable;
         }
 
@@ -399,8 +394,7 @@ namespace NMF.Expressions.Linq
         public static ObservableNullableIntAverage Create(INotifyEnumerable<int?> source)
         {
             var observable = new ObservableNullableIntAverage(source);
-            observable.Successors.Add(null);
-            source.Successors.Remove(null);
+            observable.Successors.SetDummy();
             return observable;
         }
 
@@ -458,8 +452,7 @@ namespace NMF.Expressions.Linq
         public static ObservableNullableLongAverage Create(INotifyEnumerable<long?> source)
         {
             var observable = new ObservableNullableLongAverage(source);
-            observable.Successors.Add(null);
-            source.Successors.Remove(null);
+            observable.Successors.SetDummy();
             return observable;
         }
 
@@ -517,8 +510,7 @@ namespace NMF.Expressions.Linq
         public static ObservableNullableFloatAverage Create(INotifyEnumerable<float?> source)
         {
             var observable = new ObservableNullableFloatAverage(source);
-            observable.Successors.Add(null);
-            source.Successors.Remove(null);
+            observable.Successors.SetDummy();
             return observable;
         }
 
@@ -576,8 +568,7 @@ namespace NMF.Expressions.Linq
         public static ObservableNullableDoubleAverage Create(INotifyEnumerable<double?> source)
         {
             var observable = new ObservableNullableDoubleAverage(source);
-            observable.Successors.Add(null);
-            source.Successors.Remove(null);
+            observable.Successors.SetDummy();
             return observable;
         }
 
@@ -635,8 +626,7 @@ namespace NMF.Expressions.Linq
         public static ObservableNullableDecimalAverage Create(INotifyEnumerable<decimal?> source)
         {
             var observable = new ObservableNullableDecimalAverage(source);
-            observable.Successors.Add(null);
-            source.Successors.Remove(null);
+            observable.Successors.SetDummy();
             return observable;
         }
 

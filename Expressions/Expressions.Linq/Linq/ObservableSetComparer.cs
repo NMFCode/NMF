@@ -8,7 +8,7 @@ namespace NMF.Expressions.Linq
 {
     internal abstract class ObservableSetComparer<T> : INotifyValue<bool>
     {
-        private readonly ShortList<INotifiable> successors = new ShortList<INotifiable>();
+        
 
         private INotifyEnumerable<T> source1;
         private IEnumerable<T> source2;
@@ -17,7 +17,7 @@ namespace NMF.Expressions.Linq
         private Dictionary<T, Entry> entries;
         private int attachedCount;
 
-        public IList<INotifiable> Successors { get { return successors; } }
+        public ISuccessorList Successors { get; } = NotifySystem.DefaultSystem.CreateSuccessorList();
 
         public IEnumerable<INotifiable> Dependencies
         {
@@ -42,13 +42,8 @@ namespace NMF.Expressions.Linq
             this.observableSource2 = source2 as INotifyEnumerable<T>;
             this.entries = new Dictionary<T, Entry>(comparer);
 
-            successors.CollectionChanged += (obj, e) =>
-            {
-                if (successors.Count == 0)
-                    Detach();
-                else if (e.Action == NotifyCollectionChangedAction.Add && successors.Count == 1)
-                    Attach();
-            };
+            Successors.Attached += (obj, e) => Attach();
+            Successors.Detached += (obj, e) => Detach();
         }
 
         private void AddSource2(T item)
@@ -151,7 +146,7 @@ namespace NMF.Expressions.Linq
         public void Attach()
         {
             foreach (var dep in Dependencies)
-                dep.Successors.Add(this);
+                dep.Successors.Set(this);
 
             foreach (var item in source1)
             {
@@ -169,7 +164,7 @@ namespace NMF.Expressions.Linq
             entries.Clear();
 
             foreach (var dep in Dependencies)
-                dep.Successors.Remove(this);
+                dep.Successors.Unset(this);
         }
 
         public void Dispose()

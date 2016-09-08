@@ -17,13 +17,8 @@ namespace NMF.Expressions
         /// </summary>
         protected NotifyExpression()
         {
-            successors.CollectionChanged += (obj, e) =>
-            {
-                if (successors.Count == 0)
-                    Detach();
-                else if (e.Action == NotifyCollectionChangedAction.Add && successors.Count == 1)
-                    Attach();
-            };
+            Successors.Attached += (obj, e) => Attach();
+            Successors.Detached += (obj, e) => Detach();
         }
 
         /// <summary>
@@ -35,7 +30,7 @@ namespace NMF.Expressions
             this.value = value;
         }
 
-        private readonly ShortList<INotifiable> successors = new ShortList<INotifiable>();
+        
         private T value;
 
         public event EventHandler<ValueChangedEventArgs> ValueChanged;
@@ -84,7 +79,7 @@ namespace NMF.Expressions
             get { return false; }
         }
 
-        public IList<INotifiable> Successors { get { return successors; } }
+        public virtual ISuccessorList Successors { get; } = NotifySystem.DefaultSystem.CreateSuccessorList();
 
         public abstract IEnumerable<INotifiable> Dependencies { get; }
 
@@ -106,13 +101,13 @@ namespace NMF.Expressions
 
         protected virtual void Dispose(bool disposing)
         {
-            Successors.Clear();
+            Successors.UnsetAll();
         }
 
         private void Attach()
         {
             foreach (var dep in Dependencies)
-                dep.Successors.Add(this);
+                dep.Successors.Set(this);
             OnAttach();
             value = GetValue();
         }
@@ -121,7 +116,7 @@ namespace NMF.Expressions
         {
             OnDetach();
             foreach (var dep in Dependencies)
-                dep.Successors.Remove(this);
+                dep.Successors.Unset(this);
         }
 
         /// <summary>

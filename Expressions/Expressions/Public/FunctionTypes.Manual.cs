@@ -71,8 +71,8 @@ namespace NMF.Expressions
             }
         }
 
-        private readonly ShortList<INotifiable> successors = new ShortList<INotifiable>();
-        public IList<INotifiable> Successors { get { return successors; } }
+        
+        public ISuccessorList Successors { get; } = NotifySystem.DefaultSystem.CreateSuccessorList();
 
         public IEnumerable<INotifiable> Dependencies
         {
@@ -91,18 +91,15 @@ namespace NMF.Expressions
             Expression = expression;
             Tag = tag;
 
-            successors.CollectionChanged += (obj, e) =>
+            Successors.Attached += (obj, e) =>
             {
-                if (successors.Count == 0)
-                {
-                    foreach (var dep in Dependencies)
-                        dep.Successors.Remove(this);
-                }
-                else if (e.Action == NotifyCollectionChangedAction.Add && successors.Count == 1)
-                {
-                    foreach (var dep in Dependencies)
-                        dep.Successors.Add(this);
-                }
+                foreach (var dep in Dependencies)
+                    dep.Successors.Set(this);
+            };
+            Successors.Detached += (obj, e) =>
+            {
+                foreach (var dep in Dependencies)
+                    dep.Successors.Unset(this);
             };
         }
 
@@ -128,7 +125,7 @@ namespace NMF.Expressions
 
         public void Dispose()
         {
-            Successors.Clear();
+            Successors.UnsetAll();
         }
 
         INotifyExpression INotifyExpression.ApplyParameters(IDictionary<string, object> parameters)

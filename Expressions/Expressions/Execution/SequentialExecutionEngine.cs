@@ -21,12 +21,7 @@ namespace NMF.Expressions
                 lastResult = node.Notify(node.ExecutionMetaData.Sources);
                 node.ExecutionMetaData.Sources.Clear();
 
-#if DEBUG
-                if (node.Successors.Count > 1)
-                    throw new InvalidOperationException("Node has more than one successor: This should never happen!");
-#endif
-
-                if (lastResult.Changed && node.Successors.Count > 0)
+                if (lastResult.Changed && node.Successors.HasSuccessors)
                     node = node.Successors[0];
                 else
                     break;
@@ -65,14 +60,10 @@ namespace NMF.Expressions
             }
             metaData.TotalVisits = 0;
             metaData.Sources.Clear();
-
-#if DEBUG
-            if (node.Successors.Count > 1)
-                throw new InvalidOperationException("Node has more than one successor: This should never happen!");
-#endif
-            var nextNode = node.Successors[0];
-            if (nextNode != null)
+            
+            if (node.Successors.HasSuccessors)
             {
+                var nextNode = node.Successors[0];
                 if (result != null && evaluating)
                     nextNode.ExecutionMetaData.Sources.Add(result);
 
@@ -85,10 +76,9 @@ namespace NMF.Expressions
             var metaData = node.ExecutionMetaData;
             metaData.TotalVisits++;
             metaData.RemainingVisits++;
-
-            var nextNode = node.Successors[0];
-            if (nextNode != null)
-                MarkNode(nextNode);
+            
+            if (node.Successors.HasSuccessors)
+                MarkNode(node.Successors[0]);
         }
     }
 }

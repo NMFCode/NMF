@@ -18,11 +18,7 @@ namespace NMF.Expressions.Linq
         public static INotifyValue<bool> CreateWithComparer(INotifyEnumerable<T> source, IEnumerable<T> other, IEqualityComparer<T> comparer)
         {
             var observable = new ObservableSetEquals<T>(source, other, comparer);
-            observable.Successors.Add(null);
-            source.Successors.Remove(null);
-            var observableOther = other as INotifiable;
-            if (observableOther != null)
-                observableOther.Successors.Remove(null);
+            observable.Successors.SetDummy();
             return observable;
         }
 

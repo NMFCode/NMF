@@ -11,8 +11,7 @@ namespace NMF.Expressions.Linq
         public static ObservableCount<TSource> Create(INotifyEnumerable<TSource> source)
         {
             var observable = new ObservableCount<TSource>(source);
-            observable.Successors.Add(null);
-            source.Successors.Remove(null);
+            observable.Successors.SetDummy();
             return observable;
         }
 

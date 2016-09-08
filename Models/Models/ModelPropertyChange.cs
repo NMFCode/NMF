@@ -15,7 +15,6 @@ namespace NMF.Models.Expressions
     /// <typeparam name="TProperty">The property type</typeparam>
     public abstract class ModelPropertyChange<TClass, TProperty> : INotifyReversableExpression<TProperty> where TClass : INotifyPropertyChanged
     {
-        private readonly ShortList<INotifiable> successors = new ShortList<INotifiable>();
         private readonly string propertyName;
         
         public TClass ModelElement { get; private set; }
@@ -29,13 +28,8 @@ namespace NMF.Models.Expressions
             ModelElement = modelElement;
             this.propertyName = propertyName;
 
-            successors.CollectionChanged += (obj, e) =>
-            {
-                if (successors.Count == 0)
-                    Detach();
-                else if (e.Action == NotifyCollectionChangedAction.Add && successors.Count == 1)
-                    Attach();
-            };
+            Successors.Attached += (obj, e) => Attach();
+            Successors.Detached += (obj, e) => Detach();
         }
 
         /// <summary>
@@ -102,13 +96,7 @@ namespace NMF.Models.Expressions
             }
         }
 
-        public IList<INotifiable> Successors
-        {
-            get
-            {
-                return successors;
-            }
-        }
+        public ISuccessorList Successors { get; } = NotifySystem.DefaultSystem.CreateSuccessorList();
 
         public IEnumerable<INotifiable> Dependencies
         {
@@ -169,7 +157,7 @@ namespace NMF.Models.Expressions
 
         protected virtual void Dispose(bool disposing)
         {
-            Successors.Clear();
+            Successors.UnsetAll();
         }
 
         public INotificationResult Notify(IList<INotificationResult> sources)

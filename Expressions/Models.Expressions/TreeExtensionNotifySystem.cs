@@ -18,9 +18,7 @@ namespace NMF.Expressions
         {
             return (INotifyExpression<T>)CreateExpressionInternal(expression, parameters, parameterMappings, typeof(T));
         }
-
-
-
+        
         private object CreateExpressionInternal(Expression expression, IEnumerable<ParameterExpression> parameters, IDictionary<string, object> parameterMappings, Type returnType)
         {
             var modelFuncVisitor = new ModelFuncExpressionVisitor();
@@ -103,5 +101,7 @@ namespace NMF.Expressions
         {
             throw new NotSupportedException();
         }
+
+        public ISuccessorList CreateSuccessorList() => new SingleSuccessorList();
     }
 }

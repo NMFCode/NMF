@@ -66,7 +66,7 @@ namespace NMF.Expressions
 
         private void Arg1BubbledChange(object sender, BubbledChangeEventArgs e)
         {
-            if (Successors.Count > 0 && Arg1Properties.Contains(e.PropertyName))
+            if (Successors.IsAttached && Arg1Properties.Contains(e.PropertyName))
             {
                 ExecutionEngine.Current.ManualInvalidation(this);
             }
@@ -74,7 +74,7 @@ namespace NMF.Expressions
 
         private void Arg1PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (Successors.Count > 0 && Arg1Properties.Contains(e.PropertyName))
+            if (Successors.IsAttached && Arg1Properties.Contains(e.PropertyName))
             {
                 ExecutionEngine.Current.ManualInvalidation(this);
             }
@@ -198,7 +198,7 @@ namespace NMF.Expressions
 
         private void Arg1BubbledChange(object sender, BubbledChangeEventArgs e)
         {
-            if (Successors.Count > 0 && Arg1Properties.Contains(e.PropertyName))
+            if (Successors.IsAttached && Arg1Properties.Contains(e.PropertyName))
             {
                 ExecutionEngine.Current.ManualInvalidation(this);
             }
@@ -206,7 +206,7 @@ namespace NMF.Expressions
 
         private void Arg1PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (Successors.Count > 0 && Arg1Properties.Contains(e.PropertyName))
+            if (Successors.IsAttached && Arg1Properties.Contains(e.PropertyName))
             {
                 ExecutionEngine.Current.ManualInvalidation(this);
             }
@@ -243,7 +243,7 @@ namespace NMF.Expressions
 
         private void Arg2BubbledChange(object sender, BubbledChangeEventArgs e)
         {
-            if (Successors.Count > 0 && Arg2Properties.Contains(e.PropertyName))
+            if (Successors.IsAttached && Arg2Properties.Contains(e.PropertyName))
             {
                 ExecutionEngine.Current.ManualInvalidation(this);
             }
@@ -251,7 +251,7 @@ namespace NMF.Expressions
 
         private void Arg2PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (Successors.Count > 0 && Arg2Properties.Contains(e.PropertyName))
+            if (Successors.IsAttached && Arg2Properties.Contains(e.PropertyName))
             {
                 ExecutionEngine.Current.ManualInvalidation(this);
             }
@@ -414,7 +414,7 @@ namespace NMF.Expressions
 
         private void Arg1BubbledChange(object sender, BubbledChangeEventArgs e)
         {
-            if (Successors.Count > 0 && Arg1Properties.Contains(e.PropertyName))
+            if (Successors.IsAttached && Arg1Properties.Contains(e.PropertyName))
             {
                 ExecutionEngine.Current.ManualInvalidation(this);
             }
@@ -422,7 +422,7 @@ namespace NMF.Expressions
 
         private void Arg1PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (Successors.Count > 0 && Arg1Properties.Contains(e.PropertyName))
+            if (Successors.IsAttached && Arg1Properties.Contains(e.PropertyName))
             {
                 ExecutionEngine.Current.ManualInvalidation(this);
             }
@@ -459,7 +459,7 @@ namespace NMF.Expressions
 
         private void Arg2BubbledChange(object sender, BubbledChangeEventArgs e)
         {
-            if (Successors.Count > 0 && Arg2Properties.Contains(e.PropertyName))
+            if (Successors.IsAttached && Arg2Properties.Contains(e.PropertyName))
             {
                 ExecutionEngine.Current.ManualInvalidation(this);
             }
@@ -467,7 +467,7 @@ namespace NMF.Expressions
 
         private void Arg2PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (Successors.Count > 0 && Arg2Properties.Contains(e.PropertyName))
+            if (Successors.IsAttached && Arg2Properties.Contains(e.PropertyName))
             {
                 ExecutionEngine.Current.ManualInvalidation(this);
             }
@@ -504,7 +504,7 @@ namespace NMF.Expressions
 
         private void Arg3BubbledChange(object sender, BubbledChangeEventArgs e)
         {
-            if (Successors.Count > 0 && Arg3Properties.Contains(e.PropertyName))
+            if (Successors.IsAttached && Arg3Properties.Contains(e.PropertyName))
             {
                 ExecutionEngine.Current.ManualInvalidation(this);
             }
@@ -512,7 +512,7 @@ namespace NMF.Expressions
 
         private void Arg3PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (Successors.Count > 0 && Arg3Properties.Contains(e.PropertyName))
+            if (Successors.IsAttached && Arg3Properties.Contains(e.PropertyName))
             {
                 ExecutionEngine.Current.ManualInvalidation(this);
             }
@@ -714,7 +714,7 @@ namespace NMF.Expressions
 
         private void Arg1BubbledChange(object sender, BubbledChangeEventArgs e)
         {
-            if (Successors.Count > 0 && Arg1Properties.Contains(e.PropertyName))
+            if (Successors.IsAttached && Arg1Properties.Contains(e.PropertyName))
             {
                 ExecutionEngine.Current.ManualInvalidation(this);
             }
@@ -722,7 +722,7 @@ namespace NMF.Expressions
 
         private void Arg1PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (Successors.Count > 0 && Arg1Properties.Contains(e.PropertyName))
+            if (Successors.IsAttached && Arg1Properties.Contains(e.PropertyName))
             {
                 ExecutionEngine.Current.ManualInvalidation(this);
             }
@@ -759,7 +759,7 @@ namespace NMF.Expressions
 
         private void Arg2BubbledChange(object sender, BubbledChangeEventArgs e)
         {
-            if (Successors.Count > 0 && Arg2Properties.Contains(e.PropertyName))
+            if (Successors.IsAttached && Arg2Properties.Contains(e.PropertyName))
             {
                 ExecutionEngine.Current.ManualInvalidation(this);
             }
@@ -767,7 +767,7 @@ namespace NMF.Expressions
 
         private void Arg2PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (Successors.Count > 0 && Arg2Properties.Contains(e.PropertyName))
+            if (Successors.IsAttached && Arg2Properties.Contains(e.PropertyName))
             {
                 ExecutionEngine.Current.ManualInvalidation(this);
             }
@@ -804,7 +804,7 @@ namespace NMF.Expressions
 
         private void Arg3BubbledChange(object sender, BubbledChangeEventArgs e)
         {
-            if (Successors.Count > 0 && Arg3Properties.Contains(e.PropertyName))
+            if (Successors.IsAttached && Arg3Properties.Contains(e.PropertyName))
             {
                 ExecutionEngine.Current.ManualInvalidation(this);
             }
@@ -812,7 +812,7 @@ namespace NMF.Expressions
 
         private void Arg3PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (Successors.Count > 0 && Arg3Properties.Contains(e.PropertyName))
+            if (Successors.IsAttached && Arg3Properties.Contains(e.PropertyName))
             {
                 ExecutionEngine.Current.ManualInvalidation(this);
             }
@@ -849,7 +849,7 @@ namespace NMF.Expressions
 
         private void Arg4BubbledChange(object sender, BubbledChangeEventArgs e)
         {
-            if (Successors.Count > 0 && Arg4Properties.Contains(e.PropertyName))
+            if (Successors.IsAttached && Arg4Properties.Contains(e.PropertyName))
             {
                 ExecutionEngine.Current.ManualInvalidation(this);
             }
@@ -857,7 +857,7 @@ namespace NMF.Expressions
 
         private void Arg4PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (Successors.Count > 0 && Arg4Properties.Contains(e.PropertyName))
+            if (Successors.IsAttached && Arg4Properties.Contains(e.PropertyName))
             {
                 ExecutionEngine.Current.ManualInvalidation(this);
             }
@@ -1098,7 +1098,7 @@ namespace NMF.Expressions
 
         private void Arg1BubbledChange(object sender, BubbledChangeEventArgs e)
         {
-            if (Successors.Count > 0 && Arg1Properties.Contains(e.PropertyName))
+            if (Successors.IsAttached && Arg1Properties.Contains(e.PropertyName))
             {
                 ExecutionEngine.Current.ManualInvalidation(this);
             }
@@ -1106,7 +1106,7 @@ namespace NMF.Expressions
 
         private void Arg1PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (Successors.Count > 0 && Arg1Properties.Contains(e.PropertyName))
+            if (Successors.IsAttached && Arg1Properties.Contains(e.PropertyName))
             {
                 ExecutionEngine.Current.ManualInvalidation(this);
             }
@@ -1143,7 +1143,7 @@ namespace NMF.Expressions
 
         private void Arg2BubbledChange(object sender, BubbledChangeEventArgs e)
         {
-            if (Successors.Count > 0 && Arg2Properties.Contains(e.PropertyName))
+            if (Successors.IsAttached && Arg2Properties.Contains(e.PropertyName))
             {
                 ExecutionEngine.Current.ManualInvalidation(this);
             }
@@ -1151,7 +1151,7 @@ namespace NMF.Expressions
 
         private void Arg2PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (Successors.Count > 0 && Arg2Properties.Contains(e.PropertyName))
+            if (Successors.IsAttached && Arg2Properties.Contains(e.PropertyName))
             {
                 ExecutionEngine.Current.ManualInvalidation(this);
             }
@@ -1188,7 +1188,7 @@ namespace NMF.Expressions
 
         private void Arg3BubbledChange(object sender, BubbledChangeEventArgs e)
         {
-            if (Successors.Count > 0 && Arg3Properties.Contains(e.PropertyName))
+            if (Successors.IsAttached && Arg3Properties.Contains(e.PropertyName))
             {
                 ExecutionEngine.Current.ManualInvalidation(this);
             }
@@ -1196,7 +1196,7 @@ namespace NMF.Expressions
 
         private void Arg3PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (Successors.Count > 0 && Arg3Properties.Contains(e.PropertyName))
+            if (Successors.IsAttached && Arg3Properties.Contains(e.PropertyName))
             {
                 ExecutionEngine.Current.ManualInvalidation(this);
             }
@@ -1233,7 +1233,7 @@ namespace NMF.Expressions
 
         private void Arg4BubbledChange(object sender, BubbledChangeEventArgs e)
         {
-            if (Successors.Count > 0 && Arg4Properties.Contains(e.PropertyName))
+            if (Successors.IsAttached && Arg4Properties.Contains(e.PropertyName))
             {
                 ExecutionEngine.Current.ManualInvalidation(this);
             }
@@ -1241,7 +1241,7 @@ namespace NMF.Expressions
 
         private void Arg4PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (Successors.Count > 0 && Arg4Properties.Contains(e.PropertyName))
+            if (Successors.IsAttached && Arg4Properties.Contains(e.PropertyName))
             {
                 ExecutionEngine.Current.ManualInvalidation(this);
             }
@@ -1278,7 +1278,7 @@ namespace NMF.Expressions
 
         private void Arg5BubbledChange(object sender, BubbledChangeEventArgs e)
         {
-            if (Successors.Count > 0 && Arg5Properties.Contains(e.PropertyName))
+            if (Successors.IsAttached && Arg5Properties.Contains(e.PropertyName))
             {
                 ExecutionEngine.Current.ManualInvalidation(this);
             }
@@ -1286,7 +1286,7 @@ namespace NMF.Expressions
 
         private void Arg5PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (Successors.Count > 0 && Arg5Properties.Contains(e.PropertyName))
+            if (Successors.IsAttached && Arg5Properties.Contains(e.PropertyName))
             {
                 ExecutionEngine.Current.ManualInvalidation(this);
             }
@@ -1566,7 +1566,7 @@ namespace NMF.Expressions
 
         private void Arg1BubbledChange(object sender, BubbledChangeEventArgs e)
         {
-            if (Successors.Count > 0 && Arg1Properties.Contains(e.PropertyName))
+            if (Successors.IsAttached && Arg1Properties.Contains(e.PropertyName))
             {
                 ExecutionEngine.Current.ManualInvalidation(this);
             }
@@ -1574,7 +1574,7 @@ namespace NMF.Expressions
 
         private void Arg1PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (Successors.Count > 0 && Arg1Properties.Contains(e.PropertyName))
+            if (Successors.IsAttached && Arg1Properties.Contains(e.PropertyName))
             {
                 ExecutionEngine.Current.ManualInvalidation(this);
             }
@@ -1611,7 +1611,7 @@ namespace NMF.Expressions
 
         private void Arg2BubbledChange(object sender, BubbledChangeEventArgs e)
         {
-            if (Successors.Count > 0 && Arg2Properties.Contains(e.PropertyName))
+            if (Successors.IsAttached && Arg2Properties.Contains(e.PropertyName))
             {
                 ExecutionEngine.Current.ManualInvalidation(this);
             }
@@ -1619,7 +1619,7 @@ namespace NMF.Expressions
 
         private void Arg2PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (Successors.Count > 0 && Arg2Properties.Contains(e.PropertyName))
+            if (Successors.IsAttached && Arg2Properties.Contains(e.PropertyName))
             {
                 ExecutionEngine.Current.ManualInvalidation(this);
             }
@@ -1656,7 +1656,7 @@ namespace NMF.Expressions
 
         private void Arg3BubbledChange(object sender, BubbledChangeEventArgs e)
         {
-            if (Successors.Count > 0 && Arg3Properties.Contains(e.PropertyName))
+            if (Successors.IsAttached && Arg3Properties.Contains(e.PropertyName))
             {
                 ExecutionEngine.Current.ManualInvalidation(this);
             }
@@ -1664,7 +1664,7 @@ namespace NMF.Expressions
 
         private void Arg3PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (Successors.Count > 0 && Arg3Properties.Contains(e.PropertyName))
+            if (Successors.IsAttached && Arg3Properties.Contains(e.PropertyName))
             {
                 ExecutionEngine.Current.ManualInvalidation(this);
             }
@@ -1701,7 +1701,7 @@ namespace NMF.Expressions
 
         private void Arg4BubbledChange(object sender, BubbledChangeEventArgs e)
         {
-            if (Successors.Count > 0 && Arg4Properties.Contains(e.PropertyName))
+            if (Successors.IsAttached && Arg4Properties.Contains(e.PropertyName))
             {
                 ExecutionEngine.Current.ManualInvalidation(this);
             }
@@ -1709,7 +1709,7 @@ namespace NMF.Expressions
 
         private void Arg4PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (Successors.Count > 0 && Arg4Properties.Contains(e.PropertyName))
+            if (Successors.IsAttached && Arg4Properties.Contains(e.PropertyName))
             {
                 ExecutionEngine.Current.ManualInvalidation(this);
             }
@@ -1746,7 +1746,7 @@ namespace NMF.Expressions
 
         private void Arg5BubbledChange(object sender, BubbledChangeEventArgs e)
         {
-            if (Successors.Count > 0 && Arg5Properties.Contains(e.PropertyName))
+            if (Successors.IsAttached && Arg5Properties.Contains(e.PropertyName))
             {
                 ExecutionEngine.Current.ManualInvalidation(this);
             }
@@ -1754,7 +1754,7 @@ namespace NMF.Expressions
 
         private void Arg5PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (Successors.Count > 0 && Arg5Properties.Contains(e.PropertyName))
+            if (Successors.IsAttached && Arg5Properties.Contains(e.PropertyName))
             {
                 ExecutionEngine.Current.ManualInvalidation(this);
             }
@@ -1791,7 +1791,7 @@ namespace NMF.Expressions
 
         private void Arg6BubbledChange(object sender, BubbledChangeEventArgs e)
         {
-            if (Successors.Count > 0 && Arg6Properties.Contains(e.PropertyName))
+            if (Successors.IsAttached && Arg6Properties.Contains(e.PropertyName))
             {
                 ExecutionEngine.Current.ManualInvalidation(this);
             }
@@ -1799,7 +1799,7 @@ namespace NMF.Expressions
 
         private void Arg6PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (Successors.Count > 0 && Arg6Properties.Contains(e.PropertyName))
+            if (Successors.IsAttached && Arg6Properties.Contains(e.PropertyName))
             {
                 ExecutionEngine.Current.ManualInvalidation(this);
             }
@@ -2118,7 +2118,7 @@ namespace NMF.Expressions
 
         private void Arg1BubbledChange(object sender, BubbledChangeEventArgs e)
         {
-            if (Successors.Count > 0 && Arg1Properties.Contains(e.PropertyName))
+            if (Successors.IsAttached && Arg1Properties.Contains(e.PropertyName))
             {
                 ExecutionEngine.Current.ManualInvalidation(this);
             }
@@ -2126,7 +2126,7 @@ namespace NMF.Expressions
 
         private void Arg1PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (Successors.Count > 0 && Arg1Properties.Contains(e.PropertyName))
+            if (Successors.IsAttached && Arg1Properties.Contains(e.PropertyName))
             {
                 ExecutionEngine.Current.ManualInvalidation(this);
             }
@@ -2163,7 +2163,7 @@ namespace NMF.Expressions
 
         private void Arg2BubbledChange(object sender, BubbledChangeEventArgs e)
         {
-            if (Successors.Count > 0 && Arg2Properties.Contains(e.PropertyName))
+            if (Successors.IsAttached && Arg2Properties.Contains(e.PropertyName))
             {
                 ExecutionEngine.Current.ManualInvalidation(this);
             }
@@ -2171,7 +2171,7 @@ namespace NMF.Expressions
 
         private void Arg2PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (Successors.Count > 0 && Arg2Properties.Contains(e.PropertyName))
+            if (Successors.IsAttached && Arg2Properties.Contains(e.PropertyName))
             {
                 ExecutionEngine.Current.ManualInvalidation(this);
             }
@@ -2208,7 +2208,7 @@ namespace NMF.Expressions
 
         private void Arg3BubbledChange(object sender, BubbledChangeEventArgs e)
         {
-            if (Successors.Count > 0 && Arg3Properties.Contains(e.PropertyName))
+            if (Successors.IsAttached && Arg3Properties.Contains(e.PropertyName))
             {
                 ExecutionEngine.Current.ManualInvalidation(this);
             }
@@ -2216,7 +2216,7 @@ namespace NMF.Expressions
 
         private void Arg3PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (Successors.Count > 0 && Arg3Properties.Contains(e.PropertyName))
+            if (Successors.IsAttached && Arg3Properties.Contains(e.PropertyName))
             {
                 ExecutionEngine.Current.ManualInvalidation(this);
             }
@@ -2253,7 +2253,7 @@ namespace NMF.Expressions
 
         private void Arg4BubbledChange(object sender, BubbledChangeEventArgs e)
         {
-            if (Successors.Count > 0 && Arg4Properties.Contains(e.PropertyName))
+            if (Successors.IsAttached && Arg4Properties.Contains(e.PropertyName))
             {
                 ExecutionEngine.Current.ManualInvalidation(this);
             }
@@ -2261,7 +2261,7 @@ namespace NMF.Expressions
 
         private void Arg4PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (Successors.Count > 0 && Arg4Properties.Contains(e.PropertyName))
+            if (Successors.IsAttached && Arg4Properties.Contains(e.PropertyName))
             {
                 ExecutionEngine.Current.ManualInvalidation(this);
             }
@@ -2298,7 +2298,7 @@ namespace NMF.Expressions
 
         private void Arg5BubbledChange(object sender, BubbledChangeEventArgs e)
         {
-            if (Successors.Count > 0 && Arg5Properties.Contains(e.PropertyName))
+            if (Successors.IsAttached && Arg5Properties.Contains(e.PropertyName))
             {
                 ExecutionEngine.Current.ManualInvalidation(this);
             }
@@ -2306,7 +2306,7 @@ namespace NMF.Expressions
 
         private void Arg5PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (Successors.Count > 0 && Arg5Properties.Contains(e.PropertyName))
+            if (Successors.IsAttached && Arg5Properties.Contains(e.PropertyName))
             {
                 ExecutionEngine.Current.ManualInvalidation(this);
             }
@@ -2343,7 +2343,7 @@ namespace NMF.Expressions
 
         private void Arg6BubbledChange(object sender, BubbledChangeEventArgs e)
         {
-            if (Successors.Count > 0 && Arg6Properties.Contains(e.PropertyName))
+            if (Successors.IsAttached && Arg6Properties.Contains(e.PropertyName))
             {
                 ExecutionEngine.Current.ManualInvalidation(this);
             }
@@ -2351,7 +2351,7 @@ namespace NMF.Expressions
 
         private void Arg6PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (Successors.Count > 0 && Arg6Properties.Contains(e.PropertyName))
+            if (Successors.IsAttached && Arg6Properties.Contains(e.PropertyName))
             {
                 ExecutionEngine.Current.ManualInvalidation(this);
             }
@@ -2388,7 +2388,7 @@ namespace NMF.Expressions
 
         private void Arg7BubbledChange(object sender, BubbledChangeEventArgs e)
         {
-            if (Successors.Count > 0 && Arg7Properties.Contains(e.PropertyName))
+            if (Successors.IsAttached && Arg7Properties.Contains(e.PropertyName))
             {
                 ExecutionEngine.Current.ManualInvalidation(this);
             }
@@ -2396,7 +2396,7 @@ namespace NMF.Expressions
 
         private void Arg7PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (Successors.Count > 0 && Arg7Properties.Contains(e.PropertyName))
+            if (Successors.IsAttached && Arg7Properties.Contains(e.PropertyName))
             {
                 ExecutionEngine.Current.ManualInvalidation(this);
             }
@@ -2754,7 +2754,7 @@ namespace NMF.Expressions
 
         private void Arg1BubbledChange(object sender, BubbledChangeEventArgs e)
         {
-            if (Successors.Count > 0 && Arg1Properties.Contains(e.PropertyName))
+            if (Successors.IsAttached && Arg1Properties.Contains(e.PropertyName))
             {
                 ExecutionEngine.Current.ManualInvalidation(this);
             }
@@ -2762,7 +2762,7 @@ namespace NMF.Expressions
 
         private void Arg1PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (Successors.Count > 0 && Arg1Properties.Contains(e.PropertyName))
+            if (Successors.IsAttached && Arg1Properties.Contains(e.PropertyName))
             {
                 ExecutionEngine.Current.ManualInvalidation(this);
             }
@@ -2799,7 +2799,7 @@ namespace NMF.Expressions
 
         private void Arg2BubbledChange(object sender, BubbledChangeEventArgs e)
         {
-            if (Successors.Count > 0 && Arg2Properties.Contains(e.PropertyName))
+            if (Successors.IsAttached && Arg2Properties.Contains(e.PropertyName))
             {
                 ExecutionEngine.Current.ManualInvalidation(this);
             }
@@ -2807,7 +2807,7 @@ namespace NMF.Expressions
 
         private void Arg2PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (Successors.Count > 0 && Arg2Properties.Contains(e.PropertyName))
+            if (Successors.IsAttached && Arg2Properties.Contains(e.PropertyName))
             {
                 ExecutionEngine.Current.ManualInvalidation(this);
             }
@@ -2844,7 +2844,7 @@ namespace NMF.Expressions
 
         private void Arg3BubbledChange(object sender, BubbledChangeEventArgs e)
         {
-            if (Successors.Count > 0 && Arg3Properties.Contains(e.PropertyName))
+            if (Successors.IsAttached && Arg3Properties.Contains(e.PropertyName))
             {
                 ExecutionEngine.Current.ManualInvalidation(this);
             }
@@ -2852,7 +2852,7 @@ namespace NMF.Expressions
 
         private void Arg3PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (Successors.Count > 0 && Arg3Properties.Contains(e.PropertyName))
+            if (Successors.IsAttached && Arg3Properties.Contains(e.PropertyName))
             {
                 ExecutionEngine.Current.ManualInvalidation(this);
             }
@@ -2889,7 +2889,7 @@ namespace NMF.Expressions
 
         private void Arg4BubbledChange(object sender, BubbledChangeEventArgs e)
         {
-            if (Successors.Count > 0 && Arg4Properties.Contains(e.PropertyName))
+            if (Successors.IsAttached && Arg4Properties.Contains(e.PropertyName))
             {
                 ExecutionEngine.Current.ManualInvalidation(this);
             }
@@ -2897,7 +2897,7 @@ namespace NMF.Expressions
 
         private void Arg4PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (Successors.Count > 0 && Arg4Properties.Contains(e.PropertyName))
+            if (Successors.IsAttached && Arg4Properties.Contains(e.PropertyName))
             {
                 ExecutionEngine.Current.ManualInvalidation(this);
             }
@@ -2934,7 +2934,7 @@ namespace NMF.Expressions
 
         private void Arg5BubbledChange(object sender, BubbledChangeEventArgs e)
         {
-            if (Successors.Count > 0 && Arg5Properties.Contains(e.PropertyName))
+            if (Successors.IsAttached && Arg5Properties.Contains(e.PropertyName))
             {
                 ExecutionEngine.Current.ManualInvalidation(this);
             }
@@ -2942,7 +2942,7 @@ namespace NMF.Expressions
 
         private void Arg5PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (Successors.Count > 0 && Arg5Properties.Contains(e.PropertyName))
+            if (Successors.IsAttached && Arg5Properties.Contains(e.PropertyName))
             {
                 ExecutionEngine.Current.ManualInvalidation(this);
             }
@@ -2979,7 +2979,7 @@ namespace NMF.Expressions
 
         private void Arg6BubbledChange(object sender, BubbledChangeEventArgs e)
         {
-            if (Successors.Count > 0 && Arg6Properties.Contains(e.PropertyName))
+            if (Successors.IsAttached && Arg6Properties.Contains(e.PropertyName))
             {
                 ExecutionEngine.Current.ManualInvalidation(this);
             }
@@ -2987,7 +2987,7 @@ namespace NMF.Expressions
 
         private void Arg6PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (Successors.Count > 0 && Arg6Properties.Contains(e.PropertyName))
+            if (Successors.IsAttached && Arg6Properties.Contains(e.PropertyName))
             {
                 ExecutionEngine.Current.ManualInvalidation(this);
             }
@@ -3024,7 +3024,7 @@ namespace NMF.Expressions
 
         private void Arg7BubbledChange(object sender, BubbledChangeEventArgs e)
         {
-            if (Successors.Count > 0 && Arg7Properties.Contains(e.PropertyName))
+            if (Successors.IsAttached && Arg7Properties.Contains(e.PropertyName))
             {
                 ExecutionEngine.Current.ManualInvalidation(this);
             }
@@ -3032,7 +3032,7 @@ namespace NMF.Expressions
 
         private void Arg7PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (Successors.Count > 0 && Arg7Properties.Contains(e.PropertyName))
+            if (Successors.IsAttached && Arg7Properties.Contains(e.PropertyName))
             {
                 ExecutionEngine.Current.ManualInvalidation(this);
             }
@@ -3069,7 +3069,7 @@ namespace NMF.Expressions
 
         private void Arg8BubbledChange(object sender, BubbledChangeEventArgs e)
         {
-            if (Successors.Count > 0 && Arg8Properties.Contains(e.PropertyName))
+            if (Successors.IsAttached && Arg8Properties.Contains(e.PropertyName))
             {
                 ExecutionEngine.Current.ManualInvalidation(this);
             }
@@ -3077,7 +3077,7 @@ namespace NMF.Expressions
 
         private void Arg8PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (Successors.Count > 0 && Arg8Properties.Contains(e.PropertyName))
+            if (Successors.IsAttached && Arg8Properties.Contains(e.PropertyName))
             {
                 ExecutionEngine.Current.ManualInvalidation(this);
             }
@@ -3474,7 +3474,7 @@ namespace NMF.Expressions
 
         private void Arg1BubbledChange(object sender, BubbledChangeEventArgs e)
         {
-            if (Successors.Count > 0 && Arg1Properties.Contains(e.PropertyName))
+            if (Successors.IsAttached && Arg1Properties.Contains(e.PropertyName))
             {
                 ExecutionEngine.Current.ManualInvalidation(this);
             }
@@ -3482,7 +3482,7 @@ namespace NMF.Expressions
 
         private void Arg1PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (Successors.Count > 0 && Arg1Properties.Contains(e.PropertyName))
+            if (Successors.IsAttached && Arg1Properties.Contains(e.PropertyName))
             {
                 ExecutionEngine.Current.ManualInvalidation(this);
             }
@@ -3519,7 +3519,7 @@ namespace NMF.Expressions
 
         private void Arg2BubbledChange(object sender, BubbledChangeEventArgs e)
         {
-            if (Successors.Count > 0 && Arg2Properties.Contains(e.PropertyName))
+            if (Successors.IsAttached && Arg2Properties.Contains(e.PropertyName))
             {
                 ExecutionEngine.Current.ManualInvalidation(this);
             }
@@ -3527,7 +3527,7 @@ namespace NMF.Expressions
 
         private void Arg2PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (Successors.Count > 0 && Arg2Properties.Contains(e.PropertyName))
+            if (Successors.IsAttached && Arg2Properties.Contains(e.PropertyName))
             {
                 ExecutionEngine.Current.ManualInvalidation(this);
             }
@@ -3564,7 +3564,7 @@ namespace NMF.Expressions
 
         private void Arg3BubbledChange(object sender, BubbledChangeEventArgs e)
         {
-            if (Successors.Count > 0 && Arg3Properties.Contains(e.PropertyName))
+            if (Successors.IsAttached && Arg3Properties.Contains(e.PropertyName))
             {
                 ExecutionEngine.Current.ManualInvalidation(this);
             }
@@ -3572,7 +3572,7 @@ namespace NMF.Expressions
 
         private void Arg3PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (Successors.Count > 0 && Arg3Properties.Contains(e.PropertyName))
+            if (Successors.IsAttached && Arg3Properties.Contains(e.PropertyName))
             {
                 ExecutionEngine.Current.ManualInvalidation(this);
             }
@@ -3609,7 +3609,7 @@ namespace NMF.Expressions
 
         private void Arg4BubbledChange(object sender, BubbledChangeEventArgs e)
         {
-            if (Successors.Count > 0 && Arg4Properties.Contains(e.PropertyName))
+            if (Successors.IsAttached && Arg4Properties.Contains(e.PropertyName))
             {
                 ExecutionEngine.Current.ManualInvalidation(this);
             }
@@ -3617,7 +3617,7 @@ namespace NMF.Expressions
 
         private void Arg4PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (Successors.Count > 0 && Arg4Properties.Contains(e.PropertyName))
+            if (Successors.IsAttached && Arg4Properties.Contains(e.PropertyName))
             {
                 ExecutionEngine.Current.ManualInvalidation(this);
             }
@@ -3654,7 +3654,7 @@ namespace NMF.Expressions
 
         private void Arg5BubbledChange(object sender, BubbledChangeEventArgs e)
         {
-            if (Successors.Count > 0 && Arg5Properties.Contains(e.PropertyName))
+            if (Successors.IsAttached && Arg5Properties.Contains(e.PropertyName))
             {
                 ExecutionEngine.Current.ManualInvalidation(this);
             }
@@ -3662,7 +3662,7 @@ namespace NMF.Expressions
 
         private void Arg5PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (Successors.Count > 0 && Arg5Properties.Contains(e.PropertyName))
+            if (Successors.IsAttached && Arg5Properties.Contains(e.PropertyName))
             {
                 ExecutionEngine.Current.ManualInvalidation(this);
             }
@@ -3699,7 +3699,7 @@ namespace NMF.Expressions
 
         private void Arg6BubbledChange(object sender, BubbledChangeEventArgs e)
         {
-            if (Successors.Count > 0 && Arg6Properties.Contains(e.PropertyName))
+            if (Successors.IsAttached && Arg6Properties.Contains(e.PropertyName))
             {
                 ExecutionEngine.Current.ManualInvalidation(this);
             }
@@ -3707,7 +3707,7 @@ namespace NMF.Expressions
 
         private void Arg6PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (Successors.Count > 0 && Arg6Properties.Contains(e.PropertyName))
+            if (Successors.IsAttached && Arg6Properties.Contains(e.PropertyName))
             {
                 ExecutionEngine.Current.ManualInvalidation(this);
             }
@@ -3744,7 +3744,7 @@ namespace NMF.Expressions
 
         private void Arg7BubbledChange(object sender, BubbledChangeEventArgs e)
         {
-            if (Successors.Count > 0 && Arg7Properties.Contains(e.PropertyName))
+            if (Successors.IsAttached && Arg7Properties.Contains(e.PropertyName))
             {
                 ExecutionEngine.Current.ManualInvalidation(this);
             }
@@ -3752,7 +3752,7 @@ namespace NMF.Expressions
 
         private void Arg7PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (Successors.Count > 0 && Arg7Properties.Contains(e.PropertyName))
+            if (Successors.IsAttached && Arg7Properties.Contains(e.PropertyName))
             {
                 ExecutionEngine.Current.ManualInvalidation(this);
             }
@@ -3789,7 +3789,7 @@ namespace NMF.Expressions
 
         private void Arg8BubbledChange(object sender, BubbledChangeEventArgs e)
         {
-            if (Successors.Count > 0 && Arg8Properties.Contains(e.PropertyName))
+            if (Successors.IsAttached && Arg8Properties.Contains(e.PropertyName))
             {
                 ExecutionEngine.Current.ManualInvalidation(this);
             }
@@ -3797,7 +3797,7 @@ namespace NMF.Expressions
 
         private void Arg8PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (Successors.Count > 0 && Arg8Properties.Contains(e.PropertyName))
+            if (Successors.IsAttached && Arg8Properties.Contains(e.PropertyName))
             {
                 ExecutionEngine.Current.ManualInvalidation(this);
             }
@@ -3834,7 +3834,7 @@ namespace NMF.Expressions
 
         private void Arg9BubbledChange(object sender, BubbledChangeEventArgs e)
         {
-            if (Successors.Count > 0 && Arg9Properties.Contains(e.PropertyName))
+            if (Successors.IsAttached && Arg9Properties.Contains(e.PropertyName))
             {
                 ExecutionEngine.Current.ManualInvalidation(this);
             }
@@ -3842,7 +3842,7 @@ namespace NMF.Expressions
 
         private void Arg9PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (Successors.Count > 0 && Arg9Properties.Contains(e.PropertyName))
+            if (Successors.IsAttached && Arg9Properties.Contains(e.PropertyName))
             {
                 ExecutionEngine.Current.ManualInvalidation(this);
             }
@@ -4278,7 +4278,7 @@ namespace NMF.Expressions
 
         private void Arg1BubbledChange(object sender, BubbledChangeEventArgs e)
         {
-            if (Successors.Count > 0 && Arg1Properties.Contains(e.PropertyName))
+            if (Successors.IsAttached && Arg1Properties.Contains(e.PropertyName))
             {
                 ExecutionEngine.Current.ManualInvalidation(this);
             }
@@ -4286,7 +4286,7 @@ namespace NMF.Expressions
 
         private void Arg1PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (Successors.Count > 0 && Arg1Properties.Contains(e.PropertyName))
+            if (Successors.IsAttached && Arg1Properties.Contains(e.PropertyName))
             {
                 ExecutionEngine.Current.ManualInvalidation(this);
             }
@@ -4323,7 +4323,7 @@ namespace NMF.Expressions
 
         private void Arg2BubbledChange(object sender, BubbledChangeEventArgs e)
         {
-            if (Successors.Count > 0 && Arg2Properties.Contains(e.PropertyName))
+            if (Successors.IsAttached && Arg2Properties.Contains(e.PropertyName))
             {
                 ExecutionEngine.Current.ManualInvalidation(this);
             }
@@ -4331,7 +4331,7 @@ namespace NMF.Expressions
 
         private void Arg2PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (Successors.Count > 0 && Arg2Properties.Contains(e.PropertyName))
+            if (Successors.IsAttached && Arg2Properties.Contains(e.PropertyName))
             {
                 ExecutionEngine.Current.ManualInvalidation(this);
             }
@@ -4368,7 +4368,7 @@ namespace NMF.Expressions
 
         private void Arg3BubbledChange(object sender, BubbledChangeEventArgs e)
         {
-            if (Successors.Count > 0 && Arg3Properties.Contains(e.PropertyName))
+            if (Successors.IsAttached && Arg3Properties.Contains(e.PropertyName))
             {
                 ExecutionEngine.Current.ManualInvalidation(this);
             }
@@ -4376,7 +4376,7 @@ namespace NMF.Expressions
 
         private void Arg3PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (Successors.Count > 0 && Arg3Properties.Contains(e.PropertyName))
+            if (Successors.IsAttached && Arg3Properties.Contains(e.PropertyName))
             {
                 ExecutionEngine.Current.ManualInvalidation(this);
             }
@@ -4413,7 +4413,7 @@ namespace NMF.Expressions
 
         private void Arg4BubbledChange(object sender, BubbledChangeEventArgs e)
         {
-            if (Successors.Count > 0 && Arg4Properties.Contains(e.PropertyName))
+            if (Successors.IsAttached && Arg4Properties.Contains(e.PropertyName))
             {
                 ExecutionEngine.Current.ManualInvalidation(this);
             }
@@ -4421,7 +4421,7 @@ namespace NMF.Expressions
 
         private void Arg4PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (Successors.Count > 0 && Arg4Properties.Contains(e.PropertyName))
+            if (Successors.IsAttached && Arg4Properties.Contains(e.PropertyName))
             {
                 ExecutionEngine.Current.ManualInvalidation(this);
             }
@@ -4458,7 +4458,7 @@ namespace NMF.Expressions
 
         private void Arg5BubbledChange(object sender, BubbledChangeEventArgs e)
         {
-            if (Successors.Count > 0 && Arg5Properties.Contains(e.PropertyName))
+            if (Successors.IsAttached && Arg5Properties.Contains(e.PropertyName))
             {
                 ExecutionEngine.Current.ManualInvalidation(this);
             }
@@ -4466,7 +4466,7 @@ namespace NMF.Expressions
 
         private void Arg5PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (Successors.Count > 0 && Arg5Properties.Contains(e.PropertyName))
+            if (Successors.IsAttached && Arg5Properties.Contains(e.PropertyName))
             {
                 ExecutionEngine.Current.ManualInvalidation(this);
             }
@@ -4503,7 +4503,7 @@ namespace NMF.Expressions
 
         private void Arg6BubbledChange(object sender, BubbledChangeEventArgs e)
         {
-            if (Successors.Count > 0 && Arg6Properties.Contains(e.PropertyName))
+            if (Successors.IsAttached && Arg6Properties.Contains(e.PropertyName))
             {
                 ExecutionEngine.Current.ManualInvalidation(this);
             }
@@ -4511,7 +4511,7 @@ namespace NMF.Expressions
 
         private void Arg6PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (Successors.Count > 0 && Arg6Properties.Contains(e.PropertyName))
+            if (Successors.IsAttached && Arg6Properties.Contains(e.PropertyName))
             {
                 ExecutionEngine.Current.ManualInvalidation(this);
             }
@@ -4548,7 +4548,7 @@ namespace NMF.Expressions
 
         private void Arg7BubbledChange(object sender, BubbledChangeEventArgs e)
         {
-            if (Successors.Count > 0 && Arg7Properties.Contains(e.PropertyName))
+            if (Successors.IsAttached && Arg7Properties.Contains(e.PropertyName))
             {
                 ExecutionEngine.Current.ManualInvalidation(this);
             }
@@ -4556,7 +4556,7 @@ namespace NMF.Expressions
 
         private void Arg7PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (Successors.Count > 0 && Arg7Properties.Contains(e.PropertyName))
+            if (Successors.IsAttached && Arg7Properties.Contains(e.PropertyName))
             {
                 ExecutionEngine.Current.ManualInvalidation(this);
             }
@@ -4593,7 +4593,7 @@ namespace NMF.Expressions
 
         private void Arg8BubbledChange(object sender, BubbledChangeEventArgs e)
         {
-            if (Successors.Count > 0 && Arg8Properties.Contains(e.PropertyName))
+            if (Successors.IsAttached && Arg8Properties.Contains(e.PropertyName))
             {
                 ExecutionEngine.Current.ManualInvalidation(this);
             }
@@ -4601,7 +4601,7 @@ namespace NMF.Expressions
 
         private void Arg8PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (Successors.Count > 0 && Arg8Properties.Contains(e.PropertyName))
+            if (Successors.IsAttached && Arg8Properties.Contains(e.PropertyName))
             {
                 ExecutionEngine.Current.ManualInvalidation(this);
             }
@@ -4638,7 +4638,7 @@ namespace NMF.Expressions
 
         private void Arg9BubbledChange(object sender, BubbledChangeEventArgs e)
         {
-            if (Successors.Count > 0 && Arg9Properties.Contains(e.PropertyName))
+            if (Successors.IsAttached && Arg9Properties.Contains(e.PropertyName))
             {
                 ExecutionEngine.Current.ManualInvalidation(this);
             }
@@ -4646,7 +4646,7 @@ namespace NMF.Expressions
 
         private void Arg9PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (Successors.Count > 0 && Arg9Properties.Contains(e.PropertyName))
+            if (Successors.IsAttached && Arg9Properties.Contains(e.PropertyName))
             {
                 ExecutionEngine.Current.ManualInvalidation(this);
             }
@@ -4683,7 +4683,7 @@ namespace NMF.Expressions
 
         private void Arg10BubbledChange(object sender, BubbledChangeEventArgs e)
         {
-            if (Successors.Count > 0 && Arg10Properties.Contains(e.PropertyName))
+            if (Successors.IsAttached && Arg10Properties.Contains(e.PropertyName))
             {
                 ExecutionEngine.Current.ManualInvalidation(this);
             }
@@ -4691,7 +4691,7 @@ namespace NMF.Expressions
 
         private void Arg10PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (Successors.Count > 0 && Arg10Properties.Contains(e.PropertyName))
+            if (Successors.IsAttached && Arg10Properties.Contains(e.PropertyName))
             {
                 ExecutionEngine.Current.ManualInvalidation(this);
             }
@@ -5166,7 +5166,7 @@ namespace NMF.Expressions
 
         private void Arg1BubbledChange(object sender, BubbledChangeEventArgs e)
         {
-            if (Successors.Count > 0 && Arg1Properties.Contains(e.PropertyName))
+            if (Successors.IsAttached && Arg1Properties.Contains(e.PropertyName))
             {
                 ExecutionEngine.Current.ManualInvalidation(this);
             }
@@ -5174,7 +5174,7 @@ namespace NMF.Expressions
 
         private void Arg1PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (Successors.Count > 0 && Arg1Properties.Contains(e.PropertyName))
+            if (Successors.IsAttached && Arg1Properties.Contains(e.PropertyName))
             {
                 ExecutionEngine.Current.ManualInvalidation(this);
             }
@@ -5211,7 +5211,7 @@ namespace NMF.Expressions
 
         private void Arg2BubbledChange(object sender, BubbledChangeEventArgs e)
         {
-            if (Successors.Count > 0 && Arg2Properties.Contains(e.PropertyName))
+            if (Successors.IsAttached && Arg2Properties.Contains(e.PropertyName))
             {
                 ExecutionEngine.Current.ManualInvalidation(this);
             }
@@ -5219,7 +5219,7 @@ namespace NMF.Expressions
 
         private void Arg2PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (Successors.Count > 0 && Arg2Properties.Contains(e.PropertyName))
+            if (Successors.IsAttached && Arg2Properties.Contains(e.PropertyName))
             {
                 ExecutionEngine.Current.ManualInvalidation(this);
             }
@@ -5256,7 +5256,7 @@ namespace NMF.Expressions
 
         private void Arg3BubbledChange(object sender, BubbledChangeEventArgs e)
         {
-            if (Successors.Count > 0 && Arg3Properties.Contains(e.PropertyName))
+            if (Successors.IsAttached && Arg3Properties.Contains(e.PropertyName))
             {
                 ExecutionEngine.Current.ManualInvalidation(this);
             }
@@ -5264,7 +5264,7 @@ namespace NMF.Expressions
 
         private void Arg3PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (Successors.Count > 0 && Arg3Properties.Contains(e.PropertyName))
+            if (Successors.IsAttached && Arg3Properties.Contains(e.PropertyName))
             {
                 ExecutionEngine.Current.ManualInvalidation(this);
             }
@@ -5301,7 +5301,7 @@ namespace NMF.Expressions
 
         private void Arg4BubbledChange(object sender, BubbledChangeEventArgs e)
         {
-            if (Successors.Count > 0 && Arg4Properties.Contains(e.PropertyName))
+            if (Successors.IsAttached && Arg4Properties.Contains(e.PropertyName))
             {
                 ExecutionEngine.Current.ManualInvalidation(this);
             }
@@ -5309,7 +5309,7 @@ namespace NMF.Expressions
 
         private void Arg4PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (Successors.Count > 0 && Arg4Properties.Contains(e.PropertyName))
+            if (Successors.IsAttached && Arg4Properties.Contains(e.PropertyName))
             {
                 ExecutionEngine.Current.ManualInvalidation(this);
             }
@@ -5346,7 +5346,7 @@ namespace NMF.Expressions
 
         private void Arg5BubbledChange(object sender, BubbledChangeEventArgs e)
         {
-            if (Successors.Count > 0 && Arg5Properties.Contains(e.PropertyName))
+            if (Successors.IsAttached && Arg5Properties.Contains(e.PropertyName))
             {
                 ExecutionEngine.Current.ManualInvalidation(this);
             }
@@ -5354,7 +5354,7 @@ namespace NMF.Expressions
 
         private void Arg5PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (Successors.Count > 0 && Arg5Properties.Contains(e.PropertyName))
+            if (Successors.IsAttached && Arg5Properties.Contains(e.PropertyName))
             {
                 ExecutionEngine.Current.ManualInvalidation(this);
             }
@@ -5391,7 +5391,7 @@ namespace NMF.Expressions
 
         private void Arg6BubbledChange(object sender, BubbledChangeEventArgs e)
         {
-            if (Successors.Count > 0 && Arg6Properties.Contains(e.PropertyName))
+            if (Successors.IsAttached && Arg6Properties.Contains(e.PropertyName))
             {
                 ExecutionEngine.Current.ManualInvalidation(this);
             }
@@ -5399,7 +5399,7 @@ namespace NMF.Expressions
 
         private void Arg6PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (Successors.Count > 0 && Arg6Properties.Contains(e.PropertyName))
+            if (Successors.IsAttached && Arg6Properties.Contains(e.PropertyName))
             {
                 ExecutionEngine.Current.ManualInvalidation(this);
             }
@@ -5436,7 +5436,7 @@ namespace NMF.Expressions
 
         private void Arg7BubbledChange(object sender, BubbledChangeEventArgs e)
         {
-            if (Successors.Count > 0 && Arg7Properties.Contains(e.PropertyName))
+            if (Successors.IsAttached && Arg7Properties.Contains(e.PropertyName))
             {
                 ExecutionEngine.Current.ManualInvalidation(this);
             }
@@ -5444,7 +5444,7 @@ namespace NMF.Expressions
 
         private void Arg7PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (Successors.Count > 0 && Arg7Properties.Contains(e.PropertyName))
+            if (Successors.IsAttached && Arg7Properties.Contains(e.PropertyName))
             {
                 ExecutionEngine.Current.ManualInvalidation(this);
             }
@@ -5481,7 +5481,7 @@ namespace NMF.Expressions
 
         private void Arg8BubbledChange(object sender, BubbledChangeEventArgs e)
         {
-            if (Successors.Count > 0 && Arg8Properties.Contains(e.PropertyName))
+            if (Successors.IsAttached && Arg8Properties.Contains(e.PropertyName))
             {
                 ExecutionEngine.Current.ManualInvalidation(this);
             }
@@ -5489,7 +5489,7 @@ namespace NMF.Expressions
 
         private void Arg8PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (Successors.Count > 0 && Arg8Properties.Contains(e.PropertyName))
+            if (Successors.IsAttached && Arg8Properties.Contains(e.PropertyName))
             {
                 ExecutionEngine.Current.ManualInvalidation(this);
             }
@@ -5526,7 +5526,7 @@ namespace NMF.Expressions
 
         private void Arg9BubbledChange(object sender, BubbledChangeEventArgs e)
         {
-            if (Successors.Count > 0 && Arg9Properties.Contains(e.PropertyName))
+            if (Successors.IsAttached && Arg9Properties.Contains(e.PropertyName))
             {
                 ExecutionEngine.Current.ManualInvalidation(this);
             }
@@ -5534,7 +5534,7 @@ namespace NMF.Expressions
 
         private void Arg9PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (Successors.Count > 0 && Arg9Properties.Contains(e.PropertyName))
+            if (Successors.IsAttached && Arg9Properties.Contains(e.PropertyName))
             {
                 ExecutionEngine.Current.ManualInvalidation(this);
             }
@@ -5571,7 +5571,7 @@ namespace NMF.Expressions
 
         private void Arg10BubbledChange(object sender, BubbledChangeEventArgs e)
         {
-            if (Successors.Count > 0 && Arg10Properties.Contains(e.PropertyName))
+            if (Successors.IsAttached && Arg10Properties.Contains(e.PropertyName))
             {
                 ExecutionEngine.Current.ManualInvalidation(this);
             }
@@ -5579,7 +5579,7 @@ namespace NMF.Expressions
 
         private void Arg10PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (Successors.Count > 0 && Arg10Properties.Contains(e.PropertyName))
+            if (Successors.IsAttached && Arg10Properties.Contains(e.PropertyName))
             {
                 ExecutionEngine.Current.ManualInvalidation(this);
             }
@@ -5616,7 +5616,7 @@ namespace NMF.Expressions
 
         private void Arg11BubbledChange(object sender, BubbledChangeEventArgs e)
         {
-            if (Successors.Count > 0 && Arg11Properties.Contains(e.PropertyName))
+            if (Successors.IsAttached && Arg11Properties.Contains(e.PropertyName))
             {
                 ExecutionEngine.Current.ManualInvalidation(this);
             }
@@ -5624,7 +5624,7 @@ namespace NMF.Expressions
 
         private void Arg11PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (Successors.Count > 0 && Arg11Properties.Contains(e.PropertyName))
+            if (Successors.IsAttached && Arg11Properties.Contains(e.PropertyName))
             {
                 ExecutionEngine.Current.ManualInvalidation(this);
             }
@@ -6138,7 +6138,7 @@ namespace NMF.Expressions
 
         private void Arg1BubbledChange(object sender, BubbledChangeEventArgs e)
         {
-            if (Successors.Count > 0 && Arg1Properties.Contains(e.PropertyName))
+            if (Successors.IsAttached && Arg1Properties.Contains(e.PropertyName))
             {
                 ExecutionEngine.Current.ManualInvalidation(this);
             }
@@ -6146,7 +6146,7 @@ namespace NMF.Expressions
 
         private void Arg1PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (Successors.Count > 0 && Arg1Properties.Contains(e.PropertyName))
+            if (Successors.IsAttached && Arg1Properties.Contains(e.PropertyName))
             {
                 ExecutionEngine.Current.ManualInvalidation(this);
             }
@@ -6183,7 +6183,7 @@ namespace NMF.Expressions
 
         private void Arg2BubbledChange(object sender, BubbledChangeEventArgs e)
         {
-            if (Successors.Count > 0 && Arg2Properties.Contains(e.PropertyName))
+            if (Successors.IsAttached && Arg2Properties.Contains(e.PropertyName))
             {
                 ExecutionEngine.Current.ManualInvalidation(this);
             }
@@ -6191,7 +6191,7 @@ namespace NMF.Expressions
 
         private void Arg2PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (Successors.Count > 0 && Arg2Properties.Contains(e.PropertyName))
+            if (Successors.IsAttached && Arg2Properties.Contains(e.PropertyName))
             {
                 ExecutionEngine.Current.ManualInvalidation(this);
             }
@@ -6228,7 +6228,7 @@ namespace NMF.Expressions
 
         private void Arg3BubbledChange(object sender, BubbledChangeEventArgs e)
         {
-            if (Successors.Count > 0 && Arg3Properties.Contains(e.PropertyName))
+            if (Successors.IsAttached && Arg3Properties.Contains(e.PropertyName))
             {
                 ExecutionEngine.Current.ManualInvalidation(this);
             }
@@ -6236,7 +6236,7 @@ namespace NMF.Expressions
 
         private void Arg3PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (Successors.Count > 0 && Arg3Properties.Contains(e.PropertyName))
+            if (Successors.IsAttached && Arg3Properties.Contains(e.PropertyName))
             {
                 ExecutionEngine.Current.ManualInvalidation(this);
             }
@@ -6273,7 +6273,7 @@ namespace NMF.Expressions
 
         private void Arg4BubbledChange(object sender, BubbledChangeEventArgs e)
         {
-            if (Successors.Count > 0 && Arg4Properties.Contains(e.PropertyName))
+            if (Successors.IsAttached && Arg4Properties.Contains(e.PropertyName))
             {
                 ExecutionEngine.Current.ManualInvalidation(this);
             }
@@ -6281,7 +6281,7 @@ namespace NMF.Expressions
 
         private void Arg4PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (Successors.Count > 0 && Arg4Properties.Contains(e.PropertyName))
+            if (Successors.IsAttached && Arg4Properties.Contains(e.PropertyName))
             {
                 ExecutionEngine.Current.ManualInvalidation(this);
             }
@@ -6318,7 +6318,7 @@ namespace NMF.Expressions
 
         private void Arg5BubbledChange(object sender, BubbledChangeEventArgs e)
         {
-            if (Successors.Count > 0 && Arg5Properties.Contains(e.PropertyName))
+            if (Successors.IsAttached && Arg5Properties.Contains(e.PropertyName))
             {
                 ExecutionEngine.Current.ManualInvalidation(this);
             }
@@ -6326,7 +6326,7 @@ namespace NMF.Expressions
 
         private void Arg5PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (Successors.Count > 0 && Arg5Properties.Contains(e.PropertyName))
+            if (Successors.IsAttached && Arg5Properties.Contains(e.PropertyName))
             {
                 ExecutionEngine.Current.ManualInvalidation(this);
             }
@@ -6363,7 +6363,7 @@ namespace NMF.Expressions
 
         private void Arg6BubbledChange(object sender, BubbledChangeEventArgs e)
         {
-            if (Successors.Count > 0 && Arg6Properties.Contains(e.PropertyName))
+            if (Successors.IsAttached && Arg6Properties.Contains(e.PropertyName))
             {
                 ExecutionEngine.Current.ManualInvalidation(this);
             }
@@ -6371,7 +6371,7 @@ namespace NMF.Expressions
 
         private void Arg6PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (Successors.Count > 0 && Arg6Properties.Contains(e.PropertyName))
+            if (Successors.IsAttached && Arg6Properties.Contains(e.PropertyName))
             {
                 ExecutionEngine.Current.ManualInvalidation(this);
             }
@@ -6408,7 +6408,7 @@ namespace NMF.Expressions
 
         private void Arg7BubbledChange(object sender, BubbledChangeEventArgs e)
         {
-            if (Successors.Count > 0 && Arg7Properties.Contains(e.PropertyName))
+            if (Successors.IsAttached && Arg7Properties.Contains(e.PropertyName))
             {
                 ExecutionEngine.Current.ManualInvalidation(this);
             }
@@ -6416,7 +6416,7 @@ namespace NMF.Expressions
 
         private void Arg7PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (Successors.Count > 0 && Arg7Properties.Contains(e.PropertyName))
+            if (Successors.IsAttached && Arg7Properties.Contains(e.PropertyName))
             {
                 ExecutionEngine.Current.ManualInvalidation(this);
             }
@@ -6453,7 +6453,7 @@ namespace NMF.Expressions
 
         private void Arg8BubbledChange(object sender, BubbledChangeEventArgs e)
         {
-            if (Successors.Count > 0 && Arg8Properties.Contains(e.PropertyName))
+            if (Successors.IsAttached && Arg8Properties.Contains(e.PropertyName))
             {
                 ExecutionEngine.Current.ManualInvalidation(this);
             }
@@ -6461,7 +6461,7 @@ namespace NMF.Expressions
 
         private void Arg8PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (Successors.Count > 0 && Arg8Properties.Contains(e.PropertyName))
+            if (Successors.IsAttached && Arg8Properties.Contains(e.PropertyName))
             {
                 ExecutionEngine.Current.ManualInvalidation(this);
             }
@@ -6498,7 +6498,7 @@ namespace NMF.Expressions
 
         private void Arg9BubbledChange(object sender, BubbledChangeEventArgs e)
         {
-            if (Successors.Count > 0 && Arg9Properties.Contains(e.PropertyName))
+            if (Successors.IsAttached && Arg9Properties.Contains(e.PropertyName))
             {
                 ExecutionEngine.Current.ManualInvalidation(this);
             }
@@ -6506,7 +6506,7 @@ namespace NMF.Expressions
 
         private void Arg9PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (Successors.Count > 0 && Arg9Properties.Contains(e.PropertyName))
+            if (Successors.IsAttached && Arg9Properties.Contains(e.PropertyName))
             {
                 ExecutionEngine.Current.ManualInvalidation(this);
             }
@@ -6543,7 +6543,7 @@ namespace NMF.Expressions
 
         private void Arg10BubbledChange(object sender, BubbledChangeEventArgs e)
         {
-            if (Successors.Count > 0 && Arg10Properties.Contains(e.PropertyName))
+            if (Successors.IsAttached && Arg10Properties.Contains(e.PropertyName))
             {
                 ExecutionEngine.Current.ManualInvalidation(this);
             }
@@ -6551,7 +6551,7 @@ namespace NMF.Expressions
 
         private void Arg10PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (Successors.Count > 0 && Arg10Properties.Contains(e.PropertyName))
+            if (Successors.IsAttached && Arg10Properties.Contains(e.PropertyName))
             {
                 ExecutionEngine.Current.ManualInvalidation(this);
             }
@@ -6588,7 +6588,7 @@ namespace NMF.Expressions
 
         private void Arg11BubbledChange(object sender, BubbledChangeEventArgs e)
         {
-            if (Successors.Count > 0 && Arg11Properties.Contains(e.PropertyName))
+            if (Successors.IsAttached && Arg11Properties.Contains(e.PropertyName))
             {
                 ExecutionEngine.Current.ManualInvalidation(this);
             }
@@ -6596,7 +6596,7 @@ namespace NMF.Expressions
 
         private void Arg11PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (Successors.Count > 0 && Arg11Properties.Contains(e.PropertyName))
+            if (Successors.IsAttached && Arg11Properties.Contains(e.PropertyName))
             {
                 ExecutionEngine.Current.ManualInvalidation(this);
             }
@@ -6633,7 +6633,7 @@ namespace NMF.Expressions
 
         private void Arg12BubbledChange(object sender, BubbledChangeEventArgs e)
         {
-            if (Successors.Count > 0 && Arg12Properties.Contains(e.PropertyName))
+            if (Successors.IsAttached && Arg12Properties.Contains(e.PropertyName))
             {
                 ExecutionEngine.Current.ManualInvalidation(this);
             }
@@ -6641,7 +6641,7 @@ namespace NMF.Expressions
 
         private void Arg12PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (Successors.Count > 0 && Arg12Properties.Contains(e.PropertyName))
+            if (Successors.IsAttached && Arg12Properties.Contains(e.PropertyName))
             {
                 ExecutionEngine.Current.ManualInvalidation(this);
             }
@@ -7194,7 +7194,7 @@ namespace NMF.Expressions
 
         private void Arg1BubbledChange(object sender, BubbledChangeEventArgs e)
         {
-            if (Successors.Count > 0 && Arg1Properties.Contains(e.PropertyName))
+            if (Successors.IsAttached && Arg1Properties.Contains(e.PropertyName))
             {
                 ExecutionEngine.Current.ManualInvalidation(this);
             }
@@ -7202,7 +7202,7 @@ namespace NMF.Expressions
 
         private void Arg1PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (Successors.Count > 0 && Arg1Properties.Contains(e.PropertyName))
+            if (Successors.IsAttached && Arg1Properties.Contains(e.PropertyName))
             {
                 ExecutionEngine.Current.ManualInvalidation(this);
             }
@@ -7239,7 +7239,7 @@ namespace NMF.Expressions
 
         private void Arg2BubbledChange(object sender, BubbledChangeEventArgs e)
         {
-            if (Successors.Count > 0 && Arg2Properties.Contains(e.PropertyName))
+            if (Successors.IsAttached && Arg2Properties.Contains(e.PropertyName))
             {
                 ExecutionEngine.Current.ManualInvalidation(this);
             }
@@ -7247,7 +7247,7 @@ namespace NMF.Expressions
 
         private void Arg2PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (Successors.Count > 0 && Arg2Properties.Contains(e.PropertyName))
+            if (Successors.IsAttached && Arg2Properties.Contains(e.PropertyName))
             {
                 ExecutionEngine.Current.ManualInvalidation(this);
             }
@@ -7284,7 +7284,7 @@ namespace NMF.Expressions
 
         private void Arg3BubbledChange(object sender, BubbledChangeEventArgs e)
         {
-            if (Successors.Count > 0 && Arg3Properties.Contains(e.PropertyName))
+            if (Successors.IsAttached && Arg3Properties.Contains(e.PropertyName))
             {
                 ExecutionEngine.Current.ManualInvalidation(this);
             }
@@ -7292,7 +7292,7 @@ namespace NMF.Expressions
 
         private void Arg3PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (Successors.Count > 0 && Arg3Properties.Contains(e.PropertyName))
+            if (Successors.IsAttached && Arg3Properties.Contains(e.PropertyName))
             {
                 ExecutionEngine.Current.ManualInvalidation(this);
             }
@@ -7329,7 +7329,7 @@ namespace NMF.Expressions
 
         private void Arg4BubbledChange(object sender, BubbledChangeEventArgs e)
         {
-            if (Successors.Count > 0 && Arg4Properties.Contains(e.PropertyName))
+            if (Successors.IsAttached && Arg4Properties.Contains(e.PropertyName))
             {
                 ExecutionEngine.Current.ManualInvalidation(this);
             }
@@ -7337,7 +7337,7 @@ namespace NMF.Expressions
 
         private void Arg4PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (Successors.Count > 0 && Arg4Properties.Contains(e.PropertyName))
+            if (Successors.IsAttached && Arg4Properties.Contains(e.PropertyName))
             {
                 ExecutionEngine.Current.ManualInvalidation(this);
             }
@@ -7374,7 +7374,7 @@ namespace NMF.Expressions
 
         private void Arg5BubbledChange(object sender, BubbledChangeEventArgs e)
         {
-            if (Successors.Count > 0 && Arg5Properties.Contains(e.PropertyName))
+            if (Successors.IsAttached && Arg5Properties.Contains(e.PropertyName))
             {
                 ExecutionEngine.Current.ManualInvalidation(this);
             }
@@ -7382,7 +7382,7 @@ namespace NMF.Expressions
 
         private void Arg5PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (Successors.Count > 0 && Arg5Properties.Contains(e.PropertyName))
+            if (Successors.IsAttached && Arg5Properties.Contains(e.PropertyName))
             {
                 ExecutionEngine.Current.ManualInvalidation(this);
             }
@@ -7419,7 +7419,7 @@ namespace NMF.Expressions
 
         private void Arg6BubbledChange(object sender, BubbledChangeEventArgs e)
         {
-            if (Successors.Count > 0 && Arg6Properties.Contains(e.PropertyName))
+            if (Successors.IsAttached && Arg6Properties.Contains(e.PropertyName))
             {
                 ExecutionEngine.Current.ManualInvalidation(this);
             }
@@ -7427,7 +7427,7 @@ namespace NMF.Expressions
 
         private void Arg6PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (Successors.Count > 0 && Arg6Properties.Contains(e.PropertyName))
+            if (Successors.IsAttached && Arg6Properties.Contains(e.PropertyName))
             {
                 ExecutionEngine.Current.ManualInvalidation(this);
             }
@@ -7464,7 +7464,7 @@ namespace NMF.Expressions
 
         private void Arg7BubbledChange(object sender, BubbledChangeEventArgs e)
         {
-            if (Successors.Count > 0 && Arg7Properties.Contains(e.PropertyName))
+            if (Successors.IsAttached && Arg7Properties.Contains(e.PropertyName))
             {
                 ExecutionEngine.Current.ManualInvalidation(this);
             }
@@ -7472,7 +7472,7 @@ namespace NMF.Expressions
 
         private void Arg7PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (Successors.Count > 0 && Arg7Properties.Contains(e.PropertyName))
+            if (Successors.IsAttached && Arg7Properties.Contains(e.PropertyName))
             {
                 ExecutionEngine.Current.ManualInvalidation(this);
             }
@@ -7509,7 +7509,7 @@ namespace NMF.Expressions
 
         private void Arg8BubbledChange(object sender, BubbledChangeEventArgs e)
         {
-            if (Successors.Count > 0 && Arg8Properties.Contains(e.PropertyName))
+            if (Successors.IsAttached && Arg8Properties.Contains(e.PropertyName))
             {
                 ExecutionEngine.Current.ManualInvalidation(this);
             }
@@ -7517,7 +7517,7 @@ namespace NMF.Expressions
 
         private void Arg8PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (Successors.Count > 0 && Arg8Properties.Contains(e.PropertyName))
+            if (Successors.IsAttached && Arg8Properties.Contains(e.PropertyName))
             {
                 ExecutionEngine.Current.ManualInvalidation(this);
             }
@@ -7554,7 +7554,7 @@ namespace NMF.Expressions
 
         private void Arg9BubbledChange(object sender, BubbledChangeEventArgs e)
         {
-            if (Successors.Count > 0 && Arg9Properties.Contains(e.PropertyName))
+            if (Successors.IsAttached && Arg9Properties.Contains(e.PropertyName))
             {
                 ExecutionEngine.Current.ManualInvalidation(this);
             }
@@ -7562,7 +7562,7 @@ namespace NMF.Expressions
 
         private void Arg9PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (Successors.Count > 0 && Arg9Properties.Contains(e.PropertyName))
+            if (Successors.IsAttached && Arg9Properties.Contains(e.PropertyName))
             {
                 ExecutionEngine.Current.ManualInvalidation(this);
             }
@@ -7599,7 +7599,7 @@ namespace NMF.Expressions
 
         private void Arg10BubbledChange(object sender, BubbledChangeEventArgs e)
         {
-            if (Successors.Count > 0 && Arg10Properties.Contains(e.PropertyName))
+            if (Successors.IsAttached && Arg10Properties.Contains(e.PropertyName))
             {
                 ExecutionEngine.Current.ManualInvalidation(this);
             }
@@ -7607,7 +7607,7 @@ namespace NMF.Expressions
 
         private void Arg10PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (Successors.Count > 0 && Arg10Properties.Contains(e.PropertyName))
+            if (Successors.IsAttached && Arg10Properties.Contains(e.PropertyName))
             {
                 ExecutionEngine.Current.ManualInvalidation(this);
             }
@@ -7644,7 +7644,7 @@ namespace NMF.Expressions
 
         private void Arg11BubbledChange(object sender, BubbledChangeEventArgs e)
         {
-            if (Successors.Count > 0 && Arg11Properties.Contains(e.PropertyName))
+            if (Successors.IsAttached && Arg11Properties.Contains(e.PropertyName))
             {
                 ExecutionEngine.Current.ManualInvalidation(this);
             }
@@ -7652,7 +7652,7 @@ namespace NMF.Expressions
 
         private void Arg11PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (Successors.Count > 0 && Arg11Properties.Contains(e.PropertyName))
+            if (Successors.IsAttached && Arg11Properties.Contains(e.PropertyName))
             {
                 ExecutionEngine.Current.ManualInvalidation(this);
             }
@@ -7689,7 +7689,7 @@ namespace NMF.Expressions
 
         private void Arg12BubbledChange(object sender, BubbledChangeEventArgs e)
         {
-            if (Successors.Count > 0 && Arg12Properties.Contains(e.PropertyName))
+            if (Successors.IsAttached && Arg12Properties.Contains(e.PropertyName))
             {
                 ExecutionEngine.Current.ManualInvalidation(this);
             }
@@ -7697,7 +7697,7 @@ namespace NMF.Expressions
 
         private void Arg12PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (Successors.Count > 0 && Arg12Properties.Contains(e.PropertyName))
+            if (Successors.IsAttached && Arg12Properties.Contains(e.PropertyName))
             {
                 ExecutionEngine.Current.ManualInvalidation(this);
             }
@@ -7734,7 +7734,7 @@ namespace NMF.Expressions
 
         private void Arg13BubbledChange(object sender, BubbledChangeEventArgs e)
         {
-            if (Successors.Count > 0 && Arg13Properties.Contains(e.PropertyName))
+            if (Successors.IsAttached && Arg13Properties.Contains(e.PropertyName))
             {
                 ExecutionEngine.Current.ManualInvalidation(this);
             }
@@ -7742,7 +7742,7 @@ namespace NMF.Expressions
 
         private void Arg13PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (Successors.Count > 0 && Arg13Properties.Contains(e.PropertyName))
+            if (Successors.IsAttached && Arg13Properties.Contains(e.PropertyName))
             {
                 ExecutionEngine.Current.ManualInvalidation(this);
             }
@@ -8334,7 +8334,7 @@ namespace NMF.Expressions
 
         private void Arg1BubbledChange(object sender, BubbledChangeEventArgs e)
         {
-            if (Successors.Count > 0 && Arg1Properties.Contains(e.PropertyName))
+            if (Successors.IsAttached && Arg1Properties.Contains(e.PropertyName))
             {
                 ExecutionEngine.Current.ManualInvalidation(this);
             }
@@ -8342,7 +8342,7 @@ namespace NMF.Expressions
 
         private void Arg1PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (Successors.Count > 0 && Arg1Properties.Contains(e.PropertyName))
+            if (Successors.IsAttached && Arg1Properties.Contains(e.PropertyName))
             {
                 ExecutionEngine.Current.ManualInvalidation(this);
             }
@@ -8379,7 +8379,7 @@ namespace NMF.Expressions
 
         private void Arg2BubbledChange(object sender, BubbledChangeEventArgs e)
         {
-            if (Successors.Count > 0 && Arg2Properties.Contains(e.PropertyName))
+            if (Successors.IsAttached && Arg2Properties.Contains(e.PropertyName))
             {
                 ExecutionEngine.Current.ManualInvalidation(this);
             }
@@ -8387,7 +8387,7 @@ namespace NMF.Expressions
 
         private void Arg2PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (Successors.Count > 0 && Arg2Properties.Contains(e.PropertyName))
+            if (Successors.IsAttached && Arg2Properties.Contains(e.PropertyName))
             {
                 ExecutionEngine.Current.ManualInvalidation(this);
             }
@@ -8424,7 +8424,7 @@ namespace NMF.Expressions
 
         private void Arg3BubbledChange(object sender, BubbledChangeEventArgs e)
         {
-            if (Successors.Count > 0 && Arg3Properties.Contains(e.PropertyName))
+            if (Successors.IsAttached && Arg3Properties.Contains(e.PropertyName))
             {
                 ExecutionEngine.Current.ManualInvalidation(this);
             }
@@ -8432,7 +8432,7 @@ namespace NMF.Expressions
 
         private void Arg3PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (Successors.Count > 0 && Arg3Properties.Contains(e.PropertyName))
+            if (Successors.IsAttached && Arg3Properties.Contains(e.PropertyName))
             {
                 ExecutionEngine.Current.ManualInvalidation(this);
             }
@@ -8469,7 +8469,7 @@ namespace NMF.Expressions
 
         private void Arg4BubbledChange(object sender, BubbledChangeEventArgs e)
         {
-            if (Successors.Count > 0 && Arg4Properties.Contains(e.PropertyName))
+            if (Successors.IsAttached && Arg4Properties.Contains(e.PropertyName))
             {
                 ExecutionEngine.Current.ManualInvalidation(this);
             }
@@ -8477,7 +8477,7 @@ namespace NMF.Expressions
 
         private void Arg4PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (Successors.Count > 0 && Arg4Properties.Contains(e.PropertyName))
+            if (Successors.IsAttached && Arg4Properties.Contains(e.PropertyName))
             {
                 ExecutionEngine.Current.ManualInvalidation(this);
             }
@@ -8514,7 +8514,7 @@ namespace NMF.Expressions
 
         private void Arg5BubbledChange(object sender, BubbledChangeEventArgs e)
         {
-            if (Successors.Count > 0 && Arg5Properties.Contains(e.PropertyName))
+            if (Successors.IsAttached && Arg5Properties.Contains(e.PropertyName))
             {
                 ExecutionEngine.Current.ManualInvalidation(this);
             }
@@ -8522,7 +8522,7 @@ namespace NMF.Expressions
 
         private void Arg5PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (Successors.Count > 0 && Arg5Properties.Contains(e.PropertyName))
+            if (Successors.IsAttached && Arg5Properties.Contains(e.PropertyName))
             {
                 ExecutionEngine.Current.ManualInvalidation(this);
             }
@@ -8559,7 +8559,7 @@ namespace NMF.Expressions
 
         private void Arg6BubbledChange(object sender, BubbledChangeEventArgs e)
         {
-            if (Successors.Count > 0 && Arg6Properties.Contains(e.PropertyName))
+            if (Successors.IsAttached && Arg6Properties.Contains(e.PropertyName))
             {
                 ExecutionEngine.Current.ManualInvalidation(this);
             }
@@ -8567,7 +8567,7 @@ namespace NMF.Expressions
 
         private void Arg6PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (Successors.Count > 0 && Arg6Properties.Contains(e.PropertyName))
+            if (Successors.IsAttached && Arg6Properties.Contains(e.PropertyName))
             {
                 ExecutionEngine.Current.ManualInvalidation(this);
             }
@@ -8604,7 +8604,7 @@ namespace NMF.Expressions
 
         private void Arg7BubbledChange(object sender, BubbledChangeEventArgs e)
         {
-            if (Successors.Count > 0 && Arg7Properties.Contains(e.PropertyName))
+            if (Successors.IsAttached && Arg7Properties.Contains(e.PropertyName))
             {
                 ExecutionEngine.Current.ManualInvalidation(this);
             }
@@ -8612,7 +8612,7 @@ namespace NMF.Expressions
 
         private void Arg7PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (Successors.Count > 0 && Arg7Properties.Contains(e.PropertyName))
+            if (Successors.IsAttached && Arg7Properties.Contains(e.PropertyName))
             {
                 ExecutionEngine.Current.ManualInvalidation(this);
             }
@@ -8649,7 +8649,7 @@ namespace NMF.Expressions
 
         private void Arg8BubbledChange(object sender, BubbledChangeEventArgs e)
         {
-            if (Successors.Count > 0 && Arg8Properties.Contains(e.PropertyName))
+            if (Successors.IsAttached && Arg8Properties.Contains(e.PropertyName))
             {
                 ExecutionEngine.Current.ManualInvalidation(this);
             }
@@ -8657,7 +8657,7 @@ namespace NMF.Expressions
 
         private void Arg8PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (Successors.Count > 0 && Arg8Properties.Contains(e.PropertyName))
+            if (Successors.IsAttached && Arg8Properties.Contains(e.PropertyName))
             {
                 ExecutionEngine.Current.ManualInvalidation(this);
             }
@@ -8694,7 +8694,7 @@ namespace NMF.Expressions
 
         private void Arg9BubbledChange(object sender, BubbledChangeEventArgs e)
         {
-            if (Successors.Count > 0 && Arg9Properties.Contains(e.PropertyName))
+            if (Successors.IsAttached && Arg9Properties.Contains(e.PropertyName))
             {
                 ExecutionEngine.Current.ManualInvalidation(this);
             }
@@ -8702,7 +8702,7 @@ namespace NMF.Expressions
 
         private void Arg9PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (Successors.Count > 0 && Arg9Properties.Contains(e.PropertyName))
+            if (Successors.IsAttached && Arg9Properties.Contains(e.PropertyName))
             {
                 ExecutionEngine.Current.ManualInvalidation(this);
             }
@@ -8739,7 +8739,7 @@ namespace NMF.Expressions
 
         private void Arg10BubbledChange(object sender, BubbledChangeEventArgs e)
         {
-            if (Successors.Count > 0 && Arg10Properties.Contains(e.PropertyName))
+            if (Successors.IsAttached && Arg10Properties.Contains(e.PropertyName))
             {
                 ExecutionEngine.Current.ManualInvalidation(this);
             }
@@ -8747,7 +8747,7 @@ namespace NMF.Expressions
 
         private void Arg10PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (Successors.Count > 0 && Arg10Properties.Contains(e.PropertyName))
+            if (Successors.IsAttached && Arg10Properties.Contains(e.PropertyName))
             {
                 ExecutionEngine.Current.ManualInvalidation(this);
             }
@@ -8784,7 +8784,7 @@ namespace NMF.Expressions
 
         private void Arg11BubbledChange(object sender, BubbledChangeEventArgs e)
         {
-            if (Successors.Count > 0 && Arg11Properties.Contains(e.PropertyName))
+            if (Successors.IsAttached && Arg11Properties.Contains(e.PropertyName))
             {
                 ExecutionEngine.Current.ManualInvalidation(this);
             }
@@ -8792,7 +8792,7 @@ namespace NMF.Expressions
 
         private void Arg11PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (Successors.Count > 0 && Arg11Properties.Contains(e.PropertyName))
+            if (Successors.IsAttached && Arg11Properties.Contains(e.PropertyName))
             {
                 ExecutionEngine.Current.ManualInvalidation(this);
             }
@@ -8829,7 +8829,7 @@ namespace NMF.Expressions
 
         private void Arg12BubbledChange(object sender, BubbledChangeEventArgs e)
         {
-            if (Successors.Count > 0 && Arg12Properties.Contains(e.PropertyName))
+            if (Successors.IsAttached && Arg12Properties.Contains(e.PropertyName))
             {
                 ExecutionEngine.Current.ManualInvalidation(this);
             }
@@ -8837,7 +8837,7 @@ namespace NMF.Expressions
 
         private void Arg12PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (Successors.Count > 0 && Arg12Properties.Contains(e.PropertyName))
+            if (Successors.IsAttached && Arg12Properties.Contains(e.PropertyName))
             {
                 ExecutionEngine.Current.ManualInvalidation(this);
             }
@@ -8874,7 +8874,7 @@ namespace NMF.Expressions
 
         private void Arg13BubbledChange(object sender, BubbledChangeEventArgs e)
         {
-            if (Successors.Count > 0 && Arg13Properties.Contains(e.PropertyName))
+            if (Successors.IsAttached && Arg13Properties.Contains(e.PropertyName))
             {
                 ExecutionEngine.Current.ManualInvalidation(this);
             }
@@ -8882,7 +8882,7 @@ namespace NMF.Expressions
 
         private void Arg13PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (Successors.Count > 0 && Arg13Properties.Contains(e.PropertyName))
+            if (Successors.IsAttached && Arg13Properties.Contains(e.PropertyName))
             {
                 ExecutionEngine.Current.ManualInvalidation(this);
             }
@@ -8919,7 +8919,7 @@ namespace NMF.Expressions
 
         private void Arg14BubbledChange(object sender, BubbledChangeEventArgs e)
         {
-            if (Successors.Count > 0 && Arg14Properties.Contains(e.PropertyName))
+            if (Successors.IsAttached && Arg14Properties.Contains(e.PropertyName))
             {
                 ExecutionEngine.Current.ManualInvalidation(this);
             }
@@ -8927,7 +8927,7 @@ namespace NMF.Expressions
 
         private void Arg14PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (Successors.Count > 0 && Arg14Properties.Contains(e.PropertyName))
+            if (Successors.IsAttached && Arg14Properties.Contains(e.PropertyName))
             {
                 ExecutionEngine.Current.ManualInvalidation(this);
             }
@@ -9558,7 +9558,7 @@ namespace NMF.Expressions
 
         private void Arg1BubbledChange(object sender, BubbledChangeEventArgs e)
         {
-            if (Successors.Count > 0 && Arg1Properties.Contains(e.PropertyName))
+            if (Successors.IsAttached && Arg1Properties.Contains(e.PropertyName))
             {
                 ExecutionEngine.Current.ManualInvalidation(this);
             }
@@ -9566,7 +9566,7 @@ namespace NMF.Expressions
 
         private void Arg1PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (Successors.Count > 0 && Arg1Properties.Contains(e.PropertyName))
+            if (Successors.IsAttached && Arg1Properties.Contains(e.PropertyName))
             {
                 ExecutionEngine.Current.ManualInvalidation(this);
             }
@@ -9603,7 +9603,7 @@ namespace NMF.Expressions
 
         private void Arg2BubbledChange(object sender, BubbledChangeEventArgs e)
         {
-            if (Successors.Count > 0 && Arg2Properties.Contains(e.PropertyName))
+            if (Successors.IsAttached && Arg2Properties.Contains(e.PropertyName))
             {
                 ExecutionEngine.Current.ManualInvalidation(this);
             }
@@ -9611,7 +9611,7 @@ namespace NMF.Expressions
 
         private void Arg2PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (Successors.Count > 0 && Arg2Properties.Contains(e.PropertyName))
+            if (Successors.IsAttached && Arg2Properties.Contains(e.PropertyName))
             {
                 ExecutionEngine.Current.ManualInvalidation(this);
             }
@@ -9648,7 +9648,7 @@ namespace NMF.Expressions
 
         private void Arg3BubbledChange(object sender, BubbledChangeEventArgs e)
         {
-            if (Successors.Count > 0 && Arg3Properties.Contains(e.PropertyName))
+            if (Successors.IsAttached && Arg3Properties.Contains(e.PropertyName))
             {
                 ExecutionEngine.Current.ManualInvalidation(this);
             }
@@ -9656,7 +9656,7 @@ namespace NMF.Expressions
 
         private void Arg3PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (Successors.Count > 0 && Arg3Properties.Contains(e.PropertyName))
+            if (Successors.IsAttached && Arg3Properties.Contains(e.PropertyName))
             {
                 ExecutionEngine.Current.ManualInvalidation(this);
             }
@@ -9693,7 +9693,7 @@ namespace NMF.Expressions
 
         private void Arg4BubbledChange(object sender, BubbledChangeEventArgs e)
         {
-            if (Successors.Count > 0 && Arg4Properties.Contains(e.PropertyName))
+            if (Successors.IsAttached && Arg4Properties.Contains(e.PropertyName))
             {
                 ExecutionEngine.Current.ManualInvalidation(this);
             }
@@ -9701,7 +9701,7 @@ namespace NMF.Expressions
 
         private void Arg4PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (Successors.Count > 0 && Arg4Properties.Contains(e.PropertyName))
+            if (Successors.IsAttached && Arg4Properties.Contains(e.PropertyName))
             {
                 ExecutionEngine.Current.ManualInvalidation(this);
             }
@@ -9738,7 +9738,7 @@ namespace NMF.Expressions
 
         private void Arg5BubbledChange(object sender, BubbledChangeEventArgs e)
         {
-            if (Successors.Count > 0 && Arg5Properties.Contains(e.PropertyName))
+            if (Successors.IsAttached && Arg5Properties.Contains(e.PropertyName))
             {
                 ExecutionEngine.Current.ManualInvalidation(this);
             }
@@ -9746,7 +9746,7 @@ namespace NMF.Expressions
 
         private void Arg5PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (Successors.Count > 0 && Arg5Properties.Contains(e.PropertyName))
+            if (Successors.IsAttached && Arg5Properties.Contains(e.PropertyName))
             {
                 ExecutionEngine.Current.ManualInvalidation(this);
             }
@@ -9783,7 +9783,7 @@ namespace NMF.Expressions
 
         private void Arg6BubbledChange(object sender, BubbledChangeEventArgs e)
         {
-            if (Successors.Count > 0 && Arg6Properties.Contains(e.PropertyName))
+            if (Successors.IsAttached && Arg6Properties.Contains(e.PropertyName))
             {
                 ExecutionEngine.Current.ManualInvalidation(this);
             }
@@ -9791,7 +9791,7 @@ namespace NMF.Expressions
 
         private void Arg6PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (Successors.Count > 0 && Arg6Properties.Contains(e.PropertyName))
+            if (Successors.IsAttached && Arg6Properties.Contains(e.PropertyName))
             {
                 ExecutionEngine.Current.ManualInvalidation(this);
             }
@@ -9828,7 +9828,7 @@ namespace NMF.Expressions
 
         private void Arg7BubbledChange(object sender, BubbledChangeEventArgs e)
         {
-            if (Successors.Count > 0 && Arg7Properties.Contains(e.PropertyName))
+            if (Successors.IsAttached && Arg7Properties.Contains(e.PropertyName))
             {
                 ExecutionEngine.Current.ManualInvalidation(this);
             }
@@ -9836,7 +9836,7 @@ namespace NMF.Expressions
 
         private void Arg7PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (Successors.Count > 0 && Arg7Properties.Contains(e.PropertyName))
+            if (Successors.IsAttached && Arg7Properties.Contains(e.PropertyName))
             {
                 ExecutionEngine.Current.ManualInvalidation(this);
             }
@@ -9873,7 +9873,7 @@ namespace NMF.Expressions
 
         private void Arg8BubbledChange(object sender, BubbledChangeEventArgs e)
         {
-            if (Successors.Count > 0 && Arg8Properties.Contains(e.PropertyName))
+            if (Successors.IsAttached && Arg8Properties.Contains(e.PropertyName))
             {
                 ExecutionEngine.Current.ManualInvalidation(this);
             }
@@ -9881,7 +9881,7 @@ namespace NMF.Expressions
 
         private void Arg8PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (Successors.Count > 0 && Arg8Properties.Contains(e.PropertyName))
+            if (Successors.IsAttached && Arg8Properties.Contains(e.PropertyName))
             {
                 ExecutionEngine.Current.ManualInvalidation(this);
             }
@@ -9918,7 +9918,7 @@ namespace NMF.Expressions
 
         private void Arg9BubbledChange(object sender, BubbledChangeEventArgs e)
         {
-            if (Successors.Count > 0 && Arg9Properties.Contains(e.PropertyName))
+            if (Successors.IsAttached && Arg9Properties.Contains(e.PropertyName))
             {
                 ExecutionEngine.Current.ManualInvalidation(this);
             }
@@ -9926,7 +9926,7 @@ namespace NMF.Expressions
 
         private void Arg9PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (Successors.Count > 0 && Arg9Properties.Contains(e.PropertyName))
+            if (Successors.IsAttached && Arg9Properties.Contains(e.PropertyName))
             {
                 ExecutionEngine.Current.ManualInvalidation(this);
             }
@@ -9963,7 +9963,7 @@ namespace NMF.Expressions
 
         private void Arg10BubbledChange(object sender, BubbledChangeEventArgs e)
         {
-            if (Successors.Count > 0 && Arg10Properties.Contains(e.PropertyName))
+            if (Successors.IsAttached && Arg10Properties.Contains(e.PropertyName))
             {
                 ExecutionEngine.Current.ManualInvalidation(this);
             }
@@ -9971,7 +9971,7 @@ namespace NMF.Expressions
 
         private void Arg10PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (Successors.Count > 0 && Arg10Properties.Contains(e.PropertyName))
+            if (Successors.IsAttached && Arg10Properties.Contains(e.PropertyName))
             {
                 ExecutionEngine.Current.ManualInvalidation(this);
             }
@@ -10008,7 +10008,7 @@ namespace NMF.Expressions
 
         private void Arg11BubbledChange(object sender, BubbledChangeEventArgs e)
         {
-            if (Successors.Count > 0 && Arg11Properties.Contains(e.PropertyName))
+            if (Successors.IsAttached && Arg11Properties.Contains(e.PropertyName))
             {
                 ExecutionEngine.Current.ManualInvalidation(this);
             }
@@ -10016,7 +10016,7 @@ namespace NMF.Expressions
 
         private void Arg11PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (Successors.Count > 0 && Arg11Properties.Contains(e.PropertyName))
+            if (Successors.IsAttached && Arg11Properties.Contains(e.PropertyName))
             {
                 ExecutionEngine.Current.ManualInvalidation(this);
             }
@@ -10053,7 +10053,7 @@ namespace NMF.Expressions
 
         private void Arg12BubbledChange(object sender, BubbledChangeEventArgs e)
         {
-            if (Successors.Count > 0 && Arg12Properties.Contains(e.PropertyName))
+            if (Successors.IsAttached && Arg12Properties.Contains(e.PropertyName))
             {
                 ExecutionEngine.Current.ManualInvalidation(this);
             }
@@ -10061,7 +10061,7 @@ namespace NMF.Expressions
 
         private void Arg12PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (Successors.Count > 0 && Arg12Properties.Contains(e.PropertyName))
+            if (Successors.IsAttached && Arg12Properties.Contains(e.PropertyName))
             {
                 ExecutionEngine.Current.ManualInvalidation(this);
             }
@@ -10098,7 +10098,7 @@ namespace NMF.Expressions
 
         private void Arg13BubbledChange(object sender, BubbledChangeEventArgs e)
         {
-            if (Successors.Count > 0 && Arg13Properties.Contains(e.PropertyName))
+            if (Successors.IsAttached && Arg13Properties.Contains(e.PropertyName))
             {
                 ExecutionEngine.Current.ManualInvalidation(this);
             }
@@ -10106,7 +10106,7 @@ namespace NMF.Expressions
 
         private void Arg13PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (Successors.Count > 0 && Arg13Properties.Contains(e.PropertyName))
+            if (Successors.IsAttached && Arg13Properties.Contains(e.PropertyName))
             {
                 ExecutionEngine.Current.ManualInvalidation(this);
             }
@@ -10143,7 +10143,7 @@ namespace NMF.Expressions
 
         private void Arg14BubbledChange(object sender, BubbledChangeEventArgs e)
         {
-            if (Successors.Count > 0 && Arg14Properties.Contains(e.PropertyName))
+            if (Successors.IsAttached && Arg14Properties.Contains(e.PropertyName))
             {
                 ExecutionEngine.Current.ManualInvalidation(this);
             }
@@ -10151,7 +10151,7 @@ namespace NMF.Expressions
 
         private void Arg14PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (Successors.Count > 0 && Arg14Properties.Contains(e.PropertyName))
+            if (Successors.IsAttached && Arg14Properties.Contains(e.PropertyName))
             {
                 ExecutionEngine.Current.ManualInvalidation(this);
             }
@@ -10188,7 +10188,7 @@ namespace NMF.Expressions
 
         private void Arg15BubbledChange(object sender, BubbledChangeEventArgs e)
         {
-            if (Successors.Count > 0 && Arg15Properties.Contains(e.PropertyName))
+            if (Successors.IsAttached && Arg15Properties.Contains(e.PropertyName))
             {
                 ExecutionEngine.Current.ManualInvalidation(this);
             }
@@ -10196,7 +10196,7 @@ namespace NMF.Expressions
 
         private void Arg15PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (Successors.Count > 0 && Arg15Properties.Contains(e.PropertyName))
+            if (Successors.IsAttached && Arg15Properties.Contains(e.PropertyName))
             {
                 ExecutionEngine.Current.ManualInvalidation(this);
             }

@@ -10,8 +10,6 @@ namespace NMF.Expressions
 {
     internal sealed class ObservableLocalVariable<T, TVar> : INotifyExpression<T>
     {
-        private readonly ShortList<INotifiable> successors = new ShortList<INotifiable>();
-
         public event EventHandler<ValueChangedEventArgs> ValueChanged;
 
         public INotifyExpression<T> Inner { get; private set; }
@@ -28,18 +26,16 @@ namespace NMF.Expressions
             ParameterName = parameterName;
             Variable = variable;
 
-            successors.CollectionChanged += (obj, e) =>
+            Successors.Attached += (obj, e) =>
             {
-                if (successors.Count == 0)
-                {
-                    foreach (var dep in Dependencies)
-                        dep.Successors.Remove(this);
-                }
-                else if (e.Action == NotifyCollectionChangedAction.Add && successors.Count == 1)
-                {
-                    foreach (var dep in Dependencies)
-                        dep.Successors.Add(this);
-                }
+                foreach (var dep in Dependencies)
+                    dep.Successors.Set(this);
+            };
+
+            Successors.Detached += (obj, e) =>
+            {
+                foreach (var dep in Dependencies)
+                    dep.Successors.Unset(this);
             };
         }
 
@@ -77,7 +73,7 @@ namespace NMF.Expressions
             }
         }
 
-        public IList<INotifiable> Successors { get { return successors; } }
+        public ISuccessorList Successors { get; } = NotifySystem.DefaultSystem.CreateSuccessorList();
 
         public ExecutionMetaData ExecutionMetaData { get; } = new ExecutionMetaData();
 
@@ -99,7 +95,7 @@ namespace NMF.Expressions
 
         public void Dispose()
         {
-            Successors.Clear();
+            Successors.UnsetAll();
         }
 
         public INotificationResult Notify(IList<INotificationResult> sources)

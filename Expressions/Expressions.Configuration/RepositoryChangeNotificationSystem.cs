@@ -71,5 +71,7 @@ namespace NMF.Expressions
                 return new RepositoryAffectedReversableNotifyFunc<T>(Repository, expression, parameters);
             }
         }
+
+        public ISuccessorList CreateSuccessorList() => new SingleSuccessorList();
     }
 }

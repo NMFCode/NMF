@@ -85,7 +85,7 @@ namespace NMF.Expressions.Linq
         private TResult AttachOuter(TOuter item)
         {
             var keyValue = outerKeySelector.InvokeTagged(item, item);
-            keyValue.Successors.Add(this);
+            keyValue.Successors.Set(this);
             Stack<TaggedObservableValue<TKey, TOuter>> valueStack;
             if (!outerValues.TryGetValue(item, out valueStack))
             {
@@ -100,7 +100,7 @@ namespace NMF.Expressions.Linq
                 groups.Add(keyValue.Value, group);
             }
             var resultValue = resultSelector.InvokeTagged(item, group.InnerElements, item);
-            resultValue.Successors.Add(this);
+            resultValue.Successors.Set(this);
             group.OuterElements.Add(keyValue, resultValue);
             return resultValue.Value;
         }
@@ -108,7 +108,7 @@ namespace NMF.Expressions.Linq
         private void AttachInner(TInner item, ICollection<TResult> added)
         {
             var keyValue = innerKeySelector.InvokeTagged(item, item);
-            keyValue.Successors.Add(this);
+            keyValue.Successors.Set(this);
             Stack<TaggedObservableValue<TKey, TInner>> valueStack;
             if (!innerValues.TryGetValue(item, out valueStack))
             {
@@ -150,12 +150,12 @@ namespace NMF.Expressions.Linq
             {
                 foreach (var val in group.OuterElements)
                 {
-                    val.Key.Successors.Remove(this);
-                    val.Value.Successors.Remove(this);
+                    val.Key.Successors.Unset(this);
+                    val.Value.Successors.Unset(this);
                 }
                 foreach (var val in group.InnerKeys)
                 {
-                    val.Successors.Remove(this);
+                    val.Successors.Unset(this);
                 }
             }
 
@@ -183,8 +183,8 @@ namespace NMF.Expressions.Linq
                         {
                             foreach (var val in group.OuterElements)
                             {
-                                val.Key.Successors.Remove(this);
-                                val.Value.Successors.Remove(this);
+                                val.Key.Successors.Unset(this);
+                                val.Value.Successors.Unset(this);
                             }
                             group.OuterElements.Clear();
                         }
@@ -211,7 +211,7 @@ namespace NMF.Expressions.Linq
                         {
                             foreach (var val in group.InnerKeys)
                             {
-                                val.Successors.Remove(this);
+                                val.Successors.Unset(this);
                             }
                             group.InnerKeys.Clear();
                         }
@@ -284,8 +284,8 @@ namespace NMF.Expressions.Linq
                     removed.Add(result.Value);
                 }
                 group.OuterElements.Remove(value);
-                value.Successors.Remove(this);
-                result.Successors.Remove(this);
+                value.Successors.Unset(this);
+                result.Successors.Unset(this);
             }
             
             foreach (var outer in outerChange.AllAddedItems)
@@ -317,7 +317,7 @@ namespace NMF.Expressions.Linq
                         removed.AddRange(group.OuterElements.Values.Select(r => r.Value));
                     }
                 }
-                value.Successors.Remove(this);
+                value.Successors.Unset(this);
             }
                 
             foreach (var inner in innerChange.AllAddedItems)
@@ -336,7 +336,7 @@ namespace NMF.Expressions.Linq
             {
                 var result = group.OuterElements[value];
                 removed.Add(result.Value);
-                result.Successors.Remove(this);
+                result.Successors.Unset(this);
             }
 
             if (!groups.TryGetValue(value.Value, out group))
@@ -346,7 +346,7 @@ namespace NMF.Expressions.Linq
             }
 
             var newResult = resultSelector.InvokeTagged(value.Tag, group.InnerElements, value.Tag);
-            newResult.Successors.Add(this);
+            newResult.Successors.Set(this);
             group.OuterElements.Add(value, newResult);
             if (group.InnerKeys.Count != 0)
             {

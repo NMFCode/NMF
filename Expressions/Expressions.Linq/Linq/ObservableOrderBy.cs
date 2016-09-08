@@ -42,7 +42,7 @@ namespace NMF.Expressions.Linq
             {
                 lambdaResult = keySelector.InvokeTagged<Multiplicity<TItem>>(item);
                 lambdas.Add(item, lambdaResult);
-                lambdaResult.Successors.Add(this);
+                lambdaResult.Successors.Set(this);
             }
             lambdaResult.Tag = new Multiplicity<TItem>(item, lambdaResult.Tag.Count + 1);
             Collection<TItem> sequence;
@@ -90,7 +90,7 @@ namespace NMF.Expressions.Linq
         {
             foreach (var tagged in lambdas.Values)
             {
-                tagged.Successors.Remove(this);
+                tagged.Successors.Unset(this);
             }
             lambdas.Clear();
             searchTree.Clear();
@@ -172,7 +172,7 @@ namespace NMF.Expressions.Linq
                 if (lambdaResult.Tag.Count == 1)
                 {
                     lambdas.Remove(item);
-                    lambdaResult.Successors.Remove(this);
+                    lambdaResult.Successors.Unset(this);
                 }
                 else
                 {

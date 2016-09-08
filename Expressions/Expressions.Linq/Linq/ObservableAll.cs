@@ -11,8 +11,7 @@ namespace NMF.Expressions.Linq
         public static ObservableAll<TItem> Create(INotifyEnumerable<TItem> source, Expression<Func<TItem, bool>> predicate)
         {
             var observable =  new ObservableAll<TItem>(source, predicate);
-            observable.Successors.Add(null);
-            source.Successors.Remove(null);
+            observable.Successors.SetDummy();
             return observable;
         }
 

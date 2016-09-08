@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq.Expressions;
 
 namespace NMF.Expressions
@@ -114,5 +115,8 @@ namespace NMF.Expressions
                 return newBinder.VisitObservable(expression, false);
             }
         }
+
+        [DebuggerStepThrough]
+        public ISuccessorList CreateSuccessorList() => new SingleSuccessorList();
     }
 }

@@ -8,7 +8,6 @@ namespace NMF.Expressions.Linq
 {
     public abstract class ObservableAggregate<TSource, TAccumulator, TResult> : INotifyValue<TResult>
     {
-        private ShortList<INotifiable> successors = new ShortList<INotifiable>();
         private INotifyEnumerable<TSource> source;
 
         protected TAccumulator Accumulator { get; set; }
@@ -19,13 +18,8 @@ namespace NMF.Expressions.Linq
             this.source = source;
             Accumulator = accumulator;
 
-            successors.CollectionChanged += (obj, e) =>
-            {
-                if (successors.Count == 0)
-                    Detach();
-                else if (e.Action == NotifyCollectionChangedAction.Add && successors.Count == 1)
-                    Attach();
-            };
+            Successors.Attached += (obj, e) => Attach();
+            Successors.Detached += (obj, e) => Detach();
         }
 
         protected INotifyEnumerable<TSource> Source
@@ -51,7 +45,7 @@ namespace NMF.Expressions.Linq
         private void Attach()
         {
             foreach (var dep in Dependencies)
-                dep.Successors.Add(this);
+                dep.Successors.Set(this);
             ResetAccumulator();
             foreach (var item in source)
             {
@@ -64,7 +58,7 @@ namespace NMF.Expressions.Linq
         {
             OnDetach();
             foreach (var dep in Dependencies)
-                dep.Successors.Remove(this);
+                dep.Successors.Unset(this);
         }
 
         protected virtual void OnAttach() { }
@@ -113,10 +107,10 @@ namespace NMF.Expressions.Linq
 
         protected virtual void Dispose(bool disposing)
         {
-            Successors.Clear();
+            Successors.UnsetAll();
         }
 
-        public IList<INotifiable> Successors { get { return successors; } }
+        public ISuccessorList Successors { get; } = NotifySystem.DefaultSystem.CreateSuccessorList();
 
         public IEnumerable<INotifiable> Dependencies { get { yield return source; } }
 

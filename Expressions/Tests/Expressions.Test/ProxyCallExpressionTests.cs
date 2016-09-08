@@ -136,7 +136,7 @@ namespace NMF.Expressions.Test
             }
 
             private List<INotifiable> successors = new List<INotifiable>();
-            public IList<INotifiable> Successors { get { return successors; } }
+            public ISuccessorList Successors { get; } = NotifySystem.DefaultSystem.CreateSuccessorList();
 
             public IEnumerable<INotifiable> Dependencies { get { return Enumerable.Empty<INotifiable>(); } }
 
@@ -144,7 +144,7 @@ namespace NMF.Expressions.Test
 
             public virtual void Dispose()
             {
-                Successors.Clear();
+                Successors.UnsetAll();
             }
         }
 
