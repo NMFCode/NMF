@@ -124,8 +124,8 @@ namespace NMF.Models.Meta
                     thisRef, "Remove", new CodeCastExpression(elementTypeReference, new CodeArgumentReferenceExpression("sender"))));
                 output.Members.Add(onItemDeleted);
 
-                ifNotNull.TrueStatements.Add(new CodeAttachEventStatement(item, eventName, new CodeMethodReferenceExpression(thisRef, "OnItemDeleted")));
-                ifNotNull.FalseStatements.Add(new CodeRemoveEventStatement(item, eventName, new CodeMethodReferenceExpression(thisRef, "OnItemDeleted")));
+                ifNotNull.TrueStatements.Add(new CodeAttachEventStatement(item, eventName, new CodeMethodReferenceExpression(thisRef, onItemDeleted.Name)));
+                ifNotNull.FalseStatements.Add(new CodeRemoveEventStatement(item, eventName, new CodeMethodReferenceExpression(thisRef, onItemDeleted.Name)));
 
 
                 if (opposite.UpperBound == 1)
