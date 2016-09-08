@@ -62,9 +62,9 @@ namespace NMF.Expressions
                 result = node.Notify(metaData.Sources);
                 evaluating = result.Changed;
                 currentValue = metaData.TotalVisits;
-                metaData.TotalVisits = 0;
-                metaData.Sources.Clear();
             }
+            metaData.TotalVisits = 0;
+            metaData.Sources.Clear();
 
 #if DEBUG
             if (node.Successors.Count > 1)
