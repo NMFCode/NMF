@@ -11,7 +11,6 @@ namespace NMF.Expressions
     public class NotifyCollection<T> : ObservableCollection<T>, INotifyEnumerable<T>, INotifyCollection<T>
     {
         private readonly ShortList<INotifiable> successors = new ShortList<INotifiable>();
-        private readonly IExecutionContext context = ExecutionEngine.Current.Context;
 
         public virtual IEnumerable<INotifiable> Dependencies { get { return Enumerable.Empty<INotifiable>(); } }
 
@@ -41,16 +40,19 @@ namespace NMF.Expressions
             return CollectionChangedNotificationResult<T>.Transfer(sources[0] as ICollectionChangedNotificationResult, this);
         }
 
-        protected virtual void Dispose(bool disposing) { }
+        protected virtual void Dispose(bool disposing)
+        {
+            Detach();
+        }
 
         private void Attach()
         {
-            context.AddChangeListener<T>(this, this);
+            ExecutionContext.Instance.AddChangeListener<T>(this, this);
         }
 
         private void Detach()
         {
-            context.RemoveChangeListener(this, this);
+            ExecutionContext.Instance.RemoveChangeListener(this, this);
         }
     }
 }

@@ -126,9 +126,7 @@ namespace NMF.Expressions
 
     internal class ObservableReversablePropertyMemberBinding<T, TMember> : ObservableMemberBinding<T>
     {
-        private readonly IExecutionContext context;
-
-        public ObservableReversablePropertyMemberBinding(INotifyExpression<T> target, string memberName, Func<T, TMember> memberGet, Action<T, TMember> memberSet, INotifyReversableExpression<TMember> value, IExecutionContext context)
+        public ObservableReversablePropertyMemberBinding(INotifyExpression<T> target, string memberName, Func<T, TMember> memberGet, Action<T, TMember> memberSet, INotifyReversableExpression<TMember> value)
         {
             if (value == null) throw new ArgumentNullException("value");
             if (memberName == null) throw new ArgumentNullException("memberName");
@@ -141,7 +139,6 @@ namespace NMF.Expressions
             MemberGet = memberGet;
             MemberSet = memberSet;
             Target = target;
-            this.context = context;
         }
 
         public INotifyReversableExpression<TMember> Value { get; private set; }
@@ -211,14 +208,14 @@ namespace NMF.Expressions
         {
             var newTarget = target as INotifyPropertyChanged;
             if (newTarget != null)
-                context.AddChangeListener(this, newTarget, MemberName);
+                ExecutionContext.Instance.AddChangeListener(this, newTarget, MemberName);
         }
 
         private void DetachPropertyChangeListener(object target)
         {
             var oldTarget = target as INotifyPropertyChanged;
             if (oldTarget != null)
-                context.RemoveChangeListener(this, oldTarget, MemberName);
+                ExecutionContext.Instance.RemoveChangeListener(this, oldTarget, MemberName);
         }
     }
 }

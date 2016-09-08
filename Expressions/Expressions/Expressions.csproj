@@ -62,6 +62,7 @@
     <Compile Include="Arithmetics\ObservableUnaryMinus.cs" />
     <Compile Include="ConstantAttribute.cs" />
     <Compile Include="Execution\CollectionChangedNotificationResult.cs" />
+    <Compile Include="Execution\ExecutionContext.cs" />
     <Compile Include="Execution\ExecutionEngine.cs" />
     <Compile Include="Execution\SequentialExecutionEngine.cs" />
     <Compile Include="ExpressionHelper.cs" />
@@ -70,7 +71,6 @@
     <Compile Include="ExpressionRewriter\SetExpressionRewriterAttribute.cs" />
     <Compile Include="ExpressionRewriter\SetExpressionRewriter.cs" />
     <Compile Include="ExpressionVisitorBase.cs" />
-    <Compile Include="Execution\IExecutionContext.cs" />
     <Compile Include="ObservableDeferredProxyElement.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>

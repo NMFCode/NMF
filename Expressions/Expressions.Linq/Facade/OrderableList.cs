@@ -9,8 +9,6 @@ namespace NMF.Expressions.Linq
 {
     public class OrderableList<T> : ObservableEnumerable<T>, IOrderableNotifyEnumerable<T>
     {
-        private readonly IExecutionContext context = ExecutionEngine.Current.Context;
-
         public override IEnumerable<INotifiable> Dependencies { get { return Enumerable.Empty<INotifiable>(); } }
         
         public OrderableList()
@@ -34,7 +32,7 @@ namespace NMF.Expressions.Linq
                         INotifyCollectionChanged notifier = sequence as INotifyCollectionChanged;
                         if (notifier != null)
                         {
-                            context.RemoveChangeListener(this, notifier);
+                            ExecutionContext.Instance.RemoveChangeListener(this, notifier);
                         }
                     }
                 }
@@ -46,7 +44,7 @@ namespace NMF.Expressions.Linq
                         INotifyCollectionChanged notifier = sequence as INotifyCollectionChanged;
                         if (notifier != null)
                         {
-                            context.AddChangeListener<T>(this, notifier);
+                            ExecutionContext.Instance.AddChangeListener<T>(this, notifier);
                         }
                     }
                 }

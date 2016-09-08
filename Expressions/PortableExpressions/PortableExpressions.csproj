@@ -431,8 +431,8 @@
     <Compile Include="..\Expressions\Execution\ExecutionMetaData.cs">
       <Link>Execution\ExecutionMetaData.cs</Link>
     </Compile>
-    <Compile Include="..\Expressions\Execution\IExecutionContext.cs">
-      <Link>Execution\IExecutionContext.cs</Link>
+    <Compile Include="..\Expressions\Execution\ExecutionContext.cs">
+      <Link>Execution\ExecutionContext.cs</Link>
     </Compile>
     <Compile Include="..\Expressions\Execution\INotificationResult.cs">
       <Link>Execution\INotificationResult.cs</Link>

@@ -12,12 +12,10 @@ namespace NMF.Expressions
 {
     internal class ObservableMemberExpression<TTarget, TMember> : NotifyExpression<TMember>
     {
-        private readonly IExecutionContext context;
-
         public ObservableMemberExpression(MemberExpression expression, ObservableExpressionBinder binder, string name, Func<TTarget, TMember> getter)
-            : this(binder.VisitObservable<TTarget>(expression.Expression, true), name, getter, binder.Context) { }
+            : this(binder.VisitObservable<TTarget>(expression.Expression, true), name, getter) { }
 
-        public ObservableMemberExpression(INotifyExpression<TTarget> target, string memberName, Func<TTarget, TMember> memberGet, IExecutionContext context)
+        public ObservableMemberExpression(INotifyExpression<TTarget> target, string memberName, Func<TTarget, TMember> memberGet)
         {
             if (memberGet == null) throw new ArgumentNullException("memberGet");
             if (memberName == null) throw new ArgumentNullException("memberName");
@@ -25,7 +23,6 @@ namespace NMF.Expressions
             Target = target;
             MemberGet = memberGet;
             MemberName = memberName;
-            this.context = context;
         }
         
         public override ExpressionType NodeType { get { return ExpressionType.MemberAccess; } }
@@ -81,7 +78,7 @@ namespace NMF.Expressions
 
         public override INotifyExpression<TMember> ApplyParameters(IDictionary<string, object> parameters)
         {
-            return new ObservableMemberExpression<TTarget, TMember>(Target.ApplyParameters(parameters), MemberName, MemberGet, context);
+            return new ObservableMemberExpression<TTarget, TMember>(Target.ApplyParameters(parameters), MemberName, MemberGet);
         }
 
         public override INotificationResult Notify(IList<INotificationResult> sources)
@@ -111,28 +108,26 @@ namespace NMF.Expressions
         {
             var newTarget = target as INotifyPropertyChanged;
             if (newTarget != null)
-                context.AddChangeListener(this, newTarget, MemberName);
+                ExecutionContext.Instance.AddChangeListener(this, newTarget, MemberName);
         }
 
         private void DetachPropertyChangeListener(object target)
         {
             var oldTarget = target as INotifyPropertyChanged;
             if (oldTarget != null)
-                context.RemoveChangeListener(this, oldTarget, MemberName);
+                ExecutionContext.Instance.RemoveChangeListener(this, oldTarget, MemberName);
         }
     }
 
     internal class ObservableReversableMemberExpression<TTarget, TMember> : ObservableReversableExpression<TMember>
     {
-        private readonly IExecutionContext context;
-
         public ObservableReversableMemberExpression(MemberExpression expression, ObservableExpressionBinder binder, string name, FieldInfo field)
-            : this(binder.VisitObservable<TTarget>(expression.Expression, true), name, ReflectionHelper.CreateDynamicFieldGetter<TTarget, TMember>(field), ReflectionHelper.CreateDynamicFieldSetter<TTarget, TMember>(field), binder.Context) { }
+            : this(binder.VisitObservable<TTarget>(expression.Expression, true), name, ReflectionHelper.CreateDynamicFieldGetter<TTarget, TMember>(field), ReflectionHelper.CreateDynamicFieldSetter<TTarget, TMember>(field)) { }
 
         public ObservableReversableMemberExpression(MemberExpression expression, ObservableExpressionBinder binder, string name, Func<TTarget, TMember> getter, Action<TTarget, TMember> setter)
-            : this(binder.VisitObservable<TTarget>(expression.Expression, true), name, getter, setter, binder.Context) { }
+            : this(binder.VisitObservable<TTarget>(expression.Expression, true), name, getter, setter) { }
 
-        public ObservableReversableMemberExpression(INotifyExpression<TTarget> target, string memberName, Func<TTarget, TMember> memberGet, Action<TTarget, TMember> memberSet, IExecutionContext context)
+        public ObservableReversableMemberExpression(INotifyExpression<TTarget> target, string memberName, Func<TTarget, TMember> memberGet, Action<TTarget, TMember> memberSet)
         {
             if (memberGet == null) throw new ArgumentNullException("memberGet");
             if (memberSet == null) throw new ArgumentNullException("memberSet");
@@ -142,7 +137,6 @@ namespace NMF.Expressions
             MemberGet = memberGet;
             MemberSet = memberSet;
             MemberName = memberName;
-            this.context = context;
         }
         
         public override ExpressionType NodeType { get { return ExpressionType.MemberAccess; } }
@@ -215,7 +209,7 @@ namespace NMF.Expressions
 
         public override INotifyExpression<TMember> ApplyParameters(IDictionary<string, object> parameters)
         {
-            return new ObservableReversableMemberExpression<TTarget, TMember>(Target.ApplyParameters(parameters), MemberName, MemberGet, MemberSet, context);
+            return new ObservableReversableMemberExpression<TTarget, TMember>(Target.ApplyParameters(parameters), MemberName, MemberGet, MemberSet);
         }
 
         public override INotificationResult Notify(IList<INotificationResult> sources)
@@ -245,14 +239,14 @@ namespace NMF.Expressions
         {
             var newTarget = target as INotifyPropertyChanged;
             if (newTarget != null)
-                context.AddChangeListener(this, newTarget, MemberName);
+                ExecutionContext.Instance.AddChangeListener(this, newTarget, MemberName);
         }
 
         private void DetachPropertyChangeListener(object target)
         {
             var oldTarget = target as INotifyPropertyChanged;
             if (oldTarget != null)
-                context.RemoveChangeListener(this, oldTarget, MemberName);
+                ExecutionContext.Instance.RemoveChangeListener(this, oldTarget, MemberName);
         }
     }
 }

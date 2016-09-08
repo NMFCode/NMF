@@ -16,7 +16,6 @@ namespace NMF.Expressions
     {
         private class Entry : INotifyReversableExpression<TValue>, INotifyPropertyChanged
         {
-            private readonly IExecutionContext context = ExecutionEngine.Current.Context;
             private readonly ShortList<INotifiable> successors = new ShortList<INotifiable>();
             private TValue value;
 
@@ -25,9 +24,9 @@ namespace NMF.Expressions
                 successors.CollectionChanged += (obj, e) =>
                 {
                     if (successors.Count == 0)
-                        context.RemoveChangeListener(this, this, "Value");
+                        ExecutionContext.Instance.RemoveChangeListener(this, this, "Value");
                     else if (e.Action == NotifyCollectionChangedAction.Add && successors.Count == 1)
-                        context.AddChangeListener(this, this, "Value");
+                        ExecutionContext.Instance.AddChangeListener(this, this, "Value");
                 };
             }
 

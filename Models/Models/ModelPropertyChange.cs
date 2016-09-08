@@ -16,7 +16,6 @@ namespace NMF.Models.Expressions
     public abstract class ModelPropertyChange<TClass, TProperty> : INotifyReversableExpression<TProperty> where TClass : INotifyPropertyChanged
     {
         private readonly ShortList<INotifiable> successors = new ShortList<INotifiable>();
-        private readonly IExecutionContext context = ExecutionEngine.Current.Context;
         private readonly string propertyName;
         
         public TClass ModelElement { get; private set; }
@@ -142,7 +141,7 @@ namespace NMF.Models.Expressions
         /// </summary>
         public void Attach()
         {
-            context.AddChangeListener(this, ModelElement, propertyName);
+            ExecutionContext.Instance.AddChangeListener(this, ModelElement, propertyName);
         }
 
         /// <summary>
@@ -150,7 +149,7 @@ namespace NMF.Models.Expressions
         /// </summary>
         public void Detach()
         {
-            context.RemoveChangeListener(this, ModelElement, propertyName);
+            ExecutionContext.Instance.RemoveChangeListener(this, ModelElement, propertyName);
         }
 
         /// <summary>

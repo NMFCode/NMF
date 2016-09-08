@@ -8,7 +8,6 @@ namespace NMF.Expressions.Linq
 {
     internal sealed class ObservableCollectionProxy<T> : ObservableEnumerable<T>, INotifyCollection<T>
     {
-        private readonly IExecutionContext context;
         private IEnumerable<T> inner;
 
         public override IEnumerable<INotifiable> Dependencies { get { return Enumerable.Empty<INotifiable>(); } }
@@ -18,7 +17,6 @@ namespace NMF.Expressions.Linq
             if (inner == null) throw new ArgumentNullException("inner");
 
             this.inner = inner;
-            this.context = ExecutionEngine.Current.Context;
         }
 
         public override IEnumerator<T> GetEnumerator()
@@ -30,14 +28,14 @@ namespace NMF.Expressions.Linq
         {
             var notifiable = inner as INotifyCollectionChanged;
             if (notifiable != null)
-                context.AddChangeListener<T>(this, notifiable);
+                ExecutionContext.Instance.AddChangeListener<T>(this, notifiable);
         }
 
         protected override void OnDetach()
         {
             var notifiable = inner as INotifyCollectionChanged;
             if (notifiable != null)
-                context.RemoveChangeListener(this, notifiable);
+                ExecutionContext.Instance.RemoveChangeListener(this, notifiable);
         }
 
         public override INotificationResult Notify(IList<INotificationResult> sources)
