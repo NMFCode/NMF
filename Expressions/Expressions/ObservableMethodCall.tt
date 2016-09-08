@@ -21,10 +21,10 @@ namespace NMF.Expressions
     internal class ObservableMethodCall<T, <# for (int j = 1; j <= i; j++) { #>T<#= j #>, <# } #>TResult> : ObservableMethodBase<T, Func<<# for (int j = 1; j <= i; j++) { #>T<#= j #>, <# } #>TResult>, TResult>
     {
         public ObservableMethodCall(MethodCallExpression node, ObservableExpressionBinder binder)
-            : this(binder.VisitObservable<T>(node.Object), node.Method<# for (int j = 1; j <= i; j++) { #>, binder.VisitObservable<T<#= j #>>(node.Arguments[<#= j-1 #>])<# } #>, binder.Context) { }
+            : this(binder.VisitObservable<T>(node.Object), node.Method<# for (int j = 1; j <= i; j++) { #>, binder.VisitObservable<T<#= j #>>(node.Arguments[<#= j-1 #>])<# } #>) { }
 
-        public ObservableMethodCall(INotifyExpression<T> target, MethodInfo method<# for (int j = 1; j <= i; j++) { #>, INotifyExpression<T<#= j #>> arg<#= j #><# } #>, IExecutionContext context)
-            : base(target, method, context)
+        public ObservableMethodCall(INotifyExpression<T> target, MethodInfo method<# for (int j = 1; j <= i; j++) { #>, INotifyExpression<T<#= j #>> arg<#= j #><# } #>)
+            : base(target, method)
         {
 <# for (int j = 1; j <= i; j++) { #>
             if (arg<#= j #> == null) throw new ArgumentNullException("arg<#= j #>");
@@ -70,7 +70,7 @@ namespace NMF.Expressions
 
         public override INotifyExpression<TResult> ApplyParameters(IDictionary<string, object> parameters)
         {
-            return new ObservableMethodCall<T, <# for (int j = 1; j <= i; j++) { #>T<#= j #>, <# } #>TResult>(Target.ApplyParameters(parameters), Method<# for (int j = 1; j <= i; j++) { #>, Argument<#= j #>.ApplyParameters(parameters)<# } #>, context);
+            return new ObservableMethodCall<T, <# for (int j = 1; j <= i; j++) { #>T<#= j #>, <# } #>TResult>(Target.ApplyParameters(parameters), Method<# for (int j = 1; j <= i; j++) { #>, Argument<#= j #>.ApplyParameters(parameters)<# } #>);
         }
     }
 <#
