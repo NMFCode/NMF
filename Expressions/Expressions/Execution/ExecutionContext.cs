@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.ComponentModel;
@@ -15,10 +16,28 @@ namespace NMF.Expressions
         private readonly Dictionary<Tuple<INotifiable, INotifyPropertyChanged, string>, PropertyChangedEventHandler> propertyChangedHandler = new Dictionary<Tuple<INotifiable, INotifyPropertyChanged, string>, PropertyChangedEventHandler>();
         private readonly Dictionary<Tuple<INotifiable, INotifyCollectionChanged>, NotifyCollectionChangedEventHandler> collectionChangedHandler = new Dictionary<Tuple<INotifiable, INotifyCollectionChanged>, NotifyCollectionChangedEventHandler>();
 
-        public readonly Dictionary<INotifyCollectionChanged, ICollectionChangeTracker> CollectionChanges = new Dictionary<INotifyCollectionChanged, ICollectionChangeTracker>();
-        public readonly Dictionary<INotifiable, INotifyCollectionChanged> TrackedCollections = new Dictionary<INotifiable, INotifyCollectionChanged>();
+        private readonly Dictionary<INotifyCollectionChanged, CollectionChangeTracker> collectionChanges = new Dictionary<INotifyCollectionChanged, CollectionChangeTracker>();
+        private readonly Dictionary<INotifiable, INotifyCollectionChanged> trackedCollections = new Dictionary<INotifiable, INotifyCollectionChanged>();
 
         private ExecutionContext() { }
+
+        internal void AggregateCollectionChanges(IEnumerable<INotifiable> nodes)
+        {
+            foreach (var node in nodes)
+            {
+                INotifyCollectionChanged collection;
+                if (!trackedCollections.TryGetValue(node, out collection))
+                    return;
+
+                CollectionChangeTracker tracker;
+                if (!collectionChanges.TryGetValue(collection, out tracker))
+                    return;
+
+                if (tracker.HasChanges())
+                    node.ExecutionMetaData.Sources.Add(tracker.GetResult());
+            }
+            collectionChanges.Clear();
+        }
 
         public void AddChangeListener(INotifiable node, INotifyPropertyChanged element, string propertyName)
         {
@@ -34,16 +53,16 @@ namespace NMF.Expressions
                 new Tuple<INotifiable, INotifyPropertyChanged, string>(node, element, propertyName)] = handler;
         }
 
-        public void AddChangeListener<T>(INotifiable node, INotifyCollectionChanged collection)
+        public void AddChangeListener(INotifiable node, INotifyCollectionChanged collection)
         {
             NotifyCollectionChangedEventHandler handler = (obj, e) =>
             {
-                TrackCollectionChanges<T>(collection, e);
+                TrackCollectionChanges(collection, e);
                 ExecutionEngine.Current.SetInvalidNode(node);
             };
             collection.CollectionChanged += handler;
             collectionChangedHandler[new Tuple<INotifiable, INotifyCollectionChanged>(node, collection)] = handler;
-            TrackedCollections[node] = collection;
+            trackedCollections[node] = collection;
         }
 
 
@@ -68,12 +87,7 @@ namespace NMF.Expressions
                 collectionChangedHandler.Remove(key);
             }
 
-            INotifyCollectionChanged trackedColl;
-            if (TrackedCollections.TryGetValue(node, out trackedColl))
-            {
-                if (trackedColl == collection)
-                    TrackedCollections.Remove(node);
-            }
+            trackedCollections.Remove(node);
         }
 
         public void DetachAllChangeHandler()
@@ -87,30 +101,28 @@ namespace NMF.Expressions
             collectionChangedHandler.Clear();
         }
 
-        private void TrackCollectionChanges<T>(INotifyCollectionChanged collection, NotifyCollectionChangedEventArgs args)
+        private void TrackCollectionChanges(INotifyCollectionChanged collection, NotifyCollectionChangedEventArgs args)
         {
-            ICollectionChangeTracker temp;
-            if (!CollectionChanges.TryGetValue(collection, out temp))
+            CollectionChangeTracker tracker;
+            if (!collectionChanges.TryGetValue(collection, out tracker))
             {
-                temp = new CollectionChangeTracker<T>();
-                CollectionChanges[collection] = temp;
+                tracker = new CollectionChangeTracker();
+                collectionChanges[collection] = tracker;
             }
-
-            var tracker = (CollectionChangeTracker<T>)temp;
 
             switch (args.Action)
             {
                 case NotifyCollectionChangedAction.Add:
-                    tracker.TrackAddAction(args.NewItems.Cast<T>().ToList());
+                    tracker.TrackAddAction(args.NewItems);
                     break;
                 case NotifyCollectionChangedAction.Remove:
-                    tracker.TrackRemoveAction(args.OldItems.Cast<T>().ToList());
+                    tracker.TrackRemoveAction(args.OldItems);
                     break;
                 case NotifyCollectionChangedAction.Move:
-                    tracker.TrackMoveAction(args.OldItems.Cast<T>().ToList());
+                    tracker.TrackMoveAction(args.OldItems);
                     break;
                 case NotifyCollectionChangedAction.Replace:
-                    tracker.TrackReplaceAction(args.OldItems.Cast<T>().ToList(), args.NewItems.Cast<T>().ToList());
+                    tracker.TrackReplaceAction(args.OldItems, args.NewItems);
                     break;
                 case NotifyCollectionChangedAction.Reset:
                     tracker.TrackResetAction();
@@ -120,20 +132,15 @@ namespace NMF.Expressions
                         "{args.Action} is not a valid action for a NotifyCollectionChanged event.");
             }
         }
-
-        internal interface ICollectionChangeTracker
-        {
-            ICollectionChangedNotificationResult GetResult();
-            bool HasChanges();
-        }
-        private class CollectionChangeTracker<T> : ICollectionChangeTracker
+        
+        private class CollectionChangeTracker
         {
             private bool _isReset;
-            private readonly List<T> _addedItems = new List<T>();
-            private readonly List<T> _removedItems = new List<T>();
-            private readonly List<T> _movedItems = new List<T>();
-            private readonly List<T> _replaceAddedItems = new List<T>();
-            private readonly List<T> _replaceRemovedItems = new List<T>();
+            private readonly List<object> _addedItems = new List<object>();
+            private readonly List<object> _removedItems = new List<object>();
+            private readonly List<object> _movedItems = new List<object>();
+            private readonly List<object> _replaceAddedItems = new List<object>();
+            private readonly List<object> _replaceRemovedItems = new List<object>();
 
             public CollectionChangeTracker()
             {
@@ -144,7 +151,7 @@ namespace NMF.Expressions
                 _isReset = isReset;
             }
 
-            public void TrackAddAction(IEnumerable<T> addedItems)
+            public void TrackAddAction(IEnumerable addedItems)
             {
                 if (_isReset) return;
                 foreach (var item in addedItems)
@@ -158,7 +165,7 @@ namespace NMF.Expressions
                 }
             }
 
-            public void TrackRemoveAction(IEnumerable<T> removedItems)
+            public void TrackRemoveAction(IEnumerable removedItems)
             {
                 if (_isReset) return;
                 foreach (var item in removedItems)
@@ -172,14 +179,14 @@ namespace NMF.Expressions
                 }
             }
 
-            public void TrackMoveAction(IEnumerable<T> movedItems)
+            public void TrackMoveAction(IEnumerable movedItems)
             {
                 if (_isReset) return;
                 foreach (var item in movedItems)
                     _movedItems.Add(item);
             }
 
-            public void TrackReplaceAction(IEnumerable<T> replacedItems, IEnumerable<T> replacingItems)
+            public void TrackReplaceAction(IEnumerable replacedItems, IEnumerable replacingItems)
             {
                 if (_isReset) return;
                 foreach (var item in replacingItems)
@@ -211,9 +218,9 @@ namespace NMF.Expressions
             public ICollectionChangedNotificationResult GetResult()
             {
                 if (_isReset)
-                    return new CollectionChangedNotificationResult<T>(null);
+                    return new CollectionChangedNotificationResult<object>(null);
                 else
-                    return new CollectionChangedNotificationResult<T>
+                    return new CollectionChangedNotificationResult<object>
                     (
                         null,
                         _addedItems,
