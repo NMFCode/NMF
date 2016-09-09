@@ -1,4 +1,6 @@
 ﻿using BenchmarkDotNet.Attributes;
+using BenchmarkDotNet.Configs;
+using BenchmarkDotNet.Jobs;
 using NMF.Expressions;
 using NMF.Models.Repository;
 using NMF.Models.Tests.Railway;
@@ -123,6 +125,14 @@ namespace TrainBenchmark
                 var railwayModel = repository.Resolve(new Uri(BaseUri), "railway.railway").Model;
                 return railwayModel.RootElements.Single() as RailwayContainer;
             }
+        }
+    }
+
+    class TrainBenchmarkConfig : ManualConfig
+    {
+        public TrainBenchmarkConfig()
+        {
+            Add(Job.Default.WithTargetCount(30));
         }
     }
 }
