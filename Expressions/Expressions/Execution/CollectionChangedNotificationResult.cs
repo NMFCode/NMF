@@ -125,16 +125,16 @@ namespace NMF.Expressions
             if (replaceRemovedItems != null && replaceRemovedItems.Count > 0)
                 this.replaceRemovedItems = replaceRemovedItems;
 
-            if (ReplaceAddedItems != null || ReplaceRemovedItems != null)
+            if (this.replaceAddedItems != null || this.replaceRemovedItems != null)
             {
-                if ((ReplaceAddedItems == null || ReplaceRemovedItems == null)
-                    || ReplaceAddedItems.Count != ReplaceRemovedItems.Count)
+                if ((this.replaceAddedItems == null || this.replaceRemovedItems == null)
+                    || this.replaceAddedItems.Count != this.replaceRemovedItems.Count)
                 {
                     throw new ArgumentException("The replace lists must have the same number of items.");
                 }
             }
 
-            if (AddedItems == null && RemovedItems == null && MovedItems == null && ReplaceAddedItems == null && ReplaceRemovedItems == null)
+            if (this.addedItems == null && this.removedItems == null && this.movedItems == null && this.replaceAddedItems == null && this.replaceRemovedItems == null)
                 throw new ArgumentException("A collection change that is not a reset must have at least one add, remove, move or replace.");
         }
         

@@ -15,7 +15,7 @@ namespace TrainBenchmark
         public override Func<RailwayContainer, INotifyEnumerable<Tuple<IRoute, ISensor>>> Query =>
             rc => (from route in rc.Routes.Concat(rc.Invalids.OfType<Route>())
                    from swP in route.Follows.OfType<SwitchPosition>()
-                   where swP.Switch.Sensor != null && !route.DefinedBy.Contains(swP.Switch.Sensor)
+                   where swP.Switch.Sensor != null && !route.DefinedBy.Contains<ISensor>(swP.Switch.Sensor)
                    select new Tuple<IRoute, ISensor>(route, swP.Switch.Sensor)).AsNotifiable();
 
         public override Action<Tuple<IRoute, ISensor>> Repair =>

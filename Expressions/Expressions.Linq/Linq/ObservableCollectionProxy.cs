@@ -40,7 +40,7 @@ namespace NMF.Expressions.Linq
 
         public override INotificationResult Notify(IList<INotificationResult> sources)
         {
-            return CollectionChangedNotificationResult<T>.Transfer(sources[0] as ICollectionChangedNotificationResult, this);
+            return CollectionChangedNotificationResult<T>.Transfer((ICollectionChangedNotificationResult)sources[0], this);
         }
 
         public override bool Contains(T item)
