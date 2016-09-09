@@ -60,12 +60,11 @@ namespace NMF.Expressions
         /// <returns>An observable value that keeps track of any changes</returns>
         public INotifyValue<TResult> Observe(T1 in1)
         {
-            if (isParameterFree)
-            {
-                return expression;
-            }
             var parameters = new Dictionary<string, object>();
-            parameters.Add(parameter1Name, in1);
+            if (!isParameterFree)
+            {
+                parameters.Add(parameter1Name, in1);
+            }
             return expression.ApplyParameters(parameters);
         }
 
@@ -76,12 +75,11 @@ namespace NMF.Expressions
         /// <returns>An observable value that keeps track of any changes</returns>
         public INotifyValue<TResult> Observe(INotifyValue<T1> in1)
         {
-            if (isParameterFree)
-            {
-                return expression;
-            }
             var parameters = new Dictionary<string, object>();
-            parameters.Add(parameter1Name, in1);
+            if (!isParameterFree)
+            {
+                parameters.Add(parameter1Name, in1);
+            }
             return expression.ApplyParameters(parameters);
         }
 
@@ -94,9 +92,11 @@ namespace NMF.Expressions
         public virtual INotifyReversableValue<TResult> InvokeReversable(T1 in1)
         {
             if (!IsReversable) throw new InvalidOperationException("Expression is not reversable");
-            if (isParameterFree) return expression as INotifyReversableExpression<TResult>;
             var parameters = new Dictionary<string, object>();
-            parameters.Add(parameter1Name, in1);
+            if (!isParameterFree)
+            {
+                parameters.Add(parameter1Name, in1);
+            }
             return expression.ApplyParameters(parameters) as INotifyReversableExpression<TResult>;
         }
 
@@ -108,9 +108,11 @@ namespace NMF.Expressions
         public virtual INotifyReversableValue<TResult> InvokeReversable(INotifyValue<T1> in1)
         {
             if (!IsReversable) throw new InvalidOperationException("Expression is not reversable");
-            if (isParameterFree) return expression as INotifyReversableExpression<TResult>;
             var parameters = new Dictionary<string, object>();
-            parameters.Add(parameter1Name, in1);
+            if (!isParameterFree)
+            {
+                parameters.Add(parameter1Name, in1);
+            }
             return expression.ApplyParameters(parameters) as INotifyReversableExpression<TResult>;
         }
 
@@ -210,13 +212,12 @@ namespace NMF.Expressions
         /// <returns>An observable value that keeps track of any changes</returns>
         public INotifyValue<TResult> Observe(T1 in1, T2 in2)
         {
-            if (isParameterFree)
-            {
-                return expression;
-            }
             var parameters = new Dictionary<string, object>();
-            parameters.Add(parameter1Name, in1);
-            parameters.Add(parameter2Name, in2);
+            if (!isParameterFree)
+            {
+                parameters.Add(parameter1Name, in1);
+                parameters.Add(parameter2Name, in2);
+            }
             return expression.ApplyParameters(parameters);
         }
 
@@ -228,13 +229,12 @@ namespace NMF.Expressions
         /// <returns>An observable value that keeps track of any changes</returns>
         public INotifyValue<TResult> Observe(INotifyValue<T1> in1, INotifyValue<T2> in2)
         {
-            if (isParameterFree)
-            {
-                return expression;
-            }
             var parameters = new Dictionary<string, object>();
-            parameters.Add(parameter1Name, in1);
-            parameters.Add(parameter2Name, in2);
+            if (!isParameterFree)
+            {
+                parameters.Add(parameter1Name, in1);
+                parameters.Add(parameter2Name, in2);
+            }
             return expression.ApplyParameters(parameters);
         }
 
@@ -272,10 +272,12 @@ namespace NMF.Expressions
         public virtual INotifyReversableValue<TResult> InvokeReversable(T1 in1, T2 in2)
         {
             if (!IsReversable) throw new InvalidOperationException("Expression is not reversable");
-            if (isParameterFree) return expression as INotifyReversableExpression<TResult>;
             var parameters = new Dictionary<string, object>();
-            parameters.Add(parameter1Name, in1);
-            parameters.Add(parameter2Name, in2);
+            if (!isParameterFree)
+            {
+                parameters.Add(parameter1Name, in1);
+                parameters.Add(parameter2Name, in2);
+            }
             return expression.ApplyParameters(parameters) as INotifyReversableExpression<TResult>;
         }
 
@@ -288,10 +290,12 @@ namespace NMF.Expressions
         public virtual INotifyReversableValue<TResult> InvokeReversable(INotifyValue<T1> in1, INotifyValue<T2> in2)
         {
             if (!IsReversable) throw new InvalidOperationException("Expression is not reversable");
-            if (isParameterFree) return expression as INotifyReversableExpression<TResult>;
             var parameters = new Dictionary<string, object>();
-            parameters.Add(parameter1Name, in1);
-            parameters.Add(parameter2Name, in2);
+            if (!isParameterFree)
+            {
+                parameters.Add(parameter1Name, in1);
+                parameters.Add(parameter2Name, in2);
+            }
             return expression.ApplyParameters(parameters) as INotifyReversableExpression<TResult>;
         }
 
@@ -396,14 +400,13 @@ namespace NMF.Expressions
         /// <returns>An observable value that keeps track of any changes</returns>
         public INotifyValue<TResult> Observe(T1 in1, T2 in2, T3 in3)
         {
-            if (isParameterFree)
-            {
-                return expression;
-            }
             var parameters = new Dictionary<string, object>();
-            parameters.Add(parameter1Name, in1);
-            parameters.Add(parameter2Name, in2);
-            parameters.Add(parameter3Name, in3);
+            if (!isParameterFree)
+            {
+                parameters.Add(parameter1Name, in1);
+                parameters.Add(parameter2Name, in2);
+                parameters.Add(parameter3Name, in3);
+            }
             return expression.ApplyParameters(parameters);
         }
 
@@ -416,14 +419,13 @@ namespace NMF.Expressions
         /// <returns>An observable value that keeps track of any changes</returns>
         public INotifyValue<TResult> Observe(INotifyValue<T1> in1, INotifyValue<T2> in2, INotifyValue<T3> in3)
         {
-            if (isParameterFree)
-            {
-                return expression;
-            }
             var parameters = new Dictionary<string, object>();
-            parameters.Add(parameter1Name, in1);
-            parameters.Add(parameter2Name, in2);
-            parameters.Add(parameter3Name, in3);
+            if (!isParameterFree)
+            {
+                parameters.Add(parameter1Name, in1);
+                parameters.Add(parameter2Name, in2);
+                parameters.Add(parameter3Name, in3);
+            }
             return expression.ApplyParameters(parameters);
         }
 
@@ -489,11 +491,13 @@ namespace NMF.Expressions
         public virtual INotifyReversableValue<TResult> InvokeReversable(T1 in1, T2 in2, T3 in3)
         {
             if (!IsReversable) throw new InvalidOperationException("Expression is not reversable");
-            if (isParameterFree) return expression as INotifyReversableExpression<TResult>;
             var parameters = new Dictionary<string, object>();
-            parameters.Add(parameter1Name, in1);
-            parameters.Add(parameter2Name, in2);
-            parameters.Add(parameter3Name, in3);
+            if (!isParameterFree)
+            {
+                parameters.Add(parameter1Name, in1);
+                parameters.Add(parameter2Name, in2);
+                parameters.Add(parameter3Name, in3);
+            }
             return expression.ApplyParameters(parameters) as INotifyReversableExpression<TResult>;
         }
 
@@ -507,11 +511,13 @@ namespace NMF.Expressions
         public virtual INotifyReversableValue<TResult> InvokeReversable(INotifyValue<T1> in1, INotifyValue<T2> in2, INotifyValue<T3> in3)
         {
             if (!IsReversable) throw new InvalidOperationException("Expression is not reversable");
-            if (isParameterFree) return expression as INotifyReversableExpression<TResult>;
             var parameters = new Dictionary<string, object>();
-            parameters.Add(parameter1Name, in1);
-            parameters.Add(parameter2Name, in2);
-            parameters.Add(parameter3Name, in3);
+            if (!isParameterFree)
+            {
+                parameters.Add(parameter1Name, in1);
+                parameters.Add(parameter2Name, in2);
+                parameters.Add(parameter3Name, in3);
+            }
             return expression.ApplyParameters(parameters) as INotifyReversableExpression<TResult>;
         }
 
@@ -621,15 +627,14 @@ namespace NMF.Expressions
         /// <returns>An observable value that keeps track of any changes</returns>
         public INotifyValue<TResult> Observe(T1 in1, T2 in2, T3 in3, T4 in4)
         {
-            if (isParameterFree)
-            {
-                return expression;
-            }
             var parameters = new Dictionary<string, object>();
-            parameters.Add(parameter1Name, in1);
-            parameters.Add(parameter2Name, in2);
-            parameters.Add(parameter3Name, in3);
-            parameters.Add(parameter4Name, in4);
+            if (!isParameterFree)
+            {
+                parameters.Add(parameter1Name, in1);
+                parameters.Add(parameter2Name, in2);
+                parameters.Add(parameter3Name, in3);
+                parameters.Add(parameter4Name, in4);
+            }
             return expression.ApplyParameters(parameters);
         }
 
@@ -643,15 +648,14 @@ namespace NMF.Expressions
         /// <returns>An observable value that keeps track of any changes</returns>
         public INotifyValue<TResult> Observe(INotifyValue<T1> in1, INotifyValue<T2> in2, INotifyValue<T3> in3, INotifyValue<T4> in4)
         {
-            if (isParameterFree)
-            {
-                return expression;
-            }
             var parameters = new Dictionary<string, object>();
-            parameters.Add(parameter1Name, in1);
-            parameters.Add(parameter2Name, in2);
-            parameters.Add(parameter3Name, in3);
-            parameters.Add(parameter4Name, in4);
+            if (!isParameterFree)
+            {
+                parameters.Add(parameter1Name, in1);
+                parameters.Add(parameter2Name, in2);
+                parameters.Add(parameter3Name, in3);
+                parameters.Add(parameter4Name, in4);
+            }
             return expression.ApplyParameters(parameters);
         }
 
@@ -748,12 +752,14 @@ namespace NMF.Expressions
         public virtual INotifyReversableValue<TResult> InvokeReversable(T1 in1, T2 in2, T3 in3, T4 in4)
         {
             if (!IsReversable) throw new InvalidOperationException("Expression is not reversable");
-            if (isParameterFree) return expression as INotifyReversableExpression<TResult>;
             var parameters = new Dictionary<string, object>();
-            parameters.Add(parameter1Name, in1);
-            parameters.Add(parameter2Name, in2);
-            parameters.Add(parameter3Name, in3);
-            parameters.Add(parameter4Name, in4);
+            if (!isParameterFree)
+            {
+                parameters.Add(parameter1Name, in1);
+                parameters.Add(parameter2Name, in2);
+                parameters.Add(parameter3Name, in3);
+                parameters.Add(parameter4Name, in4);
+            }
             return expression.ApplyParameters(parameters) as INotifyReversableExpression<TResult>;
         }
 
@@ -768,12 +774,14 @@ namespace NMF.Expressions
         public virtual INotifyReversableValue<TResult> InvokeReversable(INotifyValue<T1> in1, INotifyValue<T2> in2, INotifyValue<T3> in3, INotifyValue<T4> in4)
         {
             if (!IsReversable) throw new InvalidOperationException("Expression is not reversable");
-            if (isParameterFree) return expression as INotifyReversableExpression<TResult>;
             var parameters = new Dictionary<string, object>();
-            parameters.Add(parameter1Name, in1);
-            parameters.Add(parameter2Name, in2);
-            parameters.Add(parameter3Name, in3);
-            parameters.Add(parameter4Name, in4);
+            if (!isParameterFree)
+            {
+                parameters.Add(parameter1Name, in1);
+                parameters.Add(parameter2Name, in2);
+                parameters.Add(parameter3Name, in3);
+                parameters.Add(parameter4Name, in4);
+            }
             return expression.ApplyParameters(parameters) as INotifyReversableExpression<TResult>;
         }
 
@@ -888,16 +896,15 @@ namespace NMF.Expressions
         /// <returns>An observable value that keeps track of any changes</returns>
         public INotifyValue<TResult> Observe(T1 in1, T2 in2, T3 in3, T4 in4, T5 in5)
         {
-            if (isParameterFree)
-            {
-                return expression;
-            }
             var parameters = new Dictionary<string, object>();
-            parameters.Add(parameter1Name, in1);
-            parameters.Add(parameter2Name, in2);
-            parameters.Add(parameter3Name, in3);
-            parameters.Add(parameter4Name, in4);
-            parameters.Add(parameter5Name, in5);
+            if (!isParameterFree)
+            {
+                parameters.Add(parameter1Name, in1);
+                parameters.Add(parameter2Name, in2);
+                parameters.Add(parameter3Name, in3);
+                parameters.Add(parameter4Name, in4);
+                parameters.Add(parameter5Name, in5);
+            }
             return expression.ApplyParameters(parameters);
         }
 
@@ -912,16 +919,15 @@ namespace NMF.Expressions
         /// <returns>An observable value that keeps track of any changes</returns>
         public INotifyValue<TResult> Observe(INotifyValue<T1> in1, INotifyValue<T2> in2, INotifyValue<T3> in3, INotifyValue<T4> in4, INotifyValue<T5> in5)
         {
-            if (isParameterFree)
-            {
-                return expression;
-            }
             var parameters = new Dictionary<string, object>();
-            parameters.Add(parameter1Name, in1);
-            parameters.Add(parameter2Name, in2);
-            parameters.Add(parameter3Name, in3);
-            parameters.Add(parameter4Name, in4);
-            parameters.Add(parameter5Name, in5);
+            if (!isParameterFree)
+            {
+                parameters.Add(parameter1Name, in1);
+                parameters.Add(parameter2Name, in2);
+                parameters.Add(parameter3Name, in3);
+                parameters.Add(parameter4Name, in4);
+                parameters.Add(parameter5Name, in5);
+            }
             return expression.ApplyParameters(parameters);
         }
 
@@ -1052,13 +1058,15 @@ namespace NMF.Expressions
         public virtual INotifyReversableValue<TResult> InvokeReversable(T1 in1, T2 in2, T3 in3, T4 in4, T5 in5)
         {
             if (!IsReversable) throw new InvalidOperationException("Expression is not reversable");
-            if (isParameterFree) return expression as INotifyReversableExpression<TResult>;
             var parameters = new Dictionary<string, object>();
-            parameters.Add(parameter1Name, in1);
-            parameters.Add(parameter2Name, in2);
-            parameters.Add(parameter3Name, in3);
-            parameters.Add(parameter4Name, in4);
-            parameters.Add(parameter5Name, in5);
+            if (!isParameterFree)
+            {
+                parameters.Add(parameter1Name, in1);
+                parameters.Add(parameter2Name, in2);
+                parameters.Add(parameter3Name, in3);
+                parameters.Add(parameter4Name, in4);
+                parameters.Add(parameter5Name, in5);
+            }
             return expression.ApplyParameters(parameters) as INotifyReversableExpression<TResult>;
         }
 
@@ -1074,13 +1082,15 @@ namespace NMF.Expressions
         public virtual INotifyReversableValue<TResult> InvokeReversable(INotifyValue<T1> in1, INotifyValue<T2> in2, INotifyValue<T3> in3, INotifyValue<T4> in4, INotifyValue<T5> in5)
         {
             if (!IsReversable) throw new InvalidOperationException("Expression is not reversable");
-            if (isParameterFree) return expression as INotifyReversableExpression<TResult>;
             var parameters = new Dictionary<string, object>();
-            parameters.Add(parameter1Name, in1);
-            parameters.Add(parameter2Name, in2);
-            parameters.Add(parameter3Name, in3);
-            parameters.Add(parameter4Name, in4);
-            parameters.Add(parameter5Name, in5);
+            if (!isParameterFree)
+            {
+                parameters.Add(parameter1Name, in1);
+                parameters.Add(parameter2Name, in2);
+                parameters.Add(parameter3Name, in3);
+                parameters.Add(parameter4Name, in4);
+                parameters.Add(parameter5Name, in5);
+            }
             return expression.ApplyParameters(parameters) as INotifyReversableExpression<TResult>;
         }
 
@@ -1200,17 +1210,16 @@ namespace NMF.Expressions
         /// <returns>An observable value that keeps track of any changes</returns>
         public INotifyValue<TResult> Observe(T1 in1, T2 in2, T3 in3, T4 in4, T5 in5, T6 in6)
         {
-            if (isParameterFree)
-            {
-                return expression;
-            }
             var parameters = new Dictionary<string, object>();
-            parameters.Add(parameter1Name, in1);
-            parameters.Add(parameter2Name, in2);
-            parameters.Add(parameter3Name, in3);
-            parameters.Add(parameter4Name, in4);
-            parameters.Add(parameter5Name, in5);
-            parameters.Add(parameter6Name, in6);
+            if (!isParameterFree)
+            {
+                parameters.Add(parameter1Name, in1);
+                parameters.Add(parameter2Name, in2);
+                parameters.Add(parameter3Name, in3);
+                parameters.Add(parameter4Name, in4);
+                parameters.Add(parameter5Name, in5);
+                parameters.Add(parameter6Name, in6);
+            }
             return expression.ApplyParameters(parameters);
         }
 
@@ -1226,17 +1235,16 @@ namespace NMF.Expressions
         /// <returns>An observable value that keeps track of any changes</returns>
         public INotifyValue<TResult> Observe(INotifyValue<T1> in1, INotifyValue<T2> in2, INotifyValue<T3> in3, INotifyValue<T4> in4, INotifyValue<T5> in5, INotifyValue<T6> in6)
         {
-            if (isParameterFree)
-            {
-                return expression;
-            }
             var parameters = new Dictionary<string, object>();
-            parameters.Add(parameter1Name, in1);
-            parameters.Add(parameter2Name, in2);
-            parameters.Add(parameter3Name, in3);
-            parameters.Add(parameter4Name, in4);
-            parameters.Add(parameter5Name, in5);
-            parameters.Add(parameter6Name, in6);
+            if (!isParameterFree)
+            {
+                parameters.Add(parameter1Name, in1);
+                parameters.Add(parameter2Name, in2);
+                parameters.Add(parameter3Name, in3);
+                parameters.Add(parameter4Name, in4);
+                parameters.Add(parameter5Name, in5);
+                parameters.Add(parameter6Name, in6);
+            }
             return expression.ApplyParameters(parameters);
         }
 
@@ -1404,14 +1412,16 @@ namespace NMF.Expressions
         public virtual INotifyReversableValue<TResult> InvokeReversable(T1 in1, T2 in2, T3 in3, T4 in4, T5 in5, T6 in6)
         {
             if (!IsReversable) throw new InvalidOperationException("Expression is not reversable");
-            if (isParameterFree) return expression as INotifyReversableExpression<TResult>;
             var parameters = new Dictionary<string, object>();
-            parameters.Add(parameter1Name, in1);
-            parameters.Add(parameter2Name, in2);
-            parameters.Add(parameter3Name, in3);
-            parameters.Add(parameter4Name, in4);
-            parameters.Add(parameter5Name, in5);
-            parameters.Add(parameter6Name, in6);
+            if (!isParameterFree)
+            {
+                parameters.Add(parameter1Name, in1);
+                parameters.Add(parameter2Name, in2);
+                parameters.Add(parameter3Name, in3);
+                parameters.Add(parameter4Name, in4);
+                parameters.Add(parameter5Name, in5);
+                parameters.Add(parameter6Name, in6);
+            }
             return expression.ApplyParameters(parameters) as INotifyReversableExpression<TResult>;
         }
 
@@ -1428,14 +1438,16 @@ namespace NMF.Expressions
         public virtual INotifyReversableValue<TResult> InvokeReversable(INotifyValue<T1> in1, INotifyValue<T2> in2, INotifyValue<T3> in3, INotifyValue<T4> in4, INotifyValue<T5> in5, INotifyValue<T6> in6)
         {
             if (!IsReversable) throw new InvalidOperationException("Expression is not reversable");
-            if (isParameterFree) return expression as INotifyReversableExpression<TResult>;
             var parameters = new Dictionary<string, object>();
-            parameters.Add(parameter1Name, in1);
-            parameters.Add(parameter2Name, in2);
-            parameters.Add(parameter3Name, in3);
-            parameters.Add(parameter4Name, in4);
-            parameters.Add(parameter5Name, in5);
-            parameters.Add(parameter6Name, in6);
+            if (!isParameterFree)
+            {
+                parameters.Add(parameter1Name, in1);
+                parameters.Add(parameter2Name, in2);
+                parameters.Add(parameter3Name, in3);
+                parameters.Add(parameter4Name, in4);
+                parameters.Add(parameter5Name, in5);
+                parameters.Add(parameter6Name, in6);
+            }
             return expression.ApplyParameters(parameters) as INotifyReversableExpression<TResult>;
         }
 
@@ -1560,18 +1572,17 @@ namespace NMF.Expressions
         /// <returns>An observable value that keeps track of any changes</returns>
         public INotifyValue<TResult> Observe(T1 in1, T2 in2, T3 in3, T4 in4, T5 in5, T6 in6, T7 in7)
         {
-            if (isParameterFree)
-            {
-                return expression;
-            }
             var parameters = new Dictionary<string, object>();
-            parameters.Add(parameter1Name, in1);
-            parameters.Add(parameter2Name, in2);
-            parameters.Add(parameter3Name, in3);
-            parameters.Add(parameter4Name, in4);
-            parameters.Add(parameter5Name, in5);
-            parameters.Add(parameter6Name, in6);
-            parameters.Add(parameter7Name, in7);
+            if (!isParameterFree)
+            {
+                parameters.Add(parameter1Name, in1);
+                parameters.Add(parameter2Name, in2);
+                parameters.Add(parameter3Name, in3);
+                parameters.Add(parameter4Name, in4);
+                parameters.Add(parameter5Name, in5);
+                parameters.Add(parameter6Name, in6);
+                parameters.Add(parameter7Name, in7);
+            }
             return expression.ApplyParameters(parameters);
         }
 
@@ -1588,18 +1599,17 @@ namespace NMF.Expressions
         /// <returns>An observable value that keeps track of any changes</returns>
         public INotifyValue<TResult> Observe(INotifyValue<T1> in1, INotifyValue<T2> in2, INotifyValue<T3> in3, INotifyValue<T4> in4, INotifyValue<T5> in5, INotifyValue<T6> in6, INotifyValue<T7> in7)
         {
-            if (isParameterFree)
-            {
-                return expression;
-            }
             var parameters = new Dictionary<string, object>();
-            parameters.Add(parameter1Name, in1);
-            parameters.Add(parameter2Name, in2);
-            parameters.Add(parameter3Name, in3);
-            parameters.Add(parameter4Name, in4);
-            parameters.Add(parameter5Name, in5);
-            parameters.Add(parameter6Name, in6);
-            parameters.Add(parameter7Name, in7);
+            if (!isParameterFree)
+            {
+                parameters.Add(parameter1Name, in1);
+                parameters.Add(parameter2Name, in2);
+                parameters.Add(parameter3Name, in3);
+                parameters.Add(parameter4Name, in4);
+                parameters.Add(parameter5Name, in5);
+                parameters.Add(parameter6Name, in6);
+                parameters.Add(parameter7Name, in7);
+            }
             return expression.ApplyParameters(parameters);
         }
 
@@ -1807,15 +1817,17 @@ namespace NMF.Expressions
         public virtual INotifyReversableValue<TResult> InvokeReversable(T1 in1, T2 in2, T3 in3, T4 in4, T5 in5, T6 in6, T7 in7)
         {
             if (!IsReversable) throw new InvalidOperationException("Expression is not reversable");
-            if (isParameterFree) return expression as INotifyReversableExpression<TResult>;
             var parameters = new Dictionary<string, object>();
-            parameters.Add(parameter1Name, in1);
-            parameters.Add(parameter2Name, in2);
-            parameters.Add(parameter3Name, in3);
-            parameters.Add(parameter4Name, in4);
-            parameters.Add(parameter5Name, in5);
-            parameters.Add(parameter6Name, in6);
-            parameters.Add(parameter7Name, in7);
+            if (!isParameterFree)
+            {
+                parameters.Add(parameter1Name, in1);
+                parameters.Add(parameter2Name, in2);
+                parameters.Add(parameter3Name, in3);
+                parameters.Add(parameter4Name, in4);
+                parameters.Add(parameter5Name, in5);
+                parameters.Add(parameter6Name, in6);
+                parameters.Add(parameter7Name, in7);
+            }
             return expression.ApplyParameters(parameters) as INotifyReversableExpression<TResult>;
         }
 
@@ -1833,15 +1845,17 @@ namespace NMF.Expressions
         public virtual INotifyReversableValue<TResult> InvokeReversable(INotifyValue<T1> in1, INotifyValue<T2> in2, INotifyValue<T3> in3, INotifyValue<T4> in4, INotifyValue<T5> in5, INotifyValue<T6> in6, INotifyValue<T7> in7)
         {
             if (!IsReversable) throw new InvalidOperationException("Expression is not reversable");
-            if (isParameterFree) return expression as INotifyReversableExpression<TResult>;
             var parameters = new Dictionary<string, object>();
-            parameters.Add(parameter1Name, in1);
-            parameters.Add(parameter2Name, in2);
-            parameters.Add(parameter3Name, in3);
-            parameters.Add(parameter4Name, in4);
-            parameters.Add(parameter5Name, in5);
-            parameters.Add(parameter6Name, in6);
-            parameters.Add(parameter7Name, in7);
+            if (!isParameterFree)
+            {
+                parameters.Add(parameter1Name, in1);
+                parameters.Add(parameter2Name, in2);
+                parameters.Add(parameter3Name, in3);
+                parameters.Add(parameter4Name, in4);
+                parameters.Add(parameter5Name, in5);
+                parameters.Add(parameter6Name, in6);
+                parameters.Add(parameter7Name, in7);
+            }
             return expression.ApplyParameters(parameters) as INotifyReversableExpression<TResult>;
         }
 
@@ -1971,19 +1985,18 @@ namespace NMF.Expressions
         /// <returns>An observable value that keeps track of any changes</returns>
         public INotifyValue<TResult> Observe(T1 in1, T2 in2, T3 in3, T4 in4, T5 in5, T6 in6, T7 in7, T8 in8)
         {
-            if (isParameterFree)
-            {
-                return expression;
-            }
             var parameters = new Dictionary<string, object>();
-            parameters.Add(parameter1Name, in1);
-            parameters.Add(parameter2Name, in2);
-            parameters.Add(parameter3Name, in3);
-            parameters.Add(parameter4Name, in4);
-            parameters.Add(parameter5Name, in5);
-            parameters.Add(parameter6Name, in6);
-            parameters.Add(parameter7Name, in7);
-            parameters.Add(parameter8Name, in8);
+            if (!isParameterFree)
+            {
+                parameters.Add(parameter1Name, in1);
+                parameters.Add(parameter2Name, in2);
+                parameters.Add(parameter3Name, in3);
+                parameters.Add(parameter4Name, in4);
+                parameters.Add(parameter5Name, in5);
+                parameters.Add(parameter6Name, in6);
+                parameters.Add(parameter7Name, in7);
+                parameters.Add(parameter8Name, in8);
+            }
             return expression.ApplyParameters(parameters);
         }
 
@@ -2001,19 +2014,18 @@ namespace NMF.Expressions
         /// <returns>An observable value that keeps track of any changes</returns>
         public INotifyValue<TResult> Observe(INotifyValue<T1> in1, INotifyValue<T2> in2, INotifyValue<T3> in3, INotifyValue<T4> in4, INotifyValue<T5> in5, INotifyValue<T6> in6, INotifyValue<T7> in7, INotifyValue<T8> in8)
         {
-            if (isParameterFree)
-            {
-                return expression;
-            }
             var parameters = new Dictionary<string, object>();
-            parameters.Add(parameter1Name, in1);
-            parameters.Add(parameter2Name, in2);
-            parameters.Add(parameter3Name, in3);
-            parameters.Add(parameter4Name, in4);
-            parameters.Add(parameter5Name, in5);
-            parameters.Add(parameter6Name, in6);
-            parameters.Add(parameter7Name, in7);
-            parameters.Add(parameter8Name, in8);
+            if (!isParameterFree)
+            {
+                parameters.Add(parameter1Name, in1);
+                parameters.Add(parameter2Name, in2);
+                parameters.Add(parameter3Name, in3);
+                parameters.Add(parameter4Name, in4);
+                parameters.Add(parameter5Name, in5);
+                parameters.Add(parameter6Name, in6);
+                parameters.Add(parameter7Name, in7);
+                parameters.Add(parameter8Name, in8);
+            }
             return expression.ApplyParameters(parameters);
         }
 
@@ -2264,16 +2276,18 @@ namespace NMF.Expressions
         public virtual INotifyReversableValue<TResult> InvokeReversable(T1 in1, T2 in2, T3 in3, T4 in4, T5 in5, T6 in6, T7 in7, T8 in8)
         {
             if (!IsReversable) throw new InvalidOperationException("Expression is not reversable");
-            if (isParameterFree) return expression as INotifyReversableExpression<TResult>;
             var parameters = new Dictionary<string, object>();
-            parameters.Add(parameter1Name, in1);
-            parameters.Add(parameter2Name, in2);
-            parameters.Add(parameter3Name, in3);
-            parameters.Add(parameter4Name, in4);
-            parameters.Add(parameter5Name, in5);
-            parameters.Add(parameter6Name, in6);
-            parameters.Add(parameter7Name, in7);
-            parameters.Add(parameter8Name, in8);
+            if (!isParameterFree)
+            {
+                parameters.Add(parameter1Name, in1);
+                parameters.Add(parameter2Name, in2);
+                parameters.Add(parameter3Name, in3);
+                parameters.Add(parameter4Name, in4);
+                parameters.Add(parameter5Name, in5);
+                parameters.Add(parameter6Name, in6);
+                parameters.Add(parameter7Name, in7);
+                parameters.Add(parameter8Name, in8);
+            }
             return expression.ApplyParameters(parameters) as INotifyReversableExpression<TResult>;
         }
 
@@ -2292,16 +2306,18 @@ namespace NMF.Expressions
         public virtual INotifyReversableValue<TResult> InvokeReversable(INotifyValue<T1> in1, INotifyValue<T2> in2, INotifyValue<T3> in3, INotifyValue<T4> in4, INotifyValue<T5> in5, INotifyValue<T6> in6, INotifyValue<T7> in7, INotifyValue<T8> in8)
         {
             if (!IsReversable) throw new InvalidOperationException("Expression is not reversable");
-            if (isParameterFree) return expression as INotifyReversableExpression<TResult>;
             var parameters = new Dictionary<string, object>();
-            parameters.Add(parameter1Name, in1);
-            parameters.Add(parameter2Name, in2);
-            parameters.Add(parameter3Name, in3);
-            parameters.Add(parameter4Name, in4);
-            parameters.Add(parameter5Name, in5);
-            parameters.Add(parameter6Name, in6);
-            parameters.Add(parameter7Name, in7);
-            parameters.Add(parameter8Name, in8);
+            if (!isParameterFree)
+            {
+                parameters.Add(parameter1Name, in1);
+                parameters.Add(parameter2Name, in2);
+                parameters.Add(parameter3Name, in3);
+                parameters.Add(parameter4Name, in4);
+                parameters.Add(parameter5Name, in5);
+                parameters.Add(parameter6Name, in6);
+                parameters.Add(parameter7Name, in7);
+                parameters.Add(parameter8Name, in8);
+            }
             return expression.ApplyParameters(parameters) as INotifyReversableExpression<TResult>;
         }
 
@@ -2436,20 +2452,19 @@ namespace NMF.Expressions
         /// <returns>An observable value that keeps track of any changes</returns>
         public INotifyValue<TResult> Observe(T1 in1, T2 in2, T3 in3, T4 in4, T5 in5, T6 in6, T7 in7, T8 in8, T9 in9)
         {
-            if (isParameterFree)
-            {
-                return expression;
-            }
             var parameters = new Dictionary<string, object>();
-            parameters.Add(parameter1Name, in1);
-            parameters.Add(parameter2Name, in2);
-            parameters.Add(parameter3Name, in3);
-            parameters.Add(parameter4Name, in4);
-            parameters.Add(parameter5Name, in5);
-            parameters.Add(parameter6Name, in6);
-            parameters.Add(parameter7Name, in7);
-            parameters.Add(parameter8Name, in8);
-            parameters.Add(parameter9Name, in9);
+            if (!isParameterFree)
+            {
+                parameters.Add(parameter1Name, in1);
+                parameters.Add(parameter2Name, in2);
+                parameters.Add(parameter3Name, in3);
+                parameters.Add(parameter4Name, in4);
+                parameters.Add(parameter5Name, in5);
+                parameters.Add(parameter6Name, in6);
+                parameters.Add(parameter7Name, in7);
+                parameters.Add(parameter8Name, in8);
+                parameters.Add(parameter9Name, in9);
+            }
             return expression.ApplyParameters(parameters);
         }
 
@@ -2468,20 +2483,19 @@ namespace NMF.Expressions
         /// <returns>An observable value that keeps track of any changes</returns>
         public INotifyValue<TResult> Observe(INotifyValue<T1> in1, INotifyValue<T2> in2, INotifyValue<T3> in3, INotifyValue<T4> in4, INotifyValue<T5> in5, INotifyValue<T6> in6, INotifyValue<T7> in7, INotifyValue<T8> in8, INotifyValue<T9> in9)
         {
-            if (isParameterFree)
-            {
-                return expression;
-            }
             var parameters = new Dictionary<string, object>();
-            parameters.Add(parameter1Name, in1);
-            parameters.Add(parameter2Name, in2);
-            parameters.Add(parameter3Name, in3);
-            parameters.Add(parameter4Name, in4);
-            parameters.Add(parameter5Name, in5);
-            parameters.Add(parameter6Name, in6);
-            parameters.Add(parameter7Name, in7);
-            parameters.Add(parameter8Name, in8);
-            parameters.Add(parameter9Name, in9);
+            if (!isParameterFree)
+            {
+                parameters.Add(parameter1Name, in1);
+                parameters.Add(parameter2Name, in2);
+                parameters.Add(parameter3Name, in3);
+                parameters.Add(parameter4Name, in4);
+                parameters.Add(parameter5Name, in5);
+                parameters.Add(parameter6Name, in6);
+                parameters.Add(parameter7Name, in7);
+                parameters.Add(parameter8Name, in8);
+                parameters.Add(parameter9Name, in9);
+            }
             return expression.ApplyParameters(parameters);
         }
 
@@ -2778,17 +2792,19 @@ namespace NMF.Expressions
         public virtual INotifyReversableValue<TResult> InvokeReversable(T1 in1, T2 in2, T3 in3, T4 in4, T5 in5, T6 in6, T7 in7, T8 in8, T9 in9)
         {
             if (!IsReversable) throw new InvalidOperationException("Expression is not reversable");
-            if (isParameterFree) return expression as INotifyReversableExpression<TResult>;
             var parameters = new Dictionary<string, object>();
-            parameters.Add(parameter1Name, in1);
-            parameters.Add(parameter2Name, in2);
-            parameters.Add(parameter3Name, in3);
-            parameters.Add(parameter4Name, in4);
-            parameters.Add(parameter5Name, in5);
-            parameters.Add(parameter6Name, in6);
-            parameters.Add(parameter7Name, in7);
-            parameters.Add(parameter8Name, in8);
-            parameters.Add(parameter9Name, in9);
+            if (!isParameterFree)
+            {
+                parameters.Add(parameter1Name, in1);
+                parameters.Add(parameter2Name, in2);
+                parameters.Add(parameter3Name, in3);
+                parameters.Add(parameter4Name, in4);
+                parameters.Add(parameter5Name, in5);
+                parameters.Add(parameter6Name, in6);
+                parameters.Add(parameter7Name, in7);
+                parameters.Add(parameter8Name, in8);
+                parameters.Add(parameter9Name, in9);
+            }
             return expression.ApplyParameters(parameters) as INotifyReversableExpression<TResult>;
         }
 
@@ -2808,17 +2824,19 @@ namespace NMF.Expressions
         public virtual INotifyReversableValue<TResult> InvokeReversable(INotifyValue<T1> in1, INotifyValue<T2> in2, INotifyValue<T3> in3, INotifyValue<T4> in4, INotifyValue<T5> in5, INotifyValue<T6> in6, INotifyValue<T7> in7, INotifyValue<T8> in8, INotifyValue<T9> in9)
         {
             if (!IsReversable) throw new InvalidOperationException("Expression is not reversable");
-            if (isParameterFree) return expression as INotifyReversableExpression<TResult>;
             var parameters = new Dictionary<string, object>();
-            parameters.Add(parameter1Name, in1);
-            parameters.Add(parameter2Name, in2);
-            parameters.Add(parameter3Name, in3);
-            parameters.Add(parameter4Name, in4);
-            parameters.Add(parameter5Name, in5);
-            parameters.Add(parameter6Name, in6);
-            parameters.Add(parameter7Name, in7);
-            parameters.Add(parameter8Name, in8);
-            parameters.Add(parameter9Name, in9);
+            if (!isParameterFree)
+            {
+                parameters.Add(parameter1Name, in1);
+                parameters.Add(parameter2Name, in2);
+                parameters.Add(parameter3Name, in3);
+                parameters.Add(parameter4Name, in4);
+                parameters.Add(parameter5Name, in5);
+                parameters.Add(parameter6Name, in6);
+                parameters.Add(parameter7Name, in7);
+                parameters.Add(parameter8Name, in8);
+                parameters.Add(parameter9Name, in9);
+            }
             return expression.ApplyParameters(parameters) as INotifyReversableExpression<TResult>;
         }
 
@@ -2958,21 +2976,20 @@ namespace NMF.Expressions
         /// <returns>An observable value that keeps track of any changes</returns>
         public INotifyValue<TResult> Observe(T1 in1, T2 in2, T3 in3, T4 in4, T5 in5, T6 in6, T7 in7, T8 in8, T9 in9, T10 in10)
         {
-            if (isParameterFree)
-            {
-                return expression;
-            }
             var parameters = new Dictionary<string, object>();
-            parameters.Add(parameter1Name, in1);
-            parameters.Add(parameter2Name, in2);
-            parameters.Add(parameter3Name, in3);
-            parameters.Add(parameter4Name, in4);
-            parameters.Add(parameter5Name, in5);
-            parameters.Add(parameter6Name, in6);
-            parameters.Add(parameter7Name, in7);
-            parameters.Add(parameter8Name, in8);
-            parameters.Add(parameter9Name, in9);
-            parameters.Add(parameter10Name, in10);
+            if (!isParameterFree)
+            {
+                parameters.Add(parameter1Name, in1);
+                parameters.Add(parameter2Name, in2);
+                parameters.Add(parameter3Name, in3);
+                parameters.Add(parameter4Name, in4);
+                parameters.Add(parameter5Name, in5);
+                parameters.Add(parameter6Name, in6);
+                parameters.Add(parameter7Name, in7);
+                parameters.Add(parameter8Name, in8);
+                parameters.Add(parameter9Name, in9);
+                parameters.Add(parameter10Name, in10);
+            }
             return expression.ApplyParameters(parameters);
         }
 
@@ -2992,21 +3009,20 @@ namespace NMF.Expressions
         /// <returns>An observable value that keeps track of any changes</returns>
         public INotifyValue<TResult> Observe(INotifyValue<T1> in1, INotifyValue<T2> in2, INotifyValue<T3> in3, INotifyValue<T4> in4, INotifyValue<T5> in5, INotifyValue<T6> in6, INotifyValue<T7> in7, INotifyValue<T8> in8, INotifyValue<T9> in9, INotifyValue<T10> in10)
         {
-            if (isParameterFree)
-            {
-                return expression;
-            }
             var parameters = new Dictionary<string, object>();
-            parameters.Add(parameter1Name, in1);
-            parameters.Add(parameter2Name, in2);
-            parameters.Add(parameter3Name, in3);
-            parameters.Add(parameter4Name, in4);
-            parameters.Add(parameter5Name, in5);
-            parameters.Add(parameter6Name, in6);
-            parameters.Add(parameter7Name, in7);
-            parameters.Add(parameter8Name, in8);
-            parameters.Add(parameter9Name, in9);
-            parameters.Add(parameter10Name, in10);
+            if (!isParameterFree)
+            {
+                parameters.Add(parameter1Name, in1);
+                parameters.Add(parameter2Name, in2);
+                parameters.Add(parameter3Name, in3);
+                parameters.Add(parameter4Name, in4);
+                parameters.Add(parameter5Name, in5);
+                parameters.Add(parameter6Name, in6);
+                parameters.Add(parameter7Name, in7);
+                parameters.Add(parameter8Name, in8);
+                parameters.Add(parameter9Name, in9);
+                parameters.Add(parameter10Name, in10);
+            }
             return expression.ApplyParameters(parameters);
         }
 
@@ -3352,18 +3368,20 @@ namespace NMF.Expressions
         public virtual INotifyReversableValue<TResult> InvokeReversable(T1 in1, T2 in2, T3 in3, T4 in4, T5 in5, T6 in6, T7 in7, T8 in8, T9 in9, T10 in10)
         {
             if (!IsReversable) throw new InvalidOperationException("Expression is not reversable");
-            if (isParameterFree) return expression as INotifyReversableExpression<TResult>;
             var parameters = new Dictionary<string, object>();
-            parameters.Add(parameter1Name, in1);
-            parameters.Add(parameter2Name, in2);
-            parameters.Add(parameter3Name, in3);
-            parameters.Add(parameter4Name, in4);
-            parameters.Add(parameter5Name, in5);
-            parameters.Add(parameter6Name, in6);
-            parameters.Add(parameter7Name, in7);
-            parameters.Add(parameter8Name, in8);
-            parameters.Add(parameter9Name, in9);
-            parameters.Add(parameter10Name, in10);
+            if (!isParameterFree)
+            {
+                parameters.Add(parameter1Name, in1);
+                parameters.Add(parameter2Name, in2);
+                parameters.Add(parameter3Name, in3);
+                parameters.Add(parameter4Name, in4);
+                parameters.Add(parameter5Name, in5);
+                parameters.Add(parameter6Name, in6);
+                parameters.Add(parameter7Name, in7);
+                parameters.Add(parameter8Name, in8);
+                parameters.Add(parameter9Name, in9);
+                parameters.Add(parameter10Name, in10);
+            }
             return expression.ApplyParameters(parameters) as INotifyReversableExpression<TResult>;
         }
 
@@ -3384,18 +3402,20 @@ namespace NMF.Expressions
         public virtual INotifyReversableValue<TResult> InvokeReversable(INotifyValue<T1> in1, INotifyValue<T2> in2, INotifyValue<T3> in3, INotifyValue<T4> in4, INotifyValue<T5> in5, INotifyValue<T6> in6, INotifyValue<T7> in7, INotifyValue<T8> in8, INotifyValue<T9> in9, INotifyValue<T10> in10)
         {
             if (!IsReversable) throw new InvalidOperationException("Expression is not reversable");
-            if (isParameterFree) return expression as INotifyReversableExpression<TResult>;
             var parameters = new Dictionary<string, object>();
-            parameters.Add(parameter1Name, in1);
-            parameters.Add(parameter2Name, in2);
-            parameters.Add(parameter3Name, in3);
-            parameters.Add(parameter4Name, in4);
-            parameters.Add(parameter5Name, in5);
-            parameters.Add(parameter6Name, in6);
-            parameters.Add(parameter7Name, in7);
-            parameters.Add(parameter8Name, in8);
-            parameters.Add(parameter9Name, in9);
-            parameters.Add(parameter10Name, in10);
+            if (!isParameterFree)
+            {
+                parameters.Add(parameter1Name, in1);
+                parameters.Add(parameter2Name, in2);
+                parameters.Add(parameter3Name, in3);
+                parameters.Add(parameter4Name, in4);
+                parameters.Add(parameter5Name, in5);
+                parameters.Add(parameter6Name, in6);
+                parameters.Add(parameter7Name, in7);
+                parameters.Add(parameter8Name, in8);
+                parameters.Add(parameter9Name, in9);
+                parameters.Add(parameter10Name, in10);
+            }
             return expression.ApplyParameters(parameters) as INotifyReversableExpression<TResult>;
         }
 
@@ -3540,22 +3560,21 @@ namespace NMF.Expressions
         /// <returns>An observable value that keeps track of any changes</returns>
         public INotifyValue<TResult> Observe(T1 in1, T2 in2, T3 in3, T4 in4, T5 in5, T6 in6, T7 in7, T8 in8, T9 in9, T10 in10, T11 in11)
         {
-            if (isParameterFree)
-            {
-                return expression;
-            }
             var parameters = new Dictionary<string, object>();
-            parameters.Add(parameter1Name, in1);
-            parameters.Add(parameter2Name, in2);
-            parameters.Add(parameter3Name, in3);
-            parameters.Add(parameter4Name, in4);
-            parameters.Add(parameter5Name, in5);
-            parameters.Add(parameter6Name, in6);
-            parameters.Add(parameter7Name, in7);
-            parameters.Add(parameter8Name, in8);
-            parameters.Add(parameter9Name, in9);
-            parameters.Add(parameter10Name, in10);
-            parameters.Add(parameter11Name, in11);
+            if (!isParameterFree)
+            {
+                parameters.Add(parameter1Name, in1);
+                parameters.Add(parameter2Name, in2);
+                parameters.Add(parameter3Name, in3);
+                parameters.Add(parameter4Name, in4);
+                parameters.Add(parameter5Name, in5);
+                parameters.Add(parameter6Name, in6);
+                parameters.Add(parameter7Name, in7);
+                parameters.Add(parameter8Name, in8);
+                parameters.Add(parameter9Name, in9);
+                parameters.Add(parameter10Name, in10);
+                parameters.Add(parameter11Name, in11);
+            }
             return expression.ApplyParameters(parameters);
         }
 
@@ -3576,22 +3595,21 @@ namespace NMF.Expressions
         /// <returns>An observable value that keeps track of any changes</returns>
         public INotifyValue<TResult> Observe(INotifyValue<T1> in1, INotifyValue<T2> in2, INotifyValue<T3> in3, INotifyValue<T4> in4, INotifyValue<T5> in5, INotifyValue<T6> in6, INotifyValue<T7> in7, INotifyValue<T8> in8, INotifyValue<T9> in9, INotifyValue<T10> in10, INotifyValue<T11> in11)
         {
-            if (isParameterFree)
-            {
-                return expression;
-            }
             var parameters = new Dictionary<string, object>();
-            parameters.Add(parameter1Name, in1);
-            parameters.Add(parameter2Name, in2);
-            parameters.Add(parameter3Name, in3);
-            parameters.Add(parameter4Name, in4);
-            parameters.Add(parameter5Name, in5);
-            parameters.Add(parameter6Name, in6);
-            parameters.Add(parameter7Name, in7);
-            parameters.Add(parameter8Name, in8);
-            parameters.Add(parameter9Name, in9);
-            parameters.Add(parameter10Name, in10);
-            parameters.Add(parameter11Name, in11);
+            if (!isParameterFree)
+            {
+                parameters.Add(parameter1Name, in1);
+                parameters.Add(parameter2Name, in2);
+                parameters.Add(parameter3Name, in3);
+                parameters.Add(parameter4Name, in4);
+                parameters.Add(parameter5Name, in5);
+                parameters.Add(parameter6Name, in6);
+                parameters.Add(parameter7Name, in7);
+                parameters.Add(parameter8Name, in8);
+                parameters.Add(parameter9Name, in9);
+                parameters.Add(parameter10Name, in10);
+                parameters.Add(parameter11Name, in11);
+            }
             return expression.ApplyParameters(parameters);
         }
 
@@ -3989,19 +4007,21 @@ namespace NMF.Expressions
         public virtual INotifyReversableValue<TResult> InvokeReversable(T1 in1, T2 in2, T3 in3, T4 in4, T5 in5, T6 in6, T7 in7, T8 in8, T9 in9, T10 in10, T11 in11)
         {
             if (!IsReversable) throw new InvalidOperationException("Expression is not reversable");
-            if (isParameterFree) return expression as INotifyReversableExpression<TResult>;
             var parameters = new Dictionary<string, object>();
-            parameters.Add(parameter1Name, in1);
-            parameters.Add(parameter2Name, in2);
-            parameters.Add(parameter3Name, in3);
-            parameters.Add(parameter4Name, in4);
-            parameters.Add(parameter5Name, in5);
-            parameters.Add(parameter6Name, in6);
-            parameters.Add(parameter7Name, in7);
-            parameters.Add(parameter8Name, in8);
-            parameters.Add(parameter9Name, in9);
-            parameters.Add(parameter10Name, in10);
-            parameters.Add(parameter11Name, in11);
+            if (!isParameterFree)
+            {
+                parameters.Add(parameter1Name, in1);
+                parameters.Add(parameter2Name, in2);
+                parameters.Add(parameter3Name, in3);
+                parameters.Add(parameter4Name, in4);
+                parameters.Add(parameter5Name, in5);
+                parameters.Add(parameter6Name, in6);
+                parameters.Add(parameter7Name, in7);
+                parameters.Add(parameter8Name, in8);
+                parameters.Add(parameter9Name, in9);
+                parameters.Add(parameter10Name, in10);
+                parameters.Add(parameter11Name, in11);
+            }
             return expression.ApplyParameters(parameters) as INotifyReversableExpression<TResult>;
         }
 
@@ -4023,19 +4043,21 @@ namespace NMF.Expressions
         public virtual INotifyReversableValue<TResult> InvokeReversable(INotifyValue<T1> in1, INotifyValue<T2> in2, INotifyValue<T3> in3, INotifyValue<T4> in4, INotifyValue<T5> in5, INotifyValue<T6> in6, INotifyValue<T7> in7, INotifyValue<T8> in8, INotifyValue<T9> in9, INotifyValue<T10> in10, INotifyValue<T11> in11)
         {
             if (!IsReversable) throw new InvalidOperationException("Expression is not reversable");
-            if (isParameterFree) return expression as INotifyReversableExpression<TResult>;
             var parameters = new Dictionary<string, object>();
-            parameters.Add(parameter1Name, in1);
-            parameters.Add(parameter2Name, in2);
-            parameters.Add(parameter3Name, in3);
-            parameters.Add(parameter4Name, in4);
-            parameters.Add(parameter5Name, in5);
-            parameters.Add(parameter6Name, in6);
-            parameters.Add(parameter7Name, in7);
-            parameters.Add(parameter8Name, in8);
-            parameters.Add(parameter9Name, in9);
-            parameters.Add(parameter10Name, in10);
-            parameters.Add(parameter11Name, in11);
+            if (!isParameterFree)
+            {
+                parameters.Add(parameter1Name, in1);
+                parameters.Add(parameter2Name, in2);
+                parameters.Add(parameter3Name, in3);
+                parameters.Add(parameter4Name, in4);
+                parameters.Add(parameter5Name, in5);
+                parameters.Add(parameter6Name, in6);
+                parameters.Add(parameter7Name, in7);
+                parameters.Add(parameter8Name, in8);
+                parameters.Add(parameter9Name, in9);
+                parameters.Add(parameter10Name, in10);
+                parameters.Add(parameter11Name, in11);
+            }
             return expression.ApplyParameters(parameters) as INotifyReversableExpression<TResult>;
         }
 
@@ -4185,23 +4207,22 @@ namespace NMF.Expressions
         /// <returns>An observable value that keeps track of any changes</returns>
         public INotifyValue<TResult> Observe(T1 in1, T2 in2, T3 in3, T4 in4, T5 in5, T6 in6, T7 in7, T8 in8, T9 in9, T10 in10, T11 in11, T12 in12)
         {
-            if (isParameterFree)
-            {
-                return expression;
-            }
             var parameters = new Dictionary<string, object>();
-            parameters.Add(parameter1Name, in1);
-            parameters.Add(parameter2Name, in2);
-            parameters.Add(parameter3Name, in3);
-            parameters.Add(parameter4Name, in4);
-            parameters.Add(parameter5Name, in5);
-            parameters.Add(parameter6Name, in6);
-            parameters.Add(parameter7Name, in7);
-            parameters.Add(parameter8Name, in8);
-            parameters.Add(parameter9Name, in9);
-            parameters.Add(parameter10Name, in10);
-            parameters.Add(parameter11Name, in11);
-            parameters.Add(parameter12Name, in12);
+            if (!isParameterFree)
+            {
+                parameters.Add(parameter1Name, in1);
+                parameters.Add(parameter2Name, in2);
+                parameters.Add(parameter3Name, in3);
+                parameters.Add(parameter4Name, in4);
+                parameters.Add(parameter5Name, in5);
+                parameters.Add(parameter6Name, in6);
+                parameters.Add(parameter7Name, in7);
+                parameters.Add(parameter8Name, in8);
+                parameters.Add(parameter9Name, in9);
+                parameters.Add(parameter10Name, in10);
+                parameters.Add(parameter11Name, in11);
+                parameters.Add(parameter12Name, in12);
+            }
             return expression.ApplyParameters(parameters);
         }
 
@@ -4223,23 +4244,22 @@ namespace NMF.Expressions
         /// <returns>An observable value that keeps track of any changes</returns>
         public INotifyValue<TResult> Observe(INotifyValue<T1> in1, INotifyValue<T2> in2, INotifyValue<T3> in3, INotifyValue<T4> in4, INotifyValue<T5> in5, INotifyValue<T6> in6, INotifyValue<T7> in7, INotifyValue<T8> in8, INotifyValue<T9> in9, INotifyValue<T10> in10, INotifyValue<T11> in11, INotifyValue<T12> in12)
         {
-            if (isParameterFree)
-            {
-                return expression;
-            }
             var parameters = new Dictionary<string, object>();
-            parameters.Add(parameter1Name, in1);
-            parameters.Add(parameter2Name, in2);
-            parameters.Add(parameter3Name, in3);
-            parameters.Add(parameter4Name, in4);
-            parameters.Add(parameter5Name, in5);
-            parameters.Add(parameter6Name, in6);
-            parameters.Add(parameter7Name, in7);
-            parameters.Add(parameter8Name, in8);
-            parameters.Add(parameter9Name, in9);
-            parameters.Add(parameter10Name, in10);
-            parameters.Add(parameter11Name, in11);
-            parameters.Add(parameter12Name, in12);
+            if (!isParameterFree)
+            {
+                parameters.Add(parameter1Name, in1);
+                parameters.Add(parameter2Name, in2);
+                parameters.Add(parameter3Name, in3);
+                parameters.Add(parameter4Name, in4);
+                parameters.Add(parameter5Name, in5);
+                parameters.Add(parameter6Name, in6);
+                parameters.Add(parameter7Name, in7);
+                parameters.Add(parameter8Name, in8);
+                parameters.Add(parameter9Name, in9);
+                parameters.Add(parameter10Name, in10);
+                parameters.Add(parameter11Name, in11);
+                parameters.Add(parameter12Name, in12);
+            }
             return expression.ApplyParameters(parameters);
         }
 
@@ -4692,20 +4712,22 @@ namespace NMF.Expressions
         public virtual INotifyReversableValue<TResult> InvokeReversable(T1 in1, T2 in2, T3 in3, T4 in4, T5 in5, T6 in6, T7 in7, T8 in8, T9 in9, T10 in10, T11 in11, T12 in12)
         {
             if (!IsReversable) throw new InvalidOperationException("Expression is not reversable");
-            if (isParameterFree) return expression as INotifyReversableExpression<TResult>;
             var parameters = new Dictionary<string, object>();
-            parameters.Add(parameter1Name, in1);
-            parameters.Add(parameter2Name, in2);
-            parameters.Add(parameter3Name, in3);
-            parameters.Add(parameter4Name, in4);
-            parameters.Add(parameter5Name, in5);
-            parameters.Add(parameter6Name, in6);
-            parameters.Add(parameter7Name, in7);
-            parameters.Add(parameter8Name, in8);
-            parameters.Add(parameter9Name, in9);
-            parameters.Add(parameter10Name, in10);
-            parameters.Add(parameter11Name, in11);
-            parameters.Add(parameter12Name, in12);
+            if (!isParameterFree)
+            {
+                parameters.Add(parameter1Name, in1);
+                parameters.Add(parameter2Name, in2);
+                parameters.Add(parameter3Name, in3);
+                parameters.Add(parameter4Name, in4);
+                parameters.Add(parameter5Name, in5);
+                parameters.Add(parameter6Name, in6);
+                parameters.Add(parameter7Name, in7);
+                parameters.Add(parameter8Name, in8);
+                parameters.Add(parameter9Name, in9);
+                parameters.Add(parameter10Name, in10);
+                parameters.Add(parameter11Name, in11);
+                parameters.Add(parameter12Name, in12);
+            }
             return expression.ApplyParameters(parameters) as INotifyReversableExpression<TResult>;
         }
 
@@ -4728,20 +4750,22 @@ namespace NMF.Expressions
         public virtual INotifyReversableValue<TResult> InvokeReversable(INotifyValue<T1> in1, INotifyValue<T2> in2, INotifyValue<T3> in3, INotifyValue<T4> in4, INotifyValue<T5> in5, INotifyValue<T6> in6, INotifyValue<T7> in7, INotifyValue<T8> in8, INotifyValue<T9> in9, INotifyValue<T10> in10, INotifyValue<T11> in11, INotifyValue<T12> in12)
         {
             if (!IsReversable) throw new InvalidOperationException("Expression is not reversable");
-            if (isParameterFree) return expression as INotifyReversableExpression<TResult>;
             var parameters = new Dictionary<string, object>();
-            parameters.Add(parameter1Name, in1);
-            parameters.Add(parameter2Name, in2);
-            parameters.Add(parameter3Name, in3);
-            parameters.Add(parameter4Name, in4);
-            parameters.Add(parameter5Name, in5);
-            parameters.Add(parameter6Name, in6);
-            parameters.Add(parameter7Name, in7);
-            parameters.Add(parameter8Name, in8);
-            parameters.Add(parameter9Name, in9);
-            parameters.Add(parameter10Name, in10);
-            parameters.Add(parameter11Name, in11);
-            parameters.Add(parameter12Name, in12);
+            if (!isParameterFree)
+            {
+                parameters.Add(parameter1Name, in1);
+                parameters.Add(parameter2Name, in2);
+                parameters.Add(parameter3Name, in3);
+                parameters.Add(parameter4Name, in4);
+                parameters.Add(parameter5Name, in5);
+                parameters.Add(parameter6Name, in6);
+                parameters.Add(parameter7Name, in7);
+                parameters.Add(parameter8Name, in8);
+                parameters.Add(parameter9Name, in9);
+                parameters.Add(parameter10Name, in10);
+                parameters.Add(parameter11Name, in11);
+                parameters.Add(parameter12Name, in12);
+            }
             return expression.ApplyParameters(parameters) as INotifyReversableExpression<TResult>;
         }
 
@@ -4896,24 +4920,23 @@ namespace NMF.Expressions
         /// <returns>An observable value that keeps track of any changes</returns>
         public INotifyValue<TResult> Observe(T1 in1, T2 in2, T3 in3, T4 in4, T5 in5, T6 in6, T7 in7, T8 in8, T9 in9, T10 in10, T11 in11, T12 in12, T13 in13)
         {
-            if (isParameterFree)
-            {
-                return expression;
-            }
             var parameters = new Dictionary<string, object>();
-            parameters.Add(parameter1Name, in1);
-            parameters.Add(parameter2Name, in2);
-            parameters.Add(parameter3Name, in3);
-            parameters.Add(parameter4Name, in4);
-            parameters.Add(parameter5Name, in5);
-            parameters.Add(parameter6Name, in6);
-            parameters.Add(parameter7Name, in7);
-            parameters.Add(parameter8Name, in8);
-            parameters.Add(parameter9Name, in9);
-            parameters.Add(parameter10Name, in10);
-            parameters.Add(parameter11Name, in11);
-            parameters.Add(parameter12Name, in12);
-            parameters.Add(parameter13Name, in13);
+            if (!isParameterFree)
+            {
+                parameters.Add(parameter1Name, in1);
+                parameters.Add(parameter2Name, in2);
+                parameters.Add(parameter3Name, in3);
+                parameters.Add(parameter4Name, in4);
+                parameters.Add(parameter5Name, in5);
+                parameters.Add(parameter6Name, in6);
+                parameters.Add(parameter7Name, in7);
+                parameters.Add(parameter8Name, in8);
+                parameters.Add(parameter9Name, in9);
+                parameters.Add(parameter10Name, in10);
+                parameters.Add(parameter11Name, in11);
+                parameters.Add(parameter12Name, in12);
+                parameters.Add(parameter13Name, in13);
+            }
             return expression.ApplyParameters(parameters);
         }
 
@@ -4936,24 +4959,23 @@ namespace NMF.Expressions
         /// <returns>An observable value that keeps track of any changes</returns>
         public INotifyValue<TResult> Observe(INotifyValue<T1> in1, INotifyValue<T2> in2, INotifyValue<T3> in3, INotifyValue<T4> in4, INotifyValue<T5> in5, INotifyValue<T6> in6, INotifyValue<T7> in7, INotifyValue<T8> in8, INotifyValue<T9> in9, INotifyValue<T10> in10, INotifyValue<T11> in11, INotifyValue<T12> in12, INotifyValue<T13> in13)
         {
-            if (isParameterFree)
-            {
-                return expression;
-            }
             var parameters = new Dictionary<string, object>();
-            parameters.Add(parameter1Name, in1);
-            parameters.Add(parameter2Name, in2);
-            parameters.Add(parameter3Name, in3);
-            parameters.Add(parameter4Name, in4);
-            parameters.Add(parameter5Name, in5);
-            parameters.Add(parameter6Name, in6);
-            parameters.Add(parameter7Name, in7);
-            parameters.Add(parameter8Name, in8);
-            parameters.Add(parameter9Name, in9);
-            parameters.Add(parameter10Name, in10);
-            parameters.Add(parameter11Name, in11);
-            parameters.Add(parameter12Name, in12);
-            parameters.Add(parameter13Name, in13);
+            if (!isParameterFree)
+            {
+                parameters.Add(parameter1Name, in1);
+                parameters.Add(parameter2Name, in2);
+                parameters.Add(parameter3Name, in3);
+                parameters.Add(parameter4Name, in4);
+                parameters.Add(parameter5Name, in5);
+                parameters.Add(parameter6Name, in6);
+                parameters.Add(parameter7Name, in7);
+                parameters.Add(parameter8Name, in8);
+                parameters.Add(parameter9Name, in9);
+                parameters.Add(parameter10Name, in10);
+                parameters.Add(parameter11Name, in11);
+                parameters.Add(parameter12Name, in12);
+                parameters.Add(parameter13Name, in13);
+            }
             return expression.ApplyParameters(parameters);
         }
 
@@ -5464,21 +5486,23 @@ namespace NMF.Expressions
         public virtual INotifyReversableValue<TResult> InvokeReversable(T1 in1, T2 in2, T3 in3, T4 in4, T5 in5, T6 in6, T7 in7, T8 in8, T9 in9, T10 in10, T11 in11, T12 in12, T13 in13)
         {
             if (!IsReversable) throw new InvalidOperationException("Expression is not reversable");
-            if (isParameterFree) return expression as INotifyReversableExpression<TResult>;
             var parameters = new Dictionary<string, object>();
-            parameters.Add(parameter1Name, in1);
-            parameters.Add(parameter2Name, in2);
-            parameters.Add(parameter3Name, in3);
-            parameters.Add(parameter4Name, in4);
-            parameters.Add(parameter5Name, in5);
-            parameters.Add(parameter6Name, in6);
-            parameters.Add(parameter7Name, in7);
-            parameters.Add(parameter8Name, in8);
-            parameters.Add(parameter9Name, in9);
-            parameters.Add(parameter10Name, in10);
-            parameters.Add(parameter11Name, in11);
-            parameters.Add(parameter12Name, in12);
-            parameters.Add(parameter13Name, in13);
+            if (!isParameterFree)
+            {
+                parameters.Add(parameter1Name, in1);
+                parameters.Add(parameter2Name, in2);
+                parameters.Add(parameter3Name, in3);
+                parameters.Add(parameter4Name, in4);
+                parameters.Add(parameter5Name, in5);
+                parameters.Add(parameter6Name, in6);
+                parameters.Add(parameter7Name, in7);
+                parameters.Add(parameter8Name, in8);
+                parameters.Add(parameter9Name, in9);
+                parameters.Add(parameter10Name, in10);
+                parameters.Add(parameter11Name, in11);
+                parameters.Add(parameter12Name, in12);
+                parameters.Add(parameter13Name, in13);
+            }
             return expression.ApplyParameters(parameters) as INotifyReversableExpression<TResult>;
         }
 
@@ -5502,21 +5526,23 @@ namespace NMF.Expressions
         public virtual INotifyReversableValue<TResult> InvokeReversable(INotifyValue<T1> in1, INotifyValue<T2> in2, INotifyValue<T3> in3, INotifyValue<T4> in4, INotifyValue<T5> in5, INotifyValue<T6> in6, INotifyValue<T7> in7, INotifyValue<T8> in8, INotifyValue<T9> in9, INotifyValue<T10> in10, INotifyValue<T11> in11, INotifyValue<T12> in12, INotifyValue<T13> in13)
         {
             if (!IsReversable) throw new InvalidOperationException("Expression is not reversable");
-            if (isParameterFree) return expression as INotifyReversableExpression<TResult>;
             var parameters = new Dictionary<string, object>();
-            parameters.Add(parameter1Name, in1);
-            parameters.Add(parameter2Name, in2);
-            parameters.Add(parameter3Name, in3);
-            parameters.Add(parameter4Name, in4);
-            parameters.Add(parameter5Name, in5);
-            parameters.Add(parameter6Name, in6);
-            parameters.Add(parameter7Name, in7);
-            parameters.Add(parameter8Name, in8);
-            parameters.Add(parameter9Name, in9);
-            parameters.Add(parameter10Name, in10);
-            parameters.Add(parameter11Name, in11);
-            parameters.Add(parameter12Name, in12);
-            parameters.Add(parameter13Name, in13);
+            if (!isParameterFree)
+            {
+                parameters.Add(parameter1Name, in1);
+                parameters.Add(parameter2Name, in2);
+                parameters.Add(parameter3Name, in3);
+                parameters.Add(parameter4Name, in4);
+                parameters.Add(parameter5Name, in5);
+                parameters.Add(parameter6Name, in6);
+                parameters.Add(parameter7Name, in7);
+                parameters.Add(parameter8Name, in8);
+                parameters.Add(parameter9Name, in9);
+                parameters.Add(parameter10Name, in10);
+                parameters.Add(parameter11Name, in11);
+                parameters.Add(parameter12Name, in12);
+                parameters.Add(parameter13Name, in13);
+            }
             return expression.ApplyParameters(parameters) as INotifyReversableExpression<TResult>;
         }
 
@@ -5676,25 +5702,24 @@ namespace NMF.Expressions
         /// <returns>An observable value that keeps track of any changes</returns>
         public INotifyValue<TResult> Observe(T1 in1, T2 in2, T3 in3, T4 in4, T5 in5, T6 in6, T7 in7, T8 in8, T9 in9, T10 in10, T11 in11, T12 in12, T13 in13, T14 in14)
         {
-            if (isParameterFree)
-            {
-                return expression;
-            }
             var parameters = new Dictionary<string, object>();
-            parameters.Add(parameter1Name, in1);
-            parameters.Add(parameter2Name, in2);
-            parameters.Add(parameter3Name, in3);
-            parameters.Add(parameter4Name, in4);
-            parameters.Add(parameter5Name, in5);
-            parameters.Add(parameter6Name, in6);
-            parameters.Add(parameter7Name, in7);
-            parameters.Add(parameter8Name, in8);
-            parameters.Add(parameter9Name, in9);
-            parameters.Add(parameter10Name, in10);
-            parameters.Add(parameter11Name, in11);
-            parameters.Add(parameter12Name, in12);
-            parameters.Add(parameter13Name, in13);
-            parameters.Add(parameter14Name, in14);
+            if (!isParameterFree)
+            {
+                parameters.Add(parameter1Name, in1);
+                parameters.Add(parameter2Name, in2);
+                parameters.Add(parameter3Name, in3);
+                parameters.Add(parameter4Name, in4);
+                parameters.Add(parameter5Name, in5);
+                parameters.Add(parameter6Name, in6);
+                parameters.Add(parameter7Name, in7);
+                parameters.Add(parameter8Name, in8);
+                parameters.Add(parameter9Name, in9);
+                parameters.Add(parameter10Name, in10);
+                parameters.Add(parameter11Name, in11);
+                parameters.Add(parameter12Name, in12);
+                parameters.Add(parameter13Name, in13);
+                parameters.Add(parameter14Name, in14);
+            }
             return expression.ApplyParameters(parameters);
         }
 
@@ -5718,25 +5743,24 @@ namespace NMF.Expressions
         /// <returns>An observable value that keeps track of any changes</returns>
         public INotifyValue<TResult> Observe(INotifyValue<T1> in1, INotifyValue<T2> in2, INotifyValue<T3> in3, INotifyValue<T4> in4, INotifyValue<T5> in5, INotifyValue<T6> in6, INotifyValue<T7> in7, INotifyValue<T8> in8, INotifyValue<T9> in9, INotifyValue<T10> in10, INotifyValue<T11> in11, INotifyValue<T12> in12, INotifyValue<T13> in13, INotifyValue<T14> in14)
         {
-            if (isParameterFree)
-            {
-                return expression;
-            }
             var parameters = new Dictionary<string, object>();
-            parameters.Add(parameter1Name, in1);
-            parameters.Add(parameter2Name, in2);
-            parameters.Add(parameter3Name, in3);
-            parameters.Add(parameter4Name, in4);
-            parameters.Add(parameter5Name, in5);
-            parameters.Add(parameter6Name, in6);
-            parameters.Add(parameter7Name, in7);
-            parameters.Add(parameter8Name, in8);
-            parameters.Add(parameter9Name, in9);
-            parameters.Add(parameter10Name, in10);
-            parameters.Add(parameter11Name, in11);
-            parameters.Add(parameter12Name, in12);
-            parameters.Add(parameter13Name, in13);
-            parameters.Add(parameter14Name, in14);
+            if (!isParameterFree)
+            {
+                parameters.Add(parameter1Name, in1);
+                parameters.Add(parameter2Name, in2);
+                parameters.Add(parameter3Name, in3);
+                parameters.Add(parameter4Name, in4);
+                parameters.Add(parameter5Name, in5);
+                parameters.Add(parameter6Name, in6);
+                parameters.Add(parameter7Name, in7);
+                parameters.Add(parameter8Name, in8);
+                parameters.Add(parameter9Name, in9);
+                parameters.Add(parameter10Name, in10);
+                parameters.Add(parameter11Name, in11);
+                parameters.Add(parameter12Name, in12);
+                parameters.Add(parameter13Name, in13);
+                parameters.Add(parameter14Name, in14);
+            }
             return expression.ApplyParameters(parameters);
         }
 
@@ -6308,22 +6332,24 @@ namespace NMF.Expressions
         public virtual INotifyReversableValue<TResult> InvokeReversable(T1 in1, T2 in2, T3 in3, T4 in4, T5 in5, T6 in6, T7 in7, T8 in8, T9 in9, T10 in10, T11 in11, T12 in12, T13 in13, T14 in14)
         {
             if (!IsReversable) throw new InvalidOperationException("Expression is not reversable");
-            if (isParameterFree) return expression as INotifyReversableExpression<TResult>;
             var parameters = new Dictionary<string, object>();
-            parameters.Add(parameter1Name, in1);
-            parameters.Add(parameter2Name, in2);
-            parameters.Add(parameter3Name, in3);
-            parameters.Add(parameter4Name, in4);
-            parameters.Add(parameter5Name, in5);
-            parameters.Add(parameter6Name, in6);
-            parameters.Add(parameter7Name, in7);
-            parameters.Add(parameter8Name, in8);
-            parameters.Add(parameter9Name, in9);
-            parameters.Add(parameter10Name, in10);
-            parameters.Add(parameter11Name, in11);
-            parameters.Add(parameter12Name, in12);
-            parameters.Add(parameter13Name, in13);
-            parameters.Add(parameter14Name, in14);
+            if (!isParameterFree)
+            {
+                parameters.Add(parameter1Name, in1);
+                parameters.Add(parameter2Name, in2);
+                parameters.Add(parameter3Name, in3);
+                parameters.Add(parameter4Name, in4);
+                parameters.Add(parameter5Name, in5);
+                parameters.Add(parameter6Name, in6);
+                parameters.Add(parameter7Name, in7);
+                parameters.Add(parameter8Name, in8);
+                parameters.Add(parameter9Name, in9);
+                parameters.Add(parameter10Name, in10);
+                parameters.Add(parameter11Name, in11);
+                parameters.Add(parameter12Name, in12);
+                parameters.Add(parameter13Name, in13);
+                parameters.Add(parameter14Name, in14);
+            }
             return expression.ApplyParameters(parameters) as INotifyReversableExpression<TResult>;
         }
 
@@ -6348,22 +6374,24 @@ namespace NMF.Expressions
         public virtual INotifyReversableValue<TResult> InvokeReversable(INotifyValue<T1> in1, INotifyValue<T2> in2, INotifyValue<T3> in3, INotifyValue<T4> in4, INotifyValue<T5> in5, INotifyValue<T6> in6, INotifyValue<T7> in7, INotifyValue<T8> in8, INotifyValue<T9> in9, INotifyValue<T10> in10, INotifyValue<T11> in11, INotifyValue<T12> in12, INotifyValue<T13> in13, INotifyValue<T14> in14)
         {
             if (!IsReversable) throw new InvalidOperationException("Expression is not reversable");
-            if (isParameterFree) return expression as INotifyReversableExpression<TResult>;
             var parameters = new Dictionary<string, object>();
-            parameters.Add(parameter1Name, in1);
-            parameters.Add(parameter2Name, in2);
-            parameters.Add(parameter3Name, in3);
-            parameters.Add(parameter4Name, in4);
-            parameters.Add(parameter5Name, in5);
-            parameters.Add(parameter6Name, in6);
-            parameters.Add(parameter7Name, in7);
-            parameters.Add(parameter8Name, in8);
-            parameters.Add(parameter9Name, in9);
-            parameters.Add(parameter10Name, in10);
-            parameters.Add(parameter11Name, in11);
-            parameters.Add(parameter12Name, in12);
-            parameters.Add(parameter13Name, in13);
-            parameters.Add(parameter14Name, in14);
+            if (!isParameterFree)
+            {
+                parameters.Add(parameter1Name, in1);
+                parameters.Add(parameter2Name, in2);
+                parameters.Add(parameter3Name, in3);
+                parameters.Add(parameter4Name, in4);
+                parameters.Add(parameter5Name, in5);
+                parameters.Add(parameter6Name, in6);
+                parameters.Add(parameter7Name, in7);
+                parameters.Add(parameter8Name, in8);
+                parameters.Add(parameter9Name, in9);
+                parameters.Add(parameter10Name, in10);
+                parameters.Add(parameter11Name, in11);
+                parameters.Add(parameter12Name, in12);
+                parameters.Add(parameter13Name, in13);
+                parameters.Add(parameter14Name, in14);
+            }
             return expression.ApplyParameters(parameters) as INotifyReversableExpression<TResult>;
         }
 
@@ -6528,26 +6556,25 @@ namespace NMF.Expressions
         /// <returns>An observable value that keeps track of any changes</returns>
         public INotifyValue<TResult> Observe(T1 in1, T2 in2, T3 in3, T4 in4, T5 in5, T6 in6, T7 in7, T8 in8, T9 in9, T10 in10, T11 in11, T12 in12, T13 in13, T14 in14, T15 in15)
         {
-            if (isParameterFree)
-            {
-                return expression;
-            }
             var parameters = new Dictionary<string, object>();
-            parameters.Add(parameter1Name, in1);
-            parameters.Add(parameter2Name, in2);
-            parameters.Add(parameter3Name, in3);
-            parameters.Add(parameter4Name, in4);
-            parameters.Add(parameter5Name, in5);
-            parameters.Add(parameter6Name, in6);
-            parameters.Add(parameter7Name, in7);
-            parameters.Add(parameter8Name, in8);
-            parameters.Add(parameter9Name, in9);
-            parameters.Add(parameter10Name, in10);
-            parameters.Add(parameter11Name, in11);
-            parameters.Add(parameter12Name, in12);
-            parameters.Add(parameter13Name, in13);
-            parameters.Add(parameter14Name, in14);
-            parameters.Add(parameter15Name, in15);
+            if (!isParameterFree)
+            {
+                parameters.Add(parameter1Name, in1);
+                parameters.Add(parameter2Name, in2);
+                parameters.Add(parameter3Name, in3);
+                parameters.Add(parameter4Name, in4);
+                parameters.Add(parameter5Name, in5);
+                parameters.Add(parameter6Name, in6);
+                parameters.Add(parameter7Name, in7);
+                parameters.Add(parameter8Name, in8);
+                parameters.Add(parameter9Name, in9);
+                parameters.Add(parameter10Name, in10);
+                parameters.Add(parameter11Name, in11);
+                parameters.Add(parameter12Name, in12);
+                parameters.Add(parameter13Name, in13);
+                parameters.Add(parameter14Name, in14);
+                parameters.Add(parameter15Name, in15);
+            }
             return expression.ApplyParameters(parameters);
         }
 
@@ -6572,26 +6599,25 @@ namespace NMF.Expressions
         /// <returns>An observable value that keeps track of any changes</returns>
         public INotifyValue<TResult> Observe(INotifyValue<T1> in1, INotifyValue<T2> in2, INotifyValue<T3> in3, INotifyValue<T4> in4, INotifyValue<T5> in5, INotifyValue<T6> in6, INotifyValue<T7> in7, INotifyValue<T8> in8, INotifyValue<T9> in9, INotifyValue<T10> in10, INotifyValue<T11> in11, INotifyValue<T12> in12, INotifyValue<T13> in13, INotifyValue<T14> in14, INotifyValue<T15> in15)
         {
-            if (isParameterFree)
-            {
-                return expression;
-            }
             var parameters = new Dictionary<string, object>();
-            parameters.Add(parameter1Name, in1);
-            parameters.Add(parameter2Name, in2);
-            parameters.Add(parameter3Name, in3);
-            parameters.Add(parameter4Name, in4);
-            parameters.Add(parameter5Name, in5);
-            parameters.Add(parameter6Name, in6);
-            parameters.Add(parameter7Name, in7);
-            parameters.Add(parameter8Name, in8);
-            parameters.Add(parameter9Name, in9);
-            parameters.Add(parameter10Name, in10);
-            parameters.Add(parameter11Name, in11);
-            parameters.Add(parameter12Name, in12);
-            parameters.Add(parameter13Name, in13);
-            parameters.Add(parameter14Name, in14);
-            parameters.Add(parameter15Name, in15);
+            if (!isParameterFree)
+            {
+                parameters.Add(parameter1Name, in1);
+                parameters.Add(parameter2Name, in2);
+                parameters.Add(parameter3Name, in3);
+                parameters.Add(parameter4Name, in4);
+                parameters.Add(parameter5Name, in5);
+                parameters.Add(parameter6Name, in6);
+                parameters.Add(parameter7Name, in7);
+                parameters.Add(parameter8Name, in8);
+                parameters.Add(parameter9Name, in9);
+                parameters.Add(parameter10Name, in10);
+                parameters.Add(parameter11Name, in11);
+                parameters.Add(parameter12Name, in12);
+                parameters.Add(parameter13Name, in13);
+                parameters.Add(parameter14Name, in14);
+                parameters.Add(parameter15Name, in15);
+            }
             return expression.ApplyParameters(parameters);
         }
 
@@ -7227,23 +7253,25 @@ namespace NMF.Expressions
         public virtual INotifyReversableValue<TResult> InvokeReversable(T1 in1, T2 in2, T3 in3, T4 in4, T5 in5, T6 in6, T7 in7, T8 in8, T9 in9, T10 in10, T11 in11, T12 in12, T13 in13, T14 in14, T15 in15)
         {
             if (!IsReversable) throw new InvalidOperationException("Expression is not reversable");
-            if (isParameterFree) return expression as INotifyReversableExpression<TResult>;
             var parameters = new Dictionary<string, object>();
-            parameters.Add(parameter1Name, in1);
-            parameters.Add(parameter2Name, in2);
-            parameters.Add(parameter3Name, in3);
-            parameters.Add(parameter4Name, in4);
-            parameters.Add(parameter5Name, in5);
-            parameters.Add(parameter6Name, in6);
-            parameters.Add(parameter7Name, in7);
-            parameters.Add(parameter8Name, in8);
-            parameters.Add(parameter9Name, in9);
-            parameters.Add(parameter10Name, in10);
-            parameters.Add(parameter11Name, in11);
-            parameters.Add(parameter12Name, in12);
-            parameters.Add(parameter13Name, in13);
-            parameters.Add(parameter14Name, in14);
-            parameters.Add(parameter15Name, in15);
+            if (!isParameterFree)
+            {
+                parameters.Add(parameter1Name, in1);
+                parameters.Add(parameter2Name, in2);
+                parameters.Add(parameter3Name, in3);
+                parameters.Add(parameter4Name, in4);
+                parameters.Add(parameter5Name, in5);
+                parameters.Add(parameter6Name, in6);
+                parameters.Add(parameter7Name, in7);
+                parameters.Add(parameter8Name, in8);
+                parameters.Add(parameter9Name, in9);
+                parameters.Add(parameter10Name, in10);
+                parameters.Add(parameter11Name, in11);
+                parameters.Add(parameter12Name, in12);
+                parameters.Add(parameter13Name, in13);
+                parameters.Add(parameter14Name, in14);
+                parameters.Add(parameter15Name, in15);
+            }
             return expression.ApplyParameters(parameters) as INotifyReversableExpression<TResult>;
         }
 
@@ -7269,23 +7297,25 @@ namespace NMF.Expressions
         public virtual INotifyReversableValue<TResult> InvokeReversable(INotifyValue<T1> in1, INotifyValue<T2> in2, INotifyValue<T3> in3, INotifyValue<T4> in4, INotifyValue<T5> in5, INotifyValue<T6> in6, INotifyValue<T7> in7, INotifyValue<T8> in8, INotifyValue<T9> in9, INotifyValue<T10> in10, INotifyValue<T11> in11, INotifyValue<T12> in12, INotifyValue<T13> in13, INotifyValue<T14> in14, INotifyValue<T15> in15)
         {
             if (!IsReversable) throw new InvalidOperationException("Expression is not reversable");
-            if (isParameterFree) return expression as INotifyReversableExpression<TResult>;
             var parameters = new Dictionary<string, object>();
-            parameters.Add(parameter1Name, in1);
-            parameters.Add(parameter2Name, in2);
-            parameters.Add(parameter3Name, in3);
-            parameters.Add(parameter4Name, in4);
-            parameters.Add(parameter5Name, in5);
-            parameters.Add(parameter6Name, in6);
-            parameters.Add(parameter7Name, in7);
-            parameters.Add(parameter8Name, in8);
-            parameters.Add(parameter9Name, in9);
-            parameters.Add(parameter10Name, in10);
-            parameters.Add(parameter11Name, in11);
-            parameters.Add(parameter12Name, in12);
-            parameters.Add(parameter13Name, in13);
-            parameters.Add(parameter14Name, in14);
-            parameters.Add(parameter15Name, in15);
+            if (!isParameterFree)
+            {
+                parameters.Add(parameter1Name, in1);
+                parameters.Add(parameter2Name, in2);
+                parameters.Add(parameter3Name, in3);
+                parameters.Add(parameter4Name, in4);
+                parameters.Add(parameter5Name, in5);
+                parameters.Add(parameter6Name, in6);
+                parameters.Add(parameter7Name, in7);
+                parameters.Add(parameter8Name, in8);
+                parameters.Add(parameter9Name, in9);
+                parameters.Add(parameter10Name, in10);
+                parameters.Add(parameter11Name, in11);
+                parameters.Add(parameter12Name, in12);
+                parameters.Add(parameter13Name, in13);
+                parameters.Add(parameter14Name, in14);
+                parameters.Add(parameter15Name, in15);
+            }
             return expression.ApplyParameters(parameters) as INotifyReversableExpression<TResult>;
         }
 

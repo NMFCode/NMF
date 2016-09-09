@@ -80,14 +80,13 @@ public partial class ObservingFunc<<# for (int j = 1; j <= i; j++) { #>T<#= j #>
         /// <returns>An observable value that keeps track of any changes</returns>
         public INotifyValue<TResult> Observe(<# for (int j = 1; j < i; j++) { #>T<#= j #> in<#= j #>, <# } #>T<#= i #> in<#= i #>)
         {
-            if (isParameterFree)
-            {
-                return expression;
-            }
             var parameters = new Dictionary<string, object>();
+            if (!isParameterFree)
+            {
 <# for(int j = 1; j <= i; j++) { #>
-            parameters.Add(parameter<#= j #>Name, in<#= j #>);
+                parameters.Add(parameter<#= j #>Name, in<#= j #>);
 <# } #>
+            }
             return expression.ApplyParameters(parameters);
         }
 
@@ -100,14 +99,13 @@ public partial class ObservingFunc<<# for (int j = 1; j <= i; j++) { #>T<#= j #>
         /// <returns>An observable value that keeps track of any changes</returns>
         public INotifyValue<TResult> Observe(<# for (int j = 1; j < i; j++) { #>INotifyValue<T<#= j #>> in<#= j #>, <# } #>INotifyValue<T<#= i #>> in<#= i #>)
         {
-            if (isParameterFree)
-            {
-                return expression;
-            }
             var parameters = new Dictionary<string, object>();
+            if (!isParameterFree)
+            {
 <# for(int j = 1; j <= i; j++) { #>
-            parameters.Add(parameter<#= j #>Name, in<#= j #>);
+                parameters.Add(parameter<#= j #>Name, in<#= j #>);
 <# } #>
+            }
             return expression.ApplyParameters(parameters);
         }
 
@@ -154,11 +152,13 @@ public partial class ObservingFunc<<# for (int j = 1; j <= i; j++) { #>T<#= j #>
         public virtual INotifyReversableValue<TResult> InvokeReversable(<# for (int j = 1; j < i; j++) { #>T<#= j #> in<#= j #>, <# } #>T<#= i #> in<#= i #>)
         {
             if (!IsReversable) throw new InvalidOperationException("Expression is not reversable");
-            if (isParameterFree) return expression as INotifyReversableExpression<TResult>;
             var parameters = new Dictionary<string, object>();
+            if (!isParameterFree)
+            {
 <# for(int j = 1; j <= i; j++) { #>
-            parameters.Add(parameter<#= j #>Name, in<#= j #>);
+                parameters.Add(parameter<#= j #>Name, in<#= j #>);
 <# } #>
+            }
             return expression.ApplyParameters(parameters) as INotifyReversableExpression<TResult>;
         }
 
@@ -172,11 +172,13 @@ public partial class ObservingFunc<<# for (int j = 1; j <= i; j++) { #>T<#= j #>
         public virtual INotifyReversableValue<TResult> InvokeReversable(<# for (int j = 1; j < i; j++) { #>INotifyValue<T<#= j #>> in<#= j #>, <# } #>INotifyValue<T<#= i #>> in<#= i #>)
         {
             if (!IsReversable) throw new InvalidOperationException("Expression is not reversable");
-            if (isParameterFree) return expression as INotifyReversableExpression<TResult>;
             var parameters = new Dictionary<string, object>();
+            if (!isParameterFree)
+            {
 <# for(int j = 1; j <= i; j++) { #>
-            parameters.Add(parameter<#= j #>Name, in<#= j #>);
+                parameters.Add(parameter<#= j #>Name, in<#= j #>);
 <# } #>
+            }
             return expression.ApplyParameters(parameters) as INotifyReversableExpression<TResult>;
         }
 

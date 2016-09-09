@@ -192,7 +192,6 @@ namespace NMF.Expressions.Linq
             foreach (var dep in Dependencies)
                 dep.Successors.Set(this);
             OnAttach();
-            OnCleared();
         }
 
         private void Detach()

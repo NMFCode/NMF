@@ -39,7 +39,7 @@ namespace NMF.Expressions
         {
             if (node == null)
                 throw new ArgumentNullException(nameof(node));
-            if (successor != null && successor != node)
+            if (successor != null)
                 throw new InvalidOperationException("Only one successor is allowed.");
 
             successor = node;

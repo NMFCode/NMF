@@ -62,6 +62,8 @@ namespace NMF.Expressions.Linq
             this.resultSelector = resultSelector;
 
             this.observableInnerSource = innerSource as INotifyEnumerable<TInner>;
+            if (observableInnerSource == null)
+                observableInnerSource = (innerSource as IEnumerableExpression<TInner>)?.AsNotifiable();
             groups = new Dictionary<TKey, KeyGroup>(comparer);
         }
 
