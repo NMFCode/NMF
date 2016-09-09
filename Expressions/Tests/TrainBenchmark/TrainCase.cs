@@ -14,7 +14,7 @@ namespace TrainBenchmark
     public abstract class TrainCase<TResult, TInject>
     {
         private const string BaseUri = "http://github.com/NMFCode/NMF/Models/Models.Test/railway.railway";
-        private const double RepairPortion = 0.5;
+        private const double RepairPortion = 0.2;
         private const double InjectPortion = 0.2;
 
         public abstract Func<RailwayContainer, INotifyEnumerable<TResult>> Query { get; }

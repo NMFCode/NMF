@@ -27,11 +27,11 @@ namespace NMF.Expressions
             {
                 INotifyCollectionChanged collection;
                 if (!trackedCollections.TryGetValue(node, out collection))
-                    return;
+                    continue;
 
                 CollectionChangeTracker tracker;
                 if (!collectionChanges.TryGetValue(collection, out tracker))
-                    return;
+                    continue;
 
                 if (tracker.HasChanges())
                     node.ExecutionMetaData.Sources.Add(tracker.GetResult());
