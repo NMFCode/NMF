@@ -11,6 +11,7 @@ using System.Threading.Tasks;
 
 namespace TrainBenchmark
 {
+    [Config(typeof(TrainBenchmarkConfig))]
     public abstract class TrainCase<TResult, TInject>
     {
         private const string BaseUri = "http://github.com/NMFCode/NMF/Models/Models.Test/railway.railway";
@@ -28,7 +29,7 @@ namespace TrainBenchmark
         public RunData ImmediateRunData { get; }
         public RunData TransactionRunData { get; }
 
-        private readonly XorShift128Plus rnd = new XorShift128Plus(42);
+        private readonly Random rnd = new Random(42);
 
         public TrainCase()
         {
@@ -57,18 +58,26 @@ namespace TrainBenchmark
 
         private void DoRepair(List<TResult> errors)
         {
-            int take = Math.Min(1, (int)(RepairPortion * errors.Count));
-            int skip = errors.Count <= take ? 0 : rnd.Next(errors.Count - take);
-            foreach (var error in errors.Skip(skip).Take(take))
-                Repair(error);
+            ExecuteRandom(errors, Repair, RepairPortion);
         }
 
         private void DoInject(List<TInject> injects)
         {
-            int take = Math.Min(1, (int)(InjectPortion * injects.Count));
-            int skip = injects.Count <= take ? 0 : rnd.Next(injects.Count - take);
-            foreach (var injectTarget in injects.Skip(skip).Take(take))
-                Inject(injectTarget);
+            ExecuteRandom(injects, Inject, InjectPortion);
+        }
+
+        private void ExecuteRandom<T>(List<T> candidates, Action<T> action, double percentage)
+        {
+            if (candidates.Count == 0)
+                return;
+
+            int take = (int)(percentage * candidates.Count);
+            if (take <= 0)
+                take = 1;
+            int skip = candidates.Count == take ? 0 : rnd.Next(candidates.Count - take);
+
+            for (int i = skip; i < skip + take; i++)
+                action(candidates[i]);
         }
 
         public class RunData

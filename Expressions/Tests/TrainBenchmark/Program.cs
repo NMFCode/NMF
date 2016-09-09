@@ -1,4 +1,6 @@
-﻿using BenchmarkDotNet.Running;
+﻿using BenchmarkDotNet.Configs;
+using BenchmarkDotNet.Jobs;
+using BenchmarkDotNet.Running;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -25,43 +27,22 @@ namespace TrainBenchmark
 
         private static void Profile()
         {
-            var bench = new RouteSensor();
+            var bench = new SemaphoreNeighbor();
             var watch = Stopwatch.StartNew();
             for (int i = 0; ; i++)
             {
-                bench.Transaction();
+                bench.Immediate();
                 if ((i & 0xFF) == 0 && watch.ElapsedMilliseconds > 5000)
                     break;
             }
         }
     }
 
-    public class XorShift128Plus
+    class TrainBenchmarkConfig : ManualConfig
     {
-        private int s0;
-        private int s1;
-
-        public XorShift128Plus(long seed)
+        public TrainBenchmarkConfig()
         {
-            s0 = (int)(seed >> 32);
-            s1 = (int)(seed & 0xFFFFFFFF);
-        }
-
-        public XorShift128Plus() : this(Stopwatch.GetTimestamp()) { }
-
-        public int Next()
-        {
-            int x = s0;
-            int y = s1;
-            s0 = y;
-            x ^= x << 11; // a
-            s1 = x ^ y ^ (x >> 8) ^ (y >> 19); // b, c
-            return s1 + y;
-        }
-
-        public int Next(int exclusiveUpperBound)
-        {
-            return Next() % exclusiveUpperBound;
+            Add(Job.Default.WithTargetCount(30));
         }
     }
 }
