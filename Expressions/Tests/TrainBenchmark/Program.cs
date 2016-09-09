@@ -1,10 +1,10 @@
-﻿using BenchmarkDotNet.Configs;
-using BenchmarkDotNet.Jobs;
+﻿using BenchmarkDotNet.Reports;
 using BenchmarkDotNet.Running;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
@@ -16,10 +16,19 @@ namespace TrainBenchmark
 {
     class Program
     {
+        private static readonly Dictionary<string, double> masterTimes = new Dictionary<string, double>()
+        {
+            ["PosLength"] = 741050.8,
+            ["RouteSensor"] = 212.1303,
+            ["SemaphoreNeighbor"] = 15782400,
+            ["SwitchSensor"] = 224.235,
+            ["SwitchSet"] = 29578.6
+        };
+
         static void Main(string[] args)
         {
 #if !DEBUG
-            new BenchmarkSwitcher(Assembly.GetExecutingAssembly()).Run();
+            Benchmark();
 #else
             Profile();
 #endif
@@ -29,20 +38,54 @@ namespace TrainBenchmark
         {
             var bench = new SemaphoreNeighbor();
             var watch = Stopwatch.StartNew();
-            for (int i = 0; ; i++)
+            int i = 0;
+            for (; ; i++)
             {
                 bench.Immediate();
                 if ((i & 0xFF) == 0 && watch.ElapsedMilliseconds > 5000)
                     break;
             }
+            Console.WriteLine("Interations: " + i);
         }
-    }
 
-    class TrainBenchmarkConfig : ManualConfig
-    {
-        public TrainBenchmarkConfig()
+        private static void Benchmark()
         {
-            Add(Job.Default.WithTargetCount(30));
+            var posLength = BenchmarkRunner.Run<PosLength>();
+            var routeSensor = BenchmarkRunner.Run<RouteSensor>();
+            var semaphoreNeighbor = BenchmarkRunner.Run<SemaphoreNeighbor>();
+            var switchSensor = BenchmarkRunner.Run<SwitchSensor>();
+            var switchSet = BenchmarkRunner.Run<SwitchSet>();
+
+            var markdown = CreateMarkdown();
+            AppendBenchmarkResult(markdown, posLength);
+            AppendBenchmarkResult(markdown, routeSensor);
+            AppendBenchmarkResult(markdown, semaphoreNeighbor);
+            AppendBenchmarkResult(markdown, switchSensor);
+            AppendBenchmarkResult(markdown, switchSet);
+
+            File.WriteAllText(@"..\..\..\..\..\BenchmarkResults.md", markdown.ToString());
+        }
+
+        private static void AppendBenchmarkResult(StringBuilder builder, Summary summary)
+        {
+            var master = masterTimes[summary.Title];
+            var immediate = summary.Reports[0].ResultStatistics.Median;
+            var transaction = summary.Reports[1].ResultStatistics.Median;
+
+            builder.AppendFormat("{0}|{1:00,0} ns|{2:00,0} ns|{3:00,0} ns|{4:0.00}x|{5:0.00}x|{6:0.00}x|",
+                summary.Title, master, immediate, transaction, master / immediate,
+                master / transaction, immediate / transaction).AppendLine();
+        }
+
+        private static StringBuilder CreateMarkdown()
+        {
+            return new StringBuilder()
+                .AppendLine("# Results of the TTC 2015 Train Benchmark")
+                .AppendLine()
+                .AppendFormat("Last Run: {0}", DateTime.Now).AppendLine()
+                .AppendLine()
+                .AppendLine("Test Case|Master|Immediate|Transaction|M→I|M→T|I→T|\r\n")
+                .AppendLine("---------|------|---------|-----------|---|---|---|\r\n");
         }
     }
 }

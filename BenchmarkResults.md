@@ -1,13 +1,11 @@
 # Results of the TTC 2015 Train Benchmark
 
-Last Run: Sep 9, 2016 19:30
+Last Run: 09.09.2016 22:23:19
 
- Test Case         |  Master | Immediate | Transaction | M->I | M->T | I->T |
------------------- |-------- |---------- |------------ |----- |----- |----- |
- PosLength         | 6,44e-6 | 3,62e-6   | 3,27e-6     | 1,78 | 1,97 | 1,11 |
- RouteSensor       | 4,54e-7 | 4,54e-7   | 4,53e-7     | 1,00 | 1,00 | 1,00 |
- SemaphoreNeighbor | N/A*    | 1,57e-2   | 1,52e-2     | N/A* | N/A* | 1,04 |
- SwitchSensor      | 4,93e-7 | 4,89e-7   | 4,43e-7     | 1,01 | 1,11 | 1,10 |
- SwitchSet         | 4,02e-6 | 1,70e-6   | 1,84e-6     | 2,37 | 2,18 | 0,92 |
-
-* Note: SemaphoreNeighbor does not currently run correctly on master.
+Test Case|Master|Immediate|Transaction|M→I|M→T|I→T|
+---------|------|---------|-----------|---|---|---|
+PosLength|741.051 ns|166.366 ns|195.808 ns|4,45x|3,78x|0,85x|
+RouteSensor|212 ns|218 ns|2.346 ns|0,97x|0,09x|0,09x|
+SemaphoreNeighbor|15.782.400 ns|17.736.915 ns|16.830.198 ns|0,89x|0,94x|1,05x|
+SwitchSensor|224 ns|218 ns|231 ns|1,03x|0,97x|0,95x|
+SwitchSet|29.579 ns|4.065 ns|2.835 ns|7,28x|10,43x|1,43x|
