@@ -39,9 +39,6 @@ namespace NMF.Expressions
 
         private void NotifyNode(INotifiable node, int currentValue, bool evaluating)
         {
-            if (node == null)
-                return;
-
             var metaData = node.ExecutionMetaData;
             metaData.RemainingVisits -= currentValue;
             if (metaData.RemainingVisits > 0)
@@ -52,7 +49,7 @@ namespace NMF.Expressions
 #endif
 
             INotificationResult result = null;
-            if (evaluating)
+            if (evaluating || metaData.Sources.Count > 0)
             {
                 result = node.Notify(metaData.Sources);
                 evaluating = result.Changed;
