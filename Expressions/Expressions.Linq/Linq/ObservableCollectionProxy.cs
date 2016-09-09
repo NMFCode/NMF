@@ -28,7 +28,7 @@ namespace NMF.Expressions.Linq
         {
             var notifiable = inner as INotifyCollectionChanged;
             if (notifiable != null)
-                ExecutionContext.Instance.AddChangeListener<T>(this, notifiable);
+                ExecutionContext.Instance.AddChangeListener(this, notifiable);
         }
 
         protected override void OnDetach()

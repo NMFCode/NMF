@@ -40,7 +40,7 @@ namespace NMF.Expressions
 
         private void Attach()
         {
-            ExecutionContext.Instance.AddChangeListener<T>(this, this);
+            ExecutionContext.Instance.AddChangeListener(this, this);
         }
 
         private void Detach()

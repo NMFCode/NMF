@@ -8,6 +8,7 @@ using System.Text;
 namespace NMF.Expressions
 {
     [DebuggerDisplay("{isDummySet ? \"<dummy>\" : successor?.ToString()}")]
+    [DebuggerStepThrough]
     public class SingleSuccessorList : ISuccessorList
     {
         private bool isDummySet = false;

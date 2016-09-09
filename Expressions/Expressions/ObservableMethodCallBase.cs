@@ -89,11 +89,7 @@ namespace NMF.Expressions
         {
             var newTarget = target as INotifyCollectionChanged;
             if (newTarget != null)
-            {
-                // Since we don't know the type of the items of the Target.Value collection
-                // without using reflection, we use object here.
-                ExecutionContext.Instance.AddChangeListener<object>(this, newTarget);
-            }
+                ExecutionContext.Instance.AddChangeListener(this, newTarget);
         }
 
         private void DetachCollectionChangeListener(object target)

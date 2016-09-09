@@ -44,7 +44,7 @@ namespace NMF.Expressions.Linq
                         INotifyCollectionChanged notifier = sequence as INotifyCollectionChanged;
                         if (notifier != null)
                         {
-                            ExecutionContext.Instance.AddChangeListener<T>(this, notifier);
+                            ExecutionContext.Instance.AddChangeListener(this, notifier);
                         }
                     }
                 }
@@ -80,13 +80,15 @@ namespace NMF.Expressions.Linq
             }
             else
             {
-                var change = (CollectionChangedNotificationResult<T>)sources[0];
+                var change = (ICollectionChangedNotificationResult)sources[0];
                 if (change.IsReset)
                     OnCleared();
                 else
                 {
-                    OnRemoveItems(change.AllRemovedItems);
-                    OnAddItems(change.AllAddedItems);
+                    if (change.RemovedItems != null)
+                        OnRemoveItems(change.RemovedItems.Cast<T>());
+                    if (change.AddedItems != null)
+                        OnAddItems(change.AddedItems.Cast<T>());
                 }
                 return CollectionChangedNotificationResult<T>.Transfer(change, this);
             }

@@ -24,10 +24,8 @@ namespace NMF.Expressions
 
         public void CommitTransaction()
         {
-            foreach (var node in invalidNodes)
-                AggregateCollectionChanges(node);
+            context.AggregateCollectionChanges(invalidNodes);
             Execute(invalidNodes);
-            context.CollectionChanges.Clear();
             invalidNodes.Clear();
             TransactionActive = false;
         }
@@ -42,9 +40,8 @@ namespace NMF.Expressions
 
             if (nodes.Length == 1)
             {
-                AggregateCollectionChanges(nodes[0]);
+                context.AggregateCollectionChanges(nodes);
                 ExecuteSingle(nodes[0]);
-                context.CollectionChanges.Clear();
             }
             else
             {
@@ -61,26 +58,9 @@ namespace NMF.Expressions
                 invalidNodes.Add(node);
             else
             {
-                AggregateCollectionChanges(node);
+                context.AggregateCollectionChanges(new[] { node });
                 ExecuteSingle(node);
-                context.CollectionChanges.Clear();
             }
-        }
-
-        private void AggregateCollectionChanges(INotifiable node)
-        {
-            INotifyCollectionChanged collection;
-            if (!context.TrackedCollections.TryGetValue(node, out collection))
-                return;
-
-            ExecutionContext.ICollectionChangeTracker tracker;
-            if (!context.CollectionChanges.TryGetValue(collection, out tracker))
-                return;
-
-            if (tracker.HasChanges())
-                node.ExecutionMetaData.Sources.Add(tracker.GetResult());
-            else
-                node.ExecutionMetaData.Sources.Add(UnchangedNotificationResult.Instance);
         }
 
         protected abstract void Execute(HashSet<INotifiable> nodes);
