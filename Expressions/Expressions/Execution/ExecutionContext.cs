@@ -17,6 +17,7 @@ namespace NMF.Expressions
         private readonly Dictionary<Tuple<INotifiable, INotifyCollectionChanged>, NotifyCollectionChangedEventHandler> collectionChangedHandler = new Dictionary<Tuple<INotifiable, INotifyCollectionChanged>, NotifyCollectionChangedEventHandler>();
 
         private readonly Dictionary<INotifyCollectionChanged, CollectionChangeTracker> collectionChanges = new Dictionary<INotifyCollectionChanged, CollectionChangeTracker>();
+        private readonly Dictionary<INotifyPropertyChanged, PropertyChangeTracker> propertyChanges = new Dictionary<INotifyPropertyChanged, PropertyChangeTracker>();
         private readonly Dictionary<INotifiable, INotifyCollectionChanged> trackedCollections = new Dictionary<INotifiable, INotifyCollectionChanged>();
 
         private ExecutionContext() { }
@@ -46,6 +47,8 @@ namespace NMF.Expressions
                 if (e.PropertyName == propertyName ||
                     e.PropertyName.Equals(propertyName, StringComparison.OrdinalIgnoreCase))
                     ExecutionEngine.Current.SetInvalidNode(node);
+                TrackPropertyChanges(element, e); //TODO e durch neuen Wert ersetzen
+                //TODO abspeichern was getrackt wird etc
             };
 
             element.PropertyChanged += handler;
@@ -68,6 +71,7 @@ namespace NMF.Expressions
 
         public void RemoveChangeListener(INotifiable node, INotifyPropertyChanged element, string propertyName)
         {
+            //TODO aggregation beachten
             var key = new Tuple<INotifiable, INotifyPropertyChanged, string>(node, element, propertyName);
             PropertyChangedEventHandler handler;
             if (propertyChangedHandler.TryGetValue(key, out handler))
@@ -101,6 +105,20 @@ namespace NMF.Expressions
             collectionChangedHandler.Clear();
         }
 
+        private void TrackPropertyChanges(INotifyPropertyChanged property, object newValue)
+        {
+            PropertyChangeTracker tracker;
+            if (!propertyChanges.TryGetValue(property, out tracker))
+            {
+                tracker = new PropertyChangeTracker(newValue);
+                propertyChanges[property] = tracker;
+            }
+            else
+            {
+                tracker.TrackValueChanged(newValue);
+            }
+        }
+
         private void TrackCollectionChanges(INotifyCollectionChanged collection, NotifyCollectionChangedEventArgs args)
         {
             CollectionChangeTracker tracker;
@@ -132,7 +150,34 @@ namespace NMF.Expressions
                         "{args.Action} is not a valid action for a NotifyCollectionChanged event.");
             }
         }
-        
+
+        private class PropertyChangeTracker
+        {
+            private readonly object _oldValue;
+            private object _currentValue;
+
+            public PropertyChangeTracker(object value)
+            {
+                _oldValue = value;
+                _currentValue = value;
+            }
+
+            public void TrackValueChanged(object newValue)
+            {
+                _currentValue = newValue;
+            }
+
+            public bool HasChanges()
+            {
+                return _oldValue != _currentValue;
+            }
+
+            public IValueChangedNotificationResult GetResult()
+            {
+                return new ValueChangedNotificationResult<object>(null, _oldValue, _currentValue);
+            }
+        }
+
         private class CollectionChangeTracker
         {
             private bool _isReset;
