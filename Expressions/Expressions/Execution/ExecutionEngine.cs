@@ -10,10 +10,9 @@ using System.Text;
 
 namespace NMF.Expressions
 {
-    public abstract class ExecutionEngine : IDisposable
+    public abstract class ExecutionEngine
     {
         private readonly ExecutionContext context = ExecutionContext.Instance;
-        private HashSet<INotifiable> invalidNodes = new HashSet<INotifiable>();
 
         public bool TransactionActive { get; private set; }
 
@@ -24,10 +23,7 @@ namespace NMF.Expressions
 
         public void CommitTransaction()
         {
-            context.AggregateCollectionChanges(invalidNodes);
-            context.AggregatePropertyChanges(invalidNodes);
-            Execute(invalidNodes);
-            invalidNodes.Clear();
+            AggregateAndExecute();
             TransactionActive = false;
         }
 
@@ -40,60 +36,30 @@ namespace NMF.Expressions
                 throw new InvalidOperationException("A transaction is in progress. Commit or rollback first.");
 
             if (nodes.Length == 1)
-            {
-                context.AggregatePropertyChanges(nodes);
-                context.AggregateCollectionChanges(nodes);
                 ExecuteSingle(nodes[0]);
-            }
             else
-            {
-                BeginTransaction();
-                foreach (var node in nodes)
-                    SetInvalidNode(node);
-                CommitTransaction();
-            }
+                Execute(new HashSet<INotifiable>(nodes));
         }
 
-        internal void SetInvalidNode(INotifiable node)
+        internal void OnNodesInvalidated()
         {
-            if (TransactionActive)
-                invalidNodes.Add(node);
+            if (!TransactionActive)
+                AggregateAndExecute();
+        }
+
+        private void AggregateAndExecute()
+        {
+            var invalids = context.AggregateInvalidNodes();
+            if (invalids.Count == 1)
+                ExecuteSingle(invalids.First());
             else
-            {
-                context.AggregatePropertyChanges(new[] { node });
-                context.AggregateCollectionChanges(new[] { node });
-                ExecuteSingle(node);
-            }
+                Execute(invalids);
         }
 
         protected abstract void Execute(HashSet<INotifiable> nodes);
 
         protected abstract void ExecuteSingle(INotifiable node);
-
-        public void Dispose()
-        {
-            Dispose(true);
-            GC.SuppressFinalize(this);
-        }
-
-        protected virtual void Dispose(bool disposing)
-        {
-            invalidNodes.Clear();
-        }
-
-        private static ExecutionEngine current = new SequentialExecutionEngine();
-
-        public static ExecutionEngine Current
-        {
-            get { return current; }
-            set
-            {
-                if (value != null)
-                {
-                    current.Dispose();
-                    current = value;
-                }
-            }
-        }
+        
+        public static ExecutionEngine Current { get; set; } = new SequentialExecutionEngine();
     }
 }

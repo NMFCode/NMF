@@ -28,7 +28,8 @@ namespace TrainBenchmark
         static void Main(string[] args)
         {
 #if !DEBUG
-            Benchmark();
+            //Benchmark();
+            new BenchmarkSwitcher(Assembly.GetExecutingAssembly()).Run();
 #else
             Profile();
 #endif
@@ -36,14 +37,12 @@ namespace TrainBenchmark
 
         private static void Profile()
         {
-            var bench = new SemaphoreNeighbor();
+            var bench = new RouteSensor();
             var watch = Stopwatch.StartNew();
             int i = 0;
-            for (; ; i++)
+            for (; (i & 0xFF) != 0 || watch.ElapsedMilliseconds < 5000; i++)
             {
                 bench.Immediate();
-                if ((i & 0xFF) == 0 && watch.ElapsedMilliseconds > 5000)
-                    break;
             }
             Console.WriteLine("Interations: " + i);
         }
