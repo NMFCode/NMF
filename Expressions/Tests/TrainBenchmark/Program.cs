@@ -28,8 +28,8 @@ namespace TrainBenchmark
         static void Main(string[] args)
         {
 #if !DEBUG
-            //Benchmark();
-            new BenchmarkSwitcher(Assembly.GetExecutingAssembly()).Run();
+            Benchmark();
+            //new BenchmarkSwitcher(Assembly.GetExecutingAssembly()).Run();
 #else
             Profile();
 #endif
@@ -37,12 +37,12 @@ namespace TrainBenchmark
 
         private static void Profile()
         {
-            var bench = new RouteSensor();
+            var bench = new SwitchSet();
             var watch = Stopwatch.StartNew();
             int i = 0;
             for (; (i & 0xFF) != 0 || watch.ElapsedMilliseconds < 5000; i++)
             {
-                bench.Immediate();
+                bench.Transaction();
             }
             Console.WriteLine("Interations: " + i);
         }
@@ -83,8 +83,8 @@ namespace TrainBenchmark
                 .AppendLine()
                 .AppendFormat("Last Run: {0}", DateTime.Now).AppendLine()
                 .AppendLine()
-                .AppendLine("Test Case|Master|Immediate|Transaction|M→I|M→T|I→T|\r\n")
-                .AppendLine("---------|------|---------|-----------|---|---|---|\r\n");
+                .AppendLine("Test Case|Master|Immediate|Transaction|M→I|M→T|I→T|")
+                .AppendLine("---------|------|---------|-----------|---|---|---|");
         }
     }
 }

@@ -50,6 +50,9 @@ namespace NMF.Expressions
         private void AggregateAndExecute()
         {
             var invalids = context.AggregateInvalidNodes();
+            if (invalids.Count == 0)
+                return;
+
             if (invalids.Count == 1)
                 ExecuteSingle(invalids.First());
             else
