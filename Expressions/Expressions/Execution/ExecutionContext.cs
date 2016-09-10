@@ -14,7 +14,7 @@ namespace NMF.Expressions
         private static readonly ExecutionContext instance = new ExecutionContext();
         public static ExecutionContext Instance => instance;
 
-        private readonly Dictionary<INotifyCollectionChanged, CollectionChangeTracker> collectionChanges = new Dictionary<INotifyCollectionChanged, CollectionChangeTracker>();
+        private readonly List<CollectionChangeTracker> collectionChanges = new List<CollectionChangeTracker>();
         private readonly Dictionary<INotifyPropertyChanged, HashSet<string>> propertyChanges = new Dictionary<INotifyPropertyChanged, HashSet<string>>();
 
         private readonly Dictionary<INotifyCollectionChanged, Collection<INotifiable>> collectionSubscribers = new Dictionary<INotifyCollectionChanged, Collection<INotifiable>>();
@@ -36,13 +36,16 @@ namespace NMF.Expressions
             }
             propertyChanges.Clear();
 
-            foreach (var kvp in collectionChanges)
+            foreach (var tracker in collectionChanges)
             {
-                var result = kvp.Value.GetResult();
-                foreach (var subscriber in collectionSubscribers[kvp.Key])
+                if (tracker.HasChanges())
                 {
-                    results.Add(subscriber);
-                    subscriber.ExecutionMetaData.Sources.Add(result);
+                    var result = tracker.GetResult();
+                    foreach (var subscriber in collectionSubscribers[tracker.Collection])
+                    {
+                        results.Add(subscriber);
+                        subscriber.ExecutionMetaData.Sources.Add(result);
+                    }
                 }
             }
             collectionChanges.Clear();
@@ -131,7 +134,7 @@ namespace NMF.Expressions
             {
                 collection.CollectionChanged -= OnCollectionChanged;
                 collectionSubscribers.Remove(collection);
-                collectionChanges.Remove(collection);
+                collectionChanges.RemoveAll(t => t.Collection == collection);
             }
         }
 
@@ -144,11 +147,11 @@ namespace NMF.Expressions
 
         private void TrackCollectionChanges(INotifyCollectionChanged collection, NotifyCollectionChangedEventArgs args)
         {
-            CollectionChangeTracker tracker;
-            if (!collectionChanges.TryGetValue(collection, out tracker))
+            var tracker = collectionChanges.Find(t => t.Collection == collection);
+            if (tracker == null)
             {
-                tracker = new CollectionChangeTracker();
-                collectionChanges[collection] = tracker;
+                tracker = new CollectionChangeTracker(collection);
+                collectionChanges.Add(tracker);
             }
 
             switch (args.Action)
@@ -177,77 +180,81 @@ namespace NMF.Expressions
         private class CollectionChangeTracker
         {
             private bool _isReset;
-            private readonly List<object> _addedItems = new List<object>();
-            private readonly List<object> _removedItems = new List<object>();
-            private readonly List<object> _movedItems = new List<object>();
-            private readonly List<object> _replaceAddedItems = new List<object>();
-            private readonly List<object> _replaceRemovedItems = new List<object>();
+            private List<object> _addedItems;
+            private List<object> _removedItems;
+            private List<object> _movedItems;
+            private List<object> _replaceAddedItems;
+            private List<object> _replaceRemovedItems;
 
-            public CollectionChangeTracker()
-            {
-            }
+            public INotifyCollectionChanged Collection { get; private set; }
 
-            public CollectionChangeTracker(bool isReset)
+            public CollectionChangeTracker(INotifyCollectionChanged collection)
             {
-                _isReset = isReset;
+                Collection = collection;
             }
 
             public void TrackAddAction(IEnumerable addedItems)
             {
-                if (_isReset) return;
+                if (_isReset)
+                    return;
                 foreach (var item in addedItems)
                 {
-                    if (_removedItems.Contains(item))
-                        _removedItems.Remove(item);
-                    else if (_replaceRemovedItems.Contains(item))
-                        _replaceRemovedItems.Remove(item);
-                    else
+                    if ((!_removedItems?.Remove(item) ?? false) && (!_replaceRemovedItems?.Remove(item) ?? false))
+                    {
+                        if (_addedItems == null)
+                            _addedItems = new List<object>();
                         _addedItems.Add(item);
+                    }
                 }
             }
 
             public void TrackRemoveAction(IEnumerable removedItems)
             {
-                if (_isReset) return;
+                if (_isReset)
+                    return;
                 foreach (var item in removedItems)
                 {
-                    if (_addedItems.Contains(item))
-                        _addedItems.Remove(item);
-                    else if (_replaceAddedItems.Contains(item))
-                        _replaceAddedItems.Remove(item);
-                    else
+                    if ((!_addedItems?.Remove(item) ?? false) && (!_replaceAddedItems?.Remove(item) ?? false))
+                    {
+                        if (_removedItems == null)
+                            _removedItems = new List<object>();
                         _removedItems.Add(item);
+                    }
                 }
             }
 
             public void TrackMoveAction(IEnumerable movedItems)
             {
-                if (_isReset) return;
+                if (_isReset)
+                    return;
+                if (_movedItems == null)
+                    _movedItems = new List<object>();
                 foreach (var item in movedItems)
                     _movedItems.Add(item);
             }
 
             public void TrackReplaceAction(IEnumerable replacedItems, IEnumerable replacingItems)
             {
-                if (_isReset) return;
+                if (_isReset)
+                    return;
                 foreach (var item in replacingItems)
                 {
-                    if (_removedItems.Contains(item))
-                        _removedItems.Remove(item);
-                    else if (_replaceRemovedItems.Contains(item))
-                        _replaceRemovedItems.Remove(item);
-                    else
+                    if ((!_removedItems?.Remove(item) ?? false) && (!_replaceRemovedItems?.Remove(item) ?? false))
+                    {
+                        if (_replaceAddedItems == null)
+                            _replaceAddedItems = new List<object>();
                         _replaceAddedItems.Add(item);
+                    }
                 }
 
                 foreach (var item in replacedItems)
                 {
-                    if (_addedItems.Contains(item))
-                        _addedItems.Remove(item);
-                    else if (_replaceAddedItems.Contains(item))
-                        _replaceAddedItems.Remove(item);
-                    else
+                    if ((!_addedItems?.Remove(item) ?? false) && (!_replaceAddedItems?.Remove(item) ?? false))
+                    {
+                        if (_replaceRemovedItems == null)
+                            _replaceRemovedItems = new List<object>();
                         _replaceRemovedItems.Add(item);
+                    }
                 }
             }
 
@@ -276,11 +283,11 @@ namespace NMF.Expressions
             {
                 return
                     _isReset ||
-                    _addedItems.Count > 0 ||
-                    _removedItems.Count > 0 ||
-                    _movedItems.Count > 0 ||
-                    _replaceAddedItems.Count > 0 ||
-                    _replaceRemovedItems.Count > 0;
+                    _addedItems?.Count > 0 ||
+                    _removedItems?.Count > 0 ||
+                    _movedItems?.Count > 0 ||
+                    _replaceAddedItems?.Count > 0 ||
+                    _replaceRemovedItems?.Count > 0;
             }
         }
 
