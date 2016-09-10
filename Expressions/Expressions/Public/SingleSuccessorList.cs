@@ -8,7 +8,7 @@ using System.Text;
 namespace NMF.Expressions
 {
     [DebuggerDisplay("{isDummySet ? \"<dummy>\" : successor?.ToString()}")]
-    [DebuggerStepThrough]
+    //[DebuggerStepThrough]
     public class SingleSuccessorList : ISuccessorList
     {
         private bool isDummySet = false;
@@ -73,11 +73,10 @@ namespace NMF.Expressions
 
         public void UnsetAll()
         {
-            if (successor != null)
-                Unset(successor);
-            else if (isDummySet)
+            if (IsAttached)
             {
                 isDummySet = false;
+                successor = null;
                 Detached?.Invoke(this, EventArgs.Empty);
             }
         }

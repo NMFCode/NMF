@@ -19,6 +19,8 @@ namespace NMF.Expressions.Arithmetics
         public ObservableLogicAnd(INotifyExpression<bool> left, INotifyExpression<bool> right)
             : base(left, right) { }
 
+        public override ExpressionType NodeType { get { return ExpressionType.And; } }
+
         protected override bool GetValue()
         {
             return Left.Value && Right.Value;
@@ -43,6 +45,8 @@ namespace NMF.Expressions.Arithmetics
         public ObservableLogicOr(INotifyExpression<bool> left, INotifyExpression<bool> right)
             : base(left, right) { }
 
+        public override ExpressionType NodeType { get { return ExpressionType.Or; } }
+
         protected override bool GetValue()
         {
             return Left.Value || Right.Value;
@@ -66,6 +70,8 @@ namespace NMF.Expressions.Arithmetics
 
         public ObservableLogicXor(INotifyExpression<bool> left, INotifyExpression<bool> right)
             : base(left, right) { }
+
+        public override ExpressionType NodeType { get { return ExpressionType.ExclusiveOr; } }
 
         protected override bool GetValue()
         {
@@ -208,6 +214,8 @@ namespace NMF.Expressions.Arithmetics
 
         public ObservableLogicNot(INotifyExpression<bool> inner)
             : base(inner) { }
+
+        public override ExpressionType NodeType { get { return ExpressionType.Not; } }
 
         protected override bool GetValue()
         {
