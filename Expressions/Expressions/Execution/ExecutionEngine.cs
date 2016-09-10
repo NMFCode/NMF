@@ -25,6 +25,7 @@ namespace NMF.Expressions
         public void CommitTransaction()
         {
             context.AggregateCollectionChanges(invalidNodes);
+            context.AggregatePropertyChanges(invalidNodes);
             Execute(invalidNodes);
             invalidNodes.Clear();
             TransactionActive = false;
@@ -40,6 +41,7 @@ namespace NMF.Expressions
 
             if (nodes.Length == 1)
             {
+                context.AggregatePropertyChanges(nodes);
                 context.AggregateCollectionChanges(nodes);
                 ExecuteSingle(nodes[0]);
             }
@@ -58,6 +60,7 @@ namespace NMF.Expressions
                 invalidNodes.Add(node);
             else
             {
+                context.AggregatePropertyChanges(new[] { node });
                 context.AggregateCollectionChanges(new[] { node });
                 ExecuteSingle(node);
             }
