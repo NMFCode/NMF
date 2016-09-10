@@ -14,8 +14,9 @@ namespace NMF.Expressions
         private static readonly ExecutionContext instance = new ExecutionContext();
         public static ExecutionContext Instance => instance;
 
+        private readonly HashSet<Tuple<INotifiable, CollectionChangeTracker>> invalidNodes = new HashSet<Tuple<INotifiable, CollectionChangeTracker>>();
+
         private readonly List<CollectionChangeTracker> collectionChanges = new List<CollectionChangeTracker>();
-        private readonly Dictionary<INotifyPropertyChanged, HashSet<string>> propertyChanges = new Dictionary<INotifyPropertyChanged, HashSet<string>>();
 
         private readonly Dictionary<INotifyCollectionChanged, Collection<INotifiable>> collectionSubscribers = new Dictionary<INotifyCollectionChanged, Collection<INotifiable>>();
         private readonly Dictionary<INotifyPropertyChanged, Collection<Tuple<INotifiable, string>>> propertySubscribers = new Dictionary<INotifyPropertyChanged, Collection<Tuple<INotifiable, string>>>();
@@ -26,39 +27,28 @@ namespace NMF.Expressions
         {
             var results = new HashSet<INotifiable>();
 
-            foreach (var kvp in propertyChanges)
+            foreach (var node in invalidNodes)
             {
-                foreach (var tuple in propertySubscribers[kvp.Key])
+                if (node.Item2 == null)
+                    results.Add(node.Item1);
+                else if (node.Item2.HasChanges())
                 {
-                    if (kvp.Value.Contains(tuple.Item2))
-                        results.Add(tuple.Item1);
+                    results.Add(node.Item1);
+                    node.Item1.ExecutionMetaData.Sources.Add(node.Item2.GetResult());
                 }
             }
-            propertyChanges.Clear();
-
-            foreach (var tracker in collectionChanges)
-            {
-                if (tracker.HasChanges())
-                {
-                    var result = tracker.GetResult();
-                    foreach (var subscriber in collectionSubscribers[tracker.Collection])
-                    {
-                        results.Add(subscriber);
-                        subscriber.ExecutionMetaData.Sources.Add(result);
-                    }
-                }
-            }
-            collectionChanges.Clear();
+            invalidNodes.Clear();
 
             return results;
         }
 
         public void DetachAllChangeHandler()
         {
+            invalidNodes.Clear();
+
             foreach (var element in propertySubscribers.Keys)
                 element.PropertyChanged -= OnPropertyChanged;
             propertySubscribers.Clear();
-            propertyChanges.Clear();
 
             foreach (var collection in collectionSubscribers.Keys)
                 collection.CollectionChanged -= OnCollectionChanged;
@@ -88,26 +78,20 @@ namespace NMF.Expressions
             {
                 element.PropertyChanged -= OnPropertyChanged;
                 propertySubscribers.Remove(element);
-                propertyChanges.Remove(element);
             }
         }
 
         private void OnPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
             var element = (INotifyPropertyChanged)sender;
-            TrackPropertyChanges(element, e);
-            ExecutionEngine.Current.OnNodesInvalidated();
-        }
 
-        private void TrackPropertyChanges(INotifyPropertyChanged element, PropertyChangedEventArgs e)
-        {
-            HashSet<string> properties;
-            if (!propertyChanges.TryGetValue(element, out properties))
+            foreach (var subscriber in propertySubscribers[element])
             {
-                properties = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
-                propertyChanges.Add(element, properties);
+                if (subscriber.Item2 == e.PropertyName)
+                    invalidNodes.Add(new Tuple<INotifiable, CollectionChangeTracker>(subscriber.Item1, null));
             }
-            properties.Add(e.PropertyName);
+
+            ExecutionEngine.Current.OnNodesInvalidated();
         }
         
         #endregion
@@ -153,6 +137,9 @@ namespace NMF.Expressions
                 tracker = new CollectionChangeTracker(collection);
                 collectionChanges.Add(tracker);
             }
+
+            foreach (var node in collectionSubscribers[collection])
+                invalidNodes.Add(new Tuple<INotifiable, CollectionChangeTracker>(node, tracker));
 
             switch (args.Action)
             {
