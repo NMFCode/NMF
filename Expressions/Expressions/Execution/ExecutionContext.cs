@@ -18,7 +18,9 @@ namespace NMF.Expressions
 
         private readonly Dictionary<INotifyCollectionChanged, CollectionChangeTracker> collectionChanges = new Dictionary<INotifyCollectionChanged, CollectionChangeTracker>();
         private readonly Dictionary<INotifyPropertyChanged, PropertyChangeTracker> propertyChanges = new Dictionary<INotifyPropertyChanged, PropertyChangeTracker>();
+
         private readonly Dictionary<INotifiable, INotifyCollectionChanged> trackedCollections = new Dictionary<INotifiable, INotifyCollectionChanged>();
+        private readonly Dictionary<INotifiable, INotifyPropertyChanged> trackedProperties = new Dictionary<INotifiable, INotifyPropertyChanged>();
 
         private ExecutionContext() { }
 
@@ -40,17 +42,35 @@ namespace NMF.Expressions
             collectionChanges.Clear();
         }
 
+        internal void AggregatePropertyChanges(IEnumerable<INotifiable> nodes)
+        {
+            foreach (var node in nodes)
+            {
+                INotifyPropertyChanged property;
+                if (!trackedProperties.TryGetValue(node, out property))
+                    continue;
+
+                PropertyChangeTracker tracker;
+                if (!propertyChanges.TryGetValue(property, out tracker))
+                    continue;
+
+                if (tracker.HasChanges())
+                    node.ExecutionMetaData.Sources.Add(tracker.GetResult());
+            }
+            propertyChanges.Clear();
+        }
+
         public void AddChangeListener(INotifiable node, INotifyPropertyChanged element, string propertyName)
         {
             PropertyChangedEventHandler handler = (obj, e) =>
             {
-                if (e.PropertyName == propertyName ||
-                    e.PropertyName.Equals(propertyName, StringComparison.OrdinalIgnoreCase))
+                if (e.PropertyName == propertyName || e.PropertyName.Equals(propertyName, StringComparison.OrdinalIgnoreCase))
+                {
                     ExecutionEngine.Current.SetInvalidNode(node);
-                TrackPropertyChanges(element, e); //TODO e durch neuen Wert ersetzen
-                //TODO abspeichern was getrackt wird etc
+                    TrackPropertyChanges(element);
+                }
             };
-
+            trackedProperties[node] = element;
             element.PropertyChanged += handler;
             propertyChangedHandler[
                 new Tuple<INotifiable, INotifyPropertyChanged, string>(node, element, propertyName)] = handler;
@@ -71,7 +91,6 @@ namespace NMF.Expressions
 
         public void RemoveChangeListener(INotifiable node, INotifyPropertyChanged element, string propertyName)
         {
-            //TODO aggregation beachten
             var key = new Tuple<INotifiable, INotifyPropertyChanged, string>(node, element, propertyName);
             PropertyChangedEventHandler handler;
             if (propertyChangedHandler.TryGetValue(key, out handler))
@@ -79,6 +98,8 @@ namespace NMF.Expressions
                 element.PropertyChanged -= handler;
                 propertyChangedHandler.Remove(key);
             }
+
+            trackedProperties.Remove(node);
         }
 
         public void RemoveChangeListener(INotifiable node, INotifyCollectionChanged collection)
@@ -105,17 +126,17 @@ namespace NMF.Expressions
             collectionChangedHandler.Clear();
         }
 
-        private void TrackPropertyChanges(INotifyPropertyChanged property, object newValue)
+        private void TrackPropertyChanges(INotifyPropertyChanged property)
         {
             PropertyChangeTracker tracker;
             if (!propertyChanges.TryGetValue(property, out tracker))
             {
-                tracker = new PropertyChangeTracker(newValue);
+                tracker = new PropertyChangeTracker(property);
                 propertyChanges[property] = tracker;
             }
             else
             {
-                tracker.TrackValueChanged(newValue);
+                tracker.TrackValueChanged(property);
             }
         }
 
