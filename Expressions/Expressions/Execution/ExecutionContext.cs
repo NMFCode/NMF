@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Linq;
@@ -13,131 +14,132 @@ namespace NMF.Expressions
         private static readonly ExecutionContext instance = new ExecutionContext();
         public static ExecutionContext Instance => instance;
 
-        private readonly Dictionary<Tuple<INotifiable, INotifyPropertyChanged, string>, PropertyChangedEventHandler> propertyChangedHandler = new Dictionary<Tuple<INotifiable, INotifyPropertyChanged, string>, PropertyChangedEventHandler>();
-        private readonly Dictionary<Tuple<INotifiable, INotifyCollectionChanged>, NotifyCollectionChangedEventHandler> collectionChangedHandler = new Dictionary<Tuple<INotifiable, INotifyCollectionChanged>, NotifyCollectionChangedEventHandler>();
-
         private readonly Dictionary<INotifyCollectionChanged, CollectionChangeTracker> collectionChanges = new Dictionary<INotifyCollectionChanged, CollectionChangeTracker>();
-        private readonly Dictionary<INotifyPropertyChanged, PropertyChangeTracker> propertyChanges = new Dictionary<INotifyPropertyChanged, PropertyChangeTracker>();
+        private readonly Dictionary<INotifyPropertyChanged, HashSet<string>> propertyChanges = new Dictionary<INotifyPropertyChanged, HashSet<string>>();
 
-        private readonly Dictionary<INotifiable, INotifyCollectionChanged> trackedCollections = new Dictionary<INotifiable, INotifyCollectionChanged>();
-        private readonly Dictionary<INotifiable, INotifyPropertyChanged> trackedProperties = new Dictionary<INotifiable, INotifyPropertyChanged>();
+        private readonly Dictionary<INotifyCollectionChanged, Collection<INotifiable>> collectionSubscribers = new Dictionary<INotifyCollectionChanged, Collection<INotifiable>>();
+        private readonly Dictionary<INotifyPropertyChanged, Collection<Tuple<INotifiable, string>>> propertySubscribers = new Dictionary<INotifyPropertyChanged, Collection<Tuple<INotifiable, string>>>();
 
         private ExecutionContext() { }
 
-        internal void AggregateCollectionChanges(IEnumerable<INotifiable> nodes)
+        internal HashSet<INotifiable> AggregateInvalidNodes()
         {
-            foreach (var node in nodes)
+            var results = new HashSet<INotifiable>();
+
+            foreach (var kvp in propertyChanges)
             {
-                INotifyCollectionChanged collection;
-                if (!trackedCollections.TryGetValue(node, out collection))
-                    continue;
-
-                CollectionChangeTracker tracker;
-                if (!collectionChanges.TryGetValue(collection, out tracker))
-                    continue;
-
-                if (tracker.HasChanges())
-                    node.ExecutionMetaData.Sources.Add(tracker.GetResult());
-            }
-            collectionChanges.Clear();
-        }
-
-        internal void AggregatePropertyChanges(IEnumerable<INotifiable> nodes)
-        {
-            foreach (var node in nodes)
-            {
-                INotifyPropertyChanged property;
-                if (!trackedProperties.TryGetValue(node, out property))
-                    continue;
-
-                PropertyChangeTracker tracker;
-                if (!propertyChanges.TryGetValue(property, out tracker))
-                    continue;
-
-                if (tracker.HasChanges())
-                    node.ExecutionMetaData.Sources.Add(tracker.GetResult());
+                foreach (var tuple in propertySubscribers[kvp.Key])
+                {
+                    if (kvp.Value.Contains(tuple.Item2))
+                        results.Add(tuple.Item1);
+                }
             }
             propertyChanges.Clear();
-        }
 
-        public void AddChangeListener(INotifiable node, INotifyPropertyChanged element, string propertyName)
-        {
-            PropertyChangedEventHandler handler = (obj, e) =>
+            foreach (var kvp in collectionChanges)
             {
-                if (e.PropertyName == propertyName || e.PropertyName.Equals(propertyName, StringComparison.OrdinalIgnoreCase))
+                var result = kvp.Value.GetResult();
+                foreach (var subscriber in collectionSubscribers[kvp.Key])
                 {
-                    ExecutionEngine.Current.SetInvalidNode(node);
-                    TrackPropertyChanges(element);
+                    results.Add(subscriber);
+                    subscriber.ExecutionMetaData.Sources.Add(result);
                 }
-            };
-            trackedProperties[node] = element;
-            element.PropertyChanged += handler;
-            propertyChangedHandler[
-                new Tuple<INotifiable, INotifyPropertyChanged, string>(node, element, propertyName)] = handler;
-        }
-
-        public void AddChangeListener(INotifiable node, INotifyCollectionChanged collection)
-        {
-            NotifyCollectionChangedEventHandler handler = (obj, e) =>
-            {
-                TrackCollectionChanges(collection, e);
-                ExecutionEngine.Current.SetInvalidNode(node);
-            };
-            collection.CollectionChanged += handler;
-            collectionChangedHandler[new Tuple<INotifiable, INotifyCollectionChanged>(node, collection)] = handler;
-            trackedCollections[node] = collection;
-        }
-
-
-        public void RemoveChangeListener(INotifiable node, INotifyPropertyChanged element, string propertyName)
-        {
-            var key = new Tuple<INotifiable, INotifyPropertyChanged, string>(node, element, propertyName);
-            PropertyChangedEventHandler handler;
-            if (propertyChangedHandler.TryGetValue(key, out handler))
-            {
-                element.PropertyChanged -= handler;
-                propertyChangedHandler.Remove(key);
             }
+            collectionChanges.Clear();
 
-            trackedProperties.Remove(node);
-        }
-
-        public void RemoveChangeListener(INotifiable node, INotifyCollectionChanged collection)
-        {
-            var key = new Tuple<INotifiable, INotifyCollectionChanged>(node, collection);
-            NotifyCollectionChangedEventHandler handler;
-            if (collectionChangedHandler.TryGetValue(key, out handler))
-            {
-                collection.CollectionChanged -= handler;
-                collectionChangedHandler.Remove(key);
-            }
-
-            trackedCollections.Remove(node);
+            return results;
         }
 
         public void DetachAllChangeHandler()
         {
-            foreach (var kvp in propertyChangedHandler)
-                kvp.Key.Item2.PropertyChanged -= kvp.Value;
-            propertyChangedHandler.Clear();
+            foreach (var element in propertySubscribers.Keys)
+                element.PropertyChanged -= OnPropertyChanged;
+            propertySubscribers.Clear();
+            propertyChanges.Clear();
 
-            foreach (var kvp in collectionChangedHandler)
-                kvp.Key.Item2.CollectionChanged -= kvp.Value;
-            collectionChangedHandler.Clear();
+            foreach (var collection in collectionSubscribers.Keys)
+                collection.CollectionChanged -= OnCollectionChanged;
+            collectionSubscribers.Clear();
+            collectionChanges.Clear();
         }
 
-        private void TrackPropertyChanges(INotifyPropertyChanged property)
+        #region Properties
+
+        public void AddChangeListener(INotifiable node, INotifyPropertyChanged element, string propertyName)
         {
-            PropertyChangeTracker tracker;
-            if (!propertyChanges.TryGetValue(property, out tracker))
+            Collection<Tuple<INotifiable, string>> subscribers;
+            if (!propertySubscribers.TryGetValue(element, out subscribers))
             {
-                tracker = new PropertyChangeTracker(property);
-                propertyChanges[property] = tracker;
+                subscribers = new Collection<Tuple<INotifiable, string>>();
+                propertySubscribers.Add(element, subscribers);
+                element.PropertyChanged += OnPropertyChanged;
             }
-            else
+            subscribers.Add(new Tuple<INotifiable, string>(node, propertyName));
+        }
+
+        public void RemoveChangeListener(INotifiable node, INotifyPropertyChanged element, string propertyName)
+        {
+            var subscribers = propertySubscribers[element];
+            subscribers.Remove(new Tuple<INotifiable, string>(node, propertyName));
+            if (subscribers.Count == 0)
             {
-                tracker.TrackValueChanged(property);
+                element.PropertyChanged -= OnPropertyChanged;
+                propertySubscribers.Remove(element);
+                propertyChanges.Remove(element);
             }
+        }
+
+        private void OnPropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            var element = (INotifyPropertyChanged)sender;
+            TrackPropertyChanges(element, e);
+            ExecutionEngine.Current.OnNodesInvalidated();
+        }
+
+        private void TrackPropertyChanges(INotifyPropertyChanged element, PropertyChangedEventArgs e)
+        {
+            HashSet<string> properties;
+            if (!propertyChanges.TryGetValue(element, out properties))
+            {
+                properties = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+                propertyChanges.Add(element, properties);
+            }
+            properties.Add(e.PropertyName);
+        }
+        
+        #endregion
+
+        #region Collections
+
+        public void AddChangeListener(INotifiable node, INotifyCollectionChanged collection)
+        {
+            Collection<INotifiable> subscribers;
+            if (!collectionSubscribers.TryGetValue(collection, out subscribers))
+            {
+                subscribers = new Collection<INotifiable>();
+                collectionSubscribers.Add(collection, subscribers);
+                collection.CollectionChanged += OnCollectionChanged;
+            }
+            subscribers.Add(node);
+        }
+
+        public void RemoveChangeListener(INotifiable node, INotifyCollectionChanged collection)
+        {
+            var subscribers = collectionSubscribers[collection];
+            subscribers.Remove(node);
+            if (subscribers.Count == 0)
+            {
+                collection.CollectionChanged -= OnCollectionChanged;
+                collectionSubscribers.Remove(collection);
+                collectionChanges.Remove(collection);
+            }
+        }
+
+        private void OnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            var collection = (INotifyCollectionChanged)sender;
+            TrackCollectionChanges(collection, e);
+            ExecutionEngine.Current.OnNodesInvalidated();
         }
 
         private void TrackCollectionChanges(INotifyCollectionChanged collection, NotifyCollectionChangedEventArgs args)
@@ -169,33 +171,6 @@ namespace NMF.Expressions
                 default:
                     throw new ArgumentException(
                         "{args.Action} is not a valid action for a NotifyCollectionChanged event.");
-            }
-        }
-
-        private class PropertyChangeTracker
-        {
-            private readonly object _oldValue;
-            private object _currentValue;
-
-            public PropertyChangeTracker(object value)
-            {
-                _oldValue = value;
-                _currentValue = value;
-            }
-
-            public void TrackValueChanged(object newValue)
-            {
-                _currentValue = newValue;
-            }
-
-            public bool HasChanges()
-            {
-                return _oldValue != _currentValue;
-            }
-
-            public IValueChangedNotificationResult GetResult()
-            {
-                return new ValueChangedNotificationResult<object>(null, _oldValue, _currentValue);
             }
         }
 
@@ -308,5 +283,7 @@ namespace NMF.Expressions
                     _replaceRemovedItems.Count > 0;
             }
         }
+
+        #endregion
     }
 }
