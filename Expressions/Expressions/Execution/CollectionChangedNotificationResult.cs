@@ -157,11 +157,24 @@ namespace NMF.Expressions
                 return new CollectionChangedNotificationResult<T>(newSource);
 
             return new CollectionChangedNotificationResult<T>(newSource,
-                oldResult.AddedItems?.Cast<T>().ToList(),
-                oldResult.RemovedItems?.Cast<T>().ToList(),
-                oldResult.MovedItems?.Cast<T>().ToList(),
-                oldResult.ReplaceAddedItems?.Cast<T>().ToList(),
-                oldResult.ReplaceRemovedItems?.Cast<T>().ToList());
+                Cast(oldResult.AddedItems),
+                Cast(oldResult.RemovedItems),
+                Cast(oldResult.MovedItems),
+                Cast(oldResult.ReplaceAddedItems),
+                Cast(oldResult.ReplaceRemovedItems));
+        }
+
+        private static List<T> Cast(IList list)
+        {
+            if (list == null || list.Count == 0)
+                return null;
+            
+            var result = new List<T>(list.Count);
+            for (int i = 0; i < list.Count; i++)
+            {
+                result.Add((T)list[i]);
+            }
+            return result;
         }
     }
 }
