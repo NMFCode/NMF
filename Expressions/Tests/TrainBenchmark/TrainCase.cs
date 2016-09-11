@@ -30,13 +30,22 @@ namespace TrainBenchmark
 
         public RunData ImmediateRunData { get; }
         public RunData TransactionRunData { get; }
+        public RunData ParallelRunData { get; }
 
+        private readonly ExecutionEngine defaultEngine;
+        private readonly ExecutionEngine parallelEngine;
         private readonly Random rnd = new Random(42);
 
         public TrainCase()
         {
+            defaultEngine = ExecutionEngine.Current;
+            parallelEngine = new ParallelQueueExecutionEngine();
+
             ImmediateRunData = new RunData(this);
             TransactionRunData = new RunData(this);
+            ExecutionEngine.Current = parallelEngine;
+            ParallelRunData = new RunData(this);
+            ExecutionEngine.Current = defaultEngine;
         }
 
         [Benchmark]
@@ -46,7 +55,7 @@ namespace TrainBenchmark
             DoInject(ImmediateRunData.InjectResults.ToList());
         }
 
-        [Benchmark(Baseline = true)]
+        [Benchmark]
         public void Transaction()
         {
             ExecutionEngine.Current.BeginTransaction();
@@ -56,6 +65,22 @@ namespace TrainBenchmark
             ExecutionEngine.Current.BeginTransaction();
             DoInject(TransactionRunData.InjectResults);
             ExecutionEngine.Current.CommitTransaction();
+        }
+
+        [Benchmark(Baseline = true)]
+        public void Parallel()
+        {
+            ExecutionEngine.Current = parallelEngine;
+
+            ExecutionEngine.Current.BeginTransaction();
+            DoRepair(ParallelRunData.QueryResults);
+            ExecutionEngine.Current.CommitTransaction();
+
+            ExecutionEngine.Current.BeginTransaction();
+            DoInject(ParallelRunData.InjectResults);
+            ExecutionEngine.Current.CommitTransaction();
+
+            ExecutionEngine.Current = defaultEngine;
         }
 
         private void DoRepair(List<TResult> errors)

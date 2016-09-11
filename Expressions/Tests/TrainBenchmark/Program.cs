@@ -28,8 +28,8 @@ namespace TrainBenchmark
         static void Main(string[] args)
         {
 #if !DEBUG
-            Benchmark();
-            //new BenchmarkSwitcher(Assembly.GetExecutingAssembly()).Run();
+            //Benchmark();
+            new BenchmarkSwitcher(Assembly.GetExecutingAssembly()).Run();
 #else
             Profile();
 #endif
@@ -40,11 +40,11 @@ namespace TrainBenchmark
             var bench = new SwitchSet();
             var watch = Stopwatch.StartNew();
             int i = 0;
-            for (; (i & 0xFF) != 0 || watch.ElapsedMilliseconds < 5000; i++)
+            for (; (i & 0x0F) != 0 || watch.ElapsedMilliseconds < 5000; i++)
             {
-                bench.Transaction();
+                bench.Parallel();
             }
-            Console.WriteLine("Interations: " + i);
+            Console.WriteLine("Iterations: " + i);
         }
 
         private static void Benchmark()

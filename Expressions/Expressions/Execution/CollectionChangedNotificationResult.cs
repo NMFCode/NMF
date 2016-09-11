@@ -146,16 +146,13 @@ namespace NMF.Expressions
 
         public static CollectionChangedNotificationResult<T> Transfer(ICollectionChangedNotificationResult oldResult, INotifiable newSource)
         {
-            var orig = oldResult as CollectionChangedNotificationResult<T>;
-            if (orig != null)
-            {
-                orig.source = newSource;
-                return orig;
-            }
-
             if (oldResult.IsReset)
                 return new CollectionChangedNotificationResult<T>(newSource);
 
+            var orig = oldResult as CollectionChangedNotificationResult<T>;
+            if (orig != null)
+                return new CollectionChangedNotificationResult<T>(newSource, orig.AddedItems, orig.RemovedItems, orig.MovedItems, orig.ReplaceAddedItems, orig.ReplaceRemovedItems);
+            
             return new CollectionChangedNotificationResult<T>(newSource,
                 Cast(oldResult.AddedItems),
                 Cast(oldResult.RemovedItems),
