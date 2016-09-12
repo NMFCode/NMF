@@ -12,8 +12,7 @@ namespace NMF.Expressions.Linq
         private ObservingFunc<TItem, TKey> keySelector;
 
         private Dictionary<TKey, ObservableGroup<TKey, TItem>> groups;
-        private Dictionary<TItem, INotifyValue<TKey>> keys = new Dictionary<TItem, INotifyValue<TKey>>();
-        private Dictionary<INotifyValue<TKey>, TItem> items = new Dictionary<INotifyValue<TKey>, TItem>();
+        private Dictionary<TItem, TaggedObservableValue<TKey, TItem>> keys = new Dictionary<TItem, TaggedObservableValue<TKey, TItem>>();
 
         public override IEnumerable<INotifiable> Dependencies
         {
@@ -40,10 +39,9 @@ namespace NMF.Expressions.Linq
 
         private bool AttachItem(TItem item)
         {
-            var key = keySelector.Observe(item);
+            var key = keySelector.InvokeTagged(item, item);
             key.Successors.Set(this);
             keys[item] = key;
-            items[key] = item;
 
             var add = false;
             ObservableGroup<TKey, TItem> group;
@@ -63,7 +61,6 @@ namespace NMF.Expressions.Linq
             var key = keys[item];
             key.Successors.Unset(this);
             keys.Remove(item);
-            items.Remove(key);
             var group = groups[key.Value];
             group.Items.Remove(item);
             if (group.Count == 0)
@@ -139,7 +136,6 @@ namespace NMF.Expressions.Linq
             }
 
             keys.Clear();
-            items.Clear();
             groups.Clear();
         }
 
@@ -168,13 +164,12 @@ namespace NMF.Expressions.Linq
                 else
                 {
                     var keyChange = (ValueChangedNotificationResult<TKey>)change;
-                    var key = (INotifyValue<TKey>)keyChange.Source;
-                    var item = items[key];
+                    var tagged = (TaggedObservableValue<TKey, TItem>)keyChange.Source;
 
                     ObservableGroup<TKey, TItem> group;
                     if (groups.TryGetValue(keyChange.OldValue, out group))
                     {
-                        group.Items.Remove(item);
+                        group.Items.Remove(tagged.Tag);
                         if (group.Count == 0)
                         {
                             groups.Remove(keyChange.OldValue);
@@ -188,7 +183,7 @@ namespace NMF.Expressions.Linq
                         groups.Add(keyChange.NewValue, group);
                         added.Add(group);
                     }
-                    group.Items.Add(item);
+                    group.Items.Add(tagged.Tag);
                 }
             }
 
