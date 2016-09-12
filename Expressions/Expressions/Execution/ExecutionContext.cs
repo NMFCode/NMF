@@ -186,7 +186,7 @@ namespace NMF.Expressions
                     return;
                 foreach (var item in addedItems)
                 {
-                    if ((!_removedItems?.Remove(item) ?? false) && (!_replaceRemovedItems?.Remove(item) ?? false))
+                    if ((!_removedItems?.Remove(item) ?? true) && (!_replaceRemovedItems?.Remove(item) ?? true))
                     {
                         if (_addedItems == null)
                             _addedItems = new List<object>();
@@ -201,7 +201,7 @@ namespace NMF.Expressions
                     return;
                 foreach (var item in removedItems)
                 {
-                    if ((!_addedItems?.Remove(item) ?? false) && (!_replaceAddedItems?.Remove(item) ?? false))
+                    if ((!_addedItems?.Remove(item) ?? true) && (!_replaceAddedItems?.Remove(item) ?? true))
                     {
                         if (_removedItems == null)
                             _removedItems = new List<object>();
@@ -226,7 +226,7 @@ namespace NMF.Expressions
                     return;
                 foreach (var item in replacingItems)
                 {
-                    if ((!_removedItems?.Remove(item) ?? false) && (!_replaceRemovedItems?.Remove(item) ?? false))
+                    if ((!_removedItems?.Remove(item) ?? true) && (!_replaceRemovedItems?.Remove(item) ?? true))
                     {
                         if (_replaceAddedItems == null)
                             _replaceAddedItems = new List<object>();
@@ -236,7 +236,7 @@ namespace NMF.Expressions
 
                 foreach (var item in replacedItems)
                 {
-                    if ((!_addedItems?.Remove(item) ?? false) && (!_replaceAddedItems?.Remove(item) ?? false))
+                    if ((!_addedItems?.Remove(item) ?? true) && (!_replaceAddedItems?.Remove(item) ?? true))
                     {
                         if (_replaceRemovedItems == null)
                             _replaceRemovedItems = new List<object>();
