@@ -135,6 +135,9 @@ namespace NMF.Models.Collections
                     added.AddRange(descendants);
                     childCollections.Add(child, descendants);
                 }
+
+                if (added.Count > 0)
+                    OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, added));
             }
         }
 
