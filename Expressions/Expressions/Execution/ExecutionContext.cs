@@ -38,6 +38,7 @@ namespace NMF.Expressions
                 }
             }
             invalidNodes.Clear();
+            collectionChanges.Clear();
 
             return results;
         }
