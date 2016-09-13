@@ -99,7 +99,9 @@ namespace NMF.Synchronizations
 
         protected override INotifyValue<bool> CreateTracker(SynchronizationComputation<TLeft, TRight> computation)
         {
-            return Guard.Observe(computation.Input, computation.Opposite.Input);
+            var tracker = Guard.Observe(computation.Input, computation.Opposite.Input);
+            tracker.Successors.SetDummy();
+            return tracker;
         }
     }
 
@@ -119,7 +121,9 @@ namespace NMF.Synchronizations
 
         protected override INotifyValue<bool> CreateTracker(SynchronizationComputation<TLeft, TRight> computation)
         {
-            return Guard.Observe(computation.Opposite.Input);
+            var tracker = Guard.Observe(computation.Opposite.Input);
+            tracker.Successors.SetDummy();
+            return tracker;
         }
     }
 
@@ -139,7 +143,9 @@ namespace NMF.Synchronizations
 
         protected override INotifyValue<bool> CreateTracker(SynchronizationComputation<TLeft, TRight> computation)
         {
-            return Guard.Observe(computation.Input);
+            var tracker = Guard.Observe(computation.Input);
+            tracker.Successors.SetDummy();
+            return tracker;
         }
     }
 }

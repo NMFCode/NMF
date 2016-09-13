@@ -152,7 +152,9 @@ namespace NMF.Synchronizations
         private IDisposable HandleTwoWayLTRSynchronization(SynchronizationComputation<TLeft, TRight> syncComputation)
         {
             var left = leftFunc.InvokeReversable(syncComputation.Input);
+            left.Successors.SetDummy();
             var right = rightFunc.InvokeReversable(syncComputation.Opposite.Input);
+            right.Successors.SetDummy();
             Action<TLeft, TDepLeft> leftSetter = (l, val) => left.Value = val;
             Action<TRight, TDepRight> rightSetter = (r, val) => right.Value = val;
             CallLTRTransformationForInput(syncComputation, syncComputation.SynchronizationContext.Direction,
@@ -163,7 +165,9 @@ namespace NMF.Synchronizations
         private IDisposable HandleTwoWayRTLSynchronization(SynchronizationComputation<TRight, TLeft> syncComputation)
         {
             var left = leftFunc.InvokeReversable(syncComputation.Opposite.Input);
+            left.Successors.SetDummy();
             var right = rightFunc.InvokeReversable(syncComputation.Input);
+            right.Successors.SetDummy();
             Action<TLeft, TDepLeft> leftSetter = (l, val) => left.Value = val;
             Action<TRight, TDepRight> rightSetter = (r, val) => right.Value = val;
             CallRTLTransformationForInput(syncComputation, syncComputation.SynchronizationContext.Direction,
@@ -217,6 +221,7 @@ namespace NMF.Synchronizations
         private IDisposable HandleOneWayLTRSynchronization(SynchronizationComputation<TLeft, TRight> syncComputation)
         {
             var input = leftFunc.Observe(syncComputation.Input);
+            input.Successors.SetDummy();
             Action<TLeft, TDepLeft> leftSetter = (left, val) =>
             {
                 var reversable = input as INotifyReversableValue<TDepLeft>;
@@ -264,6 +269,7 @@ namespace NMF.Synchronizations
         private IDisposable HandleOneWayRTLSynchronization(SynchronizationComputation<TRight, TLeft> syncComputation)
         {
             var input = rightFunc.Observe(syncComputation.Input);
+            input.Successors.SetDummy();
             Action<TRight, TDepRight> rightSetter = (right, val) =>
             {
                 var reversable = input as INotifyReversableValue<TDepRight>;
@@ -528,6 +534,7 @@ namespace NMF.Synchronizations
                     case ChangePropagationMode.OneWay:
                     case ChangePropagationMode.TwoWay:
                         var tracker = guard.Observe(left, right);
+                        tracker.Successors.SetDummy();
                         syncComputation.Dependencies.Add(new GuardedSynchronization<TLeft, TRight>(syncComputation, parent.CreateLeftToRightSynchronization, tracker));
                         break;
                     default:
@@ -559,6 +566,7 @@ namespace NMF.Synchronizations
                     case ChangePropagationMode.OneWay:
                     case ChangePropagationMode.TwoWay:
                         var tracker = guard.Observe(left);
+                        tracker.Successors.SetDummy();
                         syncComputation.Dependencies.Add(new GuardedSynchronization<TLeft, TRight>(syncComputation, parent.CreateLeftToRightOnlySynchronization, tracker));
                         break;
                     default:
@@ -591,6 +599,7 @@ namespace NMF.Synchronizations
                     case ChangePropagationMode.OneWay:
                     case ChangePropagationMode.TwoWay:
                         var tracker = guard.Observe(left, right);
+                        tracker.Successors.SetDummy();
                         syncComputation.Dependencies.Add(new GuardedSynchronization<TRight, TLeft>(syncComputation, parent.CreateRightToLeftSynchronization, tracker));
                         break;
                     default:
@@ -622,6 +631,7 @@ namespace NMF.Synchronizations
                     case ChangePropagationMode.OneWay:
                     case ChangePropagationMode.TwoWay:
                         var tracker = guard.Observe(right);
+                        tracker.Successors.SetDummy();
                         syncComputation.Dependencies.Add(new GuardedSynchronization<TRight, TLeft>(syncComputation, parent.CreateRightToLeftOnlySynchronization, tracker));
                         break;
                     default:
