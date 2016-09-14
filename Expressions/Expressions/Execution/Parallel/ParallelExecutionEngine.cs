@@ -18,66 +18,54 @@ namespace NMF.Expressions
 
             Schedule(nodes);
         }
-
+        
         protected void NotifyNode(INotifiable node)
         {
-            NotifyNode(node, 1, true, true);
-        }
+            int currentValue = 1;
+            bool evaluating = true;
+            bool isFirst = true;
 
-        private void NotifyNode(INotifiable node, int currentValue, bool evaluating, bool isFirst)
-        {
-            var metaData = node.ExecutionMetaData;
-            if (metaData.RemainingVisits != currentValue)
+            do
             {
-                int remaining = Interlocked.Add(ref metaData.RemainingVisits, -currentValue);
-                if (remaining > 0)
-                    return;
-            }
-            else
-            {
-                metaData.RemainingVisits = 0;
-            }
-
-            INotificationResult result = null;
-            if (evaluating)
-            {
-                foreach (var dep in node.Dependencies)
+                var metaData = node.ExecutionMetaData;
+                if (metaData.RemainingVisits != currentValue)
                 {
-                    if (dep.ExecutionMetaData.Result != null)
+                    int remaining = Interlocked.Add(ref metaData.RemainingVisits, -currentValue);
+                    if (remaining > 0)
+                        return;
+                }
+                else
+                {
+                    metaData.RemainingVisits = 0;
+                }
+
+                INotificationResult result = null;
+                if (evaluating)
+                {
+                    foreach (var dep in node.Dependencies)
                     {
-                        metaData.Sources.Add(dep.ExecutionMetaData.Result);
-                        dep.ExecutionMetaData.Result = null;
+                        if (dep.ExecutionMetaData.Result != null)
+                        {
+                            metaData.Sources.Add(dep.ExecutionMetaData.Result);
+                            dep.ExecutionMetaData.Result = null;
+                        }
+                    }
+
+                    if (isFirst || metaData.Sources.Count > 0)
+                    {
+                        result = node.Notify(metaData.Sources);
+                        evaluating = result.Changed;
+                        if (evaluating && node.Successors.HasSuccessors)
+                            metaData.Result = result;
+                        currentValue = metaData.TotalVisits;
+                        metaData.Sources.Clear();
                     }
                 }
-                
-                if (isFirst || metaData.Sources.Count > 0)
-                {
-                    result = node.Notify(metaData.Sources);
-                    evaluating = result.Changed;
-                    if (evaluating && node.Successors.HasSuccessors)
-                        metaData.Result = result;
-                    currentValue = metaData.TotalVisits;
-                    metaData.Sources.Clear();
-                }
+
+                metaData.TotalVisits = 0;
+                isFirst = false;
             }
-
-            metaData.TotalVisits = 0;
-
-            if (node.Successors.HasSuccessors)
-            {
-                var nextNode = node.Successors[0];
-                NotifyNode(nextNode, currentValue, evaluating, false);
-            }
-        }
-
-        private void MarkNode(INotifiable node)
-        {
-            var metaData = node.ExecutionMetaData;
-            metaData.RemainingVisits++;
-            metaData.TotalVisits++;
-
-            if (node.Successors.HasSuccessors)
-                MarkNode(node.Successors[0]);
+            while (node.Successors.HasSuccessors && (node = node.Successors[0]) != null);
         }
     }
 }
