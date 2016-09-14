@@ -34,48 +34,55 @@ namespace NMF.Expressions
                 MarkNode(node);
 
             foreach (var source in nodes)
-                NotifyNode(source, 1, true);
+                NotifyNode(source);
         }
 
-        private void NotifyNode(INotifiable node, int currentValue, bool evaluating)
+        private void NotifyNode(INotifiable node)
         {
-            var metaData = node.ExecutionMetaData;
-            metaData.RemainingVisits -= currentValue;
-            if (metaData.RemainingVisits > 0)
-                return;
+            int currentValue = 1;
+            bool evaluating = true;
+
+            while (true)
+            {
+                var metaData = node.ExecutionMetaData;
+                metaData.RemainingVisits -= currentValue;
+                if (metaData.RemainingVisits > 0)
+                    return;
 #if DEBUG
-            if (metaData.RemainingVisits < 0)
-                throw new InvalidOperationException("RemainingVisits < 0: This should never happen!");
+                if (metaData.RemainingVisits < 0)
+                    throw new InvalidOperationException("RemainingVisits < 0: This should never happen!");
 #endif
 
-            INotificationResult result = null;
-            if (evaluating || metaData.Sources.Count > 0)
-            {
-                result = node.Notify(metaData.Sources);
-                evaluating = result.Changed;
-                currentValue = metaData.TotalVisits;
-            }
-            metaData.TotalVisits = 0;
-            metaData.Sources.Clear();
-            
-            if (node.Successors.HasSuccessors)
-            {
-                var nextNode = node.Successors[0];
-                if (result != null && evaluating)
-                    nextNode.ExecutionMetaData.Sources.Add(result);
+                INotificationResult result = null;
+                if (evaluating || metaData.Sources.Count > 0)
+                {
+                    result = node.Notify(metaData.Sources);
+                    evaluating = result.Changed;
+                    currentValue = metaData.TotalVisits;
+                }
+                metaData.TotalVisits = 0;
+                metaData.Sources.Clear();
 
-                NotifyNode(nextNode, currentValue, evaluating);
+                if (node.Successors.HasSuccessors)
+                {
+                    node = node.Successors[0];
+                    if (result != null && evaluating)
+                        node.ExecutionMetaData.Sources.Add(result);
+                }
+                else
+                    break;
             }
         }
 
         private void MarkNode(INotifiable node)
         {
-            var metaData = node.ExecutionMetaData;
-            metaData.TotalVisits++;
-            metaData.RemainingVisits++;
-            
-            if (node.Successors.HasSuccessors)
-                MarkNode(node.Successors[0]);
+            do
+            {
+                var metaData = node.ExecutionMetaData;
+                metaData.TotalVisits++;
+                metaData.RemainingVisits++;
+            }
+            while (node.Successors.HasSuccessors && (node = node.Successors[0]) != null);
         }
     }
 }
