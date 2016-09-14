@@ -25,7 +25,7 @@ namespace NMF.Expressions
                     while (!queue.IsEmpty)
                     {
                         if (queue.TryDequeue(out node))
-                            NotifyNode(node, 1, true);
+                            NotifyNode(node);
                     }
                 });
             }

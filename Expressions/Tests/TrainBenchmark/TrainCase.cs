@@ -39,7 +39,7 @@ namespace TrainBenchmark
         public TrainCase()
         {
             defaultEngine = ExecutionEngine.Current;
-            parallelEngine = new ParallelQueueExecutionEngine();
+            parallelEngine = new ParallelArrayExecutionEngine();
 
             ImmediateRunData = new RunData(this);
             TransactionRunData = new RunData(this);

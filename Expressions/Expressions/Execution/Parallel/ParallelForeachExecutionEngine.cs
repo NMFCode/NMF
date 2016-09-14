@@ -10,7 +10,7 @@ namespace NMF.Expressions
     {
         protected override void Schedule(HashSet<INotifiable> nodes)
         {
-            Parallel.ForEach(nodes, node => NotifyNode(node, 1, true));
+            Parallel.ForEach(nodes, node => NotifyNode(node));
         }
     }
 }

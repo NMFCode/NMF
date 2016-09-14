@@ -64,6 +64,7 @@
     <Compile Include="Execution\CollectionChangedNotificationResult.cs" />
     <Compile Include="Execution\ExecutionContext.cs" />
     <Compile Include="Execution\ExecutionEngine.cs" />
+    <Compile Include="Execution\Parallel\ParallelArrayExecutionEngine.cs" />
     <Compile Include="Execution\Parallel\ParallelExecutionEngine.cs" />
     <Compile Include="Execution\Parallel\ParallelForeachExecutionEngine.cs" />
     <Compile Include="Execution\Parallel\ParallelQueueExecutionEngine.cs" />

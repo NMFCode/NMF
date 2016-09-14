@@ -19,7 +19,12 @@ namespace NMF.Expressions
             Schedule(nodes);
         }
 
-        protected void NotifyNode(INotifiable node, int currentValue, bool evaluating)
+        protected void NotifyNode(INotifiable node)
+        {
+            NotifyNode(node, 1, true, true);
+        }
+
+        private void NotifyNode(INotifiable node, int currentValue, bool evaluating, bool isFirst)
         {
             var metaData = node.ExecutionMetaData;
             if (metaData.RemainingVisits != currentValue)
@@ -45,11 +50,11 @@ namespace NMF.Expressions
                     }
                 }
                 
-                if (metaData.Sources.Count > 0)
+                if (isFirst || metaData.Sources.Count > 0)
                 {
                     result = node.Notify(metaData.Sources);
                     evaluating = result.Changed;
-                    if (evaluating)
+                    if (evaluating && node.Successors.HasSuccessors)
                         metaData.Result = result;
                     currentValue = metaData.TotalVisits;
                     metaData.Sources.Clear();
@@ -61,7 +66,7 @@ namespace NMF.Expressions
             if (node.Successors.HasSuccessors)
             {
                 var nextNode = node.Successors[0];
-                NotifyNode(nextNode, currentValue, evaluating);
+                NotifyNode(nextNode, currentValue, evaluating, false);
             }
         }
 
