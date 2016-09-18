@@ -141,6 +141,9 @@ namespace NMF.Expressions.Linq
                 }
             }
 
+            if (added.Count == 0 && removed.Count == 0 && replaceAdded.Count == 0 && replaceRemoved.Count == 0)
+                return UnchangedNotificationResult.Instance;
+
             OnRemoveItems(removed);
             OnAddItems(added);
             OnReplaceItems(replaceRemoved, replaceAdded);
@@ -153,14 +156,17 @@ namespace NMF.Expressions.Linq
             {
                 if (item != null)
                 {
-                    var lambdaResult = lambdaInstances[item];
-                    lambdaResult.Tag--;
-                    if (lambdaResult.Tag == 0)
+                    TaggedObservableValue<TResult, int> lambdaResult;
+                    if (lambdaInstances.TryGetValue(item, out lambdaResult))
                     {
-                        lambdaInstances.Remove(item);
-                        lambdaResult.Successors.Unset(this);
+                        lambdaResult.Tag--;
+                        if (lambdaResult.Tag == 0)
+                        {
+                            lambdaInstances.Remove(item);
+                            lambdaResult.Successors.Unset(this);
+                        }
+                        removed.Add(lambdaResult.Value);
                     }
-                    removed.Add(lambdaResult.Value);
                 }
                 else if (nullLambda != null)
                 {
