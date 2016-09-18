@@ -37,7 +37,7 @@ namespace TrainBenchmark
 
         private static void Profile()
         {
-            var bench = new SwitchSet();
+            var bench = new RouteSensor();
             var watch = Stopwatch.StartNew();
             int i = 0;
             for (; (i & 0x0F) != 0 || watch.ElapsedMilliseconds < 5000; i++)
@@ -70,10 +70,12 @@ namespace TrainBenchmark
             var master = masterTimes[summary.Title];
             var immediate = summary.Reports[0].ResultStatistics.Median;
             var transaction = summary.Reports[1].ResultStatistics.Median;
+            var parallel = summary.Reports[2].ResultStatistics.Median;
 
-            builder.AppendFormat("{0}|{1:00,0} ns|{2:00,0} ns|{3:00,0} ns|{4:0.00}x|{5:0.00}x|{6:0.00}x|",
-                summary.Title, master, immediate, transaction, master / immediate,
-                master / transaction, immediate / transaction).AppendLine();
+            builder.AppendFormat("{0}|{1:00,0} ns|{2:00,0} ns|{3:00,0} ns|{4:00,0} ns|{5:0.00}x|{6:0.00}x|{7:0.00}x|{8:0.00}x|{9:0.00}x|{10:0.00}x|",
+                summary.Title, master, immediate, transaction, parallel,
+                master / immediate, master / transaction, master / parallel,
+                immediate / transaction, immediate / parallel, transaction / parallel).AppendLine();
         }
 
         private static StringBuilder CreateMarkdown()
@@ -83,8 +85,8 @@ namespace TrainBenchmark
                 .AppendLine()
                 .AppendFormat("Last Run: {0}", DateTime.Now).AppendLine()
                 .AppendLine()
-                .AppendLine("Test Case|Master|Immediate|Transaction|M→I|M→T|I→T|")
-                .AppendLine("---------|------|---------|-----------|---|---|---|");
+                .AppendLine("Test Case|Master|Immediate|Transaction|Parallel|M→I|M→T|M→P|I→T|I→P|T→P|")
+                .AppendLine("---------|------|---------|-----------|--------|---|---|---|---|---|---|");
         }
     }
 }
