@@ -9,9 +9,9 @@ namespace NMF.Expressions
 {
     public abstract class ParallelExecutionEngine : SequentialExecutionEngine
     {
-        protected abstract void Schedule(HashSet<INotifiable> nodes);
+        protected abstract void Schedule(List<INotifiable> nodes);
 
-        protected override void Execute(HashSet<INotifiable> nodes)
+        protected override void Execute(List<INotifiable> nodes)
         {
             foreach (var node in nodes)
                 MarkNode(node);

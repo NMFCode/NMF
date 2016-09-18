@@ -12,7 +12,7 @@ namespace NMF.Expressions
     {
         private static readonly int MaxTaskCount = Environment.ProcessorCount;
 
-        protected override void Schedule(HashSet<INotifiable> nodes)
+        protected override void Schedule(List<INotifiable> nodes)
         {
             var taskCount = Math.Min(MaxTaskCount, nodes.Count);
             var queue = new ConcurrentQueue<INotifiable>(nodes);

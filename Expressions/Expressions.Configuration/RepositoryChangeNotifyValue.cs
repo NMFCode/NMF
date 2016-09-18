@@ -39,7 +39,7 @@ namespace NMF.Expressions
 
         private void Repository_BubbledChange(object sender, Models.BubbledChangeEventArgs e)
         {
-            ExecutionEngine.Current.ManualInvalidation(this);
+            ExecutionEngine.Current.InvalidateNode(this);
         }
 
         protected override void OnDetach()
@@ -107,7 +107,7 @@ namespace NMF.Expressions
 
         private void ChangeInfo_ChangeCaptured(object sender, EventArgs e)
         {
-            ExecutionEngine.Current.ManualInvalidation(this);
+            ExecutionEngine.Current.InvalidateNode(this);
         }
 
         protected override void OnDetach()
@@ -140,7 +140,7 @@ namespace NMF.Expressions
 
         private void ChangeInfo_ChangeCaptured(object sender, EventArgs e)
         {
-            ExecutionEngine.Current.ManualInvalidation(this);
+            ExecutionEngine.Current.InvalidateNode(this);
         }
 
         protected override void OnDetach()

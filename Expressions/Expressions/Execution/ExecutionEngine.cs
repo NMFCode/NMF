@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Diagnostics;
@@ -12,7 +13,7 @@ namespace NMF.Expressions
 {
     public abstract class ExecutionEngine
     {
-        private readonly ExecutionContext context = ExecutionContext.Instance;
+        private readonly Collection<IChangeListener> changeListener = new Collection<IChangeListener>();
 
         public bool TransactionActive { get; private set; }
 
@@ -23,43 +24,58 @@ namespace NMF.Expressions
 
         public void CommitTransaction()
         {
-            AggregateAndExecute();
+            if (changeListener.Count > 0)
+            {
+                var nodes = new List<INotifiable>(changeListener.Count);
+                foreach (var listener in changeListener)
+                {
+                    var result = listener.AggregateChanges();
+                    if (result == null)
+                        nodes.Add(listener.Node);
+                    else if (result.Changed)
+                    {
+                        listener.Node.ExecutionMetaData.Sources.Add(result);
+                        nodes.Add(listener.Node);
+                    }
+                }
+                changeListener.Clear();
+
+                if (nodes.Count == 1)
+                    ExecuteSingle(nodes[0]);
+                else
+                    Execute(nodes);
+            }
             TransactionActive = false;
         }
 
-        public void ManualInvalidation(params INotifiable[] nodes)
+        public void InvalidateNode(INotifiable node)
         {
-            if (nodes.Length == 0)
-                return;
-
             if (TransactionActive)
                 throw new InvalidOperationException("A transaction is in progress. Commit or rollback first.");
-
-            if (nodes.Length == 1)
-                ExecuteSingle(nodes[0]);
-            else
-                Execute(new HashSet<INotifiable>(nodes));
+            
+            ExecuteSingle(node);
         }
 
-        internal void OnNodesInvalidated()
+        internal void InvalidateNode(IChangeListener listener)
         {
-            if (!TransactionActive)
-                AggregateAndExecute();
-        }
-
-        private void AggregateAndExecute()
-        {
-            var invalids = context.AggregateInvalidNodes();
-            if (invalids.Count == 0)
-                return;
-
-            if (invalids.Count == 1)
-                ExecuteSingle(invalids.First());
+            if (TransactionActive)
+            {
+                changeListener.Add(listener);
+            }
             else
-                Execute(invalids);
+            {
+                var result = listener.AggregateChanges();
+                if (result == null)
+                    ExecuteSingle(listener.Node);
+                else if (result.Changed)
+                {
+                    listener.Node.ExecutionMetaData.Sources.Add(result);
+                    ExecuteSingle(listener.Node);
+                }
+            }
         }
 
-        protected abstract void Execute(HashSet<INotifiable> nodes);
+        protected abstract void Execute(List<INotifiable> nodes);
 
         protected abstract void ExecuteSingle(INotifiable node);
         

@@ -10,6 +10,8 @@ namespace NMF.Expressions
 {
     public class NotifyCollection<T> : ObservableCollection<T>, INotifyEnumerable<T>, INotifyCollection<T>
     {
+        private readonly CollectionChangeListener<T> listener;
+
         public virtual IEnumerable<INotifiable> Dependencies { get { return Enumerable.Empty<INotifiable>(); } }
 
         public ExecutionMetaData ExecutionMetaData { get; } = new ExecutionMetaData();
@@ -20,6 +22,7 @@ namespace NMF.Expressions
         {
             Successors.Attached += (obj, e) => Attach();
             Successors.Detached += (obj, e) => Detach();
+            listener = new CollectionChangeListener<T>(this);
         }
 
         public void Dispose()
@@ -35,17 +38,17 @@ namespace NMF.Expressions
 
         protected virtual void Dispose(bool disposing)
         {
-            Detach();
+            Successors.UnsetAll();
         }
 
         private void Attach()
         {
-            ExecutionContext.Instance.AddChangeListener(this, this);
+            listener.Subscribe(this);
         }
 
         private void Detach()
         {
-            ExecutionContext.Instance.RemoveChangeListener(this, this);
+            listener.Unsubscribe();
         }
     }
 }

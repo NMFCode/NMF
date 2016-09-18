@@ -12,6 +12,8 @@ namespace NMF.Expressions
     internal abstract class ObservableMethodBase<T, TDelegate, TResult> : NotifyExpression<TResult>
         where TDelegate : class
     {
+        private readonly CollectionChangeListener<object> listener;
+
         public ObservableMethodBase(INotifyExpression<T> target, MethodInfo method)
         {
             if (method == null) throw new ArgumentNullException("method");
@@ -19,6 +21,7 @@ namespace NMF.Expressions
 
             Target = target;
             Method = method;
+            listener = new CollectionChangeListener<object>(this);
         }
 
         public MethodInfo Method { get; private set; }
@@ -50,7 +53,7 @@ namespace NMF.Expressions
 
         protected override void OnDetach()
         {
-            DetachCollectionChangeListener(Target.Value);
+            listener.Unsubscribe();
         }
 
         public override INotificationResult Notify(IList<INotificationResult> sources)
@@ -67,7 +70,7 @@ namespace NMF.Expressions
 
             if (targetChange != null)
             {
-                DetachCollectionChangeListener(targetChange.OldValue);
+                listener.Unsubscribe();
                 AttachCollectionChangeListener(targetChange.NewValue);
                 RenewFunction();
             }
@@ -89,14 +92,7 @@ namespace NMF.Expressions
         {
             var newTarget = target as INotifyCollectionChanged;
             if (newTarget != null)
-                ExecutionContext.Instance.AddChangeListener(this, newTarget);
-        }
-
-        private void DetachCollectionChangeListener(object target)
-        {
-            var oldTarget = target as INotifyCollectionChanged;
-            if (oldTarget != null)
-                ExecutionContext.Instance.RemoveChangeListener(this, oldTarget);
+                listener.Subscribe(newTarget);
         }
     }
 }

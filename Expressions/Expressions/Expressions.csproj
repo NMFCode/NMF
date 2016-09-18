@@ -62,12 +62,14 @@
     <Compile Include="Arithmetics\ObservableUnaryMinus.cs" />
     <Compile Include="ConstantAttribute.cs" />
     <Compile Include="Execution\CollectionChangedNotificationResult.cs" />
-    <Compile Include="Execution\ExecutionContext.cs" />
+    <Compile Include="Execution\CollectionChangeListener.cs" />
     <Compile Include="Execution\ExecutionEngine.cs" />
+    <Compile Include="Execution\IChangeListener.cs" />
     <Compile Include="Execution\Parallel\ParallelArrayExecutionEngine.cs" />
     <Compile Include="Execution\Parallel\ParallelExecutionEngine.cs" />
     <Compile Include="Execution\Parallel\ParallelForeachExecutionEngine.cs" />
     <Compile Include="Execution\Parallel\ParallelQueueExecutionEngine.cs" />
+    <Compile Include="Execution\PropertyChangeListener.cs" />
     <Compile Include="Execution\SequentialExecutionEngine.cs" />
     <Compile Include="ExpressionHelper.cs" />
     <Compile Include="ExpressionRewriter\ExpressionCompileRewriter.cs" />

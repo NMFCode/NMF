@@ -9,12 +9,15 @@ namespace NMF.Expressions.Linq
 {
     public class OrderableList<T> : ObservableEnumerable<T>, IOrderableNotifyEnumerable<T>
     {
+        private readonly Dictionary<IEnumerable<T>, CollectionChangeListener<T>> changeListener;
+
         public override IEnumerable<INotifiable> Dependencies { get { return Enumerable.Empty<INotifiable>(); } }
         
         public OrderableList()
         {
             Sequences = new NotifyCollection<IEnumerable<T>>();
             Sequences.CollectionChanged += SequencesCollectionChanged;
+            changeListener = new Dictionary<IEnumerable<T>, CollectionChangeListener<T>>();
         }
 
         void SequencesCollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
@@ -32,7 +35,9 @@ namespace NMF.Expressions.Linq
                         INotifyCollectionChanged notifier = sequence as INotifyCollectionChanged;
                         if (notifier != null)
                         {
-                            ExecutionContext.Instance.RemoveChangeListener(this, notifier);
+                            var listener = changeListener[sequence];
+                            listener.Unsubscribe();
+                            changeListener.Remove(sequence);
                         }
                     }
                 }
@@ -44,14 +49,16 @@ namespace NMF.Expressions.Linq
                         INotifyCollectionChanged notifier = sequence as INotifyCollectionChanged;
                         if (notifier != null)
                         {
-                            ExecutionContext.Instance.AddChangeListener(this, notifier);
+                            var listener = new CollectionChangeListener<T>(this);
+                            listener.Subscribe(notifier);
+                            changeListener.Add(sequence, listener);
                         }
                     }
                 }
 
                 ExecutionMetaData.Sources.Add(new CollectionChangedNotificationResult<T>(this, added, removed));
             }
-            ExecutionEngine.Current.ManualInvalidation(this);
+            ExecutionEngine.Current.InvalidateNode(this);
         }
 
         public NotifyCollection<IEnumerable<T>> Sequences { get; private set; }

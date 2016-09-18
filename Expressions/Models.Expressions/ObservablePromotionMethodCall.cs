@@ -68,7 +68,7 @@ namespace NMF.Expressions
         {
             if (Successors.IsAttached && Arg1Properties.Contains(e.PropertyName))
             {
-                ExecutionEngine.Current.ManualInvalidation(this);
+                ExecutionEngine.Current.InvalidateNode(this);
             }
         }
 
@@ -76,7 +76,7 @@ namespace NMF.Expressions
         {
             if (Successors.IsAttached && Arg1Properties.Contains(e.PropertyName))
             {
-                ExecutionEngine.Current.ManualInvalidation(this);
+                ExecutionEngine.Current.InvalidateNode(this);
             }
         }
 
@@ -200,7 +200,7 @@ namespace NMF.Expressions
         {
             if (Successors.IsAttached && Arg1Properties.Contains(e.PropertyName))
             {
-                ExecutionEngine.Current.ManualInvalidation(this);
+                ExecutionEngine.Current.InvalidateNode(this);
             }
         }
 
@@ -208,7 +208,7 @@ namespace NMF.Expressions
         {
             if (Successors.IsAttached && Arg1Properties.Contains(e.PropertyName))
             {
-                ExecutionEngine.Current.ManualInvalidation(this);
+                ExecutionEngine.Current.InvalidateNode(this);
             }
         }
         private void RegisterArg2BubbledChange(IModelElement arg2)
@@ -245,7 +245,7 @@ namespace NMF.Expressions
         {
             if (Successors.IsAttached && Arg2Properties.Contains(e.PropertyName))
             {
-                ExecutionEngine.Current.ManualInvalidation(this);
+                ExecutionEngine.Current.InvalidateNode(this);
             }
         }
 
@@ -253,7 +253,7 @@ namespace NMF.Expressions
         {
             if (Successors.IsAttached && Arg2Properties.Contains(e.PropertyName))
             {
-                ExecutionEngine.Current.ManualInvalidation(this);
+                ExecutionEngine.Current.InvalidateNode(this);
             }
         }
 
@@ -416,7 +416,7 @@ namespace NMF.Expressions
         {
             if (Successors.IsAttached && Arg1Properties.Contains(e.PropertyName))
             {
-                ExecutionEngine.Current.ManualInvalidation(this);
+                ExecutionEngine.Current.InvalidateNode(this);
             }
         }
 
@@ -424,7 +424,7 @@ namespace NMF.Expressions
         {
             if (Successors.IsAttached && Arg1Properties.Contains(e.PropertyName))
             {
-                ExecutionEngine.Current.ManualInvalidation(this);
+                ExecutionEngine.Current.InvalidateNode(this);
             }
         }
         private void RegisterArg2BubbledChange(IModelElement arg2)
@@ -461,7 +461,7 @@ namespace NMF.Expressions
         {
             if (Successors.IsAttached && Arg2Properties.Contains(e.PropertyName))
             {
-                ExecutionEngine.Current.ManualInvalidation(this);
+                ExecutionEngine.Current.InvalidateNode(this);
             }
         }
 
@@ -469,7 +469,7 @@ namespace NMF.Expressions
         {
             if (Successors.IsAttached && Arg2Properties.Contains(e.PropertyName))
             {
-                ExecutionEngine.Current.ManualInvalidation(this);
+                ExecutionEngine.Current.InvalidateNode(this);
             }
         }
         private void RegisterArg3BubbledChange(IModelElement arg3)
@@ -506,7 +506,7 @@ namespace NMF.Expressions
         {
             if (Successors.IsAttached && Arg3Properties.Contains(e.PropertyName))
             {
-                ExecutionEngine.Current.ManualInvalidation(this);
+                ExecutionEngine.Current.InvalidateNode(this);
             }
         }
 
@@ -514,7 +514,7 @@ namespace NMF.Expressions
         {
             if (Successors.IsAttached && Arg3Properties.Contains(e.PropertyName))
             {
-                ExecutionEngine.Current.ManualInvalidation(this);
+                ExecutionEngine.Current.InvalidateNode(this);
             }
         }
 
@@ -716,7 +716,7 @@ namespace NMF.Expressions
         {
             if (Successors.IsAttached && Arg1Properties.Contains(e.PropertyName))
             {
-                ExecutionEngine.Current.ManualInvalidation(this);
+                ExecutionEngine.Current.InvalidateNode(this);
             }
         }
 
@@ -724,7 +724,7 @@ namespace NMF.Expressions
         {
             if (Successors.IsAttached && Arg1Properties.Contains(e.PropertyName))
             {
-                ExecutionEngine.Current.ManualInvalidation(this);
+                ExecutionEngine.Current.InvalidateNode(this);
             }
         }
         private void RegisterArg2BubbledChange(IModelElement arg2)
@@ -761,7 +761,7 @@ namespace NMF.Expressions
         {
             if (Successors.IsAttached && Arg2Properties.Contains(e.PropertyName))
             {
-                ExecutionEngine.Current.ManualInvalidation(this);
+                ExecutionEngine.Current.InvalidateNode(this);
             }
         }
 
@@ -769,7 +769,7 @@ namespace NMF.Expressions
         {
             if (Successors.IsAttached && Arg2Properties.Contains(e.PropertyName))
             {
-                ExecutionEngine.Current.ManualInvalidation(this);
+                ExecutionEngine.Current.InvalidateNode(this);
             }
         }
         private void RegisterArg3BubbledChange(IModelElement arg3)
@@ -806,7 +806,7 @@ namespace NMF.Expressions
         {
             if (Successors.IsAttached && Arg3Properties.Contains(e.PropertyName))
             {
-                ExecutionEngine.Current.ManualInvalidation(this);
+                ExecutionEngine.Current.InvalidateNode(this);
             }
         }
 
@@ -814,7 +814,7 @@ namespace NMF.Expressions
         {
             if (Successors.IsAttached && Arg3Properties.Contains(e.PropertyName))
             {
-                ExecutionEngine.Current.ManualInvalidation(this);
+                ExecutionEngine.Current.InvalidateNode(this);
             }
         }
         private void RegisterArg4BubbledChange(IModelElement arg4)
@@ -851,7 +851,7 @@ namespace NMF.Expressions
         {
             if (Successors.IsAttached && Arg4Properties.Contains(e.PropertyName))
             {
-                ExecutionEngine.Current.ManualInvalidation(this);
+                ExecutionEngine.Current.InvalidateNode(this);
             }
         }
 
@@ -859,7 +859,7 @@ namespace NMF.Expressions
         {
             if (Successors.IsAttached && Arg4Properties.Contains(e.PropertyName))
             {
-                ExecutionEngine.Current.ManualInvalidation(this);
+                ExecutionEngine.Current.InvalidateNode(this);
             }
         }
 
@@ -1100,7 +1100,7 @@ namespace NMF.Expressions
         {
             if (Successors.IsAttached && Arg1Properties.Contains(e.PropertyName))
             {
-                ExecutionEngine.Current.ManualInvalidation(this);
+                ExecutionEngine.Current.InvalidateNode(this);
             }
         }
 
@@ -1108,7 +1108,7 @@ namespace NMF.Expressions
         {
             if (Successors.IsAttached && Arg1Properties.Contains(e.PropertyName))
             {
-                ExecutionEngine.Current.ManualInvalidation(this);
+                ExecutionEngine.Current.InvalidateNode(this);
             }
         }
         private void RegisterArg2BubbledChange(IModelElement arg2)
@@ -1145,7 +1145,7 @@ namespace NMF.Expressions
         {
             if (Successors.IsAttached && Arg2Properties.Contains(e.PropertyName))
             {
-                ExecutionEngine.Current.ManualInvalidation(this);
+                ExecutionEngine.Current.InvalidateNode(this);
             }
         }
 
@@ -1153,7 +1153,7 @@ namespace NMF.Expressions
         {
             if (Successors.IsAttached && Arg2Properties.Contains(e.PropertyName))
             {
-                ExecutionEngine.Current.ManualInvalidation(this);
+                ExecutionEngine.Current.InvalidateNode(this);
             }
         }
         private void RegisterArg3BubbledChange(IModelElement arg3)
@@ -1190,7 +1190,7 @@ namespace NMF.Expressions
         {
             if (Successors.IsAttached && Arg3Properties.Contains(e.PropertyName))
             {
-                ExecutionEngine.Current.ManualInvalidation(this);
+                ExecutionEngine.Current.InvalidateNode(this);
             }
         }
 
@@ -1198,7 +1198,7 @@ namespace NMF.Expressions
         {
             if (Successors.IsAttached && Arg3Properties.Contains(e.PropertyName))
             {
-                ExecutionEngine.Current.ManualInvalidation(this);
+                ExecutionEngine.Current.InvalidateNode(this);
             }
         }
         private void RegisterArg4BubbledChange(IModelElement arg4)
@@ -1235,7 +1235,7 @@ namespace NMF.Expressions
         {
             if (Successors.IsAttached && Arg4Properties.Contains(e.PropertyName))
             {
-                ExecutionEngine.Current.ManualInvalidation(this);
+                ExecutionEngine.Current.InvalidateNode(this);
             }
         }
 
@@ -1243,7 +1243,7 @@ namespace NMF.Expressions
         {
             if (Successors.IsAttached && Arg4Properties.Contains(e.PropertyName))
             {
-                ExecutionEngine.Current.ManualInvalidation(this);
+                ExecutionEngine.Current.InvalidateNode(this);
             }
         }
         private void RegisterArg5BubbledChange(IModelElement arg5)
@@ -1280,7 +1280,7 @@ namespace NMF.Expressions
         {
             if (Successors.IsAttached && Arg5Properties.Contains(e.PropertyName))
             {
-                ExecutionEngine.Current.ManualInvalidation(this);
+                ExecutionEngine.Current.InvalidateNode(this);
             }
         }
 
@@ -1288,7 +1288,7 @@ namespace NMF.Expressions
         {
             if (Successors.IsAttached && Arg5Properties.Contains(e.PropertyName))
             {
-                ExecutionEngine.Current.ManualInvalidation(this);
+                ExecutionEngine.Current.InvalidateNode(this);
             }
         }
 
@@ -1568,7 +1568,7 @@ namespace NMF.Expressions
         {
             if (Successors.IsAttached && Arg1Properties.Contains(e.PropertyName))
             {
-                ExecutionEngine.Current.ManualInvalidation(this);
+                ExecutionEngine.Current.InvalidateNode(this);
             }
         }
 
@@ -1576,7 +1576,7 @@ namespace NMF.Expressions
         {
             if (Successors.IsAttached && Arg1Properties.Contains(e.PropertyName))
             {
-                ExecutionEngine.Current.ManualInvalidation(this);
+                ExecutionEngine.Current.InvalidateNode(this);
             }
         }
         private void RegisterArg2BubbledChange(IModelElement arg2)
@@ -1613,7 +1613,7 @@ namespace NMF.Expressions
         {
             if (Successors.IsAttached && Arg2Properties.Contains(e.PropertyName))
             {
-                ExecutionEngine.Current.ManualInvalidation(this);
+                ExecutionEngine.Current.InvalidateNode(this);
             }
         }
 
@@ -1621,7 +1621,7 @@ namespace NMF.Expressions
         {
             if (Successors.IsAttached && Arg2Properties.Contains(e.PropertyName))
             {
-                ExecutionEngine.Current.ManualInvalidation(this);
+                ExecutionEngine.Current.InvalidateNode(this);
             }
         }
         private void RegisterArg3BubbledChange(IModelElement arg3)
@@ -1658,7 +1658,7 @@ namespace NMF.Expressions
         {
             if (Successors.IsAttached && Arg3Properties.Contains(e.PropertyName))
             {
-                ExecutionEngine.Current.ManualInvalidation(this);
+                ExecutionEngine.Current.InvalidateNode(this);
             }
         }
 
@@ -1666,7 +1666,7 @@ namespace NMF.Expressions
         {
             if (Successors.IsAttached && Arg3Properties.Contains(e.PropertyName))
             {
-                ExecutionEngine.Current.ManualInvalidation(this);
+                ExecutionEngine.Current.InvalidateNode(this);
             }
         }
         private void RegisterArg4BubbledChange(IModelElement arg4)
@@ -1703,7 +1703,7 @@ namespace NMF.Expressions
         {
             if (Successors.IsAttached && Arg4Properties.Contains(e.PropertyName))
             {
-                ExecutionEngine.Current.ManualInvalidation(this);
+                ExecutionEngine.Current.InvalidateNode(this);
             }
         }
 
@@ -1711,7 +1711,7 @@ namespace NMF.Expressions
         {
             if (Successors.IsAttached && Arg4Properties.Contains(e.PropertyName))
             {
-                ExecutionEngine.Current.ManualInvalidation(this);
+                ExecutionEngine.Current.InvalidateNode(this);
             }
         }
         private void RegisterArg5BubbledChange(IModelElement arg5)
@@ -1748,7 +1748,7 @@ namespace NMF.Expressions
         {
             if (Successors.IsAttached && Arg5Properties.Contains(e.PropertyName))
             {
-                ExecutionEngine.Current.ManualInvalidation(this);
+                ExecutionEngine.Current.InvalidateNode(this);
             }
         }
 
@@ -1756,7 +1756,7 @@ namespace NMF.Expressions
         {
             if (Successors.IsAttached && Arg5Properties.Contains(e.PropertyName))
             {
-                ExecutionEngine.Current.ManualInvalidation(this);
+                ExecutionEngine.Current.InvalidateNode(this);
             }
         }
         private void RegisterArg6BubbledChange(IModelElement arg6)
@@ -1793,7 +1793,7 @@ namespace NMF.Expressions
         {
             if (Successors.IsAttached && Arg6Properties.Contains(e.PropertyName))
             {
-                ExecutionEngine.Current.ManualInvalidation(this);
+                ExecutionEngine.Current.InvalidateNode(this);
             }
         }
 
@@ -1801,7 +1801,7 @@ namespace NMF.Expressions
         {
             if (Successors.IsAttached && Arg6Properties.Contains(e.PropertyName))
             {
-                ExecutionEngine.Current.ManualInvalidation(this);
+                ExecutionEngine.Current.InvalidateNode(this);
             }
         }
 
@@ -2120,7 +2120,7 @@ namespace NMF.Expressions
         {
             if (Successors.IsAttached && Arg1Properties.Contains(e.PropertyName))
             {
-                ExecutionEngine.Current.ManualInvalidation(this);
+                ExecutionEngine.Current.InvalidateNode(this);
             }
         }
 
@@ -2128,7 +2128,7 @@ namespace NMF.Expressions
         {
             if (Successors.IsAttached && Arg1Properties.Contains(e.PropertyName))
             {
-                ExecutionEngine.Current.ManualInvalidation(this);
+                ExecutionEngine.Current.InvalidateNode(this);
             }
         }
         private void RegisterArg2BubbledChange(IModelElement arg2)
@@ -2165,7 +2165,7 @@ namespace NMF.Expressions
         {
             if (Successors.IsAttached && Arg2Properties.Contains(e.PropertyName))
             {
-                ExecutionEngine.Current.ManualInvalidation(this);
+                ExecutionEngine.Current.InvalidateNode(this);
             }
         }
 
@@ -2173,7 +2173,7 @@ namespace NMF.Expressions
         {
             if (Successors.IsAttached && Arg2Properties.Contains(e.PropertyName))
             {
-                ExecutionEngine.Current.ManualInvalidation(this);
+                ExecutionEngine.Current.InvalidateNode(this);
             }
         }
         private void RegisterArg3BubbledChange(IModelElement arg3)
@@ -2210,7 +2210,7 @@ namespace NMF.Expressions
         {
             if (Successors.IsAttached && Arg3Properties.Contains(e.PropertyName))
             {
-                ExecutionEngine.Current.ManualInvalidation(this);
+                ExecutionEngine.Current.InvalidateNode(this);
             }
         }
 
@@ -2218,7 +2218,7 @@ namespace NMF.Expressions
         {
             if (Successors.IsAttached && Arg3Properties.Contains(e.PropertyName))
             {
-                ExecutionEngine.Current.ManualInvalidation(this);
+                ExecutionEngine.Current.InvalidateNode(this);
             }
         }
         private void RegisterArg4BubbledChange(IModelElement arg4)
@@ -2255,7 +2255,7 @@ namespace NMF.Expressions
         {
             if (Successors.IsAttached && Arg4Properties.Contains(e.PropertyName))
             {
-                ExecutionEngine.Current.ManualInvalidation(this);
+                ExecutionEngine.Current.InvalidateNode(this);
             }
         }
 
@@ -2263,7 +2263,7 @@ namespace NMF.Expressions
         {
             if (Successors.IsAttached && Arg4Properties.Contains(e.PropertyName))
             {
-                ExecutionEngine.Current.ManualInvalidation(this);
+                ExecutionEngine.Current.InvalidateNode(this);
             }
         }
         private void RegisterArg5BubbledChange(IModelElement arg5)
@@ -2300,7 +2300,7 @@ namespace NMF.Expressions
         {
             if (Successors.IsAttached && Arg5Properties.Contains(e.PropertyName))
             {
-                ExecutionEngine.Current.ManualInvalidation(this);
+                ExecutionEngine.Current.InvalidateNode(this);
             }
         }
 
@@ -2308,7 +2308,7 @@ namespace NMF.Expressions
         {
             if (Successors.IsAttached && Arg5Properties.Contains(e.PropertyName))
             {
-                ExecutionEngine.Current.ManualInvalidation(this);
+                ExecutionEngine.Current.InvalidateNode(this);
             }
         }
         private void RegisterArg6BubbledChange(IModelElement arg6)
@@ -2345,7 +2345,7 @@ namespace NMF.Expressions
         {
             if (Successors.IsAttached && Arg6Properties.Contains(e.PropertyName))
             {
-                ExecutionEngine.Current.ManualInvalidation(this);
+                ExecutionEngine.Current.InvalidateNode(this);
             }
         }
 
@@ -2353,7 +2353,7 @@ namespace NMF.Expressions
         {
             if (Successors.IsAttached && Arg6Properties.Contains(e.PropertyName))
             {
-                ExecutionEngine.Current.ManualInvalidation(this);
+                ExecutionEngine.Current.InvalidateNode(this);
             }
         }
         private void RegisterArg7BubbledChange(IModelElement arg7)
@@ -2390,7 +2390,7 @@ namespace NMF.Expressions
         {
             if (Successors.IsAttached && Arg7Properties.Contains(e.PropertyName))
             {
-                ExecutionEngine.Current.ManualInvalidation(this);
+                ExecutionEngine.Current.InvalidateNode(this);
             }
         }
 
@@ -2398,7 +2398,7 @@ namespace NMF.Expressions
         {
             if (Successors.IsAttached && Arg7Properties.Contains(e.PropertyName))
             {
-                ExecutionEngine.Current.ManualInvalidation(this);
+                ExecutionEngine.Current.InvalidateNode(this);
             }
         }
 
@@ -2756,7 +2756,7 @@ namespace NMF.Expressions
         {
             if (Successors.IsAttached && Arg1Properties.Contains(e.PropertyName))
             {
-                ExecutionEngine.Current.ManualInvalidation(this);
+                ExecutionEngine.Current.InvalidateNode(this);
             }
         }
 
@@ -2764,7 +2764,7 @@ namespace NMF.Expressions
         {
             if (Successors.IsAttached && Arg1Properties.Contains(e.PropertyName))
             {
-                ExecutionEngine.Current.ManualInvalidation(this);
+                ExecutionEngine.Current.InvalidateNode(this);
             }
         }
         private void RegisterArg2BubbledChange(IModelElement arg2)
@@ -2801,7 +2801,7 @@ namespace NMF.Expressions
         {
             if (Successors.IsAttached && Arg2Properties.Contains(e.PropertyName))
             {
-                ExecutionEngine.Current.ManualInvalidation(this);
+                ExecutionEngine.Current.InvalidateNode(this);
             }
         }
 
@@ -2809,7 +2809,7 @@ namespace NMF.Expressions
         {
             if (Successors.IsAttached && Arg2Properties.Contains(e.PropertyName))
             {
-                ExecutionEngine.Current.ManualInvalidation(this);
+                ExecutionEngine.Current.InvalidateNode(this);
             }
         }
         private void RegisterArg3BubbledChange(IModelElement arg3)
@@ -2846,7 +2846,7 @@ namespace NMF.Expressions
         {
             if (Successors.IsAttached && Arg3Properties.Contains(e.PropertyName))
             {
-                ExecutionEngine.Current.ManualInvalidation(this);
+                ExecutionEngine.Current.InvalidateNode(this);
             }
         }
 
@@ -2854,7 +2854,7 @@ namespace NMF.Expressions
         {
             if (Successors.IsAttached && Arg3Properties.Contains(e.PropertyName))
             {
-                ExecutionEngine.Current.ManualInvalidation(this);
+                ExecutionEngine.Current.InvalidateNode(this);
             }
         }
         private void RegisterArg4BubbledChange(IModelElement arg4)
@@ -2891,7 +2891,7 @@ namespace NMF.Expressions
         {
             if (Successors.IsAttached && Arg4Properties.Contains(e.PropertyName))
             {
-                ExecutionEngine.Current.ManualInvalidation(this);
+                ExecutionEngine.Current.InvalidateNode(this);
             }
         }
 
@@ -2899,7 +2899,7 @@ namespace NMF.Expressions
         {
             if (Successors.IsAttached && Arg4Properties.Contains(e.PropertyName))
             {
-                ExecutionEngine.Current.ManualInvalidation(this);
+                ExecutionEngine.Current.InvalidateNode(this);
             }
         }
         private void RegisterArg5BubbledChange(IModelElement arg5)
@@ -2936,7 +2936,7 @@ namespace NMF.Expressions
         {
             if (Successors.IsAttached && Arg5Properties.Contains(e.PropertyName))
             {
-                ExecutionEngine.Current.ManualInvalidation(this);
+                ExecutionEngine.Current.InvalidateNode(this);
             }
         }
 
@@ -2944,7 +2944,7 @@ namespace NMF.Expressions
         {
             if (Successors.IsAttached && Arg5Properties.Contains(e.PropertyName))
             {
-                ExecutionEngine.Current.ManualInvalidation(this);
+                ExecutionEngine.Current.InvalidateNode(this);
             }
         }
         private void RegisterArg6BubbledChange(IModelElement arg6)
@@ -2981,7 +2981,7 @@ namespace NMF.Expressions
         {
             if (Successors.IsAttached && Arg6Properties.Contains(e.PropertyName))
             {
-                ExecutionEngine.Current.ManualInvalidation(this);
+                ExecutionEngine.Current.InvalidateNode(this);
             }
         }
 
@@ -2989,7 +2989,7 @@ namespace NMF.Expressions
         {
             if (Successors.IsAttached && Arg6Properties.Contains(e.PropertyName))
             {
-                ExecutionEngine.Current.ManualInvalidation(this);
+                ExecutionEngine.Current.InvalidateNode(this);
             }
         }
         private void RegisterArg7BubbledChange(IModelElement arg7)
@@ -3026,7 +3026,7 @@ namespace NMF.Expressions
         {
             if (Successors.IsAttached && Arg7Properties.Contains(e.PropertyName))
             {
-                ExecutionEngine.Current.ManualInvalidation(this);
+                ExecutionEngine.Current.InvalidateNode(this);
             }
         }
 
@@ -3034,7 +3034,7 @@ namespace NMF.Expressions
         {
             if (Successors.IsAttached && Arg7Properties.Contains(e.PropertyName))
             {
-                ExecutionEngine.Current.ManualInvalidation(this);
+                ExecutionEngine.Current.InvalidateNode(this);
             }
         }
         private void RegisterArg8BubbledChange(IModelElement arg8)
@@ -3071,7 +3071,7 @@ namespace NMF.Expressions
         {
             if (Successors.IsAttached && Arg8Properties.Contains(e.PropertyName))
             {
-                ExecutionEngine.Current.ManualInvalidation(this);
+                ExecutionEngine.Current.InvalidateNode(this);
             }
         }
 
@@ -3079,7 +3079,7 @@ namespace NMF.Expressions
         {
             if (Successors.IsAttached && Arg8Properties.Contains(e.PropertyName))
             {
-                ExecutionEngine.Current.ManualInvalidation(this);
+                ExecutionEngine.Current.InvalidateNode(this);
             }
         }
 
@@ -3476,7 +3476,7 @@ namespace NMF.Expressions
         {
             if (Successors.IsAttached && Arg1Properties.Contains(e.PropertyName))
             {
-                ExecutionEngine.Current.ManualInvalidation(this);
+                ExecutionEngine.Current.InvalidateNode(this);
             }
         }
 
@@ -3484,7 +3484,7 @@ namespace NMF.Expressions
         {
             if (Successors.IsAttached && Arg1Properties.Contains(e.PropertyName))
             {
-                ExecutionEngine.Current.ManualInvalidation(this);
+                ExecutionEngine.Current.InvalidateNode(this);
             }
         }
         private void RegisterArg2BubbledChange(IModelElement arg2)
@@ -3521,7 +3521,7 @@ namespace NMF.Expressions
         {
             if (Successors.IsAttached && Arg2Properties.Contains(e.PropertyName))
             {
-                ExecutionEngine.Current.ManualInvalidation(this);
+                ExecutionEngine.Current.InvalidateNode(this);
             }
         }
 
@@ -3529,7 +3529,7 @@ namespace NMF.Expressions
         {
             if (Successors.IsAttached && Arg2Properties.Contains(e.PropertyName))
             {
-                ExecutionEngine.Current.ManualInvalidation(this);
+                ExecutionEngine.Current.InvalidateNode(this);
             }
         }
         private void RegisterArg3BubbledChange(IModelElement arg3)
@@ -3566,7 +3566,7 @@ namespace NMF.Expressions
         {
             if (Successors.IsAttached && Arg3Properties.Contains(e.PropertyName))
             {
-                ExecutionEngine.Current.ManualInvalidation(this);
+                ExecutionEngine.Current.InvalidateNode(this);
             }
         }
 
@@ -3574,7 +3574,7 @@ namespace NMF.Expressions
         {
             if (Successors.IsAttached && Arg3Properties.Contains(e.PropertyName))
             {
-                ExecutionEngine.Current.ManualInvalidation(this);
+                ExecutionEngine.Current.InvalidateNode(this);
             }
         }
         private void RegisterArg4BubbledChange(IModelElement arg4)
@@ -3611,7 +3611,7 @@ namespace NMF.Expressions
         {
             if (Successors.IsAttached && Arg4Properties.Contains(e.PropertyName))
             {
-                ExecutionEngine.Current.ManualInvalidation(this);
+                ExecutionEngine.Current.InvalidateNode(this);
             }
         }
 
@@ -3619,7 +3619,7 @@ namespace NMF.Expressions
         {
             if (Successors.IsAttached && Arg4Properties.Contains(e.PropertyName))
             {
-                ExecutionEngine.Current.ManualInvalidation(this);
+                ExecutionEngine.Current.InvalidateNode(this);
             }
         }
         private void RegisterArg5BubbledChange(IModelElement arg5)
@@ -3656,7 +3656,7 @@ namespace NMF.Expressions
         {
             if (Successors.IsAttached && Arg5Properties.Contains(e.PropertyName))
             {
-                ExecutionEngine.Current.ManualInvalidation(this);
+                ExecutionEngine.Current.InvalidateNode(this);
             }
         }
 
@@ -3664,7 +3664,7 @@ namespace NMF.Expressions
         {
             if (Successors.IsAttached && Arg5Properties.Contains(e.PropertyName))
             {
-                ExecutionEngine.Current.ManualInvalidation(this);
+                ExecutionEngine.Current.InvalidateNode(this);
             }
         }
         private void RegisterArg6BubbledChange(IModelElement arg6)
@@ -3701,7 +3701,7 @@ namespace NMF.Expressions
         {
             if (Successors.IsAttached && Arg6Properties.Contains(e.PropertyName))
             {
-                ExecutionEngine.Current.ManualInvalidation(this);
+                ExecutionEngine.Current.InvalidateNode(this);
             }
         }
 
@@ -3709,7 +3709,7 @@ namespace NMF.Expressions
         {
             if (Successors.IsAttached && Arg6Properties.Contains(e.PropertyName))
             {
-                ExecutionEngine.Current.ManualInvalidation(this);
+                ExecutionEngine.Current.InvalidateNode(this);
             }
         }
         private void RegisterArg7BubbledChange(IModelElement arg7)
@@ -3746,7 +3746,7 @@ namespace NMF.Expressions
         {
             if (Successors.IsAttached && Arg7Properties.Contains(e.PropertyName))
             {
-                ExecutionEngine.Current.ManualInvalidation(this);
+                ExecutionEngine.Current.InvalidateNode(this);
             }
         }
 
@@ -3754,7 +3754,7 @@ namespace NMF.Expressions
         {
             if (Successors.IsAttached && Arg7Properties.Contains(e.PropertyName))
             {
-                ExecutionEngine.Current.ManualInvalidation(this);
+                ExecutionEngine.Current.InvalidateNode(this);
             }
         }
         private void RegisterArg8BubbledChange(IModelElement arg8)
@@ -3791,7 +3791,7 @@ namespace NMF.Expressions
         {
             if (Successors.IsAttached && Arg8Properties.Contains(e.PropertyName))
             {
-                ExecutionEngine.Current.ManualInvalidation(this);
+                ExecutionEngine.Current.InvalidateNode(this);
             }
         }
 
@@ -3799,7 +3799,7 @@ namespace NMF.Expressions
         {
             if (Successors.IsAttached && Arg8Properties.Contains(e.PropertyName))
             {
-                ExecutionEngine.Current.ManualInvalidation(this);
+                ExecutionEngine.Current.InvalidateNode(this);
             }
         }
         private void RegisterArg9BubbledChange(IModelElement arg9)
@@ -3836,7 +3836,7 @@ namespace NMF.Expressions
         {
             if (Successors.IsAttached && Arg9Properties.Contains(e.PropertyName))
             {
-                ExecutionEngine.Current.ManualInvalidation(this);
+                ExecutionEngine.Current.InvalidateNode(this);
             }
         }
 
@@ -3844,7 +3844,7 @@ namespace NMF.Expressions
         {
             if (Successors.IsAttached && Arg9Properties.Contains(e.PropertyName))
             {
-                ExecutionEngine.Current.ManualInvalidation(this);
+                ExecutionEngine.Current.InvalidateNode(this);
             }
         }
 
@@ -4280,7 +4280,7 @@ namespace NMF.Expressions
         {
             if (Successors.IsAttached && Arg1Properties.Contains(e.PropertyName))
             {
-                ExecutionEngine.Current.ManualInvalidation(this);
+                ExecutionEngine.Current.InvalidateNode(this);
             }
         }
 
@@ -4288,7 +4288,7 @@ namespace NMF.Expressions
         {
             if (Successors.IsAttached && Arg1Properties.Contains(e.PropertyName))
             {
-                ExecutionEngine.Current.ManualInvalidation(this);
+                ExecutionEngine.Current.InvalidateNode(this);
             }
         }
         private void RegisterArg2BubbledChange(IModelElement arg2)
@@ -4325,7 +4325,7 @@ namespace NMF.Expressions
         {
             if (Successors.IsAttached && Arg2Properties.Contains(e.PropertyName))
             {
-                ExecutionEngine.Current.ManualInvalidation(this);
+                ExecutionEngine.Current.InvalidateNode(this);
             }
         }
 
@@ -4333,7 +4333,7 @@ namespace NMF.Expressions
         {
             if (Successors.IsAttached && Arg2Properties.Contains(e.PropertyName))
             {
-                ExecutionEngine.Current.ManualInvalidation(this);
+                ExecutionEngine.Current.InvalidateNode(this);
             }
         }
         private void RegisterArg3BubbledChange(IModelElement arg3)
@@ -4370,7 +4370,7 @@ namespace NMF.Expressions
         {
             if (Successors.IsAttached && Arg3Properties.Contains(e.PropertyName))
             {
-                ExecutionEngine.Current.ManualInvalidation(this);
+                ExecutionEngine.Current.InvalidateNode(this);
             }
         }
 
@@ -4378,7 +4378,7 @@ namespace NMF.Expressions
         {
             if (Successors.IsAttached && Arg3Properties.Contains(e.PropertyName))
             {
-                ExecutionEngine.Current.ManualInvalidation(this);
+                ExecutionEngine.Current.InvalidateNode(this);
             }
         }
         private void RegisterArg4BubbledChange(IModelElement arg4)
@@ -4415,7 +4415,7 @@ namespace NMF.Expressions
         {
             if (Successors.IsAttached && Arg4Properties.Contains(e.PropertyName))
             {
-                ExecutionEngine.Current.ManualInvalidation(this);
+                ExecutionEngine.Current.InvalidateNode(this);
             }
         }
 
@@ -4423,7 +4423,7 @@ namespace NMF.Expressions
         {
             if (Successors.IsAttached && Arg4Properties.Contains(e.PropertyName))
             {
-                ExecutionEngine.Current.ManualInvalidation(this);
+                ExecutionEngine.Current.InvalidateNode(this);
             }
         }
         private void RegisterArg5BubbledChange(IModelElement arg5)
@@ -4460,7 +4460,7 @@ namespace NMF.Expressions
         {
             if (Successors.IsAttached && Arg5Properties.Contains(e.PropertyName))
             {
-                ExecutionEngine.Current.ManualInvalidation(this);
+                ExecutionEngine.Current.InvalidateNode(this);
             }
         }
 
@@ -4468,7 +4468,7 @@ namespace NMF.Expressions
         {
             if (Successors.IsAttached && Arg5Properties.Contains(e.PropertyName))
             {
-                ExecutionEngine.Current.ManualInvalidation(this);
+                ExecutionEngine.Current.InvalidateNode(this);
             }
         }
         private void RegisterArg6BubbledChange(IModelElement arg6)
@@ -4505,7 +4505,7 @@ namespace NMF.Expressions
         {
             if (Successors.IsAttached && Arg6Properties.Contains(e.PropertyName))
             {
-                ExecutionEngine.Current.ManualInvalidation(this);
+                ExecutionEngine.Current.InvalidateNode(this);
             }
         }
 
@@ -4513,7 +4513,7 @@ namespace NMF.Expressions
         {
             if (Successors.IsAttached && Arg6Properties.Contains(e.PropertyName))
             {
-                ExecutionEngine.Current.ManualInvalidation(this);
+                ExecutionEngine.Current.InvalidateNode(this);
             }
         }
         private void RegisterArg7BubbledChange(IModelElement arg7)
@@ -4550,7 +4550,7 @@ namespace NMF.Expressions
         {
             if (Successors.IsAttached && Arg7Properties.Contains(e.PropertyName))
             {
-                ExecutionEngine.Current.ManualInvalidation(this);
+                ExecutionEngine.Current.InvalidateNode(this);
             }
         }
 
@@ -4558,7 +4558,7 @@ namespace NMF.Expressions
         {
             if (Successors.IsAttached && Arg7Properties.Contains(e.PropertyName))
             {
-                ExecutionEngine.Current.ManualInvalidation(this);
+                ExecutionEngine.Current.InvalidateNode(this);
             }
         }
         private void RegisterArg8BubbledChange(IModelElement arg8)
@@ -4595,7 +4595,7 @@ namespace NMF.Expressions
         {
             if (Successors.IsAttached && Arg8Properties.Contains(e.PropertyName))
             {
-                ExecutionEngine.Current.ManualInvalidation(this);
+                ExecutionEngine.Current.InvalidateNode(this);
             }
         }
 
@@ -4603,7 +4603,7 @@ namespace NMF.Expressions
         {
             if (Successors.IsAttached && Arg8Properties.Contains(e.PropertyName))
             {
-                ExecutionEngine.Current.ManualInvalidation(this);
+                ExecutionEngine.Current.InvalidateNode(this);
             }
         }
         private void RegisterArg9BubbledChange(IModelElement arg9)
@@ -4640,7 +4640,7 @@ namespace NMF.Expressions
         {
             if (Successors.IsAttached && Arg9Properties.Contains(e.PropertyName))
             {
-                ExecutionEngine.Current.ManualInvalidation(this);
+                ExecutionEngine.Current.InvalidateNode(this);
             }
         }
 
@@ -4648,7 +4648,7 @@ namespace NMF.Expressions
         {
             if (Successors.IsAttached && Arg9Properties.Contains(e.PropertyName))
             {
-                ExecutionEngine.Current.ManualInvalidation(this);
+                ExecutionEngine.Current.InvalidateNode(this);
             }
         }
         private void RegisterArg10BubbledChange(IModelElement arg10)
@@ -4685,7 +4685,7 @@ namespace NMF.Expressions
         {
             if (Successors.IsAttached && Arg10Properties.Contains(e.PropertyName))
             {
-                ExecutionEngine.Current.ManualInvalidation(this);
+                ExecutionEngine.Current.InvalidateNode(this);
             }
         }
 
@@ -4693,7 +4693,7 @@ namespace NMF.Expressions
         {
             if (Successors.IsAttached && Arg10Properties.Contains(e.PropertyName))
             {
-                ExecutionEngine.Current.ManualInvalidation(this);
+                ExecutionEngine.Current.InvalidateNode(this);
             }
         }
 
@@ -5168,7 +5168,7 @@ namespace NMF.Expressions
         {
             if (Successors.IsAttached && Arg1Properties.Contains(e.PropertyName))
             {
-                ExecutionEngine.Current.ManualInvalidation(this);
+                ExecutionEngine.Current.InvalidateNode(this);
             }
         }
 
@@ -5176,7 +5176,7 @@ namespace NMF.Expressions
         {
             if (Successors.IsAttached && Arg1Properties.Contains(e.PropertyName))
             {
-                ExecutionEngine.Current.ManualInvalidation(this);
+                ExecutionEngine.Current.InvalidateNode(this);
             }
         }
         private void RegisterArg2BubbledChange(IModelElement arg2)
@@ -5213,7 +5213,7 @@ namespace NMF.Expressions
         {
             if (Successors.IsAttached && Arg2Properties.Contains(e.PropertyName))
             {
-                ExecutionEngine.Current.ManualInvalidation(this);
+                ExecutionEngine.Current.InvalidateNode(this);
             }
         }
 
@@ -5221,7 +5221,7 @@ namespace NMF.Expressions
         {
             if (Successors.IsAttached && Arg2Properties.Contains(e.PropertyName))
             {
-                ExecutionEngine.Current.ManualInvalidation(this);
+                ExecutionEngine.Current.InvalidateNode(this);
             }
         }
         private void RegisterArg3BubbledChange(IModelElement arg3)
@@ -5258,7 +5258,7 @@ namespace NMF.Expressions
         {
             if (Successors.IsAttached && Arg3Properties.Contains(e.PropertyName))
             {
-                ExecutionEngine.Current.ManualInvalidation(this);
+                ExecutionEngine.Current.InvalidateNode(this);
             }
         }
 
@@ -5266,7 +5266,7 @@ namespace NMF.Expressions
         {
             if (Successors.IsAttached && Arg3Properties.Contains(e.PropertyName))
             {
-                ExecutionEngine.Current.ManualInvalidation(this);
+                ExecutionEngine.Current.InvalidateNode(this);
             }
         }
         private void RegisterArg4BubbledChange(IModelElement arg4)
@@ -5303,7 +5303,7 @@ namespace NMF.Expressions
         {
             if (Successors.IsAttached && Arg4Properties.Contains(e.PropertyName))
             {
-                ExecutionEngine.Current.ManualInvalidation(this);
+                ExecutionEngine.Current.InvalidateNode(this);
             }
         }
 
@@ -5311,7 +5311,7 @@ namespace NMF.Expressions
         {
             if (Successors.IsAttached && Arg4Properties.Contains(e.PropertyName))
             {
-                ExecutionEngine.Current.ManualInvalidation(this);
+                ExecutionEngine.Current.InvalidateNode(this);
             }
         }
         private void RegisterArg5BubbledChange(IModelElement arg5)
@@ -5348,7 +5348,7 @@ namespace NMF.Expressions
         {
             if (Successors.IsAttached && Arg5Properties.Contains(e.PropertyName))
             {
-                ExecutionEngine.Current.ManualInvalidation(this);
+                ExecutionEngine.Current.InvalidateNode(this);
             }
         }
 
@@ -5356,7 +5356,7 @@ namespace NMF.Expressions
         {
             if (Successors.IsAttached && Arg5Properties.Contains(e.PropertyName))
             {
-                ExecutionEngine.Current.ManualInvalidation(this);
+                ExecutionEngine.Current.InvalidateNode(this);
             }
         }
         private void RegisterArg6BubbledChange(IModelElement arg6)
@@ -5393,7 +5393,7 @@ namespace NMF.Expressions
         {
             if (Successors.IsAttached && Arg6Properties.Contains(e.PropertyName))
             {
-                ExecutionEngine.Current.ManualInvalidation(this);
+                ExecutionEngine.Current.InvalidateNode(this);
             }
         }
 
@@ -5401,7 +5401,7 @@ namespace NMF.Expressions
         {
             if (Successors.IsAttached && Arg6Properties.Contains(e.PropertyName))
             {
-                ExecutionEngine.Current.ManualInvalidation(this);
+                ExecutionEngine.Current.InvalidateNode(this);
             }
         }
         private void RegisterArg7BubbledChange(IModelElement arg7)
@@ -5438,7 +5438,7 @@ namespace NMF.Expressions
         {
             if (Successors.IsAttached && Arg7Properties.Contains(e.PropertyName))
             {
-                ExecutionEngine.Current.ManualInvalidation(this);
+                ExecutionEngine.Current.InvalidateNode(this);
             }
         }
 
@@ -5446,7 +5446,7 @@ namespace NMF.Expressions
         {
             if (Successors.IsAttached && Arg7Properties.Contains(e.PropertyName))
             {
-                ExecutionEngine.Current.ManualInvalidation(this);
+                ExecutionEngine.Current.InvalidateNode(this);
             }
         }
         private void RegisterArg8BubbledChange(IModelElement arg8)
@@ -5483,7 +5483,7 @@ namespace NMF.Expressions
         {
             if (Successors.IsAttached && Arg8Properties.Contains(e.PropertyName))
             {
-                ExecutionEngine.Current.ManualInvalidation(this);
+                ExecutionEngine.Current.InvalidateNode(this);
             }
         }
 
@@ -5491,7 +5491,7 @@ namespace NMF.Expressions
         {
             if (Successors.IsAttached && Arg8Properties.Contains(e.PropertyName))
             {
-                ExecutionEngine.Current.ManualInvalidation(this);
+                ExecutionEngine.Current.InvalidateNode(this);
             }
         }
         private void RegisterArg9BubbledChange(IModelElement arg9)
@@ -5528,7 +5528,7 @@ namespace NMF.Expressions
         {
             if (Successors.IsAttached && Arg9Properties.Contains(e.PropertyName))
             {
-                ExecutionEngine.Current.ManualInvalidation(this);
+                ExecutionEngine.Current.InvalidateNode(this);
             }
         }
 
@@ -5536,7 +5536,7 @@ namespace NMF.Expressions
         {
             if (Successors.IsAttached && Arg9Properties.Contains(e.PropertyName))
             {
-                ExecutionEngine.Current.ManualInvalidation(this);
+                ExecutionEngine.Current.InvalidateNode(this);
             }
         }
         private void RegisterArg10BubbledChange(IModelElement arg10)
@@ -5573,7 +5573,7 @@ namespace NMF.Expressions
         {
             if (Successors.IsAttached && Arg10Properties.Contains(e.PropertyName))
             {
-                ExecutionEngine.Current.ManualInvalidation(this);
+                ExecutionEngine.Current.InvalidateNode(this);
             }
         }
 
@@ -5581,7 +5581,7 @@ namespace NMF.Expressions
         {
             if (Successors.IsAttached && Arg10Properties.Contains(e.PropertyName))
             {
-                ExecutionEngine.Current.ManualInvalidation(this);
+                ExecutionEngine.Current.InvalidateNode(this);
             }
         }
         private void RegisterArg11BubbledChange(IModelElement arg11)
@@ -5618,7 +5618,7 @@ namespace NMF.Expressions
         {
             if (Successors.IsAttached && Arg11Properties.Contains(e.PropertyName))
             {
-                ExecutionEngine.Current.ManualInvalidation(this);
+                ExecutionEngine.Current.InvalidateNode(this);
             }
         }
 
@@ -5626,7 +5626,7 @@ namespace NMF.Expressions
         {
             if (Successors.IsAttached && Arg11Properties.Contains(e.PropertyName))
             {
-                ExecutionEngine.Current.ManualInvalidation(this);
+                ExecutionEngine.Current.InvalidateNode(this);
             }
         }
 
@@ -6140,7 +6140,7 @@ namespace NMF.Expressions
         {
             if (Successors.IsAttached && Arg1Properties.Contains(e.PropertyName))
             {
-                ExecutionEngine.Current.ManualInvalidation(this);
+                ExecutionEngine.Current.InvalidateNode(this);
             }
         }
 
@@ -6148,7 +6148,7 @@ namespace NMF.Expressions
         {
             if (Successors.IsAttached && Arg1Properties.Contains(e.PropertyName))
             {
-                ExecutionEngine.Current.ManualInvalidation(this);
+                ExecutionEngine.Current.InvalidateNode(this);
             }
         }
         private void RegisterArg2BubbledChange(IModelElement arg2)
@@ -6185,7 +6185,7 @@ namespace NMF.Expressions
         {
             if (Successors.IsAttached && Arg2Properties.Contains(e.PropertyName))
             {
-                ExecutionEngine.Current.ManualInvalidation(this);
+                ExecutionEngine.Current.InvalidateNode(this);
             }
         }
 
@@ -6193,7 +6193,7 @@ namespace NMF.Expressions
         {
             if (Successors.IsAttached && Arg2Properties.Contains(e.PropertyName))
             {
-                ExecutionEngine.Current.ManualInvalidation(this);
+                ExecutionEngine.Current.InvalidateNode(this);
             }
         }
         private void RegisterArg3BubbledChange(IModelElement arg3)
@@ -6230,7 +6230,7 @@ namespace NMF.Expressions
         {
             if (Successors.IsAttached && Arg3Properties.Contains(e.PropertyName))
             {
-                ExecutionEngine.Current.ManualInvalidation(this);
+                ExecutionEngine.Current.InvalidateNode(this);
             }
         }
 
@@ -6238,7 +6238,7 @@ namespace NMF.Expressions
         {
             if (Successors.IsAttached && Arg3Properties.Contains(e.PropertyName))
             {
-                ExecutionEngine.Current.ManualInvalidation(this);
+                ExecutionEngine.Current.InvalidateNode(this);
             }
         }
         private void RegisterArg4BubbledChange(IModelElement arg4)
@@ -6275,7 +6275,7 @@ namespace NMF.Expressions
         {
             if (Successors.IsAttached && Arg4Properties.Contains(e.PropertyName))
             {
-                ExecutionEngine.Current.ManualInvalidation(this);
+                ExecutionEngine.Current.InvalidateNode(this);
             }
         }
 
@@ -6283,7 +6283,7 @@ namespace NMF.Expressions
         {
             if (Successors.IsAttached && Arg4Properties.Contains(e.PropertyName))
             {
-                ExecutionEngine.Current.ManualInvalidation(this);
+                ExecutionEngine.Current.InvalidateNode(this);
             }
         }
         private void RegisterArg5BubbledChange(IModelElement arg5)
@@ -6320,7 +6320,7 @@ namespace NMF.Expressions
         {
             if (Successors.IsAttached && Arg5Properties.Contains(e.PropertyName))
             {
-                ExecutionEngine.Current.ManualInvalidation(this);
+                ExecutionEngine.Current.InvalidateNode(this);
             }
         }
 
@@ -6328,7 +6328,7 @@ namespace NMF.Expressions
         {
             if (Successors.IsAttached && Arg5Properties.Contains(e.PropertyName))
             {
-                ExecutionEngine.Current.ManualInvalidation(this);
+                ExecutionEngine.Current.InvalidateNode(this);
             }
         }
         private void RegisterArg6BubbledChange(IModelElement arg6)
@@ -6365,7 +6365,7 @@ namespace NMF.Expressions
         {
             if (Successors.IsAttached && Arg6Properties.Contains(e.PropertyName))
             {
-                ExecutionEngine.Current.ManualInvalidation(this);
+                ExecutionEngine.Current.InvalidateNode(this);
             }
         }
 
@@ -6373,7 +6373,7 @@ namespace NMF.Expressions
         {
             if (Successors.IsAttached && Arg6Properties.Contains(e.PropertyName))
             {
-                ExecutionEngine.Current.ManualInvalidation(this);
+                ExecutionEngine.Current.InvalidateNode(this);
             }
         }
         private void RegisterArg7BubbledChange(IModelElement arg7)
@@ -6410,7 +6410,7 @@ namespace NMF.Expressions
         {
             if (Successors.IsAttached && Arg7Properties.Contains(e.PropertyName))
             {
-                ExecutionEngine.Current.ManualInvalidation(this);
+                ExecutionEngine.Current.InvalidateNode(this);
             }
         }
 
@@ -6418,7 +6418,7 @@ namespace NMF.Expressions
         {
             if (Successors.IsAttached && Arg7Properties.Contains(e.PropertyName))
             {
-                ExecutionEngine.Current.ManualInvalidation(this);
+                ExecutionEngine.Current.InvalidateNode(this);
             }
         }
         private void RegisterArg8BubbledChange(IModelElement arg8)
@@ -6455,7 +6455,7 @@ namespace NMF.Expressions
         {
             if (Successors.IsAttached && Arg8Properties.Contains(e.PropertyName))
             {
-                ExecutionEngine.Current.ManualInvalidation(this);
+                ExecutionEngine.Current.InvalidateNode(this);
             }
         }
 
@@ -6463,7 +6463,7 @@ namespace NMF.Expressions
         {
             if (Successors.IsAttached && Arg8Properties.Contains(e.PropertyName))
             {
-                ExecutionEngine.Current.ManualInvalidation(this);
+                ExecutionEngine.Current.InvalidateNode(this);
             }
         }
         private void RegisterArg9BubbledChange(IModelElement arg9)
@@ -6500,7 +6500,7 @@ namespace NMF.Expressions
         {
             if (Successors.IsAttached && Arg9Properties.Contains(e.PropertyName))
             {
-                ExecutionEngine.Current.ManualInvalidation(this);
+                ExecutionEngine.Current.InvalidateNode(this);
             }
         }
 
@@ -6508,7 +6508,7 @@ namespace NMF.Expressions
         {
             if (Successors.IsAttached && Arg9Properties.Contains(e.PropertyName))
             {
-                ExecutionEngine.Current.ManualInvalidation(this);
+                ExecutionEngine.Current.InvalidateNode(this);
             }
         }
         private void RegisterArg10BubbledChange(IModelElement arg10)
@@ -6545,7 +6545,7 @@ namespace NMF.Expressions
         {
             if (Successors.IsAttached && Arg10Properties.Contains(e.PropertyName))
             {
-                ExecutionEngine.Current.ManualInvalidation(this);
+                ExecutionEngine.Current.InvalidateNode(this);
             }
         }
 
@@ -6553,7 +6553,7 @@ namespace NMF.Expressions
         {
             if (Successors.IsAttached && Arg10Properties.Contains(e.PropertyName))
             {
-                ExecutionEngine.Current.ManualInvalidation(this);
+                ExecutionEngine.Current.InvalidateNode(this);
             }
         }
         private void RegisterArg11BubbledChange(IModelElement arg11)
@@ -6590,7 +6590,7 @@ namespace NMF.Expressions
         {
             if (Successors.IsAttached && Arg11Properties.Contains(e.PropertyName))
             {
-                ExecutionEngine.Current.ManualInvalidation(this);
+                ExecutionEngine.Current.InvalidateNode(this);
             }
         }
 
@@ -6598,7 +6598,7 @@ namespace NMF.Expressions
         {
             if (Successors.IsAttached && Arg11Properties.Contains(e.PropertyName))
             {
-                ExecutionEngine.Current.ManualInvalidation(this);
+                ExecutionEngine.Current.InvalidateNode(this);
             }
         }
         private void RegisterArg12BubbledChange(IModelElement arg12)
@@ -6635,7 +6635,7 @@ namespace NMF.Expressions
         {
             if (Successors.IsAttached && Arg12Properties.Contains(e.PropertyName))
             {
-                ExecutionEngine.Current.ManualInvalidation(this);
+                ExecutionEngine.Current.InvalidateNode(this);
             }
         }
 
@@ -6643,7 +6643,7 @@ namespace NMF.Expressions
         {
             if (Successors.IsAttached && Arg12Properties.Contains(e.PropertyName))
             {
-                ExecutionEngine.Current.ManualInvalidation(this);
+                ExecutionEngine.Current.InvalidateNode(this);
             }
         }
 
@@ -7196,7 +7196,7 @@ namespace NMF.Expressions
         {
             if (Successors.IsAttached && Arg1Properties.Contains(e.PropertyName))
             {
-                ExecutionEngine.Current.ManualInvalidation(this);
+                ExecutionEngine.Current.InvalidateNode(this);
             }
         }
 
@@ -7204,7 +7204,7 @@ namespace NMF.Expressions
         {
             if (Successors.IsAttached && Arg1Properties.Contains(e.PropertyName))
             {
-                ExecutionEngine.Current.ManualInvalidation(this);
+                ExecutionEngine.Current.InvalidateNode(this);
             }
         }
         private void RegisterArg2BubbledChange(IModelElement arg2)
@@ -7241,7 +7241,7 @@ namespace NMF.Expressions
         {
             if (Successors.IsAttached && Arg2Properties.Contains(e.PropertyName))
             {
-                ExecutionEngine.Current.ManualInvalidation(this);
+                ExecutionEngine.Current.InvalidateNode(this);
             }
         }
 
@@ -7249,7 +7249,7 @@ namespace NMF.Expressions
         {
             if (Successors.IsAttached && Arg2Properties.Contains(e.PropertyName))
             {
-                ExecutionEngine.Current.ManualInvalidation(this);
+                ExecutionEngine.Current.InvalidateNode(this);
             }
         }
         private void RegisterArg3BubbledChange(IModelElement arg3)
@@ -7286,7 +7286,7 @@ namespace NMF.Expressions
         {
             if (Successors.IsAttached && Arg3Properties.Contains(e.PropertyName))
             {
-                ExecutionEngine.Current.ManualInvalidation(this);
+                ExecutionEngine.Current.InvalidateNode(this);
             }
         }
 
@@ -7294,7 +7294,7 @@ namespace NMF.Expressions
         {
             if (Successors.IsAttached && Arg3Properties.Contains(e.PropertyName))
             {
-                ExecutionEngine.Current.ManualInvalidation(this);
+                ExecutionEngine.Current.InvalidateNode(this);
             }
         }
         private void RegisterArg4BubbledChange(IModelElement arg4)
@@ -7331,7 +7331,7 @@ namespace NMF.Expressions
         {
             if (Successors.IsAttached && Arg4Properties.Contains(e.PropertyName))
             {
-                ExecutionEngine.Current.ManualInvalidation(this);
+                ExecutionEngine.Current.InvalidateNode(this);
             }
         }
 
@@ -7339,7 +7339,7 @@ namespace NMF.Expressions
         {
             if (Successors.IsAttached && Arg4Properties.Contains(e.PropertyName))
             {
-                ExecutionEngine.Current.ManualInvalidation(this);
+                ExecutionEngine.Current.InvalidateNode(this);
             }
         }
         private void RegisterArg5BubbledChange(IModelElement arg5)
@@ -7376,7 +7376,7 @@ namespace NMF.Expressions
         {
             if (Successors.IsAttached && Arg5Properties.Contains(e.PropertyName))
             {
-                ExecutionEngine.Current.ManualInvalidation(this);
+                ExecutionEngine.Current.InvalidateNode(this);
             }
         }
 
@@ -7384,7 +7384,7 @@ namespace NMF.Expressions
         {
             if (Successors.IsAttached && Arg5Properties.Contains(e.PropertyName))
             {
-                ExecutionEngine.Current.ManualInvalidation(this);
+                ExecutionEngine.Current.InvalidateNode(this);
             }
         }
         private void RegisterArg6BubbledChange(IModelElement arg6)
@@ -7421,7 +7421,7 @@ namespace NMF.Expressions
         {
             if (Successors.IsAttached && Arg6Properties.Contains(e.PropertyName))
             {
-                ExecutionEngine.Current.ManualInvalidation(this);
+                ExecutionEngine.Current.InvalidateNode(this);
             }
         }
 
@@ -7429,7 +7429,7 @@ namespace NMF.Expressions
         {
             if (Successors.IsAttached && Arg6Properties.Contains(e.PropertyName))
             {
-                ExecutionEngine.Current.ManualInvalidation(this);
+                ExecutionEngine.Current.InvalidateNode(this);
             }
         }
         private void RegisterArg7BubbledChange(IModelElement arg7)
@@ -7466,7 +7466,7 @@ namespace NMF.Expressions
         {
             if (Successors.IsAttached && Arg7Properties.Contains(e.PropertyName))
             {
-                ExecutionEngine.Current.ManualInvalidation(this);
+                ExecutionEngine.Current.InvalidateNode(this);
             }
         }
 
@@ -7474,7 +7474,7 @@ namespace NMF.Expressions
         {
             if (Successors.IsAttached && Arg7Properties.Contains(e.PropertyName))
             {
-                ExecutionEngine.Current.ManualInvalidation(this);
+                ExecutionEngine.Current.InvalidateNode(this);
             }
         }
         private void RegisterArg8BubbledChange(IModelElement arg8)
@@ -7511,7 +7511,7 @@ namespace NMF.Expressions
         {
             if (Successors.IsAttached && Arg8Properties.Contains(e.PropertyName))
             {
-                ExecutionEngine.Current.ManualInvalidation(this);
+                ExecutionEngine.Current.InvalidateNode(this);
             }
         }
 
@@ -7519,7 +7519,7 @@ namespace NMF.Expressions
         {
             if (Successors.IsAttached && Arg8Properties.Contains(e.PropertyName))
             {
-                ExecutionEngine.Current.ManualInvalidation(this);
+                ExecutionEngine.Current.InvalidateNode(this);
             }
         }
         private void RegisterArg9BubbledChange(IModelElement arg9)
@@ -7556,7 +7556,7 @@ namespace NMF.Expressions
         {
             if (Successors.IsAttached && Arg9Properties.Contains(e.PropertyName))
             {
-                ExecutionEngine.Current.ManualInvalidation(this);
+                ExecutionEngine.Current.InvalidateNode(this);
             }
         }
 
@@ -7564,7 +7564,7 @@ namespace NMF.Expressions
         {
             if (Successors.IsAttached && Arg9Properties.Contains(e.PropertyName))
             {
-                ExecutionEngine.Current.ManualInvalidation(this);
+                ExecutionEngine.Current.InvalidateNode(this);
             }
         }
         private void RegisterArg10BubbledChange(IModelElement arg10)
@@ -7601,7 +7601,7 @@ namespace NMF.Expressions
         {
             if (Successors.IsAttached && Arg10Properties.Contains(e.PropertyName))
             {
-                ExecutionEngine.Current.ManualInvalidation(this);
+                ExecutionEngine.Current.InvalidateNode(this);
             }
         }
 
@@ -7609,7 +7609,7 @@ namespace NMF.Expressions
         {
             if (Successors.IsAttached && Arg10Properties.Contains(e.PropertyName))
             {
-                ExecutionEngine.Current.ManualInvalidation(this);
+                ExecutionEngine.Current.InvalidateNode(this);
             }
         }
         private void RegisterArg11BubbledChange(IModelElement arg11)
@@ -7646,7 +7646,7 @@ namespace NMF.Expressions
         {
             if (Successors.IsAttached && Arg11Properties.Contains(e.PropertyName))
             {
-                ExecutionEngine.Current.ManualInvalidation(this);
+                ExecutionEngine.Current.InvalidateNode(this);
             }
         }
 
@@ -7654,7 +7654,7 @@ namespace NMF.Expressions
         {
             if (Successors.IsAttached && Arg11Properties.Contains(e.PropertyName))
             {
-                ExecutionEngine.Current.ManualInvalidation(this);
+                ExecutionEngine.Current.InvalidateNode(this);
             }
         }
         private void RegisterArg12BubbledChange(IModelElement arg12)
@@ -7691,7 +7691,7 @@ namespace NMF.Expressions
         {
             if (Successors.IsAttached && Arg12Properties.Contains(e.PropertyName))
             {
-                ExecutionEngine.Current.ManualInvalidation(this);
+                ExecutionEngine.Current.InvalidateNode(this);
             }
         }
 
@@ -7699,7 +7699,7 @@ namespace NMF.Expressions
         {
             if (Successors.IsAttached && Arg12Properties.Contains(e.PropertyName))
             {
-                ExecutionEngine.Current.ManualInvalidation(this);
+                ExecutionEngine.Current.InvalidateNode(this);
             }
         }
         private void RegisterArg13BubbledChange(IModelElement arg13)
@@ -7736,7 +7736,7 @@ namespace NMF.Expressions
         {
             if (Successors.IsAttached && Arg13Properties.Contains(e.PropertyName))
             {
-                ExecutionEngine.Current.ManualInvalidation(this);
+                ExecutionEngine.Current.InvalidateNode(this);
             }
         }
 
@@ -7744,7 +7744,7 @@ namespace NMF.Expressions
         {
             if (Successors.IsAttached && Arg13Properties.Contains(e.PropertyName))
             {
-                ExecutionEngine.Current.ManualInvalidation(this);
+                ExecutionEngine.Current.InvalidateNode(this);
             }
         }
 
@@ -8336,7 +8336,7 @@ namespace NMF.Expressions
         {
             if (Successors.IsAttached && Arg1Properties.Contains(e.PropertyName))
             {
-                ExecutionEngine.Current.ManualInvalidation(this);
+                ExecutionEngine.Current.InvalidateNode(this);
             }
         }
 
@@ -8344,7 +8344,7 @@ namespace NMF.Expressions
         {
             if (Successors.IsAttached && Arg1Properties.Contains(e.PropertyName))
             {
-                ExecutionEngine.Current.ManualInvalidation(this);
+                ExecutionEngine.Current.InvalidateNode(this);
             }
         }
         private void RegisterArg2BubbledChange(IModelElement arg2)
@@ -8381,7 +8381,7 @@ namespace NMF.Expressions
         {
             if (Successors.IsAttached && Arg2Properties.Contains(e.PropertyName))
             {
-                ExecutionEngine.Current.ManualInvalidation(this);
+                ExecutionEngine.Current.InvalidateNode(this);
             }
         }
 
@@ -8389,7 +8389,7 @@ namespace NMF.Expressions
         {
             if (Successors.IsAttached && Arg2Properties.Contains(e.PropertyName))
             {
-                ExecutionEngine.Current.ManualInvalidation(this);
+                ExecutionEngine.Current.InvalidateNode(this);
             }
         }
         private void RegisterArg3BubbledChange(IModelElement arg3)
@@ -8426,7 +8426,7 @@ namespace NMF.Expressions
         {
             if (Successors.IsAttached && Arg3Properties.Contains(e.PropertyName))
             {
-                ExecutionEngine.Current.ManualInvalidation(this);
+                ExecutionEngine.Current.InvalidateNode(this);
             }
         }
 
@@ -8434,7 +8434,7 @@ namespace NMF.Expressions
         {
             if (Successors.IsAttached && Arg3Properties.Contains(e.PropertyName))
             {
-                ExecutionEngine.Current.ManualInvalidation(this);
+                ExecutionEngine.Current.InvalidateNode(this);
             }
         }
         private void RegisterArg4BubbledChange(IModelElement arg4)
@@ -8471,7 +8471,7 @@ namespace NMF.Expressions
         {
             if (Successors.IsAttached && Arg4Properties.Contains(e.PropertyName))
             {
-                ExecutionEngine.Current.ManualInvalidation(this);
+                ExecutionEngine.Current.InvalidateNode(this);
             }
         }
 
@@ -8479,7 +8479,7 @@ namespace NMF.Expressions
         {
             if (Successors.IsAttached && Arg4Properties.Contains(e.PropertyName))
             {
-                ExecutionEngine.Current.ManualInvalidation(this);
+                ExecutionEngine.Current.InvalidateNode(this);
             }
         }
         private void RegisterArg5BubbledChange(IModelElement arg5)
@@ -8516,7 +8516,7 @@ namespace NMF.Expressions
         {
             if (Successors.IsAttached && Arg5Properties.Contains(e.PropertyName))
             {
-                ExecutionEngine.Current.ManualInvalidation(this);
+                ExecutionEngine.Current.InvalidateNode(this);
             }
         }
 
@@ -8524,7 +8524,7 @@ namespace NMF.Expressions
         {
             if (Successors.IsAttached && Arg5Properties.Contains(e.PropertyName))
             {
-                ExecutionEngine.Current.ManualInvalidation(this);
+                ExecutionEngine.Current.InvalidateNode(this);
             }
         }
         private void RegisterArg6BubbledChange(IModelElement arg6)
@@ -8561,7 +8561,7 @@ namespace NMF.Expressions
         {
             if (Successors.IsAttached && Arg6Properties.Contains(e.PropertyName))
             {
-                ExecutionEngine.Current.ManualInvalidation(this);
+                ExecutionEngine.Current.InvalidateNode(this);
             }
         }
 
@@ -8569,7 +8569,7 @@ namespace NMF.Expressions
         {
             if (Successors.IsAttached && Arg6Properties.Contains(e.PropertyName))
             {
-                ExecutionEngine.Current.ManualInvalidation(this);
+                ExecutionEngine.Current.InvalidateNode(this);
             }
         }
         private void RegisterArg7BubbledChange(IModelElement arg7)
@@ -8606,7 +8606,7 @@ namespace NMF.Expressions
         {
             if (Successors.IsAttached && Arg7Properties.Contains(e.PropertyName))
             {
-                ExecutionEngine.Current.ManualInvalidation(this);
+                ExecutionEngine.Current.InvalidateNode(this);
             }
         }
 
@@ -8614,7 +8614,7 @@ namespace NMF.Expressions
         {
             if (Successors.IsAttached && Arg7Properties.Contains(e.PropertyName))
             {
-                ExecutionEngine.Current.ManualInvalidation(this);
+                ExecutionEngine.Current.InvalidateNode(this);
             }
         }
         private void RegisterArg8BubbledChange(IModelElement arg8)
@@ -8651,7 +8651,7 @@ namespace NMF.Expressions
         {
             if (Successors.IsAttached && Arg8Properties.Contains(e.PropertyName))
             {
-                ExecutionEngine.Current.ManualInvalidation(this);
+                ExecutionEngine.Current.InvalidateNode(this);
             }
         }
 
@@ -8659,7 +8659,7 @@ namespace NMF.Expressions
         {
             if (Successors.IsAttached && Arg8Properties.Contains(e.PropertyName))
             {
-                ExecutionEngine.Current.ManualInvalidation(this);
+                ExecutionEngine.Current.InvalidateNode(this);
             }
         }
         private void RegisterArg9BubbledChange(IModelElement arg9)
@@ -8696,7 +8696,7 @@ namespace NMF.Expressions
         {
             if (Successors.IsAttached && Arg9Properties.Contains(e.PropertyName))
             {
-                ExecutionEngine.Current.ManualInvalidation(this);
+                ExecutionEngine.Current.InvalidateNode(this);
             }
         }
 
@@ -8704,7 +8704,7 @@ namespace NMF.Expressions
         {
             if (Successors.IsAttached && Arg9Properties.Contains(e.PropertyName))
             {
-                ExecutionEngine.Current.ManualInvalidation(this);
+                ExecutionEngine.Current.InvalidateNode(this);
             }
         }
         private void RegisterArg10BubbledChange(IModelElement arg10)
@@ -8741,7 +8741,7 @@ namespace NMF.Expressions
         {
             if (Successors.IsAttached && Arg10Properties.Contains(e.PropertyName))
             {
-                ExecutionEngine.Current.ManualInvalidation(this);
+                ExecutionEngine.Current.InvalidateNode(this);
             }
         }
 
@@ -8749,7 +8749,7 @@ namespace NMF.Expressions
         {
             if (Successors.IsAttached && Arg10Properties.Contains(e.PropertyName))
             {
-                ExecutionEngine.Current.ManualInvalidation(this);
+                ExecutionEngine.Current.InvalidateNode(this);
             }
         }
         private void RegisterArg11BubbledChange(IModelElement arg11)
@@ -8786,7 +8786,7 @@ namespace NMF.Expressions
         {
             if (Successors.IsAttached && Arg11Properties.Contains(e.PropertyName))
             {
-                ExecutionEngine.Current.ManualInvalidation(this);
+                ExecutionEngine.Current.InvalidateNode(this);
             }
         }
 
@@ -8794,7 +8794,7 @@ namespace NMF.Expressions
         {
             if (Successors.IsAttached && Arg11Properties.Contains(e.PropertyName))
             {
-                ExecutionEngine.Current.ManualInvalidation(this);
+                ExecutionEngine.Current.InvalidateNode(this);
             }
         }
         private void RegisterArg12BubbledChange(IModelElement arg12)
@@ -8831,7 +8831,7 @@ namespace NMF.Expressions
         {
             if (Successors.IsAttached && Arg12Properties.Contains(e.PropertyName))
             {
-                ExecutionEngine.Current.ManualInvalidation(this);
+                ExecutionEngine.Current.InvalidateNode(this);
             }
         }
 
@@ -8839,7 +8839,7 @@ namespace NMF.Expressions
         {
             if (Successors.IsAttached && Arg12Properties.Contains(e.PropertyName))
             {
-                ExecutionEngine.Current.ManualInvalidation(this);
+                ExecutionEngine.Current.InvalidateNode(this);
             }
         }
         private void RegisterArg13BubbledChange(IModelElement arg13)
@@ -8876,7 +8876,7 @@ namespace NMF.Expressions
         {
             if (Successors.IsAttached && Arg13Properties.Contains(e.PropertyName))
             {
-                ExecutionEngine.Current.ManualInvalidation(this);
+                ExecutionEngine.Current.InvalidateNode(this);
             }
         }
 
@@ -8884,7 +8884,7 @@ namespace NMF.Expressions
         {
             if (Successors.IsAttached && Arg13Properties.Contains(e.PropertyName))
             {
-                ExecutionEngine.Current.ManualInvalidation(this);
+                ExecutionEngine.Current.InvalidateNode(this);
             }
         }
         private void RegisterArg14BubbledChange(IModelElement arg14)
@@ -8921,7 +8921,7 @@ namespace NMF.Expressions
         {
             if (Successors.IsAttached && Arg14Properties.Contains(e.PropertyName))
             {
-                ExecutionEngine.Current.ManualInvalidation(this);
+                ExecutionEngine.Current.InvalidateNode(this);
             }
         }
 
@@ -8929,7 +8929,7 @@ namespace NMF.Expressions
         {
             if (Successors.IsAttached && Arg14Properties.Contains(e.PropertyName))
             {
-                ExecutionEngine.Current.ManualInvalidation(this);
+                ExecutionEngine.Current.InvalidateNode(this);
             }
         }
 
@@ -9560,7 +9560,7 @@ namespace NMF.Expressions
         {
             if (Successors.IsAttached && Arg1Properties.Contains(e.PropertyName))
             {
-                ExecutionEngine.Current.ManualInvalidation(this);
+                ExecutionEngine.Current.InvalidateNode(this);
             }
         }
 
@@ -9568,7 +9568,7 @@ namespace NMF.Expressions
         {
             if (Successors.IsAttached && Arg1Properties.Contains(e.PropertyName))
             {
-                ExecutionEngine.Current.ManualInvalidation(this);
+                ExecutionEngine.Current.InvalidateNode(this);
             }
         }
         private void RegisterArg2BubbledChange(IModelElement arg2)
@@ -9605,7 +9605,7 @@ namespace NMF.Expressions
         {
             if (Successors.IsAttached && Arg2Properties.Contains(e.PropertyName))
             {
-                ExecutionEngine.Current.ManualInvalidation(this);
+                ExecutionEngine.Current.InvalidateNode(this);
             }
         }
 
@@ -9613,7 +9613,7 @@ namespace NMF.Expressions
         {
             if (Successors.IsAttached && Arg2Properties.Contains(e.PropertyName))
             {
-                ExecutionEngine.Current.ManualInvalidation(this);
+                ExecutionEngine.Current.InvalidateNode(this);
             }
         }
         private void RegisterArg3BubbledChange(IModelElement arg3)
@@ -9650,7 +9650,7 @@ namespace NMF.Expressions
         {
             if (Successors.IsAttached && Arg3Properties.Contains(e.PropertyName))
             {
-                ExecutionEngine.Current.ManualInvalidation(this);
+                ExecutionEngine.Current.InvalidateNode(this);
             }
         }
 
@@ -9658,7 +9658,7 @@ namespace NMF.Expressions
         {
             if (Successors.IsAttached && Arg3Properties.Contains(e.PropertyName))
             {
-                ExecutionEngine.Current.ManualInvalidation(this);
+                ExecutionEngine.Current.InvalidateNode(this);
             }
         }
         private void RegisterArg4BubbledChange(IModelElement arg4)
@@ -9695,7 +9695,7 @@ namespace NMF.Expressions
         {
             if (Successors.IsAttached && Arg4Properties.Contains(e.PropertyName))
             {
-                ExecutionEngine.Current.ManualInvalidation(this);
+                ExecutionEngine.Current.InvalidateNode(this);
             }
         }
 
@@ -9703,7 +9703,7 @@ namespace NMF.Expressions
         {
             if (Successors.IsAttached && Arg4Properties.Contains(e.PropertyName))
             {
-                ExecutionEngine.Current.ManualInvalidation(this);
+                ExecutionEngine.Current.InvalidateNode(this);
             }
         }
         private void RegisterArg5BubbledChange(IModelElement arg5)
@@ -9740,7 +9740,7 @@ namespace NMF.Expressions
         {
             if (Successors.IsAttached && Arg5Properties.Contains(e.PropertyName))
             {
-                ExecutionEngine.Current.ManualInvalidation(this);
+                ExecutionEngine.Current.InvalidateNode(this);
             }
         }
 
@@ -9748,7 +9748,7 @@ namespace NMF.Expressions
         {
             if (Successors.IsAttached && Arg5Properties.Contains(e.PropertyName))
             {
-                ExecutionEngine.Current.ManualInvalidation(this);
+                ExecutionEngine.Current.InvalidateNode(this);
             }
         }
         private void RegisterArg6BubbledChange(IModelElement arg6)
@@ -9785,7 +9785,7 @@ namespace NMF.Expressions
         {
             if (Successors.IsAttached && Arg6Properties.Contains(e.PropertyName))
             {
-                ExecutionEngine.Current.ManualInvalidation(this);
+                ExecutionEngine.Current.InvalidateNode(this);
             }
         }
 
@@ -9793,7 +9793,7 @@ namespace NMF.Expressions
         {
             if (Successors.IsAttached && Arg6Properties.Contains(e.PropertyName))
             {
-                ExecutionEngine.Current.ManualInvalidation(this);
+                ExecutionEngine.Current.InvalidateNode(this);
             }
         }
         private void RegisterArg7BubbledChange(IModelElement arg7)
@@ -9830,7 +9830,7 @@ namespace NMF.Expressions
         {
             if (Successors.IsAttached && Arg7Properties.Contains(e.PropertyName))
             {
-                ExecutionEngine.Current.ManualInvalidation(this);
+                ExecutionEngine.Current.InvalidateNode(this);
             }
         }
 
@@ -9838,7 +9838,7 @@ namespace NMF.Expressions
         {
             if (Successors.IsAttached && Arg7Properties.Contains(e.PropertyName))
             {
-                ExecutionEngine.Current.ManualInvalidation(this);
+                ExecutionEngine.Current.InvalidateNode(this);
             }
         }
         private void RegisterArg8BubbledChange(IModelElement arg8)
@@ -9875,7 +9875,7 @@ namespace NMF.Expressions
         {
             if (Successors.IsAttached && Arg8Properties.Contains(e.PropertyName))
             {
-                ExecutionEngine.Current.ManualInvalidation(this);
+                ExecutionEngine.Current.InvalidateNode(this);
             }
         }
 
@@ -9883,7 +9883,7 @@ namespace NMF.Expressions
         {
             if (Successors.IsAttached && Arg8Properties.Contains(e.PropertyName))
             {
-                ExecutionEngine.Current.ManualInvalidation(this);
+                ExecutionEngine.Current.InvalidateNode(this);
             }
         }
         private void RegisterArg9BubbledChange(IModelElement arg9)
@@ -9920,7 +9920,7 @@ namespace NMF.Expressions
         {
             if (Successors.IsAttached && Arg9Properties.Contains(e.PropertyName))
             {
-                ExecutionEngine.Current.ManualInvalidation(this);
+                ExecutionEngine.Current.InvalidateNode(this);
             }
         }
 
@@ -9928,7 +9928,7 @@ namespace NMF.Expressions
         {
             if (Successors.IsAttached && Arg9Properties.Contains(e.PropertyName))
             {
-                ExecutionEngine.Current.ManualInvalidation(this);
+                ExecutionEngine.Current.InvalidateNode(this);
             }
         }
         private void RegisterArg10BubbledChange(IModelElement arg10)
@@ -9965,7 +9965,7 @@ namespace NMF.Expressions
         {
             if (Successors.IsAttached && Arg10Properties.Contains(e.PropertyName))
             {
-                ExecutionEngine.Current.ManualInvalidation(this);
+                ExecutionEngine.Current.InvalidateNode(this);
             }
         }
 
@@ -9973,7 +9973,7 @@ namespace NMF.Expressions
         {
             if (Successors.IsAttached && Arg10Properties.Contains(e.PropertyName))
             {
-                ExecutionEngine.Current.ManualInvalidation(this);
+                ExecutionEngine.Current.InvalidateNode(this);
             }
         }
         private void RegisterArg11BubbledChange(IModelElement arg11)
@@ -10010,7 +10010,7 @@ namespace NMF.Expressions
         {
             if (Successors.IsAttached && Arg11Properties.Contains(e.PropertyName))
             {
-                ExecutionEngine.Current.ManualInvalidation(this);
+                ExecutionEngine.Current.InvalidateNode(this);
             }
         }
 
@@ -10018,7 +10018,7 @@ namespace NMF.Expressions
         {
             if (Successors.IsAttached && Arg11Properties.Contains(e.PropertyName))
             {
-                ExecutionEngine.Current.ManualInvalidation(this);
+                ExecutionEngine.Current.InvalidateNode(this);
             }
         }
         private void RegisterArg12BubbledChange(IModelElement arg12)
@@ -10055,7 +10055,7 @@ namespace NMF.Expressions
         {
             if (Successors.IsAttached && Arg12Properties.Contains(e.PropertyName))
             {
-                ExecutionEngine.Current.ManualInvalidation(this);
+                ExecutionEngine.Current.InvalidateNode(this);
             }
         }
 
@@ -10063,7 +10063,7 @@ namespace NMF.Expressions
         {
             if (Successors.IsAttached && Arg12Properties.Contains(e.PropertyName))
             {
-                ExecutionEngine.Current.ManualInvalidation(this);
+                ExecutionEngine.Current.InvalidateNode(this);
             }
         }
         private void RegisterArg13BubbledChange(IModelElement arg13)
@@ -10100,7 +10100,7 @@ namespace NMF.Expressions
         {
             if (Successors.IsAttached && Arg13Properties.Contains(e.PropertyName))
             {
-                ExecutionEngine.Current.ManualInvalidation(this);
+                ExecutionEngine.Current.InvalidateNode(this);
             }
         }
 
@@ -10108,7 +10108,7 @@ namespace NMF.Expressions
         {
             if (Successors.IsAttached && Arg13Properties.Contains(e.PropertyName))
             {
-                ExecutionEngine.Current.ManualInvalidation(this);
+                ExecutionEngine.Current.InvalidateNode(this);
             }
         }
         private void RegisterArg14BubbledChange(IModelElement arg14)
@@ -10145,7 +10145,7 @@ namespace NMF.Expressions
         {
             if (Successors.IsAttached && Arg14Properties.Contains(e.PropertyName))
             {
-                ExecutionEngine.Current.ManualInvalidation(this);
+                ExecutionEngine.Current.InvalidateNode(this);
             }
         }
 
@@ -10153,7 +10153,7 @@ namespace NMF.Expressions
         {
             if (Successors.IsAttached && Arg14Properties.Contains(e.PropertyName))
             {
-                ExecutionEngine.Current.ManualInvalidation(this);
+                ExecutionEngine.Current.InvalidateNode(this);
             }
         }
         private void RegisterArg15BubbledChange(IModelElement arg15)
@@ -10190,7 +10190,7 @@ namespace NMF.Expressions
         {
             if (Successors.IsAttached && Arg15Properties.Contains(e.PropertyName))
             {
-                ExecutionEngine.Current.ManualInvalidation(this);
+                ExecutionEngine.Current.InvalidateNode(this);
             }
         }
 
@@ -10198,7 +10198,7 @@ namespace NMF.Expressions
         {
             if (Successors.IsAttached && Arg15Properties.Contains(e.PropertyName))
             {
-                ExecutionEngine.Current.ManualInvalidation(this);
+                ExecutionEngine.Current.InvalidateNode(this);
             }
         }
 

@@ -16,12 +16,14 @@ namespace NMF.Expressions
     {
         private class Entry : INotifyReversableExpression<TValue>, INotifyPropertyChanged
         {
+            private readonly PropertyChangeListener listener;
             private TValue value;
 
             public Entry()
             {
-                Successors.Attached += (obj, e) => ExecutionContext.Instance.AddChangeListener(this, this, "Value");
-                Successors.Detached += (obj, e) => ExecutionContext.Instance.RemoveChangeListener(this, this, "Value");
+                listener = new PropertyChangeListener(this);
+                Successors.Attached += (obj, e) => listener.Subscribe(this, "Value");
+                Successors.Detached += (obj, e) => listener.Unsubscribe();
             }
 
             public IEnumerable<INotifiable> Dependencies

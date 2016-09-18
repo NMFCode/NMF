@@ -84,7 +84,7 @@ namespace NMF.Expressions
         {
             if (Successors.IsAttached && Arg<#= j #>Properties.Contains(e.PropertyName))
             {
-                ExecutionEngine.Current.ManualInvalidation(this);
+                ExecutionEngine.Current.InvalidateNode(this);
             }
         }
 
@@ -92,7 +92,7 @@ namespace NMF.Expressions
         {
             if (Successors.IsAttached && Arg<#= j #>Properties.Contains(e.PropertyName))
             {
-                ExecutionEngine.Current.ManualInvalidation(this);
+                ExecutionEngine.Current.InvalidateNode(this);
             }
         }
 <# } #>

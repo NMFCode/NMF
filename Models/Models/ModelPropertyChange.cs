@@ -15,6 +15,7 @@ namespace NMF.Models.Expressions
     /// <typeparam name="TProperty">The property type</typeparam>
     public abstract class ModelPropertyChange<TClass, TProperty> : INotifyReversableExpression<TProperty> where TClass : INotifyPropertyChanged
     {
+        private readonly PropertyChangeListener listener;
         private readonly string propertyName;
         
         public TClass ModelElement { get; private set; }
@@ -27,6 +28,7 @@ namespace NMF.Models.Expressions
         {
             ModelElement = modelElement;
             this.propertyName = propertyName;
+            this.listener = new PropertyChangeListener(this);
 
             Successors.Attached += (obj, e) => Attach();
             Successors.Detached += (obj, e) => Detach();
@@ -129,7 +131,7 @@ namespace NMF.Models.Expressions
         /// </summary>
         public void Attach()
         {
-            ExecutionContext.Instance.AddChangeListener(this, ModelElement, propertyName);
+            listener.Subscribe(ModelElement, propertyName);
         }
 
         /// <summary>
@@ -137,7 +139,7 @@ namespace NMF.Models.Expressions
         /// </summary>
         public void Detach()
         {
-            ExecutionContext.Instance.RemoveChangeListener(this, ModelElement, propertyName);
+            listener.Unsubscribe();
         }
 
         /// <summary>

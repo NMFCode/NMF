@@ -8,7 +8,7 @@ namespace NMF.Expressions
 {
     public class ParallelForeachExecutionEngine : ParallelExecutionEngine
     {
-        protected override void Schedule(HashSet<INotifiable> nodes)
+        protected override void Schedule(List<INotifiable> nodes)
         {
             Parallel.ForEach(nodes, node => NotifyNode(node));
         }

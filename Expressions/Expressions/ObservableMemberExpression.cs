@@ -12,6 +12,8 @@ namespace NMF.Expressions
 {
     internal class ObservableMemberExpression<TTarget, TMember> : NotifyExpression<TMember>
     {
+        private readonly PropertyChangeListener listener;
+
         public ObservableMemberExpression(MemberExpression expression, ObservableExpressionBinder binder, string name, Func<TTarget, TMember> getter)
             : this(binder.VisitObservable<TTarget>(expression.Expression, true), name, getter) { }
 
@@ -23,6 +25,7 @@ namespace NMF.Expressions
             Target = target;
             MemberGet = memberGet;
             MemberName = memberName;
+            listener = new PropertyChangeListener(this);
         }
         
         public override ExpressionType NodeType { get { return ExpressionType.MemberAccess; } }
@@ -86,7 +89,7 @@ namespace NMF.Expressions
             if (sources.Count > 0)
             {
                 var oldValue = ((ValueChangedNotificationResult<TTarget>)sources[0]).OldValue;
-                DetachPropertyChangeListener(oldValue);
+                listener.Unsubscribe();
                 AttachPropertyChangeListener(Target.Value);
             }
             return base.Notify(sources);
@@ -100,27 +103,21 @@ namespace NMF.Expressions
 
         protected override void OnDetach()
         {
-            if (Target != null)
-                DetachPropertyChangeListener(Target.Value);
+            listener.Unsubscribe();
         }
 
         private void AttachPropertyChangeListener(object target)
         {
             var newTarget = target as INotifyPropertyChanged;
             if (newTarget != null)
-                ExecutionContext.Instance.AddChangeListener(this, newTarget, MemberName);
-        }
-
-        private void DetachPropertyChangeListener(object target)
-        {
-            var oldTarget = target as INotifyPropertyChanged;
-            if (oldTarget != null)
-                ExecutionContext.Instance.RemoveChangeListener(this, oldTarget, MemberName);
+                listener.Subscribe(newTarget, MemberName);
         }
     }
 
     internal class ObservableReversableMemberExpression<TTarget, TMember> : ObservableReversableExpression<TMember>
     {
+        private readonly PropertyChangeListener listener;
+
         public ObservableReversableMemberExpression(MemberExpression expression, ObservableExpressionBinder binder, string name, FieldInfo field)
             : this(binder.VisitObservable<TTarget>(expression.Expression, true), name, ReflectionHelper.CreateDynamicFieldGetter<TTarget, TMember>(field), ReflectionHelper.CreateDynamicFieldSetter<TTarget, TMember>(field)) { }
 
@@ -137,6 +134,7 @@ namespace NMF.Expressions
             MemberGet = memberGet;
             MemberSet = memberSet;
             MemberName = memberName;
+            listener = new PropertyChangeListener(this);
         }
         
         public override ExpressionType NodeType { get { return ExpressionType.MemberAccess; } }
@@ -217,7 +215,7 @@ namespace NMF.Expressions
             if (sources.Count > 0)
             {
                 var oldValue = ((IValueChangedNotificationResult)sources[0]).OldValue;
-                DetachPropertyChangeListener(oldValue);
+                listener.Unsubscribe();
                 AttachPropertyChangeListener(Target.Value);
             }
             return base.Notify(sources);
@@ -231,22 +229,14 @@ namespace NMF.Expressions
 
         protected override void OnDetach()
         {
-            if (Target != null)
-                DetachPropertyChangeListener(Target.Value);
+            listener.Unsubscribe();
         }
 
         private void AttachPropertyChangeListener(object target)
         {
             var newTarget = target as INotifyPropertyChanged;
             if (newTarget != null)
-                ExecutionContext.Instance.AddChangeListener(this, newTarget, MemberName);
-        }
-
-        private void DetachPropertyChangeListener(object target)
-        {
-            var oldTarget = target as INotifyPropertyChanged;
-            if (oldTarget != null)
-                ExecutionContext.Instance.RemoveChangeListener(this, oldTarget, MemberName);
+                listener.Subscribe(newTarget, MemberName);
         }
     }
 }

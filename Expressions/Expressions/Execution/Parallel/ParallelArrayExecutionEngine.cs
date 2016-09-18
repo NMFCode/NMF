@@ -11,23 +11,22 @@ namespace NMF.Expressions
     {
         private static readonly int MaxTasks = Math.Min(64, Environment.ProcessorCount);
 
-        protected override void Schedule(HashSet<INotifiable> nodes)
+        protected override void Schedule(List<INotifiable> nodes)
         {
-            var array = nodes.ToArray();
-            var taskCount = Math.Min(MaxTasks, array.Length);
+            var taskCount = Math.Min(MaxTasks, nodes.Count);
             var tasks = new Task[taskCount];
             int counter = taskCount - 1;
 
             Action<object> work = state =>
             {
                 int startIndex = (int)state;
-                NotifyNode(array[startIndex]);
-                if (taskCount < array.Length)
+                NotifyNode(nodes[startIndex]);
+                if (taskCount < nodes.Count)
                 {
                     int index = Interlocked.Increment(ref counter);
-                    while (index < array.Length)
+                    while (index < nodes.Count)
                     {
-                        NotifyNode(array[index]);
+                        NotifyNode(nodes[index]);
                         index = Interlocked.Increment(ref counter);
                     }
                 }

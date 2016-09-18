@@ -55,7 +55,7 @@ namespace NMF.Expressions
         {
             if (Successors.IsAttached)
             {
-                ExecutionEngine.Current.ManualInvalidation(this);
+                ExecutionEngine.Current.InvalidateNode(this);
             }
         }
 
@@ -139,7 +139,7 @@ namespace NMF.Expressions
         {
             if (Successors.IsAttached)
             {
-                ExecutionEngine.Current.ManualInvalidation(this);
+                ExecutionEngine.Current.InvalidateNode(this);
             }
         }
 
@@ -249,7 +249,7 @@ namespace NMF.Expressions
         {
             if (Successors.IsAttached)
             {
-                ExecutionEngine.Current.ManualInvalidation(this);
+                ExecutionEngine.Current.InvalidateNode(this);
             }
         }
 
@@ -385,7 +385,7 @@ namespace NMF.Expressions
         {
             if (Successors.IsAttached)
             {
-                ExecutionEngine.Current.ManualInvalidation(this);
+                ExecutionEngine.Current.InvalidateNode(this);
             }
         }
 
@@ -547,7 +547,7 @@ namespace NMF.Expressions
         {
             if (Successors.IsAttached)
             {
-                ExecutionEngine.Current.ManualInvalidation(this);
+                ExecutionEngine.Current.InvalidateNode(this);
             }
         }
 
@@ -735,7 +735,7 @@ namespace NMF.Expressions
         {
             if (Successors.IsAttached)
             {
-                ExecutionEngine.Current.ManualInvalidation(this);
+                ExecutionEngine.Current.InvalidateNode(this);
             }
         }
 
@@ -949,7 +949,7 @@ namespace NMF.Expressions
         {
             if (Successors.IsAttached)
             {
-                ExecutionEngine.Current.ManualInvalidation(this);
+                ExecutionEngine.Current.InvalidateNode(this);
             }
         }
 
@@ -1189,7 +1189,7 @@ namespace NMF.Expressions
         {
             if (Successors.IsAttached)
             {
-                ExecutionEngine.Current.ManualInvalidation(this);
+                ExecutionEngine.Current.InvalidateNode(this);
             }
         }
 
@@ -1455,7 +1455,7 @@ namespace NMF.Expressions
         {
             if (Successors.IsAttached)
             {
-                ExecutionEngine.Current.ManualInvalidation(this);
+                ExecutionEngine.Current.InvalidateNode(this);
             }
         }
 
@@ -1747,7 +1747,7 @@ namespace NMF.Expressions
         {
             if (Successors.IsAttached)
             {
-                ExecutionEngine.Current.ManualInvalidation(this);
+                ExecutionEngine.Current.InvalidateNode(this);
             }
         }
 
@@ -2065,7 +2065,7 @@ namespace NMF.Expressions
         {
             if (Successors.IsAttached)
             {
-                ExecutionEngine.Current.ManualInvalidation(this);
+                ExecutionEngine.Current.InvalidateNode(this);
             }
         }
 
@@ -2409,7 +2409,7 @@ namespace NMF.Expressions
         {
             if (Successors.IsAttached)
             {
-                ExecutionEngine.Current.ManualInvalidation(this);
+                ExecutionEngine.Current.InvalidateNode(this);
             }
         }
 
@@ -2779,7 +2779,7 @@ namespace NMF.Expressions
         {
             if (Successors.IsAttached)
             {
-                ExecutionEngine.Current.ManualInvalidation(this);
+                ExecutionEngine.Current.InvalidateNode(this);
             }
         }
 
@@ -3175,7 +3175,7 @@ namespace NMF.Expressions
         {
             if (Successors.IsAttached)
             {
-                ExecutionEngine.Current.ManualInvalidation(this);
+                ExecutionEngine.Current.InvalidateNode(this);
             }
         }
 
@@ -3597,7 +3597,7 @@ namespace NMF.Expressions
         {
             if (Successors.IsAttached)
             {
-                ExecutionEngine.Current.ManualInvalidation(this);
+                ExecutionEngine.Current.InvalidateNode(this);
             }
         }
 
