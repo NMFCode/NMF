@@ -48,6 +48,9 @@ namespace Ecore2Code
         [Option('g', "operations", HelpText = "If specified, the code generator generates stubs for operations")]
         public bool Operations { get; set; }
 
+        [Option('u', "model-uri", HelpText ="If specified, overrides the uri of the base package.")]
+        public string Uri { get; set; }
+
         [ValueList(typeof(List<string>))]
         public IList<string> InputFiles { get; set; }
 
@@ -136,6 +139,22 @@ namespace Ecore2Code
             }
 
             var metaPackage = LoadPackageFromFiles(options.InputFiles, options.OverallNamespace, mappings);
+            if (options.Uri != null)
+            {
+                Uri uri;
+                if (Uri.TryCreate(options.Uri, UriKind.Absolute, out uri))
+                {
+                    metaPackage.Uri = uri;
+                }
+                else
+                {
+                    Console.Error.WriteLine("The provided string {0} could not be parsed as an absolute URI.", options.Uri);
+                }
+            }
+            if (metaPackage.Uri == null)
+            {
+                Console.Error.WriteLine("Warning: There is no base Uri for the provided metamodels. Some features of the generated code will be disabled.");
+            }
 
             var model = metaPackage.Model;
             if (model == null)

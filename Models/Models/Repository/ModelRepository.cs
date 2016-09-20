@@ -59,10 +59,12 @@ namespace NMF.Models.Repository
         /// Resolves the given Uri and returns the model element
         /// </summary>
         /// <param name="uri">The Uri where to look for the model element</param>
+        /// <param name="loadOnDemand">A boolean flag indicating whether the uri should be attempted
+        /// to load, if the model is not already registered with the repository</param>
         /// <returns>A model element at the given Uri or null if none can be found</returns>
-        public IModelElement Resolve(Uri uri)
+        public IModelElement Resolve(Uri uri, bool loadOnDemand = true)
         {
-            return Resolve(uri, null);
+            return Resolve(uri, null, loadOnDemand);
         }
 
         /// <summary>
@@ -70,56 +72,65 @@ namespace NMF.Models.Repository
         /// </summary>
         /// <param name="uri">The Uri where to look for the model element</param>
         /// <param name="hintPath">The path where the model can be found</param>
+        /// <param name="loadOnDemand">A boolean flag indicating whether the uri should be attempted
+        /// to load, if the model is not already registered with the repository</param>
         /// <returns>A model element at the given Uri or null if none can be found</returns>
-        public IModelElement Resolve(Uri uri, string hintPath)
+        public IModelElement Resolve(Uri uri, string hintPath, bool loadOnDemand = true)
         {
-            var parentResolved = Parent.Resolve(uri);
-            if (parentResolved != null && !models.ContainsKey(uri)) return parentResolved;
-
             if (uri == null) throw new ArgumentNullException("uri");
             Model model;
             Uri modelUri;
             Func<Stream> streamCreator;
             if (!models.TryGetValue(uri, out model))
             {
-                if (hintPath == null)
-                {
-                    var locator = Locators.Where(l => l.CanLocate(uri)).FirstOrDefault();
+                var parentResolved = Parent.Resolve(uri, false);
+                if (parentResolved != null) return parentResolved;
 
-                    if (locator == null)
+                if (loadOnDemand)
+                {
+                    if (hintPath == null)
                     {
-                        if (parentResolved != null) return parentResolved;
+                        var locator = Locators.Where(l => l.CanLocate(uri)).FirstOrDefault();
 
-                        var e = new UnresolvedModelElementEventArgs(uri);
-                        OnUnresolvedModelElement(e);
-                        return e.ModelElement;
-                    }
-                    modelUri = locator.GetRepositoryUri(uri);
-                    streamCreator = () => locator.Open(modelUri);
-                }
-                else
-                {
-                    modelUri = uri;
-                    streamCreator = () => File.OpenRead(hintPath);
-                }
-                if (!models.TryGetValue(modelUri, out model))
-                {
-                    using (var stream = streamCreator())
-                    {
-                        model = Serializer.Deserialize(stream, modelUri, this, true);
-                        if (model.RootElements.Count == 1)
+                        if (locator == null)
                         {
-                            var ns = model.RootElements[0] as INamespace;
-                            if (ns != null)
+                            if (parentResolved != null) return parentResolved;
+
+                            var e = new UnresolvedModelElementEventArgs(uri);
+                            OnUnresolvedModelElement(e);
+                            return e.ModelElement;
+                        }
+                        modelUri = locator.GetRepositoryUri(uri);
+                        streamCreator = () => locator.Open(modelUri);
+                    }
+                    else
+                    {
+                        modelUri = uri;
+                        streamCreator = () => File.OpenRead(hintPath);
+                    }
+                    if (!models.TryGetValue(modelUri, out model))
+                    {
+                        using (var stream = streamCreator())
+                        {
+                            model = Serializer.Deserialize(stream, modelUri, this, true);
+                            if (model.RootElements.Count == 1)
                             {
-                                model.ModelUri = ns.Uri;
-                                if (!models.ContainsKey(ns.Uri))
+                                var ns = model.RootElements[0] as INamespace;
+                                if (ns != null)
                                 {
-                                    models.Add(ns.Uri, model);
+                                    model.ModelUri = ns.Uri;
+                                    if (!models.ContainsKey(ns.Uri))
+                                    {
+                                        models.Add(ns.Uri, model);
+                                    }
                                 }
                             }
                         }
                     }
+                }
+                else
+                {
+                    return null;
                 }
             }
 
@@ -129,8 +140,6 @@ namespace NMF.Models.Repository
 
                 if (element == null)
                 {
-                    if (parentResolved != null) return parentResolved;
-
                     var e = new UnresolvedModelElementEventArgs(uri);
                     OnUnresolvedModelElement(e);
                     element = e.ModelElement;

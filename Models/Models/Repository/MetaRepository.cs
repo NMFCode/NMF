@@ -155,6 +155,11 @@ namespace NMF.Models.Repository
             return Resolve(new Uri(uriString, UriKind.Absolute));
         }
 
+        IModelElement IModelRepository.Resolve(Uri uri, bool loadOnDemand)
+        {
+            return Resolve(uri);
+        }
+
         public ModelCollection Models
         {
             get { return entries; }

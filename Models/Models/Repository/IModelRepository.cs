@@ -7,7 +7,7 @@ namespace NMF.Models.Repository
 {
     public interface IModelRepository
     {
-        IModelElement Resolve(Uri uri);
+        IModelElement Resolve(Uri uri, bool loadOnDemand = true);
 
         ModelCollection Models { get; }
 
