@@ -54,12 +54,13 @@ namespace NMF.Expressions
 #endif
 
                 INotificationResult result = null;
-                if (evaluating || metaData.Sources.Count > 0)
+                if (evaluating)
                 {
                     result = node.Notify(metaData.Sources);
                     evaluating = result.Changed;
-                    currentValue = metaData.TotalVisits;
                 }
+
+                currentValue = metaData.TotalVisits;
                 metaData.TotalVisits = 0;
                 metaData.Sources.Clear();
 
