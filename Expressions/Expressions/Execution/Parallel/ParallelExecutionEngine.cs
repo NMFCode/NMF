@@ -39,7 +39,9 @@ namespace NMF.Expressions
                     metaData.RemainingVisits = 0;
                 }
 
-                INotificationResult result = null;
+                currentValue = metaData.TotalVisits;
+                metaData.TotalVisits = 0;
+
                 if (evaluating)
                 {
                     foreach (var dep in node.Dependencies)
@@ -53,17 +55,21 @@ namespace NMF.Expressions
 
                     if (isFirst || metaData.Sources.Count > 0)
                     {
-                        result = node.Notify(metaData.Sources);
+                        var result = node.Notify(metaData.Sources);
                         evaluating = result.Changed;
                         if (evaluating && node.Successors.HasSuccessors)
                             metaData.Result = result;
-                        currentValue = metaData.TotalVisits;
                         metaData.Sources.Clear();
+                        isFirst = false;
                     }
                 }
-
-                metaData.TotalVisits = 0;
-                isFirst = false;
+                else
+                {
+                    foreach (var dep in node.Dependencies)
+                    {
+                        dep.ExecutionMetaData.Result = null;
+                    }
+                }
             }
             while (node.Successors.HasSuccessors && (node = node.Successors[0]) != null);
         }

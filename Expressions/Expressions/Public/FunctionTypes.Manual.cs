@@ -13,17 +13,48 @@ namespace NMF.Expressions
     {
         internal TaggedObservableValue<TResult, TTag> InvokeTagged<TTag>(T1 input, TTag tag = default(TTag))
         {
-            if (isParameterFree) return new TaggedObservableValue<TResult, TTag>(expression, tag);
             var parameters = new Dictionary<string, object>();
-            parameters.Add(parameter1Name, input);
+            if (!isParameterFree)
+                parameters.Add(parameter1Name, input);
             return new TaggedObservableValue<TResult, TTag>(expression.ApplyParameters(parameters), tag);
         }
 
         internal TaggedObservableValue<TResult, TTag> InvokeTagged<TTag>(INotifyValue<T1> input, TTag tag = default(TTag))
         {
-            if (isParameterFree) return new TaggedObservableValue<TResult, TTag>(expression, tag);
             var parameters = new Dictionary<string, object>();
-            parameters.Add(parameter1Name, input);
+            if (!isParameterFree)
+                parameters.Add(parameter1Name, input);
+            return new TaggedObservableValue<TResult, TTag>(expression.ApplyParameters(parameters), tag);
+        }
+    }
+
+    /// <summary>
+    /// Represents an observable expression with two input parameters
+    /// </summary>
+    /// <typeparam name="T1">The type of the first input parameter</typeparam>
+    /// <typeparam name="T2">The type of the second input parameter</typeparam>
+    /// <typeparam name="TResult">The type of the result</typeparam>
+    public partial class ObservingFunc<T1, T2, TResult>
+    {
+        internal TaggedObservableValue<TResult, TTag> InvokeTagged<TTag>(T1 input1, T2 input2, TTag tag)
+        {
+            var parameters = new Dictionary<string, object>();
+            if (!isParameterFree)
+            {
+                parameters.Add(parameter1Name, input1);
+                parameters.Add(parameter2Name, input2);
+            }
+            return new TaggedObservableValue<TResult, TTag>(expression.ApplyParameters(parameters), tag);
+        }
+
+        internal TaggedObservableValue<TResult, TTag> InvokeTagged<TTag>(INotifyValue<T1> input1, T2 input2, TTag tag)
+        {
+            var parameters = new Dictionary<string, object>();
+            if (!isParameterFree)
+            {
+                parameters.Add(parameter1Name, input1);
+                parameters.Add(parameter2Name, input2);
+            }
             return new TaggedObservableValue<TResult, TTag>(expression.ApplyParameters(parameters), tag);
         }
     }
@@ -131,34 +162,6 @@ namespace NMF.Expressions
         INotifyExpression INotifyExpression.ApplyParameters(IDictionary<string, object> parameters)
         {
             return ApplyParameters(parameters);
-        }
-    }
-
-    /// <summary>
-    /// Represents an observable expression with one input parameter
-    /// </summary>
-    /// <typeparam name="T1">The type of the first input parameter</typeparam>
-    /// <typeparam name="T2">The type of the second input parameter</typeparam>
-    /// <typeparam name="TResult">The type of the result</typeparam>
-    public partial class ObservingFunc<T1, T2, TResult>
-    {
-
-        internal TaggedObservableValue<TResult, TTag> InvokeTagged<TTag>(T1 input1, T2 input2, TTag tag)
-        {
-            if (isParameterFree) return new TaggedObservableValue<TResult, TTag>(expression, tag);
-            var parameters = new Dictionary<string, object>();
-            parameters.Add(parameter1Name, input1);
-            parameters.Add(parameter2Name, input2);
-            return new TaggedObservableValue<TResult, TTag>(expression.ApplyParameters(parameters), tag);
-        }
-
-        internal TaggedObservableValue<TResult, TTag> InvokeTagged<TTag>(INotifyValue<T1> input1, T2 input2, TTag tag)
-        {
-            if (isParameterFree) return new TaggedObservableValue<TResult, TTag>(expression, tag);
-            var parameters = new Dictionary<string, object>();
-            parameters.Add(parameter1Name, input1);
-            parameters.Add(parameter2Name, input2);
-            return new TaggedObservableValue<TResult, TTag>(expression.ApplyParameters(parameters), tag);
         }
     }
 }

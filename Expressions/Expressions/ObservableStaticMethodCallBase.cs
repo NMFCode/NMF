@@ -8,7 +8,6 @@ using System.Text;
 
 namespace NMF.Expressions
 {
-
     internal abstract class ObservableStaticMethodBase<TDelegate, TResult> : NotifyExpression<TResult>
         where TDelegate : class
     {
