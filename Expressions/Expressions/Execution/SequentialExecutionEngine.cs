@@ -51,7 +51,7 @@ namespace NMF.Expressions
             }
         }
 
-        protected void MarkNode(INotifiable node)
+        private void MarkNode(INotifiable node)
         {
             do
             {
