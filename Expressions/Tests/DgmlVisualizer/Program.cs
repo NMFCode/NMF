@@ -17,7 +17,7 @@ namespace DgmlVisualizer
         static void Main(string[] args)
         {
             var test = new SwitchSet();
-            var query = test.ImmediateRunData.Query;
+            var query = test.Data.Query;
             var changeSources = Enumerable.Empty<INotifiable>();
 
             var doc = CreateDgml(query, changeSources);
@@ -30,7 +30,7 @@ namespace DgmlVisualizer
             var nodes = doc.Root.Element(ns + "Nodes");
             var links = doc.Root.Element(ns + "Links");
 
-            var allNodes = NMF.Utilities.Extensions.SelectRecursive(query, n => n.Dependencies).ToList();
+            var allNodes = new[] { query }.Concat(NMF.Utilities.Extensions.SelectRecursive(query, n => n.Dependencies)).ToList();
             foreach (var node in allNodes)
             {
                 nodes.Add(ToDgmlNode(node));
@@ -105,8 +105,27 @@ namespace DgmlVisualizer
         {
             var e = new XElement(ns + "Node");
             e.SetAttributeValue("Id", node.GetHashCode());
-            e.SetAttributeValue("Label", node.GetType().Name);
+            e.SetAttributeValue("Label", NodeToLabel(node));
             return e;
+        }
+
+        private static string NodeToLabel(INotifiable node)
+        {
+            var typeName = node.GetType().Name;
+            var result = typeName.Replace("Observable", "");
+            int genericIndex = result.IndexOf('`');
+            if (genericIndex > 0)
+                result = result.Remove(genericIndex);
+
+            var valueProp = node.GetType().GetProperties().FirstOrDefault(p => p.Name == "Value");
+            if (valueProp != null)
+                result += "\nValue: " + valueProp.GetValue(node);
+
+            var countProp = node.GetType().GetProperty("Count");
+            if (countProp != null)
+                result += "\nCount: " + countProp.GetValue(node);
+
+            return result;
         }
 
         private static IEnumerable<XElement> ToDgmlLink(INotifiable node)
