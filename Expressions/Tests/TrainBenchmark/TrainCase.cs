@@ -28,9 +28,7 @@ namespace TrainBenchmark
 
         public abstract Action<TInject> Inject { get; }
 
-        public RunData ImmediateRunData { get; }
-        public RunData TransactionRunData { get; }
-        public RunData ParallelRunData { get; }
+        public RunData Data { get; }
 
         private readonly ExecutionEngine defaultEngine;
         private readonly ExecutionEngine parallelEngine;
@@ -40,30 +38,25 @@ namespace TrainBenchmark
         {
             defaultEngine = ExecutionEngine.Current;
             parallelEngine = new ParallelArrayExecutionEngine();
-
-            ImmediateRunData = new RunData(this);
-            TransactionRunData = new RunData(this);
-            ExecutionEngine.Current = parallelEngine;
-            ParallelRunData = new RunData(this);
-            ExecutionEngine.Current = defaultEngine;
+            Data = new RunData(this);
         }
 
         [Benchmark]
         public void Immediate()
         {
-            DoRepair(ImmediateRunData.QueryResults.ToList());
-            DoInject(ImmediateRunData.InjectResults.ToList());
+            DoRepair(Data.QueryResults.ToList());
+            DoInject(Data.InjectResults.ToList());
         }
 
         [Benchmark]
         public void Transaction()
         {
             ExecutionEngine.Current.BeginTransaction();
-            DoRepair(TransactionRunData.QueryResults);
+            DoRepair(Data.QueryResults);
             ExecutionEngine.Current.CommitTransaction();
 
             ExecutionEngine.Current.BeginTransaction();
-            DoInject(TransactionRunData.InjectResults);
+            DoInject(Data.InjectResults);
             ExecutionEngine.Current.CommitTransaction();
         }
 
@@ -73,11 +66,11 @@ namespace TrainBenchmark
             ExecutionEngine.Current = parallelEngine;
 
             ExecutionEngine.Current.BeginTransaction();
-            DoRepair(ParallelRunData.QueryResults);
+            DoRepair(Data.QueryResults);
             ExecutionEngine.Current.CommitTransaction();
 
             ExecutionEngine.Current.BeginTransaction();
-            DoInject(ParallelRunData.InjectResults);
+            DoInject(Data.InjectResults);
             ExecutionEngine.Current.CommitTransaction();
 
             ExecutionEngine.Current = defaultEngine;

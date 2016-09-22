@@ -23,7 +23,6 @@ namespace NMF.Expressions
         {
             int currentValue = 1;
             bool evaluating = true;
-            bool isFirst = true;
 
             do
             {
@@ -42,34 +41,24 @@ namespace NMF.Expressions
                 currentValue = metaData.TotalVisits;
                 metaData.TotalVisits = 0;
 
-                if (evaluating)
+                foreach (var dep in node.Dependencies)
                 {
-                    foreach (var dep in node.Dependencies)
+                    if (dep.ExecutionMetaData.Result != null)
                     {
-                        if (dep.ExecutionMetaData.Result != null)
-                        {
-                            metaData.Sources.Add(dep.ExecutionMetaData.Result);
-                            dep.ExecutionMetaData.Result = null;
-                        }
-                    }
-
-                    if (isFirst || metaData.Sources.Count > 0)
-                    {
-                        var result = node.Notify(metaData.Sources);
-                        evaluating = result.Changed;
-                        if (evaluating && node.Successors.HasSuccessors)
-                            metaData.Result = result;
-                        metaData.Sources.Clear();
-                        isFirst = false;
-                    }
-                }
-                else
-                {
-                    foreach (var dep in node.Dependencies)
-                    {
+                        metaData.Sources.Add(dep.ExecutionMetaData.Result);
                         dep.ExecutionMetaData.Result = null;
                     }
                 }
+
+                if (evaluating || metaData.Sources.Count > 0)
+                {
+                    var result = node.Notify(metaData.Sources);
+                    evaluating = result.Changed;
+                    if (evaluating && node.Successors.HasSuccessors)
+                        metaData.Result = result;
+                }
+
+                metaData.Sources.Clear();
             }
             while (node.Successors.HasSuccessors && (node = node.Successors[0]) != null);
         }
