@@ -1,11 +1,11 @@
 # Results of the TTC 2015 Train Benchmark
 
-Last Run: 22.09.2016 16:04:09
+Last Run: 22.09.2016 22:02:37
 
 Test Case|Master|Immediate|Transaction|Parallel|M→I|M→T|M→P|I→T|I→P|T→P|
 ---------|------|---------|-----------|--------|---|---|---|---|---|---|
-PosLength|1.446.800 ns|870.719 ns|714.380 ns|907.767 ns|1,66x|2,03x|1,59x|1,22x|0,96x|0,79x|
-RouteSensor|219 ns|204 ns|143 ns|146 ns|1,07x|1,53x|1,50x|1,42x|1,39x|0,98x|
-SemaphoreNeighbor|15.552.100 ns|15.463.554 ns|14.604.374 ns|16.090.052 ns|1,01x|1,06x|0,97x|1,06x|0,96x|0,91x|
-SwitchSensor|211 ns|207 ns|105 ns|107 ns|1,02x|2,00x|1,96x|1,97x|1,93x|0,98x|
-SwitchSet|28.815 ns|3.972 ns|3.405 ns|9.352 ns|7,25x|8,46x|3,08x|1,17x|0,42x|0,36x|
+PosLength|1,45 ms|883,81 us|712,63 us|914,18 us|1,64x|2,03x|1,58x|1,24x|0,97x|0,78x|
+RouteSensor|218,65 ns|203,98 ns|141,97 ns|145,15 ns|1,07x|1,54x|1,51x|1,44x|1,41x|0,98x|
+SemaphoreNeighbor|15,55 ms|15,47 ms|14,85 ms|15,97 ms|1,01x|1,05x|0,97x|1,04x|0,97x|0,93x|
+SwitchSensor|210,57 ns|207,82 ns|104,26 ns|106,80 ns|1,01x|2,02x|1,97x|1,99x|1,95x|0,98x|
+SwitchSet|28,81 us|4,54 us|3,83 us|11,03 us|6,34x|7,53x|2,61x|1,19x|0,41x|0,35x|

@@ -37,7 +37,7 @@ namespace TrainBenchmark
 
         private static void Profile()
         {
-            var bench = new RouteSensor();
+            var bench = new SwitchSet();
             var watch = Stopwatch.StartNew();
             int i = 0;
             for (; (i & 0x0F) != 0 || watch.ElapsedMilliseconds < 5000; i++)
@@ -72,8 +72,8 @@ namespace TrainBenchmark
             var transaction = summary.Reports[1].ResultStatistics.Median;
             var parallel = summary.Reports[2].ResultStatistics.Median;
 
-            builder.AppendFormat("{0}|{1:00,0} ns|{2:00,0} ns|{3:00,0} ns|{4:00,0} ns|{5:0.00}x|{6:0.00}x|{7:0.00}x|{8:0.00}x|{9:0.00}x|{10:0.00}x|",
-                summary.Title, master, immediate, transaction, parallel,
+            builder.AppendFormat("{0}|{1}|{2}|{3}|{4}|{5:0.00}x|{6:0.00}x|{7:0.00}x|{8:0.00}x|{9:0.00}x|{10:0.00}x|",
+                summary.Title, NormalizeNano(master), NormalizeNano(immediate), NormalizeNano(transaction), NormalizeNano(parallel),
                 master / immediate, master / transaction, master / parallel,
                 immediate / transaction, immediate / parallel, transaction / parallel).AppendLine();
         }
@@ -87,6 +87,19 @@ namespace TrainBenchmark
                 .AppendLine()
                 .AppendLine("Test Case|Master|Immediate|Transaction|Parallel|M→I|M→T|M→P|I→T|I→P|T→P|")
                 .AppendLine("---------|------|---------|-----------|--------|---|---|---|---|---|---|");
+        }
+
+        private static string NormalizeNano(double nano)
+        {
+            const string format = "{0:0.00} {1}s";
+            if (nano >= 1000000000)
+                return string.Format(format, nano / 1000000000, "");
+            else if (nano >= 1000000)
+                return string.Format(format, nano / 1000000, "m");
+            else if (nano >= 1000)
+                return string.Format(format, nano / 1000, "u");
+            else
+                return string.Format(format, nano, "n");
         }
     }
 }

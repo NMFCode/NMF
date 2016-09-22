@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,9 +9,10 @@ namespace NMF.Expressions
 {
     public class ParallelForeachExecutionEngine : ParallelExecutionEngine
     {
-        protected override void Schedule(List<INotifiable> nodes)
+        protected override void Schedule(List<INotifiable> nodes, Action<INotifiable> action)
         {
-            Parallel.ForEach(nodes, node => NotifyNode(node));
+            var part = Partitioner.Create(nodes);
+            Parallel.ForEach(part, action);
         }
     }
 }

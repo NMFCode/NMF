@@ -75,9 +75,27 @@ namespace NMF.Expressions
             }
         }
 
-        protected abstract void Execute(List<INotifiable> nodes);
+        private void ExecuteSingle(INotifiable source)
+        {
+            var node = source;
+            INotificationResult lastResult = null;
 
-        protected abstract void ExecuteSingle(INotifiable node);
+            while (node != null)
+            {
+                if (lastResult != null)
+                    node.ExecutionMetaData.Sources.Add(lastResult);
+
+                lastResult = node.Notify(node.ExecutionMetaData.Sources);
+                node.ExecutionMetaData.Sources.Clear();
+
+                if (lastResult.Changed && node.Successors.HasSuccessors)
+                    node = node.Successors[0];
+                else
+                    break;
+            }
+        }
+
+        protected abstract void Execute(List<INotifiable> nodes);
         
         public static ExecutionEngine Current { get; set; } = new SequentialExecutionEngine();
     }

@@ -8,26 +8,6 @@ namespace NMF.Expressions
 {
     public class SequentialExecutionEngine : ExecutionEngine
     {
-        protected override void ExecuteSingle(INotifiable source)
-        {
-            var node = source;
-            INotificationResult lastResult = null;
-
-            while (node != null)
-            {
-                if (lastResult != null)
-                    node.ExecutionMetaData.Sources.Add(lastResult);
-
-                lastResult = node.Notify(node.ExecutionMetaData.Sources);
-                node.ExecutionMetaData.Sources.Clear();
-
-                if (lastResult.Changed && node.Successors.HasSuccessors)
-                    node = node.Successors[0];
-                else
-                    break;
-            }
-        }
-
         protected override void Execute(List<INotifiable> nodes)
         {
             foreach (var node in nodes)
@@ -75,7 +55,7 @@ namespace NMF.Expressions
             }
         }
 
-        protected void MarkNode(INotifiable node)
+        private void MarkNode(INotifiable node)
         {
             do
             {

@@ -12,7 +12,7 @@ namespace NMF.Expressions
     {
         private static readonly int MaxTaskCount = Environment.ProcessorCount;
 
-        protected override void Schedule(List<INotifiable> nodes)
+        protected override void Schedule(List<INotifiable> nodes, Action<INotifiable> action)
         {
             var taskCount = Math.Min(MaxTaskCount, nodes.Count);
             var queue = new ConcurrentQueue<INotifiable>(nodes);
@@ -25,7 +25,7 @@ namespace NMF.Expressions
                     while (!queue.IsEmpty)
                     {
                         if (queue.TryDequeue(out node))
-                            NotifyNode(node);
+                            action(node);
                     }
                 });
             }

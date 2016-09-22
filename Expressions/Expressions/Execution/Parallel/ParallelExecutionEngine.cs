@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -7,19 +8,17 @@ using System.Threading.Tasks;
 
 namespace NMF.Expressions
 {
-    public abstract class ParallelExecutionEngine : SequentialExecutionEngine
+    public abstract class ParallelExecutionEngine : ExecutionEngine
     {
-        protected abstract void Schedule(List<INotifiable> nodes);
+        protected abstract void Schedule(List<INotifiable> nodes, Action<INotifiable> action);
 
         protected override void Execute(List<INotifiable> nodes)
         {
-            foreach (var node in nodes)
-                MarkNode(node);
-
-            Schedule(nodes);
+            Schedule(nodes, MarkNode);
+            Schedule(nodes, NotifyNode);
         }
-        
-        protected void NotifyNode(INotifiable node)
+
+        private void NotifyNode(INotifiable node)
         {
             int currentValue = 1;
             bool evaluating = true;
@@ -59,6 +58,17 @@ namespace NMF.Expressions
                 }
 
                 metaData.Sources.Clear();
+            }
+            while (node.Successors.HasSuccessors && (node = node.Successors[0]) != null);
+        }
+
+        private void MarkNode(INotifiable node)
+        {
+            do
+            {
+                var metaData = node.ExecutionMetaData;
+                Interlocked.Increment(ref metaData.RemainingVisits);
+                Interlocked.Increment(ref metaData.TotalVisits);
             }
             while (node.Successors.HasSuccessors && (node = node.Successors[0]) != null);
         }

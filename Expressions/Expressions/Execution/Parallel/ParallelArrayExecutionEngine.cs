@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -11,7 +12,7 @@ namespace NMF.Expressions
     {
         private static readonly int MaxTasks = Math.Min(64, Environment.ProcessorCount);
 
-        protected override void Schedule(List<INotifiable> nodes)
+        protected override void Schedule(List<INotifiable> nodes, Action<INotifiable> action)
         {
             var taskCount = Math.Min(MaxTasks, nodes.Count);
             var tasks = new Task[taskCount];
@@ -20,13 +21,13 @@ namespace NMF.Expressions
             Action<object> work = state =>
             {
                 int startIndex = (int)state;
-                NotifyNode(nodes[startIndex]);
+                action(nodes[startIndex]);
                 if (taskCount < nodes.Count)
                 {
                     int index = Interlocked.Increment(ref counter);
                     while (index < nodes.Count)
                     {
-                        NotifyNode(nodes[index]);
+                        action(nodes[index]);
                         index = Interlocked.Increment(ref counter);
                     }
                 }
