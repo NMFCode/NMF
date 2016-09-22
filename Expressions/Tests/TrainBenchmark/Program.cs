@@ -18,18 +18,18 @@ namespace TrainBenchmark
     {
         private static readonly Dictionary<string, double> masterTimes = new Dictionary<string, double>()
         {
-            ["PosLength"] = 741050.8,
-            ["RouteSensor"] = 212.1303,
-            ["SemaphoreNeighbor"] = 15782400,
-            ["SwitchSensor"] = 224.235,
-            ["SwitchSet"] = 29578.6
+            ["PosLength"] = 1446800,
+            ["RouteSensor"] = 218.6473,
+            ["SemaphoreNeighbor"] = 15552100,
+            ["SwitchSensor"] = 210.5739,
+            ["SwitchSet"] = 28814.6
         };
 
         static void Main(string[] args)
         {
 #if !DEBUG
-            //Benchmark();
-            new BenchmarkSwitcher(Assembly.GetExecutingAssembly()).Run();
+            Benchmark();
+            //new BenchmarkSwitcher(Assembly.GetExecutingAssembly()).Run();
 #else
             Profile();
 #endif
