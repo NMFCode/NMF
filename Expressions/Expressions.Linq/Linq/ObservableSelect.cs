@@ -155,12 +155,12 @@ namespace NMF.Expressions.Linq
                 {
                     var lambdaResult = lambdaInstances[item];
                     lambdaResult.Tag--;
+                    removed.Add(lambdaResult.Value);
                     if (lambdaResult.Tag == 0)
                     {
                         lambdaInstances.Remove(item);
                         lambdaResult.Successors.Unset(this);
                     }
-                    removed.Add(lambdaResult.Value);
                 }
                 else if (nullLambda != null)
                 {

@@ -54,7 +54,7 @@ namespace NMF.Expressions
 #endif
 
                 INotificationResult result = null;
-                if (evaluating)
+                if (evaluating || metaData.Sources.Count > 0)
                 {
                     result = node.Notify(metaData.Sources);
                     evaluating = result.Changed;
