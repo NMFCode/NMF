@@ -10,12 +10,12 @@ namespace NMF.Expressions
 {
     public class ParallelArrayExecutionEngine : ParallelExecutionEngine
     {
-        private static readonly int MaxTasks = Math.Min(64, Environment.ProcessorCount);
+        private static readonly int MaxTasks = Math.Min(64, Environment.ProcessorCount * 2);
 
         protected override void Schedule(List<INotifiable> nodes, Action<INotifiable> action)
         {
             var taskCount = Math.Min(MaxTasks, nodes.Count);
-            var tasks = new Task[taskCount];
+            var tasks = new Task[taskCount - 1];
             int counter = taskCount - 1;
 
             Action<object> work = state =>
@@ -33,10 +33,11 @@ namespace NMF.Expressions
                 }
             };
             
-            for (int i = 0; i < taskCount; i++)
+            for (int i = 0; i < taskCount - 1; i++)
             {
                 tasks[i] = Task.Factory.StartNew(work, i);
             }
+            work(taskCount - 1);
 
             Task.WaitAll(tasks);
         }
