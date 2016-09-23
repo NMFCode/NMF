@@ -16,19 +16,27 @@ namespace NMF.Incerator
 {
     class Incerator
     {
-        internal static readonly ModelRepository repository = new ModelRepository();
+        private readonly ModelRepository repository;
+        private readonly InceratorConfiguration options;
+
+        public Incerator(InceratorConfiguration options, ModelRepository repository)
+        {
+            this.options = options;
+            this.repository = repository;
+        }
 
         static void Main(string[] args)
         {
             InceratorConfiguration options = new InceratorConfiguration();
             if (Parser.Default.ParseArguments(args, options))
             {
+                var incerator = new Incerator(options, new ModelRepository());
 #if DEBUG
-                RunIncerator(options);
+                incerator.Run();
 #else
                 try
                 {
-                    RunIncerator(options);
+                    incerator.Run();
                 }
                 catch (Exception ex)
                 {
@@ -44,19 +52,22 @@ namespace NMF.Incerator
             }
         }
 
-        private static void RunIncerator(InceratorConfiguration options)
+        public void Run()
         {
             switch (options.Mode)
             {
                 case OperationMode.Record:
                     LoadNotifySystem(options);
+                    Console.Write(".");
                     RunAnalysis(options);
                     break;
                 case OperationMode.Optimize:
                     var recorder = new RecordingNotifySystem(NotifySystem.DefaultSystem);
                     NotifySystem.DefaultSystem = recorder;
+                    Console.WriteLine("Recording variation points...");
                     RunAnalysis(options);
-                    OptimizeAnalysis(options, recorder.Configuration);
+                    Console.WriteLine("Found {0} variation points. ", recorder.Configuration.MethodConfigurations.Select(c => c.AllowedStrategies.Count).Aggregate(1, (a, b) => a * b));
+                    OptimizeAnalysis(recorder.Configuration);
                     break;
                 default:
                     Console.WriteLine("Operation mode {0} is unknown.", options.Mode);
@@ -65,16 +76,19 @@ namespace NMF.Incerator
             }
         }
 
-        private static void LoadNotifySystem(InceratorConfiguration options)
+        private void LoadNotifySystem(InceratorConfiguration options)
         {
             var configModel = repository.Resolve(options.Configuration);
             var configuration = configModel.RootElements[0] as Configuration;
             NotifySystem.DefaultSystem = new ConfiguredNotifySystem(repository, configuration);
         }
 
-        private static void RunAnalysis(InceratorConfiguration options)
+        private void RunAnalysis(InceratorConfiguration options)
         {
-            var assembly = Assembly.LoadFile(options.Assembly);
+            var sysOut = Console.Out;
+            Console.SetOut(TextWriter.Null);
+
+            var assembly = Assembly.LoadFile(Path.GetFullPath(options.Assembly));
             if (assembly == null) throw new InvalidOperationException("The specified assembly could not be loaded.");
 
             var type = assembly.GetType(options.Type);
@@ -83,23 +97,39 @@ namespace NMF.Incerator
 
             var analysis = (Analysis)Activator.CreateInstance(type);
             analysis.Run(repository);
+
+            Console.SetOut(sysOut);
         }
 
-        private static void OptimizeAnalysis(InceratorConfiguration options, Configuration baseConfiguration)
+        protected virtual IBenchmark<Configuration> CreateBenchmark()
+        {
+            return new Benchmark(options, repository);
+        }
+
+        private void OptimizeAnalysis(Configuration baseConfiguration)
         {
             var measurements = new List<MeasuredConfiguration<Configuration>>();
-            var benchmark = new Benchmark(options);
+            var benchmark = new Benchmark(options, repository);
             var repBenchmark = new RepeatAverageBenchmark<Configuration>(benchmark, options.Repetitions);
             switch (options.Method)
             {
                 case OptimizationAlgorithm.Full:
+                    var counter = 1;
                     foreach (var config in baseConfiguration.GetAllPossibilities())
                     {
+                        Console.Write("Running configuration {0}", counter);
                         var values = repBenchmark.MeasureConfiguration(config);
+                        Console.WriteLine();
                         if (values != null)
                         {
                             measurements.Add(new MeasuredConfiguration<Configuration>(config, values));
+                            Console.WriteLine("Configuration completed in {0}ms and took {1}bytes.", values["Time"], values["Memory"]);
                         }
+                        else
+                        {
+                            Console.WriteLine("The configuration [{0}] threw an exception and is therefore discarded.", config.Describe());
+                        }
+                        counter++;
                     }
                     break;
                 case OptimizationAlgorithm.NSGAII:
@@ -108,35 +138,46 @@ namespace NMF.Incerator
                     throw new ArgumentOutOfRangeException("options", "The chosen method is not supported");
             }
 
-            var paretoDimensions = new Dictionary<string, DimensionRating>();
-            paretoDimensions.Add("Time", DimensionRating.SmallerIsBetter);
-            paretoDimensions.Add("Memory", DimensionRating.SmallerIsBetter);
-            var pareto = new ParetoFilter<Configuration>(paretoDimensions);
-
-            var results = pareto.Filter(measurements).ToList();
-
-            if (results.Count == 1)
+            if (!options.All)
             {
-                repository.Save(results[0].Configuration, options.Configuration);
+                Console.WriteLine("Starting Pareto filter for dimensions Time and Memory");
+                var paretoDimensions = new Dictionary<string, DimensionRating>();
+                paretoDimensions.Add("Time", DimensionRating.SmallerIsBetter);
+                paretoDimensions.Add("Memory", DimensionRating.SmallerIsBetter);
+                var pareto = new ParetoFilter<Configuration>(paretoDimensions);
+
+                measurements = pareto.Filter(measurements).ToList();
+            }
+            else
+            {
+                Console.WriteLine("Skipping Pareto filter");
+            }
+
+            Console.WriteLine("Saving results to disk.");
+            if (measurements.Count == 1)
+            {
+                repository.Save(measurements[0].Configuration, options.Configuration);
             }
             else
             {
                 using (var csv = new StreamWriter(Path.ChangeExtension(options.Configuration, "csv"), false))
                 {
-                    csv.WriteLine("Configuration;Time;Memory;VirtualMemory;PagedMemory;TotalTime;UserTime;PrivelegedTime");
+                    csv.WriteLine("Configuration;Time;Memory;VirtualMemory;PagedMemory");
                     var index = 1;
                     var baseName = Path.ChangeExtension(options.Configuration, null);
-                    foreach (var config in results)
+                    foreach (var config in measurements)
                     {
                         var fileName = string.Format("{0}_{1}.xmi", baseName, index);
                         var time = config.Measurements["Time"];
                         var memory = config.Measurements["Memory"];
                         var virtualMemory = config.Measurements["VirtualMemory"];
                         var pagedMemory = config.Measurements["PagedMemory"];
-                        var totalTime = config.Measurements["TotalTime"];
-                        var userTime = config.Measurements["UserTime"];
-                        var privelegedTime = config.Measurements["PrivelegedTime"];
-                        csv.WriteLine("{0};{1};{2};{3};{4};{5};{6};{7}", Path.GetFileNameWithoutExtension(fileName), time, memory, virtualMemory, pagedMemory, totalTime, userTime, privelegedTime);
+                        csv.WriteLine("{0};{1};{2};{3};{4}", 
+                            Path.GetFileNameWithoutExtension(fileName),
+                            time, 
+                            memory, 
+                            virtualMemory, 
+                            pagedMemory);
                         repository.Save(config.Configuration, fileName);
                         index++;
                     }
@@ -148,35 +189,95 @@ namespace NMF.Incerator
     public class Benchmark : IBenchmark<Configuration>
     {
         public InceratorConfiguration Options { get; private set; }
+        public ModelRepository Repository { get; private set; }
 
-        public Benchmark(InceratorConfiguration options)
+        public Benchmark(InceratorConfiguration options, ModelRepository repository)
         {
             Options = options;
+            Repository = repository;
         }
 
         public IDictionary<string, double> MeasureConfiguration(Configuration configuration)
         {
             var tmpFile = Path.GetTempFileName();
-            Incerator.repository.Save(configuration, tmpFile);
+            Repository.Save(configuration, tmpFile);
 
             var processTemplate = "{0} -c {1} -a {2} -t {3}";
             var executingAssemblyPath = Assembly.GetExecutingAssembly().CodeBase;
             var processCmd = string.Format(processTemplate, nameof(OperationMode.Record), tmpFile, Options.Assembly, Options.Type);
-            
-            var process = Process.Start(executingAssemblyPath, processCmd);
-            var memory = process.VirtualMemorySize64;
-            process.WaitForExit();
 
-            if (process.ExitCode != 0) return null;
+            var stopwatch = new Stopwatch();
+
+            // Define variables to track the peak
+            // memory usage of the process.
+            long peakPagedMem = 0,
+                peakWorkingSet = 0,
+                peakVirtualMem = 0;
+
+            Process recordProcess = null;
+
+            var startInfo = new ProcessStartInfo(executingAssemblyPath, processCmd);
+            startInfo.CreateNoWindow = true;
+            startInfo.ErrorDialog = false;
+            startInfo.UseShellExecute = false;
+            startInfo.RedirectStandardError = true;
+            startInfo.RedirectStandardOutput = true;
+            startInfo.WorkingDirectory = Environment.CurrentDirectory;
+
+            stopwatch.Start();
+            try
+            {
+                // Start the process.
+                recordProcess = Process.Start(executingAssemblyPath, processCmd);
+                
+                do
+                {
+                    if (!recordProcess.HasExited)
+                    {
+                        try
+                        {
+                            // Refresh the current process property values.
+                            recordProcess.Refresh();
+
+                            // Update the values for the overall peak memory statistics.
+                            peakPagedMem = recordProcess.PeakPagedMemorySize64;
+                            peakVirtualMem = recordProcess.PeakVirtualMemorySize64;
+                            peakWorkingSet = recordProcess.PeakWorkingSet64;
+                        }
+                        catch (InvalidOperationException)
+                        {
+                        }
+                    }
+                }
+                // refresh process statistics every 100ms
+                while (!recordProcess.WaitForExit(100));
+
+                stopwatch.Stop();
+
+                Console.Write(".");
+
+                if (recordProcess.ExitCode != 0)
+                {
+                    Console.Error.WriteLine("Recorder for configuration {0} quit with exit code {1}.", configuration.Describe(), recordProcess.ExitCode);
+                    var error = recordProcess.StandardError.ReadToEnd();
+                    Console.Error.WriteLine(error);
+                    return null;
+                }
+            }
+            finally
+            {
+                if (recordProcess != null)
+                {
+                    recordProcess.Close();
+                }
+            }
 
             var results = new Dictionary<string, double>();
-            results.Add("Time", (process.ExitTime - process.StartTime).TotalMilliseconds);
-            results.Add("Memory", process.PeakWorkingSet64);
-            results.Add("VirtualMemory", process.PeakVirtualMemorySize64);
-            results.Add("PagedMemory", process.PeakPagedMemorySize64);
-            results.Add("TotalTime", process.TotalProcessorTime.TotalMilliseconds);
-            results.Add("UserTime", process.UserProcessorTime.TotalMilliseconds);
-            results.Add("PrivelegedTime", process.PrivilegedProcessorTime.TotalMilliseconds);
+            results.Add("Time", stopwatch.ElapsedMilliseconds);
+            results.Add("Memory", peakWorkingSet);
+            results.Add("PagedMemory", peakPagedMem);
+            results.Add("VirtualMemory", peakVirtualMem);
+
             return results;
         }
     }

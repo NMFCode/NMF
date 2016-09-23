@@ -16,6 +16,7 @@ using NMF.Models;
 using NMF.Models.Collections;
 using NMF.Models.Expressions;
 using NMF.Models.Meta;
+using NMF.Models.Repository;
 using NMF.Serialization;
 using NMF.Utilities;
 using System;
@@ -42,11 +43,14 @@ namespace NMF.Expressions.IncrementalizationConfiguration
         /// <summary>
         /// The backing field for the MethodConfigurations property
         /// </summary>
-        private ObservableAssociationList<IMethodConfiguration> _methodConfigurations;
+        private ObservableCompositionList<IMethodConfiguration> _methodConfigurations;
+        
+        private static IClass _classInstance;
         
         public Configuration()
         {
-            this._methodConfigurations = new ObservableAssociationList<IMethodConfiguration>();
+            this._methodConfigurations = new ObservableCompositionList<IMethodConfiguration>(this);
+            this._methodConfigurations.CollectionChanging += this.MethodConfigurationsCollectionChanging;
             this._methodConfigurations.CollectionChanged += this.MethodConfigurationsCollectionChanged;
         }
         
@@ -55,13 +59,25 @@ namespace NMF.Expressions.IncrementalizationConfiguration
         /// </summary>
         [DesignerSerializationVisibilityAttribute(DesignerSerializationVisibility.Content)]
         [XmlElementNameAttribute("methodConfigurations")]
-        [XmlAttributeAttribute(true)]
+        [XmlAttributeAttribute(false)]
+        [ContainmentAttribute()]
         [ConstantAttribute()]
         public virtual IListExpression<IMethodConfiguration> MethodConfigurations
         {
             get
             {
                 return this._methodConfigurations;
+            }
+        }
+        
+        /// <summary>
+        /// Gets the child model elements of this model element
+        /// </summary>
+        public override IEnumerableExpression<IModelElement> Children
+        {
+            get
+            {
+                return base.Children.Concat(new ConfigurationChildrenCollection(this));
             }
         }
         
@@ -77,24 +93,75 @@ namespace NMF.Expressions.IncrementalizationConfiguration
         }
         
         /// <summary>
-        /// Gets the Class element that describes the structure of this type
+        /// Gets the Class model for this type
         /// </summary>
-        public new static NMF.Models.Meta.IClass ClassInstance
+        public new static IClass ClassInstance
         {
             get
             {
-                return (IClass)NMF.Models.Repository.MetaRepository.Instance.ResolveType("http://nmf.codeplex.com/incrementalizationConfig#//Configuration/");
+                if ((_classInstance == null))
+                {
+                    _classInstance = ((IClass)(MetaRepository.Instance.Resolve("http://nmf.codeplex.com/incrementalizationConfig#//Configuration/")));
+                }
+                return _classInstance;
             }
         }
         
         /// <summary>
-        /// Forwards change notifications for the MethodConfigurations property to the parent model element
+        /// Forwards CollectionChanging notifications for the MethodConfigurations property to the parent model element
+        /// </summary>
+        /// <param name="sender">The collection that raised the change</param>
+        /// <param name="e">The original event data</param>
+        private void MethodConfigurationsCollectionChanging(object sender, NMF.Collections.ObjectModel.NotifyCollectionChangingEventArgs e)
+        {
+            this.OnCollectionChanging("MethodConfigurations", e);
+        }
+        
+        /// <summary>
+        /// Forwards CollectionChanged notifications for the MethodConfigurations property to the parent model element
         /// </summary>
         /// <param name="sender">The collection that raised the change</param>
         /// <param name="e">The original event data</param>
         private void MethodConfigurationsCollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
         {
             this.OnCollectionChanged("MethodConfigurations", e);
+        }
+        
+        /// <summary>
+        /// Gets the relative URI fragment for the given child model element
+        /// </summary>
+        /// <returns>A fragment of the relative URI</returns>
+        /// <param name="element">The element that should be looked for</param>
+        protected override string GetRelativePathForNonIdentifiedChild(IModelElement element)
+        {
+            int methodConfigurationsIndex = ModelHelper.IndexOfReference(this.MethodConfigurations, element);
+            if ((methodConfigurationsIndex != -1))
+            {
+                return ModelHelper.CreatePath("methodConfigurations", methodConfigurationsIndex);
+            }
+            return base.GetRelativePathForNonIdentifiedChild(element);
+        }
+        
+        /// <summary>
+        /// Resolves the given URI to a child model element
+        /// </summary>
+        /// <returns>The model element or null if it could not be found</returns>
+        /// <param name="reference">The requested reference name</param>
+        /// <param name="index">The index of this reference</param>
+        protected override IModelElement GetModelElementForReference(string reference, int index)
+        {
+            if ((reference == "METHODCONFIGURATIONS"))
+            {
+                if ((index < this.MethodConfigurations.Count))
+                {
+                    return this.MethodConfigurations[index];
+                }
+                else
+                {
+                    return null;
+                }
+            }
+            return base.GetModelElementForReference(reference, index);
         }
         
         /// <summary>
@@ -116,7 +183,135 @@ namespace NMF.Expressions.IncrementalizationConfiguration
         /// </summary>
         public override IClass GetClass()
         {
-            return ((IClass)(NMF.Models.Repository.MetaRepository.Instance.Resolve("http://nmf.codeplex.com/incrementalizationConfig#//Configuration/")));
+            if ((_classInstance == null))
+            {
+                _classInstance = ((IClass)(MetaRepository.Instance.Resolve("http://nmf.codeplex.com/incrementalizationConfig#//Configuration/")));
+            }
+            return _classInstance;
+        }
+        
+        /// <summary>
+        /// The collection class to to represent the children of the Configuration class
+        /// </summary>
+        public class ConfigurationChildrenCollection : ReferenceCollection, ICollectionExpression<IModelElement>, ICollection<IModelElement>
+        {
+            
+            private Configuration _parent;
+            
+            /// <summary>
+            /// Creates a new instance
+            /// </summary>
+            public ConfigurationChildrenCollection(Configuration parent)
+            {
+                this._parent = parent;
+            }
+            
+            /// <summary>
+            /// Gets the amount of elements contained in this collection
+            /// </summary>
+            public override int Count
+            {
+                get
+                {
+                    int count = 0;
+                    count = (count + this._parent.MethodConfigurations.Count);
+                    return count;
+                }
+            }
+            
+            protected override void AttachCore()
+            {
+                this._parent.MethodConfigurations.AsNotifiable().CollectionChanged += this.PropagateCollectionChanges;
+            }
+            
+            protected override void DetachCore()
+            {
+                this._parent.MethodConfigurations.AsNotifiable().CollectionChanged -= this.PropagateCollectionChanges;
+            }
+            
+            /// <summary>
+            /// Adds the given element to the collection
+            /// </summary>
+            /// <param name="item">The item to add</param>
+            public override void Add(IModelElement item)
+            {
+                IMethodConfiguration methodConfigurationsCasted = item.As<IMethodConfiguration>();
+                if ((methodConfigurationsCasted != null))
+                {
+                    this._parent.MethodConfigurations.Add(methodConfigurationsCasted);
+                }
+            }
+            
+            /// <summary>
+            /// Clears the collection and resets all references that implement it.
+            /// </summary>
+            public override void Clear()
+            {
+                this._parent.MethodConfigurations.Clear();
+            }
+            
+            /// <summary>
+            /// Gets a value indicating whether the given element is contained in the collection
+            /// </summary>
+            /// <returns>True, if it is contained, otherwise False</returns>
+            /// <param name="item">The item that should be looked out for</param>
+            public override bool Contains(IModelElement item)
+            {
+                if (this._parent.MethodConfigurations.Contains(item))
+                {
+                    return true;
+                }
+                return false;
+            }
+            
+            /// <summary>
+            /// Copies the contents of the collection to the given array starting from the given array index
+            /// </summary>
+            /// <param name="array">The array in which the elements should be copied</param>
+            /// <param name="arrayIndex">The starting index</param>
+            public override void CopyTo(IModelElement[] array, int arrayIndex)
+            {
+                IEnumerator<IModelElement> methodConfigurationsEnumerator = this._parent.MethodConfigurations.GetEnumerator();
+                try
+                {
+                    for (
+                    ; methodConfigurationsEnumerator.MoveNext(); 
+                    )
+                    {
+                        array[arrayIndex] = methodConfigurationsEnumerator.Current;
+                        arrayIndex = (arrayIndex + 1);
+                    }
+                }
+                finally
+                {
+                    methodConfigurationsEnumerator.Dispose();
+                }
+            }
+            
+            /// <summary>
+            /// Removes the given item from the collection
+            /// </summary>
+            /// <returns>True, if the item was removed, otherwise False</returns>
+            /// <param name="item">The item that should be removed</param>
+            public override bool Remove(IModelElement item)
+            {
+                IMethodConfiguration methodConfigurationItem = item.As<IMethodConfiguration>();
+                if (((methodConfigurationItem != null) 
+                            && this._parent.MethodConfigurations.Remove(methodConfigurationItem)))
+                {
+                    return true;
+                }
+                return false;
+            }
+            
+            /// <summary>
+            /// Gets an enumerator that enumerates the collection
+            /// </summary>
+            /// <returns>A generic enumerator</returns>
+            public override IEnumerator<IModelElement> GetEnumerator()
+            {
+                return Enumerable.Empty<IModelElement>().Concat(this._parent.MethodConfigurations).GetEnumerator();
+            }
         }
         
         /// <summary>

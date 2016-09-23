@@ -16,6 +16,7 @@ using NMF.Models;
 using NMF.Models.Collections;
 using NMF.Models.Expressions;
 using NMF.Models.Meta;
+using NMF.Models.Repository;
 using NMF.Serialization;
 using NMF.Utilities;
 using System;
@@ -54,9 +55,12 @@ namespace NMF.Expressions.IncrementalizationConfiguration
         /// </summary>
         private ObservableList<IncrementalizationStrategy> _allowedStrategies;
         
+        private static IClass _classInstance;
+        
         public MethodConfiguration()
         {
             this._allowedStrategies = new ObservableList<IncrementalizationStrategy>();
+            this._allowedStrategies.CollectionChanging += this.AllowedStrategiesCollectionChanging;
             this._allowedStrategies.CollectionChanged += this.AllowedStrategiesCollectionChanged;
         }
         
@@ -76,8 +80,10 @@ namespace NMF.Expressions.IncrementalizationConfiguration
                 if ((this._methodIdentifier != value))
                 {
                     string old = this._methodIdentifier;
-                    this._methodIdentifier = value;
                     ValueChangedEventArgs e = new ValueChangedEventArgs(old, value);
+                    this.OnMethodIdentifierChanging(e);
+                    this.OnPropertyChanging("MethodIdentifier", e);
+                    this._methodIdentifier = value;
                     this.OnMethodIdentifierChanged(e);
                     this.OnPropertyChanged("MethodIdentifier", e);
                 }
@@ -100,8 +106,10 @@ namespace NMF.Expressions.IncrementalizationConfiguration
                 if ((this._strategy != value))
                 {
                     IncrementalizationStrategy old = this._strategy;
-                    this._strategy = value;
                     ValueChangedEventArgs e = new ValueChangedEventArgs(old, value);
+                    this.OnStrategyChanging(e);
+                    this.OnPropertyChanging("Strategy", e);
+                    this._strategy = value;
                     this.OnStrategyChanged(e);
                     this.OnPropertyChanged("Strategy", e);
                 }
@@ -125,25 +133,52 @@ namespace NMF.Expressions.IncrementalizationConfiguration
         }
         
         /// <summary>
-        /// Gets the Class element that describes the structure of this type
+        /// Gets the Class model for this type
         /// </summary>
-        public new static NMF.Models.Meta.IClass ClassInstance
+        public new static IClass ClassInstance
         {
             get
             {
-                return (IClass)NMF.Models.Repository.MetaRepository.Instance.ResolveType("http://nmf.codeplex.com/incrementalizationConfig#//MethodConfiguration/");
+                if ((_classInstance == null))
+                {
+                    _classInstance = ((IClass)(MetaRepository.Instance.Resolve("http://nmf.codeplex.com/incrementalizationConfig#//MethodConfiguration/")));
+                }
+                return _classInstance;
             }
         }
         
         /// <summary>
+        /// Gets fired before the MethodIdentifier property changes its value
+        /// </summary>
+        public event System.EventHandler<ValueChangedEventArgs> MethodIdentifierChanging;
+        
+        /// <summary>
         /// Gets fired when the MethodIdentifier property changed its value
         /// </summary>
-        public event EventHandler<ValueChangedEventArgs> MethodIdentifierChanged;
+        public event System.EventHandler<ValueChangedEventArgs> MethodIdentifierChanged;
+        
+        /// <summary>
+        /// Gets fired before the Strategy property changes its value
+        /// </summary>
+        public event System.EventHandler<ValueChangedEventArgs> StrategyChanging;
         
         /// <summary>
         /// Gets fired when the Strategy property changed its value
         /// </summary>
-        public event EventHandler<ValueChangedEventArgs> StrategyChanged;
+        public event System.EventHandler<ValueChangedEventArgs> StrategyChanged;
+        
+        /// <summary>
+        /// Raises the MethodIdentifierChanging event
+        /// </summary>
+        /// <param name="eventArgs">The event data</param>
+        protected virtual void OnMethodIdentifierChanging(ValueChangedEventArgs eventArgs)
+        {
+            System.EventHandler<ValueChangedEventArgs> handler = this.MethodIdentifierChanging;
+            if ((handler != null))
+            {
+                handler.Invoke(this, eventArgs);
+            }
+        }
         
         /// <summary>
         /// Raises the MethodIdentifierChanged event
@@ -151,7 +186,20 @@ namespace NMF.Expressions.IncrementalizationConfiguration
         /// <param name="eventArgs">The event data</param>
         protected virtual void OnMethodIdentifierChanged(ValueChangedEventArgs eventArgs)
         {
-            EventHandler<ValueChangedEventArgs> handler = this.MethodIdentifierChanged;
+            System.EventHandler<ValueChangedEventArgs> handler = this.MethodIdentifierChanged;
+            if ((handler != null))
+            {
+                handler.Invoke(this, eventArgs);
+            }
+        }
+        
+        /// <summary>
+        /// Raises the StrategyChanging event
+        /// </summary>
+        /// <param name="eventArgs">The event data</param>
+        protected virtual void OnStrategyChanging(ValueChangedEventArgs eventArgs)
+        {
+            System.EventHandler<ValueChangedEventArgs> handler = this.StrategyChanging;
             if ((handler != null))
             {
                 handler.Invoke(this, eventArgs);
@@ -164,7 +212,7 @@ namespace NMF.Expressions.IncrementalizationConfiguration
         /// <param name="eventArgs">The event data</param>
         protected virtual void OnStrategyChanged(ValueChangedEventArgs eventArgs)
         {
-            EventHandler<ValueChangedEventArgs> handler = this.StrategyChanged;
+            System.EventHandler<ValueChangedEventArgs> handler = this.StrategyChanged;
             if ((handler != null))
             {
                 handler.Invoke(this, eventArgs);
@@ -172,7 +220,17 @@ namespace NMF.Expressions.IncrementalizationConfiguration
         }
         
         /// <summary>
-        /// Forwards change notifications for the AllowedStrategies property to the parent model element
+        /// Forwards CollectionChanging notifications for the AllowedStrategies property to the parent model element
+        /// </summary>
+        /// <param name="sender">The collection that raised the change</param>
+        /// <param name="e">The original event data</param>
+        private void AllowedStrategiesCollectionChanging(object sender, NMF.Collections.ObjectModel.NotifyCollectionChangingEventArgs e)
+        {
+            this.OnCollectionChanging("AllowedStrategies", e);
+        }
+        
+        /// <summary>
+        /// Forwards CollectionChanged notifications for the AllowedStrategies property to the parent model element
         /// </summary>
         /// <param name="sender">The collection that raised the change</param>
         /// <param name="e">The original event data</param>
@@ -250,7 +308,11 @@ namespace NMF.Expressions.IncrementalizationConfiguration
         /// </summary>
         public override IClass GetClass()
         {
-            return ((IClass)(NMF.Models.Repository.MetaRepository.Instance.Resolve("http://nmf.codeplex.com/incrementalizationConfig#//MethodConfiguration/")));
+            if ((_classInstance == null))
+            {
+                _classInstance = ((IClass)(MetaRepository.Instance.Resolve("http://nmf.codeplex.com/incrementalizationConfig#//MethodConfiguration/")));
+            }
+            return _classInstance;
         }
         
         /// <summary>

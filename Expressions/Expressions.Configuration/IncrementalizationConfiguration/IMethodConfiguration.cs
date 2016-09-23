@@ -16,6 +16,7 @@ using NMF.Models;
 using NMF.Models.Collections;
 using NMF.Models.Expressions;
 using NMF.Models.Meta;
+using NMF.Models.Repository;
 using NMF.Serialization;
 using NMF.Utilities;
 using System;
@@ -65,14 +66,24 @@ namespace NMF.Expressions.IncrementalizationConfiguration
         }
         
         /// <summary>
+        /// Gets fired before the MethodIdentifier property changes its value
+        /// </summary>
+        event System.EventHandler<ValueChangedEventArgs> MethodIdentifierChanging;
+        
+        /// <summary>
         /// Gets fired when the MethodIdentifier property changed its value
         /// </summary>
-        event EventHandler<ValueChangedEventArgs> MethodIdentifierChanged;
+        event System.EventHandler<ValueChangedEventArgs> MethodIdentifierChanged;
+        
+        /// <summary>
+        /// Gets fired before the Strategy property changes its value
+        /// </summary>
+        event System.EventHandler<ValueChangedEventArgs> StrategyChanging;
         
         /// <summary>
         /// Gets fired when the Strategy property changed its value
         /// </summary>
-        event EventHandler<ValueChangedEventArgs> StrategyChanged;
+        event System.EventHandler<ValueChangedEventArgs> StrategyChanged;
     }
 }
 

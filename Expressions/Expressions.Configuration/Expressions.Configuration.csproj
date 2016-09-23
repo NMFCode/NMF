@@ -55,7 +55,7 @@
     <Compile Include="RepositoryChangeNotifyValue.cs" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="IncrementalizationConfiguration.nmf" />
+    <EmbeddedResource Include="IncrementalizationConfiguration.nmeta" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Collections\Collections\Collections.csproj">

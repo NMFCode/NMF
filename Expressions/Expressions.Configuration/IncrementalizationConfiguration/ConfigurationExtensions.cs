@@ -35,18 +35,25 @@ namespace NMF.Expressions.IncrementalizationConfiguration
                 var config = baseConfiguration.Clone();
                 for (int i = 0; i < nextIndices.Length; i++)
                 {
-                    config.MethodConfigurations[i].Strategy = baseConfiguration.MethodConfigurations[i].AllowedStrategies[nextIndices[0]];
+                    config.MethodConfigurations[i].Strategy = baseConfiguration.MethodConfigurations[i].AllowedStrategies[nextIndices[i]];
                 }
                 yield return config;
                 nextIndices[nextToIncrease]++;
-                while (nextIndices[nextToIncrease] == baseConfiguration.MethodConfigurations[nextToIncrease].AllowedStrategies.Count)
+                while (nextIndices[nextToIncrease] >= baseConfiguration.MethodConfigurations[nextToIncrease].AllowedStrategies.Count)
                 {
                     nextIndices[nextToIncrease] = 0;
                     nextToIncrease--;
                     if (nextToIncrease < 0) yield break;
                     nextIndices[nextToIncrease]++;
                 }
+                nextToIncrease = nextIndices.GetUpperBound(0);
             }
+        }
+
+        public static string Describe(this Configuration configuration)
+        {
+            return string.Join(",", from mc in configuration.MethodConfigurations
+                                    select string.Format("{0}:{1}", mc.MethodIdentifier, mc.Strategy));
         }
     }
 }

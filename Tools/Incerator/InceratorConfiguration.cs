@@ -23,6 +23,9 @@ namespace NMF.Incerator
         [Option('a', "assembly", HelpText = "The assembly that should be optimized", Required = true)]
         public string Assembly { get; set; }
 
+        [Option("all", DefaultValue = false, HelpText = "Print results for all configurations (skip Pareto-filter)", Required = false)]
+        public bool All { get; set; }
+
         [Option('t', "type", HelpText = "The analysis type that should be optímized", Required = true)]
         public string Type { get; set; }
 

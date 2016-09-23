@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <nmeta:Namespace xmi:version="2.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" Uri="http://nmf.codeplex.com/incrementalizationConfig" Prefix="conf" Name="IncrementalizationConfiguration" xmlns:xmi="http://www.omg.org/XMI" xmlns:nmeta="http://nmf.codeplex.com/nmeta/">
   <Types xsi:type="nmeta:Class" Name="Configuration">
-    <References ReferenceType="//MethodConfiguration/" IsOrdered="True" UpperBound="-1" Name="methodConfigurations" />
+    <References ReferenceType="//MethodConfiguration/" IsOrdered="True" UpperBound="-1" Name="methodConfigurations" IsContainment="True" />
   </Types>
   <Types xsi:type="nmeta:Class" Name="MethodConfiguration">
     <Attributes IsOrdered="True" LowerBound="1" Type="http://nmf.codeplex.com/nmeta/#//String/" Name="methodIdentifier" />

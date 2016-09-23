@@ -10,4 +10,4 @@ using System.Runtime.InteropServices;
 [assembly: CLSCompliant(false)]
 [assembly: Guid("ce312afb-2fb6-4436-89d6-33242d26e2a3")]
 
-[assembly: ModelMetadata("http://nmf.codeplex.com/incrementalizationConfig", "NMF.Expressions.IncrementalizationConfiguration.nmf")]
+[assembly: ModelMetadata("http://nmf.codeplex.com/incrementalizationConfig", "NMF.Expressions.IncrementalizationConfiguration.nmeta")]

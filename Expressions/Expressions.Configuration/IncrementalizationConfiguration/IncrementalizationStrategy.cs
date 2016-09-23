@@ -16,6 +16,7 @@ using NMF.Models;
 using NMF.Models.Collections;
 using NMF.Models.Expressions;
 using NMF.Models.Meta;
+using NMF.Models.Repository;
 using NMF.Serialization;
 using NMF.Utilities;
 using System;
@@ -30,6 +31,7 @@ namespace NMF.Expressions.IncrementalizationConfiguration
 {
     
     
+    [ModelRepresentationClassAttribute("http://nmf.codeplex.com/incrementalizationConfig#//IncrementalizationStrategy/")]
     public enum IncrementalizationStrategy
     {
         

@@ -56,6 +56,7 @@
     <Compile Include="..\Models.Expressions.Tests\NotifySystemTests.cs">
       <Link>NotifySystemTests.cs</Link>
     </Compile>
+    <Compile Include="ConfigurationExtensionTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RecordingNotifySystemTests.cs" />
     <Compile Include="ConfigurationNotifySystemTests.cs" />
