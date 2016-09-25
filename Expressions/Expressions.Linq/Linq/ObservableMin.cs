@@ -378,20 +378,18 @@ namespace NMF.Expressions.Linq
 
             if (!change.IsReset)
             {
-                if (change.RemovedItems != null)
+                foreach (var item in change.AllRemovedItems)
                 {
-                    foreach (var item in change.RemovedItems)
+                    if (item.HasValue && comparer.Compare(current.Value, item.Value) == 0)
                     {
-                        if (item.HasValue && comparer.Compare(current.Value, item.Value) == 0)
-                        {
-                            reset = true;
-                            break;
-                        }
+                        reset = true;
+                        break;
                     }
                 }
-                if (change.AddedItems != null && !reset)
+
+                if (!reset)
                 {
-                    foreach (var item in change.AddedItems)
+                    foreach (var item in change.AllAddedItems)
                     {
                         AddItem(item);
                     }
@@ -400,7 +398,7 @@ namespace NMF.Expressions.Linq
 
             if (change.IsReset || reset)
             {
-                current = default(T);
+                current = null;
                 foreach (var item in source)
                 {
                     AddItem(item);
