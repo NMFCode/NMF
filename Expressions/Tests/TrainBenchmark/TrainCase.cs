@@ -44,19 +44,19 @@ namespace TrainBenchmark
         [Benchmark]
         public void Immediate()
         {
-            DoRepair(Data.QueryResults.ToList());
-            DoInject(Data.InjectResults.ToList());
+            DoRepair(Data.QueryResults.Values.ToList());
+            DoInject(Data.InjectResults.Values.ToList());
         }
 
         [Benchmark]
         public void Transaction()
         {
             ExecutionEngine.Current.BeginTransaction();
-            DoRepair(Data.QueryResults);
+            DoRepair(Data.QueryResults.Values);
             ExecutionEngine.Current.CommitTransaction();
 
             ExecutionEngine.Current.BeginTransaction();
-            DoInject(Data.InjectResults);
+            DoInject(Data.InjectResults.Values);
             ExecutionEngine.Current.CommitTransaction();
         }
 
@@ -66,27 +66,27 @@ namespace TrainBenchmark
             ExecutionEngine.Current = parallelEngine;
 
             ExecutionEngine.Current.BeginTransaction();
-            DoRepair(Data.QueryResults);
+            DoRepair(Data.QueryResults.Values);
             ExecutionEngine.Current.CommitTransaction();
 
             ExecutionEngine.Current.BeginTransaction();
-            DoInject(Data.InjectResults);
+            DoInject(Data.InjectResults.Values);
             ExecutionEngine.Current.CommitTransaction();
 
             ExecutionEngine.Current = defaultEngine;
         }
 
-        private void DoRepair(List<TResult> errors)
+        private void DoRepair(IList<TResult> errors)
         {
             ExecuteRandom(errors, Repair, RepairPortion);
         }
 
-        private void DoInject(List<TInject> injects)
+        private void DoInject(IList<TInject> injects)
         {
             ExecuteRandom(injects, Inject, InjectPortion);
         }
 
-        private void ExecuteRandom<T>(List<T> candidates, Action<T> action, double percentage)
+        private void ExecuteRandom<T>(IList<T> candidates, Action<T> action, double percentage)
         {
             if (candidates.Count == 0)
                 return;
@@ -106,24 +106,24 @@ namespace TrainBenchmark
             
             public INotifyEnumerable<TResult> Query { get; }
 
-            public List<TResult> QueryResults { get; }
+            public SortedList<string, TResult> QueryResults { get; }
 
             public INotifyEnumerable<TInject> Inject { get; }
 
-            public List<TInject> InjectResults { get; }
+            public SortedList<string, TInject> InjectResults { get; }
 
             public RunData(TrainCase<TResult, TInject> test)
             {
                 Query = test.Query(Model);
-                QueryResults = Query.ToList();
+                QueryResults = new SortedList<string, TResult>(Query.ToDictionary(r => r.ToString()));
                 Query.CollectionChanged += (obj, e) => UpdateList(e, QueryResults);
 
                 Inject = test.InjectSelector(Model);
-                InjectResults = Inject.ToList();
+                InjectResults = new SortedList<string, TInject>(Inject.ToDictionary(r => r.ToString()));
                 Inject.CollectionChanged += (obj, e) => UpdateList(e, InjectResults);
             }
 
-            private static void UpdateList<T>(NotifyCollectionChangedEventArgs e, List<T> list)
+            private static void UpdateList<T>(NotifyCollectionChangedEventArgs e, SortedList<string, T> list)
             {
                 if (e.Action == NotifyCollectionChangedAction.Reset)
                     throw new NotImplementedException();
@@ -131,10 +131,13 @@ namespace TrainBenchmark
                 if (e.OldItems != null)
                 {
                     foreach (T result in e.OldItems)
-                        list.Remove(result);
+                        list.Remove(result.ToString());
                 }
                 if (e.NewItems != null)
-                    list.AddRange(e.NewItems.Cast<T>());
+                {
+                    foreach (T result in e.NewItems)
+                        list.Add(result.ToString(), result);
+                }
             }
 
             private static RailwayContainer LoadRailwayModel()

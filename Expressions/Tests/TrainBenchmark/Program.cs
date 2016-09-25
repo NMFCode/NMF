@@ -18,11 +18,11 @@ namespace TrainBenchmark
     {
         private static readonly Dictionary<string, double> masterTimes = new Dictionary<string, double>()
         {
-            ["PosLength"] = 1446800,
-            ["RouteSensor"] = 218.6473,
-            ["SemaphoreNeighbor"] = 15552100,
-            ["SwitchSensor"] = 210.5739,
-            ["SwitchSet"] = 28814.6
+            ["PosLength"] = 1915400,
+            ["RouteSensor"] = 159142,
+            ["SemaphoreNeighbor"] = 11903400,
+            ["SwitchSensor"] = 251.786,
+            ["SwitchSet"] = 33543.2
         };
 
         static void Main(string[] args)
