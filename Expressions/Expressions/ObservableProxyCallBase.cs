@@ -71,7 +71,8 @@ namespace NMF.Expressions
         
         public override INotificationResult Notify(IList<INotificationResult> sources)
         {
-            RenewProxy();
+            if (sources.Count > 1 || sources[0].Source != Proxy)
+                RenewProxy();
             return base.Notify(sources);
         }
 
