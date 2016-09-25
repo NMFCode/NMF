@@ -16,12 +16,20 @@ namespace TrainBenchmark
             rc => rc.Descendants().OfType<Switch>().Where(sw => sw.Sensor == null).AsNotifiable();
 
         public override Action<Switch> Repair =>
-            sw => sw.Sensor = new Sensor();
+            sw =>
+            {
+                sw.Sensor = new Sensor();
+                ((RailwayContainer)sw.ConnectsTo[0].Model.RootElements[0]).Invalids.Remove(sw);
+            };
 
         public override Func<RailwayContainer, INotifyEnumerable<Switch>> InjectSelector =>
             rc => rc.Descendants().OfType<Switch>().Where(sw => sw.Sensor != null).AsNotifiable();
 
         public override Action<Switch> Inject =>
-            sw => sw.Sensor = null;
+            sw =>
+            {
+                ((RailwayContainer)sw.ConnectsTo[0].Model.RootElements[0]).Invalids.Add(sw);
+                sw.Sensor = null;
+            };
     }
 }

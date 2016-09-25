@@ -10,6 +10,7 @@ using System.Collections.Specialized;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Collections;
 
 namespace TrainBenchmark
 {
@@ -44,19 +45,19 @@ namespace TrainBenchmark
         [Benchmark]
         public void Immediate()
         {
-            DoRepair(Data.QueryResults.Values.ToList());
-            DoInject(Data.InjectResults.Values.ToList());
+            DoRepair(Data.QueryResults.ToList());
+            DoInject(Data.InjectResults.ToList());
         }
 
         [Benchmark]
         public void Transaction()
         {
             ExecutionEngine.Current.BeginTransaction();
-            DoRepair(Data.QueryResults.Values);
+            DoRepair(Data.QueryResults);
             ExecutionEngine.Current.CommitTransaction();
 
             ExecutionEngine.Current.BeginTransaction();
-            DoInject(Data.InjectResults.Values);
+            DoInject(Data.InjectResults);
             ExecutionEngine.Current.CommitTransaction();
         }
 
@@ -66,11 +67,11 @@ namespace TrainBenchmark
             ExecutionEngine.Current = parallelEngine;
 
             ExecutionEngine.Current.BeginTransaction();
-            DoRepair(Data.QueryResults.Values);
+            DoRepair(Data.QueryResults);
             ExecutionEngine.Current.CommitTransaction();
 
             ExecutionEngine.Current.BeginTransaction();
-            DoInject(Data.InjectResults.Values);
+            DoInject(Data.InjectResults);
             ExecutionEngine.Current.CommitTransaction();
 
             ExecutionEngine.Current = defaultEngine;
@@ -106,24 +107,24 @@ namespace TrainBenchmark
             
             public INotifyEnumerable<TResult> Query { get; }
 
-            public SortedList<string, TResult> QueryResults { get; }
+            public SortedList<int, TResult> QueryResults { get; }
 
             public INotifyEnumerable<TInject> Inject { get; }
 
-            public SortedList<string, TInject> InjectResults { get; }
+            public SortedList<int, TInject> InjectResults { get; }
 
             public RunData(TrainCase<TResult, TInject> test)
             {
                 Query = test.Query(Model);
-                QueryResults = new SortedList<string, TResult>(Query.ToDictionary(r => r.ToString()));
+                QueryResults = new SortedList<int, TResult>(r => r.GetHashCode(), Query);
                 Query.CollectionChanged += (obj, e) => UpdateList(e, QueryResults);
 
                 Inject = test.InjectSelector(Model);
-                InjectResults = new SortedList<string, TInject>(Inject.ToDictionary(r => r.ToString()));
+                InjectResults = new SortedList<int, TInject>(r => r.GetHashCode(), Inject);
                 Inject.CollectionChanged += (obj, e) => UpdateList(e, InjectResults);
             }
 
-            private static void UpdateList<T>(NotifyCollectionChangedEventArgs e, SortedList<string, T> list)
+            private static void UpdateList<T>(NotifyCollectionChangedEventArgs e, SortedList<int, T> list)
             {
                 if (e.Action == NotifyCollectionChangedAction.Reset)
                     throw new NotImplementedException();
@@ -131,12 +132,12 @@ namespace TrainBenchmark
                 if (e.OldItems != null)
                 {
                     foreach (T result in e.OldItems)
-                        list.Remove(result.ToString());
+                        list.Remove(result);
                 }
                 if (e.NewItems != null)
                 {
                     foreach (T result in e.NewItems)
-                        list.Add(result.ToString(), result);
+                        list.Add(result);
                 }
             }
 
@@ -146,6 +147,103 @@ namespace TrainBenchmark
                 var railwayModel = repository.Resolve(new Uri(BaseUri), "railway.railway").Model;
                 return railwayModel.RootElements.Single() as RailwayContainer;
             }
+        }
+    }
+
+    public class SortedList<TKey, TItem> : IList<TItem>
+    {
+        private readonly Func<TItem, TKey> keySelector;
+        private readonly List<TKey> keys = new List<TKey>();
+        private readonly List<TItem> items = new List<TItem>();
+
+        public int Count { get { return keys.Count; } }
+
+        public bool IsReadOnly { get { return false; } }
+
+        public TItem this[int index]
+        {
+            get
+            {
+                return items[index];
+            }
+
+            set
+            {
+                throw new InvalidOperationException();
+            }
+        }
+
+        public SortedList(Func<TItem, TKey> keySelector)
+        {
+            this.keySelector = keySelector;
+        }
+
+        public SortedList(Func<TItem, TKey> keySelector, IEnumerable<TItem> items) : this(keySelector)
+        {
+            foreach (var item in items)
+                Add(item);
+        }
+
+        public int IndexOf(TItem item)
+        {
+            return items.IndexOf(item);
+        }
+
+        public void Insert(int index, TItem item)
+        {
+            throw new InvalidOperationException();
+        }
+
+        public void RemoveAt(int index)
+        {
+            keys.RemoveAt(index);
+            items.RemoveAt(index);
+        }
+
+        public void Add(TItem item)
+        {
+            var key = keySelector(item);
+            var index = keys.BinarySearch(key);
+            if (index >= 0)
+                throw new ArgumentException("Duplicate Key!");
+            keys.Insert(~index, key);
+            items.Insert(~index, item);
+        }
+
+        public void Clear()
+        {
+            keys.Clear();
+            items.Clear();
+        }
+
+        public bool Contains(TItem item)
+        {
+            return items.Contains(item);
+        }
+
+        public void CopyTo(TItem[] array, int arrayIndex)
+        {
+            items.CopyTo(array, arrayIndex);
+        }
+
+        public bool Remove(TItem item)
+        {
+            var index = items.IndexOf(item);
+            if (index < 0)
+                return false;
+            items.RemoveAt(index);
+            keys.RemoveAt(index);
+            return true;
+        }
+
+        public IEnumerator<TItem> GetEnumerator()
+        {
+            return items.GetEnumerator();
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return items.GetEnumerator();
         }
     }
 
