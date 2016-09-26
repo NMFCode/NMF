@@ -23,7 +23,7 @@ namespace NMF.Expressions
             int currentValue = 1;
             bool evaluating = true;
 
-            do
+            while (true)
             {
                 var metaData = node.ExecutionMetaData;
                 if (metaData.RemainingVisits != currentValue)
@@ -40,26 +40,23 @@ namespace NMF.Expressions
                 currentValue = metaData.TotalVisits;
                 metaData.TotalVisits = 0;
 
-                foreach (var dep in node.Dependencies)
+                INotificationResult result = null;
+                if (evaluating || metaData.Results.Count > 0)
                 {
-                    if (dep.ExecutionMetaData.Result != null)
-                    {
-                        metaData.Sources.Add(dep.ExecutionMetaData.Result);
-                        dep.ExecutionMetaData.Result = null;
-                    }
-                }
-
-                if (evaluating || metaData.Sources.Count > 0)
-                {
-                    var result = node.Notify(metaData.Sources);
+                    result = node.Notify(metaData.Results.Values);
                     evaluating = result.Changed;
-                    if (evaluating && node.Successors.HasSuccessors)
-                        metaData.Result = result;
+                    metaData.Results.Clear();
                 }
 
-                metaData.Sources.Clear();
+                if (node.Successors.HasSuccessors)
+                {
+                    node = node.Successors[0];
+                    if (result != null && evaluating)
+                        node.ExecutionMetaData.Results.Add(result);
+                }
+                else
+                    break;
             }
-            while (node.Successors.HasSuccessors && (node = node.Successors[0]) != null);
         }
 
         private void MarkNode(INotifiable node)

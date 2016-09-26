@@ -9,7 +9,6 @@ namespace NMF.Expressions
     {
         internal int TotalVisits;
         internal int RemainingVisits;
-        internal List<INotificationResult> Sources { get; } = new List<INotificationResult>();
-        internal INotificationResult Result;
+        internal NotificationResultCollection Results = new NotificationResultCollection();
     }
 }

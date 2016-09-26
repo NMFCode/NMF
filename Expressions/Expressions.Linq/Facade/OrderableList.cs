@@ -56,7 +56,7 @@ namespace NMF.Expressions.Linq
                     }
                 }
 
-                ExecutionMetaData.Sources.Add(new CollectionChangedNotificationResult<T>(this, added, removed));
+                ExecutionMetaData.Results.Add(new CollectionChangedNotificationResult<T>(this, added, removed));
             }
             ExecutionEngine.Current.InvalidateNode(this);
         }

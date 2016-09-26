@@ -34,7 +34,7 @@ namespace NMF.Expressions
                         nodes.Add(listener.Node);
                     else if (result.Changed)
                     {
-                        listener.Node.ExecutionMetaData.Sources.Add(result);
+                        listener.Node.ExecutionMetaData.Results.UnsafeAdd(result);
                         nodes.Add(listener.Node);
                     }
                 }
@@ -69,7 +69,7 @@ namespace NMF.Expressions
                     ExecuteSingle(listener.Node);
                 else if (result.Changed)
                 {
-                    listener.Node.ExecutionMetaData.Sources.Add(result);
+                    listener.Node.ExecutionMetaData.Results.UnsafeAdd(result);
                     ExecuteSingle(listener.Node);
                 }
             }
@@ -83,10 +83,10 @@ namespace NMF.Expressions
             while (node != null)
             {
                 if (lastResult != null)
-                    node.ExecutionMetaData.Sources.Add(lastResult);
+                    node.ExecutionMetaData.Results.UnsafeAdd(lastResult);
 
-                lastResult = node.Notify(node.ExecutionMetaData.Sources);
-                node.ExecutionMetaData.Sources.Clear();
+                lastResult = node.Notify(node.ExecutionMetaData.Results.Values);
+                node.ExecutionMetaData.Results.Clear();
 
                 if (lastResult.Changed && node.Successors.HasSuccessors)
                     node = node.Successors[0];

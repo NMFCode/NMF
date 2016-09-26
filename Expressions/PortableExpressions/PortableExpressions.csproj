@@ -455,6 +455,15 @@
     <Compile Include="..\Expressions\Execution\ValueChangedNotificationResult.cs">
       <Link>Execution\ValueChangedNotificationResult.cs</Link>
     </Compile>
+    <Compile Include="..\Expressions\Execution\Parallel\NotificationResultCollection.cs">
+      <Link>Execution\Parallel\NotificationResultCollection.cs</Link>
+    </Compile>
+    <Compile Include="..\Expressions\Execution\Parallel\ParallelArrayExecutionEngine.cs">
+      <Link>Execution\Parallel\ParallelArrayExecutionEngine.cs</Link>
+    </Compile>
+    <Compile Include="..\Expressions\Execution\Parallel\ParallelExecutionEngine.cs">
+      <Link>Execution\Parallel\ParallelExecutionEngine.cs</Link>
+    </Compile>
     <Compile Include="ExpressionRewriter\ProxyMethodAttribute.cs" />
     <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="ReflectionHelper.cs" />

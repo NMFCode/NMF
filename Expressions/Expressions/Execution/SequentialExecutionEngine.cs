@@ -28,27 +28,23 @@ namespace NMF.Expressions
                 metaData.RemainingVisits -= currentValue;
                 if (metaData.RemainingVisits > 0)
                     return;
-#if DEBUG
-                if (metaData.RemainingVisits < 0)
-                    throw new InvalidOperationException("RemainingVisits < 0: This should never happen!");
-#endif
-
-                INotificationResult result = null;
-                if (evaluating || metaData.Sources.Count > 0)
-                {
-                    result = node.Notify(metaData.Sources);
-                    evaluating = result.Changed;
-                }
 
                 currentValue = metaData.TotalVisits;
                 metaData.TotalVisits = 0;
-                metaData.Sources.Clear();
+
+                INotificationResult result = null;
+                if (evaluating || metaData.Results.Count > 0)
+                {
+                    result = node.Notify(metaData.Results.Values);
+                    evaluating = result.Changed;
+                    metaData.Results.Clear();
+                }
 
                 if (node.Successors.HasSuccessors)
                 {
                     node = node.Successors[0];
                     if (result != null && evaluating)
-                        node.ExecutionMetaData.Sources.Add(result);
+                        node.ExecutionMetaData.Results.UnsafeAdd(result);
                 }
                 else
                     break;
