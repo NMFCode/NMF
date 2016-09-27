@@ -24,7 +24,7 @@ namespace NMF.Expressions
             {
                 oldArray = array;
                 newArray = array;
-                EnsureCapacity(ref newArray, index);
+                EnsureCapacity(ref newArray, index + 1);
                 newArray[index] = item;
             } while (Interlocked.CompareExchange(ref array, newArray, oldArray) != newArray);
         }
@@ -32,7 +32,7 @@ namespace NMF.Expressions
         public void UnsafeAdd(INotificationResult item)
         {
             count++;
-            EnsureCapacity(ref array, count);
+            EnsureCapacity(ref array, count + 1);
             array[count] = item;
         }
 
@@ -45,9 +45,9 @@ namespace NMF.Expressions
 
         private void EnsureCapacity(ref INotificationResult[] array, int capacity)
         {
-            if (capacity >= array.Length)
+            if (capacity > array.Length)
             {
-                var newArray = new INotificationResult[array.Length * 2];
+                var newArray = new INotificationResult[Math.Max(capacity, array.Length * 2)];
                 Array.Copy(array, newArray, array.Length);
                 array = newArray;
             }
