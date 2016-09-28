@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -6,50 +7,147 @@ using System.Threading;
 
 namespace NMF.Expressions
 {
-    internal class NotificationResultCollection
+    internal class NotificationResultCollection : IList<INotificationResult>
     {
-        private INotificationResult[] array = new INotificationResult[2];
-        private int count = -1;
+        private readonly Entry head = new Entry(null);
+        private Entry tail;
+        private int count = 0;
+        
+        public int Count { get { return count; } }
 
-        public int Count { get { return count + 1; } }
+        public bool IsReadOnly { get { return false; } }
 
-        public IList<INotificationResult> Values { get { return new ArraySegment<INotificationResult>(array, 0, Count); } }
+        public INotificationResult this[int index]
+        {
+            get
+            {
+                if (count == 0 || index < 0)
+                    throw new IndexOutOfRangeException();
+                var current = head.Next;
+                for (int i = 0; i < index; i++)
+                {
+                    current = current.Next;
+                    if (current == null)
+                        throw new IndexOutOfRangeException();
+                }
+                return current.Item;
+            }
+            set
+            {
+                throw new NotSupportedException();
+            }
+        }
+
+        public NotificationResultCollection()
+        {
+            tail = head;
+        }
 
         public void Add(INotificationResult item)
         {
-            INotificationResult[] oldArray, newArray;
-            var index = Interlocked.Increment(ref count);
-
-            do
-            {
-                oldArray = array;
-                newArray = array;
-                EnsureCapacity(ref newArray, index + 1);
-                newArray[index] = item;
-            } while (Interlocked.CompareExchange(ref array, newArray, oldArray) != newArray);
+            Interlocked.Increment(ref count);
+            var entry = new Entry(item);
+            var oldTail = Interlocked.Exchange(ref tail, entry);
+            oldTail.Next = entry;
         }
 
         public void UnsafeAdd(INotificationResult item)
         {
             count++;
-            EnsureCapacity(ref array, count + 1);
-            array[count] = item;
+            var entry = new Entry(item);
+            tail.Next = entry;
+            tail = entry;
         }
 
         public void Clear()
         {
-            for (int i = 0; i < Count; i++)
-                array[i] = null;
-            count = -1;
+            tail = head;
+            head.Next = null;
+            count = 0;
         }
 
-        private void EnsureCapacity(ref INotificationResult[] array, int capacity)
+        public IEnumerator<INotificationResult> GetEnumerator()
         {
-            if (capacity > array.Length)
+            return new Enumerator(this);
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return GetEnumerator();
+        }
+
+        public bool Contains(INotificationResult item)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void CopyTo(INotificationResult[] array, int arrayIndex)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool Remove(INotificationResult item)
+        {
+            throw new NotImplementedException();
+        }
+
+        public int IndexOf(INotificationResult item)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void Insert(int index, INotificationResult item)
+        {
+            throw new NotSupportedException();
+        }
+
+        public void RemoveAt(int index)
+        {
+            throw new NotSupportedException();
+        }
+
+        private class Entry
+        {
+            public readonly INotificationResult Item;
+
+            public Entry Next;
+
+            public Entry(INotificationResult item)
             {
-                var newArray = new INotificationResult[Math.Max(capacity, array.Length * 2)];
-                Array.Copy(array, newArray, array.Length);
-                array = newArray;
+                Item = item;
+            }
+        }
+
+        private class Enumerator : IEnumerator<INotificationResult>
+        {
+            private readonly NotificationResultCollection collection;
+            private Entry currentEntry;
+
+            public Enumerator(NotificationResultCollection collection)
+            {
+                this.collection = collection;
+                this.currentEntry = collection.head;
+            }
+
+            public INotificationResult Current { get { return currentEntry.Item; } }
+
+            object IEnumerator.Current { get { return Current; } }
+
+            public void Dispose() { }
+
+            public bool MoveNext()
+            {
+                if (currentEntry.Next != null)
+                {
+                    currentEntry = currentEntry.Next;
+                    return true;
+                }
+                return false;
+            }
+
+            public void Reset()
+            {
+                currentEntry = collection.head;
             }
         }
     }
