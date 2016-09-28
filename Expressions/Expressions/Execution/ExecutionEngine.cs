@@ -85,7 +85,7 @@ namespace NMF.Expressions
                 if (lastResult != null)
                     node.ExecutionMetaData.Results.UnsafeAdd(lastResult);
 
-                lastResult = node.Notify(node.ExecutionMetaData.Results.Values);
+                lastResult = node.Notify(node.ExecutionMetaData.Results);
                 node.ExecutionMetaData.Results.Clear();
 
                 if (lastResult.Changed && node.Successors.HasSuccessors)

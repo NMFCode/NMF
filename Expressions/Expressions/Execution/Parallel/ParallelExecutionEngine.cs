@@ -43,7 +43,7 @@ namespace NMF.Expressions
                 INotificationResult result = null;
                 if (evaluating || metaData.Results.Count > 0)
                 {
-                    result = node.Notify(metaData.Results.Values);
+                    result = node.Notify(metaData.Results);
                     evaluating = result.Changed;
                     metaData.Results.Clear();
                 }
