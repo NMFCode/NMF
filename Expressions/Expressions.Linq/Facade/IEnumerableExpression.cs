@@ -45,6 +45,11 @@ namespace NMF.Expressions
     }
 
     /// <summary>
+    /// Represents an editable collection that can be accessed incrementally, i.e. with change notifications
+    /// </summary>
+    public interface ICollectionExpression : IEnumerableExpression, IList { }
+
+    /// <summary>
     /// Represents an orderable collection that can be accessed incrementally, i.e. with change notifications
     /// </summary>
     /// <typeparam name="T"></typeparam>

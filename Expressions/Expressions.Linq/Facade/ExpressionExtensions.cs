@@ -1277,6 +1277,18 @@ namespace NMF.Expressions.Linq
         }
 
         /// <summary>
+        /// Filters the given collection for elements of the given type as a collection using the non-generic interface
+        /// </summary>
+        /// <typeparam name="TResult">The result type</typeparam>
+        /// <param name="source">The current collection</param>
+        /// <returns>A collection containing the elements of the given type</returns>
+        /// <remarks>Only use this method if a generic collection interface is for some reason unavailable.</remarks>
+        public static ICollectionExpression<TResult> OfType<TResult>(this ICollectionExpression source)
+        {
+            return new OfTypeCollectionExpression<TResult>(source);
+        }
+
+        /// <summary>
         /// Orders the given collection ascending by the given predicate
         /// </summary>
         /// <typeparam name="TItem">The elements type</typeparam>

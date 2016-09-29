@@ -12,7 +12,7 @@ using System.Text;
 namespace NMF.Collections.ObjectModel
 {
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1710:IdentifiersShouldHaveCorrectSuffix"), DebuggerDisplay("Count = {Count}"), DebuggerTypeProxy(typeof(EnumerableDebuggerProxy<>))]
-    public class ObservableSet<T> : DecoratedSet<T>, ISet<T>, ICollection<T>, IEnumerable<T>, ICollection, IEnumerable, INotifyCollectionChanged, INotifyCollectionChanging, INotifyEnumerable<T>, INotifyPropertyChanged, INotifyCollection<T>, ISetExpression<T>
+    public class ObservableSet<T> : DecoratedSet<T>, ISet<T>, ICollection<T>, IEnumerable<T>, ICollection, IEnumerable, INotifyCollectionChanged, INotifyCollectionChanging, INotifyEnumerable<T>, INotifyPropertyChanged, INotifyCollection<T>, ISetExpression<T>, ICollectionExpression
     {
         public override bool Add(T item)
         {
@@ -51,13 +51,13 @@ namespace NMF.Collections.ObjectModel
 
         protected void OnPropertyChanged(string property)
         {
-            if (PropertyChanged != null) PropertyChanged(this, new PropertyChangedEventArgs(property));
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(property));
         }
 
         protected void OnCollectionChanged(NotifyCollectionChangedEventArgs e)
         {
             OnPropertyChanged("Count");
-            if (CollectionChanged != null) CollectionChanged(this, e);
+            CollectionChanged?.Invoke(this, e);
         }
 
         protected void OnCollectionChanging(NotifyCollectionChangingEventArgs e)

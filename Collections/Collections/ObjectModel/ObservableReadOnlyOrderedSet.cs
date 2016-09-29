@@ -12,7 +12,7 @@ using System.Diagnostics;
 namespace NMF.Collections.ObjectModel
 {
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1710:IdentifiersShouldHaveCorrectSuffix"), DebuggerDisplay("Count = {Count}"), DebuggerTypeProxy(typeof(EnumerableDebuggerProxy<>))]
-    public class ObservableReadOnlyOrderedSet<T> : ReadOnlyOrderedSet<T>, INotifyCollectionChanged, INotifyCollectionChanging, IEnumerableExpression<T>, INotifyEnumerable<T>
+    public class ObservableReadOnlyOrderedSet<T> : ReadOnlyOrderedSet<T>, INotifyCollectionChanged, INotifyCollectionChanging, IEnumerableExpression<T>, INotifyEnumerable<T>, ICollectionExpression
     {
         public ObservableReadOnlyOrderedSet(ObservableOrderedSet<T> parent)
             : base(parent)

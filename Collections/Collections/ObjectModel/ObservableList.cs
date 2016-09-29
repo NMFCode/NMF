@@ -7,7 +7,7 @@ using NMF.Expressions;
 
 namespace NMF.Collections.ObjectModel
 {
-    public class ObservableList<T> : ObservableCollectionExtended<T>, INotifyEnumerable<T>, INotifyCollection<T>, IListExpression<T>
+    public class ObservableList<T> : ObservableCollectionExtended<T>, INotifyEnumerable<T>, INotifyCollection<T>, IListExpression<T>, ICollectionExpression
     {
         void INotifyEnumerable.Attach() { }
 

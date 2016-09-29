@@ -6,6 +6,7 @@ using System.Text;
 using SL = System.Linq.Enumerable;
 using NMF.Expressions.Linq;
 using System.Diagnostics;
+using System.Collections;
 
 namespace NMF.Expressions
 {
@@ -47,7 +48,7 @@ namespace NMF.Expressions
         }
     }
 
-    internal class WhereCollectionExpression<T> : WhereExpression<T>, ICollectionExpression<T>
+    internal class WhereCollectionExpression<T> : WhereExpression<T>, ICollectionExpression<T>, IList
     {
         public Action<T, bool> PredicateSetter { get; private set; }
 
@@ -151,6 +152,59 @@ namespace NMF.Expressions
             get { return Source.IsReadOnly && PredicateSetter == null; }
         }
 
+        bool IList.IsFixedSize
+        {
+            get
+            {
+                return false;
+            }
+        }
+
+        bool IList.IsReadOnly
+        {
+            get
+            {
+                return IsReadOnly;
+            }
+        }
+
+        int ICollection.Count
+        {
+            get
+            {
+                return Count;
+            }
+        }
+
+        bool ICollection.IsSynchronized
+        {
+            get
+            {
+                return false;
+            }
+        }
+
+        object ICollection.SyncRoot
+        {
+            get
+            {
+                return null;
+            }
+        }
+
+        object IList.this[int index]
+        {
+            get
+            {
+                throw new NotSupportedException();
+            }
+
+            set
+            {
+                throw new NotSupportedException();
+            }
+        }
+
         public bool Remove(T item)
         {
             var source = Source;
@@ -164,6 +218,51 @@ namespace NMF.Expressions
                 return true;
             }
             return false;
+        }
+
+        int IList.Add(object value)
+        {
+            Add((T)value);
+            return Count;
+        }
+
+        void IList.Clear()
+        {
+            Clear();
+        }
+
+        bool IList.Contains(object value)
+        {
+            return value is T && Contains((T)value);
+        }
+
+        int IList.IndexOf(object value)
+        {
+            throw new NotSupportedException();
+        }
+
+        void IList.Insert(int index, object value)
+        {
+            Add((T)value);
+        }
+
+        void IList.Remove(object value)
+        {
+            Remove((T)value);
+        }
+
+        void IList.RemoveAt(int index)
+        {
+            throw new NotSupportedException();
+        }
+
+        void ICollection.CopyTo(Array array, int index)
+        {
+            foreach (var item in this)
+            {
+                array.SetValue(item, index);
+                index++;
+            }
         }
     }
 
