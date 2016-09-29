@@ -11,6 +11,16 @@ namespace NMF.Optimizations.Tests
         private int counter;
         private Dictionary<string, Func<int, double>> metrics;
 
+        public IEnumerable<string> Metrics
+        {
+            get
+            {
+                yield return "Time";
+                yield return "Memory";
+                yield return "Throughput";
+            }
+        }
+
         public MockedBenchmark(Func<int, double> time = null, Func<int, double> memory = null, Func<int, double> throughput = null)
         {
             metrics = new Dictionary<string, Func<int, double>>();

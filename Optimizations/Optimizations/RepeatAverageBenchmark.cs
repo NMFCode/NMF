@@ -11,6 +11,14 @@ namespace NMF.Optimizations
 
         public int N { get; set; }
 
+        public IEnumerable<string> Metrics
+        {
+            get
+            {
+                return Inner.Metrics;
+            }
+        }
+
         public RepeatAverageBenchmark(IBenchmark<T> inner, int n = 5)
         {
             if (inner == null) throw new ArgumentNullException("inner");

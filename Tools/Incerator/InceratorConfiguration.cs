@@ -20,13 +20,10 @@ namespace NMF.Incerator
         [Option('c', "configuration", HelpText = "The change configuration", Required = true)]
         public string Configuration { get; set; }
 
-        [Option('a', "assembly", HelpText = "The assembly that should be optimized", Required = true)]
-        public string Assembly { get; set; }
-
         [Option("all", DefaultValue = false, HelpText = "Print results for all configurations (skip Pareto-filter)", Required = false)]
         public bool All { get; set; }
 
-        [Option('t', "type", HelpText = "The analysis type that should be optímized", Required = true)]
+        [Option('a', "analysis", HelpText = "The implementation of the analysis as an assembly-qualified type. The assembly path may be a relative path.", Required = true)]
         public string Type { get; set; }
 
         [Option('m', "method", HelpText = "The method how the analysis should be optimized. Allowed values are Full or NSGAII.", Required = false, DefaultValue = OptimizationAlgorithm.Full)]
@@ -34,6 +31,9 @@ namespace NMF.Incerator
 
         [Option('n', "repetitions", HelpText = "A number specifying how often each measurement should be repeated", Required = false, DefaultValue = 5)]
         public int Repetitions { get; set; }
+
+        [Option('b', "benchmark", HelpText = "The assembly-qualified name of a benchmark class. The assembly may be specified in a relative path. If not provided, a default benchmark implementation is chosen.", Required = false)]
+        public string Benchmark { get; set; }
 
         [ValueOption(0)]
         public OperationMode Mode { get; set; }

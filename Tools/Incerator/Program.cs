@@ -27,6 +27,8 @@ namespace NMF.Incerator
 
         static void Main(string[] args)
         {
+            AppDomain.CurrentDomain.AssemblyResolve += CurrentDomain_AssemblyResolve;
+
             InceratorConfiguration options = new InceratorConfiguration();
             if (Parser.Default.ParseArguments(args, options))
             {
@@ -50,6 +52,24 @@ namespace NMF.Incerator
                 Console.WriteLine("Usage: Incerator optimize [options]");
                 Console.WriteLine(options.GetHelp());
             }
+        }
+
+        private static Assembly CurrentDomain_AssemblyResolve(object sender, ResolveEventArgs args)
+        {
+            var assName = new AssemblyName(args.Name);
+            if (File.Exists(assName.Name))
+            {
+                return Assembly.LoadFile(Path.GetFullPath(assName.Name));
+            }
+            else if (File.Exists(assName.Name + ".dll"))
+            {
+                return Assembly.LoadFile(Path.GetFullPath(assName.Name + ".dll"));
+            }
+            else if (File.Exists(assName.Name + ".exe"))
+            {
+                return Assembly.LoadFile(Path.GetFullPath(assName.Name + ".exe"));
+            }
+            return null;
         }
 
         public void Run()
@@ -88,12 +108,9 @@ namespace NMF.Incerator
             var sysOut = Console.Out;
             Console.SetOut(TextWriter.Null);
 
-            var assembly = Assembly.LoadFile(Path.GetFullPath(options.Assembly));
-            if (assembly == null) throw new InvalidOperationException("The specified assembly could not be loaded.");
-
-            var type = assembly.GetType(options.Type);
-            if (type == null) throw new InvalidOperationException("The specified type does not exist.");
-            if (!typeof(Analysis).IsAssignableFrom(type)) throw new InvalidOperationException("The specified type is not an analysis.");
+            var type = Type.GetType(options.Type);
+            if (type == null) throw new InvalidOperationException("The specified analysis type does not exist.");
+            if (!typeof(Analysis).IsAssignableFrom(type)) throw new InvalidOperationException("The specified analysis type is not an analysis.");
 
             var analysis = (Analysis)Activator.CreateInstance(type);
             analysis.Run(repository);
@@ -101,39 +118,48 @@ namespace NMF.Incerator
             Console.SetOut(sysOut);
         }
 
+        private Assembly LoadAssembly(AssemblyName arg)
+        {
+            if (File.Exists(arg.Name))
+            {
+                return Assembly.LoadFile(Path.GetFullPath(arg.Name));
+            }
+            else
+            {
+                Console.WriteLine("No assembly could be found for the file name {0}.", arg.Name);
+                return null;
+            }
+        }
+
         protected virtual IBenchmark<Configuration> CreateBenchmark()
         {
+            if (options.Benchmark != null)
+            {
+                var benchmarkType = Type.GetType(options.Benchmark, LoadAssembly, null);
+                if (benchmarkType == null) throw new InvalidOperationException("The specified benchmark type does not exist.");
+                if (!typeof(IBenchmark<Configuration>).IsAssignableFrom(benchmarkType)) throw new InvalidOperationException("The specified benchmark type is not a benchmark.");
+
+                return (IBenchmark<Configuration>)Activator.CreateInstance(benchmarkType);
+            }
             return new Benchmark(options, repository);
         }
 
         private void OptimizeAnalysis(Configuration baseConfiguration)
         {
-            var measurements = new List<MeasuredConfiguration<Configuration>>();
-            var benchmark = new Benchmark(options, repository);
-            var repBenchmark = new RepeatAverageBenchmark<Configuration>(benchmark, options.Repetitions);
+            IList<MeasuredConfiguration<Configuration>> measurements;
+            var benchmark = CreateBenchmark();
+            if (options.Repetitions > 1)
+            {
+                benchmark = new RepeatAverageBenchmark<Configuration>(benchmark, options.Repetitions);
+            }
             switch (options.Method)
             {
                 case OptimizationAlgorithm.Full:
-                    var counter = 1;
-                    foreach (var config in baseConfiguration.GetAllPossibilities())
-                    {
-                        Console.Write("Running configuration {0}", counter);
-                        var values = repBenchmark.MeasureConfiguration(config);
-                        Console.WriteLine();
-                        if (values != null)
-                        {
-                            measurements.Add(new MeasuredConfiguration<Configuration>(config, values));
-                            Console.WriteLine("Configuration completed in {0}ms and took {1}bytes.", values["Time"], values["Memory"]);
-                        }
-                        else
-                        {
-                            Console.WriteLine("The configuration [{0}] threw an exception and is therefore discarded.", config.Describe());
-                        }
-                        counter++;
-                    }
+                    measurements = PerformFullExploration(baseConfiguration, benchmark);
                     break;
                 case OptimizationAlgorithm.NSGAII:
-                    throw new NotImplementedException();
+                    measurements = PerformGeneticAlgorithm(baseConfiguration, benchmark);
+                    break;
                 default:
                     throw new ArgumentOutOfRangeException("options", "The chosen method is not supported");
             }
@@ -162,27 +188,59 @@ namespace NMF.Incerator
             {
                 using (var csv = new StreamWriter(Path.ChangeExtension(options.Configuration, "csv"), false))
                 {
-                    csv.WriteLine("Configuration;Time;Memory;VirtualMemory;PagedMemory");
+                    csv.Write("Configuration");
+                    foreach (var metric in benchmark.Metrics)
+                    {
+                        csv.Write(";" + metric);
+                    }
+                    csv.WriteLine();
                     var index = 1;
                     var baseName = Path.ChangeExtension(options.Configuration, null);
                     foreach (var config in measurements)
                     {
                         var fileName = string.Format("{0}_{1}.xmi", baseName, index);
-                        var time = config.Measurements["Time"];
-                        var memory = config.Measurements["Memory"];
-                        var virtualMemory = config.Measurements["VirtualMemory"];
-                        var pagedMemory = config.Measurements["PagedMemory"];
-                        csv.WriteLine("{0};{1};{2};{3};{4}", 
-                            Path.GetFileNameWithoutExtension(fileName),
-                            time, 
-                            memory, 
-                            virtualMemory, 
-                            pagedMemory);
+                        csv.Write(Path.GetFileNameWithoutExtension(fileName));
+                        foreach (var metric in benchmark.Metrics)
+                        {
+                            csv.Write(";");
+                            csv.Write(config.Measurements[metric]);
+                        }
+                        csv.WriteLine();
                         repository.Save(config.Configuration, fileName);
                         index++;
                     }
                 }
             }
+        }
+
+        private static IList<MeasuredConfiguration<Configuration>> PerformGeneticAlgorithm(Configuration baseConfiguration, IBenchmark<Configuration> benchmark)
+        {
+            return new List<MeasuredConfiguration<Configuration>>()
+            {
+                new MeasuredConfiguration<Configuration>(baseConfiguration, benchmark.MeasureConfiguration(baseConfiguration))
+            };
+        }
+
+        private static IList<MeasuredConfiguration<Configuration>> PerformFullExploration(Configuration baseConfiguration, IBenchmark<Configuration> repBenchmark)
+        {
+            var counter = 1;
+            var measurements = new List<MeasuredConfiguration<Configuration>>();
+            foreach (var config in baseConfiguration.GetAllPossibilities())
+            {
+                Console.Write("Running configuration {0}", counter);
+                var values = repBenchmark.MeasureConfiguration(config);
+                Console.WriteLine();
+                if (values == null)
+                {
+                    Console.WriteLine("The configuration [{0}] threw an exception and is therefore discarded.", config.Describe());
+                }
+                else
+                {
+                    measurements.Add(new MeasuredConfiguration<Configuration>(config, values));
+                }
+                counter++;
+            }
+            return measurements;
         }
     }
 
@@ -190,6 +248,17 @@ namespace NMF.Incerator
     {
         public InceratorConfiguration Options { get; private set; }
         public ModelRepository Repository { get; private set; }
+
+        public IEnumerable<string> Metrics
+        {
+            get
+            {
+                yield return "Time";
+                yield return "WorkingSet";
+                yield return "PagedMemory";
+                yield return "VirtualMemory";
+            }
+        }
 
         public Benchmark(InceratorConfiguration options, ModelRepository repository)
         {
@@ -202,9 +271,9 @@ namespace NMF.Incerator
             var tmpFile = Path.GetTempFileName();
             Repository.Save(configuration, tmpFile);
 
-            var processTemplate = "{0} -c {1} -a {2} -t {3}";
+            var processTemplate = "{0} -c {1} -a \"{2}\"";
             var executingAssemblyPath = Assembly.GetExecutingAssembly().CodeBase;
-            var processCmd = string.Format(processTemplate, nameof(OperationMode.Record), tmpFile, Options.Assembly, Options.Type);
+            var processCmd = string.Format(processTemplate, nameof(OperationMode.Record), tmpFile, Options.Type);
 
             var stopwatch = new Stopwatch();
 
@@ -274,7 +343,7 @@ namespace NMF.Incerator
 
             var results = new Dictionary<string, double>();
             results.Add("Time", stopwatch.ElapsedMilliseconds);
-            results.Add("Memory", peakWorkingSet);
+            results.Add("WorkingSet", peakWorkingSet);
             results.Add("PagedMemory", peakPagedMem);
             results.Add("VirtualMemory", peakVirtualMem);
 

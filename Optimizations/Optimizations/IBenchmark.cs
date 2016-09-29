@@ -8,5 +8,7 @@ namespace NMF.Optimizations
     public interface IBenchmark<T>
     {
         IDictionary<string, double> MeasureConfiguration(T configuration);
+
+        IEnumerable<string> Metrics { get; }
     }
 }
