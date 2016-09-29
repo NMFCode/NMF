@@ -61,7 +61,7 @@ namespace NMF.Serialization.Xmi
             if (attr != null)
             {
                 int separator = attr.IndexOf(':');
-                if (separator == -1) return GetTypeInfo(string.Empty, attr);
+                if (separator == -1) return GetTypeInfo(reader.LookupNamespace(string.Empty), attr);
                 var prefix = attr.Substring(0, separator);
                 var localName = attr.Substring(separator + 1);
                 return GetTypeInfo(reader.LookupNamespace(prefix), localName);
