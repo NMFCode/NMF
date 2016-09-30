@@ -28,8 +28,8 @@ namespace TrainBenchmark
         static void Main(string[] args)
         {
 #if !DEBUG
-            Benchmark();
-            //new BenchmarkSwitcher(Assembly.GetExecutingAssembly()).Run();
+            //Benchmark();
+            new BenchmarkSwitcher(Assembly.GetExecutingAssembly()).Run();
 #else
             Profile();
 #endif

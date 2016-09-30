@@ -68,7 +68,12 @@ namespace NMF.Expressions
 
         public IEnumerator<INotificationResult> GetEnumerator()
         {
-            return new Enumerator(this);
+            var current = head.Next;
+            while (current != null)
+            {
+                yield return current.Item;
+                current = current.Next;
+            }
         }
 
         IEnumerator IEnumerable.GetEnumerator()
@@ -115,39 +120,6 @@ namespace NMF.Expressions
             public Entry(INotificationResult item)
             {
                 Item = item;
-            }
-        }
-
-        private struct Enumerator : IEnumerator<INotificationResult>
-        {
-            private readonly NotificationResultCollection collection;
-            private Entry currentEntry;
-
-            public Enumerator(NotificationResultCollection collection)
-            {
-                this.collection = collection;
-                this.currentEntry = collection.head;
-            }
-
-            public INotificationResult Current { get { return currentEntry.Item; } }
-
-            object IEnumerator.Current { get { return Current; } }
-
-            public void Dispose() { }
-
-            public bool MoveNext()
-            {
-                if (currentEntry.Next != null)
-                {
-                    currentEntry = currentEntry.Next;
-                    return true;
-                }
-                return false;
-            }
-
-            public void Reset()
-            {
-                currentEntry = collection.head;
             }
         }
     }
