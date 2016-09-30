@@ -13,21 +13,24 @@ namespace NMF.Models
     {
         private bool committed = false;
         private readonly ExecutionEngine engine = ExecutionEngine.Current;
-        private Collection<IModelChange> changes = new Collection<IModelChange>();
+        private readonly ModelChangeRecorder recorder = new ModelChangeRecorder();
 
-        public NMFTransaction()
+        public NMFTransaction(IModelElement rootElement)
         {
+            recorder.Start(rootElement);
             engine.BeginTransaction();
         }
         public void Commit()
         {
             engine.CommitTransaction();
             committed = true;
-            throw new NotImplementedException();
         }
         public void Rollback()
         {
-            foreach (var change in changes)
+            var modelChanges = recorder.GetModelChanges().TraverseFlat();
+            recorder.Stop();
+
+            foreach (var change in modelChanges)
                 change.Undo();
             engine.RollbackTransaction();
         }
