@@ -1,9 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using NMF.Expressions;
 using NMF.Models.Evolution;
 
@@ -11,35 +6,33 @@ namespace NMF.Models
 {
     class NMFTransaction : IDisposable
     {
-        private bool committed = false;
-        private readonly ExecutionEngine engine = ExecutionEngine.Current;
-        private readonly ModelChangeRecorder recorder = new ModelChangeRecorder();
+        private bool _committed;
+        private readonly ExecutionEngine _engine = ExecutionEngine.Current;
+        private readonly ModelChangeRecorder _recorder = new ModelChangeRecorder();
 
         public NMFTransaction(IModelElement rootElement)
         {
-            recorder.Start(rootElement);
-            engine.BeginTransaction();
+            _recorder.Start(rootElement);
+            _engine.BeginTransaction();
         }
         public void Commit()
         {
-            engine.CommitTransaction();
-            committed = true;
+            _engine.CommitTransaction();
+            _committed = true;
         }
         public void Rollback()
         {
-            var modelChanges = recorder.GetModelChanges().TraverseFlat();
-            recorder.Stop();
+            var modelChanges = _recorder.GetModelChanges().TraverseFlat();
+            _recorder.Stop();
 
             foreach (var change in modelChanges)
                 change.Undo();
-            engine.RollbackTransaction();
+            _engine.RollbackTransaction();
         }
         public void Dispose()
         {
-            if (!committed)
-            {
+            if (!_committed)
                 Rollback();
-            }
         }
 
     }
