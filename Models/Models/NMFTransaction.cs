@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using NMF.Expressions;
+using NMF.Models.Evolution;
 
 namespace NMF.Models
 {
@@ -11,6 +13,7 @@ namespace NMF.Models
     {
         private bool committed = false;
         private readonly ExecutionEngine engine = ExecutionEngine.Current;
+        private Collection<IModelChange> changes = new Collection<IModelChange>();
 
         public NMFTransaction()
         {
@@ -24,8 +27,9 @@ namespace NMF.Models
         }
         public void Rollback()
         {
-            throw new NotImplementedException();
-            
+            foreach (var change in changes)
+                change.Undo();
+            engine.RollbackTransaction();
         }
         public void Dispose()
         {
