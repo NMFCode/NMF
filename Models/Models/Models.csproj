@@ -150,6 +150,7 @@
     <Compile Include="Repository\Serialization\ModelSerializer.cs" />
     <Compile Include="Repository\UnresolvedModelElementEventArgs.cs" />
     <Compile Include="ScopedIdentifier.cs" />
+    <Compile Include="NMFTransaction.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Collections\Collections\Collections.csproj">
