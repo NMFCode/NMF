@@ -38,6 +38,12 @@ namespace NMF.Models.Evolution
             parent?.GetType().GetProperty(PropertyName)?.SetValue(parent, newValue, null);
         }
 
+        public void Undo()
+        {
+            //TODO
+            throw new NotImplementedException();
+        }
+
         protected abstract T GetNewValue(IModelRepository repository);
     }
 
