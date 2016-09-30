@@ -52,7 +52,13 @@ namespace NMF.Models.Evolution
                 list.RemoveAt(i);
             }
         }
-        
+
+        public void Undo()
+        {
+            //TODO
+            throw new NotImplementedException();
+        }
+
         public override bool Equals(object obj)
         {
             if (ReferenceEquals(this, obj))

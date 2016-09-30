@@ -49,6 +49,12 @@ namespace NMF.Models.Evolution
             }
         }
 
+        public void Undo()
+        {
+            //TODO
+            throw new NotImplementedException();
+        }
+
         protected abstract List<T> GetNewElements(IModelRepository repository);
     }
 

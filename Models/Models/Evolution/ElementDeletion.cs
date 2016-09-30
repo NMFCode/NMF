@@ -28,6 +28,12 @@ namespace NMF.Models.Evolution
             element.Delete();
         }
 
+        public void Undo()
+        {
+            //TODO
+            throw new NotImplementedException();
+        }
+
         public override bool Equals(object obj)
         {
             if (ReferenceEquals(this, obj))

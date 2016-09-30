@@ -12,5 +12,7 @@ namespace NMF.Models.Evolution
         Uri AbsoluteUri { get; }
 
         void Apply(IModelRepository repository);
+
+        void Undo();
     }
 }
