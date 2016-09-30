@@ -14,7 +14,7 @@ namespace NMF.Expressions
     public abstract class ExecutionEngine
     {
         private readonly Collection<IChangeListener> changeListener = new Collection<IChangeListener>();
-
+        private static ExecutionEngine _current = new SequentialExecutionEngine();
         public bool TransactionActive { get; private set; }
 
         public void BeginTransaction()
@@ -102,7 +102,20 @@ namespace NMF.Expressions
         }
 
         protected abstract void Execute(List<INotifiable> nodes);
-        
-        public static ExecutionEngine Current { get; set; } = new SequentialExecutionEngine();
+
+        public static ExecutionEngine Current
+        {
+            get { return _current; }
+            set {
+                if (_current.TransactionActive)
+                {
+                    throw new Exception("Tried to change execution engine during transaction.");
+                }
+                else
+                {
+                    _current = value;
+                }
+            }
+        }
     }
 }
