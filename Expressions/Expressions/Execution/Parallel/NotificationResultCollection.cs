@@ -118,7 +118,7 @@ namespace NMF.Expressions
             }
         }
 
-        private class Enumerator : IEnumerator<INotificationResult>
+        private struct Enumerator : IEnumerator<INotificationResult>
         {
             private readonly NotificationResultCollection collection;
             private Entry currentEntry;
