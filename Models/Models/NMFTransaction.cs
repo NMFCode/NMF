@@ -12,6 +12,7 @@ namespace NMF.Models
 
         public NMFTransaction(IModelElement rootElement)
         {
+            if (rootElement == null) throw new ArgumentNullException(nameof(rootElement));
             _recorder.Start(rootElement);
             _engine.BeginTransaction();
         }
