@@ -48,6 +48,12 @@ namespace NMF.Expressions
             TransactionActive = false;
         }
 
+        public void RollbackTransaction()
+        {
+            changeListener.Clear();
+            TransactionActive = false;
+        }
+
         public void InvalidateNode(INotifiable node)
         {
             if (TransactionActive)
