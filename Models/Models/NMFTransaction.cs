@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using NMF.Expressions;
 using NMF.Models.Evolution;
 
@@ -23,7 +24,7 @@ namespace NMF.Models
         }
         public void Rollback()
         {
-            var modelChanges = _recorder.GetModelChanges().TraverseFlat();
+            var modelChanges = _recorder.GetModelChanges().TraverseFlat().Reverse();
             _recorder.Stop();
 
             foreach (var change in modelChanges)
