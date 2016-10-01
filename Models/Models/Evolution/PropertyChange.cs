@@ -62,7 +62,7 @@ namespace NMF.Models.Evolution
 
         public override void Undo(IModelRepository repository)
         {
-            //TODO set oldValue before
+            //TODO soll ich so auf die felder zugreifen oder anders?
             //var parent = repository.Resolve(AbsoluteUri);
             //parent?.GetType().GetProperty(PropertyName)?.SetValue(parent, _oldValue, null);
             throw new NotImplementedException();
@@ -97,6 +97,9 @@ namespace NMF.Models.Evolution
     [XmlConstructor(3)]
     public class PropertyChangeReference<T> : PropertyChangeBase<T> where T : class, IModelElement
     {
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        private Uri _oldUri; //Can I just use the AbsoluteUri-Property or does that get overwritten?
+
         [XmlConstructorParameter(2)]
         [XmlAttribute(true)]
         public Uri ReferenceUri { get; set; }
@@ -105,6 +108,14 @@ namespace NMF.Models.Evolution
             : base(absoluteUri, propertyName)
         {
             ReferenceUri = referenceUri;
+            _oldUri = absoluteUri;
+        }
+
+        public override void Undo(IModelRepository repository)
+        {
+            //var parent = repository.Resolve(AbsoluteUri);
+            //parent?.GetType().GetProperty(PropertyName)?.SetValue(parent, _oldUri, null);
+            throw new NotImplementedException(); //TODO
         }
 
         protected override T GetNewValue(IModelRepository repository)
