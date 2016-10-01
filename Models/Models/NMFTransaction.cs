@@ -3,6 +3,7 @@ using System.Linq;
 using System.Transactions;
 using NMF.Expressions;
 using NMF.Models.Evolution;
+using NMF.Models.Repository;
 
 namespace NMF.Models
 {
@@ -11,11 +12,13 @@ namespace NMF.Models
         private bool _committed;
         private readonly ExecutionEngine _engine = ExecutionEngine.Current;
         private readonly ModelChangeRecorder _recorder = new ModelChangeRecorder();
+        private IModelRepository _repository;
         //private TransactionScope _scope;
 
         public NMFTransaction(IModelElement rootElement)
         {
             if (rootElement == null) throw new ArgumentNullException(nameof(rootElement));
+            _repository = rootElement.Model.Repository;
             _recorder.Start(rootElement);
             //_scope = new TransactionScope();
             _engine.BeginTransaction();
@@ -33,7 +36,7 @@ namespace NMF.Models
             _recorder.Stop();
 
             foreach (var change in modelChanges)
-                change.Undo();
+                change.Undo(_repository);
             _engine.RollbackTransaction();
         }
         public void Dispose()

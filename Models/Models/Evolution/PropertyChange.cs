@@ -38,11 +38,7 @@ namespace NMF.Models.Evolution
             parent?.GetType().GetProperty(PropertyName)?.SetValue(parent, newValue, null);
         }
 
-        public void Undo()
-        {
-            //TODO
-            throw new NotImplementedException();
-        }
+        public abstract void Undo(IModelRepository repository);
 
         protected abstract T GetNewValue(IModelRepository repository);
     }
@@ -50,15 +46,26 @@ namespace NMF.Models.Evolution
     [XmlConstructor(2)]
     public class PropertyChangeAttribute<T> : PropertyChangeBase<T>
     {
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        private T _oldValue;
         public T NewValue { get; set; }
 
         [EditorBrowsable(EditorBrowsableState.Never)]
         public PropertyChangeAttribute(Uri absoluteUri, string propertyName) : base(absoluteUri, propertyName) { }
         
-        public PropertyChangeAttribute(Uri absoluteUri, string propertyName, T newValue)
+        public PropertyChangeAttribute(Uri absoluteUri, string propertyName, T oldValue, T newValue)
             : base(absoluteUri, propertyName)
         {
+            _oldValue = oldValue;
             NewValue = newValue;
+        }
+
+        public override void Undo(IModelRepository repository)
+        {
+            //TODO set oldValue before
+            //var parent = repository.Resolve(AbsoluteUri);
+            //parent?.GetType().GetProperty(PropertyName)?.SetValue(parent, _oldValue, null);
+            throw new NotImplementedException();
         }
 
         protected override T GetNewValue(IModelRepository repository)
