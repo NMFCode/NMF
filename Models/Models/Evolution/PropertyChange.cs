@@ -97,7 +97,7 @@ namespace NMF.Models.Evolution
     public class PropertyChangeReference<T> : PropertyChangeBase<T> where T : class, IModelElement
     {
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        private Uri _oldUri; //Can I just use the AbsoluteUri-Property or does that get overwritten?
+        private readonly Uri _oldUri; //TODO Can I just use the AbsoluteUri-Property or does that get overwritten?
 
         [XmlConstructorParameter(2)]
         [XmlAttribute(true)]
