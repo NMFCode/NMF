@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -41,10 +42,12 @@ namespace NMF.Models.Evolution
             SourceChange.Apply(repository);
         }
 
-        public void Undo()
+        public void Invert(IModelRepository repository)
         {
-            //TODO
-            throw new NotImplementedException();
+            //assumes nestedchanges is ordered like a flattened tree of changes
+            for (var i = NestedChanges.Count; i >= 0; i--)
+                NestedChanges[i].Invert(repository);
+            SourceChange.Invert(repository);
         }
 
         public override bool Equals(object obj)
