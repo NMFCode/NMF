@@ -1,10 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+using System.ComponentModel;
 using NMF.Models.Repository;
 using NMF.Serialization;
-using System.ComponentModel;
 
 namespace NMF.Models.Evolution
 {
@@ -39,6 +36,7 @@ namespace NMF.Models.Evolution
 
         public void Invert(IModelRepository repository)
         {
+            //TODO hängt momentan von modelelement.delete ab
             _deletedElement.Parent = _deletedElementParent;
         }
 
@@ -47,10 +45,7 @@ namespace NMF.Models.Evolution
             if (ReferenceEquals(this, obj))
                 return true;
             var other = obj as ElementDeletion;
-            if (other == null)
-                return false;
-            else
-                return this.AbsoluteUri.Equals(other.AbsoluteUri);
+            return other != null && AbsoluteUri.Equals(other.AbsoluteUri);
         }
 
         public override int GetHashCode()
