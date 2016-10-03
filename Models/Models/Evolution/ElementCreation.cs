@@ -30,10 +30,9 @@ namespace NMF.Models.Evolution
             //NMF does this automatically when adding a new element to a parent
         }
 
-        public void Undo()
+        public void Invert(IModelRepository repository)
         {
-            //TODO
-            throw new NotImplementedException();
+            repository.Resolve(AbsoluteUri).Delete();
         }
 
         public override bool Equals(object obj)
