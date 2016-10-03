@@ -1,11 +1,7 @@
-﻿using NMF.Models.Repository;
-using NMF.Serialization;
-using System;
-using System.Collections.Generic;
+﻿using System;
 using System.ComponentModel;
-using System.Linq;
-using System.Reflection;
-using System.Text;
+using NMF.Models.Repository;
+using NMF.Serialization;
 
 namespace NMF.Models.Evolution
 {
@@ -38,16 +34,23 @@ namespace NMF.Models.Evolution
             parent?.GetType().GetProperty(PropertyName)?.SetValue(parent, newValue, null);
         }
 
-        public abstract void Undo(IModelRepository repository);
+        public void Invert(IModelRepository repository)
+        {
+            var parent = repository.Resolve(AbsoluteUri);
+            var oldValue = GetOldValue(repository);
+            parent?.GetType().GetProperty(PropertyName)?.SetValue(parent, oldValue, null);
+        }
 
         protected abstract T GetNewValue(IModelRepository repository);
+
+        protected abstract T GetOldValue(IModelRepository repository);
     }
 
     [XmlConstructor(2)]
     public class PropertyChangeAttribute<T> : PropertyChangeBase<T>
     {
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        private T _oldValue;
+        private readonly T _oldValue;
         public T NewValue { get; set; }
 
         [EditorBrowsable(EditorBrowsableState.Never)]
@@ -60,17 +63,14 @@ namespace NMF.Models.Evolution
             NewValue = newValue;
         }
 
-        public override void Undo(IModelRepository repository)
-        {
-            //TODO soll ich so auf die felder zugreifen oder anders?
-            //var parent = repository.Resolve(AbsoluteUri);
-            //parent?.GetType().GetProperty(PropertyName)?.SetValue(parent, _oldValue, null);
-            throw new NotImplementedException();
-        }
-
         protected override T GetNewValue(IModelRepository repository)
         {
             return NewValue;
+        }
+
+        protected override T GetOldValue(IModelRepository repository)
+        {
+            return _oldValue;
         }
 
         public override bool Equals(object obj)
@@ -80,10 +80,9 @@ namespace NMF.Models.Evolution
             var other = obj as PropertyChangeAttribute<T>;
             if (other == null)
                 return false;
-            else
-                return Equals(this.AbsoluteUri, other.AbsoluteUri)
-                    && Equals(this.PropertyName, other.PropertyName)
-                    && Equals(this.NewValue, other.NewValue);
+            return Equals(AbsoluteUri, other.AbsoluteUri)
+                   && Equals(PropertyName, other.PropertyName)
+                   && Equals(NewValue, other.NewValue);
         }
 
         public override int GetHashCode()
@@ -111,18 +110,18 @@ namespace NMF.Models.Evolution
             _oldUri = absoluteUri;
         }
 
-        public override void Undo(IModelRepository repository)
-        {
-            //var parent = repository.Resolve(AbsoluteUri);
-            //parent?.GetType().GetProperty(PropertyName)?.SetValue(parent, _oldUri, null);
-            throw new NotImplementedException(); //TODO
-        }
-
         protected override T GetNewValue(IModelRepository repository)
         {
             if (ReferenceUri == null)
                 return null;
             return (T)repository.Resolve(ReferenceUri);
+        }
+
+        protected override T GetOldValue(IModelRepository repository)
+        {
+            if (_oldUri == null)
+                return null;
+            return (T) repository.Resolve(_oldUri);
         }
 
         public override bool Equals(object obj)
@@ -132,10 +131,9 @@ namespace NMF.Models.Evolution
             var other = obj as PropertyChangeReference<T>;
             if (other == null)
                 return false;
-            else
-                return Equals(this.AbsoluteUri, other.AbsoluteUri)
-                    && Equals(this.PropertyName, other.PropertyName)
-                    && Equals(this.ReferenceUri, other.ReferenceUri);
+            return Equals(AbsoluteUri, other.AbsoluteUri)
+                   && Equals(PropertyName, other.PropertyName)
+                   && Equals(ReferenceUri, other.ReferenceUri);
         }
 
         public override int GetHashCode()
