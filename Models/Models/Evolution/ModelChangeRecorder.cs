@@ -149,7 +149,7 @@ namespace NMF.Models.Evolution
                 case ChangeType.ModelElementCreated:
                     return new ElementCreation(e.Element);
                 case ChangeType.ModelElementDeleted:
-                    return new ElementDeletion(e.AbsoluteUri);
+                    return new ElementDeletion(e.AbsoluteUri, e.Element);
                 case ChangeType.PropertyChanged:
                     var valueChangeArgs = (ValueChangedEventArgs)e.OriginalEventArgs;
                     return CreatePropertyChange(e.Element, e.AbsoluteUri, e.PropertyName, valueChangeArgs.NewValue, e.ChildrenUris == null ? null : e.ChildrenUris.First());
