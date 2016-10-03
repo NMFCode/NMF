@@ -13,6 +13,6 @@ namespace NMF.Models.Evolution
 
         void Apply(IModelRepository repository);
 
-        void Undo(IModelRepository repository);
+        void Invert(IModelRepository repository);
     }
 }
