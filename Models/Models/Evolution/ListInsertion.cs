@@ -49,10 +49,15 @@ namespace NMF.Models.Evolution
             }
         }
 
-        public void Undo()
+        public void Invert(IModelRepository repository)
         {
-            //TODO
-            throw new NotImplementedException();
+            var parent = repository.Resolve(AbsoluteUri);
+            var property = parent.GetType().GetProperty(CollectionPropertyName);
+            var list = property.GetValue(parent, null) as IList<T>;
+            var newElements = GetNewElements(repository);
+
+            foreach (var element in newElements)
+                list?.Remove(element);
         }
 
         protected abstract List<T> GetNewElements(IModelRepository repository);
