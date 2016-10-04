@@ -228,6 +228,10 @@ namespace NMF.Models.Evolution
 
         private static Type GetCollectionItemType(Type collectionType)
         {
+            if (collectionType.IsInterface && collectionType.IsGenericType && collectionType.GetGenericTypeDefinition() == typeof(ICollection<>))
+            {
+                return collectionType.GetGenericArguments()[0];
+            }
             if (collectionType.IsArray)
                 return collectionType.GetElementType();
             else

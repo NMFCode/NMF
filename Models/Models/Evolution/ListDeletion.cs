@@ -75,7 +75,7 @@ namespace NMF.Models.Evolution
             }
             else
             {
-                property.SetValue(_oldItems, null);
+                throw new InvalidOperationException();
             }
         }
 
