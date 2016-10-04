@@ -120,8 +120,19 @@ namespace NMF.Models.Meta
 
                 onItemDeleted.Parameters.Add(new CodeParameterDeclarationExpression(typeof(object), "sender"));
                 onItemDeleted.Parameters.Add(new CodeParameterDeclarationExpression(eventType, "e"));
-                onItemDeleted.Statements.Add(new CodeMethodInvokeExpression(
-                    thisRef, "Remove", new CodeCastExpression(elementTypeReference, new CodeArgumentReferenceExpression("sender"))));
+                var actualRemove = new CodeMethodInvokeExpression(
+                    thisRef, "Remove", new CodeCastExpression(elementTypeReference, new CodeArgumentReferenceExpression("sender")));
+                if (input.IsContainment)
+                {
+                    var newValue = new CodePropertyReferenceExpression(new CodeArgumentReferenceExpression("e"), "NewValue");
+                    var parentRef = new CodePropertyReferenceExpression(thisRef, "Parent");
+                    onItemDeleted.Statements.Add(new CodeConditionStatement(new CodeBinaryOperatorExpression(newValue, CodeBinaryOperatorType.IdentityInequality, parentRef),
+                        new CodeExpressionStatement(actualRemove)));
+                }
+                else
+                {
+                    onItemDeleted.Statements.Add(actualRemove);
+                }
                 output.Members.Add(onItemDeleted);
 
                 ifNotNull.TrueStatements.Add(new CodeAttachEventStatement(item, eventName, new CodeMethodReferenceExpression(thisRef, onItemDeleted.Name)));
