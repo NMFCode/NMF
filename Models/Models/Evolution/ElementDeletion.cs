@@ -36,8 +36,7 @@ namespace NMF.Models.Evolution
 
         public void Invert(IModelRepository repository)
         {
-            //TODO hängt momentan von modelelement.delete ab
-            _deletedElement.Parent = _deletedElementParent;
+            //Is done automatically by NMF
         }
 
         public override bool Equals(object obj)

@@ -32,7 +32,7 @@ namespace NMF.Models.Evolution
 
         public void Invert(IModelRepository repository)
         {
-            repository.Resolve(AbsoluteUri).Delete();
+            //Is done automatically by NMF
         }
 
         public override bool Equals(object obj)
