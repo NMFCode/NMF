@@ -32,8 +32,9 @@ namespace NMF.Models
         }
         public void Rollback()
         {
-            var modelChanges = _recorder.GetModelChanges().TraverseFlat().Reverse();
+            var modelChanges = _recorder.GetModelChanges().Changes;
             _recorder.Stop();
+            modelChanges.Reverse();
 
             foreach (var change in modelChanges)
                 change.Invert(_repository);
