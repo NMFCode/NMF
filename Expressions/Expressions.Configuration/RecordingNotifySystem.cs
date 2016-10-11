@@ -26,11 +26,8 @@ namespace NMF.Expressions
         {
             yield return IncrementalizationStrategy.InstructionLevel;
             yield return IncrementalizationStrategy.ListenRepositoryChanges;
-            if (parameters.All(par => typeof(IModelElement).IsAssignableFrom(par.Type)))
-            {
-                yield return IncrementalizationStrategy.ArgumentPromotion;
-                yield return IncrementalizationStrategy.UseAugmentation;
-            }
+            yield return IncrementalizationStrategy.ArgumentPromotion;
+            yield return IncrementalizationStrategy.UseAugmentation;
         }
 
         public INotifyExpression CreateExpression(Expression expression, IEnumerable<ParameterExpression> parameters, IDictionary<string, object> parameterMappings)
