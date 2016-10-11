@@ -14,6 +14,7 @@ namespace NMF.Models.Repository
     public class ModelRepository : IModelRepository
     {
         private ModelRepositoryModelCollection models;
+        private EventHandler<BubbledChangeEventArgs> bubbledChange;
 
         /// <summary>
         /// Gets the parent model repository.
@@ -241,14 +242,36 @@ namespace NMF.Models.Repository
 
         protected virtual void OnBubbledChange(BubbledChangeEventArgs e)
         {
-            var handler = BubbledChange;
-            if (handler != null)
-            {
-                handler(this, e);
-            }
+            bubbledChange?.Invoke(this, e);
         }
 
-        public event EventHandler<BubbledChangeEventArgs> BubbledChange;
+        public event EventHandler<BubbledChangeEventArgs> BubbledChange
+        {
+            add
+            {
+                var isAttached = bubbledChange != null;
+                bubbledChange += value;
+                if (!isAttached && (bubbledChange != null))
+                {
+                    foreach (var model in Models.Values)
+                    {
+                        model.RequestBubbledChanges();
+                    }
+                }
+            }
+            remove
+            {
+                var isAttached = bubbledChange != null;
+                bubbledChange -= value;
+                if (isAttached && (bubbledChange == null))
+                {
+                    foreach (var model in Models.Values)
+                    {
+                        model.UnregisterBubbledChangeRequest();
+                    }
+                }
+            }
+        }
 
         /// <summary>
         /// Gets a dictionary of the models loaded to this repository
@@ -265,6 +288,11 @@ namespace NMF.Models.Repository
             public override void Add(Uri key, Model value)
             {
                 base.Add(key, value);
+                var repository = (ModelRepository)Repository;
+                if (repository.bubbledChange != null)
+                {
+                    value.RequestBubbledChanges();
+                }
                 value.BubbledChange += ModelBubbledChange;
             }
 

@@ -26,6 +26,8 @@ namespace NMF.Models
         private IModelElement parent;
         private ObservableList<ModelElementExtension> extensions;
         private bool deleting = false;
+        private bool raiseBubbledChanges;
+        private EventHandler<BubbledChangeEventArgs> bubbledChange;
 
         /// <summary>
         /// Gets the model that contains the current model element
@@ -48,6 +50,42 @@ namespace NMF.Models
                     }
                 }
                 return null;
+            }
+        }
+
+
+        internal void RequestBubbledChanges()
+        {
+            if (!raiseBubbledChanges)
+            {
+                raiseBubbledChanges = true;
+                foreach (var child in Children)
+                {
+                    var childME = child as ModelElement;
+                    if (childME != null)
+                    {
+                        childME.RequestBubbledChanges();
+                    }
+                }
+            }
+        }
+
+        internal void UnregisterBubbledChangeRequest()
+        {
+            if (raiseBubbledChanges)
+            {
+                raiseBubbledChanges = false;
+                if (bubbledChange == null)
+                {
+                    foreach (var child in Children)
+                    {
+                        var childME = child as ModelElement;
+                        if (childME != null)
+                        {
+                            childME.UnregisterBubbledChangeRequest();
+                        }
+                    }
+                }
             }
         }
 
@@ -80,7 +118,19 @@ namespace NMF.Models
                     var newParentME = newParent as ModelElement;
                     if (newParentME != null)
                     {
+                        if (newParentME.raiseBubbledChanges || newParentME.bubbledChange != null)
+                        {
+                            RequestBubbledChanges();
+                        }
+                        else if (bubbledChange == null)
+                        {
+                            UnregisterBubbledChangeRequest();
+                        }
                         newParentME.OnChildCreated(this);
+                    }
+                    else if (bubbledChange == null)
+                    {
+                        UnregisterBubbledChangeRequest();
                     }
                     if (newModel != oldModel)
                     {
@@ -91,6 +141,11 @@ namespace NMF.Models
                 {
                     var oldModel = oldParent.Model;
                     oldParent.Deleted -= CascadeDelete;
+
+                    if (bubbledChange == null)
+                    {
+                        UnregisterBubbledChangeRequest();
+                    }
 
                     if (oldModel != null)
                     {
@@ -805,22 +860,35 @@ namespace NMF.Models
         /// <param name="e">The event data</param>
         protected virtual void OnBubbledChange(BubbledChangeEventArgs e)
         {
-            var handler = BubbledChange;
-            if (handler != null)
+            bubbledChange?.Invoke(this, e);
+            if (raiseBubbledChanges)
             {
-                handler(this, e);
-            }
-            var parent = Parent as ModelElement;
-            if (parent != null)
-            {
-                parent.OnBubbledChange(e);
+                var parent = Parent as ModelElement;
+                if (parent != null)
+                {
+                    parent.OnBubbledChange(e);
+                }
             }
         }
 
         /// <summary>
         /// Is fired when an element in the below containment hierarchy has changed
         /// </summary>
-        public event EventHandler<BubbledChangeEventArgs> BubbledChange;
+        public event EventHandler<BubbledChangeEventArgs> BubbledChange
+        {
+            add
+            {
+                var isAttached = bubbledChange != null;
+                bubbledChange += value;
+                if (!isAttached && (bubbledChange != null)) RequestBubbledChanges();
+            }
+            remove
+            {
+                var isAttached = bubbledChange != null;
+                bubbledChange -= value;
+                if (isAttached && bubbledChange == null) UnregisterBubbledChangeRequest();
+            }
+        }
 
         /// <summary>
         /// Gets fired when the container of the current model element has changed
