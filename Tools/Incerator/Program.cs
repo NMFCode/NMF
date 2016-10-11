@@ -157,8 +157,8 @@ namespace NMF.Incerator
                 case OptimizationAlgorithm.Full:
                     measurements = PerformFullExploration(baseConfiguration, benchmark);
                     break;
-                case OptimizationAlgorithm.NSGAII:
-                    measurements = PerformGeneticAlgorithm(baseConfiguration, benchmark);
+                case OptimizationAlgorithm.Genetic:
+                    measurements = PerformGeneticAlgorithm(baseConfiguration, benchmark, options);
                     break;
                 default:
                     throw new ArgumentOutOfRangeException("options", "The chosen method is not supported");
@@ -213,12 +213,10 @@ namespace NMF.Incerator
             }
         }
 
-        private static IList<MeasuredConfiguration<Configuration>> PerformGeneticAlgorithm(Configuration baseConfiguration, IBenchmark<Configuration> benchmark)
+        private static IList<MeasuredConfiguration<Configuration>> PerformGeneticAlgorithm(Configuration baseConfiguration, IBenchmark<Configuration> benchmark, InceratorConfiguration configuration)
         {
-            return new List<MeasuredConfiguration<Configuration>>()
-            {
-                new MeasuredConfiguration<Configuration>(baseConfiguration, benchmark.MeasureConfiguration(baseConfiguration))
-            };
+            var geneticSearch = new GeneticOptimization(benchmark, baseConfiguration);
+            return geneticSearch.Optimize(configuration.Generations, configuration.PopulationSize).ToList();
         }
 
         private static IList<MeasuredConfiguration<Configuration>> PerformFullExploration(Configuration baseConfiguration, IBenchmark<Configuration> repBenchmark)

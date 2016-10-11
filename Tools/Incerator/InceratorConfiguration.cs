@@ -15,6 +15,8 @@ namespace NMF.Incerator
             Method = OptimizationAlgorithm.Full;
             Repetitions = 5;
             Mode = OperationMode.Record;
+            PopulationSize = 30;
+            Generations = 100;
         }
 
         [Option('c', "configuration", HelpText = "The change configuration", Required = true)]
@@ -35,6 +37,12 @@ namespace NMF.Incerator
         [Option('b', "benchmark", HelpText = "The assembly-qualified name of a benchmark class. The assembly may be specified in a relative path. If not provided, a default benchmark implementation is chosen.", Required = false)]
         public string Benchmark { get; set; }
 
+        [Option('p', "populationSize", HelpText = "If run with genetic algorithm, determines the population size", Required = false, DefaultValue = 20)]
+        public int PopulationSize { get; set; }
+
+        [Option('g', "generations", HelpText = "If run with genetic algorithm, determines the maximum generation count", Required = false, DefaultValue = 10)]
+        public int Generations { get; set; }
+
         [ValueOption(0)]
         public OperationMode Mode { get; set; }
 
@@ -54,6 +62,6 @@ namespace NMF.Incerator
     public enum OptimizationAlgorithm
     {
         Full = 0,
-        NSGAII
+        Genetic
     }
 }

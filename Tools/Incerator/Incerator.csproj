@@ -42,12 +42,17 @@
       <HintPath>..\..\packages\CommandLineParser.1.9.71\lib\net40\CommandLine.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="GAF, Version=2.2.5.40527, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\GAF.2.2.5\lib\net40\GAF.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="GeneticOptimization.cs" />
     <Compile Include="InceratorConfiguration.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
