@@ -459,6 +459,77 @@ namespace NMF.Expressions
             return node;
         }
 
+        protected override Expression VisitNew(NewExpression node)
+        {
+            var state = SaveState();
+            var method = node.Constructor;
+            var methodParameters = method.GetParameters();
+            var changed = false;
+            var arguments = new Expression[node.Arguments.Count];
+            var propertyAccessArray = new LooselyLinkedListNode<PropertyChainNode>[node.Arguments.Count];
+            var ghostAccessArray = new LooselyLinkedListNode<PropertyChainNode>[node.Arguments.Count];
+            for (int i = 0; i < node.Arguments.Count; i++)
+            {
+                var arg = node.Arguments[i];
+                var argument = Visit(arg);
+                arguments[i] = argument;
+                changed |= argument != arg;
+                propertyAccessArray[i] = propertyAccesses.First.Next;
+                propertyAccesses.Clear();
+            }
+            var defaultList = Enumerable.Range(0, node.Arguments.Count).ToList();
+            for (int i = 0; i < node.Arguments.Count; i++)
+            {
+                if (propertyAccessArray[i] == null) continue;
+                defaultList[i] = -2;
+                var lambda = FindLambdaExpression(node.Arguments[i]);
+                if (lambda != null)
+                {
+                    for (int j = 0; j < lambda.Parameters.Count; j++)
+                    {
+                        var parameter = lambda.Parameters[j];
+                        var dependencies = defaultList;
+                        var dummy = LooselyLinkedListNode<PropertyChainNode>.CreateDummyFor(propertyAccessArray[i]);
+                        var ghostDummy = LooselyLinkedListNode<PropertyChainNode>.CreateDummyFor(ghostAccessArray[i]);
+                        var current = dummy;
+                        var currentGhost = ghostDummy;
+                        while (current.Next != null)
+                        {
+                            if (current.Next.Value.Parameter == parameter)
+                            {
+                                var access = current.Next.Value;
+                                current.CutNext();
+                                foreach (var dependency in dependencies)
+                                {
+                                    if (dependency == -2) continue;
+                                    PropagatePropertyAccesses(propertyAccessArray, null, ref current, ref currentGhost, access, dependency);
+                                    PropagatePropertyAccesses(ghostAccessArray, null, ref current, ref currentGhost, access, dependency);
+                                }
+                            }
+                            else
+                            {
+                                current = current.Next;
+                            }
+                        }
+                        propertyAccessArray[i] = dummy.Next;
+                    }
+                }
+                defaultList[i] = i;
+            }
+            for (int i = node.Arguments.Count - 1; i >= 0; i--)
+            {
+                if (propertyAccessArray[i] != null)
+                {
+                    propertyAccesses.AddFirst(propertyAccessArray[i]);
+                }
+            }
+            if (changed)
+            {
+                return node.Update(arguments);
+            }
+            return node;
+        }
+
         private void PropagatePropertyAccesses(LooselyLinkedListNode<PropertyChainNode>[] propertyAccessArray, LooselyLinkedListNode<PropertyChainNode> objectPropertyAccesses, ref LooselyLinkedListNode<PropertyChainNode> current, ref LooselyLinkedListNode<PropertyChainNode> currentGhost, PropertyChainNode access, int dependency)
         {
             LooselyLinkedListNode<PropertyChainNode> dependentParameters;

@@ -147,7 +147,7 @@ namespace NMF.Expressions
                     count++;
                     current = current.Base as PropertyAccess;
                 }
-                if (!parameterInfo.NeedsContainment && count > 1)
+                if (!parameterInfo.NeedsContainment && (count > 1 || !typeof(IModelElement).IsAssignableFrom(access.Property.PropertyType)))
                 {
                     parameterInfo.NeedsContainment = true;
                     dict[access.Parameter] = parameterInfo;
