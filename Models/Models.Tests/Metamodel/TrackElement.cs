@@ -146,6 +146,7 @@ namespace NMF.Models.Tests.Railway
             ValueChangedEventArgs e = new ValueChangedEventArgs(oldSensor, newSensor);
             this.OnSensorChanged(e);
             this.OnPropertyChanged("Sensor", e);
+            base.OnParentChanged(newParent, oldParent);
         }
         
         /// <summary>

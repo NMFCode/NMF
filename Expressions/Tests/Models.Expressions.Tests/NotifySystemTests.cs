@@ -6,6 +6,7 @@ using NMF.Models.Tests.Railway;
 using System;
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.Linq;
 using System.Text;
 
@@ -283,7 +284,7 @@ namespace NMF.Expressions.Tests
         }
 
         [TestMethod]
-        public void NotifySystem_SwitchSet()
+        public void NotifySystem_SwitchSet_Full()
         {
             ObservingFunc<RailwayContainer, IEnumerableExpression<SwitchPosition>> func = new ObservingFunc<RailwayContainer, IEnumerableExpression<SwitchPosition>>(
                 rc =>
@@ -304,6 +305,33 @@ namespace NMF.Expressions.Tests
             var testCollection = test.Value.AsNotifiable();
             Assert.AreEqual(3, testCollection.Count());
             Assert.IsFalse(resultChanged);
+        }
+
+        [TestMethod]
+        public void NotifySystem_SwitchSet_Predicates()
+        {
+            var func = CreateExpression(from route in RailwayContainer.Routes
+                where route.Entry != null && route.Entry.Signal == Signal.GO
+                from swP in route.Follows.OfType<SwitchPosition>()
+                where swP.Switch.CurrentPosition != swP.Position
+                select swP);
+
+            var switchPosition = RailwayContainer.Routes[0].Follows.OfType<ISwitchPosition>().FirstOrDefault();
+            var test = func.AsNotifiable();
+            var resultChanged = false;
+            test.CollectionChanged += (o, e) =>
+            {
+                resultChanged = true;
+            };
+            
+            Assert.AreEqual(func.Count(), test.Count());
+            Assert.IsFalse(resultChanged);
+
+            var switchP = func.FirstOrDefault();
+            switchP.Switch.CurrentPosition = switchP.Position;
+
+            Assert.IsTrue(resultChanged);
+            Assert.AreEqual(func.Count(), test.Count());
         }
 
         [TestMethod]
@@ -329,6 +357,61 @@ namespace NMF.Expressions.Tests
             var testCollection = test.Value.AsNotifiable();
             Assert.AreEqual(0, testCollection.Count());
             Assert.IsFalse(resultChanged);
+        }
+
+        [TestMethod]
+        public void NotifySystem_RouteSensor()
+        {
+            var func = CreateExpression(from route in RailwayContainer.Invalids.OfType<Route>()
+                                        from swP in route.Follows.OfType<SwitchPosition>()
+                                        where swP.Switch.Sensor != null && !route.DefinedBy.Contains(swP.Switch.Sensor)
+                                        select new { Route = route, Sensor = swP.Switch.Sensor, SwitchPos = swP });
+
+            var first = func.FirstOrDefault();
+            var incremental = func.AsNotifiable();
+            var changed = false;
+            incremental.CollectionChanged += (o, e) =>
+            {
+                changed = true;
+            };
+
+            Assert.IsFalse(changed);
+            Assert.AreEqual(func.Count(), incremental.Count());
+
+            first.Route.DefinedBy.Add(first.Sensor);
+
+            Assert.IsTrue(changed);
+            Assert.AreEqual(func.Count(), incremental.Count());
+        }
+
+        [TestMethod]
+        public void NotifySystem_SwitchSensor()
+        {
+            var func = CreateExpression(RailwayContainer.Descendants().OfType<Switch>().Where(sw => sw.Sensor == null));
+
+            var first = func.FirstOrDefault();
+            var incremental = func.AsNotifiable();
+            var changed = false;
+            incremental.CollectionChanged += (o, e) =>
+            {
+                changed = true;
+                Assert.AreEqual(NotifyCollectionChangedAction.Remove, e.Action);
+                Assert.AreEqual(1, e.OldItems.Count);
+                Assert.AreEqual(first, e.OldItems[0]);
+            };
+
+            Assert.IsFalse(changed);
+            Assert.AreEqual(func.Count(), incremental.Count());
+
+            first.Sensor = new Sensor();
+
+            Assert.IsTrue(changed);
+            Assert.AreEqual(func.Count(), incremental.Count());
+        }
+
+        private IEnumerableExpression<T> CreateExpression<T>(IEnumerableExpression<T> value)
+        {
+            return value;
         }
     }
 }

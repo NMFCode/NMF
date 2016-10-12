@@ -76,7 +76,7 @@ namespace NMF.Expressions.Tests
         [TestMethod]
         public void RecordingNotifySystem_SwitchSet()
         {
-            inner.NotifySystem_SwitchSet();
+            inner.NotifySystem_SwitchSet_Full();
             Assert.AreEqual(6, recorder.Configuration.MethodConfigurations.Count);
         }
 
