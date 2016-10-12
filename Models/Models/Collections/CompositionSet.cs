@@ -56,8 +56,11 @@ namespace NMF.Models.Collections
 
         private void RemoveItem(object sender, ValueChangedEventArgs e)
         {
-            var item = sender as T;
-            base.Remove(item);
+            if (e.NewValue != Parent)
+            {
+                var item = sender as T;
+                base.Remove(item);
+            }
         }
     }
 
@@ -108,8 +111,11 @@ namespace NMF.Models.Collections
 
         private void RemoveItem(object sender, ValueChangedEventArgs e)
         {
-            var item = sender as T;
-            base.Remove(item);
+            if (e.NewValue != Parent)
+            {
+                var item = sender as T;
+                base.Remove(item);
+            }
         }
     }
 }
