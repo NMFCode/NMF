@@ -21,7 +21,7 @@ namespace NMF.Expressions.Linq
         
         public TKey Key { get { return key; } }
 
-        public ISuccessorList Successors { get; } = new DummySuccessorList();
+        public ISuccessorList Successors { get; } = SingletonSuccessorList.Instance;
 
         public IEnumerable<INotifiable> Dependencies { get { return Enumerable.Empty<INotifiable>(); } }
 
@@ -43,36 +43,5 @@ namespace NMF.Expressions.Linq
         }
 
         public void Dispose() { }
-
-        private class DummySuccessorList : ISuccessorList
-        {
-            INotifiable ISuccessorList.this[int index] { get { return null; } }
-
-            bool ISuccessorList.HasSuccessors { get { return false; } }
-
-            bool ISuccessorList.IsAttached { get { return false; } }
-
-            event EventHandler ISuccessorList.Attached { add { } remove { } }
-
-            event EventHandler ISuccessorList.Detached { add { } remove { } }
-
-            IEnumerator<INotifiable> IEnumerable<INotifiable>.GetEnumerator()
-            {
-                yield break;
-            }
-
-            IEnumerator IEnumerable.GetEnumerator()
-            {
-                yield break;
-            }
-
-            void ISuccessorList.Set(INotifiable node) { }
-
-            void ISuccessorList.SetDummy() { }
-
-            void ISuccessorList.Unset(INotifiable node, bool leaveDummy) { }
-
-            void ISuccessorList.UnsetAll() { }
-        }
     }
 }

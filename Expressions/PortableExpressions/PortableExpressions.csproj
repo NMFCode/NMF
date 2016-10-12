@@ -422,6 +422,9 @@
     <Compile Include="..\Expressions\Public\SingleSuccessorList.cs">
       <Link>Facade\SingleSuccessorList.cs</Link>
     </Compile>
+    <Compile Include="..\Expressions\Public\SingletonSuccessorList.cs">
+      <Link>Facade\SingletonSuccessorList.cs</Link>
+    </Compile>
     <Compile Include="..\Expressions\Public\ValueChangedEventArgs.cs">
       <Link>Facade\ValueChangedEventArgs.cs</Link>
     </Compile>
@@ -455,8 +458,8 @@
     <Compile Include="..\Expressions\Execution\ValueChangedNotificationResult.cs">
       <Link>Execution\ValueChangedNotificationResult.cs</Link>
     </Compile>
-    <Compile Include="..\Expressions\Execution\Parallel\NotificationResultCollection.cs">
-      <Link>Execution\Parallel\NotificationResultCollection.cs</Link>
+    <Compile Include="..\Expressions\Execution\NotificationResultCollection.cs">
+      <Link>Execution\NotificationResultCollection.cs</Link>
     </Compile>
     <Compile Include="..\Expressions\Execution\Parallel\ParallelArrayExecutionEngine.cs">
       <Link>Execution\Parallel\ParallelArrayExecutionEngine.cs</Link>

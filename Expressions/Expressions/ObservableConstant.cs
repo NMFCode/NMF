@@ -28,7 +28,7 @@ namespace NMF.Expressions
 
         public override IEnumerable<INotifiable> Dependencies { get { return Enumerable.Empty<INotifiable>(); } }
 
-        public override ISuccessorList Successors { get; } = new DummySuccessorList();
+        public override ISuccessorList Successors { get; } = SingletonSuccessorList.Instance;
 
         public override INotifyExpression<T> ApplyParameters(IDictionary<string, object> parameters)
         {
@@ -48,37 +48,6 @@ namespace NMF.Expressions
         public override INotificationResult Notify(IList<INotificationResult> sources)
         {
             throw new InvalidOperationException("A constant cannot have a dependency and therefore cannot be notified of a dependency change.");
-        }
-
-        private class DummySuccessorList : ISuccessorList
-        {
-            INotifiable ISuccessorList.this[int index] { get { return null; } }
-
-            bool ISuccessorList.HasSuccessors { get { return false; } }
-
-            bool ISuccessorList.IsAttached { get { return false; } }
-
-            event EventHandler ISuccessorList.Attached { add { } remove { } }
-
-            event EventHandler ISuccessorList.Detached { add { } remove { } }
-
-            IEnumerator<INotifiable> IEnumerable<INotifiable>.GetEnumerator()
-            {
-                yield break;
-            }
-
-            IEnumerator IEnumerable.GetEnumerator()
-            {
-                yield break;
-            }
-
-            void ISuccessorList.Set(INotifiable node) { }
-
-            void ISuccessorList.SetDummy() { }
-
-            void ISuccessorList.Unset(INotifiable node, bool leaveDummy) { }
-
-            void ISuccessorList.UnsetAll() { }
         }
     }
 }

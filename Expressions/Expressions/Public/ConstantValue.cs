@@ -14,12 +14,10 @@ namespace NMF.Expressions
         }
 
         public IEnumerable<INotifiable> Dependencies { get { return Enumerable.Empty<INotifiable>(); } }
-
         
-
         public event EventHandler<ValueChangedEventArgs> ValueChanged { add { } remove { } }
 
-        public ISuccessorList Successors { get; } = NotifySystem.DefaultSystem.CreateSuccessorList();
+        public ISuccessorList Successors { get; } = SingletonSuccessorList.Instance;
 
         public ExecutionMetaData ExecutionMetaData { get; } = new ExecutionMetaData();
 
@@ -33,9 +31,6 @@ namespace NMF.Expressions
             throw new InvalidOperationException("A constant cannot have a dependency and therefore cannot be notified of a dependency change.");
         }
 
-        public void Dispose()
-        {
-            Successors.UnsetAll();
-        }
+        public void Dispose() { }
     }
 }
