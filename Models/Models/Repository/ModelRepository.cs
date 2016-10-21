@@ -253,10 +253,7 @@ namespace NMF.Models.Repository
                 bubbledChange += value;
                 if (!isAttached && (bubbledChange != null))
                 {
-                    foreach (var model in Models.Values)
-                    {
-                        model.RequestBubbledChanges();
-                    }
+                    models.RegisterChangeHandlers();
                 }
             }
             remove
@@ -265,10 +262,7 @@ namespace NMF.Models.Repository
                 bubbledChange -= value;
                 if (isAttached && (bubbledChange == null))
                 {
-                    foreach (var model in Models.Values)
-                    {
-                        model.UnregisterBubbledChangeRequest();
-                    }
+                    models.UnregisterChangeHandlers();
                 }
             }
         }
@@ -291,9 +285,24 @@ namespace NMF.Models.Repository
                 var repository = (ModelRepository)Repository;
                 if (repository.bubbledChange != null)
                 {
-                    value.RequestBubbledChanges();
+                    value.BubbledChange += ModelBubbledChange;
                 }
-                value.BubbledChange += ModelBubbledChange;
+            }
+
+            public void RegisterChangeHandlers()
+            {
+                foreach (var model in Values)
+                {
+                    model.BubbledChange += ModelBubbledChange;
+                }
+            }
+
+            public void UnregisterChangeHandlers()
+            {
+                foreach (var model in Values)
+                {
+                    model.BubbledChange -= ModelBubbledChange;
+                }
             }
 
             private void ModelBubbledChange(object sender, BubbledChangeEventArgs e)

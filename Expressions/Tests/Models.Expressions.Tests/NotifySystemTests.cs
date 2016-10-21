@@ -339,24 +339,32 @@ namespace NMF.Expressions.Tests
         {
             ObservingFunc<RailwayContainer, IEnumerableExpression<ISegment>> func = new ObservingFunc<RailwayContainer, IEnumerableExpression<ISegment>>(
                 rc =>
-                from seg in rc.Invalids.OfType<Segment>()
+                from seg in rc.Descendants().OfType<Segment>()
                 where seg.Length <= 0
                 select seg);
 
             var test = func.Observe(RailwayContainer);
             var resultChanged = false;
-            var expectedOld = true;
-            var expectedNew = false;
             test.ValueChanged += (o, e) =>
             {
                 resultChanged = true;
-                Assert.AreEqual(expectedOld, e.OldValue);
-                Assert.AreEqual(expectedNew, e.NewValue);
             };
 
             var testCollection = test.Value.AsNotifiable();
-            Assert.AreEqual(0, testCollection.Count());
+
+            testCollection.CollectionChanged += (o, e) =>
+            {
+                resultChanged = true;
+            };
+
+            Assert.AreEqual(43, testCollection.Count());
             Assert.IsFalse(resultChanged);
+
+            var first = test.Value.FirstOrDefault();
+            first.Length = -first.Length + 1;
+
+            Assert.AreEqual(42, testCollection.Count());
+            Assert.IsTrue(resultChanged);
         }
 
         [TestMethod]

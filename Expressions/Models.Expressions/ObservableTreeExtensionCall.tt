@@ -30,7 +30,7 @@ namespace NMF.Expressions
         public ObservableTreeExtensionCall(Func<<# for (int j = 1; j <= i; j++) { #>T<#= j #>, <# } #>TResult> function<# for (int j = 1; j <= i; j++) { #>, INotifyExpression<T<#= j #>> arg<#= j #>, IEnumerable<Type> anchors<#= j #>, ICollection<string> arg<#= j #>Properties<# } #>) : base(function<# for (int j = 1; j <= i; j++) { #>, arg<#= j #><# } #>)
         {
 <# for (int j = 1; j <= i; j++) { #>
-			if (anchors<#= j #> != null)
+			if (anchors<#= j #> != null && anchors<#= j #>.Any())
 			{
                 anchor<#= j #>Listener = anchors<#= j #>.Select(t => new BubbledChangeListener(null, t)).ToList();
 			}
@@ -43,9 +43,10 @@ namespace NMF.Expressions
 
         protected override void AttachCore()
         {
-            base.AttachCore();
             EventHandler<BubbledChangeEventArgs> handler = Listener_BubbledChange;
 <# for (int j = 1; j <= i; j++) { #>
+			Argument<#= j #>.Attach();
+			Argument<#= j #>.ValueChanged += Argument<#= j #>Changed;
 			if (anchor<#= j #>Listener != null)
 			{
                 foreach (var listener in anchor<#= j #>Listener)
@@ -55,8 +56,36 @@ namespace NMF.Expressions
                     listener.Attach();
                 }
 			}
+			else
+			{
+			    if (Argument<#= j #>.Value != null) Argument<#= j #>.Value.BubbledChange += handler;
+			}
 <# } #>
-        }
+        }		
+<# for (int j = 1; j <= i; j++) { #>
+
+		private void Argument<#= j #>Changed(object sender, ValueChangedEventArgs e)
+		{
+			var oldArg = (T<#= j #>)e.OldValue;
+			var newArg = (T<#= j #>)e.NewValue;
+            EventHandler<BubbledChangeEventArgs> handler = Listener_BubbledChange;
+
+			if (anchor<#= j #>Listener != null)
+			{
+				foreach (var listener in anchor<#= j #>Listener)
+				{
+					listener.Detach();
+					listener.Element = newArg;
+					listener.Attach();
+				}
+			}
+			else
+			{
+				if (oldArg != null) oldArg.BubbledChange -= handler;
+				if (newArg != null) newArg.BubbledChange += handler;
+			}
+		}
+<# } #>
 
         protected override void DetachCore()
         {
@@ -70,8 +99,13 @@ namespace NMF.Expressions
                     listener.Detach();
                 }
 			}
+			else
+			{
+			    Argument<#= j #>.Value.BubbledChange -= handler;
+			}
+			Argument<#= j #>.ValueChanged -= Argument<#= j #>Changed;
+			Argument<#= j #>.Detach();
 <# } #>
-            base.DetachCore();
         }
 
         private void Listener_BubbledChange(object sender, BubbledChangeEventArgs e)
