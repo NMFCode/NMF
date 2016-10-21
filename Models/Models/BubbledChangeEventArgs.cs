@@ -12,13 +12,12 @@ namespace NMF.Models
     /// <summary>
     /// Describes that an elementary change in the model elements containment hierarchy has happened
     /// </summary>
-    [DebuggerDisplay("BubbledChange: {ChangeType} in {Element} {AbsoluteUri}")]
+    [DebuggerDisplay("BubbledChange: {ChangeType} in {Element}")]
     public class BubbledChangeEventArgs : EventArgs
     {
-        private BubbledChangeEventArgs(IModelElement element)
+        internal BubbledChangeEventArgs(IModelElement element)
         {
             Element = element;
-            AbsoluteUri = Element.AbsoluteUri;
         }
 
         /// <summary>
@@ -29,13 +28,33 @@ namespace NMF.Models
         /// <summary>
         /// Absolute URI of the model element at the time of the event
         /// </summary>
-        public Uri AbsoluteUri { get; private set; }
+        public virtual Uri AbsoluteUri
+        {
+            get
+            {
+                throw new NotSupportedException("You have to request Uris on change notifications first");
+            }
+        }
 
         /// <summary>
         /// If the change introduces new or changed model elements, this list
         /// contains their URIs in the same order as their parent collection.
         /// </summary>
-        public List<Uri> ChildrenUris { get; private set; }
+        public virtual List<Uri> ChildrenUris
+        {
+            get
+            {
+                throw new NotSupportedException("You have to request Uris on change notifications first");
+            }
+        }
+
+        public virtual bool HasUris
+        {
+            get
+            {
+                return false;
+            }
+        }
 
         /// <summary>
         /// The name of the affected property or null, if no specific property was affected
@@ -84,32 +103,43 @@ namespace NMF.Models
         /// Creates an instance of BubbledChangeEventArgs describing the creation of the given model element.
         /// </summary>
         /// <param name="createdElement">The new model element.</param>
+        /// <param name="requireUris">Determines whether the event data should include absolute Uris</param>
         /// <returns></returns>
-        public static BubbledChangeEventArgs ElementCreated(IModelElement createdElement)
+        public static BubbledChangeEventArgs ElementCreated(IModelElement createdElement, bool requireUris)
         {
             if (createdElement == null)
                 throw new ArgumentNullException(nameof(createdElement));
 
-            return new BubbledChangeEventArgs(createdElement)
+            if (requireUris)
             {
-                ChangeType = ChangeType.ModelElementCreated
-            };
+                return new UriEnabledBubbledChangeEventArgs(createdElement)
+                {
+                    ChangeType = ChangeType.ModelElementCreated
+                };
+            }
+            else
+            {
+                return new BubbledChangeEventArgs(createdElement)
+                {
+                    ChangeType = ChangeType.ModelElementCreated
+                };
+            }
         }
 
         /// <summary>
         /// Creates an instance of BubbledChangeEventArgs describing the upcoming deletion of the given model element.
         /// </summary>
         /// <param name="deletedElement">The deleted model element.</param>
+        /// <param name="requireUris">Determines whether the event data should include absolute Uris</param>
         /// <returns></returns>
         public static BubbledChangeEventArgs ElementDeleting(IModelElement deletingElement, Uri originalAbsoluteUri)
         {
             if (deletingElement == null)
                 throw new ArgumentNullException(nameof(deletingElement));
-
-            return new BubbledChangeEventArgs(deletingElement)
+            
+            return new UriEnabledBubbledChangeEventArgs(deletingElement, originalAbsoluteUri)
             {
-                ChangeType = ChangeType.ModelElementDeleting,
-                AbsoluteUri = originalAbsoluteUri
+                ChangeType = ChangeType.ModelElementDeleting
             };
         }
 
@@ -123,10 +153,9 @@ namespace NMF.Models
             if (deletedElement == null)
                 throw new ArgumentNullException(nameof(deletedElement));
 
-            return new BubbledChangeEventArgs(deletedElement)
+            return new UriEnabledBubbledChangeEventArgs(deletedElement, originalAbsoluteUri)
             {
-                ChangeType = ChangeType.ModelElementDeleted,
-                AbsoluteUri = originalAbsoluteUri
+                ChangeType = ChangeType.ModelElementDeleted
             };
         }
 
@@ -135,19 +164,33 @@ namespace NMF.Models
         /// </summary>
         /// <param name="source">The model element containing the property.</param>
         /// <param name="propertyName">The property name.</param>
+        /// <param name="requireUris">Determines whether the event data should include absolute Uris</param>
         /// <returns></returns>
-        public static BubbledChangeEventArgs PropertyChanging(IModelElement source, string propertyName)
+        public static BubbledChangeEventArgs PropertyChanging(IModelElement source, string propertyName, ValueChangedEventArgs eventArgs, bool requireUris)
         {
             if (source == null)
                 throw new ArgumentNullException(nameof(source));
             if (string.IsNullOrEmpty(propertyName))
                 throw new ArgumentNullException(nameof(propertyName));
 
-            return new BubbledChangeEventArgs(source)
+            if (requireUris)
             {
-                ChangeType = ChangeType.PropertyChanging,
-                PropertyName = propertyName
-            };
+                return new UriEnabledBubbledChangeEventArgs(source)
+                {
+                    ChangeType = ChangeType.PropertyChanging,
+                    OriginalEventArgs = eventArgs,
+                    PropertyName = propertyName
+                };
+            }
+            else
+            {
+                return new BubbledChangeEventArgs(source)
+                {
+                    ChangeType = ChangeType.PropertyChanging,
+                    OriginalEventArgs = eventArgs,
+                    PropertyName = propertyName
+                };
+            }
         }
 
         /// <summary>
@@ -156,8 +199,9 @@ namespace NMF.Models
         /// <param name="source">The model element containing the property.</param>
         /// <param name="propertyName">The property name.</param>
         /// <param name="args">The original ValueChangedEventArgs.</param>
+        /// <param name="requireUris">Determines whether the event data should include absolute Uris</param>
         /// <returns></returns>
-        public static BubbledChangeEventArgs PropertyChanged(IModelElement source, string propertyName, ValueChangedEventArgs args)
+        public static BubbledChangeEventArgs PropertyChanged(IModelElement source, string propertyName, ValueChangedEventArgs args, bool requireUris)
         {
             if (source == null)
                 throw new ArgumentNullException(nameof(source));
@@ -166,15 +210,26 @@ namespace NMF.Models
             if (args == null)
                 throw new ArgumentNullException(nameof(args));
 
-            var newValueUri = (args.NewValue as IModelElement)?.AbsoluteUri;
-
-            return new BubbledChangeEventArgs(source)
+            if (requireUris)
             {
-                ChangeType = ChangeType.PropertyChanged,
-                OriginalEventArgs = args,
-                PropertyName = propertyName,
-                ChildrenUris = new List<Uri>() { newValueUri }
-            };
+                var newValueUri = (args.NewValue as IModelElement)?.AbsoluteUri;
+
+                return new UriEnabledBubbledChangeEventArgs(source, newValueUri != null ? new List<Uri>() {  newValueUri } : null)
+                {
+                    ChangeType = ChangeType.PropertyChanged,
+                    OriginalEventArgs = args,
+                    PropertyName = propertyName
+                };
+            }
+            else
+            {
+                return new BubbledChangeEventArgs(source)
+                {
+                    ChangeType = ChangeType.PropertyChanged,
+                    OriginalEventArgs = args,
+                    PropertyName = propertyName
+                };
+            }
         }
 
         /// <summary>
@@ -183,8 +238,9 @@ namespace NMF.Models
         /// <param name="source">The model element containing the collection.</param>
         /// <param name="propertyName">The name of the collection property.</param>
         /// <param name="args">The original NotifyCollectionChangingEventArgs.</param>
+        /// <param name="requireUris">Determines whether the event data should include absolute Uris</param>
         /// <returns></returns>
-        public static BubbledChangeEventArgs CollectionChanging(IModelElement source, string propertyName, NotifyCollectionChangingEventArgs args)
+        public static BubbledChangeEventArgs CollectionChanging(IModelElement source, string propertyName, NotifyCollectionChangingEventArgs args, bool requireUris)
         {
             if (source == null)
                 throw new ArgumentNullException(nameof(source));
@@ -193,12 +249,24 @@ namespace NMF.Models
             if (args == null)
                 throw new ArgumentNullException(nameof(args));
 
-            return new BubbledChangeEventArgs(source)
+            if (requireUris)
             {
-                ChangeType = ChangeType.CollectionChanging,
-                OriginalEventArgs = args,
-                PropertyName = propertyName
-            };
+                return new UriEnabledBubbledChangeEventArgs(source)
+                {
+                    ChangeType = ChangeType.CollectionChanging,
+                    OriginalEventArgs = args,
+                    PropertyName = propertyName
+                };
+            }
+            else
+            {
+                return new BubbledChangeEventArgs(source)
+                {
+                    ChangeType = ChangeType.CollectionChanging,
+                    OriginalEventArgs = args,
+                    PropertyName = propertyName
+                };
+            }
         }
 
         /// <summary>
@@ -207,8 +275,9 @@ namespace NMF.Models
         /// <param name="source">The model element containing the collection.</param>
         /// <param name="propertyName">The name of the collection property.</param>
         /// <param name="args">The original NotifyCollectionChangedEventArgs.</param>
+        /// <param name="requireUris">Determies whether the event data should obtain the absolute Uris</param>
         /// <returns></returns>
-        public static BubbledChangeEventArgs CollectionChanged(IModelElement source, string propertyName, NotifyCollectionChangedEventArgs args)
+        public static BubbledChangeEventArgs CollectionChanged(IModelElement source, string propertyName, NotifyCollectionChangedEventArgs args, bool requireUris)
         {
             if (source == null)
                 throw new ArgumentNullException(nameof(source));
@@ -217,17 +286,71 @@ namespace NMF.Models
             if (args == null)
                 throw new ArgumentNullException(nameof(args));
 
-            List<Uri> childrenUris = null;
-            if (args.Action == NotifyCollectionChangedAction.Add)
-                childrenUris = args.NewItems.OfType<IModelElement>().Select(e => e.AbsoluteUri).ToList();
-
-            return new BubbledChangeEventArgs(source)
+            if (requireUris)
             {
-                ChangeType = ChangeType.CollectionChanged,
-                OriginalEventArgs = args,
-                PropertyName = propertyName,
-                ChildrenUris = childrenUris
-            };
+                List<Uri> childrenUris = null;
+                if (args.Action == NotifyCollectionChangedAction.Add)
+                    childrenUris = args.NewItems.OfType<IModelElement>().Select(e => e.AbsoluteUri).ToList();
+
+                return new UriEnabledBubbledChangeEventArgs(source, childrenUris)
+                {
+                    ChangeType = ChangeType.CollectionChanged,
+                    OriginalEventArgs = args,
+                    PropertyName = propertyName
+                };
+            }
+            else
+            {
+                return new BubbledChangeEventArgs(source)
+                {
+                    ChangeType = ChangeType.CollectionChanged,
+                    OriginalEventArgs = args,
+                    PropertyName = propertyName
+                };
+            }
+        }
+    }
+
+    [DebuggerDisplay("BubbledChange: {ChangeType} in {Element} ({AbsoluteUri})")]
+    public class UriEnabledBubbledChangeEventArgs : BubbledChangeEventArgs
+    {
+        private Uri absoluteUri;
+        private List<Uri> childrenUris;
+
+        public UriEnabledBubbledChangeEventArgs(IModelElement element) : this(element, element.AbsoluteUri) { }
+
+        public UriEnabledBubbledChangeEventArgs(IModelElement element, List<Uri> childrenUris) : this(element)
+        {
+            this.childrenUris = childrenUris;
+        }
+
+        public UriEnabledBubbledChangeEventArgs(IModelElement element, Uri absoluteUri) : base(element)
+        {
+            this.absoluteUri = absoluteUri;
+        }
+
+        public override bool HasUris
+        {
+            get
+            {
+                return true;
+            }
+        }
+
+        public override Uri AbsoluteUri
+        {
+            get
+            {
+                return absoluteUri;
+            }
+        }
+
+        public override List<Uri> ChildrenUris
+        {
+            get
+            {
+                return childrenUris;
+            }
         }
     }
 

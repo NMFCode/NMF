@@ -25,9 +25,31 @@ namespace NMF.Models
     {
         private IModelElement parent;
         private ObservableList<ModelElementExtension> extensions;
-        private bool deleting = false;
-        private bool raiseBubbledChanges;
+        private ModelElementFlag flag;
         private EventHandler<BubbledChangeEventArgs> bubbledChange;
+
+        [Flags]
+        private enum ModelElementFlag : byte
+        {
+            Deleting = 1,
+            RaiseBubbledChanges = 2,
+            RequireUris = 4
+        }
+
+        private bool IsFlagSet(ModelElementFlag flag)
+        {
+            return (this.flag & flag) == flag;
+        }
+
+        private void SetFlag(ModelElementFlag flag)
+        {
+            this.flag |= flag;
+        }
+
+        private void UnsetFlag(ModelElementFlag flag)
+        {
+            this.flag &= ~flag;
+        }
 
         /// <summary>
         /// Gets the model that contains the current model element
@@ -53,12 +75,46 @@ namespace NMF.Models
             }
         }
 
+        internal void RequestUris()
+        {
+            if (!IsFlagSet(ModelElementFlag.RequireUris))
+            {
+                SetFlag(ModelElementFlag.RequireUris);
+                foreach (var child in Children)
+                {
+                    var childME = child as ModelElement;
+                    if (childME != null)
+                    {
+                        childME.RequestUris();
+                    }
+                }
+            }
+        }
+
+        internal void UnregisterUriRequest()
+        {
+            if (IsFlagSet(ModelElementFlag.RequireUris))
+            {
+                UnsetFlag(ModelElementFlag.RequireUris);
+                if (bubbledChange == null)
+                {
+                    foreach (var child in Children)
+                    {
+                        var childME = child as ModelElement;
+                        if (childME != null)
+                        {
+                            childME.UnregisterUriRequest();
+                        }
+                    }
+                }
+            }
+        }
 
         internal void RequestBubbledChanges()
         {
-            if (!raiseBubbledChanges)
+            if (!IsFlagSet(ModelElementFlag.RaiseBubbledChanges))
             {
-                raiseBubbledChanges = true;
+                SetFlag(ModelElementFlag.RaiseBubbledChanges);
                 foreach (var child in Children)
                 {
                     var childME = child as ModelElement;
@@ -72,9 +128,9 @@ namespace NMF.Models
 
         internal void UnregisterBubbledChangeRequest()
         {
-            if (raiseBubbledChanges)
+            if (IsFlagSet(ModelElementFlag.RaiseBubbledChanges))
             {
-                raiseBubbledChanges = false;
+                UnsetFlag(ModelElementFlag.RaiseBubbledChanges);
                 if (bubbledChange == null)
                 {
                     foreach (var child in Children)
@@ -118,7 +174,7 @@ namespace NMF.Models
                     var newParentME = newParent as ModelElement;
                     if (newParentME != null)
                     {
-                        if (newParentME.raiseBubbledChanges || newParentME.bubbledChange != null)
+                        if (newParentME.IsFlagSet(ModelElementFlag.RaiseBubbledChanges) || newParentME.bubbledChange != null)
                         {
                             RequestBubbledChanges();
                         }
@@ -177,7 +233,7 @@ namespace NMF.Models
         /// <remarks>This method is not called if an existing model element is moved in the composition hierarchy</remarks>
         protected virtual void OnChildCreated(IModelElement child)
         {
-            OnBubbledChange(BubbledChangeEventArgs.ElementCreated(child));
+            OnBubbledChange(BubbledChangeEventArgs.ElementCreated(child, IsFlagSet(ModelElementFlag.RequireUris)));
         }
 
         /// <summary>
@@ -651,8 +707,8 @@ namespace NMF.Models
         protected virtual void OnPropertyChanged(string propertyName, ValueChangedEventArgs valueChangedEvent)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-            if (!deleting)
-                OnBubbledChange(BubbledChangeEventArgs.PropertyChanged(this, propertyName, valueChangedEvent));
+            if (!IsFlagSet(ModelElementFlag.Deleting))
+                OnBubbledChange(BubbledChangeEventArgs.PropertyChanged(this, propertyName, valueChangedEvent, IsFlagSet(ModelElementFlag.RequireUris)));
         }
 
 
@@ -663,8 +719,8 @@ namespace NMF.Models
         protected virtual void OnPropertyChanging(string propertyName, ValueChangedEventArgs e = null)
         {
             PropertyChanging?.Invoke(this, new PropertyChangingEventArgs(propertyName));
-            if (!deleting)
-                OnBubbledChange(BubbledChangeEventArgs.PropertyChanging(this, propertyName));
+            if (!IsFlagSet(ModelElementFlag.Deleting))
+                OnBubbledChange(BubbledChangeEventArgs.PropertyChanging(this, propertyName, e, IsFlagSet(ModelElementFlag.RequireUris)));
         }
 
 
@@ -673,10 +729,14 @@ namespace NMF.Models
         /// </summary>
         public virtual void Delete()
         {
-            if (!deleting)
+            if (!IsFlagSet(ModelElementFlag.Deleting))
             {
-                deleting = true;
-                var originalAbsoluteUri = AbsoluteUri;
+                SetFlag(ModelElementFlag.Deleting);
+                Uri originalAbsoluteUri = null;
+                if (IsFlagSet(ModelElementFlag.RequireUris))
+                {
+                    originalAbsoluteUri = AbsoluteUri;
+                }
                 OnDeleting(EventArgs.Empty, originalAbsoluteUri);
                 OnDeleted(EventArgs.Empty, originalAbsoluteUri);
                 SetParent(null);
@@ -839,8 +899,8 @@ namespace NMF.Models
         /// <param name="e">The event data</param>
         protected void OnCollectionChanged(string propertyName, NotifyCollectionChangedEventArgs e)
         {
-            if (!deleting)
-                OnBubbledChange(BubbledChangeEventArgs.CollectionChanged(this, propertyName, e));
+            if (!IsFlagSet(ModelElementFlag.Deleting))
+                OnBubbledChange(BubbledChangeEventArgs.CollectionChanged(this, propertyName, e, IsFlagSet(ModelElementFlag.RequireUris)));
         }
 
         /// <summary>
@@ -850,8 +910,8 @@ namespace NMF.Models
         /// <param name="e">The event data</param>
         protected void OnCollectionChanging(string propertyName, NotifyCollectionChangingEventArgs e)
         {
-            if (!deleting)
-                OnBubbledChange(BubbledChangeEventArgs.CollectionChanging(this, propertyName, e));
+            if (!IsFlagSet(ModelElementFlag.Deleting))
+                OnBubbledChange(BubbledChangeEventArgs.CollectionChanging(this, propertyName, e, IsFlagSet(ModelElementFlag.RequireUris)));
         }
 
         /// <summary>
@@ -861,7 +921,7 @@ namespace NMF.Models
         protected virtual void OnBubbledChange(BubbledChangeEventArgs e)
         {
             bubbledChange?.Invoke(this, e);
-            if (raiseBubbledChanges)
+            if (IsFlagSet(ModelElementFlag.RaiseBubbledChanges))
             {
                 var parent = Parent as ModelElement;
                 if (parent != null)

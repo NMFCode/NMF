@@ -39,6 +39,11 @@ namespace NMF.Models.Evolution
 
             AttachedElement = element;
             element.BubbledChange += OnBubbledChange;
+            var elementMe = element as ModelElement;
+            if (elementMe != null)
+            {
+                elementMe.RequestUris();
+            }
         }
 
         /// <summary>
@@ -49,6 +54,11 @@ namespace NMF.Models.Evolution
             if (!IsRecording)
                 throw new InvalidOperationException("The recorder is not attached.");
 
+            var elementMe = AttachedElement as ModelElement;
+            if (elementMe != null)
+            {
+                elementMe.UnregisterUriRequest();
+            }
             AttachedElement.BubbledChange -= OnBubbledChange;
             AttachedElement = null;
         }
@@ -141,7 +151,7 @@ namespace NMF.Models.Evolution
                     return new ElementDeletion(e.AbsoluteUri);
                 case ChangeType.PropertyChanged:
                     var valueChangeArgs = (ValueChangedEventArgs)e.OriginalEventArgs;
-                    return CreatePropertyChange(e.Element, e.AbsoluteUri, e.PropertyName, valueChangeArgs.NewValue, e.ChildrenUris.First());
+                    return CreatePropertyChange(e.Element, e.AbsoluteUri, e.PropertyName, valueChangeArgs.NewValue, e.ChildrenUris == null ? null : e.ChildrenUris.First());
                 case ChangeType.CollectionChanged:
                     var collectionChangeArgs = (NotifyCollectionChangedEventArgs)e.OriginalEventArgs;
                     switch (collectionChangeArgs.Action)
