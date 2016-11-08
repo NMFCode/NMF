@@ -262,7 +262,8 @@ namespace Ecore2Code
                 if (Path.GetExtension(ecoreFile) == ".ecore")
                 {
 #if DEBUG
-                    var ePackages = repository.Resolve(ecoreFile).RootElements.OfType<EPackage>();
+                    var model = repository.Resolve(ecoreFile);
+                    var ePackages = model.RootElements.OfType<EPackage>();
                     foreach (var ePackage in ePackages)
                     {
                         packages.Add(EcoreInterop.Transform2Meta(ePackage));
