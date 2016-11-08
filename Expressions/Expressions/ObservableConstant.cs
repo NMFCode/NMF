@@ -8,6 +8,11 @@ namespace NMF.Expressions
 {
     internal class ObservableConstant<T> : NotifyExpression<T>
     {
+        public override string ToString()
+        {
+            return Value != null ? Value.ToString() : "(null)";
+        }
+
         public ObservableConstant(T value) : base(value) { }
 
         public override ExpressionType NodeType

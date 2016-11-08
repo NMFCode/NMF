@@ -18,6 +18,11 @@ namespace NMF.Expressions.Test
         {
             return new Dummy<T>(item);
         }
+
+        public override string ToString()
+        {
+            return string.Format("Dummy({0})", Item != null ? Item.ToString() : "(null)");
+        }
     }
 
     public class ObservableDummy<T> : Dummy<T>, INotifyPropertyChanged

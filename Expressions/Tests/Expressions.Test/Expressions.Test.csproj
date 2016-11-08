@@ -67,6 +67,7 @@
     <Compile Include="NewArrayExpressionTests.cs" />
     <Compile Include="MemberExpressionTests.cs" />
     <Compile Include="NewExpressionTests.cs" />
+    <Compile Include="RecursiveTest.cs" />
     <Compile Include="Reversable\ReversableAddExpressionTests.cs" />
     <Compile Include="Reversable\ReversableDivideExpressionTests.cs" />
     <Compile Include="Reversable\ReversableExpressionTests.cs" />

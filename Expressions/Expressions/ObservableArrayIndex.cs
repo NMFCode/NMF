@@ -8,6 +8,14 @@ namespace NMF.Expressions
 {
     internal class ObservableIntArrayIndex<T> : ObservableBinaryExpressionBase<T[], int, T>
     {
+        protected override string Format
+        {
+            get
+            {
+                return "{0}[{1}]";
+            }
+        }
+
         public ObservableIntArrayIndex(BinaryExpression node, ObservableExpressionBinder binder)
             : this(binder.VisitObservable<T[]>(node.Left), binder.VisitObservable<int>(node.Right)) { }
 
@@ -27,6 +35,14 @@ namespace NMF.Expressions
 
     internal class ObservableLongArrayIndex<T> : ObservableBinaryExpressionBase<T[], long, T>
     {
+        protected override string Format
+        {
+            get
+            {
+                return "{0}[{1}]";
+            }
+        }
+
         public ObservableLongArrayIndex(BinaryExpression node, ObservableExpressionBinder binder)
             : this(binder.VisitObservable<T[]>(node.Left), binder.VisitObservable<long>(node.Right)) { }
 

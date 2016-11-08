@@ -17,6 +17,11 @@ namespace NMF.Expressions
             Refresh();
         }
 
+        public override string ToString()
+        {
+            return "proxy for " + Proxy.ToString();
+        }
+
         public INotifyValue<TResult> Proxy { get; private set; }
 
         protected override TResult GetValue()

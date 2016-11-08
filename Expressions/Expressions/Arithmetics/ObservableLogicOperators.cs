@@ -7,6 +7,14 @@ namespace NMF.Expressions.Arithmetics
 {
     internal class ObservableLogicAnd : ObservableBinaryExpressionBase<bool, bool, bool>
     {
+        protected override string Format
+        {
+            get
+            {
+                return "({0} & {1})";
+            }
+        }
+
         public ObservableLogicAnd(INotifyExpression<bool> left, INotifyExpression<bool> right)
             : base(left, right) { }
 
@@ -23,6 +31,14 @@ namespace NMF.Expressions.Arithmetics
 
     internal class ObservableLogicOr : ObservableBinaryExpressionBase<bool, bool, bool>
     {
+        protected override string Format
+        {
+            get
+            {
+                return "({0} | {1})";
+            }
+        }
+
         public ObservableLogicOr(INotifyExpression<bool> left, INotifyExpression<bool> right)
             : base(left, right) { }
 
@@ -39,6 +55,14 @@ namespace NMF.Expressions.Arithmetics
 
     internal class ObservableLogicXor : ObservableBinaryExpressionBase<bool, bool, bool>
     {
+        protected override string Format
+        {
+            get
+            {
+                return "({0} ^ {1})";
+            }
+        }
+
         public ObservableLogicXor(INotifyExpression<bool> left, INotifyExpression<bool> right)
             : base(left, right) { }
 
@@ -55,6 +79,14 @@ namespace NMF.Expressions.Arithmetics
 
     internal class ObservableLogicAndAlso : ObservableBinaryExpressionBase<bool, bool, bool>
     {
+        protected override string Format
+        {
+            get
+            {
+                return "({0} && {1})";
+            }
+        }
+
         public ObservableLogicAndAlso(INotifyExpression<bool> left, INotifyExpression<bool> right)
             : base(left, right) { }
 
@@ -102,6 +134,14 @@ namespace NMF.Expressions.Arithmetics
 
     internal class ObservableLogicOrElse : ObservableBinaryExpressionBase<bool, bool, bool>
     {
+        protected override string Format
+        {
+            get
+            {
+                return "({0} || {1})";
+            }
+        }
+
         public ObservableLogicOrElse(INotifyExpression<bool> left, INotifyExpression<bool> right)
             : base(left, right) { }
 
@@ -149,6 +189,14 @@ namespace NMF.Expressions.Arithmetics
 
     internal sealed class ObservableLogicNot : ObservableUnaryExpressionBase<bool, bool>
     {
+        protected override string Format
+        {
+            get
+            {
+                return "!{0}";
+            }
+        }
+
         public ObservableLogicNot(INotifyExpression<bool> inner)
             : base(inner) { }
 

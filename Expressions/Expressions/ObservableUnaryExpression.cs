@@ -11,6 +11,13 @@ namespace NMF.Expressions
 {
     internal abstract class ObservableUnaryExpressionBase<TInner, TOuter> : NotifyExpression<TOuter>
     {
+        protected abstract string Format { get; }
+
+        public override string ToString()
+        {
+            return string.Format(Format, Target.ToString()) + "{" + (Value != null ? Value.ToString() : "(null)") + "}";
+        }
+
         public ObservableUnaryExpressionBase(INotifyExpression<TInner> target)
         {
             if (target == null) throw new ArgumentNullException("target");
@@ -91,6 +98,14 @@ namespace NMF.Expressions
 
     internal sealed class ObservableUnaryExpression<TInner, TOuter> : ObservableUnaryExpressionBase<TInner, TOuter>
     {
+        protected override string Format
+        {
+            get
+            {
+                return Implementation.ToString() + "{0}";
+            }
+        }
+
         public Func<TInner, TOuter> Implementation { get; private set; }
 
         public ObservableUnaryExpression(UnaryExpression node, ObservableExpressionBinder binder)
@@ -115,6 +130,14 @@ namespace NMF.Expressions
 
     internal sealed class ObservableConvert<TInner, TOuter> : ObservableUnaryReversableExpressionBase<TInner, TOuter>
     {
+        protected override string Format
+        {
+            get
+            {
+                return "(" + typeof(TOuter).Name + "){0}";
+            }
+        }
+
         public ObservableConvert(UnaryExpression node, ObservableExpressionBinder binder)
             : base(binder.VisitObservable<TInner>(node.Operand)) { }
 
@@ -148,6 +171,14 @@ namespace NMF.Expressions
     internal sealed class ObservableTypeAs<TInner, TOuter> : ObservableUnaryExpressionBase<TInner, TOuter>
         where TOuter : class
     {
+        protected override string Format
+        {
+            get
+            {
+                return "{0} as " + typeof(TOuter).Name;
+            }
+        }
+
         public ObservableTypeAs(UnaryExpression node, ObservableExpressionBinder binder)
             : base(binder.VisitObservable<TInner>(node.Operand)) { }
 

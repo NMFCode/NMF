@@ -784,19 +784,49 @@ namespace NMF.Expressions
                         }
                         CheckForOutParameter(proxyMethod.GetParameters());
                         CheckReturnTypeIsCorrect(node, proxyMethod);
-                        var proxyArgs = new Object[node.Arguments.Count + typeOffset];
-                        if (!staticMethod)
+                        if (proxyAttribute.IsRecursive)
                         {
-                            proxyArgs[0] = Visit(node.Object);
+                            var proxyArgs = new Object[1 + node.Arguments.Count + typeOffset];
+                            var proxyCallTypes = new Type[1 + node.Arguments.Count + typeOffset];
+                            proxyArgs[0] = proxyMethod;
+                            proxyCallTypes[0] = node.Type;
+                            if (!staticMethod)
+                            {
+                                proxyArgs[1] = Visit(node.Object);
+                                proxyCallTypes[1] = node.Object.Type;
+                            }
+                            for (int i = 0; i < node.Arguments.Count; i++)
+                            {
+                                proxyArgs[i + typeOffset + 1] = Visit(node.Arguments[i]);
+                                proxyCallTypes[i + typeOffset + 1] = node.Arguments[i].Type;
+                            }
+                            var deferredProxyType = ObservableDeferredElementTypes.Types[proxyCallTypes.Length - 2];
+                            deferredProxyType = deferredProxyType.MakeGenericType(proxyCallTypes);
+                            return Activator.CreateInstance(deferredProxyType, proxyArgs) as Expression;
                         }
-                        for (int i = 0; i < node.Arguments.Count; i++)
+                        else
                         {
-                            proxyArgs[i + typeOffset] = Visit(node.Arguments[i]);
+                            var proxyArgs = new Object[node.Arguments.Count + typeOffset];
+                            if (!staticMethod)
+                            {
+                                proxyArgs[0] = Visit(node.Object);
+                            }
+                            for (int i = 0; i < node.Arguments.Count; i++)
+                            {
+                                proxyArgs[i + typeOffset] = Visit(node.Arguments[i]);
+                            }
+                            try
+                            {
+                                object proxy = proxyMethod.Invoke(null, proxyArgs);
+                                var proxyExp = proxy as Expression;
+                                if (proxyExp != null) return proxyExp;
+                                return System.Activator.CreateInstance(typeof(ObservableProxyExpression<>).MakeGenericType(node.Method.ReturnType), proxy) as Expression;
+                            }
+                            catch (NullReferenceException)
+                            {
+                                throw new InvalidOperationException(string.Format("The proxy method {0} threw a NullReferenceException. Is the underlying function recursive? If so, you have to specify this manually.", proxyMethod.Name));
+                            }
                         }
-                        object proxy = proxyMethod.Invoke(null, proxyArgs);
-                        var proxyExp = proxy as Expression;
-                        if (proxyExp != null) return proxyExp;
-                        return System.Activator.CreateInstance(typeof(ObservableProxyExpression<>).MakeGenericType(node.Method.ReturnType), proxy) as Expression;
                     }
                     else if (proxyAttribute.InitializeProxyMethod(node.Method, typesArgStatic, out proxyMethod))
                     {

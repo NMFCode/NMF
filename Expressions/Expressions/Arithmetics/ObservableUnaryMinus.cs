@@ -7,6 +7,14 @@ namespace NMF.Expressions.Arithmetics
 {
     internal sealed class ObservableUnaryIntMinus : ObservableUnaryReversableExpressionBase<int, int>
     {
+        protected override string Format
+        {
+            get
+            {
+                return "-{0}";
+            }
+        }
+
         public ObservableUnaryIntMinus(INotifyExpression<int> inner)
             : base(inner) { }
 
@@ -28,6 +36,14 @@ namespace NMF.Expressions.Arithmetics
 
     internal sealed class ObservableUnaryLongMinus : ObservableUnaryReversableExpressionBase<long, long>
     {
+        protected override string Format
+        {
+            get
+            {
+                return "-{0}";
+            }
+        }
+
         public ObservableUnaryLongMinus(INotifyExpression<long> inner)
             : base(inner) { }
 
@@ -49,6 +65,14 @@ namespace NMF.Expressions.Arithmetics
 
     internal sealed class ObservableUnaryFloatMinus : ObservableUnaryReversableExpressionBase<float, float>
     {
+        protected override string Format
+        {
+            get
+            {
+                return "-{0}";
+            }
+        }
+
         public ObservableUnaryFloatMinus(INotifyExpression<float> inner)
             : base(inner) { }
 
@@ -70,6 +94,14 @@ namespace NMF.Expressions.Arithmetics
 
     internal sealed class ObservableUnaryDoubleMinus : ObservableUnaryReversableExpressionBase<double, double>
     {
+        protected override string Format
+        {
+            get
+            {
+                return "-{0}";
+            }
+        }
+
         public ObservableUnaryDoubleMinus(INotifyExpression<double> inner)
             : base(inner) { }
 
@@ -91,6 +123,14 @@ namespace NMF.Expressions.Arithmetics
 
     internal sealed class ObservableUnaryDecimalMinus : ObservableUnaryReversableExpressionBase<decimal, decimal>
     {
+        protected override string Format
+        {
+            get
+            {
+                return "-{0}";
+            }
+        }
+
         public ObservableUnaryDecimalMinus(INotifyExpression<decimal> inner)
             : base(inner) { }
 

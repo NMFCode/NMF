@@ -8,6 +8,14 @@ namespace NMF.Expressions.Arithmetics
 
     internal class ObservableIntRightShift : ObservableBinaryExpressionBase<int, int, int>
     {
+        protected override string Format
+        {
+            get
+            {
+                return "({0} >> {1})";
+            }
+        }
+
         public ObservableIntRightShift(INotifyExpression<int> left, INotifyExpression<int> right)
             : base(left, right) { }
 
@@ -24,6 +32,14 @@ namespace NMF.Expressions.Arithmetics
 
     internal class ObservableIntLeftShift : ObservableBinaryExpressionBase<int, int, int>
     {
+        protected override string Format
+        {
+            get
+            {
+                return "({0} << {1})";
+            }
+        }
+
         public ObservableIntLeftShift(INotifyExpression<int> left, INotifyExpression<int> right)
             : base(left, right) { }
 
@@ -40,6 +56,14 @@ namespace NMF.Expressions.Arithmetics
 
     internal class ObservableUIntRightShift : ObservableBinaryExpressionBase<uint, int, uint>
     {
+        protected override string Format
+        {
+            get
+            {
+                return "({0} >> {1})";
+            }
+        }
+
         public ObservableUIntRightShift(INotifyExpression<uint> left, INotifyExpression<int> right)
             : base(left, right) { }
 
@@ -56,6 +80,14 @@ namespace NMF.Expressions.Arithmetics
 
     internal class ObservableUIntLeftShift : ObservableBinaryExpressionBase<uint, int, uint>
     {
+        protected override string Format
+        {
+            get
+            {
+                return "({0} << {1})";
+            }
+        }
+
         public ObservableUIntLeftShift(INotifyExpression<uint> left, INotifyExpression<int> right)
             : base(left, right) { }
 
@@ -73,6 +105,14 @@ namespace NMF.Expressions.Arithmetics
 
     internal class ObservableLongRightShift : ObservableBinaryExpressionBase<long, int, long>
     {
+        protected override string Format
+        {
+            get
+            {
+                return "({0} >> {1})";
+            }
+        }
+
         public ObservableLongRightShift(INotifyExpression<long> left, INotifyExpression<int> right)
             : base(left, right) { }
 
@@ -89,6 +129,14 @@ namespace NMF.Expressions.Arithmetics
 
     internal class ObservableLongLeftShift : ObservableBinaryExpressionBase<long, int, long>
     {
+        protected override string Format
+        {
+            get
+            {
+                return "({0} << {1})";
+            }
+        }
+
         public ObservableLongLeftShift(INotifyExpression<long> left, INotifyExpression<int> right)
             : base(left, right) { }
 
@@ -105,6 +153,14 @@ namespace NMF.Expressions.Arithmetics
 
     internal class ObservableULongRightShift : ObservableBinaryExpressionBase<ulong, int, ulong>
     {
+        protected override string Format
+        {
+            get
+            {
+                return "({0} >> {1})";
+            }
+        }
+
         public ObservableULongRightShift(INotifyExpression<ulong> left, INotifyExpression<int> right)
             : base(left, right) { }
 
@@ -121,6 +177,14 @@ namespace NMF.Expressions.Arithmetics
 
     internal class ObservableULongLeftShift : ObservableBinaryExpressionBase<ulong, int, ulong>
     {
+        protected override string Format
+        {
+            get
+            {
+                return "({0} << {1})";
+            }
+        }
+
         public ObservableULongLeftShift(INotifyExpression<ulong> left, INotifyExpression<int> right)
             : base(left, right) { }
 

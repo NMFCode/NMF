@@ -7,6 +7,14 @@ namespace NMF.Expressions.Arithmetics
 {
     internal class ObservableIntMultiply : ObservableReversableBinaryExpressionBase<int, int, int>
     {
+        protected override string Format
+        {
+            get
+            {
+                return "({0} * {1})";
+            }
+        }
+
         public ObservableIntMultiply(INotifyExpression<int> left, INotifyExpression<int> right)
             : base(left, right) { }
 
@@ -39,6 +47,14 @@ namespace NMF.Expressions.Arithmetics
 
     internal class ObservableLongMultiply : ObservableReversableBinaryExpressionBase<long, long, long>
     {
+        protected override string Format
+        {
+            get
+            {
+                return "({0} * {1})";
+            }
+        }
+
         public ObservableLongMultiply(INotifyExpression<long> left, INotifyExpression<long> right)
             : base(left, right) { }
 
@@ -71,6 +87,14 @@ namespace NMF.Expressions.Arithmetics
 
     internal class ObservableUIntMultiply : ObservableReversableBinaryExpressionBase<uint, uint, uint>
     {
+        protected override string Format
+        {
+            get
+            {
+                return "({0} * {1})";
+            }
+        }
+
         public ObservableUIntMultiply(INotifyExpression<uint> left, INotifyExpression<uint> right)
             : base(left, right) { }
 
@@ -103,6 +127,14 @@ namespace NMF.Expressions.Arithmetics
 
     internal class ObservableULongMultiply : ObservableReversableBinaryExpressionBase<ulong, ulong, ulong>
     {
+        protected override string Format
+        {
+            get
+            {
+                return "({0} * {1})";
+            }
+        }
+
         public ObservableULongMultiply(INotifyExpression<ulong> left, INotifyExpression<ulong> right)
             : base(left, right) { }
 
@@ -135,6 +167,14 @@ namespace NMF.Expressions.Arithmetics
 
     internal class ObservableFloatMultiply : ObservableReversableBinaryExpressionBase<float, float, float>
     {
+        protected override string Format
+        {
+            get
+            {
+                return "({0} * {1})";
+            }
+        }
+
         public ObservableFloatMultiply(INotifyExpression<float> left, INotifyExpression<float> right)
             : base(left, right) { }
 
@@ -167,6 +207,14 @@ namespace NMF.Expressions.Arithmetics
 
     internal class ObservableDoubleMultiply : ObservableReversableBinaryExpressionBase<double, double, double>
     {
+        protected override string Format
+        {
+            get
+            {
+                return "({0} * {1})";
+            }
+        }
+
         public ObservableDoubleMultiply(INotifyExpression<double> left, INotifyExpression<double> right)
             : base(left, right) { }
 

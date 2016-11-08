@@ -8,6 +8,14 @@ namespace NMF.Expressions.Arithmetics
 {
     internal class ObservableEquals<T> : ObservableBinaryExpressionBase<T, T, bool>
     {
+        protected override string Format
+        {
+            get
+            {
+                return "({0} == {1})";
+            }
+        }
+
         public ObservableEquals(BinaryExpression node, ObservableExpressionBinder binder)
             : this(binder.VisitObservable<T>(node.Left), binder.VisitObservable<T>(node.Right)) { }
 
@@ -27,6 +35,14 @@ namespace NMF.Expressions.Arithmetics
 
     internal class ObservableNotEquals<T> : ObservableBinaryExpressionBase<T, T, bool>
     {
+        protected override string Format
+        {
+            get
+            {
+                return "({0} != {1})";
+            }
+        }
+
         public ObservableNotEquals(BinaryExpression node, ObservableExpressionBinder binder)
             : this(binder.VisitObservable<T>(node.Left), binder.VisitObservable<T>(node.Right)) { }
 

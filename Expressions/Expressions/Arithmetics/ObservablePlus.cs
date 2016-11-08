@@ -7,6 +7,14 @@ namespace NMF.Expressions.Arithmetics
 {
     internal class ObservableIntPlus : ObservableReversableBinaryExpressionBase<int, int, int>
     {
+        protected override string Format
+        {
+            get
+            {
+                return "({0} + {1})";
+            }
+        }
+
         public ObservableIntPlus(INotifyExpression<int> left, INotifyExpression<int> right)
             : base(left, right) { }
 
@@ -39,6 +47,14 @@ namespace NMF.Expressions.Arithmetics
 
     internal class ObservableLongPlus : ObservableReversableBinaryExpressionBase<long, long, long>
     {
+        protected override string Format
+        {
+            get
+            {
+                return "({0} + {1})";
+            }
+        }
+
         public ObservableLongPlus(INotifyExpression<long> left, INotifyExpression<long> right)
             : base(left, right) { }
 
@@ -71,6 +87,14 @@ namespace NMF.Expressions.Arithmetics
 
     internal class ObservableUIntPlus : ObservableReversableBinaryExpressionBase<uint, uint, uint>
     {
+        protected override string Format
+        {
+            get
+            {
+                return "({0} + {1})";
+            }
+        }
+
         public ObservableUIntPlus(INotifyExpression<uint> left, INotifyExpression<uint> right)
             : base(left, right) { }
 
@@ -103,6 +127,14 @@ namespace NMF.Expressions.Arithmetics
 
     internal class ObservableULongPlus : ObservableReversableBinaryExpressionBase<ulong, ulong, ulong>
     {
+        protected override string Format
+        {
+            get
+            {
+                return "({0} + {1})";
+            }
+        }
+
         public ObservableULongPlus(INotifyExpression<ulong> left, INotifyExpression<ulong> right)
             : base(left, right) { }
 
@@ -135,6 +167,14 @@ namespace NMF.Expressions.Arithmetics
 
     internal class ObservableFloatPlus : ObservableReversableBinaryExpressionBase<float, float, float>
     {
+        protected override string Format
+        {
+            get
+            {
+                return "({0} + {1})";
+            }
+        }
+
         public ObservableFloatPlus(INotifyExpression<float> left, INotifyExpression<float> right)
             : base(left, right) { }
 
@@ -167,6 +207,14 @@ namespace NMF.Expressions.Arithmetics
 
     internal class ObservableDoublePlus : ObservableReversableBinaryExpressionBase<double, double, double>
     {
+        protected override string Format
+        {
+            get
+            {
+                return "({0} + {1})";
+            }
+        }
+
         public ObservableDoublePlus(INotifyExpression<double> left, INotifyExpression<double> right)
             : base(left, right) { }
 
@@ -199,6 +247,14 @@ namespace NMF.Expressions.Arithmetics
 
     internal class ObservableStringPlus : ObservableReversableBinaryExpressionBase<string, string, string>
     {
+        protected override string Format
+        {
+            get
+            {
+                return "({0} + {1})";
+            }
+        }
+
         public ObservableStringPlus(INotifyExpression<string> left, INotifyExpression<string> right)
             : base(left, right) { }
 

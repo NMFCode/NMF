@@ -7,6 +7,14 @@ namespace NMF.Expressions.Arithmetics
 {
     internal class ObservableIntDivide : ObservableReversableBinaryExpressionBase<int, int, int>
     {
+        protected override string Format
+        {
+            get
+            {
+                return "({0} / {1})";
+            }
+        }
+
         public ObservableIntDivide(INotifyExpression<int> left, INotifyExpression<int> right)
             : base(left, right) { }
 
@@ -39,6 +47,14 @@ namespace NMF.Expressions.Arithmetics
 
     internal class ObservableLongDivide : ObservableReversableBinaryExpressionBase<long, long, long>
     {
+        protected override string Format
+        {
+            get
+            {
+                return "({0} / {1})";
+            }
+        }
+
         public ObservableLongDivide(INotifyExpression<long> left, INotifyExpression<long> right)
             : base(left, right) { }
 
@@ -71,6 +87,14 @@ namespace NMF.Expressions.Arithmetics
 
     internal class ObservableUIntDivide : ObservableReversableBinaryExpressionBase<uint, uint, uint>
     {
+        protected override string Format
+        {
+            get
+            {
+                return "({0} / {1})";
+            }
+        }
+
         public ObservableUIntDivide(INotifyExpression<uint> left, INotifyExpression<uint> right)
             : base(left, right) { }
 
@@ -103,6 +127,14 @@ namespace NMF.Expressions.Arithmetics
 
     internal class ObservableULongDivide : ObservableReversableBinaryExpressionBase<ulong, ulong, ulong>
     {
+        protected override string Format
+        {
+            get
+            {
+                return "({0} / {1})";
+            }
+        }
+
         public ObservableULongDivide(INotifyExpression<ulong> left, INotifyExpression<ulong> right)
             : base(left, right) { }
 
@@ -135,6 +167,14 @@ namespace NMF.Expressions.Arithmetics
 
     internal class ObservableFloatDivide : ObservableReversableBinaryExpressionBase<float, float, float>
     {
+        protected override string Format
+        {
+            get
+            {
+                return "({0} / {1})";
+            }
+        }
+
         public ObservableFloatDivide(INotifyExpression<float> left, INotifyExpression<float> right)
             : base(left, right) { }
 
@@ -167,6 +207,14 @@ namespace NMF.Expressions.Arithmetics
 
     internal class ObservableDoubleDivide : ObservableReversableBinaryExpressionBase<double, double, double>
     {
+        protected override string Format
+        {
+            get
+            {
+                return "({0} / {1})";
+            }
+        }
+
         public ObservableDoubleDivide(INotifyExpression<double> left, INotifyExpression<double> right)
             : base(left, right) { }
 

@@ -7,6 +7,11 @@ namespace NMF.Expressions
 {
     internal class ObservableParameter<T> : NotifyExpression<T>
     {
+        public override string ToString()
+        {
+            return "<" + Name + ">";
+        }
+
         public ObservableParameter(string name)
         {
             Name = name;

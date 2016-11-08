@@ -8,6 +8,14 @@ namespace NMF.Expressions.Arithmetics
 {
     internal class ObservableGreatherThan<T> : ObservableBinaryExpressionBase<T, T, bool>
     {
+        protected override string Format
+        {
+            get
+            {
+                return "({0} > {1})";
+            }
+        }
+
         public ObservableGreatherThan(BinaryExpression node, ObservableExpressionBinder binder)
             : this(binder.VisitObservable<T>(node.Left), binder.VisitObservable<T>(node.Right)) { }
 
@@ -27,6 +35,14 @@ namespace NMF.Expressions.Arithmetics
 
     internal class ObservableGreatherThanOrEquals<T> : ObservableBinaryExpressionBase<T, T, bool>
     {
+        protected override string Format
+        {
+            get
+            {
+                return "({0} >= {1})";
+            }
+        }
+
         public ObservableGreatherThanOrEquals(BinaryExpression node, ObservableExpressionBinder binder)
             : this(binder.VisitObservable<T>(node.Left), binder.VisitObservable<T>(node.Right)) { }
 
@@ -46,6 +62,14 @@ namespace NMF.Expressions.Arithmetics
 
     internal class ObservableLessThan<T> : ObservableBinaryExpressionBase<T, T, bool>
     {
+        protected override string Format
+        {
+            get
+            {
+                return "({0} < {1})";
+            }
+        }
+
         public ObservableLessThan(BinaryExpression node, ObservableExpressionBinder binder)
             : this(binder.VisitObservable<T>(node.Left), binder.VisitObservable<T>(node.Right)) { }
 
@@ -65,6 +89,14 @@ namespace NMF.Expressions.Arithmetics
 
     internal class ObservableLessThanOrEquals<T> : ObservableBinaryExpressionBase<T, T, bool>
     {
+        protected override string Format
+        {
+            get
+            {
+                return "({0} <= {1})";
+            }
+        }
+
         public ObservableLessThanOrEquals(BinaryExpression node, ObservableExpressionBinder binder)
             : this(binder.VisitObservable<T>(node.Left), binder.VisitObservable<T>(node.Right)) { }
 

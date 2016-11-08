@@ -7,6 +7,14 @@ namespace NMF.Expressions.Arithmetics
 {
     internal class ObservableIntBitwiseAnd : ObservableBinaryExpressionBase<int, int, int>
     {
+        protected override string Format
+        {
+            get
+            {
+                return "({0} & {1})";
+            }
+        }
+
         public ObservableIntBitwiseAnd(INotifyExpression<int> left, INotifyExpression<int> right)
             : base(left, right) { }
 
@@ -23,6 +31,14 @@ namespace NMF.Expressions.Arithmetics
 
     internal class ObservableUIntBitwiseAnd : ObservableBinaryExpressionBase<uint, uint, uint>
     {
+        protected override string Format
+        {
+            get
+            {
+                return "({0} & {1})";
+            }
+        }
+
         public ObservableUIntBitwiseAnd(INotifyExpression<uint> left, INotifyExpression<uint> right)
             : base(left, right) { }
 
@@ -39,6 +55,13 @@ namespace NMF.Expressions.Arithmetics
 
     internal class ObservableLongBitwiseAnd : ObservableBinaryExpressionBase<long, long, long>
     {
+        protected override string Format
+        {
+            get
+            {
+                return "({0} & {1})";
+            }
+        }
         public ObservableLongBitwiseAnd(INotifyExpression<long> left, INotifyExpression<long> right)
             : base(left, right) { }
 
@@ -55,6 +78,14 @@ namespace NMF.Expressions.Arithmetics
 
     internal class ObservableULongBitwiseAnd : ObservableBinaryExpressionBase<ulong, ulong, ulong>
     {
+        protected override string Format
+        {
+            get
+            {
+                return "({0} & {1})";
+            }
+        }
+
         public ObservableULongBitwiseAnd(INotifyExpression<ulong> left, INotifyExpression<ulong> right)
             : base(left, right) { }
 

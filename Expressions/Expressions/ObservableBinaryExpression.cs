@@ -21,6 +21,13 @@ namespace NMF.Expressions
             Left.ValueChanged += LeftChanged;
         }
 
+        protected abstract string Format { get; }
+
+        public override string ToString()
+        {
+            return string.Format(Format, Left.ToString(), Right.ToString()) + "{" + (Value != null ? Value.ToString() : "(null)") + "}";
+        }
+
         protected virtual void RightChanged(object sender, ValueChangedEventArgs e)
         {
             if (!IsAttached) return;
@@ -127,6 +134,14 @@ namespace NMF.Expressions
 
     internal sealed class ObservableBinaryExpression<TLeft, TRight, TResult> : ObservableBinaryExpressionBase<TLeft, TRight, TResult>
     {
+        protected override string Format
+        {
+            get
+            {
+                return Implementation.ToString() + "({0}, {1})";
+            }
+        }
+
         public ObservableBinaryExpression(BinaryExpression node, ObservableExpressionBinder binder)
             : this(binder.VisitObservable<TLeft>(node.Left), binder.VisitObservable<TRight>(node.Right), ReflectionHelper.CreateDelegate<Func<TLeft, TRight, TResult>>(node.Method)) { }
 
@@ -151,6 +166,14 @@ namespace NMF.Expressions
 
     internal sealed class ObservableReversableBinaryExpression<TLeft, TRight, TResult> : ObservableReversableBinaryExpressionBase<TLeft, TRight, TResult>
     {
+        protected override string Format
+        {
+            get
+            {
+                return Implementation.ToString() + "({0}, {1})";
+            }
+        }
+
         private Func<TResult, TRight, TLeft> rightReverser;
         private Func<TResult, TLeft, TRight> leftReverser;
 
@@ -207,6 +230,14 @@ namespace NMF.Expressions
     internal sealed class ObservableCoalesceExpression<T> : ObservableBinaryExpressionBase<T, T, T>
         where T : class
     {
+        protected override string Format
+        {
+            get
+            {
+                return "({0} ?? {1})";
+            }
+        }
+
         public ObservableCoalesceExpression(BinaryExpression expression, ObservableExpressionBinder binder)
             : this(binder.VisitObservable<T>(expression.Left), binder.VisitObservable<T>(expression.Right)) { }
 

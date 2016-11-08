@@ -7,6 +7,14 @@ namespace NMF.Expressions.Arithmetics
 {
     internal class ObservableIntBitwiseXor : ObservableReversableBinaryExpressionBase<int, int, int>
     {
+        protected override string Format
+        {
+            get
+            {
+                return "({0} ^ {1})";
+            }
+        }
+
         public ObservableIntBitwiseXor(INotifyExpression<int> left, INotifyExpression<int> right)
             : base(left, right) { }
 
@@ -33,6 +41,14 @@ namespace NMF.Expressions.Arithmetics
 
     internal class ObservableUIntBitwiseXor : ObservableReversableBinaryExpressionBase<uint, uint, uint>
     {
+        protected override string Format
+        {
+            get
+            {
+                return "({0} ^ {1})";
+            }
+        }
+
         public ObservableUIntBitwiseXor(INotifyExpression<uint> left, INotifyExpression<uint> right)
             : base(left, right) { }
 
@@ -59,6 +75,14 @@ namespace NMF.Expressions.Arithmetics
 
     internal class ObservableLongBitwiseXor : ObservableReversableBinaryExpressionBase<long, long, long>
     {
+        protected override string Format
+        {
+            get
+            {
+                return "({0} ^ {1})";
+            }
+        }
+
         public ObservableLongBitwiseXor(INotifyExpression<long> left, INotifyExpression<long> right)
             : base(left, right) { }
 
@@ -85,6 +109,14 @@ namespace NMF.Expressions.Arithmetics
 
     internal class ObservableULongBitwiseXor : ObservableReversableBinaryExpressionBase<ulong, ulong, ulong>
     {
+        protected override string Format
+        {
+            get
+            {
+                return "({0} ^ {1})";
+            }
+        }
+
         public ObservableULongBitwiseXor(INotifyExpression<ulong> left, INotifyExpression<ulong> right)
             : base(left, right) { }
 

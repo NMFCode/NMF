@@ -8,6 +8,14 @@ namespace NMF.Expressions.Arithmetics
 
     internal sealed class ObservableIntOnesComplement : ObservableUnaryExpressionBase<int, int>
     {
+        protected override string Format
+        {
+            get
+            {
+                return "~{0}";
+            }
+        }
+
         public ObservableIntOnesComplement(INotifyExpression<int> inner)
             : base(inner) { }
 
@@ -24,6 +32,14 @@ namespace NMF.Expressions.Arithmetics
 
     internal sealed class ObservableUIntOnesComplement : ObservableUnaryExpressionBase<uint, uint>
     {
+        protected override string Format
+        {
+            get
+            {
+                return "~{0}";
+            }
+        }
+
         public ObservableUIntOnesComplement(INotifyExpression<uint> inner)
             : base(inner) { }
 
@@ -40,6 +56,14 @@ namespace NMF.Expressions.Arithmetics
 
     internal sealed class ObservableLongOnesComplement : ObservableUnaryExpressionBase<long, long>
     {
+        protected override string Format
+        {
+            get
+            {
+                return "~{0}";
+            }
+        }
+
         public ObservableLongOnesComplement(INotifyExpression<long> inner)
             : base(inner) { }
 
@@ -56,6 +80,14 @@ namespace NMF.Expressions.Arithmetics
 
     internal sealed class ObservableULongOnesComplement : ObservableUnaryExpressionBase<ulong, ulong>
     {
+        protected override string Format
+        {
+            get
+            {
+                return "~{0}";
+            }
+        }
+
         public ObservableULongOnesComplement(INotifyExpression<ulong> inner)
             : base(inner) { }
 

@@ -12,6 +12,11 @@ namespace NMF.Expressions
 {
     internal class ObservableMemberExpression<TTarget, TMember> : NotifyExpression<TMember>
     {
+        public override string ToString()
+        {
+            return string.Format("{0}.{1}", Target.ToString(), MemberName);
+        }
+
         public ObservableMemberExpression(MemberExpression expression, ObservableExpressionBinder binder, string name, Func<TTarget, TMember> getter)
             : this(binder.VisitObservable<TTarget>(expression.Expression, true), name, getter) { }
 
@@ -125,6 +130,11 @@ namespace NMF.Expressions
 
     internal class ObservableReversableMemberExpression<TTarget, TMember> : ObservableReversableExpression<TMember>
     {
+        public override string ToString()
+        {
+            return string.Format("{0}.{1}", Target.ToString(), MemberName);
+        }
+
         public ObservableReversableMemberExpression(MemberExpression expression, ObservableExpressionBinder binder, string name, FieldInfo field)
             : this(binder.VisitObservable<TTarget>(expression.Expression, true), name, ReflectionHelper.CreateDynamicFieldGetter<TTarget, TMember>(field), ReflectionHelper.CreateDynamicFieldSetter<TTarget, TMember>(field)) { }
 

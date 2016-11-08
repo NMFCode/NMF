@@ -1,0 +1,148 @@
+﻿<#@ template debug="false" hostspecific="false" language="C#" #>
+<#@ assembly name="System.Core" #>
+<#@ import namespace="System.Linq" #>
+<#@ import namespace="System.Text" #>
+<#@ import namespace="System.Collections.Generic" #>
+<#@ output extension=".cs" #>
+<# int maxParameters = 15; #>
+using System;
+using System.Collections.Generic;
+using System.Collections.Specialized;
+using System.Linq;
+using System.Linq.Expressions;
+using System.Reflection;
+using System.Text;
+
+namespace NMF.Expressions
+{
+<#
+    for(int i = 1; i <= maxParameters; i++)
+    {
+#>
+    internal class ObservableDeferredProxyElement<T<# for (int j = 1; j <= i; j++) { #>, T<#= j #><# } #>> : NotifyExpression<T>
+    {
+        private INotifyExpression<T> proxy;
+        public Func<<# for (int j = 1; j <= i; j++) { #>INotifyValue<T<#= j #>>, <# } #>INotifyValue<T>> ProxyGenerator { get; private set; }
+<# for (int j = 1; j <= i; j++) { #>
+        public INotifyExpression<T<#= j #>> Argument<#= j #> { get; private set; }
+<# } #>
+
+        public ObservableDeferredProxyElement(MethodInfo proxyGenerator<# for (int j = 1; j <= i; j++) { #>, INotifyExpression<T<#= j #>> argument<#= j #><# } #>)
+            : this(ReflectionHelper.CreateDelegate<Func<<# for (int j = 1; j <= i; j++) { #>INotifyValue<T<#= j #>>, <# } #>INotifyValue<T>>>(proxyGenerator)<# for (int j = 1; j <= i; j++) { #>, argument<#= j #><# } #>)
+        { }
+
+        private ObservableDeferredProxyElement(Func<<# for (int j = 1; j <= i; j++) { #>INotifyValue<T<#= j #>>, <# } #>INotifyValue<T>> proxyGenerator<# for (int j = 1; j <= i; j++) { #>, INotifyExpression<T<#= j #>> argument<#= j #><# } #>)
+        {
+            ProxyGenerator = proxyGenerator;
+<# for (int j = 1; j <= i; j++) { #>
+            Argument1 = argument1;
+<# } #>
+        }
+
+        private void EnsureProxy()
+        {
+            if (proxy == null)
+            {
+                var proxyVal = ProxyGenerator(Argument1<# for (int j = 2; j <= i; j++) { #>, Argument<#= j #><# } #>);
+                proxy = proxyVal as INotifyExpression<T>;
+                if (proxy == null)
+                {
+                    proxy = new ObservableProxyExpression<T>(proxyVal);
+                }     
+                proxy.ValueChanged += Proxy_ValueChanged;
+            }
+        }
+
+        private void Proxy_ValueChanged(object sender, ValueChangedEventArgs e)
+        {
+            Refresh();
+        }
+
+        public override bool CanReduce
+        {
+            get
+            {
+                return proxy != null;
+            }
+        }
+
+        public override INotifyExpression<T> Reduce()
+        {
+            Attach();
+		    EnsureProxy();
+            return proxy.Reduce();
+        }
+
+        public override ExpressionType NodeType
+        {
+            get
+            {
+                return ExpressionType.Extension;
+            }
+        }
+
+        public override bool IsParameterFree
+        {
+            get
+            {
+			    EnsureProxy();
+                return proxy.IsParameterFree;
+            }
+        }
+
+		public override string ToString()
+		{
+			if (proxy != null)
+			{
+				return "proxy for " + proxy.ToString();
+			}
+			else
+			{
+				return "(deferred proxy)";
+			}
+		}
+
+        public override INotifyExpression<T> ApplyParameters(IDictionary<string, object> parameters)
+        {
+            if (proxy != null)
+            {
+                return proxy.ApplyParameters(parameters);
+            }
+            else
+            {
+                return new ObservableDeferredProxyElement<T<# for (int j = 1; j <= i; j++) { #>, T<#= j #><# } #>>(ProxyGenerator<# for (int j = 1; j <= i; j++) { #>, Argument<#= j #>.ApplyParameters(parameters)<# } #>);
+            }
+        }
+
+        protected override void AttachCore()
+        {
+		    EnsureProxy();
+<# for (int j = 1; j <= i; j++) { #>
+            Argument<#= j #>.Attach();
+<# } #>
+            proxy.Attach();
+        }
+
+        protected override void DetachCore()
+        {
+		    if (proxy != null)
+			{
+<# for (int j = 1; j <= i; j++) { #>
+                Argument<#= j #>.Detach();
+<# } #>
+                proxy.Detach();
+			}
+        }
+
+        protected override T GetValue()
+        {
+            EnsureProxy();
+            return proxy.Value;
+        }
+    }
+<# } #>
+    internal class ObservableDeferredElementTypes
+	{
+		public static readonly Type[] Types = { typeof(ObservableDeferredProxyElement<,>)<# for (int j = 2; j <= maxParameters; j++) { #>, typeof(ObservableDeferredProxyElement<<#= new string(',', j) #>>)<# } #>};
+	}
+}

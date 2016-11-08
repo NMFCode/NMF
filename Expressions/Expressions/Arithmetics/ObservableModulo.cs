@@ -7,6 +7,14 @@ namespace NMF.Expressions.Arithmetics
 {
     internal class ObservableIntModulo : ObservableBinaryExpressionBase<int, int, int>
     {
+        protected override string Format
+        {
+            get
+            {
+                return "({0} % {1})";
+            }
+        }
+
         public ObservableIntModulo(INotifyExpression<int> left, INotifyExpression<int> right)
             : base(left, right) { }
 
@@ -23,6 +31,14 @@ namespace NMF.Expressions.Arithmetics
 
     internal class ObservableLongModulo : ObservableBinaryExpressionBase<long, long, long>
     {
+        protected override string Format
+        {
+            get
+            {
+                return "({0} % {1})";
+            }
+        }
+
         public ObservableLongModulo(INotifyExpression<long> left, INotifyExpression<long> right)
             : base(left, right) { }
 
@@ -39,6 +55,14 @@ namespace NMF.Expressions.Arithmetics
 
     internal class ObservableUIntModulo : ObservableBinaryExpressionBase<uint, uint, uint>
     {
+        protected override string Format
+        {
+            get
+            {
+                return "({0} % {1})";
+            }
+        }
+
         public ObservableUIntModulo(INotifyExpression<uint> left, INotifyExpression<uint> right)
             : base(left, right) { }
 
@@ -56,6 +80,14 @@ namespace NMF.Expressions.Arithmetics
 
     internal class ObservableULongModulo : ObservableBinaryExpressionBase<ulong, ulong, ulong>
     {
+        protected override string Format
+        {
+            get
+            {
+                return "({0} % {1})";
+            }
+        }
+
         public ObservableULongModulo(INotifyExpression<ulong> left, INotifyExpression<ulong> right)
             : base(left, right) { }
 
@@ -72,6 +104,14 @@ namespace NMF.Expressions.Arithmetics
 
     internal class ObservableFloatModulo : ObservableBinaryExpressionBase<float, float, float>
     {
+        protected override string Format
+        {
+            get
+            {
+                return "({0} % {1})";
+            }
+        }
+
         public ObservableFloatModulo(INotifyExpression<float> left, INotifyExpression<float> right)
             : base(left, right) { }
 
@@ -88,6 +128,14 @@ namespace NMF.Expressions.Arithmetics
 
     internal class ObservableDoubleModulo : ObservableBinaryExpressionBase<double, double, double>
     {
+        protected override string Format
+        {
+            get
+            {
+                return "({0} % {1})";
+            }
+        }
+
         public ObservableDoubleModulo(INotifyExpression<double> left, INotifyExpression<double> right)
             : base(left, right) { }
 
