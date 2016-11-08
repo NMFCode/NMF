@@ -4,6 +4,7 @@ using System.Text;
 using System.Collections;
 using System.Reflection;
 using System.ComponentModel;
+using System.Linq.Expressions;
 
 namespace NMF.Serialization
 {
@@ -16,6 +17,7 @@ namespace NMF.Serialization
         private List<ITypeSerializationInfo> baseTypes = new List<ITypeSerializationInfo>();
         private IPropertySerializationInfo identifierProperty;
         private TypeConverter converter;
+        private Action<object, object> addMethod;
 
         public XmlTypeSerializationInfo(Type type)
         {
@@ -141,7 +143,11 @@ namespace NMF.Serialization
         {
             if (item != null)
             {
-                CollectionType.InvokeMember("Add", BindingFlags.Public | BindingFlags.InvokeMethod | BindingFlags.Instance, null, collection, new object[] { item });
+                if (addMethod == null)
+                {
+                    CreateCollectionAddMethod();
+                }
+                addMethod(collection, item);
             }
         }
 
@@ -182,6 +188,16 @@ namespace NMF.Serialization
         IEnumerable<ITypeSerializationInfo> ITypeSerializationInfo.BaseTypes
         {
             get { return baseTypes; }
+        }
+
+        public void CreateCollectionAddMethod()
+        {
+            var itemType = CollectionItemType.Type;
+            var collectionAddMethod = CollectionType.GetMethod("Add", new Type[] { itemType });
+            var p = Expression.Parameter(typeof(object));
+            var coll = Expression.Parameter(typeof(object));
+            var body = Expression.Call(Expression.Convert(coll, CollectionType), collectionAddMethod, Expression.Convert(p, itemType));
+            addMethod = Expression.Lambda<Action<object, object>>(body, coll, p).Compile();
         }
     }
 }

@@ -245,6 +245,11 @@ namespace NMF.Serialization
                     info.CollectionType = type;
                     info.CollectionItemType = GetSerializationInfo(type.GetGenericArguments()[0], true);
                 }
+
+                if (info.CollectionType != null)
+                {
+                    info.CreateCollectionAddMethod();
+                }
             }
             Type constructorType = type;
             if (type.BaseType != null)
