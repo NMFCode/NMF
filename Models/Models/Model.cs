@@ -101,15 +101,13 @@ namespace NMF.Models
         {
             if (fragment != null)
             {
-                var leftPad = fragment == string.Empty ?
-                    "/" : string.Empty;
                 if (ModelUri == null || !absolute || !ModelUri.IsAbsoluteUri)
                 {
-                    return new Uri("/" + leftPad + fragment, UriKind.Relative);
+                    return new Uri("#/" + fragment + "/", UriKind.Relative);
                 }
                 else
                 {
-                    return new Uri(ModelUri, "#/" + leftPad + fragment);
+                    return new Uri(ModelUri, "#/" + fragment + "/");
                 }
             }
             else

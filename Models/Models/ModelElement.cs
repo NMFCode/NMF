@@ -354,12 +354,12 @@ namespace NMF.Models
                         if (absolute)
                         {
                             result = model.ModelUri != null
-                                ? new Uri(model.ModelUri, "#" + newFragment)
+                                ? new Uri(model.ModelUri, "#" + newFragment + "/")
                                 : null;
                         }
                         else
                         {
-                            result = new Uri("#" + newFragment, UriKind.Relative);
+                            result = new Uri("#" + newFragment + "/", UriKind.Relative);
                         }
                     }
                 }
@@ -538,7 +538,7 @@ namespace NMF.Models
             var id = child.ToIdentifierString();
             if (!string.IsNullOrWhiteSpace(id))
             {
-                return Uri.EscapeDataString(id) + "/";
+                return Uri.EscapeDataString(id);
             }
             else
             {
