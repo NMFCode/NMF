@@ -14,6 +14,7 @@ namespace NMF.Interop.Ecore.Transformations
     public class Ecore2MetaTransformation : ReflectiveTransformation
     {
         private static Dictionary<string, IPrimitiveType> classesDict = new Dictionary<string, IPrimitiveType>();
+        private static IType eObject = MetaRepository.Instance.ResolveClass(typeof(EObject));
 
         static Ecore2MetaTransformation()
         {
@@ -223,6 +224,8 @@ namespace NMF.Interop.Ecore.Transformations
                         output.Refines = context.Trace.ResolveIn(this, baseReference);
                     }
                 }
+
+                if (output.Type == eObject) output.Type = null;
             }
 
             public override void RegisterDependencies()
