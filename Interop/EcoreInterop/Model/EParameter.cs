@@ -89,9 +89,41 @@ namespace NMF.Interop.Ecore
         }
         
         /// <summary>
+        /// Gets fired before the EOperation property changes its value
+        /// </summary>
+        public event System.EventHandler<ValueChangedEventArgs> EOperationChanging;
+        
+        /// <summary>
         /// Gets fired when the EOperation property changed its value
         /// </summary>
-        public event EventHandler<ValueChangedEventArgs> EOperationChanged;
+        public event System.EventHandler<ValueChangedEventArgs> EOperationChanged;
+        
+        /// <summary>
+        /// Raises the EOperationChanging event
+        /// </summary>
+        /// <param name="eventArgs">The event data</param>
+        protected virtual void OnEOperationChanging(ValueChangedEventArgs eventArgs)
+        {
+            System.EventHandler<ValueChangedEventArgs> handler = this.EOperationChanging;
+            if ((handler != null))
+            {
+                handler.Invoke(this, eventArgs);
+            }
+        }
+        
+        /// <summary>
+        /// Gets called when the parent model element of the current model element is about to change
+        /// </summary>
+        /// <param name="oldParent">The old parent model element</param>
+        /// <param name="newParent">The new parent model element</param>
+        protected override void OnParentChanging(IModelElement newParent, IModelElement oldParent)
+        {
+            IEOperation oldEOperation = ModelHelper.CastAs<IEOperation>(oldParent);
+            IEOperation newEOperation = ModelHelper.CastAs<IEOperation>(newParent);
+            ValueChangedEventArgs e = new ValueChangedEventArgs(oldEOperation, newEOperation);
+            this.OnEOperationChanging(e);
+            this.OnPropertyChanging("EOperation");
+        }
         
         /// <summary>
         /// Raises the EOperationChanged event
@@ -99,7 +131,7 @@ namespace NMF.Interop.Ecore
         /// <param name="eventArgs">The event data</param>
         protected virtual void OnEOperationChanged(ValueChangedEventArgs eventArgs)
         {
-            EventHandler<ValueChangedEventArgs> handler = this.EOperationChanged;
+            System.EventHandler<ValueChangedEventArgs> handler = this.EOperationChanged;
             if ((handler != null))
             {
                 handler.Invoke(this, eventArgs);
@@ -126,6 +158,7 @@ namespace NMF.Interop.Ecore
             ValueChangedEventArgs e = new ValueChangedEventArgs(oldEOperation, newEOperation);
             this.OnEOperationChanged(e);
             this.OnPropertyChanged("EOperation", e);
+            base.OnParentChanged(newParent, oldParent);
         }
         
         /// <summary>

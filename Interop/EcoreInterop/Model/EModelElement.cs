@@ -63,7 +63,7 @@ namespace NMF.Interop.Ecore
         [ContainmentAttribute()]
         [XmlOppositeAttribute("eModelElement")]
         [ConstantAttribute()]
-        public virtual IListExpression<IEAnnotation> EAnnotations
+        public virtual IOrderedSetExpression<IEAnnotation> EAnnotations
         {
             get
             {

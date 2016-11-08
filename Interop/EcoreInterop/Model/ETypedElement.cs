@@ -89,11 +89,11 @@ namespace NMF.Interop.Ecore
             {
                 if ((this._ordered != value))
                 {
-                    this.OnOrderedChanging(EventArgs.Empty);
-                    this.OnPropertyChanging("Ordered");
                     Nullable<bool> old = this._ordered;
-                    this._ordered = value;
                     ValueChangedEventArgs e = new ValueChangedEventArgs(old, value);
+                    this.OnOrderedChanging(e);
+                    this.OnPropertyChanging("Ordered", e);
+                    this._ordered = value;
                     this.OnOrderedChanged(e);
                     this.OnPropertyChanged("Ordered", e);
                 }
@@ -116,11 +116,11 @@ namespace NMF.Interop.Ecore
             {
                 if ((this._unique != value))
                 {
-                    this.OnUniqueChanging(EventArgs.Empty);
-                    this.OnPropertyChanging("Unique");
                     Nullable<bool> old = this._unique;
-                    this._unique = value;
                     ValueChangedEventArgs e = new ValueChangedEventArgs(old, value);
+                    this.OnUniqueChanging(e);
+                    this.OnPropertyChanging("Unique", e);
+                    this._unique = value;
                     this.OnUniqueChanged(e);
                     this.OnPropertyChanged("Unique", e);
                 }
@@ -142,11 +142,11 @@ namespace NMF.Interop.Ecore
             {
                 if ((this._lowerBound != value))
                 {
-                    this.OnLowerBoundChanging(EventArgs.Empty);
-                    this.OnPropertyChanging("LowerBound");
                     Nullable<int> old = this._lowerBound;
-                    this._lowerBound = value;
                     ValueChangedEventArgs e = new ValueChangedEventArgs(old, value);
+                    this.OnLowerBoundChanging(e);
+                    this.OnPropertyChanging("LowerBound", e);
+                    this._lowerBound = value;
                     this.OnLowerBoundChanged(e);
                     this.OnPropertyChanged("LowerBound", e);
                 }
@@ -169,11 +169,11 @@ namespace NMF.Interop.Ecore
             {
                 if ((this._upperBound != value))
                 {
-                    this.OnUpperBoundChanging(EventArgs.Empty);
-                    this.OnPropertyChanging("UpperBound");
                     Nullable<int> old = this._upperBound;
-                    this._upperBound = value;
                     ValueChangedEventArgs e = new ValueChangedEventArgs(old, value);
+                    this.OnUpperBoundChanging(e);
+                    this.OnPropertyChanging("UpperBound", e);
+                    this._upperBound = value;
                     this.OnUpperBoundChanged(e);
                     this.OnPropertyChanged("UpperBound", e);
                 }
@@ -195,9 +195,10 @@ namespace NMF.Interop.Ecore
             {
                 if ((this._eType != value))
                 {
-                    this.OnETypeChanging(EventArgs.Empty);
-                    this.OnPropertyChanging("EType");
                     IEClassifier old = this._eType;
+                    ValueChangedEventArgs e = new ValueChangedEventArgs(old, value);
+                    this.OnETypeChanging(e);
+                    this.OnPropertyChanging("EType", e);
                     this._eType = value;
                     if ((old != null))
                     {
@@ -207,7 +208,6 @@ namespace NMF.Interop.Ecore
                     {
                         value.Deleted += this.OnResetEType;
                     }
-                    ValueChangedEventArgs e = new ValueChangedEventArgs(old, value);
                     this.OnETypeChanged(e);
                     this.OnPropertyChanged("EType", e);
                 }
@@ -230,9 +230,10 @@ namespace NMF.Interop.Ecore
             {
                 if ((this._eGenericType != value))
                 {
-                    this.OnEGenericTypeChanging(EventArgs.Empty);
-                    this.OnPropertyChanging("EGenericType");
                     IEGenericType old = this._eGenericType;
+                    ValueChangedEventArgs e = new ValueChangedEventArgs(old, value);
+                    this.OnEGenericTypeChanging(e);
+                    this.OnPropertyChanging("EGenericType", e);
                     this._eGenericType = value;
                     if ((old != null))
                     {
@@ -244,7 +245,6 @@ namespace NMF.Interop.Ecore
                         value.Parent = this;
                         value.Deleted += this.OnResetEGenericType;
                     }
-                    ValueChangedEventArgs e = new ValueChangedEventArgs(old, value);
                     this.OnEGenericTypeChanged(e);
                     this.OnPropertyChanged("EGenericType", e);
                 }
@@ -291,70 +291,70 @@ namespace NMF.Interop.Ecore
         /// <summary>
         /// Gets fired before the Ordered property changes its value
         /// </summary>
-        public event EventHandler OrderedChanging;
+        public event System.EventHandler<ValueChangedEventArgs> OrderedChanging;
         
         /// <summary>
         /// Gets fired when the Ordered property changed its value
         /// </summary>
-        public event EventHandler<ValueChangedEventArgs> OrderedChanged;
+        public event System.EventHandler<ValueChangedEventArgs> OrderedChanged;
         
         /// <summary>
         /// Gets fired before the Unique property changes its value
         /// </summary>
-        public event EventHandler UniqueChanging;
+        public event System.EventHandler<ValueChangedEventArgs> UniqueChanging;
         
         /// <summary>
         /// Gets fired when the Unique property changed its value
         /// </summary>
-        public event EventHandler<ValueChangedEventArgs> UniqueChanged;
+        public event System.EventHandler<ValueChangedEventArgs> UniqueChanged;
         
         /// <summary>
         /// Gets fired before the LowerBound property changes its value
         /// </summary>
-        public event EventHandler LowerBoundChanging;
+        public event System.EventHandler<ValueChangedEventArgs> LowerBoundChanging;
         
         /// <summary>
         /// Gets fired when the LowerBound property changed its value
         /// </summary>
-        public event EventHandler<ValueChangedEventArgs> LowerBoundChanged;
+        public event System.EventHandler<ValueChangedEventArgs> LowerBoundChanged;
         
         /// <summary>
         /// Gets fired before the UpperBound property changes its value
         /// </summary>
-        public event EventHandler UpperBoundChanging;
+        public event System.EventHandler<ValueChangedEventArgs> UpperBoundChanging;
         
         /// <summary>
         /// Gets fired when the UpperBound property changed its value
         /// </summary>
-        public event EventHandler<ValueChangedEventArgs> UpperBoundChanged;
+        public event System.EventHandler<ValueChangedEventArgs> UpperBoundChanged;
         
         /// <summary>
         /// Gets fired before the EType property changes its value
         /// </summary>
-        public event EventHandler ETypeChanging;
+        public event System.EventHandler<ValueChangedEventArgs> ETypeChanging;
         
         /// <summary>
         /// Gets fired when the EType property changed its value
         /// </summary>
-        public event EventHandler<ValueChangedEventArgs> ETypeChanged;
+        public event System.EventHandler<ValueChangedEventArgs> ETypeChanged;
         
         /// <summary>
         /// Gets fired before the EGenericType property changes its value
         /// </summary>
-        public event EventHandler EGenericTypeChanging;
+        public event System.EventHandler<ValueChangedEventArgs> EGenericTypeChanging;
         
         /// <summary>
         /// Gets fired when the EGenericType property changed its value
         /// </summary>
-        public event EventHandler<ValueChangedEventArgs> EGenericTypeChanged;
+        public event System.EventHandler<ValueChangedEventArgs> EGenericTypeChanged;
         
         /// <summary>
         /// Raises the OrderedChanging event
         /// </summary>
         /// <param name="eventArgs">The event data</param>
-        protected virtual void OnOrderedChanging(EventArgs eventArgs)
+        protected virtual void OnOrderedChanging(ValueChangedEventArgs eventArgs)
         {
-            EventHandler handler = this.OrderedChanging;
+            System.EventHandler<ValueChangedEventArgs> handler = this.OrderedChanging;
             if ((handler != null))
             {
                 handler.Invoke(this, eventArgs);
@@ -367,7 +367,7 @@ namespace NMF.Interop.Ecore
         /// <param name="eventArgs">The event data</param>
         protected virtual void OnOrderedChanged(ValueChangedEventArgs eventArgs)
         {
-            EventHandler<ValueChangedEventArgs> handler = this.OrderedChanged;
+            System.EventHandler<ValueChangedEventArgs> handler = this.OrderedChanged;
             if ((handler != null))
             {
                 handler.Invoke(this, eventArgs);
@@ -378,9 +378,9 @@ namespace NMF.Interop.Ecore
         /// Raises the UniqueChanging event
         /// </summary>
         /// <param name="eventArgs">The event data</param>
-        protected virtual void OnUniqueChanging(EventArgs eventArgs)
+        protected virtual void OnUniqueChanging(ValueChangedEventArgs eventArgs)
         {
-            EventHandler handler = this.UniqueChanging;
+            System.EventHandler<ValueChangedEventArgs> handler = this.UniqueChanging;
             if ((handler != null))
             {
                 handler.Invoke(this, eventArgs);
@@ -393,7 +393,7 @@ namespace NMF.Interop.Ecore
         /// <param name="eventArgs">The event data</param>
         protected virtual void OnUniqueChanged(ValueChangedEventArgs eventArgs)
         {
-            EventHandler<ValueChangedEventArgs> handler = this.UniqueChanged;
+            System.EventHandler<ValueChangedEventArgs> handler = this.UniqueChanged;
             if ((handler != null))
             {
                 handler.Invoke(this, eventArgs);
@@ -404,9 +404,9 @@ namespace NMF.Interop.Ecore
         /// Raises the LowerBoundChanging event
         /// </summary>
         /// <param name="eventArgs">The event data</param>
-        protected virtual void OnLowerBoundChanging(EventArgs eventArgs)
+        protected virtual void OnLowerBoundChanging(ValueChangedEventArgs eventArgs)
         {
-            EventHandler handler = this.LowerBoundChanging;
+            System.EventHandler<ValueChangedEventArgs> handler = this.LowerBoundChanging;
             if ((handler != null))
             {
                 handler.Invoke(this, eventArgs);
@@ -419,7 +419,7 @@ namespace NMF.Interop.Ecore
         /// <param name="eventArgs">The event data</param>
         protected virtual void OnLowerBoundChanged(ValueChangedEventArgs eventArgs)
         {
-            EventHandler<ValueChangedEventArgs> handler = this.LowerBoundChanged;
+            System.EventHandler<ValueChangedEventArgs> handler = this.LowerBoundChanged;
             if ((handler != null))
             {
                 handler.Invoke(this, eventArgs);
@@ -430,9 +430,9 @@ namespace NMF.Interop.Ecore
         /// Raises the UpperBoundChanging event
         /// </summary>
         /// <param name="eventArgs">The event data</param>
-        protected virtual void OnUpperBoundChanging(EventArgs eventArgs)
+        protected virtual void OnUpperBoundChanging(ValueChangedEventArgs eventArgs)
         {
-            EventHandler handler = this.UpperBoundChanging;
+            System.EventHandler<ValueChangedEventArgs> handler = this.UpperBoundChanging;
             if ((handler != null))
             {
                 handler.Invoke(this, eventArgs);
@@ -445,7 +445,7 @@ namespace NMF.Interop.Ecore
         /// <param name="eventArgs">The event data</param>
         protected virtual void OnUpperBoundChanged(ValueChangedEventArgs eventArgs)
         {
-            EventHandler<ValueChangedEventArgs> handler = this.UpperBoundChanged;
+            System.EventHandler<ValueChangedEventArgs> handler = this.UpperBoundChanged;
             if ((handler != null))
             {
                 handler.Invoke(this, eventArgs);
@@ -456,9 +456,9 @@ namespace NMF.Interop.Ecore
         /// Raises the ETypeChanging event
         /// </summary>
         /// <param name="eventArgs">The event data</param>
-        protected virtual void OnETypeChanging(EventArgs eventArgs)
+        protected virtual void OnETypeChanging(ValueChangedEventArgs eventArgs)
         {
-            EventHandler handler = this.ETypeChanging;
+            System.EventHandler<ValueChangedEventArgs> handler = this.ETypeChanging;
             if ((handler != null))
             {
                 handler.Invoke(this, eventArgs);
@@ -471,7 +471,7 @@ namespace NMF.Interop.Ecore
         /// <param name="eventArgs">The event data</param>
         protected virtual void OnETypeChanged(ValueChangedEventArgs eventArgs)
         {
-            EventHandler<ValueChangedEventArgs> handler = this.ETypeChanged;
+            System.EventHandler<ValueChangedEventArgs> handler = this.ETypeChanged;
             if ((handler != null))
             {
                 handler.Invoke(this, eventArgs);
@@ -492,9 +492,9 @@ namespace NMF.Interop.Ecore
         /// Raises the EGenericTypeChanging event
         /// </summary>
         /// <param name="eventArgs">The event data</param>
-        protected virtual void OnEGenericTypeChanging(EventArgs eventArgs)
+        protected virtual void OnEGenericTypeChanging(ValueChangedEventArgs eventArgs)
         {
-            EventHandler handler = this.EGenericTypeChanging;
+            System.EventHandler<ValueChangedEventArgs> handler = this.EGenericTypeChanging;
             if ((handler != null))
             {
                 handler.Invoke(this, eventArgs);
@@ -507,7 +507,7 @@ namespace NMF.Interop.Ecore
         /// <param name="eventArgs">The event data</param>
         protected virtual void OnEGenericTypeChanged(ValueChangedEventArgs eventArgs)
         {
-            EventHandler<ValueChangedEventArgs> handler = this.EGenericTypeChanged;
+            System.EventHandler<ValueChangedEventArgs> handler = this.EGenericTypeChanged;
             if ((handler != null))
             {
                 handler.Invoke(this, eventArgs);

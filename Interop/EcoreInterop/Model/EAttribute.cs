@@ -63,11 +63,11 @@ namespace NMF.Interop.Ecore
             {
                 if ((this._iD != value))
                 {
-                    this.OnIDChanging(EventArgs.Empty);
-                    this.OnPropertyChanging("ID");
                     Nullable<bool> old = this._iD;
-                    this._iD = value;
                     ValueChangedEventArgs e = new ValueChangedEventArgs(old, value);
+                    this.OnIDChanging(e);
+                    this.OnPropertyChanging("ID", e);
+                    this._iD = value;
                     this.OnIDChanged(e);
                     this.OnPropertyChanged("ID", e);
                 }
@@ -92,20 +92,20 @@ namespace NMF.Interop.Ecore
         /// <summary>
         /// Gets fired before the ID property changes its value
         /// </summary>
-        public event EventHandler IDChanging;
+        public event System.EventHandler<ValueChangedEventArgs> IDChanging;
         
         /// <summary>
         /// Gets fired when the ID property changed its value
         /// </summary>
-        public event EventHandler<ValueChangedEventArgs> IDChanged;
+        public event System.EventHandler<ValueChangedEventArgs> IDChanged;
         
         /// <summary>
         /// Raises the IDChanging event
         /// </summary>
         /// <param name="eventArgs">The event data</param>
-        protected virtual void OnIDChanging(EventArgs eventArgs)
+        protected virtual void OnIDChanging(ValueChangedEventArgs eventArgs)
         {
-            EventHandler handler = this.IDChanging;
+            System.EventHandler<ValueChangedEventArgs> handler = this.IDChanging;
             if ((handler != null))
             {
                 handler.Invoke(this, eventArgs);
@@ -118,7 +118,7 @@ namespace NMF.Interop.Ecore
         /// <param name="eventArgs">The event data</param>
         protected virtual void OnIDChanged(ValueChangedEventArgs eventArgs)
         {
-            EventHandler<ValueChangedEventArgs> handler = this.IDChanged;
+            System.EventHandler<ValueChangedEventArgs> handler = this.IDChanged;
             if ((handler != null))
             {
                 handler.Invoke(this, eventArgs);

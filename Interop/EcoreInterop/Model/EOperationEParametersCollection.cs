@@ -31,7 +31,7 @@ namespace NMF.Interop.Ecore
 {
     
     
-    public class EOperationEParametersCollection : ObservableOppositeList<IEOperation, IEParameter>
+    public class EOperationEParametersCollection : ObservableOppositeOrderedSet<IEOperation, IEParameter>
     {
         
         public EOperationEParametersCollection(IEOperation parent) : 
@@ -39,21 +39,24 @@ namespace NMF.Interop.Ecore
         {
         }
         
-        private void OnItemDeleted(object sender, System.EventArgs e)
+        private void OnItemParentChanged(object sender, ValueChangedEventArgs e)
         {
-            this.Remove(((IEParameter)(sender)));
+            if ((e.NewValue != this.Parent))
+            {
+                this.Remove(((IEParameter)(sender)));
+            }
         }
         
         protected override void SetOpposite(IEParameter item, IEOperation parent)
         {
             if ((parent != null))
             {
-                item.Deleted += this.OnItemDeleted;
+                item.ParentChanged += this.OnItemParentChanged;
                 item.EOperation = parent;
             }
             else
             {
-                item.Deleted -= this.OnItemDeleted;
+                item.ParentChanged -= this.OnItemParentChanged;
                 if ((item.EOperation == this.Parent))
                 {
                     item.EOperation = parent;

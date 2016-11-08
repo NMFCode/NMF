@@ -73,11 +73,11 @@ namespace NMF.Interop.Ecore
             {
                 if ((this._value != value))
                 {
-                    this.OnValueChanging(EventArgs.Empty);
-                    this.OnPropertyChanging("Value");
                     Nullable<int> old = this._value;
-                    this._value = value;
                     ValueChangedEventArgs e = new ValueChangedEventArgs(old, value);
+                    this.OnValueChanging(e);
+                    this.OnPropertyChanging("Value", e);
+                    this._value = value;
                     this.OnValueChanged(e);
                     this.OnPropertyChanged("Value", e);
                 }
@@ -99,11 +99,11 @@ namespace NMF.Interop.Ecore
             {
                 if ((this._instance != value))
                 {
-                    this.OnInstanceChanging(EventArgs.Empty);
-                    this.OnPropertyChanging("Instance");
                     object old = this._instance;
-                    this._instance = value;
                     ValueChangedEventArgs e = new ValueChangedEventArgs(old, value);
+                    this.OnInstanceChanging(e);
+                    this.OnPropertyChanging("Instance", e);
+                    this._instance = value;
                     this.OnInstanceChanged(e);
                     this.OnPropertyChanged("Instance", e);
                 }
@@ -125,11 +125,11 @@ namespace NMF.Interop.Ecore
             {
                 if ((this._literal != value))
                 {
-                    this.OnLiteralChanging(EventArgs.Empty);
-                    this.OnPropertyChanging("Literal");
                     string old = this._literal;
-                    this._literal = value;
                     ValueChangedEventArgs e = new ValueChangedEventArgs(old, value);
+                    this.OnLiteralChanging(e);
+                    this.OnPropertyChanging("Literal", e);
+                    this._literal = value;
                     this.OnLiteralChanged(e);
                     this.OnPropertyChanged("Literal", e);
                 }
@@ -184,45 +184,50 @@ namespace NMF.Interop.Ecore
         /// <summary>
         /// Gets fired before the Value property changes its value
         /// </summary>
-        public event EventHandler ValueChanging;
+        public event System.EventHandler<ValueChangedEventArgs> ValueChanging;
         
         /// <summary>
         /// Gets fired when the Value property changed its value
         /// </summary>
-        public event EventHandler<ValueChangedEventArgs> ValueChanged;
+        public event System.EventHandler<ValueChangedEventArgs> ValueChanged;
         
         /// <summary>
         /// Gets fired before the Instance property changes its value
         /// </summary>
-        public event EventHandler InstanceChanging;
+        public event System.EventHandler<ValueChangedEventArgs> InstanceChanging;
         
         /// <summary>
         /// Gets fired when the Instance property changed its value
         /// </summary>
-        public event EventHandler<ValueChangedEventArgs> InstanceChanged;
+        public event System.EventHandler<ValueChangedEventArgs> InstanceChanged;
         
         /// <summary>
         /// Gets fired before the Literal property changes its value
         /// </summary>
-        public event EventHandler LiteralChanging;
+        public event System.EventHandler<ValueChangedEventArgs> LiteralChanging;
         
         /// <summary>
         /// Gets fired when the Literal property changed its value
         /// </summary>
-        public event EventHandler<ValueChangedEventArgs> LiteralChanged;
+        public event System.EventHandler<ValueChangedEventArgs> LiteralChanged;
+        
+        /// <summary>
+        /// Gets fired before the EEnum property changes its value
+        /// </summary>
+        public event System.EventHandler<ValueChangedEventArgs> EEnumChanging;
         
         /// <summary>
         /// Gets fired when the EEnum property changed its value
         /// </summary>
-        public event EventHandler<ValueChangedEventArgs> EEnumChanged;
+        public event System.EventHandler<ValueChangedEventArgs> EEnumChanged;
         
         /// <summary>
         /// Raises the ValueChanging event
         /// </summary>
         /// <param name="eventArgs">The event data</param>
-        protected virtual void OnValueChanging(EventArgs eventArgs)
+        protected virtual void OnValueChanging(ValueChangedEventArgs eventArgs)
         {
-            EventHandler handler = this.ValueChanging;
+            System.EventHandler<ValueChangedEventArgs> handler = this.ValueChanging;
             if ((handler != null))
             {
                 handler.Invoke(this, eventArgs);
@@ -235,7 +240,7 @@ namespace NMF.Interop.Ecore
         /// <param name="eventArgs">The event data</param>
         protected virtual void OnValueChanged(ValueChangedEventArgs eventArgs)
         {
-            EventHandler<ValueChangedEventArgs> handler = this.ValueChanged;
+            System.EventHandler<ValueChangedEventArgs> handler = this.ValueChanged;
             if ((handler != null))
             {
                 handler.Invoke(this, eventArgs);
@@ -246,9 +251,9 @@ namespace NMF.Interop.Ecore
         /// Raises the InstanceChanging event
         /// </summary>
         /// <param name="eventArgs">The event data</param>
-        protected virtual void OnInstanceChanging(EventArgs eventArgs)
+        protected virtual void OnInstanceChanging(ValueChangedEventArgs eventArgs)
         {
-            EventHandler handler = this.InstanceChanging;
+            System.EventHandler<ValueChangedEventArgs> handler = this.InstanceChanging;
             if ((handler != null))
             {
                 handler.Invoke(this, eventArgs);
@@ -261,7 +266,7 @@ namespace NMF.Interop.Ecore
         /// <param name="eventArgs">The event data</param>
         protected virtual void OnInstanceChanged(ValueChangedEventArgs eventArgs)
         {
-            EventHandler<ValueChangedEventArgs> handler = this.InstanceChanged;
+            System.EventHandler<ValueChangedEventArgs> handler = this.InstanceChanged;
             if ((handler != null))
             {
                 handler.Invoke(this, eventArgs);
@@ -272,9 +277,9 @@ namespace NMF.Interop.Ecore
         /// Raises the LiteralChanging event
         /// </summary>
         /// <param name="eventArgs">The event data</param>
-        protected virtual void OnLiteralChanging(EventArgs eventArgs)
+        protected virtual void OnLiteralChanging(ValueChangedEventArgs eventArgs)
         {
-            EventHandler handler = this.LiteralChanging;
+            System.EventHandler<ValueChangedEventArgs> handler = this.LiteralChanging;
             if ((handler != null))
             {
                 handler.Invoke(this, eventArgs);
@@ -287,11 +292,38 @@ namespace NMF.Interop.Ecore
         /// <param name="eventArgs">The event data</param>
         protected virtual void OnLiteralChanged(ValueChangedEventArgs eventArgs)
         {
-            EventHandler<ValueChangedEventArgs> handler = this.LiteralChanged;
+            System.EventHandler<ValueChangedEventArgs> handler = this.LiteralChanged;
             if ((handler != null))
             {
                 handler.Invoke(this, eventArgs);
             }
+        }
+        
+        /// <summary>
+        /// Raises the EEnumChanging event
+        /// </summary>
+        /// <param name="eventArgs">The event data</param>
+        protected virtual void OnEEnumChanging(ValueChangedEventArgs eventArgs)
+        {
+            System.EventHandler<ValueChangedEventArgs> handler = this.EEnumChanging;
+            if ((handler != null))
+            {
+                handler.Invoke(this, eventArgs);
+            }
+        }
+        
+        /// <summary>
+        /// Gets called when the parent model element of the current model element is about to change
+        /// </summary>
+        /// <param name="oldParent">The old parent model element</param>
+        /// <param name="newParent">The new parent model element</param>
+        protected override void OnParentChanging(IModelElement newParent, IModelElement oldParent)
+        {
+            IEEnum oldEEnum = ModelHelper.CastAs<IEEnum>(oldParent);
+            IEEnum newEEnum = ModelHelper.CastAs<IEEnum>(newParent);
+            ValueChangedEventArgs e = new ValueChangedEventArgs(oldEEnum, newEEnum);
+            this.OnEEnumChanging(e);
+            this.OnPropertyChanging("EEnum");
         }
         
         /// <summary>
@@ -300,7 +332,7 @@ namespace NMF.Interop.Ecore
         /// <param name="eventArgs">The event data</param>
         protected virtual void OnEEnumChanged(ValueChangedEventArgs eventArgs)
         {
-            EventHandler<ValueChangedEventArgs> handler = this.EEnumChanged;
+            System.EventHandler<ValueChangedEventArgs> handler = this.EEnumChanged;
             if ((handler != null))
             {
                 handler.Invoke(this, eventArgs);
@@ -327,6 +359,7 @@ namespace NMF.Interop.Ecore
             ValueChangedEventArgs e = new ValueChangedEventArgs(oldEEnum, newEEnum);
             this.OnEEnumChanged(e);
             this.OnPropertyChanged("EEnum", e);
+            base.OnParentChanged(newParent, oldParent);
         }
         
         /// <summary>

@@ -64,7 +64,7 @@ namespace NMF.Interop.Ecore
         [ContainmentAttribute()]
         [XmlOppositeAttribute("eEnum")]
         [ConstantAttribute()]
-        public virtual IListExpression<IEEnumLiteral> ELiterals
+        public virtual IOrderedSetExpression<IEEnumLiteral> ELiterals
         {
             get
             {

@@ -51,7 +51,7 @@ namespace NMF.Interop.Ecore
         /// <summary>
         /// The eTypeArguments property
         /// </summary>
-        IListExpression<IEGenericType> ETypeArguments
+        IOrderedSetExpression<IEGenericType> ETypeArguments
         {
             get;
         }
@@ -86,42 +86,42 @@ namespace NMF.Interop.Ecore
         /// <summary>
         /// Gets fired before the EUpperBound property changes its value
         /// </summary>
-        event EventHandler EUpperBoundChanging;
+        event System.EventHandler<ValueChangedEventArgs> EUpperBoundChanging;
         
         /// <summary>
         /// Gets fired when the EUpperBound property changed its value
         /// </summary>
-        event EventHandler<ValueChangedEventArgs> EUpperBoundChanged;
+        event System.EventHandler<ValueChangedEventArgs> EUpperBoundChanged;
         
         /// <summary>
         /// Gets fired before the ELowerBound property changes its value
         /// </summary>
-        event EventHandler ELowerBoundChanging;
+        event System.EventHandler<ValueChangedEventArgs> ELowerBoundChanging;
         
         /// <summary>
         /// Gets fired when the ELowerBound property changed its value
         /// </summary>
-        event EventHandler<ValueChangedEventArgs> ELowerBoundChanged;
+        event System.EventHandler<ValueChangedEventArgs> ELowerBoundChanged;
         
         /// <summary>
         /// Gets fired before the ETypeParameter property changes its value
         /// </summary>
-        event EventHandler ETypeParameterChanging;
+        event System.EventHandler<ValueChangedEventArgs> ETypeParameterChanging;
         
         /// <summary>
         /// Gets fired when the ETypeParameter property changed its value
         /// </summary>
-        event EventHandler<ValueChangedEventArgs> ETypeParameterChanged;
+        event System.EventHandler<ValueChangedEventArgs> ETypeParameterChanged;
         
         /// <summary>
         /// Gets fired before the EClassifier property changes its value
         /// </summary>
-        event EventHandler EClassifierChanging;
+        event System.EventHandler<ValueChangedEventArgs> EClassifierChanging;
         
         /// <summary>
         /// Gets fired when the EClassifier property changed its value
         /// </summary>
-        event EventHandler<ValueChangedEventArgs> EClassifierChanged;
+        event System.EventHandler<ValueChangedEventArgs> EClassifierChanged;
     }
 }
 

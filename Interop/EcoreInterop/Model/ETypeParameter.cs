@@ -44,13 +44,13 @@ namespace NMF.Interop.Ecore
         /// <summary>
         /// The backing field for the EBounds property
         /// </summary>
-        private ObservableCompositionList<IEGenericType> _eBounds;
+        private ObservableCompositionOrderedSet<IEGenericType> _eBounds;
         
         private static IClass _classInstance;
         
         public ETypeParameter()
         {
-            this._eBounds = new ObservableCompositionList<IEGenericType>(this);
+            this._eBounds = new ObservableCompositionOrderedSet<IEGenericType>(this);
             this._eBounds.CollectionChanging += this.EBoundsCollectionChanging;
             this._eBounds.CollectionChanged += this.EBoundsCollectionChanged;
         }
@@ -63,7 +63,7 @@ namespace NMF.Interop.Ecore
         [XmlAttributeAttribute(false)]
         [ContainmentAttribute()]
         [ConstantAttribute()]
-        public virtual IListExpression<IEGenericType> EBounds
+        public virtual IOrderedSetExpression<IEGenericType> EBounds
         {
             get
             {

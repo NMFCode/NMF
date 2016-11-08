@@ -12,11 +12,11 @@ using NMF.Collections.Generic;
 using NMF.Collections.ObjectModel;
 using NMF.Expressions;
 using NMF.Expressions.Linq;
-using NMF.Interop.Ecore;
 using NMF.Models;
 using NMF.Models.Collections;
 using NMF.Models.Expressions;
 using NMF.Models.Meta;
+using NMF.Models.Repository;
 using NMF.Serialization;
 using NMF.Utilities;
 using System;
@@ -43,14 +43,16 @@ namespace NMF.Interop.Layout
         /// <summary>
         /// The backing field for the Object property
         /// </summary>
-        private IEObject _object;
+        private IModelElement _object;
+        
+        private static IClass _classInstance;
         
         /// <summary>
         /// The object property
         /// </summary>
         [XmlElementNameAttribute("object")]
         [XmlAttributeAttribute(true)]
-        public virtual IEObject Object
+        public virtual IModelElement Object
         {
             get
             {
@@ -60,17 +62,11 @@ namespace NMF.Interop.Layout
             {
                 if ((this._object != value))
                 {
-                    IEObject old = this._object;
-                    this._object = value;
-                    if ((old != null))
-                    {
-                        old.Deleted -= this.OnResetObject;
-                    }
-                    if ((value != null))
-                    {
-                        value.Deleted += this.OnResetObject;
-                    }
+                    IModelElement old = this._object;
                     ValueChangedEventArgs e = new ValueChangedEventArgs(old, value);
+                    this.OnObjectChanging(e);
+                    this.OnPropertyChanging("Object", e);
+                    this._object = value;
                     this.OnObjectChanged(e);
                     this.OnPropertyChanged("Object", e);
                 }
@@ -89,20 +85,42 @@ namespace NMF.Interop.Layout
         }
         
         /// <summary>
-        /// Gets the Class element that describes the structure of this type
+        /// Gets the Class model for this type
         /// </summary>
-        public new static NMF.Models.Meta.IClass ClassInstance
+        public new static IClass ClassInstance
         {
             get
             {
-                return (IClass)NMF.Models.Repository.MetaRepository.Instance.ResolveType("http://www.emftext.org/commons/layout#//ReferenceLayoutInformation/");
+                if ((_classInstance == null))
+                {
+                    _classInstance = ((IClass)(MetaRepository.Instance.Resolve("http://www.emftext.org/commons/layout#//ReferenceLayoutInformation/")));
+                }
+                return _classInstance;
             }
         }
         
         /// <summary>
+        /// Gets fired before the Object property changes its value
+        /// </summary>
+        public event System.EventHandler<ValueChangedEventArgs> ObjectChanging;
+        
+        /// <summary>
         /// Gets fired when the Object property changed its value
         /// </summary>
-        public event EventHandler<ValueChangedEventArgs> ObjectChanged;
+        public event System.EventHandler<ValueChangedEventArgs> ObjectChanged;
+        
+        /// <summary>
+        /// Raises the ObjectChanging event
+        /// </summary>
+        /// <param name="eventArgs">The event data</param>
+        protected virtual void OnObjectChanging(ValueChangedEventArgs eventArgs)
+        {
+            System.EventHandler<ValueChangedEventArgs> handler = this.ObjectChanging;
+            if ((handler != null))
+            {
+                handler.Invoke(this, eventArgs);
+            }
+        }
         
         /// <summary>
         /// Raises the ObjectChanged event
@@ -110,7 +128,7 @@ namespace NMF.Interop.Layout
         /// <param name="eventArgs">The event data</param>
         protected virtual void OnObjectChanged(ValueChangedEventArgs eventArgs)
         {
-            EventHandler<ValueChangedEventArgs> handler = this.ObjectChanged;
+            System.EventHandler<ValueChangedEventArgs> handler = this.ObjectChanged;
             if ((handler != null))
             {
                 handler.Invoke(this, eventArgs);
@@ -122,7 +140,7 @@ namespace NMF.Interop.Layout
         /// </summary>
         /// <param name="sender">The object that sent this reset request</param>
         /// <param name="eventArgs">The event data for the reset event</param>
-        private void OnResetObject(object sender, EventArgs eventArgs)
+        private void OnResetObject(object sender, System.EventArgs eventArgs)
         {
             this.Object = null;
         }
@@ -136,7 +154,7 @@ namespace NMF.Interop.Layout
         {
             if ((feature == "OBJECT"))
             {
-                this.Object = ((IEObject)(value));
+                this.Object = ((IModelElement)(value));
                 return;
             }
             base.SetFeature(feature, value);
@@ -175,7 +193,11 @@ namespace NMF.Interop.Layout
         /// </summary>
         public override IClass GetClass()
         {
-            return ((IClass)(NMF.Models.Repository.MetaRepository.Instance.Resolve("http://www.emftext.org/commons/layout#//ReferenceLayoutInformation/")));
+            if ((_classInstance == null))
+            {
+                _classInstance = ((IClass)(MetaRepository.Instance.Resolve("http://www.emftext.org/commons/layout#//ReferenceLayoutInformation/")));
+            }
+            return _classInstance;
         }
         
         /// <summary>
@@ -228,12 +250,8 @@ namespace NMF.Interop.Layout
             {
                 if ((this._parent.Object == null))
                 {
-                    IEObject objectCasted = item.As<IEObject>();
-                    if ((objectCasted != null))
-                    {
-                        this._parent.Object = objectCasted;
-                        return;
-                    }
+                    this._parent.Object = item;
+                    return;
                 }
             }
             
@@ -301,7 +319,7 @@ namespace NMF.Interop.Layout
         /// <summary>
         /// Represents a proxy to represent an incremental access to the object property
         /// </summary>
-        private sealed class ObjectProxy : ModelPropertyChange<IReferenceLayoutInformation, IEObject>
+        private sealed class ObjectProxy : ModelPropertyChange<IReferenceLayoutInformation, IModelElement>
         {
             
             /// <summary>
@@ -316,7 +334,7 @@ namespace NMF.Interop.Layout
             /// <summary>
             /// Gets or sets the value of this expression
             /// </summary>
-            public override IEObject Value
+            public override IModelElement Value
             {
                 get
                 {

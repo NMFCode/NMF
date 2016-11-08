@@ -44,7 +44,7 @@ namespace NMF.Interop.Ecore
         /// <summary>
         /// The backing field for the ETypeParameters property
         /// </summary>
-        private ObservableCompositionList<IETypeParameter> _eTypeParameters;
+        private ObservableCompositionOrderedSet<IETypeParameter> _eTypeParameters;
         
         /// <summary>
         /// The backing field for the EParameters property
@@ -54,27 +54,27 @@ namespace NMF.Interop.Ecore
         /// <summary>
         /// The backing field for the EExceptions property
         /// </summary>
-        private ObservableAssociationList<IEClassifier> _eExceptions;
+        private ObservableAssociationOrderedSet<IEClassifier> _eExceptions;
         
         /// <summary>
         /// The backing field for the EGenericExceptions property
         /// </summary>
-        private ObservableCompositionList<IEGenericType> _eGenericExceptions;
+        private ObservableCompositionOrderedSet<IEGenericType> _eGenericExceptions;
         
         private static IClass _classInstance;
         
         public EOperation()
         {
-            this._eTypeParameters = new ObservableCompositionList<IETypeParameter>(this);
+            this._eTypeParameters = new ObservableCompositionOrderedSet<IETypeParameter>(this);
             this._eTypeParameters.CollectionChanging += this.ETypeParametersCollectionChanging;
             this._eTypeParameters.CollectionChanged += this.ETypeParametersCollectionChanged;
             this._eParameters = new EOperationEParametersCollection(this);
             this._eParameters.CollectionChanging += this.EParametersCollectionChanging;
             this._eParameters.CollectionChanged += this.EParametersCollectionChanged;
-            this._eExceptions = new ObservableAssociationList<IEClassifier>();
+            this._eExceptions = new ObservableAssociationOrderedSet<IEClassifier>();
             this._eExceptions.CollectionChanging += this.EExceptionsCollectionChanging;
             this._eExceptions.CollectionChanged += this.EExceptionsCollectionChanged;
-            this._eGenericExceptions = new ObservableCompositionList<IEGenericType>(this);
+            this._eGenericExceptions = new ObservableCompositionOrderedSet<IEGenericType>(this);
             this._eGenericExceptions.CollectionChanging += this.EGenericExceptionsCollectionChanging;
             this._eGenericExceptions.CollectionChanged += this.EGenericExceptionsCollectionChanged;
         }
@@ -106,7 +106,7 @@ namespace NMF.Interop.Ecore
         [XmlAttributeAttribute(false)]
         [ContainmentAttribute()]
         [ConstantAttribute()]
-        public virtual IListExpression<IETypeParameter> ETypeParameters
+        public virtual IOrderedSetExpression<IETypeParameter> ETypeParameters
         {
             get
             {
@@ -123,7 +123,7 @@ namespace NMF.Interop.Ecore
         [ContainmentAttribute()]
         [XmlOppositeAttribute("eOperation")]
         [ConstantAttribute()]
-        public virtual IListExpression<IEParameter> EParameters
+        public virtual IOrderedSetExpression<IEParameter> EParameters
         {
             get
             {
@@ -138,7 +138,7 @@ namespace NMF.Interop.Ecore
         [XmlElementNameAttribute("eExceptions")]
         [XmlAttributeAttribute(true)]
         [ConstantAttribute()]
-        public virtual IListExpression<IEClassifier> EExceptions
+        public virtual IOrderedSetExpression<IEClassifier> EExceptions
         {
             get
             {
@@ -154,7 +154,7 @@ namespace NMF.Interop.Ecore
         [XmlAttributeAttribute(false)]
         [ContainmentAttribute()]
         [ConstantAttribute()]
-        public virtual IListExpression<IEGenericType> EGenericExceptions
+        public virtual IOrderedSetExpression<IEGenericType> EGenericExceptions
         {
             get
             {
@@ -200,9 +200,41 @@ namespace NMF.Interop.Ecore
         }
         
         /// <summary>
+        /// Gets fired before the EContainingClass property changes its value
+        /// </summary>
+        public event System.EventHandler<ValueChangedEventArgs> EContainingClassChanging;
+        
+        /// <summary>
         /// Gets fired when the EContainingClass property changed its value
         /// </summary>
-        public event EventHandler<ValueChangedEventArgs> EContainingClassChanged;
+        public event System.EventHandler<ValueChangedEventArgs> EContainingClassChanged;
+        
+        /// <summary>
+        /// Raises the EContainingClassChanging event
+        /// </summary>
+        /// <param name="eventArgs">The event data</param>
+        protected virtual void OnEContainingClassChanging(ValueChangedEventArgs eventArgs)
+        {
+            System.EventHandler<ValueChangedEventArgs> handler = this.EContainingClassChanging;
+            if ((handler != null))
+            {
+                handler.Invoke(this, eventArgs);
+            }
+        }
+        
+        /// <summary>
+        /// Gets called when the parent model element of the current model element is about to change
+        /// </summary>
+        /// <param name="oldParent">The old parent model element</param>
+        /// <param name="newParent">The new parent model element</param>
+        protected override void OnParentChanging(IModelElement newParent, IModelElement oldParent)
+        {
+            IEClass oldEContainingClass = ModelHelper.CastAs<IEClass>(oldParent);
+            IEClass newEContainingClass = ModelHelper.CastAs<IEClass>(newParent);
+            ValueChangedEventArgs e = new ValueChangedEventArgs(oldEContainingClass, newEContainingClass);
+            this.OnEContainingClassChanging(e);
+            this.OnPropertyChanging("EContainingClass");
+        }
         
         /// <summary>
         /// Raises the EContainingClassChanged event
@@ -210,7 +242,7 @@ namespace NMF.Interop.Ecore
         /// <param name="eventArgs">The event data</param>
         protected virtual void OnEContainingClassChanged(ValueChangedEventArgs eventArgs)
         {
-            EventHandler<ValueChangedEventArgs> handler = this.EContainingClassChanged;
+            System.EventHandler<ValueChangedEventArgs> handler = this.EContainingClassChanged;
             if ((handler != null))
             {
                 handler.Invoke(this, eventArgs);
@@ -237,6 +269,7 @@ namespace NMF.Interop.Ecore
             ValueChangedEventArgs e = new ValueChangedEventArgs(oldEContainingClass, newEContainingClass);
             this.OnEContainingClassChanged(e);
             this.OnPropertyChanged("EContainingClass", e);
+            base.OnParentChanged(newParent, oldParent);
         }
         
         /// <summary>

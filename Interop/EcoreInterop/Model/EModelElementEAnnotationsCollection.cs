@@ -31,7 +31,7 @@ namespace NMF.Interop.Ecore
 {
     
     
-    public class EModelElementEAnnotationsCollection : ObservableOppositeList<IEModelElement, IEAnnotation>
+    public class EModelElementEAnnotationsCollection : ObservableOppositeOrderedSet<IEModelElement, IEAnnotation>
     {
         
         public EModelElementEAnnotationsCollection(IEModelElement parent) : 
@@ -39,21 +39,24 @@ namespace NMF.Interop.Ecore
         {
         }
         
-        private void OnItemDeleted(object sender, System.EventArgs e)
+        private void OnItemParentChanged(object sender, ValueChangedEventArgs e)
         {
-            this.Remove(((IEAnnotation)(sender)));
+            if ((e.NewValue != this.Parent))
+            {
+                this.Remove(((IEAnnotation)(sender)));
+            }
         }
         
         protected override void SetOpposite(IEAnnotation item, IEModelElement parent)
         {
             if ((parent != null))
             {
-                item.Deleted += this.OnItemDeleted;
+                item.ParentChanged += this.OnItemParentChanged;
                 item.EModelElement = parent;
             }
             else
             {
-                item.Deleted -= this.OnItemDeleted;
+                item.ParentChanged -= this.OnItemParentChanged;
                 if ((item.EModelElement == this.Parent))
                 {
                     item.EModelElement = parent;

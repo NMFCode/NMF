@@ -42,7 +42,7 @@ namespace NMF.Interop.Ecore
         /// <summary>
         /// The eLiterals property
         /// </summary>
-        IListExpression<IEEnumLiteral> ELiterals
+        IOrderedSetExpression<IEEnumLiteral> ELiterals
         {
             get;
         }

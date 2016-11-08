@@ -60,7 +60,7 @@ namespace NMF.Interop.Ecore
         /// <summary>
         /// The eSuperTypes property
         /// </summary>
-        IListExpression<IEClass> ESuperTypes
+        IOrderedSetExpression<IEClass> ESuperTypes
         {
             get;
         }
@@ -68,7 +68,7 @@ namespace NMF.Interop.Ecore
         /// <summary>
         /// The eOperations property
         /// </summary>
-        IListExpression<IEOperation> EOperations
+        IOrderedSetExpression<IEOperation> EOperations
         {
             get;
         }
@@ -76,7 +76,7 @@ namespace NMF.Interop.Ecore
         /// <summary>
         /// The eStructuralFeatures property
         /// </summary>
-        IListExpression<IEStructuralFeature> EStructuralFeatures
+        IOrderedSetExpression<IEStructuralFeature> EStructuralFeatures
         {
             get;
         }
@@ -84,7 +84,7 @@ namespace NMF.Interop.Ecore
         /// <summary>
         /// The eGenericSuperTypes property
         /// </summary>
-        IListExpression<IEGenericType> EGenericSuperTypes
+        IOrderedSetExpression<IEGenericType> EGenericSuperTypes
         {
             get;
         }
@@ -92,22 +92,22 @@ namespace NMF.Interop.Ecore
         /// <summary>
         /// Gets fired before the Abstract property changes its value
         /// </summary>
-        event EventHandler AbstractChanging;
+        event System.EventHandler<ValueChangedEventArgs> AbstractChanging;
         
         /// <summary>
         /// Gets fired when the Abstract property changed its value
         /// </summary>
-        event EventHandler<ValueChangedEventArgs> AbstractChanged;
+        event System.EventHandler<ValueChangedEventArgs> AbstractChanged;
         
         /// <summary>
         /// Gets fired before the Interface property changes its value
         /// </summary>
-        event EventHandler InterfaceChanging;
+        event System.EventHandler<ValueChangedEventArgs> InterfaceChanging;
         
         /// <summary>
         /// Gets fired when the Interface property changed its value
         /// </summary>
-        event EventHandler<ValueChangedEventArgs> InterfaceChanged;
+        event System.EventHandler<ValueChangedEventArgs> InterfaceChanged;
     }
 }
 

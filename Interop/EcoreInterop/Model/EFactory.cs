@@ -63,9 +63,10 @@ namespace NMF.Interop.Ecore
             {
                 if ((this._ePackage != value))
                 {
-                    this.OnEPackageChanging(EventArgs.Empty);
-                    this.OnPropertyChanging("EPackage");
                     IEPackage old = this._ePackage;
+                    ValueChangedEventArgs e = new ValueChangedEventArgs(old, value);
+                    this.OnEPackageChanging(e);
+                    this.OnPropertyChanging("EPackage", e);
                     this._ePackage = value;
                     if ((old != null))
                     {
@@ -77,7 +78,6 @@ namespace NMF.Interop.Ecore
                         value.EFactoryInstance = this;
                         value.Deleted += this.OnResetEPackage;
                     }
-                    ValueChangedEventArgs e = new ValueChangedEventArgs(old, value);
                     this.OnEPackageChanged(e);
                     this.OnPropertyChanged("EPackage", e);
                 }
@@ -113,20 +113,20 @@ namespace NMF.Interop.Ecore
         /// <summary>
         /// Gets fired before the EPackage property changes its value
         /// </summary>
-        public event EventHandler EPackageChanging;
+        public event System.EventHandler<ValueChangedEventArgs> EPackageChanging;
         
         /// <summary>
         /// Gets fired when the EPackage property changed its value
         /// </summary>
-        public event EventHandler<ValueChangedEventArgs> EPackageChanged;
+        public event System.EventHandler<ValueChangedEventArgs> EPackageChanged;
         
         /// <summary>
         /// Raises the EPackageChanging event
         /// </summary>
         /// <param name="eventArgs">The event data</param>
-        protected virtual void OnEPackageChanging(EventArgs eventArgs)
+        protected virtual void OnEPackageChanging(ValueChangedEventArgs eventArgs)
         {
-            EventHandler handler = this.EPackageChanging;
+            System.EventHandler<ValueChangedEventArgs> handler = this.EPackageChanging;
             if ((handler != null))
             {
                 handler.Invoke(this, eventArgs);
@@ -139,7 +139,7 @@ namespace NMF.Interop.Ecore
         /// <param name="eventArgs">The event data</param>
         protected virtual void OnEPackageChanged(ValueChangedEventArgs eventArgs)
         {
-            EventHandler<ValueChangedEventArgs> handler = this.EPackageChanged;
+            System.EventHandler<ValueChangedEventArgs> handler = this.EPackageChanged;
             if ((handler != null))
             {
                 handler.Invoke(this, eventArgs);

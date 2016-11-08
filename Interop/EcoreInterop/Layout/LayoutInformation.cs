@@ -12,11 +12,11 @@ using NMF.Collections.Generic;
 using NMF.Collections.ObjectModel;
 using NMF.Expressions;
 using NMF.Expressions.Linq;
-using NMF.Interop.Ecore;
 using NMF.Models;
 using NMF.Models.Collections;
 using NMF.Models.Expressions;
 using NMF.Models.Meta;
+using NMF.Models.Repository;
 using NMF.Serialization;
 using NMF.Utilities;
 using System;
@@ -60,6 +60,8 @@ namespace NMF.Interop.Layout
         /// </summary>
         private string _syntaxElementID;
         
+        private static IClass _classInstance;
+        
         /// <summary>
         /// The startOffset property
         /// </summary>
@@ -76,8 +78,10 @@ namespace NMF.Interop.Layout
                 if ((this._startOffset != value))
                 {
                     int old = this._startOffset;
-                    this._startOffset = value;
                     ValueChangedEventArgs e = new ValueChangedEventArgs(old, value);
+                    this.OnStartOffsetChanging(e);
+                    this.OnPropertyChanging("StartOffset", e);
+                    this._startOffset = value;
                     this.OnStartOffsetChanged(e);
                     this.OnPropertyChanged("StartOffset", e);
                 }
@@ -100,8 +104,10 @@ namespace NMF.Interop.Layout
                 if ((this._hiddenTokenText != value))
                 {
                     string old = this._hiddenTokenText;
-                    this._hiddenTokenText = value;
                     ValueChangedEventArgs e = new ValueChangedEventArgs(old, value);
+                    this.OnHiddenTokenTextChanging(e);
+                    this.OnPropertyChanging("HiddenTokenText", e);
+                    this._hiddenTokenText = value;
                     this.OnHiddenTokenTextChanged(e);
                     this.OnPropertyChanged("HiddenTokenText", e);
                 }
@@ -124,8 +130,10 @@ namespace NMF.Interop.Layout
                 if ((this._visibleTokenText != value))
                 {
                     string old = this._visibleTokenText;
-                    this._visibleTokenText = value;
                     ValueChangedEventArgs e = new ValueChangedEventArgs(old, value);
+                    this.OnVisibleTokenTextChanging(e);
+                    this.OnPropertyChanging("VisibleTokenText", e);
+                    this._visibleTokenText = value;
                     this.OnVisibleTokenTextChanged(e);
                     this.OnPropertyChanged("VisibleTokenText", e);
                 }
@@ -148,8 +156,10 @@ namespace NMF.Interop.Layout
                 if ((this._syntaxElementID != value))
                 {
                     string old = this._syntaxElementID;
-                    this._syntaxElementID = value;
                     ValueChangedEventArgs e = new ValueChangedEventArgs(old, value);
+                    this.OnSyntaxElementIDChanging(e);
+                    this.OnPropertyChanging("SyntaxElementID", e);
+                    this._syntaxElementID = value;
                     this.OnSyntaxElementIDChanged(e);
                     this.OnPropertyChanged("SyntaxElementID", e);
                 }
@@ -157,35 +167,72 @@ namespace NMF.Interop.Layout
         }
         
         /// <summary>
-        /// Gets the Class element that describes the structure of this type
+        /// Gets the Class model for this type
         /// </summary>
-        public new static NMF.Models.Meta.IClass ClassInstance
+        public new static IClass ClassInstance
         {
             get
             {
-                return (IClass)NMF.Models.Repository.MetaRepository.Instance.ResolveType("http://www.emftext.org/commons/layout#//LayoutInformation/");
+                if ((_classInstance == null))
+                {
+                    _classInstance = ((IClass)(MetaRepository.Instance.Resolve("http://www.emftext.org/commons/layout#//LayoutInformation/")));
+                }
+                return _classInstance;
             }
         }
         
         /// <summary>
+        /// Gets fired before the StartOffset property changes its value
+        /// </summary>
+        public event System.EventHandler<ValueChangedEventArgs> StartOffsetChanging;
+        
+        /// <summary>
         /// Gets fired when the StartOffset property changed its value
         /// </summary>
-        public event EventHandler<ValueChangedEventArgs> StartOffsetChanged;
+        public event System.EventHandler<ValueChangedEventArgs> StartOffsetChanged;
+        
+        /// <summary>
+        /// Gets fired before the HiddenTokenText property changes its value
+        /// </summary>
+        public event System.EventHandler<ValueChangedEventArgs> HiddenTokenTextChanging;
         
         /// <summary>
         /// Gets fired when the HiddenTokenText property changed its value
         /// </summary>
-        public event EventHandler<ValueChangedEventArgs> HiddenTokenTextChanged;
+        public event System.EventHandler<ValueChangedEventArgs> HiddenTokenTextChanged;
+        
+        /// <summary>
+        /// Gets fired before the VisibleTokenText property changes its value
+        /// </summary>
+        public event System.EventHandler<ValueChangedEventArgs> VisibleTokenTextChanging;
         
         /// <summary>
         /// Gets fired when the VisibleTokenText property changed its value
         /// </summary>
-        public event EventHandler<ValueChangedEventArgs> VisibleTokenTextChanged;
+        public event System.EventHandler<ValueChangedEventArgs> VisibleTokenTextChanged;
+        
+        /// <summary>
+        /// Gets fired before the SyntaxElementID property changes its value
+        /// </summary>
+        public event System.EventHandler<ValueChangedEventArgs> SyntaxElementIDChanging;
         
         /// <summary>
         /// Gets fired when the SyntaxElementID property changed its value
         /// </summary>
-        public event EventHandler<ValueChangedEventArgs> SyntaxElementIDChanged;
+        public event System.EventHandler<ValueChangedEventArgs> SyntaxElementIDChanged;
+        
+        /// <summary>
+        /// Raises the StartOffsetChanging event
+        /// </summary>
+        /// <param name="eventArgs">The event data</param>
+        protected virtual void OnStartOffsetChanging(ValueChangedEventArgs eventArgs)
+        {
+            System.EventHandler<ValueChangedEventArgs> handler = this.StartOffsetChanging;
+            if ((handler != null))
+            {
+                handler.Invoke(this, eventArgs);
+            }
+        }
         
         /// <summary>
         /// Raises the StartOffsetChanged event
@@ -193,7 +240,20 @@ namespace NMF.Interop.Layout
         /// <param name="eventArgs">The event data</param>
         protected virtual void OnStartOffsetChanged(ValueChangedEventArgs eventArgs)
         {
-            EventHandler<ValueChangedEventArgs> handler = this.StartOffsetChanged;
+            System.EventHandler<ValueChangedEventArgs> handler = this.StartOffsetChanged;
+            if ((handler != null))
+            {
+                handler.Invoke(this, eventArgs);
+            }
+        }
+        
+        /// <summary>
+        /// Raises the HiddenTokenTextChanging event
+        /// </summary>
+        /// <param name="eventArgs">The event data</param>
+        protected virtual void OnHiddenTokenTextChanging(ValueChangedEventArgs eventArgs)
+        {
+            System.EventHandler<ValueChangedEventArgs> handler = this.HiddenTokenTextChanging;
             if ((handler != null))
             {
                 handler.Invoke(this, eventArgs);
@@ -206,7 +266,20 @@ namespace NMF.Interop.Layout
         /// <param name="eventArgs">The event data</param>
         protected virtual void OnHiddenTokenTextChanged(ValueChangedEventArgs eventArgs)
         {
-            EventHandler<ValueChangedEventArgs> handler = this.HiddenTokenTextChanged;
+            System.EventHandler<ValueChangedEventArgs> handler = this.HiddenTokenTextChanged;
+            if ((handler != null))
+            {
+                handler.Invoke(this, eventArgs);
+            }
+        }
+        
+        /// <summary>
+        /// Raises the VisibleTokenTextChanging event
+        /// </summary>
+        /// <param name="eventArgs">The event data</param>
+        protected virtual void OnVisibleTokenTextChanging(ValueChangedEventArgs eventArgs)
+        {
+            System.EventHandler<ValueChangedEventArgs> handler = this.VisibleTokenTextChanging;
             if ((handler != null))
             {
                 handler.Invoke(this, eventArgs);
@@ -219,7 +292,20 @@ namespace NMF.Interop.Layout
         /// <param name="eventArgs">The event data</param>
         protected virtual void OnVisibleTokenTextChanged(ValueChangedEventArgs eventArgs)
         {
-            EventHandler<ValueChangedEventArgs> handler = this.VisibleTokenTextChanged;
+            System.EventHandler<ValueChangedEventArgs> handler = this.VisibleTokenTextChanged;
+            if ((handler != null))
+            {
+                handler.Invoke(this, eventArgs);
+            }
+        }
+        
+        /// <summary>
+        /// Raises the SyntaxElementIDChanging event
+        /// </summary>
+        /// <param name="eventArgs">The event data</param>
+        protected virtual void OnSyntaxElementIDChanging(ValueChangedEventArgs eventArgs)
+        {
+            System.EventHandler<ValueChangedEventArgs> handler = this.SyntaxElementIDChanging;
             if ((handler != null))
             {
                 handler.Invoke(this, eventArgs);
@@ -232,7 +318,7 @@ namespace NMF.Interop.Layout
         /// <param name="eventArgs">The event data</param>
         protected virtual void OnSyntaxElementIDChanged(ValueChangedEventArgs eventArgs)
         {
-            EventHandler<ValueChangedEventArgs> handler = this.SyntaxElementIDChanged;
+            System.EventHandler<ValueChangedEventArgs> handler = this.SyntaxElementIDChanged;
             if ((handler != null))
             {
                 handler.Invoke(this, eventArgs);
@@ -301,7 +387,11 @@ namespace NMF.Interop.Layout
         /// </summary>
         public override IClass GetClass()
         {
-            return ((IClass)(NMF.Models.Repository.MetaRepository.Instance.Resolve("http://www.emftext.org/commons/layout#//LayoutInformation/")));
+            if ((_classInstance == null))
+            {
+                _classInstance = ((IClass)(MetaRepository.Instance.Resolve("http://www.emftext.org/commons/layout#//LayoutInformation/")));
+            }
+            return _classInstance;
         }
         
         /// <summary>

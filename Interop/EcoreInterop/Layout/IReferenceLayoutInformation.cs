@@ -12,11 +12,11 @@ using NMF.Collections.Generic;
 using NMF.Collections.ObjectModel;
 using NMF.Expressions;
 using NMF.Expressions.Linq;
-using NMF.Interop.Ecore;
 using NMF.Models;
 using NMF.Models.Collections;
 using NMF.Models.Expressions;
 using NMF.Models.Meta;
+using NMF.Models.Repository;
 using NMF.Serialization;
 using NMF.Utilities;
 using System;
@@ -42,16 +42,21 @@ namespace NMF.Interop.Layout
         /// <summary>
         /// The object property
         /// </summary>
-        IEObject Object
+        IModelElement Object
         {
             get;
             set;
         }
         
         /// <summary>
+        /// Gets fired before the Object property changes its value
+        /// </summary>
+        event System.EventHandler<ValueChangedEventArgs> ObjectChanging;
+        
+        /// <summary>
         /// Gets fired when the Object property changed its value
         /// </summary>
-        event EventHandler<ValueChangedEventArgs> ObjectChanged;
+        event System.EventHandler<ValueChangedEventArgs> ObjectChanged;
     }
 }
 

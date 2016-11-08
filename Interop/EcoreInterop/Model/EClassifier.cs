@@ -54,13 +54,13 @@ namespace NMF.Interop.Ecore
         /// <summary>
         /// The backing field for the ETypeParameters property
         /// </summary>
-        private ObservableCompositionList<IETypeParameter> _eTypeParameters;
+        private ObservableCompositionOrderedSet<IETypeParameter> _eTypeParameters;
         
         private static IClass _classInstance;
         
         public EClassifier()
         {
-            this._eTypeParameters = new ObservableCompositionList<IETypeParameter>(this);
+            this._eTypeParameters = new ObservableCompositionOrderedSet<IETypeParameter>(this);
             this._eTypeParameters.CollectionChanging += this.ETypeParametersCollectionChanging;
             this._eTypeParameters.CollectionChanged += this.ETypeParametersCollectionChanged;
         }
@@ -80,11 +80,11 @@ namespace NMF.Interop.Ecore
             {
                 if ((this._instanceClassName != value))
                 {
-                    this.OnInstanceClassNameChanging(EventArgs.Empty);
-                    this.OnPropertyChanging("InstanceClassName");
                     string old = this._instanceClassName;
-                    this._instanceClassName = value;
                     ValueChangedEventArgs e = new ValueChangedEventArgs(old, value);
+                    this.OnInstanceClassNameChanging(e);
+                    this.OnPropertyChanging("InstanceClassName", e);
+                    this._instanceClassName = value;
                     this.OnInstanceClassNameChanged(e);
                     this.OnPropertyChanged("InstanceClassName", e);
                 }
@@ -106,11 +106,11 @@ namespace NMF.Interop.Ecore
             {
                 if ((this._instanceTypeName != value))
                 {
-                    this.OnInstanceTypeNameChanging(EventArgs.Empty);
-                    this.OnPropertyChanging("InstanceTypeName");
                     string old = this._instanceTypeName;
-                    this._instanceTypeName = value;
                     ValueChangedEventArgs e = new ValueChangedEventArgs(old, value);
+                    this.OnInstanceTypeNameChanging(e);
+                    this.OnPropertyChanging("InstanceTypeName", e);
+                    this._instanceTypeName = value;
                     this.OnInstanceTypeNameChanged(e);
                     this.OnPropertyChanged("InstanceTypeName", e);
                 }
@@ -144,7 +144,7 @@ namespace NMF.Interop.Ecore
         [XmlAttributeAttribute(false)]
         [ContainmentAttribute()]
         [ConstantAttribute()]
-        public virtual IListExpression<IETypeParameter> ETypeParameters
+        public virtual IOrderedSetExpression<IETypeParameter> ETypeParameters
         {
             get
             {
@@ -192,35 +192,40 @@ namespace NMF.Interop.Ecore
         /// <summary>
         /// Gets fired before the InstanceClassName property changes its value
         /// </summary>
-        public event EventHandler InstanceClassNameChanging;
+        public event System.EventHandler<ValueChangedEventArgs> InstanceClassNameChanging;
         
         /// <summary>
         /// Gets fired when the InstanceClassName property changed its value
         /// </summary>
-        public event EventHandler<ValueChangedEventArgs> InstanceClassNameChanged;
+        public event System.EventHandler<ValueChangedEventArgs> InstanceClassNameChanged;
         
         /// <summary>
         /// Gets fired before the InstanceTypeName property changes its value
         /// </summary>
-        public event EventHandler InstanceTypeNameChanging;
+        public event System.EventHandler<ValueChangedEventArgs> InstanceTypeNameChanging;
         
         /// <summary>
         /// Gets fired when the InstanceTypeName property changed its value
         /// </summary>
-        public event EventHandler<ValueChangedEventArgs> InstanceTypeNameChanged;
+        public event System.EventHandler<ValueChangedEventArgs> InstanceTypeNameChanged;
+        
+        /// <summary>
+        /// Gets fired before the EPackage property changes its value
+        /// </summary>
+        public event System.EventHandler<ValueChangedEventArgs> EPackageChanging;
         
         /// <summary>
         /// Gets fired when the EPackage property changed its value
         /// </summary>
-        public event EventHandler<ValueChangedEventArgs> EPackageChanged;
+        public event System.EventHandler<ValueChangedEventArgs> EPackageChanged;
         
         /// <summary>
         /// Raises the InstanceClassNameChanging event
         /// </summary>
         /// <param name="eventArgs">The event data</param>
-        protected virtual void OnInstanceClassNameChanging(EventArgs eventArgs)
+        protected virtual void OnInstanceClassNameChanging(ValueChangedEventArgs eventArgs)
         {
-            EventHandler handler = this.InstanceClassNameChanging;
+            System.EventHandler<ValueChangedEventArgs> handler = this.InstanceClassNameChanging;
             if ((handler != null))
             {
                 handler.Invoke(this, eventArgs);
@@ -233,7 +238,7 @@ namespace NMF.Interop.Ecore
         /// <param name="eventArgs">The event data</param>
         protected virtual void OnInstanceClassNameChanged(ValueChangedEventArgs eventArgs)
         {
-            EventHandler<ValueChangedEventArgs> handler = this.InstanceClassNameChanged;
+            System.EventHandler<ValueChangedEventArgs> handler = this.InstanceClassNameChanged;
             if ((handler != null))
             {
                 handler.Invoke(this, eventArgs);
@@ -244,9 +249,9 @@ namespace NMF.Interop.Ecore
         /// Raises the InstanceTypeNameChanging event
         /// </summary>
         /// <param name="eventArgs">The event data</param>
-        protected virtual void OnInstanceTypeNameChanging(EventArgs eventArgs)
+        protected virtual void OnInstanceTypeNameChanging(ValueChangedEventArgs eventArgs)
         {
-            EventHandler handler = this.InstanceTypeNameChanging;
+            System.EventHandler<ValueChangedEventArgs> handler = this.InstanceTypeNameChanging;
             if ((handler != null))
             {
                 handler.Invoke(this, eventArgs);
@@ -259,11 +264,38 @@ namespace NMF.Interop.Ecore
         /// <param name="eventArgs">The event data</param>
         protected virtual void OnInstanceTypeNameChanged(ValueChangedEventArgs eventArgs)
         {
-            EventHandler<ValueChangedEventArgs> handler = this.InstanceTypeNameChanged;
+            System.EventHandler<ValueChangedEventArgs> handler = this.InstanceTypeNameChanged;
             if ((handler != null))
             {
                 handler.Invoke(this, eventArgs);
             }
+        }
+        
+        /// <summary>
+        /// Raises the EPackageChanging event
+        /// </summary>
+        /// <param name="eventArgs">The event data</param>
+        protected virtual void OnEPackageChanging(ValueChangedEventArgs eventArgs)
+        {
+            System.EventHandler<ValueChangedEventArgs> handler = this.EPackageChanging;
+            if ((handler != null))
+            {
+                handler.Invoke(this, eventArgs);
+            }
+        }
+        
+        /// <summary>
+        /// Gets called when the parent model element of the current model element is about to change
+        /// </summary>
+        /// <param name="oldParent">The old parent model element</param>
+        /// <param name="newParent">The new parent model element</param>
+        protected override void OnParentChanging(IModelElement newParent, IModelElement oldParent)
+        {
+            IEPackage oldEPackage = ModelHelper.CastAs<IEPackage>(oldParent);
+            IEPackage newEPackage = ModelHelper.CastAs<IEPackage>(newParent);
+            ValueChangedEventArgs e = new ValueChangedEventArgs(oldEPackage, newEPackage);
+            this.OnEPackageChanging(e);
+            this.OnPropertyChanging("EPackage");
         }
         
         /// <summary>
@@ -272,7 +304,7 @@ namespace NMF.Interop.Ecore
         /// <param name="eventArgs">The event data</param>
         protected virtual void OnEPackageChanged(ValueChangedEventArgs eventArgs)
         {
-            EventHandler<ValueChangedEventArgs> handler = this.EPackageChanged;
+            System.EventHandler<ValueChangedEventArgs> handler = this.EPackageChanged;
             if ((handler != null))
             {
                 handler.Invoke(this, eventArgs);
@@ -299,6 +331,7 @@ namespace NMF.Interop.Ecore
             ValueChangedEventArgs e = new ValueChangedEventArgs(oldEPackage, newEPackage);
             this.OnEPackageChanged(e);
             this.OnPropertyChanged("EPackage", e);
+            base.OnParentChanged(newParent, oldParent);
         }
         
         /// <summary>

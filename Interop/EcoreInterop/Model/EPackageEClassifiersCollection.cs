@@ -31,7 +31,7 @@ namespace NMF.Interop.Ecore
 {
     
     
-    public class EPackageEClassifiersCollection : ObservableOppositeList<IEPackage, IEClassifier>
+    public class EPackageEClassifiersCollection : ObservableOppositeOrderedSet<IEPackage, IEClassifier>
     {
         
         public EPackageEClassifiersCollection(IEPackage parent) : 
@@ -39,21 +39,24 @@ namespace NMF.Interop.Ecore
         {
         }
         
-        private void OnItemDeleted(object sender, System.EventArgs e)
+        private void OnItemParentChanged(object sender, ValueChangedEventArgs e)
         {
-            this.Remove(((IEClassifier)(sender)));
+            if ((e.NewValue != this.Parent))
+            {
+                this.Remove(((IEClassifier)(sender)));
+            }
         }
         
         protected override void SetOpposite(IEClassifier item, IEPackage parent)
         {
             if ((parent != null))
             {
-                item.Deleted += this.OnItemDeleted;
+                item.ParentChanged += this.OnItemParentChanged;
                 item.EPackage = parent;
             }
             else
             {
-                item.Deleted -= this.OnItemDeleted;
+                item.ParentChanged -= this.OnItemParentChanged;
                 if ((item.EPackage == this.Parent))
                 {
                     item.EPackage = parent;

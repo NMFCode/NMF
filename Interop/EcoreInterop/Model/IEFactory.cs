@@ -51,12 +51,12 @@ namespace NMF.Interop.Ecore
         /// <summary>
         /// Gets fired before the EPackage property changes its value
         /// </summary>
-        event EventHandler EPackageChanging;
+        event System.EventHandler<ValueChangedEventArgs> EPackageChanging;
         
         /// <summary>
         /// Gets fired when the EPackage property changed its value
         /// </summary>
-        event EventHandler<ValueChangedEventArgs> EPackageChanged;
+        event System.EventHandler<ValueChangedEventArgs> EPackageChanged;
     }
 }
 

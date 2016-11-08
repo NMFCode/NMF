@@ -51,12 +51,12 @@ namespace NMF.Interop.Ecore
         /// <summary>
         /// Gets fired before the ID property changes its value
         /// </summary>
-        event EventHandler IDChanging;
+        event System.EventHandler<ValueChangedEventArgs> IDChanging;
         
         /// <summary>
         /// Gets fired when the ID property changed its value
         /// </summary>
-        event EventHandler<ValueChangedEventArgs> IDChanged;
+        event System.EventHandler<ValueChangedEventArgs> IDChanged;
     }
 }
 

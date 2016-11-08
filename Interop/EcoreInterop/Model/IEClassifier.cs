@@ -69,7 +69,7 @@ namespace NMF.Interop.Ecore
         /// <summary>
         /// The eTypeParameters property
         /// </summary>
-        IListExpression<IETypeParameter> ETypeParameters
+        IOrderedSetExpression<IETypeParameter> ETypeParameters
         {
             get;
         }
@@ -77,27 +77,32 @@ namespace NMF.Interop.Ecore
         /// <summary>
         /// Gets fired before the InstanceClassName property changes its value
         /// </summary>
-        event EventHandler InstanceClassNameChanging;
+        event System.EventHandler<ValueChangedEventArgs> InstanceClassNameChanging;
         
         /// <summary>
         /// Gets fired when the InstanceClassName property changed its value
         /// </summary>
-        event EventHandler<ValueChangedEventArgs> InstanceClassNameChanged;
+        event System.EventHandler<ValueChangedEventArgs> InstanceClassNameChanged;
         
         /// <summary>
         /// Gets fired before the InstanceTypeName property changes its value
         /// </summary>
-        event EventHandler InstanceTypeNameChanging;
+        event System.EventHandler<ValueChangedEventArgs> InstanceTypeNameChanging;
         
         /// <summary>
         /// Gets fired when the InstanceTypeName property changed its value
         /// </summary>
-        event EventHandler<ValueChangedEventArgs> InstanceTypeNameChanged;
+        event System.EventHandler<ValueChangedEventArgs> InstanceTypeNameChanged;
+        
+        /// <summary>
+        /// Gets fired before the EPackage property changes its value
+        /// </summary>
+        event System.EventHandler<ValueChangedEventArgs> EPackageChanging;
         
         /// <summary>
         /// Gets fired when the EPackage property changed its value
         /// </summary>
-        event EventHandler<ValueChangedEventArgs> EPackageChanged;
+        event System.EventHandler<ValueChangedEventArgs> EPackageChanged;
     }
 }
 

@@ -96,62 +96,62 @@ namespace NMF.Interop.Ecore
         /// <summary>
         /// Gets fired before the Ordered property changes its value
         /// </summary>
-        event EventHandler OrderedChanging;
+        event System.EventHandler<ValueChangedEventArgs> OrderedChanging;
         
         /// <summary>
         /// Gets fired when the Ordered property changed its value
         /// </summary>
-        event EventHandler<ValueChangedEventArgs> OrderedChanged;
+        event System.EventHandler<ValueChangedEventArgs> OrderedChanged;
         
         /// <summary>
         /// Gets fired before the Unique property changes its value
         /// </summary>
-        event EventHandler UniqueChanging;
+        event System.EventHandler<ValueChangedEventArgs> UniqueChanging;
         
         /// <summary>
         /// Gets fired when the Unique property changed its value
         /// </summary>
-        event EventHandler<ValueChangedEventArgs> UniqueChanged;
+        event System.EventHandler<ValueChangedEventArgs> UniqueChanged;
         
         /// <summary>
         /// Gets fired before the LowerBound property changes its value
         /// </summary>
-        event EventHandler LowerBoundChanging;
+        event System.EventHandler<ValueChangedEventArgs> LowerBoundChanging;
         
         /// <summary>
         /// Gets fired when the LowerBound property changed its value
         /// </summary>
-        event EventHandler<ValueChangedEventArgs> LowerBoundChanged;
+        event System.EventHandler<ValueChangedEventArgs> LowerBoundChanged;
         
         /// <summary>
         /// Gets fired before the UpperBound property changes its value
         /// </summary>
-        event EventHandler UpperBoundChanging;
+        event System.EventHandler<ValueChangedEventArgs> UpperBoundChanging;
         
         /// <summary>
         /// Gets fired when the UpperBound property changed its value
         /// </summary>
-        event EventHandler<ValueChangedEventArgs> UpperBoundChanged;
+        event System.EventHandler<ValueChangedEventArgs> UpperBoundChanged;
         
         /// <summary>
         /// Gets fired before the EType property changes its value
         /// </summary>
-        event EventHandler ETypeChanging;
+        event System.EventHandler<ValueChangedEventArgs> ETypeChanging;
         
         /// <summary>
         /// Gets fired when the EType property changed its value
         /// </summary>
-        event EventHandler<ValueChangedEventArgs> ETypeChanged;
+        event System.EventHandler<ValueChangedEventArgs> ETypeChanged;
         
         /// <summary>
         /// Gets fired before the EGenericType property changes its value
         /// </summary>
-        event EventHandler EGenericTypeChanging;
+        event System.EventHandler<ValueChangedEventArgs> EGenericTypeChanging;
         
         /// <summary>
         /// Gets fired when the EGenericType property changed its value
         /// </summary>
-        event EventHandler<ValueChangedEventArgs> EGenericTypeChanged;
+        event System.EventHandler<ValueChangedEventArgs> EGenericTypeChanged;
     }
 }
 

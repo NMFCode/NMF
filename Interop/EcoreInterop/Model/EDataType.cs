@@ -64,11 +64,11 @@ namespace NMF.Interop.Ecore
             {
                 if ((this._serializable != value))
                 {
-                    this.OnSerializableChanging(EventArgs.Empty);
-                    this.OnPropertyChanging("Serializable");
                     Nullable<bool> old = this._serializable;
-                    this._serializable = value;
                     ValueChangedEventArgs e = new ValueChangedEventArgs(old, value);
+                    this.OnSerializableChanging(e);
+                    this.OnPropertyChanging("Serializable", e);
+                    this._serializable = value;
                     this.OnSerializableChanged(e);
                     this.OnPropertyChanged("Serializable", e);
                 }
@@ -93,20 +93,20 @@ namespace NMF.Interop.Ecore
         /// <summary>
         /// Gets fired before the Serializable property changes its value
         /// </summary>
-        public event EventHandler SerializableChanging;
+        public event System.EventHandler<ValueChangedEventArgs> SerializableChanging;
         
         /// <summary>
         /// Gets fired when the Serializable property changed its value
         /// </summary>
-        public event EventHandler<ValueChangedEventArgs> SerializableChanged;
+        public event System.EventHandler<ValueChangedEventArgs> SerializableChanged;
         
         /// <summary>
         /// Raises the SerializableChanging event
         /// </summary>
         /// <param name="eventArgs">The event data</param>
-        protected virtual void OnSerializableChanging(EventArgs eventArgs)
+        protected virtual void OnSerializableChanging(ValueChangedEventArgs eventArgs)
         {
-            EventHandler handler = this.SerializableChanging;
+            System.EventHandler<ValueChangedEventArgs> handler = this.SerializableChanging;
             if ((handler != null))
             {
                 handler.Invoke(this, eventArgs);
@@ -119,7 +119,7 @@ namespace NMF.Interop.Ecore
         /// <param name="eventArgs">The event data</param>
         protected virtual void OnSerializableChanged(ValueChangedEventArgs eventArgs)
         {
-            EventHandler<ValueChangedEventArgs> handler = this.SerializableChanged;
+            System.EventHandler<ValueChangedEventArgs> handler = this.SerializableChanged;
             if ((handler != null))
             {
                 handler.Invoke(this, eventArgs);

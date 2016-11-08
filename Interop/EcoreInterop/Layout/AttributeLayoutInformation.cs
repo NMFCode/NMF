@@ -12,11 +12,11 @@ using NMF.Collections.Generic;
 using NMF.Collections.ObjectModel;
 using NMF.Expressions;
 using NMF.Expressions.Linq;
-using NMF.Interop.Ecore;
 using NMF.Models;
 using NMF.Models.Collections;
 using NMF.Models.Expressions;
 using NMF.Models.Meta;
+using NMF.Models.Repository;
 using NMF.Serialization;
 using NMF.Utilities;
 using System;
@@ -40,14 +40,20 @@ namespace NMF.Interop.Layout
     public class AttributeLayoutInformation : LayoutInformation, IAttributeLayoutInformation, IModelElement
     {
         
+        private static IClass _classInstance;
+        
         /// <summary>
-        /// Gets the Class element that describes the structure of this type
+        /// Gets the Class model for this type
         /// </summary>
-        public new static NMF.Models.Meta.IClass ClassInstance
+        public new static IClass ClassInstance
         {
             get
             {
-                return (IClass)NMF.Models.Repository.MetaRepository.Instance.ResolveType("http://www.emftext.org/commons/layout#//AttributeLayoutInformation/");
+                if ((_classInstance == null))
+                {
+                    _classInstance = ((IClass)(MetaRepository.Instance.Resolve("http://www.emftext.org/commons/layout#//AttributeLayoutInformation/")));
+                }
+                return _classInstance;
             }
         }
         
@@ -56,7 +62,11 @@ namespace NMF.Interop.Layout
         /// </summary>
         public override IClass GetClass()
         {
-            return ((IClass)(NMF.Models.Repository.MetaRepository.Instance.Resolve("http://www.emftext.org/commons/layout#//AttributeLayoutInformation/")));
+            if ((_classInstance == null))
+            {
+                _classInstance = ((IClass)(MetaRepository.Instance.Resolve("http://www.emftext.org/commons/layout#//AttributeLayoutInformation/")));
+            }
+            return _classInstance;
         }
     }
 }

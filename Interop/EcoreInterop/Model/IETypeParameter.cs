@@ -42,7 +42,7 @@ namespace NMF.Interop.Ecore
         /// <summary>
         /// The eBounds property
         /// </summary>
-        IListExpression<IEGenericType> EBounds
+        IOrderedSetExpression<IEGenericType> EBounds
         {
             get;
         }

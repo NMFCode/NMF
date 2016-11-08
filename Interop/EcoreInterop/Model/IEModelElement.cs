@@ -42,7 +42,7 @@ namespace NMF.Interop.Ecore
         /// <summary>
         /// The eAnnotations property
         /// </summary>
-        IListExpression<IEAnnotation> EAnnotations
+        IOrderedSetExpression<IEAnnotation> EAnnotations
         {
             get;
         }

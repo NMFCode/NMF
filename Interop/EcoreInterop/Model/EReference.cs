@@ -59,13 +59,13 @@ namespace NMF.Interop.Ecore
         /// <summary>
         /// The backing field for the EKeys property
         /// </summary>
-        private ObservableAssociationList<IEAttribute> _eKeys;
+        private ObservableAssociationOrderedSet<IEAttribute> _eKeys;
         
         private static IClass _classInstance;
         
         public EReference()
         {
-            this._eKeys = new ObservableAssociationList<IEAttribute>();
+            this._eKeys = new ObservableAssociationOrderedSet<IEAttribute>();
             this._eKeys.CollectionChanging += this.EKeysCollectionChanging;
             this._eKeys.CollectionChanged += this.EKeysCollectionChanged;
         }
@@ -85,11 +85,11 @@ namespace NMF.Interop.Ecore
             {
                 if ((this._containment != value))
                 {
-                    this.OnContainmentChanging(EventArgs.Empty);
-                    this.OnPropertyChanging("Containment");
                     Nullable<bool> old = this._containment;
-                    this._containment = value;
                     ValueChangedEventArgs e = new ValueChangedEventArgs(old, value);
+                    this.OnContainmentChanging(e);
+                    this.OnPropertyChanging("Containment", e);
+                    this._containment = value;
                     this.OnContainmentChanged(e);
                     this.OnPropertyChanged("Containment", e);
                 }
@@ -112,11 +112,11 @@ namespace NMF.Interop.Ecore
             {
                 if ((this._resolveProxies != value))
                 {
-                    this.OnResolveProxiesChanging(EventArgs.Empty);
-                    this.OnPropertyChanging("ResolveProxies");
                     Nullable<bool> old = this._resolveProxies;
-                    this._resolveProxies = value;
                     ValueChangedEventArgs e = new ValueChangedEventArgs(old, value);
+                    this.OnResolveProxiesChanging(e);
+                    this.OnPropertyChanging("ResolveProxies", e);
+                    this._resolveProxies = value;
                     this.OnResolveProxiesChanged(e);
                     this.OnPropertyChanged("ResolveProxies", e);
                 }
@@ -138,9 +138,10 @@ namespace NMF.Interop.Ecore
             {
                 if ((this._eOpposite != value))
                 {
-                    this.OnEOppositeChanging(EventArgs.Empty);
-                    this.OnPropertyChanging("EOpposite");
                     IEReference old = this._eOpposite;
+                    ValueChangedEventArgs e = new ValueChangedEventArgs(old, value);
+                    this.OnEOppositeChanging(e);
+                    this.OnPropertyChanging("EOpposite", e);
                     this._eOpposite = value;
                     if ((old != null))
                     {
@@ -150,7 +151,6 @@ namespace NMF.Interop.Ecore
                     {
                         value.Deleted += this.OnResetEOpposite;
                     }
-                    ValueChangedEventArgs e = new ValueChangedEventArgs(old, value);
                     this.OnEOppositeChanged(e);
                     this.OnPropertyChanged("EOpposite", e);
                 }
@@ -164,7 +164,7 @@ namespace NMF.Interop.Ecore
         [XmlElementNameAttribute("eKeys")]
         [XmlAttributeAttribute(true)]
         [ConstantAttribute()]
-        public virtual IListExpression<IEAttribute> EKeys
+        public virtual IOrderedSetExpression<IEAttribute> EKeys
         {
             get
             {
@@ -201,40 +201,40 @@ namespace NMF.Interop.Ecore
         /// <summary>
         /// Gets fired before the Containment property changes its value
         /// </summary>
-        public event EventHandler ContainmentChanging;
+        public event System.EventHandler<ValueChangedEventArgs> ContainmentChanging;
         
         /// <summary>
         /// Gets fired when the Containment property changed its value
         /// </summary>
-        public event EventHandler<ValueChangedEventArgs> ContainmentChanged;
+        public event System.EventHandler<ValueChangedEventArgs> ContainmentChanged;
         
         /// <summary>
         /// Gets fired before the ResolveProxies property changes its value
         /// </summary>
-        public event EventHandler ResolveProxiesChanging;
+        public event System.EventHandler<ValueChangedEventArgs> ResolveProxiesChanging;
         
         /// <summary>
         /// Gets fired when the ResolveProxies property changed its value
         /// </summary>
-        public event EventHandler<ValueChangedEventArgs> ResolveProxiesChanged;
+        public event System.EventHandler<ValueChangedEventArgs> ResolveProxiesChanged;
         
         /// <summary>
         /// Gets fired before the EOpposite property changes its value
         /// </summary>
-        public event EventHandler EOppositeChanging;
+        public event System.EventHandler<ValueChangedEventArgs> EOppositeChanging;
         
         /// <summary>
         /// Gets fired when the EOpposite property changed its value
         /// </summary>
-        public event EventHandler<ValueChangedEventArgs> EOppositeChanged;
+        public event System.EventHandler<ValueChangedEventArgs> EOppositeChanged;
         
         /// <summary>
         /// Raises the ContainmentChanging event
         /// </summary>
         /// <param name="eventArgs">The event data</param>
-        protected virtual void OnContainmentChanging(EventArgs eventArgs)
+        protected virtual void OnContainmentChanging(ValueChangedEventArgs eventArgs)
         {
-            EventHandler handler = this.ContainmentChanging;
+            System.EventHandler<ValueChangedEventArgs> handler = this.ContainmentChanging;
             if ((handler != null))
             {
                 handler.Invoke(this, eventArgs);
@@ -247,7 +247,7 @@ namespace NMF.Interop.Ecore
         /// <param name="eventArgs">The event data</param>
         protected virtual void OnContainmentChanged(ValueChangedEventArgs eventArgs)
         {
-            EventHandler<ValueChangedEventArgs> handler = this.ContainmentChanged;
+            System.EventHandler<ValueChangedEventArgs> handler = this.ContainmentChanged;
             if ((handler != null))
             {
                 handler.Invoke(this, eventArgs);
@@ -258,9 +258,9 @@ namespace NMF.Interop.Ecore
         /// Raises the ResolveProxiesChanging event
         /// </summary>
         /// <param name="eventArgs">The event data</param>
-        protected virtual void OnResolveProxiesChanging(EventArgs eventArgs)
+        protected virtual void OnResolveProxiesChanging(ValueChangedEventArgs eventArgs)
         {
-            EventHandler handler = this.ResolveProxiesChanging;
+            System.EventHandler<ValueChangedEventArgs> handler = this.ResolveProxiesChanging;
             if ((handler != null))
             {
                 handler.Invoke(this, eventArgs);
@@ -273,7 +273,7 @@ namespace NMF.Interop.Ecore
         /// <param name="eventArgs">The event data</param>
         protected virtual void OnResolveProxiesChanged(ValueChangedEventArgs eventArgs)
         {
-            EventHandler<ValueChangedEventArgs> handler = this.ResolveProxiesChanged;
+            System.EventHandler<ValueChangedEventArgs> handler = this.ResolveProxiesChanged;
             if ((handler != null))
             {
                 handler.Invoke(this, eventArgs);
@@ -284,9 +284,9 @@ namespace NMF.Interop.Ecore
         /// Raises the EOppositeChanging event
         /// </summary>
         /// <param name="eventArgs">The event data</param>
-        protected virtual void OnEOppositeChanging(EventArgs eventArgs)
+        protected virtual void OnEOppositeChanging(ValueChangedEventArgs eventArgs)
         {
-            EventHandler handler = this.EOppositeChanging;
+            System.EventHandler<ValueChangedEventArgs> handler = this.EOppositeChanging;
             if ((handler != null))
             {
                 handler.Invoke(this, eventArgs);
@@ -299,7 +299,7 @@ namespace NMF.Interop.Ecore
         /// <param name="eventArgs">The event data</param>
         protected virtual void OnEOppositeChanged(ValueChangedEventArgs eventArgs)
         {
-            EventHandler<ValueChangedEventArgs> handler = this.EOppositeChanged;
+            System.EventHandler<ValueChangedEventArgs> handler = this.EOppositeChanged;
             if ((handler != null))
             {
                 handler.Invoke(this, eventArgs);

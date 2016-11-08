@@ -60,22 +60,22 @@ namespace NMF.Interop.Ecore
         /// <summary>
         /// Gets fired before the Key property changes its value
         /// </summary>
-        event EventHandler KeyChanging;
+        event System.EventHandler<ValueChangedEventArgs> KeyChanging;
         
         /// <summary>
         /// Gets fired when the Key property changed its value
         /// </summary>
-        event EventHandler<ValueChangedEventArgs> KeyChanged;
+        event System.EventHandler<ValueChangedEventArgs> KeyChanged;
         
         /// <summary>
         /// Gets fired before the Value property changes its value
         /// </summary>
-        event EventHandler ValueChanging;
+        event System.EventHandler<ValueChangedEventArgs> ValueChanging;
         
         /// <summary>
         /// Gets fired when the Value property changed its value
         /// </summary>
-        event EventHandler<ValueChangedEventArgs> ValueChanged;
+        event System.EventHandler<ValueChangedEventArgs> ValueChanged;
     }
 }
 

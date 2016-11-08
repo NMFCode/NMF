@@ -54,7 +54,7 @@ namespace NMF.Interop.Ecore
         /// <summary>
         /// The backing field for the ESuperTypes property
         /// </summary>
-        private ObservableAssociationList<IEClass> _eSuperTypes;
+        private ObservableAssociationOrderedSet<IEClass> _eSuperTypes;
         
         /// <summary>
         /// The backing field for the EOperations property
@@ -69,13 +69,13 @@ namespace NMF.Interop.Ecore
         /// <summary>
         /// The backing field for the EGenericSuperTypes property
         /// </summary>
-        private ObservableCompositionList<IEGenericType> _eGenericSuperTypes;
+        private ObservableCompositionOrderedSet<IEGenericType> _eGenericSuperTypes;
         
         private static IClass _classInstance;
         
         public EClass()
         {
-            this._eSuperTypes = new ObservableAssociationList<IEClass>();
+            this._eSuperTypes = new ObservableAssociationOrderedSet<IEClass>();
             this._eSuperTypes.CollectionChanging += this.ESuperTypesCollectionChanging;
             this._eSuperTypes.CollectionChanged += this.ESuperTypesCollectionChanged;
             this._eOperations = new EClassEOperationsCollection(this);
@@ -84,7 +84,7 @@ namespace NMF.Interop.Ecore
             this._eStructuralFeatures = new EClassEStructuralFeaturesCollection(this);
             this._eStructuralFeatures.CollectionChanging += this.EStructuralFeaturesCollectionChanging;
             this._eStructuralFeatures.CollectionChanged += this.EStructuralFeaturesCollectionChanged;
-            this._eGenericSuperTypes = new ObservableCompositionList<IEGenericType>(this);
+            this._eGenericSuperTypes = new ObservableCompositionOrderedSet<IEGenericType>(this);
             this._eGenericSuperTypes.CollectionChanging += this.EGenericSuperTypesCollectionChanging;
             this._eGenericSuperTypes.CollectionChanged += this.EGenericSuperTypesCollectionChanged;
         }
@@ -104,11 +104,11 @@ namespace NMF.Interop.Ecore
             {
                 if ((this._abstract != value))
                 {
-                    this.OnAbstractChanging(EventArgs.Empty);
-                    this.OnPropertyChanging("Abstract");
                     Nullable<bool> old = this._abstract;
-                    this._abstract = value;
                     ValueChangedEventArgs e = new ValueChangedEventArgs(old, value);
+                    this.OnAbstractChanging(e);
+                    this.OnPropertyChanging("Abstract", e);
+                    this._abstract = value;
                     this.OnAbstractChanged(e);
                     this.OnPropertyChanged("Abstract", e);
                 }
@@ -130,11 +130,11 @@ namespace NMF.Interop.Ecore
             {
                 if ((this._interface != value))
                 {
-                    this.OnInterfaceChanging(EventArgs.Empty);
-                    this.OnPropertyChanging("Interface");
                     Nullable<bool> old = this._interface;
-                    this._interface = value;
                     ValueChangedEventArgs e = new ValueChangedEventArgs(old, value);
+                    this.OnInterfaceChanging(e);
+                    this.OnPropertyChanging("Interface", e);
+                    this._interface = value;
                     this.OnInterfaceChanged(e);
                     this.OnPropertyChanged("Interface", e);
                 }
@@ -148,7 +148,7 @@ namespace NMF.Interop.Ecore
         [XmlElementNameAttribute("eSuperTypes")]
         [XmlAttributeAttribute(true)]
         [ConstantAttribute()]
-        public virtual IListExpression<IEClass> ESuperTypes
+        public virtual IOrderedSetExpression<IEClass> ESuperTypes
         {
             get
             {
@@ -165,7 +165,7 @@ namespace NMF.Interop.Ecore
         [ContainmentAttribute()]
         [XmlOppositeAttribute("eContainingClass")]
         [ConstantAttribute()]
-        public virtual IListExpression<IEOperation> EOperations
+        public virtual IOrderedSetExpression<IEOperation> EOperations
         {
             get
             {
@@ -182,7 +182,7 @@ namespace NMF.Interop.Ecore
         [ContainmentAttribute()]
         [XmlOppositeAttribute("eContainingClass")]
         [ConstantAttribute()]
-        public virtual IListExpression<IEStructuralFeature> EStructuralFeatures
+        public virtual IOrderedSetExpression<IEStructuralFeature> EStructuralFeatures
         {
             get
             {
@@ -198,7 +198,7 @@ namespace NMF.Interop.Ecore
         [XmlAttributeAttribute(false)]
         [ContainmentAttribute()]
         [ConstantAttribute()]
-        public virtual IListExpression<IEGenericType> EGenericSuperTypes
+        public virtual IOrderedSetExpression<IEGenericType> EGenericSuperTypes
         {
             get
             {
@@ -246,30 +246,30 @@ namespace NMF.Interop.Ecore
         /// <summary>
         /// Gets fired before the Abstract property changes its value
         /// </summary>
-        public event EventHandler AbstractChanging;
+        public event System.EventHandler<ValueChangedEventArgs> AbstractChanging;
         
         /// <summary>
         /// Gets fired when the Abstract property changed its value
         /// </summary>
-        public event EventHandler<ValueChangedEventArgs> AbstractChanged;
+        public event System.EventHandler<ValueChangedEventArgs> AbstractChanged;
         
         /// <summary>
         /// Gets fired before the Interface property changes its value
         /// </summary>
-        public event EventHandler InterfaceChanging;
+        public event System.EventHandler<ValueChangedEventArgs> InterfaceChanging;
         
         /// <summary>
         /// Gets fired when the Interface property changed its value
         /// </summary>
-        public event EventHandler<ValueChangedEventArgs> InterfaceChanged;
+        public event System.EventHandler<ValueChangedEventArgs> InterfaceChanged;
         
         /// <summary>
         /// Raises the AbstractChanging event
         /// </summary>
         /// <param name="eventArgs">The event data</param>
-        protected virtual void OnAbstractChanging(EventArgs eventArgs)
+        protected virtual void OnAbstractChanging(ValueChangedEventArgs eventArgs)
         {
-            EventHandler handler = this.AbstractChanging;
+            System.EventHandler<ValueChangedEventArgs> handler = this.AbstractChanging;
             if ((handler != null))
             {
                 handler.Invoke(this, eventArgs);
@@ -282,7 +282,7 @@ namespace NMF.Interop.Ecore
         /// <param name="eventArgs">The event data</param>
         protected virtual void OnAbstractChanged(ValueChangedEventArgs eventArgs)
         {
-            EventHandler<ValueChangedEventArgs> handler = this.AbstractChanged;
+            System.EventHandler<ValueChangedEventArgs> handler = this.AbstractChanged;
             if ((handler != null))
             {
                 handler.Invoke(this, eventArgs);
@@ -293,9 +293,9 @@ namespace NMF.Interop.Ecore
         /// Raises the InterfaceChanging event
         /// </summary>
         /// <param name="eventArgs">The event data</param>
-        protected virtual void OnInterfaceChanging(EventArgs eventArgs)
+        protected virtual void OnInterfaceChanging(ValueChangedEventArgs eventArgs)
         {
-            EventHandler handler = this.InterfaceChanging;
+            System.EventHandler<ValueChangedEventArgs> handler = this.InterfaceChanging;
             if ((handler != null))
             {
                 handler.Invoke(this, eventArgs);
@@ -308,7 +308,7 @@ namespace NMF.Interop.Ecore
         /// <param name="eventArgs">The event data</param>
         protected virtual void OnInterfaceChanged(ValueChangedEventArgs eventArgs)
         {
-            EventHandler<ValueChangedEventArgs> handler = this.InterfaceChanged;
+            System.EventHandler<ValueChangedEventArgs> handler = this.InterfaceChanged;
             if ((handler != null))
             {
                 handler.Invoke(this, eventArgs);

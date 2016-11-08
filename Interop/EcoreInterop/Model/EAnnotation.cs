@@ -48,29 +48,29 @@ namespace NMF.Interop.Ecore
         /// <summary>
         /// The backing field for the Details property
         /// </summary>
-        private ObservableCompositionList<IEStringToStringMapEntry> _details;
+        private ObservableCompositionOrderedSet<IEStringToStringMapEntry> _details;
         
         /// <summary>
         /// The backing field for the Contents property
         /// </summary>
-        private ObservableCompositionList<IEObject> _contents;
+        private ObservableCompositionOrderedSet<IModelElement> _contents;
         
         /// <summary>
         /// The backing field for the References property
         /// </summary>
-        private ObservableAssociationList<IEObject> _references;
+        private ObservableAssociationOrderedSet<IModelElement> _references;
         
         private static IClass _classInstance;
         
         public EAnnotation()
         {
-            this._details = new ObservableCompositionList<IEStringToStringMapEntry>(this);
+            this._details = new ObservableCompositionOrderedSet<IEStringToStringMapEntry>(this);
             this._details.CollectionChanging += this.DetailsCollectionChanging;
             this._details.CollectionChanged += this.DetailsCollectionChanged;
-            this._contents = new ObservableCompositionList<IEObject>(this);
+            this._contents = new ObservableCompositionOrderedSet<IModelElement>(this);
             this._contents.CollectionChanging += this.ContentsCollectionChanging;
             this._contents.CollectionChanged += this.ContentsCollectionChanged;
-            this._references = new ObservableAssociationList<IEObject>();
+            this._references = new ObservableAssociationOrderedSet<IModelElement>();
             this._references.CollectionChanging += this.ReferencesCollectionChanging;
             this._references.CollectionChanged += this.ReferencesCollectionChanged;
         }
@@ -90,11 +90,11 @@ namespace NMF.Interop.Ecore
             {
                 if ((this._source != value))
                 {
-                    this.OnSourceChanging(EventArgs.Empty);
-                    this.OnPropertyChanging("Source");
                     string old = this._source;
-                    this._source = value;
                     ValueChangedEventArgs e = new ValueChangedEventArgs(old, value);
+                    this.OnSourceChanging(e);
+                    this.OnPropertyChanging("Source", e);
+                    this._source = value;
                     this.OnSourceChanged(e);
                     this.OnPropertyChanged("Source", e);
                 }
@@ -109,7 +109,7 @@ namespace NMF.Interop.Ecore
         [XmlAttributeAttribute(false)]
         [ContainmentAttribute()]
         [ConstantAttribute()]
-        public virtual IListExpression<IEStringToStringMapEntry> Details
+        public virtual IOrderedSetExpression<IEStringToStringMapEntry> Details
         {
             get
             {
@@ -144,7 +144,7 @@ namespace NMF.Interop.Ecore
         [XmlAttributeAttribute(false)]
         [ContainmentAttribute()]
         [ConstantAttribute()]
-        public virtual IListExpression<IEObject> Contents
+        public virtual IOrderedSetExpression<IModelElement> Contents
         {
             get
             {
@@ -159,7 +159,7 @@ namespace NMF.Interop.Ecore
         [XmlElementNameAttribute("references")]
         [XmlAttributeAttribute(true)]
         [ConstantAttribute()]
-        public virtual IListExpression<IEObject> References
+        public virtual IOrderedSetExpression<IModelElement> References
         {
             get
             {
@@ -207,25 +207,30 @@ namespace NMF.Interop.Ecore
         /// <summary>
         /// Gets fired before the Source property changes its value
         /// </summary>
-        public event EventHandler SourceChanging;
+        public event System.EventHandler<ValueChangedEventArgs> SourceChanging;
         
         /// <summary>
         /// Gets fired when the Source property changed its value
         /// </summary>
-        public event EventHandler<ValueChangedEventArgs> SourceChanged;
+        public event System.EventHandler<ValueChangedEventArgs> SourceChanged;
+        
+        /// <summary>
+        /// Gets fired before the EModelElement property changes its value
+        /// </summary>
+        public event System.EventHandler<ValueChangedEventArgs> EModelElementChanging;
         
         /// <summary>
         /// Gets fired when the EModelElement property changed its value
         /// </summary>
-        public event EventHandler<ValueChangedEventArgs> EModelElementChanged;
+        public event System.EventHandler<ValueChangedEventArgs> EModelElementChanged;
         
         /// <summary>
         /// Raises the SourceChanging event
         /// </summary>
         /// <param name="eventArgs">The event data</param>
-        protected virtual void OnSourceChanging(EventArgs eventArgs)
+        protected virtual void OnSourceChanging(ValueChangedEventArgs eventArgs)
         {
-            EventHandler handler = this.SourceChanging;
+            System.EventHandler<ValueChangedEventArgs> handler = this.SourceChanging;
             if ((handler != null))
             {
                 handler.Invoke(this, eventArgs);
@@ -238,7 +243,7 @@ namespace NMF.Interop.Ecore
         /// <param name="eventArgs">The event data</param>
         protected virtual void OnSourceChanged(ValueChangedEventArgs eventArgs)
         {
-            EventHandler<ValueChangedEventArgs> handler = this.SourceChanged;
+            System.EventHandler<ValueChangedEventArgs> handler = this.SourceChanged;
             if ((handler != null))
             {
                 handler.Invoke(this, eventArgs);
@@ -266,12 +271,39 @@ namespace NMF.Interop.Ecore
         }
         
         /// <summary>
+        /// Raises the EModelElementChanging event
+        /// </summary>
+        /// <param name="eventArgs">The event data</param>
+        protected virtual void OnEModelElementChanging(ValueChangedEventArgs eventArgs)
+        {
+            System.EventHandler<ValueChangedEventArgs> handler = this.EModelElementChanging;
+            if ((handler != null))
+            {
+                handler.Invoke(this, eventArgs);
+            }
+        }
+        
+        /// <summary>
+        /// Gets called when the parent model element of the current model element is about to change
+        /// </summary>
+        /// <param name="oldParent">The old parent model element</param>
+        /// <param name="newParent">The new parent model element</param>
+        protected override void OnParentChanging(IModelElement newParent, IModelElement oldParent)
+        {
+            IEModelElement oldEModelElement = ModelHelper.CastAs<IEModelElement>(oldParent);
+            IEModelElement newEModelElement = ModelHelper.CastAs<IEModelElement>(newParent);
+            ValueChangedEventArgs e = new ValueChangedEventArgs(oldEModelElement, newEModelElement);
+            this.OnEModelElementChanging(e);
+            this.OnPropertyChanging("EModelElement");
+        }
+        
+        /// <summary>
         /// Raises the EModelElementChanged event
         /// </summary>
         /// <param name="eventArgs">The event data</param>
         protected virtual void OnEModelElementChanged(ValueChangedEventArgs eventArgs)
         {
-            EventHandler<ValueChangedEventArgs> handler = this.EModelElementChanged;
+            System.EventHandler<ValueChangedEventArgs> handler = this.EModelElementChanged;
             if ((handler != null))
             {
                 handler.Invoke(this, eventArgs);
@@ -298,6 +330,7 @@ namespace NMF.Interop.Ecore
             ValueChangedEventArgs e = new ValueChangedEventArgs(oldEModelElement, newEModelElement);
             this.OnEModelElementChanged(e);
             this.OnPropertyChanged("EModelElement", e);
+            base.OnParentChanged(newParent, oldParent);
         }
         
         /// <summary>
@@ -543,11 +576,7 @@ namespace NMF.Interop.Ecore
                 {
                     this._parent.Details.Add(detailsCasted);
                 }
-                IEObject contentsCasted = item.As<IEObject>();
-                if ((contentsCasted != null))
-                {
-                    this._parent.Contents.Add(contentsCasted);
-                }
+                this._parent.Contents.Add(item);
             }
             
             /// <summary>
@@ -599,21 +628,8 @@ namespace NMF.Interop.Ecore
                 {
                     detailsEnumerator.Dispose();
                 }
-                IEnumerator<IModelElement> contentsEnumerator = this._parent.Contents.GetEnumerator();
-                try
-                {
-                    for (
-                    ; contentsEnumerator.MoveNext(); 
-                    )
-                    {
-                        array[arrayIndex] = contentsEnumerator.Current;
-                        arrayIndex = (arrayIndex + 1);
-                    }
-                }
-                finally
-                {
-                    contentsEnumerator.Dispose();
-                }
+                this._parent.Contents.CopyTo(array, arrayIndex);
+                arrayIndex = (arrayIndex + this._parent.Contents.Count);
             }
             
             /// <summary>
@@ -629,9 +645,7 @@ namespace NMF.Interop.Ecore
                 {
                     return true;
                 }
-                IEObject eObjectItem = item.As<IEObject>();
-                if (((eObjectItem != null) 
-                            && this._parent.Contents.Remove(eObjectItem)))
+                if (this._parent.Contents.Remove(item))
                 {
                     return true;
                 }
@@ -719,16 +733,7 @@ namespace NMF.Interop.Ecore
                         return;
                     }
                 }
-                IEObject contentsCasted = item.As<IEObject>();
-                if ((contentsCasted != null))
-                {
-                    this._parent.Contents.Add(contentsCasted);
-                }
-                IEObject referencesCasted = item.As<IEObject>();
-                if ((referencesCasted != null))
-                {
-                    this._parent.References.Add(referencesCasted);
-                }
+                this._parent.Contents.Add(item);
             }
             
             /// <summary>
@@ -795,36 +800,10 @@ namespace NMF.Interop.Ecore
                     array[arrayIndex] = this._parent.EModelElement;
                     arrayIndex = (arrayIndex + 1);
                 }
-                IEnumerator<IModelElement> contentsEnumerator = this._parent.Contents.GetEnumerator();
-                try
-                {
-                    for (
-                    ; contentsEnumerator.MoveNext(); 
-                    )
-                    {
-                        array[arrayIndex] = contentsEnumerator.Current;
-                        arrayIndex = (arrayIndex + 1);
-                    }
-                }
-                finally
-                {
-                    contentsEnumerator.Dispose();
-                }
-                IEnumerator<IModelElement> referencesEnumerator = this._parent.References.GetEnumerator();
-                try
-                {
-                    for (
-                    ; referencesEnumerator.MoveNext(); 
-                    )
-                    {
-                        array[arrayIndex] = referencesEnumerator.Current;
-                        arrayIndex = (arrayIndex + 1);
-                    }
-                }
-                finally
-                {
-                    referencesEnumerator.Dispose();
-                }
+                this._parent.Contents.CopyTo(array, arrayIndex);
+                arrayIndex = (arrayIndex + this._parent.Contents.Count);
+                this._parent.References.CopyTo(array, arrayIndex);
+                arrayIndex = (arrayIndex + this._parent.References.Count);
             }
             
             /// <summary>
@@ -845,14 +824,11 @@ namespace NMF.Interop.Ecore
                     this._parent.EModelElement = null;
                     return true;
                 }
-                IEObject eObjectItem = item.As<IEObject>();
-                if (((eObjectItem != null) 
-                            && this._parent.Contents.Remove(eObjectItem)))
+                if (this._parent.Contents.Remove(item))
                 {
                     return true;
                 }
-                if (((eObjectItem != null) 
-                            && this._parent.References.Remove(eObjectItem)))
+                if (this._parent.References.Remove(item))
                 {
                     return true;
                 }

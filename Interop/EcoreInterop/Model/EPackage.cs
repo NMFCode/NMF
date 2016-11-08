@@ -93,11 +93,11 @@ namespace NMF.Interop.Ecore
             {
                 if ((this._nsURI != value))
                 {
-                    this.OnNsURIChanging(EventArgs.Empty);
-                    this.OnPropertyChanging("NsURI");
                     string old = this._nsURI;
-                    this._nsURI = value;
                     ValueChangedEventArgs e = new ValueChangedEventArgs(old, value);
+                    this.OnNsURIChanging(e);
+                    this.OnPropertyChanging("NsURI", e);
+                    this._nsURI = value;
                     this.OnNsURIChanged(e);
                     this.OnPropertyChanged("NsURI", e);
                 }
@@ -119,11 +119,11 @@ namespace NMF.Interop.Ecore
             {
                 if ((this._nsPrefix != value))
                 {
-                    this.OnNsPrefixChanging(EventArgs.Empty);
-                    this.OnPropertyChanging("NsPrefix");
                     string old = this._nsPrefix;
-                    this._nsPrefix = value;
                     ValueChangedEventArgs e = new ValueChangedEventArgs(old, value);
+                    this.OnNsPrefixChanging(e);
+                    this.OnPropertyChanging("NsPrefix", e);
+                    this._nsPrefix = value;
                     this.OnNsPrefixChanged(e);
                     this.OnPropertyChanged("NsPrefix", e);
                 }
@@ -146,9 +146,10 @@ namespace NMF.Interop.Ecore
             {
                 if ((this._eFactoryInstance != value))
                 {
-                    this.OnEFactoryInstanceChanging(EventArgs.Empty);
-                    this.OnPropertyChanging("EFactoryInstance");
                     IEFactory old = this._eFactoryInstance;
+                    ValueChangedEventArgs e = new ValueChangedEventArgs(old, value);
+                    this.OnEFactoryInstanceChanging(e);
+                    this.OnPropertyChanging("EFactoryInstance", e);
                     this._eFactoryInstance = value;
                     if ((old != null))
                     {
@@ -160,7 +161,6 @@ namespace NMF.Interop.Ecore
                         value.EPackage = this;
                         value.Deleted += this.OnResetEFactoryInstance;
                     }
-                    ValueChangedEventArgs e = new ValueChangedEventArgs(old, value);
                     this.OnEFactoryInstanceChanged(e);
                     this.OnPropertyChanged("EFactoryInstance", e);
                 }
@@ -176,7 +176,7 @@ namespace NMF.Interop.Ecore
         [ContainmentAttribute()]
         [XmlOppositeAttribute("ePackage")]
         [ConstantAttribute()]
-        public virtual IListExpression<IEClassifier> EClassifiers
+        public virtual IOrderedSetExpression<IEClassifier> EClassifiers
         {
             get
             {
@@ -193,7 +193,7 @@ namespace NMF.Interop.Ecore
         [ContainmentAttribute()]
         [XmlOppositeAttribute("eSuperPackage")]
         [ConstantAttribute()]
-        public virtual IListExpression<IEPackage> ESubpackages
+        public virtual IOrderedSetExpression<IEPackage> ESubpackages
         {
             get
             {
@@ -260,45 +260,50 @@ namespace NMF.Interop.Ecore
         /// <summary>
         /// Gets fired before the NsURI property changes its value
         /// </summary>
-        public event EventHandler NsURIChanging;
+        public event System.EventHandler<ValueChangedEventArgs> NsURIChanging;
         
         /// <summary>
         /// Gets fired when the NsURI property changed its value
         /// </summary>
-        public event EventHandler<ValueChangedEventArgs> NsURIChanged;
+        public event System.EventHandler<ValueChangedEventArgs> NsURIChanged;
         
         /// <summary>
         /// Gets fired before the NsPrefix property changes its value
         /// </summary>
-        public event EventHandler NsPrefixChanging;
+        public event System.EventHandler<ValueChangedEventArgs> NsPrefixChanging;
         
         /// <summary>
         /// Gets fired when the NsPrefix property changed its value
         /// </summary>
-        public event EventHandler<ValueChangedEventArgs> NsPrefixChanged;
+        public event System.EventHandler<ValueChangedEventArgs> NsPrefixChanged;
         
         /// <summary>
         /// Gets fired before the EFactoryInstance property changes its value
         /// </summary>
-        public event EventHandler EFactoryInstanceChanging;
+        public event System.EventHandler<ValueChangedEventArgs> EFactoryInstanceChanging;
         
         /// <summary>
         /// Gets fired when the EFactoryInstance property changed its value
         /// </summary>
-        public event EventHandler<ValueChangedEventArgs> EFactoryInstanceChanged;
+        public event System.EventHandler<ValueChangedEventArgs> EFactoryInstanceChanged;
+        
+        /// <summary>
+        /// Gets fired before the ESuperPackage property changes its value
+        /// </summary>
+        public event System.EventHandler<ValueChangedEventArgs> ESuperPackageChanging;
         
         /// <summary>
         /// Gets fired when the ESuperPackage property changed its value
         /// </summary>
-        public event EventHandler<ValueChangedEventArgs> ESuperPackageChanged;
+        public event System.EventHandler<ValueChangedEventArgs> ESuperPackageChanged;
         
         /// <summary>
         /// Raises the NsURIChanging event
         /// </summary>
         /// <param name="eventArgs">The event data</param>
-        protected virtual void OnNsURIChanging(EventArgs eventArgs)
+        protected virtual void OnNsURIChanging(ValueChangedEventArgs eventArgs)
         {
-            EventHandler handler = this.NsURIChanging;
+            System.EventHandler<ValueChangedEventArgs> handler = this.NsURIChanging;
             if ((handler != null))
             {
                 handler.Invoke(this, eventArgs);
@@ -311,7 +316,7 @@ namespace NMF.Interop.Ecore
         /// <param name="eventArgs">The event data</param>
         protected virtual void OnNsURIChanged(ValueChangedEventArgs eventArgs)
         {
-            EventHandler<ValueChangedEventArgs> handler = this.NsURIChanged;
+            System.EventHandler<ValueChangedEventArgs> handler = this.NsURIChanged;
             if ((handler != null))
             {
                 handler.Invoke(this, eventArgs);
@@ -322,9 +327,9 @@ namespace NMF.Interop.Ecore
         /// Raises the NsPrefixChanging event
         /// </summary>
         /// <param name="eventArgs">The event data</param>
-        protected virtual void OnNsPrefixChanging(EventArgs eventArgs)
+        protected virtual void OnNsPrefixChanging(ValueChangedEventArgs eventArgs)
         {
-            EventHandler handler = this.NsPrefixChanging;
+            System.EventHandler<ValueChangedEventArgs> handler = this.NsPrefixChanging;
             if ((handler != null))
             {
                 handler.Invoke(this, eventArgs);
@@ -337,7 +342,7 @@ namespace NMF.Interop.Ecore
         /// <param name="eventArgs">The event data</param>
         protected virtual void OnNsPrefixChanged(ValueChangedEventArgs eventArgs)
         {
-            EventHandler<ValueChangedEventArgs> handler = this.NsPrefixChanged;
+            System.EventHandler<ValueChangedEventArgs> handler = this.NsPrefixChanged;
             if ((handler != null))
             {
                 handler.Invoke(this, eventArgs);
@@ -348,9 +353,9 @@ namespace NMF.Interop.Ecore
         /// Raises the EFactoryInstanceChanging event
         /// </summary>
         /// <param name="eventArgs">The event data</param>
-        protected virtual void OnEFactoryInstanceChanging(EventArgs eventArgs)
+        protected virtual void OnEFactoryInstanceChanging(ValueChangedEventArgs eventArgs)
         {
-            EventHandler handler = this.EFactoryInstanceChanging;
+            System.EventHandler<ValueChangedEventArgs> handler = this.EFactoryInstanceChanging;
             if ((handler != null))
             {
                 handler.Invoke(this, eventArgs);
@@ -363,7 +368,7 @@ namespace NMF.Interop.Ecore
         /// <param name="eventArgs">The event data</param>
         protected virtual void OnEFactoryInstanceChanged(ValueChangedEventArgs eventArgs)
         {
-            EventHandler<ValueChangedEventArgs> handler = this.EFactoryInstanceChanged;
+            System.EventHandler<ValueChangedEventArgs> handler = this.EFactoryInstanceChanged;
             if ((handler != null))
             {
                 handler.Invoke(this, eventArgs);
@@ -421,12 +426,39 @@ namespace NMF.Interop.Ecore
         }
         
         /// <summary>
+        /// Raises the ESuperPackageChanging event
+        /// </summary>
+        /// <param name="eventArgs">The event data</param>
+        protected virtual void OnESuperPackageChanging(ValueChangedEventArgs eventArgs)
+        {
+            System.EventHandler<ValueChangedEventArgs> handler = this.ESuperPackageChanging;
+            if ((handler != null))
+            {
+                handler.Invoke(this, eventArgs);
+            }
+        }
+        
+        /// <summary>
+        /// Gets called when the parent model element of the current model element is about to change
+        /// </summary>
+        /// <param name="oldParent">The old parent model element</param>
+        /// <param name="newParent">The new parent model element</param>
+        protected override void OnParentChanging(IModelElement newParent, IModelElement oldParent)
+        {
+            IEPackage oldESuperPackage = ModelHelper.CastAs<IEPackage>(oldParent);
+            IEPackage newESuperPackage = ModelHelper.CastAs<IEPackage>(newParent);
+            ValueChangedEventArgs e = new ValueChangedEventArgs(oldESuperPackage, newESuperPackage);
+            this.OnESuperPackageChanging(e);
+            this.OnPropertyChanging("ESuperPackage");
+        }
+        
+        /// <summary>
         /// Raises the ESuperPackageChanged event
         /// </summary>
         /// <param name="eventArgs">The event data</param>
         protected virtual void OnESuperPackageChanged(ValueChangedEventArgs eventArgs)
         {
-            EventHandler<ValueChangedEventArgs> handler = this.ESuperPackageChanged;
+            System.EventHandler<ValueChangedEventArgs> handler = this.ESuperPackageChanged;
             if ((handler != null))
             {
                 handler.Invoke(this, eventArgs);
@@ -453,6 +485,7 @@ namespace NMF.Interop.Ecore
             ValueChangedEventArgs e = new ValueChangedEventArgs(oldESuperPackage, newESuperPackage);
             this.OnESuperPackageChanged(e);
             this.OnPropertyChanged("ESuperPackage", e);
+            base.OnParentChanged(newParent, oldParent);
         }
         
         /// <summary>

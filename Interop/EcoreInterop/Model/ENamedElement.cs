@@ -65,11 +65,11 @@ namespace NMF.Interop.Ecore
             {
                 if ((this._name != value))
                 {
-                    this.OnNameChanging(EventArgs.Empty);
-                    this.OnPropertyChanging("Name");
                     string old = this._name;
-                    this._name = value;
                     ValueChangedEventArgs e = new ValueChangedEventArgs(old, value);
+                    this.OnNameChanging(e);
+                    this.OnPropertyChanging("Name", e);
+                    this._name = value;
                     this.OnNameChanged(e);
                     this.OnPropertyChanged("Name", e);
                 }
@@ -105,20 +105,20 @@ namespace NMF.Interop.Ecore
         /// <summary>
         /// Gets fired before the Name property changes its value
         /// </summary>
-        public event EventHandler NameChanging;
+        public event System.EventHandler<ValueChangedEventArgs> NameChanging;
         
         /// <summary>
         /// Gets fired when the Name property changed its value
         /// </summary>
-        public event EventHandler<ValueChangedEventArgs> NameChanged;
+        public event System.EventHandler<ValueChangedEventArgs> NameChanged;
         
         /// <summary>
         /// Raises the NameChanging event
         /// </summary>
         /// <param name="eventArgs">The event data</param>
-        protected virtual void OnNameChanging(EventArgs eventArgs)
+        protected virtual void OnNameChanging(ValueChangedEventArgs eventArgs)
         {
-            EventHandler handler = this.NameChanging;
+            System.EventHandler<ValueChangedEventArgs> handler = this.NameChanging;
             if ((handler != null))
             {
                 handler.Invoke(this, eventArgs);
@@ -131,7 +131,7 @@ namespace NMF.Interop.Ecore
         /// <param name="eventArgs">The event data</param>
         protected virtual void OnNameChanged(ValueChangedEventArgs eventArgs)
         {
-            EventHandler<ValueChangedEventArgs> handler = this.NameChanged;
+            System.EventHandler<ValueChangedEventArgs> handler = this.NameChanged;
             if ((handler != null))
             {
                 handler.Invoke(this, eventArgs);

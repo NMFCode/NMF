@@ -49,9 +49,14 @@ namespace NMF.Interop.Ecore
         }
         
         /// <summary>
+        /// Gets fired before the EOperation property changes its value
+        /// </summary>
+        event System.EventHandler<ValueChangedEventArgs> EOperationChanging;
+        
+        /// <summary>
         /// Gets fired when the EOperation property changed its value
         /// </summary>
-        event EventHandler<ValueChangedEventArgs> EOperationChanged;
+        event System.EventHandler<ValueChangedEventArgs> EOperationChanged;
     }
 }
 

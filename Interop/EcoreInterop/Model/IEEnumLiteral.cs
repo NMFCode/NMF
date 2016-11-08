@@ -78,37 +78,42 @@ namespace NMF.Interop.Ecore
         /// <summary>
         /// Gets fired before the Value property changes its value
         /// </summary>
-        event EventHandler ValueChanging;
+        event System.EventHandler<ValueChangedEventArgs> ValueChanging;
         
         /// <summary>
         /// Gets fired when the Value property changed its value
         /// </summary>
-        event EventHandler<ValueChangedEventArgs> ValueChanged;
+        event System.EventHandler<ValueChangedEventArgs> ValueChanged;
         
         /// <summary>
         /// Gets fired before the Instance property changes its value
         /// </summary>
-        event EventHandler InstanceChanging;
+        event System.EventHandler<ValueChangedEventArgs> InstanceChanging;
         
         /// <summary>
         /// Gets fired when the Instance property changed its value
         /// </summary>
-        event EventHandler<ValueChangedEventArgs> InstanceChanged;
+        event System.EventHandler<ValueChangedEventArgs> InstanceChanged;
         
         /// <summary>
         /// Gets fired before the Literal property changes its value
         /// </summary>
-        event EventHandler LiteralChanging;
+        event System.EventHandler<ValueChangedEventArgs> LiteralChanging;
         
         /// <summary>
         /// Gets fired when the Literal property changed its value
         /// </summary>
-        event EventHandler<ValueChangedEventArgs> LiteralChanged;
+        event System.EventHandler<ValueChangedEventArgs> LiteralChanged;
+        
+        /// <summary>
+        /// Gets fired before the EEnum property changes its value
+        /// </summary>
+        event System.EventHandler<ValueChangedEventArgs> EEnumChanging;
         
         /// <summary>
         /// Gets fired when the EEnum property changed its value
         /// </summary>
-        event EventHandler<ValueChangedEventArgs> EEnumChanged;
+        event System.EventHandler<ValueChangedEventArgs> EEnumChanged;
     }
 }
 

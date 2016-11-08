@@ -105,67 +105,72 @@ namespace NMF.Interop.Ecore
         /// <summary>
         /// Gets fired before the Changeable property changes its value
         /// </summary>
-        event EventHandler ChangeableChanging;
+        event System.EventHandler<ValueChangedEventArgs> ChangeableChanging;
         
         /// <summary>
         /// Gets fired when the Changeable property changed its value
         /// </summary>
-        event EventHandler<ValueChangedEventArgs> ChangeableChanged;
+        event System.EventHandler<ValueChangedEventArgs> ChangeableChanged;
         
         /// <summary>
         /// Gets fired before the Volatile property changes its value
         /// </summary>
-        event EventHandler VolatileChanging;
+        event System.EventHandler<ValueChangedEventArgs> VolatileChanging;
         
         /// <summary>
         /// Gets fired when the Volatile property changed its value
         /// </summary>
-        event EventHandler<ValueChangedEventArgs> VolatileChanged;
+        event System.EventHandler<ValueChangedEventArgs> VolatileChanged;
         
         /// <summary>
         /// Gets fired before the Transient property changes its value
         /// </summary>
-        event EventHandler TransientChanging;
+        event System.EventHandler<ValueChangedEventArgs> TransientChanging;
         
         /// <summary>
         /// Gets fired when the Transient property changed its value
         /// </summary>
-        event EventHandler<ValueChangedEventArgs> TransientChanged;
+        event System.EventHandler<ValueChangedEventArgs> TransientChanged;
         
         /// <summary>
         /// Gets fired before the DefaultValueLiteral property changes its value
         /// </summary>
-        event EventHandler DefaultValueLiteralChanging;
+        event System.EventHandler<ValueChangedEventArgs> DefaultValueLiteralChanging;
         
         /// <summary>
         /// Gets fired when the DefaultValueLiteral property changed its value
         /// </summary>
-        event EventHandler<ValueChangedEventArgs> DefaultValueLiteralChanged;
+        event System.EventHandler<ValueChangedEventArgs> DefaultValueLiteralChanged;
         
         /// <summary>
         /// Gets fired before the Unsettable property changes its value
         /// </summary>
-        event EventHandler UnsettableChanging;
+        event System.EventHandler<ValueChangedEventArgs> UnsettableChanging;
         
         /// <summary>
         /// Gets fired when the Unsettable property changed its value
         /// </summary>
-        event EventHandler<ValueChangedEventArgs> UnsettableChanged;
+        event System.EventHandler<ValueChangedEventArgs> UnsettableChanged;
         
         /// <summary>
         /// Gets fired before the Derived property changes its value
         /// </summary>
-        event EventHandler DerivedChanging;
+        event System.EventHandler<ValueChangedEventArgs> DerivedChanging;
         
         /// <summary>
         /// Gets fired when the Derived property changed its value
         /// </summary>
-        event EventHandler<ValueChangedEventArgs> DerivedChanged;
+        event System.EventHandler<ValueChangedEventArgs> DerivedChanged;
+        
+        /// <summary>
+        /// Gets fired before the EContainingClass property changes its value
+        /// </summary>
+        event System.EventHandler<ValueChangedEventArgs> EContainingClassChanging;
         
         /// <summary>
         /// Gets fired when the EContainingClass property changed its value
         /// </summary>
-        event EventHandler<ValueChangedEventArgs> EContainingClassChanged;
+        event System.EventHandler<ValueChangedEventArgs> EContainingClassChanged;
     }
 }
 

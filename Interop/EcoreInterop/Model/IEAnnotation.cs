@@ -51,7 +51,7 @@ namespace NMF.Interop.Ecore
         /// <summary>
         /// The details property
         /// </summary>
-        IListExpression<IEStringToStringMapEntry> Details
+        IOrderedSetExpression<IEStringToStringMapEntry> Details
         {
             get;
         }
@@ -68,7 +68,7 @@ namespace NMF.Interop.Ecore
         /// <summary>
         /// The contents property
         /// </summary>
-        IListExpression<IEObject> Contents
+        IOrderedSetExpression<IModelElement> Contents
         {
             get;
         }
@@ -76,7 +76,7 @@ namespace NMF.Interop.Ecore
         /// <summary>
         /// The references property
         /// </summary>
-        IListExpression<IEObject> References
+        IOrderedSetExpression<IModelElement> References
         {
             get;
         }
@@ -84,17 +84,22 @@ namespace NMF.Interop.Ecore
         /// <summary>
         /// Gets fired before the Source property changes its value
         /// </summary>
-        event EventHandler SourceChanging;
+        event System.EventHandler<ValueChangedEventArgs> SourceChanging;
         
         /// <summary>
         /// Gets fired when the Source property changed its value
         /// </summary>
-        event EventHandler<ValueChangedEventArgs> SourceChanged;
+        event System.EventHandler<ValueChangedEventArgs> SourceChanged;
+        
+        /// <summary>
+        /// Gets fired before the EModelElement property changes its value
+        /// </summary>
+        event System.EventHandler<ValueChangedEventArgs> EModelElementChanging;
         
         /// <summary>
         /// Gets fired when the EModelElement property changed its value
         /// </summary>
-        event EventHandler<ValueChangedEventArgs> EModelElementChanged;
+        event System.EventHandler<ValueChangedEventArgs> EModelElementChanged;
     }
 }
 

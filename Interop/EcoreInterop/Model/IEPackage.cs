@@ -69,7 +69,7 @@ namespace NMF.Interop.Ecore
         /// <summary>
         /// The eClassifiers property
         /// </summary>
-        IListExpression<IEClassifier> EClassifiers
+        IOrderedSetExpression<IEClassifier> EClassifiers
         {
             get;
         }
@@ -77,7 +77,7 @@ namespace NMF.Interop.Ecore
         /// <summary>
         /// The eSubpackages property
         /// </summary>
-        IListExpression<IEPackage> ESubpackages
+        IOrderedSetExpression<IEPackage> ESubpackages
         {
             get;
         }
@@ -94,37 +94,42 @@ namespace NMF.Interop.Ecore
         /// <summary>
         /// Gets fired before the NsURI property changes its value
         /// </summary>
-        event EventHandler NsURIChanging;
+        event System.EventHandler<ValueChangedEventArgs> NsURIChanging;
         
         /// <summary>
         /// Gets fired when the NsURI property changed its value
         /// </summary>
-        event EventHandler<ValueChangedEventArgs> NsURIChanged;
+        event System.EventHandler<ValueChangedEventArgs> NsURIChanged;
         
         /// <summary>
         /// Gets fired before the NsPrefix property changes its value
         /// </summary>
-        event EventHandler NsPrefixChanging;
+        event System.EventHandler<ValueChangedEventArgs> NsPrefixChanging;
         
         /// <summary>
         /// Gets fired when the NsPrefix property changed its value
         /// </summary>
-        event EventHandler<ValueChangedEventArgs> NsPrefixChanged;
+        event System.EventHandler<ValueChangedEventArgs> NsPrefixChanged;
         
         /// <summary>
         /// Gets fired before the EFactoryInstance property changes its value
         /// </summary>
-        event EventHandler EFactoryInstanceChanging;
+        event System.EventHandler<ValueChangedEventArgs> EFactoryInstanceChanging;
         
         /// <summary>
         /// Gets fired when the EFactoryInstance property changed its value
         /// </summary>
-        event EventHandler<ValueChangedEventArgs> EFactoryInstanceChanged;
+        event System.EventHandler<ValueChangedEventArgs> EFactoryInstanceChanged;
+        
+        /// <summary>
+        /// Gets fired before the ESuperPackage property changes its value
+        /// </summary>
+        event System.EventHandler<ValueChangedEventArgs> ESuperPackageChanging;
         
         /// <summary>
         /// Gets fired when the ESuperPackage property changed its value
         /// </summary>
-        event EventHandler<ValueChangedEventArgs> ESuperPackageChanged;
+        event System.EventHandler<ValueChangedEventArgs> ESuperPackageChanged;
     }
 }
 

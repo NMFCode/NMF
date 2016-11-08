@@ -31,7 +31,7 @@ namespace NMF.Interop.Ecore
 {
     
     
-    public class EEnumELiteralsCollection : ObservableOppositeList<IEEnum, IEEnumLiteral>
+    public class EEnumELiteralsCollection : ObservableOppositeOrderedSet<IEEnum, IEEnumLiteral>
     {
         
         public EEnumELiteralsCollection(IEEnum parent) : 
@@ -39,21 +39,24 @@ namespace NMF.Interop.Ecore
         {
         }
         
-        private void OnItemDeleted(object sender, System.EventArgs e)
+        private void OnItemParentChanged(object sender, ValueChangedEventArgs e)
         {
-            this.Remove(((IEEnumLiteral)(sender)));
+            if ((e.NewValue != this.Parent))
+            {
+                this.Remove(((IEEnumLiteral)(sender)));
+            }
         }
         
         protected override void SetOpposite(IEEnumLiteral item, IEEnum parent)
         {
             if ((parent != null))
             {
-                item.Deleted += this.OnItemDeleted;
+                item.ParentChanged += this.OnItemParentChanged;
                 item.EEnum = parent;
             }
             else
             {
-                item.Deleted -= this.OnItemDeleted;
+                item.ParentChanged -= this.OnItemParentChanged;
                 if ((item.EEnum == this.Parent))
                 {
                     item.EEnum = parent;

@@ -89,11 +89,11 @@ namespace NMF.Interop.Ecore
             {
                 if ((this._changeable != value))
                 {
-                    this.OnChangeableChanging(EventArgs.Empty);
-                    this.OnPropertyChanging("Changeable");
                     Nullable<bool> old = this._changeable;
-                    this._changeable = value;
                     ValueChangedEventArgs e = new ValueChangedEventArgs(old, value);
+                    this.OnChangeableChanging(e);
+                    this.OnPropertyChanging("Changeable", e);
+                    this._changeable = value;
                     this.OnChangeableChanged(e);
                     this.OnPropertyChanged("Changeable", e);
                 }
@@ -115,11 +115,11 @@ namespace NMF.Interop.Ecore
             {
                 if ((this._volatile != value))
                 {
-                    this.OnVolatileChanging(EventArgs.Empty);
-                    this.OnPropertyChanging("Volatile");
                     Nullable<bool> old = this._volatile;
-                    this._volatile = value;
                     ValueChangedEventArgs e = new ValueChangedEventArgs(old, value);
+                    this.OnVolatileChanging(e);
+                    this.OnPropertyChanging("Volatile", e);
+                    this._volatile = value;
                     this.OnVolatileChanged(e);
                     this.OnPropertyChanged("Volatile", e);
                 }
@@ -141,11 +141,11 @@ namespace NMF.Interop.Ecore
             {
                 if ((this._transient != value))
                 {
-                    this.OnTransientChanging(EventArgs.Empty);
-                    this.OnPropertyChanging("Transient");
                     Nullable<bool> old = this._transient;
-                    this._transient = value;
                     ValueChangedEventArgs e = new ValueChangedEventArgs(old, value);
+                    this.OnTransientChanging(e);
+                    this.OnPropertyChanging("Transient", e);
+                    this._transient = value;
                     this.OnTransientChanged(e);
                     this.OnPropertyChanged("Transient", e);
                 }
@@ -167,11 +167,11 @@ namespace NMF.Interop.Ecore
             {
                 if ((this._defaultValueLiteral != value))
                 {
-                    this.OnDefaultValueLiteralChanging(EventArgs.Empty);
-                    this.OnPropertyChanging("DefaultValueLiteral");
                     string old = this._defaultValueLiteral;
-                    this._defaultValueLiteral = value;
                     ValueChangedEventArgs e = new ValueChangedEventArgs(old, value);
+                    this.OnDefaultValueLiteralChanging(e);
+                    this.OnPropertyChanging("DefaultValueLiteral", e);
+                    this._defaultValueLiteral = value;
                     this.OnDefaultValueLiteralChanged(e);
                     this.OnPropertyChanged("DefaultValueLiteral", e);
                 }
@@ -193,11 +193,11 @@ namespace NMF.Interop.Ecore
             {
                 if ((this._unsettable != value))
                 {
-                    this.OnUnsettableChanging(EventArgs.Empty);
-                    this.OnPropertyChanging("Unsettable");
                     Nullable<bool> old = this._unsettable;
-                    this._unsettable = value;
                     ValueChangedEventArgs e = new ValueChangedEventArgs(old, value);
+                    this.OnUnsettableChanging(e);
+                    this.OnPropertyChanging("Unsettable", e);
+                    this._unsettable = value;
                     this.OnUnsettableChanged(e);
                     this.OnPropertyChanged("Unsettable", e);
                 }
@@ -219,11 +219,11 @@ namespace NMF.Interop.Ecore
             {
                 if ((this._derived != value))
                 {
-                    this.OnDerivedChanging(EventArgs.Empty);
-                    this.OnPropertyChanging("Derived");
                     Nullable<bool> old = this._derived;
-                    this._derived = value;
                     ValueChangedEventArgs e = new ValueChangedEventArgs(old, value);
+                    this.OnDerivedChanging(e);
+                    this.OnPropertyChanging("Derived", e);
+                    this._derived = value;
                     this.OnDerivedChanged(e);
                     this.OnPropertyChanged("Derived", e);
                 }
@@ -278,75 +278,80 @@ namespace NMF.Interop.Ecore
         /// <summary>
         /// Gets fired before the Changeable property changes its value
         /// </summary>
-        public event EventHandler ChangeableChanging;
+        public event System.EventHandler<ValueChangedEventArgs> ChangeableChanging;
         
         /// <summary>
         /// Gets fired when the Changeable property changed its value
         /// </summary>
-        public event EventHandler<ValueChangedEventArgs> ChangeableChanged;
+        public event System.EventHandler<ValueChangedEventArgs> ChangeableChanged;
         
         /// <summary>
         /// Gets fired before the Volatile property changes its value
         /// </summary>
-        public event EventHandler VolatileChanging;
+        public event System.EventHandler<ValueChangedEventArgs> VolatileChanging;
         
         /// <summary>
         /// Gets fired when the Volatile property changed its value
         /// </summary>
-        public event EventHandler<ValueChangedEventArgs> VolatileChanged;
+        public event System.EventHandler<ValueChangedEventArgs> VolatileChanged;
         
         /// <summary>
         /// Gets fired before the Transient property changes its value
         /// </summary>
-        public event EventHandler TransientChanging;
+        public event System.EventHandler<ValueChangedEventArgs> TransientChanging;
         
         /// <summary>
         /// Gets fired when the Transient property changed its value
         /// </summary>
-        public event EventHandler<ValueChangedEventArgs> TransientChanged;
+        public event System.EventHandler<ValueChangedEventArgs> TransientChanged;
         
         /// <summary>
         /// Gets fired before the DefaultValueLiteral property changes its value
         /// </summary>
-        public event EventHandler DefaultValueLiteralChanging;
+        public event System.EventHandler<ValueChangedEventArgs> DefaultValueLiteralChanging;
         
         /// <summary>
         /// Gets fired when the DefaultValueLiteral property changed its value
         /// </summary>
-        public event EventHandler<ValueChangedEventArgs> DefaultValueLiteralChanged;
+        public event System.EventHandler<ValueChangedEventArgs> DefaultValueLiteralChanged;
         
         /// <summary>
         /// Gets fired before the Unsettable property changes its value
         /// </summary>
-        public event EventHandler UnsettableChanging;
+        public event System.EventHandler<ValueChangedEventArgs> UnsettableChanging;
         
         /// <summary>
         /// Gets fired when the Unsettable property changed its value
         /// </summary>
-        public event EventHandler<ValueChangedEventArgs> UnsettableChanged;
+        public event System.EventHandler<ValueChangedEventArgs> UnsettableChanged;
         
         /// <summary>
         /// Gets fired before the Derived property changes its value
         /// </summary>
-        public event EventHandler DerivedChanging;
+        public event System.EventHandler<ValueChangedEventArgs> DerivedChanging;
         
         /// <summary>
         /// Gets fired when the Derived property changed its value
         /// </summary>
-        public event EventHandler<ValueChangedEventArgs> DerivedChanged;
+        public event System.EventHandler<ValueChangedEventArgs> DerivedChanged;
+        
+        /// <summary>
+        /// Gets fired before the EContainingClass property changes its value
+        /// </summary>
+        public event System.EventHandler<ValueChangedEventArgs> EContainingClassChanging;
         
         /// <summary>
         /// Gets fired when the EContainingClass property changed its value
         /// </summary>
-        public event EventHandler<ValueChangedEventArgs> EContainingClassChanged;
+        public event System.EventHandler<ValueChangedEventArgs> EContainingClassChanged;
         
         /// <summary>
         /// Raises the ChangeableChanging event
         /// </summary>
         /// <param name="eventArgs">The event data</param>
-        protected virtual void OnChangeableChanging(EventArgs eventArgs)
+        protected virtual void OnChangeableChanging(ValueChangedEventArgs eventArgs)
         {
-            EventHandler handler = this.ChangeableChanging;
+            System.EventHandler<ValueChangedEventArgs> handler = this.ChangeableChanging;
             if ((handler != null))
             {
                 handler.Invoke(this, eventArgs);
@@ -359,7 +364,7 @@ namespace NMF.Interop.Ecore
         /// <param name="eventArgs">The event data</param>
         protected virtual void OnChangeableChanged(ValueChangedEventArgs eventArgs)
         {
-            EventHandler<ValueChangedEventArgs> handler = this.ChangeableChanged;
+            System.EventHandler<ValueChangedEventArgs> handler = this.ChangeableChanged;
             if ((handler != null))
             {
                 handler.Invoke(this, eventArgs);
@@ -370,9 +375,9 @@ namespace NMF.Interop.Ecore
         /// Raises the VolatileChanging event
         /// </summary>
         /// <param name="eventArgs">The event data</param>
-        protected virtual void OnVolatileChanging(EventArgs eventArgs)
+        protected virtual void OnVolatileChanging(ValueChangedEventArgs eventArgs)
         {
-            EventHandler handler = this.VolatileChanging;
+            System.EventHandler<ValueChangedEventArgs> handler = this.VolatileChanging;
             if ((handler != null))
             {
                 handler.Invoke(this, eventArgs);
@@ -385,7 +390,7 @@ namespace NMF.Interop.Ecore
         /// <param name="eventArgs">The event data</param>
         protected virtual void OnVolatileChanged(ValueChangedEventArgs eventArgs)
         {
-            EventHandler<ValueChangedEventArgs> handler = this.VolatileChanged;
+            System.EventHandler<ValueChangedEventArgs> handler = this.VolatileChanged;
             if ((handler != null))
             {
                 handler.Invoke(this, eventArgs);
@@ -396,9 +401,9 @@ namespace NMF.Interop.Ecore
         /// Raises the TransientChanging event
         /// </summary>
         /// <param name="eventArgs">The event data</param>
-        protected virtual void OnTransientChanging(EventArgs eventArgs)
+        protected virtual void OnTransientChanging(ValueChangedEventArgs eventArgs)
         {
-            EventHandler handler = this.TransientChanging;
+            System.EventHandler<ValueChangedEventArgs> handler = this.TransientChanging;
             if ((handler != null))
             {
                 handler.Invoke(this, eventArgs);
@@ -411,7 +416,7 @@ namespace NMF.Interop.Ecore
         /// <param name="eventArgs">The event data</param>
         protected virtual void OnTransientChanged(ValueChangedEventArgs eventArgs)
         {
-            EventHandler<ValueChangedEventArgs> handler = this.TransientChanged;
+            System.EventHandler<ValueChangedEventArgs> handler = this.TransientChanged;
             if ((handler != null))
             {
                 handler.Invoke(this, eventArgs);
@@ -422,9 +427,9 @@ namespace NMF.Interop.Ecore
         /// Raises the DefaultValueLiteralChanging event
         /// </summary>
         /// <param name="eventArgs">The event data</param>
-        protected virtual void OnDefaultValueLiteralChanging(EventArgs eventArgs)
+        protected virtual void OnDefaultValueLiteralChanging(ValueChangedEventArgs eventArgs)
         {
-            EventHandler handler = this.DefaultValueLiteralChanging;
+            System.EventHandler<ValueChangedEventArgs> handler = this.DefaultValueLiteralChanging;
             if ((handler != null))
             {
                 handler.Invoke(this, eventArgs);
@@ -437,7 +442,7 @@ namespace NMF.Interop.Ecore
         /// <param name="eventArgs">The event data</param>
         protected virtual void OnDefaultValueLiteralChanged(ValueChangedEventArgs eventArgs)
         {
-            EventHandler<ValueChangedEventArgs> handler = this.DefaultValueLiteralChanged;
+            System.EventHandler<ValueChangedEventArgs> handler = this.DefaultValueLiteralChanged;
             if ((handler != null))
             {
                 handler.Invoke(this, eventArgs);
@@ -448,9 +453,9 @@ namespace NMF.Interop.Ecore
         /// Raises the UnsettableChanging event
         /// </summary>
         /// <param name="eventArgs">The event data</param>
-        protected virtual void OnUnsettableChanging(EventArgs eventArgs)
+        protected virtual void OnUnsettableChanging(ValueChangedEventArgs eventArgs)
         {
-            EventHandler handler = this.UnsettableChanging;
+            System.EventHandler<ValueChangedEventArgs> handler = this.UnsettableChanging;
             if ((handler != null))
             {
                 handler.Invoke(this, eventArgs);
@@ -463,7 +468,7 @@ namespace NMF.Interop.Ecore
         /// <param name="eventArgs">The event data</param>
         protected virtual void OnUnsettableChanged(ValueChangedEventArgs eventArgs)
         {
-            EventHandler<ValueChangedEventArgs> handler = this.UnsettableChanged;
+            System.EventHandler<ValueChangedEventArgs> handler = this.UnsettableChanged;
             if ((handler != null))
             {
                 handler.Invoke(this, eventArgs);
@@ -474,9 +479,9 @@ namespace NMF.Interop.Ecore
         /// Raises the DerivedChanging event
         /// </summary>
         /// <param name="eventArgs">The event data</param>
-        protected virtual void OnDerivedChanging(EventArgs eventArgs)
+        protected virtual void OnDerivedChanging(ValueChangedEventArgs eventArgs)
         {
-            EventHandler handler = this.DerivedChanging;
+            System.EventHandler<ValueChangedEventArgs> handler = this.DerivedChanging;
             if ((handler != null))
             {
                 handler.Invoke(this, eventArgs);
@@ -489,11 +494,38 @@ namespace NMF.Interop.Ecore
         /// <param name="eventArgs">The event data</param>
         protected virtual void OnDerivedChanged(ValueChangedEventArgs eventArgs)
         {
-            EventHandler<ValueChangedEventArgs> handler = this.DerivedChanged;
+            System.EventHandler<ValueChangedEventArgs> handler = this.DerivedChanged;
             if ((handler != null))
             {
                 handler.Invoke(this, eventArgs);
             }
+        }
+        
+        /// <summary>
+        /// Raises the EContainingClassChanging event
+        /// </summary>
+        /// <param name="eventArgs">The event data</param>
+        protected virtual void OnEContainingClassChanging(ValueChangedEventArgs eventArgs)
+        {
+            System.EventHandler<ValueChangedEventArgs> handler = this.EContainingClassChanging;
+            if ((handler != null))
+            {
+                handler.Invoke(this, eventArgs);
+            }
+        }
+        
+        /// <summary>
+        /// Gets called when the parent model element of the current model element is about to change
+        /// </summary>
+        /// <param name="oldParent">The old parent model element</param>
+        /// <param name="newParent">The new parent model element</param>
+        protected override void OnParentChanging(IModelElement newParent, IModelElement oldParent)
+        {
+            IEClass oldEContainingClass = ModelHelper.CastAs<IEClass>(oldParent);
+            IEClass newEContainingClass = ModelHelper.CastAs<IEClass>(newParent);
+            ValueChangedEventArgs e = new ValueChangedEventArgs(oldEContainingClass, newEContainingClass);
+            this.OnEContainingClassChanging(e);
+            this.OnPropertyChanging("EContainingClass");
         }
         
         /// <summary>
@@ -502,7 +534,7 @@ namespace NMF.Interop.Ecore
         /// <param name="eventArgs">The event data</param>
         protected virtual void OnEContainingClassChanged(ValueChangedEventArgs eventArgs)
         {
-            EventHandler<ValueChangedEventArgs> handler = this.EContainingClassChanged;
+            System.EventHandler<ValueChangedEventArgs> handler = this.EContainingClassChanged;
             if ((handler != null))
             {
                 handler.Invoke(this, eventArgs);
@@ -529,6 +561,7 @@ namespace NMF.Interop.Ecore
             ValueChangedEventArgs e = new ValueChangedEventArgs(oldEContainingClass, newEContainingClass);
             this.OnEContainingClassChanged(e);
             this.OnPropertyChanged("EContainingClass", e);
+            base.OnParentChanged(newParent, oldParent);
         }
         
         /// <summary>

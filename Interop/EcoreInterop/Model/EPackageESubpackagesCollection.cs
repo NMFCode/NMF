@@ -31,7 +31,7 @@ namespace NMF.Interop.Ecore
 {
     
     
-    public class EPackageESubpackagesCollection : ObservableOppositeList<IEPackage, IEPackage>
+    public class EPackageESubpackagesCollection : ObservableOppositeOrderedSet<IEPackage, IEPackage>
     {
         
         public EPackageESubpackagesCollection(IEPackage parent) : 
@@ -39,21 +39,24 @@ namespace NMF.Interop.Ecore
         {
         }
         
-        private void OnItemDeleted(object sender, System.EventArgs e)
+        private void OnItemParentChanged(object sender, ValueChangedEventArgs e)
         {
-            this.Remove(((IEPackage)(sender)));
+            if ((e.NewValue != this.Parent))
+            {
+                this.Remove(((IEPackage)(sender)));
+            }
         }
         
         protected override void SetOpposite(IEPackage item, IEPackage parent)
         {
             if ((parent != null))
             {
-                item.Deleted += this.OnItemDeleted;
+                item.ParentChanged += this.OnItemParentChanged;
                 item.ESuperPackage = parent;
             }
             else
             {
-                item.Deleted -= this.OnItemDeleted;
+                item.ParentChanged -= this.OnItemParentChanged;
                 if ((item.ESuperPackage == this.Parent))
                 {
                     item.ESuperPackage = parent;

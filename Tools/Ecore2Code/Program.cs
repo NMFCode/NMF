@@ -165,7 +165,7 @@ namespace Ecore2Code
             model.ModelUri = metaPackage.Uri;
             if (options.NMeta != null)
             {
-                using (var fs = File.OpenWrite(options.NMeta))
+                using (var fs = File.Create(options.NMeta))
                 {
                     MetaRepository.Instance.Serializer.Serialize(model, fs);
                 }

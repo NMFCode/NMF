@@ -51,7 +51,7 @@ namespace NMF.Interop.Ecore
         /// <summary>
         /// The eTypeParameters property
         /// </summary>
-        IListExpression<IETypeParameter> ETypeParameters
+        IOrderedSetExpression<IETypeParameter> ETypeParameters
         {
             get;
         }
@@ -59,7 +59,7 @@ namespace NMF.Interop.Ecore
         /// <summary>
         /// The eParameters property
         /// </summary>
-        IListExpression<IEParameter> EParameters
+        IOrderedSetExpression<IEParameter> EParameters
         {
             get;
         }
@@ -67,7 +67,7 @@ namespace NMF.Interop.Ecore
         /// <summary>
         /// The eExceptions property
         /// </summary>
-        IListExpression<IEClassifier> EExceptions
+        IOrderedSetExpression<IEClassifier> EExceptions
         {
             get;
         }
@@ -75,15 +75,20 @@ namespace NMF.Interop.Ecore
         /// <summary>
         /// The eGenericExceptions property
         /// </summary>
-        IListExpression<IEGenericType> EGenericExceptions
+        IOrderedSetExpression<IEGenericType> EGenericExceptions
         {
             get;
         }
         
         /// <summary>
+        /// Gets fired before the EContainingClass property changes its value
+        /// </summary>
+        event System.EventHandler<ValueChangedEventArgs> EContainingClassChanging;
+        
+        /// <summary>
         /// Gets fired when the EContainingClass property changed its value
         /// </summary>
-        event EventHandler<ValueChangedEventArgs> EContainingClassChanged;
+        event System.EventHandler<ValueChangedEventArgs> EContainingClassChanged;
     }
 }
 

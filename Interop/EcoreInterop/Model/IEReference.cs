@@ -69,7 +69,7 @@ namespace NMF.Interop.Ecore
         /// <summary>
         /// The eKeys property
         /// </summary>
-        IListExpression<IEAttribute> EKeys
+        IOrderedSetExpression<IEAttribute> EKeys
         {
             get;
         }
@@ -77,32 +77,32 @@ namespace NMF.Interop.Ecore
         /// <summary>
         /// Gets fired before the Containment property changes its value
         /// </summary>
-        event EventHandler ContainmentChanging;
+        event System.EventHandler<ValueChangedEventArgs> ContainmentChanging;
         
         /// <summary>
         /// Gets fired when the Containment property changed its value
         /// </summary>
-        event EventHandler<ValueChangedEventArgs> ContainmentChanged;
+        event System.EventHandler<ValueChangedEventArgs> ContainmentChanged;
         
         /// <summary>
         /// Gets fired before the ResolveProxies property changes its value
         /// </summary>
-        event EventHandler ResolveProxiesChanging;
+        event System.EventHandler<ValueChangedEventArgs> ResolveProxiesChanging;
         
         /// <summary>
         /// Gets fired when the ResolveProxies property changed its value
         /// </summary>
-        event EventHandler<ValueChangedEventArgs> ResolveProxiesChanged;
+        event System.EventHandler<ValueChangedEventArgs> ResolveProxiesChanged;
         
         /// <summary>
         /// Gets fired before the EOpposite property changes its value
         /// </summary>
-        event EventHandler EOppositeChanging;
+        event System.EventHandler<ValueChangedEventArgs> EOppositeChanging;
         
         /// <summary>
         /// Gets fired when the EOpposite property changed its value
         /// </summary>
-        event EventHandler<ValueChangedEventArgs> EOppositeChanged;
+        event System.EventHandler<ValueChangedEventArgs> EOppositeChanged;
     }
 }
 

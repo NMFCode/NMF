@@ -51,12 +51,12 @@ namespace NMF.Interop.Ecore
         /// <summary>
         /// Gets fired before the Serializable property changes its value
         /// </summary>
-        event EventHandler SerializableChanging;
+        event System.EventHandler<ValueChangedEventArgs> SerializableChanging;
         
         /// <summary>
         /// Gets fired when the Serializable property changed its value
         /// </summary>
-        event EventHandler<ValueChangedEventArgs> SerializableChanged;
+        event System.EventHandler<ValueChangedEventArgs> SerializableChanged;
     }
 }
 

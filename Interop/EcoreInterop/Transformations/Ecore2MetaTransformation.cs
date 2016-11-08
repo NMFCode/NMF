@@ -152,15 +152,7 @@ namespace NMF.Interop.Ecore.Transformations
         {
             public override IPrimitiveType CreateOutput(IEDataType input, ITransformationContext context)
             {
-                IPrimitiveType type;
-                if (input.InstanceClassName != null && classesDict.TryGetValue(input.InstanceClassName, out type))
-                {
-                    return type;
-                }
-                else
-                {
-                    return classesDict["java.lang.Object"];
-                }
+                return null;
             }
 
             public override void RegisterDependencies()
@@ -225,7 +217,7 @@ namespace NMF.Interop.Ecore.Transformations
                     }
                 }
 
-                if (output.Type == eObject) output.Type = null;
+                if (output.Type == eObject || (output.Type != null && output.Type.Name == eObject.Name)) output.Type = null;
             }
 
             public override void RegisterDependencies()
@@ -243,6 +235,20 @@ namespace NMF.Interop.Ecore.Transformations
             public override void Transform(IEAttribute input, IAttribute output, ITransformationContext context)
             {
                 output.DefaultValue = input.DefaultValueLiteral;
+
+                var eDataType = input.EType as IEDataType;
+                if (eDataType != null && eDataType.InstanceClassName != null)
+                {
+                    IPrimitiveType type;
+                    if (classesDict.TryGetValue(eDataType.InstanceClassName, out type))
+                    {
+                        output.Type = type;
+                    }
+                }
+                if (output.Type == null)
+                {
+                    output.Type = classesDict["java.lang.Object"];
+                }
             }
 
             public override void RegisterDependencies()

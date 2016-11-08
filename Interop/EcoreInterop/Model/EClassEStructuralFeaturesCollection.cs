@@ -31,7 +31,7 @@ namespace NMF.Interop.Ecore
 {
     
     
-    public class EClassEStructuralFeaturesCollection : ObservableOppositeList<IEClass, IEStructuralFeature>
+    public class EClassEStructuralFeaturesCollection : ObservableOppositeOrderedSet<IEClass, IEStructuralFeature>
     {
         
         public EClassEStructuralFeaturesCollection(IEClass parent) : 
@@ -39,21 +39,24 @@ namespace NMF.Interop.Ecore
         {
         }
         
-        private void OnItemDeleted(object sender, System.EventArgs e)
+        private void OnItemParentChanged(object sender, ValueChangedEventArgs e)
         {
-            this.Remove(((IEStructuralFeature)(sender)));
+            if ((e.NewValue != this.Parent))
+            {
+                this.Remove(((IEStructuralFeature)(sender)));
+            }
         }
         
         protected override void SetOpposite(IEStructuralFeature item, IEClass parent)
         {
             if ((parent != null))
             {
-                item.Deleted += this.OnItemDeleted;
+                item.ParentChanged += this.OnItemParentChanged;
                 item.EContainingClass = parent;
             }
             else
             {
-                item.Deleted -= this.OnItemDeleted;
+                item.ParentChanged -= this.OnItemParentChanged;
                 if ((item.EContainingClass == this.Parent))
                 {
                     item.EContainingClass = parent;

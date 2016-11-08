@@ -12,11 +12,11 @@ using NMF.Collections.Generic;
 using NMF.Collections.ObjectModel;
 using NMF.Expressions;
 using NMF.Expressions.Linq;
-using NMF.Interop.Ecore;
 using NMF.Models;
 using NMF.Models.Collections;
 using NMF.Models.Expressions;
 using NMF.Models.Meta;
+using NMF.Models.Repository;
 using NMF.Serialization;
 using NMF.Utilities;
 using System;
@@ -76,24 +76,44 @@ namespace NMF.Interop.Layout
         }
         
         /// <summary>
+        /// Gets fired before the StartOffset property changes its value
+        /// </summary>
+        event System.EventHandler<ValueChangedEventArgs> StartOffsetChanging;
+        
+        /// <summary>
         /// Gets fired when the StartOffset property changed its value
         /// </summary>
-        event EventHandler<ValueChangedEventArgs> StartOffsetChanged;
+        event System.EventHandler<ValueChangedEventArgs> StartOffsetChanged;
+        
+        /// <summary>
+        /// Gets fired before the HiddenTokenText property changes its value
+        /// </summary>
+        event System.EventHandler<ValueChangedEventArgs> HiddenTokenTextChanging;
         
         /// <summary>
         /// Gets fired when the HiddenTokenText property changed its value
         /// </summary>
-        event EventHandler<ValueChangedEventArgs> HiddenTokenTextChanged;
+        event System.EventHandler<ValueChangedEventArgs> HiddenTokenTextChanged;
+        
+        /// <summary>
+        /// Gets fired before the VisibleTokenText property changes its value
+        /// </summary>
+        event System.EventHandler<ValueChangedEventArgs> VisibleTokenTextChanging;
         
         /// <summary>
         /// Gets fired when the VisibleTokenText property changed its value
         /// </summary>
-        event EventHandler<ValueChangedEventArgs> VisibleTokenTextChanged;
+        event System.EventHandler<ValueChangedEventArgs> VisibleTokenTextChanged;
+        
+        /// <summary>
+        /// Gets fired before the SyntaxElementID property changes its value
+        /// </summary>
+        event System.EventHandler<ValueChangedEventArgs> SyntaxElementIDChanging;
         
         /// <summary>
         /// Gets fired when the SyntaxElementID property changed its value
         /// </summary>
-        event EventHandler<ValueChangedEventArgs> SyntaxElementIDChanged;
+        event System.EventHandler<ValueChangedEventArgs> SyntaxElementIDChanged;
     }
 }
 
