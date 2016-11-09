@@ -1,11 +1,11 @@
-﻿using NMF.Models.Tests.Railway;
+﻿using NMF.Expressions;
+using NMF.Expressions.Linq;
+using NMF.Models.Tests.Railway;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using NMF.Expressions;
-using NMF.Expressions.Linq;
 
 namespace TrainBenchmark
 {
@@ -15,10 +15,7 @@ namespace TrainBenchmark
             rc => from route1 in rc.Routes.WithUpdates().Concat(rc.Invalids.OfType<Route>())
                   from route2 in rc.Routes.WithUpdates().Concat(rc.Invalids.OfType<Route>())
                   where route1 != route2 && route2.Entry != route1.Exit
-                  from sensor1 in route1.DefinedBy
-                  from te1 in sensor1.Elements
-                  from te2 in te1.ConnectsTo
-                  where te2.Sensor == null || route2.DefinedBy.Contains(te2.Sensor)
+                  where check(route1, route2)
                   select new Tuple<IRoute, IRoute>(route2, route1);
 
         public override Action<Tuple<IRoute, IRoute>> Repair =>
@@ -29,5 +26,12 @@ namespace TrainBenchmark
 
         public override Action<IRoute> Inject =>
             route => route.Entry = null;
+
+        private static Func<IRoute, IRoute, bool> check =
+            (route1, route2) => (from sensor1 in route1.DefinedBy
+                                 from te1 in sensor1.Elements
+                                 from te2 in te1.ConnectsTo
+                                 where te2.Sensor == null || route2.DefinedBy.Contains(te2.Sensor)
+                                 select 0).Any();
     }
 }
