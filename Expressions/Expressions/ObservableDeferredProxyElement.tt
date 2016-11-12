@@ -27,6 +27,18 @@ namespace NMF.Expressions
         public INotifyExpression<T<#= j #>> Argument<#= j #> { get; private set; }
 <# } #>
 
+        public override IEnumerable<INotifiable> Dependencies
+        {
+            get
+            {
+                if (proxy != null)
+                    yield return proxy;
+<# for (int j = 1; j <= i; j++) { #>
+                yield return Argument<#= j #>;
+<# } #>
+            }
+        }
+
         public ObservableDeferredProxyElement(MethodInfo proxyGenerator<# for (int j = 1; j <= i; j++) { #>, INotifyExpression<T<#= j #>> argument<#= j #><# } #>)
             : this(ReflectionHelper.CreateDelegate<Func<<# for (int j = 1; j <= i; j++) { #>INotifyValue<T<#= j #>>, <# } #>INotifyValue<T>>>(proxyGenerator)<# for (int j = 1; j <= i; j++) { #>, argument<#= j #><# } #>)
         { }
@@ -48,14 +60,9 @@ namespace NMF.Expressions
                 if (proxy == null)
                 {
                     proxy = new ObservableProxyExpression<T>(proxyVal);
-                }     
-                proxy.ValueChanged += Proxy_ValueChanged;
+                }
+                proxy.Successors.Set(this);
             }
-        }
-
-        private void Proxy_ValueChanged(object sender, ValueChangedEventArgs e)
-        {
-            Refresh();
         }
 
         public override bool CanReduce
@@ -68,8 +75,7 @@ namespace NMF.Expressions
 
         public override INotifyExpression<T> Reduce()
         {
-            Attach();
-		    EnsureProxy();
+            EnsureProxy();
             return proxy.Reduce();
         }
 
@@ -85,22 +91,22 @@ namespace NMF.Expressions
         {
             get
             {
-			    EnsureProxy();
+                EnsureProxy();
                 return proxy.IsParameterFree;
             }
         }
 
-		public override string ToString()
-		{
-			if (proxy != null)
-			{
-				return "proxy for " + proxy.ToString();
-			}
-			else
-			{
-				return "(deferred proxy)";
-			}
-		}
+        public override string ToString()
+        {
+            if (proxy != null)
+            {
+                return "proxy for " + proxy.ToString();
+            }
+            else
+            {
+                return "(deferred proxy)";
+            }
+        }
 
         public override INotifyExpression<T> ApplyParameters(IDictionary<string, object> parameters)
         {
@@ -114,26 +120,6 @@ namespace NMF.Expressions
             }
         }
 
-        protected override void AttachCore()
-        {
-		    EnsureProxy();
-<# for (int j = 1; j <= i; j++) { #>
-            Argument<#= j #>.Attach();
-<# } #>
-            proxy.Attach();
-        }
-
-        protected override void DetachCore()
-        {
-		    if (proxy != null)
-			{
-<# for (int j = 1; j <= i; j++) { #>
-                Argument<#= j #>.Detach();
-<# } #>
-                proxy.Detach();
-			}
-        }
-
         protected override T GetValue()
         {
             EnsureProxy();
@@ -142,7 +128,7 @@ namespace NMF.Expressions
     }
 <# } #>
     internal class ObservableDeferredElementTypes
-	{
-		public static readonly Type[] Types = { typeof(ObservableDeferredProxyElement<,>)<# for (int j = 2; j <= maxParameters; j++) { #>, typeof(ObservableDeferredProxyElement<<#= new string(',', j) #>>)<# } #>};
-	}
+    {
+        public static readonly Type[] Types = { typeof(ObservableDeferredProxyElement<,>)<# for (int j = 2; j <= maxParameters; j++) { #>, typeof(ObservableDeferredProxyElement<<#= new string(',', j) #>>)<# } #>};
+    }
 }

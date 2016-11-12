@@ -173,36 +173,23 @@ namespace NMF.Expressions
             return new Notifiable(casted.AsNotifiable().OfType<T>(), casted);
         }
 
-        private class Notifiable : INotifyEnumerable<T>, INotifyCollection<T>
+        private class Notifiable : INotifyCollection<T>
         {
             private INotifyEnumerable<T> inner;
             private IList underlyingCollection;
+
+            public ISuccessorList Successors { get; } = new SingleSuccessorList();
+
+            public IEnumerable<INotifiable> Dependencies { get { yield return inner; } }
+            public ExecutionMetaData ExecutionMetaData { get; } = new ExecutionMetaData();
 
             public Notifiable(INotifyEnumerable<T> inner, IList underlyingCollection)
             {
                 this.inner = inner;
                 this.underlyingCollection = underlyingCollection;
 
-                inner.CollectionChanged += Inner_CollectionChanged;
-            }
-
-            private void Inner_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
-            {
-                if (e.Action == NotifyCollectionChangedAction.Reset)
-                {
-                    CollectionChanged?.Invoke(this, e);
-                }
-                else
-                {
-                    if (e.OldItems != null)
-                    {
-                        CollectionChanged?.Invoke(this, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Remove, SL.OfType<T>(e.OldItems).ToList()));
-                    }
-                    if (e.NewItems != null)
-                    {
-                        CollectionChanged?.Invoke(this, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, SL.OfType<T>(e.NewItems).ToList()));
-                    }
-                }
+                Successors.Attached += (obj, e) => Attach();
+                Successors.Detached += (obj, e) => Detach();
             }
 
             public int Count
@@ -210,14 +197,6 @@ namespace NMF.Expressions
                 get
                 {
                     return SL.Count(inner);
-                }
-            }
-
-            public bool IsAttached
-            {
-                get
-                {
-                    return inner.IsAttached;
                 }
             }
 
@@ -234,11 +213,6 @@ namespace NMF.Expressions
             public void Add(T item)
             {
                 underlyingCollection.Add(item);
-            }
-
-            public void Attach()
-            {
-                inner.Attach();
             }
 
             public void Clear()
@@ -263,11 +237,6 @@ namespace NMF.Expressions
                 }
             }
 
-            public void Detach()
-            {
-                inner.Detach();
-            }
-
             public IEnumerator<T> GetEnumerator()
             {
                 return inner.GetEnumerator();
@@ -289,6 +258,43 @@ namespace NMF.Expressions
             IEnumerator IEnumerable.GetEnumerator()
             {
                 return inner.GetEnumerator();
+            }
+
+            private void Attach()
+            {
+                foreach (var dep in Dependencies)
+                    dep.Successors.Set(this);
+            }
+
+            private void Detach()
+            {
+                foreach (var dep in Dependencies)
+                    dep.Successors.Unset(this);
+            }
+
+            public void Dispose()
+            {
+                Detach();
+            }
+
+            public INotificationResult Notify(IList<INotificationResult> sources)
+            {
+                var change = (CollectionChangedNotificationResult<T>)sources[0];
+
+                if (change.IsReset)
+                {
+                    CollectionChanged?.Invoke(this, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
+                }
+                else if (change.AllRemovedItems.Any())
+                {
+                    CollectionChanged?.Invoke(this, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Remove, change.AllRemovedItems));
+                }
+                else if (change.AllAddedItems.Any())
+                {
+                    CollectionChanged?.Invoke(this, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, change.AllAddedItems));
+                }
+
+                return change;
             }
         }
     }

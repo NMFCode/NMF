@@ -92,7 +92,7 @@ namespace NMF.Expressions
         {
             get
             {
-                if (Successors.Count > 0)
+                if (Successors.HasSuccessors)
                 {
                     var leftReversable = Left as INotifyReversableExpression<TLeft>;
                     if (leftReversable != null)

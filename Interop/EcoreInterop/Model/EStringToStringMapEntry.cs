@@ -127,7 +127,7 @@ namespace NMF.Interop.Ecore
         /// <summary>
         /// Gets fired when the Key property changed its value
         /// </summary>
-        public event System.EventHandler<ValueChangedEventArgs> KeyChanged;
+        public new event System.EventHandler<ValueChangedEventArgs> KeyChanged;
         
         /// <summary>
         /// Gets fired before the Value property changes its value

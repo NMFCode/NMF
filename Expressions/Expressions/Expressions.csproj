@@ -92,6 +92,7 @@
     <Compile Include="Public\INotifiable.cs" />
     <Compile Include="Execution\INotificationResult.cs" />
     <Compile Include="Public\ISuccessorList.cs" />
+    <Compile Include="Public\MultiSuccessorList.cs" />
     <Compile Include="Public\ParameterDataflowAttribute.cs" />
     <Compile Include="Public\ConstantValue.cs" />
     <Compile Include="Public\ImmutableMethodAttribute.cs" />

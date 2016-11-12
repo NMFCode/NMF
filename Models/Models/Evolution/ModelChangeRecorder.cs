@@ -65,7 +65,6 @@ namespace NMF.Models.Evolution
 
         private void OnBubbledChange(object sender, BubbledChangeEventArgs e)
         {
-            e.AbsoluteUri = e.Element.AbsoluteUri;
             recordedEvents.Add(e);
         }
 

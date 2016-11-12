@@ -26,6 +26,7 @@ namespace NMF.Models
     {
         private IModelElement parent;
         private ObservableList<ModelElementExtension> extensions;
+        private DescendantsCollection descendants;
         private ModelElementFlag flag;
         private EventHandler<BubbledChangeEventArgs> bubbledChange;
 

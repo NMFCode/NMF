@@ -389,6 +389,9 @@
     <Compile Include="..\Expressions\Public\ISuccessorList.cs">
       <Link>Facade\ISuccessorList.cs</Link>
     </Compile>
+    <Compile Include="..\Expressions\Public\MultiSuccessorList.cs">
+      <Link>Facade\MultiSuccessorList.cs</Link>
+    </Compile>
     <Compile Include="..\Expressions\Public\NotifyExpression.cs">
       <Link>Facade\NotifyExpression.cs</Link>
     </Compile>
