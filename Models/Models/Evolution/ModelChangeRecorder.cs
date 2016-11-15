@@ -4,7 +4,6 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using NMF.Collections.ObjectModel;
 
@@ -176,7 +175,9 @@ namespace NMF.Models.Evolution
                     var collectionChangeArgs = (NotifyCollectionChangedEventArgs)e.OriginalEventArgs;
                     switch (collectionChangeArgs.Action)
                     {
+                        //TODO: collectionInsertion, collectionDeletion, collectionReset
                         case NotifyCollectionChangedAction.Add:
+                            
                             return CreateListInsertion(e.Element, e.AbsoluteUri, e.PropertyName, collectionChangeArgs.NewStartingIndex, collectionChangeArgs.NewItems, e.ChildrenUris);
                         case NotifyCollectionChangedAction.Remove:
                             return new ListDeletion(e.AbsoluteUri, e.PropertyName, collectionChangeArgs.OldStartingIndex, collectionChangeArgs.OldItems.Count);
