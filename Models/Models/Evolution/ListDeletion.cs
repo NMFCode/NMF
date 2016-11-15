@@ -10,11 +10,8 @@ using System.ComponentModel;
 namespace NMF.Models.Evolution
 {
     [XmlConstructor(4)]
-    public class ListDeletion<T> : IModelChange
+    public abstract class ListDeletionBase<T> : IModelChange
     {
-        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        private readonly List<T> _oldItems;
-
         [XmlConstructorParameter(0)]
         public Uri AbsoluteUri { get; set; }
         
@@ -27,7 +24,7 @@ namespace NMF.Models.Evolution
         [XmlConstructorParameter(3)]
         public int Count { get; set; }
         
-        public ListDeletion(Uri absoluteUri, string collectionPropertyName, int startingIndex, int count, List<T> oldItems)
+        public ListDeletionBase(Uri absoluteUri, string collectionPropertyName, int startingIndex, int count)
         {
             
             if (absoluteUri == null)
@@ -38,14 +35,11 @@ namespace NMF.Models.Evolution
                 throw new ArgumentOutOfRangeException(nameof(startingIndex));
             if (count <= 0)
                 throw new ArgumentOutOfRangeException(nameof(count));
-            if (oldItems == null)
-                throw new ArgumentNullException(nameof(oldItems));
 
             AbsoluteUri = absoluteUri;
             CollectionPropertyName = collectionPropertyName;
             StartingIndex = startingIndex;
             Count = count;
-            _oldItems = oldItems;
         }
 
         public void Apply(IModelRepository repository)
@@ -62,15 +56,16 @@ namespace NMF.Models.Evolution
 
         public void Invert(IModelRepository repository)
         {
-            //TODO differentiate between references and items
             var parent = repository.Resolve(AbsoluteUri);
             var property = parent.GetType().GetProperty(CollectionPropertyName);
             var list = property.GetValue(parent, null) as IList;
+            var oldItems = GetOldElements(repository);
+
             if (list != null)
             {
                 for (var i = 0; i < Count; i++)
                 {
-                    list.Insert(StartingIndex + i, _oldItems[i]);
+                    list.Insert(StartingIndex + i, oldItems[i]);
                 }
             }
             else
@@ -79,18 +74,46 @@ namespace NMF.Models.Evolution
             }
         }
 
+        protected abstract List<T> GetOldElements(IModelRepository repository);
+    }
+
+    [XmlConstructor(4)]
+    public class ListDeletionComposition<T> : ListDeletionBase<T>
+    {
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public List<T> OldElements { get; set; }
+
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public ListDeletionComposition(Uri absoluteUri, string collectionPropertyName, int startingIndex, int count)
+            : base(absoluteUri, collectionPropertyName, startingIndex, count)
+        {
+            OldElements = new List<T>();
+        }
+
+        public ListDeletionComposition(Uri absoluteUri, string collectionPropertyName, int startingIndex, int count, List<T> oldElements)
+            : base(absoluteUri, collectionPropertyName, startingIndex, count)
+        {
+            OldElements = oldElements;
+        }
+
+        protected override List<T> GetOldElements(IModelRepository repository)
+        {
+            return OldElements;
+        }
+
         public override bool Equals(object obj)
         {
             if (ReferenceEquals(this, obj))
                 return true;
-            var other = obj as ListDeletion<T>;
+            var other = obj as ListDeletionComposition<T>;
             if (other == null)
                 return false;
             else
                 return this.AbsoluteUri.Equals(other.AbsoluteUri)
                     && this.CollectionPropertyName.Equals(other.CollectionPropertyName)
                     && this.StartingIndex.Equals(other.StartingIndex)
-                    && this.Count.Equals(other.Count);
+                    && this.Count.Equals(other.Count)
+                    && this.OldElements.SequenceEqual(other.OldElements);
         }
 
         public override int GetHashCode()
@@ -98,7 +121,57 @@ namespace NMF.Models.Evolution
             return AbsoluteUri?.GetHashCode() ?? 0
                 ^ CollectionPropertyName?.GetHashCode() ?? 0
                 ^ StartingIndex.GetHashCode()
-                ^ Count.GetHashCode();
+                ^ Count.GetHashCode()
+                ^ OldElements.GetHashCode();
+        }
+    }
+
+    [XmlConstructor(4)]
+    public class ListDeletionAssociation<T> : ListDeletionBase<T> where T : class, IModelElement
+    {
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public List<Uri> OldElementUris { get; set; }
+
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public ListDeletionAssociation(Uri absoluteUri, string collectionPropertyName, int startingIndex, int count)
+            : base(absoluteUri, collectionPropertyName, startingIndex, count)
+        {
+            OldElementUris = new List<Uri>();
+        }
+
+        public ListDeletionAssociation(Uri absoluteUri, string collectionPropertyName, int startingIndex, int count, List<Uri> oldElementUris)
+            : base(absoluteUri, collectionPropertyName, startingIndex, count)
+        {
+            OldElementUris = oldElementUris;
+        }
+
+        protected override List<T> GetOldElements(IModelRepository repository)
+        {
+            return OldElementUris.Select(u => repository.Resolve(u)).Cast<T>().ToList();
+        }
+
+        public override bool Equals(object obj)
+        {
+            if (ReferenceEquals(this, obj))
+                return true;
+            var other = obj as ListDeletionAssociation<T>;
+            if (other == null)
+                return false;
+            else
+                return this.AbsoluteUri.Equals(other.AbsoluteUri)
+                    && this.CollectionPropertyName.Equals(other.CollectionPropertyName)
+                    && this.StartingIndex.Equals(other.StartingIndex)
+                    && this.Count.Equals(other.Count)
+                    && this.OldElementUris.SequenceEqual(other.OldElementUris);
+        }
+
+        public override int GetHashCode()
+        {
+            return AbsoluteUri?.GetHashCode() ?? 0
+                ^ CollectionPropertyName?.GetHashCode() ?? 0
+                ^ StartingIndex.GetHashCode()
+                ^ Count.GetHashCode()
+                ^ OldElementUris.GetHashCode();
         }
     }
 }
