@@ -130,6 +130,8 @@ namespace NMF.Expressions
 
     internal sealed class ObservableConvert<TInner, TOuter> : ObservableUnaryReversableExpressionBase<TInner, TOuter>
     {
+        private static bool conversionRequired = ReflectionHelper.IsValueType(typeof(TInner));
+
         protected override string Format
         {
             get
@@ -146,7 +148,14 @@ namespace NMF.Expressions
 
         protected override TOuter GetValue()
         {
-            return (TOuter)System.Convert.ChangeType(Target.Value, typeof(TOuter));
+            if (conversionRequired)
+            {
+                return (TOuter)System.Convert.ChangeType(Target.Value, typeof(TOuter));
+            }
+            else
+            {
+                return (TOuter)((object)Target.Value);
+            }
         }
 
         public override INotifyExpression<TOuter> ApplyParameters(IDictionary<string, object> parameters)
