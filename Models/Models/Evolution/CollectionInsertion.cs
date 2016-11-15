@@ -105,7 +105,7 @@ namespace NMF.Models.Evolution
         }
     }
 
-    [XmlConstructor(3)]
+    [XmlConstructor(2)]
     public class CollectionInsertionAssociation<T> : CollectionInsertionBase<T> where T : class, IModelElement
     {
         public ICollection<Uri> NewElementUris { get; set; }
