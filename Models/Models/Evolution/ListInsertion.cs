@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using NMF.Models.Repository;
-using System.Collections;
 using NMF.Serialization;
 using System.ComponentModel;
 
@@ -55,9 +53,11 @@ namespace NMF.Models.Evolution
             var property = parent.GetType().GetProperty(CollectionPropertyName);
             var list = property.GetValue(parent, null) as IList<T>;
             var newElements = GetNewElements(repository);
-
-            foreach (var element in newElements)
-                list?.Remove(element);
+            
+            for (int i = Math.Min(StartingIndex + newElements.Count - 1, list.Count - 1); i >= StartingIndex; i--)
+            {
+                list.RemoveAt(i);
+            }
         }
 
         protected abstract List<T> GetNewElements(IModelRepository repository);
