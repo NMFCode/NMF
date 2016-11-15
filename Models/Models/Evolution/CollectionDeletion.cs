@@ -1,11 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.ComponentModel;
+using System.Linq;
 using NMF.Models.Repository;
 using NMF.Serialization;
 
 namespace NMF.Models.Evolution
 {
-    [XmlConstructor(4)]
+    [XmlConstructor(2)]
     public abstract class CollectionDeletionBase<T> : IModelChange
     {
         [XmlConstructorParameter(0)]
@@ -13,34 +16,29 @@ namespace NMF.Models.Evolution
 
         [XmlConstructorParameter(1)]
         public string CollectionPropertyName { get; set; }
-
-        [XmlConstructorParameter(2)]
-        public ICollection<T> OldItems { get; } //fragen ob das wirklich serialisiert werden sollte
-
+        
         public void Apply(IModelRepository repository)
         {
             var parent = repository.Resolve(AbsoluteUri);
             var property = parent.GetType().GetProperty(CollectionPropertyName);
             var coll = property.GetValue(parent, null) as ICollection<T>;
+            var oldItems = GetOldElements(repository);
 
-            foreach (var item in OldItems)
+            foreach (var item in oldItems)
             {
                 coll.Remove(item);
             }
         }
-        public CollectionDeletionBase(Uri absoluteUri, string collectionPropertyName, ICollection<T> oldItems)
+        public CollectionDeletionBase(Uri absoluteUri, string collectionPropertyName)
         {
 
             if (absoluteUri == null)
                 throw new ArgumentNullException(nameof(absoluteUri));
             if (string.IsNullOrEmpty(collectionPropertyName))
                 throw new ArgumentNullException(nameof(collectionPropertyName));
-            if (oldItems == null)
-                throw new ArgumentNullException(nameof(oldItems));
 
             AbsoluteUri = absoluteUri;
             CollectionPropertyName = collectionPropertyName;
-            OldItems = oldItems;
         }
 
         public void Invert(IModelRepository repository)
@@ -51,7 +49,8 @@ namespace NMF.Models.Evolution
 
             if (coll != null)
             {
-                foreach (var item in OldItems)
+                var oldItems = GetOldElements(repository);
+                foreach (var item in oldItems)
                 {
                     coll.Add(item);
                 }
@@ -62,24 +61,94 @@ namespace NMF.Models.Evolution
             }
         }
 
-        public override int GetHashCode()
+        protected abstract ICollection<T> GetOldElements(IModelRepository repository);
+    }
+
+    [XmlConstructor(2)]
+    public class CollectionDeletionComposition<T> : CollectionDeletionBase<T>
+    {
+        public ICollection<T> OldElements { get; set; }
+
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public CollectionDeletionComposition(Uri absoluteUri, string collectionPropertyName)
+            : base(absoluteUri, collectionPropertyName)
         {
-            return AbsoluteUri?.GetHashCode() ?? 0
-                ^ CollectionPropertyName?.GetHashCode() ?? 0
-                ^ OldItems.GetHashCode();
+            OldElements = new Collection<T>();
+        }
+
+        public CollectionDeletionComposition(Uri absoluteUri, string collectionPropertyName, ICollection<T> oldElements)
+            : base(absoluteUri, collectionPropertyName)
+        {
+            OldElements = oldElements;
+        }
+
+        protected override ICollection<T> GetOldElements(IModelRepository repository)
+        {
+            return OldElements;
         }
 
         public override bool Equals(object obj)
         {
             if (ReferenceEquals(this, obj))
                 return true;
-            var other = obj as CollectionDeletionBase<T>;
+            var other = obj as CollectionInsertionComposition<T>;
+            if (other == null)
+                return false;
+            else
+                return this.AbsoluteUri.Equals(other.AbsoluteUri)
+                       && this.CollectionPropertyName.Equals(other.CollectionPropertyName)
+                       && this.OldElements.SequenceEqual(other.NewElements);
+        }
+
+        public override int GetHashCode()
+        {
+            return AbsoluteUri?.GetHashCode() ?? 0
+                   ^ CollectionPropertyName?.GetHashCode() ?? 0
+                   ^ OldElements.GetHashCode();
+        }
+    }
+
+    [XmlConstructor(2)]
+    public class CollectionDeletionAssociation<T> : CollectionInsertionBase<T> where T : class, IModelElement
+    {
+        public ICollection<Uri> OldElementUris { get; set; }
+
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public CollectionDeletionAssociation(Uri absoluteUri, string collectionPropertyName)
+            : base(absoluteUri, collectionPropertyName)
+        {
+            OldElementUris = new Collection<Uri>();
+        }
+
+        public CollectionDeletionAssociation(Uri absoluteUri, string collectionPropertyName, ICollection<Uri> oldElementUris)
+            : base(absoluteUri, collectionPropertyName)
+        {
+            OldElementUris = oldElementUris;
+        }
+
+        protected override ICollection<T> GetNewElements(IModelRepository repository)
+        {
+            return OldElementUris.Select(u => repository.Resolve(u)).Cast<T>().ToList();
+        }
+
+        public override bool Equals(object obj)
+        {
+            if (ReferenceEquals(this, obj))
+                return true;
+            var other = obj as CollectionInsertionAssociation<T>;
             if (other == null)
                 return false;
             else
                 return this.AbsoluteUri.Equals(other.AbsoluteUri)
                     && this.CollectionPropertyName.Equals(other.CollectionPropertyName)
-                    && this.OldItems.Equals(other.OldItems);
+                    && this.OldElementUris.SequenceEqual(other.NewElementUris);
+        }
+
+        public override int GetHashCode()
+        {
+            return AbsoluteUri?.GetHashCode() ?? 0
+                ^ CollectionPropertyName?.GetHashCode() ?? 0
+                ^ OldElementUris.GetHashCode();
         }
     }
 }
