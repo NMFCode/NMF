@@ -16,6 +16,15 @@ namespace NMF.Models.Evolution
     {
         private List<BubbledChangeEventArgs> recordedEvents = new List<BubbledChangeEventArgs>();
 
+        private bool _isInvertible;
+
+        public ModelChangeRecorder(bool isInvertible)
+        {
+            _isInvertible = isInvertible;
+        }
+
+        public ModelChangeRecorder() : this(false) { }
+        
         /// <summary>
         /// Checks whether the recorder is attached to a model element.
         /// </summary>

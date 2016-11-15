@@ -11,7 +11,7 @@ namespace NMF.Models
     {
         private bool _committed;
         private readonly ExecutionEngine _engine = ExecutionEngine.Current;
-        private readonly ModelChangeRecorder _recorder = new ModelChangeRecorder();
+        private readonly ModelChangeRecorder _recorder = new ModelChangeRecorder(true);
         private IModelRepository _repository;
         //private TransactionScope _scope;
 
