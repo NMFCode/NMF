@@ -28,10 +28,10 @@ namespace NMF.Models.Tests.Evolution
         }
 
         [TestMethod]
-        public void ApplyListDeletion()
+        public void ApplyListDeletionComposition()
         {
             var toDelete = railway.Routes.Take(1).ToList();
-            var change = new ListDeletion(railway.AbsoluteUri, "Routes", 0, 1);
+            var change = new ListDeletionComposition<IRoute>(railway.AbsoluteUri, "Routes", 0, 1);
 
             change.Apply(repository);
             
@@ -40,9 +40,22 @@ namespace NMF.Models.Tests.Evolution
         }
 
         [TestMethod]
+        public void ApplyListDeletionAssociation()
+        {
+            var parent = railway.Routes[0].DefinedBy[0].Elements[0];
+            var toDelete = parent.ConnectsTo[0];
+            var change = new ListDeletionAssociation<ITrackElement>(parent.AbsoluteUri, "ConnectsTo", 0, 1, new List<Uri>() { parent.ConnectsTo[0].AbsoluteUri });
+
+            change.Apply(repository);
+
+            Assert.AreNotEqual(toDelete, parent.ConnectsTo.FirstOrDefault());
+            CollectionAssert.DoesNotContain(parent.ConnectsTo.ToList(), toDelete);
+        }
+
+        [TestMethod]
         public void ApplyListClear()
         {
-            var change = new ListDeletion(railway.AbsoluteUri, "Semaphores", 0, int.MaxValue);
+            var change = new ListDeletionComposition<ISemaphore>(railway.AbsoluteUri, "Semaphores", 0, int.MaxValue);
 
             change.Apply(repository);
 
