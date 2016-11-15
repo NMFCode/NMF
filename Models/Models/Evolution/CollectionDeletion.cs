@@ -109,7 +109,7 @@ namespace NMF.Models.Evolution
     }
 
     [XmlConstructor(2)]
-    public class CollectionDeletionAssociation<T> : CollectionInsertionBase<T> where T : class, IModelElement
+    public class CollectionDeletionAssociation<T> : CollectionDeletionBase<T> where T : class, IModelElement
     {
         public ICollection<Uri> OldElementUris { get; set; }
 
@@ -126,7 +126,7 @@ namespace NMF.Models.Evolution
             OldElementUris = oldElementUris;
         }
 
-        protected override ICollection<T> GetNewElements(IModelRepository repository)
+        protected override ICollection<T> GetOldElements(IModelRepository repository)
         {
             return OldElementUris.Select(u => repository.Resolve(u)).Cast<T>().ToList();
         }
