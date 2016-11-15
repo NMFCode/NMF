@@ -6,6 +6,7 @@ using System.Collections.Specialized;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using NMF.Collections.ObjectModel;
 
 namespace NMF.Models.Evolution
 {
@@ -15,6 +16,7 @@ namespace NMF.Models.Evolution
     public class ModelChangeRecorder
     {
         private List<BubbledChangeEventArgs> recordedEvents = new List<BubbledChangeEventArgs>();
+        private Dictionary<CollectionReset, List<object>> preResetItems = new Dictionary<CollectionReset, List<object>>();
 
         private bool _isInvertible;
 
@@ -139,6 +141,14 @@ namespace NMF.Models.Evolution
             switch (beforeEvent.ChangeType)
             {
                 case ChangeType.CollectionChanging:
+                    if (_isInvertible)
+                    {
+                        var cArgs = beforeEvent.OriginalEventArgs as NotifyCollectionChangingEventArgs;
+                        if (cArgs.Action == NotifyCollectionChangedAction.Reset)
+                        {
+                            //TODO store elements in collection for inversion of reset
+                        }
+                    }
                     return afterEvent.ChangeType == ChangeType.CollectionChanged;
                 case ChangeType.ModelElementDeleting:
                     return afterEvent.ChangeType == ChangeType.ModelElementDeleted;
@@ -259,6 +269,16 @@ namespace NMF.Models.Evolution
             foreach (var t in c.BaseTypes)
                 foreach (var r in GetAllReferences(t))
                     yield return r;
+        }
+
+        public List<object> GetItemsBeforeReset(CollectionReset reset)
+        {
+            List<object> items;
+            if (!preResetItems.TryGetValue(reset, out items))
+            {
+                items = new List<object>();
+            }
+            return items;
         }
     }
 }
