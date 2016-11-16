@@ -14,6 +14,7 @@ namespace NMF.Models.Evolution
     /// </summary>
     public class ModelChangeRecorder
     {
+        //TODO invert tests
         private List<BubbledChangeEventArgs> recordedEvents = new List<BubbledChangeEventArgs>();
         private Dictionary<CollectionReset, List<object>> preResetItems = new Dictionary<CollectionReset, List<object>>();
 
