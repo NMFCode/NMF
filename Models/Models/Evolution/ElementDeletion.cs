@@ -7,25 +7,15 @@ namespace NMF.Models.Evolution
 {
     [XmlConstructor(1)]
     public class ElementDeletion : IModelChange
-    {
-        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        private readonly IModelElement _deletedElement;
-        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        private readonly IModelElement _deletedElementParent;
-
-        [XmlConstructorParameter(0)]
+    {[XmlConstructorParameter(0)]
         public Uri AbsoluteUri { get; set; }
 
-        public ElementDeletion(Uri absoluteUri, IModelElement deletedElement)
+        public ElementDeletion(Uri absoluteUri)
         {
             if (absoluteUri == null)
                 throw new ArgumentException(nameof(absoluteUri));
-            if (deletedElement == null)
-                throw new ArgumentNullException(nameof(deletedElement));
 
             AbsoluteUri = absoluteUri;
-            _deletedElement = deletedElement;
-            _deletedElementParent = _deletedElement.Parent;
         }
 
         public void Apply(IModelRepository repository)
