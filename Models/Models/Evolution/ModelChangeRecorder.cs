@@ -6,6 +6,7 @@ using System.Collections.Specialized;
 using System.Linq;
 using System.Threading.Tasks;
 using NMF.Collections.ObjectModel;
+using NMF.Utilities;
 
 namespace NMF.Models.Evolution
 {
@@ -16,7 +17,7 @@ namespace NMF.Models.Evolution
     {
         //TODO invert tests
         private List<BubbledChangeEventArgs> recordedEvents = new List<BubbledChangeEventArgs>();
-        private Dictionary<CollectionReset, List<object>> preResetItems = new Dictionary<CollectionReset, List<object>>();
+        private readonly Dictionary<BubbledChangeEventArgs, List<object>> preResetItems = new Dictionary<BubbledChangeEventArgs, List<object>>();
 
         private bool _isInvertible;
 
@@ -146,7 +147,10 @@ namespace NMF.Models.Evolution
                         var cArgs = beforeEvent.OriginalEventArgs as NotifyCollectionChangingEventArgs;
                         if (cArgs.Action == NotifyCollectionChangedAction.Reset)
                         {
-                            //TODO store elements in collection for inversion of reset
+                            //store collection state before reset for the following reset event 
+                            var property = beforeEvent.Element.GetType().GetProperty(beforeEvent.PropertyName);
+                            var list = property.GetValue(beforeEvent.Element, null) as List<object>;
+                            preResetItems[afterEvent] = list.ToList();
                         }
                     }
                     return afterEvent.ChangeType == ChangeType.CollectionChanged;
@@ -273,10 +277,10 @@ namespace NMF.Models.Evolution
                     yield return r;
         }
 
-        public List<object> GetItemsBeforeReset(CollectionReset reset)
+        public List<object> GetItemsBeforeReset(BubbledChangeEventArgs resetEvent)
         {
             List<object> items;
-            if (!preResetItems.TryGetValue(reset, out items))
+            if (!preResetItems.TryGetValue(resetEvent, out items))
             {
                 items = new List<object>();
             }
