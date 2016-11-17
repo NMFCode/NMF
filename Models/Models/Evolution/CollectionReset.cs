@@ -74,8 +74,7 @@ namespace NMF.Models.Evolution
     public class CollectionResetComposition<T> : CollectionResetBase<T>
     {
         public ICollection<T> NewState { get; set; }
-
-        //Use this only if Invert functionality is necessary
+        
         [EditorBrowsable(EditorBrowsableState.Never)]
         public CollectionResetComposition(Uri absoluteUri, string collectionPropertyName)
             : base(absoluteUri, collectionPropertyName)
