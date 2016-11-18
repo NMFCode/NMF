@@ -20,7 +20,7 @@ namespace NMF.Models.Tests.Evolution
         [TestMethod]
         public void SerializePropertyChangeAttribute()
         {
-            var change = new PropertyChangeAttribute<Signal>(uri, property, Signal.FAILURE);
+            var change = new PropertyChangeAttribute<Signal>(uri, property, Signal.STOP, Signal.FAILURE);
             SerializeAndAssert(change);
         }
 
@@ -53,9 +53,17 @@ namespace NMF.Models.Tests.Evolution
         }
 
         [TestMethod]
-        public void SerializeListDeletion()
+        public void SerializeListDeletionComposition()
         {
-            var change = new ListDeletion(uri, property, 42, 23);
+            var change = new ListDeletionComposition<int>(uri, property, 42, 23);
+            SerializeAndAssert(change);
+        }
+
+        [TestMethod]
+        public void SerializeListDeletionAssociation()
+        {
+            var list = new List<Uri>() {new Uri("http://ReferenceUri1"), new Uri("http://ReferenceUri2")};
+            var change = new ListDeletionAssociation<IRoute>(uri, property, 0, list.Count, list);
             SerializeAndAssert(change);
         }
 
@@ -63,7 +71,7 @@ namespace NMF.Models.Tests.Evolution
         public void SerializeChangeTransaction()
         {
             var sourceChange = new ElementDeletion(uri);
-            var nestedChanges = new[] { new ListDeletion(uri, property, 0, 1) };
+            var nestedChanges = new[] { new ListDeletionComposition<int>(uri, property, 0, 1),  };
             var change = new ChangeTransaction(sourceChange, nestedChanges);
             SerializeAndAssert(change);
         }
