@@ -24,11 +24,23 @@ namespace NMF.Models.Meta
             /// <returns>A collection of enumeration members</returns>
             protected override IEnumerable<EnumGenerator<IEnumeration>.EnumMember> GetMembers(IEnumeration input)
             {
+                var names = new HashSet<string>();
+
                 foreach (var literal in input.Literals)
                 {
+                    var fieldName = literal.Name.ToPascalCase();
+                    if (!names.Add(fieldName))
+                    {
+                        var counter = 1;
+                        while (!names.Add(fieldName + counter.ToString()))
+                        {
+                            counter++;
+                        }
+                        fieldName += counter.ToString();
+                    }
                     yield return new EnumMember()
                     {
-                        Name = literal.Name.ToPascalCase(),
+                        Name = fieldName,
                         Summary = literal.Summary,
                         Remarks = literal.Remarks,
                         Value = literal.Value

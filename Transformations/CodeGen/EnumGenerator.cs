@@ -118,14 +118,8 @@ namespace NMF.CodeGen
         /// <returns>The code type declaration that will be the transformation result for the given enumeration</returns>
         public override CodeTypeDeclaration CreateOutput(T input, Transformations.Core.ITransformationContext context)
         {
-            var declaration = new CodeTypeDeclaration()
-            {
-                Name = GetName(input),
-                IsEnum = true
-            };
-            var reference = new CodeTypeReference(declaration.Name);
-            CodeDomHelper.SetUserItem(declaration, CodeDomHelper.TypeReferenceKey, reference);
-            CodeDomHelper.SetUserItem(reference, CodeDomHelper.ClassKey, declaration);
+            var declaration = CodeDomHelper.CreateTypeDeclarationWithReference(GetName(input), true);
+            declaration.IsEnum = true;
             return declaration;
         }
     }

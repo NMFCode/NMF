@@ -117,9 +117,16 @@ namespace NMF.Serialization
         {
             if (!context.IsOppositeSet(input, this))
             {
-                var collection = GetValue(input, context);
-                PropertyType.AddToCollection(collection, item);
-                context.BlockOpposite(item, this);
+                try
+                {
+                    var collection = GetValue(input, context);
+                    PropertyType.AddToCollection(collection, item);
+                    context.BlockOpposite(item, this);
+                }
+                catch (InvalidCastException e)
+                {
+                    throw new Exception($"The element {item} cannot be added to the property {ElementName} of {input} because the types do not match.", e);
+                }
             }
         }
 

@@ -201,6 +201,10 @@ namespace NMF.CodeGen
                         }
                         return reference;
                     });
+                    foreach (CodeTypeDeclaration codeType in codeNs.Types)
+                    {
+                        RegisterConflict(codeType.Name, nameDict, codeNs.Name);
+                    }
                 }
             }
             return nameDict;
@@ -211,18 +215,23 @@ namespace NMF.CodeGen
             var refNs = reference.Namespace();
             if (refNs != null)
             {
-                string chosenClass;
-                if (nameDict.TryGetValue(reference.BaseType, out chosenClass))
+                RegisterConflict(reference.BaseType, nameDict, refNs);
+            }
+        }
+
+        private void RegisterConflict(string typeName, Dictionary<string, string> nameDict, string refNs)
+        {
+            string chosenClass;
+            if (nameDict.TryGetValue(typeName, out chosenClass))
+            {
+                if (refNs != chosenClass)
                 {
-                    if (refNs != chosenClass)
-                    {
-                        nameDict[reference.BaseType] = null;
-                    }
+                    nameDict[typeName] = null;
                 }
-                else
-                {
-                    nameDict.Add(reference.BaseType, IsSystemNameConflict(reference.BaseType) ? null : refNs);
-                }
+            }
+            else
+            {
+                nameDict.Add(typeName, IsSystemNameConflict(typeName) ? null : refNs);
             }
         }
 

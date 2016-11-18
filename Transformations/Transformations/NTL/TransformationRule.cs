@@ -4,6 +4,7 @@ using NMF.Utilities;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
 using System.Text;
@@ -33,8 +34,19 @@ namespace NMF.Transformations
             needDependencies = createOutput.ReflectedType != typeof(TransformationRule<TIn, TOut>);
         }
 
+        [DebuggerDisplay("{Representation}")]
         private sealed class SimpleComputation : TransformationComputation<TIn, TOut>
         {
+            public string Representation
+            {
+                get
+                {
+                    var inputStr = Input != null ? Input.ToString() : "(null)";
+                    var outputStr = IsDelayed ? "(not yet set)" : OutputCore != null ? OutputCore.ToString() : "(null)";
+                    return $"{inputStr} -{TransformationRule.GetType().Name}-> {outputStr}";
+                }
+            }
+
             public SimpleComputation(TransformationRule<TIn, TOut> transformationRule, TIn input, IComputationContext context)
                 : base(transformationRule, context, input) { }
 

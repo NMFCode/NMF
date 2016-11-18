@@ -34,8 +34,11 @@ namespace NMF.Models.Meta
                 generatedType.BaseTypes.Add(new CodeTypeReference("ModelPropertyChange", declaringType, type));
 
                 var modelElementRef = new CodePropertyReferenceExpression(new CodeThisReferenceExpression(), "ModelElement");
-                var propertyRef = new CodePropertyReferenceExpression(modelElementRef, feature.Name.ToPascalCase());
-                var propertyChanged = new CodeEventReferenceExpression(modelElementRef, feature.Name.ToPascalCase() + "Changed");
+
+                var property = context.Trace.ResolveIn(Rule<Feature2Property>(), feature);
+
+                var propertyRef = new CodePropertyReferenceExpression(modelElementRef, property.Name);
+                var propertyChanged = new CodeEventReferenceExpression(modelElementRef, property.Name + "Changed");
 
                 var value = new CodeMemberProperty()
                 {

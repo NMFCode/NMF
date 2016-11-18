@@ -53,6 +53,7 @@
     <Compile Include="Meta\Event2EventArgs.cs" />
     <Compile Include="Meta\Extension2Type.cs" />
     <Compile Include="Meta\Extensions.cs" />
+    <Compile Include="Meta\Feature2Property.cs" />
     <Compile Include="Meta\Feature2Proxy.cs" />
     <Compile Include="Meta\Meta2ClassesTransformation.cs" />
     <Compile Include="Meta\MetaFacade.cs" />

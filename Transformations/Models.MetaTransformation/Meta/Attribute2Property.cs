@@ -29,7 +29,20 @@ namespace NMF.Models.Meta
             /// </summary>
             public override void RegisterDependencies()
             {
+                MarkInstantiatingFor(Rule<Feature2Property>());
+
                 Require(Rule<RefinedAttributeGenerator>(), att => att.DeclaringType as IClass, att => att.Refines, att => att.Refines != null);
+            }
+
+            public override CodeMemberProperty CreateOutput(IAttribute input, ITransformationContext context)
+            {
+                var property = new CodeMemberProperty();
+                property.Name = input.Name.ToPascalCase();
+                if (property.Name == input.DeclaringType.Name.ToPascalCase())
+                {
+                    property.Name += "_";
+                }
+                return property;
             }
 
             /// <summary>
@@ -40,7 +53,6 @@ namespace NMF.Models.Meta
             /// <param name="context">The transformation context</param>
             public override void Transform(IAttribute input, CodeMemberProperty generatedProperty, ITransformationContext context)
             {
-                generatedProperty.Name = input.Name.ToPascalCase();
                 generatedProperty.Attributes = MemberAttributes.Public;
                 var summary = input.Summary;
                 if (string.IsNullOrEmpty(summary)) summary = string.Format("The {0} property", input.Name);

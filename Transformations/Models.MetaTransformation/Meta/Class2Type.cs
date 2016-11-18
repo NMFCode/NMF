@@ -288,7 +288,7 @@ namespace NMF.Models.Meta
                     AddIfNotNull(members, CreateClassInstanceProperty(input, ModelExtensions.ClassModelElement.InstanceOf, context, codeField));
                 }
 
-                ImplementIdentifier(input, generatedType);
+                ImplementIdentifier(input, generatedType, context);
 
                 var inputModel = input.Model;
                 if (!input.BaseTypes.Any(c => c.Model == inputModel))
@@ -598,18 +598,12 @@ namespace NMF.Models.Meta
                 return referencedProperty;
             }
 
-            private static CodeExpression AddReference(CodeExpression expression, IReference reference)
-            {
-                return new CodeMethodInvokeExpression(new CodeMethodReferenceExpression(expression, "Concat", typeof(IModelElement).ToTypeReference()),
-                    new CodePropertyReferenceExpression(new CodeThisReferenceExpression(), reference.Name.ToPascalCase()));
-            }
-
             /// <summary>
             /// Implements the members necessary for the identifier mechanism of the given NMeta class
             /// </summary>
             /// <param name="class">The NMeta class</param>
             /// <param name="generatedType">The generated type for the NMeta class</param>
-            protected virtual void ImplementIdentifier(IClass @class, CodeTypeDeclaration generatedType)
+            protected virtual void ImplementIdentifier(IClass @class, CodeTypeDeclaration generatedType, ITransformationContext context)
             {
                 if (@class.Identifier != null)
                 {
@@ -630,7 +624,8 @@ namespace NMF.Models.Meta
                         ReturnType = new CodeTypeReference(typeof(string))
                     };
                     toIdentifierString.WriteDocumentation("Gets the identifier string for this model element", "The identifier string");
-                    var identifiedObject = new CodePropertyReferenceExpression(new CodeThisReferenceExpression(), @class.Identifier.Name.ToPascalCase());
+                    var identifierProperty = context.Trace.ResolveIn(Rule<Attribute2Property>(), @class.Identifier);
+                    var identifiedObject = new CodePropertyReferenceExpression(new CodeThisReferenceExpression(), identifierProperty.Name);
                     var toString = new CodeMethodInvokeExpression(identifiedObject, "ToString");
                     var t = Transformation as Meta2ClassesTransformation;
                     if (t != null && !t.IsValueType(@class.Identifier.Type))
@@ -681,7 +676,8 @@ namespace NMF.Models.Meta
 
                 var identifier = @class.RetrieveIdentifier();
                 if (identifier.Identifier == null || generatedType.IsInterface) return;
-                generatedType.AddAttribute(typeof(DebuggerDisplayAttribute), string.Format("{0} {{{1}}}", generatedType.Name, identifier.Identifier.Name.ToPascalCase()));
+                var identifierProp = context.Trace.ResolveIn(Rule<Attribute2Property>(), identifier.Identifier);
+                generatedType.AddAttribute(typeof(DebuggerDisplayAttribute), string.Format("{0} {{{1}}}", generatedType.Name, identifierProp.Name));
             }
 
             /// <summary>
@@ -742,11 +738,12 @@ namespace NMF.Models.Meta
                 return getAttributeValue;
             }
 
-            private static CodeMemberMethod AddToGetAttributeValue(CodeMemberMethod method, IAttribute attribute)
+            private CodeMemberMethod AddToGetAttributeValue(CodeMemberMethod method, IAttribute attribute, ITransformationContext context)
             {
                 if (attribute.UpperBound == 1 || attribute.IsOrdered)
                 {
-                    var propRef = new CodePropertyReferenceExpression(new CodeThisReferenceExpression(), attribute.Name.ToPascalCase());
+                    var attributeProperty = context.Trace.ResolveIn(Rule<Attribute2Property>(), attribute);
+                    var propRef = new CodePropertyReferenceExpression(new CodeThisReferenceExpression(), attributeProperty.Name);
                     var ifStmt = new CodeConditionStatement(new CodeBinaryOperatorExpression(new CodeVariableReferenceExpression("attribute"),
                         CodeBinaryOperatorType.ValueEquality, new CodePrimitiveExpression(attribute.Name.ToUpperInvariant())));
                     if (attribute.UpperBound == 1)
@@ -798,7 +795,7 @@ namespace NMF.Models.Meta
                 return getCollectionForFeature;
             }
 
-            private CodeMemberMethod AddToCollectionsForFeature(CodeMemberMethod method, ITypedElement feature)
+            private CodeMemberMethod AddToCollectionsForFeature(CodeMemberMethod method, ITypedElement feature, ITransformationContext context)
             {
                 if (feature.UpperBound != 1)
                 {
@@ -828,8 +825,8 @@ namespace NMF.Models.Meta
                 };
                 setFeature.Parameters.Add(new CodeParameterDeclarationExpression(typeof(string), "feature"));
                 setFeature.Parameters.Add(new CodeParameterDeclarationExpression(typeof(object), "value"));
-                AddReferencesOfClass(input, generatedType, (m,f) => AddSetFeature(m, f, context, true), setFeature, false, context);
-                AddAttributesOfClass(input, generatedType, (m,f) => AddSetFeature(m, f, context, false), setFeature, context);
+                AddReferencesOfClass(input, generatedType, (m,f,_) => AddSetFeature(m, f, context, true), setFeature, false, context);
+                AddAttributesOfClass(input, generatedType, (m,f,_) => AddSetFeature(m, f, context, false), setFeature, context);
                 if (setFeature.Statements.Count == 0)
                 {
                     return null;
@@ -847,7 +844,8 @@ namespace NMF.Models.Meta
             {
                 if (feature.UpperBound == 1)
                 {
-                    var propRef = new CodePropertyReferenceExpression(new CodeThisReferenceExpression(), feature.Name.ToPascalCase());
+                    var property = context.Trace.ResolveIn(Rule<Feature2Property>(), feature);
+                    var propRef = new CodePropertyReferenceExpression(new CodeThisReferenceExpression(), property.Name);
                     var ifStmt = new CodeConditionStatement(new CodeBinaryOperatorExpression(new CodeVariableReferenceExpression("feature"),
                         CodeBinaryOperatorType.ValueEquality, new CodePrimitiveExpression(feature.Name.ToUpperInvariant())));
                     CodeExpression value = new CodeArgumentReferenceExpression("value");
@@ -879,7 +877,7 @@ namespace NMF.Models.Meta
                     ReturnType = new CodeTypeReference(typeof(INotifyExpression<IModelElement>))
                 };
                 getExpressionForReference.Parameters.Add(new CodeParameterDeclarationExpression(typeof(string), "reference"));
-                AddReferencesOfClass(input, generatedType, (m,r) => AddToExpressionForFeature(m, r, context, "reference"), getExpressionForReference, false, context);
+                AddReferencesOfClass(input, generatedType, (m,r,_) => AddToExpressionForFeature(m, r, context, "reference"), getExpressionForReference, false, context);
                 if (getExpressionForReference.Statements.Count == 0)
                 {
                     return null;
@@ -909,7 +907,7 @@ namespace NMF.Models.Meta
                     ReturnType = new CodeTypeReference(typeof(INotifyExpression<object>))
                 };
                 getExpressionForAttribute.Parameters.Add(new CodeParameterDeclarationExpression(typeof(string), "attribute"));
-                AddReferencesOfClass(input, generatedType, (m, r) => AddToExpressionForFeature(m, r, context, "attribute"), getExpressionForAttribute, false, context);
+                AddReferencesOfClass(input, generatedType, (m, r, _) => AddToExpressionForFeature(m, r, context, "attribute"), getExpressionForAttribute, false, context);
                 if (getExpressionForAttribute.Statements.Count == 0)
                 {
                     return null;
@@ -927,9 +925,10 @@ namespace NMF.Models.Meta
             {
                 if (feature.UpperBound == 1)
                 {
+                    var property = context.Trace.ResolveIn(Rule<Feature2Property>(), feature);
                     var propTypeRef = new CodeTypeReference(feature.Name.ToPascalCase() + "Proxy");
                     var ifStmt = new CodeConditionStatement(new CodeBinaryOperatorExpression(new CodeVariableReferenceExpression(parameterName),
-                        CodeBinaryOperatorType.ValueEquality, new CodePrimitiveExpression(feature.Name.ToUpperInvariant())));
+                        CodeBinaryOperatorType.ValueEquality, new CodePrimitiveExpression(property.Name)));
                     ifStmt.TrueStatements.Add(new CodeMethodReturnStatement(new CodeObjectCreateExpression(propTypeRef, new CodeThisReferenceExpression())));
                     method.Statements.Add(ifStmt);
                 }
@@ -993,7 +992,7 @@ namespace NMF.Models.Meta
                 return childrenProperty;
             }
 
-            protected T AddReferencesOfClass<T>(IClass input, CodeTypeDeclaration typeDeclaration, Func<T, IReference, T> action, T initial, bool containmentsOnly, ITransformationContext context)
+            protected T AddReferencesOfClass<T>(IClass input, CodeTypeDeclaration typeDeclaration, Func<T, IReference, ITransformationContext, T> action, T initial, bool containmentsOnly, ITransformationContext context)
             {
                 var r2p = Rule<Reference2Property>();
                 foreach (var bcl in input.Closure(cl => cl.BaseTypes))
@@ -1005,7 +1004,7 @@ namespace NMF.Models.Meta
                             var property = context.Trace.ResolveIn(r2p, reference);
                             if (typeDeclaration.Members.Contains(property))
                             {
-                                initial = action(initial, reference);
+                                initial = action(initial, reference, context);
                             }
                         }
                     }
@@ -1013,7 +1012,7 @@ namespace NMF.Models.Meta
                 return initial;
             }
             
-            protected T AddAttributesOfClass<T>(IClass input, CodeTypeDeclaration typeDeclaration, Func<T, IAttribute, T> action, T initial, ITransformationContext context)
+            protected T AddAttributesOfClass<T>(IClass input, CodeTypeDeclaration typeDeclaration, Func<T, IAttribute, ITransformationContext, T> action, T initial, ITransformationContext context)
             {
                 var a2p = Rule<Attribute2Property>();
                 foreach (var bcl in input.Closure(cl => cl.BaseTypes))
@@ -1023,25 +1022,26 @@ namespace NMF.Models.Meta
                         var property = context.Trace.ResolveIn(a2p, att);
                         if (typeDeclaration.Members.Contains(property))
                         {
-                            initial = action(initial, att);
+                            initial = action(initial, att, context);
                         }
                     }
                 }
                 return initial;
             }
 
-            private static CodeMemberMethod AddToGetRelativeUriForChild(CodeMemberMethod method, IReference containment)
+            private CodeMemberMethod AddToGetRelativeUriForChild(CodeMemberMethod method, IReference containment, ITransformationContext context)
             {
+                var property = context.Trace.ResolveIn(Rule<Reference2Property>(), containment);
                 if (containment.UpperBound == 1)
                 {
                     var ifIdentical = new CodeConditionStatement(
                         new CodeBinaryOperatorExpression(
                             new CodeArgumentReferenceExpression("element"),
                             CodeBinaryOperatorType.IdentityEquality,
-                            new CodePropertyReferenceExpression(new CodeThisReferenceExpression(), containment.Name.ToPascalCase())));
+                            new CodePropertyReferenceExpression(new CodeThisReferenceExpression(), property.Name)));
 
                     ifIdentical.TrueStatements.Add(new CodeMethodReturnStatement(new CodeMethodInvokeExpression(new CodeTypeReferenceExpression(typeof(ModelHelper).ToTypeReference()), "CreatePath",
-                        new CodePrimitiveExpression(containment.Name.ToPascalCase()))));
+                        new CodePrimitiveExpression(property.Name))));
 
                     method.Statements.Add(ifIdentical);
                 }
@@ -1049,7 +1049,7 @@ namespace NMF.Models.Meta
                 {
                     var idxVarName = containment.Name.ToCamelCase() + "Index";
                     var idxVar = new CodeVariableDeclarationStatement(typeof(int), idxVarName, new CodeMethodInvokeExpression(new CodeTypeReferenceExpression(typeof(ModelHelper).ToTypeReference()), "IndexOfReference",
-                        new CodePropertyReferenceExpression(new CodeThisReferenceExpression(), containment.Name.ToPascalCase()), new CodeArgumentReferenceExpression("element")));
+                        new CodePropertyReferenceExpression(new CodeThisReferenceExpression(), property.Name), new CodeArgumentReferenceExpression("element")));
                     var idxRef = new CodeVariableReferenceExpression(idxVarName);
 
                     var ifContained = new CodeConditionStatement(new CodeBinaryOperatorExpression(idxRef, CodeBinaryOperatorType.IdentityInequality, new CodePrimitiveExpression(-1)));
@@ -1063,7 +1063,7 @@ namespace NMF.Models.Meta
                 return method;
             }
 
-            private static CodeMemberMethod AddToGetModelElementForUri(CodeMemberMethod method, IReference containment)
+            private static CodeMemberMethod AddToGetModelElementForUri(CodeMemberMethod method, IReference containment, ITransformationContext context)
             {
                 if (containment.UpperBound == 1 || containment.IsOrdered)
                 {

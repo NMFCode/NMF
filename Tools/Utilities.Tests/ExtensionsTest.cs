@@ -264,8 +264,9 @@ namespace NMF.Utilities.Tests
             Assert.AreEqual("parameter", "parameter".ToCamelCase());
             Assert.AreEqual("isUnique", "Is unique?".ToCamelCase());
             Assert.AreEqual("anYway", "AnYway".ToCamelCase());
-            Assert.AreEqual("_Hello", "_Hello".ToCamelCase());
+            Assert.AreEqual("_hello", "_Hello".ToCamelCase());
             Assert.AreEqual("nMF", "NMF".ToCamelCase());
+            Assert.AreEqual("_setMag", "_setMag".ToCamelCase());
         }
 
         [TestMethod]
@@ -279,6 +280,7 @@ namespace NMF.Utilities.Tests
             Assert.AreEqual("AnYway", "AnYway".ToPascalCase());
             Assert.AreEqual("_Hello", "_Hello".ToPascalCase());
             Assert.AreEqual("NMF", "NMF".ToPascalCase());
+            Assert.AreEqual("_SetMag", "_setMag".ToPascalCase());
         }
 
         [TestMethod]

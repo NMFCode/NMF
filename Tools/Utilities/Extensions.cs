@@ -392,8 +392,12 @@ namespace NMF.Utilities
             var sb = new StringBuilder();
             var nextUpper = false;
             int start = 0;
-            while (start < input.Length && !(char.IsLetter(input[start]) || input[start] == '_'))
+            while (start < input.Length && !char.IsLetter(input[start]))
             {
+                if (input[start] == '_')
+                {
+                    sb.Append('_');
+                }
                 start++;
             }
             if (start >= input.Length) return string.Empty;

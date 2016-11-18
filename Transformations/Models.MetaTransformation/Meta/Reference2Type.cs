@@ -50,7 +50,7 @@ namespace NMF.Models.Meta
 
                 CreateConstructor(output, baseTypeReference);
 
-                CreateSetParentMethod(input, output, baseTypeReference, elementTypeReference);
+                CreateSetParentMethod(input, output, baseTypeReference, elementTypeReference, context);
             }
 
             private CodeTypeReference GetBaseClass(IReference input, CodeTypeReference baseTypeReference, CodeTypeReference elementTypeReference)
@@ -82,7 +82,7 @@ namespace NMF.Models.Meta
                 return collectionType;
             }
 
-            private static void CreateSetParentMethod(IReference input, CodeTypeDeclaration output, CodeTypeReference baseTypeReference, CodeTypeReference elementTypeReference)
+            private void CreateSetParentMethod(IReference input, CodeTypeDeclaration output, CodeTypeReference baseTypeReference, CodeTypeReference elementTypeReference, ITransformationContext context)
             {
                 var method = new CodeMemberMethod();
                 method.Attributes = MemberAttributes.Family | MemberAttributes.Override;
@@ -90,11 +90,11 @@ namespace NMF.Models.Meta
                 method.Parameters.Add(new CodeParameterDeclarationExpression(elementTypeReference, "item"));
                 method.Parameters.Add(new CodeParameterDeclarationExpression(baseTypeReference, "parent"));
 
-                ImplementSetParentMethod(input, output, elementTypeReference, method);
+                ImplementSetParentMethod(input, output, elementTypeReference, method, context);
                 output.Members.Add(method);
             }
 
-            private static void ImplementSetParentMethod(IReference input, CodeTypeDeclaration output, CodeTypeReference elementTypeReference, CodeMemberMethod method)
+            private void ImplementSetParentMethod(IReference input, CodeTypeDeclaration output, CodeTypeReference elementTypeReference, CodeMemberMethod method, ITransformationContext context)
             {
                 var opposite = input.Opposite;
 
@@ -103,7 +103,7 @@ namespace NMF.Models.Meta
 
                 var thisRef = new CodeThisReferenceExpression();
                 var nullRef = new CodePrimitiveExpression(null);
-                var item_opp = new CodePropertyReferenceExpression(item, opposite.Name.ToPascalCase());
+                var item_opp = new CodePropertyReferenceExpression(item, context.Trace.ResolveIn(Rule<Reference2Property>(), opposite).Name);
                 var ifNotNull = new CodeConditionStatement(new CodeBinaryOperatorExpression(parent, CodeBinaryOperatorType.IdentityInequality, nullRef));
 
                 var targetClass = input.Type;

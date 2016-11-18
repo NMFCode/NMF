@@ -32,6 +32,13 @@ namespace NMF.Models.Meta
                 return CodeDomHelper.CreateTypeDeclarationWithReference(scope.Name.ToPascalCase() + "ChildrenCollection", false);
             }
 
+            private Reference2Property reference2Property;
+
+            public override void RegisterDependencies()
+            {
+                reference2Property = Rule<Reference2Property>();
+            }
+
             protected virtual List<IReference> GetImplementingReferences(IClass scope, ITransformationContext context)
             {
                 var generatedType = context.Trace.ResolveIn(Rule<Class2Type>(), scope);
@@ -88,15 +95,15 @@ namespace NMF.Models.Meta
             {
                 generatedType.BaseTypes.Add(new CodeTypeReference(typeof(ICollectionExpression<>).Name, elementType));
                 generatedType.BaseTypes.Add(new CodeTypeReference(typeof(ICollection<>).Name, elementType));
-                generatedType.Members.Add(GenerateAttachCore(implementingReferences));
-                generatedType.Members.Add(GenerateDetachCore(implementingReferences));
+                generatedType.Members.Add(GenerateAttachCore(implementingReferences, context));
+                generatedType.Members.Add(GenerateDetachCore(implementingReferences, context));
                 generatedType.Members.Add(GenerateAdd(implementingReferences, elementType, context));
-                generatedType.Members.Add(GenerateClear(implementingReferences));
-                generatedType.Members.Add(GenerateContains(implementingReferences, elementType, standardValuesRef));
-                generatedType.Members.Add(GenerateCopyTo(implementingReferences, elementType, standardValuesRef));
-                generatedType.Members.Add(GenerateCount(implementingReferences));
+                generatedType.Members.Add(GenerateClear(implementingReferences, context));
+                generatedType.Members.Add(GenerateContains(implementingReferences, elementType, standardValuesRef, context));
+                generatedType.Members.Add(GenerateCopyTo(implementingReferences, elementType, standardValuesRef, context));
+                generatedType.Members.Add(GenerateCount(implementingReferences, context));
                 generatedType.Members.Add(GenerateRemove(implementingReferences, elementType, context));
-                generatedType.Members.Add(GenerateGenericGetEnumerator(implementingReferences, elementType, standardValuesRef));
+                generatedType.Members.Add(GenerateGenericGetEnumerator(implementingReferences, elementType, standardValuesRef, context));
             }
 
             private CodeMemberMethod GenerateAdd(IEnumerable<IReference> implementingReferences, CodeTypeReference elementType, ITransformationContext context)
@@ -111,7 +118,7 @@ namespace NMF.Models.Meta
                 var itemRef = new CodeArgumentReferenceExpression("item");
                 foreach (var reference in implementingReferences)
                 {
-                    var propertyRef = GetPropertyReference(reference);
+                    var propertyRef = GetPropertyReference(reference, context);
                     var propertyTypeRef = CreateReference(reference.Type, true, context);
                     if (reference.UpperBound == 1)
                     {
@@ -178,7 +185,7 @@ namespace NMF.Models.Meta
                 return add;
             }
 
-            private CodeMemberMethod GenerateClear(IEnumerable<IReference> implementingReferences)
+            private CodeMemberMethod GenerateClear(IEnumerable<IReference> implementingReferences, ITransformationContext context)
             {
                 var clear = new CodeMemberMethod()
                 {
@@ -188,7 +195,7 @@ namespace NMF.Models.Meta
                 };
                 foreach (var reference in implementingReferences)
                 {
-                    var refRef = GetPropertyReference(reference);
+                    var refRef = GetPropertyReference(reference, context);
                     if (reference.UpperBound == 1)
                     {
                         clear.Statements.Add(new CodeAssignStatement(refRef, new CodePrimitiveExpression(null)));
@@ -202,12 +209,13 @@ namespace NMF.Models.Meta
                 return clear;
             }
 
-            private CodeExpression GetPropertyReference(IReference reference)
+            private CodeExpression GetPropertyReference(IReference reference, ITransformationContext context)
             {
-                return new CodePropertyReferenceExpression(parentRef, reference.Name.ToPascalCase());
+                var property = context.Trace.ResolveIn(reference2Property, reference);
+                return new CodePropertyReferenceExpression(parentRef, property.Name);
             }
 
-            private CodeMemberMethod GenerateContains(IEnumerable<IReference> implementingReferences, CodeTypeReference elementType, CodeExpression standardValuesRef)
+            private CodeMemberMethod GenerateContains(IEnumerable<IReference> implementingReferences, CodeTypeReference elementType, CodeExpression standardValuesRef, ITransformationContext context)
             {
                 var contains = new CodeMemberMethod()
                 {
@@ -219,7 +227,7 @@ namespace NMF.Models.Meta
                 var itemRef = new CodeArgumentReferenceExpression("item");
                 foreach (var reference in implementingReferences)
                 {
-                    var propertyRef = GetPropertyReference(reference);
+                    var propertyRef = GetPropertyReference(reference, context);
                     var refIf = new CodeConditionStatement();
                     if (reference.UpperBound == 1)
                     {
@@ -238,7 +246,7 @@ namespace NMF.Models.Meta
                 return contains;
             }
 
-            private CodeMemberMethod GenerateCopyTo(IEnumerable<IReference> implementingReferences, CodeTypeReference elementType, CodeExpression standardValuesRef)
+            private CodeMemberMethod GenerateCopyTo(IEnumerable<IReference> implementingReferences, CodeTypeReference elementType, CodeExpression standardValuesRef, ITransformationContext context)
             {
                 var copyTo = new CodeMemberMethod()
                 {
@@ -252,7 +260,7 @@ namespace NMF.Models.Meta
                 var arrayIndexRef = new CodeArgumentReferenceExpression("arrayIndex");
                 foreach (var reference in implementingReferences)
                 {
-                    var propertyRef = GetPropertyReference(reference);
+                    var propertyRef = GetPropertyReference(reference, context);
                     if (reference.UpperBound == 1)
                     {
                         var ifNull = new CodeConditionStatement();
@@ -293,7 +301,7 @@ namespace NMF.Models.Meta
                 return copyTo;
             }
 
-            private CodeMemberProperty GenerateCount(IEnumerable<IReference> implementingReferences)
+            private CodeMemberProperty GenerateCount(IEnumerable<IReference> implementingReferences, ITransformationContext context)
             {
                 var count = new CodeMemberProperty()
                 {
@@ -307,7 +315,7 @@ namespace NMF.Models.Meta
                 var countRef = new CodeVariableReferenceExpression("count");
                 foreach (var reference in implementingReferences)
                 {
-                    var propertyRef = GetPropertyReference(reference);
+                    var propertyRef = GetPropertyReference(reference, context);
                     if (reference.UpperBound == 1)
                     {
                         var ifNull = new CodeConditionStatement();
@@ -340,7 +348,7 @@ namespace NMF.Models.Meta
                 foreach (var reference in implementingReferences)
                 {
                     var refIf = new CodeConditionStatement();
-                    var propertyRef = GetPropertyReference(reference);
+                    var propertyRef = GetPropertyReference(reference, context);
                     if (reference.UpperBound == 1)
                     {
                         refIf.Condition = new CodeBinaryOperatorExpression(propertyRef, CodeBinaryOperatorType.IdentityEquality, itemRef);
@@ -384,7 +392,7 @@ namespace NMF.Models.Meta
                 return remove;
             }
 
-            private CodeMemberMethod GenerateGenericGetEnumerator(IEnumerable<IReference> implementingReferences, CodeTypeReference elementType, CodeExpression standardValuesRef)
+            private CodeMemberMethod GenerateGenericGetEnumerator(IEnumerable<IReference> implementingReferences, CodeTypeReference elementType, CodeExpression standardValuesRef, ITransformationContext context)
             {
                 var getEnumerator = new CodeMemberMethod()
                 {
@@ -396,7 +404,7 @@ namespace NMF.Models.Meta
                 currentExpression = new CodeMethodInvokeExpression(new CodeMethodReferenceExpression(new CodeTypeReferenceExpression(typeof(Enumerable).ToTypeReference()), "Empty", elementType));
                 foreach (var reference in implementingReferences)
                 {
-                    currentExpression = new CodeMethodInvokeExpression(currentExpression, "Concat", GetPropertyReference(reference));
+                    currentExpression = new CodeMethodInvokeExpression(currentExpression, "Concat", GetPropertyReference(reference, context));
                 }
                 currentExpression = new CodeMethodInvokeExpression(currentExpression, "GetEnumerator");
                 getEnumerator.Statements.Add(new CodeMethodReturnStatement(currentExpression));
@@ -404,7 +412,7 @@ namespace NMF.Models.Meta
                 return getEnumerator;
             }
 
-            private CodeMemberMethod GenerateAttachCore(IEnumerable<IReference> implementingReferences)
+            private CodeMemberMethod GenerateAttachCore(IEnumerable<IReference> implementingReferences, ITransformationContext context)
             {
                 var attachCore = new CodeMemberMethod()
                 {
@@ -412,24 +420,26 @@ namespace NMF.Models.Meta
                     Attributes = MemberAttributes.Family | MemberAttributes.Override
                 };
                 var thisRef = new CodeThisReferenceExpression();
+                var reference2Property = Rule<Reference2Property>();
                 foreach (var reference in implementingReferences)
                 {
+                    var property = context.Trace.ResolveIn(reference2Property, reference);
                     if (reference.UpperBound == 1)
                     {
-                        attachCore.Statements.Add(new CodeAttachEventStatement(parentRef, reference.Name.ToPascalCase() + "Changed",
+                        attachCore.Statements.Add(new CodeAttachEventStatement(parentRef, property.Name + "Changed",
                             new CodeMethodReferenceExpression(thisRef, "PropagateValueChanges")));
                     }
                     else
                     {
                         attachCore.Statements.Add(new CodeAttachEventStatement(new CodeMethodInvokeExpression(
-                            new CodePropertyReferenceExpression(parentRef, reference.Name.ToPascalCase()), "AsNotifiable"), "CollectionChanged",
+                            new CodePropertyReferenceExpression(parentRef, property.Name), "AsNotifiable"), "CollectionChanged",
                             new CodeMethodReferenceExpression(thisRef, "PropagateCollectionChanges")));
                     }
                 }
                 return attachCore;
             }
 
-            private CodeMemberMethod GenerateDetachCore(IEnumerable<IReference> implementingReferences)
+            private CodeMemberMethod GenerateDetachCore(IEnumerable<IReference> implementingReferences, ITransformationContext context)
             {
                 var detachCore = new CodeMemberMethod()
                 {
@@ -437,17 +447,19 @@ namespace NMF.Models.Meta
                     Attributes = MemberAttributes.Family | MemberAttributes.Override
                 };
                 var thisRef = new CodeThisReferenceExpression();
+                var reference2Property = Rule<Reference2Property>();
                 foreach (var reference in implementingReferences)
                 {
+                    var property = context.Trace.ResolveIn(reference2Property, reference);
                     if (reference.UpperBound == 1)
                     {
-                        detachCore.Statements.Add(new CodeRemoveEventStatement(parentRef, reference.Name.ToPascalCase() + "Changed",
+                        detachCore.Statements.Add(new CodeRemoveEventStatement(parentRef, property.Name + "Changed",
                             new CodeMethodReferenceExpression(thisRef, "PropagateValueChanges")));
                     }
                     else
                     {
                         detachCore.Statements.Add(new CodeRemoveEventStatement(new CodeMethodInvokeExpression(
-                            new CodePropertyReferenceExpression(parentRef, reference.Name.ToPascalCase()), "AsNotifiable"), "CollectionChanged",
+                            new CodePropertyReferenceExpression(parentRef, property.Name), "AsNotifiable"), "CollectionChanged",
                             new CodeMethodReferenceExpression(thisRef, "PropagateCollectionChanges")));
                     }
                 }

@@ -40,7 +40,7 @@ namespace NMF.Models.Meta
                 var originalAttribute = context.Trace.ResolveIn(Rule<Attribute2Property>(), attribute);
 
                 property.Attributes = MemberAttributes.Private;
-                property.Name = attribute.Name.ToPascalCase();
+                property.Name = originalAttribute.Name;
                 property.PrivateImplementationType = CreateReference(attribute.DeclaringType, false, context);
 
                 lock (classDeclaration)
@@ -90,7 +90,9 @@ namespace NMF.Models.Meta
                         var castedThisVariableRef = new CodeVariableReferenceExpression("_this");
                         property.GetStatements.Add(castedThisVariable);
                         property.SetStatements.Add(castedThisVariable);
-                        CodeExpression implementationRef = new CodePropertyReferenceExpression(castedThisVariableRef, implementations[0].Name.ToPascalCase());
+
+                        var implProperty = context.Trace.ResolveIn(Rule<Attribute2Property>(), implementations[0]);
+                        CodeExpression implementationRef = new CodePropertyReferenceExpression(castedThisVariableRef, implProperty.Name);
 
                         property.GetStatements.Add(new CodeMethodReturnStatement(implementationRef));
                         property.SetStatements.Add(new CodeAssignStatement(implementationRef, new CodePropertySetValueReferenceExpression()));

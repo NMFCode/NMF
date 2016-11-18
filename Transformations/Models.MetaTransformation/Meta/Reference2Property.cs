@@ -30,12 +30,25 @@ namespace NMF.Models.Meta
             /// </summary>
             public override void RegisterDependencies()
             {
+                MarkInstantiatingFor(Rule<Feature2Property>());
+
                 Require(Rule<Reference2Type>(), reference => reference.UpperBound != 1 && reference.Opposite != null,
                     (prop, decl) => CodeDomHelper.DependentTypes(prop, true).Add(decl));
 
                 Require(Rule<RefinedReferenceGenerator>(), r => r.DeclaringType as IClass, r => r.Refines, r => r.Refines != null);
 
                 Call(Rule<Type2Type>(), reference => reference.Type);
+            }
+
+            public override CodeMemberProperty CreateOutput(IReference input, ITransformationContext context)
+            {
+                var property = new CodeMemberProperty();
+                property.Name = input.Name.ToPascalCase();
+                if (property.Name == input.DeclaringType.Name.ToPascalCase())
+                {
+                    property.Name += "_";
+                }
+                return property;
             }
 
             /// <summary>
@@ -46,7 +59,6 @@ namespace NMF.Models.Meta
             /// <param name="context">The transformation context</param>
             public override void Transform(IReference input, CodeMemberProperty generatedProperty, ITransformationContext context)
             {
-                generatedProperty.Name = input.Name.ToPascalCase();
                 generatedProperty.Attributes = MemberAttributes.Public;
                 var summary = input.Summary;
                 if (string.IsNullOrEmpty(summary)) summary = string.Format("The {0} property", input.Name);
@@ -81,11 +93,11 @@ namespace NMF.Models.Meta
 
                 generatedProperty.SetStatements.Add(new CodeAssignStatement(parentRef, new CodePropertySetValueReferenceExpression()));
 
-                GenerateOnParentChangingMethod(input, generatedProperty);
-                GenerateOnParentChangedMethod(input, generatedProperty);
+                GenerateOnParentChangingMethod(input, generatedProperty, context);
+                GenerateOnParentChangedMethod(input, generatedProperty, context);
             }
 
-            private void GenerateOnParentChangingMethod(IReference input, CodeMemberProperty property)
+            private void GenerateOnParentChangingMethod(IReference input, CodeMemberProperty property, ITransformationContext context)
             {
                 var onParentChanging = new CodeMemberMethod()
                 {
@@ -96,7 +108,7 @@ namespace NMF.Models.Meta
                 onParentChanging.Parameters.Add(new CodeParameterDeclarationExpression(typeof(IModelElement).ToTypeReference(), "newParent"));
                 onParentChanging.Parameters.Add(new CodeParameterDeclarationExpression(typeof(IModelElement).ToTypeReference(), "oldParent"));
 
-                var appendix = property.Name.ToPascalCase();
+                var appendix = property.Name;
                 if (appendix == "Parent") appendix += "Reference";
                 var oldElementVar = new CodeVariableReferenceExpression("old" + appendix);
                 var newElementVar = new CodeVariableReferenceExpression("new" + appendix);
@@ -110,7 +122,7 @@ namespace NMF.Models.Meta
                 onParentChanging.Statements.Add(new CodeVariableDeclarationStatement(property.Type, newElementVar.VariableName,
                     new CodeMethodInvokeExpression(castRef, new CodeArgumentReferenceExpression("newParent"))));
 
-                string oppositeName = input.Opposite.Name.ToPascalCase();
+                string oppositeName = context.Trace.ResolveIn(this, input.Opposite).Name;
                 
                 var valueChangedEvArgs = typeof(ValueChangedEventArgs).ToTypeReference();
                 var valueChangeDef = new CodeVariableDeclarationStatement(valueChangedEvArgs, "e",
@@ -155,7 +167,7 @@ namespace NMF.Models.Meta
                 property.DependentMembers(true).Add(onParentChanging);
             }
 
-            private void GenerateOnParentChangedMethod(IReference input, CodeMemberProperty property)
+            private void GenerateOnParentChangedMethod(IReference input, CodeMemberProperty property, ITransformationContext context)
             {
                 var onParentChanged = new CodeMemberMethod()
                 {
@@ -166,7 +178,7 @@ namespace NMF.Models.Meta
                 onParentChanged.Parameters.Add(new CodeParameterDeclarationExpression(typeof(IModelElement).ToTypeReference(), "newParent"));
                 onParentChanged.Parameters.Add(new CodeParameterDeclarationExpression(typeof(IModelElement).ToTypeReference(), "oldParent"));
 
-                var appendix = property.Name.ToPascalCase();
+                var appendix = property.Name;
                 if (appendix == "Parent") appendix += "Reference";
                 var oldElementVar = new CodeVariableReferenceExpression("old" + appendix);
                 var newElementVar = new CodeVariableReferenceExpression("new" + appendix);
@@ -183,7 +195,7 @@ namespace NMF.Models.Meta
                 CodeStatement unsetOld;
                 CodeStatement setNew;
 
-                string oppositeName = input.Opposite.Name.ToPascalCase();
+                string oppositeName = context.Trace.ResolveIn(this, input.Opposite).Name;
 
                 if (input.Opposite.UpperBound == 1)
                 {
@@ -261,7 +273,7 @@ namespace NMF.Models.Meta
                 if (property.UpperBound == 1)
                 {
                     codeProperty.Type = fieldType;
-                    GenerateSetStatement(property, codeProperty, fieldRef);
+                    GenerateSetStatement(property, codeProperty, fieldRef, context);
                     GenerateResetMethod(codeProperty);
                 }
                 else
@@ -309,7 +321,7 @@ namespace NMF.Models.Meta
             /// <param name="codeProperty">The generated code property</param>
             /// <param name="fieldReference">A reference to the backening field</param>
             /// <remarks>Normal means in this case that the reference is not an overridden container reference</remarks>
-            protected virtual void GenerateSetStatement(IReference property, CodeMemberProperty codeProperty, CodeExpression fieldReference)
+            protected virtual void GenerateSetStatement(IReference property, CodeMemberProperty codeProperty, CodeExpression fieldReference, ITransformationContext context)
             {
                 var ifStmt = new CodeConditionStatement();
                 var val = new CodePropertySetValueReferenceExpression();
@@ -349,7 +361,7 @@ namespace NMF.Models.Meta
 
                     if (property.Opposite != null)
                     {
-                        var oppositeName = property.Opposite.Name.ToPascalCase();
+                        var oppositeName = context.Trace.ResolveIn(this, property.Opposite).Name;
                         var oldOpposite = new CodePropertyReferenceExpression(oldRef, oppositeName);
                         var valOpposite = new CodePropertyReferenceExpression(val, oppositeName);
 

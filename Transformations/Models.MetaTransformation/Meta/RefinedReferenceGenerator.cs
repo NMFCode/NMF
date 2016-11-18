@@ -39,7 +39,7 @@ namespace NMF.Models.Meta
                 var originalReference = context.Trace.ResolveIn(Rule<Reference2Property>(), reference);
 
                 property.Attributes = MemberAttributes.Private;
-                property.Name = reference.Name.ToPascalCase();
+                property.Name = originalReference.Name;
                 property.PrivateImplementationType = CreateReference(reference.DeclaringType, false, context);
                 property.Type = originalReference.Type;
 
@@ -89,7 +89,7 @@ namespace NMF.Models.Meta
 
                         foreach (var implementation in implementations)
                         {
-                            var implementationRef = new CodePropertyReferenceExpression(castedThisVariableRef, implementation.Name.ToPascalCase());
+                            var implementationRef = new CodePropertyReferenceExpression(castedThisVariableRef, context.Trace.ResolveIn(Rule<Reference2Property>(), implementation).Name);
 
                             if (implementation.Type == reference.Type)
                             {
