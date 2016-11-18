@@ -191,11 +191,13 @@ namespace NMF.Models.Evolution
                             var property = e.Element.GetType().GetProperty(e.PropertyName);
                             var propertyValue = property.GetValue(e.Element, null) as IList;
                             var newCollectionState = new List<object>();
+                            
                             foreach (var item in propertyValue)
                             {
                                 newCollectionState.Add(item);
                             }
-                            return CreateReset(e.Element, e.AbsoluteUri, e.PropertyName, e, newCollectionState, e.ChildrenUris); 
+                            var newCollectionUris = newCollectionState.Select(i => ((IModelElement) i).AbsoluteUri).ToList();
+                            return CreateReset(e.Element, e.AbsoluteUri, e.PropertyName, e, newCollectionState, newCollectionUris); 
                         default:
                             throw new NotSupportedException("The CollectionChanged action " + collectionChangeArgs.Action + " is not supported.");
                     }
