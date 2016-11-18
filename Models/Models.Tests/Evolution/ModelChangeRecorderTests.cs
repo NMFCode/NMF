@@ -35,8 +35,9 @@ namespace NMF.Models.Tests
             rec.Start(railway);
 
             semaphore.Signal = Signal.FAILURE;
-
-            var expected = new PropertyChangeAttribute<Signal>(semaphore.AbsoluteUri, "Signal", Signal.FAILURE);
+            
+            var oldValue = (Signal)repository.Resolve(semaphore.AbsoluteUri).GetType().GetProperty("Signal").GetValue(semaphore, null);
+            var expected = new PropertyChangeAttribute<Signal>(semaphore.AbsoluteUri, "Signal", oldValue, Signal.FAILURE);
             var actual = rec.GetModelChanges().Changes[0];
             Assert.AreEqual(expected, actual);
         }
@@ -56,16 +57,32 @@ namespace NMF.Models.Tests
         }
 
         [TestMethod]
-        public void RecordListDeletion()
+        public void RecordListDeletionComposition()
         {
             var rec = new ModelChangeRecorder();
             rec.Start(railway);
 
             railway.Semaphores.RemoveAt(0);
 
-            var expected = new ListDeletion(railway.AbsoluteUri, "Semaphores", 0, 1);
+            var expected = new ListDeletionComposition<ISemaphore>(railway.AbsoluteUri, "Semaphores", 0, 1);
             var actual = ((ChangeTransaction)rec.GetModelChanges().Changes[0]).SourceChange;
             Assert.AreEqual(expected, actual);
+        }
+
+        [TestMethod]
+        public void RecordListDeletionAssociation()
+        {
+            var parent = railway.Routes[0].DefinedBy[0].Elements[0];
+            var rec = new ModelChangeRecorder();
+            rec.Start(railway);
+
+            parent.ConnectsTo.RemoveAt(0);
+            var expected = new List<IModelChange>()
+            {
+                new ListDeletionAssociation<ITrackElement>(parent.AbsoluteUri, "ConnectsTo", 0, 1)
+            };
+            var actual = rec.GetModelChanges().Changes;
+            CollectionAssert.AreEqual(expected, actual);
         }
 
         [TestMethod]
@@ -77,7 +94,8 @@ namespace NMF.Models.Tests
 
             parent.ConnectsTo.Clear();
 
-            var expected = new ListDeletion(parent.AbsoluteUri, "ConnectsTo", 0, int.MaxValue);
+            //var expected = new ListDeletionBase<>(parent.AbsoluteUri, "ConnectsTo", 0, int.MaxValue); //TODO reset-event
+            var expected = new CollectionResetAssociation<ITrackElement>(parent.AbsoluteUri, "ConnectsTo", new List<Uri>());
             var actual = rec.GetModelChanges().Changes[0];
             Assert.AreEqual(expected, actual);
         }
