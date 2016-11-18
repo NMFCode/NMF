@@ -90,7 +90,9 @@ namespace NMF.Models.Tests.Evolution
         {
             var parent = railway.Routes.First().Entry;
             var newValue = Signal.FAILURE;
-            var change = new PropertyChangeAttribute<Signal>(parent.AbsoluteUri, "Signal", newValue);
+            var oldValue = repository.Resolve(parent.AbsoluteUri).GetType().GetProperty("Signal").GetValue(parent, null);
+
+            var change = new PropertyChangeAttribute<Signal>(parent.AbsoluteUri, "Signal", (Signal)oldValue, newValue);
 
             change.Apply(repository);
 
