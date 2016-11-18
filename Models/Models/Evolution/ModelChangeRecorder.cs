@@ -189,7 +189,12 @@ namespace NMF.Models.Evolution
                             return CreateDeletion(e.Element, e.AbsoluteUri, e.PropertyName, collectionChangeArgs.OldStartingIndex, collectionChangeArgs.OldItems.Count, collectionChangeArgs.OldItems, e.ChildrenUris);
                         case NotifyCollectionChangedAction.Reset:
                             var property = e.Element.GetType().GetProperty(e.PropertyName);
-                            var newCollectionState = (property.GetValue(e.Element, null) as List<object>).ToList();
+                            var propertyValue = property.GetValue(e.Element, null) as IList;
+                            var newCollectionState = new List<object>();
+                            foreach (var item in propertyValue)
+                            {
+                                newCollectionState.Add(item);
+                            }
                             return CreateReset(e.Element, e.AbsoluteUri, e.PropertyName, e, newCollectionState, e.ChildrenUris); 
                         default:
                             throw new NotSupportedException("The CollectionChanged action " + collectionChangeArgs.Action + " is not supported.");
