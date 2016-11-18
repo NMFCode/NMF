@@ -112,8 +112,7 @@ namespace NMF.Models.Evolution
                 return this.AbsoluteUri.Equals(other.AbsoluteUri)
                     && this.CollectionPropertyName.Equals(other.CollectionPropertyName)
                     && this.StartingIndex.Equals(other.StartingIndex)
-                    && this.Count.Equals(other.Count)
-                    && this.OldElements.SequenceEqual(other.OldElements);
+                    && this.Count.Equals(other.Count);
         }
 
         public override int GetHashCode()
@@ -121,8 +120,7 @@ namespace NMF.Models.Evolution
             return AbsoluteUri?.GetHashCode() ?? 0
                 ^ CollectionPropertyName?.GetHashCode() ?? 0
                 ^ StartingIndex.GetHashCode()
-                ^ Count.GetHashCode()
-                ^ OldElements.GetHashCode();
+                ^ Count.GetHashCode();
         }
     }
 
@@ -161,8 +159,7 @@ namespace NMF.Models.Evolution
                 return this.AbsoluteUri.Equals(other.AbsoluteUri)
                     && this.CollectionPropertyName.Equals(other.CollectionPropertyName)
                     && this.StartingIndex.Equals(other.StartingIndex)
-                    && this.Count.Equals(other.Count)
-                    && this.OldElementUris.SequenceEqual(other.OldElementUris);
+                    && this.Count.Equals(other.Count);
         }
 
         public override int GetHashCode()
@@ -170,8 +167,7 @@ namespace NMF.Models.Evolution
             return AbsoluteUri?.GetHashCode() ?? 0
                 ^ CollectionPropertyName?.GetHashCode() ?? 0
                 ^ StartingIndex.GetHashCode()
-                ^ Count.GetHashCode()
-                ^ OldElementUris.GetHashCode();
+                ^ Count.GetHashCode();
         }
     }
 }
