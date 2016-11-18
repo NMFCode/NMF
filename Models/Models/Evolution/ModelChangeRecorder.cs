@@ -183,7 +183,6 @@ namespace NMF.Models.Evolution
                     var collectionChangeArgs = (NotifyCollectionChangedEventArgs)e.OriginalEventArgs;
                     switch (collectionChangeArgs.Action)
                     {
-                        //TODO: collectionReset
                         case NotifyCollectionChangedAction.Add:
                             return CreateInsertion(e.Element, e.AbsoluteUri, e.PropertyName, collectionChangeArgs.NewStartingIndex, collectionChangeArgs.NewItems, e.ChildrenUris);
                         case NotifyCollectionChangedAction.Remove:
