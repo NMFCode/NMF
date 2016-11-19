@@ -7,7 +7,7 @@ using NMF.Models.Repository;
 
 namespace NMF.Models
 {
-    class NMFTransaction : IDisposable
+    public class NMFTransaction : IDisposable
     {
         private bool _committed;
         private readonly ExecutionEngine _engine = ExecutionEngine.Current;
