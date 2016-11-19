@@ -194,7 +194,13 @@ namespace NMF.Models.Evolution
                         case NotifyCollectionChangedAction.Add:
                             return CreateInsertion(e.Element, e.AbsoluteUri, e.PropertyName, collectionChangeArgs.NewStartingIndex, collectionChangeArgs.NewItems, e.ChildrenUris);
                         case NotifyCollectionChangedAction.Remove:
-                            return CreateDeletion(e.Element, e.AbsoluteUri, e.PropertyName, collectionChangeArgs.OldStartingIndex, collectionChangeArgs.OldItems.Count, collectionChangeArgs.OldItems, e.ChildrenUris);
+                            var oldCollectionUris = new List<Uri>();
+                            foreach (var item in collectionChangeArgs.OldItems)
+                            {
+                                oldCollectionUris.Add(((IModelElement)item).AbsoluteUri); //TODO hier stimmt was nicht
+                            }
+                            
+                            return CreateDeletion(e.Element, e.AbsoluteUri, e.PropertyName, collectionChangeArgs.OldStartingIndex, collectionChangeArgs.OldItems.Count, collectionChangeArgs.OldItems, oldCollectionUris);
                         case NotifyCollectionChangedAction.Reset:
                             var property = e.Element.GetType().GetProperty(e.PropertyName);
                             var propertyValue = property.GetValue(e.Element, null) as IList;
