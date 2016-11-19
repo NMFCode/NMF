@@ -93,8 +93,7 @@ namespace NMF.Models.Tests
             rec.Start(railway);
 
             parent.ConnectsTo.Clear();
-
-            //var expected = new ListDeletionBase<>(parent.AbsoluteUri, "ConnectsTo", 0, int.MaxValue); //TODO reset-event
+            
             var expected = new CollectionResetAssociation<ITrackElement>(parent.AbsoluteUri, "ConnectsTo", new List<Uri>());
             var actual = rec.GetModelChanges().Changes[0];
             Assert.AreEqual(expected, actual);
