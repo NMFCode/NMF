@@ -18,9 +18,11 @@ namespace NMF.Models.Evolution
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         private BubbledChangeEventArgs _resetEvent;
 
+        [XmlAttribute(true)]
         [XmlConstructorParameter(0)]
-        public Uri AbsoluteUri { get; }
+        public Uri AbsoluteUri { get; set; }
 
+        [XmlAttribute(true)]
         [XmlConstructorParameter(1)]
         public string CollectionPropertyName { get; set; }
 
