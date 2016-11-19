@@ -82,7 +82,7 @@ namespace NMF.Models.Tests.Evolution
         [TestMethod]
         public void ApplyListClear()
         {
-            var change = new ListDeletionComposition<ISemaphore>(railway.AbsoluteUri, "Semaphores", 0, int.MaxValue);
+            var change = new CollectionResetComposition<ISemaphore>(railway.AbsoluteUri, "Semaphores", new List<ISemaphore>());
 
             change.Apply(repository);
 
