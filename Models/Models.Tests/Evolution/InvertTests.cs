@@ -156,22 +156,12 @@ namespace NMF.Models.Tests.Evolution
         [TestMethod]
         public void InvertCollectionReset()
         {
-            /*public void ApplyListClear()
-            {
-                var change = new CollectionResetComposition<ISemaphore>(railway.AbsoluteUri, "Semaphores", new List<ISemaphore>());
-
-                change.Apply(repository);
-
-                Assert.AreEqual(0, railway.Semaphores.Count);
-            }*/
-            //has to be done with a change recorder
-
             var rec = new ModelChangeRecorder(true);
             rec.Start(railway1);
 
             railway1.Semaphores.Clear();
-            var changes = (rec.GetModelChanges().Changes[0]);
-            //change.Invert(repository1);
+            var change = (rec.GetModelChanges().Changes[0]);
+            change.Invert(repository1);
 
             Assert.AreEqual(railway1.Semaphores.Count, railway2.Semaphores.Count);
         }

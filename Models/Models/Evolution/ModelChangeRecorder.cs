@@ -18,9 +18,9 @@ namespace NMF.Models.Evolution
     /// </summary>
     public class ModelChangeRecorder
     {
-        //TODO inversion tests
         private List<BubbledChangeEventArgs> recordedEvents = new List<BubbledChangeEventArgs>();
         private readonly Dictionary<BubbledChangeEventArgs, List<object>> preResetItems = new Dictionary<BubbledChangeEventArgs, List<object>>();
+        private readonly Dictionary<BubbledChangeEventArgs, BubbledChangeEventArgs> changingFromChangedEvent = new Dictionary<BubbledChangeEventArgs, BubbledChangeEventArgs>();
 
         private bool _isInvertible;
 
@@ -81,6 +81,16 @@ namespace NMF.Models.Evolution
         private void OnBubbledChange(object sender, BubbledChangeEventArgs e)
         {
             e.AbsoluteUri = e.Element.AbsoluteUri;
+            if (_isInvertible && e.ChangeType == ChangeType.CollectionChanging)
+            {
+                var cArgs = e.OriginalEventArgs as NotifyCollectionChangingEventArgs;
+                if (cArgs.Action == NotifyCollectionChangedAction.Reset)
+                {
+                    var property = e.Element.GetType().GetProperty(e.PropertyName);
+                    var list = (property.GetValue(e.Element, null) as IEnumerable<object>).ToList();
+                    preResetItems[e] = list;
+                }
+            }
             recordedEvents.Add(e);
         }
 
@@ -150,10 +160,7 @@ namespace NMF.Models.Evolution
                         var cArgs = beforeEvent.OriginalEventArgs as NotifyCollectionChangingEventArgs;
                         if (cArgs.Action == NotifyCollectionChangedAction.Reset)
                         {
-                            //store collection state before reset for the following reset event 
-                            var property = beforeEvent.Element.GetType().GetProperty(beforeEvent.PropertyName);
-                            var list = property.GetValue(beforeEvent.Element, null) as List<object>;
-                            preResetItems[afterEvent] = list.ToList();
+                            changingFromChangedEvent[afterEvent] = beforeEvent;
                         }
                     }
                     return afterEvent.ChangeType == ChangeType.CollectionChanged;
@@ -198,7 +205,9 @@ namespace NMF.Models.Evolution
                                 newCollectionState.Add(item);
                             }
                             var newCollectionUris = newCollectionState.Select(i => ((IModelElement) i).AbsoluteUri).ToList();
-                            return CreateReset(e.Element, e.AbsoluteUri, e.PropertyName, e, newCollectionState, newCollectionUris); 
+                            BubbledChangeEventArgs resetEvent;
+                            changingFromChangedEvent.TryGetValue(e, out resetEvent);
+                            return CreateReset(e.Element, e.AbsoluteUri, e.PropertyName, resetEvent, newCollectionState, newCollectionUris); 
                         default:
                             throw new NotSupportedException("The CollectionChanged action " + collectionChangeArgs.Action + " is not supported.");
                     }
