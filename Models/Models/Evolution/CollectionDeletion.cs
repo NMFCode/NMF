@@ -91,13 +91,13 @@ namespace NMF.Models.Evolution
         {
             if (ReferenceEquals(this, obj))
                 return true;
-            var other = obj as CollectionInsertionComposition<T>;
+            var other = obj as CollectionDeletionComposition<T>;
             if (other == null)
                 return false;
             else
                 return this.AbsoluteUri.Equals(other.AbsoluteUri)
                        && this.CollectionPropertyName.Equals(other.CollectionPropertyName)
-                       && this.OldElements.SequenceEqual(other.NewElements);
+                       && this.OldElements.SequenceEqual(other.OldElements);
         }
 
         public override int GetHashCode()
@@ -135,13 +135,13 @@ namespace NMF.Models.Evolution
         {
             if (ReferenceEquals(this, obj))
                 return true;
-            var other = obj as CollectionInsertionAssociation<T>;
+            var other = obj as CollectionDeletionAssociation<T>;
             if (other == null)
                 return false;
             else
                 return this.AbsoluteUri.Equals(other.AbsoluteUri)
                     && this.CollectionPropertyName.Equals(other.CollectionPropertyName)
-                    && this.OldElementUris.SequenceEqual(other.NewElementUris);
+                    && this.OldElementUris.SequenceEqual(other.OldElementUris);
         }
 
         public override int GetHashCode()
