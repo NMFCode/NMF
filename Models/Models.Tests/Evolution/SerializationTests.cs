@@ -54,6 +54,20 @@ namespace NMF.Models.Tests.Evolution
         }
 
         [TestMethod]
+        public void SerializeCollectionInsertionComposition()
+        {
+            var change = new CollectionInsertionComposition<int>(uri, property, new Collection<int>() { 23, 42 });
+            SerializeAndAssert(change);
+        }
+
+        [TestMethod]
+        public void SerializeCollectionInsertionAssociation()
+        {
+            var change = new CollectionInsertionAssociation<IRoute>(uri, property, new Collection<Uri>() { new Uri("http://ReferenceUri1"), new Uri("http://ReferenceUri2") });
+            SerializeAndAssert(change);
+        }
+
+        [TestMethod]
         public void SerializeListDeletionComposition()
         {
             var change = new ListDeletionComposition<int>(uri, property, 42, 23);

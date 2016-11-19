@@ -115,6 +115,29 @@ namespace NMF.Models.Tests.Evolution
         }
 
         [TestMethod]
+        public void ApplyCollectionInsertionComposition()
+        {
+            var toInsert = new Route();
+            var change = new CollectionInsertionComposition<IRoute>(railway.AbsoluteUri, "Routes", new Collection<IRoute>() { toInsert });
+
+            change.Apply(repository);
+
+            Assert.AreEqual(toInsert, railway.Routes.Last());
+        }
+
+        [TestMethod]
+        public void ApplyCollectionInsertionAssociation()
+        {
+            var parent = railway.Routes[0].DefinedBy[0].Elements[0];
+            var toInsert = railway.Routes[0].DefinedBy[1].Elements[0];
+            var change = new CollectionInsertionAssociation<ITrackElement>(parent.AbsoluteUri, "ConnectsTo", new Collection<Uri>() { toInsert.AbsoluteUri });
+
+            change.Apply(repository);
+
+            Assert.AreSame(toInsert, parent.ConnectsTo[parent.ConnectsTo.Count - 1]);
+        }
+
+        [TestMethod]
         public void ApplyPropertyChangeAttribute()
         {
             var parent = railway.Routes.First().Entry;
