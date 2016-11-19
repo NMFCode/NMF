@@ -5,6 +5,7 @@ using NMF.Models.Tests.Railway;
 using NMF.Serialization.Xmi;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -64,6 +65,21 @@ namespace NMF.Models.Tests.Evolution
         {
             var list = new List<Uri>() {new Uri("http://ReferenceUri1"), new Uri("http://ReferenceUri2")};
             var change = new ListDeletionAssociation<IRoute>(uri, property, 0, list.Count, list);
+            SerializeAndAssert(change);
+        }
+
+        [TestMethod]
+        public void SerializeCollectionDeletionComposition()
+        {
+            var change = new CollectionDeletionComposition<int>(uri, property, new Collection<int>() {42});
+            SerializeAndAssert(change);
+        }
+
+        [TestMethod]
+        public void SerializeCollectionDeletionAssociation()
+        {
+            var list = new Collection<Uri>() { new Uri("http://ReferenceUri1"), new Uri("http://ReferenceUri2") };
+            var change = new CollectionDeletionAssociation<IRoute>(uri, property, list);
             SerializeAndAssert(change);
         }
 
