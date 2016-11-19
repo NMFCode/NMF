@@ -156,7 +156,7 @@ namespace NMF.Models.Tests.Evolution
         {
             var parent = railway.Routes[0];
             var newValue = railway.Semaphores[0];
-            var change = new PropertyChangeReference<Semaphore>(parent.AbsoluteUri, "Entry", newValue.AbsoluteUri);
+            var change = new PropertyChangeReference<Semaphore>(parent.AbsoluteUri, "Entry", parent.Entry.AbsoluteUri, newValue.AbsoluteUri);
 
             change.Apply(repository);
 

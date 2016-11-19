@@ -28,7 +28,7 @@ namespace NMF.Models.Tests.Evolution
         [TestMethod]
         public void SerializePropertyChangeReference()
         {
-            var change = new PropertyChangeReference<Semaphore>(uri, property, new Uri("http://ReferenceUri"));
+            var change = new PropertyChangeReference<Semaphore>(uri, property, new Uri("http://OldReferenceUri"), new Uri("http://NewReferenceUri"));
             SerializeAndAssert(change);
         }
 

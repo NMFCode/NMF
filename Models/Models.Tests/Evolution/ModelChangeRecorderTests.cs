@@ -51,7 +51,7 @@ namespace NMF.Models.Tests
 
             parent.Entry = railway.Semaphores[0];
 
-            var expected = new PropertyChangeReference<ISemaphore>(parent.AbsoluteUri, "Entry", railway.Semaphores[0].AbsoluteUri);
+            var expected = new PropertyChangeReference<ISemaphore>(parent.AbsoluteUri, "Entry", parent.Entry.AbsoluteUri, railway.Semaphores[0].AbsoluteUri);
             var actual = rec.GetModelChanges().Changes[0];
             Assert.AreEqual(expected, actual);
         }

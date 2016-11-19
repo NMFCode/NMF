@@ -93,21 +93,22 @@ namespace NMF.Models.Evolution
         }
     }
 
-    [XmlConstructor(3)]
+    [XmlConstructor(4)]
     public class PropertyChangeReference<T> : PropertyChangeBase<T> where T : class, IModelElement
     {
-        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        private readonly Uri _oldUri; //TODO Can I just use the AbsoluteUri-Property or does that get overwritten?
-
         [XmlConstructorParameter(2)]
+        [XmlAttribute(true)]
+        public Uri OldUri { get; set; }
+
+        [XmlConstructorParameter(3)]
         [XmlAttribute(true)]
         public Uri ReferenceUri { get; set; }
         
-        public PropertyChangeReference(Uri absoluteUri, string propertyName, Uri referenceUri)
+        public PropertyChangeReference(Uri absoluteUri, string propertyName, Uri oldUri, Uri referenceUri)
             : base(absoluteUri, propertyName)
         {
             ReferenceUri = referenceUri;
-            _oldUri = absoluteUri;
+            OldUri = oldUri;
         }
 
         protected override T GetNewValue(IModelRepository repository)
@@ -119,9 +120,9 @@ namespace NMF.Models.Evolution
 
         protected override T GetOldValue(IModelRepository repository)
         {
-            if (_oldUri == null)
+            if (OldUri == null)
                 return null;
-            return (T) repository.Resolve(_oldUri);
+            return (T) repository.Resolve(OldUri);
         }
 
         public override bool Equals(object obj)
