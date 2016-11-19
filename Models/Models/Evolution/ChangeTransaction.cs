@@ -45,7 +45,7 @@ namespace NMF.Models.Evolution
         public void Invert(IModelRepository repository)
         {
             //assumes nestedchanges is ordered like a flattened tree of changes
-            for (var i = NestedChanges.Count; i >= 0; i--)
+            for (var i = NestedChanges.Count - 1; i >= 0; i--)
                 NestedChanges[i].Invert(repository);
             SourceChange.Invert(repository);
         }
