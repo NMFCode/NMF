@@ -98,6 +98,13 @@ namespace NMF.Models.Tests.Evolution
         }
 
         [TestMethod]
+        public void SerializeCollectionResetComposition()
+        {
+            var change = new CollectionResetComposition<int>(uri, property, null, null, new Collection<int>() {42});
+            SerializeAndAssert(change);
+        }
+
+        [TestMethod]
         public void SerializeChangeTransaction()
         {
             var sourceChange = new ElementDeletion(uri);
