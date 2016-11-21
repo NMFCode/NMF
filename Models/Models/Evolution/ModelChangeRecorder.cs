@@ -21,6 +21,8 @@ namespace NMF.Models.Evolution
         private List<BubbledChangeEventArgs> recordedEvents = new List<BubbledChangeEventArgs>();
         private readonly Dictionary<BubbledChangeEventArgs, List<object>> preResetItems = new Dictionary<BubbledChangeEventArgs, List<object>>();
         private readonly Dictionary<BubbledChangeEventArgs, BubbledChangeEventArgs> changingFromChangedEvent = new Dictionary<BubbledChangeEventArgs, BubbledChangeEventArgs>();
+        private readonly Dictionary<IModelElement, IModelElement> parentBeforeDeletion = new Dictionary<IModelElement, IModelElement>();
+        private readonly Dictionary<IModelElement, List<IModelElement>> childrenOfDeletedElements = new Dictionary<IModelElement, List<IModelElement>>();
 
         private bool _isInvertible;
 
@@ -81,14 +83,39 @@ namespace NMF.Models.Evolution
         private void OnBubbledChange(object sender, BubbledChangeEventArgs e)
         {
             //e.AbsoluteUri = e.Element.AbsoluteUri;
-            if (_isInvertible && e.ChangeType == ChangeType.CollectionChanging)
+            if (_isInvertible)
             {
-                var cArgs = e.OriginalEventArgs as NotifyCollectionChangingEventArgs;
-                if (cArgs.Action == NotifyCollectionChangedAction.Reset)
+                if (e.ChangeType == ChangeType.ModelElementDeleting)
                 {
-                    var property = e.Element.GetType().GetProperty(e.PropertyName);
-                    var list = (property.GetValue(e.Element, null) as IEnumerable<object>).ToList();
-                    preResetItems[e] = list;
+                    var parent = e.Element.Parent;
+                    //TODO hier auch abhängigkeiten speichern und in elementDeletion.invert wiederherstellen
+                    if (childrenOfDeletedElements.ContainsKey(parent))
+                    {
+                        childrenOfDeletedElements[parent].Add(e.Element);
+                    }
+                }
+                if (e.ChangeType == ChangeType.CollectionChanging)
+                {
+                    var cArgs = e.OriginalEventArgs as NotifyCollectionChangingEventArgs;
+                    if (cArgs.Action == NotifyCollectionChangedAction.Reset)
+                    {
+                        var property = e.Element.GetType().GetProperty(e.PropertyName);
+                        var list = (property.GetValue(e.Element, null) as IEnumerable<object>).ToList();
+                        preResetItems[e] = list;
+                    }
+                    if (cArgs.Action == NotifyCollectionChangedAction.Remove)
+                    {
+                        var parent = e.Element.Parent;
+                        if (!parentBeforeDeletion.ContainsKey(e.Element))
+                        {
+                            parentBeforeDeletion[e.Element] = parent; //e.Element; // parent;
+                        }
+
+                        if (!childrenOfDeletedElements.ContainsKey(e.Element))
+                        {
+                            childrenOfDeletedElements[e.Element] = new List<IModelElement>();
+                        }
+                    }
                 }
             }
             recordedEvents.Add(e);
@@ -359,8 +386,16 @@ namespace NMF.Models.Evolution
 
             if (IsListType(collectionType))
             {
+                var parent = element.Parent;
+                var children = new List<IModelElement>();
+                childrenOfDeletedElements.TryGetValue(element, out children);
+                if (parent == null)
+                {
+                    parentBeforeDeletion.TryGetValue(element, out parent);
+                }
+                element.Parent = parent;
                 var genericType = typeof(ListDeletionComposition<>).MakeGenericType(itemType);
-                return (IModelChange)Activator.CreateInstance(genericType, absoluteUri, propertyName, startingIndex, count, list);
+                return (IModelChange)Activator.CreateInstance(genericType, absoluteUri, propertyName, startingIndex, count, list, element, parent, children);
             }
             else
             {

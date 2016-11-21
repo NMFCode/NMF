@@ -165,6 +165,7 @@ namespace NMF.Models.Tests.Evolution
             change.Invert(repository1);
 
             Assert.AreEqual(railway1.Semaphores.Count, railway2.Semaphores.Count);
+            Assert.AreEqual(railway1.Routes[0].DefinedBy.Count, railway2.Routes[0].DefinedBy.Count);
         }
 
         

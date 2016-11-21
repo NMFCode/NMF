@@ -23,6 +23,10 @@ namespace NMF.Models.Evolution
 
         [XmlConstructorParameter(3)]
         public int Count { get; set; }
+
+        private IModelElement _collectionContainer;
+        private IModelElement _containerParent;
+        private IList<IModelElement> _containerChildren;
         
         public ListDeletionBase(Uri absoluteUri, string collectionPropertyName, int startingIndex, int count)
         {
@@ -42,6 +46,13 @@ namespace NMF.Models.Evolution
             Count = count;
         }
 
+        public ListDeletionBase(Uri absoluteUri, string collectionPropertyName, int startingIndex, int count,
+            IModelElement collectionContainer, IModelElement containerParent, IList<IModelElement> containerChildren) : this(absoluteUri, collectionPropertyName, startingIndex, count)
+        {
+            _collectionContainer = collectionContainer;
+            _containerParent = containerParent;
+            _containerChildren = containerChildren;
+        }
         public void Apply(IModelRepository repository)
         {
             var parent = repository.Resolve(AbsoluteUri);
@@ -56,7 +67,12 @@ namespace NMF.Models.Evolution
 
         public void Invert(IModelRepository repository)
         {
-            var parent = repository.Resolve(AbsoluteUri);
+            _collectionContainer.Parent = _collectionContainer.Parent ?? _containerParent;
+            foreach (var child in _containerChildren)
+            {
+                child.Parent = child.Parent ?? _collectionContainer;
+            }
+            var parent = repository.Resolve(AbsoluteUri) ?? _collectionContainer;
             var property = parent.GetType().GetProperty(CollectionPropertyName);
             var list = property.GetValue(parent, null) as IList;
             var oldItems = GetOldElements(repository);
@@ -92,6 +108,12 @@ namespace NMF.Models.Evolution
 
         public ListDeletionComposition(Uri absoluteUri, string collectionPropertyName, int startingIndex, int count, List<T> oldElements)
             : base(absoluteUri, collectionPropertyName, startingIndex, count)
+        {
+            OldElements = oldElements;
+        }
+
+        public ListDeletionComposition(Uri absoluteUri, string collectionPropertyName, int startingIndex, int count, List<T> oldElements, IModelElement collectionContainer, IModelElement containerParent, IList<IModelElement> containerChildren)
+            : base(absoluteUri, collectionPropertyName, startingIndex, count, collectionContainer, containerParent, containerChildren)
         {
             OldElements = oldElements;
         }
