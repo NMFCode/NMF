@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using NMF.Models.Repository;
 using NMF.Serialization;
@@ -10,12 +11,20 @@ namespace NMF.Models.Evolution
     {[XmlConstructorParameter(0)]
         public Uri AbsoluteUri { get; set; }
 
+        private IModelElement _element;
+        private IModelElement _parent;
         public ElementDeletion(Uri absoluteUri)
         {
             if (absoluteUri == null)
                 throw new ArgumentException(nameof(absoluteUri));
 
             AbsoluteUri = absoluteUri;
+        }
+
+        public ElementDeletion(Uri absoluteUri, IModelElement element, IModelElement parent) : this(absoluteUri)
+        {
+            _element = element;
+            _parent = parent;
         }
 
         public void Apply(IModelRepository repository)
@@ -26,7 +35,7 @@ namespace NMF.Models.Evolution
 
         public void Invert(IModelRepository repository)
         {
-            //Is done automatically by NMF
+            _element.Parent = _parent;
         }
 
         public override bool Equals(object obj)

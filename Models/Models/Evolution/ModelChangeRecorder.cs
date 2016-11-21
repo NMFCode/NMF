@@ -93,6 +93,10 @@ namespace NMF.Models.Evolution
                     {
                         childrenOfDeletedElements[parent].Add(e.Element);
                     }
+                    else
+                    {
+                        childrenOfDeletedElements[parent] = new List<IModelElement>() {e.Element};
+                    }
                 }
                 if (e.ChangeType == ChangeType.CollectionChanging)
                 {
@@ -209,7 +213,23 @@ namespace NMF.Models.Evolution
                 case ChangeType.ModelElementCreated:
                     return new ElementCreation(e.Element);
                 case ChangeType.ModelElementDeleted:
-                    return new ElementDeletion(e.AbsoluteUri);
+                    if (!_isInvertible)
+                    {
+                        return new ElementDeletion(e.AbsoluteUri);
+                    }
+                    else
+                    {
+                        IModelElement parent = null;
+                        foreach (var item in childrenOfDeletedElements)
+                        {
+                            if (item.Value.Contains(e.Element))
+                            {
+                                parent = item.Key;
+                                break;
+                            }
+                        }
+                        return new ElementDeletion(e.AbsoluteUri, e.Element, parent);
+                    }
                 case ChangeType.PropertyChanged:
                     var valueChangeArgs = (ValueChangedEventArgs)e.OriginalEventArgs;
                     var oldUri = (valueChangeArgs.OldValue as IModelElement)?.AbsoluteUri;
@@ -387,15 +407,13 @@ namespace NMF.Models.Evolution
             if (IsListType(collectionType))
             {
                 var parent = element.Parent;
-                var children = new List<IModelElement>();
-                childrenOfDeletedElements.TryGetValue(element, out children);
                 if (parent == null)
                 {
                     parentBeforeDeletion.TryGetValue(element, out parent);
                 }
                 element.Parent = parent;
                 var genericType = typeof(ListDeletionComposition<>).MakeGenericType(itemType);
-                return (IModelChange)Activator.CreateInstance(genericType, absoluteUri, propertyName, startingIndex, count, list, element, parent, children);
+                return (IModelChange)Activator.CreateInstance(genericType, absoluteUri, propertyName, startingIndex, count, list, element, parent);
             }
             else
             {

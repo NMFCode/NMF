@@ -3,6 +3,7 @@ using System.Text;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Reflection.Emit;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using NMF.Models.Evolution;
 using NMF.Models.Repository;
@@ -129,7 +130,7 @@ namespace NMF.Models.Tests.Evolution
         public void InvertListDeletionComposition()
         {
             var toDelete = railway1.Routes.Take(1).ToList();
-            var change = new ListDeletionComposition<IRoute>(railway1.AbsoluteUri, "Routes", 0, 1, toDelete);
+            var change = new ListDeletionComposition<IRoute>(railway1.AbsoluteUri, "Routes", 0, 1, toDelete, railway1, railway1.Parent);
 
             change.Apply(repository1);
             change.Invert(repository1);
