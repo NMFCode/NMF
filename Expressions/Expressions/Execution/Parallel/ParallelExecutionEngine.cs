@@ -69,16 +69,5 @@ namespace NMF.Expressions
             }
             while (node.Successors.HasSuccessors && (node = node.Successors[0]) != null);
         }
-
-        private void MarkNode(INotifiable node)
-        {
-            do
-            {
-                var metaData = node.ExecutionMetaData;
-                Interlocked.Increment(ref metaData.RemainingVisits);
-                Interlocked.Increment(ref metaData.TotalVisits);
-            }
-            while (node.Successors.HasSuccessors && (node = node.Successors[0]) != null);
-        }
     }
 }

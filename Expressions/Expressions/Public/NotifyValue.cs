@@ -59,17 +59,8 @@ namespace NMF.Expressions
         {
             Successors.UnsetAll();
         }
-
-        public void Dispose()
-        {
-            Dispose(true);
-            GC.SuppressFinalize(this);
-        }
-
-        protected virtual void Dispose(bool disposing)
-        {
-            Successors.Clear();
-        }
+        
+        
 
         protected virtual void OnValueChanged(T oldValue, T newValue)
         {
@@ -187,17 +178,7 @@ namespace NMF.Expressions
         {
             Successors.UnsetAll();
         }
-
-        public void Dispose()
-        {
-            Dispose(true);
-            GC.SuppressFinalize(this);
-        }
-
-        protected virtual void Dispose(bool disposing)
-        {
-            Successors.Clear();
-        }
+        
 
         private void Attach()
         {
@@ -308,11 +289,6 @@ namespace NMF.Expressions
         public void Dispose()
         {
             Successors.UnsetAll();
-        }
-
-        public void Dispose()
-        {
-            Successors.Clear();
         }
 
         private void Attach()

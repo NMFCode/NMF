@@ -80,7 +80,7 @@ namespace NMF.Models.Evolution
 
         private void OnBubbledChange(object sender, BubbledChangeEventArgs e)
         {
-            e.AbsoluteUri = e.Element.AbsoluteUri;
+            //e.AbsoluteUri = e.Element.AbsoluteUri;
             if (_isInvertible && e.ChangeType == ChangeType.CollectionChanging)
             {
                 var cArgs = e.OriginalEventArgs as NotifyCollectionChangingEventArgs;

@@ -84,21 +84,7 @@ namespace NMF.Expressions.Linq
             }
             return false;
         }
-
-        private bool ReplaceItem(TItem old, TItem newItem)
-        {
-            var oldKey = keys[old];
-            var newKey = keySelector.Evaluate(newItem);
-
-            if (EqualityComparer<TKey>.Default.Equals(oldKey.Value, newKey))
-            {
-                var group = groups[newKey];
-                int itemIdx = group.Items.IndexOf(old);
-                group.Items[itemIdx] = newItem;
-                return true;
-            }
-            return false;
-        }
+        
 
         public override IEnumerator<ObservableGroup<TKey, TItem>> GetEnumerator()
         {

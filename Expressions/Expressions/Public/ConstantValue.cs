@@ -20,8 +20,7 @@ namespace NMF.Expressions
         public ISuccessorList Successors { get; } = SingletonSuccessorList.Instance;
 
         public ExecutionMetaData ExecutionMetaData { get; } = new ExecutionMetaData();
-
-        public ExecutionMetaData ExecutionMetaData { get; } = new ExecutionMetaData();
+        
 
         public T Value
         {
