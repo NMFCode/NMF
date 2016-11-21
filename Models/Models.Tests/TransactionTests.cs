@@ -39,7 +39,21 @@ namespace NMF.Models.Tests
         [TestMethod]
         public void CommitTest()
         {
-            Assert.Fail();
+            var model = LoadRailwayModel(new ModelRepository());
+            var referenceModel = LoadRailwayModel(new ModelRepository());
+
+            using (var trans = new NMFTransaction(model))
+            {
+                var route = new Route() { Id = 42 };
+                model.Routes.Add(route);
+                model.Routes[0].DefinedBy.RemoveAt(0);
+                model.Semaphores[0].Signal = Signal.FAILURE;
+                trans.Commit();
+            }
+
+            Assert.AreNotEqual(model.Routes.Count, referenceModel.Routes.Count);
+            Assert.AreNotEqual(model.Routes[0].DefinedBy.Count, referenceModel.Routes[0].DefinedBy.Count);
+            Assert.AreNotEqual(model.Semaphores[0].Signal, referenceModel.Semaphores[0].Signal);
         }
 
         
