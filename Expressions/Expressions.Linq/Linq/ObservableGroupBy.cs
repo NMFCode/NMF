@@ -237,24 +237,6 @@ namespace NMF.Expressions.Linq
                     }
                 }
             }
-
-            if (sourceChange.ReplaceAddedItems != null)
-            {
-                for (int i = 0; i < sourceChange.ReplaceAddedItems.Count; i++)
-                {
-                    var oldItem = sourceChange.ReplaceRemovedItems[i];
-                    var newItem = sourceChange.ReplaceAddedItems[i];
-                    if (!ReplaceItem(oldItem, newItem))
-                    {
-                        var removedGroup = DetachItem(oldItem);
-                        if (removedGroup != null)
-                            removed.Add(removedGroup);
-                        var addedGroup = AttachItem(newItem);
-                        if (addedGroup != null)
-                            added.Add(addedGroup);
-                    }
-                }
-            }
         }
     }
 }
