@@ -186,7 +186,7 @@ namespace NMF.Models.Evolution
                 case ChangeType.PropertyChanged:
                     var valueChangeArgs = (ValueChangedEventArgs)e.OriginalEventArgs;
                     var oldUri = (valueChangeArgs.OldValue as IModelElement)?.AbsoluteUri;
-                    return CreatePropertyChange(e.Element, e.AbsoluteUri, e.PropertyName, valueChangeArgs.OldValue, valueChangeArgs.NewValue, oldUri, e.ChildrenUris.First()); 
+                    return CreatePropertyChange(e.Element, e.AbsoluteUri, e.PropertyName, valueChangeArgs.OldValue, valueChangeArgs.NewValue, oldUri, e.ChildrenUris?.First()); 
                 case ChangeType.CollectionChanged:
                     var collectionChangeArgs = (NotifyCollectionChangedEventArgs)e.OriginalEventArgs;
                     switch (collectionChangeArgs.Action)
@@ -221,17 +221,17 @@ namespace NMF.Models.Evolution
         {
             var propertyType = element.GetType().GetProperty(propertyName).PropertyType;
             if (!propertyType.GetInterfaces().Contains(typeof(IModelElement))) // only model elements can be references
-                return CreatePropertyChangeAttribute(propertyType, absoluteUri, propertyName, newValue);
+                return CreatePropertyChangeAttribute(propertyType, absoluteUri, propertyName, oldValue, newValue);
             else if (GetAllReferences(element.GetClass()).Any(a => a.Name.Equals(propertyName, StringComparison.OrdinalIgnoreCase))) // a reference
                 return CreatePropertyChangeReference(propertyType, absoluteUri, propertyName, oldValueUri, newValueUri);
             else // a recently created model element
-                return CreatePropertyChangeAttribute(propertyType, absoluteUri, propertyName, newValue);
+                return CreatePropertyChangeAttribute(propertyType, absoluteUri, propertyName, oldValue, newValue);
         }
 
-        private IModelChange CreatePropertyChangeAttribute(Type propertyType, Uri absoluteUri, string propertyName, object newValue)
+        private IModelChange CreatePropertyChangeAttribute(Type propertyType, Uri absoluteUri, string propertyName, object oldValue, object newValue)
         {
             var genericType = typeof(PropertyChangeAttribute<>).MakeGenericType(propertyType);
-            return (IModelChange)Activator.CreateInstance(genericType, absoluteUri, propertyName, newValue);
+            return (IModelChange)Activator.CreateInstance(genericType, absoluteUri, propertyName, oldValue, newValue);
         }
 
         private IModelChange CreatePropertyChangeReference(Type propertyType, Uri absoluteUri, string propertyName, Uri oldValueUri, Uri newValueUri)
