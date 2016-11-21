@@ -342,7 +342,7 @@ namespace NMF.Models.Evolution
         {
             var reference = GetAllReferences(element.GetClass()).First(r => r.Name.Equals(propertyName, StringComparison.OrdinalIgnoreCase));
 
-            if (reference.IsContainment)
+            if (true || reference.IsContainment)
                 return CreateDeletionContainment(element, absoluteUri, propertyName, startingIndex, count, oldItems);
             else
                 return CreateDeletionReference(element, absoluteUri, propertyName, startingIndex, count, oldItemsUris);

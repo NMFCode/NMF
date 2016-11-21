@@ -159,7 +159,8 @@ namespace NMF.Models.Tests.Evolution
             var rec = new ModelChangeRecorder(true);
             rec.Start(railway1);
 
-            railway1.Semaphores.Clear();
+            //railway1.Semaphores.Clear();
+            railway1.Routes[0].DefinedBy.Clear();
             var change = (rec.GetModelChanges().Changes[0]);
             change.Invert(repository1);
 

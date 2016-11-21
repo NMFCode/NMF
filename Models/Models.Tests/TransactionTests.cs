@@ -34,21 +34,6 @@ namespace NMF.Models.Tests
             Assert.AreEqual(model.Routes[0].DefinedBy.Count, referenceModel.Routes[0].DefinedBy.Count);
             Assert.AreEqual(model.Routes[0].DefinedBy[0].Elements.Count, referenceModel.Routes[0].DefinedBy[0].Elements.Count);
             Assert.AreEqual(model.Semaphores[0].Signal, referenceModel.Semaphores[0].Signal);
-            //Assert.AreEqual(model, referenceModel);
-
-
-
-            /*//Load second instance of the model
-            var newRepository = new ModelRepository();
-            var newModel = LoadRailwayModel(newRepository);
-
-            //Apply changes to the new model
-            newChanges.Apply(newRepository);
-
-            Assert.AreEqual(model.Routes.Count, newModel.Routes.Count);
-            Assert.AreEqual(model.Routes[0].DefinedBy.Count, newModel.Routes[0].DefinedBy.Count);
-            Assert.AreEqual(model.Routes[0].DefinedBy[0].Elements.Count, newModel.Routes[0].DefinedBy[0].Elements.Count);
-            Assert.AreEqual(model.Semaphores[0].Signal, newModel.Semaphores[0].Signal);*/
         }
 
         [TestMethod]
