@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="ASCII"?>
+<xmi:XMI xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:tpA="platform:/resource/ListMetamodelRefactoring/Metamodel/TypeA.ecore">
+	<tpA:A nameA="A1">
+	  <elms nameB="B1"/>
+	</tpA:A>
+	<tpA:B nameB="B2">
+	  <elms nameA="A2"/>
+	</tpA:B>
+	<tpA:A nameA="ABC" />
+	<tpA:A nameA="XYZ" />
+</xmi:XMI>

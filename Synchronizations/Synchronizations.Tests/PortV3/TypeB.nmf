@@ -1,0 +1,12 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<nmeta:Namespace xmi:version="2.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" Uri="http://www.eclipse.org/atl/atlTransformations/TypeB" Prefix="TypeB" Name="TypeB" xmlns:xmi="http://www.omg.org/XMI" xmlns:nmeta="http://nmf.codeplex.com/nmeta/">
+  <Types xsi:type="nmeta:Class" Name="BlockB">
+    <References IsContainment="True" ReferenceType="#//InPortB/" IsOrdered="True" IsUnique="True" UpperBound="-1" Name="inputPorts" />
+    <References IsContainment="True" ReferenceType="#//OutPortB/" IsOrdered="True" IsUnique="True" UpperBound="-1" Name="outputPorts" />
+  </Types>
+  <Types xsi:type="nmeta:Class" IsAbstract="True" Identifier="#//PortB/name/" Name="PortB">
+    <Attributes IsOrdered="True" IsUnique="True" Type="http://nmf.codeplex.com/nmeta/#//String/" Name="name" />
+  </Types>
+  <Types xsi:type="nmeta:Class" BaseTypes="#//PortB/" Name="InPortB" />
+  <Types xsi:type="nmeta:Class" BaseTypes="#//PortB/" Name="OutPortB" />
+</nmeta:Namespace>

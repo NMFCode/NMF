@@ -1,0 +1,14 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<nmeta:Namespace xmi:version="2.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" Uri="platform:/resource/ListMetamodelRefactoring/Metamodel/TypeB.ecore" Prefix="tpB" Name="TypeB" xmlns:xmi="http://www.omg.org/XMI" xmlns:nmeta="http://nmf.codeplex.com/nmeta/">
+  <Types xsi:type="nmeta:Class" Identifier="#//A/name/" Name="A">
+    <References IsContainment="True" ReferenceType="#//B/" IsOrdered="True" IsUnique="True" UpperBound="-1" Name="elms" />
+    <Attributes IsOrdered="True" IsUnique="True" Type="http://nmf.codeplex.com/nmeta/#//String/" Name="name" />
+    <Attributes IsOrdered="True" IsUnique="True" Type="http://nmf.codeplex.com/nmeta/#//Boolean/" Name="isNameABC" />
+  </Types>
+  <Types xsi:type="nmeta:Class" Identifier="#//B/name/" Name="B">
+    <References IsContainment="True" ReferenceType="#//A/" IsOrdered="True" IsUnique="True" UpperBound="-1" Name="elms" />
+    <References ReferenceType="#//A/" IsOrdered="True" IsUnique="True" UpperBound="-1" Name="firstAElement" />
+    <References ReferenceType="#//A/" IsOrdered="True" IsUnique="True" UpperBound="-1" Name="aElementWithName" />
+    <Attributes IsOrdered="True" IsUnique="True" Type="http://nmf.codeplex.com/nmeta/#//String/" Name="name" />
+  </Types>
+</nmeta:Namespace>

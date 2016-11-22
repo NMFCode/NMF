@@ -1,0 +1,11 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<nmeta:Namespace xmi:version="2.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" Uri="platform:/resource/ListMetamodelRefactoring/Metamodel/TypeA.ecore" Prefix="tpA" Name="TypeA" xmlns:xmi="http://www.omg.org/XMI" xmlns:nmeta="http://nmf.codeplex.com/nmeta/">
+  <Types xsi:type="nmeta:Class" Name="A">
+    <References IsContainment="True" ReferenceType="#//B/" IsOrdered="True" IsUnique="True" UpperBound="-1" Name="elms" />
+    <Attributes IsOrdered="True" IsUnique="True" Type="http://nmf.codeplex.com/nmeta/#//String/" Name="nameA" />
+  </Types>
+  <Types xsi:type="nmeta:Class" Name="B">
+    <References IsContainment="True" ReferenceType="#//A/" IsOrdered="True" IsUnique="True" UpperBound="-1" Name="elms" />
+    <Attributes IsOrdered="True" IsUnique="True" Type="http://nmf.codeplex.com/nmeta/#//String/" Name="nameB" />
+  </Types>
+</nmeta:Namespace>

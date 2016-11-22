@@ -56,8 +56,24 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
+    <Compile Include="A2B\A2BHelperWithoutContext.cs" />
+    <Compile Include="A2B\A2BTest.cs" />
+    <Compile Include="A2B\HelperExtensionMethods.cs" />
+    <Compile Include="A2B\InputModelContainer.cs" />
+    <Compile Include="A2B\OutputModelCollection.cs" />
+    <Compile Include="A2B\OutputModelContainer.cs" />
+    <Compile Include="A2B\TypeA.cs" />
+    <Compile Include="A2B\TypeB.cs" />
     <Compile Include="BigPictureTests\Fsm2PnTest.cs" />
     <Compile Include="BigPictureTests\Families2PersonsTest.cs" />
+    <Compile Include="PortV3\FilterExtensionMethods.cs" />
+    <Compile Include="PortV3\InputModelContainer.cs" />
+    <Compile Include="PortV3\OutputModelCollection.cs" />
+    <Compile Include="PortV3\OutputModelContainer.cs" />
+    <Compile Include="PortV3\PortV3.cs" />
+    <Compile Include="PortV3\PortV3Test.cs" />
+    <Compile Include="PortV3\TypeA.cs" />
+    <Compile Include="PortV3\TypeB.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -81,9 +97,17 @@
       <Project>{e42ac7b6-8120-40b5-8cd3-c4139b940897}</Project>
       <Name>Models</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\Models\Serialization\Serialization.csproj">
+      <Project>{c24ef2ac-49d3-4542-bc40-5d62e12c7ded}</Project>
+      <Name>Serialization</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\Tools\Tests\Tests.csproj">
       <Project>{a73b97dd-f870-48d0-86ae-713457b47e2b}</Project>
       <Name>Tests</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Tools\Utilities\Utilities.csproj">
+      <Project>{868226d4-bc8b-4b91-bd09-8f63d3c9debe}</Project>
+      <Name>Utilities</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\Transformations\Transformations.Core\Transformations.Core.csproj">
       <Project>{9a62c452-44e3-4263-a91d-8b480259270d}</Project>
@@ -102,6 +126,17 @@
     <Folder Include="UnitTests\" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="A2B\SampleInput.xmi">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="A2B\SampleOutput.xmi" />
+    <EmbeddedResource Include="A2B\TypeA.nmf" />
+    <EmbeddedResource Include="A2B\TypeB.nmf" />
+    <None Include="PortV3\SampleInput.xmi">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <EmbeddedResource Include="PortV3\TypeA.nmf" />
+    <EmbeddedResource Include="PortV3\TypeB.nmf" />
     <None Include="SampleFamilies.xmi">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <SubType>Designer</SubType>

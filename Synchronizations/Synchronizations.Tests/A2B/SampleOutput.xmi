@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<xmi:XMI xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:tpB="platform:/resource/ListMetamodelRefactoring/Metamodel/TypeB.ecore">
+  <tpB:A name="A1Extension">
+    <elms firstAElement="/0" aElementWithName="/1" name="B1Extension"/>
+  </tpB:A>
+  <tpB:A name="ABCExtension" isNameABC="true"/>
+  <tpB:A name="XYZExtension"/>
+  <tpB:B firstAElement="/0" aElementWithName="/1" name="B2Extension">
+    <elms name="A2Extension"/>
+  </tpB:B>
+</xmi:XMI>
