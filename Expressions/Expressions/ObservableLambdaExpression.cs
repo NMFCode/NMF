@@ -58,11 +58,15 @@ namespace NMF.Expressions
                     else
                     {
                         INotifyExpression expression = argument as INotifyExpression;
-                        if (expression.IsConstant)
+                        if (expression != null && expression.IsConstant)
                         {
                             return Expression.Constant(expression.ValueObject, node.Type);
                         }
-                        throw new NotImplementedException();
+                        else
+                        {
+                            var notifyValueType = typeof(INotifyValue<>).MakeGenericType(node.Type);
+                            return Expression.MakeMemberAccess(Expression.Constant(argument, notifyValueType), ReflectionHelper.GetProperty(notifyValueType, "Value"));
+                        }
                     }
                 }
                 else
