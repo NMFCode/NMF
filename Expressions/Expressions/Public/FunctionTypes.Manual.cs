@@ -147,6 +147,11 @@ namespace NMF.Expressions
         {
             Expression.Refresh();
         }
+
+        INotifyExpression INotifyExpression.ApplyParameters(IDictionary<string, object> parameters)
+        {
+            return ApplyParameters(parameters);
+        }
     }
 
     /// <summary>

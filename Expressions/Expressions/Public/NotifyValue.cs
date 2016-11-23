@@ -253,6 +253,11 @@ namespace NMF.Expressions
             Inner = Inner.Reduce();
             return this;
         }
+
+        INotifyExpression INotifyExpression.ApplyParameters(IDictionary<string, object> parameters)
+        {
+            return ApplyParameters(parameters);
+        }
     }
 
 }

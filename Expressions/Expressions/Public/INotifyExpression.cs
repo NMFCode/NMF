@@ -31,6 +31,14 @@ namespace NMF.Expressions
         /// Gets the current value as object
         /// </summary>
         object ValueObject { get; }
+
+        /// <summary>
+        /// Applies the given set of parameters to the expression
+        /// </summary>
+        /// <param name="parameters">A set of parameter values</param>
+        /// <returns>A new expression with all parameter placeholders replaced with the parameter values</returns>
+        /// <remarks>In case that the current expression is parameter free, it simply returns itself</remarks>
+        INotifyExpression ApplyParameters(IDictionary<string, object> parameters);
     }
 
     /// <summary>
@@ -45,7 +53,7 @@ namespace NMF.Expressions
         /// <param name="parameters">A set of parameter values</param>
         /// <returns>A new expression with all parameter placeholders replaced with the parameter values</returns>
         /// <remarks>In case that the current expression is parameter free, it simply returns itself</remarks>
-        INotifyExpression<T> ApplyParameters(IDictionary<string, object> parameters);
+        new INotifyExpression<T> ApplyParameters(IDictionary<string, object> parameters);
 
         /// <summary>
         /// Simplifies the current expression

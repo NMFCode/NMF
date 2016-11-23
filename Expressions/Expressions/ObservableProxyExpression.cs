@@ -109,6 +109,11 @@ namespace NMF.Expressions
         {
             return this;
         }
+
+        INotifyExpression INotifyExpression.ApplyParameters(IDictionary<string, object> parameters)
+        {
+            return ApplyParameters(parameters);
+        }
     }
 
     class ObservableProxyReversableExpression<T> : ObservableProxyExpression<T>, INotifyReversableExpression<T>

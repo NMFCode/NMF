@@ -176,5 +176,10 @@ namespace NMF.Models.Expressions
         public void Refresh()
         {
         }
+
+        INotifyExpression INotifyExpression.ApplyParameters(IDictionary<string, object> parameters)
+        {
+            return ApplyParameters(parameters);
+        }
     }
 }

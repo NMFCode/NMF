@@ -214,6 +214,11 @@ namespace NMF.Expressions
         /// <remarks>In case that the current expression is parameter free, it simply returns itself</remarks>
         public abstract INotifyExpression<T> ApplyParameters(IDictionary<string, object> parameters);
 
+        INotifyExpression INotifyExpression.ApplyParameters(IDictionary<string, object> parameters)
+        {
+            return ApplyParameters(parameters);
+        }
+
         /// <summary>
         /// Returns whether this expression is a constant value
         /// </summary>

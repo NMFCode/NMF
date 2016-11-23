@@ -131,6 +131,7 @@ namespace NMF.Expressions
     internal sealed class ObservableConvert<TInner, TOuter> : ObservableUnaryReversableExpressionBase<TInner, TOuter>
     {
         private static bool conversionRequired = ReflectionHelper.IsValueType(typeof(TInner));
+        private static Type nullableType = Nullable.GetUnderlyingType(typeof(TOuter)) ?? typeof(TOuter);
 
         protected override string Format
         {
@@ -150,7 +151,8 @@ namespace NMF.Expressions
         {
             if (conversionRequired)
             {
-                return (TOuter)System.Convert.ChangeType(Target.Value, typeof(TOuter));
+                var value = Target.Value;
+                return (value == null) ? default(TOuter) : (TOuter)System.Convert.ChangeType(value, nullableType);
             }
             else
             {

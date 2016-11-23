@@ -99,5 +99,10 @@ namespace NMF.Expressions
         {
             return this;
         }
+
+        INotifyExpression INotifyExpression.ApplyParameters(IDictionary<string, object> parameters)
+        {
+            return ApplyParameters(parameters);
+        }
     }
 }

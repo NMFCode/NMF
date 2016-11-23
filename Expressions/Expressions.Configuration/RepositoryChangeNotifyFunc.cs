@@ -122,6 +122,11 @@ namespace NMF.Expressions
             }
         }
 
+        INotifyExpression INotifyExpression.ApplyParameters(IDictionary<string, object> parameters)
+        {
+            return ApplyParameters(parameters);
+        }
+
         public INotifyExpression<T> Reduce()
         {
             return this;

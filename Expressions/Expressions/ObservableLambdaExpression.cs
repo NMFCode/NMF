@@ -74,6 +74,16 @@ namespace NMF.Expressions
                     return node;
                 }
             }
+
+            protected override Expression VisitConstant(ConstantExpression node)
+            {
+                var expressionVal = node.Value as INotifyExpression;
+                if (expressionVal != null)
+                {
+                    return Expression.Constant(expressionVal.ApplyParameters(parameterMappings), node.Type);
+                }
+                return node;
+            }
         }
 
         private class CheckLambdaParametersVisitor : ExpressionVisitorBase
@@ -88,6 +98,17 @@ namespace NMF.Expressions
                     FoundExternalParameter = true;
                 }
                 return node;
+            }
+
+            protected override Expression VisitConstant(ConstantExpression node)
+            {
+                var expressionVal = node.Value as INotifyExpression;
+                if (expressionVal != null && !expressionVal.IsParameterFree)
+                {
+                    FoundExternalParameter = true;
+                }
+                return node;
+
             }
         }
     }

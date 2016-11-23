@@ -75,6 +75,11 @@ namespace NMF.Expressions
             return this;
         }
 
+        INotifyExpression INotifyExpression.ApplyParameters(IDictionary<string, object> parameters)
+        {
+            return ApplyParameters(parameters);
+        }
+
         public void Attach() { }
 
         public void Detach() { }
@@ -156,6 +161,11 @@ namespace NMF.Expressions
         public INotifyExpression<T> ApplyParameters(IDictionary<string, object> parameters)
         {
             return this;
+        }
+
+        INotifyExpression INotifyExpression.ApplyParameters(IDictionary<string, object> parameters)
+        {
+            return ApplyParameters(parameters);
         }
 
         public void Attach() { }
@@ -241,6 +251,11 @@ namespace NMF.Expressions
         public INotifyExpression<T> ApplyParameters(IDictionary<string, object> parameters)
         {
             return this;
+        }
+
+        INotifyExpression INotifyExpression.ApplyParameters(IDictionary<string, object> parameters)
+        {
+            return ApplyParameters(parameters);
         }
 
         public void Attach() { }
@@ -330,6 +345,11 @@ namespace NMF.Expressions
             return this;
         }
 
+        INotifyExpression INotifyExpression.ApplyParameters(IDictionary<string, object> parameters)
+        {
+            return ApplyParameters(parameters);
+        }
+
         public void Attach() { }
 
         public void Detach() { }
@@ -417,6 +437,11 @@ namespace NMF.Expressions
         public INotifyExpression<T> ApplyParameters(IDictionary<string, object> parameters)
         {
             return this;
+        }
+
+        INotifyExpression INotifyExpression.ApplyParameters(IDictionary<string, object> parameters)
+        {
+            return ApplyParameters(parameters);
         }
 
         public void Attach() { }
@@ -510,6 +535,11 @@ namespace NMF.Expressions
             return this;
         }
 
+        INotifyExpression INotifyExpression.ApplyParameters(IDictionary<string, object> parameters)
+        {
+            return ApplyParameters(parameters);
+        }
+
         public void Attach() { }
 
         public void Detach() { }
@@ -601,6 +631,11 @@ namespace NMF.Expressions
         public INotifyExpression<T> ApplyParameters(IDictionary<string, object> parameters)
         {
             return this;
+        }
+
+        INotifyExpression INotifyExpression.ApplyParameters(IDictionary<string, object> parameters)
+        {
+            return ApplyParameters(parameters);
         }
 
         public void Attach() { }

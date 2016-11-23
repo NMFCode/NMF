@@ -17,6 +17,14 @@ namespace NMF.Expressions
             Refresh();
         }
 
+        public override bool IsParameterFree
+        {
+            get
+            {
+                return false;
+            }
+        }
+
         public override string ToString()
         {
             return "proxy for " + Proxy.ToString();
