@@ -4,11 +4,8 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Linq;
-using System.Threading;
 using System.Threading.Tasks;
 using NMF.Collections.ObjectModel;
-using NMF.Models.Meta;
-using NMF.Utilities;
 using Type = System.Type;
 
 namespace NMF.Models.Evolution
@@ -82,13 +79,11 @@ namespace NMF.Models.Evolution
 
         private void OnBubbledChange(object sender, BubbledChangeEventArgs e)
         {
-            //e.AbsoluteUri = e.Element.AbsoluteUri;
             if (_isInvertible)
             {
                 if (e.ChangeType == ChangeType.ModelElementDeleting)
                 {
                     var parent = e.Element.Parent;
-                    //TODO hier auch abhängigkeiten speichern und in elementDeletion.invert wiederherstellen
                     if (childrenOfDeletedElements.ContainsKey(parent))
                     {
                         childrenOfDeletedElements[parent].Add(e.Element);
@@ -411,7 +406,6 @@ namespace NMF.Models.Evolution
                 {
                     parentBeforeDeletion.TryGetValue(element, out parent);
                 }
-                //element.Parent = parent;
                 var genericType = typeof(ListDeletionComposition<>).MakeGenericType(itemType);
                 return (IModelChange)Activator.CreateInstance(genericType, absoluteUri, propertyName, startingIndex, count, list, element, parent);
             }
