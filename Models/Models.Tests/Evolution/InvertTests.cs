@@ -142,7 +142,8 @@ namespace NMF.Models.Tests.Evolution
         [TestMethod]
         public void InvertListDeletionAssociation()
         {
-            var parent1 = railway1.Routes[0].DefinedBy[0].Elements[0];
+            //Deprecated, ListDeletionAssociation will be removed
+            /*var parent1 = railway1.Routes[0].DefinedBy[0].Elements[0];
             var parent2 = railway1.Routes[0].DefinedBy[0].Elements[0];
             var toDelete = parent1.ConnectsTo[0];
             var change = new ListDeletionAssociation<ITrackElement>(parent1.AbsoluteUri, "ConnectsTo", 0, 1, new List<Uri>() { parent1.ConnectsTo[0].AbsoluteUri });
@@ -151,7 +152,7 @@ namespace NMF.Models.Tests.Evolution
             change.Invert(repository1);
 
             Assert.AreEqual(parent1.ConnectsTo.Count, parent2.ConnectsTo.Count);
-            CollectionAssert.Contains(parent1.ConnectsTo.ToList(), toDelete);
+            CollectionAssert.Contains(parent1.ConnectsTo.ToList(), toDelete);*/
         }
 
         [TestMethod]
@@ -187,7 +188,8 @@ namespace NMF.Models.Tests.Evolution
         [TestMethod]
         public void InvertCollectionDeletionAssociation()
         {
-            var parent1 = railway1.Routes[0].DefinedBy[0].Elements[0];
+            //Deprecated, CollectionDeletionAssociation will be removed
+            /*var parent1 = railway1.Routes[0].DefinedBy[0].Elements[0];
             var parent2 = railway2.Routes[0].DefinedBy[0].Elements[0];
             var toDelete = parent1.ConnectsTo[0];
             var change = new CollectionDeletionAssociation<ITrackElement>(parent1.AbsoluteUri, "ConnectsTo", new Collection<Uri>() { parent1.ConnectsTo[0].AbsoluteUri });
@@ -196,7 +198,7 @@ namespace NMF.Models.Tests.Evolution
             change.Invert(repository1);
 
             CollectionAssert.Contains(parent1.ConnectsTo.ToList(), toDelete);
-            Assert.AreEqual(parent1.ConnectsTo.Count, parent2.ConnectsTo.Count);
+            Assert.AreEqual(parent1.ConnectsTo.Count, parent2.ConnectsTo.Count);*/
         }
 
         [TestMethod]
