@@ -51,6 +51,7 @@ namespace NMF.Models.Evolution
             _collectionContainer = collectionContainer;
             _containerParent = containerParent;
         }
+
         public void Apply(IModelRepository repository)
         {
             var parent = repository.Resolve(AbsoluteUri);

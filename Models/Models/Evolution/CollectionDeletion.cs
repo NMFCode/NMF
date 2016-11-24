@@ -16,7 +16,10 @@ namespace NMF.Models.Evolution
 
         [XmlConstructorParameter(1)]
         public string CollectionPropertyName { get; set; }
-        
+
+        private IModelElement _collectionContainer;
+        private IModelElement _containerParent;
+
         public void Apply(IModelRepository repository)
         {
             var parent = repository.Resolve(AbsoluteUri);
@@ -41,9 +44,17 @@ namespace NMF.Models.Evolution
             CollectionPropertyName = collectionPropertyName;
         }
 
+        public CollectionDeletionBase(Uri absoluteUri, string collectionPropertyName, IModelElement collectionContainer,
+            IModelElement containerParent) : this(absoluteUri, collectionPropertyName)
+        {
+            _collectionContainer = collectionContainer;
+            _containerParent = containerParent;
+        }
+
         public void Invert(IModelRepository repository)
         {
-            var parent = repository.Resolve(AbsoluteUri);
+            _collectionContainer.Parent = _collectionContainer.Parent ?? _containerParent;
+            var parent = repository.Resolve(AbsoluteUri) ?? _collectionContainer;
             var property = parent.GetType().GetProperty(CollectionPropertyName);
             var coll = property.GetValue(parent, null) as ICollection<T>;
 
@@ -78,6 +89,13 @@ namespace NMF.Models.Evolution
 
         public CollectionDeletionComposition(Uri absoluteUri, string collectionPropertyName, ICollection<T> oldElements)
             : base(absoluteUri, collectionPropertyName)
+        {
+            OldElements = oldElements;
+        }
+
+        public CollectionDeletionComposition(Uri absoluteUri, string collectionPropertyName, ICollection<T> oldElements,
+            IModelElement collectionContainer, IModelElement containerParent)
+            : base(absoluteUri, collectionPropertyName, collectionContainer, containerParent)
         {
             OldElements = oldElements;
         }

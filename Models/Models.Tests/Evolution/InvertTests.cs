@@ -175,7 +175,7 @@ namespace NMF.Models.Tests.Evolution
         public void InvertCollectionDeletionComposition()
         {
             var toDelete = railway1.Routes.Take(1).ToList();
-            var change = new CollectionDeletionComposition<IRoute>(railway1.AbsoluteUri, "Routes", new Collection<IRoute>() { toDelete[0] });
+            var change = new CollectionDeletionComposition<IRoute>(railway1.AbsoluteUri, "Routes", new Collection<IRoute>() { toDelete[0] }, railway1, railway1.Parent);
 
             change.Apply(repository1);
             change.Invert(repository1);

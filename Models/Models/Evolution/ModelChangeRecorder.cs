@@ -411,14 +411,19 @@ namespace NMF.Models.Evolution
                 {
                     parentBeforeDeletion.TryGetValue(element, out parent);
                 }
-                element.Parent = parent;
+                //element.Parent = parent;
                 var genericType = typeof(ListDeletionComposition<>).MakeGenericType(itemType);
                 return (IModelChange)Activator.CreateInstance(genericType, absoluteUri, propertyName, startingIndex, count, list, element, parent);
             }
             else
             {
+                var parent = element.Parent;
+                if (parent == null)
+                {
+                    parentBeforeDeletion.TryGetValue(element, out parent);
+                }
                 var genericType = typeof(CollectionDeletionComposition<>).MakeGenericType(itemType);
-                return (IModelChange)Activator.CreateInstance(genericType, absoluteUri, propertyName, list);
+                return (IModelChange)Activator.CreateInstance(genericType, absoluteUri, propertyName, list, element, parent);
             }
 
         }
