@@ -72,7 +72,8 @@ namespace NMF.Models.Tests
         [TestMethod]
         public void RecordListDeletionAssociation()
         {
-            var parent = railway.Routes[0].DefinedBy[0].Elements[0];
+            //ListDeletionAssociation will be removed
+            /*var parent = railway.Routes[0].DefinedBy[0].Elements[0];
             var rec = new ModelChangeRecorder();
             rec.Start(railway);
 
@@ -82,7 +83,7 @@ namespace NMF.Models.Tests
                 new ListDeletionAssociation<ITrackElement>(parent.AbsoluteUri, "ConnectsTo", 0, 1)
             };
             var actual = rec.GetModelChanges().Changes;
-            CollectionAssert.AreEqual(expected, actual);
+            CollectionAssert.AreEqual(expected, actual);*/
         }
 
         [TestMethod]
