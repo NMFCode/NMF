@@ -44,30 +44,6 @@ namespace NMF.CodeGenerationTests
             GenerateAndAssertEcore("Relational.ecore");
         }
 
-        [TestMethod]
-        public void ABBModelGeneratesSuccessfully()
-        {
-            GenerateAndAssertEcore("ABB.ecore");
-        }
-
-        [TestMethod]
-        public void Iso61850GeneratesSuccessfully()
-        {
-            GenerateAndAssertEcore("61850.ecore");
-        }
-
-        [TestMethod]
-        public void CosemModelGeneratesSuccessfully()
-        {
-            GenerateAndAssertEcore("COSEM.ecore");
-        }
-
-        [TestMethod]
-        public void SmartGridSchemaGeneratesSuccessfully()
-        {
-            GenerateAndAssertEcore("schema.ecore");
-        }
-
         private void GenerateAndAssertEcore(string modelPath)
         {
             string log;
