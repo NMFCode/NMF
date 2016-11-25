@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Xml;
 using NMF.Utilities;
@@ -299,17 +300,17 @@ namespace NMF.Serialization.Xmi
             }
         }
 
-        protected override void InitializeTypeSerializationInfo(Type type, ITypeSerializationInfo serializationInfo)
+        protected override void InitializeTypeSerializationInfo(ITypeSerializationInfo serializationInfo)
         {
-            base.InitializeTypeSerializationInfo(type, serializationInfo);
+            base.InitializeTypeSerializationInfo(serializationInfo);
 
             if (!serializationInfo.IsIdentified && !serializationInfo.IsCollection && serializationInfo is XmlTypeSerializationInfo)
             {
                 XmlTypeSerializationInfo info = serializationInfo as XmlTypeSerializationInfo;
                 var id = IdAttribute;
-                if (id != null && info != null)
+                if (id != null && info != null && !info.AttributeProperties.Contains(id))
                 {
-                    info.AttributeProperties.Add(id);
+                    info.DeclaredAttributeProperties.Add(id);
                     info.IdentifierProperty = id;
                 }
             }

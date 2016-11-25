@@ -5,6 +5,7 @@ using System.ComponentModel;
 using System.Xml;
 using System.Reflection;
 using System.Collections;
+using System.Diagnostics;
 
 namespace NMF.Serialization
 {
@@ -156,11 +157,19 @@ namespace NMF.Serialization
 
         public XmlPropertySerializationInfo(PropertyInfo property) : base(property)
         {
-            getter = (Func<TComponent, TProperty>)Delegate.CreateDelegate(typeof(Func<TComponent, TProperty>), property.GetGetMethod());
-            var setMethod = property.GetSetMethod(false);
-            if (setMethod != null)
+            try
             {
-                setter = (Action<TComponent, TProperty>)Delegate.CreateDelegate(typeof(Action<TComponent, TProperty>), setMethod);
+                getter = (Func<TComponent, TProperty>)Delegate.CreateDelegate(typeof(Func<TComponent, TProperty>), property.GetGetMethod());
+                var setMethod = property.GetSetMethod(false);
+                if (setMethod != null)
+                {
+                    setter = (Action<TComponent, TProperty>)Delegate.CreateDelegate(typeof(Action<TComponent, TProperty>), setMethod);
+                }
+            }
+            catch (ArgumentException ex)
+            {
+                getter = _ => default(TProperty);
+                Debug.WriteLine(ex.Message);
             }
         }
 

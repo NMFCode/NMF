@@ -116,13 +116,57 @@ namespace NMF.Serialization
             get { return types; }
         }
 
+        private Queue<Action> initializationQueue;
+
+        protected void EnqueueInitialization(Action action)
+        {
+            if (initializationQueue != null)
+            {
+                initializationQueue.Enqueue(action);
+            }
+            else
+            {
+                throw new InvalidOperationException();
+            }
+        }
+
         private ITypeSerializationInfo AddType(Type type)
         {
             ITypeSerializationInfo info = CreateTypeSerializationInfoFor(type);
             types.Add(type, info);
 
-            InitializeTypeSerializationInfo(type, info);
+            if (initializationQueue != null)
+            {
+                EnqueueBaseTypes(info);
+            }
+            else
+            {
+                initializationQueue = new Queue<Action>();
+                EnqueueBaseTypes(info);
 
+                while (initializationQueue.Count > 0)
+                {
+                    var initializationAction = initializationQueue.Dequeue();
+                    initializationAction();
+                }
+
+                initializationQueue = null;
+            }
+
+            return info;
+        }
+
+        private void EnqueueBaseTypes(ITypeSerializationInfo info)
+        {
+            if (info.Type.BaseType != null)
+            {
+                GetSerializationInfo(info.Type.BaseType, true);
+            }
+            initializationQueue.Enqueue(() => InitializeTypeSerializationInfo(info));
+        }
+
+        protected void RegisterNamespace(ITypeSerializationInfo info)
+        {
             Dictionary<string, ITypeSerializationInfo> typesOfNamespace;
             if (!typesByQualifier.TryGetValue(info.Namespace ?? "", out typesOfNamespace))
             {
@@ -150,8 +194,6 @@ namespace NMF.Serialization
             var elName = Settings.CaseSensitive ? info.ElementName : info.ElementName.ToUpperInvariant();
             if (!typesOfNamespace.ContainsKey(elName))
                 typesOfNamespace.Add(elName, info);
-
-            return info;
         }
 
         protected ITypeSerializationInfo GetTypeInfo(string ns, string localName)
@@ -174,14 +216,15 @@ namespace NMF.Serialization
             return new XmlTypeSerializationInfo(type);
         }
 
-        protected virtual void InitializeTypeSerializationInfo(Type type, ITypeSerializationInfo serializationInfo)
+        protected virtual void InitializeTypeSerializationInfo(ITypeSerializationInfo serializationInfo)
         {
+            Type type = serializationInfo.Type;
             XmlTypeSerializationInfo info = serializationInfo as XmlTypeSerializationInfo;
 
             if (info == null) throw new NotSupportedException("Cannot initialize other serialization info types");
 
             string identifier = null;
-            XmlPropertySerializationInfo[] constructorInfos = null;
+            IPropertySerializationInfo[] constructorInfos = null;
             if (type.IsGenericType)
             {
                 var genericTypes = type.GetGenericArguments().Select(t => t.Name).Aggregate((a, b) => a + "-" + b);
@@ -256,21 +299,28 @@ namespace NMF.Serialization
             {
                 var parentTsi = GetSerializationInfo(type.BaseType, true);
                 info.BaseTypes.Add(parentTsi);
-                if (identifier == null && parentTsi.IsIdentified)
+                if (!info.IsIdentified && parentTsi.IsIdentified)
                 {
                     XmlPropertySerializationInfo identifierProperty = parentTsi.IdentifierProperty as XmlPropertySerializationInfo;
                     if (identifierProperty != null)
                     {
-                        identifier = identifierProperty.Property.Name;
+                        info.IdentifierProperty = identifierProperty;
                     }
                 }
+                if (parentTsi.ConstructorProperties != null && constructorInfos != null)
+                {
+                    Array.Copy(parentTsi.ConstructorProperties, constructorInfos, Math.Min(parentTsi.ConstructorProperties.Length, constructorInfos.Length));
+                }
             }
-            foreach (var pi in type.GetProperties(BindingFlags.Public | BindingFlags.Instance))
+            foreach (var pi in type.GetProperties(BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly))
             {
                 var indexParams = pi.GetIndexParameters();
                 if (indexParams == null || indexParams.Length == 0)
                 {
-                    CreatePropertySerializationInfo(info, identifier, constructorInfos, ignoredProperties, pi);
+                    if (!ignoredProperties.Contains(pi.Name))
+                    {
+                        CreatePropertySerializationInfo(info, identifier, constructorInfos, pi);
+                    }
                 }
             }
             if (constructorInfos != null)
@@ -292,12 +342,12 @@ namespace NMF.Serialization
                 var t = (att as XmlKnownTypeAttribute).Type;
                 if (t != null) GetSerializationInfo(t, true);
             }
+
+            RegisterNamespace(info);
         }
 
-        private void CreatePropertySerializationInfo(XmlTypeSerializationInfo typeSerializationInfo, string identifier, IPropertySerializationInfo[] constructorInfos, List<string> ignoredProperties, PropertyInfo pd)
+        private void CreatePropertySerializationInfo(XmlTypeSerializationInfo typeSerializationInfo, string identifier, IPropertySerializationInfo[] constructorInfos, PropertyInfo pd)
         {
-            if (ignoredProperties.Contains(pd.Name)) return;
-
             var isId = Settings.TreatAsEqual(pd.Name, identifier);
             var cParam = FetchAttribute<XmlConstructorParameterAttribute>(pd, true);
 
@@ -364,11 +414,11 @@ namespace NMF.Serialization
                     var asAttribute = FetchAttribute<XmlAttributeAttribute>(pd, true);
                     if (asAttribute == null || !asAttribute.SerializeAsAttribute)
                     {
-                        typeSerializationInfo.ElementProperties.Add(p);
+                        typeSerializationInfo.DeclaredElementProperties.Add(p);
                     }
                     else
                     {
-                        typeSerializationInfo.AttributeProperties.Add(p);
+                        typeSerializationInfo.DeclaredAttributeProperties.Add(p);
                     }
                 }
             }
@@ -377,11 +427,11 @@ namespace NMF.Serialization
                 var asAttribute = FetchAttribute<XmlAttributeAttribute>(pd, true);
                 if (asAttribute == null || !asAttribute.SerializeAsAttribute)
                 {
-                    typeSerializationInfo.ElementProperties.Add(p);
+                    typeSerializationInfo.DeclaredElementProperties.Add(p);
                 }
                 else
                 {
-                    typeSerializationInfo.AttributeProperties.Add(p);
+                    typeSerializationInfo.DeclaredAttributeProperties.Add(p);
                 }
             }
 
@@ -835,7 +885,7 @@ namespace NMF.Serialization
             while (reader.NodeType != XmlNodeType.Element) reader.Read();
             var propertyType = GetElementTypeInfo(reader, property);
             if (propertyType == null) throw new InvalidOperationException("The Xml serializer is in a corrupt state.");
-            d = CreateObject(reader, propertyType);
+            d = CreateObject(reader, propertyType, context);
             Initialize(reader, d, context);
             return d;
         }
@@ -855,7 +905,7 @@ namespace NMF.Serialization
             object root = null;
             while (reader.NodeType != XmlNodeType.Element) reader.Read();
             var rootInfo = GetRootElementTypeInfo(reader);
-            root = CreateObject(reader, rootInfo);
+            root = CreateObject(reader, rootInfo, null);
             return root;
         }
 
@@ -878,7 +928,7 @@ namespace NMF.Serialization
             }
         }
 
-        protected virtual object CreateObject(XmlReader reader, ITypeSerializationInfo tsi)
+        protected virtual object CreateObject(XmlReader reader, ITypeSerializationInfo tsi, XmlSerializationContext context)
         {
             if (tsi.ConstructorProperties == null)
             {
@@ -991,23 +1041,27 @@ namespace NMF.Serialization
                 if (info.IsIdentified && info.AttributeProperties.Contains(info.IdentifierProperty))
                 {
                     IPropertySerializationInfo p = info.IdentifierProperty;
-                    string id = CStr(p.ConvertFromString(reader.GetAttribute(p.ElementName, p.Namespace)));
-                    if (!string.IsNullOrEmpty(id))
+                    var idValue = reader.GetAttribute(p.ElementName, p.Namespace);
+                    if (idValue != null)
                     {
-                        if (OverrideIdentifiedObject(obj, reader, context))
+                        string id = CStr(p.ConvertFromString(idValue));
+                        if (!string.IsNullOrEmpty(id))
                         {
-                            if (!context.ContainsId(id, info.Type))
+                            if (OverrideIdentifiedObject(obj, reader, context))
                             {
-                                context.RegisterId(id, obj);
+                                if (!context.ContainsId(id, info.Type))
+                                {
+                                    context.RegisterId(id, obj);
+                                }
+                                else
+                                {
+                                    obj = context.Resolve(id, info.Type);
+                                }
                             }
                             else
                             {
-                                obj = context.Resolve(id, info.Type);
+                                context.RegisterId(id, obj);
                             }
-                        }
-                        else
-                        {
-                            context.RegisterId(id, obj);
                         }
                     }
                 }

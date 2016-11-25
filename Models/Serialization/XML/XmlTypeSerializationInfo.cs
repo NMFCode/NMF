@@ -5,6 +5,7 @@ using System.Collections;
 using System.Reflection;
 using System.ComponentModel;
 using System.Linq.Expressions;
+using System.Linq;
 
 namespace NMF.Serialization
 {
@@ -25,7 +26,7 @@ namespace NMF.Serialization
             this.converter = TypeDescriptor.GetConverter(type);
         }
 
-        public List<IPropertySerializationInfo> AttributeProperties
+        public List<IPropertySerializationInfo> DeclaredAttributeProperties
         {
             get
             {
@@ -33,7 +34,7 @@ namespace NMF.Serialization
             }
         }
 
-        public List<IPropertySerializationInfo> ElementProperties
+        public List<IPropertySerializationInfo> DeclaredElementProperties
         {
             get
             {
@@ -151,14 +152,70 @@ namespace NMF.Serialization
             }
         }
 
-        IEnumerable<IPropertySerializationInfo> ITypeSerializationInfo.AttributeProperties
+        public IEnumerable<IPropertySerializationInfo> AttributeProperties
         {
-            get { return AttributeProperties; }
+            get
+            {
+                var stack = new Stack<ITypeSerializationInfo>();
+                ITypeSerializationInfo current = this;
+                XmlTypeSerializationInfo currentType = this;
+                while (current != null)
+                {
+                    if (currentType != null)
+                    {
+                        foreach (var att in currentType.DeclaredAttributeProperties)
+                        {
+                            yield return att;
+                        }
+                        foreach (var bt in currentType.BaseTypes)
+                        {
+                            stack.Push(bt);
+                        }
+                    }
+                    else
+                    {
+                        foreach (var att in current.AttributeProperties)
+                        {
+                            yield return att;
+                        }
+                    }
+                    current = stack.Count > 0 ? stack.Pop() : null;
+                    currentType = current as XmlTypeSerializationInfo;
+                }
+            }
         }
 
-        IEnumerable<IPropertySerializationInfo> ITypeSerializationInfo.ElementProperties
+        public IEnumerable<IPropertySerializationInfo> ElementProperties
         {
-            get { return ElementProperties; }
+            get
+            {
+                var stack = new Stack<ITypeSerializationInfo>();
+                ITypeSerializationInfo current = this;
+                XmlTypeSerializationInfo currentType = this;
+                while (current != null)
+                {
+                    if (currentType != null)
+                    {
+                        foreach (var att in currentType.DeclaredElementProperties)
+                        {
+                            yield return att;
+                        }
+                        foreach (var bt in currentType.BaseTypes)
+                        {
+                            stack.Push(bt);
+                        }
+                    }
+                    else
+                    {
+                        foreach (var att in current.ElementProperties)
+                        {
+                            yield return att;
+                        }
+                    }
+                    current = stack.Count > 0 ? stack.Pop() : null;
+                    currentType = current as XmlTypeSerializationInfo;
+                }
+            }
         }
 
 

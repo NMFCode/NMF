@@ -20,7 +20,7 @@ namespace NMF.Models.Repository.Serialization
 
         private static Regex colonRegex = new Regex(@"^\w+:\w+ ", RegexOptions.Compiled);
 
-        public override object Resolve(string id, Type type)
+        public override object Resolve(string id, Type type, bool exactType = false, bool failOnConflict = true)
         {
             if (string.IsNullOrEmpty(id)) return null;
             var match = colonRegex.Match(id);
@@ -61,9 +61,37 @@ namespace NMF.Models.Repository.Serialization
             }
             if (resolved != null)
             {
-                return resolved;
+                if (failOnConflict)
+                {
+                    if (exactType)
+                    {
+                        if (resolved.GetType() == type)
+                        {
+                            return resolved;
+                        }
+                        else
+                        {
+                            throw new InvalidOperationException($"The model element with the uri {id} has not the expected type {type.Name} but is a {resolved.GetType().Name} instead.");
+                        }
+                    }
+                    else
+                    {
+                        if (type.IsInstanceOfType(resolved))
+                        {
+                            return resolved;
+                        }
+                        else
+                        {
+                            throw new InvalidOperationException($"The model element with the uri {id} has not the expected type {type.Name} but is a {resolved.GetType().Name}.");
+                        }
+                    }
+                }
+                else
+                {
+                    return resolved;
+                }
             }
-            return base.Resolve(id, type);
+            return base.Resolve(id, type, exactType, failOnConflict);
         }
     }
 }

@@ -118,7 +118,7 @@ namespace NMF.Serialization
             }
         }
 
-        public virtual object Resolve(string id, Type type)
+        public virtual object Resolve(string id, Type type, bool exactType = false, bool failOnConflict = true)
         {
             if (id == null) return null;
             Dictionary<string, object> dict;
@@ -127,24 +127,54 @@ namespace NMF.Serialization
             {
                 if (obj is NameClash)
                 {
-                    throw new InvalidOperationException(string.Format("The id {0} is not unique for type {1}!", id, type.Name));
+                    if (failOnConflict)
+                    {
+                        throw new InvalidOperationException(string.Format("The id {0} is not unique for type {1}!", id, type.Name));
+                    }
+                    else
+                    {
+                        return null;
+                    }
                 }
                 return obj;
             }
-            else
+            else if (!exactType)
             {
+                object result = null;
                 List<Dictionary<string, object>> paths = GetOrCreateTypeStores(type);
                 foreach (var typeStore in paths)
                 {
                     if (typeStore.TryGetValue(id, out obj))
                     {
-                        if (obj is NameClash)
+                        if (result == null || obj is NameClash)
                         {
-                            throw new InvalidOperationException(string.Format("The id {0} is not unique for type {1}!", id, type.Name));
+                            result = obj;
                         }
-                        return obj;
+                        else
+                        {
+                            result = new NameClash();
+                            break;
+                        }
                     }
                 }
+                if (result is NameClash)
+                {
+                    if (failOnConflict)
+                    {
+                        throw new InvalidOperationException(string.Format("The id {0} is not unique for type {1}!", id, type.Name));
+                    }
+                    else
+                    {
+                        return null;
+                    }
+                }
+                else
+                {
+                    return result;
+                }
+            }
+            else
+            {
                 return null;
             }
         }
