@@ -183,7 +183,7 @@ namespace NMF.Models.Tests
                 serializer.SerializeFragment(element, fs);
             }
 
-            AssertFileContentsMatch(tempFile, "RailwayModelWithXmi.xmi");
+            AssertFileContentsMatch("RailwayModelWithXmi.xmi", tempFile);
 
             var test = File.ReadAllText(tempFile);
             
@@ -202,7 +202,7 @@ namespace NMF.Models.Tests
             Assert.AreEqual(file1Contents.Length, file2Contents.Length);
             for (int i = 0; i < file1Contents.Length; i++)
             {
-                Assert.AreEqual(file1Contents[i], file2Contents[i], string.Format("Line {0} does not match: '{1}' != '{2}'", i, file1Contents[i], file2Contents[i]));
+                Assert.AreEqual(file1Contents[i], file2Contents[i], string.Format("Error is in line {0}.", i));
             }
         }
 
