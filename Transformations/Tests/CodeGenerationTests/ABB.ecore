@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ecore:EPackage xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" name="ABBModel" nsURI="ABB" nsPrefix="ABB">
+  <eClassifiers xsi:type="ecore:EClass" name="BaseVoltage">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="VoltageLevel" upperBound="-1"
+        eType="#//VoltageLevel"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="ConductingEquipment" upperBound="-1"
+        eType="#//ConductingEquipment"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="VoltageLevel" eSuperTypes="#//EquipmentContainer">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="BaseVoltage" eType="#//BaseVoltage"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="Substation" eType="#//Substation"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="StaticVarCompensator" eSuperTypes="#//ConductingEquipment"/>
+  <eClassifiers xsi:type="ecore:EClass" name="ShuntCompensator" eSuperTypes="#//ConductingEquipment"/>
+  <eClassifiers xsi:type="ecore:EClass" name="BusbarSection" eSuperTypes="#//ConductingEquipment"/>
+  <eClassifiers xsi:type="ecore:EClass" name="Breaker" eSuperTypes="#//ConductingEquipment"/>
+  <eClassifiers xsi:type="ecore:EClass" name="ConformLoad" eSuperTypes="#//EnergyConsumer">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="ConformLoadGroup" eType="#//ConformLoadGroup"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="ACLineSegment" eSuperTypes="#//ConductingEquipment"/>
+  <eClassifiers xsi:type="ecore:EClass" name="NonConformLoad" eSuperTypes="#//EnergyConsumer">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="NonConformLoadGroup" eType="#//NonConformLoadGroup"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Disconnector" eSuperTypes="#//ConductingEquipment"/>
+  <eClassifiers xsi:type="ecore:EClass" name="SynchronousMachine" eSuperTypes="#//ConductingEquipment">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="GeneratingUnit" eType="#//GeneratingUnit"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="ConductingEquipment" eSuperTypes="#//Equipment">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="BaseVoltage" eType="#//BaseVoltage"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="Terminals" upperBound="-1"
+        eType="#//Terminal"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Substation" eSuperTypes="#//EquipmentContainer">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="VoltageLevel" upperBound="-1"
+        eType="#//VoltageLevel"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="Region" eType="#//SubGeographicalRegion"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="EquipmentContainer">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="Equipment" upperBound="-1"
+        eType="#//Equipment"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Terminal">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="ConductingEquipment" eType="#//ConductingEquipment"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="ConnectivityNode" eType="#//ConnectivityNode"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="Measurements" upperBound="-1"
+        eType="#//Measurement"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Equipment">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="EquipmentContainer" eType="#//EquipmentContainer"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="ConformLoadGroup" eSuperTypes="#//LoadGroup">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="ParentGroup" eType="#//ConformLoadGroup"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="ConformSchedule" eType="#//ConformLoadSchedule"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="EnergyConsumer" eSuperTypes="#//ConductingEquipment"/>
+  <eClassifiers xsi:type="ecore:EClass" name="NonConformLoadGroup" eSuperTypes="#//LoadGroup">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="NonConformLoadSchedule"
+        eType="#//NonConformLoadSchedule"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="HydroGeneratingUnit" eSuperTypes="#//GeneratingUnit"/>
+  <eClassifiers xsi:type="ecore:EClass" name="ThermalGeneratingUnit" eSuperTypes="#//GeneratingUnit"/>
+  <eClassifiers xsi:type="ecore:EClass" name="GeneratingUnit" eSuperTypes="#//Equipment">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="SynchronousMachines" upperBound="-1"
+        eType="#//SynchronousMachine"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="SubGeographicalRegion">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="Substations" upperBound="-1"
+        eType="#//Substation"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="GeographicalRegion" eType="#//GeographicalRegion"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="Lines" upperBound="-1"
+        eType="#//Line"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Analog" eSuperTypes="#//Measurement">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="AnalogValues" upperBound="-1"
+        eType="#//AnalogValue"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="LimitSets" upperBound="-1"
+        eType="#//AnalogLimitSet"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Discrete" eSuperTypes="#//Measurement">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="DiscreteValues" upperBound="-1"
+        eType="#//DiscreteValue"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="ConnectivityNode">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="Terminals" upperBound="-1"
+        eType="#//Terminal"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Measurement">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="Terminal" eType="#//Terminal"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="Unit" eType="#//Unit"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="ConformLoadSchedule">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="ConformLoadGroup" eType="#//ConformLoadGroup"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="Season" eType="#//Season"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="DayType" eType="#//DayType"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="RegularTimePoint" eType="#//RegularTimePoint"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="SubLoadArea">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="LoadGroup" upperBound="-1"
+        eType="#//LoadGroup"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="LoadGroup">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="SubLoadArea" eType="#//SubLoadArea"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="NonConformLoadSchedule">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="NonConformLoadGroup" eType="#//NonConformLoadGroup"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="Season" eType="#//Season"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="DayType" eType="#//DayType"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="RegularTimePoint" eType="#//RegularTimePoint"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="GeographicalRegion">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="SubGeographicalRegions"
+        upperBound="-1" eType="#//SubGeographicalRegion"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Line" eSuperTypes="#//EquipmentContainer">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="SubGeographicalRegion"
+        eType="#//SubGeographicalRegion"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="AnalogValue">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="Analog" eType="#//Analog"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Unit">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="Measurements" upperBound="-1"
+        eType="#//Measurement"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="AnalogLimitSet">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="Analog" eType="#//Analog"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="Limits" upperBound="-1"
+        eType="#//AnalogLimit"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="DiscreteValue">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="DiscreteMeas" eType="#//Discrete"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Season">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="ConformSchedule" eType="#//ConformLoadSchedule"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="NonConformSchedule" eType="#//NonConformLoadSchedule"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="DayType">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="ConformSchedule" eType="#//ConformLoadSchedule"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="NonConformSchedule" eType="#//NonConformLoadSchedule"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="RegularTimePoint">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="ConformSchedule" eType="#//ConformLoadSchedule"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="NonConformSchedule" eType="#//NonConformLoadSchedule"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="AnalogLimit">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="LimitSet" eType="#//AnalogLimitSet"/>
+  </eClassifiers>
+</ecore:EPackage>
