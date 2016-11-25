@@ -103,7 +103,7 @@ namespace NMF.Interop.Ecore.Transformations
                     output.Identifier = context.Trace.ResolveIn(Rule<EAttribute2Attribute>(), identifier);
                 }
 
-                if (output.Identifier == null)
+                if (output.Identifier == null && output.RetrieveIdentifier().Identifier == null)
                 {
                     var nameAttribute = input.EStructuralFeatures.OfType<EAttribute>().FirstOrDefault(att => string.Equals(att.Name, "Name",
                         System.StringComparison.InvariantCultureIgnoreCase));
