@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<ecore:EPackage xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" name="Families" nsURI="http://ttc/Families" nsPrefix="f">
+  <eClassifiers xsi:type="ecore:EClass" name="Family">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="lastName" ordered="false"
+        unique="false" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="father" ordered="false"
+        lowerBound="1" eType="#//Member" containment="true" eOpposite="#//Member/familyFather"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="mother" ordered="false"
+        lowerBound="1" eType="#//Member" containment="true" eOpposite="#//Member/familyMother"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="sons" ordered="false" upperBound="-1"
+        eType="#//Member" containment="true" eOpposite="#//Member/familySon"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="daughters" ordered="false"
+        upperBound="-1" eType="#//Member" containment="true" eOpposite="#//Member/familyDaughter"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Member">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="firstName" ordered="false"
+        unique="false" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="familyFather" ordered="false"
+        eType="#//Family" eOpposite="#//Family/father"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="familyMother" ordered="false"
+        eType="#//Family" eOpposite="#//Family/mother"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="familySon" ordered="false"
+        eType="#//Family" eOpposite="#//Family/sons"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="familyDaughter" ordered="false"
+        eType="#//Family" eOpposite="#//Family/daughters"/>
+  </eClassifiers>
+</ecore:EPackage>

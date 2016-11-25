@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="ASCII"?>
+<xmi:XMI xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore">
+  <ecore:EPackage name="Relational" nsURI="http://ttc/Relational" nsPrefix="rel">
+    <eClassifiers xsi:type="ecore:EClass" name="Named" abstract="true">
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" ordered="false"
+          lowerBound="1" eType="#/1/String"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="Table" eSuperTypes="#/0/Named">
+      <eStructuralFeatures xsi:type="ecore:EReference" name="col" upperBound="-1"
+          eType="#/0/Column" containment="true" eOpposite="#/0/Column/owner"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="key" ordered="false"
+          upperBound="-1" eType="#/0/Column" eOpposite="#/0/Column/keyOf"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="Column" eSuperTypes="#/0/Named">
+      <eStructuralFeatures xsi:type="ecore:EReference" name="owner" ordered="false"
+          lowerBound="1" eType="#/0/Table" eOpposite="#/0/Table/col"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="keyOf" ordered="false"
+          eType="#/0/Table" eOpposite="#/0/Table/key"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="type" ordered="false"
+          lowerBound="1" eType="#/0/Type"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="Type" eSuperTypes="#/0/Named"/>
+  </ecore:EPackage>
+  <ecore:EPackage name="PrimitiveTypes" nsURI="http://ttc/dbPrimitiveTypes" nsPrefix="dbPT">
+    <eClassifiers xsi:type="ecore:EDataType" name="Boolean" instanceClassName="java.lang.Boolean"/>
+    <eClassifiers xsi:type="ecore:EDataType" name="Integer" instanceClassName="java.lang.Integer"/>
+    <eClassifiers xsi:type="ecore:EDataType" name="String" instanceClassName="java.lang.String"/>
+  </ecore:EPackage>
+</xmi:XMI>
