@@ -62,7 +62,7 @@ namespace NMF.Serialization
             while (lostProperties.Count > 0)
             {
                 XmlIdentifierDelay p = lostProperties.Dequeue();
-                var resolved = Resolve(p.Identifier, p.TargetType.Type);
+                var resolved = Resolve(p.Identifier, p.TargetType.Type, exactType: false, failOnConflict: true, source: p.Target);
                 if (resolved == null)
                 {
                     throw new InvalidOperationException(string.Format("The reference {0} could not be resolved", p.Identifier));
@@ -84,17 +84,28 @@ namespace NMF.Serialization
                 dict = new Dictionary<string, object>();
                 idStore.Add(type, dict);
             }
-            if (!dict.ContainsKey(id))
+            object current;
+            if (!dict.TryGetValue(id, out current))
             {
                 dict.Add(id, value);
             }
             else
             {
-                dict[id] = new NameClash();
+                var clash = current as NameClash;
+                if (clash == null)
+                {
+                    clash = new NameClash();
+                    clash.Objects.Add(current);
+                    dict[id] = clash;
+                }
+                clash.Objects.Add(value);
             }
         }
 
-        private class NameClash { }
+        private class NameClash
+        {
+            public readonly List<object> Objects = new List<object>();
+        }
 
         public virtual bool ContainsId(string id, Type type)
         {
@@ -118,18 +129,24 @@ namespace NMF.Serialization
             }
         }
 
-        public virtual object Resolve(string id, Type type, bool exactType = false, bool failOnConflict = true)
+        protected virtual object OnNameClash(string id, Type type, IEnumerable<object> candidates, object source)
+        {
+            throw new XmlResolveNameClashException(id, type, candidates);
+        }
+
+        public virtual object Resolve(string id, Type type, bool exactType = false, bool failOnConflict = true, object source = null)
         {
             if (id == null) return null;
             Dictionary<string, object> dict;
             object obj;
             if (idStore.TryGetValue(type, out dict) && dict.TryGetValue(id, out obj))
             {
-                if (obj is NameClash)
+                var clash = obj as NameClash;
+                if (clash != null)
                 {
                     if (failOnConflict)
                     {
-                        throw new InvalidOperationException(string.Format("The id {0} is not unique for type {1}!", id, type.Name));
+                        return OnNameClash(id, type, clash.Objects.AsReadOnly(), source);
                     }
                     else
                     {
@@ -146,22 +163,29 @@ namespace NMF.Serialization
                 {
                     if (typeStore.TryGetValue(id, out obj))
                     {
-                        if (result == null || obj is NameClash)
+                        if (result == null)
                         {
                             result = obj;
                         }
                         else
                         {
-                            result = new NameClash();
-                            break;
+                            var clash = result as NameClash;
+                            if (clash == null)
+                            {
+                                clash = new NameClash();
+                                clash.Objects.Add(result);
+                                result = clash;
+                            }
+                            clash.Objects.Add(obj);
                         }
                     }
                 }
-                if (result is NameClash)
+                var resultClash = result as NameClash;
+                if (resultClash != null)
                 {
                     if (failOnConflict)
                     {
-                        throw new InvalidOperationException(string.Format("The id {0} is not unique for type {1}!", id, type.Name));
+                        return OnNameClash(id, type, resultClash.Objects.AsReadOnly(), source);
                     }
                     else
                     {
@@ -218,5 +242,22 @@ namespace NMF.Serialization
             get;
             private set;
         }
+    }
+
+    public class XmlResolveNameClashException : Exception
+    {
+        public XmlResolveNameClashException(string id, Type type, IEnumerable<object> candidates)
+            : base($"Resolving failed because the id {id} is not unique for type {type.Name}.")
+        {
+            Id = id;
+            Type = type;
+            Candidates = candidates;
+        }
+
+        public IEnumerable<object> Candidates { get; private set; }
+
+        public string Id { get; private set; }
+
+        public Type Type { get; private set; }
     }
 }

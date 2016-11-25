@@ -20,7 +20,22 @@ namespace NMF.Models.Repository.Serialization
 
         private static Regex colonRegex = new Regex(@"^\w+:\w+ ", RegexOptions.Compiled);
 
-        public override object Resolve(string id, Type type, bool exactType = false, bool failOnConflict = true)
+        protected override object OnNameClash(string id, Type type, IEnumerable<object> candidates, object source)
+        {
+            var modelElement = source as IModelElement;
+            if (modelElement != null)
+            {
+                var newCandidates = candidates.OfType<IModelElement>();
+                if (newCandidates.Count() == 1) return newCandidates.First();
+                var siblingsOfCurrent = newCandidates.Where(c => c.Parent == modelElement.Parent);
+                if (siblingsOfCurrent.Count() == 1) return siblingsOfCurrent.First();
+                var childrenOfCurrent = newCandidates.Where(c => c.Parent == modelElement);
+                if (childrenOfCurrent.Count() == 1) return childrenOfCurrent.First();
+            }
+            return base.OnNameClash(id, type, candidates, source);
+        }
+
+        public override object Resolve(string id, Type type, bool exactType = false, bool failOnConflict = true, object source = null)
         {
             if (string.IsNullOrEmpty(id)) return null;
             var match = colonRegex.Match(id);
@@ -91,7 +106,7 @@ namespace NMF.Models.Repository.Serialization
                     return resolved;
                 }
             }
-            return base.Resolve(id, type, exactType, failOnConflict);
+            return base.Resolve(id, type, exactType, failOnConflict, source);
         }
     }
 }

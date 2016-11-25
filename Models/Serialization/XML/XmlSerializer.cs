@@ -457,6 +457,11 @@ namespace NMF.Serialization
                     oppositeType = GetSerializationInfo(oppositeAtt.OppositeType, true);
                 }
                 var oppositeProperty = oppositeType.AttributeProperties.OfType<XmlPropertySerializationInfo>().FirstOrDefault(prop => prop.ElementName == oppositeAtt.OppositeProperty);
+                if (oppositeProperty == null && oppositeType.IsCollection && oppositeType.CollectionItemType != null)
+                {
+                    oppositeType = oppositeType.CollectionItemType;
+                    oppositeProperty = oppositeType.AttributeProperties.OfType<XmlPropertySerializationInfo>().FirstOrDefault(prop => prop.ElementName == oppositeAtt.OppositeProperty);
+                }
                 if (oppositeProperty != null)
                 {
                     p.Opposite = oppositeProperty;
