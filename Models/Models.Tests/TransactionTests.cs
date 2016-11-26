@@ -25,13 +25,14 @@ namespace NMF.Models.Tests
                 model.Routes.Add(route);
                 model.Semaphores[0].Signal = Signal.FAILURE;
                 model.Routes[0].DefinedBy.RemoveAt(0);
-                //model.Routes[0].DefinedBy[0].Elements.RemoveAt(0);
+                model.Routes[0].DefinedBy[0].Elements.RemoveAt(0);
 
             }
 
             Assert.AreEqual(model.Routes.Count, referenceModel.Routes.Count);
             Assert.AreEqual(model.Routes[0].DefinedBy.Count, referenceModel.Routes[0].DefinedBy.Count);
             Assert.AreEqual(model.Routes[0].DefinedBy[0].Elements.Count, referenceModel.Routes[0].DefinedBy[0].Elements.Count);
+            //Assert.AreEqual(model.Routes[0].DefinedBy[0].Elements.First(), referenceModel.Routes[0].DefinedBy[0].Elements.First()); //will always fail because equals not implemented, only for debug purposes
             Assert.AreEqual(model.Routes[0].DefinedBy[0].Elements[0].ConnectsTo.Count, referenceModel.Routes[0].DefinedBy[0].Elements[0].ConnectsTo.Count);
             Assert.AreEqual(model.Semaphores[0].Signal, referenceModel.Semaphores[0].Signal);
         }

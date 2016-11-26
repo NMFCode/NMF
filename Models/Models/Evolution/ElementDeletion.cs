@@ -11,7 +11,8 @@ namespace NMF.Models.Evolution
     {[XmlConstructorParameter(0)]
         public Uri AbsoluteUri { get; set; }
 
-        private IModelElement _element;
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public IModelElement Element { get; }
         private IModelElement _parent;
         public ElementDeletion(Uri absoluteUri)
         {
@@ -23,7 +24,7 @@ namespace NMF.Models.Evolution
 
         public ElementDeletion(Uri absoluteUri, IModelElement element, IModelElement parent) : this(absoluteUri)
         {
-            _element = element;
+            Element = element;
             _parent = parent;
         }
 
@@ -35,7 +36,7 @@ namespace NMF.Models.Evolution
 
         public void Invert(IModelRepository repository)
         {
-            _element.Parent = _parent;
+            Element.Parent = _parent;
         }
 
         public override bool Equals(object obj)

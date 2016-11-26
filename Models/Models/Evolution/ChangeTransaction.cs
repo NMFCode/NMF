@@ -16,6 +16,8 @@ namespace NMF.Models.Evolution
         public IModelChange SourceChange { get; set; }
         
         public List<IModelChange> NestedChanges { get; set; }
+
+        public bool InvertSourceChange { get; set; } = true;
         
         [EditorBrowsable(EditorBrowsableState.Never)]
         public ChangeTransaction()
@@ -44,10 +46,41 @@ namespace NMF.Models.Evolution
 
         public void Invert(IModelRepository repository)
         {
+            RemoveDuplicateDeletionInversions();
             //assumes nestedchanges is ordered like a flattened tree of changes
-            for (var i = NestedChanges.Count - 1; i >= 0; i--) //TODO evtl in umgekehrter reihenfolge vom aktuellen abarbeiten
+            for (var i = NestedChanges.Count - 1; i >= 0; i--)
+            {
+                //TODO evtl in umgekehrter reihenfolge vom aktuellen abarbeiten 
                 NestedChanges[i].Invert(repository);
-            SourceChange.Invert(repository);
+            }
+            if(InvertSourceChange) SourceChange.Invert(repository);
+        }
+
+        //Makes sure ListDeletions / CollectionDeletions that trigger ElementDeletions for the same element do not get inverted by both change inversions
+        private void RemoveDuplicateDeletionInversions()
+        {
+            if (!InvertSourceChange) return;
+            var t = SourceChange.GetType();
+            var tDef = t.GetGenericTypeDefinition();
+            if (t.IsGenericType && (tDef == typeof(ListDeletionComposition<>) || tDef == typeof(CollectionDeletionComposition<>)))
+            {
+                foreach (var change in NestedChanges)
+                {
+                    if (change.GetType() != typeof(ChangeTransaction) || (change as ChangeTransaction).SourceChange.GetType() != typeof(ElementDeletion))
+                        continue;
+                    var temp = change as ChangeTransaction;
+                    var removedElement = (temp.SourceChange as ElementDeletion).Element;
+                    var sourceDeletions = SourceChange.GetType().GetProperty("OldElements").GetValue(SourceChange) as ICollection;
+                    foreach (var item in sourceDeletions)
+                    {
+                        if (item == removedElement)
+                        {
+                            temp.InvertSourceChange = false;
+                            break;
+                        }
+                    }
+                }
+            }
         }
 
         public override bool Equals(object obj)
