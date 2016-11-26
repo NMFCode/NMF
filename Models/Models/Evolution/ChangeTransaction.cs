@@ -47,10 +47,9 @@ namespace NMF.Models.Evolution
         public void Invert(IModelRepository repository)
         {
             RemoveDuplicateDeletionInversions();
-            //assumes nestedchanges is ordered like a flattened tree of changes
-            for (var i = NestedChanges.Count - 1; i >= 0; i--)
+            //assumes NestedChanges is ordered like a flattened tree of changes
+            for (var i = NestedChanges.Count - 1; i >= 0; i--) //TODO evtl in umgekehrter reihenfolge vom aktuellen abarbeiten? Das könnte aber ggf. zu Fehlern führen.
             {
-                //TODO evtl in umgekehrter reihenfolge vom aktuellen abarbeiten 
                 NestedChanges[i].Invert(repository);
             }
             if(InvertSourceChange) SourceChange.Invert(repository);

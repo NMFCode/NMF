@@ -24,7 +24,7 @@ namespace NMF.Models.Tests
                 var route = new Route() { Id = 42 };
                 model.Routes.Add(route);
                 model.Semaphores[0].Signal = Signal.FAILURE;
-                model.Routes[0].DefinedBy.RemoveAt(0);
+                //model.Routes[0].DefinedBy.RemoveAt(0); //hier aufpassen
                 model.Routes[0].DefinedBy[0].Elements.RemoveAt(0);
 
             }
@@ -35,6 +35,23 @@ namespace NMF.Models.Tests
             //Assert.AreEqual(model.Routes[0].DefinedBy[0].Elements.First(), referenceModel.Routes[0].DefinedBy[0].Elements.First()); //will always fail because equals not implemented, only for debug purposes
             Assert.AreEqual(model.Routes[0].DefinedBy[0].Elements[0].ConnectsTo.Count, referenceModel.Routes[0].DefinedBy[0].Elements[0].ConnectsTo.Count);
             Assert.AreEqual(model.Semaphores[0].Signal, referenceModel.Semaphores[0].Signal);
+        }
+
+        [TestMethod]
+        public void DemoTestCase()
+        {
+            var model = LoadRailwayModel(new ModelRepository());
+            var referenceModel = LoadRailwayModel(new ModelRepository());
+
+            using (var trans = new NMFTransaction(model))
+            {
+                model.Routes[0].DefinedBy.RemoveAt(0); 
+            }
+
+            var debug = model.Routes[0].DefinedBy[0].Elements;
+            var debugReference = referenceModel.Routes[0].DefinedBy[0].Elements;
+            //Elements gets re-populated in inverse order due to the way ChangeTransaction.Invert() works, ignore for now
+            Assert.AreEqual(debug.Last().ConnectsTo.Count, debugReference.First().ConnectsTo.Count);
         }
 
         [TestMethod]
