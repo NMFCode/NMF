@@ -61,6 +61,7 @@ namespace NMF.Models.Evolution
         {
             if (!InvertSourceChange) return;
             var t = SourceChange.GetType();
+            if (!t.IsGenericType) return;
             var tDef = t.GetGenericTypeDefinition();
             if (t.IsGenericType && (tDef == typeof(ListDeletionComposition<>) || tDef == typeof(CollectionDeletionComposition<>)))
             {
