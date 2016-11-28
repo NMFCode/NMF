@@ -116,66 +116,64 @@ namespace NMF.Collections.ObjectModel
         {
             if (!noModification)
             {
-                var elements = this.ToArray();
-                beforeCollectionChangedAction = () =>
-                {
-                    noModification = true;
-                    foreach (var item in elements)
-                    {
-                        SetOpposite(item, default(TParent));
-                    }
-                    noModification = false;
-                };
                 base.ClearItems();
             }
+        }
+
+        protected override void BeforeClearPropagates(TCollected[] elements)
+        {
+            noModification = true;
+            foreach (var item in elements)
+            {
+                SetOpposite(item, default(TParent));
+            }
+            noModification = false;
         }
 
         protected override void InsertItem(int index, TCollected item)
         {
             if (!noModification)
             {
-                beforeCollectionChangedAction = () =>
-                {
-                    noModification = true;
-                    SetOpposite(item, Parent);
-                    noModification = false;
-                };
                 base.InsertItem(index, item);
             }
+        }
+
+        protected override void BeforeInsertPropagates(int index, TCollected item)
+        {
+            noModification = true;
+            SetOpposite(item, Parent);
+            noModification = false;
         }
 
         protected override void RemoveItem(int index)
         {
             if (!noModification)
             {
-                var item = this[index];
-                beforeCollectionChangedAction = () =>
-                {
-                    noModification = true;
-                    SetOpposite(item, default(TParent));
-                    noModification = false;
-                };
                 base.RemoveItem(index);
             }
+        }
+
+        protected override void BeforeRemovePropagates(int index, TCollected item)
+        {
+            noModification = true;
+            SetOpposite(item, default(TParent));
+            noModification = false;
         }
 
         protected override void SetItem(int index, TCollected item)
         {
             if (!noModification)
             {
-                var old = this[index];
-                beforeCollectionChangedAction = () =>
-                {
-                    if (!object.Equals(old, item))
-                    {
-                        noModification = true;
-                        SetOpposite(this[index], default(TParent));
-                        SetOpposite(item, Parent);
-                        noModification = false;
-                    }
-                };
                 base.SetItem(index, item);
             }
+        }
+
+        protected override void BeforeSetItemPropagates(int index, TCollected item, TCollected oldItem)
+        {
+            noModification = true;
+            SetOpposite(this[index], default(TParent));
+            SetOpposite(item, Parent);
+            noModification = false;
         }
     }
 }

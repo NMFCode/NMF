@@ -128,24 +128,25 @@ namespace NMF.Models.Collections
         {
             if (!silent)
             {
+                silent = true;
                 var elements = this.ToArray();
-                beforeCollectionChangedAction = () =>
-                {
-                    silent = true;
-                    foreach (var item in elements)
-                    {
-                        if (item != null)
-                        {
-                            item.ParentChanged -= RemoveItem;
-                            if (item.Parent == Parent)
-                            {
-                                item.Delete();
-                            }
-                        }
-                    }
-                };
                 base.ClearItems();
                 silent = false;
+            }
+        }
+
+        protected override void BeforeClearPropagates(T[] elements)
+        {
+            foreach (var item in elements)
+            {
+                if (item != null)
+                {
+                    item.ParentChanged -= RemoveItem;
+                    if (item.Parent == Parent)
+                    {
+                        item.Delete();
+                    }
+                }
             }
         }
 
@@ -153,71 +154,69 @@ namespace NMF.Models.Collections
         {
             if (!silent && item != null)
             {
-                beforeCollectionChangedAction = () =>
-                {
-                    silent = true;
-                    item.ParentChanged += RemoveItem;
-                    item.Parent = Parent;
-                    silent = false;
-                };
                 base.InsertItem(index, item);
             }
+        }
+
+        protected override void BeforeInsertPropagates(int index, T item)
+        {
+            silent = true;
+            item.ParentChanged += RemoveItem;
+            item.Parent = Parent;
+            silent = false;
         }
 
         protected override void RemoveItem(int index)
         {
             if (!silent)
             {
-                var item = this[index];
-                beforeCollectionChangedAction = () =>
-                {
-                    silent = true;
-                    if (item != null)
-                    {
-                        item.ParentChanged -= RemoveItem;
-                        if (item.Parent == Parent)
-                        {
-                            item.Delete();
-                        }
-                    }
-                    silent = false;
-                };
                 base.RemoveItem(index);
             }
+        }
+
+        protected override void BeforeRemovePropagates(int index, T item)
+        {
+            silent = true;
+            if (item != null)
+            {
+                item.ParentChanged -= RemoveItem;
+                if (item.Parent == Parent)
+                {
+                    item.Delete();
+                }
+            }
+            silent = false;
         }
 
         protected override void SetItem(int index, T item)
         {
             if (!silent)
             {
-                var oldItem = this[index];
-                silent = true;
-                if (oldItem != item)
-                {
-                    beforeCollectionChangedAction = () =>
-                    {
-                        if (item != null)
-                        {
-                            item.ParentChanged += RemoveItem;
-                        }
-                        if (oldItem != null)
-                        {
-                            oldItem.ParentChanged -= RemoveItem;
-                        }
-
-                        if (oldItem != null && oldItem.Parent == Parent)
-                        {
-                            oldItem.Delete();
-                        }
-                        if (item != null)
-                        {
-                            item.Parent = Parent;
-                        }
-                    };
-                    base.SetItem(index, item);
-                }
-                silent = false;
+                base.SetItem(index, item);
             }
+        }
+
+        protected override void BeforeSetItemPropagates(int index, T item, T oldItem)
+        {
+            silent = true;
+            if (item != null)
+            {
+                item.ParentChanged += RemoveItem;
+            }
+            if (oldItem != null)
+            {
+                oldItem.ParentChanged -= RemoveItem;
+            }
+
+            if (oldItem != null && oldItem.Parent == Parent)
+            {
+                oldItem.Delete();
+            }
+            if (item != null)
+            {
+                item.Parent = Parent;
+            }
+            silent = true;
         }
 
         private void RemoveItem(object sender, ValueChangedEventArgs e)
