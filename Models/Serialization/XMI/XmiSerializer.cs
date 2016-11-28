@@ -308,9 +308,12 @@ namespace NMF.Serialization.Xmi
             {
                 XmlTypeSerializationInfo info = serializationInfo as XmlTypeSerializationInfo;
                 var id = IdAttribute;
-                if (id != null && info != null && !info.AttributeProperties.Contains(id))
+                if (id != null && info != null)
                 {
-                    info.DeclaredAttributeProperties.Add(id);
+                    if (!info.AttributeProperties.Contains(id))
+                    {
+                        info.DeclaredAttributeProperties.Add(id);
+                    }
                     info.IdentifierProperty = id;
                 }
             }
