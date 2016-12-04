@@ -165,14 +165,14 @@ namespace NMF.Models
                     var oldModel = oldParent != null ? oldParent.Model : null;
                     if (oldParent != null)
                     {
-                        oldParent.Deleted -= CascadeDelete;
+                        //oldParent.Deleted -= CascadeDelete;
 
                         if (EnforceModels && oldModel != null && oldModel == oldParent.Parent && newModel == null)
                         {
                             oldModel.RootElements.Add(newParent);
                         }
                     }
-                    newParent.Deleted += CascadeDelete;
+                    //newParent.Deleted += CascadeDelete;
                     var newParentME = newParent as ModelElement;
                     if (newParentME != null)
                     {
@@ -198,7 +198,7 @@ namespace NMF.Models
                 else
                 {
                     var oldModel = oldParent.Model;
-                    oldParent.Deleted -= CascadeDelete;
+                    //oldParent.Deleted -= CascadeDelete;
 
                     if (bubbledChange == null)
                     {
@@ -774,14 +774,18 @@ namespace NMF.Models
         /// <param name="e">The event data</param>
         protected virtual void OnDeleted(EventArgs e, Uri originalAbsoluteUri)
         {
+            foreach (var child in Children.Reverse())
+            {
+                child.Delete();
+            }
             Deleted?.Invoke(this, e);
             OnBubbledChange(BubbledChangeEventArgs.ElementDeleted(this, originalAbsoluteUri));
         }
 
-        internal void CascadeDelete(object sender, EventArgs e)
+        /*internal void CascadeDelete(object sender, EventArgs e)
         {
             Delete();
-        }
+        }*/
 
 
         /// <summary>
