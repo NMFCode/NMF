@@ -35,22 +35,7 @@ namespace NMF.Models.Tests
             Assert.AreEqual(model.Routes[0].DefinedBy[0].Elements[0].ConnectsTo.Count, referenceModel.Routes[0].DefinedBy[0].Elements[0].ConnectsTo.Count);
             Assert.AreEqual(model.Semaphores[0].Signal, referenceModel.Semaphores[0].Signal);
         }
-
-        [TestMethod]
-        public void DemoTestCase()
-        {
-            var model = LoadRailwayModel(new ModelRepository());
-            var referenceModel = LoadRailwayModel(new ModelRepository());
-
-            using (var trans = new NMFTransaction(model))
-            {
-                model.Routes[0].DefinedBy.RemoveAt(0); 
-            }
-
-            var debug = model.Routes[0].DefinedBy[0].Elements;
-            var debugReference = referenceModel.Routes[0].DefinedBy[0].Elements;
-            Assert.AreEqual(debug.First().ConnectsTo.Count, debugReference.First().ConnectsTo.Count);
-        }
+        
 
         [TestMethod]
         public void CommitTest()
