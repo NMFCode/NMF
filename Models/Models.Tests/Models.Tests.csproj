@@ -50,6 +50,12 @@
     <Compile Include="Evolution\ModelChangeRecorderTests.cs" />
     <Compile Include="Evolution\ChangeApplyTests.cs" />
     <Compile Include="Evolution\SerializationTests.cs" />
+    <Compile Include="Metamodel\AClass.cs" />
+    <Compile Include="Metamodel\BClass.cs" />
+    <Compile Include="Metamodel\CClass.cs" />
+    <Compile Include="Metamodel\IAClass.cs" />
+    <Compile Include="Metamodel\IBClass.cs" />
+    <Compile Include="Metamodel\ICClass.cs" />
     <Compile Include="Metamodel\IRailwayContainer.cs" />
     <Compile Include="Metamodel\IRailwayElement.cs" />
     <Compile Include="Metamodel\IRoute.cs" />
@@ -58,6 +64,7 @@
     <Compile Include="Metamodel\ISensor.cs" />
     <Compile Include="Metamodel\ISwitch.cs" />
     <Compile Include="Metamodel\ISwitchPosition.cs" />
+    <Compile Include="Metamodel\ITest.cs" />
     <Compile Include="Metamodel\ITrackElement.cs" />
     <Compile Include="Metamodel\Position.cs" />
     <Compile Include="Metamodel\RailwayContainer.cs" />
@@ -72,6 +79,7 @@
     <Compile Include="Metamodel\Switch.cs" />
     <Compile Include="Metamodel\SwitchPosition.cs" />
     <Compile Include="Metamodel\SwitchPositionsCollection.cs" />
+    <Compile Include="Metamodel\Test.cs" />
     <Compile Include="Metamodel\TrackElement.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ResolveTests.cs" />
@@ -111,6 +119,13 @@
     <EmbeddedResource Include="railway.nmf" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="debug.debug">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <SubType>Designer</SubType>
+    </None>
+    <EmbeddedResource Include="debug.nmf">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
     <None Include="railway.railway">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

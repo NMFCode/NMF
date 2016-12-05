@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using NMF.Models.Repository;
+using NMF.Models.Tests.Debug;
 using NMF.Models.Tests.Railway;
 
 namespace NMF.Models.Tests
@@ -37,14 +38,40 @@ namespace NMF.Models.Tests
         }
 
         [TestMethod]
-        public void ReferenceDeletionInvertDebugTest()
+        public void RestoreReferencesTest()
         {
-            var r1 = new ModelRepository();
-            var path = new Uri("C:\\Users\\Tizian\\Desktop\\debug.debug");
-            var m1 = r1.Resolve(path, "C:\\Users\\Tizian\\Desktop\\debug.debug").Model;
-            Assert.IsNotNull(m1);
-            var temp = m1.RootElements.Single();
-            Assert.Fail();
+            var repository = new ModelRepository();
+            var model = repository.Resolve("debug.debug").Model;
+            Assert.IsNotNull(model);
+            var root = model.RootElements.Single() as Test;
+            Assert.IsNotNull(root);
+
+            using (var trans = new ModelTransaction(root))
+            {
+                var aElem = root.Invalids[0] as AClass;
+                aElem.Cont1[0].Delete();
+                aElem.Cont1[0].Delete();
+                root.Invalids[1].Delete();
+            }
+            Assert.AreEqual((root.Invalids[1] as BClass).Ref1[0], (root.Invalids[0] as AClass).Cont1[0]);
+            Assert.AreEqual((root.Invalids[1] as BClass).Ref2[0], (root.Invalids[0] as AClass).Cont1[1]);
+
+            using (var trans = new ModelTransaction(root))
+            {
+                var aElem = root.Invalids[0] as AClass;
+                aElem.Cont1[0].Delete();
+                aElem.Cont1[0].Delete();
+                root.Invalids[1].Delete();
+            }
+            Assert.AreEqual((root.Invalids[1] as BClass).Ref1[0], (root.Invalids[0] as AClass).Cont1[0]);
+            Assert.AreEqual((root.Invalids[1] as BClass).Ref2[0], (root.Invalids[0] as AClass).Cont1[1]);
+
+            using (var trans = new ModelTransaction(root))
+            {
+                root.Invalids[1].Delete();
+            }
+            Assert.AreEqual((root.Invalids[1] as BClass).Ref1[0], (root.Invalids[0] as AClass).Cont1[0]);
+            Assert.AreEqual((root.Invalids[1] as BClass).Ref2[0], (root.Invalids[0] as AClass).Cont1[1]);
         }
         
 

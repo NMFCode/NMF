@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="ASCII"?>
+<debug:test xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:debug="about:foo" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <invalids xsi:type="debug:AClass">
+    <cont1 xsi:type="debug:CClass"/>
+    <cont1 xsi:type="debug:CClass"/>
+  </invalids>
+  <invalids xsi:type="debug:BClass" ref1="//@invalids.0/@cont1.0" ref2="//@invalids.0/@cont1.1"/>
+</debug:test>
