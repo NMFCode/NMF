@@ -35,6 +35,17 @@ namespace NMF.Models.Tests
             Assert.AreEqual(model.Routes[0].DefinedBy[0].Elements[0].ConnectsTo.Count, referenceModel.Routes[0].DefinedBy[0].Elements[0].ConnectsTo.Count);
             Assert.AreEqual(model.Semaphores[0].Signal, referenceModel.Semaphores[0].Signal);
         }
+
+        [TestMethod]
+        public void ReferenceDeletionInvertDebugTest()
+        {
+            var r1 = new ModelRepository();
+            var path = new Uri("C:\\Users\\Tizian\\Desktop\\debug.debug");
+            var m1 = r1.Resolve(path, "C:\\Users\\Tizian\\Desktop\\debug.debug").Model;
+            Assert.IsNotNull(m1);
+            var temp = m1.RootElements.Single();
+            Assert.Fail();
+        }
         
 
         [TestMethod]
