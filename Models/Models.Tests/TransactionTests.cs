@@ -19,7 +19,7 @@ namespace NMF.Models.Tests
             var model = LoadRailwayModel(new ModelRepository());
             var referenceModel = LoadRailwayModel(new ModelRepository());
 
-            using (var trans = new NMFTransaction(model))
+            using (var trans = new ModelTransaction(model))
             {
                 var route = new Route() { Id = 42 };
                 model.Routes.Add(route);
@@ -54,7 +54,7 @@ namespace NMF.Models.Tests
             var model = LoadRailwayModel(new ModelRepository());
             var referenceModel = LoadRailwayModel(new ModelRepository());
 
-            using (var trans = new NMFTransaction(model))
+            using (var trans = new ModelTransaction(model))
             {
                 var route = new Route() { Id = 42 };
                 model.Routes.Add(route);

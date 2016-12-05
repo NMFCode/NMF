@@ -5,14 +5,14 @@ using NMF.Models.Repository;
 
 namespace NMF.Models
 {
-    public class NMFTransaction : IDisposable
+    public class ModelTransaction : IDisposable
     {
         private bool _committed;
         private readonly ExecutionEngine _engine = ExecutionEngine.Current;
         private readonly ModelChangeRecorder _recorder = new ModelChangeRecorder(true);
         private IModelRepository _repository;
 
-        public NMFTransaction(IModelElement rootElement)
+        public ModelTransaction(IModelElement rootElement)
         {
             if (rootElement == null) throw new ArgumentNullException(nameof(rootElement));
             _repository = rootElement.Model.Repository;
