@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <xmi:XMI xmi:version="2.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xmi="http://www.omg.org/XMI">
-  <hu.bme.mit.trainbenchmark:RailwayContainer xmi:version="2.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:hu.bme.mit.trainbenchmark="http://www.semanticweb.org/ontologies/2015/ttc/trainbenchmark">
+  <hu.bme.mit.trainbenchmark:RailwayContainer xmlns:hu.bme.mit.trainbenchmark="http://www.semanticweb.org/ontologies/2015/ttc/trainbenchmark">
     <invalids xsi:type="hu.bme.mit.trainbenchmark:Route" exit="#//0/@semaphores.1/" id="3">
       <follows position="RIGHT" switch="#//0/@invalids.0/@definedBy.5/@elements.5/" id="47" />
       <follows position="STRAIGHT" switch="#//0/@invalids.0/@definedBy.9/@elements.5/" id="73" />

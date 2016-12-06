@@ -68,9 +68,9 @@ namespace NMF.Models.Repository.Serialization
                 {
                     if (element == null) continue;
                     var typeInfo = GetSerializationInfo(element.GetType(), true);
-                    WriteBeginRootElement(writer, element, typeInfo);
+                    writer.WriteStartElement(typeInfo.NamespacePrefix ?? RootPrefix, typeInfo.ElementName, typeInfo.Namespace);
                     Serialize(element, writer, null, false, XmlIdentificationMode.FullObject, context);
-                    WriteEndRootElement(writer, element, typeInfo);
+                    writer.WriteEndElement();
                 }
             }
         }
