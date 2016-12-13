@@ -59,6 +59,6 @@ namespace NMF.Expressions
             return Inner.CreateReversableExpression<T>(expression, parameters, parameterMappings);
         }
 
-        public ISuccessorList CreateSuccessorList() => new SingleSuccessorList();
+        public ISuccessorList CreateSuccessorList() => new MultiSuccessorList();
     }
 }

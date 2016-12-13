@@ -117,6 +117,6 @@ namespace NMF.Expressions
         }
 
         [DebuggerStepThrough]
-        public ISuccessorList CreateSuccessorList() => new SingleSuccessorList();
+        public ISuccessorList CreateSuccessorList() => new MultiSuccessorList();
     }
 }

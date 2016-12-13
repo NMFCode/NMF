@@ -136,6 +136,6 @@ namespace NMF.Expressions
             throw new NotSupportedException("Reversable expressions are currently not supported.");
         }
 
-        public ISuccessorList CreateSuccessorList() => new SingleSuccessorList();
+        public ISuccessorList CreateSuccessorList() => new MultiSuccessorList();
     }
 }

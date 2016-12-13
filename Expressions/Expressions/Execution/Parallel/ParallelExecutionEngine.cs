@@ -18,27 +18,28 @@ namespace NMF.Expressions
             Schedule(nodes, NotifyNode);
         }
 
-        private void NotifyNode(INotifiable node)
+        private void NotifyNode(INotifiable source)
         {
-            int currentValue = 1;
             bool evaluating = true;
+            var stack = new Stack<Tuple<INotifiable, int>>();
+            stack.Push(new Tuple<INotifiable, int>(source, 1));
 
-            while (true)
+            while (stack.Count > 0)
             {
+                var tuple = stack.Pop();
+                var node = tuple.Item1;
                 var metaData = node.ExecutionMetaData;
-                if (metaData.RemainingVisits != currentValue)
+
+                if (metaData.RemainingVisits != tuple.Item2)
                 {
-                    int remaining = Interlocked.Add(ref metaData.RemainingVisits, -currentValue);
+                    int remaining = Interlocked.Add(ref metaData.RemainingVisits, -tuple.Item2);
                     if (remaining > 0)
-                        return;
+                        continue;
                 }
                 else
                 {
                     metaData.RemainingVisits = 0;
                 }
-
-                currentValue = metaData.TotalVisits;
-                metaData.TotalVisits = 0;
 
                 INotificationResult result = null;
                 if (evaluating || metaData.Results.Count > 0)
@@ -50,12 +51,15 @@ namespace NMF.Expressions
 
                 if (node.Successors.HasSuccessors)
                 {
-                    node = node.Successors[0];
-                    if (result != null && evaluating)
-                        node.ExecutionMetaData.Results.Add(result);
+                    foreach (var succ in node.Successors)
+                    {
+                        if (result != null && evaluating)
+                            succ.ExecutionMetaData.Results.Add(result);
+                        stack.Push(new Tuple<INotifiable, int>(succ, metaData.TotalVisits));
+                    }
                 }
-                else
-                    break;
+
+                metaData.TotalVisits = 0;
             }
         }
 

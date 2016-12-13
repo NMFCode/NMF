@@ -17,20 +17,20 @@ namespace NMF.Expressions
                 NotifyNode(source);
         }
 
-        private void NotifyNode(INotifiable node)
+        private void NotifyNode(INotifiable source)
         {
-            int currentValue = 1;
             bool evaluating = true;
+            var stack = new Stack<Tuple<INotifiable, int>>();
+            stack.Push(new Tuple<INotifiable, int>(source, 1));
 
-            while (true)
+            while (stack.Count > 0)
             {
+                var tuple = stack.Pop();
+                var node = tuple.Item1;
                 var metaData = node.ExecutionMetaData;
-                metaData.RemainingVisits -= currentValue;
+                metaData.RemainingVisits -= tuple.Item2;
                 if (metaData.RemainingVisits > 0)
-                    return;
-
-                currentValue = metaData.TotalVisits;
-                metaData.TotalVisits = 0;
+                    continue;
 
                 INotificationResult result = null;
                 if (evaluating || metaData.Results.Count > 0)
@@ -42,12 +42,15 @@ namespace NMF.Expressions
 
                 if (node.Successors.HasSuccessors)
                 {
-                    node = node.Successors[0];
-                    if (result != null && evaluating)
-                        node.ExecutionMetaData.Results.UnsafeAdd(result);
+                    foreach (var succ in node.Successors)
+                    {
+                        if (result != null && evaluating)
+                            succ.ExecutionMetaData.Results.UnsafeAdd(result);
+                        stack.Push(new Tuple<INotifiable, int>(succ, metaData.TotalVisits));
+                    }
                 }
-                else
-                    break;
+                
+                metaData.TotalVisits = 0;
             }
         }
 

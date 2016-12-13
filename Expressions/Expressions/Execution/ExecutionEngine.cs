@@ -83,21 +83,23 @@ namespace NMF.Expressions
 
         private void ExecuteSingle(INotifiable source)
         {
-            var node = source;
-            INotificationResult lastResult = null;
+            var stack = new Stack<INotifiable>();
+            stack.Push(source);
 
-            while (node != null)
+            while (stack.Count > 0)
             {
-                if (lastResult != null)
-                    node.ExecutionMetaData.Results.UnsafeAdd(lastResult);
-
-                lastResult = node.Notify(node.ExecutionMetaData.Results);
+                var node = stack.Pop();
+                var result = node.Notify(node.ExecutionMetaData.Results);
                 node.ExecutionMetaData.Results.Clear();
 
-                if (lastResult.Changed && node.Successors.HasSuccessors)
-                    node = node.Successors[0];
-                else
-                    break;
+                if (result.Changed && node.Successors.HasSuccessors)
+                {
+                    foreach (var succ in node.Successors)
+                    {
+                        succ.ExecutionMetaData.Results.UnsafeAdd(result);
+                        stack.Push(succ);
+                    }
+                }
             }
         }
 

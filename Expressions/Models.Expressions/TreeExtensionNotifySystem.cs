@@ -102,6 +102,6 @@ namespace NMF.Expressions
             throw new NotSupportedException();
         }
 
-        public ISuccessorList CreateSuccessorList() => new SingleSuccessorList();
+        public ISuccessorList CreateSuccessorList() => new MultiSuccessorList();
     }
 }

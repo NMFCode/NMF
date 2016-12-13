@@ -178,7 +178,7 @@ namespace NMF.Expressions
             private INotifyEnumerable<T> inner;
             private IList underlyingCollection;
 
-            public ISuccessorList Successors { get; } = new SingleSuccessorList();
+            public ISuccessorList Successors { get; } = new MultiSuccessorList();
 
             public IEnumerable<INotifiable> Dependencies { get { yield return inner; } }
             public ExecutionMetaData ExecutionMetaData { get; } = new ExecutionMetaData();
