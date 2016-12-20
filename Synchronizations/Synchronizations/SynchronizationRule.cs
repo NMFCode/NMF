@@ -425,9 +425,11 @@ namespace NMF.Synchronizations
             existing = false;
             if (candidates != null)
             {
+                var inputArray = new object[1];
                 foreach (var item in candidates)
                 {
-                    if (item != null && ShouldCorrespond(input, item, context))
+                    inputArray[0] = item;
+                    if (item != null && !context.Trace.TraceIn(rightToLeft, inputArray).Any() && ShouldCorrespond(input, item, context))
                     {
                         output = item;
                         existing = true;
@@ -452,9 +454,11 @@ namespace NMF.Synchronizations
             existing = false;
             if (candidates != null)
             {
+                var inputArray = new object[1];
                 foreach (var item in candidates)
                 {
-                    if (item != null && ShouldCorrespond(item, input, context))
+                    inputArray[0] = item;
+                    if (item != null && !context.Trace.TraceIn(rightToLeft, inputArray).Any() && ShouldCorrespond(item, input, context))
                     {
                         output = item;
                         existing = true;

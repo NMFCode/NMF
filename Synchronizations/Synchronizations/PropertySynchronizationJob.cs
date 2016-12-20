@@ -249,14 +249,16 @@ namespace NMF.Synchronizations
 
         protected IDisposable Perform(TSource source, TTarget target, ISynchronizationContext context)
         {
-            targetSetter(target, sourceGetter(source));
             switch (context.ChangePropagation)
             {
                 case NMF.Transformations.ChangePropagationMode.None:
+                    targetSetter(target, sourceGetter(source));
                     return null;
                 case NMF.Transformations.ChangePropagationMode.OneWay:
                 case NMF.Transformations.ChangePropagationMode.TwoWay:
-                    return new PropertySynchronization<TValue>(sourceFunc.Observe(source), val => targetSetter(target, val));
+                    var incVal = sourceFunc.Observe(source);
+                    targetSetter(target, incVal.Value);
+                    return new PropertySynchronization<TValue>(incVal, val => targetSetter(target, val));
                 default:
                     throw new InvalidOperationException("Change propagation mode is not supported");
             }
@@ -270,7 +272,7 @@ namespace NMF.Synchronizations
         public LeftToRightPropertySynchronizationJob(Expression<Func<TLeft, TValue>> leftGetter, Action<TRight, TValue> rightSetter, bool isEarly)
             : base(leftGetter, rightSetter, isEarly)
         { }
-        
+
         public virtual IDisposable Perform(SynchronizationComputation<TLeft, TRight> computation, SynchronizationDirection direction, ISynchronizationContext context)
         {
             if (direction.IsLeftToRight())
