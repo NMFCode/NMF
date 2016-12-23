@@ -132,6 +132,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TrainBenchmark", "Expressio
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DgmlVisualizer", "Expressions\Tests\DgmlVisualizer\DgmlVisualizer.csproj", "{AEB08821-4040-4F7E-8367-E9605125A277}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClassDiagramOptimization", "Expressions\Tests\TTC2016CRA\ClassDiagramOptimization.csproj", "{88851106-A711-4CD8-B2D8-5DBD7A42156E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -322,6 +324,10 @@ Global
 		{AEB08821-4040-4F7E-8367-E9605125A277}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{AEB08821-4040-4F7E-8367-E9605125A277}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{AEB08821-4040-4F7E-8367-E9605125A277}.Release|Any CPU.Build.0 = Release|Any CPU
+		{88851106-A711-4CD8-B2D8-5DBD7A42156E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{88851106-A711-4CD8-B2D8-5DBD7A42156E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{88851106-A711-4CD8-B2D8-5DBD7A42156E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{88851106-A711-4CD8-B2D8-5DBD7A42156E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -379,5 +385,6 @@ Global
 		{09761C44-D1F2-4DB7-B33C-FCDBF260388C} = {DB96042F-8815-430D-8345-362F4266F0FE}
 		{32068384-1495-4002-9F26-CCFF63405B92} = {0B9F756F-763B-4BEB-A592-78DBD370B3A9}
 		{AEB08821-4040-4F7E-8367-E9605125A277} = {0B9F756F-763B-4BEB-A592-78DBD370B3A9}
+		{88851106-A711-4CD8-B2D8-5DBD7A42156E} = {0B9F756F-763B-4BEB-A592-78DBD370B3A9}
 	EndGlobalSection
 EndGlobal
