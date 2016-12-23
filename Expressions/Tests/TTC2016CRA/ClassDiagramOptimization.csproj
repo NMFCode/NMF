@@ -1,0 +1,121 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{88851106-A711-4CD8-B2D8-5DBD7A42156E}</ProjectGuid>
+    <OutputType>Exe</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>TTC2016.ClassDiagramOptimization</RootNamespace>
+    <AssemblyName>ClassDiagramOptimization</AssemblyName>
+    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject>ClassDiagramOptimization.Program</StartupObject>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="MemoizedProgram.cs" />
+    <Compile Include="IncrementalProgram.cs" />
+    <Compile Include="Metamodel\Attribute.cs" />
+    <Compile Include="Metamodel\Class.cs" />
+    <Compile Include="Metamodel\ClassEncapsulatesCollection.cs" />
+    <Compile Include="Metamodel\ClassModel.cs" />
+    <Compile Include="Metamodel\Feature.cs" />
+    <Compile Include="Metamodel\IAttribute.cs" />
+    <Compile Include="Metamodel\IClass.cs" />
+    <Compile Include="Metamodel\IClassModel.cs" />
+    <Compile Include="Metamodel\IFeature.cs" />
+    <Compile Include="Metamodel\IMethod.cs" />
+    <Compile Include="Metamodel\INamedElement.cs" />
+    <Compile Include="Metamodel\Method.cs" />
+    <Compile Include="Metamodel\NamedElement.cs" />
+    <Compile Include="Program.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
+    <EmbeddedResource Include="architectureCRA.nmf" />
+    <None Include="InputModels\TTC_InputRDG_A.xmi">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="InputModels\TTC_InputRDG_B.xmi">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="InputModels\TTC_InputRDG_C.xmi">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="InputModels\TTC_InputRDG_D.xmi">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="InputModels\TTC_InputRDG_E.xmi">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\Collections\Collections\Collections.csproj">
+      <Project>{6F57AA50-FB70-4DE8-BEAB-E3AE58B225D3}</Project>
+      <Name>Collections</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Expressions.Linq\Expressions.Linq.csproj">
+      <Project>{E82D72A1-90F6-4341-A82D-D6B40349DF63}</Project>
+      <Name>Expressions.Linq</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Expressions\Expressions.csproj">
+      <Project>{AFCA9D1D-26A6-482A-A5AB-0827AD0FD677}</Project>
+      <Name>Expressions</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\Models\Models\Models.csproj">
+      <Project>{E42AC7B6-8120-40B5-8CD3-C4139B940897}</Project>
+      <Name>Models</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\Models\Serialization\Serialization.csproj">
+      <Project>{C24EF2AC-49D3-4542-BC40-5D62E12C7DED}</Project>
+      <Name>Serialization</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\Tools\Utilities\Utilities.csproj">
+      <Project>{868226D4-BC8B-4B91-BD09-8F63D3C9DEBE}</Project>
+      <Name>Utilities</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

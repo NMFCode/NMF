@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="ASCII"?>
+<architectureCRA:ClassModel xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:architectureCRA="http://momot.big.tuwien.ac.at/architectureCRA/1.0" xsi:schemaLocation="http://momot.big.tuwien.ac.at/architectureCRA/1.0 architectureCRA.ecore">
+  <features xsi:type="architectureCRA:Method" name="M31" dataDependency="//@features.43 //@features.46 //@features.78" functionalDependency="//@features.12 //@features.39 //@features.18"/>
+  <features xsi:type="architectureCRA:Method" name="M8" dataDependency="//@features.63 //@features.71 //@features.79" functionalDependency="//@features.12 //@features.32 //@features.16"/>
+  <features xsi:type="architectureCRA:Method" name="M13" dataDependency="//@features.40 //@features.56 //@features.72" functionalDependency="//@features.1 //@features.33 //@features.21"/>
+  <features xsi:type="architectureCRA:Method" name="M30" dataDependency="//@features.68 //@features.56 //@features.72" functionalDependency="//@features.2 //@features.8 //@features.16"/>
+  <features xsi:type="architectureCRA:Method" name="M12" dataDependency="//@features.66 //@features.54 //@features.68" functionalDependency="//@features.6 //@features.29 //@features.26 //@features.16"/>
+  <features xsi:type="architectureCRA:Method" name="M7" dataDependency="//@features.61 //@features.53 //@features.59" functionalDependency="//@features.8 //@features.36 //@features.16"/>
+  <features xsi:type="architectureCRA:Method" name="M11" dataDependency="//@features.40 //@features.67 //@features.69" functionalDependency="//@features.8 //@features.30 //@features.37 //@features.16"/>
+  <features xsi:type="architectureCRA:Method" name="M6" dataDependency="//@features.62 //@features.47 //@features.64 //@features.75" functionalDependency="//@features.29 //@features.14 //@features.24 //@features.34"/>
+  <features xsi:type="architectureCRA:Method" name="M10" dataDependency="//@features.60 //@features.43 //@features.57 //@features.77" functionalDependency="//@features.5 //@features.29 //@features.35 //@features.16"/>
+  <features xsi:type="architectureCRA:Method" name="M5" dataDependency="//@features.62 //@features.71 //@features.74 //@features.78" functionalDependency="//@features.32 //@features.12 //@features.37 //@features.17"/>
+  <features xsi:type="architectureCRA:Method" name="M35" dataDependency="//@features.62 //@features.63 //@features.53 //@features.59" functionalDependency="//@features.3 //@features.5 //@features.33 //@features.28"/>
+  <features xsi:type="architectureCRA:Method" name="M34" dataDependency="//@features.62 //@features.53" functionalDependency="//@features.19 //@features.37 //@features.15"/>
+  <features xsi:type="architectureCRA:Method" name="M33" dataDependency="//@features.51 //@features.65 //@features.67 //@features.57" functionalDependency="//@features.1 //@features.13 //@features.39 //@features.18"/>
+  <features xsi:type="architectureCRA:Method" name="M32" dataDependency="//@features.60 //@features.63 //@features.61 //@features.66" functionalDependency="//@features.1 //@features.12 //@features.35 //@features.23"/>
+  <features xsi:type="architectureCRA:Method" name="M9" dataDependency="//@features.62 //@features.46 //@features.49 //@features.71" functionalDependency="//@features.2 //@features.13 //@features.39 //@features.18"/>
+  <features xsi:type="architectureCRA:Method" name="M4" dataDependency="//@features.63 //@features.67 //@features.55 //@features.57" functionalDependency="//@features.1 //@features.11 //@features.39 //@features.34"/>
+  <features xsi:type="architectureCRA:Method" name="M3" dataDependency="//@features.70 //@features.72 //@features.74 //@features.76" functionalDependency="//@features.20 //@features.22 //@features.24 //@features.28"/>
+  <features xsi:type="architectureCRA:Method" name="M2" dataDependency="//@features.41 //@features.57 //@features.75 //@features.58" functionalDependency="//@features.29 //@features.11 //@features.21 //@features.16"/>
+  <features xsi:type="architectureCRA:Method" name="M1" dataDependency="//@features.61 //@features.65 //@features.75" functionalDependency="//@features.29 //@features.8 //@features.13 //@features.39"/>
+  <features xsi:type="architectureCRA:Method" name="M38" dataDependency="//@features.48 //@features.71 //@features.55 //@features.72" functionalDependency="//@features.0 //@features.5 //@features.4 //@features.17"/>
+  <features xsi:type="architectureCRA:Method" name="M39" dataDependency="//@features.62 //@features.66 //@features.57 //@features.58" functionalDependency="//@features.2 //@features.38 //@features.15 //@features.28"/>
+  <features xsi:type="architectureCRA:Method" name="M36" dataDependency="//@features.40 //@features.51 //@features.70 //@features.56" functionalDependency="//@features.9 //@features.10 //@features.11 //@features.15"/>
+  <features xsi:type="architectureCRA:Method" name="M18" dataDependency="//@features.44 //@features.64 //@features.54 //@features.55" functionalDependency="//@features.0 //@features.5 //@features.29 //@features.37"/>
+  <features xsi:type="architectureCRA:Method" name="M37" dataDependency="//@features.43 //@features.48 //@features.67 //@features.74" functionalDependency="//@features.5 //@features.9 //@features.20"/>
+  <features xsi:type="architectureCRA:Method" name="M19" dataDependency="//@features.68 //@features.73 //@features.56 //@features.78" functionalDependency="//@features.8 //@features.31 //@features.33 //@features.18"/>
+  <features xsi:type="architectureCRA:Method" name="M16" dataDependency="//@features.52 //@features.65 //@features.53 //@features.59" functionalDependency="//@features.0 //@features.39 //@features.15 //@features.28"/>
+  <features xsi:type="architectureCRA:Method" name="M17" dataDependency="//@features.69 //@features.72 //@features.75 //@features.57" functionalDependency="//@features.6 //@features.14 //@features.36 //@features.38"/>
+  <features xsi:type="architectureCRA:Method" name="M14" dataDependency="//@features.48 //@features.49 //@features.54 //@features.79" functionalDependency="//@features.19 //@features.35 //@features.39"/>
+  <features xsi:type="architectureCRA:Method" name="M15" dataDependency="//@features.52 //@features.50 //@features.59" functionalDependency="//@features.0 //@features.29 //@features.24"/>
+  <features xsi:type="architectureCRA:Method" name="M20" dataDependency="//@features.62 //@features.45 //@features.71 //@features.77" functionalDependency="//@features.2 //@features.5 //@features.7 //@features.26"/>
+  <features xsi:type="architectureCRA:Method" name="M22" dataDependency="//@features.50 //@features.74 //@features.77 //@features.79" functionalDependency="//@features.5 //@features.21 //@features.24 //@features.28"/>
+  <features xsi:type="architectureCRA:Method" name="M21" dataDependency="//@features.40 //@features.60 //@features.69 //@features.76" functionalDependency="//@features.7 //@features.12 //@features.17"/>
+  <features xsi:type="architectureCRA:Method" name="M24" dataDependency="//@features.52 //@features.53 //@features.58 //@features.78" functionalDependency="//@features.3 //@features.13 //@features.25 //@features.26"/>
+  <features xsi:type="architectureCRA:Method" name="M23" dataDependency="//@features.44 //@features.49 //@features.70 //@features.58" functionalDependency="//@features.12 //@features.23 //@features.38 //@features.25"/>
+  <features xsi:type="architectureCRA:Method" name="M40" dataDependency="//@features.40 //@features.44 //@features.68 //@features.57" functionalDependency="//@features.5 //@features.35 //@features.20 //@features.17"/>
+  <features xsi:type="architectureCRA:Method" name="M25" dataDependency="//@features.63 //@features.51 //@features.61 //@features.79" functionalDependency="//@features.31 //@features.37 //@features.24"/>
+  <features xsi:type="architectureCRA:Method" name="M26" dataDependency="//@features.49 //@features.64 //@features.53 //@features.74" functionalDependency="//@features.8 //@features.33 //@features.19 //@features.20"/>
+  <features xsi:type="architectureCRA:Method" name="M27" dataDependency="//@features.46 //@features.68 //@features.71" functionalDependency="//@features.33 //@features.22 //@features.24 //@features.27"/>
+  <features xsi:type="architectureCRA:Method" name="M28" dataDependency="//@features.41 //@features.65 //@features.70" functionalDependency="//@features.0 //@features.7 //@features.19 //@features.27"/>
+  <features xsi:type="architectureCRA:Method" name="M29" dataDependency="//@features.51 //@features.68 //@features.55 //@features.72" functionalDependency="//@features.12 //@features.38 //@features.18"/>
+  <features xsi:type="architectureCRA:Attribute" name="A30"/>
+  <features xsi:type="architectureCRA:Attribute" name="A2"/>
+  <features xsi:type="architectureCRA:Attribute" name="A31"/>
+  <features xsi:type="architectureCRA:Attribute" name="A1"/>
+  <features xsi:type="architectureCRA:Attribute" name="A4"/>
+  <features xsi:type="architectureCRA:Attribute" name="A3"/>
+  <features xsi:type="architectureCRA:Attribute" name="A6"/>
+  <features xsi:type="architectureCRA:Attribute" name="A5"/>
+  <features xsi:type="architectureCRA:Attribute" name="A8"/>
+  <features xsi:type="architectureCRA:Attribute" name="A7"/>
+  <features xsi:type="architectureCRA:Attribute" name="A9"/>
+  <features xsi:type="architectureCRA:Attribute" name="A29"/>
+  <features xsi:type="architectureCRA:Attribute" name="A28"/>
+  <features xsi:type="architectureCRA:Attribute" name="A27"/>
+  <features xsi:type="architectureCRA:Attribute" name="A26"/>
+  <features xsi:type="architectureCRA:Attribute" name="A25"/>
+  <features xsi:type="architectureCRA:Attribute" name="A24"/>
+  <features xsi:type="architectureCRA:Attribute" name="A23"/>
+  <features xsi:type="architectureCRA:Attribute" name="A22"/>
+  <features xsi:type="architectureCRA:Attribute" name="A21"/>
+  <features xsi:type="architectureCRA:Attribute" name="A40"/>
+  <features xsi:type="architectureCRA:Attribute" name="A20"/>
+  <features xsi:type="architectureCRA:Attribute" name="A19"/>
+  <features xsi:type="architectureCRA:Attribute" name="A18"/>
+  <features xsi:type="architectureCRA:Attribute" name="A37"/>
+  <features xsi:type="architectureCRA:Attribute" name="A11"/>
+  <features xsi:type="architectureCRA:Attribute" name="A36"/>
+  <features xsi:type="architectureCRA:Attribute" name="A10"/>
+  <features xsi:type="architectureCRA:Attribute" name="A39"/>
+  <features xsi:type="architectureCRA:Attribute" name="A13"/>
+  <features xsi:type="architectureCRA:Attribute" name="A38"/>
+  <features xsi:type="architectureCRA:Attribute" name="A12"/>
+  <features xsi:type="architectureCRA:Attribute" name="A33"/>
+  <features xsi:type="architectureCRA:Attribute" name="A15"/>
+  <features xsi:type="architectureCRA:Attribute" name="A32"/>
+  <features xsi:type="architectureCRA:Attribute" name="A14"/>
+  <features xsi:type="architectureCRA:Attribute" name="A35"/>
+  <features xsi:type="architectureCRA:Attribute" name="A17"/>
+  <features xsi:type="architectureCRA:Attribute" name="A34"/>
+  <features xsi:type="architectureCRA:Attribute" name="A16"/>
+</architectureCRA:ClassModel>

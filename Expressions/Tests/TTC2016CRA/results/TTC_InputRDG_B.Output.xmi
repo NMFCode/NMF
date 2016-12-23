@@ -1,0 +1,25 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<architectureCRA:ClassModel xmi:version="2.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="Optimized Class Model" xmlns:xmi="http://www.omg.org/XMI" xmlns:architectureCRA="http://momot.big.tuwien.ac.at/architectureCRA/1.0">
+  <classes encapsulates="//@features.9" name="CA1" />
+  <classes encapsulates="//@features.11 //@features.0 //@features.15" name="C9" />
+  <classes encapsulates="//@features.4 //@features.1 //@features.16 //@features.5 //@features.8 //@features.12" name="C12" />
+  <classes encapsulates="//@features.13 //@features.6 //@features.7 //@features.3 //@features.10 //@features.2 //@features.14 //@features.17" name="C14" />
+  <features xsi:type="architectureCRA:Method" dataDependency="//@features.11 //@features.15" functionalDependency="//@features.6" isEncapsulatedBy="//@classes.1" name="M8" />
+  <features xsi:type="architectureCRA:Method" dataDependency="//@features.8 //@features.12" functionalDependency="//@features.3 //@features.4" isEncapsulatedBy="//@classes.2" name="M7" />
+  <features xsi:type="architectureCRA:Method" dataDependency="//@features.10 //@features.14" functionalDependency="//@features.1 //@features.7" isEncapsulatedBy="//@classes.3" name="M6" />
+  <features xsi:type="architectureCRA:Method" dataDependency="//@features.17" functionalDependency="//@features.2 //@features.4 //@features.7" isEncapsulatedBy="//@classes.3" name="M5" />
+  <features xsi:type="architectureCRA:Method" dataDependency="//@features.11 //@features.12" functionalDependency="//@features.1" isEncapsulatedBy="//@classes.2" name="M4" />
+  <features xsi:type="architectureCRA:Method" dataDependency="//@features.11 //@features.16" functionalDependency="//@features.1 //@features.4" isEncapsulatedBy="//@classes.2" name="M3" />
+  <features xsi:type="architectureCRA:Method" dataDependency="//@features.10 //@features.13" functionalDependency="//@features.1 //@features.7" isEncapsulatedBy="//@classes.3" name="M2" />
+  <features xsi:type="architectureCRA:Method" dataDependency="//@features.8 //@features.13" functionalDependency="//@features.3" isEncapsulatedBy="//@classes.3" name="M1" />
+  <features xsi:type="architectureCRA:Attribute" isEncapsulatedBy="//@classes.2" name="A2" />
+  <features xsi:type="architectureCRA:Attribute" isEncapsulatedBy="//@classes.0" name="A1" />
+  <features xsi:type="architectureCRA:Attribute" isEncapsulatedBy="//@classes.3" name="A4" />
+  <features xsi:type="architectureCRA:Attribute" isEncapsulatedBy="//@classes.1" name="A3" />
+  <features xsi:type="architectureCRA:Attribute" isEncapsulatedBy="//@classes.2" name="A6" />
+  <features xsi:type="architectureCRA:Attribute" isEncapsulatedBy="//@classes.3" name="A5" />
+  <features xsi:type="architectureCRA:Attribute" isEncapsulatedBy="//@classes.3" name="A8" />
+  <features xsi:type="architectureCRA:Attribute" isEncapsulatedBy="//@classes.1" name="A7" />
+  <features xsi:type="architectureCRA:Attribute" isEncapsulatedBy="//@classes.2" name="A10" />
+  <features xsi:type="architectureCRA:Attribute" isEncapsulatedBy="//@classes.3" name="A9" />
+</architectureCRA:ClassModel>

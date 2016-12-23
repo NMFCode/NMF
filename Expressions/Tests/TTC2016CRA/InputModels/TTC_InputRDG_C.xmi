@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="ASCII"?>
+<architectureCRA:ClassModel xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:architectureCRA="http://momot.big.tuwien.ac.at/architectureCRA/1.0" xsi:schemaLocation="http://momot.big.tuwien.ac.at/architectureCRA/1.0 architectureCRA.ecore">
+  <features xsi:type="architectureCRA:Method" name="M13" dataDependency="//@features.16 //@features.28 //@features.33" functionalDependency="//@features.1 //@features.2 //@features.4"/>
+  <features xsi:type="architectureCRA:Method" name="M8" dataDependency="//@features.23 //@features.34" functionalDependency="//@features.4 //@features.13 //@features.12"/>
+  <features xsi:type="architectureCRA:Method" name="M7" dataDependency="//@features.25 //@features.21 //@features.28" functionalDependency="//@features.1 //@features.6"/>
+  <features xsi:type="architectureCRA:Method" name="M12" dataDependency="//@features.24 //@features.29" functionalDependency="//@features.0 //@features.6"/>
+  <features xsi:type="architectureCRA:Method" name="M6" dataDependency="//@features.15 //@features.17 //@features.24" functionalDependency="//@features.3 //@features.6 //@features.9 //@features.11"/>
+  <features xsi:type="architectureCRA:Method" name="M11" dataDependency="//@features.16 //@features.20 //@features.33" functionalDependency="//@features.4 //@features.8 //@features.9 //@features.11"/>
+  <features xsi:type="architectureCRA:Method" name="M5" dataDependency="//@features.25 //@features.16 //@features.29" functionalDependency="//@features.7 //@features.9 //@features.10"/>
+  <features xsi:type="architectureCRA:Method" name="M10" dataDependency="//@features.26 //@features.22 //@features.29 //@features.33" functionalDependency="//@features.2 //@features.4 //@features.9 //@features.14"/>
+  <features xsi:type="architectureCRA:Method" name="M9" dataDependency="//@features.22 //@features.31 //@features.32 //@features.33" functionalDependency="//@features.0 //@features.4 //@features.11"/>
+  <features xsi:type="architectureCRA:Method" name="M4" dataDependency="//@features.16 //@features.19 //@features.21 //@features.33" functionalDependency="//@features.0 //@features.1 //@features.2 //@features.8"/>
+  <features xsi:type="architectureCRA:Method" name="M3" dataDependency="//@features.19 //@features.23 //@features.27 //@features.30" functionalDependency="//@features.1 //@features.8 //@features.12"/>
+  <features xsi:type="architectureCRA:Method" name="M2" dataDependency="//@features.15 //@features.22 //@features.28 //@features.32" functionalDependency="//@features.2 //@features.6 //@features.9"/>
+  <features xsi:type="architectureCRA:Method" name="M1" dataDependency="//@features.25 //@features.19 //@features.30 //@features.34" functionalDependency="//@features.0 //@features.3 //@features.8"/>
+  <features xsi:type="architectureCRA:Method" name="M14" dataDependency="//@features.19 //@features.21 //@features.22 //@features.31" functionalDependency="//@features.2 //@features.4 //@features.9 //@features.11"/>
+  <features xsi:type="architectureCRA:Method" name="M15" dataDependency="//@features.24 //@features.32 //@features.33" functionalDependency="//@features.3 //@features.13 //@features.12"/>
+  <features xsi:type="architectureCRA:Attribute" name="A2"/>
+  <features xsi:type="architectureCRA:Attribute" name="A1"/>
+  <features xsi:type="architectureCRA:Attribute" name="A4"/>
+  <features xsi:type="architectureCRA:Attribute" name="A3"/>
+  <features xsi:type="architectureCRA:Attribute" name="A6"/>
+  <features xsi:type="architectureCRA:Attribute" name="A5"/>
+  <features xsi:type="architectureCRA:Attribute" name="A8"/>
+  <features xsi:type="architectureCRA:Attribute" name="A20"/>
+  <features xsi:type="architectureCRA:Attribute" name="A7"/>
+  <features xsi:type="architectureCRA:Attribute" name="A9"/>
+  <features xsi:type="architectureCRA:Attribute" name="A19"/>
+  <features xsi:type="architectureCRA:Attribute" name="A18"/>
+  <features xsi:type="architectureCRA:Attribute" name="A11"/>
+  <features xsi:type="architectureCRA:Attribute" name="A10"/>
+  <features xsi:type="architectureCRA:Attribute" name="A13"/>
+  <features xsi:type="architectureCRA:Attribute" name="A12"/>
+  <features xsi:type="architectureCRA:Attribute" name="A15"/>
+  <features xsi:type="architectureCRA:Attribute" name="A14"/>
+  <features xsi:type="architectureCRA:Attribute" name="A17"/>
+  <features xsi:type="architectureCRA:Attribute" name="A16"/>
+</architectureCRA:ClassModel>

@@ -1,0 +1,17 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<architectureCRA:ClassModel xmi:version="2.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="Incrementally Optimized Class Model" xmlns:xmi="http://www.omg.org/XMI" xmlns:architectureCRA="http://momot.big.tuwien.ac.at/architectureCRA/1.0">
+  <classes encapsulates="//@features.5" name="CA1" />
+  <classes encapsulates="//@features.6" name="CA4" />
+  <classes encapsulates="//@features.8" name="CA5" />
+  <classes encapsulates="//@features.4 //@features.2" name="C2" />
+  <classes encapsulates="//@features.3 //@features.1 //@features.7 //@features.0" name="C4" />
+  <features xsi:type="architectureCRA:Method" dataDependency="//@features.7 //@features.8" functionalDependency="//@features.2" isEncapsulatedBy="//@classes.4" name="M4" />
+  <features xsi:type="architectureCRA:Method" dataDependency="//@features.6 //@features.7" functionalDependency="//@features.0 //@features.3" isEncapsulatedBy="//@classes.4" name="M3" />
+  <features xsi:type="architectureCRA:Method" dataDependency="//@features.4" functionalDependency="//@features.3" isEncapsulatedBy="//@classes.3" name="M2" />
+  <features xsi:type="architectureCRA:Method" dataDependency="//@features.5 //@features.7" functionalDependency="//@features.0 //@features.1" isEncapsulatedBy="//@classes.4" name="M1" />
+  <features xsi:type="architectureCRA:Attribute" isEncapsulatedBy="//@classes.3" name="A2" />
+  <features xsi:type="architectureCRA:Attribute" isEncapsulatedBy="//@classes.0" name="A1" />
+  <features xsi:type="architectureCRA:Attribute" isEncapsulatedBy="//@classes.1" name="A4" />
+  <features xsi:type="architectureCRA:Attribute" isEncapsulatedBy="//@classes.4" name="A3" />
+  <features xsi:type="architectureCRA:Attribute" isEncapsulatedBy="//@classes.2" name="A5" />
+</architectureCRA:ClassModel>

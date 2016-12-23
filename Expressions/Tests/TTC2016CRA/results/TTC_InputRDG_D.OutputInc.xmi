@@ -1,0 +1,98 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<architectureCRA:ClassModel xmi:version="2.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="Incrementally Optimized Class Model" xmlns:xmi="http://www.omg.org/XMI" xmlns:architectureCRA="http://momot.big.tuwien.ac.at/architectureCRA/1.0">
+  <classes encapsulates="//@features.42" name="CA31" />
+  <classes encapsulates="//@features.48 //@features.19 //@features.27" name="C15" />
+  <classes encapsulates="//@features.52 //@features.25 //@features.32" name="C21" />
+  <classes encapsulates="//@features.62 //@features.9 //@features.74 //@features.23" name="C39" />
+  <classes encapsulates="//@features.46 //@features.14 //@features.71" name="C42" />
+  <classes encapsulates="//@features.11 //@features.15 //@features.55" name="C50" />
+  <classes encapsulates="//@features.22 //@features.37 //@features.64" name="C51" />
+  <classes encapsulates="//@features.70 //@features.16 //@features.44 //@features.33 //@features.8 //@features.5 //@features.49 //@features.36" name="C54" />
+  <classes encapsulates="//@features.65 //@features.38 //@features.43 //@features.0 //@features.18 //@features.39" name="C55" />
+  <classes encapsulates="//@features.67 //@features.6 //@features.69 //@features.26 //@features.54 //@features.4 //@features.66" name="C56" />
+  <classes encapsulates="//@features.57 //@features.20 //@features.34 //@features.41 //@features.17 //@features.58 //@features.75" name="C57" />
+  <classes encapsulates="//@features.29 //@features.7 //@features.45 //@features.47 //@features.77" name="C59" />
+  <classes encapsulates="//@features.50 //@features.28 //@features.30 //@features.68 //@features.24 //@features.73 //@features.78" name="C60" />
+  <classes encapsulates="//@features.60 //@features.31 //@features.76 //@features.51 //@features.35 //@features.12 //@features.1 //@features.13 //@features.63 //@features.61 //@features.79" name="C64" />
+  <classes encapsulates="//@features.53 //@features.10 //@features.59 //@features.56 //@features.3 //@features.72 //@features.40 //@features.2 //@features.21" name="C65" />
+  <features xsi:type="architectureCRA:Method" dataDependency="//@features.43 //@features.46 //@features.78" functionalDependency="//@features.12 //@features.39 //@features.18" isEncapsulatedBy="//@classes.8" name="M31" />
+  <features xsi:type="architectureCRA:Method" dataDependency="//@features.63 //@features.71 //@features.79" functionalDependency="//@features.12 //@features.32 //@features.16" isEncapsulatedBy="//@classes.13" name="M8" />
+  <features xsi:type="architectureCRA:Method" dataDependency="//@features.40 //@features.56 //@features.72" functionalDependency="//@features.1 //@features.33 //@features.21" isEncapsulatedBy="//@classes.14" name="M13" />
+  <features xsi:type="architectureCRA:Method" dataDependency="//@features.68 //@features.56 //@features.72" functionalDependency="//@features.2 //@features.8 //@features.16" isEncapsulatedBy="//@classes.14" name="M30" />
+  <features xsi:type="architectureCRA:Method" dataDependency="//@features.66 //@features.54 //@features.68" functionalDependency="//@features.6 //@features.29 //@features.26 //@features.16" isEncapsulatedBy="//@classes.9" name="M12" />
+  <features xsi:type="architectureCRA:Method" dataDependency="//@features.61 //@features.53 //@features.59" functionalDependency="//@features.8 //@features.36 //@features.16" isEncapsulatedBy="//@classes.7" name="M7" />
+  <features xsi:type="architectureCRA:Method" dataDependency="//@features.40 //@features.67 //@features.69" functionalDependency="//@features.8 //@features.30 //@features.37 //@features.16" isEncapsulatedBy="//@classes.9" name="M11" />
+  <features xsi:type="architectureCRA:Method" dataDependency="//@features.62 //@features.47 //@features.64 //@features.75" functionalDependency="//@features.29 //@features.14 //@features.24 //@features.34" isEncapsulatedBy="//@classes.11" name="M6" />
+  <features xsi:type="architectureCRA:Method" dataDependency="//@features.60 //@features.43 //@features.57 //@features.77" functionalDependency="//@features.5 //@features.29 //@features.35 //@features.16" isEncapsulatedBy="//@classes.7" name="M10" />
+  <features xsi:type="architectureCRA:Method" dataDependency="//@features.62 //@features.71 //@features.74 //@features.78" functionalDependency="//@features.32 //@features.12 //@features.37 //@features.17" isEncapsulatedBy="//@classes.3" name="M5" />
+  <features xsi:type="architectureCRA:Method" dataDependency="//@features.62 //@features.63 //@features.53 //@features.59" functionalDependency="//@features.3 //@features.5 //@features.33 //@features.28" isEncapsulatedBy="//@classes.14" name="M35" />
+  <features xsi:type="architectureCRA:Method" dataDependency="//@features.62 //@features.53" functionalDependency="//@features.19 //@features.37 //@features.15" isEncapsulatedBy="//@classes.5" name="M34" />
+  <features xsi:type="architectureCRA:Method" dataDependency="//@features.51 //@features.65 //@features.67 //@features.57" functionalDependency="//@features.1 //@features.13 //@features.39 //@features.18" isEncapsulatedBy="//@classes.13" name="M33" />
+  <features xsi:type="architectureCRA:Method" dataDependency="//@features.60 //@features.63 //@features.61 //@features.66" functionalDependency="//@features.1 //@features.12 //@features.35 //@features.23" isEncapsulatedBy="//@classes.13" name="M32" />
+  <features xsi:type="architectureCRA:Method" dataDependency="//@features.62 //@features.46 //@features.49 //@features.71" functionalDependency="//@features.2 //@features.13 //@features.39 //@features.18" isEncapsulatedBy="//@classes.4" name="M9" />
+  <features xsi:type="architectureCRA:Method" dataDependency="//@features.63 //@features.67 //@features.55 //@features.57" functionalDependency="//@features.1 //@features.11 //@features.39 //@features.34" isEncapsulatedBy="//@classes.5" name="M4" />
+  <features xsi:type="architectureCRA:Method" dataDependency="//@features.70 //@features.72 //@features.74 //@features.76" functionalDependency="//@features.20 //@features.22 //@features.24 //@features.28" isEncapsulatedBy="//@classes.7" name="M3" />
+  <features xsi:type="architectureCRA:Method" dataDependency="//@features.41 //@features.57 //@features.75 //@features.58" functionalDependency="//@features.29 //@features.11 //@features.21 //@features.16" isEncapsulatedBy="//@classes.10" name="M2" />
+  <features xsi:type="architectureCRA:Method" dataDependency="//@features.61 //@features.65 //@features.75" functionalDependency="//@features.29 //@features.8 //@features.13 //@features.39" isEncapsulatedBy="//@classes.8" name="M1" />
+  <features xsi:type="architectureCRA:Method" dataDependency="//@features.48 //@features.71 //@features.55 //@features.72" functionalDependency="//@features.0 //@features.5 //@features.4 //@features.17" isEncapsulatedBy="//@classes.1" name="M38" />
+  <features xsi:type="architectureCRA:Method" dataDependency="//@features.62 //@features.66 //@features.57 //@features.58" functionalDependency="//@features.2 //@features.38 //@features.15 //@features.28" isEncapsulatedBy="//@classes.10" name="M39" />
+  <features xsi:type="architectureCRA:Method" dataDependency="//@features.40 //@features.51 //@features.70 //@features.56" functionalDependency="//@features.9 //@features.10 //@features.11 //@features.15" isEncapsulatedBy="//@classes.14" name="M36" />
+  <features xsi:type="architectureCRA:Method" dataDependency="//@features.44 //@features.64 //@features.54 //@features.55" functionalDependency="//@features.0 //@features.5 //@features.29 //@features.37" isEncapsulatedBy="//@classes.6" name="M18" />
+  <features xsi:type="architectureCRA:Method" dataDependency="//@features.43 //@features.48 //@features.67 //@features.74" functionalDependency="//@features.5 //@features.9 //@features.20" isEncapsulatedBy="//@classes.3" name="M37" />
+  <features xsi:type="architectureCRA:Method" dataDependency="//@features.68 //@features.73 //@features.56 //@features.78" functionalDependency="//@features.8 //@features.31 //@features.33 //@features.18" isEncapsulatedBy="//@classes.12" name="M19" />
+  <features xsi:type="architectureCRA:Method" dataDependency="//@features.52 //@features.65 //@features.53 //@features.59" functionalDependency="//@features.0 //@features.39 //@features.15 //@features.28" isEncapsulatedBy="//@classes.2" name="M16" />
+  <features xsi:type="architectureCRA:Method" dataDependency="//@features.69 //@features.72 //@features.75 //@features.57" functionalDependency="//@features.6 //@features.14 //@features.36 //@features.38" isEncapsulatedBy="//@classes.9" name="M17" />
+  <features xsi:type="architectureCRA:Method" dataDependency="//@features.48 //@features.49 //@features.54 //@features.79" functionalDependency="//@features.19 //@features.35 //@features.39" isEncapsulatedBy="//@classes.1" name="M14" />
+  <features xsi:type="architectureCRA:Method" dataDependency="//@features.52 //@features.50 //@features.59" functionalDependency="//@features.0 //@features.29 //@features.24" isEncapsulatedBy="//@classes.12" name="M15" />
+  <features xsi:type="architectureCRA:Method" dataDependency="//@features.62 //@features.45 //@features.71 //@features.77" functionalDependency="//@features.2 //@features.5 //@features.7 //@features.26" isEncapsulatedBy="//@classes.11" name="M20" />
+  <features xsi:type="architectureCRA:Method" dataDependency="//@features.50 //@features.74 //@features.77 //@features.79" functionalDependency="//@features.5 //@features.21 //@features.24 //@features.28" isEncapsulatedBy="//@classes.12" name="M22" />
+  <features xsi:type="architectureCRA:Method" dataDependency="//@features.40 //@features.60 //@features.69 //@features.76" functionalDependency="//@features.7 //@features.12 //@features.17" isEncapsulatedBy="//@classes.13" name="M21" />
+  <features xsi:type="architectureCRA:Method" dataDependency="//@features.52 //@features.53 //@features.58 //@features.78" functionalDependency="//@features.3 //@features.13 //@features.25 //@features.26" isEncapsulatedBy="//@classes.2" name="M24" />
+  <features xsi:type="architectureCRA:Method" dataDependency="//@features.44 //@features.49 //@features.70 //@features.58" functionalDependency="//@features.12 //@features.23 //@features.38 //@features.25" isEncapsulatedBy="//@classes.7" name="M23" />
+  <features xsi:type="architectureCRA:Method" dataDependency="//@features.40 //@features.44 //@features.68 //@features.57" functionalDependency="//@features.5 //@features.35 //@features.20 //@features.17" isEncapsulatedBy="//@classes.10" name="M40" />
+  <features xsi:type="architectureCRA:Method" dataDependency="//@features.63 //@features.51 //@features.61 //@features.79" functionalDependency="//@features.31 //@features.37 //@features.24" isEncapsulatedBy="//@classes.13" name="M25" />
+  <features xsi:type="architectureCRA:Method" dataDependency="//@features.49 //@features.64 //@features.53 //@features.74" functionalDependency="//@features.8 //@features.33 //@features.19 //@features.20" isEncapsulatedBy="//@classes.7" name="M26" />
+  <features xsi:type="architectureCRA:Method" dataDependency="//@features.46 //@features.68 //@features.71" functionalDependency="//@features.33 //@features.22 //@features.24 //@features.27" isEncapsulatedBy="//@classes.6" name="M27" />
+  <features xsi:type="architectureCRA:Method" dataDependency="//@features.41 //@features.65 //@features.70" functionalDependency="//@features.0 //@features.7 //@features.19 //@features.27" isEncapsulatedBy="//@classes.8" name="M28" />
+  <features xsi:type="architectureCRA:Method" dataDependency="//@features.51 //@features.68 //@features.55 //@features.72" functionalDependency="//@features.12 //@features.38 //@features.18" isEncapsulatedBy="//@classes.8" name="M29" />
+  <features xsi:type="architectureCRA:Attribute" isEncapsulatedBy="//@classes.14" name="A30" />
+  <features xsi:type="architectureCRA:Attribute" isEncapsulatedBy="//@classes.10" name="A2" />
+  <features xsi:type="architectureCRA:Attribute" isEncapsulatedBy="//@classes.0" name="A31" />
+  <features xsi:type="architectureCRA:Attribute" isEncapsulatedBy="//@classes.8" name="A1" />
+  <features xsi:type="architectureCRA:Attribute" isEncapsulatedBy="//@classes.7" name="A4" />
+  <features xsi:type="architectureCRA:Attribute" isEncapsulatedBy="//@classes.11" name="A3" />
+  <features xsi:type="architectureCRA:Attribute" isEncapsulatedBy="//@classes.4" name="A6" />
+  <features xsi:type="architectureCRA:Attribute" isEncapsulatedBy="//@classes.11" name="A5" />
+  <features xsi:type="architectureCRA:Attribute" isEncapsulatedBy="//@classes.1" name="A8" />
+  <features xsi:type="architectureCRA:Attribute" isEncapsulatedBy="//@classes.7" name="A7" />
+  <features xsi:type="architectureCRA:Attribute" isEncapsulatedBy="//@classes.12" name="A9" />
+  <features xsi:type="architectureCRA:Attribute" isEncapsulatedBy="//@classes.13" name="A29" />
+  <features xsi:type="architectureCRA:Attribute" isEncapsulatedBy="//@classes.2" name="A28" />
+  <features xsi:type="architectureCRA:Attribute" isEncapsulatedBy="//@classes.14" name="A27" />
+  <features xsi:type="architectureCRA:Attribute" isEncapsulatedBy="//@classes.9" name="A26" />
+  <features xsi:type="architectureCRA:Attribute" isEncapsulatedBy="//@classes.5" name="A25" />
+  <features xsi:type="architectureCRA:Attribute" isEncapsulatedBy="//@classes.14" name="A24" />
+  <features xsi:type="architectureCRA:Attribute" isEncapsulatedBy="//@classes.10" name="A23" />
+  <features xsi:type="architectureCRA:Attribute" isEncapsulatedBy="//@classes.10" name="A22" />
+  <features xsi:type="architectureCRA:Attribute" isEncapsulatedBy="//@classes.14" name="A21" />
+  <features xsi:type="architectureCRA:Attribute" isEncapsulatedBy="//@classes.13" name="A40" />
+  <features xsi:type="architectureCRA:Attribute" isEncapsulatedBy="//@classes.13" name="A20" />
+  <features xsi:type="architectureCRA:Attribute" isEncapsulatedBy="//@classes.3" name="A19" />
+  <features xsi:type="architectureCRA:Attribute" isEncapsulatedBy="//@classes.13" name="A18" />
+  <features xsi:type="architectureCRA:Attribute" isEncapsulatedBy="//@classes.6" name="A37" />
+  <features xsi:type="architectureCRA:Attribute" isEncapsulatedBy="//@classes.8" name="A11" />
+  <features xsi:type="architectureCRA:Attribute" isEncapsulatedBy="//@classes.9" name="A36" />
+  <features xsi:type="architectureCRA:Attribute" isEncapsulatedBy="//@classes.9" name="A10" />
+  <features xsi:type="architectureCRA:Attribute" isEncapsulatedBy="//@classes.12" name="A39" />
+  <features xsi:type="architectureCRA:Attribute" isEncapsulatedBy="//@classes.9" name="A13" />
+  <features xsi:type="architectureCRA:Attribute" isEncapsulatedBy="//@classes.7" name="A38" />
+  <features xsi:type="architectureCRA:Attribute" isEncapsulatedBy="//@classes.4" name="A12" />
+  <features xsi:type="architectureCRA:Attribute" isEncapsulatedBy="//@classes.14" name="A33" />
+  <features xsi:type="architectureCRA:Attribute" isEncapsulatedBy="//@classes.12" name="A15" />
+  <features xsi:type="architectureCRA:Attribute" isEncapsulatedBy="//@classes.3" name="A32" />
+  <features xsi:type="architectureCRA:Attribute" isEncapsulatedBy="//@classes.10" name="A14" />
+  <features xsi:type="architectureCRA:Attribute" isEncapsulatedBy="//@classes.13" name="A35" />
+  <features xsi:type="architectureCRA:Attribute" isEncapsulatedBy="//@classes.11" name="A17" />
+  <features xsi:type="architectureCRA:Attribute" isEncapsulatedBy="//@classes.12" name="A34" />
+  <features xsi:type="architectureCRA:Attribute" isEncapsulatedBy="//@classes.13" name="A16" />
+</architectureCRA:ClassModel>

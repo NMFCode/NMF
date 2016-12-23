@@ -1,0 +1,21 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<nmeta:Namespace xmi:version="2.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" Uri="http://momot.big.tuwien.ac.at/architectureCRA/1.0" Prefix="architectureCRA" Name="architectureCRA" xmlns:xmi="http://www.omg.org/XMI" xmlns:nmeta="http://nmf.codeplex.com/nmeta/">
+  <Types xsi:type="nmeta:Class" BaseTypes="//NamedElement/" Name="ClassModel">
+    <References IsContainment="True" ReferenceType="//Class/" IsOrdered="True" UpperBound="-1" Name="classes" />
+    <References IsContainment="True" ReferenceType="//Feature/" IsOrdered="True" UpperBound="-1" Name="features" />
+  </Types>
+  <Types xsi:type="nmeta:Class" BaseTypes="//NamedElement/" Name="Class">
+    <References Opposite="//Feature/isEncapsulatedBy/" ReferenceType="//Feature/" IsOrdered="True" LowerBound="1" UpperBound="-1" Name="encapsulates" />
+  </Types>
+  <Types xsi:type="nmeta:Class" BaseTypes="//Feature/" Name="Attribute" />
+  <Types xsi:type="nmeta:Class" BaseTypes="//Feature/" Name="Method">
+    <References ReferenceType="//Attribute/" IsOrdered="True" UpperBound="-1" Name="dataDependency" />
+    <References ReferenceType="//Method/" IsOrdered="True" UpperBound="-1" Name="functionalDependency" />
+  </Types>
+  <Types xsi:type="nmeta:Class" IsAbstract="True" BaseTypes="//NamedElement/" Name="Feature">
+    <References Opposite="//Class/encapsulates/" ReferenceType="//Class/" IsOrdered="True" Name="isEncapsulatedBy" />
+  </Types>
+  <Types xsi:type="nmeta:Class" IsAbstract="True" Identifier="//NamedElement/name/" Name="NamedElement">
+    <Attributes IsOrdered="True" LowerBound="1" Type="http://nmf.codeplex.com/nmeta/#//String/" Name="name" />
+  </Types>
+</nmeta:Namespace>
