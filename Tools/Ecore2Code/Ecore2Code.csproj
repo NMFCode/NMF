@@ -76,7 +76,6 @@
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="PythonCodeGenerator\CodeUnitPreProcessor.cs" />
-    <Compile Include="PythonCodeGenerator\Compiler.cs" />
     <Compile Include="PythonCodeGenerator\Generator.cs" />
     <Compile Include="PythonCodeGenerator\Provider.cs">
       <SubType>Component</SubType>

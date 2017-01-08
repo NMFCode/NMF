@@ -50,7 +50,7 @@ namespace PythonCodeGenerator.CodeDom {
      * 
      */
 
-    partial class PythonGenerator : CodeCompiler, ICodeCompiler, ICodeGenerator {
+    partial class PythonGenerator : CodeGenerator, ICodeGenerator {
         CodeEntryPointMethod entryPoint = null;
         string entryPointNamespace = null;
         string lastNamespace;        

@@ -26,7 +26,8 @@ namespace PythonCodeGenerator.CodeDom {
 
         [Obsolete]
         public override ICodeCompiler CreateCompiler() {
-            return new PythonGenerator();
+            //return new PythonGenerator();
+            throw new Exception("Not Supported");
         }
 
         [Obsolete]
