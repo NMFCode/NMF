@@ -54,6 +54,7 @@ namespace PythonCodeGenerator.CodeDom {
         Stack<CodeNamespace> namespaceStack = new Stack<CodeNamespace>();
         int col, row;               
         int lastIndent;
+        Hashtable methodDocstringCache = new Hashtable();
         internal const string ctorFieldInit = "_ConstructorFieldInitFunction";        
         List<string> processedTypes = new List<string>();
         List<string> topLevelTypes = new List<string>();
@@ -245,7 +246,7 @@ namespace PythonCodeGenerator.CodeDom {
             }
 
             if (e.Initializers.Count > 0) {
-                Write("System.Array[");
+                Write("[");
                 OutputType(elementType);
                 Write("]");
 
@@ -305,10 +306,9 @@ namespace PythonCodeGenerator.CodeDom {
             WriteLine();            
         }
 
-        protected override void GenerateBaseReferenceExpression(CodeBaseReferenceExpression e) {
-            //the last appended class in processedTypes is the current one we're generating
+        protected override void GenerateBaseReferenceExpression(CodeBaseReferenceExpression e) {            
             //use it instead of type(self)
-            Write("super(" + processedTypes[processedTypes.Count - 1] + ", self)");
+            Write("super(" + CurrentClass.Name + ", self)");
         }
 
         protected override void GenerateCastExpression(CodeCastExpression e) {
@@ -316,17 +316,35 @@ namespace PythonCodeGenerator.CodeDom {
         }
 
         protected override void GenerateComment(CodeComment e) {
-
-            //Console.WriteLine(e.Text.Replace("\r", "\\r").Replace("\n", "\\n"));
-            e.Text = e.Text.Replace("<summary>\r\n", "");
-            e.Text = e.Text.Replace("\r\n </summary>", "");
-            e.Text = e.Text.Replace("<summary>", "");
-            e.Text = e.Text.Replace("</summary>", "");            
-            string[] lines = e.Text.Replace("\r", "").Split('\n');
-            foreach (string line in lines) {
-                Write("# ");
-                WriteLine(line);
-            }
+            String emptyString = "";
+            String tripleApo = "\"\"\"";
+            
+            e.Text = e.Text.Replace("<summary>\r\n", emptyString);
+            e.Text = e.Text.Replace("\r\n </summary>", Environment.NewLine);
+            e.Text = e.Text.Replace("<summary>", emptyString);
+            e.Text = e.Text.Replace("</summary>", Environment.NewLine);
+            e.Text = e.Text.Replace("</param>", emptyString);
+            e.Text = e.Text.Replace("</returns>", emptyString);
+            e.Text = e.Text.Replace("<param name=\"", ":param ");
+            e.Text = e.Text.Replace("<returns>", ":returns: ");
+            e.Text = e.Text.Replace("\">", ": ");       
+                 
+            e.Text = e.Text.Replace("\r", emptyString);
+            e.Text = e.Text.TrimEnd(new char[] { '\n' });
+            string[] lines = e.Text.Split('\n');
+            if(lines.Length == 1)
+            {
+                WriteCommentLine(tripleApo + lines[0].Trim() + tripleApo);                
+            } else
+            {
+                WriteCommentLine(tripleApo);
+                foreach (string line in lines)
+                {
+                    WriteCommentLine(line);
+                }
+                WriteCommentLine(tripleApo);
+            }            
+            
         }
 
         protected override void GenerateConditionStatement(CodeConditionStatement e) {
@@ -806,18 +824,25 @@ namespace PythonCodeGenerator.CodeDom {
                 Write("fset=" + priv + "set_");
                 Write(e.Name);
             }
-            if (e.Comments != null && e.Comments.Count > 0) {
+            if (e.Comments != null && e.Comments.Count > 0) {                
                 Write(",doc=\"\"\"");
-                foreach (CodeCommentStatement comment in e.Comments) {
-                    if (!comment.Comment.DocComment) continue;
+                if (e.Comments.Count == 1)
+                {
+                    Write(e.Comments[0].Comment.Text.Trim());
+                } else
+                {
+                    foreach (CodeCommentStatement comment in e.Comments)
+                    {
+                        if (!comment.Comment.DocComment) continue;
 
-                    WriteLine(comment.Comment.Text);
+                        WriteLine(comment.Comment.Text);
+                    }
                 }
-                Write("\"\"\"");
+                Write("\"\"\"");                
             }
-            WriteLine(")");
-
-            
+            Write(")");
+            WriteLine();
+            WriteLine();
         }
 
         protected override void GeneratePropertyReferenceExpression(CodePropertyReferenceExpression e) {
@@ -1603,6 +1628,18 @@ namespace PythonCodeGenerator.CodeDom {
                 WriteLine("):"); //!!! Consult UserData["NoNewLine"]
                 Indent++;
                 lastIndent = Indent;
+
+                //write docstring if there is one
+                if (methodDocstringCache.ContainsKey(CurrentMember))
+                {                    
+                    foreach (String line in (List<String>)methodDocstringCache[CurrentMember])
+                    {
+                        WriteLine(line);
+                    }
+                    methodDocstringCache.Remove(CurrentMember);                    
+
+                }
+
                 GenerateStatements(stmts);
                 Indent--;
                 cursorCol = col;
@@ -1686,8 +1723,24 @@ namespace PythonCodeGenerator.CodeDom {
             Indent = prevIndent;
         }
 
-        private void WriteLine(string txt) {
-            WriteLine(txt, false);
+        private void WriteLine(string txt) {            
+            WriteLine(txt, false);                      
+        }
+
+        private void WriteCommentLine(string txt)
+        {
+            if (CurrentMember is CodeMemberMethod)
+            {
+                if (!methodDocstringCache.ContainsKey(CurrentMember))
+                {
+                    methodDocstringCache.Add(CurrentMember, new List<String>());
+                }
+                ((List<String>)methodDocstringCache[CurrentMember]).Add(txt);
+            }
+            else
+            {
+                WriteLine(txt, false);
+            }
         }
 
         private void WriteLine(string txt, bool preserveSpaces) {
