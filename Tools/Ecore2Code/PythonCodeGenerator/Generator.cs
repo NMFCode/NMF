@@ -27,16 +27,12 @@ namespace PythonCodeGenerator.CodeDom {
     /* CodeGen Notes: 
      * 
      * return types are set using @returns(type) decorator syntax
-     * argument types are set using @accepts(type) decorator syntax
-     * 
-     * we just need to then define these data descriptors somewhere (so
-     * our code compiles)
+     * argument types are set using @accepts(type) decorator syntax         
      * 
      * Classes are defined as:
      * 
      * class foo(object):
-     *      """type(x) == int, type(y) == System.EventArgs, type(z) == bar"""
-     *      __slots__ = ['x', 'y', 'z']
+     *      """type(x) == int, type(y) == System.EventArgs, type(z) == bar"""     
      * 
      * @returns(str)
      * def bar():
@@ -56,7 +52,7 @@ namespace PythonCodeGenerator.CodeDom {
         string lastNamespace;        
         Stack<TypeDeclInfo> typeStack = new Stack<TypeDeclInfo>();
         Stack<CodeNamespace> namespaceStack = new Stack<CodeNamespace>();
-        int col, row, lastCol, lastRow;                
+        int col, row;               
         int lastIndent;
         internal const string ctorFieldInit = "_ConstructorFieldInitFunction";        
         List<string> processedTypes = new List<string>();
@@ -79,14 +75,7 @@ namespace PythonCodeGenerator.CodeDom {
 #endif
                 if (Options != null) {
                     Options.BlankLinesBetweenMembers = false;
-                }
-
-                
-                // fetch the merger, if one is available.  When a merger
-                // is available our internal write functions will write
-                // to a cache.  When we advance output we'll commit the
-                // cache all at once.                    
-                string oldNewline = Output.NewLine;                    
+                }                                              
 
                 CodeUnitPreProcessor.removeNetSystemImports(ref e);                    
                 e = CodeUnitPreProcessor.replaceNetVariableTypesWithNativeVaribaleTypes(e);              
@@ -373,7 +362,6 @@ namespace PythonCodeGenerator.CodeDom {
         }
 
         protected override void GenerateConstructor(CodeConstructor e, CodeTypeDeclaration c) {
-            FlushOutput(e);           
 
             Write("def __init__(self");
             if (e.Parameters.Count > 0) {
@@ -436,8 +424,6 @@ namespace PythonCodeGenerator.CodeDom {
         }
 
         protected override void GenerateEntryPointMethod(CodeEntryPointMethod e, CodeTypeDeclaration c) {
-            FlushOutput(e);
-
             entryPointNamespace = lastNamespace;
             entryPoint = e;
         }
@@ -543,8 +529,6 @@ namespace PythonCodeGenerator.CodeDom {
 
 
         protected override void GenerateMethod(CodeMemberMethod e, CodeTypeDeclaration c) {
-            FlushOutput(e);
-
             if ((e.Attributes & MemberAttributes.ScopeMask) == MemberAttributes.Static)
                 WriteLine("@staticmethod");
 
@@ -710,15 +694,12 @@ namespace PythonCodeGenerator.CodeDom {
                 GenerateNamespaceImportsWorker(e);
             }
 
-            FlushOutput(e);
-  
             if (!String.IsNullOrEmpty(e.Name)) {
                 namespaceStack.Push(e);
 
                 lastNamespace = e.Name;
 
-                // the best way to realize namespaces in python are modules not classes
-                // ipy wasn't even able to execute this generated code so there is no purpose for it
+                // the best way to realize namespaces in python are modules not classes                
                 Write("# Namespace ");
                 Write(e.Name);
                 Write("\n");           
@@ -781,8 +762,6 @@ namespace PythonCodeGenerator.CodeDom {
         }
 
         protected override void GenerateProperty(CodeMemberProperty e, CodeTypeDeclaration c) {
-            FlushOutput(e);
-
             string priv = String.Empty;
             if ((e.Attributes & MemberAttributes.AccessMask) == MemberAttributes.Private) priv = "_";
 
@@ -878,9 +857,7 @@ namespace PythonCodeGenerator.CodeDom {
 
             int oldIndent = Indent;
             Indent = lastIndent;
-
-            FlushOutput(e);
-
+            
             WriteLine("# begin snippet member " + Indent.ToString() + CurrentTypeName);
 
             WriteSnippetWorker(e.Text);
@@ -1007,9 +984,7 @@ namespace PythonCodeGenerator.CodeDom {
         }
 
         protected override void GenerateTypeConstructor(CodeTypeConstructor e) {
-            FlushOutput(e);
-
-            MyGenerateStatements(e.Statements);            
+            GenerateStatements(e.Statements);            
         }
 
         private void GenerateFieldInit() {
@@ -1137,9 +1112,7 @@ namespace PythonCodeGenerator.CodeDom {
                 topLevelTypes.Add(e.Name);
             }
             currentTypeLevel++;
-
-            if (UserDataFalse(e.UserData, "NoEmit")) FlushOutput(e);            
-
+           
             if (e.Name != "__top__" || !UserDataFalse(e.UserData, "IsTopType")) {
 
                 typeStack.Push(new TypeDeclInfo(e));
@@ -1630,7 +1603,7 @@ namespace PythonCodeGenerator.CodeDom {
                 WriteLine("):"); //!!! Consult UserData["NoNewLine"]
                 Indent++;
                 lastIndent = Indent;
-                MyGenerateStatements(stmts);
+                GenerateStatements(stmts);
                 Indent--;
                 cursorCol = col;
                 cursorRow = row;
@@ -1648,11 +1621,7 @@ namespace PythonCodeGenerator.CodeDom {
 
             // store the location the cursor shold goto for this function.
             //userData[typeof(System.Drawing.Point)] = new System.Drawing.Point(cursorCol, cursorRow); //???
-        }
-
-        private void MyGenerateStatements(CodeStatementCollection statements) {
-            GenerateStatements(statements);            
-        }
+        }        
 
         private static string UserDataString(IDictionary userData, string name, string defaultValue) {
             if (userData == null) return defaultValue;
@@ -1671,28 +1640,7 @@ namespace PythonCodeGenerator.CodeDom {
             return userData == null ||
                 userData[name] == null ||
                 ((bool)userData[name]) == true;
-        }
-        
-        /// <summary>
-        /// Flushes output to the merger based upon the location
-        /// of this object.
-        /// </summary>
-        private void FlushOutput(CodeObject co) {
-            int line = row;
-            if (co.UserData["IPCreated"] != null) {
-                line = (int)co.UserData["Line"];
-                int column = (int)co.UserData["Column"];
-
-                DoFlush(line, column);
-            }             
-        }
-
-        /// <summary> Performs the actual work of flushing output </summary>
-        private void DoFlush(int line, int column) {
-
-            lastRow = line;
-            lastCol = column;
-        }
+        }                
 
         private void Write(object val) {
             Write(val.ToString());
