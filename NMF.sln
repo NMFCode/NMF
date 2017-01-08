@@ -130,8 +130,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Analysis", "Analysis\Analys
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CodeGenerationTests", "Transformations\Tests\CodeGenerationTests\CodeGenerationTests.csproj", "{F92D2D61-0DD1-4F73-AAB4-92DCC58F45D0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IronPython", "..\IronPython-1.1.2\Src\IronPython\IronPython.csproj", "{16ED1884-8B08-4787-B598-7C9D60519075}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -498,14 +496,6 @@ Global
 		{F92D2D61-0DD1-4F73-AAB4-92DCC58F45D0}.Release|Any CPU.Build.0 = Release|Any CPU
 		{F92D2D61-0DD1-4F73-AAB4-92DCC58F45D0}.Signed Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{F92D2D61-0DD1-4F73-AAB4-92DCC58F45D0}.Signed Release|Any CPU.ActiveCfg = Release|Any CPU
-		{16ED1884-8B08-4787-B598-7C9D60519075}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{16ED1884-8B08-4787-B598-7C9D60519075}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{16ED1884-8B08-4787-B598-7C9D60519075}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{16ED1884-8B08-4787-B598-7C9D60519075}.Release|Any CPU.Build.0 = Release|Any CPU
-		{16ED1884-8B08-4787-B598-7C9D60519075}.Signed Debug|Any CPU.ActiveCfg = Signed Debug|Any CPU
-		{16ED1884-8B08-4787-B598-7C9D60519075}.Signed Debug|Any CPU.Build.0 = Signed Debug|Any CPU
-		{16ED1884-8B08-4787-B598-7C9D60519075}.Signed Release|Any CPU.ActiveCfg = Signed Release|Any CPU
-		{16ED1884-8B08-4787-B598-7C9D60519075}.Signed Release|Any CPU.Build.0 = Signed Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

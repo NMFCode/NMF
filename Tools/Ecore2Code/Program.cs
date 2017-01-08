@@ -21,7 +21,7 @@ using NMF.Models.Repository;
 using NMF.Models.Repository.Serialization;
 using NMF.Models;
 
-using IronPython.CodeDom;
+using PythonCodeGenerator.CodeDom;
 
 
 namespace Ecore2Code
