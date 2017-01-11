@@ -354,12 +354,12 @@ namespace NMF.Models
                         if (absolute)
                         {
                             result = model.ModelUri != null
-                                ? new Uri(model.ModelUri, "#" + newFragment + "/")
+                                ? new Uri(model.ModelUri, "#" + newFragment)
                                 : null;
                         }
                         else
                         {
-                            result = new Uri("#" + newFragment + "/", UriKind.Relative);
+                            result = new Uri("#" + newFragment, UriKind.Relative);
                         }
                     }
                 }

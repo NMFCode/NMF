@@ -57,8 +57,8 @@ namespace NMF.Models.Tests
         public void RouteCanBeResolved()
         {
             var route = railway.Routes[0];
-            Assert.AreEqual("#//@routes.0/", route.RelativeUri.ToString());
-            Assert.AreEqual(BaseUri + "#//@routes.0/", route.AbsoluteUri.AbsoluteUri);
+            Assert.AreEqual("#//@routes.0", route.RelativeUri.ToString());
+            Assert.AreEqual(BaseUri + "#//@routes.0", route.AbsoluteUri.AbsoluteUri);
             Assert.AreSame(route, railwayModel.Resolve(route.RelativeUri));
             Assert.AreSame(route, repository.Resolve(route.AbsoluteUri));
         }
@@ -67,8 +67,8 @@ namespace NMF.Models.Tests
         public void SensorCanBeResolved()
         {
             var sensor = railway.Routes[0].DefinedBy[0];
-            Assert.AreEqual("#//@routes.0/@definedBy.0/", sensor.RelativeUri.ToString());
-            Assert.AreEqual(BaseUri + "#//@routes.0/@definedBy.0/", sensor.AbsoluteUri.AbsoluteUri);
+            Assert.AreEqual("#//@routes.0/@definedBy.0", sensor.RelativeUri.ToString());
+            Assert.AreEqual(BaseUri + "#//@routes.0/@definedBy.0", sensor.AbsoluteUri.AbsoluteUri);
             Assert.AreSame(sensor, railwayModel.Resolve(sensor.RelativeUri));
             Assert.AreSame(sensor, repository.Resolve(sensor.AbsoluteUri));
         }
@@ -77,8 +77,8 @@ namespace NMF.Models.Tests
         public void RootUriCanBeResolvedIfTwoRootsPresent()
         {
             railwayModel.RootElements.Add(new Segment());
-            Assert.AreEqual("#//0/", railway.RelativeUri.ToString());
-            Assert.AreEqual(BaseUri + "#//0/", railway.AbsoluteUri.AbsoluteUri);
+            Assert.AreEqual("#//0", railway.RelativeUri.ToString());
+            Assert.AreEqual(BaseUri + "#//0", railway.AbsoluteUri.AbsoluteUri);
             Assert.AreSame(railway, railway.Model.Resolve(railway.RelativeUri));
             Assert.AreSame(railway, repository.Resolve(railway.AbsoluteUri));
         }
@@ -88,8 +88,8 @@ namespace NMF.Models.Tests
         {
             railwayModel.RootElements.Add(new Segment());
             var route = railway.Routes[0];
-            Assert.AreEqual("#//0/@routes.0/", route.RelativeUri.ToString());
-            Assert.AreEqual(BaseUri + "#//0/@routes.0/", route.AbsoluteUri.AbsoluteUri);
+            Assert.AreEqual("#//0/@routes.0", route.RelativeUri.ToString());
+            Assert.AreEqual(BaseUri + "#//0/@routes.0", route.AbsoluteUri.AbsoluteUri);
             Assert.AreSame(route, railwayModel.Resolve(route.RelativeUri));
             Assert.AreSame(route, repository.Resolve(route.AbsoluteUri));
         }
@@ -98,8 +98,8 @@ namespace NMF.Models.Tests
         public void RootUriCanBeResolvedWhenRootPromotionDisabled()
         {
             Model.PromoteSingleRootElement = false;
-            Assert.AreEqual("#//0/", railway.RelativeUri.ToString());
-            Assert.AreEqual(BaseUri + "#//0/", railway.AbsoluteUri.AbsoluteUri);
+            Assert.AreEqual("#//0", railway.RelativeUri.ToString());
+            Assert.AreEqual(BaseUri + "#//0", railway.AbsoluteUri.AbsoluteUri);
             Assert.AreSame(railway, railway.Model.Resolve(railway.RelativeUri));
             Assert.AreSame(railway, repository.Resolve(railway.AbsoluteUri));
         }
@@ -109,8 +109,8 @@ namespace NMF.Models.Tests
         {
             Model.PromoteSingleRootElement = false;
             var route = railway.Routes[0];
-            Assert.AreEqual("#//0/@routes.0/", route.RelativeUri.ToString());
-            Assert.AreEqual(BaseUri + "#//0/@routes.0/", route.AbsoluteUri.AbsoluteUri);
+            Assert.AreEqual("#//0/@routes.0", route.RelativeUri.ToString());
+            Assert.AreEqual(BaseUri + "#//0/@routes.0", route.AbsoluteUri.AbsoluteUri);
             Assert.AreSame(route, railwayModel.Resolve(route.RelativeUri));
             Assert.AreSame(route, repository.Resolve(route.AbsoluteUri));
         }
@@ -120,8 +120,8 @@ namespace NMF.Models.Tests
         {
             Model.PromoteSingleRootElement = false;
             var sensor = railway.Routes[0].DefinedBy[0];
-            Assert.AreEqual("#//0/@routes.0/@definedBy.0/", sensor.RelativeUri.ToString());
-            Assert.AreEqual(BaseUri + "#//0/@routes.0/@definedBy.0/", sensor.AbsoluteUri.AbsoluteUri);
+            Assert.AreEqual("#//0/@routes.0/@definedBy.0", sensor.RelativeUri.ToString());
+            Assert.AreEqual(BaseUri + "#//0/@routes.0/@definedBy.0", sensor.AbsoluteUri.AbsoluteUri);
             Assert.AreSame(sensor, railwayModel.Resolve(sensor.RelativeUri));
             Assert.AreSame(sensor, repository.Resolve(sensor.AbsoluteUri));
         }
@@ -131,8 +131,8 @@ namespace NMF.Models.Tests
         {
             Model.PromoteSingleRootElement = false;
             railwayModel.RootElements.Add(new Segment());
-            Assert.AreEqual("#//0/", railway.RelativeUri.ToString());
-            Assert.AreEqual(BaseUri + "#//0/", railway.AbsoluteUri.AbsoluteUri);
+            Assert.AreEqual("#//0", railway.RelativeUri.ToString());
+            Assert.AreEqual(BaseUri + "#//0", railway.AbsoluteUri.AbsoluteUri);
             Assert.AreSame(railway, railway.Model.Resolve(railway.RelativeUri));
             Assert.AreSame(railway, repository.Resolve(railway.AbsoluteUri));
         }
@@ -143,8 +143,8 @@ namespace NMF.Models.Tests
             Model.PromoteSingleRootElement = false;
             railwayModel.RootElements.Add(new Segment());
             var route = railway.Routes[0];
-            Assert.AreEqual("#//0/@routes.0/", route.RelativeUri.ToString());
-            Assert.AreEqual(BaseUri + "#//0/@routes.0/", route.AbsoluteUri.AbsoluteUri);
+            Assert.AreEqual("#//0/@routes.0", route.RelativeUri.ToString());
+            Assert.AreEqual(BaseUri + "#//0/@routes.0", route.AbsoluteUri.AbsoluteUri);
             Assert.AreSame(route, railwayModel.Resolve(route.RelativeUri));
             Assert.AreSame(route, repository.Resolve(route.AbsoluteUri));
         }
