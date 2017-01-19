@@ -164,7 +164,11 @@ namespace NMF.Synchronizations
         /// </summary>
         public override IEnumerable<SynchronizationRuleBase> SynchronizationRules
         {
-            get { return syncRules.Values; }
+            get
+            {
+                Initialize();
+                return syncRules.Values;
+            }
         }
     }
 }
