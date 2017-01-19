@@ -101,16 +101,19 @@ namespace NMF.Interop.Ecore.Transformations
                 if (identifier != null)
                 {
                     output.Identifier = context.Trace.ResolveIn(Rule<EAttribute2Attribute>(), identifier);
+                    output.IdentifierScope = IdentifierScope.Global;
                 }
 
                 if (output.Identifier == null && output.RetrieveIdentifier().Identifier == null)
                 {
+                    // if no attribute is the xmi id and the class has a name attribute, this attribute is used as a local identifier
                     var nameAttribute = input.EStructuralFeatures.OfType<EAttribute>().FirstOrDefault(att => string.Equals(att.Name, "Name",
                         System.StringComparison.InvariantCultureIgnoreCase));
 
                     if (nameAttribute != null)
                     {
                         output.Identifier = context.Trace.ResolveIn(Rule<EAttribute2Attribute>(), nameAttribute);
+                        output.IdentifierScope = IdentifierScope.Local;
                     }
                 }
             }

@@ -14,6 +14,7 @@ using NMF.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.Web;
 using System.Collections;
+using NMF.Models.Meta;
 
 namespace NMF.Models
 {
@@ -323,8 +324,8 @@ namespace NMF.Models
         {
             var parent = Parent as ModelElement;
             if (parent == null) return null;
-            string path = parent.GetRelativePathForChild(this);
             Uri result = null;
+            string path = parent.GetRelativePathForChild(this);
             if (path != null)
             {
                 if (fragment != null)
@@ -341,27 +342,7 @@ namespace NMF.Models
             {
                 if (IsIdentified)
                 {
-                    var model = Model;
-                    if (model != null)
-                    {
-                        var newFragment = GetIdentifierFragment(this);
-
-                        if (fragment != null)
-                        {
-                            newFragment += "/" + fragment;
-                        }
-
-                        if (absolute)
-                        {
-                            result = model.ModelUri != null
-                                ? new Uri(model.ModelUri, "#" + newFragment)
-                                : null;
-                        }
-                        else
-                        {
-                            result = new Uri("#" + newFragment, UriKind.Relative);
-                        }
-                    }
+                    result = CreateUriFromGlobalIdentifier(fragment, absolute);
                 }
             }
             return result;
@@ -383,9 +364,13 @@ namespace NMF.Models
             if (absolute)
             {
                 var model = Model;
-                if (model != null && model.ModelUri != null)
+                if (model != null && model.ModelUri != null && model.ModelUri.IsAbsoluteUri)
                 {
-                    return new Uri(model.ModelUri, "#" + id);
+                    return new Uri(model.ModelUri.AbsoluteUri + "#" + id);
+                }
+                else
+                {
+                    return null;
                 }
             }
             return new Uri(id, UriKind.Relative);

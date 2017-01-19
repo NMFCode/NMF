@@ -108,7 +108,7 @@ namespace NMF.Models
                 }
                 else if (ModelUri != null && ModelUri.IsAbsoluteUri)
                 {
-                    return new Uri(ModelUri, "#/" + fragment);
+                    return new Uri(ModelUri.AbsoluteUri + "#/" + fragment);
                 }
                 else
                 {
