@@ -889,7 +889,7 @@ namespace NMF.Serialization
             object d = null;
             while (reader.NodeType != XmlNodeType.Element) reader.Read();
             var propertyType = GetElementTypeInfo(reader, property);
-            if (propertyType == null) throw new InvalidOperationException("The Xml serializer is in a corrupt state.");
+            if (propertyType == null) throw new InvalidOperationException($"No information available what the type of {reader.LocalName} is.");
             d = CreateObject(reader, propertyType, context);
             Initialize(reader, d, context);
             return d;
@@ -1023,11 +1023,6 @@ namespace NMF.Serialization
         protected internal void EnqueueSetPropertyDelay(IPropertySerializationInfo property, object obj, string text, XmlSerializationContext context)
         {
             context.LostProperties.Enqueue(new XmlSetPropertyDelay() { Identifier = text, Target = obj, Property = property });
-        }
-
-        protected internal void EnqueueAddToCollectionDelay(ITypeSerializationInfo info, string item, object coll, XmlSerializationContext context)
-        {
-            context.LostProperties.Enqueue(new XmlAddToCollectionDelay(info) { Identifier = item, Target = coll});
         }
 
         /// <summary>
