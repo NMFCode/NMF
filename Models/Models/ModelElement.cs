@@ -361,9 +361,26 @@ namespace NMF.Models
             {
                 id += "/" + fragment;
             }
+            var model = Model;
+            if (model == null) return null;
+            if (model == Parent && fragment != null)
+            {
+                string path = model.GetRelativePathForChild(this);
+                if (path != null)
+                {
+                    if (fragment != null)
+                    {
+                        fragment = path + "/" + fragment;
+                    }
+                    else
+                    {
+                        fragment = path;
+                    }
+                    return model.CreateUriWithFragment(fragment, absolute);
+                }
+            }
             if (absolute)
             {
-                var model = Model;
                 if (model != null && model.ModelUri != null && model.ModelUri.IsAbsoluteUri)
                 {
                     return new Uri(model.ModelUri.AbsoluteUri + "#" + id);
