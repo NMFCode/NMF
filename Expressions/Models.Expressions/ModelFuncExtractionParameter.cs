@@ -38,14 +38,6 @@ namespace NMF.Expressions
             }
         }
 
-        public bool IsAttached
-        {
-            get
-            {
-                return Base1.IsAttached;
-            }
-        }
-
         public bool IsConstant
         {
             get
@@ -146,14 +138,6 @@ namespace NMF.Expressions
             }
         }
 
-        public bool IsAttached
-        {
-            get
-            {
-                return Base1.IsAttached;
-            }
-        }
-
         public bool IsConstant
         {
             get
@@ -202,6 +186,10 @@ namespace NMF.Expressions
             return ApplyParameters(parameters);
         }
 
+        public void Attach() { }
+
+        public void Detach() { }
+
         public INotifyExpression<T> Reduce()
         {
             return this;
@@ -209,14 +197,10 @@ namespace NMF.Expressions
 
         public void Dispose() { }
 
-        public void Detach() { }
-
         public INotificationResult Notify(IList<INotificationResult> sources)
         {
             return new ValueChangedNotificationResult<T>(this, Value, Value);
         }
-
-        public void Refresh() { }
     }
     internal class ModelFuncExtractionParameter<TBase1, TBase2, TBase3, T> : INotifyExpression<T>
     {
@@ -254,14 +238,6 @@ namespace NMF.Expressions
             get
             {
                 return Base1.CanBeConstant;
-            }
-        }
-
-        public bool IsAttached
-        {
-            get
-            {
-                return Base1.IsAttached;
             }
         }
 
@@ -371,14 +347,6 @@ namespace NMF.Expressions
             }
         }
 
-        public bool IsAttached
-        {
-            get
-            {
-                return Base1.IsAttached;
-            }
-        }
-
         public bool IsConstant
         {
             get
@@ -485,14 +453,6 @@ namespace NMF.Expressions
             get
             {
                 return Base1.CanBeConstant;
-            }
-        }
-
-        public bool IsAttached
-        {
-            get
-            {
-                return Base1.IsAttached;
             }
         }
 
@@ -608,14 +568,6 @@ namespace NMF.Expressions
             }
         }
 
-        public bool IsAttached
-        {
-            get
-            {
-                return Base1.IsAttached;
-            }
-        }
-
         public bool IsConstant
         {
             get
@@ -728,14 +680,6 @@ namespace NMF.Expressions
             get
             {
                 return Base1.CanBeConstant;
-            }
-        }
-
-        public bool IsAttached
-        {
-            get
-            {
-                return Base1.IsAttached;
             }
         }
 

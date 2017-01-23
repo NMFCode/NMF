@@ -51,14 +51,6 @@ namespace NMF.Expressions
             }
         }
 
-        public bool IsAttached
-        {
-            get
-            {
-                return Base1.IsAttached;
-            }
-        }
-
         public bool IsConstant
         {
             get

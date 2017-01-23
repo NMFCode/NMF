@@ -73,14 +73,6 @@ namespace NMF.Expressions
                 }
             }
 
-            bool INotifyValue<TValue>.IsAttached
-            {
-                get
-                {
-                    return true;
-                }
-            }
-
             bool INotifyExpression.IsConstant
             {
                 get
@@ -124,6 +116,11 @@ namespace NMF.Expressions
             public INotificationResult Notify(IList<INotificationResult> sources)
             {
                 return new ValueChangedNotificationResult<TValue>(this, value, value);
+            }
+
+            public INotifyExpression ApplyParameters(IDictionary<string, object> parameters)
+            {
+                return this;
             }
 
             INotifyExpression<TValue> INotifyExpression<TValue>.ApplyParameters(IDictionary<string, object> parameters)

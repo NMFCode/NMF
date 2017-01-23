@@ -16,10 +16,6 @@ namespace NMF.Expressions
             return Value;
         }
 
-        protected override void DetachCore() { }
-
-        protected override void AttachCore() { }
-
         public override bool IsParameterFree
         {
             get
@@ -31,7 +27,7 @@ namespace NMF.Expressions
             }
         }
 
-	public override IEnumerable<INotifiable> Dependencies { get { return Enumerable.Empty<INotifiable>(); } }
+        public override IEnumerable<INotifiable> Dependencies { get { return Enumerable.Empty<INotifiable>(); } }
 
         public override INotifyExpression<Expression<T>> ApplyParameters(IDictionary<string, object> parameters)
         {
