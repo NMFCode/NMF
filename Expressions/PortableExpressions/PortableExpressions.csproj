@@ -464,11 +464,8 @@
     <Compile Include="..\Expressions\Execution\NotificationResultCollection.cs">
       <Link>Execution\NotificationResultCollection.cs</Link>
     </Compile>
-    <Compile Include="..\Expressions\Execution\Parallel\ParallelArrayExecutionEngine.cs">
-      <Link>Execution\Parallel\ParallelArrayExecutionEngine.cs</Link>
-    </Compile>
-    <Compile Include="..\Expressions\Execution\Parallel\ParallelExecutionEngine.cs">
-      <Link>Execution\Parallel\ParallelExecutionEngine.cs</Link>
+    <Compile Include="..\Expressions\Execution\ParallelExecutionEngine.cs">
+      <Link>Execution\ParallelExecutionEngine.cs</Link>
     </Compile>
     <Compile Include="ExpressionRewriter\ProxyMethodAttribute.cs" />
     <Compile Include="GlobalSuppressions.cs" />
