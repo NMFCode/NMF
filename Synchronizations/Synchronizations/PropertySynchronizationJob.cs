@@ -263,6 +263,7 @@ namespace NMF.Synchronizations
                 case NMF.Transformations.ChangePropagationMode.OneWay:
                 case NMF.Transformations.ChangePropagationMode.TwoWay:
                     var incVal = sourceFunc.Observe(source);
+                    incVal.Successors.SetDummy();
                     targetSetter(target, incVal.Value);
                     return new PropertySynchronization<TValue>(incVal, val => targetSetter(target, val));
                 default:

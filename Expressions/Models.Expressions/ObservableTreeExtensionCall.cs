@@ -36,6 +36,10 @@ namespace NMF.Expressions
                     listener.Attach();
                 }
             }
+            else if (Argument1.Value != null)
+            {
+                Argument1.Value.BubbledChange += handler;
+            }
         }
 
         protected override void OnDetach()
@@ -48,6 +52,10 @@ namespace NMF.Expressions
                     listener.BubbledChange -= handler;
                     listener.Detach();
                 }
+            }
+            else if (Argument1.Value != null)
+            {
+                Argument1.Value.BubbledChange -= handler;
             }
             base.OnDetach();
         }
@@ -104,6 +112,10 @@ namespace NMF.Expressions
                     listener.Attach();
                 }
             }
+            else if (Argument1.Value != null)
+            {
+                Argument1.Value.BubbledChange += handler;
+            }
             if (anchor2Listener != null)
             {
                 foreach (var listener in anchor2Listener)
@@ -112,6 +124,10 @@ namespace NMF.Expressions
                     listener.BubbledChange += handler;
                     listener.Attach();
                 }
+            }
+            else if (Argument2.Value != null)
+            {
+                Argument2.Value.BubbledChange += handler;
             }
         }
 
@@ -126,6 +142,10 @@ namespace NMF.Expressions
                     listener.Detach();
                 }
             }
+            else if (Argument1.Value != null)
+            {
+                Argument1.Value.BubbledChange -= handler;
+            }
             if (anchor2Listener != null)
             {
                 foreach (var listener in anchor2Listener)
@@ -133,6 +153,10 @@ namespace NMF.Expressions
                     listener.BubbledChange -= handler;
                     listener.Detach();
                 }
+            }
+            else if (Argument2.Value != null)
+            {
+                Argument2.Value.BubbledChange -= handler;
             }
             base.OnDetach();
         }
@@ -198,6 +222,10 @@ namespace NMF.Expressions
                     listener.Attach();
                 }
             }
+            else if (Argument1.Value != null)
+            {
+                Argument1.Value.BubbledChange += handler;
+            }
             if (anchor2Listener != null)
             {
                 foreach (var listener in anchor2Listener)
@@ -207,6 +235,10 @@ namespace NMF.Expressions
                     listener.Attach();
                 }
             }
+            else if (Argument2.Value != null)
+            {
+                Argument2.Value.BubbledChange += handler;
+            }
             if (anchor3Listener != null)
             {
                 foreach (var listener in anchor3Listener)
@@ -215,6 +247,10 @@ namespace NMF.Expressions
                     listener.BubbledChange += handler;
                     listener.Attach();
                 }
+            }
+            else if (Argument3.Value != null)
+            {
+                Argument3.Value.BubbledChange += handler;
             }
         }
 
@@ -229,6 +265,10 @@ namespace NMF.Expressions
                     listener.Detach();
                 }
             }
+            else if (Argument1.Value != null)
+            {
+                Argument1.Value.BubbledChange -= handler;
+            }
             if (anchor2Listener != null)
             {
                 foreach (var listener in anchor2Listener)
@@ -237,6 +277,10 @@ namespace NMF.Expressions
                     listener.Detach();
                 }
             }
+            else if (Argument2.Value != null)
+            {
+                Argument2.Value.BubbledChange -= handler;
+            }
             if (anchor3Listener != null)
             {
                 foreach (var listener in anchor3Listener)
@@ -244,6 +288,10 @@ namespace NMF.Expressions
                     listener.BubbledChange -= handler;
                     listener.Detach();
                 }
+            }
+            else if (Argument3.Value != null)
+            {
+                Argument3.Value.BubbledChange -= handler;
             }
             base.OnDetach();
         }
@@ -318,6 +366,10 @@ namespace NMF.Expressions
                     listener.Attach();
                 }
             }
+            else if (Argument1.Value != null)
+            {
+                Argument1.Value.BubbledChange += handler;
+            }
             if (anchor2Listener != null)
             {
                 foreach (var listener in anchor2Listener)
@@ -326,6 +378,10 @@ namespace NMF.Expressions
                     listener.BubbledChange += handler;
                     listener.Attach();
                 }
+            }
+            else if (Argument2.Value != null)
+            {
+                Argument2.Value.BubbledChange += handler;
             }
             if (anchor3Listener != null)
             {
@@ -336,6 +392,10 @@ namespace NMF.Expressions
                     listener.Attach();
                 }
             }
+            else if (Argument3.Value != null)
+            {
+                Argument3.Value.BubbledChange += handler;
+            }
             if (anchor4Listener != null)
             {
                 foreach (var listener in anchor4Listener)
@@ -344,6 +404,10 @@ namespace NMF.Expressions
                     listener.BubbledChange += handler;
                     listener.Attach();
                 }
+            }
+            else if (Argument4.Value != null)
+            {
+                Argument4.Value.BubbledChange += handler;
             }
         }
 
@@ -358,6 +422,10 @@ namespace NMF.Expressions
                     listener.Detach();
                 }
             }
+            else if (Argument1.Value != null)
+            {
+                Argument1.Value.BubbledChange -= handler;
+            }
             if (anchor2Listener != null)
             {
                 foreach (var listener in anchor2Listener)
@@ -365,6 +433,10 @@ namespace NMF.Expressions
                     listener.BubbledChange -= handler;
                     listener.Detach();
                 }
+            }
+            else if (Argument2.Value != null)
+            {
+                Argument2.Value.BubbledChange -= handler;
             }
             if (anchor3Listener != null)
             {
@@ -374,6 +446,10 @@ namespace NMF.Expressions
                     listener.Detach();
                 }
             }
+            else if (Argument3.Value != null)
+            {
+                Argument3.Value.BubbledChange -= handler;
+            }
             if (anchor4Listener != null)
             {
                 foreach (var listener in anchor4Listener)
@@ -381,6 +457,10 @@ namespace NMF.Expressions
                     listener.BubbledChange -= handler;
                     listener.Detach();
                 }
+            }
+            else if (Argument4.Value != null)
+            {
+                Argument4.Value.BubbledChange -= handler;
             }
             base.OnDetach();
         }
@@ -464,6 +544,10 @@ namespace NMF.Expressions
                     listener.Attach();
                 }
             }
+            else if (Argument1.Value != null)
+            {
+                Argument1.Value.BubbledChange += handler;
+            }
             if (anchor2Listener != null)
             {
                 foreach (var listener in anchor2Listener)
@@ -472,6 +556,10 @@ namespace NMF.Expressions
                     listener.BubbledChange += handler;
                     listener.Attach();
                 }
+            }
+            else if (Argument2.Value != null)
+            {
+                Argument2.Value.BubbledChange += handler;
             }
             if (anchor3Listener != null)
             {
@@ -482,6 +570,10 @@ namespace NMF.Expressions
                     listener.Attach();
                 }
             }
+            else if (Argument3.Value != null)
+            {
+                Argument3.Value.BubbledChange += handler;
+            }
             if (anchor4Listener != null)
             {
                 foreach (var listener in anchor4Listener)
@@ -491,6 +583,10 @@ namespace NMF.Expressions
                     listener.Attach();
                 }
             }
+            else if (Argument4.Value != null)
+            {
+                Argument4.Value.BubbledChange += handler;
+            }
             if (anchor5Listener != null)
             {
                 foreach (var listener in anchor5Listener)
@@ -499,6 +595,10 @@ namespace NMF.Expressions
                     listener.BubbledChange += handler;
                     listener.Attach();
                 }
+            }
+            else if (Argument5.Value != null)
+            {
+                Argument5.Value.BubbledChange += handler;
             }
         }
 
@@ -513,6 +613,10 @@ namespace NMF.Expressions
                     listener.Detach();
                 }
             }
+            else if (Argument1.Value != null)
+            {
+                Argument1.Value.BubbledChange -= handler;
+            }
             if (anchor2Listener != null)
             {
                 foreach (var listener in anchor2Listener)
@@ -520,6 +624,10 @@ namespace NMF.Expressions
                     listener.BubbledChange -= handler;
                     listener.Detach();
                 }
+            }
+            else if (Argument2.Value != null)
+            {
+                Argument2.Value.BubbledChange -= handler;
             }
             if (anchor3Listener != null)
             {
@@ -529,6 +637,10 @@ namespace NMF.Expressions
                     listener.Detach();
                 }
             }
+            else if (Argument3.Value != null)
+            {
+                Argument3.Value.BubbledChange -= handler;
+            }
             if (anchor4Listener != null)
             {
                 foreach (var listener in anchor4Listener)
@@ -537,6 +649,10 @@ namespace NMF.Expressions
                     listener.Detach();
                 }
             }
+            else if (Argument4.Value != null)
+            {
+                Argument4.Value.BubbledChange -= handler;
+            }
             if (anchor5Listener != null)
             {
                 foreach (var listener in anchor5Listener)
@@ -544,6 +660,10 @@ namespace NMF.Expressions
                     listener.BubbledChange -= handler;
                     listener.Detach();
                 }
+            }
+            else if (Argument5.Value != null)
+            {
+                Argument5.Value.BubbledChange -= handler;
             }
             base.OnDetach();
         }
@@ -636,6 +756,10 @@ namespace NMF.Expressions
                     listener.Attach();
                 }
             }
+            else if (Argument1.Value != null)
+            {
+                Argument1.Value.BubbledChange += handler;
+            }
             if (anchor2Listener != null)
             {
                 foreach (var listener in anchor2Listener)
@@ -644,6 +768,10 @@ namespace NMF.Expressions
                     listener.BubbledChange += handler;
                     listener.Attach();
                 }
+            }
+            else if (Argument2.Value != null)
+            {
+                Argument2.Value.BubbledChange += handler;
             }
             if (anchor3Listener != null)
             {
@@ -654,6 +782,10 @@ namespace NMF.Expressions
                     listener.Attach();
                 }
             }
+            else if (Argument3.Value != null)
+            {
+                Argument3.Value.BubbledChange += handler;
+            }
             if (anchor4Listener != null)
             {
                 foreach (var listener in anchor4Listener)
@@ -662,6 +794,10 @@ namespace NMF.Expressions
                     listener.BubbledChange += handler;
                     listener.Attach();
                 }
+            }
+            else if (Argument4.Value != null)
+            {
+                Argument4.Value.BubbledChange += handler;
             }
             if (anchor5Listener != null)
             {
@@ -672,6 +808,10 @@ namespace NMF.Expressions
                     listener.Attach();
                 }
             }
+            else if (Argument5.Value != null)
+            {
+                Argument5.Value.BubbledChange += handler;
+            }
             if (anchor6Listener != null)
             {
                 foreach (var listener in anchor6Listener)
@@ -680,6 +820,10 @@ namespace NMF.Expressions
                     listener.BubbledChange += handler;
                     listener.Attach();
                 }
+            }
+            else if (Argument6.Value != null)
+            {
+                Argument6.Value.BubbledChange += handler;
             }
         }
 
@@ -694,6 +838,10 @@ namespace NMF.Expressions
                     listener.Detach();
                 }
             }
+            else if (Argument1.Value != null)
+            {
+                Argument1.Value.BubbledChange -= handler;
+            }
             if (anchor2Listener != null)
             {
                 foreach (var listener in anchor2Listener)
@@ -701,6 +849,10 @@ namespace NMF.Expressions
                     listener.BubbledChange -= handler;
                     listener.Detach();
                 }
+            }
+            else if (Argument2.Value != null)
+            {
+                Argument2.Value.BubbledChange -= handler;
             }
             if (anchor3Listener != null)
             {
@@ -710,6 +862,10 @@ namespace NMF.Expressions
                     listener.Detach();
                 }
             }
+            else if (Argument3.Value != null)
+            {
+                Argument3.Value.BubbledChange -= handler;
+            }
             if (anchor4Listener != null)
             {
                 foreach (var listener in anchor4Listener)
@@ -717,6 +873,10 @@ namespace NMF.Expressions
                     listener.BubbledChange -= handler;
                     listener.Detach();
                 }
+            }
+            else if (Argument4.Value != null)
+            {
+                Argument4.Value.BubbledChange -= handler;
             }
             if (anchor5Listener != null)
             {
@@ -726,6 +886,10 @@ namespace NMF.Expressions
                     listener.Detach();
                 }
             }
+            else if (Argument5.Value != null)
+            {
+                Argument5.Value.BubbledChange -= handler;
+            }
             if (anchor6Listener != null)
             {
                 foreach (var listener in anchor6Listener)
@@ -733,6 +897,10 @@ namespace NMF.Expressions
                     listener.BubbledChange -= handler;
                     listener.Detach();
                 }
+            }
+            else if (Argument6.Value != null)
+            {
+                Argument6.Value.BubbledChange -= handler;
             }
             base.OnDetach();
         }
@@ -834,6 +1002,10 @@ namespace NMF.Expressions
                     listener.Attach();
                 }
             }
+            else if (Argument1.Value != null)
+            {
+                Argument1.Value.BubbledChange += handler;
+            }
             if (anchor2Listener != null)
             {
                 foreach (var listener in anchor2Listener)
@@ -842,6 +1014,10 @@ namespace NMF.Expressions
                     listener.BubbledChange += handler;
                     listener.Attach();
                 }
+            }
+            else if (Argument2.Value != null)
+            {
+                Argument2.Value.BubbledChange += handler;
             }
             if (anchor3Listener != null)
             {
@@ -852,6 +1028,10 @@ namespace NMF.Expressions
                     listener.Attach();
                 }
             }
+            else if (Argument3.Value != null)
+            {
+                Argument3.Value.BubbledChange += handler;
+            }
             if (anchor4Listener != null)
             {
                 foreach (var listener in anchor4Listener)
@@ -860,6 +1040,10 @@ namespace NMF.Expressions
                     listener.BubbledChange += handler;
                     listener.Attach();
                 }
+            }
+            else if (Argument4.Value != null)
+            {
+                Argument4.Value.BubbledChange += handler;
             }
             if (anchor5Listener != null)
             {
@@ -870,6 +1054,10 @@ namespace NMF.Expressions
                     listener.Attach();
                 }
             }
+            else if (Argument5.Value != null)
+            {
+                Argument5.Value.BubbledChange += handler;
+            }
             if (anchor6Listener != null)
             {
                 foreach (var listener in anchor6Listener)
@@ -879,6 +1067,10 @@ namespace NMF.Expressions
                     listener.Attach();
                 }
             }
+            else if (Argument6.Value != null)
+            {
+                Argument6.Value.BubbledChange += handler;
+            }
             if (anchor7Listener != null)
             {
                 foreach (var listener in anchor7Listener)
@@ -887,6 +1079,10 @@ namespace NMF.Expressions
                     listener.BubbledChange += handler;
                     listener.Attach();
                 }
+            }
+            else if (Argument7.Value != null)
+            {
+                Argument7.Value.BubbledChange += handler;
             }
         }
 
@@ -901,6 +1097,10 @@ namespace NMF.Expressions
                     listener.Detach();
                 }
             }
+            else if (Argument1.Value != null)
+            {
+                Argument1.Value.BubbledChange -= handler;
+            }
             if (anchor2Listener != null)
             {
                 foreach (var listener in anchor2Listener)
@@ -908,6 +1108,10 @@ namespace NMF.Expressions
                     listener.BubbledChange -= handler;
                     listener.Detach();
                 }
+            }
+            else if (Argument2.Value != null)
+            {
+                Argument2.Value.BubbledChange -= handler;
             }
             if (anchor3Listener != null)
             {
@@ -917,6 +1121,10 @@ namespace NMF.Expressions
                     listener.Detach();
                 }
             }
+            else if (Argument3.Value != null)
+            {
+                Argument3.Value.BubbledChange -= handler;
+            }
             if (anchor4Listener != null)
             {
                 foreach (var listener in anchor4Listener)
@@ -924,6 +1132,10 @@ namespace NMF.Expressions
                     listener.BubbledChange -= handler;
                     listener.Detach();
                 }
+            }
+            else if (Argument4.Value != null)
+            {
+                Argument4.Value.BubbledChange -= handler;
             }
             if (anchor5Listener != null)
             {
@@ -933,6 +1145,10 @@ namespace NMF.Expressions
                     listener.Detach();
                 }
             }
+            else if (Argument5.Value != null)
+            {
+                Argument5.Value.BubbledChange -= handler;
+            }
             if (anchor6Listener != null)
             {
                 foreach (var listener in anchor6Listener)
@@ -941,6 +1157,10 @@ namespace NMF.Expressions
                     listener.Detach();
                 }
             }
+            else if (Argument6.Value != null)
+            {
+                Argument6.Value.BubbledChange -= handler;
+            }
             if (anchor7Listener != null)
             {
                 foreach (var listener in anchor7Listener)
@@ -948,6 +1168,10 @@ namespace NMF.Expressions
                     listener.BubbledChange -= handler;
                     listener.Detach();
                 }
+            }
+            else if (Argument7.Value != null)
+            {
+                Argument7.Value.BubbledChange -= handler;
             }
             base.OnDetach();
         }
@@ -1058,6 +1282,10 @@ namespace NMF.Expressions
                     listener.Attach();
                 }
             }
+            else if (Argument1.Value != null)
+            {
+                Argument1.Value.BubbledChange += handler;
+            }
             if (anchor2Listener != null)
             {
                 foreach (var listener in anchor2Listener)
@@ -1066,6 +1294,10 @@ namespace NMF.Expressions
                     listener.BubbledChange += handler;
                     listener.Attach();
                 }
+            }
+            else if (Argument2.Value != null)
+            {
+                Argument2.Value.BubbledChange += handler;
             }
             if (anchor3Listener != null)
             {
@@ -1076,6 +1308,10 @@ namespace NMF.Expressions
                     listener.Attach();
                 }
             }
+            else if (Argument3.Value != null)
+            {
+                Argument3.Value.BubbledChange += handler;
+            }
             if (anchor4Listener != null)
             {
                 foreach (var listener in anchor4Listener)
@@ -1084,6 +1320,10 @@ namespace NMF.Expressions
                     listener.BubbledChange += handler;
                     listener.Attach();
                 }
+            }
+            else if (Argument4.Value != null)
+            {
+                Argument4.Value.BubbledChange += handler;
             }
             if (anchor5Listener != null)
             {
@@ -1094,6 +1334,10 @@ namespace NMF.Expressions
                     listener.Attach();
                 }
             }
+            else if (Argument5.Value != null)
+            {
+                Argument5.Value.BubbledChange += handler;
+            }
             if (anchor6Listener != null)
             {
                 foreach (var listener in anchor6Listener)
@@ -1102,6 +1346,10 @@ namespace NMF.Expressions
                     listener.BubbledChange += handler;
                     listener.Attach();
                 }
+            }
+            else if (Argument6.Value != null)
+            {
+                Argument6.Value.BubbledChange += handler;
             }
             if (anchor7Listener != null)
             {
@@ -1112,6 +1360,10 @@ namespace NMF.Expressions
                     listener.Attach();
                 }
             }
+            else if (Argument7.Value != null)
+            {
+                Argument7.Value.BubbledChange += handler;
+            }
             if (anchor8Listener != null)
             {
                 foreach (var listener in anchor8Listener)
@@ -1120,6 +1372,10 @@ namespace NMF.Expressions
                     listener.BubbledChange += handler;
                     listener.Attach();
                 }
+            }
+            else if (Argument8.Value != null)
+            {
+                Argument8.Value.BubbledChange += handler;
             }
         }
 
@@ -1134,6 +1390,10 @@ namespace NMF.Expressions
                     listener.Detach();
                 }
             }
+            else if (Argument1.Value != null)
+            {
+                Argument1.Value.BubbledChange -= handler;
+            }
             if (anchor2Listener != null)
             {
                 foreach (var listener in anchor2Listener)
@@ -1141,6 +1401,10 @@ namespace NMF.Expressions
                     listener.BubbledChange -= handler;
                     listener.Detach();
                 }
+            }
+            else if (Argument2.Value != null)
+            {
+                Argument2.Value.BubbledChange -= handler;
             }
             if (anchor3Listener != null)
             {
@@ -1150,6 +1414,10 @@ namespace NMF.Expressions
                     listener.Detach();
                 }
             }
+            else if (Argument3.Value != null)
+            {
+                Argument3.Value.BubbledChange -= handler;
+            }
             if (anchor4Listener != null)
             {
                 foreach (var listener in anchor4Listener)
@@ -1157,6 +1425,10 @@ namespace NMF.Expressions
                     listener.BubbledChange -= handler;
                     listener.Detach();
                 }
+            }
+            else if (Argument4.Value != null)
+            {
+                Argument4.Value.BubbledChange -= handler;
             }
             if (anchor5Listener != null)
             {
@@ -1166,6 +1438,10 @@ namespace NMF.Expressions
                     listener.Detach();
                 }
             }
+            else if (Argument5.Value != null)
+            {
+                Argument5.Value.BubbledChange -= handler;
+            }
             if (anchor6Listener != null)
             {
                 foreach (var listener in anchor6Listener)
@@ -1173,6 +1449,10 @@ namespace NMF.Expressions
                     listener.BubbledChange -= handler;
                     listener.Detach();
                 }
+            }
+            else if (Argument6.Value != null)
+            {
+                Argument6.Value.BubbledChange -= handler;
             }
             if (anchor7Listener != null)
             {
@@ -1182,6 +1462,10 @@ namespace NMF.Expressions
                     listener.Detach();
                 }
             }
+            else if (Argument7.Value != null)
+            {
+                Argument7.Value.BubbledChange -= handler;
+            }
             if (anchor8Listener != null)
             {
                 foreach (var listener in anchor8Listener)
@@ -1189,6 +1473,10 @@ namespace NMF.Expressions
                     listener.BubbledChange -= handler;
                     listener.Detach();
                 }
+            }
+            else if (Argument8.Value != null)
+            {
+                Argument8.Value.BubbledChange -= handler;
             }
             base.OnDetach();
         }
@@ -1308,6 +1596,10 @@ namespace NMF.Expressions
                     listener.Attach();
                 }
             }
+            else if (Argument1.Value != null)
+            {
+                Argument1.Value.BubbledChange += handler;
+            }
             if (anchor2Listener != null)
             {
                 foreach (var listener in anchor2Listener)
@@ -1316,6 +1608,10 @@ namespace NMF.Expressions
                     listener.BubbledChange += handler;
                     listener.Attach();
                 }
+            }
+            else if (Argument2.Value != null)
+            {
+                Argument2.Value.BubbledChange += handler;
             }
             if (anchor3Listener != null)
             {
@@ -1326,6 +1622,10 @@ namespace NMF.Expressions
                     listener.Attach();
                 }
             }
+            else if (Argument3.Value != null)
+            {
+                Argument3.Value.BubbledChange += handler;
+            }
             if (anchor4Listener != null)
             {
                 foreach (var listener in anchor4Listener)
@@ -1334,6 +1634,10 @@ namespace NMF.Expressions
                     listener.BubbledChange += handler;
                     listener.Attach();
                 }
+            }
+            else if (Argument4.Value != null)
+            {
+                Argument4.Value.BubbledChange += handler;
             }
             if (anchor5Listener != null)
             {
@@ -1344,6 +1648,10 @@ namespace NMF.Expressions
                     listener.Attach();
                 }
             }
+            else if (Argument5.Value != null)
+            {
+                Argument5.Value.BubbledChange += handler;
+            }
             if (anchor6Listener != null)
             {
                 foreach (var listener in anchor6Listener)
@@ -1352,6 +1660,10 @@ namespace NMF.Expressions
                     listener.BubbledChange += handler;
                     listener.Attach();
                 }
+            }
+            else if (Argument6.Value != null)
+            {
+                Argument6.Value.BubbledChange += handler;
             }
             if (anchor7Listener != null)
             {
@@ -1362,6 +1674,10 @@ namespace NMF.Expressions
                     listener.Attach();
                 }
             }
+            else if (Argument7.Value != null)
+            {
+                Argument7.Value.BubbledChange += handler;
+            }
             if (anchor8Listener != null)
             {
                 foreach (var listener in anchor8Listener)
@@ -1371,6 +1687,10 @@ namespace NMF.Expressions
                     listener.Attach();
                 }
             }
+            else if (Argument8.Value != null)
+            {
+                Argument8.Value.BubbledChange += handler;
+            }
             if (anchor9Listener != null)
             {
                 foreach (var listener in anchor9Listener)
@@ -1379,6 +1699,10 @@ namespace NMF.Expressions
                     listener.BubbledChange += handler;
                     listener.Attach();
                 }
+            }
+            else if (Argument9.Value != null)
+            {
+                Argument9.Value.BubbledChange += handler;
             }
         }
 
@@ -1393,6 +1717,10 @@ namespace NMF.Expressions
                     listener.Detach();
                 }
             }
+            else if (Argument1.Value != null)
+            {
+                Argument1.Value.BubbledChange -= handler;
+            }
             if (anchor2Listener != null)
             {
                 foreach (var listener in anchor2Listener)
@@ -1400,6 +1728,10 @@ namespace NMF.Expressions
                     listener.BubbledChange -= handler;
                     listener.Detach();
                 }
+            }
+            else if (Argument2.Value != null)
+            {
+                Argument2.Value.BubbledChange -= handler;
             }
             if (anchor3Listener != null)
             {
@@ -1409,6 +1741,10 @@ namespace NMF.Expressions
                     listener.Detach();
                 }
             }
+            else if (Argument3.Value != null)
+            {
+                Argument3.Value.BubbledChange -= handler;
+            }
             if (anchor4Listener != null)
             {
                 foreach (var listener in anchor4Listener)
@@ -1416,6 +1752,10 @@ namespace NMF.Expressions
                     listener.BubbledChange -= handler;
                     listener.Detach();
                 }
+            }
+            else if (Argument4.Value != null)
+            {
+                Argument4.Value.BubbledChange -= handler;
             }
             if (anchor5Listener != null)
             {
@@ -1425,6 +1765,10 @@ namespace NMF.Expressions
                     listener.Detach();
                 }
             }
+            else if (Argument5.Value != null)
+            {
+                Argument5.Value.BubbledChange -= handler;
+            }
             if (anchor6Listener != null)
             {
                 foreach (var listener in anchor6Listener)
@@ -1432,6 +1776,10 @@ namespace NMF.Expressions
                     listener.BubbledChange -= handler;
                     listener.Detach();
                 }
+            }
+            else if (Argument6.Value != null)
+            {
+                Argument6.Value.BubbledChange -= handler;
             }
             if (anchor7Listener != null)
             {
@@ -1441,6 +1789,10 @@ namespace NMF.Expressions
                     listener.Detach();
                 }
             }
+            else if (Argument7.Value != null)
+            {
+                Argument7.Value.BubbledChange -= handler;
+            }
             if (anchor8Listener != null)
             {
                 foreach (var listener in anchor8Listener)
@@ -1449,6 +1801,10 @@ namespace NMF.Expressions
                     listener.Detach();
                 }
             }
+            else if (Argument8.Value != null)
+            {
+                Argument8.Value.BubbledChange -= handler;
+            }
             if (anchor9Listener != null)
             {
                 foreach (var listener in anchor9Listener)
@@ -1456,6 +1812,10 @@ namespace NMF.Expressions
                     listener.BubbledChange -= handler;
                     listener.Detach();
                 }
+            }
+            else if (Argument9.Value != null)
+            {
+                Argument9.Value.BubbledChange -= handler;
             }
             base.OnDetach();
         }
@@ -1584,6 +1944,10 @@ namespace NMF.Expressions
                     listener.Attach();
                 }
             }
+            else if (Argument1.Value != null)
+            {
+                Argument1.Value.BubbledChange += handler;
+            }
             if (anchor2Listener != null)
             {
                 foreach (var listener in anchor2Listener)
@@ -1592,6 +1956,10 @@ namespace NMF.Expressions
                     listener.BubbledChange += handler;
                     listener.Attach();
                 }
+            }
+            else if (Argument2.Value != null)
+            {
+                Argument2.Value.BubbledChange += handler;
             }
             if (anchor3Listener != null)
             {
@@ -1602,6 +1970,10 @@ namespace NMF.Expressions
                     listener.Attach();
                 }
             }
+            else if (Argument3.Value != null)
+            {
+                Argument3.Value.BubbledChange += handler;
+            }
             if (anchor4Listener != null)
             {
                 foreach (var listener in anchor4Listener)
@@ -1610,6 +1982,10 @@ namespace NMF.Expressions
                     listener.BubbledChange += handler;
                     listener.Attach();
                 }
+            }
+            else if (Argument4.Value != null)
+            {
+                Argument4.Value.BubbledChange += handler;
             }
             if (anchor5Listener != null)
             {
@@ -1620,6 +1996,10 @@ namespace NMF.Expressions
                     listener.Attach();
                 }
             }
+            else if (Argument5.Value != null)
+            {
+                Argument5.Value.BubbledChange += handler;
+            }
             if (anchor6Listener != null)
             {
                 foreach (var listener in anchor6Listener)
@@ -1628,6 +2008,10 @@ namespace NMF.Expressions
                     listener.BubbledChange += handler;
                     listener.Attach();
                 }
+            }
+            else if (Argument6.Value != null)
+            {
+                Argument6.Value.BubbledChange += handler;
             }
             if (anchor7Listener != null)
             {
@@ -1638,6 +2022,10 @@ namespace NMF.Expressions
                     listener.Attach();
                 }
             }
+            else if (Argument7.Value != null)
+            {
+                Argument7.Value.BubbledChange += handler;
+            }
             if (anchor8Listener != null)
             {
                 foreach (var listener in anchor8Listener)
@@ -1646,6 +2034,10 @@ namespace NMF.Expressions
                     listener.BubbledChange += handler;
                     listener.Attach();
                 }
+            }
+            else if (Argument8.Value != null)
+            {
+                Argument8.Value.BubbledChange += handler;
             }
             if (anchor9Listener != null)
             {
@@ -1656,6 +2048,10 @@ namespace NMF.Expressions
                     listener.Attach();
                 }
             }
+            else if (Argument9.Value != null)
+            {
+                Argument9.Value.BubbledChange += handler;
+            }
             if (anchor10Listener != null)
             {
                 foreach (var listener in anchor10Listener)
@@ -1664,6 +2060,10 @@ namespace NMF.Expressions
                     listener.BubbledChange += handler;
                     listener.Attach();
                 }
+            }
+            else if (Argument10.Value != null)
+            {
+                Argument10.Value.BubbledChange += handler;
             }
         }
 
@@ -1678,6 +2078,10 @@ namespace NMF.Expressions
                     listener.Detach();
                 }
             }
+            else if (Argument1.Value != null)
+            {
+                Argument1.Value.BubbledChange -= handler;
+            }
             if (anchor2Listener != null)
             {
                 foreach (var listener in anchor2Listener)
@@ -1685,6 +2089,10 @@ namespace NMF.Expressions
                     listener.BubbledChange -= handler;
                     listener.Detach();
                 }
+            }
+            else if (Argument2.Value != null)
+            {
+                Argument2.Value.BubbledChange -= handler;
             }
             if (anchor3Listener != null)
             {
@@ -1694,6 +2102,10 @@ namespace NMF.Expressions
                     listener.Detach();
                 }
             }
+            else if (Argument3.Value != null)
+            {
+                Argument3.Value.BubbledChange -= handler;
+            }
             if (anchor4Listener != null)
             {
                 foreach (var listener in anchor4Listener)
@@ -1701,6 +2113,10 @@ namespace NMF.Expressions
                     listener.BubbledChange -= handler;
                     listener.Detach();
                 }
+            }
+            else if (Argument4.Value != null)
+            {
+                Argument4.Value.BubbledChange -= handler;
             }
             if (anchor5Listener != null)
             {
@@ -1710,6 +2126,10 @@ namespace NMF.Expressions
                     listener.Detach();
                 }
             }
+            else if (Argument5.Value != null)
+            {
+                Argument5.Value.BubbledChange -= handler;
+            }
             if (anchor6Listener != null)
             {
                 foreach (var listener in anchor6Listener)
@@ -1717,6 +2137,10 @@ namespace NMF.Expressions
                     listener.BubbledChange -= handler;
                     listener.Detach();
                 }
+            }
+            else if (Argument6.Value != null)
+            {
+                Argument6.Value.BubbledChange -= handler;
             }
             if (anchor7Listener != null)
             {
@@ -1726,6 +2150,10 @@ namespace NMF.Expressions
                     listener.Detach();
                 }
             }
+            else if (Argument7.Value != null)
+            {
+                Argument7.Value.BubbledChange -= handler;
+            }
             if (anchor8Listener != null)
             {
                 foreach (var listener in anchor8Listener)
@@ -1733,6 +2161,10 @@ namespace NMF.Expressions
                     listener.BubbledChange -= handler;
                     listener.Detach();
                 }
+            }
+            else if (Argument8.Value != null)
+            {
+                Argument8.Value.BubbledChange -= handler;
             }
             if (anchor9Listener != null)
             {
@@ -1742,6 +2174,10 @@ namespace NMF.Expressions
                     listener.Detach();
                 }
             }
+            else if (Argument9.Value != null)
+            {
+                Argument9.Value.BubbledChange -= handler;
+            }
             if (anchor10Listener != null)
             {
                 foreach (var listener in anchor10Listener)
@@ -1749,6 +2185,10 @@ namespace NMF.Expressions
                     listener.BubbledChange -= handler;
                     listener.Detach();
                 }
+            }
+            else if (Argument10.Value != null)
+            {
+                Argument10.Value.BubbledChange -= handler;
             }
             base.OnDetach();
         }
@@ -1886,6 +2326,10 @@ namespace NMF.Expressions
                     listener.Attach();
                 }
             }
+            else if (Argument1.Value != null)
+            {
+                Argument1.Value.BubbledChange += handler;
+            }
             if (anchor2Listener != null)
             {
                 foreach (var listener in anchor2Listener)
@@ -1894,6 +2338,10 @@ namespace NMF.Expressions
                     listener.BubbledChange += handler;
                     listener.Attach();
                 }
+            }
+            else if (Argument2.Value != null)
+            {
+                Argument2.Value.BubbledChange += handler;
             }
             if (anchor3Listener != null)
             {
@@ -1904,6 +2352,10 @@ namespace NMF.Expressions
                     listener.Attach();
                 }
             }
+            else if (Argument3.Value != null)
+            {
+                Argument3.Value.BubbledChange += handler;
+            }
             if (anchor4Listener != null)
             {
                 foreach (var listener in anchor4Listener)
@@ -1912,6 +2364,10 @@ namespace NMF.Expressions
                     listener.BubbledChange += handler;
                     listener.Attach();
                 }
+            }
+            else if (Argument4.Value != null)
+            {
+                Argument4.Value.BubbledChange += handler;
             }
             if (anchor5Listener != null)
             {
@@ -1922,6 +2378,10 @@ namespace NMF.Expressions
                     listener.Attach();
                 }
             }
+            else if (Argument5.Value != null)
+            {
+                Argument5.Value.BubbledChange += handler;
+            }
             if (anchor6Listener != null)
             {
                 foreach (var listener in anchor6Listener)
@@ -1930,6 +2390,10 @@ namespace NMF.Expressions
                     listener.BubbledChange += handler;
                     listener.Attach();
                 }
+            }
+            else if (Argument6.Value != null)
+            {
+                Argument6.Value.BubbledChange += handler;
             }
             if (anchor7Listener != null)
             {
@@ -1940,6 +2404,10 @@ namespace NMF.Expressions
                     listener.Attach();
                 }
             }
+            else if (Argument7.Value != null)
+            {
+                Argument7.Value.BubbledChange += handler;
+            }
             if (anchor8Listener != null)
             {
                 foreach (var listener in anchor8Listener)
@@ -1948,6 +2416,10 @@ namespace NMF.Expressions
                     listener.BubbledChange += handler;
                     listener.Attach();
                 }
+            }
+            else if (Argument8.Value != null)
+            {
+                Argument8.Value.BubbledChange += handler;
             }
             if (anchor9Listener != null)
             {
@@ -1958,6 +2430,10 @@ namespace NMF.Expressions
                     listener.Attach();
                 }
             }
+            else if (Argument9.Value != null)
+            {
+                Argument9.Value.BubbledChange += handler;
+            }
             if (anchor10Listener != null)
             {
                 foreach (var listener in anchor10Listener)
@@ -1967,6 +2443,10 @@ namespace NMF.Expressions
                     listener.Attach();
                 }
             }
+            else if (Argument10.Value != null)
+            {
+                Argument10.Value.BubbledChange += handler;
+            }
             if (anchor11Listener != null)
             {
                 foreach (var listener in anchor11Listener)
@@ -1975,6 +2455,10 @@ namespace NMF.Expressions
                     listener.BubbledChange += handler;
                     listener.Attach();
                 }
+            }
+            else if (Argument11.Value != null)
+            {
+                Argument11.Value.BubbledChange += handler;
             }
         }
 
@@ -1989,6 +2473,10 @@ namespace NMF.Expressions
                     listener.Detach();
                 }
             }
+            else if (Argument1.Value != null)
+            {
+                Argument1.Value.BubbledChange -= handler;
+            }
             if (anchor2Listener != null)
             {
                 foreach (var listener in anchor2Listener)
@@ -1996,6 +2484,10 @@ namespace NMF.Expressions
                     listener.BubbledChange -= handler;
                     listener.Detach();
                 }
+            }
+            else if (Argument2.Value != null)
+            {
+                Argument2.Value.BubbledChange -= handler;
             }
             if (anchor3Listener != null)
             {
@@ -2005,6 +2497,10 @@ namespace NMF.Expressions
                     listener.Detach();
                 }
             }
+            else if (Argument3.Value != null)
+            {
+                Argument3.Value.BubbledChange -= handler;
+            }
             if (anchor4Listener != null)
             {
                 foreach (var listener in anchor4Listener)
@@ -2012,6 +2508,10 @@ namespace NMF.Expressions
                     listener.BubbledChange -= handler;
                     listener.Detach();
                 }
+            }
+            else if (Argument4.Value != null)
+            {
+                Argument4.Value.BubbledChange -= handler;
             }
             if (anchor5Listener != null)
             {
@@ -2021,6 +2521,10 @@ namespace NMF.Expressions
                     listener.Detach();
                 }
             }
+            else if (Argument5.Value != null)
+            {
+                Argument5.Value.BubbledChange -= handler;
+            }
             if (anchor6Listener != null)
             {
                 foreach (var listener in anchor6Listener)
@@ -2028,6 +2532,10 @@ namespace NMF.Expressions
                     listener.BubbledChange -= handler;
                     listener.Detach();
                 }
+            }
+            else if (Argument6.Value != null)
+            {
+                Argument6.Value.BubbledChange -= handler;
             }
             if (anchor7Listener != null)
             {
@@ -2037,6 +2545,10 @@ namespace NMF.Expressions
                     listener.Detach();
                 }
             }
+            else if (Argument7.Value != null)
+            {
+                Argument7.Value.BubbledChange -= handler;
+            }
             if (anchor8Listener != null)
             {
                 foreach (var listener in anchor8Listener)
@@ -2044,6 +2556,10 @@ namespace NMF.Expressions
                     listener.BubbledChange -= handler;
                     listener.Detach();
                 }
+            }
+            else if (Argument8.Value != null)
+            {
+                Argument8.Value.BubbledChange -= handler;
             }
             if (anchor9Listener != null)
             {
@@ -2053,6 +2569,10 @@ namespace NMF.Expressions
                     listener.Detach();
                 }
             }
+            else if (Argument9.Value != null)
+            {
+                Argument9.Value.BubbledChange -= handler;
+            }
             if (anchor10Listener != null)
             {
                 foreach (var listener in anchor10Listener)
@@ -2061,6 +2581,10 @@ namespace NMF.Expressions
                     listener.Detach();
                 }
             }
+            else if (Argument10.Value != null)
+            {
+                Argument10.Value.BubbledChange -= handler;
+            }
             if (anchor11Listener != null)
             {
                 foreach (var listener in anchor11Listener)
@@ -2068,6 +2592,10 @@ namespace NMF.Expressions
                     listener.BubbledChange -= handler;
                     listener.Detach();
                 }
+            }
+            else if (Argument11.Value != null)
+            {
+                Argument11.Value.BubbledChange -= handler;
             }
             base.OnDetach();
         }
@@ -2214,6 +2742,10 @@ namespace NMF.Expressions
                     listener.Attach();
                 }
             }
+            else if (Argument1.Value != null)
+            {
+                Argument1.Value.BubbledChange += handler;
+            }
             if (anchor2Listener != null)
             {
                 foreach (var listener in anchor2Listener)
@@ -2222,6 +2754,10 @@ namespace NMF.Expressions
                     listener.BubbledChange += handler;
                     listener.Attach();
                 }
+            }
+            else if (Argument2.Value != null)
+            {
+                Argument2.Value.BubbledChange += handler;
             }
             if (anchor3Listener != null)
             {
@@ -2232,6 +2768,10 @@ namespace NMF.Expressions
                     listener.Attach();
                 }
             }
+            else if (Argument3.Value != null)
+            {
+                Argument3.Value.BubbledChange += handler;
+            }
             if (anchor4Listener != null)
             {
                 foreach (var listener in anchor4Listener)
@@ -2240,6 +2780,10 @@ namespace NMF.Expressions
                     listener.BubbledChange += handler;
                     listener.Attach();
                 }
+            }
+            else if (Argument4.Value != null)
+            {
+                Argument4.Value.BubbledChange += handler;
             }
             if (anchor5Listener != null)
             {
@@ -2250,6 +2794,10 @@ namespace NMF.Expressions
                     listener.Attach();
                 }
             }
+            else if (Argument5.Value != null)
+            {
+                Argument5.Value.BubbledChange += handler;
+            }
             if (anchor6Listener != null)
             {
                 foreach (var listener in anchor6Listener)
@@ -2258,6 +2806,10 @@ namespace NMF.Expressions
                     listener.BubbledChange += handler;
                     listener.Attach();
                 }
+            }
+            else if (Argument6.Value != null)
+            {
+                Argument6.Value.BubbledChange += handler;
             }
             if (anchor7Listener != null)
             {
@@ -2268,6 +2820,10 @@ namespace NMF.Expressions
                     listener.Attach();
                 }
             }
+            else if (Argument7.Value != null)
+            {
+                Argument7.Value.BubbledChange += handler;
+            }
             if (anchor8Listener != null)
             {
                 foreach (var listener in anchor8Listener)
@@ -2276,6 +2832,10 @@ namespace NMF.Expressions
                     listener.BubbledChange += handler;
                     listener.Attach();
                 }
+            }
+            else if (Argument8.Value != null)
+            {
+                Argument8.Value.BubbledChange += handler;
             }
             if (anchor9Listener != null)
             {
@@ -2286,6 +2846,10 @@ namespace NMF.Expressions
                     listener.Attach();
                 }
             }
+            else if (Argument9.Value != null)
+            {
+                Argument9.Value.BubbledChange += handler;
+            }
             if (anchor10Listener != null)
             {
                 foreach (var listener in anchor10Listener)
@@ -2294,6 +2858,10 @@ namespace NMF.Expressions
                     listener.BubbledChange += handler;
                     listener.Attach();
                 }
+            }
+            else if (Argument10.Value != null)
+            {
+                Argument10.Value.BubbledChange += handler;
             }
             if (anchor11Listener != null)
             {
@@ -2304,6 +2872,10 @@ namespace NMF.Expressions
                     listener.Attach();
                 }
             }
+            else if (Argument11.Value != null)
+            {
+                Argument11.Value.BubbledChange += handler;
+            }
             if (anchor12Listener != null)
             {
                 foreach (var listener in anchor12Listener)
@@ -2312,6 +2884,10 @@ namespace NMF.Expressions
                     listener.BubbledChange += handler;
                     listener.Attach();
                 }
+            }
+            else if (Argument12.Value != null)
+            {
+                Argument12.Value.BubbledChange += handler;
             }
         }
 
@@ -2326,6 +2902,10 @@ namespace NMF.Expressions
                     listener.Detach();
                 }
             }
+            else if (Argument1.Value != null)
+            {
+                Argument1.Value.BubbledChange -= handler;
+            }
             if (anchor2Listener != null)
             {
                 foreach (var listener in anchor2Listener)
@@ -2333,6 +2913,10 @@ namespace NMF.Expressions
                     listener.BubbledChange -= handler;
                     listener.Detach();
                 }
+            }
+            else if (Argument2.Value != null)
+            {
+                Argument2.Value.BubbledChange -= handler;
             }
             if (anchor3Listener != null)
             {
@@ -2342,6 +2926,10 @@ namespace NMF.Expressions
                     listener.Detach();
                 }
             }
+            else if (Argument3.Value != null)
+            {
+                Argument3.Value.BubbledChange -= handler;
+            }
             if (anchor4Listener != null)
             {
                 foreach (var listener in anchor4Listener)
@@ -2349,6 +2937,10 @@ namespace NMF.Expressions
                     listener.BubbledChange -= handler;
                     listener.Detach();
                 }
+            }
+            else if (Argument4.Value != null)
+            {
+                Argument4.Value.BubbledChange -= handler;
             }
             if (anchor5Listener != null)
             {
@@ -2358,6 +2950,10 @@ namespace NMF.Expressions
                     listener.Detach();
                 }
             }
+            else if (Argument5.Value != null)
+            {
+                Argument5.Value.BubbledChange -= handler;
+            }
             if (anchor6Listener != null)
             {
                 foreach (var listener in anchor6Listener)
@@ -2365,6 +2961,10 @@ namespace NMF.Expressions
                     listener.BubbledChange -= handler;
                     listener.Detach();
                 }
+            }
+            else if (Argument6.Value != null)
+            {
+                Argument6.Value.BubbledChange -= handler;
             }
             if (anchor7Listener != null)
             {
@@ -2374,6 +2974,10 @@ namespace NMF.Expressions
                     listener.Detach();
                 }
             }
+            else if (Argument7.Value != null)
+            {
+                Argument7.Value.BubbledChange -= handler;
+            }
             if (anchor8Listener != null)
             {
                 foreach (var listener in anchor8Listener)
@@ -2381,6 +2985,10 @@ namespace NMF.Expressions
                     listener.BubbledChange -= handler;
                     listener.Detach();
                 }
+            }
+            else if (Argument8.Value != null)
+            {
+                Argument8.Value.BubbledChange -= handler;
             }
             if (anchor9Listener != null)
             {
@@ -2390,6 +2998,10 @@ namespace NMF.Expressions
                     listener.Detach();
                 }
             }
+            else if (Argument9.Value != null)
+            {
+                Argument9.Value.BubbledChange -= handler;
+            }
             if (anchor10Listener != null)
             {
                 foreach (var listener in anchor10Listener)
@@ -2397,6 +3009,10 @@ namespace NMF.Expressions
                     listener.BubbledChange -= handler;
                     listener.Detach();
                 }
+            }
+            else if (Argument10.Value != null)
+            {
+                Argument10.Value.BubbledChange -= handler;
             }
             if (anchor11Listener != null)
             {
@@ -2406,6 +3022,10 @@ namespace NMF.Expressions
                     listener.Detach();
                 }
             }
+            else if (Argument11.Value != null)
+            {
+                Argument11.Value.BubbledChange -= handler;
+            }
             if (anchor12Listener != null)
             {
                 foreach (var listener in anchor12Listener)
@@ -2413,6 +3033,10 @@ namespace NMF.Expressions
                     listener.BubbledChange -= handler;
                     listener.Detach();
                 }
+            }
+            else if (Argument12.Value != null)
+            {
+                Argument12.Value.BubbledChange -= handler;
             }
             base.OnDetach();
         }
@@ -2568,6 +3192,10 @@ namespace NMF.Expressions
                     listener.Attach();
                 }
             }
+            else if (Argument1.Value != null)
+            {
+                Argument1.Value.BubbledChange += handler;
+            }
             if (anchor2Listener != null)
             {
                 foreach (var listener in anchor2Listener)
@@ -2576,6 +3204,10 @@ namespace NMF.Expressions
                     listener.BubbledChange += handler;
                     listener.Attach();
                 }
+            }
+            else if (Argument2.Value != null)
+            {
+                Argument2.Value.BubbledChange += handler;
             }
             if (anchor3Listener != null)
             {
@@ -2586,6 +3218,10 @@ namespace NMF.Expressions
                     listener.Attach();
                 }
             }
+            else if (Argument3.Value != null)
+            {
+                Argument3.Value.BubbledChange += handler;
+            }
             if (anchor4Listener != null)
             {
                 foreach (var listener in anchor4Listener)
@@ -2594,6 +3230,10 @@ namespace NMF.Expressions
                     listener.BubbledChange += handler;
                     listener.Attach();
                 }
+            }
+            else if (Argument4.Value != null)
+            {
+                Argument4.Value.BubbledChange += handler;
             }
             if (anchor5Listener != null)
             {
@@ -2604,6 +3244,10 @@ namespace NMF.Expressions
                     listener.Attach();
                 }
             }
+            else if (Argument5.Value != null)
+            {
+                Argument5.Value.BubbledChange += handler;
+            }
             if (anchor6Listener != null)
             {
                 foreach (var listener in anchor6Listener)
@@ -2612,6 +3256,10 @@ namespace NMF.Expressions
                     listener.BubbledChange += handler;
                     listener.Attach();
                 }
+            }
+            else if (Argument6.Value != null)
+            {
+                Argument6.Value.BubbledChange += handler;
             }
             if (anchor7Listener != null)
             {
@@ -2622,6 +3270,10 @@ namespace NMF.Expressions
                     listener.Attach();
                 }
             }
+            else if (Argument7.Value != null)
+            {
+                Argument7.Value.BubbledChange += handler;
+            }
             if (anchor8Listener != null)
             {
                 foreach (var listener in anchor8Listener)
@@ -2630,6 +3282,10 @@ namespace NMF.Expressions
                     listener.BubbledChange += handler;
                     listener.Attach();
                 }
+            }
+            else if (Argument8.Value != null)
+            {
+                Argument8.Value.BubbledChange += handler;
             }
             if (anchor9Listener != null)
             {
@@ -2640,6 +3296,10 @@ namespace NMF.Expressions
                     listener.Attach();
                 }
             }
+            else if (Argument9.Value != null)
+            {
+                Argument9.Value.BubbledChange += handler;
+            }
             if (anchor10Listener != null)
             {
                 foreach (var listener in anchor10Listener)
@@ -2648,6 +3308,10 @@ namespace NMF.Expressions
                     listener.BubbledChange += handler;
                     listener.Attach();
                 }
+            }
+            else if (Argument10.Value != null)
+            {
+                Argument10.Value.BubbledChange += handler;
             }
             if (anchor11Listener != null)
             {
@@ -2658,6 +3322,10 @@ namespace NMF.Expressions
                     listener.Attach();
                 }
             }
+            else if (Argument11.Value != null)
+            {
+                Argument11.Value.BubbledChange += handler;
+            }
             if (anchor12Listener != null)
             {
                 foreach (var listener in anchor12Listener)
@@ -2667,6 +3335,10 @@ namespace NMF.Expressions
                     listener.Attach();
                 }
             }
+            else if (Argument12.Value != null)
+            {
+                Argument12.Value.BubbledChange += handler;
+            }
             if (anchor13Listener != null)
             {
                 foreach (var listener in anchor13Listener)
@@ -2675,6 +3347,10 @@ namespace NMF.Expressions
                     listener.BubbledChange += handler;
                     listener.Attach();
                 }
+            }
+            else if (Argument13.Value != null)
+            {
+                Argument13.Value.BubbledChange += handler;
             }
         }
 
@@ -2689,6 +3365,10 @@ namespace NMF.Expressions
                     listener.Detach();
                 }
             }
+            else if (Argument1.Value != null)
+            {
+                Argument1.Value.BubbledChange -= handler;
+            }
             if (anchor2Listener != null)
             {
                 foreach (var listener in anchor2Listener)
@@ -2696,6 +3376,10 @@ namespace NMF.Expressions
                     listener.BubbledChange -= handler;
                     listener.Detach();
                 }
+            }
+            else if (Argument2.Value != null)
+            {
+                Argument2.Value.BubbledChange -= handler;
             }
             if (anchor3Listener != null)
             {
@@ -2705,6 +3389,10 @@ namespace NMF.Expressions
                     listener.Detach();
                 }
             }
+            else if (Argument3.Value != null)
+            {
+                Argument3.Value.BubbledChange -= handler;
+            }
             if (anchor4Listener != null)
             {
                 foreach (var listener in anchor4Listener)
@@ -2712,6 +3400,10 @@ namespace NMF.Expressions
                     listener.BubbledChange -= handler;
                     listener.Detach();
                 }
+            }
+            else if (Argument4.Value != null)
+            {
+                Argument4.Value.BubbledChange -= handler;
             }
             if (anchor5Listener != null)
             {
@@ -2721,6 +3413,10 @@ namespace NMF.Expressions
                     listener.Detach();
                 }
             }
+            else if (Argument5.Value != null)
+            {
+                Argument5.Value.BubbledChange -= handler;
+            }
             if (anchor6Listener != null)
             {
                 foreach (var listener in anchor6Listener)
@@ -2728,6 +3424,10 @@ namespace NMF.Expressions
                     listener.BubbledChange -= handler;
                     listener.Detach();
                 }
+            }
+            else if (Argument6.Value != null)
+            {
+                Argument6.Value.BubbledChange -= handler;
             }
             if (anchor7Listener != null)
             {
@@ -2737,6 +3437,10 @@ namespace NMF.Expressions
                     listener.Detach();
                 }
             }
+            else if (Argument7.Value != null)
+            {
+                Argument7.Value.BubbledChange -= handler;
+            }
             if (anchor8Listener != null)
             {
                 foreach (var listener in anchor8Listener)
@@ -2744,6 +3448,10 @@ namespace NMF.Expressions
                     listener.BubbledChange -= handler;
                     listener.Detach();
                 }
+            }
+            else if (Argument8.Value != null)
+            {
+                Argument8.Value.BubbledChange -= handler;
             }
             if (anchor9Listener != null)
             {
@@ -2753,6 +3461,10 @@ namespace NMF.Expressions
                     listener.Detach();
                 }
             }
+            else if (Argument9.Value != null)
+            {
+                Argument9.Value.BubbledChange -= handler;
+            }
             if (anchor10Listener != null)
             {
                 foreach (var listener in anchor10Listener)
@@ -2760,6 +3472,10 @@ namespace NMF.Expressions
                     listener.BubbledChange -= handler;
                     listener.Detach();
                 }
+            }
+            else if (Argument10.Value != null)
+            {
+                Argument10.Value.BubbledChange -= handler;
             }
             if (anchor11Listener != null)
             {
@@ -2769,6 +3485,10 @@ namespace NMF.Expressions
                     listener.Detach();
                 }
             }
+            else if (Argument11.Value != null)
+            {
+                Argument11.Value.BubbledChange -= handler;
+            }
             if (anchor12Listener != null)
             {
                 foreach (var listener in anchor12Listener)
@@ -2777,6 +3497,10 @@ namespace NMF.Expressions
                     listener.Detach();
                 }
             }
+            else if (Argument12.Value != null)
+            {
+                Argument12.Value.BubbledChange -= handler;
+            }
             if (anchor13Listener != null)
             {
                 foreach (var listener in anchor13Listener)
@@ -2784,6 +3508,10 @@ namespace NMF.Expressions
                     listener.BubbledChange -= handler;
                     listener.Detach();
                 }
+            }
+            else if (Argument13.Value != null)
+            {
+                Argument13.Value.BubbledChange -= handler;
             }
             base.OnDetach();
         }
@@ -2948,6 +3676,10 @@ namespace NMF.Expressions
                     listener.Attach();
                 }
             }
+            else if (Argument1.Value != null)
+            {
+                Argument1.Value.BubbledChange += handler;
+            }
             if (anchor2Listener != null)
             {
                 foreach (var listener in anchor2Listener)
@@ -2956,6 +3688,10 @@ namespace NMF.Expressions
                     listener.BubbledChange += handler;
                     listener.Attach();
                 }
+            }
+            else if (Argument2.Value != null)
+            {
+                Argument2.Value.BubbledChange += handler;
             }
             if (anchor3Listener != null)
             {
@@ -2966,6 +3702,10 @@ namespace NMF.Expressions
                     listener.Attach();
                 }
             }
+            else if (Argument3.Value != null)
+            {
+                Argument3.Value.BubbledChange += handler;
+            }
             if (anchor4Listener != null)
             {
                 foreach (var listener in anchor4Listener)
@@ -2974,6 +3714,10 @@ namespace NMF.Expressions
                     listener.BubbledChange += handler;
                     listener.Attach();
                 }
+            }
+            else if (Argument4.Value != null)
+            {
+                Argument4.Value.BubbledChange += handler;
             }
             if (anchor5Listener != null)
             {
@@ -2984,6 +3728,10 @@ namespace NMF.Expressions
                     listener.Attach();
                 }
             }
+            else if (Argument5.Value != null)
+            {
+                Argument5.Value.BubbledChange += handler;
+            }
             if (anchor6Listener != null)
             {
                 foreach (var listener in anchor6Listener)
@@ -2992,6 +3740,10 @@ namespace NMF.Expressions
                     listener.BubbledChange += handler;
                     listener.Attach();
                 }
+            }
+            else if (Argument6.Value != null)
+            {
+                Argument6.Value.BubbledChange += handler;
             }
             if (anchor7Listener != null)
             {
@@ -3002,6 +3754,10 @@ namespace NMF.Expressions
                     listener.Attach();
                 }
             }
+            else if (Argument7.Value != null)
+            {
+                Argument7.Value.BubbledChange += handler;
+            }
             if (anchor8Listener != null)
             {
                 foreach (var listener in anchor8Listener)
@@ -3010,6 +3766,10 @@ namespace NMF.Expressions
                     listener.BubbledChange += handler;
                     listener.Attach();
                 }
+            }
+            else if (Argument8.Value != null)
+            {
+                Argument8.Value.BubbledChange += handler;
             }
             if (anchor9Listener != null)
             {
@@ -3020,6 +3780,10 @@ namespace NMF.Expressions
                     listener.Attach();
                 }
             }
+            else if (Argument9.Value != null)
+            {
+                Argument9.Value.BubbledChange += handler;
+            }
             if (anchor10Listener != null)
             {
                 foreach (var listener in anchor10Listener)
@@ -3028,6 +3792,10 @@ namespace NMF.Expressions
                     listener.BubbledChange += handler;
                     listener.Attach();
                 }
+            }
+            else if (Argument10.Value != null)
+            {
+                Argument10.Value.BubbledChange += handler;
             }
             if (anchor11Listener != null)
             {
@@ -3038,6 +3806,10 @@ namespace NMF.Expressions
                     listener.Attach();
                 }
             }
+            else if (Argument11.Value != null)
+            {
+                Argument11.Value.BubbledChange += handler;
+            }
             if (anchor12Listener != null)
             {
                 foreach (var listener in anchor12Listener)
@@ -3046,6 +3818,10 @@ namespace NMF.Expressions
                     listener.BubbledChange += handler;
                     listener.Attach();
                 }
+            }
+            else if (Argument12.Value != null)
+            {
+                Argument12.Value.BubbledChange += handler;
             }
             if (anchor13Listener != null)
             {
@@ -3056,6 +3832,10 @@ namespace NMF.Expressions
                     listener.Attach();
                 }
             }
+            else if (Argument13.Value != null)
+            {
+                Argument13.Value.BubbledChange += handler;
+            }
             if (anchor14Listener != null)
             {
                 foreach (var listener in anchor14Listener)
@@ -3064,6 +3844,10 @@ namespace NMF.Expressions
                     listener.BubbledChange += handler;
                     listener.Attach();
                 }
+            }
+            else if (Argument14.Value != null)
+            {
+                Argument14.Value.BubbledChange += handler;
             }
         }
 
@@ -3078,6 +3862,10 @@ namespace NMF.Expressions
                     listener.Detach();
                 }
             }
+            else if (Argument1.Value != null)
+            {
+                Argument1.Value.BubbledChange -= handler;
+            }
             if (anchor2Listener != null)
             {
                 foreach (var listener in anchor2Listener)
@@ -3085,6 +3873,10 @@ namespace NMF.Expressions
                     listener.BubbledChange -= handler;
                     listener.Detach();
                 }
+            }
+            else if (Argument2.Value != null)
+            {
+                Argument2.Value.BubbledChange -= handler;
             }
             if (anchor3Listener != null)
             {
@@ -3094,6 +3886,10 @@ namespace NMF.Expressions
                     listener.Detach();
                 }
             }
+            else if (Argument3.Value != null)
+            {
+                Argument3.Value.BubbledChange -= handler;
+            }
             if (anchor4Listener != null)
             {
                 foreach (var listener in anchor4Listener)
@@ -3101,6 +3897,10 @@ namespace NMF.Expressions
                     listener.BubbledChange -= handler;
                     listener.Detach();
                 }
+            }
+            else if (Argument4.Value != null)
+            {
+                Argument4.Value.BubbledChange -= handler;
             }
             if (anchor5Listener != null)
             {
@@ -3110,6 +3910,10 @@ namespace NMF.Expressions
                     listener.Detach();
                 }
             }
+            else if (Argument5.Value != null)
+            {
+                Argument5.Value.BubbledChange -= handler;
+            }
             if (anchor6Listener != null)
             {
                 foreach (var listener in anchor6Listener)
@@ -3117,6 +3921,10 @@ namespace NMF.Expressions
                     listener.BubbledChange -= handler;
                     listener.Detach();
                 }
+            }
+            else if (Argument6.Value != null)
+            {
+                Argument6.Value.BubbledChange -= handler;
             }
             if (anchor7Listener != null)
             {
@@ -3126,6 +3934,10 @@ namespace NMF.Expressions
                     listener.Detach();
                 }
             }
+            else if (Argument7.Value != null)
+            {
+                Argument7.Value.BubbledChange -= handler;
+            }
             if (anchor8Listener != null)
             {
                 foreach (var listener in anchor8Listener)
@@ -3133,6 +3945,10 @@ namespace NMF.Expressions
                     listener.BubbledChange -= handler;
                     listener.Detach();
                 }
+            }
+            else if (Argument8.Value != null)
+            {
+                Argument8.Value.BubbledChange -= handler;
             }
             if (anchor9Listener != null)
             {
@@ -3142,6 +3958,10 @@ namespace NMF.Expressions
                     listener.Detach();
                 }
             }
+            else if (Argument9.Value != null)
+            {
+                Argument9.Value.BubbledChange -= handler;
+            }
             if (anchor10Listener != null)
             {
                 foreach (var listener in anchor10Listener)
@@ -3149,6 +3969,10 @@ namespace NMF.Expressions
                     listener.BubbledChange -= handler;
                     listener.Detach();
                 }
+            }
+            else if (Argument10.Value != null)
+            {
+                Argument10.Value.BubbledChange -= handler;
             }
             if (anchor11Listener != null)
             {
@@ -3158,6 +3982,10 @@ namespace NMF.Expressions
                     listener.Detach();
                 }
             }
+            else if (Argument11.Value != null)
+            {
+                Argument11.Value.BubbledChange -= handler;
+            }
             if (anchor12Listener != null)
             {
                 foreach (var listener in anchor12Listener)
@@ -3165,6 +3993,10 @@ namespace NMF.Expressions
                     listener.BubbledChange -= handler;
                     listener.Detach();
                 }
+            }
+            else if (Argument12.Value != null)
+            {
+                Argument12.Value.BubbledChange -= handler;
             }
             if (anchor13Listener != null)
             {
@@ -3174,6 +4006,10 @@ namespace NMF.Expressions
                     listener.Detach();
                 }
             }
+            else if (Argument13.Value != null)
+            {
+                Argument13.Value.BubbledChange -= handler;
+            }
             if (anchor14Listener != null)
             {
                 foreach (var listener in anchor14Listener)
@@ -3181,6 +4017,10 @@ namespace NMF.Expressions
                     listener.BubbledChange -= handler;
                     listener.Detach();
                 }
+            }
+            else if (Argument14.Value != null)
+            {
+                Argument14.Value.BubbledChange -= handler;
             }
             base.OnDetach();
         }
@@ -3354,6 +4194,10 @@ namespace NMF.Expressions
                     listener.Attach();
                 }
             }
+            else if (Argument1.Value != null)
+            {
+                Argument1.Value.BubbledChange += handler;
+            }
             if (anchor2Listener != null)
             {
                 foreach (var listener in anchor2Listener)
@@ -3362,6 +4206,10 @@ namespace NMF.Expressions
                     listener.BubbledChange += handler;
                     listener.Attach();
                 }
+            }
+            else if (Argument2.Value != null)
+            {
+                Argument2.Value.BubbledChange += handler;
             }
             if (anchor3Listener != null)
             {
@@ -3372,6 +4220,10 @@ namespace NMF.Expressions
                     listener.Attach();
                 }
             }
+            else if (Argument3.Value != null)
+            {
+                Argument3.Value.BubbledChange += handler;
+            }
             if (anchor4Listener != null)
             {
                 foreach (var listener in anchor4Listener)
@@ -3380,6 +4232,10 @@ namespace NMF.Expressions
                     listener.BubbledChange += handler;
                     listener.Attach();
                 }
+            }
+            else if (Argument4.Value != null)
+            {
+                Argument4.Value.BubbledChange += handler;
             }
             if (anchor5Listener != null)
             {
@@ -3390,6 +4246,10 @@ namespace NMF.Expressions
                     listener.Attach();
                 }
             }
+            else if (Argument5.Value != null)
+            {
+                Argument5.Value.BubbledChange += handler;
+            }
             if (anchor6Listener != null)
             {
                 foreach (var listener in anchor6Listener)
@@ -3398,6 +4258,10 @@ namespace NMF.Expressions
                     listener.BubbledChange += handler;
                     listener.Attach();
                 }
+            }
+            else if (Argument6.Value != null)
+            {
+                Argument6.Value.BubbledChange += handler;
             }
             if (anchor7Listener != null)
             {
@@ -3408,6 +4272,10 @@ namespace NMF.Expressions
                     listener.Attach();
                 }
             }
+            else if (Argument7.Value != null)
+            {
+                Argument7.Value.BubbledChange += handler;
+            }
             if (anchor8Listener != null)
             {
                 foreach (var listener in anchor8Listener)
@@ -3416,6 +4284,10 @@ namespace NMF.Expressions
                     listener.BubbledChange += handler;
                     listener.Attach();
                 }
+            }
+            else if (Argument8.Value != null)
+            {
+                Argument8.Value.BubbledChange += handler;
             }
             if (anchor9Listener != null)
             {
@@ -3426,6 +4298,10 @@ namespace NMF.Expressions
                     listener.Attach();
                 }
             }
+            else if (Argument9.Value != null)
+            {
+                Argument9.Value.BubbledChange += handler;
+            }
             if (anchor10Listener != null)
             {
                 foreach (var listener in anchor10Listener)
@@ -3434,6 +4310,10 @@ namespace NMF.Expressions
                     listener.BubbledChange += handler;
                     listener.Attach();
                 }
+            }
+            else if (Argument10.Value != null)
+            {
+                Argument10.Value.BubbledChange += handler;
             }
             if (anchor11Listener != null)
             {
@@ -3444,6 +4324,10 @@ namespace NMF.Expressions
                     listener.Attach();
                 }
             }
+            else if (Argument11.Value != null)
+            {
+                Argument11.Value.BubbledChange += handler;
+            }
             if (anchor12Listener != null)
             {
                 foreach (var listener in anchor12Listener)
@@ -3452,6 +4336,10 @@ namespace NMF.Expressions
                     listener.BubbledChange += handler;
                     listener.Attach();
                 }
+            }
+            else if (Argument12.Value != null)
+            {
+                Argument12.Value.BubbledChange += handler;
             }
             if (anchor13Listener != null)
             {
@@ -3462,6 +4350,10 @@ namespace NMF.Expressions
                     listener.Attach();
                 }
             }
+            else if (Argument13.Value != null)
+            {
+                Argument13.Value.BubbledChange += handler;
+            }
             if (anchor14Listener != null)
             {
                 foreach (var listener in anchor14Listener)
@@ -3471,6 +4363,10 @@ namespace NMF.Expressions
                     listener.Attach();
                 }
             }
+            else if (Argument14.Value != null)
+            {
+                Argument14.Value.BubbledChange += handler;
+            }
             if (anchor15Listener != null)
             {
                 foreach (var listener in anchor15Listener)
@@ -3479,6 +4375,10 @@ namespace NMF.Expressions
                     listener.BubbledChange += handler;
                     listener.Attach();
                 }
+            }
+            else if (Argument15.Value != null)
+            {
+                Argument15.Value.BubbledChange += handler;
             }
         }
 
@@ -3493,6 +4393,10 @@ namespace NMF.Expressions
                     listener.Detach();
                 }
             }
+            else if (Argument1.Value != null)
+            {
+                Argument1.Value.BubbledChange -= handler;
+            }
             if (anchor2Listener != null)
             {
                 foreach (var listener in anchor2Listener)
@@ -3500,6 +4404,10 @@ namespace NMF.Expressions
                     listener.BubbledChange -= handler;
                     listener.Detach();
                 }
+            }
+            else if (Argument2.Value != null)
+            {
+                Argument2.Value.BubbledChange -= handler;
             }
             if (anchor3Listener != null)
             {
@@ -3509,6 +4417,10 @@ namespace NMF.Expressions
                     listener.Detach();
                 }
             }
+            else if (Argument3.Value != null)
+            {
+                Argument3.Value.BubbledChange -= handler;
+            }
             if (anchor4Listener != null)
             {
                 foreach (var listener in anchor4Listener)
@@ -3516,6 +4428,10 @@ namespace NMF.Expressions
                     listener.BubbledChange -= handler;
                     listener.Detach();
                 }
+            }
+            else if (Argument4.Value != null)
+            {
+                Argument4.Value.BubbledChange -= handler;
             }
             if (anchor5Listener != null)
             {
@@ -3525,6 +4441,10 @@ namespace NMF.Expressions
                     listener.Detach();
                 }
             }
+            else if (Argument5.Value != null)
+            {
+                Argument5.Value.BubbledChange -= handler;
+            }
             if (anchor6Listener != null)
             {
                 foreach (var listener in anchor6Listener)
@@ -3532,6 +4452,10 @@ namespace NMF.Expressions
                     listener.BubbledChange -= handler;
                     listener.Detach();
                 }
+            }
+            else if (Argument6.Value != null)
+            {
+                Argument6.Value.BubbledChange -= handler;
             }
             if (anchor7Listener != null)
             {
@@ -3541,6 +4465,10 @@ namespace NMF.Expressions
                     listener.Detach();
                 }
             }
+            else if (Argument7.Value != null)
+            {
+                Argument7.Value.BubbledChange -= handler;
+            }
             if (anchor8Listener != null)
             {
                 foreach (var listener in anchor8Listener)
@@ -3548,6 +4476,10 @@ namespace NMF.Expressions
                     listener.BubbledChange -= handler;
                     listener.Detach();
                 }
+            }
+            else if (Argument8.Value != null)
+            {
+                Argument8.Value.BubbledChange -= handler;
             }
             if (anchor9Listener != null)
             {
@@ -3557,6 +4489,10 @@ namespace NMF.Expressions
                     listener.Detach();
                 }
             }
+            else if (Argument9.Value != null)
+            {
+                Argument9.Value.BubbledChange -= handler;
+            }
             if (anchor10Listener != null)
             {
                 foreach (var listener in anchor10Listener)
@@ -3564,6 +4500,10 @@ namespace NMF.Expressions
                     listener.BubbledChange -= handler;
                     listener.Detach();
                 }
+            }
+            else if (Argument10.Value != null)
+            {
+                Argument10.Value.BubbledChange -= handler;
             }
             if (anchor11Listener != null)
             {
@@ -3573,6 +4513,10 @@ namespace NMF.Expressions
                     listener.Detach();
                 }
             }
+            else if (Argument11.Value != null)
+            {
+                Argument11.Value.BubbledChange -= handler;
+            }
             if (anchor12Listener != null)
             {
                 foreach (var listener in anchor12Listener)
@@ -3580,6 +4524,10 @@ namespace NMF.Expressions
                     listener.BubbledChange -= handler;
                     listener.Detach();
                 }
+            }
+            else if (Argument12.Value != null)
+            {
+                Argument12.Value.BubbledChange -= handler;
             }
             if (anchor13Listener != null)
             {
@@ -3589,6 +4537,10 @@ namespace NMF.Expressions
                     listener.Detach();
                 }
             }
+            else if (Argument13.Value != null)
+            {
+                Argument13.Value.BubbledChange -= handler;
+            }
             if (anchor14Listener != null)
             {
                 foreach (var listener in anchor14Listener)
@@ -3597,6 +4549,10 @@ namespace NMF.Expressions
                     listener.Detach();
                 }
             }
+            else if (Argument14.Value != null)
+            {
+                Argument14.Value.BubbledChange -= handler;
+            }
             if (anchor15Listener != null)
             {
                 foreach (var listener in anchor15Listener)
@@ -3604,6 +4560,10 @@ namespace NMF.Expressions
                     listener.BubbledChange -= handler;
                     listener.Detach();
                 }
+            }
+            else if (Argument15.Value != null)
+            {
+                Argument15.Value.BubbledChange -= handler;
             }
             base.OnDetach();
         }

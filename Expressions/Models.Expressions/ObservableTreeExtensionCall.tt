@@ -55,6 +55,10 @@ namespace NMF.Expressions
                     listener.Attach();
                 }
             }
+            else if (Argument<#= j #>.Value != null)
+            {
+                Argument<#= j #>.Value.BubbledChange += handler;
+            }
 <# } #>
         }
 
@@ -69,6 +73,10 @@ namespace NMF.Expressions
                     listener.BubbledChange -= handler;
                     listener.Detach();
                 }
+            }
+            else if (Argument<#= j #>.Value != null)
+            {
+                Argument<#= j #>.Value.BubbledChange -= handler;
             }
 <# } #>
             base.OnDetach();
