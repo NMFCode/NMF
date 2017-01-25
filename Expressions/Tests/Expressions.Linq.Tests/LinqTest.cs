@@ -67,6 +67,33 @@ namespace NMF.Expressions.Linq.Tests
             Assert.IsTrue(violation);
         }
 
+        [TestMethod]
+        public void Linq_Group_Test_Employees()
+        {
+            var violation = false;
+
+            var employees = new ObservableCollection<Person>();
+            var employeesWithUpdates = employees.WithUpdates();
+            var violations = from employee in employeesWithUpdates
+                             group employee by employee.Team into team
+                             from member in team
+                             where member.WorkItems >= 2 * team.Average(e => e.WorkItems)
+                             select member.Name;
+
+            violations.CollectionChanged += (o, e) =>
+            {
+                violation = true;
+            };
+
+            Assert.IsFalse(violation);
+            employees.Add(new Person() { Name = "John", WorkItems = 20, Team = "A" });
+            Assert.IsFalse(violation);
+            employees.Add(new Person() { Name = "Susi", WorkItems = 5, Team = "A" });
+            Assert.IsFalse(violation);
+            employees.Add(new Person() { Name = "Joe", WorkItems = 3, Team = "A" });
+            Assert.IsTrue(violation);
+        }
+
 
     }
 
