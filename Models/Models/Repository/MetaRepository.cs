@@ -99,24 +99,28 @@ namespace NMF.Models.Repository
                     }
                 }
                 var names = assembly.GetManifestResourceNames();
+                if (names == null || names.Length == 0)
+                {
+                    throw new Exception($"The assembly {assembly.FullName} declares a model but has no embedded resources. Did you forget to embed a model?");
+                }
                 for (int i = 0; i < attributes.Length; i++)
                 {
                     var metadata = attributes[i] as ModelMetadataAttribute;
                     Uri modelUri;
                     if (metadata != null && names.Contains(metadata.ResourceName) && Uri.TryCreate(metadata.ModelUri, UriKind.Absolute, out modelUri))
                     {
-#if DEBUG
-                        serializer.Deserialize(assembly.GetManifestResourceStream(metadata.ResourceName), modelUri, this, true);
-#else
                         try
                         {
                             serializer.Deserialize(assembly.GetManifestResourceStream(metadata.ResourceName), modelUri, this, true);
                         }
-                        catch (Exception ex)
+                        catch (Exception e)
                         {
-                            Console.Error.WriteLine(ex.Message);
+                            throw new Exception($"Error loading the embedded resource {metadata.ResourceName} from assembly {assembly.FullName}: {e.Message}", e);
                         }
-#endif
+                    }
+                    else
+                    {
+                        throw new Exception($"The declared embedded resource {metadata.ResourceName} of asembly {assembly.FullName} could not be found.");
                     }
                 }
                 for (int i = 0; i < saveMapping.Count; i++)
