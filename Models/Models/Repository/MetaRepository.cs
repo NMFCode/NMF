@@ -50,6 +50,72 @@ namespace NMF.Models.Repository
             {
                 RegisterAssembly(assemblies[i]);
             }
+
+            var metaNamespace = entries[new Uri("http://nmf.codeplex.com/nmeta/")].RootElements[0] as INamespace;
+            foreach (var type in metaNamespace.Types.OfType<PrimitiveType>())
+            {
+                switch (type.Name)
+                {
+                    case "Boolean":
+                        MapType(type, typeof(bool));
+                        break;
+                    case "Byte":
+                        MapType(type, typeof(byte));
+                        break;
+                    case "ByteArray":
+                        MapType(type, typeof(byte[]));
+                        break;
+                    case "Char":
+                        MapType(type, typeof(char));
+                        break;
+                    case "DateTime":
+                        MapType(type, typeof(DateTime));
+                        break;
+                    case "Decimal":
+                        MapType(type, typeof(decimal));
+                        break;
+                    case "Double":
+                        MapType(type, typeof(double));
+                        break;
+                    case "Float":
+                        MapType(type, typeof(float));
+                        break;
+                    case "Guid":
+                        MapType(type, typeof(Guid));
+                        break;
+                    case "Integer":
+                        MapType(type, typeof(int));
+                        break;
+                    case "Long":
+                        MapType(type, typeof(long));
+                        break;
+                    case "Object":
+                        MapType(type, typeof(object));
+                        break;
+                    case "String":
+                        MapType(type, typeof(string));
+                        break;
+                    case "Short":
+                        MapType(type, typeof(short));
+                        break;
+                    case "TimeSpan":
+                        MapType(type, typeof(TimeSpan));
+                        break;
+                    case "Uri":
+                        MapType(type, typeof(Uri));
+                        break;
+                    case "SystemType":
+                        MapType(type, typeof(System.Type));
+                        break;
+                    default:
+                        break;
+                }
+            }
+        }
+
+        private void MapType(IType type, System.Type systemType)
+        {
+            MappedType.FromType(type).SystemType = systemType;
         }
 
         public IType ResolveType(string uriString)
