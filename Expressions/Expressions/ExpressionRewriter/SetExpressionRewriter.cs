@@ -284,7 +284,14 @@ namespace NMF.Expressions
 
         protected override Expression VisitMember(MemberExpression node)
         {
-            return Expression.Assign(node, Value);
+            if (ReflectionHelper.IsAssignableFrom(node.Type, Value.Type))
+            {
+                return Expression.Assign(node, Value);
+            }
+            else
+            {
+                return Expression.Assign(node, Expression.Convert(Value, node.Type));
+            }
         }
 
         protected override MemberAssignment VisitMemberAssignment(MemberAssignment node)
