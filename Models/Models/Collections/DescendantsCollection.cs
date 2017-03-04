@@ -18,7 +18,7 @@ namespace NMF.Models.Collections
 
         public DescendantsCollection(IModelElement element)
         {
-            this.Element = element;
+            this.Element = element ?? throw new ArgumentNullException(nameof(element));
         }
 
         public INotifyEnumerable<IModelElement> AsNotifiable()

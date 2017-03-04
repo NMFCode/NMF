@@ -23,7 +23,13 @@ namespace NMF.Expressions
 
         public INotifyEnumerable<T> AsNotifiable()
         {
-            return Source.AsNotifiable().Concat(Other);
+            var otherExpression = Other as IEnumerableExpression<T>;
+            IEnumerable<T> other = Other;
+            if (otherExpression != null)
+            {
+                other = otherExpression.AsNotifiable();
+            }
+            return Source.AsNotifiable().Concat(otherExpression);
         }
 
         public IEnumerator<T> GetEnumerator()
