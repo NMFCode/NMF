@@ -29,12 +29,15 @@ namespace NMF.Models.Collections
 
         public IEnumerator<IModelElement> GetEnumerator()
         {
-            foreach (var item in Element.Children)
+            var stack = new Stack<IModelElement>(Element.Children);
+            while (stack.Count > 0)
             {
-                yield return item;
-                foreach (var child in item.Descendants())
+                var element = stack.Pop();
+                if (element == null) continue;
+                yield return element;
+                foreach (var ancestor in element.Children)
                 {
-                    yield return child;
+                    stack.Push(ancestor);
                 }
             }
         }
