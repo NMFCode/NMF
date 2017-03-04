@@ -38,7 +38,16 @@ namespace NMF.Expressions.Linq
                 {
                     wrapper.AttachResult(element);
                 }
-                var notifier = wrapper.SubSource.Value as INotifyCollectionChanged;
+                var notifier = wrapper.SubSource.Value as INotifyEnumerable;
+                if (notifier == null)
+                {
+                    var expression = wrapper.SubSource.Value as IEnumerableExpression;
+                    if (expression != null)
+                    {
+                        notifier = expression.AsNotifiable();
+                    }
+                }
+                wrapper.NotifySubSource = notifier;
                 if (notifier != null)
                 {
                     notifier.CollectionChanged += wrapper.OnCollectionChanged;
@@ -58,7 +67,7 @@ namespace NMF.Expressions.Linq
                     {
                         wrapper.DetachResult(element);
                     }
-                    var notifier = wrapper.SubSource.Value as INotifyCollectionChanged;
+                    var notifier = wrapper.NotifySubSource;
                     if (notifier != null)
                     {
                         notifier.CollectionChanged -= wrapper.OnCollectionChanged;
@@ -177,6 +186,7 @@ namespace NMF.Expressions.Linq
             public Dictionary<TIntermediate, TaggedObservableValue<TResult, int>> Values = new Dictionary<TIntermediate, TaggedObservableValue<TResult, int>>();
 
             public INotifyValue<IEnumerable<TIntermediate>> SubSource { get; set; }
+            public INotifyEnumerable NotifySubSource { get; set; }
 
             public TSource Item { get; private set; }
 
@@ -195,6 +205,7 @@ namespace NMF.Expressions.Linq
                 if (e.Action == NotifyCollectionChangedAction.Reset)
                 {
                     DetachSubsource();
+                    AttachSubSource(this);
                     return;
                 }
                 if (e.OldItems != null)
@@ -236,6 +247,11 @@ namespace NMF.Expressions.Linq
                 {
                     element.Value.ValueChanged -= Parent.ResultChanged;
                     removed.Add(element.Value.Value);
+                }
+                if (NotifySubSource != null)
+                {
+                    NotifySubSource.Detach();
+                    NotifySubSource = null;
                 }
                 Values.Clear();
                 Parent.OnRemoveItems(removed);
