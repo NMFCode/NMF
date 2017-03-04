@@ -44,7 +44,13 @@ namespace NMF.Expressions
 
         public override INotifyEnumerable<T> AsNotifiable()
         {
-            return Source.AsNotifiable().Except(Other, Comparer);
+            var otherExpression = Other as IEnumerableExpression<T>;
+            IEnumerable<T> other = Other;
+            if (otherExpression != null)
+            {
+                other = otherExpression.AsNotifiable();
+            }
+            return Source.AsNotifiable().Except(other, Comparer);
         }
 
         public override IEnumerator<T> GetEnumerator()
@@ -59,7 +65,13 @@ namespace NMF.Expressions
 
         public override INotifyEnumerable<T> AsNotifiable()
         {
-            return Source.AsNotifiable().Union(Other, Comparer);
+            var otherExpression = Other as IEnumerableExpression<T>;
+            IEnumerable<T> other = Other;
+            if (otherExpression != null)
+            {
+                other = otherExpression.AsNotifiable();
+            }
+            return Source.AsNotifiable().Union(other, Comparer);
         }
 
         public override IEnumerator<T> GetEnumerator()
@@ -74,7 +86,13 @@ namespace NMF.Expressions
 
         public override INotifyEnumerable<T> AsNotifiable()
         {
-            return Source.AsNotifiable().Intersect(Other, Comparer);
+            var otherExpression = Other as IEnumerableExpression<T>;
+            IEnumerable<T> other = Other;
+            if (otherExpression != null)
+            {
+                other = otherExpression.AsNotifiable();
+            }
+            return Source.AsNotifiable().Intersect(other, Comparer);
         }
 
         public override IEnumerator<T> GetEnumerator()

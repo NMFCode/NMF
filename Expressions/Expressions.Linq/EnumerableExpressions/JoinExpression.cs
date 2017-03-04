@@ -40,7 +40,13 @@ namespace NMF.Expressions
 
         public INotifyEnumerable<TResult> AsNotifiable()
         {
-            return Source.AsNotifiable().Join(Inner, OuterKeySelector, InnerKeySelector, ResultSelector, Comparer);
+            var innerExpression = Inner as IEnumerableExpression<TInner>;
+            IEnumerable<TInner> inner = Inner;
+            if (innerExpression != null)
+            {
+                inner = innerExpression.AsNotifiable();
+            }
+            return Source.AsNotifiable().Join(inner, OuterKeySelector, InnerKeySelector, ResultSelector, Comparer);
         }
 
         public IEnumerator<TResult> GetEnumerator()
