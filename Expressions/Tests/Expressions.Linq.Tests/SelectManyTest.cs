@@ -375,7 +375,7 @@ namespace NMF.Expressions.Linq.Tests
 			var dummy = new Dummy<string>() { Item = "23" };
 			var dummy2 = new Dummy<ICollection<Dummy<string>>>()
 			{
-				Item = new ObservableCollection<Dummy<string>>() { dummy }
+				Item = new NotifyCollection<Dummy<string>>() { dummy }
 			};
 			coll.Add(dummy2);
 
@@ -428,7 +428,7 @@ namespace NMF.Expressions.Linq.Tests
 			var dummy = new Dummy<string>() { Item = "23" };
 			var dummy2 = new Dummy<ICollection<Dummy<string>>>()
 			{
-				Item = new ObservableCollection<Dummy<string>>()
+				Item = new NotifyCollection<Dummy<string>>()
 			};
 			coll.Add(dummy2);
 
@@ -457,7 +457,7 @@ namespace NMF.Expressions.Linq.Tests
             var dummy = new Dummy<string>() { Item = "23" };
             var dummy2 = new Dummy<ICollection<Dummy<string>>>()
             {
-                Item = new ObservableCollection<Dummy<string>>()
+                Item = new NotifyCollection<Dummy<string>>()
             };
             coll.Add(dummy2);
 
@@ -559,7 +559,7 @@ namespace NMF.Expressions.Linq.Tests
             var coll = new List<Dummy<ICollection<Dummy<string>>>>()
             {
                 new Dummy<ICollection<Dummy<string>>>(
-                    new ObservableCollection<Dummy<string>>() { new Dummy<string>("42") })
+                    new NotifyCollection<Dummy<string>>() { new Dummy<string>("42") })
             };
 
             var test = coll.WithUpdates().SelectMany(d => d.Item, (d1, d2) => d2.Item);
