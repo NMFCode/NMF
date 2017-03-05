@@ -29,7 +29,7 @@ namespace NMF.Expressions
             {
                 other = otherExpression.AsNotifiable();
             }
-            return Source.AsNotifiable().Concat(otherExpression);
+            return Source.AsNotifiable().Concat(other);
         }
 
         public IEnumerator<T> GetEnumerator()
