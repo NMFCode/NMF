@@ -223,18 +223,25 @@ namespace NMF.Incerator
         {
             var counter = 1;
             var measurements = new List<MeasuredConfiguration<Configuration>>();
+            var keepLastLine = true;
             foreach (var config in baseConfiguration.GetAllPossibilities())
             {
+                if (!keepLastLine)
+                {
+                    Console.CursorTop--;
+                }
                 Console.Write("Running configuration {0}", counter);
                 var values = repBenchmark.MeasureConfiguration(config);
                 Console.WriteLine();
-                if (values == null)
+                if (values == null || !repBenchmark.Metrics.All(m => values[m] != double.NaN))
                 {
                     Console.WriteLine("The configuration [{0}] threw an exception and is therefore discarded.", config.Describe());
+                    keepLastLine = true;
                 }
                 else
                 {
                     measurements.Add(new MeasuredConfiguration<Configuration>(config, values));
+                    keepLastLine = false;
                 }
                 counter++;
             }
@@ -296,7 +303,7 @@ namespace NMF.Incerator
             {
                 // Start the process.
                 recordProcess = Process.Start(executingAssemblyPath, processCmd);
-                
+
                 do
                 {
                     if (!recordProcess.HasExited)

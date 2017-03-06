@@ -25,9 +25,48 @@ namespace NMF.Expressions
         protected virtual IEnumerable<IncrementalizationStrategy> GetApplicableStrategies(Expression expression, IEnumerable<ParameterExpression> parameters)
         {
             yield return IncrementalizationStrategy.InstructionLevel;
+            switch (expression.NodeType)
+            {
+                case ExpressionType.Parameter:
+                    yield break;
+                case ExpressionType.MemberAccess:
+                    var me = (MemberExpression)expression;
+                    if (me.Expression == null || me.Expression.NodeType == ExpressionType.Parameter)
+                    {
+                        yield break;
+                    }
+                    break;
+                case ExpressionType.New:
+                    var ne = (NewExpression)expression;
+                    if (ne.Arguments.All(arg => arg.NodeType == ExpressionType.Parameter))
+                    {
+                        yield break;
+                    }
+                    break;
+                default:
+                    break;
+            }
             yield return IncrementalizationStrategy.ListenRepositoryChanges;
             yield return IncrementalizationStrategy.ArgumentPromotion;
-            yield return IncrementalizationStrategy.UseAugmentation;
+            var finder = new AnchorFinder();
+            finder.Visit(expression);
+            if (finder.AnchorFound)
+            {
+                yield return IncrementalizationStrategy.UseAugmentation;
+            }
+        }
+
+        private class AnchorFinder : ExpressionVisitor
+        {
+            public bool AnchorFound { get; private set; }
+
+            protected override Expression VisitMember(MemberExpression node)
+            {
+                Visit(node.Expression);
+                var anchors = node.Member.GetCustomAttributes(typeof(AnchorAttribute), true);
+                AnchorFound |= (anchors != null && anchors.Length > 0);
+                return node;
+            }
         }
 
         public INotifyExpression CreateExpression(Expression expression, IEnumerable<ParameterExpression> parameters, IDictionary<string, object> parameterMappings)
@@ -38,13 +77,17 @@ namespace NMF.Expressions
 
         protected virtual void RecordExpressionUsage(Expression expression, IEnumerable<ParameterExpression> parameters, bool reversible)
         {
-            var expressionConfig = new MethodConfiguration()
+            var methodIdentifier = expression.ToString();
+            if (!Configuration.MethodConfigurations.Any(c => c.MethodIdentifier == methodIdentifier))
             {
-                MethodIdentifier = expression.ToString(),
-                Strategy = DefaultStrategy
-            };
-            expressionConfig.AllowedStrategies.AddRange(GetApplicableStrategies(expression, parameters));
-            Configuration.MethodConfigurations.Add(expressionConfig);
+                var expressionConfig = new MethodConfiguration()
+                {
+                    MethodIdentifier = methodIdentifier,
+                    Strategy = DefaultStrategy
+                };
+                expressionConfig.AllowedStrategies.AddRange(GetApplicableStrategies(expression, parameters));
+                Configuration.MethodConfigurations.Add(expressionConfig);
+            }
         }
 
         public INotifyExpression<T> CreateExpression<T>(Expression expression, IEnumerable<ParameterExpression> parameters, IDictionary<string, object> parameterMappings)

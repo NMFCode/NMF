@@ -36,6 +36,7 @@ namespace NMF.Expressions.IncrementalizationConfiguration
     /// </summary>
     [XmlNamespaceAttribute("http://nmf.codeplex.com/incrementalizationConfig")]
     [XmlNamespacePrefixAttribute("conf")]
+    [DebuggerDisplay("{MethodIdentifier}")]
     [ModelRepresentationClassAttribute("http://nmf.codeplex.com/incrementalizationConfig#//MethodConfiguration/")]
     public class MethodConfiguration : ModelElement, IMethodConfiguration, IModelElement
     {
