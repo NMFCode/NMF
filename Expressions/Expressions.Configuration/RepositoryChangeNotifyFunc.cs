@@ -15,6 +15,10 @@ namespace NMF.Expressions
 
         public List<IChangeInfo> ChangeInfos { get; private set; }
 
+        public IEnumerable<INotifiable> Dependencies { get { return Enumerable.Empty<INotifiable>(); } }
+
+        public ISuccessorList Successors { get { throw new InvalidOperationException(); } }
+
         public T Value
         {
             get
@@ -60,6 +64,14 @@ namespace NMF.Expressions
             get
             {
                 return Value;
+            }
+        }
+
+        public ExecutionMetaData ExecutionMetaData
+        {
+            get
+            {
+                throw new InvalidOperationException();
             }
         }
 
@@ -132,17 +144,12 @@ namespace NMF.Expressions
             return this;
         }
 
-        public void Detach()
+        public INotificationResult Notify(IList<INotificationResult> sources)
         {
             throw new InvalidOperationException();
         }
 
-        public void Attach()
-        {
-            throw new InvalidOperationException();
-        }
-
-        public void Refresh()
+        public void Dispose()
         {
         }
     }
@@ -209,7 +216,7 @@ namespace NMF.Expressions
                 }
                 else
                 {
-                    return new RepositoryAffectedDependentReversableNotofyValue<T>(Repository, lambda.Compile(), setter.Compile(), changeInfos);
+                    return new RepositoryAffectedDependentReversableNotifyValue<T>(Repository, lambda.Compile(), setter.Compile(), changeInfos);
                 }
             }
             else

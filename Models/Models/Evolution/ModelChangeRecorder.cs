@@ -4,8 +4,9 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
+using NMF.Collections.ObjectModel;
+using Type = System.Type;
 
 namespace NMF.Models.Evolution
 {
@@ -15,7 +16,20 @@ namespace NMF.Models.Evolution
     public class ModelChangeRecorder
     {
         private List<BubbledChangeEventArgs> recordedEvents = new List<BubbledChangeEventArgs>();
+        private readonly Dictionary<BubbledChangeEventArgs, List<object>> preResetItems = new Dictionary<BubbledChangeEventArgs, List<object>>();
+        private readonly Dictionary<BubbledChangeEventArgs, BubbledChangeEventArgs> changingFromChangedEvent = new Dictionary<BubbledChangeEventArgs, BubbledChangeEventArgs>();
+        private readonly Dictionary<IModelElement, IModelElement> parentBeforeDeletion = new Dictionary<IModelElement, IModelElement>();
+        private readonly Dictionary<IModelElement, List<IModelElement>> childrenOfDeletedElements = new Dictionary<IModelElement, List<IModelElement>>();
 
+        private bool _isInvertible;
+
+        public ModelChangeRecorder(bool isInvertible)
+        {
+            _isInvertible = isInvertible;
+        }
+
+        public ModelChangeRecorder() : this(false) { }
+        
         /// <summary>
         /// Checks whether the recorder is attached to a model element.
         /// </summary>
@@ -65,6 +79,44 @@ namespace NMF.Models.Evolution
 
         private void OnBubbledChange(object sender, BubbledChangeEventArgs e)
         {
+            if (_isInvertible)
+            {
+                if (e.ChangeType == ChangeType.ModelElementDeleting)
+                {
+                    var parent = e.Element.Parent;
+                    if (childrenOfDeletedElements.ContainsKey(parent))
+                    {
+                        childrenOfDeletedElements[parent].Add(e.Element);
+                    }
+                    else
+                    {
+                        childrenOfDeletedElements[parent] = new List<IModelElement>() {e.Element};
+                    }
+                }
+                if (e.ChangeType == ChangeType.CollectionChanging)
+                {
+                    var cArgs = e.OriginalEventArgs as NotifyCollectionChangingEventArgs;
+                    if (cArgs.Action == NotifyCollectionChangedAction.Reset)
+                    {
+                        var property = e.Element.GetType().GetProperty(e.PropertyName);
+                        var list = (property.GetValue(e.Element, null) as IEnumerable<object>).ToList();
+                        preResetItems[e] = list;
+                    }
+                    if (cArgs.Action == NotifyCollectionChangedAction.Remove)
+                    {
+                        var parent = e.Element.Parent;
+                        if (!parentBeforeDeletion.ContainsKey(e.Element))
+                        {
+                            parentBeforeDeletion[e.Element] = parent; //e.Element; // parent;
+                        }
+
+                        if (!childrenOfDeletedElements.ContainsKey(e.Element))
+                        {
+                            childrenOfDeletedElements[e.Element] = new List<IModelElement>();
+                        }
+                    }
+                }
+            }
             recordedEvents.Add(e);
         }
 
@@ -129,6 +181,14 @@ namespace NMF.Models.Evolution
             switch (beforeEvent.ChangeType)
             {
                 case ChangeType.CollectionChanging:
+                    if (_isInvertible)
+                    {
+                        var cArgs = beforeEvent.OriginalEventArgs as NotifyCollectionChangingEventArgs;
+                        if (cArgs.Action == NotifyCollectionChangedAction.Reset)
+                        {
+                            changingFromChangedEvent[afterEvent] = beforeEvent;
+                        }
+                    }
                     return afterEvent.ChangeType == ChangeType.CollectionChanged;
                 case ChangeType.ModelElementDeleting:
                     return afterEvent.ChangeType == ChangeType.ModelElementDeleted;
@@ -148,20 +208,48 @@ namespace NMF.Models.Evolution
                 case ChangeType.ModelElementCreated:
                     return new ElementCreation(e.Element);
                 case ChangeType.ModelElementDeleted:
-                    return new ElementDeletion(e.AbsoluteUri);
+                    if (!_isInvertible)
+                    {
+                        return new ElementDeletion(e.AbsoluteUri);
+                    }
+                    else
+                    {
+                        IModelElement parent = null;
+                        foreach (var item in childrenOfDeletedElements)
+                        {
+                            if (item.Value.Contains(e.Element))
+                            {
+                                parent = item.Key;
+                                break;
+                            }
+                        }
+                        return new ElementDeletion(e.AbsoluteUri, e.Element, parent);
+                    }
                 case ChangeType.PropertyChanged:
                     var valueChangeArgs = (ValueChangedEventArgs)e.OriginalEventArgs;
-                    return CreatePropertyChange(e.Element, e.AbsoluteUri, e.PropertyName, valueChangeArgs.NewValue, e.ChildrenUris == null ? null : e.ChildrenUris.First());
+                    var oldUri = (valueChangeArgs.OldValue as IModelElement)?.AbsoluteUri;
+                    return CreatePropertyChange(e.Element, e.AbsoluteUri, e.PropertyName, valueChangeArgs.OldValue, valueChangeArgs.NewValue, oldUri, e.ChildrenUris?.First()); 
                 case ChangeType.CollectionChanged:
                     var collectionChangeArgs = (NotifyCollectionChangedEventArgs)e.OriginalEventArgs;
                     switch (collectionChangeArgs.Action)
                     {
                         case NotifyCollectionChangedAction.Add:
-                            return CreateListInsertion(e.Element, e.AbsoluteUri, e.PropertyName, collectionChangeArgs.NewStartingIndex, collectionChangeArgs.NewItems, e.ChildrenUris);
+                            return CreateInsertion(e.Element, e.AbsoluteUri, e.PropertyName, collectionChangeArgs.NewStartingIndex, collectionChangeArgs.NewItems, e.ChildrenUris);
                         case NotifyCollectionChangedAction.Remove:
-                            return new ListDeletion(e.AbsoluteUri, e.PropertyName, collectionChangeArgs.OldStartingIndex, collectionChangeArgs.OldItems.Count);
+                            return CreateDeletion(e.Element, e.AbsoluteUri, e.PropertyName, collectionChangeArgs.OldStartingIndex, collectionChangeArgs.OldItems.Count, collectionChangeArgs.OldItems, e.ChildrenUris);
                         case NotifyCollectionChangedAction.Reset:
-                            return new ListDeletion(e.AbsoluteUri, e.PropertyName, 0, int.MaxValue);
+                            var property = e.Element.GetType().GetProperty(e.PropertyName);
+                            var propertyValue = property.GetValue(e.Element, null) as IList;
+                            var newCollectionState = new List<object>();
+                            
+                            foreach (var item in propertyValue)
+                            {
+                                newCollectionState.Add(item);
+                            }
+                            var newCollectionUris = newCollectionState.Select(i => ((IModelElement) i).AbsoluteUri).ToList();
+                            BubbledChangeEventArgs resetEvent;
+                            changingFromChangedEvent.TryGetValue(e, out resetEvent);
+                            return CreateReset(e.Element, e.AbsoluteUri, e.PropertyName, resetEvent, newCollectionState, newCollectionUris); 
                         default:
                             throw new NotSupportedException("The CollectionChanged action " + collectionChangeArgs.Action + " is not supported.");
                     }
@@ -170,48 +258,107 @@ namespace NMF.Models.Evolution
             }
         }
 
-        private IModelChange CreatePropertyChange(IModelElement element, Uri absoluteUri, string propertyName, object newValue, Uri newValueUri)
+        
+        private IModelChange CreatePropertyChange(IModelElement element, Uri absoluteUri, string propertyName, object oldValue, object newValue, Uri oldValueUri, Uri newValueUri)
         {
             var propertyType = element.GetType().GetProperty(propertyName).PropertyType;
             if (!propertyType.GetInterfaces().Contains(typeof(IModelElement))) // only model elements can be references
-                return CreatePropertyChangeAttribute(propertyType, absoluteUri, propertyName, newValue);
+                return CreatePropertyChangeAttribute(propertyType, absoluteUri, propertyName, oldValue, newValue);
             else if (GetAllReferences(element.GetClass()).Any(a => a.Name.Equals(propertyName, StringComparison.OrdinalIgnoreCase))) // a reference
-                return CreatePropertyChangeReference(propertyType, absoluteUri, propertyName, newValueUri);
+                return CreatePropertyChangeReference(propertyType, absoluteUri, propertyName, oldValueUri, newValueUri);
             else // a recently created model element
-                return CreatePropertyChangeAttribute(propertyType, absoluteUri, propertyName, newValue);
+                return CreatePropertyChangeAttribute(propertyType, absoluteUri, propertyName, oldValue, newValue);
         }
 
-        private IModelChange CreatePropertyChangeAttribute(Type propertyType, Uri absoluteUri, string propertyName, object newValue)
+        private IModelChange CreatePropertyChangeAttribute(Type propertyType, Uri absoluteUri, string propertyName, object oldValue, object newValue)
         {
             var genericType = typeof(PropertyChangeAttribute<>).MakeGenericType(propertyType);
-            return (IModelChange)Activator.CreateInstance(genericType, absoluteUri, propertyName, newValue);
+            return (IModelChange)Activator.CreateInstance(genericType, absoluteUri, propertyName, oldValue, newValue);
         }
 
-        private IModelChange CreatePropertyChangeReference(Type propertyType, Uri absoluteUri, string propertyName, Uri newValueUri)
+        private IModelChange CreatePropertyChangeReference(Type propertyType, Uri absoluteUri, string propertyName, Uri oldValueUri, Uri newValueUri)
         {
             var genericType = typeof(PropertyChangeReference<>).MakeGenericType(propertyType);
-            return (IModelChange)Activator.CreateInstance(genericType, absoluteUri, propertyName, newValueUri);
+            return (IModelChange)Activator.CreateInstance(genericType, absoluteUri, propertyName, oldValueUri, newValueUri);
         }
 
-        private IModelChange CreateListInsertion(IModelElement element, Uri absoluteUri, string propertyName, int startingIndex, IList newItems, List<Uri> newItemsUris)
+        private IModelChange CreateReset(IModelElement element, Uri absoluteUri, string propertyName, 
+            BubbledChangeEventArgs resetEvent, ICollection newCollectionState, ICollection<Uri> newCollectionStateUris)
         {
             var reference = GetAllReferences(element.GetClass()).First(r => r.Name.Equals(propertyName, StringComparison.OrdinalIgnoreCase));
+
             if (reference.IsContainment)
-                return CreateListInsertionContainment(element, absoluteUri, propertyName, startingIndex, newItems);
+                return CreateResetContainment(element, absoluteUri, propertyName, resetEvent, newCollectionState);
             else
-                return CreateListInsertionReference(element, absoluteUri, propertyName, startingIndex, newItemsUris);
+                return CreateResetReference(element, absoluteUri, propertyName, resetEvent, newCollectionStateUris);
         }
 
-        private IModelChange CreateListInsertionReference(IModelElement element, Uri absoluteUri, string propertyName, int startingIndex, List<Uri> newItemsUris)
+        private IModelChange CreateResetContainment(IModelElement element, Uri absoluteUri, string propertyName, BubbledChangeEventArgs resetEvent, ICollection newCollectionState)
         {
             var collectionType = element.GetType().GetProperty(propertyName).PropertyType;
             var itemType = GetCollectionItemType(collectionType);
 
-            var genericType = typeof(ListInsertionAssociation<>).MakeGenericType(itemType);
-            return (IModelChange)Activator.CreateInstance(genericType, absoluteUri, propertyName, startingIndex, newItemsUris);
+            var listType = typeof(List<>).MakeGenericType(itemType);
+            var list = Activator.CreateInstance(listType) as IList;
+            foreach (var item in newCollectionState)
+                list.Add(item);
+
+            var genericType = typeof(CollectionResetComposition<>).MakeGenericType(itemType);
+            if (_isInvertible)
+            {
+                return (IModelChange)Activator.CreateInstance(genericType, absoluteUri, propertyName, this, resetEvent, list);
+            }
+            else
+            {
+                return (IModelChange)Activator.CreateInstance(genericType, absoluteUri, propertyName, list);
+            }
         }
 
-        private IModelChange CreateListInsertionContainment(IModelElement element, Uri absoluteUri, string propertyName, int startingIndex, IList newItems)
+        private IModelChange CreateResetReference(IModelElement element, Uri absoluteUri, string propertyName, BubbledChangeEventArgs resetEvent, ICollection<Uri> newElementUris)
+        {
+            var collectionType = element.GetType().GetProperty(propertyName).PropertyType;
+            var itemType = GetCollectionItemType(collectionType);
+
+            var genericType = typeof(CollectionResetAssociation<>).MakeGenericType(itemType);
+            if (_isInvertible)
+            {
+                return (IModelChange)Activator.CreateInstance(genericType, absoluteUri, propertyName, this, resetEvent, newElementUris);
+            }
+            else
+            {
+                return (IModelChange)Activator.CreateInstance(genericType, absoluteUri, propertyName, newElementUris);
+            }
+            
+        }
+
+        private IModelChange CreateInsertion(IModelElement element, Uri absoluteUri, string propertyName, int startingIndex, IList newItems, List<Uri> newItemsUris)
+        {
+            var reference = GetAllReferences(element.GetClass()).First(r => r.Name.Equals(propertyName, StringComparison.OrdinalIgnoreCase));
+            
+            if (reference.IsContainment)
+                return CreateInsertionContainment(element, absoluteUri, propertyName, startingIndex, newItems);
+            else
+                return CreateInsertionReference(element, absoluteUri, propertyName, startingIndex, newItemsUris);
+        }
+
+        private IModelChange CreateInsertionReference(IModelElement element, Uri absoluteUri, string propertyName, int startingIndex, List<Uri> newItemsUris)
+        {
+            var collectionType = element.GetType().GetProperty(propertyName).PropertyType;
+            var itemType = GetCollectionItemType(collectionType);
+
+            if (IsListType(collectionType))
+            {
+                var genericType = typeof(ListInsertionAssociation<>).MakeGenericType(itemType);
+                return (IModelChange)Activator.CreateInstance(genericType, absoluteUri, propertyName, startingIndex, newItemsUris);
+            }
+            else
+            {
+                var genericType = typeof(CollectionInsertionAssociation<>).MakeGenericType(itemType);
+                return (IModelChange) Activator.CreateInstance(genericType, absoluteUri, propertyName, newItemsUris);
+            }
+        }
+
+        private IModelChange CreateInsertionContainment(IModelElement element, Uri absoluteUri, string propertyName, int startingIndex, IList newItems)
         {
             var collectionType = element.GetType().GetProperty(propertyName).PropertyType;
             var itemType = GetCollectionItemType(collectionType);
@@ -221,12 +368,89 @@ namespace NMF.Models.Evolution
             foreach (var item in newItems)
                 list.Add(item);
 
-            var genericType = typeof(ListInsertionComposition<>).MakeGenericType(itemType);
-            return (IModelChange)Activator.CreateInstance(genericType, absoluteUri, propertyName, startingIndex, list);
+            if (IsListType(collectionType))
+            {
+                var genericType = typeof(ListInsertionComposition<>).MakeGenericType(itemType);
+                return (IModelChange) Activator.CreateInstance(genericType, absoluteUri, propertyName, startingIndex, list);
+            }
+            else
+            {
+                var genericType = typeof(CollectionInsertionComposition<>).MakeGenericType(itemType);
+                return (IModelChange)Activator.CreateInstance(genericType, absoluteUri, propertyName, list);
+            }
+        }
+
+        private IModelChange CreateDeletion(IModelElement element, Uri absoluteUri, string propertyName, int startingIndex, int count, IList oldItems, List<Uri> oldItemsUris)
+        {
+            var reference = GetAllReferences(element.GetClass()).First(r => r.Name.Equals(propertyName, StringComparison.OrdinalIgnoreCase));
+
+            if (true || reference.IsContainment)
+                return CreateDeletionContainment(element, absoluteUri, propertyName, startingIndex, count, oldItems);
+            else
+                return CreateDeletionReference(element, absoluteUri, propertyName, startingIndex, count, oldItemsUris);
+        }
+
+        private IModelChange CreateDeletionContainment(IModelElement element, Uri absoluteUri, string propertyName, int startingIndex, int count, IList oldItems)
+        {
+            var collectionType = element.GetType().GetProperty(propertyName).PropertyType;
+            var itemType = GetCollectionItemType(collectionType);
+            var listType = typeof(List<>).MakeGenericType(itemType);
+            var list = Activator.CreateInstance(listType) as IList;
+            foreach (var item in oldItems)
+                list.Add(item);
+
+            if (IsListType(collectionType))
+            {
+                var parent = element.Parent;
+                if (parent == null)
+                {
+                    parentBeforeDeletion.TryGetValue(element, out parent);
+                }
+                var genericType = typeof(ListDeletionComposition<>).MakeGenericType(itemType);
+                return (IModelChange)Activator.CreateInstance(genericType, absoluteUri, propertyName, startingIndex, count, list, element, parent);
+            }
+            else
+            {
+                var parent = element.Parent;
+                if (parent == null)
+                {
+                    parentBeforeDeletion.TryGetValue(element, out parent);
+                }
+                var genericType = typeof(CollectionDeletionComposition<>).MakeGenericType(itemType);
+                return (IModelChange)Activator.CreateInstance(genericType, absoluteUri, propertyName, list, element, parent);
+            }
+
+        }
+
+        private IModelChange CreateDeletionReference(IModelElement element, Uri absoluteUri, string propertyName, int startingIndex, int count, List<Uri> oldItemsUris)
+        {
+            var collectionType = element.GetType().GetProperty(propertyName).PropertyType;
+            var itemType = GetCollectionItemType(collectionType);
+
+            if (IsListType(collectionType))
+            {
+                var genericType = typeof(ListDeletionAssociation<>).MakeGenericType(itemType);
+                return (IModelChange)Activator.CreateInstance(genericType, absoluteUri, propertyName, startingIndex, count, oldItemsUris);
+            }
+            else
+            {
+                var genericType = typeof(CollectionDeletionAssociation<>).MakeGenericType(itemType);
+                return (IModelChange)Activator.CreateInstance(genericType, absoluteUri, propertyName, oldItemsUris);
+            }
+        }
+
+        private bool IsListType(Type collectionType)
+        {
+            return collectionType.GetInterfaces()
+                    .Any(i => i.IsGenericType && i.GetGenericTypeDefinition() == typeof(IList<>));
         }
 
         private static Type GetCollectionItemType(Type collectionType)
         {
+            if (collectionType.IsInterface && collectionType.IsGenericType && collectionType.GetGenericTypeDefinition() == typeof(ICollection<>))
+            {
+                return collectionType.GetGenericArguments()[0];
+            }
             if (collectionType.IsArray)
                 return collectionType.GetElementType();
             else
@@ -245,6 +469,16 @@ namespace NMF.Models.Evolution
             foreach (var t in c.BaseTypes)
                 foreach (var r in GetAllReferences(t))
                     yield return r;
+        }
+
+        public List<object> GetItemsBeforeReset(BubbledChangeEventArgs resetEvent)
+        {
+            List<object> items;
+            if (!preResetItems.TryGetValue(resetEvent, out items))
+            {
+                items = new List<object>();
+            }
+            return items;
         }
     }
 }

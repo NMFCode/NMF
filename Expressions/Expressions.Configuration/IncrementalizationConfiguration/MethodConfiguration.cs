@@ -327,7 +327,7 @@ namespace NMF.Expressions.IncrementalizationConfiguration
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
             public MethodIdentifierProxy(IMethodConfiguration modelElement) : 
-                    base(modelElement)
+                    base(modelElement, "methodIdentifier")
             {
             }
             
@@ -345,24 +345,6 @@ namespace NMF.Expressions.IncrementalizationConfiguration
                     this.ModelElement.MethodIdentifier = value;
                 }
             }
-            
-            /// <summary>
-            /// Registers an event handler to subscribe specifically on the changed event for this property
-            /// </summary>
-            /// <param name="handler">The handler that should be subscribed to the property change event</param>
-            protected override void RegisterChangeEventHandler(System.EventHandler<NMF.Expressions.ValueChangedEventArgs> handler)
-            {
-                this.ModelElement.MethodIdentifierChanged += handler;
-            }
-            
-            /// <summary>
-            /// Registers an event handler to subscribe specifically on the changed event for this property
-            /// </summary>
-            /// <param name="handler">The handler that should be unsubscribed from the property change event</param>
-            protected override void UnregisterChangeEventHandler(System.EventHandler<NMF.Expressions.ValueChangedEventArgs> handler)
-            {
-                this.ModelElement.MethodIdentifierChanged -= handler;
-            }
         }
         
         /// <summary>
@@ -376,7 +358,7 @@ namespace NMF.Expressions.IncrementalizationConfiguration
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
             public StrategyProxy(IMethodConfiguration modelElement) : 
-                    base(modelElement)
+                    base(modelElement, "strategy")
             {
             }
             
@@ -393,24 +375,6 @@ namespace NMF.Expressions.IncrementalizationConfiguration
                 {
                     this.ModelElement.Strategy = value;
                 }
-            }
-            
-            /// <summary>
-            /// Registers an event handler to subscribe specifically on the changed event for this property
-            /// </summary>
-            /// <param name="handler">The handler that should be subscribed to the property change event</param>
-            protected override void RegisterChangeEventHandler(System.EventHandler<NMF.Expressions.ValueChangedEventArgs> handler)
-            {
-                this.ModelElement.StrategyChanged += handler;
-            }
-            
-            /// <summary>
-            /// Registers an event handler to subscribe specifically on the changed event for this property
-            /// </summary>
-            /// <param name="handler">The handler that should be unsubscribed from the property change event</param>
-            protected override void UnregisterChangeEventHandler(System.EventHandler<NMF.Expressions.ValueChangedEventArgs> handler)
-            {
-                this.ModelElement.StrategyChanged -= handler;
             }
         }
     }

@@ -66,7 +66,9 @@ namespace NMF.Synchronizations
         protected IDisposable PerformTwoWay(TLeft left, TRight right, ISynchronizationContext context)
         {
             var leftEx3 = leftFunc.InvokeReversable(left);
+            leftEx3.Successors.SetDummy();
             var rightEx3 = rightFunc.InvokeReversable(right);
+            rightEx3.Successors.SetDummy();
             switch (context.Direction)
             {
                 case SynchronizationDirection.LeftToRight:
@@ -112,12 +114,14 @@ namespace NMF.Synchronizations
                 case SynchronizationDirection.LeftToRight:
                 case SynchronizationDirection.LeftToRightForced:
                     var leftEx1 = leftFunc.Observe(left);
+                    leftEx1.Successors.SetDummy();
                     rightSetter(right, leftEx1.Value);
                     dependency = new PropertySynchronization<TValue>(leftEx1, val => rightSetter(right, val));
                     break;
                 case SynchronizationDirection.RightToLeft:
                 case SynchronizationDirection.RightToLeftForced:
                     var rightEx2 = rightFunc.Observe(right);
+                    rightEx2.Successors.SetDummy();
                     leftSetter(left, rightEx2.Value);
                     dependency = new PropertySynchronization<TValue>(rightEx2, val => leftSetter(left, val));
                     break;
@@ -128,6 +132,7 @@ namespace NMF.Synchronizations
                     if (context.Direction == SynchronizationDirection.LeftWins)
                     {
                         var leftEx4 = leftFunc.Observe(left);
+                        leftEx4.Successors.SetDummy();
                         leftVal = leftEx4.Value;
                         rightVal = rightGetter(right);
                         dependency = new PropertySynchronization<TValue>(leftEx4, val => rightSetter(right, val));
@@ -135,6 +140,7 @@ namespace NMF.Synchronizations
                     else
                     {
                         var rightEx4 = rightFunc.Observe(right);
+                        rightEx4.Successors.SetDummy();
                         leftVal = leftGetter(left);
                         rightVal = rightEx4.Value;
                         dependency = new PropertySynchronization<TValue>(rightEx4, val => leftSetter(left, val));
@@ -257,6 +263,7 @@ namespace NMF.Synchronizations
                 case NMF.Transformations.ChangePropagationMode.OneWay:
                 case NMF.Transformations.ChangePropagationMode.TwoWay:
                     var incVal = sourceFunc.Observe(source);
+                    incVal.Successors.SetDummy();
                     targetSetter(target, incVal.Value);
                     return new PropertySynchronization<TValue>(incVal, val => targetSetter(target, val));
                 default:
@@ -317,6 +324,7 @@ namespace NMF.Synchronizations
             Source = source;
             Target = target;
 
+            Source.Successors.SetDummy();
             Source.ValueChanged += Source_ValueChanged;
         }
 
@@ -328,6 +336,7 @@ namespace NMF.Synchronizations
         public void Dispose()
         {
             Source.ValueChanged -= Source_ValueChanged;
+            Source.Successors.UnsetAll();
         }
     }
 
@@ -341,6 +350,8 @@ namespace NMF.Synchronizations
             Source1 = source1;
             Source2 = source2;
 
+            Source1.Successors.SetDummy();
+            Source2.Successors.SetDummy();
             Source1.ValueChanged += Source1_ValueChanged;
             Source2.ValueChanged += Source2_ValueChanged;
         }
@@ -359,6 +370,8 @@ namespace NMF.Synchronizations
         {
             Source1.ValueChanged -= Source1_ValueChanged;
             Source2.ValueChanged -= Source2_ValueChanged;
+            Source1.Successors.UnsetAll();
+            Source2.Successors.UnsetAll();
         }
     }
 }

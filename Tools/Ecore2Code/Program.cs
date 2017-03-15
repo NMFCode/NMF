@@ -216,12 +216,9 @@ namespace Ecore2Code
                 {
                     var fileInfo = new FileInfo(Path.Combine(options.OutputFile, file.Key) + "." + generator.FileExtension);
                     CheckDirectoryExists(fileInfo.Directory);
-                    using (var fs = fileInfo.Create())
+                    using (var sw = new StreamWriter(fileInfo.Create()))
                     {
-                        using (var sw = new StreamWriter(fs))
-                        {
-                            generator.GenerateCodeFromCompileUnit(file.Value, sw, genOptions);
-                        }
+                        generator.GenerateCodeFromCompileUnit(file.Value, sw, genOptions);
                     }
                 }
             }

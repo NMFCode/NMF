@@ -222,6 +222,7 @@ namespace NMF.Models.Meta
             ValueChangedEventArgs e = new ValueChangedEventArgs(oldEnumeration, newEnumeration);
             this.OnEnumerationChanged(e);
             this.OnPropertyChanged("Enumeration", e);
+            base.OnParentChanged(newParent, oldParent);
         }
         
         /// <summary>
@@ -430,7 +431,7 @@ namespace NMF.Models.Meta
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
             public ValueProxy(ILiteral modelElement) : 
-                    base(modelElement)
+                    base(modelElement, "Value")
             {
             }
             
@@ -448,24 +449,6 @@ namespace NMF.Models.Meta
                     this.ModelElement.Value = value;
                 }
             }
-            
-            /// <summary>
-            /// Registers an event handler to subscribe specifically on the changed event for this property
-            /// </summary>
-            /// <param name="handler">The handler that should be subscribed to the property change event</param>
-            protected override void RegisterChangeEventHandler(System.EventHandler<NMF.Expressions.ValueChangedEventArgs> handler)
-            {
-                this.ModelElement.ValueChanged += handler;
-            }
-            
-            /// <summary>
-            /// Registers an event handler to subscribe specifically on the changed event for this property
-            /// </summary>
-            /// <param name="handler">The handler that should be unsubscribed from the property change event</param>
-            protected override void UnregisterChangeEventHandler(System.EventHandler<NMF.Expressions.ValueChangedEventArgs> handler)
-            {
-                this.ModelElement.ValueChanged -= handler;
-            }
         }
         
         /// <summary>
@@ -479,7 +462,7 @@ namespace NMF.Models.Meta
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
             public EnumerationProxy(ILiteral modelElement) : 
-                    base(modelElement)
+                    base(modelElement, "Enumeration")
             {
             }
             
@@ -496,24 +479,6 @@ namespace NMF.Models.Meta
                 {
                     this.ModelElement.Enumeration = value;
                 }
-            }
-            
-            /// <summary>
-            /// Registers an event handler to subscribe specifically on the changed event for this property
-            /// </summary>
-            /// <param name="handler">The handler that should be subscribed to the property change event</param>
-            protected override void RegisterChangeEventHandler(System.EventHandler<NMF.Expressions.ValueChangedEventArgs> handler)
-            {
-                this.ModelElement.EnumerationChanged += handler;
-            }
-            
-            /// <summary>
-            /// Registers an event handler to subscribe specifically on the changed event for this property
-            /// </summary>
-            /// <param name="handler">The handler that should be unsubscribed from the property change event</param>
-            protected override void UnregisterChangeEventHandler(System.EventHandler<NMF.Expressions.ValueChangedEventArgs> handler)
-            {
-                this.ModelElement.EnumerationChanged -= handler;
             }
         }
     }

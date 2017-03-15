@@ -10,11 +10,18 @@ namespace NMF.Expressions
 {
     internal abstract class ObservableProxyCallBase<TResult> : ObservableReversableExpression<TResult>
     {
-        protected void ArgumentChanged(object sender, ValueChangedEventArgs e)
+        public INotifyValue<TResult> Proxy { get; private set; }
+        
+        public override ExpressionType NodeType { get { return ExpressionType.Extension; } }
+
+        public override bool IsReversable
         {
-            if (!IsAttached) return;
-            RenewProxy();
-            Refresh();
+            get
+            {
+                if (Proxy == null) return true;
+                var reversable = Proxy as INotifyReversableValue<TResult>;
+                return reversable != null && reversable.IsReversable;
+            }
         }
 
         public override bool IsParameterFree
@@ -25,12 +32,14 @@ namespace NMF.Expressions
             }
         }
 
-        public override string ToString()
+        public override IEnumerable<INotifiable> Dependencies
         {
-            return "proxy for " + Proxy.ToString();
+            get
+            {
+                if (Proxy != null)
+                    yield return Proxy;
+            }
         }
-
-        public INotifyValue<TResult> Proxy { get; private set; }
 
         protected override TResult GetValue()
         {
@@ -43,71 +52,28 @@ namespace NMF.Expressions
             reversable.Value = value;
         }
 
-        public override bool IsReversable
-        {
-            get
-            {
-                if (Proxy == null) return true;
-                var reversable = Proxy as INotifyReversableValue<TResult>;
-                return reversable != null && reversable.IsReversable;
-            }
-        }
-
         public void RenewProxy()
         {
             if (Proxy != null)
             {
-                Proxy.ValueChanged -= ProxyValueChanged;
-                IDisposable disposable = Proxy as IDisposable;
-                if (disposable != null)
-                {
-                    disposable.Dispose();
-                }
+                Proxy.Dispose();
             }
             Proxy = CreateProxy();
-            Proxy.Attach();
-            Proxy.ValueChanged += ProxyValueChanged;
+            Proxy.Successors.Set(this);
         }
 
-        private void ProxyValueChanged(object sender, ValueChangedEventArgs e)
+        public override string ToString()
         {
-            Refresh();
+            return "proxy for " + Proxy.ToString();
         }
 
         protected abstract INotifyValue<TResult> CreateProxy();
-
-        protected override void DetachCore()
+        
+        public override INotificationResult Notify(IList<INotificationResult> sources)
         {
-            if (Proxy != null)
-            {
-                Proxy.Detach();
-                IDisposable disposable = Proxy as IDisposable;
-                if (disposable != null)
-                {
-                    disposable.Dispose();
-                }
-                Proxy = null;
-            }
-        }
-
-        protected override void AttachCore()
-        {
-            if (Proxy != null)
-            {
-                Proxy.Attach();
-            }
-            else
-            {
+            if (sources.Count > 1 || sources[0].Source != Proxy)
                 RenewProxy();
-            }
-        }
-
-        public override ExpressionType NodeType
-        {
-            get
-            {
-                return ExpressionType.Extension;
-            }
+            return base.Notify(sources);
         }
     }
 }

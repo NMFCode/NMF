@@ -222,6 +222,7 @@ namespace NMF.Models.Meta
             ValueChangedEventArgs e = new ValueChangedEventArgs(oldOperation, newOperation);
             this.OnOperationChanged(e);
             this.OnPropertyChanged("Operation", e);
+            base.OnParentChanged(newParent, oldParent);
         }
         
         /// <summary>
@@ -430,7 +431,7 @@ namespace NMF.Models.Meta
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
             public DirectionProxy(IParameter modelElement) : 
-                    base(modelElement)
+                    base(modelElement, "Direction")
             {
             }
             
@@ -448,24 +449,6 @@ namespace NMF.Models.Meta
                     this.ModelElement.Direction = value;
                 }
             }
-            
-            /// <summary>
-            /// Registers an event handler to subscribe specifically on the changed event for this property
-            /// </summary>
-            /// <param name="handler">The handler that should be subscribed to the property change event</param>
-            protected override void RegisterChangeEventHandler(System.EventHandler<NMF.Expressions.ValueChangedEventArgs> handler)
-            {
-                this.ModelElement.DirectionChanged += handler;
-            }
-            
-            /// <summary>
-            /// Registers an event handler to subscribe specifically on the changed event for this property
-            /// </summary>
-            /// <param name="handler">The handler that should be unsubscribed from the property change event</param>
-            protected override void UnregisterChangeEventHandler(System.EventHandler<NMF.Expressions.ValueChangedEventArgs> handler)
-            {
-                this.ModelElement.DirectionChanged -= handler;
-            }
         }
         
         /// <summary>
@@ -479,7 +462,7 @@ namespace NMF.Models.Meta
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
             public OperationProxy(IParameter modelElement) : 
-                    base(modelElement)
+                    base(modelElement, "Operation")
             {
             }
             
@@ -496,24 +479,6 @@ namespace NMF.Models.Meta
                 {
                     this.ModelElement.Operation = value;
                 }
-            }
-            
-            /// <summary>
-            /// Registers an event handler to subscribe specifically on the changed event for this property
-            /// </summary>
-            /// <param name="handler">The handler that should be subscribed to the property change event</param>
-            protected override void RegisterChangeEventHandler(System.EventHandler<NMF.Expressions.ValueChangedEventArgs> handler)
-            {
-                this.ModelElement.OperationChanged += handler;
-            }
-            
-            /// <summary>
-            /// Registers an event handler to subscribe specifically on the changed event for this property
-            /// </summary>
-            /// <param name="handler">The handler that should be unsubscribed from the property change event</param>
-            protected override void UnregisterChangeEventHandler(System.EventHandler<NMF.Expressions.ValueChangedEventArgs> handler)
-            {
-                this.ModelElement.OperationChanged -= handler;
             }
         }
     }

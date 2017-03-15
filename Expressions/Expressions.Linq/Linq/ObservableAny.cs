@@ -10,12 +10,14 @@ namespace NMF.Expressions.Linq
     {
         public static ObservableAny<TSource> Create(INotifyEnumerable<TSource> source)
         {
-            return new ObservableAny<TSource>(source);
+            var observable =  new ObservableAny<TSource>(source);
+            observable.Successors.SetDummy();
+            return observable;
         }
 
         public static ObservableAny<TSource> CreateExpression(IEnumerableExpression<TSource> source)
         {
-            return new ObservableAny<TSource>(source.AsNotifiable());
+            return Create(source.AsNotifiable());
         }
 
         public ObservableAny(INotifyEnumerable<TSource> source)
@@ -49,12 +51,14 @@ namespace NMF.Expressions.Linq
     {
         public static ObservableLambdaAny<TSource> Create(INotifyEnumerable<TSource> source, Expression<Func<TSource, bool>> selector)
         {
-            return new ObservableLambdaAny<TSource>(source, selector);
+            var observable = new ObservableLambdaAny<TSource>(source, selector);
+            observable.Successors.SetDummy();
+            return observable;
         }
 
         public static ObservableLambdaAny<TSource> CreateExpression(IEnumerableExpression<TSource> source, Expression<Func<TSource, bool>> selector)
         {
-            return new ObservableLambdaAny<TSource>(source.AsNotifiable(), selector);
+            return Create(source.AsNotifiable(), selector);
         }
 
         public ObservableLambdaAny(INotifyEnumerable<TSource> source, Expression<Func<TSource, bool>> selector)

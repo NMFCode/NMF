@@ -14,7 +14,7 @@ namespace NMF.Expressions.Linq.Tests
             var update = false;
             var coll = new List<int>() { 1, 2, 3 };
 
-            var test = Observable.Expression(() => coll.WithUpdates().Contains(4));
+            var test = Observable.Expression(() => coll.WithUpdates().Contains<int>(4));
 
             test.ValueChanged += (o, e) => update = true;
 
@@ -25,45 +25,15 @@ namespace NMF.Expressions.Linq.Tests
 
             Assert.IsFalse(update);
         }
-
-        [TestMethod]
-        public void Contains_ObservableSourceElementAdded_NoUpdateWhenDetached()
-        {
-            var update = false;
-            var coll = new NotifyCollection<int>() { 1, 2, 3 };
-
-            var test = Observable.Expression(() => coll.Contains(4));
-
-            test.ValueChanged += (o, e) => update = true;
-
-            Assert.IsFalse(test.Value);
-            Assert.IsFalse(update);
-
-            test.Detach();
-            update = false;
-
-            coll.Add(4);
-
-            Assert.IsFalse(update);
-
-            test.Attach();
-
-            Assert.IsTrue(update);
-            Assert.IsTrue(test.Value);
-            update = false;
-
-            coll.Remove(4);
-
-            Assert.IsTrue(update);
-        }
-
+        
         [TestMethod]
         public void Contains_ObservableSourceElementAdded_Update()
         {
             var update = false;
             var coll = new ObservableCollection<int>() { 1, 2, 3 };
+            INotifyEnumerable<int> notifiable = coll.WithUpdates();
 
-            var test = Observable.Expression(() => coll.WithUpdates().Contains(4));
+            var test = Observable.Expression(() => notifiable.Contains<int>(4));
 
             test.ValueChanged += (o, e) =>
             {
@@ -87,7 +57,7 @@ namespace NMF.Expressions.Linq.Tests
             var update = false;
             var coll = new ObservableCollection<int>() { 1, 2, 3 };
 
-            var test = Observable.Expression(() => coll.WithUpdates().Contains(3));
+            var test = Observable.Expression(() => coll.WithUpdates().Contains<int>(3));
 
             test.ValueChanged += (o, e) => update = true;
 
@@ -105,7 +75,7 @@ namespace NMF.Expressions.Linq.Tests
             var update = false;
             var coll = new ObservableCollection<int>() { 1, 2, 3 };
 
-            var test = Observable.Expression(() => coll.WithUpdates().Contains(4));
+            var test = Observable.Expression(() => coll.WithUpdates().Contains<int>(4));
 
             test.ValueChanged += (o, e) => update = true;
 
@@ -123,7 +93,7 @@ namespace NMF.Expressions.Linq.Tests
             var update = false;
             var coll = new List<int>() { 1, 2, 3 };
 
-            var test = Observable.Expression(() => coll.WithUpdates().Contains(3));
+            var test = Observable.Expression(() => coll.WithUpdates().Contains<int>(3));
 
             test.ValueChanged += (o, e) => update = true;
 
@@ -140,8 +110,9 @@ namespace NMF.Expressions.Linq.Tests
         {
             var update = false;
             var coll = new ObservableCollection<int>() { 1, 2, 3 };
+            INotifyEnumerable<int> notifiable = coll.WithUpdates();
 
-            var test = Observable.Expression(() => coll.WithUpdates().Contains(3));
+            var test = Observable.Expression(() => notifiable.Contains<int>(3));
 
             test.ValueChanged += (o, e) =>
             {
@@ -165,7 +136,7 @@ namespace NMF.Expressions.Linq.Tests
             var update = false;
             var coll = new ObservableCollection<int>() { 1, 2, 3, 3 };
 
-            var test = Observable.Expression(() => coll.WithUpdates().Contains(3));
+            var test = Observable.Expression(() => coll.WithUpdates().Contains<int>(3));
 
             test.ValueChanged += (o, e) => update = true;
 
@@ -183,7 +154,7 @@ namespace NMF.Expressions.Linq.Tests
             var update = false;
             var coll = new ObservableCollection<int>() { 1, 2, 3 };
 
-            var test = Observable.Expression(() => coll.WithUpdates().Contains(3));
+            var test = Observable.Expression(() => coll.WithUpdates().Contains<int>(3));
 
             test.ValueChanged += (o, e) => update = true;
 
@@ -201,7 +172,7 @@ namespace NMF.Expressions.Linq.Tests
             var update = false;
             var coll = new List<int>() { 1, 2, 3 };
 
-            var test = Observable.Expression(() => coll.WithUpdates().Contains(4, new AbsoluteValueComparer()));
+            var test = Observable.Expression(() => coll.WithUpdates().Contains<int>(4, new AbsoluteValueComparer()));
 
             test.ValueChanged += (o, e) => update = true;
 
@@ -219,7 +190,7 @@ namespace NMF.Expressions.Linq.Tests
             var update = false;
             var coll = new ObservableCollection<int>() { 1, 2, 3 };
 
-            var test = Observable.Expression(() => coll.WithUpdates().Contains(4, new AbsoluteValueComparer()));
+            var test = Observable.Expression(() => coll.WithUpdates().Contains<int>(4, new AbsoluteValueComparer()));
 
             test.ValueChanged += (o, e) =>
             {
@@ -243,7 +214,7 @@ namespace NMF.Expressions.Linq.Tests
             var update = false;
             var coll = new ObservableCollection<int>() { 1, 2, 3 };
 
-            var test = Observable.Expression(() => coll.WithUpdates().Contains(-3, new AbsoluteValueComparer()));
+            var test = Observable.Expression(() => coll.WithUpdates().Contains<int>(-3, new AbsoluteValueComparer()));
 
             test.ValueChanged += (o, e) => update = true;
 
@@ -261,7 +232,7 @@ namespace NMF.Expressions.Linq.Tests
             var update = false;
             var coll = new ObservableCollection<int>() { 1, 2, 3 };
 
-            var test = Observable.Expression(() => coll.WithUpdates().Contains(-4, new AbsoluteValueComparer()));
+            var test = Observable.Expression(() => coll.WithUpdates().Contains<int>(-4, new AbsoluteValueComparer()));
 
             test.ValueChanged += (o, e) => update = true;
 
@@ -279,7 +250,7 @@ namespace NMF.Expressions.Linq.Tests
             var update = false;
             var coll = new List<int>() { 1, 2, 3 };
 
-            var test = Observable.Expression(() => coll.WithUpdates().Contains(-3, new AbsoluteValueComparer()));
+            var test = Observable.Expression(() => coll.WithUpdates().Contains<int>(-3, new AbsoluteValueComparer()));
 
             test.ValueChanged += (o, e) => update = true;
 
@@ -297,7 +268,7 @@ namespace NMF.Expressions.Linq.Tests
             var update = false;
             var coll = new ObservableCollection<int>() { 1, 2, 3 };
 
-            var test = Observable.Expression(() => coll.WithUpdates().Contains(-3, new AbsoluteValueComparer()));
+            var test = Observable.Expression(() => coll.WithUpdates().Contains<int>(-3, new AbsoluteValueComparer()));
 
             test.ValueChanged += (o, e) =>
             {
@@ -321,7 +292,7 @@ namespace NMF.Expressions.Linq.Tests
             var update = false;
             var coll = new ObservableCollection<int>() { 1, 2, 3, 3 };
 
-            var test = Observable.Expression(() => coll.WithUpdates().Contains(-3, new AbsoluteValueComparer()));
+            var test = Observable.Expression(() => coll.WithUpdates().Contains<int>(-3, new AbsoluteValueComparer()));
 
             test.ValueChanged += (o, e) => update = true;
 
@@ -339,7 +310,7 @@ namespace NMF.Expressions.Linq.Tests
             var update = false;
             var coll = new ObservableCollection<int>() { 1, 2, 3 };
 
-            var test = Observable.Expression(() => coll.WithUpdates().Contains(-3, new AbsoluteValueComparer()));
+            var test = Observable.Expression(() => coll.WithUpdates().Contains<int>(-3, new AbsoluteValueComparer()));
 
             test.ValueChanged += (o, e) => update = true;
 
@@ -357,7 +328,7 @@ namespace NMF.Expressions.Linq.Tests
             var update = false;
             var coll = new List<int>() { 1, 2, 3 };
 
-            var test = Observable.Expression(() => coll.WithUpdates().Contains(2));
+            var test = Observable.Expression(() => coll.WithUpdates().Contains<int>(2));
 
             test.ValueChanged += (o, e) => update = true;
 
@@ -372,7 +343,7 @@ namespace NMF.Expressions.Linq.Tests
             var update = false;
             var coll = new NotifyCollection<int>() { 1, 2, 3 };
 
-            var test = Observable.Expression(() => coll.WithUpdates().Contains(2));
+            var test = Observable.Expression(() => coll.WithUpdates().Contains<int>(2));
 
             test.ValueChanged += (o, e) => update = true;
 

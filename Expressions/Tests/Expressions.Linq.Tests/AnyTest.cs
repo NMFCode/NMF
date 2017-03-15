@@ -129,36 +129,6 @@ namespace NMF.Expressions.Linq.Tests
         }
 
         [TestMethod]
-        public void Any_ObservableSource_NoUpdateWhenDetached()
-        {
-            var update = false;
-            var coll = new NotifyCollection<int>();
-
-            var test = Observable.Expression(() => coll.Any());
-
-            test.ValueChanged += (o, e) => update = true;
-
-            Assert.IsFalse(test.Value);
-            Assert.IsFalse(update);
-
-            test.Detach();
-
-            coll.Add(1);
-
-            Assert.IsFalse(update);
-
-            test.Attach();
-
-            Assert.IsTrue(update);
-            Assert.IsTrue(test.Value);
-            update = true;
-
-            coll.Remove(1);
-
-            Assert.IsTrue(update);
-        }
-
-        [TestMethod]
         public void Any_NoObservableSourceReset_NoUpdate()
         {
             var update = false;
@@ -307,37 +277,7 @@ namespace NMF.Expressions.Linq.Tests
 
             Assert.IsFalse(update);
         }
-
-        [TestMethod]
-        public void LambdaAny_ObservableSource_NoUpdateWhenDetached()
-        {
-            var update = false;
-            var coll = new NotifyCollection<int>() { -1, -2 };
-
-            var test = Observable.Expression(() => coll.Any(i => i > 0));
-
-            test.ValueChanged += (o, e) => update = true;
-
-            Assert.IsFalse(test.Value);
-            Assert.IsFalse(update);
-
-            test.Detach();
-
-            coll.Add(1);
-
-            Assert.IsFalse(update);
-
-            test.Attach();
-
-            Assert.IsTrue(update);
-            Assert.IsTrue(test.Value);
-            update = false;
-
-            coll.Remove(1);
-
-            Assert.IsTrue(update);
-        }
-
+        
         [TestMethod]
         public void LambdaAny_NoObservableSourceReset_NoUpdate()
         {

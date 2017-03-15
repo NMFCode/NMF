@@ -16,37 +16,11 @@ namespace NMF.Expressions
             if (bounds1 == null) throw new ArgumentNullException("bounds1");
 
             Bounds1 = bounds1;
-
-            bounds1.ValueChanged += ArgumentChanged;
         }
 
         public override ExpressionType NodeType
         {
-            get
-            {
-                return ExpressionType.NewArrayBounds;
-            }
-        }
-
-        protected override T[] GetValue()
-        {
-            return (T[])Activator.CreateInstance(typeof(T[]), Bounds1.Value);
-        }
-
-        protected override void DetachCore()
-        {
-            Bounds1.Detach();
-        }
-
-        protected override void AttachCore()
-        {
-            Bounds1.Attach();
-        }
-
-        private void ArgumentChanged(object sender, ValueChangedEventArgs e)
-        {
-            if (!IsAttached) return;
-            Refresh();
+            get { return ExpressionType.NewArrayBounds; }
         }
 
         public override bool IsParameterFree
@@ -54,11 +28,66 @@ namespace NMF.Expressions
             get { return Bounds1.IsParameterFree; }
         }
 
+        public override IEnumerable<INotifiable> Dependencies
+        {
+            get { yield return Bounds1; }
+        }
+
+        protected override T[] GetValue()
+        {
+            return (T[])Activator.CreateInstance(typeof(T[]), Bounds1.Value);
+        }
+        
         public override INotifyExpression<T[]> ApplyParameters(IDictionary<string, object> parameters)
         {
             return new ObservableNewArray1Expression<T>(Bounds1.ApplyParameters(parameters));
         }
     }
+    
+    internal sealed class ObservableNewArray2Expression<T> : NotifyExpression<T[,]>
+    {
+        public INotifyExpression<int> Bounds1 { get; private set; }
+        public INotifyExpression<int> Bounds2 { get; private set; }
+
+        public ObservableNewArray2Expression(INotifyExpression<int> bounds1, INotifyExpression<int> bounds2)
+        {
+            if (bounds1 == null) throw new ArgumentNullException("bounds1");
+            if (bounds2 == null) throw new ArgumentNullException("bounds2");
+
+            Bounds1 = bounds1;
+            Bounds2 = bounds2;
+        }
+
+        public override ExpressionType NodeType
+        {
+            get { return ExpressionType.NewArrayBounds; }
+        }
+
+        public override bool IsParameterFree
+        {
+            get { return Bounds1.IsParameterFree && Bounds2.IsParameterFree; }
+        }
+
+        public override IEnumerable<INotifiable> Dependencies
+        {
+            get
+            {
+                yield return Bounds1;
+                yield return Bounds2;
+            }
+        }
+
+        protected override T[,] GetValue()
+        {
+            return (T[,])Activator.CreateInstance(typeof(T[,]), Bounds1.Value, Bounds2.Value);
+        }
+
+        public override INotifyExpression<T[,]> ApplyParameters(IDictionary<string, object> parameters)
+        {
+            return new ObservableNewArray2Expression<T>(Bounds1.ApplyParameters(parameters), Bounds2.ApplyParameters(parameters));
+        }
+    }
+
     internal sealed class ObservableNewArray3Expression<T> : NotifyExpression<T[,,]>
     {
         public INotifyExpression<int> Bounds1 { get; private set; }
@@ -74,17 +103,25 @@ namespace NMF.Expressions
             Bounds1 = bounds1;
             Bounds2 = bounds2;
             Bounds3 = bounds3;
-
-            bounds1.ValueChanged += ArgumentChanged;
-            bounds2.ValueChanged += ArgumentChanged;
-            bounds3.ValueChanged += ArgumentChanged;
         }
 
         public override ExpressionType NodeType
         {
+            get { return ExpressionType.NewArrayBounds; }
+        }
+
+        public override bool IsParameterFree
+        {
+            get { return Bounds1.IsParameterFree && Bounds2.IsParameterFree && Bounds3.IsParameterFree; }
+        }
+
+        public override IEnumerable<INotifiable> Dependencies
+        {
             get
             {
-                return ExpressionType.NewArrayBounds;
+                yield return Bounds1;
+                yield return Bounds2;
+                yield return Bounds3;
             }
         }
 
@@ -93,92 +130,9 @@ namespace NMF.Expressions
             return (T[,,])Activator.CreateInstance(typeof(T[,,]), Bounds1.Value, Bounds2.Value, Bounds3.Value);
         }
 
-        protected override void DetachCore()
-        {
-            Bounds1.Detach();
-            Bounds2.Detach();
-            Bounds3.Detach();
-        }
-
-        protected override void AttachCore()
-        {
-            Bounds1.Attach();
-            Bounds2.Attach();
-            Bounds3.Attach();
-        }
-
-        private void ArgumentChanged(object sender, ValueChangedEventArgs e)
-        {
-            if (!IsAttached) return;
-            Refresh();
-        }
-
-        public override bool IsParameterFree
-        {
-            get { return Bounds1.IsParameterFree && Bounds2.IsParameterFree && Bounds3.IsParameterFree; }
-        }
-
         public override INotifyExpression<T[,,]> ApplyParameters(IDictionary<string, object> parameters)
         {
             return new ObservableNewArray3Expression<T>(Bounds1.ApplyParameters(parameters), Bounds2.ApplyParameters(parameters), Bounds3.ApplyParameters(parameters));
-        }
-    }
-    internal sealed class ObservableNewArray2Expression<T> : NotifyExpression<T[,]>
-    {
-        public INotifyExpression<int> Bounds1 { get; private set; }
-        public INotifyExpression<int> Bounds2 { get; private set; }
-
-        public ObservableNewArray2Expression(INotifyExpression<int> bounds1, INotifyExpression<int> bounds2)
-        {
-            if (bounds1 == null) throw new ArgumentNullException("bounds1");
-            if (bounds2 == null) throw new ArgumentNullException("bounds2");
-
-            Bounds1 = bounds1;
-            Bounds2 = bounds2;
-
-            bounds1.ValueChanged += ArgumentChanged;
-            bounds2.ValueChanged += ArgumentChanged;
-        }
-
-        public override ExpressionType NodeType
-        {
-            get
-            {
-                return ExpressionType.NewArrayBounds;
-            }
-        }
-
-        protected override T[,] GetValue()
-        {
-            return (T[,])Activator.CreateInstance(typeof(T[,]), Bounds1.Value, Bounds2.Value);
-        }
-
-        protected override void DetachCore()
-        {
-            Bounds1.Detach();
-            Bounds2.Detach();
-        }
-
-        protected override void AttachCore()
-        {
-            Bounds1.Attach();
-            Bounds2.Attach();
-        }
-
-        private void ArgumentChanged(object sender, ValueChangedEventArgs e)
-        {
-            if (!IsAttached) return;
-            Refresh();
-        }
-
-        public override bool IsParameterFree
-        {
-            get { return Bounds1.IsParameterFree && Bounds2.IsParameterFree; }
-        }
-
-        public override INotifyExpression<T[,]> ApplyParameters(IDictionary<string, object> parameters)
-        {
-            return new ObservableNewArray2Expression<T>(Bounds1.ApplyParameters(parameters), Bounds2.ApplyParameters(parameters));
         }
     }
 }

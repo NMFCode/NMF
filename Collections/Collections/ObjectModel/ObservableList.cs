@@ -4,33 +4,25 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using NMF.Expressions;
+using NMF.Expressions.Linq;
 
 namespace NMF.Collections.ObjectModel
 {
-    public class ObservableList<T> : ObservableCollectionExtended<T>, INotifyEnumerable<T>, INotifyCollection<T>, IListExpression<T>, ICollectionExpression
+    public class ObservableList<T> : ObservableCollectionExtended<T>, IListExpression<T>
     {
-        void INotifyEnumerable.Attach() { }
-
-        void INotifyEnumerable.Detach() { }
-
-        bool INotifyEnumerable.IsAttached
-        {
-            get { return true; }
-        }
-
         public INotifyCollection<T> AsNotifiable()
         {
-            return this;
+            return this.WithUpdates();
         }
 
         INotifyEnumerable<T> IEnumerableExpression<T>.AsNotifiable()
         {
-            return this;
+            return AsNotifiable();
         }
 
         INotifyEnumerable IEnumerableExpression.AsNotifiable()
         {
-            return this;
+            return AsNotifiable();
         }
     }
 }

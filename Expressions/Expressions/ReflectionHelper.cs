@@ -184,5 +184,10 @@ namespace NMF.Expressions
             }
             throw new InvalidOperationException("No suitable Remove method found");
         }
+
+        internal static bool Implements<T>(this Type type)
+        {
+            return type.GetInterface(typeof(T).FullName) != null;
+        }
     }
 }

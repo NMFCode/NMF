@@ -22,22 +22,11 @@ namespace NMF.Expressions
             Inner = inner;
             ExactMatch = exactMatch;
             TypeOperand = typeOperand;
-
-            inner.ValueChanged += InnerValueChanged;
-        }
-
-        void InnerValueChanged(object sender, ValueChangedEventArgs e)
-        {
-            if (!IsAttached) return;
-            Refresh();
         }
 
         public override bool CanBeConstant
         {
-            get
-            {
-                return Inner.CanBeConstant;
-            }
+            get { return Inner.CanBeConstant; }
         }
 
         public override ExpressionType NodeType
@@ -47,6 +36,16 @@ namespace NMF.Expressions
                 if (ExactMatch) return ExpressionType.TypeEqual;
                 return ExpressionType.TypeIs;
             }
+        }
+
+        public override bool IsParameterFree
+        {
+            get { return Inner.IsParameterFree; }
+        }
+
+        public override IEnumerable<INotifiable> Dependencies
+        {
+            get { yield return Inner; }
         }
 
         protected override bool GetValue()
@@ -59,21 +58,6 @@ namespace NMF.Expressions
             {
                 return Inner.Value == null || Inner.Value.GetType() == TypeOperand;
             }
-        }
-
-        protected override void DetachCore()
-        {
-            Inner.Detach();
-        }
-
-        protected override void AttachCore()
-        {
-            Inner.Attach();
-        }
-
-        public override bool IsParameterFree
-        {
-            get { return Inner.IsParameterFree; }
         }
 
         public override INotifyExpression<bool> ApplyParameters(IDictionary<string, object> parameters)

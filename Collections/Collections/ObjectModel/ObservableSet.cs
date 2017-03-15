@@ -1,5 +1,6 @@
 ﻿using NMF.Collections.Generic;
 using NMF.Expressions;
+using NMF.Expressions.Linq;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -12,7 +13,7 @@ using System.Text;
 namespace NMF.Collections.ObjectModel
 {
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1710:IdentifiersShouldHaveCorrectSuffix"), DebuggerDisplay("Count = {Count}"), DebuggerTypeProxy(typeof(EnumerableDebuggerProxy<>))]
-    public class ObservableSet<T> : DecoratedSet<T>, ISet<T>, ICollection<T>, IEnumerable<T>, ICollection, IEnumerable, INotifyCollectionChanged, INotifyCollectionChanging, INotifyEnumerable<T>, INotifyPropertyChanged, INotifyCollection<T>, ISetExpression<T>, ICollectionExpression
+    public class ObservableSet<T> : DecoratedSet<T>, ISet<T>, ICollection<T>, IEnumerable<T>, ICollection, IEnumerable, INotifyCollectionChanged, INotifyCollectionChanging, INotifyPropertyChanged, ISetExpression<T>
     {
         public override bool Add(T item)
         {
@@ -84,31 +85,22 @@ namespace NMF.Collections.ObjectModel
         {
             OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Replace, newItem, oldItem));
         }
-
-        void INotifyEnumerable.Attach() { }
-
-        void INotifyEnumerable.Detach() { }
-
-        bool INotifyEnumerable.IsAttached
-        {
-            get { return true; }
-        }
-
+        
         public event PropertyChangedEventHandler PropertyChanged;
 
         public INotifyCollection<T> AsNotifiable()
         {
-            return this;
+            return this.WithUpdates();
         }
 
         INotifyEnumerable<T> IEnumerableExpression<T>.AsNotifiable()
         {
-            return this;
+            return AsNotifiable();
         }
 
         INotifyEnumerable IEnumerableExpression.AsNotifiable()
         {
-            return this;
+            return AsNotifiable();
         }
     }
 }

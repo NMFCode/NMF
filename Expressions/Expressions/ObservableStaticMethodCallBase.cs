@@ -8,7 +8,6 @@ using System.Text;
 
 namespace NMF.Expressions
 {
-
     internal abstract class ObservableStaticMethodBase<TDelegate, TResult> : NotifyExpression<TResult>
         where TDelegate : class
     {
@@ -24,55 +23,23 @@ namespace NMF.Expressions
             Function = function;
         }
 
-        protected virtual void RegisterCollectionChanged<T>(INotifyValue<T> value)
-        {
-            if (value == null) return;
-            var notifyCollection = value.Value as INotifyCollectionChanged;
-            if (notifyCollection != null)
-            {
-                notifyCollection.CollectionChanged += notifyCollection_CollectionChanged;
-            }
-            value.ValueChanged += value_ValueChanged;
-        }
-
-        private void value_ValueChanged(object sender, ValueChangedEventArgs e)
-        {
-            var oldNotifyCollection = e.OldValue as INotifyCollectionChanged;
-            var newNotifyCollection = e.NewValue as INotifyCollectionChanged;
-            if (oldNotifyCollection != null) oldNotifyCollection.CollectionChanged -= notifyCollection_CollectionChanged;
-            if (newNotifyCollection != null) newNotifyCollection.CollectionChanged += notifyCollection_CollectionChanged;
-        }
-
-        private void notifyCollection_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
-        {
-            if (!IsAttached) return;
-            Refresh();
-        }
-
         public TDelegate Function { get; private set; }
 
-        protected override void OnValueChanged(ValueChangedEventArgs e)
+        public override ExpressionType NodeType { get { return ExpressionType.Invoke; } }
+        
+        public override INotificationResult Notify(IList<INotificationResult> sources)
         {
-            base.OnValueChanged(e);
-            var disposable = e.OldValue as IDisposable;
-            if (disposable != null)
-            {
-                disposable.Dispose();
-            }
-        }
+            var oldValue = Value;
+            var result = base.Notify(sources);
 
-        protected void ArgumentChanged(object sender, ValueChangedEventArgs e)
-        {
-            if (!IsAttached) return;
-            Refresh();
-        }
-
-        public override ExpressionType NodeType
-        {
-            get
+            if (result.Changed)
             {
-                return ExpressionType.Invoke;
+                var disposable = oldValue as IDisposable;
+                if (disposable != null)
+                    disposable.Dispose();
             }
+
+            return result;
         }
     }
 }

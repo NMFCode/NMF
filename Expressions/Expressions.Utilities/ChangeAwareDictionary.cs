@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 
@@ -12,9 +14,27 @@ namespace NMF.Expressions
     /// <typeparam name="TValue">The type of the values</typeparam>
     public class ChangeAwareDictionary<TKey, TValue>
     {
-        private class Entry : INotifyReversableExpression<TValue>
+        private class Entry : INotifyReversableExpression<TValue>, INotifyPropertyChanged
         {
+            private readonly PropertyChangeListener listener;
             private TValue value;
+
+            public Entry()
+            {
+                listener = new PropertyChangeListener(this);
+                Successors.Attached += (obj, e) => listener.Subscribe(this, "Value");
+                Successors.Detached += (obj, e) => listener.Unsubscribe();
+            }
+
+            public IEnumerable<INotifiable> Dependencies
+            {
+                get
+                {
+                    return Enumerable.Empty<INotifiable>();
+                }
+            }
+
+            public ExecutionMetaData ExecutionMetaData { get; } = new ExecutionMetaData();
 
             public bool IsReversable
             {
@@ -23,6 +43,8 @@ namespace NMF.Expressions
                     return true;
                 }
             }
+
+            public ISuccessorList Successors { get; } = NotifySystem.DefaultSystem.CreateSuccessorList();
 
             public TValue Value
             {
@@ -35,9 +57,10 @@ namespace NMF.Expressions
                 {
                     if (!EqualityComparer<TValue>.Default.Equals(value, this.value))
                     {
-                        var change = new ValueChangedEventArgs(this.value, value);
+                        var oldValue = this.value;
                         this.value = value;
-                        ValueChanged?.Invoke(this, change);
+                        ValueChanged?.Invoke(this, new ValueChangedEventArgs(oldValue, value));
+                        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("Value"));
                     }
                 }
             }
@@ -47,14 +70,6 @@ namespace NMF.Expressions
                 get
                 {
                     return false;
-                }
-            }
-
-            bool INotifyValue<TValue>.IsAttached
-            {
-                get
-                {
-                    return true;
                 }
             }
 
@@ -90,29 +105,32 @@ namespace NMF.Expressions
                 }
             }
 
+            public event PropertyChangedEventHandler PropertyChanged;
             public event EventHandler<ValueChangedEventArgs> ValueChanged;
+
+            public void Dispose()
+            {
+                Successors.UnsetAll();
+            }
+
+            public INotificationResult Notify(IList<INotificationResult> sources)
+            {
+                return new ValueChangedNotificationResult<TValue>(this, value, value);
+            }
+
+            public INotifyExpression ApplyParameters(IDictionary<string, object> parameters)
+            {
+                return this;
+            }
 
             INotifyExpression<TValue> INotifyExpression<TValue>.ApplyParameters(IDictionary<string, object> parameters)
             {
                 return this;
             }
 
-            INotifyExpression INotifyExpression.ApplyParameters(IDictionary<string, object> parameters)
-            {
-                return this;
-            }
-
-            void INotifyValue<TValue>.Attach() { }
-
-            void INotifyValue<TValue>.Detach() { }
-
             INotifyExpression<TValue> INotifyExpression<TValue>.Reduce()
             {
                 return this;
-            }
-
-            void INotifyExpression.Refresh()
-            {
             }
         }
 

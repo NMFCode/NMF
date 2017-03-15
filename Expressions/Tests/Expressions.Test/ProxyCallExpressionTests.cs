@@ -1,35 +1,13 @@
 ﻿using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace NMF.Expressions.Test
 {
     [TestClass]
     public class ProxyCallExpressionTests
     {
-        [TestMethod]
-        public void ProxyCall_GenericNoObservable_UpdateIfValueChanges()
-        {
-            var update = false;
-            var dummy = new Dummy<string>("42");
-            
-            var test = Observable.Expression(() => ProxyTest(dummy.Item));
-
-            test.ValueChanged += (o, e) => update = true;
-
-            Assert.AreEqual("42", test.Value);
-            Assert.IsFalse(update);
-
-            dummy.Item = "23";
-
-            Assert.IsFalse(update);
-
-            TestProxy<string>.SetValue("FooBar");
-
-            Assert.IsTrue(update);
-            Assert.AreEqual("FooBar", test.Value);
-        }
-
         [TestMethod]
         public void ProxyCall_GenericObservable_Update()
         {
@@ -52,29 +30,6 @@ namespace NMF.Expressions.Test
 
             Assert.IsTrue(update);
             Assert.AreEqual("23", test.Value);
-        }
-
-        [TestMethod]
-        public void ProxyCall_NonGenericNoObservable_UpdateIfValueChanges()
-        {
-            var update = false;
-            var dummy = new Dummy<int>(1);
-
-            var test = Observable.Expression(() => ProxyTest(42, dummy.Item));
-
-            test.ValueChanged += (o, e) => update = true;
-
-            Assert.AreEqual(1, test.Value);
-            Assert.IsFalse(update);
-
-            dummy.Item = 2;
-
-            Assert.IsFalse(update);
-
-            TestProxy<int>.SetValue(3);
-
-            Assert.IsTrue(update);
-            Assert.AreEqual(3, test.Value);
         }
 
         [TestMethod]
@@ -168,20 +123,28 @@ namespace NMF.Expressions.Test
                 }
             }
 
+            public INotificationResult Notify(IList<INotificationResult> sources)
+            {
+                throw new NotImplementedException();
+            }
+
             public event EventHandler<ValueChangedEventArgs> ValueChanged;
-
-            public void Detach() { }
-
-            public void Attach() { }
-
+            
             public T Value
             {
                 get { return value; }
             }
 
-            public bool IsAttached
+            private List<INotifiable> successors = new List<INotifiable>();
+            public ISuccessorList Successors { get; } = NotifySystem.DefaultSystem.CreateSuccessorList();
+
+            public IEnumerable<INotifiable> Dependencies { get { return Enumerable.Empty<INotifiable>(); } }
+
+            public ExecutionMetaData ExecutionMetaData { get; } = new ExecutionMetaData();
+
+            public virtual void Dispose()
             {
-                get { return true; }
+                Successors.UnsetAll();
             }
         }
 
@@ -200,8 +163,9 @@ namespace NMF.Expressions.Test
                 Assert.AreEqual(42, argument);
             }
 
-            public void Dispose()
+            public override void Dispose()
             {
+                base.Dispose();
                 Disposed = true;
             }
         }

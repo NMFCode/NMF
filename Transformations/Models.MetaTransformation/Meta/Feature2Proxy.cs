@@ -50,38 +50,7 @@ namespace NMF.Models.Meta
                 value.GetStatements.Add(new CodeMethodReturnStatement(propertyRef));
                 value.SetStatements.Add(new CodeAssignStatement(propertyRef, new CodePropertySetValueReferenceExpression()));
                 generatedType.Members.Add(value);
-
-                var handlerParameter = new CodeParameterDeclarationExpression(typeof(EventHandler<ValueChangedEventArgs>), "handler");
-                var handlerParameterRef = new CodeArgumentReferenceExpression("handler");
-
-                var registerChangeEventHandler = new CodeMemberMethod()
-                {
-                    Name = "RegisterChangeEventHandler",
-                    Attributes = MemberAttributes.Family | MemberAttributes.Override,
-                    ReturnType = null
-                };
-                registerChangeEventHandler.WriteDocumentation("Registers an event handler to subscribe specifically on the changed event for this property", null, new Dictionary<string, string>()
-                {
-                    { "handler", "The handler that should be subscribed to the property change event" }
-                });
-                registerChangeEventHandler.Parameters.Add(handlerParameter);
-                registerChangeEventHandler.Statements.Add(new CodeAttachEventStatement(propertyChanged, handlerParameterRef));
-                generatedType.Members.Add(registerChangeEventHandler);
-
-                var unregisterChangeEventHandler = new CodeMemberMethod()
-                {
-                    Name = "UnregisterChangeEventHandler",
-                    Attributes = MemberAttributes.Family | MemberAttributes.Override,
-                    ReturnType = null
-                };
-                unregisterChangeEventHandler.WriteDocumentation("Registers an event handler to subscribe specifically on the changed event for this property", null, new Dictionary<string, string>()
-                {
-                    { "handler", "The handler that should be unsubscribed from the property change event" }
-                });
-                unregisterChangeEventHandler.Parameters.Add(handlerParameter);
-                unregisterChangeEventHandler.Statements.Add(new CodeRemoveEventStatement(propertyChanged, handlerParameterRef));
-                generatedType.Members.Add(unregisterChangeEventHandler);
-
+                
                 var constructor = new CodeConstructor()
                 {
                     Attributes = MemberAttributes.Public
@@ -92,6 +61,7 @@ namespace NMF.Models.Meta
                 });
                 constructor.Parameters.Add(new CodeParameterDeclarationExpression(declaringType, "modelElement"));
                 constructor.BaseConstructorArgs.Add(new CodeArgumentReferenceExpression("modelElement"));
+                constructor.BaseConstructorArgs.Add(new CodePrimitiveExpression(feature.Name));
                 generatedType.Members.Add(constructor);
             }
         }

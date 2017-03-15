@@ -5,6 +5,7 @@ using NMF.Models.Tests.Railway;
 using NMF.Serialization.Xmi;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -20,14 +21,14 @@ namespace NMF.Models.Tests.Evolution
         [TestMethod]
         public void SerializePropertyChangeAttribute()
         {
-            var change = new PropertyChangeAttribute<Signal>(uri, property, Signal.FAILURE);
+            var change = new PropertyChangeAttribute<Signal>(uri, property, Signal.STOP, Signal.FAILURE);
             SerializeAndAssert(change);
         }
 
         [TestMethod]
         public void SerializePropertyChangeReference()
         {
-            var change = new PropertyChangeReference<Semaphore>(uri, property, new Uri("http://ReferenceUri"));
+            var change = new PropertyChangeReference<Semaphore>(uri, property, new Uri("http://OldReferenceUri"), new Uri("http://NewReferenceUri"));
             SerializeAndAssert(change);
         }
 
@@ -53,9 +54,53 @@ namespace NMF.Models.Tests.Evolution
         }
 
         [TestMethod]
-        public void SerializeListDeletion()
+        public void SerializeCollectionInsertionComposition()
         {
-            var change = new ListDeletion(uri, property, 42, 23);
+            var change = new CollectionInsertionComposition<int>(uri, property, new Collection<int>() { 23, 42 });
+            SerializeAndAssert(change);
+        }
+
+        [TestMethod]
+        public void SerializeCollectionInsertionAssociation()
+        {
+            var change = new CollectionInsertionAssociation<IRoute>(uri, property, new Collection<Uri>() { new Uri("http://ReferenceUri1"), new Uri("http://ReferenceUri2") });
+            SerializeAndAssert(change);
+        }
+
+        [TestMethod]
+        public void SerializeListDeletionComposition()
+        {
+            var change = new ListDeletionComposition<int>(uri, property, 42, 23);
+            SerializeAndAssert(change);
+        }
+
+        [TestMethod]
+        public void SerializeListDeletionAssociation()
+        {
+            var list = new List<Uri>() {new Uri("http://ReferenceUri1"), new Uri("http://ReferenceUri2")};
+            var change = new ListDeletionAssociation<IRoute>(uri, property, 0, list.Count, list);
+            SerializeAndAssert(change);
+        }
+
+        [TestMethod]
+        public void SerializeCollectionDeletionComposition()
+        {
+            var change = new CollectionDeletionComposition<int>(uri, property, new Collection<int>() {42});
+            SerializeAndAssert(change);
+        }
+
+        [TestMethod]
+        public void SerializeCollectionDeletionAssociation()
+        {
+            var list = new Collection<Uri>() { new Uri("http://ReferenceUri1"), new Uri("http://ReferenceUri2") };
+            var change = new CollectionDeletionAssociation<IRoute>(uri, property, list);
+            SerializeAndAssert(change);
+        }
+
+        [TestMethod]
+        public void SerializeCollectionResetComposition()
+        {
+            var change = new CollectionResetComposition<int>(uri, property, null, null, new Collection<int>() {42});
             SerializeAndAssert(change);
         }
 
@@ -63,7 +108,7 @@ namespace NMF.Models.Tests.Evolution
         public void SerializeChangeTransaction()
         {
             var sourceChange = new ElementDeletion(uri);
-            var nestedChanges = new[] { new ListDeletion(uri, property, 0, 1) };
+            var nestedChanges = new[] { new ListDeletionComposition<int>(uri, property, 0, 1),  };
             var change = new ChangeTransaction(sourceChange, nestedChanges);
             SerializeAndAssert(change);
         }

@@ -10,6 +10,17 @@ namespace NMF.Expressions.Linq
     {
         private INotifyEnumerable<TSource> source;
         private IEnumerable<TSource> source2;
+        private INotifyEnumerable<TSource> observableSource2;
+
+        public override IEnumerable<INotifiable> Dependencies
+        {
+            get
+            {
+                yield return source;
+                if (observableSource2 != null)
+                    yield return observableSource2;
+            }
+        }
 
         public ObservableConcat(INotifyEnumerable<TSource> source, IEnumerable<TSource> source2)
         {
@@ -18,64 +29,49 @@ namespace NMF.Expressions.Linq
 
             this.source = source;
             this.source2 = source2;
-
-            Attach();
+            this.observableSource2 = source2 as INotifyEnumerable<TSource>;
+            if (observableSource2 == null)
+                observableSource2 = (source2 as IEnumerableExpression<TSource>)?.AsNotifiable();
         }
 
         public override IEnumerator<TSource> GetEnumerator()
         {
             return SL.Concat(source, source2).GetEnumerator();
         }
-
-        protected override void AttachCore()
+        
+        public override INotificationResult Notify(IList<INotificationResult> sources)
         {
-            source.CollectionChanged += SourceCollectionChanged;
-            var notifier = source2 as INotifyCollectionChanged;
-            if (notifier != null)
-            {
-                notifier.CollectionChanged += Source2CollectionChanged;
-            }
-        }
+            var added = new List<TSource>();
+            var removed = new List<TSource>();
+            var moved = new List<TSource>();
+            var replaceAdded = new List<TSource>();
+            var replaceRemoved = new List<TSource>();
 
-        private void Source2CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
-        {
-            int sourceCount = SL.Count(source);
-            switch (e.Action)
+            foreach (CollectionChangedNotificationResult<TSource> change in sources)
             {
-                case NotifyCollectionChangedAction.Add:
-                    e = new NotifyCollectionChangedEventArgs(e.Action, e.NewItems, sourceCount + e.NewStartingIndex);
-                    break;
-                case NotifyCollectionChangedAction.Move:
-                    e = new NotifyCollectionChangedEventArgs(e.Action, e.NewItems, sourceCount + e.NewStartingIndex, sourceCount + e.OldStartingIndex);
-                    break;
-                case NotifyCollectionChangedAction.Remove:
-                    e = new NotifyCollectionChangedEventArgs(e.Action, e.OldItems, sourceCount + e.OldStartingIndex);
-                    break;
-                case NotifyCollectionChangedAction.Replace:
-                    e = new NotifyCollectionChangedEventArgs(e.Action, e.NewItems, e.OldItems, sourceCount + e.OldStartingIndex);
-                    break;
-                case NotifyCollectionChangedAction.Reset:
+                if (change.IsReset)
+                {
                     OnCleared();
-                    return;
-                default:
-                    throw new InvalidOperationException();
-            }
-            OnCollectionChanged(e);
-        }
+                    return new CollectionChangedNotificationResult<TSource>(this);
+                }
 
-        private void SourceCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
-        {
-            OnCollectionChanged(e);
-        }
-
-        protected override void DetachCore()
-        {
-            source.CollectionChanged -= SourceCollectionChanged;
-            var notifier = source2 as INotifyCollectionChanged;
-            if (notifier != null)
-            {
-                notifier.CollectionChanged -= Source2CollectionChanged;
+                if (change.AddedItems != null)
+                    added.AddRange(change.AddedItems);
+                if (change.RemovedItems != null)
+                    removed.AddRange(change.RemovedItems);
+                if (change.MovedItems != null)
+                    moved.AddRange(change.MovedItems);
+                if (change.ReplaceAddedItems != null)
+                    replaceAdded.AddRange(change.ReplaceAddedItems);
+                if (change.ReplaceRemovedItems != null)
+                    replaceRemoved.AddRange(change.ReplaceRemovedItems);
             }
+
+            OnRemoveItems(removed);
+            OnAddItems(added);
+            OnMoveItems(moved);
+            OnReplaceItems(replaceRemoved, replaceAdded);
+            return new CollectionChangedNotificationResult<TSource>(this, added, removed, moved, replaceAdded, replaceRemoved);
         }
     }
 }

@@ -104,9 +104,6 @@
     <Compile Include="..\Expressions.Linq\Facade\OrderableList.cs">
       <Link>Facade\OrderableList.cs</Link>
     </Compile>
-    <Compile Include="..\Expressions.Linq\Linq\ManualObservableCollectionView.cs">
-      <Link>Linq\ManualObservableCollectionView.cs</Link>
-    </Compile>
     <Compile Include="..\Expressions.Linq\Linq\Multiplicity.cs">
       <Link>Linq\Multiplicity.cs</Link>
     </Compile>
@@ -163,9 +160,6 @@
     </Compile>
     <Compile Include="..\Expressions.Linq\Linq\ObservableIntersect.cs">
       <Link>Linq\ObservableIntersect.cs</Link>
-    </Compile>
-    <Compile Include="..\Expressions.Linq\Linq\ObservableItemExpressionEnumerable.cs">
-      <Link>Linq\ObservableItemExpressionEnumerable.cs</Link>
     </Compile>
     <Compile Include="..\Expressions.Linq\Linq\ObservableJoin.cs">
       <Link>Linq\ObservableJoin.cs</Link>
@@ -374,6 +368,9 @@
     <Compile Include="..\Expressions\Public\FunctionTypes.Manual.cs">
       <Link>Facade\FunctionTypes.Manual.cs</Link>
     </Compile>
+    <Compile Include="..\Expressions\Public\INotifiable.cs">
+      <Link>Facade\INotifiable.cs</Link>
+    </Compile>
     <Compile Include="..\Expressions\Public\INotifyExpression.cs">
       <Link>Facade\INotifyExpression.cs</Link>
     </Compile>
@@ -388,6 +385,12 @@
     </Compile>
     <Compile Include="..\Expressions\Public\InstructionLevelNotifySystem.cs">
       <Link>Facade\InstructionLevelNotifySystem.cs</Link>
+    </Compile>
+    <Compile Include="..\Expressions\Public\ISuccessorList.cs">
+      <Link>Facade\ISuccessorList.cs</Link>
+    </Compile>
+    <Compile Include="..\Expressions\Public\MultiSuccessorList.cs">
+      <Link>Facade\MultiSuccessorList.cs</Link>
     </Compile>
     <Compile Include="..\Expressions\Public\NotifyExpression.cs">
       <Link>Facade\NotifyExpression.cs</Link>
@@ -419,8 +422,50 @@
     <Compile Include="..\Expressions\Public\ReversableFunctionTypes.cs">
       <Link>Facade\ReversableFunctionTypes.cs</Link>
     </Compile>
+    <Compile Include="..\Expressions\Public\SingleSuccessorList.cs">
+      <Link>Facade\SingleSuccessorList.cs</Link>
+    </Compile>
+    <Compile Include="..\Expressions\Public\SingletonSuccessorList.cs">
+      <Link>Facade\SingletonSuccessorList.cs</Link>
+    </Compile>
     <Compile Include="..\Expressions\Public\ValueChangedEventArgs.cs">
       <Link>Facade\ValueChangedEventArgs.cs</Link>
+    </Compile>
+    <Compile Include="..\Expressions\Execution\CollectionChangedNotificationResult.cs">
+      <Link>Execution\CollectionChangedNotificationResult.cs</Link>
+    </Compile>
+    <Compile Include="..\Expressions\Execution\CollectionChangeListener.cs">
+      <Link>Execution\CollectionChangeListener.cs</Link>
+    </Compile>
+    <Compile Include="..\Expressions\Execution\ExecutionEngine.cs">
+      <Link>Execution\ExecutionEngine.cs</Link>
+    </Compile>
+    <Compile Include="..\Expressions\Execution\ExecutionMetaData.cs">
+      <Link>Execution\ExecutionMetaData.cs</Link>
+    </Compile>
+    <Compile Include="..\Expressions\Execution\IChangeListener.cs">
+      <Link>Execution\IChangeListener.cs</Link>
+    </Compile>
+    <Compile Include="..\Expressions\Execution\INotificationResult.cs">
+      <Link>Execution\INotificationResult.cs</Link>
+    </Compile>
+    <Compile Include="..\Expressions\Execution\PropertyChangeListener.cs">
+      <Link>Execution\PropertyChangeListener.cs</Link>
+    </Compile>
+    <Compile Include="..\Expressions\Execution\SequentialExecutionEngine.cs">
+      <Link>Execution\SequentialExecutionEngine.cs</Link>
+    </Compile>
+    <Compile Include="..\Expressions\Execution\UnchangedNotificationResult.cs">
+      <Link>Execution\UnchangedNotificationResult.cs</Link>
+    </Compile>
+    <Compile Include="..\Expressions\Execution\ValueChangedNotificationResult.cs">
+      <Link>Execution\ValueChangedNotificationResult.cs</Link>
+    </Compile>
+    <Compile Include="..\Expressions\Execution\NotificationResultCollection.cs">
+      <Link>Execution\NotificationResultCollection.cs</Link>
+    </Compile>
+    <Compile Include="..\Expressions\Execution\ParallelExecutionEngine.cs">
+      <Link>Execution\ParallelExecutionEngine.cs</Link>
     </Compile>
     <Compile Include="ExpressionRewriter\ProxyMethodAttribute.cs" />
     <Compile Include="GlobalSuppressions.cs" />

@@ -16,6 +16,7 @@ using NMF.Models;
 using NMF.Models.Collections;
 using NMF.Models.Expressions;
 using NMF.Models.Meta;
+using NMF.Models.Repository;
 using NMF.Serialization;
 using NMF.Utilities;
 using System;
@@ -38,7 +39,7 @@ namespace NMF.Models.Tests.Railway
         {
         }
         
-        private void OnItemDeleted(object sender, EventArgs e)
+        private void OnItemDeleted(object sender, System.EventArgs e)
         {
             this.Remove(((ITrackElement)(sender)));
         }

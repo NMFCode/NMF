@@ -36,5 +36,11 @@ namespace NMF.Expressions
         /// <param name="parameters">The parameters of the expression</param>
         /// <returns>An incremental expression object</returns>
         INotifyReversableExpression<T> CreateReversableExpression<T>(Expression expression, IEnumerable<ParameterExpression> parameters, IDictionary<string, object> parameterMappings);
+
+        /// <summary>
+        /// Creates an object representing the successors of a dependency graph node. This decides how many successors are allowed.
+        /// </summary>
+        /// <returns></returns>
+        ISuccessorList CreateSuccessorList();
     }
 }

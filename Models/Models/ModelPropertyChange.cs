@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using NMF.Expressions;
+using System.Collections.Specialized;
+using System.ComponentModel;
 
 namespace NMF.Models.Expressions
 {
@@ -11,31 +13,26 @@ namespace NMF.Models.Expressions
     /// </summary>
     /// <typeparam name="TClass">The member type for the property</typeparam>
     /// <typeparam name="TProperty">The property type</typeparam>
-    public abstract class ModelPropertyChange<TClass, TProperty> : INotifyReversableExpression<TProperty>
+    public abstract class ModelPropertyChange<TClass, TProperty> : INotifyReversableExpression<TProperty> where TClass : INotifyPropertyChanged
     {
+        private readonly PropertyChangeListener listener;
+        private readonly string propertyName;
+        
         public TClass ModelElement { get; private set; }
-        private int attachedCount = 0;
 
         /// <summary>
         /// Creates a proxy for the given model instance
         /// </summary>
         /// <param name="modelElement"></param>
-        protected ModelPropertyChange(TClass modelElement)
+        protected ModelPropertyChange(TClass modelElement, string propertyName)
         {
             ModelElement = modelElement;
+            this.propertyName = propertyName;
+            this.listener = new PropertyChangeListener(this);
+
+            Successors.Attached += (obj, e) => Attach();
+            Successors.Detached += (obj, e) => Detach();
         }
-
-        /// <summary>
-        /// Registers the given event handler to a property changed event
-        /// </summary>
-        /// <param name="handler">The event handler that shall be registered</param>
-        protected abstract void RegisterChangeEventHandler(EventHandler<ValueChangedEventArgs> handler);
-
-        /// <summary>
-        /// Unregisters the given handler from a property changed event
-        /// </summary>
-        /// <param name="handler">The event handler</param>
-        protected abstract void UnregisterChangeEventHandler(EventHandler<ValueChangedEventArgs> handler);
 
         /// <summary>
         /// Determines whether the expression can be replaced by a constant expression
@@ -45,17 +42,6 @@ namespace NMF.Models.Expressions
             get
             {
                 return false;
-            }
-        }
-
-        /// <summary>
-        /// Returns whether this value listens for changes
-        /// </summary>
-        public bool IsAttached
-        {
-            get
-            {
-                return attachedCount > 0;
             }
         }
 
@@ -112,6 +98,18 @@ namespace NMF.Models.Expressions
             }
         }
 
+        public ISuccessorList Successors { get; } = NotifySystem.DefaultSystem.CreateSuccessorList();
+
+        public IEnumerable<INotifiable> Dependencies
+        {
+            get
+            {
+                return Enumerable.Empty<INotifiable>();
+            }
+        }
+
+        public ExecutionMetaData ExecutionMetaData { get; } = new ExecutionMetaData();
+
         /// <summary>
         /// Gets fired when the value changed
         /// </summary>
@@ -133,20 +131,7 @@ namespace NMF.Models.Expressions
         /// </summary>
         public void Attach()
         {
-            attachedCount++;
-            if (attachedCount == 1)
-            {
-                RegisterChangeEventHandler(ForwardValueChange);
-            }
-        }
-
-        private void ForwardValueChange(object sender, ValueChangedEventArgs e)
-        {
-            var handler = ValueChanged;
-            if (handler != null)
-            {
-                handler(this, e);
-            }
+            listener.Subscribe(ModelElement, propertyName);
         }
 
         /// <summary>
@@ -154,11 +139,7 @@ namespace NMF.Models.Expressions
         /// </summary>
         public void Detach()
         {
-            attachedCount--;
-            if (attachedCount == 0)
-            {
-                UnregisterChangeEventHandler(ForwardValueChange);
-            }
+            listener.Unsubscribe();
         }
 
         /// <summary>
@@ -170,11 +151,20 @@ namespace NMF.Models.Expressions
             return this;
         }
 
-        /// <summary>
-        /// Refreshes the current value of the current expression
-        /// </summary>
-        public void Refresh()
+        public void Dispose()
         {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            Successors.UnsetAll();
+        }
+
+        public INotificationResult Notify(IList<INotificationResult> sources)
+        {
+            return new ValueChangedNotificationResult<TProperty>(this, Value, Value);
         }
 
         INotifyExpression INotifyExpression.ApplyParameters(IDictionary<string, object> parameters)

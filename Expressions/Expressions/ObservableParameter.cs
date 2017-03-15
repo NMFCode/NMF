@@ -23,14 +23,15 @@ namespace NMF.Expressions
         {
             throw new InvalidOperationException(string.Format("No value for the argument {0} was provided.", Name));
         }
-
-        protected override void DetachCore() { }
-
-        protected override void AttachCore() { }
-
+        
         public override bool IsParameterFree
         {
             get { return false; }
+        }
+
+        public override IEnumerable<INotifiable> Dependencies
+        {
+            get { return Enumerable.Empty<INotifiable>(); }
         }
 
         public override INotifyExpression<T> ApplyParameters(IDictionary<string, object> parameters)

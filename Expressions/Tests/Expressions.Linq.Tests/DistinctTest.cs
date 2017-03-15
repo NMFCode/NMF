@@ -26,38 +26,7 @@ namespace NMF.Expressions.Linq.Tests
 
             Assert.IsFalse(update);
         }
-
-        [TestMethod]
-        public void Distinct_ObservableSource_NoUpdateWhenDetached()
-        {
-            var update = false;
-            var coll = new List<int>() { 1, 2, 2, 3 };
-
-            var test = coll.WithUpdates().Distinct();
-
-            test.CollectionChanged += (o, e) => update = true;
-
-            Assert.AreEqual(3, test.Count());
-            Assert.IsFalse(update);
-
-            test.Detach();
-            update = false;
-
-            coll.Add(4);
-
-            Assert.IsFalse(update);
-
-            test.Attach();
-
-            Assert.IsTrue(update);
-            Assert.AreEqual(4, test.Count());
-            update = true;
-
-            coll.Remove(4);
-
-            Assert.IsTrue(update);
-        }
-
+        
         [TestMethod]
         public void Distinct_ObservableSourceNewItemAdded_Update()
         {
@@ -69,6 +38,7 @@ namespace NMF.Expressions.Linq.Tests
             test.CollectionChanged += (o, e) =>
             {
                 update = true;
+                Assert.AreEqual(NotifyCollectionChangedAction.Add, e.Action);
                 Assert.IsTrue(e.NewItems.Contains(4));
                 Assert.IsNull(e.OldItems);
             };
@@ -129,6 +99,7 @@ namespace NMF.Expressions.Linq.Tests
             test.CollectionChanged += (o, e) =>
             {
                 update = true;
+                Assert.AreEqual(NotifyCollectionChangedAction.Remove, e.Action);
                 Assert.IsTrue(e.OldItems.Contains(3));
                 Assert.IsNull(e.NewItems);
             };
@@ -189,6 +160,7 @@ namespace NMF.Expressions.Linq.Tests
             test.CollectionChanged += (o, e) =>
             {
                 update = true;
+                Assert.AreEqual(NotifyCollectionChangedAction.Add, e.Action);
                 Assert.IsTrue(e.NewItems.Contains(4));
                 Assert.IsNull(e.OldItems);
             };
@@ -249,6 +221,7 @@ namespace NMF.Expressions.Linq.Tests
             test.CollectionChanged += (o, e) =>
             {
                 update = true;
+                Assert.AreEqual(NotifyCollectionChangedAction.Remove, e.Action);
                 Assert.IsTrue(e.OldItems.Contains(3));
                 Assert.IsNull(e.NewItems);
             };

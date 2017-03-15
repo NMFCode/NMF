@@ -330,7 +330,9 @@ namespace NMF.Expressions.Linq
             {
                 return casted;
             }
-            return new ObservableCast<TResult>(source);
+            var observable = new ObservableCast<TResult>(source);
+            observable.Successors.SetDummy();
+            return observable;
         }
 
         /// <summary>
@@ -343,7 +345,9 @@ namespace NMF.Expressions.Linq
         /// <remarks>The second collection does not have to be a notifying collection, but if it is not, it must not change its contents.</remarks>
         public static INotifyEnumerable<TSource> Concat<TSource>(this INotifyEnumerable<TSource> source, IEnumerable<TSource> source2)
         {
-            return new ObservableConcat<TSource>(source, source2);
+            var observable = new ObservableConcat<TSource>(source, source2);
+            observable.Successors.SetDummy();
+            return observable;
         }
 
         /// <summary>
@@ -425,7 +429,9 @@ namespace NMF.Expressions.Linq
         /// <remarks>This method destroys the original order of the items</remarks>
         public static INotifyEnumerable<TSource> Distinct<TSource>(this INotifyEnumerable<TSource> source, IEqualityComparer<TSource> comparer)
         {
-            return new ObservableDistinct<TSource>(source, comparer);
+            var observable = new ObservableDistinct<TSource>(source, comparer);
+            observable.Successors.SetDummy();
+            return observable;
         }
 
         /// <summary>
@@ -452,7 +458,9 @@ namespace NMF.Expressions.Linq
         /// <remarks>If the exceptions collection will ever change, it must implement <see cref="INotifyCollectionChanged"/>, otherwise the implementation will get corrupted.</remarks>
         public static INotifyEnumerable<TSource> Except<TSource>(this INotifyEnumerable<TSource> source, IEnumerable<TSource> exceptions, IEqualityComparer<TSource> comparer)
         {
-            return new ObservableExcept<TSource>(source, exceptions, comparer);
+            var observable = new ObservableExcept<TSource>(source, exceptions, comparer);
+            observable.Successors.SetDummy();
+            return observable;
         }
 
         /// <summary>
@@ -495,7 +503,7 @@ namespace NMF.Expressions.Linq
         /// <returns>A collection of groups</returns>
         public static INotifyEnumerable<INotifyGrouping<TKey, TSource>> GroupBy<TSource, TKey>(this INotifyEnumerable<TSource> source, Expression<Func<TSource, TKey>> keySelector)
         {
-            return GroupBy<TSource, TKey>(source, keySelector, null);
+            return GroupBy(source, keySelector, null);
         }
 
         /// <summary>
@@ -509,7 +517,9 @@ namespace NMF.Expressions.Linq
         /// <returns>A collection of groups</returns>
         public static INotifyEnumerable<INotifyGrouping<TKey, TSource>> GroupBy<TSource, TKey>(this INotifyEnumerable<TSource> source, Expression<Func<TSource, TKey>> keySelector, IEqualityComparer<TKey> comparer)
         {
-            return new ObservableGroupBy<TKey, TSource>(source, new ObservingFunc<TSource, TKey>(keySelector), comparer);
+            var observable = new ObservableGroupBy<TKey, TSource>(source, new ObservingFunc<TSource, TKey>(keySelector), comparer);
+            observable.Successors.SetDummy();
+            return observable;
         }
 
         /// <summary>
@@ -523,7 +533,7 @@ namespace NMF.Expressions.Linq
         /// <returns>A collection of groups</returns>
         public static INotifyEnumerable<TResult> GroupBy<TSource, TKey, TResult>(this INotifyEnumerable<TSource> source, Expression<Func<TSource, TKey>> keySelector, Expression<Func<TKey, IEnumerable<TSource>, TResult>> resultSelector)
         {
-            return GroupBy<TSource, TKey, TResult>(source, keySelector, resultSelector, null);
+            return GroupBy(source, keySelector, resultSelector, null);
         }
 
         /// <summary>
@@ -544,7 +554,7 @@ namespace NMF.Expressions.Linq
             dict.Add(resultSelector.Parameters[1], Expression.Property(newP, "Key"));
             var visitor = new ReplaceParametersVisitor(dict);
             var lambda = Expression.Lambda<Func<INotifyGrouping<TKey, TSource>, TResult>>(visitor.Visit(resultSelector.Body), newP);
-            return GroupBy<TSource, TKey>(source, keySelector, comparer).Select(lambda);
+            return GroupBy(source, keySelector, comparer).Select(lambda);
         }
 
         /// <summary>
@@ -562,7 +572,7 @@ namespace NMF.Expressions.Linq
         /// <returns>A collection of grouped results</returns>
         public static INotifyEnumerable<TResult> GroupJoin<TOuter, TInner, TKey, TResult>(this INotifyEnumerable<TOuter> outer, IEnumerable<TInner> inner, Expression<Func<TOuter, TKey>> outerKeySelector, Expression<Func<TInner, TKey>> innerKeySelector, Expression<Func<TOuter, IEnumerable<TInner>, TResult>> resultSelector)
         {
-            return new ObservableGroupJoin<TOuter, TInner, TKey, TResult>(outer, inner, outerKeySelector, innerKeySelector, resultSelector, null);
+            return GroupJoin(outer, inner, outerKeySelector, innerKeySelector, resultSelector, null);
         }
 
         /// <summary>
@@ -581,7 +591,9 @@ namespace NMF.Expressions.Linq
         /// <returns>A collection of grouped results</returns>
         public static INotifyEnumerable<TResult> GroupJoin<TOuter, TInner, TKey, TResult>(this INotifyEnumerable<TOuter> outer, IEnumerable<TInner> inner, Expression<Func<TOuter, TKey>> outerKeySelector, Expression<Func<TInner, TKey>> innerKeySelector, Expression<Func<TOuter, IEnumerable<TInner>, TResult>> resultSelector, IEqualityComparer<TKey> comparer)
         {
-            return new ObservableGroupJoin<TOuter, TInner, TKey, TResult>(outer, inner, outerKeySelector, innerKeySelector, resultSelector, comparer);
+            var observable = new ObservableGroupJoin<TOuter, TInner, TKey, TResult>(outer, inner, outerKeySelector, innerKeySelector, resultSelector, comparer);
+            observable.Successors.SetDummy();
+            return observable;
         }
 
         /// <summary>
@@ -608,7 +620,9 @@ namespace NMF.Expressions.Linq
         /// <remarks>No deduplication is done</remarks>
         public static INotifyEnumerable<TSource> Intersect<TSource>(this INotifyEnumerable<TSource> source, IEnumerable<TSource> source2, IEqualityComparer<TSource> comparer)
         {
-            return new ObservableIntersect<TSource>(source, source2, comparer);
+            var observable = new ObservableIntersect<TSource>(source, source2, comparer);
+            observable.Successors.SetDummy();
+            return observable;
         }
 
         /// <summary>
@@ -622,7 +636,7 @@ namespace NMF.Expressions.Linq
         [ObservableProxy(typeof(ObservableProperSubsetOf<>), "Create")]
         public static bool IsProperSubsetOf<T>(this INotifyEnumerable<T> source, IEnumerable<T> other)
         {
-            return IsProperSubsetOf<T>(source, other, null);
+            return IsProperSubsetOf(source, other, null);
         }
 
         /// <summary>
@@ -652,7 +666,7 @@ namespace NMF.Expressions.Linq
         [ObservableProxy(typeof(ObservableProperSupersetOf<>), "Create")]
         public static bool IsProperSupersetOf<T>(this INotifyEnumerable<T> source, IEnumerable<T> other)
         {
-            return IsProperSupersetOf<T>(source, other, null);
+            return IsProperSupersetOf(source, other, null);
         }
 
         /// <summary>
@@ -682,7 +696,7 @@ namespace NMF.Expressions.Linq
         [ObservableProxy(typeof(ObservableSubsetOf<>), "Create")]
         public static bool IsSubsetOf<T>(this INotifyEnumerable<T> source, IEnumerable<T> other)
         {
-            return IsSubsetOf<T>(source, other, null);
+            return IsSubsetOf(source, other, null);
         }
 
         /// <summary>
@@ -712,7 +726,7 @@ namespace NMF.Expressions.Linq
         [ObservableProxy(typeof(ObservableSupersetOf<>), "Create")]
         public static bool IsSupersetOf<T>(this INotifyEnumerable<T> source, IEnumerable<T> other)
         {
-            return IsSupersetOf<T>(source, other, null);
+            return IsSupersetOf(source, other, null);
         }
 
         /// <summary>
@@ -765,7 +779,9 @@ namespace NMF.Expressions.Linq
         /// <returns>A joined collection</returns>
         public static INotifyEnumerable<TResult> Join<TOuter, TInner, TKey, TResult>(this INotifyEnumerable<TOuter> outerSource, IEnumerable<TInner> innerSource, Expression<Func<TOuter, TKey>> outerKeySelector, Expression<Func<TInner, TKey>> innerKeySelector, Expression<Func<TOuter, TInner, TResult>> resultSelector, IEqualityComparer<TKey> comparer)
         {
-            return new ObservableJoin<TOuter, TInner, TKey, TResult>(outerSource, innerSource, outerKeySelector, innerKeySelector, resultSelector, comparer);
+            var observable = new ObservableJoin<TOuter, TInner, TKey, TResult>(outerSource, innerSource, outerKeySelector, innerKeySelector, resultSelector, comparer);
+            observable.Successors.SetDummy();
+            return observable;
         }
 
         /// <summary>
@@ -1199,7 +1215,9 @@ namespace NMF.Expressions.Linq
         /// <returns>A collection containing the elements of the given type</returns>
         public static INotifyEnumerable<TResult> OfType<TResult>(this INotifyEnumerable source)
         {
-            return new ObservableOfType<TResult>(source);
+            var observable = new ObservableOfType<TResult>(source);
+            observable.Successors.SetDummy();
+            return observable;
         }
 
         /// <summary>
@@ -1211,7 +1229,9 @@ namespace NMF.Expressions.Linq
         public static INotifyCollection<TResult> OfType<TSource, TResult>(this INotifyCollection<TSource> source)
             where TResult : TSource
         {
-            return new ObservableOfTypeCollection<TSource, TResult>(source);
+            var observable = new ObservableOfTypeCollection<TSource, TResult>(source);
+            observable.Successors.SetDummy();
+            return observable;
         }
 
         /// <summary>
@@ -1238,7 +1258,9 @@ namespace NMF.Expressions.Linq
         /// <returns>A collection with the elements contained in the current collection sorted by the given predicate</returns>
         public static IOrderableNotifyEnumerable<TItem> OrderBy<TItem, TKey>(this INotifyEnumerable<TItem> source, Expression<Func<TItem, TKey>> keySelector, IComparer<TKey> comparer)
         {
-            return new ObservableOrderBy<TItem, TKey>(source, keySelector, comparer);
+            var observable = new ObservableOrderBy<TItem, TKey>(source, keySelector, comparer);
+            observable.Successors.SetDummy();
+            return observable;
         }
 
         /// <summary>
@@ -1265,7 +1287,7 @@ namespace NMF.Expressions.Linq
         /// <returns>A collection with the elements contained in the current collection sorted by the given predicate</returns>
         public static IOrderableNotifyEnumerable<TItem> OrderByDescending<TItem, TKey>(this INotifyEnumerable<TItem> source, Expression<Func<TItem, TKey>> keySelector, IComparer<TKey> comparer)
         {
-            return new ObservableOrderBy<TItem, TKey>(source, keySelector, new ReverseComparer<TKey>(comparer));
+            return OrderBy(source, keySelector, new ReverseComparer<TKey>(comparer));
         }
 
         /// <summary>
@@ -1278,7 +1300,9 @@ namespace NMF.Expressions.Linq
         /// <returns>A collection with the mapping results</returns>
         public static INotifyEnumerable<TResult> Select<TSource, TResult>(this INotifyEnumerable<TSource> source, Expression<Func<TSource, TResult>> selector)
         {
-            return new ObservableSelect<TSource, TResult>(source, selector);
+            var observable = new ObservableSelect<TSource, TResult>(source, selector);
+            observable.Successors.SetDummy();
+            return observable;
         }
 
         /// <summary>
@@ -1293,7 +1317,9 @@ namespace NMF.Expressions.Linq
         /// <returns>A collection with the results</returns>
         public static INotifyEnumerable<TResult> SelectMany<TSource, TIntermediate, TResult>(this INotifyEnumerable<TSource> source, Expression<Func<TSource, IEnumerable<TIntermediate>>> func, Expression<Func<TSource, TIntermediate, TResult>> selector)
         {
-            return new ObservableSelectMany<TSource, TIntermediate, TResult>(source, func, selector);
+            var observable = new ObservableSelectMany<TSource, TIntermediate, TResult>(source, func, selector);
+            observable.Successors.SetDummy();
+            return observable;
         }
 
         /// <summary>
@@ -1306,7 +1332,9 @@ namespace NMF.Expressions.Linq
         /// <returns>A collection with the results</returns>
         public static INotifyEnumerable<TResult> SelectMany<TSource, TResult>(this INotifyEnumerable<TSource> source, Expression<Func<TSource, IEnumerable<TResult>>> selector)
         {
-            return new ObservableSimpleSelectMany<TSource, TResult>(source, selector);
+            var observable = new ObservableSimpleSelectMany<TSource, TResult>(source, selector);
+            observable.Successors.SetDummy();
+            return observable;
         }
 
         /// <summary>
@@ -1341,8 +1369,6 @@ namespace NMF.Expressions.Linq
             var set = new HashSet<T>(source, comparer);
             return set.SetEquals(other);
         }
-
-
 
         /// <summary>
         /// Gets the single item of the given source collection or the item type default value, if the collection is empty
@@ -1658,7 +1684,9 @@ namespace NMF.Expressions.Linq
         /// <returns>A collection with the elements of the current collection but ordered in lower priority for the given predicate</returns>
         public static IOrderableNotifyEnumerable<TItem> ThenBy<TItem, TKey>(this IOrderableNotifyEnumerable<TItem> source, Expression<Func<TItem, TKey>> keySelector, IComparer<TKey> comparer)
         {
-            return new ObservableThenBy<TItem, TKey>(source, keySelector, comparer);
+            var observable = new ObservableThenBy<TItem, TKey>(source, keySelector, comparer);
+            observable.Successors.SetDummy();
+            return observable;
         }
 
         /// <summary>
@@ -1685,7 +1713,7 @@ namespace NMF.Expressions.Linq
         /// <returns>A collection with the elements of the current collection but ordered in lower priority for the given predicate</returns>
         public static IOrderableNotifyEnumerable<TItem> ThenByDescending<TItem, TKey>(this IOrderableNotifyEnumerable<TItem> source, Expression<Func<TItem, TKey>> keySelector, IComparer<TKey> comparer)
         {
-            return new ObservableThenBy<TItem, TKey>(source, keySelector, new ReverseComparer<TKey>(comparer));
+            return ThenBy(source, keySelector, new ReverseComparer<TKey>(comparer));
         }
 
         /// <summary>
@@ -1722,7 +1750,9 @@ namespace NMF.Expressions.Linq
         /// <returns>A collection containing the elements that passed the filter</returns>
         public static INotifyEnumerable<T> Where<T>(this INotifyEnumerable<T> source, Expression<Func<T, bool>> filter)
         {
-            return new ObservableWhere<T>(source, filter);
+            var observable = new ObservableWhere<T>(source, filter);
+            observable.Successors.SetDummy();
+            return observable;
         }
 
         /// <summary>
@@ -1734,7 +1764,9 @@ namespace NMF.Expressions.Linq
         /// <returns>A collection containing the elements that passed the filter</returns>
         public static INotifyCollection<T> Where<T>(this INotifyCollection<T> source, Expression<Func<T, bool>> filter)
         {
-            return new ObservableWhere<T>(source, filter);
+            var observable = new ObservableWhere<T>(source, filter);
+            observable.Successors.SetDummy();
+            return observable;
         }
 
         /// <summary>
@@ -1751,7 +1783,9 @@ namespace NMF.Expressions.Linq
             var collection = source as INotifyEnumerable<T>;
             if (collection == null)
             {
-                return new ObservableCollectionProxy<T>(source);
+                var observable = new ObservableCollectionProxy<T>(source);
+                observable.Successors.SetDummy();
+                return observable;
             }
             else
             {
@@ -1772,7 +1806,9 @@ namespace NMF.Expressions.Linq
             var collection = source as INotifyCollection<T>;
             if (collection == null)
             {
-                return new ObservableCollectionProxy<T>(source);
+                var observable = new ObservableCollectionProxy<T>(source);
+                observable.Successors.SetDummy();
+                return observable;
             }
             else
             {

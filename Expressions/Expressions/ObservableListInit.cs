@@ -17,26 +17,40 @@ namespace NMF.Expressions
             : base(inner, expression.Initializers.Select(e => binder.VisitElementInit<T>(e, inner))) { }
     }
 
-	internal class ObservableListInitializer<T, TElement> : ObservableMemberBinding<T>
-	{
-		public INotifyExpression<T> Target { get; private set; }
+    internal class ObservableListInitializer<T, TElement> : ObservableMemberBinding<T>
+    {
+        public INotifyExpression<T> Target { get; private set; }
 
-		public INotifyExpression<TElement> Value { get; private set; }
+        public INotifyExpression<TElement> Value { get; private set; }
 
         public Action<T, TElement> AddAction { get; private set; }
         public Action<T, TElement> RemoveAction { get; private set; }
 
+        public override bool IsParameterFree
+        {
+            get { return Value.IsParameterFree; }
+        }
+
+        public override IEnumerable<INotifiable> Dependencies
+        {
+            get
+            {
+                yield return Target;
+                yield return Value;
+            }
+        }
+
         public ObservableListInitializer(ElementInit expression, ObservableExpressionBinder binder, INotifyExpression<T> target)
             : this(target, binder.VisitObservable<TElement>(expression.Arguments[0]), expression.AddMethod) { }
 
-		public ObservableListInitializer(INotifyExpression<T> target, INotifyExpression<TElement> value, MethodInfo addMethod)
-		{
+        public ObservableListInitializer(INotifyExpression<T> target, INotifyExpression<TElement> value, MethodInfo addMethod)
+        {
             if (target == null) throw new ArgumentNullException("target");
             if (value == null) throw new ArgumentNullException("value");
             if (addMethod == null) throw new ArgumentNullException("addMethod");
 
-			Target = target;
-			Value = value;
+            Target = target;
+            Value = value;
 
             AddAction = ReflectionHelper.CreateDelegate<Action<T, TElement>>(addMethod);
             var removeMethod = ReflectionHelper.GetRemoveMethod(typeof(T), typeof(TElement));
@@ -57,7 +71,7 @@ namespace NMF.Expressions
             {
                 throw new NotSupportedException();
             }
-		}
+        }
 
         private ObservableListInitializer(INotifyExpression<T> target, INotifyExpression<TElement> value, Action<T, TElement> addMethod, Action<T, TElement> removeMethod)
         {
@@ -67,59 +81,70 @@ namespace NMF.Expressions
             AddAction = addMethod;
             RemoveAction = removeMethod;
         }
-
-		private void AddToList(bool removeOld, object old)
-		{
-            if (removeOld)
-            {
-                RemoveAction.Invoke(Target.Value, (TElement)old);
-            }
-            AddAction.Invoke(Target.Value, Value.Value);
-		}
-
-		private void TargetChanged(object sender, ValueChangedEventArgs e)
-        {
-            if (!Target.IsAttached) return;
-            RemoveAction.Invoke((T)e.OldValue, Value.Value);
-			AddToList(false, null);
-		}
-
-		private void ValueChanged(object sender, ValueChangedEventArgs e)
-		{
-            if (!Target.IsAttached) return;
-			AddToList(true, e.OldValue);
-		}
-
-		public override void Attach()
-		{
-			Target.Attach();
-            Value.Attach();
-
-            Target.ValueChanged += TargetChanged;
-            Value.ValueChanged += ValueChanged;
-
-            AddToList(false, null);
-		}
-
-		public override void Detach()
-		{
-			Target.Detach();
-            Value.Detach();
-
-            Target.ValueChanged -= TargetChanged;
-            Value.ValueChanged -= ValueChanged;
-
-            RemoveAction.Invoke(Target.Value, Value.Value);
-		}
-
-        public override bool IsParameterFree
-        {
-            get { return Value.IsParameterFree; }
-        }
-
+        
         public override ObservableMemberBinding<T> ApplyParameters(INotifyExpression<T> newTarget, IDictionary<string, object> parameters)
         {
             return new ObservableListInitializer<T, TElement>(newTarget, Value.ApplyParameters(parameters), AddAction, RemoveAction);
+        }
+
+        public override INotificationResult Notify(IList<INotificationResult> sources)
+        {
+            ValueChangedNotificationResult<T> targetChange = null;
+            ValueChangedNotificationResult<TElement> valueChange = null;
+
+            if (sources.Count == 1)
+            {
+                if (sources[0].Source == Target)
+                    targetChange = sources[0] as ValueChangedNotificationResult<T>;
+                else
+                    valueChange = sources[0] as ValueChangedNotificationResult<TElement>;
+            }
+            else if(sources.Count == 2)
+            {
+                if (sources[0].Source == Target)
+                {
+                    targetChange = sources[0] as ValueChangedNotificationResult<T>;
+                    valueChange = sources[1] as ValueChangedNotificationResult<TElement>;
+                }
+                else
+                {
+                    targetChange = sources[1] as ValueChangedNotificationResult<T>;
+                    valueChange = sources[0] as ValueChangedNotificationResult<TElement>;
+                }
+            }
+            
+            if (targetChange != null && valueChange != null)
+            {
+                RemoveAction(targetChange.OldValue, valueChange.OldValue);
+                AddAction(targetChange.NewValue, valueChange.NewValue);
+                return new ValueChangedNotificationResult<T>(this, targetChange.OldValue, targetChange.NewValue);
+            }
+            else if (targetChange != null)
+            {
+                RemoveAction(targetChange.OldValue, Value.Value);
+                AddAction(targetChange.NewValue, Value.Value);
+                return new ValueChangedNotificationResult<T>(this, targetChange.OldValue, targetChange.NewValue);
+            }
+            else if (valueChange != null)
+            {
+                RemoveAction(Target.Value, valueChange.OldValue);
+                AddAction(Target.Value, valueChange.NewValue);
+                return new ValueChangedNotificationResult<T>(this, Target.Value, Target.Value);
+            }
+            else
+            {
+                return UnchangedNotificationResult.Instance;
+            }
+        }
+
+        protected override void OnAttach()
+        {
+            AddAction(Target.Value, Value.Value);
+        }
+
+        protected override void OnDetach()
+        {
+            RemoveAction(Target.Value, Value.Value);
         }
     }
 

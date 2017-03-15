@@ -16,7 +16,7 @@ namespace NMF.Expressions.Linq
 
         public static INotifyValue<T> MaxWithComparer<T>(INotifyEnumerable<T> source, IComparer<T> comparer)
         {
-            return new ObservableMin<T>(source, new ReverseComparer<T>(comparer));
+            return MinWithComparer(source, new ReverseComparer<T>(comparer));
         }
 
         public static INotifyValue<TResult> LambdaMax<TSource, TResult>(INotifyEnumerable<TSource> source, Expression<Func<TSource, TResult>> selector)
@@ -26,7 +26,7 @@ namespace NMF.Expressions.Linq
 
         public static INotifyValue<TResult> LambdaMaxWithComparer<TSource, TResult>(INotifyEnumerable<TSource> source, Expression<Func<TSource, TResult>> selector, IComparer<TResult> comparer)
         {
-            return new ObservableMin<TResult>(source.Select(selector), new ReverseComparer<TResult>(comparer));
+            return MinWithComparer(source.Select(selector), new ReverseComparer<TResult>(comparer));
         }
 
         public static INotifyValue<T?> NullableMax<T>(INotifyEnumerable<T?> source) where T : struct
@@ -36,7 +36,7 @@ namespace NMF.Expressions.Linq
 
         public static INotifyValue<T?> NullableMaxWithComparer<T>(INotifyEnumerable<T?> source, IComparer<T> comparer) where T : struct
         {
-            return new ObservableNullableMin<T>(source, new ReverseComparer<T>(comparer));
+            return NullableMinWithComparer(source, new ReverseComparer<T>(comparer));
         }
 
         public static INotifyValue<T?> LambdaNullableMax<TSource, T>(INotifyEnumerable<TSource> source, Expression<Func<TSource, T?>> selector) where T : struct
@@ -46,7 +46,7 @@ namespace NMF.Expressions.Linq
 
         public static INotifyValue<T?> LambdaNullableMaxWithComparer<TSource, T>(INotifyEnumerable<TSource> source, Expression<Func<TSource, T?>> selector, IComparer<T> comparer) where T : struct
         {
-            return new ObservableNullableMin<T>(source.Select(selector), new ReverseComparer<T>(comparer));
+            return NullableMinWithComparer(source.Select(selector), new ReverseComparer<T>(comparer));
         }
 
         public static INotifyValue<T> Min<T>(INotifyEnumerable<T> source)
@@ -56,7 +56,9 @@ namespace NMF.Expressions.Linq
 
         public static INotifyValue<T> MinWithComparer<T>(INotifyEnumerable<T> source, IComparer<T> comparer)
         {
-            return new ObservableMin<T>(source, comparer);
+            var observable = new ObservableMin<T>(source, comparer);
+            observable.Successors.SetDummy();
+            return observable;
         }
 
         public static INotifyValue<TResult> LambdaMin<TSource, TResult>(INotifyEnumerable<TSource> source, Expression<Func<TSource, TResult>> selector)
@@ -66,7 +68,7 @@ namespace NMF.Expressions.Linq
 
         public static INotifyValue<TResult> LambdaMinWithComparer<TSource, TResult>(INotifyEnumerable<TSource> source, Expression<Func<TSource, TResult>> selector, IComparer<TResult> comparer)
         {
-            return new ObservableMin<TResult>(source.Select(selector), comparer);
+            return MinWithComparer(source.Select(selector), comparer);
         }
 
         public static INotifyValue<T?> NullableMin<T>(INotifyEnumerable<T?> source) where T : struct
@@ -76,7 +78,9 @@ namespace NMF.Expressions.Linq
 
         public static INotifyValue<T?> NullableMinWithComparer<T>(INotifyEnumerable<T?> source, IComparer<T> comparer) where T : struct
         {
-            return new ObservableNullableMin<T>(source, comparer);
+            var observable = new ObservableNullableMin<T>(source, comparer);
+            observable.Successors.SetDummy();
+            return observable;
         }
 
         public static INotifyValue<T?> LambdaNullableMin<TSource, T>(INotifyEnumerable<TSource> source, Expression<Func<TSource, T?>> selector) where T : struct
@@ -86,7 +90,7 @@ namespace NMF.Expressions.Linq
 
         public static INotifyValue<T?> LambdaNullableMinWithComparer<TSource, T>(INotifyEnumerable<TSource> source, Expression<Func<TSource, T?>> selector, IComparer<T> comparer) where T : struct
         {
-            return new ObservableNullableMin<T>(source.Select(selector), comparer);
+            return NullableMinWithComparer(source.Select(selector), comparer);
         }
 
         public static INotifyValue<T> MaxExpression<T>(IEnumerableExpression<T> source)
@@ -96,7 +100,7 @@ namespace NMF.Expressions.Linq
 
         public static INotifyValue<T> MaxExpressionWithComparer<T>(IEnumerableExpression<T> source, IComparer<T> comparer)
         {
-            return new ObservableMin<T>(source.AsNotifiable(), new ReverseComparer<T>(comparer));
+            return MinWithComparer(source.AsNotifiable(), new ReverseComparer<T>(comparer));
         }
 
         public static INotifyValue<TResult> LambdaMaxExpression<TSource, TResult>(IEnumerableExpression<TSource> source, Expression<Func<TSource, TResult>> selector)
@@ -106,7 +110,7 @@ namespace NMF.Expressions.Linq
 
         public static INotifyValue<TResult> LambdaMaxExpressionWithComparer<TSource, TResult>(IEnumerableExpression<TSource> source, Expression<Func<TSource, TResult>> selector, IComparer<TResult> comparer)
         {
-            return new ObservableMin<TResult>(source.AsNotifiable().Select(selector), new ReverseComparer<TResult>(comparer));
+            return MinWithComparer(source.AsNotifiable().Select(selector), new ReverseComparer<TResult>(comparer));
         }
 
         public static INotifyValue<T?> NullableMaxExpression<T>(IEnumerableExpression<T?> source) where T : struct
@@ -116,7 +120,7 @@ namespace NMF.Expressions.Linq
 
         public static INotifyValue<T?> NullableMaxExpressionWithComparer<T>(IEnumerableExpression<T?> source, IComparer<T> comparer) where T : struct
         {
-            return new ObservableNullableMin<T>(source.AsNotifiable(), new ReverseComparer<T>(comparer));
+            return NullableMinWithComparer(source.AsNotifiable(), new ReverseComparer<T>(comparer));
         }
 
         public static INotifyValue<T?> LambdaNullableMaxExpression<TSource, T>(IEnumerableExpression<TSource> source, Expression<Func<TSource, T?>> selector) where T : struct
@@ -126,7 +130,7 @@ namespace NMF.Expressions.Linq
 
         public static INotifyValue<T?> LambdaNullableMaxExpressionWithComparer<TSource, T>(IEnumerableExpression<TSource> source, Expression<Func<TSource, T?>> selector, IComparer<T> comparer) where T : struct
         {
-            return new ObservableNullableMin<T>(source.AsNotifiable().Select(selector), new ReverseComparer<T>(comparer));
+            return NullableMinWithComparer(source.AsNotifiable().Select(selector), new ReverseComparer<T>(comparer));
         }
 
         public static INotifyValue<T> MinExpression<T>(INotifyEnumerable<T> source)
@@ -136,7 +140,7 @@ namespace NMF.Expressions.Linq
 
         public static INotifyValue<T> MinExpressionWithComparer<T>(IEnumerableExpression<T> source, IComparer<T> comparer)
         {
-            return new ObservableMin<T>(source.AsNotifiable(), comparer);
+            return MinWithComparer(source.AsNotifiable(), comparer);
         }
 
         public static INotifyValue<TResult> LambdaMinExpression<TSource, TResult>(IEnumerableExpression<TSource> source, Expression<Func<TSource, TResult>> selector)
@@ -146,7 +150,7 @@ namespace NMF.Expressions.Linq
 
         public static INotifyValue<TResult> LambdaMinExpressionWithComparer<TSource, TResult>(IEnumerableExpression<TSource> source, Expression<Func<TSource, TResult>> selector, IComparer<TResult> comparer)
         {
-            return new ObservableMin<TResult>(source.AsNotifiable().Select(selector), comparer);
+            return MinWithComparer(source.AsNotifiable().Select(selector), comparer);
         }
 
         public static INotifyValue<T?> NullableMinExpression<T>(IEnumerableExpression<T?> source) where T : struct
@@ -156,7 +160,7 @@ namespace NMF.Expressions.Linq
 
         public static INotifyValue<T?> NullableMinExpressionWithComparer<T>(IEnumerableExpression<T?> source, IComparer<T> comparer) where T : struct
         {
-            return new ObservableNullableMin<T>(source.AsNotifiable(), comparer);
+            return NullableMinWithComparer(source.AsNotifiable(), comparer);
         }
 
         public static INotifyValue<T?> LambdaNullableMinExpression<TSource, T>(IEnumerableExpression<TSource> source, Expression<Func<TSource, T?>> selector) where T : struct
@@ -166,17 +170,17 @@ namespace NMF.Expressions.Linq
 
         public static INotifyValue<T?> LambdaNullableMinExpressionWithComparer<TSource, T>(IEnumerableExpression<TSource> source, Expression<Func<TSource, T?>> selector, IComparer<T> comparer) where T : struct
         {
-            return new ObservableNullableMin<T>(source.AsNotifiable().Select(selector), comparer);
+            return NullableMinWithComparer(source.AsNotifiable().Select(selector), comparer);
         }
     }
 
     internal class ObservableMin<T> : INotifyValue<T>
     {
+        
         private INotifyEnumerable<T> source;
         private IComparer<T> comparer;
         private bool hasValue;
         private T current;
-        private int attachedCount;
 
         public ObservableMin(INotifyEnumerable<T> source) : this(source, null) { }
 
@@ -189,6 +193,9 @@ namespace NMF.Expressions.Linq
 
             this.source = source;
             this.comparer = comparer ?? Comparer<T>.Default;
+
+            Successors.Attached += (obj, e) => Attach();
+            Successors.Detached += (obj, e) => Detach();
         }
 
         public T Value
@@ -196,34 +203,30 @@ namespace NMF.Expressions.Linq
             get { return current; }
         }
 
-        public event EventHandler<ValueChangedEventArgs> ValueChanged;
+        public ISuccessorList Successors { get; } = NotifySystem.DefaultSystem.CreateSuccessorList();
 
-        public void Detach()
-        {
-            attachedCount--;
-            if (attachedCount == 0)
-            {
-                source.CollectionChanged -= SourceCollectionChanged;
-            }
-        }
+        public IEnumerable<INotifiable> Dependencies { get { yield return source; } }
+
+        public ExecutionMetaData ExecutionMetaData { get; } = new ExecutionMetaData();
+
+        public event EventHandler<ValueChangedEventArgs> ValueChanged;
 
         public void Attach()
         {
-            if (attachedCount == 0)
+            foreach (var dep in Dependencies)
+                dep.Successors.Set(this);
+            
+            hasValue = false;
+            foreach (var item in source)
             {
-                hasValue = false;
-                var oldCurrent = current;
-                foreach (var item in source)
-                {
-                    AddItem(item);
-                }
-                if (hasValue)
-                {
-                    OnValueChanged(current, oldCurrent);
-                }
-                source.CollectionChanged += SourceCollectionChanged;
+                AddItem(item);
             }
-            attachedCount++;
+        }
+
+        public void Detach()
+        {
+            foreach (var dep in Dependencies)
+                dep.Successors.Unset(this);
         }
 
         private void AddItem(T item)
@@ -243,70 +246,66 @@ namespace NMF.Expressions.Linq
             }
         }
 
-        private void SourceCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        public INotificationResult Notify(IList<INotificationResult> sources)
         {
-            if (e.Action != NotifyCollectionChangedAction.Reset)
+            var change = (CollectionChangedNotificationResult<T>)sources[0];
+            var oldValue = Value;
+            var reset = false;
+
+            if (!change.IsReset)
             {
-                var oldValue = Value;
-                var reset = false;
-                if (e.OldItems != null)
+                if (change.RemovedItems != null)
                 {
-                    foreach (T item in e.OldItems)
+                    foreach (var item in change.RemovedItems)
                     {
                         if (comparer.Compare(current, item) == 0)
                         {
                             reset = true;
-                        }
-                    }
-                    if (reset)
-                    {
-                        current = default(T);
-                        hasValue = false;
-                        foreach (var item in source)
-                        {
-                            AddItem(item);
+                            break;
                         }
                     }
                 }
-                if (e.NewItems != null)
+                if (change.AddedItems != null && !reset)
                 {
-                    foreach (T item in e.NewItems)
+                    foreach (var item in change.AddedItems)
                     {
                         AddItem(item);
                     }
                 }
-                var newValue = Value;
-                if (!EqualityComparer<T>.Default.Equals(newValue, oldValue))
-                {
-                    OnValueChanged(newValue, oldValue);
-                }
             }
-            else
+
+            if (change.IsReset || reset)
             {
-                var oldValue = Value;
                 current = default(T);
                 hasValue = false;
-                if (!EqualityComparer<T>.Default.Equals(current, oldValue))
+                foreach (var item in source)
                 {
-                    OnValueChanged(current, oldValue);
+                    AddItem(item);
                 }
             }
+
+            if (!EqualityComparer<T>.Default.Equals(current, oldValue))
+            {
+                OnValueChanged(current, oldValue);
+                return new ValueChangedNotificationResult<T>(this, oldValue, current);
+            }
+
+            return UnchangedNotificationResult.Instance;
         }
 
-
-        public bool IsAttached
+        public void Dispose()
         {
-            get { return attachedCount > 0; }
+            Detach();
         }
     }
 
     internal class ObservableNullableMin<T> : INotifyValue<T?>
         where T : struct
     {
+        
         private INotifyEnumerable<T?> source;
         private IComparer<T> comparer;
         private T? current;
-        private int attachedCount;
 
         public ObservableNullableMin(INotifyEnumerable<T?> source) : this(source, null) { }
 
@@ -319,6 +318,9 @@ namespace NMF.Expressions.Linq
 
             this.source = source;
             this.comparer = comparer ?? Comparer<T>.Default;
+
+            Successors.Attached += (obj, e) => Attach();
+            Successors.Detached += (obj, e) => Detach();
         }
 
         public T? Value
@@ -326,43 +328,38 @@ namespace NMF.Expressions.Linq
             get { return current; }
         }
 
-        public event EventHandler<ValueChangedEventArgs> ValueChanged;
+        public ISuccessorList Successors { get; } = NotifySystem.DefaultSystem.CreateSuccessorList();
 
-        public void Detach()
-        {
-            attachedCount--;
-            if (attachedCount == 0)
-            {
-                source.CollectionChanged -= SourceCollectionChanged;
-            }
-        }
+        public IEnumerable<INotifiable> Dependencies { get { yield return source; } }
+
+        public ExecutionMetaData ExecutionMetaData { get; } = new ExecutionMetaData();
+
+        public event EventHandler<ValueChangedEventArgs> ValueChanged;
 
         public void Attach()
         {
-            if (attachedCount == 0)
+            foreach (var dep in Dependencies)
+                dep.Successors.Set(this);
+            
+            foreach (var item in source)
             {
-                var oldCurrent = current;
-                current = null;
-                foreach (var item in source)
-                {
-                    AddItem(item);
-                }
-                if (current.HasValue)
-                {
-                    OnValueChanged(current, oldCurrent);
-                }
-                source.CollectionChanged += SourceCollectionChanged;
+                AddItem(item);
             }
-            attachedCount++;
+        }
+
+        public void Detach()
+        {
+            foreach (var dep in Dependencies)
+                dep.Successors.Unset(this);
         }
 
         private void AddItem(T? item)
         {
-            if (!item.HasValue) return;
+            if (!item.HasValue)
+                return;
+
             if (!current.HasValue || comparer.Compare(current.Value, item.Value) > 0)
-            {
                 current = item;
-            }
         }
 
         private void OnValueChanged(T? value, T? oldValue)
@@ -373,62 +370,53 @@ namespace NMF.Expressions.Linq
             }
         }
 
-        private void SourceCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        public INotificationResult Notify(IList<INotificationResult> sources)
         {
-            if (e.Action != NotifyCollectionChangedAction.Reset)
+            var change = (CollectionChangedNotificationResult<T?>)sources[0];
+            var oldValue = Value;
+            var reset = false;
+
+            if (!change.IsReset)
             {
-                var oldValue = Value;
-                var reset = false;
-                if (e.OldItems != null)
+                foreach (var item in change.AllRemovedItems)
                 {
-                    foreach (T? item in e.OldItems)
+                    if (item.HasValue && comparer.Compare(current.Value, item.Value) == 0)
                     {
-                        if (item.HasValue)
-                        {
-                            if (comparer.Compare(current.Value, item.Value) == 0)
-                            {
-                                reset = true;
-                            }
-                        }
-                    }
-                    if (reset)
-                    {
-                        current = null;
-                        foreach (var item in source)
-                        {
-                            AddItem(item);
-                        }
+                        reset = true;
+                        break;
                     }
                 }
-                if (e.NewItems != null)
+
+                if (!reset)
                 {
-                    foreach (T? item in e.NewItems)
+                    foreach (var item in change.AllAddedItems)
                     {
                         AddItem(item);
                     }
                 }
-                var newValue = Value;
-                if (!EqualityComparer<T?>.Default.Equals(newValue, oldValue))
-                {
-                    OnValueChanged(newValue, oldValue);
-                }
             }
-            else
+
+            if (change.IsReset || reset)
             {
-                var oldValue = Value;
                 current = null;
-                if (!EqualityComparer<T?>.Default.Equals(current, oldValue))
+                foreach (var item in source)
                 {
-                    OnValueChanged(current, oldValue);
+                    AddItem(item);
                 }
             }
+
+            if (!EqualityComparer<T>.Default.Equals(current.Value, oldValue.Value))
+            {
+                OnValueChanged(current, oldValue);
+                return new ValueChangedNotificationResult<T?>(this, oldValue, current);
+            }
+
+            return UnchangedNotificationResult.Instance;
         }
 
-
-        public bool IsAttached
+        public void Dispose()
         {
-            get { return attachedCount > 0; }
+            Detach();
         }
     }
-
 }

@@ -11,22 +11,24 @@ namespace NMF.Expressions.Linq
 
         public new static INotifyValue<bool> Create(INotifyEnumerable<T> source, IEnumerable<T> other)
         {
-            return new ObservableSetEquals<T>(source, other, null);
+            return CreateWithComparer(source, other, null);
         }
 
         public new static INotifyValue<bool> CreateWithComparer(INotifyEnumerable<T> source, IEnumerable<T> other, IEqualityComparer<T> comparer)
         {
-            return new ObservableSetEquals<T>(source, other, comparer);
+            var observable = new ObservableSetEquals<T>(source, other, comparer);
+            observable.Successors.SetDummy();
+            return observable;
         }
 
         public new static INotifyValue<bool> CreateExpression(IEnumerableExpression<T> source, IEnumerable<T> other)
         {
-            return new ObservableSetEquals<T>(source.AsNotifiable(), other, null);
+            return CreateWithComparer(source.AsNotifiable(), other, null);
         }
 
         public new static INotifyValue<bool> CreateExpressionWithComparer(IEnumerableExpression<T> source, IEnumerable<T> other, IEqualityComparer<T> comparer)
         {
-            return new ObservableSetEquals<T>(source.AsNotifiable(), other, comparer);
+            return CreateWithComparer(source.AsNotifiable(), other, comparer);
         }
 
         public ObservableProperSubsetOf(INotifyEnumerable<T> source, IEnumerable<T> other, IEqualityComparer<T> comparer)
@@ -56,15 +58,15 @@ namespace NMF.Expressions.Linq
             if (isLast && removeEntry) diffCount--;
         }
 
-        protected override void OnSource1Reset(int entriesCount)
+        protected override void OnResetSource1(int entriesCount)
         {
-            base.OnSource1Reset(entriesCount);
+            base.OnResetSource1(entriesCount);
             diffCount = entriesCount;
         }
 
-        protected override void OnSource2Reset(int entriesCount)
+        protected override void OnResetSource2(int entriesCount)
         {
-            base.OnSource2Reset(entriesCount);
+            base.OnResetSource2(entriesCount);
             diffCount = 0;
         }
 
@@ -83,22 +85,24 @@ namespace NMF.Expressions.Linq
 
         public new static INotifyValue<bool> Create(INotifyEnumerable<T> source, IEnumerable<T> other)
         {
-            return new ObservableSetEquals<T>(source, other, null);
+            return CreateWithComparer(source, other, null);
         }
 
         public new static INotifyValue<bool> CreateWithComparer(INotifyEnumerable<T> source, IEnumerable<T> other, IEqualityComparer<T> comparer)
         {
-            return new ObservableSetEquals<T>(source, other, comparer);
+            var observable = new ObservableSetEquals<T>(source, other, comparer);
+            observable.Successors.SetDummy();
+            return observable;
         }
 
         public new static INotifyValue<bool> CreateExpression(IEnumerableExpression<T> source, IEnumerable<T> other)
         {
-            return new ObservableSetEquals<T>(source.AsNotifiable(), other, null);
+            return CreateWithComparer(source.AsNotifiable(), other, null);
         }
 
         public new static INotifyValue<bool> CreateExpressionWithComparer(IEnumerableExpression<T> source, IEnumerable<T> other, IEqualityComparer<T> comparer)
         {
-            return new ObservableSetEquals<T>(source.AsNotifiable(), other, comparer);
+            return CreateWithComparer(source.AsNotifiable(), other, comparer);
         }
 
         public ObservableProperSupersetOf(INotifyEnumerable<T> source, IEnumerable<T> other, IEqualityComparer<T> comparer)
@@ -128,15 +132,15 @@ namespace NMF.Expressions.Linq
             if (isLast && removeEntry) diffCount--;
         }
 
-        protected override void OnSource2Reset(int entriesCount)
+        protected override void OnResetSource2(int entriesCount)
         {
-            base.OnSource1Reset(entriesCount);
+            base.OnResetSource1(entriesCount);
             diffCount = entriesCount;
         }
 
-        protected override void OnSource1Reset(int entriesCount)
+        protected override void OnResetSource1(int entriesCount)
         {
-            base.OnSource2Reset(entriesCount);
+            base.OnResetSource2(entriesCount);
             diffCount = 0;
         }
 

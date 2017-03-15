@@ -5,51 +5,31 @@ using System.Collections;
 
 namespace NMF.Expressions.Test
 {
-	[TestClass]
-	public class ListInitializationTests
-	{
-		[TestMethod]
-		public void ListInit_NoObservable_NoUpdate()
-		{
-			var update = false;
-			var dummy = new Dummy<string>("foo");
+    [TestClass]
+    public class ListInitializationTests
+    {
+        [TestMethod]
+        public void ListInit_NoObservable_NoUpdate()
+        {
+            var update = false;
+            var dummy = new Dummy<string>("foo");
 
-			var test = Observable.Expression(() => new List<string>() { dummy.Item });
+            var test = Observable.Expression(() => new List<string>() { dummy.Item });
 
-			test.ValueChanged += (o, e) => update = true;
+            test.ValueChanged += (o, e) => update = true;
 
-			Assert.IsTrue(test.Value.Contains("foo"));
-			Assert.IsFalse(update);
+            Assert.IsTrue(test.Value.Contains("foo"));
+            Assert.IsFalse(update);
 
-			dummy.Item = "bar";
+            dummy.Item = "bar";
 
-			Assert.IsFalse(update);
-			Assert.AreEqual(1, test.Value.Count);
-			Assert.IsFalse(test.Value.Contains("bar"));
-		}
-
-		[TestMethod]
-		public void ListInit_Observable_NoUpdate()
-		{
-			var update = false;
-			var dummy = new ObservableDummy<string>("foo");
-
-			var test = Observable.Expression(() => new List<string>() { dummy.Item });
-
-			test.ValueChanged += (o, e) => update = true;
-
-			Assert.IsTrue(test.Value.Contains("foo"));
-			Assert.IsFalse(update);
-
-			dummy.Item = "bar";
-
-			Assert.IsFalse(update);
-			Assert.AreEqual(1, test.Value.Count);
-			Assert.IsTrue(test.Value.Contains("bar"));
-		}
+            Assert.IsFalse(update);
+            Assert.AreEqual(1, test.Value.Count);
+            Assert.IsFalse(test.Value.Contains("bar"));
+        }
 
         [TestMethod]
-        public void ListInit_Observable_NoUpdateWhenDetached()
+        public void ListInit_Observable_NoUpdate()
         {
             var update = false;
             var dummy = new ObservableDummy<string>("foo");
@@ -61,22 +41,11 @@ namespace NMF.Expressions.Test
             Assert.IsTrue(test.Value.Contains("foo"));
             Assert.IsFalse(update);
 
-            test.Detach();
-
             dummy.Item = "bar";
 
             Assert.IsFalse(update);
-            Assert.AreEqual(0, test.Value.Count);
-
-            test.Attach();
-
             Assert.AreEqual(1, test.Value.Count);
             Assert.IsTrue(test.Value.Contains("bar"));
-
-            dummy.Item = "42";
-
-            Assert.AreEqual(1, test.Value.Count);
-            Assert.IsTrue(test.Value.Contains("42"));
         }
 
         [TestMethod]
@@ -117,35 +86,6 @@ namespace NMF.Expressions.Test
             Assert.AreEqual("bar", test.Value.Value);
         }
 
-        [TestMethod]
-        public void ListInit_CustomListObservable_NoUpdateWhenDetached()
-        {
-            var update = false;
-            var dummy = new ObservableDummy<string>("foo");
-
-            var test = Observable.Expression(() => new ListFake() { dummy.Item });
-
-            test.ValueChanged += (o, e) => update = true;
-
-            Assert.AreEqual("foo", test.Value.Value);
-            Assert.IsFalse(update);
-
-            test.Detach();
-
-            dummy.Item = "bar";
-
-            Assert.IsFalse(update);
-            Assert.AreEqual(string.Empty, test.Value.Value);
-
-            test.Attach();
-
-            Assert.AreEqual("bar", test.Value.Value);
-
-            dummy.Item = "42";
-
-            Assert.AreEqual("42", test.Value.Value);
-        }
-
         private class ListFake : IEnumerable
         {
             public string Value { get; set; }
@@ -173,5 +113,5 @@ namespace NMF.Expressions.Test
                 throw new NotImplementedException();
             }
         }
-	}
+    }
 }

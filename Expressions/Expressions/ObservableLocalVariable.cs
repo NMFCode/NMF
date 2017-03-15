@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
@@ -8,6 +10,8 @@ namespace NMF.Expressions
 {
     internal sealed class ObservableLocalVariable<T, TVar> : INotifyExpression<T>
     {
+        public event EventHandler<ValueChangedEventArgs> ValueChanged;
+
         public INotifyExpression<T> Inner { get; private set; }
         public INotifyExpression<TVar> Variable { get; private set; }
         public string ParameterName { get; private set; }
@@ -21,6 +25,18 @@ namespace NMF.Expressions
             Inner = inner;
             ParameterName = parameterName;
             Variable = variable;
+
+            Successors.Attached += (obj, e) =>
+            {
+                foreach (var dep in Dependencies)
+                    dep.Successors.Set(this);
+            };
+
+            Successors.Detached += (obj, e) =>
+            {
+                foreach (var dep in Dependencies)
+                    dep.Successors.Unset(this);
+            };
         }
 
         public bool CanBeConstant
@@ -38,6 +54,34 @@ namespace NMF.Expressions
             get { return Inner.IsParameterFree; }
         }
 
+        public T Value
+        {
+            get { return Inner.Value; }
+        }
+
+        public object ValueObject
+        {
+            get { return Value; }
+        }
+        
+        public IEnumerable<INotifiable> Dependencies
+        {
+            get
+            {
+                yield return Inner;
+                yield return Variable;
+            }
+        }
+
+        public ISuccessorList Successors { get; } = NotifySystem.DefaultSystem.CreateSuccessorList();
+
+        public ExecutionMetaData ExecutionMetaData { get; } = new ExecutionMetaData();
+
+        public INotifyExpression<T> Reduce()
+        {
+            return this;
+        }
+
         public INotifyExpression<T> ApplyParameters(IDictionary<string, object> parameters)
         {
             var applied = Variable.ApplyParameters(parameters);
@@ -49,55 +93,21 @@ namespace NMF.Expressions
             return new ObservableLocalVariable<T, TVar>(Inner.ApplyParameters(parameters), applied, ParameterName);
         }
 
-        public void Refresh()
+        public void Dispose()
         {
-            Inner.Refresh();
+            Successors.UnsetAll();
         }
 
-        public T Value
+        public INotificationResult Notify(IList<INotificationResult> sources)
         {
-            get { return Inner.Value; }
-        }
-
-        public object ValueObject
-        {
-            get
+            if (sources.Count > 0)
             {
-                return Value;
+                var innerChange = sources[0] as ValueChangedNotificationResult<T>;
+                if (ValueChanged != null)
+                    ValueChanged(this, new ValueChangedEventArgs(innerChange.OldValue, Value));
+                return new ValueChangedNotificationResult<T>(this, innerChange.OldValue, innerChange.NewValue);
             }
-        }
-
-        public event EventHandler<ValueChangedEventArgs> ValueChanged
-        {
-            add
-            {
-                Inner.ValueChanged += value;
-            }
-            remove
-            {
-                Inner.ValueChanged -= value;
-            }
-        }
-
-        public void Detach()
-        {
-            Inner.Detach();
-        }
-
-        public void Attach()
-        {
-            Inner.Attach();
-        }
-
-        public bool IsAttached
-        {
-            get { return Inner.IsAttached; }
-        }
-
-
-        public INotifyExpression<T> Reduce()
-        {
-            return this;
+            return new ValueChangedNotificationResult<T>(this, Inner.Value, Inner.Value);
         }
 
         INotifyExpression INotifyExpression.ApplyParameters(IDictionary<string, object> parameters)

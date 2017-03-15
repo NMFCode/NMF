@@ -54,7 +54,7 @@ namespace NMF.Models.Meta
 
             protected override bool ShouldContainMembers(CodeTypeDeclaration generatedType, CodeTypeReference baseType)
             {
-                return baseType.BaseType != "IModelElement";
+                return !baseType.BaseType.Contains("IModelElement");
             }
 
             private IEnumerable<Tuple<IClass, IReference>> FindReferencesToOverride(IClass current)

@@ -176,37 +176,6 @@ namespace NMF.Expressions.Linq.Tests
         }
 
         [TestMethod]
-        public void FirstOrDefault_ObservableSourceFirstItemAdded_NoUpdateWhenDetached()
-        {
-            var update = false;
-            var coll = new NotifyCollection<string>();
-
-            var test = Observable.Expression(() => coll.FirstOrDefault());
-
-            test.ValueChanged += (o, e) => update = true;
-
-            Assert.IsNull(test.Value);
-            Assert.IsFalse(update);
-
-            test.Detach();
-            update = false;
-
-            coll.Add("42");
-
-            Assert.IsFalse(update);
-
-            test.Attach();
-
-            Assert.IsTrue(update);
-            Assert.AreEqual("42", test.Value);
-            update = false;
-
-            coll.Insert(0, "23");
-
-            Assert.IsTrue(update);
-        }
-
-        [TestMethod]
         public void PredicateFirstOrDefault_NoObservableSourceFirstItemAdded_NoUpdate()
         {
             var update = false;
@@ -348,37 +317,6 @@ namespace NMF.Expressions.Linq.Tests
             coll.Remove("42");
 
             Assert.IsFalse(update);
-        }
-
-        [TestMethod]
-        public void PredicateFirstOrDefault_ObservableSourceFirstItemAdded_NoUpdateWhenDetached()
-        {
-            var update = false;
-            var coll = new NotifyCollection<string>() { "1" };
-
-            var test = Observable.Expression(() => coll.FirstOrDefault(s => s.Length > 1));
-
-            test.ValueChanged += (o, e) => update = true;
-
-            Assert.IsNull(test.Value);
-            Assert.IsFalse(update);
-
-            test.Detach();
-            update = false;
-
-            coll.Add("42");
-
-            Assert.IsFalse(update);
-
-            test.Attach();
-
-            Assert.IsTrue(update);
-            Assert.AreEqual("42", test.Value);
-            update = false;
-
-            coll.Remove("42");
-
-            Assert.IsTrue(update);
         }
     }
 }

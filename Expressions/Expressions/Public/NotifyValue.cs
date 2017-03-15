@@ -1,94 +1,107 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.ComponentModel;
+using System.Linq;
 using System.Linq.Expressions;
 
 namespace NMF.Expressions
 {
     public class NotifyValue<T> : INotifyValue<T>, INotifyPropertyChanged
     {
-        public NotifyValue(Expression<Func<T>> expression, IDictionary<string, object> parameterMappings = null)
-            : this(NotifySystem.CreateExpression<T>(expression.Body, null, parameterMappings: parameterMappings)) { }
-
         internal INotifyExpression<T> Expression { get; private set; }
 
+        public T Value { get { return Expression.Value; } }
+
+        public event EventHandler<ValueChangedEventArgs> ValueChanged;
+
+        public event PropertyChangedEventHandler PropertyChanged;
+        
+        public ISuccessorList Successors { get; } = NotifySystem.DefaultSystem.CreateSuccessorList();
+
+        public virtual IEnumerable<INotifiable> Dependencies { get { yield return Expression; } }
+
+        public ExecutionMetaData ExecutionMetaData { get; } = new ExecutionMetaData();
+
+        public NotifyValue(Expression<Func<T>> expression, IDictionary<string, object> parameterMappings = null)
+            : this(NotifySystem.CreateExpression<T>(expression.Body, null, parameterMappings: parameterMappings)) { }
+        
         internal NotifyValue(INotifyExpression<T> expression)
         {
             if (expression == null) throw new ArgumentNullException("expression");
 
             Expression = expression;
-            if (!expression.IsAttached) expression.Attach();
-            expression.ValueChanged += ExpressionValueChanged;
+
+            Successors.Attached += (obj, e) => Attach();
+            Successors.Detached += (obj, e) => Detach();
         }
 
-        private void ExpressionValueChanged(object sender, ValueChangedEventArgs e)
+        public virtual INotificationResult Notify(IList<INotificationResult> sources)
+        {
+            if (sources.Count > 0)
+            {
+                var oldValue = ((ValueChangedNotificationResult<T>)sources[0]).OldValue;
+                OnValueChanged(oldValue, Value);
+                OnPropertyChanged("Value");
+                return new ValueChangedNotificationResult<T>(this, oldValue, Value);
+            }
+            return UnchangedNotificationResult.Instance;
+        }
+
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            Successors.UnsetAll();
+        }
+        
+        
+
+        protected virtual void OnValueChanged(T oldValue, T newValue)
         {
             if (ValueChanged != null)
-            {
-                ValueChanged(this, e);
-            }
-            OnPropertyChanged("Value");
-        }
-
-        public T Value
-        {
-            get
-            {
-                return Expression.Value;
-            }
-        }
-
-        public event EventHandler<ValueChangedEventArgs> ValueChanged;
-
-        public void Detach()
-        {
-            Expression.Detach();
-        }
-
-        public void Attach()
-        {
-            Expression.Attach();
+                ValueChanged(this, new ValueChangedEventArgs(oldValue, newValue));
         }
 
         protected virtual void OnPropertyChanged(string propertyName)
         {
-            if (PropertyChanged != null) PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+            if (PropertyChanged != null)
+                PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
         }
 
-        public event PropertyChangedEventHandler PropertyChanged;
-
-
-
-        public bool IsAttached
+        private void Attach()
         {
-            get { return Expression.IsAttached; }
+            OnAttach();
+            foreach (var dep in Dependencies)
+                dep.Successors.Set(this);
         }
+
+        private void Detach()
+        {
+            OnDetach();
+            foreach (var dep in Dependencies)
+                dep.Successors.Unset(this);
+        }
+
+        /// <summary>
+        /// Occurs when this node gets (re)attached to another node for the first time
+        /// </summary>
+        protected virtual void OnAttach() { }
+
+        /// <summary>
+        /// Occurs when the last successor of this node gets removed
+        /// </summary>
+        protected virtual void OnDetach() { }
     }
 
     public class NotifyReversableValue<T> : INotifyReversableValue<T>, INotifyPropertyChanged
     {
         internal INotifyReversableExpression<T> Expression { get; private set; }
-
-        public NotifyReversableValue(Expression<Func<T>> expression, IDictionary<string, object> parameterMappings = null)
-            : this(NotifySystem.CreateReversableExpression<T>(expression.Body, null, parameterMappings)) { }
-
-        internal NotifyReversableValue(INotifyReversableExpression<T> expression)
-        {
-            if (expression == null) throw new ArgumentNullException("expression");
-
-            Expression = expression;
-            if (!expression.IsAttached) expression.Attach();
-            expression.ValueChanged += ExpressionValueChanged;
-        }
-
-        private void ExpressionValueChanged(object sender, ValueChangedEventArgs e)
-        {
-            if (ValueChanged != null)
-            {
-                ValueChanged(this, e);
-            }
-            OnPropertyChanged("Value");
-        }
 
         public T Value
         {
@@ -104,34 +117,92 @@ namespace NMF.Expressions
 
         public event EventHandler<ValueChangedEventArgs> ValueChanged;
 
-        public void Detach()
-        {
-            Expression.Detach();
-        }
-
-        public void Attach()
-        {
-            Expression.Attach();
-        }
-
-        protected virtual void OnPropertyChanged(string propertyName)
-        {
-            if (PropertyChanged != null) PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
-        }
-
         public event PropertyChangedEventHandler PropertyChanged;
 
+        
+        public ISuccessorList Successors { get; } = NotifySystem.DefaultSystem.CreateSuccessorList();
 
-        public bool IsAttached
+        public IEnumerable<INotifiable> Dependencies { get { yield return Expression; } }
+
+        public ExecutionMetaData ExecutionMetaData { get; } = new ExecutionMetaData();
+
+        public NotifyReversableValue(Expression<Func<T>> expression, IDictionary<string, object> parameterMappings = null)
+            : this(NotifySystem.CreateReversableExpression<T>(expression.Body, null, parameterMappings)) { }
+
+        internal NotifyReversableValue(INotifyReversableExpression<T> expression)
         {
-            get { return Expression.IsAttached; }
-        }
+            if (expression == null) throw new ArgumentNullException("expression");
 
+            Expression = expression;
+
+            Successors.Attached += (obj, e) => Attach();
+            Successors.Detached += (obj, e) => Detach();
+        }
 
         public bool IsReversable
         {
             get { return Expression.IsReversable; }
         }
+
+        protected virtual void OnValueChanged(T oldValue, T newValue)
+        {
+            if (ValueChanged != null)
+                ValueChanged(this, new ValueChangedEventArgs(oldValue, newValue));
+        }
+
+        protected virtual void OnPropertyChanged(string propertyName)
+        {
+            if (PropertyChanged != null)
+                PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+        }
+
+        public virtual INotificationResult Notify(IList<INotificationResult> sources)
+        {
+            if (sources.Count > 0)
+            {
+                var oldValue = ((ValueChangedNotificationResult<T>)sources[0]).OldValue;
+                OnValueChanged(oldValue, Value);
+                OnPropertyChanged("Value");
+                return new ValueChangedNotificationResult<T>(this, oldValue, Value);
+            }
+            return UnchangedNotificationResult.Instance;
+        }
+
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            Successors.UnsetAll();
+        }
+        
+
+        private void Attach()
+        {
+            foreach (var dep in Dependencies)
+                dep.Successors.Set(this);
+            OnAttach();
+        }
+
+        private void Detach()
+        {
+            foreach (var dep in Dependencies)
+                dep.Successors.Unset(this);
+            OnDetach();
+        }
+
+        /// <summary>
+        /// Occurs when this node gets (re)attached to another node for the first time
+        /// </summary>
+        protected virtual void OnAttach() { }
+
+        /// <summary>
+        /// Occurs when the last successor of this node gets removed
+        /// </summary>
+        protected virtual void OnDetach() { }
     }
 
     internal class ReversableProxyValue<T, TExpression> : INotifyReversableValue<T> where TExpression : class, INotifyValue<T>
@@ -147,14 +218,44 @@ namespace NMF.Expressions
             {
                 if (inner != value)
                 {
-                    if (inner != null) inner.ValueChanged -= Inner_ValueChanged;
-                    if (value != null) value.ValueChanged += Inner_ValueChanged;
+                    if (inner != null)
+                        inner.Successors.Unset(this);
+                    if (value != null)
+                        value.Successors.Set(this);
                     inner = value;
                 }
             }
         }
 
+        public T Value
+        {
+            get { return Inner.Value; }
+            set { UpdateHandler(value); }
+        }
+
+        public event EventHandler<ValueChangedEventArgs> ValueChanged;
+
         public Action<T> UpdateHandler { get; private set; }
+
+        
+
+        public ISuccessorList Successors { get; } = NotifySystem.DefaultSystem.CreateSuccessorList();
+
+        public IEnumerable<INotifiable> Dependencies
+        {
+            get
+            {
+                if (inner != null)
+                    yield return inner;
+            }
+        }
+
+        public ExecutionMetaData ExecutionMetaData { get; } = new ExecutionMetaData();
+
+        public bool IsReversable
+        {
+            get { return true; }
+        }
 
         public ReversableProxyValue(TExpression inner, Action<T> updateHandler)
         {
@@ -164,51 +265,55 @@ namespace NMF.Expressions
             Inner = inner;
             UpdateHandler = updateHandler;
 
-            Inner.ValueChanged += Inner_ValueChanged;
+            Successors.Attached += (obj, e) => Attach();
+            Successors.Detached += (obj, e) => Detach();
         }
 
-        void Inner_ValueChanged(object sender, ValueChangedEventArgs e)
+        protected virtual void OnValueChanged(T oldValue, T newValue)
         {
             if (ValueChanged != null)
+                ValueChanged(this, new ValueChangedEventArgs(oldValue, newValue));
+        }
+
+        public virtual INotificationResult Notify(IList<INotificationResult> sources)
+        {
+            if (sources.Count > 0)
             {
-                ValueChanged(this, e);
+                var oldValue = ((ValueChangedNotificationResult<T>)sources[0]).OldValue;
+                OnValueChanged(oldValue, Value);
+                return new ValueChangedNotificationResult<T>(this, oldValue, Value);
             }
+            return UnchangedNotificationResult.Instance;
         }
 
-        public T Value
+        public void Dispose()
         {
-            get
-            {
-                return Inner.Value;
-            }
-            set
-            {
-                UpdateHandler(value);
-            }
+            Successors.UnsetAll();
         }
 
-        public bool IsReversable
+        private void Attach()
         {
-            get { return true; }
+            foreach (var dep in Dependencies)
+                dep.Successors.Set(this);
+            OnAttach();
         }
 
-
-        public event EventHandler<ValueChangedEventArgs> ValueChanged;
-
-        public void Detach()
+        private void Detach()
         {
-            Inner.Detach();
+            foreach (var dep in Dependencies)
+                dep.Successors.Unset(this);
+            OnDetach();
         }
 
-        public void Attach()
-        {
-            Inner.Attach();
-        }
+        /// <summary>
+        /// Occurs when this node gets (re)attached to another node for the first time
+        /// </summary>
+        protected virtual void OnAttach() { }
 
-        public bool IsAttached
-        {
-            get { return Inner.IsAttached; }
-        }
+        /// <summary>
+        /// Occurs when the last successor of this node gets removed
+        /// </summary>
+        protected virtual void OnDetach() { }
     }
 
     internal class ReversableProxyExpression<T> : ReversableProxyValue<T, INotifyExpression<T>>, INotifyReversableExpression<T>
@@ -243,11 +348,6 @@ namespace NMF.Expressions
             return new ReversableProxyExpression<T>(Inner.ApplyParameters(parameters), UpdateHandler);
         }
 
-        public void Refresh()
-        {
-            Inner.Refresh();
-        }
-
         public INotifyExpression<T> Reduce()
         {
             Inner = Inner.Reduce();
@@ -259,5 +359,4 @@ namespace NMF.Expressions
             return ApplyParameters(parameters);
         }
     }
-
 }

@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using NMF.Expressions.Test;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Collections.Specialized;
 
 namespace NMF.Expressions.Linq.Tests
 {
@@ -28,6 +29,7 @@ namespace NMF.Expressions.Linq.Tests
             test.CollectionChanged += (o, e) =>
             {
                 update = true;
+                Assert.AreEqual(NotifyCollectionChangedAction.Add, e.Action);
                 Assert.AreEqual("42", e.NewItems[0]);
             };
 
@@ -45,10 +47,9 @@ namespace NMF.Expressions.Linq.Tests
             var violation = false;
 
             var employees = new ObservableCollection<Person>();
-            var employeesWithUpdates = employees.WithUpdates();
-            var violations = from employee in employeesWithUpdates
+            var violations = from employee in employees.WithUpdates()
                              where employee.WorkItems > 2 *
-                                (from collegue in employeesWithUpdates
+                                (from collegue in employees.WithUpdates()
                                  where collegue.Team == employee.Team
                                  select collegue.WorkItems).Average()
                              select employee.Name;

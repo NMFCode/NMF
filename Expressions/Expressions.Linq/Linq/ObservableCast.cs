@@ -17,12 +17,7 @@ namespace NMF.Expressions.Linq
 
             this.source = source;
         }
-
-        private void SourceCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
-        {
-            OnCollectionChanged(e);
-        }
-
+        
         public override IEnumerator<TTarget> GetEnumerator()
         {
             return SL.Cast<TTarget>(source).GetEnumerator();
@@ -41,18 +36,11 @@ namespace NMF.Expressions.Linq
             }
         }
 
-        protected override void AttachCore()
+        public override IEnumerable<INotifiable> Dependencies { get { yield return source; } }
+
+        public override INotificationResult Notify(IList<INotificationResult> sources)
         {
-            source.Attach();
-
-            source.CollectionChanged += SourceCollectionChanged;
-        }
-
-        protected override void DetachCore()
-        {
-            source.Detach();
-
-            source.CollectionChanged -= SourceCollectionChanged;
+            return CollectionChangedNotificationResult<TTarget>.Transfer((ICollectionChangedNotificationResult)sources[0], this);
         }
     }
 }

@@ -7,73 +7,68 @@ using System.Text;
 
 namespace NMF.Collections.ObjectModel
 {
-    public class ObservableCollectionExtended<T> : ObservableCollection<T>, INotifyCollectionChanging
+    public abstract class ObservableCollectionExtended<T> : ObservableCollection<T>, INotifyCollectionChanging
     {
         public event EventHandler<NotifyCollectionChangingEventArgs> CollectionChanging;
-
-        protected Action beforeCollectionChangedAction;
-
-        private NotifyCollectionChangedEventArgs collectionChangedArgs;
 
         protected virtual void OnCollectionChanging(NotifyCollectionChangingEventArgs e)
         {
             CollectionChanging?.Invoke(this, e);
         }
 
-        protected override void OnCollectionChanged(NotifyCollectionChangedEventArgs e)
-        {
-            if (collectionChangedArgs == null)
-                collectionChangedArgs = e;
-            else
-            {
-                collectionChangedArgs = null;
-                base.OnCollectionChanged(e);
-            }
-        }
-
         protected override void ClearItems()
         {
             OnCollectionChanging(new NotifyCollectionChangingEventArgs(NotifyCollectionChangedAction.Reset));
-            base.ClearItems();
-            BeforeCollectionChanged();
+            var items = this.ToArray();
+            Items.Clear();
+            BeforeClearPropagates(items);
+            OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
         }
+
+        protected virtual void BeforeClearPropagates(T[] items) { }
 
         protected override void InsertItem(int index, T item)
         {
             OnCollectionChanging(new NotifyCollectionChangingEventArgs(NotifyCollectionChangedAction.Add));
-            base.InsertItem(index, item);
-            BeforeCollectionChanged();
+            Items.Insert(index, item);
+            BeforeInsertPropagates(index, item);
+            OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, item, index));
         }
+
+        protected virtual void BeforeInsertPropagates(int index, T item) { }
 
         protected override void MoveItem(int oldIndex, int newIndex)
         {
             OnCollectionChanging(new NotifyCollectionChangingEventArgs(NotifyCollectionChangedAction.Move));
-            base.MoveItem(oldIndex, newIndex);
-            BeforeCollectionChanged();
+            var item = this[oldIndex];
+            Items.RemoveAt(oldIndex);
+            Items.Insert(newIndex, item);
+            BeforeMovePropagates(item, oldIndex, newIndex);
+            OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Move, item, newIndex, oldIndex));
         }
+
+        protected virtual void BeforeMovePropagates(T item, int oldIndex, int newIndex) { }
 
         protected override void RemoveItem(int index)
         {
             OnCollectionChanging(new NotifyCollectionChangingEventArgs(NotifyCollectionChangedAction.Remove));
-            base.RemoveItem(index);
-            BeforeCollectionChanged();
+            var item = this[index];
+            Items.RemoveAt(index);
+            BeforeRemovePropagates(index, item);
+            OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Remove, item, index));
         }
+
+        protected virtual void BeforeRemovePropagates(int index, T item) { }
 
         protected override void SetItem(int index, T item)
         {
             OnCollectionChanging(new NotifyCollectionChangingEventArgs(NotifyCollectionChangedAction.Replace));
-            base.SetItem(index, item);
-            BeforeCollectionChanged();
+            var oldItem = this[index];
+            Items[index] = item;
+            BeforeSetItemPropagates(index, oldItem, item);
+            OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Replace, item, oldItem, index));
         }
 
-        private void BeforeCollectionChanged()
-        {
-            if (beforeCollectionChangedAction != null)
-            {
-                beforeCollectionChangedAction();
-                beforeCollectionChangedAction = null;
-            }
-            OnCollectionChanged(collectionChangedArgs);
-        }
+        protected virtual void BeforeSetItemPropagates(int index, T oldItem, T item) { }
     }
 }

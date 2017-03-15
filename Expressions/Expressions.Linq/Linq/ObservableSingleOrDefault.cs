@@ -7,38 +7,34 @@ using System.Linq.Expressions;
 
 namespace NMF.Expressions.Linq
 {
-
     internal class ObservableSingleOrDefault<TSource> : INotifyValue<TSource>, INotifyReversableValue<TSource>
     {
+        
         private TSource value;
-        private bool isAttached;
         private INotifyEnumerable<TSource> source;
 
         public static ObservableSingleOrDefault<TSource> Create(INotifyEnumerable<TSource> source)
         {
-            return new ObservableSingleOrDefault<TSource>(source);
+            var observable = new ObservableSingleOrDefault<TSource>(source);
+            observable.Successors.SetDummy();
+            return observable;
         }
 
         public static ObservableSingleOrDefault<TSource> CreateForPredicate(INotifyEnumerable<TSource> source, Expression<Func<TSource, bool>> predicate)
         {
-            return new ObservableSingleOrDefault<TSource>(source.Where(predicate));
+            return Create(source.Where(predicate));
         }
 
         public static ObservableSingleOrDefault<TSource> CreateExpression(IEnumerableExpression<TSource> source)
         {
-            return new ObservableSingleOrDefault<TSource>(source.AsNotifiable());
+            return Create(source.AsNotifiable());
         }
 
         public static ObservableSingleOrDefault<TSource> CreateExpressionForPredicate(IEnumerableExpression<TSource> source, Expression<Func<TSource, bool>> predicate)
         {
-            return new ObservableSingleOrDefault<TSource>(source.AsNotifiable().Where(predicate));
+            return Create(source.AsNotifiable().Where(predicate));
         }
-
-        public static ObservableSingleOrDefault<TSource> CreateExpressionForPredicate2(IEnumerableExpression<TSource> source, Expression<Func<TSource, bool>> predicate, Func<TSource, bool> predicateCompiled)
-        {
-            return CreateExpressionForPredicate(source, predicate);
-        }
-
+        
         public static Expression CreateSetExpression(MethodCallExpression node, SetExpressionRewriter rewriter)
         {
             if (node == null || rewriter == null) return null;
@@ -171,27 +167,8 @@ namespace NMF.Expressions.Linq
 
             this.source = source;
 
-            Attach();
-        }
-
-        private void SourceCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
-        {
-            if (e.Action == NotifyCollectionChangedAction.Reset
-                || (e.OldItems != null && e.OldStartingIndex <= 0)
-                || (e.NewItems != null && e.NewStartingIndex <= 0))
-            {
-                SetValue(SL.SingleOrDefault(source));
-            }
-        }
-
-        private void SetValue(TSource item)
-        {
-            if (!EqualityComparer<TSource>.Default.Equals(value, item))
-            {
-                var old = value;
-                value = item;
-                OnValueChanged(new ValueChangedEventArgs(old, item));
-            }
+            Successors.Attached += (obj, e) => Attach();
+            Successors.Detached += (obj, e) => Detach();
         }
 
         public TSource Value
@@ -209,29 +186,36 @@ namespace NMF.Expressions.Linq
 
         public event EventHandler<ValueChangedEventArgs> ValueChanged;
 
-        public void Detach()
-        {
-            if (isAttached)
-            {
-                source.CollectionChanged -= SourceCollectionChanged;
-                isAttached = false;
-            }
-        }
-
         public void Attach()
         {
-            if (!isAttached)
-            {
-                value = SL.FirstOrDefault(source);
-                source.CollectionChanged += SourceCollectionChanged;
-                isAttached = true;
-            }
+            foreach (var dep in Dependencies)
+                dep.Successors.Set(this);
+            value = SL.SingleOrDefault(source);
         }
 
-
-        public bool IsAttached
+        public void Detach()
         {
-            get { return isAttached; }
+            foreach (var dep in Dependencies)
+                dep.Successors.Unset(this);
+        }
+
+        public INotificationResult Notify(IList<INotificationResult> sources)
+        {
+            var newValue = SL.SingleOrDefault(source);
+            if (!EqualityComparer<TSource>.Default.Equals(value, newValue))
+            {
+                var oldValue = value;
+                value = newValue;
+                OnValueChanged(new ValueChangedEventArgs(oldValue, newValue));
+                return new ValueChangedNotificationResult<TSource>(this, oldValue, newValue);
+            }
+
+            return UnchangedNotificationResult.Instance;
+        }
+
+        public void Dispose()
+        {
+            Detach();
         }
 
         TSource INotifyReversableValue<TSource>.Value
@@ -280,5 +264,11 @@ namespace NMF.Expressions.Linq
                 return coll != null && !coll.IsReadOnly;
             }
         }
+
+        public ISuccessorList Successors { get; } = NotifySystem.DefaultSystem.CreateSuccessorList();
+
+        public IEnumerable<INotifiable> Dependencies { get { yield return source; } }
+
+        public ExecutionMetaData ExecutionMetaData { get; } = new ExecutionMetaData();
     }
 }

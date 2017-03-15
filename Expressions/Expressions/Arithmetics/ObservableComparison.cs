@@ -22,6 +22,8 @@ namespace NMF.Expressions.Arithmetics
         public ObservableGreatherThan(INotifyExpression<T> left, INotifyExpression<T> right)
             : base(left, right) { }
 
+        public override ExpressionType NodeType { get { return ExpressionType.GreaterThan; } }
+
         protected override bool GetValue()
         {
             return Comparer<T>.Default.Compare(Left.Value, Right.Value) > 0;
@@ -48,6 +50,8 @@ namespace NMF.Expressions.Arithmetics
 
         public ObservableGreatherThanOrEquals(INotifyExpression<T> left, INotifyExpression<T> right)
             : base(left, right) { }
+
+        public override ExpressionType NodeType { get { return ExpressionType.GreaterThanOrEqual; } }
 
         protected override bool GetValue()
         {
@@ -76,6 +80,8 @@ namespace NMF.Expressions.Arithmetics
         public ObservableLessThan(INotifyExpression<T> left, INotifyExpression<T> right)
             : base(left, right) { }
 
+        public override ExpressionType NodeType { get { return ExpressionType.LessThan; } }
+
         protected override bool GetValue()
         {
             return Comparer<T>.Default.Compare(Left.Value, Right.Value) < 0;
@@ -102,6 +108,8 @@ namespace NMF.Expressions.Arithmetics
 
         public ObservableLessThanOrEquals(INotifyExpression<T> left, INotifyExpression<T> right)
             : base(left, right) { }
+
+        public override ExpressionType NodeType { get { return ExpressionType.LessThanOrEqual; } }
 
         protected override bool GetValue()
         {

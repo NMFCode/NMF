@@ -13,7 +13,7 @@ namespace NMF.Models
     {
         public static IEnumerableExpression<IModelElement> Descendants(this IModelElement element)
         {
-            return new DescendantsCollection(element);
+            return ((ModelElement)element).Descendants;
         }
 
         public static void Serialize(this IModelSerializer serializer, IModelElement element, string path)

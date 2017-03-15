@@ -9,7 +9,6 @@ namespace NMF.Expressions.Linq
     public abstract class ObservableAggregate<TSource, TAccumulator, TResult> : INotifyValue<TResult>
     {
         private INotifyEnumerable<TSource> source;
-        private int attachedCount;
 
         protected TAccumulator Accumulator { get; set; }
 
@@ -18,43 +17,9 @@ namespace NMF.Expressions.Linq
             if (source == null) throw new ArgumentNullException("source");
             this.source = source;
             Accumulator = accumulator;
-        }
 
-        private void SourceCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
-        {
-            if (e.Action != NotifyCollectionChangedAction.Reset)
-            {
-                var oldValue = Value;
-                if (e.OldItems != null)
-                {
-                    foreach (TSource item in e.OldItems)
-                    {
-                        RemoveItem(item);
-                    }
-                }
-                if (e.NewItems != null)
-                {
-                    foreach (TSource item in e.NewItems)
-                    {
-                        AddItem(item);
-                    }
-                }
-                var newValue = Value;
-                if (!EqualityComparer<TResult>.Default.Equals(newValue, oldValue))
-                {
-                    OnValueChanged(new ValueChangedEventArgs(oldValue, newValue));
-                }
-            }
-            else
-            {
-                var oldValue = Value;
-                ResetAccumulator();
-                var newValue = Value;
-                if (!EqualityComparer<TResult>.Default.Equals(newValue, oldValue))
-                {
-                    OnValueChanged(new ValueChangedEventArgs(oldValue, newValue));
-                }
-            }
+            Successors.Attached += (obj, e) => Attach();
+            Successors.Detached += (obj, e) => Detach();
         }
 
         protected INotifyEnumerable<TSource> Source
@@ -67,17 +32,7 @@ namespace NMF.Expressions.Linq
         protected abstract void RemoveItem(TSource item);
 
         protected abstract void AddItem(TSource item);
-
-        private void AttachCore()
-        {
-            ResetAccumulator();
-            foreach (var item in source)
-            {
-                AddItem(item);
-            }
-            source.CollectionChanged += SourceCollectionChanged;
-        }
-
+        
         public abstract TResult Value { get; }
 
         protected virtual void OnValueChanged(ValueChangedEventArgs e)
@@ -87,33 +42,78 @@ namespace NMF.Expressions.Linq
 
         public event EventHandler<ValueChangedEventArgs> ValueChanged;
 
-        public void Detach()
+        private void Attach()
         {
-            if (attachedCount == 1)
+            foreach (var dep in Dependencies)
+                dep.Successors.Set(this);
+            ResetAccumulator();
+            foreach (var item in source)
             {
-                DetachCore();
+                AddItem(item);
             }
-            attachedCount--;
+            OnAttach();
         }
 
-        protected virtual void DetachCore()
+        private void Detach()
         {
-            source.CollectionChanged -= SourceCollectionChanged;
+            OnDetach();
+            foreach (var dep in Dependencies)
+                dep.Successors.Unset(this);
         }
 
-        public void Attach()
+        protected virtual void OnAttach() { }
+
+        protected virtual void OnDetach() { }
+
+        public INotificationResult Notify(IList<INotificationResult> sources)
         {
-            if (attachedCount == 0)
+            var sourceChange = (CollectionChangedNotificationResult<TSource>)sources[0];
+            var oldValue = Value;
+            if (sourceChange.IsReset)
             {
-                AttachCore();
+                ResetAccumulator();
+                foreach (var item in source)
+                {
+                    AddItem(item);
+                }
             }
-            attachedCount++;
+            else
+            {
+                foreach (var item in sourceChange.AllRemovedItems)
+                {
+                    RemoveItem(item);
+                }
+                foreach (var item in sourceChange.AllAddedItems)
+                {
+                    AddItem(item);
+                }
+            }
+
+            var newValue = Value;
+            if (!EqualityComparer<TResult>.Default.Equals(newValue, oldValue))
+            {
+                OnValueChanged(new ValueChangedEventArgs(oldValue, newValue));
+                return new ValueChangedNotificationResult<TResult>(this, oldValue, newValue);
+            }
+            else
+                return UnchangedNotificationResult.Instance;
         }
 
-
-        public bool IsAttached
+        public void Dispose()
         {
-            get { return attachedCount > 0; }
+            Dispose(true);
+            GC.SuppressFinalize(this);
         }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            Successors.UnsetAll();
+        }
+
+        public ISuccessorList Successors { get; } = NotifySystem.DefaultSystem.CreateSuccessorList();
+
+        public IEnumerable<INotifiable> Dependencies { get { yield return source; } }
+
+        public ExecutionMetaData ExecutionMetaData { get; } = new ExecutionMetaData();
     }
 }

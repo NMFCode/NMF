@@ -16,6 +16,7 @@ using NMF.Models;
 using NMF.Models.Collections;
 using NMF.Models.Expressions;
 using NMF.Models.Meta;
+using NMF.Models.Repository;
 using NMF.Serialization;
 using NMF.Utilities;
 using System;
@@ -50,12 +51,12 @@ namespace NMF.Models.Tests.Railway
         /// <summary>
         /// Gets fired before the Signal property changes its value
         /// </summary>
-        event EventHandler SignalChanging;
+        event System.EventHandler<ValueChangedEventArgs> SignalChanging;
         
         /// <summary>
         /// Gets fired when the Signal property changed its value
         /// </summary>
-        event EventHandler<ValueChangedEventArgs> SignalChanged;
+        event System.EventHandler<ValueChangedEventArgs> SignalChanged;
     }
 }
 

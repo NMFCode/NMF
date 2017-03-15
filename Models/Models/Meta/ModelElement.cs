@@ -36,7 +36,7 @@ namespace NMF.Models.Meta
     [XmlNamespaceAttribute("http://nmf.codeplex.com/nmeta/")]
     [XmlNamespacePrefixAttribute("nmeta")]
     [ModelRepresentationClassAttribute("http://nmf.codeplex.com/nmeta/#//ModelElement/")]
-    public abstract class ModelElement : NMF.Models.ModelElement, NMF.Models.Meta.IModelElement, IModelElement
+    public abstract class ModelElement : ModelElement, NMF.Models.Meta.IModelElement, IModelElement
     {
         
         /// <summary>
@@ -834,7 +834,7 @@ namespace NMF.Models.Meta
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
             public AbsoluteUriProxy(NMF.Models.Meta.IModelElement modelElement) : 
-                    base(modelElement)
+                    base(modelElement, "AbsoluteUri")
             {
             }
             
@@ -852,24 +852,6 @@ namespace NMF.Models.Meta
                     this.ModelElement.AbsoluteUri = value;
                 }
             }
-            
-            /// <summary>
-            /// Registers an event handler to subscribe specifically on the changed event for this property
-            /// </summary>
-            /// <param name="handler">The handler that should be subscribed to the property change event</param>
-            protected override void RegisterChangeEventHandler(System.EventHandler<NMF.Expressions.ValueChangedEventArgs> handler)
-            {
-                this.ModelElement.AbsoluteUriChanged += handler;
-            }
-            
-            /// <summary>
-            /// Registers an event handler to subscribe specifically on the changed event for this property
-            /// </summary>
-            /// <param name="handler">The handler that should be unsubscribed from the property change event</param>
-            protected override void UnregisterChangeEventHandler(System.EventHandler<NMF.Expressions.ValueChangedEventArgs> handler)
-            {
-                this.ModelElement.AbsoluteUriChanged -= handler;
-            }
         }
         
         /// <summary>
@@ -883,7 +865,7 @@ namespace NMF.Models.Meta
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
             public RelativeUriProxy(NMF.Models.Meta.IModelElement modelElement) : 
-                    base(modelElement)
+                    base(modelElement, "RelativeUri")
             {
             }
             
@@ -901,24 +883,6 @@ namespace NMF.Models.Meta
                     this.ModelElement.RelativeUri = value;
                 }
             }
-            
-            /// <summary>
-            /// Registers an event handler to subscribe specifically on the changed event for this property
-            /// </summary>
-            /// <param name="handler">The handler that should be subscribed to the property change event</param>
-            protected override void RegisterChangeEventHandler(System.EventHandler<NMF.Expressions.ValueChangedEventArgs> handler)
-            {
-                this.ModelElement.RelativeUriChanged += handler;
-            }
-            
-            /// <summary>
-            /// Registers an event handler to subscribe specifically on the changed event for this property
-            /// </summary>
-            /// <param name="handler">The handler that should be unsubscribed from the property change event</param>
-            protected override void UnregisterChangeEventHandler(System.EventHandler<NMF.Expressions.ValueChangedEventArgs> handler)
-            {
-                this.ModelElement.RelativeUriChanged -= handler;
-            }
         }
         
         /// <summary>
@@ -932,7 +896,7 @@ namespace NMF.Models.Meta
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
             public ParentProxy(NMF.Models.Meta.IModelElement modelElement) : 
-                    base(modelElement)
+                    base(modelElement, "Parent")
             {
             }
             
@@ -950,24 +914,6 @@ namespace NMF.Models.Meta
                     this.ModelElement.Parent = value;
                 }
             }
-            
-            /// <summary>
-            /// Registers an event handler to subscribe specifically on the changed event for this property
-            /// </summary>
-            /// <param name="handler">The handler that should be subscribed to the property change event</param>
-            protected override void RegisterChangeEventHandler(System.EventHandler<NMF.Expressions.ValueChangedEventArgs> handler)
-            {
-                this.ModelElement.ParentChanged += handler;
-            }
-            
-            /// <summary>
-            /// Registers an event handler to subscribe specifically on the changed event for this property
-            /// </summary>
-            /// <param name="handler">The handler that should be unsubscribed from the property change event</param>
-            protected override void UnregisterChangeEventHandler(System.EventHandler<NMF.Expressions.ValueChangedEventArgs> handler)
-            {
-                this.ModelElement.ParentChanged -= handler;
-            }
         }
         
         /// <summary>
@@ -981,7 +927,7 @@ namespace NMF.Models.Meta
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
             public TypeProxy(NMF.Models.Meta.IModelElement modelElement) : 
-                    base(modelElement)
+                    base(modelElement, "Type")
             {
             }
             
@@ -998,24 +944,6 @@ namespace NMF.Models.Meta
                 {
                     this.ModelElement.Type = value;
                 }
-            }
-            
-            /// <summary>
-            /// Registers an event handler to subscribe specifically on the changed event for this property
-            /// </summary>
-            /// <param name="handler">The handler that should be subscribed to the property change event</param>
-            protected override void RegisterChangeEventHandler(System.EventHandler<NMF.Expressions.ValueChangedEventArgs> handler)
-            {
-                this.ModelElement.TypeChanged += handler;
-            }
-            
-            /// <summary>
-            /// Registers an event handler to subscribe specifically on the changed event for this property
-            /// </summary>
-            /// <param name="handler">The handler that should be unsubscribed from the property change event</param>
-            protected override void UnregisterChangeEventHandler(System.EventHandler<NMF.Expressions.ValueChangedEventArgs> handler)
-            {
-                this.ModelElement.TypeChanged -= handler;
             }
         }
     }
