@@ -9,6 +9,8 @@ using System.ComponentModel;
 
 namespace NMF.Models.Evolution
 {
+    [XmlNamespace("http://nmf.codeplex.com/changes")]
+    [XmlNamespacePrefix("changes")]
     [XmlConstructor(4)]
     public class ListDeletion : IModelChange
     {

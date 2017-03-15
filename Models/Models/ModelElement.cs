@@ -357,30 +357,31 @@ namespace NMF.Models
         protected Uri CreateUriFromGlobalIdentifier(string fragment, bool absolute)
         {
             var id = ToIdentifierString();
+            if (id == null) return null;
             if (fragment != null)
             {
                 id += "/" + fragment;
             }
-            var model = Model;
-            if (model == null) return null;
-            if (model == Parent && fragment != null)
-            {
-                string path = model.GetRelativePathForChild(this);
-                if (path != null)
-                {
-                    if (fragment != null)
-                    {
-                        fragment = path + "/" + fragment;
-                    }
-                    else
-                    {
-                        fragment = path;
-                    }
-                    return model.CreateUriWithFragment(fragment, absolute);
-                }
-            }
             if (absolute)
             {
+                var model = Model;
+                if (model == null) return null;
+                if (model == Parent && fragment != null)
+                {
+                    string path = model.GetRelativePathForChild(this);
+                    if (path != null)
+                    {
+                        if (fragment != null)
+                        {
+                            fragment = path + "/" + fragment;
+                        }
+                        else
+                        {
+                            fragment = path;
+                        }
+                        return model.CreateUriWithFragment(fragment, absolute);
+                    }
+                }
                 if (model != null && model.ModelUri != null && model.ModelUri.IsAbsoluteUri)
                 {
                     return new Uri(model.ModelUri.AbsoluteUri + "#" + id);

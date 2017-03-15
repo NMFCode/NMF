@@ -52,6 +52,8 @@ namespace NMF.Models.Evolution
         protected abstract List<T> GetNewElements(IModelRepository repository);
     }
 
+    [XmlNamespace("http://nmf.codeplex.com/changes")]
+    [XmlNamespacePrefix("changes")]
     [XmlConstructor(3)]
     public class ListInsertionComposition<T> : ListInsertionBase<T>
     {
@@ -98,6 +100,8 @@ namespace NMF.Models.Evolution
         }
     }
 
+    [XmlNamespace("http://nmf.codeplex.com/changes")]
+    [XmlNamespacePrefix("changes")]
     [XmlConstructor(3)]
     public class ListInsertionAssociation<T> : ListInsertionBase<T> where T : class, IModelElement
     {

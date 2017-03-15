@@ -8,6 +8,8 @@ using System.ComponentModel;
 
 namespace NMF.Models.Evolution
 {
+    [XmlNamespace("http://nmf.codeplex.com/changes")]
+    [XmlNamespacePrefix("changes")]
     public class ElementCreation : IModelChange
     {
         public Uri AbsoluteUri { get { return Element.AbsoluteUri; } }

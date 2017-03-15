@@ -8,6 +8,8 @@ using System.ComponentModel;
 
 namespace NMF.Models.Evolution
 {
+    [XmlNamespace("http://nmf.codeplex.com/changes")]
+    [XmlNamespacePrefix("changes")]
     [XmlConstructor(1)]
     public class ElementDeletion : IModelChange
     {

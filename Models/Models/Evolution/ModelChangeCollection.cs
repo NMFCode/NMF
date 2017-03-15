@@ -1,4 +1,5 @@
 ﻿using NMF.Models.Repository;
+using NMF.Serialization;
 using NMF.Serialization.Xmi;
 using System;
 using System.Collections;
@@ -13,6 +14,8 @@ namespace NMF.Models.Evolution
     /// <summary>
     /// Represents a root collection of model changes.
     /// </summary>
+    [XmlNamespace("http://nmf.codeplex.com/changes")]
+    [XmlNamespacePrefix("changes")]
     public class ModelChangeCollection
     {
         /// <summary>

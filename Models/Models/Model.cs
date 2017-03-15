@@ -130,6 +130,7 @@ namespace NMF.Models
 
         public bool RegisterId(string id, ModelElement element)
         {
+            if (id == null) return false;
             var idStore = IdStore;
             if (idStore == null)
             {
@@ -148,6 +149,7 @@ namespace NMF.Models
 
         public bool UnregisterId(string id)
         {
+            if (id == null) return false;
             if (IdStore == null)
             {
                 return false;
@@ -160,12 +162,15 @@ namespace NMF.Models
 
         public override IModelElement Resolve(string path)
         {
-            if (path == null) return this;
+            if (string.IsNullOrEmpty(path)) return this;
+            if (path.StartsWith("\"") && path.EndsWith("\"/"))
+            {
+                path = path.Substring(1, path.Length - 3);
+            }
             if (path.StartsWith("#"))
             {
                 path = path.Substring(1);
             }
-            if (path == string.Empty) return this;
             if (!path.StartsWith("//"))
             {
                 var index = path.IndexOf('/');

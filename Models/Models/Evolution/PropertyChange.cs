@@ -9,6 +9,8 @@ using System.Text;
 
 namespace NMF.Models.Evolution
 {
+    [XmlNamespace("http://nmf.codeplex.com/changes")]
+    [XmlNamespacePrefix("changes")]
     [XmlConstructor(2)]
     public abstract class PropertyChangeBase<T> : IModelChange
     {
@@ -41,6 +43,8 @@ namespace NMF.Models.Evolution
         protected abstract T GetNewValue(IModelRepository repository);
     }
 
+    [XmlNamespace("http://nmf.codeplex.com/changes")]
+    [XmlNamespacePrefix("changes")]
     [XmlConstructor(2)]
     public class PropertyChangeAttribute<T> : PropertyChangeBase<T>
     {
@@ -81,6 +85,8 @@ namespace NMF.Models.Evolution
         }
     }
 
+    [XmlNamespace("http://nmf.codeplex.com/changes")]
+    [XmlNamespacePrefix("changes")]
     [XmlConstructor(3)]
     public class PropertyChangeReference<T> : PropertyChangeBase<T> where T : class, IModelElement
     {
