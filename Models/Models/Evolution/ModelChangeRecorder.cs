@@ -399,7 +399,7 @@ namespace NMF.Models.Evolution
             foreach (var item in oldItems)
                 list.Add(item);
 
-            if (IsListType(collectionType))
+            if (startingIndex != -1 && IsListType(collectionType))
             {
                 var parent = element.Parent;
                 if (parent == null)

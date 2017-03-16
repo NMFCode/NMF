@@ -587,7 +587,9 @@ namespace NMF.Models
                 qString = qString.Substring(1);
                 foreach (var child in Children)
                 {
-                    if (child.IsIdentified && child.ToIdentifierString().ToUpperInvariant() == qString) return child;
+                    if (!child.IsIdentified) continue;
+                    var childId = child.ToIdentifierString();
+                    if (childId != null && childId.ToUpperInvariant() == qString) return child;
                 }
                 return null;
             }
