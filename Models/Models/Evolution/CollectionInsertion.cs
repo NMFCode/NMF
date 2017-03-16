@@ -8,6 +8,8 @@ using NMF.Serialization;
 
 namespace NMF.Models.Evolution
 {
+    [XmlNamespace("http://nmf.codeplex.com/changes")]
+    [XmlNamespacePrefix("changes")]
     [XmlConstructor(2)]
     public abstract class CollectionInsertionBase<T> : IModelChange
     {
@@ -61,6 +63,8 @@ namespace NMF.Models.Evolution
         protected abstract ICollection<T> GetNewElements(IModelRepository repository);
     }
 
+    [XmlNamespace("http://nmf.codeplex.com/changes")]
+    [XmlNamespacePrefix("changes")]
     [XmlConstructor(2)]
     public class CollectionInsertionComposition<T> : CollectionInsertionBase<T>
     {
@@ -105,6 +109,8 @@ namespace NMF.Models.Evolution
         }
     }
 
+    [XmlNamespace("http://nmf.codeplex.com/changes")]
+    [XmlNamespacePrefix("changes")]
     [XmlConstructor(2)]
     public class CollectionInsertionAssociation<T> : CollectionInsertionBase<T> where T : class, IModelElement
     {

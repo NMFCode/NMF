@@ -10,6 +10,8 @@ using NMF.Serialization;
 
 namespace NMF.Models.Evolution
 {
+    [XmlNamespace("http://nmf.codeplex.com/changes")]
+    [XmlNamespacePrefix("changes")]
     [XmlConstructor(2)]
     public abstract class CollectionResetBase<T> : IModelChange
     {
@@ -72,6 +74,8 @@ namespace NMF.Models.Evolution
         protected abstract ICollection<T> GetNewState(IModelRepository repository);
     }
 
+    [XmlNamespace("http://nmf.codeplex.com/changes")]
+    [XmlNamespacePrefix("changes")]
     [XmlConstructor(2)]
     public class CollectionResetComposition<T> : CollectionResetBase<T>
     {
@@ -131,6 +135,8 @@ namespace NMF.Models.Evolution
         }
     }
 
+    [XmlNamespace("http://nmf.codeplex.com/changes")]
+    [XmlNamespacePrefix("changes")]
     [XmlConstructor(2)]
     public class CollectionResetAssociation<T> : CollectionResetBase<T> where T : class, IModelElement
     {

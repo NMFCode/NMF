@@ -8,6 +8,8 @@ using NMF.Serialization;
 
 namespace NMF.Models.Evolution
 {
+    [XmlNamespace("http://nmf.codeplex.com/changes")]
+    [XmlNamespacePrefix("changes")]
     [XmlConstructor(2)]
     public abstract class CollectionDeletionBase<T> : IModelChange
     {
@@ -75,6 +77,8 @@ namespace NMF.Models.Evolution
         protected abstract ICollection<T> GetOldElements(IModelRepository repository);
     }
 
+    [XmlNamespace("http://nmf.codeplex.com/changes")]
+    [XmlNamespacePrefix("changes")]
     [XmlConstructor(2)]
     public class CollectionDeletionComposition<T> : CollectionDeletionBase<T>
     {
@@ -126,6 +130,8 @@ namespace NMF.Models.Evolution
         }
     }
 
+    [XmlNamespace("http://nmf.codeplex.com/changes")]
+    [XmlNamespacePrefix("changes")]
     [XmlConstructor(2)]
     public class CollectionDeletionAssociation<T> : CollectionDeletionBase<T> where T : class, IModelElement
     {

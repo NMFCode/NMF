@@ -96,14 +96,10 @@ namespace NMF.Models.Evolution
                 ^ PropertyName?.GetHashCode() ?? 0;
         }
     }
-
-<<<<<<< HEAD
+    
     [XmlNamespace("http://nmf.codeplex.com/changes")]
     [XmlNamespacePrefix("changes")]
-    [XmlConstructor(3)]
-=======
     [XmlConstructor(4)]
->>>>>>> execution-engine
     public class PropertyChangeReference<T> : PropertyChangeBase<T> where T : class, IModelElement
     {
         [XmlConstructorParameter(2)]
