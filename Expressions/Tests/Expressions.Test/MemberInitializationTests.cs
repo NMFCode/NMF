@@ -46,35 +46,5 @@ namespace NMF.Expressions.Test
             Assert.AreEqual(42, (test.Value as Dummy<int>).Item);
             Assert.AreNotSame(dummy, test.Value);
         }
-
-        [TestMethod]
-        public void MemberInitialization_Observable_NoUpdatesWhenDetached()
-        {
-            var update = false;
-            var dummy = new ObservableDummy<int>(23);
-
-            var test = Observable.Expression(() => new Dummy<int>() { Item = dummy.Item });
-
-            test.ValueChanged += (o, e) => update = true;
-
-            Assert.AreEqual(23, (test.Value as Dummy<int>).Item);
-            Assert.IsFalse(update);
-
-            test.Detach();
-
-            dummy.Item = 42;
-
-            Assert.IsFalse(update);
-            Assert.AreNotSame(dummy, test.Value);
-            Assert.AreEqual(23, test.Value.Item);
-
-            test.Attach();
-
-            Assert.AreEqual(42, test.Value.Item);
-
-            dummy.Item = 1;
-
-            Assert.AreEqual(1, test.Value.Item);
-        }
     }
 }

@@ -16,6 +16,7 @@ using NMF.Models;
 using NMF.Models.Collections;
 using NMF.Models.Expressions;
 using NMF.Models.Meta;
+using NMF.Models.Repository;
 using NMF.Serialization;
 using NMF.Utilities;
 using System;
@@ -60,6 +61,8 @@ namespace NMF.Models.Tests.Railway
         /// </summary>
         private ObservableCompositionList<ISensor> _definedBy;
         
+        private static IClass _classInstance;
+        
         public Route()
         {
             this._follows = new RouteFollowsCollection(this);
@@ -85,9 +88,10 @@ namespace NMF.Models.Tests.Railway
             {
                 if ((this._entry != value))
                 {
-                    this.OnEntryChanging(EventArgs.Empty);
-                    this.OnPropertyChanging("Entry");
                     ISemaphore old = this._entry;
+                    ValueChangedEventArgs e = new ValueChangedEventArgs(old, value);
+                    this.OnEntryChanging(e);
+                    this.OnPropertyChanging("Entry", e);
                     this._entry = value;
                     if ((old != null))
                     {
@@ -97,7 +101,6 @@ namespace NMF.Models.Tests.Railway
                     {
                         value.Deleted += this.OnResetEntry;
                     }
-                    ValueChangedEventArgs e = new ValueChangedEventArgs(old, value);
                     this.OnEntryChanged(e);
                     this.OnPropertyChanged("Entry", e);
                 }
@@ -136,9 +139,10 @@ namespace NMF.Models.Tests.Railway
             {
                 if ((this._exit != value))
                 {
-                    this.OnExitChanging(EventArgs.Empty);
-                    this.OnPropertyChanging("Exit");
                     ISemaphore old = this._exit;
+                    ValueChangedEventArgs e = new ValueChangedEventArgs(old, value);
+                    this.OnExitChanging(e);
+                    this.OnPropertyChanging("Exit", e);
                     this._exit = value;
                     if ((old != null))
                     {
@@ -148,7 +152,6 @@ namespace NMF.Models.Tests.Railway
                     {
                         value.Deleted += this.OnResetExit;
                     }
-                    ValueChangedEventArgs e = new ValueChangedEventArgs(old, value);
                     this.OnExitChanged(e);
                     this.OnPropertyChanged("Exit", e);
                 }
@@ -195,43 +198,47 @@ namespace NMF.Models.Tests.Railway
         }
         
         /// <summary>
-        /// Gets the Class element that describes the structure of this type
+        /// Gets the Class model for this type
         /// </summary>
-        public new static NMF.Models.Meta.IClass ClassInstance
+        public new static IClass ClassInstance
         {
             get
             {
-                return (IClass)NMF.Models.Repository.MetaRepository.Instance.ResolveType("http://www.semanticweb.org/ontologies/2015/ttc/trainbenchmark#//Route/");
+                if ((_classInstance == null))
+                {
+                    _classInstance = ((IClass)(MetaRepository.Instance.Resolve("http://www.semanticweb.org/ontologies/2015/ttc/trainbenchmark#//Route/")));
+                }
+                return _classInstance;
             }
         }
         
         /// <summary>
         /// Gets fired before the Entry property changes its value
         /// </summary>
-        public event EventHandler EntryChanging;
+        public event System.EventHandler<ValueChangedEventArgs> EntryChanging;
         
         /// <summary>
         /// Gets fired when the Entry property changed its value
         /// </summary>
-        public event EventHandler<ValueChangedEventArgs> EntryChanged;
+        public event System.EventHandler<ValueChangedEventArgs> EntryChanged;
         
         /// <summary>
         /// Gets fired before the Exit property changes its value
         /// </summary>
-        public event EventHandler ExitChanging;
+        public event System.EventHandler<ValueChangedEventArgs> ExitChanging;
         
         /// <summary>
         /// Gets fired when the Exit property changed its value
         /// </summary>
-        public event EventHandler<ValueChangedEventArgs> ExitChanged;
+        public event System.EventHandler<ValueChangedEventArgs> ExitChanged;
         
         /// <summary>
         /// Raises the EntryChanging event
         /// </summary>
         /// <param name="eventArgs">The event data</param>
-        protected virtual void OnEntryChanging(EventArgs eventArgs)
+        protected virtual void OnEntryChanging(ValueChangedEventArgs eventArgs)
         {
-            EventHandler handler = this.EntryChanging;
+            System.EventHandler<ValueChangedEventArgs> handler = this.EntryChanging;
             if ((handler != null))
             {
                 handler.Invoke(this, eventArgs);
@@ -244,7 +251,7 @@ namespace NMF.Models.Tests.Railway
         /// <param name="eventArgs">The event data</param>
         protected virtual void OnEntryChanged(ValueChangedEventArgs eventArgs)
         {
-            EventHandler<ValueChangedEventArgs> handler = this.EntryChanged;
+            System.EventHandler<ValueChangedEventArgs> handler = this.EntryChanged;
             if ((handler != null))
             {
                 handler.Invoke(this, eventArgs);
@@ -256,7 +263,7 @@ namespace NMF.Models.Tests.Railway
         /// </summary>
         /// <param name="sender">The object that sent this reset request</param>
         /// <param name="eventArgs">The event data for the reset event</param>
-        private void OnResetEntry(object sender, EventArgs eventArgs)
+        private void OnResetEntry(object sender, System.EventArgs eventArgs)
         {
             this.Entry = null;
         }
@@ -285,9 +292,9 @@ namespace NMF.Models.Tests.Railway
         /// Raises the ExitChanging event
         /// </summary>
         /// <param name="eventArgs">The event data</param>
-        protected virtual void OnExitChanging(EventArgs eventArgs)
+        protected virtual void OnExitChanging(ValueChangedEventArgs eventArgs)
         {
-            EventHandler handler = this.ExitChanging;
+            System.EventHandler<ValueChangedEventArgs> handler = this.ExitChanging;
             if ((handler != null))
             {
                 handler.Invoke(this, eventArgs);
@@ -300,7 +307,7 @@ namespace NMF.Models.Tests.Railway
         /// <param name="eventArgs">The event data</param>
         protected virtual void OnExitChanged(ValueChangedEventArgs eventArgs)
         {
-            EventHandler<ValueChangedEventArgs> handler = this.ExitChanged;
+            System.EventHandler<ValueChangedEventArgs> handler = this.ExitChanged;
             if ((handler != null))
             {
                 handler.Invoke(this, eventArgs);
@@ -312,7 +319,7 @@ namespace NMF.Models.Tests.Railway
         /// </summary>
         /// <param name="sender">The object that sent this reset request</param>
         /// <param name="eventArgs">The event data for the reset event</param>
-        private void OnResetExit(object sender, EventArgs eventArgs)
+        private void OnResetExit(object sender, System.EventArgs eventArgs)
         {
             this.Exit = null;
         }
@@ -469,7 +476,11 @@ namespace NMF.Models.Tests.Railway
         /// </summary>
         public override IClass GetClass()
         {
-            return ((IClass)(NMF.Models.Repository.MetaRepository.Instance.Resolve("http://www.semanticweb.org/ontologies/2015/ttc/trainbenchmark#//Route/")));
+            if ((_classInstance == null))
+            {
+                _classInstance = ((IClass)(MetaRepository.Instance.Resolve("http://www.semanticweb.org/ontologies/2015/ttc/trainbenchmark#//Route/")));
+            }
+            return _classInstance;
         }
         
         /// <summary>
@@ -859,7 +870,7 @@ namespace NMF.Models.Tests.Railway
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
             public EntryProxy(IRoute modelElement) : 
-                    base(modelElement)
+                    base(modelElement, "entry")
             {
             }
             
@@ -877,24 +888,6 @@ namespace NMF.Models.Tests.Railway
                     this.ModelElement.Entry = value;
                 }
             }
-            
-            /// <summary>
-            /// Registers an event handler to subscribe specifically on the changed event for this property
-            /// </summary>
-            /// <param name="handler">The handler that should be subscribed to the property change event</param>
-            protected override void RegisterChangeEventHandler(System.EventHandler<NMF.Expressions.ValueChangedEventArgs> handler)
-            {
-                this.ModelElement.EntryChanged += handler;
-            }
-            
-            /// <summary>
-            /// Registers an event handler to subscribe specifically on the changed event for this property
-            /// </summary>
-            /// <param name="handler">The handler that should be unsubscribed from the property change event</param>
-            protected override void UnregisterChangeEventHandler(System.EventHandler<NMF.Expressions.ValueChangedEventArgs> handler)
-            {
-                this.ModelElement.EntryChanged -= handler;
-            }
         }
         
         /// <summary>
@@ -908,7 +901,7 @@ namespace NMF.Models.Tests.Railway
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
             public ExitProxy(IRoute modelElement) : 
-                    base(modelElement)
+                    base(modelElement, "exit")
             {
             }
             
@@ -925,24 +918,6 @@ namespace NMF.Models.Tests.Railway
                 {
                     this.ModelElement.Exit = value;
                 }
-            }
-            
-            /// <summary>
-            /// Registers an event handler to subscribe specifically on the changed event for this property
-            /// </summary>
-            /// <param name="handler">The handler that should be subscribed to the property change event</param>
-            protected override void RegisterChangeEventHandler(System.EventHandler<NMF.Expressions.ValueChangedEventArgs> handler)
-            {
-                this.ModelElement.ExitChanged += handler;
-            }
-            
-            /// <summary>
-            /// Registers an event handler to subscribe specifically on the changed event for this property
-            /// </summary>
-            /// <param name="handler">The handler that should be unsubscribed from the property change event</param>
-            protected override void UnregisterChangeEventHandler(System.EventHandler<NMF.Expressions.ValueChangedEventArgs> handler)
-            {
-                this.ModelElement.ExitChanged -= handler;
             }
         }
     }

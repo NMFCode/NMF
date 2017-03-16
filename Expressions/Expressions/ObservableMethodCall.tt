@@ -18,7 +18,7 @@ namespace NMF.Expressions
     for(int i = 0; i <= 15; i++)
     {
 #>
-	internal class ObservableMethodCall<T, <# for (int j = 1; j <= i; j++) { #>T<#= j #>, <# } #>TResult> : ObservableMethodBase<T, Func<<# for (int j = 1; j <= i; j++) { #>T<#= j #>, <# } #>TResult>, TResult>
+    internal class ObservableMethodCall<T, <# for (int j = 1; j <= i; j++) { #>T<#= j #>, <# } #>TResult> : ObservableMethodBase<T, Func<<# for (int j = 1; j <= i; j++) { #>T<#= j #>, <# } #>TResult>, TResult>
     {
         public ObservableMethodCall(MethodCallExpression node, ObservableExpressionBinder binder)
             : this(binder.VisitObservable<T>(node.Object), node.Method<# for (int j = 1; j <= i; j++) { #>, binder.VisitObservable<T<#= j #>>(node.Arguments[<#= j-1 #>])<# } #>) { }
@@ -39,42 +39,33 @@ namespace NMF.Expressions
         public INotifyExpression<T<#= j #>> Argument<#= j #> { get; private set; }
 <# } #>
 
-        protected override TResult GetValue()
-        {
-            return Function(<# if (i > 0) { #>Argument1.Value<# } for (int j = 2; j <= i; j++) { #>, Argument<#= j #>.Value<# } #>);
-        }
-
-        protected override void AttachCore()
-        {
-            base.AttachCore();
-            var argChanged = new EventHandler<ValueChangedEventArgs>(ArgumentChanged);
-<# for (int j = 1; j <= i; j++) { #>
-            Argument<#= j #>.Attach();
-            Argument<#= j #>.ValueChanged += argChanged;
-<# } #>
-        }
-
-        protected override void DetachCore()
-        {
-            base.DetachCore();
-            var argChanged = new EventHandler<ValueChangedEventArgs>(ArgumentChanged);
-<# for (int j = 1; j <= i; j++) { #>
-            Argument<#= j #>.ValueChanged -= argChanged;
-            Argument<#= j #>.Detach();
-<# } #>
-        }
-
-        public override bool CanBeConstant
+        public override bool IsConstant
         {
             get
             {
-                return base.CanBeConstant<# for (int j = 1; j <= i; j++) { #> && Argument<#= j #>.IsConstant<# } #>;
+                return Target.IsConstant<# for (int j = 1; j <= i; j++) { #> && Argument<#= j #>.IsConstant<# } #>;
             }
         }
 
         public override bool IsParameterFree
         {
             get { return Target.IsParameterFree<# for (int j = 1; j <= i; j++) { #> && Argument<#= j #>.IsParameterFree<# } #>; }
+        }
+
+        public override IEnumerable<INotifiable> Dependencies
+        {
+            get
+            {
+                yield return Target;
+<# for (int j = 1; j <= i; j++) { #>
+                yield return Argument<#= j #>;
+<# } #>
+            }
+        }
+
+        protected override TResult GetValue()
+        {
+            return Function(<# if (i > 0) { #>Argument1.Value<# } for (int j = 2; j <= i; j++) { #>, Argument<#= j #>.Value<# } #>);
         }
 
         public override INotifyExpression<TResult> ApplyParameters(IDictionary<string, object> parameters)

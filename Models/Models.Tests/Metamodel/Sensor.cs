@@ -16,6 +16,7 @@ using NMF.Models;
 using NMF.Models.Collections;
 using NMF.Models.Expressions;
 using NMF.Models.Meta;
+using NMF.Models.Repository;
 using NMF.Serialization;
 using NMF.Utilities;
 using System;
@@ -44,6 +45,8 @@ namespace NMF.Models.Tests.Railway
         /// The backing field for the Elements property
         /// </summary>
         private SensorElementsCollection _elements;
+        
+        private static IClass _classInstance;
         
         public Sensor()
         {
@@ -92,13 +95,17 @@ namespace NMF.Models.Tests.Railway
         }
         
         /// <summary>
-        /// Gets the Class element that describes the structure of this type
+        /// Gets the Class model for this type
         /// </summary>
-        public new static NMF.Models.Meta.IClass ClassInstance
+        public new static IClass ClassInstance
         {
             get
             {
-                return (IClass)NMF.Models.Repository.MetaRepository.Instance.ResolveType("http://www.semanticweb.org/ontologies/2015/ttc/trainbenchmark#//Sensor/");
+                if ((_classInstance == null))
+                {
+                    _classInstance = ((IClass)(MetaRepository.Instance.Resolve("http://www.semanticweb.org/ontologies/2015/ttc/trainbenchmark#//Sensor/")));
+                }
+                return _classInstance;
             }
         }
         
@@ -178,7 +185,11 @@ namespace NMF.Models.Tests.Railway
         /// </summary>
         public override IClass GetClass()
         {
-            return ((IClass)(NMF.Models.Repository.MetaRepository.Instance.Resolve("http://www.semanticweb.org/ontologies/2015/ttc/trainbenchmark#//Sensor/")));
+            if ((_classInstance == null))
+            {
+                _classInstance = ((IClass)(MetaRepository.Instance.Resolve("http://www.semanticweb.org/ontologies/2015/ttc/trainbenchmark#//Sensor/")));
+            }
+            return _classInstance;
         }
         
         /// <summary>

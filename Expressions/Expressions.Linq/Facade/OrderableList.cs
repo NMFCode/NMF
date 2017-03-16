@@ -9,25 +9,35 @@ namespace NMF.Expressions.Linq
 {
     public class OrderableList<T> : ObservableEnumerable<T>, IOrderableNotifyEnumerable<T>
     {
+        private readonly Dictionary<IEnumerable<T>, CollectionChangeListener<T>> changeListener;
+
+        public override IEnumerable<INotifiable> Dependencies { get { return Enumerable.Empty<INotifiable>(); } }
+        
         public OrderableList()
         {
             Sequences = new NotifyCollection<IEnumerable<T>>();
             Sequences.CollectionChanged += SequencesCollectionChanged;
+            changeListener = new Dictionary<IEnumerable<T>, CollectionChangeListener<T>>();
         }
 
         void SequencesCollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
         {
             if (e.Action != NotifyCollectionChangedAction.Reset)
             {
+                var removed = new List<T>();
+                var added = new List<T>();
+
                 if (e.OldItems != null)
                 {
                     foreach (IEnumerable<T> sequence in e.OldItems)
                     {
-                        OnRemoveItems(sequence);
+                        removed.AddRange(sequence);
                         INotifyCollectionChanged notifier = sequence as INotifyCollectionChanged;
                         if (notifier != null)
                         {
-                            notifier.CollectionChanged -= SequenceCollectionChanged;
+                            var listener = changeListener[sequence];
+                            listener.Unsubscribe();
+                            changeListener.Remove(sequence);
                         }
                     }
                 }
@@ -35,32 +45,20 @@ namespace NMF.Expressions.Linq
                 {
                     foreach (IEnumerable<T> sequence in e.NewItems)
                     {
-                        OnAddItems(sequence);
+                        added.AddRange(sequence);
                         INotifyCollectionChanged notifier = sequence as INotifyCollectionChanged;
                         if (notifier != null)
                         {
-                            notifier.CollectionChanged += SequenceCollectionChanged;
+                            var listener = new CollectionChangeListener<T>(this);
+                            listener.Subscribe(notifier);
+                            changeListener.Add(sequence, listener);
                         }
                     }
                 }
-            }
-            else
-            {
-                OnCleared();
-            }
-        }
 
-        private void SequenceCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
-        {
-            if (e.Action != NotifyCollectionChangedAction.Reset)
-            {
-                OnCollectionChanged(e);
+                ExecutionMetaData.Results.Add(new CollectionChangedNotificationResult<T>(this, added, removed));
             }
-            else
-            {
-                OnCleared();
-                OnAddItems(this);
-            }
+            ExecutionEngine.Current.InvalidateNode(this);
         }
 
         public NotifyCollection<IEnumerable<T>> Sequences { get; private set; }
@@ -70,13 +68,37 @@ namespace NMF.Expressions.Linq
             return Enumerable.SelectMany(Sequences, coll => coll).GetEnumerator();
         }
 
-        protected override void AttachCore() { }
+        public IEnumerable<T> GetSequenceForItem(T item)
+        {
+            return Sequences.FirstOrDefault(s => s.Contains(item));
+        }
 
-        protected override void DetachCore() { }
-
-        INotifyEnumerable<IEnumerable<T>> IOrderableNotifyEnumerable<T>.Sequences
+        IEnumerable<IEnumerable<T>> IOrderableNotifyEnumerable<T>.Sequences
         {
             get { return Sequences; }
+        }
+
+        public override INotificationResult Notify(IList<INotificationResult> sources)
+        {
+            if (sources.Count == 0)
+            {
+                OnCleared();
+                return new CollectionChangedNotificationResult<T>(this);
+            }
+            else
+            {
+                var change = (ICollectionChangedNotificationResult)sources[0];
+                if (change.IsReset)
+                    OnCleared();
+                else
+                {
+                    if (change.RemovedItems != null)
+                        OnRemoveItems(change.RemovedItems.Cast<T>());
+                    if (change.AddedItems != null)
+                        OnAddItems(change.AddedItems.Cast<T>());
+                }
+                return CollectionChangedNotificationResult<T>.Transfer(change, this);
+            }
         }
     }
 }

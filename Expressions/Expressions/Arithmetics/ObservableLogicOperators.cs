@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 
 namespace NMF.Expressions.Arithmetics
@@ -17,6 +18,8 @@ namespace NMF.Expressions.Arithmetics
 
         public ObservableLogicAnd(INotifyExpression<bool> left, INotifyExpression<bool> right)
             : base(left, right) { }
+
+        public override ExpressionType NodeType { get { return ExpressionType.And; } }
 
         protected override bool GetValue()
         {
@@ -42,6 +45,8 @@ namespace NMF.Expressions.Arithmetics
         public ObservableLogicOr(INotifyExpression<bool> left, INotifyExpression<bool> right)
             : base(left, right) { }
 
+        public override ExpressionType NodeType { get { return ExpressionType.Or; } }
+
         protected override bool GetValue()
         {
             return Left.Value || Right.Value;
@@ -66,6 +71,8 @@ namespace NMF.Expressions.Arithmetics
         public ObservableLogicXor(INotifyExpression<bool> left, INotifyExpression<bool> right)
             : base(left, right) { }
 
+        public override ExpressionType NodeType { get { return ExpressionType.ExclusiveOr; } }
+
         protected override bool GetValue()
         {
             return Left.Value ^ Right.Value;
@@ -86,49 +93,53 @@ namespace NMF.Expressions.Arithmetics
                 return "({0} && {1})";
             }
         }
-
+		
         public ObservableLogicAndAlso(INotifyExpression<bool> left, INotifyExpression<bool> right)
             : base(left, right) { }
 
-        protected override void AttachCore()
+        public override ExpressionType NodeType
         {
-            Left.Attach();
-            if (Left.Value)
+            get { return ExpressionType.AndAlso; }
+        }
+
+        public override IEnumerable<INotifiable> Dependencies
+        {
+            get
             {
-                Right.Attach();
+                yield return Left;
+                if (Left.Value)
+                    yield return Right;
             }
         }
-
-        protected override void DetachCore()
-        {
-            Left.Detach();
-            if (Right.IsAttached) Right.Detach();
-        }
-
+        
         protected override bool GetValue()
         {
-            if (!Left.Value) return false;
-            if (!Right.IsAttached) Right.Attach();
+            if (!Left.Value)
+                return false;
             return Right.Value;
-        }
-
-        protected override void LeftChanged(object sender, ValueChangedEventArgs e)
-        {
-            if (!IsAttached) return;
-            if (Left.Value)
-            {
-                Right.Attach();
-            }
-            else
-            {
-                Right.Detach();
-            }
-            Refresh();
         }
 
         public override INotifyExpression<bool> ApplyParameters(IDictionary<string, object> parameters)
         {
             return new ObservableLogicAndAlso(Left.ApplyParameters(parameters), Right.ApplyParameters(parameters));
+        }
+
+        public override INotificationResult Notify(IList<INotificationResult> sources)
+        {
+            ValueChangedNotificationResult<bool> leftChange = null;
+            if (sources.Count >= 1 && sources[0].Source == Left)
+                leftChange = sources[0] as ValueChangedNotificationResult<bool>;
+            else if (sources.Count >= 2 && sources[1].Source == Left)
+                leftChange = sources[1] as ValueChangedNotificationResult<bool>;
+            
+            if (leftChange != null)
+            {
+                if (leftChange.NewValue)
+                    Right.Successors.Set(this);
+                else
+                    Right.Successors.Unset(this);
+            }
+            return base.Notify(sources);
         }
     }
 
@@ -141,49 +152,53 @@ namespace NMF.Expressions.Arithmetics
                 return "({0} || {1})";
             }
         }
-
+		
         public ObservableLogicOrElse(INotifyExpression<bool> left, INotifyExpression<bool> right)
             : base(left, right) { }
 
-        protected override void AttachCore()
+        public override ExpressionType NodeType
         {
-            Left.Attach();
-            if (!Left.Value)
-            {
-                Right.Attach();
-            }
+            get { return ExpressionType.OrElse; }
         }
 
-        protected override void DetachCore()
+        public override IEnumerable<INotifiable> Dependencies
         {
-            Left.Detach();
-            if (Right.IsAttached) Right.Detach();
+            get
+            {
+                yield return Left;
+                if (!Left.Value)
+                    yield return Right;
+            }
         }
 
         protected override bool GetValue()
         {
-            if (Left.Value) return true;
-            if (!Right.IsAttached) Right.Attach();
-            return Right.Value;
-        }
-
-        protected override void LeftChanged(object sender, ValueChangedEventArgs e)
-        {
-            if (!IsAttached) return;
             if (Left.Value)
-            {
-                Right.Detach();
-            }
-            else
-            {
-                Right.Attach();
-            }
-            Refresh();
+                return true;
+            return Right.Value;
         }
 
         public override INotifyExpression<bool> ApplyParameters(IDictionary<string, object> parameters)
         {
             return new ObservableLogicOrElse(Left.ApplyParameters(parameters), Right.ApplyParameters(parameters));
+        }
+
+        public override INotificationResult Notify(IList<INotificationResult> sources)
+        {
+            ValueChangedNotificationResult<bool> leftChange = null;
+            if (sources.Count >= 1 && sources[0].Source == Left)
+                leftChange = sources[0] as ValueChangedNotificationResult<bool>;
+            else if (sources.Count >= 2 && sources[1].Source == Left)
+                leftChange = sources[1] as ValueChangedNotificationResult<bool>;
+
+            if (leftChange != null)
+            {
+                if (leftChange.NewValue)
+                    Right.Successors.Unset(this);
+                else
+                    Right.Successors.Set(this);
+            }
+            return base.Notify(sources);
         }
     }
 
@@ -199,6 +214,8 @@ namespace NMF.Expressions.Arithmetics
 
         public ObservableLogicNot(INotifyExpression<bool> inner)
             : base(inner) { }
+
+        public override ExpressionType NodeType { get { return ExpressionType.Not; } }
 
         protected override bool GetValue()
         {

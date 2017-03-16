@@ -10,7 +10,11 @@ namespace NMF.Expressions.Linq
 {
     public abstract class ObservableEnumerable<T> : INotifyEnumerable<T>, ICollection<T>, IEnumerable<T>, INotifyCollectionChanged, IDisposable
     {
-        private int attachedCount;
+        public ObservableEnumerable()
+        {
+            Successors.Attached += (obj, e) => Attach();
+            Successors.Detached += (obj, e) => Detach();
+        }
 
         [DebuggerStepThrough]
         protected void OnAddItem(T item, int index = 0)
@@ -47,10 +51,13 @@ namespace NMF.Expressions.Linq
         [DebuggerStepThrough]
         protected void OnReplaceItems(IEnumerable<T> oldItems, IEnumerable<T> newItems, int index = 0)
         {
-            OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Replace,
-                newItems as List<T> ?? newItems.ToList(),
-                oldItems as List<T> ?? oldItems.ToList(),
-                index));
+            var added = newItems as List<T> ?? newItems.ToList();
+            var removed = oldItems as List<T> ?? oldItems.ToList();
+            if (added.Count > 0 && removed.Count > 0)
+            {
+                OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Replace,
+                    added, removed, index));
+            }
         }
 
         [DebuggerStepThrough]
@@ -69,6 +76,17 @@ namespace NMF.Expressions.Linq
         protected void OnMoveItem(T item, int oldIndex = 0, int newIndex = 0)
         {
             OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Move, item, newIndex, oldIndex));
+        }
+
+        [DebuggerStepThrough]
+        protected void OnMoveItems(IEnumerable<T> items, int oldIndex = 0, int newIndex = 0)
+        {
+            var moved = items as List<T> ?? items.ToList();
+            if (moved.Count > 0)
+            {
+                OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Move,
+                moved, newIndex, oldIndex));
+            }
         }
 
         [DebuggerStepThrough]
@@ -128,7 +146,7 @@ namespace NMF.Expressions.Linq
             IEqualityComparer<T> comparer = EqualityComparer<T>.Default;
             foreach (var element in this)
             {
-		        if (comparer.Equals(element, item))
+                if (comparer.Equals(element, item))
                 {
                     return true;
                 }
@@ -163,36 +181,30 @@ namespace NMF.Expressions.Linq
             }
         }
 
-        public void Attach()
+        public ISuccessorList Successors { get; } = NotifySystem.DefaultSystem.CreateSuccessorList();
+
+        public abstract IEnumerable<INotifiable> Dependencies { get; }
+
+        public ExecutionMetaData ExecutionMetaData { get; } = new ExecutionMetaData();
+
+        private void Attach()
         {
-            if (attachedCount == 0)
-            {
-                AttachCore();
-                OnCleared();
-            }
-            attachedCount++;
+            foreach (var dep in Dependencies)
+                dep.Successors.Set(this);
+            OnAttach();
         }
 
-        protected abstract void AttachCore();
-
-        protected abstract void DetachCore();
-
-        public void Detach()
+        private void Detach()
         {
-            if (attachedCount == 1)
-            {
-                DetachCore();
-            }
-            attachedCount--;
-            if (attachedCount < 0)
-            {
-                throw new InvalidOperationException("Cannot detach more often than has been attached");
-            }
+            OnDetach();
+            foreach (var dep in Dependencies)
+                dep.Successors.Unset(this);
         }
 
-        public bool IsAttached
-        {
-            get { return attachedCount > 0; }
-        }
+        protected virtual void OnAttach() { }
+
+        protected virtual void OnDetach() { }
+
+        public abstract INotificationResult Notify(IList<INotificationResult> sources);
     }
 }

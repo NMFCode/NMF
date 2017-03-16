@@ -1,20 +1,35 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
 
 namespace NMF.Expressions
 {
-    class ObservableProxyExpression<T> : Expression, INotifyExpression<T>
+    internal class ObservableProxyExpression<T> : Expression, INotifyExpression<T>
     {
         protected INotifyValue<T> value;
+
+        public event EventHandler<ValueChangedEventArgs> ValueChanged;
 
         public ObservableProxyExpression(INotifyValue<T> value)
         {
             if (value == null) throw new ArgumentNullException("value");
 
             this.value = value;
+
+            Successors.Attached += (obj, e) =>
+            {
+                foreach (var dep in Dependencies)
+                    dep.Successors.Set(this);
+            };
+            Successors.Detached += (obj, e) =>
+            {
+                foreach (var dep in Dependencies)
+                    dep.Successors.Unset(this);
+            };
         }
 
         public bool CanBeConstant
@@ -27,13 +42,6 @@ namespace NMF.Expressions
             get { return true; }
         }
 
-        public INotifyExpression<T> ApplyParameters(IDictionary<string, object> parameters)
-        {
-            return this;
-        }
-
-        public void Refresh() { }
-
         public T Value
         {
             get { return value.Value; }
@@ -41,73 +49,66 @@ namespace NMF.Expressions
 
         public object ValueObject
         {
-            get
-            {
-                return Value;
-            }
+            get { return Value; }
         }
 
         public override bool CanReduce
         {
-            get
-            {
-                return false;
-            }
+            get { return false; }
         }
 
         public override ExpressionType NodeType
         {
-            get
-            {
-                return ExpressionType.Parameter;
-            }
+            get { return ExpressionType.Parameter; }
         }
 
         public override Type Type
         {
-            get
-            {
-                return typeof(T);
-            }
+            get { return typeof(T); }
         }
-
-        public event EventHandler<ValueChangedEventArgs> ValueChanged
-        {
-            add
-            {
-                this.value.ValueChanged += value;
-            }
-            remove
-            {
-                this.value.ValueChanged -= value;
-            }
-        }
-
-        public void Detach()
-        {
-            this.value.Detach();
-        }
-
-        public void Attach()
-        {
-            this.value.Attach();
-        }
-
-        public bool IsAttached
-        {
-            get { return this.value.IsAttached; }
-        }
-
 
         public bool IsConstant
         {
             get { return this is ConstantValue<T>; }
         }
 
+        public IEnumerable<INotifiable> Dependencies
+        {
+            get
+            {
+                yield return value;
+            }
+        }
 
+        public ISuccessorList Successors { get; } = NotifySystem.DefaultSystem.CreateSuccessorList();
+
+        public ExecutionMetaData ExecutionMetaData { get; } = new ExecutionMetaData();
+
+        public INotifyExpression<T> ApplyParameters(IDictionary<string, object> parameters)
+        {
+            return this;
+        }
+        
         public new INotifyExpression<T> Reduce()
         {
             return this;
+        }
+
+        public void Dispose()
+        {
+            Successors.UnsetAll();
+        }
+
+        public INotificationResult Notify(IList<INotificationResult> sources)
+        {
+            if (sources.Count > 0)
+            {
+                var change = (ValueChangedNotificationResult<T>)sources[0];
+                if (ValueChanged != null)
+                    ValueChanged(this, new ValueChangedEventArgs(change.OldValue, Value));
+                return new ValueChangedNotificationResult<T>(this, change.OldValue, Value);
+            }
+            return new ValueChangedNotificationResult<T>(this, Value, Value);
         }
 
         INotifyExpression INotifyExpression.ApplyParameters(IDictionary<string, object> parameters)
@@ -116,7 +117,7 @@ namespace NMF.Expressions
         }
     }
 
-    class ObservableProxyReversableExpression<T> : ObservableProxyExpression<T>, INotifyReversableExpression<T>
+    internal class ObservableProxyReversableExpression<T> : ObservableProxyExpression<T>, INotifyReversableExpression<T>
     {
         public ObservableProxyReversableExpression(INotifyReversableValue<T> value)
             : base(value) { }

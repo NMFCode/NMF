@@ -16,6 +16,7 @@ using NMF.Models;
 using NMF.Models.Collections;
 using NMF.Models.Expressions;
 using NMF.Models.Meta;
+using NMF.Models.Repository;
 using NMF.Serialization;
 using NMF.Utilities;
 using System;
@@ -50,12 +51,12 @@ namespace NMF.Models.Tests.Railway
         /// <summary>
         /// Gets fired before the Length property changes its value
         /// </summary>
-        event EventHandler LengthChanging;
+        event System.EventHandler<ValueChangedEventArgs> LengthChanging;
         
         /// <summary>
         /// Gets fired when the Length property changed its value
         /// </summary>
-        event EventHandler<ValueChangedEventArgs> LengthChanged;
+        event System.EventHandler<ValueChangedEventArgs> LengthChanged;
     }
 }
 

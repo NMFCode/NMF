@@ -32,6 +32,11 @@ namespace NMF.Models.Evolution
             //NMF does this automatically when adding a new element to a parent
         }
 
+        public void Invert(IModelRepository repository)
+        {
+            //Is done automatically by NMF
+        }
+
         public override bool Equals(object obj)
         {
             if (ReferenceEquals(this, obj))

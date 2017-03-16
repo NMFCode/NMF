@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace NMF.Expressions
 {
@@ -11,20 +13,25 @@ namespace NMF.Expressions
             this.value = value;
         }
 
+        public IEnumerable<INotifiable> Dependencies { get { return Enumerable.Empty<INotifiable>(); } }
+        
+        public event EventHandler<ValueChangedEventArgs> ValueChanged { add { } remove { } }
+
+        public ISuccessorList Successors { get; } = SingletonSuccessorList.Instance;
+
+        public ExecutionMetaData ExecutionMetaData { get; } = new ExecutionMetaData();
+        
+
         public T Value
         {
             get { return value; }
         }
 
-        event EventHandler<ValueChangedEventArgs> INotifyValue<T>.ValueChanged { add { } remove { } }
-
-        void INotifyValue<T>.Detach() { }
-
-        void INotifyValue<T>.Attach() { }
-
-        bool INotifyValue<T>.IsAttached
+        public INotificationResult Notify(IList<INotificationResult> sources)
         {
-            get { return true; }
+            throw new InvalidOperationException("A constant cannot have a dependency and therefore cannot be notified of a dependency change.");
         }
+
+        public void Dispose() { }
     }
 }

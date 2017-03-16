@@ -1,4 +1,6 @@
 ﻿using NMF.Expressions;
+using NMF.Expressions.Linq;
+using NMF.Utilities;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -8,40 +10,29 @@ using System.Text;
 
 namespace NMF.Models.Collections
 {
-    public class DescendantsCollection : IEnumerableExpression<IModelElement>, INotifyEnumerable<IModelElement>
+    public class DescendantsCollection : IEnumerableExpression<IModelElement>, INotifyCollectionChanged
     {
         public IModelElement Element { get; private set; }
 
         private INotifyEnumerable<IModelElement> childrenCollection;
-        private Dictionary<IModelElement, INotifyEnumerable<IModelElement>> childCollections;
-        private int attachedCount = 0;
+        private Dictionary<IModelElement, IEnumerableExpression<IModelElement>> childCollections;
 
         public DescendantsCollection(IModelElement element)
         {
             if (element == null) throw new ArgumentNullException(nameof(element));
 
             this.Element = element;
+            Attach();
         }
 
         public INotifyEnumerable<IModelElement> AsNotifiable()
         {
-            Attach();
-            return this;
+            return this.WithUpdates();
         }
 
         public IEnumerator<IModelElement> GetEnumerator()
         {
-            var stack = new Stack<IModelElement>(Element.Children);
-            while (stack.Count > 0)
-            {
-                var element = stack.Pop();
-                if (element == null) continue;
-                yield return element;
-                foreach (var ancestor in element.Children)
-                {
-                    stack.Push(ancestor);
-                }
-            }
+            return Element.Children.SelectRecursive(e => e.Children).GetEnumerator();
         }
 
         IEnumerator IEnumerable.GetEnumerator()
@@ -54,115 +45,107 @@ namespace NMF.Models.Collections
             return AsNotifiable();
         }
 
-
-        public void Attach()
-        {
-            attachedCount++;
-            if (attachedCount == 1)
-            {
-                AttachCore();
-            }
-        }
-
-        protected void AttachCore()
+        private void Attach()
         {
             if (childrenCollection == null)
             {
                 childrenCollection = Element.Children.AsNotifiable();
+                childrenCollection.Successors.SetDummy();
+                childrenCollection.CollectionChanged += ChildrenChanged;
             }
-            else
-            {
-                childrenCollection.Attach();
-            }
-            childrenCollection.CollectionChanged += ChildrenChanged;
+
             if (childCollections == null)
             {
-                childCollections = new Dictionary<IModelElement, INotifyEnumerable<IModelElement>>();
+                childCollections = new Dictionary<IModelElement, IEnumerableExpression<IModelElement>>();
             }
             foreach (var child in childrenCollection)
             {
-                var descendants = child.Descendants().AsNotifiable();
-                descendants.CollectionChanged += PropagateChildChanges;
+                var descendants = child.Descendants();
+                ((INotifyCollectionChanged)descendants).CollectionChanged += ChildDescendantsChanged;
                 childCollections.Add(child, descendants);
             }
+        }
+
+        private void Detach()
+        {
+            foreach (INotifyCollectionChanged child in childCollections.Values)
+            {
+                child.CollectionChanged -= ChildDescendantsChanged;
+            }
+            childCollections.Clear();
+
+            childrenCollection.CollectionChanged -= ChildrenChanged;
+            childrenCollection.Successors.UnsetAll();
+        }
+
+        public event NotifyCollectionChangedEventHandler CollectionChanged;
+
+        protected virtual void OnCollectionChanged(NotifyCollectionChangedEventArgs e)
+        {
+            if (CollectionChanged != null)
+                CollectionChanged(this, e);
+        }
+
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            Detach();
         }
 
         private void ChildrenChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
             if (e.Action == NotifyCollectionChangedAction.Reset)
             {
+                Detach();
+                Attach();
                 OnCollectionChanged(e);
+                return;
             }
-            else
+            
+            if (e.OldItems != null)
             {
-                if (e.NewItems != null)
+                var removed = new List<IModelElement>();
+                foreach (IModelElement child in e.OldItems)
                 {
-                    var added = new List<IModelElement>();
-                    foreach (IModelElement child in e.NewItems)
+                    IEnumerableExpression<IModelElement> descendants;
+                    if (child != null && childCollections.TryGetValue(child, out descendants))
                     {
-                        added.Add(child);
-                        var descendants = child.Descendants().AsNotifiable();
-                        added.AddRange(descendants);
-                        childCollections.Add(child, descendants);
+                        removed.Add(child);
+                        removed.AddRange(descendants);
+                        ((INotifyCollectionChanged)descendants).CollectionChanged -= ChildDescendantsChanged;
+                        childCollections.Remove(child);
                     }
-                    OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, added));
                 }
-                if (e.OldItems != null)
-                {
-                    var removed = new List<IModelElement>();
-                    foreach (IModelElement child in e.OldItems)
-                    {
-                        INotifyEnumerable<IModelElement> descendants;
-                        if (child != null && childCollections.TryGetValue(child, out descendants))
-                        {
-                            removed.Add(child);
-                            removed.AddRange(descendants);
-                            childCollections.Remove(child);
-                        }
-                    }
+
+                if (removed.Count > 0)
                     OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Remove, removed));
+            }
+
+            if (e.NewItems != null)
+            {
+                var added = new List<IModelElement>();
+                foreach (IModelElement child in e.NewItems)
+                {
+                    added.Add(child);
+                    var descendants = child.Descendants();
+                    ((INotifyCollectionChanged)descendants).CollectionChanged += ChildDescendantsChanged;
+                    added.AddRange(descendants);
+                    childCollections.Add(child, descendants);
                 }
+
+                if (added.Count > 0)
+                    OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, added));
             }
         }
 
-        private void PropagateChildChanges(object sender, NotifyCollectionChangedEventArgs e)
+        private void ChildDescendantsChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
             OnCollectionChanged(e);
         }
-
-        public void Detach()
-        {
-            attachedCount--;
-            if (attachedCount == 0)
-            {
-                DetachCore();
-            }
-        }
-
-        protected void DetachCore()
-        {
-            foreach (var child in childCollections.Values)
-            {
-                child.CollectionChanged -= PropagateChildChanges;
-            }
-            childCollections.Clear();
-            childrenCollection.CollectionChanged -= ChildrenChanged;
-        }
-
-        public bool IsAttached
-        {
-            get { return attachedCount > 0; }
-        }
-
-        protected virtual void OnCollectionChanged(NotifyCollectionChangedEventArgs e)
-        {
-            var handler = CollectionChanged;
-            if (handler != null)
-            {
-                handler(this, e);
-            }
-        }
-
-        public event NotifyCollectionChangedEventHandler CollectionChanged;
     }
 }

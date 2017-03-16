@@ -12,33 +12,35 @@ namespace NMF.Expressions.Linq
 
         public static INotifyValue<bool> Create(INotifyEnumerable<T> source, IEnumerable<T> other)
         {
-            return new ObservableSetEquals<T>(source, other, null);
+            return CreateWithComparer(source, other, null);
         }
 
         public static INotifyValue<bool> CreateWithComparer(INotifyEnumerable<T> source, IEnumerable<T> other, IEqualityComparer<T> comparer)
         {
-            return new ObservableSetEquals<T>(source, other, comparer);
+            var observable = new ObservableSetEquals<T>(source, other, comparer);
+            observable.Successors.SetDummy();
+            return observable;
         }
 
         public static INotifyValue<bool> CreateExpression(IEnumerableExpression<T> source, IEnumerable<T> other)
         {
-            return new ObservableSetEquals<T>(source.AsNotifiable(), other, null);
+            return CreateWithComparer(source.AsNotifiable(), other, null);
         }
 
         public static INotifyValue<bool> CreateExpressionWithComparer(IEnumerableExpression<T> source, IEnumerable<T> other, IEqualityComparer<T> comparer)
         {
-            return new ObservableSetEquals<T>(source.AsNotifiable(), other, comparer);
+            return CreateWithComparer(source.AsNotifiable(), other, comparer);
         }
 
         public ObservableSubsetOf(INotifyEnumerable<T> source, IEnumerable<T> other, IEqualityComparer<T> comparer)
             : base(source, other, comparer) { }
 
-        protected override void OnSource1Reset(int entriesCount)
+        protected override void OnResetSource1(int entriesCount)
         {
             nDiff = 0;
         }
 
-        protected override void OnSource2Reset(int entriesCount)
+        protected override void OnResetSource2(int entriesCount)
         {
             nDiff = entriesCount;
         }
@@ -75,33 +77,35 @@ namespace NMF.Expressions.Linq
 
         public static INotifyValue<bool> Create(INotifyEnumerable<T> source, IEnumerable<T> other)
         {
-            return new ObservableSetEquals<T>(source, other, null);
+            return CreateWithComparer(source, other, null);
         }
 
         public static INotifyValue<bool> CreateWithComparer(INotifyEnumerable<T> source, IEnumerable<T> other, IEqualityComparer<T> comparer)
         {
-            return new ObservableSetEquals<T>(source, other, comparer);
+            var observable = new ObservableSetEquals<T>(source, other, comparer);
+            observable.Successors.SetDummy();
+            return observable;
         }
 
         public static INotifyValue<bool> CreateExpression(IEnumerableExpression<T> source, IEnumerable<T> other)
         {
-            return new ObservableSetEquals<T>(source.AsNotifiable(), other, null);
+            return CreateWithComparer(source.AsNotifiable(), other, null);
         }
 
         public static INotifyValue<bool> CreateExpressionWithComparer(IEnumerableExpression<T> source, IEnumerable<T> other, IEqualityComparer<T> comparer)
         {
-            return new ObservableSetEquals<T>(source.AsNotifiable(), other, comparer);
+            return CreateWithComparer(source.AsNotifiable(), other, comparer);
         }
 
         public ObservableSupersetOf(INotifyEnumerable<T> source, IEnumerable<T> other, IEqualityComparer<T> comparer)
             : base(source, other, comparer) { }
 
-        protected override void OnSource2Reset(int entriesCount)
+        protected override void OnResetSource2(int entriesCount)
         {
             nDiff = 0;
         }
 
-        protected override void OnSource1Reset(int entriesCount)
+        protected override void OnResetSource1(int entriesCount)
         {
             nDiff = entriesCount;
         }

@@ -37,3 +37,4 @@ using NMF.Models;
 [assembly: AssemblyFileVersion("1.0.0.0")]
 
 [assembly: ModelMetadata("http://www.semanticweb.org/ontologies/2015/ttc/trainbenchmark", "NMF.Models.Tests.railway.nmf")]
+[assembly: ModelMetadata("about:foo", "NMF.Models.Tests.debug.nmf")]

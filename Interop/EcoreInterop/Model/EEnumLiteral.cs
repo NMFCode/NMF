@@ -586,7 +586,7 @@ namespace NMF.Interop.Ecore
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
             public ValueProxy(IEEnumLiteral modelElement) : 
-                    base(modelElement)
+                    base(modelElement, "value")
             {
             }
             
@@ -604,24 +604,6 @@ namespace NMF.Interop.Ecore
                     this.ModelElement.Value = value;
                 }
             }
-            
-            /// <summary>
-            /// Registers an event handler to subscribe specifically on the changed event for this property
-            /// </summary>
-            /// <param name="handler">The handler that should be subscribed to the property change event</param>
-            protected override void RegisterChangeEventHandler(System.EventHandler<NMF.Expressions.ValueChangedEventArgs> handler)
-            {
-                this.ModelElement.ValueChanged += handler;
-            }
-            
-            /// <summary>
-            /// Registers an event handler to subscribe specifically on the changed event for this property
-            /// </summary>
-            /// <param name="handler">The handler that should be unsubscribed from the property change event</param>
-            protected override void UnregisterChangeEventHandler(System.EventHandler<NMF.Expressions.ValueChangedEventArgs> handler)
-            {
-                this.ModelElement.ValueChanged -= handler;
-            }
         }
         
         /// <summary>
@@ -635,7 +617,7 @@ namespace NMF.Interop.Ecore
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
             public InstanceProxy(IEEnumLiteral modelElement) : 
-                    base(modelElement)
+                    base(modelElement, "instance")
             {
             }
             
@@ -653,24 +635,6 @@ namespace NMF.Interop.Ecore
                     this.ModelElement.Instance = value;
                 }
             }
-            
-            /// <summary>
-            /// Registers an event handler to subscribe specifically on the changed event for this property
-            /// </summary>
-            /// <param name="handler">The handler that should be subscribed to the property change event</param>
-            protected override void RegisterChangeEventHandler(System.EventHandler<NMF.Expressions.ValueChangedEventArgs> handler)
-            {
-                this.ModelElement.InstanceChanged += handler;
-            }
-            
-            /// <summary>
-            /// Registers an event handler to subscribe specifically on the changed event for this property
-            /// </summary>
-            /// <param name="handler">The handler that should be unsubscribed from the property change event</param>
-            protected override void UnregisterChangeEventHandler(System.EventHandler<NMF.Expressions.ValueChangedEventArgs> handler)
-            {
-                this.ModelElement.InstanceChanged -= handler;
-            }
         }
         
         /// <summary>
@@ -684,7 +648,7 @@ namespace NMF.Interop.Ecore
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
             public LiteralProxy(IEEnumLiteral modelElement) : 
-                    base(modelElement)
+                    base(modelElement, "literal")
             {
             }
             
@@ -702,24 +666,6 @@ namespace NMF.Interop.Ecore
                     this.ModelElement.Literal = value;
                 }
             }
-            
-            /// <summary>
-            /// Registers an event handler to subscribe specifically on the changed event for this property
-            /// </summary>
-            /// <param name="handler">The handler that should be subscribed to the property change event</param>
-            protected override void RegisterChangeEventHandler(System.EventHandler<NMF.Expressions.ValueChangedEventArgs> handler)
-            {
-                this.ModelElement.LiteralChanged += handler;
-            }
-            
-            /// <summary>
-            /// Registers an event handler to subscribe specifically on the changed event for this property
-            /// </summary>
-            /// <param name="handler">The handler that should be unsubscribed from the property change event</param>
-            protected override void UnregisterChangeEventHandler(System.EventHandler<NMF.Expressions.ValueChangedEventArgs> handler)
-            {
-                this.ModelElement.LiteralChanged -= handler;
-            }
         }
         
         /// <summary>
@@ -733,7 +679,7 @@ namespace NMF.Interop.Ecore
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
             public EEnumProxy(IEEnumLiteral modelElement) : 
-                    base(modelElement)
+                    base(modelElement, "eEnum")
             {
             }
             
@@ -750,24 +696,6 @@ namespace NMF.Interop.Ecore
                 {
                     this.ModelElement.EEnum = value;
                 }
-            }
-            
-            /// <summary>
-            /// Registers an event handler to subscribe specifically on the changed event for this property
-            /// </summary>
-            /// <param name="handler">The handler that should be subscribed to the property change event</param>
-            protected override void RegisterChangeEventHandler(System.EventHandler<NMF.Expressions.ValueChangedEventArgs> handler)
-            {
-                this.ModelElement.EEnumChanged += handler;
-            }
-            
-            /// <summary>
-            /// Registers an event handler to subscribe specifically on the changed event for this property
-            /// </summary>
-            /// <param name="handler">The handler that should be unsubscribed from the property change event</param>
-            protected override void UnregisterChangeEventHandler(System.EventHandler<NMF.Expressions.ValueChangedEventArgs> handler)
-            {
-                this.ModelElement.EEnumChanged -= handler;
             }
         }
     }

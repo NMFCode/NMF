@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<nmeta:Namespace xmi:version="2.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" Uri="about:foo" Prefix="debug" Name="debug" xmlns:xmi="http://www.omg.org/XMI" xmlns:nmeta="http://nmf.codeplex.com/nmeta/">
+  <Types xsi:type="nmeta:Class" Name="AClass">
+    <References IsContainment="True" ReferenceType="//CClass/" IsOrdered="True" UpperBound="-1" Name="cont1" />
+  </Types>
+  <Types xsi:type="nmeta:Class" Name="BClass">
+    <References ReferenceType="//CClass/" IsOrdered="True" UpperBound="-1" Name="ref1" />
+    <References ReferenceType="//CClass/" IsOrdered="True" UpperBound="-1" Name="ref2" />
+  </Types>
+  <Types xsi:type="nmeta:Class" Name="CClass">
+  </Types>
+  <Types xsi:type="nmeta:Class" Name="test">
+  	<References IsContainment="True" IsOrdered="True" UpperBound="-1" Name="invalids" />
+  </Types>
+</nmeta:Namespace>

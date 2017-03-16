@@ -778,7 +778,7 @@ namespace NMF.Interop.Ecore
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
             public InstanceClassNameProxy(IEClassifier modelElement) : 
-                    base(modelElement)
+                    base(modelElement, "instanceClassName")
             {
             }
             
@@ -796,24 +796,6 @@ namespace NMF.Interop.Ecore
                     this.ModelElement.InstanceClassName = value;
                 }
             }
-            
-            /// <summary>
-            /// Registers an event handler to subscribe specifically on the changed event for this property
-            /// </summary>
-            /// <param name="handler">The handler that should be subscribed to the property change event</param>
-            protected override void RegisterChangeEventHandler(System.EventHandler<NMF.Expressions.ValueChangedEventArgs> handler)
-            {
-                this.ModelElement.InstanceClassNameChanged += handler;
-            }
-            
-            /// <summary>
-            /// Registers an event handler to subscribe specifically on the changed event for this property
-            /// </summary>
-            /// <param name="handler">The handler that should be unsubscribed from the property change event</param>
-            protected override void UnregisterChangeEventHandler(System.EventHandler<NMF.Expressions.ValueChangedEventArgs> handler)
-            {
-                this.ModelElement.InstanceClassNameChanged -= handler;
-            }
         }
         
         /// <summary>
@@ -827,7 +809,7 @@ namespace NMF.Interop.Ecore
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
             public InstanceTypeNameProxy(IEClassifier modelElement) : 
-                    base(modelElement)
+                    base(modelElement, "instanceTypeName")
             {
             }
             
@@ -845,24 +827,6 @@ namespace NMF.Interop.Ecore
                     this.ModelElement.InstanceTypeName = value;
                 }
             }
-            
-            /// <summary>
-            /// Registers an event handler to subscribe specifically on the changed event for this property
-            /// </summary>
-            /// <param name="handler">The handler that should be subscribed to the property change event</param>
-            protected override void RegisterChangeEventHandler(System.EventHandler<NMF.Expressions.ValueChangedEventArgs> handler)
-            {
-                this.ModelElement.InstanceTypeNameChanged += handler;
-            }
-            
-            /// <summary>
-            /// Registers an event handler to subscribe specifically on the changed event for this property
-            /// </summary>
-            /// <param name="handler">The handler that should be unsubscribed from the property change event</param>
-            protected override void UnregisterChangeEventHandler(System.EventHandler<NMF.Expressions.ValueChangedEventArgs> handler)
-            {
-                this.ModelElement.InstanceTypeNameChanged -= handler;
-            }
         }
         
         /// <summary>
@@ -876,7 +840,7 @@ namespace NMF.Interop.Ecore
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
             public EPackageProxy(IEClassifier modelElement) : 
-                    base(modelElement)
+                    base(modelElement, "ePackage")
             {
             }
             
@@ -893,24 +857,6 @@ namespace NMF.Interop.Ecore
                 {
                     this.ModelElement.EPackage = value;
                 }
-            }
-            
-            /// <summary>
-            /// Registers an event handler to subscribe specifically on the changed event for this property
-            /// </summary>
-            /// <param name="handler">The handler that should be subscribed to the property change event</param>
-            protected override void RegisterChangeEventHandler(System.EventHandler<NMF.Expressions.ValueChangedEventArgs> handler)
-            {
-                this.ModelElement.EPackageChanged += handler;
-            }
-            
-            /// <summary>
-            /// Registers an event handler to subscribe specifically on the changed event for this property
-            /// </summary>
-            /// <param name="handler">The handler that should be unsubscribed from the property change event</param>
-            protected override void UnregisterChangeEventHandler(System.EventHandler<NMF.Expressions.ValueChangedEventArgs> handler)
-            {
-                this.ModelElement.EPackageChanged -= handler;
             }
         }
     }

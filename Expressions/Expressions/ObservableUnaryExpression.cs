@@ -23,36 +23,14 @@ namespace NMF.Expressions
             if (target == null) throw new ArgumentNullException("target");
 
             Target = target;
-
-            target.ValueChanged += TargetChanged;
         }
 
-        private void TargetChanged(object sender, EventArgs e)
-        {
-            if (!IsAttached) return;
-            Refresh();
-        }
-
-        public override bool CanBeConstant
-        {
-            get
-            {
-                return Target.CanBeConstant;
-            }
-        }
+        public override bool CanBeConstant { get { return Target.CanBeConstant; } }
 
         public INotifyExpression<TInner> Target { get; private set; }
 
-        protected override void DetachCore()
-        {
-            Target.Detach();
-        }
-
-        protected override void AttachCore()
-        {
-            Target.Attach();
-        }
-
+        public override IEnumerable<INotifiable> Dependencies { get { yield return Target; } }
+        
         public override bool IsParameterFree
         {
             get { return Target.IsParameterFree; }
@@ -175,6 +153,14 @@ namespace NMF.Expressions
             {
                 // Swallow
                 Debug.WriteLine("Cast failed: " + ex.Message);
+            }
+        }
+
+        public override ExpressionType NodeType
+        {
+            get
+            {
+                return ExpressionType.Convert;
             }
         }
     }

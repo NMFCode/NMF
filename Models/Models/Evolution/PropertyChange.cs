@@ -1,11 +1,7 @@
-﻿using NMF.Models.Repository;
-using NMF.Serialization;
-using System;
-using System.Collections.Generic;
+﻿using System;
 using System.ComponentModel;
-using System.Linq;
-using System.Reflection;
-using System.Text;
+using NMF.Models.Repository;
+using NMF.Serialization;
 
 namespace NMF.Models.Evolution
 {
@@ -40,7 +36,16 @@ namespace NMF.Models.Evolution
             parent?.GetType().GetProperty(PropertyName)?.SetValue(parent, newValue, null);
         }
 
+        public void Invert(IModelRepository repository)
+        {
+            var parent = repository.Resolve(AbsoluteUri);
+            var oldValue = GetOldValue(repository);
+            parent?.GetType().GetProperty(PropertyName)?.SetValue(parent, oldValue, null);
+        }
+
         protected abstract T GetNewValue(IModelRepository repository);
+
+        protected abstract T GetOldValue(IModelRepository repository);
     }
 
     [XmlNamespace("http://nmf.codeplex.com/changes")]
@@ -48,20 +53,28 @@ namespace NMF.Models.Evolution
     [XmlConstructor(2)]
     public class PropertyChangeAttribute<T> : PropertyChangeBase<T>
     {
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        private readonly T _oldValue;
         public T NewValue { get; set; }
 
         [EditorBrowsable(EditorBrowsableState.Never)]
         public PropertyChangeAttribute(Uri absoluteUri, string propertyName) : base(absoluteUri, propertyName) { }
         
-        public PropertyChangeAttribute(Uri absoluteUri, string propertyName, T newValue)
+        public PropertyChangeAttribute(Uri absoluteUri, string propertyName, T oldValue, T newValue)
             : base(absoluteUri, propertyName)
         {
+            _oldValue = oldValue;
             NewValue = newValue;
         }
 
         protected override T GetNewValue(IModelRepository repository)
         {
             return NewValue;
+        }
+
+        protected override T GetOldValue(IModelRepository repository)
+        {
+            return _oldValue;
         }
 
         public override bool Equals(object obj)
@@ -71,10 +84,9 @@ namespace NMF.Models.Evolution
             var other = obj as PropertyChangeAttribute<T>;
             if (other == null)
                 return false;
-            else
-                return Equals(this.AbsoluteUri, other.AbsoluteUri)
-                    && Equals(this.PropertyName, other.PropertyName)
-                    && Equals(this.NewValue, other.NewValue);
+            return Equals(AbsoluteUri, other.AbsoluteUri)
+                   && Equals(PropertyName, other.PropertyName)
+                   && Equals(NewValue, other.NewValue);
         }
 
         public override int GetHashCode()
@@ -85,19 +97,28 @@ namespace NMF.Models.Evolution
         }
     }
 
+<<<<<<< HEAD
     [XmlNamespace("http://nmf.codeplex.com/changes")]
     [XmlNamespacePrefix("changes")]
     [XmlConstructor(3)]
+=======
+    [XmlConstructor(4)]
+>>>>>>> execution-engine
     public class PropertyChangeReference<T> : PropertyChangeBase<T> where T : class, IModelElement
     {
         [XmlConstructorParameter(2)]
         [XmlAttribute(true)]
+        public Uri OldUri { get; set; }
+
+        [XmlConstructorParameter(3)]
+        [XmlAttribute(true)]
         public Uri ReferenceUri { get; set; }
         
-        public PropertyChangeReference(Uri absoluteUri, string propertyName, Uri referenceUri)
+        public PropertyChangeReference(Uri absoluteUri, string propertyName, Uri oldUri, Uri referenceUri)
             : base(absoluteUri, propertyName)
         {
             ReferenceUri = referenceUri;
+            OldUri = oldUri;
         }
 
         protected override T GetNewValue(IModelRepository repository)
@@ -107,6 +128,13 @@ namespace NMF.Models.Evolution
             return (T)repository.Resolve(ReferenceUri);
         }
 
+        protected override T GetOldValue(IModelRepository repository)
+        {
+            if (OldUri == null)
+                return null;
+            return (T) repository.Resolve(OldUri);
+        }
+
         public override bool Equals(object obj)
         {
             if (ReferenceEquals(this, obj))
@@ -114,10 +142,9 @@ namespace NMF.Models.Evolution
             var other = obj as PropertyChangeReference<T>;
             if (other == null)
                 return false;
-            else
-                return Equals(this.AbsoluteUri, other.AbsoluteUri)
-                    && Equals(this.PropertyName, other.PropertyName)
-                    && Equals(this.ReferenceUri, other.ReferenceUri);
+            return Equals(AbsoluteUri, other.AbsoluteUri)
+                   && Equals(PropertyName, other.PropertyName)
+                   && Equals(ReferenceUri, other.ReferenceUri);
         }
 
         public override int GetHashCode()

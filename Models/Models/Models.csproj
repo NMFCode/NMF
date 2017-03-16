@@ -9,7 +9,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>NMF.Models</RootNamespace>
     <AssemblyName>NMF.Models</AssemblyName>
-    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <SccProjectName>SAK</SccProjectName>
     <SccLocalPath>SAK</SccLocalPath>
@@ -40,6 +40,7 @@
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Transactions" />
     <Reference Include="System.XML" />
   </ItemGroup>
   <ItemGroup>
@@ -62,6 +63,9 @@
     <Compile Include="Collections\CompositionSet.cs" />
     <Compile Include="Collections\DescendantsCollection.cs" />
     <Compile Include="Evolution\ChangeTransaction.cs" />
+    <Compile Include="Evolution\CollectionDeletion.cs" />
+    <Compile Include="Evolution\CollectionInsertion.cs" />
+    <Compile Include="Evolution\CollectionReset.cs" />
     <Compile Include="Evolution\ElementCreation.cs" />
     <Compile Include="Evolution\ElementDeletion.cs" />
     <Compile Include="Evolution\ModelChangeCollection.cs" />
@@ -150,6 +154,7 @@
     <Compile Include="Repository\Serialization\ModelSerializer.cs" />
     <Compile Include="Repository\UnresolvedModelElementEventArgs.cs" />
     <Compile Include="ScopedIdentifier.cs" />
+    <Compile Include="ModelTransaction.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Collections\Collections\Collections.csproj">

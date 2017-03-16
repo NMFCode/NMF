@@ -34,7 +34,7 @@ namespace NMF.Transformations.Linq
         public void Finish()
         {
             IncrementalPatternEngine.GetForContext(Context).Patterns.Remove(this);
-            Source.Detach();
+            Source.Dispose();
         }
 
         public override bool PushComputation()
@@ -81,7 +81,7 @@ namespace NMF.Transformations.Linq
         public void Finish()
         {
             IncrementalPatternEngine.GetForContext(Context).Patterns.Remove(this);
-            Source.Detach();
+            Source.Dispose();
         }
 
         public override bool PushComputation()

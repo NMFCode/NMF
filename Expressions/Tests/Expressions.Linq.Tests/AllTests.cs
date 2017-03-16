@@ -16,9 +16,9 @@ namespace NMF.Expressions.Linq.Tests
         {
             var update = false;
 
-            var coll = new List<int>() { 1, 2, 3 };
+            var coll = new List<int>() { 1, 2, 3 }.WithUpdates();
 
-            var test = Observable.Expression(() => coll.WithUpdates().All(i => i > 0));
+            var test = Observable.Expression(() => coll.All(i => i > 0));
 
             test.ValueChanged += (o, e) => update = true;
 
@@ -125,9 +125,9 @@ namespace NMF.Expressions.Linq.Tests
             var update = false;
 
             var dummy = new ObservableDummy<bool>(true);
-            var coll = new List<Dummy<bool>>() { dummy };
+            var coll = new List<Dummy<bool>>() { dummy }.WithUpdates();
 
-            var test = Observable.Expression(() => coll.WithUpdates().All(d => d.Item));
+            var test = Observable.Expression(() => coll.All(d => d.Item));
 
             test.ValueChanged += (o, e) =>
             {

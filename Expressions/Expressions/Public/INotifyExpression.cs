@@ -23,11 +23,6 @@ namespace NMF.Expressions
         bool IsParameterFree { get; }
 
         /// <summary>
-        /// Refreshes the current value of the current expression
-        /// </summary>
-        void Refresh();
-
-        /// <summary>
         /// Gets the current value as object
         /// </summary>
         object ValueObject { get; }

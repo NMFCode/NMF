@@ -17,64 +17,62 @@ namespace NMF.Expressions
     /// <summary>
     /// Represents an observable expression with <#= i #> input parameters and a custom update handler
     /// </summary>
-	<# for(int j = 1; j <= i; j++) { #>
-/// <typeparam name="T<#= j #>">The type of the input parameter <#= j #></typeparam>
-	<# } #>
-public partial class ReversableObservingFunc<<# for (int j = 1; j <= i; j++) { #>T<#= j #>, <# } #>TResult> : ObservingFunc<<# for (int j = 1; j <= i; j++) { #>T<#= j #>, <# } #>TResult>
+<# for(int j = 1; j <= i; j++) { #>
+    /// <typeparam name="T<#= j #>">The type of the input parameter <#= j #></typeparam>
+<# } #>
+    public partial class ReversableObservingFunc<<# for (int j = 1; j <= i; j++) { #>T<#= j #>, <# } #>TResult> : ObservingFunc<<# for (int j = 1; j <= i; j++) { #>T<#= j #>, <# } #>TResult>
     {
-		/// <summary>
-		/// The method that handles value updates for this func
-		/// </summary>
-		public Action<<# for (int j = 1; j <= i; j++) { #>T<#= j #>, <# } #>TResult> UpdateHandler { get; private set; }
+        /// <summary>
+        /// The method that handles value updates for this func
+        /// </summary>
+        public Action<<# for (int j = 1; j <= i; j++) { #>T<#= j #>, <# } #>TResult> UpdateHandler { get; private set; }
 
         /// <summary>
         /// Creates a new observable expression for the given expression
         /// </summary>
         /// <param name="expression">The expression that is to be observed</param>
         public ReversableObservingFunc(Expression<Func<<# for (int j = 1; j <= i; j++) { #>T<#= j #>, <# } #> TResult>> expression, Action<<# for (int j = 1; j <= i; j++) { #>T<#= j #>, <# } #>TResult> updateHandler)
-			: base(expression)
+            : base(expression)
         {
-			if (updateHandler == null) throw new ArgumentNullException("updateHandler");
+            if (updateHandler == null) throw new ArgumentNullException("updateHandler");
 
-			UpdateHandler = updateHandler;
+            UpdateHandler = updateHandler;
         }
 
         /// <summary>
         /// Invokes the expression
         /// </summary>
 <# for(int j = 1; j <= i; j++) { #>
-		/// <param name="in<#= j #>">The input parameter <#= j #></param>
+        /// <param name="in<#= j #>">The input parameter <#= j #></param>
 <# } #>
-	    /// <returns>An observable value that keeps track of any changes</returns>
+        /// <returns>An observable value that keeps track of any changes</returns>
         public override INotifyReversableValue<TResult> InvokeReversable(<# for (int j = 1; j < i; j++) { #>T<#= j #> in<#= j #>, <# } #>T<#= i #> in<#= i #>)
         {
             if (isParameterFree) return new ReversableProxyExpression<TResult>(expression, newValue => UpdateHandler(<# for (int j = 1; j <= i; j++) { #>in<#= j #>, <# } #>newValue));
             var parameters = new Dictionary<string, object>();
 <# for(int j = 1; j <= i; j++) { #>
-		    parameters.Add(parameter<#= j #>Name, in<#= j #>);
+            parameters.Add(parameter<#= j #>Name, in<#= j #>);
 <# } #>
-	        var result = expression.ApplyParameters(parameters);
-			result.Attach();
-			return new ReversableProxyExpression<TResult>(result, newValue => UpdateHandler(<# for (int j = 1; j <= i; j++) { #>in<#= j #>, <# } #>newValue));
+            var result = expression.ApplyParameters(parameters);
+            return new ReversableProxyExpression<TResult>(result, newValue => UpdateHandler(<# for (int j = 1; j <= i; j++) { #>in<#= j #>, <# } #>newValue));
         }
 
         /// <summary>
         /// Invokes the expression
         /// </summary>
 <# for(int j = 1; j <= i; j++) { #>
-		/// <param name="in<#= j #>">The input parameter <#= j #></param>
+        /// <param name="in<#= j #>">The input parameter <#= j #></param>
 <# } #>
-	    /// <returns>An observable value that keeps track of any changes</returns>
+        /// <returns>An observable value that keeps track of any changes</returns>
         public override INotifyReversableValue<TResult> InvokeReversable(<# for (int j = 1; j < i; j++) { #>INotifyValue<T<#= j #>> in<#= j #>, <# } #>INotifyValue<T<#= i #>> in<#= i #>)
         {
             if (isParameterFree) return new ReversableProxyExpression<TResult>(expression, newValue => UpdateHandler(<# for (int j = 1; j <= i; j++) { #>in<#= j #>.Value, <# } #>newValue));
             var parameters = new Dictionary<string, object>();
 <# for(int j = 1; j <= i; j++) { #>
-		    parameters.Add(parameter<#= j #>Name, in<#= j #>);
+            parameters.Add(parameter<#= j #>Name, in<#= j #>);
 <# } #>
-	        var result = expression.ApplyParameters(parameters) as INotifyReversableExpression<TResult>;
-			result.Attach();
-			return new ReversableProxyExpression<TResult>(result, newValue => UpdateHandler(<# for (int j = 1; j <= i; j++) { #>in<#= j #>.Value, <# } #>newValue));
+            var result = expression.ApplyParameters(parameters) as INotifyReversableExpression<TResult>;
+            return new ReversableProxyExpression<TResult>(result, newValue => UpdateHandler(<# for (int j = 1; j <= i; j++) { #>in<#= j #>.Value, <# } #>newValue));
         }
 
         /// <summary>
@@ -84,7 +82,7 @@ public partial class ReversableObservingFunc<<# for (int j = 1; j <= i; j++) { #
         {
             get
             {
-				return true;
+                return true;
             }
         }
     }

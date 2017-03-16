@@ -16,6 +16,7 @@ using NMF.Models;
 using NMF.Models.Collections;
 using NMF.Models.Expressions;
 using NMF.Models.Meta;
+using NMF.Models.Repository;
 using NMF.Serialization;
 using NMF.Utilities;
 using System;
@@ -50,6 +51,8 @@ namespace NMF.Models.Tests.Railway
         /// </summary>
         private SwitchPositionsCollection _positions;
         
+        private static IClass _classInstance;
+        
         public Switch()
         {
             this._positions = new SwitchPositionsCollection(this);
@@ -72,11 +75,11 @@ namespace NMF.Models.Tests.Railway
             {
                 if ((this._currentPosition != value))
                 {
-                    this.OnCurrentPositionChanging(EventArgs.Empty);
-                    this.OnPropertyChanging("CurrentPosition");
                     Position old = this._currentPosition;
-                    this._currentPosition = value;
                     ValueChangedEventArgs e = new ValueChangedEventArgs(old, value);
+                    this.OnCurrentPositionChanging(e);
+                    this.OnPropertyChanging("CurrentPosition", e);
+                    this._currentPosition = value;
                     this.OnCurrentPositionChanged(e);
                     this.OnPropertyChanged("CurrentPosition", e);
                 }
@@ -111,33 +114,37 @@ namespace NMF.Models.Tests.Railway
         }
         
         /// <summary>
-        /// Gets the Class element that describes the structure of this type
+        /// Gets the Class model for this type
         /// </summary>
-        public new static NMF.Models.Meta.IClass ClassInstance
+        public new static IClass ClassInstance
         {
             get
             {
-                return (IClass)NMF.Models.Repository.MetaRepository.Instance.ResolveType("http://www.semanticweb.org/ontologies/2015/ttc/trainbenchmark#//Switch/");
+                if ((_classInstance == null))
+                {
+                    _classInstance = ((IClass)(MetaRepository.Instance.Resolve("http://www.semanticweb.org/ontologies/2015/ttc/trainbenchmark#//Switch/")));
+                }
+                return _classInstance;
             }
         }
         
         /// <summary>
         /// Gets fired before the CurrentPosition property changes its value
         /// </summary>
-        public event EventHandler CurrentPositionChanging;
+        public event System.EventHandler<ValueChangedEventArgs> CurrentPositionChanging;
         
         /// <summary>
         /// Gets fired when the CurrentPosition property changed its value
         /// </summary>
-        public event EventHandler<ValueChangedEventArgs> CurrentPositionChanged;
+        public event System.EventHandler<ValueChangedEventArgs> CurrentPositionChanged;
         
         /// <summary>
         /// Raises the CurrentPositionChanging event
         /// </summary>
         /// <param name="eventArgs">The event data</param>
-        protected virtual void OnCurrentPositionChanging(EventArgs eventArgs)
+        protected virtual void OnCurrentPositionChanging(ValueChangedEventArgs eventArgs)
         {
-            EventHandler handler = this.CurrentPositionChanging;
+            System.EventHandler<ValueChangedEventArgs> handler = this.CurrentPositionChanging;
             if ((handler != null))
             {
                 handler.Invoke(this, eventArgs);
@@ -150,7 +157,7 @@ namespace NMF.Models.Tests.Railway
         /// <param name="eventArgs">The event data</param>
         protected virtual void OnCurrentPositionChanged(ValueChangedEventArgs eventArgs)
         {
-            EventHandler<ValueChangedEventArgs> handler = this.CurrentPositionChanged;
+            System.EventHandler<ValueChangedEventArgs> handler = this.CurrentPositionChanged;
             if ((handler != null))
             {
                 handler.Invoke(this, eventArgs);
@@ -226,7 +233,11 @@ namespace NMF.Models.Tests.Railway
         /// </summary>
         public override IClass GetClass()
         {
-            return ((IClass)(NMF.Models.Repository.MetaRepository.Instance.Resolve("http://www.semanticweb.org/ontologies/2015/ttc/trainbenchmark#//Switch/")));
+            if ((_classInstance == null))
+            {
+                _classInstance = ((IClass)(MetaRepository.Instance.Resolve("http://www.semanticweb.org/ontologies/2015/ttc/trainbenchmark#//Switch/")));
+            }
+            return _classInstance;
         }
         
         /// <summary>
@@ -364,7 +375,7 @@ namespace NMF.Models.Tests.Railway
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
             public CurrentPositionProxy(ISwitch modelElement) : 
-                    base(modelElement)
+                    base(modelElement, "currentPosition")
             {
             }
             
@@ -381,24 +392,6 @@ namespace NMF.Models.Tests.Railway
                 {
                     this.ModelElement.CurrentPosition = value;
                 }
-            }
-            
-            /// <summary>
-            /// Registers an event handler to subscribe specifically on the changed event for this property
-            /// </summary>
-            /// <param name="handler">The handler that should be subscribed to the property change event</param>
-            protected override void RegisterChangeEventHandler(System.EventHandler<NMF.Expressions.ValueChangedEventArgs> handler)
-            {
-                this.ModelElement.CurrentPositionChanged += handler;
-            }
-            
-            /// <summary>
-            /// Registers an event handler to subscribe specifically on the changed event for this property
-            /// </summary>
-            /// <param name="handler">The handler that should be unsubscribed from the property change event</param>
-            protected override void UnregisterChangeEventHandler(System.EventHandler<NMF.Expressions.ValueChangedEventArgs> handler)
-            {
-                this.ModelElement.CurrentPositionChanged -= handler;
             }
         }
     }

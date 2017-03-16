@@ -30,25 +30,6 @@ namespace NMF.Expressions
 
         public INotifyExpression<T1> Argument1 { get; private set; }
 
-        protected override TResult GetValue()
-        {
-            return Function(Argument1.Value);
-        }
-
-        protected override void AttachCore()
-        {
-            var argChanged = new EventHandler<ValueChangedEventArgs>(ArgumentChanged);
-            Argument1.Attach();
-            Argument1.ValueChanged += argChanged;
-        }
-
-        protected override void DetachCore()
-        {
-            var argChanged = new EventHandler<ValueChangedEventArgs>(ArgumentChanged);
-            Argument1.ValueChanged -= argChanged;
-            Argument1.Detach();
-        }
-
         public override bool IsConstant
         {
             get
@@ -60,6 +41,19 @@ namespace NMF.Expressions
         public override bool IsParameterFree
         {
             get { return Argument1.IsParameterFree; }
+        }
+
+        public override IEnumerable<INotifiable> Dependencies
+        {
+            get
+            {
+                yield return Argument1;
+            }
+        }
+
+        protected override TResult GetValue()
+        {
+            return Function(Argument1.Value);
         }
 
         public override INotifyExpression<TResult> ApplyParameters(IDictionary<string, object> parameters)
@@ -95,29 +89,6 @@ namespace NMF.Expressions
         public INotifyExpression<T1> Argument1 { get; private set; }
         public INotifyExpression<T2> Argument2 { get; private set; }
 
-        protected override TResult GetValue()
-        {
-            return Function(Argument1.Value, Argument2.Value);
-        }
-
-        protected override void AttachCore()
-        {
-            var argChanged = new EventHandler<ValueChangedEventArgs>(ArgumentChanged);
-            Argument1.Attach();
-            Argument1.ValueChanged += argChanged;
-            Argument2.Attach();
-            Argument2.ValueChanged += argChanged;
-        }
-
-        protected override void DetachCore()
-        {
-            var argChanged = new EventHandler<ValueChangedEventArgs>(ArgumentChanged);
-            Argument1.ValueChanged -= argChanged;
-            Argument1.Detach();
-            Argument2.ValueChanged -= argChanged;
-            Argument2.Detach();
-        }
-
         public override bool IsConstant
         {
             get
@@ -129,6 +100,20 @@ namespace NMF.Expressions
         public override bool IsParameterFree
         {
             get { return Argument1.IsParameterFree && Argument2.IsParameterFree; }
+        }
+
+        public override IEnumerable<INotifiable> Dependencies
+        {
+            get
+            {
+                yield return Argument1;
+                yield return Argument2;
+            }
+        }
+
+        protected override TResult GetValue()
+        {
+            return Function(Argument1.Value, Argument2.Value);
         }
 
         public override INotifyExpression<TResult> ApplyParameters(IDictionary<string, object> parameters)
@@ -169,33 +154,6 @@ namespace NMF.Expressions
         public INotifyExpression<T2> Argument2 { get; private set; }
         public INotifyExpression<T3> Argument3 { get; private set; }
 
-        protected override TResult GetValue()
-        {
-            return Function(Argument1.Value, Argument2.Value, Argument3.Value);
-        }
-
-        protected override void AttachCore()
-        {
-            var argChanged = new EventHandler<ValueChangedEventArgs>(ArgumentChanged);
-            Argument1.Attach();
-            Argument1.ValueChanged += argChanged;
-            Argument2.Attach();
-            Argument2.ValueChanged += argChanged;
-            Argument3.Attach();
-            Argument3.ValueChanged += argChanged;
-        }
-
-        protected override void DetachCore()
-        {
-            var argChanged = new EventHandler<ValueChangedEventArgs>(ArgumentChanged);
-            Argument1.ValueChanged -= argChanged;
-            Argument1.Detach();
-            Argument2.ValueChanged -= argChanged;
-            Argument2.Detach();
-            Argument3.ValueChanged -= argChanged;
-            Argument3.Detach();
-        }
-
         public override bool IsConstant
         {
             get
@@ -207,6 +165,21 @@ namespace NMF.Expressions
         public override bool IsParameterFree
         {
             get { return Argument1.IsParameterFree && Argument2.IsParameterFree && Argument3.IsParameterFree; }
+        }
+
+        public override IEnumerable<INotifiable> Dependencies
+        {
+            get
+            {
+                yield return Argument1;
+                yield return Argument2;
+                yield return Argument3;
+            }
+        }
+
+        protected override TResult GetValue()
+        {
+            return Function(Argument1.Value, Argument2.Value, Argument3.Value);
         }
 
         public override INotifyExpression<TResult> ApplyParameters(IDictionary<string, object> parameters)
@@ -252,37 +225,6 @@ namespace NMF.Expressions
         public INotifyExpression<T3> Argument3 { get; private set; }
         public INotifyExpression<T4> Argument4 { get; private set; }
 
-        protected override TResult GetValue()
-        {
-            return Function(Argument1.Value, Argument2.Value, Argument3.Value, Argument4.Value);
-        }
-
-        protected override void AttachCore()
-        {
-            var argChanged = new EventHandler<ValueChangedEventArgs>(ArgumentChanged);
-            Argument1.Attach();
-            Argument1.ValueChanged += argChanged;
-            Argument2.Attach();
-            Argument2.ValueChanged += argChanged;
-            Argument3.Attach();
-            Argument3.ValueChanged += argChanged;
-            Argument4.Attach();
-            Argument4.ValueChanged += argChanged;
-        }
-
-        protected override void DetachCore()
-        {
-            var argChanged = new EventHandler<ValueChangedEventArgs>(ArgumentChanged);
-            Argument1.ValueChanged -= argChanged;
-            Argument1.Detach();
-            Argument2.ValueChanged -= argChanged;
-            Argument2.Detach();
-            Argument3.ValueChanged -= argChanged;
-            Argument3.Detach();
-            Argument4.ValueChanged -= argChanged;
-            Argument4.Detach();
-        }
-
         public override bool IsConstant
         {
             get
@@ -294,6 +236,22 @@ namespace NMF.Expressions
         public override bool IsParameterFree
         {
             get { return Argument1.IsParameterFree && Argument2.IsParameterFree && Argument3.IsParameterFree && Argument4.IsParameterFree; }
+        }
+
+        public override IEnumerable<INotifiable> Dependencies
+        {
+            get
+            {
+                yield return Argument1;
+                yield return Argument2;
+                yield return Argument3;
+                yield return Argument4;
+            }
+        }
+
+        protected override TResult GetValue()
+        {
+            return Function(Argument1.Value, Argument2.Value, Argument3.Value, Argument4.Value);
         }
 
         public override INotifyExpression<TResult> ApplyParameters(IDictionary<string, object> parameters)
@@ -344,41 +302,6 @@ namespace NMF.Expressions
         public INotifyExpression<T4> Argument4 { get; private set; }
         public INotifyExpression<T5> Argument5 { get; private set; }
 
-        protected override TResult GetValue()
-        {
-            return Function(Argument1.Value, Argument2.Value, Argument3.Value, Argument4.Value, Argument5.Value);
-        }
-
-        protected override void AttachCore()
-        {
-            var argChanged = new EventHandler<ValueChangedEventArgs>(ArgumentChanged);
-            Argument1.Attach();
-            Argument1.ValueChanged += argChanged;
-            Argument2.Attach();
-            Argument2.ValueChanged += argChanged;
-            Argument3.Attach();
-            Argument3.ValueChanged += argChanged;
-            Argument4.Attach();
-            Argument4.ValueChanged += argChanged;
-            Argument5.Attach();
-            Argument5.ValueChanged += argChanged;
-        }
-
-        protected override void DetachCore()
-        {
-            var argChanged = new EventHandler<ValueChangedEventArgs>(ArgumentChanged);
-            Argument1.ValueChanged -= argChanged;
-            Argument1.Detach();
-            Argument2.ValueChanged -= argChanged;
-            Argument2.Detach();
-            Argument3.ValueChanged -= argChanged;
-            Argument3.Detach();
-            Argument4.ValueChanged -= argChanged;
-            Argument4.Detach();
-            Argument5.ValueChanged -= argChanged;
-            Argument5.Detach();
-        }
-
         public override bool IsConstant
         {
             get
@@ -390,6 +313,23 @@ namespace NMF.Expressions
         public override bool IsParameterFree
         {
             get { return Argument1.IsParameterFree && Argument2.IsParameterFree && Argument3.IsParameterFree && Argument4.IsParameterFree && Argument5.IsParameterFree; }
+        }
+
+        public override IEnumerable<INotifiable> Dependencies
+        {
+            get
+            {
+                yield return Argument1;
+                yield return Argument2;
+                yield return Argument3;
+                yield return Argument4;
+                yield return Argument5;
+            }
+        }
+
+        protected override TResult GetValue()
+        {
+            return Function(Argument1.Value, Argument2.Value, Argument3.Value, Argument4.Value, Argument5.Value);
         }
 
         public override INotifyExpression<TResult> ApplyParameters(IDictionary<string, object> parameters)
@@ -445,45 +385,6 @@ namespace NMF.Expressions
         public INotifyExpression<T5> Argument5 { get; private set; }
         public INotifyExpression<T6> Argument6 { get; private set; }
 
-        protected override TResult GetValue()
-        {
-            return Function(Argument1.Value, Argument2.Value, Argument3.Value, Argument4.Value, Argument5.Value, Argument6.Value);
-        }
-
-        protected override void AttachCore()
-        {
-            var argChanged = new EventHandler<ValueChangedEventArgs>(ArgumentChanged);
-            Argument1.Attach();
-            Argument1.ValueChanged += argChanged;
-            Argument2.Attach();
-            Argument2.ValueChanged += argChanged;
-            Argument3.Attach();
-            Argument3.ValueChanged += argChanged;
-            Argument4.Attach();
-            Argument4.ValueChanged += argChanged;
-            Argument5.Attach();
-            Argument5.ValueChanged += argChanged;
-            Argument6.Attach();
-            Argument6.ValueChanged += argChanged;
-        }
-
-        protected override void DetachCore()
-        {
-            var argChanged = new EventHandler<ValueChangedEventArgs>(ArgumentChanged);
-            Argument1.ValueChanged -= argChanged;
-            Argument1.Detach();
-            Argument2.ValueChanged -= argChanged;
-            Argument2.Detach();
-            Argument3.ValueChanged -= argChanged;
-            Argument3.Detach();
-            Argument4.ValueChanged -= argChanged;
-            Argument4.Detach();
-            Argument5.ValueChanged -= argChanged;
-            Argument5.Detach();
-            Argument6.ValueChanged -= argChanged;
-            Argument6.Detach();
-        }
-
         public override bool IsConstant
         {
             get
@@ -495,6 +396,24 @@ namespace NMF.Expressions
         public override bool IsParameterFree
         {
             get { return Argument1.IsParameterFree && Argument2.IsParameterFree && Argument3.IsParameterFree && Argument4.IsParameterFree && Argument5.IsParameterFree && Argument6.IsParameterFree; }
+        }
+
+        public override IEnumerable<INotifiable> Dependencies
+        {
+            get
+            {
+                yield return Argument1;
+                yield return Argument2;
+                yield return Argument3;
+                yield return Argument4;
+                yield return Argument5;
+                yield return Argument6;
+            }
+        }
+
+        protected override TResult GetValue()
+        {
+            return Function(Argument1.Value, Argument2.Value, Argument3.Value, Argument4.Value, Argument5.Value, Argument6.Value);
         }
 
         public override INotifyExpression<TResult> ApplyParameters(IDictionary<string, object> parameters)
@@ -555,49 +474,6 @@ namespace NMF.Expressions
         public INotifyExpression<T6> Argument6 { get; private set; }
         public INotifyExpression<T7> Argument7 { get; private set; }
 
-        protected override TResult GetValue()
-        {
-            return Function(Argument1.Value, Argument2.Value, Argument3.Value, Argument4.Value, Argument5.Value, Argument6.Value, Argument7.Value);
-        }
-
-        protected override void AttachCore()
-        {
-            var argChanged = new EventHandler<ValueChangedEventArgs>(ArgumentChanged);
-            Argument1.Attach();
-            Argument1.ValueChanged += argChanged;
-            Argument2.Attach();
-            Argument2.ValueChanged += argChanged;
-            Argument3.Attach();
-            Argument3.ValueChanged += argChanged;
-            Argument4.Attach();
-            Argument4.ValueChanged += argChanged;
-            Argument5.Attach();
-            Argument5.ValueChanged += argChanged;
-            Argument6.Attach();
-            Argument6.ValueChanged += argChanged;
-            Argument7.Attach();
-            Argument7.ValueChanged += argChanged;
-        }
-
-        protected override void DetachCore()
-        {
-            var argChanged = new EventHandler<ValueChangedEventArgs>(ArgumentChanged);
-            Argument1.ValueChanged -= argChanged;
-            Argument1.Detach();
-            Argument2.ValueChanged -= argChanged;
-            Argument2.Detach();
-            Argument3.ValueChanged -= argChanged;
-            Argument3.Detach();
-            Argument4.ValueChanged -= argChanged;
-            Argument4.Detach();
-            Argument5.ValueChanged -= argChanged;
-            Argument5.Detach();
-            Argument6.ValueChanged -= argChanged;
-            Argument6.Detach();
-            Argument7.ValueChanged -= argChanged;
-            Argument7.Detach();
-        }
-
         public override bool IsConstant
         {
             get
@@ -609,6 +485,25 @@ namespace NMF.Expressions
         public override bool IsParameterFree
         {
             get { return Argument1.IsParameterFree && Argument2.IsParameterFree && Argument3.IsParameterFree && Argument4.IsParameterFree && Argument5.IsParameterFree && Argument6.IsParameterFree && Argument7.IsParameterFree; }
+        }
+
+        public override IEnumerable<INotifiable> Dependencies
+        {
+            get
+            {
+                yield return Argument1;
+                yield return Argument2;
+                yield return Argument3;
+                yield return Argument4;
+                yield return Argument5;
+                yield return Argument6;
+                yield return Argument7;
+            }
+        }
+
+        protected override TResult GetValue()
+        {
+            return Function(Argument1.Value, Argument2.Value, Argument3.Value, Argument4.Value, Argument5.Value, Argument6.Value, Argument7.Value);
         }
 
         public override INotifyExpression<TResult> ApplyParameters(IDictionary<string, object> parameters)
@@ -674,53 +569,6 @@ namespace NMF.Expressions
         public INotifyExpression<T7> Argument7 { get; private set; }
         public INotifyExpression<T8> Argument8 { get; private set; }
 
-        protected override TResult GetValue()
-        {
-            return Function(Argument1.Value, Argument2.Value, Argument3.Value, Argument4.Value, Argument5.Value, Argument6.Value, Argument7.Value, Argument8.Value);
-        }
-
-        protected override void AttachCore()
-        {
-            var argChanged = new EventHandler<ValueChangedEventArgs>(ArgumentChanged);
-            Argument1.Attach();
-            Argument1.ValueChanged += argChanged;
-            Argument2.Attach();
-            Argument2.ValueChanged += argChanged;
-            Argument3.Attach();
-            Argument3.ValueChanged += argChanged;
-            Argument4.Attach();
-            Argument4.ValueChanged += argChanged;
-            Argument5.Attach();
-            Argument5.ValueChanged += argChanged;
-            Argument6.Attach();
-            Argument6.ValueChanged += argChanged;
-            Argument7.Attach();
-            Argument7.ValueChanged += argChanged;
-            Argument8.Attach();
-            Argument8.ValueChanged += argChanged;
-        }
-
-        protected override void DetachCore()
-        {
-            var argChanged = new EventHandler<ValueChangedEventArgs>(ArgumentChanged);
-            Argument1.ValueChanged -= argChanged;
-            Argument1.Detach();
-            Argument2.ValueChanged -= argChanged;
-            Argument2.Detach();
-            Argument3.ValueChanged -= argChanged;
-            Argument3.Detach();
-            Argument4.ValueChanged -= argChanged;
-            Argument4.Detach();
-            Argument5.ValueChanged -= argChanged;
-            Argument5.Detach();
-            Argument6.ValueChanged -= argChanged;
-            Argument6.Detach();
-            Argument7.ValueChanged -= argChanged;
-            Argument7.Detach();
-            Argument8.ValueChanged -= argChanged;
-            Argument8.Detach();
-        }
-
         public override bool IsConstant
         {
             get
@@ -732,6 +580,26 @@ namespace NMF.Expressions
         public override bool IsParameterFree
         {
             get { return Argument1.IsParameterFree && Argument2.IsParameterFree && Argument3.IsParameterFree && Argument4.IsParameterFree && Argument5.IsParameterFree && Argument6.IsParameterFree && Argument7.IsParameterFree && Argument8.IsParameterFree; }
+        }
+
+        public override IEnumerable<INotifiable> Dependencies
+        {
+            get
+            {
+                yield return Argument1;
+                yield return Argument2;
+                yield return Argument3;
+                yield return Argument4;
+                yield return Argument5;
+                yield return Argument6;
+                yield return Argument7;
+                yield return Argument8;
+            }
+        }
+
+        protected override TResult GetValue()
+        {
+            return Function(Argument1.Value, Argument2.Value, Argument3.Value, Argument4.Value, Argument5.Value, Argument6.Value, Argument7.Value, Argument8.Value);
         }
 
         public override INotifyExpression<TResult> ApplyParameters(IDictionary<string, object> parameters)
@@ -802,57 +670,6 @@ namespace NMF.Expressions
         public INotifyExpression<T8> Argument8 { get; private set; }
         public INotifyExpression<T9> Argument9 { get; private set; }
 
-        protected override TResult GetValue()
-        {
-            return Function(Argument1.Value, Argument2.Value, Argument3.Value, Argument4.Value, Argument5.Value, Argument6.Value, Argument7.Value, Argument8.Value, Argument9.Value);
-        }
-
-        protected override void AttachCore()
-        {
-            var argChanged = new EventHandler<ValueChangedEventArgs>(ArgumentChanged);
-            Argument1.Attach();
-            Argument1.ValueChanged += argChanged;
-            Argument2.Attach();
-            Argument2.ValueChanged += argChanged;
-            Argument3.Attach();
-            Argument3.ValueChanged += argChanged;
-            Argument4.Attach();
-            Argument4.ValueChanged += argChanged;
-            Argument5.Attach();
-            Argument5.ValueChanged += argChanged;
-            Argument6.Attach();
-            Argument6.ValueChanged += argChanged;
-            Argument7.Attach();
-            Argument7.ValueChanged += argChanged;
-            Argument8.Attach();
-            Argument8.ValueChanged += argChanged;
-            Argument9.Attach();
-            Argument9.ValueChanged += argChanged;
-        }
-
-        protected override void DetachCore()
-        {
-            var argChanged = new EventHandler<ValueChangedEventArgs>(ArgumentChanged);
-            Argument1.ValueChanged -= argChanged;
-            Argument1.Detach();
-            Argument2.ValueChanged -= argChanged;
-            Argument2.Detach();
-            Argument3.ValueChanged -= argChanged;
-            Argument3.Detach();
-            Argument4.ValueChanged -= argChanged;
-            Argument4.Detach();
-            Argument5.ValueChanged -= argChanged;
-            Argument5.Detach();
-            Argument6.ValueChanged -= argChanged;
-            Argument6.Detach();
-            Argument7.ValueChanged -= argChanged;
-            Argument7.Detach();
-            Argument8.ValueChanged -= argChanged;
-            Argument8.Detach();
-            Argument9.ValueChanged -= argChanged;
-            Argument9.Detach();
-        }
-
         public override bool IsConstant
         {
             get
@@ -864,6 +681,27 @@ namespace NMF.Expressions
         public override bool IsParameterFree
         {
             get { return Argument1.IsParameterFree && Argument2.IsParameterFree && Argument3.IsParameterFree && Argument4.IsParameterFree && Argument5.IsParameterFree && Argument6.IsParameterFree && Argument7.IsParameterFree && Argument8.IsParameterFree && Argument9.IsParameterFree; }
+        }
+
+        public override IEnumerable<INotifiable> Dependencies
+        {
+            get
+            {
+                yield return Argument1;
+                yield return Argument2;
+                yield return Argument3;
+                yield return Argument4;
+                yield return Argument5;
+                yield return Argument6;
+                yield return Argument7;
+                yield return Argument8;
+                yield return Argument9;
+            }
+        }
+
+        protected override TResult GetValue()
+        {
+            return Function(Argument1.Value, Argument2.Value, Argument3.Value, Argument4.Value, Argument5.Value, Argument6.Value, Argument7.Value, Argument8.Value, Argument9.Value);
         }
 
         public override INotifyExpression<TResult> ApplyParameters(IDictionary<string, object> parameters)
@@ -939,61 +777,6 @@ namespace NMF.Expressions
         public INotifyExpression<T9> Argument9 { get; private set; }
         public INotifyExpression<T10> Argument10 { get; private set; }
 
-        protected override TResult GetValue()
-        {
-            return Function(Argument1.Value, Argument2.Value, Argument3.Value, Argument4.Value, Argument5.Value, Argument6.Value, Argument7.Value, Argument8.Value, Argument9.Value, Argument10.Value);
-        }
-
-        protected override void AttachCore()
-        {
-            var argChanged = new EventHandler<ValueChangedEventArgs>(ArgumentChanged);
-            Argument1.Attach();
-            Argument1.ValueChanged += argChanged;
-            Argument2.Attach();
-            Argument2.ValueChanged += argChanged;
-            Argument3.Attach();
-            Argument3.ValueChanged += argChanged;
-            Argument4.Attach();
-            Argument4.ValueChanged += argChanged;
-            Argument5.Attach();
-            Argument5.ValueChanged += argChanged;
-            Argument6.Attach();
-            Argument6.ValueChanged += argChanged;
-            Argument7.Attach();
-            Argument7.ValueChanged += argChanged;
-            Argument8.Attach();
-            Argument8.ValueChanged += argChanged;
-            Argument9.Attach();
-            Argument9.ValueChanged += argChanged;
-            Argument10.Attach();
-            Argument10.ValueChanged += argChanged;
-        }
-
-        protected override void DetachCore()
-        {
-            var argChanged = new EventHandler<ValueChangedEventArgs>(ArgumentChanged);
-            Argument1.ValueChanged -= argChanged;
-            Argument1.Detach();
-            Argument2.ValueChanged -= argChanged;
-            Argument2.Detach();
-            Argument3.ValueChanged -= argChanged;
-            Argument3.Detach();
-            Argument4.ValueChanged -= argChanged;
-            Argument4.Detach();
-            Argument5.ValueChanged -= argChanged;
-            Argument5.Detach();
-            Argument6.ValueChanged -= argChanged;
-            Argument6.Detach();
-            Argument7.ValueChanged -= argChanged;
-            Argument7.Detach();
-            Argument8.ValueChanged -= argChanged;
-            Argument8.Detach();
-            Argument9.ValueChanged -= argChanged;
-            Argument9.Detach();
-            Argument10.ValueChanged -= argChanged;
-            Argument10.Detach();
-        }
-
         public override bool IsConstant
         {
             get
@@ -1005,6 +788,28 @@ namespace NMF.Expressions
         public override bool IsParameterFree
         {
             get { return Argument1.IsParameterFree && Argument2.IsParameterFree && Argument3.IsParameterFree && Argument4.IsParameterFree && Argument5.IsParameterFree && Argument6.IsParameterFree && Argument7.IsParameterFree && Argument8.IsParameterFree && Argument9.IsParameterFree && Argument10.IsParameterFree; }
+        }
+
+        public override IEnumerable<INotifiable> Dependencies
+        {
+            get
+            {
+                yield return Argument1;
+                yield return Argument2;
+                yield return Argument3;
+                yield return Argument4;
+                yield return Argument5;
+                yield return Argument6;
+                yield return Argument7;
+                yield return Argument8;
+                yield return Argument9;
+                yield return Argument10;
+            }
+        }
+
+        protected override TResult GetValue()
+        {
+            return Function(Argument1.Value, Argument2.Value, Argument3.Value, Argument4.Value, Argument5.Value, Argument6.Value, Argument7.Value, Argument8.Value, Argument9.Value, Argument10.Value);
         }
 
         public override INotifyExpression<TResult> ApplyParameters(IDictionary<string, object> parameters)
@@ -1085,65 +890,6 @@ namespace NMF.Expressions
         public INotifyExpression<T10> Argument10 { get; private set; }
         public INotifyExpression<T11> Argument11 { get; private set; }
 
-        protected override TResult GetValue()
-        {
-            return Function(Argument1.Value, Argument2.Value, Argument3.Value, Argument4.Value, Argument5.Value, Argument6.Value, Argument7.Value, Argument8.Value, Argument9.Value, Argument10.Value, Argument11.Value);
-        }
-
-        protected override void AttachCore()
-        {
-            var argChanged = new EventHandler<ValueChangedEventArgs>(ArgumentChanged);
-            Argument1.Attach();
-            Argument1.ValueChanged += argChanged;
-            Argument2.Attach();
-            Argument2.ValueChanged += argChanged;
-            Argument3.Attach();
-            Argument3.ValueChanged += argChanged;
-            Argument4.Attach();
-            Argument4.ValueChanged += argChanged;
-            Argument5.Attach();
-            Argument5.ValueChanged += argChanged;
-            Argument6.Attach();
-            Argument6.ValueChanged += argChanged;
-            Argument7.Attach();
-            Argument7.ValueChanged += argChanged;
-            Argument8.Attach();
-            Argument8.ValueChanged += argChanged;
-            Argument9.Attach();
-            Argument9.ValueChanged += argChanged;
-            Argument10.Attach();
-            Argument10.ValueChanged += argChanged;
-            Argument11.Attach();
-            Argument11.ValueChanged += argChanged;
-        }
-
-        protected override void DetachCore()
-        {
-            var argChanged = new EventHandler<ValueChangedEventArgs>(ArgumentChanged);
-            Argument1.ValueChanged -= argChanged;
-            Argument1.Detach();
-            Argument2.ValueChanged -= argChanged;
-            Argument2.Detach();
-            Argument3.ValueChanged -= argChanged;
-            Argument3.Detach();
-            Argument4.ValueChanged -= argChanged;
-            Argument4.Detach();
-            Argument5.ValueChanged -= argChanged;
-            Argument5.Detach();
-            Argument6.ValueChanged -= argChanged;
-            Argument6.Detach();
-            Argument7.ValueChanged -= argChanged;
-            Argument7.Detach();
-            Argument8.ValueChanged -= argChanged;
-            Argument8.Detach();
-            Argument9.ValueChanged -= argChanged;
-            Argument9.Detach();
-            Argument10.ValueChanged -= argChanged;
-            Argument10.Detach();
-            Argument11.ValueChanged -= argChanged;
-            Argument11.Detach();
-        }
-
         public override bool IsConstant
         {
             get
@@ -1155,6 +901,29 @@ namespace NMF.Expressions
         public override bool IsParameterFree
         {
             get { return Argument1.IsParameterFree && Argument2.IsParameterFree && Argument3.IsParameterFree && Argument4.IsParameterFree && Argument5.IsParameterFree && Argument6.IsParameterFree && Argument7.IsParameterFree && Argument8.IsParameterFree && Argument9.IsParameterFree && Argument10.IsParameterFree && Argument11.IsParameterFree; }
+        }
+
+        public override IEnumerable<INotifiable> Dependencies
+        {
+            get
+            {
+                yield return Argument1;
+                yield return Argument2;
+                yield return Argument3;
+                yield return Argument4;
+                yield return Argument5;
+                yield return Argument6;
+                yield return Argument7;
+                yield return Argument8;
+                yield return Argument9;
+                yield return Argument10;
+                yield return Argument11;
+            }
+        }
+
+        protected override TResult GetValue()
+        {
+            return Function(Argument1.Value, Argument2.Value, Argument3.Value, Argument4.Value, Argument5.Value, Argument6.Value, Argument7.Value, Argument8.Value, Argument9.Value, Argument10.Value, Argument11.Value);
         }
 
         public override INotifyExpression<TResult> ApplyParameters(IDictionary<string, object> parameters)
@@ -1240,69 +1009,6 @@ namespace NMF.Expressions
         public INotifyExpression<T11> Argument11 { get; private set; }
         public INotifyExpression<T12> Argument12 { get; private set; }
 
-        protected override TResult GetValue()
-        {
-            return Function(Argument1.Value, Argument2.Value, Argument3.Value, Argument4.Value, Argument5.Value, Argument6.Value, Argument7.Value, Argument8.Value, Argument9.Value, Argument10.Value, Argument11.Value, Argument12.Value);
-        }
-
-        protected override void AttachCore()
-        {
-            var argChanged = new EventHandler<ValueChangedEventArgs>(ArgumentChanged);
-            Argument1.Attach();
-            Argument1.ValueChanged += argChanged;
-            Argument2.Attach();
-            Argument2.ValueChanged += argChanged;
-            Argument3.Attach();
-            Argument3.ValueChanged += argChanged;
-            Argument4.Attach();
-            Argument4.ValueChanged += argChanged;
-            Argument5.Attach();
-            Argument5.ValueChanged += argChanged;
-            Argument6.Attach();
-            Argument6.ValueChanged += argChanged;
-            Argument7.Attach();
-            Argument7.ValueChanged += argChanged;
-            Argument8.Attach();
-            Argument8.ValueChanged += argChanged;
-            Argument9.Attach();
-            Argument9.ValueChanged += argChanged;
-            Argument10.Attach();
-            Argument10.ValueChanged += argChanged;
-            Argument11.Attach();
-            Argument11.ValueChanged += argChanged;
-            Argument12.Attach();
-            Argument12.ValueChanged += argChanged;
-        }
-
-        protected override void DetachCore()
-        {
-            var argChanged = new EventHandler<ValueChangedEventArgs>(ArgumentChanged);
-            Argument1.ValueChanged -= argChanged;
-            Argument1.Detach();
-            Argument2.ValueChanged -= argChanged;
-            Argument2.Detach();
-            Argument3.ValueChanged -= argChanged;
-            Argument3.Detach();
-            Argument4.ValueChanged -= argChanged;
-            Argument4.Detach();
-            Argument5.ValueChanged -= argChanged;
-            Argument5.Detach();
-            Argument6.ValueChanged -= argChanged;
-            Argument6.Detach();
-            Argument7.ValueChanged -= argChanged;
-            Argument7.Detach();
-            Argument8.ValueChanged -= argChanged;
-            Argument8.Detach();
-            Argument9.ValueChanged -= argChanged;
-            Argument9.Detach();
-            Argument10.ValueChanged -= argChanged;
-            Argument10.Detach();
-            Argument11.ValueChanged -= argChanged;
-            Argument11.Detach();
-            Argument12.ValueChanged -= argChanged;
-            Argument12.Detach();
-        }
-
         public override bool IsConstant
         {
             get
@@ -1314,6 +1020,30 @@ namespace NMF.Expressions
         public override bool IsParameterFree
         {
             get { return Argument1.IsParameterFree && Argument2.IsParameterFree && Argument3.IsParameterFree && Argument4.IsParameterFree && Argument5.IsParameterFree && Argument6.IsParameterFree && Argument7.IsParameterFree && Argument8.IsParameterFree && Argument9.IsParameterFree && Argument10.IsParameterFree && Argument11.IsParameterFree && Argument12.IsParameterFree; }
+        }
+
+        public override IEnumerable<INotifiable> Dependencies
+        {
+            get
+            {
+                yield return Argument1;
+                yield return Argument2;
+                yield return Argument3;
+                yield return Argument4;
+                yield return Argument5;
+                yield return Argument6;
+                yield return Argument7;
+                yield return Argument8;
+                yield return Argument9;
+                yield return Argument10;
+                yield return Argument11;
+                yield return Argument12;
+            }
+        }
+
+        protected override TResult GetValue()
+        {
+            return Function(Argument1.Value, Argument2.Value, Argument3.Value, Argument4.Value, Argument5.Value, Argument6.Value, Argument7.Value, Argument8.Value, Argument9.Value, Argument10.Value, Argument11.Value, Argument12.Value);
         }
 
         public override INotifyExpression<TResult> ApplyParameters(IDictionary<string, object> parameters)
@@ -1404,73 +1134,6 @@ namespace NMF.Expressions
         public INotifyExpression<T12> Argument12 { get; private set; }
         public INotifyExpression<T13> Argument13 { get; private set; }
 
-        protected override TResult GetValue()
-        {
-            return Function(Argument1.Value, Argument2.Value, Argument3.Value, Argument4.Value, Argument5.Value, Argument6.Value, Argument7.Value, Argument8.Value, Argument9.Value, Argument10.Value, Argument11.Value, Argument12.Value, Argument13.Value);
-        }
-
-        protected override void AttachCore()
-        {
-            var argChanged = new EventHandler<ValueChangedEventArgs>(ArgumentChanged);
-            Argument1.Attach();
-            Argument1.ValueChanged += argChanged;
-            Argument2.Attach();
-            Argument2.ValueChanged += argChanged;
-            Argument3.Attach();
-            Argument3.ValueChanged += argChanged;
-            Argument4.Attach();
-            Argument4.ValueChanged += argChanged;
-            Argument5.Attach();
-            Argument5.ValueChanged += argChanged;
-            Argument6.Attach();
-            Argument6.ValueChanged += argChanged;
-            Argument7.Attach();
-            Argument7.ValueChanged += argChanged;
-            Argument8.Attach();
-            Argument8.ValueChanged += argChanged;
-            Argument9.Attach();
-            Argument9.ValueChanged += argChanged;
-            Argument10.Attach();
-            Argument10.ValueChanged += argChanged;
-            Argument11.Attach();
-            Argument11.ValueChanged += argChanged;
-            Argument12.Attach();
-            Argument12.ValueChanged += argChanged;
-            Argument13.Attach();
-            Argument13.ValueChanged += argChanged;
-        }
-
-        protected override void DetachCore()
-        {
-            var argChanged = new EventHandler<ValueChangedEventArgs>(ArgumentChanged);
-            Argument1.ValueChanged -= argChanged;
-            Argument1.Detach();
-            Argument2.ValueChanged -= argChanged;
-            Argument2.Detach();
-            Argument3.ValueChanged -= argChanged;
-            Argument3.Detach();
-            Argument4.ValueChanged -= argChanged;
-            Argument4.Detach();
-            Argument5.ValueChanged -= argChanged;
-            Argument5.Detach();
-            Argument6.ValueChanged -= argChanged;
-            Argument6.Detach();
-            Argument7.ValueChanged -= argChanged;
-            Argument7.Detach();
-            Argument8.ValueChanged -= argChanged;
-            Argument8.Detach();
-            Argument9.ValueChanged -= argChanged;
-            Argument9.Detach();
-            Argument10.ValueChanged -= argChanged;
-            Argument10.Detach();
-            Argument11.ValueChanged -= argChanged;
-            Argument11.Detach();
-            Argument12.ValueChanged -= argChanged;
-            Argument12.Detach();
-            Argument13.ValueChanged -= argChanged;
-            Argument13.Detach();
-        }
-
         public override bool IsConstant
         {
             get
@@ -1482,6 +1145,31 @@ namespace NMF.Expressions
         public override bool IsParameterFree
         {
             get { return Argument1.IsParameterFree && Argument2.IsParameterFree && Argument3.IsParameterFree && Argument4.IsParameterFree && Argument5.IsParameterFree && Argument6.IsParameterFree && Argument7.IsParameterFree && Argument8.IsParameterFree && Argument9.IsParameterFree && Argument10.IsParameterFree && Argument11.IsParameterFree && Argument12.IsParameterFree && Argument13.IsParameterFree; }
+        }
+
+        public override IEnumerable<INotifiable> Dependencies
+        {
+            get
+            {
+                yield return Argument1;
+                yield return Argument2;
+                yield return Argument3;
+                yield return Argument4;
+                yield return Argument5;
+                yield return Argument6;
+                yield return Argument7;
+                yield return Argument8;
+                yield return Argument9;
+                yield return Argument10;
+                yield return Argument11;
+                yield return Argument12;
+                yield return Argument13;
+            }
+        }
+
+        protected override TResult GetValue()
+        {
+            return Function(Argument1.Value, Argument2.Value, Argument3.Value, Argument4.Value, Argument5.Value, Argument6.Value, Argument7.Value, Argument8.Value, Argument9.Value, Argument10.Value, Argument11.Value, Argument12.Value, Argument13.Value);
         }
 
         public override INotifyExpression<TResult> ApplyParameters(IDictionary<string, object> parameters)
@@ -1577,77 +1265,6 @@ namespace NMF.Expressions
         public INotifyExpression<T13> Argument13 { get; private set; }
         public INotifyExpression<T14> Argument14 { get; private set; }
 
-        protected override TResult GetValue()
-        {
-            return Function(Argument1.Value, Argument2.Value, Argument3.Value, Argument4.Value, Argument5.Value, Argument6.Value, Argument7.Value, Argument8.Value, Argument9.Value, Argument10.Value, Argument11.Value, Argument12.Value, Argument13.Value, Argument14.Value);
-        }
-
-        protected override void AttachCore()
-        {
-            var argChanged = new EventHandler<ValueChangedEventArgs>(ArgumentChanged);
-            Argument1.Attach();
-            Argument1.ValueChanged += argChanged;
-            Argument2.Attach();
-            Argument2.ValueChanged += argChanged;
-            Argument3.Attach();
-            Argument3.ValueChanged += argChanged;
-            Argument4.Attach();
-            Argument4.ValueChanged += argChanged;
-            Argument5.Attach();
-            Argument5.ValueChanged += argChanged;
-            Argument6.Attach();
-            Argument6.ValueChanged += argChanged;
-            Argument7.Attach();
-            Argument7.ValueChanged += argChanged;
-            Argument8.Attach();
-            Argument8.ValueChanged += argChanged;
-            Argument9.Attach();
-            Argument9.ValueChanged += argChanged;
-            Argument10.Attach();
-            Argument10.ValueChanged += argChanged;
-            Argument11.Attach();
-            Argument11.ValueChanged += argChanged;
-            Argument12.Attach();
-            Argument12.ValueChanged += argChanged;
-            Argument13.Attach();
-            Argument13.ValueChanged += argChanged;
-            Argument14.Attach();
-            Argument14.ValueChanged += argChanged;
-        }
-
-        protected override void DetachCore()
-        {
-            var argChanged = new EventHandler<ValueChangedEventArgs>(ArgumentChanged);
-            Argument1.ValueChanged -= argChanged;
-            Argument1.Detach();
-            Argument2.ValueChanged -= argChanged;
-            Argument2.Detach();
-            Argument3.ValueChanged -= argChanged;
-            Argument3.Detach();
-            Argument4.ValueChanged -= argChanged;
-            Argument4.Detach();
-            Argument5.ValueChanged -= argChanged;
-            Argument5.Detach();
-            Argument6.ValueChanged -= argChanged;
-            Argument6.Detach();
-            Argument7.ValueChanged -= argChanged;
-            Argument7.Detach();
-            Argument8.ValueChanged -= argChanged;
-            Argument8.Detach();
-            Argument9.ValueChanged -= argChanged;
-            Argument9.Detach();
-            Argument10.ValueChanged -= argChanged;
-            Argument10.Detach();
-            Argument11.ValueChanged -= argChanged;
-            Argument11.Detach();
-            Argument12.ValueChanged -= argChanged;
-            Argument12.Detach();
-            Argument13.ValueChanged -= argChanged;
-            Argument13.Detach();
-            Argument14.ValueChanged -= argChanged;
-            Argument14.Detach();
-        }
-
         public override bool IsConstant
         {
             get
@@ -1659,6 +1276,32 @@ namespace NMF.Expressions
         public override bool IsParameterFree
         {
             get { return Argument1.IsParameterFree && Argument2.IsParameterFree && Argument3.IsParameterFree && Argument4.IsParameterFree && Argument5.IsParameterFree && Argument6.IsParameterFree && Argument7.IsParameterFree && Argument8.IsParameterFree && Argument9.IsParameterFree && Argument10.IsParameterFree && Argument11.IsParameterFree && Argument12.IsParameterFree && Argument13.IsParameterFree && Argument14.IsParameterFree; }
+        }
+
+        public override IEnumerable<INotifiable> Dependencies
+        {
+            get
+            {
+                yield return Argument1;
+                yield return Argument2;
+                yield return Argument3;
+                yield return Argument4;
+                yield return Argument5;
+                yield return Argument6;
+                yield return Argument7;
+                yield return Argument8;
+                yield return Argument9;
+                yield return Argument10;
+                yield return Argument11;
+                yield return Argument12;
+                yield return Argument13;
+                yield return Argument14;
+            }
+        }
+
+        protected override TResult GetValue()
+        {
+            return Function(Argument1.Value, Argument2.Value, Argument3.Value, Argument4.Value, Argument5.Value, Argument6.Value, Argument7.Value, Argument8.Value, Argument9.Value, Argument10.Value, Argument11.Value, Argument12.Value, Argument13.Value, Argument14.Value);
         }
 
         public override INotifyExpression<TResult> ApplyParameters(IDictionary<string, object> parameters)
@@ -1759,81 +1402,6 @@ namespace NMF.Expressions
         public INotifyExpression<T14> Argument14 { get; private set; }
         public INotifyExpression<T15> Argument15 { get; private set; }
 
-        protected override TResult GetValue()
-        {
-            return Function(Argument1.Value, Argument2.Value, Argument3.Value, Argument4.Value, Argument5.Value, Argument6.Value, Argument7.Value, Argument8.Value, Argument9.Value, Argument10.Value, Argument11.Value, Argument12.Value, Argument13.Value, Argument14.Value, Argument15.Value);
-        }
-
-        protected override void AttachCore()
-        {
-            var argChanged = new EventHandler<ValueChangedEventArgs>(ArgumentChanged);
-            Argument1.Attach();
-            Argument1.ValueChanged += argChanged;
-            Argument2.Attach();
-            Argument2.ValueChanged += argChanged;
-            Argument3.Attach();
-            Argument3.ValueChanged += argChanged;
-            Argument4.Attach();
-            Argument4.ValueChanged += argChanged;
-            Argument5.Attach();
-            Argument5.ValueChanged += argChanged;
-            Argument6.Attach();
-            Argument6.ValueChanged += argChanged;
-            Argument7.Attach();
-            Argument7.ValueChanged += argChanged;
-            Argument8.Attach();
-            Argument8.ValueChanged += argChanged;
-            Argument9.Attach();
-            Argument9.ValueChanged += argChanged;
-            Argument10.Attach();
-            Argument10.ValueChanged += argChanged;
-            Argument11.Attach();
-            Argument11.ValueChanged += argChanged;
-            Argument12.Attach();
-            Argument12.ValueChanged += argChanged;
-            Argument13.Attach();
-            Argument13.ValueChanged += argChanged;
-            Argument14.Attach();
-            Argument14.ValueChanged += argChanged;
-            Argument15.Attach();
-            Argument15.ValueChanged += argChanged;
-        }
-
-        protected override void DetachCore()
-        {
-            var argChanged = new EventHandler<ValueChangedEventArgs>(ArgumentChanged);
-            Argument1.ValueChanged -= argChanged;
-            Argument1.Detach();
-            Argument2.ValueChanged -= argChanged;
-            Argument2.Detach();
-            Argument3.ValueChanged -= argChanged;
-            Argument3.Detach();
-            Argument4.ValueChanged -= argChanged;
-            Argument4.Detach();
-            Argument5.ValueChanged -= argChanged;
-            Argument5.Detach();
-            Argument6.ValueChanged -= argChanged;
-            Argument6.Detach();
-            Argument7.ValueChanged -= argChanged;
-            Argument7.Detach();
-            Argument8.ValueChanged -= argChanged;
-            Argument8.Detach();
-            Argument9.ValueChanged -= argChanged;
-            Argument9.Detach();
-            Argument10.ValueChanged -= argChanged;
-            Argument10.Detach();
-            Argument11.ValueChanged -= argChanged;
-            Argument11.Detach();
-            Argument12.ValueChanged -= argChanged;
-            Argument12.Detach();
-            Argument13.ValueChanged -= argChanged;
-            Argument13.Detach();
-            Argument14.ValueChanged -= argChanged;
-            Argument14.Detach();
-            Argument15.ValueChanged -= argChanged;
-            Argument15.Detach();
-        }
-
         public override bool IsConstant
         {
             get
@@ -1845,6 +1413,33 @@ namespace NMF.Expressions
         public override bool IsParameterFree
         {
             get { return Argument1.IsParameterFree && Argument2.IsParameterFree && Argument3.IsParameterFree && Argument4.IsParameterFree && Argument5.IsParameterFree && Argument6.IsParameterFree && Argument7.IsParameterFree && Argument8.IsParameterFree && Argument9.IsParameterFree && Argument10.IsParameterFree && Argument11.IsParameterFree && Argument12.IsParameterFree && Argument13.IsParameterFree && Argument14.IsParameterFree && Argument15.IsParameterFree; }
+        }
+
+        public override IEnumerable<INotifiable> Dependencies
+        {
+            get
+            {
+                yield return Argument1;
+                yield return Argument2;
+                yield return Argument3;
+                yield return Argument4;
+                yield return Argument5;
+                yield return Argument6;
+                yield return Argument7;
+                yield return Argument8;
+                yield return Argument9;
+                yield return Argument10;
+                yield return Argument11;
+                yield return Argument12;
+                yield return Argument13;
+                yield return Argument14;
+                yield return Argument15;
+            }
+        }
+
+        protected override TResult GetValue()
+        {
+            return Function(Argument1.Value, Argument2.Value, Argument3.Value, Argument4.Value, Argument5.Value, Argument6.Value, Argument7.Value, Argument8.Value, Argument9.Value, Argument10.Value, Argument11.Value, Argument12.Value, Argument13.Value, Argument14.Value, Argument15.Value);
         }
 
         public override INotifyExpression<TResult> ApplyParameters(IDictionary<string, object> parameters)

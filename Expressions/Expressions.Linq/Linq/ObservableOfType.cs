@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using SL = System.Linq.Enumerable;
 using System.Text;
 using System.Collections.Specialized;
@@ -11,51 +12,47 @@ namespace NMF.Expressions.Linq
     {
         public INotifyEnumerable Source { get; private set; }
 
+        public override IEnumerable<INotifiable> Dependencies { get { yield return Source; } }
+
         public ObservableOfType(INotifyEnumerable source)
         {
             if (source == null) throw new ArgumentNullException("source");
 
             Source = source;
-
-            Attach();
         }
-
-        void SourceCollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
-        {
-            if (e.Action == NotifyCollectionChangedAction.Reset)
-            {
-                OnCleared();
-            }
-            else
-            {
-                if (e.OldItems != null)
-                {
-                    OnRemoveItems(SL.OfType<T>(e.OldItems));
-                }
-                if (e.NewItems != null)
-                {
-                    OnAddItems(SL.OfType<T>(e.NewItems));
-                }
-            }
-        }
-
+        
         public override IEnumerator<T> GetEnumerator()
         {
             return SL.OfType<T>(Source).GetEnumerator();
         }
 
-        protected override void AttachCore()
+        public override INotificationResult Notify(IList<INotificationResult> sources)
         {
-            Source.Attach();
+            var change = (ICollectionChangedNotificationResult)sources[0];
+            if (change.IsReset)
+            {
+                OnCleared();
+                return new CollectionChangedNotificationResult<T>(this);
+            }
 
-            Source.CollectionChanged += SourceCollectionChanged;
-        }
+            var removed = change.RemovedItems?.OfType<T>().ToList();
+            var added = change.AddedItems?.OfType<T>().ToList();
+            var moved = change.MovedItems?.OfType<T>().ToList();
+            var replaceAdded = change.ReplaceAddedItems?.OfType<T>().ToList();
+            var replaceRemoved = change.ReplaceRemovedItems?.OfType<T>().ToList();
+            
+            if ((removed?.Count ?? 0) + (added?.Count ?? 0) + (moved?.Count ?? 0) + (replaceAdded?.Count ?? 0) + (replaceRemoved?.Count ?? 0) == 0)
+                return UnchangedNotificationResult.Instance;
 
-        protected override void DetachCore()
-        {
-            Source.Detach();
-
-            Source.CollectionChanged -= SourceCollectionChanged;
+            if (removed != null)
+                OnRemoveItems(removed);
+            if (added != null)
+                OnAddItems(added);
+            if (moved != null)
+                OnMoveItems(moved);
+            if (replaceAdded != null && replaceRemoved != null)
+                OnReplaceItems(replaceRemoved, replaceAdded);
+            return new CollectionChangedNotificationResult<T>(this, added, removed, moved, replaceAdded, replaceRemoved);
         }
     }
 

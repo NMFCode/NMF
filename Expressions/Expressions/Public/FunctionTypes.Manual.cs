@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 
 namespace NMF.Expressions
 {
@@ -12,17 +13,48 @@ namespace NMF.Expressions
     {
         internal TaggedObservableValue<TResult, TTag> InvokeTagged<TTag>(T1 input, TTag tag = default(TTag))
         {
-            if (isParameterFree) return new TaggedObservableValue<TResult, TTag>(expression, tag);
             var parameters = new Dictionary<string, object>();
-            parameters.Add(parameter1Name, input);
+            if (!isParameterFree)
+                parameters.Add(parameter1Name, input);
             return new TaggedObservableValue<TResult, TTag>(expression.ApplyParameters(parameters), tag);
         }
 
         internal TaggedObservableValue<TResult, TTag> InvokeTagged<TTag>(INotifyValue<T1> input, TTag tag = default(TTag))
         {
-            if (isParameterFree) return new TaggedObservableValue<TResult, TTag>(expression, tag);
             var parameters = new Dictionary<string, object>();
-            parameters.Add(parameter1Name, input);
+            if (!isParameterFree)
+                parameters.Add(parameter1Name, input);
+            return new TaggedObservableValue<TResult, TTag>(expression.ApplyParameters(parameters), tag);
+        }
+    }
+
+    /// <summary>
+    /// Represents an observable expression with two input parameters
+    /// </summary>
+    /// <typeparam name="T1">The type of the first input parameter</typeparam>
+    /// <typeparam name="T2">The type of the second input parameter</typeparam>
+    /// <typeparam name="TResult">The type of the result</typeparam>
+    public partial class ObservingFunc<T1, T2, TResult>
+    {
+        internal TaggedObservableValue<TResult, TTag> InvokeTagged<TTag>(T1 input1, T2 input2, TTag tag)
+        {
+            var parameters = new Dictionary<string, object>();
+            if (!isParameterFree)
+            {
+                parameters.Add(parameter1Name, input1);
+                parameters.Add(parameter2Name, input2);
+            }
+            return new TaggedObservableValue<TResult, TTag>(expression.ApplyParameters(parameters), tag);
+        }
+
+        internal TaggedObservableValue<TResult, TTag> InvokeTagged<TTag>(INotifyValue<T1> input1, T2 input2, TTag tag)
+        {
+            var parameters = new Dictionary<string, object>();
+            if (!isParameterFree)
+            {
+                parameters.Add(parameter1Name, input1);
+                parameters.Add(parameter2Name, input2);
+            }
             return new TaggedObservableValue<TResult, TTag>(expression.ApplyParameters(parameters), tag);
         }
     }
@@ -31,54 +63,14 @@ namespace NMF.Expressions
     {
         public INotifyExpression<T> Expression { get; set; }
         public TTag Tag { get; set; }
+        
+        public bool CanBeConstant { get { return Expression.CanBeConstant; } }
 
-        T INotifyValue<T>.Value
-        {
-            get
-            {
-                return Expression.Value;
-            }
-        }
+        public bool IsConstant { get { return Expression.IsConstant; } }
 
-        public bool IsAttached
-        {
-            get
-            {
-                return Expression.IsAttached;
-            }
-        }
+        public bool IsParameterFree { get { return Expression.IsParameterFree; } }
 
-        public bool CanBeConstant
-        {
-            get
-            {
-                return Expression.CanBeConstant;
-            }
-        }
-
-        public bool IsConstant
-        {
-            get
-            {
-                return Expression.IsConstant;
-            }
-        }
-
-        public bool IsParameterFree
-        {
-            get
-            {
-                return Expression.IsParameterFree;
-            }
-        }
-
-        public object ValueObject
-        {
-            get
-            {
-                return Expression.ValueObject;
-            }
-        }
+        public object ValueObject { get { return Expression.ValueObject; } }
 
         public T Value
         {
@@ -110,6 +102,19 @@ namespace NMF.Expressions
             }
         }
 
+        
+        public ISuccessorList Successors { get; } = NotifySystem.DefaultSystem.CreateSuccessorList();
+
+        public IEnumerable<INotifiable> Dependencies
+        {
+            get
+            {
+                yield return Expression;
+            }
+        }
+
+        public ExecutionMetaData ExecutionMetaData { get; } = new ExecutionMetaData();
+
         public TaggedObservableValue(INotifyExpression<T> expression, TTag tag)
         {
             if (expression == null) throw new ArgumentNullException("expression");
@@ -117,8 +122,16 @@ namespace NMF.Expressions
             Expression = expression;
             Tag = tag;
 
-            expression.Attach();
-            expression.ValueChanged += (o, e) => ValueChanged?.Invoke(this, e);
+            Successors.Attached += (obj, e) =>
+            {
+                foreach (var dep in Dependencies)
+                    dep.Successors.Set(this);
+            };
+            Successors.Detached += (obj, e) =>
+            {
+                foreach (var dep in Dependencies)
+                    dep.Successors.Unset(this);
+            };
         }
 
         public event EventHandler<ValueChangedEventArgs> ValueChanged;
@@ -133,52 +146,22 @@ namespace NMF.Expressions
             return this;
         }
 
-        public void Detach()
+        public INotificationResult Notify(IList<INotificationResult> sources)
         {
-            Expression.Detach();
+            var valueChange = (ValueChangedNotificationResult<T>)sources[0];
+            if (ValueChanged != null)
+                ValueChanged(this, new ValueChangedEventArgs(valueChange.OldValue, Value));
+            return new ValueChangedNotificationResult<T>(this, valueChange.OldValue, Value);
         }
 
-        public void Attach()
+        public void Dispose()
         {
-            Expression.Attach();
-        }
-
-        public void Refresh()
-        {
-            Expression.Refresh();
+            Successors.UnsetAll();
         }
 
         INotifyExpression INotifyExpression.ApplyParameters(IDictionary<string, object> parameters)
         {
             return ApplyParameters(parameters);
-        }
-    }
-
-    /// <summary>
-    /// Represents an observable expression with one input parameter
-    /// </summary>
-    /// <typeparam name="T1">The type of the first input parameter</typeparam>
-    /// <typeparam name="T2">The type of the second input parameter</typeparam>
-    /// <typeparam name="TResult">The type of the result</typeparam>
-    public partial class ObservingFunc<T1, T2, TResult>
-    {
-
-        internal TaggedObservableValue<TResult, TTag> InvokeTagged<TTag>(T1 input1, T2 input2, TTag tag)
-        {
-            if (isParameterFree) return new TaggedObservableValue<TResult, TTag>(expression, tag);
-            var parameters = new Dictionary<string, object>();
-            parameters.Add(parameter1Name, input1);
-            parameters.Add(parameter2Name, input2);
-            return new TaggedObservableValue<TResult, TTag>(expression.ApplyParameters(parameters), tag);
-        }
-
-        internal TaggedObservableValue<TResult, TTag> InvokeTagged<TTag>(INotifyValue<T1> input1, T2 input2, TTag tag)
-        {
-            if (isParameterFree) return new TaggedObservableValue<TResult, TTag>(expression, tag);
-            var parameters = new Dictionary<string, object>();
-            parameters.Add(parameter1Name, input1);
-            parameters.Add(parameter2Name, input2);
-            return new TaggedObservableValue<TResult, TTag>(expression.ApplyParameters(parameters), tag);
         }
     }
 }

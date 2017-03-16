@@ -14,7 +14,7 @@ using NMF.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.Web;
 using System.Collections;
-using NMF.Models.Meta;
+using NMF.Models.Collections;
 
 namespace NMF.Models
 {
@@ -26,6 +26,7 @@ namespace NMF.Models
     {
         private IModelElement parent;
         private ObservableList<ModelElementExtension> extensions;
+        private DescendantsCollection descendants;
         private ModelElementFlag flag;
         private EventHandler<BubbledChangeEventArgs> bubbledChange;
 
@@ -164,14 +165,14 @@ namespace NMF.Models
                     var oldModel = oldParent != null ? oldParent.Model : null;
                     if (oldParent != null)
                     {
-                        oldParent.Deleted -= CascadeDelete;
+                        //oldParent.Deleted -= CascadeDelete;
 
                         if (EnforceModels && oldModel != null && oldModel == oldParent.Parent && newModel == null)
                         {
                             oldModel.RootElements.Add(newParent);
                         }
                     }
-                    newParent.Deleted += CascadeDelete;
+                    //newParent.Deleted += CascadeDelete;
                     var newParentME = newParent as ModelElement;
                     if (newParentME != null)
                     {
@@ -197,7 +198,7 @@ namespace NMF.Models
                 else
                 {
                     var oldModel = oldParent.Model;
-                    oldParent.Deleted -= CascadeDelete;
+                    //oldParent.Deleted -= CascadeDelete;
 
                     if (bubbledChange == null)
                     {
@@ -291,6 +292,17 @@ namespace NMF.Models
         }
 
 
+        internal DescendantsCollection Descendants
+        {
+            get
+            {
+                if (descendants == null)
+                    descendants = new DescendantsCollection(this);
+                return descendants;
+            }
+        }
+
+
         /// <summary>
         /// Gets the relative Uri for the current model element
         /// </summary>
@@ -324,8 +336,8 @@ namespace NMF.Models
         {
             var parent = Parent as ModelElement;
             if (parent == null) return null;
-            Uri result = null;
             string path = parent.GetRelativePathForChild(this);
+            Uri result = null;
             if (path != null)
             {
                 if (fragment != null)
@@ -763,14 +775,18 @@ namespace NMF.Models
         /// <param name="e">The event data</param>
         protected virtual void OnDeleted(EventArgs e, Uri originalAbsoluteUri)
         {
+            foreach (var child in Children.Reverse())
+            {
+                child.Delete();
+            }
             Deleted?.Invoke(this, e);
             OnBubbledChange(BubbledChangeEventArgs.ElementDeleted(this, originalAbsoluteUri));
         }
 
-        internal void CascadeDelete(object sender, EventArgs e)
+        /*internal void CascadeDelete(object sender, EventArgs e)
         {
             Delete();
-        }
+        }*/
 
 
         /// <summary>

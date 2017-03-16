@@ -16,6 +16,7 @@ using NMF.Models;
 using NMF.Models.Collections;
 using NMF.Models.Expressions;
 using NMF.Models.Meta;
+using NMF.Models.Repository;
 using NMF.Serialization;
 using NMF.Utilities;
 using System;
@@ -75,22 +76,22 @@ namespace NMF.Models.Tests.Railway
         /// <summary>
         /// Gets fired before the Entry property changes its value
         /// </summary>
-        event EventHandler EntryChanging;
+        event System.EventHandler<ValueChangedEventArgs> EntryChanging;
         
         /// <summary>
         /// Gets fired when the Entry property changed its value
         /// </summary>
-        event EventHandler<ValueChangedEventArgs> EntryChanged;
+        event System.EventHandler<ValueChangedEventArgs> EntryChanged;
         
         /// <summary>
         /// Gets fired before the Exit property changes its value
         /// </summary>
-        event EventHandler ExitChanging;
+        event System.EventHandler<ValueChangedEventArgs> ExitChanging;
         
         /// <summary>
         /// Gets fired when the Exit property changed its value
         /// </summary>
-        event EventHandler<ValueChangedEventArgs> ExitChanged;
+        event System.EventHandler<ValueChangedEventArgs> ExitChanged;
     }
 }
 

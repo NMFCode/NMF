@@ -1009,7 +1009,7 @@ namespace NMF.Synchronizations.Example.Families
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
             public LastNameProxy(IFamily modelElement) : 
-                    base(modelElement)
+                    base(modelElement, "lastName")
             {
             }
             
@@ -1027,24 +1027,6 @@ namespace NMF.Synchronizations.Example.Families
                     this.ModelElement.LastName = value;
                 }
             }
-            
-            /// <summary>
-            /// Registers an event handler to subscribe specifically on the changed event for this property
-            /// </summary>
-            /// <param name="handler">The handler that should be subscribed to the property change event</param>
-            protected override void RegisterChangeEventHandler(System.EventHandler<NMF.Expressions.ValueChangedEventArgs> handler)
-            {
-                this.ModelElement.LastNameChanged += handler;
-            }
-            
-            /// <summary>
-            /// Registers an event handler to subscribe specifically on the changed event for this property
-            /// </summary>
-            /// <param name="handler">The handler that should be unsubscribed from the property change event</param>
-            protected override void UnregisterChangeEventHandler(System.EventHandler<NMF.Expressions.ValueChangedEventArgs> handler)
-            {
-                this.ModelElement.LastNameChanged -= handler;
-            }
         }
         
         /// <summary>
@@ -1058,7 +1040,7 @@ namespace NMF.Synchronizations.Example.Families
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
             public FatherProxy(IFamily modelElement) : 
-                    base(modelElement)
+                    base(modelElement, "father")
             {
             }
             
@@ -1076,24 +1058,6 @@ namespace NMF.Synchronizations.Example.Families
                     this.ModelElement.Father = value;
                 }
             }
-            
-            /// <summary>
-            /// Registers an event handler to subscribe specifically on the changed event for this property
-            /// </summary>
-            /// <param name="handler">The handler that should be subscribed to the property change event</param>
-            protected override void RegisterChangeEventHandler(System.EventHandler<NMF.Expressions.ValueChangedEventArgs> handler)
-            {
-                this.ModelElement.FatherChanged += handler;
-            }
-            
-            /// <summary>
-            /// Registers an event handler to subscribe specifically on the changed event for this property
-            /// </summary>
-            /// <param name="handler">The handler that should be unsubscribed from the property change event</param>
-            protected override void UnregisterChangeEventHandler(System.EventHandler<NMF.Expressions.ValueChangedEventArgs> handler)
-            {
-                this.ModelElement.FatherChanged -= handler;
-            }
         }
         
         /// <summary>
@@ -1107,7 +1071,7 @@ namespace NMF.Synchronizations.Example.Families
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
             public MotherProxy(IFamily modelElement) : 
-                    base(modelElement)
+                    base(modelElement, "mother")
             {
             }
             
@@ -1124,24 +1088,6 @@ namespace NMF.Synchronizations.Example.Families
                 {
                     this.ModelElement.Mother = value;
                 }
-            }
-            
-            /// <summary>
-            /// Registers an event handler to subscribe specifically on the changed event for this property
-            /// </summary>
-            /// <param name="handler">The handler that should be subscribed to the property change event</param>
-            protected override void RegisterChangeEventHandler(System.EventHandler<NMF.Expressions.ValueChangedEventArgs> handler)
-            {
-                this.ModelElement.MotherChanged += handler;
-            }
-            
-            /// <summary>
-            /// Registers an event handler to subscribe specifically on the changed event for this property
-            /// </summary>
-            /// <param name="handler">The handler that should be unsubscribed from the property change event</param>
-            protected override void UnregisterChangeEventHandler(System.EventHandler<NMF.Expressions.ValueChangedEventArgs> handler)
-            {
-                this.ModelElement.MotherChanged -= handler;
             }
         }
     }
@@ -1945,7 +1891,7 @@ namespace NMF.Synchronizations.Example.Families
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
             public FirstNameProxy(IMember modelElement) : 
-                    base(modelElement)
+                    base(modelElement, "firstName")
             {
             }
             
@@ -1963,24 +1909,6 @@ namespace NMF.Synchronizations.Example.Families
                     this.ModelElement.FirstName = value;
                 }
             }
-            
-            /// <summary>
-            /// Registers an event handler to subscribe specifically on the changed event for this property
-            /// </summary>
-            /// <param name="handler">The handler that should be subscribed to the property change event</param>
-            protected override void RegisterChangeEventHandler(System.EventHandler<NMF.Expressions.ValueChangedEventArgs> handler)
-            {
-                this.ModelElement.FirstNameChanged += handler;
-            }
-            
-            /// <summary>
-            /// Registers an event handler to subscribe specifically on the changed event for this property
-            /// </summary>
-            /// <param name="handler">The handler that should be unsubscribed from the property change event</param>
-            protected override void UnregisterChangeEventHandler(System.EventHandler<NMF.Expressions.ValueChangedEventArgs> handler)
-            {
-                this.ModelElement.FirstNameChanged -= handler;
-            }
         }
         
         /// <summary>
@@ -1994,7 +1922,7 @@ namespace NMF.Synchronizations.Example.Families
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
             public FamilyFatherProxy(IMember modelElement) : 
-                    base(modelElement)
+                    base(modelElement, "familyFather")
             {
             }
             
@@ -2012,24 +1940,6 @@ namespace NMF.Synchronizations.Example.Families
                     this.ModelElement.FamilyFather = value;
                 }
             }
-            
-            /// <summary>
-            /// Registers an event handler to subscribe specifically on the changed event for this property
-            /// </summary>
-            /// <param name="handler">The handler that should be subscribed to the property change event</param>
-            protected override void RegisterChangeEventHandler(System.EventHandler<NMF.Expressions.ValueChangedEventArgs> handler)
-            {
-                this.ModelElement.FamilyFatherChanged += handler;
-            }
-            
-            /// <summary>
-            /// Registers an event handler to subscribe specifically on the changed event for this property
-            /// </summary>
-            /// <param name="handler">The handler that should be unsubscribed from the property change event</param>
-            protected override void UnregisterChangeEventHandler(System.EventHandler<NMF.Expressions.ValueChangedEventArgs> handler)
-            {
-                this.ModelElement.FamilyFatherChanged -= handler;
-            }
         }
         
         /// <summary>
@@ -2043,7 +1953,7 @@ namespace NMF.Synchronizations.Example.Families
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
             public FamilyMotherProxy(IMember modelElement) : 
-                    base(modelElement)
+                    base(modelElement, "familyMother")
             {
             }
             
@@ -2061,24 +1971,6 @@ namespace NMF.Synchronizations.Example.Families
                     this.ModelElement.FamilyMother = value;
                 }
             }
-            
-            /// <summary>
-            /// Registers an event handler to subscribe specifically on the changed event for this property
-            /// </summary>
-            /// <param name="handler">The handler that should be subscribed to the property change event</param>
-            protected override void RegisterChangeEventHandler(System.EventHandler<NMF.Expressions.ValueChangedEventArgs> handler)
-            {
-                this.ModelElement.FamilyMotherChanged += handler;
-            }
-            
-            /// <summary>
-            /// Registers an event handler to subscribe specifically on the changed event for this property
-            /// </summary>
-            /// <param name="handler">The handler that should be unsubscribed from the property change event</param>
-            protected override void UnregisterChangeEventHandler(System.EventHandler<NMF.Expressions.ValueChangedEventArgs> handler)
-            {
-                this.ModelElement.FamilyMotherChanged -= handler;
-            }
         }
         
         /// <summary>
@@ -2092,7 +1984,7 @@ namespace NMF.Synchronizations.Example.Families
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
             public FamilySonProxy(IMember modelElement) : 
-                    base(modelElement)
+                    base(modelElement, "familySon")
             {
             }
             
@@ -2110,24 +2002,6 @@ namespace NMF.Synchronizations.Example.Families
                     this.ModelElement.FamilySon = value;
                 }
             }
-            
-            /// <summary>
-            /// Registers an event handler to subscribe specifically on the changed event for this property
-            /// </summary>
-            /// <param name="handler">The handler that should be subscribed to the property change event</param>
-            protected override void RegisterChangeEventHandler(System.EventHandler<NMF.Expressions.ValueChangedEventArgs> handler)
-            {
-                this.ModelElement.FamilySonChanged += handler;
-            }
-            
-            /// <summary>
-            /// Registers an event handler to subscribe specifically on the changed event for this property
-            /// </summary>
-            /// <param name="handler">The handler that should be unsubscribed from the property change event</param>
-            protected override void UnregisterChangeEventHandler(System.EventHandler<NMF.Expressions.ValueChangedEventArgs> handler)
-            {
-                this.ModelElement.FamilySonChanged -= handler;
-            }
         }
         
         /// <summary>
@@ -2141,7 +2015,7 @@ namespace NMF.Synchronizations.Example.Families
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
             public FamilyDaughterProxy(IMember modelElement) : 
-                    base(modelElement)
+                    base(modelElement, "familyDaughter")
             {
             }
             
@@ -2158,24 +2032,6 @@ namespace NMF.Synchronizations.Example.Families
                 {
                     this.ModelElement.FamilyDaughter = value;
                 }
-            }
-            
-            /// <summary>
-            /// Registers an event handler to subscribe specifically on the changed event for this property
-            /// </summary>
-            /// <param name="handler">The handler that should be subscribed to the property change event</param>
-            protected override void RegisterChangeEventHandler(System.EventHandler<NMF.Expressions.ValueChangedEventArgs> handler)
-            {
-                this.ModelElement.FamilyDaughterChanged += handler;
-            }
-            
-            /// <summary>
-            /// Registers an event handler to subscribe specifically on the changed event for this property
-            /// </summary>
-            /// <param name="handler">The handler that should be unsubscribed from the property change event</param>
-            protected override void UnregisterChangeEventHandler(System.EventHandler<NMF.Expressions.ValueChangedEventArgs> handler)
-            {
-                this.ModelElement.FamilyDaughterChanged -= handler;
             }
         }
     }

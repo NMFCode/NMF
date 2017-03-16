@@ -7,27 +7,20 @@ using System.Text;
 
 namespace NMF.Expressions
 {
-    public interface INotifyEnumerable : IEnumerable, INotifyCollectionChanged
-    {
-        void Attach();
-        void Detach();
-        bool IsAttached { get; }
-    }
+    public interface INotifyEnumerable : IEnumerable, INotifyCollectionChanged, INotifiable { }
 
-    public interface INotifyEnumerable<out T> : IEnumerable<T>, INotifyEnumerable
-    {
-    }
+    public interface INotifyEnumerable<out T> : IEnumerable<T>, INotifyEnumerable { }
 
     public interface IOrderableNotifyEnumerable<T> : INotifyEnumerable<T>
     {
-        INotifyEnumerable<IEnumerable<T>> Sequences { get; }
+        IEnumerable<IEnumerable<T>> Sequences { get; }
+
+        IEnumerable<T> GetSequenceForItem(T item);
     }
 
     public interface INotifyCollection<T> : INotifyEnumerable<T>, ICollection<T> { }
 
-    public interface INotifyGrouping<out TKey, out TItem> : INotifyEnumerable<TItem>, IGrouping<TKey, TItem>
-    {
-    }
+    public interface INotifyGrouping<out TKey, out TItem> : INotifyEnumerable<TItem>, IGrouping<TKey, TItem> { }
 
     public interface INotifySplit<T>
     {
@@ -39,9 +32,7 @@ namespace NMF.Expressions
     public interface ILookup<TKey, TValue>
     {
         TValue this[TKey key] { get; }
-
     }
 
-    public interface INotifyLookup<TKey, TValue> : INotifyCollection<KeyValuePair<TKey, TValue>>, ILookup<TKey, TValue>
-    { }
+    public interface INotifyLookup<TKey, TValue> : INotifyCollection<KeyValuePair<TKey, TValue>>, ILookup<TKey, TValue> { }
 }

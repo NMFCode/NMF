@@ -16,6 +16,7 @@ using NMF.Models;
 using NMF.Models.Collections;
 using NMF.Models.Expressions;
 using NMF.Models.Meta;
+using NMF.Models.Repository;
 using NMF.Serialization;
 using NMF.Utilities;
 using System;
@@ -44,6 +45,8 @@ namespace NMF.Models.Tests.Railway
         /// The backing field for the ConnectsTo property
         /// </summary>
         private ObservableAssociationList<ITrackElement> _connectsTo;
+        
+        private static IClass _classInstance;
         
         public TrackElement()
         {
@@ -98,20 +101,56 @@ namespace NMF.Models.Tests.Railway
         }
         
         /// <summary>
-        /// Gets the Class element that describes the structure of this type
+        /// Gets the Class model for this type
         /// </summary>
-        public new static NMF.Models.Meta.IClass ClassInstance
+        public new static IClass ClassInstance
         {
             get
             {
-                return (IClass)NMF.Models.Repository.MetaRepository.Instance.ResolveType("http://www.semanticweb.org/ontologies/2015/ttc/trainbenchmark#//TrackElement/");
+                if ((_classInstance == null))
+                {
+                    _classInstance = ((IClass)(MetaRepository.Instance.Resolve("http://www.semanticweb.org/ontologies/2015/ttc/trainbenchmark#//TrackElement/")));
+                }
+                return _classInstance;
             }
         }
         
         /// <summary>
+        /// Gets fired before the Sensor property changes its value
+        /// </summary>
+        public event System.EventHandler<ValueChangedEventArgs> SensorChanging;
+        
+        /// <summary>
         /// Gets fired when the Sensor property changed its value
         /// </summary>
-        public event EventHandler<ValueChangedEventArgs> SensorChanged;
+        public event System.EventHandler<ValueChangedEventArgs> SensorChanged;
+        
+        /// <summary>
+        /// Raises the SensorChanging event
+        /// </summary>
+        /// <param name="eventArgs">The event data</param>
+        protected virtual void OnSensorChanging(ValueChangedEventArgs eventArgs)
+        {
+            System.EventHandler<ValueChangedEventArgs> handler = this.SensorChanging;
+            if ((handler != null))
+            {
+                handler.Invoke(this, eventArgs);
+            }
+        }
+        
+        /// <summary>
+        /// Gets called when the parent model element of the current model element is about to change
+        /// </summary>
+        /// <param name="oldParent">The old parent model element</param>
+        /// <param name="newParent">The new parent model element</param>
+        protected override void OnParentChanging(IModelElement newParent, IModelElement oldParent)
+        {
+            ISensor oldSensor = ModelHelper.CastAs<ISensor>(oldParent);
+            ISensor newSensor = ModelHelper.CastAs<ISensor>(newParent);
+            ValueChangedEventArgs e = new ValueChangedEventArgs(oldSensor, newSensor);
+            this.OnSensorChanging(e);
+            this.OnPropertyChanging("Sensor");
+        }
         
         /// <summary>
         /// Raises the SensorChanged event
@@ -119,7 +158,7 @@ namespace NMF.Models.Tests.Railway
         /// <param name="eventArgs">The event data</param>
         protected virtual void OnSensorChanged(ValueChangedEventArgs eventArgs)
         {
-            EventHandler<ValueChangedEventArgs> handler = this.SensorChanged;
+            System.EventHandler<ValueChangedEventArgs> handler = this.SensorChanged;
             if ((handler != null))
             {
                 handler.Invoke(this, eventArgs);
@@ -231,7 +270,11 @@ namespace NMF.Models.Tests.Railway
         /// </summary>
         public override IClass GetClass()
         {
-            return ((IClass)(NMF.Models.Repository.MetaRepository.Instance.Resolve("http://www.semanticweb.org/ontologies/2015/ttc/trainbenchmark#//TrackElement/")));
+            if ((_classInstance == null))
+            {
+                _classInstance = ((IClass)(MetaRepository.Instance.Resolve("http://www.semanticweb.org/ontologies/2015/ttc/trainbenchmark#//TrackElement/")));
+            }
+            return _classInstance;
         }
         
         /// <summary>
@@ -399,7 +442,7 @@ namespace NMF.Models.Tests.Railway
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
             public SensorProxy(ITrackElement modelElement) : 
-                    base(modelElement)
+                    base(modelElement, "sensor")
             {
             }
             
@@ -416,24 +459,6 @@ namespace NMF.Models.Tests.Railway
                 {
                     this.ModelElement.Sensor = value;
                 }
-            }
-            
-            /// <summary>
-            /// Registers an event handler to subscribe specifically on the changed event for this property
-            /// </summary>
-            /// <param name="handler">The handler that should be subscribed to the property change event</param>
-            protected override void RegisterChangeEventHandler(System.EventHandler<NMF.Expressions.ValueChangedEventArgs> handler)
-            {
-                this.ModelElement.SensorChanged += handler;
-            }
-            
-            /// <summary>
-            /// Registers an event handler to subscribe specifically on the changed event for this property
-            /// </summary>
-            /// <param name="handler">The handler that should be unsubscribed from the property change event</param>
-            protected override void UnregisterChangeEventHandler(System.EventHandler<NMF.Expressions.ValueChangedEventArgs> handler)
-            {
-                this.ModelElement.SensorChanged -= handler;
             }
         }
     }

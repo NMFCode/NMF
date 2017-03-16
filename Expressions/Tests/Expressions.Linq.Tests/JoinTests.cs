@@ -52,6 +52,7 @@ namespace NMF.Expressions.Linq.Tests
             test.CollectionChanged += (o, e) =>
             {
                 update = true;
+                Assert.AreEqual(NotifyCollectionChangedAction.Add, e.Action);
                 Assert.AreEqual(2, e.NewItems.Count);
                 Assert.IsTrue(e.NewItems.Contains("Foo"));
                 Assert.IsTrue(e.NewItems.Contains("Bar"));
@@ -69,49 +70,6 @@ namespace NMF.Expressions.Linq.Tests
             Assert.AreEqual(4, test.Count());
             Assert.IsTrue(test.Contains("Foo"));
             Assert.IsTrue(test.Contains("Bar"));
-        }
-
-        [TestMethod]
-        public void Join_ObservableSource1ItemAdded_NoUpdateWhenDetached()
-        {
-            var update = false;
-
-            var source1 = CreateObservableFilterSource();
-            var source2 = CreateStringSource();
-
-            var test = source1.WithUpdates().Join(source2,
-                filter => filter.Item1,
-                content => content.Item1,
-                (filter, content) => filter.Item2 ? content.Item2 : null);
-
-            test.CollectionChanged += (o, e) => update = true;
-
-            Assert.AreEqual(2, test.Count());
-            Assert.IsTrue(test.Contains(null));
-            Assert.IsTrue(test.Contains("42"));
-            Assert.IsFalse(update);
-
-            test.Detach();
-            update = false;
-
-            var pair = new Pair<int, bool>(4, true);
-            source1.Add(pair);
-
-            Assert.IsFalse(update);
-
-            test.Attach();
-
-            Assert.IsTrue(update);
-            Assert.AreEqual(4, test.Count());
-            Assert.IsTrue(test.Contains("Foo"));
-            Assert.IsTrue(test.Contains("Bar"));
-            Assert.IsTrue(test.Contains(null));
-            Assert.IsTrue(test.Contains("42"));
-            update = false;
-
-            source1.Remove(pair);
-
-            Assert.IsTrue(update);
         }
 
         [TestMethod]
@@ -155,6 +113,7 @@ namespace NMF.Expressions.Linq.Tests
             test.CollectionChanged += (o, e) =>
             {
                 update = true;
+                Assert.AreEqual(NotifyCollectionChangedAction.Remove, e.Action);
                 Assert.AreEqual(1, e.OldItems.Count);
                 Assert.IsTrue(e.OldItems.Contains(null));
                 Assert.IsNull(e.NewItems);
@@ -213,6 +172,7 @@ namespace NMF.Expressions.Linq.Tests
             test.CollectionChanged += (o, e) =>
             {
                 update = true;
+                Assert.AreEqual(NotifyCollectionChangedAction.Add, e.Action);
                 Assert.AreEqual(2, e.NewItems.Count);
                 Assert.IsTrue(e.NewItems.Contains("Foo"));
                 Assert.IsTrue(e.NewItems.Contains("Bar"));
@@ -230,49 +190,6 @@ namespace NMF.Expressions.Linq.Tests
             Assert.AreEqual(4, test.Count());
             Assert.IsTrue(test.Contains("Foo"));
             Assert.IsTrue(test.Contains("Bar"));
-        }
-
-        [TestMethod]
-        public void Join_ObservableSource2ItemAdded_NoUpdateWhenDetached()
-        {
-            var update = false;
-
-            var source1 = CreateStringSource();
-            var source2 = CreateObservableFilterSource();
-
-            var test = source1.WithUpdates().Join(source2,
-                content => content.Item1,
-                filter => filter.Item1,
-                (content, filter) => filter.Item2 ? content.Item2 : null);
-
-            test.CollectionChanged += (o, e) => update = true;
-
-            Assert.AreEqual(2, test.Count());
-            Assert.IsTrue(test.Contains(null));
-            Assert.IsTrue(test.Contains("42"));
-            Assert.IsFalse(update);
-
-            test.Detach();
-            update = false;
-
-            var pair = new Pair<int, bool>(4, true);
-            source2.Add(pair);
-
-            Assert.IsFalse(update);
-
-            test.Attach();
-
-            Assert.IsTrue(update);
-            Assert.AreEqual(4, test.Count());
-            Assert.IsTrue(test.Contains("Foo"));
-            Assert.IsTrue(test.Contains("Bar"));
-            Assert.IsTrue(test.Contains(null));
-            Assert.IsTrue(test.Contains("42"));
-            update = false;
-
-            source2.Remove(pair);
-
-            Assert.IsTrue(update);
         }
 
         [TestMethod]
@@ -316,6 +233,7 @@ namespace NMF.Expressions.Linq.Tests
             test.CollectionChanged += (o, e) =>
             {
                 update = true;
+                Assert.AreEqual(NotifyCollectionChangedAction.Remove, e.Action);
                 Assert.AreEqual(1, e.OldItems.Count);
                 Assert.IsTrue(e.OldItems.Contains(null));
                 Assert.IsNull(e.NewItems);
@@ -604,6 +522,7 @@ namespace NMF.Expressions.Linq.Tests
             test.CollectionChanged += (o, e) =>
             {
                 update = true;
+                Assert.AreEqual(NotifyCollectionChangedAction.Add, e.Action);
                 Assert.AreEqual(2, e.NewItems.Count);
                 Assert.IsTrue(e.NewItems.Contains("Foo"));
                 Assert.IsTrue(e.NewItems.Contains("Bar"));
@@ -621,50 +540,6 @@ namespace NMF.Expressions.Linq.Tests
             Assert.AreEqual(4, test.Count());
             Assert.IsTrue(test.Contains("Foo"));
             Assert.IsTrue(test.Contains("Bar"));
-        }
-
-        [TestMethod]
-        public void JoinComparer_ObservableSource1ItemAdded_NoUpdateWhenDetached()
-        {
-            var update = false;
-
-            var source1 = CreateObservableFilterSource(-1);
-            var source2 = CreateStringSource();
-
-            var test = source1.WithUpdates().Join(source2,
-                filter => filter.Item1,
-                content => content.Item1,
-                (filter, content) => filter.Item2 ? content.Item2 : null,
-                new AbsoluteValueComparer());
-
-            test.CollectionChanged += (o, e) => update = true;
-
-            Assert.AreEqual(2, test.Count());
-            Assert.IsTrue(test.Contains(null));
-            Assert.IsTrue(test.Contains("42"));
-            Assert.IsFalse(update);
-
-            test.Detach();
-            update = false;
-
-            var pair = new Pair<int, bool>(4, true);
-            source1.Add(pair);
-
-            Assert.IsFalse(update);
-
-            test.Attach();
-
-            Assert.IsTrue(update);
-            Assert.AreEqual(4, test.Count());
-            Assert.IsTrue(test.Contains("Foo"));
-            Assert.IsTrue(test.Contains("Bar"));
-            Assert.IsTrue(test.Contains(null));
-            Assert.IsTrue(test.Contains("42"));
-            update = false;
-
-            source1.Remove(pair);
-
-            Assert.IsTrue(update);
         }
 
         [TestMethod]
@@ -710,6 +585,7 @@ namespace NMF.Expressions.Linq.Tests
             test.CollectionChanged += (o, e) =>
             {
                 update = true;
+                Assert.AreEqual(NotifyCollectionChangedAction.Remove, e.Action);
                 Assert.AreEqual(1, e.OldItems.Count);
                 Assert.IsTrue(e.OldItems.Contains(null));
                 Assert.IsNull(e.NewItems);
@@ -770,6 +646,7 @@ namespace NMF.Expressions.Linq.Tests
             test.CollectionChanged += (o, e) =>
             {
                 update = true;
+                Assert.AreEqual(NotifyCollectionChangedAction.Add, e.Action);
                 Assert.AreEqual(2, e.NewItems.Count);
                 Assert.IsTrue(e.NewItems.Contains("Foo"));
                 Assert.IsTrue(e.NewItems.Contains("Bar"));
@@ -787,50 +664,6 @@ namespace NMF.Expressions.Linq.Tests
             Assert.AreEqual(4, test.Count());
             Assert.IsTrue(test.Contains("Foo"));
             Assert.IsTrue(test.Contains("Bar"));
-        }
-
-        [TestMethod]
-        public void JoinComparer_ObservableSource2ItemAdded_NoUpdateWhenDetached()
-        {
-            var update = false;
-
-            var source1 = CreateStringSource();
-            var source2 = CreateObservableFilterSource(-1);
-
-            var test = source1.WithUpdates().Join(source2,
-                content => content.Item1,
-                filter => filter.Item1,
-                (content, filter) => filter.Item2 ? content.Item2 : null,
-                new AbsoluteValueComparer());
-
-            test.CollectionChanged += (o, e) => update = true;
-
-            Assert.AreEqual(2, test.Count());
-            Assert.IsTrue(test.Contains(null));
-            Assert.IsTrue(test.Contains("42"));
-            Assert.IsFalse(update);
-
-            test.Detach();
-            update = false;
-
-            var pair = new Pair<int, bool>(4, true);
-            source2.Add(pair);
-
-            Assert.IsFalse(update);
-
-            test.Attach();
-
-            Assert.IsTrue(update);
-            Assert.AreEqual(4, test.Count());
-            Assert.IsTrue(test.Contains("Foo"));
-            Assert.IsTrue(test.Contains("Bar"));
-            Assert.IsTrue(test.Contains(null));
-            Assert.IsTrue(test.Contains("42"));
-            update = false;
-
-            source2.Remove(pair);
-
-            Assert.IsTrue(update);
         }
 
         [TestMethod]
@@ -876,6 +709,7 @@ namespace NMF.Expressions.Linq.Tests
             test.CollectionChanged += (o, e) =>
             {
                 update = true;
+                Assert.AreEqual(NotifyCollectionChangedAction.Remove, e.Action);
                 Assert.AreEqual(1, e.OldItems.Count);
                 Assert.IsTrue(e.OldItems.Contains(null));
                 Assert.IsNull(e.NewItems);

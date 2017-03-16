@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+using System.ComponentModel;
 using NMF.Models.Repository;
 using NMF.Serialization;
-using System.ComponentModel;
 
 namespace NMF.Models.Evolution
 {
@@ -12,10 +10,12 @@ namespace NMF.Models.Evolution
     [XmlNamespacePrefix("changes")]
     [XmlConstructor(1)]
     public class ElementDeletion : IModelChange
-    {
-        [XmlConstructorParameter(0)]
+    {[XmlConstructorParameter(0)]
         public Uri AbsoluteUri { get; set; }
 
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public IModelElement Element { get; }
+        private IModelElement _parent;
         public ElementDeletion(Uri absoluteUri)
         {
             if (absoluteUri == null)
@@ -24,10 +24,21 @@ namespace NMF.Models.Evolution
             AbsoluteUri = absoluteUri;
         }
 
+        public ElementDeletion(Uri absoluteUri, IModelElement element, IModelElement parent) : this(absoluteUri)
+        {
+            Element = element;
+            _parent = parent;
+        }
+
         public void Apply(IModelRepository repository)
         {
             var element = repository.Resolve(AbsoluteUri);
             element.Delete();
+        }
+
+        public void Invert(IModelRepository repository)
+        {
+            Element.Parent = _parent;
         }
 
         public override bool Equals(object obj)
@@ -35,10 +46,7 @@ namespace NMF.Models.Evolution
             if (ReferenceEquals(this, obj))
                 return true;
             var other = obj as ElementDeletion;
-            if (other == null)
-                return false;
-            else
-                return this.AbsoluteUri.Equals(other.AbsoluteUri);
+            return other != null && AbsoluteUri.Equals(other.AbsoluteUri);
         }
 
         public override int GetHashCode()

@@ -648,7 +648,7 @@ namespace A2BHelperWithoutContextNamespace.TypeB
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
             public NameProxy(IA modelElement) : 
-                    base(modelElement)
+                    base(modelElement, "Name")
             {
             }
             
@@ -666,24 +666,6 @@ namespace A2BHelperWithoutContextNamespace.TypeB
                     this.ModelElement.Name = value;
                 }
             }
-            
-            /// <summary>
-            /// Registers an event handler to subscribe specifically on the changed event for this property
-            /// </summary>
-            /// <param name="handler">The handler that should be subscribed to the property change event</param>
-            protected override void RegisterChangeEventHandler(System.EventHandler<NMF.Expressions.ValueChangedEventArgs> handler)
-            {
-                this.ModelElement.NameChanged += handler;
-            }
-            
-            /// <summary>
-            /// Registers an event handler to subscribe specifically on the changed event for this property
-            /// </summary>
-            /// <param name="handler">The handler that should be unsubscribed from the property change event</param>
-            protected override void UnregisterChangeEventHandler(System.EventHandler<NMF.Expressions.ValueChangedEventArgs> handler)
-            {
-                this.ModelElement.NameChanged -= handler;
-            }
         }
         
         /// <summary>
@@ -697,7 +679,7 @@ namespace A2BHelperWithoutContextNamespace.TypeB
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
             public IsNameABCProxy(IA modelElement) : 
-                    base(modelElement)
+                    base(modelElement, "IsNameABC")
             {
             }
             
@@ -714,24 +696,6 @@ namespace A2BHelperWithoutContextNamespace.TypeB
                 {
                     this.ModelElement.IsNameABC = value;
                 }
-            }
-            
-            /// <summary>
-            /// Registers an event handler to subscribe specifically on the changed event for this property
-            /// </summary>
-            /// <param name="handler">The handler that should be subscribed to the property change event</param>
-            protected override void RegisterChangeEventHandler(System.EventHandler<NMF.Expressions.ValueChangedEventArgs> handler)
-            {
-                this.ModelElement.IsNameABCChanged += handler;
-            }
-            
-            /// <summary>
-            /// Registers an event handler to subscribe specifically on the changed event for this property
-            /// </summary>
-            /// <param name="handler">The handler that should be unsubscribed from the property change event</param>
-            protected override void UnregisterChangeEventHandler(System.EventHandler<NMF.Expressions.ValueChangedEventArgs> handler)
-            {
-                this.ModelElement.IsNameABCChanged -= handler;
             }
         }
     }
@@ -1438,7 +1402,7 @@ namespace A2BHelperWithoutContextNamespace.TypeB
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
             public NameProxy(IB modelElement) : 
-                    base(modelElement)
+                    base(modelElement, "Name")
             {
             }
             
@@ -1455,24 +1419,6 @@ namespace A2BHelperWithoutContextNamespace.TypeB
                 {
                     this.ModelElement.Name = value;
                 }
-            }
-            
-            /// <summary>
-            /// Registers an event handler to subscribe specifically on the changed event for this property
-            /// </summary>
-            /// <param name="handler">The handler that should be subscribed to the property change event</param>
-            protected override void RegisterChangeEventHandler(System.EventHandler<NMF.Expressions.ValueChangedEventArgs> handler)
-            {
-                this.ModelElement.NameChanged += handler;
-            }
-            
-            /// <summary>
-            /// Registers an event handler to subscribe specifically on the changed event for this property
-            /// </summary>
-            /// <param name="handler">The handler that should be unsubscribed from the property change event</param>
-            protected override void UnregisterChangeEventHandler(System.EventHandler<NMF.Expressions.ValueChangedEventArgs> handler)
-            {
-                this.ModelElement.NameChanged -= handler;
             }
         }
     }

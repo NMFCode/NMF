@@ -8,7 +8,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>NMF.Models.Tests</RootNamespace>
     <AssemblyName>NMF.Models.Tests</AssemblyName>
-    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{3AC096D0-A1C2-E12C-1390-A8335801FDAB};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
@@ -40,28 +40,22 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Microsoft.VisualStudio.QualityTools.UnitTestFramework, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
     <Reference Include="System" />
     <Reference Include="System.XML" />
   </ItemGroup>
-  <Choose>
-    <When Condition="('$(VisualStudioVersion)' == '10.0' or '$(VisualStudioVersion)' == '') and '$(TargetFrameworkVersion)' == 'v3.5'">
-      <ItemGroup>
-        <Reference Include="Microsoft.VisualStudio.QualityTools.UnitTestFramework, Version=10.1.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
-      </ItemGroup>
-    </When>
-    <Otherwise>
-      <ItemGroup>
-        <Reference Include="Microsoft.VisualStudio.QualityTools.UnitTestFramework">
-          <Private>False</Private>
-        </Reference>
-      </ItemGroup>
-    </Otherwise>
-  </Choose>
   <ItemGroup>
     <Compile Include="Evolution\IntegrationTests.cs" />
+    <Compile Include="Evolution\InvertTests.cs" />
     <Compile Include="Evolution\ModelChangeRecorderTests.cs" />
     <Compile Include="Evolution\ChangeApplyTests.cs" />
     <Compile Include="Evolution\SerializationTests.cs" />
+    <Compile Include="Metamodel\AClass.cs" />
+    <Compile Include="Metamodel\BClass.cs" />
+    <Compile Include="Metamodel\CClass.cs" />
+    <Compile Include="Metamodel\IAClass.cs" />
+    <Compile Include="Metamodel\IBClass.cs" />
+    <Compile Include="Metamodel\ICClass.cs" />
     <Compile Include="Metamodel\IRailwayContainer.cs" />
     <Compile Include="Metamodel\IRailwayElement.cs" />
     <Compile Include="Metamodel\IRoute.cs" />
@@ -70,6 +64,7 @@
     <Compile Include="Metamodel\ISensor.cs" />
     <Compile Include="Metamodel\ISwitch.cs" />
     <Compile Include="Metamodel\ISwitchPosition.cs" />
+    <Compile Include="Metamodel\ITest.cs" />
     <Compile Include="Metamodel\ITrackElement.cs" />
     <Compile Include="Metamodel\Position.cs" />
     <Compile Include="Metamodel\RailwayContainer.cs" />
@@ -84,9 +79,11 @@
     <Compile Include="Metamodel\Switch.cs" />
     <Compile Include="Metamodel\SwitchPosition.cs" />
     <Compile Include="Metamodel\SwitchPositionsCollection.cs" />
+    <Compile Include="Metamodel\Test.cs" />
     <Compile Include="Metamodel\TrackElement.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ResolveTests.cs" />
+    <Compile Include="TransactionTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Collections\Collections\Collections.csproj">
@@ -122,6 +119,13 @@
     <EmbeddedResource Include="railway.nmf" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="debug.debug">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <SubType>Designer</SubType>
+    </None>
+    <EmbeddedResource Include="debug.nmf">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
     <None Include="railway.railway">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

@@ -9,7 +9,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>NMF.Expressions</RootNamespace>
     <AssemblyName>NMF.Expressions</AssemblyName>
-    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <SccProjectName>SAK</SccProjectName>
     <SccLocalPath>SAK</SccLocalPath>
@@ -24,8 +24,6 @@
     <DefineConstants>TRACE;DEBUG;DYNAMICEXPRESSIONS</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <RunCodeAnalysis>false</RunCodeAnalysis>
-    <CodeAnalysisRuleSet>codeanalysis.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -34,8 +32,6 @@
     <DefineConstants>TRACE;CODE_ANALYSIS;DYNAMICEXPRESSIONS</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <RunCodeAnalysis>true</RunCodeAnalysis>
-    <CodeAnalysisRuleSet>codeanalysis.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <PropertyGroup>
     <SignAssembly>false</SignAssembly>
@@ -65,6 +61,14 @@
     <Compile Include="Arithmetics\ObservablePlus.cs" />
     <Compile Include="Arithmetics\ObservableUnaryMinus.cs" />
     <Compile Include="ConstantAttribute.cs" />
+    <Compile Include="Execution\CollectionChangedNotificationResult.cs" />
+    <Compile Include="Execution\CollectionChangeListener.cs" />
+    <Compile Include="Execution\ExecutionEngine.cs" />
+    <Compile Include="Execution\IChangeListener.cs" />
+    <Compile Include="Execution\NotificationResultCollection.cs" />
+    <Compile Include="Execution\ParallelExecutionEngine.cs" />
+    <Compile Include="Execution\PropertyChangeListener.cs" />
+    <Compile Include="Execution\SequentialExecutionEngine.cs" />
     <Compile Include="ExpressionHelper.cs" />
     <Compile Include="ExpressionRewriter\ExpressionCompileRewriter.cs" />
     <Compile Include="ExpressionRewriter\ExpressionCompileRewriterAttribute.cs" />
@@ -81,6 +85,11 @@
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
     </Compile>
+    <Compile Include="Execution\ExecutionMetaData.cs" />
+    <Compile Include="Public\INotifiable.cs" />
+    <Compile Include="Execution\INotificationResult.cs" />
+    <Compile Include="Public\ISuccessorList.cs" />
+    <Compile Include="Public\MultiSuccessorList.cs" />
     <Compile Include="Public\ParameterDataflowAttribute.cs" />
     <Compile Include="Public\ConstantValue.cs" />
     <Compile Include="Public\ImmutableMethodAttribute.cs" />
@@ -162,8 +171,12 @@
     <Compile Include="ObservableTypeBinaryExpression.cs" />
     <Compile Include="ObservableUnaryExpression.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Execution\UnchangedNotificationResult.cs" />
+    <Compile Include="Public\SingletonSuccessorList.cs" />
     <Compile Include="Public\ValueChangedEventArgs.cs" />
+    <Compile Include="Execution\ValueChangedNotificationResult.cs" />
     <Compile Include="ReflectionHelper.cs" />
+    <Compile Include="Public\SingleSuccessorList.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Public\Observable.tt">

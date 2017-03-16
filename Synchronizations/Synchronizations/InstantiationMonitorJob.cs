@@ -75,6 +75,7 @@ namespace NMF.Synchronizations
             }
 
             var instantiationMonitor = Predicate.Observe(computation.Input);
+            instantiationMonitor.Successors.SetDummy();
             var monitor = new Monitor(instantiationMonitor, computation);
             monitor.StartMonitoring();
             return monitor;
@@ -127,7 +128,7 @@ namespace NMF.Synchronizations
             public void Dispose()
             {
                 InstantiationMonitor.ValueChanged -= InstantiationChanged;
-                InstantiationMonitor.Detach();
+                InstantiationMonitor.Dispose();
             }
         }
     }
@@ -170,6 +171,7 @@ namespace NMF.Synchronizations
             }
 
             var instantiationMonitor = Predicate.Observe(computation.Opposite.Input);
+            instantiationMonitor.Successors.SetDummy();
             var monitor = new Monitor(instantiationMonitor, computation);
             monitor.StartMonitoring();
             return monitor;
@@ -202,7 +204,7 @@ namespace NMF.Synchronizations
             public void Dispose()
             {
                 InstantiationMonitor.ValueChanged -= InstantiationChanged;
-                InstantiationMonitor.Detach();
+                InstantiationMonitor.Dispose();
             }
         }
     }

@@ -2,6 +2,7 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.ComponentModel;
 using System.Collections.Specialized;
+using System.Collections.ObjectModel;
 
 namespace NMF.Expressions.Linq.Tests.Integration
 {
@@ -63,7 +64,7 @@ namespace NMF.Expressions.Linq.Tests.Integration
     }
 
     [TestClass]
-    public class UnitTest1
+    public class LinqIntegrationTests
     {
         [TestMethod]
         public void SelectManyWithAverage1()
@@ -143,10 +144,10 @@ namespace NMF.Expressions.Linq.Tests.Integration
         public void SelectWithAverage1()
         {
             var updates = 0;
-            var coll = new NotifyCollection<TestItem>();
+            var coll = new ObservableCollection<TestItem>();
 
-            var query = from item in coll
-                        where item.Items < coll.Average(t => t.Items)
+            var query = from item in coll.WithUpdates()
+                        where item.Items < coll.WithUpdates().Average(t => t.Items)
                         select item;
 
 
@@ -177,10 +178,10 @@ namespace NMF.Expressions.Linq.Tests.Integration
         public void SelectWithAverage2()
         {
             var updates = 0;
-            var coll = new NotifyCollection<TestItem>();
+            var coll = new ObservableCollection<TestItem>();
 
-            var query = from item in coll
-                        where item.Items < coll.Average(t => t.Items)
+            var query = from item in coll.WithUpdates()
+                        where item.Items < coll.WithUpdates().Average(t => t.Items)
                         select item;
 
 
