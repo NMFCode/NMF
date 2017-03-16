@@ -1,0 +1,1239 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ecore:EPackage xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" name="COSEM" nsURI="foo:cosem" nsPrefix="cosem">
+  <eClassifiers xsi:type="ecore:EClass" name="LogicalDevice">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="AA" lowerBound="1" eType="#//COSEMObjects/CurrentAssociation"
+        containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="name" eType="#//LogicalDeviceName"
+        containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="AutoConnect" eType="#//COSEMObjects/AutoConnectObject"
+        containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="BillingPeriodValues" eType="#//COSEMObjects/BillingPeriodValues"
+        containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="ElectricityID" eType="#//COSEMObjects/ElectricityID"
+        containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="ProgramEntries" eType="#//COSEMObjects/ElectricityProgramEntries"
+        containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="OutputPulse" eType="#//COSEMObjects/OutputPulseValues_constants"
+        containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="ReadingFactor" eType="#//COSEMObjects/ReadingFactorAndCT_VTratio"
+        containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="NominalValues" eType="#//COSEMObjects/ElectricityNominalValues"
+        containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="InputPulse" eType="#//COSEMObjects/InputPulseValuesOrConstants"
+        containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="MeasurementPeriod" eType="#//COSEMObjects/MeasurementPeriod_recordingInterval_billingPeriodDuration"
+        containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="TimeEntries" eType="#//COSEMObjects/TimeEntries"
+        containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="TransformerLineLosses"
+        eType="#//COSEMObjects/TransformerAndLineLosses" containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="MeasurementAlgorithm" eType="#//COSEMObjects/MeasurementMethods"
+        containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="MeteringPoint" eType="#//COSEMObjects/MeteringPointID"
+        containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="ElectricityRelatedStatus"
+        eType="#//COSEMObjects/ElectricityRelatedStatusData" containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="RegisterMonitor" eType="#//COSEMObjects/RegisterMonitorObject"
+        containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="ElectricityValues" eType="#//COSEMObjects/ElectricityValues"
+        containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="MeasurementValueTypes"
+        eType="#//COSEMObjects/MeasurementValues" containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="Harmonics" eType="#//COSEMObjects/ElectricityHarmonics"
+        containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="Tariffs" eType="#//COSEMObjects/CurrentlyActiveTariff"
+        containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="Phaseangles" eType="#//COSEMObjects/ExtendedPhaseAngleMeasurement"
+        containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="ID" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="PhysicalDevice">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="managementLogicalDevice"
+        eType="#//ManagementLogicalDevice"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="ID" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="LogicalDevice" upperBound="-1"
+        eType="#//LogicalDevice"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="ElectricityRelatedStatus"
+        eType="#//COSEMObjects/ElectricityRelatedStatusData" containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="AA" lowerBound="1" eType="#//COSEMObjects/CurrentAssociation"
+        containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="AutoConnect" eType="#//COSEMObjects/AutoConnectObject"
+        containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="BillingPeriodValues" eType="#//COSEMObjects/BillingPeriodValues"
+        containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="ElectricityID" eType="#//COSEMObjects/ElectricityID"
+        containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="ProgramEntries" eType="#//COSEMObjects/ElectricityProgramEntries"
+        containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="OutputPulse" eType="#//COSEMObjects/OutputPulseValues_constants"
+        containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="ReadingFactor" eType="#//COSEMObjects/ReadingFactorAndCT_VTratio"
+        containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="NominalValues" eType="#//COSEMObjects/ElectricityNominalValues"
+        containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="InputPulse" eType="#//COSEMObjects/InputPulseValuesOrConstants"
+        containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="MeasurementPeriod" eType="#//COSEMObjects/MeasurementPeriod_recordingInterval_billingPeriodDuration"
+        containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="TimeEntries" eType="#//COSEMObjects/TimeEntries"
+        containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="TransformerLineLosses"
+        eType="#//COSEMObjects/TransformerAndLineLosses" containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="MeasurementAlgorithm" eType="#//COSEMObjects/MeasurementMethods"
+        containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="MeteringPoint" eType="#//COSEMObjects/MeteringPointID"
+        containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="RegisterMonitor" eType="#//COSEMObjects/RegisterMonitorObject"
+        containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="ElectricityValues" eType="#//COSEMObjects/ElectricityValues"
+        containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="MeasurementValueTypes"
+        eType="#//COSEMObjects/MeasurementValues" containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="Harmonics" eType="#//COSEMObjects/ElectricityHarmonics"
+        containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="Tariffs" eType="#//COSEMObjects/CurrentlyActiveTariff"
+        containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="Phaseangles" eType="#//COSEMObjects/ExtendedPhaseAngleMeasurement"
+        containment="true"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="ManagementLogicalDevice" eSuperTypes="#//LogicalDevice"/>
+  <eClassifiers xsi:type="ecore:EClass" name="LogicalDeviceName">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="name" lowerBound="1" eType="#//COSEMObjects/SAPAssignmentCurrent"
+        containment="true"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="COSEM">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="PhysicalDevice" upperBound="-1"
+        eType="#//PhysicalDevice" containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="LogicalDevice" upperBound="-1"
+        eType="#//LogicalDevice" containment="true"/>
+  </eClassifiers>
+  <eSubpackages name="Datatypes" nsURI="data" nsPrefix="data">
+    <eClassifiers xsi:type="ecore:EClass" name="scal_unit_type">
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="scaler" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="Unit" eType="#//Datatypes/Units"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EEnum" name="Units">
+      <eLiterals name="year"/>
+      <eLiterals name="month" literal=""/>
+      <eLiterals name="week"/>
+      <eLiterals name="day"/>
+      <eLiterals name="hour"/>
+      <eLiterals name="min"/>
+      <eLiterals name="second"/>
+      <eLiterals name="degree"/>
+      <eLiterals name="degree_celsius"/>
+      <eLiterals name="currency"/>
+      <eLiterals name="metre"/>
+      <eLiterals name="metre_per_second"/>
+      <eLiterals name="cubic_metre"/>
+      <eLiterals name="cubic_metre_per_hour"/>
+      <eLiterals name="litre"/>
+      <eLiterals name="kilogram"/>
+      <eLiterals name="newton"/>
+      <eLiterals name="newton_meter"/>
+      <eLiterals name="pascal"/>
+      <eLiterals name="bar"/>
+      <eLiterals name="joule"/>
+      <eLiterals name="joule_per_hour"/>
+      <eLiterals name="watt"/>
+      <eLiterals name="volt_ampere"/>
+      <eLiterals name="var"/>
+      <eLiterals name="watt_hour"/>
+      <eLiterals name="volt_ampere_hour"/>
+      <eLiterals name="var_hour"/>
+      <eLiterals name="ampere"/>
+      <eLiterals name="coulomb"/>
+      <eLiterals name="volt"/>
+      <eLiterals name="volt_per_metre"/>
+      <eLiterals name="farad"/>
+      <eLiterals name="ohm"/>
+      <eLiterals name="weber"/>
+      <eLiterals name="tesla"/>
+      <eLiterals name="ampere_per_metre"/>
+      <eLiterals name="henry"/>
+      <eLiterals name="hertz"/>
+      <eLiterals name="active_energy_meter_constant"/>
+      <eLiterals name="reactive_energy_meter_constant"/>
+      <eLiterals name="apparent_energy_meter_constant"/>
+      <eLiterals name="volt_squared_hours"/>
+      <eLiterals name="ampere_squared_hours"/>
+      <eLiterals name="kilogram_per_second"/>
+      <eLiterals name="siemens"/>
+      <eLiterals name="kelvin"/>
+      <eLiterals name="percentage"/>
+      <eLiterals name="Ampere_hour"/>
+      <eLiterals name="energy_per_volume"/>
+      <eLiterals name="mole_percent"/>
+      <eLiterals name="calorific_value"/>
+      <eLiterals name="mass_density"/>
+      <eLiterals name="pascal_second"/>
+      <eLiterals name="Joule_kilogram"/>
+      <eLiterals name="Signal_strength_milliwatt"/>
+      <eLiterals name="Signal_strenght_microvolt"/>
+      <eLiterals name="count"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EEnum" name="DisconnectControlState">
+      <eLiterals name="Disconnected"/>
+      <eLiterals name="Connected" value="1"/>
+      <eLiterals name="Ready_for_reconnection" value="2"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EEnum" name="DisconnectControlTransition">
+      <eLiterals name="remote_reconnect"/>
+      <eLiterals name="remote_disconnect"/>
+      <eLiterals name="manual_reconnect"/>
+      <eLiterals name="manual_disconnect"/>
+      <eLiterals name="local_disconnect"/>
+      <eLiterals name="local_reconnect"/>
+    </eClassifiers>
+  </eSubpackages>
+  <eSubpackages name="InterfaceClasses" nsURI="interface" nsPrefix="inter">
+    <eClassifiers xsi:type="ecore:EClass" name="S_FSK_PHY_MACsetup" eSuperTypes="#//InterfaceClasses/Base"/>
+    <eClassifiers xsi:type="ecore:EClass" name="S_FSKActiveinitiator" eSuperTypes="#//InterfaceClasses/Base"/>
+    <eClassifiers xsi:type="ecore:EClass" name="S_FSKMACsynctimeouts" eSuperTypes="#//InterfaceClasses/Base"/>
+    <eClassifiers xsi:type="ecore:EClass" name="S_FSKMACcounters" eSuperTypes="#//InterfaceClasses/Base"/>
+    <eClassifiers xsi:type="ecore:EClass" name="IEC61334_4_32LLCsetup" eSuperTypes="#//InterfaceClasses/Base"/>
+    <eClassifiers xsi:type="ecore:EClass" name="S_FSKReportingsystemlist" eSuperTypes="#//InterfaceClasses/Base"/>
+    <eClassifiers xsi:type="ecore:EClass" name="t61334_32_LLC_SSCS_setup" eSuperTypes="#//InterfaceClasses/Base"/>
+    <eClassifiers xsi:type="ecore:EClass" name="PRIME_NB_OFDM_PLC_Phy_layer_counters"
+        eSuperTypes="#//InterfaceClasses/Base"/>
+    <eClassifiers xsi:type="ecore:EClass" name="PRIME_NB_OFDM_PLC_MACsetup" eSuperTypes="#//InterfaceClasses/Base"/>
+    <eClassifiers xsi:type="ecore:EClass" name="PRIME_NB_OFDM_PLC_MAC_counters" eSuperTypes="#//InterfaceClasses/Base"/>
+    <eClassifiers xsi:type="ecore:EClass" name="PRIME_NB_OFDM_PLC_MAC_functionalparams"
+        eSuperTypes="#//InterfaceClasses/Base"/>
+    <eClassifiers xsi:type="ecore:EClass" name="PRIME_NB_OFDM_PLC_MACnetworkadmindata"
+        eSuperTypes="#//InterfaceClasses/Base"/>
+    <eClassifiers xsi:type="ecore:EClass" name="PRIME_NB_OFDM_PLC_Application_identification"
+        eSuperTypes="#//InterfaceClasses/Base"/>
+    <eClassifiers xsi:type="ecore:EClass" name="G3_PLC_MAC_layer_counters" eSuperTypes="#//InterfaceClasses/Base"/>
+    <eClassifiers xsi:type="ecore:EClass" name="G3_PLC_MAC_setup" eSuperTypes="#//InterfaceClasses/Base"/>
+    <eClassifiers xsi:type="ecore:EClass" name="G3_PLC_6LoWPAN" eSuperTypes="#//InterfaceClasses/Base"/>
+    <eClassifiers xsi:type="ecore:EClass" name="ZigBee_SAS_startup" eSuperTypes="#//InterfaceClasses/Base"/>
+    <eClassifiers xsi:type="ecore:EClass" name="ZigBee_SAS_join" eSuperTypes="#//InterfaceClasses/Base"/>
+    <eClassifiers xsi:type="ecore:EClass" name="ZigBee_SAS_APS_fragmentation" eSuperTypes="#//InterfaceClasses/Base"/>
+    <eClassifiers xsi:type="ecore:EClass" name="ZigBeenetworkcontrol" eSuperTypes="#//InterfaceClasses/Base"/>
+    <eClassifiers xsi:type="ecore:EClass" name="ZigBeetunnelsetup" eSuperTypes="#//InterfaceClasses/Base"/>
+    <eClassifiers xsi:type="ecore:EClass" name="TCP_UDPsetup" eSuperTypes="#//InterfaceClasses/Base"/>
+    <eClassifiers xsi:type="ecore:EClass" name="IPv4setup" eSuperTypes="#//InterfaceClasses/Base"/>
+    <eClassifiers xsi:type="ecore:EClass" name="IPv6setup" eSuperTypes="#//InterfaceClasses/Base"/>
+    <eClassifiers xsi:type="ecore:EClass" name="MACaddresssetup" eSuperTypes="#//InterfaceClasses/Base"/>
+    <eClassifiers xsi:type="ecore:EClass" name="PPPsetup" eSuperTypes="#//InterfaceClasses/Base"/>
+    <eClassifiers xsi:type="ecore:EClass" name="SMTPsetup" eSuperTypes="#//InterfaceClasses/Base"/>
+    <eClassifiers xsi:type="ecore:EClass" name="Modemconfiguration" eSuperTypes="#//InterfaceClasses/Base"/>
+    <eClassifiers xsi:type="ecore:EClass" name="Auto_answer" eSuperTypes="#//InterfaceClasses/Base"/>
+    <eClassifiers xsi:type="ecore:EClass" name="Auto_connect" eSuperTypes="#//InterfaceClasses/Base"/>
+    <eClassifiers xsi:type="ecore:EClass" name="GPRS_modem_setup" eSuperTypes="#//InterfaceClasses/Base"/>
+    <eClassifiers xsi:type="ecore:EClass" name="GSM_Diagnostic" eSuperTypes="#//InterfaceClasses/Base"/>
+    <eClassifiers xsi:type="ecore:EClass" name="IEC_twisted_pair_setup" eSuperTypes="#//InterfaceClasses/Base"/>
+    <eClassifiers xsi:type="ecore:EClass" name="M_Bus_slave_port_setup" eSuperTypes="#//InterfaceClasses/Base"/>
+    <eClassifiers xsi:type="ecore:EClass" name="M_Bus_client" eSuperTypes="#//InterfaceClasses/Base"/>
+    <eClassifiers xsi:type="ecore:EClass" name="Wireless_Mode_Q_Channel" eSuperTypes="#//InterfaceClasses/Base"/>
+    <eClassifiers xsi:type="ecore:EClass" name="M_Bus_master_port_setup" eSuperTypes="#//InterfaceClasses/Base"/>
+    <eClassifiers xsi:type="ecore:EClass" name="DLMS_COSEM_Server_M_Bus_port_setup"
+        eSuperTypes="#//InterfaceClasses/Base"/>
+    <eClassifiers xsi:type="ecore:EClass" name="M_Bus_diagnostic" eSuperTypes="#//InterfaceClasses/Base"/>
+    <eClassifiers xsi:type="ecore:EClass" name="Scripttable" eSuperTypes="#//InterfaceClasses/Base">
+      <eOperations name="execute"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="includes" upperBound="-1"
+          eType="#//InterfaceClasses/Script"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="Script"/>
+    <eClassifiers xsi:type="ecore:EClass" name="Schedule" eSuperTypes="#//InterfaceClasses/Base"/>
+    <eClassifiers xsi:type="ecore:EClass" name="Specialdaystable" eSuperTypes="#//InterfaceClasses/Base"/>
+    <eClassifiers xsi:type="ecore:EClass" name="Activitycalendar" eSuperTypes="#//InterfaceClasses/Base"/>
+    <eClassifiers xsi:type="ecore:EClass" name="Registermonitor" eSuperTypes="#//InterfaceClasses/Base"/>
+    <eClassifiers xsi:type="ecore:EClass" name="Singleactionschedule" eSuperTypes="#//InterfaceClasses/Base"/>
+    <eClassifiers xsi:type="ecore:EClass" name="Parametermonitor" eSuperTypes="#//InterfaceClasses/Base"/>
+    <eClassifiers xsi:type="ecore:EClass" name="Sensormanager" eSuperTypes="#//InterfaceClasses/Base"/>
+    <eClassifiers xsi:type="ecore:EClass" name="Arbitrator" eSuperTypes="#//InterfaceClasses/Base"/>
+    <eClassifiers xsi:type="ecore:EClass" name="DisconnectControl" eSuperTypes="#//InterfaceClasses/Base">
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="state" eType="#//Datatypes/DisconnectControlState"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="transition" eType="#//Datatypes/DisconnectControlTransition"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="Limiter" eSuperTypes="#//InterfaceClasses/Base"/>
+    <eClassifiers xsi:type="ecore:EClass" name="Account" eSuperTypes="#//InterfaceClasses/Base"/>
+    <eClassifiers xsi:type="ecore:EClass" name="Credit" eSuperTypes="#//InterfaceClasses/Base"/>
+    <eClassifiers xsi:type="ecore:EClass" name="Charge" eSuperTypes="#//InterfaceClasses/Base"/>
+    <eClassifiers xsi:type="ecore:EClass" name="Tokengateway" eSuperTypes="#//InterfaceClasses/Base"/>
+    <eClassifiers xsi:type="ecore:EClass" name="IEC_local_port_setup" eSuperTypes="#//InterfaceClasses/Base"/>
+    <eClassifiers xsi:type="ecore:EClass" name="IEC_HDLC_setup" eSuperTypes="#//InterfaceClasses/Base"/>
+    <eClassifiers xsi:type="ecore:EClass" name="IEC_8802_2_LLC_Type_1" eSuperTypes="#//InterfaceClasses/Base"/>
+    <eClassifiers xsi:type="ecore:EClass" name="IEC_8802_2_LLC_G3_NB" eSuperTypes="#//InterfaceClasses/Base"/>
+    <eClassifiers xsi:type="ecore:EClass" name="IEC8802_2LLCType3" eSuperTypes="#//InterfaceClasses/Base"/>
+    <eClassifiers xsi:type="ecore:EClass" name="Register" eSuperTypes="#//InterfaceClasses/Data">
+      <eOperations name="reset"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="value" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EFloat"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="scaler_unit" lowerBound="1"
+          eType="#//Datatypes/scal_unit_type"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="SAPAssignment" eSuperTypes="#//InterfaceClasses/Base">
+      <eStructuralFeatures xsi:type="ecore:EReference" name="ldnname" eType="#//LogicalDeviceName"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="AssociationLN" eSuperTypes="#//InterfaceClasses/Base">
+      <eStructuralFeatures xsi:type="ecore:EReference" name="AA" lowerBound="1" eType="#//InterfaceClasses/ApplicationAssociation"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="Data" eSuperTypes="#//InterfaceClasses/Base"/>
+    <eClassifiers xsi:type="ecore:EClass" name="ExtendedRegister" eSuperTypes="#//InterfaceClasses/Register"/>
+    <eClassifiers xsi:type="ecore:EClass" name="DemandRegister" eSuperTypes="#//InterfaceClasses/ExtendedRegister">
+      <eOperations name="calculate_current_average_value"/>
+      <eOperations name="calculate_last_average_value"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="number_of_periods" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="period" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="current_average_value"
+          eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EFloat" derived="true"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="RegisterActivation" eSuperTypes="#//InterfaceClasses/Base"/>
+    <eClassifiers xsi:type="ecore:EClass" name="Profilegeneric" eSuperTypes="#//InterfaceClasses/Base"/>
+    <eClassifiers xsi:type="ecore:EClass" name="Base">
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="logical_name" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="OBIScode" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="Utilitytables" eSuperTypes="#//InterfaceClasses/Base"/>
+    <eClassifiers xsi:type="ecore:EClass" name="Registertable" eSuperTypes="#//InterfaceClasses/Base"/>
+    <eClassifiers xsi:type="ecore:EClass" name="Compactdata" eSuperTypes="#//InterfaceClasses/Base">
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="compact_buffer" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="template_id" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="template_description"
+          eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="Statusmapping" eSuperTypes="#//InterfaceClasses/Base"/>
+    <eClassifiers xsi:type="ecore:EClass" name="AssociationSN" eSuperTypes="#//InterfaceClasses/Base"/>
+    <eClassifiers xsi:type="ecore:EClass" name="Imagetransfer" eSuperTypes="#//InterfaceClasses/Base"/>
+    <eClassifiers xsi:type="ecore:EClass" name="Dataprotection" eSuperTypes="#//InterfaceClasses/Base"/>
+    <eClassifiers xsi:type="ecore:EClass" name="Pushsetup" eSuperTypes="#//InterfaceClasses/Base"/>
+    <eClassifiers xsi:type="ecore:EClass" name="Securitysetup" eSuperTypes="#//InterfaceClasses/Base"/>
+    <eClassifiers xsi:type="ecore:EClass" name="Clock" eSuperTypes="#//InterfaceClasses/Base">
+      <eOperations name="adjust_to_quarter"/>
+      <eOperations name="adjust_to_measuring_period"/>
+      <eOperations name="adjust_to_minute"/>
+      <eOperations name="adjust_to_present_time"/>
+      <eOperations name="present_adjusting_time"/>
+      <eOperations name="shift_time"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="time" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="time_zone" upperBound="720"
+          eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//ELong"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="status" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="daylight_savings_begin"
+          eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="daylight_savings_end"
+          eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="daylight_savings_deviation"
+          upperBound="120" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="daylight_savings_enabled"
+          eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="ApplicationAssociation"/>
+  </eSubpackages>
+  <eSubpackages name="COSEMObjects" nsURI="objects" nsPrefix="objects">
+    <eClassifiers xsi:type="ecore:EClass" name="ProgramEntries" eSuperTypes="#//InterfaceClasses/Data">
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="ActiveFirmwareIdentifier"
+          eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="ActiveFirmwareVersion"
+          eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="ActiveFirmwareSignature"
+          eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="BillingPeriodValues" eSuperTypes="#//InterfaceClasses/Data">
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="BillingPeriodCounter"
+          eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="NumberAvailableBillingPeriods"
+          eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="TimestampRecentBillingPeriod"
+          eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="TimeEntries" eSuperTypes="#//InterfaceClasses/Data">
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="LocalTime" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="LocalDate" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="ClockObject" eSuperTypes="#//InterfaceClasses/Clock">
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="Time" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="UNIXClock" eSuperTypes="#//InterfaceClasses/Data">
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="value" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="ModemConfigurationObject" eSuperTypes="#//InterfaceClasses/Modemconfiguration"/>
+    <eClassifiers xsi:type="ecore:EClass" name="AutoConnectObject" eSuperTypes="#//InterfaceClasses/Auto_connect">
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="Connection" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="AutoAnswerObject" eSuperTypes="#//InterfaceClasses/Auto_answer">
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="Answer" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="ScriptTable" eSuperTypes="#//InterfaceClasses/Scripttable">
+      <eStructuralFeatures xsi:type="ecore:EReference" name="globalMeterReset" eType="#//COSEMObjects/GlobalMeterReset"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="MDIReset" eType="#//COSEMObjects/MDIReset"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="Tariffication" eType="#//COSEMObjects/Tariffication"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="AcitvateTest" eType="#//COSEMObjects/ActivateTestMode"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="ActivateNormal" eType="#//COSEMObjects/ActivateNormalMode"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="SetOutput" eType="#//COSEMObjects/SetOutputSignal"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="SwitchOptical" eType="#//COSEMObjects/SwitchOpticalTestOutput"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="PowerQuality" eType="#//COSEMObjects/PowerQualityMeasurementManagement"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="Disconnect" eType="#//COSEMObjects/DisconnectControl"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="Image" eType="#//COSEMObjects/ImageActivation"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="Push" eType="#//COSEMObjects/Push"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="Broadcast" eType="#//COSEMObjects/Broadcast"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="GlobalMeterReset" eSuperTypes="#//InterfaceClasses/Scripttable"/>
+    <eClassifiers xsi:type="ecore:EClass" name="MDIReset" eSuperTypes="#//InterfaceClasses/Scripttable"/>
+    <eClassifiers xsi:type="ecore:EClass" name="Tariffication" eSuperTypes="#//InterfaceClasses/Scripttable"/>
+    <eClassifiers xsi:type="ecore:EClass" name="ActivateTestMode" eSuperTypes="#//InterfaceClasses/Scripttable"/>
+    <eClassifiers xsi:type="ecore:EClass" name="ActivateNormalMode" eSuperTypes="#//InterfaceClasses/Scripttable"/>
+    <eClassifiers xsi:type="ecore:EClass" name="SetOutputSignal" eSuperTypes="#//InterfaceClasses/Scripttable"/>
+    <eClassifiers xsi:type="ecore:EClass" name="SwitchOpticalTestOutput" eSuperTypes="#//InterfaceClasses/Scripttable"/>
+    <eClassifiers xsi:type="ecore:EClass" name="PowerQualityMeasurementManagement"
+        eSuperTypes="#//InterfaceClasses/Scripttable"/>
+    <eClassifiers xsi:type="ecore:EClass" name="DisconnectControl" eSuperTypes="#//InterfaceClasses/Scripttable"/>
+    <eClassifiers xsi:type="ecore:EClass" name="ImageActivation" eSuperTypes="#//InterfaceClasses/Scripttable"/>
+    <eClassifiers xsi:type="ecore:EClass" name="Push" eSuperTypes="#//InterfaceClasses/Scripttable"/>
+    <eClassifiers xsi:type="ecore:EClass" name="Broadcast" eSuperTypes="#//InterfaceClasses/Scripttable"/>
+    <eClassifiers xsi:type="ecore:EClass" name="SpecialDays" eSuperTypes="#//InterfaceClasses/Specialdaystable"/>
+    <eClassifiers xsi:type="ecore:EClass" name="ScheduleObject" eSuperTypes="#//InterfaceClasses/Schedule"/>
+    <eClassifiers xsi:type="ecore:EClass" name="ActivityCalendarObject" eSuperTypes="#//InterfaceClasses/Activitycalendar"/>
+    <eClassifiers xsi:type="ecore:EClass" name="RegisterActivationObject" eSuperTypes="#//InterfaceClasses/RegisterActivation"/>
+    <eClassifiers xsi:type="ecore:EClass" name="SingleActionScheduleObject" eSuperTypes="#//InterfaceClasses/Singleactionschedule">
+      <eStructuralFeatures xsi:type="ecore:EReference" name="disconnect" eType="#//COSEMObjects/DisconnectControlSchedule"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="BillingPeriodEnd" eType="#//COSEMObjects/EndOfBillingPeriodSchedule"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="Image" eType="#//COSEMObjects/ImageActivationSchedule"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="Output" eType="#//COSEMObjects/OutputControlSchedule"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="Push" eType="#//COSEMObjects/PushSchedule"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="DisconnectControlSchedule" eSuperTypes="#//InterfaceClasses/Singleactionschedule"/>
+    <eClassifiers xsi:type="ecore:EClass" name="EndOfBillingPeriodSchedule" eSuperTypes="#//InterfaceClasses/Singleactionschedule"/>
+    <eClassifiers xsi:type="ecore:EClass" name="ImageActivationSchedule" eSuperTypes="#//InterfaceClasses/Singleactionschedule"/>
+    <eClassifiers xsi:type="ecore:EClass" name="OutputControlSchedule" eSuperTypes="#//InterfaceClasses/Singleactionschedule"/>
+    <eClassifiers xsi:type="ecore:EClass" name="PushSchedule" eSuperTypes="#//InterfaceClasses/Singleactionschedule"/>
+    <eClassifiers xsi:type="ecore:EClass" name="RegisterMonitorObject" eSuperTypes="#//InterfaceClasses/Registermonitor"/>
+    <eClassifiers xsi:type="ecore:EClass" name="AlarmMonitor" eSuperTypes="#//InterfaceClasses/Registermonitor"/>
+    <eClassifiers xsi:type="ecore:EClass" name="ParameterMonitorObject" eSuperTypes="#//InterfaceClasses/Parametermonitor"/>
+    <eClassifiers xsi:type="ecore:EClass" name="LimiterObject" eSuperTypes="#//InterfaceClasses/Limiter"/>
+    <eClassifiers xsi:type="ecore:EClass" name="AccountObject" eSuperTypes="#//InterfaceClasses/Account"/>
+    <eClassifiers xsi:type="ecore:EClass" name="CreditObject" eSuperTypes="#//InterfaceClasses/Credit"/>
+    <eClassifiers xsi:type="ecore:EClass" name="ChargeObject" eSuperTypes="#//InterfaceClasses/Charge"/>
+    <eClassifiers xsi:type="ecore:EClass" name="TokenGatewayObject" eSuperTypes="#//InterfaceClasses/Tokengateway"/>
+    <eClassifiers xsi:type="ecore:EClass" name="MaxCreditLimit" eSuperTypes="#//InterfaceClasses/Data">
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="value" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="MaxVendLimit" eSuperTypes="#//InterfaceClasses/Data">
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="value" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="IECOpticalPortSetup" eSuperTypes="#//InterfaceClasses/IEC_local_port_setup"/>
+    <eClassifiers xsi:type="ecore:EClass" name="IECElectricalPortSetup" eSuperTypes="#//InterfaceClasses/IEC_local_port_setup"/>
+    <eClassifiers xsi:type="ecore:EClass" name="StandardReadout" eSuperTypes="#//InterfaceClasses/Profilegeneric">
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="GeneralLocalPortReadout"
+          eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="GeneralDisplayReadout"
+          eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="AlternateDisplayReadout"
+          eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="ServiceDisplayReadout"
+          eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="ListConfigMeterData"
+          eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="AdditionalReadout" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="StandardReadoutParam" eSuperTypes="#//InterfaceClasses/Data"/>
+    <eClassifiers xsi:type="ecore:EClass" name="IECHDLCSetupObject" eSuperTypes="#//InterfaceClasses/IEC_HDLC_setup"/>
+    <eClassifiers xsi:type="ecore:EClass" name="IECTwistedPairSetupObject" eSuperTypes="#//InterfaceClasses/IEC_twisted_pair_setup"/>
+    <eClassifiers xsi:type="ecore:EClass" name="IECTwistedPairMACAddressSetup" eSuperTypes="#//InterfaceClasses/MACaddresssetup"/>
+    <eClassifiers xsi:type="ecore:EClass" name="IECTwistedPairFatalErrorRegister"
+        eSuperTypes="#//InterfaceClasses/Data"/>
+    <eClassifiers xsi:type="ecore:EClass" name="IEC62056_3_1ShortReadout" eSuperTypes="#//InterfaceClasses/Profilegeneric"/>
+    <eClassifiers xsi:type="ecore:EClass" name="IEC62056_3_1LongReadout" eSuperTypes="#//InterfaceClasses/Profilegeneric"/>
+    <eClassifiers xsi:type="ecore:EClass" name="IEC_62056_3_1AlternateReadoutProfile"
+        eSuperTypes="#//InterfaceClasses/Profilegeneric"/>
+    <eClassifiers xsi:type="ecore:EClass" name="M_BusSlavePortSetupObject" eSuperTypes="#//InterfaceClasses/M_Bus_slave_port_setup"/>
+    <eClassifiers xsi:type="ecore:EClass" name="M_BusClientObject" eSuperTypes="#//InterfaceClasses/M_Bus_client"/>
+    <eClassifiers xsi:type="ecore:EClass" name="M_BusValue" eSuperTypes="#//InterfaceClasses/ExtendedRegister"/>
+    <eClassifiers xsi:type="ecore:EClass" name="M_BusProfileGeneric" eSuperTypes="#//InterfaceClasses/Profilegeneric"/>
+    <eClassifiers xsi:type="ecore:EClass" name="M_BusDisconnectControl" eSuperTypes="#//InterfaceClasses/DisconnectControl"/>
+    <eClassifiers xsi:type="ecore:EClass" name="M_BusControlLog" eSuperTypes="#//InterfaceClasses/Profilegeneric"/>
+    <eClassifiers xsi:type="ecore:EClass" name="M_BusMasterPortSetupObject" eSuperTypes="#//InterfaceClasses/M_Bus_master_port_setup"/>
+    <eClassifiers xsi:type="ecore:EClass" name="WirelessModeQChannelObject" eSuperTypes="#//InterfaceClasses/Wireless_Mode_Q_Channel"/>
+    <eClassifiers xsi:type="ecore:EClass" name="DLMS_COSEMServerM_BusPortSetupObject"
+        eSuperTypes="#//InterfaceClasses/DLMS_COSEM_Server_M_Bus_port_setup"/>
+    <eClassifiers xsi:type="ecore:EClass" name="M_BusDiagnosticObject" eSuperTypes="#//InterfaceClasses/M_Bus_diagnostic"/>
+    <eClassifiers xsi:type="ecore:EClass" name="TCP_UDPSetupObject" eSuperTypes="#//InterfaceClasses/TCP_UDPsetup"/>
+    <eClassifiers xsi:type="ecore:EClass" name="IPv4SetupObject" eSuperTypes="#//InterfaceClasses/IPv4setup"/>
+    <eClassifiers xsi:type="ecore:EClass" name="MACAddressSetupObject" eSuperTypes="#//InterfaceClasses/MACaddresssetup"/>
+    <eClassifiers xsi:type="ecore:EClass" name="PPPSetupObject" eSuperTypes="#//InterfaceClasses/PPPsetup"/>
+    <eClassifiers xsi:type="ecore:EClass" name="GPRSModemSetupObject" eSuperTypes="#//InterfaceClasses/GPRS_modem_setup"/>
+    <eClassifiers xsi:type="ecore:EClass" name="SMTPSetupObject" eSuperTypes="#//InterfaceClasses/SMTPsetup"/>
+    <eClassifiers xsi:type="ecore:EClass" name="GSMDiagnosticObject" eSuperTypes="#//InterfaceClasses/GSM_Diagnostic"/>
+    <eClassifiers xsi:type="ecore:EClass" name="IPv6SetupObject" eSuperTypes="#//InterfaceClasses/IPv6setup"/>
+    <eClassifiers xsi:type="ecore:EClass" name="PushSetupObject" eSuperTypes="#//InterfaceClasses/Pushsetup"/>
+    <eClassifiers xsi:type="ecore:EClass" name="S_FSKPhy_MACSetupObject" eSuperTypes="#//InterfaceClasses/S_FSK_PHY_MACsetup"/>
+    <eClassifiers xsi:type="ecore:EClass" name="S_FSKActiveInitiatorObject" eSuperTypes="#//InterfaceClasses/S_FSKActiveinitiator"/>
+    <eClassifiers xsi:type="ecore:EClass" name="S_FSKMACSynchronizationTimeouts" eSuperTypes="#//InterfaceClasses/S_FSKMACsynctimeouts"/>
+    <eClassifiers xsi:type="ecore:EClass" name="S_FSKMACCountersObject" eSuperTypes="#//InterfaceClasses/S_FSKMACcounters"/>
+    <eClassifiers xsi:type="ecore:EClass" name="IEC61334_4_32LLCSetupObject" eSuperTypes="#//InterfaceClasses/IEC61334_4_32LLCsetup"/>
+    <eClassifiers xsi:type="ecore:EClass" name="S_FSKReportingSystemListObject" eSuperTypes="#//InterfaceClasses/S_FSKReportingsystemlist"/>
+    <eClassifiers xsi:type="ecore:EClass" name="ISO_IEC8802_2LLCType1SetupObject"
+        eSuperTypes="#//InterfaceClasses/IEC_8802_2_LLC_Type_1"/>
+    <eClassifiers xsi:type="ecore:EClass" name="ISO_IEC8802_2LLCType2Setup" eSuperTypes="#//InterfaceClasses/IEC_8802_2_LLC_G3_NB"/>
+    <eClassifiers xsi:type="ecore:EClass" name="ISO_IEC8802_2LLCType3Setup" eSuperTypes="#//InterfaceClasses/IEC8802_2LLCType3"/>
+    <eClassifiers xsi:type="ecore:EClass" name="t61334_4_32LLCSSCSsetupobject" eSuperTypes="#//InterfaceClasses/t61334_32_LLC_SSCS_setup"/>
+    <eClassifiers xsi:type="ecore:EClass" name="PRIME_NB_OFDM_PLC_Physical_layer_counters_object"
+        eSuperTypes="#//InterfaceClasses/PRIME_NB_OFDM_PLC_Phy_layer_counters"/>
+    <eClassifiers xsi:type="ecore:EClass" name="PRIME_NB_OFDM_PLC_MAC_setup_object"
+        eSuperTypes="#//InterfaceClasses/PRIME_NB_OFDM_PLC_MACsetup"/>
+    <eClassifiers xsi:type="ecore:EClass" name="PRIME_NB_OFDM_PLC_MAC_functional_parameters_object"
+        eSuperTypes="#//InterfaceClasses/PRIME_NB_OFDM_PLC_MAC_functionalparams"/>
+    <eClassifiers xsi:type="ecore:EClass" name="PRIME_NB_OFDM_PLC_MAC_counters_object"
+        eSuperTypes="#//InterfaceClasses/PRIME_NB_OFDM_PLC_MAC_counters"/>
+    <eClassifiers xsi:type="ecore:EClass" name="PRIME_NB_OFDM_PLC_MAC_network_administration_data_object"
+        eSuperTypes="#//InterfaceClasses/PRIME_NB_OFDM_PLC_MACnetworkadmindata"/>
+    <eClassifiers xsi:type="ecore:EClass" name="PRIME_NB_OFDM_PLC_MAC_address_setup"
+        eSuperTypes="#//InterfaceClasses/MACaddresssetup"/>
+    <eClassifiers xsi:type="ecore:EClass" name="PRIME_NB_OFDM_PLC_Application_identification_object"
+        eSuperTypes="#//InterfaceClasses/PRIME_NB_OFDM_PLC_Application_identification"/>
+    <eClassifiers xsi:type="ecore:EClass" name="G3_PLC_MAC_layer_counters_object"
+        eSuperTypes="#//InterfaceClasses/G3_PLC_MAC_layer_counters"/>
+    <eClassifiers xsi:type="ecore:EClass" name="G3_PLC_MAC_setup_object" eSuperTypes="#//InterfaceClasses/G3_PLC_MAC_setup"/>
+    <eClassifiers xsi:type="ecore:EClass" name="G3_PLC_6LoWPAN_adaptation_layer_setup_object"
+        eSuperTypes="#//InterfaceClasses/G3_PLC_6LoWPAN"/>
+    <eClassifiers xsi:type="ecore:EClass" name="ZigBee_SAS_startup_object" eSuperTypes="#//InterfaceClasses/ZigBee_SAS_startup"/>
+    <eClassifiers xsi:type="ecore:EClass" name="ZigBee_SAS_join_object" eSuperTypes="#//InterfaceClasses/ZigBee_SAS_join"/>
+    <eClassifiers xsi:type="ecore:EClass" name="ZigBee_SAS_APS_fragmentation_object"
+        eSuperTypes="#//InterfaceClasses/ZigBee_SAS_APS_fragmentation"/>
+    <eClassifiers xsi:type="ecore:EClass" name="ZigBee_network_control_object" eSuperTypes="#//InterfaceClasses/ZigBeenetworkcontrol"/>
+    <eClassifiers xsi:type="ecore:EClass" name="ZigBee_tunnel_setup_object" eSuperTypes="#//InterfaceClasses/ZigBeetunnelsetup"/>
+    <eClassifiers xsi:type="ecore:EClass" name="CurrentAssociation" eSuperTypes="#//InterfaceClasses/AssociationLN"/>
+    <eClassifiers xsi:type="ecore:EClass" name="SAPAssignmentCurrent" eSuperTypes="#//InterfaceClasses/SAPAssignment"/>
+    <eClassifiers xsi:type="ecore:EClass" name="SecuritySetupObject" eSuperTypes="#//InterfaceClasses/Securitysetup"/>
+    <eClassifiers xsi:type="ecore:EClass" name="InvocationCounter" eSuperTypes="#//InterfaceClasses/Data">
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="value" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="DataProtectionObject" eSuperTypes="#//InterfaceClasses/Dataprotection"/>
+    <eClassifiers xsi:type="ecore:EClass" name="ImageTransferObject" eSuperTypes="#//InterfaceClasses/Imagetransfer"/>
+    <eClassifiers xsi:type="ecore:EClass" name="UtilitiesTableObject" eSuperTypes="#//InterfaceClasses/Utilitytables">
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="Standard" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="Manufacturer" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="StdPending" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="MfgPending" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="CompactDataObject" eSuperTypes="#//InterfaceClasses/Compactdata"/>
+    <eClassifiers xsi:type="ecore:EClass" name="DeviceID" eSuperTypes="#//InterfaceClasses/Data">
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="value" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="MeteringPointID" eSuperTypes="#//InterfaceClasses/Data">
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="value" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="ParameterChangesObject" eSuperTypes="#//InterfaceClasses/Data">
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="NumberConfigProgramChanges"
+          eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="DateLastConfigChange"
+          eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDate"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="DateLastSwitchChange"
+          eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDate"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="DateLastRippleControlChange"
+          eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDate"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="StatusSecuritySwitches"
+          eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="DateLastCalibration"
+          eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDate"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="DateNextConfig" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDate"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="DateActivationPassivCalendar"
+          eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDate"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="NumberProtectedConfigChanges"
+          eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="DateLastProtectedConfigChange"
+          eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDate"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="DateLastClockSynch" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDate"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="DateLastFirmwareActivation"
+          eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDate"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="I_O_control_signal_objects_contentsmanufacturerspecific"
+        eSuperTypes="#//InterfaceClasses/Data">
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="value" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="I_O_control_signal_objects_contentsmappedtoareferencetable"
+        eSuperTypes="#//InterfaceClasses/Statusmapping"/>
+    <eClassifiers xsi:type="ecore:EClass" name="I_O_control_signal_objects_global"
+        eSuperTypes="#//InterfaceClasses/Profilegeneric"/>
+    <eClassifiers xsi:type="ecore:EClass" name="Disconnectcontrolobject" eSuperTypes="#//InterfaceClasses/DisconnectControl"/>
+    <eClassifiers xsi:type="ecore:EClass" name="GeneralpurposeArbitrator" eSuperTypes="#//InterfaceClasses/Arbitrator"/>
+    <eClassifiers xsi:type="ecore:EClass" name="IOControlSignalsManufacturer" eSuperTypes="#//InterfaceClasses/Data">
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="value" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="IOControlSignalsMapped" eSuperTypes="#//InterfaceClasses/Statusmapping"/>
+    <eClassifiers xsi:type="ecore:EClass" name="IOControlSignalsGlobal" eSuperTypes="#//InterfaceClasses/Profilegeneric"/>
+    <eClassifiers xsi:type="ecore:EClass" name="DisconnectControlObject" eSuperTypes="#//InterfaceClasses/DisconnectControl"/>
+    <eClassifiers xsi:type="ecore:EClass" name="GeneralPurposeArbitrator" eSuperTypes="#//InterfaceClasses/Arbitrator"/>
+    <eClassifiers xsi:type="ecore:EClass" name="InternalControlManu" eSuperTypes="#//InterfaceClasses/Data">
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="value" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="InternalControlMapped" eSuperTypes="#//InterfaceClasses/Statusmapping"/>
+    <eClassifiers xsi:type="ecore:EClass" name="InternalControlGlobal" eSuperTypes="#//InterfaceClasses/Profilegeneric"/>
+    <eClassifiers xsi:type="ecore:EClass" name="InternalOperatingStatusManu" eSuperTypes="#//InterfaceClasses/Data"/>
+    <eClassifiers xsi:type="ecore:EClass" name="InternalOperatingStatusMapped" eSuperTypes="#//InterfaceClasses/Statusmapping"/>
+    <eClassifiers xsi:type="ecore:EClass" name="InternalOperatingStatusGlobal" eSuperTypes="#//InterfaceClasses/Registertable"/>
+    <eClassifiers xsi:type="ecore:EClass" name="StatusRegisterManu" eSuperTypes="#//InterfaceClasses/Data"/>
+    <eClassifiers xsi:type="ecore:EClass" name="StatusRegisterMapped" eSuperTypes="#//InterfaceClasses/Statusmapping"/>
+    <eClassifiers xsi:type="ecore:EClass" name="ErrorRegisterObject" eSuperTypes="#//InterfaceClasses/Data">
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="value" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="ErrorProfileObject" eSuperTypes="#//InterfaceClasses/Profilegeneric"/>
+    <eClassifiers xsi:type="ecore:EClass" name="ErrorTableObject" eSuperTypes="#//InterfaceClasses/Registertable"/>
+    <eClassifiers xsi:type="ecore:EClass" name="AlarmRegisterObject" eSuperTypes="#//InterfaceClasses/Data">
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="value" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="AlarmFilterObject" eSuperTypes="#//InterfaceClasses/Data">
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="value" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="AlarmDescriptorObject" eSuperTypes="#//InterfaceClasses/Data">
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="value" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="EventLog" eSuperTypes="#//InterfaceClasses/Profilegeneric"/>
+    <eClassifiers xsi:type="ecore:EClass" name="ElectricityID" eSuperTypes="#//InterfaceClasses/Data">
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="value" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="ElectricityProgramEntries" eSuperTypes="#//InterfaceClasses/Data">
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="Activefirmwareidentifier"
+          eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="Parameterrecordnumber"
+          eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="Timeswitchprogramnumber"
+          eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="RCRprogramnumber" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="MeterconnectiondiagramID"
+          eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="Passivecalendarname"
+          eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="Activefirmwaresignature"
+          eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="OutputPulseValues_constants" eSuperTypes="#//InterfaceClasses/Data">
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="ActiveenergymetrologicalLED"
+          eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="ReactiveenergymetrologicalLED"
+          eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="ApparentenergymetrologicalLED"
+          eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="Activeenergyoutputpulse"
+          eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="Reactiveenergyoutputpulse"
+          eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="Apparentenergyoutputpulse"
+          eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="Volt_squaredhoursmetrologicalLED"
+          eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="Ampere_squaredhoursmetrologicalLED"
+          eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="Volt_squaredhoursoutputpulse"
+          eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="Ampere_squaredhoursoutputpulse"
+          eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="ReadingFactorAndCT_VTratio" eSuperTypes="#//InterfaceClasses/Data">
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="Readingfactorforpower"
+          eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="Readingfactorforenergy"
+          eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="Transformerratio_currentzähler"
+          eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="Transformerratio_voltagezähler"
+          eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="Overalltransformerratiozähler"
+          eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="Transformerratio_currentnenner"
+          eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="Transformerratio_voltagenenner"
+          eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="Overalltransformer_rationenner"
+          eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="ElectricityNominalValues" eSuperTypes="#//InterfaceClasses/Data">
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="Voltage" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="Nominalcurrent" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="Frequency" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="Maximumcurrent" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="Reference_voltage_for_power_quality_measurement"
+          eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="Reference_voltage_for_aux_power_supply"
+          eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="InputPulseValuesOrConstants" eSuperTypes="#//InterfaceClasses/Data">
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="ActiveEnergy" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="Reactive_energy" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="Apparent_energy" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="Volt_squared_hours" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="Ampere_squared_hours"
+          eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="Unitless_quantities"
+          eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="Active_energy_export"
+          eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="Reactive_energy_export"
+          eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="Apparent_energy_export"
+          eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="MeasurementPeriod_recordingInterval_billingPeriodDuration"
+        eSuperTypes="#//InterfaceClasses/Data">
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="Measurement_period_1_for_averaging_scheme_1"
+          eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="Measurement_period_2_for_averagingscheme_2"
+          eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="Measurement_period_3_for_instantaneous_value"
+          eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="Measurement_period_4_for_test_value"
+          eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="Recording_interval_1_for_loadprofile"
+          eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="Recording_interval_2_for_loadprofile"
+          eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="Billingperiod" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="ElectricityTimeEntries" eSuperTypes="#//InterfaceClasses/Data">
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="Time_expired_since_last_end_of_billing_period"
+          eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="Localtime" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="Localdate" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="Weekday" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="Timeoflastreset" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="Dateoflastreset" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="Outputpulseduration"
+          eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="Clocksynchronizationwindow"
+          eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="Clock_synchronization_method"
+          eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="Clock_time_shift_limit"
+          eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="Billing_period_reset_lockout_time"
+          eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="Coefficients" eSuperTypes="#//InterfaceClasses/Data">
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="Transformer_magnetic_losses"
+          eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="Transformer_iron_losses"
+          eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="Line_resistance_losses"
+          eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="Line_reactance_losses"
+          eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="MeasurementMethods" eSuperTypes="#//InterfaceClasses/Data">
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="Algorithm_for_active_power_measurement"
+          eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="Algorithm_for_active_energy_management"
+          eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="Algorithm_for_reactive_power_measurement"
+          eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="Algorithm_for_reactive_energy_measurement"
+          eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="Algorithm_for_apparent_power_measurement"
+          eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="Algorithm_for_apparent_energy_measurement"
+          eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="Algorithm_for_power_factor_calculation"
+          eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="ElectricityMeteringPointID" eSuperTypes="#//InterfaceClasses/Data">
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="value" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="ElectricityRelatedStatusData" eSuperTypes="#//InterfaceClasses/Data">
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="Status_information_missing_voltage"
+          eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="Status_information_missing_current"
+          eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="Status_information_current_without_voltage"
+          eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="Status_information_auxiliary_power_supply"
+          eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="ElectricityRelatedStatusDataMapped"
+        eSuperTypes="#//InterfaceClasses/Statusmapping"/>
+    <eClassifiers xsi:type="ecore:EClass" name="BatteryEntries" eSuperTypes="#//InterfaceClasses/Data">
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="Battery_use_time_counter"
+          eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="Battery_charge_display"
+          eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="Date_of_next_battery_change"
+          eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="Battery_voltage" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="Battery_initial_capacity"
+          eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="Battery_installation_date_and_time"
+          eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="Battery_estimated_remaining_use_time"
+          eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="Aux_supply_use_time_counter"
+          eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="Aux_voltage" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="PowerFailureMonitoring" eSuperTypes="#//InterfaceClasses/Data">
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="FailuresAllPhases" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="FailuresL1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="FailuresL2" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="FailuresL3" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="FailuresAny" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="Auxiliarysupply" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="LongFailsAll" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="LongFailsL1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="LongFailsL2" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="LongFailsL3" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="LongFailsAny" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="TimeAll" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="TimeL1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="TimeL2" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="TimeL3" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="TimeAny" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="DurationAll" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="DurationL1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="DurationL2" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="DurationL3" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="DurationAny" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="Time_threshold_long_powerfailure"
+          eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="OperatingTime" eSuperTypes="#//InterfaceClasses/Data">
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="Timeofoperation" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="EnvironmentRelatedParameters" eSuperTypes="#//InterfaceClasses/Register">
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="ambient_temperature"
+          eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="Ambient_pressure" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="Relative_humidity" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="StatusRegister" eSuperTypes="#//InterfaceClasses/Register"/>
+    <eClassifiers xsi:type="ecore:EClass" name="EventCode" eSuperTypes="#//InterfaceClasses/Data">
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="event_code_object" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="CommunicationPortLogParameters" eSuperTypes="#//InterfaceClasses/Data">
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="Reserved" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="Number_connections" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="Communication_port_parameter"
+          eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="GSM_field_strength" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="Communicationaddress"
+          eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="ConsumerMessage" eSuperTypes="#//InterfaceClasses/Data">
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="Consumer_message_via_local_consumer_information_port"
+          eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="Consumer_message_via_meter_display"
+          eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="CurrentlyActiveTariff" eSuperTypes="#//InterfaceClasses/Data">
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="value" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="EventCounterObject" eSuperTypes="#//InterfaceClasses/Data">
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="value" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="ProfileEntryDigitalSignatureObject"
+        eSuperTypes="#//InterfaceClasses/Data">
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="value" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="MeterTemperEventRelatedObject" eSuperTypes="#//InterfaceClasses/Data">
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="Meter_open_event_counter"
+          eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="Meter_open_event_timestamp"
+          eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="Meter_open_event_duration"
+          eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="Meter_open_event_cumulative_duration"
+          eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="Terminal_cover_open_event_counter"
+          eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="Terminal_cover_open_event_time"
+          eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="Terminal_cover_open_event_duration"
+          eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="Terminal_cover_open_event_cumulative_duration"
+          eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="Tilt_event_counter" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="Tilt_event_time" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="Tilt_event_duration"
+          eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="Tilt_event_cumulative_duration"
+          eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="Strong_DC_magnetic_field_event_counter"
+          eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="Strong_DC_magnetic_field_event_time"
+          eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="Strong_DC_magnetic_field_event_duration"
+          eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="Strong_DC_magnetic_field_event_cumulative_duration"
+          eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="Supply_control_switch_event_counter"
+          eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="Supply_control_switch_event_time"
+          eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="Supply_control_switch_event_duration"
+          eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="Supply_control_switch_event_cumulative_duration"
+          eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="Metrology_tamper_event_counter"
+          eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="Metrology_tamper_event_time"
+          eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="Metrology_tamper_event_duration"
+          eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="Metrology_tamper_event_cumulative_duration"
+          eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="Communication_tamper_event_counter"
+          eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="Communication_tamper_event_time"
+          eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="Communication_tamper_event_duration"
+          eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="Communication_tamper_event_cumulative_duration"
+          eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="Manufacturer_specific"
+          eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="ElectricityValues" eSuperTypes="#//InterfaceClasses/Data">
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="ActivePowerpL1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="ActivePowerpall" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="ActivePowerpL2" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="ActivePowerpL3" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="ActivePowermL2" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="ActivePowermL1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="ActivePowermL3" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="ActivePowermall" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="ReactivePowerpL1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="ReactivePowerpL2" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="ReactivePowerpL3" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="ReactivePowerpall" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="ReactivePowermL1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="ReactivePowermL2" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="ReactivePowermL3" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="ReactivePowermall" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="ReactivePowerQIL1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="ReactivePowerQIL2" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="ReactivePowerQIL3" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="ReactivePowerQIall" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="ReactivePowerQIIL1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="ReactivePowerQIIL2" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="ReactivePowerQIIL3" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="ReactivePowerQIIall"
+          eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="ReactivePowerQIIIL1"
+          eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="ReactivePowerQIIIL2"
+          eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="ReactivePowerQIIIL3"
+          eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="ReactivePowerQIIIall"
+          eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="ReactivePowerQIVL1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="ReactivePowerQIVL2" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="ReactivePowerQIVL3" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="ReactivePowerQIVall"
+          eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="ApparentPowerpL1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="ApparentPowerpL2" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="ApparentPowerpL3" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="ApparentPowerpAll" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="ApparentPowermL1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="ApparentPowermL2" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="ApparentPowermL3" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="ApparentPowermAll" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="CurrentL1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="CurrentL2" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="CurrentL3" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="CurrentAll" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="VoltageL1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="VoltageL2" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="VoltageL3" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="VoltageAll" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="PowerFactorL1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="PowerFactorL2" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="PowerFactorL3" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="PowerFactorAll" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="SupplyFrequencyL1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="SupplyFrequencyL2" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="SupplyFrequencyL3" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="SupplyFrequencyAll" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="ActivePowerAbsPL1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="ActivePowerAbsPL2" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="ActivePowerAbsPL3" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="ActivePowerAbsPAll" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="ActivePowerAbsML1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="ActivePowerAbsML2" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="ActivePowerAbsML3" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="ActivePowerAbsMAll" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="ActivePowerQIL1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="ActivePowerQIL2" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="ActivePowerQIL3" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="ActivePowerQIall" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="ActivePowerQIIL1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="ActivePowerQIIL2" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="ActivePowerQIIL3" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="ActivePowerQIIall" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="ActivePowerQIIIL1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="ActivePowerQIIIL2" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="ActivePowerQIIIL3" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="ActivePowerQIIIall" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="ActivePowerQIVL1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="ActivePowerQIVL2" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="ActivePowerQIVL3" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="ActivePowerQIVall" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="Angles" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="Pulses" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="Ampere_squaredHours"
+          eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="Volt_squaredHours" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="NeutralCurrent" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="NeutralVoltage" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="MeasurementValues" eSuperTypes="#//InterfaceClasses/Data">
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="Billing_period_average"
+          eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="Cumulative_minimum" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="Cumulative_maximum" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="Minimum" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="Current_average" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="Last_average" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="Maximum" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="Instantaneous_value"
+          eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="Time_integral" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="Under_limit_threshold"
+          eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="Under_limit_occurrence_counter"
+          eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="Under_limit_duration"
+          eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="Under_limit_magnitude"
+          eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="Over_limit_threshold"
+          eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="Over_limit_occurrence_counter"
+          eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="Over_limit_duration"
+          eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="Over_limit_magnitude"
+          eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="Missing_threshold" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="Missing_occurrence_counter"
+          eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="Missing_duration" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="Missing_magnitude" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="Time_threshold_for_under_limit"
+          eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="Time_threshold_for_over_limit"
+          eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="Time_threshold_for_missing_magnitude"
+          eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="Contracted_value" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="Minimum_for_recording_interval"
+          eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="Maximum_for_recording_interval"
+          eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="Test_average" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="calculations" lowerBound="1"
+          eType="#//COSEMObjects/ElectricityValues"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="ElectricityHarmonics" eSuperTypes="#//InterfaceClasses/Data">
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="total" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="fundamental_harmonic"
+          eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="harmonic" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="Total_Harmoni_Distortion"
+          eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="Total_Demand_Distortion"
+          eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="All_harmonics" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="All_harmonics_to_nominal_value_ratio"
+          eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="ExtendedPhaseAngleMeasurement" eSuperTypes="#//InterfaceClasses/Data">
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="FromUL1toUL2" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="FromUL1toUL3" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="FromUL1toIL1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="FromUL1toIL2" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="FromUL1toIL3" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="FromUL1toIL0" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="FromUL2toUL1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="FromUL2toUL3" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="FromUL2toIL1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="FromUL2toIL2" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="FromUL2toIL3" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="FromUL2toIL0" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="FromUL3toUL1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="FromUL3toUL2" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="FromUL3toIL1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="FromUL3toIL2" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="FromUL3toIL3" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="FromUL3toIL0" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="FromIL1toUL1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="FromIL1toUL2" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="FromIL1toUL3" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="FromIL1toIL2" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="FromIL1toIL3" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="FromIL1toIL0" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="FromIL2toUL1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="FromIL2toUL2" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="FromIL2toUL3" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="FromIL2toIL1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="FromIL2toIL3" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="FromIL2toIL0" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="FromIL3toUL1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="FromIL3toUL2" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="FromIL3toUL3" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="FromIL3toIL1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="FromIL3toIL2" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="FromIL3toIL0" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="FromIL0toUL1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="FromIL0toUL2" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="FromIL0toUL3" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="FromIL0toIL1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="FromIL0toIL2" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="FromIL0toIL3" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="TransformerAndLineLosses" eSuperTypes="#//InterfaceClasses/Data">
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="Active_line_losses_P"
+          eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="Active_line_losses_M"
+          eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="Active_line_losses" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="Active_transformer_losses_P"
+          eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="Active_transformer_losses_M"
+          eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="Active_transformer_losses"
+          eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="Active_losses_P" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="Active_losses_M" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="Active_losses" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="Reactive_line_losses_P"
+          eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="Reactive_line_losses_M"
+          eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="Reactive_line_losses"
+          eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="Reactive_transformer_losses_P"
+          eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="Reactive_transformer_losses_M"
+          eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="Reactive_transformer_losses"
+          eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="Reactive_losses_P" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="Reactive_losses_M" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="Reactive_losses" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="Total_normalized_transformer_losses"
+          eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="Total_normalized_line_losses"
+          eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="Compensated_active_gross_P"
+          eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="Compensated_active_net_P"
+          eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="Compensated_active_gross_M"
+          eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="Compensated_active_net_M"
+          eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="Compensated_reactive_gross_P"
+          eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="Compensated_reactive_net_P"
+          eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="Compensated_reactive_gross_M"
+          eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="Compensated_reactive_net_M"
+          eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="L1active_line_losses"
+          eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="L1active_line_losses_M"
+          eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="L1active_transformer_losses_P"
+          eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="L1active_transformer_losses_M"
+          eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="L1active_transformer_losses"
+          eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="L1active_losses_P" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="L1active_losses_M" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="L1active_losses" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="L1reactive_line_losses_P"
+          eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="L1reactive_line_losses_M"
+          eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="L1reactive_line_losses"
+          eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="L1reactive_transformer_losses_P"
+          eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="L1reactive_transformer_losses_M"
+          eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="L1reactive_transformer_losses"
+          eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="L1Reactive_losses_P"
+          eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="L1Reactive_losses_M"
+          eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="L1Reactive_losses" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="L1Ampere_squared_hours"
+          eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="L1Volt_squared_hours"
+          eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="L2active_line_losses_P"
+          eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="L2active_line_losses_M"
+          eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="L2active_transformer_losses_P"
+          eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="L2active_transformer_losses_M"
+          eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="L2active_transformer_losses"
+          eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="L2active_losses_P" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="L2active_losses_M" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="L2active_losses" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="L2reactive_line_losses_P"
+          eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="L2reactive_line_losses_M"
+          eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="L2reactive_line_losses"
+          eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="L2reactive_transformer_losses"
+          eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="L2reactive_transformer_losses_P"
+          eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="L2reactive_transformer_losses_M"
+          eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="L2reactive_losses" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="L2reactive_losses_P"
+          eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="L2reactive_losses_M"
+          eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="L2Ampere_squared_hours"
+          eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="L2Volt_squared_hours"
+          eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="L3Active_line_losses_P"
+          eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="L3Active_line_losses_M"
+          eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="L3active_transformer_losses_P"
+          eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="L3active_transformer_losses_M"
+          eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="L3active_transformer_losses"
+          eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="L3active_losses_P" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="L3active_losses_M" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="L3active_losses" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="L3reactive_line_losses_P"
+          eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="L3reactive_line_losses_M"
+          eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="L3reactive_line_losses"
+          eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="L3reactive_transformer_losses_P"
+          eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="L3reactive_transformer_losses_M"
+          eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="L3reactive_transformer_losses"
+          eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="L3reactive_losses_P"
+          eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="L3reactive_losses_M"
+          eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="L3reactive_losses" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="L3Ampere_squared_hours"
+          eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="L3Volt_Squared_hours"
+          eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
+    </eClassifiers>
+  </eSubpackages>
+</ecore:EPackage>

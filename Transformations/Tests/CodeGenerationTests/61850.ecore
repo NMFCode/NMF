@@ -1,0 +1,2752 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ecore:EPackage xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" name="substationStandard" nsURI="substationStandard" nsPrefix="sub">
+  <eClassifiers xsi:type="ecore:EClass" name="Substandard">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="LN" upperBound="-1" eType="#//LNNodes/DomainLNs/DomainLN"
+        containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="NamePlt" upperBound="-1"
+        eType="#//Dataclasses/LPL" containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="LPL" upperBound="-1" eType="#//Dataclasses/LPL"
+        containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="DPC" upperBound="-1" eType="#//Dataclasses/DPC"
+        containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="ACT" upperBound="-1" eType="#//Dataclasses/ACT"
+        containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="SPS" upperBound="-1" eType="#//Dataclasses/SPS"
+        containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="BSC" upperBound="-1" eType="#//Dataclasses/BSC"
+        containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="ISC" upperBound="-1" eType="#//Dataclasses/ISC"
+        containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="SPC" upperBound="-1" eType="#//Dataclasses/SPC"
+        containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="MV" upperBound="-1" eType="#//Dataclasses/MV"
+        containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="INS" upperBound="-1" eType="#//Dataclasses/INS"
+        containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="ASG" upperBound="-1" eType="#//Dataclasses/ASG"
+        containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="WYE" upperBound="-1" eType="#//Dataclasses/WYE"
+        containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="DPStatus" upperBound="-1"
+        eType="#//Dataclasses/DPStatus" containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="AnalogueValue" upperBound="-1"
+        eType="#//Dataclasses/AnalogueValue" containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="CMV" upperBound="-1" eType="#//Dataclasses/CMV"
+        containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="ValWithTrans" upperBound="-1"
+        eType="#//Dataclasses/ValWithTrans" containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="BSControl" upperBound="-1"
+        eType="#//Dataclasses/BSControl" containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="Vector" upperBound="-1"
+        eType="#//Dataclasses/Vector" containment="true"/>
+  </eClassifiers>
+  <eSubpackages name="LNNodes" nsURI="substationStandard#LNNodes" nsPrefix="ln">
+    <eSubpackages name="DomainLNs" nsURI="substationStandard#DomainLNs" nsPrefix="domain">
+      <eClassifiers xsi:type="ecore:EClass" name="DomainLN">
+        <eStructuralFeatures xsi:type="ecore:EReference" name="Mode" lowerBound="1"
+            eType="#//Dataclasses/INC"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="Behaviour" lowerBound="1"
+            eType="#//Dataclasses/INS"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="Health" lowerBound="1"
+            eType="#//Dataclasses/INS"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="NamePlt" lowerBound="1"
+            eType="#//Dataclasses/LPL"/>
+      </eClassifiers>
+    </eSubpackages>
+    <eSubpackages name="LNGroupP" nsURI="substationStandard#groupP" nsPrefix="groupP">
+      <eClassifiers xsi:type="ecore:EClass" name="GroupP" eSuperTypes="#//LNNodes/DomainLNs/DomainLN">
+        <eStructuralFeatures xsi:type="ecore:EReference" name="OpCntRs" lowerBound="1"
+            eType="#//Dataclasses/INC"/>
+      </eClassifiers>
+      <eClassifiers xsi:type="ecore:EClass" name="PDIF" eSuperTypes="#//LNNodes/LNGroupP/GroupP">
+        <eStructuralFeatures xsi:type="ecore:EReference" name="Str" lowerBound="1"
+            eType="#//Dataclasses/ACD"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="Op" lowerBound="1"
+            eType="#//Dataclasses/ACT"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="TmASt" lowerBound="1"
+            eType="#//Dataclasses/CSD"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="DifAClc" lowerBound="1"
+            eType="#//Dataclasses/WYE"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="RstA" lowerBound="1"
+            eType="#//Dataclasses/WYE"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="LinCapac" lowerBound="1"
+            eType="#//Dataclasses/ASG"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="LoSet" lowerBound="1"
+            eType="#//Dataclasses/ING"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="HiSet" lowerBound="1"
+            eType="#//Dataclasses/ING"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="MinOpTmms" lowerBound="1"
+            eType="#//Dataclasses/ING"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="MaxOpTmms" lowerBound="1"
+            eType="#//Dataclasses/ING"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="RstMod" lowerBound="1"
+            eType="#//Dataclasses/ING"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="RsDiTmms" lowerBound="1"
+            eType="#//Dataclasses/ING"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="TmACrv" lowerBound="1"
+            eType="#//Dataclasses/CURVE"/>
+      </eClassifiers>
+      <eClassifiers xsi:type="ecore:EClass" name="PDIR" eSuperTypes="#//LNNodes/LNGroupP/GroupP">
+        <eStructuralFeatures xsi:type="ecore:EReference" name="Str" lowerBound="1"
+            eType="#//Dataclasses/ACD"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="Op" lowerBound="1"
+            eType="#//Dataclasses/ACT"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="RsDiTmms" lowerBound="1"
+            eType="#//Dataclasses/ING"/>
+      </eClassifiers>
+      <eClassifiers xsi:type="ecore:EClass" name="PFRC" eSuperTypes="#//LNNodes/LNGroupP/GroupP">
+        <eStructuralFeatures xsi:type="ecore:EReference" name="Str" lowerBound="1"
+            eType="#//Dataclasses/ACD"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="Op" lowerBound="1"
+            eType="#//Dataclasses/ACT"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="BlkV" lowerBound="1"
+            eType="#//Dataclasses/SPS"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="StrVal" lowerBound="1"
+            eType="#//Dataclasses/ASG"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="BlkVal" lowerBound="1"
+            eType="#//Dataclasses/ASG"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="OpDiTmms" lowerBound="1"
+            eType="#//Dataclasses/ING"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="RsDiTmms" lowerBound="1"
+            eType="#//Dataclasses/ING"/>
+      </eClassifiers>
+      <eClassifiers xsi:type="ecore:EClass" name="PHAR" eSuperTypes="#//LNNodes/LNGroupP/GroupP">
+        <eStructuralFeatures xsi:type="ecore:EReference" name="Str" lowerBound="1"
+            eType="#//Dataclasses/ACD"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="HaRst" lowerBound="1"
+            eType="#//Dataclasses/ING"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="PhStr" lowerBound="1"
+            eType="#//Dataclasses/ASG"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="PhStop" lowerBound="1"
+            eType="#//Dataclasses/ASG"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="OpDiTmms" lowerBound="1"
+            eType="#//Dataclasses/ING"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="RsDiTmms" lowerBound="1"
+            eType="#//Dataclasses/ING"/>
+      </eClassifiers>
+      <eClassifiers xsi:type="ecore:EClass" name="POPF" eSuperTypes="#//LNNodes/LNGroupP/GroupP">
+        <eStructuralFeatures xsi:type="ecore:EReference" name="Str" lowerBound="1"
+            eType="#//Dataclasses/ACD"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="Op" lowerBound="1"
+            eType="#//Dataclasses/ACT"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="BlkA" lowerBound="1"
+            eType="#//Dataclasses/SPS"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="BlkV" lowerBound="1"
+            eType="#//Dataclasses/SPS"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="StrVal" lowerBound="1"
+            eType="#//Dataclasses/ASG"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="OpDiTmms" lowerBound="1"
+            eType="#//Dataclasses/ING"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="RsDiTmms" lowerBound="1"
+            eType="#//Dataclasses/ING"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="BlkValA" lowerBound="1"
+            eType="#//Dataclasses/ASG"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="BlkValV" lowerBound="1"
+            eType="#//Dataclasses/ASG"/>
+      </eClassifiers>
+      <eClassifiers xsi:type="ecore:EClass" name="PPAM" eSuperTypes="#//LNNodes/LNGroupP/GroupP">
+        <eStructuralFeatures xsi:type="ecore:EReference" name="Str" lowerBound="1"
+            eType="#//Dataclasses/ACD"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="Op" lowerBound="1"
+            eType="#//Dataclasses/ACT"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="StrVal" eType="#//Dataclasses/ASG"/>
+      </eClassifiers>
+      <eClassifiers xsi:type="ecore:EClass" name="PDIS" eSuperTypes="#//LNNodes/LNGroupP/GroupP">
+        <eStructuralFeatures xsi:type="ecore:EReference" name="Str" lowerBound="1"
+            eType="#//Dataclasses/ACD"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="Op" lowerBound="1"
+            eType="#//Dataclasses/ACT"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="PoRch" lowerBound="1"
+            eType="#//Dataclasses/ASG"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="PhStr" lowerBound="1"
+            eType="#//Dataclasses/ASG"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="GndStr" lowerBound="1"
+            eType="#//Dataclasses/ASG"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="DirMod" lowerBound="1"
+            eType="#//Dataclasses/ING"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="PctRch" lowerBound="1"
+            eType="#//Dataclasses/ASG"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="Ofs" lowerBound="1"
+            eType="#//Dataclasses/ASG"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="PctOfs" lowerBound="1"
+            eType="#//Dataclasses/ASG"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="RisLod" lowerBound="1"
+            eType="#//Dataclasses/ASG"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="AngLod" lowerBound="1"
+            eType="#//Dataclasses/ASG"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="TmDlMod" lowerBound="1"
+            eType="#//Dataclasses/SPG"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="OpDlTmms" lowerBound="1"
+            eType="#//Dataclasses/ING"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="PhDlMod" lowerBound="1"
+            eType="#//Dataclasses/SPG"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="PhDlTmms" lowerBound="1"
+            eType="#//Dataclasses/ING"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="GndDlMod" lowerBound="1"
+            eType="#//Dataclasses/SPG"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="GndDlTmms" lowerBound="1"
+            eType="#//Dataclasses/ING"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="X1" lowerBound="1"
+            eType="#//Dataclasses/ASG"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="LinAng" lowerBound="1"
+            eType="#//Dataclasses/ASG"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="RisGndRch" lowerBound="1"
+            eType="#//Dataclasses/ASG"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="RisPhRch" lowerBound="1"
+            eType="#//Dataclasses/ASG"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="K0Fact" lowerBound="1"
+            eType="#//Dataclasses/ASG"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="K0FactAng" lowerBound="1"
+            eType="#//Dataclasses/ASG"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="RsDlTmms" lowerBound="1"
+            eType="#//Dataclasses/ING"/>
+      </eClassifiers>
+      <eClassifiers xsi:type="ecore:EClass" name="PDOP" eSuperTypes="#//LNNodes/LNGroupP/GroupP">
+        <eStructuralFeatures xsi:type="ecore:EReference" name="Str" lowerBound="1"
+            eType="#//Dataclasses/ACD"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="Op" lowerBound="1"
+            eType="#//Dataclasses/ACT"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="DirMod" lowerBound="1"
+            eType="#//Dataclasses/ING"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="StrVal" lowerBound="1"
+            eType="#//Dataclasses/ASG"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="OpDlTmms" lowerBound="1"
+            eType="#//Dataclasses/ING"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="RsDlTmms" lowerBound="1"
+            eType="#//Dataclasses/ING"/>
+      </eClassifiers>
+      <eClassifiers xsi:type="ecore:EClass" name="PHIZ" eSuperTypes="#//LNNodes/LNGroupP/GroupP">
+        <eStructuralFeatures xsi:type="ecore:EReference" name="Str" lowerBound="1"
+            eType="#//Dataclasses/ACD"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="Op" lowerBound="1"
+            eType="#//Dataclasses/ACT"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="AStr" lowerBound="1"
+            eType="#//Dataclasses/ASG"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="VStr" lowerBound="1"
+            eType="#//Dataclasses/ASG"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="HVStr" lowerBound="1"
+            eType="#//Dataclasses/ASG"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="OpDlTmms" lowerBound="1"
+            eType="#//Dataclasses/ING"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="RsDlTmms" lowerBound="1"
+            eType="#//Dataclasses/ING"/>
+      </eClassifiers>
+      <eClassifiers xsi:type="ecore:EClass" name="PIOC" eSuperTypes="#//LNNodes/LNGroupP/GroupP">
+        <eStructuralFeatures xsi:type="ecore:EReference" name="Str" lowerBound="1"
+            eType="#//Dataclasses/ACD"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="Op" lowerBound="1"
+            eType="#//Dataclasses/ACT"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="StrVal" lowerBound="1"
+            eType="#//Dataclasses/ASG"/>
+      </eClassifiers>
+      <eClassifiers xsi:type="ecore:EClass" name="PMRI" eSuperTypes="#//LNNodes/LNGroupP/GroupP">
+        <eStructuralFeatures xsi:type="ecore:EReference" name="Op" lowerBound="1"
+            eType="#//Dataclasses/ACT"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="StrInh" lowerBound="1"
+            eType="#//Dataclasses/SPS"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="StrInhTmm" lowerBound="1"
+            eType="#//Dataclasses/INS"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="SetA" lowerBound="1"
+            eType="#//Dataclasses/ASG"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="SetTms" lowerBound="1"
+            eType="#//Dataclasses/ING"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="MaxNumStr" lowerBound="1"
+            eType="#//Dataclasses/ING"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="MaxWrmStr" lowerBound="1"
+            eType="#//Dataclasses/ING"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="MaxStrTmm" lowerBound="1"
+            eType="#//Dataclasses/ING"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="EqTmm" lowerBound="1"
+            eType="#//Dataclasses/ING"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="InhTmm" lowerBound="1"
+            eType="#//Dataclasses/ING"/>
+      </eClassifiers>
+      <eClassifiers xsi:type="ecore:EClass" name="PMSS" eSuperTypes="#//LNNodes/LNGroupP/GroupP">
+        <eStructuralFeatures xsi:type="ecore:EReference" name="Str" lowerBound="1"
+            eType="#//Dataclasses/ACD"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="Op" lowerBound="1"
+            eType="#//Dataclasses/ACT"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="SetA" lowerBound="1"
+            eType="#//Dataclasses/ASG"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="SetTms" lowerBound="1"
+            eType="#//Dataclasses/ING"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="MotStr" lowerBound="1"
+            eType="#//Dataclasses/ASG"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="LokRotTms" lowerBound="1"
+            eType="#//Dataclasses/ING"/>
+      </eClassifiers>
+      <eClassifiers xsi:type="ecore:EClass" name="PSCH" eSuperTypes="#//LNNodes/LNGroupP/GroupP">
+        <eStructuralFeatures xsi:type="ecore:EReference" name="ProTx" lowerBound="1"
+            eType="#//Dataclasses/SPS"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="ProRx" lowerBound="1"
+            eType="#//Dataclasses/SPS"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="Str" lowerBound="1"
+            eType="#//Dataclasses/ACD"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="Op" lowerBound="1"
+            eType="#//Dataclasses/ACT"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="CarRx" lowerBound="1"
+            eType="#//Dataclasses/ACT"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="LosOfGrd" lowerBound="1"
+            eType="#//Dataclasses/SPS"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="Echo" lowerBound="1"
+            eType="#//Dataclasses/ACT"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="WeiOp" lowerBound="1"
+            eType="#//Dataclasses/ACT"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="RvABlk" lowerBound="1"
+            eType="#//Dataclasses/ACT"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="GrdRx" lowerBound="1"
+            eType="#//Dataclasses/SPS"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="SchTyp" lowerBound="1"
+            eType="#//Dataclasses/ING"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="OpDlTmms" lowerBound="1"
+            eType="#//Dataclasses/ING"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="CrdTmms" lowerBound="1"
+            eType="#//Dataclasses/ING"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="DurTmms" lowerBound="1"
+            eType="#//Dataclasses/ING"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="UnBlkMod" lowerBound="1"
+            eType="#//Dataclasses/ING"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="SecTmms" lowerBound="1"
+            eType="#//Dataclasses/ING"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="WeiMod" lowerBound="1"
+            eType="#//Dataclasses/ING"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="WeiTmms" lowerBound="1"
+            eType="#//Dataclasses/ING"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="PPVVal" lowerBound="1"
+            eType="#//Dataclasses/ASG"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="PhGndVal" lowerBound="1"
+            eType="#//Dataclasses/ASG"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="RvAMod" lowerBound="1"
+            eType="#//Dataclasses/ING"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="RvATmms" lowerBound="1"
+            eType="#//Dataclasses/ING"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="RvRsTmms" lowerBound="1"
+            eType="#//Dataclasses/ING"/>
+      </eClassifiers>
+      <eClassifiers xsi:type="ecore:EClass" name="PSDE" eSuperTypes="#//LNNodes/LNGroupP/GroupP">
+        <eStructuralFeatures xsi:type="ecore:EReference" name="Str" lowerBound="1"
+            eType="#//Dataclasses/ACD"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="Op" lowerBound="1"
+            eType="#//Dataclasses/ACT"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="Ang" lowerBound="1"
+            eType="#//Dataclasses/ASG"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="GndStr" lowerBound="1"
+            eType="#//Dataclasses/ASG"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="GndOp" lowerBound="1"
+            eType="#//Dataclasses/ASG"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="StrDlTmms" lowerBound="1"
+            eType="#//Dataclasses/ING"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="OpDlTmms" lowerBound="1"
+            eType="#//Dataclasses/ING"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="DirMod" lowerBound="1"
+            eType="#//Dataclasses/ING"/>
+      </eClassifiers>
+      <eClassifiers xsi:type="ecore:EClass" name="PDUP" eSuperTypes="#//LNNodes/LNGroupP/GroupP">
+        <eStructuralFeatures xsi:type="ecore:EReference" name="Str" lowerBound="1"
+            eType="#//Dataclasses/ACD"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="Op" lowerBound="1"
+            eType="#//Dataclasses/ACT"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="StrVal" lowerBound="1"
+            eType="#//Dataclasses/ASG"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="OpDlTmms" lowerBound="1"
+            eType="#//Dataclasses/ING"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="RsDlTmms" lowerBound="1"
+            eType="#//Dataclasses/ING"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="DirMod" lowerBound="1"
+            eType="#//Dataclasses/ING"/>
+      </eClassifiers>
+      <eClassifiers xsi:type="ecore:EClass" name="PTEF" eSuperTypes="#//LNNodes/LNGroupP/GroupP">
+        <eStructuralFeatures xsi:type="ecore:EReference" name="Str" lowerBound="1"
+            eType="#//Dataclasses/ACD"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="Op" lowerBound="1"
+            eType="#//Dataclasses/ACT"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="GndStr" lowerBound="1"
+            eType="#//Dataclasses/ASG"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="DirMod" lowerBound="1"
+            eType="#//Dataclasses/ING"/>
+      </eClassifiers>
+      <eClassifiers xsi:type="ecore:EClass" name="PTOC" eSuperTypes="#//LNNodes/LNGroupP/GroupP">
+        <eStructuralFeatures xsi:type="ecore:EReference" name="Str" lowerBound="1"
+            eType="#//Dataclasses/ACD"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="Op" lowerBound="1"
+            eType="#//Dataclasses/ACT"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="TmASt" lowerBound="1"
+            eType="#//Dataclasses/CSD"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="TmACrv" lowerBound="1"
+            eType="#//Dataclasses/CURVE"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="StrVal" lowerBound="1"
+            eType="#//Dataclasses/ASG"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="TmMult" lowerBound="1"
+            eType="#//Dataclasses/ASG"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="MinOpTmms" lowerBound="1"
+            eType="#//Dataclasses/ING"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="MaxOpTmms" lowerBound="1"
+            eType="#//Dataclasses/ING"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="OpDlTmms" lowerBound="1"
+            eType="#//Dataclasses/ING"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="TypRsCrv" lowerBound="1"
+            eType="#//Dataclasses/ING"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="RsDlTmms" lowerBound="1"
+            eType="#//Dataclasses/ING"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="DirMod" lowerBound="1"
+            eType="#//Dataclasses/ING"/>
+      </eClassifiers>
+      <eClassifiers xsi:type="ecore:EClass" name="PTOF" eSuperTypes="#//LNNodes/LNGroupP/GroupP">
+        <eStructuralFeatures xsi:type="ecore:EReference" name="Str" lowerBound="1"
+            eType="#//Dataclasses/ACD"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="Op" lowerBound="1"
+            eType="#//Dataclasses/ACT"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="BlkV" lowerBound="1"
+            eType="#//Dataclasses/SPS"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="StrVal" lowerBound="1"
+            eType="#//Dataclasses/ASG"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="BlkVal" lowerBound="1"
+            eType="#//Dataclasses/ASG"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="OpDlTmms" lowerBound="1"
+            eType="#//Dataclasses/ING"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="RsDlTmms" lowerBound="1"
+            eType="#//Dataclasses/ING"/>
+      </eClassifiers>
+      <eClassifiers xsi:type="ecore:EClass" name="PTOV" eSuperTypes="#//LNNodes/LNGroupP/GroupP">
+        <eStructuralFeatures xsi:type="ecore:EReference" name="Str" lowerBound="1"
+            eType="#//Dataclasses/ACD"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="Op" lowerBound="1"
+            eType="#//Dataclasses/ACT"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="TmVst" lowerBound="1"
+            eType="#//Dataclasses/CSD"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="TmVCrv" lowerBound="1"
+            eType="#//Dataclasses/CURVE"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="StrVal" lowerBound="1"
+            eType="#//Dataclasses/ASG"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="TmMult" lowerBound="1"
+            eType="#//Dataclasses/ASG"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="MinOpTmms" lowerBound="1"
+            eType="#//Dataclasses/ING"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="MaxOpTmms" lowerBound="1"
+            eType="#//Dataclasses/ING"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="OpDlTmms" lowerBound="1"
+            eType="#//Dataclasses/ING"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="RsDlTmms" lowerBound="1"
+            eType="#//Dataclasses/ING"/>
+      </eClassifiers>
+      <eClassifiers xsi:type="ecore:EClass" name="PTTR" eSuperTypes="#//LNNodes/LNGroupP/GroupP">
+        <eStructuralFeatures xsi:type="ecore:EReference" name="Amp" lowerBound="1"
+            eType="#//Dataclasses/MV"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="Tmp" lowerBound="1"
+            eType="#//Dataclasses/MV"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="TmpRl" lowerBound="1"
+            eType="#//Dataclasses/MV"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="LodRsvAlm" lowerBound="1"
+            eType="#//Dataclasses/MV"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="LodRsvTr" lowerBound="1"
+            eType="#//Dataclasses/MV"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="AgeRat" lowerBound="1"
+            eType="#//Dataclasses/MV"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="Str" lowerBound="1"
+            eType="#//Dataclasses/ACD"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="Op" lowerBound="1"
+            eType="#//Dataclasses/ACT"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="AlmThm" lowerBound="1"
+            eType="#//Dataclasses/ACT"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="TmTmpSt" lowerBound="1"
+            eType="#//Dataclasses/CSD"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="TmASt" lowerBound="1"
+            eType="#//Dataclasses/CSD"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="TmTmpCrv" lowerBound="1"
+            eType="#//Dataclasses/CURVE"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="TmACrv" lowerBound="1"
+            eType="#//Dataclasses/CURVE"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="TmpMax" lowerBound="1"
+            eType="#//Dataclasses/ASG"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="StrVal" lowerBound="1"
+            eType="#//Dataclasses/ASG"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="OpDlTmms" lowerBound="1"
+            eType="#//Dataclasses/ING"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="MinOpTmms" lowerBound="1"
+            eType="#//Dataclasses/ING"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="MaxOpTmms" lowerBound="1"
+            eType="#//Dataclasses/ING"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="RsDlTmms" lowerBound="1"
+            eType="#//Dataclasses/ING"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="ConsTms" lowerBound="1"
+            eType="#//Dataclasses/ING"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="AlmVal" lowerBound="1"
+            eType="#//Dataclasses/ASG"/>
+      </eClassifiers>
+      <eClassifiers xsi:type="ecore:EClass" name="PTUC" eSuperTypes="#//LNNodes/LNGroupP/GroupP">
+        <eStructuralFeatures xsi:type="ecore:EReference" name="Str" lowerBound="1"
+            eType="#//Dataclasses/ACD"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="Op" lowerBound="1"
+            eType="#//Dataclasses/ACT"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="TmASt" lowerBound="1"
+            eType="#//Dataclasses/CSD"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="TmACrv" lowerBound="1"
+            eType="#//Dataclasses/CURVE"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="StrVal" lowerBound="1"
+            eType="#//Dataclasses/ASG"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="OpDlTmms" lowerBound="1"
+            eType="#//Dataclasses/ING"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="TmMult" lowerBound="1"
+            eType="#//Dataclasses/ASG"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="MinOpTmms" lowerBound="1"
+            eType="#//Dataclasses/ING"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="MaxOpTmms" lowerBound="1"
+            eType="#//Dataclasses/ING"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="RsDlTmms" lowerBound="1"
+            eType="#//Dataclasses/ING"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="ConsTms" lowerBound="1"
+            eType="#//Dataclasses/ING"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="AlmVal" lowerBound="1"
+            eType="#//Dataclasses/ASG"/>
+      </eClassifiers>
+      <eClassifiers xsi:type="ecore:EClass" name="PTUF" eSuperTypes="#//LNNodes/LNGroupP/GroupP">
+        <eStructuralFeatures xsi:type="ecore:EReference" name="Str" lowerBound="1"
+            eType="#//Dataclasses/ACD"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="Op" lowerBound="1"
+            eType="#//Dataclasses/ACT"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="BlkV" lowerBound="1"
+            eType="#//Dataclasses/SPS"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="StrVal" lowerBound="1"
+            eType="#//Dataclasses/ASG"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="BlkVal" lowerBound="1"
+            eType="#//Dataclasses/ACT"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="OpDlTmms" lowerBound="1"
+            eType="#//Dataclasses/ING"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="RsDlTmms" lowerBound="1"
+            eType="#//Dataclasses/ING"/>
+      </eClassifiers>
+      <eClassifiers xsi:type="ecore:EClass" name="PVOC" eSuperTypes="#//LNNodes/LNGroupP/GroupP">
+        <eStructuralFeatures xsi:type="ecore:EReference" name="Str" lowerBound="1"
+            eType="#//Dataclasses/ACD"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="Op" lowerBound="1"
+            eType="#//Dataclasses/ACT"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="AVSt" lowerBound="1"
+            eType="#//Dataclasses/CSD"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="TmASt" lowerBound="1"
+            eType="#//Dataclasses/CSD"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="TmMult" lowerBound="1"
+            eType="#//Dataclasses/ASG"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="AVCrv" lowerBound="1"
+            eType="#//Dataclasses/CURVE"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="TmACrv" lowerBound="1"
+            eType="#//Dataclasses/CURVE"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="MinOpTmms" lowerBound="1"
+            eType="#//Dataclasses/ING"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="MaxOpTmms" lowerBound="1"
+            eType="#//Dataclasses/ING"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="OpDlTmms" lowerBound="1"
+            eType="#//Dataclasses/ING"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="TypRsCrv" lowerBound="1"
+            eType="#//Dataclasses/ING"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="RsDlTmms" lowerBound="1"
+            eType="#//Dataclasses/ING"/>
+      </eClassifiers>
+      <eClassifiers xsi:type="ecore:EClass" name="PVPH" eSuperTypes="#//LNNodes/LNGroupP/GroupP">
+        <eStructuralFeatures xsi:type="ecore:EReference" name="Str" lowerBound="1"
+            eType="#//Dataclasses/ACD"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="Op" lowerBound="1"
+            eType="#//Dataclasses/ACT"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="VHzSt" lowerBound="1"
+            eType="#//Dataclasses/CSD"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="VHzCrv" lowerBound="1"
+            eType="#//Dataclasses/CURVE"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="StrVal" lowerBound="1"
+            eType="#//Dataclasses/ASG"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="OpDlTmms" lowerBound="1"
+            eType="#//Dataclasses/ING"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="TypRsCrv" lowerBound="1"
+            eType="#//Dataclasses/ING"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="RsDlTmms" lowerBound="1"
+            eType="#//Dataclasses/ING"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="TmMult" lowerBound="1"
+            eType="#//Dataclasses/ASG"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="MinOpTmms" lowerBound="1"
+            eType="#//Dataclasses/ING"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="MaxOpTmms" lowerBound="1"
+            eType="#//Dataclasses/ING"/>
+      </eClassifiers>
+      <eClassifiers xsi:type="ecore:EClass" name="PTRC" eSuperTypes="#//LNNodes/LNGroupP/GroupP">
+        <eStructuralFeatures xsi:type="ecore:EReference" name="Tr" lowerBound="1"
+            eType="#//Dataclasses/ACT"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="Op" lowerBound="1"
+            eType="#//Dataclasses/ACT"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="Str" lowerBound="1"
+            eType="#//Dataclasses/ACD"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="TrMod" lowerBound="1"
+            eType="#//Dataclasses/ING"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="TrPlsTmms" lowerBound="1"
+            eType="#//Dataclasses/ING"/>
+      </eClassifiers>
+      <eClassifiers xsi:type="ecore:EClass" name="PTUV" eSuperTypes="#//LNNodes/LNGroupP/GroupP">
+        <eStructuralFeatures xsi:type="ecore:EReference" name="Str" lowerBound="1"
+            eType="#//Dataclasses/ACD"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="Op" lowerBound="1"
+            eType="#//Dataclasses/ACT"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="TmVSt" lowerBound="1"
+            eType="#//Dataclasses/CSD"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="TmVCrv" lowerBound="1"
+            eType="#//Dataclasses/CURVE"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="StrVal" lowerBound="1"
+            eType="#//Dataclasses/ASG"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="TmMult" lowerBound="1"
+            eType="#//Dataclasses/ASG"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="MinOpTmms" lowerBound="1"
+            eType="#//Dataclasses/ING"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="MaxOpTmms" lowerBound="1"
+            eType="#//Dataclasses/ING"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="OpDlTmms" lowerBound="1"
+            eType="#//Dataclasses/ING"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="RsDlTmms" lowerBound="1"
+            eType="#//Dataclasses/ING"/>
+      </eClassifiers>
+      <eClassifiers xsi:type="ecore:EClass" name="PUPF" eSuperTypes="#//LNNodes/LNGroupP/GroupP">
+        <eStructuralFeatures xsi:type="ecore:EReference" name="Str" lowerBound="1"
+            eType="#//Dataclasses/ACD"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="Op" lowerBound="1"
+            eType="#//Dataclasses/ACT"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="BlkA" lowerBound="1"
+            eType="#//Dataclasses/SPS"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="BlkV" lowerBound="1"
+            eType="#//Dataclasses/SPS"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="StrVal" lowerBound="1"
+            eType="#//Dataclasses/ASG"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="OpDlTmms" lowerBound="1"
+            eType="#//Dataclasses/ING"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="RsDlTmms" lowerBound="1"
+            eType="#//Dataclasses/ING"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="BlkValA" lowerBound="1"
+            eType="#//Dataclasses/ASG"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="BlkValV" lowerBound="1"
+            eType="#//Dataclasses/ASG"/>
+      </eClassifiers>
+      <eClassifiers xsi:type="ecore:EClass" name="PZSU" eSuperTypes="#//LNNodes/LNGroupP/GroupP">
+        <eStructuralFeatures xsi:type="ecore:EReference" name="Str" lowerBound="1"
+            eType="#//Dataclasses/ACD"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="Op" lowerBound="1"
+            eType="#//Dataclasses/ACT"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="StrVal" lowerBound="1"
+            eType="#//Dataclasses/ASG"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="OpDlTmms" lowerBound="1"
+            eType="#//Dataclasses/ING"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="RsDlTmms" lowerBound="1"
+            eType="#//Dataclasses/ING"/>
+      </eClassifiers>
+    </eSubpackages>
+    <eSubpackages name="LNGroupR" nsURI="substationStandard#groupR" nsPrefix="groupr">
+      <eClassifiers xsi:type="ecore:EClass" name="GroupR" eSuperTypes="#//LNNodes/DomainLNs/DomainLN"/>
+      <eClassifiers xsi:type="ecore:EClass" name="RDRE" eSuperTypes="#//LNNodes/LNGroupR/GroupR">
+        <eStructuralFeatures xsi:type="ecore:EReference" name="OpCntRs" lowerBound="1"
+            eType="#//Dataclasses/INC"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="RcdTrg" lowerBound="1"
+            eType="#//Dataclasses/SPC"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="MemRs" lowerBound="1"
+            eType="#//Dataclasses/SPC"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="MemClr" lowerBound="1"
+            eType="#//Dataclasses/SPC"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="RcdMade" lowerBound="1"
+            eType="#//Dataclasses/SPS"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="FltNum" lowerBound="1"
+            eType="#//Dataclasses/INS"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="GriFltNum" lowerBound="1"
+            eType="#//Dataclasses/INS"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="RcdStr" lowerBound="1"
+            eType="#//Dataclasses/SPS"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="MemUsed" lowerBound="1"
+            eType="#//Dataclasses/INS"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="TrgMod" lowerBound="1"
+            eType="#//Dataclasses/ING"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="LevMod" lowerBound="1"
+            eType="#//Dataclasses/ING"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="PreTmms" lowerBound="1"
+            eType="#//Dataclasses/ING"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="PstTmms" lowerBound="1"
+            eType="#//Dataclasses/ING"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="MemFull" lowerBound="1"
+            eType="#//Dataclasses/ING"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="MaxNumRcd" lowerBound="1"
+            eType="#//Dataclasses/ING"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="ReTrgMod" lowerBound="1"
+            eType="#//Dataclasses/ING"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="PerTrgTms" lowerBound="1"
+            eType="#//Dataclasses/ING"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="ExclTmms" lowerBound="1"
+            eType="#//Dataclasses/ING"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="OpMod" lowerBound="1"
+            eType="#//Dataclasses/ING"/>
+      </eClassifiers>
+      <eClassifiers xsi:type="ecore:EClass" name="RDRS" eSuperTypes="#//LNNodes/LNGroupR/GroupR">
+        <eStructuralFeatures xsi:type="ecore:EReference" name="AutoUpLod" lowerBound="1"
+            eType="#//Dataclasses/SPC"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="DltRcd" lowerBound="1"
+            eType="#//Dataclasses/SPC"/>
+      </eClassifiers>
+      <eClassifiers xsi:type="ecore:EClass" name="RPSB" eSuperTypes="#//LNNodes/LNGroupR/GroupR">
+        <eStructuralFeatures xsi:type="ecore:EReference" name="OpCntRs" lowerBound="1"
+            eType="#//Dataclasses/INC"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="Str" lowerBound="1"
+            eType="#//Dataclasses/ACD"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="Op" lowerBound="1"
+            eType="#//Dataclasses/ACT"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="BlkZn" lowerBound="1"
+            eType="#//Dataclasses/SPS"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="ZeroEna" lowerBound="1"
+            eType="#//Dataclasses/SPG"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="NgEna" lowerBound="1"
+            eType="#//Dataclasses/SPG"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="MaxEna" lowerBound="1"
+            eType="#//Dataclasses/SPG"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="SwgVal" lowerBound="1"
+            eType="#//Dataclasses/ASG"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="SwgRis" lowerBound="1"
+            eType="#//Dataclasses/ASG"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="SwgReact" lowerBound="1"
+            eType="#//Dataclasses/ASG"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="SwgTmms" lowerBound="1"
+            eType="#//Dataclasses/ING"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="UnBlkTmms" lowerBound="1"
+            eType="#//Dataclasses/ING"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="MaxNumSlp" lowerBound="1"
+            eType="#//Dataclasses/ING"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="EvTmms" lowerBound="1"
+            eType="#//Dataclasses/ING"/>
+      </eClassifiers>
+      <eClassifiers xsi:type="ecore:EClass" name="RBRF" eSuperTypes="#//LNNodes/LNGroupR/GroupR">
+        <eStructuralFeatures xsi:type="ecore:EReference" name="OpCntRs" lowerBound="1"
+            eType="#//Dataclasses/INC"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="Str" lowerBound="1"
+            eType="#//Dataclasses/ACD"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="OpEx" lowerBound="1"
+            eType="#//Dataclasses/ACT"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="OpIn" lowerBound="1"
+            eType="#//Dataclasses/ACT"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="FailMod" lowerBound="1"
+            eType="#//Dataclasses/ING"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="FailTmms" lowerBound="1"
+            eType="#//Dataclasses/ING"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="SPlTrTmms" lowerBound="1"
+            eType="#//Dataclasses/ING"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="TPTrTmms" lowerBound="1"
+            eType="#//Dataclasses/ING"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="DetValA" lowerBound="1"
+            eType="#//Dataclasses/ASG"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="ReTrMod" lowerBound="1"
+            eType="#//Dataclasses/ING"/>
+      </eClassifiers>
+      <eClassifiers xsi:type="ecore:EClass" name="RADR" eSuperTypes="#//LNNodes/LNGroupR/GroupR">
+        <eStructuralFeatures xsi:type="ecore:EReference" name="OpCntRs" lowerBound="1"
+            eType="#//Dataclasses/INC"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="ChTrg" lowerBound="1"
+            eType="#//Dataclasses/SPS"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="ChNum" lowerBound="1"
+            eType="#//Dataclasses/ING"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="TrGMod" lowerBound="1"
+            eType="#//Dataclasses/ING"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="LevMod" lowerBound="1"
+            eType="#//Dataclasses/ING"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="HiTrgLev" lowerBound="1"
+            eType="#//Dataclasses/ASG"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="LoTrgLev" lowerBound="1"
+            eType="#//Dataclasses/ASG"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="PreTmms" lowerBound="1"
+            eType="#//Dataclasses/ING"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="PstTmms" lowerBound="1"
+            eType="#//Dataclasses/ING"/>
+      </eClassifiers>
+      <eClassifiers xsi:type="ecore:EClass" name="RBDR" eSuperTypes="#//LNNodes/LNGroupR/GroupR">
+        <eStructuralFeatures xsi:type="ecore:EReference" name="OpCntRs" lowerBound="1"
+            eType="#//Dataclasses/INC"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="ChTrg" lowerBound="1"
+            eType="#//Dataclasses/SPS"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="ChNum" lowerBound="1"
+            eType="#//Dataclasses/ING"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="TrgMod" lowerBound="1"
+            eType="#//Dataclasses/ING"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="LevMod" lowerBound="1"
+            eType="#//Dataclasses/ING"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="PreTmms" lowerBound="1"
+            eType="#//Dataclasses/ING"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="PstTmms" lowerBound="1"
+            eType="#//Dataclasses/ING"/>
+      </eClassifiers>
+      <eClassifiers xsi:type="ecore:EClass" name="RDIR" eSuperTypes="#//LNNodes/LNGroupR/GroupR">
+        <eStructuralFeatures xsi:type="ecore:EReference" name="Dir" lowerBound="1"
+            eType="#//Dataclasses/ACD"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="ChrAng" lowerBound="1"
+            eType="#//Dataclasses/ASG"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="MinFwdAng" lowerBound="1"
+            eType="#//Dataclasses/ASG"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="MinRvAng" lowerBound="1"
+            eType="#//Dataclasses/ASG"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="MaxFwdAng" lowerBound="1"
+            eType="#//Dataclasses/ASG"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="MaxRvAng" lowerBound="1"
+            eType="#//Dataclasses/ASG"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="BlkValA" lowerBound="1"
+            eType="#//Dataclasses/ASG"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="BlkValV" lowerBound="1"
+            eType="#//Dataclasses/ASG"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="PolQty" lowerBound="1"
+            eType="#//Dataclasses/ING"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="MinPPV" lowerBound="1"
+            eType="#//Dataclasses/ASG"/>
+      </eClassifiers>
+      <eClassifiers xsi:type="ecore:EClass" name="RFLO" eSuperTypes="#//LNNodes/LNGroupR/GroupR">
+        <eStructuralFeatures xsi:type="ecore:EReference" name="OpCntRs" lowerBound="1"
+            eType="#//Dataclasses/INC"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="FltZ" lowerBound="1"
+            eType="#//Dataclasses/CMV"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="FltDiskm" lowerBound="1"
+            eType="#//Dataclasses/MV"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="FltLoop" lowerBound="1"
+            eType="#//Dataclasses/INS"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="LinLenKm" lowerBound="1"
+            eType="#//Dataclasses/ASG"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="R1" lowerBound="1"
+            eType="#//Dataclasses/ASG"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="X1" lowerBound="1"
+            eType="#//Dataclasses/ASG"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="R0" lowerBound="1"
+            eType="#//Dataclasses/ASG"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="X0" lowerBound="1"
+            eType="#//Dataclasses/ASG"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="Z1Mod" lowerBound="1"
+            eType="#//Dataclasses/ASG"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="Z1Ang" lowerBound="1"
+            eType="#//Dataclasses/ASG"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="Z0Mod" lowerBound="1"
+            eType="#//Dataclasses/ASG"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="Z0Ang" lowerBound="1"
+            eType="#//Dataclasses/ASG"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="Rm0" lowerBound="1"
+            eType="#//Dataclasses/ASG"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="Xm0" lowerBound="1"
+            eType="#//Dataclasses/ASG"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="Zm0Mod" lowerBound="1"
+            eType="#//Dataclasses/ASG"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="Zm0Ang" lowerBound="1"
+            eType="#//Dataclasses/ASG"/>
+      </eClassifiers>
+      <eClassifiers xsi:type="ecore:EClass" name="RREC" eSuperTypes="#//LNNodes/LNGroupR/GroupR">
+        <eStructuralFeatures xsi:type="ecore:EReference" name="OpCntRs" lowerBound="1"
+            eType="#//Dataclasses/INC"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="BlkRec" lowerBound="1"
+            eType="#//Dataclasses/SPC"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="ChkRec" lowerBound="1"
+            eType="#//Dataclasses/SPC"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="Auto" lowerBound="1"
+            eType="#//Dataclasses/SPS"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="Op" lowerBound="1"
+            eType="#//Dataclasses/ACT"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="AutoRecSt" lowerBound="1"
+            eType="#//Dataclasses/INS"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="Rec1Tmms" lowerBound="1"
+            eType="#//Dataclasses/ING"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="Rec2Tmms" lowerBound="1"
+            eType="#//Dataclasses/ING"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="Rec3Tmms" lowerBound="1"
+            eType="#//Dataclasses/ING"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="PlsTmms" lowerBound="1"
+            eType="#//Dataclasses/ING"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="RclTmms" lowerBound="1"
+            eType="#//Dataclasses/ING"/>
+      </eClassifiers>
+      <eClassifiers xsi:type="ecore:EClass" name="RSYN" eSuperTypes="#//LNNodes/LNGroupR/GroupR">
+        <eStructuralFeatures xsi:type="ecore:EReference" name="RHz" lowerBound="1"
+            eType="#//Dataclasses/SPC"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="LHz" lowerBound="1"
+            eType="#//Dataclasses/SPC"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="RV" lowerBound="1"
+            eType="#//Dataclasses/SPC"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="LV" lowerBound="1"
+            eType="#//Dataclasses/SPC"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="Rel" lowerBound="1"
+            eType="#//Dataclasses/SPS"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="Vlnd" lowerBound="1"
+            eType="#//Dataclasses/SPS"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="AngInd" lowerBound="1"
+            eType="#//Dataclasses/SPS"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="HzInd" lowerBound="1"
+            eType="#//Dataclasses/SPS"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="SynPrg" lowerBound="1"
+            eType="#//Dataclasses/SPS"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="DifVClc" lowerBound="1"
+            eType="#//Dataclasses/MV"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="DifAngClc" lowerBound="1"
+            eType="#//Dataclasses/MV"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="DifV" lowerBound="1"
+            eType="#//Dataclasses/ASG"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="DifHz" lowerBound="1"
+            eType="#//Dataclasses/ASG"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="DifAng" lowerBound="1"
+            eType="#//Dataclasses/ASG"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="LivDeaMod" lowerBound="1"
+            eType="#//Dataclasses/ING"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="DeaLinVal" lowerBound="1"
+            eType="#//Dataclasses/ASG"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="LivLinVal" lowerBound="1"
+            eType="#//Dataclasses/ASG"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="DeaBusVal" lowerBound="1"
+            eType="#//Dataclasses/ASG"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="PlsTmms" lowerBound="1"
+            eType="#//Dataclasses/ING"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="BkrTmms" lowerBound="1"
+            eType="#//Dataclasses/ING"/>
+      </eClassifiers>
+    </eSubpackages>
+    <eSubpackages name="LNGroupC" nsURI="substationStandard#groupC" nsPrefix="groupc">
+      <eClassifiers xsi:type="ecore:EClass" name="GroupC" eSuperTypes="#//LNNodes/DomainLNs/DomainLN"/>
+      <eClassifiers xsi:type="ecore:EClass" name="CALH" eSuperTypes="#//LNNodes/LNGroupC/GroupC">
+        <eStructuralFeatures xsi:type="ecore:EReference" name="GrAlm" lowerBound="1"
+            eType="#//Dataclasses/SPS"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="GrWrn" lowerBound="1"
+            eType="#//Dataclasses/SPS"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="AlmLstOv" lowerBound="1"
+            eType="#//Dataclasses/SPS"/>
+      </eClassifiers>
+      <eClassifiers xsi:type="ecore:EClass" name="CILO" eSuperTypes="#//LNNodes/LNGroupC/GroupC">
+        <eStructuralFeatures xsi:type="ecore:EReference" name="EnaOpn" lowerBound="1"
+            eType="#//Dataclasses/SPS"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="EnaCls" lowerBound="1"
+            eType="#//Dataclasses/SPS"/>
+      </eClassifiers>
+      <eClassifiers xsi:type="ecore:EClass" name="CCGR" eSuperTypes="#//LNNodes/LNGroupC/GroupC">
+        <eStructuralFeatures xsi:type="ecore:EReference" name="EEHealth" lowerBound="1"
+            eType="#//Dataclasses/ING"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="EEName" lowerBound="1"
+            eType="#//Dataclasses/DPL"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="OpTmh" lowerBound="1"
+            eType="#//Dataclasses/INS"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="EnvTmp" lowerBound="1"
+            eType="#//Dataclasses/MV"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="OilTmpIn" lowerBound="1"
+            eType="#//Dataclasses/MV"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="OilTmpOut" lowerBound="1"
+            eType="#//Dataclasses/MV"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="OilMotA" lowerBound="1"
+            eType="#//Dataclasses/MV"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="FanFlw" lowerBound="1"
+            eType="#//Dataclasses/MV"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="FanA" lowerBound="1"
+            eType="#//Dataclasses/MV"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="CECtl" lowerBound="1"
+            eType="#//Dataclasses/SPC"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="PmpCtlGen" lowerBound="1"
+            eType="#//Dataclasses/INC"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="PmpCtl" lowerBound="1"
+            eType="#//Dataclasses/INC"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="FanCtlGen" lowerBound="1"
+            eType="#//Dataclasses/INC"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="FanCtl" lowerBound="1"
+            eType="#//Dataclasses/INC"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="Auto" lowerBound="1"
+            eType="#//Dataclasses/SPS"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="FanOvCur" lowerBound="1"
+            eType="#//Dataclasses/SPS"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="PmpOvCur" lowerBound="1"
+            eType="#//Dataclasses/SPS"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="PmpAlm" lowerBound="1"
+            eType="#//Dataclasses/SPS"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="OilTmpSet" lowerBound="1"
+            eType="#//Dataclasses/ASG"/>
+      </eClassifiers>
+      <eClassifiers xsi:type="ecore:EClass" name="CPOW" eSuperTypes="#//LNNodes/LNGroupC/GroupC">
+        <eStructuralFeatures xsi:type="ecore:EReference" name="TmExc" lowerBound="1"
+            eType="#//Dataclasses/SPS"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="StrPOW" lowerBound="1"
+            eType="#//Dataclasses/SPS"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="OpOpn" lowerBound="1"
+            eType="#//Dataclasses/ACT"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="OpCls" lowerBound="1"
+            eType="#//Dataclasses/ACT"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="MaxDlTmms" lowerBound="1"
+            eType="#//Dataclasses/ING"/>
+      </eClassifiers>
+      <eClassifiers xsi:type="ecore:EClass" name="CSWI" eSuperTypes="#//LNNodes/LNGroupC/GroupC">
+        <eStructuralFeatures xsi:type="ecore:EReference" name="Loc" lowerBound="1"
+            eType="#//Dataclasses/SPS"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="OpCntRs" lowerBound="1"
+            eType="#//Dataclasses/INC"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="Pos" lowerBound="1"
+            eType="#//Dataclasses/DPC"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="PosA" lowerBound="1"
+            eType="#//Dataclasses/DPC"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="PosB" lowerBound="1"
+            eType="#//Dataclasses/DPC"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="PosC" lowerBound="1"
+            eType="#//Dataclasses/DPC"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="OpOpn" lowerBound="1"
+            eType="#//Dataclasses/ACT"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="OpCls" lowerBound="1"
+            eType="#//Dataclasses/ACT"/>
+      </eClassifiers>
+    </eSubpackages>
+    <eSubpackages name="LNGroupA" nsURI="substationStandard#groupA" nsPrefix="groupa">
+      <eClassifiers xsi:type="ecore:EClass" name="GroupA" eSuperTypes="#//LNNodes/DomainLNs/DomainLN">
+        <eStructuralFeatures xsi:type="ecore:EReference" name="Loc" lowerBound="1"
+            eType="#//Dataclasses/SPS"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="OpCntRs" lowerBound="1"
+            eType="#//Dataclasses/INC"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="Auto" lowerBound="1"
+            eType="#//Dataclasses/SPS"/>
+      </eClassifiers>
+      <eClassifiers xsi:type="ecore:EClass" name="ANCR" eSuperTypes="#//LNNodes/LNGroupA/GroupA">
+        <eStructuralFeatures xsi:type="ecore:EReference" name="TapChg" lowerBound="1"
+            eType="#//Dataclasses/BSC"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="RCol" lowerBound="1"
+            eType="#//Dataclasses/SPC"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="LCol" lowerBound="1"
+            eType="#//Dataclasses/SPC"/>
+      </eClassifiers>
+      <eClassifiers xsi:type="ecore:EClass" name="ARCO" eSuperTypes="#//LNNodes/LNGroupA/GroupA">
+        <eStructuralFeatures xsi:type="ecore:EReference" name="TapChg" lowerBound="1"
+            eType="#//Dataclasses/BSC"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="VOvSt" lowerBound="1"
+            eType="#//Dataclasses/SPS"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="NeutAlm" lowerBound="1"
+            eType="#//Dataclasses/SPS"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="DschBlk" lowerBound="1"
+            eType="#//Dataclasses/SPS"/>
+      </eClassifiers>
+      <eClassifiers xsi:type="ecore:EClass" name="ATCC" eSuperTypes="#//LNNodes/LNGroupA/GroupA">
+        <eStructuralFeatures xsi:type="ecore:EReference" name="TapChg" lowerBound="1"
+            eType="#//Dataclasses/BSC"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="TapPos" lowerBound="1"
+            eType="#//Dataclasses/ISC"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="ParOp" lowerBound="1"
+            eType="#//Dataclasses/DPC"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="LTCBlk" lowerBound="1"
+            eType="#//Dataclasses/SPC"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="LTCDragRs" lowerBound="1"
+            eType="#//Dataclasses/SPC"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="VRed1" lowerBound="1"
+            eType="#//Dataclasses/SPC"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="VRed2" lowerBound="1"
+            eType="#//Dataclasses/SPC"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="CtlV" lowerBound="1"
+            eType="#//Dataclasses/MV"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="LodA" lowerBound="1"
+            eType="#//Dataclasses/MV"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="CircA" lowerBound="1"
+            eType="#//Dataclasses/MV"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="PhAng" lowerBound="1"
+            eType="#//Dataclasses/MV"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="HiCtlV" lowerBound="1"
+            eType="#//Dataclasses/MV"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="LoCtlV" lowerBound="1"
+            eType="#//Dataclasses/MV"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="HiDmdA" lowerBound="1"
+            eType="#//Dataclasses/MV"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="HiTapPos" lowerBound="1"
+            eType="#//Dataclasses/INS"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="LoTapPos" lowerBound="1"
+            eType="#//Dataclasses/INS"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="BndCtr" lowerBound="1"
+            eType="#//Dataclasses/ASG"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="BndWid" lowerBound="1"
+            eType="#//Dataclasses/ASG"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="CtlDlTmms" lowerBound="1"
+            eType="#//Dataclasses/ASG"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="LDCR" lowerBound="1"
+            eType="#//Dataclasses/ASG"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="LDCX" lowerBound="1"
+            eType="#//Dataclasses/ASG"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="BlkLV" lowerBound="1"
+            eType="#//Dataclasses/ASG"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="BlkRV" lowerBound="1"
+            eType="#//Dataclasses/ASG"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="RnbkRV" lowerBound="1"
+            eType="#//Dataclasses/ASG"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="LimLodA" lowerBound="1"
+            eType="#//Dataclasses/ASG"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="LDC" lowerBound="1"
+            eType="#//Dataclasses/SPG"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="TmDlChr" lowerBound="1"
+            eType="#//Dataclasses/SPG"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="LDCZ" lowerBound="1"
+            eType="#//Dataclasses/ASG"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="VRedVal" lowerBound="1"
+            eType="#//Dataclasses/ASG"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="TapBlkR" lowerBound="1"
+            eType="#//Dataclasses/ASG"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="TapBlkL" lowerBound="1"
+            eType="#//Dataclasses/ASG"/>
+      </eClassifiers>
+      <eClassifiers xsi:type="ecore:EClass" name="AVCO" eSuperTypes="#//LNNodes/LNGroupA/GroupA">
+        <eStructuralFeatures xsi:type="ecore:EReference" name="TapChg" lowerBound="1"
+            eType="#//Dataclasses/BSC"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="BlkEF" lowerBound="1"
+            eType="#//Dataclasses/SPS"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="BlkAOv" lowerBound="1"
+            eType="#//Dataclasses/SPS"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="BlkVOv" lowerBound="1"
+            eType="#//Dataclasses/SPS"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="LimAOv" lowerBound="1"
+            eType="#//Dataclasses/ASG"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="LimVOv" lowerBound="1"
+            eType="#//Dataclasses/ASG"/>
+      </eClassifiers>
+    </eSubpackages>
+    <eSubpackages name="LNGroupM" nsURI="substationStandard#groupM" nsPrefix="groupm">
+      <eClassifiers xsi:type="ecore:EClass" name="GroupM" eSuperTypes="#//LNNodes/DomainLNs/DomainLN"/>
+      <eClassifiers xsi:type="ecore:EClass" name="MDIF" eSuperTypes="#//LNNodes/LNGroupM/GroupM">
+        <eStructuralFeatures xsi:type="ecore:EReference" name="OpARem" lowerBound="1"
+            eType="#//Dataclasses/WYE"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="Amp1" lowerBound="1"
+            eType="#//Dataclasses/SAV"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="Amp2" lowerBound="1"
+            eType="#//Dataclasses/SAV"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="Amp3" lowerBound="1"
+            eType="#//Dataclasses/SAV"/>
+      </eClassifiers>
+      <eClassifiers xsi:type="ecore:EClass" name="MHAI" eSuperTypes="#//LNNodes/LNGroupM/GroupM">
+        <eStructuralFeatures xsi:type="ecore:EReference" name="EEName" lowerBound="1"
+            eType="#//Dataclasses/DPL"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="Hz" lowerBound="1"
+            eType="#//Dataclasses/MV"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="HA" lowerBound="1"
+            eType="#//Dataclasses/HYWE"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="HPhV" lowerBound="1"
+            eType="#//Dataclasses/HYWE"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="HPPV" lowerBound="1"
+            eType="#//Dataclasses/HDEL"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="HW" lowerBound="1"
+            eType="#//Dataclasses/HYWE"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="HVAr" lowerBound="1"
+            eType="#//Dataclasses/HYWE"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="HVA" lowerBound="1"
+            eType="#//Dataclasses/HYWE"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="HRmsA" lowerBound="1"
+            eType="#//Dataclasses/WYE"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="HRmsPhV" lowerBound="1"
+            eType="#//Dataclasses/WYE"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="HRmsPPV" lowerBound="1"
+            eType="#//Dataclasses/DEL"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="HTuW" lowerBound="1"
+            eType="#//Dataclasses/WYE"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="HTsW" lowerBound="1"
+            eType="#//Dataclasses/WYE"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="HATm" lowerBound="1"
+            eType="#//Dataclasses/WYE"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="HKf" lowerBound="1"
+            eType="#//Dataclasses/WYE"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="HTdf" lowerBound="1"
+            eType="#//Dataclasses/WYE"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="ThdA" lowerBound="1"
+            eType="#//Dataclasses/WYE"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="ThdOddA" lowerBound="1"
+            eType="#//Dataclasses/WYE"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="ThdEvnA" lowerBound="1"
+            eType="#//Dataclasses/WYE"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="ThdPhV" lowerBound="1"
+            eType="#//Dataclasses/WYE"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="ThdOddPhV" lowerBound="1"
+            eType="#//Dataclasses/WYE"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="ThdEvnV" lowerBound="1"
+            eType="#//Dataclasses/WYE"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="ThdPPV" lowerBound="1"
+            eType="#//Dataclasses/DEL"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="ThdOddPPV" lowerBound="1"
+            eType="#//Dataclasses/DEL"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="ThdEvnPPV" lowerBound="1"
+            eType="#//Dataclasses/DEL"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="HCfPhV" lowerBound="1"
+            eType="#//Dataclasses/WYE"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="HCfPPV" lowerBound="1"
+            eType="#//Dataclasses/DEL"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="HCfA" lowerBound="1"
+            eType="#//Dataclasses/WYE"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="HTif" lowerBound="1"
+            eType="#//Dataclasses/WYE"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="HzSet" lowerBound="1"
+            eType="#//Dataclasses/ASG"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="EvTmms" lowerBound="1"
+            eType="#//Dataclasses/ASG"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="NumCyc" lowerBound="1"
+            eType="#//Dataclasses/ING"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="ThdAVal" lowerBound="1"
+            eType="#//Dataclasses/ASG"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="ThdVVal" lowerBound="1"
+            eType="#//Dataclasses/ASG"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="ThdATmms" lowerBound="1"
+            eType="#//Dataclasses/ING"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="ThdVTmms" lowerBound="1"
+            eType="#//Dataclasses/ING"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="NomA" lowerBound="1"
+            eType="#//Dataclasses/ASG"/>
+        <eStructuralFeatures xsi:type="ecore:EAttribute" name="EEHealth" eType="#//Enumerations/HealthStateKind"/>
+      </eClassifiers>
+      <eClassifiers xsi:type="ecore:EClass" name="MHAN" eSuperTypes="#//LNNodes/LNGroupM/GroupM">
+        <eStructuralFeatures xsi:type="ecore:EReference" name="EEName" lowerBound="1"
+            eType="#//Dataclasses/DPL"/>
+        <eStructuralFeatures xsi:type="ecore:EAttribute" name="EEHealth" eType="#//Enumerations/HealthStateKind"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="Hz" lowerBound="1"
+            eType="#//Dataclasses/MV"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="HaAmp" lowerBound="1"
+            eType="#//Dataclasses/HMV"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="HaVol" lowerBound="1"
+            eType="#//Dataclasses/HMV"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="HaWatt" lowerBound="1"
+            eType="#//Dataclasses/HMV"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="HaVolAmpr" lowerBound="1"
+            eType="#//Dataclasses/HMV"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="HaVolAmp" lowerBound="1"
+            eType="#//Dataclasses/HMV"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="HaRmsAmp" lowerBound="1"
+            eType="#//Dataclasses/MV"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="HaRmsVol" lowerBound="1"
+            eType="#//Dataclasses/MV"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="HaTuWatt" lowerBound="1"
+            eType="#//Dataclasses/MV"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="HaTsWatt" lowerBound="1"
+            eType="#//Dataclasses/MV"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="HaAmpTm" lowerBound="1"
+            eType="#//Dataclasses/MV"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="HaKFact" lowerBound="1"
+            eType="#//Dataclasses/MV"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="HaTdFact" lowerBound="1"
+            eType="#//Dataclasses/MV"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="ThdAmp" lowerBound="1"
+            eType="#//Dataclasses/MV"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="ThdOddAmp" lowerBound="1"
+            eType="#//Dataclasses/MV"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="ThdEvnAmp" lowerBound="1"
+            eType="#//Dataclasses/MV"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="TddAmp" lowerBound="1"
+            eType="#//Dataclasses/MV"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="TddOddAmp" lowerBound="1"
+            eType="#//Dataclasses/MV"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="TddEvnAmp" lowerBound="1"
+            eType="#//Dataclasses/MV"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="ThdVol" lowerBound="1"
+            eType="#//Dataclasses/MV"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="ThdOddVol" lowerBound="1"
+            eType="#//Dataclasses/MV"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="ThdEvnVol" lowerBound="1"
+            eType="#//Dataclasses/MV"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="HaCfAmp" lowerBound="1"
+            eType="#//Dataclasses/MV"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="HaCfVol" lowerBound="1"
+            eType="#//Dataclasses/MV"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="HaTiFact" lowerBound="1"
+            eType="#//Dataclasses/MV"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="HzSet" lowerBound="1"
+            eType="#//Dataclasses/ASG"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="EvTmms" lowerBound="1"
+            eType="#//Dataclasses/ASG"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="NumCyc" lowerBound="1"
+            eType="#//Dataclasses/ING"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="ThdAVal" lowerBound="1"
+            eType="#//Dataclasses/ASG"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="ThdVVal" lowerBound="1"
+            eType="#//Dataclasses/ASG"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="ThdATmms" lowerBound="1"
+            eType="#//Dataclasses/ING"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="ThdVTmms" lowerBound="1"
+            eType="#//Dataclasses/ING"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="NomA" lowerBound="1"
+            eType="#//Dataclasses/ASG"/>
+      </eClassifiers>
+      <eClassifiers xsi:type="ecore:EClass" name="MMXU" eSuperTypes="#//LNNodes/LNGroupM/GroupM">
+        <eStructuralFeatures xsi:type="ecore:EReference" name="TotW" lowerBound="1"
+            eType="#//Dataclasses/MV"/>
+        <eStructuralFeatures xsi:type="ecore:EAttribute" name="EEHealth" eType="#//Enumerations/HealthStateKind"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="TotVAr" lowerBound="1"
+            eType="#//Dataclasses/MV"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="TotVA" lowerBound="1"
+            eType="#//Dataclasses/MV"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="TotPF" lowerBound="1"
+            eType="#//Dataclasses/MV"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="Hz" lowerBound="1"
+            eType="#//Dataclasses/MV"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="PPV" lowerBound="1"
+            eType="#//Dataclasses/DEL"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="PhV" lowerBound="1"
+            eType="#//Dataclasses/WYE"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="A" lowerBound="1" eType="#//Dataclasses/WYE"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="W" lowerBound="1" eType="#//Dataclasses/WYE"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="VAr" lowerBound="1"
+            eType="#//Dataclasses/WYE"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="VA" lowerBound="1"
+            eType="#//Dataclasses/WYE"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="PF" lowerBound="1"
+            eType="#//Dataclasses/WYE"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="Z" lowerBound="1" eType="#//Dataclasses/WYE"/>
+      </eClassifiers>
+      <eClassifiers xsi:type="ecore:EClass" name="MSQI" eSuperTypes="#//LNNodes/LNGroupM/GroupM">
+        <eStructuralFeatures xsi:type="ecore:EReference" name="EEName" lowerBound="1"
+            eType="#//Dataclasses/DPL"/>
+        <eStructuralFeatures xsi:type="ecore:EAttribute" name="EEHealth" eType="#//Enumerations/HealthStateKind"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="SeqA" lowerBound="1"
+            eType="#//Dataclasses/SEQ"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="SeqV" lowerBound="1"
+            eType="#//Dataclasses/SEQ"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="DQ0Seq" lowerBound="1"
+            eType="#//Dataclasses/SEQ"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="ImbA" lowerBound="1"
+            eType="#//Dataclasses/WYE"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="ImbNgA" lowerBound="1"
+            eType="#//Dataclasses/MV"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="ImbNgV" lowerBound="1"
+            eType="#//Dataclasses/MV"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="ImbPPV" lowerBound="1"
+            eType="#//Dataclasses/DEL"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="ImbV" lowerBound="1"
+            eType="#//Dataclasses/MV"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="ImbZroA" lowerBound="1"
+            eType="#//Dataclasses/MV"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="ImbZroV" lowerBound="1"
+            eType="#//Dataclasses/MV"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="MaxImbA" lowerBound="1"
+            eType="#//Dataclasses/WYE"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="MaxImbPPV" lowerBound="1"
+            eType="#//Dataclasses/WYE"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="MaxImbV" lowerBound="1"
+            eType="#//Dataclasses/WYE"/>
+      </eClassifiers>
+      <eClassifiers xsi:type="ecore:EClass" name="MMTR" eSuperTypes="#//LNNodes/LNGroupM/GroupM">
+        <eStructuralFeatures xsi:type="ecore:EReference" name="EEName" lowerBound="1"
+            eType="#//Dataclasses/DPL"/>
+        <eStructuralFeatures xsi:type="ecore:EAttribute" name="EEHealth" eType="#//Enumerations/HealthStateKind"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="TotVAh" lowerBound="1"
+            eType="#//Dataclasses/BCR"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="TotWh" lowerBound="1"
+            eType="#//Dataclasses/BCR"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="TotVArh" lowerBound="1"
+            eType="#//Dataclasses/BCR"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="SupWh" lowerBound="1"
+            eType="#//Dataclasses/BCR"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="SupVArh" lowerBound="1"
+            eType="#//Dataclasses/BCR"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="DmdWh" lowerBound="1"
+            eType="#//Dataclasses/BCR"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="DmdVArh" lowerBound="1"
+            eType="#//Dataclasses/BCR"/>
+      </eClassifiers>
+      <eClassifiers xsi:type="ecore:EClass" name="MMXN" eSuperTypes="#//LNNodes/LNGroupM/GroupM">
+        <eStructuralFeatures xsi:type="ecore:EReference" name="EEName" lowerBound="1"
+            eType="#//Dataclasses/DPL"/>
+        <eStructuralFeatures xsi:type="ecore:EAttribute" name="EEHealth" eType="#//Enumerations/HealthStateKind"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="Amp" lowerBound="1"
+            eType="#//Dataclasses/MV"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="Vol" lowerBound="1"
+            eType="#//Dataclasses/MV"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="Watt" lowerBound="1"
+            eType="#//Dataclasses/MV"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="VolAmpr" lowerBound="1"
+            eType="#//Dataclasses/MV"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="VolAmp" lowerBound="1"
+            eType="#//Dataclasses/MV"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="PwrFact" lowerBound="1"
+            eType="#//Dataclasses/MV"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="Imp" lowerBound="1"
+            eType="#//Dataclasses/CMV"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="Hz" lowerBound="1"
+            eType="#//Dataclasses/MV"/>
+      </eClassifiers>
+      <eClassifiers xsi:type="ecore:EClass" name="MSTA" eSuperTypes="#//LNNodes/LNGroupM/GroupM">
+        <eStructuralFeatures xsi:type="ecore:EReference" name="EEName" lowerBound="1"
+            eType="#//Dataclasses/DPL"/>
+        <eStructuralFeatures xsi:type="ecore:EAttribute" name="EEHealth" eType="#//Enumerations/HealthStateKind"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="AvAmps" lowerBound="1"
+            eType="#//Dataclasses/MV"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="MaxAmps" lowerBound="1"
+            eType="#//Dataclasses/MV"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="MinAmps" lowerBound="1"
+            eType="#//Dataclasses/MV"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="AvVolts" lowerBound="1"
+            eType="#//Dataclasses/MV"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="MaxVolts" lowerBound="1"
+            eType="#//Dataclasses/MV"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="MinVolts" lowerBound="1"
+            eType="#//Dataclasses/MV"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="AvVA" lowerBound="1"
+            eType="#//Dataclasses/MV"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="MaxVA" lowerBound="1"
+            eType="#//Dataclasses/MV"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="MinVA" lowerBound="1"
+            eType="#//Dataclasses/MV"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="AvW" lowerBound="1"
+            eType="#//Dataclasses/MV"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="MaxW" lowerBound="1"
+            eType="#//Dataclasses/MV"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="MinW" lowerBound="1"
+            eType="#//Dataclasses/MV"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="AvVAr" lowerBound="1"
+            eType="#//Dataclasses/MV"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="MaxVAr" lowerBound="1"
+            eType="#//Dataclasses/MV"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="MinVAr" lowerBound="1"
+            eType="#//Dataclasses/MV"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="EvStr" lowerBound="1"
+            eType="#//Dataclasses/SPC"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="EvTmms" lowerBound="1"
+            eType="#//Dataclasses/ASG"/>
+      </eClassifiers>
+    </eSubpackages>
+    <eSubpackages name="LNGroupX" nsURI="substationStandard#groupX" nsPrefix="groupx">
+      <eClassifiers xsi:type="ecore:EClass" name="GroupX" eSuperTypes="#//LNNodes/DomainLNs/DomainLN">
+        <eStructuralFeatures xsi:type="ecore:EReference" name="Loc" lowerBound="1"
+            eType="#//Dataclasses/SPS"/>
+        <eStructuralFeatures xsi:type="ecore:EAttribute" name="EEHealth" eType="#//Enumerations/HealthStateKind"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="EEName" lowerBound="1"
+            eType="#//Dataclasses/DPL"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="OpCnt" lowerBound="1"
+            eType="#//Dataclasses/INS"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="Pos" lowerBound="1"
+            eType="#//Dataclasses/DPC"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="BlkOpn" lowerBound="1"
+            eType="#//Dataclasses/SPC"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="BlkCls" lowerBound="1"
+            eType="#//Dataclasses/SPC"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="ChaMotEna" lowerBound="1"
+            eType="#//Dataclasses/SPC"/>
+      </eClassifiers>
+      <eClassifiers xsi:type="ecore:EClass" name="XCBR" eSuperTypes="#//LNNodes/LNGroupX/GroupX">
+        <eStructuralFeatures xsi:type="ecore:EReference" name="SumSwARs" lowerBound="1"
+            eType="#//Dataclasses/BCR"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="CBOpCap" lowerBound="1"
+            eType="#//Dataclasses/INS"/>
+        <eStructuralFeatures xsi:type="ecore:EAttribute" name="POWCap" eType="#//Enumerations/SwitchingCapabilityKind"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="MaxOpCap" lowerBound="1"
+            eType="#//Dataclasses/INS"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="SwitchControl" eType="#//LNNodes/LNGroupC/CSWI"/>
+      </eClassifiers>
+      <eClassifiers xsi:type="ecore:EClass" name="XSWI" eSuperTypes="#//LNNodes/LNGroupX/GroupX">
+        <eStructuralFeatures xsi:type="ecore:EAttribute" name="SwOpCap" eType="#//Enumerations/SwitchingCapabilityKind"/>
+        <eStructuralFeatures xsi:type="ecore:EAttribute" name="MaxOpCap" eType="#//Enumerations/SwitchingCapabilityKind"/>
+        <eStructuralFeatures xsi:type="ecore:EAttribute" name="SwTyp" eType="#//Enumerations/SwitchTypeKind"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="SwitchControl" eType="#//LNNodes/LNGroupC/CSWI"/>
+      </eClassifiers>
+    </eSubpackages>
+    <eSubpackages name="LNGroupT" nsURI="substationStandard#groupT" nsPrefix="groupt">
+      <eClassifiers xsi:type="ecore:EClass" name="GroupT" eSuperTypes="#//LNNodes/DomainLNs/DomainLN">
+        <eStructuralFeatures xsi:type="ecore:EReference" name="EEName" lowerBound="1"
+            eType="#//Dataclasses/DPL"/>
+        <eStructuralFeatures xsi:type="ecore:EAttribute" name="EEHealth" eType="#//Enumerations/HealthStateKind"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="OpTmh" lowerBound="1"
+            eType="#//Dataclasses/INS"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="HzRtg" lowerBound="1"
+            eType="#//Dataclasses/ASG"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="Rat" lowerBound="1"
+            eType="#//Dataclasses/ASG"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="Cor" lowerBound="1"
+            eType="#//Dataclasses/ASG"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="AngCor" lowerBound="1"
+            eType="#//Dataclasses/ASG"/>
+      </eClassifiers>
+      <eClassifiers xsi:type="ecore:EClass" name="TCTR" eSuperTypes="#//LNNodes/LNGroupT/GroupT">
+        <eStructuralFeatures xsi:type="ecore:EReference" name="Amp" lowerBound="1"
+            eType="#//Dataclasses/SAV"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="ARtg" lowerBound="1"
+            eType="#//Dataclasses/ASG"/>
+      </eClassifiers>
+      <eClassifiers xsi:type="ecore:EClass" name="TVTR" eSuperTypes="#//LNNodes/LNGroupT/GroupT">
+        <eStructuralFeatures xsi:type="ecore:EReference" name="Vol" lowerBound="1"
+            eType="#//Dataclasses/SAV"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="FuFail" lowerBound="1"
+            eType="#//Dataclasses/SPS"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="VRtg" lowerBound="1"
+            eType="#//Dataclasses/ASG"/>
+      </eClassifiers>
+    </eSubpackages>
+    <eSubpackages name="LNGroupY" nsURI="substationStandard#groupY" nsPrefix="groupy">
+      <eClassifiers xsi:type="ecore:EClass" name="GroupY" eSuperTypes="#//LNNodes/DomainLNs/DomainLN">
+        <eStructuralFeatures xsi:type="ecore:EReference" name="EEName" lowerBound="1"
+            eType="#//Dataclasses/DPL"/>
+        <eStructuralFeatures xsi:type="ecore:EAttribute" name="EEHealth" eType="#//Enumerations/HealthStateKind"/>
+      </eClassifiers>
+      <eClassifiers xsi:type="ecore:EClass" name="YEFN" eSuperTypes="#//LNNodes/LNGroupY/GroupY">
+        <eStructuralFeatures xsi:type="ecore:EReference" name="Loc" lowerBound="1"
+            eType="#//Dataclasses/SPS"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="OpTmh" lowerBound="1"
+            eType="#//Dataclasses/INS"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="ECA" lowerBound="1"
+            eType="#//Dataclasses/MV"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="ColTapPos" lowerBound="1"
+            eType="#//Dataclasses/ISC"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="ColPos" lowerBound="1"
+            eType="#//Dataclasses/APC"/>
+      </eClassifiers>
+      <eClassifiers xsi:type="ecore:EClass" name="YLTC" eSuperTypes="#//LNNodes/LNGroupY/GroupY">
+        <eStructuralFeatures xsi:type="ecore:EReference" name="OpCnt" lowerBound="1"
+            eType="#//Dataclasses/INS"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="Torq" lowerBound="1"
+            eType="#//Dataclasses/MV"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="MotDrvA" lowerBound="1"
+            eType="#//Dataclasses/MV"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="TapPos" lowerBound="1"
+            eType="#//Dataclasses/ISC"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="TapChg" lowerBound="1"
+            eType="#//Dataclasses/BSC"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="EndPosR" lowerBound="1"
+            eType="#//Dataclasses/SPS"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="EndPosL" lowerBound="1"
+            eType="#//Dataclasses/SPS"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="OilFil" lowerBound="1"
+            eType="#//Dataclasses/SPS"/>
+      </eClassifiers>
+      <eClassifiers xsi:type="ecore:EClass" name="YPSH" eSuperTypes="#//LNNodes/LNGroupY/GroupY">
+        <eStructuralFeatures xsi:type="ecore:EReference" name="OpTmh" lowerBound="1"
+            eType="#//Dataclasses/INS"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="Pos" lowerBound="1"
+            eType="#//Dataclasses/DPC"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="BlkOpn" lowerBound="1"
+            eType="#//Dataclasses/SPC"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="BlkCls" lowerBound="1"
+            eType="#//Dataclasses/SPC"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="ChaMotEna" lowerBound="1"
+            eType="#//Dataclasses/SPC"/>
+        <eStructuralFeatures xsi:type="ecore:EAttribute" name="ShOpCap" eType="#//Enumerations/SwitchingCapabilityKind"/>
+        <eStructuralFeatures xsi:type="ecore:EAttribute" name="MaxOpCap" eType="#//Enumerations/SwitchingCapabilityKind"/>
+      </eClassifiers>
+      <eClassifiers xsi:type="ecore:EClass" name="YPTR" eSuperTypes="#//LNNodes/LNGroupY/GroupY">
+        <eStructuralFeatures xsi:type="ecore:EReference" name="OpTmh" lowerBound="1"
+            eType="#//Dataclasses/INS"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="HPTmp" lowerBound="1"
+            eType="#//Dataclasses/MV"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="HPZmpAlm" lowerBound="1"
+            eType="#//Dataclasses/SPS"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="HPTmpTr" lowerBound="1"
+            eType="#//Dataclasses/SPS"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="OANL" lowerBound="1"
+            eType="#//Dataclasses/SPS"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="OpOvA" lowerBound="1"
+            eType="#//Dataclasses/SPS"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="OpOvV" lowerBound="1"
+            eType="#//Dataclasses/SPS"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="OpUnV" lowerBound="1"
+            eType="#//Dataclasses/SPS"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="CGAlm" lowerBound="1"
+            eType="#//Dataclasses/SPS"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="HiVRtg" lowerBound="1"
+            eType="#//Dataclasses/ASG"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="LoVRtg" lowerBound="1"
+            eType="#//Dataclasses/ASG"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="PwrRtg" lowerBound="1"
+            eType="#//Dataclasses/ASG"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="TransformerControl"
+            eType="#//LNNodes/LNGroupA/ATCC"/>
+      </eClassifiers>
+    </eSubpackages>
+    <eSubpackages name="LNGroupZ" nsURI="substationStandard#groupZ" nsPrefix="groupz">
+      <eClassifiers xsi:type="ecore:EClass" name="GroupZ" eSuperTypes="#//LNNodes/DomainLNs/DomainLN"/>
+      <eClassifiers xsi:type="ecore:EClass" name="ZAXN" eSuperTypes="#//LNNodes/LNGroupZ/GroupZ">
+        <eStructuralFeatures xsi:type="ecore:EReference" name="OpTmh" lowerBound="1"
+            eType="#//Dataclasses/INS"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="Vol" lowerBound="1"
+            eType="#//Dataclasses/MV"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="Amp" lowerBound="1"
+            eType="#//Dataclasses/MV"/>
+      </eClassifiers>
+      <eClassifiers xsi:type="ecore:EClass" name="ZGIL" eSuperTypes="#//LNNodes/LNGroupZ/GroupZ">
+        <eStructuralFeatures xsi:type="ecore:EReference" name="OpTmh" lowerBound="1"
+            eType="#//Dataclasses/INS"/>
+      </eClassifiers>
+      <eClassifiers xsi:type="ecore:EClass" name="ZBAT" eSuperTypes="#//LNNodes/LNGroupZ/GroupZ">
+        <eStructuralFeatures xsi:type="ecore:EReference" name="OpTmh" lowerBound="1"
+            eType="#//Dataclasses/MV"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="Vol" lowerBound="1"
+            eType="#//Dataclasses/MV"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="VolChgRte" lowerBound="1"
+            eType="#//Dataclasses/MV"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="Amp" lowerBound="1"
+            eType="#//Dataclasses/MV"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="BatTest" lowerBound="1"
+            eType="#//Dataclasses/SPC"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="TestRsl" lowerBound="1"
+            eType="#//Dataclasses/SPC"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="BatHi" lowerBound="1"
+            eType="#//Dataclasses/SPC"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="BatLo" lowerBound="1"
+            eType="#//Dataclasses/SPC"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="LoBatVal" lowerBound="1"
+            eType="#//Dataclasses/ASG"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="HiBatVal" lowerBound="1"
+            eType="#//Dataclasses/ASG"/>
+      </eClassifiers>
+      <eClassifiers xsi:type="ecore:EClass" name="ZLIN" eSuperTypes="#//LNNodes/LNGroupZ/GroupZ">
+        <eStructuralFeatures xsi:type="ecore:EReference" name="OpTmh" lowerBound="1"
+            eType="#//Dataclasses/INS"/>
+      </eClassifiers>
+      <eClassifiers xsi:type="ecore:EClass" name="ZMOT" eSuperTypes="#//LNNodes/LNGroupZ/GroupZ">
+        <eStructuralFeatures xsi:type="ecore:EReference" name="OpTmh" lowerBound="1"
+            eType="#//Dataclasses/INS"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="DExt" lowerBound="1"
+            eType="#//Dataclasses/SPC"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="LosOil" lowerBound="1"
+            eType="#//Dataclasses/SPS"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="LosVac" lowerBound="1"
+            eType="#//Dataclasses/SPS"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="PresAlm" lowerBound="1"
+            eType="#//Dataclasses/SPS"/>
+      </eClassifiers>
+      <eClassifiers xsi:type="ecore:EClass" name="ZREA" eSuperTypes="#//LNNodes/LNGroupZ/GroupZ">
+        <eStructuralFeatures xsi:type="ecore:EReference" name="OpTmh" lowerBound="1"
+            eType="#//Dataclasses/INS"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="ReactorControl" eType="#//LNNodes/LNGroupA/ARCO"/>
+      </eClassifiers>
+      <eClassifiers xsi:type="ecore:EClass" name="ZBSH" eSuperTypes="#//LNNodes/LNGroupZ/GroupZ">
+        <eStructuralFeatures xsi:type="ecore:EReference" name="OpTmh" lowerBound="1"
+            eType="#//Dataclasses/INS"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="React" lowerBound="1"
+            eType="#//Dataclasses/MV"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="LosFact" lowerBound="1"
+            eType="#//Dataclasses/MV"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="Vol" lowerBound="1"
+            eType="#//Dataclasses/MV"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="RefReact" lowerBound="1"
+            eType="#//Dataclasses/ASG"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="RefPF" lowerBound="1"
+            eType="#//Dataclasses/ASG"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="RefV" lowerBound="1"
+            eType="#//Dataclasses/ASG"/>
+      </eClassifiers>
+      <eClassifiers xsi:type="ecore:EClass" name="ZRRC" eSuperTypes="#//LNNodes/LNGroupZ/GroupZ">
+        <eStructuralFeatures xsi:type="ecore:EReference" name="OpTmh" lowerBound="1"
+            eType="#//Dataclasses/INS"/>
+      </eClassifiers>
+      <eClassifiers xsi:type="ecore:EClass" name="ZSAR" eSuperTypes="#//LNNodes/LNGroupZ/GroupZ">
+        <eStructuralFeatures xsi:type="ecore:EReference" name="OpCnt" lowerBound="1"
+            eType="#//Dataclasses/INS"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="OPSA" lowerBound="1"
+            eType="#//Dataclasses/SPS"/>
+      </eClassifiers>
+      <eClassifiers xsi:type="ecore:EClass" name="ZTCF" eSuperTypes="#//LNNodes/LNGroupZ/GroupZ">
+        <eStructuralFeatures xsi:type="ecore:EReference" name="OpTmh" lowerBound="1"
+            eType="#//Dataclasses/INS"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="PwrFrq" lowerBound="1"
+            eType="#//Dataclasses/ASG"/>
+      </eClassifiers>
+      <eClassifiers xsi:type="ecore:EClass" name="ZTCR" eSuperTypes="#//LNNodes/LNGroupZ/GroupZ">
+        <eStructuralFeatures xsi:type="ecore:EReference" name="OpTmh" lowerBound="1"
+            eType="#//Dataclasses/INS"/>
+      </eClassifiers>
+      <eClassifiers xsi:type="ecore:EClass" name="ZCAB" eSuperTypes="#//LNNodes/LNGroupZ/GroupZ">
+        <eStructuralFeatures xsi:type="ecore:EReference" name="OpTmh" lowerBound="1"
+            eType="#//Dataclasses/INS"/>
+      </eClassifiers>
+      <eClassifiers xsi:type="ecore:EClass" name="ZCAP" eSuperTypes="#//LNNodes/LNGroupZ/GroupZ">
+        <eStructuralFeatures xsi:type="ecore:EReference" name="OpTmh" lowerBound="1"
+            eType="#//Dataclasses/INS"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="CapDS" lowerBound="1"
+            eType="#//Dataclasses/SPC"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="DschBlk" lowerBound="1"
+            eType="#//Dataclasses/SPS"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="CapControl" eType="#//LNNodes/LNGroupA/ARCO"/>
+      </eClassifiers>
+      <eClassifiers xsi:type="ecore:EClass" name="ZCON" eSuperTypes="#//LNNodes/LNGroupZ/GroupZ">
+        <eStructuralFeatures xsi:type="ecore:EReference" name="OpTmh" lowerBound="1"
+            eType="#//Dataclasses/INS"/>
+      </eClassifiers>
+      <eClassifiers xsi:type="ecore:EClass" name="ZGEN" eSuperTypes="#//LNNodes/LNGroupZ/GroupZ">
+        <eStructuralFeatures xsi:type="ecore:EReference" name="OpTmh" lowerBound="1"
+            eType="#//Dataclasses/INS"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="GnCtl" lowerBound="1"
+            eType="#//Dataclasses/DPC"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="DExt" lowerBound="1"
+            eType="#//Dataclasses/SPC"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="AuxSCO" lowerBound="1"
+            eType="#//Dataclasses/SPC"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="StopVlv" lowerBound="1"
+            eType="#//Dataclasses/SPC"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="ReactPwrR" lowerBound="1"
+            eType="#//Dataclasses/SPC"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="ReactPwrL" lowerBound="1"
+            eType="#//Dataclasses/SPC"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="GnSpd" lowerBound="1"
+            eType="#//Dataclasses/MV"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="OANL" lowerBound="1"
+            eType="#//Dataclasses/SPS"/>
+        <eStructuralFeatures xsi:type="ecore:EAttribute" name="GnSt" eType="#//Enumerations/GeneratorStateKind"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="ClkRot" lowerBound="1"
+            eType="#//Dataclasses/SPS"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="CntClkRot" lowerBound="1"
+            eType="#//Dataclasses/SPS"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="OpUnExt" lowerBound="1"
+            eType="#//Dataclasses/SPS"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="OpOvExt" lowerBound="1"
+            eType="#//Dataclasses/SPS"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="LosOil" lowerBound="1"
+            eType="#//Dataclasses/SPS"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="LosVac" lowerBound="1"
+            eType="#//Dataclasses/SPS"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="PresAlm" lowerBound="1"
+            eType="#//Dataclasses/SPS"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="DmdPwr" lowerBound="1"
+            eType="#//Dataclasses/ASG"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="PwrRtg" lowerBound="1"
+            eType="#//Dataclasses/ASG"/>
+        <eStructuralFeatures xsi:type="ecore:EReference" name="VRtg" lowerBound="1"
+            eType="#//Dataclasses/ASG"/>
+      </eClassifiers>
+    </eSubpackages>
+  </eSubpackages>
+  <eSubpackages name="Dataclasses" nsURI="dataclasses" nsPrefix="data">
+    <eClassifiers xsi:type="ecore:EClass" name="TimeStamp">
+      <eStructuralFeatures xsi:type="ecore:EReference" name="val" lowerBound="1" eType="#//Dataclasses/P_TimeStamp"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="P_TimeStamp">
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="secondSinceEpoch" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="fractionOfSecond" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="timeQuality" lowerBound="1"
+          eType="#//Dataclasses/TimeQuality"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="TimeQuality">
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="leapSecondsKnown" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="clockFailure" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="clockNotSynchronized"
+          eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="timeAccuracy" eType="#//Enumerations/TimeAccuracyKind"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="AnalogueValue">
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="i" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="f" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EFloat"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="AngleReference">
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="val" eType="#//Enumerations/AngleReferenceKind"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="BSControl">
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="val" eType="#//Enumerations/BSControlKind"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="CMVAngleReference">
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="val" eType="#//Enumerations/CMVAngleReferenceKind"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="ControlOutput">
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="val" eType="#//Enumerations/ControlOutputKind"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="CtlModels">
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="val" eType="#//Enumerations/CtlModelsKind"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="CurveChar">
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="val" eType="#//Enumerations/CurveCharKind"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="DirectionPhase">
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="val" eType="#//Enumerations/DirectionPhaseKind"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="DPStatus">
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="val" eType="#//Enumerations/DPStatusKind"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="FaultDirection">
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="val" eType="#//Enumerations/FaultDirectionKind"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="MagReference">
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="val" eType="#//Enumerations/MagReferenceKind"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="Multiplier">
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="val" eType="#//Enumerations/MultiplierKind"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="Originator">
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="orident" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="orCat" lowerBound="1"
+          eType="#//Dataclasses/OriginatorCategory"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="OriginatorCategory">
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="val" eType="#//Enumerations/OriginatorCategoryKind"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="PhaseReference">
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="val" eType="#//Enumerations/PhaseReferenceKind"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="Point">
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="xVal" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EFloat"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="yVal" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EFloat"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="PointArray">
+      <eStructuralFeatures xsi:type="ecore:EReference" name="point" lowerBound="1"
+          upperBound="-1" eType="#//Dataclasses/Point" resolveProxies="false"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="PulseConfig">
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="onDur" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="offDur" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="numPls" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="cmdQual" lowerBound="1"
+          eType="#//Dataclasses/ControlOutput"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="Quality">
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="test" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="operatorBlocked" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="validity" eType="#//Enumerations/ValidityKind"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="source" eType="#//Enumerations/SourceKind"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="detailQual" lowerBound="1"
+          eType="#//Dataclasses/DetailQual"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="DetailQual">
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="overflow" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="outOfRange" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="badReference" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="oscillatory" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="failure" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="oldData" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="inconsistent" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="inaccurate" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="Range">
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="val" eType="#//Enumerations/RangeKind"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="RangeConfig">
+      <eStructuralFeatures xsi:type="ecore:EReference" name="hhLim" lowerBound="1"
+          eType="#//Dataclasses/AnalogueValue"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="hLim" lowerBound="1"
+          eType="#//Dataclasses/AnalogueValue"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="lLim" lowerBound="1"
+          eType="#//Dataclasses/AnalogueValue"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="llLim" lowerBound="1"
+          eType="#//Dataclasses/AnalogueValue"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="min" lowerBound="1" eType="#//Dataclasses/AnalogueValue"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="max" lowerBound="1" eType="#//Dataclasses/AnalogueValue"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="SboClasses">
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="val" eType="#//Enumerations/SboClassesKind"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="ScaledValueConfig">
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="scaleFactor" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EFloat"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="offset" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EFloat"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="Sequence">
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="val" eType="#//Enumerations/SequenceKind"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="Severity">
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="val" eType="#//Enumerations/SeverityKind"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="SlUnits">
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="SlUnitsKind" eType="#//Enumerations/SIUnitsKind"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="Units">
+      <eStructuralFeatures xsi:type="ecore:EReference" name="SlUnits" lowerBound="1"
+          eType="#//Dataclasses/SlUnits"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="multiplier" lowerBound="1"
+          eType="#//Dataclasses/Multiplier"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="ValWithTrans">
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="posVal" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="transInd" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="Vector">
+      <eStructuralFeatures xsi:type="ecore:EReference" name="mag" lowerBound="1" eType="#//Dataclasses/AnalogueValue"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="ang" lowerBound="1" eType="#//Dataclasses/AnalogueValue"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="VectorArray">
+      <eStructuralFeatures xsi:type="ecore:EReference" name="Vector" lowerBound="1"
+          upperBound="-1" eType="#//Dataclasses/Vector"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="C_PrimitiveCDC">
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="cdcNs" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="cdcName" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="dataNs" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="C_ComposedCDC">
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="cdcNs" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="cdcName" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="dataNs" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="StatusInfo">
+      <eStructuralFeatures xsi:type="ecore:EReference" name="t" lowerBound="1" eType="#//Dataclasses/TimeStamp"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="d" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="dU" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="SPS">
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="stVal" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="q" lowerBound="1" eType="#//Dataclasses/Quality"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="subEna" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="subVal" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="subQ" lowerBound="1"
+          eType="#//Dataclasses/Quality"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="subID" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="INS">
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="stVal" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="q" lowerBound="1" eType="#//Dataclasses/Quality"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="subEna" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="subVal" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="subQ" lowerBound="1"
+          eType="#//Dataclasses/Quality"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="subID" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="DPS">
+      <eStructuralFeatures xsi:type="ecore:EReference" name="stVal" lowerBound="1"
+          eType="#//Dataclasses/DPStatus"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="q" lowerBound="1" eType="#//Dataclasses/Quality"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="subEna" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="subVal" lowerBound="1"
+          eType="#//Dataclasses/DPStatus"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="subQ" lowerBound="1"
+          eType="#//Dataclasses/Quality"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="subID" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="ACT">
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="general" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="phsA" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="phsB" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="phsC" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="neut" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="q" lowerBound="1" eType="#//Dataclasses/Quality"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="operTm" lowerBound="1"
+          eType="#//Dataclasses/TimeStamp"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="ACD">
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="general" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="dirGeneral" lowerBound="1"
+          eType="#//Dataclasses/FaultDirection"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="phsA" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="dirPhsA" lowerBound="1"
+          eType="#//Dataclasses/DirectionPhase"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="phsB" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="dirPhsB" lowerBound="1"
+          eType="#//Dataclasses/DirectionPhase"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="phsC" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="dirPhsC" lowerBound="1"
+          eType="#//Dataclasses/DirectionPhase"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="neut" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="dirNeut" lowerBound="1"
+          eType="#//Dataclasses/DirectionPhase"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="q" lowerBound="1" eType="#//Dataclasses/Quality"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="SEC">
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="cnt" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="sev" lowerBound="1" eType="#//Dataclasses/Severity"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="addr" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="addInfo" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="BCR">
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="actVal" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="frVal" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="frTm" lowerBound="1"
+          eType="#//Dataclasses/TimeStamp"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="q" lowerBound="1" eType="#//Dataclasses/Quality"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="units" lowerBound="1"
+          eType="#//Dataclasses/Units"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="pulsQty" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EFloat"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="frEna" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="strTm" lowerBound="1"
+          eType="#//Dataclasses/TimeStamp"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="frPd" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="frRs" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="PrimitiveMeasureAndInfo">
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="d" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="dU" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="ComposedMeasureAndInfo">
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="d" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="dU" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="MV">
+      <eStructuralFeatures xsi:type="ecore:EReference" name="instMag" lowerBound="1"
+          eType="#//Dataclasses/AnalogueValue"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="mag" lowerBound="1" eType="#//Dataclasses/AnalogueValue"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="range" lowerBound="1"
+          eType="#//Dataclasses/Range"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="q" lowerBound="1" eType="#//Dataclasses/Quality"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="t" lowerBound="1" eType="#//Dataclasses/TimeStamp"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="subEna" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="subMag" lowerBound="1"
+          eType="#//Dataclasses/AnalogueValue"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="subQ" lowerBound="1"
+          eType="#//Dataclasses/Quality"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="subID" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="units" lowerBound="1"
+          eType="#//Dataclasses/Units"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="db" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="zeroDb" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="sVC" lowerBound="1" eType="#//Dataclasses/ScaledValueConfig"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="rangeC" lowerBound="1"
+          eType="#//Dataclasses/RangeConfig"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="smpRate" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="CMV">
+      <eStructuralFeatures xsi:type="ecore:EReference" name="instCVal" lowerBound="1"
+          eType="#//Dataclasses/Vector"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="cVal" lowerBound="1"
+          eType="#//Dataclasses/Vector"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="range" lowerBound="1"
+          eType="#//Dataclasses/Range"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="q" lowerBound="1" eType="#//Dataclasses/Quality"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="t" lowerBound="1" eType="#//Dataclasses/TimeStamp"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="subEna" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="subCVal" eType="#//Dataclasses/Vector"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="subQ" lowerBound="1"
+          eType="#//Dataclasses/Quality"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="subID" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="units" lowerBound="1"
+          eType="#//Dataclasses/Units"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="db" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="zeroDb" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="rangeC" lowerBound="1"
+          eType="#//Dataclasses/RangeConfig"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="magSVC" lowerBound="1"
+          eType="#//Dataclasses/ScaledValueConfig"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="angSVC" lowerBound="1"
+          eType="#//Dataclasses/ScaledValueConfig"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="angRef" lowerBound="1"
+          eType="#//Dataclasses/CMVAngleReference"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="smpRate" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="SAV">
+      <eStructuralFeatures xsi:type="ecore:EReference" name="instMag" lowerBound="1"
+          eType="#//Dataclasses/AnalogueValue"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="q" lowerBound="1" eType="#//Dataclasses/Quality"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="t" lowerBound="1" eType="#//Dataclasses/TimeStamp"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="units" lowerBound="1"
+          eType="#//Dataclasses/Units"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="sVC" lowerBound="1" eType="#//Dataclasses/ScaledValueConfig"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="min" lowerBound="1" eType="#//Dataclasses/AnalogueValue"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="max" lowerBound="1" eType="#//Dataclasses/AnalogueValue"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="DEL">
+      <eStructuralFeatures xsi:type="ecore:EReference" name="phsAB" lowerBound="1"
+          eType="#//Dataclasses/CMV"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="phsBC" lowerBound="1"
+          eType="#//Dataclasses/CMV"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="phsCA" lowerBound="1"
+          eType="#//Dataclasses/CMV"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="angRef" lowerBound="1"
+          eType="#//Dataclasses/AngleReference"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="WYE">
+      <eStructuralFeatures xsi:type="ecore:EReference" name="phsA" lowerBound="1"
+          eType="#//Dataclasses/CMV"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="phsB" lowerBound="1"
+          eType="#//Dataclasses/CMV"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="phsC" lowerBound="1"
+          eType="#//Dataclasses/CMV"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="neut" lowerBound="1"
+          eType="#//Dataclasses/CMV"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="net" lowerBound="1" eType="#//Dataclasses/CMV"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="res" lowerBound="1" eType="#//Dataclasses/CMV"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="angRef" lowerBound="1"
+          eType="#//Dataclasses/AngleReference"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="SEQ">
+      <eStructuralFeatures xsi:type="ecore:EReference" name="c1" lowerBound="1" eType="#//Dataclasses/CMV"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="c2" lowerBound="1" eType="#//Dataclasses/CMV"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="c3" lowerBound="1" eType="#//Dataclasses/CMV"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="seqT" lowerBound="1"
+          eType="#//Dataclasses/Sequence"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="phsRef" lowerBound="1"
+          eType="#//Dataclasses/PhaseReference"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="HMV">
+      <eStructuralFeatures xsi:type="ecore:EReference" name="q" lowerBound="1" eType="#//Dataclasses/Quality"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="t" lowerBound="1" eType="#//Dataclasses/TimeStamp"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="har" lowerBound="1" eType="#//Dataclasses/VectorArray"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="numHar" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="numCyc" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="evalTm" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="units" lowerBound="1"
+          eType="#//Dataclasses/Units"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="smpRate" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="frequency" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EFloat"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="hvRef" lowerBound="1"
+          eType="#//Dataclasses/MagReference"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="rmsCyc" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="HYWE">
+      <eStructuralFeatures xsi:type="ecore:EReference" name="q" lowerBound="1" eType="#//Dataclasses/Quality"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="t" lowerBound="1" eType="#//Dataclasses/TimeStamp"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="phsAHar" lowerBound="1"
+          eType="#//Dataclasses/VectorArray"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="phsBHar" lowerBound="1"
+          eType="#//Dataclasses/VectorArray"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="phsCHar" lowerBound="1"
+          eType="#//Dataclasses/VectorArray"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="neutHar" lowerBound="1"
+          eType="#//Dataclasses/VectorArray"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="netHar" lowerBound="1"
+          eType="#//Dataclasses/VectorArray"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="resHar" lowerBound="1"
+          eType="#//Dataclasses/VectorArray"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="numHar" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="numCyc" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="evalTm" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="units" lowerBound="1"
+          eType="#//Dataclasses/Units"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="angRef" lowerBound="1"
+          eType="#//Dataclasses/AngleReference"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="smpRate" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="frequency" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EFloat"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="hvRef" lowerBound="1"
+          eType="#//Dataclasses/MagReference"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="rmsCyc" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="HDEL">
+      <eStructuralFeatures xsi:type="ecore:EReference" name="q" lowerBound="1" eType="#//Dataclasses/Quality"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="t" lowerBound="1" eType="#//Dataclasses/TimeStamp"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="phsABHar" lowerBound="1"
+          eType="#//Dataclasses/VectorArray"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="phsBCHar" lowerBound="1"
+          eType="#//Dataclasses/VectorArray"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="phsCAHar" lowerBound="1"
+          eType="#//Dataclasses/VectorArray"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="numHar" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="numCyc" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="evalTm" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="units" lowerBound="1"
+          eType="#//Dataclasses/Units"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="angRef" lowerBound="1"
+          eType="#//Dataclasses/AngleReference"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="smpRate" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="frequency" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EFloat"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="hvRef" lowerBound="1"
+          eType="#//Dataclasses/MagReference"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="rmsCyc" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="ControllableStatusInfo">
+      <eStructuralFeatures xsi:type="ecore:EReference" name="operTm" lowerBound="1"
+          eType="#//Dataclasses/TimeStamp"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="origin" lowerBound="1"
+          eType="#//Dataclasses/Originator"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="_origin" lowerBound="1"
+          eType="#//Dataclasses/Originator"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="ctlNum" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="_ctlNum" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="stSeld" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="subEna" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="subQ" lowerBound="1"
+          eType="#//Dataclasses/Quality"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="subID" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="ctlModel" lowerBound="1"
+          eType="#//Dataclasses/CtlModels"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="sboTimeout" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="sboClass" lowerBound="1"
+          eType="#//Dataclasses/SboClasses"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="d" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="dU" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="SPC">
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="ctlVal" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="stVal" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="q" lowerBound="1" eType="#//Dataclasses/Quality"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="t" lowerBound="1" eType="#//Dataclasses/TimeStamp"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="subVal" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="pulseConfig" lowerBound="1"
+          eType="#//Dataclasses/PulseConfig"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="DPC">
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="ctlVal" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="stVal" lowerBound="1"
+          eType="#//Dataclasses/DPStatus"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="q" lowerBound="1" eType="#//Dataclasses/Quality"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="t" lowerBound="1" eType="#//Dataclasses/TimeStamp"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="subVal" lowerBound="1"
+          eType="#//Dataclasses/DPStatus"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="pulseConfig" lowerBound="1"
+          eType="#//Dataclasses/PulseConfig"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="INC">
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="ctlVal" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="stVal" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="q" lowerBound="1" eType="#//Dataclasses/Quality"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="t" lowerBound="1" eType="#//Dataclasses/TimeStamp"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="subVal" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="minVal" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="maxVal" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="stepSize" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="BSC">
+      <eStructuralFeatures xsi:type="ecore:EReference" name="ctlVal" lowerBound="1"
+          eType="#//Dataclasses/BSControl"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="valWTr" lowerBound="1"
+          eType="#//Dataclasses/ValWithTrans"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="q" lowerBound="1" eType="#//Dataclasses/Quality"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="t" lowerBound="1" eType="#//Dataclasses/TimeStamp"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="subVal" lowerBound="1"
+          eType="#//Dataclasses/ValWithTrans"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="persistent" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="minVal" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="maxVal" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="stepSize" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="ISC">
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="ctlVal" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="valWTr" lowerBound="1"
+          eType="#//Dataclasses/ValWithTrans"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="t" lowerBound="1" eType="#//Dataclasses/TimeStamp"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="q" lowerBound="1" eType="#//Dataclasses/Quality"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="subVal" lowerBound="1"
+          eType="#//Dataclasses/ValWithTrans"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="minVal" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="maxVal" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="stepSize" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="ControllableAnalogueInfo">
+      <eStructuralFeatures xsi:type="ecore:EReference" name="APC" lowerBound="1" upperBound="-1"
+          eType="#//Dataclasses/APC"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="C_PrimitiveCDC" lowerBound="1"
+          upperBound="-1" eType="#//Dataclasses/C_PrimitiveCDC"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="APC">
+      <eStructuralFeatures xsi:type="ecore:EReference" name="setMag" lowerBound="1"
+          eType="#//Dataclasses/AnalogueValue"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="_setMag" lowerBound="1"
+          eType="#//Dataclasses/AnalogueValue"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="origin" lowerBound="1"
+          eType="#//Dataclasses/Originator"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="_origin" lowerBound="1"
+          eType="#//Dataclasses/Originator"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="operTm" lowerBound="1"
+          eType="#//Dataclasses/TimeStamp"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="q" lowerBound="1" eType="#//Dataclasses/Quality"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="t" lowerBound="1" eType="#//Dataclasses/TimeStamp"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="ctlModel" lowerBound="1"
+          eType="#//Dataclasses/CtlModels"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="units" lowerBound="1"
+          eType="#//Dataclasses/Units"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="sVC" lowerBound="1" eType="#//Dataclasses/ScaledValueConfig"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="minVal" lowerBound="1"
+          eType="#//Dataclasses/AnalogueValue"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="maxVal" lowerBound="1"
+          eType="#//Dataclasses/AnalogueValue"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="stepSize" lowerBound="1"
+          eType="#//Dataclasses/AnalogueValue"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="d" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="dU" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="SPG">
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="setVal" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="_setVal" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="__setVal" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="ING">
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="setVal" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="_setVal" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="__setVal" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="minVal" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="maxVal" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="stepSize" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="AnalogueSettings">
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="d" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="dU" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="ASG">
+      <eStructuralFeatures xsi:type="ecore:EReference" name="setMag" lowerBound="1"
+          eType="#//Dataclasses/AnalogueValue"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="_setMag" lowerBound="1"
+          eType="#//Dataclasses/AnalogueValue"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="__setMag" lowerBound="1"
+          eType="#//Dataclasses/AnalogueValue"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="units" lowerBound="1"
+          eType="#//Dataclasses/Units"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="sVC" lowerBound="1" eType="#//Dataclasses/ScaledValueConfig"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="minVal" lowerBound="1"
+          eType="#//Dataclasses/AnalogueValue"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="maxVal" lowerBound="1"
+          eType="#//Dataclasses/AnalogueValue"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="stepSize" lowerBound="1"
+          eType="#//Dataclasses/AnalogueValue"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="CURVE">
+      <eStructuralFeatures xsi:type="ecore:EReference" name="setCharact" lowerBound="1"
+          eType="#//Dataclasses/CurveChar"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="setParA" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EFloat"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="setParB" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EFloat"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="setParC" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EFloat"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="setParD" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EFloat"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="setParE" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EFloat"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="setParF" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EFloat"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="_setCharact" lowerBound="1"
+          eType="#//Dataclasses/CurveChar"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="_setParA" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EFloat"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="_setParB" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EFloat"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="_setParC" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EFloat"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="_setParD" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EFloat"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="_setParE" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EFloat"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="_setParF" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EFloat"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="__setCharact" lowerBound="1"
+          eType="#//Dataclasses/CurveChar"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="__setParA" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EFloat"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="__setParB" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EFloat"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="__setParC" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EFloat"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="__setParD" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EFloat"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="__setParE" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EFloat"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="__setParF" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EFloat"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="DescriptionInfo">
+      <eStructuralFeatures xsi:type="ecore:EReference" name="DPL" lowerBound="1" upperBound="-1"
+          eType="#//Dataclasses/DPL"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="LPL" lowerBound="1" upperBound="-1"
+          eType="#//Dataclasses/LPL"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="CSD" lowerBound="1" upperBound="-1"
+          eType="#//Dataclasses/CSD"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="C_PrimitiveCDC" lowerBound="1"
+          upperBound="-1" eType="#//Dataclasses/C_PrimitiveCDC"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="DPL">
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="vendor" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="hwRev" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="swRev" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="serNum" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="model" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="location" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="LPL">
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="vendor" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="swRev" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="d" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="dU" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="configRev" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="IdNs" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="lnNs" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="CSD">
+      <eStructuralFeatures xsi:type="ecore:EReference" name="xUnit" lowerBound="1"
+          eType="#//Dataclasses/Units"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="xD" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="yUnit" lowerBound="1"
+          eType="#//Dataclasses/Units"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="yD" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="numPts" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="crvPts" lowerBound="1"
+          eType="#//Dataclasses/PointArray"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="d" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="dU" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    </eClassifiers>
+  </eSubpackages>
+  <eSubpackages name="Enumerations" nsURI="enumerations" nsPrefix="enum">
+    <eClassifiers xsi:type="ecore:EEnum" name="TimeAccuracyKind">
+      <eLiterals name="T0" value="7"/>
+      <eLiterals name="T1" value="10"/>
+      <eLiterals name="T2" value="14"/>
+      <eLiterals name="T3" value="16"/>
+      <eLiterals name="T4" value="18"/>
+      <eLiterals name="T5" value="20"/>
+      <eLiterals name="unspecified" value="31"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EEnum" name="AngleReferenceKind">
+      <eLiterals name="Va"/>
+      <eLiterals name="Vb"/>
+      <eLiterals name="Vc"/>
+      <eLiterals name="Aa"/>
+      <eLiterals name="Ab"/>
+      <eLiterals name="Ac"/>
+      <eLiterals name="Vab"/>
+      <eLiterals name="Vbc"/>
+      <eLiterals name="Vca"/>
+      <eLiterals name="Vother"/>
+      <eLiterals name="Aother"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EEnum" name="BSControlKind">
+      <eLiterals name="stop"/>
+      <eLiterals name="lower"/>
+      <eLiterals name="higher"/>
+      <eLiterals name="reserved"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EEnum" name="CMVAngleReferenceKind">
+      <eLiterals name="volt"/>
+      <eLiterals name="ampere"/>
+      <eLiterals name="other"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EEnum" name="ControlOutputKind">
+      <eLiterals name="pulse"/>
+      <eLiterals name="persistent"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EEnum" name="CtlModelsKind">
+      <eLiterals name="statusOnly"/>
+      <eLiterals name="directWithNormalSecurity"/>
+      <eLiterals name="sboWithNormalSecurity"/>
+      <eLiterals name="directWithEnhancedSecurity"/>
+      <eLiterals name="sboWithEnhancedSecurity"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EEnum" name="CurveCharKind">
+      <eLiterals name="ansiExtremelyInverse"/>
+      <eLiterals name="ansiVeryInverse"/>
+      <eLiterals name="ansiNormalInverse"/>
+      <eLiterals name="ansiModerateInverse"/>
+      <eLiterals name="ansiDefiniteTime"/>
+      <eLiterals name="longTimeExtremelyInverse"/>
+      <eLiterals name="longTimeVeryInverse"/>
+      <eLiterals name="longTimeInverse" literal=""/>
+      <eLiterals name="iecNormalInverse"/>
+      <eLiterals name="iecVeryInverse"/>
+      <eLiterals name="iecInverse"/>
+      <eLiterals name="iecExtremelyInverse"/>
+      <eLiterals name="iecShortTimeInverse"/>
+      <eLiterals name="iecLongTimeInverse"/>
+      <eLiterals name="iecDefiniteTime"/>
+      <eLiterals name="reserved"/>
+      <eLiterals name="formula1"/>
+      <eLiterals name="formula2"/>
+      <eLiterals name="formula3"/>
+      <eLiterals name="formula4"/>
+      <eLiterals name="formula5"/>
+      <eLiterals name="formula6"/>
+      <eLiterals name="formula7"/>
+      <eLiterals name="formula8"/>
+      <eLiterals name="formula9"/>
+      <eLiterals name="formula10"/>
+      <eLiterals name="formula11"/>
+      <eLiterals name="formula12"/>
+      <eLiterals name="formula13"/>
+      <eLiterals name="formula14"/>
+      <eLiterals name="formula15"/>
+      <eLiterals name="formula16"/>
+      <eLiterals name="vendorPoints1"/>
+      <eLiterals name="vendorPoints2"/>
+      <eLiterals name="vendorPoints3"/>
+      <eLiterals name="vendorPoints4"/>
+      <eLiterals name="vendorPoints5"/>
+      <eLiterals name="vendorPoints6"/>
+      <eLiterals name="vendorPoints7"/>
+      <eLiterals name="vendorPoints8"/>
+      <eLiterals name="vendorPoints9"/>
+      <eLiterals name="vendorPoints10"/>
+      <eLiterals name="vendorPoints11"/>
+      <eLiterals name="vendorPoints12"/>
+      <eLiterals name="vendorPoints13"/>
+      <eLiterals name="vendorPoints14"/>
+      <eLiterals name="vendorPoints15"/>
+      <eLiterals name="vendorPoints16"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EEnum" name="DPStatusKind">
+      <eLiterals name="intermediateState"/>
+      <eLiterals name="offOrFalse"/>
+      <eLiterals name="onOrTrue"/>
+      <eLiterals name="badState"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EEnum" name="DirectionPhaseKind">
+      <eLiterals name="unknown"/>
+      <eLiterals name="forward"/>
+      <eLiterals name="backward"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EEnum" name="FaultDirectionKind">
+      <eLiterals name="unknown"/>
+      <eLiterals name="forward"/>
+      <eLiterals name="backward"/>
+      <eLiterals name="both"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EEnum" name="MagReferenceKind">
+      <eLiterals name="fundamental"/>
+      <eLiterals name="rms"/>
+      <eLiterals name="absolute"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EEnum" name="MultiplierKind">
+      <eLiterals name="yocto"/>
+      <eLiterals name="zepto"/>
+      <eLiterals name="atto"/>
+      <eLiterals name="femto"/>
+      <eLiterals name="pico"/>
+      <eLiterals name="nano"/>
+      <eLiterals name="micro"/>
+      <eLiterals name="milli"/>
+      <eLiterals name="centi"/>
+      <eLiterals name="deci"/>
+      <eLiterals name="none"/>
+      <eLiterals name="deca"/>
+      <eLiterals name="hecto"/>
+      <eLiterals name="kilo"/>
+      <eLiterals name="mega"/>
+      <eLiterals name="giga"/>
+      <eLiterals name="tera"/>
+      <eLiterals name="petra"/>
+      <eLiterals name="exa"/>
+      <eLiterals name="zetta" literal=""/>
+      <eLiterals name="yotta"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EEnum" name="OriginatorCategoryKind">
+      <eLiterals name="notSupported"/>
+      <eLiterals name="bayControl"/>
+      <eLiterals name="stationControl"/>
+      <eLiterals name="remoteControl"/>
+      <eLiterals name="automaticBay"/>
+      <eLiterals name="automaticStation"/>
+      <eLiterals name="automaticRemote"/>
+      <eLiterals name="maintenance"/>
+      <eLiterals name="process"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EEnum" name="PhaseReferenceKind">
+      <eLiterals name="a"/>
+      <eLiterals name="b"/>
+      <eLiterals name="c"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EEnum" name="RangeKind">
+      <eLiterals name="normal"/>
+      <eLiterals name="high"/>
+      <eLiterals name="low"/>
+      <eLiterals name="highHigh"/>
+      <eLiterals name="lowLow"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EEnum" name="SboClassesKind">
+      <eLiterals name="operateOnce"/>
+      <eLiterals name="operateMany"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EEnum" name="SequenceKind">
+      <eLiterals name="posNegZero"/>
+      <eLiterals name="dirQuadZero" literal=""/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EEnum" name="SeverityKind">
+      <eLiterals name="unknown"/>
+      <eLiterals name="critical"/>
+      <eLiterals name="major"/>
+      <eLiterals name="minor"/>
+      <eLiterals name="warning"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EEnum" name="SIUnitsKind">
+      <eLiterals name="dimensionless"/>
+      <eLiterals name="meter"/>
+      <eLiterals name="kilogram"/>
+      <eLiterals name="second"/>
+      <eLiterals name="ampere"/>
+      <eLiterals name="Kelvin"/>
+      <eLiterals name="mole"/>
+      <eLiterals name="candela"/>
+      <eLiterals name="degree"/>
+      <eLiterals name="radian"/>
+      <eLiterals name="steradian"/>
+      <eLiterals name="Gray"/>
+      <eLiterals name="becquerel"/>
+      <eLiterals name="degreeCelsius"/>
+      <eLiterals name="sievert"/>
+      <eLiterals name="farad"/>
+      <eLiterals name="coulomb"/>
+      <eLiterals name="siemens"/>
+      <eLiterals name="henry"/>
+      <eLiterals name="volt"/>
+      <eLiterals name="ohm"/>
+      <eLiterals name="joule"/>
+      <eLiterals name="newton"/>
+      <eLiterals name="hertz"/>
+      <eLiterals name="lux"/>
+      <eLiterals name="lumen"/>
+      <eLiterals name="weber"/>
+      <eLiterals name="tesla"/>
+      <eLiterals name="wattGeneral"/>
+      <eLiterals name="pascal"/>
+      <eLiterals name="squareMeter"/>
+      <eLiterals name="cubicMeter"/>
+      <eLiterals name="meterPerSecond"/>
+      <eLiterals name="meterPerSquareSecond"/>
+      <eLiterals name="cubicMeterPerSecond"/>
+      <eLiterals name="meterPerCubicMeter"/>
+      <eLiterals name="kilogramMeter"/>
+      <eLiterals name="kilogramPerCubicMeter"/>
+      <eLiterals name="squareMeterPerSecond"/>
+      <eLiterals name="wattPerMeterKelvin"/>
+      <eLiterals name="joulePerKelvin"/>
+      <eLiterals name="partPerMillion"/>
+      <eLiterals name="rotationPerSecond"/>
+      <eLiterals name="radianPerSecond"/>
+      <eLiterals name="voltAmpere"/>
+      <eLiterals name="watt"/>
+      <eLiterals name="voltAmpereReactive"/>
+      <eLiterals name="phaseAngleDegree"/>
+      <eLiterals name="cosTheta"/>
+      <eLiterals name="voltSecond"/>
+      <eLiterals name="voltSquare"/>
+      <eLiterals name="ampSecond"/>
+      <eLiterals name="ampSquare"/>
+      <eLiterals name="ampSquareSecond"/>
+      <eLiterals name="voltAmpereHour"/>
+      <eLiterals name="wattHour"/>
+      <eLiterals name="voltAmpereReactiveHour"/>
+      <eLiterals name="voltPerHertz"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EEnum" name="AutoReclosingStatusKind">
+      <eLiterals name="ready"/>
+      <eLiterals name="inProgress"/>
+      <eLiterals name="successfull"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EEnum" name="BreakerOperatingCapabilityKind">
+      <eLiterals name="none"/>
+      <eLiterals name="open"/>
+      <eLiterals name="closeOpen"/>
+      <eLiterals name="openCloseOpen"/>
+      <eLiterals name="closeOpenCloseOpen"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EEnum" name="CurrentReversalModeKind">
+      <eLiterals name="off"/>
+      <eLiterals name="on"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EEnum" name="DirectionModeKind">
+      <eLiterals name="nonDirectional"/>
+      <eLiterals name="forward"/>
+      <eLiterals name="reverse"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EEnum" name="FailureDetectionModeKind">
+      <eLiterals name="current"/>
+      <eLiterals name="breakerStatus"/>
+      <eLiterals name="both"/>
+      <eLiterals name="other"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EEnum" name="FanControlKind">
+      <eLiterals name="inactive"/>
+      <eLiterals name="stage1"/>
+      <eLiterals name="stage2"/>
+      <eLiterals name="stage3"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EEnum" name="FaultLoopKind">
+      <eLiterals name="phAToGround"/>
+      <eLiterals name="phBToGround"/>
+      <eLiterals name="phCToGround"/>
+      <eLiterals name="phAToPhB"/>
+      <eLiterals name="phBToPhC"/>
+      <eLiterals name="phCToPhA"/>
+      <eLiterals name="other"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EEnum" name="GeneratorStateKind">
+      <eLiterals name="stopped"/>
+      <eLiterals name="stopping"/>
+      <eLiterals name="started"/>
+      <eLiterals name="starting"/>
+      <eLiterals name="disabled"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EEnum" name="HealthStateKind">
+      <eLiterals name="ok"/>
+      <eLiterals name="warning"/>
+      <eLiterals name="alarm"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EEnum" name="InternalTriggerModeKind">
+      <eLiterals name="positiveOrRising"/>
+      <eLiterals name="negativeOrFalling"/>
+      <eLiterals name="both"/>
+      <eLiterals name="other"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EEnum" name="ModeBehaviourKind">
+      <eLiterals name="on"/>
+      <eLiterals name="blocked"/>
+      <eLiterals name="test"/>
+      <eLiterals name="testBlocked"/>
+      <eLiterals name="off"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EEnum" name="LiveDeadModeKind">
+      <eLiterals name="lineLive"/>
+      <eLiterals name="bothDead"/>
+      <eLiterals name="busLive"/>
+      <eLiterals name="bothDeadOrLineLive"/>
+      <eLiterals name="bothDeadOrBusLive"/>
+      <eLiterals name="lineLiveBusDeadOrBusLiveLineDead"/>
+      <eLiterals name="bothDeadOrOnlyOneLive"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EEnum" name="PolarizingQuantityKind">
+      <eLiterals name="none"/>
+      <eLiterals name="zeroSeqCurrent"/>
+      <eLiterals name="zeroSeqVoltage"/>
+      <eLiterals name="negSeqVoltage"/>
+      <eLiterals name="phToPhVoltages"/>
+      <eLiterals name="phToGroundVoltages"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EEnum" name="PumpControlKind">
+      <eLiterals name="inactive"/>
+      <eLiterals name="stage1"/>
+      <eLiterals name="stage2"/>
+      <eLiterals name="stage3"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EEnum" name="RecordingModeKind">
+      <eLiterals name="overwrite"/>
+      <eLiterals name="stopWhenFull"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EEnum" name="ResetCurveKind">
+      <eLiterals name="none"/>
+      <eLiterals name="definiteTimeDelayed"/>
+      <eLiterals name="inverse"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EEnum" name="RestraintModeKind">
+      <eLiterals name="none"/>
+      <eLiterals name="harm2"/>
+      <eLiterals name="harm5"/>
+      <eLiterals name="harm2AndHarm5"/>
+      <eLiterals name="waveformAnalysis"/>
+      <eLiterals name="harm2AndWaveformAnalysis"/>
+      <eLiterals name="other"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EEnum" name="RetripModeKind">
+      <eLiterals name="off"/>
+      <eLiterals name="noCheck"/>
+      <eLiterals name="currentCheck"/>
+      <eLiterals name="breakerStatusCheck"/>
+      <eLiterals name="bothChecks"/>
+      <eLiterals name="other"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EEnum" name="SchemeTypeKind">
+      <eLiterals name="none"/>
+      <eLiterals name="intertrip"/>
+      <eLiterals name="permissiveUnderReach"/>
+      <eLiterals name="permissiveOverReach"/>
+      <eLiterals name="blocking"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EEnum" name="SwitchingCapabilityKind">
+      <eLiterals name="none"/>
+      <eLiterals name="open"/>
+      <eLiterals name="close"/>
+      <eLiterals name="both"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EEnum" name="SwitchTypeKind">
+      <eLiterals name="loadBreak"/>
+      <eLiterals name="disconnector"/>
+      <eLiterals name="earthingSwitch"/>
+      <eLiterals name="highSpeedEarthingSwitch"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EEnum" name="TriggerSourceKind">
+      <eLiterals name="internal"/>
+      <eLiterals name="external"/>
+      <eLiterals name="both"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EEnum" name="TripModeKind">
+      <eLiterals name="threePhase"/>
+      <eLiterals name="oneOrThreePhase"/>
+      <eLiterals name="specific"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EEnum" name="UnblockFunctionModeKind">
+      <eLiterals name="off"/>
+      <eLiterals name="permanent"/>
+      <eLiterals name="timeWindow"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EEnum" name="WeakEndInfeedModeKind">
+      <eLiterals name="off"/>
+      <eLiterals name="operate"/>
+      <eLiterals name="echo"/>
+      <eLiterals name="echoAndOperate"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EEnum" name="ValidityKind">
+      <eLiterals name="good"/>
+      <eLiterals name="invalid"/>
+      <eLiterals name="questionable"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EEnum" name="SourceKind">
+      <eLiterals name="process"/>
+      <eLiterals name="substituted"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EEnum" name="FcKind">
+      <eLiterals name="ST"/>
+      <eLiterals name="MX"/>
+      <eLiterals name="CO"/>
+      <eLiterals name="MC"/>
+      <eLiterals name="SP"/>
+      <eLiterals name="SV"/>
+      <eLiterals name="CF"/>
+      <eLiterals name="DC"/>
+      <eLiterals name="SG"/>
+      <eLiterals name="SE"/>
+      <eLiterals name="EX"/>
+      <eLiterals name="XX"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EEnum" name="TrgOpKind">
+      <eLiterals name="none"/>
+      <eLiterals name="dchg"/>
+      <eLiterals name="qchg"/>
+      <eLiterals name="dupd"/>
+      <eLiterals name="dchgDupd"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EEnum" name="PresenceCondition">
+      <eLiterals name="M"/>
+      <eLiterals name="O"/>
+      <eLiterals name="PICS_SUBST"/>
+      <eLiterals name="GC_1"/>
+      <eLiterals name="GC_2_n"/>
+      <eLiterals name="GC_CON"/>
+      <eLiterals name="AC_LN0_M"/>
+      <eLiterals name="AC_LN0_EX"/>
+      <eLiterals name="AC_DLD_M"/>
+      <eLiterals name="AC_DLN_M"/>
+      <eLiterals name="AC_DLNDA_M"/>
+      <eLiterals name="AC_SCAV"/>
+      <eLiterals name="AC_ST"/>
+      <eLiterals name="AC_CO_M"/>
+      <eLiterals name="AC_CO_O"/>
+      <eLiterals name="AC_SG_M"/>
+      <eLiterals name="AC_SG_O"/>
+      <eLiterals name="AC_NSG_M"/>
+      <eLiterals name="AC_NSG_O"/>
+      <eLiterals name="AC_RMS_M"/>
+    </eClassifiers>
+  </eSubpackages>
+</ecore:EPackage>
