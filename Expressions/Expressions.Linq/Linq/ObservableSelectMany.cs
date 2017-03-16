@@ -176,7 +176,7 @@ namespace NMF.Expressions.Linq
             public Dictionary<TIntermediate, TaggedObservableValue<TResult, int>> Results = new Dictionary<TIntermediate, TaggedObservableValue<TResult, int>>();
 
             public INotifyValue<IEnumerable<TIntermediate>> SubSource { get; set; }
-            public INotifyEnumerable NotifySubSource { get; set; }
+            public INotifyEnumerable<TIntermediate> NotifySubSource { get; set; }
 
             public TSource Item { get; private set; }
 
@@ -187,9 +187,8 @@ namespace NMF.Expressions.Linq
                 get
                 {
                     yield return SubSource;
-                    var notifiable = SubSource.Value as INotifyEnumerable<TIntermediate>;
-                    if (notifiable != null)
-                        yield return notifiable;
+                    if (NotifySubSource != null)
+                        yield return NotifySubSource;
                     foreach (var tagged in Results.Values)
                         yield return tagged;
                 }
@@ -238,6 +237,15 @@ namespace NMF.Expressions.Linq
                 if (SubSource.Value != null)
                 {
                     var notifiable = SubSource.Value as INotifyEnumerable<TIntermediate>;
+                    if (notifiable == null)
+                    {
+                        var expression = SubSource.Value as IEnumerableExpression<TIntermediate>;
+                        if (expression != null)
+                        {
+                            notifiable = expression.AsNotifiable();
+                        }
+                    }
+                    NotifySubSource = notifiable;
                     if (notifiable != null)
                         notifiable.Successors.SetDummy();
 
@@ -258,14 +266,21 @@ namespace NMF.Expressions.Linq
                 }
                 Results.Clear();
 
-                var notifiable = oldSubSource as INotifyEnumerable<TIntermediate>;
+                var notifiable = NotifySubSource;
                 if (notifiable != null)
+                {
                     notifiable.Successors.Unset(this);
+                    NotifySubSource = null;
+                }
             }
 
             protected override void OnAttach()
             {
                 AttachSubSourceValue();
+                if (NotifySubSource != null)
+                {
+                    NotifySubSource.Successors.Set(this);
+                }
             }
 
             protected override void OnDetach()
@@ -286,11 +301,7 @@ namespace NMF.Expressions.Linq
                     {
                         var subSourceChange = (IValueChangedNotificationResult)change;
                         DetachSubSourceValue((IEnumerable<TIntermediate>)subSourceChange.OldValue, removed);
-
-                        var notifiable = SubSource.Value as INotifyEnumerable<TIntermediate>;
-                        if (notifiable != null)
-                            notifiable.Successors.Set(this);
-                        AttachSubSourceValue();
+                        OnAttach();
                         added.AddRange(SL.Select(Results.Values, res => res.Value));
                     }
                     else if (change.Source is TaggedObservableValue<TResult, int>)
