@@ -51,6 +51,35 @@ namespace NMF.Models.Meta
                 return property;
             }
 
+
+            private CodeMemberField GenerateStaticAttributeField(IReference property, ITransformationContext context)
+            {
+                var typedElementType = CodeDomHelper.ToTypeReference(typeof(ITypedElement));
+                var staticAttributeField = new CodeMemberField()
+                {
+                    Name = "_" + property.Name.ToCamelCase() + "Reference",
+                    Attributes = MemberAttributes.Static | MemberAttributes.Private,
+                    Type = new CodeTypeReference(typeof(Lazy<>).Name, typedElementType)
+                };
+                var staticAttributeFieldInit = new CodeMemberMethod()
+                {
+                    Name = "Retrieve" + property.Name.ToPascalCase() + "Reference",
+                    Attributes = MemberAttributes.Private | MemberAttributes.Static,
+                    ReturnType = typedElementType
+                };
+                var declaringTypeRef = CreateReference(property.DeclaringType, true, context);
+                var declaringRef2 = new CodeTypeReference();
+                declaringRef2.BaseType = declaringTypeRef.BaseType;
+                declaringRef2.SetNamespace(declaringTypeRef.Namespace());
+                staticAttributeFieldInit.Statements.Add(new CodeMethodReturnStatement(new CodeCastExpression(typedElementType,
+                    new CodeMethodInvokeExpression(new CodeCastExpression(CodeDomHelper.ToTypeReference(typeof(ModelElement)),
+                    new CodePropertyReferenceExpression(new CodeTypeReferenceExpression(declaringRef2), "ClassInstance")),
+                    "Resolve", new CodePrimitiveExpression(property.Name)))));
+                staticAttributeField.InitExpression = new CodeObjectCreateExpression(staticAttributeField.Type, new CodeMethodReferenceExpression(null, staticAttributeFieldInit.Name));
+                CodeDomHelper.DependentMembers(staticAttributeField, true).Add(staticAttributeFieldInit);
+                return staticAttributeField;
+            }
+
             /// <summary>
             /// Initializes the generated property
             /// </summary>
@@ -63,6 +92,8 @@ namespace NMF.Models.Meta
                 var summary = input.Summary;
                 if (string.IsNullOrEmpty(summary)) summary = string.Format("The {0} property", input.Name);
                 generatedProperty.WriteDocumentation(summary, input.Remarks);
+
+                CodeDomHelper.DependentMembers(generatedProperty, true).Add(GenerateStaticAttributeField(input, context));
 
                 if (input.IsContainerReference() && input.DeclaringType is IClass && input.DeclaringType.References.Count(r => r.IsContainerReference()) == 1)
                 {
@@ -131,9 +162,11 @@ namespace NMF.Models.Meta
 
                 onParentChanging.Statements.Add(valueChangeDef);
 
+                var referenceRef = new CodeFieldReferenceExpression(null, "_" + input.Name.ToCamelCase() + "Reference");
+
                 onParentChanging.Statements.Add(property.CreateOnChangingEventPattern(valueChangedEvArgs, valueChangeRef));
                 onParentChanging.Statements.Add(new CodeMethodInvokeExpression(new CodeThisReferenceExpression(), "OnPropertyChanging",
-                    new CodePrimitiveExpression(property.Name)));
+                    new CodePrimitiveExpression(property.Name), valueChangeRef, referenceRef));
 
                 onParentChanging.WriteDocumentation("Gets called when the parent model element of the current model element is about to change",
                     null, new Dictionary<string, string>() {
@@ -221,10 +254,11 @@ namespace NMF.Models.Meta
                 var valueChangeRef = new CodeVariableReferenceExpression(valueChangeDef.Name);
 
                 onParentChanged.Statements.Add(valueChangeDef);
+                var referenceRef = new CodeFieldReferenceExpression(null, "_" + input.Name.ToCamelCase() + "Reference");
 
                 onParentChanged.Statements.Add(property.CreateOnChangedEventPattern(valueChangedEvArgs, valueChangeRef));
                 onParentChanged.Statements.Add(new CodeMethodInvokeExpression(new CodeThisReferenceExpression(), "OnPropertyChanged",
-                    new CodePrimitiveExpression(property.Name), valueChangeRef));
+                    new CodePrimitiveExpression(property.Name), valueChangeRef, referenceRef));
 
                 onParentChanged.Statements.Add(new CodeMethodInvokeExpression(new CodeBaseReferenceExpression(),
                     onParentChanged.Name, new CodeArgumentReferenceExpression("newParent"), new CodeArgumentReferenceExpression("oldParent")));
@@ -287,24 +321,26 @@ namespace NMF.Models.Meta
                     var constructorStmts = codeProperty.ImpliedConstructorStatements(true);
                     constructorStmts.Add(createEmptyCollection);
                     constructorStmts.Add(new CodeAttachEventStatement(fieldRef, "CollectionChanging",
-                        GenerateCollectionBubbleHandler(codeProperty, "CollectionChanging", typeof(NotifyCollectionChangingEventArgs))));
+                        GenerateCollectionBubbleHandler(property, codeProperty, "CollectionChanging", typeof(NotifyCollectionChangingEventArgs))));
                     constructorStmts.Add(new CodeAttachEventStatement(fieldRef, "CollectionChanged",
-                        GenerateCollectionBubbleHandler(codeProperty, "CollectionChanged", typeof(NotifyCollectionChangedEventArgs))));
+                        GenerateCollectionBubbleHandler(property, codeProperty, "CollectionChanged", typeof(NotifyCollectionChangedEventArgs))));
                 }
             }
 
-            private CodeMethodReferenceExpression GenerateCollectionBubbleHandler(CodeMemberProperty property, string suffix, System.Type eventArgsType)
+            private CodeMethodReferenceExpression GenerateCollectionBubbleHandler(IReference input, CodeMemberProperty property, string suffix, System.Type eventArgsType)
             {
                 var collectionBubbleHandler = new CodeMemberMethod()
                 {
                     Name = property.Name + suffix,
                     Attributes = MemberAttributes.Private
                 };
+
+                var referenceRef = new CodeFieldReferenceExpression(null, "_" + input.Name.ToCamelCase() + "Reference");
                 collectionBubbleHandler.Parameters.Add(new CodeParameterDeclarationExpression(typeof(object), "sender"));
                 collectionBubbleHandler.Parameters.Add(new CodeParameterDeclarationExpression(eventArgsType, "e"));
                 collectionBubbleHandler.Statements.Add(new CodeMethodInvokeExpression(
                     new CodeThisReferenceExpression(), "On" + suffix,
-                    new CodePrimitiveExpression(property.Name), new CodeArgumentReferenceExpression("e")));
+                    new CodePrimitiveExpression(property.Name), new CodeArgumentReferenceExpression("e"), referenceRef));
                 collectionBubbleHandler.WriteDocumentation(string.Format("Forwards " + suffix + " notifications for the {0} property to the parent model element", property.Name), null,
                     new Dictionary<string, string>() {
                     { "sender", "The collection that raised the change" },
@@ -341,9 +377,11 @@ namespace NMF.Models.Meta
 
                 ifStmt.TrueStatements.Add(valueChangeDef);
                 
+                var referenceRef = new CodeFieldReferenceExpression(null, "_" + property.Name.ToCamelCase() + "Reference");
+
                 ifStmt.TrueStatements.Add(codeProperty.CreateOnChangingEventPattern(typeof(ValueChangedEventArgs).ToTypeReference(), valueChangeRef));
                 ifStmt.TrueStatements.Add(new CodeMethodInvokeExpression(new CodeThisReferenceExpression(), "OnPropertyChanging",
-                        new CodePrimitiveExpression(codeProperty.Name), valueChangeRef));
+                        new CodePrimitiveExpression(codeProperty.Name), valueChangeRef, referenceRef));
 
                 var targetClass = property.Type;
                 if (targetClass != null)
@@ -423,7 +461,7 @@ namespace NMF.Models.Meta
                     valueChangeRef));
 
                 ifStmt.TrueStatements.Add(new CodeMethodInvokeExpression(new CodeThisReferenceExpression(), "OnPropertyChanged",
-                        new CodePrimitiveExpression(codeProperty.Name), valueChangeRef));
+                        new CodePrimitiveExpression(codeProperty.Name), valueChangeRef, referenceRef));
 
                 codeProperty.SetStatements.Add(ifStmt);
                 codeProperty.HasSet = true;

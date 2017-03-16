@@ -35,9 +35,11 @@ namespace NMF.Models.Meta
     /// </summary>
     [XmlNamespaceAttribute("http://nmf.codeplex.com/nmeta/")]
     [XmlNamespacePrefixAttribute("nmeta")]
-    [ModelRepresentationClassAttribute("http://nmf.codeplex.com/nmeta/#//ModelElementExtension/")]
-    public abstract class ModelElementExtension : ModelElement, IModelElementExtension, IModelElement
+    [ModelRepresentationClassAttribute("http://nmf.codeplex.com/nmeta/#//ModelElementExtension")]
+    public abstract partial class ModelElementExtension : NMF.Models.ModelElement, IModelElementExtension, NMF.Models.IModelElement
     {
+        
+        private static Lazy<ITypedElement> _extendedElementReference = new Lazy<ITypedElement>(RetrieveExtendedElementReference);
         
         private static IClass _classInstance;
         
@@ -62,7 +64,7 @@ namespace NMF.Models.Meta
         /// <summary>
         /// Gets the referenced model elements of this model element
         /// </summary>
-        public override IEnumerableExpression<IModelElement> ReferencedElements
+        public override IEnumerableExpression<NMF.Models.IModelElement> ReferencedElements
         {
             get
             {
@@ -79,7 +81,7 @@ namespace NMF.Models.Meta
             {
                 if ((_classInstance == null))
                 {
-                    _classInstance = ((IClass)(MetaRepository.Instance.Resolve("http://nmf.codeplex.com/nmeta/#//ModelElementExtension/")));
+                    _classInstance = ((IClass)(MetaRepository.Instance.Resolve("http://nmf.codeplex.com/nmeta/#//ModelElementExtension")));
                 }
                 return _classInstance;
             }
@@ -100,6 +102,11 @@ namespace NMF.Models.Meta
         /// </summary>
         public abstract IExtension GetExtension();
         
+        private static ITypedElement RetrieveExtendedElementReference()
+        {
+            return ((ITypedElement)(((NMF.Models.ModelElement)(ModelElementExtension.ClassInstance)).Resolve("ExtendedElement")));
+        }
+        
         /// <summary>
         /// Raises the ExtendedElementChanging event
         /// </summary>
@@ -118,13 +125,13 @@ namespace NMF.Models.Meta
         /// </summary>
         /// <param name="oldParent">The old parent model element</param>
         /// <param name="newParent">The new parent model element</param>
-        protected override void OnParentChanging(IModelElement newParent, IModelElement oldParent)
+        protected override void OnParentChanging(NMF.Models.IModelElement newParent, NMF.Models.IModelElement oldParent)
         {
             NMF.Models.Meta.IModelElement oldExtendedElement = ModelHelper.CastAs<NMF.Models.Meta.IModelElement>(oldParent);
             NMF.Models.Meta.IModelElement newExtendedElement = ModelHelper.CastAs<NMF.Models.Meta.IModelElement>(newParent);
             ValueChangedEventArgs e = new ValueChangedEventArgs(oldExtendedElement, newExtendedElement);
             this.OnExtendedElementChanging(e);
-            this.OnPropertyChanging("ExtendedElement");
+            this.OnPropertyChanging("ExtendedElement", e, _extendedElementReference);
         }
         
         /// <summary>
@@ -145,7 +152,7 @@ namespace NMF.Models.Meta
         /// </summary>
         /// <param name="oldParent">The old parent model element</param>
         /// <param name="newParent">The new parent model element</param>
-        protected override void OnParentChanged(IModelElement newParent, IModelElement oldParent)
+        protected override void OnParentChanged(NMF.Models.IModelElement newParent, NMF.Models.IModelElement oldParent)
         {
             NMF.Models.Meta.IModelElement oldExtendedElement = ModelHelper.CastAs<NMF.Models.Meta.IModelElement>(oldParent);
             NMF.Models.Meta.IModelElement newExtendedElement = ModelHelper.CastAs<NMF.Models.Meta.IModelElement>(newParent);
@@ -159,7 +166,7 @@ namespace NMF.Models.Meta
             }
             ValueChangedEventArgs e = new ValueChangedEventArgs(oldExtendedElement, newExtendedElement);
             this.OnExtendedElementChanged(e);
-            this.OnPropertyChanged("ExtendedElement", e);
+            this.OnPropertyChanged("ExtendedElement", e, _extendedElementReference);
             base.OnParentChanged(newParent, oldParent);
         }
         
@@ -185,7 +192,7 @@ namespace NMF.Models.Meta
         /// <param name="attribute">The requested attribute in upper case</param>
         protected override NMF.Expressions.INotifyExpression<object> GetExpressionForAttribute(string attribute)
         {
-            if ((attribute == "EXTENDEDELEMENT"))
+            if ((attribute == "ExtendedElement"))
             {
                 return new ExtendedElementProxy(this);
             }
@@ -199,7 +206,7 @@ namespace NMF.Models.Meta
         /// <param name="reference">The requested reference in upper case</param>
         protected override NMF.Expressions.INotifyExpression<NMF.Models.IModelElement> GetExpressionForReference(string reference)
         {
-            if ((reference == "EXTENDEDELEMENT"))
+            if ((reference == "ExtendedElement"))
             {
                 return new ExtendedElementProxy(this);
             }
@@ -213,7 +220,7 @@ namespace NMF.Models.Meta
         {
             if ((_classInstance == null))
             {
-                _classInstance = ((IClass)(MetaRepository.Instance.Resolve("http://nmf.codeplex.com/nmeta/#//ModelElementExtension/")));
+                _classInstance = ((IClass)(MetaRepository.Instance.Resolve("http://nmf.codeplex.com/nmeta/#//ModelElementExtension")));
             }
             return _classInstance;
         }
@@ -221,7 +228,7 @@ namespace NMF.Models.Meta
         /// <summary>
         /// The collection class to to represent the children of the ModelElementExtension class
         /// </summary>
-        public class ModelElementExtensionReferencedElementsCollection : ReferenceCollection, ICollectionExpression<IModelElement>, ICollection<IModelElement>
+        public class ModelElementExtensionReferencedElementsCollection : ReferenceCollection, ICollectionExpression<NMF.Models.IModelElement>, ICollection<NMF.Models.IModelElement>
         {
             
             private ModelElementExtension _parent;
@@ -264,7 +271,7 @@ namespace NMF.Models.Meta
             /// Adds the given element to the collection
             /// </summary>
             /// <param name="item">The item to add</param>
-            public override void Add(IModelElement item)
+            public override void Add(NMF.Models.IModelElement item)
             {
                 if ((this._parent.ExtendedElement == null))
                 {
@@ -290,7 +297,7 @@ namespace NMF.Models.Meta
             /// </summary>
             /// <returns>True, if it is contained, otherwise False</returns>
             /// <param name="item">The item that should be looked out for</param>
-            public override bool Contains(IModelElement item)
+            public override bool Contains(NMF.Models.IModelElement item)
             {
                 if ((item == this._parent.ExtendedElement))
                 {
@@ -304,7 +311,7 @@ namespace NMF.Models.Meta
             /// </summary>
             /// <param name="array">The array in which the elements should be copied</param>
             /// <param name="arrayIndex">The starting index</param>
-            public override void CopyTo(IModelElement[] array, int arrayIndex)
+            public override void CopyTo(NMF.Models.IModelElement[] array, int arrayIndex)
             {
                 if ((this._parent.ExtendedElement != null))
                 {
@@ -318,7 +325,7 @@ namespace NMF.Models.Meta
             /// </summary>
             /// <returns>True, if the item was removed, otherwise False</returns>
             /// <param name="item">The item that should be removed</param>
-            public override bool Remove(IModelElement item)
+            public override bool Remove(NMF.Models.IModelElement item)
             {
                 if ((this._parent.ExtendedElement == item))
                 {
@@ -332,9 +339,9 @@ namespace NMF.Models.Meta
             /// Gets an enumerator that enumerates the collection
             /// </summary>
             /// <returns>A generic enumerator</returns>
-            public override IEnumerator<IModelElement> GetEnumerator()
+            public override IEnumerator<NMF.Models.IModelElement> GetEnumerator()
             {
-                return Enumerable.Empty<IModelElement>().Concat(this._parent.ExtendedElement).GetEnumerator();
+                return Enumerable.Empty<NMF.Models.IModelElement>().Concat(this._parent.ExtendedElement).GetEnumerator();
             }
         }
         

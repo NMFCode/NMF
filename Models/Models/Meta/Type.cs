@@ -35,10 +35,12 @@ namespace NMF.Models.Meta
     /// </summary>
     [XmlNamespaceAttribute("http://nmf.codeplex.com/nmeta/")]
     [XmlNamespacePrefixAttribute("nmeta")]
-    [ModelRepresentationClassAttribute("http://nmf.codeplex.com/nmeta/#//Type/")]
+    [ModelRepresentationClassAttribute("http://nmf.codeplex.com/nmeta/#//Type")]
     [DebuggerDisplayAttribute("Type {Name}")]
-    public abstract class Type : MetaElement, IType, IModelElement
+    public abstract partial class Type : MetaElement, IType, NMF.Models.IModelElement
     {
+        
+        private static Lazy<ITypedElement> _namespaceReference = new Lazy<ITypedElement>(RetrieveNamespaceReference);
         
         private static IClass _classInstance;
         
@@ -63,7 +65,7 @@ namespace NMF.Models.Meta
         /// <summary>
         /// Gets the referenced model elements of this model element
         /// </summary>
-        public override IEnumerableExpression<IModelElement> ReferencedElements
+        public override IEnumerableExpression<NMF.Models.IModelElement> ReferencedElements
         {
             get
             {
@@ -80,7 +82,7 @@ namespace NMF.Models.Meta
             {
                 if ((_classInstance == null))
                 {
-                    _classInstance = ((IClass)(MetaRepository.Instance.Resolve("http://nmf.codeplex.com/nmeta/#//Type/")));
+                    _classInstance = ((IClass)(MetaRepository.Instance.Resolve("http://nmf.codeplex.com/nmeta/#//Type")));
                 }
                 return _classInstance;
             }
@@ -95,6 +97,11 @@ namespace NMF.Models.Meta
         /// Gets fired when the Namespace property changed its value
         /// </summary>
         public event System.EventHandler<ValueChangedEventArgs> NamespaceChanged;
+        
+        private static ITypedElement RetrieveNamespaceReference()
+        {
+            return ((ITypedElement)(((NMF.Models.ModelElement)(Type.ClassInstance)).Resolve("Namespace")));
+        }
         
         /// <summary>
         /// Raises the NamespaceChanging event
@@ -114,13 +121,13 @@ namespace NMF.Models.Meta
         /// </summary>
         /// <param name="oldParent">The old parent model element</param>
         /// <param name="newParent">The new parent model element</param>
-        protected override void OnParentChanging(IModelElement newParent, IModelElement oldParent)
+        protected override void OnParentChanging(NMF.Models.IModelElement newParent, NMF.Models.IModelElement oldParent)
         {
             INamespace oldNamespace = ModelHelper.CastAs<INamespace>(oldParent);
             INamespace newNamespace = ModelHelper.CastAs<INamespace>(newParent);
             ValueChangedEventArgs e = new ValueChangedEventArgs(oldNamespace, newNamespace);
             this.OnNamespaceChanging(e);
-            this.OnPropertyChanging("Namespace");
+            this.OnPropertyChanging("Namespace", e, _namespaceReference);
         }
         
         /// <summary>
@@ -141,7 +148,7 @@ namespace NMF.Models.Meta
         /// </summary>
         /// <param name="oldParent">The old parent model element</param>
         /// <param name="newParent">The new parent model element</param>
-        protected override void OnParentChanged(IModelElement newParent, IModelElement oldParent)
+        protected override void OnParentChanged(NMF.Models.IModelElement newParent, NMF.Models.IModelElement oldParent)
         {
             INamespace oldNamespace = ModelHelper.CastAs<INamespace>(oldParent);
             INamespace newNamespace = ModelHelper.CastAs<INamespace>(newParent);
@@ -155,7 +162,7 @@ namespace NMF.Models.Meta
             }
             ValueChangedEventArgs e = new ValueChangedEventArgs(oldNamespace, newNamespace);
             this.OnNamespaceChanged(e);
-            this.OnPropertyChanged("Namespace", e);
+            this.OnPropertyChanged("Namespace", e, _namespaceReference);
             base.OnParentChanged(newParent, oldParent);
         }
         
@@ -181,7 +188,7 @@ namespace NMF.Models.Meta
         /// <param name="attribute">The requested attribute in upper case</param>
         protected override NMF.Expressions.INotifyExpression<object> GetExpressionForAttribute(string attribute)
         {
-            if ((attribute == "NAMESPACE"))
+            if ((attribute == "Namespace"))
             {
                 return new NamespaceProxy(this);
             }
@@ -195,7 +202,7 @@ namespace NMF.Models.Meta
         /// <param name="reference">The requested reference in upper case</param>
         protected override NMF.Expressions.INotifyExpression<NMF.Models.IModelElement> GetExpressionForReference(string reference)
         {
-            if ((reference == "NAMESPACE"))
+            if ((reference == "Namespace"))
             {
                 return new NamespaceProxy(this);
             }
@@ -209,7 +216,7 @@ namespace NMF.Models.Meta
         {
             if ((_classInstance == null))
             {
-                _classInstance = ((IClass)(MetaRepository.Instance.Resolve("http://nmf.codeplex.com/nmeta/#//Type/")));
+                _classInstance = ((IClass)(MetaRepository.Instance.Resolve("http://nmf.codeplex.com/nmeta/#//Type")));
             }
             return _classInstance;
         }
@@ -217,7 +224,7 @@ namespace NMF.Models.Meta
         /// <summary>
         /// The collection class to to represent the children of the Type class
         /// </summary>
-        public class TypeReferencedElementsCollection : ReferenceCollection, ICollectionExpression<IModelElement>, ICollection<IModelElement>
+        public class TypeReferencedElementsCollection : ReferenceCollection, ICollectionExpression<NMF.Models.IModelElement>, ICollection<NMF.Models.IModelElement>
         {
             
             private Type _parent;
@@ -260,7 +267,7 @@ namespace NMF.Models.Meta
             /// Adds the given element to the collection
             /// </summary>
             /// <param name="item">The item to add</param>
-            public override void Add(IModelElement item)
+            public override void Add(NMF.Models.IModelElement item)
             {
                 if ((this._parent.Namespace == null))
                 {
@@ -286,7 +293,7 @@ namespace NMF.Models.Meta
             /// </summary>
             /// <returns>True, if it is contained, otherwise False</returns>
             /// <param name="item">The item that should be looked out for</param>
-            public override bool Contains(IModelElement item)
+            public override bool Contains(NMF.Models.IModelElement item)
             {
                 if ((item == this._parent.Namespace))
                 {
@@ -300,7 +307,7 @@ namespace NMF.Models.Meta
             /// </summary>
             /// <param name="array">The array in which the elements should be copied</param>
             /// <param name="arrayIndex">The starting index</param>
-            public override void CopyTo(IModelElement[] array, int arrayIndex)
+            public override void CopyTo(NMF.Models.IModelElement[] array, int arrayIndex)
             {
                 if ((this._parent.Namespace != null))
                 {
@@ -314,7 +321,7 @@ namespace NMF.Models.Meta
             /// </summary>
             /// <returns>True, if the item was removed, otherwise False</returns>
             /// <param name="item">The item that should be removed</param>
-            public override bool Remove(IModelElement item)
+            public override bool Remove(NMF.Models.IModelElement item)
             {
                 if ((this._parent.Namespace == item))
                 {
@@ -328,9 +335,9 @@ namespace NMF.Models.Meta
             /// Gets an enumerator that enumerates the collection
             /// </summary>
             /// <returns>A generic enumerator</returns>
-            public override IEnumerator<IModelElement> GetEnumerator()
+            public override IEnumerator<NMF.Models.IModelElement> GetEnumerator()
             {
-                return Enumerable.Empty<IModelElement>().Concat(this._parent.Namespace).GetEnumerator();
+                return Enumerable.Empty<NMF.Models.IModelElement>().Concat(this._parent.Namespace).GetEnumerator();
             }
         }
         

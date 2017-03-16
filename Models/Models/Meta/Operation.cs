@@ -35,15 +35,21 @@ namespace NMF.Models.Meta
     /// </summary>
     [XmlNamespaceAttribute("http://nmf.codeplex.com/nmeta/")]
     [XmlNamespacePrefixAttribute("nmeta")]
-    [ModelRepresentationClassAttribute("http://nmf.codeplex.com/nmeta/#//Operation/")]
+    [ModelRepresentationClassAttribute("http://nmf.codeplex.com/nmeta/#//Operation")]
     [DebuggerDisplayAttribute("Operation {Name}")]
-    public class Operation : TypedElement, IOperation, IModelElement
+    public partial class Operation : TypedElement, IOperation, NMF.Models.IModelElement
     {
+        
+        private static Lazy<ITypedElement> _parametersReference = new Lazy<ITypedElement>(RetrieveParametersReference);
         
         /// <summary>
         /// The backing field for the Parameters property
         /// </summary>
         private OperationParametersCollection _parameters;
+        
+        private static Lazy<ITypedElement> _declaringTypeReference = new Lazy<ITypedElement>(RetrieveDeclaringTypeReference);
+        
+        private static Lazy<ITypedElement> _refinesReference = new Lazy<ITypedElement>(RetrieveRefinesReference);
         
         /// <summary>
         /// The backing field for the Refines property
@@ -110,7 +116,7 @@ namespace NMF.Models.Meta
                     IOperation old = this._refines;
                     ValueChangedEventArgs e = new ValueChangedEventArgs(old, value);
                     this.OnRefinesChanging(e);
-                    this.OnPropertyChanging("Refines", e);
+                    this.OnPropertyChanging("Refines", e, _refinesReference);
                     this._refines = value;
                     if ((old != null))
                     {
@@ -121,7 +127,7 @@ namespace NMF.Models.Meta
                         value.Deleted += this.OnResetRefines;
                     }
                     this.OnRefinesChanged(e);
-                    this.OnPropertyChanged("Refines", e);
+                    this.OnPropertyChanged("Refines", e, _refinesReference);
                 }
             }
         }
@@ -129,7 +135,7 @@ namespace NMF.Models.Meta
         /// <summary>
         /// Gets the child model elements of this model element
         /// </summary>
-        public override IEnumerableExpression<IModelElement> Children
+        public override IEnumerableExpression<NMF.Models.IModelElement> Children
         {
             get
             {
@@ -140,7 +146,7 @@ namespace NMF.Models.Meta
         /// <summary>
         /// Gets the referenced model elements of this model element
         /// </summary>
-        public override IEnumerableExpression<IModelElement> ReferencedElements
+        public override IEnumerableExpression<NMF.Models.IModelElement> ReferencedElements
         {
             get
             {
@@ -157,7 +163,7 @@ namespace NMF.Models.Meta
             {
                 if ((_classInstance == null))
                 {
-                    _classInstance = ((IClass)(MetaRepository.Instance.Resolve("http://nmf.codeplex.com/nmeta/#//Operation/")));
+                    _classInstance = ((IClass)(MetaRepository.Instance.Resolve("http://nmf.codeplex.com/nmeta/#//Operation")));
                 }
                 return _classInstance;
             }
@@ -183,6 +189,11 @@ namespace NMF.Models.Meta
         /// </summary>
         public event System.EventHandler<ValueChangedEventArgs> RefinesChanged;
         
+        private static ITypedElement RetrieveParametersReference()
+        {
+            return ((ITypedElement)(((NMF.Models.ModelElement)(Operation.ClassInstance)).Resolve("Parameters")));
+        }
+        
         /// <summary>
         /// Forwards CollectionChanging notifications for the Parameters property to the parent model element
         /// </summary>
@@ -190,7 +201,7 @@ namespace NMF.Models.Meta
         /// <param name="e">The original event data</param>
         private void ParametersCollectionChanging(object sender, NMF.Collections.ObjectModel.NotifyCollectionChangingEventArgs e)
         {
-            this.OnCollectionChanging("Parameters", e);
+            this.OnCollectionChanging("Parameters", e, _parametersReference);
         }
         
         /// <summary>
@@ -200,7 +211,12 @@ namespace NMF.Models.Meta
         /// <param name="e">The original event data</param>
         private void ParametersCollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
         {
-            this.OnCollectionChanged("Parameters", e);
+            this.OnCollectionChanged("Parameters", e, _parametersReference);
+        }
+        
+        private static ITypedElement RetrieveDeclaringTypeReference()
+        {
+            return ((ITypedElement)(((NMF.Models.ModelElement)(Operation.ClassInstance)).Resolve("DeclaringType")));
         }
         
         /// <summary>
@@ -221,13 +237,13 @@ namespace NMF.Models.Meta
         /// </summary>
         /// <param name="oldParent">The old parent model element</param>
         /// <param name="newParent">The new parent model element</param>
-        protected override void OnParentChanging(IModelElement newParent, IModelElement oldParent)
+        protected override void OnParentChanging(NMF.Models.IModelElement newParent, NMF.Models.IModelElement oldParent)
         {
             IStructuredType oldDeclaringType = ModelHelper.CastAs<IStructuredType>(oldParent);
             IStructuredType newDeclaringType = ModelHelper.CastAs<IStructuredType>(newParent);
             ValueChangedEventArgs e = new ValueChangedEventArgs(oldDeclaringType, newDeclaringType);
             this.OnDeclaringTypeChanging(e);
-            this.OnPropertyChanging("DeclaringType");
+            this.OnPropertyChanging("DeclaringType", e, _declaringTypeReference);
         }
         
         /// <summary>
@@ -248,7 +264,7 @@ namespace NMF.Models.Meta
         /// </summary>
         /// <param name="oldParent">The old parent model element</param>
         /// <param name="newParent">The new parent model element</param>
-        protected override void OnParentChanged(IModelElement newParent, IModelElement oldParent)
+        protected override void OnParentChanged(NMF.Models.IModelElement newParent, NMF.Models.IModelElement oldParent)
         {
             IStructuredType oldDeclaringType = ModelHelper.CastAs<IStructuredType>(oldParent);
             IStructuredType newDeclaringType = ModelHelper.CastAs<IStructuredType>(newParent);
@@ -262,8 +278,13 @@ namespace NMF.Models.Meta
             }
             ValueChangedEventArgs e = new ValueChangedEventArgs(oldDeclaringType, newDeclaringType);
             this.OnDeclaringTypeChanged(e);
-            this.OnPropertyChanged("DeclaringType", e);
+            this.OnPropertyChanged("DeclaringType", e, _declaringTypeReference);
             base.OnParentChanged(newParent, oldParent);
+        }
+        
+        private static ITypedElement RetrieveRefinesReference()
+        {
+            return ((ITypedElement)(((NMF.Models.ModelElement)(Operation.ClassInstance)).Resolve("Refines")));
         }
         
         /// <summary>
@@ -343,11 +364,11 @@ namespace NMF.Models.Meta
         /// <param name="attribute">The requested attribute in upper case</param>
         protected override NMF.Expressions.INotifyExpression<object> GetExpressionForAttribute(string attribute)
         {
-            if ((attribute == "DECLARINGTYPE"))
+            if ((attribute == "DeclaringType"))
             {
                 return new DeclaringTypeProxy(this);
             }
-            if ((attribute == "REFINES"))
+            if ((attribute == "Refines"))
             {
                 return new RefinesProxy(this);
             }
@@ -361,11 +382,11 @@ namespace NMF.Models.Meta
         /// <param name="reference">The requested reference in upper case</param>
         protected override NMF.Expressions.INotifyExpression<NMF.Models.IModelElement> GetExpressionForReference(string reference)
         {
-            if ((reference == "DECLARINGTYPE"))
+            if ((reference == "DeclaringType"))
             {
                 return new DeclaringTypeProxy(this);
             }
-            if ((reference == "REFINES"))
+            if ((reference == "Refines"))
             {
                 return new RefinesProxy(this);
             }
@@ -379,7 +400,7 @@ namespace NMF.Models.Meta
         {
             if ((_classInstance == null))
             {
-                _classInstance = ((IClass)(MetaRepository.Instance.Resolve("http://nmf.codeplex.com/nmeta/#//Operation/")));
+                _classInstance = ((IClass)(MetaRepository.Instance.Resolve("http://nmf.codeplex.com/nmeta/#//Operation")));
             }
             return _classInstance;
         }
@@ -387,7 +408,7 @@ namespace NMF.Models.Meta
         /// <summary>
         /// The collection class to to represent the children of the Operation class
         /// </summary>
-        public class OperationChildrenCollection : ReferenceCollection, ICollectionExpression<IModelElement>, ICollection<IModelElement>
+        public class OperationChildrenCollection : ReferenceCollection, ICollectionExpression<NMF.Models.IModelElement>, ICollection<NMF.Models.IModelElement>
         {
             
             private Operation _parent;
@@ -427,7 +448,7 @@ namespace NMF.Models.Meta
             /// Adds the given element to the collection
             /// </summary>
             /// <param name="item">The item to add</param>
-            public override void Add(IModelElement item)
+            public override void Add(NMF.Models.IModelElement item)
             {
                 IParameter parametersCasted = item.As<IParameter>();
                 if ((parametersCasted != null))
@@ -449,7 +470,7 @@ namespace NMF.Models.Meta
             /// </summary>
             /// <returns>True, if it is contained, otherwise False</returns>
             /// <param name="item">The item that should be looked out for</param>
-            public override bool Contains(IModelElement item)
+            public override bool Contains(NMF.Models.IModelElement item)
             {
                 if (this._parent.Parameters.Contains(item))
                 {
@@ -463,9 +484,9 @@ namespace NMF.Models.Meta
             /// </summary>
             /// <param name="array">The array in which the elements should be copied</param>
             /// <param name="arrayIndex">The starting index</param>
-            public override void CopyTo(IModelElement[] array, int arrayIndex)
+            public override void CopyTo(NMF.Models.IModelElement[] array, int arrayIndex)
             {
-                IEnumerator<IModelElement> parametersEnumerator = this._parent.Parameters.GetEnumerator();
+                IEnumerator<NMF.Models.IModelElement> parametersEnumerator = this._parent.Parameters.GetEnumerator();
                 try
                 {
                     for (
@@ -487,7 +508,7 @@ namespace NMF.Models.Meta
             /// </summary>
             /// <returns>True, if the item was removed, otherwise False</returns>
             /// <param name="item">The item that should be removed</param>
-            public override bool Remove(IModelElement item)
+            public override bool Remove(NMF.Models.IModelElement item)
             {
                 IParameter parameterItem = item.As<IParameter>();
                 if (((parameterItem != null) 
@@ -502,16 +523,16 @@ namespace NMF.Models.Meta
             /// Gets an enumerator that enumerates the collection
             /// </summary>
             /// <returns>A generic enumerator</returns>
-            public override IEnumerator<IModelElement> GetEnumerator()
+            public override IEnumerator<NMF.Models.IModelElement> GetEnumerator()
             {
-                return Enumerable.Empty<IModelElement>().Concat(this._parent.Parameters).GetEnumerator();
+                return Enumerable.Empty<NMF.Models.IModelElement>().Concat(this._parent.Parameters).GetEnumerator();
             }
         }
         
         /// <summary>
         /// The collection class to to represent the children of the Operation class
         /// </summary>
-        public class OperationReferencedElementsCollection : ReferenceCollection, ICollectionExpression<IModelElement>, ICollection<IModelElement>
+        public class OperationReferencedElementsCollection : ReferenceCollection, ICollectionExpression<NMF.Models.IModelElement>, ICollection<NMF.Models.IModelElement>
         {
             
             private Operation _parent;
@@ -563,7 +584,7 @@ namespace NMF.Models.Meta
             /// Adds the given element to the collection
             /// </summary>
             /// <param name="item">The item to add</param>
-            public override void Add(IModelElement item)
+            public override void Add(NMF.Models.IModelElement item)
             {
                 IParameter parametersCasted = item.As<IParameter>();
                 if ((parametersCasted != null))
@@ -605,7 +626,7 @@ namespace NMF.Models.Meta
             /// </summary>
             /// <returns>True, if it is contained, otherwise False</returns>
             /// <param name="item">The item that should be looked out for</param>
-            public override bool Contains(IModelElement item)
+            public override bool Contains(NMF.Models.IModelElement item)
             {
                 if (this._parent.Parameters.Contains(item))
                 {
@@ -627,9 +648,9 @@ namespace NMF.Models.Meta
             /// </summary>
             /// <param name="array">The array in which the elements should be copied</param>
             /// <param name="arrayIndex">The starting index</param>
-            public override void CopyTo(IModelElement[] array, int arrayIndex)
+            public override void CopyTo(NMF.Models.IModelElement[] array, int arrayIndex)
             {
-                IEnumerator<IModelElement> parametersEnumerator = this._parent.Parameters.GetEnumerator();
+                IEnumerator<NMF.Models.IModelElement> parametersEnumerator = this._parent.Parameters.GetEnumerator();
                 try
                 {
                     for (
@@ -661,7 +682,7 @@ namespace NMF.Models.Meta
             /// </summary>
             /// <returns>True, if the item was removed, otherwise False</returns>
             /// <param name="item">The item that should be removed</param>
-            public override bool Remove(IModelElement item)
+            public override bool Remove(NMF.Models.IModelElement item)
             {
                 IParameter parameterItem = item.As<IParameter>();
                 if (((parameterItem != null) 
@@ -686,9 +707,9 @@ namespace NMF.Models.Meta
             /// Gets an enumerator that enumerates the collection
             /// </summary>
             /// <returns>A generic enumerator</returns>
-            public override IEnumerator<IModelElement> GetEnumerator()
+            public override IEnumerator<NMF.Models.IModelElement> GetEnumerator()
             {
-                return Enumerable.Empty<IModelElement>().Concat(this._parent.Parameters).Concat(this._parent.DeclaringType).Concat(this._parent.Refines).GetEnumerator();
+                return Enumerable.Empty<NMF.Models.IModelElement>().Concat(this._parent.Parameters).Concat(this._parent.DeclaringType).Concat(this._parent.Refines).GetEnumerator();
             }
         }
         

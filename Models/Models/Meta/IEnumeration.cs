@@ -35,7 +35,7 @@ namespace NMF.Models.Meta
     /// </summary>
     [DefaultImplementationTypeAttribute(typeof(Enumeration))]
     [XmlDefaultImplementationTypeAttribute(typeof(Enumeration))]
-    public interface IEnumeration : IModelElement, IType
+    public interface IEnumeration : NMF.Models.IModelElement, IType
     {
         
         /// <summary>

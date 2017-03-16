@@ -15,6 +15,7 @@ using System.Collections.Specialized;
 using System.Web;
 using System.Collections;
 using NMF.Models.Collections;
+using NMF.Models.Meta;
 
 namespace NMF.Models
 {
@@ -721,11 +722,11 @@ namespace NMF.Models
         /// </summary>
         /// <param name="propertyName">The name of the changed property</param>
         /// <param name="valueChangedEvent">The original event data</param>
-        protected virtual void OnPropertyChanged(string propertyName, ValueChangedEventArgs valueChangedEvent)
+        protected virtual void OnPropertyChanged(string propertyName, ValueChangedEventArgs valueChangedEvent, Lazy<ITypedElement> feature = null)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
             if (!IsFlagSet(ModelElementFlag.Deleting))
-                OnBubbledChange(BubbledChangeEventArgs.PropertyChanged(this, propertyName, valueChangedEvent, IsFlagSet(ModelElementFlag.RequireUris)));
+                OnBubbledChange(BubbledChangeEventArgs.PropertyChanged(this, propertyName, valueChangedEvent, IsFlagSet(ModelElementFlag.RequireUris), feature));
         }
 
 
@@ -733,11 +734,11 @@ namespace NMF.Models
         /// Gets called when the PropertyChanging event is fired
         /// </summary>
         /// <param name="propertyName">The name of the changed property</param>
-        protected virtual void OnPropertyChanging(string propertyName, ValueChangedEventArgs e = null)
+        protected virtual void OnPropertyChanging(string propertyName, ValueChangedEventArgs e = null, Lazy<ITypedElement> feature = null)
         {
             PropertyChanging?.Invoke(this, new PropertyChangingEventArgs(propertyName));
             if (!IsFlagSet(ModelElementFlag.Deleting))
-                OnBubbledChange(BubbledChangeEventArgs.PropertyChanging(this, propertyName, e, IsFlagSet(ModelElementFlag.RequireUris)));
+                OnBubbledChange(BubbledChangeEventArgs.PropertyChanging(this, propertyName, e, IsFlagSet(ModelElementFlag.RequireUris), feature));
         }
 
 
@@ -918,7 +919,7 @@ namespace NMF.Models
         /// </summary>
         /// <param name="propertyName">The name of the property that has changed</param>
         /// <param name="e">The event data</param>
-        protected void OnCollectionChanged(string propertyName, NotifyCollectionChangedEventArgs e)
+        protected void OnCollectionChanged(string propertyName, NotifyCollectionChangedEventArgs e, Lazy<ITypedElement> feature = null)
         {
             if (!IsFlagSet(ModelElementFlag.Deleting))
                 OnBubbledChange(BubbledChangeEventArgs.CollectionChanged(this, propertyName, e, IsFlagSet(ModelElementFlag.RequireUris)));
@@ -929,7 +930,7 @@ namespace NMF.Models
         /// </summary>
         /// <param name="propertyName">The name of the property that has changed</param>
         /// <param name="e">The event data</param>
-        protected void OnCollectionChanging(string propertyName, NotifyCollectionChangingEventArgs e)
+        protected void OnCollectionChanging(string propertyName, NotifyCollectionChangingEventArgs e, Lazy<ITypedElement> feature = null)
         {
             if (!IsFlagSet(ModelElementFlag.Deleting))
                 OnBubbledChange(BubbledChangeEventArgs.CollectionChanging(this, propertyName, e, IsFlagSet(ModelElementFlag.RequireUris)));

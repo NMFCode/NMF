@@ -125,11 +125,25 @@ namespace NMF.Models
         IModelElement GetReferencedElement(IReference reference, int index = 0);
 
         /// <summary>
+        /// Sets the referenced element of the current model element for the given reference
+        /// </summary>
+        /// <param name="reference">The reference</param>
+        /// <param name="element">The element that should be set</param>
+        void SetReferencedElement(IReference reference, IModelElement element);
+
+        /// <summary>
         /// Gets the referen
         /// </summary>
         /// <param name="reference"></param>
         /// <returns></returns>
         IList GetReferencedElements(IReference reference);
+
+        /// <summary>
+        /// Sets the value of the current model element for the given attribute
+        /// </summary>
+        /// <param name="attribute">The attribute</param>
+        /// <param name="value">The value that should be set</param>
+        void SetAttributeValue(IAttribute attribute, object value);
 
         /// <summary>
         /// Gets fired when an elementary change happens in the composition hierarchy rooted at the current element. The original elementary change can be retrieved in the event data

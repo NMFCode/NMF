@@ -14,6 +14,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Collections.Specialized;
+using System;
 
 namespace NMF.Models.Meta
 {
@@ -68,6 +69,8 @@ namespace NMF.Models.Meta
 
                 var fieldRef = generatedProperty.CreateBackingField(fieldType, CreateDefaultValue(input, fieldType, generatedProperty));
 
+                CodeDomHelper.DependentMembers(generatedProperty, true).Add(GenerateStaticAttributeField(input, context));
+
                 generatedProperty.ImplementGetter(fieldRef);
 
                 if (input.UpperBound == 1)
@@ -83,13 +86,15 @@ namespace NMF.Models.Meta
                         new CodeObjectCreateExpression(typeof(ValueChangedEventArgs).ToTypeReference(), oldRef, value));
                     var valueChangeRef = new CodeVariableReferenceExpression(valueChangeDef.Name);
 
+                    var attributeRef = new CodeFieldReferenceExpression(null, "_" + input.Name.ToCamelCase() + "Attribute");
+
                     var callOnPropertyChanging = new CodeMethodInvokeExpression(
                         new CodeThisReferenceExpression(), "OnPropertyChanging",
-                        new CodePrimitiveExpression(generatedProperty.Name), valueChangeRef);
+                        new CodePrimitiveExpression(generatedProperty.Name), valueChangeRef, attributeRef);
 
                     var callOnPropertyChanged = new CodeMethodInvokeExpression(
                         new CodeThisReferenceExpression(), "OnPropertyChanged", 
-                        new CodePrimitiveExpression(generatedProperty.Name), valueChangeRef);
+                        new CodePrimitiveExpression(generatedProperty.Name), valueChangeRef, attributeRef);
 
                     generatedProperty.SetStatements.Add(new CodeConditionStatement(new CodeBinaryOperatorExpression(fieldRef, CodeBinaryOperatorType.IdentityInequality, value),
                         oldDef,
@@ -109,26 +114,56 @@ namespace NMF.Models.Meta
                     var constructorStmts = generatedProperty.ImpliedConstructorStatements(true);
                     constructorStmts.Add(createEmptyCollection);
                     constructorStmts.Add(new CodeAttachEventStatement(fieldRef, "CollectionChanging",
-                        GenerateCollectionBubbleHandler(generatedProperty, "CollectionChanging", typeof(NotifyCollectionChangingEventArgs))));
+                        GenerateCollectionBubbleHandler(input, generatedProperty, "CollectionChanging", typeof(NotifyCollectionChangingEventArgs))));
                     constructorStmts.Add(new CodeAttachEventStatement(fieldRef, "CollectionChanged",
-                        GenerateCollectionBubbleHandler(generatedProperty, "CollectionChanged", typeof(NotifyCollectionChangedEventArgs))));
+                        GenerateCollectionBubbleHandler(input, generatedProperty, "CollectionChanged", typeof(NotifyCollectionChangedEventArgs))));
                 }
 
                 GenerateSerializationAttributes(input, generatedProperty, context);
             }
 
-            private CodeMethodReferenceExpression GenerateCollectionBubbleHandler(CodeMemberProperty property, string suffix, System.Type eventArgsType)
+            private CodeMemberField GenerateStaticAttributeField(IAttribute property, ITransformationContext context)
+            {
+                var typedElementType = CodeDomHelper.ToTypeReference(typeof(ITypedElement));
+                var staticAttributeField = new CodeMemberField()
+                {
+                    Name = "_" + property.Name.ToCamelCase() + "Attribute",
+                    Attributes = MemberAttributes.Static | MemberAttributes.Private,
+                    Type = new CodeTypeReference(typeof(Lazy<>).Name, typedElementType)
+                };
+                var staticAttributeFieldInit = new CodeMemberMethod()
+                {
+                    Name = "Retrieve" + property.Name.ToPascalCase() + "Attribute",
+                    Attributes = MemberAttributes.Private | MemberAttributes.Static,
+                    ReturnType = typedElementType
+                };
+                var declaringTypeRef = CreateReference(property.DeclaringType, true, context);
+                var declaringRef2 = new CodeTypeReference();
+                declaringRef2.BaseType = declaringTypeRef.BaseType;
+                declaringRef2.SetNamespace(declaringTypeRef.Namespace());
+                staticAttributeFieldInit.Statements.Add(new CodeMethodReturnStatement(new CodeCastExpression(typedElementType,
+                    new CodeMethodInvokeExpression(new CodeCastExpression(CodeDomHelper.ToTypeReference(typeof(ModelElement)), 
+                    new CodePropertyReferenceExpression(new CodeTypeReferenceExpression(declaringRef2), "ClassInstance")),
+                    "Resolve", new CodePrimitiveExpression(property.Name)))));
+                staticAttributeField.InitExpression = new CodeObjectCreateExpression(staticAttributeField.Type, new CodeMethodReferenceExpression(null, staticAttributeFieldInit.Name));
+                CodeDomHelper.DependentMembers(staticAttributeField, true).Add(staticAttributeFieldInit);
+                return staticAttributeField;
+            }
+
+            private CodeMethodReferenceExpression GenerateCollectionBubbleHandler(IAttribute input, CodeMemberProperty property, string suffix, System.Type eventArgsType)
             {
                 var collectionBubbleHandler = new CodeMemberMethod()
                 {
                     Name = property.Name + suffix,
                     Attributes = MemberAttributes.Private
                 };
+
+                var attributeRef = new CodeFieldReferenceExpression(null, "_" + input.Name.ToCamelCase() + "Attribute");
                 collectionBubbleHandler.Parameters.Add(new CodeParameterDeclarationExpression(typeof(object), "sender"));
                 collectionBubbleHandler.Parameters.Add(new CodeParameterDeclarationExpression(eventArgsType, "e"));
                 collectionBubbleHandler.Statements.Add(new CodeMethodInvokeExpression(
                     new CodeThisReferenceExpression(), "On" + suffix,
-                    new CodePrimitiveExpression(property.Name), new CodeArgumentReferenceExpression("e")));
+                    new CodePrimitiveExpression(property.Name), new CodeArgumentReferenceExpression("e"), attributeRef));
                 collectionBubbleHandler.WriteDocumentation(string.Format("Forwards " + suffix + " notifications for the {0} property to the parent model element", property.Name), null,
                     new Dictionary<string, string>() {
                     { "sender", "The collection that raised the change" },

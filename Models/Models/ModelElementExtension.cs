@@ -9,7 +9,7 @@ namespace NMF.Models
 {
 
     [ModelRepresentationClassAttribute("http://nmf.codeplex.com/nmeta/#//ModelElementExtension/")]
-    public abstract class ModelElementExtension : ModelElement, Meta.IModelElementExtension
+    public abstract class ModelElementExtension : ModelElement, IModelElementExtension
     {
         protected internal ModelElementExtension(IModelElement extended)
         {

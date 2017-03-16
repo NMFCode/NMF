@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using NMF.Collections.ObjectModel;
 using System.Diagnostics;
+using NMF.Models.Meta;
 
 namespace NMF.Models
 {
@@ -15,15 +16,18 @@ namespace NMF.Models
     [DebuggerDisplay("BubbledChange: {ChangeType} in {Element}")]
     public class BubbledChangeEventArgs : EventArgs
     {
-        internal BubbledChangeEventArgs(IModelElement element)
+        internal BubbledChangeEventArgs(IModelElement element, ITypedElement feature = null)
         {
             Element = element;
+            Feature = feature;
         }
 
         /// <summary>
         /// The original model element directly affected by this change
         /// </summary>
         public IModelElement Element { get; private set; }
+
+        public ITypedElement Feature { get; private set; }
 
         /// <summary>
         /// Absolute URI of the model element at the time of the event
@@ -166,7 +170,7 @@ namespace NMF.Models
         /// <param name="propertyName">The property name.</param>
         /// <param name="requireUris">Determines whether the event data should include absolute Uris</param>
         /// <returns></returns>
-        public static BubbledChangeEventArgs PropertyChanging(IModelElement source, string propertyName, ValueChangedEventArgs eventArgs, bool requireUris)
+        public static BubbledChangeEventArgs PropertyChanging(IModelElement source, string propertyName, ValueChangedEventArgs eventArgs, bool requireUris, Lazy<ITypedElement> feature = null)
         {
             if (source == null)
                 throw new ArgumentNullException(nameof(source));
@@ -175,7 +179,7 @@ namespace NMF.Models
 
             if (requireUris)
             {
-                return new UriEnabledBubbledChangeEventArgs(source)
+                return new UriEnabledBubbledChangeEventArgs(source, feature?.Value)
                 {
                     ChangeType = ChangeType.PropertyChanging,
                     OriginalEventArgs = eventArgs,
@@ -201,7 +205,7 @@ namespace NMF.Models
         /// <param name="args">The original ValueChangedEventArgs.</param>
         /// <param name="requireUris">Determines whether the event data should include absolute Uris</param>
         /// <returns></returns>
-        public static BubbledChangeEventArgs PropertyChanged(IModelElement source, string propertyName, ValueChangedEventArgs args, bool requireUris)
+        public static BubbledChangeEventArgs PropertyChanged(IModelElement source, string propertyName, ValueChangedEventArgs args, bool requireUris, Lazy<ITypedElement> feature = null)
         {
             if (source == null)
                 throw new ArgumentNullException(nameof(source));
@@ -214,7 +218,7 @@ namespace NMF.Models
             {
                 var newValueUri = (args.NewValue as IModelElement)?.AbsoluteUri;
 
-                return new UriEnabledBubbledChangeEventArgs(source, newValueUri != null ? new List<Uri>() {  newValueUri } : null)
+                return new UriEnabledBubbledChangeEventArgs(source, newValueUri != null ? new List<Uri>() {  newValueUri } : null, feature?.Value)
                 {
                     ChangeType = ChangeType.PropertyChanged,
                     OriginalEventArgs = args,
@@ -240,7 +244,7 @@ namespace NMF.Models
         /// <param name="args">The original NotifyCollectionChangingEventArgs.</param>
         /// <param name="requireUris">Determines whether the event data should include absolute Uris</param>
         /// <returns></returns>
-        public static BubbledChangeEventArgs CollectionChanging(IModelElement source, string propertyName, NotifyCollectionChangingEventArgs args, bool requireUris)
+        public static BubbledChangeEventArgs CollectionChanging(IModelElement source, string propertyName, NotifyCollectionChangingEventArgs args, bool requireUris, Lazy<ITypedElement> feature = null)
         {
             if (source == null)
                 throw new ArgumentNullException(nameof(source));
@@ -251,7 +255,7 @@ namespace NMF.Models
 
             if (requireUris)
             {
-                return new UriEnabledBubbledChangeEventArgs(source)
+                return new UriEnabledBubbledChangeEventArgs(source, feature?.Value)
                 {
                     ChangeType = ChangeType.CollectionChanging,
                     OriginalEventArgs = args,
@@ -277,7 +281,7 @@ namespace NMF.Models
         /// <param name="args">The original NotifyCollectionChangedEventArgs.</param>
         /// <param name="requireUris">Determies whether the event data should obtain the absolute Uris</param>
         /// <returns></returns>
-        public static BubbledChangeEventArgs CollectionChanged(IModelElement source, string propertyName, NotifyCollectionChangedEventArgs args, bool requireUris)
+        public static BubbledChangeEventArgs CollectionChanged(IModelElement source, string propertyName, NotifyCollectionChangedEventArgs args, bool requireUris, Lazy<ITypedElement> feature = null)
         {
             if (source == null)
                 throw new ArgumentNullException(nameof(source));
@@ -292,7 +296,7 @@ namespace NMF.Models
                 if (args.Action == NotifyCollectionChangedAction.Add)
                     childrenUris = args.NewItems.OfType<IModelElement>().Select(e => e.AbsoluteUri).ToList();
 
-                return new UriEnabledBubbledChangeEventArgs(source, childrenUris)
+                return new UriEnabledBubbledChangeEventArgs(source, childrenUris, feature?.Value)
                 {
                     ChangeType = ChangeType.CollectionChanged,
                     OriginalEventArgs = args,
@@ -317,14 +321,14 @@ namespace NMF.Models
         private Uri absoluteUri;
         private List<Uri> childrenUris;
 
-        public UriEnabledBubbledChangeEventArgs(IModelElement element) : this(element, element.AbsoluteUri) { }
+        public UriEnabledBubbledChangeEventArgs(IModelElement element, ITypedElement feature = null) : this(element, element.AbsoluteUri) { }
 
-        public UriEnabledBubbledChangeEventArgs(IModelElement element, List<Uri> childrenUris) : this(element)
+        public UriEnabledBubbledChangeEventArgs(IModelElement element, List<Uri> childrenUris, ITypedElement feature = null) : this(element)
         {
             this.childrenUris = childrenUris;
         }
 
-        public UriEnabledBubbledChangeEventArgs(IModelElement element, Uri absoluteUri) : base(element)
+        public UriEnabledBubbledChangeEventArgs(IModelElement element, Uri absoluteUri, ITypedElement feature = null) : base(element, feature)
         {
             this.absoluteUri = absoluteUri;
         }

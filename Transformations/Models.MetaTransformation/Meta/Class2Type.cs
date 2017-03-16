@@ -210,6 +210,7 @@ namespace NMF.Models.Meta
             public override void Transform(IClass input, CodeTypeDeclaration generatedType, ITransformationContext context)
             {
                 if (input.IsAbstract) generatedType.TypeAttributes = TypeAttributes.Abstract | TypeAttributes.Public;
+                generatedType.IsPartial = true;
 
                 if (input.Namespace.Uri != null)
                 {

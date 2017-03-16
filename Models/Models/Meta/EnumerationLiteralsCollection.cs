@@ -38,21 +38,24 @@ namespace NMF.Models.Meta
         {
         }
         
-        private void OnItemDeleted(object sender, System.EventArgs e)
+        private void OnItemParentChanged(object sender, ValueChangedEventArgs e)
         {
-            this.Remove(((ILiteral)(sender)));
+            if ((e.NewValue != this.Parent))
+            {
+                this.Remove(((ILiteral)(sender)));
+            }
         }
         
         protected override void SetOpposite(ILiteral item, IEnumeration parent)
         {
             if ((parent != null))
             {
-                item.Deleted += this.OnItemDeleted;
+                item.ParentChanged += this.OnItemParentChanged;
                 item.Enumeration = parent;
             }
             else
             {
-                item.Deleted -= this.OnItemDeleted;
+                item.ParentChanged -= this.OnItemParentChanged;
                 if ((item.Enumeration == this.Parent))
                 {
                     item.Enumeration = parent;

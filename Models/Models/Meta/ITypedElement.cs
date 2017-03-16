@@ -35,7 +35,7 @@ namespace NMF.Models.Meta
     /// </summary>
     [DefaultImplementationTypeAttribute(typeof(TypedElement))]
     [XmlDefaultImplementationTypeAttribute(typeof(TypedElement))]
-    public interface ITypedElement : IModelElement, IMetaElement
+    public interface ITypedElement : NMF.Models.IModelElement, IMetaElement
     {
         
         /// <summary>

@@ -35,15 +35,19 @@ namespace NMF.Models.Meta
     /// </summary>
     [XmlNamespaceAttribute("http://nmf.codeplex.com/nmeta/")]
     [XmlNamespacePrefixAttribute("nmeta")]
-    [ModelRepresentationClassAttribute("http://nmf.codeplex.com/nmeta/#//Literal/")]
+    [ModelRepresentationClassAttribute("http://nmf.codeplex.com/nmeta/#//Literal")]
     [DebuggerDisplayAttribute("Literal {Name}")]
-    public class Literal : MetaElement, ILiteral, IModelElement
+    public partial class Literal : MetaElement, ILiteral, NMF.Models.IModelElement
     {
         
         /// <summary>
         /// The backing field for the Value property
         /// </summary>
         private Nullable<int> _value;
+        
+        private static Lazy<ITypedElement> _valueAttribute = new Lazy<ITypedElement>(RetrieveValueAttribute);
+        
+        private static Lazy<ITypedElement> _enumerationReference = new Lazy<ITypedElement>(RetrieveEnumerationReference);
         
         private static IClass _classInstance;
         
@@ -64,10 +68,10 @@ namespace NMF.Models.Meta
                     Nullable<int> old = this._value;
                     ValueChangedEventArgs e = new ValueChangedEventArgs(old, value);
                     this.OnValueChanging(e);
-                    this.OnPropertyChanging("Value", e);
+                    this.OnPropertyChanging("Value", e, _valueAttribute);
                     this._value = value;
                     this.OnValueChanged(e);
-                    this.OnPropertyChanged("Value", e);
+                    this.OnPropertyChanged("Value", e, _valueAttribute);
                 }
             }
         }
@@ -93,7 +97,7 @@ namespace NMF.Models.Meta
         /// <summary>
         /// Gets the referenced model elements of this model element
         /// </summary>
-        public override IEnumerableExpression<IModelElement> ReferencedElements
+        public override IEnumerableExpression<NMF.Models.IModelElement> ReferencedElements
         {
             get
             {
@@ -110,7 +114,7 @@ namespace NMF.Models.Meta
             {
                 if ((_classInstance == null))
                 {
-                    _classInstance = ((IClass)(MetaRepository.Instance.Resolve("http://nmf.codeplex.com/nmeta/#//Literal/")));
+                    _classInstance = ((IClass)(MetaRepository.Instance.Resolve("http://nmf.codeplex.com/nmeta/#//Literal")));
                 }
                 return _classInstance;
             }
@@ -135,6 +139,11 @@ namespace NMF.Models.Meta
         /// Gets fired when the Enumeration property changed its value
         /// </summary>
         public event System.EventHandler<ValueChangedEventArgs> EnumerationChanged;
+        
+        private static ITypedElement RetrieveValueAttribute()
+        {
+            return ((ITypedElement)(((NMF.Models.ModelElement)(Literal.ClassInstance)).Resolve("Value")));
+        }
         
         /// <summary>
         /// Raises the ValueChanging event
@@ -162,6 +171,11 @@ namespace NMF.Models.Meta
             }
         }
         
+        private static ITypedElement RetrieveEnumerationReference()
+        {
+            return ((ITypedElement)(((NMF.Models.ModelElement)(Literal.ClassInstance)).Resolve("Enumeration")));
+        }
+        
         /// <summary>
         /// Raises the EnumerationChanging event
         /// </summary>
@@ -180,13 +194,13 @@ namespace NMF.Models.Meta
         /// </summary>
         /// <param name="oldParent">The old parent model element</param>
         /// <param name="newParent">The new parent model element</param>
-        protected override void OnParentChanging(IModelElement newParent, IModelElement oldParent)
+        protected override void OnParentChanging(NMF.Models.IModelElement newParent, NMF.Models.IModelElement oldParent)
         {
             IEnumeration oldEnumeration = ModelHelper.CastAs<IEnumeration>(oldParent);
             IEnumeration newEnumeration = ModelHelper.CastAs<IEnumeration>(newParent);
             ValueChangedEventArgs e = new ValueChangedEventArgs(oldEnumeration, newEnumeration);
             this.OnEnumerationChanging(e);
-            this.OnPropertyChanging("Enumeration");
+            this.OnPropertyChanging("Enumeration", e, _enumerationReference);
         }
         
         /// <summary>
@@ -207,7 +221,7 @@ namespace NMF.Models.Meta
         /// </summary>
         /// <param name="oldParent">The old parent model element</param>
         /// <param name="newParent">The new parent model element</param>
-        protected override void OnParentChanged(IModelElement newParent, IModelElement oldParent)
+        protected override void OnParentChanged(NMF.Models.IModelElement newParent, NMF.Models.IModelElement oldParent)
         {
             IEnumeration oldEnumeration = ModelHelper.CastAs<IEnumeration>(oldParent);
             IEnumeration newEnumeration = ModelHelper.CastAs<IEnumeration>(newParent);
@@ -221,7 +235,7 @@ namespace NMF.Models.Meta
             }
             ValueChangedEventArgs e = new ValueChangedEventArgs(oldEnumeration, newEnumeration);
             this.OnEnumerationChanged(e);
-            this.OnPropertyChanged("Enumeration", e);
+            this.OnPropertyChanged("Enumeration", e, _enumerationReference);
             base.OnParentChanged(newParent, oldParent);
         }
         
@@ -267,7 +281,7 @@ namespace NMF.Models.Meta
         /// <param name="attribute">The requested attribute in upper case</param>
         protected override NMF.Expressions.INotifyExpression<object> GetExpressionForAttribute(string attribute)
         {
-            if ((attribute == "ENUMERATION"))
+            if ((attribute == "Enumeration"))
             {
                 return new EnumerationProxy(this);
             }
@@ -281,7 +295,7 @@ namespace NMF.Models.Meta
         /// <param name="reference">The requested reference in upper case</param>
         protected override NMF.Expressions.INotifyExpression<NMF.Models.IModelElement> GetExpressionForReference(string reference)
         {
-            if ((reference == "ENUMERATION"))
+            if ((reference == "Enumeration"))
             {
                 return new EnumerationProxy(this);
             }
@@ -295,7 +309,7 @@ namespace NMF.Models.Meta
         {
             if ((_classInstance == null))
             {
-                _classInstance = ((IClass)(MetaRepository.Instance.Resolve("http://nmf.codeplex.com/nmeta/#//Literal/")));
+                _classInstance = ((IClass)(MetaRepository.Instance.Resolve("http://nmf.codeplex.com/nmeta/#//Literal")));
             }
             return _classInstance;
         }
@@ -303,7 +317,7 @@ namespace NMF.Models.Meta
         /// <summary>
         /// The collection class to to represent the children of the Literal class
         /// </summary>
-        public class LiteralReferencedElementsCollection : ReferenceCollection, ICollectionExpression<IModelElement>, ICollection<IModelElement>
+        public class LiteralReferencedElementsCollection : ReferenceCollection, ICollectionExpression<NMF.Models.IModelElement>, ICollection<NMF.Models.IModelElement>
         {
             
             private Literal _parent;
@@ -346,7 +360,7 @@ namespace NMF.Models.Meta
             /// Adds the given element to the collection
             /// </summary>
             /// <param name="item">The item to add</param>
-            public override void Add(IModelElement item)
+            public override void Add(NMF.Models.IModelElement item)
             {
                 if ((this._parent.Enumeration == null))
                 {
@@ -372,7 +386,7 @@ namespace NMF.Models.Meta
             /// </summary>
             /// <returns>True, if it is contained, otherwise False</returns>
             /// <param name="item">The item that should be looked out for</param>
-            public override bool Contains(IModelElement item)
+            public override bool Contains(NMF.Models.IModelElement item)
             {
                 if ((item == this._parent.Enumeration))
                 {
@@ -386,7 +400,7 @@ namespace NMF.Models.Meta
             /// </summary>
             /// <param name="array">The array in which the elements should be copied</param>
             /// <param name="arrayIndex">The starting index</param>
-            public override void CopyTo(IModelElement[] array, int arrayIndex)
+            public override void CopyTo(NMF.Models.IModelElement[] array, int arrayIndex)
             {
                 if ((this._parent.Enumeration != null))
                 {
@@ -400,7 +414,7 @@ namespace NMF.Models.Meta
             /// </summary>
             /// <returns>True, if the item was removed, otherwise False</returns>
             /// <param name="item">The item that should be removed</param>
-            public override bool Remove(IModelElement item)
+            public override bool Remove(NMF.Models.IModelElement item)
             {
                 if ((this._parent.Enumeration == item))
                 {
@@ -414,9 +428,9 @@ namespace NMF.Models.Meta
             /// Gets an enumerator that enumerates the collection
             /// </summary>
             /// <returns>A generic enumerator</returns>
-            public override IEnumerator<IModelElement> GetEnumerator()
+            public override IEnumerator<NMF.Models.IModelElement> GetEnumerator()
             {
-                return Enumerable.Empty<IModelElement>().Concat(this._parent.Enumeration).GetEnumerator();
+                return Enumerable.Empty<NMF.Models.IModelElement>().Concat(this._parent.Enumeration).GetEnumerator();
             }
         }
         

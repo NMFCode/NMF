@@ -35,7 +35,7 @@ namespace NMF.Models.Meta
     /// </summary>
     [DefaultImplementationTypeAttribute(typeof(ReferenceConstraint))]
     [XmlDefaultImplementationTypeAttribute(typeof(ReferenceConstraint))]
-    public interface IReferenceConstraint : IModelElement
+    public interface IReferenceConstraint : NMF.Models.IModelElement
     {
         
         /// <summary>
@@ -50,7 +50,7 @@ namespace NMF.Models.Meta
         /// <summary>
         /// The References property
         /// </summary>
-        IListExpression<IModelElement> References
+        IListExpression<NMF.Models.IModelElement> References
         {
             get;
         }

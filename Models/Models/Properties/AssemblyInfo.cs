@@ -10,4 +10,5 @@ using System;
 [assembly: AssemblyCopyright("Copyright © Georg Hinkel 2013")]
 [assembly: Guid("911a6021-54b8-4905-b6e1-ad7222116427")]
 
-[assembly: ModelMetadata("http://nmf.codeplex.com/nmeta/", "NMF.Models.NMeta.nmf")]
+[assembly: ModelMetadata("http://nmf.codeplex.com/nmeta/", "NMF.Models.NMeta.nmeta")]
+[assembly: ModelMetadata("http://nmf.codeplex.com/changes", "NMF.Models.NMetaChanges.nmeta")]

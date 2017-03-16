@@ -35,9 +35,9 @@ namespace NMF.Models.Meta
     /// </summary>
     [XmlNamespaceAttribute("http://nmf.codeplex.com/nmeta/")]
     [XmlNamespacePrefixAttribute("nmeta")]
-    [ModelRepresentationClassAttribute("http://nmf.codeplex.com/nmeta/#//DataType/")]
+    [ModelRepresentationClassAttribute("http://nmf.codeplex.com/nmeta/#//DataType")]
     [DebuggerDisplayAttribute("DataType {Name}")]
-    public class DataType : StructuredType, IDataType, IModelElement
+    public partial class DataType : StructuredType, IDataType, NMF.Models.IModelElement
     {
         
         private static IClass _classInstance;
@@ -51,7 +51,7 @@ namespace NMF.Models.Meta
             {
                 if ((_classInstance == null))
                 {
-                    _classInstance = ((IClass)(MetaRepository.Instance.Resolve("http://nmf.codeplex.com/nmeta/#//DataType/")));
+                    _classInstance = ((IClass)(MetaRepository.Instance.Resolve("http://nmf.codeplex.com/nmeta/#//DataType")));
                 }
                 return _classInstance;
             }
@@ -64,7 +64,7 @@ namespace NMF.Models.Meta
         {
             if ((_classInstance == null))
             {
-                _classInstance = ((IClass)(MetaRepository.Instance.Resolve("http://nmf.codeplex.com/nmeta/#//DataType/")));
+                _classInstance = ((IClass)(MetaRepository.Instance.Resolve("http://nmf.codeplex.com/nmeta/#//DataType")));
             }
             return _classInstance;
         }

@@ -54,6 +54,10 @@
     <Compile Include="Attributes\OppositeAttribute.cs" />
     <Compile Include="Attributes\UpperBoundAttribute.cs" />
     <Compile Include="BubbledChangeEventArgs.cs" />
+    <Compile Include="Changes\ApplyChanges.cs" />
+    <Compile Include="Changes\IModelChangeManual.cs" />
+    <Compile Include="Changes\InvertChanges.cs" />
+    <Compile Include="Changes\ModelChangeRecorder.cs" />
     <Compile Include="Collections\AssociationList.cs" />
     <Compile Include="Collections\AssociationOrderedSet.cs" />
     <Compile Include="Collections\AssociationSet.cs" />
@@ -62,15 +66,6 @@
     <Compile Include="Collections\CompositionOrderedSet.cs" />
     <Compile Include="Collections\CompositionSet.cs" />
     <Compile Include="Collections\DescendantsCollection.cs" />
-    <Compile Include="Evolution\ChangeTransaction.cs" />
-    <Compile Include="Evolution\CollectionDeletion.cs" />
-    <Compile Include="Evolution\CollectionInsertion.cs" />
-    <Compile Include="Evolution\CollectionReset.cs" />
-    <Compile Include="Evolution\ElementCreation.cs" />
-    <Compile Include="Evolution\ElementDeletion.cs" />
-    <Compile Include="Evolution\ModelChangeCollection.cs" />
-    <Compile Include="Evolution\ModelChangeRecorder.cs" />
-    <Compile Include="Evolution\ListDeletion.cs" />
     <Compile Include="IModelElement.cs" />
     <Compile Include="IModelValidationLog.cs" />
     <Compile Include="Meta\Attribute.cs" />
@@ -107,10 +102,67 @@
     <Compile Include="Meta\ReferenceTypeEventsCollection.cs" />
     <Compile Include="Meta\ReferenceTypeReferencesCollection.cs" />
     <Compile Include="Meta\TypedElement.cs" />
+    <Compile Include="Meta\TypeExtensions.cs" />
     <Compile Include="ModelExtensions.cs" />
     <Compile Include="ModelMetadataAttribute.cs" />
     <Compile Include="ModelPropertyChange.cs" />
     <Compile Include="ModelRepresentationClassAttribute.cs" />
+    <Compile Include="Changes\AssociationChange.cs" />
+    <Compile Include="Changes\AssociationCollectionDeletion.cs" />
+    <Compile Include="Changes\AssociationCollectionInsertion.cs" />
+    <Compile Include="Changes\AssociationCollectionReset.cs" />
+    <Compile Include="Changes\AssociationListDeletion.cs" />
+    <Compile Include="Changes\AssociationListInsertion.cs" />
+    <Compile Include="Changes\AttributeChange.cs" />
+    <Compile Include="Changes\AttributeCollectionDeletion.cs" />
+    <Compile Include="Changes\AttributeCollectionInsertion.cs" />
+    <Compile Include="Changes\AttributeCollectionReset.cs" />
+    <Compile Include="Changes\AttributeListDeletion.cs" />
+    <Compile Include="Changes\AttributeListInsertion.cs" />
+    <Compile Include="Changes\CollectionDeletion.cs" />
+    <Compile Include="Changes\CollectionInsertion.cs" />
+    <Compile Include="Changes\CollectionReset.cs" />
+    <Compile Include="Changes\CompositionChange.cs" />
+    <Compile Include="Changes\CompositionCollectionDeletion.cs" />
+    <Compile Include="Changes\CompositionCollectionInsertion.cs" />
+    <Compile Include="Changes\CompositionCollectionReset.cs" />
+    <Compile Include="Changes\CompositionListDeletion.cs" />
+    <Compile Include="Changes\CompositionListInsertion.cs" />
+    <Compile Include="Changes\ElementaryChange.cs" />
+    <Compile Include="Changes\ElementaryChangeTransaction.cs" />
+    <Compile Include="Changes\IAssociationChange.cs" />
+    <Compile Include="Changes\IAssociationCollectionDeletion.cs" />
+    <Compile Include="Changes\IAssociationCollectionInsertion.cs" />
+    <Compile Include="Changes\IAssociationCollectionReset.cs" />
+    <Compile Include="Changes\IAssociationListDeletion.cs" />
+    <Compile Include="Changes\IAssociationListInsertion.cs" />
+    <Compile Include="Changes\IAttributeChange.cs" />
+    <Compile Include="Changes\IAttributeCollectionDeletion.cs" />
+    <Compile Include="Changes\IAttributeCollectionInsertion.cs" />
+    <Compile Include="Changes\IAttributeCollectionReset.cs" />
+    <Compile Include="Changes\IAttributeListDeletion.cs" />
+    <Compile Include="Changes\IAttributeListInsertion.cs" />
+    <Compile Include="Changes\ICollectionDeletion.cs" />
+    <Compile Include="Changes\ICollectionInsertion.cs" />
+    <Compile Include="Changes\ICollectionReset.cs" />
+    <Compile Include="Changes\ICompositionChange.cs" />
+    <Compile Include="Changes\ICompositionCollectionDeletion.cs" />
+    <Compile Include="Changes\ICompositionCollectionInsertion.cs" />
+    <Compile Include="Changes\ICompositionCollectionReset.cs" />
+    <Compile Include="Changes\ICompositionListDeletion.cs" />
+    <Compile Include="Changes\ICompositionListInsertion.cs" />
+    <Compile Include="Changes\IElementaryChange.cs" />
+    <Compile Include="Changes\IElementaryChangeTransaction.cs" />
+    <Compile Include="Changes\IListDeletion.cs" />
+    <Compile Include="Changes\IListInsertion.cs" />
+    <Compile Include="Changes\IModelChange.cs" />
+    <Compile Include="Changes\IModelChangeSet.cs" />
+    <Compile Include="Changes\IPropertyChange.cs" />
+    <Compile Include="Changes\ListDeletion.cs" />
+    <Compile Include="Changes\ListInsertion.cs" />
+    <Compile Include="Changes\ModelChange.cs" />
+    <Compile Include="Changes\ModelChangeSet.cs" />
+    <Compile Include="Changes\PropertyChange.cs" />
     <Compile Include="Repository\FileLocator.cs" />
     <Compile Include="Repository\FileMapLocator.cs" />
     <Compile Include="Repository\MapLocator.cs" />
@@ -136,11 +188,8 @@
     <Compile Include="Meta\Type.cs" />
     <Compile Include="Meta\ITypedElement.cs" />
     <Compile Include="Model.cs" />
-    <Compile Include="Evolution\IModelChange.cs" />
-    <Compile Include="Evolution\ListInsertion.cs" />
     <Compile Include="ModelElement.cs" />
     <Compile Include="ModelElementExtension.cs" />
-    <Compile Include="Evolution\PropertyChange.cs" />
     <Compile Include="Repository\MetaRepository.cs" />
     <Compile Include="Repository\ModelCollection.cs" />
     <Compile Include="Repository\ModelRepository.cs" />
@@ -179,8 +228,13 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="..\..\NMeta.nmf">
-      <Link>NMeta.nmf</Link>
+    <EmbeddedResource Include="..\..\NMetaChanges.nmeta">
+      <Link>NMetaChanges.nmeta</Link>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="..\..\NMeta.nmeta">
+      <Link>NMeta.nmeta</Link>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

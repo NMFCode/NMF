@@ -35,15 +35,19 @@ namespace NMF.Models.Meta
     /// </summary>
     [XmlNamespaceAttribute("http://nmf.codeplex.com/nmeta/")]
     [XmlNamespacePrefixAttribute("nmeta")]
-    [ModelRepresentationClassAttribute("http://nmf.codeplex.com/nmeta/#//ReferenceType/")]
+    [ModelRepresentationClassAttribute("http://nmf.codeplex.com/nmeta/#//ReferenceType")]
     [DebuggerDisplayAttribute("ReferenceType {Name}")]
-    public abstract class ReferenceType : StructuredType, IReferenceType, IModelElement
+    public abstract partial class ReferenceType : StructuredType, IReferenceType, NMF.Models.IModelElement
     {
+        
+        private static Lazy<ITypedElement> _eventsReference = new Lazy<ITypedElement>(RetrieveEventsReference);
         
         /// <summary>
         /// The backing field for the Events property
         /// </summary>
         private ReferenceTypeEventsCollection _events;
+        
+        private static Lazy<ITypedElement> _referencesReference = new Lazy<ITypedElement>(RetrieveReferencesReference);
         
         /// <summary>
         /// The backing field for the References property
@@ -97,7 +101,7 @@ namespace NMF.Models.Meta
         /// <summary>
         /// Gets the child model elements of this model element
         /// </summary>
-        public override IEnumerableExpression<IModelElement> Children
+        public override IEnumerableExpression<NMF.Models.IModelElement> Children
         {
             get
             {
@@ -108,7 +112,7 @@ namespace NMF.Models.Meta
         /// <summary>
         /// Gets the referenced model elements of this model element
         /// </summary>
-        public override IEnumerableExpression<IModelElement> ReferencedElements
+        public override IEnumerableExpression<NMF.Models.IModelElement> ReferencedElements
         {
             get
             {
@@ -125,10 +129,15 @@ namespace NMF.Models.Meta
             {
                 if ((_classInstance == null))
                 {
-                    _classInstance = ((IClass)(MetaRepository.Instance.Resolve("http://nmf.codeplex.com/nmeta/#//ReferenceType/")));
+                    _classInstance = ((IClass)(MetaRepository.Instance.Resolve("http://nmf.codeplex.com/nmeta/#//ReferenceType")));
                 }
                 return _classInstance;
             }
+        }
+        
+        private static ITypedElement RetrieveEventsReference()
+        {
+            return ((ITypedElement)(((NMF.Models.ModelElement)(ReferenceType.ClassInstance)).Resolve("Events")));
         }
         
         /// <summary>
@@ -138,7 +147,7 @@ namespace NMF.Models.Meta
         /// <param name="e">The original event data</param>
         private void EventsCollectionChanging(object sender, NMF.Collections.ObjectModel.NotifyCollectionChangingEventArgs e)
         {
-            this.OnCollectionChanging("Events", e);
+            this.OnCollectionChanging("Events", e, _eventsReference);
         }
         
         /// <summary>
@@ -148,7 +157,12 @@ namespace NMF.Models.Meta
         /// <param name="e">The original event data</param>
         private void EventsCollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
         {
-            this.OnCollectionChanged("Events", e);
+            this.OnCollectionChanged("Events", e, _eventsReference);
+        }
+        
+        private static ITypedElement RetrieveReferencesReference()
+        {
+            return ((ITypedElement)(((NMF.Models.ModelElement)(ReferenceType.ClassInstance)).Resolve("References")));
         }
         
         /// <summary>
@@ -158,7 +172,7 @@ namespace NMF.Models.Meta
         /// <param name="e">The original event data</param>
         private void ReferencesCollectionChanging(object sender, NMF.Collections.ObjectModel.NotifyCollectionChangingEventArgs e)
         {
-            this.OnCollectionChanging("References", e);
+            this.OnCollectionChanging("References", e, _referencesReference);
         }
         
         /// <summary>
@@ -168,7 +182,7 @@ namespace NMF.Models.Meta
         /// <param name="e">The original event data</param>
         private void ReferencesCollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
         {
-            this.OnCollectionChanged("References", e);
+            this.OnCollectionChanged("References", e, _referencesReference);
         }
         
         /// <summary>
@@ -196,7 +210,7 @@ namespace NMF.Models.Meta
         {
             if ((_classInstance == null))
             {
-                _classInstance = ((IClass)(MetaRepository.Instance.Resolve("http://nmf.codeplex.com/nmeta/#//ReferenceType/")));
+                _classInstance = ((IClass)(MetaRepository.Instance.Resolve("http://nmf.codeplex.com/nmeta/#//ReferenceType")));
             }
             return _classInstance;
         }
@@ -204,7 +218,7 @@ namespace NMF.Models.Meta
         /// <summary>
         /// The collection class to to represent the children of the ReferenceType class
         /// </summary>
-        public class ReferenceTypeChildrenCollection : ReferenceCollection, ICollectionExpression<IModelElement>, ICollection<IModelElement>
+        public class ReferenceTypeChildrenCollection : ReferenceCollection, ICollectionExpression<NMF.Models.IModelElement>, ICollection<NMF.Models.IModelElement>
         {
             
             private ReferenceType _parent;
@@ -247,7 +261,7 @@ namespace NMF.Models.Meta
             /// Adds the given element to the collection
             /// </summary>
             /// <param name="item">The item to add</param>
-            public override void Add(IModelElement item)
+            public override void Add(NMF.Models.IModelElement item)
             {
                 IEvent eventsCasted = item.As<IEvent>();
                 if ((eventsCasted != null))
@@ -275,7 +289,7 @@ namespace NMF.Models.Meta
             /// </summary>
             /// <returns>True, if it is contained, otherwise False</returns>
             /// <param name="item">The item that should be looked out for</param>
-            public override bool Contains(IModelElement item)
+            public override bool Contains(NMF.Models.IModelElement item)
             {
                 if (this._parent.Events.Contains(item))
                 {
@@ -293,9 +307,9 @@ namespace NMF.Models.Meta
             /// </summary>
             /// <param name="array">The array in which the elements should be copied</param>
             /// <param name="arrayIndex">The starting index</param>
-            public override void CopyTo(IModelElement[] array, int arrayIndex)
+            public override void CopyTo(NMF.Models.IModelElement[] array, int arrayIndex)
             {
-                IEnumerator<IModelElement> eventsEnumerator = this._parent.Events.GetEnumerator();
+                IEnumerator<NMF.Models.IModelElement> eventsEnumerator = this._parent.Events.GetEnumerator();
                 try
                 {
                     for (
@@ -310,7 +324,7 @@ namespace NMF.Models.Meta
                 {
                     eventsEnumerator.Dispose();
                 }
-                IEnumerator<IModelElement> referencesEnumerator = this._parent.References.GetEnumerator();
+                IEnumerator<NMF.Models.IModelElement> referencesEnumerator = this._parent.References.GetEnumerator();
                 try
                 {
                     for (
@@ -332,7 +346,7 @@ namespace NMF.Models.Meta
             /// </summary>
             /// <returns>True, if the item was removed, otherwise False</returns>
             /// <param name="item">The item that should be removed</param>
-            public override bool Remove(IModelElement item)
+            public override bool Remove(NMF.Models.IModelElement item)
             {
                 IEvent eventItem = item.As<IEvent>();
                 if (((eventItem != null) 
@@ -353,16 +367,16 @@ namespace NMF.Models.Meta
             /// Gets an enumerator that enumerates the collection
             /// </summary>
             /// <returns>A generic enumerator</returns>
-            public override IEnumerator<IModelElement> GetEnumerator()
+            public override IEnumerator<NMF.Models.IModelElement> GetEnumerator()
             {
-                return Enumerable.Empty<IModelElement>().Concat(this._parent.Events).Concat(this._parent.References).GetEnumerator();
+                return Enumerable.Empty<NMF.Models.IModelElement>().Concat(this._parent.Events).Concat(this._parent.References).GetEnumerator();
             }
         }
         
         /// <summary>
         /// The collection class to to represent the children of the ReferenceType class
         /// </summary>
-        public class ReferenceTypeReferencedElementsCollection : ReferenceCollection, ICollectionExpression<IModelElement>, ICollection<IModelElement>
+        public class ReferenceTypeReferencedElementsCollection : ReferenceCollection, ICollectionExpression<NMF.Models.IModelElement>, ICollection<NMF.Models.IModelElement>
         {
             
             private ReferenceType _parent;
@@ -405,7 +419,7 @@ namespace NMF.Models.Meta
             /// Adds the given element to the collection
             /// </summary>
             /// <param name="item">The item to add</param>
-            public override void Add(IModelElement item)
+            public override void Add(NMF.Models.IModelElement item)
             {
                 IEvent eventsCasted = item.As<IEvent>();
                 if ((eventsCasted != null))
@@ -433,7 +447,7 @@ namespace NMF.Models.Meta
             /// </summary>
             /// <returns>True, if it is contained, otherwise False</returns>
             /// <param name="item">The item that should be looked out for</param>
-            public override bool Contains(IModelElement item)
+            public override bool Contains(NMF.Models.IModelElement item)
             {
                 if (this._parent.Events.Contains(item))
                 {
@@ -451,9 +465,9 @@ namespace NMF.Models.Meta
             /// </summary>
             /// <param name="array">The array in which the elements should be copied</param>
             /// <param name="arrayIndex">The starting index</param>
-            public override void CopyTo(IModelElement[] array, int arrayIndex)
+            public override void CopyTo(NMF.Models.IModelElement[] array, int arrayIndex)
             {
-                IEnumerator<IModelElement> eventsEnumerator = this._parent.Events.GetEnumerator();
+                IEnumerator<NMF.Models.IModelElement> eventsEnumerator = this._parent.Events.GetEnumerator();
                 try
                 {
                     for (
@@ -468,7 +482,7 @@ namespace NMF.Models.Meta
                 {
                     eventsEnumerator.Dispose();
                 }
-                IEnumerator<IModelElement> referencesEnumerator = this._parent.References.GetEnumerator();
+                IEnumerator<NMF.Models.IModelElement> referencesEnumerator = this._parent.References.GetEnumerator();
                 try
                 {
                     for (
@@ -490,7 +504,7 @@ namespace NMF.Models.Meta
             /// </summary>
             /// <returns>True, if the item was removed, otherwise False</returns>
             /// <param name="item">The item that should be removed</param>
-            public override bool Remove(IModelElement item)
+            public override bool Remove(NMF.Models.IModelElement item)
             {
                 IEvent eventItem = item.As<IEvent>();
                 if (((eventItem != null) 
@@ -511,9 +525,9 @@ namespace NMF.Models.Meta
             /// Gets an enumerator that enumerates the collection
             /// </summary>
             /// <returns>A generic enumerator</returns>
-            public override IEnumerator<IModelElement> GetEnumerator()
+            public override IEnumerator<NMF.Models.IModelElement> GetEnumerator()
             {
-                return Enumerable.Empty<IModelElement>().Concat(this._parent.Events).Concat(this._parent.References).GetEnumerator();
+                return Enumerable.Empty<NMF.Models.IModelElement>().Concat(this._parent.Events).Concat(this._parent.References).GetEnumerator();
             }
         }
     }

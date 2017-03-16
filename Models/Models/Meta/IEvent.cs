@@ -35,7 +35,7 @@ namespace NMF.Models.Meta
     /// </summary>
     [DefaultImplementationTypeAttribute(typeof(Event))]
     [XmlDefaultImplementationTypeAttribute(typeof(Event))]
-    public interface IEvent : IModelElement, IMetaElement
+    public interface IEvent : NMF.Models.IModelElement, IMetaElement
     {
         
         /// <summary>

@@ -1,6 +1,7 @@
 ﻿using System;
+using System.Linq;
 using NMF.Expressions;
-using NMF.Models.Evolution;
+using NMF.Models.Changes;
 using NMF.Models.Repository;
 
 namespace NMF.Models
@@ -28,9 +29,8 @@ namespace NMF.Models
         {
             var modelChanges = _recorder.GetModelChanges().Changes;
             _recorder.Stop();
-            modelChanges.Reverse();
 
-            foreach (var change in modelChanges)
+            foreach (var change in modelChanges.Reverse())
                 change.Invert(_repository);
             _engine.RollbackTransaction();
         }

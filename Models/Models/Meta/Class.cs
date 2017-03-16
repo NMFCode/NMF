@@ -35,9 +35,9 @@ namespace NMF.Models.Meta
     /// </summary>
     [XmlNamespaceAttribute("http://nmf.codeplex.com/nmeta/")]
     [XmlNamespacePrefixAttribute("nmeta")]
-    [ModelRepresentationClassAttribute("http://nmf.codeplex.com/nmeta/#//Class/")]
+    [ModelRepresentationClassAttribute("http://nmf.codeplex.com/nmeta/#//Class")]
     [DebuggerDisplayAttribute("Class {Name}")]
-    public class Class : ReferenceType, IClass, IModelElement
+    public partial class Class : ReferenceType, IClass, NMF.Models.IModelElement
     {
         
         /// <summary>
@@ -45,30 +45,44 @@ namespace NMF.Models.Meta
         /// </summary>
         private bool _isAbstract = false;
         
+        private static Lazy<ITypedElement> _isAbstractAttribute = new Lazy<ITypedElement>(RetrieveIsAbstractAttribute);
+        
         /// <summary>
         /// The backing field for the IdentifierScope property
         /// </summary>
         private IdentifierScope _identifierScope;
+        
+        private static Lazy<ITypedElement> _identifierScopeAttribute = new Lazy<ITypedElement>(RetrieveIdentifierScopeAttribute);
+        
+        private static Lazy<ITypedElement> _baseTypesReference = new Lazy<ITypedElement>(RetrieveBaseTypesReference);
         
         /// <summary>
         /// The backing field for the BaseTypes property
         /// </summary>
         private ObservableAssociationList<IClass> _baseTypes;
         
+        private static Lazy<ITypedElement> _instanceOfReference = new Lazy<ITypedElement>(RetrieveInstanceOfReference);
+        
         /// <summary>
         /// The backing field for the InstanceOf property
         /// </summary>
         private IClass _instanceOf;
+        
+        private static Lazy<ITypedElement> _identifierReference = new Lazy<ITypedElement>(RetrieveIdentifierReference);
         
         /// <summary>
         /// The backing field for the Identifier property
         /// </summary>
         private IAttribute _identifier;
         
+        private static Lazy<ITypedElement> _attributeConstraintsReference = new Lazy<ITypedElement>(RetrieveAttributeConstraintsReference);
+        
         /// <summary>
         /// The backing field for the AttributeConstraints property
         /// </summary>
         private ClassAttributeConstraintsCollection _attributeConstraints;
+        
+        private static Lazy<ITypedElement> _referenceConstraintsReference = new Lazy<ITypedElement>(RetrieveReferenceConstraintsReference);
         
         /// <summary>
         /// The backing field for the ReferenceConstraints property
@@ -108,10 +122,10 @@ namespace NMF.Models.Meta
                     bool old = this._isAbstract;
                     ValueChangedEventArgs e = new ValueChangedEventArgs(old, value);
                     this.OnIsAbstractChanging(e);
-                    this.OnPropertyChanging("IsAbstract", e);
+                    this.OnPropertyChanging("IsAbstract", e, _isAbstractAttribute);
                     this._isAbstract = value;
                     this.OnIsAbstractChanged(e);
-                    this.OnPropertyChanged("IsAbstract", e);
+                    this.OnPropertyChanged("IsAbstract", e, _isAbstractAttribute);
                 }
             }
         }
@@ -134,10 +148,10 @@ namespace NMF.Models.Meta
                     IdentifierScope old = this._identifierScope;
                     ValueChangedEventArgs e = new ValueChangedEventArgs(old, value);
                     this.OnIdentifierScopeChanging(e);
-                    this.OnPropertyChanging("IdentifierScope", e);
+                    this.OnPropertyChanging("IdentifierScope", e, _identifierScopeAttribute);
                     this._identifierScope = value;
                     this.OnIdentifierScopeChanged(e);
-                    this.OnPropertyChanged("IdentifierScope", e);
+                    this.OnPropertyChanged("IdentifierScope", e, _identifierScopeAttribute);
                 }
             }
         }
@@ -173,7 +187,7 @@ namespace NMF.Models.Meta
                     IClass old = this._instanceOf;
                     ValueChangedEventArgs e = new ValueChangedEventArgs(old, value);
                     this.OnInstanceOfChanging(e);
-                    this.OnPropertyChanging("InstanceOf", e);
+                    this.OnPropertyChanging("InstanceOf", e, _instanceOfReference);
                     this._instanceOf = value;
                     if ((old != null))
                     {
@@ -184,7 +198,7 @@ namespace NMF.Models.Meta
                         value.Deleted += this.OnResetInstanceOf;
                     }
                     this.OnInstanceOfChanged(e);
-                    this.OnPropertyChanged("InstanceOf", e);
+                    this.OnPropertyChanged("InstanceOf", e, _instanceOfReference);
                 }
             }
         }
@@ -206,7 +220,7 @@ namespace NMF.Models.Meta
                     IAttribute old = this._identifier;
                     ValueChangedEventArgs e = new ValueChangedEventArgs(old, value);
                     this.OnIdentifierChanging(e);
-                    this.OnPropertyChanging("Identifier", e);
+                    this.OnPropertyChanging("Identifier", e, _identifierReference);
                     this._identifier = value;
                     if ((old != null))
                     {
@@ -217,7 +231,7 @@ namespace NMF.Models.Meta
                         value.Deleted += this.OnResetIdentifier;
                     }
                     this.OnIdentifierChanged(e);
-                    this.OnPropertyChanged("Identifier", e);
+                    this.OnPropertyChanged("Identifier", e, _identifierReference);
                 }
             }
         }
@@ -257,7 +271,7 @@ namespace NMF.Models.Meta
         /// <summary>
         /// Gets the child model elements of this model element
         /// </summary>
-        public override IEnumerableExpression<IModelElement> Children
+        public override IEnumerableExpression<NMF.Models.IModelElement> Children
         {
             get
             {
@@ -268,7 +282,7 @@ namespace NMF.Models.Meta
         /// <summary>
         /// Gets the referenced model elements of this model element
         /// </summary>
-        public override IEnumerableExpression<IModelElement> ReferencedElements
+        public override IEnumerableExpression<NMF.Models.IModelElement> ReferencedElements
         {
             get
             {
@@ -285,7 +299,7 @@ namespace NMF.Models.Meta
             {
                 if ((_classInstance == null))
                 {
-                    _classInstance = ((IClass)(MetaRepository.Instance.Resolve("http://nmf.codeplex.com/nmeta/#//Class/")));
+                    _classInstance = ((IClass)(MetaRepository.Instance.Resolve("http://nmf.codeplex.com/nmeta/#//Class")));
                 }
                 return _classInstance;
             }
@@ -331,6 +345,11 @@ namespace NMF.Models.Meta
         /// </summary>
         public event System.EventHandler<ValueChangedEventArgs> IdentifierChanged;
         
+        private static ITypedElement RetrieveIsAbstractAttribute()
+        {
+            return ((ITypedElement)(((NMF.Models.ModelElement)(Class.ClassInstance)).Resolve("IsAbstract")));
+        }
+        
         /// <summary>
         /// Raises the IsAbstractChanging event
         /// </summary>
@@ -355,6 +374,11 @@ namespace NMF.Models.Meta
             {
                 handler.Invoke(this, eventArgs);
             }
+        }
+        
+        private static ITypedElement RetrieveIdentifierScopeAttribute()
+        {
+            return ((ITypedElement)(((NMF.Models.ModelElement)(Class.ClassInstance)).Resolve("IdentifierScope")));
         }
         
         /// <summary>
@@ -383,6 +407,11 @@ namespace NMF.Models.Meta
             }
         }
         
+        private static ITypedElement RetrieveBaseTypesReference()
+        {
+            return ((ITypedElement)(((NMF.Models.ModelElement)(Class.ClassInstance)).Resolve("BaseTypes")));
+        }
+        
         /// <summary>
         /// Forwards CollectionChanging notifications for the BaseTypes property to the parent model element
         /// </summary>
@@ -390,7 +419,7 @@ namespace NMF.Models.Meta
         /// <param name="e">The original event data</param>
         private void BaseTypesCollectionChanging(object sender, NMF.Collections.ObjectModel.NotifyCollectionChangingEventArgs e)
         {
-            this.OnCollectionChanging("BaseTypes", e);
+            this.OnCollectionChanging("BaseTypes", e, _baseTypesReference);
         }
         
         /// <summary>
@@ -400,7 +429,12 @@ namespace NMF.Models.Meta
         /// <param name="e">The original event data</param>
         private void BaseTypesCollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
         {
-            this.OnCollectionChanged("BaseTypes", e);
+            this.OnCollectionChanged("BaseTypes", e, _baseTypesReference);
+        }
+        
+        private static ITypedElement RetrieveInstanceOfReference()
+        {
+            return ((ITypedElement)(((NMF.Models.ModelElement)(Class.ClassInstance)).Resolve("InstanceOf")));
         }
         
         /// <summary>
@@ -439,6 +473,11 @@ namespace NMF.Models.Meta
             this.InstanceOf = null;
         }
         
+        private static ITypedElement RetrieveIdentifierReference()
+        {
+            return ((ITypedElement)(((NMF.Models.ModelElement)(Class.ClassInstance)).Resolve("Identifier")));
+        }
+        
         /// <summary>
         /// Raises the IdentifierChanging event
         /// </summary>
@@ -475,6 +514,11 @@ namespace NMF.Models.Meta
             this.Identifier = null;
         }
         
+        private static ITypedElement RetrieveAttributeConstraintsReference()
+        {
+            return ((ITypedElement)(((NMF.Models.ModelElement)(Class.ClassInstance)).Resolve("AttributeConstraints")));
+        }
+        
         /// <summary>
         /// Forwards CollectionChanging notifications for the AttributeConstraints property to the parent model element
         /// </summary>
@@ -482,7 +526,7 @@ namespace NMF.Models.Meta
         /// <param name="e">The original event data</param>
         private void AttributeConstraintsCollectionChanging(object sender, NMF.Collections.ObjectModel.NotifyCollectionChangingEventArgs e)
         {
-            this.OnCollectionChanging("AttributeConstraints", e);
+            this.OnCollectionChanging("AttributeConstraints", e, _attributeConstraintsReference);
         }
         
         /// <summary>
@@ -492,7 +536,12 @@ namespace NMF.Models.Meta
         /// <param name="e">The original event data</param>
         private void AttributeConstraintsCollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
         {
-            this.OnCollectionChanged("AttributeConstraints", e);
+            this.OnCollectionChanged("AttributeConstraints", e, _attributeConstraintsReference);
+        }
+        
+        private static ITypedElement RetrieveReferenceConstraintsReference()
+        {
+            return ((ITypedElement)(((NMF.Models.ModelElement)(Class.ClassInstance)).Resolve("ReferenceConstraints")));
         }
         
         /// <summary>
@@ -502,7 +551,7 @@ namespace NMF.Models.Meta
         /// <param name="e">The original event data</param>
         private void ReferenceConstraintsCollectionChanging(object sender, NMF.Collections.ObjectModel.NotifyCollectionChangingEventArgs e)
         {
-            this.OnCollectionChanging("ReferenceConstraints", e);
+            this.OnCollectionChanging("ReferenceConstraints", e, _referenceConstraintsReference);
         }
         
         /// <summary>
@@ -512,7 +561,7 @@ namespace NMF.Models.Meta
         /// <param name="e">The original event data</param>
         private void ReferenceConstraintsCollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
         {
-            this.OnCollectionChanged("ReferenceConstraints", e);
+            this.OnCollectionChanged("ReferenceConstraints", e, _referenceConstraintsReference);
         }
         
         /// <summary>
@@ -593,11 +642,11 @@ namespace NMF.Models.Meta
         /// <param name="attribute">The requested attribute in upper case</param>
         protected override NMF.Expressions.INotifyExpression<object> GetExpressionForAttribute(string attribute)
         {
-            if ((attribute == "INSTANCEOF"))
+            if ((attribute == "InstanceOf"))
             {
                 return new InstanceOfProxy(this);
             }
-            if ((attribute == "IDENTIFIER"))
+            if ((attribute == "Identifier"))
             {
                 return new IdentifierProxy(this);
             }
@@ -611,11 +660,11 @@ namespace NMF.Models.Meta
         /// <param name="reference">The requested reference in upper case</param>
         protected override NMF.Expressions.INotifyExpression<NMF.Models.IModelElement> GetExpressionForReference(string reference)
         {
-            if ((reference == "INSTANCEOF"))
+            if ((reference == "InstanceOf"))
             {
                 return new InstanceOfProxy(this);
             }
-            if ((reference == "IDENTIFIER"))
+            if ((reference == "Identifier"))
             {
                 return new IdentifierProxy(this);
             }
@@ -629,7 +678,7 @@ namespace NMF.Models.Meta
         {
             if ((_classInstance == null))
             {
-                _classInstance = ((IClass)(MetaRepository.Instance.Resolve("http://nmf.codeplex.com/nmeta/#//Class/")));
+                _classInstance = ((IClass)(MetaRepository.Instance.Resolve("http://nmf.codeplex.com/nmeta/#//Class")));
             }
             return _classInstance;
         }
@@ -637,7 +686,7 @@ namespace NMF.Models.Meta
         /// <summary>
         /// The collection class to to represent the children of the Class class
         /// </summary>
-        public class ClassChildrenCollection : ReferenceCollection, ICollectionExpression<IModelElement>, ICollection<IModelElement>
+        public class ClassChildrenCollection : ReferenceCollection, ICollectionExpression<NMF.Models.IModelElement>, ICollection<NMF.Models.IModelElement>
         {
             
             private Class _parent;
@@ -680,7 +729,7 @@ namespace NMF.Models.Meta
             /// Adds the given element to the collection
             /// </summary>
             /// <param name="item">The item to add</param>
-            public override void Add(IModelElement item)
+            public override void Add(NMF.Models.IModelElement item)
             {
                 IAttributeConstraint attributeConstraintsCasted = item.As<IAttributeConstraint>();
                 if ((attributeConstraintsCasted != null))
@@ -708,7 +757,7 @@ namespace NMF.Models.Meta
             /// </summary>
             /// <returns>True, if it is contained, otherwise False</returns>
             /// <param name="item">The item that should be looked out for</param>
-            public override bool Contains(IModelElement item)
+            public override bool Contains(NMF.Models.IModelElement item)
             {
                 if (this._parent.AttributeConstraints.Contains(item))
                 {
@@ -726,9 +775,9 @@ namespace NMF.Models.Meta
             /// </summary>
             /// <param name="array">The array in which the elements should be copied</param>
             /// <param name="arrayIndex">The starting index</param>
-            public override void CopyTo(IModelElement[] array, int arrayIndex)
+            public override void CopyTo(NMF.Models.IModelElement[] array, int arrayIndex)
             {
-                IEnumerator<IModelElement> attributeConstraintsEnumerator = this._parent.AttributeConstraints.GetEnumerator();
+                IEnumerator<NMF.Models.IModelElement> attributeConstraintsEnumerator = this._parent.AttributeConstraints.GetEnumerator();
                 try
                 {
                     for (
@@ -743,7 +792,7 @@ namespace NMF.Models.Meta
                 {
                     attributeConstraintsEnumerator.Dispose();
                 }
-                IEnumerator<IModelElement> referenceConstraintsEnumerator = this._parent.ReferenceConstraints.GetEnumerator();
+                IEnumerator<NMF.Models.IModelElement> referenceConstraintsEnumerator = this._parent.ReferenceConstraints.GetEnumerator();
                 try
                 {
                     for (
@@ -765,7 +814,7 @@ namespace NMF.Models.Meta
             /// </summary>
             /// <returns>True, if the item was removed, otherwise False</returns>
             /// <param name="item">The item that should be removed</param>
-            public override bool Remove(IModelElement item)
+            public override bool Remove(NMF.Models.IModelElement item)
             {
                 IAttributeConstraint attributeConstraintItem = item.As<IAttributeConstraint>();
                 if (((attributeConstraintItem != null) 
@@ -786,16 +835,16 @@ namespace NMF.Models.Meta
             /// Gets an enumerator that enumerates the collection
             /// </summary>
             /// <returns>A generic enumerator</returns>
-            public override IEnumerator<IModelElement> GetEnumerator()
+            public override IEnumerator<NMF.Models.IModelElement> GetEnumerator()
             {
-                return Enumerable.Empty<IModelElement>().Concat(this._parent.AttributeConstraints).Concat(this._parent.ReferenceConstraints).GetEnumerator();
+                return Enumerable.Empty<NMF.Models.IModelElement>().Concat(this._parent.AttributeConstraints).Concat(this._parent.ReferenceConstraints).GetEnumerator();
             }
         }
         
         /// <summary>
         /// The collection class to to represent the children of the Class class
         /// </summary>
-        public class ClassReferencedElementsCollection : ReferenceCollection, ICollectionExpression<IModelElement>, ICollection<IModelElement>
+        public class ClassReferencedElementsCollection : ReferenceCollection, ICollectionExpression<NMF.Models.IModelElement>, ICollection<NMF.Models.IModelElement>
         {
             
             private Class _parent;
@@ -853,7 +902,7 @@ namespace NMF.Models.Meta
             /// Adds the given element to the collection
             /// </summary>
             /// <param name="item">The item to add</param>
-            public override void Add(IModelElement item)
+            public override void Add(NMF.Models.IModelElement item)
             {
                 IClass baseTypesCasted = item.As<IClass>();
                 if ((baseTypesCasted != null))
@@ -907,7 +956,7 @@ namespace NMF.Models.Meta
             /// </summary>
             /// <returns>True, if it is contained, otherwise False</returns>
             /// <param name="item">The item that should be looked out for</param>
-            public override bool Contains(IModelElement item)
+            public override bool Contains(NMF.Models.IModelElement item)
             {
                 if (this._parent.BaseTypes.Contains(item))
                 {
@@ -937,9 +986,9 @@ namespace NMF.Models.Meta
             /// </summary>
             /// <param name="array">The array in which the elements should be copied</param>
             /// <param name="arrayIndex">The starting index</param>
-            public override void CopyTo(IModelElement[] array, int arrayIndex)
+            public override void CopyTo(NMF.Models.IModelElement[] array, int arrayIndex)
             {
-                IEnumerator<IModelElement> baseTypesEnumerator = this._parent.BaseTypes.GetEnumerator();
+                IEnumerator<NMF.Models.IModelElement> baseTypesEnumerator = this._parent.BaseTypes.GetEnumerator();
                 try
                 {
                     for (
@@ -964,7 +1013,7 @@ namespace NMF.Models.Meta
                     array[arrayIndex] = this._parent.Identifier;
                     arrayIndex = (arrayIndex + 1);
                 }
-                IEnumerator<IModelElement> attributeConstraintsEnumerator = this._parent.AttributeConstraints.GetEnumerator();
+                IEnumerator<NMF.Models.IModelElement> attributeConstraintsEnumerator = this._parent.AttributeConstraints.GetEnumerator();
                 try
                 {
                     for (
@@ -979,7 +1028,7 @@ namespace NMF.Models.Meta
                 {
                     attributeConstraintsEnumerator.Dispose();
                 }
-                IEnumerator<IModelElement> referenceConstraintsEnumerator = this._parent.ReferenceConstraints.GetEnumerator();
+                IEnumerator<NMF.Models.IModelElement> referenceConstraintsEnumerator = this._parent.ReferenceConstraints.GetEnumerator();
                 try
                 {
                     for (
@@ -1001,7 +1050,7 @@ namespace NMF.Models.Meta
             /// </summary>
             /// <returns>True, if the item was removed, otherwise False</returns>
             /// <param name="item">The item that should be removed</param>
-            public override bool Remove(IModelElement item)
+            public override bool Remove(NMF.Models.IModelElement item)
             {
                 IClass classItem = item.As<IClass>();
                 if (((classItem != null) 
@@ -1038,9 +1087,9 @@ namespace NMF.Models.Meta
             /// Gets an enumerator that enumerates the collection
             /// </summary>
             /// <returns>A generic enumerator</returns>
-            public override IEnumerator<IModelElement> GetEnumerator()
+            public override IEnumerator<NMF.Models.IModelElement> GetEnumerator()
             {
-                return Enumerable.Empty<IModelElement>().Concat(this._parent.BaseTypes).Concat(this._parent.InstanceOf).Concat(this._parent.Identifier).Concat(this._parent.AttributeConstraints).Concat(this._parent.ReferenceConstraints).GetEnumerator();
+                return Enumerable.Empty<NMF.Models.IModelElement>().Concat(this._parent.BaseTypes).Concat(this._parent.InstanceOf).Concat(this._parent.Identifier).Concat(this._parent.AttributeConstraints).Concat(this._parent.ReferenceConstraints).GetEnumerator();
             }
         }
         

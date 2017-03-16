@@ -41,6 +41,8 @@ namespace NMF.Models.Meta
         /// </summary>
         private System.Type _systemType;
         
+        private static Lazy<ITypedElement> _systemTypeAttribute = new Lazy<ITypedElement>(RetrieveSystemTypeAttribute);
+        
         private static IExtension _extensionType;
         
         /// <summary>
@@ -69,10 +71,10 @@ namespace NMF.Models.Meta
                     System.Type old = this._systemType;
                     ValueChangedEventArgs e = new ValueChangedEventArgs(old, value);
                     this.OnSystemTypeChanging(e);
-                    this.OnPropertyChanging("SystemType", e);
+                    this.OnPropertyChanging("SystemType", e, _systemTypeAttribute);
                     this._systemType = value;
                     this.OnSystemTypeChanged(e);
-                    this.OnPropertyChanged("SystemType", e);
+                    this.OnPropertyChanged("SystemType", e, _systemTypeAttribute);
                 }
             }
         }
@@ -86,6 +88,11 @@ namespace NMF.Models.Meta
         /// Gets fired when the SystemType property changed its value
         /// </summary>
         public event System.EventHandler<ValueChangedEventArgs> SystemTypeChanged;
+        
+        private static ITypedElement RetrieveSystemTypeAttribute()
+        {
+            return ((ITypedElement)(((NMF.Models.ModelElement)(MappedType.ClassInstance)).Resolve("SystemType")));
+        }
         
         /// <summary>
         /// Raises the SystemTypeChanging event
@@ -141,7 +148,7 @@ namespace NMF.Models.Meta
         {
             if ((_extensionType == null))
             {
-                _extensionType = ((IExtension)(MetaRepository.Instance.Resolve("http://nmf.codeplex.com/nmeta/#//MappedType/")));
+                _extensionType = ((IExtension)(MetaRepository.Instance.Resolve("http://nmf.codeplex.com/nmeta/#//MappedType")));
             }
             return _extensionType;
         }

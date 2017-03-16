@@ -35,15 +35,19 @@ namespace NMF.Models.Meta
     /// </summary>
     [XmlNamespaceAttribute("http://nmf.codeplex.com/nmeta/")]
     [XmlNamespacePrefixAttribute("nmeta")]
-    [ModelRepresentationClassAttribute("http://nmf.codeplex.com/nmeta/#//Event/")]
+    [ModelRepresentationClassAttribute("http://nmf.codeplex.com/nmeta/#//Event")]
     [DebuggerDisplayAttribute("Event {Name}")]
-    public class Event : MetaElement, IEvent, IModelElement
+    public partial class Event : MetaElement, IEvent, NMF.Models.IModelElement
     {
+        
+        private static Lazy<ITypedElement> _typeReference = new Lazy<ITypedElement>(RetrieveTypeReference);
         
         /// <summary>
         /// The backing field for the Type property
         /// </summary>
         private IDataType _type;
+        
+        private static Lazy<ITypedElement> _declaringTypeReference = new Lazy<ITypedElement>(RetrieveDeclaringTypeReference);
         
         private static IClass _classInstance;
         
@@ -64,7 +68,7 @@ namespace NMF.Models.Meta
                     IDataType old = this._type;
                     ValueChangedEventArgs e = new ValueChangedEventArgs(old, value);
                     this.OnTypeChanging(e);
-                    this.OnPropertyChanging("Type", e);
+                    this.OnPropertyChanging("Type", e, _typeReference);
                     this._type = value;
                     if ((old != null))
                     {
@@ -75,7 +79,7 @@ namespace NMF.Models.Meta
                         value.Deleted += this.OnResetType;
                     }
                     this.OnTypeChanged(e);
-                    this.OnPropertyChanged("Type", e);
+                    this.OnPropertyChanged("Type", e, _typeReference);
                 }
             }
         }
@@ -101,7 +105,7 @@ namespace NMF.Models.Meta
         /// <summary>
         /// Gets the referenced model elements of this model element
         /// </summary>
-        public override IEnumerableExpression<IModelElement> ReferencedElements
+        public override IEnumerableExpression<NMF.Models.IModelElement> ReferencedElements
         {
             get
             {
@@ -118,7 +122,7 @@ namespace NMF.Models.Meta
             {
                 if ((_classInstance == null))
                 {
-                    _classInstance = ((IClass)(MetaRepository.Instance.Resolve("http://nmf.codeplex.com/nmeta/#//Event/")));
+                    _classInstance = ((IClass)(MetaRepository.Instance.Resolve("http://nmf.codeplex.com/nmeta/#//Event")));
                 }
                 return _classInstance;
             }
@@ -143,6 +147,11 @@ namespace NMF.Models.Meta
         /// Gets fired when the DeclaringType property changed its value
         /// </summary>
         public event System.EventHandler<ValueChangedEventArgs> DeclaringTypeChanged;
+        
+        private static ITypedElement RetrieveTypeReference()
+        {
+            return ((ITypedElement)(((NMF.Models.ModelElement)(Event.ClassInstance)).Resolve("Type")));
+        }
         
         /// <summary>
         /// Raises the TypeChanging event
@@ -180,6 +189,11 @@ namespace NMF.Models.Meta
             this.Type = null;
         }
         
+        private static ITypedElement RetrieveDeclaringTypeReference()
+        {
+            return ((ITypedElement)(((NMF.Models.ModelElement)(Event.ClassInstance)).Resolve("DeclaringType")));
+        }
+        
         /// <summary>
         /// Raises the DeclaringTypeChanging event
         /// </summary>
@@ -198,13 +212,13 @@ namespace NMF.Models.Meta
         /// </summary>
         /// <param name="oldParent">The old parent model element</param>
         /// <param name="newParent">The new parent model element</param>
-        protected override void OnParentChanging(IModelElement newParent, IModelElement oldParent)
+        protected override void OnParentChanging(NMF.Models.IModelElement newParent, NMF.Models.IModelElement oldParent)
         {
             IReferenceType oldDeclaringType = ModelHelper.CastAs<IReferenceType>(oldParent);
             IReferenceType newDeclaringType = ModelHelper.CastAs<IReferenceType>(newParent);
             ValueChangedEventArgs e = new ValueChangedEventArgs(oldDeclaringType, newDeclaringType);
             this.OnDeclaringTypeChanging(e);
-            this.OnPropertyChanging("DeclaringType");
+            this.OnPropertyChanging("DeclaringType", e, _declaringTypeReference);
         }
         
         /// <summary>
@@ -225,7 +239,7 @@ namespace NMF.Models.Meta
         /// </summary>
         /// <param name="oldParent">The old parent model element</param>
         /// <param name="newParent">The new parent model element</param>
-        protected override void OnParentChanged(IModelElement newParent, IModelElement oldParent)
+        protected override void OnParentChanged(NMF.Models.IModelElement newParent, NMF.Models.IModelElement oldParent)
         {
             IReferenceType oldDeclaringType = ModelHelper.CastAs<IReferenceType>(oldParent);
             IReferenceType newDeclaringType = ModelHelper.CastAs<IReferenceType>(newParent);
@@ -239,7 +253,7 @@ namespace NMF.Models.Meta
             }
             ValueChangedEventArgs e = new ValueChangedEventArgs(oldDeclaringType, newDeclaringType);
             this.OnDeclaringTypeChanged(e);
-            this.OnPropertyChanged("DeclaringType", e);
+            this.OnPropertyChanged("DeclaringType", e, _declaringTypeReference);
             base.OnParentChanged(newParent, oldParent);
         }
         
@@ -270,11 +284,11 @@ namespace NMF.Models.Meta
         /// <param name="attribute">The requested attribute in upper case</param>
         protected override NMF.Expressions.INotifyExpression<object> GetExpressionForAttribute(string attribute)
         {
-            if ((attribute == "TYPE"))
+            if ((attribute == "Type"))
             {
                 return new TypeProxy(this);
             }
-            if ((attribute == "DECLARINGTYPE"))
+            if ((attribute == "DeclaringType"))
             {
                 return new DeclaringTypeProxy(this);
             }
@@ -288,11 +302,11 @@ namespace NMF.Models.Meta
         /// <param name="reference">The requested reference in upper case</param>
         protected override NMF.Expressions.INotifyExpression<NMF.Models.IModelElement> GetExpressionForReference(string reference)
         {
-            if ((reference == "TYPE"))
+            if ((reference == "Type"))
             {
                 return new TypeProxy(this);
             }
-            if ((reference == "DECLARINGTYPE"))
+            if ((reference == "DeclaringType"))
             {
                 return new DeclaringTypeProxy(this);
             }
@@ -306,7 +320,7 @@ namespace NMF.Models.Meta
         {
             if ((_classInstance == null))
             {
-                _classInstance = ((IClass)(MetaRepository.Instance.Resolve("http://nmf.codeplex.com/nmeta/#//Event/")));
+                _classInstance = ((IClass)(MetaRepository.Instance.Resolve("http://nmf.codeplex.com/nmeta/#//Event")));
             }
             return _classInstance;
         }
@@ -314,7 +328,7 @@ namespace NMF.Models.Meta
         /// <summary>
         /// The collection class to to represent the children of the Event class
         /// </summary>
-        public class EventReferencedElementsCollection : ReferenceCollection, ICollectionExpression<IModelElement>, ICollection<IModelElement>
+        public class EventReferencedElementsCollection : ReferenceCollection, ICollectionExpression<NMF.Models.IModelElement>, ICollection<NMF.Models.IModelElement>
         {
             
             private Event _parent;
@@ -363,7 +377,7 @@ namespace NMF.Models.Meta
             /// Adds the given element to the collection
             /// </summary>
             /// <param name="item">The item to add</param>
-            public override void Add(IModelElement item)
+            public override void Add(NMF.Models.IModelElement item)
             {
                 if ((this._parent.Type == null))
                 {
@@ -399,7 +413,7 @@ namespace NMF.Models.Meta
             /// </summary>
             /// <returns>True, if it is contained, otherwise False</returns>
             /// <param name="item">The item that should be looked out for</param>
-            public override bool Contains(IModelElement item)
+            public override bool Contains(NMF.Models.IModelElement item)
             {
                 if ((item == this._parent.Type))
                 {
@@ -417,7 +431,7 @@ namespace NMF.Models.Meta
             /// </summary>
             /// <param name="array">The array in which the elements should be copied</param>
             /// <param name="arrayIndex">The starting index</param>
-            public override void CopyTo(IModelElement[] array, int arrayIndex)
+            public override void CopyTo(NMF.Models.IModelElement[] array, int arrayIndex)
             {
                 if ((this._parent.Type != null))
                 {
@@ -436,7 +450,7 @@ namespace NMF.Models.Meta
             /// </summary>
             /// <returns>True, if the item was removed, otherwise False</returns>
             /// <param name="item">The item that should be removed</param>
-            public override bool Remove(IModelElement item)
+            public override bool Remove(NMF.Models.IModelElement item)
             {
                 if ((this._parent.Type == item))
                 {
@@ -455,9 +469,9 @@ namespace NMF.Models.Meta
             /// Gets an enumerator that enumerates the collection
             /// </summary>
             /// <returns>A generic enumerator</returns>
-            public override IEnumerator<IModelElement> GetEnumerator()
+            public override IEnumerator<NMF.Models.IModelElement> GetEnumerator()
             {
-                return Enumerable.Empty<IModelElement>().Concat(this._parent.Type).Concat(this._parent.DeclaringType).GetEnumerator();
+                return Enumerable.Empty<NMF.Models.IModelElement>().Concat(this._parent.Type).Concat(this._parent.DeclaringType).GetEnumerator();
             }
         }
         

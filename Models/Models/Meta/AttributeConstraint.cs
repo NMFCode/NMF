@@ -35,14 +35,20 @@ namespace NMF.Models.Meta
     /// </summary>
     [XmlNamespaceAttribute("http://nmf.codeplex.com/nmeta/")]
     [XmlNamespacePrefixAttribute("nmeta")]
-    [ModelRepresentationClassAttribute("http://nmf.codeplex.com/nmeta/#//AttributeConstraint/")]
-    public class AttributeConstraint : ModelElement, IAttributeConstraint, IModelElement
+    [ModelRepresentationClassAttribute("http://nmf.codeplex.com/nmeta/#//AttributeConstraint")]
+    public partial class AttributeConstraint : NMF.Models.ModelElement, IAttributeConstraint, NMF.Models.IModelElement
     {
         
         /// <summary>
         /// The backing field for the Values property
         /// </summary>
         private ObservableList<string> _values;
+        
+        private static Lazy<ITypedElement> _valuesAttribute = new Lazy<ITypedElement>(RetrieveValuesAttribute);
+        
+        private static Lazy<ITypedElement> _declaringTypeReference = new Lazy<ITypedElement>(RetrieveDeclaringTypeReference);
+        
+        private static Lazy<ITypedElement> _constrainsReference = new Lazy<ITypedElement>(RetrieveConstrainsReference);
         
         /// <summary>
         /// The backing field for the Constrains property
@@ -107,7 +113,7 @@ namespace NMF.Models.Meta
                     IAttribute old = this._constrains;
                     ValueChangedEventArgs e = new ValueChangedEventArgs(old, value);
                     this.OnConstrainsChanging(e);
-                    this.OnPropertyChanging("Constrains", e);
+                    this.OnPropertyChanging("Constrains", e, _constrainsReference);
                     this._constrains = value;
                     if ((old != null))
                     {
@@ -118,7 +124,7 @@ namespace NMF.Models.Meta
                         value.Deleted += this.OnResetConstrains;
                     }
                     this.OnConstrainsChanged(e);
-                    this.OnPropertyChanged("Constrains", e);
+                    this.OnPropertyChanged("Constrains", e, _constrainsReference);
                 }
             }
         }
@@ -126,7 +132,7 @@ namespace NMF.Models.Meta
         /// <summary>
         /// Gets the referenced model elements of this model element
         /// </summary>
-        public override IEnumerableExpression<IModelElement> ReferencedElements
+        public override IEnumerableExpression<NMF.Models.IModelElement> ReferencedElements
         {
             get
             {
@@ -143,7 +149,7 @@ namespace NMF.Models.Meta
             {
                 if ((_classInstance == null))
                 {
-                    _classInstance = ((IClass)(MetaRepository.Instance.Resolve("http://nmf.codeplex.com/nmeta/#//AttributeConstraint/")));
+                    _classInstance = ((IClass)(MetaRepository.Instance.Resolve("http://nmf.codeplex.com/nmeta/#//AttributeConstraint")));
                 }
                 return _classInstance;
             }
@@ -169,6 +175,11 @@ namespace NMF.Models.Meta
         /// </summary>
         public event System.EventHandler<ValueChangedEventArgs> ConstrainsChanged;
         
+        private static ITypedElement RetrieveValuesAttribute()
+        {
+            return ((ITypedElement)(((NMF.Models.ModelElement)(AttributeConstraint.ClassInstance)).Resolve("Values")));
+        }
+        
         /// <summary>
         /// Forwards CollectionChanging notifications for the Values property to the parent model element
         /// </summary>
@@ -176,7 +187,7 @@ namespace NMF.Models.Meta
         /// <param name="e">The original event data</param>
         private void ValuesCollectionChanging(object sender, NMF.Collections.ObjectModel.NotifyCollectionChangingEventArgs e)
         {
-            this.OnCollectionChanging("Values", e);
+            this.OnCollectionChanging("Values", e, _valuesAttribute);
         }
         
         /// <summary>
@@ -186,7 +197,12 @@ namespace NMF.Models.Meta
         /// <param name="e">The original event data</param>
         private void ValuesCollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
         {
-            this.OnCollectionChanged("Values", e);
+            this.OnCollectionChanged("Values", e, _valuesAttribute);
+        }
+        
+        private static ITypedElement RetrieveDeclaringTypeReference()
+        {
+            return ((ITypedElement)(((NMF.Models.ModelElement)(AttributeConstraint.ClassInstance)).Resolve("DeclaringType")));
         }
         
         /// <summary>
@@ -207,13 +223,13 @@ namespace NMF.Models.Meta
         /// </summary>
         /// <param name="oldParent">The old parent model element</param>
         /// <param name="newParent">The new parent model element</param>
-        protected override void OnParentChanging(IModelElement newParent, IModelElement oldParent)
+        protected override void OnParentChanging(NMF.Models.IModelElement newParent, NMF.Models.IModelElement oldParent)
         {
             IClass oldDeclaringType = ModelHelper.CastAs<IClass>(oldParent);
             IClass newDeclaringType = ModelHelper.CastAs<IClass>(newParent);
             ValueChangedEventArgs e = new ValueChangedEventArgs(oldDeclaringType, newDeclaringType);
             this.OnDeclaringTypeChanging(e);
-            this.OnPropertyChanging("DeclaringType");
+            this.OnPropertyChanging("DeclaringType", e, _declaringTypeReference);
         }
         
         /// <summary>
@@ -234,7 +250,7 @@ namespace NMF.Models.Meta
         /// </summary>
         /// <param name="oldParent">The old parent model element</param>
         /// <param name="newParent">The new parent model element</param>
-        protected override void OnParentChanged(IModelElement newParent, IModelElement oldParent)
+        protected override void OnParentChanged(NMF.Models.IModelElement newParent, NMF.Models.IModelElement oldParent)
         {
             IClass oldDeclaringType = ModelHelper.CastAs<IClass>(oldParent);
             IClass newDeclaringType = ModelHelper.CastAs<IClass>(newParent);
@@ -248,8 +264,13 @@ namespace NMF.Models.Meta
             }
             ValueChangedEventArgs e = new ValueChangedEventArgs(oldDeclaringType, newDeclaringType);
             this.OnDeclaringTypeChanged(e);
-            this.OnPropertyChanged("DeclaringType", e);
+            this.OnPropertyChanged("DeclaringType", e, _declaringTypeReference);
             base.OnParentChanged(newParent, oldParent);
+        }
+        
+        private static ITypedElement RetrieveConstrainsReference()
+        {
+            return ((ITypedElement)(((NMF.Models.ModelElement)(AttributeConstraint.ClassInstance)).Resolve("Constrains")));
         }
         
         /// <summary>
@@ -351,11 +372,11 @@ namespace NMF.Models.Meta
         /// <param name="attribute">The requested attribute in upper case</param>
         protected override NMF.Expressions.INotifyExpression<object> GetExpressionForAttribute(string attribute)
         {
-            if ((attribute == "DECLARINGTYPE"))
+            if ((attribute == "DeclaringType"))
             {
                 return new DeclaringTypeProxy(this);
             }
-            if ((attribute == "CONSTRAINS"))
+            if ((attribute == "Constrains"))
             {
                 return new ConstrainsProxy(this);
             }
@@ -369,11 +390,11 @@ namespace NMF.Models.Meta
         /// <param name="reference">The requested reference in upper case</param>
         protected override NMF.Expressions.INotifyExpression<NMF.Models.IModelElement> GetExpressionForReference(string reference)
         {
-            if ((reference == "DECLARINGTYPE"))
+            if ((reference == "DeclaringType"))
             {
                 return new DeclaringTypeProxy(this);
             }
-            if ((reference == "CONSTRAINS"))
+            if ((reference == "Constrains"))
             {
                 return new ConstrainsProxy(this);
             }
@@ -387,7 +408,7 @@ namespace NMF.Models.Meta
         {
             if ((_classInstance == null))
             {
-                _classInstance = ((IClass)(MetaRepository.Instance.Resolve("http://nmf.codeplex.com/nmeta/#//AttributeConstraint/")));
+                _classInstance = ((IClass)(MetaRepository.Instance.Resolve("http://nmf.codeplex.com/nmeta/#//AttributeConstraint")));
             }
             return _classInstance;
         }
@@ -395,7 +416,7 @@ namespace NMF.Models.Meta
         /// <summary>
         /// The collection class to to represent the children of the AttributeConstraint class
         /// </summary>
-        public class AttributeConstraintReferencedElementsCollection : ReferenceCollection, ICollectionExpression<IModelElement>, ICollection<IModelElement>
+        public class AttributeConstraintReferencedElementsCollection : ReferenceCollection, ICollectionExpression<NMF.Models.IModelElement>, ICollection<NMF.Models.IModelElement>
         {
             
             private AttributeConstraint _parent;
@@ -444,7 +465,7 @@ namespace NMF.Models.Meta
             /// Adds the given element to the collection
             /// </summary>
             /// <param name="item">The item to add</param>
-            public override void Add(IModelElement item)
+            public override void Add(NMF.Models.IModelElement item)
             {
                 if ((this._parent.DeclaringType == null))
                 {
@@ -480,7 +501,7 @@ namespace NMF.Models.Meta
             /// </summary>
             /// <returns>True, if it is contained, otherwise False</returns>
             /// <param name="item">The item that should be looked out for</param>
-            public override bool Contains(IModelElement item)
+            public override bool Contains(NMF.Models.IModelElement item)
             {
                 if ((item == this._parent.DeclaringType))
                 {
@@ -498,7 +519,7 @@ namespace NMF.Models.Meta
             /// </summary>
             /// <param name="array">The array in which the elements should be copied</param>
             /// <param name="arrayIndex">The starting index</param>
-            public override void CopyTo(IModelElement[] array, int arrayIndex)
+            public override void CopyTo(NMF.Models.IModelElement[] array, int arrayIndex)
             {
                 if ((this._parent.DeclaringType != null))
                 {
@@ -517,7 +538,7 @@ namespace NMF.Models.Meta
             /// </summary>
             /// <returns>True, if the item was removed, otherwise False</returns>
             /// <param name="item">The item that should be removed</param>
-            public override bool Remove(IModelElement item)
+            public override bool Remove(NMF.Models.IModelElement item)
             {
                 if ((this._parent.DeclaringType == item))
                 {
@@ -536,9 +557,9 @@ namespace NMF.Models.Meta
             /// Gets an enumerator that enumerates the collection
             /// </summary>
             /// <returns>A generic enumerator</returns>
-            public override IEnumerator<IModelElement> GetEnumerator()
+            public override IEnumerator<NMF.Models.IModelElement> GetEnumerator()
             {
-                return Enumerable.Empty<IModelElement>().Concat(this._parent.DeclaringType).Concat(this._parent.Constrains).GetEnumerator();
+                return Enumerable.Empty<NMF.Models.IModelElement>().Concat(this._parent.DeclaringType).Concat(this._parent.Constrains).GetEnumerator();
             }
         }
         

@@ -35,7 +35,7 @@ namespace NMF.Models.Meta
     /// </summary>
     [DefaultImplementationTypeAttribute(typeof(Operation))]
     [XmlDefaultImplementationTypeAttribute(typeof(Operation))]
-    public interface IOperation : IModelElement, ITypedElement
+    public interface IOperation : NMF.Models.IModelElement, ITypedElement
     {
         
         /// <summary>

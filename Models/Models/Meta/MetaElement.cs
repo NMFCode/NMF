@@ -36,9 +36,9 @@ namespace NMF.Models.Meta
     [XmlIdentifierAttribute("Name")]
     [XmlNamespaceAttribute("http://nmf.codeplex.com/nmeta/")]
     [XmlNamespacePrefixAttribute("nmeta")]
-    [ModelRepresentationClassAttribute("http://nmf.codeplex.com/nmeta/#//MetaElement/")]
+    [ModelRepresentationClassAttribute("http://nmf.codeplex.com/nmeta/#//MetaElement")]
     [DebuggerDisplayAttribute("MetaElement {Name}")]
-    public abstract class MetaElement : ModelElement, IMetaElement, IModelElement
+    public abstract partial class MetaElement : NMF.Models.ModelElement, IMetaElement, NMF.Models.IModelElement
     {
         
         /// <summary>
@@ -46,15 +46,21 @@ namespace NMF.Models.Meta
         /// </summary>
         private string _name;
         
+        private static Lazy<ITypedElement> _nameAttribute = new Lazy<ITypedElement>(RetrieveNameAttribute);
+        
         /// <summary>
         /// The backing field for the Summary property
         /// </summary>
         private string _summary;
         
+        private static Lazy<ITypedElement> _summaryAttribute = new Lazy<ITypedElement>(RetrieveSummaryAttribute);
+        
         /// <summary>
         /// The backing field for the Remarks property
         /// </summary>
         private string _remarks;
+        
+        private static Lazy<ITypedElement> _remarksAttribute = new Lazy<ITypedElement>(RetrieveRemarksAttribute);
         
         private static IClass _classInstance;
         
@@ -76,10 +82,10 @@ namespace NMF.Models.Meta
                     string old = this._name;
                     ValueChangedEventArgs e = new ValueChangedEventArgs(old, value);
                     this.OnNameChanging(e);
-                    this.OnPropertyChanging("Name", e);
+                    this.OnPropertyChanging("Name", e, _nameAttribute);
                     this._name = value;
                     this.OnNameChanged(e);
-                    this.OnPropertyChanged("Name", e);
+                    this.OnPropertyChanged("Name", e, _nameAttribute);
                 }
             }
         }
@@ -101,10 +107,10 @@ namespace NMF.Models.Meta
                     string old = this._summary;
                     ValueChangedEventArgs e = new ValueChangedEventArgs(old, value);
                     this.OnSummaryChanging(e);
-                    this.OnPropertyChanging("Summary", e);
+                    this.OnPropertyChanging("Summary", e, _summaryAttribute);
                     this._summary = value;
                     this.OnSummaryChanged(e);
-                    this.OnPropertyChanged("Summary", e);
+                    this.OnPropertyChanged("Summary", e, _summaryAttribute);
                 }
             }
         }
@@ -126,10 +132,10 @@ namespace NMF.Models.Meta
                     string old = this._remarks;
                     ValueChangedEventArgs e = new ValueChangedEventArgs(old, value);
                     this.OnRemarksChanging(e);
-                    this.OnPropertyChanging("Remarks", e);
+                    this.OnPropertyChanging("Remarks", e, _remarksAttribute);
                     this._remarks = value;
                     this.OnRemarksChanged(e);
-                    this.OnPropertyChanged("Remarks", e);
+                    this.OnPropertyChanged("Remarks", e, _remarksAttribute);
                 }
             }
         }
@@ -143,7 +149,7 @@ namespace NMF.Models.Meta
             {
                 if ((_classInstance == null))
                 {
-                    _classInstance = ((IClass)(MetaRepository.Instance.Resolve("http://nmf.codeplex.com/nmeta/#//MetaElement/")));
+                    _classInstance = ((IClass)(MetaRepository.Instance.Resolve("http://nmf.codeplex.com/nmeta/#//MetaElement")));
                 }
                 return _classInstance;
             }
@@ -190,6 +196,11 @@ namespace NMF.Models.Meta
         /// </summary>
         public event System.EventHandler<ValueChangedEventArgs> RemarksChanged;
         
+        private static ITypedElement RetrieveNameAttribute()
+        {
+            return ((ITypedElement)(((NMF.Models.ModelElement)(MetaElement.ClassInstance)).Resolve("Name")));
+        }
+        
         /// <summary>
         /// Raises the NameChanging event
         /// </summary>
@@ -216,6 +227,11 @@ namespace NMF.Models.Meta
             }
         }
         
+        private static ITypedElement RetrieveSummaryAttribute()
+        {
+            return ((ITypedElement)(((NMF.Models.ModelElement)(MetaElement.ClassInstance)).Resolve("Summary")));
+        }
+        
         /// <summary>
         /// Raises the SummaryChanging event
         /// </summary>
@@ -240,6 +256,11 @@ namespace NMF.Models.Meta
             {
                 handler.Invoke(this, eventArgs);
             }
+        }
+        
+        private static ITypedElement RetrieveRemarksAttribute()
+        {
+            return ((ITypedElement)(((NMF.Models.ModelElement)(MetaElement.ClassInstance)).Resolve("Remarks")));
         }
         
         /// <summary>
@@ -323,7 +344,7 @@ namespace NMF.Models.Meta
         {
             if ((_classInstance == null))
             {
-                _classInstance = ((IClass)(MetaRepository.Instance.Resolve("http://nmf.codeplex.com/nmeta/#//MetaElement/")));
+                _classInstance = ((IClass)(MetaRepository.Instance.Resolve("http://nmf.codeplex.com/nmeta/#//MetaElement")));
             }
             return _classInstance;
         }

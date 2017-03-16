@@ -1,16 +1,14 @@
 ﻿using NMF.Models.Repository;
-using NMF.Serialization;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 
-namespace NMF.Models.Evolution
+namespace NMF.Models.Changes
 {
-    public interface IModelChange
+    public partial interface IModelChange
     {
-        Uri AbsoluteUri { get; }
-
         void Apply(IModelRepository repository);
 
         void Invert(IModelRepository repository);

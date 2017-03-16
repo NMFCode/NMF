@@ -30,7 +30,7 @@ namespace NMF.Models.Meta
 {
     
     
-    [ModelRepresentationClassAttribute("http://nmf.codeplex.com/nmeta/#//IdentifierScope/")]
+    [ModelRepresentationClassAttribute("http://nmf.codeplex.com/nmeta/#//IdentifierScope")]
     public enum IdentifierScope
     {
         

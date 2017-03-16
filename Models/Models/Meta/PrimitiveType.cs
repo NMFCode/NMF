@@ -35,15 +35,17 @@ namespace NMF.Models.Meta
     /// </summary>
     [XmlNamespaceAttribute("http://nmf.codeplex.com/nmeta/")]
     [XmlNamespacePrefixAttribute("nmeta")]
-    [ModelRepresentationClassAttribute("http://nmf.codeplex.com/nmeta/#//PrimitiveType/")]
+    [ModelRepresentationClassAttribute("http://nmf.codeplex.com/nmeta/#//PrimitiveType")]
     [DebuggerDisplayAttribute("PrimitiveType {Name}")]
-    public class PrimitiveType : Type, IPrimitiveType, IModelElement
+    public partial class PrimitiveType : Type, IPrimitiveType, NMF.Models.IModelElement
     {
         
         /// <summary>
         /// The backing field for the SystemType property
         /// </summary>
         private string _systemType;
+        
+        private static Lazy<ITypedElement> _systemTypeAttribute = new Lazy<ITypedElement>(RetrieveSystemTypeAttribute);
         
         private static IClass _classInstance;
         
@@ -64,10 +66,10 @@ namespace NMF.Models.Meta
                     string old = this._systemType;
                     ValueChangedEventArgs e = new ValueChangedEventArgs(old, value);
                     this.OnSystemTypeChanging(e);
-                    this.OnPropertyChanging("SystemType", e);
+                    this.OnPropertyChanging("SystemType", e, _systemTypeAttribute);
                     this._systemType = value;
                     this.OnSystemTypeChanged(e);
-                    this.OnPropertyChanged("SystemType", e);
+                    this.OnPropertyChanged("SystemType", e, _systemTypeAttribute);
                 }
             }
         }
@@ -81,7 +83,7 @@ namespace NMF.Models.Meta
             {
                 if ((_classInstance == null))
                 {
-                    _classInstance = ((IClass)(MetaRepository.Instance.Resolve("http://nmf.codeplex.com/nmeta/#//PrimitiveType/")));
+                    _classInstance = ((IClass)(MetaRepository.Instance.Resolve("http://nmf.codeplex.com/nmeta/#//PrimitiveType")));
                 }
                 return _classInstance;
             }
@@ -96,6 +98,11 @@ namespace NMF.Models.Meta
         /// Gets fired when the SystemType property changed its value
         /// </summary>
         public event System.EventHandler<ValueChangedEventArgs> SystemTypeChanged;
+        
+        private static ITypedElement RetrieveSystemTypeAttribute()
+        {
+            return ((ITypedElement)(((NMF.Models.ModelElement)(PrimitiveType.ClassInstance)).Resolve("SystemType")));
+        }
         
         /// <summary>
         /// Raises the SystemTypeChanging event
@@ -160,7 +167,7 @@ namespace NMF.Models.Meta
         {
             if ((_classInstance == null))
             {
-                _classInstance = ((IClass)(MetaRepository.Instance.Resolve("http://nmf.codeplex.com/nmeta/#//PrimitiveType/")));
+                _classInstance = ((IClass)(MetaRepository.Instance.Resolve("http://nmf.codeplex.com/nmeta/#//PrimitiveType")));
             }
             return _classInstance;
         }

@@ -35,9 +35,9 @@ namespace NMF.Models.Meta
     /// </summary>
     [XmlNamespaceAttribute("http://nmf.codeplex.com/nmeta/")]
     [XmlNamespacePrefixAttribute("nmeta")]
-    [ModelRepresentationClassAttribute("http://nmf.codeplex.com/nmeta/#//Reference/")]
+    [ModelRepresentationClassAttribute("http://nmf.codeplex.com/nmeta/#//Reference")]
     [DebuggerDisplayAttribute("Reference {Name}")]
-    public class Reference : MetaElement, IReference, IModelElement
+    public partial class Reference : MetaElement, IReference, NMF.Models.IModelElement
     {
         
         /// <summary>
@@ -45,20 +45,32 @@ namespace NMF.Models.Meta
         /// </summary>
         private bool _isContainment;
         
+        private static Lazy<ITypedElement> _isContainmentAttribute = new Lazy<ITypedElement>(RetrieveIsContainmentAttribute);
+        
+        private static Lazy<ITypedElement> _declaringTypeReference = new Lazy<ITypedElement>(RetrieveDeclaringTypeReference);
+        
+        private static Lazy<ITypedElement> _oppositeReference = new Lazy<ITypedElement>(RetrieveOppositeReference);
+        
         /// <summary>
         /// The backing field for the Opposite property
         /// </summary>
         private IReference _opposite;
+        
+        private static Lazy<ITypedElement> _referenceTypeReference = new Lazy<ITypedElement>(RetrieveReferenceTypeReference);
         
         /// <summary>
         /// The backing field for the ReferenceType property
         /// </summary>
         private IReferenceType _referenceType;
         
+        private static Lazy<ITypedElement> _refinesReference = new Lazy<ITypedElement>(RetrieveRefinesReference);
+        
         /// <summary>
         /// The backing field for the Refines property
         /// </summary>
         private IReference _refines;
+        
+        private static Lazy<ITypedElement> _anchorReference = new Lazy<ITypedElement>(RetrieveAnchorReference);
         
         /// <summary>
         /// The backing field for the Anchor property
@@ -70,20 +82,28 @@ namespace NMF.Models.Meta
         /// </summary>
         private bool _isOrdered;
         
+        private static Lazy<ITypedElement> _isOrderedAttribute = new Lazy<ITypedElement>(RetrieveIsOrderedAttribute);
+        
         /// <summary>
         /// The backing field for the IsUnique property
         /// </summary>
         private bool _isUnique;
+        
+        private static Lazy<ITypedElement> _isUniqueAttribute = new Lazy<ITypedElement>(RetrieveIsUniqueAttribute);
         
         /// <summary>
         /// The backing field for the LowerBound property
         /// </summary>
         private int _lowerBound = 0;
         
+        private static Lazy<ITypedElement> _lowerBoundAttribute = new Lazy<ITypedElement>(RetrieveLowerBoundAttribute);
+        
         /// <summary>
         /// The backing field for the UpperBound property
         /// </summary>
         private int _upperBound = 1;
+        
+        private static Lazy<ITypedElement> _upperBoundAttribute = new Lazy<ITypedElement>(RetrieveUpperBoundAttribute);
         
         private static IClass _classInstance;
         
@@ -131,10 +151,10 @@ namespace NMF.Models.Meta
                     bool old = this._isContainment;
                     ValueChangedEventArgs e = new ValueChangedEventArgs(old, value);
                     this.OnIsContainmentChanging(e);
-                    this.OnPropertyChanging("IsContainment", e);
+                    this.OnPropertyChanging("IsContainment", e, _isContainmentAttribute);
                     this._isContainment = value;
                     this.OnIsContainmentChanged(e);
-                    this.OnPropertyChanged("IsContainment", e);
+                    this.OnPropertyChanged("IsContainment", e, _isContainmentAttribute);
                 }
             }
         }
@@ -175,7 +195,7 @@ namespace NMF.Models.Meta
                     IReference old = this._opposite;
                     ValueChangedEventArgs e = new ValueChangedEventArgs(old, value);
                     this.OnOppositeChanging(e);
-                    this.OnPropertyChanging("Opposite", e);
+                    this.OnPropertyChanging("Opposite", e, _oppositeReference);
                     this._opposite = value;
                     if ((old != null))
                     {
@@ -188,7 +208,7 @@ namespace NMF.Models.Meta
                         value.Deleted += this.OnResetOpposite;
                     }
                     this.OnOppositeChanged(e);
-                    this.OnPropertyChanged("Opposite", e);
+                    this.OnPropertyChanged("Opposite", e, _oppositeReference);
                 }
             }
         }
@@ -210,7 +230,7 @@ namespace NMF.Models.Meta
                     IReferenceType old = this._referenceType;
                     ValueChangedEventArgs e = new ValueChangedEventArgs(old, value);
                     this.OnReferenceTypeChanging(e);
-                    this.OnPropertyChanging("ReferenceType", e);
+                    this.OnPropertyChanging("ReferenceType", e, _referenceTypeReference);
                     this._referenceType = value;
                     if ((old != null))
                     {
@@ -221,7 +241,7 @@ namespace NMF.Models.Meta
                         value.Deleted += this.OnResetReferenceType;
                     }
                     this.OnReferenceTypeChanged(e);
-                    this.OnPropertyChanged("ReferenceType", e);
+                    this.OnPropertyChanged("ReferenceType", e, _referenceTypeReference);
                 }
             }
         }
@@ -243,7 +263,7 @@ namespace NMF.Models.Meta
                     IReference old = this._refines;
                     ValueChangedEventArgs e = new ValueChangedEventArgs(old, value);
                     this.OnRefinesChanging(e);
-                    this.OnPropertyChanging("Refines", e);
+                    this.OnPropertyChanging("Refines", e, _refinesReference);
                     this._refines = value;
                     if ((old != null))
                     {
@@ -254,7 +274,7 @@ namespace NMF.Models.Meta
                         value.Deleted += this.OnResetRefines;
                     }
                     this.OnRefinesChanged(e);
-                    this.OnPropertyChanged("Refines", e);
+                    this.OnPropertyChanged("Refines", e, _refinesReference);
                 }
             }
         }
@@ -276,7 +296,7 @@ namespace NMF.Models.Meta
                     IClass old = this._anchor;
                     ValueChangedEventArgs e = new ValueChangedEventArgs(old, value);
                     this.OnAnchorChanging(e);
-                    this.OnPropertyChanging("Anchor", e);
+                    this.OnPropertyChanging("Anchor", e, _anchorReference);
                     this._anchor = value;
                     if ((old != null))
                     {
@@ -287,7 +307,7 @@ namespace NMF.Models.Meta
                         value.Deleted += this.OnResetAnchor;
                     }
                     this.OnAnchorChanged(e);
-                    this.OnPropertyChanged("Anchor", e);
+                    this.OnPropertyChanged("Anchor", e, _anchorReference);
                 }
             }
         }
@@ -341,10 +361,10 @@ namespace NMF.Models.Meta
                     bool old = this._isOrdered;
                     ValueChangedEventArgs e = new ValueChangedEventArgs(old, value);
                     this.OnIsOrderedChanging(e);
-                    this.OnPropertyChanging("IsOrdered", e);
+                    this.OnPropertyChanging("IsOrdered", e, _isOrderedAttribute);
                     this._isOrdered = value;
                     this.OnIsOrderedChanged(e);
-                    this.OnPropertyChanged("IsOrdered", e);
+                    this.OnPropertyChanged("IsOrdered", e, _isOrderedAttribute);
                 }
             }
         }
@@ -366,10 +386,10 @@ namespace NMF.Models.Meta
                     bool old = this._isUnique;
                     ValueChangedEventArgs e = new ValueChangedEventArgs(old, value);
                     this.OnIsUniqueChanging(e);
-                    this.OnPropertyChanging("IsUnique", e);
+                    this.OnPropertyChanging("IsUnique", e, _isUniqueAttribute);
                     this._isUnique = value;
                     this.OnIsUniqueChanged(e);
-                    this.OnPropertyChanged("IsUnique", e);
+                    this.OnPropertyChanged("IsUnique", e, _isUniqueAttribute);
                 }
             }
         }
@@ -392,10 +412,10 @@ namespace NMF.Models.Meta
                     int old = this._lowerBound;
                     ValueChangedEventArgs e = new ValueChangedEventArgs(old, value);
                     this.OnLowerBoundChanging(e);
-                    this.OnPropertyChanging("LowerBound", e);
+                    this.OnPropertyChanging("LowerBound", e, _lowerBoundAttribute);
                     this._lowerBound = value;
                     this.OnLowerBoundChanged(e);
-                    this.OnPropertyChanged("LowerBound", e);
+                    this.OnPropertyChanged("LowerBound", e, _lowerBoundAttribute);
                 }
             }
         }
@@ -418,10 +438,10 @@ namespace NMF.Models.Meta
                     int old = this._upperBound;
                     ValueChangedEventArgs e = new ValueChangedEventArgs(old, value);
                     this.OnUpperBoundChanging(e);
-                    this.OnPropertyChanging("UpperBound", e);
+                    this.OnPropertyChanging("UpperBound", e, _upperBoundAttribute);
                     this._upperBound = value;
                     this.OnUpperBoundChanged(e);
-                    this.OnPropertyChanged("UpperBound", e);
+                    this.OnPropertyChanged("UpperBound", e, _upperBoundAttribute);
                 }
             }
         }
@@ -429,7 +449,7 @@ namespace NMF.Models.Meta
         /// <summary>
         /// Gets the referenced model elements of this model element
         /// </summary>
-        public override IEnumerableExpression<IModelElement> ReferencedElements
+        public override IEnumerableExpression<NMF.Models.IModelElement> ReferencedElements
         {
             get
             {
@@ -446,7 +466,7 @@ namespace NMF.Models.Meta
             {
                 if ((_classInstance == null))
                 {
-                    _classInstance = ((IClass)(MetaRepository.Instance.Resolve("http://nmf.codeplex.com/nmeta/#//Reference/")));
+                    _classInstance = ((IClass)(MetaRepository.Instance.Resolve("http://nmf.codeplex.com/nmeta/#//Reference")));
                 }
                 return _classInstance;
             }
@@ -552,6 +572,11 @@ namespace NMF.Models.Meta
         /// </summary>
         public event System.EventHandler<ValueChangedEventArgs> UpperBoundChanged;
         
+        private static ITypedElement RetrieveIsContainmentAttribute()
+        {
+            return ((ITypedElement)(((NMF.Models.ModelElement)(Reference.ClassInstance)).Resolve("IsContainment")));
+        }
+        
         /// <summary>
         /// Raises the IsContainmentChanging event
         /// </summary>
@@ -578,6 +603,11 @@ namespace NMF.Models.Meta
             }
         }
         
+        private static ITypedElement RetrieveDeclaringTypeReference()
+        {
+            return ((ITypedElement)(((NMF.Models.ModelElement)(Reference.ClassInstance)).Resolve("DeclaringType")));
+        }
+        
         /// <summary>
         /// Raises the DeclaringTypeChanging event
         /// </summary>
@@ -596,13 +626,13 @@ namespace NMF.Models.Meta
         /// </summary>
         /// <param name="oldParent">The old parent model element</param>
         /// <param name="newParent">The new parent model element</param>
-        protected override void OnParentChanging(IModelElement newParent, IModelElement oldParent)
+        protected override void OnParentChanging(NMF.Models.IModelElement newParent, NMF.Models.IModelElement oldParent)
         {
             IReferenceType oldDeclaringType = ModelHelper.CastAs<IReferenceType>(oldParent);
             IReferenceType newDeclaringType = ModelHelper.CastAs<IReferenceType>(newParent);
             ValueChangedEventArgs e = new ValueChangedEventArgs(oldDeclaringType, newDeclaringType);
             this.OnDeclaringTypeChanging(e);
-            this.OnPropertyChanging("DeclaringType");
+            this.OnPropertyChanging("DeclaringType", e, _declaringTypeReference);
         }
         
         /// <summary>
@@ -623,7 +653,7 @@ namespace NMF.Models.Meta
         /// </summary>
         /// <param name="oldParent">The old parent model element</param>
         /// <param name="newParent">The new parent model element</param>
-        protected override void OnParentChanged(IModelElement newParent, IModelElement oldParent)
+        protected override void OnParentChanged(NMF.Models.IModelElement newParent, NMF.Models.IModelElement oldParent)
         {
             IReferenceType oldDeclaringType = ModelHelper.CastAs<IReferenceType>(oldParent);
             IReferenceType newDeclaringType = ModelHelper.CastAs<IReferenceType>(newParent);
@@ -637,8 +667,13 @@ namespace NMF.Models.Meta
             }
             ValueChangedEventArgs e = new ValueChangedEventArgs(oldDeclaringType, newDeclaringType);
             this.OnDeclaringTypeChanged(e);
-            this.OnPropertyChanged("DeclaringType", e);
+            this.OnPropertyChanged("DeclaringType", e, _declaringTypeReference);
             base.OnParentChanged(newParent, oldParent);
+        }
+        
+        private static ITypedElement RetrieveOppositeReference()
+        {
+            return ((ITypedElement)(((NMF.Models.ModelElement)(Reference.ClassInstance)).Resolve("Opposite")));
         }
         
         /// <summary>
@@ -677,6 +712,11 @@ namespace NMF.Models.Meta
             this.Opposite = null;
         }
         
+        private static ITypedElement RetrieveReferenceTypeReference()
+        {
+            return ((ITypedElement)(((NMF.Models.ModelElement)(Reference.ClassInstance)).Resolve("ReferenceType")));
+        }
+        
         /// <summary>
         /// Raises the ReferenceTypeChanging event
         /// </summary>
@@ -711,6 +751,11 @@ namespace NMF.Models.Meta
         private void OnResetReferenceType(object sender, System.EventArgs eventArgs)
         {
             this.ReferenceType = null;
+        }
+        
+        private static ITypedElement RetrieveRefinesReference()
+        {
+            return ((ITypedElement)(((NMF.Models.ModelElement)(Reference.ClassInstance)).Resolve("Refines")));
         }
         
         /// <summary>
@@ -749,6 +794,11 @@ namespace NMF.Models.Meta
             this.Refines = null;
         }
         
+        private static ITypedElement RetrieveAnchorReference()
+        {
+            return ((ITypedElement)(((NMF.Models.ModelElement)(Reference.ClassInstance)).Resolve("Anchor")));
+        }
+        
         /// <summary>
         /// Raises the AnchorChanging event
         /// </summary>
@@ -785,6 +835,11 @@ namespace NMF.Models.Meta
             this.Anchor = null;
         }
         
+        private static ITypedElement RetrieveIsOrderedAttribute()
+        {
+            return ((ITypedElement)(((NMF.Models.ModelElement)(TypedElement.ClassInstance)).Resolve("IsOrdered")));
+        }
+        
         /// <summary>
         /// Raises the IsOrderedChanging event
         /// </summary>
@@ -809,6 +864,11 @@ namespace NMF.Models.Meta
             {
                 handler.Invoke(this, eventArgs);
             }
+        }
+        
+        private static ITypedElement RetrieveIsUniqueAttribute()
+        {
+            return ((ITypedElement)(((NMF.Models.ModelElement)(TypedElement.ClassInstance)).Resolve("IsUnique")));
         }
         
         /// <summary>
@@ -837,6 +897,11 @@ namespace NMF.Models.Meta
             }
         }
         
+        private static ITypedElement RetrieveLowerBoundAttribute()
+        {
+            return ((ITypedElement)(((NMF.Models.ModelElement)(TypedElement.ClassInstance)).Resolve("LowerBound")));
+        }
+        
         /// <summary>
         /// Raises the LowerBoundChanging event
         /// </summary>
@@ -861,6 +926,11 @@ namespace NMF.Models.Meta
             {
                 handler.Invoke(this, eventArgs);
             }
+        }
+        
+        private static ITypedElement RetrieveUpperBoundAttribute()
+        {
+            return ((ITypedElement)(((NMF.Models.ModelElement)(TypedElement.ClassInstance)).Resolve("UpperBound")));
         }
         
         /// <summary>
@@ -987,23 +1057,23 @@ namespace NMF.Models.Meta
         /// <param name="attribute">The requested attribute in upper case</param>
         protected override NMF.Expressions.INotifyExpression<object> GetExpressionForAttribute(string attribute)
         {
-            if ((attribute == "DECLARINGTYPE"))
+            if ((attribute == "DeclaringType"))
             {
                 return new DeclaringTypeProxy(this);
             }
-            if ((attribute == "OPPOSITE"))
+            if ((attribute == "Opposite"))
             {
                 return new OppositeProxy(this);
             }
-            if ((attribute == "REFERENCETYPE"))
+            if ((attribute == "ReferenceType"))
             {
                 return new ReferenceTypeProxy(this);
             }
-            if ((attribute == "REFINES"))
+            if ((attribute == "Refines"))
             {
                 return new RefinesProxy(this);
             }
-            if ((attribute == "ANCHOR"))
+            if ((attribute == "Anchor"))
             {
                 return new AnchorProxy(this);
             }
@@ -1017,23 +1087,23 @@ namespace NMF.Models.Meta
         /// <param name="reference">The requested reference in upper case</param>
         protected override NMF.Expressions.INotifyExpression<NMF.Models.IModelElement> GetExpressionForReference(string reference)
         {
-            if ((reference == "DECLARINGTYPE"))
+            if ((reference == "DeclaringType"))
             {
                 return new DeclaringTypeProxy(this);
             }
-            if ((reference == "OPPOSITE"))
+            if ((reference == "Opposite"))
             {
                 return new OppositeProxy(this);
             }
-            if ((reference == "REFERENCETYPE"))
+            if ((reference == "ReferenceType"))
             {
                 return new ReferenceTypeProxy(this);
             }
-            if ((reference == "REFINES"))
+            if ((reference == "Refines"))
             {
                 return new RefinesProxy(this);
             }
-            if ((reference == "ANCHOR"))
+            if ((reference == "Anchor"))
             {
                 return new AnchorProxy(this);
             }
@@ -1047,7 +1117,7 @@ namespace NMF.Models.Meta
         {
             if ((_classInstance == null))
             {
-                _classInstance = ((IClass)(MetaRepository.Instance.Resolve("http://nmf.codeplex.com/nmeta/#//Reference/")));
+                _classInstance = ((IClass)(MetaRepository.Instance.Resolve("http://nmf.codeplex.com/nmeta/#//Reference")));
             }
             return _classInstance;
         }
@@ -1055,7 +1125,7 @@ namespace NMF.Models.Meta
         /// <summary>
         /// The collection class to to represent the children of the Reference class
         /// </summary>
-        public class ReferenceReferencedElementsCollection : ReferenceCollection, ICollectionExpression<IModelElement>, ICollection<IModelElement>
+        public class ReferenceReferencedElementsCollection : ReferenceCollection, ICollectionExpression<NMF.Models.IModelElement>, ICollection<NMF.Models.IModelElement>
         {
             
             private Reference _parent;
@@ -1122,7 +1192,7 @@ namespace NMF.Models.Meta
             /// Adds the given element to the collection
             /// </summary>
             /// <param name="item">The item to add</param>
-            public override void Add(IModelElement item)
+            public override void Add(NMF.Models.IModelElement item)
             {
                 if ((this._parent.DeclaringType == null))
                 {
@@ -1188,7 +1258,7 @@ namespace NMF.Models.Meta
             /// </summary>
             /// <returns>True, if it is contained, otherwise False</returns>
             /// <param name="item">The item that should be looked out for</param>
-            public override bool Contains(IModelElement item)
+            public override bool Contains(NMF.Models.IModelElement item)
             {
                 if ((item == this._parent.DeclaringType))
                 {
@@ -1218,7 +1288,7 @@ namespace NMF.Models.Meta
             /// </summary>
             /// <param name="array">The array in which the elements should be copied</param>
             /// <param name="arrayIndex">The starting index</param>
-            public override void CopyTo(IModelElement[] array, int arrayIndex)
+            public override void CopyTo(NMF.Models.IModelElement[] array, int arrayIndex)
             {
                 if ((this._parent.DeclaringType != null))
                 {
@@ -1252,7 +1322,7 @@ namespace NMF.Models.Meta
             /// </summary>
             /// <returns>True, if the item was removed, otherwise False</returns>
             /// <param name="item">The item that should be removed</param>
-            public override bool Remove(IModelElement item)
+            public override bool Remove(NMF.Models.IModelElement item)
             {
                 if ((this._parent.DeclaringType == item))
                 {
@@ -1286,9 +1356,9 @@ namespace NMF.Models.Meta
             /// Gets an enumerator that enumerates the collection
             /// </summary>
             /// <returns>A generic enumerator</returns>
-            public override IEnumerator<IModelElement> GetEnumerator()
+            public override IEnumerator<NMF.Models.IModelElement> GetEnumerator()
             {
-                return Enumerable.Empty<IModelElement>().Concat(this._parent.DeclaringType).Concat(this._parent.Opposite).Concat(this._parent.ReferenceType).Concat(this._parent.Refines).Concat(this._parent.Anchor).GetEnumerator();
+                return Enumerable.Empty<NMF.Models.IModelElement>().Concat(this._parent.DeclaringType).Concat(this._parent.Opposite).Concat(this._parent.ReferenceType).Concat(this._parent.Refines).Concat(this._parent.Anchor).GetEnumerator();
             }
         }
         

@@ -35,14 +35,18 @@ namespace NMF.Models.Meta
     /// </summary>
     [XmlNamespaceAttribute("http://nmf.codeplex.com/nmeta/")]
     [XmlNamespacePrefixAttribute("nmeta")]
-    [ModelRepresentationClassAttribute("http://nmf.codeplex.com/nmeta/#//Model/")]
-    public class Model : ModelElement, IModel, IModelElement
+    [ModelRepresentationClassAttribute("http://nmf.codeplex.com/nmeta/#//Model")]
+    public partial class Model : NMF.Models.ModelElement, IModel, NMF.Models.IModelElement
     {
         
         /// <summary>
         /// The backing field for the ModelUri property
         /// </summary>
         private Uri _modelUri;
+        
+        private static Lazy<ITypedElement> _modelUriAttribute = new Lazy<ITypedElement>(RetrieveModelUriAttribute);
+        
+        private static Lazy<ITypedElement> _rootElementsReference = new Lazy<ITypedElement>(RetrieveRootElementsReference);
         
         /// <summary>
         /// The backing field for the RootElements property
@@ -75,10 +79,10 @@ namespace NMF.Models.Meta
                     Uri old = this._modelUri;
                     ValueChangedEventArgs e = new ValueChangedEventArgs(old, value);
                     this.OnModelUriChanging(e);
-                    this.OnPropertyChanging("ModelUri", e);
+                    this.OnPropertyChanging("ModelUri", e, _modelUriAttribute);
                     this._modelUri = value;
                     this.OnModelUriChanged(e);
-                    this.OnPropertyChanged("ModelUri", e);
+                    this.OnPropertyChanged("ModelUri", e, _modelUriAttribute);
                 }
             }
         }
@@ -101,7 +105,7 @@ namespace NMF.Models.Meta
         /// <summary>
         /// Gets the child model elements of this model element
         /// </summary>
-        public override IEnumerableExpression<IModelElement> Children
+        public override IEnumerableExpression<NMF.Models.IModelElement> Children
         {
             get
             {
@@ -112,7 +116,7 @@ namespace NMF.Models.Meta
         /// <summary>
         /// Gets the referenced model elements of this model element
         /// </summary>
-        public override IEnumerableExpression<IModelElement> ReferencedElements
+        public override IEnumerableExpression<NMF.Models.IModelElement> ReferencedElements
         {
             get
             {
@@ -129,7 +133,7 @@ namespace NMF.Models.Meta
             {
                 if ((_classInstance == null))
                 {
-                    _classInstance = ((IClass)(MetaRepository.Instance.Resolve("http://nmf.codeplex.com/nmeta/#//Model/")));
+                    _classInstance = ((IClass)(MetaRepository.Instance.Resolve("http://nmf.codeplex.com/nmeta/#//Model")));
                 }
                 return _classInstance;
             }
@@ -144,6 +148,11 @@ namespace NMF.Models.Meta
         /// Gets fired when the ModelUri property changed its value
         /// </summary>
         public event System.EventHandler<ValueChangedEventArgs> ModelUriChanged;
+        
+        private static ITypedElement RetrieveModelUriAttribute()
+        {
+            return ((ITypedElement)(((NMF.Models.ModelElement)(odel.ClassInstance)).Resolve("ModelUri")));
+        }
         
         /// <summary>
         /// Raises the ModelUriChanging event
@@ -171,6 +180,11 @@ namespace NMF.Models.Meta
             }
         }
         
+        private static ITypedElement RetrieveRootElementsReference()
+        {
+            return ((ITypedElement)(((NMF.Models.ModelElement)(Model.ClassInstance)).Resolve("RootElements")));
+        }
+        
         /// <summary>
         /// Forwards CollectionChanging notifications for the RootElements property to the parent model element
         /// </summary>
@@ -178,7 +192,7 @@ namespace NMF.Models.Meta
         /// <param name="e">The original event data</param>
         private void RootElementsCollectionChanging(object sender, NMF.Collections.ObjectModel.NotifyCollectionChangingEventArgs e)
         {
-            this.OnCollectionChanging("RootElements", e);
+            this.OnCollectionChanging("RootElements", e, _rootElementsReference);
         }
         
         /// <summary>
@@ -188,7 +202,7 @@ namespace NMF.Models.Meta
         /// <param name="e">The original event data</param>
         private void RootElementsCollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
         {
-            this.OnCollectionChanged("RootElements", e);
+            this.OnCollectionChanged("RootElements", e, _rootElementsReference);
         }
         
         /// <summary>
@@ -242,7 +256,7 @@ namespace NMF.Models.Meta
         {
             if ((_classInstance == null))
             {
-                _classInstance = ((IClass)(MetaRepository.Instance.Resolve("http://nmf.codeplex.com/nmeta/#//Model/")));
+                _classInstance = ((IClass)(MetaRepository.Instance.Resolve("http://nmf.codeplex.com/nmeta/#//Model")));
             }
             return _classInstance;
         }
@@ -250,7 +264,7 @@ namespace NMF.Models.Meta
         /// <summary>
         /// The collection class to to represent the children of the Model class
         /// </summary>
-        public class ModelChildrenCollection : ReferenceCollection, ICollectionExpression<IModelElement>, ICollection<IModelElement>
+        public class ModelChildrenCollection : ReferenceCollection, ICollectionExpression<NMF.Models.IModelElement>, ICollection<NMF.Models.IModelElement>
         {
             
             private Model _parent;
@@ -290,7 +304,7 @@ namespace NMF.Models.Meta
             /// Adds the given element to the collection
             /// </summary>
             /// <param name="item">The item to add</param>
-            public override void Add(IModelElement item)
+            public override void Add(NMF.Models.IModelElement item)
             {
                 NMF.Models.Meta.IModelElement rootElementsCasted = item.As<NMF.Models.Meta.IModelElement>();
                 if ((rootElementsCasted != null))
@@ -312,7 +326,7 @@ namespace NMF.Models.Meta
             /// </summary>
             /// <returns>True, if it is contained, otherwise False</returns>
             /// <param name="item">The item that should be looked out for</param>
-            public override bool Contains(IModelElement item)
+            public override bool Contains(NMF.Models.IModelElement item)
             {
                 if (this._parent.RootElements.Contains(item))
                 {
@@ -326,9 +340,9 @@ namespace NMF.Models.Meta
             /// </summary>
             /// <param name="array">The array in which the elements should be copied</param>
             /// <param name="arrayIndex">The starting index</param>
-            public override void CopyTo(IModelElement[] array, int arrayIndex)
+            public override void CopyTo(NMF.Models.IModelElement[] array, int arrayIndex)
             {
-                IEnumerator<IModelElement> rootElementsEnumerator = this._parent.RootElements.GetEnumerator();
+                IEnumerator<NMF.Models.IModelElement> rootElementsEnumerator = this._parent.RootElements.GetEnumerator();
                 try
                 {
                     for (
@@ -350,7 +364,7 @@ namespace NMF.Models.Meta
             /// </summary>
             /// <returns>True, if the item was removed, otherwise False</returns>
             /// <param name="item">The item that should be removed</param>
-            public override bool Remove(IModelElement item)
+            public override bool Remove(NMF.Models.IModelElement item)
             {
                 NMF.Models.Meta.IModelElement modelElementItem = item.As<NMF.Models.Meta.IModelElement>();
                 if (((modelElementItem != null) 
@@ -365,16 +379,16 @@ namespace NMF.Models.Meta
             /// Gets an enumerator that enumerates the collection
             /// </summary>
             /// <returns>A generic enumerator</returns>
-            public override IEnumerator<IModelElement> GetEnumerator()
+            public override IEnumerator<NMF.Models.IModelElement> GetEnumerator()
             {
-                return Enumerable.Empty<IModelElement>().Concat(this._parent.RootElements).GetEnumerator();
+                return Enumerable.Empty<NMF.Models.IModelElement>().Concat(this._parent.RootElements).GetEnumerator();
             }
         }
         
         /// <summary>
         /// The collection class to to represent the children of the Model class
         /// </summary>
-        public class ModelReferencedElementsCollection : ReferenceCollection, ICollectionExpression<IModelElement>, ICollection<IModelElement>
+        public class ModelReferencedElementsCollection : ReferenceCollection, ICollectionExpression<NMF.Models.IModelElement>, ICollection<NMF.Models.IModelElement>
         {
             
             private Model _parent;
@@ -414,7 +428,7 @@ namespace NMF.Models.Meta
             /// Adds the given element to the collection
             /// </summary>
             /// <param name="item">The item to add</param>
-            public override void Add(IModelElement item)
+            public override void Add(NMF.Models.IModelElement item)
             {
                 NMF.Models.Meta.IModelElement rootElementsCasted = item.As<NMF.Models.Meta.IModelElement>();
                 if ((rootElementsCasted != null))
@@ -436,7 +450,7 @@ namespace NMF.Models.Meta
             /// </summary>
             /// <returns>True, if it is contained, otherwise False</returns>
             /// <param name="item">The item that should be looked out for</param>
-            public override bool Contains(IModelElement item)
+            public override bool Contains(NMF.Models.IModelElement item)
             {
                 if (this._parent.RootElements.Contains(item))
                 {
@@ -450,9 +464,9 @@ namespace NMF.Models.Meta
             /// </summary>
             /// <param name="array">The array in which the elements should be copied</param>
             /// <param name="arrayIndex">The starting index</param>
-            public override void CopyTo(IModelElement[] array, int arrayIndex)
+            public override void CopyTo(NMF.Models.IModelElement[] array, int arrayIndex)
             {
-                IEnumerator<IModelElement> rootElementsEnumerator = this._parent.RootElements.GetEnumerator();
+                IEnumerator<NMF.Models.IModelElement> rootElementsEnumerator = this._parent.RootElements.GetEnumerator();
                 try
                 {
                     for (
@@ -474,7 +488,7 @@ namespace NMF.Models.Meta
             /// </summary>
             /// <returns>True, if the item was removed, otherwise False</returns>
             /// <param name="item">The item that should be removed</param>
-            public override bool Remove(IModelElement item)
+            public override bool Remove(NMF.Models.IModelElement item)
             {
                 NMF.Models.Meta.IModelElement modelElementItem = item.As<NMF.Models.Meta.IModelElement>();
                 if (((modelElementItem != null) 
@@ -489,9 +503,9 @@ namespace NMF.Models.Meta
             /// Gets an enumerator that enumerates the collection
             /// </summary>
             /// <returns>A generic enumerator</returns>
-            public override IEnumerator<IModelElement> GetEnumerator()
+            public override IEnumerator<NMF.Models.IModelElement> GetEnumerator()
             {
-                return Enumerable.Empty<IModelElement>().Concat(this._parent.RootElements).GetEnumerator();
+                return Enumerable.Empty<NMF.Models.IModelElement>().Concat(this._parent.RootElements).GetEnumerator();
             }
         }
         
