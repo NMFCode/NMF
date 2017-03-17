@@ -36,10 +36,14 @@ namespace NMF.Models.Tests.Railway
     /// </summary>
     [XmlNamespaceAttribute("http://www.semanticweb.org/ontologies/2015/ttc/trainbenchmark")]
     [XmlNamespacePrefixAttribute("hu.bme.mit.trainbenchmark")]
-    [ModelRepresentationClassAttribute("http://www.semanticweb.org/ontologies/2015/ttc/trainbenchmark#//TrackElement/")]
+    [ModelRepresentationClassAttribute("http://www.semanticweb.org/ontologies/2015/ttc/trainbenchmark#//TrackElement")]
     [DebuggerDisplayAttribute("TrackElement {Id}")]
-    public abstract class TrackElement : RailwayElement, ITrackElement, IModelElement
+    public abstract partial class TrackElement : RailwayElement, ITrackElement, IModelElement
     {
+        
+        private static Lazy<ITypedElement> _sensorReference = new Lazy<ITypedElement>(RetrieveSensorReference);
+        
+        private static Lazy<ITypedElement> _connectsToReference = new Lazy<ITypedElement>(RetrieveConnectsToReference);
         
         /// <summary>
         /// The backing field for the ConnectsTo property
@@ -109,7 +113,7 @@ namespace NMF.Models.Tests.Railway
             {
                 if ((_classInstance == null))
                 {
-                    _classInstance = ((IClass)(MetaRepository.Instance.Resolve("http://www.semanticweb.org/ontologies/2015/ttc/trainbenchmark#//TrackElement/")));
+                    _classInstance = ((IClass)(MetaRepository.Instance.Resolve("http://www.semanticweb.org/ontologies/2015/ttc/trainbenchmark#//TrackElement")));
                 }
                 return _classInstance;
             }
@@ -124,6 +128,11 @@ namespace NMF.Models.Tests.Railway
         /// Gets fired when the Sensor property changed its value
         /// </summary>
         public event System.EventHandler<ValueChangedEventArgs> SensorChanged;
+        
+        private static ITypedElement RetrieveSensorReference()
+        {
+            return ((ITypedElement)(((ModelElement)(TrackElement.ClassInstance)).Resolve("sensor")));
+        }
         
         /// <summary>
         /// Raises the SensorChanging event
@@ -149,7 +158,7 @@ namespace NMF.Models.Tests.Railway
             ISensor newSensor = ModelHelper.CastAs<ISensor>(newParent);
             ValueChangedEventArgs e = new ValueChangedEventArgs(oldSensor, newSensor);
             this.OnSensorChanging(e);
-            this.OnPropertyChanging("Sensor");
+            this.OnPropertyChanging("Sensor", e, _sensorReference);
         }
         
         /// <summary>
@@ -184,8 +193,13 @@ namespace NMF.Models.Tests.Railway
             }
             ValueChangedEventArgs e = new ValueChangedEventArgs(oldSensor, newSensor);
             this.OnSensorChanged(e);
-            this.OnPropertyChanged("Sensor", e);
+            this.OnPropertyChanged("Sensor", e, _sensorReference);
             base.OnParentChanged(newParent, oldParent);
+        }
+        
+        private static ITypedElement RetrieveConnectsToReference()
+        {
+            return ((ITypedElement)(((ModelElement)(TrackElement.ClassInstance)).Resolve("connectsTo")));
         }
         
         /// <summary>
@@ -195,7 +209,7 @@ namespace NMF.Models.Tests.Railway
         /// <param name="e">The original event data</param>
         private void ConnectsToCollectionChanging(object sender, NMF.Collections.ObjectModel.NotifyCollectionChangingEventArgs e)
         {
-            this.OnCollectionChanging("ConnectsTo", e);
+            this.OnCollectionChanging("ConnectsTo", e, _connectsToReference);
         }
         
         /// <summary>
@@ -205,7 +219,7 @@ namespace NMF.Models.Tests.Railway
         /// <param name="e">The original event data</param>
         private void ConnectsToCollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
         {
-            this.OnCollectionChanged("ConnectsTo", e);
+            this.OnCollectionChanged("ConnectsTo", e, _connectsToReference);
         }
         
         /// <summary>
@@ -244,7 +258,7 @@ namespace NMF.Models.Tests.Railway
         /// <param name="attribute">The requested attribute in upper case</param>
         protected override NMF.Expressions.INotifyExpression<object> GetExpressionForAttribute(string attribute)
         {
-            if ((attribute == "SENSOR"))
+            if ((attribute == "Sensor"))
             {
                 return new SensorProxy(this);
             }
@@ -258,7 +272,7 @@ namespace NMF.Models.Tests.Railway
         /// <param name="reference">The requested reference in upper case</param>
         protected override NMF.Expressions.INotifyExpression<NMF.Models.IModelElement> GetExpressionForReference(string reference)
         {
-            if ((reference == "SENSOR"))
+            if ((reference == "Sensor"))
             {
                 return new SensorProxy(this);
             }
@@ -272,7 +286,7 @@ namespace NMF.Models.Tests.Railway
         {
             if ((_classInstance == null))
             {
-                _classInstance = ((IClass)(MetaRepository.Instance.Resolve("http://www.semanticweb.org/ontologies/2015/ttc/trainbenchmark#//TrackElement/")));
+                _classInstance = ((IClass)(MetaRepository.Instance.Resolve("http://www.semanticweb.org/ontologies/2015/ttc/trainbenchmark#//TrackElement")));
             }
             return _classInstance;
         }

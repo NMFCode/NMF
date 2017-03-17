@@ -10,10 +10,10 @@ namespace NMF.Models.Collections
 {
     public class CompositionList<T> : Collection<T> where T : class, IModelElement
     {
-        public IModelElement Parent { get; private set; }
+        public ModelElement Parent { get; private set; }
         private bool silent;
 
-        public CompositionList(IModelElement parent)
+        public CompositionList(ModelElement parent)
         {
             if (parent == null) throw new ArgumentNullException("parent");
 
@@ -50,6 +50,7 @@ namespace NMF.Models.Collections
                 item.Parent = Parent;
                 base.InsertItem(index, item);
                 silent = false;
+                NotifyChangedUri(index + 1, -1);
             }
         }
 
@@ -69,6 +70,38 @@ namespace NMF.Models.Collections
                     }
                 }
                 silent = false;
+                NotifyChangedUri(index, 1);
+            }
+        }
+
+        private void NotifyChangedUri(int startIndex, int diff)
+        {
+            if (Parent.IsFlagSet(ModelElement.ModelElementFlag.RequireUris))
+            {
+                var parentUri = new Lazy<Uri>(() => Parent.AbsoluteUri ?? Parent.RelativeUri);
+                for (int i = startIndex; i < Count; i++)
+                {
+                    var item = this[i];
+                    if (item != null && !item.IsIdentified)
+                    {
+                        var me = item as ModelElement;
+                        if (me != null)
+                        {
+                            var baseUri = parentUri.Value;
+                            Uri oldUri;
+                            var newRef = ModelHelper.CreatePath(Parent.GetCompositionName(this), i + diff);
+                            if (baseUri.IsAbsoluteUri)
+                            {
+                                oldUri = new Uri(baseUri, baseUri.Fragment + "/" + newRef);
+                            }
+                            else
+                            {
+                                oldUri = new Uri(baseUri.OriginalString + "/" + newRef, UriKind.Relative);
+                            }
+                            me.OnUriChanged(oldUri);
+                        }
+                    }
+                }
             }
         }
 
@@ -114,10 +147,10 @@ namespace NMF.Models.Collections
 
     public class ObservableCompositionList<T> : ObservableList<T> where T : class, IModelElement
     {
-        public IModelElement Parent { get; private set; }
+        public ModelElement Parent { get; private set; }
         private bool silent;
 
-        public ObservableCompositionList(IModelElement parent)
+        public ObservableCompositionList(ModelElement parent)
         {
             if (parent == null) throw new ArgumentNullException("parent");
 
@@ -150,11 +183,43 @@ namespace NMF.Models.Collections
             }
         }
 
+        private void NotifyChangedUri(int startIndex, int diff)
+        {
+            if (Parent.IsFlagSet(ModelElement.ModelElementFlag.RequireUris))
+            {
+                var parentUri = new Lazy<Uri>(() => Parent.AbsoluteUri ?? Parent.RelativeUri);
+                for (int i = startIndex; i < Count; i++)
+                {
+                    var item = this[i];
+                    if (item != null && (!item.IsIdentified || !ModelElement.PreferIdentifiers))
+                    {
+                        var me = item as ModelElement;
+                        if (me != null)
+                        {
+                            var baseUri = parentUri.Value;
+                            Uri oldUri;
+                            var newRef = ModelHelper.CreatePath(Parent.GetCompositionName(this), i + diff);
+                            if (baseUri.IsAbsoluteUri)
+                            {
+                                oldUri = new Uri(baseUri, baseUri.Fragment + "/" + newRef);
+                            }
+                            else
+                            {
+                                oldUri = new Uri(baseUri.OriginalString + "/" + newRef, UriKind.Relative);
+                            }
+                            me.OnUriChanged(oldUri);
+                        }
+                    }
+                }
+            }
+        }
+
         protected override void InsertItem(int index, T item)
         {
             if (!silent && item != null)
             {
                 base.InsertItem(index, item);
+                NotifyChangedUri(index + 1, -1);
             }
         }
 
@@ -171,6 +236,7 @@ namespace NMF.Models.Collections
             if (!silent)
             {
                 base.RemoveItem(index);
+                NotifyChangedUri(index, 1);
             }
         }
 

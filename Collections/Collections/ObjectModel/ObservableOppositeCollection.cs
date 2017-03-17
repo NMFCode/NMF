@@ -31,16 +31,16 @@ namespace NMF.Collections.ObjectModel
             }
         }
 
-        protected override void OnInsertItem(TCollected item)
+        protected override void OnInsertItem(TCollected item, int index)
         {
             SetOpposite(item, Parent);
-            base.OnInsertItem(item);
+            base.OnInsertItem(item, index);
         }
 
-        protected override void OnRemoveItem(TCollected item)
+        protected override void OnRemoveItem(TCollected item, int index)
         {
             SetOpposite(item, default(TParent));
-            base.OnRemoveItem(item);
+            base.OnRemoveItem(item, index);
         }
 
         protected override void OnReplaceItem(TCollected oldItem, TCollected newItem)

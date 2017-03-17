@@ -36,15 +36,17 @@ namespace NMF.Models.Tests.Railway
     /// </summary>
     [XmlNamespaceAttribute("http://www.semanticweb.org/ontologies/2015/ttc/trainbenchmark")]
     [XmlNamespacePrefixAttribute("hu.bme.mit.trainbenchmark")]
-    [ModelRepresentationClassAttribute("http://www.semanticweb.org/ontologies/2015/ttc/trainbenchmark#//Segment/")]
+    [ModelRepresentationClassAttribute("http://www.semanticweb.org/ontologies/2015/ttc/trainbenchmark#//Segment")]
     [DebuggerDisplayAttribute("Segment {Id}")]
-    public class Segment : TrackElement, ISegment, IModelElement
+    public partial class Segment : TrackElement, ISegment, IModelElement
     {
         
         /// <summary>
         /// The backing field for the Length property
         /// </summary>
         private int _length;
+        
+        private static Lazy<ITypedElement> _lengthAttribute = new Lazy<ITypedElement>(RetrieveLengthAttribute);
         
         private static IClass _classInstance;
         
@@ -66,10 +68,10 @@ namespace NMF.Models.Tests.Railway
                     int old = this._length;
                     ValueChangedEventArgs e = new ValueChangedEventArgs(old, value);
                     this.OnLengthChanging(e);
-                    this.OnPropertyChanging("Length", e);
+                    this.OnPropertyChanging("Length", e, _lengthAttribute);
                     this._length = value;
                     this.OnLengthChanged(e);
-                    this.OnPropertyChanged("Length", e);
+                    this.OnPropertyChanged("Length", e, _lengthAttribute);
                 }
             }
         }
@@ -83,7 +85,7 @@ namespace NMF.Models.Tests.Railway
             {
                 if ((_classInstance == null))
                 {
-                    _classInstance = ((IClass)(MetaRepository.Instance.Resolve("http://www.semanticweb.org/ontologies/2015/ttc/trainbenchmark#//Segment/")));
+                    _classInstance = ((IClass)(MetaRepository.Instance.Resolve("http://www.semanticweb.org/ontologies/2015/ttc/trainbenchmark#//Segment")));
                 }
                 return _classInstance;
             }
@@ -98,6 +100,11 @@ namespace NMF.Models.Tests.Railway
         /// Gets fired when the Length property changed its value
         /// </summary>
         public event System.EventHandler<ValueChangedEventArgs> LengthChanged;
+        
+        private static ITypedElement RetrieveLengthAttribute()
+        {
+            return ((ITypedElement)(((ModelElement)(Segment.ClassInstance)).Resolve("length")));
+        }
         
         /// <summary>
         /// Raises the LengthChanging event
@@ -162,7 +169,7 @@ namespace NMF.Models.Tests.Railway
         {
             if ((_classInstance == null))
             {
-                _classInstance = ((IClass)(MetaRepository.Instance.Resolve("http://www.semanticweb.org/ontologies/2015/ttc/trainbenchmark#//Segment/")));
+                _classInstance = ((IClass)(MetaRepository.Instance.Resolve("http://www.semanticweb.org/ontologies/2015/ttc/trainbenchmark#//Segment")));
             }
             return _classInstance;
         }

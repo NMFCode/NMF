@@ -37,15 +37,17 @@ namespace NMF.Models.Tests.Railway
     [XmlIdentifierAttribute("id")]
     [XmlNamespaceAttribute("http://www.semanticweb.org/ontologies/2015/ttc/trainbenchmark")]
     [XmlNamespacePrefixAttribute("hu.bme.mit.trainbenchmark")]
-    [ModelRepresentationClassAttribute("http://www.semanticweb.org/ontologies/2015/ttc/trainbenchmark#//RailwayElement/")]
+    [ModelRepresentationClassAttribute("http://www.semanticweb.org/ontologies/2015/ttc/trainbenchmark#//RailwayElement")]
     [DebuggerDisplayAttribute("RailwayElement {Id}")]
-    public abstract class RailwayElement : ModelElement, IRailwayElement, IModelElement
+    public abstract partial class RailwayElement : ModelElement, IRailwayElement, IModelElement
     {
         
         /// <summary>
         /// The backing field for the Id property
         /// </summary>
         private Nullable<int> _id;
+        
+        private static Lazy<ITypedElement> _idAttribute = new Lazy<ITypedElement>(RetrieveIdAttribute);
         
         private static IClass _classInstance;
         
@@ -68,10 +70,10 @@ namespace NMF.Models.Tests.Railway
                     Nullable<int> old = this._id;
                     ValueChangedEventArgs e = new ValueChangedEventArgs(old, value);
                     this.OnIdChanging(e);
-                    this.OnPropertyChanging("Id", e);
+                    this.OnPropertyChanging("Id", e, _idAttribute);
                     this._id = value;
                     this.OnIdChanged(e);
-                    this.OnPropertyChanged("Id", e);
+                    this.OnPropertyChanged("Id", e, _idAttribute);
                 }
             }
         }
@@ -85,7 +87,7 @@ namespace NMF.Models.Tests.Railway
             {
                 if ((_classInstance == null))
                 {
-                    _classInstance = ((IClass)(MetaRepository.Instance.Resolve("http://www.semanticweb.org/ontologies/2015/ttc/trainbenchmark#//RailwayElement/")));
+                    _classInstance = ((IClass)(MetaRepository.Instance.Resolve("http://www.semanticweb.org/ontologies/2015/ttc/trainbenchmark#//RailwayElement")));
                 }
                 return _classInstance;
             }
@@ -111,6 +113,11 @@ namespace NMF.Models.Tests.Railway
         /// Gets fired when the Id property changed its value
         /// </summary>
         public event System.EventHandler<ValueChangedEventArgs> IdChanged;
+        
+        private static ITypedElement RetrieveIdAttribute()
+        {
+            return ((ITypedElement)(((ModelElement)(RailwayElement.ClassInstance)).Resolve("id")));
+        }
         
         /// <summary>
         /// Raises the IdChanging event
@@ -175,7 +182,7 @@ namespace NMF.Models.Tests.Railway
         {
             if ((_classInstance == null))
             {
-                _classInstance = ((IClass)(MetaRepository.Instance.Resolve("http://www.semanticweb.org/ontologies/2015/ttc/trainbenchmark#//RailwayElement/")));
+                _classInstance = ((IClass)(MetaRepository.Instance.Resolve("http://www.semanticweb.org/ontologies/2015/ttc/trainbenchmark#//RailwayElement")));
             }
             return _classInstance;
         }

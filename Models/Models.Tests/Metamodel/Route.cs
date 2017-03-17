@@ -36,25 +36,33 @@ namespace NMF.Models.Tests.Railway
     /// </summary>
     [XmlNamespaceAttribute("http://www.semanticweb.org/ontologies/2015/ttc/trainbenchmark")]
     [XmlNamespacePrefixAttribute("hu.bme.mit.trainbenchmark")]
-    [ModelRepresentationClassAttribute("http://www.semanticweb.org/ontologies/2015/ttc/trainbenchmark#//Route/")]
+    [ModelRepresentationClassAttribute("http://www.semanticweb.org/ontologies/2015/ttc/trainbenchmark#//Route")]
     [DebuggerDisplayAttribute("Route {Id}")]
-    public class Route : RailwayElement, IRoute, IModelElement
+    public partial class Route : RailwayElement, IRoute, IModelElement
     {
+        
+        private static Lazy<ITypedElement> _entryReference = new Lazy<ITypedElement>(RetrieveEntryReference);
         
         /// <summary>
         /// The backing field for the Entry property
         /// </summary>
         private ISemaphore _entry;
         
+        private static Lazy<ITypedElement> _followsReference = new Lazy<ITypedElement>(RetrieveFollowsReference);
+        
         /// <summary>
         /// The backing field for the Follows property
         /// </summary>
         private RouteFollowsCollection _follows;
         
+        private static Lazy<ITypedElement> _exitReference = new Lazy<ITypedElement>(RetrieveExitReference);
+        
         /// <summary>
         /// The backing field for the Exit property
         /// </summary>
         private ISemaphore _exit;
+        
+        private static Lazy<ITypedElement> _definedByReference = new Lazy<ITypedElement>(RetrieveDefinedByReference);
         
         /// <summary>
         /// The backing field for the DefinedBy property
@@ -62,7 +70,16 @@ namespace NMF.Models.Tests.Railway
         private ObservableCompositionList<ISensor> _definedBy;
         
         private static IClass _classInstance;
-        
+
+        protected override string GetCompositionName(object container)
+        {
+            if (container == _definedBy)
+            {
+                return "definedBy";
+            }
+            return base.GetCompositionName(container);
+        }
+
         public Route()
         {
             this._follows = new RouteFollowsCollection(this);
@@ -91,7 +108,7 @@ namespace NMF.Models.Tests.Railway
                     ISemaphore old = this._entry;
                     ValueChangedEventArgs e = new ValueChangedEventArgs(old, value);
                     this.OnEntryChanging(e);
-                    this.OnPropertyChanging("Entry", e);
+                    this.OnPropertyChanging("Entry", e, _entryReference);
                     this._entry = value;
                     if ((old != null))
                     {
@@ -102,7 +119,7 @@ namespace NMF.Models.Tests.Railway
                         value.Deleted += this.OnResetEntry;
                     }
                     this.OnEntryChanged(e);
-                    this.OnPropertyChanged("Entry", e);
+                    this.OnPropertyChanged("Entry", e, _entryReference);
                 }
             }
         }
@@ -142,7 +159,7 @@ namespace NMF.Models.Tests.Railway
                     ISemaphore old = this._exit;
                     ValueChangedEventArgs e = new ValueChangedEventArgs(old, value);
                     this.OnExitChanging(e);
-                    this.OnPropertyChanging("Exit", e);
+                    this.OnPropertyChanging("Exit", e, _exitReference);
                     this._exit = value;
                     if ((old != null))
                     {
@@ -153,7 +170,7 @@ namespace NMF.Models.Tests.Railway
                         value.Deleted += this.OnResetExit;
                     }
                     this.OnExitChanged(e);
-                    this.OnPropertyChanged("Exit", e);
+                    this.OnPropertyChanged("Exit", e, _exitReference);
                 }
             }
         }
@@ -206,7 +223,7 @@ namespace NMF.Models.Tests.Railway
             {
                 if ((_classInstance == null))
                 {
-                    _classInstance = ((IClass)(MetaRepository.Instance.Resolve("http://www.semanticweb.org/ontologies/2015/ttc/trainbenchmark#//Route/")));
+                    _classInstance = ((IClass)(MetaRepository.Instance.Resolve("http://www.semanticweb.org/ontologies/2015/ttc/trainbenchmark#//Route")));
                 }
                 return _classInstance;
             }
@@ -231,6 +248,11 @@ namespace NMF.Models.Tests.Railway
         /// Gets fired when the Exit property changed its value
         /// </summary>
         public event System.EventHandler<ValueChangedEventArgs> ExitChanged;
+        
+        private static ITypedElement RetrieveEntryReference()
+        {
+            return ((ITypedElement)(((ModelElement)(Route.ClassInstance)).Resolve("entry")));
+        }
         
         /// <summary>
         /// Raises the EntryChanging event
@@ -268,6 +290,11 @@ namespace NMF.Models.Tests.Railway
             this.Entry = null;
         }
         
+        private static ITypedElement RetrieveFollowsReference()
+        {
+            return ((ITypedElement)(((ModelElement)(Route.ClassInstance)).Resolve("follows")));
+        }
+        
         /// <summary>
         /// Forwards CollectionChanging notifications for the Follows property to the parent model element
         /// </summary>
@@ -275,7 +302,7 @@ namespace NMF.Models.Tests.Railway
         /// <param name="e">The original event data</param>
         private void FollowsCollectionChanging(object sender, NMF.Collections.ObjectModel.NotifyCollectionChangingEventArgs e)
         {
-            this.OnCollectionChanging("Follows", e);
+            this.OnCollectionChanging("Follows", e, _followsReference);
         }
         
         /// <summary>
@@ -285,7 +312,12 @@ namespace NMF.Models.Tests.Railway
         /// <param name="e">The original event data</param>
         private void FollowsCollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
         {
-            this.OnCollectionChanged("Follows", e);
+            this.OnCollectionChanged("Follows", e, _followsReference);
+        }
+        
+        private static ITypedElement RetrieveExitReference()
+        {
+            return ((ITypedElement)(((ModelElement)(Route.ClassInstance)).Resolve("exit")));
         }
         
         /// <summary>
@@ -324,6 +356,11 @@ namespace NMF.Models.Tests.Railway
             this.Exit = null;
         }
         
+        private static ITypedElement RetrieveDefinedByReference()
+        {
+            return ((ITypedElement)(((ModelElement)(Route.ClassInstance)).Resolve("definedBy")));
+        }
+        
         /// <summary>
         /// Forwards CollectionChanging notifications for the DefinedBy property to the parent model element
         /// </summary>
@@ -331,7 +368,7 @@ namespace NMF.Models.Tests.Railway
         /// <param name="e">The original event data</param>
         private void DefinedByCollectionChanging(object sender, NMF.Collections.ObjectModel.NotifyCollectionChangingEventArgs e)
         {
-            this.OnCollectionChanging("DefinedBy", e);
+            this.OnCollectionChanging("DefinedBy", e, _definedByReference);
         }
         
         /// <summary>
@@ -341,7 +378,7 @@ namespace NMF.Models.Tests.Railway
         /// <param name="e">The original event data</param>
         private void DefinedByCollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
         {
-            this.OnCollectionChanged("DefinedBy", e);
+            this.OnCollectionChanged("DefinedBy", e, _definedByReference);
         }
         
         /// <summary>
@@ -442,11 +479,11 @@ namespace NMF.Models.Tests.Railway
         /// <param name="attribute">The requested attribute in upper case</param>
         protected override NMF.Expressions.INotifyExpression<object> GetExpressionForAttribute(string attribute)
         {
-            if ((attribute == "ENTRY"))
+            if ((attribute == "Entry"))
             {
                 return new EntryProxy(this);
             }
-            if ((attribute == "EXIT"))
+            if ((attribute == "Exit"))
             {
                 return new ExitProxy(this);
             }
@@ -460,11 +497,11 @@ namespace NMF.Models.Tests.Railway
         /// <param name="reference">The requested reference in upper case</param>
         protected override NMF.Expressions.INotifyExpression<NMF.Models.IModelElement> GetExpressionForReference(string reference)
         {
-            if ((reference == "ENTRY"))
+            if ((reference == "Entry"))
             {
                 return new EntryProxy(this);
             }
-            if ((reference == "EXIT"))
+            if ((reference == "Exit"))
             {
                 return new ExitProxy(this);
             }
@@ -478,7 +515,7 @@ namespace NMF.Models.Tests.Railway
         {
             if ((_classInstance == null))
             {
-                _classInstance = ((IClass)(MetaRepository.Instance.Resolve("http://www.semanticweb.org/ontologies/2015/ttc/trainbenchmark#//Route/")));
+                _classInstance = ((IClass)(MetaRepository.Instance.Resolve("http://www.semanticweb.org/ontologies/2015/ttc/trainbenchmark#//Route")));
             }
             return _classInstance;
         }

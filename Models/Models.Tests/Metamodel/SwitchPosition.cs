@@ -36,9 +36,9 @@ namespace NMF.Models.Tests.Railway
     /// </summary>
     [XmlNamespaceAttribute("http://www.semanticweb.org/ontologies/2015/ttc/trainbenchmark")]
     [XmlNamespacePrefixAttribute("hu.bme.mit.trainbenchmark")]
-    [ModelRepresentationClassAttribute("http://www.semanticweb.org/ontologies/2015/ttc/trainbenchmark#//SwitchPosition/")]
+    [ModelRepresentationClassAttribute("http://www.semanticweb.org/ontologies/2015/ttc/trainbenchmark#//SwitchPosition")]
     [DebuggerDisplayAttribute("SwitchPosition {Id}")]
-    public class SwitchPosition : RailwayElement, ISwitchPosition, IModelElement
+    public partial class SwitchPosition : RailwayElement, ISwitchPosition, IModelElement
     {
         
         /// <summary>
@@ -46,10 +46,16 @@ namespace NMF.Models.Tests.Railway
         /// </summary>
         private Position _position;
         
+        private static Lazy<ITypedElement> _positionAttribute = new Lazy<ITypedElement>(RetrievePositionAttribute);
+        
+        private static Lazy<ITypedElement> _switchReference = new Lazy<ITypedElement>(RetrieveSwitchReference);
+        
         /// <summary>
         /// The backing field for the Switch property
         /// </summary>
         private ISwitch _switch;
+        
+        private static Lazy<ITypedElement> _routeReference = new Lazy<ITypedElement>(RetrieveRouteReference);
         
         private static IClass _classInstance;
         
@@ -71,10 +77,10 @@ namespace NMF.Models.Tests.Railway
                     Position old = this._position;
                     ValueChangedEventArgs e = new ValueChangedEventArgs(old, value);
                     this.OnPositionChanging(e);
-                    this.OnPropertyChanging("Position", e);
+                    this.OnPropertyChanging("Position", e, _positionAttribute);
                     this._position = value;
                     this.OnPositionChanged(e);
-                    this.OnPropertyChanged("Position", e);
+                    this.OnPropertyChanged("Position", e, _positionAttribute);
                 }
             }
         }
@@ -98,7 +104,7 @@ namespace NMF.Models.Tests.Railway
                     ISwitch old = this._switch;
                     ValueChangedEventArgs e = new ValueChangedEventArgs(old, value);
                     this.OnSwitchChanging(e);
-                    this.OnPropertyChanging("Switch", e);
+                    this.OnPropertyChanging("Switch", e, _switchReference);
                     this._switch = value;
                     if ((old != null))
                     {
@@ -114,7 +120,7 @@ namespace NMF.Models.Tests.Railway
                         value.Deleted += this.OnResetSwitch;
                     }
                     this.OnSwitchChanged(e);
-                    this.OnPropertyChanged("Switch", e);
+                    this.OnPropertyChanged("Switch", e, _switchReference);
                 }
             }
         }
@@ -158,7 +164,7 @@ namespace NMF.Models.Tests.Railway
             {
                 if ((_classInstance == null))
                 {
-                    _classInstance = ((IClass)(MetaRepository.Instance.Resolve("http://www.semanticweb.org/ontologies/2015/ttc/trainbenchmark#//SwitchPosition/")));
+                    _classInstance = ((IClass)(MetaRepository.Instance.Resolve("http://www.semanticweb.org/ontologies/2015/ttc/trainbenchmark#//SwitchPosition")));
                 }
                 return _classInstance;
             }
@@ -194,6 +200,11 @@ namespace NMF.Models.Tests.Railway
         /// </summary>
         public event System.EventHandler<ValueChangedEventArgs> RouteChanged;
         
+        private static ITypedElement RetrievePositionAttribute()
+        {
+            return ((ITypedElement)(((ModelElement)(SwitchPosition.ClassInstance)).Resolve("position")));
+        }
+        
         /// <summary>
         /// Raises the PositionChanging event
         /// </summary>
@@ -218,6 +229,11 @@ namespace NMF.Models.Tests.Railway
             {
                 handler.Invoke(this, eventArgs);
             }
+        }
+        
+        private static ITypedElement RetrieveSwitchReference()
+        {
+            return ((ITypedElement)(((ModelElement)(SwitchPosition.ClassInstance)).Resolve("switch")));
         }
         
         /// <summary>
@@ -256,6 +272,11 @@ namespace NMF.Models.Tests.Railway
             this.Switch = null;
         }
         
+        private static ITypedElement RetrieveRouteReference()
+        {
+            return ((ITypedElement)(((ModelElement)(SwitchPosition.ClassInstance)).Resolve("route")));
+        }
+        
         /// <summary>
         /// Raises the RouteChanging event
         /// </summary>
@@ -280,7 +301,7 @@ namespace NMF.Models.Tests.Railway
             IRoute newRoute = ModelHelper.CastAs<IRoute>(newParent);
             ValueChangedEventArgs e = new ValueChangedEventArgs(oldRoute, newRoute);
             this.OnRouteChanging(e);
-            this.OnPropertyChanging("Route");
+            this.OnPropertyChanging("Route", e, _routeReference);
         }
         
         /// <summary>
@@ -315,7 +336,7 @@ namespace NMF.Models.Tests.Railway
             }
             ValueChangedEventArgs e = new ValueChangedEventArgs(oldRoute, newRoute);
             this.OnRouteChanged(e);
-            this.OnPropertyChanged("Route", e);
+            this.OnPropertyChanged("Route", e, _routeReference);
             base.OnParentChanged(newParent, oldParent);
         }
         
@@ -366,11 +387,11 @@ namespace NMF.Models.Tests.Railway
         /// <param name="attribute">The requested attribute in upper case</param>
         protected override NMF.Expressions.INotifyExpression<object> GetExpressionForAttribute(string attribute)
         {
-            if ((attribute == "SWITCH"))
+            if ((attribute == "Switch"))
             {
                 return new SwitchProxy(this);
             }
-            if ((attribute == "ROUTE"))
+            if ((attribute == "Route"))
             {
                 return new RouteProxy(this);
             }
@@ -384,11 +405,11 @@ namespace NMF.Models.Tests.Railway
         /// <param name="reference">The requested reference in upper case</param>
         protected override NMF.Expressions.INotifyExpression<NMF.Models.IModelElement> GetExpressionForReference(string reference)
         {
-            if ((reference == "SWITCH"))
+            if ((reference == "Switch"))
             {
                 return new SwitchProxy(this);
             }
-            if ((reference == "ROUTE"))
+            if ((reference == "Route"))
             {
                 return new RouteProxy(this);
             }
@@ -402,7 +423,7 @@ namespace NMF.Models.Tests.Railway
         {
             if ((_classInstance == null))
             {
-                _classInstance = ((IClass)(MetaRepository.Instance.Resolve("http://www.semanticweb.org/ontologies/2015/ttc/trainbenchmark#//SwitchPosition/")));
+                _classInstance = ((IClass)(MetaRepository.Instance.Resolve("http://www.semanticweb.org/ontologies/2015/ttc/trainbenchmark#//SwitchPosition")));
             }
             return _classInstance;
         }

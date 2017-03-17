@@ -147,6 +147,14 @@ namespace NMF.Serialization
                 return Opposite;
             }
         }
+
+        public Type PropertyMinType
+        {
+            get
+            {
+                return Property.PropertyType;
+            }
+        }
     }
 
     public class XmlPropertySerializationInfo<TComponent, TProperty> : XmlPropertySerializationInfo

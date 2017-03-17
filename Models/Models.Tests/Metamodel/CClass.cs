@@ -36,8 +36,8 @@ namespace NMF.Models.Tests.Debug
     /// </summary>
     [XmlNamespaceAttribute("about:foo")]
     [XmlNamespacePrefixAttribute("debug")]
-    [ModelRepresentationClassAttribute("about:foo#//CClass/")]
-    public class CClass : ModelElement, ICClass, IModelElement
+    [ModelRepresentationClassAttribute("about:foo#//CClass")]
+    public partial class CClass : ModelElement, ICClass, IModelElement
     {
         
         private static IClass _classInstance;
@@ -51,7 +51,7 @@ namespace NMF.Models.Tests.Debug
             {
                 if ((_classInstance == null))
                 {
-                    _classInstance = ((IClass)(MetaRepository.Instance.Resolve("about:foo#//CClass/")));
+                    _classInstance = ((IClass)(MetaRepository.Instance.Resolve("about:foo#//CClass")));
                 }
                 return _classInstance;
             }
@@ -64,7 +64,7 @@ namespace NMF.Models.Tests.Debug
         {
             if ((_classInstance == null))
             {
-                _classInstance = ((IClass)(MetaRepository.Instance.Resolve("about:foo#//CClass/")));
+                _classInstance = ((IClass)(MetaRepository.Instance.Resolve("about:foo#//CClass")));
             }
             return _classInstance;
         }

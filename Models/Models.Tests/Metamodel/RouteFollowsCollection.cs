@@ -39,21 +39,24 @@ namespace NMF.Models.Tests.Railway
         {
         }
         
-        private void OnItemDeleted(object sender, System.EventArgs e)
+        private void OnItemParentChanged(object sender, ValueChangedEventArgs e)
         {
-            this.Remove(((ISwitchPosition)(sender)));
+            if ((e.NewValue != this.Parent))
+            {
+                this.Remove(((ISwitchPosition)(sender)));
+            }
         }
         
         protected override void SetOpposite(ISwitchPosition item, IRoute parent)
         {
             if ((parent != null))
             {
-                item.Deleted += this.OnItemDeleted;
+                item.ParentChanged += this.OnItemParentChanged;
                 item.Route = parent;
             }
             else
             {
-                item.Deleted -= this.OnItemDeleted;
+                item.ParentChanged -= this.OnItemParentChanged;
                 if ((item.Route == this.Parent))
                 {
                     item.Route = parent;

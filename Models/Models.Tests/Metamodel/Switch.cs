@@ -36,15 +36,19 @@ namespace NMF.Models.Tests.Railway
     /// </summary>
     [XmlNamespaceAttribute("http://www.semanticweb.org/ontologies/2015/ttc/trainbenchmark")]
     [XmlNamespacePrefixAttribute("hu.bme.mit.trainbenchmark")]
-    [ModelRepresentationClassAttribute("http://www.semanticweb.org/ontologies/2015/ttc/trainbenchmark#//Switch/")]
+    [ModelRepresentationClassAttribute("http://www.semanticweb.org/ontologies/2015/ttc/trainbenchmark#//Switch")]
     [DebuggerDisplayAttribute("Switch {Id}")]
-    public class Switch : TrackElement, ISwitch, IModelElement
+    public partial class Switch : TrackElement, ISwitch, IModelElement
     {
         
         /// <summary>
         /// The backing field for the CurrentPosition property
         /// </summary>
         private Position _currentPosition;
+        
+        private static Lazy<ITypedElement> _currentPositionAttribute = new Lazy<ITypedElement>(RetrieveCurrentPositionAttribute);
+        
+        private static Lazy<ITypedElement> _positionsReference = new Lazy<ITypedElement>(RetrievePositionsReference);
         
         /// <summary>
         /// The backing field for the Positions property
@@ -78,10 +82,10 @@ namespace NMF.Models.Tests.Railway
                     Position old = this._currentPosition;
                     ValueChangedEventArgs e = new ValueChangedEventArgs(old, value);
                     this.OnCurrentPositionChanging(e);
-                    this.OnPropertyChanging("CurrentPosition", e);
+                    this.OnPropertyChanging("CurrentPosition", e, _currentPositionAttribute);
                     this._currentPosition = value;
                     this.OnCurrentPositionChanged(e);
-                    this.OnPropertyChanged("CurrentPosition", e);
+                    this.OnPropertyChanged("CurrentPosition", e, _currentPositionAttribute);
                 }
             }
         }
@@ -122,7 +126,7 @@ namespace NMF.Models.Tests.Railway
             {
                 if ((_classInstance == null))
                 {
-                    _classInstance = ((IClass)(MetaRepository.Instance.Resolve("http://www.semanticweb.org/ontologies/2015/ttc/trainbenchmark#//Switch/")));
+                    _classInstance = ((IClass)(MetaRepository.Instance.Resolve("http://www.semanticweb.org/ontologies/2015/ttc/trainbenchmark#//Switch")));
                 }
                 return _classInstance;
             }
@@ -137,6 +141,11 @@ namespace NMF.Models.Tests.Railway
         /// Gets fired when the CurrentPosition property changed its value
         /// </summary>
         public event System.EventHandler<ValueChangedEventArgs> CurrentPositionChanged;
+        
+        private static ITypedElement RetrieveCurrentPositionAttribute()
+        {
+            return ((ITypedElement)(((ModelElement)(Switch.ClassInstance)).Resolve("currentPosition")));
+        }
         
         /// <summary>
         /// Raises the CurrentPositionChanging event
@@ -164,6 +173,11 @@ namespace NMF.Models.Tests.Railway
             }
         }
         
+        private static ITypedElement RetrievePositionsReference()
+        {
+            return ((ITypedElement)(((ModelElement)(Switch.ClassInstance)).Resolve("positions")));
+        }
+        
         /// <summary>
         /// Forwards CollectionChanging notifications for the Positions property to the parent model element
         /// </summary>
@@ -171,7 +185,7 @@ namespace NMF.Models.Tests.Railway
         /// <param name="e">The original event data</param>
         private void PositionsCollectionChanging(object sender, NMF.Collections.ObjectModel.NotifyCollectionChangingEventArgs e)
         {
-            this.OnCollectionChanging("Positions", e);
+            this.OnCollectionChanging("Positions", e, _positionsReference);
         }
         
         /// <summary>
@@ -181,7 +195,7 @@ namespace NMF.Models.Tests.Railway
         /// <param name="e">The original event data</param>
         private void PositionsCollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
         {
-            this.OnCollectionChanged("Positions", e);
+            this.OnCollectionChanged("Positions", e, _positionsReference);
         }
         
         /// <summary>
@@ -235,7 +249,7 @@ namespace NMF.Models.Tests.Railway
         {
             if ((_classInstance == null))
             {
-                _classInstance = ((IClass)(MetaRepository.Instance.Resolve("http://www.semanticweb.org/ontologies/2015/ttc/trainbenchmark#//Switch/")));
+                _classInstance = ((IClass)(MetaRepository.Instance.Resolve("http://www.semanticweb.org/ontologies/2015/ttc/trainbenchmark#//Switch")));
             }
             return _classInstance;
         }

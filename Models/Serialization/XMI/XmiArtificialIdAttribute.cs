@@ -112,5 +112,13 @@ namespace NMF.Serialization.Xmi
                 return null;
             }
         }
+
+        public Type PropertyMinType
+        {
+            get
+            {
+                return typeof(string);
+            }
+        }
     }
 }

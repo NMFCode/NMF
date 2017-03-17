@@ -58,6 +58,7 @@
     <Compile Include="Changes\IModelChangeManual.cs" />
     <Compile Include="Changes\InvertChanges.cs" />
     <Compile Include="Changes\ModelChangeRecorder.cs" />
+    <Compile Include="Changes\ModelChangeSetExtensions.cs" />
     <Compile Include="Collections\AssociationList.cs" />
     <Compile Include="Collections\AssociationOrderedSet.cs" />
     <Compile Include="Collections\AssociationSet.cs" />

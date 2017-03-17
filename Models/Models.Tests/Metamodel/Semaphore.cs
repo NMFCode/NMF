@@ -36,15 +36,17 @@ namespace NMF.Models.Tests.Railway
     /// </summary>
     [XmlNamespaceAttribute("http://www.semanticweb.org/ontologies/2015/ttc/trainbenchmark")]
     [XmlNamespacePrefixAttribute("hu.bme.mit.trainbenchmark")]
-    [ModelRepresentationClassAttribute("http://www.semanticweb.org/ontologies/2015/ttc/trainbenchmark#//Semaphore/")]
+    [ModelRepresentationClassAttribute("http://www.semanticweb.org/ontologies/2015/ttc/trainbenchmark#//Semaphore")]
     [DebuggerDisplayAttribute("Semaphore {Id}")]
-    public class Semaphore : RailwayElement, ISemaphore, IModelElement
+    public partial class Semaphore : RailwayElement, ISemaphore, IModelElement
     {
         
         /// <summary>
         /// The backing field for the Signal property
         /// </summary>
         private Signal _signal;
+        
+        private static Lazy<ITypedElement> _signalAttribute = new Lazy<ITypedElement>(RetrieveSignalAttribute);
         
         private static IClass _classInstance;
         
@@ -66,10 +68,10 @@ namespace NMF.Models.Tests.Railway
                     Signal old = this._signal;
                     ValueChangedEventArgs e = new ValueChangedEventArgs(old, value);
                     this.OnSignalChanging(e);
-                    this.OnPropertyChanging("Signal", e);
+                    this.OnPropertyChanging("Signal", e, _signalAttribute);
                     this._signal = value;
                     this.OnSignalChanged(e);
-                    this.OnPropertyChanged("Signal", e);
+                    this.OnPropertyChanged("Signal", e, _signalAttribute);
                 }
             }
         }
@@ -83,7 +85,7 @@ namespace NMF.Models.Tests.Railway
             {
                 if ((_classInstance == null))
                 {
-                    _classInstance = ((IClass)(MetaRepository.Instance.Resolve("http://www.semanticweb.org/ontologies/2015/ttc/trainbenchmark#//Semaphore/")));
+                    _classInstance = ((IClass)(MetaRepository.Instance.Resolve("http://www.semanticweb.org/ontologies/2015/ttc/trainbenchmark#//Semaphore")));
                 }
                 return _classInstance;
             }
@@ -98,6 +100,11 @@ namespace NMF.Models.Tests.Railway
         /// Gets fired when the Signal property changed its value
         /// </summary>
         public event System.EventHandler<ValueChangedEventArgs> SignalChanged;
+        
+        private static ITypedElement RetrieveSignalAttribute()
+        {
+            return ((ITypedElement)(((ModelElement)(Semaphore.ClassInstance)).Resolve("signal")));
+        }
         
         /// <summary>
         /// Raises the SignalChanging event
@@ -162,7 +169,7 @@ namespace NMF.Models.Tests.Railway
         {
             if ((_classInstance == null))
             {
-                _classInstance = ((IClass)(MetaRepository.Instance.Resolve("http://www.semanticweb.org/ontologies/2015/ttc/trainbenchmark#//Semaphore/")));
+                _classInstance = ((IClass)(MetaRepository.Instance.Resolve("http://www.semanticweb.org/ontologies/2015/ttc/trainbenchmark#//Semaphore")));
             }
             return _classInstance;
         }

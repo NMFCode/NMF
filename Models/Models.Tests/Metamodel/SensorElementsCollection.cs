@@ -39,21 +39,24 @@ namespace NMF.Models.Tests.Railway
         {
         }
         
-        private void OnItemDeleted(object sender, System.EventArgs e)
+        private void OnItemParentChanged(object sender, ValueChangedEventArgs e)
         {
-            this.Remove(((ITrackElement)(sender)));
+            if ((e.NewValue != this.Parent))
+            {
+                this.Remove(((ITrackElement)(sender)));
+            }
         }
         
         protected override void SetOpposite(ITrackElement item, ISensor parent)
         {
             if ((parent != null))
             {
-                item.Deleted += this.OnItemDeleted;
+                item.ParentChanged += this.OnItemParentChanged;
                 item.Sensor = parent;
             }
             else
             {
-                item.Deleted -= this.OnItemDeleted;
+                item.ParentChanged -= this.OnItemParentChanged;
                 if ((item.Sensor == this.Parent))
                 {
                     item.Sensor = parent;

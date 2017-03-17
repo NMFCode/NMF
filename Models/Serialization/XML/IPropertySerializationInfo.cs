@@ -24,6 +24,8 @@ namespace NMF.Serialization
         XmlIdentificationMode IdentificationMode { get; }
         ITypeSerializationInfo PropertyType { get; }
 
+        Type PropertyMinType { get; }
+
         IPropertySerializationInfo Opposite { get; }
 
         bool IsStringConvertible { get; }

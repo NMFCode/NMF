@@ -49,7 +49,6 @@
     <Compile Include="Evolution\InvertTests.cs" />
     <Compile Include="Evolution\ModelChangeRecorderTests.cs" />
     <Compile Include="Evolution\ChangeApplyTests.cs" />
-    <Compile Include="Evolution\SerializationTests.cs" />
     <Compile Include="Metamodel\AClass.cs" />
     <Compile Include="Metamodel\BClass.cs" />
     <Compile Include="Metamodel\CClass.cs" />

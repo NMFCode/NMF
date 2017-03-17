@@ -62,7 +62,7 @@ namespace NMF.Serialization
             while (lostProperties.Count > 0)
             {
                 XmlIdentifierDelay p = lostProperties.Dequeue();
-                var resolved = Resolve(p.Identifier, p.TargetType.Type, exactType: false, failOnConflict: true, source: p.Target);
+                var resolved = Resolve(p.Identifier, p.TargetType.Type, p.TargetMinType, exactType: false, failOnConflict: true, source: p.Target);
                 if (resolved == null)
                 {
                     throw new InvalidOperationException(string.Format("The reference {0} could not be resolved", p.Identifier));
@@ -134,7 +134,7 @@ namespace NMF.Serialization
             throw new XmlResolveNameClashException(id, type, candidates);
         }
 
-        public virtual object Resolve(string id, Type type, bool exactType = false, bool failOnConflict = true, object source = null)
+        public virtual object Resolve(string id, Type type, Type minType = null, bool exactType = false, bool failOnConflict = true, object source = null)
         {
             if (id == null) return null;
             Dictionary<string, object> dict;

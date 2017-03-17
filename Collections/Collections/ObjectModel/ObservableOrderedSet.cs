@@ -41,28 +41,27 @@ namespace NMF.Collections.ObjectModel
             OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
         }
 
-        protected override void OnInsertingItem(T item, ref bool cancel)
+        protected override void OnInsertingItem(T item, ref bool cancel, int index)
         {
-            base.OnInsertingItem(item, ref cancel);
             if (!cancel)
                 OnCollectionChanging(new NotifyCollectionChangingEventArgs(NotifyCollectionChangedAction.Add));
         }
 
-        protected override void OnInsertItem(T item)
+        protected override void OnInsertItem(T item, int index)
         {
             OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, item));
         }
 
-        protected override void OnRemovingItem(T item, ref bool cancel)
+        protected override void OnRemovingItem(T item, ref bool cancel, int index)
         {
-            base.OnRemovingItem(item, ref cancel);
+            base.OnRemovingItem(item, ref cancel, index);
             if (!cancel)
                 OnCollectionChanging(new NotifyCollectionChangingEventArgs(NotifyCollectionChangedAction.Remove));
         }
 
-        protected override void OnRemoveItem(T item)
+        protected override void OnRemoveItem(T item, int index)
         {
-            OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Remove, item));
+            OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Remove, item, index));
         }
 
         protected override void OnReplacingItem(T oldItem, T newItem, ref bool cancel)

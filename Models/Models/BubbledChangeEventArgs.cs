@@ -95,75 +95,6 @@ namespace NMF.Models
         }
 
         /// <summary>
-        /// Gets a value indicating whether the change was that a new element was created
-        /// </summary>
-        [Obsolete("Use ChangeType instead.")]
-        public bool IsElementCreated
-        {
-            get { return ChangeType == ChangeType.ModelElementCreated; }
-        }
-
-        /// <summary>
-        /// Creates an instance of BubbledChangeEventArgs describing the creation of the given model element.
-        /// </summary>
-        /// <param name="createdElement">The new model element.</param>
-        /// <param name="requireUris">Determines whether the event data should include absolute Uris</param>
-        /// <returns></returns>
-        public static BubbledChangeEventArgs ElementCreated(IModelElement createdElement, bool requireUris)
-        {
-            if (createdElement == null)
-                throw new ArgumentNullException(nameof(createdElement));
-
-            if (requireUris)
-            {
-                return new UriEnabledBubbledChangeEventArgs(createdElement)
-                {
-                    ChangeType = ChangeType.ModelElementCreated
-                };
-            }
-            else
-            {
-                return new BubbledChangeEventArgs(createdElement)
-                {
-                    ChangeType = ChangeType.ModelElementCreated
-                };
-            }
-        }
-
-        /// <summary>
-        /// Creates an instance of BubbledChangeEventArgs describing the upcoming deletion of the given model element.
-        /// </summary>
-        /// <param name="deletedElement">The deleted model element.</param>
-        /// <param name="requireUris">Determines whether the event data should include absolute Uris</param>
-        /// <returns></returns>
-        public static BubbledChangeEventArgs ElementDeleting(IModelElement deletingElement, Uri originalAbsoluteUri)
-        {
-            if (deletingElement == null)
-                throw new ArgumentNullException(nameof(deletingElement));
-            
-            return new UriEnabledBubbledChangeEventArgs(deletingElement, originalAbsoluteUri)
-            {
-                ChangeType = ChangeType.ModelElementDeleting
-            };
-        }
-
-        /// <summary>
-        /// Creates an instance of BubbledChangeEventArgs describing the deletion of the given model element.
-        /// </summary>
-        /// <param name="deletedElement">The deleted model element.</param>
-        /// <returns></returns>
-        public static BubbledChangeEventArgs ElementDeleted(IModelElement deletedElement, Uri originalAbsoluteUri)
-        {
-            if (deletedElement == null)
-                throw new ArgumentNullException(nameof(deletedElement));
-
-            return new UriEnabledBubbledChangeEventArgs(deletedElement, originalAbsoluteUri)
-            {
-                ChangeType = ChangeType.ModelElementDeleted
-            };
-        }
-
-        /// <summary>
         /// Create an instance of BubbledChangeEventArgs describing an upcoming change of a property value.
         /// </summary>
         /// <param name="source">The model element containing the property.</param>
@@ -313,6 +244,40 @@ namespace NMF.Models
                 };
             }
         }
+
+        public static BubbledChangeEventArgs ElementDeleted(ModelElement source, Uri originalAbsoluteUri)
+        {
+            return new UriEnabledBubbledChangeEventArgs(source, originalAbsoluteUri)
+            {
+                ChangeType = ChangeType.ElementDeleted
+            };
+        }
+
+        public static BubbledChangeEventArgs ElementCreated(IModelElement child, bool v)
+        {
+            if (v)
+            {
+                return new UriEnabledBubbledChangeEventArgs(child, null as Uri)
+                {
+                    ChangeType = ChangeType.ElementCreated
+                };
+            }
+            else
+            {
+                return new BubbledChangeEventArgs(child)
+                {
+                    ChangeType = ChangeType.ElementCreated
+                };
+            }
+        }
+
+        public static BubbledChangeEventArgs UriChanged(ModelElement modelElement, Uri oldUri)
+        {
+            return new UriEnabledBubbledChangeEventArgs(modelElement, oldUri)
+            {
+                ChangeType = ChangeType.UriChanged
+            };
+        }
     }
 
     [DebuggerDisplay("BubbledChange: {ChangeType} in {Element} ({AbsoluteUri})")]
@@ -321,9 +286,9 @@ namespace NMF.Models
         private Uri absoluteUri;
         private List<Uri> childrenUris;
 
-        public UriEnabledBubbledChangeEventArgs(IModelElement element, ITypedElement feature = null) : this(element, element.AbsoluteUri) { }
+        public UriEnabledBubbledChangeEventArgs(IModelElement element, ITypedElement feature = null) : this(element, element.AbsoluteUri, feature) { }
 
-        public UriEnabledBubbledChangeEventArgs(IModelElement element, List<Uri> childrenUris, ITypedElement feature = null) : this(element)
+        public UriEnabledBubbledChangeEventArgs(IModelElement element, List<Uri> childrenUris, ITypedElement feature = null) : this(element, feature)
         {
             this.childrenUris = childrenUris;
         }
@@ -363,12 +328,12 @@ namespace NMF.Models
     /// </summary>
     public enum ChangeType
     {
-        ModelElementCreated,
-        ModelElementDeleting,
-        ModelElementDeleted,
         PropertyChanging,
         PropertyChanged,
         CollectionChanging,
-        CollectionChanged
+        CollectionChanged,
+        ElementDeleted,
+        ElementCreated,
+        UriChanged
     }
 }

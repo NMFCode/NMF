@@ -1,4 +1,5 @@
-﻿using NMF.Serialization;
+﻿using NMF.Models.Changes;
+using NMF.Serialization;
 using NMF.Serialization.Xmi;
 using NMF.Utilities;
 using System;
@@ -55,12 +56,12 @@ namespace NMF.Models.Repository.Serialization
             }
         }
 
-        protected override void WriteElementProperties(XmlWriter writer, object obj, ITypeSerializationInfo info, XmlSerializationContext context)
+        protected override void WriteElementProperties(XmlWriter writer, object obj, ITypeSerializationInfo info, XmlSerializationContext context, XmlIdentificationMode identificationMode)
         {
             var model = obj as Model;
             if (model == null)
             {
-                base.WriteElementProperties(writer, obj, info, context);
+                base.WriteElementProperties(writer, obj, info, context, identificationMode);
             }
             else
             {
@@ -69,7 +70,7 @@ namespace NMF.Models.Repository.Serialization
                     if (element == null) continue;
                     var typeInfo = GetSerializationInfo(element.GetType(), true);
                     writer.WriteStartElement(typeInfo.NamespacePrefix ?? RootPrefix, typeInfo.ElementName, typeInfo.Namespace);
-                    Serialize(element, writer, null, false, XmlIdentificationMode.FullObject, context);
+                    Serialize(element, writer, null, false, identificationMode == XmlIdentificationMode.ForceFullObject ? XmlIdentificationMode.ForceFullObject : XmlIdentificationMode.FullObject, context);
                     writer.WriteEndElement();
                 }
             }
@@ -93,15 +94,7 @@ namespace NMF.Models.Repository.Serialization
                     var modelElement = obj as IModelElement;
                     if (modelElement != null)
                     {
-                        Uri uri;
-                        if (modelElement.Model == model)
-                        {
-                            uri = modelElement.RelativeUri;
-                        }
-                        else
-                        {
-                            uri = MakeShortUri(modelElement.AbsoluteUri, model.ModelUri);
-                        }
+                        Uri uri = model.CreateUriForElement(modelElement);
                         if (uri != null)
                         {
                             writer.WriteString(uri.ConvertToString());
@@ -113,27 +106,10 @@ namespace NMF.Models.Repository.Serialization
             return base.WriteIdentifiedObject(writer, obj, identificationMode, info, context);
         }
 
-        private Uri MakeShortUri(Uri target, Uri current)
-        {
-            if (target == null) return null;
-            if (!target.IsFile) return target;
-            if (target.Scheme != current.Scheme) return target;
-            if (target.Host != current.Host) return target;
-            for (int i = 0; i < target.Segments.Length; i++)
-            {
-                if (i >= current.Segments.Length || target.Segments[i] != current.Segments[i])
-                {
-                    var relative = Path.Combine(Enumerable.Repeat("..", current.Segments.Length - i - 1).Concat(target.Segments.Skip(i)).ToArray());
-                    return new Uri(relative + target.Fragment, UriKind.Relative);
-                }
-            }
-            return target;
-        }
-
         public override void Serialize(object obj, XmlWriter writer, IPropertySerializationInfo property, bool writeInstance, XmlIdentificationMode identificationMode, XmlSerializationContext context)
         {
             var modelElement = obj as IModelElement;
-            if (modelElement == null)
+            if (modelElement == null || identificationMode >= XmlIdentificationMode.FullObject)
             {
                 base.Serialize(obj, writer, property, writeInstance, identificationMode, context);
             }
@@ -148,7 +124,7 @@ namespace NMF.Models.Repository.Serialization
                 else
                 {
                     writer.WriteStartAttribute("href");
-                    WriteIdentifiedObject(writer, obj, property.IdentificationMode, GetSerializationInfo(obj.GetType(), false), context);
+                    WriteIdentifiedObject(writer, obj, XmlIdentificationMode.Identifier, GetSerializationInfo(obj.GetType(), false), context);
                     writer.WriteEndAttribute();
                 }
             }
@@ -160,15 +136,7 @@ namespace NMF.Models.Repository.Serialization
             var modelElement = value as ModelElement;
             if (modelElement != null && model != null)
             {
-                Uri uri;
-                if (modelElement.Model == model)
-                {
-                    uri = modelElement.RelativeUri;
-                }
-                else
-                {
-                    uri = MakeShortUri(modelElement.AbsoluteUri, model.ModelUri);
-                }
+                Uri uri = model.CreateUriForElement(modelElement);
                 if (uri != null)
                 {
                     return uri.ConvertToString();

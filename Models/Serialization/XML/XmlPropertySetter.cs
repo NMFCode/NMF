@@ -22,6 +22,8 @@ namespace NMF.Serialization
         public abstract void OnResolveIdentifiedObject(object instance, XmlSerializationContext context);
 
         public abstract ITypeSerializationInfo TargetType { get; }
+
+        public abstract Type TargetMinType { get; }
     }
 
     class XmlSetPropertyDelay : XmlIdentifierDelay
@@ -41,6 +43,14 @@ namespace NMF.Serialization
         {
             get { return Property.PropertyType; }
         }
+
+        public override Type TargetMinType
+        {
+            get
+            {
+                return Property.PropertyMinType;
+            }
+        }
     }
 
     class XmlAddToPropertyDelay : XmlIdentifierDelay
@@ -55,6 +65,14 @@ namespace NMF.Serialization
         public override ITypeSerializationInfo TargetType
         {
             get { return Property.PropertyType.CollectionItemType; }
+        }
+
+        public override Type TargetMinType
+        {
+            get
+            {
+                return null;
+            }
         }
 
         public override void OnResolveIdentifiedObject(object instance, XmlSerializationContext context)
@@ -80,6 +98,14 @@ namespace NMF.Serialization
         public override ITypeSerializationInfo TargetType
         {
             get { return Type.CollectionItemType; }
+        }
+
+        public override Type TargetMinType
+        {
+            get
+            {
+                return null;
+            }
         }
     }
 }

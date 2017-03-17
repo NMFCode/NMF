@@ -36,14 +36,18 @@ namespace NMF.Models.Tests.Debug
     /// </summary>
     [XmlNamespaceAttribute("about:foo")]
     [XmlNamespacePrefixAttribute("debug")]
-    [ModelRepresentationClassAttribute("about:foo#//BClass/")]
-    public class BClass : ModelElement, IBClass, IModelElement
+    [ModelRepresentationClassAttribute("about:foo#//BClass")]
+    public partial class BClass : ModelElement, IBClass, IModelElement
     {
+        
+        private static Lazy<ITypedElement> _ref1Reference = new Lazy<ITypedElement>(RetrieveRef1Reference);
         
         /// <summary>
         /// The backing field for the Ref1 property
         /// </summary>
         private ObservableAssociationList<ICClass> _ref1;
+        
+        private static Lazy<ITypedElement> _ref2Reference = new Lazy<ITypedElement>(RetrieveRef2Reference);
         
         /// <summary>
         /// The backing field for the Ref2 property
@@ -112,10 +116,15 @@ namespace NMF.Models.Tests.Debug
             {
                 if ((_classInstance == null))
                 {
-                    _classInstance = ((IClass)(MetaRepository.Instance.Resolve("about:foo#//BClass/")));
+                    _classInstance = ((IClass)(MetaRepository.Instance.Resolve("about:foo#//BClass")));
                 }
                 return _classInstance;
             }
+        }
+        
+        private static ITypedElement RetrieveRef1Reference()
+        {
+            return ((ITypedElement)(((ModelElement)(BClass.ClassInstance)).Resolve("ref1")));
         }
         
         /// <summary>
@@ -125,7 +134,7 @@ namespace NMF.Models.Tests.Debug
         /// <param name="e">The original event data</param>
         private void Ref1CollectionChanging(object sender, NMF.Collections.ObjectModel.NotifyCollectionChangingEventArgs e)
         {
-            this.OnCollectionChanging("Ref1", e);
+            this.OnCollectionChanging("Ref1", e, _ref1Reference);
         }
         
         /// <summary>
@@ -135,7 +144,12 @@ namespace NMF.Models.Tests.Debug
         /// <param name="e">The original event data</param>
         private void Ref1CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
         {
-            this.OnCollectionChanged("Ref1", e);
+            this.OnCollectionChanged("Ref1", e, _ref1Reference);
+        }
+        
+        private static ITypedElement RetrieveRef2Reference()
+        {
+            return ((ITypedElement)(((ModelElement)(BClass.ClassInstance)).Resolve("ref2")));
         }
         
         /// <summary>
@@ -145,7 +159,7 @@ namespace NMF.Models.Tests.Debug
         /// <param name="e">The original event data</param>
         private void Ref2CollectionChanging(object sender, NMF.Collections.ObjectModel.NotifyCollectionChangingEventArgs e)
         {
-            this.OnCollectionChanging("Ref2", e);
+            this.OnCollectionChanging("Ref2", e, _ref2Reference);
         }
         
         /// <summary>
@@ -155,7 +169,7 @@ namespace NMF.Models.Tests.Debug
         /// <param name="e">The original event data</param>
         private void Ref2CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
         {
-            this.OnCollectionChanged("Ref2", e);
+            this.OnCollectionChanged("Ref2", e, _ref2Reference);
         }
         
         /// <summary>
@@ -183,7 +197,7 @@ namespace NMF.Models.Tests.Debug
         {
             if ((_classInstance == null))
             {
-                _classInstance = ((IClass)(MetaRepository.Instance.Resolve("about:foo#//BClass/")));
+                _classInstance = ((IClass)(MetaRepository.Instance.Resolve("about:foo#//BClass")));
             }
             return _classInstance;
         }

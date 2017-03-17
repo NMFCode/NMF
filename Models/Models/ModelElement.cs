@@ -25,21 +25,21 @@ namespace NMF.Models
     [ModelRepresentationClassAttribute("http://nmf.codeplex.com/nmeta/#//ModelElement/")]
     public abstract class ModelElement : IModelElement, INotifyPropertyChanged, INotifyPropertyChanging
     {
-        private IModelElement parent;
+        private ModelElement parent;
         private ObservableList<ModelElementExtension> extensions;
         private DescendantsCollection descendants;
         private ModelElementFlag flag;
         private EventHandler<BubbledChangeEventArgs> bubbledChange;
 
         [Flags]
-        private enum ModelElementFlag : byte
+        internal enum ModelElementFlag : byte
         {
             Deleting = 1,
             RaiseBubbledChanges = 2,
             RequireUris = 4
         }
 
-        private bool IsFlagSet(ModelElementFlag flag)
+        internal bool IsFlagSet(ModelElementFlag flag)
         {
             return (this.flag & flag) == flag;
         }
@@ -155,63 +155,50 @@ namespace NMF.Models
         /// <param name="newParent">The new parent for the given element</param>
         private void SetParent(IModelElement newParent)
         {
-            if (newParent != parent)
+            var newParentME = newParent as ModelElement;
+            if (newParentME != parent)
             {
-                OnParentChanging(newParent, parent);
                 var oldParent = parent;
-                parent = newParent;
-                if (newParent != null)
+                if (newParentME != null)
                 {
-                    var newModel = newParent.Model;
+                    OnParentChanging(newParentME, parent);
+                    parent = newParentME;
+                    var newModel = newParentME.Model;
                     var oldModel = oldParent != null ? oldParent.Model : null;
                     if (oldParent != null)
                     {
-                        //oldParent.Deleted -= CascadeDelete;
-
                         if (EnforceModels && oldModel != null && oldModel == oldParent.Parent && newModel == null)
                         {
-                            oldModel.RootElements.Add(newParent);
+                            oldModel.RootElements.Add(newParentME);
                         }
                     }
-                    //newParent.Deleted += CascadeDelete;
-                    var newParentME = newParent as ModelElement;
-                    if (newParentME != null)
+                    if (newParentME.IsFlagSet(ModelElementFlag.RaiseBubbledChanges) || newParentME.bubbledChange != null)
                     {
-                        if (newParentME.IsFlagSet(ModelElementFlag.RaiseBubbledChanges) || newParentME.bubbledChange != null)
-                        {
-                            RequestBubbledChanges();
-                        }
-                        else if (bubbledChange == null)
-                        {
-                            UnregisterBubbledChangeRequest();
-                        }
-                        newParentME.OnChildCreated(this);
+                        RequestBubbledChanges();
                     }
                     else if (bubbledChange == null)
                     {
                         UnregisterBubbledChangeRequest();
                     }
+                    newParentME.OnChildCreated(this);
                     if (newModel != oldModel)
                     {
                         PropagateNewModel(newModel, oldModel, this);
                     }
+                    OnParentChanged(newParentME, oldParent);
                 }
                 else
                 {
                     var oldModel = oldParent.Model;
-                    //oldParent.Deleted -= CascadeDelete;
-
                     if (bubbledChange == null)
                     {
                         UnregisterBubbledChangeRequest();
                     }
-
                     if (oldModel != null)
                     {
                         PropagateNewModel(null, oldModel, this);
                     }
                 }
-                OnParentChanged(newParent, oldParent);
             }
         }
 
@@ -333,10 +320,21 @@ namespace NMF.Models
         /// <param name="fragment">The fragment starting from this element</param>
         /// <param name="absolute">True, if an absolute Uri is desired, otherwise false</param>
         /// <returns>A uri (relative or absolute)</returns>
-        protected internal virtual Uri CreateUriWithFragment(string fragment, bool absolute)
+        protected internal virtual Uri CreateUriWithFragment(string fragment, bool absolute, IModelElement baseElement = null)
         {
             var parent = Parent as ModelElement;
             if (parent == null) return null;
+            if (baseElement == this)
+            {
+                if (fragment == null)
+                {
+                    return null;
+                }
+                else
+                {
+                    return new Uri(fragment, UriKind.Relative);
+                }
+            }
             string path = parent.GetRelativePathForChild(this);
             Uri result = null;
             if (path != null)
@@ -349,7 +347,7 @@ namespace NMF.Models
                 {
                     fragment = path;
                 }
-                result = parent.CreateUriWithFragment(fragment, absolute);
+                result = parent.CreateUriWithFragment(fragment, absolute, baseElement);
             }
             if (result == null)
             {
@@ -573,6 +571,11 @@ namespace NMF.Models
             return null;
         }
 
+        protected internal virtual string GetCompositionName(object container)
+        {
+            return container as string;
+        }
+
 
         /// <summary>
         /// Gets the model element for the given relative Uri
@@ -769,7 +772,7 @@ namespace NMF.Models
         protected virtual void OnDeleting(EventArgs e, Uri originalAbsoluteUri)
         {
             Deleting?.Invoke(this, e);
-            OnBubbledChange(BubbledChangeEventArgs.ElementDeleting(this, originalAbsoluteUri));
+            //OnBubbledChange(BubbledChangeEventArgs.ElementDeleting(this, originalAbsoluteUri));
         }
 
         /// <summary>
@@ -784,12 +787,8 @@ namespace NMF.Models
             }
             Deleted?.Invoke(this, e);
             OnBubbledChange(BubbledChangeEventArgs.ElementDeleted(this, originalAbsoluteUri));
+            UnsetFlag(ModelElementFlag.Deleting);
         }
-
-        /*internal void CascadeDelete(object sender, EventArgs e)
-        {
-            Delete();
-        }*/
 
 
         /// <summary>
@@ -814,6 +813,19 @@ namespace NMF.Models
         /// Gets fired before the model element gets deleted
         /// </summary>
         public event EventHandler Deleting;
+
+
+        /// <summary>
+        /// Gets fired when the Uri of this element changes
+        /// </summary>
+        public event EventHandler UriChanged;
+
+
+        internal void OnUriChanged(Uri oldUri)
+        {
+            UriChanged?.Invoke(this, EventArgs.Empty);
+            OnBubbledChange(BubbledChangeEventArgs.UriChanged(this, oldUri));
+        }
 
 
         /// <summary>
@@ -876,7 +888,7 @@ namespace NMF.Models
         /// <returns>A collection of referenced elements</returns>
         public IList GetReferencedElements(Meta.IReference reference)
         {
-            throw new ArgumentOutOfRangeException("reference");
+            return GetCollectionForFeature(reference.Name.ToUpperInvariant());
         }
 
         /// <summary>
@@ -922,7 +934,7 @@ namespace NMF.Models
         protected void OnCollectionChanged(string propertyName, NotifyCollectionChangedEventArgs e, Lazy<ITypedElement> feature = null)
         {
             if (!IsFlagSet(ModelElementFlag.Deleting))
-                OnBubbledChange(BubbledChangeEventArgs.CollectionChanged(this, propertyName, e, IsFlagSet(ModelElementFlag.RequireUris)));
+                OnBubbledChange(BubbledChangeEventArgs.CollectionChanged(this, propertyName, e, IsFlagSet(ModelElementFlag.RequireUris), feature));
         }
 
         /// <summary>
@@ -933,7 +945,7 @@ namespace NMF.Models
         protected void OnCollectionChanging(string propertyName, NotifyCollectionChangingEventArgs e, Lazy<ITypedElement> feature = null)
         {
             if (!IsFlagSet(ModelElementFlag.Deleting))
-                OnBubbledChange(BubbledChangeEventArgs.CollectionChanging(this, propertyName, e, IsFlagSet(ModelElementFlag.RequireUris)));
+                OnBubbledChange(BubbledChangeEventArgs.CollectionChanging(this, propertyName, e, IsFlagSet(ModelElementFlag.RequireUris), feature));
         }
 
         /// <summary>

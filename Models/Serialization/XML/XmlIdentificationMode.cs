@@ -17,11 +17,15 @@ namespace NMF.Serialization
         /// <summary>
         /// Use the identifier only
         /// </summary>
-        Identifier,
+        Identifier = 1,
         /// <summary>
         /// Write the full object
         /// </summary>
         /// <remarks>If this attribute appears somewhere else in the resulting Xml-file, be sure that every property before this one is marked to use identifiers!</remarks>
-        FullObject
+        FullObject = 2,
+        /// <summary>
+        /// Write the full object and force subsequent elements to full objects
+        /// </summary>
+        ForceFullObject = 3
     }
 }

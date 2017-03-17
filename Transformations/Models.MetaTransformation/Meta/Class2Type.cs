@@ -258,6 +258,7 @@ namespace NMF.Models.Meta
                 AddIfNotNull(members, CreateSetFeature(input, generatedType, context));
                 AddIfNotNull(members, CreateGetExpressionForAttribute(input, generatedType, context));
                 AddIfNotNull(members, CreateGetExpressionForReference(input, generatedType, context));
+                AddIfNotNull(members, CreateGetCompositionName(input, generatedType, context));
 
                 CodeMemberField codeField = CreateClassField(input);
                 AddIfNotNull(members, codeField);
@@ -647,6 +648,7 @@ namespace NMF.Models.Meta
                         createUriWithFragment.Attributes = MemberAttributes.Family | MemberAttributes.Override;
                         createUriWithFragment.Parameters.Add(new CodeParameterDeclarationExpression(typeof(string), "fragment"));
                         createUriWithFragment.Parameters.Add(new CodeParameterDeclarationExpression(typeof(bool), "absolute"));
+                        createUriWithFragment.Parameters.Add(new CodeParameterDeclarationExpression(typeof(IModelElement).ToTypeReference(), "baseElement"));
                         createUriWithFragment.Statements.Add(new CodeMethodReturnStatement(new CodeMethodInvokeExpression(
                             new CodeThisReferenceExpression(), "CreateUriFromGlobalIdentifier",
                             new CodeArgumentReferenceExpression("fragment"), new CodeArgumentReferenceExpression("absolute"))));
@@ -890,6 +892,38 @@ namespace NMF.Models.Meta
                     { "reference", "The requested reference in upper case" }
                 });
                 return getExpressionForReference;
+            }
+
+            protected virtual CodeMemberMethod CreateGetCompositionName(IClass input, CodeTypeDeclaration generatedType, ITransformationContext context)
+            {
+                var getCompositionName = new CodeMemberMethod
+                {
+                    Name = "GetCompositionName",
+                    Attributes = MemberAttributes.Family | MemberAttributes.Override,
+                    ReturnType = new CodeTypeReference(typeof(string))
+                };
+                getCompositionName.Parameters.Add(new CodeParameterDeclarationExpression(typeof(object), "container"));
+                var containerRef = new CodeArgumentReferenceExpression("container");
+                AddReferencesOfClass(input, generatedType, (stmts, r, ctx) =>
+                {
+                    if (r.UpperBound != 1)
+                    {
+                        stmts.Add(new CodeConditionStatement(new CodeBinaryOperatorExpression(containerRef, CodeBinaryOperatorType.ValueEquality, new CodeFieldReferenceExpression(new CodeThisReferenceExpression(), "_" + r.Name.ToCamelCase())),
+                            new CodeMethodReturnStatement(new CodePrimitiveExpression(r.Name))));
+                    }
+                    return stmts;
+                }, getCompositionName.Statements, true, context);
+                if (getCompositionName.Statements.Count == 0)
+                {
+                    return null;
+                }
+                getCompositionName.Statements.Add(new CodeMethodReturnStatement(
+                    new CodeMethodInvokeExpression(new CodeBaseReferenceExpression(), "GetCompositionName", containerRef)));
+                getCompositionName.WriteDocumentation("Gets the property name for the given container", "The name of the respective container reference", new Dictionary<string, string>()
+                {
+                    { "container", "The container object" }
+                });
+                return getCompositionName;
             }
 
             /// <summary>

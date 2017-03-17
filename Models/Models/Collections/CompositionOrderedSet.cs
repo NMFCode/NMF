@@ -11,23 +11,65 @@ namespace NMF.Models.Collections
 {
     public class CompositionOrderedSet<T> : OrderedSet<T> where T : class, IModelElement
     {
-        public IModelElement Parent { get; private set; }
+        public ModelElement Parent { get; private set; }
 
-        public CompositionOrderedSet(IModelElement parent)
+        public CompositionOrderedSet(ModelElement parent)
         {
             if (parent == null) throw new ArgumentNullException("parent");
 
             Parent = parent;
         }
 
-        public override bool Add(T item)
+        protected override void OnInsertItem(T item, int index)
         {
             if (item != null)
             {
                 item.ParentChanged += RemoveItem;
                 item.Parent = Parent;
             }
-            return base.Add(item);
+            NotifyChangedUri(index + 1, -1);
+        }
+
+        protected override void OnRemoveItem(T item, int index)
+        {
+            if (item != null && base.Remove(item))
+            {
+                item.ParentChanged -= RemoveItem;
+                item.Delete();
+            }
+            NotifyChangedUri(index, 1);
+        }
+        
+
+        private void NotifyChangedUri(int startIndex, int diff)
+        {
+            if (Parent.IsFlagSet(ModelElement.ModelElementFlag.RequireUris))
+            {
+                var parentUri = new Lazy<Uri>(() => Parent.AbsoluteUri ?? Parent.RelativeUri);
+                for (int i = startIndex; i < Count; i++)
+                {
+                    var item = this[i];
+                    if (item != null && !item.IsIdentified)
+                    {
+                        var me = item as ModelElement;
+                        if (me != null)
+                        {
+                            var baseUri = parentUri.Value;
+                            Uri oldUri;
+                            var newRef = ModelHelper.CreatePath(Parent.GetCompositionName(this), i + diff);
+                            if (baseUri.IsAbsoluteUri)
+                            {
+                                oldUri = new Uri(baseUri, baseUri.Fragment + "/" + newRef);
+                            }
+                            else
+                            {
+                                oldUri = new Uri(baseUri.OriginalString + "/" + newRef, UriKind.Relative);
+                            }
+                            me.OnUriChanged(oldUri);
+                        }
+                    }
+                }
+            }
         }
 
         public override void Clear()
@@ -38,20 +80,6 @@ namespace NMF.Models.Collections
                 item.Delete();
             }
             base.Clear();
-        }
-
-        public override bool Remove(T item)
-        {
-            if (item != null && base.Remove(item))
-            {
-                item.ParentChanged -= RemoveItem;
-                item.Delete();
-                return true;
-            }
-            else
-            {
-                return false;
-            }
         }
 
         private void RemoveItem(object sender, ValueChangedEventArgs e)
@@ -66,23 +94,13 @@ namespace NMF.Models.Collections
 
     public class ObservableCompositionOrderedSet<T> : ObservableOrderedSet<T> where T : class, IModelElement
     {
-        public IModelElement Parent { get; private set; }
+        public ModelElement Parent { get; private set; }
 
-        public ObservableCompositionOrderedSet(IModelElement parent)
+        public ObservableCompositionOrderedSet(ModelElement parent)
         {
             if (parent == null) throw new ArgumentNullException("parent");
 
             Parent = parent;
-        }
-
-        public override bool Add(T item)
-        {
-            if (item != null)
-            {
-                item.ParentChanged += RemoveItem;
-                item.Parent = Parent;
-            }
-            return base.Add(item);
         }
 
         public override void Clear()
@@ -95,17 +113,57 @@ namespace NMF.Models.Collections
             base.Clear();
         }
 
-        public override bool Remove(T item)
+        protected override void OnInsertItem(T item, int index)
         {
+            if (item != null)
+            {
+                item.ParentChanged += RemoveItem;
+                item.Parent = Parent;
+            }
+            base.OnInsertItem(item, index);
+            NotifyChangedUri(index + 1, -1);
+        }
+
+        protected override void OnRemoveItem(T item, int index)
+        {
+            base.OnRemoveItem(item, index);
             if (item != null && base.Remove(item))
             {
                 item.ParentChanged -= RemoveItem;
                 item.Delete();
-                return true;
             }
-            else
+            NotifyChangedUri(index, 1);
+        }
+
+
+        private void NotifyChangedUri(int startIndex, int diff)
+        {
+            if (Parent.IsFlagSet(ModelElement.ModelElementFlag.RequireUris))
             {
-                return false;
+                var parentUri = new Lazy<Uri>(() => Parent.AbsoluteUri ?? Parent.RelativeUri);
+                for (int i = startIndex; i < Count; i++)
+                {
+                    var item = this[i];
+                    if (item != null && !item.IsIdentified)
+                    {
+                        var me = item as ModelElement;
+                        if (me != null)
+                        {
+                            var baseUri = parentUri.Value;
+                            Uri oldUri;
+                            var newRef = ModelHelper.CreatePath(Parent.GetCompositionName(this), i + diff);
+                            if (baseUri.IsAbsoluteUri)
+                            {
+                                oldUri = new Uri(baseUri, baseUri.Fragment + "/" + newRef);
+                            }
+                            else
+                            {
+                                oldUri = new Uri(baseUri.OriginalString + "/" + newRef, UriKind.Relative);
+                            }
+                            me.OnUriChanged(oldUri);
+                        }
+                    }
+                }
             }
         }
 

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using NMF.Models.Changes;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -13,5 +14,9 @@ namespace NMF.Models.Repository
         void SerializeFragment(ModelElement element, Stream target);
 
         Model Deserialize(Stream source, Uri modelUri, IModelRepository repository, bool addToRepository);
+
+        //void SerializeChanges(ModelChangeCollection changes, Stream target);
+
+        //ModelCollection DeserializeChanges(Stream source, IModelRepository repository);
     }
 }

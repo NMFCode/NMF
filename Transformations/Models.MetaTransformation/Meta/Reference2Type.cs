@@ -61,22 +61,22 @@ namespace NMF.Models.Meta
                 {
                     if (input.IsOrdered)
                     {
-                        collectionType = CreateOrderedSet(baseTypeReference, elementTypeReference);
+                        collectionType = CreateOrderedSet(baseTypeReference, elementTypeReference, input.IsContainment);
                     }
                     else
                     {
-                        collectionType = CreateSet(baseTypeReference, elementTypeReference);
+                        collectionType = CreateSet(baseTypeReference, elementTypeReference, input.IsContainment);
                     }
                 }
                 else
                 {
                     if (input.IsOrdered)
                     {
-                        collectionType = CreateList(baseTypeReference, elementTypeReference);
+                        collectionType = CreateList(baseTypeReference, elementTypeReference, input.IsContainment);
                     }
                     else
                     {
-                        collectionType = CreateBag(baseTypeReference, elementTypeReference);
+                        collectionType = CreateBag(baseTypeReference, elementTypeReference, input.IsContainment);
                     }
                 }
                 return collectionType;
@@ -171,7 +171,7 @@ namespace NMF.Models.Meta
             /// <param name="baseTypeReference">The parent element type</param>
             /// <param name="elementTypeReference">The referenced element type</param>
             /// <returns>The type reference to the opposite list</returns>
-            protected virtual CodeTypeReference CreateList(CodeTypeReference baseTypeReference, CodeTypeReference elementTypeReference)
+            protected virtual CodeTypeReference CreateList(CodeTypeReference baseTypeReference, CodeTypeReference elementTypeReference, bool isContainment)
             {
                 return new CodeTypeReference(typeof(ObservableOppositeList<,>).Name, baseTypeReference, elementTypeReference);
             }
@@ -182,7 +182,7 @@ namespace NMF.Models.Meta
             /// <param name="baseTypeReference">The parent element type</param>
             /// <param name="elementTypeReference">The referenced element type</param>
             /// <returns>The type reference to the opposite bag</returns>
-            protected virtual CodeTypeReference CreateBag(CodeTypeReference baseTypeReference, CodeTypeReference elementTypeReference)
+            protected virtual CodeTypeReference CreateBag(CodeTypeReference baseTypeReference, CodeTypeReference elementTypeReference, bool isContainment)
             {
                 return new CodeTypeReference(typeof(ObservableOppositeList<,>).Name, baseTypeReference, elementTypeReference);
             }
@@ -193,7 +193,7 @@ namespace NMF.Models.Meta
             /// <param name="baseTypeReference">The parent element type</param>
             /// <param name="elementTypeReference">The referenced element type</param>
             /// <returns>The type reference to the opposite set</returns>
-            protected virtual CodeTypeReference CreateSet(CodeTypeReference baseTypeReference, CodeTypeReference elementTypeReference)
+            protected virtual CodeTypeReference CreateSet(CodeTypeReference baseTypeReference, CodeTypeReference elementTypeReference, bool isContainment)
             {
                 return new CodeTypeReference(typeof(ObservableOppositeSet<,>).Name, baseTypeReference, elementTypeReference);
             }
@@ -204,7 +204,7 @@ namespace NMF.Models.Meta
             /// <param name="baseTypeReference">The parent element type</param>
             /// <param name="elementTypeReference">The referenced element type</param>
             /// <returns>The type reference to the opposite ordered set</returns>
-            protected virtual CodeTypeReference CreateOrderedSet(CodeTypeReference baseTypeReference, CodeTypeReference elementTypeReference)
+            protected virtual CodeTypeReference CreateOrderedSet(CodeTypeReference baseTypeReference, CodeTypeReference elementTypeReference, bool isContainment)
             {
                 return new CodeTypeReference(typeof(ObservableOppositeOrderedSet<,>).Name, baseTypeReference, elementTypeReference);
             }

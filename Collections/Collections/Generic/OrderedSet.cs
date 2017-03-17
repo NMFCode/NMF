@@ -13,14 +13,14 @@ namespace NMF.Collections.Generic
         private List<T> itemOrder = new List<T>();
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1045:DoNotPassTypesByReference", MessageId = "1#")]
-        protected virtual void OnInsertingItem(T item, ref bool cancel) { }
+        protected virtual void OnInsertingItem(T item, ref bool cancel, int index) { }
 
-        protected virtual void OnInsertItem(T item) { }
+        protected virtual void OnInsertItem(T item, int index) { }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1045:DoNotPassTypesByReference", MessageId = "1#")]
-        protected virtual void OnRemovingItem(T item, ref bool cancel) { }
+        protected virtual void OnRemovingItem(T item, ref bool cancel, int index) { }
 
-        protected virtual void OnRemoveItem(T item) { }
+        protected virtual void OnRemoveItem(T item, int index) { }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1045:DoNotPassTypesByReference", MessageId = "2#")]
         protected virtual void OnReplacingItem(T oldItem, T newItem, ref bool cancel) { }
@@ -37,11 +37,12 @@ namespace NMF.Collections.Generic
             if (!Items.Contains(item))
             {
                 bool cancel = false;
-                OnInsertingItem(item, ref cancel);
+                var index = Count;
+                OnInsertingItem(item, ref cancel, index);
                 if (cancel) return false;
                 Items.Add(item);
                 itemOrder.Add(item);
-                OnInsertItem(item);
+                OnInsertItem(item, index);
                 return true;
             }
             else
@@ -60,11 +61,11 @@ namespace NMF.Collections.Generic
             if (Items.Contains(item))
             {
                 bool cancel = false;
-                OnRemovingItem(item, ref cancel);
+                OnRemovingItem(item, ref cancel, index);
                 if (cancel) return false;
                 Items.Remove(item);
                 itemOrder.RemoveAt(index);
-                OnRemoveItem(item);
+                OnRemoveItem(item, index);
                 return true;
             }
             else
@@ -98,11 +99,11 @@ namespace NMF.Collections.Generic
             if (!Items.Contains(item))
             {
                 bool cancel = false;
-                OnInsertingItem(item, ref cancel);
+                OnInsertingItem(item, ref cancel, index);
                 if (cancel) return;
                 Items.Add(item);
                 itemOrder.Insert(index, item);
-                OnInsertItem(item);
+                OnInsertItem(item, index);
             }
         }
 

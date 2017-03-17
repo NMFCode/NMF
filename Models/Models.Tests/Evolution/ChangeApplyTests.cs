@@ -1,5 +1,6 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using NMF.Models.Evolution;
+using NMF.Models.Meta;
+using NMF.Models.Changes;
 using NMF.Models.Repository;
 using NMF.Models.Tests.Railway;
 using System;
@@ -31,8 +32,14 @@ namespace NMF.Models.Tests.Evolution
         [TestMethod]
         public void ApplyListDeletionComposition()
         {
-            var toDelete = railway.Routes.Take(1).ToList();
-            var change = new ListDeletionComposition<IRoute>(railway.AbsoluteUri, "Routes", 0, 1);
+            var toDelete = railway.Routes.First();
+
+            var change = new CompositionListDeletion
+            {
+                AffectedElement = railway,
+                Index = 0,
+                Feature = RailwayContainer.ClassInstance.LookupReference("routes")
+            };
 
             change.Apply(repository);
 
@@ -45,8 +52,13 @@ namespace NMF.Models.Tests.Evolution
         {
             var parent = railway.Routes[0].DefinedBy[0].Elements[0];
             var toDelete = parent.ConnectsTo[0];
-            var change = new ListDeletionAssociation<ITrackElement>(parent.AbsoluteUri, "ConnectsTo", 0, 1,
-                new List<Uri>() {parent.ConnectsTo[0].AbsoluteUri});
+
+            var change = new AssociationListDeletion
+            {
+                AffectedElement = parent,
+                Feature = TrackElement.ClassInstance.LookupReference("connectsTo"),
+                Index = 0
+            };
 
             change.Apply(repository);
 
@@ -57,8 +69,14 @@ namespace NMF.Models.Tests.Evolution
         [TestMethod]
         public void ApplyCollectionDeletionComposition()
         {
-            var toDelete = railway.Routes.Take(1).ToList();
-            var change = new CollectionDeletionComposition<IRoute>(railway.AbsoluteUri, "Routes", new Collection<IRoute>() {toDelete[0]});
+            var toDelete = railway.Routes[0];
+
+            var change = new CompositionListDeletion
+            {
+                AffectedElement = railway,
+                Feature = RailwayContainer.ClassInstance.LookupReference("routes"),
+                DeletedElement = toDelete
+            };
 
             change.Apply(repository);
 
@@ -71,8 +89,14 @@ namespace NMF.Models.Tests.Evolution
         {
             var parent = railway.Routes[0].DefinedBy[0].Elements[0];
             var toDelete = parent.ConnectsTo[0];
-            var change = new CollectionDeletionAssociation<ITrackElement>(parent.AbsoluteUri, "ConnectsTo", new Collection<Uri>() { parent.ConnectsTo[0].AbsoluteUri });
 
+            var change = new AssociationCollectionDeletion
+            {
+                AffectedElement = parent,
+                Feature = TrackElement.ClassInstance.LookupReference("connectsTo"),
+                DeletedElementUri = toDelete.AbsoluteUri
+            };
+            
             change.Apply(repository);
 
             Assert.AreNotEqual(toDelete, parent.ConnectsTo.FirstOrDefault());
@@ -82,7 +106,11 @@ namespace NMF.Models.Tests.Evolution
         [TestMethod]
         public void ApplyListClear()
         {
-            var change = new CollectionResetComposition<ISemaphore>(railway.AbsoluteUri, "Semaphores", new List<ISemaphore>());
+            var change = new CompositionCollectionReset
+            {
+                AffectedElement = railway,
+                Feature = RailwayContainer.ClassInstance.LookupReference("semaphores")
+            };
 
             change.Apply(repository);
 
@@ -93,8 +121,14 @@ namespace NMF.Models.Tests.Evolution
         public void ApplyListInsertionComposition()
         {
             var toInsert = new Route();
-            var change = new ListInsertionComposition<IRoute>(railway.AbsoluteUri, "Routes", 0,
-                new List<IRoute>() {toInsert});
+
+            var change = new CompositionListInsertion
+            {
+                AffectedElement = railway,
+                Feature = RailwayContainer.ClassInstance.LookupReference("routes"),
+                Index = 0,
+                AddedElement = toInsert
+            };
 
             change.Apply(repository);
 
@@ -106,9 +140,14 @@ namespace NMF.Models.Tests.Evolution
         {
             var parent = railway.Routes[0].DefinedBy[0].Elements[0];
             var toInsert = railway.Routes[0].DefinedBy[1].Elements[0];
-            var change = new ListInsertionAssociation<ITrackElement>(parent.AbsoluteUri, "ConnectsTo", 0,
-                new List<Uri>() {toInsert.AbsoluteUri});
 
+            var change = new AssociationListInsertion
+            {
+                AffectedElement = parent,
+                Feature = TrackElement.ClassInstance.LookupReference("connectsTo"),
+                Index = 0,
+                AddedElement = toInsert
+            };
             change.Apply(repository);
 
             Assert.AreSame(toInsert, parent.ConnectsTo[0]);
@@ -118,8 +157,13 @@ namespace NMF.Models.Tests.Evolution
         public void ApplyCollectionInsertionComposition()
         {
             var toInsert = new Route();
-            var change = new CollectionInsertionComposition<IRoute>(railway.AbsoluteUri, "Routes", new Collection<IRoute>() { toInsert });
 
+            var change = new CompositionCollectionInsertion
+            {
+                AffectedElement = railway,
+                Feature = RailwayContainer.ClassInstance.LookupReference("routes"),
+                AddedElement = toInsert
+            };
             change.Apply(repository);
 
             Assert.AreEqual(toInsert, railway.Routes.Last());
@@ -130,8 +174,13 @@ namespace NMF.Models.Tests.Evolution
         {
             var parent = railway.Routes[0].DefinedBy[0].Elements[0];
             var toInsert = railway.Routes[0].DefinedBy[1].Elements[0];
-            var change = new CollectionInsertionAssociation<ITrackElement>(parent.AbsoluteUri, "ConnectsTo", new Collection<Uri>() { toInsert.AbsoluteUri });
 
+            var change = new AssociationCollectionInsertion
+            {
+                AffectedElement = parent,
+                Feature = TrackElement.ClassInstance.LookupReference("connectsTo"),
+                AddedElement = toInsert
+            };
             change.Apply(repository);
 
             Assert.AreSame(toInsert, parent.ConnectsTo[parent.ConnectsTo.Count - 1]);
@@ -144,8 +193,13 @@ namespace NMF.Models.Tests.Evolution
             var newValue = Signal.FAILURE;
             var oldValue = repository.Resolve(parent.AbsoluteUri).GetType().GetProperty("Signal").GetValue(parent, null);
 
-            var change = new PropertyChangeAttribute<Signal>(parent.AbsoluteUri, "Signal", (Signal) oldValue, newValue);
-
+            var change = new AttributeChange
+            {
+                AffectedElement = parent,
+                Feature = Semaphore.ClassInstance.LookupAttribute("signal"),
+                OldValue = oldValue.ToString(),
+                NewValue = newValue.ToString()
+            };
             change.Apply(repository);
 
             Assert.AreEqual(newValue, parent.Signal);
@@ -156,22 +210,16 @@ namespace NMF.Models.Tests.Evolution
         {
             var parent = railway.Routes[0];
             var newValue = railway.Semaphores[0];
-            var change = new PropertyChangeReference<Semaphore>(parent.AbsoluteUri, "Entry", parent.Entry.AbsoluteUri, newValue.AbsoluteUri);
 
+            var change = new AssociationChange
+            {
+                AffectedElement = parent,
+                Feature = Route.ClassInstance.LookupReference("entry"),
+                NewValue = newValue
+            };
             change.Apply(repository);
 
             Assert.AreSame(newValue, parent.Entry);
-        }
-
-        [TestMethod]
-        public void ApplyElementDeletion()
-        {
-            var toDelete = railway.Semaphores[0];
-            var change = new ElementDeletion(toDelete.AbsoluteUri);
-
-            change.Apply(repository);
-
-            CollectionAssert.DoesNotContain(railway.Semaphores.ToArray(), toDelete);
         }
     }
 }

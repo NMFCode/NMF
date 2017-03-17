@@ -31,7 +31,7 @@ namespace NMF.Models.Tests.Railway
 {
     
     
-    [ModelRepresentationClassAttribute("http://www.semanticweb.org/ontologies/2015/ttc/trainbenchmark#//Signal/")]
+    [ModelRepresentationClassAttribute("http://www.semanticweb.org/ontologies/2015/ttc/trainbenchmark#//Signal")]
     public enum Signal
     {
         

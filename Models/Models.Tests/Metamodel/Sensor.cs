@@ -36,10 +36,12 @@ namespace NMF.Models.Tests.Railway
     /// </summary>
     [XmlNamespaceAttribute("http://www.semanticweb.org/ontologies/2015/ttc/trainbenchmark")]
     [XmlNamespacePrefixAttribute("hu.bme.mit.trainbenchmark")]
-    [ModelRepresentationClassAttribute("http://www.semanticweb.org/ontologies/2015/ttc/trainbenchmark#//Sensor/")]
+    [ModelRepresentationClassAttribute("http://www.semanticweb.org/ontologies/2015/ttc/trainbenchmark#//Sensor")]
     [DebuggerDisplayAttribute("Sensor {Id}")]
-    public class Sensor : RailwayElement, ISensor, IModelElement
+    public partial class Sensor : RailwayElement, ISensor, IModelElement
     {
+        
+        private static Lazy<ITypedElement> _elementsReference = new Lazy<ITypedElement>(RetrieveElementsReference);
         
         /// <summary>
         /// The backing field for the Elements property
@@ -103,10 +105,15 @@ namespace NMF.Models.Tests.Railway
             {
                 if ((_classInstance == null))
                 {
-                    _classInstance = ((IClass)(MetaRepository.Instance.Resolve("http://www.semanticweb.org/ontologies/2015/ttc/trainbenchmark#//Sensor/")));
+                    _classInstance = ((IClass)(MetaRepository.Instance.Resolve("http://www.semanticweb.org/ontologies/2015/ttc/trainbenchmark#//Sensor")));
                 }
                 return _classInstance;
             }
+        }
+        
+        private static ITypedElement RetrieveElementsReference()
+        {
+            return ((ITypedElement)(((ModelElement)(Sensor.ClassInstance)).Resolve("elements")));
         }
         
         /// <summary>
@@ -116,7 +123,7 @@ namespace NMF.Models.Tests.Railway
         /// <param name="e">The original event data</param>
         private void ElementsCollectionChanging(object sender, NMF.Collections.ObjectModel.NotifyCollectionChangingEventArgs e)
         {
-            this.OnCollectionChanging("Elements", e);
+            this.OnCollectionChanging("Elements", e, _elementsReference);
         }
         
         /// <summary>
@@ -126,7 +133,7 @@ namespace NMF.Models.Tests.Railway
         /// <param name="e">The original event data</param>
         private void ElementsCollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
         {
-            this.OnCollectionChanged("Elements", e);
+            this.OnCollectionChanged("Elements", e, _elementsReference);
         }
         
         /// <summary>
@@ -187,7 +194,7 @@ namespace NMF.Models.Tests.Railway
         {
             if ((_classInstance == null))
             {
-                _classInstance = ((IClass)(MetaRepository.Instance.Resolve("http://www.semanticweb.org/ontologies/2015/ttc/trainbenchmark#//Sensor/")));
+                _classInstance = ((IClass)(MetaRepository.Instance.Resolve("http://www.semanticweb.org/ontologies/2015/ttc/trainbenchmark#//Sensor")));
             }
             return _classInstance;
         }

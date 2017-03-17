@@ -16,27 +16,31 @@ namespace NMF.Models.Changes
     {
         public override void Invert(IModelRepository repository)
         {
-            AffectedElement.SetReferencedElement((IReference)Feature, NewValue);
+            AffectedElement.SetReferencedElement((IReference)Feature, OldValue);
         }
     }
     public partial class CompositionChange
     {
         public override void Invert(IModelRepository repository)
         {
-            AffectedElement.SetReferencedElement((IReference)Feature, NewValue);
+            AffectedElement.SetReferencedElement((IReference)Feature, OldValue);
         }
     }
     public partial class AttributeChange
     {
         public override void Invert(IModelRepository repository)
         {
-            AffectedElement.SetAttributeValue((IAttribute)Feature, Feature.Type.Parse(NewValue));
+            AffectedElement.SetAttributeValue((IAttribute)Feature, Feature.Type.Parse(OldValue));
         }
     }
     public partial class ElementaryChangeTransaction
     {
         public override void Invert(IModelRepository repository)
         {
+            for (int i = NestedChanges.Count - 1; i >= 0; i--)
+            {
+                NestedChanges[i].Invert(repository);
+            }
             SourceChange.Invert(repository);
         }
     }
@@ -52,23 +56,21 @@ namespace NMF.Models.Changes
 
         public override void Invert(IModelRepository repository)
         {
-            AffectedElement.GetReferencedElements((IReference)Feature).Add(AddedElement);
+            AffectedElement.GetReferencedElements((IReference)Feature).Remove(AddedElement);
         }
     }
     public partial class AssociationCollectionReset
     {
-
         public override void Invert(IModelRepository repository)
         {
-            AffectedElement.GetReferencedElements((IReference)Feature).Clear();
+            throw new NotImplementedException();
         }
     }
     public partial class AssociationListDeletion
     {
-
         public override void Invert(IModelRepository repository)
         {
-            AffectedElement.GetReferencedElements((IReference)Feature).RemoveAt(Index);
+            AffectedElement.GetReferencedElements((IReference)Feature).Insert(Index, DeletedElement);
         }
     }
     public partial class AssociationListInsertion
@@ -76,7 +78,7 @@ namespace NMF.Models.Changes
 
         public override void Invert(IModelRepository repository)
         {
-            AffectedElement.GetReferencedElements((IReference)Feature).Insert(Index, AddedElement);
+            AffectedElement.GetReferencedElements((IReference)Feature).RemoveAt(Index);
         }
     }
     public partial class CompositionCollectionDeletion
@@ -84,7 +86,7 @@ namespace NMF.Models.Changes
 
         public override void Invert(IModelRepository repository)
         {
-            AffectedElement.GetReferencedElements((IReference)Feature).Remove(repository.Resolve(DeletedElementUri));
+            AffectedElement.GetReferencedElements((IReference)Feature).Add(DeletedElement);
         }
     }
     public partial class CompositionCollectionInsertion
@@ -92,7 +94,7 @@ namespace NMF.Models.Changes
 
         public override void Invert(IModelRepository repository)
         {
-            AffectedElement.GetReferencedElements((IReference)Feature).Add(AddedElement);
+            AffectedElement.GetReferencedElements((IReference)Feature).Remove(AddedElement);
         }
     }
     public partial class CompositionCollectionReset
@@ -100,7 +102,7 @@ namespace NMF.Models.Changes
 
         public override void Invert(IModelRepository repository)
         {
-            AffectedElement.GetReferencedElements((IReference)Feature).Clear();
+            throw new NotImplementedException();
         }
     }
     public partial class CompositionListDeletion
@@ -108,7 +110,7 @@ namespace NMF.Models.Changes
 
         public override void Invert(IModelRepository repository)
         {
-            AffectedElement.GetReferencedElements((IReference)Feature).RemoveAt(Index);
+            AffectedElement.GetReferencedElements((IReference)Feature).Insert(Index, DeletedElement);
         }
     }
     public partial class CompositionListInsertion
@@ -116,7 +118,7 @@ namespace NMF.Models.Changes
 
         public override void Invert(IModelRepository repository)
         {
-            AffectedElement.GetReferencedElements((IReference)Feature).Insert(Index, AddedElement);
+            AffectedElement.GetReferencedElements((IReference)Feature).RemoveAt(Index);
         }
     }
     public partial class AttributeCollectionDeletion
@@ -124,7 +126,7 @@ namespace NMF.Models.Changes
 
         public override void Invert(IModelRepository repository)
         {
-            AffectedElement.GetAttributeValues((IAttribute)Feature).Remove(Feature.Type.Parse(DeletedValue));
+            AffectedElement.GetAttributeValues((IAttribute)Feature).Add(Feature.Type.Parse(DeletedValue));
         }
     }
     public partial class AttributeCollectionInsertion
@@ -132,7 +134,7 @@ namespace NMF.Models.Changes
 
         public override void Invert(IModelRepository repository)
         {
-            AffectedElement.GetAttributeValues((IAttribute)Feature).Add(Feature.Type.Parse(AddedValue));
+            AffectedElement.GetAttributeValues((IAttribute)Feature).Remove(Feature.Type.Parse(AddedValue));
         }
     }
     public partial class AttributeCollectionReset
@@ -140,7 +142,7 @@ namespace NMF.Models.Changes
 
         public override void Invert(IModelRepository repository)
         {
-            AffectedElement.GetAttributeValues((IAttribute)Feature).Clear();
+            throw new NotImplementedException();
         }
     }
     public partial class AttributeListDeletion
@@ -148,15 +150,14 @@ namespace NMF.Models.Changes
 
         public override void Invert(IModelRepository repository)
         {
-            AffectedElement.GetAttributeValues((IAttribute)Feature).RemoveAt(Index);
+            AffectedElement.GetAttributeValues((IAttribute)Feature).Insert(Index, Feature.Type.Parse(DeletedValue));
         }
     }
     public partial class AttributeListInsertion
     {
-
         public override void Invert(IModelRepository repository)
         {
-            AffectedElement.GetAttributeValues((IAttribute)Feature).Insert(Index, AddedValue);
+            AffectedElement.GetAttributeValues((IAttribute)Feature).RemoveAt(Index);
         }
     }
 }

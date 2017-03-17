@@ -36,9 +36,11 @@ namespace NMF.Models.Tests.Debug
     /// </summary>
     [XmlNamespaceAttribute("about:foo")]
     [XmlNamespacePrefixAttribute("debug")]
-    [ModelRepresentationClassAttribute("about:foo#//test/")]
-    public class Test : ModelElement, ITest, IModelElement
+    [ModelRepresentationClassAttribute("about:foo#//test")]
+    public partial class Test : ModelElement, ITest, IModelElement
     {
+        
+        private static Lazy<ITypedElement> _invalidsReference = new Lazy<ITypedElement>(RetrieveInvalidsReference);
         
         /// <summary>
         /// The backing field for the Invalids property
@@ -101,10 +103,15 @@ namespace NMF.Models.Tests.Debug
             {
                 if ((_classInstance == null))
                 {
-                    _classInstance = ((IClass)(MetaRepository.Instance.Resolve("about:foo#//test/")));
+                    _classInstance = ((IClass)(MetaRepository.Instance.Resolve("about:foo#//test")));
                 }
                 return _classInstance;
             }
+        }
+        
+        private static ITypedElement RetrieveInvalidsReference()
+        {
+            return ((ITypedElement)(((ModelElement)(Test.ClassInstance)).Resolve("invalids")));
         }
         
         /// <summary>
@@ -114,7 +121,7 @@ namespace NMF.Models.Tests.Debug
         /// <param name="e">The original event data</param>
         private void InvalidsCollectionChanging(object sender, NMF.Collections.ObjectModel.NotifyCollectionChangingEventArgs e)
         {
-            this.OnCollectionChanging("Invalids", e);
+            this.OnCollectionChanging("Invalids", e, _invalidsReference);
         }
         
         /// <summary>
@@ -124,7 +131,7 @@ namespace NMF.Models.Tests.Debug
         /// <param name="e">The original event data</param>
         private void InvalidsCollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
         {
-            this.OnCollectionChanged("Invalids", e);
+            this.OnCollectionChanged("Invalids", e, _invalidsReference);
         }
         
         /// <summary>
@@ -185,7 +192,7 @@ namespace NMF.Models.Tests.Debug
         {
             if ((_classInstance == null))
             {
-                _classInstance = ((IClass)(MetaRepository.Instance.Resolve("about:foo#//test/")));
+                _classInstance = ((IClass)(MetaRepository.Instance.Resolve("about:foo#//test")));
             }
             return _classInstance;
         }

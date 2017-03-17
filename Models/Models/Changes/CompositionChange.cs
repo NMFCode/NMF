@@ -57,7 +57,7 @@ namespace NMF.Models.Changes
         /// </summary>
         [XmlElementNameAttribute("oldValue")]
         [XmlAttribute(false)]
-        [ContainmentAttribute()]
+        [XmlIdentificationMode(XmlIdentificationMode.ForceFullObject)]
         public virtual NMF.Models.IModelElement OldValue
         {
             get
@@ -84,7 +84,7 @@ namespace NMF.Models.Changes
         /// </summary>
         [XmlElementNameAttribute("newValue")]
         [XmlAttributeAttribute(false)]
-        [ContainmentAttribute()]
+        [XmlIdentificationMode(XmlIdentificationMode.ForceFullObject)]
         public virtual NMF.Models.IModelElement NewValue
         {
             get

@@ -36,26 +36,48 @@ namespace NMF.Models.Tests.Railway
     /// </summary>
     [XmlNamespaceAttribute("http://www.semanticweb.org/ontologies/2015/ttc/trainbenchmark")]
     [XmlNamespacePrefixAttribute("hu.bme.mit.trainbenchmark")]
-    [ModelRepresentationClassAttribute("http://www.semanticweb.org/ontologies/2015/ttc/trainbenchmark#//RailwayContainer/" +
-        "")]
-    public class RailwayContainer : ModelElement, IRailwayContainer, IModelElement
+    [ModelRepresentationClassAttribute("http://www.semanticweb.org/ontologies/2015/ttc/trainbenchmark#//RailwayContainer")]
+    public partial class RailwayContainer : ModelElement, IRailwayContainer, IModelElement
     {
+        
+        private static Lazy<ITypedElement> _invalidsReference = new Lazy<ITypedElement>(RetrieveInvalidsReference);
         
         /// <summary>
         /// The backing field for the Invalids property
         /// </summary>
         private ObservableCompositionList<IRailwayElement> _invalids;
         
+        private static Lazy<ITypedElement> _semaphoresReference = new Lazy<ITypedElement>(RetrieveSemaphoresReference);
+        
         /// <summary>
         /// The backing field for the Semaphores property
         /// </summary>
         private ObservableCompositionList<ISemaphore> _semaphores;
         
+        private static Lazy<ITypedElement> _routesReference = new Lazy<ITypedElement>(RetrieveRoutesReference);
+        
         /// <summary>
         /// The backing field for the Routes property
         /// </summary>
         private ObservableCompositionList<IRoute> _routes;
-        
+
+        protected override string GetCompositionName(object container)
+        {
+            if (container == _invalids)
+            {
+                return "invalid";
+            }
+            if (container == _semaphores)
+            {
+                return "semaphores";
+            }
+            if (container == _routes)
+            {
+                return "routes";
+            }
+            return base.GetCompositionName(container);
+        }
+
         private static IClass _classInstance;
         
         public RailwayContainer()
@@ -150,11 +172,15 @@ namespace NMF.Models.Tests.Railway
             {
                 if ((_classInstance == null))
                 {
-                    _classInstance = ((IClass)(MetaRepository.Instance.Resolve("http://www.semanticweb.org/ontologies/2015/ttc/trainbenchmark#//RailwayContainer/" +
-                            "")));
+                    _classInstance = ((IClass)(MetaRepository.Instance.Resolve("http://www.semanticweb.org/ontologies/2015/ttc/trainbenchmark#//RailwayContainer")));
                 }
                 return _classInstance;
             }
+        }
+        
+        private static ITypedElement RetrieveInvalidsReference()
+        {
+            return ((ITypedElement)(((ModelElement)(RailwayContainer.ClassInstance)).Resolve("invalids")));
         }
         
         /// <summary>
@@ -164,7 +190,7 @@ namespace NMF.Models.Tests.Railway
         /// <param name="e">The original event data</param>
         private void InvalidsCollectionChanging(object sender, NMF.Collections.ObjectModel.NotifyCollectionChangingEventArgs e)
         {
-            this.OnCollectionChanging("Invalids", e);
+            this.OnCollectionChanging("Invalids", e, _invalidsReference);
         }
         
         /// <summary>
@@ -174,7 +200,12 @@ namespace NMF.Models.Tests.Railway
         /// <param name="e">The original event data</param>
         private void InvalidsCollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
         {
-            this.OnCollectionChanged("Invalids", e);
+            this.OnCollectionChanged("Invalids", e, _invalidsReference);
+        }
+        
+        private static ITypedElement RetrieveSemaphoresReference()
+        {
+            return ((ITypedElement)(((ModelElement)(RailwayContainer.ClassInstance)).Resolve("semaphores")));
         }
         
         /// <summary>
@@ -184,7 +215,7 @@ namespace NMF.Models.Tests.Railway
         /// <param name="e">The original event data</param>
         private void SemaphoresCollectionChanging(object sender, NMF.Collections.ObjectModel.NotifyCollectionChangingEventArgs e)
         {
-            this.OnCollectionChanging("Semaphores", e);
+            this.OnCollectionChanging("Semaphores", e, _semaphoresReference);
         }
         
         /// <summary>
@@ -194,7 +225,12 @@ namespace NMF.Models.Tests.Railway
         /// <param name="e">The original event data</param>
         private void SemaphoresCollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
         {
-            this.OnCollectionChanged("Semaphores", e);
+            this.OnCollectionChanged("Semaphores", e, _semaphoresReference);
+        }
+        
+        private static ITypedElement RetrieveRoutesReference()
+        {
+            return ((ITypedElement)(((ModelElement)(RailwayContainer.ClassInstance)).Resolve("routes")));
         }
         
         /// <summary>
@@ -204,7 +240,7 @@ namespace NMF.Models.Tests.Railway
         /// <param name="e">The original event data</param>
         private void RoutesCollectionChanging(object sender, NMF.Collections.ObjectModel.NotifyCollectionChangingEventArgs e)
         {
-            this.OnCollectionChanging("Routes", e);
+            this.OnCollectionChanging("Routes", e, _routesReference);
         }
         
         /// <summary>
@@ -214,7 +250,7 @@ namespace NMF.Models.Tests.Railway
         /// <param name="e">The original event data</param>
         private void RoutesCollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
         {
-            this.OnCollectionChanged("Routes", e);
+            this.OnCollectionChanged("Routes", e, _routesReference);
         }
         
         /// <summary>
@@ -315,8 +351,7 @@ namespace NMF.Models.Tests.Railway
         {
             if ((_classInstance == null))
             {
-                _classInstance = ((IClass)(MetaRepository.Instance.Resolve("http://www.semanticweb.org/ontologies/2015/ttc/trainbenchmark#//RailwayContainer/" +
-                        "")));
+                _classInstance = ((IClass)(MetaRepository.Instance.Resolve("http://www.semanticweb.org/ontologies/2015/ttc/trainbenchmark#//RailwayContainer")));
             }
             return _classInstance;
         }

@@ -7,6 +7,7 @@ using NMF.Serialization;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading;
@@ -97,7 +98,7 @@ namespace NMF.Models
             }
         }
 
-        protected internal override Uri CreateUriWithFragment(string fragment, bool absolute)
+        protected internal override Uri CreateUriWithFragment(string fragment, bool absolute, IModelElement baseElement = null)
         {
             if (fragment != null)
             {
@@ -157,6 +158,33 @@ namespace NMF.Models
             else
             {
                 return IdStore.Remove(id);
+            }
+        }
+
+        public virtual Uri CreateUriForElement(IModelElement element)
+        {
+            if (element == null) return null;
+            if (element.Model == this)
+            {
+                return element.RelativeUri;
+            }
+            else
+            {
+                var target = element.AbsoluteUri;
+                var current = ModelUri;
+                if (target == null) return null;
+                if (!target.IsFile) return target;
+                if (target.Scheme != current.Scheme) return target;
+                if (target.Host != current.Host) return target;
+                for (int i = 0; i < target.Segments.Length; i++)
+                {
+                    if (i >= current.Segments.Length || target.Segments[i] != current.Segments[i])
+                    {
+                        var relative = Path.Combine(Enumerable.Repeat("..", current.Segments.Length - i - 1).Concat(target.Segments.Skip(i)).ToArray());
+                        return new Uri(relative + target.Fragment, UriKind.Relative);
+                    }
+                }
+                return target;
             }
         }
 

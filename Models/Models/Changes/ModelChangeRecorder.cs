@@ -9,6 +9,7 @@ using NMF.Collections.ObjectModel;
 using NMF.Utilities;
 using Type = System.Type;
 using NMF.Models.Meta;
+using System.Diagnostics;
 
 namespace NMF.Models.Changes
 {
@@ -18,10 +19,8 @@ namespace NMF.Models.Changes
     public partial class ModelChangeRecorder
     {
         private List<BubbledChangeEventArgs> recordedEvents = new List<BubbledChangeEventArgs>();
-        private readonly Dictionary<BubbledChangeEventArgs, List<object>> preResetItems = new Dictionary<BubbledChangeEventArgs, List<object>>();
-        private readonly Dictionary<BubbledChangeEventArgs, BubbledChangeEventArgs> changingFromChangedEvent = new Dictionary<BubbledChangeEventArgs, BubbledChangeEventArgs>();
-        private readonly Dictionary<IModelElement, IModelElement> parentBeforeDeletion = new Dictionary<IModelElement, IModelElement>();
-        private readonly Dictionary<IModelElement, List<IModelElement>> childrenOfDeletedElements = new Dictionary<IModelElement, List<IModelElement>>();
+        private readonly Dictionary<IModelElement, Uri> uriMappings = new Dictionary<IModelElement, Uri>();
+        private readonly Dictionary<IModelElement, IModelChange> elementSources = new Dictionary<IModelElement, IModelChange>();
 
         private bool _isInvertible;
 
@@ -81,45 +80,43 @@ namespace NMF.Models.Changes
 
         private void OnBubbledChange(object sender, BubbledChangeEventArgs e)
         {
-            if (_isInvertible)
+            if (e.ChangeType == ChangeType.UriChanged || e.ChangeType == ChangeType.ElementDeleted)
             {
-                if (e.ChangeType == ChangeType.ModelElementDeleting)
+                RegisterAllChangedUris(e.Element, e.AbsoluteUri);
+            }
+            else
+            {
+                recordedEvents.Add(e);
+            }
+        }
+
+        private void RegisterAllChangedUris(IModelElement origin, Uri originalUri)
+        {
+            if (originalUri == null) return;
+            var stack = new Stack<IModelElement>();
+            stack.Push(origin);
+            while (stack.Count > 0)
+            {
+                var element = stack.Pop();
+                if (!uriMappings.ContainsKey(element))
                 {
-                    var parent = e.Element.Parent;
-                    if (childrenOfDeletedElements.ContainsKey(parent))
+                    var me = (ModelElement)element;
+                    var fragment = me.CreateUriWithFragment(null, false, origin);
+                    var fragmentString = fragment != null ? "/" + fragment.OriginalString : null;
+                    if (originalUri.IsAbsoluteUri)
                     {
-                        childrenOfDeletedElements[parent].Add(e.Element);
+                        uriMappings.Add(element, new Uri(originalUri, originalUri.Fragment + fragmentString));
                     }
                     else
                     {
-                        childrenOfDeletedElements[parent] = new List<IModelElement>() {e.Element};
+                        uriMappings.Add(element, new Uri(originalUri.OriginalString + fragmentString, UriKind.Relative));
                     }
-                }
-                if (e.ChangeType == ChangeType.CollectionChanging)
-                {
-                    var cArgs = e.OriginalEventArgs as NotifyCollectionChangingEventArgs;
-                    if (cArgs.Action == NotifyCollectionChangedAction.Reset)
+                    foreach (var child in element.Children)
                     {
-                        var property = e.Element.GetType().GetProperty(e.PropertyName);
-                        var list = (property.GetValue(e.Element, null) as IEnumerable<object>).ToList();
-                        preResetItems[e] = list;
-                    }
-                    if (cArgs.Action == NotifyCollectionChangedAction.Remove)
-                    {
-                        var parent = e.Element.Parent;
-                        if (!parentBeforeDeletion.ContainsKey(e.Element))
-                        {
-                            parentBeforeDeletion[e.Element] = parent; //e.Element; // parent;
-                        }
-
-                        if (!childrenOfDeletedElements.ContainsKey(e.Element))
-                        {
-                            childrenOfDeletedElements[e.Element] = new List<IModelElement>();
-                        }
+                        stack.Push(child);
                     }
                 }
             }
-            recordedEvents.Add(e);
         }
 
         public Task<ModelChangeSet> GetModelChangesAsync()
@@ -134,6 +131,8 @@ namespace NMF.Models.Changes
         public ModelChangeSet GetModelChanges()
         {
             var changes = new ModelChangeSet();
+            var changeModel = new ChangeModel(uriMappings, elementSources);
+            changeModel.RootElements.Add(changes);
             int currentIndex = 0;
             var list = changes.Changes;
             while (currentIndex < recordedEvents.Count)
@@ -144,19 +143,28 @@ namespace NMF.Models.Changes
         private IModelChange ParseChange(ref int currentIndex)
         {
             var currentEvent = recordedEvents[currentIndex++];
-            if (currentEvent.ChangeType == ChangeType.ModelElementCreated)
-                return EventToChange(currentEvent);
 
             var childChanges = new List<IModelChange>();
+            IModelElement createdElement = null;
 
             while (currentIndex < recordedEvents.Count)
             {
                 var nextEvent = recordedEvents[currentIndex];
 
+                if (nextEvent.ChangeType == ChangeType.ElementCreated)
+                {
+                    createdElement = nextEvent.Element;
+                    currentIndex++;
+                    continue;
+                }
                 if (MatchEvents(currentEvent, nextEvent))
                 {
                     currentIndex++;
                     var currentChange = EventToChange(nextEvent);
+                    if (createdElement != null)
+                    {
+                        elementSources.Add(createdElement, currentChange);
+                    }
                     if (childChanges.Count == 0)
                     {
                         return currentChange;
@@ -171,7 +179,11 @@ namespace NMF.Models.Changes
                 }
                 else
                 {
-                    childChanges.Add(ParseChange(ref currentIndex));
+                    var change = ParseChange(ref currentIndex);
+                    if (change != null)
+                    {
+                        childChanges.Add(change);
+                    }
                 }
             }
 
@@ -186,20 +198,10 @@ namespace NMF.Models.Changes
             switch (beforeEvent.ChangeType)
             {
                 case ChangeType.CollectionChanging:
-                    if (_isInvertible)
-                    {
-                        var cArgs = beforeEvent.OriginalEventArgs as NotifyCollectionChangingEventArgs;
-                        if (cArgs.Action == NotifyCollectionChangedAction.Reset)
-                        {
-                            changingFromChangedEvent[afterEvent] = beforeEvent;
-                        }
-                    }
                     return afterEvent.ChangeType == ChangeType.CollectionChanged;
-                case ChangeType.ModelElementDeleting:
-                    return afterEvent.ChangeType == ChangeType.ModelElementDeleted;
                 case ChangeType.PropertyChanging:
                     return afterEvent.ChangeType == ChangeType.PropertyChanged;
-                case ChangeType.ModelElementCreated:
+                case ChangeType.ElementCreated:
                     return false;
                 default:
                     throw new ArgumentException(nameof(beforeEvent.ChangeType));
@@ -211,9 +213,6 @@ namespace NMF.Models.Changes
             if (e.Feature == null) return null;
             switch (e.ChangeType)
             {
-                case ChangeType.ModelElementCreated:
-                case ChangeType.ModelElementDeleted:
-                    return null;
                 case ChangeType.PropertyChanged:
                     return CreatePropertyChange(e);
                 case ChangeType.CollectionChanged:
@@ -452,4 +451,32 @@ namespace NMF.Models.Changes
             }
         }
     }
-}
+
+    public class ChangeModel : Model
+    {
+        private Dictionary<IModelElement, Uri> uriMappings;
+        private Dictionary<IModelElement, IModelChange> changeSources;
+
+        public ChangeModel(Dictionary<IModelElement, Uri> uriMappings, Dictionary<IModelElement, IModelChange> changeSources)
+        {
+            this.uriMappings = uriMappings;
+            this.changeSources = changeSources;
+        }
+
+        public override Uri CreateUriForElement(IModelElement element)
+        {
+            Uri deletedUri;
+            if (uriMappings.TryGetValue(element, out deletedUri))
+            {
+                return deletedUri;
+            }
+            IModelChange elementSource;
+            if (changeSources.TryGetValue(element, out elementSource))
+            {
+                var me = elementSource as ModelElement;
+                return me.CreateUriWithFragment("element", false);
+            }
+            return base.CreateUriForElement(element);
+        }
+    }
+ }

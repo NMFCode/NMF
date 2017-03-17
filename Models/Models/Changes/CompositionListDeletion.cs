@@ -52,7 +52,7 @@ namespace NMF.Models.Changes
         /// </summary>
         [XmlElementNameAttribute("deletedElement")]
         [XmlAttributeAttribute(false)]
-        [ContainmentAttribute()]
+        [XmlIdentificationMode(XmlIdentificationMode.ForceFullObject)]
         public virtual NMF.Models.IModelElement DeletedElement
         {
             get

@@ -1,6 +1,7 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using NMF.Models.Evolution;
+using NMF.Models.Changes;
 using NMF.Models.Repository;
+using NMF.Models.Repository.Serialization;
 using NMF.Models.Tests.Railway;
 using NMF.Serialization.Xmi;
 using System;
@@ -15,7 +16,7 @@ namespace NMF.Models.Tests.Evolution
     public class IntegrationTests
     {
         private const string BaseUri = "http://github.com/NMFCode/NMF/Models/Models.Test/railway.railway";
-        
+
         [TestMethod]
         public void SerializationIntegration()
         {
@@ -38,40 +39,36 @@ namespace NMF.Models.Tests.Evolution
             var changes = recorder.GetModelChanges();
 
             //Serialize the changes
-            var types = changes.TraverseFlat().Select(t => t.GetType()).Distinct();
-            var serializer = new XmiSerializer(types);
-            string xmi;
-            using (var writer = new StringWriter())
+            var file = System.IO.Path.GetTempFileName();
+            try
             {
-                serializer.Serialize(changes, writer);
-                xmi = writer.ToString();
-            }
+                repository.Save(changes, file);
 
-            //Deserialize the XMI
-            ModelChangeCollection newChanges;
-            using (var reader = new StringReader(xmi))
+                var xmi = File.ReadAllText(file);
+
+                //Load second instance of the model
+                var newRepository = new ModelRepository();
+                var newModel = LoadRailwayModel(newRepository);
+
+                //Deserialize the XMI
+                var newChangesModel = newRepository.Resolve(file);
+                var newChanges = newChangesModel.RootElements[0] as ModelChangeSet;
+
+                Assert.IsNotNull(newChanges);
+
+
+                //Apply changes to the new model
+                newChanges.Apply(newRepository);
+
+                Assert.AreEqual(model.Routes.Count, newModel.Routes.Count);
+                Assert.AreEqual(model.Routes[0].DefinedBy.Count, newModel.Routes[0].DefinedBy.Count);
+                Assert.AreEqual(model.Routes[0].DefinedBy[0].Elements.Count, newModel.Routes[0].DefinedBy[0].Elements.Count);
+                Assert.AreEqual(model.Semaphores[0].Signal, newModel.Semaphores[0].Signal);
+            }
+            finally
             {
-                newChanges = serializer.Deserialize(reader) as ModelChangeCollection;
+                File.Delete(file);
             }
-
-            Assert.IsNotNull(newChanges);
-            //Since model elements don't implement Equals() we can only test for property equality
-            var newRoute = ((ListInsertionComposition<IRoute>)((ChangeTransaction)newChanges.Changes[0]).SourceChange).NewElements[0];
-            Assert.AreEqual(route.Id, newRoute.Id);
-            //We have to leave out the changes with model elements in them when tesing for equality
-            CollectionAssert.AreEqual(changes.Changes.Skip(1).ToArray(), newChanges.Changes.Skip(1).ToArray());
-
-            //Load second instance of the model
-            var newRepository = new ModelRepository();
-            var newModel = LoadRailwayModel(newRepository);
-
-            //Apply changes to the new model
-            newChanges.Apply(newRepository);
-
-            Assert.AreEqual(model.Routes.Count, newModel.Routes.Count);
-            Assert.AreEqual(model.Routes[0].DefinedBy.Count, newModel.Routes[0].DefinedBy.Count);
-            Assert.AreEqual(model.Routes[0].DefinedBy[0].Elements.Count, newModel.Routes[0].DefinedBy[0].Elements.Count);
-            Assert.AreEqual(model.Semaphores[0].Signal, newModel.Semaphores[0].Signal);
         }
 
         private RailwayContainer LoadRailwayModel(ModelRepository repository)

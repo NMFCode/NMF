@@ -35,7 +35,7 @@ namespace NMF.Models.Repository.Serialization
             return base.OnNameClash(id, type, candidates, source);
         }
 
-        public override object Resolve(string id, Type type, bool exactType = false, bool failOnConflict = true, object source = null)
+        public override object Resolve(string id, Type type, Type minType = null, bool exactType = false, bool failOnConflict = true, object source = null)
         {
             if (string.IsNullOrEmpty(id)) return null;
             var match = colonRegex.Match(id);
@@ -91,7 +91,7 @@ namespace NMF.Models.Repository.Serialization
                     }
                     else
                     {
-                        if (type.IsInstanceOfType(resolved))
+                        if ((minType ?? type).IsInstanceOfType(resolved))
                         {
                             return resolved;
                         }
@@ -106,7 +106,7 @@ namespace NMF.Models.Repository.Serialization
                     return resolved;
                 }
             }
-            return base.Resolve(id, type, exactType, failOnConflict, source);
+            return base.Resolve(id, type, minType, exactType, failOnConflict, source);
         }
     }
 }

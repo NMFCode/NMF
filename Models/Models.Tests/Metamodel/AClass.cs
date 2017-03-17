@@ -36,9 +36,11 @@ namespace NMF.Models.Tests.Debug
     /// </summary>
     [XmlNamespaceAttribute("about:foo")]
     [XmlNamespacePrefixAttribute("debug")]
-    [ModelRepresentationClassAttribute("about:foo#//AClass/")]
-    public class AClass : ModelElement, IAClass, IModelElement
+    [ModelRepresentationClassAttribute("about:foo#//AClass")]
+    public partial class AClass : ModelElement, IAClass, IModelElement
     {
+        
+        private static Lazy<ITypedElement> _cont1Reference = new Lazy<ITypedElement>(RetrieveCont1Reference);
         
         /// <summary>
         /// The backing field for the Cont1 property
@@ -101,10 +103,15 @@ namespace NMF.Models.Tests.Debug
             {
                 if ((_classInstance == null))
                 {
-                    _classInstance = ((IClass)(MetaRepository.Instance.Resolve("about:foo#//AClass/")));
+                    _classInstance = ((IClass)(MetaRepository.Instance.Resolve("about:foo#//AClass")));
                 }
                 return _classInstance;
             }
+        }
+        
+        private static ITypedElement RetrieveCont1Reference()
+        {
+            return ((ITypedElement)(((ModelElement)(AClass.ClassInstance)).Resolve("cont1")));
         }
         
         /// <summary>
@@ -114,7 +121,7 @@ namespace NMF.Models.Tests.Debug
         /// <param name="e">The original event data</param>
         private void Cont1CollectionChanging(object sender, NMF.Collections.ObjectModel.NotifyCollectionChangingEventArgs e)
         {
-            this.OnCollectionChanging("Cont1", e);
+            this.OnCollectionChanging("Cont1", e, _cont1Reference);
         }
         
         /// <summary>
@@ -124,7 +131,7 @@ namespace NMF.Models.Tests.Debug
         /// <param name="e">The original event data</param>
         private void Cont1CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
         {
-            this.OnCollectionChanged("Cont1", e);
+            this.OnCollectionChanged("Cont1", e, _cont1Reference);
         }
         
         /// <summary>
@@ -185,7 +192,7 @@ namespace NMF.Models.Tests.Debug
         {
             if ((_classInstance == null))
             {
-                _classInstance = ((IClass)(MetaRepository.Instance.Resolve("about:foo#//AClass/")));
+                _classInstance = ((IClass)(MetaRepository.Instance.Resolve("about:foo#//AClass")));
             }
             return _classInstance;
         }
