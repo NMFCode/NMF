@@ -20,12 +20,12 @@ namespace NMF.Models
         /// <summary>
         /// This event is fired after the model element is deleted
         /// </summary>
-        event EventHandler Deleted;
+        event EventHandler<UriChangedEventArgs> Deleted;
 
         /// <summary>
         /// This event is fired before the model element is deleted
         /// </summary>
-        event EventHandler Deleting;
+        event EventHandler<UriChangedEventArgs> Deleting;
 
         /// <summary>
         /// Gets a value indicating whether this item can be identified through its ToString value

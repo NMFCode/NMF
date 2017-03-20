@@ -176,6 +176,10 @@ namespace NMF.Models
                     {
                         RequestBubbledChanges();
                     }
+                    if (newParentME.IsFlagSet(ModelElementFlag.RequireUris))
+                    {
+                        RequestUris();
+                    }
                     else if (bubbledChange == null)
                     {
                         UnregisterBubbledChangeRequest();
@@ -223,7 +227,7 @@ namespace NMF.Models
         /// <remarks>This method is not called if an existing model element is moved in the composition hierarchy</remarks>
         protected virtual void OnChildCreated(IModelElement child)
         {
-            OnBubbledChange(BubbledChangeEventArgs.ElementCreated(child, IsFlagSet(ModelElementFlag.RequireUris)));
+            OnBubbledChange(BubbledChangeEventArgs.ElementCreated(child, new UriChangedEventArgs(null)));
         }
 
         /// <summary>
@@ -758,8 +762,9 @@ namespace NMF.Models
                 {
                     originalAbsoluteUri = AbsoluteUri;
                 }
-                OnDeleting(EventArgs.Empty, originalAbsoluteUri);
-                OnDeleted(EventArgs.Empty, originalAbsoluteUri);
+                var e = new UriChangedEventArgs(originalAbsoluteUri);
+                OnDeleting(e);
+                OnDeleted(e);
                 SetParent(null);
             }
         }
@@ -769,24 +774,23 @@ namespace NMF.Models
         /// Gets called before the model element gets deleted
         /// </summary>
         /// <param name="e"></param>
-        protected virtual void OnDeleting(EventArgs e, Uri originalAbsoluteUri)
+        protected virtual void OnDeleting(UriChangedEventArgs e)
         {
             Deleting?.Invoke(this, e);
-            //OnBubbledChange(BubbledChangeEventArgs.ElementDeleting(this, originalAbsoluteUri));
         }
 
         /// <summary>
         /// Gets called when the model element gets deleted
         /// </summary>
         /// <param name="e">The event data</param>
-        protected virtual void OnDeleted(EventArgs e, Uri originalAbsoluteUri)
+        protected virtual void OnDeleted(UriChangedEventArgs e)
         {
             foreach (var child in Children.Reverse())
             {
                 child.Delete();
             }
             Deleted?.Invoke(this, e);
-            OnBubbledChange(BubbledChangeEventArgs.ElementDeleted(this, originalAbsoluteUri));
+            OnBubbledChange(BubbledChangeEventArgs.ElementDeleted(this, e));
             UnsetFlag(ModelElementFlag.Deleting);
         }
 
@@ -806,25 +810,26 @@ namespace NMF.Models
         /// <summary>
         /// Gets fired after the model element has been deleted
         /// </summary>
-        public event EventHandler Deleted;
+        public event EventHandler<UriChangedEventArgs> Deleted;
 
 
         /// <summary>
         /// Gets fired before the model element gets deleted
         /// </summary>
-        public event EventHandler Deleting;
+        public event EventHandler<UriChangedEventArgs> Deleting;
 
 
         /// <summary>
         /// Gets fired when the Uri of this element changes
         /// </summary>
-        public event EventHandler UriChanged;
+        public event EventHandler<UriChangedEventArgs> UriChanged;
 
 
         internal void OnUriChanged(Uri oldUri)
         {
-            UriChanged?.Invoke(this, EventArgs.Empty);
-            OnBubbledChange(BubbledChangeEventArgs.UriChanged(this, oldUri));
+            var e = new UriChangedEventArgs(oldUri);
+            UriChanged?.Invoke(this, e);
+            OnBubbledChange(BubbledChangeEventArgs.UriChanged(this, e));
         }
 
 

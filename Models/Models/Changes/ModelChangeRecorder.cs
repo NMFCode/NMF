@@ -82,10 +82,13 @@ namespace NMF.Models.Changes
         {
             if (e.ChangeType == ChangeType.UriChanged || e.ChangeType == ChangeType.ElementDeleted)
             {
-                RegisterAllChangedUris(e.Element, e.AbsoluteUri);
+                var eventArgs = (UriChangedEventArgs)e.OriginalEventArgs;
+                RegisterAllChangedUris(e.Element, eventArgs.OldUri);
             }
             else
             {
+                if (e.ChangeType != ChangeType.ElementCreated && e.Feature == null)
+                    throw new InvalidOperationException($"The property {e.PropertyName} is not mapped to an attribute or reference. Therefore, changes of this property cannot be recorded. To fix this problem, try to regenerate the metamodel code or contact the NMF developers.");
                 recordedEvents.Add(e);
             }
         }
@@ -192,7 +195,7 @@ namespace NMF.Models.Changes
 
         private bool MatchEvents(BubbledChangeEventArgs beforeEvent, BubbledChangeEventArgs afterEvent)
         {
-            if (beforeEvent.AbsoluteUri != afterEvent.AbsoluteUri)
+            if (beforeEvent.Element != afterEvent.Element)
                 return false;
 
             switch (beforeEvent.ChangeType)
@@ -210,7 +213,7 @@ namespace NMF.Models.Changes
 
         private IModelChange EventToChange(BubbledChangeEventArgs e)
         {
-            if (e.Feature == null) return null;
+            if (e.Feature == null) throw new InvalidOperationException($"The property {e.PropertyName} of {e.Element} was not mapped to a feature");
             switch (e.ChangeType)
             {
                 case ChangeType.PropertyChanged:

@@ -30,37 +30,6 @@ namespace NMF.Models
         public ITypedElement Feature { get; private set; }
 
         /// <summary>
-        /// Absolute URI of the model element at the time of the event
-        /// </summary>
-        public virtual Uri AbsoluteUri
-        {
-            get
-            {
-                throw new NotSupportedException("You have to request Uris on change notifications first");
-            }
-        }
-
-        /// <summary>
-        /// If the change introduces new or changed model elements, this list
-        /// contains their URIs in the same order as their parent collection.
-        /// </summary>
-        public virtual List<Uri> ChildrenUris
-        {
-            get
-            {
-                throw new NotSupportedException("You have to request Uris on change notifications first");
-            }
-        }
-
-        public virtual bool HasUris
-        {
-            get
-            {
-                return false;
-            }
-        }
-
-        /// <summary>
         /// The name of the affected property or null, if no specific property was affected
         /// </summary>
         public string PropertyName { get; private set; }
@@ -75,24 +44,7 @@ namespace NMF.Models
         /// and whether PropertyName is used.
         /// </summary>
         public ChangeType ChangeType { get; private set; }
-
-        /// <summary>
-        /// Gets a value indicating whether the underlying change has been a elementary collection change
-        /// </summary>
-        [Obsolete("Use ChangeType instead.")]
-        public bool IsCollectionChangeEvent
-        {
-            get { return ChangeType == ChangeType.CollectionChanged; }
-        }
-
-        /// <summary>
-        /// Gets a value indicating whether the underlying change was a changed property value
-        /// </summary>
-        [Obsolete("Use ChangeType instead.")]
-        public bool IsPropertyChangedEvent
-        {
-            get { return ChangeType == ChangeType.PropertyChanged; }
-        }
+        
 
         /// <summary>
         /// Create an instance of BubbledChangeEventArgs describing an upcoming change of a property value.
@@ -108,24 +60,13 @@ namespace NMF.Models
             if (string.IsNullOrEmpty(propertyName))
                 throw new ArgumentNullException(nameof(propertyName));
 
-            if (requireUris)
+            var featureRef = requireUris ? feature?.Value : null;
+            return new BubbledChangeEventArgs(source, featureRef)
             {
-                return new UriEnabledBubbledChangeEventArgs(source, feature?.Value)
-                {
-                    ChangeType = ChangeType.PropertyChanging,
-                    OriginalEventArgs = eventArgs,
-                    PropertyName = propertyName
-                };
-            }
-            else
-            {
-                return new BubbledChangeEventArgs(source)
-                {
-                    ChangeType = ChangeType.PropertyChanging,
-                    OriginalEventArgs = eventArgs,
-                    PropertyName = propertyName
-                };
-            }
+                ChangeType = ChangeType.PropertyChanging,
+                OriginalEventArgs = eventArgs,
+                PropertyName = propertyName
+            };
         }
 
         /// <summary>
@@ -145,26 +86,14 @@ namespace NMF.Models
             if (args == null)
                 throw new ArgumentNullException(nameof(args));
 
-            if (requireUris)
-            {
-                var newValueUri = (args.NewValue as IModelElement)?.AbsoluteUri;
 
-                return new UriEnabledBubbledChangeEventArgs(source, newValueUri != null ? new List<Uri>() {  newValueUri } : null, feature?.Value)
-                {
-                    ChangeType = ChangeType.PropertyChanged,
-                    OriginalEventArgs = args,
-                    PropertyName = propertyName
-                };
-            }
-            else
+            var featureRef = requireUris ? feature?.Value : null;
+            return new BubbledChangeEventArgs(source, featureRef)
             {
-                return new BubbledChangeEventArgs(source)
-                {
-                    ChangeType = ChangeType.PropertyChanged,
-                    OriginalEventArgs = args,
-                    PropertyName = propertyName
-                };
-            }
+                ChangeType = ChangeType.PropertyChanged,
+                OriginalEventArgs = args,
+                PropertyName = propertyName
+            };
         }
 
         /// <summary>
@@ -184,24 +113,13 @@ namespace NMF.Models
             if (args == null)
                 throw new ArgumentNullException(nameof(args));
 
-            if (requireUris)
+            var featureRef = requireUris ? feature?.Value : null;
+            return new BubbledChangeEventArgs(source, featureRef)
             {
-                return new UriEnabledBubbledChangeEventArgs(source, feature?.Value)
-                {
-                    ChangeType = ChangeType.CollectionChanging,
-                    OriginalEventArgs = args,
-                    PropertyName = propertyName
-                };
-            }
-            else
-            {
-                return new BubbledChangeEventArgs(source)
-                {
-                    ChangeType = ChangeType.CollectionChanging,
-                    OriginalEventArgs = args,
-                    PropertyName = propertyName
-                };
-            }
+                ChangeType = ChangeType.CollectionChanging,
+                OriginalEventArgs = args,
+                PropertyName = propertyName
+            };
         }
 
         /// <summary>
@@ -221,106 +139,51 @@ namespace NMF.Models
             if (args == null)
                 throw new ArgumentNullException(nameof(args));
 
-            if (requireUris)
+            var featureRef = requireUris ? feature?.Value : null;
+            return new BubbledChangeEventArgs(source, featureRef)
             {
-                List<Uri> childrenUris = null;
-                if (args.Action == NotifyCollectionChangedAction.Add)
-                    childrenUris = args.NewItems.OfType<IModelElement>().Select(e => e.AbsoluteUri).ToList();
-
-                return new UriEnabledBubbledChangeEventArgs(source, childrenUris, feature?.Value)
-                {
-                    ChangeType = ChangeType.CollectionChanged,
-                    OriginalEventArgs = args,
-                    PropertyName = propertyName
-                };
-            }
-            else
-            {
-                return new BubbledChangeEventArgs(source)
-                {
-                    ChangeType = ChangeType.CollectionChanged,
-                    OriginalEventArgs = args,
-                    PropertyName = propertyName
-                };
-            }
-        }
-
-        public static BubbledChangeEventArgs ElementDeleted(ModelElement source, Uri originalAbsoluteUri)
-        {
-            return new UriEnabledBubbledChangeEventArgs(source, originalAbsoluteUri)
-            {
-                ChangeType = ChangeType.ElementDeleted
+                ChangeType = ChangeType.CollectionChanged,
+                OriginalEventArgs = args,
+                PropertyName = propertyName
             };
         }
 
-        public static BubbledChangeEventArgs ElementCreated(IModelElement child, bool v)
+        public static BubbledChangeEventArgs ElementDeleted(ModelElement source, UriChangedEventArgs e)
         {
-            if (v)
+            return new BubbledChangeEventArgs(source)
             {
-                return new UriEnabledBubbledChangeEventArgs(child, null as Uri)
-                {
-                    ChangeType = ChangeType.ElementCreated
-                };
-            }
-            else
-            {
-                return new BubbledChangeEventArgs(child)
-                {
-                    ChangeType = ChangeType.ElementCreated
-                };
-            }
+                ChangeType = ChangeType.ElementDeleted,
+                OriginalEventArgs = e
+            };
         }
 
-        public static BubbledChangeEventArgs UriChanged(ModelElement modelElement, Uri oldUri)
+        public static BubbledChangeEventArgs ElementCreated(IModelElement child, UriChangedEventArgs e)
         {
-            return new UriEnabledBubbledChangeEventArgs(modelElement, oldUri)
+            return new BubbledChangeEventArgs(child)
             {
-                ChangeType = ChangeType.UriChanged
+                ChangeType = ChangeType.ElementCreated,
+                OriginalEventArgs = e
+            };
+        }
+
+        public static BubbledChangeEventArgs UriChanged(ModelElement modelElement, UriChangedEventArgs e)
+        {
+            return new BubbledChangeEventArgs(modelElement)
+            {
+                ChangeType = ChangeType.UriChanged,
+                OriginalEventArgs = e
             };
         }
     }
 
-    [DebuggerDisplay("BubbledChange: {ChangeType} in {Element} ({AbsoluteUri})")]
-    public class UriEnabledBubbledChangeEventArgs : BubbledChangeEventArgs
+    public class UriChangedEventArgs : EventArgs
     {
-        private Uri absoluteUri;
-        private List<Uri> childrenUris;
-
-        public UriEnabledBubbledChangeEventArgs(IModelElement element, ITypedElement feature = null) : this(element, element.AbsoluteUri, feature) { }
-
-        public UriEnabledBubbledChangeEventArgs(IModelElement element, List<Uri> childrenUris, ITypedElement feature = null) : this(element, feature)
+        public UriChangedEventArgs(Uri oldUri)
         {
-            this.childrenUris = childrenUris;
+            OldUri = oldUri;
         }
 
-        public UriEnabledBubbledChangeEventArgs(IModelElement element, Uri absoluteUri, ITypedElement feature = null) : base(element, feature)
-        {
-            this.absoluteUri = absoluteUri;
-        }
-
-        public override bool HasUris
-        {
-            get
-            {
-                return true;
-            }
-        }
-
-        public override Uri AbsoluteUri
-        {
-            get
-            {
-                return absoluteUri;
-            }
-        }
-
-        public override List<Uri> ChildrenUris
-        {
-            get
-            {
-                return childrenUris;
-            }
-        }
+        public Uri OldUri { get; private set; }
     }
 
     /// <summary>
