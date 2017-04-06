@@ -387,7 +387,7 @@ namespace NMF.Expressions
                 default:
                     break;
             }
-            return base.VisitUnary(node);
+            return null;
         }
     }
 }

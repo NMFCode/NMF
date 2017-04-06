@@ -163,9 +163,6 @@
     <Compile Include="..\Expressions.Test\UnaryExpressionTests.cs">
       <Link>UnaryExpressionTests.cs</Link>
     </Compile>
-    <Compile Include="..\Expressions.Test\UnitTest1.cs">
-      <Link>UnitTest1.cs</Link>
-    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

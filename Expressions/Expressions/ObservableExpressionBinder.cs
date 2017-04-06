@@ -840,7 +840,7 @@ namespace NMF.Expressions
                     }
                     else
                     {
-                        throw new NotSupportedException("The parameters of the proxy method are invalid. Parameters must match the original method or all parameters must be converted to monads.");
+                        throw new NotSupportedException($"The parameters of the proxy method {proxyAttribute.MethodName} are invalid. Parameters must match the original method {node.Method.Name} or all parameters must be converted to monads.");
                     }
                 }
             }
