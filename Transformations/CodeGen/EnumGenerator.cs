@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using NMF.Transformations;
 using System.CodeDom;
+using NMF.Transformations.Core;
 
 namespace NMF.CodeGen
 {
@@ -45,7 +46,7 @@ namespace NMF.CodeGen
         /// </summary>
         /// <param name="input">The input model element</param>
         /// <returns>A collection of enumeration members</returns>
-        protected abstract IEnumerable<EnumMember> GetMembers(T input);
+        protected abstract IEnumerable<EnumMember> GetMembers(T input, CodeTypeDeclaration generatedType, ITransformationContext context);
 
         /// <summary>
         /// Gets the name of the enumeration class
@@ -67,7 +68,7 @@ namespace NMF.CodeGen
         /// <param name="input">The input model element that is transformed to an enumeration</param>
         /// <param name="output">The output code type declaration that represents an enumeration</param>
         /// <param name="context">The transformation context</param>
-        public override void Transform(T input, CodeTypeDeclaration output, Transformations.Core.ITransformationContext context)
+        public override void Transform(T input, CodeTypeDeclaration output, ITransformationContext context)
         {
             var flagged = GetIsFlagged(input);
 
@@ -77,7 +78,7 @@ namespace NMF.CodeGen
             }
 
             int nextValue = flagged ? 1 : 0;
-            foreach (var item in GetMembers(input))
+            foreach (var item in GetMembers(input, output, context))
             {
                 if (item.Value.HasValue) nextValue = item.Value.Value;
                 var literal = new CodeMemberField()
@@ -116,7 +117,7 @@ namespace NMF.CodeGen
         /// <param name="input">The input model element</param>
         /// <param name="context">The transformation context</param>
         /// <returns>The code type declaration that will be the transformation result for the given enumeration</returns>
-        public override CodeTypeDeclaration CreateOutput(T input, Transformations.Core.ITransformationContext context)
+        public override CodeTypeDeclaration CreateOutput(T input, ITransformationContext context)
         {
             var declaration = CodeDomHelper.CreateTypeDeclarationWithReference(GetName(input), true);
             declaration.IsEnum = true;

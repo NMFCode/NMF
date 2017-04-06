@@ -64,24 +64,11 @@ namespace NMF.Transformations.Core
             }
 
             var originalTransformationRule = transformationRule;
-            while (transformationRule.BaseRule != null)
-            {
-                transformationRule = transformationRule.BaseRule;
-            }
 
             Computation comp;
             if (transformationRule.IsUnique)
             {
-                comp = computations.OfType<Computation>().FirstOrDefault(cpt => cpt.TransformationRule == transformationRule);
-                if (comp != null && transformationRule != originalTransformationRule)
-                {
-                    transformationRule = originalTransformationRule;
-                    while (computations.OfType<Computation>().FirstOrDefault(cpt => cpt.TransformationRule == transformationRule.BaseRule) == null)
-                    {
-                        transformationRule = transformationRule.BaseRule;
-                    }
-                    comp = computations.OfType<Computation>().FirstOrDefault(cpt => cpt.TransformationRule == transformationRule);
-                }
+                comp = computations.OfType<Computation>().FirstOrDefault(cpt => cpt.TransformationRule == originalTransformationRule);
             }
             else
             {
@@ -89,9 +76,12 @@ namespace NMF.Transformations.Core
             }
             if (comp == null)
             {
+                while (transformationRule.BaseRule != null)
+                {
+                    transformationRule = transformationRule.BaseRule;
+                }
                 var compCon = CreateComputationContextInternal(input, transformationRule);
                 comp = transformationRule.CreateComputation(input, compCon);
-
                 if (comp == null) return null;
 
                 computations.Add(comp);
@@ -102,6 +92,11 @@ namespace NMF.Transformations.Core
                 CallDependencies(comp, true);
 
                 HandleComputation(transformationRule, input, context, computations, originalTransformationRule, comp, compCon);
+
+                if (transformationRule != originalTransformationRule)
+                {
+                    comp = computations.OfType<Computation>().FirstOrDefault(cpt => cpt.TransformationRule == originalTransformationRule);
+                }
             }
             return comp;
         }
@@ -161,7 +156,16 @@ namespace NMF.Transformations.Core
                     var createRule = computes[0];
 
                     // Generate the output
-                    var output = createRule.CreateOutput(context);
+                    object output;
+
+                    try
+                    {
+                        output = createRule.CreateOutput(context);
+                    }
+                    catch(Exception e)
+                    {
+                        throw new Exception($"The transformation rule {createRule.TransformationRule} threw an exception creating the output for the elements {PrintInputs(createRule)}", e);
+                    }
 
                     for (int i = computes.Count - 1; i >= 0; i--)
                     {
@@ -171,7 +175,14 @@ namespace NMF.Transformations.Core
                     {
                         for (int i = computes.Count - 1; i >= 0; i--)
                         {
-                            computes[i].Transform();
+                            try
+                            {
+                                computes[i].Transform();
+                            }
+                            catch (Exception e)
+                            {
+                                throw new Exception($"The transformation rule {computes[i].TransformationRule} threw an exception transforming the elements {PrintInputs(computes[i])}", e);
+                            }
                         }
                     }
                 }
@@ -194,6 +205,11 @@ namespace NMF.Transformations.Core
                     dependencyCallQueue.Enqueue(computes[i]);
                 }
             }
+        }
+
+        private static string PrintInputs(Computation createRule)
+        {
+            return string.Join(", ", Enumerable.Range(0, createRule.InputArguments).Select(i => createRule.GetInput(i) != null ? createRule.GetInput(i).ToString() : "(null)"));
         }
 
         private ComputationContext CreateComputationContextInternal(object[] input, GeneralTransformationRule rule)
@@ -373,7 +389,14 @@ namespace NMF.Transformations.Core
             for (int i = 0; i < computationsOfLevel.Count; i++)
             {
                 var item = computationsOfLevel[i];
-                item.Transform();
+                try
+                {
+                    item.Transform();
+                }
+                catch (Exception e)
+                {
+                    throw new Exception($"The transformation rule {item.TransformationRule} threw an exception transforming the elements {PrintInputs(item)}", e);
+                }
                 OnComputationCompleted(new ComputationEventArgs(item));
             }
         }

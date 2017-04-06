@@ -132,6 +132,7 @@ namespace NMF.CodeGen
                     }
                     return interfaceType.BaseTypes.Cast<CodeTypeReference>().Select(r => r.GetTypeForReference()).Where(c => c != null);
                 };
+            // TODO: Add layer links
             var layering = Layering<CodeTypeDeclaration>.CreateLayers(generatedType, getBaseTypes);
             CodeTypeDeclaration implBaseType = FindBaseClassAndCreateShadows(generatedType, shadows, layering);
             IEnumerable<CodeTypeDeclaration> inheritedBaseClasses;
@@ -182,10 +183,6 @@ namespace NMF.CodeGen
             CodeTypeDeclaration implBaseType = null;
             for (int i = layering.Count - 1; i >= 0; i--)
             {
-                if (layering[i].Count > 1)
-                {
-                    throw new InvalidOperationException(string.Format("Inheritance relation forms cycle: {0}", string.Join(", ", layering[i].Select(dec => dec.Name))));
-                }
                 foreach (var baseType in layering[i])
                 {
                     if (baseType == generatedType || !ShouldContainMembers(generatedType, baseType.GetReferenceForType())) continue;
