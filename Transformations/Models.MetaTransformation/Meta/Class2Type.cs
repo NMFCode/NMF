@@ -300,6 +300,11 @@ namespace NMF.Models.Meta
                         context.GetRootClasses(true).Add(input);
                     }
                 }
+
+                if (input.Name != generatedType.Name)
+                {
+                    generatedType.AddAttribute(typeof(XmlElementNameAttribute), input.Name);
+                }
             }
 
             private CodeTypeMember CreateOverriddenReferenceImplementation(IClass currentType, IClass scope, IReference referenceImplementation, ITransformationContext context, bool isOverride)
@@ -607,7 +612,12 @@ namespace NMF.Models.Meta
             /// <param name="generatedType">The generated type for the NMeta class</param>
             protected virtual void ImplementIdentifier(IClass @class, CodeTypeDeclaration generatedType, ITransformationContext context)
             {
-                if (@class.Identifier != null)
+                var identifier = @class.RetrieveIdentifier();
+                if (identifier.Identifier == null || generatedType.IsInterface) return;
+                var identifierProp = context.Trace.ResolveIn(Rule<Attribute2Property>(), identifier.Identifier);
+                generatedType.AddAttribute(typeof(DebuggerDisplayAttribute), string.Format("{0} {{{1}}}", @class.Name, identifierProp.Name));
+
+                if (generatedType.Members.Contains(identifierProp))
                 {
                     var isIdentifiedProperty = new CodeMemberProperty();
                     isIdentifiedProperty.Name = "IsIdentified";
@@ -626,11 +636,11 @@ namespace NMF.Models.Meta
                         ReturnType = new CodeTypeReference(typeof(string))
                     };
                     toIdentifierString.WriteDocumentation("Gets the identifier string for this model element", "The identifier string");
-                    var identifierProperty = context.Trace.ResolveIn(Rule<Attribute2Property>(), @class.Identifier);
+                    var identifierProperty = context.Trace.ResolveIn(Rule<Attribute2Property>(), identifier.Identifier);
                     var identifiedObject = new CodePropertyReferenceExpression(new CodeThisReferenceExpression(), identifierProperty.Name);
                     var toString = new CodeMethodInvokeExpression(identifiedObject, "ToString");
                     var t = Transformation as Meta2ClassesTransformation;
-                    if (t != null && !t.IsValueType(@class.Identifier.Type))
+                    if (t != null && !t.IsValueType(identifier.Identifier.Type))
                     {
                         var nullRef = new CodePrimitiveExpression(null);
                         toIdentifierString.Statements.Add(new CodeConditionStatement(
@@ -640,7 +650,7 @@ namespace NMF.Models.Meta
                     toIdentifierString.Statements.Add(new CodeMethodReturnStatement(toString));
                     generatedType.Members.Add(toIdentifierString);
 
-                    if (@class.IdentifierScope == IdentifierScope.Global)
+                    if (identifier.Scope == IdentifierScope.Global)
                     {
                         var createUriWithFragment = new CodeMemberMethod();
                         createUriWithFragment.Name = "CreateUriWithFragment";
@@ -676,11 +686,6 @@ namespace NMF.Models.Meta
                         generatedType.Members.Add(propagateNewModel);
                     }
                 }
-
-                var identifier = @class.RetrieveIdentifier();
-                if (identifier.Identifier == null || generatedType.IsInterface) return;
-                var identifierProp = context.Trace.ResolveIn(Rule<Attribute2Property>(), identifier.Identifier);
-                generatedType.AddAttribute(typeof(DebuggerDisplayAttribute), string.Format("{0} {{{1}}}", generatedType.Name, identifierProp.Name));
             }
 
             /// <summary>
@@ -703,7 +708,10 @@ namespace NMF.Models.Meta
                 AddReferencesOfClass(input, generatedType, AddToGetModelElementForUri, getModelElementForUri, true, context);
                 getModelElementForUri.Statements.Add(new CodeMethodReturnStatement(
                     new CodeMethodInvokeExpression(new CodeBaseReferenceExpression(), "GetModelElementForReference", new CodeArgumentReferenceExpression("reference"), new CodeArgumentReferenceExpression("index"))));
-                if (getModelElementForUri.Statements.Count == 1) return null;
+                if (getModelElementForUri.Statements.Count == 1)
+                {
+                    return null;
+                }
                 getModelElementForUri.WriteDocumentation("Resolves the given URI to a child model element", "The model element or null if it could not be found", new Dictionary<string, string>() 
                 {
                     {"reference", "The requested reference name"},

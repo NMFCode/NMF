@@ -28,7 +28,10 @@ namespace NMF.Models.Meta
             /// <returns>The newly created code type declaration</returns>
             public override CodeTypeDeclaration CreateOutput(IClass scope, ITransformationContext context)
             {
-                if (!scope.References.Any(r => r.IsContainment)) return null;
+                if (!scope.References.Any(r => r.IsContainment) && scope.BaseTypes.Count <= 1)
+                {
+                    return null;
+                }
                 return CodeDomHelper.CreateTypeDeclarationWithReference(scope.Name.ToPascalCase() + "ChildrenCollection", false);
             }
 

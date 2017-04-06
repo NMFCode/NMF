@@ -69,8 +69,7 @@ namespace NMF.Models.Meta
                 };
                 var declaringTypeRef = CreateReference(property.DeclaringType, true, context);
                 var declaringRef2 = new CodeTypeReference();
-                declaringRef2.BaseType = declaringTypeRef.BaseType;
-                declaringRef2.SetNamespace(declaringTypeRef.Namespace());
+                declaringRef2.BaseType = declaringTypeRef.Namespace() + "." + declaringTypeRef.BaseType;
                 staticAttributeFieldInit.Statements.Add(new CodeMethodReturnStatement(new CodeCastExpression(typedElementType,
                     new CodeMethodInvokeExpression(new CodeCastExpression(CodeDomHelper.ToTypeReference(typeof(ModelElement)),
                     new CodePropertyReferenceExpression(new CodeTypeReferenceExpression(declaringRef2), "ClassInstance")),
@@ -88,7 +87,7 @@ namespace NMF.Models.Meta
             /// <param name="context">The transformation context</param>
             public override void Transform(IReference input, CodeMemberProperty generatedProperty, ITransformationContext context)
             {
-                generatedProperty.Attributes = MemberAttributes.Public;
+                generatedProperty.Attributes = MemberAttributes.Public | MemberAttributes.Final;
                 var summary = input.Summary;
                 if (string.IsNullOrEmpty(summary)) summary = string.Format("The {0} property", input.Name);
                 generatedProperty.WriteDocumentation(summary, input.Remarks);
@@ -337,7 +336,7 @@ namespace NMF.Models.Meta
 
                 var referenceRef = new CodeFieldReferenceExpression(null, "_" + input.Name.ToCamelCase() + "Reference");
                 collectionBubbleHandler.Parameters.Add(new CodeParameterDeclarationExpression(typeof(object), "sender"));
-                collectionBubbleHandler.Parameters.Add(new CodeParameterDeclarationExpression(eventArgsType, "e"));
+                collectionBubbleHandler.Parameters.Add(new CodeParameterDeclarationExpression(eventArgsType.ToTypeReference(), "e"));
                 collectionBubbleHandler.Statements.Add(new CodeMethodInvokeExpression(
                     new CodeThisReferenceExpression(), "On" + suffix,
                     new CodePrimitiveExpression(property.Name), new CodeArgumentReferenceExpression("e"), referenceRef));

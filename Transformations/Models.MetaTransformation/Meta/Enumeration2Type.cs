@@ -5,6 +5,8 @@ using NMF.Utilities;
 using System;
 using System.CodeDom;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 
@@ -22,9 +24,10 @@ namespace NMF.Models.Meta
             /// </summary>
             /// <param name="input">The NMeta enumeration</param>
             /// <returns>A collection of enumeration members</returns>
-            protected override IEnumerable<EnumGenerator<IEnumeration>.EnumMember> GetMembers(IEnumeration input)
+            protected override IEnumerable<EnumGenerator<IEnumeration>.EnumMember> GetMembers(IEnumeration input, CodeTypeDeclaration generatedType, ITransformationContext context)
             {
                 var names = new HashSet<string>();
+                var dict = new Dictionary<ILiteral, string>();
 
                 foreach (var literal in input.Literals)
                 {
@@ -38,6 +41,7 @@ namespace NMF.Models.Meta
                         }
                         fieldName += counter.ToString();
                     }
+                    dict.Add(literal, fieldName);
                     yield return new EnumMember()
                     {
                         Name = fieldName,
@@ -46,6 +50,95 @@ namespace NMF.Models.Meta
                         Value = literal.Value
                     };
                 }
+
+                GenerateTypeConverter(generatedType, dict);
+            }
+
+            private void GenerateTypeConverter(CodeTypeDeclaration generatedType, Dictionary<ILiteral, string> fieldNames)
+            {
+                var dependents = generatedType.DependentTypes(true);
+                if (dependents.Any(c => c.Name == generatedType.Name + "Converter") ||
+                    fieldNames.All(field => field.Value == field.Key.Name)) return;
+
+                var typeConverter = new CodeTypeDeclaration(generatedType.Name + "Converter");
+                typeConverter.BaseTypes.Add(typeof(TypeConverter).ToTypeReference());
+                var stringTypeRef = new CodeTypeOfExpression(typeof(string));
+
+                var canConvertFromMethod = new CodeMemberMethod
+                {
+                    Name = "CanConvertFrom",
+                    Attributes = MemberAttributes.Public | MemberAttributes.Override,
+                    ReturnType = new CodeTypeReference(typeof(bool))
+                };
+                canConvertFromMethod.Parameters.Add(new CodeParameterDeclarationExpression(typeof(ITypeDescriptorContext).ToTypeReference(), "context"));
+                canConvertFromMethod.Parameters.Add(new CodeParameterDeclarationExpression(typeof(System.Type).ToTypeReference(), "sourceType"));
+                var sourceTypeRef = new CodeArgumentReferenceExpression("sourceType");
+                canConvertFromMethod.Statements.Add(new CodeMethodReturnStatement(new CodeBinaryOperatorExpression(sourceTypeRef, CodeBinaryOperatorType.IdentityEquality, stringTypeRef)));
+                typeConverter.Members.Add(canConvertFromMethod);
+
+                var canConvertTo = new CodeMemberMethod
+                {
+                    Name = "CanConvertTo",
+                    Attributes = MemberAttributes.Public | MemberAttributes.Override,
+                    ReturnType = new CodeTypeReference(typeof(bool))
+                };
+                canConvertTo.Parameters.Add(new CodeParameterDeclarationExpression(typeof(ITypeDescriptorContext).ToTypeReference(), "context"));
+                canConvertTo.Parameters.Add(new CodeParameterDeclarationExpression(typeof(System.Type), "destinationType"));
+                var destinationTypeRef = new CodeArgumentReferenceExpression("destinationType");
+                canConvertTo.Statements.Add(new CodeMethodReturnStatement(new CodeBinaryOperatorExpression(destinationTypeRef, CodeBinaryOperatorType.IdentityEquality, stringTypeRef)));
+                typeConverter.Members.Add(canConvertTo);
+                
+                var typeRef = generatedType.GetReferenceForType();
+                var typeExpression = new CodeTypeReferenceExpression(typeRef);
+                var convertFrom = new CodeMemberMethod
+                {
+                    Name = "ConvertFrom",
+                    Attributes = MemberAttributes.Public | MemberAttributes.Override,
+                    ReturnType = new CodeTypeReference(typeof(object))
+                };
+                convertFrom.Parameters.Add(new CodeParameterDeclarationExpression(typeof(ITypeDescriptorContext).ToTypeReference(), "context"));
+                convertFrom.Parameters.Add(new CodeParameterDeclarationExpression(typeof(CultureInfo).ToTypeReference(), "culture"));
+                convertFrom.Parameters.Add(new CodeParameterDeclarationExpression(typeof(object), "value"));
+                var valueRef = new CodeArgumentReferenceExpression("value");
+                var nullRef = new CodePrimitiveExpression();
+                convertFrom.Statements.Add(new CodeConditionStatement(new CodeBinaryOperatorExpression(valueRef, CodeBinaryOperatorType.IdentityEquality, nullRef),
+                    new CodeMethodReturnStatement(new CodeDefaultValueExpression(typeRef))));
+                var valueString = new CodeVariableDeclarationStatement(typeof(string), "valueString", new CodeMethodInvokeExpression(valueRef, "ToString"));
+                convertFrom.Statements.Add(valueString);
+                var valueStringRef = new CodeVariableReferenceExpression(valueString.Name);
+                foreach (var field in fieldNames)
+                {
+                    convertFrom.Statements.Add(new CodeConditionStatement(new CodeBinaryOperatorExpression(valueStringRef, CodeBinaryOperatorType.ValueEquality, new CodePrimitiveExpression(field.Key.Name)),
+                        new CodeMethodReturnStatement(new CodeFieldReferenceExpression(typeExpression, field.Value))));
+                }
+                convertFrom.Statements.Add(new CodeMethodReturnStatement(new CodeDefaultValueExpression(typeRef)));
+                typeConverter.Members.Add(convertFrom);
+                
+                var convertTo = new CodeMemberMethod
+                {
+                    Name = "ConvertTo",
+                    Attributes = MemberAttributes.Public | MemberAttributes.Override,
+                    ReturnType = new CodeTypeReference(typeof(object))
+                };
+                convertTo.Parameters.Add(new CodeParameterDeclarationExpression(typeof(ITypeDescriptorContext).ToTypeReference(), "context"));
+                convertTo.Parameters.Add(new CodeParameterDeclarationExpression(typeof(CultureInfo).ToTypeReference(), "culture"));
+                convertTo.Parameters.Add(new CodeParameterDeclarationExpression(typeof(object), "value"));
+                convertTo.Parameters.Add(new CodeParameterDeclarationExpression(typeof(System.Type).ToTypeReference(), "destinationType"));
+                convertTo.Statements.Add(new CodeConditionStatement(new CodeBinaryOperatorExpression(valueRef, CodeBinaryOperatorType.IdentityEquality, nullRef),
+                    new CodeMethodReturnStatement(nullRef)));
+                var valueCasted = new CodeVariableDeclarationStatement(typeRef, "valueCasted", new CodeCastExpression(typeRef, valueRef));
+                convertTo.Statements.Add(valueCasted);
+                var valueCastedRef = new CodeVariableReferenceExpression(valueCasted.Name);
+                foreach (var field in fieldNames)
+                {
+                    convertTo.Statements.Add(new CodeConditionStatement(new CodeBinaryOperatorExpression(valueCastedRef, CodeBinaryOperatorType.ValueEquality, new CodeFieldReferenceExpression(typeExpression, field.Value)),
+                        new CodeMethodReturnStatement(new CodePrimitiveExpression(field.Key.Name))));
+                }
+                convertTo.ThrowException<ArgumentOutOfRangeException>("value");
+                typeConverter.Members.Add(convertTo);
+
+                generatedType.AddAttribute(typeof(TypeConverterAttribute), new CodeTypeOfExpression(typeConverter.Name));
+                dependents.Add(typeConverter);
             }
 
             /// <summary>
