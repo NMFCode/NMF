@@ -8,13 +8,21 @@ namespace NMF.Models
     [AttributeUsage(AttributeTargets.Assembly, AllowMultiple = true)]
     public class ModelMetadataAttribute : Attribute
     {
-        public string ModelUri { get; private set; }
+        public Uri ModelUri { get; private set; }
 
         public string ResourceName { get; private set; }
 
         public ModelMetadataAttribute(string modelUri, string resourceName)
         {
-            ModelUri = modelUri;
+            Uri parsedModelUri;
+            if (Uri.TryCreate(modelUri, UriKind.Absolute, out parsedModelUri))
+            {
+                ModelUri = parsedModelUri;
+            }
+            else
+            {
+                ModelUri = new Uri(modelUri, UriKind.Relative);
+            }
             ResourceName = resourceName;
         }
     }

@@ -172,16 +172,32 @@ namespace NMF.Models.Repository
                 for (int i = 0; i < attributes.Length; i++)
                 {
                     var metadata = attributes[i] as ModelMetadataAttribute;
-                    Uri modelUri;
-                    if (metadata != null && names.Contains(metadata.ResourceName) && Uri.TryCreate(metadata.ModelUri, UriKind.Absolute, out modelUri))
+                    if (metadata != null && names.Contains(metadata.ResourceName) && metadata.ModelUri.IsAbsoluteUri)
                     {
                         try
                         {
-                            serializer.Deserialize(assembly.GetManifestResourceStream(metadata.ResourceName), modelUri, this, true);
+                            var model = serializer.Deserialize(assembly.GetManifestResourceStream(metadata.ResourceName), metadata.ModelUri, this, true);
+                            for (int j = i + 1; j < attributes.Length; j++)
+                            {
+                                var followingAttribute = attributes[j] as ModelMetadataAttribute;
+                                if (followingAttribute != null)
+                                {
+                                    var followUri = new Uri(followingAttribute.ModelUri, MakeRelativePath(metadata.ResourceName, followingAttribute.ResourceName));
+                                    if (!entries.ContainsKey(followUri))
+                                    {
+                                        entries.Add(followUri, model);
+                                    }
+                                }
+                            }
                         }
                         catch (Exception e)
                         {
-                            throw new Exception($"Error loading the embedded resource {metadata.ResourceName} from assembly {assembly.FullName}: {e.Message}", e);
+                            var hint = "";
+                            if (i < attributes.Length - 1)
+                            {
+                                hint = " Hint: Resources are loaded in the order in which they are specified. If a metamodel requires another metamodel from the same assembly, the metadata attribute must be specified afterwards. All metamodels must be in the same directory.";
+                            }
+                            throw new Exception($"Error loading the embedded resource {metadata.ResourceName} from assembly {assembly.FullName}: {e.Message}{hint}", e); ;
                         }
                     }
                     else
@@ -203,6 +219,26 @@ namespace NMF.Models.Repository
                     }
                 }
             }
+        }
+
+        private string MakeRelativePath(string resourceName, string baseResourceName)
+        {
+            var resourceSplit = resourceName.Split('.');
+            var baseSplit = baseResourceName.Split('.');
+            var relativeBuilder = new StringBuilder();
+            for (int i = 0; i < resourceSplit.Length && i < baseSplit.Length; i++)
+            {
+                if (resourceSplit[i] != baseSplit[i])
+                {
+                    for (int j = i; j < resourceSplit.Length; j++)
+                    {
+                        relativeBuilder.Append(resourceSplit[j]);
+                        if (j < resourceSplit.Length - 1) relativeBuilder.Append(".");
+                    }
+                    break;
+                }
+            }
+            return relativeBuilder.ToString();
         }
 
         void domain_AssemblyLoad(object sender, AssemblyLoadEventArgs args)

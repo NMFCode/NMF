@@ -251,6 +251,10 @@ namespace NMF.Serialization
         {
             var itemType = CollectionItemType.Type;
             var collectionAddMethod = CollectionType.GetMethod("Add", new Type[] { itemType });
+            if (collectionAddMethod == null) throw new Exception($"Could not find a suitable add method in the type {CollectionType}");
+            var parameters = collectionAddMethod.GetParameters();
+            if (parameters == null || parameters.Length != 1) throw new Exception($"The add method of type {CollectionType} has the wrong amount of arguments");
+            itemType = parameters[0].ParameterType;
             var p = Expression.Parameter(typeof(object));
             var coll = Expression.Parameter(typeof(object));
             var body = Expression.Call(Expression.Convert(coll, CollectionType), collectionAddMethod, Expression.Convert(p, itemType));

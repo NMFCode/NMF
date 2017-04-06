@@ -118,12 +118,19 @@ namespace NMF.Interop.Ecore.Transformations
                 }
             }
 
+            private bool IsContainerReference(IEStructuralFeature f)
+            {
+                var r = f as EReference;
+                if (r == null) return false;
+                return r.EOpposite != null && r.EOpposite.Containment.GetValueOrDefault();
+            }
+
             public override void RegisterDependencies()
             {
                 MarkInstantiatingFor(Rule<EClassifier2Type>());
 
                 CallMany(Rule<EStructuralFeature2Property>(),
-                    selector: cl => cl.EStructuralFeatures.Where(f => !f.Derived.GetValueOrDefault()),
+                    selector: cl => cl.EStructuralFeatures.Where(f => !f.Derived.GetValueOrDefault() || IsContainerReference(f)),
                     persistor: (cl, properties) => {
                         cl.Attributes.AddRange(properties.OfType<IAttribute>());
                         cl.References.AddRange(properties.OfType<IReference>());
@@ -210,6 +217,11 @@ namespace NMF.Interop.Ecore.Transformations
             public override void Transform(IEReference input, IReference output, ITransformationContext context)
             {
                 output.IsContainment = input.Containment.GetValueOrDefault();
+                // if output is a containment, we set ordered to true, because EMF tends to use indices also for unordered collections
+                if (output.IsContainment)
+                {
+                    output.IsOrdered = true;
+                }
 
                 foreach (var baseInterface in input.EContainingClass.ESuperTypes.Where(t => t.Interface.GetValueOrDefault()))
                 {

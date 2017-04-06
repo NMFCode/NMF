@@ -545,7 +545,7 @@ namespace NMF.Synchronizations
                 IEnumerable rightContext = ignoreCandidates ? null : targets;
                 foreach (var item in source)
                 {
-                    var comp = context.CallTransformation(childRule, new object[] { item }, rightContext) as SynchronizationComputation<TSourceDep, TTargetDep>;
+                    var comp = (SynchronizationComputation<TSourceDep, TTargetDep>)context.CallTransformation(childRule, new object[] { item }, rightContext);
                     comp.DoWhenOutputIsAvailable((inp, outp) =>
                     {
                         if (!targets.Contains(outp))
