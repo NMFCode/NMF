@@ -45,12 +45,6 @@ namespace NMF.CodeGenerationTests
         }
 
         [TestMethod]
-        public void ABBModelGeneratesSuccessfully()
-        {
-            GenerateAndAssertEcore("ABB.ecore");
-        }
-
-        [TestMethod]
         public void Iso61850GeneratesSuccessfully()
         {
             GenerateAndAssertEcore("61850.ecore");

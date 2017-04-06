@@ -32,7 +32,7 @@ namespace NMF.CodeGenerationTests
                     var projectFile = Path.Combine(path, "project.csproj");
                     var codeFile = Path.Combine(path, "code.cs");
 
-                    var code = MetaFacade.CreateCode(ns, "Test");
+                    var code = MetaFacade.CreateCode(ns, "TemporaryGeneratedCode");
                     MetaFacade.GenerateCode(code, new Microsoft.CSharp.CSharpCodeProvider(), codeFile, false);
 
                     File.WriteAllText(projectFile, GenerateProjectFile(codeFile));
