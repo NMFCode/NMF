@@ -139,13 +139,22 @@ namespace NMF.Models.Changes
             int currentIndex = 0;
             var list = changes.Changes;
             while (currentIndex < recordedEvents.Count)
-                list.Add(ParseChange(ref currentIndex));
+            {
+                var parsed = ParseChange(ref currentIndex);
+                if (parsed != null) list.Add(parsed);
+            }
             return changes;
         }
 
         private IModelChange ParseChange(ref int currentIndex)
         {
-            var currentEvent = recordedEvents[currentIndex++];
+            BubbledChangeEventArgs currentEvent;
+
+            do
+            {
+                currentEvent = recordedEvents[currentIndex++];
+                if (currentIndex == recordedEvents.Count) return null;
+            } while (currentEvent.ChangeType != ChangeType.PropertyChanging && currentEvent.ChangeType != ChangeType.CollectionChanging);
 
             var childChanges = new List<IModelChange>();
             IModelElement createdElement = null;
@@ -179,6 +188,12 @@ namespace NMF.Models.Changes
                         transaction.NestedChanges.AddRange(childChanges);
                         return transaction;
                     }
+                }
+                else if ((nextEvent.ChangeType == ChangeType.PropertyChanged || nextEvent.ChangeType == ChangeType.CollectionChanged) && nextEvent.Element == createdElement)
+                {
+                    // These events are opposites of creation messages and can be ignored
+                    currentIndex++;
+                    continue;
                 }
                 else
                 {
@@ -477,7 +492,7 @@ namespace NMF.Models.Changes
             if (changeSources.TryGetValue(element, out elementSource))
             {
                 var me = elementSource as ModelElement;
-                return me.CreateUriWithFragment("element", false);
+                return me.CreateUriWithFragment("addedElement", false);
             }
             return base.CreateUriForElement(element);
         }
