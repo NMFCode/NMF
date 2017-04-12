@@ -1,0 +1,94 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<nmeta:Namespace xmi:version="2.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" Uri="http://sdq.ipd.kit.edu/ComponentBasedSystem/" Prefix="MM06" Name="MM06" xmlns:xmi="http://www.omg.org/XMI" xmlns:nmeta="http://nmf.codeplex.com/nmeta/">
+  <ChildNamespaces Uri="http://sdq.ipd.kit.edu/ComponentBasedSystem/Assembly/" Prefix="assembly" Name="Assembly">
+    <Types xsi:type="nmeta:Class" BaseTypes="#//NamedElement" Name="AssemblyContext">
+      <References ReferenceType="#//SystemIndependent/Component_MM06" IsOrdered="True" IsUnique="True" LowerBound="1" Name="Implements" />
+    </Types>
+    <Types xsi:type="nmeta:Class" BaseTypes="#//SystemIndependent/Component_MM06" Name="CompositeComponent">
+      <References IsContainment="True" ReferenceType="#//Assembly/AssemblyContext" IsOrdered="True" IsUnique="True" UpperBound="-1" Name="EncapsulatedContexts" />
+      <References IsContainment="True" ReferenceType="#//Assembly/DelegateConnector" IsOrdered="True" IsUnique="True" LowerBound="1" UpperBound="-1" Name="DelegateConnectors" />
+      <References IsContainment="True" ReferenceType="#//Assembly/AssemblyConnector" IsOrdered="True" IsUnique="True" UpperBound="-1" Name="Connectors" />
+    </Types>
+    <Types xsi:type="nmeta:Class" BaseTypes="#//Assembly/CompositeComponent" Name="System_MM06" />
+    <Types xsi:type="nmeta:Class" Name="AssemblyConnector">
+      <References ReferenceType="#//Assembly/AssemblyContext" IsOrdered="True" IsUnique="True" LowerBound="1" Name="ProvidingComponent" />
+      <References ReferenceType="#//Assembly/AssemblyContext" IsOrdered="True" IsUnique="True" LowerBound="1" Name="UsingComponent" />
+      <References ReferenceType="#//SystemIndependent/Interface" IsOrdered="True" IsUnique="True" LowerBound="1" Name="Interface" />
+    </Types>
+    <Types xsi:type="nmeta:Class" IsAbstract="True" Name="DelegateConnector">
+      <References ReferenceType="#//SystemIndependent/Interface" IsOrdered="True" IsUnique="True" LowerBound="1" Name="Interface" />
+      <References ReferenceType="#//Assembly/AssemblyContext" IsOrdered="True" IsUnique="True" LowerBound="1" Name="ConnectedAssemblyContext" />
+    </Types>
+    <Types xsi:type="nmeta:Class" BaseTypes="#//Assembly/DelegateConnector" Name="ProvidingDelegateConnector" />
+    <Types xsi:type="nmeta:Class" BaseTypes="#//Assembly/DelegateConnector" Name="RequiringDelegateConnector" />
+  </ChildNamespaces>
+  <ChildNamespaces Uri="http://sdq.ipd.kit.edu/ComponentBasedSystem/Deployment/" Prefix="deploy" Name="Deployment">
+    <Types xsi:type="nmeta:Class" Name="Environment_MM06">
+      <References IsContainment="True" Opposite="#//Deployment/Container_MM06/Environment" ReferenceType="#//Deployment/Container_MM06" IsOrdered="True" IsUnique="True" LowerBound="1" UpperBound="-1" Name="Containers" />
+      <References IsContainment="True" ReferenceType="#//Deployment/Link" IsOrdered="True" IsUnique="True" UpperBound="-1" Name="Links" />
+    </Types>
+    <Types xsi:type="nmeta:Class" BaseTypes="#//NamedElement" Name="Container_MM06">
+      <References Opposite="#//Deployment/Link/ConnectedContainers" ReferenceType="#//Deployment/Link" IsOrdered="True" IsUnique="True" UpperBound="-1" Name="Links" />
+      <References Opposite="#//Deployment/Environment_MM06/Containers" ReferenceType="#//Deployment/Environment_MM06" IsOrdered="True" IsUnique="True" LowerBound="1" Name="Environment" />
+    </Types>
+    <Types xsi:type="nmeta:Class" BaseTypes="#//NamedElement" Name="Link">
+      <References Opposite="#//Deployment/Container_MM06/Links" ReferenceType="#//Deployment/Container_MM06" IsOrdered="True" IsUnique="True" LowerBound="2" UpperBound="-1" Name="ConnectedContainers" />
+    </Types>
+    <Types xsi:type="nmeta:Class" Name="AllocationContext">
+      <References ReferenceType="#//Assembly/AssemblyContext" IsOrdered="True" IsUnique="True" LowerBound="1" Name="Assembly" />
+      <References ReferenceType="#//Deployment/Container_MM06" IsOrdered="True" IsUnique="True" LowerBound="1" Name="Container" />
+    </Types>
+    <Types xsi:type="nmeta:Class" Name="Allocation">
+      <References IsContainment="True" ReferenceType="#//Deployment/AllocationContext" IsOrdered="True" IsUnique="True" LowerBound="1" UpperBound="-1" Name="Contexts" />
+      <References ReferenceType="#//Assembly/System_MM06" IsOrdered="True" IsUnique="True" LowerBound="1" Name="AllocatedSystem" />
+    </Types>
+  </ChildNamespaces>
+  <ChildNamespaces Uri="http://sdq.ipd.kit.edu/ComponentBasedSystem/SystemIndependent/" Prefix="system" Name="SystemIndependent">
+    <Types xsi:type="nmeta:Class" Name="Repository_MM06">
+      <References IsContainment="True" ReferenceType="#//SystemIndependent/Interface" IsOrdered="True" IsUnique="True" UpperBound="-1" Name="Interfaces" />
+      <References IsContainment="True" ReferenceType="#//SystemIndependent/Component_MM06" IsOrdered="True" IsUnique="True" UpperBound="-1" Name="Components" />
+      <References IsContainment="True" ReferenceType="#//SystemIndependent/Signature" IsOrdered="True" IsUnique="True" LowerBound="1" UpperBound="-1" Name="AvailableSignatures" />
+    </Types>
+    <Types xsi:type="nmeta:Class" BaseTypes="#//NamedElement" Name="Interface">
+      <References ReferenceType="#//SystemIndependent/Signature" IsOrdered="True" IsUnique="True" UpperBound="-1" Name="Signatures" />
+    </Types>
+    <Types xsi:type="nmeta:Class" BaseTypes="#//NamedElement" Name="Component_MM06">
+      <References IsContainment="True" ReferenceType="#//SystemIndependent/Service" IsOrdered="True" IsUnique="True" UpperBound="-1" Name="Services" />
+      <References ReferenceType="#//SystemIndependent/Interface" IsOrdered="True" IsUnique="True" LowerBound="1" UpperBound="-1" Name="ProvidedInterfaces" />
+      <References ReferenceType="#//SystemIndependent/Interface" IsOrdered="True" IsUnique="True" UpperBound="-1" Name="RequiredInterfaces" />
+    </Types>
+    <Types xsi:type="nmeta:Class" BaseTypes="#//NamedElement" Name="Signature">
+      <References IsContainment="True" ReferenceType="#//SystemIndependent/Parameter" IsOrdered="True" IsUnique="True" UpperBound="-1" Name="Parameter" />
+      <Attributes IsOrdered="True" IsUnique="True" Type="#//SystemIndependent/Type" Name="ReturnType" />
+    </Types>
+    <Types xsi:type="nmeta:Class" BaseTypes="#//NamedElement" Name="Parameter">
+      <Attributes IsOrdered="True" IsUnique="True" LowerBound="1" Type="#//SystemIndependent/Type" Name="Type" />
+    </Types>
+    <Types xsi:type="nmeta:Enumeration" Name="Type">
+      <Literals Value="0" Name="NotSpecified" />
+      <Literals Value="1" Name="EBoolean" />
+      <Literals Value="2" Name="EChar" />
+      <Literals Value="3" Name="EDate" />
+      <Literals Value="4" Name="EDouble" />
+      <Literals Value="5" Name="EFloat" />
+      <Literals Value="6" Name="EInt" />
+      <Literals Value="7" Name="EList" />
+      <Literals Value="8" Name="ELong" />
+      <Literals Value="9" Name="EMap" />
+      <Literals Value="10" Name="EString" />
+      <Literals Value="11" Name="EComplex" />
+    </Types>
+    <Types xsi:type="nmeta:Class" Name="Service">
+      <References ReferenceType="#//SystemIndependent/Signature" IsOrdered="True" IsUnique="True" LowerBound="1" Name="Signature" />
+    </Types>
+  </ChildNamespaces>
+  <Types xsi:type="nmeta:Class" IsAbstract="True" IdentifierScope="Local" Identifier="#//NamedElement/name" Name="NamedElement">
+    <Attributes IsOrdered="True" IsUnique="True" LowerBound="1" Type="http://nmf.codeplex.com/nmeta/#//String" Name="name" />
+  </Types>
+  <Types xsi:type="nmeta:Class" Name="Root_MM06">
+    <References IsContainment="True" ReferenceType="#//Assembly/System_MM06" IsOrdered="True" IsUnique="True" Name="System" />
+    <References IsContainment="True" ReferenceType="#//SystemIndependent/Repository_MM06" IsOrdered="True" IsUnique="True" Name="Repository" />
+    <References IsContainment="True" ReferenceType="#//Deployment/Allocation" IsOrdered="True" IsUnique="True" Name="Allocation" />
+    <References IsContainment="True" ReferenceType="#//Deployment/Environment_MM06" IsOrdered="True" IsUnique="True" Name="Environment" />
+  </Types>
+</nmeta:Namespace>

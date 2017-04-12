@@ -1,0 +1,105 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<nmeta:Namespace xmi:version="2.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" Uri="http://sdq.ipd.uka.de/StochasticExpressions/1.0" Prefix="stoex" Name="stoex" xmlns:xmi="http://www.omg.org/XMI" xmlns:nmeta="http://nmf.codeplex.com/nmeta/">
+  <Types xsi:type="nmeta:Class" BaseTypes="//AbstractNamedReference/" Name="VariableReference" />
+  <Types xsi:type="nmeta:Class" IsAbstract="True" Name="AbstractNamedReference">
+    <Attributes LowerBound="1" Type="http://nmf.codeplex.com/nmeta/#//String/" Name="referenceName" />
+  </Types>
+  <Types xsi:type="nmeta:Class" BaseTypes="//AbstractNamedReference/" Name="NamespaceReference">
+    <References IsContainment="True" ReferenceType="//AbstractNamedReference/" LowerBound="1" Name="innerReference_NamespaceReference" />
+  </Types>
+  <Types xsi:type="nmeta:Enumeration" Name="TermOperations">
+    <Literals Name="ADD" />
+    <Literals Value="1" Name="SUB" />
+  </Types>
+  <Types xsi:type="nmeta:Enumeration" Name="ProductOperations">
+    <Literals Name="MULT" />
+    <Literals Value="1" Name="DIV" />
+    <Literals Value="2" Name="MOD" />
+  </Types>
+  <Types xsi:type="nmeta:Enumeration" Name="CompareOperations">
+    <Literals Name="GREATER" />
+    <Literals Value="1" Name="EQUALS" />
+    <Literals Value="2" Name="LESS" />
+    <Literals Value="3" Name="NOTEQUAL" />
+    <Literals Value="4" Name="LESSEQUAL" />
+    <Literals Value="5" Name="GREATEREQUAL" />
+  </Types>
+  <Types xsi:type="nmeta:Class" BaseTypes="//Atom/" Name="Variable">
+    <References ReferenceType="//AbstractNamedReference/" LowerBound="1" Name="id_Variable" />
+  </Types>
+  <Types xsi:type="nmeta:Class" IsAbstract="True" BaseTypes="//Unary/" Name="Atom" />
+  <Types xsi:type="nmeta:Class" IsAbstract="True" BaseTypes="//Power/" Name="Unary" />
+  <Types xsi:type="nmeta:Class" IsAbstract="True" BaseTypes="//Product/" Name="Power" />
+  <Types xsi:type="nmeta:Class" IsAbstract="True" BaseTypes="//Term/" Name="Product" />
+  <Types xsi:type="nmeta:Class" IsAbstract="True" BaseTypes="//Comparison/" Name="Term" />
+  <Types xsi:type="nmeta:Class" IsAbstract="True" BaseTypes="//BooleanExpression/" Name="Comparison" />
+  <Types xsi:type="nmeta:Class" IsAbstract="True" BaseTypes="//IfElse/" Name="BooleanExpression" />
+  <Types xsi:type="nmeta:Class" IsAbstract="True" BaseTypes="//Expression/" Name="IfElse" />
+  <Types xsi:type="nmeta:Class" IsAbstract="True" Name="Expression" />
+  <Types xsi:type="nmeta:Class" BaseTypes="//Term/" Name="TermExpression">
+    <References IsContainment="True" ReferenceType="//Term/" LowerBound="1" Name="left" />
+    <References IsContainment="True" ReferenceType="//Product/" LowerBound="1" Name="right" />
+    <Attributes LowerBound="1" Type="//TermOperations/" Name="operation" />
+  </Types>
+  <Types xsi:type="nmeta:Class" BaseTypes="//Product/" Name="ProductExpression">
+    <References IsContainment="True" ReferenceType="//Product/" LowerBound="1" Name="left" />
+    <References IsContainment="True" ReferenceType="//Power/" LowerBound="1" Name="right" />
+    <Attributes LowerBound="1" Type="//ProductOperations/" Name="operation" />
+  </Types>
+  <Types xsi:type="nmeta:Class" BaseTypes="//Atom/" Name="ProbabilityFunctionLiteral">
+    <References IsContainment="True" ReferenceType="ProbabilityFunction.nmeta#//ProbabilityFunction" LowerBound="1" Name="function_ProbabilityFunctionLiteral" />
+  </Types>
+  <Types xsi:type="nmeta:Class" BaseTypes="//Atom/" Name="Parenthesis">
+    <References IsContainment="True" ReferenceType="//Expression/" LowerBound="1" Name="innerExpression" />
+  </Types>
+  <Types xsi:type="nmeta:Class" IsAbstract="True" BaseTypes="Units.nmeta#//UnitCarryingElement //Atom/" Name="NumericLiteral" />
+  <Types xsi:type="nmeta:Class" BaseTypes="//NumericLiteral/" Name="IntLiteral">
+    <Attributes LowerBound="1" Type="http://nmf.codeplex.com/nmeta/#//Integer/" Name="value" />
+  </Types>
+  <Types xsi:type="nmeta:Class" BaseTypes="//NumericLiteral/" Name="DoubleLiteral">
+    <Attributes LowerBound="1" Type="http://nmf.codeplex.com/nmeta/#//Double/" Name="value" />
+  </Types>
+  <Types xsi:type="nmeta:Class" BaseTypes="//Comparison/" Name="CompareExpression">
+    <References IsContainment="True" ReferenceType="//Term/" LowerBound="1" Name="left" />
+    <References IsContainment="True" ReferenceType="//Term/" LowerBound="1" Name="right" />
+    <Attributes LowerBound="1" Type="//CompareOperations/" Name="operation" />
+  </Types>
+  <Types xsi:type="nmeta:Class" BaseTypes="//Atom/" Name="BoolLiteral">
+    <Attributes LowerBound="1" Type="http://nmf.codeplex.com/nmeta/#//Boolean/" Name="value" />
+  </Types>
+  <Types xsi:type="nmeta:Class" BaseTypes="//Atom/" Name="StringLiteral">
+    <Attributes LowerBound="1" Type="http://nmf.codeplex.com/nmeta/#//String/" Name="value" />
+  </Types>
+  <Types xsi:type="nmeta:Class" BaseTypes="//Power/" Name="PowerExpression">
+    <References IsContainment="True" ReferenceType="//Power/" LowerBound="1" Name="base" />
+    <References IsContainment="True" ReferenceType="//Unary/" LowerBound="1" Name="exponent" />
+  </Types>
+  <Types xsi:type="nmeta:Class" BaseTypes="//BooleanExpression/" Name="BooleanOperatorExpression">
+    <References IsContainment="True" ReferenceType="//BooleanExpression/" LowerBound="1" Name="left" />
+    <References IsContainment="True" ReferenceType="//BooleanExpression/" LowerBound="1" Name="right" />
+    <Attributes LowerBound="1" Type="//BooleanOperations/" Name="operation" />
+  </Types>
+  <Types xsi:type="nmeta:Enumeration" Name="BooleanOperations">
+    <Literals Name="AND" />
+    <Literals Value="1" Name="OR" />
+    <Literals Value="2" Name="XOR" />
+  </Types>
+  <Types xsi:type="nmeta:Class" BaseTypes="//Unary/" Name="NotExpression">
+    <References IsContainment="True" ReferenceType="//Unary/" LowerBound="1" Name="inner" />
+  </Types>
+  <Types xsi:type="nmeta:Class" BaseTypes="//Unary/" Name="NegativeExpression">
+    <References IsContainment="True" ReferenceType="//Unary/" LowerBound="1" Name="inner" />
+  </Types>
+  <Types xsi:type="nmeta:Class" BaseTypes="//Atom/" Name="FunctionLiteral">
+    <References IsContainment="True" ReferenceType="//Expression/" UpperBound="-1" Name="parameters_FunctionLiteral" />
+    <Attributes LowerBound="1" Type="http://nmf.codeplex.com/nmeta/#//String/" Name="id" />
+  </Types>
+  <Types xsi:type="nmeta:Class" BaseTypes="//IfElse/" Name="IfElseExpression">
+    <References IsContainment="True" ReferenceType="//BooleanExpression/" LowerBound="1" Name="ifExpression" />
+    <References IsContainment="True" ReferenceType="//BooleanExpression/" LowerBound="1" Name="elseExpression" />
+    <References IsContainment="True" ReferenceType="//BooleanExpression/" LowerBound="1" Name="conditionExpression" />
+  </Types>
+  <Types xsi:type="nmeta:Class" Name="RandomVariable">
+    <Attributes LowerBound="1" Type="http://nmf.codeplex.com/nmeta/#//String/" Name="specification" />
+  </Types>
+</nmeta:Namespace>

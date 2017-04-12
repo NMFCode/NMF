@@ -181,6 +181,7 @@ namespace NMF.Models
                     if (i >= current.Segments.Length || target.Segments[i] != current.Segments[i])
                     {
                         var relative = Path.Combine(Enumerable.Repeat("..", current.Segments.Length - i - 1).Concat(target.Segments.Skip(i)).ToArray());
+                        if (Path.IsPathRooted(relative)) return target;
                         return new Uri(relative + target.Fragment, UriKind.Relative);
                     }
                 }

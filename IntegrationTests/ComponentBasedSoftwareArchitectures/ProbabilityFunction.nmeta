@@ -1,0 +1,44 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<nmeta:Namespace xmi:version="2.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" Uri="http://sdq.ipd.uka.de/ProbFunction/1.0" Prefix="probfunction" Name="probfunction" xmlns:xmi="http://www.omg.org/XMI" xmlns:nmeta="http://nmf.codeplex.com/nmeta/">
+  <Types xsi:type="nmeta:Class" BaseTypes="//ProbabilityDensityFunction/" Name="BoxedPDF">
+    <References IsContainment="True" ReferenceType="//ContinuousSample/" UpperBound="-1" Name="samples" />
+  </Types>
+  <Types xsi:type="nmeta:Class" IsAbstract="True" BaseTypes="//ProbabilityFunction/" Name="ProbabilityDensityFunction" />
+  <Types xsi:type="nmeta:Class" IsAbstract="True" BaseTypes="Units.nmeta#//UnitCarryingElement" Name="ProbabilityFunction" />
+  <Types xsi:type="nmeta:Class" Name="ContinuousSample">
+    <Attributes Type="http://nmf.codeplex.com/nmeta/#//Double/" Name="value" />
+    <Attributes Type="http://nmf.codeplex.com/nmeta/#//Double/" Name="probability" />
+  </Types>
+  <Types xsi:type="nmeta:Class" BaseTypes="//ProbabilityFunction/" Name="ProbabilityMassFunction">
+    <References IsContainment="True" ReferenceType="//Sample/" IsOrdered="True" UpperBound="-1" Name="samples" />
+    <Attributes LowerBound="1" Type="http://nmf.codeplex.com/nmeta/#//Boolean/" Name="orderedDomain" />
+  </Types>
+  <Types xsi:type="nmeta:Class" Name="Sample">
+    <References LowerBound="1" Name="value" />
+    <Attributes Type="http://nmf.codeplex.com/nmeta/#//Double/" Name="probability" />
+  </Types>
+  <Types xsi:type="nmeta:Class" BaseTypes="//ProbabilityDensityFunction/" Name="SamplePDF">
+    <References IsContainment="True" ReferenceType="//Complex/" UpperBound="-1" Name="values" />
+    <Attributes Type="http://nmf.codeplex.com/nmeta/#//Double/" Name="distance" />
+  </Types>
+  <Types xsi:type="nmeta:Class" Name="Complex">
+    <Attributes LowerBound="1" Type="http://nmf.codeplex.com/nmeta/#//Double/" Name="real" />
+    <Attributes LowerBound="1" Type="http://nmf.codeplex.com/nmeta/#//Double/" Name="imaginary" />
+  </Types>
+  <Types xsi:type="nmeta:Class" IsAbstract="True" BaseTypes="//ProbabilityDensityFunction/" Name="ContinuousPDF" />
+  <Types xsi:type="nmeta:Class" BaseTypes="//ContinuousPDF/" Name="ExponentialDistribution">
+    <Attributes LowerBound="1" Type="http://nmf.codeplex.com/nmeta/#//Double/" Name="rate" />
+  </Types>
+  <Types xsi:type="nmeta:Class" BaseTypes="//ContinuousPDF/" Name="NormalDistribution">
+    <Attributes LowerBound="1" Type="http://nmf.codeplex.com/nmeta/#//Double/" Name="mu" />
+    <Attributes LowerBound="1" Type="http://nmf.codeplex.com/nmeta/#//Double/" Name="sigma" />
+  </Types>
+  <Types xsi:type="nmeta:Class" BaseTypes="//ContinuousPDF/" Name="LognormalDistribution">
+    <Attributes LowerBound="1" Type="http://nmf.codeplex.com/nmeta/#//Double/" Name="mu" />
+    <Attributes LowerBound="1" Type="http://nmf.codeplex.com/nmeta/#//Double/" Name="sigma" />
+  </Types>
+  <Types xsi:type="nmeta:Class" BaseTypes="//ContinuousPDF/" Name="GammaDistribution">
+    <Attributes LowerBound="1" Type="http://nmf.codeplex.com/nmeta/#//Double/" Name="alpha" />
+    <Attributes LowerBound="1" Type="http://nmf.codeplex.com/nmeta/#//Double/" Name="theta" />
+  </Types>
+</nmeta:Namespace>

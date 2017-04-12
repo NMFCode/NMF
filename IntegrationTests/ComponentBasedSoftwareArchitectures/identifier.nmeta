@@ -1,0 +1,10 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<nmeta:Namespace xmi:version="2.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" Uri="http://sdq.ipd.uka.de/Identifier/1.0" Prefix="identifier" Name="identifier" xmlns:xmi="http://www.omg.org/XMI" xmlns:nmeta="http://nmf.codeplex.com/nmeta/">
+  <Types xsi:type="nmeta:Class" IsAbstract="True" Identifier="//Identifier//id/" IdentifierScope="Global" Name="Identifier">
+    <Operations IsOrdered="True" Type="http://nmf.codeplex.com/nmeta/#//Boolean/" Name="idHasToBeUnique">
+      <Parameters IsOrdered="True" Type="http://nmf.codeplex.com/nmeta/#//Object/" Name="diagnostics" />
+      <Parameters IsOrdered="True" Name="context" />
+    </Operations>
+    <Attributes LowerBound="1" Type="http://nmf.codeplex.com/nmeta/#//String/" Name="id" />
+  </Types>
+</nmeta:Namespace>

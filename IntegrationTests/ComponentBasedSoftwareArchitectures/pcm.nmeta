@@ -1,0 +1,941 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<nmeta:Namespace xmi:version="2.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" Uri="http://sdq.ipd.uka.de/PalladioComponentModel/5.0" Prefix="pcm" Name="pcm" xmlns:xmi="http://www.omg.org/XMI" xmlns:nmeta="http://nmf.codeplex.com/nmeta/">
+  <ChildNamespaces Uri="http://sdq.ipd.uka.de/PalladioComponentModel/Core/5.0" Prefix="core" Name="core">
+    <ChildNamespaces Uri="http://sdq.ipd.uka.de/PalladioComponentModel/Core/Entity/5.0" Prefix="entity" Name="entity">
+      <Types xsi:type="nmeta:Class" BaseTypes="//repository//Role/" Name="ResourceProvidedRole">
+        <References Opposite="//core//entity//ResourceInterfaceProvidingEntity//resourceProvidedRoles__ResourceInterfaceProvidingEntity/" ReferenceType="//core//entity//ResourceInterfaceProvidingEntity/" LowerBound="1" Name="resourceInterfaceProvidingEntity__ResourceProvidedRole" />
+        <References ReferenceType="//resourcetype//ResourceInterface/" LowerBound="1" Name="providedResourceInterface__ResourceProvidedRole" />
+      </Types>
+      <Types xsi:type="nmeta:Class" IsAbstract="True" BaseTypes="//core//entity//InterfaceProvidingEntity/ //core//entity//InterfaceRequiringEntity/" Name="InterfaceProvidingRequiringEntity" />
+      <Types xsi:type="nmeta:Class" IsAbstract="True" BaseTypes="//core//entity//Entity/" Name="InterfaceProvidingEntity">
+        <References IsContainment="True" IsOrdered="True" Opposite="//repository//ProvidedRole//providingEntity_ProvidedRole/" ReferenceType="//repository//ProvidedRole/" UpperBound="-1" Name="providedRoles_InterfaceProvidingEntity" />
+      </Types>
+      <Types xsi:type="nmeta:Class" IsAbstract="True" BaseTypes="//core//entity//Entity/ //core//entity//ResourceInterfaceRequiringEntity/" Name="InterfaceRequiringEntity">
+        <References IsContainment="True" IsOrdered="True" Opposite="//repository//RequiredRole//requiringEntity_RequiredRole/" ReferenceType="//repository//RequiredRole/" UpperBound="-1" Name="requiredRoles_InterfaceRequiringEntity" />
+      </Types>
+      <Types xsi:type="nmeta:Class" BaseTypes="//core//entity//Entity/" Name="ResourceInterfaceRequiringEntity">
+        <References IsContainment="True" IsOrdered="True" Opposite="//core//entity//ResourceRequiredRole//resourceInterfaceRequiringEntity__ResourceRequiredRole/" ReferenceType="//core//entity//ResourceRequiredRole/" UpperBound="-1" Name="resourceRequiredRoles__ResourceInterfaceRequiringEntity" />
+      </Types>
+      <Types xsi:type="nmeta:Class" BaseTypes="//repository//Role/" Name="ResourceRequiredRole">
+        <References ReferenceType="//resourcetype//ResourceInterface/" LowerBound="1" Name="requiredResourceInterface__ResourceRequiredRole" />
+        <References Opposite="//core//entity//ResourceInterfaceRequiringEntity//resourceRequiredRoles__ResourceInterfaceRequiringEntity/" ReferenceType="//core//entity//ResourceInterfaceRequiringEntity/" LowerBound="1" Name="resourceInterfaceRequiringEntity__ResourceRequiredRole" />
+      </Types>
+      <Types xsi:type="nmeta:Class" BaseTypes="//core//entity//Entity/" Name="ResourceInterfaceProvidingEntity">
+        <References IsContainment="True" IsOrdered="True" Opposite="//core//entity//ResourceProvidedRole//resourceInterfaceProvidingEntity__ResourceProvidedRole/" ReferenceType="//core//entity//ResourceProvidedRole/" UpperBound="-1" Name="resourceProvidedRoles__ResourceInterfaceProvidingEntity" />
+      </Types>
+      <Types xsi:type="nmeta:Class" IsAbstract="True" BaseTypes="//core//composition//ComposedStructure/ //core//entity//InterfaceProvidingRequiringEntity/" Name="ComposedProvidingRequiringEntity">
+        <Operations IsOrdered="True" Type="http://nmf.codeplex.com/nmeta/#//Boolean/" Name="ProvidedRolesMustBeBound">
+          <Parameters IsOrdered="True" Type="http://nmf.codeplex.com/nmeta/#//Object/" Name="diagnostics" />
+          <Parameters IsOrdered="True" Name="context" />
+        </Operations>
+      </Types>
+      <Types xsi:type="nmeta:Class" IsAbstract="True" Name="NamedElement">
+        <Attributes DefaultValue="aName" LowerBound="1" Type="http://nmf.codeplex.com/nmeta/#//String/" Name="entityName" />
+      </Types>
+      <Types xsi:type="nmeta:Class" BaseTypes="//core//entity//ResourceInterfaceRequiringEntity/ //core//entity//ResourceInterfaceProvidingEntity/" Name="ResourceInterfaceProvidingRequiringEntity" />
+      <Types xsi:type="nmeta:Class" IsAbstract="True" BaseTypes="identifier.nmeta#//Identifier //core//entity//NamedElement/" Name="Entity" />
+    </ChildNamespaces>
+    <ChildNamespaces Uri="http://sdq.ipd.uka.de/PalladioComponentModel/Core/Composition/5.0" Prefix="composition" Name="composition">
+      <Types xsi:type="nmeta:Class" IsAbstract="True" BaseTypes="//core//composition//Connector/" Name="DelegationConnector" />
+      <Types xsi:type="nmeta:Class" IsAbstract="True" BaseTypes="//core//entity//Entity/" Name="Connector">
+        <References Opposite="//core//composition//ComposedStructure//connectors__ComposedStructure/" ReferenceType="//core//composition//ComposedStructure/" LowerBound="1" Name="parentStructure__Connector" />
+      </Types>
+      <Types xsi:type="nmeta:Class" IsAbstract="True" BaseTypes="//core//entity//Entity/" Name="ComposedStructure">
+        <References IsContainment="True" IsOrdered="True" Opposite="//core//composition//AssemblyContext//parentStructure__AssemblyContext/" ReferenceType="//core//composition//AssemblyContext/" UpperBound="-1" Name="assemblyContexts__ComposedStructure" />
+        <References IsContainment="True" IsOrdered="True" Opposite="//core//composition//ResourceRequiredDelegationConnector//parentStructure_ResourceRequiredDelegationConnector/" ReferenceType="//core//composition//ResourceRequiredDelegationConnector/" UpperBound="-1" Name="resourceRequiredDelegationConnectors_ComposedStructure" />
+        <References IsContainment="True" IsOrdered="True" Opposite="//core//composition//EventChannel//parentStructure__EventChannel/" ReferenceType="//core//composition//EventChannel/" UpperBound="-1" Name="eventChannel__ComposedStructure" />
+        <References IsContainment="True" IsOrdered="True" Opposite="//core//composition//Connector//parentStructure__Connector/" ReferenceType="//core//composition//Connector/" UpperBound="-1" Name="connectors__ComposedStructure" />
+        <Operations IsOrdered="True" Type="http://nmf.codeplex.com/nmeta/#//Boolean/" Name="MultipleConnectorsConstraint">
+          <Parameters IsOrdered="True" Type="http://nmf.codeplex.com/nmeta/#//Object/" Name="diagnostics" />
+          <Parameters IsOrdered="True" Name="context" />
+        </Operations>
+        <Operations IsOrdered="True" Type="http://nmf.codeplex.com/nmeta/#//Boolean/" Name="MultipleConnectorsConstraintForAssemblyConnectors">
+          <Parameters IsOrdered="True" Type="http://nmf.codeplex.com/nmeta/#//Object/" Name="diagnostics" />
+          <Parameters IsOrdered="True" Name="context" />
+        </Operations>
+      </Types>
+      <Types xsi:type="nmeta:Class" Name="ResourceRequiredDelegationConnector">
+        <References ReferenceType="//core//entity//ResourceRequiredRole/" LowerBound="1" Name="innerResourceRequiredRole_ResourceRequiredDelegationConnector" />
+        <References ReferenceType="//core//entity//ResourceRequiredRole/" LowerBound="1" Name="outerResourceRequiredRole_ResourceRequiredDelegationConnector" />
+        <References Opposite="//core//composition//ComposedStructure//resourceRequiredDelegationConnectors_ComposedStructure/" ReferenceType="//core//composition//ComposedStructure/" LowerBound="1" Name="parentStructure_ResourceRequiredDelegationConnector" />
+      </Types>
+      <Types xsi:type="nmeta:Class" BaseTypes="//core//entity//Entity/" Name="EventChannel">
+        <References ReferenceType="//repository//EventGroup/" LowerBound="1" Name="eventGroup__EventChannel" />
+        <References Opposite="//core//composition//EventChannelSourceConnector//eventChannel__EventChannelSourceConnector/" ReferenceType="//core//composition//EventChannelSourceConnector/" UpperBound="-1" Name="eventChannelSourceConnector__EventChannel" />
+        <References Opposite="//core//composition//EventChannelSinkConnector//eventChannel__EventChannelSinkConnector/" ReferenceType="//core//composition//EventChannelSinkConnector/" UpperBound="-1" Name="eventChannelSinkConnector__EventChannel" />
+        <References Opposite="//core//composition//ComposedStructure//eventChannel__ComposedStructure/" ReferenceType="//core//composition//ComposedStructure/" LowerBound="1" Name="parentStructure__EventChannel" />
+      </Types>
+      <Types xsi:type="nmeta:Class" BaseTypes="//core//composition//Connector/" Name="EventChannelSourceConnector">
+        <References ReferenceType="//repository//SourceRole/" LowerBound="1" Name="sourceRole__EventChannelSourceRole" />
+        <References ReferenceType="//core//composition//AssemblyContext/" LowerBound="1" Name="assemblyContext__EventChannelSourceConnector" />
+        <References Opposite="//core//composition//EventChannel//eventChannelSourceConnector__EventChannel/" ReferenceType="//core//composition//EventChannel/" LowerBound="1" Name="eventChannel__EventChannelSourceConnector" />
+      </Types>
+      <Types xsi:type="nmeta:Class" BaseTypes="//core//composition//Connector/" Name="EventChannelSinkConnector">
+        <References ReferenceType="//repository//SinkRole/" LowerBound="1" Name="sinkRole__EventChannelSinkConnector" />
+        <References IsContainment="True" IsOrdered="True" Opposite="//core//PCMRandomVariable//eventChannelSinkConnector__FilterCondition/" ReferenceType="//core//PCMRandomVariable/" Name="filterCondition__EventChannelSinkConnector" />
+        <References ReferenceType="//core//composition//AssemblyContext/" LowerBound="1" Name="assemblyContext__EventChannelSinkConnector" />
+        <References Opposite="//core//composition//EventChannel//eventChannelSinkConnector__EventChannel/" ReferenceType="//core//composition//EventChannel/" LowerBound="1" Name="eventChannel__EventChannelSinkConnector" />
+      </Types>
+      <Types xsi:type="nmeta:Class" BaseTypes="//core//composition//DelegationConnector/" Name="ProvidedDelegationConnector">
+        <References ReferenceType="//repository//OperationProvidedRole/" LowerBound="1" Name="innerProvidedRole_ProvidedDelegationConnector" />
+        <References ReferenceType="//repository//OperationProvidedRole/" LowerBound="1" Name="outerProvidedRole_ProvidedDelegationConnector" />
+        <References ReferenceType="//core//composition//AssemblyContext/" LowerBound="1" Name="assemblyContext_ProvidedDelegationConnector" />
+        <Operations IsOrdered="True" Type="http://nmf.codeplex.com/nmeta/#//Boolean/" Name="ProvidedDelegationConnectorandtheconnectedComponentmustbepartofthesamecompositestructure">
+          <Parameters IsOrdered="True" Type="http://nmf.codeplex.com/nmeta/#//Object/" Name="diagnostics" />
+          <Parameters IsOrdered="True" Name="context" />
+        </Operations>
+        <Operations IsOrdered="True" Type="http://nmf.codeplex.com/nmeta/#//Boolean/" Name="ComponentOfAssemblyContextAndInnerRoleProvidingComponentNeedToBeTheSame">
+          <Parameters IsOrdered="True" Type="http://nmf.codeplex.com/nmeta/#//Object/" Name="diagnostics" />
+          <Parameters IsOrdered="True" Name="context" />
+        </Operations>
+      </Types>
+      <Types xsi:type="nmeta:Class" BaseTypes="//core//composition//DelegationConnector/" Name="RequiredDelegationConnector">
+        <References ReferenceType="//repository//OperationRequiredRole/" LowerBound="1" Name="innerRequiredRole_RequiredDelegationConnector" />
+        <References ReferenceType="//repository//OperationRequiredRole/" LowerBound="1" Name="outerRequiredRole_RequiredDelegationConnector" />
+        <References ReferenceType="//core//composition//AssemblyContext/" LowerBound="1" Name="assemblyContext_RequiredDelegationConnector" />
+        <Operations IsOrdered="True" Type="http://nmf.codeplex.com/nmeta/#//Boolean/" Name="RequiredDelegationConnectorandtheconnectedComponentmustbepartofthesamecompositestructure">
+          <Parameters IsOrdered="True" Type="http://nmf.codeplex.com/nmeta/#//Object/" Name="diagnostics" />
+          <Parameters IsOrdered="True" Name="context" />
+        </Operations>
+        <Operations IsOrdered="True" Type="http://nmf.codeplex.com/nmeta/#//Boolean/" Name="ComponentOfAssemblyContextAndInnerRoleRequiringComponentNeedToBeTheSame">
+          <Parameters IsOrdered="True" Type="http://nmf.codeplex.com/nmeta/#//Object/" Name="diagnostics" />
+          <Parameters IsOrdered="True" Name="context" />
+        </Operations>
+        <Operations IsOrdered="True" Type="http://nmf.codeplex.com/nmeta/#//Boolean/" Name="RequiringEntityOfOuterRequiredRoleMustBeTheSameAsTheParentOfTheRequiredDelegationConnector">
+          <Parameters IsOrdered="True" Type="http://nmf.codeplex.com/nmeta/#//Object/" Name="diagnostics" />
+          <Parameters IsOrdered="True" Name="context" />
+        </Operations>
+      </Types>
+      <Types xsi:type="nmeta:Class" BaseTypes="//core//composition//Connector/" Name="AssemblyConnector">
+        <References ReferenceType="//core//composition//AssemblyContext/" LowerBound="1" Name="requiringAssemblyContext_AssemblyConnector" />
+        <References ReferenceType="//core//composition//AssemblyContext/" LowerBound="1" Name="providingAssemblyContext_AssemblyConnector" />
+        <References ReferenceType="//repository//OperationProvidedRole/" LowerBound="1" Name="providedRole_AssemblyConnector" />
+        <References ReferenceType="//repository//OperationRequiredRole/" LowerBound="1" Name="requiredRole_AssemblyConnector" />
+        <Operations IsOrdered="True" Type="http://nmf.codeplex.com/nmeta/#//Boolean/" Name="AssemblyConnectorsReferencedProvidedRolesAndChildContextMustMatch">
+          <Parameters IsOrdered="True" Type="http://nmf.codeplex.com/nmeta/#//Object/" Name="diagnostics" />
+          <Parameters IsOrdered="True" Name="context" />
+        </Operations>
+        <Operations IsOrdered="True" Type="http://nmf.codeplex.com/nmeta/#//Boolean/" Name="AssemblyConnectorsReferencedRequiredRoleAndChildContextMustMatch">
+          <Parameters IsOrdered="True" Type="http://nmf.codeplex.com/nmeta/#//Object/" Name="diagnostics" />
+          <Parameters IsOrdered="True" Name="context" />
+        </Operations>
+        <Operations IsOrdered="True" Type="http://nmf.codeplex.com/nmeta/#//Boolean/" Name="AssemblyConnectorsReferencedInterfacesMustMatch">
+          <Parameters IsOrdered="True" Type="http://nmf.codeplex.com/nmeta/#//Object/" Name="diagnostics" />
+          <Parameters IsOrdered="True" Name="context" />
+        </Operations>
+      </Types>
+      <Types xsi:type="nmeta:Class" BaseTypes="//core//composition//Connector/" Name="AssemblyEventConnector">
+        <References ReferenceType="//repository//SinkRole/" LowerBound="1" Name="sinkRole__AssemblyEventConnector" />
+        <References ReferenceType="//repository//SourceRole/" LowerBound="1" Name="sourceRole__AssemblyEventConnector" />
+        <References ReferenceType="//core//composition//AssemblyContext/" LowerBound="1" Name="sinkAssemblyContext__AssemblyEventConnector" />
+        <References ReferenceType="//core//composition//AssemblyContext/" LowerBound="1" Name="sourceAssemblyContext__AssemblyEventConnector" />
+        <References IsContainment="True" IsOrdered="True" Opposite="//core//PCMRandomVariable//assemblyEventConnector__FilterCondition/" ReferenceType="//core//PCMRandomVariable/" Name="filterCondition__AssemblyEventConnector" />
+      </Types>
+      <Types xsi:type="nmeta:Class" BaseTypes="//core//composition//DelegationConnector/" Name="SourceDelegationConnector">
+        <References ReferenceType="//repository//SourceRole/" LowerBound="1" Name="innerSourceRole__SourceRole" />
+        <References ReferenceType="//repository//SourceRole/" LowerBound="1" Name="outerSourceRole__SourceRole" />
+        <References ReferenceType="//core//composition//AssemblyContext/" LowerBound="1" Name="assemblyContext__SourceDelegationConnector" />
+      </Types>
+      <Types xsi:type="nmeta:Class" BaseTypes="//core//composition//DelegationConnector/" Name="SinkDelegationConnector">
+        <References ReferenceType="//core//composition//AssemblyContext/" LowerBound="1" Name="assemblyContext__SinkDelegationConnector" />
+        <References ReferenceType="//repository//SinkRole/" LowerBound="1" Name="innerSinkRole__SinkRole" />
+        <References ReferenceType="//repository//SinkRole/" LowerBound="1" Name="outerSinkRole__SinkRole" />
+      </Types>
+      <Types xsi:type="nmeta:Class" BaseTypes="//core//composition//Connector/" Name="AssemblyInfrastructureConnector">
+        <References ReferenceType="//repository//InfrastructureProvidedRole/" LowerBound="1" Name="providedRole__AssemblyInfrastructureConnector" />
+        <References ReferenceType="//repository//InfrastructureRequiredRole/" LowerBound="1" Name="requiredRole__AssemblyInfrastructureConnector" />
+        <References ReferenceType="//core//composition//AssemblyContext/" LowerBound="1" Name="providingAssemblyContext__AssemblyInfrastructureConnector" />
+        <References ReferenceType="//core//composition//AssemblyContext/" Name="requiringAssemblyContext__AssemblyInfrastructureConnector" />
+      </Types>
+      <Types xsi:type="nmeta:Class" BaseTypes="//core//composition//DelegationConnector/" Name="ProvidedInfrastructureDelegationConnector">
+        <References ReferenceType="//repository//InfrastructureProvidedRole/" LowerBound="1" Name="innerProvidedRole__ProvidedInfrastructureDelegationConnector" />
+        <References ReferenceType="//repository//InfrastructureProvidedRole/" LowerBound="1" Name="outerProvidedRole__ProvidedInfrastructureDelegationConnector" />
+        <References ReferenceType="//core//composition//AssemblyContext/" LowerBound="1" Name="assemblyContext__ProvidedInfrastructureDelegationConnector" />
+      </Types>
+      <Types xsi:type="nmeta:Class" BaseTypes="//core//composition//DelegationConnector/" Name="RequiredInfrastructureDelegationConnector">
+        <References ReferenceType="//repository//InfrastructureRequiredRole/" LowerBound="1" Name="innerRequiredRole__RequiredInfrastructureDelegationConnector" />
+        <References ReferenceType="//repository//InfrastructureRequiredRole/" LowerBound="1" Name="outerRequiredRole__RequiredInfrastructureDelegationConnector" />
+        <References ReferenceType="//core//composition//AssemblyContext/" LowerBound="1" Name="assemblyContext__RequiredInfrastructureDelegationConnector" />
+      </Types>
+      <Types xsi:type="nmeta:Class" BaseTypes="//core//composition//DelegationConnector/" Name="RequiredResourceDelegationConnector">
+        <References ReferenceType="//core//composition//AssemblyContext/" LowerBound="1" Name="assemblyContext__RequiredResourceDelegationConnector" />
+        <References ReferenceType="//core//entity//ResourceRequiredRole/" LowerBound="1" Name="innerRequiredRole__RequiredResourceDelegationConnector" />
+        <References ReferenceType="//core//entity//ResourceRequiredRole/" LowerBound="1" Name="outerRequiredRole__RequiredResourceDelegationConnector" />
+      </Types>
+      <Types xsi:type="nmeta:Class" BaseTypes="//core//entity//Entity/" Name="AssemblyContext">
+        <References Opposite="//core//composition//ComposedStructure//assemblyContexts__ComposedStructure/" ReferenceType="//core//composition//ComposedStructure/" LowerBound="1" Name="parentStructure__AssemblyContext" />
+        <References ReferenceType="//repository//RepositoryComponent/" LowerBound="1" Name="encapsulatedComponent__AssemblyContext" />
+        <References IsContainment="True" IsOrdered="True" Opposite="//parameter//VariableUsage//assemblyContext__VariableUsage/" ReferenceType="//parameter//VariableUsage/" UpperBound="-1" Name="configParameterUsages__AssemblyContext" />
+      </Types>
+    </ChildNamespaces>
+    <Types xsi:type="nmeta:Class" BaseTypes="stoex.nmeta#//RandomVariable" Name="PCMRandomVariable">
+      <References Opposite="//usagemodel//ClosedWorkload//thinkTime_ClosedWorkload/" ReferenceType="//usagemodel//ClosedWorkload/" Name="closedWorkload_PCMRandomVariable" />
+      <References Opposite="//repository//PassiveResource//capacity_PassiveResource/" ReferenceType="//repository//PassiveResource/" Name="passiveResource_capacity_PCMRandomVariable" />
+      <References Opposite="//parameter//VariableCharacterisation//specification_VariableCharacterisation/" ReferenceType="//parameter//VariableCharacterisation/" Name="variableCharacterisation_Specification" />
+      <References Opposite="//seff//seff_performance//InfrastructureCall//numberOfCalls__InfrastructureCall/" ReferenceType="//seff//seff_performance//InfrastructureCall/" Name="infrastructureCall__PCMRandomVariable" />
+      <References Opposite="//seff//seff_performance//ResourceCall//numberOfCalls__ResourceCall/" ReferenceType="//seff//seff_performance//ResourceCall/" Name="resourceCall__PCMRandomVariable" />
+      <References Opposite="//seff//seff_performance//ParametricResourceDemand//specification_ParametericResourceDemand/" ReferenceType="//seff//seff_performance//ParametricResourceDemand/" Name="parametricResourceDemand_PCMRandomVariable" />
+      <References Opposite="//seff//LoopAction//iterationCount_LoopAction/" ReferenceType="//seff//LoopAction/" Name="loopAction_PCMRandomVariable" />
+      <References Opposite="//seff//GuardedBranchTransition//branchCondition_GuardedBranchTransition/" ReferenceType="//seff//GuardedBranchTransition/" Name="guardedBranchTransition_PCMRandomVariable" />
+      <References Opposite="//qosannotations//qos_performance//SpecifiedExecutionTime//specification_SpecifiedExecutionTime/" ReferenceType="//qosannotations//qos_performance//SpecifiedExecutionTime/" Name="specifiedExecutionTime_PCMRandomVariable" />
+      <References Opposite="//core//composition//EventChannelSinkConnector//filterCondition__EventChannelSinkConnector/" ReferenceType="//core//composition//EventChannelSinkConnector/" Name="eventChannelSinkConnector__FilterCondition" />
+      <References Opposite="//core//composition//AssemblyEventConnector//filterCondition__AssemblyEventConnector/" ReferenceType="//core//composition//AssemblyEventConnector/" Name="assemblyEventConnector__FilterCondition" />
+      <References Opposite="//usagemodel//Loop//loopIteration_Loop/" ReferenceType="//usagemodel//Loop/" Name="loop_LoopIteration" />
+      <References Opposite="//usagemodel//OpenWorkload//interArrivalTime_OpenWorkload/" ReferenceType="//usagemodel//OpenWorkload/" Name="openWorkload_PCMRandomVariable" />
+      <References Opposite="//usagemodel//Delay//timeSpecification_Delay/" ReferenceType="//usagemodel//Delay/" Name="delay_TimeSpecification" />
+      <References Opposite="//resourceenvironment//CommunicationLinkResourceSpecification//throughput_CommunicationLinkResourceSpecification/" ReferenceType="//resourceenvironment//CommunicationLinkResourceSpecification/" Name="communicationLinkResourceSpecifcation_throughput_PCMRandomVariable" />
+      <References Opposite="//resourceenvironment//ProcessingResourceSpecification//processingRate_ProcessingResourceSpecification/" ReferenceType="//resourceenvironment//ProcessingResourceSpecification/" Name="processingResourceSpecification_processingRate_PCMRandomVariable" />
+      <References Opposite="//resourceenvironment//CommunicationLinkResourceSpecification//latency_CommunicationLinkResourceSpecification/" ReferenceType="//resourceenvironment//CommunicationLinkResourceSpecification/" Name="communicationLinkResourceSpecification_latency_PCMRandomVariable" />
+      <Operations IsOrdered="True" Type="http://nmf.codeplex.com/nmeta/#//Boolean/" Name="SpecificationMustNotBeNULL">
+        <Parameters IsOrdered="True" Type="http://nmf.codeplex.com/nmeta/#//Object/" Name="diagnostics" />
+        <Parameters IsOrdered="True" Name="context" />
+      </Operations>
+    </Types>
+  </ChildNamespaces>
+  <ChildNamespaces Uri="http://sdq.ipd.uka.de/PalladioComponentModel/UsageModel/5.0" Prefix="usagemodel" Name="usagemodel">
+    <Types xsi:type="nmeta:Class" IsAbstract="True" Name="Workload">
+      <References Opposite="//usagemodel//UsageScenario//workload_UsageScenario/" ReferenceType="//usagemodel//UsageScenario/" LowerBound="1" Name="usageScenario_Workload" />
+    </Types>
+    <Types xsi:type="nmeta:Class" BaseTypes="//core//entity//Entity/" Name="UsageScenario">
+      <References Opposite="//usagemodel//UsageModel//usageScenario_UsageModel/" ReferenceType="//usagemodel//UsageModel/" LowerBound="1" Name="usageModel_UsageScenario" />
+      <References IsContainment="True" IsOrdered="True" Opposite="//usagemodel//ScenarioBehaviour//usageScenario_SenarioBehaviour/" ReferenceType="//usagemodel//ScenarioBehaviour/" LowerBound="1" Name="scenarioBehaviour_UsageScenario" />
+      <References IsContainment="True" IsOrdered="True" Opposite="//usagemodel//Workload//usageScenario_Workload/" ReferenceType="//usagemodel//Workload/" LowerBound="1" Name="workload_UsageScenario" />
+    </Types>
+    <Types xsi:type="nmeta:Class" Name="UserData">
+      <References ReferenceType="//core//composition//AssemblyContext/" LowerBound="1" Name="assemblyContext_userData" />
+      <References Opposite="//usagemodel//UsageModel//userData_UsageModel/" ReferenceType="//usagemodel//UsageModel/" LowerBound="1" Name="usageModel_UserData" />
+      <References IsContainment="True" IsOrdered="True" Opposite="//parameter//VariableUsage//userData_VariableUsage/" ReferenceType="//parameter//VariableUsage/" UpperBound="-1" Name="userDataParameterUsages_UserData" />
+    </Types>
+    <Types xsi:type="nmeta:Class" Name="UsageModel">
+      <References IsContainment="True" IsOrdered="True" Opposite="//usagemodel//UsageScenario//usageModel_UsageScenario/" ReferenceType="//usagemodel//UsageScenario/" UpperBound="-1" Name="usageScenario_UsageModel" />
+      <References IsContainment="True" IsOrdered="True" Opposite="//usagemodel//UserData//usageModel_UserData/" ReferenceType="//usagemodel//UserData/" UpperBound="-1" Name="userData_UsageModel" />
+    </Types>
+    <Types xsi:type="nmeta:Class" BaseTypes="//usagemodel//AbstractUserAction/" Name="EntryLevelSystemCall">
+      <References ReferenceType="//repository//OperationProvidedRole/" LowerBound="1" Name="providedRole_EntryLevelSystemCall" />
+      <References ReferenceType="//repository//OperationSignature/" LowerBound="1" Name="operationSignature__EntryLevelSystemCall" />
+      <References IsContainment="True" IsOrdered="True" Opposite="//parameter//VariableUsage//entryLevelSystemCall_OutputParameterUsage/" ReferenceType="//parameter//VariableUsage/" UpperBound="-1" Name="outputParameterUsages_EntryLevelSystemCall" />
+      <References IsContainment="True" IsOrdered="True" Opposite="//parameter//VariableUsage//entryLevelSystemCall_InputParameterUsage/" ReferenceType="//parameter//VariableUsage/" UpperBound="-1" Name="inputParameterUsages_EntryLevelSystemCall" />
+      <Operations IsOrdered="True" Type="http://nmf.codeplex.com/nmeta/#//Boolean/" Name="EntryLevelSystemCallMustReferenceProvidedRoleOfASystem">
+        <Parameters IsOrdered="True" Type="http://nmf.codeplex.com/nmeta/#//Object/" Name="diagnostics" />
+        <Parameters IsOrdered="True" Name="context" />
+      </Operations>
+      <Operations IsOrdered="True" Type="http://nmf.codeplex.com/nmeta/#//Boolean/" Name="EntryLevelSystemCallSignatureMustMatchItsProvidedRole">
+        <Parameters IsOrdered="True" Type="http://nmf.codeplex.com/nmeta/#//Object/" Name="diagnostics" />
+        <Parameters IsOrdered="True" Name="context" />
+      </Operations>
+      <Attributes IsOrdered="True" Type="http://nmf.codeplex.com/nmeta/#//Integer/" Name="priority" />
+    </Types>
+    <Types xsi:type="nmeta:Class" IsAbstract="True" BaseTypes="//core//entity//Entity/" Name="AbstractUserAction">
+      <References Opposite="//usagemodel//AbstractUserAction//predecessor/" ReferenceType="//usagemodel//AbstractUserAction/" Name="successor" />
+      <References Opposite="//usagemodel//AbstractUserAction//successor/" ReferenceType="//usagemodel//AbstractUserAction/" Name="predecessor" />
+      <References Opposite="//usagemodel//ScenarioBehaviour//actions_ScenarioBehaviour/" ReferenceType="//usagemodel//ScenarioBehaviour/" LowerBound="1" Name="scenarioBehaviour_AbstractUserAction" />
+    </Types>
+    <Types xsi:type="nmeta:Class" BaseTypes="//core//entity//Entity/" Name="ScenarioBehaviour">
+      <References Opposite="//usagemodel//UsageScenario//scenarioBehaviour_UsageScenario/" ReferenceType="//usagemodel//UsageScenario/" Name="usageScenario_SenarioBehaviour" />
+      <References Opposite="//usagemodel//BranchTransition//branchedBehaviour_BranchTransition/" ReferenceType="//usagemodel//BranchTransition/" Name="branchTransition_ScenarioBehaviour" />
+      <References Opposite="//usagemodel//Loop//bodyBehaviour_Loop/" ReferenceType="//usagemodel//Loop/" Name="loop_ScenarioBehaviour" />
+      <References IsContainment="True" IsOrdered="True" Opposite="//usagemodel//AbstractUserAction//scenarioBehaviour_AbstractUserAction/" ReferenceType="//usagemodel//AbstractUserAction/" UpperBound="-1" Name="actions_ScenarioBehaviour" />
+      <Operations IsOrdered="True" Type="http://nmf.codeplex.com/nmeta/#//Boolean/" Name="Exactlyonestart">
+        <Parameters IsOrdered="True" Type="http://nmf.codeplex.com/nmeta/#//Object/" Name="diagnostics" />
+        <Parameters IsOrdered="True" Name="context" />
+      </Operations>
+      <Operations IsOrdered="True" Type="http://nmf.codeplex.com/nmeta/#//Boolean/" Name="Exactlyonestop">
+        <Parameters IsOrdered="True" Type="http://nmf.codeplex.com/nmeta/#//Object/" Name="diagnostics" />
+        <Parameters IsOrdered="True" Name="context" />
+      </Operations>
+      <Operations IsOrdered="True" Type="http://nmf.codeplex.com/nmeta/#//Boolean/" Name="EachuseractionexceptStartandStopmusthaveapredecessorandsuccessor">
+        <Parameters IsOrdered="True" Type="http://nmf.codeplex.com/nmeta/#//Object/" Name="diagnostics" />
+        <Parameters IsOrdered="True" Name="context" />
+      </Operations>
+    </Types>
+    <Types xsi:type="nmeta:Class" Name="BranchTransition">
+      <References Opposite="//usagemodel//Branch//branchTransitions_Branch/" ReferenceType="//usagemodel//Branch/" LowerBound="1" Name="branch_BranchTransition" />
+      <References IsContainment="True" IsOrdered="True" Opposite="//usagemodel//ScenarioBehaviour//branchTransition_ScenarioBehaviour/" ReferenceType="//usagemodel//ScenarioBehaviour/" LowerBound="1" Name="branchedBehaviour_BranchTransition" />
+      <Attributes LowerBound="1" Type="http://nmf.codeplex.com/nmeta/#//Double/" Name="branchProbability" />
+    </Types>
+    <Types xsi:type="nmeta:Class" BaseTypes="//usagemodel//AbstractUserAction/" Name="Branch">
+      <References IsContainment="True" IsOrdered="True" Opposite="//usagemodel//BranchTransition//branch_BranchTransition/" ReferenceType="//usagemodel//BranchTransition/" UpperBound="-1" Name="branchTransitions_Branch" />
+      <Operations IsOrdered="True" Type="http://nmf.codeplex.com/nmeta/#//Boolean/" Name="AllBranchProbabilitiesMustSumUpTo1">
+        <Parameters IsOrdered="True" Type="http://nmf.codeplex.com/nmeta/#//Object/" Name="diagnostics" />
+        <Parameters IsOrdered="True" Name="context" />
+      </Operations>
+    </Types>
+    <Types xsi:type="nmeta:Class" BaseTypes="//usagemodel//AbstractUserAction/" Name="Loop">
+      <References IsContainment="True" IsOrdered="True" Opposite="//core//PCMRandomVariable//loop_LoopIteration/" ReferenceType="//core//PCMRandomVariable/" LowerBound="1" Name="loopIteration_Loop" />
+      <References IsContainment="True" IsOrdered="True" Opposite="//usagemodel//ScenarioBehaviour//loop_ScenarioBehaviour/" ReferenceType="//usagemodel//ScenarioBehaviour/" LowerBound="1" Name="bodyBehaviour_Loop" />
+    </Types>
+    <Types xsi:type="nmeta:Class" BaseTypes="//usagemodel//AbstractUserAction/" Name="Stop">
+      <Operations IsOrdered="True" Type="http://nmf.codeplex.com/nmeta/#//Boolean/" Name="StopHasNoSuccessor">
+        <Parameters IsOrdered="True" Type="http://nmf.codeplex.com/nmeta/#//Object/" Name="diagnostics" />
+        <Parameters IsOrdered="True" Name="context" />
+      </Operations>
+    </Types>
+    <Types xsi:type="nmeta:Class" BaseTypes="//usagemodel//AbstractUserAction/" Name="Start">
+      <Operations IsOrdered="True" Type="http://nmf.codeplex.com/nmeta/#//Boolean/" Name="StartHasNoPredecessor">
+        <Parameters IsOrdered="True" Type="http://nmf.codeplex.com/nmeta/#//Object/" Name="diagnostics" />
+        <Parameters IsOrdered="True" Name="context" />
+      </Operations>
+    </Types>
+    <Types xsi:type="nmeta:Class" BaseTypes="//usagemodel//Workload/" Name="OpenWorkload">
+      <References IsContainment="True" IsOrdered="True" Opposite="//core//PCMRandomVariable//openWorkload_PCMRandomVariable/" ReferenceType="//core//PCMRandomVariable/" LowerBound="1" Name="interArrivalTime_OpenWorkload" />
+      <Operations IsOrdered="True" Type="http://nmf.codeplex.com/nmeta/#//Boolean/" Name="InterArrivalTimeInOpenWorkloadNeedsToBeSpecified">
+        <Parameters IsOrdered="True" Type="http://nmf.codeplex.com/nmeta/#//Object/" Name="diagnostics" />
+        <Parameters IsOrdered="True" Name="context" />
+      </Operations>
+    </Types>
+    <Types xsi:type="nmeta:Class" BaseTypes="//usagemodel//AbstractUserAction/" Name="Delay">
+      <References IsContainment="True" IsOrdered="True" Opposite="//core//PCMRandomVariable//delay_TimeSpecification/" ReferenceType="//core//PCMRandomVariable/" LowerBound="1" Name="timeSpecification_Delay" />
+    </Types>
+    <Types xsi:type="nmeta:Class" BaseTypes="//usagemodel//Workload/" Name="ClosedWorkload">
+      <References IsContainment="True" IsOrdered="True" Opposite="//core//PCMRandomVariable//closedWorkload_PCMRandomVariable/" ReferenceType="//core//PCMRandomVariable/" LowerBound="1" Name="thinkTime_ClosedWorkload" />
+      <Operations IsOrdered="True" Type="http://nmf.codeplex.com/nmeta/#//Boolean/" Name="PopulationInClosedWorkloadNeedsToBeSpecified">
+        <Parameters IsOrdered="True" Type="http://nmf.codeplex.com/nmeta/#//Object/" Name="diagnostics" />
+        <Parameters IsOrdered="True" Name="context" />
+      </Operations>
+      <Operations IsOrdered="True" Type="http://nmf.codeplex.com/nmeta/#//Boolean/" Name="ThinkTimeInClosedWorkloadNeedsToBeSpecified">
+        <Parameters IsOrdered="True" Type="http://nmf.codeplex.com/nmeta/#//Object/" Name="diagnostics" />
+        <Parameters IsOrdered="True" Name="context" />
+      </Operations>
+      <Attributes LowerBound="1" Type="http://nmf.codeplex.com/nmeta/#//Integer/" Name="population" />
+    </Types>
+  </ChildNamespaces>
+  <ChildNamespaces Uri="http://sdq.ipd.uka.de/PalladioComponentModel/Repository/5.0" Prefix="repository" Name="repository">
+    <Types xsi:type="nmeta:Class" BaseTypes="//core//entity//Entity/" Name="PassiveResource">
+      <References IsContainment="True" IsOrdered="True" Opposite="//core//PCMRandomVariable//passiveResource_capacity_PCMRandomVariable/" ReferenceType="//core//PCMRandomVariable/" LowerBound="1" Name="capacity_PassiveResource" />
+      <References Opposite="//repository//BasicComponent//passiveResource_BasicComponent/" ReferenceType="//repository//BasicComponent/" LowerBound="1" Name="basicComponent_PassiveResource" />
+      <References Opposite="//reliability//ResourceTimeoutFailureType//passiveResource__ResourceTimeoutFailureType/" ReferenceType="//reliability//ResourceTimeoutFailureType/" Name="resourceTimeoutFailureType__PassiveResource" />
+    </Types>
+    <Types xsi:type="nmeta:Class" BaseTypes="//repository//ImplementationComponentType/" Name="BasicComponent">
+      <References IsContainment="True" IsOrdered="True" Opposite="//seff//ServiceEffectSpecification//basicComponent_ServiceEffectSpecification/" ReferenceType="//seff//ServiceEffectSpecification/" UpperBound="-1" Name="serviceEffectSpecifications__BasicComponent" />
+      <References IsContainment="True" IsOrdered="True" Opposite="//repository//PassiveResource//basicComponent_PassiveResource/" ReferenceType="//repository//PassiveResource/" UpperBound="-1" Name="passiveResource_BasicComponent" />
+      <Operations IsOrdered="True" Type="http://nmf.codeplex.com/nmeta/#//Boolean/" Name="NoSeffTypeUsedTwice">
+        <Parameters IsOrdered="True" Type="http://nmf.codeplex.com/nmeta/#//Object/" Name="diagnostics" />
+        <Parameters IsOrdered="True" Name="context" />
+      </Operations>
+      <Operations IsOrdered="True" Type="http://nmf.codeplex.com/nmeta/#//Boolean/" Name="ProvideSameInterfacesAsImplementationType">
+        <Parameters IsOrdered="True" Type="http://nmf.codeplex.com/nmeta/#//Object/" Name="diagnostics" />
+        <Parameters IsOrdered="True" Name="context" />
+      </Operations>
+      <Operations IsOrdered="True" Type="http://nmf.codeplex.com/nmeta/#//Boolean/" Name="RequireSameInterfacesAsImplementationType">
+        <Parameters IsOrdered="True" Type="http://nmf.codeplex.com/nmeta/#//Object/" Name="diagnostics" />
+        <Parameters IsOrdered="True" Name="context" />
+      </Operations>
+    </Types>
+    <Types xsi:type="nmeta:Class" IsAbstract="True" BaseTypes="//repository//RepositoryComponent/" Name="ImplementationComponentType">
+      <References ReferenceType="//repository//CompleteComponentType/" UpperBound="-1" Name="parentCompleteComponentTypes" />
+      <References IsContainment="True" IsOrdered="True" ReferenceType="//parameter//VariableUsage/" UpperBound="-1" Name="componentParameterUsage_ImplementationComponentType" />
+      <Operations IsOrdered="True" Type="http://nmf.codeplex.com/nmeta/#//Boolean/" Name="RequiredInterfacesHaveToConformToCompleteType">
+        <Parameters IsOrdered="True" Type="http://nmf.codeplex.com/nmeta/#//Object/" Name="diagnostics" />
+        <Parameters IsOrdered="True" Name="context" />
+      </Operations>
+      <Operations IsOrdered="True" Type="http://nmf.codeplex.com/nmeta/#//Boolean/" Name="providedInterfacesHaveToConformToCompleteType">
+        <Parameters IsOrdered="True" Type="http://nmf.codeplex.com/nmeta/#//Object/" Name="diagnostics" />
+        <Parameters IsOrdered="True" Name="context" />
+      </Operations>
+      <Operations IsOrdered="True" Type="http://nmf.codeplex.com/nmeta/#//Boolean/" Name="ProvidedInterfaceHaveToConformToComponentType">
+        <Parameters IsOrdered="True" Type="http://nmf.codeplex.com/nmeta/#//Object/" Name="diagnostics" />
+        <Parameters IsOrdered="True" Name="context" />
+      </Operations>
+      <Attributes DefaultValue="BUSINESS_COMPONENT" LowerBound="1" Type="//repository//ComponentType/" Name="componentType" />
+    </Types>
+    <Types xsi:type="nmeta:Class" IsAbstract="True" BaseTypes="//core//entity//InterfaceProvidingRequiringEntity/" Name="RepositoryComponent">
+      <References Opposite="//repository//Repository//components__Repository/" ReferenceType="//repository//Repository/" LowerBound="1" Name="repository__RepositoryComponent" />
+    </Types>
+    <Types xsi:type="nmeta:Class" IsAbstract="True" BaseTypes="//repository//Role/" Name="ProvidedRole">
+      <References Opposite="//core//entity//InterfaceProvidingEntity//providedRoles_InterfaceProvidingEntity/" ReferenceType="//core//entity//InterfaceProvidingEntity/" LowerBound="1" Name="providingEntity_ProvidedRole" />
+    </Types>
+    <Types xsi:type="nmeta:Class" Name="Parameter">
+      <References ReferenceType="//repository//DataType/" LowerBound="1" Name="dataType__Parameter" />
+      <References Opposite="//repository//InfrastructureSignature//parameters__InfrastructureSignature/" ReferenceType="//repository//InfrastructureSignature/" Name="infrastructureSignature__Parameter" />
+      <References Opposite="//repository//OperationSignature//parameters__OperationSignature/" ReferenceType="//repository//OperationSignature/" Name="operationSignature__Parameter" />
+      <References Opposite="//repository//EventType//parameter__EventType/" ReferenceType="//repository//EventType/" Name="eventType__Parameter" />
+      <References Opposite="//resourcetype//ResourceSignature//parameter__ResourceSignature/" ReferenceType="//resourcetype//ResourceSignature/" Name="resourceSignature__Parameter" />
+      <Attributes LowerBound="1" Type="http://nmf.codeplex.com/nmeta/#//String/" Name="parameterName" />
+      <Attributes LowerBound="1" Type="//repository//ParameterModifier/" Name="modifier__Parameter" />
+    </Types>
+    <Types xsi:type="nmeta:Class" IsAbstract="True" Name="DataType">
+      <References Opposite="//repository//Repository//dataTypes__Repository/" ReferenceType="//repository//Repository/" LowerBound="1" Name="repository__DataType" />
+    </Types>
+    <Types xsi:type="nmeta:Class" BaseTypes="//core//entity//Entity/" Name="Repository">
+      <References IsContainment="True" IsOrdered="True" Opposite="//repository//RepositoryComponent//repository__RepositoryComponent/" ReferenceType="//repository//RepositoryComponent/" UpperBound="-1" Name="components__Repository" />
+      <References IsContainment="True" IsOrdered="True" Opposite="//repository//Interface//repository__Interface/" ReferenceType="//repository//Interface/" UpperBound="-1" Name="interfaces__Repository" />
+      <References IsContainment="True" IsOrdered="True" Opposite="//reliability//FailureType//repository__FailureType/" ReferenceType="//reliability//FailureType/" UpperBound="-1" Name="failureTypes__Repository" />
+      <References IsContainment="True" IsOrdered="True" Opposite="//repository//DataType//repository__DataType/" ReferenceType="//repository//DataType/" UpperBound="-1" Name="dataTypes__Repository" />
+      <Attributes Type="http://nmf.codeplex.com/nmeta/#//String/" Name="repositoryDescription" />
+    </Types>
+    <Types xsi:type="nmeta:Class" IsAbstract="True" BaseTypes="//core//entity//Entity/" Name="Interface">
+      <References ReferenceType="//repository//Interface/" UpperBound="-1" Name="parentInterfaces__Interface" />
+      <References IsContainment="True" IsOrdered="True" ReferenceType="//protocol//Protocol/" UpperBound="-1" Name="protocols__Interface" />
+      <References IsContainment="True" IsOrdered="True" Opposite="//repository//RequiredCharacterisation//interface_RequiredCharacterisation/" ReferenceType="//repository//RequiredCharacterisation/" UpperBound="-1" Name="requiredCharacterisations" />
+      <References Opposite="//repository//Repository//interfaces__Repository/" ReferenceType="//repository//Repository/" LowerBound="1" Name="repository__Interface" />
+      <Operations IsOrdered="True" Type="http://nmf.codeplex.com/nmeta/#//Boolean/" Name="NoProtocolTypeIDUsedTwice">
+        <Parameters IsOrdered="True" Type="http://nmf.codeplex.com/nmeta/#//Object/" Name="diagnostics" />
+        <Parameters IsOrdered="True" Name="context" />
+      </Operations>
+    </Types>
+    <Types xsi:type="nmeta:Class" Name="RequiredCharacterisation">
+      <References ReferenceType="//repository//Parameter/" LowerBound="1" Name="parameter" />
+      <References Opposite="//repository//Interface//requiredCharacterisations/" ReferenceType="//repository//Interface/" LowerBound="1" Name="interface_RequiredCharacterisation" />
+      <Attributes LowerBound="1" Type="//parameter//VariableCharacterisationType/" Name="type" />
+    </Types>
+    <Types xsi:type="nmeta:Class" BaseTypes="//repository//Interface/" Name="EventGroup">
+      <References IsContainment="True" IsOrdered="True" Opposite="//repository//EventType//eventGroup__EventType/" ReferenceType="//repository//EventType/" UpperBound="-1" Name="eventTypes__EventGroup" />
+    </Types>
+    <Types xsi:type="nmeta:Class" BaseTypes="//repository//Signature/" Name="EventType">
+      <References IsContainment="True" IsOrdered="True" Opposite="//repository//Parameter//eventType__Parameter/" ReferenceType="//repository//Parameter/" LowerBound="1" Name="parameter__EventType" />
+      <References Opposite="//repository//EventGroup//eventTypes__EventGroup/" ReferenceType="//repository//EventGroup/" LowerBound="1" Name="eventGroup__EventType" />
+    </Types>
+    <Types xsi:type="nmeta:Class" IsAbstract="True" BaseTypes="//core//entity//Entity/" Name="Signature">
+      <References IsContainment="True" IsOrdered="True" ReferenceType="//repository//ExceptionType/" UpperBound="-1" Name="exceptions__Signature" />
+      <References ReferenceType="//reliability//FailureType/" UpperBound="-1" Name="failureType" />
+    </Types>
+    <Types xsi:type="nmeta:Class" Name="ExceptionType">
+      <Attributes LowerBound="1" Type="http://nmf.codeplex.com/nmeta/#//String/" Name="exceptionName" />
+      <Attributes LowerBound="1" Type="http://nmf.codeplex.com/nmeta/#//String/" Name="exceptionMessage" />
+    </Types>
+    <Types xsi:type="nmeta:Class" BaseTypes="//repository//Signature/" Name="InfrastructureSignature">
+      <References IsContainment="True" IsOrdered="True" Opposite="//repository//Parameter//infrastructureSignature__Parameter/" ReferenceType="//repository//Parameter/" UpperBound="-1" Name="parameters__InfrastructureSignature" />
+      <References Opposite="//repository//InfrastructureInterface//infrastructureSignatures__InfrastructureInterface/" ReferenceType="//repository//InfrastructureInterface/" LowerBound="1" Name="infrastructureInterface__InfrastructureSignature" />
+    </Types>
+    <Types xsi:type="nmeta:Class" BaseTypes="//repository//Interface/" Name="InfrastructureInterface">
+      <References IsContainment="True" IsOrdered="True" Opposite="//repository//InfrastructureSignature//infrastructureInterface__InfrastructureSignature/" ReferenceType="//repository//InfrastructureSignature/" UpperBound="-1" Name="infrastructureSignatures__InfrastructureInterface" />
+    </Types>
+    <Types xsi:type="nmeta:Class" BaseTypes="//repository//RequiredRole/" Name="InfrastructureRequiredRole">
+      <References ReferenceType="//repository//InfrastructureInterface/" LowerBound="1" Name="requiredInterface__InfrastructureRequiredRole" />
+    </Types>
+    <Types xsi:type="nmeta:Class" IsAbstract="True" BaseTypes="//repository//Role/" Name="RequiredRole">
+      <References Opposite="//core//entity//InterfaceRequiringEntity//requiredRoles_InterfaceRequiringEntity/" ReferenceType="//core//entity//InterfaceRequiringEntity/" LowerBound="1" Name="requiringEntity_RequiredRole" />
+    </Types>
+    <Types xsi:type="nmeta:Class" BaseTypes="//repository//Signature/" Name="OperationSignature">
+      <References Opposite="//repository//OperationInterface//signatures__OperationInterface/" ReferenceType="//repository//OperationInterface/" LowerBound="1" Name="interface__OperationSignature" />
+      <References IsContainment="True" IsOrdered="True" Opposite="//repository//Parameter//operationSignature__Parameter/" ReferenceType="//repository//Parameter/" UpperBound="-1" Name="parameters__OperationSignature" />
+      <References ReferenceType="//repository//DataType/" Name="returnType__OperationSignature" />
+      <Operations IsOrdered="True" Type="http://nmf.codeplex.com/nmeta/#//Boolean/" Name="ParameterNamesHaveToBeUniqueForASignature">
+        <Parameters IsOrdered="True" Type="http://nmf.codeplex.com/nmeta/#//Object/" Name="diagnostics" />
+        <Parameters IsOrdered="True" Name="context" />
+      </Operations>
+    </Types>
+    <Types xsi:type="nmeta:Class" BaseTypes="//repository//Interface/" Name="OperationInterface">
+      <References IsContainment="True" IsOrdered="True" Opposite="//repository//OperationSignature//interface__OperationSignature/" ReferenceType="//repository//OperationSignature/" UpperBound="-1" Name="signatures__OperationInterface" />
+      <Operations IsOrdered="True" Type="http://nmf.codeplex.com/nmeta/#//Boolean/" Name="SignaturesHaveToBeUniqueForAnInterface">
+        <Parameters IsOrdered="True" Type="http://nmf.codeplex.com/nmeta/#//Object/" Name="diagnostics" />
+        <Parameters IsOrdered="True" Name="context" />
+      </Operations>
+    </Types>
+    <Types xsi:type="nmeta:Class" BaseTypes="//repository//RequiredRole/" Name="OperationRequiredRole">
+      <References ReferenceType="//repository//OperationInterface/" LowerBound="1" Name="requiredInterface__OperationRequiredRole" />
+    </Types>
+    <Types xsi:type="nmeta:Class" BaseTypes="//repository//RequiredRole/" Name="SourceRole">
+      <References ReferenceType="//repository//EventGroup/" LowerBound="1" Name="eventGroup__SourceRole" />
+    </Types>
+    <Types xsi:type="nmeta:Class" BaseTypes="//repository//ProvidedRole/" Name="SinkRole">
+      <References ReferenceType="//repository//EventGroup/" LowerBound="1" Name="eventGroup__SinkRole" />
+    </Types>
+    <Types xsi:type="nmeta:Class" BaseTypes="//repository//ProvidedRole/" Name="OperationProvidedRole">
+      <References ReferenceType="//repository//OperationInterface/" LowerBound="1" Name="providedInterface__OperationProvidedRole" />
+    </Types>
+    <Types xsi:type="nmeta:Class" BaseTypes="//repository//ProvidedRole/" Name="InfrastructureProvidedRole">
+      <References ReferenceType="//repository//InfrastructureInterface/" LowerBound="1" Name="providedInterface__InfrastructureProvidedRole" />
+    </Types>
+    <Types xsi:type="nmeta:Enumeration" Name="ParameterModifier">
+      <Literals Name="none" />
+      <Literals Value="1" Name="in" />
+      <Literals Value="2" Name="out" />
+      <Literals Value="3" Name="inout" />
+    </Types>
+    <Types xsi:type="nmeta:Class" BaseTypes="//repository//RepositoryComponent/" Name="CompleteComponentType">
+      <References ReferenceType="//repository//ProvidesComponentType/" UpperBound="-1" Name="parentProvidesComponentTypes" />
+      <Operations IsOrdered="True" Type="http://nmf.codeplex.com/nmeta/#//Boolean/" Name="AtLeastOneInterfaceHasToBeProvidedOrRequiredByAUsefullCompleteComponentType">
+        <Parameters IsOrdered="True" Type="http://nmf.codeplex.com/nmeta/#//Object/" Name="diagnostics" />
+        <Parameters IsOrdered="True" Name="context" />
+      </Operations>
+      <Operations IsOrdered="True" Type="http://nmf.codeplex.com/nmeta/#//Boolean/" Name="providedInterfacesHaveToConformToProvidedType2">
+        <Parameters IsOrdered="True" Type="http://nmf.codeplex.com/nmeta/#//Object/" Name="diagnostics" />
+        <Parameters IsOrdered="True" Name="context" />
+      </Operations>
+    </Types>
+    <Types xsi:type="nmeta:Class" BaseTypes="//repository//RepositoryComponent/" Name="ProvidesComponentType">
+      <Operations IsOrdered="True" Type="http://nmf.codeplex.com/nmeta/#//Boolean/" Name="AtLeastOneInterfaceHasToBeProvidedByAUsefullProvidesComponentType">
+        <Parameters IsOrdered="True" Type="http://nmf.codeplex.com/nmeta/#//Object/" Name="diagnostics" />
+        <Parameters IsOrdered="True" Name="context" />
+      </Operations>
+    </Types>
+    <Types xsi:type="nmeta:Enumeration" Name="ComponentType">
+      <Literals Name="BUSINESS_COMPONENT" />
+      <Literals Value="1" Name="INFRASTRUCTURE_COMPONENT" />
+    </Types>
+    <Types xsi:type="nmeta:Class" BaseTypes="//core//entity//ComposedProvidingRequiringEntity/ //repository//ImplementationComponentType/" Name="CompositeComponent">
+      <Operations IsOrdered="True" Type="http://nmf.codeplex.com/nmeta/#//Boolean/" Name="ProvideSameInterfaces">
+        <Parameters IsOrdered="True" Type="http://nmf.codeplex.com/nmeta/#//Object/" Name="diagnostics" />
+        <Parameters IsOrdered="True" Name="context" />
+      </Operations>
+      <Operations IsOrdered="True" Type="http://nmf.codeplex.com/nmeta/#//Boolean/" Name="RequireSameInterfaces">
+        <Parameters IsOrdered="True" Type="http://nmf.codeplex.com/nmeta/#//Object/" Name="diagnostics" />
+        <Parameters IsOrdered="True" Name="context" />
+      </Operations>
+    </Types>
+    <Types xsi:type="nmeta:Class" BaseTypes="//repository//DataType/" Name="PrimitiveDataType">
+      <Attributes LowerBound="1" Type="//repository//PrimitiveTypeEnum/" Name="type" />
+    </Types>
+    <Types xsi:type="nmeta:Enumeration" Name="PrimitiveTypeEnum">
+      <Literals Name="INT" />
+      <Literals Value="1" Name="STRING" />
+      <Literals Value="2" Name="BOOL" />
+      <Literals Value="3" Name="DOUBLE" />
+      <Literals Value="4" Name="CHAR" />
+      <Literals Value="5" Name="BYTE" />
+      <Literals Value="6" Name="LONG" />
+    </Types>
+    <Types xsi:type="nmeta:Class" BaseTypes="//core//entity//Entity/ //repository//DataType/" Name="CollectionDataType">
+      <References ReferenceType="//repository//DataType/" LowerBound="1" Name="innerType_CollectionDataType" />
+    </Types>
+    <Types xsi:type="nmeta:Class" BaseTypes="//core//entity//Entity/ //repository//DataType/" Name="CompositeDataType">
+      <References ReferenceType="//repository//CompositeDataType/" UpperBound="-1" Name="parentType_CompositeDataType" />
+      <References IsContainment="True" IsOrdered="True" Opposite="//repository//InnerDeclaration//compositeDataType_InnerDeclaration/" ReferenceType="//repository//InnerDeclaration/" UpperBound="-1" Name="innerDeclaration_CompositeDataType" />
+    </Types>
+    <Types xsi:type="nmeta:Class" BaseTypes="//core//entity//NamedElement/" Name="InnerDeclaration">
+      <References ReferenceType="//repository//DataType/" LowerBound="1" Name="datatype_InnerDeclaration" />
+      <References Opposite="//repository//CompositeDataType//innerDeclaration_CompositeDataType/" ReferenceType="//repository//CompositeDataType/" LowerBound="1" Name="compositeDataType_InnerDeclaration" />
+    </Types>
+    <Types xsi:type="nmeta:Class" IsAbstract="True" BaseTypes="//core//entity//Entity/" Name="Role" />
+  </ChildNamespaces>
+  <ChildNamespaces Uri="http://sdq.ipd.uka.de/PalladioComponentModel/ResourceType/5.0" Prefix="resourcetype" Name="resourcetype">
+    <Types xsi:type="nmeta:Class" BaseTypes="//core//entity//Entity/" Name="ResourceSignature">
+      <References IsContainment="True" IsOrdered="True" Opposite="//repository//Parameter//resourceSignature__Parameter/" ReferenceType="//repository//Parameter/" Name="parameter__ResourceSignature" />
+      <References Opposite="//resourcetype//ResourceInterface//resourceSignatures__ResourceInterface/" ReferenceType="//resourcetype//ResourceInterface/" LowerBound="1" Name="resourceInterface__ResourceSignature" />
+      <Attributes LowerBound="1" Type="http://nmf.codeplex.com/nmeta/#//Integer/" Name="resourceServiceId" />
+    </Types>
+    <Types xsi:type="nmeta:Class" BaseTypes="//resourcetype//ResourceType/" Name="ProcessingResourceType">
+      <References Opposite="//reliability//HardwareInducedFailureType//processingResourceType__HardwareInducedFailureType/" ReferenceType="//reliability//HardwareInducedFailureType/" Name="hardwareInducedFailureType__ProcessingResourceType" />
+    </Types>
+    <Types xsi:type="nmeta:Class" IsAbstract="True" BaseTypes="//core//entity//Entity/ Units.nmeta#//UnitCarryingElement //core//entity//ResourceInterfaceProvidingEntity/" Name="ResourceType">
+      <References Opposite="//resourcetype//ResourceRepository//availableResourceTypes_ResourceRepository/" ReferenceType="//resourcetype//ResourceRepository/" LowerBound="1" Name="resourceRepository_ResourceType" />
+    </Types>
+    <Types xsi:type="nmeta:Class" Name="ResourceRepository">
+      <References IsContainment="True" IsOrdered="True" Opposite="//resourcetype//ResourceInterface//resourceRepository__ResourceInterface/" ReferenceType="//resourcetype//ResourceInterface/" UpperBound="-1" Name="resourceInterfaces__ResourceRepository" />
+      <References IsContainment="True" IsOrdered="True" Opposite="//resourcetype//SchedulingPolicy//resourceRepository__SchedulingPolicy/" ReferenceType="//resourcetype//SchedulingPolicy/" UpperBound="-1" Name="schedulingPolicies__ResourceRepository" />
+      <References IsContainment="True" IsOrdered="True" Opposite="//resourcetype//ResourceType//resourceRepository_ResourceType/" ReferenceType="//resourcetype//ResourceType/" UpperBound="-1" Name="availableResourceTypes_ResourceRepository" />
+    </Types>
+    <Types xsi:type="nmeta:Class" BaseTypes="//core//entity//Entity/" Name="SchedulingPolicy">
+      <References Opposite="//resourcetype//ResourceRepository//schedulingPolicies__ResourceRepository/" ReferenceType="//resourcetype//ResourceRepository/" LowerBound="1" Name="resourceRepository__SchedulingPolicy" />
+    </Types>
+    <Types xsi:type="nmeta:Class" BaseTypes="//resourcetype//ResourceType/" Name="CommunicationLinkResourceType">
+      <References Opposite="//reliability//NetworkInducedFailureType//communicationLinkResourceType__NetworkInducedFailureType/" ReferenceType="//reliability//NetworkInducedFailureType/" Name="networkInducedFailureType__CommunicationLinkResourceType" />
+    </Types>
+    <Types xsi:type="nmeta:Class" BaseTypes="//core//entity//Entity/" Name="ResourceInterface">
+      <References Opposite="//resourcetype//ResourceRepository//resourceInterfaces__ResourceRepository/" ReferenceType="//resourcetype//ResourceRepository/" LowerBound="1" Name="resourceRepository__ResourceInterface" />
+      <References IsContainment="True" IsOrdered="True" Opposite="//resourcetype//ResourceSignature//resourceInterface__ResourceSignature/" ReferenceType="//resourcetype//ResourceSignature/" UpperBound="-1" Name="resourceSignatures__ResourceInterface" />
+    </Types>
+  </ChildNamespaces>
+  <ChildNamespaces Uri="http://sdq.ipd.uka.de/PalladioComponentModel/Protocol/5.0" Prefix="protocol" Name="protocol">
+    <Types xsi:type="nmeta:Class" IsAbstract="True" Name="Protocol">
+      <Attributes LowerBound="1" Type="http://nmf.codeplex.com/nmeta/#//String/" Name="protocolTypeID" />
+    </Types>
+  </ChildNamespaces>
+  <ChildNamespaces Uri="http://sdq.ipd.uka.de/PalladioComponentModel/Parameter/5.0" Prefix="parameter" Name="parameter">
+    <Types xsi:type="nmeta:Class" Name="VariableUsage">
+      <References IsContainment="True" IsOrdered="True" Opposite="//parameter//VariableCharacterisation//variableUsage_VariableCharacterisation/" ReferenceType="//parameter//VariableCharacterisation/" UpperBound="-1" Name="variableCharacterisation_VariableUsage" />
+      <References Opposite="//usagemodel//UserData//userDataParameterUsages_UserData/" ReferenceType="//usagemodel//UserData/" Name="userData_VariableUsage" />
+      <References Opposite="//seff//CallAction//inputVariableUsages__CallAction/" ReferenceType="//seff//CallAction/" Name="callAction__VariableUsage" />
+      <References Opposite="//seff//SynchronisationPoint//outputParameterUsage_SynchronisationPoint/" ReferenceType="//seff//SynchronisationPoint/" Name="synchronisationPoint_VariableUsage" />
+      <References Opposite="//seff//CallReturnAction//returnVariableUsage__CallReturnAction/" ReferenceType="//seff//CallReturnAction/" Name="callReturnAction__VariableUsage" />
+      <References Opposite="//seff//SetVariableAction//localVariableUsages_SetVariableAction/" ReferenceType="//seff//SetVariableAction/" Name="setVariableAction_VariableUsage" />
+      <References Opposite="//qosannotations//SpecifiedOutputParameterAbstraction//expectedExternalOutputs_SpecifiedOutputParameterAbstraction/" ReferenceType="//qosannotations//SpecifiedOutputParameterAbstraction/" Name="specifiedOutputParameterAbstraction_expectedExternalOutputs_VariableUsage" />
+      <References Opposite="//core//composition//AssemblyContext//configParameterUsages__AssemblyContext/" ReferenceType="//core//composition//AssemblyContext/" Name="assemblyContext__VariableUsage" />
+      <References Opposite="//usagemodel//EntryLevelSystemCall//inputParameterUsages_EntryLevelSystemCall/" ReferenceType="//usagemodel//EntryLevelSystemCall/" Name="entryLevelSystemCall_InputParameterUsage" />
+      <References Opposite="//usagemodel//EntryLevelSystemCall//outputParameterUsages_EntryLevelSystemCall/" ReferenceType="//usagemodel//EntryLevelSystemCall/" Name="entryLevelSystemCall_OutputParameterUsage" />
+      <References IsContainment="True" IsOrdered="True" ReferenceType="stoex.nmeta#//AbstractNamedReference" LowerBound="1" Name="namedReference__VariableUsage" />
+    </Types>
+    <Types xsi:type="nmeta:Class" Name="VariableCharacterisation">
+      <References IsContainment="True" IsOrdered="True" Opposite="//core//PCMRandomVariable//variableCharacterisation_Specification/" ReferenceType="//core//PCMRandomVariable/" LowerBound="1" Name="specification_VariableCharacterisation" />
+      <References Opposite="//parameter//VariableUsage//variableCharacterisation_VariableUsage/" ReferenceType="//parameter//VariableUsage/" Name="variableUsage_VariableCharacterisation" />
+      <Attributes LowerBound="1" Type="//parameter//VariableCharacterisationType/" Name="type" />
+    </Types>
+    <Types xsi:type="nmeta:Class" BaseTypes="stoex.nmeta#//Variable" Name="CharacterisedVariable">
+      <Attributes LowerBound="1" Type="//parameter//VariableCharacterisationType/" Name="characterisationType" />
+    </Types>
+    <Types xsi:type="nmeta:Enumeration" Name="VariableCharacterisationType">
+      <Literals Name="STRUCTURE" />
+      <Literals Value="1" Name="NUMBER_OF_ELEMENTS" />
+      <Literals Value="2" Name="VALUE" />
+      <Literals Value="3" Name="BYTESIZE" />
+      <Literals Value="4" Name="TYPE" />
+    </Types>
+  </ChildNamespaces>
+  <ChildNamespaces Uri="http://sdq.ipd.uka.de/PalladioComponentModel/Reliability/5.0" Prefix="reliability" Name="reliability">
+    <Types xsi:type="nmeta:Class" IsAbstract="True" Name="FailureOccurrenceDescription">
+      <Operations IsOrdered="True" Type="http://nmf.codeplex.com/nmeta/#//Boolean/" Name="EnsureValidFailureProbabilityRange">
+        <Parameters IsOrdered="True" Type="http://nmf.codeplex.com/nmeta/#//Object/" Name="diagnostics" />
+        <Parameters IsOrdered="True" Name="context" />
+      </Operations>
+      <Attributes LowerBound="1" Type="http://nmf.codeplex.com/nmeta/#//Double/" Name="failureProbability" />
+    </Types>
+    <Types xsi:type="nmeta:Class" BaseTypes="//reliability//FailureType/" Name="HardwareInducedFailureType">
+      <References Opposite="//resourcetype//ProcessingResourceType//hardwareInducedFailureType__ProcessingResourceType/" ReferenceType="//resourcetype//ProcessingResourceType/" LowerBound="1" Name="processingResourceType__HardwareInducedFailureType" />
+      <Operations IsOrdered="True" Type="http://nmf.codeplex.com/nmeta/#//Boolean/" Name="HardwareInducedFailureTypeHasProcessingResourceType">
+        <Parameters IsOrdered="True" Type="http://nmf.codeplex.com/nmeta/#//Object/" Name="diagnostics" />
+        <Parameters IsOrdered="True" Name="context" />
+      </Operations>
+    </Types>
+    <Types xsi:type="nmeta:Class" BaseTypes="//reliability//FailureType/" Name="SoftwareInducedFailureType">
+      <References Opposite="//reliability//InternalFailureOccurrenceDescription//softwareInducedFailureType__InternalFailureOccurrenceDescription/" ReferenceType="//reliability//InternalFailureOccurrenceDescription/" UpperBound="-1" Name="internalFailureOccurrenceDescriptions__SoftwareInducedFailureType" />
+    </Types>
+    <Types xsi:type="nmeta:Class" BaseTypes="//reliability//FailureOccurrenceDescription/" Name="InternalFailureOccurrenceDescription">
+      <References Opposite="//seff//InternalAction//internalFailureOccurrenceDescriptions__InternalAction/" ReferenceType="//seff//InternalAction/" LowerBound="1" Name="internalAction__InternalFailureOccurrenceDescription" />
+      <References Opposite="//reliability//SoftwareInducedFailureType//internalFailureOccurrenceDescriptions__SoftwareInducedFailureType/" ReferenceType="//reliability//SoftwareInducedFailureType/" LowerBound="1" Name="softwareInducedFailureType__InternalFailureOccurrenceDescription" />
+      <Operations IsOrdered="True" Type="http://nmf.codeplex.com/nmeta/#//Boolean/" Name="NoResourceTimeoutFailureAllowedForInternalFailureOccurrenceDescription">
+        <Parameters IsOrdered="True" Type="http://nmf.codeplex.com/nmeta/#//Object/" Name="diagnostics" />
+        <Parameters IsOrdered="True" Name="context" />
+      </Operations>
+    </Types>
+    <Types xsi:type="nmeta:Class" BaseTypes="//reliability//FailureType/" Name="NetworkInducedFailureType">
+      <References Opposite="//resourcetype//CommunicationLinkResourceType//networkInducedFailureType__CommunicationLinkResourceType/" ReferenceType="//resourcetype//CommunicationLinkResourceType/" LowerBound="1" Name="communicationLinkResourceType__NetworkInducedFailureType" />
+      <Operations IsOrdered="True" Type="http://nmf.codeplex.com/nmeta/#//Boolean/" Name="NetworkInducedFailureTypeHasCommunicationLinkResourceType">
+        <Parameters IsOrdered="True" Type="http://nmf.codeplex.com/nmeta/#//Object/" Name="diagnostics" />
+        <Parameters IsOrdered="True" Name="context" />
+      </Operations>
+    </Types>
+    <Types xsi:type="nmeta:Class" BaseTypes="//reliability//FailureOccurrenceDescription/" Name="ExternalFailureOccurrenceDescription">
+      <References Opposite="//qosannotations//qos_reliability//SpecifiedReliabilityAnnotation//externalFailureOccurrenceDescriptions__SpecifiedReliabilityAnnotation/" ReferenceType="//qosannotations//qos_reliability//SpecifiedReliabilityAnnotation/" LowerBound="1" Name="specifiedReliabilityAnnotation__ExternalFailureOccurrenceDescription" />
+      <References ReferenceType="//reliability//FailureType/" LowerBound="1" Name="failureType__ExternalFailureOccurrenceDescription" />
+      <Operations IsOrdered="True" Type="http://nmf.codeplex.com/nmeta/#//Boolean/" Name="NoResourceTimeoutFailureAllowedForExternalFailureOccurrenceDescription">
+        <Parameters IsOrdered="True" Type="http://nmf.codeplex.com/nmeta/#//Object/" Name="diagnostics" />
+        <Parameters IsOrdered="True" Name="context" />
+      </Operations>
+    </Types>
+    <Types xsi:type="nmeta:Class" BaseTypes="//reliability//SoftwareInducedFailureType/" Name="ResourceTimeoutFailureType">
+      <References Opposite="//repository//PassiveResource//resourceTimeoutFailureType__PassiveResource/" ReferenceType="//repository//PassiveResource/" LowerBound="1" Name="passiveResource__ResourceTimeoutFailureType" />
+    </Types>
+    <Types xsi:type="nmeta:Class" IsAbstract="True" BaseTypes="//core//entity//Entity/" Name="FailureType">
+      <References Opposite="//repository//Repository//failureTypes__Repository/" ReferenceType="//repository//Repository/" LowerBound="1" Name="repository__FailureType" />
+    </Types>
+  </ChildNamespaces>
+  <ChildNamespaces Uri="http://sdq.ipd.uka.de/PalladioComponentModel/SEFF/5.0" Prefix="seff" Name="seff">
+    <ChildNamespaces Uri="http://sdq.ipd.uka.de/PalladioComponentModel/SEFF/SEFF_Performance/5.0" Prefix="seff_performance" Name="seff_performance">
+      <Types xsi:type="nmeta:Class" BaseTypes="//seff//CallAction/" Name="InfrastructureCall">
+        <References ReferenceType="//repository//InfrastructureSignature/" LowerBound="1" Name="signature__InfrastructureCall" />
+        <References IsContainment="True" IsOrdered="True" Opposite="//core//PCMRandomVariable//infrastructureCall__PCMRandomVariable/" ReferenceType="//core//PCMRandomVariable/" LowerBound="1" Name="numberOfCalls__InfrastructureCall" />
+        <References Opposite="//seff//AbstractInternalControlFlowAction//infrastructureCall__Action/" ReferenceType="//seff//AbstractInternalControlFlowAction/" LowerBound="1" Name="action__InfrastructureCall" />
+        <References ReferenceType="//repository//InfrastructureRequiredRole/" LowerBound="1" Name="requiredRole__InfrastructureCall" />
+        <Operations IsOrdered="True" Type="http://nmf.codeplex.com/nmeta/#//Boolean/" Name="SignatureMustBelongToUsedRequiredRole">
+          <Parameters IsOrdered="True" Type="http://nmf.codeplex.com/nmeta/#//Object/" Name="diagnostics" />
+          <Parameters IsOrdered="True" Name="context" />
+        </Operations>
+      </Types>
+      <Types xsi:type="nmeta:Class" BaseTypes="//seff//CallAction/" Name="ResourceCall">
+        <References Opposite="//seff//AbstractInternalControlFlowAction//resourceCall__Action/" ReferenceType="//seff//AbstractInternalControlFlowAction/" LowerBound="1" Name="action__ResourceCall" />
+        <References ReferenceType="//core//entity//ResourceRequiredRole/" LowerBound="1" Name="resourceRequiredRole__ResourceCall" />
+        <References ReferenceType="//resourcetype//ResourceSignature/" LowerBound="1" Name="signature__ResourceCall" />
+        <References IsContainment="True" IsOrdered="True" Opposite="//core//PCMRandomVariable//resourceCall__PCMRandomVariable/" ReferenceType="//core//PCMRandomVariable/" LowerBound="1" Name="numberOfCalls__ResourceCall" />
+        <Operations IsOrdered="True" Type="http://nmf.codeplex.com/nmeta/#//Boolean/" Name="ResourceSignatureBelongsToResourceRequiredRole">
+          <Parameters IsOrdered="True" Type="http://nmf.codeplex.com/nmeta/#//Object/" Name="diagnostics" />
+          <Parameters IsOrdered="True" Name="context" />
+        </Operations>
+      </Types>
+      <Types xsi:type="nmeta:Class" Name="ParametricResourceDemand">
+        <References IsContainment="True" IsOrdered="True" Opposite="//core//PCMRandomVariable//parametricResourceDemand_PCMRandomVariable/" ReferenceType="//core//PCMRandomVariable/" LowerBound="1" Name="specification_ParametericResourceDemand" />
+        <References ReferenceType="//resourcetype//ProcessingResourceType/" LowerBound="1" Name="requiredResource_ParametricResourceDemand" />
+        <References Opposite="//seff//AbstractInternalControlFlowAction//resourceDemand_Action/" ReferenceType="//seff//AbstractInternalControlFlowAction/" LowerBound="1" Name="action_ParametricResourceDemand" />
+      </Types>
+    </ChildNamespaces>
+    <ChildNamespaces Uri="http://sdq.ipd.uka.de/PalladioComponentModel/SEFF/SEFF_Reliability/5.0" Prefix="seff_reliability" Name="seff_reliability">
+      <Types xsi:type="nmeta:Class" BaseTypes="//seff//seff_reliability//FailureHandlingEntity/ //seff//ResourceDemandingBehaviour/" Name="RecoveryActionBehaviour">
+        <References ReferenceType="//seff//seff_reliability//RecoveryActionBehaviour/" UpperBound="-1" Name="failureHandlingAlternatives__RecoveryActionBehaviour" />
+        <References Opposite="//seff//seff_reliability//RecoveryAction//recoveryActionBehaviours__RecoveryAction/" ReferenceType="//seff//seff_reliability//RecoveryAction/" LowerBound="1" Name="recoveryAction__RecoveryActionBehaviour" />
+        <Operations IsOrdered="True" Type="http://nmf.codeplex.com/nmeta/#//Boolean/" Name="RecoveryActionBehaviourHasOnlyOnePredecessor">
+          <Parameters IsOrdered="True" Type="http://nmf.codeplex.com/nmeta/#//Object/" Name="diagnostics" />
+          <Parameters IsOrdered="True" Name="context" />
+        </Operations>
+        <Operations IsOrdered="True" Type="http://nmf.codeplex.com/nmeta/#//Boolean/" Name="RecoveryActionBehaviourIsNotSuccessorOfItself">
+          <Parameters IsOrdered="True" Type="http://nmf.codeplex.com/nmeta/#//Object/" Name="diagnostics" />
+          <Parameters IsOrdered="True" Name="context" />
+        </Operations>
+        <Operations IsOrdered="True" Type="http://nmf.codeplex.com/nmeta/#//Boolean/" Name="SuccessorsOfRecoveryActionBehaviourHandleDisjointFailureTypes">
+          <Parameters IsOrdered="True" Type="http://nmf.codeplex.com/nmeta/#//Object/" Name="diagnostics" />
+          <Parameters IsOrdered="True" Name="context" />
+        </Operations>
+      </Types>
+      <Types xsi:type="nmeta:Class" BaseTypes="//seff//AbstractInternalControlFlowAction/" Name="RecoveryAction">
+        <References ReferenceType="//seff//seff_reliability//RecoveryActionBehaviour/" LowerBound="1" Name="primaryBehaviour__RecoveryAction" />
+        <References IsContainment="True" IsOrdered="True" Opposite="//seff//seff_reliability//RecoveryActionBehaviour//recoveryAction__RecoveryActionBehaviour/" ReferenceType="//seff//seff_reliability//RecoveryActionBehaviour/" LowerBound="2" UpperBound="-1" Name="recoveryActionBehaviours__RecoveryAction" />
+        <Operations IsOrdered="True" Type="http://nmf.codeplex.com/nmeta/#//Boolean/" Name="PrimaryBehaviourOfRecoveryActionMustBeSet">
+          <Parameters IsOrdered="True" Type="http://nmf.codeplex.com/nmeta/#//Object/" Name="diagnostics" />
+          <Parameters IsOrdered="True" Name="context" />
+        </Operations>
+      </Types>
+      <Types xsi:type="nmeta:Class" IsAbstract="True" BaseTypes="//core//entity//Entity/" Name="FailureHandlingEntity">
+        <References ReferenceType="//reliability//FailureType/" UpperBound="-1" Name="failureTypes_FailureHandlingEntity" />
+      </Types>
+    </ChildNamespaces>
+    <Types xsi:type="nmeta:Class" BaseTypes="//seff//AbstractInternalControlFlowAction/" Name="StopAction">
+      <Operations IsOrdered="True" Type="http://nmf.codeplex.com/nmeta/#//Boolean/" Name="StopActionSuccessorMustNotBeDefined">
+        <Parameters IsOrdered="True" Type="http://nmf.codeplex.com/nmeta/#//Object/" Name="diagnostics" />
+        <Parameters IsOrdered="True" Name="context" />
+      </Operations>
+    </Types>
+    <Types xsi:type="nmeta:Class" IsAbstract="True" BaseTypes="//seff//AbstractAction/" Name="AbstractInternalControlFlowAction">
+      <References IsContainment="True" IsOrdered="True" Opposite="//seff//seff_performance//ParametricResourceDemand//action_ParametricResourceDemand/" ReferenceType="//seff//seff_performance//ParametricResourceDemand/" UpperBound="-1" Name="resourceDemand_Action" />
+      <References IsContainment="True" IsOrdered="True" Opposite="//seff//seff_performance//InfrastructureCall//action__InfrastructureCall/" ReferenceType="//seff//seff_performance//InfrastructureCall/" UpperBound="-1" Name="infrastructureCall__Action" />
+      <References IsContainment="True" IsOrdered="True" Opposite="//seff//seff_performance//ResourceCall//action__ResourceCall/" ReferenceType="//seff//seff_performance//ResourceCall/" UpperBound="-1" Name="resourceCall__Action" />
+    </Types>
+    <Types xsi:type="nmeta:Class" IsAbstract="True" BaseTypes="//core//entity//Entity/" Name="AbstractAction">
+      <References Opposite="//seff//AbstractAction//successor_AbstractAction/" ReferenceType="//seff//AbstractAction/" Name="predecessor_AbstractAction" />
+      <References Opposite="//seff//AbstractAction//predecessor_AbstractAction/" ReferenceType="//seff//AbstractAction/" Name="successor_AbstractAction" />
+      <References Opposite="//seff//ResourceDemandingBehaviour//steps_Behaviour/" ReferenceType="//seff//ResourceDemandingBehaviour/" Name="resourceDemandingBehaviour_AbstractAction" />
+    </Types>
+    <Types xsi:type="nmeta:Class" BaseTypes="identifier.nmeta#//Identifier" Name="ResourceDemandingBehaviour">
+      <References Opposite="//seff//AbstractLoopAction//bodyBehaviour_Loop/" ReferenceType="//seff//AbstractLoopAction/" Name="abstractLoopAction_ResourceDemandingBehaviour" />
+      <References Opposite="//seff//AbstractBranchTransition//branchBehaviour_BranchTransition/" ReferenceType="//seff//AbstractBranchTransition/" Name="abstractBranchTransition_ResourceDemandingBehaviour" />
+      <References IsContainment="True" IsOrdered="True" Opposite="//seff//AbstractAction//resourceDemandingBehaviour_AbstractAction/" ReferenceType="//seff//AbstractAction/" UpperBound="-1" Name="steps_Behaviour" />
+      <Operations IsOrdered="True" Type="http://nmf.codeplex.com/nmeta/#//Boolean/" Name="ExactlyOneStopAction">
+        <Parameters IsOrdered="True" Type="http://nmf.codeplex.com/nmeta/#//Object/" Name="diagnostics" />
+        <Parameters IsOrdered="True" Name="context" />
+      </Operations>
+      <Operations IsOrdered="True" Type="http://nmf.codeplex.com/nmeta/#//Boolean/" Name="ExactlyOneStartAction">
+        <Parameters IsOrdered="True" Type="http://nmf.codeplex.com/nmeta/#//Object/" Name="diagnostics" />
+        <Parameters IsOrdered="True" Name="context" />
+      </Operations>
+      <Operations IsOrdered="True" Type="http://nmf.codeplex.com/nmeta/#//Boolean/" Name="EachActionExceptStartActionandStopActionMustHhaveAPredecessorAndSuccessor">
+        <Parameters IsOrdered="True" Type="http://nmf.codeplex.com/nmeta/#//Object/" Name="diagnostics" />
+        <Parameters IsOrdered="True" Name="context" />
+      </Operations>
+    </Types>
+    <Types xsi:type="nmeta:Class" IsAbstract="True" BaseTypes="//seff//AbstractInternalControlFlowAction/" Name="AbstractLoopAction">
+      <References IsContainment="True" IsOrdered="True" Opposite="//seff//ResourceDemandingBehaviour//abstractLoopAction_ResourceDemandingBehaviour/" ReferenceType="//seff//ResourceDemandingBehaviour/" LowerBound="1" Name="bodyBehaviour_Loop" />
+    </Types>
+    <Types xsi:type="nmeta:Class" IsAbstract="True" BaseTypes="//core//entity//Entity/" Name="AbstractBranchTransition">
+      <References Opposite="//seff//BranchAction//branches_Branch/" ReferenceType="//seff//BranchAction/" LowerBound="1" Name="branchAction_AbstractBranchTransition" />
+      <References IsContainment="True" IsOrdered="True" Opposite="//seff//ResourceDemandingBehaviour//abstractBranchTransition_ResourceDemandingBehaviour/" ReferenceType="//seff//ResourceDemandingBehaviour/" LowerBound="1" Name="branchBehaviour_BranchTransition" />
+    </Types>
+    <Types xsi:type="nmeta:Class" BaseTypes="//seff//AbstractInternalControlFlowAction/" Name="BranchAction">
+      <References IsContainment="True" IsOrdered="True" Opposite="//seff//AbstractBranchTransition//branchAction_AbstractBranchTransition/" ReferenceType="//seff//AbstractBranchTransition/" UpperBound="-1" Name="branches_Branch" />
+      <Operations IsOrdered="True" Type="http://nmf.codeplex.com/nmeta/#//Boolean/" Name="EitherGuardedBranchesOrProbabilisiticBranchTransitions">
+        <Parameters IsOrdered="True" Type="http://nmf.codeplex.com/nmeta/#//Object/" Name="diagnostics" />
+        <Parameters IsOrdered="True" Name="context" />
+      </Operations>
+      <Operations IsOrdered="True" Type="http://nmf.codeplex.com/nmeta/#//Boolean/" Name="AllProbabilisticBranchProbabilitiesMustSumUpTo1">
+        <Parameters IsOrdered="True" Type="http://nmf.codeplex.com/nmeta/#//Object/" Name="diagnostics" />
+        <Parameters IsOrdered="True" Name="context" />
+      </Operations>
+    </Types>
+    <Types xsi:type="nmeta:Class" IsAbstract="True" Name="CallAction">
+      <References IsContainment="True" IsOrdered="True" Opposite="//parameter//VariableUsage//callAction__VariableUsage/" ReferenceType="//parameter//VariableUsage/" UpperBound="-1" Name="inputVariableUsages__CallAction" />
+    </Types>
+    <Types xsi:type="nmeta:Class" BaseTypes="//seff//AbstractInternalControlFlowAction/" Name="StartAction">
+      <Operations IsOrdered="True" Type="http://nmf.codeplex.com/nmeta/#//Boolean/" Name="StartActionPredecessorMustNotBeDefined">
+        <Parameters IsOrdered="True" Type="http://nmf.codeplex.com/nmeta/#//Object/" Name="diagnostics" />
+        <Parameters IsOrdered="True" Name="context" />
+      </Operations>
+    </Types>
+    <Types xsi:type="nmeta:Class" IsAbstract="True" Name="ServiceEffectSpecification">
+      <References ReferenceType="//repository//Signature/" LowerBound="1" Name="describedService__SEFF" />
+      <References Opposite="//repository//BasicComponent//serviceEffectSpecifications__BasicComponent/" ReferenceType="//repository//BasicComponent/" LowerBound="1" Name="basicComponent_ServiceEffectSpecification" />
+      <Operations IsOrdered="True" Type="http://nmf.codeplex.com/nmeta/#//Boolean/" Name="ReferencedSignatureMustBelongToInterfaceReferencedByProvidedRole">
+        <Parameters IsOrdered="True" Type="http://nmf.codeplex.com/nmeta/#//Object/" Name="diagnostics" />
+        <Parameters IsOrdered="True" Name="context" />
+      </Operations>
+      <Attributes DefaultValue="1" LowerBound="1" Type="http://nmf.codeplex.com/nmeta/#//String/" Name="seffTypeID" />
+    </Types>
+    <Types xsi:type="nmeta:Class" BaseTypes="identifier.nmeta#//Identifier //seff//ServiceEffectSpecification/ //seff//ResourceDemandingBehaviour/" Name="ResourceDemandingSEFF">
+      <References IsContainment="True" IsOrdered="True" Opposite="//seff//ResourceDemandingInternalBehaviour//resourceDemandingSEFF_ResourceDemandingInternalBehaviour/" ReferenceType="//seff//ResourceDemandingInternalBehaviour/" UpperBound="-1" Name="resourceDemandingInternalBehaviours" />
+    </Types>
+    <Types xsi:type="nmeta:Class" BaseTypes="//seff//ResourceDemandingBehaviour/" Name="ResourceDemandingInternalBehaviour">
+      <References Opposite="//seff//ResourceDemandingSEFF//resourceDemandingInternalBehaviours/" ReferenceType="//seff//ResourceDemandingSEFF/" LowerBound="1" Name="resourceDemandingSEFF_ResourceDemandingInternalBehaviour" />
+    </Types>
+    <Types xsi:type="nmeta:Class" BaseTypes="//seff//AbstractInternalControlFlowAction/" Name="ReleaseAction">
+      <References ReferenceType="//repository//PassiveResource/" LowerBound="1" Name="passiveResource_ReleaseAction" />
+    </Types>
+    <Types xsi:type="nmeta:Class" BaseTypes="//seff//AbstractLoopAction/" Name="LoopAction">
+      <References IsContainment="True" IsOrdered="True" Opposite="//core//PCMRandomVariable//loopAction_PCMRandomVariable/" ReferenceType="//core//PCMRandomVariable/" LowerBound="1" Name="iterationCount_LoopAction" />
+    </Types>
+    <Types xsi:type="nmeta:Class" BaseTypes="//seff//AbstractInternalControlFlowAction/" Name="ForkAction">
+      <References IsContainment="True" IsOrdered="True" Opposite="//seff//ForkedBehaviour//forkAction_ForkedBehaivour/" ReferenceType="//seff//ForkedBehaviour/" UpperBound="-1" Name="asynchronousForkedBehaviours_ForkAction" />
+      <References IsContainment="True" IsOrdered="True" Opposite="//seff//SynchronisationPoint//forkAction_SynchronisationPoint/" ReferenceType="//seff//SynchronisationPoint/" Name="synchronisingBehaviours_ForkAction" />
+    </Types>
+    <Types xsi:type="nmeta:Class" BaseTypes="//seff//ResourceDemandingBehaviour/" Name="ForkedBehaviour">
+      <References Opposite="//seff//SynchronisationPoint//synchronousForkedBehaviours_SynchronisationPoint/" ReferenceType="//seff//SynchronisationPoint/" Name="synchronisationPoint_ForkedBehaviour" />
+      <References Opposite="//seff//ForkAction//asynchronousForkedBehaviours_ForkAction/" ReferenceType="//seff//ForkAction/" Name="forkAction_ForkedBehaivour" />
+    </Types>
+    <Types xsi:type="nmeta:Class" Name="SynchronisationPoint">
+      <References IsContainment="True" IsOrdered="True" Opposite="//parameter//VariableUsage//synchronisationPoint_VariableUsage/" ReferenceType="//parameter//VariableUsage/" UpperBound="-1" Name="outputParameterUsage_SynchronisationPoint" />
+      <References Opposite="//seff//ForkAction//synchronisingBehaviours_ForkAction/" ReferenceType="//seff//ForkAction/" LowerBound="1" Name="forkAction_SynchronisationPoint" />
+      <References IsContainment="True" IsOrdered="True" Opposite="//seff//ForkedBehaviour//synchronisationPoint_ForkedBehaviour/" ReferenceType="//seff//ForkedBehaviour/" LowerBound="1" UpperBound="-1" Name="synchronousForkedBehaviours_SynchronisationPoint" />
+    </Types>
+    <Types xsi:type="nmeta:Class" BaseTypes="//seff//AbstractAction/ //seff//CallReturnAction/ //seff//seff_reliability//FailureHandlingEntity/" Name="ExternalCallAction">
+      <References ReferenceType="//repository//OperationSignature/" LowerBound="1" Name="calledService_ExternalService" />
+      <References ReferenceType="//repository//OperationRequiredRole/" LowerBound="1" Name="role_ExternalService" />
+      <Operations IsOrdered="True" Type="http://nmf.codeplex.com/nmeta/#//Boolean/" Name="SignatureBelongsToRole">
+        <Parameters IsOrdered="True" Type="http://nmf.codeplex.com/nmeta/#//Object/" Name="diagnostics" />
+        <Parameters IsOrdered="True" Name="context" />
+      </Operations>
+      <Attributes DefaultValue="0" LowerBound="1" Type="http://nmf.codeplex.com/nmeta/#//Integer/" Name="retryCount" />
+    </Types>
+    <Types xsi:type="nmeta:Class" BaseTypes="//seff//CallAction/" Name="CallReturnAction">
+      <References IsContainment="True" IsOrdered="True" Opposite="//parameter//VariableUsage//callReturnAction__VariableUsage/" ReferenceType="//parameter//VariableUsage/" UpperBound="-1" Name="returnVariableUsage__CallReturnAction" />
+    </Types>
+    <Types xsi:type="nmeta:Class" BaseTypes="//seff//AbstractBranchTransition/" Name="ProbabilisticBranchTransition">
+      <Attributes LowerBound="1" Type="http://nmf.codeplex.com/nmeta/#//Double/" Name="branchProbability" />
+    </Types>
+    <Types xsi:type="nmeta:Class" BaseTypes="//seff//AbstractInternalControlFlowAction/" Name="AcquireAction">
+      <References ReferenceType="//repository//PassiveResource/" LowerBound="1" Name="passiveresource_AcquireAction" />
+      <Operations IsOrdered="True" Type="http://nmf.codeplex.com/nmeta/#//Boolean/" Name="TimeoutValueOfAcquireActionMustNotBeNegative">
+        <Parameters IsOrdered="True" Type="http://nmf.codeplex.com/nmeta/#//Object/" Name="diagnostics" />
+        <Parameters IsOrdered="True" Name="context" />
+      </Operations>
+      <Attributes LowerBound="1" Type="http://nmf.codeplex.com/nmeta/#//Boolean/" Name="timeout" />
+      <Attributes LowerBound="1" Type="http://nmf.codeplex.com/nmeta/#//Double/" Name="timeoutValue" />
+    </Types>
+    <Types xsi:type="nmeta:Class" BaseTypes="//seff//AbstractLoopAction/" Name="CollectionIteratorAction">
+      <References ReferenceType="//repository//Parameter/" LowerBound="1" Name="parameter_CollectionIteratorAction" />
+    </Types>
+    <Types xsi:type="nmeta:Class" BaseTypes="//seff//AbstractBranchTransition/" Name="GuardedBranchTransition">
+      <References IsContainment="True" IsOrdered="True" Opposite="//core//PCMRandomVariable//guardedBranchTransition_PCMRandomVariable/" ReferenceType="//core//PCMRandomVariable/" LowerBound="1" Name="branchCondition_GuardedBranchTransition" />
+    </Types>
+    <Types xsi:type="nmeta:Class" BaseTypes="//seff//AbstractInternalControlFlowAction/" Name="SetVariableAction">
+      <References IsContainment="True" IsOrdered="True" Opposite="//parameter//VariableUsage//setVariableAction_VariableUsage/" ReferenceType="//parameter//VariableUsage/" UpperBound="-1" Name="localVariableUsages_SetVariableAction" />
+    </Types>
+    <Types xsi:type="nmeta:Class" BaseTypes="//seff//CallAction/ //seff//AbstractInternalControlFlowAction/" Name="InternalCallAction">
+      <References ReferenceType="//seff//ResourceDemandingInternalBehaviour/" LowerBound="1" Name="calledResourceDemandingInternalBehaviour" />
+    </Types>
+    <Types xsi:type="nmeta:Class" BaseTypes="//seff//AbstractAction/ //seff//CallAction/" Name="EmitEventAction">
+      <References ReferenceType="//repository//EventType/" LowerBound="1" Name="eventType__EmitEventAction" />
+      <References ReferenceType="//repository//SourceRole/" LowerBound="1" Name="sourceRole__EmitEventAction" />
+    </Types>
+    <Types xsi:type="nmeta:Class" BaseTypes="//seff//AbstractInternalControlFlowAction/" Name="InternalAction">
+      <References IsContainment="True" IsOrdered="True" Opposite="//reliability//InternalFailureOccurrenceDescription//internalAction__InternalFailureOccurrenceDescription/" ReferenceType="//reliability//InternalFailureOccurrenceDescription/" UpperBound="-1" Name="internalFailureOccurrenceDescriptions__InternalAction" />
+      <Operations IsOrdered="True" Type="http://nmf.codeplex.com/nmeta/#//Boolean/" Name="MultipleInternalOccurrenceDescriptionsPerFailureTypeNotAllowed">
+        <Parameters IsOrdered="True" Type="http://nmf.codeplex.com/nmeta/#//Object/" Name="diagnostics" />
+        <Parameters IsOrdered="True" Name="context" />
+      </Operations>
+      <Operations IsOrdered="True" Type="http://nmf.codeplex.com/nmeta/#//Boolean/" Name="SumOfInternalActionFailureProbabilitiesMustNotExceed1">
+        <Parameters IsOrdered="True" Type="http://nmf.codeplex.com/nmeta/#//Object/" Name="diagnostics" />
+        <Parameters IsOrdered="True" Name="context" />
+      </Operations>
+    </Types>
+  </ChildNamespaces>
+  <ChildNamespaces Uri="http://sdq.ipd.uka.de/PalladioComponentModel/QoSAnnotations/5.0" Prefix="qosannotations" Name="qosannotations">
+    <ChildNamespaces Uri="http://sdq.ipd.uka.de/PalladioComponentModel/QoSAnnotations/QoS_Performance/5.0" Prefix="" Name="qos_performance">
+      <Types xsi:type="nmeta:Class" BaseTypes="//qosannotations//qos_performance//SpecifiedExecutionTime/" Name="SystemSpecifiedExecutionTime">
+        <Operations IsOrdered="True" Type="http://nmf.codeplex.com/nmeta/#//Boolean/" Name="SystemSpecifiedExecutionTimeMustReferenceRequiredRoleOfASystem">
+          <Parameters IsOrdered="True" Type="http://nmf.codeplex.com/nmeta/#//Object/" Name="diagnostics" />
+          <Parameters IsOrdered="True" Name="context" />
+        </Operations>
+      </Types>
+      <Types xsi:type="nmeta:Class" IsAbstract="True" BaseTypes="//qosannotations//SpecifiedQoSAnnotation/" Name="SpecifiedExecutionTime">
+        <References IsContainment="True" IsOrdered="True" Opposite="//core//PCMRandomVariable//specifiedExecutionTime_PCMRandomVariable/" ReferenceType="//core//PCMRandomVariable/" LowerBound="1" Name="specification_SpecifiedExecutionTime" />
+      </Types>
+      <Types xsi:type="nmeta:Class" BaseTypes="//qosannotations//qos_performance//SpecifiedExecutionTime/" Name="ComponentSpecifiedExecutionTime">
+        <References ReferenceType="//core//composition//AssemblyContext/" LowerBound="1" Name="assemblyContext_ComponentSpecifiedExecutionTime" />
+      </Types>
+    </ChildNamespaces>
+    <ChildNamespaces Uri="http://sdq.ipd.uka.de/PalladioComponentModel/QoSAnnotations/QoS_Reliability/5.0" Prefix="" Name="qos_reliability">
+      <Types xsi:type="nmeta:Class" BaseTypes="//qosannotations//SpecifiedQoSAnnotation/" Name="SpecifiedReliabilityAnnotation">
+        <References IsContainment="True" IsOrdered="True" Opposite="//reliability//ExternalFailureOccurrenceDescription//specifiedReliabilityAnnotation__ExternalFailureOccurrenceDescription/" ReferenceType="//reliability//ExternalFailureOccurrenceDescription/" LowerBound="1" UpperBound="-1" Name="externalFailureOccurrenceDescriptions__SpecifiedReliabilityAnnotation" />
+        <Operations IsOrdered="True" Type="http://nmf.codeplex.com/nmeta/#//Boolean/" Name="SpecifiedReliabilityAnnotationMustReferenceRequiredRoleOfASystem">
+          <Parameters IsOrdered="True" Type="http://nmf.codeplex.com/nmeta/#//Object/" Name="diagnostics" />
+          <Parameters IsOrdered="True" Name="context" />
+        </Operations>
+        <Operations IsOrdered="True" Type="http://nmf.codeplex.com/nmeta/#//Boolean/" Name="SumOfReliabilityAnnotationFailureProbabilitiesMustNotExceed1">
+          <Parameters IsOrdered="True" Type="http://nmf.codeplex.com/nmeta/#//Object/" Name="diagnostics" />
+          <Parameters IsOrdered="True" Name="context" />
+        </Operations>
+        <Operations IsOrdered="True" Type="http://nmf.codeplex.com/nmeta/#//Boolean/" Name="MultipleExternalOccurrenceDescriptionsPerFailureTypeNotAllowed">
+          <Parameters IsOrdered="True" Type="http://nmf.codeplex.com/nmeta/#//Object/" Name="diagnostics" />
+          <Parameters IsOrdered="True" Name="context" />
+        </Operations>
+      </Types>
+    </ChildNamespaces>
+    <Types xsi:type="nmeta:Class" IsAbstract="True" Name="SpecifiedQoSAnnotation">
+      <References ReferenceType="//repository//Signature/" LowerBound="1" Name="signature_SpecifiedQoSAnnation" />
+      <References ReferenceType="//repository//Role/" LowerBound="1" Name="role_SpecifiedQoSAnnotation" />
+      <References Opposite="//qosannotations//QoSAnnotations//specifiedQoSAnnotations_QoSAnnotations/" ReferenceType="//qosannotations//QoSAnnotations/" LowerBound="1" Name="qosAnnotations_SpecifiedQoSAnnotation" />
+    </Types>
+    <Types xsi:type="nmeta:Class" BaseTypes="//core//entity//Entity/" Name="QoSAnnotations">
+      <References IsContainment="True" IsOrdered="True" Opposite="//qosannotations//SpecifiedOutputParameterAbstraction//qosAnnotations_SpecifiedOutputParameterAbstraction/" ReferenceType="//qosannotations//SpecifiedOutputParameterAbstraction/" UpperBound="-1" Name="specifiedOutputParameterAbstractions_QoSAnnotations" />
+      <References Opposite="//system//System//qosAnnotations_System/" ReferenceType="//system//System/" LowerBound="1" Name="system_QoSAnnotations" />
+      <References IsContainment="True" IsOrdered="True" Opposite="//qosannotations//SpecifiedQoSAnnotation//qosAnnotations_SpecifiedQoSAnnotation/" ReferenceType="//qosannotations//SpecifiedQoSAnnotation/" UpperBound="-1" Name="specifiedQoSAnnotations_QoSAnnotations" />
+      <Operations IsOrdered="True" Type="http://nmf.codeplex.com/nmeta/#//Boolean/" Name="MultipleReliabilityAnnotationsPerExternalCallNotAllowed">
+        <Parameters IsOrdered="True" Type="http://nmf.codeplex.com/nmeta/#//Object/" Name="diagnostics" />
+        <Parameters IsOrdered="True" Name="context" />
+      </Operations>
+    </Types>
+    <Types xsi:type="nmeta:Class" IsAbstract="True" Name="SpecifiedOutputParameterAbstraction">
+      <References ReferenceType="//repository//Signature/" LowerBound="1" Name="signature_SpecifiedOutputParameterAbstraction" />
+      <References ReferenceType="//repository//Role/" LowerBound="1" Name="role_SpecifiedOutputParameterAbstraction" />
+      <References IsContainment="True" IsOrdered="True" Opposite="//parameter//VariableUsage//specifiedOutputParameterAbstraction_expectedExternalOutputs_VariableUsage/" ReferenceType="//parameter//VariableUsage/" UpperBound="-1" Name="expectedExternalOutputs_SpecifiedOutputParameterAbstraction" />
+      <References Opposite="//qosannotations//QoSAnnotations//specifiedOutputParameterAbstractions_QoSAnnotations/" ReferenceType="//qosannotations//QoSAnnotations/" LowerBound="1" Name="qosAnnotations_SpecifiedOutputParameterAbstraction" />
+    </Types>
+  </ChildNamespaces>
+  <ChildNamespaces Uri="http://sdq.ipd.uka.de/PalladioComponentModel/System/5.0" Prefix="system" Name="system">
+    <Types xsi:type="nmeta:Class" BaseTypes="//core//entity//Entity/ //core//entity//ComposedProvidingRequiringEntity/" Name="System">
+      <References IsContainment="True" IsOrdered="True" Opposite="//qosannotations//QoSAnnotations//system_QoSAnnotations/" ReferenceType="//qosannotations//QoSAnnotations/" UpperBound="-1" Name="qosAnnotations_System" />
+      <Operations IsOrdered="True" Type="http://nmf.codeplex.com/nmeta/#//Boolean/" Name="SystemMustHaveAtLeastOneProvidedRole">
+        <Parameters IsOrdered="True" Type="http://nmf.codeplex.com/nmeta/#//Object/" Name="diagnostics" />
+        <Parameters IsOrdered="True" Name="context" />
+      </Operations>
+    </Types>
+  </ChildNamespaces>
+  <ChildNamespaces Uri="http://sdq.ipd.uka.de/PalladioComponentModel/ResourceEnvironment/5.0" Prefix="resourceenvironment" Name="resourceenvironment">
+    <Types xsi:type="nmeta:Class" BaseTypes="//core//entity//NamedElement/" Name="ResourceEnvironment">
+      <References IsContainment="True" IsOrdered="True" Opposite="//resourceenvironment//LinkingResource//resourceEnvironment_LinkingResource/" ReferenceType="//resourceenvironment//LinkingResource/" UpperBound="-1" Name="linkingResources__ResourceEnvironment" />
+      <References IsContainment="True" IsOrdered="True" Opposite="//resourceenvironment//ResourceContainer//resourceEnvironment_ResourceContainer/" ReferenceType="//resourceenvironment//ResourceContainer/" UpperBound="-1" Name="resourceContainer_ResourceEnvironment" />
+    </Types>
+    <Types xsi:type="nmeta:Class" BaseTypes="//core//entity//Entity/" Name="LinkingResource">
+      <References ReferenceType="//resourceenvironment//ResourceContainer/" UpperBound="-1" Name="connectedResourceContainers_LinkingResource" />
+      <References IsContainment="True" IsOrdered="True" Opposite="//resourceenvironment//CommunicationLinkResourceSpecification//linkingResource_CommunicationLinkResourceSpecification/" ReferenceType="//resourceenvironment//CommunicationLinkResourceSpecification/" LowerBound="1" Name="communicationLinkResourceSpecifications_LinkingResource" />
+      <References Opposite="//resourceenvironment//ResourceEnvironment//linkingResources__ResourceEnvironment/" ReferenceType="//resourceenvironment//ResourceEnvironment/" LowerBound="1" Name="resourceEnvironment_LinkingResource" />
+    </Types>
+    <Types xsi:type="nmeta:Class" BaseTypes="//core//entity//Entity/" Name="ResourceContainer">
+      <References IsContainment="True" IsOrdered="True" Opposite="//resourceenvironment//ProcessingResourceSpecification//resourceContainer_ProcessingResourceSpecification/" ReferenceType="//resourceenvironment//ProcessingResourceSpecification/" UpperBound="-1" Name="activeResourceSpecifications_ResourceContainer" />
+      <References Opposite="//resourceenvironment//ResourceEnvironment//resourceContainer_ResourceEnvironment/" ReferenceType="//resourceenvironment//ResourceEnvironment/" Name="resourceEnvironment_ResourceContainer" />
+      <References IsContainment="True" IsOrdered="True" Opposite="//resourceenvironment//ResourceContainer//parentResourceContainer__ResourceContainer/" ReferenceType="//resourceenvironment//ResourceContainer/" UpperBound="-1" Name="nestedResourceContainers__ResourceContainer" />
+      <References Opposite="//resourceenvironment//ResourceContainer//nestedResourceContainers__ResourceContainer/" ReferenceType="//resourceenvironment//ResourceContainer/" Name="parentResourceContainer__ResourceContainer" />
+    </Types>
+    <Types xsi:type="nmeta:Class" BaseTypes="identifier.nmeta#//Identifier" Name="ProcessingResourceSpecification">
+      <References ReferenceType="//resourcetype//SchedulingPolicy/" LowerBound="1" Name="schedulingPolicy" />
+      <References ReferenceType="//resourcetype//ProcessingResourceType/" LowerBound="1" Name="activeResourceType_ActiveResourceSpecification" />
+      <References IsContainment="True" IsOrdered="True" Opposite="//core//PCMRandomVariable//processingResourceSpecification_processingRate_PCMRandomVariable/" ReferenceType="//core//PCMRandomVariable/" LowerBound="1" Name="processingRate_ProcessingResourceSpecification" />
+      <References Opposite="//resourceenvironment//ResourceContainer//activeResourceSpecifications_ResourceContainer/" ReferenceType="//resourceenvironment//ResourceContainer/" LowerBound="1" Name="resourceContainer_ProcessingResourceSpecification" />
+      <Attributes DefaultValue="0.0" LowerBound="1" Type="http://nmf.codeplex.com/nmeta/#//Double/" Name="MTTR" />
+      <Attributes DefaultValue="0.0" LowerBound="1" Type="http://nmf.codeplex.com/nmeta/#//Double/" Name="MTTF" />
+      <Attributes LowerBound="1" Type="http://nmf.codeplex.com/nmeta/#//Boolean/" Name="requiredByContainer" />
+      <Attributes DefaultValue="1" LowerBound="1" Type="http://nmf.codeplex.com/nmeta/#//Integer/" Name="numberOfReplicas" />
+    </Types>
+    <Types xsi:type="nmeta:Class" BaseTypes="identifier.nmeta#//Identifier" Name="CommunicationLinkResourceSpecification">
+      <References Opposite="//resourceenvironment//LinkingResource//communicationLinkResourceSpecifications_LinkingResource/" ReferenceType="//resourceenvironment//LinkingResource/" LowerBound="1" Name="linkingResource_CommunicationLinkResourceSpecification" />
+      <References ReferenceType="//resourcetype//CommunicationLinkResourceType/" LowerBound="1" Name="communicationLinkResourceType_CommunicationLinkResourceSpecification" />
+      <References IsContainment="True" IsOrdered="True" Opposite="//core//PCMRandomVariable//communicationLinkResourceSpecification_latency_PCMRandomVariable/" ReferenceType="//core//PCMRandomVariable/" LowerBound="1" Name="latency_CommunicationLinkResourceSpecification" />
+      <References IsContainment="True" IsOrdered="True" Opposite="//core//PCMRandomVariable//communicationLinkResourceSpecifcation_throughput_PCMRandomVariable/" ReferenceType="//core//PCMRandomVariable/" LowerBound="1" Name="throughput_CommunicationLinkResourceSpecification" />
+      <Attributes DefaultValue="0.0" LowerBound="1" Type="http://nmf.codeplex.com/nmeta/#//Double/" Name="failureProbability" />
+    </Types>
+  </ChildNamespaces>
+  <ChildNamespaces Uri="http://sdq.ipd.uka.de/PalladioComponentModel/Allocation/5.0" Prefix="allocation" Name="allocation">
+    <Types xsi:type="nmeta:Class" BaseTypes="//core//entity//Entity/" Name="AllocationContext">
+      <References ReferenceType="//resourceenvironment//ResourceContainer/" LowerBound="1" Name="resourceContainer_AllocationContext" />
+      <References ReferenceType="//core//composition//AssemblyContext/" Name="assemblyContext_AllocationContext" />
+      <References Opposite="//allocation//Allocation//allocationContexts_Allocation/" ReferenceType="//allocation//Allocation/" LowerBound="1" Name="allocation_AllocationContext" />
+      <References ReferenceType="//core//composition//EventChannel/" Name="eventChannel__AllocationContext" />
+      <Operations IsOrdered="True" Type="http://nmf.codeplex.com/nmeta/#//Boolean/" Name="OneAssemblyContextOrOneEventChannelShouldBeReferred">
+        <Parameters IsOrdered="True" Type="http://nmf.codeplex.com/nmeta/#//Object/" Name="diagnostics" />
+        <Parameters IsOrdered="True" Name="context" />
+      </Operations>
+    </Types>
+    <Types xsi:type="nmeta:Class" BaseTypes="//core//entity//Entity/" Name="Allocation">
+      <References ReferenceType="//resourceenvironment//ResourceEnvironment/" Name="targetResourceEnvironment_Allocation" />
+      <References ReferenceType="//system//System/" LowerBound="1" Name="system_Allocation" />
+      <References IsContainment="True" IsOrdered="True" Opposite="//allocation//AllocationContext//allocation_AllocationContext/" ReferenceType="//allocation//AllocationContext/" UpperBound="-1" Name="allocationContexts_Allocation" />
+      <Operations IsOrdered="True" Type="http://nmf.codeplex.com/nmeta/#//Boolean/" Name="EachAssemblyContextWithinSystemHasToBeAllocatedExactlyOnce">
+        <Parameters IsOrdered="True" Type="http://nmf.codeplex.com/nmeta/#//Object/" Name="diagnostics" />
+        <Parameters IsOrdered="True" Name="context" />
+      </Operations>
+      <Operations IsOrdered="True" Type="http://nmf.codeplex.com/nmeta/#//Boolean/" Name="CommunicatingServersHaveToBeConnectedByLinkingResource">
+        <Parameters IsOrdered="True" Type="http://nmf.codeplex.com/nmeta/#//Object/" Name="diagnostics" />
+        <Parameters IsOrdered="True" Name="context" />
+      </Operations>
+    </Types>
+  </ChildNamespaces>
+  <ChildNamespaces Uri="http://sdq.ipd.uka.de/PalladioComponentModel/SubSystem/5.0" Prefix="subsystem" Name="subsystem">
+    <Types xsi:type="nmeta:Class" BaseTypes="//core//entity//ComposedProvidingRequiringEntity/ //repository//RepositoryComponent/" Name="SubSystem" />
+  </ChildNamespaces>
+  <Types xsi:type="nmeta:Class" Name="DummyClass" />
+</nmeta:Namespace>

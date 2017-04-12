@@ -1,0 +1,771 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<xmi:XMI xmi:version="2.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xmi="http://www.omg.org/XMI">
+  <allocation:Allocation targetResourceEnvironment_Allocation="#//2" system_Allocation="_MafcUFBvEd6ActLj8Gdl_A" entityName="defaultAllocation" id="_BuYpgFBwEd6ActLj8Gdl_A" xmlns:allocation="http://sdq.ipd.uka.de/PalladioComponentModel/Allocation/5.0">
+    <allocationContexts_Allocation resourceContainer_AllocationContext="_5uTBUBpmEdyxqpPYxT_m3w" assemblyContext_AllocationContext="_Yp70sFBvEd6ActLj8Gdl_A" entityName="Allocation_Assembly_WebGUI &lt;WebGUI&gt; &lt;WebGUI&gt;" id="_Cdi1kFBwEd6ActLj8Gdl_A" />
+    <allocationContexts_Allocation resourceContainer_AllocationContext="_5uTBUBpmEdyxqpPYxT_m3w" assemblyContext_AllocationContext="_a3kJ4FBvEd6ActLj8Gdl_A" entityName="Allocation_Assembly_MediaStore &lt;MediaStore&gt; &lt;MediaStore&gt;" id="_DzYnIFBwEd6ActLj8Gdl_A" />
+    <allocationContexts_Allocation resourceContainer_AllocationContext="_5uTBUBpmEdyxqpPYxT_m3w" assemblyContext_AllocationContext="_dbNyYFBvEd6ActLj8Gdl_A" entityName="Allocation_Assembly_DigitalWatermarking &lt;DigitalWatermarking&gt; &lt;DigitalWatermarking&gt;" id="_Eh89UFBwEd6ActLj8Gdl_A" />
+    <allocationContexts_Allocation resourceContainer_AllocationContext="_tVi40Dq_EeCCbpF63PfiyA" assemblyContext_AllocationContext="_jeBpYFBvEd6ActLj8Gdl_A" entityName="Allocation_Assembly_AudioDB &lt;AudioDB&gt; &lt;AudioDB&gt;" id="_FPL2wFBwEd6ActLj8Gdl_A" />
+  </allocation:Allocation>
+  <system:System entityName="defaultSystem" id="_MafcUFBvEd6ActLj8Gdl_A" xmlns:system="http://sdq.ipd.uka.de/PalladioComponentModel/System/5.0">
+    <providedRoles_InterfaceProvidingEntity xmlns:repository="http://sdq.ipd.uka.de/PalladioComponentModel/Repository/5.0" xsi:type="repository:OperationProvidedRole" providedInterface__OperationProvidedRole="_wflM0BpXEdyxqpPYxT_m3w" entityName="Provided_IHTTP" id="_TSt4YFBvEd6ActLj8Gdl_A" />
+    <assemblyContexts__ComposedStructure encapsulatedComponent__AssemblyContext="_q5WkIBpXEdyxqpPYxT_m3w" entityName="Assembly_WebGUI &lt;WebGUI&gt;" id="_Yp70sFBvEd6ActLj8Gdl_A" />
+    <assemblyContexts__ComposedStructure encapsulatedComponent__AssemblyContext="_rzeDABpXEdyxqpPYxT_m3w" entityName="Assembly_MediaStore &lt;MediaStore&gt;" id="_a3kJ4FBvEd6ActLj8Gdl_A" />
+    <assemblyContexts__ComposedStructure encapsulatedComponent__AssemblyContext="_t663sBpXEdyxqpPYxT_m3w" entityName="Assembly_DigitalWatermarking &lt;DigitalWatermarking&gt;" id="_dbNyYFBvEd6ActLj8Gdl_A" />
+    <assemblyContexts__ComposedStructure encapsulatedComponent__AssemblyContext="_q2UeYCAiEdyB2fTIEA4hbA" entityName="Assembly_AudioDB &lt;AudioDB&gt;" id="_jeBpYFBvEd6ActLj8Gdl_A" />
+    <connectors__ComposedStructure xmlns:composition="http://sdq.ipd.uka.de/PalladioComponentModel/Core/Composition/5.0" xsi:type="composition:AssemblyConnector" requiringAssemblyContext_AssemblyConnector="_Yp70sFBvEd6ActLj8Gdl_A" providingAssemblyContext_AssemblyConnector="_a3kJ4FBvEd6ActLj8Gdl_A" providedRole_AssemblyConnector="__EO3IBpZEdyxqpPYxT_m3w" requiredRole_AssemblyConnector="_-uB9oBpZEdyxqpPYxT_m3w" entityName="Connector Assembly_WebGUI &lt;WebGUI&gt; -&gt; Assembly_MediaStore &lt;MediaStore&gt;" id="_dFy8AFBvEd6ActLj8Gdl_A" />
+    <connectors__ComposedStructure xmlns:composition="http://sdq.ipd.uka.de/PalladioComponentModel/Core/Composition/5.0" xsi:type="composition:AssemblyConnector" requiringAssemblyContext_AssemblyConnector="_a3kJ4FBvEd6ActLj8Gdl_A" providingAssemblyContext_AssemblyConnector="_jeBpYFBvEd6ActLj8Gdl_A" providedRole_AssemblyConnector="_snaokCAiEdyB2fTIEA4hbA" requiredRole_AssemblyConnector="__rkj8BpZEdyxqpPYxT_m3w" entityName="Connector Assembly_MediaStore &lt;MediaStore&gt; -&gt; Assembly_AudioDB &lt;AudioDB&gt;" id="_oujH0FBvEd6ActLj8Gdl_A" />
+    <connectors__ComposedStructure xmlns:composition="http://sdq.ipd.uka.de/PalladioComponentModel/Core/Composition/5.0" xsi:type="composition:AssemblyConnector" requiringAssemblyContext_AssemblyConnector="_a3kJ4FBvEd6ActLj8Gdl_A" providingAssemblyContext_AssemblyConnector="_dbNyYFBvEd6ActLj8Gdl_A" providedRole_AssemblyConnector="_A1yUUBpaEdyxqpPYxT_m3w" requiredRole_AssemblyConnector="_ACOwcBpaEdyxqpPYxT_m3w" entityName="Connector Assembly_MediaStore &lt;MediaStore&gt; -&gt; Assembly_DigitalWatermarking &lt;DigitalWatermarking&gt;" id="_pCfXgFBvEd6ActLj8Gdl_A" />
+    <connectors__ComposedStructure xmlns:composition="http://sdq.ipd.uka.de/PalladioComponentModel/Core/Composition/5.0" xsi:type="composition:ProvidedDelegationConnector" innerProvidedRole_ProvidedDelegationConnector="_-BBGoBpZEdyxqpPYxT_m3w" outerProvidedRole_ProvidedDelegationConnector="_TSt4YFBvEd6ActLj8Gdl_A" assemblyContext_ProvidedDelegationConnector="_Yp70sFBvEd6ActLj8Gdl_A" entityName="ProvDelegation Provided_IHTTP -&gt; Provided_IHTTP_WebGUI" id="_agDo0FBvEd6ActLj8Gdl_A" />
+  </system:System>
+  <resourceenvironment:ResourceEnvironment xmlns:resourceenvironment="http://sdq.ipd.uka.de/PalladioComponentModel/ResourceEnvironment/5.0">
+    <linkingResources__ResourceEnvironment connectedResourceContainers_LinkingResource="_tVi40Dq_EeCCbpF63PfiyA _5uTBUBpmEdyxqpPYxT_m3w" id="__oYXADq_EeCCbpF63PfiyA">
+      <communicationLinkResourceSpecifications_LinkingResource communicationLinkResourceType_CommunicationLinkResourceSpecification="_o3sScH2AEdyH8uerKnHYug" id="__or5ADq_EeCCbpF63PfiyA">
+        <latency_CommunicationLinkResourceSpecification specification="0.1" />
+        <throughput_CommunicationLinkResourceSpecification specification="10000000" />
+      </communicationLinkResourceSpecifications_LinkingResource>
+    </linkingResources__ResourceEnvironment>
+    <resourceContainer_ResourceEnvironment entityName="AppServer" id="_5uTBUBpmEdyxqpPYxT_m3w">
+      <activeResourceSpecifications_ResourceContainer schedulingPolicy="FCFS" activeResourceType_ActiveResourceSpecification="_BIjHoQ3KEdyouMqirZIhzQ" id="_afNFwQMaEeKkGv40lSkX_A">
+        <processingRate_ProcessingResourceSpecification specification="24 * 1000000" />
+      </activeResourceSpecifications_ResourceContainer>
+      <activeResourceSpecifications_ResourceContainer schedulingPolicy="ProcessorSharing" activeResourceType_ActiveResourceSpecification="_oro4gG3fEdy4YaaT-RYrLQ" id="_afNs0AMaEeKkGv40lSkX_A">
+        <processingRate_ProcessingResourceSpecification specification="1000" />
+      </activeResourceSpecifications_ResourceContainer>
+    </resourceContainer_ResourceEnvironment>
+    <resourceContainer_ResourceEnvironment entityName="DBServer" id="_tVi40Dq_EeCCbpF63PfiyA">
+      <activeResourceSpecifications_ResourceContainer schedulingPolicy="ProcessorSharing" activeResourceType_ActiveResourceSpecification="_oro4gG3fEdy4YaaT-RYrLQ" id="_afNs1AMaEeKkGv40lSkX_A">
+        <processingRate_ProcessingResourceSpecification specification="1000" />
+      </activeResourceSpecifications_ResourceContainer>
+      <activeResourceSpecifications_ResourceContainer schedulingPolicy="FCFS" activeResourceType_ActiveResourceSpecification="_BIjHoQ3KEdyouMqirZIhzQ" id="_afOT4QMaEeKkGv40lSkX_A">
+        <processingRate_ProcessingResourceSpecification specification="24*1000000" />
+      </activeResourceSpecifications_ResourceContainer>
+    </resourceContainer_ResourceEnvironment>
+  </resourceenvironment:ResourceEnvironment>
+  <repository:Repository entityName="mediastoreRepository" id="_qPoRsBpXEdyxqpPYxT_m3w" xmlns:repository="http://sdq.ipd.uka.de/PalladioComponentModel/Repository/5.0">
+    <components__Repository xsi:type="repository:BasicComponent" entityName="WebGUI" id="_q5WkIBpXEdyxqpPYxT_m3w">
+      <serviceEffectSpecifications__BasicComponent xmlns:seff="http://sdq.ipd.uka.de/PalladioComponentModel/SEFF/5.0" xsi:type="seff:ResourceDemandingSEFF" id="_twp4gCZ4EdywZLVVlfU7gQ" describedService__SEFF="_B8SE7HebEd-AVaTk8ZPCHQ">
+        <steps_Behaviour xsi:type="seff:StartAction" successor_AbstractAction="_-rVJoEg-Ed2v5eXKEbOQ9g" id="_uHmY4CZ4EdywZLVVlfU7gQ" />
+        <steps_Behaviour xsi:type="seff:StopAction" predecessor_AbstractAction="_HZOt4Eg_Ed2v5eXKEbOQ9g" id="_uHmY4SZ4EdywZLVVlfU7gQ" />
+        <steps_Behaviour xsi:type="seff:InternalAction" predecessor_AbstractAction="_uHmY4CZ4EdywZLVVlfU7gQ" successor_AbstractAction="_A-_1YEg_Ed2v5eXKEbOQ9g" entityName="parseRequest" id="_-rVJoEg-Ed2v5eXKEbOQ9g">
+          <resourceDemand_Action requiredResource_ParametricResourceDemand="_oro4gG3fEdy4YaaT-RYrLQ">
+            <specification_ParametericResourceDemand specification="10" />
+          </resourceDemand_Action>
+        </steps_Behaviour>
+        <steps_Behaviour xsi:type="seff:ExternalCallAction" calledService_ExternalService="_B8bOsXebEd-AVaTk8ZPCHQ" role_ExternalService="_-uB9oBpZEdyxqpPYxT_m3w" predecessor_AbstractAction="_-rVJoEg-Ed2v5eXKEbOQ9g" successor_AbstractAction="_HZOt4Eg_Ed2v5eXKEbOQ9g" id="_A-_1YEg_Ed2v5eXKEbOQ9g">
+          <inputVariableUsages__CallAction>
+            <variableCharacterisation_VariableUsage type="NUMBER_OF_ELEMENTS">
+              <specification_VariableCharacterisation specification="request.requestedFiles.NUMBER_OF_ELEMENTS" />
+            </variableCharacterisation_VariableUsage>
+            <namedReference__VariableUsage xmlns:stoex="http://sdq.ipd.uka.de/StochasticExpressions/1.0" xsi:type="stoex:VariableReference" referenceName="ids" />
+          </inputVariableUsages__CallAction>
+          <inputVariableUsages__CallAction>
+            <variableCharacterisation_VariableUsage type="VALUE">
+              <specification_VariableCharacterisation specification="request.customerType.VALUE" />
+            </variableCharacterisation_VariableUsage>
+            <namedReference__VariableUsage xmlns:stoex="http://sdq.ipd.uka.de/StochasticExpressions/1.0" xsi:type="stoex:VariableReference" referenceName="customerType" />
+          </inputVariableUsages__CallAction>
+        </steps_Behaviour>
+        <steps_Behaviour xsi:type="seff:InternalAction" predecessor_AbstractAction="_A-_1YEg_Ed2v5eXKEbOQ9g" successor_AbstractAction="_uHmY4SZ4EdywZLVVlfU7gQ" entityName="createRepsonse" id="_HZOt4Eg_Ed2v5eXKEbOQ9g">
+          <resourceDemand_Action requiredResource_ParametricResourceDemand="_oro4gG3fEdy4YaaT-RYrLQ">
+            <specification_ParametericResourceDemand specification="5" />
+          </resourceDemand_Action>
+        </steps_Behaviour>
+      </serviceEffectSpecifications__BasicComponent>
+      <serviceEffectSpecifications__BasicComponent xmlns:seff="http://sdq.ipd.uka.de/PalladioComponentModel/SEFF/5.0" xsi:type="seff:ResourceDemandingSEFF" id="_ulQlQCZ4EdywZLVVlfU7gQ" describedService__SEFF="_B8SE7XebEd-AVaTk8ZPCHQ">
+        <steps_Behaviour xsi:type="seff:StartAction" successor_AbstractAction="_KB_x0Eg9Ed2v5eXKEbOQ9g" id="_u4LhQCZ4EdywZLVVlfU7gQ" />
+        <steps_Behaviour xsi:type="seff:StopAction" predecessor_AbstractAction="_NwHpYEg9Ed2v5eXKEbOQ9g" id="_u4LhQSZ4EdywZLVVlfU7gQ" />
+        <steps_Behaviour xsi:type="seff:InternalAction" predecessor_AbstractAction="_u4LhQCZ4EdywZLVVlfU7gQ" successor_AbstractAction="_Q8jwMEg9Ed2v5eXKEbOQ9g" entityName="parseRequest" id="_KB_x0Eg9Ed2v5eXKEbOQ9g">
+          <resourceDemand_Action requiredResource_ParametricResourceDemand="_oro4gG3fEdy4YaaT-RYrLQ">
+            <specification_ParametericResourceDemand specification="10" />
+          </resourceDemand_Action>
+        </steps_Behaviour>
+        <steps_Behaviour xsi:type="seff:InternalAction" predecessor_AbstractAction="_Q8jwMEg9Ed2v5eXKEbOQ9g" successor_AbstractAction="_u4LhQSZ4EdywZLVVlfU7gQ" entityName="createResponse" id="_NwHpYEg9Ed2v5eXKEbOQ9g">
+          <resourceDemand_Action requiredResource_ParametricResourceDemand="_oro4gG3fEdy4YaaT-RYrLQ">
+            <specification_ParametericResourceDemand specification="5" />
+          </resourceDemand_Action>
+        </steps_Behaviour>
+        <steps_Behaviour xsi:type="seff:ExternalCallAction" calledService_ExternalService="_B8bOsnebEd-AVaTk8ZPCHQ" role_ExternalService="_-uB9oBpZEdyxqpPYxT_m3w" predecessor_AbstractAction="_KB_x0Eg9Ed2v5eXKEbOQ9g" successor_AbstractAction="_NwHpYEg9Ed2v5eXKEbOQ9g" id="_Q8jwMEg9Ed2v5eXKEbOQ9g">
+          <inputVariableUsages__CallAction>
+            <variableCharacterisation_VariableUsage type="BYTESIZE">
+              <specification_VariableCharacterisation specification="file.BYTESIZE" />
+            </variableCharacterisation_VariableUsage>
+            <variableCharacterisation_VariableUsage type="VALUE">
+              <specification_VariableCharacterisation specification="file.VALUE" />
+            </variableCharacterisation_VariableUsage>
+            <variableCharacterisation_VariableUsage type="TYPE">
+              <specification_VariableCharacterisation specification="file.TYPE" />
+            </variableCharacterisation_VariableUsage>
+            <namedReference__VariableUsage xmlns:stoex="http://sdq.ipd.uka.de/StochasticExpressions/1.0" xsi:type="stoex:VariableReference" referenceName="file" />
+          </inputVariableUsages__CallAction>
+        </steps_Behaviour>
+      </serviceEffectSpecifications__BasicComponent>
+      <requiredRoles_InterfaceRequiringEntity xsi:type="repository:OperationRequiredRole" requiredInterface__OperationRequiredRole="_xSi60BpXEdyxqpPYxT_m3w" entityName="Required_IMediaStore_WebGUI" id="_-uB9oBpZEdyxqpPYxT_m3w" />
+      <providedRoles_InterfaceProvidingEntity xsi:type="repository:OperationProvidedRole" providedInterface__OperationProvidedRole="_wflM0BpXEdyxqpPYxT_m3w" entityName="Provided_IHTTP_WebGUI" id="_-BBGoBpZEdyxqpPYxT_m3w" />
+    </components__Repository>
+    <components__Repository xsi:type="repository:BasicComponent" entityName="MediaStore" id="_rzeDABpXEdyxqpPYxT_m3w">
+      <serviceEffectSpecifications__BasicComponent xmlns:seff="http://sdq.ipd.uka.de/PalladioComponentModel/SEFF/5.0" xsi:type="seff:ResourceDemandingSEFF" id="_xSaIACZ4EdywZLVVlfU7gQ" describedService__SEFF="_B8bOsXebEd-AVaTk8ZPCHQ">
+        <steps_Behaviour xsi:type="seff:StartAction" successor_AbstractAction="_GqUxwEhFEd2v5eXKEbOQ9g" id="_xj12QCZ4EdywZLVVlfU7gQ" />
+        <steps_Behaviour xsi:type="seff:StopAction" predecessor_AbstractAction="_gyFk0EhFEd2v5eXKEbOQ9g" id="_xj12QSZ4EdywZLVVlfU7gQ" />
+        <steps_Behaviour xsi:type="seff:ExternalCallAction" calledService_ExternalService="_B8bOtHebEd-AVaTk8ZPCHQ" role_ExternalService="__rkj8BpZEdyxqpPYxT_m3w" predecessor_AbstractAction="_xj12QCZ4EdywZLVVlfU7gQ" successor_AbstractAction="_gyFk0EhFEd2v5eXKEbOQ9g" id="_GqUxwEhFEd2v5eXKEbOQ9g">
+          <returnVariableUsage__CallReturnAction>
+            <variableCharacterisation_VariableUsage type="NUMBER_OF_ELEMENTS">
+              <specification_VariableCharacterisation specification="RETURN.NUMBER_OF_ELEMENTS" />
+            </variableCharacterisation_VariableUsage>
+            <namedReference__VariableUsage xmlns:stoex="http://sdq.ipd.uka.de/StochasticExpressions/1.0" xsi:type="stoex:VariableReference" referenceName="fileList" />
+          </returnVariableUsage__CallReturnAction>
+          <returnVariableUsage__CallReturnAction>
+            <variableCharacterisation_VariableUsage type="BYTESIZE">
+              <specification_VariableCharacterisation specification="RETURN.INNER.BYTESIZE" />
+            </variableCharacterisation_VariableUsage>
+            <namedReference__VariableUsage xmlns:stoex="http://sdq.ipd.uka.de/StochasticExpressions/1.0" xsi:type="stoex:VariableReference" referenceName="fileSize" />
+          </returnVariableUsage__CallReturnAction>
+          <inputVariableUsages__CallAction>
+            <variableCharacterisation_VariableUsage type="NUMBER_OF_ELEMENTS">
+              <specification_VariableCharacterisation specification="ids.NUMBER_OF_ELEMENTS" />
+            </variableCharacterisation_VariableUsage>
+            <namedReference__VariableUsage xmlns:stoex="http://sdq.ipd.uka.de/StochasticExpressions/1.0" xsi:type="stoex:VariableReference" referenceName="ids" />
+          </inputVariableUsages__CallAction>
+        </steps_Behaviour>
+        <steps_Behaviour xsi:type="seff:LoopAction" predecessor_AbstractAction="_GqUxwEhFEd2v5eXKEbOQ9g" successor_AbstractAction="_xj12QSZ4EdywZLVVlfU7gQ" entityName="watermarkLoop" id="_gyFk0EhFEd2v5eXKEbOQ9g">
+          <iterationCount_LoopAction specification="fileList.NUMBER_OF_ELEMENTS" />
+          <bodyBehaviour_Loop id="_XoUekL7GEeGhOOoNZJ4gSw">
+            <steps_Behaviour xsi:type="seff:StartAction" successor_AbstractAction="_u770YEhFEd2v5eXKEbOQ9g" id="_gyFk0UhFEd2v5eXKEbOQ9g" />
+            <steps_Behaviour xsi:type="seff:StopAction" predecessor_AbstractAction="_u770YEhFEd2v5eXKEbOQ9g" id="_gyFk0khFEd2v5eXKEbOQ9g" />
+            <steps_Behaviour xsi:type="seff:ExternalCallAction" calledService_ExternalService="_B8bOt3ebEd-AVaTk8ZPCHQ" role_ExternalService="_ACOwcBpaEdyxqpPYxT_m3w" predecessor_AbstractAction="_gyFk0UhFEd2v5eXKEbOQ9g" successor_AbstractAction="_gyFk0khFEd2v5eXKEbOQ9g" id="_u770YEhFEd2v5eXKEbOQ9g">
+              <inputVariableUsages__CallAction>
+                <variableCharacterisation_VariableUsage type="BYTESIZE">
+                  <specification_VariableCharacterisation specification="fileSize.BYTESIZE" />
+                </variableCharacterisation_VariableUsage>
+                <namedReference__VariableUsage xmlns:stoex="http://sdq.ipd.uka.de/StochasticExpressions/1.0" xsi:type="stoex:VariableReference" referenceName="file" />
+              </inputVariableUsages__CallAction>
+            </steps_Behaviour>
+          </bodyBehaviour_Loop>
+        </steps_Behaviour>
+      </serviceEffectSpecifications__BasicComponent>
+      <serviceEffectSpecifications__BasicComponent xmlns:seff="http://sdq.ipd.uka.de/PalladioComponentModel/SEFF/5.0" xsi:type="seff:ResourceDemandingSEFF" id="_x4QnECZ4EdywZLVVlfU7gQ" describedService__SEFF="_B8bOsnebEd-AVaTk8ZPCHQ">
+        <steps_Behaviour xsi:type="seff:StartAction" successor_AbstractAction="_dW7_gEg4Ed2v5eXKEbOQ9g" id="_yIpMcCZ4EdywZLVVlfU7gQ" />
+        <steps_Behaviour xsi:type="seff:StopAction" predecessor_AbstractAction="_dW7_gEg4Ed2v5eXKEbOQ9g" id="_yIpMcSZ4EdywZLVVlfU7gQ" />
+        <steps_Behaviour xsi:type="seff:ExternalCallAction" calledService_ExternalService="_B8bOtXebEd-AVaTk8ZPCHQ" role_ExternalService="__rkj8BpZEdyxqpPYxT_m3w" predecessor_AbstractAction="_yIpMcCZ4EdywZLVVlfU7gQ" successor_AbstractAction="_yIpMcSZ4EdywZLVVlfU7gQ" id="_dW7_gEg4Ed2v5eXKEbOQ9g">
+          <inputVariableUsages__CallAction>
+            <variableCharacterisation_VariableUsage type="BYTESIZE">
+              <specification_VariableCharacterisation specification="file.BYTESIZE" />
+            </variableCharacterisation_VariableUsage>
+            <namedReference__VariableUsage xmlns:stoex="http://sdq.ipd.uka.de/StochasticExpressions/1.0" xsi:type="stoex:VariableReference" referenceName="file" />
+          </inputVariableUsages__CallAction>
+        </steps_Behaviour>
+      </serviceEffectSpecifications__BasicComponent>
+      <requiredRoles_InterfaceRequiringEntity xsi:type="repository:OperationRequiredRole" requiredInterface__OperationRequiredRole="_yNjKgBpXEdyxqpPYxT_m3w" entityName="Required_IAudioDB_MediaStore" id="__rkj8BpZEdyxqpPYxT_m3w" />
+      <requiredRoles_InterfaceRequiringEntity xsi:type="repository:OperationRequiredRole" requiredInterface__OperationRequiredRole="_zAzzcBpXEdyxqpPYxT_m3w" entityName="Required_ISound_MediaStore" id="_ACOwcBpaEdyxqpPYxT_m3w" />
+      <providedRoles_InterfaceProvidingEntity xsi:type="repository:OperationProvidedRole" providedInterface__OperationProvidedRole="_xSi60BpXEdyxqpPYxT_m3w" entityName="Provided_IMediaStore_MediaStore" id="__EO3IBpZEdyxqpPYxT_m3w" />
+    </components__Repository>
+    <components__Repository xsi:type="repository:BasicComponent" entityName="AudioDB" id="_tJKDkBpXEdyxqpPYxT_m3w">
+      <serviceEffectSpecifications__BasicComponent xmlns:seff="http://sdq.ipd.uka.de/PalladioComponentModel/SEFF/5.0" xsi:type="seff:ResourceDemandingSEFF" id="_1OY1YCZ4EdywZLVVlfU7gQ" describedService__SEFF="_B8bOtHebEd-AVaTk8ZPCHQ">
+        <steps_Behaviour xsi:type="seff:StartAction" successor_AbstractAction="_VwQpgEuPEd2IYen5QyVyzQ" id="_1fqyoCZ4EdywZLVVlfU7gQ" />
+        <steps_Behaviour xsi:type="seff:StopAction" predecessor_AbstractAction="_xohJ0EuPEd2IYen5QyVyzQ" id="_1fqyoSZ4EdywZLVVlfU7gQ" />
+        <steps_Behaviour xsi:type="seff:LoopAction" predecessor_AbstractAction="_1fqyoCZ4EdywZLVVlfU7gQ" successor_AbstractAction="_xohJ0EuPEd2IYen5QyVyzQ" entityName="loadFiles" id="_VwQpgEuPEd2IYen5QyVyzQ">
+          <iterationCount_LoopAction specification="ids.NUMBER_OF_ELEMENTS" />
+          <bodyBehaviour_Loop id="_XoZXEL7GEeGhOOoNZJ4gSw">
+            <steps_Behaviour xsi:type="seff:StartAction" successor_AbstractAction="_J8k-8EhAEd2v5eXKEbOQ9g" id="_ELns8EhAEd2v5eXKEbOQ9g" />
+            <steps_Behaviour xsi:type="seff:InternalAction" predecessor_AbstractAction="_ELns8EhAEd2v5eXKEbOQ9g" successor_AbstractAction="_fMM_gEuPEd2IYen5QyVyzQ" entityName="loadFilename" id="_J8k-8EhAEd2v5eXKEbOQ9g">
+              <resourceDemand_Action requiredResource_ParametricResourceDemand="_oro4gG3fEdy4YaaT-RYrLQ">
+                <specification_ParametericResourceDemand specification="3" />
+              </resourceDemand_Action>
+            </steps_Behaviour>
+            <steps_Behaviour xsi:type="seff:StopAction" predecessor_AbstractAction="_fMM_gEuPEd2IYen5QyVyzQ" id="_ELns8UhAEd2v5eXKEbOQ9g" />
+            <steps_Behaviour xsi:type="seff:InternalAction" predecessor_AbstractAction="_J8k-8EhAEd2v5eXKEbOQ9g" successor_AbstractAction="_ELns8UhAEd2v5eXKEbOQ9g" entityName="loadFile" id="_fMM_gEuPEd2IYen5QyVyzQ">
+              <resourceDemand_Action requiredResource_ParametricResourceDemand="_BIjHoQ3KEdyouMqirZIhzQ">
+                <specification_ParametericResourceDemand specification="fileSize.BYTESIZE" />
+              </resourceDemand_Action>
+            </steps_Behaviour>
+          </bodyBehaviour_Loop>
+        </steps_Behaviour>
+        <steps_Behaviour xsi:type="seff:SetVariableAction" predecessor_AbstractAction="_VwQpgEuPEd2IYen5QyVyzQ" successor_AbstractAction="_1fqyoSZ4EdywZLVVlfU7gQ" entityName="setReturn" id="_xohJ0EuPEd2IYen5QyVyzQ">
+          <localVariableUsages_SetVariableAction>
+            <variableCharacterisation_VariableUsage type="NUMBER_OF_ELEMENTS">
+              <specification_VariableCharacterisation specification="ids.NUMBER_OF_ELEMENTS" />
+            </variableCharacterisation_VariableUsage>
+            <namedReference__VariableUsage xmlns:stoex="http://sdq.ipd.uka.de/StochasticExpressions/1.0" xsi:type="stoex:VariableReference" referenceName="RETURN" />
+          </localVariableUsages_SetVariableAction>
+          <localVariableUsages_SetVariableAction>
+            <variableCharacterisation_VariableUsage type="BYTESIZE">
+              <specification_VariableCharacterisation specification="fileSize.BYTESIZE" />
+            </variableCharacterisation_VariableUsage>
+            <namedReference__VariableUsage xmlns:stoex="http://sdq.ipd.uka.de/StochasticExpressions/1.0" xsi:type="stoex:NamespaceReference" referenceName="RETURN">
+              <innerReference_NamespaceReference xsi:type="stoex:VariableReference" referenceName="INNER" />
+            </namedReference__VariableUsage>
+          </localVariableUsages_SetVariableAction>
+        </steps_Behaviour>
+      </serviceEffectSpecifications__BasicComponent>
+      <serviceEffectSpecifications__BasicComponent xmlns:seff="http://sdq.ipd.uka.de/PalladioComponentModel/SEFF/5.0" xsi:type="seff:ResourceDemandingSEFF" id="_1t1KcCZ4EdywZLVVlfU7gQ" describedService__SEFF="_B8bOtXebEd-AVaTk8ZPCHQ">
+        <steps_Behaviour xsi:type="seff:StartAction" successor_AbstractAction="_FCXBUEg4Ed2v5eXKEbOQ9g" id="_19eI8CZ4EdywZLVVlfU7gQ" />
+        <steps_Behaviour xsi:type="seff:StopAction" predecessor_AbstractAction="_K_PPcEg4Ed2v5eXKEbOQ9g" id="_19eI8SZ4EdywZLVVlfU7gQ" />
+        <steps_Behaviour xsi:type="seff:InternalAction" predecessor_AbstractAction="_19eI8CZ4EdywZLVVlfU7gQ" successor_AbstractAction="_K_PPcEg4Ed2v5eXKEbOQ9g" entityName="writeFilename" id="_FCXBUEg4Ed2v5eXKEbOQ9g">
+          <resourceDemand_Action requiredResource_ParametricResourceDemand="_oro4gG3fEdy4YaaT-RYrLQ">
+            <specification_ParametericResourceDemand specification="10" />
+          </resourceDemand_Action>
+        </steps_Behaviour>
+        <steps_Behaviour xsi:type="seff:InternalAction" predecessor_AbstractAction="_FCXBUEg4Ed2v5eXKEbOQ9g" successor_AbstractAction="_19eI8SZ4EdywZLVVlfU7gQ" entityName="writeFile2HD" id="_K_PPcEg4Ed2v5eXKEbOQ9g">
+          <resourceDemand_Action requiredResource_ParametricResourceDemand="_BIjHoQ3KEdyouMqirZIhzQ">
+            <specification_ParametericResourceDemand specification="file.BYTESIZE" />
+          </resourceDemand_Action>
+        </steps_Behaviour>
+      </serviceEffectSpecifications__BasicComponent>
+      <componentParameterUsage_ImplementationComponentType>
+        <variableCharacterisation_VariableUsage type="BYTESIZE">
+          <specification_VariableCharacterisation specification="IntPMF[(5; 0.0)(10; 0.051)(20; 0.134)(30; 0.193)(40; 0.212)(50; 0.224)(60; 0.186)]*100000" />
+        </variableCharacterisation_VariableUsage>
+        <namedReference__VariableUsage xmlns:stoex="http://sdq.ipd.uka.de/StochasticExpressions/1.0" xsi:type="stoex:VariableReference" referenceName="fileSize" />
+      </componentParameterUsage_ImplementationComponentType>
+      <providedRoles_InterfaceProvidingEntity xsi:type="repository:OperationProvidedRole" providedInterface__OperationProvidedRole="_yNjKgBpXEdyxqpPYxT_m3w" entityName="Provided_IAudioDB_AudioDB" id="_cPQgoCAdEdyCN4c4qwaGfQ" />
+    </components__Repository>
+    <components__Repository xsi:type="repository:BasicComponent" entityName="DigitalWatermarking" id="_t663sBpXEdyxqpPYxT_m3w">
+      <serviceEffectSpecifications__BasicComponent xmlns:seff="http://sdq.ipd.uka.de/PalladioComponentModel/SEFF/5.0" xsi:type="seff:ResourceDemandingSEFF" id="_ygMJwCZ4EdywZLVVlfU7gQ" describedService__SEFF="_B8bOt3ebEd-AVaTk8ZPCHQ">
+        <steps_Behaviour xsi:type="seff:StartAction" successor_AbstractAction="_EVflMEhBEd2v5eXKEbOQ9g" id="_ywSbQCZ4EdywZLVVlfU7gQ" />
+        <steps_Behaviour xsi:type="seff:StopAction" predecessor_AbstractAction="_EVflMEhBEd2v5eXKEbOQ9g" id="_ywSbQSZ4EdywZLVVlfU7gQ" />
+        <steps_Behaviour xsi:type="seff:InternalAction" predecessor_AbstractAction="_ywSbQCZ4EdywZLVVlfU7gQ" successor_AbstractAction="_ywSbQSZ4EdywZLVVlfU7gQ" entityName="watermarkFile" id="_EVflMEhBEd2v5eXKEbOQ9g">
+          <resourceDemand_Action requiredResource_ParametricResourceDemand="_oro4gG3fEdy4YaaT-RYrLQ">
+            <specification_ParametericResourceDemand specification="25+15*(file.BYTESIZE/1000000)" />
+          </resourceDemand_Action>
+        </steps_Behaviour>
+      </serviceEffectSpecifications__BasicComponent>
+      <providedRoles_InterfaceProvidingEntity xsi:type="repository:OperationProvidedRole" providedInterface__OperationProvidedRole="_zAzzcBpXEdyxqpPYxT_m3w" entityName="Provided_ISound_DigitalWatermarking" id="_A1yUUBpaEdyxqpPYxT_m3w" />
+    </components__Repository>
+    <components__Repository xsi:type="repository:BasicComponent" entityName="Encoding" id="_vifScBpXEdyxqpPYxT_m3w">
+      <serviceEffectSpecifications__BasicComponent xmlns:seff="http://sdq.ipd.uka.de/PalladioComponentModel/SEFF/5.0" xsi:type="seff:ResourceDemandingSEFF" id="_zloH0CZ4EdywZLVVlfU7gQ" describedService__SEFF="_B8bOuXebEd-AVaTk8ZPCHQ">
+        <steps_Behaviour xsi:type="seff:StopAction" predecessor_AbstractAction="_J4l2gFNnEd2DAaYH-ZsiCA" id="_z39N8SZ4EdywZLVVlfU7gQ" />
+        <steps_Behaviour xsi:type="seff:BranchAction" predecessor_AbstractAction="_k0kp4FNpEd2DAaYH-ZsiCA" successor_AbstractAction="_z39N8SZ4EdywZLVVlfU7gQ" entityName="type?" id="_J4l2gFNnEd2DAaYH-ZsiCA">
+          <branches_Branch xsi:type="seff:GuardedBranchTransition" id="_B8IT_HebEd-AVaTk8ZPCHQ">
+            <branchCondition_GuardedBranchTransition specification="file.TYPE==&quot;constant&quot;" />
+            <branchBehaviour_BranchTransition id="_XoihAb7GEeGhOOoNZJ4gSw">
+              <steps_Behaviour xsi:type="seff:StartAction" successor_AbstractAction="_ANPdcFNlEd2DAaYH-ZsiCA" id="_L_mmUVNnEd2DAaYH-ZsiCA" />
+              <steps_Behaviour xsi:type="seff:StopAction" predecessor_AbstractAction="_qaliEFNnEd2DAaYH-ZsiCA" id="_L_mmUlNnEd2DAaYH-ZsiCA" />
+              <steps_Behaviour xsi:type="seff:BranchAction" predecessor_AbstractAction="_ANPdcFNlEd2DAaYH-ZsiCA" successor_AbstractAction="_L_mmUlNnEd2DAaYH-ZsiCA" entityName="bitrate?" id="_qaliEFNnEd2DAaYH-ZsiCA">
+                <branches_Branch xsi:type="seff:GuardedBranchTransition" id="_B8IUAHebEd-AVaTk8ZPCHQ">
+                  <branchCondition_GuardedBranchTransition specification="file.VALUE&gt;192" />
+                  <branchBehaviour_BranchTransition id="_XojvIb7GEeGhOOoNZJ4gSw">
+                    <steps_Behaviour xsi:type="seff:StartAction" successor_AbstractAction="_UVcvkFNqEd2DAaYH-ZsiCA" id="_r3uOcVNnEd2DAaYH-ZsiCA" />
+                    <steps_Behaviour xsi:type="seff:StopAction" predecessor_AbstractAction="_ZFldwFNqEd2DAaYH-ZsiCA" id="_r3uOclNnEd2DAaYH-ZsiCA" />
+                    <steps_Behaviour xsi:type="seff:InternalAction" predecessor_AbstractAction="_r3uOcVNnEd2DAaYH-ZsiCA" successor_AbstractAction="_ZFldwFNqEd2DAaYH-ZsiCA" entityName="encode" id="_UVcvkFNqEd2DAaYH-ZsiCA">
+                      <resourceDemand_Action requiredResource_ParametricResourceDemand="_oro4gG3fEdy4YaaT-RYrLQ">
+                        <specification_ParametericResourceDemand specification="10*(192/file.VALUE)*file.BYTESIZE/1000000*0.7" />
+                      </resourceDemand_Action>
+                    </steps_Behaviour>
+                    <steps_Behaviour xsi:type="seff:SetVariableAction" predecessor_AbstractAction="_UVcvkFNqEd2DAaYH-ZsiCA" successor_AbstractAction="_r3uOclNnEd2DAaYH-ZsiCA" entityName="setReturn" id="_ZFldwFNqEd2DAaYH-ZsiCA">
+                      <localVariableUsages_SetVariableAction>
+                        <variableCharacterisation_VariableUsage type="BYTESIZE">
+                          <specification_VariableCharacterisation specification="192/file.VALUE*file.BYTESIZE*0.7" />
+                        </variableCharacterisation_VariableUsage>
+                        <variableCharacterisation_VariableUsage type="VALUE">
+                          <specification_VariableCharacterisation specification="192" />
+                        </variableCharacterisation_VariableUsage>
+                        <namedReference__VariableUsage xmlns:stoex="http://sdq.ipd.uka.de/StochasticExpressions/1.0" xsi:type="stoex:VariableReference" referenceName="RETURN" />
+                      </localVariableUsages_SetVariableAction>
+                    </steps_Behaviour>
+                  </branchBehaviour_BranchTransition>
+                </branches_Branch>
+                <branches_Branch xsi:type="seff:GuardedBranchTransition" id="_B8IUBnebEd-AVaTk8ZPCHQ">
+                  <branchCondition_GuardedBranchTransition specification="file.VALUE&lt;=192" />
+                  <branchBehaviour_BranchTransition id="_Xomycb7GEeGhOOoNZJ4gSw">
+                    <steps_Behaviour xsi:type="seff:StartAction" successor_AbstractAction="_tsKVoFNpEd2DAaYH-ZsiCA" id="_zvh4MVNnEd2DAaYH-ZsiCA" />
+                    <steps_Behaviour xsi:type="seff:StopAction" predecessor_AbstractAction="_9cEkEFNpEd2DAaYH-ZsiCA" id="_zvh4MlNnEd2DAaYH-ZsiCA" />
+                    <steps_Behaviour xsi:type="seff:InternalAction" predecessor_AbstractAction="_zvh4MVNnEd2DAaYH-ZsiCA" successor_AbstractAction="_9cEkEFNpEd2DAaYH-ZsiCA" entityName="encode" id="_tsKVoFNpEd2DAaYH-ZsiCA">
+                      <resourceDemand_Action requiredResource_ParametricResourceDemand="_oro4gG3fEdy4YaaT-RYrLQ">
+                        <specification_ParametericResourceDemand specification="10*(0.7*file.BYTESIZE/1000000)" />
+                      </resourceDemand_Action>
+                    </steps_Behaviour>
+                    <steps_Behaviour xsi:type="seff:SetVariableAction" predecessor_AbstractAction="_tsKVoFNpEd2DAaYH-ZsiCA" successor_AbstractAction="_zvh4MlNnEd2DAaYH-ZsiCA" entityName="setReturn" id="_9cEkEFNpEd2DAaYH-ZsiCA">
+                      <localVariableUsages_SetVariableAction>
+                        <variableCharacterisation_VariableUsage type="VALUE">
+                          <specification_VariableCharacterisation specification="file.VALUE" />
+                        </variableCharacterisation_VariableUsage>
+                        <variableCharacterisation_VariableUsage type="BYTESIZE">
+                          <specification_VariableCharacterisation specification="file.BYTESIZE*0.7" />
+                        </variableCharacterisation_VariableUsage>
+                        <namedReference__VariableUsage xmlns:stoex="http://sdq.ipd.uka.de/StochasticExpressions/1.0" xsi:type="stoex:VariableReference" referenceName="RETURN" />
+                      </localVariableUsages_SetVariableAction>
+                    </steps_Behaviour>
+                  </branchBehaviour_BranchTransition>
+                </branches_Branch>
+              </steps_Behaviour>
+              <steps_Behaviour xsi:type="seff:InternalAction" predecessor_AbstractAction="_L_mmUVNnEd2DAaYH-ZsiCA" successor_AbstractAction="_qaliEFNnEd2DAaYH-ZsiCA" entityName="transform2Wav" id="_ANPdcFNlEd2DAaYH-ZsiCA">
+                <resourceDemand_Action requiredResource_ParametricResourceDemand="_oro4gG3fEdy4YaaT-RYrLQ">
+                  <specification_ParametericResourceDemand specification="10*file.BYTESIZE/1000000" />
+                </resourceDemand_Action>
+              </steps_Behaviour>
+            </branchBehaviour_BranchTransition>
+          </branches_Branch>
+          <branches_Branch xsi:type="seff:GuardedBranchTransition" id="_B8IUDnebEd-AVaTk8ZPCHQ">
+            <branchCondition_GuardedBranchTransition specification="file.TYPE==&quot;variable&quot;" />
+            <branchBehaviour_BranchTransition id="_XorD4L7GEeGhOOoNZJ4gSw">
+              <steps_Behaviour xsi:type="seff:StartAction" successor_AbstractAction="_5M9KMFNnEd2DAaYH-ZsiCA" id="_MtfnEVNnEd2DAaYH-ZsiCA" />
+              <steps_Behaviour xsi:type="seff:StopAction" predecessor_AbstractAction="_5M9KMFNnEd2DAaYH-ZsiCA" id="_MtfnElNnEd2DAaYH-ZsiCA" />
+              <steps_Behaviour xsi:type="seff:BranchAction" predecessor_AbstractAction="_MtfnEVNnEd2DAaYH-ZsiCA" successor_AbstractAction="_MtfnElNnEd2DAaYH-ZsiCA" entityName="bitrate?" id="_5M9KMFNnEd2DAaYH-ZsiCA">
+                <branches_Branch xsi:type="seff:GuardedBranchTransition" id="_B8IUEnebEd-AVaTk8ZPCHQ">
+                  <branchCondition_GuardedBranchTransition specification="file.VALUE&gt;192" />
+                  <branchBehaviour_BranchTransition id="_XosSAL7GEeGhOOoNZJ4gSw">
+                    <steps_Behaviour xsi:type="seff:StartAction" successor_AbstractAction="_qaUm4FNoEd2DAaYH-ZsiCA" id="_7PykoVNnEd2DAaYH-ZsiCA" />
+                    <steps_Behaviour xsi:type="seff:InternalAction" predecessor_AbstractAction="_7PykoVNnEd2DAaYH-ZsiCA" successor_AbstractAction="_1S89UFNoEd2DAaYH-ZsiCA" entityName="transform2Wav" id="_qaUm4FNoEd2DAaYH-ZsiCA">
+                      <resourceDemand_Action requiredResource_ParametricResourceDemand="_oro4gG3fEdy4YaaT-RYrLQ">
+                        <specification_ParametericResourceDemand specification="10*file.BYTESIZE/1000000" />
+                      </resourceDemand_Action>
+                    </steps_Behaviour>
+                    <steps_Behaviour xsi:type="seff:InternalAction" predecessor_AbstractAction="_qaUm4FNoEd2DAaYH-ZsiCA" successor_AbstractAction="_CyBxkFNpEd2DAaYH-ZsiCA" entityName="encode" id="_1S89UFNoEd2DAaYH-ZsiCA">
+                      <resourceDemand_Action requiredResource_ParametricResourceDemand="_oro4gG3fEdy4YaaT-RYrLQ">
+                        <specification_ParametericResourceDemand specification="10*(192/file.VALUE)*file.BYTESIZE/1000000" />
+                      </resourceDemand_Action>
+                    </steps_Behaviour>
+                    <steps_Behaviour xsi:type="seff:SetVariableAction" predecessor_AbstractAction="_1S89UFNoEd2DAaYH-ZsiCA" successor_AbstractAction="_7PykolNnEd2DAaYH-ZsiCA" entityName="setReturn" id="_CyBxkFNpEd2DAaYH-ZsiCA">
+                      <localVariableUsages_SetVariableAction>
+                        <variableCharacterisation_VariableUsage type="BYTESIZE">
+                          <specification_VariableCharacterisation specification="192/file.VALUE*file.BYTESIZE" />
+                        </variableCharacterisation_VariableUsage>
+                        <variableCharacterisation_VariableUsage type="VALUE">
+                          <specification_VariableCharacterisation specification="192" />
+                        </variableCharacterisation_VariableUsage>
+                        <namedReference__VariableUsage xmlns:stoex="http://sdq.ipd.uka.de/StochasticExpressions/1.0" xsi:type="stoex:VariableReference" referenceName="RETURN" />
+                      </localVariableUsages_SetVariableAction>
+                    </steps_Behaviour>
+                    <steps_Behaviour xsi:type="seff:StopAction" predecessor_AbstractAction="_CyBxkFNpEd2DAaYH-ZsiCA" id="_7PykolNnEd2DAaYH-ZsiCA" />
+                  </branchBehaviour_BranchTransition>
+                </branches_Branch>
+                <branches_Branch xsi:type="seff:GuardedBranchTransition" id="_B8IUGnebEd-AVaTk8ZPCHQ">
+                  <branchCondition_GuardedBranchTransition specification="file.VALUE&lt;=192" />
+                  <branchBehaviour_BranchTransition id="_Xov8YL7GEeGhOOoNZJ4gSw">
+                    <steps_Behaviour xsi:type="seff:StartAction" successor_AbstractAction="_ALbwgFNuEd2CFabol9uwYw" id="_73SCcVNnEd2DAaYH-ZsiCA" />
+                    <steps_Behaviour xsi:type="seff:StopAction" predecessor_AbstractAction="_ALbwgFNuEd2CFabol9uwYw" id="_73SCclNnEd2DAaYH-ZsiCA" />
+                    <steps_Behaviour xsi:type="seff:SetVariableAction" predecessor_AbstractAction="_73SCcVNnEd2DAaYH-ZsiCA" successor_AbstractAction="_73SCclNnEd2DAaYH-ZsiCA" entityName="setReturn" id="_ALbwgFNuEd2CFabol9uwYw">
+                      <localVariableUsages_SetVariableAction>
+                        <variableCharacterisation_VariableUsage type="BYTESIZE">
+                          <specification_VariableCharacterisation specification="file.BYTESIZE" />
+                        </variableCharacterisation_VariableUsage>
+                        <variableCharacterisation_VariableUsage type="VALUE">
+                          <specification_VariableCharacterisation specification="file.VALUE" />
+                        </variableCharacterisation_VariableUsage>
+                        <namedReference__VariableUsage xmlns:stoex="http://sdq.ipd.uka.de/StochasticExpressions/1.0" xsi:type="stoex:VariableReference" referenceName="RETURN" />
+                      </localVariableUsages_SetVariableAction>
+                    </steps_Behaviour>
+                  </branchBehaviour_BranchTransition>
+                </branches_Branch>
+              </steps_Behaviour>
+            </branchBehaviour_BranchTransition>
+          </branches_Branch>
+        </steps_Behaviour>
+        <steps_Behaviour xsi:type="seff:StartAction" successor_AbstractAction="_J4l2gFNnEd2DAaYH-ZsiCA" id="_k0kp4FNpEd2DAaYH-ZsiCA" />
+      </serviceEffectSpecifications__BasicComponent>
+      <providedRoles_InterfaceProvidingEntity xsi:type="repository:OperationProvidedRole" providedInterface__OperationProvidedRole="_7aHA8BwpEdyg5YJN38bxwQ" entityName="IEncode_Prov" id="_E_SygBwqEdyg5YJN38bxwQ" />
+    </components__Repository>
+    <components__Repository xsi:type="repository:BasicComponent" entityName="DBCache" id="_5ua00BwhEdyigt_qJDxvbA">
+      <serviceEffectSpecifications__BasicComponent xmlns:seff="http://sdq.ipd.uka.de/PalladioComponentModel/SEFF/5.0" xsi:type="seff:ResourceDemandingSEFF" id="_2MFMsCZ4EdywZLVVlfU7gQ" describedService__SEFF="_B8bOtHebEd-AVaTk8ZPCHQ">
+        <steps_Behaviour xsi:type="seff:StartAction" successor_AbstractAction="_ngAZ8FE7Ed2iLYgaJYxY7w" id="_2fc0oCZ4EdywZLVVlfU7gQ" />
+        <steps_Behaviour xsi:type="seff:StopAction" predecessor_AbstractAction="_2iz1UFE8Ed2iLYgaJYxY7w" id="_2fc0oSZ4EdywZLVVlfU7gQ" />
+        <steps_Behaviour xsi:type="seff:LoopAction" predecessor_AbstractAction="_2fc0oCZ4EdywZLVVlfU7gQ" successor_AbstractAction="_2iz1UFE8Ed2iLYgaJYxY7w" entityName="cacheLoop" id="_ngAZ8FE7Ed2iLYgaJYxY7w">
+          <iterationCount_LoopAction specification="ids.NUMBER_OF_ELEMENTS" />
+          <bodyBehaviour_Loop id="_Xo004b7GEeGhOOoNZJ4gSw">
+            <steps_Behaviour xsi:type="seff:StartAction" successor_AbstractAction="_uMankFE7Ed2iLYgaJYxY7w" id="_ngAZ8VE7Ed2iLYgaJYxY7w" />
+            <steps_Behaviour xsi:type="seff:StopAction" predecessor_AbstractAction="_0_YwMFE7Ed2iLYgaJYxY7w" id="_ngAZ8lE7Ed2iLYgaJYxY7w" />
+            <steps_Behaviour xsi:type="seff:InternalAction" predecessor_AbstractAction="_ngAZ8VE7Ed2iLYgaJYxY7w" successor_AbstractAction="_0_YwMFE7Ed2iLYgaJYxY7w" entityName="isInCache?" id="_uMankFE7Ed2iLYgaJYxY7w">
+              <resourceDemand_Action requiredResource_ParametricResourceDemand="_oro4gG3fEdy4YaaT-RYrLQ">
+                <specification_ParametericResourceDemand specification="1" />
+              </resourceDemand_Action>
+            </steps_Behaviour>
+            <steps_Behaviour xsi:type="seff:BranchAction" predecessor_AbstractAction="_uMankFE7Ed2iLYgaJYxY7w" successor_AbstractAction="_ngAZ8lE7Ed2iLYgaJYxY7w" id="_0_YwMFE7Ed2iLYgaJYxY7w">
+              <branches_Branch xsi:type="seff:ProbabilisticBranchTransition" branchProbability="0.2" id="_B8IUK3ebEd-AVaTk8ZPCHQ">
+                <branchBehaviour_BranchTransition id="_Xo3RIb7GEeGhOOoNZJ4gSw">
+                  <steps_Behaviour xsi:type="seff:StartAction" successor_AbstractAction="_2hI20lE7Ed2iLYgaJYxY7w" id="_2hI20VE7Ed2iLYgaJYxY7w" />
+                  <steps_Behaviour xsi:type="seff:StopAction" predecessor_AbstractAction="_2hI20VE7Ed2iLYgaJYxY7w" id="_2hI20lE7Ed2iLYgaJYxY7w" />
+                </branchBehaviour_BranchTransition>
+              </branches_Branch>
+              <branches_Branch xsi:type="seff:ProbabilisticBranchTransition" branchProbability="0.8" id="_B8IULnebEd-AVaTk8ZPCHQ">
+                <branchBehaviour_BranchTransition id="_Xo5GUL7GEeGhOOoNZJ4gSw">
+                  <steps_Behaviour xsi:type="seff:StartAction" successor_AbstractAction="_K67acFE8Ed2iLYgaJYxY7w" id="_G95kMVE8Ed2iLYgaJYxY7w" />
+                  <steps_Behaviour xsi:type="seff:StopAction" predecessor_AbstractAction="_K67acFE8Ed2iLYgaJYxY7w" id="_G95kMlE8Ed2iLYgaJYxY7w" />
+                  <steps_Behaviour xsi:type="seff:ExternalCallAction" calledService_ExternalService="_B8bOtHebEd-AVaTk8ZPCHQ" role_ExternalService="_rt6xkCAeEdyB2fTIEA4hbA" predecessor_AbstractAction="_G95kMVE8Ed2iLYgaJYxY7w" successor_AbstractAction="_G95kMlE8Ed2iLYgaJYxY7w" id="_K67acFE8Ed2iLYgaJYxY7w">
+                    <returnVariableUsage__CallReturnAction>
+                      <variableCharacterisation_VariableUsage type="NUMBER_OF_ELEMENTS">
+                        <specification_VariableCharacterisation specification="RETURN.NUMBER_OF_ELEMENTS" />
+                      </variableCharacterisation_VariableUsage>
+                      <namedReference__VariableUsage xmlns:stoex="http://sdq.ipd.uka.de/StochasticExpressions/1.0" xsi:type="stoex:VariableReference" referenceName="fileList" />
+                    </returnVariableUsage__CallReturnAction>
+                    <returnVariableUsage__CallReturnAction>
+                      <variableCharacterisation_VariableUsage type="BYTESIZE">
+                        <specification_VariableCharacterisation specification="RETURN.INNER.BYTESIZE" />
+                      </variableCharacterisation_VariableUsage>
+                      <namedReference__VariableUsage xmlns:stoex="http://sdq.ipd.uka.de/StochasticExpressions/1.0" xsi:type="stoex:VariableReference" referenceName="fileSize" />
+                    </returnVariableUsage__CallReturnAction>
+                    <inputVariableUsages__CallAction>
+                      <variableCharacterisation_VariableUsage type="NUMBER_OF_ELEMENTS">
+                        <specification_VariableCharacterisation specification="1" />
+                      </variableCharacterisation_VariableUsage>
+                      <namedReference__VariableUsage xmlns:stoex="http://sdq.ipd.uka.de/StochasticExpressions/1.0" xsi:type="stoex:VariableReference" referenceName="ids" />
+                    </inputVariableUsages__CallAction>
+                  </steps_Behaviour>
+                </branchBehaviour_BranchTransition>
+              </branches_Branch>
+            </steps_Behaviour>
+          </bodyBehaviour_Loop>
+        </steps_Behaviour>
+        <steps_Behaviour xsi:type="seff:SetVariableAction" predecessor_AbstractAction="_ngAZ8FE7Ed2iLYgaJYxY7w" successor_AbstractAction="_2fc0oSZ4EdywZLVVlfU7gQ" entityName="setReturn" id="_2iz1UFE8Ed2iLYgaJYxY7w">
+          <localVariableUsages_SetVariableAction>
+            <variableCharacterisation_VariableUsage type="NUMBER_OF_ELEMENTS">
+              <specification_VariableCharacterisation specification="ids.NUMBER_OF_ELEMENTS" />
+            </variableCharacterisation_VariableUsage>
+            <namedReference__VariableUsage xmlns:stoex="http://sdq.ipd.uka.de/StochasticExpressions/1.0" xsi:type="stoex:VariableReference" referenceName="RETURN" />
+          </localVariableUsages_SetVariableAction>
+          <localVariableUsages_SetVariableAction>
+            <variableCharacterisation_VariableUsage type="BYTESIZE">
+              <specification_VariableCharacterisation specification="fileSize.BYTESIZE" />
+            </variableCharacterisation_VariableUsage>
+            <namedReference__VariableUsage xmlns:stoex="http://sdq.ipd.uka.de/StochasticExpressions/1.0" xsi:type="stoex:NamespaceReference" referenceName="RETURN">
+              <innerReference_NamespaceReference xsi:type="stoex:VariableReference" referenceName="INNER" />
+            </namedReference__VariableUsage>
+          </localVariableUsages_SetVariableAction>
+        </steps_Behaviour>
+      </serviceEffectSpecifications__BasicComponent>
+      <serviceEffectSpecifications__BasicComponent xmlns:seff="http://sdq.ipd.uka.de/PalladioComponentModel/SEFF/5.0" xsi:type="seff:ResourceDemandingSEFF" id="_2wln8CZ4EdywZLVVlfU7gQ" describedService__SEFF="_B8bOtXebEd-AVaTk8ZPCHQ">
+        <steps_Behaviour xsi:type="seff:StartAction" successor_AbstractAction="_mWwoAFE9Ed2iLYgaJYxY7w" id="_2_7rgCZ4EdywZLVVlfU7gQ" />
+        <steps_Behaviour xsi:type="seff:StopAction" predecessor_AbstractAction="_mWwoAFE9Ed2iLYgaJYxY7w" id="_2_7rgSZ4EdywZLVVlfU7gQ" />
+        <steps_Behaviour xsi:type="seff:ExternalCallAction" calledService_ExternalService="_B8bOtXebEd-AVaTk8ZPCHQ" role_ExternalService="_rt6xkCAeEdyB2fTIEA4hbA" predecessor_AbstractAction="_2_7rgCZ4EdywZLVVlfU7gQ" successor_AbstractAction="_2_7rgSZ4EdywZLVVlfU7gQ" id="_mWwoAFE9Ed2iLYgaJYxY7w">
+          <inputVariableUsages__CallAction>
+            <variableCharacterisation_VariableUsage type="BYTESIZE">
+              <specification_VariableCharacterisation specification="file.BYTESIZE" />
+            </variableCharacterisation_VariableUsage>
+            <namedReference__VariableUsage xmlns:stoex="http://sdq.ipd.uka.de/StochasticExpressions/1.0" xsi:type="stoex:VariableReference" referenceName="file" />
+          </inputVariableUsages__CallAction>
+        </steps_Behaviour>
+      </serviceEffectSpecifications__BasicComponent>
+      <componentParameterUsage_ImplementationComponentType>
+        <variableCharacterisation_VariableUsage type="BYTESIZE">
+          <specification_VariableCharacterisation specification="IntPMF[(5; 0.0)(10; 0.051)(20; 0.134)(30; 0.193)(40; 0.212)(50; 0.224)(60; 0.186)]*100000" />
+        </variableCharacterisation_VariableUsage>
+        <namedReference__VariableUsage xmlns:stoex="http://sdq.ipd.uka.de/StochasticExpressions/1.0" xsi:type="stoex:VariableReference" referenceName="fileSize" />
+      </componentParameterUsage_ImplementationComponentType>
+      <requiredRoles_InterfaceRequiringEntity xsi:type="repository:OperationRequiredRole" requiredInterface__OperationRequiredRole="_yNjKgBpXEdyxqpPYxT_m3w" entityName="Required_IAudioDB_DBCache" id="_rt6xkCAeEdyB2fTIEA4hbA" />
+      <providedRoles_InterfaceProvidingEntity xsi:type="repository:OperationProvidedRole" providedInterface__OperationProvidedRole="_yNjKgBpXEdyxqpPYxT_m3w" entityName="Provided_IAudioDB_DBCache" id="_dOS7wCAdEdyCN4c4qwaGfQ" />
+    </components__Repository>
+    <components__Repository xsi:type="repository:BasicComponent" entityName="EncodingMediaStore" id="_CERy4BwqEdyg5YJN38bxwQ">
+      <serviceEffectSpecifications__BasicComponent xmlns:seff="http://sdq.ipd.uka.de/PalladioComponentModel/SEFF/5.0" xsi:type="seff:ResourceDemandingSEFF" id="_wCYqkCZ4EdywZLVVlfU7gQ" describedService__SEFF="_B8bOsXebEd-AVaTk8ZPCHQ">
+        <steps_Behaviour xsi:type="seff:StartAction" successor_AbstractAction="_SQRWUFNrEd2DAaYH-ZsiCA" id="_wbRrsCZ4EdywZLVVlfU7gQ" />
+        <steps_Behaviour xsi:type="seff:StopAction" predecessor_AbstractAction="_V2fPEFNrEd2DAaYH-ZsiCA" id="_wbRrsSZ4EdywZLVVlfU7gQ" />
+        <steps_Behaviour xsi:type="seff:ExternalCallAction" calledService_ExternalService="_B8bOtHebEd-AVaTk8ZPCHQ" role_ExternalService="_FVDAEBwqEdyg5YJN38bxwQ" predecessor_AbstractAction="_wbRrsCZ4EdywZLVVlfU7gQ" successor_AbstractAction="_V2fPEFNrEd2DAaYH-ZsiCA" id="_SQRWUFNrEd2DAaYH-ZsiCA">
+          <returnVariableUsage__CallReturnAction>
+            <variableCharacterisation_VariableUsage type="BYTESIZE">
+              <specification_VariableCharacterisation specification="RETURN.INNER.BYTESIZE" />
+            </variableCharacterisation_VariableUsage>
+            <namedReference__VariableUsage xmlns:stoex="http://sdq.ipd.uka.de/StochasticExpressions/1.0" xsi:type="stoex:VariableReference" referenceName="fileSize" />
+          </returnVariableUsage__CallReturnAction>
+          <returnVariableUsage__CallReturnAction>
+            <variableCharacterisation_VariableUsage type="NUMBER_OF_ELEMENTS">
+              <specification_VariableCharacterisation specification="RETURN.NUMBER_OF_ELEMENTS" />
+            </variableCharacterisation_VariableUsage>
+            <namedReference__VariableUsage xmlns:stoex="http://sdq.ipd.uka.de/StochasticExpressions/1.0" xsi:type="stoex:VariableReference" referenceName="fileList" />
+          </returnVariableUsage__CallReturnAction>
+          <inputVariableUsages__CallAction>
+            <variableCharacterisation_VariableUsage type="NUMBER_OF_ELEMENTS">
+              <specification_VariableCharacterisation specification="ids.NUMBER_OF_ELEMENTS" />
+            </variableCharacterisation_VariableUsage>
+            <namedReference__VariableUsage xmlns:stoex="http://sdq.ipd.uka.de/StochasticExpressions/1.0" xsi:type="stoex:VariableReference" referenceName="ids" />
+          </inputVariableUsages__CallAction>
+        </steps_Behaviour>
+        <steps_Behaviour xsi:type="seff:LoopAction" predecessor_AbstractAction="_SQRWUFNrEd2DAaYH-ZsiCA" successor_AbstractAction="_wbRrsSZ4EdywZLVVlfU7gQ" entityName="watermarkLoop" id="_V2fPEFNrEd2DAaYH-ZsiCA">
+          <iterationCount_LoopAction specification="fileList.NUMBER_OF_ELEMENTS" />
+          <bodyBehaviour_Loop id="_XpLaML7GEeGhOOoNZJ4gSw">
+            <steps_Behaviour xsi:type="seff:StartAction" successor_AbstractAction="_XxbRwFNrEd2DAaYH-ZsiCA" id="_V2pAEFNrEd2DAaYH-ZsiCA" />
+            <steps_Behaviour xsi:type="seff:StopAction" predecessor_AbstractAction="_XxbRwFNrEd2DAaYH-ZsiCA" id="_V2pAEVNrEd2DAaYH-ZsiCA" />
+            <steps_Behaviour xsi:type="seff:ExternalCallAction" calledService_ExternalService="_B8bOt3ebEd-AVaTk8ZPCHQ" role_ExternalService="_F0MaMBwqEdyg5YJN38bxwQ" predecessor_AbstractAction="_V2pAEFNrEd2DAaYH-ZsiCA" successor_AbstractAction="_V2pAEVNrEd2DAaYH-ZsiCA" id="_XxbRwFNrEd2DAaYH-ZsiCA">
+              <inputVariableUsages__CallAction>
+                <variableCharacterisation_VariableUsage type="BYTESIZE">
+                  <specification_VariableCharacterisation specification="fileSize.BYTESIZE" />
+                </variableCharacterisation_VariableUsage>
+                <namedReference__VariableUsage xmlns:stoex="http://sdq.ipd.uka.de/StochasticExpressions/1.0" xsi:type="stoex:VariableReference" referenceName="file" />
+              </inputVariableUsages__CallAction>
+            </steps_Behaviour>
+          </bodyBehaviour_Loop>
+        </steps_Behaviour>
+      </serviceEffectSpecifications__BasicComponent>
+      <serviceEffectSpecifications__BasicComponent xmlns:seff="http://sdq.ipd.uka.de/PalladioComponentModel/SEFF/5.0" xsi:type="seff:ResourceDemandingSEFF" id="_wuC2sCZ4EdywZLVVlfU7gQ" describedService__SEFF="_B8bOsnebEd-AVaTk8ZPCHQ">
+        <steps_Behaviour xsi:type="seff:StartAction" successor_AbstractAction="_JafXgFNiEd2DAaYH-ZsiCA" id="_xAX80CZ4EdywZLVVlfU7gQ" />
+        <steps_Behaviour xsi:type="seff:StopAction" predecessor_AbstractAction="_KDUSEFNiEd2DAaYH-ZsiCA" id="_xAX80SZ4EdywZLVVlfU7gQ" />
+        <steps_Behaviour xsi:type="seff:ExternalCallAction" calledService_ExternalService="_B8bOuXebEd-AVaTk8ZPCHQ" role_ExternalService="_EreeoBwqEdyg5YJN38bxwQ" predecessor_AbstractAction="_xAX80CZ4EdywZLVVlfU7gQ" successor_AbstractAction="_KDUSEFNiEd2DAaYH-ZsiCA" entityName="gg" id="_JafXgFNiEd2DAaYH-ZsiCA">
+          <returnVariableUsage__CallReturnAction>
+            <variableCharacterisation_VariableUsage type="BYTESIZE">
+              <specification_VariableCharacterisation specification="RETURN.BYTESIZE" />
+            </variableCharacterisation_VariableUsage>
+            <variableCharacterisation_VariableUsage type="VALUE">
+              <specification_VariableCharacterisation specification="RETURN.VALUE" />
+            </variableCharacterisation_VariableUsage>
+            <namedReference__VariableUsage xmlns:stoex="http://sdq.ipd.uka.de/StochasticExpressions/1.0" xsi:type="stoex:VariableReference" referenceName="fileSize" />
+          </returnVariableUsage__CallReturnAction>
+          <inputVariableUsages__CallAction>
+            <variableCharacterisation_VariableUsage type="BYTESIZE">
+              <specification_VariableCharacterisation specification="file.BYTESIZE" />
+            </variableCharacterisation_VariableUsage>
+            <variableCharacterisation_VariableUsage type="VALUE">
+              <specification_VariableCharacterisation specification="file.VALUE" />
+            </variableCharacterisation_VariableUsage>
+            <variableCharacterisation_VariableUsage type="TYPE">
+              <specification_VariableCharacterisation specification="file.TYPE" />
+            </variableCharacterisation_VariableUsage>
+            <namedReference__VariableUsage xmlns:stoex="http://sdq.ipd.uka.de/StochasticExpressions/1.0" xsi:type="stoex:VariableReference" referenceName="file" />
+          </inputVariableUsages__CallAction>
+        </steps_Behaviour>
+        <steps_Behaviour xsi:type="seff:ExternalCallAction" calledService_ExternalService="_B8bOtXebEd-AVaTk8ZPCHQ" role_ExternalService="_FVDAEBwqEdyg5YJN38bxwQ" predecessor_AbstractAction="_JafXgFNiEd2DAaYH-ZsiCA" successor_AbstractAction="_xAX80SZ4EdywZLVVlfU7gQ" id="_KDUSEFNiEd2DAaYH-ZsiCA">
+          <inputVariableUsages__CallAction>
+            <variableCharacterisation_VariableUsage type="BYTESIZE">
+              <specification_VariableCharacterisation specification="fileSize.BYTESIZE" />
+            </variableCharacterisation_VariableUsage>
+            <namedReference__VariableUsage xmlns:stoex="http://sdq.ipd.uka.de/StochasticExpressions/1.0" xsi:type="stoex:VariableReference" referenceName="file" />
+          </inputVariableUsages__CallAction>
+        </steps_Behaviour>
+      </serviceEffectSpecifications__BasicComponent>
+      <requiredRoles_InterfaceRequiringEntity xsi:type="repository:OperationRequiredRole" requiredInterface__OperationRequiredRole="_7aHA8BwpEdyg5YJN38bxwQ" entityName="IEncode_Req" id="_EreeoBwqEdyg5YJN38bxwQ" />
+      <requiredRoles_InterfaceRequiringEntity xsi:type="repository:OperationRequiredRole" requiredInterface__OperationRequiredRole="_yNjKgBpXEdyxqpPYxT_m3w" entityName="IAudioDB_Req" id="_FVDAEBwqEdyg5YJN38bxwQ" />
+      <requiredRoles_InterfaceRequiringEntity xsi:type="repository:OperationRequiredRole" requiredInterface__OperationRequiredRole="_zAzzcBpXEdyxqpPYxT_m3w" entityName="Required_ISound_EncodingMediaStore" id="_F0MaMBwqEdyg5YJN38bxwQ" />
+      <providedRoles_InterfaceProvidingEntity xsi:type="repository:OperationProvidedRole" providedInterface__OperationProvidedRole="_xSi60BpXEdyxqpPYxT_m3w" entityName="IMediaStore_Prov" id="_Dlu-kBwqEdyg5YJN38bxwQ" />
+    </components__Repository>
+    <components__Repository xsi:type="repository:BasicComponent" entityName="PoolingAudioDB" id="_q2UeYCAiEdyB2fTIEA4hbA">
+      <serviceEffectSpecifications__BasicComponent xmlns:seff="http://sdq.ipd.uka.de/PalladioComponentModel/SEFF/5.0" xsi:type="seff:ResourceDemandingSEFF" id="_0IDfcCZ4EdywZLVVlfU7gQ" describedService__SEFF="_B8bOtHebEd-AVaTk8ZPCHQ">
+        <steps_Behaviour xsi:type="seff:StartAction" successor_AbstractAction="_MI6X4FE5Ed2iLYgaJYxY7w" id="_0f5XsCZ4EdywZLVVlfU7gQ" />
+        <steps_Behaviour xsi:type="seff:StopAction" predecessor_AbstractAction="__gHO4FE5Ed2iLYgaJYxY7w" id="_0f5XsSZ4EdywZLVVlfU7gQ" />
+        <steps_Behaviour xsi:type="seff:AcquireAction" passiveresource_AcquireAction="_BcM9k1E5Ed2iLYgaJYxY7w" predecessor_AbstractAction="_0f5XsCZ4EdywZLVVlfU7gQ" successor_AbstractAction="_PqqnYFE5Ed2iLYgaJYxY7w" entityName="acquireDBConnection" id="_MI6X4FE5Ed2iLYgaJYxY7w" />
+        <steps_Behaviour xsi:type="seff:LoopAction" predecessor_AbstractAction="_MI6X4FE5Ed2iLYgaJYxY7w" successor_AbstractAction="_soEx4FE5Ed2iLYgaJYxY7w" entityName="loadFiles" id="_PqqnYFE5Ed2iLYgaJYxY7w">
+          <iterationCount_LoopAction specification="ids.NUMBER_OF_ELEMENTS" />
+          <bodyBehaviour_Loop id="_XpXAYL7GEeGhOOoNZJ4gSw">
+            <steps_Behaviour xsi:type="seff:StartAction" successor_AbstractAction="_ZxrToFE5Ed2iLYgaJYxY7w" id="_PrHTUFE5Ed2iLYgaJYxY7w" />
+            <steps_Behaviour xsi:type="seff:StopAction" predecessor_AbstractAction="_guU8sFE5Ed2iLYgaJYxY7w" id="_PrHTUVE5Ed2iLYgaJYxY7w" />
+            <steps_Behaviour xsi:type="seff:InternalAction" predecessor_AbstractAction="_PrHTUFE5Ed2iLYgaJYxY7w" successor_AbstractAction="_guU8sFE5Ed2iLYgaJYxY7w" entityName="loadFilenames" id="_ZxrToFE5Ed2iLYgaJYxY7w">
+              <resourceDemand_Action requiredResource_ParametricResourceDemand="_oro4gG3fEdy4YaaT-RYrLQ">
+                <specification_ParametericResourceDemand specification="1" />
+              </resourceDemand_Action>
+            </steps_Behaviour>
+            <steps_Behaviour xsi:type="seff:InternalAction" predecessor_AbstractAction="_ZxrToFE5Ed2iLYgaJYxY7w" successor_AbstractAction="_PrHTUVE5Ed2iLYgaJYxY7w" entityName="loadFile" id="_guU8sFE5Ed2iLYgaJYxY7w">
+              <resourceDemand_Action requiredResource_ParametricResourceDemand="_BIjHoQ3KEdyouMqirZIhzQ">
+                <specification_ParametericResourceDemand specification="fileSize.BYTESIZE" />
+              </resourceDemand_Action>
+            </steps_Behaviour>
+          </bodyBehaviour_Loop>
+        </steps_Behaviour>
+        <steps_Behaviour xsi:type="seff:SetVariableAction" predecessor_AbstractAction="_PqqnYFE5Ed2iLYgaJYxY7w" successor_AbstractAction="__gHO4FE5Ed2iLYgaJYxY7w" entityName="setReturn" id="_soEx4FE5Ed2iLYgaJYxY7w">
+          <localVariableUsages_SetVariableAction>
+            <variableCharacterisation_VariableUsage type="NUMBER_OF_ELEMENTS">
+              <specification_VariableCharacterisation specification="ids.NUMBER_OF_ELEMENTS" />
+            </variableCharacterisation_VariableUsage>
+            <namedReference__VariableUsage xmlns:stoex="http://sdq.ipd.uka.de/StochasticExpressions/1.0" xsi:type="stoex:VariableReference" referenceName="RETURN" />
+          </localVariableUsages_SetVariableAction>
+          <localVariableUsages_SetVariableAction>
+            <variableCharacterisation_VariableUsage type="BYTESIZE">
+              <specification_VariableCharacterisation specification="fileSize.BYTESIZE" />
+            </variableCharacterisation_VariableUsage>
+            <namedReference__VariableUsage xmlns:stoex="http://sdq.ipd.uka.de/StochasticExpressions/1.0" xsi:type="stoex:NamespaceReference" referenceName="RETURN">
+              <innerReference_NamespaceReference xsi:type="stoex:VariableReference" referenceName="INNER" />
+            </namedReference__VariableUsage>
+          </localVariableUsages_SetVariableAction>
+        </steps_Behaviour>
+        <steps_Behaviour xsi:type="seff:ReleaseAction" passiveResource_ReleaseAction="_BcM9k1E5Ed2iLYgaJYxY7w" predecessor_AbstractAction="_soEx4FE5Ed2iLYgaJYxY7w" successor_AbstractAction="_0f5XsSZ4EdywZLVVlfU7gQ" entityName="releaseDBConnection" id="__gHO4FE5Ed2iLYgaJYxY7w" />
+      </serviceEffectSpecifications__BasicComponent>
+      <serviceEffectSpecifications__BasicComponent xmlns:seff="http://sdq.ipd.uka.de/PalladioComponentModel/SEFF/5.0" xsi:type="seff:ResourceDemandingSEFF" id="_0uyvUCZ4EdywZLVVlfU7gQ" describedService__SEFF="_B8bOtXebEd-AVaTk8ZPCHQ">
+        <steps_Behaviour xsi:type="seff:StartAction" successor_AbstractAction="_SrNx0FE6Ed2iLYgaJYxY7w" id="_0_onsCZ4EdywZLVVlfU7gQ" />
+        <steps_Behaviour xsi:type="seff:StopAction" predecessor_AbstractAction="_U3vTwFE6Ed2iLYgaJYxY7w" id="_0_onsSZ4EdywZLVVlfU7gQ" />
+        <steps_Behaviour xsi:type="seff:AcquireAction" passiveresource_AcquireAction="_BcM9k1E5Ed2iLYgaJYxY7w" predecessor_AbstractAction="_0_onsCZ4EdywZLVVlfU7gQ" successor_AbstractAction="_Wk9qkFE6Ed2iLYgaJYxY7w" entityName="acquireDBConnection" id="_SrNx0FE6Ed2iLYgaJYxY7w" />
+        <steps_Behaviour xsi:type="seff:ReleaseAction" passiveResource_ReleaseAction="_BcM9k1E5Ed2iLYgaJYxY7w" predecessor_AbstractAction="_cPNQkFE6Ed2iLYgaJYxY7w" successor_AbstractAction="_0_onsSZ4EdywZLVVlfU7gQ" entityName="releaseDBConnection" id="_U3vTwFE6Ed2iLYgaJYxY7w" />
+        <steps_Behaviour xsi:type="seff:InternalAction" predecessor_AbstractAction="_SrNx0FE6Ed2iLYgaJYxY7w" successor_AbstractAction="_cPNQkFE6Ed2iLYgaJYxY7w" entityName="writeFilename" id="_Wk9qkFE6Ed2iLYgaJYxY7w">
+          <resourceDemand_Action requiredResource_ParametricResourceDemand="_oro4gG3fEdy4YaaT-RYrLQ">
+            <specification_ParametericResourceDemand specification="5" />
+          </resourceDemand_Action>
+        </steps_Behaviour>
+        <steps_Behaviour xsi:type="seff:InternalAction" predecessor_AbstractAction="_Wk9qkFE6Ed2iLYgaJYxY7w" successor_AbstractAction="_U3vTwFE6Ed2iLYgaJYxY7w" entityName="writeFile2HD" id="_cPNQkFE6Ed2iLYgaJYxY7w">
+          <resourceDemand_Action requiredResource_ParametricResourceDemand="_BIjHoQ3KEdyouMqirZIhzQ">
+            <specification_ParametericResourceDemand specification="file.BYTESIZE" />
+          </resourceDemand_Action>
+        </steps_Behaviour>
+      </serviceEffectSpecifications__BasicComponent>
+      <passiveResource_BasicComponent entityName="dbConnectionPool" id="_BcM9k1E5Ed2iLYgaJYxY7w">
+        <capacity_PassiveResource specification="5" />
+      </passiveResource_BasicComponent>
+      <componentParameterUsage_ImplementationComponentType>
+        <variableCharacterisation_VariableUsage type="BYTESIZE">
+          <specification_VariableCharacterisation specification="IntPMF[ (500000; 0.00000000) (1000000; 0.05100000) (2000000; 0.13400000) (3000000; 0.19300000) (4000000; 0.21200000) (5000000; 0.22400000) (6000000; 0.18600000) ]" />
+        </variableCharacterisation_VariableUsage>
+        <namedReference__VariableUsage xmlns:stoex="http://sdq.ipd.uka.de/StochasticExpressions/1.0" xsi:type="stoex:VariableReference" referenceName="fileSize" />
+      </componentParameterUsage_ImplementationComponentType>
+      <providedRoles_InterfaceProvidingEntity xsi:type="repository:OperationProvidedRole" providedInterface__OperationProvidedRole="_yNjKgBpXEdyxqpPYxT_m3w" entityName="Provided_IAudioDB_PoolingAudioDB" id="_snaokCAiEdyB2fTIEA4hbA" />
+    </components__Repository>
+    <components__Repository xsi:type="repository:BasicComponent" entityName="PrioritizingMediaStore" id="_2ODPwGafEeCCuI19Qg4dIw">
+      <serviceEffectSpecifications__BasicComponent xmlns:seff="http://sdq.ipd.uka.de/PalladioComponentModel/SEFF/5.0" xsi:type="seff:ResourceDemandingSEFF" id="_9f1bUGafEeCCuI19Qg4dIw" describedService__SEFF="_B8bOsXebEd-AVaTk8ZPCHQ">
+        <steps_Behaviour xsi:type="seff:StartAction" successor_AbstractAction="_JZ9ZEGaiEeCCuI19Qg4dIw" id="_9f2CYGafEeCCuI19Qg4dIw" />
+        <steps_Behaviour xsi:type="seff:StopAction" predecessor_AbstractAction="_In4PIHyLEeCdJZ0qbkxynw" id="_9f2pcGafEeCCuI19Qg4dIw" />
+        <steps_Behaviour xsi:type="seff:ExternalCallAction" calledService_ExternalService="_B8bOtHebEd-AVaTk8ZPCHQ" role_ExternalService="__6HscGafEeCCuI19Qg4dIw" predecessor_AbstractAction="_9f2CYGafEeCCuI19Qg4dIw" successor_AbstractAction="_TJBkkHyJEeCdJZ0qbkxynw" id="_JZ9ZEGaiEeCCuI19Qg4dIw">
+          <returnVariableUsage__CallReturnAction>
+            <variableCharacterisation_VariableUsage type="NUMBER_OF_ELEMENTS">
+              <specification_VariableCharacterisation specification="RETURN.NUMBER_OF_ELEMENTS" />
+            </variableCharacterisation_VariableUsage>
+            <namedReference__VariableUsage xmlns:stoex="http://sdq.ipd.uka.de/StochasticExpressions/1.0" xsi:type="stoex:VariableReference" referenceName="fileList" />
+          </returnVariableUsage__CallReturnAction>
+          <returnVariableUsage__CallReturnAction>
+            <variableCharacterisation_VariableUsage type="BYTESIZE">
+              <specification_VariableCharacterisation specification="RETURN.INNER.BYTESIZE" />
+            </variableCharacterisation_VariableUsage>
+            <namedReference__VariableUsage xmlns:stoex="http://sdq.ipd.uka.de/StochasticExpressions/1.0" xsi:type="stoex:NamespaceReference" referenceName="fileList">
+              <innerReference_NamespaceReference xsi:type="stoex:VariableReference" referenceName="INNER" />
+            </namedReference__VariableUsage>
+          </returnVariableUsage__CallReturnAction>
+          <inputVariableUsages__CallAction>
+            <variableCharacterisation_VariableUsage type="NUMBER_OF_ELEMENTS">
+              <specification_VariableCharacterisation specification="ids.NUMBER_OF_ELEMENTS" />
+            </variableCharacterisation_VariableUsage>
+            <namedReference__VariableUsage xmlns:stoex="http://sdq.ipd.uka.de/StochasticExpressions/1.0" xsi:type="stoex:VariableReference" referenceName="ids" />
+          </inputVariableUsages__CallAction>
+        </steps_Behaviour>
+        <steps_Behaviour xsi:type="seff:LoopAction" predecessor_AbstractAction="_JZ9ZEGaiEeCCuI19Qg4dIw" successor_AbstractAction="_In4PIHyLEeCdJZ0qbkxynw" entityName="watermark files" id="_TJBkkHyJEeCdJZ0qbkxynw">
+          <iterationCount_LoopAction specification="fileList.NUMBER_OF_ELEMENTS" />
+          <bodyBehaviour_Loop id="_XprJcL7GEeGhOOoNZJ4gSw">
+            <steps_Behaviour xsi:type="seff:StartAction" successor_AbstractAction="_YtGRIHyJEeCdJZ0qbkxynw" id="_TJcbUHyJEeCdJZ0qbkxynw" />
+            <steps_Behaviour xsi:type="seff:StopAction" predecessor_AbstractAction="_YtGRIHyJEeCdJZ0qbkxynw" id="_TJcbUXyJEeCdJZ0qbkxynw" />
+            <steps_Behaviour xsi:type="seff:BranchAction" predecessor_AbstractAction="_TJcbUHyJEeCdJZ0qbkxynw" successor_AbstractAction="_TJcbUXyJEeCdJZ0qbkxynw" entityName="customer type" id="_YtGRIHyJEeCdJZ0qbkxynw">
+              <branches_Branch xsi:type="seff:GuardedBranchTransition" entityName="Type End User" id="_hQNhsHyJEeCdJZ0qbkxynw">
+                <branchCondition_GuardedBranchTransition specification="customerType.VALUE == &quot;enduser&quot;" />
+                <branchBehaviour_BranchTransition id="_Xps-ob7GEeGhOOoNZJ4gSw">
+                  <steps_Behaviour xsi:type="seff:StartAction" successor_AbstractAction="_1RI5YHyJEeCdJZ0qbkxynw" id="_hQOv0HyJEeCdJZ0qbkxynw" />
+                  <steps_Behaviour xsi:type="seff:StopAction" predecessor_AbstractAction="_1RI5YHyJEeCdJZ0qbkxynw" id="_hQOv0XyJEeCdJZ0qbkxynw" />
+                  <steps_Behaviour xsi:type="seff:ExternalCallAction" calledService_ExternalService="_B8bOt3ebEd-AVaTk8ZPCHQ" role_ExternalService="_xx5yYHyJEeCdJZ0qbkxynw" predecessor_AbstractAction="_hQOv0HyJEeCdJZ0qbkxynw" successor_AbstractAction="_hQOv0XyJEeCdJZ0qbkxynw" id="_1RI5YHyJEeCdJZ0qbkxynw">
+                    <inputVariableUsages__CallAction>
+                      <variableCharacterisation_VariableUsage type="BYTESIZE">
+                        <specification_VariableCharacterisation specification="fileList.INNER.BYTESIZE" />
+                      </variableCharacterisation_VariableUsage>
+                      <namedReference__VariableUsage xmlns:stoex="http://sdq.ipd.uka.de/StochasticExpressions/1.0" xsi:type="stoex:VariableReference" referenceName="file" />
+                    </inputVariableUsages__CallAction>
+                  </steps_Behaviour>
+                </branchBehaviour_BranchTransition>
+              </branches_Branch>
+              <branches_Branch xsi:type="seff:GuardedBranchTransition" entityName="Type Reseller" id="_oA4kQHyJEeCdJZ0qbkxynw">
+                <branchCondition_GuardedBranchTransition specification="customerType.VALUE == &quot;reseller&quot;" />
+                <branchBehaviour_BranchTransition id="_XpwB8L7GEeGhOOoNZJ4gSw">
+                  <steps_Behaviour xsi:type="seff:StartAction" successor_AbstractAction="_oA5yYHyJEeCdJZ0qbkxynw" id="_oA5LUHyJEeCdJZ0qbkxynw" />
+                  <steps_Behaviour xsi:type="seff:StopAction" predecessor_AbstractAction="_oA5LUHyJEeCdJZ0qbkxynw" id="_oA5yYHyJEeCdJZ0qbkxynw" />
+                </branchBehaviour_BranchTransition>
+              </branches_Branch>
+            </steps_Behaviour>
+          </bodyBehaviour_Loop>
+        </steps_Behaviour>
+        <steps_Behaviour xsi:type="seff:SetVariableAction" predecessor_AbstractAction="_TJBkkHyJEeCdJZ0qbkxynw" successor_AbstractAction="_9f2pcGafEeCCuI19Qg4dIw" entityName="RETURN" id="_In4PIHyLEeCdJZ0qbkxynw">
+          <localVariableUsages_SetVariableAction>
+            <variableCharacterisation_VariableUsage type="NUMBER_OF_ELEMENTS">
+              <specification_VariableCharacterisation specification="fileList.NUMBER_OF_ELEMENTS" />
+            </variableCharacterisation_VariableUsage>
+            <namedReference__VariableUsage xmlns:stoex="http://sdq.ipd.uka.de/StochasticExpressions/1.0" xsi:type="stoex:VariableReference" referenceName="RETURN" />
+          </localVariableUsages_SetVariableAction>
+          <localVariableUsages_SetVariableAction>
+            <variableCharacterisation_VariableUsage type="BYTESIZE">
+              <specification_VariableCharacterisation specification="fileList.INNER.BYTESIZE" />
+            </variableCharacterisation_VariableUsage>
+            <namedReference__VariableUsage xmlns:stoex="http://sdq.ipd.uka.de/StochasticExpressions/1.0" xsi:type="stoex:NamespaceReference" referenceName="RETURN">
+              <innerReference_NamespaceReference xsi:type="stoex:VariableReference" referenceName="INNER" />
+            </namedReference__VariableUsage>
+          </localVariableUsages_SetVariableAction>
+        </steps_Behaviour>
+      </serviceEffectSpecifications__BasicComponent>
+      <serviceEffectSpecifications__BasicComponent xmlns:seff="http://sdq.ipd.uka.de/PalladioComponentModel/SEFF/5.0" xsi:type="seff:ResourceDemandingSEFF" id="_9f3QgGafEeCCuI19Qg4dIw" describedService__SEFF="_B8bOsnebEd-AVaTk8ZPCHQ">
+        <steps_Behaviour xsi:type="seff:StartAction" successor_AbstractAction="_IRQWgGagEeCCuI19Qg4dIw" id="_9f3QgWafEeCCuI19Qg4dIw" />
+        <steps_Behaviour xsi:type="seff:StopAction" predecessor_AbstractAction="_IRQWgGagEeCCuI19Qg4dIw" id="_9f3QgmafEeCCuI19Qg4dIw" />
+        <steps_Behaviour xsi:type="seff:ExternalCallAction" calledService_ExternalService="_B8bOtXebEd-AVaTk8ZPCHQ" role_ExternalService="__6HscGafEeCCuI19Qg4dIw" predecessor_AbstractAction="_9f3QgWafEeCCuI19Qg4dIw" successor_AbstractAction="_9f3QgmafEeCCuI19Qg4dIw" id="_IRQWgGagEeCCuI19Qg4dIw">
+          <inputVariableUsages__CallAction>
+            <variableCharacterisation_VariableUsage type="BYTESIZE">
+              <specification_VariableCharacterisation specification="file.BYTESIZE" />
+            </variableCharacterisation_VariableUsage>
+            <namedReference__VariableUsage xmlns:stoex="http://sdq.ipd.uka.de/StochasticExpressions/1.0" xsi:type="stoex:VariableReference" referenceName="file" />
+          </inputVariableUsages__CallAction>
+        </steps_Behaviour>
+      </serviceEffectSpecifications__BasicComponent>
+      <requiredRoles_InterfaceRequiringEntity xsi:type="repository:OperationRequiredRole" requiredInterface__OperationRequiredRole="_yNjKgBpXEdyxqpPYxT_m3w" entityName="Required_IAudioDB_PrioritizingMediaStore" id="__6HscGafEeCCuI19Qg4dIw" />
+      <requiredRoles_InterfaceRequiringEntity xsi:type="repository:InfrastructureRequiredRole" requiredInterface__InfrastructureRequiredRole="_dgX_oGagEeCCuI19Qg4dIw" entityName="Required_IJVM_PrioritizingMediaStore" id="_jNukAGagEeCCuI19Qg4dIw" />
+      <requiredRoles_InterfaceRequiringEntity xsi:type="repository:OperationRequiredRole" requiredInterface__OperationRequiredRole="_zAzzcBpXEdyxqpPYxT_m3w" entityName="Required_ISound_PrioritizingMediaStore" id="_xx5yYHyJEeCdJZ0qbkxynw" />
+      <providedRoles_InterfaceProvidingEntity xsi:type="repository:OperationProvidedRole" providedInterface__OperationProvidedRole="_xSi60BpXEdyxqpPYxT_m3w" entityName="Provided_IMediaStore_PrioritizingMediaStore" id="_9fy_EGafEeCCuI19Qg4dIw" />
+    </components__Repository>
+    <components__Repository xsi:type="repository:BasicComponent" componentType="INFRASTRUCTURE_COMPONENT" entityName="JVM_0815" id="_ln1O8GagEeCCuI19Qg4dIw">
+      <serviceEffectSpecifications__BasicComponent xmlns:seff="http://sdq.ipd.uka.de/PalladioComponentModel/SEFF/5.0" xsi:type="seff:ResourceDemandingSEFF" id="_ooPE4GagEeCCuI19Qg4dIw" describedService__SEFF="_egsNIGagEeCCuI19Qg4dIw">
+        <steps_Behaviour xsi:type="seff:StartAction" successor_AbstractAction="_74nwcGagEeCCuI19Qg4dIw" id="_ooPr8GagEeCCuI19Qg4dIw" />
+        <steps_Behaviour xsi:type="seff:StopAction" predecessor_AbstractAction="_74nwcGagEeCCuI19Qg4dIw" id="_ooPr8WagEeCCuI19Qg4dIw" />
+        <steps_Behaviour xsi:type="seff:InternalAction" predecessor_AbstractAction="_ooPr8GagEeCCuI19Qg4dIw" successor_AbstractAction="_ooPr8WagEeCCuI19Qg4dIw" entityName="loadOn0815" id="_74nwcGagEeCCuI19Qg4dIw">
+          <resourceDemand_Action requiredResource_ParametricResourceDemand="_oro4gG3fEdy4YaaT-RYrLQ">
+            <specification_ParametericResourceDemand specification="0.3&#xA;" />
+          </resourceDemand_Action>
+        </steps_Behaviour>
+      </serviceEffectSpecifications__BasicComponent>
+      <providedRoles_InterfaceProvidingEntity xsi:type="repository:InfrastructureProvidedRole" providedInterface__InfrastructureProvidedRole="_dgX_oGagEeCCuI19Qg4dIw" entityName="Provided_IJVM_JVM_0815" id="_ooOd0GagEeCCuI19Qg4dIw" />
+    </components__Repository>
+    <interfaces__Repository xsi:type="repository:OperationInterface" entityName="IHTTP" id="_wflM0BpXEdyxqpPYxT_m3w">
+      <signatures__OperationInterface returnType__OperationSignature="_LirKRRpZEdyxqpPYxT_m3w" entityName="HTTPDownload" id="_B8SE7HebEd-AVaTk8ZPCHQ">
+        <parameters__OperationSignature parameterName="request" dataType__Parameter="_z9IcVhpYEdyxqpPYxT_m3w" />
+      </signatures__OperationInterface>
+      <signatures__OperationInterface entityName="HTTPUpload" id="_B8SE7XebEd-AVaTk8ZPCHQ">
+        <parameters__OperationSignature parameterName="file" dataType__Parameter="_J4ti1hpZEdyxqpPYxT_m3w" />
+      </signatures__OperationInterface>
+    </interfaces__Repository>
+    <interfaces__Repository xsi:type="repository:OperationInterface" entityName="IMediaStore" id="_xSi60BpXEdyxqpPYxT_m3w">
+      <signatures__OperationInterface returnType__OperationSignature="_LirKRRpZEdyxqpPYxT_m3w" entityName="download" id="_B8bOsXebEd-AVaTk8ZPCHQ">
+        <parameters__OperationSignature parameterName="ids" dataType__Parameter="_8dsIJRpYEdyxqpPYxT_m3w" />
+        <parameters__OperationSignature parameterName="customerType" dataType__Parameter="_qPoRsBpXEdyxqpPYxT_m3w/@dataTypes__Repository.6" />
+      </signatures__OperationInterface>
+      <signatures__OperationInterface entityName="upload" id="_B8bOsnebEd-AVaTk8ZPCHQ">
+        <parameters__OperationSignature parameterName="file" dataType__Parameter="_J4ti1hpZEdyxqpPYxT_m3w" />
+      </signatures__OperationInterface>
+    </interfaces__Repository>
+    <interfaces__Repository xsi:type="repository:OperationInterface" entityName="IAudioDB" id="_yNjKgBpXEdyxqpPYxT_m3w">
+      <signatures__OperationInterface returnType__OperationSignature="_LirKRRpZEdyxqpPYxT_m3w" entityName="queryDB" id="_B8bOtHebEd-AVaTk8ZPCHQ">
+        <parameters__OperationSignature parameterName="ids" dataType__Parameter="_8dsIJRpYEdyxqpPYxT_m3w" />
+      </signatures__OperationInterface>
+      <signatures__OperationInterface entityName="addFile" id="_B8bOtXebEd-AVaTk8ZPCHQ">
+        <parameters__OperationSignature parameterName="file" dataType__Parameter="_J4ti1hpZEdyxqpPYxT_m3w" />
+      </signatures__OperationInterface>
+    </interfaces__Repository>
+    <interfaces__Repository xsi:type="repository:OperationInterface" entityName="ISound" id="_zAzzcBpXEdyxqpPYxT_m3w">
+      <signatures__OperationInterface returnType__OperationSignature="_J4ti1hpZEdyxqpPYxT_m3w" entityName="watermark" id="_B8bOt3ebEd-AVaTk8ZPCHQ">
+        <parameters__OperationSignature parameterName="file" dataType__Parameter="_J4ti1hpZEdyxqpPYxT_m3w" />
+      </signatures__OperationInterface>
+    </interfaces__Repository>
+    <interfaces__Repository xsi:type="repository:OperationInterface" entityName="IEncode" id="_7aHA8BwpEdyg5YJN38bxwQ">
+      <signatures__OperationInterface returnType__OperationSignature="_J4ti1hpZEdyxqpPYxT_m3w" entityName="encode" id="_B8bOuXebEd-AVaTk8ZPCHQ">
+        <parameters__OperationSignature parameterName="file" dataType__Parameter="_J4ti1hpZEdyxqpPYxT_m3w" />
+      </signatures__OperationInterface>
+    </interfaces__Repository>
+    <interfaces__Repository xsi:type="repository:InfrastructureInterface" entityName="IJVM" id="_dgX_oGagEeCCuI19Qg4dIw">
+      <infrastructureSignatures__InfrastructureInterface entityName="IADD" id="_egsNIGagEeCCuI19Qg4dIw" />
+    </interfaces__Repository>
+    <dataTypes__Repository xsi:type="repository:CompositeDataType" entityName="Request" id="_z9IcVhpYEdyxqpPYxT_m3w">
+      <innerDeclaration_CompositeDataType datatype_InnerDeclaration="_8dsIJRpYEdyxqpPYxT_m3w" entityName="requestedFiles" />
+      <innerDeclaration_CompositeDataType datatype_InnerDeclaration="_qPoRsBpXEdyxqpPYxT_m3w/@dataTypes__Repository.6" entityName="customerType" />
+    </dataTypes__Repository>
+    <dataTypes__Repository xsi:type="repository:CollectionDataType" innerType_CollectionDataType="_qPoRsBpXEdyxqpPYxT_m3w/@dataTypes__Repository.6" entityName="ListOfStrings" id="_8dsIJRpYEdyxqpPYxT_m3w" />
+    <dataTypes__Repository xsi:type="repository:CompositeDataType" entityName="File" id="_J4ti1hpZEdyxqpPYxT_m3w" />
+    <dataTypes__Repository xsi:type="repository:CollectionDataType" innerType_CollectionDataType="_J4ti1hpZEdyxqpPYxT_m3w" entityName="ListOfFiles" id="_LirKRRpZEdyxqpPYxT_m3w" />
+    <dataTypes__Repository xsi:type="repository:CompositeDataType" entityName="StringFT" id="_GmTUhk4cEd6ZmMlj5u8j2Q">
+      <innerDeclaration_CompositeDataType datatype_InnerDeclaration="_qPoRsBpXEdyxqpPYxT_m3w/@dataTypes__Repository.6" entityName="Value" />
+      <innerDeclaration_CompositeDataType datatype_InnerDeclaration="_qPoRsBpXEdyxqpPYxT_m3w/@dataTypes__Repository.7" entityName="Failure" />
+    </dataTypes__Repository>
+    <dataTypes__Repository xsi:type="repository:PrimitiveDataType" />
+    <dataTypes__Repository xsi:type="repository:PrimitiveDataType" type="STRING" />
+    <dataTypes__Repository xsi:type="repository:PrimitiveDataType" type="BOOL" />
+    <dataTypes__Repository xsi:type="repository:PrimitiveDataType" type="DOUBLE" />
+    <dataTypes__Repository xsi:type="repository:PrimitiveDataType" type="CHAR" />
+    <dataTypes__Repository xsi:type="repository:PrimitiveDataType" type="BYTE" />
+  </repository:Repository>
+  <resourcetype:ResourceRepository xmlns:resourcetype="http://sdq.ipd.uka.de/PalladioComponentModel/ResourceType/5.0">
+    <resourceInterfaces__ResourceRepository entityName="CpuInterface" id="_tw_Q8E5CEeCUKeckjJ_n-w">
+      <resourceSignatures__ResourceInterface resourceServiceId="1" entityName="process" id="_wF22kE5CEeCUKeckjJ_n-w" />
+    </resourceInterfaces__ResourceRepository>
+    <resourceInterfaces__ResourceRepository entityName="HddInterface" id="_xXv8QE5CEeCUKeckjJ_n-w">
+      <resourceSignatures__ResourceInterface resourceServiceId="1" entityName="read" id="_ygMyEE5CEeCUKeckjJ_n-w" />
+      <resourceSignatures__ResourceInterface resourceServiceId="2" entityName="write" id="_zUFtIE5CEeCUKeckjJ_n-w" />
+    </resourceInterfaces__ResourceRepository>
+    <schedulingPolicies__ResourceRepository entityName="Processor Sharing" id="ProcessorSharing" />
+    <schedulingPolicies__ResourceRepository entityName="First-Come-First-Serve" id="FCFS" />
+    <schedulingPolicies__ResourceRepository entityName="Delay" id="Delay" />
+    <availableResourceTypes_ResourceRepository xsi:type="resourcetype:ProcessingResourceType" id="_oro4gG3fEdy4YaaT-RYrLQ" entityName="CPU">
+      <resourceProvidedRoles__ResourceInterfaceProvidingEntity providedResourceInterface__ResourceProvidedRole="_tw_Q8E5CEeCUKeckjJ_n-w" entityName="ResourceProvidedRole_CpuInterface_CPU" id="_patY8E5dEeCg1tUg4V9tRw" />
+    </availableResourceTypes_ResourceRepository>
+    <availableResourceTypes_ResourceRepository xsi:type="resourcetype:CommunicationLinkResourceType" id="_o3sScH2AEdyH8uerKnHYug" entityName="LAN" />
+    <availableResourceTypes_ResourceRepository xsi:type="resourcetype:ProcessingResourceType" id="_BIjHoQ3KEdyouMqirZIhzQ" entityName="HDD">
+      <resourceProvidedRoles__ResourceInterfaceProvidingEntity providedResourceInterface__ResourceProvidedRole="_xXv8QE5CEeCUKeckjJ_n-w" entityName="ResourceProvidedRole_HddInterface_HDD" id="_tCR8kE5dEeCg1tUg4V9tRw" />
+    </availableResourceTypes_ResourceRepository>
+    <availableResourceTypes_ResourceRepository xsi:type="resourcetype:ProcessingResourceType" id="_nvHX4KkREdyEA_b89s7q9w" entityName="DELAY" />
+  </resourcetype:ResourceRepository>
+</xmi:XMI>

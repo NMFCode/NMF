@@ -1,0 +1,24 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<nmeta:Namespace xmi:version="2.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" Uri="http://sdq.ipd.uka.de/Units/1.0" Prefix="units" Name="units" xmlns:xmi="http://www.omg.org/XMI" xmlns:nmeta="http://nmf.codeplex.com/nmeta/">
+  <Types xsi:type="nmeta:Class" IsAbstract="True" Name="UnitCarryingElement">
+    <References ReferenceType="//Unit/" Name="unit" />
+    <Attributes LowerBound="1" Type="http://nmf.codeplex.com/nmeta/#//String/" Name="unitSpecification" />
+  </Types>
+  <Types xsi:type="nmeta:Class" IsAbstract="True" Name="Unit" />
+  <Types xsi:type="nmeta:Class" Identifier="//BaseUnit//name/" Name="BaseUnit">
+    <Attributes LowerBound="1" Type="http://nmf.codeplex.com/nmeta/#//String/" Name="name" />
+  </Types>
+  <Types xsi:type="nmeta:Class" Name="UnitRepository">
+    <References IsContainment="True" ReferenceType="//BaseUnit/" UpperBound="-1" Name="units" />
+  </Types>
+  <Types xsi:type="nmeta:Class" BaseTypes="//Unit/" Name="UnitMultiplication">
+    <References IsContainment="True" ReferenceType="//Unit/" LowerBound="1" UpperBound="-1" Name="units" />
+  </Types>
+  <Types xsi:type="nmeta:Class" BaseTypes="//Unit/" Name="UnitPower">
+    <References IsContainment="True" ReferenceType="//Unit/" LowerBound="1" Name="unit" />
+    <Attributes LowerBound="1" Type="http://nmf.codeplex.com/nmeta/#//Integer/" Name="exponent" />
+  </Types>
+  <Types xsi:type="nmeta:Class" BaseTypes="//Unit/" Name="UnitLiteral">
+    <References ReferenceType="//BaseUnit/" LowerBound="1" Name="baseUnit" />
+  </Types>
+</nmeta:Namespace>
