@@ -56,7 +56,7 @@ namespace NMFExamples
         {
             var result = new Model();
 
-            var inputContainer = new PcmToMM06.InputModelContainer(pcmModel, pcmModel, pcmModel, pcmModel);
+            var inputContainer = new PcmToMM06.InputModelContainer(pcmModel);
             var outputContainer = new PcmToMM06.OutputModelContainer(result);
 
             var transformation = new PcmToMM06.PCMto06(inputContainer, outputContainer);

@@ -28,273 +28,81 @@ namespace NMFExamples.PcmToMM06
     	public static InputModelContainer InputModelContainer { get; set; }
     	
     	public static OutputModelContainer OutputModelContainer { get; set; }
-    	
-    	public partial class Model2ModelMainRule : SynchronizationRule<InputModelContainer, OutputModelContainer>
-    	{
-    		public override bool ShouldCorrespond(InputModelContainer left, OutputModelContainer right, ISynchronizationContext context)
-    		{
-    			return true;
-    		}
-    		
-    	    public override void DeclareSynchronization()
-    	    {
-    	    	SynchronizeManyLeftToRightOnly(SyncRule<Allocation2Root>(),
-    	    		input => input.Environment.Descendants().OfType<Pcm.Allocation.IAllocation>(),
-    	    		output => new OutputModelCollection<ComponentBasedSystems.Deployment.IAllocation>(output.OUT.RootElements.OfType<IModelElement, ComponentBasedSystems.Deployment.IAllocation>()));
-    	    	
-    	    	SynchronizeManyLeftToRightOnly(SyncRule<Allocation2RootRoot>(),
-    	    		input => input.Environment.Descendants().OfType<Pcm.Allocation.IAllocation>(),
-    	    		output => new OutputModelCollection<ComponentBasedSystems.IRoot_MM06>(output.OUT.RootElements.OfType<IModelElement, ComponentBasedSystems.IRoot_MM06>()));
-    	    	
-    	    	SynchronizeManyLeftToRightOnly(SyncRule<Allocation2Root>(),
-    	    		input => input.Allocation.Descendants().OfType<Pcm.Allocation.IAllocation>(),
-    	    		output => new OutputModelCollection<ComponentBasedSystems.Deployment.IAllocation>(output.OUT.RootElements.OfType<IModelElement, ComponentBasedSystems.Deployment.IAllocation>()));
-    	    	
-    	    	SynchronizeManyLeftToRightOnly(SyncRule<Allocation2RootRoot>(),
-    	    		input => input.Allocation.Descendants().OfType<Pcm.Allocation.IAllocation>(),
-    	    		output => new OutputModelCollection<ComponentBasedSystems.IRoot_MM06>(output.OUT.RootElements.OfType<IModelElement, ComponentBasedSystems.IRoot_MM06>()));
-    	    	
-    	    	SynchronizeManyLeftToRightOnly(SyncRule<Allocation2Root>(),
-    	    		input => input.System.Descendants().OfType<Pcm.Allocation.IAllocation>(),
-    	    		output => new OutputModelCollection<ComponentBasedSystems.Deployment.IAllocation>(output.OUT.RootElements.OfType<IModelElement, ComponentBasedSystems.Deployment.IAllocation>()));
-    	    	
-    	    	SynchronizeManyLeftToRightOnly(SyncRule<Allocation2RootRoot>(),
-    	    		input => input.System.Descendants().OfType<Pcm.Allocation.IAllocation>(),
-    	    		output => new OutputModelCollection<ComponentBasedSystems.IRoot_MM06>(output.OUT.RootElements.OfType<IModelElement, ComponentBasedSystems.IRoot_MM06>()));
-    	    	
-    	    	SynchronizeManyLeftToRightOnly(SyncRule<Allocation2Root>(),
-    	    		input => input.Repository.Descendants().OfType<Pcm.Allocation.IAllocation>(),
-    	    		output => new OutputModelCollection<ComponentBasedSystems.Deployment.IAllocation>(output.OUT.RootElements.OfType<IModelElement, ComponentBasedSystems.Deployment.IAllocation>()));
-    	    	
-    	    	SynchronizeManyLeftToRightOnly(SyncRule<Allocation2RootRoot>(),
-    	    		input => input.Repository.Descendants().OfType<Pcm.Allocation.IAllocation>(),
-    	    		output => new OutputModelCollection<ComponentBasedSystems.IRoot_MM06>(output.OUT.RootElements.OfType<IModelElement, ComponentBasedSystems.IRoot_MM06>()));
-    	    	
-    	    	SynchronizeManyLeftToRightOnly(SyncRule<Environment2Environment>(),
-    	    		input => input.Environment.Descendants().OfType<Pcm.Resourceenvironment.IResourceEnvironment>(),
-    	    		output => new OutputModelCollection<ComponentBasedSystems.Deployment.IEnvironment_MM06>(output.OUT.RootElements.OfType<IModelElement, ComponentBasedSystems.Deployment.IEnvironment_MM06>()));
-    	    	
-    	    	SynchronizeManyLeftToRightOnly(SyncRule<Environment2Environment>(),
-    	    		input => input.Allocation.Descendants().OfType<Pcm.Resourceenvironment.IResourceEnvironment>(),
-    	    		output => new OutputModelCollection<ComponentBasedSystems.Deployment.IEnvironment_MM06>(output.OUT.RootElements.OfType<IModelElement, ComponentBasedSystems.Deployment.IEnvironment_MM06>()));
-    	    	
-    	    	SynchronizeManyLeftToRightOnly(SyncRule<Environment2Environment>(),
-    	    		input => input.System.Descendants().OfType<Pcm.Resourceenvironment.IResourceEnvironment>(),
-    	    		output => new OutputModelCollection<ComponentBasedSystems.Deployment.IEnvironment_MM06>(output.OUT.RootElements.OfType<IModelElement, ComponentBasedSystems.Deployment.IEnvironment_MM06>()));
-    	    	
-    	    	SynchronizeManyLeftToRightOnly(SyncRule<Environment2Environment>(),
-    	    		input => input.Repository.Descendants().OfType<Pcm.Resourceenvironment.IResourceEnvironment>(),
-    	    		output => new OutputModelCollection<ComponentBasedSystems.Deployment.IEnvironment_MM06>(output.OUT.RootElements.OfType<IModelElement, ComponentBasedSystems.Deployment.IEnvironment_MM06>()));
-    	    	
-    	    	SynchronizeManyLeftToRightOnly(SyncRule<Container2Container>(),
-    	    		input => input.Environment.Descendants().OfType<Pcm.Resourceenvironment.IResourceContainer>(),
-    	    		output => new OutputModelCollection<ComponentBasedSystems.Deployment.IContainer_MM06>(output.OUT.RootElements.OfType<IModelElement, ComponentBasedSystems.Deployment.IContainer_MM06>()));
-    	    	
-    	    	SynchronizeManyLeftToRightOnly(SyncRule<Container2Container>(),
-    	    		input => input.Allocation.Descendants().OfType<Pcm.Resourceenvironment.IResourceContainer>(),
-    	    		output => new OutputModelCollection<ComponentBasedSystems.Deployment.IContainer_MM06>(output.OUT.RootElements.OfType<IModelElement, ComponentBasedSystems.Deployment.IContainer_MM06>()));
-    	    	
-    	    	SynchronizeManyLeftToRightOnly(SyncRule<Container2Container>(),
-    	    		input => input.System.Descendants().OfType<Pcm.Resourceenvironment.IResourceContainer>(),
-    	    		output => new OutputModelCollection<ComponentBasedSystems.Deployment.IContainer_MM06>(output.OUT.RootElements.OfType<IModelElement, ComponentBasedSystems.Deployment.IContainer_MM06>()));
-    	    	
-    	    	SynchronizeManyLeftToRightOnly(SyncRule<Container2Container>(),
-    	    		input => input.Repository.Descendants().OfType<Pcm.Resourceenvironment.IResourceContainer>(),
-    	    		output => new OutputModelCollection<ComponentBasedSystems.Deployment.IContainer_MM06>(output.OUT.RootElements.OfType<IModelElement, ComponentBasedSystems.Deployment.IContainer_MM06>()));
-    	    	
-    	    	SynchronizeManyLeftToRightOnly(SyncRule<Link2Link>(),
-    	    		input => input.Environment.Descendants().OfType<Pcm.Resourceenvironment.ILinkingResource>(),
-    	    		output => new OutputModelCollection<ComponentBasedSystems.Deployment.ILink>(output.OUT.RootElements.OfType<IModelElement, ComponentBasedSystems.Deployment.ILink>()));
-    	    	
-    	    	SynchronizeManyLeftToRightOnly(SyncRule<Link2Link>(),
-    	    		input => input.Allocation.Descendants().OfType<Pcm.Resourceenvironment.ILinkingResource>(),
-    	    		output => new OutputModelCollection<ComponentBasedSystems.Deployment.ILink>(output.OUT.RootElements.OfType<IModelElement, ComponentBasedSystems.Deployment.ILink>()));
-    	    	
-    	    	SynchronizeManyLeftToRightOnly(SyncRule<Link2Link>(),
-    	    		input => input.System.Descendants().OfType<Pcm.Resourceenvironment.ILinkingResource>(),
-    	    		output => new OutputModelCollection<ComponentBasedSystems.Deployment.ILink>(output.OUT.RootElements.OfType<IModelElement, ComponentBasedSystems.Deployment.ILink>()));
-    	    	
-    	    	SynchronizeManyLeftToRightOnly(SyncRule<Link2Link>(),
-    	    		input => input.Repository.Descendants().OfType<Pcm.Resourceenvironment.ILinkingResource>(),
-    	    		output => new OutputModelCollection<ComponentBasedSystems.Deployment.ILink>(output.OUT.RootElements.OfType<IModelElement, ComponentBasedSystems.Deployment.ILink>()));
-    	    	
-    	    	SynchronizeManyLeftToRightOnly(SyncRule<AllocationContext2AllocationContext>(),
-    	    		input => input.Environment.Descendants().OfType<Pcm.Allocation.IAllocationContext>(),
-    	    		output => new OutputModelCollection<ComponentBasedSystems.Deployment.IAllocationContext>(output.OUT.RootElements.OfType<IModelElement, ComponentBasedSystems.Deployment.IAllocationContext>()));
-    	    	
-    	    	SynchronizeManyLeftToRightOnly(SyncRule<AllocationContext2AllocationContext>(),
-    	    		input => input.Allocation.Descendants().OfType<Pcm.Allocation.IAllocationContext>(),
-    	    		output => new OutputModelCollection<ComponentBasedSystems.Deployment.IAllocationContext>(output.OUT.RootElements.OfType<IModelElement, ComponentBasedSystems.Deployment.IAllocationContext>()));
-    	    	
-    	    	SynchronizeManyLeftToRightOnly(SyncRule<AllocationContext2AllocationContext>(),
-    	    		input => input.System.Descendants().OfType<Pcm.Allocation.IAllocationContext>(),
-    	    		output => new OutputModelCollection<ComponentBasedSystems.Deployment.IAllocationContext>(output.OUT.RootElements.OfType<IModelElement, ComponentBasedSystems.Deployment.IAllocationContext>()));
-    	    	
-    	    	SynchronizeManyLeftToRightOnly(SyncRule<AllocationContext2AllocationContext>(),
-    	    		input => input.Repository.Descendants().OfType<Pcm.Allocation.IAllocationContext>(),
-    	    		output => new OutputModelCollection<ComponentBasedSystems.Deployment.IAllocationContext>(output.OUT.RootElements.OfType<IModelElement, ComponentBasedSystems.Deployment.IAllocationContext>()));
-    	    	
-    	    	SynchronizeManyLeftToRightOnly(SyncRule<System2System>(),
-    	    		input => input.Environment.Descendants().OfType<Pcm.System.ISystem0>(),
-    	    		output => new OutputModelCollection<ComponentBasedSystems.Assembly.ISystem_MM06>(output.OUT.RootElements.OfType<IModelElement, ComponentBasedSystems.Assembly.ISystem_MM06>()));
-    	    	
-    	    	SynchronizeManyLeftToRightOnly(SyncRule<System2System>(),
-    	    		input => input.Allocation.Descendants().OfType<Pcm.System.ISystem0>(),
-    	    		output => new OutputModelCollection<ComponentBasedSystems.Assembly.ISystem_MM06>(output.OUT.RootElements.OfType<IModelElement, ComponentBasedSystems.Assembly.ISystem_MM06>()));
-    	    	
-    	    	SynchronizeManyLeftToRightOnly(SyncRule<System2System>(),
-    	    		input => input.System.Descendants().OfType<Pcm.System.ISystem0>(),
-    	    		output => new OutputModelCollection<ComponentBasedSystems.Assembly.ISystem_MM06>(output.OUT.RootElements.OfType<IModelElement, ComponentBasedSystems.Assembly.ISystem_MM06>()));
-    	    	
-    	    	SynchronizeManyLeftToRightOnly(SyncRule<System2System>(),
-    	    		input => input.Repository.Descendants().OfType<Pcm.System.ISystem0>(),
-    	    		output => new OutputModelCollection<ComponentBasedSystems.Assembly.ISystem_MM06>(output.OUT.RootElements.OfType<IModelElement, ComponentBasedSystems.Assembly.ISystem_MM06>()));
-    	    	
-    	    	SynchronizeManyLeftToRightOnly(SyncRule<Repository2Repository>(),
-    	    		input => input.Environment.Descendants().OfType<Pcm.Repository.IRepository>(),
-    	    		output => new OutputModelCollection<ComponentBasedSystems.SystemIndependent.IRepository_MM06>(output.OUT.RootElements.OfType<IModelElement, ComponentBasedSystems.SystemIndependent.IRepository_MM06>()));
-    	    	
-    	    	SynchronizeManyLeftToRightOnly(SyncRule<Repository2Repository>(),
-    	    		input => input.Allocation.Descendants().OfType<Pcm.Repository.IRepository>(),
-    	    		output => new OutputModelCollection<ComponentBasedSystems.SystemIndependent.IRepository_MM06>(output.OUT.RootElements.OfType<IModelElement, ComponentBasedSystems.SystemIndependent.IRepository_MM06>()));
-    	    	
-    	    	SynchronizeManyLeftToRightOnly(SyncRule<Repository2Repository>(),
-    	    		input => input.System.Descendants().OfType<Pcm.Repository.IRepository>(),
-    	    		output => new OutputModelCollection<ComponentBasedSystems.SystemIndependent.IRepository_MM06>(output.OUT.RootElements.OfType<IModelElement, ComponentBasedSystems.SystemIndependent.IRepository_MM06>()));
-    	    	
-    	    	SynchronizeManyLeftToRightOnly(SyncRule<Repository2Repository>(),
-    	    		input => input.Repository.Descendants().OfType<Pcm.Repository.IRepository>(),
-    	    		output => new OutputModelCollection<ComponentBasedSystems.SystemIndependent.IRepository_MM06>(output.OUT.RootElements.OfType<IModelElement, ComponentBasedSystems.SystemIndependent.IRepository_MM06>()));
-    	    	
-    	    	SynchronizeManyLeftToRightOnly(SyncRule<AssemblyConnector2AssemblyConnector>(),
-    	    		input => input.Environment.Descendants().OfType<Pcm.Core.Composition.IAssemblyConnector>(),
-    	    		output => new OutputModelCollection<ComponentBasedSystems.Assembly.IAssemblyConnector>(output.OUT.RootElements.OfType<IModelElement, ComponentBasedSystems.Assembly.IAssemblyConnector>()));
-    	    	
-    	    	SynchronizeManyLeftToRightOnly(SyncRule<AssemblyConnector2AssemblyConnector>(),
-    	    		input => input.Allocation.Descendants().OfType<Pcm.Core.Composition.IAssemblyConnector>(),
-    	    		output => new OutputModelCollection<ComponentBasedSystems.Assembly.IAssemblyConnector>(output.OUT.RootElements.OfType<IModelElement, ComponentBasedSystems.Assembly.IAssemblyConnector>()));
-    	    	
-    	    	SynchronizeManyLeftToRightOnly(SyncRule<AssemblyConnector2AssemblyConnector>(),
-    	    		input => input.System.Descendants().OfType<Pcm.Core.Composition.IAssemblyConnector>(),
-    	    		output => new OutputModelCollection<ComponentBasedSystems.Assembly.IAssemblyConnector>(output.OUT.RootElements.OfType<IModelElement, ComponentBasedSystems.Assembly.IAssemblyConnector>()));
-    	    	
-    	    	SynchronizeManyLeftToRightOnly(SyncRule<AssemblyConnector2AssemblyConnector>(),
-    	    		input => input.Repository.Descendants().OfType<Pcm.Core.Composition.IAssemblyConnector>(),
-    	    		output => new OutputModelCollection<ComponentBasedSystems.Assembly.IAssemblyConnector>(output.OUT.RootElements.OfType<IModelElement, ComponentBasedSystems.Assembly.IAssemblyConnector>()));
-    	    	
-    	    	SynchronizeManyLeftToRightOnly(SyncRule<ProvidingDelegationConnector2ProvidingDelegateConnector>(),
-    	    		input => input.Environment.Descendants().OfType<Pcm.Core.Composition.IProvidedDelegationConnector>(),
-    	    		output => new OutputModelCollection<ComponentBasedSystems.Assembly.IProvidingDelegateConnector>(output.OUT.RootElements.OfType<IModelElement, ComponentBasedSystems.Assembly.IProvidingDelegateConnector>()));
-    	    	
-    	    	SynchronizeManyLeftToRightOnly(SyncRule<ProvidingDelegationConnector2ProvidingDelegateConnector>(),
-    	    		input => input.Allocation.Descendants().OfType<Pcm.Core.Composition.IProvidedDelegationConnector>(),
-    	    		output => new OutputModelCollection<ComponentBasedSystems.Assembly.IProvidingDelegateConnector>(output.OUT.RootElements.OfType<IModelElement, ComponentBasedSystems.Assembly.IProvidingDelegateConnector>()));
-    	    	
-    	    	SynchronizeManyLeftToRightOnly(SyncRule<ProvidingDelegationConnector2ProvidingDelegateConnector>(),
-    	    		input => input.System.Descendants().OfType<Pcm.Core.Composition.IProvidedDelegationConnector>(),
-    	    		output => new OutputModelCollection<ComponentBasedSystems.Assembly.IProvidingDelegateConnector>(output.OUT.RootElements.OfType<IModelElement, ComponentBasedSystems.Assembly.IProvidingDelegateConnector>()));
-    	    	
-    	    	SynchronizeManyLeftToRightOnly(SyncRule<ProvidingDelegationConnector2ProvidingDelegateConnector>(),
-    	    		input => input.Repository.Descendants().OfType<Pcm.Core.Composition.IProvidedDelegationConnector>(),
-    	    		output => new OutputModelCollection<ComponentBasedSystems.Assembly.IProvidingDelegateConnector>(output.OUT.RootElements.OfType<IModelElement, ComponentBasedSystems.Assembly.IProvidingDelegateConnector>()));
-    	    	
-    	    	SynchronizeManyLeftToRightOnly(SyncRule<RequiringDelegationConnector2RequiringDelegateConnector>(),
-    	    		input => input.Environment.Descendants().OfType<Pcm.Core.Composition.IRequiredDelegationConnector>(),
-    	    		output => new OutputModelCollection<ComponentBasedSystems.Assembly.IRequiringDelegateConnector>(output.OUT.RootElements.OfType<IModelElement, ComponentBasedSystems.Assembly.IRequiringDelegateConnector>()));
-    	    	
-    	    	SynchronizeManyLeftToRightOnly(SyncRule<RequiringDelegationConnector2RequiringDelegateConnector>(),
-    	    		input => input.Allocation.Descendants().OfType<Pcm.Core.Composition.IRequiredDelegationConnector>(),
-    	    		output => new OutputModelCollection<ComponentBasedSystems.Assembly.IRequiringDelegateConnector>(output.OUT.RootElements.OfType<IModelElement, ComponentBasedSystems.Assembly.IRequiringDelegateConnector>()));
-    	    	
-    	    	SynchronizeManyLeftToRightOnly(SyncRule<RequiringDelegationConnector2RequiringDelegateConnector>(),
-    	    		input => input.System.Descendants().OfType<Pcm.Core.Composition.IRequiredDelegationConnector>(),
-    	    		output => new OutputModelCollection<ComponentBasedSystems.Assembly.IRequiringDelegateConnector>(output.OUT.RootElements.OfType<IModelElement, ComponentBasedSystems.Assembly.IRequiringDelegateConnector>()));
-    	    	
-    	    	SynchronizeManyLeftToRightOnly(SyncRule<RequiringDelegationConnector2RequiringDelegateConnector>(),
-    	    		input => input.Repository.Descendants().OfType<Pcm.Core.Composition.IRequiredDelegationConnector>(),
-    	    		output => new OutputModelCollection<ComponentBasedSystems.Assembly.IRequiringDelegateConnector>(output.OUT.RootElements.OfType<IModelElement, ComponentBasedSystems.Assembly.IRequiringDelegateConnector>()));
-    	    	
-    	    	SynchronizeManyLeftToRightOnly(SyncRule<AssemblyContext2AssemblyContext>(),
-    	    		input => input.Environment.Descendants().OfType<Pcm.Core.Composition.IAssemblyContext>(),
-    	    		output => new OutputModelCollection<ComponentBasedSystems.Assembly.IAssemblyContext>(output.OUT.RootElements.OfType<IModelElement, ComponentBasedSystems.Assembly.IAssemblyContext>()));
-    	    	
-    	    	SynchronizeManyLeftToRightOnly(SyncRule<AssemblyContext2AssemblyContext>(),
-    	    		input => input.Allocation.Descendants().OfType<Pcm.Core.Composition.IAssemblyContext>(),
-    	    		output => new OutputModelCollection<ComponentBasedSystems.Assembly.IAssemblyContext>(output.OUT.RootElements.OfType<IModelElement, ComponentBasedSystems.Assembly.IAssemblyContext>()));
-    	    	
-    	    	SynchronizeManyLeftToRightOnly(SyncRule<AssemblyContext2AssemblyContext>(),
-    	    		input => input.System.Descendants().OfType<Pcm.Core.Composition.IAssemblyContext>(),
-    	    		output => new OutputModelCollection<ComponentBasedSystems.Assembly.IAssemblyContext>(output.OUT.RootElements.OfType<IModelElement, ComponentBasedSystems.Assembly.IAssemblyContext>()));
-    	    	
-    	    	SynchronizeManyLeftToRightOnly(SyncRule<AssemblyContext2AssemblyContext>(),
-    	    		input => input.Repository.Descendants().OfType<Pcm.Core.Composition.IAssemblyContext>(),
-    	    		output => new OutputModelCollection<ComponentBasedSystems.Assembly.IAssemblyContext>(output.OUT.RootElements.OfType<IModelElement, ComponentBasedSystems.Assembly.IAssemblyContext>()));
-    	    	
-    	    	SynchronizeManyLeftToRightOnly(SyncRule<RepositoryComponent2Component>(),
-    	    		input => input.Environment.Descendants().OfType<Pcm.Repository.IRepositoryComponent>(),
-    	    		output => new OutputModelCollection<ComponentBasedSystems.SystemIndependent.IComponent_MM06>(output.OUT.RootElements.OfType<IModelElement, ComponentBasedSystems.SystemIndependent.IComponent_MM06>()));
-    	    	
-    	    	SynchronizeManyLeftToRightOnly(SyncRule<RepositoryComponent2Component>(),
-    	    		input => input.Allocation.Descendants().OfType<Pcm.Repository.IRepositoryComponent>(),
-    	    		output => new OutputModelCollection<ComponentBasedSystems.SystemIndependent.IComponent_MM06>(output.OUT.RootElements.OfType<IModelElement, ComponentBasedSystems.SystemIndependent.IComponent_MM06>()));
-    	    	
-    	    	SynchronizeManyLeftToRightOnly(SyncRule<RepositoryComponent2Component>(),
-    	    		input => input.System.Descendants().OfType<Pcm.Repository.IRepositoryComponent>(),
-    	    		output => new OutputModelCollection<ComponentBasedSystems.SystemIndependent.IComponent_MM06>(output.OUT.RootElements.OfType<IModelElement, ComponentBasedSystems.SystemIndependent.IComponent_MM06>()));
-    	    	
-    	    	SynchronizeManyLeftToRightOnly(SyncRule<RepositoryComponent2Component>(),
-    	    		input => input.Repository.Descendants().OfType<Pcm.Repository.IRepositoryComponent>(),
-    	    		output => new OutputModelCollection<ComponentBasedSystems.SystemIndependent.IComponent_MM06>(output.OUT.RootElements.OfType<IModelElement, ComponentBasedSystems.SystemIndependent.IComponent_MM06>()));
-    	    	
-    	    	SynchronizeManyLeftToRightOnly(SyncRule<Interface2Interface>(),
-    	    		input => input.Environment.Descendants().OfType<Pcm.Repository.IOperationInterface>(),
-    	    		output => new OutputModelCollection<ComponentBasedSystems.SystemIndependent.IInterface>(output.OUT.RootElements.OfType<IModelElement, ComponentBasedSystems.SystemIndependent.IInterface>()));
-    	    	
-    	    	SynchronizeManyLeftToRightOnly(SyncRule<Interface2Interface>(),
-    	    		input => input.Allocation.Descendants().OfType<Pcm.Repository.IOperationInterface>(),
-    	    		output => new OutputModelCollection<ComponentBasedSystems.SystemIndependent.IInterface>(output.OUT.RootElements.OfType<IModelElement, ComponentBasedSystems.SystemIndependent.IInterface>()));
-    	    	
-    	    	SynchronizeManyLeftToRightOnly(SyncRule<Interface2Interface>(),
-    	    		input => input.System.Descendants().OfType<Pcm.Repository.IOperationInterface>(),
-    	    		output => new OutputModelCollection<ComponentBasedSystems.SystemIndependent.IInterface>(output.OUT.RootElements.OfType<IModelElement, ComponentBasedSystems.SystemIndependent.IInterface>()));
-    	    	
-    	    	SynchronizeManyLeftToRightOnly(SyncRule<Interface2Interface>(),
-    	    		input => input.Repository.Descendants().OfType<Pcm.Repository.IOperationInterface>(),
-    	    		output => new OutputModelCollection<ComponentBasedSystems.SystemIndependent.IInterface>(output.OUT.RootElements.OfType<IModelElement, ComponentBasedSystems.SystemIndependent.IInterface>()));
-    	    	
-    	    	SynchronizeManyLeftToRightOnly(SyncRule<Signature2Signature>(),
-    	    		input => input.Environment.Descendants().OfType<Pcm.Repository.IOperationSignature>(),
-    	    		output => new OutputModelCollection<ComponentBasedSystems.SystemIndependent.ISignature>(output.OUT.RootElements.OfType<IModelElement, ComponentBasedSystems.SystemIndependent.ISignature>()));
-    	    	
-    	    	SynchronizeManyLeftToRightOnly(SyncRule<Signature2Signature>(),
-    	    		input => input.Allocation.Descendants().OfType<Pcm.Repository.IOperationSignature>(),
-    	    		output => new OutputModelCollection<ComponentBasedSystems.SystemIndependent.ISignature>(output.OUT.RootElements.OfType<IModelElement, ComponentBasedSystems.SystemIndependent.ISignature>()));
-    	    	
-    	    	SynchronizeManyLeftToRightOnly(SyncRule<Signature2Signature>(),
-    	    		input => input.System.Descendants().OfType<Pcm.Repository.IOperationSignature>(),
-    	    		output => new OutputModelCollection<ComponentBasedSystems.SystemIndependent.ISignature>(output.OUT.RootElements.OfType<IModelElement, ComponentBasedSystems.SystemIndependent.ISignature>()));
-    	    	
-    	    	SynchronizeManyLeftToRightOnly(SyncRule<Signature2Signature>(),
-    	    		input => input.Repository.Descendants().OfType<Pcm.Repository.IOperationSignature>(),
-    	    		output => new OutputModelCollection<ComponentBasedSystems.SystemIndependent.ISignature>(output.OUT.RootElements.OfType<IModelElement, ComponentBasedSystems.SystemIndependent.ISignature>()));
-    	    	
-    	    	SynchronizeManyLeftToRightOnly(SyncRule<Parameter2Parameter>(),
-    	    		input => input.Environment.Descendants().OfType<Pcm.Repository.IParameter>(),
-    	    		output => new OutputModelCollection<ComponentBasedSystems.SystemIndependent.IParameter>(output.OUT.RootElements.OfType<IModelElement, ComponentBasedSystems.SystemIndependent.IParameter>()));
-    	    	
-    	    	SynchronizeManyLeftToRightOnly(SyncRule<Parameter2Parameter>(),
-    	    		input => input.Allocation.Descendants().OfType<Pcm.Repository.IParameter>(),
-    	    		output => new OutputModelCollection<ComponentBasedSystems.SystemIndependent.IParameter>(output.OUT.RootElements.OfType<IModelElement, ComponentBasedSystems.SystemIndependent.IParameter>()));
-    	    	
-    	    	SynchronizeManyLeftToRightOnly(SyncRule<Parameter2Parameter>(),
-    	    		input => input.System.Descendants().OfType<Pcm.Repository.IParameter>(),
-    	    		output => new OutputModelCollection<ComponentBasedSystems.SystemIndependent.IParameter>(output.OUT.RootElements.OfType<IModelElement, ComponentBasedSystems.SystemIndependent.IParameter>()));
-    	    	
-    	    	SynchronizeManyLeftToRightOnly(SyncRule<Parameter2Parameter>(),
-    	    		input => input.Repository.Descendants().OfType<Pcm.Repository.IParameter>(),
-    	    		output => new OutputModelCollection<ComponentBasedSystems.SystemIndependent.IParameter>(output.OUT.RootElements.OfType<IModelElement, ComponentBasedSystems.SystemIndependent.IParameter>()));
-    	    }
-    	}
+
+        public partial class Model2ModelMainRule : SynchronizationRule<InputModelContainer, OutputModelContainer>
+        {
+            public override bool ShouldCorrespond(InputModelContainer left, OutputModelContainer right, ISynchronizationContext context)
+            {
+                return true;
+            }
+
+            public override void DeclareSynchronization()
+            {
+                SynchronizeManyLeftToRightOnly(SyncRule<Allocation2Root>(),
+                    input => input.Environment.Descendants().OfType<Pcm.Allocation.IAllocation>(),
+                    output => new OutputModelCollection<ComponentBasedSystems.Deployment.IAllocation>(output.OUT.RootElements.OfType<IModelElement, ComponentBasedSystems.Deployment.IAllocation>()));
+
+                SynchronizeManyLeftToRightOnly(SyncRule<Allocation2RootRoot>(),
+                    input => input.Environment.Descendants().OfType<Pcm.Allocation.IAllocation>(),
+                    output => new OutputModelCollection<ComponentBasedSystems.IRoot_MM06>(output.OUT.RootElements.OfType<IModelElement, ComponentBasedSystems.IRoot_MM06>()));
+
+                SynchronizeManyLeftToRightOnly(SyncRule<Environment2Environment>(),
+                    input => input.Environment.Descendants().OfType<Pcm.Resourceenvironment.IResourceEnvironment>(),
+                    output => new OutputModelCollection<ComponentBasedSystems.Deployment.IEnvironment_MM06>(output.OUT.RootElements.OfType<IModelElement, ComponentBasedSystems.Deployment.IEnvironment_MM06>()));
+
+                SynchronizeManyLeftToRightOnly(SyncRule<Container2Container>(),
+                    input => input.Environment.Descendants().OfType<Pcm.Resourceenvironment.IResourceContainer>(),
+                    output => new OutputModelCollection<ComponentBasedSystems.Deployment.IContainer_MM06>(output.OUT.RootElements.OfType<IModelElement, ComponentBasedSystems.Deployment.IContainer_MM06>()));
+
+                SynchronizeManyLeftToRightOnly(SyncRule<Link2Link>(),
+                    input => input.Environment.Descendants().OfType<Pcm.Resourceenvironment.ILinkingResource>(),
+                    output => new OutputModelCollection<ComponentBasedSystems.Deployment.ILink>(output.OUT.RootElements.OfType<IModelElement, ComponentBasedSystems.Deployment.ILink>()));
+
+                SynchronizeManyLeftToRightOnly(SyncRule<AllocationContext2AllocationContext>(),
+                    input => input.Environment.Descendants().OfType<Pcm.Allocation.IAllocationContext>(),
+                    output => new OutputModelCollection<ComponentBasedSystems.Deployment.IAllocationContext>(output.OUT.RootElements.OfType<IModelElement, ComponentBasedSystems.Deployment.IAllocationContext>()));
+
+                SynchronizeManyLeftToRightOnly(SyncRule<System2System>(),
+                    input => input.Environment.Descendants().OfType<Pcm.System.ISystem0>(),
+                    output => new OutputModelCollection<ComponentBasedSystems.Assembly.ISystem_MM06>(output.OUT.RootElements.OfType<IModelElement, ComponentBasedSystems.Assembly.ISystem_MM06>()));
+
+                SynchronizeManyLeftToRightOnly(SyncRule<Repository2Repository>(),
+                    input => input.Environment.Descendants().OfType<Pcm.Repository.IRepository>(),
+                    output => new OutputModelCollection<ComponentBasedSystems.SystemIndependent.IRepository_MM06>(output.OUT.RootElements.OfType<IModelElement, ComponentBasedSystems.SystemIndependent.IRepository_MM06>()));
+
+                SynchronizeManyLeftToRightOnly(SyncRule<AssemblyConnector2AssemblyConnector>(),
+                    input => input.Environment.Descendants().OfType<Pcm.Core.Composition.IAssemblyConnector>(),
+                    output => new OutputModelCollection<ComponentBasedSystems.Assembly.IAssemblyConnector>(output.OUT.RootElements.OfType<IModelElement, ComponentBasedSystems.Assembly.IAssemblyConnector>()));
+
+                SynchronizeManyLeftToRightOnly(SyncRule<ProvidingDelegationConnector2ProvidingDelegateConnector>(),
+                    input => input.Environment.Descendants().OfType<Pcm.Core.Composition.IProvidedDelegationConnector>(),
+                    output => new OutputModelCollection<ComponentBasedSystems.Assembly.IProvidingDelegateConnector>(output.OUT.RootElements.OfType<IModelElement, ComponentBasedSystems.Assembly.IProvidingDelegateConnector>()));
+
+                SynchronizeManyLeftToRightOnly(SyncRule<RequiringDelegationConnector2RequiringDelegateConnector>(),
+                    input => input.Environment.Descendants().OfType<Pcm.Core.Composition.IRequiredDelegationConnector>(),
+                    output => new OutputModelCollection<ComponentBasedSystems.Assembly.IRequiringDelegateConnector>(output.OUT.RootElements.OfType<IModelElement, ComponentBasedSystems.Assembly.IRequiringDelegateConnector>()));
+
+                SynchronizeManyLeftToRightOnly(SyncRule<AssemblyContext2AssemblyContext>(),
+                    input => input.Environment.Descendants().OfType<Pcm.Core.Composition.IAssemblyContext>(),
+                    output => new OutputModelCollection<ComponentBasedSystems.Assembly.IAssemblyContext>(output.OUT.RootElements.OfType<IModelElement, ComponentBasedSystems.Assembly.IAssemblyContext>()));
+
+                SynchronizeManyLeftToRightOnly(SyncRule<RepositoryComponent2Component>(),
+                    input => input.Environment.Descendants().OfType<Pcm.Repository.IRepositoryComponent>(),
+                    output => new OutputModelCollection<ComponentBasedSystems.SystemIndependent.IComponent_MM06>(output.OUT.RootElements.OfType<IModelElement, ComponentBasedSystems.SystemIndependent.IComponent_MM06>()));
+
+                SynchronizeManyLeftToRightOnly(SyncRule<Interface2Interface>(),
+                    input => input.Environment.Descendants().OfType<Pcm.Repository.IOperationInterface>(),
+                    output => new OutputModelCollection<ComponentBasedSystems.SystemIndependent.IInterface>(output.OUT.RootElements.OfType<IModelElement, ComponentBasedSystems.SystemIndependent.IInterface>()));
+
+                SynchronizeManyLeftToRightOnly(SyncRule<Signature2Signature>(),
+                    input => input.Environment.Descendants().OfType<Pcm.Repository.IOperationSignature>(),
+                    output => new OutputModelCollection<ComponentBasedSystems.SystemIndependent.ISignature>(output.OUT.RootElements.OfType<IModelElement, ComponentBasedSystems.SystemIndependent.ISignature>()));
+
+                SynchronizeManyLeftToRightOnly(SyncRule<Parameter2Parameter>(),
+                    input => input.Environment.Descendants().OfType<Pcm.Repository.IParameter>(),
+                    output => new OutputModelCollection<ComponentBasedSystems.SystemIndependent.IParameter>(output.OUT.RootElements.OfType<IModelElement, ComponentBasedSystems.SystemIndependent.IParameter>()));
+            }
+        }
     	
     	public partial class Allocation2Root : SynchronizationRule<Pcm.Allocation.IAllocation, ComponentBasedSystems.Deployment.IAllocation>
     	{

@@ -12,21 +12,12 @@ namespace NMFExamples.PcmToMM06
 {
     public class InputModelContainer
     {
-    	public InputModelContainer(Model Environment, Model Allocation, Model System, Model Repository) 
+    	public InputModelContainer(Model Environment) 
     	{
 			this.Environment = Environment;
-			this.Allocation = Allocation;
-			this.System = System;
-			this.Repository = Repository;
 		}
 		
 		public Model Environment { get; private set; }
-		
-		public Model Allocation { get; private set; }
-		
-		public Model System { get; private set; }
-		
-		public Model Repository { get; private set; }
 		
 	}
 }
