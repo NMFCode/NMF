@@ -149,15 +149,19 @@ namespace NMF.Models.Changes
         private IModelChange ParseChange(ref int currentIndex)
         {
             BubbledChangeEventArgs currentEvent;
+            IModelElement createdElement = null;
 
             do
             {
                 currentEvent = recordedEvents[currentIndex++];
+                if (currentEvent.ChangeType == ChangeType.ElementCreated)
+                {
+                    createdElement = currentEvent.Element;
+                }
                 if (currentIndex == recordedEvents.Count) return null;
             } while (currentEvent.ChangeType != ChangeType.PropertyChanging && currentEvent.ChangeType != ChangeType.CollectionChanging);
 
             var childChanges = new List<IModelChange>();
-            IModelElement createdElement = null;
 
             while (currentIndex < recordedEvents.Count)
             {
