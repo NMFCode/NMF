@@ -40,7 +40,34 @@ namespace NMF.Expressions.Linq
 
         public override INotificationResult Notify(IList<INotificationResult> sources)
         {
-            return CollectionChangedNotificationResult<T>.Transfer((ICollectionChangedNotificationResult)sources[0], this);
+            var backParsed = (ICollectionChangedNotificationResult)sources[0];
+            if (HasEventSubscriber)
+            {
+                if (backParsed.IsReset)
+                {
+                    OnCleared();
+                }
+                else
+                {
+                    if (backParsed.RemovedItems != null)
+                    {
+                        OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Remove, backParsed.RemovedItems));
+                    }
+                    if (backParsed.AddedItems != null)
+                    {
+                        OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, backParsed.AddedItems));
+                    }
+                    if (backParsed.MovedItems != null)
+                    {
+                        OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Move, backParsed.MovedItems));
+                    }
+                    if (backParsed.ReplaceAddedItems != null)
+                    {
+                        OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Replace, backParsed.ReplaceAddedItems, backParsed.ReplaceRemovedItems));
+                    }
+                }
+            }
+            return CollectionChangedNotificationResult<T>.Transfer(backParsed, this);
         }
 
         public override bool Contains(T item)

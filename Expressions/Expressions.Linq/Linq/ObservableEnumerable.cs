@@ -89,6 +89,14 @@ namespace NMF.Expressions.Linq
             }
         }
 
+        protected bool HasEventSubscriber
+        {
+            get
+            {
+                return CollectionChanged != null;
+            }
+        }
+
         [DebuggerStepThrough]
         protected void OnCollectionChanged(NotifyCollectionChangedEventArgs e)
         {
