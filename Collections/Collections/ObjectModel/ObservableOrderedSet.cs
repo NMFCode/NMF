@@ -49,7 +49,7 @@ namespace NMF.Collections.ObjectModel
 
         protected override void OnInsertItem(T item, int index)
         {
-            OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, item));
+            OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, item, index));
         }
 
         protected override void OnRemovingItem(T item, ref bool cancel, int index)
@@ -71,9 +71,9 @@ namespace NMF.Collections.ObjectModel
                 OnCollectionChanging(new NotifyCollectionChangingEventArgs(NotifyCollectionChangedAction.Replace));
         }
 
-        protected override void OnReplaceItem(T oldItem, T newItem)
+        protected override void OnReplaceItem(T oldItem, T newItem, int index)
         {
-            OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Replace, newItem, oldItem));
+            OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Replace, newItem, oldItem, index));
         }
 
         public event NotifyCollectionChangedEventHandler CollectionChanged;

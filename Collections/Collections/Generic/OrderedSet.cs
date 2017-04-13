@@ -25,7 +25,7 @@ namespace NMF.Collections.Generic
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1045:DoNotPassTypesByReference", MessageId = "2#")]
         protected virtual void OnReplacingItem(T oldItem, T newItem, ref bool cancel) { }
 
-        protected virtual void OnReplaceItem(T oldItem, T newItem) { }
+        protected virtual void OnReplaceItem(T oldItem, T newItem, int index) { }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1045:DoNotPassTypesByReference", MessageId = "0#")]
         protected virtual void OnClearing(ref bool cancel) { }
@@ -129,7 +129,7 @@ namespace NMF.Collections.Generic
                     itemOrder[index] = value;
                     Items.Remove(item);
                     Items.Add(value);
-                    OnReplaceItem(item, value);
+                    OnReplaceItem(item, value, index);
                 }
             }
         }

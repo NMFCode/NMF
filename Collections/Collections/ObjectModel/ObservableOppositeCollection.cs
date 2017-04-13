@@ -43,11 +43,11 @@ namespace NMF.Collections.ObjectModel
             base.OnRemoveItem(item, index);
         }
 
-        protected override void OnReplaceItem(TCollected oldItem, TCollected newItem)
+        protected override void OnReplaceItem(TCollected oldItem, TCollected newItem, int index)
         {
             SetOpposite(oldItem, default(TParent));
             SetOpposite(newItem, Parent);
-            base.OnReplaceItem(oldItem, newItem);
+            base.OnReplaceItem(oldItem, newItem, index);
         }
     }
 
