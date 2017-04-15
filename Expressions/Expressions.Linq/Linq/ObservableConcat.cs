@@ -47,7 +47,7 @@ namespace NMF.Expressions.Linq
             var replaceAdded = new List<TSource>();
             var replaceRemoved = new List<TSource>();
 
-            foreach (CollectionChangedNotificationResult<TSource> change in sources)
+            foreach (ICollectionChangedNotificationResult change in sources)
             {
                 if (change.IsReset)
                 {
@@ -56,15 +56,15 @@ namespace NMF.Expressions.Linq
                 }
 
                 if (change.AddedItems != null)
-                    added.AddRange(change.AddedItems);
+                    added.AddRange(SL.Cast<TSource>(change.AddedItems));
                 if (change.RemovedItems != null)
-                    removed.AddRange(change.RemovedItems);
+                    removed.AddRange(SL.Cast<TSource>(change.RemovedItems));
                 if (change.MovedItems != null)
-                    moved.AddRange(change.MovedItems);
+                    moved.AddRange(SL.Cast<TSource>(change.MovedItems));
                 if (change.ReplaceAddedItems != null)
-                    replaceAdded.AddRange(change.ReplaceAddedItems);
+                    replaceAdded.AddRange(SL.Cast<TSource>(change.ReplaceAddedItems));
                 if (change.ReplaceRemovedItems != null)
-                    replaceRemoved.AddRange(change.ReplaceRemovedItems);
+                    replaceRemoved.AddRange(SL.Cast<TSource>(change.ReplaceRemovedItems));
             }
 
             OnRemoveItems(removed);
