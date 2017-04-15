@@ -375,7 +375,7 @@ namespace NMF.Models.Meta
                 var valueChangeRef = new CodeVariableReferenceExpression(valueChangeDef.Name);
 
                 ifStmt.TrueStatements.Add(valueChangeDef);
-                
+
                 var referenceRef = new CodeFieldReferenceExpression(null, "_" + property.Name.ToCamelCase() + "Reference");
 
                 ifStmt.TrueStatements.Add(codeProperty.CreateOnChangingEventPattern(typeof(ValueChangedEventArgs).ToTypeReference(), valueChangeRef));
@@ -383,78 +383,70 @@ namespace NMF.Models.Meta
                         new CodePrimitiveExpression(codeProperty.Name), valueChangeRef, referenceRef));
 
                 var targetClass = property.Type;
-                if (targetClass != null)
+                var nullRef = new CodePrimitiveExpression(null);
+                var thisRef = new CodeThisReferenceExpression();
+                var oldNotNull = new CodeBinaryOperatorExpression(oldRef, CodeBinaryOperatorType.IdentityInequality, nullRef);
+                var valueNotNull = new CodeBinaryOperatorExpression(val, CodeBinaryOperatorType.IdentityInequality, nullRef);
+
+                ifStmt.TrueStatements.Add(assignment);
+
+                var oldCheck = new CodeConditionStatement(oldNotNull);
+                var newCheck = new CodeConditionStatement(valueNotNull);
+
+                if (property.Opposite != null)
                 {
-                    var nullRef = new CodePrimitiveExpression(null);
-                    var thisRef = new CodeThisReferenceExpression();
-                    var oldNotNull = new CodeBinaryOperatorExpression(oldRef, CodeBinaryOperatorType.IdentityInequality, nullRef);
-                    var valueNotNull = new CodeBinaryOperatorExpression(val, CodeBinaryOperatorType.IdentityInequality, nullRef);
+                    var oppositeName = context.Trace.ResolveIn(this, property.Opposite).Name;
+                    var oldOpposite = new CodePropertyReferenceExpression(oldRef, oppositeName);
+                    var valOpposite = new CodePropertyReferenceExpression(val, oppositeName);
 
-                    ifStmt.TrueStatements.Add(assignment);
-
-                    var oldCheck = new CodeConditionStatement(oldNotNull);
-
-                    var newCheck = new CodeConditionStatement(valueNotNull);
-
-                    if (property.Opposite != null)
+                    if (property.Opposite.UpperBound == 1)
                     {
-                        var oppositeName = context.Trace.ResolveIn(this, property.Opposite).Name;
-                        var oldOpposite = new CodePropertyReferenceExpression(oldRef, oppositeName);
-                        var valOpposite = new CodePropertyReferenceExpression(val, oppositeName);
+                        oldCheck.TrueStatements.Add(new CodeAssignStatement(oldOpposite, nullRef));
 
-                        if (property.Opposite.UpperBound == 1)
+                        newCheck.TrueStatements.Add(new CodeAssignStatement(valOpposite, thisRef));
+                    }
+                    else
+                    {
+                        oldCheck.TrueStatements.Add(new CodeMethodInvokeExpression(oldOpposite, "Remove", thisRef));
+
+                        var addThis = new CodeMethodInvokeExpression(valOpposite, "Add", thisRef);
+                        if (property.Opposite.IsUnique)
                         {
-                            oldCheck.TrueStatements.Add(new CodeAssignStatement(oldOpposite, nullRef));
-
-                            newCheck.TrueStatements.Add(new CodeAssignStatement(valOpposite, thisRef));
+                            newCheck.TrueStatements.Add(addThis);
                         }
                         else
                         {
-                            oldCheck.TrueStatements.Add(new CodeMethodInvokeExpression(oldOpposite, "Remove", thisRef));
+                            var ifNotContains = new CodeConditionStatement(new CodeBinaryOperatorExpression(
+                                new CodeMethodInvokeExpression(valOpposite, "Contains", thisRef), CodeBinaryOperatorType.IdentityInequality, new CodePrimitiveExpression(true)));
 
-                            var addThis = new CodeMethodInvokeExpression(valOpposite, "Add", thisRef);
-                            if (property.Opposite.IsUnique)
-                            {
-                                newCheck.TrueStatements.Add(addThis);
-                            }
-                            else
-                            {
-                                var ifNotContains = new CodeConditionStatement(new CodeBinaryOperatorExpression(
-                                    new CodeMethodInvokeExpression(valOpposite, "Contains", thisRef), CodeBinaryOperatorType.IdentityInequality, new CodePrimitiveExpression(true)));
-
-                                ifNotContains.TrueStatements.Add(addThis);
-                                newCheck.TrueStatements.Add(ifNotContains);
-                            }
-                        }
-
-                        if (property.Opposite.IsContainment)
-                        {
-                            ifStmt.TrueStatements.Add(new CodeAssignStatement(new CodePropertyReferenceExpression(thisRef, "Parent"), val));
+                            ifNotContains.TrueStatements.Add(addThis);
+                            newCheck.TrueStatements.Add(ifNotContains);
                         }
                     }
 
-                    if (property.IsContainment)
+                    if (property.Opposite.IsContainment)
                     {
-                        oldCheck.TrueStatements.Add(new CodeAssignStatement(new CodePropertyReferenceExpression(oldRef, "Parent"), nullRef));
-                        newCheck.TrueStatements.Add(new CodeAssignStatement(new CodePropertyReferenceExpression(val, "Parent"), thisRef));
+                        ifStmt.TrueStatements.Add(new CodeAssignStatement(new CodePropertyReferenceExpression(thisRef, "Parent"), val));
                     }
-
-                    oldCheck.TrueStatements.Add(new CodeRemoveEventStatement(
-                        new CodeEventReferenceExpression(oldRef, "Deleted"),
-                        new CodeMethodReferenceExpression(thisRef, "OnReset" + codeProperty.Name)));
-
-                    newCheck.TrueStatements.Add(new CodeAttachEventStatement(
-                        new CodeEventReferenceExpression(val, "Deleted"),
-                        new CodeMethodReferenceExpression(thisRef, "OnReset" + codeProperty.Name)));
-
-                    ifStmt.TrueStatements.Add(oldCheck);
-                    ifStmt.TrueStatements.Add(newCheck);
                 }
-                else
+
+                if (property.IsContainment)
                 {
-                    // TODO: Refine?
-                    ifStmt.TrueStatements.Add(assignment);
-                };
+                    oldCheck.TrueStatements.Add(new CodeAssignStatement(new CodePropertyReferenceExpression(oldRef, "Parent"), nullRef));
+                    newCheck.TrueStatements.Add(new CodeAssignStatement(new CodePropertyReferenceExpression(val, "Parent"), thisRef));
+                }
+
+                oldCheck.TrueStatements.Add(new CodeRemoveEventStatement(
+                    new CodeEventReferenceExpression(oldRef, "Deleted"),
+                    new CodeMethodReferenceExpression(thisRef, "OnReset" + codeProperty.Name)));
+
+                newCheck.TrueStatements.Add(new CodeAttachEventStatement(
+                    new CodeEventReferenceExpression(val, "Deleted"),
+                    new CodeMethodReferenceExpression(thisRef, "OnReset" + codeProperty.Name)));
+
+                ifStmt.TrueStatements.Add(oldCheck);
+                ifStmt.TrueStatements.Add(newCheck);
+
 
                 ifStmt.TrueStatements.Add(codeProperty.CreateOnChangedEventPattern(typeof(ValueChangedEventArgs).ToTypeReference(),
                     valueChangeRef));
