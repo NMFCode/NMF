@@ -33,12 +33,12 @@ namespace NMF.Models.Changes
     
     
     /// <summary>
-    /// The default implementation of the AssociationChange class
+    /// The default implementation of the CompositionMoveIntoProperty class
     /// </summary>
     [XmlNamespaceAttribute("http://nmf.codeplex.com/changes")]
     [XmlNamespacePrefixAttribute("changes")]
-    [ModelRepresentationClassAttribute("http://nmf.codeplex.com/changes#//AssociationChange")]
-    public partial class AssociationChange : PropertyChange, IAssociationChange, NMF.Models.IModelElement
+    [ModelRepresentationClassAttribute("http://nmf.codeplex.com/changes#//CompositionMoveIntoProperty")]
+    public partial class CompositionMoveIntoProperty : PropertyChange, ICompositionMoveIntoProperty, NMF.Models.IModelElement
     {
         
         private static Lazy<ITypedElement> _newValueReference = new Lazy<ITypedElement>(RetrieveNewValueReference);
@@ -54,6 +54,13 @@ namespace NMF.Models.Changes
         /// The backing field for the OldValue property
         /// </summary>
         private NMF.Models.IModelElement _oldValue;
+        
+        private static Lazy<ITypedElement> _originReference = new Lazy<ITypedElement>(RetrieveOriginReference);
+        
+        /// <summary>
+        /// The backing field for the Origin property
+        /// </summary>
+        private IElementaryChange _origin;
         
         private static IClass _classInstance;
         
@@ -77,6 +84,14 @@ namespace NMF.Models.Changes
                     this.OnNewValueChanging(e);
                     this.OnPropertyChanging("NewValue", e, _newValueReference);
                     this._newValue = value;
+                    if ((old != null))
+                    {
+                        old.Deleted -= this.OnResetNewValue;
+                    }
+                    if ((value != null))
+                    {
+                        value.Deleted += this.OnResetNewValue;
+                    }
                     this.OnNewValueChanged(e);
                     this.OnPropertyChanged("NewValue", e, _newValueReference);
                 }
@@ -103,9 +118,65 @@ namespace NMF.Models.Changes
                     this.OnOldValueChanging(e);
                     this.OnPropertyChanging("OldValue", e, _oldValueReference);
                     this._oldValue = value;
+                    if ((old != null))
+                    {
+                        old.Deleted -= this.OnResetOldValue;
+                    }
+                    if ((value != null))
+                    {
+                        value.Deleted += this.OnResetOldValue;
+                    }
                     this.OnOldValueChanged(e);
                     this.OnPropertyChanged("OldValue", e, _oldValueReference);
                 }
+            }
+        }
+        
+        /// <summary>
+        /// The origin property
+        /// </summary>
+        [XmlElementNameAttribute("origin")]
+        [XmlAttributeAttribute(false)]
+        [ContainmentAttribute()]
+        public IElementaryChange Origin
+        {
+            get
+            {
+                return this._origin;
+            }
+            set
+            {
+                if ((this._origin != value))
+                {
+                    IElementaryChange old = this._origin;
+                    ValueChangedEventArgs e = new ValueChangedEventArgs(old, value);
+                    this.OnOriginChanging(e);
+                    this.OnPropertyChanging("Origin", e, _originReference);
+                    this._origin = value;
+                    if ((old != null))
+                    {
+                        old.Parent = null;
+                        old.Deleted -= this.OnResetOrigin;
+                    }
+                    if ((value != null))
+                    {
+                        value.Parent = this;
+                        value.Deleted += this.OnResetOrigin;
+                    }
+                    this.OnOriginChanged(e);
+                    this.OnPropertyChanged("Origin", e, _originReference);
+                }
+            }
+        }
+        
+        /// <summary>
+        /// Gets the child model elements of this model element
+        /// </summary>
+        public override IEnumerableExpression<NMF.Models.IModelElement> Children
+        {
+            get
+            {
+                return base.Children.Concat(new CompositionMoveIntoPropertyChildrenCollection(this));
             }
         }
         
@@ -116,7 +187,7 @@ namespace NMF.Models.Changes
         {
             get
             {
-                return base.ReferencedElements.Concat(new AssociationChangeReferencedElementsCollection(this));
+                return base.ReferencedElements.Concat(new CompositionMoveIntoPropertyReferencedElementsCollection(this));
             }
         }
         
@@ -129,7 +200,7 @@ namespace NMF.Models.Changes
             {
                 if ((_classInstance == null))
                 {
-                    _classInstance = ((IClass)(MetaRepository.Instance.Resolve("http://nmf.codeplex.com/changes#//AssociationChange")));
+                    _classInstance = ((IClass)(MetaRepository.Instance.Resolve("http://nmf.codeplex.com/changes#//CompositionMoveIntoProperty")));
                 }
                 return _classInstance;
             }
@@ -155,9 +226,19 @@ namespace NMF.Models.Changes
         /// </summary>
         public event System.EventHandler<ValueChangedEventArgs> OldValueChanged;
         
+        /// <summary>
+        /// Gets fired before the Origin property changes its value
+        /// </summary>
+        public event System.EventHandler<ValueChangedEventArgs> OriginChanging;
+        
+        /// <summary>
+        /// Gets fired when the Origin property changed its value
+        /// </summary>
+        public event System.EventHandler<ValueChangedEventArgs> OriginChanged;
+        
         private static ITypedElement RetrieveNewValueReference()
         {
-            return ((ITypedElement)(((NMF.Models.ModelElement)(NMF.Models.Changes.AssociationChange.ClassInstance)).Resolve("newValue")));
+            return ((ITypedElement)(((NMF.Models.ModelElement)(NMF.Models.Changes.CompositionMoveIntoProperty.ClassInstance)).Resolve("newValue")));
         }
         
         /// <summary>
@@ -198,7 +279,7 @@ namespace NMF.Models.Changes
         
         private static ITypedElement RetrieveOldValueReference()
         {
-            return ((ITypedElement)(((NMF.Models.ModelElement)(NMF.Models.Changes.AssociationChange.ClassInstance)).Resolve("oldValue")));
+            return ((ITypedElement)(((NMF.Models.ModelElement)(NMF.Models.Changes.CompositionMoveIntoProperty.ClassInstance)).Resolve("oldValue")));
         }
         
         /// <summary>
@@ -237,6 +318,76 @@ namespace NMF.Models.Changes
             this.OldValue = null;
         }
         
+        private static ITypedElement RetrieveOriginReference()
+        {
+            return ((ITypedElement)(((NMF.Models.ModelElement)(NMF.Models.Changes.CompositionMoveIntoProperty.ClassInstance)).Resolve("origin")));
+        }
+        
+        /// <summary>
+        /// Raises the OriginChanging event
+        /// </summary>
+        /// <param name="eventArgs">The event data</param>
+        protected virtual void OnOriginChanging(ValueChangedEventArgs eventArgs)
+        {
+            System.EventHandler<ValueChangedEventArgs> handler = this.OriginChanging;
+            if ((handler != null))
+            {
+                handler.Invoke(this, eventArgs);
+            }
+        }
+        
+        /// <summary>
+        /// Raises the OriginChanged event
+        /// </summary>
+        /// <param name="eventArgs">The event data</param>
+        protected virtual void OnOriginChanged(ValueChangedEventArgs eventArgs)
+        {
+            System.EventHandler<ValueChangedEventArgs> handler = this.OriginChanged;
+            if ((handler != null))
+            {
+                handler.Invoke(this, eventArgs);
+            }
+        }
+        
+        /// <summary>
+        /// Handles the event that the Origin property must reset
+        /// </summary>
+        /// <param name="sender">The object that sent this reset request</param>
+        /// <param name="eventArgs">The event data for the reset event</param>
+        private void OnResetOrigin(object sender, System.EventArgs eventArgs)
+        {
+            this.Origin = null;
+        }
+        
+        /// <summary>
+        /// Gets the relative URI fragment for the given child model element
+        /// </summary>
+        /// <returns>A fragment of the relative URI</returns>
+        /// <param name="element">The element that should be looked for</param>
+        protected override string GetRelativePathForNonIdentifiedChild(NMF.Models.IModelElement element)
+        {
+            if ((element == this.Origin))
+            {
+                return ModelHelper.CreatePath("Origin");
+            }
+            return base.GetRelativePathForNonIdentifiedChild(element);
+        }
+        
+        /// <summary>
+        /// Resolves the given URI to a child model element
+        /// </summary>
+        /// <returns>The model element or null if it could not be found</returns>
+        /// <param name="reference">The requested reference name</param>
+        /// <param name="index">The index of this reference</param>
+        protected override NMF.Models.IModelElement GetModelElementForReference(string reference, int index)
+        {
+            if ((reference == "ORIGIN"))
+            {
+                return this.Origin;
+            }
+            return base.GetModelElementForReference(reference, index);
+        }
+        
         /// <summary>
         /// Sets a value to the given feature
         /// </summary>
@@ -252,6 +403,11 @@ namespace NMF.Models.Changes
             if ((feature == "OLDVALUE"))
             {
                 this.OldValue = ((NMF.Models.IModelElement)(value));
+                return;
+            }
+            if ((feature == "ORIGIN"))
+            {
+                this.Origin = ((IElementaryChange)(value));
                 return;
             }
             base.SetFeature(feature, value);
@@ -272,6 +428,10 @@ namespace NMF.Models.Changes
             {
                 return new OldValueProxy(this);
             }
+            if ((attribute == "Origin"))
+            {
+                return new OriginProxy(this);
+            }
             return base.GetExpressionForAttribute(attribute);
         }
         
@@ -290,6 +450,10 @@ namespace NMF.Models.Changes
             {
                 return new OldValueProxy(this);
             }
+            if ((reference == "Origin"))
+            {
+                return new OriginProxy(this);
+            }
             return base.GetExpressionForReference(reference);
         }
         
@@ -300,23 +464,143 @@ namespace NMF.Models.Changes
         {
             if ((_classInstance == null))
             {
-                _classInstance = ((IClass)(MetaRepository.Instance.Resolve("http://nmf.codeplex.com/changes#//AssociationChange")));
+                _classInstance = ((IClass)(MetaRepository.Instance.Resolve("http://nmf.codeplex.com/changes#//CompositionMoveIntoProperty")));
             }
             return _classInstance;
         }
         
         /// <summary>
-        /// The collection class to to represent the children of the AssociationChange class
+        /// The collection class to to represent the children of the CompositionMoveIntoProperty class
         /// </summary>
-        public class AssociationChangeReferencedElementsCollection : ReferenceCollection, ICollectionExpression<NMF.Models.IModelElement>, ICollection<NMF.Models.IModelElement>
+        public class CompositionMoveIntoPropertyChildrenCollection : ReferenceCollection, ICollectionExpression<NMF.Models.IModelElement>, ICollection<NMF.Models.IModelElement>
         {
             
-            private AssociationChange _parent;
+            private CompositionMoveIntoProperty _parent;
             
             /// <summary>
             /// Creates a new instance
             /// </summary>
-            public AssociationChangeReferencedElementsCollection(AssociationChange parent)
+            public CompositionMoveIntoPropertyChildrenCollection(CompositionMoveIntoProperty parent)
+            {
+                this._parent = parent;
+            }
+            
+            /// <summary>
+            /// Gets the amount of elements contained in this collection
+            /// </summary>
+            public override int Count
+            {
+                get
+                {
+                    int count = 0;
+                    if ((this._parent.Origin != null))
+                    {
+                        count = (count + 1);
+                    }
+                    return count;
+                }
+            }
+            
+            protected override void AttachCore()
+            {
+                this._parent.OriginChanged += this.PropagateValueChanges;
+            }
+            
+            protected override void DetachCore()
+            {
+                this._parent.OriginChanged -= this.PropagateValueChanges;
+            }
+            
+            /// <summary>
+            /// Adds the given element to the collection
+            /// </summary>
+            /// <param name="item">The item to add</param>
+            public override void Add(NMF.Models.IModelElement item)
+            {
+                if ((this._parent.Origin == null))
+                {
+                    IElementaryChange originCasted = item.As<IElementaryChange>();
+                    if ((originCasted != null))
+                    {
+                        this._parent.Origin = originCasted;
+                        return;
+                    }
+                }
+            }
+            
+            /// <summary>
+            /// Clears the collection and resets all references that implement it.
+            /// </summary>
+            public override void Clear()
+            {
+                this._parent.Origin = null;
+            }
+            
+            /// <summary>
+            /// Gets a value indicating whether the given element is contained in the collection
+            /// </summary>
+            /// <returns>True, if it is contained, otherwise False</returns>
+            /// <param name="item">The item that should be looked out for</param>
+            public override bool Contains(NMF.Models.IModelElement item)
+            {
+                if ((item == this._parent.Origin))
+                {
+                    return true;
+                }
+                return false;
+            }
+            
+            /// <summary>
+            /// Copies the contents of the collection to the given array starting from the given array index
+            /// </summary>
+            /// <param name="array">The array in which the elements should be copied</param>
+            /// <param name="arrayIndex">The starting index</param>
+            public override void CopyTo(NMF.Models.IModelElement[] array, int arrayIndex)
+            {
+                if ((this._parent.Origin != null))
+                {
+                    array[arrayIndex] = this._parent.Origin;
+                    arrayIndex = (arrayIndex + 1);
+                }
+            }
+            
+            /// <summary>
+            /// Removes the given item from the collection
+            /// </summary>
+            /// <returns>True, if the item was removed, otherwise False</returns>
+            /// <param name="item">The item that should be removed</param>
+            public override bool Remove(NMF.Models.IModelElement item)
+            {
+                if ((this._parent.Origin == item))
+                {
+                    this._parent.Origin = null;
+                    return true;
+                }
+                return false;
+            }
+            
+            /// <summary>
+            /// Gets an enumerator that enumerates the collection
+            /// </summary>
+            /// <returns>A generic enumerator</returns>
+            public override IEnumerator<NMF.Models.IModelElement> GetEnumerator()
+            {
+                return Enumerable.Empty<NMF.Models.IModelElement>().Concat(this._parent.Origin).GetEnumerator();
+            }
+        }
+        
+        /// <summary>
+        /// The collection class to to represent the children of the CompositionMoveIntoProperty class
+        /// </summary>
+        public class CompositionMoveIntoPropertyReferencedElementsCollection : ReferenceCollection, ICollectionExpression<NMF.Models.IModelElement>, ICollection<NMF.Models.IModelElement>
+        {
+            
+            private CompositionMoveIntoProperty _parent;
+            
+            /// <summary>
+            /// Creates a new instance
+            /// </summary>
+            public CompositionMoveIntoPropertyReferencedElementsCollection(CompositionMoveIntoProperty parent)
             {
                 this._parent = parent;
             }
@@ -337,6 +621,10 @@ namespace NMF.Models.Changes
                     {
                         count = (count + 1);
                     }
+                    if ((this._parent.Origin != null))
+                    {
+                        count = (count + 1);
+                    }
                     return count;
                 }
             }
@@ -345,12 +633,14 @@ namespace NMF.Models.Changes
             {
                 this._parent.NewValueChanged += this.PropagateValueChanges;
                 this._parent.OldValueChanged += this.PropagateValueChanges;
+                this._parent.OriginChanged += this.PropagateValueChanges;
             }
             
             protected override void DetachCore()
             {
                 this._parent.NewValueChanged -= this.PropagateValueChanges;
                 this._parent.OldValueChanged -= this.PropagateValueChanges;
+                this._parent.OriginChanged -= this.PropagateValueChanges;
             }
             
             /// <summary>
@@ -369,6 +659,15 @@ namespace NMF.Models.Changes
                     this._parent.OldValue = item;
                     return;
                 }
+                if ((this._parent.Origin == null))
+                {
+                    IElementaryChange originCasted = item.As<IElementaryChange>();
+                    if ((originCasted != null))
+                    {
+                        this._parent.Origin = originCasted;
+                        return;
+                    }
+                }
             }
             
             /// <summary>
@@ -378,6 +677,7 @@ namespace NMF.Models.Changes
             {
                 this._parent.NewValue = null;
                 this._parent.OldValue = null;
+                this._parent.Origin = null;
             }
             
             /// <summary>
@@ -392,6 +692,10 @@ namespace NMF.Models.Changes
                     return true;
                 }
                 if ((item == this._parent.OldValue))
+                {
+                    return true;
+                }
+                if ((item == this._parent.Origin))
                 {
                     return true;
                 }
@@ -415,6 +719,11 @@ namespace NMF.Models.Changes
                     array[arrayIndex] = this._parent.OldValue;
                     arrayIndex = (arrayIndex + 1);
                 }
+                if ((this._parent.Origin != null))
+                {
+                    array[arrayIndex] = this._parent.Origin;
+                    arrayIndex = (arrayIndex + 1);
+                }
             }
             
             /// <summary>
@@ -434,6 +743,11 @@ namespace NMF.Models.Changes
                     this._parent.OldValue = null;
                     return true;
                 }
+                if ((this._parent.Origin == item))
+                {
+                    this._parent.Origin = null;
+                    return true;
+                }
                 return false;
             }
             
@@ -443,21 +757,21 @@ namespace NMF.Models.Changes
             /// <returns>A generic enumerator</returns>
             public override IEnumerator<NMF.Models.IModelElement> GetEnumerator()
             {
-                return Enumerable.Empty<NMF.Models.IModelElement>().Concat(this._parent.NewValue).Concat(this._parent.OldValue).GetEnumerator();
+                return Enumerable.Empty<NMF.Models.IModelElement>().Concat(this._parent.NewValue).Concat(this._parent.OldValue).Concat(this._parent.Origin).GetEnumerator();
             }
         }
         
         /// <summary>
         /// Represents a proxy to represent an incremental access to the newValue property
         /// </summary>
-        private sealed class NewValueProxy : ModelPropertyChange<IAssociationChange, NMF.Models.IModelElement>
+        private sealed class NewValueProxy : ModelPropertyChange<ICompositionMoveIntoProperty, NMF.Models.IModelElement>
         {
             
             /// <summary>
             /// Creates a new observable property access proxy
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
-            public NewValueProxy(IAssociationChange modelElement) : 
+            public NewValueProxy(ICompositionMoveIntoProperty modelElement) : 
                     base(modelElement, "newValue")
             {
             }
@@ -481,14 +795,14 @@ namespace NMF.Models.Changes
         /// <summary>
         /// Represents a proxy to represent an incremental access to the oldValue property
         /// </summary>
-        private sealed class OldValueProxy : ModelPropertyChange<IAssociationChange, NMF.Models.IModelElement>
+        private sealed class OldValueProxy : ModelPropertyChange<ICompositionMoveIntoProperty, NMF.Models.IModelElement>
         {
             
             /// <summary>
             /// Creates a new observable property access proxy
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
-            public OldValueProxy(IAssociationChange modelElement) : 
+            public OldValueProxy(ICompositionMoveIntoProperty modelElement) : 
                     base(modelElement, "oldValue")
             {
             }
@@ -505,6 +819,37 @@ namespace NMF.Models.Changes
                 set
                 {
                     this.ModelElement.OldValue = value;
+                }
+            }
+        }
+        
+        /// <summary>
+        /// Represents a proxy to represent an incremental access to the origin property
+        /// </summary>
+        private sealed class OriginProxy : ModelPropertyChange<ICompositionMoveIntoProperty, IElementaryChange>
+        {
+            
+            /// <summary>
+            /// Creates a new observable property access proxy
+            /// </summary>
+            /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
+            public OriginProxy(ICompositionMoveIntoProperty modelElement) : 
+                    base(modelElement, "origin")
+            {
+            }
+            
+            /// <summary>
+            /// Gets or sets the value of this expression
+            /// </summary>
+            public override IElementaryChange Value
+            {
+                get
+                {
+                    return this.ModelElement.Origin;
+                }
+                set
+                {
+                    this.ModelElement.Origin = value;
                 }
             }
         }

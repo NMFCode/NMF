@@ -23,6 +23,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
@@ -37,8 +38,10 @@ namespace NMF.Models.Changes
     [XmlNamespaceAttribute("http://nmf.codeplex.com/changes")]
     [XmlNamespacePrefixAttribute("changes")]
     [ModelRepresentationClassAttribute("http://nmf.codeplex.com/changes#//PropertyChange")]
-    public abstract class PropertyChange : ElementaryChange, IPropertyChange, NMF.Models.IModelElement
+    public abstract partial class PropertyChange : ElementaryChange, IPropertyChange, NMF.Models.IModelElement
     {
+        
+        private static Lazy<ITypedElement> _featureReference = new Lazy<ITypedElement>(RetrieveFeatureReference);
         
         /// <summary>
         /// The backing field for the Feature property
@@ -52,7 +55,7 @@ namespace NMF.Models.Changes
         /// </summary>
         [XmlElementNameAttribute("feature")]
         [XmlAttributeAttribute(true)]
-        public virtual ITypedElement Feature
+        public ITypedElement Feature
         {
             get
             {
@@ -65,7 +68,7 @@ namespace NMF.Models.Changes
                     ITypedElement old = this._feature;
                     ValueChangedEventArgs e = new ValueChangedEventArgs(old, value);
                     this.OnFeatureChanging(e);
-                    this.OnPropertyChanging("Feature", e);
+                    this.OnPropertyChanging("Feature", e, _featureReference);
                     this._feature = value;
                     if ((old != null))
                     {
@@ -76,7 +79,7 @@ namespace NMF.Models.Changes
                         value.Deleted += this.OnResetFeature;
                     }
                     this.OnFeatureChanged(e);
-                    this.OnPropertyChanged("Feature", e);
+                    this.OnPropertyChanged("Feature", e, _featureReference);
                 }
             }
         }
@@ -116,6 +119,11 @@ namespace NMF.Models.Changes
         /// Gets fired when the Feature property changed its value
         /// </summary>
         public event System.EventHandler<ValueChangedEventArgs> FeatureChanged;
+        
+        private static ITypedElement RetrieveFeatureReference()
+        {
+            return ((ITypedElement)(((NMF.Models.ModelElement)(NMF.Models.Changes.PropertyChange.ClassInstance)).Resolve("feature")));
+        }
         
         /// <summary>
         /// Raises the FeatureChanging event
@@ -211,7 +219,7 @@ namespace NMF.Models.Changes
         /// <summary>
         /// The collection class to to represent the children of the PropertyChange class
         /// </summary>
-        public partial class PropertyChangeReferencedElementsCollection : ReferenceCollection, ICollectionExpression<NMF.Models.IModelElement>, ICollection<NMF.Models.IModelElement>
+        public class PropertyChangeReferencedElementsCollection : ReferenceCollection, ICollectionExpression<NMF.Models.IModelElement>, ICollection<NMF.Models.IModelElement>
         {
             
             private PropertyChange _parent;

@@ -140,13 +140,12 @@ namespace NMF.Models.Changes
             var list = changes.Changes;
             while (currentIndex < recordedEvents.Count)
             {
-                var parsed = ParseChange(ref currentIndex);
-                if (parsed != null) list.Add(parsed);
+                ParseChange(changes.Changes, ref currentIndex);
             }
             return changes;
         }
 
-        private IModelChange ParseChange(ref int currentIndex)
+        private void ParseChange(ICollection<IModelChange> changes, ref int currentIndex)
         {
             BubbledChangeEventArgs currentEvent;
             IModelElement createdElement = null;
@@ -158,7 +157,7 @@ namespace NMF.Models.Changes
                 {
                     createdElement = currentEvent.Element;
                 }
-                if (currentIndex == recordedEvents.Count) return null;
+                if (currentIndex == recordedEvents.Count) return;
             } while (currentEvent.ChangeType != ChangeType.PropertyChanging && currentEvent.ChangeType != ChangeType.CollectionChanging);
 
             var childChanges = new List<IModelChange>();
@@ -177,21 +176,30 @@ namespace NMF.Models.Changes
                 {
                     currentIndex++;
                     var currentChange = EventToChange(nextEvent);
-                    if (createdElement != null)
+                    if (createdElement != null && !elementSources.ContainsKey(createdElement))
                     {
                         elementSources.Add(createdElement, currentChange);
                     }
                     if (childChanges.Count == 0)
                     {
-                        return currentChange;
+                        changes.Add(currentChange);
+                        return;
                     }
-                    else
+                    if (childChanges.Count == 1 && createdElement != null)
                     {
-                        var transaction = new ElementaryChangeTransaction();
-                        transaction.SourceChange = currentChange;
-                        transaction.NestedChanges.AddRange(childChanges);
-                        return transaction;
+                        var child = childChanges[0] as IElementaryChange;
+                        var composition = currentChange as ICompositionInsertion;
+                        if (composition != null && child != null)
+                        {
+                            changes.Add(composition.ConvertIntoMove(child));
+                            return;
+                        }
                     }
+                    var transaction = new ElementaryChangeTransaction();
+                    transaction.SourceChange = currentChange;
+                    transaction.NestedChanges.AddRange(childChanges);
+                    changes.Add(transaction);
+                    return;
                 }
                 else if ((nextEvent.ChangeType == ChangeType.PropertyChanged || nextEvent.ChangeType == ChangeType.CollectionChanged) && nextEvent.Element == createdElement)
                 {
@@ -201,11 +209,21 @@ namespace NMF.Models.Changes
                 }
                 else
                 {
-                    var change = ParseChange(ref currentIndex);
-                    if (change != null)
-                    {
-                        childChanges.Add(change);
-                    }
+                    ParseChange(childChanges, ref currentIndex);
+                }
+            }
+
+            var element = currentEvent.Element;
+            while (element != null)
+            {
+                if (elementSources.ContainsKey(element))
+                {
+                    changes.AddRange(childChanges);
+                    return;
+                }
+                else
+                {
+                    element = element.Parent;
                 }
             }
 
@@ -416,7 +434,7 @@ namespace NMF.Models.Changes
                     {
                         return new AssociationCollectionDeletion
                         {
-                            DeletedElementUri = (collectionChangeArgs.OldItems[0] as IModelElement).RelativeUri,
+                            DeletedElement = collectionChangeArgs.OldItems[0] as IModelElement,
                             AffectedElement = e.Element,
                             Feature = e.Feature
                         };

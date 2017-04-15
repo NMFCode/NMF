@@ -58,7 +58,7 @@ namespace NMF.Models.Tests.Evolution
 
 
                 //Apply changes to the new model
-                newChanges.Apply(newRepository);
+                newChanges.Apply();
 
                 Assert.AreEqual(model.Routes.Count, newModel.Routes.Count);
                 Assert.AreEqual(model.Routes[0].DefinedBy.Count, newModel.Routes[0].DefinedBy.Count);

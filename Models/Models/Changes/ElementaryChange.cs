@@ -23,6 +23,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
@@ -37,13 +38,22 @@ namespace NMF.Models.Changes
     [XmlNamespaceAttribute("http://nmf.codeplex.com/changes")]
     [XmlNamespacePrefixAttribute("changes")]
     [ModelRepresentationClassAttribute("http://nmf.codeplex.com/changes#//ElementaryChange")]
-    public abstract class ElementaryChange : ModelChange, IElementaryChange, NMF.Models.IModelElement
+    public abstract partial class ElementaryChange : ModelChange, IElementaryChange, NMF.Models.IModelElement
     {
+        
+        private static Lazy<ITypedElement> _affectedElementReference = new Lazy<ITypedElement>(RetrieveAffectedElementReference);
         
         /// <summary>
         /// The backing field for the AffectedElement property
         /// </summary>
         private NMF.Models.IModelElement _affectedElement;
+        
+        private static Lazy<ITypedElement> _featureReference = new Lazy<ITypedElement>(RetrieveFeatureReference);
+        
+        /// <summary>
+        /// The backing field for the Feature property
+        /// </summary>
+        private ITypedElement _feature;
         
         private static IClass _classInstance;
         
@@ -52,7 +62,7 @@ namespace NMF.Models.Changes
         /// </summary>
         [XmlElementNameAttribute("affectedElement")]
         [XmlAttributeAttribute(true)]
-        public virtual NMF.Models.IModelElement AffectedElement
+        public NMF.Models.IModelElement AffectedElement
         {
             get
             {
@@ -65,10 +75,44 @@ namespace NMF.Models.Changes
                     NMF.Models.IModelElement old = this._affectedElement;
                     ValueChangedEventArgs e = new ValueChangedEventArgs(old, value);
                     this.OnAffectedElementChanging(e);
-                    this.OnPropertyChanging("AffectedElement", e);
+                    this.OnPropertyChanging("AffectedElement", e, _affectedElementReference);
                     this._affectedElement = value;
                     this.OnAffectedElementChanged(e);
-                    this.OnPropertyChanged("AffectedElement", e);
+                    this.OnPropertyChanged("AffectedElement", e, _affectedElementReference);
+                }
+            }
+        }
+        
+        /// <summary>
+        /// The feature property
+        /// </summary>
+        [XmlElementNameAttribute("feature")]
+        [XmlAttributeAttribute(true)]
+        public ITypedElement Feature
+        {
+            get
+            {
+                return this._feature;
+            }
+            set
+            {
+                if ((this._feature != value))
+                {
+                    ITypedElement old = this._feature;
+                    ValueChangedEventArgs e = new ValueChangedEventArgs(old, value);
+                    this.OnFeatureChanging(e);
+                    this.OnPropertyChanging("Feature", e, _featureReference);
+                    this._feature = value;
+                    if ((old != null))
+                    {
+                        old.Deleted -= this.OnResetFeature;
+                    }
+                    if ((value != null))
+                    {
+                        value.Deleted += this.OnResetFeature;
+                    }
+                    this.OnFeatureChanged(e);
+                    this.OnPropertyChanged("Feature", e, _featureReference);
                 }
             }
         }
@@ -110,6 +154,21 @@ namespace NMF.Models.Changes
         public event System.EventHandler<ValueChangedEventArgs> AffectedElementChanged;
         
         /// <summary>
+        /// Gets fired before the Feature property changes its value
+        /// </summary>
+        public event System.EventHandler<ValueChangedEventArgs> FeatureChanging;
+        
+        /// <summary>
+        /// Gets fired when the Feature property changed its value
+        /// </summary>
+        public event System.EventHandler<ValueChangedEventArgs> FeatureChanged;
+        
+        private static ITypedElement RetrieveAffectedElementReference()
+        {
+            return ((ITypedElement)(((NMF.Models.ModelElement)(NMF.Models.Changes.ElementaryChange.ClassInstance)).Resolve("affectedElement")));
+        }
+        
+        /// <summary>
         /// Raises the AffectedElementChanging event
         /// </summary>
         /// <param name="eventArgs">The event data</param>
@@ -145,6 +204,47 @@ namespace NMF.Models.Changes
             this.AffectedElement = null;
         }
         
+        private static ITypedElement RetrieveFeatureReference()
+        {
+            return ((ITypedElement)(((NMF.Models.ModelElement)(NMF.Models.Changes.ElementaryChange.ClassInstance)).Resolve("feature")));
+        }
+        
+        /// <summary>
+        /// Raises the FeatureChanging event
+        /// </summary>
+        /// <param name="eventArgs">The event data</param>
+        protected virtual void OnFeatureChanging(ValueChangedEventArgs eventArgs)
+        {
+            System.EventHandler<ValueChangedEventArgs> handler = this.FeatureChanging;
+            if ((handler != null))
+            {
+                handler.Invoke(this, eventArgs);
+            }
+        }
+        
+        /// <summary>
+        /// Raises the FeatureChanged event
+        /// </summary>
+        /// <param name="eventArgs">The event data</param>
+        protected virtual void OnFeatureChanged(ValueChangedEventArgs eventArgs)
+        {
+            System.EventHandler<ValueChangedEventArgs> handler = this.FeatureChanged;
+            if ((handler != null))
+            {
+                handler.Invoke(this, eventArgs);
+            }
+        }
+        
+        /// <summary>
+        /// Handles the event that the Feature property must reset
+        /// </summary>
+        /// <param name="sender">The object that sent this reset request</param>
+        /// <param name="eventArgs">The event data for the reset event</param>
+        private void OnResetFeature(object sender, System.EventArgs eventArgs)
+        {
+            this.Feature = null;
+        }
+        
         /// <summary>
         /// Sets a value to the given feature
         /// </summary>
@@ -155,6 +255,11 @@ namespace NMF.Models.Changes
             if ((feature == "AFFECTEDELEMENT"))
             {
                 this.AffectedElement = ((NMF.Models.IModelElement)(value));
+                return;
+            }
+            if ((feature == "FEATURE"))
+            {
+                this.Feature = ((ITypedElement)(value));
                 return;
             }
             base.SetFeature(feature, value);
@@ -171,6 +276,10 @@ namespace NMF.Models.Changes
             {
                 return new AffectedElementProxy(this);
             }
+            if ((attribute == "Feature"))
+            {
+                return new FeatureProxy(this);
+            }
             return base.GetExpressionForAttribute(attribute);
         }
         
@@ -184,6 +293,10 @@ namespace NMF.Models.Changes
             if ((reference == "AffectedElement"))
             {
                 return new AffectedElementProxy(this);
+            }
+            if ((reference == "Feature"))
+            {
+                return new FeatureProxy(this);
             }
             return base.GetExpressionForReference(reference);
         }
@@ -203,7 +316,7 @@ namespace NMF.Models.Changes
         /// <summary>
         /// The collection class to to represent the children of the ElementaryChange class
         /// </summary>
-        public partial class ElementaryChangeReferencedElementsCollection : ReferenceCollection, ICollectionExpression<NMF.Models.IModelElement>, ICollection<NMF.Models.IModelElement>
+        public class ElementaryChangeReferencedElementsCollection : ReferenceCollection, ICollectionExpression<NMF.Models.IModelElement>, ICollection<NMF.Models.IModelElement>
         {
             
             private ElementaryChange _parent;
@@ -228,6 +341,10 @@ namespace NMF.Models.Changes
                     {
                         count = (count + 1);
                     }
+                    if ((this._parent.Feature != null))
+                    {
+                        count = (count + 1);
+                    }
                     return count;
                 }
             }
@@ -235,11 +352,13 @@ namespace NMF.Models.Changes
             protected override void AttachCore()
             {
                 this._parent.AffectedElementChanged += this.PropagateValueChanges;
+                this._parent.FeatureChanged += this.PropagateValueChanges;
             }
             
             protected override void DetachCore()
             {
                 this._parent.AffectedElementChanged -= this.PropagateValueChanges;
+                this._parent.FeatureChanged -= this.PropagateValueChanges;
             }
             
             /// <summary>
@@ -253,6 +372,15 @@ namespace NMF.Models.Changes
                     this._parent.AffectedElement = item;
                     return;
                 }
+                if ((this._parent.Feature == null))
+                {
+                    ITypedElement featureCasted = item.As<ITypedElement>();
+                    if ((featureCasted != null))
+                    {
+                        this._parent.Feature = featureCasted;
+                        return;
+                    }
+                }
             }
             
             /// <summary>
@@ -261,6 +389,7 @@ namespace NMF.Models.Changes
             public override void Clear()
             {
                 this._parent.AffectedElement = null;
+                this._parent.Feature = null;
             }
             
             /// <summary>
@@ -271,6 +400,10 @@ namespace NMF.Models.Changes
             public override bool Contains(NMF.Models.IModelElement item)
             {
                 if ((item == this._parent.AffectedElement))
+                {
+                    return true;
+                }
+                if ((item == this._parent.Feature))
                 {
                     return true;
                 }
@@ -289,6 +422,11 @@ namespace NMF.Models.Changes
                     array[arrayIndex] = this._parent.AffectedElement;
                     arrayIndex = (arrayIndex + 1);
                 }
+                if ((this._parent.Feature != null))
+                {
+                    array[arrayIndex] = this._parent.Feature;
+                    arrayIndex = (arrayIndex + 1);
+                }
             }
             
             /// <summary>
@@ -303,6 +441,11 @@ namespace NMF.Models.Changes
                     this._parent.AffectedElement = null;
                     return true;
                 }
+                if ((this._parent.Feature == item))
+                {
+                    this._parent.Feature = null;
+                    return true;
+                }
                 return false;
             }
             
@@ -312,7 +455,7 @@ namespace NMF.Models.Changes
             /// <returns>A generic enumerator</returns>
             public override IEnumerator<NMF.Models.IModelElement> GetEnumerator()
             {
-                return Enumerable.Empty<NMF.Models.IModelElement>().Concat(this._parent.AffectedElement).GetEnumerator();
+                return Enumerable.Empty<NMF.Models.IModelElement>().Concat(this._parent.AffectedElement).Concat(this._parent.Feature).GetEnumerator();
             }
         }
         
@@ -343,6 +486,37 @@ namespace NMF.Models.Changes
                 set
                 {
                     this.ModelElement.AffectedElement = value;
+                }
+            }
+        }
+        
+        /// <summary>
+        /// Represents a proxy to represent an incremental access to the feature property
+        /// </summary>
+        private sealed class FeatureProxy : ModelPropertyChange<IElementaryChange, ITypedElement>
+        {
+            
+            /// <summary>
+            /// Creates a new observable property access proxy
+            /// </summary>
+            /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
+            public FeatureProxy(IElementaryChange modelElement) : 
+                    base(modelElement, "feature")
+            {
+            }
+            
+            /// <summary>
+            /// Gets or sets the value of this expression
+            /// </summary>
+            public override ITypedElement Value
+            {
+                get
+                {
+                    return this.ModelElement.Feature;
+                }
+                set
+                {
+                    this.ModelElement.Feature = value;
                 }
             }
         }

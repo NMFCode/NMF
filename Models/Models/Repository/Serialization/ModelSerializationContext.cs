@@ -106,7 +106,20 @@ namespace NMF.Models.Repository.Serialization
                     return resolved;
                 }
             }
-            return base.Resolve(id, type, minType, exactType, failOnConflict, source);
+            var baseResolved = base.Resolve(id, type, minType, exactType, failOnConflict, source);
+            if (baseResolved != null)
+            {
+                return baseResolved;
+            }
+            if (Model.ModelUri != null && Model.ModelUri.IsAbsoluteUri && Model.ModelUri.IsFile)
+            {
+                var fileUri = new Uri(Model.ModelUri, id);
+                if (System.IO.File.Exists(fileUri.AbsolutePath))
+                {
+                    return Repository.Resolve(fileUri);
+                }
+            }
+            return null;
         }
     }
 }

@@ -23,6 +23,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
@@ -40,31 +41,12 @@ namespace NMF.Models.Changes
     {
         
         /// <summary>
-        /// The invertible property
-        /// </summary>
-        bool Invertible
-        {
-            get;
-            set;
-        }
-        
-        /// <summary>
         /// The changes property
         /// </summary>
         IOrderedSetExpression<IModelChange> Changes
         {
             get;
         }
-        
-        /// <summary>
-        /// Gets fired before the Invertible property changes its value
-        /// </summary>
-        event System.EventHandler<ValueChangedEventArgs> InvertibleChanging;
-        
-        /// <summary>
-        /// Gets fired when the Invertible property changed its value
-        /// </summary>
-        event System.EventHandler<ValueChangedEventArgs> InvertibleChanged;
     }
 }
 

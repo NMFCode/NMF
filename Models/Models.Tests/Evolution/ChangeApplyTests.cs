@@ -41,7 +41,7 @@ namespace NMF.Models.Tests.Evolution
                 Feature = RailwayContainer.ClassInstance.LookupReference("routes")
             };
 
-            change.Apply(repository);
+            change.Apply();
 
             Assert.AreNotEqual(toDelete, railway.Routes.FirstOrDefault());
             CollectionAssert.DoesNotContain(railway.Routes.ToList(), toDelete);
@@ -60,7 +60,7 @@ namespace NMF.Models.Tests.Evolution
                 Index = 0
             };
 
-            change.Apply(repository);
+            change.Apply();
 
             Assert.AreNotEqual(toDelete, parent.ConnectsTo.FirstOrDefault());
             CollectionAssert.DoesNotContain(parent.ConnectsTo.ToList(), toDelete);
@@ -78,7 +78,7 @@ namespace NMF.Models.Tests.Evolution
                 DeletedElement = toDelete
             };
 
-            change.Apply(repository);
+            change.Apply();
 
             Assert.AreNotEqual(toDelete, railway.Routes.FirstOrDefault());
             CollectionAssert.DoesNotContain(railway.Routes.ToList(), toDelete);
@@ -94,10 +94,10 @@ namespace NMF.Models.Tests.Evolution
             {
                 AffectedElement = parent,
                 Feature = TrackElement.ClassInstance.LookupReference("connectsTo"),
-                DeletedElementUri = toDelete.AbsoluteUri
+                DeletedElement = toDelete
             };
             
-            change.Apply(repository);
+            change.Apply();
 
             Assert.AreNotEqual(toDelete, parent.ConnectsTo.FirstOrDefault());
             CollectionAssert.DoesNotContain(parent.ConnectsTo.ToList(), toDelete);
@@ -112,7 +112,7 @@ namespace NMF.Models.Tests.Evolution
                 Feature = RailwayContainer.ClassInstance.LookupReference("semaphores")
             };
 
-            change.Apply(repository);
+            change.Apply();
 
             Assert.AreEqual(0, railway.Semaphores.Count);
         }
@@ -130,7 +130,7 @@ namespace NMF.Models.Tests.Evolution
                 AddedElement = toInsert
             };
 
-            change.Apply(repository);
+            change.Apply();
 
             Assert.AreEqual(toInsert, railway.Routes.First());
         }
@@ -148,7 +148,7 @@ namespace NMF.Models.Tests.Evolution
                 Index = 0,
                 AddedElement = toInsert
             };
-            change.Apply(repository);
+            change.Apply();
 
             Assert.AreSame(toInsert, parent.ConnectsTo[0]);
         }
@@ -164,7 +164,7 @@ namespace NMF.Models.Tests.Evolution
                 Feature = RailwayContainer.ClassInstance.LookupReference("routes"),
                 AddedElement = toInsert
             };
-            change.Apply(repository);
+            change.Apply();
 
             Assert.AreEqual(toInsert, railway.Routes.Last());
         }
@@ -181,7 +181,7 @@ namespace NMF.Models.Tests.Evolution
                 Feature = TrackElement.ClassInstance.LookupReference("connectsTo"),
                 AddedElement = toInsert
             };
-            change.Apply(repository);
+            change.Apply();
 
             Assert.AreSame(toInsert, parent.ConnectsTo[parent.ConnectsTo.Count - 1]);
         }
@@ -200,7 +200,7 @@ namespace NMF.Models.Tests.Evolution
                 OldValue = oldValue.ToString(),
                 NewValue = newValue.ToString()
             };
-            change.Apply(repository);
+            change.Apply();
 
             Assert.AreEqual(newValue, parent.Signal);
         }
@@ -217,7 +217,7 @@ namespace NMF.Models.Tests.Evolution
                 Feature = Route.ClassInstance.LookupReference("entry"),
                 NewValue = newValue
             };
-            change.Apply(repository);
+            change.Apply();
 
             Assert.AreSame(newValue, parent.Entry);
         }

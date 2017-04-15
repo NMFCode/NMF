@@ -1,11 +1,16 @@
 ﻿using NMF.Collections.Generic;
+using NMF.Collections.ObjectModel;
 using NMF.Expressions;
 using NMF.Expressions.Linq;
 using NMF.Models.Collections;
+using NMF.Models.Expressions;
+using NMF.Models.Meta;
 using NMF.Models.Repository;
 using NMF.Serialization;
 using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -21,6 +26,553 @@ namespace NMF.Models
     [ModelRepresentationClass("http://nmf.codeplex.com/nmeta/#//Model/")]
     public class Model : ModelElement
     {
+        /// <summary>
+        /// The backing field for the ModelUri property
+        /// </summary>
+        private Uri _modelUri;
+
+        private static Lazy<ITypedElement> _modelUriAttribute = new Lazy<ITypedElement>(RetrieveModelUriAttribute);
+
+        private static Lazy<ITypedElement> _rootElementsReference = new Lazy<ITypedElement>(RetrieveRootElementsReference);
+
+        /// <summary>
+        /// The backing field for the RootElements property
+        /// </summary>
+        private ObservableCompositionOrderedSet<NMF.Models.IModelElement> _rootElements;
+
+        private static IClass _classInstance;
+
+        public Model()
+        {
+            this._rootElements = new ObservableCompositionOrderedSet<NMF.Models.IModelElement>(this);
+            this._rootElements.CollectionChanging += this.RootElementsCollectionChanging;
+            this._rootElements.CollectionChanged += this.RootElementsCollectionChanged;
+        }
+
+        /// <summary>
+        /// The ModelUri property
+        /// </summary>
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public Uri ModelUri
+        {
+            get
+            {
+                return this._modelUri;
+            }
+            set
+            {
+                if ((this._modelUri != value))
+                {
+                    Uri old = this._modelUri;
+                    ValueChangedEventArgs e = new ValueChangedEventArgs(old, value);
+                    this.OnModelUriChanging(e);
+                    this.OnPropertyChanging("ModelUri", e, _modelUriAttribute);
+                    this._modelUri = value;
+                    this.OnModelUriChanged(e);
+                    this.OnPropertyChanged("ModelUri", e, _modelUriAttribute);
+                }
+            }
+        }
+
+        /// <summary>
+        /// The RootElements property
+        /// </summary>
+        [DesignerSerializationVisibilityAttribute(DesignerSerializationVisibility.Content)]
+        [XmlAttributeAttribute(false)]
+        [ContainmentAttribute()]
+        [ConstantAttribute()]
+        public IOrderedSetExpression<NMF.Models.IModelElement> RootElements
+        {
+            get
+            {
+                return this._rootElements;
+            }
+        }
+
+        /// <summary>
+        /// Gets the child model elements of this model element
+        /// </summary>
+        public override IEnumerableExpression<NMF.Models.IModelElement> Children
+        {
+            get
+            {
+                return base.Children.Concat(new ModelChildrenCollection(this));
+            }
+        }
+
+        /// <summary>
+        /// Gets the referenced model elements of this model element
+        /// </summary>
+        public override IEnumerableExpression<NMF.Models.IModelElement> ReferencedElements
+        {
+            get
+            {
+                return base.ReferencedElements.Concat(new ModelReferencedElementsCollection(this));
+            }
+        }
+
+        /// <summary>
+        /// Gets the Class model for this type
+        /// </summary>
+        public new static IClass ClassInstance
+        {
+            get
+            {
+                if ((_classInstance == null))
+                {
+                    _classInstance = ((IClass)(MetaRepository.Instance.Resolve("http://nmf.codeplex.com/nmeta/#//Model")));
+                }
+                return _classInstance;
+            }
+        }
+
+        /// <summary>
+        /// Gets fired before the ModelUri property changes its value
+        /// </summary>
+        public event System.EventHandler<ValueChangedEventArgs> ModelUriChanging;
+
+        /// <summary>
+        /// Gets fired when the ModelUri property changed its value
+        /// </summary>
+        public event System.EventHandler<ValueChangedEventArgs> ModelUriChanged;
+
+        private static ITypedElement RetrieveModelUriAttribute()
+        {
+            return ((ITypedElement)(((NMF.Models.ModelElement)(NMF.Models.Model.ClassInstance)).Resolve("ModelUri")));
+        }
+
+        /// <summary>
+        /// Raises the ModelUriChanging event
+        /// </summary>
+        /// <param name="eventArgs">The event data</param>
+        protected virtual void OnModelUriChanging(ValueChangedEventArgs eventArgs)
+        {
+            System.EventHandler<ValueChangedEventArgs> handler = this.ModelUriChanging;
+            if ((handler != null))
+            {
+                handler.Invoke(this, eventArgs);
+            }
+        }
+
+        /// <summary>
+        /// Raises the ModelUriChanged event
+        /// </summary>
+        /// <param name="eventArgs">The event data</param>
+        protected virtual void OnModelUriChanged(ValueChangedEventArgs eventArgs)
+        {
+            System.EventHandler<ValueChangedEventArgs> handler = this.ModelUriChanged;
+            if ((handler != null))
+            {
+                handler.Invoke(this, eventArgs);
+            }
+        }
+
+        private static ITypedElement RetrieveRootElementsReference()
+        {
+            return ((ITypedElement)(((NMF.Models.ModelElement)(NMF.Models.Model.ClassInstance)).Resolve("RootElements")));
+        }
+
+        /// <summary>
+        /// Forwards CollectionChanging notifications for the RootElements property to the parent model element
+        /// </summary>
+        /// <param name="sender">The collection that raised the change</param>
+        /// <param name="e">The original event data</param>
+        private void RootElementsCollectionChanging(object sender, NotifyCollectionChangingEventArgs e)
+        {
+            this.OnCollectionChanging("RootElements", e, _rootElementsReference);
+        }
+
+        /// <summary>
+        /// Forwards CollectionChanged notifications for the RootElements property to the parent model element
+        /// </summary>
+        /// <param name="sender">The collection that raised the change</param>
+        /// <param name="e">The original event data</param>
+        private void RootElementsCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            this.OnCollectionChanged("RootElements", e, _rootElementsReference);
+            if (!PromoteSingleRootElement && ModelUri != null && IsFlagSet(ModelElementFlag.RequireUris) && 
+                ((RootElements.Count == 1 && e.Action == System.Collections.Specialized.NotifyCollectionChangedAction.Remove) || 
+                 (e.Action == NotifyCollectionChangedAction.Add && RootElements.Count - e.NewItems.Count == 1)))
+            {
+                IModelElement oldRoot;
+                string fragment;
+                if (e.Action == NotifyCollectionChangedAction.Add)
+                {
+                    if (e.NewStartingIndex == 0)
+                    {
+                        oldRoot = RootElements[RootElements.Count - 1];
+                    }
+                    else
+                    {
+                        oldRoot = RootElements[0];
+                    }
+                    fragment = "//";
+                }
+                else
+                {
+                    oldRoot = RootElements[0];
+                    fragment = "/0/";
+                }
+                foreach (ModelElement element in oldRoot.Descendants())
+                {
+                    var frag = element.CreateUriWithFragment(null, false, oldRoot);
+                    var uri = new Uri(ModelUri, fragment + frag.OriginalString);
+                    element.OnUriChanged(uri);
+                }
+            }
+
+        }
+
+        /// <summary>
+        /// Resolves the given attribute name
+        /// </summary>
+        /// <returns>The attribute value or null if it could not be found</returns>
+        /// <param name="attribute">The requested attribute name</param>
+        /// <param name="index">The index of this attribute</param>
+        protected override object GetAttributeValue(string attribute, int index)
+        {
+            if ((attribute == "MODELURI"))
+            {
+                return this.ModelUri;
+            }
+            return base.GetAttributeValue(attribute, index);
+        }
+
+        /// <summary>
+        /// Gets the Model element collection for the given feature
+        /// </summary>
+        /// <returns>A non-generic list of elements</returns>
+        /// <param name="feature">The requested feature</param>
+        protected override System.Collections.IList GetCollectionForFeature(string feature)
+        {
+            if ((feature == "ROOTELEMENTS"))
+            {
+                return this._rootElements;
+            }
+            return base.GetCollectionForFeature(feature);
+        }
+
+        /// <summary>
+        /// Sets a value to the given feature
+        /// </summary>
+        /// <param name="feature">The requested feature</param>
+        /// <param name="value">The value that should be set to that feature</param>
+        protected override void SetFeature(string feature, object value)
+        {
+            if ((feature == "MODELURI"))
+            {
+                this.ModelUri = ((Uri)(value));
+                return;
+            }
+            base.SetFeature(feature, value);
+        }
+
+        /// <summary>
+        /// Gets the property name for the given container
+        /// </summary>
+        /// <returns>The name of the respective container reference</returns>
+        /// <param name="container">The container object</param>
+        protected internal override string GetCompositionName(object container)
+        {
+            if ((container == this._rootElements))
+            {
+                return "RootElements";
+            }
+            return base.GetCompositionName(container);
+        }
+
+        /// <summary>
+        /// Gets the Class for this model element
+        /// </summary>
+        public override IClass GetClass()
+        {
+            if ((_classInstance == null))
+            {
+                _classInstance = ((IClass)(MetaRepository.Instance.Resolve("http://nmf.codeplex.com/nmeta/#//Model")));
+            }
+            return _classInstance;
+        }
+
+        /// <summary>
+        /// The collection class to to represent the children of the Model class
+        /// </summary>
+        public class ModelChildrenCollection : ReferenceCollection, ICollectionExpression<NMF.Models.IModelElement>, ICollection<NMF.Models.IModelElement>
+        {
+
+            private Model _parent;
+
+            /// <summary>
+            /// Creates a new instance
+            /// </summary>
+            public ModelChildrenCollection(Model parent)
+            {
+                this._parent = parent;
+            }
+
+            /// <summary>
+            /// Gets the amount of elements contained in this collection
+            /// </summary>
+            public override int Count
+            {
+                get
+                {
+                    int count = 0;
+                    count = (count + this._parent.RootElements.Count);
+                    return count;
+                }
+            }
+
+            protected override void AttachCore()
+            {
+                this._parent.RootElements.AsNotifiable().CollectionChanged += this.PropagateCollectionChanges;
+            }
+
+            protected override void DetachCore()
+            {
+                this._parent.RootElements.AsNotifiable().CollectionChanged -= this.PropagateCollectionChanges;
+            }
+
+            /// <summary>
+            /// Adds the given element to the collection
+            /// </summary>
+            /// <param name="item">The item to add</param>
+            public override void Add(NMF.Models.IModelElement item)
+            {
+                NMF.Models.IModelElement rootElementsCasted = item;
+                if ((rootElementsCasted != null))
+                {
+                    this._parent.RootElements.Add(rootElementsCasted);
+                }
+            }
+
+            /// <summary>
+            /// Clears the collection and resets all references that implement it.
+            /// </summary>
+            public override void Clear()
+            {
+                this._parent.RootElements.Clear();
+            }
+
+            /// <summary>
+            /// Gets a value indicating whether the given element is contained in the collection
+            /// </summary>
+            /// <returns>True, if it is contained, otherwise False</returns>
+            /// <param name="item">The item that should be looked out for</param>
+            public override bool Contains(NMF.Models.IModelElement item)
+            {
+                if (this._parent.RootElements.Contains(item))
+                {
+                    return true;
+                }
+                return false;
+            }
+
+            /// <summary>
+            /// Copies the contents of the collection to the given array starting from the given array index
+            /// </summary>
+            /// <param name="array">The array in which the elements should be copied</param>
+            /// <param name="arrayIndex">The starting index</param>
+            public override void CopyTo(NMF.Models.IModelElement[] array, int arrayIndex)
+            {
+                IEnumerator<NMF.Models.IModelElement> rootElementsEnumerator = this._parent.RootElements.GetEnumerator();
+                try
+                {
+                    for (
+                    ; rootElementsEnumerator.MoveNext();
+                    )
+                    {
+                        array[arrayIndex] = rootElementsEnumerator.Current;
+                        arrayIndex = (arrayIndex + 1);
+                    }
+                }
+                finally
+                {
+                    rootElementsEnumerator.Dispose();
+                }
+            }
+
+            /// <summary>
+            /// Removes the given item from the collection
+            /// </summary>
+            /// <returns>True, if the item was removed, otherwise False</returns>
+            /// <param name="item">The item that should be removed</param>
+            public override bool Remove(NMF.Models.IModelElement item)
+            {
+                IModelElement modelElementItem = item;
+                if (((modelElementItem != null)
+                            && this._parent.RootElements.Remove(modelElementItem)))
+                {
+                    return true;
+                }
+                return false;
+            }
+
+            /// <summary>
+            /// Gets an enumerator that enumerates the collection
+            /// </summary>
+            /// <returns>A generic enumerator</returns>
+            public override IEnumerator<NMF.Models.IModelElement> GetEnumerator()
+            {
+                return Enumerable.Empty<NMF.Models.IModelElement>().Concat(this._parent.RootElements).GetEnumerator();
+            }
+        }
+
+        /// <summary>
+        /// The collection class to to represent the children of the Model class
+        /// </summary>
+        public class ModelReferencedElementsCollection : ReferenceCollection, ICollectionExpression<NMF.Models.IModelElement>, ICollection<NMF.Models.IModelElement>
+        {
+
+            private Model _parent;
+
+            /// <summary>
+            /// Creates a new instance
+            /// </summary>
+            public ModelReferencedElementsCollection(Model parent)
+            {
+                this._parent = parent;
+            }
+
+            /// <summary>
+            /// Gets the amount of elements contained in this collection
+            /// </summary>
+            public override int Count
+            {
+                get
+                {
+                    int count = 0;
+                    count = (count + this._parent.RootElements.Count);
+                    return count;
+                }
+            }
+
+            protected override void AttachCore()
+            {
+                this._parent.RootElements.AsNotifiable().CollectionChanged += this.PropagateCollectionChanges;
+            }
+
+            protected override void DetachCore()
+            {
+                this._parent.RootElements.AsNotifiable().CollectionChanged -= this.PropagateCollectionChanges;
+            }
+
+            /// <summary>
+            /// Adds the given element to the collection
+            /// </summary>
+            /// <param name="item">The item to add</param>
+            public override void Add(NMF.Models.IModelElement item)
+            {
+                IModelElement rootElementsCasted = item;
+                if ((rootElementsCasted != null))
+                {
+                    this._parent.RootElements.Add(rootElementsCasted);
+                }
+            }
+
+            /// <summary>
+            /// Clears the collection and resets all references that implement it.
+            /// </summary>
+            public override void Clear()
+            {
+                this._parent.RootElements.Clear();
+            }
+
+            /// <summary>
+            /// Gets a value indicating whether the given element is contained in the collection
+            /// </summary>
+            /// <returns>True, if it is contained, otherwise False</returns>
+            /// <param name="item">The item that should be looked out for</param>
+            public override bool Contains(NMF.Models.IModelElement item)
+            {
+                if (this._parent.RootElements.Contains(item))
+                {
+                    return true;
+                }
+                return false;
+            }
+
+            /// <summary>
+            /// Copies the contents of the collection to the given array starting from the given array index
+            /// </summary>
+            /// <param name="array">The array in which the elements should be copied</param>
+            /// <param name="arrayIndex">The starting index</param>
+            public override void CopyTo(NMF.Models.IModelElement[] array, int arrayIndex)
+            {
+                IEnumerator<NMF.Models.IModelElement> rootElementsEnumerator = this._parent.RootElements.GetEnumerator();
+                try
+                {
+                    for (
+                    ; rootElementsEnumerator.MoveNext();
+                    )
+                    {
+                        array[arrayIndex] = rootElementsEnumerator.Current;
+                        arrayIndex = (arrayIndex + 1);
+                    }
+                }
+                finally
+                {
+                    rootElementsEnumerator.Dispose();
+                }
+            }
+
+            /// <summary>
+            /// Removes the given item from the collection
+            /// </summary>
+            /// <returns>True, if the item was removed, otherwise False</returns>
+            /// <param name="item">The item that should be removed</param>
+            public override bool Remove(NMF.Models.IModelElement item)
+            {
+                var modelElementItem = item;
+                if (((modelElementItem != null)
+                            && this._parent.RootElements.Remove(modelElementItem)))
+                {
+                    return true;
+                }
+                return false;
+            }
+
+            /// <summary>
+            /// Gets an enumerator that enumerates the collection
+            /// </summary>
+            /// <returns>A generic enumerator</returns>
+            public override IEnumerator<NMF.Models.IModelElement> GetEnumerator()
+            {
+                return Enumerable.Empty<NMF.Models.IModelElement>().Concat(this._parent.RootElements).GetEnumerator();
+            }
+        }
+
+        /// <summary>
+        /// Represents a proxy to represent an incremental access to the ModelUri property
+        /// </summary>
+        private sealed class ModelUriProxy : ModelPropertyChange<NMF.Models.Model, Uri>
+        {
+
+            /// <summary>
+            /// Creates a new observable property access proxy
+            /// </summary>
+            /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
+            public ModelUriProxy(NMF.Models.Model modelElement) :
+                    base(modelElement, "ModelUri")
+            {
+            }
+
+            /// <summary>
+            /// Gets or sets the value of this expression
+            /// </summary>
+            public override Uri Value
+            {
+                get
+                {
+                    return this.ModelElement.ModelUri;
+                }
+                set
+                {
+                    this.ModelElement.ModelUri = value;
+                }
+            }
+        }
+
+
         private Dictionary<string, ModelElement> IdStore;
 
         static Model()
@@ -30,28 +582,9 @@ namespace NMF.Models
 
         public static bool PromoteSingleRootElement { get; set; }
 
-        public Model()
-        {
-            RootElements = new ObservableCompositionOrderedSet<IModelElement>(this);
-        }
 
-        public Uri ModelUri
-        {
-            get;
-            set;
-        }
 
         public IModelRepository Repository { get; internal set; }
-
-        public IOrderedSetExpression<IModelElement> RootElements { get; private set; }
-
-        public override IEnumerableExpression<IModelElement> Children
-        {
-            get
-            {
-                return RootElements.Concat(Extensions);
-            }
-        }
 
         protected override IModelElement GetModelElementForReference(string reference, int index)
         {
@@ -70,13 +603,6 @@ namespace NMF.Models
             }
         }
 
-        public override IEnumerableExpression<IModelElement> ReferencedElements
-        {
-            get
-            {
-                return base.ReferencedElements.Concat<IModelElement>(RootElements);
-            }
-        }
 
         protected override string GetRelativePathForNonIdentifiedChild(IModelElement child)
         {
@@ -261,11 +787,6 @@ namespace NMF.Models
                 return string.Empty;
             }
             return base.GetRelativePathForChild(child);
-        }
-
-        public override Meta.IClass GetClass()
-        {
-            return (Meta.IClass)NMF.Models.Repository.MetaRepository.Instance.ResolveType("http://nmf.codeplex.com/nmeta/#//NMeta/Model/");
         }
     }
 }

@@ -23,6 +23,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
@@ -45,6 +46,8 @@ namespace NMF.Models.Changes
         /// </summary>
         private string _addedValue;
         
+        private static Lazy<ITypedElement> _addedValueAttribute = new Lazy<ITypedElement>(RetrieveAddedValueAttribute);
+        
         private static IClass _classInstance;
         
         /// <summary>
@@ -52,7 +55,7 @@ namespace NMF.Models.Changes
         /// </summary>
         [XmlElementNameAttribute("addedValue")]
         [XmlAttributeAttribute(true)]
-        public virtual string AddedValue
+        public string AddedValue
         {
             get
             {
@@ -65,10 +68,10 @@ namespace NMF.Models.Changes
                     string old = this._addedValue;
                     ValueChangedEventArgs e = new ValueChangedEventArgs(old, value);
                     this.OnAddedValueChanging(e);
-                    this.OnPropertyChanging("AddedValue", e);
+                    this.OnPropertyChanging("AddedValue", e, _addedValueAttribute);
                     this._addedValue = value;
                     this.OnAddedValueChanged(e);
-                    this.OnPropertyChanged("AddedValue", e);
+                    this.OnPropertyChanged("AddedValue", e, _addedValueAttribute);
                 }
             }
         }
@@ -97,6 +100,11 @@ namespace NMF.Models.Changes
         /// Gets fired when the AddedValue property changed its value
         /// </summary>
         public event System.EventHandler<ValueChangedEventArgs> AddedValueChanged;
+        
+        private static ITypedElement RetrieveAddedValueAttribute()
+        {
+            return ((ITypedElement)(((NMF.Models.ModelElement)(NMF.Models.Changes.AttributeCollectionInsertion.ClassInstance)).Resolve("addedValue")));
+        }
         
         /// <summary>
         /// Raises the AddedValueChanging event

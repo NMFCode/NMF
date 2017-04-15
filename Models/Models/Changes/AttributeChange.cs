@@ -23,6 +23,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
@@ -41,49 +42,27 @@ namespace NMF.Models.Changes
     {
         
         /// <summary>
-        /// The backing field for the OldValue property
-        /// </summary>
-        private string _oldValue;
-        
-        /// <summary>
         /// The backing field for the NewValue property
         /// </summary>
         private string _newValue;
         
-        private static IClass _classInstance;
+        private static Lazy<ITypedElement> _newValueAttribute = new Lazy<ITypedElement>(RetrieveNewValueAttribute);
         
         /// <summary>
-        /// The oldValue property
+        /// The backing field for the OldValue property
         /// </summary>
-        [XmlElementNameAttribute("oldValue")]
-        [XmlAttributeAttribute(true)]
-        public virtual string OldValue
-        {
-            get
-            {
-                return this._oldValue;
-            }
-            set
-            {
-                if ((this._oldValue != value))
-                {
-                    string old = this._oldValue;
-                    ValueChangedEventArgs e = new ValueChangedEventArgs(old, value);
-                    this.OnOldValueChanging(e);
-                    this.OnPropertyChanging("OldValue", e);
-                    this._oldValue = value;
-                    this.OnOldValueChanged(e);
-                    this.OnPropertyChanged("OldValue", e);
-                }
-            }
-        }
+        private string _oldValue;
+        
+        private static Lazy<ITypedElement> _oldValueAttribute = new Lazy<ITypedElement>(RetrieveOldValueAttribute);
+        
+        private static IClass _classInstance;
         
         /// <summary>
         /// The newValue property
         /// </summary>
         [XmlElementNameAttribute("newValue")]
         [XmlAttributeAttribute(true)]
-        public virtual string NewValue
+        public string NewValue
         {
             get
             {
@@ -96,10 +75,36 @@ namespace NMF.Models.Changes
                     string old = this._newValue;
                     ValueChangedEventArgs e = new ValueChangedEventArgs(old, value);
                     this.OnNewValueChanging(e);
-                    this.OnPropertyChanging("NewValue", e);
+                    this.OnPropertyChanging("NewValue", e, _newValueAttribute);
                     this._newValue = value;
                     this.OnNewValueChanged(e);
-                    this.OnPropertyChanged("NewValue", e);
+                    this.OnPropertyChanged("NewValue", e, _newValueAttribute);
+                }
+            }
+        }
+        
+        /// <summary>
+        /// The oldValue property
+        /// </summary>
+        [XmlElementNameAttribute("oldValue")]
+        [XmlAttributeAttribute(true)]
+        public string OldValue
+        {
+            get
+            {
+                return this._oldValue;
+            }
+            set
+            {
+                if ((this._oldValue != value))
+                {
+                    string old = this._oldValue;
+                    ValueChangedEventArgs e = new ValueChangedEventArgs(old, value);
+                    this.OnOldValueChanging(e);
+                    this.OnPropertyChanging("OldValue", e, _oldValueAttribute);
+                    this._oldValue = value;
+                    this.OnOldValueChanged(e);
+                    this.OnPropertyChanged("OldValue", e, _oldValueAttribute);
                 }
             }
         }
@@ -120,16 +125,6 @@ namespace NMF.Models.Changes
         }
         
         /// <summary>
-        /// Gets fired before the OldValue property changes its value
-        /// </summary>
-        public event System.EventHandler<ValueChangedEventArgs> OldValueChanging;
-        
-        /// <summary>
-        /// Gets fired when the OldValue property changed its value
-        /// </summary>
-        public event System.EventHandler<ValueChangedEventArgs> OldValueChanged;
-        
-        /// <summary>
         /// Gets fired before the NewValue property changes its value
         /// </summary>
         public event System.EventHandler<ValueChangedEventArgs> NewValueChanging;
@@ -140,29 +135,18 @@ namespace NMF.Models.Changes
         public event System.EventHandler<ValueChangedEventArgs> NewValueChanged;
         
         /// <summary>
-        /// Raises the OldValueChanging event
+        /// Gets fired before the OldValue property changes its value
         /// </summary>
-        /// <param name="eventArgs">The event data</param>
-        protected virtual void OnOldValueChanging(ValueChangedEventArgs eventArgs)
-        {
-            System.EventHandler<ValueChangedEventArgs> handler = this.OldValueChanging;
-            if ((handler != null))
-            {
-                handler.Invoke(this, eventArgs);
-            }
-        }
+        public event System.EventHandler<ValueChangedEventArgs> OldValueChanging;
         
         /// <summary>
-        /// Raises the OldValueChanged event
+        /// Gets fired when the OldValue property changed its value
         /// </summary>
-        /// <param name="eventArgs">The event data</param>
-        protected virtual void OnOldValueChanged(ValueChangedEventArgs eventArgs)
+        public event System.EventHandler<ValueChangedEventArgs> OldValueChanged;
+        
+        private static ITypedElement RetrieveNewValueAttribute()
         {
-            System.EventHandler<ValueChangedEventArgs> handler = this.OldValueChanged;
-            if ((handler != null))
-            {
-                handler.Invoke(this, eventArgs);
-            }
+            return ((ITypedElement)(((NMF.Models.ModelElement)(NMF.Models.Changes.AttributeChange.ClassInstance)).Resolve("newValue")));
         }
         
         /// <summary>
@@ -191,6 +175,37 @@ namespace NMF.Models.Changes
             }
         }
         
+        private static ITypedElement RetrieveOldValueAttribute()
+        {
+            return ((ITypedElement)(((NMF.Models.ModelElement)(NMF.Models.Changes.AttributeChange.ClassInstance)).Resolve("oldValue")));
+        }
+        
+        /// <summary>
+        /// Raises the OldValueChanging event
+        /// </summary>
+        /// <param name="eventArgs">The event data</param>
+        protected virtual void OnOldValueChanging(ValueChangedEventArgs eventArgs)
+        {
+            System.EventHandler<ValueChangedEventArgs> handler = this.OldValueChanging;
+            if ((handler != null))
+            {
+                handler.Invoke(this, eventArgs);
+            }
+        }
+        
+        /// <summary>
+        /// Raises the OldValueChanged event
+        /// </summary>
+        /// <param name="eventArgs">The event data</param>
+        protected virtual void OnOldValueChanged(ValueChangedEventArgs eventArgs)
+        {
+            System.EventHandler<ValueChangedEventArgs> handler = this.OldValueChanged;
+            if ((handler != null))
+            {
+                handler.Invoke(this, eventArgs);
+            }
+        }
+        
         /// <summary>
         /// Resolves the given attribute name
         /// </summary>
@@ -199,13 +214,13 @@ namespace NMF.Models.Changes
         /// <param name="index">The index of this attribute</param>
         protected override object GetAttributeValue(string attribute, int index)
         {
-            if ((attribute == "OLDVALUE"))
-            {
-                return this.OldValue;
-            }
             if ((attribute == "NEWVALUE"))
             {
                 return this.NewValue;
+            }
+            if ((attribute == "OLDVALUE"))
+            {
+                return this.OldValue;
             }
             return base.GetAttributeValue(attribute, index);
         }
@@ -217,14 +232,14 @@ namespace NMF.Models.Changes
         /// <param name="value">The value that should be set to that feature</param>
         protected override void SetFeature(string feature, object value)
         {
-            if ((feature == "OLDVALUE"))
-            {
-                this.OldValue = ((string)(value));
-                return;
-            }
             if ((feature == "NEWVALUE"))
             {
                 this.NewValue = ((string)(value));
+                return;
+            }
+            if ((feature == "OLDVALUE"))
+            {
+                this.OldValue = ((string)(value));
                 return;
             }
             base.SetFeature(feature, value);
@@ -240,37 +255,6 @@ namespace NMF.Models.Changes
                 _classInstance = ((IClass)(MetaRepository.Instance.Resolve("http://nmf.codeplex.com/changes#//AttributeChange")));
             }
             return _classInstance;
-        }
-        
-        /// <summary>
-        /// Represents a proxy to represent an incremental access to the oldValue property
-        /// </summary>
-        private sealed class OldValueProxy : ModelPropertyChange<IAttributeChange, string>
-        {
-            
-            /// <summary>
-            /// Creates a new observable property access proxy
-            /// </summary>
-            /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
-            public OldValueProxy(IAttributeChange modelElement) : 
-                    base(modelElement, "oldValue")
-            {
-            }
-            
-            /// <summary>
-            /// Gets or sets the value of this expression
-            /// </summary>
-            public override string Value
-            {
-                get
-                {
-                    return this.ModelElement.OldValue;
-                }
-                set
-                {
-                    this.ModelElement.OldValue = value;
-                }
-            }
         }
         
         /// <summary>
@@ -300,6 +284,37 @@ namespace NMF.Models.Changes
                 set
                 {
                     this.ModelElement.NewValue = value;
+                }
+            }
+        }
+        
+        /// <summary>
+        /// Represents a proxy to represent an incremental access to the oldValue property
+        /// </summary>
+        private sealed class OldValueProxy : ModelPropertyChange<IAttributeChange, string>
+        {
+            
+            /// <summary>
+            /// Creates a new observable property access proxy
+            /// </summary>
+            /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
+            public OldValueProxy(IAttributeChange modelElement) : 
+                    base(modelElement, "oldValue")
+            {
+            }
+            
+            /// <summary>
+            /// Gets or sets the value of this expression
+            /// </summary>
+            public override string Value
+            {
+                get
+                {
+                    return this.ModelElement.OldValue;
+                }
+                set
+                {
+                    this.ModelElement.OldValue = value;
                 }
             }
         }

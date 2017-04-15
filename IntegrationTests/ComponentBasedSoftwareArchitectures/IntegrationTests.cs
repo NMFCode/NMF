@@ -124,7 +124,7 @@ namespace NMFExamples
                 recorder.Start(targetModel);
                 foreach (var subChange in change.Changes)
                 {
-                    subChange.Apply(repository);
+                    subChange.Apply();
                 }
                 recorder.Stop();
                 if (compareResults != null)
@@ -149,7 +149,7 @@ namespace NMFExamples
                 var changeSet = repository.Resolve(string.Format(pattern, i)).RootElements[0] as ModelChangeSet;
                 foreach (var change in changeSet.Changes)
                 {
-                    change.Apply(repository);
+                    change.Apply();
                 }
                 Assert.AreEqual(incResult.Value, analysis(root));
             }

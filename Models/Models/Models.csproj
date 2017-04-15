@@ -55,6 +55,12 @@
     <Compile Include="Attributes\UpperBoundAttribute.cs" />
     <Compile Include="BubbledChangeEventArgs.cs" />
     <Compile Include="Changes\ApplyChanges.cs" />
+    <Compile Include="Changes\CompositionMoveIntoProperty.cs" />
+    <Compile Include="Changes\CompositionMoveToCollection.cs" />
+    <Compile Include="Changes\CompositionMoveToList.cs" />
+    <Compile Include="Changes\ICompositionMoveIntoProperty.cs" />
+    <Compile Include="Changes\ICompositionMoveToCollection.cs" />
+    <Compile Include="Changes\ICompositionMoveToList.cs" />
     <Compile Include="Changes\IModelChangeManual.cs" />
     <Compile Include="Changes\InvertChanges.cs" />
     <Compile Include="Changes\ModelChangeRecorder.cs" />
@@ -231,6 +237,7 @@
   <ItemGroup>
     <EmbeddedResource Include="..\..\NMetaChanges.nmeta">
       <Link>NMetaChanges.nmeta</Link>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

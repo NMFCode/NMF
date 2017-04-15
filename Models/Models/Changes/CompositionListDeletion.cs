@@ -23,6 +23,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
@@ -40,6 +41,8 @@ namespace NMF.Models.Changes
     public partial class CompositionListDeletion : ListDeletion, ICompositionListDeletion, NMF.Models.IModelElement
     {
         
+        private static Lazy<ITypedElement> _deletedElementReference = new Lazy<ITypedElement>(RetrieveDeletedElementReference);
+        
         /// <summary>
         /// The backing field for the DeletedElement property
         /// </summary>
@@ -51,9 +54,8 @@ namespace NMF.Models.Changes
         /// The deletedElement property
         /// </summary>
         [XmlElementNameAttribute("deletedElement")]
-        [XmlAttributeAttribute(false)]
-        [XmlIdentificationMode(XmlIdentificationMode.ForceFullObject)]
-        public virtual NMF.Models.IModelElement DeletedElement
+        [XmlAttributeAttribute(true)]
+        public NMF.Models.IModelElement DeletedElement
         {
             get
             {
@@ -66,22 +68,11 @@ namespace NMF.Models.Changes
                     NMF.Models.IModelElement old = this._deletedElement;
                     ValueChangedEventArgs e = new ValueChangedEventArgs(old, value);
                     this.OnDeletedElementChanging(e);
-                    this.OnPropertyChanging("DeletedElement", e);
+                    this.OnPropertyChanging("DeletedElement", e, _deletedElementReference);
                     this._deletedElement = value;
                     this.OnDeletedElementChanged(e);
-                    this.OnPropertyChanged("DeletedElement", e);
+                    this.OnPropertyChanged("DeletedElement", e, _deletedElementReference);
                 }
-            }
-        }
-        
-        /// <summary>
-        /// Gets the child model elements of this model element
-        /// </summary>
-        public override IEnumerableExpression<NMF.Models.IModelElement> Children
-        {
-            get
-            {
-                return base.Children.Concat(new CompositionListDeletionChildrenCollection(this));
             }
         }
         
@@ -121,6 +112,11 @@ namespace NMF.Models.Changes
         /// </summary>
         public event System.EventHandler<ValueChangedEventArgs> DeletedElementChanged;
         
+        private static ITypedElement RetrieveDeletedElementReference()
+        {
+            return ((ITypedElement)(((NMF.Models.ModelElement)(NMF.Models.Changes.CompositionListDeletion.ClassInstance)).Resolve("deletedElement")));
+        }
+        
         /// <summary>
         /// Raises the DeletedElementChanging event
         /// </summary>
@@ -155,35 +151,6 @@ namespace NMF.Models.Changes
         private void OnResetDeletedElement(object sender, System.EventArgs eventArgs)
         {
             this.DeletedElement = null;
-        }
-        
-        /// <summary>
-        /// Gets the relative URI fragment for the given child model element
-        /// </summary>
-        /// <returns>A fragment of the relative URI</returns>
-        /// <param name="element">The element that should be looked for</param>
-        protected override string GetRelativePathForNonIdentifiedChild(NMF.Models.IModelElement element)
-        {
-            if ((element == this.DeletedElement))
-            {
-                return ModelHelper.CreatePath("DeletedElement");
-            }
-            return base.GetRelativePathForNonIdentifiedChild(element);
-        }
-        
-        /// <summary>
-        /// Resolves the given URI to a child model element
-        /// </summary>
-        /// <returns>The model element or null if it could not be found</returns>
-        /// <param name="reference">The requested reference name</param>
-        /// <param name="index">The index of this reference</param>
-        protected override NMF.Models.IModelElement GetModelElementForReference(string reference, int index)
-        {
-            if ((reference == "DELETEDELEMENT"))
-            {
-                return this.DeletedElement;
-            }
-            return base.GetModelElementForReference(reference, index);
         }
         
         /// <summary>
@@ -244,123 +211,7 @@ namespace NMF.Models.Changes
         /// <summary>
         /// The collection class to to represent the children of the CompositionListDeletion class
         /// </summary>
-        public partial class CompositionListDeletionChildrenCollection : ReferenceCollection, ICollectionExpression<NMF.Models.IModelElement>, ICollection<NMF.Models.IModelElement>
-        {
-            
-            private CompositionListDeletion _parent;
-            
-            /// <summary>
-            /// Creates a new instance
-            /// </summary>
-            public CompositionListDeletionChildrenCollection(CompositionListDeletion parent)
-            {
-                this._parent = parent;
-            }
-            
-            /// <summary>
-            /// Gets the amount of elements contained in this collection
-            /// </summary>
-            public override int Count
-            {
-                get
-                {
-                    int count = 0;
-                    if ((this._parent.DeletedElement != null))
-                    {
-                        count = (count + 1);
-                    }
-                    return count;
-                }
-            }
-            
-            protected override void AttachCore()
-            {
-                this._parent.DeletedElementChanged += this.PropagateValueChanges;
-            }
-            
-            protected override void DetachCore()
-            {
-                this._parent.DeletedElementChanged -= this.PropagateValueChanges;
-            }
-            
-            /// <summary>
-            /// Adds the given element to the collection
-            /// </summary>
-            /// <param name="item">The item to add</param>
-            public override void Add(NMF.Models.IModelElement item)
-            {
-                if ((this._parent.DeletedElement == null))
-                {
-                    this._parent.DeletedElement = item;
-                    return;
-                }
-            }
-            
-            /// <summary>
-            /// Clears the collection and resets all references that implement it.
-            /// </summary>
-            public override void Clear()
-            {
-                this._parent.DeletedElement = null;
-            }
-            
-            /// <summary>
-            /// Gets a value indicating whether the given element is contained in the collection
-            /// </summary>
-            /// <returns>True, if it is contained, otherwise False</returns>
-            /// <param name="item">The item that should be looked out for</param>
-            public override bool Contains(NMF.Models.IModelElement item)
-            {
-                if ((item == this._parent.DeletedElement))
-                {
-                    return true;
-                }
-                return false;
-            }
-            
-            /// <summary>
-            /// Copies the contents of the collection to the given array starting from the given array index
-            /// </summary>
-            /// <param name="array">The array in which the elements should be copied</param>
-            /// <param name="arrayIndex">The starting index</param>
-            public override void CopyTo(NMF.Models.IModelElement[] array, int arrayIndex)
-            {
-                if ((this._parent.DeletedElement != null))
-                {
-                    array[arrayIndex] = this._parent.DeletedElement;
-                    arrayIndex = (arrayIndex + 1);
-                }
-            }
-            
-            /// <summary>
-            /// Removes the given item from the collection
-            /// </summary>
-            /// <returns>True, if the item was removed, otherwise False</returns>
-            /// <param name="item">The item that should be removed</param>
-            public override bool Remove(NMF.Models.IModelElement item)
-            {
-                if ((this._parent.DeletedElement == item))
-                {
-                    this._parent.DeletedElement = null;
-                    return true;
-                }
-                return false;
-            }
-            
-            /// <summary>
-            /// Gets an enumerator that enumerates the collection
-            /// </summary>
-            /// <returns>A generic enumerator</returns>
-            public override IEnumerator<NMF.Models.IModelElement> GetEnumerator()
-            {
-                return Enumerable.Empty<NMF.Models.IModelElement>().Concat(this._parent.DeletedElement).GetEnumerator();
-            }
-        }
-        
-        /// <summary>
-        /// The collection class to to represent the children of the CompositionListDeletion class
-        /// </summary>
-        public partial class CompositionListDeletionReferencedElementsCollection : ReferenceCollection, ICollectionExpression<NMF.Models.IModelElement>, ICollection<NMF.Models.IModelElement>
+        public class CompositionListDeletionReferencedElementsCollection : ReferenceCollection, ICollectionExpression<NMF.Models.IModelElement>, ICollection<NMF.Models.IModelElement>
         {
             
             private CompositionListDeletion _parent;

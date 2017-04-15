@@ -23,6 +23,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
@@ -40,36 +41,49 @@ namespace NMF.Models.Changes
     public partial class AssociationCollectionDeletion : CollectionDeletion, IAssociationCollectionDeletion, NMF.Models.IModelElement
     {
         
+        private static Lazy<ITypedElement> _deletedElementReference = new Lazy<ITypedElement>(RetrieveDeletedElementReference);
+        
         /// <summary>
-        /// The backing field for the DeletedElementUri property
+        /// The backing field for the DeletedElement property
         /// </summary>
-        private Uri _deletedElementUri;
+        private NMF.Models.IModelElement _deletedElement;
         
         private static IClass _classInstance;
         
         /// <summary>
-        /// The deletedElementUri property
+        /// The deletedElement property
         /// </summary>
-        [XmlElementNameAttribute("deletedElementUri")]
+        [XmlElementNameAttribute("deletedElement")]
         [XmlAttributeAttribute(true)]
-        public virtual Uri DeletedElementUri
+        public NMF.Models.IModelElement DeletedElement
         {
             get
             {
-                return this._deletedElementUri;
+                return this._deletedElement;
             }
             set
             {
-                if ((this._deletedElementUri != value))
+                if ((this._deletedElement != value))
                 {
-                    Uri old = this._deletedElementUri;
+                    NMF.Models.IModelElement old = this._deletedElement;
                     ValueChangedEventArgs e = new ValueChangedEventArgs(old, value);
-                    this.OnDeletedElementUriChanging(e);
-                    this.OnPropertyChanging("DeletedElementUri", e);
-                    this._deletedElementUri = value;
-                    this.OnDeletedElementUriChanged(e);
-                    this.OnPropertyChanged("DeletedElementUri", e);
+                    this.OnDeletedElementChanging(e);
+                    this.OnPropertyChanging("DeletedElement", e, _deletedElementReference);
+                    this._deletedElement = value;
+                    this.OnDeletedElementChanged(e);
+                    this.OnPropertyChanged("DeletedElement", e, _deletedElementReference);
                 }
+            }
+        }
+        
+        /// <summary>
+        /// Gets the referenced model elements of this model element
+        /// </summary>
+        public override IEnumerableExpression<NMF.Models.IModelElement> ReferencedElements
+        {
+            get
+            {
+                return base.ReferencedElements.Concat(new AssociationCollectionDeletionReferencedElementsCollection(this));
             }
         }
         
@@ -89,22 +103,27 @@ namespace NMF.Models.Changes
         }
         
         /// <summary>
-        /// Gets fired before the DeletedElementUri property changes its value
+        /// Gets fired before the DeletedElement property changes its value
         /// </summary>
-        public event System.EventHandler<ValueChangedEventArgs> DeletedElementUriChanging;
+        public event System.EventHandler<ValueChangedEventArgs> DeletedElementChanging;
         
         /// <summary>
-        /// Gets fired when the DeletedElementUri property changed its value
+        /// Gets fired when the DeletedElement property changed its value
         /// </summary>
-        public event System.EventHandler<ValueChangedEventArgs> DeletedElementUriChanged;
+        public event System.EventHandler<ValueChangedEventArgs> DeletedElementChanged;
+        
+        private static ITypedElement RetrieveDeletedElementReference()
+        {
+            return ((ITypedElement)(((NMF.Models.ModelElement)(NMF.Models.Changes.AssociationCollectionDeletion.ClassInstance)).Resolve("deletedElement")));
+        }
         
         /// <summary>
-        /// Raises the DeletedElementUriChanging event
+        /// Raises the DeletedElementChanging event
         /// </summary>
         /// <param name="eventArgs">The event data</param>
-        protected virtual void OnDeletedElementUriChanging(ValueChangedEventArgs eventArgs)
+        protected virtual void OnDeletedElementChanging(ValueChangedEventArgs eventArgs)
         {
-            System.EventHandler<ValueChangedEventArgs> handler = this.DeletedElementUriChanging;
+            System.EventHandler<ValueChangedEventArgs> handler = this.DeletedElementChanging;
             if ((handler != null))
             {
                 handler.Invoke(this, eventArgs);
@@ -112,12 +131,12 @@ namespace NMF.Models.Changes
         }
         
         /// <summary>
-        /// Raises the DeletedElementUriChanged event
+        /// Raises the DeletedElementChanged event
         /// </summary>
         /// <param name="eventArgs">The event data</param>
-        protected virtual void OnDeletedElementUriChanged(ValueChangedEventArgs eventArgs)
+        protected virtual void OnDeletedElementChanged(ValueChangedEventArgs eventArgs)
         {
-            System.EventHandler<ValueChangedEventArgs> handler = this.DeletedElementUriChanged;
+            System.EventHandler<ValueChangedEventArgs> handler = this.DeletedElementChanged;
             if ((handler != null))
             {
                 handler.Invoke(this, eventArgs);
@@ -125,18 +144,13 @@ namespace NMF.Models.Changes
         }
         
         /// <summary>
-        /// Resolves the given attribute name
+        /// Handles the event that the DeletedElement property must reset
         /// </summary>
-        /// <returns>The attribute value or null if it could not be found</returns>
-        /// <param name="attribute">The requested attribute name</param>
-        /// <param name="index">The index of this attribute</param>
-        protected override object GetAttributeValue(string attribute, int index)
+        /// <param name="sender">The object that sent this reset request</param>
+        /// <param name="eventArgs">The event data for the reset event</param>
+        private void OnResetDeletedElement(object sender, System.EventArgs eventArgs)
         {
-            if ((attribute == "DELETEDELEMENTURI"))
-            {
-                return this.DeletedElementUri;
-            }
-            return base.GetAttributeValue(attribute, index);
+            this.DeletedElement = null;
         }
         
         /// <summary>
@@ -146,12 +160,40 @@ namespace NMF.Models.Changes
         /// <param name="value">The value that should be set to that feature</param>
         protected override void SetFeature(string feature, object value)
         {
-            if ((feature == "DELETEDELEMENTURI"))
+            if ((feature == "DELETEDELEMENT"))
             {
-                this.DeletedElementUri = ((Uri)(value));
+                this.DeletedElement = ((NMF.Models.IModelElement)(value));
                 return;
             }
             base.SetFeature(feature, value);
+        }
+        
+        /// <summary>
+        /// Gets the property expression for the given attribute
+        /// </summary>
+        /// <returns>An incremental property expression</returns>
+        /// <param name="attribute">The requested attribute in upper case</param>
+        protected override NMF.Expressions.INotifyExpression<object> GetExpressionForAttribute(string attribute)
+        {
+            if ((attribute == "DeletedElement"))
+            {
+                return new DeletedElementProxy(this);
+            }
+            return base.GetExpressionForAttribute(attribute);
+        }
+        
+        /// <summary>
+        /// Gets the property expression for the given reference
+        /// </summary>
+        /// <returns>An incremental property expression</returns>
+        /// <param name="reference">The requested reference in upper case</param>
+        protected override NMF.Expressions.INotifyExpression<NMF.Models.IModelElement> GetExpressionForReference(string reference)
+        {
+            if ((reference == "DeletedElement"))
+            {
+                return new DeletedElementProxy(this);
+            }
+            return base.GetExpressionForReference(reference);
         }
         
         /// <summary>
@@ -167,32 +209,148 @@ namespace NMF.Models.Changes
         }
         
         /// <summary>
-        /// Represents a proxy to represent an incremental access to the deletedElementUri property
+        /// The collection class to to represent the children of the AssociationCollectionDeletion class
         /// </summary>
-        private sealed class DeletedElementUriProxy : ModelPropertyChange<IAssociationCollectionDeletion, Uri>
+        public class AssociationCollectionDeletionReferencedElementsCollection : ReferenceCollection, ICollectionExpression<NMF.Models.IModelElement>, ICollection<NMF.Models.IModelElement>
+        {
+            
+            private AssociationCollectionDeletion _parent;
+            
+            /// <summary>
+            /// Creates a new instance
+            /// </summary>
+            public AssociationCollectionDeletionReferencedElementsCollection(AssociationCollectionDeletion parent)
+            {
+                this._parent = parent;
+            }
+            
+            /// <summary>
+            /// Gets the amount of elements contained in this collection
+            /// </summary>
+            public override int Count
+            {
+                get
+                {
+                    int count = 0;
+                    if ((this._parent.DeletedElement != null))
+                    {
+                        count = (count + 1);
+                    }
+                    return count;
+                }
+            }
+            
+            protected override void AttachCore()
+            {
+                this._parent.DeletedElementChanged += this.PropagateValueChanges;
+            }
+            
+            protected override void DetachCore()
+            {
+                this._parent.DeletedElementChanged -= this.PropagateValueChanges;
+            }
+            
+            /// <summary>
+            /// Adds the given element to the collection
+            /// </summary>
+            /// <param name="item">The item to add</param>
+            public override void Add(NMF.Models.IModelElement item)
+            {
+                if ((this._parent.DeletedElement == null))
+                {
+                    this._parent.DeletedElement = item;
+                    return;
+                }
+            }
+            
+            /// <summary>
+            /// Clears the collection and resets all references that implement it.
+            /// </summary>
+            public override void Clear()
+            {
+                this._parent.DeletedElement = null;
+            }
+            
+            /// <summary>
+            /// Gets a value indicating whether the given element is contained in the collection
+            /// </summary>
+            /// <returns>True, if it is contained, otherwise False</returns>
+            /// <param name="item">The item that should be looked out for</param>
+            public override bool Contains(NMF.Models.IModelElement item)
+            {
+                if ((item == this._parent.DeletedElement))
+                {
+                    return true;
+                }
+                return false;
+            }
+            
+            /// <summary>
+            /// Copies the contents of the collection to the given array starting from the given array index
+            /// </summary>
+            /// <param name="array">The array in which the elements should be copied</param>
+            /// <param name="arrayIndex">The starting index</param>
+            public override void CopyTo(NMF.Models.IModelElement[] array, int arrayIndex)
+            {
+                if ((this._parent.DeletedElement != null))
+                {
+                    array[arrayIndex] = this._parent.DeletedElement;
+                    arrayIndex = (arrayIndex + 1);
+                }
+            }
+            
+            /// <summary>
+            /// Removes the given item from the collection
+            /// </summary>
+            /// <returns>True, if the item was removed, otherwise False</returns>
+            /// <param name="item">The item that should be removed</param>
+            public override bool Remove(NMF.Models.IModelElement item)
+            {
+                if ((this._parent.DeletedElement == item))
+                {
+                    this._parent.DeletedElement = null;
+                    return true;
+                }
+                return false;
+            }
+            
+            /// <summary>
+            /// Gets an enumerator that enumerates the collection
+            /// </summary>
+            /// <returns>A generic enumerator</returns>
+            public override IEnumerator<NMF.Models.IModelElement> GetEnumerator()
+            {
+                return Enumerable.Empty<NMF.Models.IModelElement>().Concat(this._parent.DeletedElement).GetEnumerator();
+            }
+        }
+        
+        /// <summary>
+        /// Represents a proxy to represent an incremental access to the deletedElement property
+        /// </summary>
+        private sealed class DeletedElementProxy : ModelPropertyChange<IAssociationCollectionDeletion, NMF.Models.IModelElement>
         {
             
             /// <summary>
             /// Creates a new observable property access proxy
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
-            public DeletedElementUriProxy(IAssociationCollectionDeletion modelElement) : 
-                    base(modelElement, "deletedElementUri")
+            public DeletedElementProxy(IAssociationCollectionDeletion modelElement) : 
+                    base(modelElement, "deletedElement")
             {
             }
             
             /// <summary>
             /// Gets or sets the value of this expression
             /// </summary>
-            public override Uri Value
+            public override NMF.Models.IModelElement Value
             {
                 get
                 {
-                    return this.ModelElement.DeletedElementUri;
+                    return this.ModelElement.DeletedElement;
                 }
                 set
                 {
-                    this.ModelElement.DeletedElementUri = value;
+                    this.ModelElement.DeletedElement = value;
                 }
             }
         }

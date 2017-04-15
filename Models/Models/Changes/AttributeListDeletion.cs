@@ -23,6 +23,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
@@ -45,6 +46,8 @@ namespace NMF.Models.Changes
         /// </summary>
         private string _deletedValue;
         
+        private static Lazy<ITypedElement> _deletedValueAttribute = new Lazy<ITypedElement>(RetrieveDeletedValueAttribute);
+        
         private static IClass _classInstance;
         
         /// <summary>
@@ -52,7 +55,7 @@ namespace NMF.Models.Changes
         /// </summary>
         [XmlElementNameAttribute("deletedValue")]
         [XmlAttributeAttribute(true)]
-        public virtual string DeletedValue
+        public string DeletedValue
         {
             get
             {
@@ -65,10 +68,10 @@ namespace NMF.Models.Changes
                     string old = this._deletedValue;
                     ValueChangedEventArgs e = new ValueChangedEventArgs(old, value);
                     this.OnDeletedValueChanging(e);
-                    this.OnPropertyChanging("DeletedValue", e);
+                    this.OnPropertyChanging("DeletedValue", e, _deletedValueAttribute);
                     this._deletedValue = value;
                     this.OnDeletedValueChanged(e);
-                    this.OnPropertyChanged("DeletedValue", e);
+                    this.OnPropertyChanged("DeletedValue", e, _deletedValueAttribute);
                 }
             }
         }
@@ -97,6 +100,11 @@ namespace NMF.Models.Changes
         /// Gets fired when the DeletedValue property changed its value
         /// </summary>
         public event System.EventHandler<ValueChangedEventArgs> DeletedValueChanged;
+        
+        private static ITypedElement RetrieveDeletedValueAttribute()
+        {
+            return ((ITypedElement)(((NMF.Models.ModelElement)(NMF.Models.Changes.AttributeListDeletion.ClassInstance)).Resolve("deletedValue")));
+        }
         
         /// <summary>
         /// Raises the DeletedValueChanging event

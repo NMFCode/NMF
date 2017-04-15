@@ -23,6 +23,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
@@ -37,7 +38,7 @@ namespace NMF.Models.Changes
     [XmlNamespaceAttribute("http://nmf.codeplex.com/changes")]
     [XmlNamespacePrefixAttribute("changes")]
     [ModelRepresentationClassAttribute("http://nmf.codeplex.com/changes#//ListDeletion")]
-    public abstract class ListDeletion : ElementaryChange, IListDeletion, NMF.Models.IModelElement
+    public abstract partial class ListDeletion : ElementaryChange, IListDeletion, NMF.Models.IModelElement
     {
         
         /// <summary>
@@ -45,10 +46,7 @@ namespace NMF.Models.Changes
         /// </summary>
         private int _index;
         
-        /// <summary>
-        /// The backing field for the Feature property
-        /// </summary>
-        private ITypedElement _feature;
+        private static Lazy<ITypedElement> _indexAttribute = new Lazy<ITypedElement>(RetrieveIndexAttribute);
         
         private static IClass _classInstance;
         
@@ -57,7 +55,7 @@ namespace NMF.Models.Changes
         /// </summary>
         [XmlElementNameAttribute("index")]
         [XmlAttributeAttribute(true)]
-        public virtual int Index
+        public int Index
         {
             get
             {
@@ -70,56 +68,11 @@ namespace NMF.Models.Changes
                     int old = this._index;
                     ValueChangedEventArgs e = new ValueChangedEventArgs(old, value);
                     this.OnIndexChanging(e);
-                    this.OnPropertyChanging("Index", e);
+                    this.OnPropertyChanging("Index", e, _indexAttribute);
                     this._index = value;
                     this.OnIndexChanged(e);
-                    this.OnPropertyChanged("Index", e);
+                    this.OnPropertyChanged("Index", e, _indexAttribute);
                 }
-            }
-        }
-        
-        /// <summary>
-        /// The feature property
-        /// </summary>
-        [XmlElementNameAttribute("feature")]
-        [XmlAttributeAttribute(true)]
-        public virtual ITypedElement Feature
-        {
-            get
-            {
-                return this._feature;
-            }
-            set
-            {
-                if ((this._feature != value))
-                {
-                    ITypedElement old = this._feature;
-                    ValueChangedEventArgs e = new ValueChangedEventArgs(old, value);
-                    this.OnFeatureChanging(e);
-                    this.OnPropertyChanging("Feature", e);
-                    this._feature = value;
-                    if ((old != null))
-                    {
-                        old.Deleted -= this.OnResetFeature;
-                    }
-                    if ((value != null))
-                    {
-                        value.Deleted += this.OnResetFeature;
-                    }
-                    this.OnFeatureChanged(e);
-                    this.OnPropertyChanged("Feature", e);
-                }
-            }
-        }
-        
-        /// <summary>
-        /// Gets the referenced model elements of this model element
-        /// </summary>
-        public override IEnumerableExpression<NMF.Models.IModelElement> ReferencedElements
-        {
-            get
-            {
-                return base.ReferencedElements.Concat(new ListDeletionReferencedElementsCollection(this));
             }
         }
         
@@ -148,15 +101,10 @@ namespace NMF.Models.Changes
         /// </summary>
         public event System.EventHandler<ValueChangedEventArgs> IndexChanged;
         
-        /// <summary>
-        /// Gets fired before the Feature property changes its value
-        /// </summary>
-        public event System.EventHandler<ValueChangedEventArgs> FeatureChanging;
-        
-        /// <summary>
-        /// Gets fired when the Feature property changed its value
-        /// </summary>
-        public event System.EventHandler<ValueChangedEventArgs> FeatureChanged;
+        private static ITypedElement RetrieveIndexAttribute()
+        {
+            return ((ITypedElement)(((NMF.Models.ModelElement)(NMF.Models.Changes.ListDeletion.ClassInstance)).Resolve("index")));
+        }
         
         /// <summary>
         /// Raises the IndexChanging event
@@ -185,42 +133,6 @@ namespace NMF.Models.Changes
         }
         
         /// <summary>
-        /// Raises the FeatureChanging event
-        /// </summary>
-        /// <param name="eventArgs">The event data</param>
-        protected virtual void OnFeatureChanging(ValueChangedEventArgs eventArgs)
-        {
-            System.EventHandler<ValueChangedEventArgs> handler = this.FeatureChanging;
-            if ((handler != null))
-            {
-                handler.Invoke(this, eventArgs);
-            }
-        }
-        
-        /// <summary>
-        /// Raises the FeatureChanged event
-        /// </summary>
-        /// <param name="eventArgs">The event data</param>
-        protected virtual void OnFeatureChanged(ValueChangedEventArgs eventArgs)
-        {
-            System.EventHandler<ValueChangedEventArgs> handler = this.FeatureChanged;
-            if ((handler != null))
-            {
-                handler.Invoke(this, eventArgs);
-            }
-        }
-        
-        /// <summary>
-        /// Handles the event that the Feature property must reset
-        /// </summary>
-        /// <param name="sender">The object that sent this reset request</param>
-        /// <param name="eventArgs">The event data for the reset event</param>
-        private void OnResetFeature(object sender, System.EventArgs eventArgs)
-        {
-            this.Feature = null;
-        }
-        
-        /// <summary>
         /// Resolves the given attribute name
         /// </summary>
         /// <returns>The attribute value or null if it could not be found</returns>
@@ -242,45 +154,12 @@ namespace NMF.Models.Changes
         /// <param name="value">The value that should be set to that feature</param>
         protected override void SetFeature(string feature, object value)
         {
-            if ((feature == "FEATURE"))
-            {
-                this.Feature = ((ITypedElement)(value));
-                return;
-            }
             if ((feature == "INDEX"))
             {
                 this.Index = ((int)(value));
                 return;
             }
             base.SetFeature(feature, value);
-        }
-        
-        /// <summary>
-        /// Gets the property expression for the given attribute
-        /// </summary>
-        /// <returns>An incremental property expression</returns>
-        /// <param name="attribute">The requested attribute in upper case</param>
-        protected override NMF.Expressions.INotifyExpression<object> GetExpressionForAttribute(string attribute)
-        {
-            if ((attribute == "Feature"))
-            {
-                return new FeatureProxy(this);
-            }
-            return base.GetExpressionForAttribute(attribute);
-        }
-        
-        /// <summary>
-        /// Gets the property expression for the given reference
-        /// </summary>
-        /// <returns>An incremental property expression</returns>
-        /// <param name="reference">The requested reference in upper case</param>
-        protected override NMF.Expressions.INotifyExpression<NMF.Models.IModelElement> GetExpressionForReference(string reference)
-        {
-            if ((reference == "Feature"))
-            {
-                return new FeatureProxy(this);
-            }
-            return base.GetExpressionForReference(reference);
         }
         
         /// <summary>
@@ -293,126 +172,6 @@ namespace NMF.Models.Changes
                 _classInstance = ((IClass)(MetaRepository.Instance.Resolve("http://nmf.codeplex.com/changes#//ListDeletion")));
             }
             return _classInstance;
-        }
-        
-        /// <summary>
-        /// The collection class to to represent the children of the ListDeletion class
-        /// </summary>
-        public partial class ListDeletionReferencedElementsCollection : ReferenceCollection, ICollectionExpression<NMF.Models.IModelElement>, ICollection<NMF.Models.IModelElement>
-        {
-            
-            private ListDeletion _parent;
-            
-            /// <summary>
-            /// Creates a new instance
-            /// </summary>
-            public ListDeletionReferencedElementsCollection(ListDeletion parent)
-            {
-                this._parent = parent;
-            }
-            
-            /// <summary>
-            /// Gets the amount of elements contained in this collection
-            /// </summary>
-            public override int Count
-            {
-                get
-                {
-                    int count = 0;
-                    if ((this._parent.Feature != null))
-                    {
-                        count = (count + 1);
-                    }
-                    return count;
-                }
-            }
-            
-            protected override void AttachCore()
-            {
-                this._parent.FeatureChanged += this.PropagateValueChanges;
-            }
-            
-            protected override void DetachCore()
-            {
-                this._parent.FeatureChanged -= this.PropagateValueChanges;
-            }
-            
-            /// <summary>
-            /// Adds the given element to the collection
-            /// </summary>
-            /// <param name="item">The item to add</param>
-            public override void Add(NMF.Models.IModelElement item)
-            {
-                if ((this._parent.Feature == null))
-                {
-                    ITypedElement featureCasted = item.As<ITypedElement>();
-                    if ((featureCasted != null))
-                    {
-                        this._parent.Feature = featureCasted;
-                        return;
-                    }
-                }
-            }
-            
-            /// <summary>
-            /// Clears the collection and resets all references that implement it.
-            /// </summary>
-            public override void Clear()
-            {
-                this._parent.Feature = null;
-            }
-            
-            /// <summary>
-            /// Gets a value indicating whether the given element is contained in the collection
-            /// </summary>
-            /// <returns>True, if it is contained, otherwise False</returns>
-            /// <param name="item">The item that should be looked out for</param>
-            public override bool Contains(NMF.Models.IModelElement item)
-            {
-                if ((item == this._parent.Feature))
-                {
-                    return true;
-                }
-                return false;
-            }
-            
-            /// <summary>
-            /// Copies the contents of the collection to the given array starting from the given array index
-            /// </summary>
-            /// <param name="array">The array in which the elements should be copied</param>
-            /// <param name="arrayIndex">The starting index</param>
-            public override void CopyTo(NMF.Models.IModelElement[] array, int arrayIndex)
-            {
-                if ((this._parent.Feature != null))
-                {
-                    array[arrayIndex] = this._parent.Feature;
-                    arrayIndex = (arrayIndex + 1);
-                }
-            }
-            
-            /// <summary>
-            /// Removes the given item from the collection
-            /// </summary>
-            /// <returns>True, if the item was removed, otherwise False</returns>
-            /// <param name="item">The item that should be removed</param>
-            public override bool Remove(NMF.Models.IModelElement item)
-            {
-                if ((this._parent.Feature == item))
-                {
-                    this._parent.Feature = null;
-                    return true;
-                }
-                return false;
-            }
-            
-            /// <summary>
-            /// Gets an enumerator that enumerates the collection
-            /// </summary>
-            /// <returns>A generic enumerator</returns>
-            public override IEnumerator<NMF.Models.IModelElement> GetEnumerator()
-            {
-                return Enumerable.Empty<NMF.Models.IModelElement>().Concat(this._parent.Feature).GetEnumerator();
-            }
         }
         
         /// <summary>
@@ -442,37 +201,6 @@ namespace NMF.Models.Changes
                 set
                 {
                     this.ModelElement.Index = value;
-                }
-            }
-        }
-        
-        /// <summary>
-        /// Represents a proxy to represent an incremental access to the feature property
-        /// </summary>
-        private sealed class FeatureProxy : ModelPropertyChange<IListDeletion, ITypedElement>
-        {
-            
-            /// <summary>
-            /// Creates a new observable property access proxy
-            /// </summary>
-            /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
-            public FeatureProxy(IListDeletion modelElement) : 
-                    base(modelElement, "feature")
-            {
-            }
-            
-            /// <summary>
-            /// Gets or sets the value of this expression
-            /// </summary>
-            public override ITypedElement Value
-            {
-                get
-                {
-                    return this.ModelElement.Feature;
-                }
-                set
-                {
-                    this.ModelElement.Feature = value;
                 }
             }
         }

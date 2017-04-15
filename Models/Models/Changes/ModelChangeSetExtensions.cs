@@ -9,20 +9,20 @@ namespace NMF.Models.Changes
 {
     public partial class ModelChangeSet
     {
-        public void Apply(IModelRepository repository)
+        public void Apply()
         {
             for (int i = 0; i < Changes.Count; i++)
             {
-                Changes[i].Apply(repository);
+                Changes[i].Apply();
             }
         }
 
-        public void Invert(IModelRepository repository)
-        {
-            for (int i = Changes.Count - 1; i >= 0; i--)
-            {
-                Changes[i].Invert(repository);
-            }
-        }
+        //public ModelChangeSet Invert()
+        //{
+        //    for (int i = Changes.Count - 1; i >= 0; i--)
+        //    {
+        //        Changes[i].Invert(repository);
+        //    }
+        //}
     }
 }

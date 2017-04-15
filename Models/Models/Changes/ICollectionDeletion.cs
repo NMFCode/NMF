@@ -23,6 +23,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
@@ -38,25 +39,6 @@ namespace NMF.Models.Changes
     [XmlDefaultImplementationTypeAttribute(typeof(CollectionDeletion))]
     public interface ICollectionDeletion : NMF.Models.IModelElement, IElementaryChange
     {
-        
-        /// <summary>
-        /// The feature property
-        /// </summary>
-        ITypedElement Feature
-        {
-            get;
-            set;
-        }
-        
-        /// <summary>
-        /// Gets fired before the Feature property changes its value
-        /// </summary>
-        event System.EventHandler<ValueChangedEventArgs> FeatureChanging;
-        
-        /// <summary>
-        /// Gets fired when the Feature property changed its value
-        /// </summary>
-        event System.EventHandler<ValueChangedEventArgs> FeatureChanged;
     }
 }
 

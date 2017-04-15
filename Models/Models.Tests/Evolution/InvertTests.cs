@@ -58,8 +58,11 @@ namespace NMF.Models.Tests.Evolution
                 NewValue = newValue.ToString()
             };
 
-            change.Apply(repository1);
-            change.Invert(repository1);
+            change.Apply();
+            foreach (var inverted in change.Invert())
+            {
+                inverted.Apply();
+            }
 
             Assert.AreEqual(oldValue, parent.Signal);
         }
@@ -79,8 +82,12 @@ namespace NMF.Models.Tests.Evolution
                 NewValue = newValue
             };
 
-            change.Apply(repository1);
-            change.Invert(repository1);
+            change.Apply();
+            foreach (var inverted in change.Invert())
+            {
+                inverted.Apply();
+            }
+
             Assert.AreSame(oldValue, parent.Entry);
         }
 
@@ -97,8 +104,12 @@ namespace NMF.Models.Tests.Evolution
                 Index = 0
             };
 
-            change.Apply(repository1);
-            change.Invert(repository1);
+            change.Apply();
+            foreach (var inverted in change.Invert())
+            {
+                inverted.Apply();
+            }
+
             Assert.AreEqual(railway1.Routes.Count, railway2.Routes.Count);
             CollectionAssert.DoesNotContain(railway1.Routes.ToList(), toInsert);
         }
@@ -118,8 +129,12 @@ namespace NMF.Models.Tests.Evolution
                 AddedElement = toInsert
             };
 
-            change.Apply(repository1);
-            change.Invert(repository1);
+            change.Apply();
+            foreach (var inverted in change.Invert())
+            {
+                inverted.Apply();
+            }
+
             Assert.AreNotSame(toInsert, parent1.ConnectsTo[0]);
             Assert.AreEqual(parent1.ConnectsTo.Count, parent2.ConnectsTo.Count);
         }
@@ -136,8 +151,11 @@ namespace NMF.Models.Tests.Evolution
                 AddedElement = toInsert
             };
 
-            change.Apply(repository1);
-            change.Invert(repository1);
+            change.Apply();
+            foreach (var inverted in change.Invert())
+            {
+                inverted.Apply();
+            }
 
             CollectionAssert.DoesNotContain(railway1.Routes.ToList(), toInsert);
             Assert.AreEqual(railway1.Routes.Count, railway2.Routes.Count);
@@ -157,8 +175,11 @@ namespace NMF.Models.Tests.Evolution
                 AddedElement = toInsert
             };
 
-            change.Apply(repository1);
-            change.Invert(repository1);
+            change.Apply();
+            foreach (var inverted in change.Invert())
+            {
+                inverted.Apply();
+            }
 
             Assert.AreNotSame(toInsert, parent1.ConnectsTo[parent1.ConnectsTo.Count - 1]);
             Assert.AreEqual(parent2.ConnectsTo.Count, parent1.ConnectsTo.Count);
@@ -178,8 +199,11 @@ namespace NMF.Models.Tests.Evolution
                 DeletedElement = toDelete
             };
 
-            change.Apply(repository1);
-            change.Invert(repository1);
+            change.Apply();
+            foreach (var inverted in change.Invert())
+            {
+                inverted.Apply();
+            }
 
             CollectionAssert.Contains(railway1.Routes.ToList(), toDelete);
             Assert.AreEqual(railway1.Routes.Count, railway2.Routes.Count);
@@ -200,30 +224,15 @@ namespace NMF.Models.Tests.Evolution
                 DeletedElement = toDelete
             };
 
-            change.Apply(repository1);
-            change.Invert(repository1);
+            change.Apply();
+            foreach (var inverted in change.Invert())
+            {
+                inverted.Apply();
+            }
 
             Assert.AreEqual(parent1.ConnectsTo.Count, parent2.ConnectsTo.Count);
             CollectionAssert.Contains(parent1.ConnectsTo.ToList(), toDelete);
         }
-
-        [TestMethod]
-        public void InvertCollectionReset()
-        {
-            // FIXME: Implement collection reset invert
-            //var rec = new ModelChangeRecorder(true);
-            //rec.Start(railway1);
-
-            ////railway1.Semaphores.Clear();
-            //railway1.Routes[0].DefinedBy.Clear();
-            //var change = (rec.GetModelChanges().Changes[0]);
-            //change.Invert(repository1);
-
-            //Assert.AreEqual(railway1.Semaphores.Count, railway2.Semaphores.Count);
-            //Assert.AreEqual(railway1.Routes[0].DefinedBy.Count, railway2.Routes[0].DefinedBy.Count);
-        }
-
-
 
         [TestMethod]
         public void InvertCollectionDeletionComposition()
@@ -234,31 +243,17 @@ namespace NMF.Models.Tests.Evolution
             {
                 AffectedElement = railway1,
                 Feature = RailwayContainer.ClassInstance.LookupReference("routes"),
-                DeletedElement = toDelete,
-                DeletedElementUri = toDelete.AbsoluteUri
+                DeletedElement = toDelete
             };
 
-            change.Apply(repository1);
-            change.Invert(repository1);
+            change.Apply();
+            foreach (var inverted in change.Invert())
+            {
+                inverted.Apply();
+            }
 
             CollectionAssert.Contains(railway1.Routes.ToList(), toDelete);
             Assert.AreEqual(railway1.Routes.Count, railway2.Routes.Count);
-        }
-
-        [TestMethod]
-        public void InvertCollectionDeletionAssociation()
-        {
-            //Deprecated, CollectionDeletionAssociation will be removed
-            /*var parent1 = railway1.Routes[0].DefinedBy[0].Elements[0];
-            var parent2 = railway2.Routes[0].DefinedBy[0].Elements[0];
-            var toDelete = parent1.ConnectsTo[0];
-            var change = new CollectionDeletionAssociation<ITrackElement>(parent1.AbsoluteUri, "ConnectsTo", new Collection<Uri>() { parent1.ConnectsTo[0].AbsoluteUri });
-
-            change.Apply(repository1);
-            change.Invert(repository1);
-
-            CollectionAssert.Contains(parent1.ConnectsTo.ToList(), toDelete);
-            Assert.AreEqual(parent1.ConnectsTo.Count, parent2.ConnectsTo.Count);*/
         }
 
         [TestMethod]
@@ -268,8 +263,13 @@ namespace NMF.Models.Tests.Evolution
             rec.Start(railway1);
 
             railway1.Semaphores.RemoveAt(0);
+            rec.Stop();
             var changes = rec.GetModelChanges().Changes[0];
-            changes.Invert(repository1);
+
+            foreach (var inverted in changes.Invert())
+            {
+                inverted.Apply();
+            }
 
             Assert.AreEqual(railway1.Semaphores.Count, railway2.Semaphores.Count);
         }

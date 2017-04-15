@@ -284,17 +284,6 @@ namespace NMF.Models
         }
 
 
-        internal DescendantsCollection Descendants
-        {
-            get
-            {
-                if (descendants == null)
-                    descendants = new DescendantsCollection(this);
-                return descendants;
-            }
-        }
-
-
         /// <summary>
         /// Gets the relative Uri for the current model element
         /// </summary>

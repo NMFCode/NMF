@@ -23,6 +23,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
@@ -40,10 +41,7 @@ namespace NMF.Models.Changes
     public partial class ModelChangeSet : NMF.Models.ModelElement, IModelChangeSet, NMF.Models.IModelElement
     {
         
-        /// <summary>
-        /// The backing field for the Invertible property
-        /// </summary>
-        private bool _invertible;
+        private static Lazy<ITypedElement> _changesReference = new Lazy<ITypedElement>(RetrieveChangesReference);
         
         /// <summary>
         /// The backing field for the Changes property
@@ -60,32 +58,6 @@ namespace NMF.Models.Changes
         }
         
         /// <summary>
-        /// The invertible property
-        /// </summary>
-        [XmlElementNameAttribute("invertible")]
-        [XmlAttributeAttribute(true)]
-        public virtual bool Invertible
-        {
-            get
-            {
-                return this._invertible;
-            }
-            set
-            {
-                if ((this._invertible != value))
-                {
-                    bool old = this._invertible;
-                    ValueChangedEventArgs e = new ValueChangedEventArgs(old, value);
-                    this.OnInvertibleChanging(e);
-                    this.OnPropertyChanging("Invertible", e);
-                    this._invertible = value;
-                    this.OnInvertibleChanged(e);
-                    this.OnPropertyChanged("Invertible", e);
-                }
-            }
-        }
-        
-        /// <summary>
         /// The changes property
         /// </summary>
         [DesignerSerializationVisibilityAttribute(DesignerSerializationVisibility.Content)]
@@ -93,7 +65,7 @@ namespace NMF.Models.Changes
         [XmlAttributeAttribute(false)]
         [ContainmentAttribute()]
         [ConstantAttribute()]
-        public virtual IOrderedSetExpression<IModelChange> Changes
+        public IOrderedSetExpression<IModelChange> Changes
         {
             get
             {
@@ -138,40 +110,9 @@ namespace NMF.Models.Changes
             }
         }
         
-        /// <summary>
-        /// Gets fired before the Invertible property changes its value
-        /// </summary>
-        public event System.EventHandler<ValueChangedEventArgs> InvertibleChanging;
-        
-        /// <summary>
-        /// Gets fired when the Invertible property changed its value
-        /// </summary>
-        public event System.EventHandler<ValueChangedEventArgs> InvertibleChanged;
-        
-        /// <summary>
-        /// Raises the InvertibleChanging event
-        /// </summary>
-        /// <param name="eventArgs">The event data</param>
-        protected virtual void OnInvertibleChanging(ValueChangedEventArgs eventArgs)
+        private static ITypedElement RetrieveChangesReference()
         {
-            System.EventHandler<ValueChangedEventArgs> handler = this.InvertibleChanging;
-            if ((handler != null))
-            {
-                handler.Invoke(this, eventArgs);
-            }
-        }
-        
-        /// <summary>
-        /// Raises the InvertibleChanged event
-        /// </summary>
-        /// <param name="eventArgs">The event data</param>
-        protected virtual void OnInvertibleChanged(ValueChangedEventArgs eventArgs)
-        {
-            System.EventHandler<ValueChangedEventArgs> handler = this.InvertibleChanged;
-            if ((handler != null))
-            {
-                handler.Invoke(this, eventArgs);
-            }
+            return ((ITypedElement)(((NMF.Models.ModelElement)(NMF.Models.Changes.ModelChangeSet.ClassInstance)).Resolve("changes")));
         }
         
         /// <summary>
@@ -179,9 +120,9 @@ namespace NMF.Models.Changes
         /// </summary>
         /// <param name="sender">The collection that raised the change</param>
         /// <param name="e">The original event data</param>
-        private void ChangesCollectionChanging(object sender, NMF.Collections.ObjectModel.NotifyCollectionChangingEventArgs e)
+        private void ChangesCollectionChanging(object sender, NotifyCollectionChangingEventArgs e)
         {
-            this.OnCollectionChanging("Changes", e);
+            this.OnCollectionChanging("Changes", e, _changesReference);
         }
         
         /// <summary>
@@ -189,9 +130,9 @@ namespace NMF.Models.Changes
         /// </summary>
         /// <param name="sender">The collection that raised the change</param>
         /// <param name="e">The original event data</param>
-        private void ChangesCollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        private void ChangesCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
-            this.OnCollectionChanged("Changes", e);
+            this.OnCollectionChanged("Changes", e, _changesReference);
         }
         
         /// <summary>
@@ -232,21 +173,6 @@ namespace NMF.Models.Changes
         }
         
         /// <summary>
-        /// Resolves the given attribute name
-        /// </summary>
-        /// <returns>The attribute value or null if it could not be found</returns>
-        /// <param name="attribute">The requested attribute name</param>
-        /// <param name="index">The index of this attribute</param>
-        protected override object GetAttributeValue(string attribute, int index)
-        {
-            if ((attribute == "INVERTIBLE"))
-            {
-                return this.Invertible;
-            }
-            return base.GetAttributeValue(attribute, index);
-        }
-        
-        /// <summary>
         /// Gets the Model element collection for the given feature
         /// </summary>
         /// <returns>A non-generic list of elements</returns>
@@ -261,18 +187,17 @@ namespace NMF.Models.Changes
         }
         
         /// <summary>
-        /// Sets a value to the given feature
+        /// Gets the property name for the given container
         /// </summary>
-        /// <param name="feature">The requested feature</param>
-        /// <param name="value">The value that should be set to that feature</param>
-        protected override void SetFeature(string feature, object value)
+        /// <returns>The name of the respective container reference</returns>
+        /// <param name="container">The container object</param>
+        protected internal override string GetCompositionName(object container)
         {
-            if ((feature == "INVERTIBLE"))
+            if ((container == this._changes))
             {
-                this.Invertible = ((bool)(value));
-                return;
+                return "changes";
             }
-            base.SetFeature(feature, value);
+            return base.GetCompositionName(container);
         }
         
         /// <summary>
@@ -290,7 +215,7 @@ namespace NMF.Models.Changes
         /// <summary>
         /// The collection class to to represent the children of the ModelChangeSet class
         /// </summary>
-        public partial class ModelChangeSetChildrenCollection : ReferenceCollection, ICollectionExpression<NMF.Models.IModelElement>, ICollection<NMF.Models.IModelElement>
+        public class ModelChangeSetChildrenCollection : ReferenceCollection, ICollectionExpression<NMF.Models.IModelElement>, ICollection<NMF.Models.IModelElement>
         {
             
             private ModelChangeSet _parent;
@@ -414,7 +339,7 @@ namespace NMF.Models.Changes
         /// <summary>
         /// The collection class to to represent the children of the ModelChangeSet class
         /// </summary>
-        public partial class ModelChangeSetReferencedElementsCollection : ReferenceCollection, ICollectionExpression<NMF.Models.IModelElement>, ICollection<NMF.Models.IModelElement>
+        public class ModelChangeSetReferencedElementsCollection : ReferenceCollection, ICollectionExpression<NMF.Models.IModelElement>, ICollection<NMF.Models.IModelElement>
         {
             
             private ModelChangeSet _parent;
@@ -532,37 +457,6 @@ namespace NMF.Models.Changes
             public override IEnumerator<NMF.Models.IModelElement> GetEnumerator()
             {
                 return Enumerable.Empty<NMF.Models.IModelElement>().Concat(this._parent.Changes).GetEnumerator();
-            }
-        }
-        
-        /// <summary>
-        /// Represents a proxy to represent an incremental access to the invertible property
-        /// </summary>
-        private sealed class InvertibleProxy : ModelPropertyChange<IModelChangeSet, bool>
-        {
-            
-            /// <summary>
-            /// Creates a new observable property access proxy
-            /// </summary>
-            /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
-            public InvertibleProxy(IModelChangeSet modelElement) : 
-                    base(modelElement, "invertible")
-            {
-            }
-            
-            /// <summary>
-            /// Gets or sets the value of this expression
-            /// </summary>
-            public override bool Value
-            {
-                get
-                {
-                    return this.ModelElement.Invertible;
-                }
-                set
-                {
-                    this.ModelElement.Invertible = value;
-                }
             }
         }
     }

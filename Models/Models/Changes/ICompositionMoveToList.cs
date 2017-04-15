@@ -33,50 +33,50 @@ namespace NMF.Models.Changes
     
     
     /// <summary>
-    /// The public interface for ElementaryChange
+    /// The public interface for CompositionMoveToList
     /// </summary>
-    [DefaultImplementationTypeAttribute(typeof(ElementaryChange))]
-    [XmlDefaultImplementationTypeAttribute(typeof(ElementaryChange))]
-    public interface IElementaryChange : NMF.Models.IModelElement, IModelChange
+    [DefaultImplementationTypeAttribute(typeof(CompositionMoveToList))]
+    [XmlDefaultImplementationTypeAttribute(typeof(CompositionMoveToList))]
+    public interface ICompositionMoveToList : NMF.Models.IModelElement, IListInsertion
     {
         
         /// <summary>
-        /// The affectedElement property
+        /// The movedElement property
         /// </summary>
-        NMF.Models.IModelElement AffectedElement
+        NMF.Models.IModelElement MovedElement
         {
             get;
             set;
         }
         
         /// <summary>
-        /// The feature property
+        /// The origin property
         /// </summary>
-        ITypedElement Feature
+        IElementaryChange Origin
         {
             get;
             set;
         }
         
         /// <summary>
-        /// Gets fired before the AffectedElement property changes its value
+        /// Gets fired before the MovedElement property changes its value
         /// </summary>
-        event System.EventHandler<ValueChangedEventArgs> AffectedElementChanging;
+        event System.EventHandler<ValueChangedEventArgs> MovedElementChanging;
         
         /// <summary>
-        /// Gets fired when the AffectedElement property changed its value
+        /// Gets fired when the MovedElement property changed its value
         /// </summary>
-        event System.EventHandler<ValueChangedEventArgs> AffectedElementChanged;
+        event System.EventHandler<ValueChangedEventArgs> MovedElementChanged;
         
         /// <summary>
-        /// Gets fired before the Feature property changes its value
+        /// Gets fired before the Origin property changes its value
         /// </summary>
-        event System.EventHandler<ValueChangedEventArgs> FeatureChanging;
+        event System.EventHandler<ValueChangedEventArgs> OriginChanging;
         
         /// <summary>
-        /// Gets fired when the Feature property changed its value
+        /// Gets fired when the Origin property changed its value
         /// </summary>
-        event System.EventHandler<ValueChangedEventArgs> FeatureChanged;
+        event System.EventHandler<ValueChangedEventArgs> OriginChanged;
     }
 }
 

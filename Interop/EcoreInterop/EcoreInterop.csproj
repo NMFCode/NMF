@@ -208,6 +208,7 @@
     <EmbeddedResource Include="layout.nmf" />
     <EmbeddedResource Include="layout.ecore" />
     <None Include="NMeta.ecore" />
+    <None Include="NMetaChanges.ecore" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Collections\Collections\Collections.csproj">

@@ -23,6 +23,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
@@ -40,23 +41,23 @@ namespace NMF.Models.Changes
     {
         
         /// <summary>
-        /// The deletedElementUri property
+        /// The deletedElement property
         /// </summary>
-        Uri DeletedElementUri
+        NMF.Models.IModelElement DeletedElement
         {
             get;
             set;
         }
         
         /// <summary>
-        /// Gets fired before the DeletedElementUri property changes its value
+        /// Gets fired before the DeletedElement property changes its value
         /// </summary>
-        event System.EventHandler<ValueChangedEventArgs> DeletedElementUriChanging;
+        event System.EventHandler<ValueChangedEventArgs> DeletedElementChanging;
         
         /// <summary>
-        /// Gets fired when the DeletedElementUri property changed its value
+        /// Gets fired when the DeletedElement property changed its value
         /// </summary>
-        event System.EventHandler<ValueChangedEventArgs> DeletedElementUriChanged;
+        event System.EventHandler<ValueChangedEventArgs> DeletedElementChanged;
     }
 }
 

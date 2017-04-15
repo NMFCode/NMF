@@ -10,154 +10,280 @@ namespace NMF.Models.Changes
 {
     public partial class ModelChange
     {
-        public abstract void Invert(IModelRepository repository);
+        public abstract IEnumerable<IModelChange> Invert();
     }
     public partial class AssociationChange
     {
-        public override void Invert(IModelRepository repository)
+        public override IEnumerable<IModelChange> Invert()
         {
-            AffectedElement.SetReferencedElement((IReference)Feature, OldValue);
+            yield return new AssociationChange
+            {
+                AffectedElement = AffectedElement,
+                Feature = Feature,
+                OldValue = NewValue,
+                NewValue = OldValue
+            };
         }
     }
     public partial class CompositionChange
     {
-        public override void Invert(IModelRepository repository)
+        public override IEnumerable<IModelChange> Invert()
         {
-            AffectedElement.SetReferencedElement((IReference)Feature, OldValue);
+            yield return new CompositionChange
+            {
+                AffectedElement = AffectedElement,
+                Feature = Feature,
+                OldValue = NewValue,
+                NewValue = OldValue
+            };
         }
     }
     public partial class AttributeChange
     {
-        public override void Invert(IModelRepository repository)
+        public override IEnumerable<IModelChange> Invert()
         {
-            AffectedElement.SetAttributeValue((IAttribute)Feature, Feature.Type.Parse(OldValue));
+            yield return new AttributeChange
+            {
+                AffectedElement = AffectedElement,
+                Feature = Feature,
+                OldValue = NewValue,
+                NewValue = OldValue
+            };
         }
     }
     public partial class ElementaryChangeTransaction
     {
-        public override void Invert(IModelRepository repository)
+        public override IEnumerable<IModelChange> Invert()
         {
             for (int i = NestedChanges.Count - 1; i >= 0; i--)
             {
-                NestedChanges[i].Invert(repository);
+                foreach (var inverted in NestedChanges[i].Invert())
+                {
+                    yield return inverted;
+                }
             }
-            SourceChange.Invert(repository);
+            foreach (var invertedSource in SourceChange.Invert())
+            {
+                yield return invertedSource;
+            }
         }
     }
     public partial class AssociationCollectionDeletion
     {
-        public override void Invert(IModelRepository repository)
+        public override IEnumerable<IModelChange> Invert()
         {
-            AffectedElement.GetReferencedElements((IReference)Feature).Remove(repository.Resolve(DeletedElementUri));
+            yield return new AssociationCollectionInsertion
+            {
+                AffectedElement = AffectedElement,
+                Feature = Feature,
+                AddedElement = DeletedElement
+            };
         }
     }
     public partial class AssociationCollectionInsertion
     {
-
-        public override void Invert(IModelRepository repository)
+        public override IEnumerable<IModelChange> Invert()
         {
-            AffectedElement.GetReferencedElements((IReference)Feature).Remove(AddedElement);
+            yield return new AssociationCollectionDeletion
+            {
+                AffectedElement = AffectedElement,
+                Feature = Feature,
+                DeletedElement = AddedElement
+            };
         }
     }
     public partial class AssociationCollectionReset
     {
-        public override void Invert(IModelRepository repository)
+        public override IEnumerable<IModelChange> Invert()
         {
-            throw new NotImplementedException();
+            throw new NotSupportedException();
         }
     }
     public partial class AssociationListDeletion
     {
-        public override void Invert(IModelRepository repository)
+        public override IEnumerable<IModelChange> Invert()
         {
-            AffectedElement.GetReferencedElements((IReference)Feature).Insert(Index, DeletedElement);
+            yield return new AssociationListInsertion
+            {
+                AffectedElement = AffectedElement,
+                Feature = Feature,
+                Index = Index,
+                AddedElement = DeletedElement
+            };
         }
     }
     public partial class AssociationListInsertion
     {
 
-        public override void Invert(IModelRepository repository)
+        public override IEnumerable<IModelChange> Invert()
         {
-            AffectedElement.GetReferencedElements((IReference)Feature).RemoveAt(Index);
+            yield return new AssociationListDeletion
+            {
+                AffectedElement = AffectedElement,
+                Feature = Feature,
+                Index = Index,
+                DeletedElement = AddedElement
+            };
         }
     }
     public partial class CompositionCollectionDeletion
     {
-
-        public override void Invert(IModelRepository repository)
+        public override IEnumerable<IModelChange> Invert()
         {
-            AffectedElement.GetReferencedElements((IReference)Feature).Add(DeletedElement);
+            yield return new CompositionCollectionInsertion
+            {
+                AffectedElement = AffectedElement,
+                Feature = Feature,
+                AddedElement = DeletedElement
+            };
         }
     }
     public partial class CompositionCollectionInsertion
     {
-
-        public override void Invert(IModelRepository repository)
+        public override IEnumerable<IModelChange> Invert()
         {
-            AffectedElement.GetReferencedElements((IReference)Feature).Remove(AddedElement);
+            yield return new CompositionCollectionDeletion
+            {
+                AffectedElement = AffectedElement,
+                Feature = Feature,
+                DeletedElement = AddedElement
+            };
         }
     }
     public partial class CompositionCollectionReset
     {
-
-        public override void Invert(IModelRepository repository)
+        public override IEnumerable<IModelChange> Invert()
         {
-            throw new NotImplementedException();
+            throw new NotSupportedException();
         }
     }
     public partial class CompositionListDeletion
     {
-
-        public override void Invert(IModelRepository repository)
+        public override IEnumerable<IModelChange> Invert()
         {
-            AffectedElement.GetReferencedElements((IReference)Feature).Insert(Index, DeletedElement);
+            yield return new CompositionListInsertion
+            {
+                AffectedElement = AffectedElement,
+                Feature = Feature,
+                Index = Index,
+                AddedElement = DeletedElement
+            };
         }
     }
     public partial class CompositionListInsertion
     {
-
-        public override void Invert(IModelRepository repository)
+        public override IEnumerable<IModelChange> Invert()
         {
-            AffectedElement.GetReferencedElements((IReference)Feature).RemoveAt(Index);
+            yield return new CompositionListDeletion
+            {
+                AffectedElement = AffectedElement,
+                Feature = Feature,
+                Index = Index,
+                DeletedElement = AddedElement
+            };
         }
     }
     public partial class AttributeCollectionDeletion
     {
-
-        public override void Invert(IModelRepository repository)
+        public override IEnumerable<IModelChange> Invert()
         {
-            AffectedElement.GetAttributeValues((IAttribute)Feature).Add(Feature.Type.Parse(DeletedValue));
+            yield return new AttributeCollectionInsertion
+            {
+                AffectedElement = AffectedElement,
+                Feature = Feature,
+                AddedValue = DeletedValue
+            };
         }
     }
     public partial class AttributeCollectionInsertion
     {
-
-        public override void Invert(IModelRepository repository)
+        public override IEnumerable<IModelChange> Invert()
         {
-            AffectedElement.GetAttributeValues((IAttribute)Feature).Remove(Feature.Type.Parse(AddedValue));
+            yield return new AttributeCollectionDeletion
+            {
+                AffectedElement = AffectedElement,
+                Feature = Feature,
+                DeletedValue = AddedValue
+            };
         }
     }
     public partial class AttributeCollectionReset
     {
-
-        public override void Invert(IModelRepository repository)
+        public override IEnumerable<IModelChange> Invert()
         {
-            throw new NotImplementedException();
+            throw new NotSupportedException();
         }
     }
     public partial class AttributeListDeletion
     {
-
-        public override void Invert(IModelRepository repository)
+        public override IEnumerable<IModelChange> Invert()
         {
-            AffectedElement.GetAttributeValues((IAttribute)Feature).Insert(Index, Feature.Type.Parse(DeletedValue));
+            yield return new AttributeListInsertion
+            {
+                AffectedElement = AffectedElement,
+                Feature = Feature,
+                Index = Index,
+                AddedValue = DeletedValue
+            };
         }
     }
     public partial class AttributeListInsertion
     {
-        public override void Invert(IModelRepository repository)
+        public override IEnumerable<IModelChange> Invert()
         {
-            AffectedElement.GetAttributeValues((IAttribute)Feature).RemoveAt(Index);
+            yield return new AttributeListDeletion
+            {
+                AffectedElement = AffectedElement,
+                Feature = Feature,
+                Index = Index,
+                DeletedValue = AddedValue
+            };
+        }
+    }
+    public partial class CompositionMoveIntoProperty
+    {
+        public override IEnumerable<IModelChange> Invert()
+        {
+            var child = new CompositionChange
+            {
+                AffectedElement = AffectedElement,
+                OldValue = NewValue,
+                NewValue = OldValue,
+                Feature = Feature
+            };
+            var composition = (ICompositionInsertion)(Origin.Invert().First());
+            yield return composition.ConvertIntoMove(child);
+        }
+    }
+
+    public partial class CompositionMoveToCollection
+    {
+        public override IEnumerable<IModelChange> Invert()
+        {
+            var child = new CompositionCollectionDeletion
+            {
+                AffectedElement = AffectedElement,
+                Feature = Feature,
+                DeletedElement = MovedElement
+            };
+            var composition = (ICompositionInsertion)(Origin.Invert().First());
+            yield return composition.ConvertIntoMove(child);
+        }
+    }
+
+    public partial class CompositionMoveToList
+    {
+        public override IEnumerable<IModelChange> Invert()
+        {
+            var child = new CompositionListDeletion
+            {
+                AffectedElement = AffectedElement,
+                Feature = Feature,
+                DeletedElement = MovedElement,
+                Index = Index
+            };
+            var composition = (ICompositionInsertion)(Origin.Invert().First());
+            yield return composition.ConvertIntoMove(child);
         }
     }
 }

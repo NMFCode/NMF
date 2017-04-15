@@ -10,47 +10,59 @@ namespace NMF.Models.Changes
 {
     public partial class ModelChange
     {
-        public abstract void Apply(IModelRepository repository);
+        public abstract void Apply();
     }
     public partial class AssociationChange
     {
-        public override void Apply(IModelRepository repository)
+        public override void Apply()
         {
             AffectedElement.SetReferencedElement((IReference)Feature, NewValue);
         }
     }
-    public partial class CompositionChange
+    public partial class CompositionChange : ICompositionInsertion
     {
-        public override void Apply(IModelRepository repository)
+        public override void Apply()
         {
             AffectedElement.SetReferencedElement((IReference)Feature, NewValue);
+        }
+
+        public IElementaryChange ConvertIntoMove(IElementaryChange originChange)
+        {
+            return new CompositionMoveIntoProperty
+            {
+                AffectedElement = AffectedElement,
+                OldValue = OldValue,
+                NewValue = NewValue,
+                Feature = Feature,
+                Origin = originChange
+            };
         }
     }
     public partial class AttributeChange
     {
-        public override void Apply(IModelRepository repository)
+        public override void Apply()
         {
             AffectedElement.SetAttributeValue((IAttribute)Feature, Feature.Type.Parse(NewValue));
         }
     }
     public partial class ElementaryChangeTransaction
     {
-        public override void Apply(IModelRepository repository)
+        public override void Apply()
         {
-            SourceChange.Apply(repository);
+            SourceChange.Apply();
         }
     }
     public partial class AssociationCollectionDeletion
     {
-        public override void Apply(IModelRepository repository)
+        public override void Apply()
         {
-            AffectedElement.GetReferencedElements((IReference)Feature).Remove(repository.Resolve(DeletedElementUri));
+            AffectedElement.GetReferencedElements((IReference)Feature).Remove(DeletedElement);
         }
     }
     public partial class AssociationCollectionInsertion
     {
 
-        public override void Apply(IModelRepository repository)
+        public override void Apply()
         {
             AffectedElement.GetReferencedElements((IReference)Feature).Add(AddedElement);
         }
@@ -58,7 +70,7 @@ namespace NMF.Models.Changes
     public partial class AssociationCollectionReset
     {
 
-        public override void Apply(IModelRepository repository)
+        public override void Apply()
         {
             AffectedElement.GetReferencedElements((IReference)Feature).Clear();
         }
@@ -66,7 +78,7 @@ namespace NMF.Models.Changes
     public partial class AssociationListDeletion
     {
 
-        public override void Apply(IModelRepository repository)
+        public override void Apply()
         {
             AffectedElement.GetReferencedElements((IReference)Feature).RemoveAt(Index);
         }
@@ -74,7 +86,7 @@ namespace NMF.Models.Changes
     public partial class AssociationListInsertion
     {
 
-        public override void Apply(IModelRepository repository)
+        public override void Apply()
         {
             AffectedElement.GetReferencedElements((IReference)Feature).Insert(Index, AddedElement);
         }
@@ -82,23 +94,34 @@ namespace NMF.Models.Changes
     public partial class CompositionCollectionDeletion
     {
 
-        public override void Apply(IModelRepository repository)
+        public override void Apply()
         {
-            AffectedElement.GetReferencedElements((IReference)Feature).Remove(repository.Resolve(DeletedElementUri));
+            AffectedElement.GetReferencedElements((IReference)Feature).Remove(DeletedElement);
         }
     }
-    public partial class CompositionCollectionInsertion
+    public partial class CompositionCollectionInsertion : ICompositionInsertion
     {
 
-        public override void Apply(IModelRepository repository)
+        public override void Apply()
         {
             AffectedElement.GetReferencedElements((IReference)Feature).Add(AddedElement);
+        }
+
+        public IElementaryChange ConvertIntoMove(IElementaryChange originChange)
+        {
+            return new CompositionMoveToCollection
+            {
+                AffectedElement = AffectedElement,
+                MovedElement = AddedElement,
+                Feature = Feature,
+                Origin = originChange
+            };
         }
     }
     public partial class CompositionCollectionReset
     {
 
-        public override void Apply(IModelRepository repository)
+        public override void Apply()
         {
             AffectedElement.GetReferencedElements((IReference)Feature).Clear();
         }
@@ -106,23 +129,64 @@ namespace NMF.Models.Changes
     public partial class CompositionListDeletion
     {
 
-        public override void Apply(IModelRepository repository)
+        public override void Apply()
         {
             AffectedElement.GetReferencedElements((IReference)Feature).RemoveAt(Index);
         }
     }
-    public partial class CompositionListInsertion
+    public partial class CompositionListInsertion : ICompositionInsertion
     {
 
-        public override void Apply(IModelRepository repository)
+        public override void Apply()
         {
             AffectedElement.GetReferencedElements((IReference)Feature).Insert(Index, AddedElement);
+        }
+
+        public IElementaryChange ConvertIntoMove(IElementaryChange originChange)
+        {
+            return new CompositionMoveToList
+            {
+                AffectedElement = AffectedElement,
+                Feature = Feature,
+                Index = Index,
+                MovedElement = AddedElement,
+                Origin = originChange
+            };
+        }
+    }
+
+    internal partial interface ICompositionInsertion
+    {
+        IElementaryChange ConvertIntoMove(IElementaryChange originChange);
+    }
+
+    public partial class CompositionMoveIntoProperty
+    {
+        public override void Apply()
+        {
+            AffectedElement.SetReferencedElement((IReference)Feature, NewValue);
+        }
+    }
+
+    public partial class CompositionMoveToCollection
+    {
+        public override void Apply()
+        {
+            AffectedElement.GetReferencedElements((IReference)Feature).Add(MovedElement);
+        }
+    }
+
+    public partial class CompositionMoveToList
+    {
+        public override void Apply()
+        {
+            AffectedElement.GetReferencedElements((IReference)Feature).Insert(Index, MovedElement);
         }
     }
     public partial class AttributeCollectionDeletion
     {
 
-        public override void Apply(IModelRepository repository)
+        public override void Apply()
         {
             AffectedElement.GetAttributeValues((IAttribute)Feature).Remove(Feature.Type.Parse(DeletedValue));
         }
@@ -130,7 +194,7 @@ namespace NMF.Models.Changes
     public partial class AttributeCollectionInsertion
     {
 
-        public override void Apply(IModelRepository repository)
+        public override void Apply()
         {
             AffectedElement.GetAttributeValues((IAttribute)Feature).Add(Feature.Type.Parse(AddedValue));
         }
@@ -138,7 +202,7 @@ namespace NMF.Models.Changes
     public partial class AttributeCollectionReset
     {
 
-        public override void Apply(IModelRepository repository)
+        public override void Apply()
         {
             AffectedElement.GetAttributeValues((IAttribute)Feature).Clear();
         }
@@ -146,7 +210,7 @@ namespace NMF.Models.Changes
     public partial class AttributeListDeletion
     {
 
-        public override void Apply(IModelRepository repository)
+        public override void Apply()
         {
             AffectedElement.GetAttributeValues((IAttribute)Feature).RemoveAt(Index);
         }
@@ -154,7 +218,7 @@ namespace NMF.Models.Changes
     public partial class AttributeListInsertion
     {
 
-        public override void Apply(IModelRepository repository)
+        public override void Apply()
         {
             AffectedElement.GetAttributeValues((IAttribute)Feature).Insert(Index, AddedValue);
         }

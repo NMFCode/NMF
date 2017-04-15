@@ -9,8 +9,8 @@ namespace NMF.Models.Changes
 {
     public partial interface IModelChange
     {
-        void Apply(IModelRepository repository);
+        void Apply();
 
-        void Invert(IModelRepository repository);
+        IEnumerable<IModelChange> Invert();
     }
 }

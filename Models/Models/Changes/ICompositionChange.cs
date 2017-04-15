@@ -23,6 +23,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
@@ -40,15 +41,6 @@ namespace NMF.Models.Changes
     {
         
         /// <summary>
-        /// The oldValue property
-        /// </summary>
-        NMF.Models.IModelElement OldValue
-        {
-            get;
-            set;
-        }
-        
-        /// <summary>
         /// The newValue property
         /// </summary>
         NMF.Models.IModelElement NewValue
@@ -58,14 +50,13 @@ namespace NMF.Models.Changes
         }
         
         /// <summary>
-        /// Gets fired before the OldValue property changes its value
+        /// The oldValue property
         /// </summary>
-        event System.EventHandler<ValueChangedEventArgs> OldValueChanging;
-        
-        /// <summary>
-        /// Gets fired when the OldValue property changed its value
-        /// </summary>
-        event System.EventHandler<ValueChangedEventArgs> OldValueChanged;
+        NMF.Models.IModelElement OldValue
+        {
+            get;
+            set;
+        }
         
         /// <summary>
         /// Gets fired before the NewValue property changes its value
@@ -76,6 +67,16 @@ namespace NMF.Models.Changes
         /// Gets fired when the NewValue property changed its value
         /// </summary>
         event System.EventHandler<ValueChangedEventArgs> NewValueChanged;
+        
+        /// <summary>
+        /// Gets fired before the OldValue property changes its value
+        /// </summary>
+        event System.EventHandler<ValueChangedEventArgs> OldValueChanging;
+        
+        /// <summary>
+        /// Gets fired when the OldValue property changed its value
+        /// </summary>
+        event System.EventHandler<ValueChangedEventArgs> OldValueChanged;
     }
 }
 

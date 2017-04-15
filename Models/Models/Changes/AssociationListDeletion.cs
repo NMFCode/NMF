@@ -23,6 +23,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
@@ -40,6 +41,8 @@ namespace NMF.Models.Changes
     public partial class AssociationListDeletion : ListDeletion, IAssociationListDeletion, NMF.Models.IModelElement
     {
         
+        private static Lazy<ITypedElement> _deletedElementReference = new Lazy<ITypedElement>(RetrieveDeletedElementReference);
+        
         /// <summary>
         /// The backing field for the DeletedElement property
         /// </summary>
@@ -52,7 +55,7 @@ namespace NMF.Models.Changes
         /// </summary>
         [XmlElementNameAttribute("deletedElement")]
         [XmlAttributeAttribute(true)]
-        public virtual NMF.Models.IModelElement DeletedElement
+        public NMF.Models.IModelElement DeletedElement
         {
             get
             {
@@ -65,10 +68,10 @@ namespace NMF.Models.Changes
                     NMF.Models.IModelElement old = this._deletedElement;
                     ValueChangedEventArgs e = new ValueChangedEventArgs(old, value);
                     this.OnDeletedElementChanging(e);
-                    this.OnPropertyChanging("DeletedElement", e);
+                    this.OnPropertyChanging("DeletedElement", e, _deletedElementReference);
                     this._deletedElement = value;
                     this.OnDeletedElementChanged(e);
-                    this.OnPropertyChanged("DeletedElement", e);
+                    this.OnPropertyChanged("DeletedElement", e, _deletedElementReference);
                 }
             }
         }
@@ -108,6 +111,11 @@ namespace NMF.Models.Changes
         /// Gets fired when the DeletedElement property changed its value
         /// </summary>
         public event System.EventHandler<ValueChangedEventArgs> DeletedElementChanged;
+        
+        private static ITypedElement RetrieveDeletedElementReference()
+        {
+            return ((ITypedElement)(((NMF.Models.ModelElement)(NMF.Models.Changes.AssociationListDeletion.ClassInstance)).Resolve("deletedElement")));
+        }
         
         /// <summary>
         /// Raises the DeletedElementChanging event
@@ -203,7 +211,7 @@ namespace NMF.Models.Changes
         /// <summary>
         /// The collection class to to represent the children of the AssociationListDeletion class
         /// </summary>
-        public partial class AssociationListDeletionReferencedElementsCollection : ReferenceCollection, ICollectionExpression<NMF.Models.IModelElement>, ICollection<NMF.Models.IModelElement>
+        public class AssociationListDeletionReferencedElementsCollection : ReferenceCollection, ICollectionExpression<NMF.Models.IModelElement>, ICollection<NMF.Models.IModelElement>
         {
             
             private AssociationListDeletion _parent;

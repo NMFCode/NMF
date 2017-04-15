@@ -23,6 +23,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
@@ -40,10 +41,14 @@ namespace NMF.Models.Changes
     public partial class ElementaryChangeTransaction : ElementaryChange, IElementaryChangeTransaction, NMF.Models.IModelElement
     {
         
+        private static Lazy<ITypedElement> _sourceChangeReference = new Lazy<ITypedElement>(RetrieveSourceChangeReference);
+        
         /// <summary>
         /// The backing field for the SourceChange property
         /// </summary>
         private IModelChange _sourceChange;
+        
+        private static Lazy<ITypedElement> _nestedChangesReference = new Lazy<ITypedElement>(RetrieveNestedChangesReference);
         
         /// <summary>
         /// The backing field for the NestedChanges property
@@ -65,7 +70,7 @@ namespace NMF.Models.Changes
         [XmlElementNameAttribute("sourceChange")]
         [XmlAttributeAttribute(false)]
         [ContainmentAttribute()]
-        public virtual IModelChange SourceChange
+        public IModelChange SourceChange
         {
             get
             {
@@ -78,7 +83,7 @@ namespace NMF.Models.Changes
                     IModelChange old = this._sourceChange;
                     ValueChangedEventArgs e = new ValueChangedEventArgs(old, value);
                     this.OnSourceChangeChanging(e);
-                    this.OnPropertyChanging("SourceChange", e);
+                    this.OnPropertyChanging("SourceChange", e, _sourceChangeReference);
                     this._sourceChange = value;
                     if ((old != null))
                     {
@@ -91,7 +96,7 @@ namespace NMF.Models.Changes
                         value.Deleted += this.OnResetSourceChange;
                     }
                     this.OnSourceChangeChanged(e);
-                    this.OnPropertyChanged("SourceChange", e);
+                    this.OnPropertyChanged("SourceChange", e, _sourceChangeReference);
                 }
             }
         }
@@ -104,7 +109,7 @@ namespace NMF.Models.Changes
         [XmlAttributeAttribute(false)]
         [ContainmentAttribute()]
         [ConstantAttribute()]
-        public virtual IOrderedSetExpression<IModelChange> NestedChanges
+        public IOrderedSetExpression<IModelChange> NestedChanges
         {
             get
             {
@@ -159,6 +164,11 @@ namespace NMF.Models.Changes
         /// </summary>
         public event System.EventHandler<ValueChangedEventArgs> SourceChangeChanged;
         
+        private static ITypedElement RetrieveSourceChangeReference()
+        {
+            return ((ITypedElement)(((NMF.Models.ModelElement)(NMF.Models.Changes.ElementaryChangeTransaction.ClassInstance)).Resolve("sourceChange")));
+        }
+        
         /// <summary>
         /// Raises the SourceChangeChanging event
         /// </summary>
@@ -195,14 +205,19 @@ namespace NMF.Models.Changes
             this.SourceChange = null;
         }
         
+        private static ITypedElement RetrieveNestedChangesReference()
+        {
+            return ((ITypedElement)(((NMF.Models.ModelElement)(NMF.Models.Changes.ElementaryChangeTransaction.ClassInstance)).Resolve("nestedChanges")));
+        }
+        
         /// <summary>
         /// Forwards CollectionChanging notifications for the NestedChanges property to the parent model element
         /// </summary>
         /// <param name="sender">The collection that raised the change</param>
         /// <param name="e">The original event data</param>
-        private void NestedChangesCollectionChanging(object sender, NMF.Collections.ObjectModel.NotifyCollectionChangingEventArgs e)
+        private void NestedChangesCollectionChanging(object sender, NotifyCollectionChangingEventArgs e)
         {
-            this.OnCollectionChanging("NestedChanges", e);
+            this.OnCollectionChanging("NestedChanges", e, _nestedChangesReference);
         }
         
         /// <summary>
@@ -210,9 +225,9 @@ namespace NMF.Models.Changes
         /// </summary>
         /// <param name="sender">The collection that raised the change</param>
         /// <param name="e">The original event data</param>
-        private void NestedChangesCollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        private void NestedChangesCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
-            this.OnCollectionChanged("NestedChanges", e);
+            this.OnCollectionChanged("NestedChanges", e, _nestedChangesReference);
         }
         
         /// <summary>
@@ -318,6 +333,20 @@ namespace NMF.Models.Changes
         }
         
         /// <summary>
+        /// Gets the property name for the given container
+        /// </summary>
+        /// <returns>The name of the respective container reference</returns>
+        /// <param name="container">The container object</param>
+        protected internal override string GetCompositionName(object container)
+        {
+            if ((container == this._nestedChanges))
+            {
+                return "nestedChanges";
+            }
+            return base.GetCompositionName(container);
+        }
+        
+        /// <summary>
         /// Gets the Class for this model element
         /// </summary>
         public override IClass GetClass()
@@ -332,7 +361,7 @@ namespace NMF.Models.Changes
         /// <summary>
         /// The collection class to to represent the children of the ElementaryChangeTransaction class
         /// </summary>
-        public partial class ElementaryChangeTransactionChildrenCollection : ReferenceCollection, ICollectionExpression<NMF.Models.IModelElement>, ICollection<NMF.Models.IModelElement>
+        public class ElementaryChangeTransactionChildrenCollection : ReferenceCollection, ICollectionExpression<NMF.Models.IModelElement>, ICollection<NMF.Models.IModelElement>
         {
             
             private ElementaryChangeTransaction _parent;
@@ -486,7 +515,7 @@ namespace NMF.Models.Changes
         /// <summary>
         /// The collection class to to represent the children of the ElementaryChangeTransaction class
         /// </summary>
-        public partial class ElementaryChangeTransactionReferencedElementsCollection : ReferenceCollection, ICollectionExpression<NMF.Models.IModelElement>, ICollection<NMF.Models.IModelElement>
+        public class ElementaryChangeTransactionReferencedElementsCollection : ReferenceCollection, ICollectionExpression<NMF.Models.IModelElement>, ICollection<NMF.Models.IModelElement>
         {
             
             private ElementaryChangeTransaction _parent;

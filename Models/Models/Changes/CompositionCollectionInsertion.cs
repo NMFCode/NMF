@@ -23,6 +23,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
@@ -40,6 +41,8 @@ namespace NMF.Models.Changes
     public partial class CompositionCollectionInsertion : CollectionInsertion, ICompositionCollectionInsertion, NMF.Models.IModelElement
     {
         
+        private static Lazy<ITypedElement> _addedElementReference = new Lazy<ITypedElement>(RetrieveAddedElementReference);
+        
         /// <summary>
         /// The backing field for the AddedElement property
         /// </summary>
@@ -53,7 +56,7 @@ namespace NMF.Models.Changes
         [XmlElementNameAttribute("addedElement")]
         [XmlAttributeAttribute(false)]
         [XmlIdentificationMode(XmlIdentificationMode.ForceFullObject)]
-        public virtual NMF.Models.IModelElement AddedElement
+        public NMF.Models.IModelElement AddedElement
         {
             get
             {
@@ -66,10 +69,10 @@ namespace NMF.Models.Changes
                     NMF.Models.IModelElement old = this._addedElement;
                     ValueChangedEventArgs e = new ValueChangedEventArgs(old, value);
                     this.OnAddedElementChanging(e);
-                    this.OnPropertyChanging("AddedElement", e);
+                    this.OnPropertyChanging("AddedElement", e, _addedElementReference);
                     this._addedElement = value;
                     this.OnAddedElementChanged(e);
-                    this.OnPropertyChanged("AddedElement", e);
+                    this.OnPropertyChanged("AddedElement", e, _addedElementReference);
                 }
             }
         }
@@ -120,6 +123,11 @@ namespace NMF.Models.Changes
         /// Gets fired when the AddedElement property changed its value
         /// </summary>
         public event System.EventHandler<ValueChangedEventArgs> AddedElementChanged;
+        
+        private static ITypedElement RetrieveAddedElementReference()
+        {
+            return ((ITypedElement)(((NMF.Models.ModelElement)(NMF.Models.Changes.CompositionCollectionInsertion.ClassInstance)).Resolve("addedElement")));
+        }
         
         /// <summary>
         /// Raises the AddedElementChanging event
@@ -244,7 +252,7 @@ namespace NMF.Models.Changes
         /// <summary>
         /// The collection class to to represent the children of the CompositionCollectionInsertion class
         /// </summary>
-        public partial class CompositionCollectionInsertionChildrenCollection : ReferenceCollection, ICollectionExpression<NMF.Models.IModelElement>, ICollection<NMF.Models.IModelElement>
+        public class CompositionCollectionInsertionChildrenCollection : ReferenceCollection, ICollectionExpression<NMF.Models.IModelElement>, ICollection<NMF.Models.IModelElement>
         {
             
             private CompositionCollectionInsertion _parent;
@@ -360,7 +368,7 @@ namespace NMF.Models.Changes
         /// <summary>
         /// The collection class to to represent the children of the CompositionCollectionInsertion class
         /// </summary>
-        public partial class CompositionCollectionInsertionReferencedElementsCollection : ReferenceCollection, ICollectionExpression<NMF.Models.IModelElement>, ICollection<NMF.Models.IModelElement>
+        public class CompositionCollectionInsertionReferencedElementsCollection : ReferenceCollection, ICollectionExpression<NMF.Models.IModelElement>, ICollection<NMF.Models.IModelElement>
         {
             
             private CompositionCollectionInsertion _parent;

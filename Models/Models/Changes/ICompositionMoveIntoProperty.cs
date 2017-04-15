@@ -33,17 +33,17 @@ namespace NMF.Models.Changes
     
     
     /// <summary>
-    /// The public interface for AttributeChange
+    /// The public interface for CompositionMoveIntoProperty
     /// </summary>
-    [DefaultImplementationTypeAttribute(typeof(AttributeChange))]
-    [XmlDefaultImplementationTypeAttribute(typeof(AttributeChange))]
-    public interface IAttributeChange : NMF.Models.IModelElement, IPropertyChange
+    [DefaultImplementationTypeAttribute(typeof(CompositionMoveIntoProperty))]
+    [XmlDefaultImplementationTypeAttribute(typeof(CompositionMoveIntoProperty))]
+    public interface ICompositionMoveIntoProperty : NMF.Models.IModelElement, IPropertyChange
     {
         
         /// <summary>
         /// The newValue property
         /// </summary>
-        string NewValue
+        NMF.Models.IModelElement NewValue
         {
             get;
             set;
@@ -52,7 +52,16 @@ namespace NMF.Models.Changes
         /// <summary>
         /// The oldValue property
         /// </summary>
-        string OldValue
+        NMF.Models.IModelElement OldValue
+        {
+            get;
+            set;
+        }
+        
+        /// <summary>
+        /// The origin property
+        /// </summary>
+        IElementaryChange Origin
         {
             get;
             set;
@@ -77,6 +86,16 @@ namespace NMF.Models.Changes
         /// Gets fired when the OldValue property changed its value
         /// </summary>
         event System.EventHandler<ValueChangedEventArgs> OldValueChanged;
+        
+        /// <summary>
+        /// Gets fired before the Origin property changes its value
+        /// </summary>
+        event System.EventHandler<ValueChangedEventArgs> OriginChanging;
+        
+        /// <summary>
+        /// Gets fired when the Origin property changed its value
+        /// </summary>
+        event System.EventHandler<ValueChangedEventArgs> OriginChanged;
     }
 }
 

@@ -31,7 +31,12 @@ namespace NMF.Models
             _recorder.Stop();
 
             foreach (var change in modelChanges.Reverse())
-                change.Invert(_repository);
+            {
+                foreach (var inverted in change.Invert())
+                {
+                    inverted.Apply();
+                }
+            }
             _engine.RollbackTransaction();
         }
         public void Dispose()
