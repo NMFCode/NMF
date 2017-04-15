@@ -167,9 +167,16 @@ namespace NMF.Transformations.Core
                         throw new Exception($"The transformation rule {createRule.TransformationRule} threw an exception creating the output for the elements {PrintInputs(createRule)}", e);
                     }
 
-                    for (int i = computes.Count - 1; i >= 0; i--)
+                    try
                     {
-                        computes[i].InitializeOutput(output);
+                        for (int i = computes.Count - 1; i >= 0; i--)
+                        {
+                            computes[i].InitializeOutput(output);
+                        }
+                    }
+                    catch (Exception e)
+                    {
+                        throw new Exception($"There was an error initializing the output {output} of transformation rule {createRule.TransformationRule} for input {PrintInputs(createRule)}", e);
                     }
                     if (callTransformations)
                     {

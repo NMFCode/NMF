@@ -45,6 +45,11 @@ namespace NMF.Synchronizations
             get { return rule; }
         }
 
+        public override string ToString()
+        {
+            return $"LTR for {rule.GetType().Name}";
+        }
+
         private class LTRComputation : SynchronizationComputation<TLeft, TRight>
         {
             public LTRComputation(SynchronizationRule<TLeft, TRight> rule, IComputationContext context, TLeft left)

@@ -44,6 +44,11 @@ namespace NMF.Synchronizations
             get { return rule; }
         }
 
+        public override string ToString()
+        {
+            return $"RTL for {rule.GetType().Name}";
+        }
+
         private class RTLComputation : SynchronizationComputation<TRight, TLeft>
         {
             public RTLComputation(SynchronizationRule<TLeft, TRight> rule, IComputationContext context, TRight right)
