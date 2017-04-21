@@ -127,7 +127,7 @@ namespace NMF.Models.Collections
         protected override void OnRemoveItem(T item, int index)
         {
             base.OnRemoveItem(item, index);
-            if (item != null && base.Remove(item))
+            if (item != null && item.Parent == Parent)
             {
                 item.ParentChanged -= RemoveItem;
                 item.Delete();
@@ -150,11 +150,14 @@ namespace NMF.Models.Collections
                         if (me != null)
                         {
                             var baseUri = parentUri.Value;
+                            if (string.IsNullOrEmpty(baseUri.Fragment)) return;
                             Uri oldUri;
-                            var newRef = ModelHelper.CreatePath(Parent.GetCompositionName(this), i + diff);
+                            string newRef = ModelHelper.CreatePath(Parent.GetCompositionName(this), i + diff);
                             if (baseUri.IsAbsoluteUri)
                             {
-                                oldUri = new Uri(baseUri, baseUri.Fragment + "/" + newRef);
+                                var builder = new UriBuilder(baseUri);
+                                builder.Fragment = baseUri.Fragment + "/" + newRef;
+                                oldUri = builder.Uri;
                             }
                             else
                             {

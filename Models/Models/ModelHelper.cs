@@ -18,6 +18,7 @@ namespace NMF.Models
         /// <returns>A relative Uri for the reference with the given index</returns>
         public static string CreatePath(string reference, int index)
         {
+            if (reference == null) return index.ToString();
             return "@" + reference + "." + index.ToString();
         }
 

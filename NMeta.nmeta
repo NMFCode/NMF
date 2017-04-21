@@ -42,7 +42,7 @@
  </Types>
  <Types xsi:type="nmeta:Class" BaseTypes="#//ModelElement/" Name="Model">
    <Attributes Type="#//Uri/" Name="ModelUri" />
-   <References IsContainment="True" UpperBound="-1" ReferenceType="#//ModelElement/" Name="RootElements" />
+   <References IsContainment="True" IsOrdered="True" UpperBound="-1" ReferenceType="#//ModelElement/" Name="RootElements" />
  </Types>
  <Types xsi:type="nmeta:Class" IsAbstract="True" Name="ModelElement" InstanceOf="#//Class">
    <Attributes LowerBound="1" Type="#//Uri/" Name="AbsoluteUri" />

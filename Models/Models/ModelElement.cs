@@ -162,12 +162,17 @@ namespace NMF.Models
                 if (newParentME != null)
                 {
                     OnParentChanging(newParentME, parent);
+                    Uri oldUri = null;
+                    if (IsFlagSet(ModelElementFlag.RequireUris))
+                    {
+                        oldUri = AbsoluteUri;
+                    }
                     parent = newParentME;
                     var newModel = newParentME.Model;
                     var oldModel = oldParent != null ? oldParent.Model : null;
                     if (oldParent != null)
                     {
-                        if (EnforceModels && oldModel != null && oldModel == oldParent.Parent && newModel == null)
+                        if (EnforceModels && oldModel != null && newModel == null)
                         {
                             oldModel.RootElements.Add(newParentME);
                         }
@@ -179,6 +184,11 @@ namespace NMF.Models
                     if (newParentME.IsFlagSet(ModelElementFlag.RequireUris))
                     {
                         RequestUris();
+                        OnUriChanged(oldUri);
+                    }
+                    if (oldParent != null && oldParent.IsFlagSet(ModelElementFlag.RequireUris) && oldUri != null)
+                    {
+                        oldParent.OnBubbledChange(BubbledChangeEventArgs.UriChanged(this, new UriChangedEventArgs(oldUri)));
                     }
                     else if (bubbledChange == null)
                     {
@@ -202,6 +212,7 @@ namespace NMF.Models
                     {
                         PropagateNewModel(null, oldModel, this);
                     }
+                    OnParentChanged(null, oldParent);
                 }
             }
         }

@@ -25,9 +25,8 @@ namespace NMF.Models.Tests
                 var route = new Route() { Id = 42 };
                 model.Routes.Add(route);
                 model.Semaphores[0].Signal = Signal.FAILURE;
-                model.Routes[0].DefinedBy.RemoveAt(0); //hier aufpassen
+                model.Routes[0].DefinedBy.RemoveAt(0);
                 model.Routes[0].DefinedBy[0].Elements.RemoveAt(0);
-
             }
 
             Assert.AreEqual(model.Routes.Count, referenceModel.Routes.Count);

@@ -19,14 +19,18 @@ namespace NMF.Models.Changes
             AffectedElement.SetReferencedElement((IReference)Feature, NewValue);
         }
     }
-    public partial class CompositionChange : ICompositionInsertion
+    public partial class CompositionChange : ICompositionInsertion, ICompositionDeletion
     {
+        public IModelElement DeletedElement => OldValue;
+
+        public IModelElement AddedElement => NewValue;
+
         public override void Apply()
         {
             AffectedElement.SetReferencedElement((IReference)Feature, NewValue);
         }
 
-        public IElementaryChange ConvertIntoMove(IElementaryChange originChange)
+        public IElementaryChange ConvertIntoMove(ICompositionDeletion originChange)
         {
             return new CompositionMoveIntoProperty
             {
@@ -91,7 +95,7 @@ namespace NMF.Models.Changes
             AffectedElement.GetReferencedElements((IReference)Feature).Insert(Index, AddedElement);
         }
     }
-    public partial class CompositionCollectionDeletion
+    public partial class CompositionCollectionDeletion : ICompositionDeletion
     {
 
         public override void Apply()
@@ -107,7 +111,7 @@ namespace NMF.Models.Changes
             AffectedElement.GetReferencedElements((IReference)Feature).Add(AddedElement);
         }
 
-        public IElementaryChange ConvertIntoMove(IElementaryChange originChange)
+        public IElementaryChange ConvertIntoMove(ICompositionDeletion originChange)
         {
             return new CompositionMoveToCollection
             {
@@ -126,7 +130,7 @@ namespace NMF.Models.Changes
             AffectedElement.GetReferencedElements((IReference)Feature).Clear();
         }
     }
-    public partial class CompositionListDeletion
+    public partial class CompositionListDeletion : ICompositionDeletion
     {
 
         public override void Apply()
@@ -142,7 +146,7 @@ namespace NMF.Models.Changes
             AffectedElement.GetReferencedElements((IReference)Feature).Insert(Index, AddedElement);
         }
 
-        public IElementaryChange ConvertIntoMove(IElementaryChange originChange)
+        public IElementaryChange ConvertIntoMove(ICompositionDeletion originChange)
         {
             return new CompositionMoveToList
             {
@@ -155,9 +159,16 @@ namespace NMF.Models.Changes
         }
     }
 
-    internal partial interface ICompositionInsertion
+    public partial interface ICompositionInsertion : IElementaryChange
     {
-        IElementaryChange ConvertIntoMove(IElementaryChange originChange);
+        IElementaryChange ConvertIntoMove(ICompositionDeletion originChange);
+
+        IModelElement AddedElement { get; }
+    }
+
+    public partial interface ICompositionDeletion : IElementaryChange
+    {
+        IModelElement DeletedElement { get; }
     }
 
     public partial class CompositionMoveIntoProperty

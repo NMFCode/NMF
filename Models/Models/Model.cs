@@ -190,7 +190,7 @@ namespace NMF.Models
         private void RootElementsCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
             this.OnCollectionChanged("RootElements", e, _rootElementsReference);
-            if (!PromoteSingleRootElement && ModelUri != null && IsFlagSet(ModelElementFlag.RequireUris) && 
+            if (PromoteSingleRootElement && ModelUri != null && IsFlagSet(ModelElementFlag.RequireUris) && 
                 ((RootElements.Count == 1 && e.Action == System.Collections.Specialized.NotifyCollectionChangedAction.Remove) || 
                  (e.Action == NotifyCollectionChangedAction.Add && RootElements.Count - e.NewItems.Count == 1)))
             {
@@ -213,11 +213,12 @@ namespace NMF.Models
                     oldRoot = RootElements[0];
                     fragment = "/0/";
                 }
+                var builder = new UriBuilder(ModelUri);
                 foreach (ModelElement element in oldRoot.Descendants())
                 {
                     var frag = element.CreateUriWithFragment(null, false, oldRoot);
-                    var uri = new Uri(ModelUri, fragment + frag.OriginalString);
-                    element.OnUriChanged(uri);
+                    builder.Fragment = fragment + frag;
+                    element.OnUriChanged(builder.Uri);
                 }
             }
 
@@ -276,7 +277,7 @@ namespace NMF.Models
         {
             if ((container == this._rootElements))
             {
-                return "RootElements";
+                return null;
             }
             return base.GetCompositionName(container);
         }
@@ -726,7 +727,7 @@ namespace NMF.Models
             {
                 path = path.Substring(1);
             }
-            if (!path.StartsWith("//"))
+            if (!path.StartsWith("/"))
             {
                 var index = path.IndexOf('/');
                 if (index == 0)
@@ -752,7 +753,7 @@ namespace NMF.Models
             }
             else
             {
-                return ResolveNonIdentified(path.Substring(2));
+                return ResolveNonIdentified(path.TrimStart('/'));
             }
         }
 

@@ -174,9 +174,8 @@ namespace NMF.Models.Repository
             }
         }
 
-        private void EnsureModelIsKnown(IModelElement element)
+        private void EnsureModelIsKnown(Model model)
         {
-            var model = element.Model;
             Model existingModel;
             if (models.TryGetValue(model.ModelUri, out existingModel))
             {
@@ -191,6 +190,25 @@ namespace NMF.Models.Repository
             }
         }
 
+        private void EnsureAllElementsContained(Model model)
+        {
+            foreach (var element in model.Descendants())
+            {
+                foreach (var referenced in element.ReferencedElements)
+                {
+                    var ancestor = referenced;
+                    while (ancestor.Parent != null)
+                    {
+                        ancestor = ancestor.Parent;
+                    }
+                    if (ancestor.Model == null)
+                    {
+                        model.RootElements.Add(ancestor);
+                    }
+                }
+            }
+        }
+
         /// <summary>
         /// Saves the given model element to the specified stream
         /// </summary>
@@ -198,8 +216,18 @@ namespace NMF.Models.Repository
         /// <param name="path">The path where to save the model element</param>
         public void Save(IModelElement element, string path)
         {
-            Serializer.Serialize(element, path);
-            EnsureModelIsKnown(element);
+            if (element == null) throw new ArgumentNullException(nameof(element));
+            var model = element.Model;
+            if (model != null)
+            {
+                EnsureAllElementsContained(model);
+                Serializer.Serialize(model, path);
+                EnsureModelIsKnown(model);
+            }
+            else
+            {
+                Serializer.Serialize(element, path);
+            }
         }
 
         /// <summary>
@@ -210,8 +238,18 @@ namespace NMF.Models.Repository
         /// <param name="uri">The uri under which the model element can be retrieved</param>
         public void Save(IModelElement element, string path, Uri uri)
         {
-            Serializer.Serialize(element, path, uri);
-            EnsureModelIsKnown(element);
+            if (element == null) throw new ArgumentNullException(nameof(element));
+            var model = element.Model;
+            if (model != null)
+            {
+                EnsureAllElementsContained(model);
+                Serializer.Serialize(model, path, uri);
+                EnsureModelIsKnown(model);
+            }
+            else
+            {
+                Serializer.Serialize(element, path, uri);
+            }
         }
 
         /// <summary>
@@ -222,8 +260,18 @@ namespace NMF.Models.Repository
         /// <param name="uri">The uri under which the model element shall be retrievable</param>
         public void Save(IModelElement element, Stream stream, Uri uri)
         {
-            Serializer.Serialize(element, stream, uri);
-            EnsureModelIsKnown(element);
+            if (element == null) throw new ArgumentNullException(nameof(element));
+            var model = element.Model;
+            if (model != null)
+            {
+                EnsureAllElementsContained(model);
+                Serializer.Serialize(model, stream, uri);
+                EnsureModelIsKnown(model);
+            }
+            else
+            {
+                Serializer.Serialize(element, stream, uri);
+            }
         }
 
         /// <summary>
