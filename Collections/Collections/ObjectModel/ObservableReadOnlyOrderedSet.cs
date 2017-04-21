@@ -46,9 +46,12 @@ namespace NMF.Collections.ObjectModel
 
         public event EventHandler<NotifyCollectionChangingEventArgs> CollectionChanging;
 
+        private INotifyEnumerable<T> proxy;
+
         public INotifyEnumerable<T> AsNotifiable()
         {
-            return this.WithUpdates();
+            if (proxy == null) proxy = this.WithUpdates();
+            return proxy;
         }
 
         INotifyEnumerable IEnumerableExpression.AsNotifiable()

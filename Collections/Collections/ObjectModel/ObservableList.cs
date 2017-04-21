@@ -10,9 +10,12 @@ namespace NMF.Collections.ObjectModel
 {
     public class ObservableList<T> : ObservableCollectionExtended<T>, IListExpression<T>
     {
+        private INotifyCollection<T> proxy;
+
         public INotifyCollection<T> AsNotifiable()
         {
-            return this.WithUpdates();
+            if (proxy == null) proxy = this.WithUpdates();
+            return proxy;
         }
 
         INotifyEnumerable<T> IEnumerableExpression<T>.AsNotifiable()
