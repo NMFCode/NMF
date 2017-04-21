@@ -17,12 +17,28 @@ namespace NMF.Models.Changes
             }
         }
 
-        //public ModelChangeSet Invert()
-        //{
-        //    for (int i = Changes.Count - 1; i >= 0; i--)
-        //    {
-        //        Changes[i].Invert(repository);
-        //    }
-        //}
+        public void Invert()
+        {
+            foreach (var change in Changes.Reverse())
+            {
+                foreach (var inverted in change.Invert())
+                {
+                    inverted.Apply();
+                }
+            }
+        }
+
+        public ModelChangeSet CreateInvertedChangeSet()
+        {
+            var inverse = new ModelChangeSet();
+            foreach (var change in Changes.Reverse())
+            {
+                foreach (var inverted in change.Invert())
+                {
+                    inverse.Changes.Add(inverted);
+                }
+            }
+            return inverse;
+        }
     }
 }

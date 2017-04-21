@@ -27,16 +27,13 @@ namespace NMF.Models
         }
         public void Rollback()
         {
-            var modelChanges = _recorder.GetModelChanges().Changes;
             _recorder.Stop();
+            var modelChanges = _recorder.GetModelChanges();
 
-            foreach (var change in modelChanges.Reverse())
-            {
-                foreach (var inverted in change.Invert())
-                {
-                    inverted.Apply();
-                }
-            }
+            var inverted = modelChanges.CreateInvertedChangeSet();
+
+            inverted.Apply();
+            
             _engine.RollbackTransaction();
         }
         public void Dispose()

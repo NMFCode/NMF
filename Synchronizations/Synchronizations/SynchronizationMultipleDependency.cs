@@ -258,7 +258,7 @@ namespace NMF.Synchronizations
 
         private void AddCorrespondingToLefts(ICollection<TDepLeft> lefts, ISynchronizationContext context, TDepRight item)
         {
-            var comp = context.CallTransformation(childRule.RightToLeft, new object[] { item }, lefts) as SynchronizationComputation<TDepRight, TDepLeft>;
+            var comp = context.CallTransformation(childRule.RightToLeft, new object[] { item }, null) as SynchronizationComputation<TDepRight, TDepLeft>;
             comp.DoWhenOutputIsAvailable((inp, outp) =>
             {
                 lefts.Add(outp);
@@ -267,7 +267,7 @@ namespace NMF.Synchronizations
 
         private void AddCorrespondingToRights(ICollection<TDepRight> rights, ISynchronizationContext context, TDepLeft item)
         {
-            var comp = context.CallTransformation(childRule.LeftToRight, new object[] { item }, rights) as SynchronizationComputation<TDepLeft, TDepRight>;
+            var comp = context.CallTransformation(childRule.LeftToRight, new object[] { item }, null) as SynchronizationComputation<TDepLeft, TDepRight>;
             comp.DoWhenOutputIsAvailable((inp, outp) =>
             {
                 rights.Add(outp);
@@ -616,7 +616,7 @@ namespace NMF.Synchronizations
 
         private void AddCorrespondingToTargets(ICollection<TTargetDep> targets, ISynchronizationContext context, TSourceDep item)
         {
-            var comp = context.CallTransformation(childRule, new object[] { item }, targets) as SynchronizationComputation<TSourceDep, TTargetDep>;
+            var comp = context.CallTransformation(childRule, new object[] { item }, null) as SynchronizationComputation<TSourceDep, TTargetDep>;
             comp.DoWhenOutputIsAvailable((inp, outp) =>
             {
                 targets.Add(outp);

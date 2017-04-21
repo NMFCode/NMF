@@ -437,6 +437,12 @@ namespace NMF.Synchronizations
                     }
                 }
             }
+            return CreateRightOutputInstance();
+        }
+
+        private static TRight CreateRightOutputInstance()
+        {
+            TRight output;
             if (rightImplementationType != null)
             {
                 output = Activator.CreateInstance(rightImplementationType) as TRight;
@@ -445,6 +451,7 @@ namespace NMF.Synchronizations
             {
                 throw new NotImplementedException();
             }
+
             return output;
         }
 
@@ -466,6 +473,11 @@ namespace NMF.Synchronizations
                     }
                 }
             }
+            return CreateLeftOutputInstance(out output);
+        }
+
+        private static TLeft CreateLeftOutputInstance(out TLeft output)
+        {
             if (leftImplementationType != null)
             {
                 output = Activator.CreateInstance(leftImplementationType) as TLeft;

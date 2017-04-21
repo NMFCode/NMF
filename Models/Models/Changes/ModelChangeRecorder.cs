@@ -685,5 +685,9 @@ namespace NMF.Models.Changes
             }
             return base.CreateUriForElement(element);
         }
+
+        protected internal override void EnsureAllElementsContained()
+        {
+        }
     }
  }

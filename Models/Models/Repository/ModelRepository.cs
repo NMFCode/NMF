@@ -190,25 +190,6 @@ namespace NMF.Models.Repository
             }
         }
 
-        private void EnsureAllElementsContained(Model model)
-        {
-            foreach (var element in model.Descendants())
-            {
-                foreach (var referenced in element.ReferencedElements)
-                {
-                    var ancestor = referenced;
-                    while (ancestor.Parent != null)
-                    {
-                        ancestor = ancestor.Parent;
-                    }
-                    if (ancestor.Model == null)
-                    {
-                        model.RootElements.Add(ancestor);
-                    }
-                }
-            }
-        }
-
         /// <summary>
         /// Saves the given model element to the specified stream
         /// </summary>
@@ -220,7 +201,7 @@ namespace NMF.Models.Repository
             var model = element.Model;
             if (model != null)
             {
-                EnsureAllElementsContained(model);
+                model.EnsureAllElementsContained();
                 Serializer.Serialize(model, path);
                 EnsureModelIsKnown(model);
             }
@@ -242,7 +223,7 @@ namespace NMF.Models.Repository
             var model = element.Model;
             if (model != null)
             {
-                EnsureAllElementsContained(model);
+                model.EnsureAllElementsContained();
                 Serializer.Serialize(model, path, uri);
                 EnsureModelIsKnown(model);
             }
@@ -264,7 +245,7 @@ namespace NMF.Models.Repository
             var model = element.Model;
             if (model != null)
             {
-                EnsureAllElementsContained(model);
+                model.EnsureAllElementsContained();
                 Serializer.Serialize(model, stream, uri);
                 EnsureModelIsKnown(model);
             }

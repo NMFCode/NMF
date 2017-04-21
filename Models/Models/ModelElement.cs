@@ -203,6 +203,7 @@ namespace NMF.Models
                 }
                 else
                 {
+                    parent = null;
                     var oldModel = oldParent.Model;
                     if (bubbledChange == null)
                     {
@@ -787,7 +788,20 @@ namespace NMF.Models
         {
             foreach (var child in Children.Reverse())
             {
-                child.Delete();
+                var childME = child as ModelElement;
+                if (childME != null)
+                {
+                    Uri oldChildUri = null;
+                    if (e.OldUri != null)
+                    {
+                        var uriBuilder = new UriBuilder(e.OldUri);
+                        uriBuilder.Fragment = uriBuilder.Fragment.Substring(1) + '/' + childME.CreateUriWithFragment(null, false, this).OriginalString;
+                        oldChildUri = uriBuilder.Uri;
+                    }
+                    var args = new UriChangedEventArgs(oldChildUri);
+                    childME.OnDeleting(args);
+                    childME.OnDeleted(args);
+                }
             }
             Deleted?.Invoke(this, e);
             OnBubbledChange(BubbledChangeEventArgs.ElementDeleted(this, e));

@@ -789,5 +789,24 @@ namespace NMF.Models
             }
             return base.GetRelativePathForChild(child);
         }
+
+        protected internal virtual void EnsureAllElementsContained()
+        {
+            foreach (var element in this.Descendants())
+            {
+                foreach (var referenced in element.ReferencedElements)
+                {
+                    var ancestor = referenced;
+                    while (ancestor.Parent != null)
+                    {
+                        ancestor = ancestor.Parent;
+                    }
+                    if (ancestor.Model == null)
+                    {
+                        RootElements.Add(ancestor);
+                    }
+                }
+            }
+        }
     }
 }
