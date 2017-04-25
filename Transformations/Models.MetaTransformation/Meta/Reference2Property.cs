@@ -436,12 +436,14 @@ namespace NMF.Models.Meta
                     newCheck.TrueStatements.Add(new CodeAssignStatement(new CodePropertyReferenceExpression(val, "Parent"), thisRef));
                 }
 
+                var resetEvent = property.IsContainment ? "ParentChanged" : "Deleted";
+
                 oldCheck.TrueStatements.Add(new CodeRemoveEventStatement(
-                    new CodeEventReferenceExpression(oldRef, "Deleted"),
+                    new CodeEventReferenceExpression(oldRef, resetEvent),
                     new CodeMethodReferenceExpression(thisRef, "OnReset" + codeProperty.Name)));
 
                 newCheck.TrueStatements.Add(new CodeAttachEventStatement(
-                    new CodeEventReferenceExpression(val, "Deleted"),
+                    new CodeEventReferenceExpression(val, resetEvent),
                     new CodeMethodReferenceExpression(thisRef, "OnReset" + codeProperty.Name)));
 
                 ifStmt.TrueStatements.Add(oldCheck);
