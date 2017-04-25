@@ -159,17 +159,12 @@ namespace NMF.Models.Changes
 
         private static void SanityCheckInsertionsAndDeletions(List<IModelChange> list)
         {
-            var allInsertions = list.OfType<ICompositionInsertion>().Concat(list.SelectMany(c => c.Descendants().OfType<ICompositionInsertion>()));
             var allDeletions = list.OfType<ICompositionDeletion>()
                 .Concat(list.SelectMany(c => c.Descendants().OfType<ICompositionDeletion>())
                 .Where(c2 => c2.Parent != null &&
                        !(c2.Parent is CompositionMoveIntoProperty) &&
                        !(c2.Parent is CompositionMoveToCollection) &&
                        !(c2.Parent is CompositionMoveToList)));
-            if (allInsertions.Select(c => c.AddedElement).IntersectsWith(allDeletions.Select(c => c.DeletedElement)))
-            {
-                throw new InvalidOperationException("There are element deletions and element insertions for the same element.");
-            }
             if (allDeletions.Any(d => d.DeletedElement.Parent != null))
             {
                 throw new InvalidOperationException("There are element deletions of elements that are not deleted.");
