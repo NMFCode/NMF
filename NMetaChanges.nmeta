@@ -75,7 +75,6 @@
     <Attributes IsOrdered="True" IsUnique="True" LowerBound="1" Type="http://nmf.codeplex.com/nmeta/#//String" Name="addedValue" />
   </Types>
   <Types xsi:type="nmeta:Class" IsAbstract="True" BaseTypes="#//ElementaryChange" Name="PropertyChange">
-    <References ReferenceType="http://nmf.codeplex.com/nmeta/#//TypedElement" IsOrdered="True" IsUnique="True" LowerBound="1" Name="feature" />
   </Types>
   <Types xsi:type="nmeta:Class" BaseTypes="#//PropertyChange" Name="AttributeChange">
     <Attributes IsOrdered="True" IsUnique="True" Type="http://nmf.codeplex.com/nmeta/#//String" Name="newValue" />

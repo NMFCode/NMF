@@ -39,25 +39,6 @@ namespace NMF.Models.Changes
     [XmlDefaultImplementationTypeAttribute(typeof(PropertyChange))]
     public interface IPropertyChange : NMF.Models.IModelElement, IElementaryChange
     {
-        
-        /// <summary>
-        /// The feature property
-        /// </summary>
-        ITypedElement Feature
-        {
-            get;
-            set;
-        }
-        
-        /// <summary>
-        /// Gets fired before the Feature property changes its value
-        /// </summary>
-        event System.EventHandler<ValueChangedEventArgs> FeatureChanging;
-        
-        /// <summary>
-        /// Gets fired when the Feature property changed its value
-        /// </summary>
-        event System.EventHandler<ValueChangedEventArgs> FeatureChanged;
     }
 }
 
