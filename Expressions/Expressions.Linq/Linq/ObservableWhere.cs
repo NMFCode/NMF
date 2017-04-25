@@ -211,16 +211,19 @@ namespace NMF.Expressions.Linq
             {
                 if (isValueType || item != null)
                 {
-                    var lambdaResult = lambdaInstances[item];
-                    if (lambdaResult.Value)
+                    TaggedObservableValue<bool, ItemMultiplicity> lambdaResult;
+                    if (lambdaInstances.TryGetValue(item, out lambdaResult))
                     {
-                        removed.Add(lambdaResult.Tag.Item);
-                    }
-                    lambdaResult.Tag = lambdaResult.Tag.Decrease();
-                    if (lambdaResult.Tag.Multiplicity == 0)
-                    {
-                        lambdaResult.Successors.Unset(this);
-                        lambdaInstances.Remove(item);
+                        if (lambdaResult.Value)
+                        {
+                            removed.Add(lambdaResult.Tag.Item);
+                        }
+                        lambdaResult.Tag = lambdaResult.Tag.Decrease();
+                        if (lambdaResult.Tag.Multiplicity == 0)
+                        {
+                            lambdaResult.Successors.Unset(this);
+                            lambdaInstances.Remove(item);
+                        }
                     }
                 }
                 else
