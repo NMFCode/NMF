@@ -56,6 +56,14 @@ namespace NMF.Models
         IModelElement Resolve(Uri relativeUri);
 
         /// <summary>
+        /// Gets the container reference for the given child element
+        /// </summary>
+        /// <param name="child">The child element</param>
+        /// <param name="index">The index of the child in the returned reference</param>
+        /// <returns>A composition reference or null, if the child is not contained in the model element</returns>
+        IReference GetContainerReference(IModelElement child, out int index);
+
+        /// <summary>
         /// Gets the model that contains the current model element
         /// </summary>
         Model Model { get; }

@@ -181,61 +181,87 @@ namespace NMF.Models.Changes
             int currentIndex = 0;
             while (currentIndex < list.Count)
             {
-                var insertion = list[currentIndex] as ICompositionInsertion;
-                ICompositionDeletion deletion;
-                if (insertion != null)
+                ICompositionDeletion deletion = list[currentIndex] as ICompositionDeletion;
+                if (deletion != null && deletion.DeletedElement.Parent != null)
                 {
-                    currentIndex++;
                     if (currentIndex < list.Count)
                     {
-                        deletion = list[currentIndex] as ICompositionDeletion;
-                        ElementaryChangeTransaction t;
-                        if (deletion != null && deletion.DeletedElement == insertion.AddedElement)
-                        {
-                            list.RemoveAt(currentIndex);
-                            list[currentIndex - 1] = insertion.ConvertIntoMove(deletion);
-                            elementSources.Remove(insertion.AddedElement);
-                        }
-                        else if ((t = list[currentIndex] as ElementaryChangeTransaction) != null && 
-                                 t.NestedChanges.Count == 1 && 
-                                 (deletion = t.NestedChanges[0] as ICompositionDeletion) != null &&
-                                 deletion.DeletedElement == insertion.AddedElement)
-                        {
-                            list.RemoveAt(currentIndex);
-                            list[currentIndex - 1] = insertion.ConvertIntoMove(deletion);
-                            elementSources.Remove(insertion.AddedElement);
-                        }
+                        TryEliminateDeletion(list, ref currentIndex, deletion);
                     }
                 }
-                else if ((deletion = list[currentIndex] as ICompositionDeletion) != null)
+                currentIndex++;
+            }
+        }
+
+        private void TryEliminateDeletion(List<IModelChange> list, ref int currentIndex, ICompositionDeletion deletion)
+        {
+            for (int i = 0; i < list.Count; i++)
+            {
+                var insertion = list[i] as ICompositionInsertion;
+                if (insertion != null && insertion.AddedElement == deletion.DeletedElement)
                 {
-                    currentIndex++;
-                    if (currentIndex < list.Count)
+                    list[i] = insertion.ConvertIntoMove(deletion);
+                    list.RemoveAt(currentIndex);
+                    currentIndex--;
+                    return;
+                }
+                else if (insertion != null && IsAncestor(insertion.AddedElement, deletion.DeletedElement))
+                {
+                    list.RemoveAt(currentIndex);
+                    list.Insert(currentIndex, CreateMove(deletion));
+                    currentIndex--;
+                    return;
+                }
+            }
+        }
+
+        private IModelChange CreateMove(ICompositionDeletion deletion)
+        {
+            var parent = deletion.DeletedElement.Parent;
+            int index;
+            var reference = parent.GetContainerReference(deletion.DeletedElement, out index);
+            if (reference == null || !reference.IsContainment) throw new InvalidOperationException("There is something wrong with your generated code. Please regenerate and try again. If the problem persists, please contact the NMF developers.");
+            if (reference.UpperBound == 1)
+            {
+                return new CompositionMoveIntoProperty
+                {
+                    AffectedElement = parent,
+                    Feature = reference,
+                    NewValue = deletion.DeletedElement,
+                    OldValue = null,
+                    Origin = deletion
+                };
+            }
+            else
+            {
+                if (reference.IsOrdered)
+                {
+                    return new CompositionMoveToList
                     {
-                        insertion = list[currentIndex] as ICompositionInsertion;
-                        ElementaryChangeTransaction t;
-                        if (insertion != null && insertion.AddedElement == deletion.DeletedElement)
-                        {
-                            list.RemoveAt(currentIndex);
-                            list[currentIndex - 1] = insertion.ConvertIntoMove(deletion);
-                            elementSources.Remove(insertion.AddedElement);
-                        }
-                        else if ((t = list[currentIndex] as ElementaryChangeTransaction) != null && 
-                                 t.NestedChanges.Count == 1 &&
-                                 (insertion = t.NestedChanges[0] as ICompositionInsertion) != null &&
-                                 insertion.AddedElement == deletion.DeletedElement)
-                        {
-                            list.RemoveAt(currentIndex);
-                            list[currentIndex - 1] = insertion.ConvertIntoMove(deletion);
-                            elementSources.Remove(insertion.AddedElement);
-                        }
-                    }
+                        AffectedElement = parent,
+                        Feature = reference,
+                        MovedElement = deletion.DeletedElement,
+                        Index = index,
+                        Origin = deletion
+                    };
                 }
                 else
                 {
-                    currentIndex++;
+                    return new CompositionMoveToCollection
+                    {
+                        AffectedElement = parent,
+                        Feature = reference,
+                        MovedElement = deletion.DeletedElement,
+                        Origin = deletion
+                    };
                 }
             }
+        }
+
+        private static bool IsAncestor(IModelElement ancestor, IModelElement child)
+        {
+            if (child == null) return false;
+            return child.Parent == ancestor || IsAncestor(ancestor, child.Parent);
         }
 
         private void ParseChange(List<IModelChange> changes, ref int currentIndex)
@@ -676,12 +702,12 @@ namespace NMF.Models.Changes
             if (changeSources.TryGetValue(element, out elementSource))
             {
                 var me = elementSource as ModelElement;
-                return me.CreateUriWithFragment("addedElement", false);
+                return SimplifyUri(me.CreateUriWithFragment("addedElement", false));
             }
             Uri deletedUri;
             if (uriMappings.TryGetValue(element, out deletedUri))
             {
-                return deletedUri;
+                return SimplifyUri(deletedUri);
             }
             return base.CreateUriForElement(element);
         }

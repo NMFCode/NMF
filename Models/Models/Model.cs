@@ -698,22 +698,27 @@ namespace NMF.Models
             else
             {
                 var target = element.AbsoluteUri;
-                var current = ModelUri;
-                if (target == null) return null;
-                if (!target.IsFile) return target;
-                if (target.Scheme != current.Scheme) return target;
-                if (target.Host != current.Host) return target;
-                for (int i = 0; i < target.Segments.Length; i++)
-                {
-                    if (i >= current.Segments.Length || target.Segments[i] != current.Segments[i])
-                    {
-                        var relative = Path.Combine(Enumerable.Repeat("..", current.Segments.Length - i - 1).Concat(target.Segments.Skip(i)).ToArray());
-                        if (Path.IsPathRooted(relative)) return target;
-                        return new Uri(relative + target.Fragment, UriKind.Relative);
-                    }
-                }
-                return target;
+                return SimplifyUri(target);
             }
+        }
+
+        protected Uri SimplifyUri(Uri target)
+        {
+            var current = ModelUri;
+            if (target == null || !target.IsAbsoluteUri) return target;
+            if (!target.IsFile || current == null) return target;
+            if (target.Scheme != current.Scheme) return target;
+            if (target.Host != current.Host) return target;
+            for (int i = 0; i < target.Segments.Length; i++)
+            {
+                if (i >= current.Segments.Length || target.Segments[i] != current.Segments[i])
+                {
+                    var relative = Path.Combine(Enumerable.Repeat("..", current.Segments.Length - i - 1).Concat(target.Segments.Skip(i)).ToArray());
+                    if (Path.IsPathRooted(relative)) return target;
+                    return new Uri(relative.Replace(Path.DirectorySeparatorChar, '/') + target.Fragment, UriKind.Relative);
+                }
+            }
+            return target;
         }
 
         public override IModelElement Resolve(string path)

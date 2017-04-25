@@ -27,7 +27,6 @@ namespace NMF.Models
     {
         private ModelElement parent;
         private ObservableList<ModelElementExtension> extensions;
-        private DescendantsCollection descendants;
         private ModelElementFlag flag;
         private EventHandler<BubbledChangeEventArgs> bubbledChange;
 
@@ -215,6 +214,66 @@ namespace NMF.Models
                     }
                     OnParentChanged(null, oldParent);
                 }
+            }
+        }
+
+        private IReference GetContainerReference(IModelElement child, IClass scope, out int index)
+        {
+            foreach (var r in scope.References)
+            {
+                if (r.IsContainment)
+                {
+                    if (r.UpperBound == 1)
+                    {
+                        if (GetReferencedElement(r) == child)
+                        {
+                            index = 0;
+                            return r;
+                        }
+                    }
+                    else
+                    {
+                        if (r.IsOrdered)
+                        {
+                            index = GetReferencedElements(r).IndexOf(child);
+                            if (index != -1) return r;
+                        }
+                        else
+                        {
+                            if (GetReferencedElements(r).Contains(child))
+                            {
+                                index = -1;
+                                return r;
+                            }
+                        }
+                    }
+                }
+            }
+            foreach (var baseClass in scope.BaseTypes)
+            {
+                var r = GetContainerReference(child, baseClass, out index);
+                if (r != null) return r;
+            }
+            index = -1;
+            return null;
+        }
+
+        /// <summary>
+        /// Gets the container reference for the given child element
+        /// </summary>
+        /// <param name="child">The child element</param>
+        /// <param name="index">The index of the child in the returned reference</param>
+        /// <returns>A composition reference or null, if the child is not contained in the model element</returns>
+        public virtual IReference GetContainerReference(IModelElement child, out int index)
+        {
+            if (child.Parent == this)
+            {
+                return GetContainerReference(child, GetClass(), out index);
+            }
+            else
+            {
+                index = -1;
+                return null;
             }
         }
 
