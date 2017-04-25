@@ -12,7 +12,7 @@
     <eStructuralFeatures xsi:type="ecore:EReference" name="feature" lowerBound="1"
         eType="ecore:EClass http://www.eclipse.org/emf/2002/Ecore#//EStructuralFeature"/>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="ElementaryChangeTransaction" eSuperTypes="#//ElementaryChange">
+  <eClassifiers xsi:type="ecore:EClass" name="ElementaryChangeTransaction" eSuperTypes="#//ModelChange">
     <eStructuralFeatures xsi:type="ecore:EReference" name="sourceChange" lowerBound="1"
         eType="#//ModelChange" containment="true"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="nestedChanges" upperBound="-1"
@@ -96,5 +96,22 @@
         eType="ecore:EClass http://www.eclipse.org/emf/2002/Ecore#//EObject" containment="true"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="oldValue"
         eType="ecore:EClass http://www.eclipse.org/emf/2002/Ecore#//EObject"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="CompositionMoveToCollection" eSuperTypes="#//CollectionInsertion">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="movedElement" lowerBound="1"
+        eType="ecore:EClass http://www.eclipse.org/emf/2002/Ecore#//EObject"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="origin" lowerBound="1" containment="true" eType="#//ElementaryChange"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="CompositionMoveIntoProperty" eSuperTypes="#//PropertyChange">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="newValue"
+        eType="ecore:EClass http://www.eclipse.org/emf/2002/Ecore#//EObject"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="oldValue"
+        eType="ecore:EClass http://www.eclipse.org/emf/2002/Ecore#//EObject"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="origin" lowerBound="1" containment="true" eType="#//ElementaryChange"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="CompositionMoveToList" eSuperTypes="#//ListInsertion">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="movedElement" lowerBound="1"
+        eType="ecore:EClass http://www.eclipse.org/emf/2002/Ecore#//EObject"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="origin" lowerBound="1" containment="true" eType="#//ElementaryChange"/>
   </eClassifiers>
 </ecore:EPackage>
