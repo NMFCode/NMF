@@ -150,6 +150,43 @@ namespace NMF.Expressions
             typeof(ObservableMethodProxyCall<,,,,,,,,,,,,,,,,>),
         };
 
+        private static Type[] staticLensProxyCallTypes =
+        {
+            typeof(ObservableStaticLensProxyCall<,>),
+            typeof(ObservableStaticLensProxyCall<,,>),
+            typeof(ObservableStaticLensProxyCall<,,,>),
+            typeof(ObservableStaticLensProxyCall<,,,,>),
+            typeof(ObservableStaticLensProxyCall<,,,,,>),
+            typeof(ObservableStaticLensProxyCall<,,,,,,>),
+            typeof(ObservableStaticLensProxyCall<,,,,,,,>),
+            typeof(ObservableStaticLensProxyCall<,,,,,,,,>),
+            typeof(ObservableStaticLensProxyCall<,,,,,,,,,>),
+            typeof(ObservableStaticLensProxyCall<,,,,,,,,,,>),
+            typeof(ObservableStaticLensProxyCall<,,,,,,,,,,,>),
+            typeof(ObservableStaticLensProxyCall<,,,,,,,,,,,,>),
+            typeof(ObservableStaticLensProxyCall<,,,,,,,,,,,,,>),
+            typeof(ObservableStaticLensProxyCall<,,,,,,,,,,,,,,>)
+        };
+
+        private static Type[] memberLensProxyCallTypes =
+        {
+            typeof(ObservableMethodLensProxyCall<,>),
+            typeof(ObservableMethodLensProxyCall<,,>),
+            typeof(ObservableMethodLensProxyCall<,,,>),
+            typeof(ObservableMethodLensProxyCall<,,,,>),
+            typeof(ObservableMethodLensProxyCall<,,,,,>),
+            typeof(ObservableMethodLensProxyCall<,,,,,,>),
+            typeof(ObservableMethodLensProxyCall<,,,,,,,>),
+            typeof(ObservableMethodLensProxyCall<,,,,,,,,>),
+            typeof(ObservableMethodLensProxyCall<,,,,,,,,,>),
+            typeof(ObservableMethodLensProxyCall<,,,,,,,,,,>),
+            typeof(ObservableMethodLensProxyCall<,,,,,,,,,,,>),
+            typeof(ObservableMethodLensProxyCall<,,,,,,,,,,,,>),
+            typeof(ObservableMethodLensProxyCall<,,,,,,,,,,,,,>),
+            typeof(ObservableMethodLensProxyCall<,,,,,,,,,,,,,,>),
+            typeof(ObservableMethodLensProxyCall<,,,,,,,,,,,,,,,>)
+        };
+
         private static Type[] funcTypes =
         {
             typeof(ObservingFunc<,>),
@@ -751,6 +788,7 @@ namespace NMF.Expressions
 
             var types = new Type[typesLength];
 
+            var lensAttribute = node.Method.GetCustomAttribute(typeof(LensPutAttribute));
             var typesArg = new Type[node.Arguments.Count];
             var typesArgInc = new Type[node.Arguments.Count];
             var typesArgStatic = new Type[node.Arguments.Count + typeOffset];
@@ -812,7 +850,8 @@ namespace NMF.Expressions
                         }
                         CheckForOutParameter(proxyMethod.GetParameters());
                         CheckReturnTypeIsCorrect(node, proxyMethod);
-                        return System.Activator.CreateInstance(memberProxyCallTypes[typesLength - 2].MakeGenericType(types), node, this, proxyMethod) as Expression;
+                        var typeArray = lensAttribute == null ? memberProxyCallTypes : memberLensProxyCallTypes;
+                        return System.Activator.CreateInstance(typeArray[typesLength - 2].MakeGenericType(types), node, this, proxyMethod) as Expression;
                     }
                     else if (proxyAttribute.InitializeProxyMethod(node.Method, typesArgStaticInc, out proxyMethod))
                     {
@@ -838,9 +877,16 @@ namespace NMF.Expressions
                                 proxyArgs[i + typeOffset + 1] = Visit(node.Arguments[i]);
                                 proxyCallTypes[i + typeOffset + 1] = node.Arguments[i].Type;
                             }
-                            var deferredProxyType = ObservableDeferredElementTypes.Types[proxyCallTypes.Length - 2];
-                            deferredProxyType = deferredProxyType.MakeGenericType(proxyCallTypes);
-                            return Activator.CreateInstance(deferredProxyType, proxyArgs) as Expression;
+                            if (lensAttribute == null)
+                            {
+                                var deferredProxyType = ObservableDeferredElementTypes.Types[proxyCallTypes.Length - 2];
+                                deferredProxyType = deferredProxyType.MakeGenericType(proxyCallTypes);
+                                return Activator.CreateInstance(deferredProxyType, proxyArgs) as Expression;
+                            }
+                            else
+                            {
+                                throw new NotImplementedException();
+                            }
                         }
                         else
                         {
@@ -855,10 +901,17 @@ namespace NMF.Expressions
                             }
                             try
                             {
-                                object proxy = proxyMethod.Invoke(null, proxyArgs);
-                                var proxyExp = proxy as Expression;
-                                if (proxyExp != null) return proxyExp;
-                                return System.Activator.CreateInstance(typeof(ObservableProxyExpression<>).MakeGenericType(node.Method.ReturnType), proxy) as Expression;
+                                if (lensAttribute == null)
+                                {
+                                    object proxy = proxyMethod.Invoke(null, proxyArgs);
+                                    var proxyExp = proxy as Expression;
+                                    if (proxyExp != null) return proxyExp;
+                                    return System.Activator.CreateInstance(typeof(ObservableProxyExpression<>).MakeGenericType(node.Method.ReturnType), proxy) as Expression;
+                                }
+                                else
+                                {
+                                    throw new NotImplementedException();
+                                }
                             }
                             catch (NullReferenceException)
                             {
@@ -874,7 +927,8 @@ namespace NMF.Expressions
                         }
                         CheckForOutParameter(proxyMethod.GetParameters());
                         CheckReturnTypeIsCorrect(node, proxyMethod);
-                        return System.Activator.CreateInstance(staticProxyCallTypes[typesLength - 2].MakeGenericType(types), node, this, proxyMethod) as Expression;
+                        var typeArray = lensAttribute == null ? staticProxyCallTypes : staticLensProxyCallTypes;
+                        return System.Activator.CreateInstance(typeArray[typesLength - 2].MakeGenericType(types), node, this, proxyMethod) as Expression;
                     }
                     else
                     {
@@ -883,7 +937,6 @@ namespace NMF.Expressions
                 }
             }
             Type[] methodArray;
-            var lensAttribute = node.Method.GetCustomAttribute(typeof(LensPutAttribute));
             if (node.Method.IsStatic)
             {
                 if (lensAttribute != null)

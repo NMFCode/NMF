@@ -24,36 +24,6 @@ namespace NMF.Expressions
             listener = new CollectionChangeListener<object>(this);
         }
 
-        protected object ExtractLensPut(MethodCallExpression node, Type[] types, Type delegateType, LensPutAttribute lensAttribute)
-        {
-            MethodInfo lensMethod;
-            if (lensAttribute.InitializeProxyMethod(node.Method, types, out lensMethod) && lensMethod != null && lensMethod.IsStatic)
-            {
-                if (lensMethod.ReturnType == typeof(void))
-                {
-                    return ReflectionHelper.CreateDelegate(delegateType, lensMethod);
-                }
-                else
-                {
-                    var targetReversable = Target as INotifyReversableExpression<T>;
-                    if (targetReversable != null)
-                    {
-                        var parameters = types.Select((t, i) => Parameter(t, "arg" + i.ToString())).ToArray();
-                        var target = Constant(targetReversable, typeof(INotifyReversableExpression<T>));
-                        var targetValue = MakeMemberAccess(target, ReflectionHelper.GetProperty(target.Type, "Value"));
-                        var lensCall = Call(lensMethod, parameters);
-                        var expression = Lambda(delegateType, Assign(targetValue, lensCall), parameters);
-                        return expression.Compile();
-                    }
-                    return null;
-                }
-            }
-            else
-            {
-                throw new InvalidOperationException($"The lens put method for method {node.Method.Name} has the wrong signature.");
-            }
-        }
-
         public MethodInfo Method { get; private set; }
 
         public TDelegate Function { get; private set; }

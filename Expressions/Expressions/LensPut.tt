@@ -1,0 +1,91 @@
+﻿<#@ template debug="false" hostspecific="false" language="C#" #>
+<#@ assembly name="System.Core" #>
+<#@ import namespace="System.Linq" #>
+<#@ import namespace="System.Text" #>
+<#@ import namespace="System.Collections.Generic" #>
+<#@ output extension=".cs" #>
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace NMF.Expressions
+{
+<# for (int i = 1; i <= 15; i++) { #>
+    internal abstract class LensPut<TBase<# for(int j = 2; j <= i; j++) { #>, T<#= j #><# } #>, TValue>
+    {
+		public static LensPut<TBase<# for(int j = 2; j <= i; j++) { #>, T<#= j #><# } #>, TValue> FromLensPutAttribute(LensPutAttribute lensAttribute, MethodInfo method, INotifyReversableValue<TBase> target)
+		{
+			MethodInfo lensMethod;
+            if (lensAttribute.InitializeProxyMethod(method, new Type[] { typeof(TBase)<# for(int j = 2; j <= i; j++) { #>, typeof(T<#= j #>)<# } #>, typeof(TValue) }, out lensMethod) && lensMethod != null && lensMethod.IsStatic)
+            {
+                if (lensMethod.ReturnType == typeof(void))
+                {
+                    return new PersistentLensPut<TBase<# for(int j = 2; j <= i; j++) { #>, T<#= j #><# } #>, TValue>(ReflectionHelper.CreateDelegate<Action<TBase<# for(int j = 2; j <= i; j++) { #>, T<#= j #><# } #>, TValue>>(lensMethod));
+                }
+                else
+                {
+                    return new NonPersistentLens<TBase<# for(int j = 2; j <= i; j++) { #>, T<#= j #><# } #>, TValue>(ReflectionHelper.CreateDelegate<Func<TBase<# for(int j = 2; j <= i; j++) { #>, T<#= j #><# } #>, TValue, TBase>>(lensMethod), target);
+                }
+            }
+            else
+            {
+                throw new InvalidOperationException($"The lens put method for method {method.Name} has the wrong signature.");
+            }
+		}
+
+		public virtual bool CanApply { get { return true; } }
+
+        public abstract void SetValue(TBase arg1<# for(int j = 2; j <= i; j++) { #>, T<#= j #> arg<#= j #><# } #>, TValue value);
+
+        public abstract LensPut<TBase<# for(int j = 2; j <= i; j++) { #>, T<#= j #><# } #>, TValue> ApplyNewTarget(INotifyReversableValue<TBase> target);
+    }
+
+    internal class PersistentLensPut<TBase<# for(int j = 2; j <= i; j++) { #>, T<#= j #><# } #>, TValue> : LensPut<TBase<# for(int j = 2; j <= i; j++) { #>, T<#= j #><# } #>, TValue>
+    {
+        public PersistentLensPut(Action<TBase<# for(int j = 2; j <= i; j++) { #>, T<#= j #><# } #>, TValue> put)
+        {
+            Put = put;
+        }
+
+        public Action<TBase<# for(int j = 2; j <= i; j++) { #>, T<#= j #><# } #>, TValue> Put { get; set; }
+
+        public override LensPut<TBase<# for(int j = 2; j <= i; j++) { #>, T<#= j #><# } #>, TValue> ApplyNewTarget(INotifyReversableValue<TBase> target)
+        {
+            return this;
+        }
+
+        public override void SetValue(TBase arg1<# for(int j = 2; j <= i; j++) { #>, T<#= j #> arg<#= j #><# } #>, TValue value)
+        {
+            Put(arg1<# for(int j = 2; j <= i; j++) { #>, arg<#= j #><# } #>, value);
+        }
+    }
+
+    internal class NonPersistentLens<TBase<# for(int j = 2; j <= i; j++) { #>, T<#= j #><# } #>, TValue> : LensPut<TBase<# for(int j = 2; j <= i; j++) { #>, T<#= j #><# } #>, TValue>
+    {
+        public Func<TBase<# for(int j = 2; j <= i; j++) { #>, T<#= j #><# } #>, TValue, TBase> Put { get; private set; }
+
+        public INotifyReversableValue<TBase> Target { get; private set; }
+
+        public NonPersistentLens(Func<TBase<# for(int j = 2; j <= i; j++) { #>, T<#= j #><# } #>, TValue, TBase> put, INotifyReversableValue<TBase> basePut)
+        {
+            Put = put;
+            Target = basePut;
+        }
+
+        public override LensPut<TBase<# for(int j = 2; j <= i; j++) { #>, T<#= j #><# } #>, TValue> ApplyNewTarget(INotifyReversableValue<TBase> target)
+        {
+            return new NonPersistentLens<TBase<# for(int j = 2; j <= i; j++) { #>, T<#= j #><# } #>, TValue>(Put, target);
+        }
+
+        public override void SetValue(TBase arg1<# for(int j = 2; j <= i; j++) { #>, T<#= j #> arg<#= j #><# } #>, TValue value)
+        {
+            Target.Value = Put(arg1<# for(int j = 2; j <= i; j++) { #>, arg<#= j #><# } #>, value);
+        }
+
+		public override bool CanApply { get { return Target != null && Target.IsReversable; } }
+    }
+<# } #>
+}

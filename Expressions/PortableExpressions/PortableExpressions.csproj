@@ -272,6 +272,9 @@
     <Compile Include="..\Expressions\ExpressionVisitorBase.cs">
       <Link>ExpressionVisitorBase.cs</Link>
     </Compile>
+    <Compile Include="..\Expressions\LensPut.cs">
+      <Link>LensPut.cs</Link>
+    </Compile>
     <Compile Include="..\Expressions\ObservableArrayIndex.cs">
       <Link>ObservableArrayIndex.cs</Link>
     </Compile>
@@ -299,6 +302,9 @@
     <Compile Include="..\Expressions\ObservableLensMethodCall.cs">
       <Link>ObservableLensMethodCall.cs</Link>
     </Compile>
+    <Compile Include="..\Expressions\ObservableLensPutProxy.cs">
+      <Link>ObservableLensPutProxy.cs</Link>
+    </Compile>
     <Compile Include="..\Expressions\ObservableListInit.cs">
       <Link>ObservableListInit.cs</Link>
     </Compile>
@@ -319,6 +325,9 @@
     </Compile>
     <Compile Include="..\Expressions\ObservableMethodCallBase.cs">
       <Link>ObservableMethodCallBase.cs</Link>
+    </Compile>
+    <Compile Include="..\Expressions\ObservableMethodLensProxyCall.cs">
+      <Link>ObservableMethodLensProxyCall.cs</Link>
     </Compile>
     <Compile Include="..\Expressions\ObservableMethodProxyCall.cs">
       <Link>ObservableMethodProxyCall.cs</Link>
@@ -346,6 +355,9 @@
     </Compile>
     <Compile Include="..\Expressions\ObservableStaticLensMethodCall.cs">
       <Link>ObservableStaticLensMethodCall.cs</Link>
+    </Compile>
+    <Compile Include="..\Expressions\ObservableStaticLensProxyCall.cs">
+      <Link>ObservableStaticLensProxyCall.cs</Link>
     </Compile>
     <Compile Include="..\Expressions\ObservableStaticMethodCall.cs">
       <Link>ObservableStaticMethodCall.cs</Link>

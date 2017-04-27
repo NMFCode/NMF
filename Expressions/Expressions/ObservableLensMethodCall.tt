@@ -20,7 +20,7 @@ namespace NMF.Expressions
 #>
     internal class ObservableLensMethodCall<T<# for(int j = 1; j <= i; j++) { #>, T<#= j #><# } #>, TResult> : ObservableMethodCall<T<# for(int j = 1; j <= i; j++) { #>, T<#= j #><# } #>, TResult>, INotifyReversableExpression<TResult>
     {
-        public Action<T<# for(int j = 1; j <= i; j++) { #>, T<#= j #><# } #>, TResult> LensPut { get; set; }
+        public LensPut<T<# for(int j = 1; j <= i; j++) { #>, T<#= j #><# } #>, TResult> LensPut { get; set; }
 
         TResult INotifyReversableValue<TResult>.Value
 		{
@@ -30,7 +30,8 @@ namespace NMF.Expressions
 			}
 			set
 			{
-				LensPut(Target.Value<# for(int j = 1; j <= i; j++) { #>, Argument<#= j #>.Value<# } #>, value);
+				Successors.SetDummy();
+				LensPut.SetValue(Target.Value<# for(int j = 1; j <= i; j++) { #>, Argument<#= j #>.Value<# } #>, value);
 			}
 		}
 
@@ -38,24 +39,25 @@ namespace NMF.Expressions
 		{
 			get
 			{
-				return LensPut != null;
+				return LensPut != null && LensPut.CanApply;
 			}
 		}
 
         public ObservableLensMethodCall(MethodCallExpression node, ObservableExpressionBinder binder) : base(node, binder)
         {
-		    var lensPut = node.Method.GetCustomAttribute(typeof(LensPutAttribute)) as LensPutAttribute;
-            LensPut = (Action<T<# for(int j = 1; j <= i; j++) { #>, T<#= j #><# } #>, TResult>)ExtractLensPut(node, new Type[] { typeof(T)<# for(int j = 1; j <= i; j++) { #>, typeof(T<#= j #>)<# } #>, typeof(TResult) }, typeof(Action<T<# for(int j = 1; j <= i; j++) { #>, T<#= j #><# } #>, TResult>), lensPut);
+		    var lensPutAttribute = node.Method.GetCustomAttribute(typeof(LensPutAttribute)) as LensPutAttribute;
+            LensPut = LensPut<T<# for(int j = 1; j <= i; j++) { #>, T<#= j #><# } #>, TResult>.FromLensPutAttribute(lensPutAttribute, node.Method, Target as INotifyReversableValue<T>);
         }
 
-        public ObservableLensMethodCall(INotifyExpression<T> target, MethodInfo method, Action<T<# for(int j = 1; j <= i; j++) { #>, T<#= j #><# } #>, TResult> lensPut<# for(int j = 1; j <= i; j++) { #>, INotifyExpression<T<#= j #>> argument<#= j #><# } #>) : base(target, method<# for(int j = 1; j <= i; j++) { #>, argument<#= j #><# } #>)
+        public ObservableLensMethodCall(INotifyExpression<T> target, MethodInfo method, LensPut<T<# for(int j = 1; j <= i; j++) { #>, T<#= j #><# } #>, TResult> lensPut<# for(int j = 1; j <= i; j++) { #>, INotifyExpression<T<#= j #>> argument<#= j #><# } #>) : base(target, method<# for(int j = 1; j <= i; j++) { #>, argument<#= j #><# } #>)
         {
             LensPut = lensPut;
         }
 
         public override INotifyExpression<TResult> ApplyParameters(IDictionary<string, object> parameters)
         {
-            return new ObservableLensMethodCall<T<# for(int j = 1; j <= i; j++) { #>, T<#= j #><# } #>, TResult>(Target.ApplyParameters(parameters), Method, LensPut<# for(int j = 1; j <= i; j++) { #>, Argument<#= j #>.ApplyParameters(parameters)<# } #>);
+		    var newTarget = Target.ApplyParameters(parameters);
+            return new ObservableLensMethodCall<T<# for(int j = 1; j <= i; j++) { #>, T<#= j #><# } #>, TResult>(newTarget, Method, LensPut.ApplyNewTarget(newTarget as INotifyReversableValue<T>)<# for(int j = 1; j <= i; j++) { #>, Argument<#= j #>.ApplyParameters(parameters)<# } #>);
         }
     }
 <#

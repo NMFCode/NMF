@@ -75,6 +75,11 @@
     <Compile Include="ExpressionRewriter\SetExpressionRewriterAttribute.cs" />
     <Compile Include="ExpressionRewriter\SetExpressionRewriter.cs" />
     <Compile Include="ExpressionVisitorBase.cs" />
+    <Compile Include="LensPut.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>LensPut.tt</DependentUpon>
+    </Compile>
     <Compile Include="ObservableDeferredProxyElement.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -85,6 +90,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>ObservableLensMethodCall.tt</DependentUpon>
     </Compile>
+    <Compile Include="ObservableLensPutProxy.cs" />
     <Compile Include="ObservableSimpleMethodProxyCall.cs">
       <DependentUpon>ObservableSimpleMethodProxyCall.tt</DependentUpon>
       <AutoGen>True</AutoGen>
@@ -95,6 +101,16 @@
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>ObservableStaticLensMethodCall.tt</DependentUpon>
+    </Compile>
+    <Compile Include="ObservableMethodLensProxyCall.cs">
+      <DependentUpon>ObservableMethodLensProxyCall.tt</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <Compile Include="ObservableStaticLensProxyCall.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>ObservableStaticLensProxyCall.tt</DependentUpon>
     </Compile>
     <Compile Include="Public\INotifiable.cs" />
     <Compile Include="Execution\INotificationResult.cs" />
@@ -233,6 +249,10 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="LensPut.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>LensPut.cs</LastGenOutput>
+    </Content>
     <Content Include="ObservableDeferredProxyElement.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>ObservableDeferredProxyElement.cs</LastGenOutput>
@@ -244,6 +264,14 @@
     <Content Include="ObservableStaticLensMethodCall.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>ObservableStaticLensMethodCall.cs</LastGenOutput>
+    </Content>
+    <Content Include="ObservableMethodLensProxyCall.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>ObservableMethodLensProxyCall.cs</LastGenOutput>
+    </Content>
+    <Content Include="ObservableStaticLensProxyCall.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>ObservableStaticLensProxyCall.cs</LastGenOutput>
     </Content>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

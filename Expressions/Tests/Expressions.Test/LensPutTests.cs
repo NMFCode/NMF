@@ -30,6 +30,44 @@ namespace NMF.Expressions.Test
             }
         }
 
+        private static ObservingFunc<Dummy<string>, Dummy<string>, string> combineFunc = new ObservingFunc<Dummy<string>, Dummy<string>, string>((d1, d2) => d1.Item + d2.Item);
+
+
+        [LensPut(typeof(Helpers), "PutCombine")]
+        [ObservableProxy(typeof(Helpers), "CombineProxy")]
+        public static string Combine(Dummy<string> arg1, Dummy<string> arg2)
+        {
+            return combineFunc.Evaluate(arg1, arg2);
+        }
+
+        [LensPut(typeof(Helpers), "PutCombineInc")]
+        [ObservableProxy(typeof(Helpers), "CombineProxyInc")]
+        public static string CombineInc(Dummy<string> arg1, Dummy<string> arg2)
+        {
+            return combineFunc.Evaluate(arg1, arg2);
+        }
+        
+        public static INotifyValue<string> CombineProxy(Dummy<string> arg1, Dummy<string> arg2)
+        {
+            return combineFunc.Observe(arg1, arg2);
+        }
+        
+        public static INotifyValue<string> CombineProxyInc(INotifyValue<Dummy<string>> arg1, INotifyValue<Dummy<string>> arg2)
+        {
+            return combineFunc.Observe(arg1, arg2);
+        }
+
+        public static void PutCombine(Dummy<string> arg1, Dummy<string> arg2, string value)
+        {
+            arg1.Item = value.Substring(0, 1);
+            arg2.Item = value.Substring(1);
+        }
+
+        public static void PutCombineInc(Dummy<string> arg1, Dummy<string> arg2, string value)
+        {
+            arg1.Item = value.Substring(0, 1);
+            arg2.Item = value.Substring(1);
+        }
     }
 
     [TestClass]
@@ -122,6 +160,87 @@ namespace NMF.Expressions.Test
             Assert.AreEqual(array, dummy.Item);
         }
 
+
+        [TestMethod]
+        public void PutGetForEmptyArrayWithFunc()
+        {
+            var dummy = new ObservableDummy<int[]>(new int[] { });
+            var func = Observable.Func<Dummy<int[]>, int>(d => d.Item.FirstOrDefault());
+            var test = func.InvokeReversable(dummy);
+
+            Assert.AreEqual(0, test.Value);
+            test.Value = 42;
+            Assert.AreEqual(42, dummy.Item[0]);
+            Assert.AreEqual(42, test.Value);
+        }
+
+        [TestMethod]
+        public void PutGetForNullArrayWithFunc()
+        {
+            var dummy = new ObservableDummy<int[]>(null);
+            var func = Observable.Func<Dummy<int[]>, int>(d => d.Item.FirstOrDefault());
+            var test = func.InvokeReversable(dummy);
+
+            Assert.AreEqual(0, test.Value);
+            test.Value = 42;
+            Assert.AreEqual(42, dummy.Item[0]);
+            Assert.AreEqual(42, test.Value);
+        }
+
+
+        [TestMethod]
+        public void PutGetForInitializedArrayWithFunc()
+        {
+            var dummy = new ObservableDummy<int[]>(new int[] { 0, 8, 15 });
+            var func = Observable.Func<Dummy<int[]>, int>(d => d.Item.FirstOrDefault());
+            var test = func.InvokeReversable(dummy);
+
+            Assert.AreEqual(0, test.Value);
+            test.Value = 42;
+            Assert.AreEqual(42, dummy.Item[0]);
+            // Arrays do not support an update notification for entries and therefore, the following assertions fails
+            //Assert.AreEqual(42, test.Value);
+        }
+
+        [TestMethod]
+        public void GetPutForEmptyArrayWithFunc()
+        {
+            var array = new int[] { };
+            var dummy = new Dummy<int[]>(array);
+            var func = Observable.Func<Dummy<int[]>, int>(d => d.Item.FirstOrDefault());
+            var test = func.InvokeReversable(dummy);
+
+            Assert.AreEqual(0, test.Value);
+            test.Value = 0;
+            Assert.AreEqual(array, dummy.Item);
+        }
+
+        [TestMethod]
+        public void GetPutForNullArrayWithFunc()
+        {
+            var dummy = new Dummy<int[]>(null);
+            var func = Observable.Func<Dummy<int[]>, int>(d => d.Item.FirstOrDefault());
+            var test = func.InvokeReversable(dummy);
+
+            Assert.AreEqual(0, test.Value);
+            test.Value = 0;
+            Assert.AreEqual(null, dummy.Item);
+        }
+
+
+        [TestMethod]
+        public void GetPutForInitializedArrayWithFunc()
+        {
+            var array = new int[] { 0, 8, 15 };
+            var dummy = new Dummy<int[]>(array);
+            var func = Observable.Func<Dummy<int[]>, int>(d => d.Item.FirstOrDefault());
+            var test = func.InvokeReversable(dummy);
+
+            Assert.AreEqual(0, test.Value);
+            test.Value = 0;
+            Assert.AreEqual(array, dummy.Item);
+        }
+
         [TestMethod]
         public void PutGetForCompiledEmptyArray()
         {
@@ -187,6 +306,93 @@ namespace NMF.Expressions.Test
             Assert.AreEqual(0, getter(dummy));
             setter(dummy, 0);
             Assert.AreEqual(array, dummy.Item);
+        }
+
+        [TestMethod]
+        public void LensPutWithProxy()
+        {
+            var dummy1 = new ObservableDummy<string>("A");
+            var dummy2 = new ObservableDummy<string>("B");
+
+            var test = Observable.Reversable(() => Helpers.Combine(dummy1, dummy2));
+            Assert.AreEqual("AB", test.Value);
+
+            var updated = false;
+            test.ValueChanged += (o, e) =>
+            {
+                updated = true;
+            };
+
+            var dummy1Updated = false;
+            dummy1.ItemChanged += (o, e) =>
+            {
+                dummy1Updated = true;
+            };
+            var dummy2Updated = false;
+            dummy2.ItemChanged += (o, e) =>
+            {
+                dummy2Updated = true;
+            };
+
+            dummy2.Item = "C";
+
+            Assert.IsTrue(updated);
+            Assert.IsFalse(dummy1Updated);
+            Assert.IsTrue(dummy2Updated);
+            Assert.AreEqual("AC", test.Value);
+
+            updated = false;
+            dummy2Updated = false;
+            test.Value = "BC";
+
+            Assert.IsTrue(dummy1Updated);
+            Assert.AreEqual("B", dummy1.Item);
+            Assert.IsTrue(updated);
+            Assert.IsFalse(dummy2Updated);
+        }
+
+        [TestMethod]
+        public void LensPutWithProxyInc()
+        {
+            // not yet implemented
+            //var dummy1 = new ObservableDummy<string>("A");
+            //var dummy2 = new ObservableDummy<string>("B");
+
+            //var test = Observable.Reversable(() => Helpers.CombineInc(dummy1, dummy2));
+            //Assert.AreEqual("AB", test.Value);
+
+            //var updated = false;
+            //test.ValueChanged += (o, e) =>
+            //{
+            //    updated = true;
+            //};
+
+            //var dummy1Updated = false;
+            //dummy1.ItemChanged += (o, e) =>
+            //{
+            //    dummy1Updated = true;
+            //};
+            //var dummy2Updated = false;
+            //dummy2.ItemChanged += (o, e) =>
+            //{
+            //    dummy2Updated = true;
+            //};
+
+            //dummy2.Item = "C";
+
+            //Assert.IsTrue(updated);
+            //Assert.IsFalse(dummy1Updated);
+            //Assert.IsTrue(dummy2Updated);
+            //Assert.AreEqual("AC", test.Value);
+
+            //updated = false;
+            //dummy2Updated = false;
+            //test.Value = "BC";
+
+            //Assert.IsTrue(dummy1Updated);
+            //Assert.AreEqual("B", dummy1.Item);
+            //Assert.IsTrue(updated);
+            //Assert.IsFalse(dummy2Updated);
         }
     }
 }

@@ -8,7 +8,7 @@ using System.Text;
 
 namespace NMF.Expressions
 {
-    internal sealed class ObservableMethodProxyCall<T, TResult> : ObservableProxyCallBase<TResult>
+    internal class ObservableMethodProxyCall<T, TResult> : ObservableProxyCallBase<TResult>
     {
         public ObservableMethodProxyCall(MethodCallExpression node, ObservableExpressionBinder binder, MethodInfo proxyMethod)
             : this(binder.VisitObservable<T>(ExpressionHelper.GetArg(node, 0)), proxyMethod) { }
@@ -91,7 +91,7 @@ namespace NMF.Expressions
 
         }
     }
-    internal sealed class ObservableMethodProxyCall<T, T1, TResult> : ObservableProxyCallBase<TResult>
+    internal class ObservableMethodProxyCall<T, T1, TResult> : ObservableProxyCallBase<TResult>
     {
         public ObservableMethodProxyCall(MethodCallExpression node, ObservableExpressionBinder binder, MethodInfo proxyMethod)
             : this(binder.VisitObservable<T>(ExpressionHelper.GetArg(node, 0)), proxyMethod, binder.VisitObservable<T1>(ExpressionHelper.GetArg(node, 1))) { }
@@ -180,7 +180,7 @@ namespace NMF.Expressions
                 Argument1.Successors.Set(this);
         }
     }
-    internal sealed class ObservableMethodProxyCall<T, T1, T2, TResult> : ObservableProxyCallBase<TResult>
+    internal class ObservableMethodProxyCall<T, T1, T2, TResult> : ObservableProxyCallBase<TResult>
     {
         public ObservableMethodProxyCall(MethodCallExpression node, ObservableExpressionBinder binder, MethodInfo proxyMethod)
             : this(binder.VisitObservable<T>(ExpressionHelper.GetArg(node, 0)), proxyMethod, binder.VisitObservable<T1>(ExpressionHelper.GetArg(node, 1)), binder.VisitObservable<T2>(ExpressionHelper.GetArg(node, 2))) { }
@@ -275,7 +275,7 @@ namespace NMF.Expressions
                 Argument2.Successors.Set(this);
         }
     }
-    internal sealed class ObservableMethodProxyCall<T, T1, T2, T3, TResult> : ObservableProxyCallBase<TResult>
+    internal class ObservableMethodProxyCall<T, T1, T2, T3, TResult> : ObservableProxyCallBase<TResult>
     {
         public ObservableMethodProxyCall(MethodCallExpression node, ObservableExpressionBinder binder, MethodInfo proxyMethod)
             : this(binder.VisitObservable<T>(ExpressionHelper.GetArg(node, 0)), proxyMethod, binder.VisitObservable<T1>(ExpressionHelper.GetArg(node, 1)), binder.VisitObservable<T2>(ExpressionHelper.GetArg(node, 2)), binder.VisitObservable<T3>(ExpressionHelper.GetArg(node, 3))) { }
@@ -376,7 +376,7 @@ namespace NMF.Expressions
                 Argument3.Successors.Set(this);
         }
     }
-    internal sealed class ObservableMethodProxyCall<T, T1, T2, T3, T4, TResult> : ObservableProxyCallBase<TResult>
+    internal class ObservableMethodProxyCall<T, T1, T2, T3, T4, TResult> : ObservableProxyCallBase<TResult>
     {
         public ObservableMethodProxyCall(MethodCallExpression node, ObservableExpressionBinder binder, MethodInfo proxyMethod)
             : this(binder.VisitObservable<T>(ExpressionHelper.GetArg(node, 0)), proxyMethod, binder.VisitObservable<T1>(ExpressionHelper.GetArg(node, 1)), binder.VisitObservable<T2>(ExpressionHelper.GetArg(node, 2)), binder.VisitObservable<T3>(ExpressionHelper.GetArg(node, 3)), binder.VisitObservable<T4>(ExpressionHelper.GetArg(node, 4))) { }
@@ -483,7 +483,7 @@ namespace NMF.Expressions
                 Argument4.Successors.Set(this);
         }
     }
-    internal sealed class ObservableMethodProxyCall<T, T1, T2, T3, T4, T5, TResult> : ObservableProxyCallBase<TResult>
+    internal class ObservableMethodProxyCall<T, T1, T2, T3, T4, T5, TResult> : ObservableProxyCallBase<TResult>
     {
         public ObservableMethodProxyCall(MethodCallExpression node, ObservableExpressionBinder binder, MethodInfo proxyMethod)
             : this(binder.VisitObservable<T>(ExpressionHelper.GetArg(node, 0)), proxyMethod, binder.VisitObservable<T1>(ExpressionHelper.GetArg(node, 1)), binder.VisitObservable<T2>(ExpressionHelper.GetArg(node, 2)), binder.VisitObservable<T3>(ExpressionHelper.GetArg(node, 3)), binder.VisitObservable<T4>(ExpressionHelper.GetArg(node, 4)), binder.VisitObservable<T5>(ExpressionHelper.GetArg(node, 5))) { }
@@ -596,7 +596,7 @@ namespace NMF.Expressions
                 Argument5.Successors.Set(this);
         }
     }
-    internal sealed class ObservableMethodProxyCall<T, T1, T2, T3, T4, T5, T6, TResult> : ObservableProxyCallBase<TResult>
+    internal class ObservableMethodProxyCall<T, T1, T2, T3, T4, T5, T6, TResult> : ObservableProxyCallBase<TResult>
     {
         public ObservableMethodProxyCall(MethodCallExpression node, ObservableExpressionBinder binder, MethodInfo proxyMethod)
             : this(binder.VisitObservable<T>(ExpressionHelper.GetArg(node, 0)), proxyMethod, binder.VisitObservable<T1>(ExpressionHelper.GetArg(node, 1)), binder.VisitObservable<T2>(ExpressionHelper.GetArg(node, 2)), binder.VisitObservable<T3>(ExpressionHelper.GetArg(node, 3)), binder.VisitObservable<T4>(ExpressionHelper.GetArg(node, 4)), binder.VisitObservable<T5>(ExpressionHelper.GetArg(node, 5)), binder.VisitObservable<T6>(ExpressionHelper.GetArg(node, 6))) { }
@@ -715,7 +715,7 @@ namespace NMF.Expressions
                 Argument6.Successors.Set(this);
         }
     }
-    internal sealed class ObservableMethodProxyCall<T, T1, T2, T3, T4, T5, T6, T7, TResult> : ObservableProxyCallBase<TResult>
+    internal class ObservableMethodProxyCall<T, T1, T2, T3, T4, T5, T6, T7, TResult> : ObservableProxyCallBase<TResult>
     {
         public ObservableMethodProxyCall(MethodCallExpression node, ObservableExpressionBinder binder, MethodInfo proxyMethod)
             : this(binder.VisitObservable<T>(ExpressionHelper.GetArg(node, 0)), proxyMethod, binder.VisitObservable<T1>(ExpressionHelper.GetArg(node, 1)), binder.VisitObservable<T2>(ExpressionHelper.GetArg(node, 2)), binder.VisitObservable<T3>(ExpressionHelper.GetArg(node, 3)), binder.VisitObservable<T4>(ExpressionHelper.GetArg(node, 4)), binder.VisitObservable<T5>(ExpressionHelper.GetArg(node, 5)), binder.VisitObservable<T6>(ExpressionHelper.GetArg(node, 6)), binder.VisitObservable<T7>(ExpressionHelper.GetArg(node, 7))) { }
@@ -840,7 +840,7 @@ namespace NMF.Expressions
                 Argument7.Successors.Set(this);
         }
     }
-    internal sealed class ObservableMethodProxyCall<T, T1, T2, T3, T4, T5, T6, T7, T8, TResult> : ObservableProxyCallBase<TResult>
+    internal class ObservableMethodProxyCall<T, T1, T2, T3, T4, T5, T6, T7, T8, TResult> : ObservableProxyCallBase<TResult>
     {
         public ObservableMethodProxyCall(MethodCallExpression node, ObservableExpressionBinder binder, MethodInfo proxyMethod)
             : this(binder.VisitObservable<T>(ExpressionHelper.GetArg(node, 0)), proxyMethod, binder.VisitObservable<T1>(ExpressionHelper.GetArg(node, 1)), binder.VisitObservable<T2>(ExpressionHelper.GetArg(node, 2)), binder.VisitObservable<T3>(ExpressionHelper.GetArg(node, 3)), binder.VisitObservable<T4>(ExpressionHelper.GetArg(node, 4)), binder.VisitObservable<T5>(ExpressionHelper.GetArg(node, 5)), binder.VisitObservable<T6>(ExpressionHelper.GetArg(node, 6)), binder.VisitObservable<T7>(ExpressionHelper.GetArg(node, 7)), binder.VisitObservable<T8>(ExpressionHelper.GetArg(node, 8))) { }
@@ -971,7 +971,7 @@ namespace NMF.Expressions
                 Argument8.Successors.Set(this);
         }
     }
-    internal sealed class ObservableMethodProxyCall<T, T1, T2, T3, T4, T5, T6, T7, T8, T9, TResult> : ObservableProxyCallBase<TResult>
+    internal class ObservableMethodProxyCall<T, T1, T2, T3, T4, T5, T6, T7, T8, T9, TResult> : ObservableProxyCallBase<TResult>
     {
         public ObservableMethodProxyCall(MethodCallExpression node, ObservableExpressionBinder binder, MethodInfo proxyMethod)
             : this(binder.VisitObservable<T>(ExpressionHelper.GetArg(node, 0)), proxyMethod, binder.VisitObservable<T1>(ExpressionHelper.GetArg(node, 1)), binder.VisitObservable<T2>(ExpressionHelper.GetArg(node, 2)), binder.VisitObservable<T3>(ExpressionHelper.GetArg(node, 3)), binder.VisitObservable<T4>(ExpressionHelper.GetArg(node, 4)), binder.VisitObservable<T5>(ExpressionHelper.GetArg(node, 5)), binder.VisitObservable<T6>(ExpressionHelper.GetArg(node, 6)), binder.VisitObservable<T7>(ExpressionHelper.GetArg(node, 7)), binder.VisitObservable<T8>(ExpressionHelper.GetArg(node, 8)), binder.VisitObservable<T9>(ExpressionHelper.GetArg(node, 9))) { }
@@ -1108,7 +1108,7 @@ namespace NMF.Expressions
                 Argument9.Successors.Set(this);
         }
     }
-    internal sealed class ObservableMethodProxyCall<T, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, TResult> : ObservableProxyCallBase<TResult>
+    internal class ObservableMethodProxyCall<T, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, TResult> : ObservableProxyCallBase<TResult>
     {
         public ObservableMethodProxyCall(MethodCallExpression node, ObservableExpressionBinder binder, MethodInfo proxyMethod)
             : this(binder.VisitObservable<T>(ExpressionHelper.GetArg(node, 0)), proxyMethod, binder.VisitObservable<T1>(ExpressionHelper.GetArg(node, 1)), binder.VisitObservable<T2>(ExpressionHelper.GetArg(node, 2)), binder.VisitObservable<T3>(ExpressionHelper.GetArg(node, 3)), binder.VisitObservable<T4>(ExpressionHelper.GetArg(node, 4)), binder.VisitObservable<T5>(ExpressionHelper.GetArg(node, 5)), binder.VisitObservable<T6>(ExpressionHelper.GetArg(node, 6)), binder.VisitObservable<T7>(ExpressionHelper.GetArg(node, 7)), binder.VisitObservable<T8>(ExpressionHelper.GetArg(node, 8)), binder.VisitObservable<T9>(ExpressionHelper.GetArg(node, 9)), binder.VisitObservable<T10>(ExpressionHelper.GetArg(node, 10))) { }
@@ -1251,7 +1251,7 @@ namespace NMF.Expressions
                 Argument10.Successors.Set(this);
         }
     }
-    internal sealed class ObservableMethodProxyCall<T, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, TResult> : ObservableProxyCallBase<TResult>
+    internal class ObservableMethodProxyCall<T, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, TResult> : ObservableProxyCallBase<TResult>
     {
         public ObservableMethodProxyCall(MethodCallExpression node, ObservableExpressionBinder binder, MethodInfo proxyMethod)
             : this(binder.VisitObservable<T>(ExpressionHelper.GetArg(node, 0)), proxyMethod, binder.VisitObservable<T1>(ExpressionHelper.GetArg(node, 1)), binder.VisitObservable<T2>(ExpressionHelper.GetArg(node, 2)), binder.VisitObservable<T3>(ExpressionHelper.GetArg(node, 3)), binder.VisitObservable<T4>(ExpressionHelper.GetArg(node, 4)), binder.VisitObservable<T5>(ExpressionHelper.GetArg(node, 5)), binder.VisitObservable<T6>(ExpressionHelper.GetArg(node, 6)), binder.VisitObservable<T7>(ExpressionHelper.GetArg(node, 7)), binder.VisitObservable<T8>(ExpressionHelper.GetArg(node, 8)), binder.VisitObservable<T9>(ExpressionHelper.GetArg(node, 9)), binder.VisitObservable<T10>(ExpressionHelper.GetArg(node, 10)), binder.VisitObservable<T11>(ExpressionHelper.GetArg(node, 11))) { }
@@ -1400,7 +1400,7 @@ namespace NMF.Expressions
                 Argument11.Successors.Set(this);
         }
     }
-    internal sealed class ObservableMethodProxyCall<T, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, TResult> : ObservableProxyCallBase<TResult>
+    internal class ObservableMethodProxyCall<T, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, TResult> : ObservableProxyCallBase<TResult>
     {
         public ObservableMethodProxyCall(MethodCallExpression node, ObservableExpressionBinder binder, MethodInfo proxyMethod)
             : this(binder.VisitObservable<T>(ExpressionHelper.GetArg(node, 0)), proxyMethod, binder.VisitObservable<T1>(ExpressionHelper.GetArg(node, 1)), binder.VisitObservable<T2>(ExpressionHelper.GetArg(node, 2)), binder.VisitObservable<T3>(ExpressionHelper.GetArg(node, 3)), binder.VisitObservable<T4>(ExpressionHelper.GetArg(node, 4)), binder.VisitObservable<T5>(ExpressionHelper.GetArg(node, 5)), binder.VisitObservable<T6>(ExpressionHelper.GetArg(node, 6)), binder.VisitObservable<T7>(ExpressionHelper.GetArg(node, 7)), binder.VisitObservable<T8>(ExpressionHelper.GetArg(node, 8)), binder.VisitObservable<T9>(ExpressionHelper.GetArg(node, 9)), binder.VisitObservable<T10>(ExpressionHelper.GetArg(node, 10)), binder.VisitObservable<T11>(ExpressionHelper.GetArg(node, 11)), binder.VisitObservable<T12>(ExpressionHelper.GetArg(node, 12))) { }
@@ -1555,7 +1555,7 @@ namespace NMF.Expressions
                 Argument12.Successors.Set(this);
         }
     }
-    internal sealed class ObservableMethodProxyCall<T, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, TResult> : ObservableProxyCallBase<TResult>
+    internal class ObservableMethodProxyCall<T, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, TResult> : ObservableProxyCallBase<TResult>
     {
         public ObservableMethodProxyCall(MethodCallExpression node, ObservableExpressionBinder binder, MethodInfo proxyMethod)
             : this(binder.VisitObservable<T>(ExpressionHelper.GetArg(node, 0)), proxyMethod, binder.VisitObservable<T1>(ExpressionHelper.GetArg(node, 1)), binder.VisitObservable<T2>(ExpressionHelper.GetArg(node, 2)), binder.VisitObservable<T3>(ExpressionHelper.GetArg(node, 3)), binder.VisitObservable<T4>(ExpressionHelper.GetArg(node, 4)), binder.VisitObservable<T5>(ExpressionHelper.GetArg(node, 5)), binder.VisitObservable<T6>(ExpressionHelper.GetArg(node, 6)), binder.VisitObservable<T7>(ExpressionHelper.GetArg(node, 7)), binder.VisitObservable<T8>(ExpressionHelper.GetArg(node, 8)), binder.VisitObservable<T9>(ExpressionHelper.GetArg(node, 9)), binder.VisitObservable<T10>(ExpressionHelper.GetArg(node, 10)), binder.VisitObservable<T11>(ExpressionHelper.GetArg(node, 11)), binder.VisitObservable<T12>(ExpressionHelper.GetArg(node, 12)), binder.VisitObservable<T13>(ExpressionHelper.GetArg(node, 13))) { }
@@ -1716,7 +1716,7 @@ namespace NMF.Expressions
                 Argument13.Successors.Set(this);
         }
     }
-    internal sealed class ObservableMethodProxyCall<T, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, TResult> : ObservableProxyCallBase<TResult>
+    internal class ObservableMethodProxyCall<T, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, TResult> : ObservableProxyCallBase<TResult>
     {
         public ObservableMethodProxyCall(MethodCallExpression node, ObservableExpressionBinder binder, MethodInfo proxyMethod)
             : this(binder.VisitObservable<T>(ExpressionHelper.GetArg(node, 0)), proxyMethod, binder.VisitObservable<T1>(ExpressionHelper.GetArg(node, 1)), binder.VisitObservable<T2>(ExpressionHelper.GetArg(node, 2)), binder.VisitObservable<T3>(ExpressionHelper.GetArg(node, 3)), binder.VisitObservable<T4>(ExpressionHelper.GetArg(node, 4)), binder.VisitObservable<T5>(ExpressionHelper.GetArg(node, 5)), binder.VisitObservable<T6>(ExpressionHelper.GetArg(node, 6)), binder.VisitObservable<T7>(ExpressionHelper.GetArg(node, 7)), binder.VisitObservable<T8>(ExpressionHelper.GetArg(node, 8)), binder.VisitObservable<T9>(ExpressionHelper.GetArg(node, 9)), binder.VisitObservable<T10>(ExpressionHelper.GetArg(node, 10)), binder.VisitObservable<T11>(ExpressionHelper.GetArg(node, 11)), binder.VisitObservable<T12>(ExpressionHelper.GetArg(node, 12)), binder.VisitObservable<T13>(ExpressionHelper.GetArg(node, 13)), binder.VisitObservable<T14>(ExpressionHelper.GetArg(node, 14))) { }
@@ -1883,7 +1883,7 @@ namespace NMF.Expressions
                 Argument14.Successors.Set(this);
         }
     }
-    internal sealed class ObservableMethodProxyCall<T, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, TResult> : ObservableProxyCallBase<TResult>
+    internal class ObservableMethodProxyCall<T, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, TResult> : ObservableProxyCallBase<TResult>
     {
         public ObservableMethodProxyCall(MethodCallExpression node, ObservableExpressionBinder binder, MethodInfo proxyMethod)
             : this(binder.VisitObservable<T>(ExpressionHelper.GetArg(node, 0)), proxyMethod, binder.VisitObservable<T1>(ExpressionHelper.GetArg(node, 1)), binder.VisitObservable<T2>(ExpressionHelper.GetArg(node, 2)), binder.VisitObservable<T3>(ExpressionHelper.GetArg(node, 3)), binder.VisitObservable<T4>(ExpressionHelper.GetArg(node, 4)), binder.VisitObservable<T5>(ExpressionHelper.GetArg(node, 5)), binder.VisitObservable<T6>(ExpressionHelper.GetArg(node, 6)), binder.VisitObservable<T7>(ExpressionHelper.GetArg(node, 7)), binder.VisitObservable<T8>(ExpressionHelper.GetArg(node, 8)), binder.VisitObservable<T9>(ExpressionHelper.GetArg(node, 9)), binder.VisitObservable<T10>(ExpressionHelper.GetArg(node, 10)), binder.VisitObservable<T11>(ExpressionHelper.GetArg(node, 11)), binder.VisitObservable<T12>(ExpressionHelper.GetArg(node, 12)), binder.VisitObservable<T13>(ExpressionHelper.GetArg(node, 13)), binder.VisitObservable<T14>(ExpressionHelper.GetArg(node, 14)), binder.VisitObservable<T15>(ExpressionHelper.GetArg(node, 15))) { }
