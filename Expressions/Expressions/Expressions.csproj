@@ -80,15 +80,27 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>ObservableDeferredProxyElement.tt</DependentUpon>
     </Compile>
+    <Compile Include="ObservableLensMethodCall.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>ObservableLensMethodCall.tt</DependentUpon>
+    </Compile>
+    <Compile Include="ObservableLensMethodCallPrototype.cs" />
     <Compile Include="ObservableSimpleMethodProxyCall.cs">
       <DependentUpon>ObservableSimpleMethodProxyCall.tt</DependentUpon>
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
     </Compile>
     <Compile Include="Execution\ExecutionMetaData.cs" />
+    <Compile Include="ObservableStaticLensMethodCall.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>ObservableStaticLensMethodCall.tt</DependentUpon>
+    </Compile>
     <Compile Include="Public\INotifiable.cs" />
     <Compile Include="Execution\INotificationResult.cs" />
     <Compile Include="Public\ISuccessorList.cs" />
+    <Compile Include="Public\LensPutAttribute.cs" />
     <Compile Include="Public\MultiSuccessorList.cs" />
     <Compile Include="Public\ParameterDataflowAttribute.cs" />
     <Compile Include="Public\ConstantValue.cs" />
@@ -225,6 +237,14 @@
     <Content Include="ObservableDeferredProxyElement.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>ObservableDeferredProxyElement.cs</LastGenOutput>
+    </Content>
+    <Content Include="ObservableLensMethodCall.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>ObservableLensMethodCall.cs</LastGenOutput>
+    </Content>
+    <Content Include="ObservableStaticLensMethodCall.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>ObservableStaticLensMethodCall.cs</LastGenOutput>
     </Content>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

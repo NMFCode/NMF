@@ -87,6 +87,7 @@
     <Compile Include="ExceptionTests.cs" />
     <Compile Include="ProxyCallExpressionTests.cs" />
     <Compile Include="FuncTests.cs" />
+    <Compile Include="LensPutTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Expressions\Expressions.csproj">

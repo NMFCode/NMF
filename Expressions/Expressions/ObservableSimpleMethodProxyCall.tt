@@ -55,7 +55,8 @@ namespace NMF.Expressions
                     yield return Proxy;
 
 <# for (int j = 1; j <= i; j++) { #>
-                yield return Argument<#= j #>;<# } #>
+                yield return Argument<#= j #>;
+<# } #>
             }
         }
 

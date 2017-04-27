@@ -296,6 +296,9 @@
     <Compile Include="..\Expressions\ObservableLambdaExpression.cs">
       <Link>ObservableLambdaExpression.cs</Link>
     </Compile>
+    <Compile Include="..\Expressions\ObservableLensMethodCall.cs">
+      <Link>ObservableLensMethodCall.cs</Link>
+    </Compile>
     <Compile Include="..\Expressions\ObservableListInit.cs">
       <Link>ObservableListInit.cs</Link>
     </Compile>
@@ -340,6 +343,9 @@
     </Compile>
     <Compile Include="..\Expressions\ObservableSimpleMethodProxyCall.cs">
       <Link>ObservableSimpleMethodProxyCall.cs</Link>
+    </Compile>
+    <Compile Include="..\Expressions\ObservableStaticLensMethodCall.cs">
+      <Link>ObservableStaticLensMethodCall.cs</Link>
     </Compile>
     <Compile Include="..\Expressions\ObservableStaticMethodCall.cs">
       <Link>ObservableStaticMethodCall.cs</Link>
@@ -388,6 +394,9 @@
     </Compile>
     <Compile Include="..\Expressions\Public\ISuccessorList.cs">
       <Link>Facade\ISuccessorList.cs</Link>
+    </Compile>
+    <Compile Include="..\Expressions\Public\LensPutAttribute.cs">
+      <Link>LensPutAttribute.cs</Link>
     </Compile>
     <Compile Include="..\Expressions\Public\MultiSuccessorList.cs">
       <Link>Facade\MultiSuccessorList.cs</Link>

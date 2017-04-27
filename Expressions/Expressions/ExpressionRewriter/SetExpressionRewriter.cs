@@ -325,12 +325,77 @@ namespace NMF.Expressions
                     MethodInfo proxyMethod;
                     if (!proxyAttribute.InitializeProxyMethod(node.Method, new Type[] { typeof(MethodCallExpression), typeof(SetExpressionRewriter) }, out proxyMethod))
                     {
-                        throw new InvalidOperationException(string.Format("The given expression rewriter method for method {0} has the wrong signature. It must accept parameters of type MethodCallExpression and SetExpressionRewriter.", node.Method.Name));
+                        throw new InvalidOperationException($"The given expression rewriter method for method {node.Method.Name} has the wrong signature. It must accept parameters of type MethodCallExpression and SetExpressionRewriter.");
                     }
                     else if (proxyMethod != null && proxyMethod.IsStatic && proxyMethod.ReturnType == typeof(Expression))
                     {
                         var func = ReflectionHelper.CreateDelegate<Func<MethodCallExpression, SetExpressionRewriter, Expression>>(proxyMethod);
                         return func(node, this);
+                    }
+                }
+            }
+            attributes = node.Method.GetCustomAttributes(typeof(LensPutAttribute), false);
+            if (attributes != null && node.Method.ReturnType != typeof(void) && Value != null)
+            {
+                var lensPutAttribute = attributes.FirstOrDefault() as LensPutAttribute;
+                if (lensPutAttribute != null)
+                {
+                    MethodInfo lensMethod;
+                    var typeList = new List<Type>(node.Method.GetParameters().Select(p => p.ParameterType));
+                    if (!node.Method.IsStatic)
+                    {
+                        typeList.Insert(0, node.Object.Type);
+                    }
+                    typeList.Add(node.Method.ReturnType);
+                    if (!lensPutAttribute.InitializeProxyMethod(node.Method, typeList.ToArray(), out lensMethod))
+                    {
+                        typeList.RemoveAt(0);
+                        if (node.Method.IsStatic || !lensPutAttribute.InitializeProxyMethod(node.Method, typeList.ToArray(), out lensMethod))
+                        {
+                            throw new InvalidOperationException($"The lens put method for method {node.Method.Name} has the wrong signature. It must accept the same parameter types as the original method plus the return type of the original method.");
+                        }
+                        else if (lensMethod != null && !lensMethod.IsStatic)
+                        {
+                            var args = new List<Expression>(node.Arguments);
+                            args.Add(Value);
+                            var call = Expression.Call(node.Object, lensMethod, args);
+                            if (lensMethod.ReturnType == typeof(void))
+                            {
+                                Value = null;
+                            }
+                            else
+                            {
+                                Value = call;
+                            }
+                            return call;
+                        }
+                    }
+                    else if (lensMethod != null && lensMethod.IsStatic)
+                    {
+                        var args = new List<Expression>(node.Arguments);
+                        args.Add(Value);
+                        if (!node.Method.IsStatic)
+                        {
+                            args.Insert(0, node.Object);
+                        }
+                        var call = Expression.Call(lensMethod, args);
+                        if (lensMethod.ReturnType == typeof(void))
+                        {
+                            Value = null;
+                            return call;
+                        }
+                        else
+                        {
+                            Value = call;
+                            if (node.Method.IsStatic)
+                            {
+                                return Visit(node.Arguments[0]);
+                            }
+                            else
+                            {
+                                return Visit(node.Object);
+                            }
+                        }
                     }
                 }
             }

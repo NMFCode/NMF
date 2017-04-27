@@ -1,0 +1,48 @@
+﻿<#@ template debug="false" hostspecific="false" language="C#" #>
+<#@ assembly name="System.Core" #>
+<#@ import namespace="System.Linq" #>
+<#@ import namespace="System.Text" #>
+<#@ import namespace="System.Collections.Generic" #>
+<#@ output extension=".cs" #>
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Linq.Expressions;
+using System.Reflection;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace NMF.Expressions
+{
+<#
+    for(int i = 1; i <= 15; i++)
+    {
+#>
+    internal class ObservableStaticLensMethodCall<<# for (int j = 1; j <= i; j++) { #>T<#= j #>, <# } #>TResult> : ObservableStaticMethodCall<<# for (int j = 1; j <= i; j++) { #>T<#= j #>, <# } #>TResult>, INotifyReversableExpression<TResult>
+    {
+        public Action<<# for (int j = 1; j <= i; j++) { #>T<#= j #>, <# } #>TResult> LensPut { get; set; }
+
+        TResult INotifyReversableValue<TResult>.Value { get => Value; set => LensPut(<# for (int j = 1; j <= i; j++) { #>Argument<#= j #>.Value, <# } #>value); }
+
+        public bool IsReversable => LensPut != null;
+
+        public ObservableStaticLensMethodCall(MethodCallExpression node, ObservableExpressionBinder binder) : base(node, binder)
+        {
+		    var lensPut = node.Method.GetCustomAttribute(typeof(LensPutAttribute)) as LensPutAttribute;
+            LensPut = (Action<<# for (int j = 1; j <= i; j++) { #>T<#= j #>, <# } #>TResult>)ExtractLensPut(node, new Type[] { <# for (int j = 1; j <= i; j++) { #>typeof(T<#= j #>), <# } #>typeof(TResult) }, typeof(Action<<# for (int j = 1; j <= i; j++) { #>T<#= j #>, <# } #>TResult>), Argument1, lensPut);
+        }
+
+        public ObservableStaticLensMethodCall(Func<<# for (int j = 1; j <= i; j++) { #>T<#= j #>, <# } #>TResult> function, Action<<# for (int j = 1; j <= i; j++) { #>T<#= j #>, <# } #>TResult> lensPut<# for (int j = 1; j <= i; j++) { #>, INotifyExpression<T<#= j #>> argument<#= j #><# } #>) : base(function<# for (int j = 1; j <= i; j++) { #>, argument<#= j #><# } #>)
+        {
+            LensPut = lensPut;
+        }
+
+        public override INotifyExpression<TResult> ApplyParameters(IDictionary<string, object> parameters)
+        {
+            return new ObservableStaticLensMethodCall<<# for (int j = 1; j <= i; j++) { #>T<#= j #>, <# } #>TResult>(Function, LensPut<# for (int j = 1; j <= i; j++) { #>, Argument<#= j #>.ApplyParameters(parameters)<# } #>);
+        }
+    }
+<#
+    }
+#>
+}

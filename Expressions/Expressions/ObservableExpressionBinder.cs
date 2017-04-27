@@ -53,6 +53,25 @@ namespace NMF.Expressions
             typeof(ObservableStaticMethodCall<,,,,,,,,,,,,,,,>)
         };
 
+        private static Type[] staticLensMethodTypes =
+        {
+            typeof(ObservableStaticLensMethodCall<,>),
+            typeof(ObservableStaticLensMethodCall<,,>),
+            typeof(ObservableStaticLensMethodCall<,,,>),
+            typeof(ObservableStaticLensMethodCall<,,,,>),
+            typeof(ObservableStaticLensMethodCall<,,,,,>),
+            typeof(ObservableStaticLensMethodCall<,,,,,,>),
+            typeof(ObservableStaticLensMethodCall<,,,,,,,>),
+            typeof(ObservableStaticLensMethodCall<,,,,,,,,>),
+            typeof(ObservableStaticLensMethodCall<,,,,,,,,,>),
+            typeof(ObservableStaticLensMethodCall<,,,,,,,,,,>),
+            typeof(ObservableStaticLensMethodCall<,,,,,,,,,,,>),
+            typeof(ObservableStaticLensMethodCall<,,,,,,,,,,,,>),
+            typeof(ObservableStaticLensMethodCall<,,,,,,,,,,,,,>),
+            typeof(ObservableStaticLensMethodCall<,,,,,,,,,,,,,,>),
+            typeof(ObservableStaticLensMethodCall<,,,,,,,,,,,,,,,>)
+        };
+
         private static Type[] memberMethodTypes =
         {
             typeof(ObservableMethodCall<,>),
@@ -71,6 +90,25 @@ namespace NMF.Expressions
             typeof(ObservableMethodCall<,,,,,,,,,,,,,,>),
             typeof(ObservableMethodCall<,,,,,,,,,,,,,,,>),
             typeof(ObservableMethodCall<,,,,,,,,,,,,,,,,>)
+        };
+
+        private static Type[] memberLensMethodTypes =
+        {
+            typeof(ObservableLensMethodCall<,>),
+            typeof(ObservableLensMethodCall<,,>),
+            typeof(ObservableLensMethodCall<,,,>),
+            typeof(ObservableLensMethodCall<,,,,>),
+            typeof(ObservableLensMethodCall<,,,,,>),
+            typeof(ObservableLensMethodCall<,,,,,,>),
+            typeof(ObservableLensMethodCall<,,,,,,,>),
+            typeof(ObservableLensMethodCall<,,,,,,,,>),
+            typeof(ObservableLensMethodCall<,,,,,,,,,>),
+            typeof(ObservableLensMethodCall<,,,,,,,,,,>),
+            typeof(ObservableLensMethodCall<,,,,,,,,,,,>),
+            typeof(ObservableLensMethodCall<,,,,,,,,,,,,>),
+            typeof(ObservableLensMethodCall<,,,,,,,,,,,,,>),
+            typeof(ObservableLensMethodCall<,,,,,,,,,,,,,,>),
+            typeof(ObservableLensMethodCall<,,,,,,,,,,,,,,,>)
         };
 
         private static Type[] staticProxyCallTypes =
@@ -845,13 +883,28 @@ namespace NMF.Expressions
                 }
             }
             Type[] methodArray;
+            var lensAttribute = node.Method.GetCustomAttribute(typeof(LensPutAttribute));
             if (node.Method.IsStatic)
             {
-                methodArray = staticMethodTypes;
+                if (lensAttribute != null)
+                {
+                    methodArray = staticLensMethodTypes;
+                }
+                else
+                {
+                    methodArray = staticMethodTypes;
+                }
             }
             else
             {
-                methodArray = memberMethodTypes;
+                if (lensAttribute != null)
+                {
+                    methodArray = memberLensMethodTypes;
+                }
+                else
+                {
+                    methodArray = memberMethodTypes;
+                }
             }
             return System.Activator.CreateInstance(methodArray[typesLength - 2].MakeGenericType(types), node, this) as Expression;
         }
