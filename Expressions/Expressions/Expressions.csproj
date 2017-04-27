@@ -85,7 +85,6 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>ObservableLensMethodCall.tt</DependentUpon>
     </Compile>
-    <Compile Include="ObservableLensMethodCallPrototype.cs" />
     <Compile Include="ObservableSimpleMethodProxyCall.cs">
       <DependentUpon>ObservableSimpleMethodProxyCall.tt</DependentUpon>
       <AutoGen>True</AutoGen>

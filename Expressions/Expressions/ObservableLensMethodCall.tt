@@ -22,9 +22,25 @@ namespace NMF.Expressions
     {
         public Action<T<# for(int j = 1; j <= i; j++) { #>, T<#= j #><# } #>, TResult> LensPut { get; set; }
 
-        TResult INotifyReversableValue<TResult>.Value { get => Value; set => LensPut(Target.Value<# for(int j = 1; j <= i; j++) { #>, Argument<#= j #>.Value<# } #>, value); }
+        TResult INotifyReversableValue<TResult>.Value
+		{
+			get
+			{
+				return Value;
+			}
+			set
+			{
+				LensPut(Target.Value<# for(int j = 1; j <= i; j++) { #>, Argument<#= j #>.Value<# } #>, value);
+			}
+		}
 
-        public bool IsReversable => LensPut != null;
+        public bool IsReversable
+		{
+			get
+			{
+				return LensPut != null;
+			}
+		}
 
         public ObservableLensMethodCall(MethodCallExpression node, ObservableExpressionBinder binder) : base(node, binder)
         {

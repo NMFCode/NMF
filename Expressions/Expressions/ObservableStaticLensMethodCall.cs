@@ -12,9 +12,25 @@ namespace NMF.Expressions
     {
         public Action<T1, TResult> LensPut { get; set; }
 
-        TResult INotifyReversableValue<TResult>.Value { get => Value; set => LensPut(Argument1.Value, value); }
+        TResult INotifyReversableValue<TResult>.Value
+		{
+			get
+			{
+				return Value;
+			}
+			set
+			{
+				LensPut(Argument1.Value, value);
+			}
+		}
 
-        public bool IsReversable => LensPut != null;
+        public bool IsReversable
+		{
+			get
+			{
+				return LensPut != null;
+			}
+		}
 
         public ObservableStaticLensMethodCall(MethodCallExpression node, ObservableExpressionBinder binder) : base(node, binder)
         {
@@ -36,9 +52,25 @@ namespace NMF.Expressions
     {
         public Action<T1, T2, TResult> LensPut { get; set; }
 
-        TResult INotifyReversableValue<TResult>.Value { get => Value; set => LensPut(Argument1.Value, Argument2.Value, value); }
+        TResult INotifyReversableValue<TResult>.Value
+		{
+			get
+			{
+				return Value;
+			}
+			set
+			{
+				LensPut(Argument1.Value, Argument2.Value, value);
+			}
+		}
 
-        public bool IsReversable => LensPut != null;
+        public bool IsReversable
+		{
+			get
+			{
+				return LensPut != null;
+			}
+		}
 
         public ObservableStaticLensMethodCall(MethodCallExpression node, ObservableExpressionBinder binder) : base(node, binder)
         {
@@ -60,9 +92,25 @@ namespace NMF.Expressions
     {
         public Action<T1, T2, T3, TResult> LensPut { get; set; }
 
-        TResult INotifyReversableValue<TResult>.Value { get => Value; set => LensPut(Argument1.Value, Argument2.Value, Argument3.Value, value); }
+        TResult INotifyReversableValue<TResult>.Value
+		{
+			get
+			{
+				return Value;
+			}
+			set
+			{
+				LensPut(Argument1.Value, Argument2.Value, Argument3.Value, value);
+			}
+		}
 
-        public bool IsReversable => LensPut != null;
+        public bool IsReversable
+		{
+			get
+			{
+				return LensPut != null;
+			}
+		}
 
         public ObservableStaticLensMethodCall(MethodCallExpression node, ObservableExpressionBinder binder) : base(node, binder)
         {
@@ -84,9 +132,25 @@ namespace NMF.Expressions
     {
         public Action<T1, T2, T3, T4, TResult> LensPut { get; set; }
 
-        TResult INotifyReversableValue<TResult>.Value { get => Value; set => LensPut(Argument1.Value, Argument2.Value, Argument3.Value, Argument4.Value, value); }
+        TResult INotifyReversableValue<TResult>.Value
+		{
+			get
+			{
+				return Value;
+			}
+			set
+			{
+				LensPut(Argument1.Value, Argument2.Value, Argument3.Value, Argument4.Value, value);
+			}
+		}
 
-        public bool IsReversable => LensPut != null;
+        public bool IsReversable
+		{
+			get
+			{
+				return LensPut != null;
+			}
+		}
 
         public ObservableStaticLensMethodCall(MethodCallExpression node, ObservableExpressionBinder binder) : base(node, binder)
         {
@@ -108,9 +172,25 @@ namespace NMF.Expressions
     {
         public Action<T1, T2, T3, T4, T5, TResult> LensPut { get; set; }
 
-        TResult INotifyReversableValue<TResult>.Value { get => Value; set => LensPut(Argument1.Value, Argument2.Value, Argument3.Value, Argument4.Value, Argument5.Value, value); }
+        TResult INotifyReversableValue<TResult>.Value
+		{
+			get
+			{
+				return Value;
+			}
+			set
+			{
+				LensPut(Argument1.Value, Argument2.Value, Argument3.Value, Argument4.Value, Argument5.Value, value);
+			}
+		}
 
-        public bool IsReversable => LensPut != null;
+        public bool IsReversable
+		{
+			get
+			{
+				return LensPut != null;
+			}
+		}
 
         public ObservableStaticLensMethodCall(MethodCallExpression node, ObservableExpressionBinder binder) : base(node, binder)
         {
@@ -132,9 +212,25 @@ namespace NMF.Expressions
     {
         public Action<T1, T2, T3, T4, T5, T6, TResult> LensPut { get; set; }
 
-        TResult INotifyReversableValue<TResult>.Value { get => Value; set => LensPut(Argument1.Value, Argument2.Value, Argument3.Value, Argument4.Value, Argument5.Value, Argument6.Value, value); }
+        TResult INotifyReversableValue<TResult>.Value
+		{
+			get
+			{
+				return Value;
+			}
+			set
+			{
+				LensPut(Argument1.Value, Argument2.Value, Argument3.Value, Argument4.Value, Argument5.Value, Argument6.Value, value);
+			}
+		}
 
-        public bool IsReversable => LensPut != null;
+        public bool IsReversable
+		{
+			get
+			{
+				return LensPut != null;
+			}
+		}
 
         public ObservableStaticLensMethodCall(MethodCallExpression node, ObservableExpressionBinder binder) : base(node, binder)
         {
@@ -156,9 +252,25 @@ namespace NMF.Expressions
     {
         public Action<T1, T2, T3, T4, T5, T6, T7, TResult> LensPut { get; set; }
 
-        TResult INotifyReversableValue<TResult>.Value { get => Value; set => LensPut(Argument1.Value, Argument2.Value, Argument3.Value, Argument4.Value, Argument5.Value, Argument6.Value, Argument7.Value, value); }
+        TResult INotifyReversableValue<TResult>.Value
+		{
+			get
+			{
+				return Value;
+			}
+			set
+			{
+				LensPut(Argument1.Value, Argument2.Value, Argument3.Value, Argument4.Value, Argument5.Value, Argument6.Value, Argument7.Value, value);
+			}
+		}
 
-        public bool IsReversable => LensPut != null;
+        public bool IsReversable
+		{
+			get
+			{
+				return LensPut != null;
+			}
+		}
 
         public ObservableStaticLensMethodCall(MethodCallExpression node, ObservableExpressionBinder binder) : base(node, binder)
         {
@@ -180,9 +292,25 @@ namespace NMF.Expressions
     {
         public Action<T1, T2, T3, T4, T5, T6, T7, T8, TResult> LensPut { get; set; }
 
-        TResult INotifyReversableValue<TResult>.Value { get => Value; set => LensPut(Argument1.Value, Argument2.Value, Argument3.Value, Argument4.Value, Argument5.Value, Argument6.Value, Argument7.Value, Argument8.Value, value); }
+        TResult INotifyReversableValue<TResult>.Value
+		{
+			get
+			{
+				return Value;
+			}
+			set
+			{
+				LensPut(Argument1.Value, Argument2.Value, Argument3.Value, Argument4.Value, Argument5.Value, Argument6.Value, Argument7.Value, Argument8.Value, value);
+			}
+		}
 
-        public bool IsReversable => LensPut != null;
+        public bool IsReversable
+		{
+			get
+			{
+				return LensPut != null;
+			}
+		}
 
         public ObservableStaticLensMethodCall(MethodCallExpression node, ObservableExpressionBinder binder) : base(node, binder)
         {
@@ -204,9 +332,25 @@ namespace NMF.Expressions
     {
         public Action<T1, T2, T3, T4, T5, T6, T7, T8, T9, TResult> LensPut { get; set; }
 
-        TResult INotifyReversableValue<TResult>.Value { get => Value; set => LensPut(Argument1.Value, Argument2.Value, Argument3.Value, Argument4.Value, Argument5.Value, Argument6.Value, Argument7.Value, Argument8.Value, Argument9.Value, value); }
+        TResult INotifyReversableValue<TResult>.Value
+		{
+			get
+			{
+				return Value;
+			}
+			set
+			{
+				LensPut(Argument1.Value, Argument2.Value, Argument3.Value, Argument4.Value, Argument5.Value, Argument6.Value, Argument7.Value, Argument8.Value, Argument9.Value, value);
+			}
+		}
 
-        public bool IsReversable => LensPut != null;
+        public bool IsReversable
+		{
+			get
+			{
+				return LensPut != null;
+			}
+		}
 
         public ObservableStaticLensMethodCall(MethodCallExpression node, ObservableExpressionBinder binder) : base(node, binder)
         {
@@ -228,9 +372,25 @@ namespace NMF.Expressions
     {
         public Action<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, TResult> LensPut { get; set; }
 
-        TResult INotifyReversableValue<TResult>.Value { get => Value; set => LensPut(Argument1.Value, Argument2.Value, Argument3.Value, Argument4.Value, Argument5.Value, Argument6.Value, Argument7.Value, Argument8.Value, Argument9.Value, Argument10.Value, value); }
+        TResult INotifyReversableValue<TResult>.Value
+		{
+			get
+			{
+				return Value;
+			}
+			set
+			{
+				LensPut(Argument1.Value, Argument2.Value, Argument3.Value, Argument4.Value, Argument5.Value, Argument6.Value, Argument7.Value, Argument8.Value, Argument9.Value, Argument10.Value, value);
+			}
+		}
 
-        public bool IsReversable => LensPut != null;
+        public bool IsReversable
+		{
+			get
+			{
+				return LensPut != null;
+			}
+		}
 
         public ObservableStaticLensMethodCall(MethodCallExpression node, ObservableExpressionBinder binder) : base(node, binder)
         {
@@ -252,9 +412,25 @@ namespace NMF.Expressions
     {
         public Action<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, TResult> LensPut { get; set; }
 
-        TResult INotifyReversableValue<TResult>.Value { get => Value; set => LensPut(Argument1.Value, Argument2.Value, Argument3.Value, Argument4.Value, Argument5.Value, Argument6.Value, Argument7.Value, Argument8.Value, Argument9.Value, Argument10.Value, Argument11.Value, value); }
+        TResult INotifyReversableValue<TResult>.Value
+		{
+			get
+			{
+				return Value;
+			}
+			set
+			{
+				LensPut(Argument1.Value, Argument2.Value, Argument3.Value, Argument4.Value, Argument5.Value, Argument6.Value, Argument7.Value, Argument8.Value, Argument9.Value, Argument10.Value, Argument11.Value, value);
+			}
+		}
 
-        public bool IsReversable => LensPut != null;
+        public bool IsReversable
+		{
+			get
+			{
+				return LensPut != null;
+			}
+		}
 
         public ObservableStaticLensMethodCall(MethodCallExpression node, ObservableExpressionBinder binder) : base(node, binder)
         {
@@ -276,9 +452,25 @@ namespace NMF.Expressions
     {
         public Action<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, TResult> LensPut { get; set; }
 
-        TResult INotifyReversableValue<TResult>.Value { get => Value; set => LensPut(Argument1.Value, Argument2.Value, Argument3.Value, Argument4.Value, Argument5.Value, Argument6.Value, Argument7.Value, Argument8.Value, Argument9.Value, Argument10.Value, Argument11.Value, Argument12.Value, value); }
+        TResult INotifyReversableValue<TResult>.Value
+		{
+			get
+			{
+				return Value;
+			}
+			set
+			{
+				LensPut(Argument1.Value, Argument2.Value, Argument3.Value, Argument4.Value, Argument5.Value, Argument6.Value, Argument7.Value, Argument8.Value, Argument9.Value, Argument10.Value, Argument11.Value, Argument12.Value, value);
+			}
+		}
 
-        public bool IsReversable => LensPut != null;
+        public bool IsReversable
+		{
+			get
+			{
+				return LensPut != null;
+			}
+		}
 
         public ObservableStaticLensMethodCall(MethodCallExpression node, ObservableExpressionBinder binder) : base(node, binder)
         {
@@ -300,9 +492,25 @@ namespace NMF.Expressions
     {
         public Action<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, TResult> LensPut { get; set; }
 
-        TResult INotifyReversableValue<TResult>.Value { get => Value; set => LensPut(Argument1.Value, Argument2.Value, Argument3.Value, Argument4.Value, Argument5.Value, Argument6.Value, Argument7.Value, Argument8.Value, Argument9.Value, Argument10.Value, Argument11.Value, Argument12.Value, Argument13.Value, value); }
+        TResult INotifyReversableValue<TResult>.Value
+		{
+			get
+			{
+				return Value;
+			}
+			set
+			{
+				LensPut(Argument1.Value, Argument2.Value, Argument3.Value, Argument4.Value, Argument5.Value, Argument6.Value, Argument7.Value, Argument8.Value, Argument9.Value, Argument10.Value, Argument11.Value, Argument12.Value, Argument13.Value, value);
+			}
+		}
 
-        public bool IsReversable => LensPut != null;
+        public bool IsReversable
+		{
+			get
+			{
+				return LensPut != null;
+			}
+		}
 
         public ObservableStaticLensMethodCall(MethodCallExpression node, ObservableExpressionBinder binder) : base(node, binder)
         {
@@ -324,9 +532,25 @@ namespace NMF.Expressions
     {
         public Action<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, TResult> LensPut { get; set; }
 
-        TResult INotifyReversableValue<TResult>.Value { get => Value; set => LensPut(Argument1.Value, Argument2.Value, Argument3.Value, Argument4.Value, Argument5.Value, Argument6.Value, Argument7.Value, Argument8.Value, Argument9.Value, Argument10.Value, Argument11.Value, Argument12.Value, Argument13.Value, Argument14.Value, value); }
+        TResult INotifyReversableValue<TResult>.Value
+		{
+			get
+			{
+				return Value;
+			}
+			set
+			{
+				LensPut(Argument1.Value, Argument2.Value, Argument3.Value, Argument4.Value, Argument5.Value, Argument6.Value, Argument7.Value, Argument8.Value, Argument9.Value, Argument10.Value, Argument11.Value, Argument12.Value, Argument13.Value, Argument14.Value, value);
+			}
+		}
 
-        public bool IsReversable => LensPut != null;
+        public bool IsReversable
+		{
+			get
+			{
+				return LensPut != null;
+			}
+		}
 
         public ObservableStaticLensMethodCall(MethodCallExpression node, ObservableExpressionBinder binder) : base(node, binder)
         {
@@ -348,9 +572,25 @@ namespace NMF.Expressions
     {
         public Action<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, TResult> LensPut { get; set; }
 
-        TResult INotifyReversableValue<TResult>.Value { get => Value; set => LensPut(Argument1.Value, Argument2.Value, Argument3.Value, Argument4.Value, Argument5.Value, Argument6.Value, Argument7.Value, Argument8.Value, Argument9.Value, Argument10.Value, Argument11.Value, Argument12.Value, Argument13.Value, Argument14.Value, Argument15.Value, value); }
+        TResult INotifyReversableValue<TResult>.Value
+		{
+			get
+			{
+				return Value;
+			}
+			set
+			{
+				LensPut(Argument1.Value, Argument2.Value, Argument3.Value, Argument4.Value, Argument5.Value, Argument6.Value, Argument7.Value, Argument8.Value, Argument9.Value, Argument10.Value, Argument11.Value, Argument12.Value, Argument13.Value, Argument14.Value, Argument15.Value, value);
+			}
+		}
 
-        public bool IsReversable => LensPut != null;
+        public bool IsReversable
+		{
+			get
+			{
+				return LensPut != null;
+			}
+		}
 
         public ObservableStaticLensMethodCall(MethodCallExpression node, ObservableExpressionBinder binder) : base(node, binder)
         {
