@@ -11,7 +11,7 @@ namespace NMF.Expressions.Linq
         private INotifyEnumerable<TSource> source;
         private ObservingFunc<TSource, IEnumerable<TResult>> selector;
 
-        private Dictionary<TSource, Stack<INotifyValue<IEnumerable<TResult>>>> results = new Dictionary<TSource, Stack<INotifyValue<IEnumerable<TResult>>>>();
+        private Dictionary<TSource, Itemdata> results = new Dictionary<TSource, Itemdata>();
         
         public ObservableSimpleSelectMany(INotifyEnumerable<TSource> source,
             ObservingFunc<TSource, IEnumerable<TResult>> selector)
@@ -25,12 +25,12 @@ namespace NMF.Expressions.Linq
 
         public override IEnumerator<TResult> GetEnumerator()
         {
-            return results.Values.SelectMany(r => r.SelectMany(s => s.Value)).GetEnumerator();
+            return results.Values.SelectMany(r => Enumerable.Repeat(0, r.Count).SelectMany(_ => r.Item.Value)).GetEnumerator();
         }
 
         public override bool Contains(TResult item)
         {
-            foreach (var items in results.Values.SelectMany(s => s))
+            foreach (var items in results.Values.Select(s => s.Item))
             {
                 if (items.Value.Contains(item))
                 {
@@ -44,7 +44,7 @@ namespace NMF.Expressions.Linq
         {
             get
             {
-                return results.Values.SelectMany(s => s).Sum(r => r.Value.Count());
+                return results.Values.Select(s => s.Count * s.Item.Value.Count()).Sum();
             }
         }
 
@@ -53,26 +53,43 @@ namespace NMF.Expressions.Linq
             get
             {
                 yield return source;
-                foreach (var stack in results.Values)
+                foreach (var result in results.Values)
                 {
-                    foreach (var item in stack)
-                        yield return item;
+                    yield return result.Item;
+                    if (result.Notifiable != null)
+                    {
+                        yield return result.Notifiable;
+                    }
                 }
             }
         }
 
         private IEnumerable<TResult> AttachItem(TSource item)
         {
-            Stack<INotifyValue<IEnumerable<TResult>>> stack;
-            if (!results.TryGetValue(item, out stack))
-            {
-                stack = new Stack<INotifyValue<IEnumerable<TResult>>>();
-                results.Add(item, stack);
-            }
             var subSource = selector.Observe(item);
-            //TODO do we need to handle INotifyCollectionChanged in subSource.Value or does it do that automatically?
-            stack.Push(subSource);
             subSource.Successors.Set(this);
+            var notifiable = subSource.Value as INotifyEnumerable<TResult>;
+            if (notifiable == null)
+            {
+                var expression = subSource.Value as IEnumerableExpression<TResult>;
+                if (expression != null)
+                {
+                    notifiable = expression.AsNotifiable();
+                }
+            }
+            if (notifiable != null)
+            {
+                notifiable.Successors.Set(this);
+            }
+            Itemdata data;
+            if (!results.TryGetValue(item, out data))
+            {
+                results.Add(item, new Itemdata(subSource, notifiable, 1));
+            }
+            else
+            {
+                results[item] = new Itemdata(data.Item, data.Notifiable, data.Count + 1);
+            }
             return subSource.Value;
         }
 
@@ -86,11 +103,12 @@ namespace NMF.Expressions.Linq
 
         protected override void OnDetach()
         {
-            foreach (var stack in results.Values)
+            foreach (var result in results.Values)
             {
-                foreach (var result in stack)
+                result.Item.Successors.Unset(this);
+                if (result.Notifiable != null)
                 {
-                    result.Successors.Unset(this);
+                    result.Notifiable.Successors.Unset(this);
                 }
             }
             results.Clear();
@@ -120,9 +138,30 @@ namespace NMF.Expressions.Linq
                 }
                 else
                 {
-                    var subSourceChange = (ValueChangedNotificationResult<IEnumerable<TResult>>)change;
-                    removed.AddRange(subSourceChange.OldValue);
-                    added.AddRange(subSourceChange.NewValue);
+                    var innerCollectionChange = change as ICollectionChangedNotificationResult;
+                    if (innerCollectionChange != null)
+                    {
+                        if (innerCollectionChange.AddedItems != null)
+                        {
+                            added.AddRange(innerCollectionChange.AddedItems.Cast<TResult>());
+                        }
+                        if (innerCollectionChange.RemovedItems != null)
+                        {
+                            removed.AddRange(innerCollectionChange.RemovedItems.Cast<TResult>());
+                        }
+                    }
+                    else
+                    {
+                        var subSourceChange = (ValueChangedNotificationResult<IEnumerable<TResult>>)change;
+                        if (subSourceChange.OldValue != null)
+                        {
+                            removed.AddRange(subSourceChange.OldValue);
+                        }
+                        if (subSourceChange.NewValue != null)
+                        {
+                            added.AddRange(subSourceChange.NewValue);
+                        }
+                    }
                 }
             }
 
@@ -138,20 +177,46 @@ namespace NMF.Expressions.Linq
         {
             foreach (var item in sourceChange.AllRemovedItems)
             {
-                var stack = results[item];
-                var resultItems = stack.Pop();
-                if (stack.Count == 0)
+                var data = results[item];
+                var resultItems = data.Item;
+                if (data.Count == 1)
                 {
+                    if (data.Notifiable != null)
+                    {
+                        data.Notifiable.Successors.Unset(this);
+                    }
+                    resultItems.Successors.Unset(this);
                     results.Remove(item);
                 }
+                else
+                {
+                    results[item] = new Itemdata(data.Item, data.Notifiable, data.Count - 1);
+                }
                 removed.AddRange(resultItems.Value);
-                resultItems.Successors.Unset(this);
             }
 
             foreach (var item in sourceChange.AllAddedItems)
             {
                 added.AddRange(AttachItem(item));
             }
+        }
+
+
+        private struct Itemdata
+        {
+            public Itemdata(INotifyValue<IEnumerable<TResult>> item, INotifyEnumerable<TResult> notifiable, int count)
+                : this()
+            {
+                Item = item;
+                Notifiable = notifiable;
+                Count = count;
+            }
+
+            public INotifyValue<IEnumerable<TResult>> Item { get; set; }
+
+            public INotifyEnumerable<TResult> Notifiable { get; set; }
+
+            public int Count { get; set; }
         }
     }
 
