@@ -76,7 +76,7 @@ namespace NMF.Synchronizations
                     rightEx3.Value = leftEx3.Value;
                     break;
                 case SynchronizationDirection.LeftWins:
-                    if (typeof(TValue).IsValueType || leftEx3.Value != null)
+                    if (leftEx3.Value != null)
                     {
                         rightEx3.Value = leftEx3.Value;
                     }
@@ -90,7 +90,7 @@ namespace NMF.Synchronizations
                     leftEx3.Value = rightEx3.Value;
                     break;
                 case SynchronizationDirection.RightWins:
-                    if (typeof(TValue).IsValueType || rightEx3.Value != null)
+                    if (rightEx3.Value != null)
                     {
                         leftEx3.Value = rightEx3.Value;
                     }

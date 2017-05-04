@@ -431,6 +431,8 @@ namespace NMF.Synchronizations
 
         private class BidirectionalHook : NotificationHook
         {
+            private bool isProcessingChange = false;
+
             public BidirectionalHook(ICollection<TDepLeft> lefts, ICollection<TDepRight> rights, ISynchronizationContext context, SynchronizationMultipleDependency<TLeft, TRight, TDepLeft, TDepRight> parent)
                 : base(lefts, rights, context, parent)
             {
@@ -448,12 +450,34 @@ namespace NMF.Synchronizations
 
             private void LeftsChanged(object sender, NotifyCollectionChangedEventArgs e)
             {
-                Parent.ProcessLeftChangesForRights(Lefts, Rights, Context, e);
+                if (!isProcessingChange)
+                {
+                    isProcessingChange = true;
+                    try
+                    {
+                        Parent.ProcessLeftChangesForRights(Lefts, Rights, Context, e);
+                    }
+                    finally
+                    {
+                        isProcessingChange = false;
+                    }
+                }
             }
 
             private void RightsChanged(object sender, NotifyCollectionChangedEventArgs e)
             {
-                Parent.ProcessRightChangesForLefts(Lefts, Rights, Context, e);
+                if (!isProcessingChange)
+                {
+                    isProcessingChange = true;
+                    try
+                    {
+                        Parent.ProcessRightChangesForLefts(Lefts, Rights, Context, e);
+                    }
+                    finally
+                    {
+                        isProcessingChange = false;
+                    }
+                }
             }
 
             public override void Dispose()

@@ -99,30 +99,30 @@ namespace NMF.Synchronizations
 
             private void InstantiationChanged(object sender, ValueChangedEventArgs e)
             {
-                if ((bool)e.NewValue) throw new InvalidOperationException();
+                if ((bool)e.NewValue) return;
 
-                // Instantiation Path of the current computation is wrong
+                //// Instantiation Path of the current computation is wrong
 
-                var context = Computation.SynchronizationContext;
+                //var context = Computation.SynchronizationContext;
 
-                // First collect all affected computations
-                var allComputations = context.Trace.Trace(Computation.Input).OfType<ComputationBase>();
-                var rearranged = InstantiationHelper.RearrangeComputations(allComputations, Computation);
-                var firstSaved = rearranged.Previous;
+                //// First collect all affected computations
+                //var allComputations = context.Trace.Trace(Computation.Input).OfType<ComputationBase>();
+                //var rearranged = InstantiationHelper.RearrangeComputations(allComputations, Computation);
+                //var firstSaved = rearranged.Previous;
 
-                var instantiationPath = context.Transformation.ComputeInstantiatingTransformationRulePath(firstSaved.Value);
+                //var instantiationPath = context.Transformation.ComputeInstantiatingTransformationRulePath(firstSaved.Value);
                 
-                var newComputations = new List<Computation>();
-                var input = Computation.CreateInputArray();
+                //var newComputations = new List<Computation>();
+                //var input = Computation.CreateInputArray();
 
-                while (instantiationPath.Count > 0)
-                {
-                    newComputations.Add(instantiationPath.Pop().CreateComputation(input, null));
-                }
+                //while (instantiationPath.Count > 0)
+                //{
+                //    newComputations.Add(instantiationPath.Pop().CreateComputation(input, null));
+                //}
                 
 
 
-                throw new NotImplementedException();
+                //throw new NotImplementedException();
             }
 
             public void Dispose()

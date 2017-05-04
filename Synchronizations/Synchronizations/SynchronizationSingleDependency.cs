@@ -182,6 +182,8 @@ namespace NMF.Synchronizations
             public SynchronizationSingleDependency<TLeft, TRight, TDepLeft, TDepRight> Parent { get; private set; }
             public SynchronizationComputation<TLeft, TRight> Computation { get; private set; }
 
+            private bool isProcessingChange = false;
+
             public TwoWaySynchronization(INotifyReversableValue<TDepLeft> left, INotifyReversableValue<TDepRight> right, SynchronizationComputation<TLeft, TRight> computation, SynchronizationSingleDependency<TLeft, TRight, TDepLeft, TDepRight> parent)
             {
                 Left = left;
@@ -195,18 +197,42 @@ namespace NMF.Synchronizations
 
             private void Right_ValueChanged(object sender, ValueChangedEventArgs e)
             {
-                Action<TLeft, TDepLeft> leftSetter = (l, val) => Left.Value = val;
-                Action<TRight, TDepRight> rightSetter = (r, val) => Right.Value = val;
+                if (!isProcessingChange)
+                {
+                    isProcessingChange = true;
+                    try
+                    {
+                        Action<TLeft, TDepLeft> leftSetter = (l, val) => Left.Value = val;
+                        Action<TRight, TDepRight> rightSetter = (r, val) => Right.Value = val;
 
-                Parent.CallRTLTransformationForInput(Computation.Opposite, SynchronizationDirection.RightToLeftForced, Right.Value, Left.Value, leftSetter, rightSetter);
+                        Parent.CallRTLTransformationForInput(Computation.Opposite, SynchronizationDirection.RightToLeftForced, Right.Value, Left.Value, leftSetter, rightSetter);
+
+                    }
+                    finally
+                    {
+                        isProcessingChange = false;
+                    }
+                }
             }
 
             private void Left_ValueChanged(object sender, ValueChangedEventArgs e)
             {
-                Action<TLeft, TDepLeft> leftSetter = (l, val) => Left.Value = val;
-                Action<TRight, TDepRight> rightSetter = (r, val) => Right.Value = val;
+                if (!isProcessingChange)
+                {
+                    isProcessingChange = true;
+                    try
+                    {
+                        Action<TLeft, TDepLeft> leftSetter = (l, val) => Left.Value = val;
+                        Action<TRight, TDepRight> rightSetter = (r, val) => Right.Value = val;
 
-                Parent.CallLTRTransformationForInput(Computation, SynchronizationDirection.LeftToRightForced, Left.Value, Right.Value, leftSetter, rightSetter);
+                        Parent.CallLTRTransformationForInput(Computation, SynchronizationDirection.LeftToRightForced, Left.Value, Right.Value, leftSetter, rightSetter);
+
+                    }
+                    finally
+                    {
+                        isProcessingChange = false;
+                    }
+                }
             }
 
             public void Dispose()
