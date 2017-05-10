@@ -21,6 +21,9 @@ using NMF.Models.Repository;
 using NMF.Models.Repository.Serialization;
 using NMF.Models;
 
+using PythonCodeGenerator.CodeDom;
+
+
 namespace Ecore2Code
 {
     class Options
@@ -74,13 +77,14 @@ namespace Ecore2Code
         CS,
         VB,
         CPP,
-        JS
+        JS,
+        PY
     }
 
     class Program
     {
         static void Main(string[] args)
-        {
+        {            
             Options options = new Options();
             if (Parser.Default.ParseArguments(args, options))
             {
@@ -105,6 +109,7 @@ namespace Ecore2Code
                 Console.WriteLine("Example: Ecore2Code -f -n NMF.Models -o Meta NMeta.nmf");
                 Console.WriteLine(options.GetHelp());
             }
+            Console.Read();
         }
 
         private static void GenerateCode(Options options)
@@ -195,6 +200,10 @@ namespace Ecore2Code
                     break;
                 case SupportedLanguage.JS:
                     generator = new Microsoft.JScript.JScriptCodeProvider();
+                    break;
+                case SupportedLanguage.PY:
+                    Console.WriteLine("Python woohoo!");
+                    generator = new PythonProvider();                                        
                     break;
                 default:
                     Console.WriteLine("Unknown language detected. Falling back to default C#");
