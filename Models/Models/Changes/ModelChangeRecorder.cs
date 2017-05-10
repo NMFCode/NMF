@@ -114,10 +114,18 @@ namespace NMF.Models.Changes
                         var fragmentString = fragment != null ? fragment.OriginalString + "/" : null;
                         if (originalUri.IsAbsoluteUri)
                         {
+                            if (!originalUri.Fragment.EndsWith("/"))
+                            {
+                                fragmentString = "/" + fragmentString;
+                            }
                             uriMappings.Add(element, new Uri(originalUri, originalUri.Fragment + fragmentString));
                         }
                         else
                         {
+                            if (!originalUri.OriginalString.EndsWith("/"))
+                            {
+                                fragmentString = "/" + fragmentString;
+                            }
                             uriMappings.Add(element, new Uri(originalUri.OriginalString + fragmentString, UriKind.Relative));
                         }
                     }

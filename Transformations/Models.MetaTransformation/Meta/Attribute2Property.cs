@@ -107,7 +107,7 @@ namespace NMF.Models.Meta
 
                     if (generatedProperty.Type.BaseType == typeof(DateTime).Name)
                     {
-                        generatedProperty.AddAttribute(typeof(TypeConverterAttribute), typeof(IsoDateTimeConverter));
+                        generatedProperty.AddAttribute(typeof(TypeConverterAttribute), new CodeTypeOfExpression(typeof(IsoDateTimeConverter).ToTypeReference()));
                     }
                 }
                 else
