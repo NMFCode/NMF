@@ -111,7 +111,7 @@ namespace NMF.Models.Changes
                     else
                     {
                         var fragment = me.CreateUriWithFragment(null, false, origin);
-                        var fragmentString = fragment != null ? "/" + fragment.OriginalString : null;
+                        var fragmentString = fragment != null ? fragment.OriginalString + "/" : null;
                         if (originalUri.IsAbsoluteUri)
                         {
                             uriMappings.Add(element, new Uri(originalUri, originalUri.Fragment + fragmentString));
@@ -408,7 +408,7 @@ namespace NMF.Models.Changes
             foreach (ModelElement item in createdElement.Descendants())
             {
                 var relative = item.CreateUriWithFragment(null, false, createdElement);
-                elementSources.Add(item, new ElementSourceInfo(changeMe, "addedElement/" + relative.OriginalString));
+                if (relative != null) elementSources.Add(item, new ElementSourceInfo(changeMe, "addedElement/" + relative.OriginalString));
             }
         }
 

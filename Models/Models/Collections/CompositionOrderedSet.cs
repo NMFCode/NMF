@@ -156,7 +156,7 @@ namespace NMF.Models.Collections
                             if (baseUri.IsAbsoluteUri)
                             {
                                 var builder = new UriBuilder(baseUri);
-                                builder.Fragment = baseUri.Fragment + "/" + newRef;
+                                builder.Fragment = baseUri.Fragment.TrimStart('#') + newRef + '/';
                                 oldUri = builder.Uri;
                             }
                             else
