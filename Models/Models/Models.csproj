@@ -75,6 +75,7 @@
     <Compile Include="Collections\DescendantsCollection.cs" />
     <Compile Include="IModelElement.cs" />
     <Compile Include="IModelValidationLog.cs" />
+    <Compile Include="IsoDateTimeConverter.cs" />
     <Compile Include="Meta\Attribute.cs" />
     <Compile Include="Meta\AttributeConstraint.cs" />
     <Compile Include="Meta\ClassAttributeConstraintsCollection.cs" />

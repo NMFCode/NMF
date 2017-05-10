@@ -104,6 +104,11 @@ namespace NMF.Models.Meta
                         new CodeAssignStatement(fieldRef, value),
                         generatedProperty.CreateOnChangedEventPattern(valueChangeTypeRef, valueChangeRef),
                         new CodeExpressionStatement(callOnPropertyChanged)));
+
+                    if (generatedProperty.Type.BaseType == typeof(DateTime).Name)
+                    {
+                        generatedProperty.AddAttribute(typeof(TypeConverterAttribute), typeof(IsoDateTimeConverter));
+                    }
                 }
                 else
                 {
