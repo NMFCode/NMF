@@ -1,0 +1,25 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp2.0</TargetFramework>
+    <IsPackable>false</IsPackable>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="15.3.0-preview-20170427-09" />
+    <PackageReference Include="MSTest.TestAdapter" Version="1.1.17" />
+    <PackageReference Include="MSTest.TestFramework" Version="1.1.17" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Examples\Transformations.Sample\Transformations.Sample.NetStd.csproj" />
+    <ProjectReference Include="..\..\Expressions\Expressions.Linq\Expressions.Linq.NetStd.csproj" />
+    <ProjectReference Include="..\..\Expressions\Expressions\Expressions.NetStd.csproj" />
+    <ProjectReference Include="..\..\Tools\Tests\Tests.NetStd.csproj" />
+    <ProjectReference Include="..\..\Tools\Utilities\Utilities.NetStd.csproj" />
+    <ProjectReference Include="..\Transformations.Core\Transformations.Core.NetStd.csproj" />
+    <ProjectReference Include="..\Transformations\Transformations.NetStd.csproj" />
+  </ItemGroup>
+
+</Project>

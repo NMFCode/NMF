@@ -10,7 +10,9 @@ using System;
 [assembly: Guid("f35b6c9f-2c4e-45d4-9ccf-9c176148f4e0")]
 
 [assembly: InternalsVisibleTo("Transformations.Tests")]
+[assembly: InternalsVisibleTo("Transformations.Tests.NetStd")]
 [assembly: InternalsVisibleTo("NMF.Transformations")]
+[assembly: InternalsVisibleTo("NMF.Transformations.NetStd")]
 [assembly: InternalsVisibleTo("NMF.Models.Transformations")]
 [assembly: InternalsVisibleTo("NMF.Transformations.Parallel")]
 [assembly: CLSCompliant(true)]

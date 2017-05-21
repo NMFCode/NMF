@@ -1,0 +1,20 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.CSharp" Version="4.4.0-preview1-25305-02" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Expressions\Expressions.Linq\Expressions.Linq.NetStd.csproj" />
+    <ProjectReference Include="..\..\Expressions\Expressions\Expressions.NetStd.csproj" />
+    <ProjectReference Include="..\..\Tools\Utilities\Utilities.NetStd.csproj" />
+    <ProjectReference Include="..\..\Transformations\Transformations.Core\Transformations.Core.NetStd.csproj" />
+    <ProjectReference Include="..\..\Transformations\Transformations\Transformations.NetStd.csproj" />
+  </ItemGroup>
+
+</Project>
