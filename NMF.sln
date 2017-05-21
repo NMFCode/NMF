@@ -141,6 +141,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Utilities.NetStd", "Tools\U
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Utilities.Tests.NetStd", "Tools\Utilities.Tests\Utilities.Tests.NetStd.csproj", "{096B6E04-A6C8-41DB-9DA0-2E81A087B2D1}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Serialization.NetStd", "Models\Serialization\Serialization.NetStd.csproj", "{01FF4AD1-126D-43FE-B9EF-226BC9FC9F3C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -529,6 +531,10 @@ Global
 		{096B6E04-A6C8-41DB-9DA0-2E81A087B2D1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{096B6E04-A6C8-41DB-9DA0-2E81A087B2D1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{096B6E04-A6C8-41DB-9DA0-2E81A087B2D1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{01FF4AD1-126D-43FE-B9EF-226BC9FC9F3C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{01FF4AD1-126D-43FE-B9EF-226BC9FC9F3C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{01FF4AD1-126D-43FE-B9EF-226BC9FC9F3C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{01FF4AD1-126D-43FE-B9EF-226BC9FC9F3C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -590,6 +596,7 @@ Global
 		{C25C9F9F-2874-403F-9AB8-07ED7B1C65AC} = {60CF79A6-B217-4AAA-9E52-AD36260E6DBD}
 		{8D737FCD-606D-4E53-AA3F-7BA198600E8E} = {C933F88A-DC6F-4D15-9816-6D47EC964AC4}
 		{096B6E04-A6C8-41DB-9DA0-2E81A087B2D1} = {C933F88A-DC6F-4D15-9816-6D47EC964AC4}
+		{01FF4AD1-126D-43FE-B9EF-226BC9FC9F3C} = {C4EFD8FD-FEBA-4C3B-B9E4-1954EBBDA1C5}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {7B6D2737-94B7-470E-B413-D9693622AA4D}
