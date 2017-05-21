@@ -1,0 +1,48 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp2.0</TargetFramework>
+    <IsPackable>false</IsPackable>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <AssemblyName>NMF.Models.Tests.NetStd</AssemblyName>
+    <RootNamespace>NMF.Models.Tests</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="debug.nmf" />
+    <None Remove="railway.nmf" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="debug.nmf" />
+    <EmbeddedResource Include="railway.nmf" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="15.3.0-preview-20170427-09" />
+    <PackageReference Include="MSTest.TestAdapter" Version="1.1.17" />
+    <PackageReference Include="MSTest.TestFramework" Version="1.1.17" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Collections\Collections\Collections.NetStd.csproj" />
+    <ProjectReference Include="..\..\Expressions\Expressions.Linq\Expressions.Linq.NetStd.csproj" />
+    <ProjectReference Include="..\..\Expressions\Expressions\Expressions.NetStd.csproj" />
+    <ProjectReference Include="..\..\Tools\Utilities\Utilities.NetStd.csproj" />
+    <ProjectReference Include="..\Models\Models.NetStd.csproj" />
+    <ProjectReference Include="..\Serialization\Serialization.NetStd.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="debug.debug">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="railway.railway">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="RailwayModelWithXmi.xmi">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+</Project>
