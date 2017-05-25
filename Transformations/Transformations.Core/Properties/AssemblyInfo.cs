@@ -15,4 +15,5 @@ using System;
 [assembly: InternalsVisibleTo("NMF.Transformations.NetStd")]
 [assembly: InternalsVisibleTo("NMF.Models.Transformations")]
 [assembly: InternalsVisibleTo("NMF.Transformations.Parallel")]
+[assembly: InternalsVisibleTo("NMF.Transformations.Parallel.NetStd")]
 [assembly: CLSCompliant(true)]
