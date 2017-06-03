@@ -426,6 +426,42 @@ namespace NMF.Expressions.Tests
             Assert.AreEqual(func.Count(), incremental.Count());
         }
 
+        [TestMethod]
+        public void NotifySystem_SemaphoreNeighbor()
+        {
+            var connectedRoute = ObservingFunc<IRoute, IRoute>.FromExpression(route =>
+                        (from sensor1 in route.DefinedBy
+                         from te1 in sensor1.Elements
+                         from te2 in te1.ConnectsTo
+                         where te2.Sensor != null && te2.Sensor.Parent != route
+                         select te2.Sensor.Parent as IRoute).Where(r => r != null).FirstOrDefault());
+
+
+            var func = CreateExpression(from route1 in RailwayContainer.Invalids.OfType<Route>().Concat(RailwayContainer.Routes)
+                                        let route2 = connectedRoute.Evaluate(route1)
+                                        where route2 != null && route2.Entry != route1.Exit
+                                        select new { Route1 = route1, Route2 = route2 });
+
+            var first = func.FirstOrDefault();
+            var incremental = func.AsNotifiable();
+            var changed = false;
+            incremental.CollectionChanged += (o, e) =>
+            {
+                changed = true;
+                Assert.AreEqual(NotifyCollectionChangedAction.Remove, e.Action);
+                Assert.AreEqual(1, e.OldItems.Count);
+                Assert.AreEqual(first, e.OldItems[0]);
+            };
+
+            Assert.IsFalse(changed);
+            Assert.AreEqual(func.Count(), incremental.Count());
+
+            first.Route2.Entry = first.Route1.Exit;
+
+            Assert.IsTrue(changed);
+            Assert.AreEqual(func.Count(), incremental.Count());
+        }
+
         private IEnumerableExpression<T> CreateExpression<T>(IEnumerableExpression<T> value)
         {
             return value;

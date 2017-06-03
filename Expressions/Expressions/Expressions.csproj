@@ -259,19 +259,15 @@
     </Content>
     <Content Include="ObservableLensMethodCall.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
-      <LastGenOutput>ObservableLensMethodCall.cs</LastGenOutput>
     </Content>
     <Content Include="ObservableStaticLensMethodCall.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
-      <LastGenOutput>ObservableStaticLensMethodCall.cs</LastGenOutput>
     </Content>
     <Content Include="ObservableMethodLensProxyCall.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
-      <LastGenOutput>ObservableMethodLensProxyCall.cs</LastGenOutput>
     </Content>
     <Content Include="ObservableStaticLensProxyCall.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
-      <LastGenOutput>ObservableStaticLensProxyCall.cs</LastGenOutput>
     </Content>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

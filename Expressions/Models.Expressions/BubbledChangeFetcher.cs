@@ -41,6 +41,7 @@ namespace NMF.Expressions
 
         public void Attach()
         {
+            if (Element == null) return;
             if (Type.IsInstanceOfType(Element))
             {
                 Element.BubbledChange += Element_BubbledChange;
@@ -92,6 +93,7 @@ namespace NMF.Expressions
 
         public void Detach()
         {
+            if (Element == null) return;
             if (Type.IsInstanceOfType(Element))
             {
                 Element.BubbledChange -= Element_BubbledChange;

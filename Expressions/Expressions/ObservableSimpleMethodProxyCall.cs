@@ -35,6 +35,7 @@ namespace NMF.Expressions
                 if (Proxy != null)
                     yield return Proxy;
 
+				yield return Target;
             }
         }
 
@@ -67,6 +68,7 @@ namespace NMF.Expressions
         protected override void OnAttach()
         {
             RenewProxyFunction();
+			RenewProxy();
             base.OnAttach();
         }
     }
@@ -100,6 +102,7 @@ namespace NMF.Expressions
                 if (Proxy != null)
                     yield return Proxy;
 
+				yield return Target;
                 yield return Argument1;
             }
         }
@@ -133,6 +136,7 @@ namespace NMF.Expressions
         protected override void OnAttach()
         {
             RenewProxyFunction();
+			RenewProxy();
             base.OnAttach();
         }
     }
@@ -169,6 +173,7 @@ namespace NMF.Expressions
                 if (Proxy != null)
                     yield return Proxy;
 
+				yield return Target;
                 yield return Argument1;
                 yield return Argument2;
             }
@@ -203,6 +208,7 @@ namespace NMF.Expressions
         protected override void OnAttach()
         {
             RenewProxyFunction();
+			RenewProxy();
             base.OnAttach();
         }
     }
@@ -242,6 +248,7 @@ namespace NMF.Expressions
                 if (Proxy != null)
                     yield return Proxy;
 
+				yield return Target;
                 yield return Argument1;
                 yield return Argument2;
                 yield return Argument3;
@@ -277,6 +284,7 @@ namespace NMF.Expressions
         protected override void OnAttach()
         {
             RenewProxyFunction();
+			RenewProxy();
             base.OnAttach();
         }
     }
@@ -319,6 +327,7 @@ namespace NMF.Expressions
                 if (Proxy != null)
                     yield return Proxy;
 
+				yield return Target;
                 yield return Argument1;
                 yield return Argument2;
                 yield return Argument3;
@@ -355,6 +364,7 @@ namespace NMF.Expressions
         protected override void OnAttach()
         {
             RenewProxyFunction();
+			RenewProxy();
             base.OnAttach();
         }
     }
@@ -400,6 +410,7 @@ namespace NMF.Expressions
                 if (Proxy != null)
                     yield return Proxy;
 
+				yield return Target;
                 yield return Argument1;
                 yield return Argument2;
                 yield return Argument3;
@@ -437,6 +448,7 @@ namespace NMF.Expressions
         protected override void OnAttach()
         {
             RenewProxyFunction();
+			RenewProxy();
             base.OnAttach();
         }
     }
@@ -485,6 +497,7 @@ namespace NMF.Expressions
                 if (Proxy != null)
                     yield return Proxy;
 
+				yield return Target;
                 yield return Argument1;
                 yield return Argument2;
                 yield return Argument3;
@@ -523,6 +536,7 @@ namespace NMF.Expressions
         protected override void OnAttach()
         {
             RenewProxyFunction();
+			RenewProxy();
             base.OnAttach();
         }
     }
@@ -574,6 +588,7 @@ namespace NMF.Expressions
                 if (Proxy != null)
                     yield return Proxy;
 
+				yield return Target;
                 yield return Argument1;
                 yield return Argument2;
                 yield return Argument3;
@@ -613,6 +628,7 @@ namespace NMF.Expressions
         protected override void OnAttach()
         {
             RenewProxyFunction();
+			RenewProxy();
             base.OnAttach();
         }
     }
@@ -667,6 +683,7 @@ namespace NMF.Expressions
                 if (Proxy != null)
                     yield return Proxy;
 
+				yield return Target;
                 yield return Argument1;
                 yield return Argument2;
                 yield return Argument3;
@@ -707,6 +724,7 @@ namespace NMF.Expressions
         protected override void OnAttach()
         {
             RenewProxyFunction();
+			RenewProxy();
             base.OnAttach();
         }
     }
@@ -764,6 +782,7 @@ namespace NMF.Expressions
                 if (Proxy != null)
                     yield return Proxy;
 
+				yield return Target;
                 yield return Argument1;
                 yield return Argument2;
                 yield return Argument3;
@@ -805,6 +824,7 @@ namespace NMF.Expressions
         protected override void OnAttach()
         {
             RenewProxyFunction();
+			RenewProxy();
             base.OnAttach();
         }
     }
@@ -865,6 +885,7 @@ namespace NMF.Expressions
                 if (Proxy != null)
                     yield return Proxy;
 
+				yield return Target;
                 yield return Argument1;
                 yield return Argument2;
                 yield return Argument3;
@@ -907,6 +928,7 @@ namespace NMF.Expressions
         protected override void OnAttach()
         {
             RenewProxyFunction();
+			RenewProxy();
             base.OnAttach();
         }
     }
@@ -970,6 +992,7 @@ namespace NMF.Expressions
                 if (Proxy != null)
                     yield return Proxy;
 
+				yield return Target;
                 yield return Argument1;
                 yield return Argument2;
                 yield return Argument3;
@@ -1013,6 +1036,7 @@ namespace NMF.Expressions
         protected override void OnAttach()
         {
             RenewProxyFunction();
+			RenewProxy();
             base.OnAttach();
         }
     }
@@ -1079,6 +1103,7 @@ namespace NMF.Expressions
                 if (Proxy != null)
                     yield return Proxy;
 
+				yield return Target;
                 yield return Argument1;
                 yield return Argument2;
                 yield return Argument3;
@@ -1123,6 +1148,7 @@ namespace NMF.Expressions
         protected override void OnAttach()
         {
             RenewProxyFunction();
+			RenewProxy();
             base.OnAttach();
         }
     }
@@ -1192,6 +1218,7 @@ namespace NMF.Expressions
                 if (Proxy != null)
                     yield return Proxy;
 
+				yield return Target;
                 yield return Argument1;
                 yield return Argument2;
                 yield return Argument3;
@@ -1237,6 +1264,7 @@ namespace NMF.Expressions
         protected override void OnAttach()
         {
             RenewProxyFunction();
+			RenewProxy();
             base.OnAttach();
         }
     }
@@ -1309,6 +1337,7 @@ namespace NMF.Expressions
                 if (Proxy != null)
                     yield return Proxy;
 
+				yield return Target;
                 yield return Argument1;
                 yield return Argument2;
                 yield return Argument3;
@@ -1355,6 +1384,7 @@ namespace NMF.Expressions
         protected override void OnAttach()
         {
             RenewProxyFunction();
+			RenewProxy();
             base.OnAttach();
         }
     }
@@ -1430,6 +1460,7 @@ namespace NMF.Expressions
                 if (Proxy != null)
                     yield return Proxy;
 
+				yield return Target;
                 yield return Argument1;
                 yield return Argument2;
                 yield return Argument3;
@@ -1477,6 +1508,7 @@ namespace NMF.Expressions
         protected override void OnAttach()
         {
             RenewProxyFunction();
+			RenewProxy();
             base.OnAttach();
         }
     }
