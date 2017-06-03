@@ -240,7 +240,6 @@ namespace NMF.Models.Meta
             {
                 generatedType.BaseTypes.Add(new CodeTypeReference(typeof(ICollectionExpression<>).Name, elementType));
                 generatedType.BaseTypes.Add(new CodeTypeReference(typeof(ICollection<>).Name, elementType));
-                generatedType.BaseTypes.Add(new CodeTypeReference(typeof(INotifyCollection<>).Name, elementType));
                 generatedType.Members.Add(GenerateAdd(original, implementingReferences, elementType, context));
                 generatedType.Members.Add(GenerateClear(implementingReferences, context));
                 generatedType.Members.Add(GenerateContains(implementingReferences, constraintReferences, elementType, standardValuesRef, context));
@@ -860,11 +859,11 @@ namespace NMF.Models.Meta
                 var asNotifiable = new CodeMemberMethod()
                 {
                     Name = "AsNotifiable",
-                    Attributes = MemberAttributes.Private,
-                    ReturnType = new CodeTypeReference(typeof(INotifyCollection<>).Name, elementType),
-                    PrivateImplementationType = new CodeTypeReference(typeof(ICollectionExpression<>).Name, elementType)
+                    Attributes = MemberAttributes.Public,
+                    ReturnType = new CodeTypeReference(typeof(INotifyCollection<>).Name, elementType)
                 };
-                asNotifiable.Statements.Add(new CodeMethodReturnStatement(new CodeThisReferenceExpression()));
+                var withUpdates = new CodeMethodInvokeExpression(new CodeThisReferenceExpression(), "WithUpdates");
+                asNotifiable.Statements.Add(new CodeMethodReturnStatement(withUpdates));
                 asNotifiable.WriteDocumentation("Gets an observable version of this collection");
                 return asNotifiable;
             }
@@ -878,7 +877,8 @@ namespace NMF.Models.Meta
                     ReturnType = new CodeTypeReference(typeof(INotifyEnumerable<>).Name, elementType),
                     PrivateImplementationType = typeof(IEnumerableExpression).ToTypeReference(elementType)
                 };
-                asNotifiable.Statements.Add(new CodeMethodReturnStatement(new CodeThisReferenceExpression()));
+                var withUpdates = new CodeMethodInvokeExpression(new CodeThisReferenceExpression(), "WithUpdates");
+                asNotifiable.Statements.Add(new CodeMethodReturnStatement(withUpdates));
                 asNotifiable.WriteDocumentation("Gets an observable version of this collection");
                 return asNotifiable;
             }
@@ -892,7 +892,8 @@ namespace NMF.Models.Meta
                     ReturnType = typeof(INotifyEnumerable).ToTypeReference(),
                     PrivateImplementationType = typeof(IEnumerableExpression).ToTypeReference()
                 };
-                asNotifiable.Statements.Add(new CodeMethodReturnStatement(new CodeThisReferenceExpression()));
+                var withUpdates = new CodeMethodInvokeExpression(new CodeThisReferenceExpression(), "WithUpdates");
+                asNotifiable.Statements.Add(new CodeMethodReturnStatement(withUpdates));
                 asNotifiable.WriteDocumentation("Gets an observable version of this collection");
                 return asNotifiable;
             }
