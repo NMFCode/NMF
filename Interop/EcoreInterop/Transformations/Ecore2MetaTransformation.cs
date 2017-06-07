@@ -13,6 +13,9 @@ namespace NMF.Interop.Ecore.Transformations
 {
     public class Ecore2MetaTransformation : ReflectiveTransformation
     {
+        public static bool GeneratePrimitiveTypes { get; set; }
+        public static IDictionary<string, string> CustomTypesMap { get; set; }
+
         private static Dictionary<string, IPrimitiveType> classesDict = new Dictionary<string, IPrimitiveType>();
         private static IType eObject = MetaRepository.Instance.ResolveClass(typeof(EObject));
 
@@ -162,7 +165,35 @@ namespace NMF.Interop.Ecore.Transformations
         {
             public override IPrimitiveType CreateOutput(IEDataType input, ITransformationContext context)
             {
+                if (GeneratePrimitiveTypes && (input.EPackage == null || input.EPackage.NsURI != "http://www.eclipse.org/emf/2002/Ecore"))
+                {
+                    return new PrimitiveType();
+                }
                 return null;
+            }
+
+            public override void Transform(IEDataType input, IPrimitiveType output, ITransformationContext context)
+            {
+                if (output != null)
+                {
+                    IPrimitiveType primType;
+                    if (classesDict.TryGetValue(input.InstanceClassName, out primType))
+                    {
+                        output.SystemType = primType.SystemType;
+                    }
+                    else
+                    {
+                        string custom;
+                        if (CustomTypesMap != null && input.InstanceClassName != null && CustomTypesMap.TryGetValue(input.InstanceClassName, out custom))
+                        {
+                            output.SystemType = custom;
+                        }
+                        else
+                        {
+                            output.SystemType = input.InstanceClassName;
+                        }
+                    }
+                }
             }
 
             public override void RegisterDependencies()
