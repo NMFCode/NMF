@@ -20,6 +20,6 @@
         </dependencies>
     </metadata>
   <files>
-    <file src="..\Interop\EcoreInterop\bin\Release\NMF.EcoreInterop.dll" target="lib\net452" />
+    <file src="..\Interop\EcoreInterop\bin\Release\NMF.EcoreInterop.dll" target="lib\net45" />
   </files>
 </package>

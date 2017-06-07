@@ -17,6 +17,6 @@
         <tags>Model-driven; MDE; MDSD;</tags>
     </metadata>
   <files>
-    <file src="..\Tools\Utilities\bin\Release\NMF.Utilities.dll" target="lib\net452" />
+    <file src="..\Tools\Utilities\bin\Release\NMF.Utilities.dll" target="lib\net45" />
   </files>
 </package>

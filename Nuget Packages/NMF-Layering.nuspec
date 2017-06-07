@@ -17,6 +17,6 @@
         <tags>Model-driven; MDE; MDSD;</tags>
     </metadata>
   <files>
-    <file src="..\Analysis\Layering\bin\Release\NMF.Layering.dll" target="lib\net452" />
+    <file src="..\Analysis\Layering\bin\Release\NMF.Layering.dll" target="lib\net45" />
   </files>
 </package>

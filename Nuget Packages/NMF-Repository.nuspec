@@ -21,8 +21,8 @@
         </dependencies>
     </metadata>
   <files>
-    <file src="..\Models\Models\bin\Release\NMF.Serialization.dll" target="lib\net452" />
-    <file src="..\Models\Models\bin\Release\NMF.Collections.dll" target="lib\net452" />
-    <file src="..\Models\Models\bin\Release\NMF.Models.dll" target="lib\net452" />
+    <file src="..\Models\Models\bin\Release\NMF.Serialization.dll" target="lib\net45" />
+    <file src="..\Models\Models\bin\Release\NMF.Collections.dll" target="lib\net45" />
+    <file src="..\Models\Models\bin\Release\NMF.Models.dll" target="lib\net45" />
   </files>
 </package>
