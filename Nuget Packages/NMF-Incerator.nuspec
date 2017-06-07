@@ -1,27 +1,29 @@
 <?xml version="1.0"?>
 <package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
     <metadata>
-        <id>NMF-Synchronizations</id>
+        <id>NMF-Incerator</id>
         <version>$version$</version>
-        <title>NMF Synchronizations</title>
+        <title>NMF Incerator</title>
         <authors>Georg Hinkel</authors>
         <owners>Georg Hinkel</owners>
         <licenseUrl>http://nmf.codeplex.com/license</licenseUrl>
         <projectUrl>http://github.com/NMFCode/NMF</projectUrl>
         <requireLicenseAcceptance>false</requireLicenseAcceptance>
         <developmentDependency>true</developmentDependency>
-        <description>The NMF Synchronizations language to support bidirectional and/or incremental model synchronizations.</description>
-        <summary>The NMF Synchronizations language to support bidirectional and/or incremental model synchronizations.</summary>
+        <description>This package contains the Incerator tool to optimize incremental analyses.</description>
+        <summary>This package contains the Incerator tool to optimize incremental analyses.</summary>
         <copyright>Copyright © Georg Hinkel 2015</copyright>
         <language>en</language>
-        <tags>Model-driven; MDE; MDSD;</tags>
+        <tags>Model-driven; MDE; EMF; XMI; MDSD; Ecore</tags>
         <dependencies>
             <dependency id="NMF-Expressions" version="$version$" />
-            <dependency id="NMF-Transformations" version="$version$" />
-            <dependency id="NMF-Utilities" version="$version$" />
+            <dependency id="NMF-Repository" version="$version$" />
+            <dependency id="NMF-Basics" version="$version$" />
         </dependencies>
     </metadata>
   <files>
-    <file src="..\Synchronizations\Synchronizations\bin\Release\NMF.Synchronizations.dll" target="lib\net452" />
+    <file src="..\Expressions\Models.Expressions\bin\Release\NMF.Expressions.Models.dll" target="net452" />
+    <file src="..\Tools\Incerator\bin\Release\*.dll" target="tools" />
+    <file src="..\Tools\Incerator\bin\Release\Ecore2Code.exe" target="tools" />
   </files>
 </package>

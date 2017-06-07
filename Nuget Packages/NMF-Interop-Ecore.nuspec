@@ -1,27 +1,25 @@
 <?xml version="1.0"?>
 <package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
     <metadata>
-        <id>NMF-Synchronizations</id>
+        <id>NMF--Interop-Ecore</id>
         <version>$version$</version>
-        <title>NMF Synchronizations</title>
+        <title>NMF Ecore Interop</title>
         <authors>Georg Hinkel</authors>
         <owners>Georg Hinkel</owners>
         <licenseUrl>http://nmf.codeplex.com/license</licenseUrl>
         <projectUrl>http://github.com/NMFCode/NMF</projectUrl>
         <requireLicenseAcceptance>false</requireLicenseAcceptance>
         <developmentDependency>true</developmentDependency>
-        <description>The NMF Synchronizations language to support bidirectional and/or incremental model synchronizations.</description>
-        <summary>The NMF Synchronizations language to support bidirectional and/or incremental model synchronizations.</summary>
+        <description>This package contains the necessary classes to load and store Ecore metamodels and to transform them to NMeta.</description>
+        <summary>This package contains the necessary classes to load and store Ecore metamodels and to transform them to NMeta.</summary>
         <copyright>Copyright © Georg Hinkel 2015</copyright>
         <language>en</language>
         <tags>Model-driven; MDE; MDSD;</tags>
         <dependencies>
-            <dependency id="NMF-Expressions" version="$version$" />
-            <dependency id="NMF-Transformations" version="$version$" />
-            <dependency id="NMF-Utilities" version="$version$" />
+            <dependency id="NMF-Basics" version="$version$" />
         </dependencies>
     </metadata>
   <files>
-    <file src="..\Synchronizations\Synchronizations\bin\Release\NMF.Synchronizations.dll" target="lib\net452" />
+    <file src="..\Interop\EcoreInterop\bin\Release\NMF.EcoreInterop.dll" target="lib\net452" />
   </files>
 </package>
