@@ -47,8 +47,8 @@ namespace NMF.Models.Tests
         [TestMethod]
         public void RootUriCanBeResolved()
         {
-            Assert.AreEqual("#//", railway.RelativeUri.ToString());
-            Assert.AreEqual(BaseUri + "#//", railway.AbsoluteUri.AbsoluteUri);
+            Assert.AreEqual("#/", railway.RelativeUri.ToString());
+            Assert.AreEqual(BaseUri + "#/", railway.AbsoluteUri.AbsoluteUri);
             Assert.AreSame(railway, railway.Model.Resolve(railway.RelativeUri));
             Assert.AreSame(railway, repository.Resolve(railway.AbsoluteUri));
         }
