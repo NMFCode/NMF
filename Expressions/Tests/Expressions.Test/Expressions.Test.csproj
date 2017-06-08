@@ -47,10 +47,10 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Arithmetic\AddExpressionTests.cs">
+    <Compile Include="Arithmetic\BasicArithmeticExpressionTests.cs">
+      <DependentUpon>BasicArithmeticExpressionTests.tt</DependentUpon>
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
-      <DependentUpon>AddExpressionTests.tt</DependentUpon>
     </Compile>
     <Compile Include="Arithmetic\BitwiseAndExpressionTests.cs" />
     <Compile Include="Arithmetic\BitwiseOrExpressionTests.cs" />
@@ -85,9 +85,6 @@
     <Compile Include="Comparison\EqualsTests.cs" />
     <Compile Include="CoalesceTests.cs" />
     <Compile Include="Comparison\GreaterThanExpressionTests.cs" />
-    <Compile Include="Arithmetic\SubtractExpressionTests.cs" />
-    <Compile Include="Arithmetic\MultiplyExpressionTests.cs" />
-    <Compile Include="Arithmetic\DivideExpressionTests.cs" />
     <Compile Include="Comparison\GreaterThanEqualsExpressionTests.cs" />
     <Compile Include="Comparison\LessThanExpressionTests.cs" />
     <Compile Include="Comparison\LessThanEqualsExpressionTests.cs" />
@@ -104,9 +101,9 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Arithmetic\AddExpressionTests.tt">
+    <Content Include="Arithmetic\BasicArithmeticExpressionTests.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
-      <LastGenOutput>AddExpressionTests.cs</LastGenOutput>
+      <LastGenOutput>BasicArithmeticExpressionTests.cs</LastGenOutput>
     </Content>
     <Content Include="FuncTests.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
