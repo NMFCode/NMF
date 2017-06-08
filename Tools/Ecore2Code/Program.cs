@@ -2,24 +2,22 @@
 using CommandLine.Text;
 using NMF.Interop.Ecore;
 using NMF.Interop.Ecore.Transformations;
+using NMF.Models;
+using NMF.Models.Meta;
+using NMF.Models.Repository;
 using NMF.Transformations;
+using NMF.Transformations.Core;
+using NMF.Transformations.Parallel;
 using NMF.Utilities;
+using PythonCodeGenerator.CodeDom;
 using System;
 using System.CodeDom;
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Xml.Serialization;
-using NMF.Transformations.Core;
-using NMF.Models.Meta;
-using System.Diagnostics;
-using NMF.Transformations.Parallel;
-using NMF.Models.Repository;
-using NMF.Models.Repository.Serialization;
-using NMF.Models;
+
 
 namespace Ecore2Code
 {
@@ -51,6 +49,9 @@ namespace Ecore2Code
         [Option('u', "model-uri", HelpText ="If specified, overrides the uri of the base package.")]
         public string Uri { get; set; }
 
+        [Option('p', "primitive-types", HelpText = "If set, Ecore Data types are transformed to primitive types")]
+        public bool PrimitiveTypes { get; set; }
+
         [ValueList(typeof(List<string>))]
         public IList<string> InputFiles { get; set; }
 
@@ -60,8 +61,11 @@ namespace Ecore2Code
         [Option('m', "metamodel", Required=false, HelpText="Specify this argument if you want to serialize the NMeta metamodel possibly generated from Ecore")]
         public string NMeta { get; set; }
 
-        [OptionList('r', "resolve", Required=false, HelpText="A list of namespace remappings in the syntax URI=file", Separator=';')]
+        [OptionList('r', "resolve", Required=false, HelpText="A list of namespace remappings in the syntax URI=file, multiple entries separated by ';'", Separator=';')]
         public List<string> NamespaceMappings { get; set; }
+
+        [OptionList('t', "type-mapping", Required = false, HelpText = "A list of type mappings in the syntax <Ecore Instance Class>=<.NET class>, multiple entries separated by ';'", Separator =';')]
+        public List<string> TypeMappings { get; set; }
 
         public string GetHelp()
         {
@@ -74,13 +78,14 @@ namespace Ecore2Code
         CS,
         VB,
         CPP,
-        JS
+        JS,
+        PY
     }
 
     class Program
     {
         static void Main(string[] args)
-        {
+        {            
             Options options = new Options();
             if (Parser.Default.ParseArguments(args, options))
             {
@@ -115,6 +120,24 @@ namespace Ecore2Code
             packageTransform.ForceGeneration = options.Force;
             packageTransform.CreateOperations = options.Operations;
             packageTransform.DefaultNamespace = options.OverallNamespace;
+
+            Ecore2MetaTransformation.GeneratePrimitiveTypes = options.PrimitiveTypes;
+            if (options.TypeMappings != null && options.TypeMappings.Count > 0)
+            {
+                var typeMapping = new Dictionary<string, string>();
+                foreach (var mapping in options.TypeMappings)
+                {
+                    if (string.IsNullOrEmpty(mapping)) continue;
+                    var lastIdx = mapping.LastIndexOf('=');
+                    if (lastIdx == -1)
+                    {
+                        Console.WriteLine("Type mapping {0} is missing required separator =", mapping);
+                        continue;
+                    }
+                    typeMapping.Add(mapping.Substring(0, lastIdx), mapping.Substring(lastIdx + 1));
+                }
+                Ecore2MetaTransformation.CustomTypesMap = typeMapping;
+            }
 
             Dictionary<Uri, string> mappings = null;
             if (options.NamespaceMappings != null && options.NamespaceMappings.Count > 0)
@@ -196,13 +219,16 @@ namespace Ecore2Code
                 case SupportedLanguage.JS:
                     generator = new Microsoft.JScript.JScriptCodeProvider();
                     break;
+                case SupportedLanguage.PY:
+                    generator = new PythonProvider();                                        
+                    break;
                 default:
                     Console.WriteLine("Unknown language detected. Falling back to default C#");
                     generator = new Microsoft.CSharp.CSharpCodeProvider();
                     break;
             }
 
-            var genOptions = new System.CodeDom.Compiler.CodeGeneratorOptions()
+            var genOptions = new CodeGeneratorOptions()
                 {
                     BlankLinesBetweenMembers = true,
                     VerbatimOrder = false,

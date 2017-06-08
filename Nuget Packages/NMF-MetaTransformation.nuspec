@@ -1,18 +1,18 @@
 <?xml version="1.0"?>
 <package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
     <metadata>
-        <id>NMF-CodeGen</id>
+        <id>NMF-MetaTransformation</id>
         <version>$version$</version>
-        <title>NMF Code Generator Templates</title>
+        <title>NMF Meta Transformation</title>
         <authors>Georg Hinkel</authors>
         <owners>Georg Hinkel</owners>
         <licenseUrl>http://nmf.codeplex.com/license</licenseUrl>
         <projectUrl>http://github.com/NMFCode/NMF</projectUrl>
         <requireLicenseAcceptance>false</requireLicenseAcceptance>
         <developmentDependency>true</developmentDependency>
-        <description>A library for code generators.</description>
-        <summary>This package contains a set of transformation rule templates that can be useful for code generators.</summary>
-        <copyright>Copyright © Georg Hinkel 2014</copyright>
+        <description>This package contains a transformation from NMeta to code.</description>
+        <summary>This package contains a transformation from NMeta to code.</summary>
+        <copyright>Copyright © Georg Hinkel 2016</copyright>
         <language>en</language>
         <tags>Model-driven; MDE; MDSD;</tags>
         <dependencies>
@@ -20,9 +20,10 @@
             <dependency id="NMF-Transformations" version="$version$" />
             <dependency id="NMF-Layering" version="$version$" />
             <dependency id="NMF-Utilities" version="$version$" />
+            <dependency id="NMF-CodeGen" version="$version$" />
         </dependencies>
     </metadata>
   <files>
-    <file src="..\Transformations\CodeGen\bin\Release\NMF.CodeGen.dll" target="lib\net45" />
+    <file src="..\Transformations\Models.MetaTransformation\bin\Release\NMF.Models.MetaTransformation.dll" target="lib\net45" />
   </files>
 </package>

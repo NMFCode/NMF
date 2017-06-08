@@ -629,7 +629,6 @@ namespace NMF.Models
         {
             if (fragment != null)
             {
-                if (fragment == string.Empty) fragment = "/";
                 if (!absolute)
                 {
                     return new Uri("#/" + fragment, UriKind.Relative);
