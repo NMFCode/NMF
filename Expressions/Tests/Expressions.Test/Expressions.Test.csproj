@@ -47,12 +47,22 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Arithmetic\AddExpressionTests.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>AddExpressionTests.tt</DependentUpon>
+    </Compile>
     <Compile Include="Arithmetic\BitwiseAndExpressionTests.cs" />
     <Compile Include="Arithmetic\BitwiseOrExpressionTests.cs" />
     <Compile Include="Arithmetic\IntegerExprssionTests.cs" />
     <Compile Include="Arithmetic\ShiftExpressionTests.cs" />
     <Compile Include="Arithmetic\ModuloExpressionTests.cs" />
     <Compile Include="Arithmetic\ShortcutOperatorTests.cs" />
+    <Compile Include="FuncTests.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>FuncTests.tt</DependentUpon>
+    </Compile>
     <Compile Include="NewArrayExpressionTests.cs" />
     <Compile Include="MemberExpressionTests.cs" />
     <Compile Include="NewExpressionTests.cs" />
@@ -75,7 +85,6 @@
     <Compile Include="Comparison\EqualsTests.cs" />
     <Compile Include="CoalesceTests.cs" />
     <Compile Include="Comparison\GreaterThanExpressionTests.cs" />
-    <Compile Include="Arithmetic\AddExpressionTests.cs" />
     <Compile Include="Arithmetic\SubtractExpressionTests.cs" />
     <Compile Include="Arithmetic\MultiplyExpressionTests.cs" />
     <Compile Include="Arithmetic\DivideExpressionTests.cs" />
@@ -86,7 +95,6 @@
     <Compile Include="DynamicTests.cs" />
     <Compile Include="ExceptionTests.cs" />
     <Compile Include="ProxyCallExpressionTests.cs" />
-    <Compile Include="FuncTests.cs" />
     <Compile Include="LensPutTests.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -94,6 +102,19 @@
       <Project>{afca9d1d-26a6-482a-a5ab-0827ad0fd677}</Project>
       <Name>Expressions</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Arithmetic\AddExpressionTests.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>AddExpressionTests.cs</LastGenOutput>
+    </Content>
+    <Content Include="FuncTests.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>FuncTests.cs</LastGenOutput>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
   </ItemGroup>
   <Choose>
     <When Condition="'$(VisualStudioVersion)' == '10.0' And '$(IsCodedUITest)' == 'True'">
