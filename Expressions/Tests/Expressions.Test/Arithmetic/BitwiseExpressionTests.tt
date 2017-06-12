@@ -1,0 +1,76 @@
+﻿<#@ template debug="false" hostspecific="false" language="C#" #>
+<#@ assembly name="System.Core" #>
+<#@ import namespace="System.Linq" #>
+<#@ import namespace="System.Text" #>
+<#@ import namespace="System.Collections.Generic" #>
+<#@ output extension=".cs" #>
+
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+
+namespace NMF.Expressions.Test.Arithmetic
+{
+    [TestClass]
+    public class BitwiseExpressionTests
+    {
+<#  
+        foreach (var operation in new[] { 
+            new {op = "&", name = "And", arg1 = 7, arg2 = 21, result = 5, arg3 = 3, result2 = 1 },
+            new {op = "|", name = "Or", arg1 = 7, arg2 = 21, result = 23, arg3 = 13, result2 = 29 }     
+        } ){
+#>
+        #region Bitwise<#=operation.name#>ExpressionTests
+
+<#
+                foreach(var type in new[] { "int", "long", "uint", "ulong" })
+                {
+                    foreach(var observable in new[] { false , true })
+                    {
+#>
+        [TestMethod]
+        public void <#=operation.name#><#=this.UppercaseFirst(type)#>_<#=observable?"Observable_Update":"NoObservable_NoUpdate"#>()
+        {
+            var updated = false;
+            var dummy = new <#=observable?"ObservableDummy":"Dummy"#><<#=type#>>() { Item = (<#=type#>)<#=operation.arg1#> };
+
+            var result = Observable.Expression(() => (<#=type#>)<#=operation.arg2#> <#=operation.op#> dummy.Item);
+
+            result.ValueChanged += (o, e) =>
+            {
+                <#=observable?("Assert.AreEqual((" + type + ")"+ operation.result +", e.OldValue);"):""#>
+                updated = true;
+            };
+
+            Assert.AreEqual((<#=type#>)<#=operation.result#>, result.Value);
+            Assert.IsFalse(updated);
+
+            dummy.Item = (<#=type#>)<#=operation.arg3#>;
+
+            Assert.AreEqual((<#=type#>)<#=observable?operation.result2:operation.result#>, result.Value);
+            Assert.<#=observable?"IsTrue":"IsFalse"#>(updated);
+        }
+
+<#
+                    }
+                }
+#>
+                
+        #endregion
+
+<#
+    }
+#>
+    }
+}
+<#+
+    public string UppercaseFirst(string s)
+    {
+        if (string.IsNullOrEmpty(s))
+        {
+            return string.Empty;
+        }
+
+        char[] charArray = s.ToCharArray();
+        charArray[0] = char.ToUpper(charArray[0]);
+        return new string(charArray);
+    }
+#>
