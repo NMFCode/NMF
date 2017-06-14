@@ -42,7 +42,14 @@ namespace NMF.Expressions.Test.Arithmetic
 
                 result.ValueChanged += (o, e) =>
                 {
-                    <#=observable?("Assert.AreEqual((" + type + ")"+ operation.result +", e.OldValue);"):""#>
+<#
+if(observable)
+{
+#>
+                    Assert.AreEqual((<#= type#>)<#= operation.result #>, e.OldValue);
+<#
+}
+#>
                     updated = true;
                 };
 
