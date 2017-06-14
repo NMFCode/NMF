@@ -52,17 +52,25 @@
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
     </Compile>
-    <Compile Include="Arithmetic\BitwiseAndExpressionTests.cs" />
     <Compile Include="Arithmetic\BitwiseExpressionTests.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>BitwiseExpressionTests.tt</DependentUpon>
     </Compile>
-    <Compile Include="Arithmetic\BitwiseOrExpressionTests.cs" />
     <Compile Include="Arithmetic\IntegerExprssionTests.cs" />
     <Compile Include="Arithmetic\ShiftExpressionTests.cs" />
     <Compile Include="Arithmetic\ModuloExpressionTests.cs" />
     <Compile Include="Arithmetic\ShortcutOperatorTests.cs" />
+    <Compile Include="LensPutProxyTests.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>LensPutProxyTests.tt</DependentUpon>
+    </Compile>
+    <Compile Include="LensPutTests.cs">
+      <DependentUpon>LensPutTests.tt</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+    </Compile>
     <Compile Include="FuncTests.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -97,7 +105,6 @@
     <Compile Include="DynamicTests.cs" />
     <Compile Include="ExceptionTests.cs" />
     <Compile Include="ProxyCallExpressionTests.cs" />
-    <Compile Include="LensPutTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Expressions\Expressions.csproj">
@@ -113,6 +120,14 @@
     <Content Include="Arithmetic\BitwiseExpressionTests.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>BitwiseExpressionTests.cs</LastGenOutput>
+    </Content>
+    <Content Include="LensPutProxyTests.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>LensPutProxyTests.cs</LastGenOutput>
+    </Content>
+    <Content Include="LensPutTests.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>LensPutTests.cs</LastGenOutput>
     </Content>
     <Content Include="FuncTests.tt">
       <Generator>TextTemplatingFileGenerator</Generator>

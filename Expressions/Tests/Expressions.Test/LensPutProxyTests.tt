@@ -1,0 +1,103 @@
+﻿<#@ template debug="false" hostspecific="false" language="C#" #>
+<#@ assembly name="System.Core" #>
+<#@ import namespace="System.Linq" #>
+<#@ import namespace="System.Text" #>
+<#@ import namespace="System.Collections.Generic" #>
+<#@ output extension=".cs" #>
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+<#
+    var isIncCombinations = new bool[] { false/*, true //Not implemented in framework yet*/ } ;
+#>
+
+namespace NMF.Expressions.Test
+{
+    [TestClass]
+    public class LensPutProxyTests
+    {
+        #region Helper
+
+        private static class Helpers
+        {
+            private static ObservingFunc<Dummy<string>, Dummy<string>, string> combineFunc = new ObservingFunc<Dummy<string>, Dummy<string>, string>((d1, d2) => d1.Item + d2.Item);
+
+<#
+foreach( var isInc in isIncCombinations)
+{
+#>
+            [LensPut(typeof(Helpers), "PutCombine<#= isInc?"Inc":"" #>")]
+            [ObservableProxy(typeof(Helpers), "CombineProxy<#= isInc?"Inc":"" #>")]
+            public static string Combine<#= isInc?"Inc":"" #>(Dummy<string> arg1, Dummy<string> arg2)
+            {
+                return combineFunc.Evaluate(arg1, arg2);
+            }
+            
+            public static INotifyValue<string> CombineProxy<#= isInc?"Inc":"" #>(<#= isInc?"INotifyValue<":"" #>Dummy<string><#= isInc?">":"" #> arg1, <#= isInc?"INotifyValue<":"" #>Dummy<string><#= isInc?">":"" #> arg2)
+            {
+                return combineFunc.Observe(arg1, arg2);
+            }     
+
+            public static void PutCombine<#= isInc?"Inc":"" #>(Dummy<string> arg1, Dummy<string> arg2, string value)
+            {
+                arg1.Item = value.Substring(0, 1);
+                arg2.Item = value.Substring(1);
+            }
+
+<#
+}
+#>
+        }
+
+        #endregion     
+   
+<#
+foreach( var isInc in isIncCombinations )
+{
+#>
+        [TestMethod]
+        public void LensPutWithProxy<#= isInc?"Inc":"" #>()
+        {
+            var dummy1 = new ObservableDummy<string>("A");
+            var dummy2 = new ObservableDummy<string>("B");
+
+            var test = Observable.Reversable(() => Helpers.Combine<#= isInc?"Inc":"" #>(dummy1, dummy2));
+            Assert.AreEqual("AB", test.Value);
+
+            var updated = false;
+            test.ValueChanged += (o, e) =>
+            {
+                updated = true;
+            };
+
+            var dummy1Updated = false;
+            dummy1.ItemChanged += (o, e) =>
+            {
+                dummy1Updated = true;
+            };
+            var dummy2Updated = false;
+            dummy2.ItemChanged += (o, e) =>
+            {
+                dummy2Updated = true;
+            };
+
+            dummy2.Item = "C";
+
+            Assert.IsTrue(updated);
+            Assert.IsFalse(dummy1Updated);
+            Assert.IsTrue(dummy2Updated);
+            Assert.AreEqual("AC", test.Value);
+
+            updated = false;
+            dummy2Updated = false;
+            test.Value = "BC";
+
+            Assert.IsTrue(dummy1Updated);
+            Assert.AreEqual("B", dummy1.Item);
+            Assert.IsTrue(updated);
+            Assert.IsFalse(dummy2Updated);
+        }
+
+<#
+}
+#>
+    }
+}
