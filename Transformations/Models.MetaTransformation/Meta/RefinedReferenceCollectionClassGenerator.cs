@@ -319,7 +319,7 @@ namespace NMF.Models.Meta
                             {
                                 var ifNotFull = new CodeConditionStatement();
                                 ifNotFull.Condition = new CodeBinaryOperatorExpression(new CodePropertyReferenceExpression(propertyRef, "Count"), CodeBinaryOperatorType.LessThan, new CodePrimitiveExpression(reference.UpperBound));
-                                ifNotFull.TrueStatements.Add(new CodeMethodInvokeExpression(propertyRef, "Add", itemRef));
+                                ifNotFull.TrueStatements.Add(new CodeMethodInvokeExpression(propertyRef, "Add", varRef));
                                 typeMatchIf.TrueStatements.Add(ifNotFull);
                             }
                             add.Statements.Add(typeMatchIf);
