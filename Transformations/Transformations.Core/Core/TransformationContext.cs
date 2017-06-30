@@ -396,6 +396,9 @@ namespace NMF.Transformations.Core
             for (int i = 0; i < computationsOfLevel.Count; i++)
             {
                 var item = computationsOfLevel[i];
+#if DEBUG
+                item.Transform();
+#else
                 try
                 {
                     item.Transform();
@@ -404,6 +407,7 @@ namespace NMF.Transformations.Core
                 {
                     throw new Exception($"The transformation rule {item.TransformationRule} threw an exception transforming the elements {PrintInputs(item)}", e);
                 }
+#endif
                 OnComputationCompleted(new ComputationEventArgs(item));
             }
         }
@@ -434,9 +438,9 @@ namespace NMF.Transformations.Core
             }
         }
 
-        #endregion
+#endregion
 
-        #region Trace Helpers
+#region Trace Helpers
 
         /// <summary>
         /// Gets all rules that apply the given signature
@@ -460,9 +464,9 @@ namespace NMF.Transformations.Core
             return Transformation.GetRuleForTypeSignature(input, output);
         }
 
-        #endregion
+#endregion
 
-        #region Bag & Data
+#region Bag & Data
 
         private dynamic bag = new ExpandoObject();
         private IDictionary<object, object> data = new Dictionary<object, object>();
@@ -485,9 +489,9 @@ namespace NMF.Transformations.Core
             get { return data; }
         }
 
-        #endregion
+#endregion
 
-        #region Trace
+#region Trace
 
         /// <summary>
         /// Represents the trace class for TransformationContext
@@ -520,7 +524,7 @@ namespace NMF.Transformations.Core
                     .Concat(published); }
             }
 
-            #region Trace accelerated by "computationsMade"
+#region Trace accelerated by "computationsMade"
 
             /// <summary>
             /// Traces the computations based upon the specified input
@@ -598,9 +602,9 @@ namespace NMF.Transformations.Core
                 return result;
             }
 
-            #endregion
+#endregion
 
-            #region Trace accelerated by "computationsByTransformationRule"
+#region Trace accelerated by "computationsByTransformationRule"
 
             /// <summary>
             /// Traces all computations with any inputs that math the given filters with the specified transformation rule
@@ -621,7 +625,7 @@ namespace NMF.Transformations.Core
                 }
             }
 
-            #endregion
+#endregion
 
             private HashSet<ITraceEntry> revoked = new HashSet<ITraceEntry>();
             private HashSet<ITraceEntry> published = new HashSet<ITraceEntry>();
@@ -696,7 +700,7 @@ namespace NMF.Transformations.Core
             }
         }
 
-        #endregion
+#endregion
 
         /// <summary>
         /// Calls the transformation context to finish any things yet undone

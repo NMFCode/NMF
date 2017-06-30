@@ -19,36 +19,49 @@ using System.Text;
 using System.CodeDom;
 using System.CodeDom.Compiler;
 using System.Reflection;
+using System.IO;
 
 namespace PythonCodeGenerator.CodeDom {
-    public class PythonProvider : CodeDomProvider {
+    public class PythonProvider : CodeDomProvider
+    {
         List<string> references = new List<string>();
 
         [Obsolete]
-        public override ICodeCompiler CreateCompiler() {
+        public override ICodeCompiler CreateCompiler()
+        {
             //return new PythonGenerator();
             throw new Exception("Not Supported");
         }
 
         [Obsolete]
-        public override ICodeGenerator CreateGenerator() {
+        public override ICodeGenerator CreateGenerator()
+        {
             return new PythonGenerator();
         }
 
-        public void AddReference(string assemblyName) {
+        public void AddReference(string assemblyName)
+        {
             references.Add(assemblyName);
         }
 
-        public override string FileExtension {
-            get {
+        public override string FileExtension
+        {
+            get
+            {
                 return "py";
             }
         }
 
-        public void MergeCodeFromCompileUnit(CodeCompileUnit compileUnit) {
+        public override void GenerateCodeFromCompileUnit(CodeCompileUnit compileUnit, TextWriter writer, CodeGeneratorOptions options)
+        {
+            base.GenerateCodeFromCompileUnit(compileUnit, writer, options);
+        }
+
+        public void MergeCodeFromCompileUnit(CodeCompileUnit compileUnit)
+        {
             new PythonGenerator().InternalGenerateCompileUnit(compileUnit);
         }
-        
+
     }
 
 }
