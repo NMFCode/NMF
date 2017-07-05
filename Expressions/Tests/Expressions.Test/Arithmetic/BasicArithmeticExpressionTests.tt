@@ -4,7 +4,7 @@
 <#@ import namespace="System.Text" #>
 <#@ import namespace="System.Collections.Generic" #>
 <#@ output extension=".cs" #>
-
+<#@ include file="..\TestGenerationSettings.t4" once="true"#>
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace NMF.Expressions.Test.Arithmetic

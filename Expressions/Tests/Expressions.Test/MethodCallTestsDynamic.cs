@@ -1,4 +1,5 @@
-﻿using System;
+﻿  
+using System;
 using System.Collections.Generic;
 using NMF.Expressions.Linq;
 using System.Linq;
@@ -981,6 +982,660 @@ namespace NMF.Expressions.Test
 
             Assert.IsTrue(update);
             Assert.AreEqual("1, 2, 3, 4, 5, 6, 7, 8, 10", String.Join(", ", test.Value));
+        }
+
+
+
+
+
+
+        #endregion
+
+        #region New tests with 10 parameters
+ 
+        [TestMethod]
+        public void MethodCall_NoObservableTarget_Parameter10()
+        {
+            var update = false;
+            var dummy = new NotifyCollection<Dummy<int>>();
+            
+            for(int j = 1; j<= 10; j++)
+            {
+                dummy.Add( new Dummy<int>() { Item = j } );
+            }
+
+            var test = Observable.Expression<string>(() => String.Join(", ", dummy.Select(x => x.Item.ToString()) ) );
+            test.ValueChanged += (o, e) => update = true;
+            Assert.AreEqual("1, 2, 3, 4, 5, 6, 7, 8, 9, 10", test.Value);
+            Assert.IsFalse(update);
+
+            dummy[9].Item = 11;
+
+            Assert.IsFalse(update);
+        }
+
+
+        [TestMethod]
+        public void MethodCall_NoObservableArgument_Parameter10()
+        {
+            var update = false;
+            var dummy = new NotifyCollection<Dummy<string>>();
+            
+            for(int j = 1; j<= 10; j++)
+            {
+                dummy.Add( new Dummy<string>() { Item = j.ToString() } );
+            }
+
+            var test = Observable.Expression<int[]>(() => dummy.Select(x => Convert.ToInt32(x.Item)).ToArray());
+            test.ValueChanged += (o, e) => update = true;
+            Assert.AreEqual("1, 2, 3, 4, 5, 6, 7, 8, 9, 10", String.Join(", ", test.Value));
+            Assert.IsFalse(update);
+
+            dummy[9].Item = "11";
+
+            Assert.IsFalse(update);
+        }
+
+
+ 
+        [TestMethod]
+        public void MethodCall_ObservableTarget_Parameter10()
+        {
+            var update = false;
+            var dummy = new NotifyCollection<ObservableDummy<int>>();
+            
+            for(int j = 1; j<= 10; j++)
+            {
+                dummy.Add( new ObservableDummy<int>() { Item = j } );
+            }
+
+            var test = Observable.Expression<string>(() => String.Join(", ", dummy.Select(x => x.Item.ToString()) ) );
+            test.ValueChanged += (o, e) =>
+            {
+                update = true;
+                Assert.AreEqual("1, 2, 3, 4, 5, 6, 7, 8, 9, 10", e.OldValue);
+                Assert.AreEqual("1, 2, 3, 4, 5, 6, 7, 8, 9, 11", e.NewValue);
+            };
+            Assert.AreEqual("1, 2, 3, 4, 5, 6, 7, 8, 9, 10", test.Value);
+            Assert.IsFalse(update);
+
+            dummy[9].Item = 11;
+
+            Assert.IsTrue(update);
+            Assert.AreEqual("1, 2, 3, 4, 5, 6, 7, 8, 9, 11", test.Value);
+        }
+
+
+        [TestMethod]
+        public void MethodCall_ObservableArgument_Parameter10()
+        {
+            var update = false;
+            var dummy = new NotifyCollection<ObservableDummy<string>>();
+            
+            for(int j = 1; j<= 10; j++)
+            {
+                dummy.Add( new ObservableDummy<string>() { Item = j.ToString() } );
+            }
+
+            var test = Observable.Expression<int[]>(() => dummy.Select(x => Convert.ToInt32(x.Item)).ToArray());
+            test.ValueChanged += (o, e) =>
+            {
+                update = true;
+                Assert.AreEqual("1, 2, 3, 4, 5, 6, 7, 8, 9, 10", String.Join(", ", e.OldValue));
+                Assert.AreEqual("1, 2, 3, 4, 5, 6, 7, 8, 9, 11", String.Join(", ", e.NewValue));
+            };
+            Assert.AreEqual("1, 2, 3, 4, 5, 6, 7, 8, 9, 10", String.Join(", ", test.Value));
+            Assert.IsFalse(update);
+
+            dummy[9].Item = "11";
+
+            Assert.IsTrue(update);
+            Assert.AreEqual("1, 2, 3, 4, 5, 6, 7, 8, 9, 11", String.Join(", ", test.Value));
+        }
+
+
+
+
+
+
+        #endregion
+
+        #region New tests with 11 parameters
+ 
+        [TestMethod]
+        public void MethodCall_NoObservableTarget_Parameter11()
+        {
+            var update = false;
+            var dummy = new NotifyCollection<Dummy<int>>();
+            
+            for(int j = 1; j<= 11; j++)
+            {
+                dummy.Add( new Dummy<int>() { Item = j } );
+            }
+
+            var test = Observable.Expression<string>(() => String.Join(", ", dummy.Select(x => x.Item.ToString()) ) );
+            test.ValueChanged += (o, e) => update = true;
+            Assert.AreEqual("1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11", test.Value);
+            Assert.IsFalse(update);
+
+            dummy[10].Item = 12;
+
+            Assert.IsFalse(update);
+        }
+
+
+        [TestMethod]
+        public void MethodCall_NoObservableArgument_Parameter11()
+        {
+            var update = false;
+            var dummy = new NotifyCollection<Dummy<string>>();
+            
+            for(int j = 1; j<= 11; j++)
+            {
+                dummy.Add( new Dummy<string>() { Item = j.ToString() } );
+            }
+
+            var test = Observable.Expression<int[]>(() => dummy.Select(x => Convert.ToInt32(x.Item)).ToArray());
+            test.ValueChanged += (o, e) => update = true;
+            Assert.AreEqual("1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11", String.Join(", ", test.Value));
+            Assert.IsFalse(update);
+
+            dummy[10].Item = "12";
+
+            Assert.IsFalse(update);
+        }
+
+
+ 
+        [TestMethod]
+        public void MethodCall_ObservableTarget_Parameter11()
+        {
+            var update = false;
+            var dummy = new NotifyCollection<ObservableDummy<int>>();
+            
+            for(int j = 1; j<= 11; j++)
+            {
+                dummy.Add( new ObservableDummy<int>() { Item = j } );
+            }
+
+            var test = Observable.Expression<string>(() => String.Join(", ", dummy.Select(x => x.Item.ToString()) ) );
+            test.ValueChanged += (o, e) =>
+            {
+                update = true;
+                Assert.AreEqual("1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11", e.OldValue);
+                Assert.AreEqual("1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 12", e.NewValue);
+            };
+            Assert.AreEqual("1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11", test.Value);
+            Assert.IsFalse(update);
+
+            dummy[10].Item = 12;
+
+            Assert.IsTrue(update);
+            Assert.AreEqual("1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 12", test.Value);
+        }
+
+
+        [TestMethod]
+        public void MethodCall_ObservableArgument_Parameter11()
+        {
+            var update = false;
+            var dummy = new NotifyCollection<ObservableDummy<string>>();
+            
+            for(int j = 1; j<= 11; j++)
+            {
+                dummy.Add( new ObservableDummy<string>() { Item = j.ToString() } );
+            }
+
+            var test = Observable.Expression<int[]>(() => dummy.Select(x => Convert.ToInt32(x.Item)).ToArray());
+            test.ValueChanged += (o, e) =>
+            {
+                update = true;
+                Assert.AreEqual("1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11", String.Join(", ", e.OldValue));
+                Assert.AreEqual("1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 12", String.Join(", ", e.NewValue));
+            };
+            Assert.AreEqual("1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11", String.Join(", ", test.Value));
+            Assert.IsFalse(update);
+
+            dummy[10].Item = "12";
+
+            Assert.IsTrue(update);
+            Assert.AreEqual("1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 12", String.Join(", ", test.Value));
+        }
+
+
+
+
+
+
+        #endregion
+
+        #region New tests with 12 parameters
+ 
+        [TestMethod]
+        public void MethodCall_NoObservableTarget_Parameter12()
+        {
+            var update = false;
+            var dummy = new NotifyCollection<Dummy<int>>();
+            
+            for(int j = 1; j<= 12; j++)
+            {
+                dummy.Add( new Dummy<int>() { Item = j } );
+            }
+
+            var test = Observable.Expression<string>(() => String.Join(", ", dummy.Select(x => x.Item.ToString()) ) );
+            test.ValueChanged += (o, e) => update = true;
+            Assert.AreEqual("1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12", test.Value);
+            Assert.IsFalse(update);
+
+            dummy[11].Item = 13;
+
+            Assert.IsFalse(update);
+        }
+
+
+        [TestMethod]
+        public void MethodCall_NoObservableArgument_Parameter12()
+        {
+            var update = false;
+            var dummy = new NotifyCollection<Dummy<string>>();
+            
+            for(int j = 1; j<= 12; j++)
+            {
+                dummy.Add( new Dummy<string>() { Item = j.ToString() } );
+            }
+
+            var test = Observable.Expression<int[]>(() => dummy.Select(x => Convert.ToInt32(x.Item)).ToArray());
+            test.ValueChanged += (o, e) => update = true;
+            Assert.AreEqual("1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12", String.Join(", ", test.Value));
+            Assert.IsFalse(update);
+
+            dummy[11].Item = "13";
+
+            Assert.IsFalse(update);
+        }
+
+
+ 
+        [TestMethod]
+        public void MethodCall_ObservableTarget_Parameter12()
+        {
+            var update = false;
+            var dummy = new NotifyCollection<ObservableDummy<int>>();
+            
+            for(int j = 1; j<= 12; j++)
+            {
+                dummy.Add( new ObservableDummy<int>() { Item = j } );
+            }
+
+            var test = Observable.Expression<string>(() => String.Join(", ", dummy.Select(x => x.Item.ToString()) ) );
+            test.ValueChanged += (o, e) =>
+            {
+                update = true;
+                Assert.AreEqual("1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12", e.OldValue);
+                Assert.AreEqual("1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 13", e.NewValue);
+            };
+            Assert.AreEqual("1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12", test.Value);
+            Assert.IsFalse(update);
+
+            dummy[11].Item = 13;
+
+            Assert.IsTrue(update);
+            Assert.AreEqual("1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 13", test.Value);
+        }
+
+
+        [TestMethod]
+        public void MethodCall_ObservableArgument_Parameter12()
+        {
+            var update = false;
+            var dummy = new NotifyCollection<ObservableDummy<string>>();
+            
+            for(int j = 1; j<= 12; j++)
+            {
+                dummy.Add( new ObservableDummy<string>() { Item = j.ToString() } );
+            }
+
+            var test = Observable.Expression<int[]>(() => dummy.Select(x => Convert.ToInt32(x.Item)).ToArray());
+            test.ValueChanged += (o, e) =>
+            {
+                update = true;
+                Assert.AreEqual("1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12", String.Join(", ", e.OldValue));
+                Assert.AreEqual("1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 13", String.Join(", ", e.NewValue));
+            };
+            Assert.AreEqual("1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12", String.Join(", ", test.Value));
+            Assert.IsFalse(update);
+
+            dummy[11].Item = "13";
+
+            Assert.IsTrue(update);
+            Assert.AreEqual("1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 13", String.Join(", ", test.Value));
+        }
+
+
+
+
+
+
+        #endregion
+
+        #region New tests with 13 parameters
+ 
+        [TestMethod]
+        public void MethodCall_NoObservableTarget_Parameter13()
+        {
+            var update = false;
+            var dummy = new NotifyCollection<Dummy<int>>();
+            
+            for(int j = 1; j<= 13; j++)
+            {
+                dummy.Add( new Dummy<int>() { Item = j } );
+            }
+
+            var test = Observable.Expression<string>(() => String.Join(", ", dummy.Select(x => x.Item.ToString()) ) );
+            test.ValueChanged += (o, e) => update = true;
+            Assert.AreEqual("1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13", test.Value);
+            Assert.IsFalse(update);
+
+            dummy[12].Item = 14;
+
+            Assert.IsFalse(update);
+        }
+
+
+        [TestMethod]
+        public void MethodCall_NoObservableArgument_Parameter13()
+        {
+            var update = false;
+            var dummy = new NotifyCollection<Dummy<string>>();
+            
+            for(int j = 1; j<= 13; j++)
+            {
+                dummy.Add( new Dummy<string>() { Item = j.ToString() } );
+            }
+
+            var test = Observable.Expression<int[]>(() => dummy.Select(x => Convert.ToInt32(x.Item)).ToArray());
+            test.ValueChanged += (o, e) => update = true;
+            Assert.AreEqual("1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13", String.Join(", ", test.Value));
+            Assert.IsFalse(update);
+
+            dummy[12].Item = "14";
+
+            Assert.IsFalse(update);
+        }
+
+
+ 
+        [TestMethod]
+        public void MethodCall_ObservableTarget_Parameter13()
+        {
+            var update = false;
+            var dummy = new NotifyCollection<ObservableDummy<int>>();
+            
+            for(int j = 1; j<= 13; j++)
+            {
+                dummy.Add( new ObservableDummy<int>() { Item = j } );
+            }
+
+            var test = Observable.Expression<string>(() => String.Join(", ", dummy.Select(x => x.Item.ToString()) ) );
+            test.ValueChanged += (o, e) =>
+            {
+                update = true;
+                Assert.AreEqual("1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13", e.OldValue);
+                Assert.AreEqual("1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 14", e.NewValue);
+            };
+            Assert.AreEqual("1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13", test.Value);
+            Assert.IsFalse(update);
+
+            dummy[12].Item = 14;
+
+            Assert.IsTrue(update);
+            Assert.AreEqual("1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 14", test.Value);
+        }
+
+
+        [TestMethod]
+        public void MethodCall_ObservableArgument_Parameter13()
+        {
+            var update = false;
+            var dummy = new NotifyCollection<ObservableDummy<string>>();
+            
+            for(int j = 1; j<= 13; j++)
+            {
+                dummy.Add( new ObservableDummy<string>() { Item = j.ToString() } );
+            }
+
+            var test = Observable.Expression<int[]>(() => dummy.Select(x => Convert.ToInt32(x.Item)).ToArray());
+            test.ValueChanged += (o, e) =>
+            {
+                update = true;
+                Assert.AreEqual("1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13", String.Join(", ", e.OldValue));
+                Assert.AreEqual("1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 14", String.Join(", ", e.NewValue));
+            };
+            Assert.AreEqual("1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13", String.Join(", ", test.Value));
+            Assert.IsFalse(update);
+
+            dummy[12].Item = "14";
+
+            Assert.IsTrue(update);
+            Assert.AreEqual("1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 14", String.Join(", ", test.Value));
+        }
+
+
+
+
+
+
+        #endregion
+
+        #region New tests with 14 parameters
+ 
+        [TestMethod]
+        public void MethodCall_NoObservableTarget_Parameter14()
+        {
+            var update = false;
+            var dummy = new NotifyCollection<Dummy<int>>();
+            
+            for(int j = 1; j<= 14; j++)
+            {
+                dummy.Add( new Dummy<int>() { Item = j } );
+            }
+
+            var test = Observable.Expression<string>(() => String.Join(", ", dummy.Select(x => x.Item.ToString()) ) );
+            test.ValueChanged += (o, e) => update = true;
+            Assert.AreEqual("1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14", test.Value);
+            Assert.IsFalse(update);
+
+            dummy[13].Item = 15;
+
+            Assert.IsFalse(update);
+        }
+
+
+        [TestMethod]
+        public void MethodCall_NoObservableArgument_Parameter14()
+        {
+            var update = false;
+            var dummy = new NotifyCollection<Dummy<string>>();
+            
+            for(int j = 1; j<= 14; j++)
+            {
+                dummy.Add( new Dummy<string>() { Item = j.ToString() } );
+            }
+
+            var test = Observable.Expression<int[]>(() => dummy.Select(x => Convert.ToInt32(x.Item)).ToArray());
+            test.ValueChanged += (o, e) => update = true;
+            Assert.AreEqual("1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14", String.Join(", ", test.Value));
+            Assert.IsFalse(update);
+
+            dummy[13].Item = "15";
+
+            Assert.IsFalse(update);
+        }
+
+
+ 
+        [TestMethod]
+        public void MethodCall_ObservableTarget_Parameter14()
+        {
+            var update = false;
+            var dummy = new NotifyCollection<ObservableDummy<int>>();
+            
+            for(int j = 1; j<= 14; j++)
+            {
+                dummy.Add( new ObservableDummy<int>() { Item = j } );
+            }
+
+            var test = Observable.Expression<string>(() => String.Join(", ", dummy.Select(x => x.Item.ToString()) ) );
+            test.ValueChanged += (o, e) =>
+            {
+                update = true;
+                Assert.AreEqual("1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14", e.OldValue);
+                Assert.AreEqual("1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 15", e.NewValue);
+            };
+            Assert.AreEqual("1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14", test.Value);
+            Assert.IsFalse(update);
+
+            dummy[13].Item = 15;
+
+            Assert.IsTrue(update);
+            Assert.AreEqual("1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 15", test.Value);
+        }
+
+
+        [TestMethod]
+        public void MethodCall_ObservableArgument_Parameter14()
+        {
+            var update = false;
+            var dummy = new NotifyCollection<ObservableDummy<string>>();
+            
+            for(int j = 1; j<= 14; j++)
+            {
+                dummy.Add( new ObservableDummy<string>() { Item = j.ToString() } );
+            }
+
+            var test = Observable.Expression<int[]>(() => dummy.Select(x => Convert.ToInt32(x.Item)).ToArray());
+            test.ValueChanged += (o, e) =>
+            {
+                update = true;
+                Assert.AreEqual("1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14", String.Join(", ", e.OldValue));
+                Assert.AreEqual("1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 15", String.Join(", ", e.NewValue));
+            };
+            Assert.AreEqual("1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14", String.Join(", ", test.Value));
+            Assert.IsFalse(update);
+
+            dummy[13].Item = "15";
+
+            Assert.IsTrue(update);
+            Assert.AreEqual("1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 15", String.Join(", ", test.Value));
+        }
+
+
+
+
+
+
+        #endregion
+
+        #region New tests with 15 parameters
+ 
+        [TestMethod]
+        public void MethodCall_NoObservableTarget_Parameter15()
+        {
+            var update = false;
+            var dummy = new NotifyCollection<Dummy<int>>();
+            
+            for(int j = 1; j<= 15; j++)
+            {
+                dummy.Add( new Dummy<int>() { Item = j } );
+            }
+
+            var test = Observable.Expression<string>(() => String.Join(", ", dummy.Select(x => x.Item.ToString()) ) );
+            test.ValueChanged += (o, e) => update = true;
+            Assert.AreEqual("1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15", test.Value);
+            Assert.IsFalse(update);
+
+            dummy[14].Item = 16;
+
+            Assert.IsFalse(update);
+        }
+
+
+        [TestMethod]
+        public void MethodCall_NoObservableArgument_Parameter15()
+        {
+            var update = false;
+            var dummy = new NotifyCollection<Dummy<string>>();
+            
+            for(int j = 1; j<= 15; j++)
+            {
+                dummy.Add( new Dummy<string>() { Item = j.ToString() } );
+            }
+
+            var test = Observable.Expression<int[]>(() => dummy.Select(x => Convert.ToInt32(x.Item)).ToArray());
+            test.ValueChanged += (o, e) => update = true;
+            Assert.AreEqual("1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15", String.Join(", ", test.Value));
+            Assert.IsFalse(update);
+
+            dummy[14].Item = "16";
+
+            Assert.IsFalse(update);
+        }
+
+
+ 
+        [TestMethod]
+        public void MethodCall_ObservableTarget_Parameter15()
+        {
+            var update = false;
+            var dummy = new NotifyCollection<ObservableDummy<int>>();
+            
+            for(int j = 1; j<= 15; j++)
+            {
+                dummy.Add( new ObservableDummy<int>() { Item = j } );
+            }
+
+            var test = Observable.Expression<string>(() => String.Join(", ", dummy.Select(x => x.Item.ToString()) ) );
+            test.ValueChanged += (o, e) =>
+            {
+                update = true;
+                Assert.AreEqual("1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15", e.OldValue);
+                Assert.AreEqual("1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 16", e.NewValue);
+            };
+            Assert.AreEqual("1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15", test.Value);
+            Assert.IsFalse(update);
+
+            dummy[14].Item = 16;
+
+            Assert.IsTrue(update);
+            Assert.AreEqual("1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 16", test.Value);
+        }
+
+
+        [TestMethod]
+        public void MethodCall_ObservableArgument_Parameter15()
+        {
+            var update = false;
+            var dummy = new NotifyCollection<ObservableDummy<string>>();
+            
+            for(int j = 1; j<= 15; j++)
+            {
+                dummy.Add( new ObservableDummy<string>() { Item = j.ToString() } );
+            }
+
+            var test = Observable.Expression<int[]>(() => dummy.Select(x => Convert.ToInt32(x.Item)).ToArray());
+            test.ValueChanged += (o, e) =>
+            {
+                update = true;
+                Assert.AreEqual("1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15", String.Join(", ", e.OldValue));
+                Assert.AreEqual("1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 16", String.Join(", ", e.NewValue));
+            };
+            Assert.AreEqual("1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15", String.Join(", ", test.Value));
+            Assert.IsFalse(update);
+
+            dummy[14].Item = "16";
+
+            Assert.IsTrue(update);
+            Assert.AreEqual("1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 16", String.Join(", ", test.Value));
         }
 
 

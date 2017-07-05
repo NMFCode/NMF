@@ -4,6 +4,7 @@
 <#@ import namespace="System.Text" #>
 <#@ import namespace="System.Collections.Generic" #>
 <#@ output extension=".cs" #>
+<#@ include file="TestGenerationSettings.t4" once="true"#> 
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 <#
 var isIncCombinations = new bool[] { false/*, true //Not implemented in framework yet*/ } ;
@@ -31,7 +32,7 @@ namespace NMF.Expressions.Test
         string textDI = "d{0}";
         string textDIItem = textDI + ".Item";
 
-        for(int i=2;i<=9;i++)
+        for(int i=2;i<=maxNumParameter;i++)
         {
 #>
             #region Helper for <#= i #> parameters
@@ -78,7 +79,7 @@ namespace NMF.Expressions.Test
 <#
     foreach( var isInc in isIncCombinations )
     {
-        for(int i=2;i<=9;i++)
+        for(int i=2;i<=maxNumParameter;i++)
         { 
 #>
         [TestMethod]
