@@ -5,6 +5,8 @@
 <#@ import namespace="System.Collections.Generic" #>
 <#@ output extension=".cs" #>
 <#@ include file="TestGenerationSettings.t4" once="true"#> 
+using System;
+using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 <#
 var isIncCombinations = new bool[] { false/*, true //Not implemented in framework yet*/ } ;
@@ -18,7 +20,16 @@ namespace NMF.Expressions.Test
         #region Helper
 
         private static class Helpers
-        {           
+        {
+            public static string GenerateTestStringLower(int length, int lowerCount)
+            {
+                return String.Join("",Enumerable.Range(1, length).Select(x => (char)( x + ( x > lowerCount?64:96 ) ) ));
+            }
+
+            public static string GenerateTestStringUpper(int length, int upperCount)
+            {
+                return String.Join("",Enumerable.Range(1, length).Select(x => (char)( x + ( x > upperCount?96:64 ) ) ));
+            }
 <#
     foreach( var isInc in isIncCombinations)
     {
@@ -28,7 +39,7 @@ namespace NMF.Expressions.Test
         string textArgI = "arg{0}";
         string textDummyTArgI = textDummyT + " " + textArgI;
         string textWrappedDummyTArgI = (isInc?"INotifyValue<":"") + "Dummy<string>" + (isInc?">":"") + " arg{0}";
-    
+
         string textDI = "d{0}";
         string textDIItem = textDI + ".Item";
 
@@ -37,21 +48,21 @@ namespace NMF.Expressions.Test
 #>
             #region Helper for <#= i #> parameters
 
-            private static readonly ObservingFunc<<#= Interpolate(textDummyT, ", ", i) #>, string> combineFunc<#=i#> = new ObservingFunc<<#= Interpolate(textDummyT, ", ", i) #>, string>((<#= Interpolate(textDI, ", ", i) #>) => <#= Interpolate(textDIItem, " + ", i) #>);
+            private static readonly ObservingFunc<<#= Interpolate(textDummyT, ", ", i, 0) #>, string> combineFunc<#=i#> = new ObservingFunc<<#= Interpolate(textDummyT, ", ", i, 0) #>, string>((<#= Interpolate(textDI, ", ", i, 0) #>) => <#= Interpolate(textDIItem, " + ", i, 0) #>);
 
             [LensPut(typeof(Helpers), "PutCombine<#= isInc?"Inc":"" #>")]
             [ObservableProxy(typeof(Helpers), "CombineProxy<#= isInc?"Inc":"" #>")]
-            public static string Combine<#= isInc?"Inc":"" #>(<#= Interpolate(textDummyTArgI, ", ", i) #>)
+            public static string Combine<#= isInc?"Inc":"" #>(<#= Interpolate(textDummyTArgI, ", ", i, 0) #>)
             {
-                return combineFunc<#= i #>.Evaluate(<#= Interpolate(textArgI, ", ", i) #>);
+                return combineFunc<#= i #>.Evaluate(<#= Interpolate(textArgI, ", ", i, 0) #>);
             }
             
-            public static INotifyValue<string> CombineProxy<#= isInc?"Inc":"" #>(<#= Interpolate(textWrappedDummyTArgI, ", ", i) #>)
+            public static INotifyValue<string> CombineProxy<#= isInc?"Inc":"" #>(<#= Interpolate(textWrappedDummyTArgI, ", ", i, 0) #>)
             {
-                return combineFunc<#= i #>.Observe(<#= Interpolate(textArgI, ", ", i) #>);
+                return combineFunc<#= i #>.Observe(<#= Interpolate(textArgI, ", ", i, 0) #>);
             }     
 
-            public static void PutCombine<#= isInc?"Inc":"" #>(<#= Interpolate(textDummyTArgI, ", ", i) #>, string value)
+            public static void PutCombine<#= isInc?"Inc":"" #>(<#= Interpolate(textDummyTArgI, ", ", i, 0) #>, string value)
             {
                 var splittedValue = value.ToCharArray();
 <# 
@@ -85,15 +96,16 @@ namespace NMF.Expressions.Test
         [TestMethod]
         public void LensPutWithProxy<#= isInc?"Inc":"" #>Param<#= i #>()
         {
-<# 
+            var dummy = new ObservableDummy<string>[<#= i #>];
+<#
             for(int j=1;j<=i;j++)
             {
 #>
-            var dummy<#= j #> = new ObservableDummy<string>("<#= (char)(j + 64) #>");
+            dummy[<#= j -1 #>] = new ObservableDummy<string>("<#= (char)(j + 64) #>");
 <#
             }
 #>
-            var test = Observable.Reversable(() => Helpers.Combine<#= isInc?"Inc":"" #>(<#= Interpolate("dummy{0}", ", ", i) #>));
+            var test = Observable.Reversable(() => Helpers.Combine<#= isInc?"Inc":"" #>(<#= Interpolate("dummy[{0}]", ", ", i, -1) #>));
             Assert.AreEqual("<#= GenerateTestString(i, i) #>", test.Value);
 
             var updated = false;
@@ -101,53 +113,63 @@ namespace NMF.Expressions.Test
             {
                 updated = true;
             };
+
+            var dummyUpdated = new bool[<#= i #>];
             
-<# 
+<#
             for(int j=1;j<=i;j++)
             {
 #>
-            var dummy<#= j #>Updated = false;
-            dummy<#= j #>.ItemChanged += (o, e) =>
+            dummyUpdated[<#= j - 1#>] = false;
+            dummy[<#= j - 1#>].ItemChanged += (o, e) =>
             {
-                dummy<#= j #>Updated = true;
+                dummyUpdated[<#= j - 1#>] = true;
             };
 <#
             }
 #>
-           
-            dummy<#= i #>.Item = "<#= (char)(i + 96) #>";
-
-            Assert.IsTrue(updated);
-<# 
-            for(int j=1;j<i;j++)
-            {
-#>
-            Assert.IsFalse(dummy<#= j #>Updated);
-<#
-            }
-#>
-            Assert.IsTrue(dummy<#= i #>Updated);
-            Assert.AreEqual("<#= GenerateTestString(i, i-1) #>", test.Value);
-
-            updated = false;
-            dummy<#= i #>Updated = false;
-            test.Value = "<#= GenerateTestString(i, i-2) #>";
-
-            Assert.IsTrue(updated);
-            Assert.IsTrue(dummy<#= i - 1 #>Updated);
-            Assert.AreEqual("<#= (char)(i - 1 + 96) #>", dummy<#= i - 1 #>.Item);
-<# 
-            for(int j=1;j<i;j++)
-            {
-                if(j == i - 1)
+            
+            for(int k=0; k<<#= i #>; k++){
+                dummy[k].Item = ((char)(k + 97)).ToString();
+                Assert.IsTrue(updated);
+                for(int m=0;m<<#= i #>;m++)
                 {
-                    continue;
+                    if(m == k)
+                    {
+                        Assert.IsTrue(dummyUpdated[m]);
+                    }
+                    else
+                    {
+                        Assert.IsFalse(dummyUpdated[m]);
+                    }
                 }
-#>
-            Assert.IsFalse(dummy<#= j #>Updated);
-<#
+
+                Assert.AreEqual(Helpers.GenerateTestStringLower(<#= i #>, k + 1), test.Value);
+
+                updated = false;
+                dummyUpdated[k] = false;
             }
-#>
+
+            for(int k=0; k<<#= i #>; k++){
+                test.Value = Helpers.GenerateTestStringUpper(<#= i #>, k + 1);
+                Assert.IsTrue(updated);
+                for(int m=0;m<<#= i #>;m++)
+                {
+                    if(m == k)
+                    {
+                        Assert.IsTrue(dummyUpdated[m]);
+                    }
+                    else
+                    {
+                        Assert.IsFalse(dummyUpdated[m]);
+                    }
+                }
+
+                Assert.AreEqual(((char)(k + 65)).ToString(), dummy[k].Item);
+
+                updated = false;
+                dummyUpdated[k] = false;
+            }
 
         }
 
@@ -159,8 +181,8 @@ namespace NMF.Expressions.Test
 }
 
 <#+
-    public string Interpolate(string str, string separator, int i){
-        return String.Join(separator,Enumerable.Range(1, i).Select(x => String.Format(str, x)));
+    public string Interpolate(string str, string separator, int i, int offset){
+        return String.Join(separator,Enumerable.Range(1, i).Select(x => String.Format(str, x + offset)));
     }
 
     public string GenerateTestString(int length, int upperCount)
