@@ -201,6 +201,14 @@ namespace NMF.Models.Changes
             for (int i = 0; i < list.Count; i++)
             {
                 var insertion = list[i] as ICompositionInsertion;
+                if (insertion == null)
+                {
+                    var transaction = list[i] as IElementaryChangeTransaction;
+                    if (transaction != null && transaction.NestedChanges.Count == 1)
+                    {
+                        insertion = transaction.NestedChanges[0] as ICompositionInsertion;
+                    }
+                }
                 if (insertion != null && insertion.AddedElement == deletion.DeletedElement)
                 {
                     RemoveAllElementSources(insertion.AddedElement);
@@ -412,11 +420,14 @@ namespace NMF.Models.Changes
         private void AddAllElementSources(IModelElement createdElement, IModelChange currentChange)
         {
             var changeMe = (ModelElement)currentChange;
-            elementSources.Add(createdElement, new ElementSourceInfo(changeMe, "addedElement"));
-            foreach (ModelElement item in createdElement.Descendants())
+            if (!elementSources.ContainsKey(createdElement))
             {
-                var relative = item.CreateUriWithFragment(null, false, createdElement);
-                if (relative != null) elementSources.Add(item, new ElementSourceInfo(changeMe, "addedElement/" + relative.OriginalString));
+                elementSources.Add(createdElement, new ElementSourceInfo(changeMe, "addedElement"));
+                foreach (ModelElement item in createdElement.Descendants())
+                {
+                    var relative = item.CreateUriWithFragment(null, false, createdElement);
+                    if (relative != null) elementSources.Add(item, new ElementSourceInfo(changeMe, "addedElement/" + relative.OriginalString));
+                }
             }
         }
 
