@@ -1,0 +1,151 @@
+﻿<#@ template debug="false" hostspecific="false" language="C#" #>
+<#@ assembly name="System.Core" #>
+<#@ import namespace="System.Linq" #>
+<#@ import namespace="System.Text" #>
+<#@ import namespace="System.Collections.Generic" #>
+<#@ output extension=".cs" #>
+<#@ include file="TestGenerationSettings.tt" once="true"#>
+using System;
+using System.Collections.Generic;
+using NMF.Expressions.Linq;
+using System.Linq;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+
+namespace NMF.Expressions.Test
+{ 
+    [TestClass]
+    public class MethodCallTestsDynamic
+    {        
+<#
+    for(int i=1;i<=maxNumParameter;i++)
+    {
+#>
+        #region New tests with <#= i #> parameters
+<#
+        foreach(var isObservable in new[] { false , true })
+        {
+#> 
+        [TestMethod]
+        public void MethodCall_<#= isObservable?"":"No" #>ObservableTarget_Parameter<#= i #>()
+        {
+            var update = false;
+            var dummy = new NotifyCollection<<#= isObservable?"Observable":"" #>Dummy<int>>();
+            
+            for(int j = 1; j<= <#= i #>; j++)
+            {
+                dummy.Add( new <#= isObservable?"Observable":"" #>Dummy<int>() { Item = j } );
+            }
+
+            var test = Observable.Expression<string>(() => String.Join(", ", dummy.Select(x => x.Item.ToString()) ) );
+<#
+            if(isObservable)
+            {
+#>
+            test.ValueChanged += (o, e) =>
+            {
+                update = true;
+                Assert.AreEqual("<#= GenerateTestString( i, 0, 0 ) #>", e.OldValue);
+                Assert.AreEqual("<#= GenerateTestString( i, 0, 1 ) #>", e.NewValue);
+            };
+<#
+            }
+            else
+            {
+#>
+            test.ValueChanged += (o, e) => update = true;
+<#
+}
+#>
+            Assert.AreEqual("<#= GenerateTestString( i, 0, 0 ) #>", test.Value);
+            Assert.IsFalse(update);
+
+            dummy[<#= i - 1 #>].Item = <#= i + 1 #>;
+
+            Assert.Is<#= isObservable?"True":"False" #>(update);
+<#
+            if(isObservable)
+            {
+#>
+            Assert.AreEqual("<#= GenerateTestString( i, 0, 1 ) #>", test.Value);
+<#
+            }
+#>
+        }
+
+<# // Attributes#>
+
+        [TestMethod]
+        public void MethodCall_<#= isObservable?"":"No" #>ObservableArgument_Parameter<#= i #>()
+        {
+            var update = false;
+            var dummy = new NotifyCollection<<#= isObservable?"Observable":"" #>Dummy<string>>();
+            
+            for(int j = 1; j<= <#= i #>; j++)
+            {
+                dummy.Add( new <#= isObservable?"Observable":"" #>Dummy<string>() { Item = j.ToString() } );
+            }
+
+            var test = Observable.Expression<int[]>(() => dummy.Select(x => Convert.ToInt32(x.Item)).ToArray());
+<#
+            if(isObservable)
+            {
+#>
+            test.ValueChanged += (o, e) =>
+            {
+                update = true;
+                Assert.AreEqual("<#= GenerateTestString( i, 0, 0 ) #>", String.Join(", ", e.OldValue));
+                Assert.AreEqual("<#= GenerateTestString( i, 0, 1 ) #>", String.Join(", ", e.NewValue));
+            };
+<#
+            }
+            else
+            {
+#>
+            test.ValueChanged += (o, e) => update = true;
+<#
+}
+#>
+            Assert.AreEqual("<#= GenerateTestString( i, 0, 0 ) #>", String.Join(", ", test.Value));
+            Assert.IsFalse(update);
+
+            dummy[<#= i - 1 #>].Item = "<#= i + 1 #>";
+
+            Assert.Is<#= isObservable?"True":"False" #>(update);
+<#
+            if(isObservable)
+            {
+#>
+            Assert.AreEqual("<#= GenerateTestString( i, 0, 1 ) #>", String.Join(", ", test.Value));
+<#
+            }
+#>
+        }
+
+
+<#
+        }
+#>
+
+<# //Atrribute test #>
+
+
+
+        #endregion
+
+<#
+    }
+#>
+    }
+}
+<#+
+    public string Interpolate(string str, string separator, int i){
+        return String.Join(separator,Enumerable.Range(1, i).Select(x => String.Format(str, x)));
+    }
+
+    public string GenerateTestString(int length, int offset, int lastOffset)
+    {
+        var list = Enumerable.Range(1, length).ToList();
+        list[length-1] += lastOffset;
+        return String.Join(", ", list.Select(x => (x + offset).ToString()));
+    }    
+#>
