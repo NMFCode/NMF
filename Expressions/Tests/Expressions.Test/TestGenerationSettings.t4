@@ -1,4 +1,14 @@
 ﻿<# 
-    int maxNumParameter = 9;
-
-#>  
+    int maxNumParameter = 9;    
+#> 
+<#  // We need to fake a usage for maxNumParameter here, otherwise the build process fails silently
+    // if it is not used in the document where it is included.#>
+<#
+    ReturnEmptyString(maxNumParameter);
+#>
+<#  // A dummy function requiring a parameter (used for faking an usage of a variable)#>
+<#+
+    public void ReturnEmptyString(object param){
+        return;
+    }   
+#>
