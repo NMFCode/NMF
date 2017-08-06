@@ -812,5 +812,10 @@ namespace NMF.Models
                 }
             }
         }
+
+        protected internal virtual bool SerializeAsReference(IModelElement element)
+        {
+            return element != null && element.Model != this;
+        }
     }
 }

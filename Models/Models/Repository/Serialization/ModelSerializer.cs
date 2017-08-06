@@ -56,12 +56,12 @@ namespace NMF.Models.Repository.Serialization
             }
         }
 
-        protected override void WriteElementProperties(XmlWriter writer, object obj, ITypeSerializationInfo info, XmlSerializationContext context, XmlIdentificationMode identificationMode)
+        protected override void WriteElementProperties(XmlWriter writer, object obj, ITypeSerializationInfo info, XmlSerializationContext context)
         {
             var model = obj as Model;
             if (model == null)
             {
-                base.WriteElementProperties(writer, obj, info, context, identificationMode);
+                base.WriteElementProperties(writer, obj, info, context);
             }
             else
             {
@@ -70,7 +70,7 @@ namespace NMF.Models.Repository.Serialization
                     if (element == null) continue;
                     var typeInfo = GetSerializationInfo(element.GetType(), true);
                     writer.WriteStartElement(typeInfo.NamespacePrefix ?? RootPrefix, typeInfo.ElementName, typeInfo.Namespace);
-                    Serialize(element, writer, null, false, identificationMode == XmlIdentificationMode.ForceFullObject ? XmlIdentificationMode.ForceFullObject : XmlIdentificationMode.FullObject, context);
+                    Serialize(element, writer, null, false, XmlIdentificationMode.FullObject, context);
                     writer.WriteEndElement();
                 }
             }
@@ -109,24 +109,24 @@ namespace NMF.Models.Repository.Serialization
         public override void Serialize(object obj, XmlWriter writer, IPropertySerializationInfo property, bool writeInstance, XmlIdentificationMode identificationMode, XmlSerializationContext context)
         {
             var modelElement = obj as IModelElement;
-            if (modelElement == null || identificationMode >= XmlIdentificationMode.FullObject)
+            var useBaseSerialization = true;
+            if (modelElement != null)
+            {
+                var modelSerializationContext = context as ModelSerializationContext;
+                if (modelSerializationContext != null && modelSerializationContext.Model != null)
+                {
+                    useBaseSerialization = !modelSerializationContext.Model.SerializeAsReference(modelElement);
+                }
+            }
+            if (useBaseSerialization)
             {
                 base.Serialize(obj, writer, property, writeInstance, identificationMode, context);
             }
             else
             {
-                var model = modelElement.Model;
-                var modelContext = context as ModelSerializationContext;
-                if (modelContext == null || model == modelContext.Model)
-                {
-                    base.Serialize(obj, writer, property, writeInstance, identificationMode, context);
-                }
-                else
-                {
-                    writer.WriteStartAttribute("href");
-                    WriteIdentifiedObject(writer, obj, XmlIdentificationMode.Identifier, GetSerializationInfo(obj.GetType(), false), context);
-                    writer.WriteEndAttribute();
-                }
+                writer.WriteStartAttribute("href");
+                WriteIdentifiedObject(writer, obj, XmlIdentificationMode.Identifier, GetSerializationInfo(obj.GetType(), false), context);
+                writer.WriteEndAttribute();
             }
         }
 

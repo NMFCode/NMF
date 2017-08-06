@@ -661,8 +661,8 @@ namespace NMF.Serialization
                 WriteConstructorProperties(writer, obj, info, context);
             }
             WriteAttributeProperties(writer, obj, info, context);
-            WriteElementProperties(writer, obj, info, context, identificationMode);
-            WriteCollectionMembers(writer, obj, info, context, identificationMode);
+            WriteElementProperties(writer, obj, info, context);
+            WriteCollectionMembers(writer, obj, info, context);
             if (writeInstance) WriteEndElement(writer, obj, info);
         }
 
@@ -763,7 +763,7 @@ namespace NMF.Serialization
             }
         }
 
-        protected virtual void WriteElementProperties(XmlWriter writer, object obj, ITypeSerializationInfo info, XmlSerializationContext context, XmlIdentificationMode identificationMode)
+        protected virtual void WriteElementProperties(XmlWriter writer, object obj, ITypeSerializationInfo info, XmlSerializationContext context)
         {
             foreach (XmlPropertySerializationInfo pi in info.ElementProperties)
             {
@@ -771,7 +771,7 @@ namespace NMF.Serialization
                 if (pi.ShouldSerializeValue(obj, value))
                 {
                     writer.WriteStartElement(pi.NamespacePrefix, pi.ElementName, pi.Namespace);
-                    Serialize(value, writer, pi, pi.ShallCreateInstance, identificationMode == XmlIdentificationMode.ForceFullObject ? XmlIdentificationMode.ForceFullObject : pi.IdentificationMode, context);
+                    Serialize(value, writer, pi, pi.ShallCreateInstance, pi.IdentificationMode, context);
                     writer.WriteEndElement();
                 }
                 if (pi.IsIdentifier)
@@ -782,14 +782,14 @@ namespace NMF.Serialization
             }
         }
 
-        protected virtual void WriteCollectionMembers(XmlWriter writer, object obj, ITypeSerializationInfo info, XmlSerializationContext context, XmlIdentificationMode identificationMode)
+        protected virtual void WriteCollectionMembers(XmlWriter writer, object obj, ITypeSerializationInfo info, XmlSerializationContext context)
         {
             if (info.IsCollection)
             {
                 IEnumerable coll = obj as IEnumerable;
                 foreach (object o in coll)
                 {
-                    Serialize(o, writer, null, true, identificationMode == XmlIdentificationMode.ForceFullObject ? XmlIdentificationMode.ForceFullObject : XmlIdentificationMode.FullObject, context);
+                    Serialize(o, writer, null, true, XmlIdentificationMode.FullObject, context);
                 }
             }
         }
@@ -813,7 +813,7 @@ namespace NMF.Serialization
                 writer.WriteString(id);
                 return true;
             }
-            else if (identificationMode >= XmlIdentificationMode.FullObject && context.ContainsId(id, info.Type))
+            else if (identificationMode == XmlIdentificationMode.FullObject && context.ContainsId(id, info.Type))
             {
                 writer.WriteStartElement(info.ElementName, info.Namespace);
                 if (info.AttributeProperties.Contains(info.IdentifierProperty))

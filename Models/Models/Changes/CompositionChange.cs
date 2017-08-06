@@ -62,7 +62,6 @@ namespace NMF.Models.Changes
         /// </summary>
         [XmlElementNameAttribute("newValue")]
         [XmlAttributeAttribute(false)]
-        [XmlIdentificationMode(XmlIdentificationMode.ForceFullObject)]
         public NMF.Models.IModelElement NewValue
         {
             get

@@ -181,12 +181,38 @@ namespace NMF.Models.Changes
 
         private void ConnectInsertionsAndDeletions(List<IModelChange> list)
         {
+            for (int i = list.Count - 1; i >= 0; i--)
+            {
+                IElementaryChange elementary = list[i] as IElementaryChange;
+                if (elementary != null && elementary.AffectedElement != null && elementSources.ContainsKey(elementary.AffectedElement))
+                {
+                    list.RemoveAt(i);
+                }
+                else
+                {
+                    var t = list[i] as IElementaryChangeTransaction;
+                    if (t != null && t.NestedChanges.Count == 1)
+                    {
+                    }
+                }
+            }
             int currentIndex = 0;
             while (currentIndex < list.Count)
             {
                 ICompositionDeletion deletion = list[currentIndex] as ICompositionDeletion;
                 if (deletion != null && deletion.DeletedElement.Parent != null)
                 {
+                    ElementSourceInfo sourceInfo;
+                    if (elementSources.TryGetValue(deletion.DeletedElement, out sourceInfo))
+                    {
+                        elementSources.Remove(deletion.DeletedElement);
+                        foreach (var item in deletion.DeletedElement.Descendants())
+                        {
+                            elementSources.Remove(item);
+                        }
+                        list.RemoveAt(currentIndex);
+                        continue;
+                    }
                     if (currentIndex < list.Count)
                     {
                         TryEliminateDeletion(list, ref currentIndex, deletion);
@@ -774,6 +800,14 @@ namespace NMF.Models.Changes
                 return SimplifyUri(deletedUri);
             }
             return base.CreateUriForElement(element);
+        }
+
+        protected internal override bool SerializeAsReference(IModelElement element)
+        {
+            if (element == null) return false;
+            if (changeSources.ContainsKey(element)) return false;
+            if (uriMappings.ContainsKey(element)) return true;
+            return base.SerializeAsReference(element);
         }
 
         protected internal override void EnsureAllElementsContained()
