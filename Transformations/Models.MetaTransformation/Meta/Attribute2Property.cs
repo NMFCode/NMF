@@ -142,12 +142,10 @@ namespace NMF.Models.Meta
                     Attributes = MemberAttributes.Private | MemberAttributes.Static,
                     ReturnType = typedElementType
                 };
-                var declaringTypeRef = CreateReference(property.DeclaringType, true, context);
-                var declaringRef2 = new CodeTypeReference();
-                declaringRef2.BaseType = declaringTypeRef.Namespace() + "." + declaringTypeRef.BaseType;
+                var declaringTypeRef = CreateReference(property.DeclaringType, true, context, implementation: true);
                 staticAttributeFieldInit.Statements.Add(new CodeMethodReturnStatement(new CodeCastExpression(typedElementType,
                     new CodeMethodInvokeExpression(new CodeCastExpression(CodeDomHelper.ToTypeReference(typeof(ModelElement)), 
-                    new CodePropertyReferenceExpression(new CodeTypeReferenceExpression(declaringRef2), "ClassInstance")),
+                    new CodePropertyReferenceExpression(new CodeTypeReferenceExpression(declaringTypeRef), "ClassInstance")),
                     "Resolve", new CodePrimitiveExpression(property.Name)))));
                 staticAttributeField.InitExpression = new CodeObjectCreateExpression(staticAttributeField.Type, new CodeMethodReferenceExpression(null, staticAttributeFieldInit.Name));
                 CodeDomHelper.DependentMembers(staticAttributeField, true).Add(staticAttributeFieldInit);

@@ -109,14 +109,43 @@ namespace NMF.Models.Meta
         /// <param name="isReference">A value indicating whether to default to IModelElement or object</param>
         /// <param name="context">The transformation context</param>
         /// <returns>A code type reference</returns>
-        protected static CodeTypeReference CreateReference(IType type, bool isReference, ITransformationContext context)
+        protected static CodeTypeReference CreateReference(IType type, bool isReference, ITransformationContext context, bool implementation = false)
         {
             if (type != null)
             {
+                var mappedType = type.GetExtension<MappedType>();
+                if (mappedType != null)
+                {
+                    var reference = new CodeTypeReference();
+                    if (mappedType.SystemType.IsValueType || mappedType.SystemType == typeof(string))
+                    {
+                        reference.BaseType = mappedType.SystemType.FullName;
+                    }
+                    else
+                    {
+                        reference.BaseType = mappedType.SystemType.Name;
+                        if (typeof(IModelElement).IsAssignableFrom(mappedType.SystemType) && !implementation)
+                        {
+                            reference.BaseType = "I" + reference.BaseType;
+                        }
+                        reference.SetNamespace(mappedType.SystemType.Namespace);
+                    }
+                    return reference;
+                }
                 var declaration = context.Trace.ResolveIn((Type2Type)context.Transformation.GetRuleForRuleType(typeof(Type2Type)), type);
                 if (declaration != null)
                 {
-                    return CodeDomHelper.GetReferenceForType(declaration);
+                    if (!implementation)
+                    {
+                        return CodeDomHelper.GetReferenceForType(declaration);
+                    }
+                    else
+                    {
+                        var reference = new CodeTypeReference();
+                        reference.SetNamespace(CodeDomHelper.GetReferenceForType(declaration).Namespace());
+                        reference.BaseType = declaration.Name;
+                        return reference;
+                    }
                 }
             }
             var primitiveType = type as IPrimitiveType;

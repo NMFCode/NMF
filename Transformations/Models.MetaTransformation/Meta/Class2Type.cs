@@ -52,9 +52,9 @@ namespace NMF.Models.Meta
                 return generatedType;
             }
 
-            protected override bool ShouldContainMembers(CodeTypeDeclaration generatedType, CodeTypeReference baseType)
+            protected override bool ShouldContainMembers(CodeTypeDeclaration generatedType, CodeTypeDeclaration baseType)
             {
-                return !baseType.BaseType.Contains("IModelElement");
+                return base.ShouldContainMembers(generatedType, baseType) && baseType.Name != "ModelElement";
             }
 
             private IEnumerable<Tuple<IClass, IReference>> FindReferencesToOverride(IClass current)
@@ -269,10 +269,11 @@ namespace NMF.Models.Meta
                     if (cl.RelativeUri == ModelExtensions.ClassModelElement.RelativeUri) isModelElementContained = true;
                     if (cl.InstanceOf != null && cl != input)
                     {
-                        var isOverride = !ShouldContainMembers(generatedType, CreateReference(cl, true, context));
+                        var isOverride = cl.RelativeUri == ModelExtensions.ClassModelElement.RelativeUri ||
+                            !base.ShouldContainMembers(generatedType, context.Trace.ResolveIn(this, cl));
                         
                         AddIfNotNull(members, CreateOverriddenGetClassMethod(input, cl.InstanceOf, context, codeField, isOverride));
-                        AddIfNotNull(members, CreateClassInstanceProperty(input, cl.InstanceOf, context, codeField));
+                        AddIfNotNull(members, CreateClassInstanceProperty(input, cl.InstanceOf, context, codeField, isOverride));
 
                         var referenceImplementations = cl.InstanceOf.MostSpecificRefinement(ModelExtensions.ReferenceTypeReferencesReference);
                         if (!referenceImplementations.Contains(ModelExtensions.ReferenceTypeReferencesReference))
@@ -287,7 +288,7 @@ namespace NMF.Models.Meta
                 if (!isModelElementContained)
                 {
                     AddIfNotNull(members, CreateOverriddenGetClassMethod(input, ModelExtensions.ClassModelElement.InstanceOf, context, codeField, true));
-                    AddIfNotNull(members, CreateClassInstanceProperty(input, ModelExtensions.ClassModelElement.InstanceOf, context, codeField));
+                    AddIfNotNull(members, CreateClassInstanceProperty(input, ModelExtensions.ClassModelElement.InstanceOf, context, codeField, true));
                 }
 
                 ImplementIdentifier(input, generatedType, context);
@@ -455,7 +456,7 @@ namespace NMF.Models.Meta
                 }
             }
 
-            protected virtual CodeMemberProperty CreateClassInstanceProperty(IClass input, IClass instantiating, ITransformationContext context, CodeMemberField classField)
+            protected virtual CodeMemberProperty CreateClassInstanceProperty(IClass input, IClass instantiating, ITransformationContext context, CodeMemberField classField, bool isOld)
             {
                 var absoluteUri = input.AbsoluteUri;
                 if (classField != null && absoluteUri != null && absoluteUri.IsAbsoluteUri)
@@ -467,7 +468,7 @@ namespace NMF.Models.Meta
                         Type = type,
                         Attributes = MemberAttributes.Public | MemberAttributes.Static
                     };
-                    if (input.InstanceOf != instantiating)
+                    if (input.InstanceOf != instantiating && isOld)
                     {
                         classInstanceProperty.Attributes |= MemberAttributes.New;
                     }
@@ -705,7 +706,7 @@ namespace NMF.Models.Meta
                 };
                 getModelElementForUri.Parameters.Add(new CodeParameterDeclarationExpression(typeof(string), "reference"));
                 getModelElementForUri.Parameters.Add(new CodeParameterDeclarationExpression(typeof(int), "index"));
-                AddReferencesOfClass(input, generatedType, AddToGetModelElementForUri, getModelElementForUri, true, context);
+                AddReferencesOfClass(input, generatedType, AddToGetModelElementForUri, getModelElementForUri, false, context);
                 getModelElementForUri.Statements.Add(new CodeMethodReturnStatement(
                     new CodeMethodInvokeExpression(new CodeBaseReferenceExpression(), "GetModelElementForReference", new CodeArgumentReferenceExpression("reference"), new CodeArgumentReferenceExpression("index"))));
                 if (getModelElementForUri.Statements.Count == 1)
@@ -971,7 +972,7 @@ namespace NMF.Models.Meta
                     var property = context.Trace.ResolveIn(Rule<Feature2Property>(), feature);
                     var propTypeRef = new CodeTypeReference(feature.Name.ToPascalCase() + "Proxy");
                     var ifStmt = new CodeConditionStatement(new CodeBinaryOperatorExpression(new CodeVariableReferenceExpression(parameterName),
-                        CodeBinaryOperatorType.ValueEquality, new CodePrimitiveExpression(property.Name)));
+                        CodeBinaryOperatorType.ValueEquality, new CodePrimitiveExpression(property.Name.ToUpperInvariant())));
                     ifStmt.TrueStatements.Add(new CodeMethodReturnStatement(new CodeObjectCreateExpression(propTypeRef, new CodeThisReferenceExpression())));
                     method.Statements.Add(ifStmt);
                 }

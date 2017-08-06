@@ -108,6 +108,10 @@ namespace NMF.CodeGen
 
                 ResolveMultipleInheritanceMembers(generatedType, shadows, constructor);
             }
+            else
+            {
+                CodeDomHelper.SetUserItem(generatedType, CodeDomHelper.BaseClassesKey, generatedType.Closure(GetBaseClasses).Except(generatedType));
+            }
 
             if (constructor.Statements.Count > 0)
             {
@@ -116,29 +120,101 @@ namespace NMF.CodeGen
             }
         }
 
-        protected virtual bool ShouldContainMembers(CodeTypeDeclaration generatedType, CodeTypeReference baseType)
+        protected virtual bool ShouldContainMembers(CodeTypeDeclaration generatedType, CodeTypeDeclaration baseType)
         {
-            return true;
+            var baseClasses = CodeDomHelper.GetOrCreateUserItem<IEnumerable<CodeTypeDeclaration>>(generatedType, CodeDomHelper.BaseClassesKey);
+            if (baseClasses == null)
+            {
+                return true;
+            }
+            else
+            {
+                return !baseClasses.Contains(baseType);
+            }
+        }
+
+        private static IEnumerable<CodeTypeDeclaration> GetBaseClasses(CodeTypeDeclaration type)
+        {
+            var interfaceType = CodeDomHelper.GetOrCreateUserItem<CodeTypeDeclaration>(type, CodeDomHelper.InterfaceKey);
+            if (interfaceType == null)
+            {
+                interfaceType = type;
+            }
+            return interfaceType.BaseTypes.Cast<CodeTypeReference>().Select(r => r.GetTypeForReference()).Where(c => c != null);
+        }
+
+        private static IEnumerable<CodeTypeMember> AllFeatures(CodeTypeDeclaration typeDeclaration)
+        {
+            return typeDeclaration.Closure(GetBaseClasses).SelectMany(AllDeclaredFeatures);
+        }
+
+        private static IEnumerable<CodeTypeMember> Refinements(CodeTypeDeclaration typeDeclaration)
+        {
+            return AllDeclaredFeatures(typeDeclaration).SelectMany(t =>
+            {
+                var shadows = t.Shadows(false);
+                if (shadows == null)
+                {
+                    return Enumerable.Empty<CodeTypeMember>();
+                }
+                else
+                {
+                    return shadows;
+                }
+            });
+        }
+
+        private static IEnumerable<CodeTypeMember> AllDeclaredFeatures(CodeTypeDeclaration typeDeclaration)
+        {
+            return typeDeclaration.Closure<CodeTypeMember>(t =>
+            {
+                var dependents = t.DependentMembers(false);
+                if (dependents == null)
+                {
+                    return Enumerable.Empty<CodeTypeMember>();
+                }
+                else
+                {
+                    return dependents;
+                }
+            });
+        }
+
+        private static IEnumerable<CodeTypeDeclaration> Edges(CodeTypeDeclaration typeDeclaration, IEnumerable<CodeTypeDeclaration> candidates)
+        {
+            var ancestors = typeDeclaration.Closure(GetBaseClasses);
+            var refinements = Refinements(typeDeclaration);
+            var conflicting = from cand in candidates
+                              where !cand.Closure(GetBaseClasses).Contains(typeDeclaration) &&
+                                    refinements.IntersectsWith(AllFeatures(cand))
+                              select cand;
+
+            return ancestors.Union(conflicting);
         }
 
         protected virtual void ResolveMultipleInheritanceMembers(CodeTypeDeclaration generatedType, HashSet<CodeTypeMember> shadows, CodeConstructor constructor)
         {
-            Func<CodeTypeDeclaration, IEnumerable<CodeTypeDeclaration>> getBaseTypes =
-                type => {
-                    var interfaceType = CodeDomHelper.GetOrCreateUserItem<CodeTypeDeclaration>(type, CodeDomHelper.InterfaceKey);
-                    if (interfaceType == null)
-                    {
-                        interfaceType = type;
-                    }
-                    return interfaceType.BaseTypes.Cast<CodeTypeReference>().Select(r => r.GetTypeForReference()).Where(c => c != null);
-                };
-            // TODO: Add layer links
-            var layering = Layering<CodeTypeDeclaration>.CreateLayers(generatedType, getBaseTypes);
-            CodeTypeDeclaration implBaseType = FindBaseClassAndCreateShadows(generatedType, shadows, layering);
+            var allClasses = generatedType.Closure(GetBaseClasses);
+            var layering = Layering<CodeTypeDeclaration>.CreateLayers(generatedType, c => Edges(c, allClasses));
+            CodeTypeDeclaration implBaseType = null;
+            int layerIndex;
+            for (layerIndex = layering.Count - 1; layerIndex >= 0; layerIndex--)
+            {
+                var layer = layering[layerIndex];
+                if (layer.Count == 1 && layer.First() != generatedType && !shadows.IntersectsWith(AllFeatures(layer.First())))
+                {
+                    implBaseType = layer.First();
+                    break;
+                }
+                foreach (var cl in layer)
+                {
+                    shadows.UnionWith(Refinements(cl));
+                }
+            }
             IEnumerable<CodeTypeDeclaration> inheritedBaseClasses;
             if (implBaseType != null)
             {
-                inheritedBaseClasses = implBaseType.Closure(getBaseTypes);
+                inheritedBaseClasses = layering.Take(layerIndex + 1).SelectMany(s => s);
                 var implementationRef = new CodeTypeReference();
                 implementationRef.BaseType = implBaseType.Name;
                 var n = implBaseType.GetReferenceForType().Namespace();
@@ -157,13 +233,12 @@ namespace NMF.CodeGen
                 inheritedBaseClasses = Enumerable.Empty<CodeTypeDeclaration>();
                 AddImplementationBaseClass(generatedType);
             }
-            for (int i = layering.Count - 1; i >= 0; i--)
+            CodeDomHelper.SetUserItem(generatedType, CodeDomHelper.BaseClassesKey, inheritedBaseClasses);
+            for (int i = layerIndex + 1; i < layering.Count; i++)
             {
                 foreach (var baseType in layering[i])
                 {
-                    if (!inheritedBaseClasses.Contains(baseType) && 
-                        baseType != generatedType &&
-                        ShouldContainMembers(generatedType, baseType.GetReferenceForType()))
+                    if (baseType != generatedType)
                     {
                         var dependent = baseType.DependentMembers(false);
                         if (dependent != null)
@@ -175,55 +250,8 @@ namespace NMF.CodeGen
                         }
                     }
                 }
-            }
-        }
 
-        private CodeTypeDeclaration FindBaseClassAndCreateShadows(CodeTypeDeclaration generatedType, HashSet<CodeTypeMember> shadows, IList<ICollection<CodeTypeDeclaration>> layering)
-        {
-            CodeTypeDeclaration implBaseType = null;
-            for (int i = layering.Count - 1; i >= 0; i--)
-            {
-                foreach (var baseType in layering[i])
-                {
-                    if (baseType == generatedType || !ShouldContainMembers(generatedType, baseType.GetReferenceForType())) continue;
-                    if (DependentMembersAffectedByShadow(baseType, shadows))
-                    {
-                        implBaseType = null;
-                    }
-                    else if (implBaseType == null)
-                    {
-                        implBaseType = baseType;
-                    }
-                }
             }
-
-            return implBaseType;
-        }
-
-        private bool DependentMembersAffectedByShadow(CodeTypeMember current, HashSet<CodeTypeMember> shadows)
-        {
-            var shadowed = false;
-            if (!shadows.Contains(current))
-            {
-                var dependent = CodeDomHelper.DependentMembers(current, false);
-                if (dependent != null)
-                {
-                    foreach (var item in dependent)
-                    {
-                        shadowed |= DependentMembersAffectedByShadow(item, shadows);
-                    }
-                }
-                var shadowsOfCurrent = CodeDomHelper.Shadows(current, false);
-                if (shadowsOfCurrent != null)
-                {
-                    shadows.AddRange(shadowsOfCurrent);
-                }
-            }
-            else
-            {
-                shadowed = true;
-            }
-            return shadowed;
         }
 
         private void RecursivelyAddDependentMembers(IList members, IList constructorStatements, CodeTypeMember current, HashSet<CodeTypeMember> shadows)
