@@ -174,21 +174,12 @@ namespace NMF.Models.Repository
                     var metadata = attributes[i] as ModelMetadataAttribute;
                     if (metadata != null && names.Contains(metadata.ResourceName) && metadata.ModelUri.IsAbsoluteUri)
                     {
+#if DEBUG
+                        LoadModel(assembly, attributes, i, metadata);
+#else
                         try
                         {
-                            var model = serializer.Deserialize(assembly.GetManifestResourceStream(metadata.ResourceName), metadata.ModelUri, this, true);
-                            for (int j = i + 1; j < attributes.Length; j++)
-                            {
-                                var followingAttribute = attributes[j] as ModelMetadataAttribute;
-                                if (followingAttribute != null)
-                                {
-                                    var followUri = new Uri(followingAttribute.ModelUri, MakeRelativePath(metadata.ResourceName, followingAttribute.ResourceName));
-                                    if (!entries.ContainsKey(followUri))
-                                    {
-                                        entries.Add(followUri, model);
-                                    }
-                                }
-                            }
+                            LoadModel(assembly, attributes, i, metadata);
                         }
                         catch (Exception e)
                         {
@@ -199,6 +190,7 @@ namespace NMF.Models.Repository
                             }
                             throw new Exception($"Error loading the embedded resource {metadata.ResourceName} from assembly {assembly.FullName}: {e.Message}{hint}", e); ;
                         }
+#endif
                     }
                     else
                     {
@@ -216,6 +208,23 @@ namespace NMF.Models.Repository
                     else
                     {
                         throw new InvalidOperationException(string.Format("The class {0} could not be resolved.", saveMapping[i].Key));
+                    }
+                }
+            }
+        }
+
+        private void LoadModel(Assembly assembly, object[] attributes, int i, ModelMetadataAttribute metadata)
+        {
+            var model = serializer.Deserialize(assembly.GetManifestResourceStream(metadata.ResourceName), metadata.ModelUri, this, true);
+            for (int j = i + 1; j < attributes.Length; j++)
+            {
+                var followingAttribute = attributes[j] as ModelMetadataAttribute;
+                if (followingAttribute != null)
+                {
+                    var followUri = new Uri(followingAttribute.ModelUri, MakeRelativePath(metadata.ResourceName, followingAttribute.ResourceName));
+                    if (!entries.ContainsKey(followUri))
+                    {
+                        entries.Add(followUri, model);
                     }
                 }
             }
