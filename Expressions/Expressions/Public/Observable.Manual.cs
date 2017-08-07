@@ -91,6 +91,36 @@ namespace NMF.Expressions
         }
 
         /// <summary>
+        /// Boxes the given incremental value
+        /// </summary>
+        /// <typeparam name="T">The type of the box</typeparam>
+        /// <param name="value">The inner incremental value expression</param>
+        /// <returns>An incremental value of type object</returns>
+        public static INotifyExpression<object> Box<T>(INotifyExpression<T> value)
+        {
+            var reversable = value as INotifyReversableExpression<T>;
+            if (reversable != null)
+            {
+                return new ObservableReversableBoxExpression<T>(reversable);
+            }
+            else
+            {
+                return new ObservableBoxExpression<T>(value);
+            }
+        }
+
+        /// <summary>
+        /// Boxes the given incremental value
+        /// </summary>
+        /// <typeparam name="T">The type of the box</typeparam>
+        /// <param name="value">The inner incremental value expression</param>
+        /// <returns>An incremental value of type object</returns>
+        public static INotifyReversableExpression<object> Box<T>(INotifyReversableExpression<T> value)
+        {
+            return new ObservableReversableBoxExpression<T>(value);
+        }
+
+        /// <summary>
         /// Creates an incremental conditional
         /// </summary>
         /// <typeparam name="T">The type of the conditional</typeparam>
