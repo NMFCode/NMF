@@ -341,6 +341,7 @@ namespace NMF.CodeGen
                             HasSet = property.HasSet
                         };
                         newProperty.Comments.AddRange(property.Comments);
+                        newProperty.CustomAttributes.AddRange(property.CustomAttributes);
                         interfaceDecl.Members.Add(newProperty);
                         continue;
                     }
@@ -355,6 +356,7 @@ namespace NMF.CodeGen
                         };
                         newMethod.Parameters.AddRange(method.Parameters);
                         newMethod.Comments.AddRange(method.Comments);
+                        newMethod.CustomAttributes.AddRange(method.CustomAttributes);
                         interfaceDecl.Members.Add(newMethod);
                         continue;
                     }

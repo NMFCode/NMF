@@ -238,7 +238,8 @@ namespace NMF.Models.Meta
                     {
                         foreach (var referenceImplementation in referenceImplementations)
                         {
-                            AddIfNotNull(members, CreateAbstractReferenceImplementation(input.InstanceOf, referenceImplementation, context));
+                            AddIfNotNull(members, CreateAbstractReferenceImplementation(input.InstanceOf, referenceImplementation, context, generatedType.GetReferenceForType()));
+                            AddIfNotNull(members, CreateAbstractReferenceProxyImplementation(input.InstanceOf, referenceImplementation, context));
                         }
                     }
                 }
@@ -281,6 +282,7 @@ namespace NMF.Models.Meta
                             foreach (var referenceImplementation in referenceImplementations)
                             {
                                 AddIfNotNull(members, CreateOverriddenReferenceImplementation(input, cl, referenceImplementation, context, isOverride));
+                                AddIfNotNull(members, CreateOverriddenReferenceProxyImplementation(input, cl, referenceImplementation, context, isOverride));
                             }
                         }
                     }
@@ -341,7 +343,54 @@ namespace NMF.Models.Meta
                 return null;
             }
 
-            private CodeTypeMember CreateAbstractReferenceImplementation(IClass instanceOf, IReference referenceImplementation, ITransformationContext context)
+            private CodeTypeMember CreateOverriddenReferenceProxyImplementation(IClass currentType, IClass scope, IReference referenceImplementation, ITransformationContext context, bool isOverride)
+            {
+                var referenceType = referenceImplementation.ReferenceType as IClass;
+                if (referenceType == null) return null;
+
+                var upperBound = referenceType.GetUpperBoundConstraintValue();
+
+                if (upperBound.HasValue && upperBound.Value == 1)
+                {
+                    // We know that the reference is single-valued
+                    IReferenceType referencedType = FindTargetTypeForReferenceClass(referenceType);
+
+                    var innerReturnType = CreateReference(referencedType, true, context);
+                    var overriddenReferenceImplementation = new CodeMemberMethod()
+                    {
+                        Attributes = MemberAttributes.Public,
+                        Name = "Get" + referenceImplementation.Name.ToPascalCase() + "Proxy",
+                        ReturnType = new CodeTypeReference(typeof(INotifyValue<>).Name, innerReturnType)
+                    };
+                    if (isOverride)
+                    {
+                        overriddenReferenceImplementation.Attributes |= MemberAttributes.Override;
+                    }
+                    overriddenReferenceImplementation.Parameters.Add(new CodeParameterDeclarationExpression(CreateReference(referenceImplementation.ReferenceType, true, context), "reference"));
+                    overriddenReferenceImplementation.WriteDocumentation(string.Format("Gets the referenced value for a {0} of the enclosing {1}.", referenceImplementation.Name, scope.InstanceOf.Name));
+
+                    var referenceRef = new CodeArgumentReferenceExpression("reference");
+
+                    overriddenReferenceImplementation.Statements.Add(new CodeConditionStatement(
+                        new CodeBinaryOperatorExpression(referenceRef, CodeBinaryOperatorType.IdentityEquality, new CodePrimitiveExpression()),
+                        new CodeThrowExceptionStatement(new CodeObjectCreateExpression(typeof(ArgumentOutOfRangeException).ToTypeReference(), new CodePrimitiveExpression("reference")))));
+
+                    var castMethod = new CodeMethodReferenceExpression(new CodeTypeReferenceExpression(typeof(Observable).ToTypeReference()), "As", typeof(IModelElement).ToTypeReference(), innerReturnType);
+                    var expression = new CodeMethodInvokeExpression(castMethod,
+                        new CodeMethodInvokeExpression(new CodeThisReferenceExpression(), "GetExpressionForReference", new CodeMethodInvokeExpression(new CodePropertyReferenceExpression(referenceRef, "Name"), "ToUpperInvariant")));
+
+                    overriddenReferenceImplementation.Statements.Add(new CodeConditionStatement(
+                        new CodeBinaryOperatorExpression(new CodePropertyReferenceExpression(referenceRef, "UpperBound"), CodeBinaryOperatorType.ValueEquality, new CodePrimitiveExpression(1)),
+                        new CodeMethodReturnStatement(expression)));
+
+                    overriddenReferenceImplementation.ThrowException<NotSupportedException>();
+
+                    return overriddenReferenceImplementation;
+                }
+                return null;
+            }
+
+            private CodeTypeMember CreateAbstractReferenceImplementation(IClass instanceOf, IReference referenceImplementation, ITransformationContext context, CodeTypeReference selfReference)
             {
                 var referenceType = referenceImplementation.ReferenceType as IClass;
                 if (referenceType == null) return null;
@@ -361,6 +410,32 @@ namespace NMF.Models.Meta
                     };
                     abstractReferenceImplementation.Parameters.Add(new CodeParameterDeclarationExpression(CreateReference(referenceImplementation.ReferenceType, true, context), "reference"));
                     abstractReferenceImplementation.WriteDocumentation(string.Format("Gets the referenced value for a {0} of the enclosing {1}.", referenceImplementation.Name, instanceOf.Name));
+                    abstractReferenceImplementation.AddAttribute(typeof(ObservableProxyAttribute), new CodeTypeOfExpression(selfReference), "Get" + referenceImplementation.Name.ToPascalCase() + "Proxy");
+                    return abstractReferenceImplementation;
+                }
+                return null;
+            }
+
+            private CodeTypeMember CreateAbstractReferenceProxyImplementation(IClass instanceOf, IReference referenceImplementation, ITransformationContext context)
+            {
+                var referenceType = referenceImplementation.ReferenceType as IClass;
+                if (referenceType == null) return null;
+
+                var upperBound = referenceType.GetUpperBoundConstraintValue();
+
+                if (upperBound.HasValue && upperBound.Value == 1)
+                {
+                    // We know that the reference is single-valued
+                    IReferenceType referencedType = FindTargetTypeForReferenceClass(referenceType);
+
+                    var abstractReferenceImplementation = new CodeMemberMethod()
+                    {
+                        Attributes = MemberAttributes.Public | MemberAttributes.Abstract,
+                        Name = "Get" + referenceImplementation.Name.ToPascalCase() + "Proxy",
+                        ReturnType = new CodeTypeReference(typeof(INotifyValue<>).Name, CreateReference(referencedType, true, context))
+                    };
+                    abstractReferenceImplementation.Parameters.Add(new CodeParameterDeclarationExpression(CreateReference(referenceImplementation.ReferenceType, true, context), "reference"));
+                    abstractReferenceImplementation.WriteDocumentation(string.Format("Gets a proxy for the referenced value for a {0} of the enclosing {1}.", referenceImplementation.Name, instanceOf.Name));
                     return abstractReferenceImplementation;
                 }
                 return null;
@@ -951,7 +1026,7 @@ namespace NMF.Models.Meta
                     ReturnType = new CodeTypeReference(typeof(INotifyExpression<object>))
                 };
                 getExpressionForAttribute.Parameters.Add(new CodeParameterDeclarationExpression(typeof(string), "attribute"));
-                AddReferencesOfClass(input, generatedType, (m, r, _) => AddToExpressionForFeature(m, r, context, "attribute"), getExpressionForAttribute, false, context);
+                AddAttributesOfClass(input, generatedType, (m, r, _) => AddToExpressionForFeature(m, r, context, "attribute"), getExpressionForAttribute, context);
                 if (getExpressionForAttribute.Statements.Count == 0)
                 {
                     return null;
@@ -973,7 +1048,15 @@ namespace NMF.Models.Meta
                     var propTypeRef = new CodeTypeReference(feature.Name.ToPascalCase() + "Proxy");
                     var ifStmt = new CodeConditionStatement(new CodeBinaryOperatorExpression(new CodeVariableReferenceExpression(parameterName),
                         CodeBinaryOperatorType.ValueEquality, new CodePrimitiveExpression(property.Name.ToUpperInvariant())));
-                    ifStmt.TrueStatements.Add(new CodeMethodReturnStatement(new CodeObjectCreateExpression(propTypeRef, new CodeThisReferenceExpression())));
+                    CodeExpression proxyExpression = new CodeObjectCreateExpression(propTypeRef, new CodeThisReferenceExpression());
+                    if (feature is IAttribute && !IsString(feature.Type))
+                    {
+                        proxyExpression = new CodeMethodInvokeExpression(
+                            new CodeTypeReferenceExpression(typeof(Observable).ToTypeReference()),
+                            "Box",
+                            proxyExpression);
+                    }
+                    ifStmt.TrueStatements.Add(new CodeMethodReturnStatement(proxyExpression));
                     method.Statements.Add(ifStmt);
                 }
                 return method;
