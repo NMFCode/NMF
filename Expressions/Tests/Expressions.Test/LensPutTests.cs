@@ -352,6 +352,36 @@ namespace NMF.Expressions.Test
         }
 
         [TestMethod]
+        public void PutGetForInitializedArrayWithFunc2()
+        {
+            var dummy = new ObservableDummy<int[]>(new int[] { 1, 8, 15 });
+            var func = Observable.Func<Dummy<int[]>, int>(d => d.Item.FirstOrDefault());
+            var test = func.InvokeReversable(dummy);
+            test.Successors.SetDummy();
+
+            Assert.AreEqual(1, test.Value);
+            test.Value = 42;
+            Assert.AreEqual(42, dummy.Item[0]);
+            // Arrays do not support an update notification for entries and therefore, the following assertions fails
+            // Assert.AreEqual(42, test.Value);
+        }
+
+        [TestMethod]
+        public void GetPutForInitializedArrayWithFunc2()
+        {
+            int[] array = new int[] { 1, 8, 15 };
+            var dummy = new Dummy<int[]>(array);
+            var func = Observable.Func<Dummy<int[]>, int>(d => d.Item.FirstOrDefault());
+            var test = func.InvokeReversable(dummy);
+            test.Successors.SetDummy();
+
+            Assert.AreEqual(1, test.Value); // Assert.AreEqual failed. Expected:<1>. Actual:<0>. 
+            test.Value = 0;
+            Assert.AreEqual(array, dummy.Item);
+        }
+
+
+        [TestMethod]
         public void LensPutWithProxyInc()
         {
             // not yet implemented
