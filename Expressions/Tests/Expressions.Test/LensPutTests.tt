@@ -63,8 +63,9 @@ namespace NMF.Expressions.Test
 foreach (var testOption in new[] { 
     new {name = "EmptyArray", array = "new int[] { }" },
     new {name = "NullArray", array = "null" },
-    new {name = "InitializedArray", array = "new int[] { 0, 8, 15 }" }
+    new {name = "InitializedArray", array = "new int[] { 1, 8, 15 }" }
 } ){
+    int firstArrayElementTestValue = testOption.name == "InitializedArray"?1:0;
 #>
         [TestMethod]
         public void PutGetFor<#= testOption.name #>()
@@ -72,7 +73,7 @@ foreach (var testOption in new[] {
             var dummy = new ObservableDummy<int[]>(<#= testOption.array #>);
             var test = Observable.Reversable(() => dummy.Item.FirstOrDefault());
 
-            Assert.AreEqual(0, test.Value);
+            Assert.AreEqual(<#= firstArrayElementTestValue #>, test.Value);
             test.Value = 42;
             Assert.AreEqual(42, dummy.Item[0]);
 <#  if(testOption.name == "InitializedArray")
@@ -98,7 +99,7 @@ foreach (var testOption in new[] {
             var dummy = new Dummy<int[]>(array);
             var test = Observable.Reversable(() => dummy.Item.FirstOrDefault());
 
-            Assert.AreEqual(0, test.Value);
+            Assert.AreEqual(<#= firstArrayElementTestValue #>, test.Value);
             test.Value = 0;
             Assert.AreEqual(array, dummy.Item);
         }
@@ -110,7 +111,15 @@ foreach (var testOption in new[] {
             var func = Observable.Func<Dummy<int[]>, int>(d => d.Item.FirstOrDefault());
             var test = func.InvokeReversable(dummy);
 
-            Assert.AreEqual(0, test.Value);
+<#  if(testOption.name == "InitializedArray")
+{
+#>            
+            // Fake usage to keep dependency graph enabled
+            test.Successors.SetDummy();
+<#
+}
+#>
+            Assert.AreEqual(<#= firstArrayElementTestValue #>, test.Value);
             test.Value = 42;
             Assert.AreEqual(42, dummy.Item[0]);
 <#  if(testOption.name == "InitializedArray")
@@ -137,7 +146,15 @@ foreach (var testOption in new[] {
             var func = Observable.Func<Dummy<int[]>, int>(d => d.Item.FirstOrDefault());
             var test = func.InvokeReversable(dummy);
 
-            Assert.AreEqual(0, test.Value);
+<#  if(testOption.name == "InitializedArray")
+{
+#>            
+            // Fake usage to keep dependency graph enabled
+            test.Successors.SetDummy();
+<#
+}
+#>
+            Assert.AreEqual(<#= firstArrayElementTestValue #>, test.Value);
             test.Value = 0;
             Assert.AreEqual(array, dummy.Item);
         }
@@ -147,7 +164,7 @@ foreach (var testOption in new[] {
         {
             var dummy = new Dummy<int[]>(<#= testOption.array #>);
 
-            Assert.AreEqual(0, getter(dummy));
+            Assert.AreEqual(<#= firstArrayElementTestValue #>, getter(dummy));
             setter(dummy, 42);
             Assert.AreEqual(42, dummy.Item[0]);
             Assert.AreEqual(42, getter(dummy));
@@ -159,7 +176,7 @@ foreach (var testOption in new[] {
             int[] array = <#= testOption.array #>;
             var dummy = new Dummy<int[]>(array);
 
-            Assert.AreEqual(0, getter(dummy));
+            Assert.AreEqual(<#= firstArrayElementTestValue #>, getter(dummy));
             setter(dummy, 0);
             Assert.AreEqual(array, dummy.Item);
         }
