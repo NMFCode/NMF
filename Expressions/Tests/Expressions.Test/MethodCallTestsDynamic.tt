@@ -16,6 +16,50 @@ namespace NMF.Expressions.Test
     [TestClass]
     public class MethodCallTestsDynamic
     {        
+
+        public class Helper
+        {
+<#
+    for(int i=1;i<=maxNumParameter;i++)
+    {
+#>
+            
+            private static readonly ObservingFunc<<#= Interpolate("Dummy<string>", ", ", i, 0) #>, string> combineFunc<#= i #> = new ObservingFunc<<#= Interpolate("Dummy<string>", ", ", i, 0) #>, string>((<#= Interpolate("d{0}", ", ", i, 0) #>) => <#= Interpolate("d{0}.Item", " + \", \" + ", i, 0) #>);
+
+            [LensPut(typeof(Helper), "PutCombine")]
+            [ObservableProxy(typeof(Helper), "CombineProxy")]
+            public static string Combine(<#= Interpolate("Dummy<string> arg{0}", ", ", i, 0) #>)
+            {
+                return combineFunc<#= i #>.Evaluate(<#= Interpolate("arg{0}", ", ", i, 0) #>);
+            }
+            
+            public string CombineInstace(<#= Interpolate("Dummy<string> arg{0}", ", ", i, 0) #>)
+            {
+                return combineFunc<#= i #>.Evaluate(<#= Interpolate("arg{0}", ", ", i, 0) #>);
+            }
+
+            public static INotifyValue<string> CombineProxy(<#= Interpolate("Dummy<string> arg{0}", ", ", i, 0) #>)
+            {
+                return combineFunc<#= i #>.Observe(<#= Interpolate("arg{0}", ", ", i, 0) #>);
+            }     
+
+            public static void PutCombine(<#= Interpolate("Dummy<string> arg{0}", ", ", i, 0) #>, string value)
+            {
+                var splittedValue = value.Split(new char[] { ',', ' ' }, StringSplitOptions.RemoveEmptyEntries);
+                
+<# 
+        for(int j=1;j<=i;j++)
+        {
+#>
+                arg<#= j #>.Item = splittedValue[<#= j - 1 #>].ToString();
+<#
+        }
+#>
+            }
+<#
+    }
+#>
+        }
 <#
     for(int i=1;i<=maxNumParameter;i++)
     {
@@ -24,19 +68,21 @@ namespace NMF.Expressions.Test
 <#
         foreach(var isObservable in new[] { false , true })
         {
+            foreach(var isStatic in new[] { false, true })
+            {
 #> 
         [TestMethod]
-        public void MethodCall_<#= isObservable?"":"No" #>ObservableTarget_Parameter<#= i #>()
+        public void MethodCall_<#= isObservable?"":"No" #>ObservableTarget_<#= isStatic?"Static":"Instance" #><#= i #>()
         {
             var update = false;
-            var dummy = new NotifyCollection<<#= isObservable?"Observable":"" #>Dummy<int>>();
+            var dummy = new NotifyCollection<<#= isObservable?"Observable":"" #>Dummy<string>>();
             
             for(int j = 1; j<= <#= i #>; j++)
             {
-                dummy.Add( new <#= isObservable?"Observable":"" #>Dummy<int>() { Item = j } );
+                dummy.Add( new <#= isObservable?"Observable":"" #>Dummy<string>() { Item = j.ToString() } );
             }
 
-            var test = Observable.Expression<string>(() => String.Join(", ", dummy.Select(x => x.Item.ToString()) ) );
+            var test = Observable.Expression<string>(() => <#= isStatic?"Helper.Combine":"(new Helper()).CombineInstace" #>(<#= Interpolate("dummy[{0}]", ", ", i, -1) #>));
 <#
             if(isObservable)
             {
@@ -59,7 +105,7 @@ namespace NMF.Expressions.Test
             Assert.AreEqual("<#= GenerateTestString( i, 0, 0 ) #>", test.Value);
             Assert.IsFalse(update);
 
-            dummy[<#= i - 1 #>].Item = <#= i + 1 #>;
+            dummy[<#= i - 1 #>].Item = "<#= i + 1 #>";
 
             Assert.Is<#= isObservable?"True":"False" #>(update);
 <#
@@ -71,63 +117,10 @@ namespace NMF.Expressions.Test
             }
 #>
         }
-
-<# // Attributes#>
-
-        [TestMethod]
-        public void MethodCall_<#= isObservable?"":"No" #>ObservableArgument_Parameter<#= i #>()
-        {
-            var update = false;
-            var dummy = new NotifyCollection<<#= isObservable?"Observable":"" #>Dummy<string>>();
-            
-            for(int j = 1; j<= <#= i #>; j++)
-            {
-                dummy.Add( new <#= isObservable?"Observable":"" #>Dummy<string>() { Item = j.ToString() } );
-            }
-
-            var test = Observable.Expression<int[]>(() => dummy.Select(x => Convert.ToInt32(x.Item)).ToArray());
-<#
-            if(isObservable)
-            {
-#>
-            test.ValueChanged += (o, e) =>
-            {
-                update = true;
-                Assert.AreEqual("<#= GenerateTestString( i, 0, 0 ) #>", String.Join(", ", e.OldValue));
-                Assert.AreEqual("<#= GenerateTestString( i, 0, 1 ) #>", String.Join(", ", e.NewValue));
-            };
 <#
             }
-            else
-            {
-#>
-            test.ValueChanged += (o, e) => update = true;
-<#
-}
-#>
-            Assert.AreEqual("<#= GenerateTestString( i, 0, 0 ) #>", String.Join(", ", test.Value));
-            Assert.IsFalse(update);
-
-            dummy[<#= i - 1 #>].Item = "<#= i + 1 #>";
-
-            Assert.Is<#= isObservable?"True":"False" #>(update);
-<#
-            if(isObservable)
-            {
-#>
-            Assert.AreEqual("<#= GenerateTestString( i, 0, 1 ) #>", String.Join(", ", test.Value));
-<#
-            }
-#>
-        }
-
-
-<#
         }
 #>
-
-<# //Atrribute test #>
-
 
 
         #endregion
@@ -138,8 +131,8 @@ namespace NMF.Expressions.Test
     }
 }
 <#+
-    public string Interpolate(string str, string separator, int i){
-        return String.Join(separator,Enumerable.Range(1, i).Select(x => String.Format(str, x)));
+    public string Interpolate(string str, string separator, int i, int offset){
+        return String.Join(separator,Enumerable.Range(1, i).Select(x => String.Format(str, x + offset)));
     }
 
     public string GenerateTestString(int length, int offset, int lastOffset)
