@@ -162,6 +162,27 @@ namespace NMF.Utilities
         }
 
         /// <summary>
+        /// Computes the root element according to the given reference
+        /// </summary>
+        /// <typeparam name="T">The element type</typeparam>
+        /// <param name="node">The current node</param>
+        /// <param name="parent">The reference to follow the parent element</param>
+        /// <returns>The root of hierarchy</returns>
+        public static T Root<T>(this T node, Func<T, T> parent)
+        {
+            if (node == null) return node;
+            if (parent == null) throw new ArgumentNullException("parent");
+            var test = parent(node);
+            var cur = node;
+            while (test != null)
+            {
+                cur = test;
+                test = parent(test);
+            }
+            return cur;
+        }
+
+        /// <summary>
         /// Computes the Depth of a tree
         /// </summary>
         /// <typeparam name="T">The type of the tree elements</typeparam>
