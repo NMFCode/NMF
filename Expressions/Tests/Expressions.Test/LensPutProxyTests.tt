@@ -9,6 +9,7 @@ using System;
 using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 <#
+// Generate incremental and non incremental tests
 var isIncCombinations = new bool[] { false/*, true //Not implemented in framework yet*/ } ;
 #>
 
@@ -21,53 +22,77 @@ namespace NMF.Expressions.Test
 
         private static class Helpers
         {
+            // Function to generate a string of the chars from starting from a
+            // length: count of chars to generate
+            // lowerCount: the number of chars that should be lowercase, all following will be uppercase
+            // example (length:5, lowerCount:2) ==> "abCDE"
             public static string GenerateTestStringLower(int length, int lowerCount)
             {
                 return String.Join("",Enumerable.Range(1, length).Select(x => (char)( x + ( x > lowerCount?64:96 ) ) ));
             }
-
+            
+            // Function to generate a string of the chars from starting from A
+            // length: count of chars to generate
+            // upperCount: the number of chars that should be uppercase, all following will be lowercase
+            // example (length:5, upperCount:2) ==> "ABcde"
             public static string GenerateTestStringUpper(int length, int upperCount)
             {
                 return String.Join("",Enumerable.Range(1, length).Select(x => (char)( x + ( x > upperCount?96:64 ) ) ));
             }
 <#
+    // Generate incremental and non incremental tests
     foreach( var isInc in isIncCombinations)
     {
 #>
 <#    
+        // Variable to build the comma separated generic parameters string
         string textDummyT = "Dummy<string>";
+        // Variable to build a comma separated string of all parameters
         string textArgI = "arg{0}";
+        // Variable to build a comma separated string of all parameters with their types
         string textDummyTArgI = textDummyT + " " + textArgI;
+        // Variable to build a comma separated string of all parameters with their types (surrounded with 'INotifyValue' if 'isInc' is true)
         string textWrappedDummyTArgI = (isInc?"INotifyValue<":"") + "Dummy<string>" + (isInc?">":"") + " arg{0}";
-
+        
+        // Variable to build a comma separated string of all parameters for the lambda function
         string textDI = "d{0}";
+        // Variable to build a comma separated string of all parameters' items for use in the lambda function body
         string textDIItem = textDI + ".Item";
 
+        // Generate helper function for each number of parameters (maxNumParameter is configured globally in TestGenerationSettings.t4)
         for(int i=2;i<=maxNumParameter;i++)
         {
 #>
             #region Helper for <#= i #> parameters
 
+<#          // [...] ObservingFunc<Dummy<string>(, Dummy<string>)*, string> combineFunc[0-9]+ = new ObservingFunc<Dummy<Dummy<string>(, Dummy<string>)*, string>\(\(d[0-9]+(, d[0-9]+)*\) => (d1.Item (\+ d[0-9]+.Item)* \);#>
             private static readonly ObservingFunc<<#= Interpolate(textDummyT, ", ", i, 0) #>, string> combineFunc<#=i#> = new ObservingFunc<<#= Interpolate(textDummyT, ", ", i, 0) #>, string>((<#= Interpolate(textDI, ", ", i, 0) #>) => <#= Interpolate(textDIItem, " + ", i, 0) #>);
 
             [LensPut(typeof(Helpers), "PutCombine<#= isInc?"Inc":"" #>")]
             [ObservableProxy(typeof(Helpers), "CombineProxy<#= isInc?"Inc":"" #>")]
+<#          // [...] \(Dummy<string> arg1(, Dummy<string> arg[0-9]+)*\) #>
             public static string Combine<#= isInc?"Inc":"" #>(<#= Interpolate(textDummyTArgI, ", ", i, 0) #>)
             {
+<#              // [...] \(arg1(, arg[0-9]+)*\) #>
                 return combineFunc<#= i #>.Evaluate(<#= Interpolate(textArgI, ", ", i, 0) #>);
             }
-            
+
+<#          // [...] \(Dummy<string> arg1(, Dummy<string> arg[0-9]+)*\) #>
             public static INotifyValue<string> CombineProxy<#= isInc?"Inc":"" #>(<#= Interpolate(textWrappedDummyTArgI, ", ", i, 0) #>)
             {
+<#              // [...] \(arg1(, arg[0-9]+)*\) #>
                 return combineFunc<#= i #>.Observe(<#= Interpolate(textArgI, ", ", i, 0) #>);
-            }     
-
+            }
+  
+<#          // [...] \(Dummy<string> arg1(, Dummy<string> arg[0-9]+)*\) #>
             public static void PutCombine<#= isInc?"Inc":"" #>(<#= Interpolate(textDummyTArgI, ", ", i, 0) #>, string value)
             {
                 var splittedValue = value.ToCharArray();
 <# 
         for(int j=1;j<=i;j++)
         {
+                // Split value into singe items (containg chars)
+                // arg[0-9]+.Item = splittedValue\[[0-9]+\].ToString();
 #>
                 arg<#= j #>.Item = splittedValue[<#= j - 1 #>].ToString();
 <#
@@ -88,8 +113,10 @@ namespace NMF.Expressions.Test
         #endregion     
    
 <#
+    // Generate incremental and non incremental tests
     foreach( var isInc in isIncCombinations )
     {
+        // Generate helper function for each number of parameters (maxNumParameter is configured globally in TestGenerationSettings.t4)
         for(int i=2;i<=maxNumParameter;i++)
         { 
 #>
@@ -100,15 +127,18 @@ namespace NMF.Expressions.Test
 <#
             for(int j=1;j<=i;j++)
             {
+            // Initialize items with letters starting from from A (64 because j ist starting from 1)
 #>
             dummy[<#= j -1 #>] = new ObservableDummy<string>("<#= (char)(j + 64) #>");
 <#
             }
 #>
             var test = Observable.Reversable(() => Helpers.Combine<#= isInc?"Inc":"" #>(<#= Interpolate("dummy[{0}]", ", ", i, -1) #>));
-            Assert.AreEqual("<#= GenerateTestString(i, i) #>", test.Value);
+<#          // Compare against a test string with all chars uppercase #>            
+            Assert.AreEqual("<#= GenerateTestStringUpper(i, i) #>", test.Value);
 
             var updated = false;
+<#          // Observe when the whole string is updated #> 
             test.ValueChanged += (o, e) =>
             {
                 updated = true;
@@ -117,6 +147,7 @@ namespace NMF.Expressions.Test
             var dummyUpdated = new bool[<#= i #>];
             
 <#
+            // Observe when each item/char is updated
             for(int j=1;j<=i;j++)
             {
 #>
@@ -128,10 +159,13 @@ namespace NMF.Expressions.Test
 <#
             }
 #>
-            
+
+            // Loop over the chars/items and make the visited char lower case
             for(int k=0; k<<#= i #>; k++){
                 dummy[k].Item = ((char)(k + 97)).ToString();
+                // Check if the complete string has the updated flag
                 Assert.IsTrue(updated);
+                // Check if only the changed items has the changed flag 
                 for(int m=0;m<<#= i #>;m++)
                 {
                     if(m == k)
@@ -144,15 +178,20 @@ namespace NMF.Expressions.Test
                     }
                 }
 
+                // Check if the complete string looks like it should (lower case until the current position, upper case for the rest)
                 Assert.AreEqual(Helpers.GenerateTestStringLower(<#= i #>, k + 1), test.Value);
-
+                
+                // Reset changed flags
                 updated = false;
                 dummyUpdated[k] = false;
             }
 
+            // Loop over the complete string (left to right) and make the visited char upper case
             for(int k=0; k<<#= i #>; k++){
                 test.Value = Helpers.GenerateTestStringUpper(<#= i #>, k + 1);
+                // Check if the complete string has the updated flag
                 Assert.IsTrue(updated);
+                // Check if only the items with the changed char has the changed flag 
                 for(int m=0;m<<#= i #>;m++)
                 {
                     if(m == k)
@@ -165,8 +204,10 @@ namespace NMF.Expressions.Test
                     }
                 }
 
+                // Check if the items with the changed char looks like it should (upper case)
                 Assert.AreEqual(((char)(k + 65)).ToString(), dummy[k].Item);
 
+                // Reset changed flags
                 updated = false;
                 dummyUpdated[k] = false;
             }
@@ -181,11 +222,20 @@ namespace NMF.Expressions.Test
 }
 
 <#+
+    // Function to build a string out of a recurring formatable element
+    // str: the recurring parameterizable string ({0} will be replaced with the instance counter value)
+    // separator: string to put between the concatenated elements
+    // i: number of times str should be concatenated
+    // offset: will be added to the instance counter value before replacing {0}
     public string Interpolate(string str, string separator, int i, int offset){
         return String.Join(separator,Enumerable.Range(1, i).Select(x => String.Format(str, x + offset)));
     }
 
-    public string GenerateTestString(int length, int upperCount)
+    // Function to generate a string of the chars from starting from A
+    // length: count of chars to generate
+    // upperCount: the number of chars that should be uppercase, all following will be lowercase
+    // example (length:5, upperCount:2) ==> "ABcde"
+    public string GenerateTestStringUpper(int length, int upperCount)
     {
         return String.Join("",Enumerable.Range(1, length).Select(x => (char)( x + ( x > upperCount?96:64 ) ) ));
     }

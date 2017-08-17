@@ -13,7 +13,14 @@ namespace NMF.Expressions.Test.Arithmetic
     [TestClass]
     public class BitwiseExpressionTests
     {
-<#  
+<#
+        // Operations to test with all types
+        // Syntax:
+        // op Operator: binary operator to use
+        // name Name: name describing the operator (used for methode name generation)
+        // arg* and result* values used for testing (values must be castable to the values of 'type' below)
+        // first evaluation: arg1 [operator] arg2 == result1
+        // second evaluation: arg1 [operator] arg3 == result2 (second operator value is changed to value of arg3)
         foreach (var operation in new[] { 
             new {op = "&", name = "And", arg1 = 7, arg2 = 21, result = 5, arg3 = 3, result2 = 1 },
             new {op = "|", name = "Or", arg1 = 7, arg2 = 21, result = 23, arg3 = 13, result2 = 29 }     
@@ -22,12 +29,17 @@ namespace NMF.Expressions.Test.Arithmetic
         #region Bitwise<#=operation.name#>ExpressionTests
 
 <#
+                // Types to test the operations with
                 foreach(var type in new[] { "int", "long", "uint", "ulong" })
                 {
+                    // Test operations in observable and not observable items
                     foreach(var observable in new[] { false , true })
                     {
 #>
+<#      // The test method (used for all permuations) #>
         [TestMethod]
+<#      // The test method name generation
+        // Syntax: [operation name]_[type]_[Observable_Update|NoObservable_NoUpdate] #>
         public void <#=operation.name#><#=this.UppercaseFirst(type)#>_<#=observable?"Observable_Update":"NoObservable_NoUpdate"#>()
         {
             var updated = false;
@@ -46,6 +58,7 @@ namespace NMF.Expressions.Test.Arithmetic
 
             dummy.Item = (<#=type#>)<#=operation.arg3#>;
 
+<#          // The target value should only change if 'observable' is true #>
             Assert.AreEqual((<#=type#>)<#=observable?operation.result2:operation.result#>, result.Value);
             Assert.<#=observable?"IsTrue":"IsFalse"#>(updated);
         }
@@ -63,6 +76,8 @@ namespace NMF.Expressions.Test.Arithmetic
     }
 }
 <#+
+    // Helper function to change the first letter of a string to uppercase
+    // Required for generating consistent methode names
     public string UppercaseFirst(string s)
     {
         if (string.IsNullOrEmpty(s))

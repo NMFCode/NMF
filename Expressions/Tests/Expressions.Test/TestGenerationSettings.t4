@@ -1,4 +1,5 @@
-﻿<# 
+﻿<#
+    // Maximum number of parameters that should be covered by the tests
     int maxNumParameter = 9;    
 #> 
 <#  // We need to fake a usage for maxNumParameter here, otherwise the build process fails silently

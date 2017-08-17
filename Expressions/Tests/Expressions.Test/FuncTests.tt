@@ -13,8 +13,14 @@ namespace NMF.Expressions.Test
     public class FuncTests
     {
 <#
+    // Variable for generating arguments for lambda expression
+    // Form: (object o[0-9]+)(, object o[0-9]+)*
     string tempArgsText = "";
+    // Variable for genarating parameter for function call
+    // Form: (\(object\) null)(, \(object\) null)*
     string tempValueText = "";
+
+    // Generate a test for each number of parameters (maxNumParameter is configured globally in TestGenerationSettings.t4)
     for(int i=1;i<=maxNumParameter;i++)
     {        
 #>
@@ -27,6 +33,7 @@ namespace NMF.Expressions.Test
         }
 
 <#
+        // Prepare variables for the next loop cycle (+ 1 variable)
         tempArgsText += ", object o"+(i+1);
         tempValueText += "null, ";
     } 

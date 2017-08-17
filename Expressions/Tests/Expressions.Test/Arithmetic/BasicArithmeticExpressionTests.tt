@@ -12,7 +12,14 @@ namespace NMF.Expressions.Test.Arithmetic
     [TestClass]
     public class BasicArithmeticExpressionTests
     {
-<#  
+<#
+        // Operations to test with all types
+        // Syntax:
+        // op Operator: binary operator to use
+        // name Name: name describing the operator (used for methode name generation)
+        // arg* and result*: values used for testing (values must be castable to the values of 'type' below)
+        // first evaluation: arg1 [operator] arg2 == result1
+        // second evaluation: arg1 [operator] arg3 == result2 (second operator value is changed to value of arg3)
         foreach (var operation in new[] { 
             new {op = "+", name = "Add", arg1 = 5, arg2 = 7, result = 12, arg3 = 35, result2 = 42 },
             new {op = "-", name = "Substract", arg1 = 5, arg2 = 3, result = 2, arg3 = 45, result2 = 42 },
@@ -23,14 +30,20 @@ namespace NMF.Expressions.Test.Arithmetic
         #region <#=operation.name#>ExpressionTests
 
 <#
+                // Types to test the operations with
                 foreach(var type in new[] { "int", "long", "uint", "ulong", "float", "double", "decimal" })
                 {
+                    // Test operations in checked and unchecked environments 
                     foreach(var checkType in new[] { "checked", "unchecked" })
                     {
+                        // Test operations in observable and not observable items
                         foreach(var observable in new[] { false , true })
                         {
 #>
+<#      // The test method (used for all permuations) #>
         [TestMethod]
+<#      // The test method name generation
+        // Syntax: [operation name][checked|unchecked]_[type]_[Observable_Update|NoObservable_NoUpdate] #>
         public void <#=operation.name#><#=this.UppercaseFirst(checkType)#>_<#=this.UppercaseFirst(type)#>_<#=observable?"Observable_Update":"NoObservable_NoUpdate"#>()
         {
             <#=checkType#>
@@ -43,6 +56,8 @@ namespace NMF.Expressions.Test.Arithmetic
                 result.ValueChanged += (o, e) =>
                 {
 <#
+// Old value check is not required for non observable
+// But we need to test if the ValueChanged event handler was falsely called with 'updated = true'
 if(observable)
 {
 #>
@@ -57,7 +72,7 @@ if(observable)
                 Assert.IsFalse(updated);
 
                 dummy.Item = (<#=type#>)<#=operation.arg3#>;
-
+<#              // The target value should only change if 'observable' is true #>
                 Assert.AreEqual((<#=type#>)<#=observable?operation.result2:operation.result#>, result.Value);
                 Assert.<#=observable?"IsTrue":"IsFalse"#>(updated);
             }
@@ -77,6 +92,8 @@ if(observable)
     }
 }
 <#+
+    // Helper function to change the first letter of a string to uppercase
+    // Required for generating consistent methode names
     public string UppercaseFirst(string s)
     {
         if (string.IsNullOrEmpty(s))

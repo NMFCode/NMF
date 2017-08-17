@@ -59,14 +59,20 @@ namespace NMF.Expressions.Test
             setter = setExp.Compile();
         }
 
-<# 
+<#
+// Test configuartions
+// Syntax:
+// name Name: name describing the configuartion (used for methode name generation)
+// array Expression: expression that returns an int array (or something that can be casted to an int array)
 foreach (var testOption in new[] { 
     new {name = "EmptyArray", array = "new int[] { }" },
     new {name = "NullArray", array = "null" },
     new {name = "InitializedArray", array = "new int[] { 1, 8, 15 }" }
 } ){
+// All first elements of the results are 0 besides 'InitializedArray' here we choose '1' to clearly separate it from the default value 
     int firstArrayElementTestValue = testOption.name == "InitializedArray"?1:0;
 #>
+<#      // Test method for all normal PutGetPut-Tests #>
         [TestMethod]
         public void PutGetFor<#= testOption.name #>()
         {
@@ -76,6 +82,7 @@ foreach (var testOption in new[] {
             Assert.AreEqual(<#= firstArrayElementTestValue #>, test.Value);
             test.Value = 42;
             Assert.AreEqual(42, dummy.Item[0]);
+<# // Disable an unsported test for the InitializedArray configuration #>
 <#  if(testOption.name == "InitializedArray")
 {
 #>
@@ -91,7 +98,7 @@ foreach (var testOption in new[] {
     }
 #>
         }
-
+<#      // Test method for all normal GetPut-Tests #>
         [TestMethod]
         public void GetPutFor<#= testOption.name #>()
         {
@@ -103,7 +110,8 @@ foreach (var testOption in new[] {
             test.Value = 0;
             Assert.AreEqual(array, dummy.Item);
         }
-        
+
+<#      // Test method for all PutGet-Tests with function #>
         [TestMethod]
         public void PutGetFor<#= testOption.name #>WithFunc()
         {
@@ -111,6 +119,7 @@ foreach (var testOption in new[] {
             var func = Observable.Func<Dummy<int[]>, int>(d => d.Item.FirstOrDefault());
             var test = func.InvokeReversable(dummy);
 
+<# // Fake usage to keep dependency graph enabled for the InitializedArray configuration #>
 <#  if(testOption.name == "InitializedArray")
 {
 #>            
@@ -122,6 +131,7 @@ foreach (var testOption in new[] {
             Assert.AreEqual(<#= firstArrayElementTestValue #>, test.Value);
             test.Value = 42;
             Assert.AreEqual(42, dummy.Item[0]);
+<# // Disable an unsported test for the InitializedArray configuration #>
 <#  if(testOption.name == "InitializedArray")
 {
 #>
@@ -138,6 +148,7 @@ foreach (var testOption in new[] {
 #>
         }
 
+<#      // Test method for all GetPut-Tests with function #>
         [TestMethod]
         public void GetPutFor<#= testOption.name #>WithFunc()
         {
@@ -145,7 +156,7 @@ foreach (var testOption in new[] {
             var dummy = new Dummy<int[]>(array);
             var func = Observable.Func<Dummy<int[]>, int>(d => d.Item.FirstOrDefault());
             var test = func.InvokeReversable(dummy);
-
+<# // Fake usage to keep dependency graph enabled for the InitializedArray configuration #>
 <#  if(testOption.name == "InitializedArray")
 {
 #>            
@@ -159,6 +170,7 @@ foreach (var testOption in new[] {
             Assert.AreEqual(array, dummy.Item);
         }
 
+<#      // Test method for all PutGet-Tests with compliation #>
         [TestMethod]
         public void PutGetForCompiled<#= testOption.name #>()
         {
@@ -170,6 +182,7 @@ foreach (var testOption in new[] {
             Assert.AreEqual(42, getter(dummy));
         }
         
+<#      // Test method for all GetPut-Tests with compliation #>
         [TestMethod]
         public void GetPutForCompiled<#= testOption.name #>()
         {

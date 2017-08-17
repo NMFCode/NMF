@@ -20,36 +20,47 @@ namespace NMF.Expressions.Test
         public class Helper
         {
 <#
+    // Generate helper functions for each number of parameter (maxNumParameter is configured globally in TestGenerationSettings.t4)
     for(int i=1;i<=maxNumParameter;i++)
     {
 #>
-            
+<#          // [...] ObservingFunc<Dummy<string>(, Dummy<string>)*, string> combineFunc[0-9]+ = new ObservingFunc<Dummy<Dummy<string>(, Dummy<string>)*, string>\(\(d[0-9]+(, d[0-9]+)*\) => (d1.Item (\+ d[0-9]+.Item)* \);#>
             private static readonly ObservingFunc<<#= Interpolate("Dummy<string>", ", ", i, 0) #>, string> combineFunc<#= i #> = new ObservingFunc<<#= Interpolate("Dummy<string>", ", ", i, 0) #>, string>((<#= Interpolate("d{0}", ", ", i, 0) #>) => <#= Interpolate("d{0}.Item", " + \", \" + ", i, 0) #>);
 
             [LensPut(typeof(Helper), "PutCombine")]
             [ObservableProxy(typeof(Helper), "CombineProxy")]
+<#          // [...] \(Dummy<string> arg1(, Dummy<string> arg[0-9]+)*\) #>
             public static string Combine(<#= Interpolate("Dummy<string> arg{0}", ", ", i, 0) #>)
             {
-                return combineFunc<#= i #>.Evaluate(<#= Interpolate("arg{0}", ", ", i, 0) #>);
-            }
-            
-            public string CombineInstace(<#= Interpolate("Dummy<string> arg{0}", ", ", i, 0) #>)
-            {
+<#              // [...] \(arg1(, arg[0-9]+)*\) #>
                 return combineFunc<#= i #>.Evaluate(<#= Interpolate("arg{0}", ", ", i, 0) #>);
             }
 
+<#          // [...] \(arg1(, arg[0-9]+)*\) #>
+            public string CombineInstace(<#= Interpolate("Dummy<string> arg{0}", ", ", i, 0) #>)
+            {
+<#              // [...] \(arg1(, arg[0-9]+)*\) #>
+                return combineFunc<#= i #>.Evaluate(<#= Interpolate("arg{0}", ", ", i, 0) #>);
+            }
+
+<#          // [...] \(Dummy<string> arg1(, Dummy<string> arg[0-9]+)*\) #>
             public static INotifyValue<string> CombineProxy(<#= Interpolate("Dummy<string> arg{0}", ", ", i, 0) #>)
             {
+<#              // [...] \(arg1(, arg[0-9]+)*\) #>
                 return combineFunc<#= i #>.Observe(<#= Interpolate("arg{0}", ", ", i, 0) #>);
             }     
 
+<#          // [...] \(Dummy<string> arg1(, Dummy<string> arg[0-9]+)*\) #>
             public static void PutCombine(<#= Interpolate("Dummy<string> arg{0}", ", ", i, 0) #>, string value)
             {
+<#              // Split a string into it's items#>
                 var splittedValue = value.Split(new char[] { ',', ' ' }, StringSplitOptions.RemoveEmptyEntries);
                 
 <# 
         for(int j=1;j<=i;j++)
         {
+                // Split value into singe items (containg chars)
+                // arg[0-9]+.Item = splittedValue\[[0-9]+\].ToString();
 #>
                 arg<#= j #>.Item = splittedValue[<#= j - 1 #>].ToString();
 <#
@@ -61,17 +72,22 @@ namespace NMF.Expressions.Test
 #>
         }
 <#
+    // Generate a test for each number of parameter (maxNumParameter is configured globally in TestGenerationSettings.t4)
     for(int i=1;i<=maxNumParameter;i++)
     {
 #>
         #region New tests with <#= i #> parameters
 <#
+        // Generate a test for observaable and non observable items
         foreach(var isObservable in new[] { false , true })
         {
+            // Generate a test for instance and static methodes
             foreach(var isStatic in new[] { false, true })
             {
 #> 
         [TestMethod]
+<#      // The test method name generation
+        // Syntax: MethodCall__[ObservableTarget|NoObservableTarget]_[Static|Instance][number of parameter] #>
         public void MethodCall_<#= isObservable?"":"No" #>ObservableTarget_<#= isStatic?"Static":"Instance" #><#= i #>()
         {
             var update = false;
@@ -81,7 +97,8 @@ namespace NMF.Expressions.Test
             {
                 dummy.Add( new <#= isObservable?"Observable":"" #>Dummy<string>() { Item = j.ToString() } );
             }
-
+<#          // Build the expression with a static or a instance methode call 
+            // Interpolate() is used to generate a paramter string of the from: (dummy[0-9]+)(, dummy[0-9]+)*#>
             var test = Observable.Expression<string>(() => <#= isStatic?"Helper.Combine":"(new Helper()).CombineInstace" #>(<#= Interpolate("dummy[{0}]", ", ", i, -1) #>));
 <#
             if(isObservable)
@@ -90,7 +107,9 @@ namespace NMF.Expressions.Test
             test.ValueChanged += (o, e) =>
             {
                 update = true;
+<#              // Test string is a comma spearated string with numbers from 1 to i  e.g. "1, 2, 3"#>
                 Assert.AreEqual("<#= GenerateTestString( i, 0, 0 ) #>", e.OldValue);
+<#              // Test string is a comma spearated string with numbers from 1 to i with last element +1 e.g "1, 2, 4"#>
                 Assert.AreEqual("<#= GenerateTestString( i, 0, 1 ) #>", e.NewValue);
             };
 <#
@@ -102,9 +121,10 @@ namespace NMF.Expressions.Test
 <#
 }
 #>
+<#          // Test string is a comma spearated string with numbers from 1 to i  e.g. "1, 2, 3"#>
             Assert.AreEqual("<#= GenerateTestString( i, 0, 0 ) #>", test.Value);
             Assert.IsFalse(update);
-
+<#          // Increment the last element by 1 #>
             dummy[<#= i - 1 #>].Item = "<#= i + 1 #>";
 
             Assert.Is<#= isObservable?"True":"False" #>(update);
@@ -112,6 +132,7 @@ namespace NMF.Expressions.Test
             if(isObservable)
             {
 #>
+<#          // Test string is a comma spearated string with numbers from 1 to i with last element +1 e.g "1, 2, 4"#>
             Assert.AreEqual("<#= GenerateTestString( i, 0, 1 ) #>", test.Value);
 <#
             }
@@ -131,10 +152,19 @@ namespace NMF.Expressions.Test
     }
 }
 <#+
+    // Function to build a string out of a recurring formatable element
+    // str: the recurring parameterizable string ({0} will be replaced with the instance counter value)
+    // separator: string to put between the concatenated elements
+    // i: number of times str should be concatenated
+    // offset: will be added to the instance counter value before replacing {0}
     public string Interpolate(string str, string separator, int i, int offset){
         return String.Join(separator,Enumerable.Range(1, i).Select(x => String.Format(str, x + offset)));
     }
 
+    // Function to generate comma spearated string of the numbers 1 to length
+    // length: count of numbers to generate
+    // offset: offset is added to each number before putting it to the result string
+    // lastOffset: lastOffset is added to the last numer (and only to this number) before putting it to the result string
     public string GenerateTestString(int length, int offset, int lastOffset)
     {
         var list = Enumerable.Range(1, length).ToList();
