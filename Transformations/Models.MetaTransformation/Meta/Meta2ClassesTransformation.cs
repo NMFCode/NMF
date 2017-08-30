@@ -80,6 +80,7 @@ namespace NMF.Models.Meta
                 yield return "NMF.Expressions";
                 yield return "NMF.Expressions.Linq";
                 yield return "NMF.Models";
+                yield return "NMF.Models.Meta";
                 yield return "NMF.Models.Collections";
                 yield return "NMF.Models.Expressions";
                 yield return "NMF.Collections.Generic";
