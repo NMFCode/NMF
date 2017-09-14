@@ -20,7 +20,7 @@ namespace NMF.Expressions.Test
     {
         #region Helper
 
-        private static class Helpers
+        private class Helpers
         {
             // Function to generate a string of the chars from starting from a
             // length: count of chars to generate
@@ -65,41 +65,47 @@ namespace NMF.Expressions.Test
 #>
             #region Helper for <#= i #> parameters
 
+<#          foreach(bool isStatic in new bool[] {true, false} )
+            {
+#>
 <#          // [...] ObservingFunc<Dummy<string>(, Dummy<string>)*, string> combineFunc[0-9]+ = new ObservingFunc<Dummy<Dummy<string>(, Dummy<string>)*, string>\(\(d[0-9]+(, d[0-9]+)*\) => (d1.Item (\+ d[0-9]+.Item)* \);#>
-            private static readonly ObservingFunc<<#= Interpolate(textDummyT, ", ", i, 0) #>, string> combineFunc<#=i#> = new ObservingFunc<<#= Interpolate(textDummyT, ", ", i, 0) #>, string>((<#= Interpolate(textDI, ", ", i, 0) #>) => <#= Interpolate(textDIItem, " + ", i, 0) #>);
+            private <#= isStatic?"static ":"" #>readonly ObservingFunc<<#= Interpolate(textDummyT, ", ", i, 0) #>, string> combineFunc<#= isStatic?"Static":"Instance" #><#=i#> = new ObservingFunc<<#= Interpolate(textDummyT, ", ", i, 0) #>, string>((<#= Interpolate(textDI, ", ", i, 0) #>) => <#= Interpolate(textDIItem, " + ", i, 0) #>);
 
-            [LensPut(typeof(Helpers), "PutCombine<#= isInc?"Inc":"" #>")]
-            [ObservableProxy(typeof(Helpers), "CombineProxy<#= isInc?"Inc":"" #>")]
+            [LensPut(typeof(Helpers), "PutCombine<#= isStatic?"Static":"Instance" #><#= isInc?"Inc":"" #>")]
+            [ObservableProxy(typeof(Helpers), "CombineProxy<#= isStatic?"Static":"Instance" #><#= isInc?"Inc":"" #>")]
 <#          // [...] \(Dummy<string> arg1(, Dummy<string> arg[0-9]+)*\) #>
-            public static string Combine<#= isInc?"Inc":"" #>(<#= Interpolate(textDummyTArgI, ", ", i, 0) #>)
+            public <#= isStatic?"static ":"" #>string Combine<#= isStatic?"Static":"Instance" #><#= isInc?"Inc":"" #>(<#= Interpolate(textDummyTArgI, ", ", i, 0) #>)
             {
 <#              // [...] \(arg1(, arg[0-9]+)*\) #>
-                return combineFunc<#= i #>.Evaluate(<#= Interpolate(textArgI, ", ", i, 0) #>);
+                return combineFunc<#= isStatic?"Static":"Instance" #><#= i #>.Evaluate(<#= Interpolate(textArgI, ", ", i, 0) #>);
             }
 
 <#          // [...] \(Dummy<string> arg1(, Dummy<string> arg[0-9]+)*\) #>
-            public static INotifyValue<string> CombineProxy<#= isInc?"Inc":"" #>(<#= Interpolate(textWrappedDummyTArgI, ", ", i, 0) #>)
+            public <#= isStatic?"static ":"" #>INotifyValue<string> CombineProxy<#= isStatic?"Static":"Instance" #><#= isInc?"Inc":"" #>(<#= Interpolate(textWrappedDummyTArgI, ", ", i, 0) #>)
             {
 <#              // [...] \(arg1(, arg[0-9]+)*\) #>
-                return combineFunc<#= i #>.Observe(<#= Interpolate(textArgI, ", ", i, 0) #>);
+                return combineFunc<#= isStatic?"Static":"Instance" #><#= i #>.Observe(<#= Interpolate(textArgI, ", ", i, 0) #>);
             }
   
 <#          // [...] \(Dummy<string> arg1(, Dummy<string> arg[0-9]+)*\) #>
-            public static void PutCombine<#= isInc?"Inc":"" #>(<#= Interpolate(textDummyTArgI, ", ", i, 0) #>, string value)
+            public <#= isStatic?"static ":"" #>void PutCombine<#= isStatic?"Static":"Instance" #><#= isInc?"Inc":"" #>(<#= Interpolate(textDummyTArgI, ", ", i, 0) #>, string value)
             {
                 var splittedValue = value.ToCharArray();
 <# 
-        for(int j=1;j<=i;j++)
-        {
-                // Split value into singe items (containg chars)
-                // arg[0-9]+.Item = splittedValue\[[0-9]+\].ToString();
+                for(int j=1;j<=i;j++)
+                {
+                    // Split value into singe items (containg chars)
+                    // arg[0-9]+.Item = splittedValue\[[0-9]+\].ToString();
 #>
                 arg<#= j #>.Item = splittedValue[<#= j - 1 #>].ToString();
 <#
-        }
+                }            
 #>
             }
 
+<#
+            }
+#>
             #endregion
 
 <#        
@@ -113,15 +119,18 @@ namespace NMF.Expressions.Test
         #endregion     
    
 <#
-    // Generate incremental and non incremental tests
-    foreach( var isInc in isIncCombinations )
+    // Generate tests for static and instance proxies
+    foreach(bool isStatic in new bool[] {true, false} )
     {
-        // Generate helper function for each number of parameters (maxNumParameter is configured globally in TestGenerationSettings.t4)
-        for(int i=2;i<=maxNumParameter;i++)
-        { 
+    // Generate incremental and non incremental tests
+        foreach( var isInc in isIncCombinations )
+        {
+            // Generate helper function for each number of parameters (maxNumParameter is configured globally in TestGenerationSettings.t4)
+            for(int i=2;i<=maxNumParameter;i++)
+            { 
 #>
         [TestMethod]
-        public void LensPutWithProxy<#= isInc?"Inc":"" #>Param<#= i #>()
+        public void LensPutWithProxy<#= isStatic?"Static":"Instance" #><#= isInc?"Inc":"" #>Param<#= i #>()
         {
             var dummy = new ObservableDummy<string>[<#= i #>];
 <#
@@ -133,7 +142,7 @@ namespace NMF.Expressions.Test
 <#
             }
 #>
-            var test = Observable.Reversable(() => Helpers.Combine<#= isInc?"Inc":"" #>(<#= Interpolate("dummy[{0}]", ", ", i, -1) #>));
+            var test = Observable.Reversable(() => <#= isStatic?"Helpers":"(new Helpers())" #>.Combine<#= isStatic?"Static":"Instance" #><#= isInc?"Inc":"" #>(<#= Interpolate("dummy[{0}]", ", ", i, -1) #>));
 <#          // Compare against a test string with all chars uppercase #>            
             Assert.AreEqual("<#= GenerateTestStringUpper(i, i) #>", test.Value);
 
@@ -215,6 +224,7 @@ namespace NMF.Expressions.Test
         }
 
 <#
+            }
         }
     }
 #>
