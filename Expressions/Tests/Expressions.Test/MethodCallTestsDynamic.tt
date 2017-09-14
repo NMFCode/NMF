@@ -36,6 +36,7 @@ namespace NMF.Expressions.Test
                 return combineFunc<#= i #>.Evaluate(<#= Interpolate("arg{0}", ", ", i, 0) #>);
             }
 
+            [ObservableProxy(typeof(Helper), "CombineProxyInstance")]
 <#          // [...] \(arg1(, arg[0-9]+)*\) #>
             public string CombineInstace(<#= Interpolate("Dummy<string> arg{0}", ", ", i, 0) #>)
             {
@@ -48,7 +49,14 @@ namespace NMF.Expressions.Test
             {
 <#              // [...] \(arg1(, arg[0-9]+)*\) #>
                 return combineFunc<#= i #>.Observe(<#= Interpolate("arg{0}", ", ", i, 0) #>);
-            }     
+            }
+
+<#          // [...] \(Dummy<string> arg1(, Dummy<string> arg[0-9]+)*\) #>
+            public INotifyValue<string> CombineProxyInstance(<#= Interpolate("Dummy<string> arg{0}", ", ", i, 0) #>)
+            {
+<#              // [...] \(arg1(, arg[0-9]+)*\) #>
+                return combineFunc<#= i #>.Observe(<#= Interpolate("arg{0}", ", ", i, 0) #>);
+            }  
 
 <#          // [...] \(Dummy<string> arg1(, Dummy<string> arg[0-9]+)*\) #>
             public static void PutCombine(<#= Interpolate("Dummy<string> arg{0}", ", ", i, 0) #>, string value)
