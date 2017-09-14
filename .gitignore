@@ -194,3 +194,9 @@ FakesAssemblies/
 
 # Visual Studio 6 workspace options file
 *.opt
+/Expressions/Tests/Expressions.Test/Arithmetic/BasicArithmeticExpressionTests.cs
+/Expressions/Tests/Expressions.Test/Arithmetic/BitwiseExpressionTests.cs
+/Expressions/Tests/Expressions.Test/FuncTests.cs
+/Expressions/Tests/Expressions.Test/LensPutProxyTests.cs
+/Expressions/Tests/Expressions.Test/LensPutTests.cs
+/Expressions/Tests/Expressions.Test/MethodCallTestsDynamic.cs
