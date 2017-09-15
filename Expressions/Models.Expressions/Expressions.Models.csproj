@@ -1,119 +1,20 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
   <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{25183C1B-5A1D-4535-AE62-90105C00BEAF}</ProjectGuid>
-    <OutputType>Library</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>NMF.Expressions</RootNamespace>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <AssemblyName>NMF.Expressions.Models</AssemblyName>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
-    <FileAlignment>512</FileAlignment>
-    <TargetFrameworkProfile />
+    <RootNamespace>Expressions</RootNamespace>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-  </PropertyGroup>
+
   <ItemGroup>
-    <Reference Include="System" />
-    <Reference Include="System.Core" />
-    <Reference Include="Microsoft.CSharp" />
+    <PackageReference Include="Microsoft.CSharp" Version="4.4.0" />
   </ItemGroup>
+
   <ItemGroup>
-    <Compile Include="..\..\CommonAssemblyInfo.cs">
-      <Link>CommonAssemblyInfo.cs</Link>
-    </Compile>
-    <Compile Include="BubbledChangeFetcher.cs" />
-    <Compile Include="ObservableTreeExtensionCall.cs">
-      <DependentUpon>ObservableTreeExtensionCall.tt</DependentUpon>
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-    </Compile>
-    <Compile Include="TreeExtensionExpressionVisitor.cs" />
-    <Compile Include="TreeExtensionNotifySystem.cs" />
-    <Compile Include="ModelFuncExpressionVisitor.cs" />
-    <Compile Include="ModelFuncExtractionParameter.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>ModelFuncExtractionParameter.tt</DependentUpon>
-    </Compile>
-    <Compile Include="ModelExpressionVisitorBase.cs" />
-    <Compile Include="ObservablePromotionMethodCall.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>ObservablePromotionMethodCall.tt</DependentUpon>
-    </Compile>
-    <Compile Include="ParameterCollector.cs" />
-    <Compile Include="PromotionExpressionVisitor.cs" />
-    <Compile Include="ParameterExtraction.cs" />
-    <Compile Include="PromotionNotifySystem.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
+    <ProjectReference Include="..\..\Expressions\Expressions.Linq\Expressions.Linq.csproj" />
+    <ProjectReference Include="..\..\Expressions\Expressions\Expressions.csproj" />
+    <ProjectReference Include="..\..\Models\Models\Models.csproj" />
   </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\..\Collections\Collections\Collections.csproj">
-      <Project>{6f57aa50-fb70-4de8-beab-e3ae58b225d3}</Project>
-      <Name>Collections</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\Models\Models\Models.csproj">
-      <Project>{e42ac7b6-8120-40b5-8cd3-c4139b940897}</Project>
-      <Name>Models</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\Models\Serialization\Serialization.csproj">
-      <Project>{c24ef2ac-49d3-4542-bc40-5d62e12c7ded}</Project>
-      <Name>Serialization</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\Tools\Utilities\Utilities.csproj">
-      <Project>{868226d4-bc8b-4b91-bd09-8f63d3c9debe}</Project>
-      <Name>Utilities</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Expressions.Linq\Expressions.Linq.csproj">
-      <Project>{e82d72a1-90f6-4341-a82d-d6b40349df63}</Project>
-      <Name>Expressions.Linq</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Expressions\Expressions.csproj">
-      <Project>{afca9d1d-26a6-482a-a5ab-0827ad0fd677}</Project>
-      <Name>Expressions</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="ModelFuncExtractionParameter.tt">
-      <Generator>TextTemplatingFileGenerator</Generator>
-      <LastGenOutput>ModelFuncExtractionParameter.cs</LastGenOutput>
-    </Content>
-    <Content Include="ObservableTreeExtensionCall.tt">
-      <Generator>TextTemplatingFileGenerator</Generator>
-      <LastGenOutput>ObservableTreeExtensionCall.cs</LastGenOutput>
-    </Content>
-    <Content Include="ObservablePromotionMethodCall.tt">
-      <Generator>TextTemplatingFileGenerator</Generator>
-      <LastGenOutput>ObservablePromotionMethodCall.cs</LastGenOutput>
-    </Content>
-  </ItemGroup>
-  <ItemGroup>
-    <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
-  </ItemGroup>
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
-       Other similar extension points exist, see Microsoft.Common.targets.
-  <Target Name="BeforeBuild">
-  </Target>
-  <Target Name="AfterBuild">
-  </Target>
-  -->
+
 </Project>
