@@ -72,7 +72,7 @@ foreach (var testOption in new[] {
 // All first elements of the results are 0 besides 'InitializedArray' here we choose '1' to clearly separate it from the default value 
     int firstArrayElementTestValue = testOption.name == "InitializedArray"?1:0;
 #>
-<#      // Test method for all normal PutGetPut-Tests #>
+<#      // Test method for all normal PutGet-Tests #>
         [TestMethod]
         public void PutGetFor<#= testOption.name #>()
         {
@@ -108,7 +108,18 @@ foreach (var testOption in new[] {
 
             Assert.AreEqual(<#= firstArrayElementTestValue #>, test.Value);
             test.Value = 0;
+            if(array != null && array.Length > 0)
+            {
+                Assert.AreEqual(array[0], 0);
+            }
             Assert.AreEqual(array, dummy.Item);
+
+            test.Value = 1;
+            if(array != null && array.Length > 0)
+            {
+                Assert.AreEqual(array[0], 1);
+            }
+            Assert.AreEqual(1, dummy.Item[0]);
         }
 
 <#      // Test method for all PutGet-Tests with function #>
@@ -167,7 +178,18 @@ foreach (var testOption in new[] {
 #>
             Assert.AreEqual(<#= firstArrayElementTestValue #>, test.Value);
             test.Value = 0;
+            if(array != null && array.Length > 0)
+            {
+                Assert.AreEqual(array[0], 0);
+            }
             Assert.AreEqual(array, dummy.Item);
+
+            test.Value = 1;
+            if(array != null && array.Length > 0)
+            {
+                Assert.AreEqual(array[0], 1);
+            }
+            Assert.AreEqual(1, dummy.Item[0]);
         }
 
 <#      // Test method for all PutGet-Tests with compliation #>
@@ -191,7 +213,18 @@ foreach (var testOption in new[] {
 
             Assert.AreEqual(<#= firstArrayElementTestValue #>, getter(dummy));
             setter(dummy, 0);
+            if(array != null && array.Length > 0)
+            {
+                Assert.AreEqual(array[0], 0);
+            }
             Assert.AreEqual(array, dummy.Item);
+
+            setter(dummy, 1);
+            if(array != null && array.Length > 0)
+            {
+                Assert.AreEqual(array[0], 1);
+            }
+            Assert.AreEqual(1, dummy.Item[0]);
         }
 
 <#

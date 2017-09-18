@@ -27,7 +27,6 @@ namespace NMF.Expressions.Test
 <#          // [...] ObservingFunc<Dummy<string>(, Dummy<string>)*, string> combineFunc[0-9]+ = new ObservingFunc<Dummy<Dummy<string>(, Dummy<string>)*, string>\(\(d[0-9]+(, d[0-9]+)*\) => (d1.Item (\+ d[0-9]+.Item)* \);#>
             private static readonly ObservingFunc<<#= Interpolate("Dummy<string>", ", ", i, 0) #>, string> combineFunc<#= i #> = new ObservingFunc<<#= Interpolate("Dummy<string>", ", ", i, 0) #>, string>((<#= Interpolate("d{0}", ", ", i, 0) #>) => <#= Interpolate("d{0}.Item", " + \", \" + ", i, 0) #>);
 
-            [LensPut(typeof(Helper), "PutCombine")]
             [ObservableProxy(typeof(Helper), "CombineProxy")]
 <#          // [...] \(Dummy<string> arg1(, Dummy<string> arg[0-9]+)*\) #>
             public static string Combine(<#= Interpolate("Dummy<string> arg{0}", ", ", i, 0) #>)
@@ -56,29 +55,12 @@ namespace NMF.Expressions.Test
             {
 <#              // [...] \(arg1(, arg[0-9]+)*\) #>
                 return combineFunc<#= i #>.Observe(<#= Interpolate("arg{0}", ", ", i, 0) #>);
-            }  
-
-<#          // [...] \(Dummy<string> arg1(, Dummy<string> arg[0-9]+)*\) #>
-            public static void PutCombine(<#= Interpolate("Dummy<string> arg{0}", ", ", i, 0) #>, string value)
-            {
-<#              // Split a string into it's items#>
-                var splittedValue = value.Split(new char[] { ',', ' ' }, StringSplitOptions.RemoveEmptyEntries);
-                
-<# 
-        for(int j=1;j<=i;j++)
-        {
-                // Split value into singe items (containg chars)
-                // arg[0-9]+.Item = splittedValue\[[0-9]+\].ToString();
-#>
-                arg<#= j #>.Item = splittedValue[<#= j - 1 #>].ToString();
-<#
-        }
-#>
             }
 <#
     }
 #>
         }
+
 <#
     // Generate a test for each number of parameter (maxNumParameter is configured globally in TestGenerationSettings.t4)
     for(int i=1;i<=maxNumParameter;i++)
