@@ -82,19 +82,28 @@ namespace Ecore2Code
         PY
     }
 
-    class Program
+    class Ecore2Code
     {
+        private Options options;
+        private ModelRepository repository;
+
+        public Ecore2Code(Options options)
+        {
+            this.options = options;
+        }
+
         static void Main(string[] args)
         {            
             Options options = new Options();
             if (Parser.Default.ParseArguments(args, options))
             {
+                var gen = new Ecore2Code(options);
 #if DEBUG
-                GenerateCode(options);
+                gen.GenerateCode();
 #else
                 try
                 {
-                    GenerateCode(options);
+                    gen.GenerateCode();
                 }
                 catch (Exception ex)
                 {
@@ -112,7 +121,7 @@ namespace Ecore2Code
             }
         }
 
-        private static void GenerateCode(Options options)
+        private void GenerateCode()
         {
             var packageTransform = new NMF.Models.Meta.Meta2ClassesTransformation();
             var stopWatch = new Stopwatch();
@@ -121,24 +130,38 @@ namespace Ecore2Code
             packageTransform.CreateOperations = options.Operations;
             packageTransform.DefaultNamespace = options.OverallNamespace;
 
-            Ecore2MetaTransformation.GeneratePrimitiveTypes = options.PrimitiveTypes;
-            if (options.TypeMappings != null && options.TypeMappings.Count > 0)
+            LoadTypeMappings();
+
+            Dictionary<Uri, string> mappings = LoadNamespaceMappings();
+
+            var metaPackage = LoadPackageFromFiles(mappings);
+            SetUri(metaPackage);
+
+            Model model = EncapsulateNamespace(metaPackage);
+            if (options.NMeta != null)
             {
-                var typeMapping = new Dictionary<string, string>();
-                foreach (var mapping in options.TypeMappings)
+                using (var fs = File.Create(options.NMeta))
                 {
-                    if (string.IsNullOrEmpty(mapping)) continue;
-                    var lastIdx = mapping.LastIndexOf('=');
-                    if (lastIdx == -1)
-                    {
-                        Console.WriteLine("Type mapping {0} is missing required separator =", mapping);
-                        continue;
-                    }
-                    typeMapping.Add(mapping.Substring(0, lastIdx), mapping.Substring(lastIdx + 1));
+                    MetaRepository.Instance.Serializer.Serialize(model, fs);
                 }
-                Ecore2MetaTransformation.CustomTypesMap = typeMapping;
             }
 
+            stopWatch.Start();
+            var compileUnit = TransformationEngine.Transform<INamespace, CodeCompileUnit>(metaPackage,
+                options.Parallel
+                   ? (ITransformationEngineContext)new ParallelTransformationContext(packageTransform)
+                   : new TransformationContext(packageTransform));
+            stopWatch.Stop();
+
+            Console.WriteLine("Operation took {0}ms", stopWatch.Elapsed.TotalMilliseconds);
+
+            OutputGeneratedCode(compileUnit);
+
+            Console.WriteLine("Code generated successfully!");
+        }
+
+        private Dictionary<Uri, string> LoadNamespaceMappings()
+        {
             Dictionary<Uri, string> mappings = null;
             if (options.NamespaceMappings != null && options.NamespaceMappings.Count > 0)
             {
@@ -161,7 +184,44 @@ namespace Ecore2Code
                 }
             }
 
-            var metaPackage = LoadPackageFromFiles(options.InputFiles, options.OverallNamespace, mappings);
+            return mappings;
+        }
+
+        private void LoadTypeMappings()
+        {
+            Ecore2MetaTransformation.GeneratePrimitiveTypes = options.PrimitiveTypes;
+            if (options.TypeMappings != null && options.TypeMappings.Count > 0)
+            {
+                var typeMapping = new Dictionary<string, string>();
+                foreach (var mapping in options.TypeMappings)
+                {
+                    if (string.IsNullOrEmpty(mapping)) continue;
+                    var lastIdx = mapping.LastIndexOf('=');
+                    if (lastIdx == -1)
+                    {
+                        Console.WriteLine("Type mapping {0} is missing required separator =", mapping);
+                        continue;
+                    }
+                    typeMapping.Add(mapping.Substring(0, lastIdx), mapping.Substring(lastIdx + 1));
+                }
+                Ecore2MetaTransformation.CustomTypesMap = typeMapping;
+            }
+        }
+
+        private static Model EncapsulateNamespace(INamespace metaPackage)
+        {
+            var model = metaPackage.Model;
+            if (model == null)
+            {
+                model = new Model();
+                model.RootElements.Add(metaPackage);
+            }
+            model.ModelUri = metaPackage.Uri;
+            return model;
+        }
+
+        private void SetUri(INamespace metaPackage)
+        {
             if (options.Uri != null)
             {
                 Uri uri;
@@ -178,31 +238,10 @@ namespace Ecore2Code
             {
                 Console.Error.WriteLine("Warning: There is no base Uri for the provided metamodels. Some features of the generated code will be disabled.");
             }
+        }
 
-            var model = metaPackage.Model;
-            if (model == null)
-            {
-                model = new Model();
-                model.RootElements.Add(metaPackage);
-            }
-            model.ModelUri = metaPackage.Uri;
-            if (options.NMeta != null)
-            {
-                using (var fs = File.Create(options.NMeta))
-                {
-                    MetaRepository.Instance.Serializer.Serialize(model, fs);
-                }
-            }
-
-            stopWatch.Start();
-            var compileUnit = TransformationEngine.Transform<INamespace, CodeCompileUnit>(metaPackage, 
-                options.Parallel
-                   ? (ITransformationEngineContext)new ParallelTransformationContext(packageTransform)
-                   : new TransformationContext(packageTransform));
-            stopWatch.Stop();
-
-            Console.WriteLine("Operation took {0}ms", stopWatch.Elapsed.TotalMilliseconds);
-
+        private void OutputGeneratedCode(CodeCompileUnit compileUnit)
+        {
             CodeDomProvider generator = null;
 
             switch (options.Language)
@@ -220,7 +259,7 @@ namespace Ecore2Code
                     generator = new Microsoft.JScript.JScriptCodeProvider();
                     break;
                 case SupportedLanguage.PY:
-                    generator = new PythonProvider();                                        
+                    generator = new PythonProvider();
                     break;
                 default:
                     Console.WriteLine("Unknown language detected. Falling back to default C#");
@@ -229,13 +268,13 @@ namespace Ecore2Code
             }
 
             var genOptions = new CodeGeneratorOptions()
-                {
-                    BlankLinesBetweenMembers = true,
-                    VerbatimOrder = false,
-                    ElseOnClosing = false,
-                    BracingStyle = "C",
-                    IndentString = "    "
-                };
+            {
+                BlankLinesBetweenMembers = true,
+                VerbatimOrder = false,
+                ElseOnClosing = false,
+                BracingStyle = "C",
+                IndentString = "    "
+            };
             if (options.UseFolders)
             {
                 foreach (var file in MetaFacade.SplitCompileUnit(compileUnit))
@@ -255,8 +294,6 @@ namespace Ecore2Code
                     generator.GenerateCodeFromCompileUnit(compileUnit, sw, genOptions);
                 }
             }
-
-            Console.WriteLine("Code generated successfully!");
         }
 
         private static void CheckDirectoryExists(DirectoryInfo directoryInfo)
@@ -268,12 +305,13 @@ namespace Ecore2Code
             }
         }
 
-        public static INamespace LoadPackageFromFiles(IList<string> files, string overallName, IDictionary<Uri, string> resolveMappings)
+        public INamespace LoadPackageFromFiles(IDictionary<Uri, string> resolveMappings)
         {
+            var files = options.InputFiles;
             if (files == null || files.Count == 0) return null;
 
             var packages = new List<INamespace>();
-            var repository = new ModelRepository(EcoreInterop.Repository);
+            repository = new ModelRepository(EcoreInterop.Repository);
             
             if (resolveMappings != null)
             {
@@ -289,7 +327,7 @@ namespace Ecore2Code
                     var ePackages = model.RootElements.OfType<EPackage>();
                     foreach (var ePackage in ePackages)
                     {
-                        packages.Add(EcoreInterop.Transform2Meta(ePackage));
+                        packages.Add(EcoreInterop.Transform2Meta(ePackage, AddMissingPackage));
                     }
 #else
                     try
@@ -297,7 +335,7 @@ namespace Ecore2Code
                         var ePackages = repository.Resolve(ecoreFile).RootElements.OfType<EPackage>();
                         foreach (var ePackage in ePackages)
                         {
-                            packages.Add(EcoreInterop.Transform2Meta(ePackage));
+                            packages.Add(EcoreInterop.Transform2Meta(ePackage, AddMissingPackage));
                         }
                     }
                     catch (Exception ex)
@@ -335,9 +373,21 @@ namespace Ecore2Code
             }
             else
             {
-                var package = new Namespace() { Name = overallName };
+                var package = new Namespace() { Name = options.OverallNamespace };
                 package.ChildNamespaces.AddRange(packages);
                 return package;
+            }
+        }
+
+        private void AddMissingPackage(IEPackage package, INamespace metaNamespace)
+        {
+            if (options.NMeta != null && package.Model != null && package.Model.ModelUri != null && package.Model.ModelUri.IsAbsoluteUri && package.Model.ModelUri.IsFile)
+            {
+                var path = package.Model.ModelUri.LocalPath;
+                var dir = Path.GetDirectoryName(options.NMeta);
+                var extension = Path.GetExtension(options.NMeta);
+                var file = Path.GetFileNameWithoutExtension(path);
+                repository.Save(EncapsulateNamespace(metaNamespace), Path.Combine(dir, file + extension));
             }
         }
     }

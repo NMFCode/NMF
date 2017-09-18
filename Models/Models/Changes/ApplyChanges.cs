@@ -2,6 +2,7 @@
 using NMF.Models.Repository;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -84,6 +85,12 @@ namespace NMF.Models.Changes
 
         public override void Apply()
         {
+#if DEBUG
+            if (AffectedElement.GetReferencedElement((IReference)Feature, Index) != DeletedElement)
+            {
+                Debugger.Break();
+            }
+#endif
             AffectedElement.GetReferencedElements((IReference)Feature).RemoveAt(Index);
         }
     }
@@ -135,6 +142,12 @@ namespace NMF.Models.Changes
 
         public override void Apply()
         {
+#if DEBUG
+            if (AffectedElement.GetReferencedElement((IReference)Feature, Index) != DeletedElement)
+            {
+                Debugger.Break();
+            }
+#endif
             AffectedElement.GetReferencedElements((IReference)Feature).RemoveAt(Index);
         }
     }

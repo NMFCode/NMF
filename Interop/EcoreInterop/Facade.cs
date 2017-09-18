@@ -59,15 +59,27 @@ namespace NMF.Interop.Ecore
             return modelElement.Model.RootElements.OfType<EPackage>().FirstOrDefault();
         }
 
-        public static INamespace Transform2Meta(EPackage package)
+        public static INamespace Transform2Meta(EPackage package, Action<IEPackage, INamespace> additionalPackageRegistry = null)
         {
             var model = new Model();
-            var rootPackage = TransformationEngine.Transform<IEPackage, INamespace>(package, ecore2Meta);
+            var context = new TransformationContext(ecore2Meta);
+            var rootPackage = TransformationEngine.Transform<IEPackage, INamespace>(package, context);
             model.RootElements.Add(rootPackage);
             Uri modelUri;
             if (Uri.TryCreate(package.NsURI, UriKind.Absolute, out modelUri))
             {
                 model.ModelUri = modelUri;
+            }
+            if (additionalPackageRegistry != null)
+            {
+                foreach (var packageT in context.Trace.TraceAllIn(ecore2Meta.Rule<Ecore2MetaTransformation.EPackage2Namespace>()))
+                {
+                    var pack = packageT.GetInput(0) as IEPackage;
+                    if (pack != package && pack.ESuperPackage == null)
+                    {
+                        additionalPackageRegistry(pack, (INamespace)packageT.Output);
+                    }
+                }
             }
             return rootPackage;
         }

@@ -40,7 +40,7 @@ namespace NMF.Incerator
             var ga = new GeneticAlgorithm(population, CalculateFitness);
 
             ga.Operators.Add(new Elite(5));
-            ga.Operators.Add(new Crossover(0.85, true, CrossoverType.SinglePoint));
+            ga.Operators.Add(new Crossover(0.85, false, CrossoverType.DoublePoint));
             ga.Operators.Add(new StrategyMutate(0.08, baseConfiguration));
 
             ga.OnGenerationComplete += OnGenerationComplete;

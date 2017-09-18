@@ -181,12 +181,38 @@ namespace NMF.Models.Changes
 
         private void ConnectInsertionsAndDeletions(List<IModelChange> list)
         {
+            for (int i = list.Count - 1; i >= 0; i--)
+            {
+                IElementaryChange elementary = list[i] as IElementaryChange;
+                if (elementary != null && elementary.AffectedElement != null && elementSources.ContainsKey(elementary.AffectedElement))
+                {
+                    list.RemoveAt(i);
+                }
+                else
+                {
+                    var t = list[i] as IElementaryChangeTransaction;
+                    if (t != null && t.NestedChanges.Count == 1)
+                    {
+                    }
+                }
+            }
             int currentIndex = 0;
             while (currentIndex < list.Count)
             {
                 ICompositionDeletion deletion = list[currentIndex] as ICompositionDeletion;
                 if (deletion != null && deletion.DeletedElement.Parent != null)
                 {
+                    ElementSourceInfo sourceInfo;
+                    if (elementSources.TryGetValue(deletion.DeletedElement, out sourceInfo))
+                    {
+                        elementSources.Remove(deletion.DeletedElement);
+                        foreach (var item in deletion.DeletedElement.Descendants())
+                        {
+                            elementSources.Remove(item);
+                        }
+                        list.RemoveAt(currentIndex);
+                        continue;
+                    }
                     if (currentIndex < list.Count)
                     {
                         TryEliminateDeletion(list, ref currentIndex, deletion);
@@ -201,6 +227,14 @@ namespace NMF.Models.Changes
             for (int i = 0; i < list.Count; i++)
             {
                 var insertion = list[i] as ICompositionInsertion;
+                if (insertion == null)
+                {
+                    var transaction = list[i] as IElementaryChangeTransaction;
+                    if (transaction != null && transaction.NestedChanges.Count == 1)
+                    {
+                        insertion = transaction.NestedChanges[0] as ICompositionInsertion;
+                    }
+                }
                 if (insertion != null && insertion.AddedElement == deletion.DeletedElement)
                 {
                     RemoveAllElementSources(insertion.AddedElement);
@@ -412,11 +446,14 @@ namespace NMF.Models.Changes
         private void AddAllElementSources(IModelElement createdElement, IModelChange currentChange)
         {
             var changeMe = (ModelElement)currentChange;
-            elementSources.Add(createdElement, new ElementSourceInfo(changeMe, "addedElement"));
-            foreach (ModelElement item in createdElement.Descendants())
+            if (!elementSources.ContainsKey(createdElement))
             {
-                var relative = item.CreateUriWithFragment(null, false, createdElement);
-                if (relative != null) elementSources.Add(item, new ElementSourceInfo(changeMe, "addedElement/" + relative.OriginalString));
+                elementSources.Add(createdElement, new ElementSourceInfo(changeMe, "addedElement"));
+                foreach (ModelElement item in createdElement.Descendants())
+                {
+                    var relative = item.CreateUriWithFragment(null, false, createdElement);
+                    if (relative != null) elementSources.Add(item, new ElementSourceInfo(changeMe, "addedElement/" + relative.OriginalString));
+                }
             }
         }
 
@@ -763,6 +800,14 @@ namespace NMF.Models.Changes
                 return SimplifyUri(deletedUri);
             }
             return base.CreateUriForElement(element);
+        }
+
+        protected internal override bool SerializeAsReference(IModelElement element)
+        {
+            if (element == null) return false;
+            if (changeSources.ContainsKey(element)) return false;
+            if (uriMappings.ContainsKey(element)) return true;
+            return base.SerializeAsReference(element);
         }
 
         protected internal override void EnsureAllElementsContained()

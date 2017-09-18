@@ -52,9 +52,9 @@ namespace NMF.Models.Meta
                 return generatedType;
             }
 
-            protected override bool ShouldContainMembers(CodeTypeDeclaration generatedType, CodeTypeReference baseType)
+            protected override bool ShouldContainMembers(CodeTypeDeclaration generatedType, CodeTypeDeclaration baseType)
             {
-                return !baseType.BaseType.Contains("IModelElement");
+                return base.ShouldContainMembers(generatedType, baseType) && baseType.Name != "ModelElement";
             }
 
             private IEnumerable<Tuple<IClass, IReference>> FindReferencesToOverride(IClass current)
@@ -238,7 +238,8 @@ namespace NMF.Models.Meta
                     {
                         foreach (var referenceImplementation in referenceImplementations)
                         {
-                            AddIfNotNull(members, CreateAbstractReferenceImplementation(input.InstanceOf, referenceImplementation, context));
+                            AddIfNotNull(members, CreateAbstractReferenceImplementation(input.InstanceOf, referenceImplementation, context, generatedType.GetReferenceForType()));
+                            AddIfNotNull(members, CreateAbstractReferenceProxyImplementation(input.InstanceOf, referenceImplementation, context));
                         }
                     }
                 }
@@ -269,10 +270,11 @@ namespace NMF.Models.Meta
                     if (cl.RelativeUri == ModelExtensions.ClassModelElement.RelativeUri) isModelElementContained = true;
                     if (cl.InstanceOf != null && cl != input)
                     {
-                        var isOverride = !ShouldContainMembers(generatedType, CreateReference(cl, true, context));
+                        var isOverride = cl.RelativeUri == ModelExtensions.ClassModelElement.RelativeUri ||
+                            !base.ShouldContainMembers(generatedType, context.Trace.ResolveIn(this, cl));
                         
                         AddIfNotNull(members, CreateOverriddenGetClassMethod(input, cl.InstanceOf, context, codeField, isOverride));
-                        AddIfNotNull(members, CreateClassInstanceProperty(input, cl.InstanceOf, context, codeField));
+                        AddIfNotNull(members, CreateClassInstanceProperty(input, cl.InstanceOf, context, codeField, isOverride));
 
                         var referenceImplementations = cl.InstanceOf.MostSpecificRefinement(ModelExtensions.ReferenceTypeReferencesReference);
                         if (!referenceImplementations.Contains(ModelExtensions.ReferenceTypeReferencesReference))
@@ -280,6 +282,7 @@ namespace NMF.Models.Meta
                             foreach (var referenceImplementation in referenceImplementations)
                             {
                                 AddIfNotNull(members, CreateOverriddenReferenceImplementation(input, cl, referenceImplementation, context, isOverride));
+                                AddIfNotNull(members, CreateOverriddenReferenceProxyImplementation(input, cl, referenceImplementation, context, isOverride));
                             }
                         }
                     }
@@ -287,7 +290,7 @@ namespace NMF.Models.Meta
                 if (!isModelElementContained)
                 {
                     AddIfNotNull(members, CreateOverriddenGetClassMethod(input, ModelExtensions.ClassModelElement.InstanceOf, context, codeField, true));
-                    AddIfNotNull(members, CreateClassInstanceProperty(input, ModelExtensions.ClassModelElement.InstanceOf, context, codeField));
+                    AddIfNotNull(members, CreateClassInstanceProperty(input, ModelExtensions.ClassModelElement.InstanceOf, context, codeField, true));
                 }
 
                 ImplementIdentifier(input, generatedType, context);
@@ -340,7 +343,54 @@ namespace NMF.Models.Meta
                 return null;
             }
 
-            private CodeTypeMember CreateAbstractReferenceImplementation(IClass instanceOf, IReference referenceImplementation, ITransformationContext context)
+            private CodeTypeMember CreateOverriddenReferenceProxyImplementation(IClass currentType, IClass scope, IReference referenceImplementation, ITransformationContext context, bool isOverride)
+            {
+                var referenceType = referenceImplementation.ReferenceType as IClass;
+                if (referenceType == null) return null;
+
+                var upperBound = referenceType.GetUpperBoundConstraintValue();
+
+                if (upperBound.HasValue && upperBound.Value == 1)
+                {
+                    // We know that the reference is single-valued
+                    IReferenceType referencedType = FindTargetTypeForReferenceClass(referenceType);
+
+                    var innerReturnType = CreateReference(referencedType, true, context);
+                    var overriddenReferenceImplementation = new CodeMemberMethod()
+                    {
+                        Attributes = MemberAttributes.Public,
+                        Name = "Get" + referenceImplementation.Name.ToPascalCase() + "Proxy",
+                        ReturnType = new CodeTypeReference(typeof(INotifyValue<>).Name, innerReturnType)
+                    };
+                    if (isOverride)
+                    {
+                        overriddenReferenceImplementation.Attributes |= MemberAttributes.Override;
+                    }
+                    overriddenReferenceImplementation.Parameters.Add(new CodeParameterDeclarationExpression(CreateReference(referenceImplementation.ReferenceType, true, context), "reference"));
+                    overriddenReferenceImplementation.WriteDocumentation(string.Format("Gets the referenced value for a {0} of the enclosing {1}.", referenceImplementation.Name, scope.InstanceOf.Name));
+
+                    var referenceRef = new CodeArgumentReferenceExpression("reference");
+
+                    overriddenReferenceImplementation.Statements.Add(new CodeConditionStatement(
+                        new CodeBinaryOperatorExpression(referenceRef, CodeBinaryOperatorType.IdentityEquality, new CodePrimitiveExpression()),
+                        new CodeThrowExceptionStatement(new CodeObjectCreateExpression(typeof(ArgumentOutOfRangeException).ToTypeReference(), new CodePrimitiveExpression("reference")))));
+
+                    var castMethod = new CodeMethodReferenceExpression(new CodeTypeReferenceExpression(typeof(Observable).ToTypeReference()), "As", typeof(IModelElement).ToTypeReference(), innerReturnType);
+                    var expression = new CodeMethodInvokeExpression(castMethod,
+                        new CodeMethodInvokeExpression(new CodeThisReferenceExpression(), "GetExpressionForReference", new CodeMethodInvokeExpression(new CodePropertyReferenceExpression(referenceRef, "Name"), "ToUpperInvariant")));
+
+                    overriddenReferenceImplementation.Statements.Add(new CodeConditionStatement(
+                        new CodeBinaryOperatorExpression(new CodePropertyReferenceExpression(referenceRef, "UpperBound"), CodeBinaryOperatorType.ValueEquality, new CodePrimitiveExpression(1)),
+                        new CodeMethodReturnStatement(expression)));
+
+                    overriddenReferenceImplementation.ThrowException<NotSupportedException>();
+
+                    return overriddenReferenceImplementation;
+                }
+                return null;
+            }
+
+            private CodeTypeMember CreateAbstractReferenceImplementation(IClass instanceOf, IReference referenceImplementation, ITransformationContext context, CodeTypeReference selfReference)
             {
                 var referenceType = referenceImplementation.ReferenceType as IClass;
                 if (referenceType == null) return null;
@@ -360,6 +410,32 @@ namespace NMF.Models.Meta
                     };
                     abstractReferenceImplementation.Parameters.Add(new CodeParameterDeclarationExpression(CreateReference(referenceImplementation.ReferenceType, true, context), "reference"));
                     abstractReferenceImplementation.WriteDocumentation(string.Format("Gets the referenced value for a {0} of the enclosing {1}.", referenceImplementation.Name, instanceOf.Name));
+                    abstractReferenceImplementation.AddAttribute(typeof(ObservableProxyAttribute), new CodeTypeOfExpression(selfReference), "Get" + referenceImplementation.Name.ToPascalCase() + "Proxy");
+                    return abstractReferenceImplementation;
+                }
+                return null;
+            }
+
+            private CodeTypeMember CreateAbstractReferenceProxyImplementation(IClass instanceOf, IReference referenceImplementation, ITransformationContext context)
+            {
+                var referenceType = referenceImplementation.ReferenceType as IClass;
+                if (referenceType == null) return null;
+
+                var upperBound = referenceType.GetUpperBoundConstraintValue();
+
+                if (upperBound.HasValue && upperBound.Value == 1)
+                {
+                    // We know that the reference is single-valued
+                    IReferenceType referencedType = FindTargetTypeForReferenceClass(referenceType);
+
+                    var abstractReferenceImplementation = new CodeMemberMethod()
+                    {
+                        Attributes = MemberAttributes.Public | MemberAttributes.Abstract,
+                        Name = "Get" + referenceImplementation.Name.ToPascalCase() + "Proxy",
+                        ReturnType = new CodeTypeReference(typeof(INotifyValue<>).Name, CreateReference(referencedType, true, context))
+                    };
+                    abstractReferenceImplementation.Parameters.Add(new CodeParameterDeclarationExpression(CreateReference(referenceImplementation.ReferenceType, true, context), "reference"));
+                    abstractReferenceImplementation.WriteDocumentation(string.Format("Gets a proxy for the referenced value for a {0} of the enclosing {1}.", referenceImplementation.Name, instanceOf.Name));
                     return abstractReferenceImplementation;
                 }
                 return null;
@@ -455,7 +531,7 @@ namespace NMF.Models.Meta
                 }
             }
 
-            protected virtual CodeMemberProperty CreateClassInstanceProperty(IClass input, IClass instantiating, ITransformationContext context, CodeMemberField classField)
+            protected virtual CodeMemberProperty CreateClassInstanceProperty(IClass input, IClass instantiating, ITransformationContext context, CodeMemberField classField, bool isOld)
             {
                 var absoluteUri = input.AbsoluteUri;
                 if (classField != null && absoluteUri != null && absoluteUri.IsAbsoluteUri)
@@ -467,7 +543,7 @@ namespace NMF.Models.Meta
                         Type = type,
                         Attributes = MemberAttributes.Public | MemberAttributes.Static
                     };
-                    if (input.InstanceOf != instantiating)
+                    if (input.InstanceOf != instantiating && isOld)
                     {
                         classInstanceProperty.Attributes |= MemberAttributes.New;
                     }
@@ -705,7 +781,7 @@ namespace NMF.Models.Meta
                 };
                 getModelElementForUri.Parameters.Add(new CodeParameterDeclarationExpression(typeof(string), "reference"));
                 getModelElementForUri.Parameters.Add(new CodeParameterDeclarationExpression(typeof(int), "index"));
-                AddReferencesOfClass(input, generatedType, AddToGetModelElementForUri, getModelElementForUri, true, context);
+                AddReferencesOfClass(input, generatedType, AddToGetModelElementForUri, getModelElementForUri, false, context);
                 getModelElementForUri.Statements.Add(new CodeMethodReturnStatement(
                     new CodeMethodInvokeExpression(new CodeBaseReferenceExpression(), "GetModelElementForReference", new CodeArgumentReferenceExpression("reference"), new CodeArgumentReferenceExpression("index"))));
                 if (getModelElementForUri.Statements.Count == 1)
@@ -950,7 +1026,7 @@ namespace NMF.Models.Meta
                     ReturnType = new CodeTypeReference(typeof(INotifyExpression<object>))
                 };
                 getExpressionForAttribute.Parameters.Add(new CodeParameterDeclarationExpression(typeof(string), "attribute"));
-                AddReferencesOfClass(input, generatedType, (m, r, _) => AddToExpressionForFeature(m, r, context, "attribute"), getExpressionForAttribute, false, context);
+                AddAttributesOfClass(input, generatedType, (m, r, _) => AddToExpressionForFeature(m, r, context, "attribute"), getExpressionForAttribute, context);
                 if (getExpressionForAttribute.Statements.Count == 0)
                 {
                     return null;
@@ -971,8 +1047,16 @@ namespace NMF.Models.Meta
                     var property = context.Trace.ResolveIn(Rule<Feature2Property>(), feature);
                     var propTypeRef = new CodeTypeReference(feature.Name.ToPascalCase() + "Proxy");
                     var ifStmt = new CodeConditionStatement(new CodeBinaryOperatorExpression(new CodeVariableReferenceExpression(parameterName),
-                        CodeBinaryOperatorType.ValueEquality, new CodePrimitiveExpression(property.Name)));
-                    ifStmt.TrueStatements.Add(new CodeMethodReturnStatement(new CodeObjectCreateExpression(propTypeRef, new CodeThisReferenceExpression())));
+                        CodeBinaryOperatorType.ValueEquality, new CodePrimitiveExpression(property.Name.ToUpperInvariant())));
+                    CodeExpression proxyExpression = new CodeObjectCreateExpression(propTypeRef, new CodeThisReferenceExpression());
+                    if (feature is IAttribute && !IsString(feature.Type))
+                    {
+                        proxyExpression = new CodeMethodInvokeExpression(
+                            new CodeTypeReferenceExpression(typeof(Observable).ToTypeReference()),
+                            "Box",
+                            proxyExpression);
+                    }
+                    ifStmt.TrueStatements.Add(new CodeMethodReturnStatement(proxyExpression));
                     method.Statements.Add(ifStmt);
                 }
                 return method;

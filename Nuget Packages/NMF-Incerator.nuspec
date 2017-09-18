@@ -24,6 +24,6 @@
   <files>
     <file src="..\Expressions\Models.Expressions\bin\Release\NMF.Expressions.Models.dll" target="net45" />
     <file src="..\Tools\Incerator\bin\Release\*.dll" target="tools" />
-    <file src="..\Tools\Incerator\bin\Release\Ecore2Code.exe" target="tools" />
+    <file src="..\Tools\Incerator\bin\Release\Incerator.exe" target="tools" />
   </files>
 </package>

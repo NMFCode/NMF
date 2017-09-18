@@ -17,7 +17,7 @@ namespace NMF.Models.Meta
     public partial class Meta2ClassesTransformation
     {
         /// <summary>
-        /// The transformation rule to 
+        /// The transformation rule to generate a refined reference
         /// </summary>
         public class RefinedReferenceGenerator : TransformationRule<IClass, IReference, CodeMemberProperty>
         {
@@ -149,11 +149,21 @@ namespace NMF.Models.Meta
                             var metaRepositoryInstance = new CodePropertyReferenceExpression(new CodeTypeReferenceExpression(typeof(MetaRepository)), "Instance");
                             var refElExpression = new CodeMethodInvokeExpression(metaRepositoryInstance, "Resolve", new CodePrimitiveExpression(uri.AbsoluteUri));
                             refElExpression = new CodeMethodInvokeExpression(new CodeMethodReferenceExpression(refElExpression, "As", property.Type));
-                            var staticField = new CodeMemberField(property.Type, "_" + reference.Name.ToPascalCase());
+
+                            var retrieveValueMethod = new CodeMemberMethod
+                            {
+                                Name = "Retrieve" + reference.Name.ToPascalCase(),
+                                Attributes = MemberAttributes.Private | MemberAttributes.Static,
+                                ReturnType = property.Type
+                            };
+                            retrieveValueMethod.Statements.Add(new CodeMethodReturnStatement(refElExpression));
+                            property.DependentMembers(true).Add(retrieveValueMethod);
+
+                            var staticField = new CodeMemberField(new CodeTypeReference("Lazy", property.Type), "_" + reference.Name.ToPascalCase());
                             staticField.Attributes = MemberAttributes.Private | MemberAttributes.Static;
-                            staticField.InitExpression = refElExpression;
+                            staticField.InitExpression = new CodeObjectCreateExpression(staticField.Type, new CodeMethodReferenceExpression(null, retrieveValueMethod.Name));
                             property.DependentMembers(true).Add(staticField);
-                            value = new CodeFieldReferenceExpression(null, staticField.Name);
+                            value = new CodePropertyReferenceExpression(new CodeFieldReferenceExpression(null, staticField.Name), "Value");
                         }
                         property.GetStatements.Add(new CodeMethodReturnStatement(value));
                         ifNotDefault.Condition = new CodeBinaryOperatorExpression(new CodePropertySetValueReferenceExpression(), CodeBinaryOperatorType.IdentityInequality, value);
@@ -198,14 +208,19 @@ namespace NMF.Models.Meta
                 {
                     var implTypeRef = CreateReference(impl.DeclaringType, true, context);
                     var name = impl.Name.ToPascalCase() + eventNameSuffix;
+                    var implTypeRefString = implTypeRef.BaseType;
+                    if (impl.DeclaringType.GetExtension<MappedType>() == null)
+                    {
+                        implTypeRefString = "I" + implTypeRefString;
+                    }
                     if (casts.Add(implTypeRef.BaseType))
                     {
-                        var thisDeclaration = string.Format("\r\n                I{0} _this_{0} = this;", implTypeRef.BaseType);
+                        var thisDeclaration = string.Format("\r\n                {0} _this_{0} = this;", implTypeRefString);
                         addEvents += thisDeclaration;
                         removeEvents += thisDeclaration;
                     }
-                    addEvents += string.Format("\r\n                _this_{1}.{0} += value;", name, implTypeRef.BaseType);
-                    removeEvents += string.Format("\r\n                _this_{1}.{0} -= value;", name, implTypeRef.BaseType);
+                    addEvents += string.Format("\r\n                _this_{1}.{0} += value;", name, implTypeRefString);
+                    removeEvents += string.Format("\r\n                _this_{1}.{0} -= value;", name, implTypeRefString);
                 }
                 eventSnippet = string.Format(eventSnippet, property.PrivateImplementationType.BaseType, property.Name + eventNameSuffix, addEvents, removeEvents);
                 property.DependentMembers(true).Add(new CodeSnippetTypeMember(eventSnippet));

@@ -55,7 +55,6 @@ namespace NMF.Models.Changes
         /// </summary>
         [XmlElementNameAttribute("addedElement")]
         [XmlAttributeAttribute(false)]
-        [XmlIdentificationMode(XmlIdentificationMode.ForceFullObject)]
         public NMF.Models.IModelElement AddedElement
         {
             get

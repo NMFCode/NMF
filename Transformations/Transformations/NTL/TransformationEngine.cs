@@ -95,7 +95,7 @@ namespace NMF.Transformations
                 if (startRule.Transformation != context.Transformation) ThrowRuleNotPartOfTransformation();
                 CheckTransformationRule<TOut>(input, startRule);
             }
-            return TransformationRunner.Transform(new object[] { input }, null, startRule, context).Output as TOut;
+            return TransformationRunner.Transform(input, null, startRule, context).Output as TOut;
         }
 
         private static void CheckTransformationRule<TOut>(object[] input, GeneralTransformationRule startRule) where TOut : class

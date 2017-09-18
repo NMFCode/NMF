@@ -26,6 +26,7 @@ namespace NMF.CodeGen
         internal static object BackingFieldKey = new object();
         internal static object BackingFieldRefKey = new object();
         internal static object MergeKey = new object();
+        internal static object BaseClassesKey = new object();
 
         /// <summary>
         /// Gets the namespace associated with the given type reference

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.CodeDom;
 using System.Collections;
+using System.Linq;
 using System.Collections.Generic;
 using System.Text;
 
@@ -8,48 +9,44 @@ namespace PythonCodeGenerator.CodeDom
 {
     class CodeUnitPreProcessor
     {
-        private static Dictionary<string, string> net2PythonTypes = net2PythonTypesInit();
-        private static List<string> unwantedMethods = unwantedMethodsInit();
-
-        //methods with these names will be removed from any type found
-        private static List<string> unwantedMethodsInit()
+        private static Dictionary<string, string> net2PythonTypes = new Dictionary<string, string>
         {
-            List<string> tmp = new List<string>();
-            tmp.Add("GetExpressionForReference");
-            tmp.Add("GetExpressionForAttribute");
-            tmp.Add("GetClass");
-            return tmp;
-        }
+            { "System.Int32", "int" },
+            { "System.Int16", "int" },
+            { "System.Int64", "int" }, //long and int were unified PEP-237
+            { "System.String", "str" },
+            { "System.Boolean", "bool" },
+            { "System.Char", "str" },
+            { "System.Decimal", "float" },
+            { "System.Double", "float" },
+            { "System.Object", "object" },
+            { "System.Collections.Specialized.NotifyCollectionChangedEventArgs", "pyNMF.collections.object_model.NotifyCollectionChangedEventArgs" },
+            { "System.EventArgs", "pyNMF.EventArgs" },
+            { "System.Collections.IList", "list" },
+            { "System.EventHandler", "pyNMF.EventHandler" }
+        };
 
-        private static Dictionary<string, string> net2PythonTypesInit()
+        private static List<string> supressedMembers = new List<string>
         {
-            Dictionary<string, string> tmp = new Dictionary<string, string>();
-            tmp.Add("System.Int32", "int");
-            tmp.Add("System.Int16", "int");
-            tmp.Add("System.Int64", "int"); //long and int were unified PEP-237
-            tmp.Add("System.String", "str");
-            tmp.Add("System.Boolean", "bool");
-            tmp.Add("System.Char", "str");
-            tmp.Add("System.Decimal", "float");
-            tmp.Add("System.Double", "float");
-            tmp.Add("System.Object", "object");
-            tmp.Add("System.Collections.Specialized.NotifyCollectionChangedEventArgs", "NMF.Collections.ObjectModel.NotifyCollectionChangedEventArgs");
-            tmp.Add("System.EventArgs", "NMF.python.EventArgs");
-            tmp.Add("System.Collections.IList", "list");
-            tmp.Add("System.EventHandler", "NMF.python.EventHandler");       
-            return tmp;
-        }
-
-        /*uses a depth first search approach to find all used variable types in the given compile unit
-         *and replaces them with their python counter part as prescribed in net2PythonTypes dictonary.
-         *Also removes all interfaces, Types that end with "Proxy" and methods that are listed in 
-         *unwanted methods         
-         */
-        public static CodeCompileUnit replaceNetVariableTypesWithNativeVaribaleTypes(CodeCompileUnit e)
-        {                        
-            for(int i = 0; i < e.Namespaces.Count; i++)
+            "GetExpressionForReference",
+            "GetExpressionForAttribute",
+            "GetClass",
+            "ClassInstance",
+            "_classInstance"
+        };
+        
+         /// <summary>
+         /// uses a depth first search approach to find all used variable types in the given compile unit
+         /// and replaces them with their python counter part as prescribed in net2PythonTypes dictonary.
+         /// Also removes all interfaces, Types that end with "Proxy" and methods that are listed in 
+         /// unwanted methods
+         /// </summary>
+        public static void PreProcessCompileUnit(CodeCompileUnit unit)
+        {
+            RemoveNetSystemImports(unit);
+            for(int i = 0; i < unit.Namespaces.Count; i++)
             {
-                CodeNamespace currentNamespace = e.Namespaces[i];
+                CodeNamespace currentNamespace = unit.Namespaces[i];
                 List<CodeTypeDeclaration> removeLater = new List<CodeTypeDeclaration>();             
                 for(int j = 0; j < currentNamespace.Types.Count; j++)
                 {                    
@@ -60,30 +57,32 @@ namespace PythonCodeGenerator.CodeDom
                         continue;                        
                     } 
                     
-                    currentNamespace.Types[j] = replaceVariableTypesInType(currentNamespace.Types[j]);
+                    PreProcessType(currentNamespace.Types[j]);
                 }
                 foreach (CodeTypeDeclaration ctd in removeLater) {
                     currentNamespace.Types.Remove(ctd);
                 }
-            }            
-            return e;
-        }
-        
-        /*called for each type there is by replaceNetVariableTypesWithNativeVariableTypes*/
-        public static CodeTypeDeclaration replaceVariableTypesInType(CodeTypeDeclaration e)
-        {
-            e = replaceInterfaceParameters(e);
-            replaceVariableTypesInMembers(e.Members);
-            for(int i = 0; i < e.BaseTypes.Count; i++)
-            {
-                e.BaseTypes[i] = replaceDeepVariableTypesInTypeReference(e.BaseTypes[i]);
             }
-            return e;
         }
 
-        /*Interfaces do not exist in python, however multi inheritance does. Instead of
-         using interfaces, use multi intheritance.*/
-        public static CodeTypeDeclaration replaceInterfaceParameters(CodeTypeDeclaration e)
+        /// <summary>
+        /// Called for each type there is by replaceNetVariableTypesWithNativeVariableTypes
+        /// </summary>
+        private static void PreProcessType(CodeTypeDeclaration e)
+        {
+            ReplaceInterfaceParameters(e);
+            PreProcessMembers(e.Members);
+            for(int i = 0; i < e.BaseTypes.Count; i++)
+            {
+                e.BaseTypes[i] = ReplaceDeepVariableTypesInTypeReference(e.BaseTypes[i]);
+            }
+        }
+
+        /// <summary>
+        /// Interfaces do not exist in python, however multi inheritance does. Instead of
+        /// using interfaces, use multi intheritance.
+        /// </summary>
+        private static void ReplaceInterfaceParameters(CodeTypeDeclaration e)
         {
             List<string> parameters = new List<string>();
             CodeTypeReferenceCollection coll = new CodeTypeReferenceCollection();
@@ -107,22 +106,22 @@ namespace PythonCodeGenerator.CodeDom
             e.BaseTypes.Clear();
             foreach(CodeTypeReference tRef in coll) {
                 e.BaseTypes.Add(tRef);
-            }                     
-            return e;
+            }
         }
 
-        public static CodeTypeMemberCollection replaceVariableTypesInMembers(CodeTypeMemberCollection members)
+        private static void PreProcessMembers(CodeTypeMemberCollection members)
         {
             bool hasConstructor = false;
             List<CodeTypeMember> removeLater = new List<CodeTypeMember>(); //removeLater or indeces would shift
             for(int i = 0; i < members.Count; i++)
             {
                 CodeTypeMember current = members[i];                
-                if (unwantedMethods.Contains(current.Name))
+                if (supressedMembers.Contains(current.Name) || ((current.Attributes & MemberAttributes.Static) == MemberAttributes.Static))
                 {
-                    Console.WriteLine("Removing method " + current.Name);
+                    Console.WriteLine("Removing member " + current.Name);
                     removeLater.Add(current);
-                } else if(current is CodeTypeDeclaration)
+                }
+                else if(current is CodeTypeDeclaration)
                 {
                     //Console.WriteLine("Found nested type: " + current.Name);
                     if (current.Name.EndsWith("Proxy"))
@@ -131,17 +130,24 @@ namespace PythonCodeGenerator.CodeDom
                         removeLater.Add(current);
                     } else
                     {
-                        members[i] = replaceVariableTypesInType((CodeTypeDeclaration)current);
+                        PreProcessType((CodeTypeDeclaration)current);
                     }                    
-                } else if (current is CodeMemberField)
+                }
+                else if (current is CodeMemberField)
                 {                    
-                    ((CodeMemberField) members[i]).Type = replaceDeepVariableTypesInTypeReference(((CodeMemberField)current).Type);
-                } else if(current is CodeMemberProperty)
+                    ((CodeMemberField) members[i]).Type = ReplaceDeepVariableTypesInTypeReference(((CodeMemberField)current).Type);
+                }
+                else if(current is CodeMemberProperty)
                 {
-                    ((CodeMemberProperty)members[i]).Type = replaceDeepVariableTypesInTypeReference(((CodeMemberProperty)current).Type);
-                } else if (current is CodeMemberMethod)
+                    var property = (CodeMemberProperty)members[i];
+                    property.Type = ReplaceDeepVariableTypesInTypeReference(property.Type);
+                    RemoveFeatureReferences(property.SetStatements);
+                }
+                else if (current is CodeMemberMethod)
                 {
-                    members[i] = replaceDeepVaribleTypesInCodeMemberMethod((CodeMemberMethod)members[i]);
+                    var method = (CodeMemberMethod)members[i];
+                    ReplaceDeepVaribleTypesInCodeMemberMethod(method);
+                    RemoveFeatureReferences(method.Statements);
                 }
 
                 if (members[i] is CodeConstructor)
@@ -165,33 +171,53 @@ namespace PythonCodeGenerator.CodeDom
 
                 members.Add(ctor);
             }
-            return members;
         }
 
-        public static CodeMemberMethod replaceDeepVaribleTypesInCodeMemberMethod(CodeMemberMethod method)
+        private static void RemoveFeatureReferences(CodeStatementCollection statements)
+        {
+            foreach (var stmt in statements)
+            {
+                var call = (stmt as CodeExpressionStatement)?.Expression as CodeMethodInvokeExpression;
+                if (call != null && (call.Method.MethodName.EndsWith("PropertyChanging") ||
+                                     call.Method.MethodName.EndsWith("PropertyChanged") ||
+                                     call.Method.MethodName.EndsWith("CollectionChanging") ||
+                                     call.Method.MethodName.EndsWith("CollectionChanged")))
+                {
+                    call.Parameters.RemoveAt(call.Parameters.Count - 1);
+                }
+                var condition = (stmt as CodeConditionStatement);
+                if (condition != null)
+                {
+                    RemoveFeatureReferences(condition.TrueStatements);
+                    RemoveFeatureReferences(condition.FalseStatements);
+                }
+            }
+        }
+
+        private static void ReplaceDeepVaribleTypesInCodeMemberMethod(CodeMemberMethod method)
         {                                    
             //ImplementationTypes
             for (int i = 0; i < method.ImplementationTypes.Count; i++)
             {
-                method.ImplementationTypes[i] = replaceDeepVariableTypesInTypeReference(method.ImplementationTypes[i]);
+                method.ImplementationTypes[i] = ReplaceDeepVariableTypesInTypeReference(method.ImplementationTypes[i]);
             }
 
             //Parameters
             for(int i = 0; i < method.Parameters.Count; i++)
             {
-                method.Parameters[i].Type = replaceDeepVariableTypesInTypeReference(method.Parameters[i].Type);
+                method.Parameters[i].Type = ReplaceDeepVariableTypesInTypeReference(method.Parameters[i].Type);
             }
 
             //PrivateImplementationType
             if (method.PrivateImplementationType != null)
             {
-                method.PrivateImplementationType = replaceDeepVariableTypesInTypeReference(method.PrivateImplementationType);
+                method.PrivateImplementationType = ReplaceDeepVariableTypesInTypeReference(method.PrivateImplementationType);
             }            
 
             //ReturnType
             if (method.ReturnType != null)
             {
-                method.ReturnType = replaceDeepVariableTypesInTypeReference(method.ReturnType);
+                method.ReturnType = ReplaceDeepVariableTypesInTypeReference(method.ReturnType);
             }            
 
             //ReturnTypeCustomAttributes
@@ -199,10 +225,9 @@ namespace PythonCodeGenerator.CodeDom
             {
                 method.ReturnTypeCustomAttributes[i].AttributeType = replaceDeepVariableTypesInTypeReference(method.ReturnTypeCustomAttributes[i].AttributeType);
             }*/
-            return method;
         }
 
-        public static CodeTypeReference replaceDeepVariableTypesInTypeReference(CodeTypeReference tr)
+        private static CodeTypeReference ReplaceDeepVariableTypesInTypeReference(CodeTypeReference tr)
         {
             //python variables are nullable by default => remove it 
             if (tr.BaseType.Contains("Nullable"))
@@ -211,21 +236,21 @@ namespace PythonCodeGenerator.CodeDom
                 {
                     throw new Exception("Fatal Error: Unkown Nullable Generic");
                 }
-                return replaceDeepVariableTypesInTypeReference(tr.TypeArguments[0]);
+                return ReplaceDeepVariableTypesInTypeReference(tr.TypeArguments[0]);
             }
             else
             {
-                tr.BaseType = replaceTypeString(tr.BaseType);
+                tr.BaseType = ReplaceTypeString(tr.BaseType);
 
                 for (int i = 0; i < tr.TypeArguments.Count; i++)
                 {
-                    tr.TypeArguments[i] = replaceDeepVariableTypesInTypeReference(tr.TypeArguments[i]);
+                    tr.TypeArguments[i] = ReplaceDeepVariableTypesInTypeReference(tr.TypeArguments[i]);
                 }
                 return tr;
             }            
         }
 
-        static string replaceTypeString(string type)
+        private static string ReplaceTypeString(string type)
         {
             if (type.Contains("`"))
             {
@@ -241,23 +266,30 @@ namespace PythonCodeGenerator.CodeDom
                 return type;
             }
         }
-        
 
-        //remove Imports which contain System
-        //these imports are part of the .Net platform so they can't be resolved in a normal
-        //python environment anyway
-        public static void removeNetSystemImports(ref CodeCompileUnit e)
+        
+        /// <summary>
+        /// remove Imports which contain System
+        /// these imports are part of the .Net platform so they can't be resolved in a normal
+        /// python environment anyway
+        /// </summary>
+        private static void RemoveNetSystemImports(CodeCompileUnit e)
         {            
             foreach (CodeNamespace ns in e.Namespaces)
             {
                 CodeNamespaceImportCollection cleaned = new CodeNamespaceImportCollection();
                 foreach (CodeNamespaceImport import in ns.Imports)
                 {
-                    if (!import.Namespace.StartsWith("System"))
+                    if (!import.Namespace.StartsWith("System") &&
+                        !import.Namespace.StartsWith("NMF"))
                     {
                         cleaned.Add(import);
                     }
                 }
+                cleaned.Add(new CodeNamespaceImport("pyNMF"));
+                cleaned.Add(new CodeNamespaceImport("pyNMF.collections.generic"));
+                cleaned.Add(new CodeNamespaceImport("pyNMF.collections.object_model"));
+                cleaned.Add(new CodeNamespaceImport("pyNMF.serialization"));
                 ns.Imports.Clear();
                 foreach (CodeNamespaceImport import in cleaned)
                 {

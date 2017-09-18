@@ -284,6 +284,9 @@
     <Compile Include="..\Expressions\ObservableBinaryExpression.cs">
       <Link>ObservableBinaryExpression.cs</Link>
     </Compile>
+    <Compile Include="..\Expressions\ObservableBoxExpression.cs">
+      <Link>ObservableBoxExpression.cs</Link>
+    </Compile>
     <Compile Include="..\Expressions\ObservableConditionalExpression.cs">
       <Link>ObservableConditionalExpression.cs</Link>
     </Compile>

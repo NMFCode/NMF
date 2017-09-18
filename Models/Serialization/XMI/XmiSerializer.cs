@@ -117,7 +117,7 @@ namespace NMF.Serialization.Xmi
             return false;
         }
 
-        protected override void WriteElementProperties(System.Xml.XmlWriter writer, object obj, ITypeSerializationInfo info, XmlSerializationContext context, XmlIdentificationMode identificationMode)
+        protected override void WriteElementProperties(System.Xml.XmlWriter writer, object obj, ITypeSerializationInfo info, XmlSerializationContext context)
         {
             foreach (XmlPropertySerializationInfo pi in info.ElementProperties)
             {
@@ -142,7 +142,7 @@ namespace NMF.Serialization.Xmi
                             }
                             else
                             {
-                                Serialize(item, writer, pi, false, identificationMode == XmlIdentificationMode.ForceFullObject ? XmlIdentificationMode.ForceFullObject : pi.IdentificationMode, context);
+                                Serialize(item, writer, pi, false, pi.IdentificationMode, context);
                             }
                             writer.WriteEndElement();
                         }
@@ -162,7 +162,7 @@ namespace NMF.Serialization.Xmi
                         {
                             throw new NotImplementedException();
                         }
-                        Serialize(value, writer, pi, false, identificationMode == XmlIdentificationMode.ForceFullObject ? XmlIdentificationMode.ForceFullObject : pi.IdentificationMode, context);
+                        Serialize(value, writer, pi, false, pi.IdentificationMode, context);
                         writer.WriteEndElement();
                     }
                 }

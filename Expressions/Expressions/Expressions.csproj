@@ -80,6 +80,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>LensPut.tt</DependentUpon>
     </Compile>
+    <Compile Include="ObservableBoxExpression.cs" />
     <Compile Include="ObservableDeferredProxyElement.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>

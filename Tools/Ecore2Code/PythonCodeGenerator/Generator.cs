@@ -23,7 +23,8 @@ using System.Diagnostics;
 using System.CodeDom;
 using System.CodeDom.Compiler;
 
-namespace PythonCodeGenerator.CodeDom {
+namespace PythonCodeGenerator.CodeDom
+{
     /* CodeGen Notes: 
      * 
      * return types are set using @returns(type) decorator syntax
@@ -46,51 +47,58 @@ namespace PythonCodeGenerator.CodeDom {
      * 
      */
 
-    partial class PythonGenerator : CodeGenerator, ICodeGenerator {
+    partial class PythonGenerator : CodeGenerator, ICodeGenerator
+    {
         CodeEntryPointMethod entryPoint = null;
         string entryPointNamespace = null;
-        string lastNamespace;        
+        string lastNamespace;
         Stack<TypeDeclInfo> typeStack = new Stack<TypeDeclInfo>();
         Stack<CodeNamespace> namespaceStack = new Stack<CodeNamespace>();
-        int col, row;               
+        int col, row;
         int lastIndent;
         Hashtable methodDocstringCache = new Hashtable();
-        internal const string ctorFieldInit = "_ConstructorFieldInitFunction";        
+        internal const string ctorFieldInit = "_ConstructorFieldInitFunction";
         List<string> processedTypes = new List<string>();
         List<string> topLevelTypes = new List<string>();
         int currentTypeLevel = 0; //0 = top level types, 1 = children types of top level types
 
-        class TypeDeclInfo {
-            public TypeDeclInfo(CodeTypeDeclaration decl) {
+        class TypeDeclInfo
+        {
+            public TypeDeclInfo(CodeTypeDeclaration decl)
+            {
                 Declaration = decl;
             }
 
-            public CodeTypeDeclaration Declaration;            
+            public CodeTypeDeclaration Declaration;
         }
 
         static string[] keywords = new string[] { "and", "assert", "break", "class", "continue", "def", "del", "elif", "else", "except", "exec", "finally", "for", "from", "global", "if", "import", "in", "is", "lambda", "not", "or", "pass", "print", "raise", "return", "try", "while", "yield" };
 
-        protected override void GenerateCompileUnit(CodeCompileUnit e) {
-#if DEBUG
-            try {
+        protected override void GenerateCompileUnit(CodeCompileUnit unit)
+        {
+#if false
+            try
+            {
 #endif
-                if (Options != null) {
-                    Options.BlankLinesBetweenMembers = false;
-                }                                              
+                if (Options != null)
+                {
+                    Options.BlankLinesBetweenMembers = true;
+                }
+                
+                CodeUnitPreProcessor.PreProcessCompileUnit(unit);
 
-                CodeUnitPreProcessor.removeNetSystemImports(ref e);                    
-                e = CodeUnitPreProcessor.replaceNetVariableTypesWithNativeVaribaleTypes(e);              
-                    
                 //base.GenerateCompileUnit(e);
                 //the following three lines are the official call of the above line
                 //it was replaced for debugging purposes
-                base.GenerateCompileUnitStart(e);
+                base.GenerateCompileUnitStart(unit);
                 WriteWarning();
-                GenerateNamespaces(e);
-                base.GenerateCompileUnitEnd(e);                                    
-                
-#if DEBUG
-            } catch (Exception ex) {
+                GenerateNamespaces(unit);
+                base.GenerateCompileUnitEnd(unit);
+
+#if false
+            }
+            catch (Exception ex)
+            {
                 Console.WriteLine(ex.StackTrace);
                 Debug.Assert(false, String.Format("Unexpected exception: {0}", ex.Message), ex.StackTrace);
             }
@@ -101,63 +109,84 @@ namespace PythonCodeGenerator.CodeDom {
         /// Check if there are any types in the CodeDom tree that we don't currently have
         /// imports for.  If we find any then add them into the imports list.
         /// </summary>
-        private void AddNewImports(CodeCompileUnit ccu) {            
-            foreach (CodeNamespace cn in ccu.Namespaces) {
+        private void AddNewImports(CodeCompileUnit ccu)
+        {
+            foreach (CodeNamespace cn in ccu.Namespaces)
+            {
                 CodeNamespaceImportCollection curImports = cn.Imports;
 
-                foreach (CodeTypeDeclaration ctd in cn.Types) {
+                foreach (CodeTypeDeclaration ctd in cn.Types)
+                {
                     AddImportsForTypeDeclaration(curImports, ctd);
                 }
             }
         }
 
-        private void AddImportsForTypeDeclaration(CodeNamespaceImportCollection curImports, CodeTypeDeclaration ctd) {
+        private void AddImportsForTypeDeclaration(CodeNamespaceImportCollection curImports, CodeTypeDeclaration ctd)
+        {
             AddImportsForCodeTypeReferenceCollection(curImports, ctd.BaseTypes);
 
-            foreach (CodeTypeMember member in ctd.Members) {
+            foreach (CodeTypeMember member in ctd.Members)
+            {
                 CodeMemberProperty prop;
                 CodeMemberMethod meth;
                 CodeMemberField field;
                 CodeMemberEvent evnt;
                 CodeTypeDeclaration innerType;
 
-                if ((prop = member as CodeMemberProperty) != null) {
+                if ((prop = member as CodeMemberProperty) != null)
+                {
                     AddImportsForProperty(curImports, prop);
-                } else if ((evnt = member as CodeMemberEvent) != null) {
+                }
+                else if ((evnt = member as CodeMemberEvent) != null)
+                {
                     AddImportsForEvent(curImports, evnt);
-                } else if ((field = member as CodeMemberField) != null) {
+                }
+                else if ((field = member as CodeMemberField) != null)
+                {
                     AddImportsForField(curImports, field);
-                } else if ((meth = member as CodeMemberMethod) != null) {
+                }
+                else if ((meth = member as CodeMemberMethod) != null)
+                {
                     AddImportsForMethod(curImports, meth);
-                } else if ((innerType = member as CodeTypeDeclaration) != null) {
+                }
+                else if ((innerType = member as CodeTypeDeclaration) != null)
+                {
                     AddImportsForTypeDeclaration(curImports, innerType);
                 }
             }
         }
 
-        private void AddImportsForProperty(CodeNamespaceImportCollection imports, CodeMemberProperty prop) {
+        private void AddImportsForProperty(CodeNamespaceImportCollection imports, CodeMemberProperty prop)
+        {
             MaybeAddImport(imports, prop.Type);
         }
 
-        private void AddImportsForEvent(CodeNamespaceImportCollection imports, CodeMemberEvent evnt) {
+        private void AddImportsForEvent(CodeNamespaceImportCollection imports, CodeMemberEvent evnt)
+        {
             MaybeAddImport(imports, evnt.Type);
         }
-        
-        private void AddImportsForField(CodeNamespaceImportCollection imports, CodeMemberField field) {
+
+        private void AddImportsForField(CodeNamespaceImportCollection imports, CodeMemberField field)
+        {
             MaybeAddImport(imports, field.Type);
         }
-        
-        private void AddImportsForMethod(CodeNamespaceImportCollection imports, CodeMemberMethod method) {
+
+        private void AddImportsForMethod(CodeNamespaceImportCollection imports, CodeMemberMethod method)
+        {
             MaybeAddImport(imports, method.ReturnType);
         }
 
-        private void AddImportsForCodeTypeReferenceCollection(CodeNamespaceImportCollection curImports, CodeTypeReferenceCollection ctrc) {
-            foreach (CodeTypeReference ctr in ctrc) {
+        private void AddImportsForCodeTypeReferenceCollection(CodeNamespaceImportCollection curImports, CodeTypeReferenceCollection ctrc)
+        {
+            foreach (CodeTypeReference ctr in ctrc)
+            {
                 MaybeAddImport(curImports, ctr);
             }
         }
 
-        private void MaybeAddImport(CodeNamespaceImportCollection curImports, CodeTypeReference reference) {
+        private void MaybeAddImport(CodeNamespaceImportCollection curImports, CodeTypeReference reference)
+        {
             string typeName = reference.BaseType;
 
             if (reference.BaseType == "System.Object" ||
@@ -167,15 +196,17 @@ namespace PythonCodeGenerator.CodeDom {
                 reference.BaseType == "System.Void")
                 return;
 
-            
+
             int firstDot;
-            if((firstDot = typeName.IndexOf('.')) == -1){
+            if ((firstDot = typeName.IndexOf('.')) == -1)
+            {
                 return;
             }
 
             string typeNs = typeName.Substring(0, firstDot);
 
-            foreach (CodeNamespaceImport cni in curImports) {
+            foreach (CodeNamespaceImport cni in curImports)
+            {
                 if (cni.Namespace.StartsWith(typeNs))
                     return;
             }
@@ -183,13 +214,16 @@ namespace PythonCodeGenerator.CodeDom {
             curImports.Add(new CodeNamespaceImport(typeName.Substring(0, typeName.LastIndexOf('.'))));
         }
 
-        internal void InternalGenerateCompileUnit(CodeCompileUnit ccu) {
+        internal void InternalGenerateCompileUnit(CodeCompileUnit ccu)
+        {
             ((ICodeGenerator)this).GenerateCodeFromCompileUnit(ccu, new System.IO.StringWriter(), null);
         }
 
-        protected override void GenerateNamespace(CodeNamespace e) {
-            if (Options != null) {
-                Options.BlankLinesBetweenMembers = false;
+        protected override void GenerateNamespace(CodeNamespace e)
+        {
+            if (Options != null)
+            {
+                Options.BlankLinesBetweenMembers = true;
             }
 
             GenerateCommentStatements(e.Comments);
@@ -202,21 +236,25 @@ namespace PythonCodeGenerator.CodeDom {
             GenerateNamespaceEnd(e);
         }
         #region CodeGenerator abstract overrides
-        protected override string CreateEscapedIdentifier(string value) {
+        protected override string CreateEscapedIdentifier(string value)
+        {
             // Python has no identifier escaping...
             return CreateValidIdentifier(value);
         }
 
-        protected override string CreateValidIdentifier(string value) {
+        protected override string CreateValidIdentifier(string value)
+        {
             if (IsValidIdentifier(value)) return value;
 
             StringBuilder sb = new StringBuilder();
-            for (int i = 0; i < value.Length; i++) {
+            for (int i = 0; i < value.Length; i++)
+            {
                 // mangle invalid identifier characters to _hexVal
                 if ((value[i] >= 'a' && value[i] <= 'z') ||
                     (value[i] >= 'A' && value[i] <= 'Z') ||
                     (i != 0 && value[i] >= '0' && value[i] <= '9') ||
-                    value[i] == '_') {
+                    value[i] == '_')
+                {
                     sb.Append(value[i]);
                     continue;
                 }
@@ -224,7 +262,8 @@ namespace PythonCodeGenerator.CodeDom {
             }
 
             value = sb.ToString();
-            if (!IsValidIdentifier(value)) {
+            if (!IsValidIdentifier(value))
+            {
                 // keyword
                 sb.Append("_");
                 return sb.ToString();
@@ -233,48 +272,60 @@ namespace PythonCodeGenerator.CodeDom {
             return value;
         }
 
-        protected override void GenerateArgumentReferenceExpression(CodeArgumentReferenceExpression e) {
+        protected override void GenerateArgumentReferenceExpression(CodeArgumentReferenceExpression e)
+        {
             Write(e.ParameterName);
         }
 
-        protected override void GenerateArrayCreateExpression(CodeArrayCreateExpression e) {
+        protected override void GenerateArrayCreateExpression(CodeArrayCreateExpression e)
+        {
             CodeTypeReference elementType = e.CreateType.ArrayElementType;
-            if (elementType == null) {
+            if (elementType == null)
+            {
                 // This is necessary to support clients which incorrectly pass a non-array
                 // type.  CSharpCodeProvider has similar logic.
                 elementType = e.CreateType;
             }
 
-            if (e.Initializers.Count > 0) {
+            if (e.Initializers.Count > 0)
+            {
                 Write("[");
                 OutputType(elementType);
                 Write("]");
 
                 Write("((");
-                for (int i = 0; i < e.Initializers.Count; i++) {
+                for (int i = 0; i < e.Initializers.Count; i++)
+                {
                     GenerateExpression(e.Initializers[i]);
                     Write(", "); // we can always end Tuple w/ an extra , and need to if the count == 1
                 }
                 Write("))");
-            } else {
+            }
+            else
+            {
                 Write("System.Array.CreateInstance(");
                 OutputType(elementType);
                 Write(",");
 
-                if (e.SizeExpression != null) {
+                if (e.SizeExpression != null)
+                {
                     GenerateExpression(e.SizeExpression);
-                } else {
+                }
+                else
+                {
                     Write(e.Size);
                 }
                 Write(")");
             }
         }
 
-        protected override void GenerateArrayIndexerExpression(CodeArrayIndexerExpression e) {
+        protected override void GenerateArrayIndexerExpression(CodeArrayIndexerExpression e)
+        {
             GenerateExpression(e.TargetObject);
             Write("[");
             string comma = "";
-            for (int i = 0; i < e.Indices.Count; i++) {
+            for (int i = 0; i < e.Indices.Count; i++)
+            {
                 Write(comma);
                 GenerateExpression(e.Indices[i]);
                 comma = ", ";
@@ -282,43 +333,51 @@ namespace PythonCodeGenerator.CodeDom {
             Write("]");
         }
 
-        protected override void GenerateAssignStatement(CodeAssignStatement e) {            
+        protected override void GenerateAssignStatement(CodeAssignStatement e)
+        {
             GenerateExpression(e.Left);
             Write(" = ");
             GenerateExpression(e.Right);
             WriteLine();
         }
 
-        protected override void GenerateAttachEventStatement(CodeAttachEventStatement e) {
+        protected override void GenerateAttachEventStatement(CodeAttachEventStatement e)
+        {
             GenerateEventReferenceExpression(e.Event);
 
             Write(" += ");
 
             CodeObjectCreateExpression coce = e.Listener as CodeObjectCreateExpression;
-            if (coce != null && coce.Parameters.Count == 1) {
+            if (coce != null && coce.Parameters.Count == 1)
+            {
                 // += new Foo(methodname)
                 // we want to transform it to:
                 // += methodname
                 GenerateExpression(coce.Parameters[0]);
-            } else {
+            }
+            else
+            {
                 GenerateExpression(e.Listener);
             }
-            WriteLine();            
+            WriteLine();
         }
 
-        protected override void GenerateBaseReferenceExpression(CodeBaseReferenceExpression e) {            
+        protected override void GenerateBaseReferenceExpression(CodeBaseReferenceExpression e)
+        {
             //use it instead of type(self)
             Write("super(" + CurrentClass.Name + ", self)");
         }
 
-        protected override void GenerateCastExpression(CodeCastExpression e) {
+        protected override void GenerateCastExpression(CodeCastExpression e)
+        {
             GenerateExpression(e.Expression);
         }
 
-        protected override void GenerateComment(CodeComment e) {
+        protected override void GenerateComment(CodeComment e)
+        {
             String emptyString = "";
             String tripleApo = "\"\"\"";
-            
+
             e.Text = e.Text.Replace("<summary>\r\n", emptyString);
             e.Text = e.Text.Replace("\r\n </summary>", Environment.NewLine);
             e.Text = e.Text.Replace("<summary>", emptyString);
@@ -327,15 +386,16 @@ namespace PythonCodeGenerator.CodeDom {
             e.Text = e.Text.Replace("</returns>", emptyString);
             e.Text = e.Text.Replace("<param name=\"", ":param ");
             e.Text = e.Text.Replace("<returns>", ":returns: ");
-            e.Text = e.Text.Replace("\">", ": ");       
-                 
+            e.Text = e.Text.Replace("\">", ": ");
+
             e.Text = e.Text.Replace("\r", emptyString);
             e.Text = e.Text.TrimEnd(new char[] { '\n' });
             string[] lines = e.Text.Split('\n');
-            if(lines.Length == 1)
+            if (lines.Length == 1)
             {
-                WriteCommentLine(tripleApo + lines[0].Trim() + tripleApo);                
-            } else
+                WriteCommentLine(tripleApo + lines[0].Trim() + tripleApo);
+            }
+            else
             {
                 WriteCommentLine(tripleApo);
                 foreach (string line in lines)
@@ -343,35 +403,43 @@ namespace PythonCodeGenerator.CodeDom {
                     WriteCommentLine(line);
                 }
                 WriteCommentLine(tripleApo);
-            }            
-            
+            }
+
         }
 
-        protected override void GenerateConditionStatement(CodeConditionStatement e) {
+        protected override void GenerateConditionStatement(CodeConditionStatement e)
+        {
             Write("if ");
             GenerateExpression(e.Condition);
-            if (e.TrueStatements.Count != 0) {
+            if (e.TrueStatements.Count != 0)
+            {
                 WriteLine(":"); //!!! Consult UserData["NoNewLine"]
 
                 Indent++;
                 GenerateStatements(e.TrueStatements);
                 Indent--;
-            } else {
+            }
+            else
+            {
                 WriteLine(": pass"); //!!! Consult UserData["NoNewLine"]
             }
-            if (e.FalseStatements != null && e.FalseStatements.Count > 0) {
+            if (e.FalseStatements != null && e.FalseStatements.Count > 0)
+            {
                 WriteLine("else:"); //!!! Consult UserData["NoNewLine"]
                 Indent++;
                 GenerateStatements(e.FalseStatements);
                 Indent--;
-            }            
+            }
         }
 
-        private bool NeedFieldInit() {
+        private bool NeedFieldInit()
+        {
             bool needsInit = false;
             //if there is at least one field or event we will need to initialize it                                      
-            for (int i = 0; i < CurrentClass.Members.Count; i++) {                
-                if (CurrentClass.Members[i] is CodeMemberField || CurrentClass.Members[i] is CodeMemberEvent) {
+            for (int i = 0; i < CurrentClass.Members.Count; i++)
+            {
+                if (CurrentClass.Members[i] is CodeMemberField || CurrentClass.Members[i] is CodeMemberEvent)
+                {
                     needsInit = true;
                     break;
                 }
@@ -379,25 +447,44 @@ namespace PythonCodeGenerator.CodeDom {
             return needsInit;
         }
 
-        protected override void GenerateConstructor(CodeConstructor e, CodeTypeDeclaration c) {
+        protected override void GenerateConstructor(CodeConstructor e, CodeTypeDeclaration c)
+        {
 
             Write("def __init__(self");
-            if (e.Parameters.Count > 0) {
+            if (e.Parameters.Count > 0)
+            {
                 Write(", ");
                 OutputParameters(e.Parameters);
             }
             WriteLine("):"); //!!! Consult UserData["NoNewLine"]
-            Indent++;            
-            if (NeedFieldInit()) {
+            Indent++;
+            if (e.ChainedConstructorArgs.Count > 0)
+            {
+                throw new NotSupportedException();
+            }
+            CodeExpression[] baseParameters = new CodeExpression[e.BaseConstructorArgs.Count];
+            for (int i = 0; i < e.BaseConstructorArgs.Count; i++)
+            {
+                baseParameters[i] = e.BaseConstructorArgs[i];
+            }
+            var baseCall = new CodeMethodInvokeExpression(new CodeBaseReferenceExpression(), "__init__", baseParameters);
+            GenerateStatement(new CodeExpressionStatement(baseCall));
+
+            if (NeedFieldInit())
+            {
                 // if there already is an call to the constructorFieldInit in the statements, we don't need to generate a call
                 bool needsCall = true;
                 //only generate a call if really need it and there isn't already one
-                for (int i = 0; i < e.Statements.Count; i++) {
+                for (int i = 0; i < e.Statements.Count; i++)
+                {
                     CodeExpressionStatement ces = e.Statements[i] as CodeExpressionStatement;
-                    if (ces != null) {
-                        CodeMethodInvokeExpression cmie = ces.Expression as CodeMethodInvokeExpression;                        
-                        if (cmie != null) {                           
-                            if (cmie.Method.TargetObject is CodeThisReferenceExpression && ("_" + cmie.Method.MethodName) == ctorFieldInit) {
+                    if (ces != null)
+                    {
+                        CodeMethodInvokeExpression cmie = ces.Expression as CodeMethodInvokeExpression;
+                        if (cmie != null)
+                        {
+                            if (cmie.Method.TargetObject is CodeThisReferenceExpression && ("_" + cmie.Method.MethodName) == ctorFieldInit)
+                            {
                                 needsCall = false;
                                 break;
                             }
@@ -405,24 +492,23 @@ namespace PythonCodeGenerator.CodeDom {
                     }
                 }
                 //generate only if there isn't already one
-                if (needsCall) {
+                if (needsCall)
+                {
                     WriteLine("self." + ctorFieldInit + "()");
-                } else if (e.Statements.Count == 0) {
-                    Write("pass");
                 }
-            } else if (e.Statements.Count == 0) {
-                Write("pass");
             }
 
             GenerateStatements(e.Statements);
 
             Indent--;
-           
+
             WriteLine();
         }
 
-        protected override void GenerateDelegateCreateExpression(CodeDelegateCreateExpression e) {
-            if (e.TargetObject != null) {
+        protected override void GenerateDelegateCreateExpression(CodeDelegateCreateExpression e)
+        {
+            if (e.TargetObject != null)
+            {
                 GenerateExpression(e.TargetObject);
                 Write(".");
             }
@@ -430,41 +516,51 @@ namespace PythonCodeGenerator.CodeDom {
             Write(e.MethodName);
         }
 
-        protected override void GenerateDelegateInvokeExpression(CodeDelegateInvokeExpression e) {
+        protected override void GenerateDelegateInvokeExpression(CodeDelegateInvokeExpression e)
+        {
             GenerateExpression(e.TargetObject);
 
             string comma = "";
-            foreach (CodeExpression ce in e.Parameters) {
+            foreach (CodeExpression ce in e.Parameters)
+            {
                 Write(comma);
                 GenerateExpression(ce);
                 comma = ", ";
             }
         }
 
-        protected override void GenerateEntryPointMethod(CodeEntryPointMethod e, CodeTypeDeclaration c) {
+        protected override void GenerateEntryPointMethod(CodeEntryPointMethod e, CodeTypeDeclaration c)
+        {
             entryPointNamespace = lastNamespace;
             entryPoint = e;
         }
 
-        protected override void GenerateEvent(CodeMemberEvent e, CodeTypeDeclaration c) {
+        protected override void GenerateEvent(CodeMemberEvent e, CodeTypeDeclaration c)
+        {
             //throw new NotImplementedException("The method or operation is not implemented.");
         }
 
-        protected override void GenerateEventReferenceExpression(CodeEventReferenceExpression e) {
-            if (e.TargetObject != null) {
+        protected override void GenerateEventReferenceExpression(CodeEventReferenceExpression e)
+        {
+            if (e.TargetObject != null)
+            {
                 GenerateExpression(e.TargetObject);
                 if (!String.IsNullOrEmpty(e.EventName)) Write(".");
             }
 
-            if (!String.IsNullOrEmpty(e.EventName)) {
+            if (!String.IsNullOrEmpty(e.EventName))
+            {
                 if (e.TargetObject is CodeThisReferenceExpression) WritePrivatePrefix(e.EventName);
                 Write(e.EventName);
             }
         }
 
-        private void WritePrivatePrefix(string name) {
-            for (int i = 0; i < CurrentClass.Members.Count; i++) {
-                if (CurrentClass.Members[i].Name == name) {
+        private void WritePrivatePrefix(string name)
+        {
+            for (int i = 0; i < CurrentClass.Members.Count; i++)
+            {
+                if (CurrentClass.Members[i].Name == name)
+                {
                     if ((CurrentClass.Members[i].Attributes & MemberAttributes.AccessMask) == MemberAttributes.Private &&
                         (CurrentClass.Members[i].Attributes & MemberAttributes.ScopeMask) != MemberAttributes.Static)
                         Write("_");
@@ -473,39 +569,50 @@ namespace PythonCodeGenerator.CodeDom {
             }
         }
 
-        protected override void GenerateExpressionStatement(CodeExpressionStatement e) {
-            if (e.Expression is CodeMethodInvokeExpression) {
+        protected override void GenerateExpressionStatement(CodeExpressionStatement e)
+        {
+            if (e.Expression is CodeMethodInvokeExpression)
+            {
                 GenerateMethodInvokeExpression(e.Expression as CodeMethodInvokeExpression);
                 WriteLine();
-            } else {
+            }
+            else
+            {
                 GenerateExpression(e.Expression);
             }
         }
 
-        protected override void GenerateField(CodeMemberField e) {
-            if (e.Type.TypeArguments.Count <= 0)
-            {
-                return;
-            }
-            Write("typeArgsOf");
-            Write(e.Name.Replace("_", "").ToUpper());
-            Write(" = [");
-            for(int i = 0; i < e.Type.TypeArguments.Count; i++)
-            {                
-                Write(e.Type.TypeArguments[i].BaseType);             
-                if (i != e.Type.TypeArguments.Count - 1) //if is not last iteration add comma
-                {
-                    Write(", ");
-                }
-            }
-            Write("]");
-            WriteLine("");
+        protected override void GenerateField(CodeMemberField e)
+        {
             // init expressions are generated in ctorFieldInit (const string)
             // and calls in the constructors are generated to the function.
+            if (methodDocstringCache.Contains(e))
+            {
+                methodDocstringCache.Remove(e);
+            }
+            if ((e.Attributes & MemberAttributes.Static) == MemberAttributes.Static) return;
+            CodeTypeReference type;
+
+            if (e.Type.TypeArguments.Count == 1)
+            {
+                type = e.Type.TypeArguments[0];
+            }
+            else
+            {
+                type = e.Type;
+            }
+            WriteLine("@staticmethod");
+            Write("def _typeOf");
+            Write(e.Name.Replace("_", "").ToUpper());
+            WriteLine("():");
+            Write("    return ");
+            WriteLine(type.BaseType);
         }
 
-        protected override void GenerateFieldReferenceExpression(CodeFieldReferenceExpression e) {
-            if (e.TargetObject != null) {
+        protected override void GenerateFieldReferenceExpression(CodeFieldReferenceExpression e)
+        {
+            if (e.TargetObject != null)
+            {
                 GenerateExpression(e.TargetObject);
                 Write(".");
             }
@@ -516,11 +623,13 @@ namespace PythonCodeGenerator.CodeDom {
             Write(e.FieldName);
         }
 
-        protected override void GenerateIndexerExpression(CodeIndexerExpression e) {
+        protected override void GenerateIndexerExpression(CodeIndexerExpression e)
+        {
             GenerateExpression(e.TargetObject);
             Write("[");
             string comma = "";
-            for (int i = 0; i < e.Indices.Count; i++) {
+            for (int i = 0; i < e.Indices.Count; i++)
+            {
                 Write(comma);
                 GenerateExpression(e.Indices[i]);
                 comma = ", ";
@@ -528,25 +637,29 @@ namespace PythonCodeGenerator.CodeDom {
             Write("]");
         }
 
-        protected override void GenerateIterationStatement(CodeIterationStatement e) {
+        protected override void GenerateIterationStatement(CodeIterationStatement e)
+        {
             if (e.InitStatement != null)
                 GenerateStatement(e.InitStatement);
             Write("while ");
             GenerateExpression(e.TestExpression);
             WriteLine(":"); //!!! Consult UserData["NoNewLine"]
             Indent++;
-            if (e.Statements.Count == 0) {
+            if (e.Statements.Count == 0)
+            {
                 if (e.IncrementStatement == null)
                     WriteLine("pass");
-            } else
+            }
+            else
                 GenerateStatements(e.Statements);
             if (e.IncrementStatement != null)
                 GenerateStatement(e.IncrementStatement);
-            Indent--;            
+            Indent--;
         }
 
 
-        protected override void GenerateMethod(CodeMemberMethod e, CodeTypeDeclaration c) {
+        protected override void GenerateMethod(CodeMemberMethod e, CodeTypeDeclaration c)
+        {
             if ((e.Attributes & MemberAttributes.ScopeMask) == MemberAttributes.Static)
                 WriteLine("@staticmethod");
 
@@ -563,21 +676,30 @@ namespace PythonCodeGenerator.CodeDom {
                 e.Parameters,
                 e.Statements,
                 e.ReturnType,
-                e.UserData);            
+                e.UserData);
         }
 
-        protected override void GeneratePrimitiveExpression(CodePrimitiveExpression e) {
-            if (e.Value is char) {
+        protected override void GeneratePrimitiveExpression(CodePrimitiveExpression e)
+        {
+            if (e.Value is char)
+            {
                 char chVal = (char)e.Value;
-                if (chVal > 0xFF || chVal < 32) {
+                if (chVal > 0xFF || chVal < 32)
+                {
                     Write("System.Convert.ToChar(");
                     Write(((int)chVal).ToString());
                     Write(")");
-                } else if (chVal == '\'') {
+                }
+                else if (chVal == '\'')
+                {
                     Write("'\\''");
-                } else if (chVal == '\\') {
+                }
+                else if (chVal == '\\')
+                {
                     Write("'\\\\'");
-                } else {
+                }
+                else
+                {
                     Write("System.Convert.ToChar('");
                     Write(chVal.ToString());
                     Write("')");
@@ -586,22 +708,35 @@ namespace PythonCodeGenerator.CodeDom {
             }
 
             string strVal = e.Value as string;
-            if (strVal != null) {
-                for (int i = 0; i < strVal.Length; i++) {
-                    if (strVal[i] > 0xFF) {
+            if (strVal != null)
+            {
+                for (int i = 0; i < strVal.Length; i++)
+                {
+                    if (strVal[i] > 0xFF)
+                    {
                         // possibly un-encodable unicode characters,
                         // write unicode characters specially...
                         Write("u'");
-                        for (i = 0; i < strVal.Length; i++) {
-                            if (strVal[i] > 0xFF) {
+                        for (i = 0; i < strVal.Length; i++)
+                        {
+                            if (strVal[i] > 0xFF)
+                            {
                                 Write(String.Format("\\u{0:X}", (int)strVal[i]));
-                            } else if (strVal[i] < 32) {
+                            }
+                            else if (strVal[i] < 32)
+                            {
                                 Write(String.Format("\\x{0:X}", (int)strVal[i]));
-                            } else if (strVal[i] == '\'') {
+                            }
+                            else if (strVal[i] == '\'')
+                            {
                                 Write("\\'");
-                            } else if (strVal[i] == '\\') {
+                            }
+                            else if (strVal[i] == '\\')
+                            {
                                 Write("\\");
-                            } else {
+                            }
+                            else
+                            {
                                 Write(strVal[i]);
                             }
                         }
@@ -614,13 +749,23 @@ namespace PythonCodeGenerator.CodeDom {
             Write(StringRepr(e.Value));
         }
 
-        protected override void GenerateMethodInvokeExpression(CodeMethodInvokeExpression e) {
-            if (e.Method.TargetObject != null) {
+        protected override void GenerateMethodInvokeExpression(CodeMethodInvokeExpression e)
+        {
+            if (e.Method.MethodName == "ToString")
+            {
+                Write("str(");
+                GenerateExpression(e.Method.TargetObject);
+                Write(")");
+                return;
+            }
+            if (e.Method.TargetObject != null)
+            {
                 GenerateExpression(e.Method.TargetObject);
                 if (!String.IsNullOrEmpty(e.Method.MethodName)) Write(".");
             }
 
-            if (e.Method.MethodName != null) {
+            if (e.Method.MethodName != null)
+            {
                 if (e.Method.TargetObject is CodeThisReferenceExpression)
                     //If the code is invoking the special method ctorFieldInit, then WritePrivatePrefix
                     //won't be able to detect it as a private member of the current class, which it will
@@ -638,21 +783,22 @@ namespace PythonCodeGenerator.CodeDom {
             Write(")");
         }
 
-        private void EmitGenericTypeArgs(CodeTypeReferenceCollection typeArgs) {
+        private void EmitGenericTypeArgs(CodeTypeReferenceCollection typeArgs)
+        {
             //we're using duck typing so the data types are irrelevant
-            //if (typeArgs != null && typeArgs.Count > 0) {
-            //    Write("[");
-            //    for (int i = 0; i < typeArgs.Count; i++) {
-            //        if (i != 0) Write(", ");
-            //        Write(typeArgs[i].BaseType);
-            //    }
-            //    Write("]");
-            //}
         }
 
-        protected override void GenerateMethodReferenceExpression(CodeMethodReferenceExpression e) {
-            GenerateExpression(e.TargetObject);
-            Write(".");
+        protected override void GenerateMethodReferenceExpression(CodeMethodReferenceExpression e)
+        {
+            if (e.TargetObject != null)
+            {
+                GenerateExpression(e.TargetObject);
+                Write(".");
+            }
+            else
+            {
+                Write("self.");
+            }
 
             if (e.TargetObject is CodeThisReferenceExpression) WritePrivatePrefix(e.MethodName);
 
@@ -661,16 +807,20 @@ namespace PythonCodeGenerator.CodeDom {
             EmitGenericTypeArgs(e.TypeArguments);
         }
 
-        protected override void GenerateMethodReturnStatement(CodeMethodReturnStatement e) {
+        protected override void GenerateMethodReturnStatement(CodeMethodReturnStatement e)
+        {
             Write("return ");
-            if (e.Expression != null) {
+            if (e.Expression != null)
+            {
                 GenerateExpression(e.Expression);
             }
-            WriteLine();            
+            WriteLine();
         }
 
-        protected override void GenerateNamespaceEnd(CodeNamespace e) {
-            if (!String.IsNullOrEmpty(e.Name)) {
+        protected override void GenerateNamespaceEnd(CodeNamespace e)
+        {
+            if (!String.IsNullOrEmpty(e.Name))
+            {
                 Indent--;
                 WriteLine("def CreateFromDocument(xml_text):");
                 Indent++;
@@ -680,10 +830,11 @@ namespace PythonCodeGenerator.CodeDom {
                 WriteLine("@param xml_text An XML document.  This should be data (Python 2");
                 WriteLine("str), or a text (Python 2 unicode)\"\"\"");
                 WriteLine("types = [" + String.Join(", ", topLevelTypes.ToArray()) + "]");
-                WriteLine("return serialize(xml_text, types)");
+                WriteLine("return deserialize(xml_text, types)");
                 Indent--;
 
-                if (typeStack.Count == 0 && entryPointNamespace != null) {
+                if (typeStack.Count == 0 && entryPointNamespace != null)
+                {
                     // end of the outer most scope, generate the real call
                     // to the entry point if we have one.
                     System.Console.WriteLine("Generate real call to the entry point");
@@ -694,39 +845,36 @@ namespace PythonCodeGenerator.CodeDom {
 
                 namespaceStack.Pop();
 
-                
+
             }
         }
 
-        protected override void GenerateNamespaceImport(CodeNamespaceImport e) {
-            if (namespaceStack.Count == 0) {
+        protected override void GenerateNamespaceImport(CodeNamespaceImport e)
+        {
+            if (namespaceStack.Count == 0)
+            {
                 RealGenerateNamespaceImport(e);
             }
         }
 
-        protected override void GenerateNamespaceStart(CodeNamespace e) {            
-            if (!UserDataFalse(e.UserData, "PreImport")) {
+        protected override void GenerateNamespaceStart(CodeNamespace e)
+        {
+            if (!UserDataFalse(e.UserData, "PreImport"))
+            {
                 // loigcally part of the namespace declaration, so
                 // we generate these before flushing output (as flushing will advance
                 // our cursor past the start of these).
                 GenerateNamespaceImportsWorker(e);
             }
 
-            if (!String.IsNullOrEmpty(e.Name)) {
+            if (!String.IsNullOrEmpty(e.Name))
+            {
                 namespaceStack.Push(e);
 
                 lastNamespace = e.Name;
 
-                // the best way to realize namespaces in python are modules not classes                
-                Write("# Namespace ");
-                Write(e.Name);
-                Write("\n");           
-                //Write("class ");
-                //Write(e.Name);
-                //WriteLine(": # namespace");
-                //Indent++;
-
-                if (UserDataFalse(e.UserData, "PreImport")) {
+                if (UserDataFalse(e.UserData, "PreImport"))
+                {
                     GenerateNamespaceImportsWorker(e);
                 }
             }
@@ -747,31 +895,34 @@ namespace PythonCodeGenerator.CodeDom {
             throw new Exception("FATAL ERROR: Could not resolve string representation for object " + o.ToString());
         }
 
-        private void GenerateNamespaceImportsWorker(CodeNamespace e) {            
-            foreach (CodeNamespaceImport cni in e.Imports) {
-                RealGenerateNamespaceImport(cni);                                
-            }            
-            
-            WriteLine("from NMF.python.decorators import accepts, returns, Self");  // import for @returns and @accepts
-            WriteLine("from NMF.python.EventHandler import EventHandler");
-            WriteLine("from NMF.python.serializer import serialize");
-            
-            WriteLine("import NMF");
+        private void GenerateNamespaceImportsWorker(CodeNamespace e)
+        {
+            foreach (CodeNamespaceImport cni in e.Imports)
+            {
+                RealGenerateNamespaceImport(cni);
+            }
         }
 
-        private void RealGenerateNamespaceImport(CodeNamespaceImport e) {
+        private void RealGenerateNamespaceImport(CodeNamespaceImport e)
+        {
             string fromImport = e.UserData["FromImport"] as string;
-            if (e.UserData["Dupped"] != null) {
+            if (e.UserData["Dupped"] != null)
+            {
                 WriteLine(String.Format("from {0} import {1}", e.Namespace, fromImport));
                 WriteLine(String.Format("import {0}", e.Namespace));
-            } else if (fromImport != null) {
+            }
+            else if (fromImport != null)
+            {
                 WriteLine(String.Format("from {0} import {1}", e.Namespace, fromImport));
-            } else {
+            }
+            else
+            {
                 WriteLine(String.Format("from {0} import *", e.Namespace));
-            }            
+            }
         }
 
-        protected override void GenerateObjectCreateExpression(CodeObjectCreateExpression e) {
+        protected override void GenerateObjectCreateExpression(CodeObjectCreateExpression e)
+        {
             OutputType(e.CreateType);
             EmitGenericTypeArgs(e.CreateType.TypeArguments);
             Write("(");
@@ -779,7 +930,8 @@ namespace PythonCodeGenerator.CodeDom {
             Write(")");
         }
 
-        protected override void GenerateProperty(CodeMemberProperty e, CodeTypeDeclaration c) {
+        protected override void GenerateProperty(CodeMemberProperty e, CodeTypeDeclaration c)
+        {
             string priv = String.Empty;
             if ((e.Attributes & MemberAttributes.AccessMask) == MemberAttributes.Private) priv = "_";
 
@@ -787,7 +939,8 @@ namespace PythonCodeGenerator.CodeDom {
             if ((e.Attributes & MemberAttributes.ScopeMask) != MemberAttributes.Static)
                 thisName = UserDataString(e.UserData, "ThisArg", "self");
 
-            if (e.HasGet) {
+            if (e.HasGet)
+            {
                 //WriteLine(String.Format("#this name {0} {1}", thisName,e.Attributes));
                 string getterName = UserDataString(e.UserData, "GetName", priv + "get_" + e.Name);
 
@@ -801,11 +954,12 @@ namespace PythonCodeGenerator.CodeDom {
                     e.UserData);
             }
 
-            if (e.HasSet) {
+            if (e.HasSet)
+            {
                 string setterName = UserDataString(e.UserData, "SetName", priv + "set_" + e.Name);
 
-                GenerateMethodWorker(thisName, UserDataString(e.UserData, "ThisType", null), setterName, new CodeParameterDeclarationExpressionCollection( new CodeParameterDeclarationExpression[] { 
-                            new CodeParameterDeclarationExpression(e.Type, "value") }), 
+                GenerateMethodWorker(thisName, UserDataString(e.UserData, "ThisType", null), setterName, new CodeParameterDeclarationExpressionCollection(new CodeParameterDeclarationExpression[] {
+                            new CodeParameterDeclarationExpression(e.Type, "value") }),
                     e.SetStatements, null, e.UserData);
             }
 
@@ -814,22 +968,26 @@ namespace PythonCodeGenerator.CodeDom {
             Write(name);
             Write(" = property(");
             string comma = "";
-            if (e.HasGet) {
+            if (e.HasGet)
+            {
                 Write("fget=" + priv + "get_");
                 Write(e.Name);
                 comma = ",";
             }
-            if (e.HasSet) {
+            if (e.HasSet)
+            {
                 Write(comma);
                 Write("fset=" + priv + "set_");
                 Write(e.Name);
             }
-            if (e.Comments != null && e.Comments.Count > 0) {                
+            if (e.Comments != null && e.Comments.Count > 0)
+            {
                 Write(",doc=\"\"\"");
                 if (e.Comments.Count == 1)
                 {
                     Write(e.Comments[0].Comment.Text.Trim());
-                } else
+                }
+                else
                 {
                     foreach (CodeCommentStatement comment in e.Comments)
                     {
@@ -838,15 +996,17 @@ namespace PythonCodeGenerator.CodeDom {
                         WriteLine(comment.Comment.Text);
                     }
                 }
-                Write("\"\"\"");                
+                Write("\"\"\"");
             }
             Write(")");
             WriteLine();
             WriteLine();
         }
 
-        protected override void GeneratePropertyReferenceExpression(CodePropertyReferenceExpression e) {
-            if (e.TargetObject != null) {
+        protected override void GeneratePropertyReferenceExpression(CodePropertyReferenceExpression e)
+        {
+            if (e.TargetObject != null)
+            {
                 GenerateExpression(e.TargetObject);
                 Write(".");
             }
@@ -856,11 +1016,13 @@ namespace PythonCodeGenerator.CodeDom {
             Write(e.PropertyName);
         }
 
-        protected override void GeneratePropertySetValueReferenceExpression(CodePropertySetValueReferenceExpression e) {
+        protected override void GeneratePropertySetValueReferenceExpression(CodePropertySetValueReferenceExpression e)
+        {
             Write("value");
         }
 
-        protected override void GenerateRemoveEventStatement(CodeRemoveEventStatement e) {
+        protected override void GenerateRemoveEventStatement(CodeRemoveEventStatement e)
+        {
             GenerateEventReferenceExpression(e.Event);
 
             Write(" -= ");
@@ -868,21 +1030,23 @@ namespace PythonCodeGenerator.CodeDom {
             GenerateExpression(e.Listener);
             WriteLine();
 
-            
+
         }
 
-        protected override void GenerateSnippetExpression(CodeSnippetExpression e) {
+        protected override void GenerateSnippetExpression(CodeSnippetExpression e)
+        {
             Write(e.Value);
         }
 
-        protected override void GenerateSnippetMember(CodeSnippetTypeMember e) {
+        protected override void GenerateSnippetMember(CodeSnippetTypeMember e)
+        {
             // the codedom base trys to generate w/o indentation, but
             // we need to generate with indentation due to the signficigance
             // of white space.
 
             int oldIndent = Indent;
             Indent = lastIndent;
-            
+
             WriteLine("# begin snippet member " + Indent.ToString() + CurrentTypeName);
 
             WriteSnippetWorker(e.Text);
@@ -891,23 +1055,27 @@ namespace PythonCodeGenerator.CodeDom {
 
             Indent = oldIndent;
 
-            
+
         }
 
         /// <summary>
         /// Checks to see if the given code matches our current indentation level.
         /// </summary>
-        private bool IsProperlyIndented(string []lines) {            
+        private bool IsProperlyIndented(string[] lines)
+        {
             string tabbedIndent = IndentString.Replace("    ", "\t");
 
-            for (int i = 0; i < lines.Length; i++) {
-                for (int j = 0; j < Indent; j++) {
+            for (int i = 0; i < lines.Length; i++)
+            {
+                for (int j = 0; j < Indent; j++)
+                {
                     if (lines[i].Length == 0 || lines[i][0] == '#') continue;
-                    
-                    if (lines[i].Length < IndentString.Length*IndentString.Length) return false;
+
+                    if (lines[i].Length < IndentString.Length * IndentString.Length) return false;
 
                     int offset = 0;
-                    for (int k = 0; k < Indent; k++) {
+                    for (int k = 0; k < Indent; k++)
+                    {
                         if (String.Compare(lines[i], offset, IndentString, 0, IndentString.Length) == 0)
                             offset += IndentString.Length;
                         else if (String.Compare(lines[i], offset, tabbedIndent, 0, tabbedIndent.Length) == 0)
@@ -920,19 +1088,22 @@ namespace PythonCodeGenerator.CodeDom {
             return true;
         }
 
-        private void WriteSnippetWorker(string text) {
+        private void WriteSnippetWorker(string text)
+        {
             string[] lines = text.Split(new string[] { "\r\n", "\r", "\n" }, StringSplitOptions.None);
             bool isProperlyIndented = IsProperlyIndented(lines);
 
-            foreach (string line in lines) {
+            foreach (string line in lines)
+            {
                 WriteLine(line, isProperlyIndented);
             }
         }
 
-        protected override void GenerateSnippetStatement(CodeSnippetStatement e) {
+        protected override void GenerateSnippetStatement(CodeSnippetStatement e)
+        {
             int oldIndent = Indent;
             Indent = lastIndent;
-            
+
 
             WriteLine("# Snippet Statement");
 
@@ -943,26 +1114,30 @@ namespace PythonCodeGenerator.CodeDom {
 
             Indent = oldIndent;
 
-            
+
         }
 
 
 
-        protected override void GenerateThisReferenceExpression(CodeThisReferenceExpression e) {
+        protected override void GenerateThisReferenceExpression(CodeThisReferenceExpression e)
+        {
             Write("self");
         }
 
-        protected override void GenerateThrowExceptionStatement(CodeThrowExceptionStatement e) {
+        protected override void GenerateThrowExceptionStatement(CodeThrowExceptionStatement e)
+        {
             Write("raise ");
             GenerateExpression(e.ToThrow);
             WriteLine();
 
-            
+
         }
 
-        protected override void GenerateTryCatchFinallyStatement(CodeTryCatchFinallyStatement e) {
+        protected override void GenerateTryCatchFinallyStatement(CodeTryCatchFinallyStatement e)
+        {
             WriteLine("try:"); //!!! Consult UserData["NoNewLine"]
-            if (e.CatchClauses.Count != 0 && e.FinallyStatements != null && e.FinallyStatements.Count > 0) {
+            if (e.CatchClauses.Count != 0 && e.FinallyStatements != null && e.FinallyStatements.Count > 0)
+            {
                 Indent++;
                 WriteLine("try:"); //!!! Consult UserData["NoNewLine"]
             }
@@ -975,65 +1150,79 @@ namespace PythonCodeGenerator.CodeDom {
             Indent--;
 
 
-            if (e.CatchClauses.Count != 0) {
-                for (int i = 0; i < e.CatchClauses.Count; i++) {
+            if (e.CatchClauses.Count != 0)
+            {
+                for (int i = 0; i < e.CatchClauses.Count; i++)
+                {
                     Write("except ");
                     OutputType(e.CatchClauses[i].CatchExceptionType);
-                    if (!String.IsNullOrEmpty(e.CatchClauses[i].LocalName)) {
+                    if (!String.IsNullOrEmpty(e.CatchClauses[i].LocalName))
+                    {
                         Write(", ");
                         Write(e.CatchClauses[i].LocalName);
                     }
-                    if (e.CatchClauses[i].Statements != null && e.CatchClauses[i].Statements.Count > 0) {
+                    if (e.CatchClauses[i].Statements != null && e.CatchClauses[i].Statements.Count > 0)
+                    {
                         WriteLine(":"); //!!! Consult UserData["NoNewLine"]
                         Indent++;
                         GenerateStatements(e.CatchClauses[i].Statements);
                         Indent--;
-                    } else {
+                    }
+                    else
+                    {
                         WriteLine(": pass"); //!!! Consult UserData["NoNewLine"]
                     }
                 }
             }
 
-            if (e.CatchClauses.Count != 0 && e.FinallyStatements != null && e.FinallyStatements.Count > 0) {
+            if (e.CatchClauses.Count != 0 && e.FinallyStatements != null && e.FinallyStatements.Count > 0)
+            {
                 Indent--;
             }
 
-            if (e.FinallyStatements != null && e.FinallyStatements.Count > 0) {
+            if (e.FinallyStatements != null && e.FinallyStatements.Count > 0)
+            {
                 WriteLine("finally:"); //!!! Consult UserData["NoNewLine"]
                 Indent++;
                 GenerateStatements(e.FinallyStatements);
                 Indent--;
             }
 
-            
+
         }
 
-        protected override void GenerateTypeConstructor(CodeTypeConstructor e) {
-            GenerateStatements(e.Statements);            
+        protected override void GenerateTypeConstructor(CodeTypeConstructor e)
+        {
+            GenerateStatements(e.Statements);
         }
 
-        private void GenerateFieldInit() {
+        private void GenerateFieldInit()
+        {
             WriteLine("def " + ctorFieldInit + "(self):");
             Indent++;
 
-            for (int i = 0; i < CurrentClass.Members.Count; i++) {
+            for (int i = 0; i < CurrentClass.Members.Count; i++)
+            {
                 if (CurrentClass.Members[i] is CodeMemberEvent)
-                {                    
+                {
                     CodeMemberEvent e = CurrentClass.Members[i] as CodeMemberEvent;
                     Write("self.");
                     if ((e.Attributes & MemberAttributes.AccessMask) == MemberAttributes.Private) Write("_");
                     Write(e.Name);
-                    Write(" = ");                    
+                    Write(" = ");
                     if (e.Type.BaseType.Equals("System.EventHandler`1"))
                     {
                         Write("EventHandler()");
-                    } else
+                    }
+                    else
                     {
                         //don't know what it is                        
                         Write("None");
                     }
                     WriteLine();
-                } else {
+                }
+                else
+                {
                     CodeMemberField e = CurrentClass.Members[i] as CodeMemberField;
                     if (e == null) continue;
                     //member is field
@@ -1081,33 +1270,39 @@ namespace PythonCodeGenerator.CodeDom {
                         WriteLine();
                     }
                 }
-                
+
             }
 
             Indent--;
         }
 
-        protected override void GenerateTypeEnd(CodeTypeDeclaration e) {
-            if (e.Name != "__top__" || !UserDataFalse(e.UserData, "IsTopType")) {
+        protected override void GenerateTypeEnd(CodeTypeDeclaration e)
+        {
+            if (e.Name != "__top__" || !UserDataFalse(e.UserData, "IsTopType"))
+            {
 
-                if (NeedFieldInit()) {
+                if (NeedFieldInit())
+                {
                     GenerateFieldInit();
                 }
 
                 TypeDeclInfo popped = typeStack.Pop();
                 System.Diagnostics.Debug.Assert(popped.Declaration == e);
 
-                if (UserDataFalse(e.UserData, "NoEmit")) {
+                if (UserDataFalse(e.UserData, "NoEmit"))
+                {
                     Indent--;
                     WriteLine();
                 }
 
-                if (entryPoint != null) {
+                if (entryPoint != null)
+                {
                     WriteLine("@staticmethod");
                     WriteLine("def RealEntryPoint():");
                     Indent++;
 
-                    if (entryPoint.Parameters.Count == 1) {
+                    if (entryPoint.Parameters.Count == 1)
+                    {
                         // should be args
                         WriteLine("import sys");
 
@@ -1127,18 +1322,20 @@ namespace PythonCodeGenerator.CodeDom {
                 }
             }
             currentTypeLevel--;
-            
+
         }
 
-        protected override void GenerateTypeStart(CodeTypeDeclaration e) {
+        protected override void GenerateTypeStart(CodeTypeDeclaration e)
+        {
             processedTypes.Add(e.Name);
             if (currentTypeLevel == 0)
             {
                 topLevelTypes.Add(e.Name);
             }
             currentTypeLevel++;
-           
-            if (e.Name != "__top__" || !UserDataFalse(e.UserData, "IsTopType")) {
+
+            if (e.Name != "__top__" || !UserDataFalse(e.UserData, "IsTopType"))
+            {
 
                 typeStack.Push(new TypeDeclInfo(e));
 
@@ -1147,26 +1344,34 @@ namespace PythonCodeGenerator.CodeDom {
                 Write("class ");
                 Write(e.Name);
                 Write("(");
-                if (e.BaseTypes.Count > 0) {
+                if (e.BaseTypes.Count > 0)
+                {
                     string comma = "";
-                    for (int i = 0; i < e.BaseTypes.Count; i++) {
+                    for (int i = 0; i < e.BaseTypes.Count; i++)
+                    {
                         Write(comma);
                         OutputType(e.BaseTypes[i]);
                         comma = ",";
                     }
-                } else {
+                }
+                else
+                {
                     Write("object");
                 }
-                if (e.Members.Count == 0) {
+                if (e.Members.Count == 0)
+                {
                     WriteLine("): pass"); //!!! Consult UserData["NoNewLine"]
                     Indent++;
-                } else {
+                }
+                else
+                {
                     WriteLine("):"); //!!! Consult UserData["NoNewLine"]
                     Indent++;
 
                     bool fHasSlots = UserDataTrue(e.UserData, "HasSlots");
 
-                    if (fHasSlots) {
+                    if (fHasSlots)
+                    {
                         // generate type & slot information, eg:
                         // """type(x) == int, type(y) == System.EventArgs, type(z) == bar"""
                         // __slots__ = ['x', 'y', 'z']
@@ -1175,16 +1380,21 @@ namespace PythonCodeGenerator.CodeDom {
 
                         List<string> slots = new List<string>();
                         string comma = "";
-                        for (int i = 0; i < e.Members.Count; i++) {
+                        for (int i = 0; i < e.Members.Count; i++)
+                        {
                             CodeMemberField cmf = e.Members[i] as CodeMemberField;
-                            if (cmf != null && (cmf.Attributes & MemberAttributes.ScopeMask) != MemberAttributes.Static) {
+                            if (cmf != null && (cmf.Attributes & MemberAttributes.ScopeMask) != MemberAttributes.Static)
+                            {
                                 if (!fOpenedQuote) { Write("\"\"\""); fOpenedQuote = true; }
 
                                 string name;
 
-                                if ((cmf.Attributes & MemberAttributes.AccessMask) == MemberAttributes.Private) {
+                                if ((cmf.Attributes & MemberAttributes.AccessMask) == MemberAttributes.Private)
+                                {
                                     name = "_" + cmf.Name;
-                                } else {
+                                }
+                                else
+                                {
                                     name = cmf.Name;
                                 }
 
@@ -1199,13 +1409,17 @@ namespace PythonCodeGenerator.CodeDom {
                             }
 
                             CodeMemberEvent cme = e.Members[i] as CodeMemberEvent;
-                            if (cme != null) {
+                            if (cme != null)
+                            {
                                 if (!fOpenedQuote) { Write("\"\"\""); fOpenedQuote = true; }
 
                                 string name;
-                                if ((cme.Attributes & MemberAttributes.AccessMask) == MemberAttributes.Private) {
+                                if ((cme.Attributes & MemberAttributes.AccessMask) == MemberAttributes.Private)
+                                {
                                     name = "_" + cme.Name;
-                                } else {
+                                }
+                                else
+                                {
                                     name = cme.Name;
                                 }
 
@@ -1219,11 +1433,13 @@ namespace PythonCodeGenerator.CodeDom {
                                 slots.Add(name);
                             }
                         }
-                        if (fOpenedQuote) WriteLine("\"\"\"");                        
+                        if (fOpenedQuote) WriteLine("\"\"\"");
 
-                        for (int i = 0; i < e.Members.Count; i++) {
+                        for (int i = 0; i < e.Members.Count; i++)
+                        {
                             CodeMemberField cmf = e.Members[i] as CodeMemberField;
-                            if (cmf != null && (cmf.Attributes & MemberAttributes.ScopeMask) == MemberAttributes.Static) {
+                            if (cmf != null && (cmf.Attributes & MemberAttributes.ScopeMask) == MemberAttributes.Static)
+                            {
                                 if (cmf.Type.BaseType == "System.Boolean" || cmf.Type.BaseType == "bool")
                                     WriteLine(String.Format("{0} = False", cmf.Name));
                                 else
@@ -1236,33 +1452,39 @@ namespace PythonCodeGenerator.CodeDom {
             lastIndent = Indent;
         }
 
-        protected override void GenerateVariableDeclarationStatement(CodeVariableDeclarationStatement e) {
+        protected override void GenerateVariableDeclarationStatement(CodeVariableDeclarationStatement e)
+        {
             // if we have no init expression then we don't
             // need to declare the variable yet.  Once we
             // have the value we will infer it's type via
             // the parser on the re-parse and generate a
             // VariableDeclarationStatement.
-            if (e.InitExpression != null) {
+            if (e.InitExpression != null)
+            {
 
                 Write(e.Name);
                 Write(" = ");
                 GenerateExpression(e.InitExpression);
                 WriteLine();
 
-                
+
             }
         }
 
-        protected override void GenerateVariableReferenceExpression(CodeVariableReferenceExpression e) {
+        protected override void GenerateVariableReferenceExpression(CodeVariableReferenceExpression e)
+        {
             Write(e.VariableName);
         }
 
-        protected override string GetTypeOutput(CodeTypeReference value) {
-            if (value.ArrayRank > 0) {
+        protected override string GetTypeOutput(CodeTypeReference value)
+        {
+            if (value.ArrayRank > 0)
+            {
                 return "list";
             }
 
-            if (value.TypeArguments != null && value.TypeArguments.Count > 0) {
+            if (value.TypeArguments != null && value.TypeArguments.Count > 0)
+            {
                 // generate generic type reference
                 string nonGenericName = value.BaseType.Substring(0, value.BaseType.LastIndexOf('`'));
                 StringBuilder baseName = new StringBuilder(PythonizeType(nonGenericName));
@@ -1282,28 +1504,36 @@ namespace PythonCodeGenerator.CodeDom {
             return PythonizeType(value.BaseType);
         }
 
-        private static string PythonizeType(string baseType) {
-            if (baseType == "Boolean" || baseType == "System.Boolean") {
+        private static string PythonizeType(string baseType)
+        {
+            if (baseType == "Boolean" || baseType == "System.Boolean")
+            {
                 return "bool";
                 /*} else if (baseType == "System.Int32") {
                     return "int";
                 } else if (baseType == "System.String") {
                     return "str";*/
-            } else if (baseType == "Void" || baseType == "System.Void" || baseType == "void") {
+            }
+            else if (baseType == "Void" || baseType == "System.Void" || baseType == "void")
+            {
                 return "None";
             }
             return baseType;
         }
 
-        protected override bool IsValidIdentifier(string value) {
-            for (int i = 0; i < keywords.Length; i++) {
+        protected override bool IsValidIdentifier(string value)
+        {
+            for (int i = 0; i < keywords.Length; i++)
+            {
                 if (keywords[i] == value) return false;
             }
-            for (int i = 0; i < value.Length; i++) {
+            for (int i = 0; i < value.Length; i++)
+            {
                 if ((value[i] >= 'a' && value[i] <= 'z') ||
                     (value[i] >= 'A' && value[i] <= 'Z') ||
                     (i != 0 && value[i] >= '0' && value[i] <= '9') ||
-                    value[i] == '_') {
+                    value[i] == '_')
+                {
                     continue;
                 }
                 return false;
@@ -1311,20 +1541,25 @@ namespace PythonCodeGenerator.CodeDom {
             return true;
         }
 
-        protected override string NullToken {
+        protected override string NullToken
+        {
             get { return "None"; }
         }
 
-        protected override void OutputType(CodeTypeReference typeRef) {
+        protected override void OutputType(CodeTypeReference typeRef)
+        {
             Write(GetTypeOutput(typeRef));
         }
 
-        protected override string QuoteSnippetString(string value) {
+        protected override string QuoteSnippetString(string value)
+        {
             return (string)StringRepr(value);
         }
 
-        protected override bool Supports(GeneratorSupport support) {
-            switch (support) {
+        protected override bool Supports(GeneratorSupport support)
+        {
+            switch (support)
+            {
                 case GeneratorSupport.ArraysOfArrays: return true;
                 case GeneratorSupport.AssemblyAttributes: return false;
                 case GeneratorSupport.ChainedConstructorArguments: return false;
@@ -1356,34 +1591,40 @@ namespace PythonCodeGenerator.CodeDom {
         }
 
         #region Not supported overrides
-        protected override void GenerateAttributeDeclarationsEnd(CodeAttributeDeclarationCollection attributes) {
+        protected override void GenerateAttributeDeclarationsEnd(CodeAttributeDeclarationCollection attributes)
+        {
             throw new NotImplementedException("The method or operation is not implemented.");
         }
 
-        protected override void GenerateAttributeDeclarationsStart(CodeAttributeDeclarationCollection attributes) {
+        protected override void GenerateAttributeDeclarationsStart(CodeAttributeDeclarationCollection attributes)
+        {
             throw new NotImplementedException("The method or operation is not implemented.");
         }
 
-        protected override void GenerateGotoStatement(CodeGotoStatement e) {
+        protected override void GenerateGotoStatement(CodeGotoStatement e)
+        {
             throw new NotImplementedException("The method or operation is not implemented.");
         }
 
-        protected override void GenerateLabeledStatement(CodeLabeledStatement e) {
+        protected override void GenerateLabeledStatement(CodeLabeledStatement e)
+        {
             throw new NotImplementedException("The method or operation is not implemented.");
         }
 
-        protected override void GenerateLinePragmaEnd(CodeLinePragma e) {
+        protected override void GenerateLinePragmaEnd(CodeLinePragma e)
+        {
             WriteLine("");
             WriteLine("#End ExternalSource");
         }
 
-        protected override void GenerateLinePragmaStart(CodeLinePragma e) {
+        protected override void GenerateLinePragmaStart(CodeLinePragma e)
+        {
             WriteLine("");
             Write("#ExternalSource(\"");
             Write(e.FileName);
             Write("\",");
             // adjust by 1 for the comment we add in for each snippet member or statement
-            Write(e.LineNumber+1);  
+            Write(e.LineNumber + 1);
             WriteLine(")");
         }
         #endregion
@@ -1391,34 +1632,44 @@ namespace PythonCodeGenerator.CodeDom {
         #endregion
 
         #region Non-required overrides
-        protected override void OutputParameters(CodeParameterDeclarationExpressionCollection parameters) {
+        protected override void OutputParameters(CodeParameterDeclarationExpressionCollection parameters)
+        {
             string comma = "";
-            for (int i = 0; i < parameters.Count; i++) {
+            for (int i = 0; i < parameters.Count; i++)
+            {
                 Write(comma);
                 Write(parameters[i].Name);
                 comma = ",";
             }
         }
-        protected override void GenerateTypeOfExpression(CodeTypeOfExpression e) {
-            if (e.Type.BaseType == this.typeStack.Peek().Declaration.Name) {
+        protected override void GenerateTypeOfExpression(CodeTypeOfExpression e)
+        {
+            if (e.Type.BaseType == this.typeStack.Peek().Declaration.Name)
+            {
                 CodeMemberMethod curMeth = CurrentMember as CodeMemberMethod;
-                if (curMeth != null) {
+                if (curMeth != null)
+                {
                     if ((curMeth.Attributes & MemberAttributes.ScopeMask) == MemberAttributes.Static)
                         throw new InvalidOperationException("can't access current type in static scope");
                 }
                 Write("self.__class__");
-            } else {
+            }
+            else
+            {
                 OutputType(e.Type);
             }
         }
 
-        protected override void ContinueOnNewLine(string st) {
+        protected override void ContinueOnNewLine(string st)
+        {
             WriteLine("\\");
         }
 
-        protected override void GenerateBinaryOperatorExpression(CodeBinaryOperatorExpression e) {
+        protected override void GenerateBinaryOperatorExpression(CodeBinaryOperatorExpression e)
+        {
             GenerateExpression(e.Left);
-            switch (e.Operator) {
+            switch (e.Operator)
+            {
                 case CodeBinaryOperatorType.Add: Write(" + "); break;
                 case CodeBinaryOperatorType.Assign: Write(" = "); break;
                 case CodeBinaryOperatorType.BitwiseAnd: Write(" & "); break;
@@ -1445,58 +1696,73 @@ namespace PythonCodeGenerator.CodeDom {
         #endregion
 
         #region Overrides to ensure only we call Write
-        public override void GenerateCodeFromMember(CodeTypeMember member, System.IO.TextWriter writer, CodeGeneratorOptions options) {
+        public override void GenerateCodeFromMember(CodeTypeMember member, System.IO.TextWriter writer, CodeGeneratorOptions options)
+        {
             CodeGeneratorOptions opts = (options == null) ? new CodeGeneratorOptions() : options;
             opts.BlankLinesBetweenMembers = false;
 
             base.GenerateCodeFromMember(member, writer, opts);
         }
-        protected override void OutputAttributeDeclarations(CodeAttributeDeclarationCollection attributes) {
+        protected override void OutputAttributeDeclarations(CodeAttributeDeclarationCollection attributes)
+        {
             //!!! Implement me
         }
 
-        protected override void OutputAttributeArgument(CodeAttributeArgument arg) {
+        protected override void OutputAttributeArgument(CodeAttributeArgument arg)
+        {
             //!!! Implement me
         }
 
-        protected override void OutputTypeAttributes(System.Reflection.TypeAttributes attributes, bool isStruct, bool isEnum) {
+        protected override void OutputTypeAttributes(System.Reflection.TypeAttributes attributes, bool isStruct, bool isEnum)
+        {
             //!!! implement me
         }
 
-        protected override void OutputDirection(FieldDirection dir) {
+        protected override void OutputDirection(FieldDirection dir)
+        {
             // not supported in Python
         }
 
-        protected override void OutputFieldScopeModifier(MemberAttributes attributes) {
+        protected override void OutputFieldScopeModifier(MemberAttributes attributes)
+        {
             // not supported in Python
         }
 
-        protected override void OutputMemberAccessModifier(MemberAttributes attributes) {
+        protected override void OutputMemberAccessModifier(MemberAttributes attributes)
+        {
             // not supported in Python
         }
 
-        protected override void OutputMemberScopeModifier(MemberAttributes attributes) {
+        protected override void OutputMemberScopeModifier(MemberAttributes attributes)
+        {
             // not supported in Python
         }
 
-        protected override void OutputTypeNamePair(CodeTypeReference typeRef, string name) {
+        protected override void OutputTypeNamePair(CodeTypeReference typeRef, string name)
+        {
             OutputType(typeRef);
             Write(" ");
             OutputIdentifier(name);
         }
 
-        protected override void OutputIdentifier(string ident) {
+        protected override void OutputIdentifier(string ident)
+        {
             Write(ident);
         }
 
-        protected override void OutputExpressionList(CodeExpressionCollection expressions, bool newlineBetweenItems) {
+        protected override void OutputExpressionList(CodeExpressionCollection expressions, bool newlineBetweenItems)
+        {
             bool first = true;
             IEnumerator en = expressions.GetEnumerator();
             Indent++;
-            while (en.MoveNext()) {
-                if (first) {
+            while (en.MoveNext())
+            {
+                if (first)
+                {
                     first = false;
-                } else {
+                }
+                else
+                {
                     if (newlineBetweenItems) ContinueOnNewLine(",");
                     else Write(", ");
                 }
@@ -1505,8 +1771,10 @@ namespace PythonCodeGenerator.CodeDom {
             Indent--;
         }
 
-        protected override void OutputOperator(CodeBinaryOperatorType op) {
-            switch (op) {
+        protected override void OutputOperator(CodeBinaryOperatorType op)
+        {
+            switch (op)
+            {
                 case CodeBinaryOperatorType.Add: Write("+"); break;
                 case CodeBinaryOperatorType.Subtract: Write("-"); break;
                 case CodeBinaryOperatorType.Multiply: Write("*"); break;
@@ -1527,8 +1795,10 @@ namespace PythonCodeGenerator.CodeDom {
             }
         }
 
-        protected override void GenerateParameterDeclarationExpression(CodeParameterDeclarationExpression e) {
-            if (e.CustomAttributes.Count > 0) {
+        protected override void GenerateParameterDeclarationExpression(CodeParameterDeclarationExpression e)
+        {
+            if (e.CustomAttributes.Count > 0)
+            {
                 OutputAttributeDeclarations(e.CustomAttributes);
                 Write(" ");
             }
@@ -1537,114 +1807,75 @@ namespace PythonCodeGenerator.CodeDom {
             OutputTypeNamePair(e.Type, e.Name);
         }
 
-        protected override void GenerateSingleFloatValue(float s) {
+        protected override void GenerateSingleFloatValue(float s)
+        {
             Write(StringRepr(s));
         }
 
-        protected override void GenerateDoubleValue(double d) {
+        protected override void GenerateDoubleValue(double d)
+        {
             Write(StringRepr(d));
         }
 
-        protected override void GenerateDecimalValue(decimal d) {
+        protected override void GenerateDecimalValue(decimal d)
+        {
             Write(StringRepr(d));
         }
 
         #endregion
 
-        protected void OutputParameters(string instanceName, CodeParameterDeclarationExpressionCollection parameters) {
+        protected void OutputParameters(string instanceName, CodeParameterDeclarationExpressionCollection parameters)
+        {
             string comma = "";
-            if (instanceName != null) {
+            if (instanceName != null)
+            {
                 Write(instanceName);
                 comma = ", ";
             }
-            for (int i = 0; i < parameters.Count; i++) {
+            for (int i = 0; i < parameters.Count; i++)
+            {
                 Write(comma);
                 Write(parameters[i].Name);
                 comma = ", ";
             }
         }
 
-        protected override void GenerateTypeReferenceExpression(CodeTypeReferenceExpression e) {
-            if ((e.Type.BaseType == "void")) {
+        protected override void GenerateTypeReferenceExpression(CodeTypeReferenceExpression e)
+        {
+            if ((e.Type.BaseType == "void"))
+            {
                 Write("None");
-            } else { 
+            }
+            else
+            {
                 base.GenerateTypeReferenceExpression(e);
             }
 
         }
-        private void GenerateMethodWorker(string instanceName, string instanceType, string name, CodeParameterDeclarationExpressionCollection parameters, CodeStatementCollection stmts, CodeTypeReference retType, IDictionary userData) {
-            // generate decorators w/ type info            
-
-            if (retType != null)
-            {
-                if (UserDataTrue(userData, "HasReturns"))
-                {
-                    Write("@returns(");
-                    if (processedTypes.Contains(retType.BaseType))
-                    {
-                        Write("Self()");
-                    } else
-                    {
-                        GenerateTypeReferenceExpression(new CodeTypeReferenceExpression(retType));
-                    }                    
-                    WriteLine(")");
-                }
-            }
-
-            if (UserDataTrue(userData, "HasAccepts")) {
-                Write("@accepts(");
-                string comma = "";                
-                if (instanceType != null) {
-                    Write("Self()");
-                    comma = ", ";
-                } else if (instanceName != null) {
-                    Write("Self()");
-                    comma = ", ";
-                }
-                foreach (CodeParameterDeclarationExpression param in parameters) {
-                    Write(comma);
-                    //since we're writing the accepts decorator which gets parsed in python before the class type instance
-                    //exists we can't have accpets with it's own class => change it Self()
-                    if (processedTypes.Contains(param.Type.BaseType)) {
-                        Write("Self()");
-                    } else
-                    {
-                        GenerateTypeReferenceExpression(new CodeTypeReferenceExpression(param.Type));
-                    }                    
-                    comma = ", ";
-                }
-                WriteLine(")");
-            }            
-
-
-            // generate raw method body
+        private void GenerateMethodWorker(string instanceName, string instanceType, string name, CodeParameterDeclarationExpressionCollection parameters, CodeStatementCollection stmts, CodeTypeReference retType, IDictionary userData)
+        {
             Write("def ");
             Write(name);
             Write("(");
             OutputParameters(instanceName, parameters);
 
             int cursorCol, cursorRow;
-            if (stmts.Count != 0) {
+            if (stmts.Count != 0)
+            {
                 WriteLine("):"); //!!! Consult UserData["NoNewLine"]
                 Indent++;
                 lastIndent = Indent;
 
                 //write docstring if there is one
-                if (methodDocstringCache.ContainsKey(CurrentMember))
-                {                    
-                    foreach (String line in (List<String>)methodDocstringCache[CurrentMember])
-                    {
-                        WriteLine(line);
-                    }
-                    methodDocstringCache.Remove(CurrentMember);                    
-
-                }
+                GenerateDocstring();
 
                 GenerateStatements(stmts);
                 Indent--;
                 cursorCol = col;
                 cursorRow = row;
-            } else {
+            }
+            else
+            {
                 WriteLine("):"); //!!! Consult UserData["NoNewLine"]
                 Indent++;
                 Write("pass");
@@ -1655,47 +1886,64 @@ namespace PythonCodeGenerator.CodeDom {
             }
 
             WriteLine("");
+        }
 
-            // store the location the cursor shold goto for this function.
-            //userData[typeof(System.Drawing.Point)] = new System.Drawing.Point(cursorCol, cursorRow); //???
-        }        
+        private void GenerateDocstring()
+        {
+            if (methodDocstringCache.ContainsKey(CurrentMember))
+            {
+                foreach (String line in (List<String>)methodDocstringCache[CurrentMember])
+                {
+                    WriteLine(line);
+                }
+                methodDocstringCache.Remove(CurrentMember);
+            }
+        }
 
-        private static string UserDataString(IDictionary userData, string name, string defaultValue) {
+        private static string UserDataString(IDictionary userData, string name, string defaultValue)
+        {
             if (userData == null) return defaultValue;
             string res = userData[name] as string;
             if (res == null) return defaultValue;
             return res;
         }
 
-        private static bool UserDataFalse(IDictionary userData, string name) {
+        private static bool UserDataFalse(IDictionary userData, string name)
+        {
             return userData == null ||
                 userData[name] == null ||
                 ((bool)userData[name]) == false;
         }
 
-        private static bool UserDataTrue(IDictionary userData, string name) {
+        private static bool UserDataTrue(IDictionary userData, string name)
+        {
             return userData == null ||
                 userData[name] == null ||
                 ((bool)userData[name]) == true;
-        }                
+        }
 
-        private void Write(object val) {
+        private void Write(object val)
+        {
             Write(val.ToString());
         }
 
-        private void Write(int val) {
+        private void Write(int val)
+        {
             Write(val.ToString());
         }
 
-        private void WriteLine() {
+        private void WriteLine()
+        {
             WriteLine("");
         }
 
-        private void Write(string txt) {
+        private void Write(string txt)
+        {
             Write(txt, false);
         }
 
-        private void Write(string txt, bool preserveSpaces) {
+        private void Write(string txt, bool preserveSpaces)
+        {
             // enforce consistent indenting - we always use 4 spaces for indentation
             // regardless of what the user provided as this guarantees the code compiles.  The
             // user could provide String.Empty for Indent which breaks Python code.
@@ -1704,15 +1952,20 @@ namespace PythonCodeGenerator.CodeDom {
             Indent = 0;
             string[] lines = txt.Split(new string[] { Environment.NewLine }, StringSplitOptions.None);
 
-            for (int i = 0; i < lines.Length; i++) {
-                if (i != 0) {
+            for (int i = 0; i < lines.Length; i++)
+            {
+                if (i != 0)
+                {
                     WriteLineTargetBuffer(String.Empty);
-                    if (!preserveSpaces) {
+                    if (!preserveSpaces)
+                    {
                         for (int j = 0; j < prevIndent; j++) WriteTargetBuffer(IndentString);
                         col = prevIndent * 4;
                     }
                     row++;
-                } else if (col == 0 && !preserveSpaces) {
+                }
+                else if (col == 0 && !preserveSpaces)
+                {
                     for (int j = 0; j < prevIndent; j++) WriteTargetBuffer(IndentString);
                     col = prevIndent * 4;
                 }
@@ -1723,8 +1976,9 @@ namespace PythonCodeGenerator.CodeDom {
             Indent = prevIndent;
         }
 
-        private void WriteLine(string txt) {            
-            WriteLine(txt, false);                      
+        private void WriteLine(string txt)
+        {
+            WriteLine(txt, false);
         }
 
         private void WriteCommentLine(string txt)
@@ -1743,7 +1997,8 @@ namespace PythonCodeGenerator.CodeDom {
             }
         }
 
-        private void WriteLine(string txt, bool preserveSpaces) {
+        private void WriteLine(string txt, bool preserveSpaces)
+        {
             // enforce consistent indenting - we always use 4 spaces for indentation
             // regardless of what the user provided as this guarantees the code compiles.  The
             // user could provide String.Empty for Indent which breaks Python code.
@@ -1751,8 +2006,10 @@ namespace PythonCodeGenerator.CodeDom {
             int prevIndent = Indent;
             Indent = 0;
             string[] lines = txt.Split(new string[] { Environment.NewLine }, StringSplitOptions.None);
-            for (int i = 0; i < lines.Length; i++) {
-                if (col == 0 && !preserveSpaces) {
+            for (int i = 0; i < lines.Length; i++)
+            {
+                if (col == 0 && !preserveSpaces)
+                {
                     for (int j = 0; j < prevIndent; j++) WriteTargetBuffer(IndentString);
                 }
 
@@ -1763,18 +2020,22 @@ namespace PythonCodeGenerator.CodeDom {
             Indent = prevIndent;
         }
 
-        private string IndentString {
-            get {
+        private string IndentString
+        {
+            get
+            {
                 if (String.IsNullOrEmpty(Options.IndentString)) return "    ";
 
                 return Options.IndentString;
             }
         }
-        private void WriteTargetBuffer(string text) {
+        private void WriteTargetBuffer(string text)
+        {
             Output.Write(text);
         }
 
-        private void WriteLineTargetBuffer(string text) {
+        private void WriteLineTargetBuffer(string text)
+        {
             Output.WriteLine(text);
         }
 
