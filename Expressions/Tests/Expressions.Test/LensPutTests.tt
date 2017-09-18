@@ -18,25 +18,25 @@ namespace NMF.Expressions.Test
     static class ArrayExtensions
     {
         [LensPut(typeof(ArrayExtensions), "PutFirst")]
-        public static T FirstOrDefault<T>(this T[] array)
+        public static int FirstOrDefault(this int[] array)
         {
-            return array != null && array.Length > 0 ? array[0] : default(T);
+            return array != null && array.Length > 0 ? array[0] : default(int);
         }
 
-        public static T[] PutFirst<T>(this T[] array, T element)
+        public static int[] PutFirst(this int[] array, int element)
         {
             if (array != null && array.Length > 0)
             {
                 array[0] = element;
                 return array;
             }
-            else if (EqualityComparer<T>.Default.Equals(element, default(T)))
+            else if (EqualityComparer<int>.Default.Equals(element, default(int)))
             {
                 return array;
             }
             else
             {
-                return new T[] { element };
+                return new int[] { element };
             }
         }        
     }
