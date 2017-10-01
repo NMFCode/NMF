@@ -3,6 +3,8 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <RootNamespace>NMF.Synchronizations.Example</RootNamespace>
+    <AssemblyName>Synchronizations.Example</AssemblyName>
   </PropertyGroup>
 
   <ItemGroup>
