@@ -23,7 +23,8 @@ namespace NMF.Expressions.Test.Arithmetic
         // second evaluation: arg1 [operator] arg3 == result2 (second operator value is changed to value of arg3)
         foreach (var operation in new[] { 
             new {op = "&", name = "And", arg1 = 7, arg2 = 21, result = 5, arg3 = 3, result2 = 1 },
-            new {op = "|", name = "Or", arg1 = 7, arg2 = 21, result = 23, arg3 = 13, result2 = 29 }     
+            new {op = "|", name = "Or", arg1 = 7, arg2 = 21, result = 23, arg3 = 13, result2 = 29 },
+            new {op = "^", name = "Xor", arg1 = 5, arg2 = 3, result = 6, arg3 = 2, result2 = 1 }
         } ){
 #>
         #region Bitwise<#=operation.name#>ExpressionTests
