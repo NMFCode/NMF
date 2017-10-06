@@ -19,7 +19,18 @@ namespace NMF.Expressions
 		public static LensPut<TBase<# for(int j = 2; j <= i; j++) { #>, T<#= j #><# } #>, TValue> FromLensPutAttribute(LensPutAttribute lensAttribute, MethodInfo method, INotifyReversableValue<TBase> target)
 		{
 			MethodInfo lensMethod;
-            if (lensAttribute.InitializeProxyMethod(method, new Type[] { typeof(TBase)<# for(int j = 2; j <= i; j++) { #>, typeof(T<#= j #>)<# } #>, typeof(TValue) }, out lensMethod) && lensMethod != null && lensMethod.IsStatic)
+			if (!method.IsStatic && lensAttribute.InitializeProxyMethod(method, new Type[] { <# for(int j = 2; j <= i; j++) { #>typeof(T<#= j #>), <# } #>typeof(TValue) }, out lensMethod) && lensMethod != null && !lensMethod.IsStatic)
+            {
+                if (lensMethod.ReturnType == typeof(void))
+                {
+                    return new PersistentLensPut<TBase<# for(int j = 2; j <= i; j++) { #>, T<#= j #><# } #>, TValue>(ReflectionHelper.CreateDelegate<Action<TBase<# for(int j = 2; j <= i; j++) { #>, T<#= j #><# } #>, TValue>>(lensMethod));
+                }
+                else
+                {
+                    return new NonPersistentLens<TBase<# for(int j = 2; j <= i; j++) { #>, T<#= j #><# } #>, TValue>(ReflectionHelper.CreateDelegate<Func<TBase<# for(int j = 2; j <= i; j++) { #>, T<#= j #><# } #>, TValue, TBase>>(lensMethod), target);
+                }
+			}
+            else if (lensAttribute.InitializeProxyMethod(method, new Type[] { typeof(TBase)<# for(int j = 2; j <= i; j++) { #>, typeof(T<#= j #>)<# } #>, typeof(TValue) }, out lensMethod) && lensMethod != null && lensMethod.IsStatic)
             {
                 if (lensMethod.ReturnType == typeof(void))
                 {

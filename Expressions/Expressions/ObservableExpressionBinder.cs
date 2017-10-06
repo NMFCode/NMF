@@ -15,217 +15,6 @@ namespace NMF.Expressions
         private bool compress;
         private Dictionary<string, object> parameters;
 
-        private static Type[] newTypes =
-        {
-            typeof(ObservableNewExpression<,>),
-            typeof(ObservableNewExpression<,,>),
-            typeof(ObservableNewExpression<,,,>),
-            typeof(ObservableNewExpression<,,,,>),
-            typeof(ObservableNewExpression<,,,,,>),
-            typeof(ObservableNewExpression<,,,,,,>),
-            typeof(ObservableNewExpression<,,,,,,,>),
-            typeof(ObservableNewExpression<,,,,,,,,>),
-            typeof(ObservableNewExpression<,,,,,,,,,>),
-            typeof(ObservableNewExpression<,,,,,,,,,,>),
-            typeof(ObservableNewExpression<,,,,,,,,,,,>),
-            typeof(ObservableNewExpression<,,,,,,,,,,,,>),
-            typeof(ObservableNewExpression<,,,,,,,,,,,,,>),
-            typeof(ObservableNewExpression<,,,,,,,,,,,,,,>),
-            typeof(ObservableNewExpression<,,,,,,,,,,,,,,,>)
-        };
-
-        private static Type[] staticMethodTypes =
-        {
-            typeof(ObservableStaticMethodCall<,>),
-            typeof(ObservableStaticMethodCall<,,>),
-            typeof(ObservableStaticMethodCall<,,,>),
-            typeof(ObservableStaticMethodCall<,,,,>),
-            typeof(ObservableStaticMethodCall<,,,,,>),
-            typeof(ObservableStaticMethodCall<,,,,,,>),
-            typeof(ObservableStaticMethodCall<,,,,,,,>),
-            typeof(ObservableStaticMethodCall<,,,,,,,,>),
-            typeof(ObservableStaticMethodCall<,,,,,,,,,>),
-            typeof(ObservableStaticMethodCall<,,,,,,,,,,>),
-            typeof(ObservableStaticMethodCall<,,,,,,,,,,,>),
-            typeof(ObservableStaticMethodCall<,,,,,,,,,,,,>),
-            typeof(ObservableStaticMethodCall<,,,,,,,,,,,,,>),
-            typeof(ObservableStaticMethodCall<,,,,,,,,,,,,,,>),
-            typeof(ObservableStaticMethodCall<,,,,,,,,,,,,,,,>)
-        };
-
-        private static Type[] staticLensMethodTypes =
-        {
-            typeof(ObservableStaticLensMethodCall<,>),
-            typeof(ObservableStaticLensMethodCall<,,>),
-            typeof(ObservableStaticLensMethodCall<,,,>),
-            typeof(ObservableStaticLensMethodCall<,,,,>),
-            typeof(ObservableStaticLensMethodCall<,,,,,>),
-            typeof(ObservableStaticLensMethodCall<,,,,,,>),
-            typeof(ObservableStaticLensMethodCall<,,,,,,,>),
-            typeof(ObservableStaticLensMethodCall<,,,,,,,,>),
-            typeof(ObservableStaticLensMethodCall<,,,,,,,,,>),
-            typeof(ObservableStaticLensMethodCall<,,,,,,,,,,>),
-            typeof(ObservableStaticLensMethodCall<,,,,,,,,,,,>),
-            typeof(ObservableStaticLensMethodCall<,,,,,,,,,,,,>),
-            typeof(ObservableStaticLensMethodCall<,,,,,,,,,,,,,>),
-            typeof(ObservableStaticLensMethodCall<,,,,,,,,,,,,,,>),
-            typeof(ObservableStaticLensMethodCall<,,,,,,,,,,,,,,,>)
-        };
-
-        private static Type[] memberMethodTypes =
-        {
-            typeof(ObservableMethodCall<,>),
-            typeof(ObservableMethodCall<,,>),
-            typeof(ObservableMethodCall<,,,>),
-            typeof(ObservableMethodCall<,,,,>),
-            typeof(ObservableMethodCall<,,,,,>),
-            typeof(ObservableMethodCall<,,,,,,>),
-            typeof(ObservableMethodCall<,,,,,,,>),
-            typeof(ObservableMethodCall<,,,,,,,,>),
-            typeof(ObservableMethodCall<,,,,,,,,,>),
-            typeof(ObservableMethodCall<,,,,,,,,,,>),
-            typeof(ObservableMethodCall<,,,,,,,,,,,>),
-            typeof(ObservableMethodCall<,,,,,,,,,,,,>),
-            typeof(ObservableMethodCall<,,,,,,,,,,,,,>),
-            typeof(ObservableMethodCall<,,,,,,,,,,,,,,>),
-            typeof(ObservableMethodCall<,,,,,,,,,,,,,,,>),
-            typeof(ObservableMethodCall<,,,,,,,,,,,,,,,,>)
-        };
-
-        private static Type[] memberLensMethodTypes =
-        {
-            typeof(ObservableLensMethodCall<,>),
-            typeof(ObservableLensMethodCall<,,>),
-            typeof(ObservableLensMethodCall<,,,>),
-            typeof(ObservableLensMethodCall<,,,,>),
-            typeof(ObservableLensMethodCall<,,,,,>),
-            typeof(ObservableLensMethodCall<,,,,,,>),
-            typeof(ObservableLensMethodCall<,,,,,,,>),
-            typeof(ObservableLensMethodCall<,,,,,,,,>),
-            typeof(ObservableLensMethodCall<,,,,,,,,,>),
-            typeof(ObservableLensMethodCall<,,,,,,,,,,>),
-            typeof(ObservableLensMethodCall<,,,,,,,,,,,>),
-            typeof(ObservableLensMethodCall<,,,,,,,,,,,,>),
-            typeof(ObservableLensMethodCall<,,,,,,,,,,,,,>),
-            typeof(ObservableLensMethodCall<,,,,,,,,,,,,,,>),
-            typeof(ObservableLensMethodCall<,,,,,,,,,,,,,,,>)
-        };
-
-        private static Type[] staticProxyCallTypes =
-        {
-            typeof(ObservableStaticProxyCall<,>),
-            typeof(ObservableStaticProxyCall<,,>),
-            typeof(ObservableStaticProxyCall<,,,>),
-            typeof(ObservableStaticProxyCall<,,,,>),
-            typeof(ObservableStaticProxyCall<,,,,,>),
-            typeof(ObservableStaticProxyCall<,,,,,,>),
-            typeof(ObservableStaticProxyCall<,,,,,,,>),
-            typeof(ObservableStaticProxyCall<,,,,,,,,>),
-            typeof(ObservableStaticProxyCall<,,,,,,,,,>),
-            typeof(ObservableStaticProxyCall<,,,,,,,,,,>),
-            typeof(ObservableStaticProxyCall<,,,,,,,,,,,>),
-            typeof(ObservableStaticProxyCall<,,,,,,,,,,,,>),
-            typeof(ObservableStaticProxyCall<,,,,,,,,,,,,,>),
-            typeof(ObservableStaticProxyCall<,,,,,,,,,,,,,,>),
-            typeof(ObservableStaticProxyCall<,,,,,,,,,,,,,,,>)
-        };
-
-        private static Type[] memberProxyCallTypes =
-        {
-            typeof(ObservableMethodProxyCall<,>),
-            typeof(ObservableMethodProxyCall<,,>),
-            typeof(ObservableMethodProxyCall<,,,>),
-            typeof(ObservableMethodProxyCall<,,,,>),
-            typeof(ObservableMethodProxyCall<,,,,,>),
-            typeof(ObservableMethodProxyCall<,,,,,,>),
-            typeof(ObservableMethodProxyCall<,,,,,,,>),
-            typeof(ObservableMethodProxyCall<,,,,,,,,>),
-            typeof(ObservableMethodProxyCall<,,,,,,,,,>),
-            typeof(ObservableMethodProxyCall<,,,,,,,,,,>),
-            typeof(ObservableMethodProxyCall<,,,,,,,,,,,>),
-            typeof(ObservableMethodProxyCall<,,,,,,,,,,,,>),
-            typeof(ObservableMethodProxyCall<,,,,,,,,,,,,,>),
-            typeof(ObservableMethodProxyCall<,,,,,,,,,,,,,,>),
-            typeof(ObservableMethodProxyCall<,,,,,,,,,,,,,,,>),
-            typeof(ObservableMethodProxyCall<,,,,,,,,,,,,,,,,>),
-        };
-
-        private static Type[] staticLensProxyCallTypes =
-        {
-            typeof(ObservableStaticLensProxyCall<,>),
-            typeof(ObservableStaticLensProxyCall<,,>),
-            typeof(ObservableStaticLensProxyCall<,,,>),
-            typeof(ObservableStaticLensProxyCall<,,,,>),
-            typeof(ObservableStaticLensProxyCall<,,,,,>),
-            typeof(ObservableStaticLensProxyCall<,,,,,,>),
-            typeof(ObservableStaticLensProxyCall<,,,,,,,>),
-            typeof(ObservableStaticLensProxyCall<,,,,,,,,>),
-            typeof(ObservableStaticLensProxyCall<,,,,,,,,,>),
-            typeof(ObservableStaticLensProxyCall<,,,,,,,,,,>),
-            typeof(ObservableStaticLensProxyCall<,,,,,,,,,,,>),
-            typeof(ObservableStaticLensProxyCall<,,,,,,,,,,,,>),
-            typeof(ObservableStaticLensProxyCall<,,,,,,,,,,,,,>),
-            typeof(ObservableStaticLensProxyCall<,,,,,,,,,,,,,,>)
-        };
-
-        private static Type[] memberLensProxyCallTypes =
-        {
-            typeof(ObservableMethodLensProxyCall<,>),
-            typeof(ObservableMethodLensProxyCall<,,>),
-            typeof(ObservableMethodLensProxyCall<,,,>),
-            typeof(ObservableMethodLensProxyCall<,,,,>),
-            typeof(ObservableMethodLensProxyCall<,,,,,>),
-            typeof(ObservableMethodLensProxyCall<,,,,,,>),
-            typeof(ObservableMethodLensProxyCall<,,,,,,,>),
-            typeof(ObservableMethodLensProxyCall<,,,,,,,,>),
-            typeof(ObservableMethodLensProxyCall<,,,,,,,,,>),
-            typeof(ObservableMethodLensProxyCall<,,,,,,,,,,>),
-            typeof(ObservableMethodLensProxyCall<,,,,,,,,,,,>),
-            typeof(ObservableMethodLensProxyCall<,,,,,,,,,,,,>),
-            typeof(ObservableMethodLensProxyCall<,,,,,,,,,,,,,>),
-            typeof(ObservableMethodLensProxyCall<,,,,,,,,,,,,,,>),
-            typeof(ObservableMethodLensProxyCall<,,,,,,,,,,,,,,,>)
-        };
-
-        private static Type[] funcTypes =
-        {
-            typeof(ObservingFunc<,>),
-            typeof(ObservingFunc<,,>),
-            typeof(ObservingFunc<,,,>),
-            typeof(ObservingFunc<,,,,>),
-            typeof(ObservingFunc<,,,,,>),
-            typeof(ObservingFunc<,,,,,,>),
-            typeof(ObservingFunc<,,,,,,,>),
-            typeof(ObservingFunc<,,,,,,,,>),
-            typeof(ObservingFunc<,,,,,,,,,>),
-            typeof(ObservingFunc<,,,,,,,,,,>),
-            typeof(ObservingFunc<,,,,,,,,,,,>),
-            typeof(ObservingFunc<,,,,,,,,,,,,>),
-            typeof(ObservingFunc<,,,,,,,,,,,,,>),
-            typeof(ObservingFunc<,,,,,,,,,,,,,,>),
-            typeof(ObservingFunc<,,,,,,,,,,,,,,,>)
-        };
-
-        private static Type[] memberSimpleProxyTypes =
-        {
-            typeof(ObservableSimpleMethodProxyCall<,>),
-            typeof(ObservableSimpleMethodProxyCall<,,>),
-            typeof(ObservableSimpleMethodProxyCall<,,,>),
-            typeof(ObservableSimpleMethodProxyCall<,,,,>),
-            typeof(ObservableSimpleMethodProxyCall<,,,,,>),
-            typeof(ObservableSimpleMethodProxyCall<,,,,,,>),
-            typeof(ObservableSimpleMethodProxyCall<,,,,,,,>),
-            typeof(ObservableSimpleMethodProxyCall<,,,,,,,,>),
-            typeof(ObservableSimpleMethodProxyCall<,,,,,,,,,>),
-            typeof(ObservableSimpleMethodProxyCall<,,,,,,,,,,>),
-            typeof(ObservableSimpleMethodProxyCall<,,,,,,,,,,,>),
-            typeof(ObservableSimpleMethodProxyCall<,,,,,,,,,,,,>),
-            typeof(ObservableSimpleMethodProxyCall<,,,,,,,,,,,,,>),
-            typeof(ObservableSimpleMethodProxyCall<,,,,,,,,,,,,,,>),
-            typeof(ObservableSimpleMethodProxyCall<,,,,,,,,,,,,,,,>),
-            typeof(ObservableSimpleMethodProxyCall<,,,,,,,,,,,,,,,,>)
-        };
-
         private static MethodInfo memberBindingCreateProperty = ReflectionHelper.GetFunc<MemberAssignment, ObservableExpressionBinder, INotifyExpression<object>, ObservableMemberBinding<object>>((node, binder, target) => CreateProperty<object, object>(node, binder, target)).GetGenericMethodDefinition();
 
         public ObservableExpressionBinder(bool compress = false, IDictionary<string, object> parameterMappings = null)
@@ -828,7 +617,7 @@ namespace NMF.Expressions
                         CheckForOutParameter(proxyMethod.GetParameters());
                         CheckReturnTypeIsCorrect(node, proxyMethod);
                         var target = Visit(node.Object) as INotifyExpression;
-                        if (target.IsConstant)
+                        if (target.IsConstant && lensAttribute == null)
                         {
                             var args = new Object[node.Arguments.Count];
                             for (int i = 0; i < node.Arguments.Count; i++)
@@ -839,7 +628,10 @@ namespace NMF.Expressions
                         }
                         else
                         {
-                            return System.Activator.CreateInstance(memberSimpleProxyTypes[node.Arguments.Count].MakeGenericType(types), node, this, proxyMethod) as Expression;
+                            var implTypes = lensAttribute == null
+                                ? ObservableExpressionTypes.ObservableSimpleMethodProxyCall
+                                : ObservableExpressionTypes.ObservableSimpleLensMethodProxyCall;
+                            return System.Activator.CreateInstance(implTypes[node.Arguments.Count].MakeGenericType(types), node, this, proxyMethod) as Expression;
                         }
                     }
                     else if (!staticMethod && proxyAttribute.InitializeProxyMethod(node.Method, typesArg, out proxyMethod))
@@ -850,7 +642,7 @@ namespace NMF.Expressions
                         }
                         CheckForOutParameter(proxyMethod.GetParameters());
                         CheckReturnTypeIsCorrect(node, proxyMethod);
-                        var typeArray = lensAttribute == null ? memberProxyCallTypes : memberLensProxyCallTypes;
+                        var typeArray = lensAttribute == null ? ObservableExpressionTypes.ObservableMethodProxyCall : ObservableExpressionTypes.ObservableMethodLensProxyCall;
                         return System.Activator.CreateInstance(typeArray[typesLength - 2].MakeGenericType(types), node, this, proxyMethod) as Expression;
                     }
                     else if (proxyAttribute.InitializeProxyMethod(node.Method, typesArgStaticInc, out proxyMethod))
@@ -927,7 +719,7 @@ namespace NMF.Expressions
                         }
                         CheckForOutParameter(proxyMethod.GetParameters());
                         CheckReturnTypeIsCorrect(node, proxyMethod);
-                        var typeArray = lensAttribute == null ? staticProxyCallTypes : staticLensProxyCallTypes;
+                        var typeArray = lensAttribute == null ? ObservableExpressionTypes.ObservableStaticProxyCall : ObservableExpressionTypes.ObservableStaticLensProxyCall;
                         return System.Activator.CreateInstance(typeArray[typesLength - 2].MakeGenericType(types), node, this, proxyMethod) as Expression;
                     }
                     else
@@ -941,22 +733,22 @@ namespace NMF.Expressions
             {
                 if (lensAttribute != null)
                 {
-                    methodArray = staticLensMethodTypes;
+                    methodArray = ObservableExpressionTypes.ObservableStaticLensMethodCall;
                 }
                 else
                 {
-                    methodArray = staticMethodTypes;
+                    methodArray = ObservableExpressionTypes.ObservableStaticMethodCall;
                 }
             }
             else
             {
                 if (lensAttribute != null)
                 {
-                    methodArray = memberLensMethodTypes;
+                    methodArray = ObservableExpressionTypes.ObservableLensMethodCall;
                 }
                 else
                 {
-                    methodArray = memberMethodTypes;
+                    methodArray = ObservableExpressionTypes.ObservableMethodCall;
                 }
             }
             return System.Activator.CreateInstance(methodArray[typesLength - 2].MakeGenericType(types), node, this) as Expression;
@@ -998,7 +790,7 @@ namespace NMF.Expressions
                 types[i] = node.Arguments[i].Type;
             }
             types[node.Arguments.Count] = node.Type;
-            return Activator.CreateInstance(newTypes[node.Arguments.Count - 1].MakeGenericType(types), node, this) as Expression;
+            return Activator.CreateInstance(ObservableExpressionTypes.ObservableNewExpression[node.Arguments.Count - 1].MakeGenericType(types), node, this) as Expression;
         }
 
         protected override Expression VisitNewArray(NewArrayExpression node)

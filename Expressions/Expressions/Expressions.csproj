@@ -86,12 +86,22 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>ObservableDeferredProxyElement.tt</DependentUpon>
     </Compile>
+    <Compile Include="ObservableExpressionTypes.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>ObservableExpressionTypes.tt</DependentUpon>
+    </Compile>
     <Compile Include="ObservableLensMethodCall.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>ObservableLensMethodCall.tt</DependentUpon>
     </Compile>
     <Compile Include="ObservableLensPutProxy.cs" />
+    <Compile Include="ObservableSimpleLensMethodProxyCall.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>ObservableSimpleLensMethodProxyCall.tt</DependentUpon>
+    </Compile>
     <Compile Include="ObservableSimpleMethodProxyCall.cs">
       <DependentUpon>ObservableSimpleMethodProxyCall.tt</DependentUpon>
       <AutoGen>True</AutoGen>
@@ -258,8 +268,16 @@
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>ObservableDeferredProxyElement.cs</LastGenOutput>
     </Content>
+    <Content Include="ObservableExpressionTypes.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>ObservableExpressionTypes.cs</LastGenOutput>
+    </Content>
     <Content Include="ObservableLensMethodCall.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
+    </Content>
+    <Content Include="ObservableSimpleLensMethodProxyCall.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>ObservableSimpleLensMethodProxyCall.cs</LastGenOutput>
     </Content>
     <Content Include="ObservableStaticLensMethodCall.tt">
       <Generator>TextTemplatingFileGenerator</Generator>

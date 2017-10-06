@@ -18,7 +18,7 @@ namespace NMF.Expressions
     for(int i = 0; i <= 15; i++)
     {
 #>
-    internal sealed class ObservableSimpleMethodProxyCall<T, <# for (int j = 1; j <= i; j++) { #>T<#= j #>, <# } #>TResult> : ObservableProxyCallBase<TResult>
+    internal class ObservableSimpleMethodProxyCall<T, <# for (int j = 1; j <= i; j++) { #>T<#= j #>, <# } #>TResult> : ObservableProxyCallBase<TResult>
     {
         public ObservableSimpleMethodProxyCall(MethodCallExpression node, ObservableExpressionBinder binder, MethodInfo proxyMethod)
             : this(binder.VisitObservable<T>(ExpressionHelper.GetArg(node, 0)), proxyMethod<# for (int j = 1; j <= i; j++) { #>, binder.VisitObservable<T<#= j #>>(ExpressionHelper.GetArg(node, <#= j #>))<# } #>) { }
