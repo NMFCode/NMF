@@ -49,20 +49,14 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="..\Expressions.Test\Arithmetic\AddExpressionTests.cs">
-      <Link>Arithmetic\AddExpressionTests.cs</Link>
+    <Compile Include="..\Expressions.Test\Arithmetic\BasicArithmeticExpressionTests.cs">
+      <Link>Arithmetic\BasicArithmeticExpressionTests.cs</Link>
+    </Compile>
+    <Compile Include="..\Expressions.Test\Arithmetic\BitwiseExpressionTests.cs">
+      <Link>Arithmetic\BitwiseExpressionTests.cs</Link>
     </Compile>
     <Compile Include="..\Expressions.Test\Arithmetic\BinaryExpressionTests.cs">
       <Link>Arithmetic\BinaryExpressionTests.cs</Link>
-    </Compile>
-    <Compile Include="..\Expressions.Test\Arithmetic\BitwiseAndExpressionTests.cs">
-      <Link>Arithmetic\BitwiseAndExpressionTests.cs</Link>
-    </Compile>
-    <Compile Include="..\Expressions.Test\Arithmetic\BitwiseOrExpressionTests.cs">
-      <Link>Arithmetic\BitwiseOrExpressionTests.cs</Link>
-    </Compile>
-    <Compile Include="..\Expressions.Test\Arithmetic\DivideExpressionTests.cs">
-      <Link>Arithmetic\DivideExpressionTests.cs</Link>
     </Compile>
     <Compile Include="..\Expressions.Test\Arithmetic\IntegerExprssionTests.cs">
       <Link>Arithmetic\IntegerExprssionTests.cs</Link>
@@ -70,17 +64,11 @@
     <Compile Include="..\Expressions.Test\Arithmetic\ModuloExpressionTests.cs">
       <Link>Arithmetic\ModuloExpressionTests.cs</Link>
     </Compile>
-    <Compile Include="..\Expressions.Test\Arithmetic\MultiplyExpressionTests.cs">
-      <Link>Arithmetic\MultiplyExpressionTests.cs</Link>
-    </Compile>
     <Compile Include="..\Expressions.Test\Arithmetic\ShiftExpressionTests.cs">
       <Link>Arithmetic\ShiftExpressionTests.cs</Link>
     </Compile>
     <Compile Include="..\Expressions.Test\Arithmetic\ShortcutOperatorTests.cs">
       <Link>Arithmetic\ShortcutOperatorTests.cs</Link>
-    </Compile>
-    <Compile Include="..\Expressions.Test\Arithmetic\SubtractExpressionTests.cs">
-      <Link>Arithmetic\SubtractExpressionTests.cs</Link>
     </Compile>
     <Compile Include="..\Expressions.Test\CoalesceTests.cs">
       <Link>CoalesceTests.cs</Link>
@@ -114,6 +102,15 @@
     </Compile>
     <Compile Include="..\Expressions.Test\FuncTests.cs">
       <Link>FuncTests.cs</Link>
+    </Compile>
+    <Compile Include="..\Expressions.Test\LensPutProxyTests.cs">
+      <Link>LensPutProxyTests.cs</Link>
+    </Compile>
+    <Compile Include="..\Expressions.Test\LensPutTests.cs">
+      <Link>LensPutTests.cs</Link>
+    </Compile>
+    <Compile Include="..\Expressions.Test\MethodCallTestsDynamic.cs">
+      <Link>MethodCallTestsDynamic.cs</Link>
     </Compile>
     <Compile Include="..\Expressions.Test\IndexExpressionTests.cs">
       <Link>IndexExpressionTests.cs</Link>
