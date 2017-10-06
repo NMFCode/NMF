@@ -12,7 +12,7 @@
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{3AC096D0-A1C2-E12C-1390-A8335801FDAB};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
-    <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
+    <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">15.0</VisualStudioVersion>
     <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
     <ReferencePath>$(ProgramFiles)\Common Files\microsoft shared\VSTT\$(VisualStudioVersion)\UITestExtensionPackages</ReferencePath>
     <IsCodedUITest>False</IsCodedUITest>
@@ -55,12 +55,40 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Arithmetic\BitwiseAndExpressionTests.cs" />
-    <Compile Include="Arithmetic\BitwiseOrExpressionTests.cs" />
+    <Compile Include="Arithmetic\BasicArithmeticExpressionTests.cs">
+      <DependentUpon>BasicArithmeticExpressionTests.tt</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <Compile Include="Arithmetic\BitwiseExpressionTests.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>BitwiseExpressionTests.tt</DependentUpon>
+    </Compile>
     <Compile Include="Arithmetic\IntegerExprssionTests.cs" />
     <Compile Include="Arithmetic\ShiftExpressionTests.cs" />
     <Compile Include="Arithmetic\ModuloExpressionTests.cs" />
     <Compile Include="Arithmetic\ShortcutOperatorTests.cs" />
+    <Compile Include="LensPutProxyTests.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>LensPutProxyTests.tt</DependentUpon>
+    </Compile>
+    <Compile Include="LensPutTests.cs">
+      <DependentUpon>LensPutTests.tt</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <Compile Include="FuncTests.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>FuncTests.tt</DependentUpon>
+    </Compile>
+    <Compile Include="MethodCallTestsDynamic.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>MethodCallTestsDynamic.tt</DependentUpon>
+    </Compile>
     <Compile Include="NewArrayExpressionTests.cs" />
     <Compile Include="MemberExpressionTests.cs" />
     <Compile Include="NewExpressionTests.cs" />
@@ -83,10 +111,6 @@
     <Compile Include="Comparison\EqualsTests.cs" />
     <Compile Include="CoalesceTests.cs" />
     <Compile Include="Comparison\GreaterThanExpressionTests.cs" />
-    <Compile Include="Arithmetic\AddExpressionTests.cs" />
-    <Compile Include="Arithmetic\SubtractExpressionTests.cs" />
-    <Compile Include="Arithmetic\MultiplyExpressionTests.cs" />
-    <Compile Include="Arithmetic\DivideExpressionTests.cs" />
     <Compile Include="Comparison\GreaterThanEqualsExpressionTests.cs" />
     <Compile Include="Comparison\LessThanExpressionTests.cs" />
     <Compile Include="Comparison\LessThanEqualsExpressionTests.cs" />
@@ -94,16 +118,48 @@
     <Compile Include="DynamicTests.cs" />
     <Compile Include="ExceptionTests.cs" />
     <Compile Include="ProxyCallExpressionTests.cs" />
-    <Compile Include="FuncTests.cs" />
-    <Compile Include="LensPutTests.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\Expressions.Linq\Expressions.Linq.csproj">
+      <Project>{e82d72a1-90f6-4341-a82d-d6b40349df63}</Project>
+      <Name>Expressions.Linq</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\Expressions\Expressions.csproj">
       <Project>{afca9d1d-26a6-482a-a5ab-0827ad0fd677}</Project>
       <Name>Expressions</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Arithmetic\BasicArithmeticExpressionTests.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>BasicArithmeticExpressionTests.cs</LastGenOutput>
+    </Content>
+    <Content Include="Arithmetic\BitwiseExpressionTests.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>BitwiseExpressionTests.cs</LastGenOutput>
+    </Content>
+    <Content Include="LensPutProxyTests.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>LensPutProxyTests.cs</LastGenOutput>
+    </Content>
+    <Content Include="LensPutTests.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>LensPutTests.cs</LastGenOutput>
+    </Content>
+    <Content Include="FuncTests.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>FuncTests.cs</LastGenOutput>
+    </Content>
+    <Content Include="MethodCallTestsDynamic.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>MethodCallTestsDynamic.cs</LastGenOutput>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="TestGenerationSettings.t4" />
     <None Include="packages.config" />
   </ItemGroup>
   <Choose>
@@ -126,6 +182,17 @@
   </Choose>
   <Import Project="$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets" Condition="Exists('$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets')" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <!-- Default VisualStudioVersion to 15 (VS2017) -->
+    <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">15.0</VisualStudioVersion>
+    <!-- Determinate VSToolsPath -->
+    <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
+    <!-- Run T4 generation if there are outdated files -->
+    <TransformOnBuild>True</TransformOnBuild>
+    <TransformOutOfDateOnly>True</TransformOutOfDateOnly>
+  </PropertyGroup>
+  <!-- Import TextTemplating target -->
+  <Import Project="$(VSToolsPath)\TextTemplating\Microsoft.TextTemplating.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>
       <ErrorText>Dieses Projekt verweist auf mindestens ein NuGet-Paket, das auf diesem Computer fehlt. Verwenden Sie die Wiederherstellung von NuGet-Paketen, um die fehlenden Dateien herunterzuladen. Weitere Informationen finden Sie unter "http://go.microsoft.com/fwlink/?LinkID=322105". Die fehlende Datei ist "{0}".</ErrorText>

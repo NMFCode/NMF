@@ -1,0 +1,42 @@
+﻿<#@ template debug="false" hostspecific="false" language="C#" #>
+<#@ assembly name="System.Core" #>
+<#@ import namespace="System.Linq" #>
+<#@ import namespace="System.Text" #>
+<#@ import namespace="System.Collections.Generic" #>
+<#@ output extension=".cs" #>
+<#@ include file="TestGenerationSettings.t4" once="true"#>
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+
+namespace NMF.Expressions.Test
+{
+    [TestClass]
+    public class FuncTests
+    {
+<#
+    // Variable for generating arguments for lambda expression
+    // Form: (object o[0-9]+)(, object o[0-9]+)*
+    string tempArgsText = "object o1";
+    // Variable for genarating parameter for function call
+    // Form: (\(object\) null)(, \(object\) null)*
+    string tempValueText = "(object)null";
+
+    // Generate a test for each number of parameters (maxNumParameter is configured globally in TestGenerationSettings.t4)
+    for(int i=1;i<=maxNumParameter;i++)
+    {        
+#>
+        [TestMethod]
+        public void FuncT<#=i#>_Invoke_ReturnsCorrectResult()
+        {
+            var test = Observable.Func((<#=tempArgsText#>) => "42");
+            var result = test.Observe(<#=tempValueText#>);
+            Assert.AreEqual("42", result.Value);
+        }
+
+<#
+        // Prepare variables for the next loop cycle (+ 1 variable)
+        tempArgsText += ", object o"+(i+1);
+        tempValueText += ", (object)null";
+    } 
+#>
+    }
+}

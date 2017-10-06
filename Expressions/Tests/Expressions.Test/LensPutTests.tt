@@ -1,0 +1,234 @@
+﻿<#@ template debug="false" hostspecific="false" language="C#" #>
+<#@ assembly name="System.Core" #>
+<#@ import namespace="System.Linq" #>
+<#@ import namespace="System.Text" #>
+<#@ import namespace="System.Collections.Generic" #>
+<#@ output extension=".cs" #>
+<#@ include file="TestGenerationSettings.t4" once="true"#>
+using System;
+using System.Collections.Generic;
+using System.Linq.Expressions;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+
+namespace NMF.Expressions.Test
+{ 
+
+    #region Helper
+
+    static class ArrayExtensions
+    {
+        [LensPut(typeof(ArrayExtensions), "PutFirst")]
+        public static int FirstOrDefault(this int[] array)
+        {
+            return array != null && array.Length > 0 ? array[0] : default(int);
+        }
+
+        public static int[] PutFirst(this int[] array, int element)
+        {
+            if (array != null && array.Length > 0)
+            {
+                array[0] = element;
+                return array;
+            }
+            else if (element == default(int))
+            {
+                return array;
+            }
+            else
+            {
+                return new int[] { element };
+            }
+        }        
+    }
+
+    #endregion
+
+    [TestClass]
+    public class LensPutTests
+    {
+        private Func<Dummy<int[]>, int> getter;
+        private Action<Dummy<int[]>, int> setter;
+
+        [TestInitialize]
+        public void CreateGetterAndSetter()
+        {
+            Expression<Func<Dummy<int[]>, int>> expression = dummy => dummy.Item.FirstOrDefault();
+
+            getter = expression.Compile();
+            var setExp = SetExpressionRewriter.CreateSetter(expression);
+            setter = setExp.Compile();
+        }
+
+<#
+// Test configuartions
+// Syntax:
+// name Name: name describing the configuartion (used for methode name generation)
+// array Expression: expression that returns an int array (or something that can be casted to an int array)
+foreach (var testOption in new[] { 
+    new {name = "EmptyArray", array = "new int[] { }" },
+    new {name = "NullArray", array = "null" },
+    new {name = "InitializedArray", array = "new int[] { 1, 8, 15 }" }
+} ){
+// All first elements of the results are 0 besides 'InitializedArray' here we choose '1' to clearly separate it from the default value 
+    int firstArrayElementTestValue = testOption.name == "InitializedArray"?1:0;
+#>
+<#      // Test method for all normal PutGet-Tests #>
+        [TestMethod]
+        public void PutGetFor<#= testOption.name #>()
+        {
+            var dummy = new ObservableDummy<int[]>(<#= testOption.array #>);
+            var test = Observable.Reversable(() => dummy.Item.FirstOrDefault());
+
+            Assert.AreEqual(<#= firstArrayElementTestValue #>, test.Value);
+            test.Value = 42;
+            Assert.AreEqual(42, dummy.Item[0]);
+<# // Disable an unsported test for the InitializedArray configuration #>
+<#  if(testOption.name == "InitializedArray")
+{
+#>
+            // Arrays do not support an update notification for entries and therefore, the following assertions fails
+            // Assert.AreEqual(42, test.Value);
+<# 
+    }
+    else
+    {
+#>
+            Assert.AreEqual(42, test.Value);
+<#
+    }
+#>
+        }
+<#      // Test method for all normal GetPut-Tests #>
+        [TestMethod]
+        public void GetPutFor<#= testOption.name #>()
+        {
+            int[] array = <#= testOption.array #>;
+            var dummy = new Dummy<int[]>(array);
+            var test = Observable.Reversable(() => dummy.Item.FirstOrDefault());
+
+            Assert.AreEqual(<#= firstArrayElementTestValue #>, test.Value);
+            test.Value = 0;
+            if(array != null && array.Length > 0)
+            {
+                Assert.AreEqual(array[0], 0);
+            }
+            Assert.AreEqual(array, dummy.Item);
+
+            test.Value = 1;
+            if(array != null && array.Length > 0)
+            {
+                Assert.AreEqual(array[0], 1);
+            }
+            Assert.AreEqual(1, dummy.Item[0]);
+        }
+
+<#      // Test method for all PutGet-Tests with function #>
+        [TestMethod]
+        public void PutGetFor<#= testOption.name #>WithFunc()
+        {
+            var dummy = new ObservableDummy<int[]>(<#= testOption.array #>);
+            var func = Observable.Func<Dummy<int[]>, int>(d => d.Item.FirstOrDefault());
+            var test = func.InvokeReversable(dummy);
+
+<# // Fake usage to keep dependency graph enabled for the InitializedArray configuration #>
+<#  if(testOption.name == "InitializedArray")
+{
+#>            
+            // Fake usage to keep dependency graph enabled
+            test.Successors.SetDummy();
+<#
+}
+#>
+            Assert.AreEqual(<#= firstArrayElementTestValue #>, test.Value);
+            test.Value = 42;
+            Assert.AreEqual(42, dummy.Item[0]);
+<# // Disable an unsported test for the InitializedArray configuration #>
+<#  if(testOption.name == "InitializedArray")
+{
+#>
+            // Arrays do not support an update notification for entries and therefore, the following assertions fails
+            // Assert.AreEqual(42, test.Value);
+<# 
+    }
+    else
+    {
+#>
+            Assert.AreEqual(42, test.Value);
+<#
+    }
+#>
+        }
+
+<#      // Test method for all GetPut-Tests with function #>
+        [TestMethod]
+        public void GetPutFor<#= testOption.name #>WithFunc()
+        {
+            int[] array = <#= testOption.array #>;
+            var dummy = new Dummy<int[]>(array);
+            var func = Observable.Func<Dummy<int[]>, int>(d => d.Item.FirstOrDefault());
+            var test = func.InvokeReversable(dummy);
+<# // Fake usage to keep dependency graph enabled for the InitializedArray configuration #>
+<#  if(testOption.name == "InitializedArray")
+{
+#>            
+            // Fake usage to keep dependency graph enabled
+            test.Successors.SetDummy();
+<#
+}
+#>
+            Assert.AreEqual(<#= firstArrayElementTestValue #>, test.Value);
+            test.Value = 0;
+            if(array != null && array.Length > 0)
+            {
+                Assert.AreEqual(array[0], 0);
+            }
+            Assert.AreEqual(array, dummy.Item);
+
+            test.Value = 1;
+            if(array != null && array.Length > 0)
+            {
+                Assert.AreEqual(array[0], 1);
+            }
+            Assert.AreEqual(1, dummy.Item[0]);
+        }
+
+<#      // Test method for all PutGet-Tests with compliation #>
+        [TestMethod]
+        public void PutGetForCompiled<#= testOption.name #>()
+        {
+            var dummy = new Dummy<int[]>(<#= testOption.array #>);
+
+            Assert.AreEqual(<#= firstArrayElementTestValue #>, getter(dummy));
+            setter(dummy, 42);
+            Assert.AreEqual(42, dummy.Item[0]);
+            Assert.AreEqual(42, getter(dummy));
+        }
+        
+<#      // Test method for all GetPut-Tests with compliation #>
+        [TestMethod]
+        public void GetPutForCompiled<#= testOption.name #>()
+        {
+            int[] array = <#= testOption.array #>;
+            var dummy = new Dummy<int[]>(array);
+
+            Assert.AreEqual(<#= firstArrayElementTestValue #>, getter(dummy));
+            setter(dummy, 0);
+            if(array != null && array.Length > 0)
+            {
+                Assert.AreEqual(array[0], 0);
+            }
+            Assert.AreEqual(array, dummy.Item);
+
+            setter(dummy, 1);
+            if(array != null && array.Length > 0)
+            {
+                Assert.AreEqual(array[0], 1);
+            }
+            Assert.AreEqual(1, dummy.Item[0]);
+        }
+
+<#
+}
+#>
+    }
+}
