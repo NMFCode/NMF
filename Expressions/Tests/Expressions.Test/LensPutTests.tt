@@ -30,7 +30,7 @@ namespace NMF.Expressions.Test
                 array[0] = element;
                 return array;
             }
-            else if (EqualityComparer<int>.Default.Equals(element, default(int)))
+            else if (element == default(int))
             {
                 return array;
             }
