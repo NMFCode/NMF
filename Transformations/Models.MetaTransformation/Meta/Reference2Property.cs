@@ -434,7 +434,7 @@ namespace NMF.Models.Meta
                     newCheck.TrueStatements.Add(new CodeAssignStatement(new CodePropertyReferenceExpression(val, "Parent"), thisRef));
                 }
 
-                var resetEvent = property.IsContainment ? "ParentChanged" : "Deleted";
+                var resetEvent = property.IsContainment || (property.Opposite?.IsContainment).GetValueOrDefault() ? "ParentChanged" : "Deleted";
 
                 oldCheck.TrueStatements.Add(new CodeRemoveEventStatement(
                     new CodeEventReferenceExpression(oldRef, resetEvent),
