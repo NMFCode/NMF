@@ -142,20 +142,11 @@ namespace NMF.Expressions.Test
     }
 }
 <#+
-    // Function to build a string out of a recurring formatable element
-    // str: the recurring parameterizable string ({0} will be replaced with the instance counter value)
-    // separator: string to put between the concatenated elements
-    // i: number of times str should be concatenated
-    // offset: will be added to the instance counter value before replacing {0}
-    public string Interpolate(string str, string separator, int i, int offset){
-        return String.Join(separator,Enumerable.Range(1, i).Select(x => String.Format(str, x + offset)));
-    }
-
     // Function to generate comma spearated string of the numbers 1 to length
     // length: count of numbers to generate
     // offset: offset is added to each number before putting it to the result string
     // lastOffset: lastOffset is added to the last numer (and only to this number) before putting it to the result string
-    public string GenerateTestString(int length, int offset, int lastOffset)
+    private string GenerateTestString(int length, int offset, int lastOffset)
     {
         var list = Enumerable.Range(1, length).ToList();
         list[length-1] += lastOffset;

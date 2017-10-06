@@ -75,18 +75,3 @@ namespace NMF.Expressions.Test.Arithmetic
 #>
     }
 }
-<#+
-    // Helper function to change the first letter of a string to uppercase
-    // Required for generating consistent methode names
-    public string UppercaseFirst(string s)
-    {
-        if (string.IsNullOrEmpty(s))
-        {
-            return string.Empty;
-        }
-
-        char[] charArray = s.ToCharArray();
-        charArray[0] = char.ToUpper(charArray[0]);
-        return new string(charArray);
-    }
-#>

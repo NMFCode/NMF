@@ -13,3 +13,28 @@
         return;
     }   
 #>
+<#+
+    // Helper function to change the first letter of a string to uppercase
+    // Required for generating consistent methode names
+    public string UppercaseFirst(string s)
+    {
+        if (string.IsNullOrEmpty(s))
+        {
+            return string.Empty;
+        }
+
+        char[] charArray = s.ToCharArray();
+        charArray[0] = char.ToUpper(charArray[0]);
+        return new string(charArray);
+    }
+#>
+<#+
+    // Function to build a string out of a recurring formatable element
+    // str: the recurring parameterizable string ({0} will be replaced with the instance counter value)
+    // separator: string to put between the concatenated elements
+    // i: number of times str should be concatenated
+    // offset: will be added to the instance counter value before replacing {0}
+    public string Interpolate(string str, string separator, int i, int offset){
+        return String.Join(separator,Enumerable.Range(1, i).Select(x => String.Format(str, x + offset)));
+    }
+#>

@@ -232,20 +232,11 @@ namespace NMF.Expressions.Test
 }
 
 <#+
-    // Function to build a string out of a recurring formatable element
-    // str: the recurring parameterizable string ({0} will be replaced with the instance counter value)
-    // separator: string to put between the concatenated elements
-    // i: number of times str should be concatenated
-    // offset: will be added to the instance counter value before replacing {0}
-    public string Interpolate(string str, string separator, int i, int offset){
-        return String.Join(separator,Enumerable.Range(1, i).Select(x => String.Format(str, x + offset)));
-    }
-
     // Function to generate a string of the chars from starting from A
     // length: count of chars to generate
     // upperCount: the number of chars that should be uppercase, all following will be lowercase
     // example (length:5, upperCount:2) ==> "ABcde"
-    public string GenerateTestStringUpper(int length, int upperCount)
+    private string GenerateTestStringUpper(int length, int upperCount)
     {
         return String.Join("",Enumerable.Range(1, length).Select(x => (char)( x + ( x > upperCount?96:64 ) ) ));
     }
