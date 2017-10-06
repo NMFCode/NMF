@@ -241,4 +241,3 @@ namespace NMF.Expressions.Test
         return String.Join("",Enumerable.Range(1, length).Select(x => (char)( x + ( x > upperCount?96:64 ) ) ));
     }
 #>
-
