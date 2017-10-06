@@ -91,7 +91,7 @@ namespace NMF.Expressions
         private bool IsObservableFuncType(Type type, int arguments)
         {
             if (!type.GetTypeInfo().IsGenericType) return false;
-            return type.GetGenericTypeDefinition() == funcTypes[arguments];
+            return type.GetGenericTypeDefinition() == ObservableExpressionTypes.ObservingFunc[arguments];
         }
     }
 }

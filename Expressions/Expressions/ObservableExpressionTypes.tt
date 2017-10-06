@@ -1,0 +1,37 @@
+﻿<#@ template debug="false" hostspecific="false" language="C#" #>
+<#@ assembly name="System.Core" #>
+<#@ import namespace="System.Linq" #>
+<#@ import namespace="System.Text" #>
+<#@ import namespace="System.Collections.Generic" #>
+<#@ output extension=".cs" #>
+using System;
+
+namespace NMF.Expressions
+{
+    internal sealed class ObservableExpressionTypes
+	{
+<#			foreach (var item in new [] {
+                new { Type="ObservableNewExpression", Min=2, Max=16 },
+				new { Type="ObservableStaticMethodCall", Min=2, Max=16 },
+				new { Type="ObservableStaticLensMethodCall", Min=2, Max=16 },
+				new { Type="ObservableMethodCall", Min=2, Max=16 },
+				new { Type="ObservableLensMethodCall", Min=2, Max=16 },
+				new { Type="ObservableStaticProxyCall", Min=2, Max=16 },
+				new { Type="ObservableMethodProxyCall", Min=2, Max=17 },
+				new { Type="ObservableStaticLensProxyCall", Min=2, Max=15 },
+				new { Type="ObservableMethodLensProxyCall", Min=2, Max=16 },
+				new { Type="ObservingFunc", Min=2, Max=16 },
+				new { Type="ObservableSimpleMethodProxyCall", Min=2, Max=17 },
+				new { Type="ObservableSimpleLensMethodProxyCall", Min=2, Max=16 }
+			})
+            { #>
+        public static readonly Type[] <#= item.Type #> =
+        {
+<#          for (int i = item.Min; i < item.Max; i++) {#>
+            typeof(<#= item.Type #><<#= new string(',', i - 1) #>>),
+<#          } #>
+            typeof(<#= item.Type #><<#= new string(',', item.Max - 1) #>>)
+        };
+<#          } #>
+	}
+}

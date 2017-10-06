@@ -299,6 +299,9 @@
     <Compile Include="..\Expressions\ObservableExpressionBinder.cs">
       <Link>ObservableExpressionBinder.cs</Link>
     </Compile>
+    <Compile Include="..\Expressions\ObservableExpressionTypes.cs">
+      <Link>ObservableExpressionTypes.cs</Link>
+    </Compile>
     <Compile Include="..\Expressions\ObservableLambdaExpression.cs">
       <Link>ObservableLambdaExpression.cs</Link>
     </Compile>
@@ -352,6 +355,9 @@
     </Compile>
     <Compile Include="..\Expressions\ObservableReversableExpression.cs">
       <Link>ObservableReversableExpression.cs</Link>
+    </Compile>
+    <Compile Include="..\Expressions\ObservableSimpleLensMethodProxyCall.cs">
+      <Link>ObservableSimpleLensMethodProxyCall.cs</Link>
     </Compile>
     <Compile Include="..\Expressions\ObservableSimpleMethodProxyCall.cs">
       <Link>ObservableSimpleMethodProxyCall.cs</Link>

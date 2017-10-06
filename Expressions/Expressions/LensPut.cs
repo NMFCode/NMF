@@ -12,7 +12,18 @@ namespace NMF.Expressions
 		public static LensPut<TBase, TValue> FromLensPutAttribute(LensPutAttribute lensAttribute, MethodInfo method, INotifyReversableValue<TBase> target)
 		{
 			MethodInfo lensMethod;
-            if (lensAttribute.InitializeProxyMethod(method, new Type[] { typeof(TBase), typeof(TValue) }, out lensMethod) && lensMethod != null && lensMethod.IsStatic)
+			if (!method.IsStatic && lensAttribute.InitializeProxyMethod(method, new Type[] { typeof(TValue) }, out lensMethod) && lensMethod != null && !lensMethod.IsStatic)
+            {
+                if (lensMethod.ReturnType == typeof(void))
+                {
+                    return new PersistentLensPut<TBase, TValue>(ReflectionHelper.CreateDelegate<Action<TBase, TValue>>(lensMethod));
+                }
+                else
+                {
+                    return new NonPersistentLens<TBase, TValue>(ReflectionHelper.CreateDelegate<Func<TBase, TValue, TBase>>(lensMethod), target);
+                }
+			}
+            else if (lensAttribute.InitializeProxyMethod(method, new Type[] { typeof(TBase), typeof(TValue) }, out lensMethod) && lensMethod != null && lensMethod.IsStatic)
             {
                 if (lensMethod.ReturnType == typeof(void))
                 {
@@ -85,7 +96,18 @@ namespace NMF.Expressions
 		public static LensPut<TBase, T2, TValue> FromLensPutAttribute(LensPutAttribute lensAttribute, MethodInfo method, INotifyReversableValue<TBase> target)
 		{
 			MethodInfo lensMethod;
-            if (lensAttribute.InitializeProxyMethod(method, new Type[] { typeof(TBase), typeof(T2), typeof(TValue) }, out lensMethod) && lensMethod != null && lensMethod.IsStatic)
+			if (!method.IsStatic && lensAttribute.InitializeProxyMethod(method, new Type[] { typeof(T2), typeof(TValue) }, out lensMethod) && lensMethod != null && !lensMethod.IsStatic)
+            {
+                if (lensMethod.ReturnType == typeof(void))
+                {
+                    return new PersistentLensPut<TBase, T2, TValue>(ReflectionHelper.CreateDelegate<Action<TBase, T2, TValue>>(lensMethod));
+                }
+                else
+                {
+                    return new NonPersistentLens<TBase, T2, TValue>(ReflectionHelper.CreateDelegate<Func<TBase, T2, TValue, TBase>>(lensMethod), target);
+                }
+			}
+            else if (lensAttribute.InitializeProxyMethod(method, new Type[] { typeof(TBase), typeof(T2), typeof(TValue) }, out lensMethod) && lensMethod != null && lensMethod.IsStatic)
             {
                 if (lensMethod.ReturnType == typeof(void))
                 {
@@ -158,7 +180,18 @@ namespace NMF.Expressions
 		public static LensPut<TBase, T2, T3, TValue> FromLensPutAttribute(LensPutAttribute lensAttribute, MethodInfo method, INotifyReversableValue<TBase> target)
 		{
 			MethodInfo lensMethod;
-            if (lensAttribute.InitializeProxyMethod(method, new Type[] { typeof(TBase), typeof(T2), typeof(T3), typeof(TValue) }, out lensMethod) && lensMethod != null && lensMethod.IsStatic)
+			if (!method.IsStatic && lensAttribute.InitializeProxyMethod(method, new Type[] { typeof(T2), typeof(T3), typeof(TValue) }, out lensMethod) && lensMethod != null && !lensMethod.IsStatic)
+            {
+                if (lensMethod.ReturnType == typeof(void))
+                {
+                    return new PersistentLensPut<TBase, T2, T3, TValue>(ReflectionHelper.CreateDelegate<Action<TBase, T2, T3, TValue>>(lensMethod));
+                }
+                else
+                {
+                    return new NonPersistentLens<TBase, T2, T3, TValue>(ReflectionHelper.CreateDelegate<Func<TBase, T2, T3, TValue, TBase>>(lensMethod), target);
+                }
+			}
+            else if (lensAttribute.InitializeProxyMethod(method, new Type[] { typeof(TBase), typeof(T2), typeof(T3), typeof(TValue) }, out lensMethod) && lensMethod != null && lensMethod.IsStatic)
             {
                 if (lensMethod.ReturnType == typeof(void))
                 {
@@ -231,7 +264,18 @@ namespace NMF.Expressions
 		public static LensPut<TBase, T2, T3, T4, TValue> FromLensPutAttribute(LensPutAttribute lensAttribute, MethodInfo method, INotifyReversableValue<TBase> target)
 		{
 			MethodInfo lensMethod;
-            if (lensAttribute.InitializeProxyMethod(method, new Type[] { typeof(TBase), typeof(T2), typeof(T3), typeof(T4), typeof(TValue) }, out lensMethod) && lensMethod != null && lensMethod.IsStatic)
+			if (!method.IsStatic && lensAttribute.InitializeProxyMethod(method, new Type[] { typeof(T2), typeof(T3), typeof(T4), typeof(TValue) }, out lensMethod) && lensMethod != null && !lensMethod.IsStatic)
+            {
+                if (lensMethod.ReturnType == typeof(void))
+                {
+                    return new PersistentLensPut<TBase, T2, T3, T4, TValue>(ReflectionHelper.CreateDelegate<Action<TBase, T2, T3, T4, TValue>>(lensMethod));
+                }
+                else
+                {
+                    return new NonPersistentLens<TBase, T2, T3, T4, TValue>(ReflectionHelper.CreateDelegate<Func<TBase, T2, T3, T4, TValue, TBase>>(lensMethod), target);
+                }
+			}
+            else if (lensAttribute.InitializeProxyMethod(method, new Type[] { typeof(TBase), typeof(T2), typeof(T3), typeof(T4), typeof(TValue) }, out lensMethod) && lensMethod != null && lensMethod.IsStatic)
             {
                 if (lensMethod.ReturnType == typeof(void))
                 {
@@ -304,7 +348,18 @@ namespace NMF.Expressions
 		public static LensPut<TBase, T2, T3, T4, T5, TValue> FromLensPutAttribute(LensPutAttribute lensAttribute, MethodInfo method, INotifyReversableValue<TBase> target)
 		{
 			MethodInfo lensMethod;
-            if (lensAttribute.InitializeProxyMethod(method, new Type[] { typeof(TBase), typeof(T2), typeof(T3), typeof(T4), typeof(T5), typeof(TValue) }, out lensMethod) && lensMethod != null && lensMethod.IsStatic)
+			if (!method.IsStatic && lensAttribute.InitializeProxyMethod(method, new Type[] { typeof(T2), typeof(T3), typeof(T4), typeof(T5), typeof(TValue) }, out lensMethod) && lensMethod != null && !lensMethod.IsStatic)
+            {
+                if (lensMethod.ReturnType == typeof(void))
+                {
+                    return new PersistentLensPut<TBase, T2, T3, T4, T5, TValue>(ReflectionHelper.CreateDelegate<Action<TBase, T2, T3, T4, T5, TValue>>(lensMethod));
+                }
+                else
+                {
+                    return new NonPersistentLens<TBase, T2, T3, T4, T5, TValue>(ReflectionHelper.CreateDelegate<Func<TBase, T2, T3, T4, T5, TValue, TBase>>(lensMethod), target);
+                }
+			}
+            else if (lensAttribute.InitializeProxyMethod(method, new Type[] { typeof(TBase), typeof(T2), typeof(T3), typeof(T4), typeof(T5), typeof(TValue) }, out lensMethod) && lensMethod != null && lensMethod.IsStatic)
             {
                 if (lensMethod.ReturnType == typeof(void))
                 {
@@ -377,7 +432,18 @@ namespace NMF.Expressions
 		public static LensPut<TBase, T2, T3, T4, T5, T6, TValue> FromLensPutAttribute(LensPutAttribute lensAttribute, MethodInfo method, INotifyReversableValue<TBase> target)
 		{
 			MethodInfo lensMethod;
-            if (lensAttribute.InitializeProxyMethod(method, new Type[] { typeof(TBase), typeof(T2), typeof(T3), typeof(T4), typeof(T5), typeof(T6), typeof(TValue) }, out lensMethod) && lensMethod != null && lensMethod.IsStatic)
+			if (!method.IsStatic && lensAttribute.InitializeProxyMethod(method, new Type[] { typeof(T2), typeof(T3), typeof(T4), typeof(T5), typeof(T6), typeof(TValue) }, out lensMethod) && lensMethod != null && !lensMethod.IsStatic)
+            {
+                if (lensMethod.ReturnType == typeof(void))
+                {
+                    return new PersistentLensPut<TBase, T2, T3, T4, T5, T6, TValue>(ReflectionHelper.CreateDelegate<Action<TBase, T2, T3, T4, T5, T6, TValue>>(lensMethod));
+                }
+                else
+                {
+                    return new NonPersistentLens<TBase, T2, T3, T4, T5, T6, TValue>(ReflectionHelper.CreateDelegate<Func<TBase, T2, T3, T4, T5, T6, TValue, TBase>>(lensMethod), target);
+                }
+			}
+            else if (lensAttribute.InitializeProxyMethod(method, new Type[] { typeof(TBase), typeof(T2), typeof(T3), typeof(T4), typeof(T5), typeof(T6), typeof(TValue) }, out lensMethod) && lensMethod != null && lensMethod.IsStatic)
             {
                 if (lensMethod.ReturnType == typeof(void))
                 {
@@ -450,7 +516,18 @@ namespace NMF.Expressions
 		public static LensPut<TBase, T2, T3, T4, T5, T6, T7, TValue> FromLensPutAttribute(LensPutAttribute lensAttribute, MethodInfo method, INotifyReversableValue<TBase> target)
 		{
 			MethodInfo lensMethod;
-            if (lensAttribute.InitializeProxyMethod(method, new Type[] { typeof(TBase), typeof(T2), typeof(T3), typeof(T4), typeof(T5), typeof(T6), typeof(T7), typeof(TValue) }, out lensMethod) && lensMethod != null && lensMethod.IsStatic)
+			if (!method.IsStatic && lensAttribute.InitializeProxyMethod(method, new Type[] { typeof(T2), typeof(T3), typeof(T4), typeof(T5), typeof(T6), typeof(T7), typeof(TValue) }, out lensMethod) && lensMethod != null && !lensMethod.IsStatic)
+            {
+                if (lensMethod.ReturnType == typeof(void))
+                {
+                    return new PersistentLensPut<TBase, T2, T3, T4, T5, T6, T7, TValue>(ReflectionHelper.CreateDelegate<Action<TBase, T2, T3, T4, T5, T6, T7, TValue>>(lensMethod));
+                }
+                else
+                {
+                    return new NonPersistentLens<TBase, T2, T3, T4, T5, T6, T7, TValue>(ReflectionHelper.CreateDelegate<Func<TBase, T2, T3, T4, T5, T6, T7, TValue, TBase>>(lensMethod), target);
+                }
+			}
+            else if (lensAttribute.InitializeProxyMethod(method, new Type[] { typeof(TBase), typeof(T2), typeof(T3), typeof(T4), typeof(T5), typeof(T6), typeof(T7), typeof(TValue) }, out lensMethod) && lensMethod != null && lensMethod.IsStatic)
             {
                 if (lensMethod.ReturnType == typeof(void))
                 {
@@ -523,7 +600,18 @@ namespace NMF.Expressions
 		public static LensPut<TBase, T2, T3, T4, T5, T6, T7, T8, TValue> FromLensPutAttribute(LensPutAttribute lensAttribute, MethodInfo method, INotifyReversableValue<TBase> target)
 		{
 			MethodInfo lensMethod;
-            if (lensAttribute.InitializeProxyMethod(method, new Type[] { typeof(TBase), typeof(T2), typeof(T3), typeof(T4), typeof(T5), typeof(T6), typeof(T7), typeof(T8), typeof(TValue) }, out lensMethod) && lensMethod != null && lensMethod.IsStatic)
+			if (!method.IsStatic && lensAttribute.InitializeProxyMethod(method, new Type[] { typeof(T2), typeof(T3), typeof(T4), typeof(T5), typeof(T6), typeof(T7), typeof(T8), typeof(TValue) }, out lensMethod) && lensMethod != null && !lensMethod.IsStatic)
+            {
+                if (lensMethod.ReturnType == typeof(void))
+                {
+                    return new PersistentLensPut<TBase, T2, T3, T4, T5, T6, T7, T8, TValue>(ReflectionHelper.CreateDelegate<Action<TBase, T2, T3, T4, T5, T6, T7, T8, TValue>>(lensMethod));
+                }
+                else
+                {
+                    return new NonPersistentLens<TBase, T2, T3, T4, T5, T6, T7, T8, TValue>(ReflectionHelper.CreateDelegate<Func<TBase, T2, T3, T4, T5, T6, T7, T8, TValue, TBase>>(lensMethod), target);
+                }
+			}
+            else if (lensAttribute.InitializeProxyMethod(method, new Type[] { typeof(TBase), typeof(T2), typeof(T3), typeof(T4), typeof(T5), typeof(T6), typeof(T7), typeof(T8), typeof(TValue) }, out lensMethod) && lensMethod != null && lensMethod.IsStatic)
             {
                 if (lensMethod.ReturnType == typeof(void))
                 {
@@ -596,7 +684,18 @@ namespace NMF.Expressions
 		public static LensPut<TBase, T2, T3, T4, T5, T6, T7, T8, T9, TValue> FromLensPutAttribute(LensPutAttribute lensAttribute, MethodInfo method, INotifyReversableValue<TBase> target)
 		{
 			MethodInfo lensMethod;
-            if (lensAttribute.InitializeProxyMethod(method, new Type[] { typeof(TBase), typeof(T2), typeof(T3), typeof(T4), typeof(T5), typeof(T6), typeof(T7), typeof(T8), typeof(T9), typeof(TValue) }, out lensMethod) && lensMethod != null && lensMethod.IsStatic)
+			if (!method.IsStatic && lensAttribute.InitializeProxyMethod(method, new Type[] { typeof(T2), typeof(T3), typeof(T4), typeof(T5), typeof(T6), typeof(T7), typeof(T8), typeof(T9), typeof(TValue) }, out lensMethod) && lensMethod != null && !lensMethod.IsStatic)
+            {
+                if (lensMethod.ReturnType == typeof(void))
+                {
+                    return new PersistentLensPut<TBase, T2, T3, T4, T5, T6, T7, T8, T9, TValue>(ReflectionHelper.CreateDelegate<Action<TBase, T2, T3, T4, T5, T6, T7, T8, T9, TValue>>(lensMethod));
+                }
+                else
+                {
+                    return new NonPersistentLens<TBase, T2, T3, T4, T5, T6, T7, T8, T9, TValue>(ReflectionHelper.CreateDelegate<Func<TBase, T2, T3, T4, T5, T6, T7, T8, T9, TValue, TBase>>(lensMethod), target);
+                }
+			}
+            else if (lensAttribute.InitializeProxyMethod(method, new Type[] { typeof(TBase), typeof(T2), typeof(T3), typeof(T4), typeof(T5), typeof(T6), typeof(T7), typeof(T8), typeof(T9), typeof(TValue) }, out lensMethod) && lensMethod != null && lensMethod.IsStatic)
             {
                 if (lensMethod.ReturnType == typeof(void))
                 {
@@ -669,7 +768,18 @@ namespace NMF.Expressions
 		public static LensPut<TBase, T2, T3, T4, T5, T6, T7, T8, T9, T10, TValue> FromLensPutAttribute(LensPutAttribute lensAttribute, MethodInfo method, INotifyReversableValue<TBase> target)
 		{
 			MethodInfo lensMethod;
-            if (lensAttribute.InitializeProxyMethod(method, new Type[] { typeof(TBase), typeof(T2), typeof(T3), typeof(T4), typeof(T5), typeof(T6), typeof(T7), typeof(T8), typeof(T9), typeof(T10), typeof(TValue) }, out lensMethod) && lensMethod != null && lensMethod.IsStatic)
+			if (!method.IsStatic && lensAttribute.InitializeProxyMethod(method, new Type[] { typeof(T2), typeof(T3), typeof(T4), typeof(T5), typeof(T6), typeof(T7), typeof(T8), typeof(T9), typeof(T10), typeof(TValue) }, out lensMethod) && lensMethod != null && !lensMethod.IsStatic)
+            {
+                if (lensMethod.ReturnType == typeof(void))
+                {
+                    return new PersistentLensPut<TBase, T2, T3, T4, T5, T6, T7, T8, T9, T10, TValue>(ReflectionHelper.CreateDelegate<Action<TBase, T2, T3, T4, T5, T6, T7, T8, T9, T10, TValue>>(lensMethod));
+                }
+                else
+                {
+                    return new NonPersistentLens<TBase, T2, T3, T4, T5, T6, T7, T8, T9, T10, TValue>(ReflectionHelper.CreateDelegate<Func<TBase, T2, T3, T4, T5, T6, T7, T8, T9, T10, TValue, TBase>>(lensMethod), target);
+                }
+			}
+            else if (lensAttribute.InitializeProxyMethod(method, new Type[] { typeof(TBase), typeof(T2), typeof(T3), typeof(T4), typeof(T5), typeof(T6), typeof(T7), typeof(T8), typeof(T9), typeof(T10), typeof(TValue) }, out lensMethod) && lensMethod != null && lensMethod.IsStatic)
             {
                 if (lensMethod.ReturnType == typeof(void))
                 {
@@ -742,7 +852,18 @@ namespace NMF.Expressions
 		public static LensPut<TBase, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, TValue> FromLensPutAttribute(LensPutAttribute lensAttribute, MethodInfo method, INotifyReversableValue<TBase> target)
 		{
 			MethodInfo lensMethod;
-            if (lensAttribute.InitializeProxyMethod(method, new Type[] { typeof(TBase), typeof(T2), typeof(T3), typeof(T4), typeof(T5), typeof(T6), typeof(T7), typeof(T8), typeof(T9), typeof(T10), typeof(T11), typeof(TValue) }, out lensMethod) && lensMethod != null && lensMethod.IsStatic)
+			if (!method.IsStatic && lensAttribute.InitializeProxyMethod(method, new Type[] { typeof(T2), typeof(T3), typeof(T4), typeof(T5), typeof(T6), typeof(T7), typeof(T8), typeof(T9), typeof(T10), typeof(T11), typeof(TValue) }, out lensMethod) && lensMethod != null && !lensMethod.IsStatic)
+            {
+                if (lensMethod.ReturnType == typeof(void))
+                {
+                    return new PersistentLensPut<TBase, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, TValue>(ReflectionHelper.CreateDelegate<Action<TBase, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, TValue>>(lensMethod));
+                }
+                else
+                {
+                    return new NonPersistentLens<TBase, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, TValue>(ReflectionHelper.CreateDelegate<Func<TBase, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, TValue, TBase>>(lensMethod), target);
+                }
+			}
+            else if (lensAttribute.InitializeProxyMethod(method, new Type[] { typeof(TBase), typeof(T2), typeof(T3), typeof(T4), typeof(T5), typeof(T6), typeof(T7), typeof(T8), typeof(T9), typeof(T10), typeof(T11), typeof(TValue) }, out lensMethod) && lensMethod != null && lensMethod.IsStatic)
             {
                 if (lensMethod.ReturnType == typeof(void))
                 {
@@ -815,7 +936,18 @@ namespace NMF.Expressions
 		public static LensPut<TBase, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, TValue> FromLensPutAttribute(LensPutAttribute lensAttribute, MethodInfo method, INotifyReversableValue<TBase> target)
 		{
 			MethodInfo lensMethod;
-            if (lensAttribute.InitializeProxyMethod(method, new Type[] { typeof(TBase), typeof(T2), typeof(T3), typeof(T4), typeof(T5), typeof(T6), typeof(T7), typeof(T8), typeof(T9), typeof(T10), typeof(T11), typeof(T12), typeof(TValue) }, out lensMethod) && lensMethod != null && lensMethod.IsStatic)
+			if (!method.IsStatic && lensAttribute.InitializeProxyMethod(method, new Type[] { typeof(T2), typeof(T3), typeof(T4), typeof(T5), typeof(T6), typeof(T7), typeof(T8), typeof(T9), typeof(T10), typeof(T11), typeof(T12), typeof(TValue) }, out lensMethod) && lensMethod != null && !lensMethod.IsStatic)
+            {
+                if (lensMethod.ReturnType == typeof(void))
+                {
+                    return new PersistentLensPut<TBase, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, TValue>(ReflectionHelper.CreateDelegate<Action<TBase, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, TValue>>(lensMethod));
+                }
+                else
+                {
+                    return new NonPersistentLens<TBase, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, TValue>(ReflectionHelper.CreateDelegate<Func<TBase, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, TValue, TBase>>(lensMethod), target);
+                }
+			}
+            else if (lensAttribute.InitializeProxyMethod(method, new Type[] { typeof(TBase), typeof(T2), typeof(T3), typeof(T4), typeof(T5), typeof(T6), typeof(T7), typeof(T8), typeof(T9), typeof(T10), typeof(T11), typeof(T12), typeof(TValue) }, out lensMethod) && lensMethod != null && lensMethod.IsStatic)
             {
                 if (lensMethod.ReturnType == typeof(void))
                 {
@@ -888,7 +1020,18 @@ namespace NMF.Expressions
 		public static LensPut<TBase, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, TValue> FromLensPutAttribute(LensPutAttribute lensAttribute, MethodInfo method, INotifyReversableValue<TBase> target)
 		{
 			MethodInfo lensMethod;
-            if (lensAttribute.InitializeProxyMethod(method, new Type[] { typeof(TBase), typeof(T2), typeof(T3), typeof(T4), typeof(T5), typeof(T6), typeof(T7), typeof(T8), typeof(T9), typeof(T10), typeof(T11), typeof(T12), typeof(T13), typeof(TValue) }, out lensMethod) && lensMethod != null && lensMethod.IsStatic)
+			if (!method.IsStatic && lensAttribute.InitializeProxyMethod(method, new Type[] { typeof(T2), typeof(T3), typeof(T4), typeof(T5), typeof(T6), typeof(T7), typeof(T8), typeof(T9), typeof(T10), typeof(T11), typeof(T12), typeof(T13), typeof(TValue) }, out lensMethod) && lensMethod != null && !lensMethod.IsStatic)
+            {
+                if (lensMethod.ReturnType == typeof(void))
+                {
+                    return new PersistentLensPut<TBase, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, TValue>(ReflectionHelper.CreateDelegate<Action<TBase, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, TValue>>(lensMethod));
+                }
+                else
+                {
+                    return new NonPersistentLens<TBase, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, TValue>(ReflectionHelper.CreateDelegate<Func<TBase, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, TValue, TBase>>(lensMethod), target);
+                }
+			}
+            else if (lensAttribute.InitializeProxyMethod(method, new Type[] { typeof(TBase), typeof(T2), typeof(T3), typeof(T4), typeof(T5), typeof(T6), typeof(T7), typeof(T8), typeof(T9), typeof(T10), typeof(T11), typeof(T12), typeof(T13), typeof(TValue) }, out lensMethod) && lensMethod != null && lensMethod.IsStatic)
             {
                 if (lensMethod.ReturnType == typeof(void))
                 {
@@ -961,7 +1104,18 @@ namespace NMF.Expressions
 		public static LensPut<TBase, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, TValue> FromLensPutAttribute(LensPutAttribute lensAttribute, MethodInfo method, INotifyReversableValue<TBase> target)
 		{
 			MethodInfo lensMethod;
-            if (lensAttribute.InitializeProxyMethod(method, new Type[] { typeof(TBase), typeof(T2), typeof(T3), typeof(T4), typeof(T5), typeof(T6), typeof(T7), typeof(T8), typeof(T9), typeof(T10), typeof(T11), typeof(T12), typeof(T13), typeof(T14), typeof(TValue) }, out lensMethod) && lensMethod != null && lensMethod.IsStatic)
+			if (!method.IsStatic && lensAttribute.InitializeProxyMethod(method, new Type[] { typeof(T2), typeof(T3), typeof(T4), typeof(T5), typeof(T6), typeof(T7), typeof(T8), typeof(T9), typeof(T10), typeof(T11), typeof(T12), typeof(T13), typeof(T14), typeof(TValue) }, out lensMethod) && lensMethod != null && !lensMethod.IsStatic)
+            {
+                if (lensMethod.ReturnType == typeof(void))
+                {
+                    return new PersistentLensPut<TBase, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, TValue>(ReflectionHelper.CreateDelegate<Action<TBase, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, TValue>>(lensMethod));
+                }
+                else
+                {
+                    return new NonPersistentLens<TBase, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, TValue>(ReflectionHelper.CreateDelegate<Func<TBase, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, TValue, TBase>>(lensMethod), target);
+                }
+			}
+            else if (lensAttribute.InitializeProxyMethod(method, new Type[] { typeof(TBase), typeof(T2), typeof(T3), typeof(T4), typeof(T5), typeof(T6), typeof(T7), typeof(T8), typeof(T9), typeof(T10), typeof(T11), typeof(T12), typeof(T13), typeof(T14), typeof(TValue) }, out lensMethod) && lensMethod != null && lensMethod.IsStatic)
             {
                 if (lensMethod.ReturnType == typeof(void))
                 {
@@ -1034,7 +1188,18 @@ namespace NMF.Expressions
 		public static LensPut<TBase, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, TValue> FromLensPutAttribute(LensPutAttribute lensAttribute, MethodInfo method, INotifyReversableValue<TBase> target)
 		{
 			MethodInfo lensMethod;
-            if (lensAttribute.InitializeProxyMethod(method, new Type[] { typeof(TBase), typeof(T2), typeof(T3), typeof(T4), typeof(T5), typeof(T6), typeof(T7), typeof(T8), typeof(T9), typeof(T10), typeof(T11), typeof(T12), typeof(T13), typeof(T14), typeof(T15), typeof(TValue) }, out lensMethod) && lensMethod != null && lensMethod.IsStatic)
+			if (!method.IsStatic && lensAttribute.InitializeProxyMethod(method, new Type[] { typeof(T2), typeof(T3), typeof(T4), typeof(T5), typeof(T6), typeof(T7), typeof(T8), typeof(T9), typeof(T10), typeof(T11), typeof(T12), typeof(T13), typeof(T14), typeof(T15), typeof(TValue) }, out lensMethod) && lensMethod != null && !lensMethod.IsStatic)
+            {
+                if (lensMethod.ReturnType == typeof(void))
+                {
+                    return new PersistentLensPut<TBase, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, TValue>(ReflectionHelper.CreateDelegate<Action<TBase, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, TValue>>(lensMethod));
+                }
+                else
+                {
+                    return new NonPersistentLens<TBase, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, TValue>(ReflectionHelper.CreateDelegate<Func<TBase, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, TValue, TBase>>(lensMethod), target);
+                }
+			}
+            else if (lensAttribute.InitializeProxyMethod(method, new Type[] { typeof(TBase), typeof(T2), typeof(T3), typeof(T4), typeof(T5), typeof(T6), typeof(T7), typeof(T8), typeof(T9), typeof(T10), typeof(T11), typeof(T12), typeof(T13), typeof(T14), typeof(T15), typeof(TValue) }, out lensMethod) && lensMethod != null && lensMethod.IsStatic)
             {
                 if (lensMethod.ReturnType == typeof(void))
                 {
