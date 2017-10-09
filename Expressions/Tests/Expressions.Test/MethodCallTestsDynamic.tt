@@ -23,40 +23,46 @@ namespace NMF.Expressions.Test
     // Generate helper functions for each number of parameter (maxNumParameter is configured globally in TestGenerationSettings.t4)
     for(int i=1;i<=maxNumParameter;i++)
     {
+        foreach( var isRecursive in new bool[] { false, true } )
+        {
+            foreach( var isINotifyValue in new bool[] { false, true } )
+            {
 #>
 <#          // [...] ObservingFunc<Dummy<string>(, Dummy<string>)*, string> combineFunc[0-9]+ = new ObservingFunc<Dummy<Dummy<string>(, Dummy<string>)*, string>\(\(d[0-9]+(, d[0-9]+)*\) => (d1.Item (\+ d[0-9]+.Item)* \);#>
-            private static readonly ObservingFunc<<#= Interpolate("Dummy<string>", ", ", i, 0) #>, string> combineFunc<#= i #> = new ObservingFunc<<#= Interpolate("Dummy<string>", ", ", i, 0) #>, string>((<#= Interpolate("d{0}", ", ", i, 0) #>) => <#= Interpolate("d{0}.Item", " + \", \" + ", i, 0) #>);
+            private static readonly ObservingFunc<<#= Interpolate((isINotifyValue?"INotifyValue<":"") + "Dummy<string>" + (isINotifyValue?">":""), ", ", i, 0) #>, string> combineFunc<#= isINotifyValue?"INotify":"Dummy" #><#= isRecursive?"Recursive":"" #><#= i #> = new ObservingFunc<<#= Interpolate((isINotifyValue?"INotifyValue<":"") + "Dummy<string>" + (isINotifyValue?">":""), ", ", i, 0) #>, string>((<#= Interpolate("d{0}", ", ", i, 0) #>) => <#= Interpolate("d{0}" + (isINotifyValue?".Value":"") + ".Item", " + \", \" + ", i, 0) #>);
 
-            [ObservableProxy(typeof(Helper), "CombineProxy")]
+            [ObservableProxy(typeof(Helper), "CombineProxy<#= isINotifyValue?"INotify":"Dummy" #><#= isRecursive?"Recursive":"" #>", isRecursive:<#= isRecursive?"true":"false" #>)]
 <#          // [...] \(Dummy<string> arg1(, Dummy<string> arg[0-9]+)*\) #>
-            public static string Combine(<#= Interpolate("Dummy<string> arg{0}", ", ", i, 0) #>)
+            public static string Combine<#= isINotifyValue?"INotify":"Dummy" #><#= isRecursive?"Recursive":"" #>(<#= Interpolate((isINotifyValue?"INotifyValue<":"") + "Dummy<string>" + (isINotifyValue?">":"") + " arg{0}", ", ", i, 0) #>)
             {
 <#              // [...] \(arg1(, arg[0-9]+)*\) #>
-                return combineFunc<#= i #>.Evaluate(<#= Interpolate("arg{0}", ", ", i, 0) #>);
+                return combineFunc<#= isINotifyValue?"INotify":"Dummy" #><#= isRecursive?"Recursive":"" #><#= i #>.Evaluate(<#= Interpolate("arg{0}", ", ", i, 0) #>);
             }
 
-            [ObservableProxy(typeof(Helper), "CombineProxyInstance")]
+            [ObservableProxy(typeof(Helper), "CombineProxyInstance<#= isINotifyValue?"INotify":"Dummy" #><#= isRecursive?"Recursive":"" #>", isRecursive:<#= isRecursive?"true":"false" #>)]
 <#          // [...] \(arg1(, arg[0-9]+)*\) #>
-            public string CombineInstace(<#= Interpolate("Dummy<string> arg{0}", ", ", i, 0) #>)
+            public string CombineInstace<#= isINotifyValue?"INotify":"Dummy" #><#= isRecursive?"Recursive":"" #>(<#= Interpolate((isINotifyValue?"INotifyValue<":"") + "Dummy<string>" + (isINotifyValue?">":"") + " arg{0}", ", ", i, 0) #>)
             {
 <#              // [...] \(arg1(, arg[0-9]+)*\) #>
-                return combineFunc<#= i #>.Evaluate(<#= Interpolate("arg{0}", ", ", i, 0) #>);
+                return combineFunc<#= isINotifyValue?"INotify":"Dummy" #><#= isRecursive?"Recursive":"" #><#= i #>.Evaluate(<#= Interpolate("arg{0}", ", ", i, 0) #>);
             }
 
 <#          // [...] \(Dummy<string> arg1(, Dummy<string> arg[0-9]+)*\) #>
-            public static INotifyValue<string> CombineProxy(<#= Interpolate("Dummy<string> arg{0}", ", ", i, 0) #>)
+            public static INotifyValue<string> CombineProxy<#= isINotifyValue?"INotify":"Dummy" #><#= isRecursive?"Recursive":"" #>(<#= Interpolate((isINotifyValue?"INotifyValue<":"") + "Dummy<string>" + (isINotifyValue?">":"") + " arg{0}", ", ", i, 0) #>)
             {
 <#              // [...] \(arg1(, arg[0-9]+)*\) #>
-                return combineFunc<#= i #>.Observe(<#= Interpolate("arg{0}", ", ", i, 0) #>);
+                return combineFunc<#= isINotifyValue?"INotify":"Dummy" #><#= isRecursive?"Recursive":"" #><#= i #>.Observe(<#= Interpolate("arg{0}", ", ", i, 0) #>);
             }
 
 <#          // [...] \(Dummy<string> arg1(, Dummy<string> arg[0-9]+)*\) #>
-            public INotifyValue<string> CombineProxyInstance(<#= Interpolate("Dummy<string> arg{0}", ", ", i, 0) #>)
+            public INotifyValue<string> CombineProxyInstance<#= isINotifyValue?"INotify":"Dummy" #><#= isRecursive?"Recursive":"" #>(<#= Interpolate((isINotifyValue?"INotifyValue<":"") + "Dummy<string>" + (isINotifyValue?">":"") + " arg{0}", ", ", i, 0) #>)
             {
 <#              // [...] \(arg1(, arg[0-9]+)*\) #>
-                return combineFunc<#= i #>.Observe(<#= Interpolate("arg{0}", ", ", i, 0) #>);
+                return combineFunc<#= isINotifyValue?"INotify":"Dummy" #><#= isRecursive?"Recursive":"" #><#= i #>.Observe(<#= Interpolate("arg{0}", ", ", i, 0) #>);
             }
 <#
+            }
+        }
     }
 #>
         }
@@ -74,22 +80,26 @@ namespace NMF.Expressions.Test
             // Generate a test for instance and static methodes
             foreach(var isStatic in new[] { false, true })
             {
+                foreach( var isRecursive in new bool[] { false, true } )
+                {
+                    foreach( var isINotifyValue in new bool[] { false, true } )
+                    {
 #> 
         [TestMethod]
 <#      // The test method name generation
         // Syntax: MethodCall__[ObservableTarget|NoObservableTarget]_[Static|Instance][number of parameter] #>
-        public void MethodCall_<#= isObservable?"":"No" #>ObservableTarget_<#= isStatic?"Static":"Instance" #><#= i #>()
+        public void MethodCall_<#= isObservable?"":"No" #>ObservableTarget_<#= isStatic?"Static":"Instance" #><#= isINotifyValue?"INotify":"Dummy" #><#= isRecursive?"Recursive":"" #><#= i #>()
         {
             var update = false;
-            var dummy = new NotifyCollection<<#= isObservable?"Observable":"" #>Dummy<string>>();
+            var dummy = new NotifyCollection<<#= isINotifyValue?"INotifyValue<":"" #><#= isObservable?"Observable":"" #>Dummy<string>><#= isINotifyValue?">":"" #>();
             
             for(int j = 1; j<= <#= i #>; j++)
             {
-                dummy.Add( new <#= isObservable?"Observable":"" #>Dummy<string>() { Item = j.ToString() } );
+                dummy.Add( <#= isINotifyValue?"new ConstantValue<" + (isObservable?"Observable":"") + "Dummy<string>>":"" #>(new <#= isObservable?"Observable":"" #>Dummy<string>() { Item = j.ToString() }) );
             }
 <#          // Build the expression with a static or a instance methode call 
             // Interpolate() is used to generate a paramter string of the from: (dummy[0-9]+)(, dummy[0-9]+)*#>
-            var test = Observable.Expression<string>(() => <#= isStatic?"Helper.Combine":"(new Helper()).CombineInstace" #>(<#= Interpolate("dummy[{0}]", ", ", i, -1) #>));
+            var test = Observable.Expression<string>(() => <#= isStatic?"Helper.Combine":"(new Helper()).CombineInstace" #><#= isINotifyValue?"INotify":"Dummy" #><#= isRecursive?"Recursive":"" #>(<#= Interpolate("dummy[{0}]", ", ", i, -1) #>));
 <#
             if(isObservable)
             {
@@ -115,7 +125,7 @@ namespace NMF.Expressions.Test
             Assert.AreEqual("<#= GenerateTestString( i, 0, 0 ) #>", test.Value);
             Assert.IsFalse(update);
 <#          // Increment the last element by 1 #>
-            dummy[<#= i - 1 #>].Item = "<#= i + 1 #>";
+            dummy[<#= i - 1 #>]<#= isINotifyValue?".Value":"" #>.Item = "<#= i + 1 #>";
 
             Assert.Is<#= isObservable?"True":"False" #>(update);
 <#
@@ -129,6 +139,8 @@ namespace NMF.Expressions.Test
 #>
         }
 <#
+                    }
+                }
             }
         }
 #>
