@@ -43,21 +43,25 @@ namespace NMF.Expressions.Test
     // Generate incremental and non incremental tests
     foreach( var isInc in isIncCombinations)
     {
+        foreach( var isRecursive in new bool[] { false, true } )
+        {
+            foreach( var isINotifyValue in new bool[] { false, true } )
+            {
 #>
 <#    
         // Variable to build the comma separated generic parameters string
-        string textDummyT = "Dummy<string>";
+        string textDummyT = (isINotifyValue?"INotifyValue<":"") + "Dummy<string>"  + (isINotifyValue?">":"");
         // Variable to build a comma separated string of all parameters
         string textArgI = "arg{0}";
         // Variable to build a comma separated string of all parameters with their types
         string textDummyTArgI = textDummyT + " " + textArgI;
-        // Variable to build a comma separated string of all parameters with their types (surrounded with 'INotifyValue' if 'isInc' is true)
-        string textWrappedDummyTArgI = (isInc?"INotifyValue<":"") + "Dummy<string>" + (isInc?">":"") + " arg{0}";
+        // Variable to build a comma separated string of all parameters with their types (surrounded with 'INotifyValue' if 'isINotifyValue' is true)
+        string textWrappedDummyTArgI = (isINotifyValue?"INotifyValue<":"") + "Dummy<string>" + (isINotifyValue?">":"") + " arg{0}";
         
         // Variable to build a comma separated string of all parameters for the lambda function
         string textDI = "d{0}";
         // Variable to build a comma separated string of all parameters' items for use in the lambda function body
-        string textDIItem = textDI + ".Item";
+        string textDIItem = textDI + (isINotifyValue?".Value":"") + ".Item";
 
         // Generate helper function for each number of parameters (maxNumParameter is configured globally in TestGenerationSettings.t4)
         for(int i=2;i<=maxNumParameter;i++)
@@ -69,26 +73,26 @@ namespace NMF.Expressions.Test
             {
 #>
 <#          // [...] ObservingFunc<Dummy<string>(, Dummy<string>)*, string> combineFunc[0-9]+ = new ObservingFunc<Dummy<Dummy<string>(, Dummy<string>)*, string>\(\(d[0-9]+(, d[0-9]+)*\) => (d1.Item (\+ d[0-9]+.Item)* \);#>
-            private <#= isStatic?"static ":"" #>readonly ObservingFunc<<#= Interpolate(textDummyT, ", ", i, 0) #>, string> combineFunc<#= isStatic?"Static":"Instance" #><#=i#> = new ObservingFunc<<#= Interpolate(textDummyT, ", ", i, 0) #>, string>((<#= Interpolate(textDI, ", ", i, 0) #>) => <#= Interpolate(textDIItem, " + ", i, 0) #>);
+            private <#= isStatic?"static ":"" #>readonly ObservingFunc<<#= Interpolate(textDummyT, ", ", i, 0) #>, string> combineFunc<#= isStatic?"Static":"Instance" #><#= isINotifyValue?"INotify":"Dummy" #><#= isRecursive?"Recursive":"" #><#=i#> = new ObservingFunc<<#= Interpolate(textDummyT, ", ", i, 0) #>, string>((<#= Interpolate(textDI, ", ", i, 0) #>) => <#= Interpolate(textDIItem, " + ", i, 0) #>);
 
-            [LensPut(typeof(Helpers), "PutCombine<#= isStatic?"Static":"Instance" #><#= isInc?"Inc":"" #>")]
-            [ObservableProxy(typeof(Helpers), "CombineProxy<#= isStatic?"Static":"Instance" #><#= isInc?"Inc":"" #>")]
+            [LensPut(typeof(Helpers), "PutCombine<#= isStatic?"Static":"Instance" #><#= isInc?"Inc":"" #><#= isINotifyValue?"INotify":"Dummy" #><#= isRecursive?"Recursive":"" #>")]
+            [ObservableProxy(typeof(Helpers), "CombineProxy<#= isStatic?"Static":"Instance" #><#= isInc?"Inc":"" #><#= isINotifyValue?"INotify":"Dummy" #><#= isRecursive?"Recursive":"" #>", isRecursive:<#= isRecursive?"true":"false" #>)]
 <#          // [...] \(Dummy<string> arg1(, Dummy<string> arg[0-9]+)*\) #>
-            public <#= isStatic?"static ":"" #>string Combine<#= isStatic?"Static":"Instance" #><#= isInc?"Inc":"" #>(<#= Interpolate(textDummyTArgI, ", ", i, 0) #>)
+            public <#= isStatic?"static ":"" #>string Combine<#= isStatic?"Static":"Instance" #><#= isInc?"Inc":"" #><#= isINotifyValue?"INotify":"Dummy" #><#= isRecursive?"Recursive":"" #>(<#= Interpolate(textDummyTArgI, ", ", i, 0) #>)
             {
 <#              // [...] \(arg1(, arg[0-9]+)*\) #>
-                return combineFunc<#= isStatic?"Static":"Instance" #><#= i #>.Evaluate(<#= Interpolate(textArgI, ", ", i, 0) #>);
+                return combineFunc<#= isStatic?"Static":"Instance" #><#= isINotifyValue?"INotify":"Dummy" #><#= isRecursive?"Recursive":"" #><#= i #>.Evaluate(<#= Interpolate(textArgI, ", ", i, 0) #>);
             }
 
 <#          // [...] \(Dummy<string> arg1(, Dummy<string> arg[0-9]+)*\) #>
-            public <#= isStatic?"static ":"" #>INotifyValue<string> CombineProxy<#= isStatic?"Static":"Instance" #><#= isInc?"Inc":"" #>(<#= Interpolate(textWrappedDummyTArgI, ", ", i, 0) #>)
+            public <#= isStatic?"static ":"" #>INotifyValue<string> CombineProxy<#= isStatic?"Static":"Instance" #><#= isInc?"Inc":"" #><#= isINotifyValue?"INotify":"Dummy" #><#= isRecursive?"Recursive":"" #>(<#= Interpolate(textWrappedDummyTArgI, ", ", i, 0) #>)
             {
 <#              // [...] \(arg1(, arg[0-9]+)*\) #>
-                return combineFunc<#= isStatic?"Static":"Instance" #><#= i #>.Observe(<#= Interpolate(textArgI, ", ", i, 0) #>);
+                return combineFunc<#= isStatic?"Static":"Instance" #><#= isINotifyValue?"INotify":"Dummy" #><#= isRecursive?"Recursive":"" #><#= i #>.Observe(<#= Interpolate(textArgI, ", ", i, 0) #>);
             }
   
 <#          // [...] \(Dummy<string> arg1(, Dummy<string> arg[0-9]+)*\) #>
-            public <#= isStatic?"static ":"" #>void PutCombine<#= isStatic?"Static":"Instance" #><#= isInc?"Inc":"" #>(<#= Interpolate(textDummyTArgI, ", ", i, 0) #>, string value)
+            public <#= isStatic?"static ":"" #>void PutCombine<#= isStatic?"Static":"Instance" #><#= isInc?"Inc":"" #><#= isINotifyValue?"INotify":"Dummy" #><#= isRecursive?"Recursive":"" #>(<#= Interpolate(textDummyTArgI, ", ", i, 0) #>, string value)
             {
                 var splittedValue = value.ToCharArray();
 <# 
@@ -97,18 +101,20 @@ namespace NMF.Expressions.Test
                     // Split value into singe items (containg chars)
                     // arg[0-9]+.Item = splittedValue\[[0-9]+\].ToString();
 #>
-                arg<#= j #>.Item = splittedValue[<#= j - 1 #>].ToString();
+                arg<#= j #><#= isINotifyValue?".Value":"" #>.Item = splittedValue[<#= j - 1 #>].ToString();
 <#
                 }            
 #>
             }
 
-<#
+<#               
             }
 #>
             #endregion
 
-<#        
+<#
+            }
+        }
     }
 #>
 <#
@@ -119,30 +125,34 @@ namespace NMF.Expressions.Test
         #endregion     
    
 <#
-    // Generate tests for static and instance proxies
-    foreach(bool isStatic in new bool[] {true, false} )
-    {
-    // Generate incremental and non incremental tests
-        foreach( var isInc in isIncCombinations )
+    // Generate helper function for each number of parameters (maxNumParameter is configured globally in TestGenerationSettings.t4)
+    for(int i=2;i<=maxNumParameter;i++)
+    { 
+        // Generate tests for static and instance proxies
+        foreach(bool isStatic in new bool[] {true, false} )
         {
-            // Generate helper function for each number of parameters (maxNumParameter is configured globally in TestGenerationSettings.t4)
-            for(int i=2;i<=maxNumParameter;i++)
-            { 
+            // Generate incremental and non incremental tests
+            foreach( var isInc in isIncCombinations )
+            {
+                foreach( var isRecursive in new bool[] { false, true } )
+                {
+                    foreach( var isINotifyValue in new bool[] { false, true } )
+                    {            
 #>
         [TestMethod]
-        public void LensPutWithProxy<#= isStatic?"Static":"Instance" #><#= isInc?"Inc":"" #>Param<#= i #>()
+        public void LensPutWithProxy<#= isStatic?"Static":"Instance" #><#= isInc?"Inc":"" #><#= isINotifyValue?"INotify":"Dummy" #><#= isRecursive?"Recursive":"" #>Param<#= i #>()
         {
-            var dummy = new ObservableDummy<string>[<#= i #>];
+            var dummy = new <#= isINotifyValue?"INotifyValue<":"" #>ObservableDummy<string><#= isINotifyValue?">":"" #>[<#= i #>];
 <#
             for(int j=1;j<=i;j++)
             {
             // Initialize items with letters starting from from A (64 because j ist starting from 1)
 #>
-            dummy[<#= j -1 #>] = new ObservableDummy<string>("<#= (char)(j + 64) #>");
+            dummy[<#= j -1 #>] = <#= isINotifyValue?"new ConstantValue<ObservableDummy<string>>":"" #>(new ObservableDummy<string>("<#= (char)(j + 64) #>"));
 <#
             }
 #>
-            var test = Observable.Reversable(() => <#= isStatic?"Helpers":"(new Helpers())" #>.Combine<#= isStatic?"Static":"Instance" #><#= isInc?"Inc":"" #>(<#= Interpolate("dummy[{0}]", ", ", i, -1) #>));
+            var test = Observable.Reversable(() => <#= isStatic?"Helpers":"(new Helpers())" #>.Combine<#= isStatic?"Static":"Instance" #><#= isInc?"Inc":"" #><#= isINotifyValue?"INotify":"Dummy" #><#= isRecursive?"Recursive":"" #>(<#= Interpolate("dummy[{0}]", ", ", i, -1) #>));
 <#          // Compare against a test string with all chars uppercase #>            
             Assert.AreEqual("<#= GenerateTestStringUpper(i, i) #>", test.Value);
 
@@ -161,7 +171,8 @@ namespace NMF.Expressions.Test
             {
 #>
             dummyUpdated[<#= j - 1#>] = false;
-            dummy[<#= j - 1#>].ItemChanged += (o, e) =>
+            // ValueChanged?
+            dummy[<#= j - 1#>].<#= isINotifyValue?"Value.ItemChanged":"ItemChanged" #> += (o, e) =>
             {
                 dummyUpdated[<#= j - 1#>] = true;
             };
@@ -171,7 +182,7 @@ namespace NMF.Expressions.Test
 
             // Loop over the chars/items and make the visited char lower case
             for(int k=0; k<<#= i #>; k++){
-                dummy[k].Item = ((char)(k + 97)).ToString();
+                dummy[k]<#= isINotifyValue?".Value":"" #>.Item = ((char)(k + 97)).ToString();
                 // Check if the complete string has the updated flag
                 Assert.IsTrue(updated);
                 // Check if only the changed items has the changed flag 
@@ -214,7 +225,7 @@ namespace NMF.Expressions.Test
                 }
 
                 // Check if the items with the changed char looks like it should (upper case)
-                Assert.AreEqual(((char)(k + 65)).ToString(), dummy[k].Item);
+                Assert.AreEqual(((char)(k + 65)).ToString(), dummy[k]<#= isINotifyValue?".Value":"" #>.Item);
 
                 // Reset changed flags
                 updated = false;
@@ -224,6 +235,8 @@ namespace NMF.Expressions.Test
         }
 
 <#
+                    }
+                }
             }
         }
     }
