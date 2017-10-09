@@ -72,6 +72,9 @@ foreach (var testOption in new[] {
 // All first elements of the results are 0 besides 'InitializedArray' here we choose '1' to clearly separate it from the default value 
     int firstArrayElementTestValue = testOption.name == "InitializedArray"?1:0;
 #>
+
+        #region LensPut tests for <#= testOption.name #>
+
 <#      // Test method for all normal PutGet-Tests #>
         [TestMethod]
         public void PutGetFor<#= testOption.name #>()
@@ -226,6 +229,8 @@ foreach (var testOption in new[] {
             }
             Assert.AreEqual(1, dummy.Item[0]);
         }
+
+#endregion
 
 <#
 }
