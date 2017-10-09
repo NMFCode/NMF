@@ -128,6 +128,11 @@ namespace NMF.Expressions.Test
     // Generate helper function for each number of parameters (maxNumParameter is configured globally in TestGenerationSettings.t4)
     for(int i=2;i<=maxNumParameter;i++)
     { 
+#>
+
+        #region LensPutProxyTests for <#= i #> parameters
+
+<#
         // Generate tests for static and instance proxies
         foreach(bool isStatic in new bool[] {true, false} )
         {
@@ -239,6 +244,10 @@ namespace NMF.Expressions.Test
                 }
             }
         }
+#>
+
+        #endregion
+<#
     }
 #>
     }
