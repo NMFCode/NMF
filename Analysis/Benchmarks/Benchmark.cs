@@ -115,16 +115,20 @@ namespace NMF.Benchmarks
         /// <param name="args">The commandline arguments</param>
         public void Run(string[] args)
         {
-            var options = new BenchmarkOptions();
-            if (!CommandLine.Parser.Default.ParseArguments(args, options))
+            var result = CommandLine.Parser.Default.ParseArguments<BenchmarkOptions>(args);
+            switch (result.Tag)
             {
-                PrintGreeting();
-                PrintWrongArgumentsHelp(options);
-                Environment.Exit(1);
-                return;
+                case CommandLine.ParserResultType.Parsed:
+                    var options = (result as CommandLine.Parsed<BenchmarkOptions>).Value;
+                    Run(options);
+                    break;
+                case CommandLine.ParserResultType.NotParsed:
+                default:
+                    PrintGreeting();
+                    PrintWrongArgumentsHelp(result);
+                    Environment.Exit(1);
+                    break;
             }
-
-            Run(options);
         }
 
         /// <summary>
@@ -175,7 +179,7 @@ namespace NMF.Benchmarks
         /// <returns>False if there are analyzers wanted that do not exist</returns>
         private bool CheckAnalyzers(BenchmarkOptions options)
         {
-            if (options.Analyzers != null && options.Analyzers.Count > 0)
+            if (options.Analyzers != null && options.Analyzers.Count() > 0)
             {
                 for (int i = Analyzers.Count - 1; i >= 0; i--)
                 {
@@ -188,7 +192,7 @@ namespace NMF.Benchmarks
                         options.Analyzers.Remove(Analyzers[i].Name);
                     }
                 }
-                if (options.Analyzers.Count > 0)
+                if (options.Analyzers.Count() > 0)
                 {
                     PrintWrongAnalyzersHelp(options);
                     return false;
@@ -320,12 +324,12 @@ namespace NMF.Benchmarks
         /// Informs the user that used wrong arguments
         /// </summary>
         /// <param name="options">The benchmark options to be used</param>
-        protected virtual void PrintWrongArgumentsHelp(BenchmarkOptions options)
+        protected virtual void PrintWrongArgumentsHelp(CommandLine.ParserResult<BenchmarkOptions> options)
         {
             PrintErrorLog("You are using me wrongly.");
             Log.WriteLine("The correct usage is as follows:");
             var helpText = CommandLine.Text.HelpText.AutoBuild(options);
-            Log.WriteLine(helpText.RenderParsingErrorsText(options, 4));
+            Log.WriteLine(helpText.ToString());
         }
 
         /// <summary>
