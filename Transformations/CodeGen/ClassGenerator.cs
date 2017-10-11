@@ -214,7 +214,7 @@ namespace NMF.CodeGen
             IEnumerable<CodeTypeDeclaration> inheritedBaseClasses;
             if (implBaseType != null)
             {
-                inheritedBaseClasses = layering.Take(layerIndex + 1).SelectMany(s => s);
+                inheritedBaseClasses = implBaseType.Closure(GetBaseClasses);
                 var implementationRef = new CodeTypeReference();
                 implementationRef.BaseType = implBaseType.Name;
                 var n = implBaseType.GetReferenceForType().Namespace();
@@ -234,11 +234,11 @@ namespace NMF.CodeGen
                 AddImplementationBaseClass(generatedType);
             }
             CodeDomHelper.SetUserItem(generatedType, CodeDomHelper.BaseClassesKey, inheritedBaseClasses);
-            for (int i = layerIndex + 1; i < layering.Count; i++)
+            for (int i = layering.Count - 1; i >= 0; i--)
             {
                 foreach (var baseType in layering[i])
                 {
-                    if (baseType != generatedType)
+                    if (baseType != generatedType && ShouldContainMembers(generatedType, baseType))
                     {
                         var dependent = baseType.DependentMembers(false);
                         if (dependent != null)
@@ -247,6 +247,11 @@ namespace NMF.CodeGen
                             {
                                 RecursivelyAddDependentMembers(generatedType.Members, constructor.Statements, inheritedMember, shadows);
                             }
+                        }
+                        var shadowsOfBase = baseType.Shadows(false);
+                        if (shadowsOfBase != null)
+                        {
+                            shadows.UnionWith(shadowsOfBase);
                         }
                     }
                 }

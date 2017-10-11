@@ -49,7 +49,6 @@
    <Attributes LowerBound="1" Type="#//Uri/" Name="RelativeUri" />
    <References IsContainment="True" Opposite="#//ModelElementExtension/ExtendedElement/" UpperBound="-1" ReferenceType="#//ModelElementExtension/" Name="Extensions" />
    <References ReferenceType="#//ModelElement/" Name="Parent" />
-   <References ReferenceType="#//ReferenceType/" Name="Type" />
  </Types>
  <Types xsi:type="nmeta:Class" IsAbstract="True" Name="ModelElementExtension" InstanceOf="#//Extension/">
    <References Opposite="#//ModelElement/Extensions/" LowerBound="1" ReferenceType="#//ModelElement/" Name="ExtendedElement" />

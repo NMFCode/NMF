@@ -582,24 +582,27 @@ namespace NMF.Models.Meta
             private void AdjustTypeReference(IClass input, CodeTypeDeclaration generatedType, ITransformationContext context)
             {
                 var reference = generatedType.GetReferenceForType();
-                var ns2ns = Rule<Namespace2Namespace>();
-                if (ns2ns != null)
+                if (input.GetExtension<MappedType>() == null)
                 {
-                    var baseType = reference.BaseType;
-                    var assemblies = AppDomain.CurrentDomain.GetAssemblies();
-                    foreach (var ns in ns2ns.DefaultImports)
+                    var ns2ns = Rule<Namespace2Namespace>();
+                    if (ns2ns != null)
                     {
-                        var typeName = ns + "." + baseType;
-                        if (System.Type.GetType(typeName, false) != null)
+                        var baseType = reference.BaseType;
+                        var assemblies = AppDomain.CurrentDomain.GetAssemblies();
+                        foreach (var ns in ns2ns.DefaultImports)
                         {
-                            reference.BaseType = context.Trace.ResolveIn(ns2ns, input.Namespace).Name + "." + baseType;
-                        }
-                        foreach (var ass in assemblies)
-                        {
-                            if (ass.GetType(typeName, false) != null)
+                            var typeName = ns + "." + baseType;
+                            if (System.Type.GetType(typeName, false) != null)
                             {
                                 reference.BaseType = context.Trace.ResolveIn(ns2ns, input.Namespace).Name + "." + baseType;
-                                return;
+                            }
+                            foreach (var ass in assemblies)
+                            {
+                                if (ass.GetType(typeName, false) != null)
+                                {
+                                    reference.BaseType = context.Trace.ResolveIn(ns2ns, input.Namespace).Name + "." + baseType;
+                                    return;
+                                }
                             }
                         }
                     }
