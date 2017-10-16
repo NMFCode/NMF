@@ -66,6 +66,13 @@ namespace NMF.Interop.Ecore.Transformations
                 {
                     output.Uri = uri;
                     output.Prefix = input.NsPrefix;
+
+                    if (input.ESuperPackage == null)
+                    {
+                        var model = new Model();
+                        model.ModelUri = uri;
+                        model.RootElements.Add(output);
+                    }
                 }
             }
 
@@ -80,6 +87,8 @@ namespace NMF.Interop.Ecore.Transformations
                 CallMany(Rule<EClassifier2Type>(),
                     selector: package => package.EClassifiers,
                     persistor: (ns, types) => ns.Types.AddRange(types));
+
+                Call(this, package => package.ESuperPackage);
             }
         }
 
@@ -146,6 +155,8 @@ namespace NMF.Interop.Ecore.Transformations
                 CallMany(Rule<EOperation2Operation>(),
                     selector: cl => cl.EOperations,
                     persistor: (cl, operations) => cl.Operations.AddRange(operations));
+
+                Call(Rule<EPackage2Namespace>(), cl => cl.EPackage);
             }
         }
 

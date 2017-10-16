@@ -137,7 +137,8 @@ namespace Ecore2Code
             var metaPackage = LoadPackageFromFiles(mappings);
             SetUri(metaPackage);
 
-            Model model = EncapsulateNamespace(metaPackage);
+            Model model = metaPackage.Model;
+            if (model == null) throw new InvalidOperationException("The namespace was not loaded correctly.");
             if (options.NMeta != null)
             {
                 using (var fs = File.Create(options.NMeta))
@@ -206,18 +207,6 @@ namespace Ecore2Code
                 }
                 Ecore2MetaTransformation.CustomTypesMap = typeMapping;
             }
-        }
-
-        private static Model EncapsulateNamespace(INamespace metaPackage)
-        {
-            var model = metaPackage.Model;
-            if (model == null)
-            {
-                model = new Model();
-                model.RootElements.Add(metaPackage);
-            }
-            model.ModelUri = metaPackage.Uri;
-            return model;
         }
 
         private void SetUri(INamespace metaPackage)
@@ -387,7 +376,7 @@ namespace Ecore2Code
                 var dir = Path.GetDirectoryName(options.NMeta);
                 var extension = Path.GetExtension(options.NMeta);
                 var file = Path.GetFileNameWithoutExtension(path);
-                repository.Save(EncapsulateNamespace(metaNamespace), Path.Combine(dir, file + extension));
+                repository.Save(metaNamespace, Path.Combine(dir, file + extension));
             }
         }
     }
