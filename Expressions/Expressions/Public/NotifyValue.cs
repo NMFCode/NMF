@@ -8,95 +8,32 @@ using System.Linq.Expressions;
 
 namespace NMF.Expressions
 {
-    public class NotifyValue<T> : INotifyValue<T>, INotifyPropertyChanged
+    public abstract class NotifyValue<T> : INotifyValue<T>
     {
-        internal INotifyExpression<T> Expression { get; private set; }
+        private ISuccessorList successors = NotifySystem.DefaultSystem.CreateSuccessorList();
+        private ExecutionMetaData metadata = new ExecutionMetaData();
 
-        public T Value { get { return Expression.Value; } }
+        public abstract T Value { get; }
+
+        public ISuccessorList Successors {  get { return successors; } }
+
+        public abstract IEnumerable<INotifiable> Dependencies { get; }
+
+        public ExecutionMetaData ExecutionMetaData {  get { return metadata; } }
 
         public event EventHandler<ValueChangedEventArgs> ValueChanged;
 
-        public event PropertyChangedEventHandler PropertyChanged;
-        
-        public ISuccessorList Successors { get; } = NotifySystem.DefaultSystem.CreateSuccessorList();
-
-        public virtual IEnumerable<INotifiable> Dependencies { get { yield return Expression; } }
-
-        public ExecutionMetaData ExecutionMetaData { get; } = new ExecutionMetaData();
-
-        public NotifyValue(Expression<Func<T>> expression, IDictionary<string, object> parameterMappings = null)
-            : this(NotifySystem.CreateExpression<T>(expression.Body, null, parameterMappings: parameterMappings)) { }
-        
-        internal NotifyValue(INotifyExpression<T> expression)
+        protected virtual void OnValueChanged(ValueChangedEventArgs e)
         {
-            if (expression == null) throw new ArgumentNullException("expression");
-
-            Expression = expression;
-
-            Successors.Attached += (obj, e) => Attach();
-            Successors.Detached += (obj, e) => Detach();
-        }
-
-        public virtual INotificationResult Notify(IList<INotificationResult> sources)
-        {
-            if (sources.Count > 0)
-            {
-                var oldValue = ((ValueChangedNotificationResult<T>)sources[0]).OldValue;
-                OnValueChanged(oldValue, Value);
-                OnPropertyChanged("Value");
-                return new ValueChangedNotificationResult<T>(this, oldValue, Value);
-            }
-            return UnchangedNotificationResult.Instance;
+            ValueChanged?.Invoke(this, e);
         }
 
         public void Dispose()
         {
-            Dispose(true);
-            GC.SuppressFinalize(this);
+
         }
 
-        protected virtual void Dispose(bool disposing)
-        {
-            Successors.UnsetAll();
-        }
-        
-        
-
-        protected virtual void OnValueChanged(T oldValue, T newValue)
-        {
-            if (ValueChanged != null)
-                ValueChanged(this, new ValueChangedEventArgs(oldValue, newValue));
-        }
-
-        protected virtual void OnPropertyChanged(string propertyName)
-        {
-            if (PropertyChanged != null)
-                PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
-        }
-
-        private void Attach()
-        {
-            OnAttach();
-            foreach (var dep in Dependencies)
-                dep.Successors.Set(this);
-        }
-
-        private void Detach()
-        {
-            OnDetach();
-            foreach (var dep in Dependencies)
-                dep.Successors.Unset(this);
-        }
-
-        /// <summary>
-        /// Occurs when this node gets (re)attached to another node for the first time
-        /// </summary>
-        protected virtual void OnAttach() { }
-
-        /// <summary>
-        /// Occurs when the last successor of this node gets removed
-        /// </summary>
-        protected virtual void OnDetach() { }
+        public abstract INotificationResult Notify(IList<INotificationResult> sources);
     }
 
     public class NotifyReversableValue<T> : INotifyReversableValue<T>, INotifyPropertyChanged

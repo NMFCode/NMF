@@ -5,7 +5,7 @@ namespace NMF.Expressions
     /// <summary>
     /// Represents an expression with additional information on the program flow
     /// </summary>
-    public interface INotifyExpression
+    public interface INotifyExpression : INotifiable
     {
         /// <summary>
         /// Determines whether the expression can be replaced by a constant expression

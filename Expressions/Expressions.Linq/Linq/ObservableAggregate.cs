@@ -6,7 +6,7 @@ using System.Text;
 
 namespace NMF.Expressions.Linq
 {
-    public abstract class ObservableAggregate<TSource, TAccumulator, TResult> : INotifyValue<TResult>
+    public abstract class ObservableAggregate<TSource, TAccumulator, TResult> : NotifyValue<TResult>
     {
         private INotifyEnumerable<TSource> source;
 
@@ -32,15 +32,6 @@ namespace NMF.Expressions.Linq
         protected abstract void RemoveItem(TSource item);
 
         protected abstract void AddItem(TSource item);
-        
-        public abstract TResult Value { get; }
-
-        protected virtual void OnValueChanged(ValueChangedEventArgs e)
-        {
-            if (ValueChanged != null) ValueChanged(this, e);
-        }
-
-        public event EventHandler<ValueChangedEventArgs> ValueChanged;
 
         private void Attach()
         {
@@ -51,21 +42,15 @@ namespace NMF.Expressions.Linq
             {
                 AddItem(item);
             }
-            OnAttach();
         }
 
         private void Detach()
         {
-            OnDetach();
             foreach (var dep in Dependencies)
                 dep.Successors.Unset(this);
         }
 
-        protected virtual void OnAttach() { }
-
-        protected virtual void OnDetach() { }
-
-        public INotificationResult Notify(IList<INotificationResult> sources)
+        public override INotificationResult Notify(IList<INotificationResult> sources)
         {
             var sourceChange = (CollectionChangedNotificationResult<TSource>)sources[0];
             var oldValue = Value;
@@ -99,21 +84,6 @@ namespace NMF.Expressions.Linq
                 return UnchangedNotificationResult.Instance;
         }
 
-        public void Dispose()
-        {
-            Dispose(true);
-            GC.SuppressFinalize(this);
-        }
-
-        protected virtual void Dispose(bool disposing)
-        {
-            Successors.UnsetAll();
-        }
-
-        public ISuccessorList Successors { get; } = NotifySystem.DefaultSystem.CreateSuccessorList();
-
-        public IEnumerable<INotifiable> Dependencies { get { yield return source; } }
-
-        public ExecutionMetaData ExecutionMetaData { get; } = new ExecutionMetaData();
+        public override IEnumerable<INotifiable> Dependencies { get { yield return source; } }
     }
 }
