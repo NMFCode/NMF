@@ -66,7 +66,12 @@ namespace NMF.CodeGenerationTests
                 }
                 finally
                 {
-                    Directory.Delete(path, true);
+                    try
+                    {
+                        Directory.Delete(path, true);
+                    }
+                    // In code coverage analysis, another process is usually accessing our temporary folder
+                    catch (Exception) { }
                 }
             }
         }
