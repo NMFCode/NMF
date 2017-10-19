@@ -48,15 +48,24 @@ namespace NMF.Expressions.Test
     {
         private Func<Dummy<int[]>, int> getter;
         private Action<Dummy<int[]>, int> setter;
+        
+        private Func<INotifyValue<Dummy<int[]>>, int> getterINotify;
+        private Action<INotifyValue<Dummy<int[]>>, int> setterINotify;        
 
         [TestInitialize]
         public void CreateGetterAndSetter()
         {
             Expression<Func<Dummy<int[]>, int>> expression = dummy => dummy.Item.FirstOrDefault();
+            Expression<Func<INotifyValue<Dummy<int[]>>, int>> expressionINotify = dummy => dummy.Value.Item.FirstOrDefault();            
 
             getter = expression.Compile();
+            getterINotify = expressionINotify.Compile();
+
             var setExp = SetExpressionRewriter.CreateSetter(expression);
+            var setExpINotify = SetExpressionRewriter.CreateSetter(expressionINotify);
+
             setter = setExp.Compile();
+            setterINotify = setExpINotify.Compile();
         }
 
 <#
@@ -72,16 +81,22 @@ foreach (var testOption in new[] {
 // All first elements of the results are 0 besides 'InitializedArray' here we choose '1' to clearly separate it from the default value 
     int firstArrayElementTestValue = testOption.name == "InitializedArray"?1:0;
 #>
+
+        #region LensPut tests for <#= testOption.name #>
+<#
+    foreach( var isINotifyValue in new bool[] { false, true } )
+        {
+#>
 <#      // Test method for all normal PutGet-Tests #>
         [TestMethod]
-        public void PutGetFor<#= testOption.name #>()
+        public void PutGetFor<#= testOption.name #><#= isINotifyValue?"INotify":"" #>()
         {
-            var dummy = new ObservableDummy<int[]>(<#= testOption.array #>);
-            var test = Observable.Reversable(() => dummy.Item.FirstOrDefault());
+            var dummy = <#= isINotifyValue?"new ConstantValue<ObservableDummy<int[]>>":"" #>(new ObservableDummy<int[]>(<#= testOption.array #>));
+            var test = Observable.Reversable(() => dummy<#= isINotifyValue?".Value":"" #>.Item.FirstOrDefault());
 
             Assert.AreEqual(<#= firstArrayElementTestValue #>, test.Value);
             test.Value = 42;
-            Assert.AreEqual(42, dummy.Item[0]);
+            Assert.AreEqual(42, dummy<#= isINotifyValue?".Value":"" #>.Item[0]);
 <# // Disable an unsported test for the InitializedArray configuration #>
 <#  if(testOption.name == "InitializedArray")
 {
@@ -98,13 +113,14 @@ foreach (var testOption in new[] {
     }
 #>
         }
+
 <#      // Test method for all normal GetPut-Tests #>
         [TestMethod]
-        public void GetPutFor<#= testOption.name #>()
+        public void GetPutFor<#= testOption.name #><#= isINotifyValue?"INotify":"" #>()
         {
             int[] array = <#= testOption.array #>;
-            var dummy = new Dummy<int[]>(array);
-            var test = Observable.Reversable(() => dummy.Item.FirstOrDefault());
+            var dummy = <#= isINotifyValue?"new ConstantValue<Dummy<int[]>>":"" #>(new Dummy<int[]>(array));
+            var test = Observable.Reversable(() => dummy<#= isINotifyValue?".Value":"" #>.Item.FirstOrDefault());
 
             Assert.AreEqual(<#= firstArrayElementTestValue #>, test.Value);
             test.Value = 0;
@@ -112,28 +128,28 @@ foreach (var testOption in new[] {
             {
                 Assert.AreEqual(array[0], 0);
             }
-            Assert.AreEqual(array, dummy.Item);
+            Assert.AreEqual(array, dummy<#= isINotifyValue?".Value":"" #>.Item);
 
             test.Value = 1;
             if(array != null && array.Length > 0)
             {
                 Assert.AreEqual(array[0], 1);
             }
-            Assert.AreEqual(1, dummy.Item[0]);
+            Assert.AreEqual(1, dummy<#= isINotifyValue?".Value":"" #>.Item[0]);
         }
 
 <#      // Test method for all PutGet-Tests with function #>
         [TestMethod]
-        public void PutGetFor<#= testOption.name #>WithFunc()
+        public void PutGetFor<#= testOption.name #>WithFunc<#= isINotifyValue?"INotify":"" #>()
         {
-            var dummy = new ObservableDummy<int[]>(<#= testOption.array #>);
-            var func = Observable.Func<Dummy<int[]>, int>(d => d.Item.FirstOrDefault());
+            var dummy = <#= isINotifyValue?"new ConstantValue<ObservableDummy<int[]>>":"" #>(new ObservableDummy<int[]>(<#= testOption.array #>));
+            var func = Observable.Func<<#= isINotifyValue?"INotifyValue<ObservableDummy<int[]>>":"Dummy<int[]>" #>, int>(d => d<#= isINotifyValue?".Value":"" #>.Item.FirstOrDefault());
             var test = func.InvokeReversable(dummy);
 
 <# // Fake usage to keep dependency graph enabled for the InitializedArray configuration #>
 <#  if(testOption.name == "InitializedArray")
 {
-#>            
+#>
             // Fake usage to keep dependency graph enabled
             test.Successors.SetDummy();
 <#
@@ -141,7 +157,7 @@ foreach (var testOption in new[] {
 #>
             Assert.AreEqual(<#= firstArrayElementTestValue #>, test.Value);
             test.Value = 42;
-            Assert.AreEqual(42, dummy.Item[0]);
+            Assert.AreEqual(42, dummy<#= isINotifyValue?".Value":"" #>.Item[0]);
 <# // Disable an unsported test for the InitializedArray configuration #>
 <#  if(testOption.name == "InitializedArray")
 {
@@ -161,11 +177,11 @@ foreach (var testOption in new[] {
 
 <#      // Test method for all GetPut-Tests with function #>
         [TestMethod]
-        public void GetPutFor<#= testOption.name #>WithFunc()
+        public void GetPutFor<#= testOption.name #>WithFunc<#= isINotifyValue?"INotify":"" #>()
         {
             int[] array = <#= testOption.array #>;
-            var dummy = new Dummy<int[]>(array);
-            var func = Observable.Func<Dummy<int[]>, int>(d => d.Item.FirstOrDefault());
+            var dummy = <#= isINotifyValue?"new ConstantValue<Dummy<int[]>>":"" #>(new Dummy<int[]>(array));
+            var func = Observable.Func<<#= isINotifyValue?"INotifyValue<Dummy<int[]>>":"Dummy<int[]>" #>, int>(d => d<#= isINotifyValue?".Value":"" #>.Item.FirstOrDefault());
             var test = func.InvokeReversable(dummy);
 <# // Fake usage to keep dependency graph enabled for the InitializedArray configuration #>
 <#  if(testOption.name == "InitializedArray")
@@ -182,50 +198,55 @@ foreach (var testOption in new[] {
             {
                 Assert.AreEqual(array[0], 0);
             }
-            Assert.AreEqual(array, dummy.Item);
+            Assert.AreEqual(array, dummy<#= isINotifyValue?".Value":"" #>.Item);
 
             test.Value = 1;
             if(array != null && array.Length > 0)
             {
                 Assert.AreEqual(array[0], 1);
             }
-            Assert.AreEqual(1, dummy.Item[0]);
+            Assert.AreEqual(1, dummy<#= isINotifyValue?".Value":"" #>.Item[0]);
         }
 
 <#      // Test method for all PutGet-Tests with compliation #>
         [TestMethod]
-        public void PutGetForCompiled<#= testOption.name #>()
+        public void PutGetForCompiled<#= testOption.name #><#= isINotifyValue?"INotify":"" #>()
         {
-            var dummy = new Dummy<int[]>(<#= testOption.array #>);
+            var dummy = <#= isINotifyValue?"new ConstantValue<Dummy<int[]>>":"" #>(new Dummy<int[]>(<#= testOption.array #>));
 
-            Assert.AreEqual(<#= firstArrayElementTestValue #>, getter(dummy));
-            setter(dummy, 42);
-            Assert.AreEqual(42, dummy.Item[0]);
-            Assert.AreEqual(42, getter(dummy));
+            Assert.AreEqual(<#= firstArrayElementTestValue #>, getter<#= isINotifyValue?"INotify":"" #>(dummy));
+            setter<#= isINotifyValue?"INotify":"" #>(dummy, 42);
+            Assert.AreEqual(42, dummy<#= isINotifyValue?".Value":"" #>.Item[0]);
+            Assert.AreEqual(42, getter<#= isINotifyValue?"INotify":"" #>(dummy));
         }
         
 <#      // Test method for all GetPut-Tests with compliation #>
         [TestMethod]
-        public void GetPutForCompiled<#= testOption.name #>()
+        public void GetPutForCompiled<#= testOption.name #><#= isINotifyValue?"INotify":"" #>()
         {
             int[] array = <#= testOption.array #>;
-            var dummy = new Dummy<int[]>(array);
+            var dummy = <#= isINotifyValue?"new ConstantValue<Dummy<int[]>>":"" #>(new Dummy<int[]>(array));
 
-            Assert.AreEqual(<#= firstArrayElementTestValue #>, getter(dummy));
-            setter(dummy, 0);
+            Assert.AreEqual(<#= firstArrayElementTestValue #>, getter<#= isINotifyValue?"INotify":"" #>(dummy));
+            setter<#= isINotifyValue?"INotify":"" #>(dummy, 0);
             if(array != null && array.Length > 0)
             {
                 Assert.AreEqual(array[0], 0);
             }
-            Assert.AreEqual(array, dummy.Item);
+            Assert.AreEqual(array, dummy<#= isINotifyValue?".Value":"" #>.Item);
 
-            setter(dummy, 1);
+            setter<#= isINotifyValue?"INotify":"" #>(dummy, 1);
             if(array != null && array.Length > 0)
             {
                 Assert.AreEqual(array[0], 1);
             }
-            Assert.AreEqual(1, dummy.Item[0]);
+            Assert.AreEqual(1, dummy<#= isINotifyValue?".Value":"" #>.Item[0]);
         }
+<# 
+        }
+#>
+
+#endregion
 
 <#
 }

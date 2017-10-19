@@ -39,19 +39,21 @@ namespace NMF.Expressions.Test.Arithmetic
                         // Test operations in observable and not observable items
                         foreach(var observable in new[] { false , true })
                         {
+                            foreach( var isINotifyValue in new bool[] { false, true } )
+                            {
 #>
 <#      // The test method (used for all permuations) #>
         [TestMethod]
 <#      // The test method name generation
         // Syntax: [operation name][checked|unchecked]_[type]_[Observable_Update|NoObservable_NoUpdate] #>
-        public void <#=operation.name#><#=this.UppercaseFirst(checkType)#>_<#=this.UppercaseFirst(type)#>_<#=observable?"Observable_Update":"NoObservable_NoUpdate"#>()
+        public void <#=operation.name#><#=this.UppercaseFirst(checkType)#>_<#=this.UppercaseFirst(type)#>_<#=observable?"Observable_Update":"NoObservable_NoUpdate"#><#= isINotifyValue?"INotify":"Dummy" #>()
         {
             <#=checkType#>
             {
                 var updated = false;
-                var dummy = new <#=observable?"ObservableDummy":"Dummy"#><<#=type#>>() { Item = (<#=type#>)<#=operation.arg1#> };
+                var dummy = <#= isINotifyValue?"new ConstantValue<" + (observable?"Observable":"") + "Dummy<" + type + ">>":"" #>(new <#= observable?"Observable":"" #>Dummy<<#=type#>>() { Item = (<#=type#>)<#=operation.arg1#> });
 
-                var result = Observable.Expression(() => dummy.Item <#=operation.op#> (<#=type#>)<#=operation.arg2#>);
+                var result = Observable.Expression(() => dummy<#= isINotifyValue?".Value":"" #>.Item <#=operation.op#> (<#=type#>)<#=operation.arg2#>);
 
                 result.ValueChanged += (o, e) =>
                 {
@@ -61,7 +63,7 @@ namespace NMF.Expressions.Test.Arithmetic
 if(observable)
 {
 #>
-                    Assert.AreEqual((<#= type#>)<#= operation.result #>, e.OldValue);
+                    Assert.AreEqual((<#= type #>)<#= operation.result #>, e.OldValue);
 <#
 }
 #>
@@ -71,7 +73,7 @@ if(observable)
                 Assert.AreEqual((<#=type#>)<#=operation.result#>, result.Value);
                 Assert.IsFalse(updated);
 
-                dummy.Item = (<#=type#>)<#=operation.arg3#>;
+                dummy<#= isINotifyValue?".Value":"" #>.Item = (<#=type#>)<#=operation.arg3#>;
 <#              // The target value should only change if 'observable' is true #>
                 Assert.AreEqual((<#=type#>)<#=observable?operation.result2:operation.result#>, result.Value);
                 Assert.<#=observable?"IsTrue":"IsFalse"#>(updated);
@@ -79,6 +81,7 @@ if(observable)
         }
 
 <#
+                            }
                         }
                     }
                 }
