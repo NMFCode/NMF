@@ -15,10 +15,10 @@ namespace NMF.Expressions.Test
 <#
     // Variable for generating arguments for lambda expression
     // Form: (object o[0-9]+)(, object o[0-9]+)*
-    string tempArgsText = "object o1";
+    string tempArgsText = "string o1";
     // Variable for genarating parameter for function call
     // Form: (\(object\) null)(, \(object\) null)*
-    string tempValueText = "(object)null";
+    string tempValueText = "\"Test\"";
 
     // Generate a test for each number of parameters (maxNumParameter is configured globally in TestGenerationSettings.t4)
     for(int i=1;i<=maxNumParameter;i++)
@@ -27,9 +27,9 @@ namespace NMF.Expressions.Test
         [TestMethod]
         public void FuncT<#=i#>_Invoke_ReturnsCorrectResult()
         {
-            var test = Observable.Func((<#=tempArgsText#>) => "42");
+            var test = Observable.Func((<#=tempArgsText#>) => o1);
             var result = test.Observe(<#=tempValueText#>);
-            Assert.AreEqual("42", result.Value);
+            Assert.AreEqual("Test", result.Value);
         }
 
 <#
