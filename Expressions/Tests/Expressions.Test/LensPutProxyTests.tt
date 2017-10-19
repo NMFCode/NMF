@@ -64,7 +64,7 @@ namespace NMF.Expressions.Test
         string textDIItem = textDI + (isINotifyValue?".Value":"") + ".Item";
 
         // Generate helper function for each number of parameters (maxNumParameter is configured globally in TestGenerationSettings.t4)
-        for(int i=2;i<=maxNumParameter;i++)
+        for(int i=2;i<=maxNumParameter-1;i++)
         {
 #>
             #region Helper for <#= i #> parameters
@@ -126,7 +126,7 @@ namespace NMF.Expressions.Test
    
 <#
     // Generate helper function for each number of parameters (maxNumParameter is configured globally in TestGenerationSettings.t4)
-    for(int i=2;i<=maxNumParameter;i++)
+    for(int i=2;i<=maxNumParameter-1;i++)
     { 
 #>
 
