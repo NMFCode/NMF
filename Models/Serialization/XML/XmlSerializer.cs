@@ -208,7 +208,7 @@ namespace NMF.Serialization
                     return info;
                 }
             }
-            return null;
+            throw new InvalidOperationException($"The type {localName} in namespace {ns} could not be resolved.");
         }
 
         protected virtual ITypeSerializationInfo CreateTypeSerializationInfoFor(Type type)
@@ -277,9 +277,14 @@ namespace NMF.Serialization
                         info.CollectionType = i;
                         var converter = GetTypeConverter(collType);
                         if (converter == null || !converter.CanConvertFrom(typeof(string)) || !converter.CanConvertTo(typeof(string)))
+                        {
                             info.CollectionItemType = GetSerializationInfo(collType, true);
+                        }
                         else
+                        {
                             info.CollectionItemType = new StringConvertibleType(converter, collType);
+                        }
+                        info.CollectionItemRawType = collType;
                         break;
                     }
                 }

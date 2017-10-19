@@ -71,6 +71,8 @@ namespace NMF.Serialization
         {
             get
             {
+                var tsi = Property.PropertyType as XmlTypeSerializationInfo;
+                if (tsi != null) return tsi.CollectionItemRawType;
                 return null;
             }
         }

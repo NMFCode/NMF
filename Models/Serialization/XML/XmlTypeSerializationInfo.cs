@@ -225,6 +225,8 @@ namespace NMF.Serialization
             set;
         }
 
+        public Type CollectionItemRawType { get; set; }
+
 
         public bool IsStringConvertible
         {
