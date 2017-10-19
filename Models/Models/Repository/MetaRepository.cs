@@ -13,7 +13,7 @@ namespace NMF.Models.Repository
         private static MetaRepository instance = new MetaRepository();
         private ModelCollection entries;
         private ModelSerializer serializer = new ModelSerializer();
-        private HashSet<Assembly> modelAssemblies = new HashSet<Assembly>();
+        private HashSet<Assembly> traversedAssemblies = new HashSet<Assembly>();
 
         event EventHandler<BubbledChangeEventArgs> IModelRepository.BubbledChange
         {
@@ -137,17 +137,18 @@ namespace NMF.Models.Repository
 
         private void RegisterAssembly(Assembly assembly)
         {
-            var attributes = assembly.GetCustomAttributes(typeof(ModelMetadataAttribute), false);
-            if (attributes != null && attributes.Length > 0 && modelAssemblies.Add(assembly))
+            if (!traversedAssemblies.Add(assembly)) return;
+            var references = assembly.GetReferencedAssemblies();
+            if (references != null)
             {
-                var references = assembly.GetReferencedAssemblies();
-                if (references != null)
+                for (int i = 0; i < references.Length; i++)
                 {
-                    for (int i = 0; i < references.Length; i++)
-                    {
-                        RegisterAssembly(Assembly.Load(references[i]));
-                    }
+                    RegisterAssembly(Assembly.Load(references[i]));
                 }
+            }
+            var attributes = assembly.GetCustomAttributes(typeof(ModelMetadataAttribute), false);
+            if (attributes != null && attributes.Length > 0)
+            {
                 var types = assembly.GetTypes();
                 var saveMapping = new List<KeyValuePair<string, System.Type>>();
                 if (types != null)
