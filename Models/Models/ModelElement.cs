@@ -665,7 +665,10 @@ namespace NMF.Models
             {
                 foreach (var child in Children)
                 {
-                    if (child.IsIdentified && child.ToIdentifierString().ToUpperInvariant() == qString) return child;
+                    if (child.IsIdentified) {
+                        var id = child.ToIdentifierString();
+                        if (id != null && id.ToUpperInvariant() == qString) return child;
+                    }
                 }
             }
             string reference;
