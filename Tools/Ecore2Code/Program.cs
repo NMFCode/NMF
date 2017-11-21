@@ -216,7 +216,7 @@ namespace Ecore2Code
                 Uri uri;
                 if (Uri.TryCreate(options.Uri, UriKind.Absolute, out uri))
                 {
-                    metaPackage.Uri = uri;
+                    metaPackage.Model.ModelUri = uri;
                 }
                 else
                 {
