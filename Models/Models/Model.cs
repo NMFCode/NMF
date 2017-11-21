@@ -581,10 +581,14 @@ namespace NMF.Models
             PromoteSingleRootElement = true;
         }
 
+        /// <summary>
+        /// This configuration sets whether a model should be identified with its single root model if such an element exists
+        /// </summary>
         public static bool PromoteSingleRootElement { get; set; }
 
-
-
+        /// <summary>
+        /// The repository that manages this model
+        /// </summary>
         public IModelRepository Repository { get; internal set; }
 
         protected override IModelElement GetModelElementForReference(string reference, int index)
@@ -655,6 +659,12 @@ namespace NMF.Models
             }
         }
 
+        /// <summary>
+        /// Registers the given model element with the given id
+        /// </summary>
+        /// <param name="id">The identifier</param>
+        /// <param name="element">That element to register with the id</param>
+        /// <returns>True, if the registration process was successful. Otherwise, False denotes that already an element with this identifier existed.</returns>
         public bool RegisterId(string id, ModelElement element)
         {
             if (id == null) return false;
@@ -674,6 +684,11 @@ namespace NMF.Models
             }
         }
 
+        /// <summary>
+        /// Unregister the given identifier
+        /// </summary>
+        /// <param name="id">The identifier</param>
+        /// <returns>True, if the identifier is removed. False denotes that this identifier was not registered</returns>
         public bool UnregisterId(string id)
         {
             if (id == null) return false;
@@ -718,6 +733,21 @@ namespace NMF.Models
                 }
             }
             return target;
+        }
+
+        /// <summary>
+        /// Resolves the given global ID
+        /// </summary>
+        /// <param name="id">The given global id</param>
+        /// <returns>The model element with the given id or null, if no such element is found</returns>
+        public IModelElement ResolveGlobal(string id)
+        {
+            if (id == null) throw new ArgumentOutOfRangeException(nameof(id));
+            if (IdStore != null && IdStore.TryGetValue(id, out ModelElement element))
+            {
+                return element;
+            }
+            return null;
         }
 
         public override IModelElement Resolve(string path)
