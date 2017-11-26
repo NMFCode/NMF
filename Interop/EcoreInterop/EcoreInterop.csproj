@@ -201,6 +201,14 @@
     <Compile Include="Facade.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Transformations\Ecore2MetaTransformation.cs" />
+    <Compile Include="Type\AnyType.cs" />
+    <Compile Include="Type\IAnyType.cs" />
+    <Compile Include="Type\IProcessingInstruction.cs" />
+    <Compile Include="Type\ISimpleAnyType.cs" />
+    <Compile Include="Type\IXMLTypeDocumentRoot.cs" />
+    <Compile Include="Type\ProcessingInstruction.cs" />
+    <Compile Include="Type\SimpleAnyType.cs" />
+    <Compile Include="Type\XMLTypeDocumentRoot.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Ecore.ecore" />
@@ -209,6 +217,8 @@
     <EmbeddedResource Include="layout.ecore" />
     <None Include="NMeta.ecore" />
     <None Include="NMetaChanges.ecore" />
+    <EmbeddedResource Include="XMLType.ecore" />
+    <EmbeddedResource Include="XMLType.nmf" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Collections\Collections\Collections.csproj">

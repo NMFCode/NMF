@@ -1,0 +1,19 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<nmeta:Namespace xmi:version="2.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" Uri="http://www.eclipse.org/emf/2003/XMLType" Prefix="ecore.xml.type" Name="type" xmlns:xmi="http://www.omg.org/XMI" xmlns:nmeta="http://nmf.codeplex.com/nmeta/">
+  <Types xsi:type="nmeta:Class" Name="AnyType">
+    <Attributes IsOrdered="True" UpperBound="-1" Type="http://nmf.codeplex.com/nmeta/#//Object" Name="mixed" />
+    <Attributes IsOrdered="True" UpperBound="-1" Type="http://nmf.codeplex.com/nmeta/#//Object" Name="anyAttribute" />
+  </Types>
+  <Types xsi:type="nmeta:Class" Name="ProcessingInstruction">
+    <Attributes IsOrdered="True" IsUnique="True" Type="http://nmf.codeplex.com/nmeta/#//String" Name="data" />
+    <Attributes IsOrdered="True" IsUnique="True" LowerBound="1" Type="http://nmf.codeplex.com/nmeta/#//String" Name="target" />
+  </Types>
+  <Types xsi:type="nmeta:Class" BaseTypes="#//AnyType" Name="SimpleAnyType">
+    <References ReferenceType="http://www.eclipse.org/emf/2002/Ecore#//EDataType" IsOrdered="True" IsUnique="True" LowerBound="1" Name="instanceType" />
+  </Types>
+  <Types xsi:type="nmeta:Class" Name="XMLTypeDocumentRoot">
+    <References IsContainment="True" ReferenceType="http://www.eclipse.org/emf/2002/Ecore#//EStringToStringMapEntry" IsOrdered="True" IsUnique="True" UpperBound="-1" Name="xMLNSPrefixMap" />
+    <References IsContainment="True" ReferenceType="http://www.eclipse.org/emf/2002/Ecore#//EStringToStringMapEntry" IsOrdered="True" IsUnique="True" UpperBound="-1" Name="xSISchemaLocation" />
+    <Attributes IsOrdered="True" UpperBound="-1" Type="http://nmf.codeplex.com/nmeta/#//Object" Name="mixed" />
+  </Types>
+</nmeta:Namespace>

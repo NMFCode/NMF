@@ -32,6 +32,10 @@ namespace NMF.Interop.Ecore
             {
                 repository.Serializer.Deserialize(layoutModel, new Uri("platform:/plugin/org.emftext.commons.layout/metamodel/layout.ecore", UriKind.Absolute), repository, true);
             }
+            using (var typeModel = typeof(EcoreInterop).Assembly.GetManifestResourceStream("NMF.Interop.Ecore.XMLType.ecore"))
+            {
+                repository.Serializer.Deserialize(typeModel, new Uri("http://www.eclipse.org/emf/2003/XMLType", UriKind.Absolute), repository, true);
+            }
         }
 
         public static IModelRepository Repository
