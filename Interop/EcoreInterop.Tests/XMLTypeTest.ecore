@@ -1,0 +1,51 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<ecore:EPackage xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" name="XMLTypeTest" nsURI="http://nmf.codeplex.com/XMLTypeTest/" nsPrefix="xmltypetest">
+  <eClassifiers xsi:type="ecore:EClass" name="DataTypes" abstract="true" interface="true">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="AnySimpleType" eType="ecore:EDataType http://www.eclipse.org/emf/2003/XMLType#//anySimpleType"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="AnyURI" eType="ecore:EDataType http://www.eclipse.org/emf/2003/XMLType#//anyURI"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="Base64Binary" eType="ecore:EDataType http://www.eclipse.org/emf/2003/XMLType#//base64Binary"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="Boolean" eType="ecore:EDataType http://www.eclipse.org/emf/2003/XMLType#//boolean"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="Byte" eType="ecore:EDataType http://www.eclipse.org/emf/2003/XMLType#//byte"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="Date" eType="ecore:EDataType http://www.eclipse.org/emf/2003/XMLType#//date"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="DateTime" eType="ecore:EDataType http://www.eclipse.org/emf/2003/XMLType#//dateTime"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="Decimal" eType="ecore:EDataType http://www.eclipse.org/emf/2003/XMLType#//decimal"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="Double" eType="ecore:EDataType http://www.eclipse.org/emf/2003/XMLType#//double"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="Duration" eType="ecore:EDataType http://www.eclipse.org/emf/2003/XMLType#//duration"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="ENTITIES" eType="ecore:EDataType http://www.eclipse.org/emf/2003/XMLType#//ENTITIES"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="ENTITY" eType="ecore:EDataType http://www.eclipse.org/emf/2003/XMLType#//ENTITY"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="Float" eType="ecore:EDataType http://www.eclipse.org/emf/2003/XMLType#//float"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="GDay" eType="ecore:EDataType http://www.eclipse.org/emf/2003/XMLType#//gDay"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="GMonth" eType="ecore:EDataType http://www.eclipse.org/emf/2003/XMLType#//gMonth"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="GMonthDay" eType="ecore:EDataType http://www.eclipse.org/emf/2003/XMLType#//gMonthDay"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="GYear" eType="ecore:EDataType http://www.eclipse.org/emf/2003/XMLType#//gYear"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="GYearMonth" eType="ecore:EDataType http://www.eclipse.org/emf/2003/XMLType#//gYearMonth"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="HexBinary" eType="ecore:EDataType http://www.eclipse.org/emf/2003/XMLType#//hexBinary"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="ID" eType="ecore:EDataType http://www.eclipse.org/emf/2003/XMLType#//ID"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="IDREF" eType="ecore:EDataType http://www.eclipse.org/emf/2003/XMLType#//IDREF"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="IDREFS" eType="ecore:EDataType http://www.eclipse.org/emf/2003/XMLType#//IDREFS"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="Int" eType="ecore:EDataType http://www.eclipse.org/emf/2003/XMLType#//int"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="Integer" eType="ecore:EDataType http://www.eclipse.org/emf/2003/XMLType#//integer"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="Language" eType="ecore:EDataType http://www.eclipse.org/emf/2003/XMLType#//language"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="Long" eType="ecore:EDataType http://www.eclipse.org/emf/2003/XMLType#//long"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="Name" eType="ecore:EDataType http://www.eclipse.org/emf/2003/XMLType#//Name"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="NCName" eType="ecore:EDataType http://www.eclipse.org/emf/2003/XMLType#//NCName"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="NegativeInteger" eType="ecore:EDataType http://www.eclipse.org/emf/2003/XMLType#//negativeInteger"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="NMToken" eType="ecore:EDataType http://www.eclipse.org/emf/2003/XMLType#//NMTOKEN"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="NMTOKENS" eType="ecore:EDataType http://www.eclipse.org/emf/2003/XMLType#//NMTOKENS"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="NonNegativeInteger" eType="ecore:EDataType http://www.eclipse.org/emf/2003/XMLType#//nonNegativeInteger"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="NonPositiveInteger" eType="ecore:EDataType http://www.eclipse.org/emf/2003/XMLType#//nonPositiveInteger"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="NormalizedString" eType="ecore:EDataType http://www.eclipse.org/emf/2003/XMLType#//normalizedString"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="NOTATION" eType="ecore:EDataType http://www.eclipse.org/emf/2003/XMLType#//NOTATION"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="PositiveInteger" eType="ecore:EDataType http://www.eclipse.org/emf/2003/XMLType#//positiveInteger"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="QName" eType="ecore:EDataType http://www.eclipse.org/emf/2003/XMLType#//QName"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="Short" eType="ecore:EDataType http://www.eclipse.org/emf/2003/XMLType#//short"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="String" eType="ecore:EDataType http://www.eclipse.org/emf/2003/XMLType#//string"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="Time" eType="ecore:EDataType http://www.eclipse.org/emf/2003/XMLType#//time"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="Token" eType="ecore:EDataType http://www.eclipse.org/emf/2003/XMLType#//token"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="UnsignedByte" eType="ecore:EDataType http://www.eclipse.org/emf/2003/XMLType#//unsignedByte"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="UnsignedInt" eType="ecore:EDataType http://www.eclipse.org/emf/2003/XMLType#//unsignedInt"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="UnsignedLong" eType="ecore:EDataType http://www.eclipse.org/emf/2003/XMLType#//unsignedLong"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="UnsignedShort" eType="ecore:EDataType http://www.eclipse.org/emf/2003/XMLType#//unsignedShort"/>
+  </eClassifiers>
+</ecore:EPackage>
