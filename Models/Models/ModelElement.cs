@@ -298,7 +298,8 @@ namespace NMF.Models
         /// <remarks>This method is not called if an existing model element is moved in the composition hierarchy</remarks>
         protected virtual void OnChildCreated(IModelElement child)
         {
-            OnBubbledChange(BubbledChangeEventArgs.ElementCreated(child, new UriChangedEventArgs(null)));
+            if (bubbledChange != null || IsFlagSet(ModelElementFlag.RaiseBubbledChanges))
+                OnBubbledChange(BubbledChangeEventArgs.ElementCreated(child, new UriChangedEventArgs(null)));
         }
 
         /// <summary>
@@ -820,14 +821,18 @@ namespace NMF.Models
             if (!IsFlagSet(ModelElementFlag.Deleting))
             {
                 SetFlag(ModelElementFlag.Deleting);
-                Uri originalAbsoluteUri = null;
-                if (IsFlagSet(ModelElementFlag.RequireUris))
+                // do not create event args when nobody listens
+                if (IsFlagSet(ModelElementFlag.RaiseBubbledChanges) || Deleted != null || Deleting != null)
                 {
-                    originalAbsoluteUri = AbsoluteUri;
+                    Uri originalAbsoluteUri = null;
+                    if (IsFlagSet(ModelElementFlag.RequireUris))
+                    {
+                        originalAbsoluteUri = AbsoluteUri;
+                    }
+                    var e = new UriChangedEventArgs(originalAbsoluteUri);
+                    OnDeleting(e);
+                    OnDeleted(e);
                 }
-                var e = new UriChangedEventArgs(originalAbsoluteUri);
-                OnDeleting(e);
-                OnDeleted(e);
                 SetParent(null);
             }
         }
