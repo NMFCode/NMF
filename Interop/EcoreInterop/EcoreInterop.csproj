@@ -12,6 +12,7 @@
     <None Remove="Ecore.nmf" />
     <None Remove="layout.ecore" />
     <None Remove="layout.nmf" />
+    <None Remove="XMLType.nmf" />
   </ItemGroup>
 
   <ItemGroup>
@@ -19,6 +20,7 @@
     <EmbeddedResource Include="Ecore.nmf" />
     <EmbeddedResource Include="layout.ecore" />
     <EmbeddedResource Include="layout.nmf" />
+    <EmbeddedResource Include="XMLType.nmf" />
   </ItemGroup>
 
   <ItemGroup>

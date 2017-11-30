@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.26730.15
+VisualStudioVersion = 15.0.27004.2002
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Analysis", "Analysis", "{DB96042F-8815-430D-8345-362F4266F0FE}"
 EndProject
@@ -91,7 +91,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Transformations.Tests", "Tr
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Expressions.Models", "Expressions\Models.Expressions\Expressions.Models.csproj", "{25183C1B-5A1D-4535-AE62-90105C00BEAF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Expressions.Models.Tests", "Expressions\Tests\Models.Expressions.Tests\Expressions.Models.Tests.csproj", "{CE4F8D70-E17A-4C51-9C9E-BFB42978B5E8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Expressions.Models.Tests", "Expressions\Tests\Models.Expressions.Tests\Expressions.Models.Tests.csproj", "{CE4F8D70-E17A-4C51-9C9E-BFB42978B5E8}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Benchmarks", "Analysis\Benchmarks\Benchmarks.csproj", "{AFF77CC1-3907-4AD0-B072-B838DB793280}"
 EndProject
@@ -106,9 +106,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Expressions.Configuration",
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Expressions.Utilities", "Expressions\Expressions.Utilities\Expressions.Utilities.csproj", "{185E5F57-2CB6-49B1-B47C-FD6F55EB2E56}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Expressions.Utilities.Tests", "Expressions\Tests\Expressions.Utilities.Tests\Expressions.Utilities.Tests.csproj", "{C31C5E02-2BCD-4908-B941-B723B758E875}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Expressions.Utilities.Tests", "Expressions\Tests\Expressions.Utilities.Tests\Expressions.Utilities.Tests.csproj", "{C31C5E02-2BCD-4908-B941-B723B758E875}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Expressions.Configuration.Test", "Expressions\Tests\Expressions.Configuration.Test\Expressions.Configuration.Test.csproj", "{3264F836-203E-4685-BC29-1B41BA386A12}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Expressions.Configuration.Test", "Expressions\Tests\Expressions.Configuration.Test\Expressions.Configuration.Test.csproj", "{3264F836-203E-4685-BC29-1B41BA386A12}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Optimizations", "Optimizations", "{119E1FEF-4D67-457A-9AD3-3FE0C43B4DEA}"
 EndProject
@@ -127,6 +127,12 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "IntegrationTests", "IntegrationTests", "{20706503-D337-4882-9043-0C4AB6D6074C}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ComponentBasedSoftwareArchitectures", "IntegrationTests\ComponentBasedSoftwareArchitectures\ComponentBasedSoftwareArchitectures.csproj", "{E65CAF57-DC83-4EA4-A35C-44D259054DB4}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{A7C48358-445E-4EA6-967D-576AEDEC0757}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Connectivity.Tests", "Analysis\Tests\Connectivity.Tests\Connectivity.Tests.csproj", "{C25C9F9F-2874-403F-9AB8-07ED7B1C65AC}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{C0E46867-0301-46DC-A6BF-7C929B78376B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -476,6 +482,14 @@ Global
 		{E65CAF57-DC83-4EA4-A35C-44D259054DB4}.Release|Any CPU.Build.0 = Release|Any CPU
 		{E65CAF57-DC83-4EA4-A35C-44D259054DB4}.Signed Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{E65CAF57-DC83-4EA4-A35C-44D259054DB4}.Signed Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C25C9F9F-2874-403F-9AB8-07ED7B1C65AC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C25C9F9F-2874-403F-9AB8-07ED7B1C65AC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C25C9F9F-2874-403F-9AB8-07ED7B1C65AC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C25C9F9F-2874-403F-9AB8-07ED7B1C65AC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C25C9F9F-2874-403F-9AB8-07ED7B1C65AC}.Signed Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C25C9F9F-2874-403F-9AB8-07ED7B1C65AC}.Signed Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C25C9F9F-2874-403F-9AB8-07ED7B1C65AC}.Signed Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C25C9F9F-2874-403F-9AB8-07ED7B1C65AC}.Signed Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -483,7 +497,7 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{A88B8AD4-1BE3-4E2B-B9E4-C1D34FF64E30} = {DB96042F-8815-430D-8345-362F4266F0FE}
 		{6F57AA50-FB70-4DE8-BEAB-E3AE58B225D3} = {F63B0164-47EE-43BA-BAAE-411CD5EC092A}
-		{72A0A175-B9EC-4BEF-8C29-164C8C878A08} = {F63B0164-47EE-43BA-BAAE-411CD5EC092A}
+		{72A0A175-B9EC-4BEF-8C29-164C8C878A08} = {C0E46867-0301-46DC-A6BF-7C929B78376B}
 		{DE054DF8-C249-4222-9EE7-A44B0442E0CD} = {5E30A55A-F4F4-4309-B469-7D491CE23900}
 		{DC65E4BA-5983-47CB-8D6E-1947C7F15973} = {5E30A55A-F4F4-4309-B469-7D491CE23900}
 		{AFCA9D1D-26A6-482A-A5AB-0827AD0FD677} = {A75E4BA2-EC03-4074-B5A9-1BA2636658E9}
@@ -530,6 +544,9 @@ Global
 		{09761C44-D1F2-4DB7-B33C-FCDBF260388C} = {DB96042F-8815-430D-8345-362F4266F0FE}
 		{F92D2D61-0DD1-4F73-AAB4-92DCC58F45D0} = {AB4705A4-A917-49DC-BF01-215241FA02E1}
 		{E65CAF57-DC83-4EA4-A35C-44D259054DB4} = {20706503-D337-4882-9043-0C4AB6D6074C}
+		{A7C48358-445E-4EA6-967D-576AEDEC0757} = {DB96042F-8815-430D-8345-362F4266F0FE}
+		{C25C9F9F-2874-403F-9AB8-07ED7B1C65AC} = {A7C48358-445E-4EA6-967D-576AEDEC0757}
+		{C0E46867-0301-46DC-A6BF-7C929B78376B} = {F63B0164-47EE-43BA-BAAE-411CD5EC092A}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {7B6D2737-94B7-470E-B413-D9693622AA4D}

@@ -143,7 +143,14 @@ namespace NMF.Models.Repository
             {
                 for (int i = 0; i < references.Length; i++)
                 {
-                    RegisterAssembly(Assembly.Load(references[i]));
+                    try
+                    {
+                        RegisterAssembly(Assembly.Load(references[i]));
+                    }
+                    catch (System.IO.IOException)
+                    {
+                        // eat exception
+                    }
                 }
             }
             var attributes = assembly.GetCustomAttributes(typeof(ModelMetadataAttribute), false);
