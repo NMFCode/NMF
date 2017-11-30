@@ -182,7 +182,7 @@ namespace NMFExamples.Pcm.Resourcetype
         /// </summary>
         /// <param name="sender">The collection that raised the change</param>
         /// <param name="e">The original event data</param>
-        private void ResourceInterfaces__ResourceRepositoryCollectionChanging(object sender, NotifyCollectionChangingEventArgs e)
+        private void ResourceInterfaces__ResourceRepositoryCollectionChanging(object sender, NotifyCollectionChangedEventArgs e)
         {
             this.OnCollectionChanging("ResourceInterfaces__ResourceRepository", e, _resourceInterfaces__ResourceRepositoryReference);
         }
@@ -207,7 +207,7 @@ namespace NMFExamples.Pcm.Resourcetype
         /// </summary>
         /// <param name="sender">The collection that raised the change</param>
         /// <param name="e">The original event data</param>
-        private void SchedulingPolicies__ResourceRepositoryCollectionChanging(object sender, NotifyCollectionChangingEventArgs e)
+        private void SchedulingPolicies__ResourceRepositoryCollectionChanging(object sender, NotifyCollectionChangedEventArgs e)
         {
             this.OnCollectionChanging("SchedulingPolicies__ResourceRepository", e, _schedulingPolicies__ResourceRepositoryReference);
         }
@@ -232,7 +232,7 @@ namespace NMFExamples.Pcm.Resourcetype
         /// </summary>
         /// <param name="sender">The collection that raised the change</param>
         /// <param name="e">The original event data</param>
-        private void AvailableResourceTypes_ResourceRepositoryCollectionChanging(object sender, NotifyCollectionChangingEventArgs e)
+        private void AvailableResourceTypes_ResourceRepositoryCollectionChanging(object sender, NotifyCollectionChangedEventArgs e)
         {
             this.OnCollectionChanging("AvailableResourceTypes_ResourceRepository", e, _availableResourceTypes_ResourceRepositoryReference);
         }

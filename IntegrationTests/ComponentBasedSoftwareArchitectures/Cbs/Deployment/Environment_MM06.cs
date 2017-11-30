@@ -147,7 +147,7 @@ namespace NMFExamples.ComponentBasedSystems.Deployment
         /// </summary>
         /// <param name="sender">The collection that raised the change</param>
         /// <param name="e">The original event data</param>
-        private void ContainersCollectionChanging(object sender, NMF.Collections.ObjectModel.NotifyCollectionChangingEventArgs e)
+        private void ContainersCollectionChanging(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
         {
             this.OnCollectionChanging("Containers", e, _containersReference);
         }
@@ -172,7 +172,7 @@ namespace NMFExamples.ComponentBasedSystems.Deployment
         /// </summary>
         /// <param name="sender">The collection that raised the change</param>
         /// <param name="e">The original event data</param>
-        private void LinksCollectionChanging(object sender, NMF.Collections.ObjectModel.NotifyCollectionChangingEventArgs e)
+        private void LinksCollectionChanging(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
         {
             this.OnCollectionChanging("Links", e, _linksReference);
         }

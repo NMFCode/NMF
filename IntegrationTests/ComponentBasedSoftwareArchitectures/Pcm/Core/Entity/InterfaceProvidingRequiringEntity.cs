@@ -144,7 +144,7 @@ namespace NMFExamples.Pcm.Core.Entity
         /// </summary>
         /// <param name="sender">The collection that raised the change</param>
         /// <param name="e">The original event data</param>
-        private void RequiredRoles_InterfaceRequiringEntityCollectionChanging(object sender, NotifyCollectionChangingEventArgs e)
+        private void RequiredRoles_InterfaceRequiringEntityCollectionChanging(object sender, NotifyCollectionChangedEventArgs e)
         {
             this.OnCollectionChanging("RequiredRoles_InterfaceRequiringEntity", e, _requiredRoles_InterfaceRequiringEntityReference);
         }
@@ -169,7 +169,7 @@ namespace NMFExamples.Pcm.Core.Entity
         /// </summary>
         /// <param name="sender">The collection that raised the change</param>
         /// <param name="e">The original event data</param>
-        private void ResourceRequiredRoles__ResourceInterfaceRequiringEntityCollectionChanging(object sender, NotifyCollectionChangingEventArgs e)
+        private void ResourceRequiredRoles__ResourceInterfaceRequiringEntityCollectionChanging(object sender, NotifyCollectionChangedEventArgs e)
         {
             this.OnCollectionChanging("ResourceRequiredRoles__ResourceInterfaceRequiringEntity", e, _resourceRequiredRoles__ResourceInterfaceRequiringEntityReference);
         }

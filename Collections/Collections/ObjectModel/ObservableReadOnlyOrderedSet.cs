@@ -22,7 +22,7 @@ namespace NMF.Collections.ObjectModel
             parent.CollectionChanged += ParentCollectionChanged;
         }
 
-        private void ParentCollectionChanging(object sender, NotifyCollectionChangingEventArgs e)
+        private void ParentCollectionChanging(object sender, NotifyCollectionChangedEventArgs e)
         {
             OnCollectionChanging(e);
         }
@@ -32,7 +32,7 @@ namespace NMF.Collections.ObjectModel
             OnCollectionChanged(e);
         }
 
-        protected virtual void OnCollectionChanging(NotifyCollectionChangingEventArgs e)
+        protected virtual void OnCollectionChanging(NotifyCollectionChangedEventArgs e)
         {
             CollectionChanging?.Invoke(this, e);
         }
@@ -44,7 +44,7 @@ namespace NMF.Collections.ObjectModel
 
         public event NotifyCollectionChangedEventHandler CollectionChanged;
 
-        public event EventHandler<NotifyCollectionChangingEventArgs> CollectionChanging;
+        public event EventHandler<NotifyCollectionChangedEventArgs> CollectionChanging;
 
         private INotifyEnumerable<T> proxy;
 

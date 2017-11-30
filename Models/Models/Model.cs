@@ -177,7 +177,7 @@ namespace NMF.Models
         /// </summary>
         /// <param name="sender">The collection that raised the change</param>
         /// <param name="e">The original event data</param>
-        private void RootElementsCollectionChanging(object sender, NotifyCollectionChangingEventArgs e)
+        private void RootElementsCollectionChanging(object sender, NotifyCollectionChangedEventArgs e)
         {
             this.OnCollectionChanging("RootElements", e, _rootElementsReference);
         }

@@ -114,7 +114,7 @@ namespace NMFExamples.Pcm.Seff.Seff_reliability
         /// </summary>
         /// <param name="sender">The collection that raised the change</param>
         /// <param name="e">The original event data</param>
-        private void FailureTypes_FailureHandlingEntityCollectionChanging(object sender, NotifyCollectionChangingEventArgs e)
+        private void FailureTypes_FailureHandlingEntityCollectionChanging(object sender, NotifyCollectionChangedEventArgs e)
         {
             this.OnCollectionChanging("FailureTypes_FailureHandlingEntity", e, _failureTypes_FailureHandlingEntityReference);
         }

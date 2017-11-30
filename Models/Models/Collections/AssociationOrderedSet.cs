@@ -28,16 +28,16 @@ namespace NMF.Models.Collections
             base.Clear();
         }
 
-        public override bool Remove(T item)
+        protected override bool Remove(T item, int index)
         {
             if (item != null) item.Deleted -= RemoveItem;
-            return base.Remove(item);
+            return base.Remove(item, index);
         }
 
         private void RemoveItem(object sender, EventArgs e)
         {
             var item = sender as T;
-            base.Remove(item);
+            Remove(item);
         }
     }
 
@@ -61,16 +61,16 @@ namespace NMF.Models.Collections
             base.Clear();
         }
 
-        public override bool Remove(T item)
+        protected override bool Remove(T item, int index)
         {
             if (item != null) item.Deleted -= RemoveItem;
-            return base.Remove(item);
+            return base.Remove(item, index);
         }
 
         private void RemoveItem(object sender, EventArgs e)
         {
             var item = sender as T;
-            base.Remove(item);
+            Remove(item);
         }
     }
 }

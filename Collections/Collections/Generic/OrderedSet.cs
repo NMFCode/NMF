@@ -12,37 +12,11 @@ namespace NMF.Collections.Generic
     {
         private List<T> itemOrder = new List<T>();
 
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1045:DoNotPassTypesByReference", MessageId = "1#")]
-        protected virtual void OnInsertingItem(T item, ref bool cancel, int index) { }
-
-        protected virtual void OnInsertItem(T item, int index) { }
-
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1045:DoNotPassTypesByReference", MessageId = "1#")]
-        protected virtual void OnRemovingItem(T item, ref bool cancel, int index) { }
-
-        protected virtual void OnRemoveItem(T item, int index) { }
-
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1045:DoNotPassTypesByReference", MessageId = "2#")]
-        protected virtual void OnReplacingItem(T oldItem, T newItem, ref bool cancel) { }
-
-        protected virtual void OnReplaceItem(T oldItem, T newItem, int index) { }
-
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1045:DoNotPassTypesByReference", MessageId = "0#")]
-        protected virtual void OnClearing(ref bool cancel) { }
-
-        protected virtual void OnCleared() { }
-
         public override bool Add(T item)
         {
-            if (!Items.Contains(item))
+            if (Items.Add(item))
             {
-                bool cancel = false;
-                var index = Count;
-                OnInsertingItem(item, ref cancel, index);
-                if (cancel) return false;
-                Items.Add(item);
                 itemOrder.Add(item);
-                OnInsertItem(item, index);
                 return true;
             }
             else
@@ -51,21 +25,16 @@ namespace NMF.Collections.Generic
             }
         }
 
-        public override bool Remove(T item)
+        public sealed override bool Remove(T item)
         {
             return Remove(item, IndexOf(item));
         }
 
-        private bool Remove(T item, int index)
+        protected virtual bool Remove(T item, int index)
         {
-            if (Items.Contains(item))
+            if (Items.Remove(item))
             {
-                bool cancel = false;
-                OnRemovingItem(item, ref cancel, index);
-                if (cancel) return false;
-                Items.Remove(item);
                 itemOrder.RemoveAt(index);
-                OnRemoveItem(item, index);
                 return true;
             }
             else
@@ -76,12 +45,8 @@ namespace NMF.Collections.Generic
 
         public override void Clear()
         {
-            bool cancel = false;
-            OnClearing(ref cancel);
-            if (cancel) return;
             base.Clear();
             itemOrder.Clear();
-            OnCleared();
         }
 
         public override IEnumerator<T> GetEnumerator()
@@ -94,16 +59,11 @@ namespace NMF.Collections.Generic
             return itemOrder.IndexOf(item);
         }
 
-        public void Insert(int index, T item)
+        public virtual void Insert(int index, T item)
         {
-            if (!Items.Contains(item))
+            if (Items.Add(item))
             {
-                bool cancel = false;
-                OnInsertingItem(item, ref cancel, index);
-                if (cancel) return;
-                Items.Add(item);
                 itemOrder.Insert(index, item);
-                OnInsertItem(item, index);
             }
         }
 
@@ -121,17 +81,18 @@ namespace NMF.Collections.Generic
             set
             {
                 var item = itemOrder[index];
-                if (!object.Equals(item, value))
+                if (!EqualityComparer<T>.Default.Equals(item, value))
                 {
-                    bool cancel = false;
-                    OnReplacingItem(item, value, ref cancel);
-                    if (cancel) return;
-                    itemOrder[index] = value;
-                    Items.Remove(item);
-                    Items.Add(value);
-                    OnReplaceItem(item, value, index);
+                    Replace(index, item, value);
                 }
             }
+        }
+
+        protected virtual void Replace(int index, T oldValue, T newValue)
+        {
+            itemOrder[index] = newValue;
+            Items.Remove(oldValue);
+            Items.Add(newValue);
         }
 
         int IList.Add(object value)

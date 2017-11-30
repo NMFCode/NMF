@@ -124,7 +124,7 @@ namespace NMFExamples.Pcm.System
         /// </summary>
         /// <param name="sender">The collection that raised the change</param>
         /// <param name="e">The original event data</param>
-        private void QosAnnotations_SystemCollectionChanging(object sender, NotifyCollectionChangingEventArgs e)
+        private void QosAnnotations_SystemCollectionChanging(object sender, NotifyCollectionChangedEventArgs e)
         {
             this.OnCollectionChanging("QosAnnotations_System", e, _qosAnnotations_SystemReference);
         }

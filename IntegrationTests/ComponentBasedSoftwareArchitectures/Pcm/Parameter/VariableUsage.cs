@@ -712,7 +712,7 @@ namespace NMFExamples.Pcm.Parameter
         /// </summary>
         /// <param name="sender">The collection that raised the change</param>
         /// <param name="e">The original event data</param>
-        private void VariableCharacterisation_VariableUsageCollectionChanging(object sender, NotifyCollectionChangingEventArgs e)
+        private void VariableCharacterisation_VariableUsageCollectionChanging(object sender, NotifyCollectionChangedEventArgs e)
         {
             this.OnCollectionChanging("VariableCharacterisation_VariableUsage", e, _variableCharacterisation_VariableUsageReference);
         }

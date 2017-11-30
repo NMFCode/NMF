@@ -153,7 +153,7 @@ namespace NMFExamples.Pcm.Usagemodel
         /// </summary>
         /// <param name="sender">The collection that raised the change</param>
         /// <param name="e">The original event data</param>
-        private void UsageScenario_UsageModelCollectionChanging(object sender, NotifyCollectionChangingEventArgs e)
+        private void UsageScenario_UsageModelCollectionChanging(object sender, NotifyCollectionChangedEventArgs e)
         {
             this.OnCollectionChanging("UsageScenario_UsageModel", e, _usageScenario_UsageModelReference);
         }
@@ -178,7 +178,7 @@ namespace NMFExamples.Pcm.Usagemodel
         /// </summary>
         /// <param name="sender">The collection that raised the change</param>
         /// <param name="e">The original event data</param>
-        private void UserData_UsageModelCollectionChanging(object sender, NotifyCollectionChangingEventArgs e)
+        private void UserData_UsageModelCollectionChanging(object sender, NotifyCollectionChangedEventArgs e)
         {
             this.OnCollectionChanging("UserData_UsageModel", e, _userData_UsageModelReference);
         }

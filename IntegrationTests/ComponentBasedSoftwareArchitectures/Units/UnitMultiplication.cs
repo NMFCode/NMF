@@ -121,7 +121,7 @@ namespace NMFExamples.Units
         /// </summary>
         /// <param name="sender">The collection that raised the change</param>
         /// <param name="e">The original event data</param>
-        private void UnitsCollectionChanging(object sender, NotifyCollectionChangingEventArgs e)
+        private void UnitsCollectionChanging(object sender, NotifyCollectionChangedEventArgs e)
         {
             this.OnCollectionChanging("Units", e, _unitsReference);
         }

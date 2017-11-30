@@ -263,7 +263,7 @@ namespace NMFExamples.Pcm.Core.Composition
         /// </summary>
         /// <param name="sender">The collection that raised the change</param>
         /// <param name="e">The original event data</param>
-        private void EventChannelSourceConnector__EventChannelCollectionChanging(object sender, NotifyCollectionChangingEventArgs e)
+        private void EventChannelSourceConnector__EventChannelCollectionChanging(object sender, NotifyCollectionChangedEventArgs e)
         {
             this.OnCollectionChanging("EventChannelSourceConnector__EventChannel", e, _eventChannelSourceConnector__EventChannelReference);
         }
@@ -288,7 +288,7 @@ namespace NMFExamples.Pcm.Core.Composition
         /// </summary>
         /// <param name="sender">The collection that raised the change</param>
         /// <param name="e">The original event data</param>
-        private void EventChannelSinkConnector__EventChannelCollectionChanging(object sender, NotifyCollectionChangingEventArgs e)
+        private void EventChannelSinkConnector__EventChannelCollectionChanging(object sender, NotifyCollectionChangedEventArgs e)
         {
             this.OnCollectionChanging("EventChannelSinkConnector__EventChannel", e, _eventChannelSinkConnector__EventChannelReference);
         }

@@ -417,7 +417,7 @@ namespace NMF.Models.Meta
         /// </summary>
         /// <param name="sender">The collection that raised the change</param>
         /// <param name="e">The original event data</param>
-        private void BaseTypesCollectionChanging(object sender, NMF.Collections.ObjectModel.NotifyCollectionChangingEventArgs e)
+        private void BaseTypesCollectionChanging(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
         {
             this.OnCollectionChanging("BaseTypes", e, _baseTypesReference);
         }
@@ -524,7 +524,7 @@ namespace NMF.Models.Meta
         /// </summary>
         /// <param name="sender">The collection that raised the change</param>
         /// <param name="e">The original event data</param>
-        private void AttributeConstraintsCollectionChanging(object sender, NMF.Collections.ObjectModel.NotifyCollectionChangingEventArgs e)
+        private void AttributeConstraintsCollectionChanging(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
         {
             this.OnCollectionChanging("AttributeConstraints", e, _attributeConstraintsReference);
         }
@@ -549,7 +549,7 @@ namespace NMF.Models.Meta
         /// </summary>
         /// <param name="sender">The collection that raised the change</param>
         /// <param name="e">The original event data</param>
-        private void ReferenceConstraintsCollectionChanging(object sender, NMF.Collections.ObjectModel.NotifyCollectionChangingEventArgs e)
+        private void ReferenceConstraintsCollectionChanging(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
         {
             this.OnCollectionChanging("ReferenceConstraints", e, _referenceConstraintsReference);
         }

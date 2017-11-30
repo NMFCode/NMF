@@ -120,7 +120,7 @@ namespace NMF.Models.Changes
         /// </summary>
         /// <param name="sender">The collection that raised the change</param>
         /// <param name="e">The original event data</param>
-        private void ChangesCollectionChanging(object sender, NotifyCollectionChangingEventArgs e)
+        private void ChangesCollectionChanging(object sender, NotifyCollectionChangedEventArgs e)
         {
             this.OnCollectionChanging("Changes", e, _changesReference);
         }

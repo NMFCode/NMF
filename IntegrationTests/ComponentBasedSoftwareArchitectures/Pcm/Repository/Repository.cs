@@ -285,7 +285,7 @@ namespace NMFExamples.Pcm.Repository
         /// </summary>
         /// <param name="sender">The collection that raised the change</param>
         /// <param name="e">The original event data</param>
-        private void Components__RepositoryCollectionChanging(object sender, NotifyCollectionChangingEventArgs e)
+        private void Components__RepositoryCollectionChanging(object sender, NotifyCollectionChangedEventArgs e)
         {
             this.OnCollectionChanging("Components__Repository", e, _components__RepositoryReference);
         }
@@ -310,7 +310,7 @@ namespace NMFExamples.Pcm.Repository
         /// </summary>
         /// <param name="sender">The collection that raised the change</param>
         /// <param name="e">The original event data</param>
-        private void Interfaces__RepositoryCollectionChanging(object sender, NotifyCollectionChangingEventArgs e)
+        private void Interfaces__RepositoryCollectionChanging(object sender, NotifyCollectionChangedEventArgs e)
         {
             this.OnCollectionChanging("Interfaces__Repository", e, _interfaces__RepositoryReference);
         }
@@ -335,7 +335,7 @@ namespace NMFExamples.Pcm.Repository
         /// </summary>
         /// <param name="sender">The collection that raised the change</param>
         /// <param name="e">The original event data</param>
-        private void FailureTypes__RepositoryCollectionChanging(object sender, NotifyCollectionChangingEventArgs e)
+        private void FailureTypes__RepositoryCollectionChanging(object sender, NotifyCollectionChangedEventArgs e)
         {
             this.OnCollectionChanging("FailureTypes__Repository", e, _failureTypes__RepositoryReference);
         }
@@ -360,7 +360,7 @@ namespace NMFExamples.Pcm.Repository
         /// </summary>
         /// <param name="sender">The collection that raised the change</param>
         /// <param name="e">The original event data</param>
-        private void DataTypes__RepositoryCollectionChanging(object sender, NotifyCollectionChangingEventArgs e)
+        private void DataTypes__RepositoryCollectionChanging(object sender, NotifyCollectionChangedEventArgs e)
         {
             this.OnCollectionChanging("DataTypes__Repository", e, _dataTypes__RepositoryReference);
         }

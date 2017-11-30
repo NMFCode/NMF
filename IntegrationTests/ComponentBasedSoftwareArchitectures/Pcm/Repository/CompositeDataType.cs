@@ -186,7 +186,7 @@ namespace NMFExamples.Pcm.Repository
         /// </summary>
         /// <param name="sender">The collection that raised the change</param>
         /// <param name="e">The original event data</param>
-        private void ParentType_CompositeDataTypeCollectionChanging(object sender, NotifyCollectionChangingEventArgs e)
+        private void ParentType_CompositeDataTypeCollectionChanging(object sender, NotifyCollectionChangedEventArgs e)
         {
             this.OnCollectionChanging("ParentType_CompositeDataType", e, _parentType_CompositeDataTypeReference);
         }
@@ -211,7 +211,7 @@ namespace NMFExamples.Pcm.Repository
         /// </summary>
         /// <param name="sender">The collection that raised the change</param>
         /// <param name="e">The original event data</param>
-        private void InnerDeclaration_CompositeDataTypeCollectionChanging(object sender, NotifyCollectionChangingEventArgs e)
+        private void InnerDeclaration_CompositeDataTypeCollectionChanging(object sender, NotifyCollectionChangedEventArgs e)
         {
             this.OnCollectionChanging("InnerDeclaration_CompositeDataType", e, _innerDeclaration_CompositeDataTypeReference);
         }

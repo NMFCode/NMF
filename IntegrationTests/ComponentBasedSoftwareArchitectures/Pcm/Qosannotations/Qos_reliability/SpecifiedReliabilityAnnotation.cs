@@ -126,7 +126,7 @@ namespace NMFExamples.Pcm.Qosannotations.Qos_reliability
         /// </summary>
         /// <param name="sender">The collection that raised the change</param>
         /// <param name="e">The original event data</param>
-        private void ExternalFailureOccurrenceDescriptions__SpecifiedReliabilityAnnotationCollectionChanging(object sender, NotifyCollectionChangingEventArgs e)
+        private void ExternalFailureOccurrenceDescriptions__SpecifiedReliabilityAnnotationCollectionChanging(object sender, NotifyCollectionChangedEventArgs e)
         {
             this.OnCollectionChanging("ExternalFailureOccurrenceDescriptions__SpecifiedReliabilityAnnotation", e, _externalFailureOccurrenceDescriptions__SpecifiedReliabilityAnnotationReference);
         }

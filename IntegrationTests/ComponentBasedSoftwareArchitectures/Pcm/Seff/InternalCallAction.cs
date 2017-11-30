@@ -514,7 +514,7 @@ namespace NMFExamples.Pcm.Seff
         /// </summary>
         /// <param name="sender">The collection that raised the change</param>
         /// <param name="e">The original event data</param>
-        private void ResourceDemand_ActionCollectionChanging(object sender, NotifyCollectionChangingEventArgs e)
+        private void ResourceDemand_ActionCollectionChanging(object sender, NotifyCollectionChangedEventArgs e)
         {
             this.OnCollectionChanging("ResourceDemand_Action", e, _resourceDemand_ActionReference);
         }
@@ -539,7 +539,7 @@ namespace NMFExamples.Pcm.Seff
         /// </summary>
         /// <param name="sender">The collection that raised the change</param>
         /// <param name="e">The original event data</param>
-        private void InfrastructureCall__ActionCollectionChanging(object sender, NotifyCollectionChangingEventArgs e)
+        private void InfrastructureCall__ActionCollectionChanging(object sender, NotifyCollectionChangedEventArgs e)
         {
             this.OnCollectionChanging("InfrastructureCall__Action", e, _infrastructureCall__ActionReference);
         }
@@ -564,7 +564,7 @@ namespace NMFExamples.Pcm.Seff
         /// </summary>
         /// <param name="sender">The collection that raised the change</param>
         /// <param name="e">The original event data</param>
-        private void ResourceCall__ActionCollectionChanging(object sender, NotifyCollectionChangingEventArgs e)
+        private void ResourceCall__ActionCollectionChanging(object sender, NotifyCollectionChangedEventArgs e)
         {
             this.OnCollectionChanging("ResourceCall__Action", e, _resourceCall__ActionReference);
         }

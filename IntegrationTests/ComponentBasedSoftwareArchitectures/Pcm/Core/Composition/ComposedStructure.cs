@@ -209,7 +209,7 @@ namespace NMFExamples.Pcm.Core.Composition
         /// </summary>
         /// <param name="sender">The collection that raised the change</param>
         /// <param name="e">The original event data</param>
-        private void AssemblyContexts__ComposedStructureCollectionChanging(object sender, NotifyCollectionChangingEventArgs e)
+        private void AssemblyContexts__ComposedStructureCollectionChanging(object sender, NotifyCollectionChangedEventArgs e)
         {
             this.OnCollectionChanging("AssemblyContexts__ComposedStructure", e, _assemblyContexts__ComposedStructureReference);
         }
@@ -234,7 +234,7 @@ namespace NMFExamples.Pcm.Core.Composition
         /// </summary>
         /// <param name="sender">The collection that raised the change</param>
         /// <param name="e">The original event data</param>
-        private void ResourceRequiredDelegationConnectors_ComposedStructureCollectionChanging(object sender, NotifyCollectionChangingEventArgs e)
+        private void ResourceRequiredDelegationConnectors_ComposedStructureCollectionChanging(object sender, NotifyCollectionChangedEventArgs e)
         {
             this.OnCollectionChanging("ResourceRequiredDelegationConnectors_ComposedStructure", e, _resourceRequiredDelegationConnectors_ComposedStructureReference);
         }
@@ -259,7 +259,7 @@ namespace NMFExamples.Pcm.Core.Composition
         /// </summary>
         /// <param name="sender">The collection that raised the change</param>
         /// <param name="e">The original event data</param>
-        private void EventChannel__ComposedStructureCollectionChanging(object sender, NotifyCollectionChangingEventArgs e)
+        private void EventChannel__ComposedStructureCollectionChanging(object sender, NotifyCollectionChangedEventArgs e)
         {
             this.OnCollectionChanging("EventChannel__ComposedStructure", e, _eventChannel__ComposedStructureReference);
         }
@@ -284,7 +284,7 @@ namespace NMFExamples.Pcm.Core.Composition
         /// </summary>
         /// <param name="sender">The collection that raised the change</param>
         /// <param name="e">The original event data</param>
-        private void Connectors__ComposedStructureCollectionChanging(object sender, NotifyCollectionChangingEventArgs e)
+        private void Connectors__ComposedStructureCollectionChanging(object sender, NotifyCollectionChangedEventArgs e)
         {
             this.OnCollectionChanging("Connectors__ComposedStructure", e, _connectors__ComposedStructureReference);
         }

@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.Linq;
 using System.Text;
 
@@ -24,30 +25,111 @@ namespace NMF.Collections.ObjectModel
         public override void Clear()
         {
             var elements = this.ToArray();
-            base.Clear();
-            foreach (var item in elements)
+            if (!RequireEvents())
             {
-                SetOpposite(item, default(TParent));
+                SilentClear();
+                foreach (var item in elements)
+                {
+                    SetOpposite(item, default(TParent));
+                }
+            }
+            else
+            {
+                var e = new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset);
+                OnCollectionChanging(e);
+                SilentClear();
+                foreach (var item in elements)
+                {
+                    SetOpposite(item, default(TParent));
+                }
+                OnCollectionChanged(e);
             }
         }
 
-        protected override void OnInsertItem(TCollected item, int index)
+        public override bool Add(TCollected item)
         {
-            SetOpposite(item, Parent);
-            base.OnInsertItem(item, index);
+            if (!RequireEvents())
+            {
+                if (SilentAdd(item))
+                {
+                    SetOpposite(item, Parent);
+                    return true;
+                }
+                return false;
+            }
+            else
+            {
+                var e = new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, item, Count);
+                OnCollectionChanging(e);
+                if (SilentAdd(item))
+                {
+                    SetOpposite(item, Parent);
+                    OnCollectionChanged(e);
+                    return true;
+                }
+                return false;
+            }
         }
 
-        protected override void OnRemoveItem(TCollected item, int index)
+        public override void Insert(int index, TCollected item)
         {
-            SetOpposite(item, default(TParent));
-            base.OnRemoveItem(item, index);
+            if (!RequireEvents())
+            {
+                SilentInsert(index, item);
+                SetOpposite(item, Parent);
+            }
+            else
+            {
+                var e = new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, item, index);
+                OnCollectionChanging(e);
+                SilentInsert(index, item);
+                SetOpposite(item, Parent);
+                OnCollectionChanged(e);
+            }
         }
 
-        protected override void OnReplaceItem(TCollected oldItem, TCollected newItem, int index)
+        protected override bool Remove(TCollected item, int index)
         {
-            SetOpposite(oldItem, default(TParent));
-            SetOpposite(newItem, Parent);
-            base.OnReplaceItem(oldItem, newItem, index);
+            if (!RequireEvents())
+            {
+                if(SilentRemove(item, index))
+                {
+                    SetOpposite(item, default(TParent));
+                    return true;
+                }
+                return false;
+            }
+            else
+            {
+                var e = new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Remove, item, index);
+                OnCollectionChanging(e);
+                if (SilentRemove(item, index))
+                {
+                    SetOpposite(item, default(TParent));
+                    OnCollectionChanged(e);
+                    return true;
+                }
+                return false;
+            }
+        }
+
+        protected override void Replace(int index, TCollected oldValue, TCollected newValue)
+        {
+            if (!RequireEvents())
+            {
+                SilentReplace(index, oldValue, newValue);
+                SetOpposite(oldValue, default(TParent));
+                SetOpposite(newValue, Parent);
+            }
+            else
+            {
+                var e = new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Replace, newValue, oldValue, index);
+                OnCollectionChanging(e);
+                SilentReplace(index, oldValue, newValue);
+                SetOpposite(oldValue, default(TParent));
+                SetOpposite(newValue, Parent);
+                OnCollectionChanged(e);
+            }
         }
     }
 
@@ -68,32 +150,76 @@ namespace NMF.Collections.ObjectModel
         public override void Clear()
         {
             var elements = this.ToArray();
-            base.Clear();
-            foreach (var item in elements)
+            if (!RequireEvents())
             {
-                SetOpposite(item, default(TParent));
+                SilentClear();
+                foreach (var item in elements)
+                {
+                    SetOpposite(item, default(TParent));
+                }
+            }
+            else
+            {
+                var e = new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset);
+                OnCollectionChanging(e);
+                SilentClear();
+                foreach (var item in elements)
+                {
+                    SetOpposite(item, default(TParent));
+                }
+                OnCollectionChanged(e);
             }
         }
 
-        protected override void OnInsertItem(TCollected item)
+        public override bool Add(TCollected item)
         {
-            base.OnInsertItem(item);
-            SetOpposite(item, Parent);
+            if (!RequireEvents())
+            {
+                if (SilentAdd(item))
+                {
+                    SetOpposite(item, Parent);
+                    return true;
+                }
+                return false;
+            }
+            else
+            {
+                var e = new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, item);
+                OnCollectionChanging(e);
+                if (SilentAdd(item))
+                {
+                    SetOpposite(item, Parent);
+                    OnCollectionChanged(e);
+                    return true;
+                }
+                return false;
+            }
         }
 
-        protected override void OnRemoveItem(TCollected item)
+        public override bool Remove(TCollected item)
         {
-            base.OnRemoveItem(item);
-            SetOpposite(item, default(TParent));
+            if (!RequireEvents())
+            {
+                if (SilentRemove(item))
+                {
+                    SetOpposite(item, default(TParent));
+                    return true;
+                }
+                return false;
+            }
+            else
+            {
+                var e = new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Remove, item);
+                OnCollectionChanging(e);
+                if (SilentRemove(item))
+                {
+                    SetOpposite(item, default(TParent));
+                    OnCollectionChanged(e);
+                    return true;
+                }
+                return false;
+            }
         }
-
-        protected override void OnReplaceItem(TCollected oldItem, TCollected newItem)
-        {
-            base.OnReplaceItem(oldItem, newItem);
-            SetOpposite(oldItem, default(TParent));
-            SetOpposite(newItem, Parent);
-        }
-
     }
 
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1710:IdentifiersShouldHaveCorrectSuffix")]
@@ -116,64 +242,107 @@ namespace NMF.Collections.ObjectModel
         {
             if (!noModification)
             {
-                base.ClearItems();
+                var elements = this.ToArray();
+                if (RequireEvents())
+                {
+                    var e = new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset);
+                    OnCollectionChanging(e);
+                    Items.Clear();
+                    noModification = true;
+                    foreach (var item in elements)
+                    {
+                        SetOpposite(item, default(TParent));
+                    }
+                    noModification = false;
+                    OnCollectionChanged(e, true);
+                }
+                else
+                {
+                    Items.Clear();
+                    noModification = true;
+                    foreach (var item in elements)
+                    {
+                        SetOpposite(item, default(TParent));
+                    }
+                    noModification = false;
+                }
             }
-        }
-
-        protected override void BeforeClearPropagates(TCollected[] elements)
-        {
-            noModification = true;
-            foreach (var item in elements)
-            {
-                SetOpposite(item, default(TParent));
-            }
-            noModification = false;
         }
 
         protected override void InsertItem(int index, TCollected item)
         {
             if (!noModification)
             {
-                base.InsertItem(index, item);
+                if (RequireEvents())
+                {
+                    var e = new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, item, index);
+                    OnCollectionChanging(e);
+                    Items.Insert(index, item);
+                    noModification = true;
+                    SetOpposite(item, Parent);
+                    noModification = false;
+                    OnCollectionChanged(e, true);
+                }
+                else
+                {
+                    Items.Insert(index, item);
+                    noModification = true;
+                    SetOpposite(item, Parent);
+                    noModification = false;
+                }
             }
-        }
-
-        protected override void BeforeInsertPropagates(int index, TCollected item)
-        {
-            noModification = true;
-            SetOpposite(item, Parent);
-            noModification = false;
         }
 
         protected override void RemoveItem(int index)
         {
             if (!noModification)
             {
-                base.RemoveItem(index);
+                var item = this[index];
+                if (RequireEvents())
+                {
+                    var e = new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Remove, item, index);
+                    OnCollectionChanging(e);
+                    Items.RemoveAt(index);
+                    noModification = true;
+                    SetOpposite(item, default(TParent));
+                    noModification = false;
+                    OnCollectionChanged(e, true);
+                }
+                else
+                {
+                    Items.RemoveAt(index);
+                    noModification = true;
+                    SetOpposite(item, default(TParent));
+                    noModification = false;
+                }
             }
-        }
-
-        protected override void BeforeRemovePropagates(int index, TCollected item)
-        {
-            noModification = true;
-            SetOpposite(item, default(TParent));
-            noModification = false;
         }
 
         protected override void SetItem(int index, TCollected item)
         {
             if (!noModification)
             {
-                base.SetItem(index, item);
+                var oldItem = this[index];
+                if (RequireEvents())
+                {
+                    var e = new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Replace, item, oldItem, index);
+                    OnCollectionChanging(e);
+                    Items[index] = item;
+                    noModification = true;
+                    SetOpposite(oldItem, default(TParent));
+                    SetOpposite(item, Parent);
+                    noModification = false;
+                    OnCollectionChanged(e, false);
+                }
+                else
+                {
+                    Items[index] = item;
+                    noModification = true;
+                    SetOpposite(oldItem, default(TParent));
+                    SetOpposite(item, Parent);
+                    noModification = false;
+                }
             }
-        }
-
-        protected override void BeforeSetItemPropagates(int index, TCollected item, TCollected oldItem)
-        {
-            noModification = true;
-            SetOpposite(this[index], default(TParent));
-            SetOpposite(item, Parent);
-            noModification = false;
         }
     }
 }

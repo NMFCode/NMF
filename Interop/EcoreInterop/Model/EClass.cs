@@ -320,7 +320,7 @@ namespace NMF.Interop.Ecore
         /// </summary>
         /// <param name="sender">The collection that raised the change</param>
         /// <param name="e">The original event data</param>
-        private void ESuperTypesCollectionChanging(object sender, NMF.Collections.ObjectModel.NotifyCollectionChangingEventArgs e)
+        private void ESuperTypesCollectionChanging(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
         {
             this.OnCollectionChanging("ESuperTypes", e);
         }
@@ -340,7 +340,7 @@ namespace NMF.Interop.Ecore
         /// </summary>
         /// <param name="sender">The collection that raised the change</param>
         /// <param name="e">The original event data</param>
-        private void EOperationsCollectionChanging(object sender, NMF.Collections.ObjectModel.NotifyCollectionChangingEventArgs e)
+        private void EOperationsCollectionChanging(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
         {
             this.OnCollectionChanging("EOperations", e);
         }
@@ -360,7 +360,7 @@ namespace NMF.Interop.Ecore
         /// </summary>
         /// <param name="sender">The collection that raised the change</param>
         /// <param name="e">The original event data</param>
-        private void EStructuralFeaturesCollectionChanging(object sender, NMF.Collections.ObjectModel.NotifyCollectionChangingEventArgs e)
+        private void EStructuralFeaturesCollectionChanging(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
         {
             this.OnCollectionChanging("EStructuralFeatures", e);
         }
@@ -380,7 +380,7 @@ namespace NMF.Interop.Ecore
         /// </summary>
         /// <param name="sender">The collection that raised the change</param>
         /// <param name="e">The original event data</param>
-        private void EGenericSuperTypesCollectionChanging(object sender, NMF.Collections.ObjectModel.NotifyCollectionChangingEventArgs e)
+        private void EGenericSuperTypesCollectionChanging(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
         {
             this.OnCollectionChanging("EGenericSuperTypes", e);
         }

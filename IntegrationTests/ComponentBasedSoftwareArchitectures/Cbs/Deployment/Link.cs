@@ -111,7 +111,7 @@ namespace NMFExamples.ComponentBasedSystems.Deployment
         /// </summary>
         /// <param name="sender">The collection that raised the change</param>
         /// <param name="e">The original event data</param>
-        private void ConnectedContainersCollectionChanging(object sender, NMF.Collections.ObjectModel.NotifyCollectionChangingEventArgs e)
+        private void ConnectedContainersCollectionChanging(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
         {
             this.OnCollectionChanging("ConnectedContainers", e, _connectedContainersReference);
         }

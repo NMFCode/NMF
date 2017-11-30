@@ -188,7 +188,7 @@ namespace NMFExamples.Pcm.Seff
         /// </summary>
         /// <param name="sender">The collection that raised the change</param>
         /// <param name="e">The original event data</param>
-        private void OutputParameterUsage_SynchronisationPointCollectionChanging(object sender, NotifyCollectionChangingEventArgs e)
+        private void OutputParameterUsage_SynchronisationPointCollectionChanging(object sender, NotifyCollectionChangedEventArgs e)
         {
             this.OnCollectionChanging("OutputParameterUsage_SynchronisationPoint", e, _outputParameterUsage_SynchronisationPointReference);
         }
@@ -281,7 +281,7 @@ namespace NMFExamples.Pcm.Seff
         /// </summary>
         /// <param name="sender">The collection that raised the change</param>
         /// <param name="e">The original event data</param>
-        private void SynchronousForkedBehaviours_SynchronisationPointCollectionChanging(object sender, NotifyCollectionChangingEventArgs e)
+        private void SynchronousForkedBehaviours_SynchronisationPointCollectionChanging(object sender, NotifyCollectionChangedEventArgs e)
         {
             this.OnCollectionChanging("SynchronousForkedBehaviours_SynchronisationPoint", e, _synchronousForkedBehaviours_SynchronisationPointReference);
         }

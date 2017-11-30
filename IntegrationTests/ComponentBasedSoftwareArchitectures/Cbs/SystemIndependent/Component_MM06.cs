@@ -169,7 +169,7 @@ namespace NMFExamples.ComponentBasedSystems.SystemIndependent
         /// </summary>
         /// <param name="sender">The collection that raised the change</param>
         /// <param name="e">The original event data</param>
-        private void ServicesCollectionChanging(object sender, NMF.Collections.ObjectModel.NotifyCollectionChangingEventArgs e)
+        private void ServicesCollectionChanging(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
         {
             this.OnCollectionChanging("Services", e, _servicesReference);
         }
@@ -194,7 +194,7 @@ namespace NMFExamples.ComponentBasedSystems.SystemIndependent
         /// </summary>
         /// <param name="sender">The collection that raised the change</param>
         /// <param name="e">The original event data</param>
-        private void ProvidedInterfacesCollectionChanging(object sender, NMF.Collections.ObjectModel.NotifyCollectionChangingEventArgs e)
+        private void ProvidedInterfacesCollectionChanging(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
         {
             this.OnCollectionChanging("ProvidedInterfaces", e, _providedInterfacesReference);
         }
@@ -219,7 +219,7 @@ namespace NMFExamples.ComponentBasedSystems.SystemIndependent
         /// </summary>
         /// <param name="sender">The collection that raised the change</param>
         /// <param name="e">The original event data</param>
-        private void RequiredInterfacesCollectionChanging(object sender, NMF.Collections.ObjectModel.NotifyCollectionChangingEventArgs e)
+        private void RequiredInterfacesCollectionChanging(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
         {
             this.OnCollectionChanging("RequiredInterfaces", e, _requiredInterfacesReference);
         }

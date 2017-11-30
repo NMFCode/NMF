@@ -342,7 +342,7 @@ namespace NMFExamples.Pcm.Qosannotations
         /// </summary>
         /// <param name="sender">The collection that raised the change</param>
         /// <param name="e">The original event data</param>
-        private void ExpectedExternalOutputs_SpecifiedOutputParameterAbstractionCollectionChanging(object sender, NotifyCollectionChangingEventArgs e)
+        private void ExpectedExternalOutputs_SpecifiedOutputParameterAbstractionCollectionChanging(object sender, NotifyCollectionChangedEventArgs e)
         {
             this.OnCollectionChanging("ExpectedExternalOutputs_SpecifiedOutputParameterAbstraction", e, _expectedExternalOutputs_SpecifiedOutputParameterAbstractionReference);
         }

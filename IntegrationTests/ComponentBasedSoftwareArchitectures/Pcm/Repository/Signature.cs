@@ -154,7 +154,7 @@ namespace NMFExamples.Pcm.Repository
         /// </summary>
         /// <param name="sender">The collection that raised the change</param>
         /// <param name="e">The original event data</param>
-        private void Exceptions__SignatureCollectionChanging(object sender, NotifyCollectionChangingEventArgs e)
+        private void Exceptions__SignatureCollectionChanging(object sender, NotifyCollectionChangedEventArgs e)
         {
             this.OnCollectionChanging("Exceptions__Signature", e, _exceptions__SignatureReference);
         }
@@ -179,7 +179,7 @@ namespace NMFExamples.Pcm.Repository
         /// </summary>
         /// <param name="sender">The collection that raised the change</param>
         /// <param name="e">The original event data</param>
-        private void FailureTypeCollectionChanging(object sender, NotifyCollectionChangingEventArgs e)
+        private void FailureTypeCollectionChanging(object sender, NotifyCollectionChangedEventArgs e)
         {
             this.OnCollectionChanging("FailureType", e, _failureTypeReference);
         }

@@ -48,7 +48,6 @@
     <Compile Include="Generic\LooselyLinkedListNode.cs" />
     <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="ObjectModel\CustomCollection.cs" />
-    <Compile Include="ObjectModel\NotifyCollectionChangingEventArgs.cs" />
     <Compile Include="ObjectModel\INotifyCollectionChanging.cs" />
     <Compile Include="ObjectModel\ObservableCollectionExtended.cs" />
     <Compile Include="ObjectModel\ObservableList.cs" />

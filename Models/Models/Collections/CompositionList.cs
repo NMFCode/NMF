@@ -3,6 +3,7 @@ using NMF.Expressions;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.Linq;
 using System.Text;
 
@@ -164,22 +165,18 @@ namespace NMF.Models.Collections
                 silent = true;
                 var elements = this.ToArray();
                 base.ClearItems();
-                silent = false;
-            }
-        }
-
-        protected override void BeforeClearPropagates(T[] elements)
-        {
-            foreach (var item in elements)
-            {
-                if (item != null)
+                foreach (var item in elements)
                 {
-                    item.ParentChanged -= RemoveItem;
-                    if (item.Parent == Parent)
+                    if (item != null)
                     {
-                        item.Delete();
+                        item.ParentChanged -= RemoveItem;
+                        if (item.Parent == Parent)
+                        {
+                            item.Delete();
+                        }
                     }
                 }
+                silent = false;
             }
         }
 
@@ -218,51 +215,91 @@ namespace NMF.Models.Collections
         {
             if (!silent && item != null)
             {
-                base.InsertItem(index, item);
+                if (RequireEvents())
+                {
+                    var e = new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, item, index);
+                    OnCollectionChanging(e);
+                    Items.Insert(index, item);
+                    silent = true;
+                    item.ParentChanged += RemoveItem;
+                    item.Parent = Parent;
+                    silent = false;
+                    OnCollectionChanged(e, true);
+                }
+                else
+                {
+                    Items.Insert(index, item);
+                    silent = true;
+                    item.ParentChanged += RemoveItem;
+                    item.Parent = Parent;
+                    silent = false;
+                }
                 NotifyChangedUri(index + 1, -1);
             }
-        }
-
-        protected override void BeforeInsertPropagates(int index, T item)
-        {
-            silent = true;
-            item.ParentChanged += RemoveItem;
-            item.Parent = Parent;
-            silent = false;
         }
 
         protected override void RemoveItem(int index)
         {
             if (!silent)
             {
-                base.RemoveItem(index);
+                var item = this[index];
+                if (RequireEvents())
+                {
+                    var e = new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Remove, item, index);
+                    OnCollectionChanging(e);
+                    Items.RemoveAt(index);
+                    silent = true;
+                    if (item != null)
+                    {
+                        item.ParentChanged -= RemoveItem;
+                        if (item.Parent == Parent)
+                        {
+                            item.Delete();
+                        }
+                    }
+                    silent = false;
+                    OnCollectionChanged(e, true);
+                }
+                else
+                {
+                    Items.RemoveAt(index);
+                    silent = true;
+                    if (item != null)
+                    {
+                        item.ParentChanged -= RemoveItem;
+                        if (item.Parent == Parent)
+                        {
+                            item.Delete();
+                        }
+                    }
+                    silent = false;
+                }
                 NotifyChangedUri(index, 1);
             }
-        }
-
-        protected override void BeforeRemovePropagates(int index, T item)
-        {
-            silent = true;
-            if (item != null)
-            {
-                item.ParentChanged -= RemoveItem;
-                if (item.Parent == Parent)
-                {
-                    item.Delete();
-                }
-            }
-            silent = false;
         }
 
         protected override void SetItem(int index, T item)
         {
             if (!silent)
             {
-                base.SetItem(index, item);
+                var oldItem = this[index];
+                if (RequireEvents())
+                {
+                    var e = new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Replace, item, oldItem, index);
+                    OnCollectionChanging(e);
+                    Items[index] = item;
+                    BeforeSetItemPropagates(index, item, oldItem);
+                    OnCollectionChanged(e, false);
+                }
+                else
+                {
+                    Items[index] = item;
+                    BeforeSetItemPropagates(index, item, oldItem);
+                }
             }
         }
 
-        protected override void BeforeSetItemPropagates(int index, T item, T oldItem)
+        private void BeforeSetItemPropagates(int index, T item, T oldItem)
         {
             silent = true;
             if (item != null)

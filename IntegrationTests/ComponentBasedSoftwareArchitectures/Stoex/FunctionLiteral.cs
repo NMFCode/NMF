@@ -196,7 +196,7 @@ namespace NMFExamples.Stoex
         /// </summary>
         /// <param name="sender">The collection that raised the change</param>
         /// <param name="e">The original event data</param>
-        private void Parameters_FunctionLiteralCollectionChanging(object sender, NotifyCollectionChangingEventArgs e)
+        private void Parameters_FunctionLiteralCollectionChanging(object sender, NotifyCollectionChangedEventArgs e)
         {
             this.OnCollectionChanging("Parameters_FunctionLiteral", e, _parameters_FunctionLiteralReference);
         }

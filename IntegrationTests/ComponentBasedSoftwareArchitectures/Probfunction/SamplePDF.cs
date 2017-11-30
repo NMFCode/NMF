@@ -195,7 +195,7 @@ namespace NMFExamples.Probfunction
         /// </summary>
         /// <param name="sender">The collection that raised the change</param>
         /// <param name="e">The original event data</param>
-        private void ValuesCollectionChanging(object sender, NotifyCollectionChangingEventArgs e)
+        private void ValuesCollectionChanging(object sender, NotifyCollectionChangedEventArgs e)
         {
             this.OnCollectionChanging("Values", e, _valuesReference);
         }

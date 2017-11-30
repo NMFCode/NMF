@@ -212,7 +212,7 @@ namespace NMFExamples.Pcm.Repository
         /// </summary>
         /// <param name="sender">The collection that raised the change</param>
         /// <param name="e">The original event data</param>
-        private void ParentInterfaces__InterfaceCollectionChanging(object sender, NotifyCollectionChangingEventArgs e)
+        private void ParentInterfaces__InterfaceCollectionChanging(object sender, NotifyCollectionChangedEventArgs e)
         {
             this.OnCollectionChanging("ParentInterfaces__Interface", e, _parentInterfaces__InterfaceReference);
         }
@@ -237,7 +237,7 @@ namespace NMFExamples.Pcm.Repository
         /// </summary>
         /// <param name="sender">The collection that raised the change</param>
         /// <param name="e">The original event data</param>
-        private void Protocols__InterfaceCollectionChanging(object sender, NotifyCollectionChangingEventArgs e)
+        private void Protocols__InterfaceCollectionChanging(object sender, NotifyCollectionChangedEventArgs e)
         {
             this.OnCollectionChanging("Protocols__Interface", e, _protocols__InterfaceReference);
         }
@@ -262,7 +262,7 @@ namespace NMFExamples.Pcm.Repository
         /// </summary>
         /// <param name="sender">The collection that raised the change</param>
         /// <param name="e">The original event data</param>
-        private void RequiredCharacterisationsCollectionChanging(object sender, NotifyCollectionChangingEventArgs e)
+        private void RequiredCharacterisationsCollectionChanging(object sender, NotifyCollectionChangedEventArgs e)
         {
             this.OnCollectionChanging("RequiredCharacterisations", e, _requiredCharacterisationsReference);
         }

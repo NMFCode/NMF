@@ -3,6 +3,7 @@ using NMF.Collections.ObjectModel;
 using NMF.Expressions;
 using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -20,8 +21,23 @@ namespace NMF.Models.Collections
             Parent = parent;
         }
 
-        protected override void OnInsertItem(T item, int index)
+        public override bool Add(T item)
         {
+            if (base.Add(item))
+            {
+                if (item != null)
+                {
+                    item.ParentChanged += RemoveItem;
+                    item.Parent = Parent;
+                }
+                return true;
+            }
+            return false;
+        }
+
+        public override void Insert(int index, T item)
+        {
+            base.Insert(index, item);
             if (item != null)
             {
                 item.ParentChanged += RemoveItem;
@@ -30,14 +46,19 @@ namespace NMF.Models.Collections
             NotifyChangedUri(index + 1, -1);
         }
 
-        protected override void OnRemoveItem(T item, int index)
+        protected override bool Remove(T item, int index)
         {
-            if (item != null && base.Remove(item))
+            if (base.Remove(item, index))
             {
-                item.ParentChanged -= RemoveItem;
-                item.Delete();
+                if (item != null && base.Remove(item))
+                {
+                    item.ParentChanged -= RemoveItem;
+                    item.Delete();
+                }
+                NotifyChangedUri(index, 1);
+                return true;
             }
-            NotifyChangedUri(index, 1);
+            return false;
         }
         
 
@@ -105,36 +126,114 @@ namespace NMF.Models.Collections
 
         public override void Clear()
         {
-            foreach (var item in this.ToArray())
+            var elements = this.ToArray();
+            if (RequireEvents())
             {
-                item.ParentChanged -= RemoveItem;
-                item.Delete();
+                var e = new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset);
+                OnCollectionChanging(e);
+                SilentClear();
+                foreach (var item in elements)
+                {
+                    item.ParentChanged -= RemoveItem;
+                    item.Delete();
+                }
+                OnCollectionChanged(e);
             }
-            base.Clear();
+            else
+            {
+                SilentClear();
+                foreach (var item in elements)
+                {
+                    item.ParentChanged -= RemoveItem;
+                    item.Delete();
+                }
+            }
         }
 
-        protected override void OnInsertItem(T item, int index)
+        public override bool Add(T item)
+        {
+            if (!RequireEvents())
+            {
+                if (SilentAdd(item))
+                {
+                    Register(item);
+                    return true;
+                }
+                return false;
+            }
+            var e = new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, item, Count);
+            OnCollectionChanging(e);
+            if (SilentAdd(item))
+            {
+                Register(item);
+                OnCollectionChanged(e);
+                return true;
+            }
+            return false;
+        }
+
+        private void Register(T item)
         {
             if (item != null)
             {
                 item.ParentChanged += RemoveItem;
                 item.Parent = Parent;
             }
-            base.OnInsertItem(item, index);
-            NotifyChangedUri(index + 1, -1);
         }
 
-        protected override void OnRemoveItem(T item, int index)
+        public override void Insert(int index, T item)
         {
-            base.OnRemoveItem(item, index);
-            if (item != null && item.Parent == Parent)
+            if (!RequireEvents())
+            {
+                SilentInsert(index, item);
+                Register(item);
+                NotifyChangedUri(index + 1, -1);
+            }
+            else
+            {
+                var e = new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, item, index);
+                OnCollectionChanging(e);
+                SilentInsert(index, item);
+                Register(item);
+                NotifyChangedUri(index + 1, -1);
+                OnCollectionChanged(e);
+            }
+        }
+
+        protected override bool Remove(T item, int index)
+        {
+            if (!RequireEvents())
+            {
+                if (SilentRemove(item, index))
+                {
+                    Unregister(item);
+                    NotifyChangedUri(index, -1);
+                }
+            }
+            else
+            {
+                var e = new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Remove, item, index);
+                OnCollectionChanging(e);
+                if (SilentRemove(item, index))
+                {
+                    Unregister(item);
+                    NotifyChangedUri(index, -1);
+                    OnCollectionChanged(e);
+                    return true;
+                }
+                return false;
+            }
+            return false;
+        }
+
+        private void Unregister(T item)
+        {
+            if (item != null)
             {
                 item.ParentChanged -= RemoveItem;
-                item.Delete();
+                if (item.Parent == Parent) item.Delete();
             }
-            NotifyChangedUri(index, 1);
         }
-
 
         private void NotifyChangedUri(int startIndex, int diff)
         {

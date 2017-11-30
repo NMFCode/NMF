@@ -154,7 +154,7 @@ namespace NMFExamples.Pcm.Resourceenvironment
         /// </summary>
         /// <param name="sender">The collection that raised the change</param>
         /// <param name="e">The original event data</param>
-        private void LinkingResources__ResourceEnvironmentCollectionChanging(object sender, NotifyCollectionChangingEventArgs e)
+        private void LinkingResources__ResourceEnvironmentCollectionChanging(object sender, NotifyCollectionChangedEventArgs e)
         {
             this.OnCollectionChanging("LinkingResources__ResourceEnvironment", e, _linkingResources__ResourceEnvironmentReference);
         }
@@ -179,7 +179,7 @@ namespace NMFExamples.Pcm.Resourceenvironment
         /// </summary>
         /// <param name="sender">The collection that raised the change</param>
         /// <param name="e">The original event data</param>
-        private void ResourceContainer_ResourceEnvironmentCollectionChanging(object sender, NotifyCollectionChangingEventArgs e)
+        private void ResourceContainer_ResourceEnvironmentCollectionChanging(object sender, NotifyCollectionChangedEventArgs e)
         {
             this.OnCollectionChanging("ResourceContainer_ResourceEnvironment", e, _resourceContainer_ResourceEnvironmentReference);
         }

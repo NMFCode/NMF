@@ -28,6 +28,7 @@ using global::System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
+using System.Collections.Specialized;
 
 namespace NMFExamples.ComponentBasedSystems.Assembly
 {
@@ -172,7 +173,7 @@ namespace NMFExamples.ComponentBasedSystems.Assembly
         /// </summary>
         /// <param name="sender">The collection that raised the change</param>
         /// <param name="e">The original event data</param>
-        private void EncapsulatedContextsCollectionChanging(object sender, NMF.Collections.ObjectModel.NotifyCollectionChangingEventArgs e)
+        private void EncapsulatedContextsCollectionChanging(object sender, NotifyCollectionChangedEventArgs e)
         {
             this.OnCollectionChanging("EncapsulatedContexts", e, _encapsulatedContextsReference);
         }
@@ -197,7 +198,7 @@ namespace NMFExamples.ComponentBasedSystems.Assembly
         /// </summary>
         /// <param name="sender">The collection that raised the change</param>
         /// <param name="e">The original event data</param>
-        private void DelegateConnectorsCollectionChanging(object sender, NMF.Collections.ObjectModel.NotifyCollectionChangingEventArgs e)
+        private void DelegateConnectorsCollectionChanging(object sender, NotifyCollectionChangedEventArgs e)
         {
             this.OnCollectionChanging("DelegateConnectors", e, _delegateConnectorsReference);
         }
@@ -222,7 +223,7 @@ namespace NMFExamples.ComponentBasedSystems.Assembly
         /// </summary>
         /// <param name="sender">The collection that raised the change</param>
         /// <param name="e">The original event data</param>
-        private void ConnectorsCollectionChanging(object sender, NMF.Collections.ObjectModel.NotifyCollectionChangingEventArgs e)
+        private void ConnectorsCollectionChanging(object sender, NotifyCollectionChangedEventArgs e)
         {
             this.OnCollectionChanging("Connectors", e, _connectorsReference);
         }

@@ -225,7 +225,7 @@ namespace NMF.Expressions.IncrementalizationConfiguration
         /// </summary>
         /// <param name="sender">The collection that raised the change</param>
         /// <param name="e">The original event data</param>
-        private void AllowedStrategiesCollectionChanging(object sender, NMF.Collections.ObjectModel.NotifyCollectionChangingEventArgs e)
+        private void AllowedStrategiesCollectionChanging(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
         {
             this.OnCollectionChanging("AllowedStrategies", e);
         }

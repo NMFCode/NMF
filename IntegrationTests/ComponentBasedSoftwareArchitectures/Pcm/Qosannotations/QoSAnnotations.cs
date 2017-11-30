@@ -184,7 +184,7 @@ namespace NMFExamples.Pcm.Qosannotations
         /// </summary>
         /// <param name="sender">The collection that raised the change</param>
         /// <param name="e">The original event data</param>
-        private void SpecifiedOutputParameterAbstractions_QoSAnnotationsCollectionChanging(object sender, NotifyCollectionChangingEventArgs e)
+        private void SpecifiedOutputParameterAbstractions_QoSAnnotationsCollectionChanging(object sender, NotifyCollectionChangedEventArgs e)
         {
             this.OnCollectionChanging("SpecifiedOutputParameterAbstractions_QoSAnnotations", e, _specifiedOutputParameterAbstractions_QoSAnnotationsReference);
         }
@@ -277,7 +277,7 @@ namespace NMFExamples.Pcm.Qosannotations
         /// </summary>
         /// <param name="sender">The collection that raised the change</param>
         /// <param name="e">The original event data</param>
-        private void SpecifiedQoSAnnotations_QoSAnnotationsCollectionChanging(object sender, NotifyCollectionChangingEventArgs e)
+        private void SpecifiedQoSAnnotations_QoSAnnotationsCollectionChanging(object sender, NotifyCollectionChangedEventArgs e)
         {
             this.OnCollectionChanging("SpecifiedQoSAnnotations_QoSAnnotations", e, _specifiedQoSAnnotations_QoSAnnotationsReference);
         }

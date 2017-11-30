@@ -163,7 +163,7 @@ namespace NMFExamples.Pcm.Repository
         /// </summary>
         /// <param name="sender">The collection that raised the change</param>
         /// <param name="e">The original event data</param>
-        private void Parameters__InfrastructureSignatureCollectionChanging(object sender, NotifyCollectionChangingEventArgs e)
+        private void Parameters__InfrastructureSignatureCollectionChanging(object sender, NotifyCollectionChangedEventArgs e)
         {
             this.OnCollectionChanging("Parameters__InfrastructureSignature", e, _parameters__InfrastructureSignatureReference);
         }

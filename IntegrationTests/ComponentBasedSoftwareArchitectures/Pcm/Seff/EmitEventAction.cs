@@ -314,7 +314,7 @@ namespace NMFExamples.Pcm.Seff
         /// </summary>
         /// <param name="sender">The collection that raised the change</param>
         /// <param name="e">The original event data</param>
-        private void InputVariableUsages__CallActionCollectionChanging(object sender, NotifyCollectionChangingEventArgs e)
+        private void InputVariableUsages__CallActionCollectionChanging(object sender, NotifyCollectionChangedEventArgs e)
         {
             this.OnCollectionChanging("InputVariableUsages__CallAction", e, _inputVariableUsages__CallActionReference);
         }

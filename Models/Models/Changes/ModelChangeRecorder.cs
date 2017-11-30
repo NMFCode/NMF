@@ -316,131 +316,142 @@ namespace NMF.Models.Changes
 
         private bool ParseChange(List<IModelChange> changes, ref int currentIndex)
         {
-            BubbledChangeEventArgs currentEvent;
-            IModelElement createdElement = null;
-
+            int originalCurrentIndex = currentIndex;
             do
             {
-                currentEvent = recordedEvents[currentIndex++];
-                if (currentEvent.ChangeType == ChangeType.ElementCreated)
+                BubbledChangeEventArgs currentEvent;
+                IModelElement createdElement = null;
+
+                do
                 {
-                    createdElement = currentEvent.Element;
-                }
-                if (currentIndex == recordedEvents.Count) return createdElement != null;
-            } while (currentEvent.ChangeType == ChangeType.ElementCreated);
-
-            var childChanges = new List<IModelChange>();
-
-            if (currentEvent.ChangeType == ChangeType.PropertyChanged || currentEvent.ChangeType == ChangeType.CollectionChanged)
-            {
-                InterpretPastChanges(changes, currentEvent);
-                return createdElement != null;
-            }
-
-            while (currentIndex < recordedEvents.Count)
-            {
-                var nextEvent = recordedEvents[currentIndex];
-
-                if (nextEvent.ChangeType == ChangeType.ElementCreated)
-                {
-                    createdElement = nextEvent.Element;
-                    currentIndex++;
-                    continue;
-                }
-                if (MatchEvents(currentEvent, nextEvent))
-                {
-                    currentIndex++;
-                    var currentChange = EventToChange(nextEvent);
-                    if (childChanges.Count == 0)
+                    currentEvent = recordedEvents[currentIndex++];
+                    if (currentEvent.ChangeType == ChangeType.ElementCreated)
                     {
-                        if (createdElement != null && !elementSources.ContainsKey(createdElement))
-                        {
-                            var r = currentEvent.Feature as IReference;
-                            if (r == null || !r.IsContainment)
-                            {
-                                throw new InvalidOperationException("The sequence of events could not be interpreted.");
-                            }
-                            AddAllElementSources(createdElement, currentChange);
-                        }
-                        changes.Add(currentChange);
-                        return false;
+                        createdElement = currentEvent.Element;
                     }
-                    if (createdElement != null)
+                    if (currentIndex == recordedEvents.Count) return createdElement != null;
+                } while (currentEvent.ChangeType == ChangeType.ElementCreated);
+
+                var childChanges = new List<IModelChange>();
+
+                if (currentEvent.ChangeType == ChangeType.PropertyChanged || currentEvent.ChangeType == ChangeType.CollectionChanged)
+                {
+                    InterpretPastChanges(changes, currentEvent);
+                    return createdElement != null;
+                }
+
+                while (currentIndex < recordedEvents.Count)
+                {
+                    var nextEvent = recordedEvents[currentIndex];
+
+                    if (nextEvent.ChangeType == ChangeType.ElementCreated)
                     {
-                        var composition = currentChange as ICompositionInsertion;
-                        if (composition == null)
+                        createdElement = nextEvent.Element;
+                        currentIndex++;
+                        continue;
+                    }
+                    if (MatchEvents(currentEvent, nextEvent))
+                    {
+                        currentIndex++;
+                        var currentChange = EventToChange(nextEvent);
+                        if (childChanges.Count == 0)
                         {
-                            composition = childChanges.OfType<ICompositionInsertion>().FirstOrDefault();
-                        }
-                        if (composition != null)
-                        {
-                            var child = childChanges.OfType<ICompositionDeletion>().FirstOrDefault(c => c.DeletedElement == createdElement);
-                            if (child != null)
+                            if (createdElement != null && !elementSources.ContainsKey(createdElement))
                             {
-                                childChanges.Remove(child);
-                                
-                                if (childChanges.Count > 0)
+                                var r = currentEvent.Feature as IReference;
+                                if (r == null || !r.IsContainment)
                                 {
-                                    CreateTransaction(changes, childChanges, composition.ConvertIntoMove(child));
+                                    throw new InvalidOperationException("The sequence of events could not be interpreted.");
+                                }
+                                AddAllElementSources(createdElement, currentChange);
+                            }
+                            changes.Add(currentChange);
+                            return false;
+                        }
+                        if (createdElement != null)
+                        {
+                            var composition = currentChange as ICompositionInsertion;
+                            if (composition == null)
+                            {
+                                composition = childChanges.OfType<ICompositionInsertion>().FirstOrDefault();
+                            }
+                            if (composition != null)
+                            {
+                                var child = childChanges.OfType<ICompositionDeletion>().FirstOrDefault(c => c.DeletedElement == createdElement);
+                                if (child != null)
+                                {
+                                    childChanges.Remove(child);
+
+                                    if (childChanges.Count > 0)
+                                    {
+                                        CreateTransaction(changes, childChanges, composition.ConvertIntoMove(child));
+                                    }
+                                    else
+                                    {
+                                        changes.Add(composition.ConvertIntoMove(child));
+                                    }
+                                    return false;
                                 }
                                 else
                                 {
-                                    changes.Add(composition.ConvertIntoMove(child));
+                                    AddAllElementSources(createdElement, composition);
                                 }
-                                return false;
                             }
                             else
                             {
-                                AddAllElementSources(createdElement, composition);
+                                var r = currentEvent.Feature as IReference;
+                                if (changes.Count == 0 && childChanges.Count == 1 && r != null && !r.IsContainment && r.Opposite != null && r.Opposite.IsContainment)
+                                {
+                                    changes.AddRange(childChanges);
+                                    return true;
+                                }
                             }
                         }
-                        else
+                        CreateTransaction(changes, childChanges, currentChange);
+                        return false;
+                    }
+                    else if ((nextEvent.ChangeType == ChangeType.PropertyChanged || nextEvent.ChangeType == ChangeType.CollectionChanged) && nextEvent.Element == createdElement)
+                    {
+                        // These events are opposites of creation messages and can be ignored
+                        currentIndex++;
+                        continue;
+                    }
+                    else
+                    {
+                        if (ParseChange(childChanges, ref currentIndex) && createdElement == null)
                         {
-                            var r = currentEvent.Feature as IReference;
-                            if (changes.Count == 0 && childChanges.Count == 1 && r != null && !r.IsContainment && r.Opposite != null && r.Opposite.IsContainment)
+                            var deletion = childChanges.OfType<ICompositionDeletion>().FirstOrDefault();
+                            if (deletion != null)
                             {
-                                changes.AddRange(childChanges);
-                                return true;
+                                createdElement = deletion.DeletedElement;
                             }
                         }
                     }
-                    CreateTransaction(changes, childChanges, currentChange);
+                }
+
+                var element = currentEvent.Element;
+                while (element != null)
+                {
+                    if (elementSources.ContainsKey(element))
+                    {
+                        changes.AddRange(childChanges);
+                        return true;
+                    }
+                    else
+                    {
+                        element = element.Parent;
+                    }
+                }
+                originalCurrentIndex++;
+                if (originalCurrentIndex < changes.Count)
+                {
+                    currentIndex = originalCurrentIndex;
+                }
+                else
+                {
                     return false;
                 }
-                else if ((nextEvent.ChangeType == ChangeType.PropertyChanged || nextEvent.ChangeType == ChangeType.CollectionChanged) && nextEvent.Element == createdElement)
-                {
-                    // These events are opposites of creation messages and can be ignored
-                    currentIndex++;
-                    continue;
-                }
-                else
-                {
-                    if (ParseChange(childChanges, ref currentIndex) && createdElement == null)
-                    {
-                        var deletion = childChanges.OfType<ICompositionDeletion>().FirstOrDefault();
-                        if (deletion != null)
-                        {
-                            createdElement = deletion.DeletedElement;
-                        }
-                    }
-                }
-            }
-
-            var element = currentEvent.Element;
-            while (element != null)
-            {
-                if (elementSources.ContainsKey(element))
-                {
-                    changes.AddRange(childChanges);
-                    return true;
-                }
-                else
-                {
-                    element = element.Parent;
-                }
-            }
-
-            throw new InvalidOperationException("No corresponding after-event found for " + currentEvent.ToString());
+            } while (true);
         }
 
         private void AddAllElementSources(IModelElement createdElement, IModelChange currentChange)

@@ -21,64 +21,17 @@ namespace NMF.Collections.ObjectModel
         {
             OnPropertyChanged("Count");
             OnPropertyChanged("Item[]");
-            if (CollectionChanged != null) CollectionChanged(this, e);
+            CollectionChanged?.Invoke(this, e);
         }
 
-        protected void OnCollectionChanging(NotifyCollectionChangingEventArgs e)
+        protected void OnCollectionChanging(NotifyCollectionChangedEventArgs e)
         {
             CollectionChanging?.Invoke(this, e);
         }
 
-        protected override void OnClearing(ref bool cancel)
-        {
-            base.OnClearing(ref cancel);
-            if (!cancel)
-                OnCollectionChanging(new NotifyCollectionChangingEventArgs(NotifyCollectionChangedAction.Reset));
-        }
-
-        protected override void OnCleared()
-        {
-            OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
-        }
-
-        protected override void OnInsertingItem(T item, ref bool cancel, int index)
-        {
-            if (!cancel)
-                OnCollectionChanging(new NotifyCollectionChangingEventArgs(NotifyCollectionChangedAction.Add));
-        }
-
-        protected override void OnInsertItem(T item, int index)
-        {
-            OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, item, index));
-        }
-
-        protected override void OnRemovingItem(T item, ref bool cancel, int index)
-        {
-            base.OnRemovingItem(item, ref cancel, index);
-            if (!cancel)
-                OnCollectionChanging(new NotifyCollectionChangingEventArgs(NotifyCollectionChangedAction.Remove));
-        }
-
-        protected override void OnRemoveItem(T item, int index)
-        {
-            OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Remove, item, index));
-        }
-
-        protected override void OnReplacingItem(T oldItem, T newItem, ref bool cancel)
-        {
-            base.OnReplacingItem(oldItem, newItem, ref cancel);
-            if (!cancel)
-                OnCollectionChanging(new NotifyCollectionChangingEventArgs(NotifyCollectionChangedAction.Replace));
-        }
-
-        protected override void OnReplaceItem(T oldItem, T newItem, int index)
-        {
-            OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Replace, newItem, oldItem, index));
-        }
-
         public event NotifyCollectionChangedEventHandler CollectionChanged;
 
-        public event EventHandler<NotifyCollectionChangingEventArgs> CollectionChanging;
+        public event EventHandler<NotifyCollectionChangedEventArgs> CollectionChanging;
         
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -98,6 +51,116 @@ namespace NMF.Collections.ObjectModel
         INotifyEnumerable IEnumerableExpression.AsNotifiable()
         {
             return AsNotifiable();
+        }
+
+        protected bool RequireEvents()
+        {
+            return CollectionChanged != null || PropertyChanged != null || CollectionChanging != null;
+        }
+
+        public override bool Add(T item)
+        {
+            if (!RequireEvents())
+            {
+                return SilentAdd(item);
+            }
+            var e = new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, item, Count);
+            OnCollectionChanging(e);
+            if (SilentAdd(item))
+            {
+                OnCollectionChanged(e);
+                return true;
+            }
+            return false;
+        }
+
+        protected bool SilentAdd(T item)
+        {
+            return base.Add(item);
+        }
+
+        public override void Insert(int index, T item)
+        {
+            if (!RequireEvents())
+            {
+                base.Insert(index, item);
+            }
+            else
+            {
+                var e = new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, item, index);
+                OnCollectionChanging(e);
+                SilentInsert(index, item);
+                OnCollectionChanged(e);
+            }
+        }
+
+        protected void SilentInsert(int index, T item)
+        {
+            base.Insert(index, item);
+        }
+
+        public override void Clear()
+        {
+            if (RequireEvents())
+            {
+                var e = new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset);
+                OnCollectionChanging(e);
+                SilentClear();
+                OnCollectionChanged(e);
+            }
+            else
+            {
+                SilentClear();
+            }
+        }
+
+        protected void SilentClear()
+        {
+            base.Clear();
+        }
+
+        protected override bool Remove(T item, int index)
+        {
+            if (!RequireEvents())
+            {
+                return SilentRemove(item, index);
+            }
+            else
+            {
+                var e = new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Remove, item, index);
+                OnCollectionChanging(e);
+                if (SilentRemove(item, index))
+                {
+                    OnCollectionChanged(e);
+                    return true;
+                }
+                return false;
+            }
+        }
+
+        protected bool SilentRemove(T item, int index)
+        {
+            return base.Remove(item, index);
+        }
+
+        protected override void Replace(int index, T oldValue, T newValue)
+        {
+            if (!RequireEvents())
+            {
+                SilentReplace(index, oldValue, newValue);
+            }
+            else
+            {
+                var e = new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Replace, newValue, oldValue, index);
+                OnCollectionChanging(e);
+                SilentReplace(index, oldValue, newValue);
+                OnCollectionChanged(e);
+            }
+        }
+
+        protected void SilentReplace(int index, T oldValue, T newValue)
+        {
+            base.Replace(index, oldValue, newValue);
         }
     }
 }

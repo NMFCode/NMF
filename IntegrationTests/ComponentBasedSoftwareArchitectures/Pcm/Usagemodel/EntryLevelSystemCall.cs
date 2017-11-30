@@ -414,7 +414,7 @@ namespace NMFExamples.Pcm.Usagemodel
         /// </summary>
         /// <param name="sender">The collection that raised the change</param>
         /// <param name="e">The original event data</param>
-        private void OutputParameterUsages_EntryLevelSystemCallCollectionChanging(object sender, NotifyCollectionChangingEventArgs e)
+        private void OutputParameterUsages_EntryLevelSystemCallCollectionChanging(object sender, NotifyCollectionChangedEventArgs e)
         {
             this.OnCollectionChanging("OutputParameterUsages_EntryLevelSystemCall", e, _outputParameterUsages_EntryLevelSystemCallReference);
         }
@@ -439,7 +439,7 @@ namespace NMFExamples.Pcm.Usagemodel
         /// </summary>
         /// <param name="sender">The collection that raised the change</param>
         /// <param name="e">The original event data</param>
-        private void InputParameterUsages_EntryLevelSystemCallCollectionChanging(object sender, NotifyCollectionChangingEventArgs e)
+        private void InputParameterUsages_EntryLevelSystemCallCollectionChanging(object sender, NotifyCollectionChangedEventArgs e)
         {
             this.OnCollectionChanging("InputParameterUsages_EntryLevelSystemCall", e, _inputParameterUsages_EntryLevelSystemCallReference);
         }

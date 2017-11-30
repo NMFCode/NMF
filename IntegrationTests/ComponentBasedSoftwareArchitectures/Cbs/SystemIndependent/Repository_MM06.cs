@@ -170,7 +170,7 @@ namespace NMFExamples.ComponentBasedSystems.SystemIndependent
         /// </summary>
         /// <param name="sender">The collection that raised the change</param>
         /// <param name="e">The original event data</param>
-        private void InterfacesCollectionChanging(object sender, NMF.Collections.ObjectModel.NotifyCollectionChangingEventArgs e)
+        private void InterfacesCollectionChanging(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
         {
             this.OnCollectionChanging("Interfaces", e, _interfacesReference);
         }
@@ -195,7 +195,7 @@ namespace NMFExamples.ComponentBasedSystems.SystemIndependent
         /// </summary>
         /// <param name="sender">The collection that raised the change</param>
         /// <param name="e">The original event data</param>
-        private void ComponentsCollectionChanging(object sender, NMF.Collections.ObjectModel.NotifyCollectionChangingEventArgs e)
+        private void ComponentsCollectionChanging(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
         {
             this.OnCollectionChanging("Components", e, _componentsReference);
         }
@@ -220,7 +220,7 @@ namespace NMFExamples.ComponentBasedSystems.SystemIndependent
         /// </summary>
         /// <param name="sender">The collection that raised the change</param>
         /// <param name="e">The original event data</param>
-        private void AvailableSignaturesCollectionChanging(object sender, NMF.Collections.ObjectModel.NotifyCollectionChangingEventArgs e)
+        private void AvailableSignaturesCollectionChanging(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
         {
             this.OnCollectionChanging("AvailableSignatures", e, _availableSignaturesReference);
         }

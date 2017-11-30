@@ -326,7 +326,7 @@ namespace NMFExamples.Pcm.Seff
         /// </summary>
         /// <param name="sender">The collection that raised the change</param>
         /// <param name="e">The original event data</param>
-        private void Steps_BehaviourCollectionChanging(object sender, NotifyCollectionChangingEventArgs e)
+        private void Steps_BehaviourCollectionChanging(object sender, NotifyCollectionChangedEventArgs e)
         {
             this.OnCollectionChanging("Steps_Behaviour", e, _steps_BehaviourReference);
         }

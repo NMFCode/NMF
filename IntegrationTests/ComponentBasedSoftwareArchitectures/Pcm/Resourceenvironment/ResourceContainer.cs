@@ -273,7 +273,7 @@ namespace NMFExamples.Pcm.Resourceenvironment
         /// </summary>
         /// <param name="sender">The collection that raised the change</param>
         /// <param name="e">The original event data</param>
-        private void ActiveResourceSpecifications_ResourceContainerCollectionChanging(object sender, NotifyCollectionChangingEventArgs e)
+        private void ActiveResourceSpecifications_ResourceContainerCollectionChanging(object sender, NotifyCollectionChangedEventArgs e)
         {
             this.OnCollectionChanging("ActiveResourceSpecifications_ResourceContainer", e, _activeResourceSpecifications_ResourceContainerReference);
         }
@@ -339,7 +339,7 @@ namespace NMFExamples.Pcm.Resourceenvironment
         /// </summary>
         /// <param name="sender">The collection that raised the change</param>
         /// <param name="e">The original event data</param>
-        private void NestedResourceContainers__ResourceContainerCollectionChanging(object sender, NotifyCollectionChangingEventArgs e)
+        private void NestedResourceContainers__ResourceContainerCollectionChanging(object sender, NotifyCollectionChangedEventArgs e)
         {
             this.OnCollectionChanging("NestedResourceContainers__ResourceContainer", e, _nestedResourceContainers__ResourceContainerReference);
         }

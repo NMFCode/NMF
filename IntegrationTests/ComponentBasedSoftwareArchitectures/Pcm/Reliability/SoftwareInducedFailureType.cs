@@ -117,7 +117,7 @@ namespace NMFExamples.Pcm.Reliability
         /// </summary>
         /// <param name="sender">The collection that raised the change</param>
         /// <param name="e">The original event data</param>
-        private void InternalFailureOccurrenceDescriptions__SoftwareInducedFailureTypeCollectionChanging(object sender, NotifyCollectionChangingEventArgs e)
+        private void InternalFailureOccurrenceDescriptions__SoftwareInducedFailureTypeCollectionChanging(object sender, NotifyCollectionChangedEventArgs e)
         {
             this.OnCollectionChanging("InternalFailureOccurrenceDescriptions__SoftwareInducedFailureType", e, _internalFailureOccurrenceDescriptions__SoftwareInducedFailureTypeReference);
         }

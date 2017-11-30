@@ -127,7 +127,7 @@ namespace NMFExamples.Pcm.Usagemodel
         /// </summary>
         /// <param name="sender">The collection that raised the change</param>
         /// <param name="e">The original event data</param>
-        private void BranchTransitions_BranchCollectionChanging(object sender, NotifyCollectionChangingEventArgs e)
+        private void BranchTransitions_BranchCollectionChanging(object sender, NotifyCollectionChangedEventArgs e)
         {
             this.OnCollectionChanging("BranchTransitions_Branch", e, _branchTransitions_BranchReference);
         }

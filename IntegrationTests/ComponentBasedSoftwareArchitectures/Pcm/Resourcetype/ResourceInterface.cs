@@ -228,7 +228,7 @@ namespace NMFExamples.Pcm.Resourcetype
         /// </summary>
         /// <param name="sender">The collection that raised the change</param>
         /// <param name="e">The original event data</param>
-        private void ResourceSignatures__ResourceInterfaceCollectionChanging(object sender, NotifyCollectionChangingEventArgs e)
+        private void ResourceSignatures__ResourceInterfaceCollectionChanging(object sender, NotifyCollectionChangedEventArgs e)
         {
             this.OnCollectionChanging("ResourceSignatures__ResourceInterface", e, _resourceSignatures__ResourceInterfaceReference);
         }

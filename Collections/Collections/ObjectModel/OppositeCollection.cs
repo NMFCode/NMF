@@ -31,27 +31,35 @@ namespace NMF.Collections.ObjectModel
             }
         }
 
-        protected override void OnInsertItem(TCollected item, int index)
+        public override bool Add(TCollected item)
         {
-            SetOpposite(item, Parent);
-            base.OnInsertItem(item, index);
+            if (base.Add(item))
+            {
+                SetOpposite(item, Parent);
+                return true;
+            }
+            return false;
         }
 
-        protected override void OnRemoveItem(TCollected item, int index)
+        protected override bool Remove(TCollected item, int index)
         {
-            SetOpposite(item, default(TParent));
-            base.OnRemoveItem(item, index);
+            if (base.Remove(item, index))
+            {
+                SetOpposite(item, default(TParent));
+                return true;
+            }
+            return false;
         }
 
-        protected override void OnReplaceItem(TCollected oldItem, TCollected newItem, int index)
+        protected override void Replace(int index, TCollected oldValue, TCollected newValue)
         {
-            SetOpposite(oldItem, default(TParent));
-            SetOpposite(newItem, Parent);
-            base.OnReplaceItem(oldItem, newItem, index);
+            base.Replace(index, oldValue, newValue);
+            SetOpposite(oldValue, default(TParent));
+            SetOpposite(newValue, Parent);
         }
     }
 
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1710:IdentifiersShouldHaveCorrectSuffix")]
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1710:IdentifiersShouldHaveCorrectSuffix")]
     public abstract class OppositeSet<TParent, TCollected> : DecoratedSet<TCollected>
     {
         public TParent Parent { get; private set; }

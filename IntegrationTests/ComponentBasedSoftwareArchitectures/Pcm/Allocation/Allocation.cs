@@ -310,7 +310,7 @@ namespace NMFExamples.Pcm.Allocation
         /// </summary>
         /// <param name="sender">The collection that raised the change</param>
         /// <param name="e">The original event data</param>
-        private void AllocationContexts_AllocationCollectionChanging(object sender, NotifyCollectionChangingEventArgs e)
+        private void AllocationContexts_AllocationCollectionChanging(object sender, NotifyCollectionChangedEventArgs e)
         {
             this.OnCollectionChanging("AllocationContexts_Allocation", e, _allocationContexts_AllocationReference);
         }

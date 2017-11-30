@@ -117,9 +117,9 @@ namespace NMF.Collections.Test
             Added.AssertEmpty();
         }
 
-        public override bool Remove(string item)
+        protected override bool Remove(string item, int index)
         {
-            if (base.Remove(item))
+            if (base.Remove(item, index))
             {
                 Added.AssertEmpty();
                 Removed.AssertContainsOnly(item);
@@ -286,9 +286,9 @@ namespace NMF.Collections.Test
             Added.AssertEmpty();
         }
 
-        public override bool Remove(string item)
+        protected override bool Remove(string item, int index)
         {
-            if (base.Remove(item))
+            if (base.Remove(item, index))
             {
                 Added.AssertEmpty();
                 Removed.AssertContainsOnly(item);

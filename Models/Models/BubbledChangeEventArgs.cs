@@ -101,10 +101,10 @@ namespace NMF.Models
         /// </summary>
         /// <param name="source">The model element containing the collection.</param>
         /// <param name="propertyName">The name of the collection property.</param>
-        /// <param name="args">The original NotifyCollectionChangingEventArgs.</param>
+        /// <param name="args">The original NotifyCollectionChangedEventArgs.</param>
         /// <param name="requireUris">Determines whether the event data should include absolute Uris</param>
         /// <returns></returns>
-        public static BubbledChangeEventArgs CollectionChanging(IModelElement source, string propertyName, NotifyCollectionChangingEventArgs args, bool requireUris, Lazy<ITypedElement> feature = null)
+        public static BubbledChangeEventArgs CollectionChanging(IModelElement source, string propertyName, NotifyCollectionChangedEventArgs args, bool requireUris, Lazy<ITypedElement> feature = null)
         {
             if (source == null)
                 throw new ArgumentNullException(nameof(source));

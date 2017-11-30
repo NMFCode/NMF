@@ -1028,7 +1028,7 @@ namespace NMF.Models
         /// </summary>
         /// <param name="propertyName">The name of the property that has changed</param>
         /// <param name="e">The event data</param>
-        protected void OnCollectionChanging(string propertyName, NotifyCollectionChangingEventArgs e, Lazy<ITypedElement> feature = null)
+        protected void OnCollectionChanging(string propertyName, NotifyCollectionChangedEventArgs e, Lazy<ITypedElement> feature = null)
         {
             if (!IsFlagSet(ModelElementFlag.Deleting))
                 OnBubbledChange(BubbledChangeEventArgs.CollectionChanging(this, propertyName, e, IsFlagSet(ModelElementFlag.RequireUris), feature));

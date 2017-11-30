@@ -157,7 +157,7 @@ namespace NMFExamples.Pcm.Repository
         /// </summary>
         /// <param name="sender">The collection that raised the change</param>
         /// <param name="e">The original event data</param>
-        private void ServiceEffectSpecifications__BasicComponentCollectionChanging(object sender, NotifyCollectionChangingEventArgs e)
+        private void ServiceEffectSpecifications__BasicComponentCollectionChanging(object sender, NotifyCollectionChangedEventArgs e)
         {
             this.OnCollectionChanging("ServiceEffectSpecifications__BasicComponent", e, _serviceEffectSpecifications__BasicComponentReference);
         }
@@ -182,7 +182,7 @@ namespace NMFExamples.Pcm.Repository
         /// </summary>
         /// <param name="sender">The collection that raised the change</param>
         /// <param name="e">The original event data</param>
-        private void PassiveResource_BasicComponentCollectionChanging(object sender, NotifyCollectionChangingEventArgs e)
+        private void PassiveResource_BasicComponentCollectionChanging(object sender, NotifyCollectionChangedEventArgs e)
         {
             this.OnCollectionChanging("PassiveResource_BasicComponent", e, _passiveResource_BasicComponentReference);
         }

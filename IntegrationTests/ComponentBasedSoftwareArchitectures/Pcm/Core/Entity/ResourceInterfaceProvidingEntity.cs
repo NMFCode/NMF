@@ -128,7 +128,7 @@ namespace NMFExamples.Pcm.Core.Entity
         /// </summary>
         /// <param name="sender">The collection that raised the change</param>
         /// <param name="e">The original event data</param>
-        private void ResourceProvidedRoles__ResourceInterfaceProvidingEntityCollectionChanging(object sender, NotifyCollectionChangingEventArgs e)
+        private void ResourceProvidedRoles__ResourceInterfaceProvidingEntityCollectionChanging(object sender, NotifyCollectionChangedEventArgs e)
         {
             this.OnCollectionChanging("ResourceProvidedRoles__ResourceInterfaceProvidingEntity", e, _resourceProvidedRoles__ResourceInterfaceProvidingEntityReference);
         }

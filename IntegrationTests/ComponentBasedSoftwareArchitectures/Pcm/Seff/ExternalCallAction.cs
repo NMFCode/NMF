@@ -441,7 +441,7 @@ namespace NMFExamples.Pcm.Seff
         /// </summary>
         /// <param name="sender">The collection that raised the change</param>
         /// <param name="e">The original event data</param>
-        private void ReturnVariableUsage__CallReturnActionCollectionChanging(object sender, NotifyCollectionChangingEventArgs e)
+        private void ReturnVariableUsage__CallReturnActionCollectionChanging(object sender, NotifyCollectionChangedEventArgs e)
         {
             this.OnCollectionChanging("ReturnVariableUsage__CallReturnAction", e, _returnVariableUsage__CallReturnActionReference);
         }
@@ -466,7 +466,7 @@ namespace NMFExamples.Pcm.Seff
         /// </summary>
         /// <param name="sender">The collection that raised the change</param>
         /// <param name="e">The original event data</param>
-        private void InputVariableUsages__CallActionCollectionChanging(object sender, NotifyCollectionChangingEventArgs e)
+        private void InputVariableUsages__CallActionCollectionChanging(object sender, NotifyCollectionChangedEventArgs e)
         {
             this.OnCollectionChanging("InputVariableUsages__CallAction", e, _inputVariableUsages__CallActionReference);
         }
@@ -491,7 +491,7 @@ namespace NMFExamples.Pcm.Seff
         /// </summary>
         /// <param name="sender">The collection that raised the change</param>
         /// <param name="e">The original event data</param>
-        private void FailureTypes_FailureHandlingEntityCollectionChanging(object sender, NotifyCollectionChangingEventArgs e)
+        private void FailureTypes_FailureHandlingEntityCollectionChanging(object sender, NotifyCollectionChangedEventArgs e)
         {
             this.OnCollectionChanging("FailureTypes_FailureHandlingEntity", e, _failureTypes_FailureHandlingEntityReference);
         }

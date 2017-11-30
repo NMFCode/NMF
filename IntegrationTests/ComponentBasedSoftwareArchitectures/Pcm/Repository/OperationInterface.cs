@@ -130,7 +130,7 @@ namespace NMFExamples.Pcm.Repository
         /// </summary>
         /// <param name="sender">The collection that raised the change</param>
         /// <param name="e">The original event data</param>
-        private void Signatures__OperationInterfaceCollectionChanging(object sender, NotifyCollectionChangingEventArgs e)
+        private void Signatures__OperationInterfaceCollectionChanging(object sender, NotifyCollectionChangedEventArgs e)
         {
             this.OnCollectionChanging("Signatures__OperationInterface", e, _signatures__OperationInterfaceReference);
         }

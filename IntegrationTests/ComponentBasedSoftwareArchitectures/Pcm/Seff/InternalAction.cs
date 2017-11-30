@@ -130,7 +130,7 @@ namespace NMFExamples.Pcm.Seff
         /// </summary>
         /// <param name="sender">The collection that raised the change</param>
         /// <param name="e">The original event data</param>
-        private void InternalFailureOccurrenceDescriptions__InternalActionCollectionChanging(object sender, NotifyCollectionChangingEventArgs e)
+        private void InternalFailureOccurrenceDescriptions__InternalActionCollectionChanging(object sender, NotifyCollectionChangedEventArgs e)
         {
             this.OnCollectionChanging("InternalFailureOccurrenceDescriptions__InternalAction", e, _internalFailureOccurrenceDescriptions__InternalActionReference);
         }

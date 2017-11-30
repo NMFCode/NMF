@@ -17,38 +17,79 @@ namespace NMF.Collections.ObjectModel
     {
         public override bool Add(T item)
         {
+            if (!RequireEvents())
+            {
+                if (base.Add(item))
+                {
+                    return true;
+                }
+                return false;
+            }
             if (item != null && !base.Contains(item))
             {
-                OnCollectionChanging(new NotifyCollectionChangingEventArgs(NotifyCollectionChangedAction.Add));
-                base.Add(item);
-                OnInsertItem(item);
+                var e = new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, item);
+                OnCollectionChanging(e);
+                SilentAdd(item);
+                OnCollectionChanged(e);
                 return true;
             }
             return false;
+        }
+
+        protected bool RequireEvents()
+        {
+            return CollectionChanged != null || PropertyChanged != null || CollectionChanging != null;
+        }
+
+        protected bool SilentAdd(T item)
+        {
+            return base.Add(item);
         }
 
         public override void Clear()
         {
-            OnCollectionChanging(new NotifyCollectionChangingEventArgs(NotifyCollectionChangedAction.Reset));
+            if (!RequireEvents())
+            {
+                base.Clear();
+            }
+            else
+            {
+                var e = new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset);
+                OnCollectionChanging(e);
+                SilentClear();
+                OnCollectionChanged(e);
+            }
+        }
+
+        protected void SilentClear()
+        {
             base.Clear();
-            OnClear();
         }
 
         public override bool Remove(T item)
         {
-            if (item != null && base.Contains(item))
+            if (CollectionChanged == null && PropertyChanged == null && CollectionChanging == null)
             {
-                OnCollectionChanging(new NotifyCollectionChangingEventArgs(NotifyCollectionChangedAction.Remove));
-                base.Remove(item);
-                OnRemoveItem(item);
+                return base.Remove(item);
+            }
+            var e = new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Remove, item);
+            OnCollectionChanging(e);
+            if (SilentRemove(item))
+            {
+                OnCollectionChanged(e);
                 return true;
             }
             return false;
         }
 
+        protected bool SilentRemove(T item)
+        {
+            return base.Remove(item);
+        }
+
         public event NotifyCollectionChangedEventHandler CollectionChanged;
 
-        public event EventHandler<NotifyCollectionChangingEventArgs> CollectionChanging;
+        public event EventHandler<NotifyCollectionChangedEventArgs> CollectionChanging;
 
         protected void OnPropertyChanged(string property)
         {
@@ -61,29 +102,9 @@ namespace NMF.Collections.ObjectModel
             CollectionChanged?.Invoke(this, e);
         }
 
-        protected void OnCollectionChanging(NotifyCollectionChangingEventArgs e)
+        protected void OnCollectionChanging(NotifyCollectionChangedEventArgs e)
         {
             CollectionChanging?.Invoke(this, e);
-        }
-
-        protected virtual void OnClear()
-        {
-            OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
-        }
-
-        protected virtual void OnInsertItem(T item)
-        {
-            OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, item));
-        }
-
-        protected virtual void OnRemoveItem(T item)
-        {
-            OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Remove, item));
-        }
-
-        protected virtual void OnReplaceItem(T oldItem, T newItem)
-        {
-            OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Replace, newItem, oldItem));
         }
         
         public event PropertyChangedEventHandler PropertyChanged;

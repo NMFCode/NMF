@@ -3,54 +3,30 @@ using NMF.Collections.ObjectModel;
 using NMF.Expressions;
 using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace NMF.Models.Collections
 {
-    public class CompositionSet<T> : DecoratedSet<T> where T : class, IModelElement
+    public class CompositionSet<T> : OppositeSet<IModelElement, T> where T : class, IModelElement
     {
-        public IModelElement Parent { get; private set; }
-
-        public CompositionSet(IModelElement parent)
+        public CompositionSet(IModelElement parent) : base(parent)
         {
-            if (parent == null) throw new ArgumentNullException("parent");
-
-            Parent = parent;
         }
 
-        public override bool Add(T item)
+        protected override void SetOpposite(T item, IModelElement newParent)
         {
-            if (item != null)
-            {
-                item.ParentChanged += RemoveItem;
-                item.Parent = Parent;
-            }
-            return base.Add(item);
-        }
-
-        public override void Clear()
-        {
-            foreach (var item in this)
+            if (newParent == null)
             {
                 item.ParentChanged -= RemoveItem;
-                item.Delete();
-            }
-            base.Clear();
-        }
-
-        public override bool Remove(T item)
-        {
-            if (item != null && base.Remove(item))
-            {
-                item.ParentChanged -= RemoveItem;
-                item.Delete();
-                return true;
+                if (item.Parent == Parent) item.Delete();
             }
             else
             {
-                return false;
+                item.ParentChanged += RemoveItem;
+                item.Parent = Parent;
             }
         }
 
@@ -64,48 +40,23 @@ namespace NMF.Models.Collections
         }
     }
 
-    public class ObservableCompositionSet<T> : ObservableSet<T> where T : class, IModelElement
+    public class ObservableCompositionSet<T> : ObservableOppositeSet<IModelElement, T> where T : class, IModelElement
     {
-        public IModelElement Parent { get; private set; }
-
-        public ObservableCompositionSet(IModelElement parent)
+        public ObservableCompositionSet(IModelElement parent) : base(parent)
         {
-            if (parent == null) throw new ArgumentNullException("parent");
-
-            Parent = parent;
         }
 
-        public override bool Add(T item)
+        protected override void SetOpposite(T item, IModelElement newParent)
         {
-            if (item != null)
-            {
-                item.ParentChanged += RemoveItem;
-                item.Parent = Parent;
-            }
-            return base.Add(item);
-        }
-
-        public override void Clear()
-        {
-            foreach (var item in this)
+            if (newParent == null)
             {
                 item.ParentChanged -= RemoveItem;
-                item.Delete();
-            }
-            base.Clear();
-        }
-
-        public override bool Remove(T item)
-        {
-            if (item != null && base.Remove(item))
-            {
-                item.ParentChanged -= RemoveItem;
-                item.Delete();
-                return true;
+                if (item.Parent == Parent) item.Delete();
             }
             else
             {
-                return false;
+                item.ParentChanged += RemoveItem;
+                item.Parent = Parent;
             }
         }
 
