@@ -15,6 +15,7 @@ using NMF.Expressions.Linq;
 using NMF.Models;
 using NMF.Models.Collections;
 using NMF.Models.Expressions;
+using NMF.Models.Meta;
 using NMF.Models.Repository;
 using NMF.Serialization;
 using NMF.Utilities;
@@ -22,6 +23,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
@@ -36,7 +38,7 @@ namespace NMF.Models.Meta
     [XmlNamespaceAttribute("http://nmf.codeplex.com/nmeta/")]
     [XmlNamespacePrefixAttribute("nmeta")]
     [ModelRepresentationClassAttribute("http://nmf.codeplex.com/nmeta/#//ModelElementExtension")]
-    public abstract partial class ModelElementExtension : NMF.Models.ModelElement, IModelElementExtension, NMF.Models.IModelElement
+    public abstract partial class ModelElementExtension : NMF.Models.ModelElement, NMF.Models.Meta.IModelElementExtension, NMF.Models.IModelElement
     {
         
         private static Lazy<ITypedElement> _extendedElementReference = new Lazy<ITypedElement>(RetrieveExtendedElementReference);
@@ -49,7 +51,7 @@ namespace NMF.Models.Meta
         [DesignerSerializationVisibilityAttribute(DesignerSerializationVisibility.Hidden)]
         [XmlAttributeAttribute(true)]
         [XmlOppositeAttribute("Extensions")]
-        public virtual NMF.Models.Meta.IModelElement ExtendedElement
+        public NMF.Models.Meta.IModelElement ExtendedElement
         {
             get
             {
@@ -100,7 +102,7 @@ namespace NMF.Models.Meta
         /// <summary>
         /// Gets the Extension for this model element
         /// </summary>
-        public abstract IExtension GetExtension();
+        public abstract NMF.Models.Meta.IExtension GetExtension();
         
         private static ITypedElement RetrieveExtendedElementReference()
         {
@@ -171,6 +173,21 @@ namespace NMF.Models.Meta
         }
         
         /// <summary>
+        /// Resolves the given URI to a child model element
+        /// </summary>
+        /// <returns>The model element or null if it could not be found</returns>
+        /// <param name="reference">The requested reference name</param>
+        /// <param name="index">The index of this reference</param>
+        protected override NMF.Models.IModelElement GetModelElementForReference(string reference, int index)
+        {
+            if ((reference == "EXTENDEDELEMENT"))
+            {
+                return this.ExtendedElement;
+            }
+            return base.GetModelElementForReference(reference, index);
+        }
+        
+        /// <summary>
         /// Sets a value to the given feature
         /// </summary>
         /// <param name="feature">The requested feature</param>
@@ -186,27 +203,13 @@ namespace NMF.Models.Meta
         }
         
         /// <summary>
-        /// Gets the property expression for the given attribute
-        /// </summary>
-        /// <returns>An incremental property expression</returns>
-        /// <param name="attribute">The requested attribute in upper case</param>
-        protected override NMF.Expressions.INotifyExpression<object> GetExpressionForAttribute(string attribute)
-        {
-            if ((attribute == "ExtendedElement"))
-            {
-                return new ExtendedElementProxy(this);
-            }
-            return base.GetExpressionForAttribute(attribute);
-        }
-        
-        /// <summary>
         /// Gets the property expression for the given reference
         /// </summary>
         /// <returns>An incremental property expression</returns>
         /// <param name="reference">The requested reference in upper case</param>
         protected override NMF.Expressions.INotifyExpression<NMF.Models.IModelElement> GetExpressionForReference(string reference)
         {
-            if ((reference == "ExtendedElement"))
+            if ((reference == "EXTENDEDELEMENT"))
             {
                 return new ExtendedElementProxy(this);
             }
@@ -348,14 +351,14 @@ namespace NMF.Models.Meta
         /// <summary>
         /// Represents a proxy to represent an incremental access to the ExtendedElement property
         /// </summary>
-        private sealed class ExtendedElementProxy : ModelPropertyChange<IModelElementExtension, NMF.Models.Meta.IModelElement>
+        private sealed class ExtendedElementProxy : ModelPropertyChange<NMF.Models.Meta.IModelElementExtension, NMF.Models.Meta.IModelElement>
         {
             
             /// <summary>
             /// Creates a new observable property access proxy
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
-            public ExtendedElementProxy(IModelElementExtension modelElement) : 
+            public ExtendedElementProxy(NMF.Models.Meta.IModelElementExtension modelElement) : 
                     base(modelElement, "ExtendedElement")
             {
             }

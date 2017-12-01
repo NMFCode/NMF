@@ -15,6 +15,7 @@ using NMF.Expressions.Linq;
 using NMF.Models;
 using NMF.Models.Collections;
 using NMF.Models.Expressions;
+using NMF.Models.Meta;
 using NMF.Models.Repository;
 using NMF.Serialization;
 using NMF.Utilities;
@@ -22,6 +23,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
@@ -35,12 +37,13 @@ namespace NMF.Models.Meta
     /// </summary>
     [DefaultImplementationTypeAttribute(typeof(Enumeration))]
     [XmlDefaultImplementationTypeAttribute(typeof(Enumeration))]
-    public interface IEnumeration : NMF.Models.IModelElement, IType
+    public interface IEnumeration : NMF.Models.IModelElement, NMF.Models.Meta.IType
     {
         
         /// <summary>
         /// The IsFlagged property
         /// </summary>
+        [XmlAttributeAttribute(true)]
         bool IsFlagged
         {
             get;
@@ -50,7 +53,12 @@ namespace NMF.Models.Meta
         /// <summary>
         /// The Literals property
         /// </summary>
-        ICollectionExpression<ILiteral> Literals
+        [DesignerSerializationVisibilityAttribute(DesignerSerializationVisibility.Content)]
+        [XmlAttributeAttribute(false)]
+        [ContainmentAttribute()]
+        [XmlOppositeAttribute("Enumeration")]
+        [ConstantAttribute()]
+        ICollectionExpression<NMF.Models.Meta.ILiteral> Literals
         {
             get;
         }

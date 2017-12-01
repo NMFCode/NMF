@@ -172,7 +172,7 @@ namespace NMF.Interop.Type
         /// </summary>
         /// <param name="sender">The collection that raised the change</param>
         /// <param name="e">The original event data</param>
-        private void MixedCollectionChanging(object sender, NotifyCollectionChangingEventArgs e)
+        private void MixedCollectionChanging(object sender, NotifyCollectionChangedEventArgs e)
         {
             this.OnCollectionChanging("Mixed", e, _mixedAttribute);
         }
@@ -197,7 +197,7 @@ namespace NMF.Interop.Type
         /// </summary>
         /// <param name="sender">The collection that raised the change</param>
         /// <param name="e">The original event data</param>
-        private void XMLNSPrefixMapCollectionChanging(object sender, NotifyCollectionChangingEventArgs e)
+        private void XMLNSPrefixMapCollectionChanging(object sender, NotifyCollectionChangedEventArgs e)
         {
             this.OnCollectionChanging("XMLNSPrefixMap", e, _xMLNSPrefixMapReference);
         }
@@ -222,7 +222,7 @@ namespace NMF.Interop.Type
         /// </summary>
         /// <param name="sender">The collection that raised the change</param>
         /// <param name="e">The original event data</param>
-        private void XSISchemaLocationCollectionChanging(object sender, NotifyCollectionChangingEventArgs e)
+        private void XSISchemaLocationCollectionChanging(object sender, NotifyCollectionChangedEventArgs e)
         {
             this.OnCollectionChanging("XSISchemaLocation", e, _xSISchemaLocationReference);
         }

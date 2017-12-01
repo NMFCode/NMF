@@ -109,6 +109,7 @@
     <Compile Include="Meta\ReferenceType.cs" />
     <Compile Include="Meta\ReferenceTypeEventsCollection.cs" />
     <Compile Include="Meta\ReferenceTypeReferencesCollection.cs" />
+    <Compile Include="Meta\SerializationInformation.cs" />
     <Compile Include="Meta\TypedElement.cs" />
     <Compile Include="Meta\TypeExtensions.cs" />
     <Compile Include="ModelExtensions.cs" />

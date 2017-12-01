@@ -15,6 +15,7 @@ using NMF.Expressions.Linq;
 using NMF.Models;
 using NMF.Models.Collections;
 using NMF.Models.Expressions;
+using NMF.Models.Meta;
 using NMF.Models.Repository;
 using NMF.Serialization;
 using NMF.Utilities;
@@ -22,6 +23,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
@@ -30,10 +32,10 @@ namespace NMF.Models.Meta
 {
     
     
-    public class EnumerationLiteralsCollection : ObservableOppositeList<IEnumeration, ILiteral>
+    public class EnumerationLiteralsCollection : ObservableOppositeList<NMF.Models.Meta.IEnumeration, NMF.Models.Meta.ILiteral>
     {
         
-        public EnumerationLiteralsCollection(IEnumeration parent) : 
+        public EnumerationLiteralsCollection(NMF.Models.Meta.IEnumeration parent) : 
                 base(parent)
         {
         }
@@ -42,11 +44,11 @@ namespace NMF.Models.Meta
         {
             if ((e.NewValue != this.Parent))
             {
-                this.Remove(((ILiteral)(sender)));
+                this.Remove(((NMF.Models.Meta.ILiteral)(sender)));
             }
         }
         
-        protected override void SetOpposite(ILiteral item, IEnumeration parent)
+        protected override void SetOpposite(NMF.Models.Meta.ILiteral item, NMF.Models.Meta.IEnumeration parent)
         {
             if ((parent != null))
             {

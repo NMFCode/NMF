@@ -15,6 +15,7 @@ using NMF.Expressions.Linq;
 using NMF.Models;
 using NMF.Models.Collections;
 using NMF.Models.Expressions;
+using NMF.Models.Meta;
 using NMF.Models.Repository;
 using NMF.Serialization;
 using NMF.Utilities;
@@ -22,6 +23,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
@@ -67,13 +69,6 @@ namespace NMF.Models.Meta
         /// </summary>
         private NMF.Models.Meta.IModelElement _parent;
         
-        private static Lazy<ITypedElement> _typeReference = new Lazy<ITypedElement>(RetrieveTypeReference);
-        
-        /// <summary>
-        /// The backing field for the Type property
-        /// </summary>
-        private IReferenceType _type;
-        
         private static IClass _classInstance;
         
         public ModelElement()
@@ -87,7 +82,7 @@ namespace NMF.Models.Meta
         /// The AbsoluteUri property
         /// </summary>
         [XmlAttributeAttribute(true)]
-        public virtual Uri AbsoluteUri
+        public Uri AbsoluteUri
         {
             get
             {
@@ -112,7 +107,7 @@ namespace NMF.Models.Meta
         /// The RelativeUri property
         /// </summary>
         [XmlAttributeAttribute(true)]
-        public virtual Uri RelativeUri
+        public Uri RelativeUri
         {
             get
             {
@@ -141,7 +136,7 @@ namespace NMF.Models.Meta
         [ContainmentAttribute()]
         [XmlOppositeAttribute("ExtendedElement")]
         [ConstantAttribute()]
-        public virtual ICollectionExpression<IModelElementExtension> Extensions
+        public ICollectionExpression<NMF.Models.Meta.IModelElementExtension> Extensions
         {
             get
             {
@@ -153,7 +148,7 @@ namespace NMF.Models.Meta
         /// The Parent property
         /// </summary>
         [XmlAttributeAttribute(true)]
-        public virtual NMF.Models.Meta.IModelElement Parent
+        public NMF.Models.Meta.IModelElement Parent
         {
             get
             {
@@ -178,39 +173,6 @@ namespace NMF.Models.Meta
                     }
                     this.OnParentChanged(e);
                     this.OnPropertyChanged("Parent", e, _parentReference);
-                }
-            }
-        }
-        
-        /// <summary>
-        /// The Type property
-        /// </summary>
-        [XmlAttributeAttribute(true)]
-        public virtual IReferenceType Type
-        {
-            get
-            {
-                return this._type;
-            }
-            set
-            {
-                if ((this._type != value))
-                {
-                    IReferenceType old = this._type;
-                    ValueChangedEventArgs e = new ValueChangedEventArgs(old, value);
-                    this.OnTypeChanging(e);
-                    this.OnPropertyChanging("Type", e, _typeReference);
-                    this._type = value;
-                    if ((old != null))
-                    {
-                        old.Deleted -= this.OnResetType;
-                    }
-                    if ((value != null))
-                    {
-                        value.Deleted += this.OnResetType;
-                    }
-                    this.OnTypeChanged(e);
-                    this.OnPropertyChanged("Type", e, _typeReference);
                 }
             }
         }
@@ -268,23 +230,13 @@ namespace NMF.Models.Meta
         public event System.EventHandler<ValueChangedEventArgs> ParentChanged;
         
         /// <summary>
-        /// Gets fired before the Type property changes its value
-        /// </summary>
-        public event System.EventHandler<ValueChangedEventArgs> TypeChanging;
-        
-        /// <summary>
-        /// Gets fired when the Type property changed its value
-        /// </summary>
-        public event System.EventHandler<ValueChangedEventArgs> TypeChanged;
-        
-        /// <summary>
         /// Gets the Class for this model element
         /// </summary>
-        public abstract IClass GetClass();
+        public abstract NMF.Models.Meta.IClass GetClass();
         
         private static ITypedElement RetrieveAbsoluteUriAttribute()
         {
-            return ((ITypedElement)(((NMF.Models.ModelElement)(odelElement.ClassInstance)).Resolve("AbsoluteUri")));
+            return ((ITypedElement)(((NMF.Models.ModelElement)(ModelElement.ClassInstance)).Resolve("AbsoluteUri")));
         }
         
         /// <summary>
@@ -315,7 +267,7 @@ namespace NMF.Models.Meta
         
         private static ITypedElement RetrieveRelativeUriAttribute()
         {
-            return ((ITypedElement)(((NMF.Models.ModelElement)(odelElement.ClassInstance)).Resolve("RelativeUri")));
+            return ((ITypedElement)(((NMF.Models.ModelElement)(ModelElement.ClassInstance)).Resolve("RelativeUri")));
         }
         
         /// <summary>
@@ -354,7 +306,7 @@ namespace NMF.Models.Meta
         /// </summary>
         /// <param name="sender">The collection that raised the change</param>
         /// <param name="e">The original event data</param>
-        private void ExtensionsCollectionChanging(object sender, NMF.Collections.ObjectModel.NotifyCollectionChangingEventArgs e)
+        private void ExtensionsCollectionChanging(object sender, NotifyCollectionChangedEventArgs e)
         {
             this.OnCollectionChanging("Extensions", e, _extensionsReference);
         }
@@ -364,7 +316,7 @@ namespace NMF.Models.Meta
         /// </summary>
         /// <param name="sender">The collection that raised the change</param>
         /// <param name="e">The original event data</param>
-        private void ExtensionsCollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        private void ExtensionsCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
             this.OnCollectionChanged("Extensions", e, _extensionsReference);
         }
@@ -410,45 +362,19 @@ namespace NMF.Models.Meta
             this.Parent = null;
         }
         
-        private static ITypedElement RetrieveTypeReference()
-        {
-            return ((ITypedElement)(((NMF.Models.ModelElement)(ModelElement.ClassInstance)).Resolve("Type")));
-        }
-        
         /// <summary>
-        /// Raises the TypeChanging event
+        /// Resolves the given URI to a child model element
         /// </summary>
-        /// <param name="eventArgs">The event data</param>
-        protected virtual void OnTypeChanging(ValueChangedEventArgs eventArgs)
+        /// <returns>The model element or null if it could not be found</returns>
+        /// <param name="reference">The requested reference name</param>
+        /// <param name="index">The index of this reference</param>
+        protected override NMF.Models.IModelElement GetModelElementForReference(string reference, int index)
         {
-            System.EventHandler<ValueChangedEventArgs> handler = this.TypeChanging;
-            if ((handler != null))
+            if ((reference == "PARENT"))
             {
-                handler.Invoke(this, eventArgs);
+                return this.Parent;
             }
-        }
-        
-        /// <summary>
-        /// Raises the TypeChanged event
-        /// </summary>
-        /// <param name="eventArgs">The event data</param>
-        protected virtual void OnTypeChanged(ValueChangedEventArgs eventArgs)
-        {
-            System.EventHandler<ValueChangedEventArgs> handler = this.TypeChanged;
-            if ((handler != null))
-            {
-                handler.Invoke(this, eventArgs);
-            }
-        }
-        
-        /// <summary>
-        /// Handles the event that the Type property must reset
-        /// </summary>
-        /// <param name="sender">The object that sent this reset request</param>
-        /// <param name="eventArgs">The event data for the reset event</param>
-        private void OnResetType(object sender, System.EventArgs eventArgs)
-        {
-            this.Type = null;
+            return base.GetModelElementForReference(reference, index);
         }
         
         /// <summary>
@@ -496,11 +422,6 @@ namespace NMF.Models.Meta
                 this.Parent = ((NMF.Models.Meta.IModelElement)(value));
                 return;
             }
-            if ((feature == "TYPE"))
-            {
-                this.Type = ((IReferenceType)(value));
-                return;
-            }
             if ((feature == "ABSOLUTEURI"))
             {
                 this.AbsoluteUri = ((Uri)(value));
@@ -521,13 +442,13 @@ namespace NMF.Models.Meta
         /// <param name="attribute">The requested attribute in upper case</param>
         protected override NMF.Expressions.INotifyExpression<object> GetExpressionForAttribute(string attribute)
         {
-            if ((attribute == "Parent"))
+            if ((attribute == "ABSOLUTEURI"))
             {
-                return new ParentProxy(this);
+                return Observable.Box(new AbsoluteUriProxy(this));
             }
-            if ((attribute == "Type"))
+            if ((attribute == "RELATIVEURI"))
             {
-                return new TypeProxy(this);
+                return Observable.Box(new RelativeUriProxy(this));
             }
             return base.GetExpressionForAttribute(attribute);
         }
@@ -539,15 +460,25 @@ namespace NMF.Models.Meta
         /// <param name="reference">The requested reference in upper case</param>
         protected override NMF.Expressions.INotifyExpression<NMF.Models.IModelElement> GetExpressionForReference(string reference)
         {
-            if ((reference == "Parent"))
+            if ((reference == "PARENT"))
             {
                 return new ParentProxy(this);
             }
-            if ((reference == "Type"))
-            {
-                return new TypeProxy(this);
-            }
             return base.GetExpressionForReference(reference);
+        }
+        
+        /// <summary>
+        /// Gets the property name for the given container
+        /// </summary>
+        /// <returns>The name of the respective container reference</returns>
+        /// <param name="container">The container object</param>
+        protected override string GetCompositionName(object container)
+        {
+            if ((container == this._extensions))
+            {
+                return "Extensions";
+            }
+            return base.GetCompositionName(container);
         }
         
         /// <summary>
@@ -595,7 +526,7 @@ namespace NMF.Models.Meta
             /// <param name="item">The item to add</param>
             public override void Add(NMF.Models.IModelElement item)
             {
-                IModelElementExtension extensionsCasted = item.As<IModelElementExtension>();
+                NMF.Models.Meta.IModelElementExtension extensionsCasted = item.As<NMF.Models.Meta.IModelElementExtension>();
                 if ((extensionsCasted != null))
                 {
                     this._parent.Extensions.Add(extensionsCasted);
@@ -655,7 +586,7 @@ namespace NMF.Models.Meta
             /// <param name="item">The item that should be removed</param>
             public override bool Remove(NMF.Models.IModelElement item)
             {
-                IModelElementExtension modelElementExtensionItem = item.As<IModelElementExtension>();
+                NMF.Models.Meta.IModelElementExtension modelElementExtensionItem = item.As<NMF.Models.Meta.IModelElementExtension>();
                 if (((modelElementExtensionItem != null) 
                             && this._parent.Extensions.Remove(modelElementExtensionItem)))
                 {
@@ -703,10 +634,6 @@ namespace NMF.Models.Meta
                     {
                         count = (count + 1);
                     }
-                    if ((this._parent.Type != null))
-                    {
-                        count = (count + 1);
-                    }
                     return count;
                 }
             }
@@ -715,14 +642,12 @@ namespace NMF.Models.Meta
             {
                 this._parent.Extensions.AsNotifiable().CollectionChanged += this.PropagateCollectionChanges;
                 this._parent.ParentChanged += this.PropagateValueChanges;
-                this._parent.TypeChanged += this.PropagateValueChanges;
             }
             
             protected override void DetachCore()
             {
                 this._parent.Extensions.AsNotifiable().CollectionChanged -= this.PropagateCollectionChanges;
                 this._parent.ParentChanged -= this.PropagateValueChanges;
-                this._parent.TypeChanged -= this.PropagateValueChanges;
             }
             
             /// <summary>
@@ -731,7 +656,7 @@ namespace NMF.Models.Meta
             /// <param name="item">The item to add</param>
             public override void Add(NMF.Models.IModelElement item)
             {
-                IModelElementExtension extensionsCasted = item.As<IModelElementExtension>();
+                NMF.Models.Meta.IModelElementExtension extensionsCasted = item.As<NMF.Models.Meta.IModelElementExtension>();
                 if ((extensionsCasted != null))
                 {
                     this._parent.Extensions.Add(extensionsCasted);
@@ -745,15 +670,6 @@ namespace NMF.Models.Meta
                         return;
                     }
                 }
-                if ((this._parent.Type == null))
-                {
-                    IReferenceType typeCasted = item.As<IReferenceType>();
-                    if ((typeCasted != null))
-                    {
-                        this._parent.Type = typeCasted;
-                        return;
-                    }
-                }
             }
             
             /// <summary>
@@ -763,7 +679,6 @@ namespace NMF.Models.Meta
             {
                 this._parent.Extensions.Clear();
                 this._parent.Parent = null;
-                this._parent.Type = null;
             }
             
             /// <summary>
@@ -778,10 +693,6 @@ namespace NMF.Models.Meta
                     return true;
                 }
                 if ((item == this._parent.Parent))
-                {
-                    return true;
-                }
-                if ((item == this._parent.Type))
                 {
                     return true;
                 }
@@ -815,11 +726,6 @@ namespace NMF.Models.Meta
                     array[arrayIndex] = this._parent.Parent;
                     arrayIndex = (arrayIndex + 1);
                 }
-                if ((this._parent.Type != null))
-                {
-                    array[arrayIndex] = this._parent.Type;
-                    arrayIndex = (arrayIndex + 1);
-                }
             }
             
             /// <summary>
@@ -829,7 +735,7 @@ namespace NMF.Models.Meta
             /// <param name="item">The item that should be removed</param>
             public override bool Remove(NMF.Models.IModelElement item)
             {
-                IModelElementExtension modelElementExtensionItem = item.As<IModelElementExtension>();
+                NMF.Models.Meta.IModelElementExtension modelElementExtensionItem = item.As<NMF.Models.Meta.IModelElementExtension>();
                 if (((modelElementExtensionItem != null) 
                             && this._parent.Extensions.Remove(modelElementExtensionItem)))
                 {
@@ -838,11 +744,6 @@ namespace NMF.Models.Meta
                 if ((this._parent.Parent == item))
                 {
                     this._parent.Parent = null;
-                    return true;
-                }
-                if ((this._parent.Type == item))
-                {
-                    this._parent.Type = null;
                     return true;
                 }
                 return false;
@@ -854,7 +755,7 @@ namespace NMF.Models.Meta
             /// <returns>A generic enumerator</returns>
             public override IEnumerator<NMF.Models.IModelElement> GetEnumerator()
             {
-                return Enumerable.Empty<NMF.Models.IModelElement>().Concat(this._parent.Extensions).Concat(this._parent.Parent).Concat(this._parent.Type).GetEnumerator();
+                return Enumerable.Empty<NMF.Models.IModelElement>().Concat(this._parent.Extensions).Concat(this._parent.Parent).GetEnumerator();
             }
         }
         
@@ -947,37 +848,6 @@ namespace NMF.Models.Meta
                 set
                 {
                     this.ModelElement.Parent = value;
-                }
-            }
-        }
-        
-        /// <summary>
-        /// Represents a proxy to represent an incremental access to the Type property
-        /// </summary>
-        private sealed class TypeProxy : ModelPropertyChange<NMF.Models.Meta.IModelElement, IReferenceType>
-        {
-            
-            /// <summary>
-            /// Creates a new observable property access proxy
-            /// </summary>
-            /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
-            public TypeProxy(NMF.Models.Meta.IModelElement modelElement) : 
-                    base(modelElement, "Type")
-            {
-            }
-            
-            /// <summary>
-            /// Gets or sets the value of this expression
-            /// </summary>
-            public override IReferenceType Value
-            {
-                get
-                {
-                    return this.ModelElement.Type;
-                }
-                set
-                {
-                    this.ModelElement.Type = value;
                 }
             }
         }

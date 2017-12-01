@@ -304,9 +304,16 @@ namespace NMF.Models.Meta
                     }
                 }
 
-                if (input.Name != generatedType.Name)
+                var serializationName = input.Name;
+                var serializationInfo = input.GetExtension<SerializationInformation>();
+                if (serializationInfo != null)
                 {
-                    generatedType.AddAttribute(typeof(XmlElementNameAttribute), input.Name);
+                    serializationName = serializationInfo.SerializationName;
+                }
+
+                if (serializationName != generatedType.Name)
+                {
+                    generatedType.AddAttribute(typeof(XmlElementNameAttribute), serializationName);
                 }
             }
 

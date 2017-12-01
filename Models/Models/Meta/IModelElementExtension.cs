@@ -15,6 +15,7 @@ using NMF.Expressions.Linq;
 using NMF.Models;
 using NMF.Models.Collections;
 using NMF.Models.Expressions;
+using NMF.Models.Meta;
 using NMF.Models.Repository;
 using NMF.Serialization;
 using NMF.Utilities;
@@ -22,6 +23,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
@@ -41,7 +43,10 @@ namespace NMF.Models.Meta
         /// <summary>
         /// The ExtendedElement property
         /// </summary>
-        IModelElement ExtendedElement
+        [DesignerSerializationVisibilityAttribute(DesignerSerializationVisibility.Hidden)]
+        [XmlAttributeAttribute(true)]
+        [XmlOppositeAttribute("Extensions")]
+        NMF.Models.IModelElement ExtendedElement
         {
             get;
             set;
@@ -60,7 +65,7 @@ namespace NMF.Models.Meta
         /// <summary>
         /// Gets the Extension for this model element
         /// </summary>
-        IExtension GetExtension();
+        NMF.Models.Meta.IExtension GetExtension();
     }
 }
 

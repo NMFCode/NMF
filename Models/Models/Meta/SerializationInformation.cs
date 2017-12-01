@@ -33,17 +33,17 @@ namespace NMF.Models.Meta
     
     
     /// <summary>
-    /// The MappedType extension
+    /// The SerializationInformation extension
     /// </summary>
-    public class MappedType : ModelElementExtension<NMF.Models.Meta.IType>
+    public class SerializationInformation : ModelElementExtension<NMF.Models.Meta.IMetaElement>
     {
         
         /// <summary>
-        /// The backing field for the SystemType property
+        /// The backing field for the SerializationName property
         /// </summary>
-        private System.Type _systemType;
+        private string _serializationName;
         
-        private static Lazy<ITypedElement> _systemTypeAttribute = new Lazy<ITypedElement>(RetrieveSystemTypeAttribute);
+        private static Lazy<ITypedElement> _serializationNameAttribute = new Lazy<ITypedElement>(RetrieveSerializationNameAttribute);
         
         private static IExtension _extensionType;
         
@@ -51,58 +51,58 @@ namespace NMF.Models.Meta
         /// Creates a new extension instance for the given parent
         /// </summary>
         /// <param name="parent">The parent model element</param>
-        public MappedType(NMF.Models.Meta.IType parent) : 
+        public SerializationInformation(NMF.Models.Meta.IMetaElement parent) : 
                 base(parent)
         {
         }
         
         /// <summary>
-        /// The SystemType property
+        /// The SerializationName property
         /// </summary>
         [XmlAttributeAttribute(true)]
-        public System.Type SystemType
+        public string SerializationName
         {
             get
             {
-                return this._systemType;
+                return this._serializationName;
             }
             set
             {
-                if ((this._systemType != value))
+                if ((this._serializationName != value))
                 {
-                    System.Type old = this._systemType;
+                    string old = this._serializationName;
                     ValueChangedEventArgs e = new ValueChangedEventArgs(old, value);
-                    this.OnSystemTypeChanging(e);
-                    this.OnPropertyChanging("SystemType", e, _systemTypeAttribute);
-                    this._systemType = value;
-                    this.OnSystemTypeChanged(e);
-                    this.OnPropertyChanged("SystemType", e, _systemTypeAttribute);
+                    this.OnSerializationNameChanging(e);
+                    this.OnPropertyChanging("SerializationName", e, _serializationNameAttribute);
+                    this._serializationName = value;
+                    this.OnSerializationNameChanged(e);
+                    this.OnPropertyChanged("SerializationName", e, _serializationNameAttribute);
                 }
             }
         }
         
         /// <summary>
-        /// Gets fired before the SystemType property changes its value
+        /// Gets fired before the SerializationName property changes its value
         /// </summary>
-        public event System.EventHandler<ValueChangedEventArgs> SystemTypeChanging;
+        public event System.EventHandler<ValueChangedEventArgs> SerializationNameChanging;
         
         /// <summary>
-        /// Gets fired when the SystemType property changed its value
+        /// Gets fired when the SerializationName property changed its value
         /// </summary>
-        public event System.EventHandler<ValueChangedEventArgs> SystemTypeChanged;
+        public event System.EventHandler<ValueChangedEventArgs> SerializationNameChanged;
         
-        private static ITypedElement RetrieveSystemTypeAttribute()
+        private static ITypedElement RetrieveSerializationNameAttribute()
         {
-            return ((ITypedElement)(((NMF.Models.ModelElement)(MappedType.ClassInstance)).Resolve("SystemType")));
+            return ((ITypedElement)(((NMF.Models.ModelElement)(SerializationInformation.ClassInstance)).Resolve("SerializationName")));
         }
         
         /// <summary>
-        /// Raises the SystemTypeChanging event
+        /// Raises the SerializationNameChanging event
         /// </summary>
         /// <param name="eventArgs">The event data</param>
-        protected virtual void OnSystemTypeChanging(ValueChangedEventArgs eventArgs)
+        protected virtual void OnSerializationNameChanging(ValueChangedEventArgs eventArgs)
         {
-            System.EventHandler<ValueChangedEventArgs> handler = this.SystemTypeChanging;
+            System.EventHandler<ValueChangedEventArgs> handler = this.SerializationNameChanging;
             if ((handler != null))
             {
                 handler.Invoke(this, eventArgs);
@@ -110,12 +110,12 @@ namespace NMF.Models.Meta
         }
         
         /// <summary>
-        /// Raises the SystemTypeChanged event
+        /// Raises the SerializationNameChanged event
         /// </summary>
         /// <param name="eventArgs">The event data</param>
-        protected virtual void OnSystemTypeChanged(ValueChangedEventArgs eventArgs)
+        protected virtual void OnSerializationNameChanged(ValueChangedEventArgs eventArgs)
         {
-            System.EventHandler<ValueChangedEventArgs> handler = this.SystemTypeChanged;
+            System.EventHandler<ValueChangedEventArgs> handler = this.SerializationNameChanged;
             if ((handler != null))
             {
                 handler.Invoke(this, eventArgs);
@@ -123,22 +123,22 @@ namespace NMF.Models.Meta
         }
         
         /// <summary>
-        /// Gets the MappedType extension from the given model element
+        /// Gets the SerializationInformation extension from the given model element
         /// </summary>
         /// <returns>The extension object or null, if the model element does not have this extension</returns>
         /// <param name="parent">The parent model element that may hold the extension</param>
-        public static MappedType FromType(NMF.Models.Meta.IType parent)
+        public static SerializationInformation FromMetaElement(NMF.Models.Meta.IMetaElement parent)
         {
             if ((parent == null))
             {
                 return null;
             }
-            MappedType extension = parent.GetExtension<MappedType>();
+            SerializationInformation extension = parent.GetExtension<SerializationInformation>();
             if ((extension != null))
             {
                 return extension;
             }
-            extension = new MappedType(parent);
+            extension = new SerializationInformation(parent);
             parent.Extensions.Add(extension);
             return extension;
         }
@@ -150,7 +150,7 @@ namespace NMF.Models.Meta
         {
             if ((_extensionType == null))
             {
-                _extensionType = ((IExtension)(MetaRepository.Instance.Resolve("http://nmf.codeplex.com/nmeta/#//MappedType")));
+                _extensionType = ((IExtension)(MetaRepository.Instance.Resolve("http://nmf.codeplex.com/nmeta/#//SerializationInformation")));
             }
             return _extensionType;
         }

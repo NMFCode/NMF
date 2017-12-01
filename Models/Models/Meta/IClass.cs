@@ -15,6 +15,7 @@ using NMF.Expressions.Linq;
 using NMF.Models;
 using NMF.Models.Collections;
 using NMF.Models.Expressions;
+using NMF.Models.Meta;
 using NMF.Models.Repository;
 using NMF.Serialization;
 using NMF.Utilities;
@@ -22,6 +23,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
@@ -35,12 +37,14 @@ namespace NMF.Models.Meta
     /// </summary>
     [DefaultImplementationTypeAttribute(typeof(Class))]
     [XmlDefaultImplementationTypeAttribute(typeof(Class))]
-    public interface IClass : NMF.Models.IModelElement, IReferenceType
+    public interface IClass : NMF.Models.IModelElement, NMF.Models.Meta.IReferenceType
     {
         
         /// <summary>
         /// The IsAbstract property
         /// </summary>
+        [DefaultValueAttribute(false)]
+        [XmlAttributeAttribute(true)]
         bool IsAbstract
         {
             get;
@@ -51,6 +55,7 @@ namespace NMF.Models.Meta
         /// Specifies whether the identifier is valid only in the scope of its container or on a global scope.
         /// </summary>
         /// <remarks>This attribute is ignored when this class is not identified.</remarks>
+        [XmlAttributeAttribute(true)]
         IdentifierScope IdentifierScope
         {
             get;
@@ -60,7 +65,10 @@ namespace NMF.Models.Meta
         /// <summary>
         /// The BaseTypes property
         /// </summary>
-        ICollectionExpression<IClass> BaseTypes
+        [DesignerSerializationVisibilityAttribute(DesignerSerializationVisibility.Content)]
+        [XmlAttributeAttribute(true)]
+        [ConstantAttribute()]
+        ICollectionExpression<NMF.Models.Meta.IClass> BaseTypes
         {
             get;
         }
@@ -68,7 +76,8 @@ namespace NMF.Models.Meta
         /// <summary>
         /// The InstanceOf property
         /// </summary>
-        IClass InstanceOf
+        [XmlAttributeAttribute(true)]
+        NMF.Models.Meta.IClass InstanceOf
         {
             get;
             set;
@@ -77,7 +86,8 @@ namespace NMF.Models.Meta
         /// <summary>
         /// Gets or sets the attribute that will identify instances of this class
         /// </summary>
-        IAttribute Identifier
+        [XmlAttributeAttribute(true)]
+        NMF.Models.Meta.IAttribute Identifier
         {
             get;
             set;
@@ -86,7 +96,12 @@ namespace NMF.Models.Meta
         /// <summary>
         /// The AttributeConstraints property
         /// </summary>
-        ICollectionExpression<IAttributeConstraint> AttributeConstraints
+        [DesignerSerializationVisibilityAttribute(DesignerSerializationVisibility.Content)]
+        [XmlAttributeAttribute(false)]
+        [ContainmentAttribute()]
+        [XmlOppositeAttribute("DeclaringType")]
+        [ConstantAttribute()]
+        ICollectionExpression<NMF.Models.Meta.IAttributeConstraint> AttributeConstraints
         {
             get;
         }
@@ -94,7 +109,12 @@ namespace NMF.Models.Meta
         /// <summary>
         /// The ReferenceConstraints property
         /// </summary>
-        ICollectionExpression<IReferenceConstraint> ReferenceConstraints
+        [DesignerSerializationVisibilityAttribute(DesignerSerializationVisibility.Content)]
+        [XmlAttributeAttribute(false)]
+        [ContainmentAttribute()]
+        [XmlOppositeAttribute("DeclaringType")]
+        [ConstantAttribute()]
+        ICollectionExpression<NMF.Models.Meta.IReferenceConstraint> ReferenceConstraints
         {
             get;
         }

@@ -15,6 +15,7 @@ using NMF.Expressions.Linq;
 using NMF.Models;
 using NMF.Models.Collections;
 using NMF.Models.Expressions;
+using NMF.Models.Meta;
 using NMF.Models.Repository;
 using NMF.Serialization;
 using NMF.Utilities;
@@ -22,6 +23,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
@@ -41,6 +43,9 @@ namespace NMF.Models.Meta
         /// <summary>
         /// The Values property
         /// </summary>
+        [DesignerSerializationVisibilityAttribute(DesignerSerializationVisibility.Content)]
+        [XmlAttributeAttribute(true)]
+        [ConstantAttribute()]
         IListExpression<string> Values
         {
             get;
@@ -49,7 +54,10 @@ namespace NMF.Models.Meta
         /// <summary>
         /// The DeclaringType property
         /// </summary>
-        IClass DeclaringType
+        [DesignerSerializationVisibilityAttribute(DesignerSerializationVisibility.Hidden)]
+        [XmlAttributeAttribute(true)]
+        [XmlOppositeAttribute("AttributeConstraints")]
+        NMF.Models.Meta.IClass DeclaringType
         {
             get;
             set;
@@ -58,7 +66,8 @@ namespace NMF.Models.Meta
         /// <summary>
         /// The Constrains property
         /// </summary>
-        IAttribute Constrains
+        [XmlAttributeAttribute(true)]
+        NMF.Models.Meta.IAttribute Constrains
         {
             get;
             set;

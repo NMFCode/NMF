@@ -15,6 +15,7 @@ using NMF.Expressions.Linq;
 using NMF.Models;
 using NMF.Models.Collections;
 using NMF.Models.Expressions;
+using NMF.Models.Meta;
 using NMF.Models.Repository;
 using NMF.Serialization;
 using NMF.Utilities;
@@ -22,6 +23,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
@@ -35,13 +37,18 @@ namespace NMF.Models.Meta
     /// </summary>
     [DefaultImplementationTypeAttribute(typeof(Operation))]
     [XmlDefaultImplementationTypeAttribute(typeof(Operation))]
-    public interface IOperation : NMF.Models.IModelElement, ITypedElement
+    public interface IOperation : NMF.Models.IModelElement, NMF.Models.Meta.ITypedElement
     {
         
         /// <summary>
         /// The Parameters property
         /// </summary>
-        ICollectionExpression<IParameter> Parameters
+        [DesignerSerializationVisibilityAttribute(DesignerSerializationVisibility.Content)]
+        [XmlAttributeAttribute(false)]
+        [ContainmentAttribute()]
+        [XmlOppositeAttribute("Operation")]
+        [ConstantAttribute()]
+        ICollectionExpression<NMF.Models.Meta.IParameter> Parameters
         {
             get;
         }
@@ -49,7 +56,10 @@ namespace NMF.Models.Meta
         /// <summary>
         /// The DeclaringType property
         /// </summary>
-        IStructuredType DeclaringType
+        [DesignerSerializationVisibilityAttribute(DesignerSerializationVisibility.Hidden)]
+        [XmlAttributeAttribute(true)]
+        [XmlOppositeAttribute("Operations")]
+        NMF.Models.Meta.IStructuredType DeclaringType
         {
             get;
             set;
@@ -58,7 +68,8 @@ namespace NMF.Models.Meta
         /// <summary>
         /// The Refines property
         /// </summary>
-        IOperation Refines
+        [XmlAttributeAttribute(true)]
+        NMF.Models.Meta.IOperation Refines
         {
             get;
             set;

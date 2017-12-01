@@ -15,6 +15,7 @@ using NMF.Expressions.Linq;
 using NMF.Models;
 using NMF.Models.Collections;
 using NMF.Models.Expressions;
+using NMF.Models.Meta;
 using NMF.Models.Repository;
 using NMF.Serialization;
 using NMF.Utilities;
@@ -22,6 +23,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
@@ -37,7 +39,7 @@ namespace NMF.Models.Meta
     [XmlNamespacePrefixAttribute("nmeta")]
     [ModelRepresentationClassAttribute("http://nmf.codeplex.com/nmeta/#//TypedElement")]
     [DebuggerDisplayAttribute("TypedElement {Name}")]
-    public abstract partial class TypedElement : MetaElement, ITypedElement, NMF.Models.IModelElement
+    public abstract partial class TypedElement : MetaElement, NMF.Models.Meta.ITypedElement, NMF.Models.IModelElement
     {
         
         /// <summary>
@@ -73,7 +75,7 @@ namespace NMF.Models.Meta
         /// <summary>
         /// The backing field for the Type property
         /// </summary>
-        private IType _type;
+        private NMF.Models.Meta.IType _type;
         
         private static IClass _classInstance;
         
@@ -81,7 +83,7 @@ namespace NMF.Models.Meta
         /// The IsOrdered property
         /// </summary>
         [XmlAttributeAttribute(true)]
-        public virtual bool IsOrdered
+        public bool IsOrdered
         {
             get
             {
@@ -106,7 +108,7 @@ namespace NMF.Models.Meta
         /// The IsUnique property
         /// </summary>
         [XmlAttributeAttribute(true)]
-        public virtual bool IsUnique
+        public bool IsUnique
         {
             get
             {
@@ -132,7 +134,7 @@ namespace NMF.Models.Meta
         /// </summary>
         [DefaultValueAttribute(0)]
         [XmlAttributeAttribute(true)]
-        public virtual int LowerBound
+        public int LowerBound
         {
             get
             {
@@ -158,7 +160,7 @@ namespace NMF.Models.Meta
         /// </summary>
         [DefaultValueAttribute(1)]
         [XmlAttributeAttribute(true)]
-        public virtual int UpperBound
+        public int UpperBound
         {
             get
             {
@@ -183,7 +185,7 @@ namespace NMF.Models.Meta
         /// The Type property
         /// </summary>
         [XmlAttributeAttribute(true)]
-        public virtual IType Type
+        public NMF.Models.Meta.IType Type
         {
             get
             {
@@ -193,7 +195,7 @@ namespace NMF.Models.Meta
             {
                 if ((this._type != value))
                 {
-                    IType old = this._type;
+                    NMF.Models.Meta.IType old = this._type;
                     ValueChangedEventArgs e = new ValueChangedEventArgs(old, value);
                     this.OnTypeChanging(e);
                     this.OnPropertyChanging("Type", e, _typeReference);
@@ -454,6 +456,21 @@ namespace NMF.Models.Meta
         }
         
         /// <summary>
+        /// Resolves the given URI to a child model element
+        /// </summary>
+        /// <returns>The model element or null if it could not be found</returns>
+        /// <param name="reference">The requested reference name</param>
+        /// <param name="index">The index of this reference</param>
+        protected override NMF.Models.IModelElement GetModelElementForReference(string reference, int index)
+        {
+            if ((reference == "TYPE"))
+            {
+                return this.Type;
+            }
+            return base.GetModelElementForReference(reference, index);
+        }
+        
+        /// <summary>
         /// Resolves the given attribute name
         /// </summary>
         /// <returns>The attribute value or null if it could not be found</returns>
@@ -489,7 +506,7 @@ namespace NMF.Models.Meta
         {
             if ((feature == "TYPE"))
             {
-                this.Type = ((IType)(value));
+                this.Type = ((NMF.Models.Meta.IType)(value));
                 return;
             }
             if ((feature == "ISORDERED"))
@@ -522,9 +539,21 @@ namespace NMF.Models.Meta
         /// <param name="attribute">The requested attribute in upper case</param>
         protected override NMF.Expressions.INotifyExpression<object> GetExpressionForAttribute(string attribute)
         {
-            if ((attribute == "Type"))
+            if ((attribute == "ISORDERED"))
             {
-                return new TypeProxy(this);
+                return Observable.Box(new IsOrderedProxy(this));
+            }
+            if ((attribute == "ISUNIQUE"))
+            {
+                return Observable.Box(new IsUniqueProxy(this));
+            }
+            if ((attribute == "LOWERBOUND"))
+            {
+                return Observable.Box(new LowerBoundProxy(this));
+            }
+            if ((attribute == "UPPERBOUND"))
+            {
+                return Observable.Box(new UpperBoundProxy(this));
             }
             return base.GetExpressionForAttribute(attribute);
         }
@@ -536,7 +565,7 @@ namespace NMF.Models.Meta
         /// <param name="reference">The requested reference in upper case</param>
         protected override NMF.Expressions.INotifyExpression<NMF.Models.IModelElement> GetExpressionForReference(string reference)
         {
-            if ((reference == "Type"))
+            if ((reference == "TYPE"))
             {
                 return new TypeProxy(this);
             }
@@ -605,7 +634,7 @@ namespace NMF.Models.Meta
             {
                 if ((this._parent.Type == null))
                 {
-                    IType typeCasted = item.As<IType>();
+                    NMF.Models.Meta.IType typeCasted = item.As<NMF.Models.Meta.IType>();
                     if ((typeCasted != null))
                     {
                         this._parent.Type = typeCasted;
@@ -678,14 +707,14 @@ namespace NMF.Models.Meta
         /// <summary>
         /// Represents a proxy to represent an incremental access to the IsOrdered property
         /// </summary>
-        private sealed class IsOrderedProxy : ModelPropertyChange<ITypedElement, bool>
+        private sealed class IsOrderedProxy : ModelPropertyChange<NMF.Models.Meta.ITypedElement, bool>
         {
             
             /// <summary>
             /// Creates a new observable property access proxy
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
-            public IsOrderedProxy(ITypedElement modelElement) : 
+            public IsOrderedProxy(NMF.Models.Meta.ITypedElement modelElement) : 
                     base(modelElement, "IsOrdered")
             {
             }
@@ -709,14 +738,14 @@ namespace NMF.Models.Meta
         /// <summary>
         /// Represents a proxy to represent an incremental access to the IsUnique property
         /// </summary>
-        private sealed class IsUniqueProxy : ModelPropertyChange<ITypedElement, bool>
+        private sealed class IsUniqueProxy : ModelPropertyChange<NMF.Models.Meta.ITypedElement, bool>
         {
             
             /// <summary>
             /// Creates a new observable property access proxy
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
-            public IsUniqueProxy(ITypedElement modelElement) : 
+            public IsUniqueProxy(NMF.Models.Meta.ITypedElement modelElement) : 
                     base(modelElement, "IsUnique")
             {
             }
@@ -740,14 +769,14 @@ namespace NMF.Models.Meta
         /// <summary>
         /// Represents a proxy to represent an incremental access to the LowerBound property
         /// </summary>
-        private sealed class LowerBoundProxy : ModelPropertyChange<ITypedElement, int>
+        private sealed class LowerBoundProxy : ModelPropertyChange<NMF.Models.Meta.ITypedElement, int>
         {
             
             /// <summary>
             /// Creates a new observable property access proxy
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
-            public LowerBoundProxy(ITypedElement modelElement) : 
+            public LowerBoundProxy(NMF.Models.Meta.ITypedElement modelElement) : 
                     base(modelElement, "LowerBound")
             {
             }
@@ -771,14 +800,14 @@ namespace NMF.Models.Meta
         /// <summary>
         /// Represents a proxy to represent an incremental access to the UpperBound property
         /// </summary>
-        private sealed class UpperBoundProxy : ModelPropertyChange<ITypedElement, int>
+        private sealed class UpperBoundProxy : ModelPropertyChange<NMF.Models.Meta.ITypedElement, int>
         {
             
             /// <summary>
             /// Creates a new observable property access proxy
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
-            public UpperBoundProxy(ITypedElement modelElement) : 
+            public UpperBoundProxy(NMF.Models.Meta.ITypedElement modelElement) : 
                     base(modelElement, "UpperBound")
             {
             }
@@ -802,14 +831,14 @@ namespace NMF.Models.Meta
         /// <summary>
         /// Represents a proxy to represent an incremental access to the Type property
         /// </summary>
-        private sealed class TypeProxy : ModelPropertyChange<ITypedElement, IType>
+        private sealed class TypeProxy : ModelPropertyChange<NMF.Models.Meta.ITypedElement, NMF.Models.Meta.IType>
         {
             
             /// <summary>
             /// Creates a new observable property access proxy
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
-            public TypeProxy(ITypedElement modelElement) : 
+            public TypeProxy(NMF.Models.Meta.ITypedElement modelElement) : 
                     base(modelElement, "Type")
             {
             }
@@ -817,7 +846,7 @@ namespace NMF.Models.Meta
             /// <summary>
             /// Gets or sets the value of this expression
             /// </summary>
-            public override IType Value
+            public override NMF.Models.Meta.IType Value
             {
                 get
                 {

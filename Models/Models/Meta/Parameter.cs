@@ -15,6 +15,7 @@ using NMF.Expressions.Linq;
 using NMF.Models;
 using NMF.Models.Collections;
 using NMF.Models.Expressions;
+using NMF.Models.Meta;
 using NMF.Models.Repository;
 using NMF.Serialization;
 using NMF.Utilities;
@@ -22,6 +23,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
@@ -37,7 +39,7 @@ namespace NMF.Models.Meta
     [XmlNamespacePrefixAttribute("nmeta")]
     [ModelRepresentationClassAttribute("http://nmf.codeplex.com/nmeta/#//Parameter")]
     [DebuggerDisplayAttribute("Parameter {Name}")]
-    public partial class Parameter : TypedElement, IParameter, NMF.Models.IModelElement
+    public partial class Parameter : TypedElement, NMF.Models.Meta.IParameter, NMF.Models.IModelElement
     {
         
         /// <summary>
@@ -55,7 +57,7 @@ namespace NMF.Models.Meta
         /// The Direction property
         /// </summary>
         [XmlAttributeAttribute(true)]
-        public virtual Direction Direction
+        public Direction Direction
         {
             get
             {
@@ -82,11 +84,11 @@ namespace NMF.Models.Meta
         [DesignerSerializationVisibilityAttribute(DesignerSerializationVisibility.Hidden)]
         [XmlAttributeAttribute(true)]
         [XmlOppositeAttribute("Parameters")]
-        public virtual IOperation Operation
+        public NMF.Models.Meta.IOperation Operation
         {
             get
             {
-                return ModelHelper.CastAs<IOperation>(this.Parent);
+                return ModelHelper.CastAs<NMF.Models.Meta.IOperation>(this.Parent);
             }
             set
             {
@@ -196,8 +198,8 @@ namespace NMF.Models.Meta
         /// <param name="newParent">The new parent model element</param>
         protected override void OnParentChanging(NMF.Models.IModelElement newParent, NMF.Models.IModelElement oldParent)
         {
-            IOperation oldOperation = ModelHelper.CastAs<IOperation>(oldParent);
-            IOperation newOperation = ModelHelper.CastAs<IOperation>(newParent);
+            NMF.Models.Meta.IOperation oldOperation = ModelHelper.CastAs<NMF.Models.Meta.IOperation>(oldParent);
+            NMF.Models.Meta.IOperation newOperation = ModelHelper.CastAs<NMF.Models.Meta.IOperation>(newParent);
             ValueChangedEventArgs e = new ValueChangedEventArgs(oldOperation, newOperation);
             this.OnOperationChanging(e);
             this.OnPropertyChanging("Operation", e, _operationReference);
@@ -223,8 +225,8 @@ namespace NMF.Models.Meta
         /// <param name="newParent">The new parent model element</param>
         protected override void OnParentChanged(NMF.Models.IModelElement newParent, NMF.Models.IModelElement oldParent)
         {
-            IOperation oldOperation = ModelHelper.CastAs<IOperation>(oldParent);
-            IOperation newOperation = ModelHelper.CastAs<IOperation>(newParent);
+            NMF.Models.Meta.IOperation oldOperation = ModelHelper.CastAs<NMF.Models.Meta.IOperation>(oldParent);
+            NMF.Models.Meta.IOperation newOperation = ModelHelper.CastAs<NMF.Models.Meta.IOperation>(newParent);
             if ((oldOperation != null))
             {
                 oldOperation.Parameters.Remove(this);
@@ -237,6 +239,21 @@ namespace NMF.Models.Meta
             this.OnOperationChanged(e);
             this.OnPropertyChanged("Operation", e, _operationReference);
             base.OnParentChanged(newParent, oldParent);
+        }
+        
+        /// <summary>
+        /// Resolves the given URI to a child model element
+        /// </summary>
+        /// <returns>The model element or null if it could not be found</returns>
+        /// <param name="reference">The requested reference name</param>
+        /// <param name="index">The index of this reference</param>
+        protected override NMF.Models.IModelElement GetModelElementForReference(string reference, int index)
+        {
+            if ((reference == "OPERATION"))
+            {
+                return this.Operation;
+            }
+            return base.GetModelElementForReference(reference, index);
         }
         
         /// <summary>
@@ -263,7 +280,7 @@ namespace NMF.Models.Meta
         {
             if ((feature == "OPERATION"))
             {
-                this.Operation = ((IOperation)(value));
+                this.Operation = ((NMF.Models.Meta.IOperation)(value));
                 return;
             }
             if ((feature == "DIRECTION"))
@@ -281,9 +298,9 @@ namespace NMF.Models.Meta
         /// <param name="attribute">The requested attribute in upper case</param>
         protected override NMF.Expressions.INotifyExpression<object> GetExpressionForAttribute(string attribute)
         {
-            if ((attribute == "Operation"))
+            if ((attribute == "DIRECTION"))
             {
-                return new OperationProxy(this);
+                return Observable.Box(new DirectionProxy(this));
             }
             return base.GetExpressionForAttribute(attribute);
         }
@@ -295,7 +312,7 @@ namespace NMF.Models.Meta
         /// <param name="reference">The requested reference in upper case</param>
         protected override NMF.Expressions.INotifyExpression<NMF.Models.IModelElement> GetExpressionForReference(string reference)
         {
-            if ((reference == "Operation"))
+            if ((reference == "OPERATION"))
             {
                 return new OperationProxy(this);
             }
@@ -364,7 +381,7 @@ namespace NMF.Models.Meta
             {
                 if ((this._parent.Operation == null))
                 {
-                    IOperation operationCasted = item.As<IOperation>();
+                    NMF.Models.Meta.IOperation operationCasted = item.As<NMF.Models.Meta.IOperation>();
                     if ((operationCasted != null))
                     {
                         this._parent.Operation = operationCasted;
@@ -437,14 +454,14 @@ namespace NMF.Models.Meta
         /// <summary>
         /// Represents a proxy to represent an incremental access to the Direction property
         /// </summary>
-        private sealed class DirectionProxy : ModelPropertyChange<IParameter, Direction>
+        private sealed class DirectionProxy : ModelPropertyChange<NMF.Models.Meta.IParameter, Direction>
         {
             
             /// <summary>
             /// Creates a new observable property access proxy
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
-            public DirectionProxy(IParameter modelElement) : 
+            public DirectionProxy(NMF.Models.Meta.IParameter modelElement) : 
                     base(modelElement, "Direction")
             {
             }
@@ -468,14 +485,14 @@ namespace NMF.Models.Meta
         /// <summary>
         /// Represents a proxy to represent an incremental access to the Operation property
         /// </summary>
-        private sealed class OperationProxy : ModelPropertyChange<IParameter, IOperation>
+        private sealed class OperationProxy : ModelPropertyChange<NMF.Models.Meta.IParameter, NMF.Models.Meta.IOperation>
         {
             
             /// <summary>
             /// Creates a new observable property access proxy
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
-            public OperationProxy(IParameter modelElement) : 
+            public OperationProxy(NMF.Models.Meta.IParameter modelElement) : 
                     base(modelElement, "Operation")
             {
             }
@@ -483,7 +500,7 @@ namespace NMF.Models.Meta
             /// <summary>
             /// Gets or sets the value of this expression
             /// </summary>
-            public override IOperation Value
+            public override NMF.Models.Meta.IOperation Value
             {
                 get
                 {

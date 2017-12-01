@@ -15,6 +15,7 @@ using NMF.Expressions.Linq;
 using NMF.Models;
 using NMF.Models.Collections;
 using NMF.Models.Expressions;
+using NMF.Models.Meta;
 using NMF.Models.Repository;
 using NMF.Serialization;
 using NMF.Utilities;
@@ -22,6 +23,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
@@ -35,12 +37,13 @@ namespace NMF.Models.Meta
     /// </summary>
     [DefaultImplementationTypeAttribute(typeof(Attribute))]
     [XmlDefaultImplementationTypeAttribute(typeof(Attribute))]
-    public interface IAttribute : NMF.Models.IModelElement, ITypedElement
+    public interface IAttribute : NMF.Models.IModelElement, NMF.Models.Meta.ITypedElement
     {
         
         /// <summary>
         /// The default value for this attribute
         /// </summary>
+        [XmlAttributeAttribute(true)]
         string DefaultValue
         {
             get;
@@ -50,7 +53,10 @@ namespace NMF.Models.Meta
         /// <summary>
         /// The type that declared this attribute
         /// </summary>
-        IStructuredType DeclaringType
+        [DesignerSerializationVisibilityAttribute(DesignerSerializationVisibility.Hidden)]
+        [XmlAttributeAttribute(true)]
+        [XmlOppositeAttribute("Attributes")]
+        NMF.Models.Meta.IStructuredType DeclaringType
         {
             get;
             set;
@@ -59,7 +65,8 @@ namespace NMF.Models.Meta
         /// <summary>
         /// Gets or sets the attribute that is implemented by the current attribute
         /// </summary>
-        IAttribute Refines
+        [XmlAttributeAttribute(true)]
+        NMF.Models.Meta.IAttribute Refines
         {
             get;
             set;

@@ -15,6 +15,7 @@ using NMF.Expressions.Linq;
 using NMF.Models;
 using NMF.Models.Collections;
 using NMF.Models.Expressions;
+using NMF.Models.Meta;
 using NMF.Models.Repository;
 using NMF.Serialization;
 using NMF.Utilities;
@@ -22,6 +23,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
@@ -30,10 +32,10 @@ namespace NMF.Models.Meta
 {
     
     
-    public class NamespaceTypesCollection : ObservableOppositeList<INamespace, IType>
+    public class NamespaceTypesCollection : ObservableOppositeList<NMF.Models.Meta.INamespace, NMF.Models.Meta.IType>
     {
         
-        public NamespaceTypesCollection(INamespace parent) : 
+        public NamespaceTypesCollection(NMF.Models.Meta.INamespace parent) : 
                 base(parent)
         {
         }
@@ -42,11 +44,11 @@ namespace NMF.Models.Meta
         {
             if ((e.NewValue != this.Parent))
             {
-                this.Remove(((IType)(sender)));
+                this.Remove(((NMF.Models.Meta.IType)(sender)));
             }
         }
         
-        protected override void SetOpposite(IType item, INamespace parent)
+        protected override void SetOpposite(NMF.Models.Meta.IType item, NMF.Models.Meta.INamespace parent)
         {
             if ((parent != null))
             {

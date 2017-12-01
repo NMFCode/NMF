@@ -15,6 +15,7 @@ using NMF.Expressions.Linq;
 using NMF.Models;
 using NMF.Models.Collections;
 using NMF.Models.Expressions;
+using NMF.Models.Meta;
 using NMF.Models.Repository;
 using NMF.Serialization;
 using NMF.Utilities;
@@ -22,6 +23,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
@@ -37,7 +39,7 @@ namespace NMF.Models.Meta
     [XmlNamespacePrefixAttribute("nmeta")]
     [ModelRepresentationClassAttribute("http://nmf.codeplex.com/nmeta/#//PrimitiveType")]
     [DebuggerDisplayAttribute("PrimitiveType {Name}")]
-    public partial class PrimitiveType : Type, IPrimitiveType, NMF.Models.IModelElement
+    public partial class PrimitiveType : Type, NMF.Models.Meta.IPrimitiveType, NMF.Models.IModelElement
     {
         
         /// <summary>
@@ -53,7 +55,7 @@ namespace NMF.Models.Meta
         /// The SystemType property
         /// </summary>
         [XmlAttributeAttribute(true)]
-        public virtual string SystemType
+        public string SystemType
         {
             get
             {
@@ -161,6 +163,20 @@ namespace NMF.Models.Meta
         }
         
         /// <summary>
+        /// Gets the property expression for the given attribute
+        /// </summary>
+        /// <returns>An incremental property expression</returns>
+        /// <param name="attribute">The requested attribute in upper case</param>
+        protected override NMF.Expressions.INotifyExpression<object> GetExpressionForAttribute(string attribute)
+        {
+            if ((attribute == "SYSTEMTYPE"))
+            {
+                return new SystemTypeProxy(this);
+            }
+            return base.GetExpressionForAttribute(attribute);
+        }
+        
+        /// <summary>
         /// Gets the Class for this model element
         /// </summary>
         public override IClass GetClass()
@@ -175,14 +191,14 @@ namespace NMF.Models.Meta
         /// <summary>
         /// Represents a proxy to represent an incremental access to the SystemType property
         /// </summary>
-        private sealed class SystemTypeProxy : ModelPropertyChange<IPrimitiveType, string>
+        private sealed class SystemTypeProxy : ModelPropertyChange<NMF.Models.Meta.IPrimitiveType, string>
         {
             
             /// <summary>
             /// Creates a new observable property access proxy
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
-            public SystemTypeProxy(IPrimitiveType modelElement) : 
+            public SystemTypeProxy(NMF.Models.Meta.IPrimitiveType modelElement) : 
                     base(modelElement, "SystemType")
             {
             }

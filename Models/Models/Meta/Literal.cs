@@ -15,6 +15,7 @@ using NMF.Expressions.Linq;
 using NMF.Models;
 using NMF.Models.Collections;
 using NMF.Models.Expressions;
+using NMF.Models.Meta;
 using NMF.Models.Repository;
 using NMF.Serialization;
 using NMF.Utilities;
@@ -22,6 +23,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
@@ -37,7 +39,7 @@ namespace NMF.Models.Meta
     [XmlNamespacePrefixAttribute("nmeta")]
     [ModelRepresentationClassAttribute("http://nmf.codeplex.com/nmeta/#//Literal")]
     [DebuggerDisplayAttribute("Literal {Name}")]
-    public partial class Literal : MetaElement, ILiteral, NMF.Models.IModelElement
+    public partial class Literal : MetaElement, NMF.Models.Meta.ILiteral, NMF.Models.IModelElement
     {
         
         /// <summary>
@@ -55,7 +57,7 @@ namespace NMF.Models.Meta
         /// The Value property
         /// </summary>
         [XmlAttributeAttribute(true)]
-        public virtual Nullable<int> Value
+        public Nullable<int> Value
         {
             get
             {
@@ -82,11 +84,11 @@ namespace NMF.Models.Meta
         [DesignerSerializationVisibilityAttribute(DesignerSerializationVisibility.Hidden)]
         [XmlAttributeAttribute(true)]
         [XmlOppositeAttribute("Literals")]
-        public virtual IEnumeration Enumeration
+        public NMF.Models.Meta.IEnumeration Enumeration
         {
             get
             {
-                return ModelHelper.CastAs<IEnumeration>(this.Parent);
+                return ModelHelper.CastAs<NMF.Models.Meta.IEnumeration>(this.Parent);
             }
             set
             {
@@ -196,8 +198,8 @@ namespace NMF.Models.Meta
         /// <param name="newParent">The new parent model element</param>
         protected override void OnParentChanging(NMF.Models.IModelElement newParent, NMF.Models.IModelElement oldParent)
         {
-            IEnumeration oldEnumeration = ModelHelper.CastAs<IEnumeration>(oldParent);
-            IEnumeration newEnumeration = ModelHelper.CastAs<IEnumeration>(newParent);
+            NMF.Models.Meta.IEnumeration oldEnumeration = ModelHelper.CastAs<NMF.Models.Meta.IEnumeration>(oldParent);
+            NMF.Models.Meta.IEnumeration newEnumeration = ModelHelper.CastAs<NMF.Models.Meta.IEnumeration>(newParent);
             ValueChangedEventArgs e = new ValueChangedEventArgs(oldEnumeration, newEnumeration);
             this.OnEnumerationChanging(e);
             this.OnPropertyChanging("Enumeration", e, _enumerationReference);
@@ -223,8 +225,8 @@ namespace NMF.Models.Meta
         /// <param name="newParent">The new parent model element</param>
         protected override void OnParentChanged(NMF.Models.IModelElement newParent, NMF.Models.IModelElement oldParent)
         {
-            IEnumeration oldEnumeration = ModelHelper.CastAs<IEnumeration>(oldParent);
-            IEnumeration newEnumeration = ModelHelper.CastAs<IEnumeration>(newParent);
+            NMF.Models.Meta.IEnumeration oldEnumeration = ModelHelper.CastAs<NMF.Models.Meta.IEnumeration>(oldParent);
+            NMF.Models.Meta.IEnumeration newEnumeration = ModelHelper.CastAs<NMF.Models.Meta.IEnumeration>(newParent);
             if ((oldEnumeration != null))
             {
                 oldEnumeration.Literals.Remove(this);
@@ -237,6 +239,21 @@ namespace NMF.Models.Meta
             this.OnEnumerationChanged(e);
             this.OnPropertyChanged("Enumeration", e, _enumerationReference);
             base.OnParentChanged(newParent, oldParent);
+        }
+        
+        /// <summary>
+        /// Resolves the given URI to a child model element
+        /// </summary>
+        /// <returns>The model element or null if it could not be found</returns>
+        /// <param name="reference">The requested reference name</param>
+        /// <param name="index">The index of this reference</param>
+        protected override NMF.Models.IModelElement GetModelElementForReference(string reference, int index)
+        {
+            if ((reference == "ENUMERATION"))
+            {
+                return this.Enumeration;
+            }
+            return base.GetModelElementForReference(reference, index);
         }
         
         /// <summary>
@@ -263,7 +280,7 @@ namespace NMF.Models.Meta
         {
             if ((feature == "ENUMERATION"))
             {
-                this.Enumeration = ((IEnumeration)(value));
+                this.Enumeration = ((NMF.Models.Meta.IEnumeration)(value));
                 return;
             }
             if ((feature == "VALUE"))
@@ -281,9 +298,9 @@ namespace NMF.Models.Meta
         /// <param name="attribute">The requested attribute in upper case</param>
         protected override NMF.Expressions.INotifyExpression<object> GetExpressionForAttribute(string attribute)
         {
-            if ((attribute == "Enumeration"))
+            if ((attribute == "VALUE"))
             {
-                return new EnumerationProxy(this);
+                return Observable.Box(new ValueProxy(this));
             }
             return base.GetExpressionForAttribute(attribute);
         }
@@ -295,7 +312,7 @@ namespace NMF.Models.Meta
         /// <param name="reference">The requested reference in upper case</param>
         protected override NMF.Expressions.INotifyExpression<NMF.Models.IModelElement> GetExpressionForReference(string reference)
         {
-            if ((reference == "Enumeration"))
+            if ((reference == "ENUMERATION"))
             {
                 return new EnumerationProxy(this);
             }
@@ -364,7 +381,7 @@ namespace NMF.Models.Meta
             {
                 if ((this._parent.Enumeration == null))
                 {
-                    IEnumeration enumerationCasted = item.As<IEnumeration>();
+                    NMF.Models.Meta.IEnumeration enumerationCasted = item.As<NMF.Models.Meta.IEnumeration>();
                     if ((enumerationCasted != null))
                     {
                         this._parent.Enumeration = enumerationCasted;
@@ -437,14 +454,14 @@ namespace NMF.Models.Meta
         /// <summary>
         /// Represents a proxy to represent an incremental access to the Value property
         /// </summary>
-        private sealed class ValueProxy : ModelPropertyChange<ILiteral, Nullable<int>>
+        private sealed class ValueProxy : ModelPropertyChange<NMF.Models.Meta.ILiteral, Nullable<int>>
         {
             
             /// <summary>
             /// Creates a new observable property access proxy
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
-            public ValueProxy(ILiteral modelElement) : 
+            public ValueProxy(NMF.Models.Meta.ILiteral modelElement) : 
                     base(modelElement, "Value")
             {
             }
@@ -468,14 +485,14 @@ namespace NMF.Models.Meta
         /// <summary>
         /// Represents a proxy to represent an incremental access to the Enumeration property
         /// </summary>
-        private sealed class EnumerationProxy : ModelPropertyChange<ILiteral, IEnumeration>
+        private sealed class EnumerationProxy : ModelPropertyChange<NMF.Models.Meta.ILiteral, NMF.Models.Meta.IEnumeration>
         {
             
             /// <summary>
             /// Creates a new observable property access proxy
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
-            public EnumerationProxy(ILiteral modelElement) : 
+            public EnumerationProxy(NMF.Models.Meta.ILiteral modelElement) : 
                     base(modelElement, "Enumeration")
             {
             }
@@ -483,7 +500,7 @@ namespace NMF.Models.Meta
             /// <summary>
             /// Gets or sets the value of this expression
             /// </summary>
-            public override IEnumeration Value
+            public override NMF.Models.Meta.IEnumeration Value
             {
                 get
                 {

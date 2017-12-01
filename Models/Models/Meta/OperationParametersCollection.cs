@@ -15,6 +15,7 @@ using NMF.Expressions.Linq;
 using NMF.Models;
 using NMF.Models.Collections;
 using NMF.Models.Expressions;
+using NMF.Models.Meta;
 using NMF.Models.Repository;
 using NMF.Serialization;
 using NMF.Utilities;
@@ -22,6 +23,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
@@ -30,10 +32,10 @@ namespace NMF.Models.Meta
 {
     
     
-    public class OperationParametersCollection : ObservableOppositeList<IOperation, IParameter>
+    public class OperationParametersCollection : ObservableOppositeList<NMF.Models.Meta.IOperation, NMF.Models.Meta.IParameter>
     {
         
-        public OperationParametersCollection(IOperation parent) : 
+        public OperationParametersCollection(NMF.Models.Meta.IOperation parent) : 
                 base(parent)
         {
         }
@@ -42,11 +44,11 @@ namespace NMF.Models.Meta
         {
             if ((e.NewValue != this.Parent))
             {
-                this.Remove(((IParameter)(sender)));
+                this.Remove(((NMF.Models.Meta.IParameter)(sender)));
             }
         }
         
-        protected override void SetOpposite(IParameter item, IOperation parent)
+        protected override void SetOpposite(NMF.Models.Meta.IParameter item, NMF.Models.Meta.IOperation parent)
         {
             if ((parent != null))
             {

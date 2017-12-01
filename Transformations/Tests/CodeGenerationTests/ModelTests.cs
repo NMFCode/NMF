@@ -15,6 +15,12 @@ namespace NMF.CodeGenerationTests
         }
 
         [TestMethod]
+        public void FromSchemaModelGeneratesSuccessfully()
+        {
+            GenerateAndAssertEcore("FromSchemaEcore.ecore");
+        }
+
+        [TestMethod]
         public void ArchitectureCRAModelGeneratesSuccessfully()
         {
             GenerateAndAssertEcore("architectureCRA.ecore");

@@ -15,6 +15,7 @@ using NMF.Expressions.Linq;
 using NMF.Models;
 using NMF.Models.Collections;
 using NMF.Models.Expressions;
+using NMF.Models.Meta;
 using NMF.Models.Repository;
 using NMF.Serialization;
 using NMF.Utilities;
@@ -22,6 +23,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
@@ -35,12 +37,13 @@ namespace NMF.Models.Meta
     /// </summary>
     [DefaultImplementationTypeAttribute(typeof(PrimitiveType))]
     [XmlDefaultImplementationTypeAttribute(typeof(PrimitiveType))]
-    public interface IPrimitiveType : NMF.Models.IModelElement, IType
+    public interface IPrimitiveType : NMF.Models.IModelElement, NMF.Models.Meta.IType
     {
         
         /// <summary>
         /// The SystemType property
         /// </summary>
+        [XmlAttributeAttribute(true)]
         string SystemType
         {
             get;

@@ -15,6 +15,7 @@ using NMF.Expressions.Linq;
 using NMF.Models;
 using NMF.Models.Collections;
 using NMF.Models.Expressions;
+using NMF.Models.Meta;
 using NMF.Models.Repository;
 using NMF.Serialization;
 using NMF.Utilities;
@@ -22,6 +23,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
@@ -38,7 +40,7 @@ namespace NMF.Models.Meta
     [XmlNamespacePrefixAttribute("nmeta")]
     [ModelRepresentationClassAttribute("http://nmf.codeplex.com/nmeta/#//MetaElement")]
     [DebuggerDisplayAttribute("MetaElement {Name}")]
-    public abstract partial class MetaElement : NMF.Models.ModelElement, IMetaElement, NMF.Models.IModelElement
+    public abstract partial class MetaElement : ModelElement, NMF.Models.Meta.IMetaElement, NMF.Models.IModelElement
     {
         
         /// <summary>
@@ -69,7 +71,7 @@ namespace NMF.Models.Meta
         /// </summary>
         [IdAttribute()]
         [XmlAttributeAttribute(true)]
-        public virtual string Name
+        public string Name
         {
             get
             {
@@ -94,7 +96,7 @@ namespace NMF.Models.Meta
         /// The Summary property
         /// </summary>
         [XmlAttributeAttribute(true)]
-        public virtual string Summary
+        public string Summary
         {
             get
             {
@@ -119,7 +121,7 @@ namespace NMF.Models.Meta
         /// The Remarks property
         /// </summary>
         [XmlAttributeAttribute(true)]
-        public virtual string Remarks
+        public string Remarks
         {
             get
             {
@@ -338,6 +340,28 @@ namespace NMF.Models.Meta
         }
         
         /// <summary>
+        /// Gets the property expression for the given attribute
+        /// </summary>
+        /// <returns>An incremental property expression</returns>
+        /// <param name="attribute">The requested attribute in upper case</param>
+        protected override NMF.Expressions.INotifyExpression<object> GetExpressionForAttribute(string attribute)
+        {
+            if ((attribute == "NAME"))
+            {
+                return new NameProxy(this);
+            }
+            if ((attribute == "SUMMARY"))
+            {
+                return new SummaryProxy(this);
+            }
+            if ((attribute == "REMARKS"))
+            {
+                return new RemarksProxy(this);
+            }
+            return base.GetExpressionForAttribute(attribute);
+        }
+        
+        /// <summary>
         /// Gets the Class for this model element
         /// </summary>
         public override IClass GetClass()
@@ -365,14 +389,14 @@ namespace NMF.Models.Meta
         /// <summary>
         /// Represents a proxy to represent an incremental access to the Name property
         /// </summary>
-        private sealed class NameProxy : ModelPropertyChange<IMetaElement, string>
+        private sealed class NameProxy : ModelPropertyChange<NMF.Models.Meta.IMetaElement, string>
         {
             
             /// <summary>
             /// Creates a new observable property access proxy
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
-            public NameProxy(IMetaElement modelElement) : 
+            public NameProxy(NMF.Models.Meta.IMetaElement modelElement) : 
                     base(modelElement, "Name")
             {
             }
@@ -396,14 +420,14 @@ namespace NMF.Models.Meta
         /// <summary>
         /// Represents a proxy to represent an incremental access to the Summary property
         /// </summary>
-        private sealed class SummaryProxy : ModelPropertyChange<IMetaElement, string>
+        private sealed class SummaryProxy : ModelPropertyChange<NMF.Models.Meta.IMetaElement, string>
         {
             
             /// <summary>
             /// Creates a new observable property access proxy
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
-            public SummaryProxy(IMetaElement modelElement) : 
+            public SummaryProxy(NMF.Models.Meta.IMetaElement modelElement) : 
                     base(modelElement, "Summary")
             {
             }
@@ -427,14 +451,14 @@ namespace NMF.Models.Meta
         /// <summary>
         /// Represents a proxy to represent an incremental access to the Remarks property
         /// </summary>
-        private sealed class RemarksProxy : ModelPropertyChange<IMetaElement, string>
+        private sealed class RemarksProxy : ModelPropertyChange<NMF.Models.Meta.IMetaElement, string>
         {
             
             /// <summary>
             /// Creates a new observable property access proxy
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
-            public RemarksProxy(IMetaElement modelElement) : 
+            public RemarksProxy(NMF.Models.Meta.IMetaElement modelElement) : 
                     base(modelElement, "Remarks")
             {
             }

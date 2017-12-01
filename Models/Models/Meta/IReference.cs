@@ -15,6 +15,7 @@ using NMF.Expressions.Linq;
 using NMF.Models;
 using NMF.Models.Collections;
 using NMF.Models.Expressions;
+using NMF.Models.Meta;
 using NMF.Models.Repository;
 using NMF.Serialization;
 using NMF.Utilities;
@@ -22,6 +23,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
@@ -35,12 +37,13 @@ namespace NMF.Models.Meta
     /// </summary>
     [DefaultImplementationTypeAttribute(typeof(Reference))]
     [XmlDefaultImplementationTypeAttribute(typeof(Reference))]
-    public interface IReference : NMF.Models.IModelElement, ITypedElement
+    public interface IReference : NMF.Models.IModelElement, NMF.Models.Meta.ITypedElement
     {
         
         /// <summary>
         /// The IsContainment property
         /// </summary>
+        [XmlAttributeAttribute(true)]
         bool IsContainment
         {
             get;
@@ -50,7 +53,10 @@ namespace NMF.Models.Meta
         /// <summary>
         /// The DeclaringType property
         /// </summary>
-        IReferenceType DeclaringType
+        [DesignerSerializationVisibilityAttribute(DesignerSerializationVisibility.Hidden)]
+        [XmlAttributeAttribute(true)]
+        [XmlOppositeAttribute("References")]
+        NMF.Models.Meta.IReferenceType DeclaringType
         {
             get;
             set;
@@ -59,7 +65,9 @@ namespace NMF.Models.Meta
         /// <summary>
         /// The Opposite property
         /// </summary>
-        IReference Opposite
+        [XmlAttributeAttribute(true)]
+        [XmlOppositeAttribute("Opposite")]
+        NMF.Models.Meta.IReference Opposite
         {
             get;
             set;
@@ -68,7 +76,8 @@ namespace NMF.Models.Meta
         /// <summary>
         /// The ReferenceType property
         /// </summary>
-        IReferenceType ReferenceType
+        [XmlAttributeAttribute(true)]
+        NMF.Models.Meta.IReferenceType ReferenceType
         {
             get;
             set;
@@ -77,7 +86,8 @@ namespace NMF.Models.Meta
         /// <summary>
         /// The reference that is refined by the current reference, only applicable if the reference is part of a class
         /// </summary>
-        IReference Refines
+        [XmlAttributeAttribute(true)]
+        NMF.Models.Meta.IReference Refines
         {
             get;
             set;
@@ -86,7 +96,8 @@ namespace NMF.Models.Meta
         /// <summary>
         /// The least common anchestor of an instance and its referenced element, if statically known
         /// </summary>
-        IClass Anchor
+        [XmlAttributeAttribute(true)]
+        NMF.Models.Meta.IClass Anchor
         {
             get;
             set;

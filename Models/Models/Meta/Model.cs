@@ -15,6 +15,7 @@ using NMF.Expressions.Linq;
 using NMF.Models;
 using NMF.Models.Collections;
 using NMF.Models.Expressions;
+using NMF.Models.Meta;
 using NMF.Models.Repository;
 using NMF.Serialization;
 using NMF.Utilities;
@@ -22,6 +23,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
@@ -36,7 +38,7 @@ namespace NMF.Models.Meta
     [XmlNamespaceAttribute("http://nmf.codeplex.com/nmeta/")]
     [XmlNamespacePrefixAttribute("nmeta")]
     [ModelRepresentationClassAttribute("http://nmf.codeplex.com/nmeta/#//Model")]
-    public partial class Model : NMF.Models.ModelElement, IModel, NMF.Models.IModelElement
+    public partial class Model : ModelElement, IModel, NMF.Models.IModelElement
     {
         
         /// <summary>
@@ -66,7 +68,7 @@ namespace NMF.Models.Meta
         /// The ModelUri property
         /// </summary>
         [XmlAttributeAttribute(true)]
-        public virtual Uri ModelUri
+        public Uri ModelUri
         {
             get
             {
@@ -94,7 +96,7 @@ namespace NMF.Models.Meta
         [XmlAttributeAttribute(false)]
         [ContainmentAttribute()]
         [ConstantAttribute()]
-        public virtual ICollectionExpression<NMF.Models.Meta.IModelElement> RootElements
+        public IListExpression<NMF.Models.Meta.IModelElement> RootElements
         {
             get
             {
@@ -151,7 +153,7 @@ namespace NMF.Models.Meta
         
         private static ITypedElement RetrieveModelUriAttribute()
         {
-            return ((ITypedElement)(((NMF.Models.ModelElement)(odel.ClassInstance)).Resolve("ModelUri")));
+            return ((ITypedElement)(((NMF.Models.ModelElement)(Model.ClassInstance)).Resolve("ModelUri")));
         }
         
         /// <summary>
@@ -190,7 +192,7 @@ namespace NMF.Models.Meta
         /// </summary>
         /// <param name="sender">The collection that raised the change</param>
         /// <param name="e">The original event data</param>
-        private void RootElementsCollectionChanging(object sender, NMF.Collections.ObjectModel.NotifyCollectionChangingEventArgs e)
+        private void RootElementsCollectionChanging(object sender, NotifyCollectionChangedEventArgs e)
         {
             this.OnCollectionChanging("RootElements", e, _rootElementsReference);
         }
@@ -200,9 +202,46 @@ namespace NMF.Models.Meta
         /// </summary>
         /// <param name="sender">The collection that raised the change</param>
         /// <param name="e">The original event data</param>
-        private void RootElementsCollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        private void RootElementsCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
             this.OnCollectionChanged("RootElements", e, _rootElementsReference);
+        }
+        
+        /// <summary>
+        /// Gets the relative URI fragment for the given child model element
+        /// </summary>
+        /// <returns>A fragment of the relative URI</returns>
+        /// <param name="element">The element that should be looked for</param>
+        protected override string GetRelativePathForNonIdentifiedChild(NMF.Models.IModelElement element)
+        {
+            int rootElementsIndex = ModelHelper.IndexOfReference(this.RootElements, element);
+            if ((rootElementsIndex != -1))
+            {
+                return ModelHelper.CreatePath("RootElements", rootElementsIndex);
+            }
+            return base.GetRelativePathForNonIdentifiedChild(element);
+        }
+        
+        /// <summary>
+        /// Resolves the given URI to a child model element
+        /// </summary>
+        /// <returns>The model element or null if it could not be found</returns>
+        /// <param name="reference">The requested reference name</param>
+        /// <param name="index">The index of this reference</param>
+        protected override NMF.Models.IModelElement GetModelElementForReference(string reference, int index)
+        {
+            if ((reference == "ROOTELEMENTS"))
+            {
+                if ((index < this.RootElements.Count))
+                {
+                    return this.RootElements[index];
+                }
+                else
+                {
+                    return null;
+                }
+            }
+            return base.GetModelElementForReference(reference, index);
         }
         
         /// <summary>
@@ -247,6 +286,34 @@ namespace NMF.Models.Meta
                 return;
             }
             base.SetFeature(feature, value);
+        }
+        
+        /// <summary>
+        /// Gets the property expression for the given attribute
+        /// </summary>
+        /// <returns>An incremental property expression</returns>
+        /// <param name="attribute">The requested attribute in upper case</param>
+        protected override NMF.Expressions.INotifyExpression<object> GetExpressionForAttribute(string attribute)
+        {
+            if ((attribute == "MODELURI"))
+            {
+                return Observable.Box(new ModelUriProxy(this));
+            }
+            return base.GetExpressionForAttribute(attribute);
+        }
+        
+        /// <summary>
+        /// Gets the property name for the given container
+        /// </summary>
+        /// <returns>The name of the respective container reference</returns>
+        /// <param name="container">The container object</param>
+        protected override string GetCompositionName(object container)
+        {
+            if ((container == this._rootElements))
+            {
+                return "RootElements";
+            }
+            return base.GetCompositionName(container);
         }
         
         /// <summary>

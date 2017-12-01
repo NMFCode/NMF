@@ -15,6 +15,7 @@ using NMF.Expressions.Linq;
 using NMF.Models;
 using NMF.Models.Collections;
 using NMF.Models.Expressions;
+using NMF.Models.Meta;
 using NMF.Models.Repository;
 using NMF.Serialization;
 using NMF.Utilities;
@@ -22,6 +23,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
@@ -37,7 +39,7 @@ namespace NMF.Models.Meta
     [XmlNamespacePrefixAttribute("nmeta")]
     [ModelRepresentationClassAttribute("http://nmf.codeplex.com/nmeta/#//Enumeration")]
     [DebuggerDisplayAttribute("Enumeration {Name}")]
-    public partial class Enumeration : Type, IEnumeration, NMF.Models.IModelElement
+    public partial class Enumeration : Type, NMF.Models.Meta.IEnumeration, NMF.Models.IModelElement
     {
         
         /// <summary>
@@ -67,7 +69,7 @@ namespace NMF.Models.Meta
         /// The IsFlagged property
         /// </summary>
         [XmlAttributeAttribute(true)]
-        public virtual bool IsFlagged
+        public bool IsFlagged
         {
             get
             {
@@ -96,7 +98,7 @@ namespace NMF.Models.Meta
         [ContainmentAttribute()]
         [XmlOppositeAttribute("Enumeration")]
         [ConstantAttribute()]
-        public virtual ICollectionExpression<ILiteral> Literals
+        public ICollectionExpression<NMF.Models.Meta.ILiteral> Literals
         {
             get
             {
@@ -192,7 +194,7 @@ namespace NMF.Models.Meta
         /// </summary>
         /// <param name="sender">The collection that raised the change</param>
         /// <param name="e">The original event data</param>
-        private void LiteralsCollectionChanging(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        private void LiteralsCollectionChanging(object sender, NotifyCollectionChangedEventArgs e)
         {
             this.OnCollectionChanging("Literals", e, _literalsReference);
         }
@@ -202,7 +204,7 @@ namespace NMF.Models.Meta
         /// </summary>
         /// <param name="sender">The collection that raised the change</param>
         /// <param name="e">The original event data</param>
-        private void LiteralsCollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        private void LiteralsCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
             this.OnCollectionChanged("Literals", e, _literalsReference);
         }
@@ -249,6 +251,34 @@ namespace NMF.Models.Meta
                 return;
             }
             base.SetFeature(feature, value);
+        }
+        
+        /// <summary>
+        /// Gets the property expression for the given attribute
+        /// </summary>
+        /// <returns>An incremental property expression</returns>
+        /// <param name="attribute">The requested attribute in upper case</param>
+        protected override NMF.Expressions.INotifyExpression<object> GetExpressionForAttribute(string attribute)
+        {
+            if ((attribute == "ISFLAGGED"))
+            {
+                return Observable.Box(new IsFlaggedProxy(this));
+            }
+            return base.GetExpressionForAttribute(attribute);
+        }
+        
+        /// <summary>
+        /// Gets the property name for the given container
+        /// </summary>
+        /// <returns>The name of the respective container reference</returns>
+        /// <param name="container">The container object</param>
+        protected internal override string GetCompositionName(object container)
+        {
+            if ((container == this._literals))
+            {
+                return "Literals";
+            }
+            return base.GetCompositionName(container);
         }
         
         /// <summary>
@@ -308,7 +338,7 @@ namespace NMF.Models.Meta
             /// <param name="item">The item to add</param>
             public override void Add(NMF.Models.IModelElement item)
             {
-                ILiteral literalsCasted = item.As<ILiteral>();
+                NMF.Models.Meta.ILiteral literalsCasted = item.As<NMF.Models.Meta.ILiteral>();
                 if ((literalsCasted != null))
                 {
                     this._parent.Literals.Add(literalsCasted);
@@ -368,7 +398,7 @@ namespace NMF.Models.Meta
             /// <param name="item">The item that should be removed</param>
             public override bool Remove(NMF.Models.IModelElement item)
             {
-                ILiteral literalItem = item.As<ILiteral>();
+                NMF.Models.Meta.ILiteral literalItem = item.As<NMF.Models.Meta.ILiteral>();
                 if (((literalItem != null) 
                             && this._parent.Literals.Remove(literalItem)))
                 {
@@ -432,7 +462,7 @@ namespace NMF.Models.Meta
             /// <param name="item">The item to add</param>
             public override void Add(NMF.Models.IModelElement item)
             {
-                ILiteral literalsCasted = item.As<ILiteral>();
+                NMF.Models.Meta.ILiteral literalsCasted = item.As<NMF.Models.Meta.ILiteral>();
                 if ((literalsCasted != null))
                 {
                     this._parent.Literals.Add(literalsCasted);
@@ -492,7 +522,7 @@ namespace NMF.Models.Meta
             /// <param name="item">The item that should be removed</param>
             public override bool Remove(NMF.Models.IModelElement item)
             {
-                ILiteral literalItem = item.As<ILiteral>();
+                NMF.Models.Meta.ILiteral literalItem = item.As<NMF.Models.Meta.ILiteral>();
                 if (((literalItem != null) 
                             && this._parent.Literals.Remove(literalItem)))
                 {
@@ -514,14 +544,14 @@ namespace NMF.Models.Meta
         /// <summary>
         /// Represents a proxy to represent an incremental access to the IsFlagged property
         /// </summary>
-        private sealed class IsFlaggedProxy : ModelPropertyChange<IEnumeration, bool>
+        private sealed class IsFlaggedProxy : ModelPropertyChange<NMF.Models.Meta.IEnumeration, bool>
         {
             
             /// <summary>
             /// Creates a new observable property access proxy
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
-            public IsFlaggedProxy(IEnumeration modelElement) : 
+            public IsFlaggedProxy(NMF.Models.Meta.IEnumeration modelElement) : 
                     base(modelElement, "IsFlagged")
             {
             }

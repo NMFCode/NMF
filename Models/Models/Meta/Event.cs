@@ -15,6 +15,7 @@ using NMF.Expressions.Linq;
 using NMF.Models;
 using NMF.Models.Collections;
 using NMF.Models.Expressions;
+using NMF.Models.Meta;
 using NMF.Models.Repository;
 using NMF.Serialization;
 using NMF.Utilities;
@@ -22,6 +23,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
@@ -37,7 +39,7 @@ namespace NMF.Models.Meta
     [XmlNamespacePrefixAttribute("nmeta")]
     [ModelRepresentationClassAttribute("http://nmf.codeplex.com/nmeta/#//Event")]
     [DebuggerDisplayAttribute("Event {Name}")]
-    public partial class Event : MetaElement, IEvent, NMF.Models.IModelElement
+    public partial class Event : MetaElement, NMF.Models.Meta.IEvent, NMF.Models.IModelElement
     {
         
         private static Lazy<ITypedElement> _typeReference = new Lazy<ITypedElement>(RetrieveTypeReference);
@@ -45,7 +47,7 @@ namespace NMF.Models.Meta
         /// <summary>
         /// The backing field for the Type property
         /// </summary>
-        private IDataType _type;
+        private NMF.Models.Meta.IDataType _type;
         
         private static Lazy<ITypedElement> _declaringTypeReference = new Lazy<ITypedElement>(RetrieveDeclaringTypeReference);
         
@@ -55,7 +57,7 @@ namespace NMF.Models.Meta
         /// The Type property
         /// </summary>
         [XmlAttributeAttribute(true)]
-        public virtual IDataType Type
+        public NMF.Models.Meta.IDataType Type
         {
             get
             {
@@ -65,7 +67,7 @@ namespace NMF.Models.Meta
             {
                 if ((this._type != value))
                 {
-                    IDataType old = this._type;
+                    NMF.Models.Meta.IDataType old = this._type;
                     ValueChangedEventArgs e = new ValueChangedEventArgs(old, value);
                     this.OnTypeChanging(e);
                     this.OnPropertyChanging("Type", e, _typeReference);
@@ -90,11 +92,11 @@ namespace NMF.Models.Meta
         [DesignerSerializationVisibilityAttribute(DesignerSerializationVisibility.Hidden)]
         [XmlAttributeAttribute(true)]
         [XmlOppositeAttribute("Events")]
-        public virtual IReferenceType DeclaringType
+        public NMF.Models.Meta.IReferenceType DeclaringType
         {
             get
             {
-                return ModelHelper.CastAs<IReferenceType>(this.Parent);
+                return ModelHelper.CastAs<NMF.Models.Meta.IReferenceType>(this.Parent);
             }
             set
             {
@@ -214,8 +216,8 @@ namespace NMF.Models.Meta
         /// <param name="newParent">The new parent model element</param>
         protected override void OnParentChanging(NMF.Models.IModelElement newParent, NMF.Models.IModelElement oldParent)
         {
-            IReferenceType oldDeclaringType = ModelHelper.CastAs<IReferenceType>(oldParent);
-            IReferenceType newDeclaringType = ModelHelper.CastAs<IReferenceType>(newParent);
+            NMF.Models.Meta.IReferenceType oldDeclaringType = ModelHelper.CastAs<NMF.Models.Meta.IReferenceType>(oldParent);
+            NMF.Models.Meta.IReferenceType newDeclaringType = ModelHelper.CastAs<NMF.Models.Meta.IReferenceType>(newParent);
             ValueChangedEventArgs e = new ValueChangedEventArgs(oldDeclaringType, newDeclaringType);
             this.OnDeclaringTypeChanging(e);
             this.OnPropertyChanging("DeclaringType", e, _declaringTypeReference);
@@ -241,8 +243,8 @@ namespace NMF.Models.Meta
         /// <param name="newParent">The new parent model element</param>
         protected override void OnParentChanged(NMF.Models.IModelElement newParent, NMF.Models.IModelElement oldParent)
         {
-            IReferenceType oldDeclaringType = ModelHelper.CastAs<IReferenceType>(oldParent);
-            IReferenceType newDeclaringType = ModelHelper.CastAs<IReferenceType>(newParent);
+            NMF.Models.Meta.IReferenceType oldDeclaringType = ModelHelper.CastAs<NMF.Models.Meta.IReferenceType>(oldParent);
+            NMF.Models.Meta.IReferenceType newDeclaringType = ModelHelper.CastAs<NMF.Models.Meta.IReferenceType>(newParent);
             if ((oldDeclaringType != null))
             {
                 oldDeclaringType.Events.Remove(this);
@@ -258,6 +260,25 @@ namespace NMF.Models.Meta
         }
         
         /// <summary>
+        /// Resolves the given URI to a child model element
+        /// </summary>
+        /// <returns>The model element or null if it could not be found</returns>
+        /// <param name="reference">The requested reference name</param>
+        /// <param name="index">The index of this reference</param>
+        protected override NMF.Models.IModelElement GetModelElementForReference(string reference, int index)
+        {
+            if ((reference == "TYPE"))
+            {
+                return this.Type;
+            }
+            if ((reference == "DECLARINGTYPE"))
+            {
+                return this.DeclaringType;
+            }
+            return base.GetModelElementForReference(reference, index);
+        }
+        
+        /// <summary>
         /// Sets a value to the given feature
         /// </summary>
         /// <param name="feature">The requested feature</param>
@@ -266,33 +287,15 @@ namespace NMF.Models.Meta
         {
             if ((feature == "TYPE"))
             {
-                this.Type = ((IDataType)(value));
+                this.Type = ((NMF.Models.Meta.IDataType)(value));
                 return;
             }
             if ((feature == "DECLARINGTYPE"))
             {
-                this.DeclaringType = ((IReferenceType)(value));
+                this.DeclaringType = ((NMF.Models.Meta.IReferenceType)(value));
                 return;
             }
             base.SetFeature(feature, value);
-        }
-        
-        /// <summary>
-        /// Gets the property expression for the given attribute
-        /// </summary>
-        /// <returns>An incremental property expression</returns>
-        /// <param name="attribute">The requested attribute in upper case</param>
-        protected override NMF.Expressions.INotifyExpression<object> GetExpressionForAttribute(string attribute)
-        {
-            if ((attribute == "Type"))
-            {
-                return new TypeProxy(this);
-            }
-            if ((attribute == "DeclaringType"))
-            {
-                return new DeclaringTypeProxy(this);
-            }
-            return base.GetExpressionForAttribute(attribute);
         }
         
         /// <summary>
@@ -302,11 +305,11 @@ namespace NMF.Models.Meta
         /// <param name="reference">The requested reference in upper case</param>
         protected override NMF.Expressions.INotifyExpression<NMF.Models.IModelElement> GetExpressionForReference(string reference)
         {
-            if ((reference == "Type"))
+            if ((reference == "TYPE"))
             {
                 return new TypeProxy(this);
             }
-            if ((reference == "DeclaringType"))
+            if ((reference == "DECLARINGTYPE"))
             {
                 return new DeclaringTypeProxy(this);
             }
@@ -381,7 +384,7 @@ namespace NMF.Models.Meta
             {
                 if ((this._parent.Type == null))
                 {
-                    IDataType typeCasted = item.As<IDataType>();
+                    NMF.Models.Meta.IDataType typeCasted = item.As<NMF.Models.Meta.IDataType>();
                     if ((typeCasted != null))
                     {
                         this._parent.Type = typeCasted;
@@ -390,7 +393,7 @@ namespace NMF.Models.Meta
                 }
                 if ((this._parent.DeclaringType == null))
                 {
-                    IReferenceType declaringTypeCasted = item.As<IReferenceType>();
+                    NMF.Models.Meta.IReferenceType declaringTypeCasted = item.As<NMF.Models.Meta.IReferenceType>();
                     if ((declaringTypeCasted != null))
                     {
                         this._parent.DeclaringType = declaringTypeCasted;
@@ -478,14 +481,14 @@ namespace NMF.Models.Meta
         /// <summary>
         /// Represents a proxy to represent an incremental access to the Type property
         /// </summary>
-        private sealed class TypeProxy : ModelPropertyChange<IEvent, IDataType>
+        private sealed class TypeProxy : ModelPropertyChange<NMF.Models.Meta.IEvent, NMF.Models.Meta.IDataType>
         {
             
             /// <summary>
             /// Creates a new observable property access proxy
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
-            public TypeProxy(IEvent modelElement) : 
+            public TypeProxy(NMF.Models.Meta.IEvent modelElement) : 
                     base(modelElement, "Type")
             {
             }
@@ -493,7 +496,7 @@ namespace NMF.Models.Meta
             /// <summary>
             /// Gets or sets the value of this expression
             /// </summary>
-            public override IDataType Value
+            public override NMF.Models.Meta.IDataType Value
             {
                 get
                 {
@@ -509,14 +512,14 @@ namespace NMF.Models.Meta
         /// <summary>
         /// Represents a proxy to represent an incremental access to the DeclaringType property
         /// </summary>
-        private sealed class DeclaringTypeProxy : ModelPropertyChange<IEvent, IReferenceType>
+        private sealed class DeclaringTypeProxy : ModelPropertyChange<NMF.Models.Meta.IEvent, NMF.Models.Meta.IReferenceType>
         {
             
             /// <summary>
             /// Creates a new observable property access proxy
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
-            public DeclaringTypeProxy(IEvent modelElement) : 
+            public DeclaringTypeProxy(NMF.Models.Meta.IEvent modelElement) : 
                     base(modelElement, "DeclaringType")
             {
             }
@@ -524,7 +527,7 @@ namespace NMF.Models.Meta
             /// <summary>
             /// Gets or sets the value of this expression
             /// </summary>
-            public override IReferenceType Value
+            public override NMF.Models.Meta.IReferenceType Value
             {
                 get
                 {

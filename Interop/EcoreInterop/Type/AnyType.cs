@@ -123,7 +123,7 @@ namespace NMF.Interop.Type
         /// </summary>
         /// <param name="sender">The collection that raised the change</param>
         /// <param name="e">The original event data</param>
-        private void MixedCollectionChanging(object sender, NotifyCollectionChangingEventArgs e)
+        private void MixedCollectionChanging(object sender, NotifyCollectionChangedEventArgs e)
         {
             this.OnCollectionChanging("Mixed", e, _mixedAttribute);
         }
@@ -148,7 +148,7 @@ namespace NMF.Interop.Type
         /// </summary>
         /// <param name="sender">The collection that raised the change</param>
         /// <param name="e">The original event data</param>
-        private void AnyAttributeCollectionChanging(object sender, NotifyCollectionChangingEventArgs e)
+        private void AnyAttributeCollectionChanging(object sender, NotifyCollectionChangedEventArgs e)
         {
             this.OnCollectionChanging("AnyAttribute", e, _anyAttributeAttribute);
         }

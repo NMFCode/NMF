@@ -15,6 +15,7 @@ using NMF.Expressions.Linq;
 using NMF.Models;
 using NMF.Models.Collections;
 using NMF.Models.Expressions;
+using NMF.Models.Meta;
 using NMF.Models.Repository;
 using NMF.Serialization;
 using NMF.Utilities;
@@ -22,6 +23,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
@@ -37,7 +39,7 @@ namespace NMF.Models.Meta
     [XmlNamespacePrefixAttribute("nmeta")]
     [ModelRepresentationClassAttribute("http://nmf.codeplex.com/nmeta/#//Extension")]
     [DebuggerDisplayAttribute("Extension {Name}")]
-    public partial class Extension : ReferenceType, IExtension, NMF.Models.IModelElement
+    public partial class Extension : ReferenceType, NMF.Models.Meta.IExtension, NMF.Models.IModelElement
     {
         
         private static Lazy<ITypedElement> _adornedClassReference = new Lazy<ITypedElement>(RetrieveAdornedClassReference);
@@ -45,7 +47,7 @@ namespace NMF.Models.Meta
         /// <summary>
         /// The backing field for the AdornedClass property
         /// </summary>
-        private IClass _adornedClass;
+        private NMF.Models.Meta.IClass _adornedClass;
         
         private static IClass _classInstance;
         
@@ -53,7 +55,7 @@ namespace NMF.Models.Meta
         /// The AdornedClass property
         /// </summary>
         [XmlAttributeAttribute(true)]
-        public virtual IClass AdornedClass
+        public NMF.Models.Meta.IClass AdornedClass
         {
             get
             {
@@ -63,7 +65,7 @@ namespace NMF.Models.Meta
             {
                 if ((this._adornedClass != value))
                 {
-                    IClass old = this._adornedClass;
+                    NMF.Models.Meta.IClass old = this._adornedClass;
                     ValueChangedEventArgs e = new ValueChangedEventArgs(old, value);
                     this.OnAdornedClassChanging(e);
                     this.OnPropertyChanging("AdornedClass", e, _adornedClassReference);
@@ -160,6 +162,21 @@ namespace NMF.Models.Meta
         }
         
         /// <summary>
+        /// Resolves the given URI to a child model element
+        /// </summary>
+        /// <returns>The model element or null if it could not be found</returns>
+        /// <param name="reference">The requested reference name</param>
+        /// <param name="index">The index of this reference</param>
+        protected override NMF.Models.IModelElement GetModelElementForReference(string reference, int index)
+        {
+            if ((reference == "ADORNEDCLASS"))
+            {
+                return this.AdornedClass;
+            }
+            return base.GetModelElementForReference(reference, index);
+        }
+        
+        /// <summary>
         /// Sets a value to the given feature
         /// </summary>
         /// <param name="feature">The requested feature</param>
@@ -168,24 +185,10 @@ namespace NMF.Models.Meta
         {
             if ((feature == "ADORNEDCLASS"))
             {
-                this.AdornedClass = ((IClass)(value));
+                this.AdornedClass = ((NMF.Models.Meta.IClass)(value));
                 return;
             }
             base.SetFeature(feature, value);
-        }
-        
-        /// <summary>
-        /// Gets the property expression for the given attribute
-        /// </summary>
-        /// <returns>An incremental property expression</returns>
-        /// <param name="attribute">The requested attribute in upper case</param>
-        protected override NMF.Expressions.INotifyExpression<object> GetExpressionForAttribute(string attribute)
-        {
-            if ((attribute == "AdornedClass"))
-            {
-                return new AdornedClassProxy(this);
-            }
-            return base.GetExpressionForAttribute(attribute);
         }
         
         /// <summary>
@@ -195,7 +198,7 @@ namespace NMF.Models.Meta
         /// <param name="reference">The requested reference in upper case</param>
         protected override NMF.Expressions.INotifyExpression<NMF.Models.IModelElement> GetExpressionForReference(string reference)
         {
-            if ((reference == "AdornedClass"))
+            if ((reference == "ADORNEDCLASS"))
             {
                 return new AdornedClassProxy(this);
             }
@@ -264,7 +267,7 @@ namespace NMF.Models.Meta
             {
                 if ((this._parent.AdornedClass == null))
                 {
-                    IClass adornedClassCasted = item.As<IClass>();
+                    NMF.Models.Meta.IClass adornedClassCasted = item.As<NMF.Models.Meta.IClass>();
                     if ((adornedClassCasted != null))
                     {
                         this._parent.AdornedClass = adornedClassCasted;
@@ -337,14 +340,14 @@ namespace NMF.Models.Meta
         /// <summary>
         /// Represents a proxy to represent an incremental access to the AdornedClass property
         /// </summary>
-        private sealed class AdornedClassProxy : ModelPropertyChange<IExtension, IClass>
+        private sealed class AdornedClassProxy : ModelPropertyChange<NMF.Models.Meta.IExtension, NMF.Models.Meta.IClass>
         {
             
             /// <summary>
             /// Creates a new observable property access proxy
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
-            public AdornedClassProxy(IExtension modelElement) : 
+            public AdornedClassProxy(NMF.Models.Meta.IExtension modelElement) : 
                     base(modelElement, "AdornedClass")
             {
             }
@@ -352,7 +355,7 @@ namespace NMF.Models.Meta
             /// <summary>
             /// Gets or sets the value of this expression
             /// </summary>
-            public override IClass Value
+            public override NMF.Models.Meta.IClass Value
             {
                 get
                 {

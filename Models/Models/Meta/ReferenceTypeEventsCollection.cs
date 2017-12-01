@@ -15,6 +15,7 @@ using NMF.Expressions.Linq;
 using NMF.Models;
 using NMF.Models.Collections;
 using NMF.Models.Expressions;
+using NMF.Models.Meta;
 using NMF.Models.Repository;
 using NMF.Serialization;
 using NMF.Utilities;
@@ -22,6 +23,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
@@ -30,10 +32,10 @@ namespace NMF.Models.Meta
 {
     
     
-    public class ReferenceTypeEventsCollection : ObservableOppositeList<IReferenceType, IEvent>
+    public class ReferenceTypeEventsCollection : ObservableOppositeList<NMF.Models.Meta.IReferenceType, NMF.Models.Meta.IEvent>
     {
         
-        public ReferenceTypeEventsCollection(IReferenceType parent) : 
+        public ReferenceTypeEventsCollection(NMF.Models.Meta.IReferenceType parent) : 
                 base(parent)
         {
         }
@@ -42,11 +44,11 @@ namespace NMF.Models.Meta
         {
             if ((e.NewValue != this.Parent))
             {
-                this.Remove(((IEvent)(sender)));
+                this.Remove(((NMF.Models.Meta.IEvent)(sender)));
             }
         }
         
-        protected override void SetOpposite(IEvent item, IReferenceType parent)
+        protected override void SetOpposite(NMF.Models.Meta.IEvent item, NMF.Models.Meta.IReferenceType parent)
         {
             if ((parent != null))
             {

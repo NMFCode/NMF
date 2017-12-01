@@ -131,6 +131,9 @@
     <None Include="Families.ecore">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Include="FromSchemaEcore.ecore">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Include="packages.config" />
     <None Include="Persons.ecore">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>

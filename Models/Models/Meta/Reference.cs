@@ -15,6 +15,7 @@ using NMF.Expressions.Linq;
 using NMF.Models;
 using NMF.Models.Collections;
 using NMF.Models.Expressions;
+using NMF.Models.Meta;
 using NMF.Models.Repository;
 using NMF.Serialization;
 using NMF.Utilities;
@@ -22,6 +23,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
@@ -37,7 +39,7 @@ namespace NMF.Models.Meta
     [XmlNamespacePrefixAttribute("nmeta")]
     [ModelRepresentationClassAttribute("http://nmf.codeplex.com/nmeta/#//Reference")]
     [DebuggerDisplayAttribute("Reference {Name}")]
-    public partial class Reference : MetaElement, IReference, NMF.Models.IModelElement
+    public partial class Reference : MetaElement, NMF.Models.Meta.IReference, NMF.Models.IModelElement
     {
         
         /// <summary>
@@ -54,28 +56,28 @@ namespace NMF.Models.Meta
         /// <summary>
         /// The backing field for the Opposite property
         /// </summary>
-        private IReference _opposite;
+        private NMF.Models.Meta.IReference _opposite;
         
         private static Lazy<ITypedElement> _referenceTypeReference = new Lazy<ITypedElement>(RetrieveReferenceTypeReference);
         
         /// <summary>
         /// The backing field for the ReferenceType property
         /// </summary>
-        private IReferenceType _referenceType;
+        private NMF.Models.Meta.IReferenceType _referenceType;
         
         private static Lazy<ITypedElement> _refinesReference = new Lazy<ITypedElement>(RetrieveRefinesReference);
         
         /// <summary>
         /// The backing field for the Refines property
         /// </summary>
-        private IReference _refines;
+        private NMF.Models.Meta.IReference _refines;
         
         private static Lazy<ITypedElement> _anchorReference = new Lazy<ITypedElement>(RetrieveAnchorReference);
         
         /// <summary>
         /// The backing field for the Anchor property
         /// </summary>
-        private IClass _anchor;
+        private NMF.Models.Meta.IClass _anchor;
         
         /// <summary>
         /// The backing field for the IsOrdered property
@@ -107,30 +109,30 @@ namespace NMF.Models.Meta
         
         private static IClass _classInstance;
         
-        event EventHandler<ValueChangedEventArgs> ITypedElement.TypeChanged
+        event EventHandler<ValueChangedEventArgs> NMF.Models.Meta.ITypedElement.TypeChanged
         {
             add
             {
-                IReference _this_Reference = this;
-                _this_Reference.ReferenceTypeChanged += value;
+                IReference _this_IReference = this;
+                _this_IReference.ReferenceTypeChanged += value;
             }
             remove
             {
-                IReference _this_Reference = this;
-                _this_Reference.ReferenceTypeChanged -= value;
+                IReference _this_IReference = this;
+                _this_IReference.ReferenceTypeChanged -= value;
             }
         }
-        event EventHandler<ValueChangedEventArgs> ITypedElement.TypeChanging
+        event EventHandler<ValueChangedEventArgs> NMF.Models.Meta.ITypedElement.TypeChanging
         {
             add
             {
-                IReference _this_Reference = this;
-                _this_Reference.ReferenceTypeChanging += value;
+                IReference _this_IReference = this;
+                _this_IReference.ReferenceTypeChanging += value;
             }
             remove
             {
-                IReference _this_Reference = this;
-                _this_Reference.ReferenceTypeChanging -= value;
+                IReference _this_IReference = this;
+                _this_IReference.ReferenceTypeChanging -= value;
             }
         }
         
@@ -138,7 +140,7 @@ namespace NMF.Models.Meta
         /// The IsContainment property
         /// </summary>
         [XmlAttributeAttribute(true)]
-        public virtual bool IsContainment
+        public bool IsContainment
         {
             get
             {
@@ -165,11 +167,11 @@ namespace NMF.Models.Meta
         [DesignerSerializationVisibilityAttribute(DesignerSerializationVisibility.Hidden)]
         [XmlAttributeAttribute(true)]
         [XmlOppositeAttribute("References")]
-        public virtual IReferenceType DeclaringType
+        public NMF.Models.Meta.IReferenceType DeclaringType
         {
             get
             {
-                return ModelHelper.CastAs<IReferenceType>(this.Parent);
+                return ModelHelper.CastAs<NMF.Models.Meta.IReferenceType>(this.Parent);
             }
             set
             {
@@ -182,7 +184,7 @@ namespace NMF.Models.Meta
         /// </summary>
         [XmlAttributeAttribute(true)]
         [XmlOppositeAttribute("Opposite")]
-        public virtual IReference Opposite
+        public NMF.Models.Meta.IReference Opposite
         {
             get
             {
@@ -192,7 +194,7 @@ namespace NMF.Models.Meta
             {
                 if ((this._opposite != value))
                 {
-                    IReference old = this._opposite;
+                    NMF.Models.Meta.IReference old = this._opposite;
                     ValueChangedEventArgs e = new ValueChangedEventArgs(old, value);
                     this.OnOppositeChanging(e);
                     this.OnPropertyChanging("Opposite", e, _oppositeReference);
@@ -217,7 +219,7 @@ namespace NMF.Models.Meta
         /// The ReferenceType property
         /// </summary>
         [XmlAttributeAttribute(true)]
-        public virtual IReferenceType ReferenceType
+        public NMF.Models.Meta.IReferenceType ReferenceType
         {
             get
             {
@@ -227,7 +229,7 @@ namespace NMF.Models.Meta
             {
                 if ((this._referenceType != value))
                 {
-                    IReferenceType old = this._referenceType;
+                    NMF.Models.Meta.IReferenceType old = this._referenceType;
                     ValueChangedEventArgs e = new ValueChangedEventArgs(old, value);
                     this.OnReferenceTypeChanging(e);
                     this.OnPropertyChanging("ReferenceType", e, _referenceTypeReference);
@@ -250,7 +252,7 @@ namespace NMF.Models.Meta
         /// The reference that is refined by the current reference, only applicable if the reference is part of a class
         /// </summary>
         [XmlAttributeAttribute(true)]
-        public virtual IReference Refines
+        public NMF.Models.Meta.IReference Refines
         {
             get
             {
@@ -260,7 +262,7 @@ namespace NMF.Models.Meta
             {
                 if ((this._refines != value))
                 {
-                    IReference old = this._refines;
+                    NMF.Models.Meta.IReference old = this._refines;
                     ValueChangedEventArgs e = new ValueChangedEventArgs(old, value);
                     this.OnRefinesChanging(e);
                     this.OnPropertyChanging("Refines", e, _refinesReference);
@@ -283,7 +285,7 @@ namespace NMF.Models.Meta
         /// The least common anchestor of an instance and its referenced element, if statically known
         /// </summary>
         [XmlAttributeAttribute(true)]
-        public virtual IClass Anchor
+        public NMF.Models.Meta.IClass Anchor
         {
             get
             {
@@ -293,7 +295,7 @@ namespace NMF.Models.Meta
             {
                 if ((this._anchor != value))
                 {
-                    IClass old = this._anchor;
+                    NMF.Models.Meta.IClass old = this._anchor;
                     ValueChangedEventArgs e = new ValueChangedEventArgs(old, value);
                     this.OnAnchorChanging(e);
                     this.OnPropertyChanging("Anchor", e, _anchorReference);
@@ -312,11 +314,11 @@ namespace NMF.Models.Meta
             }
         }
         
-        IType ITypedElement.Type
+        NMF.Models.Meta.IType NMF.Models.Meta.ITypedElement.Type
         {
             get
             {
-                IReference _this = this;
+                NMF.Models.Meta.IReference _this = this;
                 if ((_this.ReferenceType != null))
                 {
                     return _this.ReferenceType;
@@ -325,10 +327,10 @@ namespace NMF.Models.Meta
             }
             set
             {
-                IReference _this = this;
+                NMF.Models.Meta.IReference _this = this;
                 if ((value != null))
                 {
-                    IReferenceType @__ReferenceType = value.As<IReferenceType>();
+                    NMF.Models.Meta.IReferenceType @__ReferenceType = value.As<NMF.Models.Meta.IReferenceType>();
                     if ((@__ReferenceType != null))
                     {
                         _this.ReferenceType = @__ReferenceType;
@@ -348,7 +350,7 @@ namespace NMF.Models.Meta
         /// The IsOrdered property
         /// </summary>
         [XmlAttributeAttribute(true)]
-        public virtual bool IsOrdered
+        public bool IsOrdered
         {
             get
             {
@@ -373,7 +375,7 @@ namespace NMF.Models.Meta
         /// The IsUnique property
         /// </summary>
         [XmlAttributeAttribute(true)]
-        public virtual bool IsUnique
+        public bool IsUnique
         {
             get
             {
@@ -399,7 +401,7 @@ namespace NMF.Models.Meta
         /// </summary>
         [DefaultValueAttribute(0)]
         [XmlAttributeAttribute(true)]
-        public virtual int LowerBound
+        public int LowerBound
         {
             get
             {
@@ -425,7 +427,7 @@ namespace NMF.Models.Meta
         /// </summary>
         [DefaultValueAttribute(1)]
         [XmlAttributeAttribute(true)]
-        public virtual int UpperBound
+        public int UpperBound
         {
             get
             {
@@ -628,8 +630,8 @@ namespace NMF.Models.Meta
         /// <param name="newParent">The new parent model element</param>
         protected override void OnParentChanging(NMF.Models.IModelElement newParent, NMF.Models.IModelElement oldParent)
         {
-            IReferenceType oldDeclaringType = ModelHelper.CastAs<IReferenceType>(oldParent);
-            IReferenceType newDeclaringType = ModelHelper.CastAs<IReferenceType>(newParent);
+            NMF.Models.Meta.IReferenceType oldDeclaringType = ModelHelper.CastAs<NMF.Models.Meta.IReferenceType>(oldParent);
+            NMF.Models.Meta.IReferenceType newDeclaringType = ModelHelper.CastAs<NMF.Models.Meta.IReferenceType>(newParent);
             ValueChangedEventArgs e = new ValueChangedEventArgs(oldDeclaringType, newDeclaringType);
             this.OnDeclaringTypeChanging(e);
             this.OnPropertyChanging("DeclaringType", e, _declaringTypeReference);
@@ -655,8 +657,8 @@ namespace NMF.Models.Meta
         /// <param name="newParent">The new parent model element</param>
         protected override void OnParentChanged(NMF.Models.IModelElement newParent, NMF.Models.IModelElement oldParent)
         {
-            IReferenceType oldDeclaringType = ModelHelper.CastAs<IReferenceType>(oldParent);
-            IReferenceType newDeclaringType = ModelHelper.CastAs<IReferenceType>(newParent);
+            NMF.Models.Meta.IReferenceType oldDeclaringType = ModelHelper.CastAs<NMF.Models.Meta.IReferenceType>(oldParent);
+            NMF.Models.Meta.IReferenceType newDeclaringType = ModelHelper.CastAs<NMF.Models.Meta.IReferenceType>(newParent);
             if ((oldDeclaringType != null))
             {
                 oldDeclaringType.References.Remove(this);
@@ -960,6 +962,37 @@ namespace NMF.Models.Meta
         }
         
         /// <summary>
+        /// Resolves the given URI to a child model element
+        /// </summary>
+        /// <returns>The model element or null if it could not be found</returns>
+        /// <param name="reference">The requested reference name</param>
+        /// <param name="index">The index of this reference</param>
+        protected override NMF.Models.IModelElement GetModelElementForReference(string reference, int index)
+        {
+            if ((reference == "DECLARINGTYPE"))
+            {
+                return this.DeclaringType;
+            }
+            if ((reference == "OPPOSITE"))
+            {
+                return this.Opposite;
+            }
+            if ((reference == "REFERENCETYPE"))
+            {
+                return this.ReferenceType;
+            }
+            if ((reference == "REFINES"))
+            {
+                return this.Refines;
+            }
+            if ((reference == "ANCHOR"))
+            {
+                return this.Anchor;
+            }
+            return base.GetModelElementForReference(reference, index);
+        }
+        
+        /// <summary>
         /// Resolves the given attribute name
         /// </summary>
         /// <returns>The attribute value or null if it could not be found</returns>
@@ -999,27 +1032,27 @@ namespace NMF.Models.Meta
         {
             if ((feature == "DECLARINGTYPE"))
             {
-                this.DeclaringType = ((IReferenceType)(value));
+                this.DeclaringType = ((NMF.Models.Meta.IReferenceType)(value));
                 return;
             }
             if ((feature == "OPPOSITE"))
             {
-                this.Opposite = ((IReference)(value));
+                this.Opposite = ((NMF.Models.Meta.IReference)(value));
                 return;
             }
             if ((feature == "REFERENCETYPE"))
             {
-                this.ReferenceType = ((IReferenceType)(value));
+                this.ReferenceType = ((NMF.Models.Meta.IReferenceType)(value));
                 return;
             }
             if ((feature == "REFINES"))
             {
-                this.Refines = ((IReference)(value));
+                this.Refines = ((NMF.Models.Meta.IReference)(value));
                 return;
             }
             if ((feature == "ANCHOR"))
             {
-                this.Anchor = ((IClass)(value));
+                this.Anchor = ((NMF.Models.Meta.IClass)(value));
                 return;
             }
             if ((feature == "ISCONTAINMENT"))
@@ -1057,25 +1090,25 @@ namespace NMF.Models.Meta
         /// <param name="attribute">The requested attribute in upper case</param>
         protected override NMF.Expressions.INotifyExpression<object> GetExpressionForAttribute(string attribute)
         {
-            if ((attribute == "DeclaringType"))
+            if ((attribute == "ISCONTAINMENT"))
             {
-                return new DeclaringTypeProxy(this);
+                return Observable.Box(new IsContainmentProxy(this));
             }
-            if ((attribute == "Opposite"))
+            if ((attribute == "ISORDERED"))
             {
-                return new OppositeProxy(this);
+                return Observable.Box(new IsOrderedProxy(this));
             }
-            if ((attribute == "ReferenceType"))
+            if ((attribute == "ISUNIQUE"))
             {
-                return new ReferenceTypeProxy(this);
+                return Observable.Box(new IsUniqueProxy(this));
             }
-            if ((attribute == "Refines"))
+            if ((attribute == "LOWERBOUND"))
             {
-                return new RefinesProxy(this);
+                return Observable.Box(new LowerBoundProxy(this));
             }
-            if ((attribute == "Anchor"))
+            if ((attribute == "UPPERBOUND"))
             {
-                return new AnchorProxy(this);
+                return Observable.Box(new UpperBoundProxy(this));
             }
             return base.GetExpressionForAttribute(attribute);
         }
@@ -1087,23 +1120,23 @@ namespace NMF.Models.Meta
         /// <param name="reference">The requested reference in upper case</param>
         protected override NMF.Expressions.INotifyExpression<NMF.Models.IModelElement> GetExpressionForReference(string reference)
         {
-            if ((reference == "DeclaringType"))
+            if ((reference == "DECLARINGTYPE"))
             {
                 return new DeclaringTypeProxy(this);
             }
-            if ((reference == "Opposite"))
+            if ((reference == "OPPOSITE"))
             {
                 return new OppositeProxy(this);
             }
-            if ((reference == "ReferenceType"))
+            if ((reference == "REFERENCETYPE"))
             {
                 return new ReferenceTypeProxy(this);
             }
-            if ((reference == "Refines"))
+            if ((reference == "REFINES"))
             {
                 return new RefinesProxy(this);
             }
-            if ((reference == "Anchor"))
+            if ((reference == "ANCHOR"))
             {
                 return new AnchorProxy(this);
             }
@@ -1196,7 +1229,7 @@ namespace NMF.Models.Meta
             {
                 if ((this._parent.DeclaringType == null))
                 {
-                    IReferenceType declaringTypeCasted = item.As<IReferenceType>();
+                    NMF.Models.Meta.IReferenceType declaringTypeCasted = item.As<NMF.Models.Meta.IReferenceType>();
                     if ((declaringTypeCasted != null))
                     {
                         this._parent.DeclaringType = declaringTypeCasted;
@@ -1205,7 +1238,7 @@ namespace NMF.Models.Meta
                 }
                 if ((this._parent.Opposite == null))
                 {
-                    IReference oppositeCasted = item.As<IReference>();
+                    NMF.Models.Meta.IReference oppositeCasted = item.As<NMF.Models.Meta.IReference>();
                     if ((oppositeCasted != null))
                     {
                         this._parent.Opposite = oppositeCasted;
@@ -1214,7 +1247,7 @@ namespace NMF.Models.Meta
                 }
                 if ((this._parent.ReferenceType == null))
                 {
-                    IReferenceType referenceTypeCasted = item.As<IReferenceType>();
+                    NMF.Models.Meta.IReferenceType referenceTypeCasted = item.As<NMF.Models.Meta.IReferenceType>();
                     if ((referenceTypeCasted != null))
                     {
                         this._parent.ReferenceType = referenceTypeCasted;
@@ -1223,7 +1256,7 @@ namespace NMF.Models.Meta
                 }
                 if ((this._parent.Refines == null))
                 {
-                    IReference refinesCasted = item.As<IReference>();
+                    NMF.Models.Meta.IReference refinesCasted = item.As<NMF.Models.Meta.IReference>();
                     if ((refinesCasted != null))
                     {
                         this._parent.Refines = refinesCasted;
@@ -1232,7 +1265,7 @@ namespace NMF.Models.Meta
                 }
                 if ((this._parent.Anchor == null))
                 {
-                    IClass anchorCasted = item.As<IClass>();
+                    NMF.Models.Meta.IClass anchorCasted = item.As<NMF.Models.Meta.IClass>();
                     if ((anchorCasted != null))
                     {
                         this._parent.Anchor = anchorCasted;
@@ -1365,14 +1398,14 @@ namespace NMF.Models.Meta
         /// <summary>
         /// Represents a proxy to represent an incremental access to the IsContainment property
         /// </summary>
-        private sealed class IsContainmentProxy : ModelPropertyChange<IReference, bool>
+        private sealed class IsContainmentProxy : ModelPropertyChange<NMF.Models.Meta.IReference, bool>
         {
             
             /// <summary>
             /// Creates a new observable property access proxy
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
-            public IsContainmentProxy(IReference modelElement) : 
+            public IsContainmentProxy(NMF.Models.Meta.IReference modelElement) : 
                     base(modelElement, "IsContainment")
             {
             }
@@ -1396,14 +1429,14 @@ namespace NMF.Models.Meta
         /// <summary>
         /// Represents a proxy to represent an incremental access to the DeclaringType property
         /// </summary>
-        private sealed class DeclaringTypeProxy : ModelPropertyChange<IReference, IReferenceType>
+        private sealed class DeclaringTypeProxy : ModelPropertyChange<NMF.Models.Meta.IReference, NMF.Models.Meta.IReferenceType>
         {
             
             /// <summary>
             /// Creates a new observable property access proxy
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
-            public DeclaringTypeProxy(IReference modelElement) : 
+            public DeclaringTypeProxy(NMF.Models.Meta.IReference modelElement) : 
                     base(modelElement, "DeclaringType")
             {
             }
@@ -1411,7 +1444,7 @@ namespace NMF.Models.Meta
             /// <summary>
             /// Gets or sets the value of this expression
             /// </summary>
-            public override IReferenceType Value
+            public override NMF.Models.Meta.IReferenceType Value
             {
                 get
                 {
@@ -1427,14 +1460,14 @@ namespace NMF.Models.Meta
         /// <summary>
         /// Represents a proxy to represent an incremental access to the Opposite property
         /// </summary>
-        private sealed class OppositeProxy : ModelPropertyChange<IReference, IReference>
+        private sealed class OppositeProxy : ModelPropertyChange<NMF.Models.Meta.IReference, NMF.Models.Meta.IReference>
         {
             
             /// <summary>
             /// Creates a new observable property access proxy
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
-            public OppositeProxy(IReference modelElement) : 
+            public OppositeProxy(NMF.Models.Meta.IReference modelElement) : 
                     base(modelElement, "Opposite")
             {
             }
@@ -1442,7 +1475,7 @@ namespace NMF.Models.Meta
             /// <summary>
             /// Gets or sets the value of this expression
             /// </summary>
-            public override IReference Value
+            public override NMF.Models.Meta.IReference Value
             {
                 get
                 {
@@ -1458,14 +1491,14 @@ namespace NMF.Models.Meta
         /// <summary>
         /// Represents a proxy to represent an incremental access to the ReferenceType property
         /// </summary>
-        private sealed class ReferenceTypeProxy : ModelPropertyChange<IReference, IReferenceType>
+        private sealed class ReferenceTypeProxy : ModelPropertyChange<NMF.Models.Meta.IReference, NMF.Models.Meta.IReferenceType>
         {
             
             /// <summary>
             /// Creates a new observable property access proxy
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
-            public ReferenceTypeProxy(IReference modelElement) : 
+            public ReferenceTypeProxy(NMF.Models.Meta.IReference modelElement) : 
                     base(modelElement, "ReferenceType")
             {
             }
@@ -1473,7 +1506,7 @@ namespace NMF.Models.Meta
             /// <summary>
             /// Gets or sets the value of this expression
             /// </summary>
-            public override IReferenceType Value
+            public override NMF.Models.Meta.IReferenceType Value
             {
                 get
                 {
@@ -1489,14 +1522,14 @@ namespace NMF.Models.Meta
         /// <summary>
         /// Represents a proxy to represent an incremental access to the Refines property
         /// </summary>
-        private sealed class RefinesProxy : ModelPropertyChange<IReference, IReference>
+        private sealed class RefinesProxy : ModelPropertyChange<NMF.Models.Meta.IReference, NMF.Models.Meta.IReference>
         {
             
             /// <summary>
             /// Creates a new observable property access proxy
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
-            public RefinesProxy(IReference modelElement) : 
+            public RefinesProxy(NMF.Models.Meta.IReference modelElement) : 
                     base(modelElement, "Refines")
             {
             }
@@ -1504,7 +1537,7 @@ namespace NMF.Models.Meta
             /// <summary>
             /// Gets or sets the value of this expression
             /// </summary>
-            public override IReference Value
+            public override NMF.Models.Meta.IReference Value
             {
                 get
                 {
@@ -1520,14 +1553,14 @@ namespace NMF.Models.Meta
         /// <summary>
         /// Represents a proxy to represent an incremental access to the Anchor property
         /// </summary>
-        private sealed class AnchorProxy : ModelPropertyChange<IReference, IClass>
+        private sealed class AnchorProxy : ModelPropertyChange<NMF.Models.Meta.IReference, NMF.Models.Meta.IClass>
         {
             
             /// <summary>
             /// Creates a new observable property access proxy
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
-            public AnchorProxy(IReference modelElement) : 
+            public AnchorProxy(NMF.Models.Meta.IReference modelElement) : 
                     base(modelElement, "Anchor")
             {
             }
@@ -1535,7 +1568,7 @@ namespace NMF.Models.Meta
             /// <summary>
             /// Gets or sets the value of this expression
             /// </summary>
-            public override IClass Value
+            public override NMF.Models.Meta.IClass Value
             {
                 get
                 {
@@ -1551,14 +1584,14 @@ namespace NMF.Models.Meta
         /// <summary>
         /// Represents a proxy to represent an incremental access to the IsOrdered property
         /// </summary>
-        private sealed class IsOrderedProxy : ModelPropertyChange<ITypedElement, bool>
+        private sealed class IsOrderedProxy : ModelPropertyChange<NMF.Models.Meta.ITypedElement, bool>
         {
             
             /// <summary>
             /// Creates a new observable property access proxy
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
-            public IsOrderedProxy(ITypedElement modelElement) : 
+            public IsOrderedProxy(NMF.Models.Meta.ITypedElement modelElement) : 
                     base(modelElement, "IsOrdered")
             {
             }
@@ -1582,14 +1615,14 @@ namespace NMF.Models.Meta
         /// <summary>
         /// Represents a proxy to represent an incremental access to the IsUnique property
         /// </summary>
-        private sealed class IsUniqueProxy : ModelPropertyChange<ITypedElement, bool>
+        private sealed class IsUniqueProxy : ModelPropertyChange<NMF.Models.Meta.ITypedElement, bool>
         {
             
             /// <summary>
             /// Creates a new observable property access proxy
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
-            public IsUniqueProxy(ITypedElement modelElement) : 
+            public IsUniqueProxy(NMF.Models.Meta.ITypedElement modelElement) : 
                     base(modelElement, "IsUnique")
             {
             }
@@ -1613,14 +1646,14 @@ namespace NMF.Models.Meta
         /// <summary>
         /// Represents a proxy to represent an incremental access to the LowerBound property
         /// </summary>
-        private sealed class LowerBoundProxy : ModelPropertyChange<ITypedElement, int>
+        private sealed class LowerBoundProxy : ModelPropertyChange<NMF.Models.Meta.ITypedElement, int>
         {
             
             /// <summary>
             /// Creates a new observable property access proxy
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
-            public LowerBoundProxy(ITypedElement modelElement) : 
+            public LowerBoundProxy(NMF.Models.Meta.ITypedElement modelElement) : 
                     base(modelElement, "LowerBound")
             {
             }
@@ -1644,14 +1677,14 @@ namespace NMF.Models.Meta
         /// <summary>
         /// Represents a proxy to represent an incremental access to the UpperBound property
         /// </summary>
-        private sealed class UpperBoundProxy : ModelPropertyChange<ITypedElement, int>
+        private sealed class UpperBoundProxy : ModelPropertyChange<NMF.Models.Meta.ITypedElement, int>
         {
             
             /// <summary>
             /// Creates a new observable property access proxy
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
-            public UpperBoundProxy(ITypedElement modelElement) : 
+            public UpperBoundProxy(NMF.Models.Meta.ITypedElement modelElement) : 
                     base(modelElement, "UpperBound")
             {
             }
@@ -1675,14 +1708,14 @@ namespace NMF.Models.Meta
         /// <summary>
         /// Represents a proxy to represent an incremental access to the Type property
         /// </summary>
-        private sealed class TypeProxy : ModelPropertyChange<ITypedElement, IType>
+        private sealed class TypeProxy : ModelPropertyChange<NMF.Models.Meta.ITypedElement, NMF.Models.Meta.IType>
         {
             
             /// <summary>
             /// Creates a new observable property access proxy
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
-            public TypeProxy(ITypedElement modelElement) : 
+            public TypeProxy(NMF.Models.Meta.ITypedElement modelElement) : 
                     base(modelElement, "Type")
             {
             }
@@ -1690,7 +1723,7 @@ namespace NMF.Models.Meta
             /// <summary>
             /// Gets or sets the value of this expression
             /// </summary>
-            public override IType Value
+            public override NMF.Models.Meta.IType Value
             {
                 get
                 {

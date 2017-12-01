@@ -15,6 +15,7 @@ using NMF.Expressions.Linq;
 using NMF.Models;
 using NMF.Models.Collections;
 using NMF.Models.Expressions;
+using NMF.Models.Meta;
 using NMF.Models.Repository;
 using NMF.Serialization;
 using NMF.Utilities;
@@ -22,6 +23,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
@@ -35,12 +37,13 @@ namespace NMF.Models.Meta
     /// </summary>
     [DefaultImplementationTypeAttribute(typeof(TypedElement))]
     [XmlDefaultImplementationTypeAttribute(typeof(TypedElement))]
-    public interface ITypedElement : NMF.Models.IModelElement, IMetaElement
+    public interface ITypedElement : NMF.Models.IModelElement, NMF.Models.Meta.IMetaElement
     {
         
         /// <summary>
         /// The IsOrdered property
         /// </summary>
+        [XmlAttributeAttribute(true)]
         bool IsOrdered
         {
             get;
@@ -50,6 +53,7 @@ namespace NMF.Models.Meta
         /// <summary>
         /// The IsUnique property
         /// </summary>
+        [XmlAttributeAttribute(true)]
         bool IsUnique
         {
             get;
@@ -59,6 +63,8 @@ namespace NMF.Models.Meta
         /// <summary>
         /// The LowerBound property
         /// </summary>
+        [DefaultValueAttribute(0)]
+        [XmlAttributeAttribute(true)]
         int LowerBound
         {
             get;
@@ -68,6 +74,8 @@ namespace NMF.Models.Meta
         /// <summary>
         /// The UpperBound property
         /// </summary>
+        [DefaultValueAttribute(1)]
+        [XmlAttributeAttribute(true)]
         int UpperBound
         {
             get;
@@ -77,7 +85,8 @@ namespace NMF.Models.Meta
         /// <summary>
         /// The Type property
         /// </summary>
-        IType Type
+        [XmlAttributeAttribute(true)]
+        NMF.Models.Meta.IType Type
         {
             get;
             set;

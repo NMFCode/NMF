@@ -15,6 +15,7 @@ using NMF.Expressions.Linq;
 using NMF.Models;
 using NMF.Models.Collections;
 using NMF.Models.Expressions;
+using NMF.Models.Meta;
 using NMF.Models.Repository;
 using NMF.Serialization;
 using NMF.Utilities;
@@ -38,7 +39,7 @@ namespace NMF.Models.Meta
     [XmlNamespacePrefixAttribute("nmeta")]
     [ModelRepresentationClassAttribute("http://nmf.codeplex.com/nmeta/#//StructuredType")]
     [DebuggerDisplayAttribute("StructuredType {Name}")]
-    public abstract partial class StructuredType : Type, IStructuredType, NMF.Models.IModelElement
+    public abstract partial class StructuredType : Type, NMF.Models.Meta.IStructuredType, NMF.Models.IModelElement
     {
         
         private static Lazy<ITypedElement> _operationsReference = new Lazy<ITypedElement>(RetrieveOperationsReference);
@@ -75,7 +76,7 @@ namespace NMF.Models.Meta
         [ContainmentAttribute()]
         [XmlOppositeAttribute("DeclaringType")]
         [ConstantAttribute()]
-        public virtual ICollectionExpression<IOperation> Operations
+        public ICollectionExpression<NMF.Models.Meta.IOperation> Operations
         {
             get
             {
@@ -91,7 +92,7 @@ namespace NMF.Models.Meta
         [ContainmentAttribute()]
         [XmlOppositeAttribute("DeclaringType")]
         [ConstantAttribute()]
-        public virtual ICollectionExpression<IAttribute> Attributes
+        public ICollectionExpression<NMF.Models.Meta.IAttribute> Attributes
         {
             get
             {
@@ -156,7 +157,7 @@ namespace NMF.Models.Meta
         /// </summary>
         /// <param name="sender">The collection that raised the change</param>
         /// <param name="e">The original event data</param>
-        private void OperationsCollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        private void OperationsCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
             this.OnCollectionChanged("Operations", e, _operationsReference);
         }
@@ -181,7 +182,7 @@ namespace NMF.Models.Meta
         /// </summary>
         /// <param name="sender">The collection that raised the change</param>
         /// <param name="e">The original event data</param>
-        private void AttributesCollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        private void AttributesCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
             this.OnCollectionChanged("Attributes", e, _attributesReference);
         }
@@ -202,6 +203,24 @@ namespace NMF.Models.Meta
                 return this._attributes;
             }
             return base.GetCollectionForFeature(feature);
+        }
+        
+        /// <summary>
+        /// Gets the property name for the given container
+        /// </summary>
+        /// <returns>The name of the respective container reference</returns>
+        /// <param name="container">The container object</param>
+        protected internal override string GetCompositionName(object container)
+        {
+            if ((container == this._operations))
+            {
+                return "Operations";
+            }
+            if ((container == this._attributes))
+            {
+                return "Attributes";
+            }
+            return base.GetCompositionName(container);
         }
         
         /// <summary>
@@ -264,12 +283,12 @@ namespace NMF.Models.Meta
             /// <param name="item">The item to add</param>
             public override void Add(NMF.Models.IModelElement item)
             {
-                IOperation operationsCasted = item.As<IOperation>();
+                NMF.Models.Meta.IOperation operationsCasted = item.As<NMF.Models.Meta.IOperation>();
                 if ((operationsCasted != null))
                 {
                     this._parent.Operations.Add(operationsCasted);
                 }
-                IAttribute attributesCasted = item.As<IAttribute>();
+                NMF.Models.Meta.IAttribute attributesCasted = item.As<NMF.Models.Meta.IAttribute>();
                 if ((attributesCasted != null))
                 {
                     this._parent.Attributes.Add(attributesCasted);
@@ -349,13 +368,13 @@ namespace NMF.Models.Meta
             /// <param name="item">The item that should be removed</param>
             public override bool Remove(NMF.Models.IModelElement item)
             {
-                IOperation operationItem = item.As<IOperation>();
+                NMF.Models.Meta.IOperation operationItem = item.As<NMF.Models.Meta.IOperation>();
                 if (((operationItem != null) 
                             && this._parent.Operations.Remove(operationItem)))
                 {
                     return true;
                 }
-                IAttribute attributeItem = item.As<IAttribute>();
+                NMF.Models.Meta.IAttribute attributeItem = item.As<NMF.Models.Meta.IAttribute>();
                 if (((attributeItem != null) 
                             && this._parent.Attributes.Remove(attributeItem)))
                 {
@@ -422,12 +441,12 @@ namespace NMF.Models.Meta
             /// <param name="item">The item to add</param>
             public override void Add(NMF.Models.IModelElement item)
             {
-                IOperation operationsCasted = item.As<IOperation>();
+                NMF.Models.Meta.IOperation operationsCasted = item.As<NMF.Models.Meta.IOperation>();
                 if ((operationsCasted != null))
                 {
                     this._parent.Operations.Add(operationsCasted);
                 }
-                IAttribute attributesCasted = item.As<IAttribute>();
+                NMF.Models.Meta.IAttribute attributesCasted = item.As<NMF.Models.Meta.IAttribute>();
                 if ((attributesCasted != null))
                 {
                     this._parent.Attributes.Add(attributesCasted);
@@ -507,13 +526,13 @@ namespace NMF.Models.Meta
             /// <param name="item">The item that should be removed</param>
             public override bool Remove(NMF.Models.IModelElement item)
             {
-                IOperation operationItem = item.As<IOperation>();
+                NMF.Models.Meta.IOperation operationItem = item.As<NMF.Models.Meta.IOperation>();
                 if (((operationItem != null) 
                             && this._parent.Operations.Remove(operationItem)))
                 {
                     return true;
                 }
-                IAttribute attributeItem = item.As<IAttribute>();
+                NMF.Models.Meta.IAttribute attributeItem = item.As<NMF.Models.Meta.IAttribute>();
                 if (((attributeItem != null) 
                             && this._parent.Attributes.Remove(attributeItem)))
                 {

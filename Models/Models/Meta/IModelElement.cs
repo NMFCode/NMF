@@ -15,6 +15,7 @@ using NMF.Expressions.Linq;
 using NMF.Models;
 using NMF.Models.Collections;
 using NMF.Models.Expressions;
+using NMF.Models.Meta;
 using NMF.Models.Repository;
 using NMF.Serialization;
 using NMF.Utilities;
@@ -22,6 +23,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
@@ -41,6 +43,7 @@ namespace NMF.Models.Meta
         /// <summary>
         /// The AbsoluteUri property
         /// </summary>
+        [XmlAttributeAttribute(true)]
         Uri AbsoluteUri
         {
             get;
@@ -50,6 +53,7 @@ namespace NMF.Models.Meta
         /// <summary>
         /// The RelativeUri property
         /// </summary>
+        [XmlAttributeAttribute(true)]
         Uri RelativeUri
         {
             get;
@@ -59,7 +63,12 @@ namespace NMF.Models.Meta
         /// <summary>
         /// The Extensions property
         /// </summary>
-        ICollectionExpression<IModelElementExtension> Extensions
+        [DesignerSerializationVisibilityAttribute(DesignerSerializationVisibility.Content)]
+        [XmlAttributeAttribute(false)]
+        [ContainmentAttribute()]
+        [XmlOppositeAttribute("ExtendedElement")]
+        [ConstantAttribute()]
+        ICollectionExpression<NMF.Models.Meta.IModelElementExtension> Extensions
         {
             get;
         }
@@ -67,16 +76,8 @@ namespace NMF.Models.Meta
         /// <summary>
         /// The Parent property
         /// </summary>
+        [XmlAttributeAttribute(true)]
         NMF.Models.Meta.IModelElement Parent
-        {
-            get;
-            set;
-        }
-        
-        /// <summary>
-        /// The Type property
-        /// </summary>
-        IReferenceType Type
         {
             get;
             set;
@@ -113,19 +114,9 @@ namespace NMF.Models.Meta
         event System.EventHandler<ValueChangedEventArgs> ParentChanged;
         
         /// <summary>
-        /// Gets fired before the Type property changes its value
-        /// </summary>
-        event System.EventHandler<ValueChangedEventArgs> TypeChanging;
-        
-        /// <summary>
-        /// Gets fired when the Type property changed its value
-        /// </summary>
-        event System.EventHandler<ValueChangedEventArgs> TypeChanged;
-        
-        /// <summary>
         /// Gets the Class for this model element
         /// </summary>
-        IClass GetClass();
+        NMF.Models.Meta.IClass GetClass();
     }
 }
 

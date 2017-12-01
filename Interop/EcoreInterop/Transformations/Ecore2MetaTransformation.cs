@@ -53,6 +53,19 @@ namespace NMF.Interop.Ecore.Transformations
                 if (!(input is IEDataType) || (input is IEEnum))
                 {
                     output.Name = input.Name.ToString();
+
+                    var extendedMetaData = input.EAnnotations.FirstOrDefault(o => o.Source.Equals("http:///org/eclipse/emf/ecore/util/ExtendedMetaData"));
+                    if (extendedMetaData != null)
+                    {
+                        var name = extendedMetaData.Details.FirstOrDefault(o => o.Key.Equals("name"));
+                        if (name != null)
+                        {
+                            output.Extensions.Add(new SerializationInformation(output)
+                            {
+                                SerializationName = name.Value.Replace("_._type", "")
+                            });
+                        }
+                    }
                 }
             }
         }

@@ -15,6 +15,7 @@ using NMF.Expressions.Linq;
 using NMF.Models;
 using NMF.Models.Collections;
 using NMF.Models.Expressions;
+using NMF.Models.Meta;
 using NMF.Models.Repository;
 using NMF.Serialization;
 using NMF.Utilities;
@@ -22,6 +23,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
@@ -30,10 +32,10 @@ namespace NMF.Models.Meta
 {
     
     
-    public class ClassReferenceConstraintsCollection : ObservableOppositeList<IClass, IReferenceConstraint>
+    public class ClassReferenceConstraintsCollection : ObservableOppositeList<NMF.Models.Meta.IClass, NMF.Models.Meta.IReferenceConstraint>
     {
         
-        public ClassReferenceConstraintsCollection(IClass parent) : 
+        public ClassReferenceConstraintsCollection(NMF.Models.Meta.IClass parent) : 
                 base(parent)
         {
         }
@@ -42,11 +44,11 @@ namespace NMF.Models.Meta
         {
             if ((e.NewValue != this.Parent))
             {
-                this.Remove(((IReferenceConstraint)(sender)));
+                this.Remove(((NMF.Models.Meta.IReferenceConstraint)(sender)));
             }
         }
         
-        protected override void SetOpposite(IReferenceConstraint item, IClass parent)
+        protected override void SetOpposite(NMF.Models.Meta.IReferenceConstraint item, NMF.Models.Meta.IClass parent)
         {
             if ((parent != null))
             {

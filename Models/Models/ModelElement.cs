@@ -26,7 +26,7 @@ namespace NMF.Models
     public abstract class ModelElement : IModelElement, INotifyPropertyChanged, INotifyPropertyChanging
     {
         private ModelElement parent;
-        private ObservableList<ModelElementExtension> extensions;
+        private ObservableSet<ModelElementExtension> extensions;
         private ModelElementFlag flag;
         private EventHandler<BubbledChangeEventArgs> bubbledChange;
 
@@ -751,7 +751,7 @@ namespace NMF.Models
             {
                 if (extensions == null)
                 {
-                    Interlocked.CompareExchange(ref extensions, new ObservableList<ModelElementExtension>(), null);
+                    Interlocked.CompareExchange(ref extensions, new ObservableSet<ModelElementExtension>(), null);
                 }
                 return extensions;
             }

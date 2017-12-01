@@ -15,6 +15,7 @@ using NMF.Expressions.Linq;
 using NMF.Models;
 using NMF.Models.Collections;
 using NMF.Models.Expressions;
+using NMF.Models.Meta;
 using NMF.Models.Repository;
 using NMF.Serialization;
 using NMF.Utilities;
@@ -22,6 +23,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
@@ -35,12 +37,13 @@ namespace NMF.Models.Meta
     /// </summary>
     [DefaultImplementationTypeAttribute(typeof(Namespace))]
     [XmlDefaultImplementationTypeAttribute(typeof(Namespace))]
-    public interface INamespace : NMF.Models.IModelElement, IMetaElement
+    public interface INamespace : NMF.Models.IModelElement, NMF.Models.Meta.IMetaElement
     {
         
         /// <summary>
         /// The Uri property
         /// </summary>
+        [XmlAttributeAttribute(true)]
         Uri Uri
         {
             get;
@@ -50,6 +53,7 @@ namespace NMF.Models.Meta
         /// <summary>
         /// The Prefix property
         /// </summary>
+        [XmlAttributeAttribute(true)]
         string Prefix
         {
             get;
@@ -59,7 +63,10 @@ namespace NMF.Models.Meta
         /// <summary>
         /// The ParentNamespace property
         /// </summary>
-        INamespace ParentNamespace
+        [DesignerSerializationVisibilityAttribute(DesignerSerializationVisibility.Hidden)]
+        [XmlAttributeAttribute(true)]
+        [XmlOppositeAttribute("ChildNamespaces")]
+        NMF.Models.Meta.INamespace ParentNamespace
         {
             get;
             set;
@@ -68,7 +75,12 @@ namespace NMF.Models.Meta
         /// <summary>
         /// The ChildNamespaces property
         /// </summary>
-        ICollectionExpression<INamespace> ChildNamespaces
+        [DesignerSerializationVisibilityAttribute(DesignerSerializationVisibility.Content)]
+        [XmlAttributeAttribute(false)]
+        [ContainmentAttribute()]
+        [XmlOppositeAttribute("ParentNamespace")]
+        [ConstantAttribute()]
+        ICollectionExpression<NMF.Models.Meta.INamespace> ChildNamespaces
         {
             get;
         }
@@ -76,7 +88,12 @@ namespace NMF.Models.Meta
         /// <summary>
         /// The Types property
         /// </summary>
-        ICollectionExpression<IType> Types
+        [DesignerSerializationVisibilityAttribute(DesignerSerializationVisibility.Content)]
+        [XmlAttributeAttribute(false)]
+        [ContainmentAttribute()]
+        [XmlOppositeAttribute("Namespace")]
+        [ConstantAttribute()]
+        ICollectionExpression<NMF.Models.Meta.IType> Types
         {
             get;
         }
