@@ -21,7 +21,7 @@
         </dependencies>
     </metadata>
   <files>
-    <file src="..\Transformations\Transformations\bin\Release\NMF.Transformations.dll" target="lib\net45" />
-    <file src="..\Transformations\Transformations\bin\Release\NMF.Transformations.Core.dll" target="lib\net45" />
+    <file src="..\Transformations\Transformations\bin\Release\netstandard2.0\NMF.Transformations.dll" target="lib\netstandard2.0" />
+    <file src="..\Transformations\Transformations\bin\Release\netstandard2.0\NMF.Transformations.Core.dll" target="lib\netstandard2.0" />
   </files>
 </package>
