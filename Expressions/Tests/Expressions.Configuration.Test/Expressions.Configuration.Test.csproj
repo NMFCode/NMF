@@ -7,6 +7,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Include="..\Models.Expressions.Tests\NotifySystemTests.cs" Link="NotifySystemTests.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="15.3.0" />
     <PackageReference Include="MSTest.TestAdapter" Version="1.1.18" />
     <PackageReference Include="MSTest.TestFramework" Version="1.1.18" />
@@ -16,6 +20,5 @@
     <ProjectReference Include="..\..\..\Models\Models.Tests\Models.Tests.csproj" />
     <ProjectReference Include="..\..\Expressions.Configuration\Expressions.Configuration.csproj" />
     <ProjectReference Include="..\..\Models.Expressions\Expressions.Models.csproj" />
-    <ProjectReference Include="..\Models.Expressions.Tests\Expressions.Models.Tests.csproj" />
   </ItemGroup>
 </Project>
