@@ -104,14 +104,14 @@ namespace NMF.Incerator
                 this.baseConfiguration = baseConfiguration;
             }
 
-            protected override void Mutate(Chromosome child, double mutationProbability)
+            protected override void Mutate(Chromosome child)
             {
                 if (child.IsElite) return;
                 var rnd = RandomProvider.GetThreadRandom();
                 for (int i = 0; i < child.Genes.Count; i++)
                 {
                     var gene = child.Genes[i];
-                    if (rnd.NextDouble() <= mutationProbability)
+                    if (rnd.NextDouble() <= MutationProbability)
                     {
                         gene.ObjectValue = rnd.Next(baseConfiguration.MethodConfigurations[i].AllowedStrategies.Count);
                     }
@@ -137,7 +137,7 @@ namespace NMF.Incerator
                 List<Chromosome> nonElites = newPopulation.GetNonElites();
                 foreach (Chromosome current in nonElites)
                 {
-                    this.Mutate(current, this.MutationProbability);
+                    this.Mutate(current);
                 }
             }
         }

@@ -1,13 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 using NMF.Collections.ObjectModel;
 
 using NMF.Tests;
-using NMF.Models.Collections;
 
 namespace NMF.Collections.Test
 {

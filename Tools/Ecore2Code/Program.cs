@@ -31,7 +31,7 @@ namespace Ecore2Code
         [Option('n', "namespace", HelpText="The root namespace")]
         public string OverallNamespace { get; set; }
 
-        [Option('l', "language", DefaultValue = SupportedLanguage.CS, HelpText = "The language in which the code should be generated")]
+        [Option('l', "language", Default = SupportedLanguage.CS, HelpText = "The language in which the code should be generated")]
         public SupportedLanguage Language { get; set; }
 
         [Option('f', "folder", HelpText = "Determines whether the code for classes should be separated to multiple files")]
@@ -52,8 +52,8 @@ namespace Ecore2Code
         [Option('p', "primitive-types", HelpText = "If set, Ecore Data types are transformed to primitive types")]
         public bool PrimitiveTypes { get; set; }
 
-        [ValueList(typeof(List<string>))]
-        public IList<string> InputFiles { get; set; }
+        [Value(0)]
+        public IEnumerable<string> InputFiles { get; set; }
 
         [Option('o', "output", Required=true, HelpText="The output file/folder in which the code should be generated")]
         public string OutputFile { get; set; }
@@ -61,16 +61,11 @@ namespace Ecore2Code
         [Option('m', "metamodel", Required=false, HelpText="Specify this argument if you want to serialize the NMeta metamodel possibly generated from Ecore")]
         public string NMeta { get; set; }
 
-        [OptionList('r', "resolve", Required=false, HelpText="A list of namespace remappings in the syntax URI=file, multiple entries separated by ';'", Separator=';')]
-        public List<string> NamespaceMappings { get; set; }
+        [Option('r', "resolve", Required=false, HelpText="A list of namespace remappings in the syntax URI=file, multiple entries separated by ';'", Separator=';')]
+        public IEnumerable<string> NamespaceMappings { get; set; }
 
-        [OptionList('t', "type-mapping", Required = false, HelpText = "A list of type mappings in the syntax <Ecore Instance Class>=<.NET class>, multiple entries separated by ';'", Separator =';')]
-        public List<string> TypeMappings { get; set; }
-
-        public string GetHelp()
-        {
-            return HelpText.AutoBuild(this);
-        }
+        [Option('t', "type-mapping", Required = false, HelpText = "A list of type mappings in the syntax <Ecore Instance Class>=<.NET class>, multiple entries separated by ';'", Separator =';')]
+        public IEnumerable<string> TypeMappings { get; set; }
     }
 
     public enum SupportedLanguage
@@ -93,31 +88,35 @@ namespace Ecore2Code
         }
 
         static void Main(string[] args)
-        {            
-            Options options = new Options();
-            if (Parser.Default.ParseArguments(args, options))
+        {
+            var result = Parser.Default.ParseArguments<Options>(args);
+            switch (result.Tag)
             {
-                var gen = new Ecore2Code(options);
+                case ParserResultType.Parsed:
+                    var options = (result as Parsed<Options>).Value;
+
+                    var gen = new Ecore2Code(options);
 #if DEBUG
-                gen.GenerateCode();
-#else
-                try
-                {
                     gen.GenerateCode();
-                }
-                catch (Exception ex)
-                {
-                    Console.WriteLine(ex.Message);
-                }
+#else
+                    try
+                    {
+                        gen.GenerateCode();
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine(ex.Message);
+                    }
 #endif
-            }
-            else
-            {
-                Console.WriteLine("You are using me wrongly!");
-                Console.WriteLine("Usage: Ecore2Code [Options] -o [Output File or directory] [Inputfiles]");
-                Console.WriteLine("Input files may either be in NMeta or Ecore format.");
-                Console.WriteLine("Example: Ecore2Code -f -n NMF.Models -o Meta NMeta.nmf");
-                Console.WriteLine(options.GetHelp());
+                    break;
+                case ParserResultType.NotParsed:
+                default:
+                    Console.WriteLine("You are using me wrongly!");
+                    Console.WriteLine("Usage: Ecore2Code [Options] -o [Output File or directory] [Inputfiles]");
+                    Console.WriteLine("Input files may either be in NMeta or Ecore format.");
+                    Console.WriteLine("Example: Ecore2Code -f -n NMF.Models -o Meta NMeta.nmf");
+                    Console.WriteLine(HelpText.AutoBuild(result).ToString());
+                    break;
             }
         }
 
@@ -164,7 +163,7 @@ namespace Ecore2Code
         private Dictionary<Uri, string> LoadNamespaceMappings()
         {
             Dictionary<Uri, string> mappings = null;
-            if (options.NamespaceMappings != null && options.NamespaceMappings.Count > 0)
+            if (options.NamespaceMappings != null && options.NamespaceMappings.Count() > 0)
             {
                 mappings = new Dictionary<Uri, string>();
                 foreach (var mapping in options.NamespaceMappings)
@@ -191,7 +190,7 @@ namespace Ecore2Code
         private void LoadTypeMappings()
         {
             Ecore2MetaTransformation.GeneratePrimitiveTypes = options.PrimitiveTypes;
-            if (options.TypeMappings != null && options.TypeMappings.Count > 0)
+            if (options.TypeMappings != null && options.TypeMappings.Count() > 0)
             {
                 var typeMapping = new Dictionary<string, string>();
                 foreach (var mapping in options.TypeMappings)
@@ -297,7 +296,7 @@ namespace Ecore2Code
         public INamespace LoadPackageFromFiles(IDictionary<Uri, string> resolveMappings)
         {
             var files = options.InputFiles;
-            if (files == null || files.Count == 0) return null;
+            if (files == null || files.Count() == 0) return null;
 
             var packages = new List<INamespace>();
             repository = new ModelRepository(EcoreInterop.Repository);

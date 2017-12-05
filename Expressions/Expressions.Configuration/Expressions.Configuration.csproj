@@ -1,98 +1,32 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
   <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{CE312AFB-2FB6-4436-89D6-33242D26E2A3}</ProjectGuid>
-    <OutputType>Library</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>NMF.Expressions</RootNamespace>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <AssemblyName>NMF.Expressions.Configuration</AssemblyName>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
-    <FileAlignment>512</FileAlignment>
-    <TargetFrameworkProfile />
+    <RootNamespace>NMF.Expressions</RootNamespace>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-  </PropertyGroup>
+
   <ItemGroup>
-    <Reference Include="System" />
-    <Reference Include="System.Core" />
-    <Reference Include="Microsoft.CSharp" />
-    <Reference Include="System.Xml" />
+    <None Remove="IncrementalizationConfiguration.nmeta" />
   </ItemGroup>
-  <ItemGroup>
-    <Compile Include="..\..\CommonAssemblyInfo.cs">
-      <Link>CommonAssemblyInfo.cs</Link>
-    </Compile>
-    <Compile Include="ConfiguredNotifySystem.cs" />
-    <Compile Include="IncrementalizationConfiguration\Configuration.cs" />
-    <Compile Include="IncrementalizationConfiguration\ConfigurationExtensions.cs" />
-    <Compile Include="IncrementalizationConfiguration\IConfiguration.cs" />
-    <Compile Include="IncrementalizationConfiguration\IMethodConfiguration.cs" />
-    <Compile Include="IncrementalizationConfiguration\IncrementalizationStrategy.cs" />
-    <Compile Include="IncrementalizationConfiguration\MethodConfiguration.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="RecordingNotifySystem.cs" />
-    <Compile Include="RepositoryChangeApplyParametersVisitor.cs" />
-    <Compile Include="RepositoryChangeNotificationSystem.cs" />
-    <Compile Include="RepositoryChangeNotifyFunc.cs" />
-    <Compile Include="RepositoryChangeNotifyValue.cs" />
-  </ItemGroup>
+
   <ItemGroup>
     <EmbeddedResource Include="IncrementalizationConfiguration.nmeta" />
   </ItemGroup>
+
   <ItemGroup>
-    <ProjectReference Include="..\..\Collections\Collections\Collections.csproj">
-      <Project>{6f57aa50-fb70-4de8-beab-e3ae58b225d3}</Project>
-      <Name>Collections</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\Models\Models\Models.csproj">
-      <Project>{e42ac7b6-8120-40b5-8cd3-c4139b940897}</Project>
-      <Name>Models</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\Models\Serialization\Serialization.csproj">
-      <Project>{c24ef2ac-49d3-4542-bc40-5d62e12c7ded}</Project>
-      <Name>Serialization</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\Tools\Utilities\Utilities.csproj">
-      <Project>{868226d4-bc8b-4b91-bd09-8f63d3c9debe}</Project>
-      <Name>Utilities</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Expressions.Linq\Expressions.Linq.csproj">
-      <Project>{e82d72a1-90f6-4341-a82d-d6b40349df63}</Project>
-      <Name>Expressions.Linq</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Expressions\Expressions.csproj">
-      <Project>{afca9d1d-26a6-482a-a5ab-0827ad0fd677}</Project>
-      <Name>Expressions</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Models.Expressions\Expressions.Models.csproj">
-      <Project>{25183c1b-5a1d-4535-ae62-90105c00beaf}</Project>
-      <Name>Expressions.Models</Name>
-    </ProjectReference>
+    <PackageReference Include="Microsoft.CSharp" Version="4.4.0" />
   </ItemGroup>
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
-       Other similar extension points exist, see Microsoft.Common.targets.
-  <Target Name="BeforeBuild">
-  </Target>
-  <Target Name="AfterBuild">
-  </Target>
-  -->
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Collections\Collections\Collections.csproj" />
+    <ProjectReference Include="..\..\Expressions\Expressions.Linq\Expressions.Linq.csproj" />
+    <ProjectReference Include="..\..\Expressions\Expressions\Expressions.csproj" />
+    <ProjectReference Include="..\..\Models\Models\Models.csproj" />
+    <ProjectReference Include="..\..\Models\Serialization\Serialization.csproj" />
+    <ProjectReference Include="..\..\Tools\Utilities\Utilities.csproj" />
+    <ProjectReference Include="..\Models.Expressions\Expressions.Models.csproj" />
+  </ItemGroup>
+
 </Project>

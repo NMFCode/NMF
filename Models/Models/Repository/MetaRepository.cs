@@ -147,9 +147,9 @@ namespace NMF.Models.Repository
                     {
                         RegisterAssembly(Assembly.Load(references[i]));
                     }
-                    catch (System.IO.FileNotFoundException)
+                    catch (System.IO.IOException)
                     {
-                        // eat the exception
+                        // eat exception
                     }
                 }
             }

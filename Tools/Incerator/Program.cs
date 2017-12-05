@@ -29,28 +29,32 @@ namespace NMF.Incerator
         {
             AppDomain.CurrentDomain.AssemblyResolve += CurrentDomain_AssemblyResolve;
 
-            InceratorConfiguration options = new InceratorConfiguration();
-            if (Parser.Default.ParseArguments(args, options))
+            var result = CommandLine.Parser.Default.ParseArguments<InceratorConfiguration>(args);
+            switch (result.Tag)
             {
-                var incerator = new Incerator(options, new ModelRepository());
+                case ParserResultType.Parsed:
+                    var options = (result as Parsed<InceratorConfiguration>).Value;
+
+                    var incerator = new Incerator(options, new ModelRepository());
 #if DEBUG
-                incerator.Run();
-#else
-                try
-                {
                     incerator.Run();
-                }
-                catch (Exception ex)
-                {
-                    Console.WriteLine(ex.Message);
-                }
+#else
+                  try
+                    {
+                        incerator.Run();
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine(ex.Message);
+                    }
 #endif
-            }
-            else
-            {
-                Console.WriteLine("You are using me wrongly!");
-                Console.WriteLine("Usage: Incerator optimize [options]");
-                Console.WriteLine(options.GetHelp());
+                    break;
+                case ParserResultType.NotParsed:
+                default:
+                    Console.WriteLine("You are using me wrongly!");
+                    Console.WriteLine("Usage: Incerator optimize [options]");
+                    Console.WriteLine(CommandLine.Text.HelpText.AutoBuild(result).ToString());
+                    break;
             }
         }
 

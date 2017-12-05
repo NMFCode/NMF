@@ -1,83 +1,15 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+<Project Sdk="Microsoft.NET.Sdk">
+
   <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{6F57AA50-FB70-4DE8-BEAB-E3AE58B225D3}</ProjectGuid>
-    <OutputType>Library</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>NMF.Collections</RootNamespace>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <AssemblyName>NMF.Collections</AssemblyName>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
-    <FileAlignment>512</FileAlignment>
-    <SccProjectName>SAK</SccProjectName>
-    <SccLocalPath>SAK</SccLocalPath>
-    <SccAuxPath>SAK</SccAuxPath>
-    <SccProvider>SAK</SccProvider>
+    <RootNamespace>NMF.Collections</RootNamespace>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-  </PropertyGroup>
+
   <ItemGroup>
-    <Reference Include="System" />
-    <Reference Include="System.Core" />
-    <Reference Include="Microsoft.CSharp" />
+    <ProjectReference Include="..\..\Expressions\Expressions.Linq\Expressions.Linq.csproj" />
+    <ProjectReference Include="..\..\Expressions\Expressions\Expressions.csproj" />
   </ItemGroup>
-  <ItemGroup>
-    <Compile Include="..\..\CommonAssemblyInfo.cs">
-      <Link>CommonAssemblyInfo.cs</Link>
-    </Compile>
-    <Compile Include="Generic\EmptyList.cs" />
-    <Compile Include="Generic\EnumerableDebuggerProxy.cs" />
-    <Compile Include="Generic\IOrderedSet.cs" />
-    <Compile Include="Generic\LooselyLinkedListNode.cs" />
-    <Compile Include="GlobalSuppressions.cs" />
-    <Compile Include="ObjectModel\CustomCollection.cs" />
-    <Compile Include="ObjectModel\INotifyCollectionChanging.cs" />
-    <Compile Include="ObjectModel\ObservableCollectionExtended.cs" />
-    <Compile Include="ObjectModel\ObservableList.cs" />
-    <Compile Include="ObjectModel\ObservableOppositeCollection.cs" />
-    <Compile Include="ObjectModel\ObservableOrderedSet.cs" />
-    <Compile Include="Generic\OrderedSet.cs" />
-    <Compile Include="ObjectModel\ObservableReadOnlyOrderedSet.cs" />
-    <Compile Include="ObjectModel\ObservableSet.cs" />
-    <Compile Include="Generic\DecoratedSet.cs" />
-    <Compile Include="ObjectModel\OppositeCollection.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Generic\ReadOnlyListSelection.cs" />
-    <Compile Include="Generic\ReadOnlyOrderedSet.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\..\Expressions\Expressions.Linq\Expressions.Linq.csproj">
-      <Project>{e82d72a1-90f6-4341-a82d-d6b40349df63}</Project>
-      <Name>Expressions.Linq</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\Expressions\Expressions\Expressions.csproj">
-      <Project>{afca9d1d-26a6-482a-a5ab-0827ad0fd677}</Project>
-      <Name>Expressions</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
-       Other similar extension points exist, see Microsoft.Common.targets.
-  <Target Name="BeforeBuild">
-  </Target>
-  <Target Name="AfterBuild">
-  </Target>
-  -->
+
 </Project>
