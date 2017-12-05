@@ -15,6 +15,7 @@ init:
 before_build:
 - cmd: >-
     nuget update -self
+
     nuget restore
 build:
   verbosity: minimal
