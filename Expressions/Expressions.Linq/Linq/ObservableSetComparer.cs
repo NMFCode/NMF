@@ -15,7 +15,6 @@ namespace NMF.Expressions.Linq
         private INotifyEnumerable<T> observableSource2;
 
         private Dictionary<T, Entry> entries;
-        private int attachedCount;
 
         public ISuccessorList Successors { get; } = NotifySystem.DefaultSystem.CreateSuccessorList();
 

@@ -30,4 +30,10 @@
     <ProjectReference Include="..\EcoreInterop\EcoreInterop.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="XMLTypeTest.ecore">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>
