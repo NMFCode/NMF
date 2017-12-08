@@ -60,10 +60,13 @@ namespace NMF.Interop.Ecore.Transformations
                         var name = extendedMetaData.Details.FirstOrDefault(o => o.Key.Equals("name"));
                         if (name != null)
                         {
-                            output.Extensions.Add(new SerializationInformation(output)
+                            if (!string.IsNullOrEmpty(name.Value) && !name.Value.Contains(":"))
                             {
-                                SerializationName = name.Value.Replace("_._type", "")
-                            });
+                                output.Extensions.Add(new SerializationInformation(output)
+                                {
+                                    SerializationName = name.Value.Replace("_._type", "")
+                                });
+                            }
                         }
                     }
                 }

@@ -196,9 +196,16 @@ namespace NMF.Models.Meta
 
             private void GenerateSerializationAttributes(IAttribute input, CodeMemberProperty output, ITransformationContext context)
             {
-                if (input.Name != output.Name)
+                var serializationName = input.Name;
+                var serializationInfo = input.GetExtension<SerializationInformation>();
+                if (serializationInfo != null)
                 {
-                    output.AddAttribute(typeof(XmlElementNameAttribute), input.Name);
+                    serializationName = serializationInfo.SerializationName;
+                }
+
+                if (serializationName != output.Name)
+                {
+                    output.AddAttribute(typeof(XmlElementNameAttribute), serializationName);
                 }
 
                 IClass ownedClass = input.DeclaringType as IClass;

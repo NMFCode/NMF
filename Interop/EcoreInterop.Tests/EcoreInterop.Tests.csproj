@@ -31,6 +31,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Update="EcoreXMLSchemaTest.ecore">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Update="XMLTypeTest.ecore">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
