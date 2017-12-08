@@ -461,7 +461,6 @@ namespace NMF.Models.Meta
                 codeProperty.HasSet = true;
             }
 
-
             private static void GenerateResetMethod(CodeMemberProperty generatedProperty)
             {
                 var resetMember = new CodeMemberMethod()
@@ -487,9 +486,16 @@ namespace NMF.Models.Meta
 
             private void GenerateSerializationAttributes(IReference input, CodeMemberProperty output, ITransformationContext context)
             {
-                if (input.Name != output.Name)
+                var serializationName = input.Name;
+                var serializationInfo = input.GetExtension<SerializationInformation>();
+                if (serializationInfo != null)
                 {
-                    output.AddAttribute(typeof(XmlElementNameAttribute), input.Name);
+                    serializationName = serializationInfo.SerializationName;
+                }
+
+                if (serializationName != output.Name)
+                {
+                    output.AddAttribute(typeof(XmlElementNameAttribute), serializationName);
                 }
 
                 if (input.IsContainment)
