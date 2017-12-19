@@ -44,7 +44,14 @@ namespace NMF.Models.Meta
         private string _serializationName;
         
         private static Lazy<ITypedElement> _serializationNameAttribute = new Lazy<ITypedElement>(RetrieveSerializationNameAttribute);
-        
+
+        /// <summary>
+        /// The backing field for the IsDefault property
+        /// </summary>
+        private bool _isDefault;
+
+        private static Lazy<ITypedElement> _isDefaultAttribute = new Lazy<ITypedElement>(RetrieveIsDefaultAttribute);
+
         private static IExtension _extensionType;
         
         /// <summary>
@@ -80,7 +87,32 @@ namespace NMF.Models.Meta
                 }
             }
         }
-        
+
+        /// <summary>
+        /// The SerializationName property
+        /// </summary>
+        [XmlAttributeAttribute(true)]
+        public bool IsDefault
+        {
+            get
+            {
+                return this._isDefault;
+            }
+            set
+            {
+                if ((this._isDefault != value))
+                {
+                    bool old = this._isDefault;
+                    ValueChangedEventArgs e = new ValueChangedEventArgs(old, value);
+                    this.OnIsDefaultChanging(e);
+                    this.OnPropertyChanging("IsDefault", e, _isDefaultAttribute);
+                    this._isDefault = value;
+                    this.OnIsDefaultChanged(e);
+                    this.OnPropertyChanged("IsDefault", e, _isDefaultAttribute);
+                }
+            }
+        }
+
         /// <summary>
         /// Gets fired before the SerializationName property changes its value
         /// </summary>
@@ -90,12 +122,27 @@ namespace NMF.Models.Meta
         /// Gets fired when the SerializationName property changed its value
         /// </summary>
         public event System.EventHandler<ValueChangedEventArgs> SerializationNameChanged;
-        
+
+        /// <summary>
+        /// Gets fired before the SerializationName property changes its value
+        /// </summary>
+        public event System.EventHandler<ValueChangedEventArgs> IsDefaultChanging;
+
+        /// <summary>
+        /// Gets fired when the SerializationName property changed its value
+        /// </summary>
+        public event System.EventHandler<ValueChangedEventArgs> IsDefaultChanged;
+
         private static ITypedElement RetrieveSerializationNameAttribute()
         {
             return ((ITypedElement)(((NMF.Models.ModelElement)(SerializationInformation.ClassInstance)).Resolve("SerializationName")));
         }
-        
+
+        private static ITypedElement RetrieveIsDefaultAttribute()
+        {
+            return ((ITypedElement)(((NMF.Models.ModelElement)(SerializationInformation.ClassInstance)).Resolve("IsDefault")));
+        }
+
         /// <summary>
         /// Raises the SerializationNameChanging event
         /// </summary>
@@ -121,7 +168,33 @@ namespace NMF.Models.Meta
                 handler.Invoke(this, eventArgs);
             }
         }
-        
+
+        /// <summary>
+        /// Raises the SerializationNameChanging event
+        /// </summary>
+        /// <param name="eventArgs">The event data</param>
+        protected virtual void OnIsDefaultChanging(ValueChangedEventArgs eventArgs)
+        {
+            System.EventHandler<ValueChangedEventArgs> handler = this.IsDefaultChanging;
+            if ((handler != null))
+            {
+                handler.Invoke(this, eventArgs);
+            }
+        }
+
+        /// <summary>
+        /// Raises the SerializationNameChanged event
+        /// </summary>
+        /// <param name="eventArgs">The event data</param>
+        protected virtual void OnIsDefaultChanged(ValueChangedEventArgs eventArgs)
+        {
+            System.EventHandler<ValueChangedEventArgs> handler = this.IsDefaultChanged;
+            if ((handler != null))
+            {
+                handler.Invoke(this, eventArgs);
+            }
+        }
+
         /// <summary>
         /// Gets the SerializationInformation extension from the given model element
         /// </summary>

@@ -119,6 +119,14 @@ namespace NMF.Serialization.Xmi
 
         protected override void WriteElementProperties(System.Xml.XmlWriter writer, object obj, ITypeSerializationInfo info, XmlSerializationContext context)
         {
+            if (info.DefaultProperty != null)
+            {
+                var content = info.DefaultProperty.GetValue(obj, context);
+                if (info.DefaultProperty.ShouldSerializeValue(obj, content))
+                {
+                    writer.WriteString(GetAttributeValue(content, info.DefaultProperty.PropertyType, context));
+                }
+            }
             foreach (XmlPropertySerializationInfo pi in info.ElementProperties)
             {
                 var value = pi.GetValue(obj, context);
@@ -229,6 +237,14 @@ namespace NMF.Serialization.Xmi
                             OnUnknownElement(new UnknownElementEventArgs(obj, reader.ReadOuterXml()));
                         }
                     }
+                }
+                else if ((reader.NodeType == XmlNodeType.Text || reader.NodeType == XmlNodeType.CDATA))
+                {
+                    if (info.DefaultProperty == null)
+                    {
+                        throw new InvalidOperationException("Simple content unexpected for type " + info.Type.FullName);
+                    }
+                    InitializePropertyFromText(info.DefaultProperty, obj, reader.Value, context);
                 }
             }
         }

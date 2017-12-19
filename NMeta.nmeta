@@ -107,7 +107,8 @@
    <Attributes UpperBound="1" Type="#//SystemType/" Name="SystemType" />
  </Types>
  <Types xsi:type="nmeta:Extension" AdornedClass="#//MetaElement/" Name="SerializationInformation">
-   <Attributes UpperBound="1" Type="#//String/" Name="SerializationName"  />
+   <Attributes UpperBound="1" Type="#//String/" Name="SerializationName" />
+   <Attributes UpperBound="1" Type="#//Boolean/" Name="IsDefault" />
  </Types>
  <Types xsi:type="nmeta:Enumeration" Name="Direction">
    <Literals Name="In" />

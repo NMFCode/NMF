@@ -407,9 +407,14 @@ namespace NMF.Serialization
                 }
             }
 
+            var defaultAttribute = FetchAttribute<XmlDefaultPropertyAttribute>(pd, true);
             //control serialization through an attribute
             if (cParam != null && constructorInfos != null)
             {
+                if (defaultAttribute != null && defaultAttribute.IsDefault)
+                {
+                    throw new InvalidOperationException("Default properties must not be used as constructor parameters.");
+                }
                 if (cParam.Index >= 0 || cParam.Index < constructorInfos.GetLength(0))
                 {
                     constructorInfos[cParam.Index] = p;
@@ -429,14 +434,25 @@ namespace NMF.Serialization
             }
             else
             {
-                var asAttribute = FetchAttribute<XmlAttributeAttribute>(pd, true);
-                if (asAttribute == null || !asAttribute.SerializeAsAttribute)
+                if (defaultAttribute != null && defaultAttribute.IsDefault)
                 {
-                    typeSerializationInfo.DeclaredElementProperties.Add(p);
+                    if (typeSerializationInfo.DefaultProperty != null)
+                    {
+                        throw new InvalidOperationException("Only one default property allowed for type " + typeSerializationInfo.Type.FullName);
+                    }
+                    typeSerializationInfo.DefaultProperty = p;
                 }
                 else
                 {
-                    typeSerializationInfo.DeclaredAttributeProperties.Add(p);
+                    var asAttribute = FetchAttribute<XmlAttributeAttribute>(pd, true);
+                    if (asAttribute == null || !asAttribute.SerializeAsAttribute)
+                    {
+                        typeSerializationInfo.DeclaredElementProperties.Add(p);
+                    }
+                    else
+                    {
+                        typeSerializationInfo.DeclaredAttributeProperties.Add(p);
+                    }
                 }
             }
 
@@ -1140,6 +1156,14 @@ namespace NMF.Serialization
                         info.AddToCollection(obj, o);
                     }
 
+                }
+                else if ((reader.NodeType == XmlNodeType.Text || reader.NodeType == XmlNodeType.CDATA))
+                {
+                    if (info.DefaultProperty == null)
+                    {
+                        throw new InvalidOperationException("Simple content unexpected for type " + info.Type.FullName);
+                    }
+                    InitializePropertyFromText(info.DefaultProperty, obj, reader.Value, context);
                 }
             }
         }

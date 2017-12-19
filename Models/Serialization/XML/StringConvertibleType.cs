@@ -95,6 +95,14 @@ namespace NMF.Serialization
             get { return true; }
         }
 
+        public IPropertySerializationInfo DefaultProperty
+        {
+            get
+            {
+                return null;
+            }
+        }
+
         public object ConvertFromString(string text)
         {
             return converter.ConvertFromInvariantString(text);

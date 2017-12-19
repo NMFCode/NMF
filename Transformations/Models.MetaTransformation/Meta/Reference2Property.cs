@@ -490,10 +490,18 @@ namespace NMF.Models.Meta
                 var serializationInfo = input.GetExtension<SerializationInformation>();
                 if (serializationInfo != null)
                 {
-                    serializationName = serializationInfo.SerializationName;
+                    if (serializationInfo.IsDefault)
+                    {
+                        serializationName = null;
+                        output.AddAttribute(typeof(XmlDefaultPropertyAttribute), true);
+                    }
+                    else
+                    {
+                        serializationName = serializationInfo.SerializationName;
+                    }
                 }
 
-                if (serializationName != output.Name)
+                if (serializationName != output.Name && serializationName != null)
                 {
                     output.AddAttribute(typeof(XmlElementNameAttribute), serializationName);
                 }

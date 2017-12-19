@@ -41,7 +41,7 @@ namespace NMF.Interop.Ecore.Tests
 
             /* Check Attributes */
             var valueAttr = PType.Attributes.FirstOrDefault(a => a.Name == "value");
-            AssertNoSerializationName(valueAttr);
+            AssertDefaultProperty(valueAttr);
 
             var sizeAttr = PType.Attributes.FirstOrDefault(a => a.Name == "size");
             AssertSerializationName(sizeAttr, "size");
@@ -56,6 +56,7 @@ namespace NMF.Interop.Ecore.Tests
             var serializationInfo = type.GetExtension<SerializationInformation>();
             Assert.IsNotNull(serializationInfo);
             Assert.AreEqual(serializationInfo.SerializationName, serializedName);
+            Assert.IsFalse(serializationInfo.IsDefault);
         }
 
         private void AssertNoSerializationName(IMetaElement type)
@@ -63,6 +64,14 @@ namespace NMF.Interop.Ecore.Tests
             Assert.IsNotNull(type);
             var serializationInfo = type.GetExtension<SerializationInformation>();
             Assert.IsNull(serializationInfo);
+        }
+
+        private void AssertDefaultProperty(ITypedElement feature)
+        {
+            Assert.IsNotNull(feature);
+            var serializationInfo = feature.GetExtension<SerializationInformation>();
+            Assert.IsNotNull(serializationInfo);
+            Assert.IsTrue(serializationInfo.IsDefault);
         }
     }
 }

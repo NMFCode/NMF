@@ -249,6 +249,8 @@ namespace NMF.Serialization
             get { return baseTypes; }
         }
 
+        public IPropertySerializationInfo DefaultProperty { get; set; }
+
         public void CreateCollectionAddMethod()
         {
             var itemType = CollectionItemType.Type;

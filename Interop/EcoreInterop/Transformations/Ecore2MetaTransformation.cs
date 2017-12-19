@@ -322,6 +322,23 @@ namespace NMF.Interop.Ecore.Transformations
                 {
                     output.Type = classesDict["java.lang.Object"];
                 }
+
+                var extendedMetaData = input.EAnnotations.FirstOrDefault(o => o.Source.Equals("http:///org/eclipse/emf/ecore/util/ExtendedMetaData"));
+                if (extendedMetaData != null)
+                {
+                    var name = extendedMetaData.Details.FirstOrDefault(o => o.Key == "name");
+                    var kind = extendedMetaData.Details.FirstOrDefault(o => o.Key == "kind");
+                    if (name != null && kind != null && kind.Value == "simple")
+                    {
+                        var serializationInfo = output.GetExtension<SerializationInformation>();
+                        if (serializationInfo == null)
+                        {
+                            serializationInfo = new SerializationInformation(output);
+                            output.Extensions.Add(serializationInfo);
+                        }
+                        serializationInfo.IsDefault = true;
+                    }
+                }
             }
 
             public override void RegisterDependencies()

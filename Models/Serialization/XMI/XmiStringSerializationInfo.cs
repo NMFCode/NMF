@@ -101,5 +101,10 @@ namespace NMF.Serialization.Xmi
         {
             get { return Enumerable.Empty<XmlTypeSerializationInfo>(); }
         }
+
+        public IPropertySerializationInfo DefaultProperty
+        {
+            get { return null; }
+        }
     }
 }

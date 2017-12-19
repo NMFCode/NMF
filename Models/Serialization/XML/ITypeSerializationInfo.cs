@@ -11,6 +11,8 @@ namespace NMF.Serialization
         string Namespace { get; }
         string NamespacePrefix { get; }
 
+        IPropertySerializationInfo DefaultProperty { get; }
+
         IEnumerable<IPropertySerializationInfo> AttributeProperties { get; }
         IEnumerable<IPropertySerializationInfo> ElementProperties { get; }
 
