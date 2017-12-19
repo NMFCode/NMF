@@ -14,6 +14,11 @@ namespace NMF.Expressions.Linq
     public static class ObservableExtensions
     {
         /// <summary>
+        /// Gets or sets a global flag indicating whether projections and filters should maintain the element order
+        /// </summary>
+        public static bool KeepOrder { get; set; }
+
+        /// <summary>
         /// Gets a value indicating whether all items in the given collection match the given predicate
         /// </summary>
         /// <typeparam name="TSource">The type of the elements in the source collection</typeparam>

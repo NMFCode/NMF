@@ -59,6 +59,31 @@ namespace NMF.Expressions.Linq.Tests
         [TestMethod]
         public void Select_NoObservableSourceItemRemoved_NoUpdate()
         {
+            ObservableExtensions.KeepOrder = false;
+
+            var update = false;
+            ICollection<Dummy<string>> coll = new List<Dummy<string>>();
+            var dummy = new Dummy<string>() { Item = "42" };
+            coll.Add(dummy);
+
+            var test = coll.WithUpdates().Select(d => d.Item);
+
+            test.CollectionChanged += (o, e) => update = true;
+
+            Assert.IsTrue(Sys.Contains(test, "42"));
+            Assert.IsFalse(update);
+
+            coll.Remove(dummy);
+
+            Assert.IsTrue(Sys.Contains(test, "42"));
+            Assert.IsFalse(update);
+        }
+
+        [TestMethod]
+        public void Select_NoObservableSourceItemRemoved_KeepOrder_NoUpdate()
+        {
+            ObservableExtensions.KeepOrder = true;
+
             var update = false;
             ICollection<Dummy<string>> coll = new List<Dummy<string>>();
             var dummy = new Dummy<string>() { Item = "42" };

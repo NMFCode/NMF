@@ -109,25 +109,56 @@ namespace NMF.Expressions.Linq
 
         public override IEnumerator<T> GetEnumerator()
         {
-            return SL.Where(source, item =>
+            if (ObservableExtensions.KeepOrder)
             {
-                if (isValueType || item != null)
+                return SL.Where(source, item =>
                 {
-                    TaggedObservableValue<bool, ItemMultiplicity> node;
-                    if (lambdaInstances.TryGetValue(item, out node))
+                    if (isValueType || item != null)
                     {
-                        return node.Value;
+                        TaggedObservableValue<bool, ItemMultiplicity> node;
+                        if (lambdaInstances.TryGetValue(item, out node))
+                        {
+                            return node.Value;
+                        }
+                        else
+                        {
+                            return false;
+                        }
                     }
                     else
                     {
-                        return false;
+                        return nullCheck != null && nullCheck.Value;
+                    }
+                }).GetEnumerator();
+            }
+            else
+            {
+                return ItemsUnordered.GetEnumerator();
+            }
+        }
+
+        private IEnumerable<T> ItemsUnordered
+        {
+            get
+            {
+                foreach (var item in lambdaInstances.Values)
+                {
+                    if (item.Value)
+                    {
+                        for (int i = 0; i < item.Tag.Multiplicity; i++)
+                        {
+                            yield return item.Tag.Item;
+                        }
                     }
                 }
-                else
+                if (nullCheck != null && nullCheck.Value)
                 {
-                    return nullCheck != null && nullCheck.Value;
+                    for (int i = 0; i < nulls; i++)
+                    {
+                        yield return default(T);
+                    }
                 }
-            }).GetEnumerator();
+            }
         }
 
         public override bool Contains(T item)

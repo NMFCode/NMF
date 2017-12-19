@@ -80,7 +80,35 @@ namespace NMF.Expressions.Linq
         
         public override IEnumerator<TResult> GetEnumerator()
         {
-            return ItemsInternal.GetEnumerator();
+            if (ObservableExtensions.KeepOrder)
+            {
+                return ItemsInternal.GetEnumerator();
+            }
+            else
+            {
+                return ItemsUnordered.GetEnumerator();
+            }
+        }
+
+        private IEnumerable<TResult> ItemsUnordered
+        {
+            get
+            {
+                foreach (var item in lambdaInstances.Values)
+                {
+                    for (int i = 0; i < item.Tag; i++)
+                    {
+                        yield return item.Value;
+                    }
+                }
+                if (nullLambda != null)
+                {
+                    for (int i = 0; i < nullLambda.Tag; i++)
+                    {
+                        yield return nullLambda.Value;
+                    }
+                }
+            }
         }
 
         private IEnumerable<TResult> ItemsInternal
@@ -89,10 +117,17 @@ namespace NMF.Expressions.Linq
             {
                 foreach (var item in source)
                 {
-                    TaggedObservableValue<TResult, int> lambdaResult;
-                    if (lambdaInstances.TryGetValue(item, out lambdaResult))
+                    if (item == null)
                     {
-                        yield return lambdaResult.Value;
+                        yield return nullLambda.Value;
+                    }
+                    else
+                    {
+                        TaggedObservableValue<TResult, int> lambdaResult;
+                        if (lambdaInstances.TryGetValue(item, out lambdaResult))
+                        {
+                            yield return lambdaResult.Value;
+                        }
                     }
                 }
             }
