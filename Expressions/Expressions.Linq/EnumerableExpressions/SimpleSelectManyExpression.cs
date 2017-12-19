@@ -13,6 +13,7 @@ namespace NMF.Expressions
         public IEnumerableExpression<TSource> Source { get; private set; }
         public Expression<Func<TSource, IEnumerable<TResult>>> SelectorExpression { get; private set; }
         public Func<TSource, IEnumerable<TResult>> SelectorCompiled { get; private set; }
+        private INotifyEnumerable<TResult> notifyEnumerable;
 
         public SimpleSelectManyExpression(IEnumerableExpression<TSource> source, Expression<Func<TSource, IEnumerable<TResult>>> selector, Func<TSource, IEnumerable<TResult>> selectorCompiled)
         {
@@ -27,11 +28,16 @@ namespace NMF.Expressions
 
         public INotifyEnumerable<TResult> AsNotifiable()
         {
-            return Source.AsNotifiable().SelectMany(SelectorExpression);
+            if (notifyEnumerable == null)
+            {
+                notifyEnumerable = Source.AsNotifiable().SelectMany(SelectorExpression);
+            }
+            return notifyEnumerable;
         }
 
         public IEnumerator<TResult> GetEnumerator()
         {
+            if (notifyEnumerable != null) return notifyEnumerable.GetEnumerator();
             return SL.SelectMany(Source, SelectorCompiled).GetEnumerator();
         }
 

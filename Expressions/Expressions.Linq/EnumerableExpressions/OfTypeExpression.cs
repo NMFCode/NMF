@@ -12,6 +12,7 @@ namespace NMF.Expressions
     internal class OfTypeExpression<T> : IEnumerableExpression<T>
     {
         public IEnumerableExpression Source { get; private set; }
+        private INotifyEnumerable<T> notifyEnumerable;
 
         public OfTypeExpression(IEnumerableExpression source)
         {
@@ -22,11 +23,16 @@ namespace NMF.Expressions
 
         public INotifyEnumerable<T> AsNotifiable()
         {
-            return Source.AsNotifiable().OfType<T>();
+            if (notifyEnumerable == null)
+            {
+                notifyEnumerable = Source.AsNotifiable().OfType<T>();
+            }
+            return notifyEnumerable;
         }
 
         public IEnumerator<T> GetEnumerator()
         {
+            if (notifyEnumerable != null) return notifyEnumerable.GetEnumerator();
             return SL.OfType<T>(Source).GetEnumerator();
         }
 

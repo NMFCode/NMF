@@ -11,6 +11,7 @@ namespace NMF.Expressions
     {
         public IEnumerableExpression<T> Source { get; private set; }
         public IEqualityComparer<T> Comparer { get; set; }
+        private INotifyEnumerable<T> notifyEnumerable;
 
         public DistinctExpression(IEnumerableExpression<T> source, IEqualityComparer<T> comparer)
         {
@@ -22,11 +23,16 @@ namespace NMF.Expressions
 
         public INotifyEnumerable<T> AsNotifiable()
         {
-            return Source.AsNotifiable().Distinct(Comparer);
+            if (notifyEnumerable == null)
+            {
+                notifyEnumerable = Source.AsNotifiable().Distinct(Comparer);
+            }
+            return notifyEnumerable;
         }
 
         public IEnumerator<T> GetEnumerator()
         {
+            if (notifyEnumerable != null) return notifyEnumerable.GetEnumerator();
             return SL.Distinct(Source, Comparer).GetEnumerator();
         }
 

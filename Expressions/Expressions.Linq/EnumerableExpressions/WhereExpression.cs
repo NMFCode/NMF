@@ -15,6 +15,7 @@ namespace NMF.Expressions
         public IEnumerableExpression<T> Source { get; private set; }
         public Expression<Func<T, bool>> PredicateExpression { get; private set; }
         public Func<T, bool> PredicateCompiled { get; private set; }
+        private INotifyEnumerable<T> notifyEnumerable;
 
         public WhereExpression(IEnumerableExpression<T> source, Expression<Func<T, bool>> predicate, Func<T, bool> predicateCompiled)
         {
@@ -29,11 +30,16 @@ namespace NMF.Expressions
 
         public INotifyEnumerable<T> AsNotifiable()
         {
-            return Source.AsNotifiable().Where(PredicateExpression);
+            if (notifyEnumerable == null)
+            {
+                notifyEnumerable = Source.AsNotifiable().Where(PredicateExpression);
+            }
+            return notifyEnumerable;
         }
 
         public IEnumerator<T> GetEnumerator()
         {
+            if (notifyEnumerable != null) return notifyEnumerable.GetEnumerator();
             return SL.Where(Source, PredicateCompiled).GetEnumerator();
         }
 

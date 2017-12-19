@@ -35,7 +35,7 @@ namespace NMF.Expressions
             public INotifyEnumerable<TElement> AsNotifiable()
             {
                 groupBy.CreateIncremental();
-                return groupBy.incremental[Key];
+                return groupBy.notifyEnumerable[Key];
             }
 
             IEnumerator IEnumerable.GetEnumerator()
@@ -55,7 +55,7 @@ namespace NMF.Expressions
         public Func<TElement, TKey> PredicateCompiled { get; private set; }
         public IEqualityComparer<TKey> Comparer { get; private set; }
 
-        private ObservableGroupBy<TKey, TElement> incremental;
+        private ObservableGroupBy<TKey, TElement> notifyEnumerable;
 
         public GroupByExpression(IEnumerableExpression<TElement> source, Expression<Func<TElement, TKey>> keySelector, Func<TElement, TKey> keySelectorCompiled, IEqualityComparer<TKey> comparer)
         {
@@ -72,19 +72,20 @@ namespace NMF.Expressions
         public INotifyEnumerable<IGroupingExpression<TKey, TElement>> AsNotifiable()
         {
             CreateIncremental();
-            return incremental;
+            return notifyEnumerable;
         }
 
         private void CreateIncremental()
         {
-            if (incremental == null)
+            if (notifyEnumerable == null)
             {
-                incremental = new ObservableGroupBy<TKey, TElement>(Source.AsNotifiable(), Predicate, Comparer);
+                notifyEnumerable = new ObservableGroupBy<TKey, TElement>(Source.AsNotifiable(), Predicate, Comparer);
             }
         }
 
         public IEnumerator<IGroupingExpression<TKey, TElement>> GetEnumerator()
         {
+            if (notifyEnumerable != null) return notifyEnumerable.GetEnumerator();
             return SL.GroupBy(Source, PredicateCompiled, Comparer).Select(g => new GroupingExpression(g, this)).GetEnumerator();
         }
 

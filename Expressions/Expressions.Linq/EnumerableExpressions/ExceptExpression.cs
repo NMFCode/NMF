@@ -12,6 +12,7 @@ namespace NMF.Expressions
         public IEnumerableExpression<T> Source { get; private set; }
         public IEnumerable<T> Other { get; private set; }
         public IEqualityComparer<T> Comparer { get; private set; }
+        protected INotifyEnumerable<T> notifyEnumerable;
 
         public SetExpression(IEnumerableExpression<T> source, IEnumerable<T> other, IEqualityComparer<T> comparer)
         {
@@ -23,7 +24,16 @@ namespace NMF.Expressions
             Comparer = comparer ?? EqualityComparer<T>.Default;
         }
 
-        public abstract INotifyEnumerable<T> AsNotifiable();
+        public INotifyEnumerable<T> AsNotifiable()
+        {
+            if (notifyEnumerable == null)
+            {
+                notifyEnumerable = AsNotifiableCore();
+            }
+            return notifyEnumerable;
+        }
+
+        protected abstract INotifyEnumerable<T> AsNotifiableCore();
 
         public abstract IEnumerator<T> GetEnumerator();
 
@@ -42,7 +52,7 @@ namespace NMF.Expressions
     {
         public ExceptExpression(IEnumerableExpression<T> source, IEnumerable<T> other, IEqualityComparer<T> comparer) : base(source, other, comparer) { }
 
-        public override INotifyEnumerable<T> AsNotifiable()
+        protected override INotifyEnumerable<T> AsNotifiableCore()
         {
             var otherExpression = Other as IEnumerableExpression<T>;
             IEnumerable<T> other = Other;
@@ -55,6 +65,7 @@ namespace NMF.Expressions
 
         public override IEnumerator<T> GetEnumerator()
         {
+            if (notifyEnumerable != null) return notifyEnumerable.GetEnumerator();
             return SL.Except(Source, Other, Comparer).GetEnumerator();
         }
     }
@@ -63,7 +74,7 @@ namespace NMF.Expressions
     {
         public UnionExpression(IEnumerableExpression<T> source, IEnumerable<T> other, IEqualityComparer<T> comparer) : base(source, other, comparer) { }
 
-        public override INotifyEnumerable<T> AsNotifiable()
+        protected override INotifyEnumerable<T> AsNotifiableCore()
         {
             var otherExpression = Other as IEnumerableExpression<T>;
             IEnumerable<T> other = Other;
@@ -76,6 +87,7 @@ namespace NMF.Expressions
 
         public override IEnumerator<T> GetEnumerator()
         {
+            if (notifyEnumerable != null) return notifyEnumerable.GetEnumerator();
             return SL.Union(Source, Other, Comparer).GetEnumerator();
         }
     }
@@ -84,7 +96,7 @@ namespace NMF.Expressions
     {
         public IntersectExpression(IEnumerableExpression<T> source, IEnumerable<T> other, IEqualityComparer<T> comparer) : base(source, other, comparer) { }
 
-        public override INotifyEnumerable<T> AsNotifiable()
+        protected override INotifyEnumerable<T> AsNotifiableCore()
         {
             var otherExpression = Other as IEnumerableExpression<T>;
             IEnumerable<T> other = Other;
@@ -97,6 +109,7 @@ namespace NMF.Expressions
 
         public override IEnumerator<T> GetEnumerator()
         {
+            if (notifyEnumerable != null) return notifyEnumerable.GetEnumerator();
             return SL.Intersect(Source, Other, Comparer).GetEnumerator();
         }
     }

@@ -13,6 +13,7 @@ namespace NMF.Expressions
         public Expression<Func<T, TKey>> Predicate { get; private set; }
         public Func<T, TKey> PredicateCompiled { get; private set; }
         public IComparer<TKey> Comparer { get; private set; }
+        private IOrderableNotifyEnumerable<T> notifyEnumerable;
 
         public OrderByExpression(IEnumerableExpression<T> source, Expression<Func<T, TKey>> keySelector, Func<T, TKey> keySelectorCompiled, IComparer<TKey> comparer)
         {
@@ -28,6 +29,7 @@ namespace NMF.Expressions
 
         public IEnumerator<T> GetEnumerator()
         {
+            if (notifyEnumerable != null) return notifyEnumerable.GetEnumerator();
             return SL.OrderBy(Source, PredicateCompiled, Comparer).GetEnumerator();
         }
 
@@ -43,7 +45,11 @@ namespace NMF.Expressions
 
         public IOrderableNotifyEnumerable<T> AsNotifiable()
         {
-            return Source.AsNotifiable().OrderBy(Predicate, Comparer);
+            if (notifyEnumerable == null)
+            {
+                notifyEnumerable = Source.AsNotifiable().OrderBy(Predicate, Comparer);
+            }
+            return notifyEnumerable;
         }
 
         public System.Linq.IOrderedEnumerable<T> CreateOrderedEnumerable<TKey2>(Func<T, TKey2> keySelector, IComparer<TKey2> comparer, bool descending)

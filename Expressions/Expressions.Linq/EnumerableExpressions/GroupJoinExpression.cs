@@ -18,6 +18,7 @@ namespace NMF.Expressions
         public Expression<Func<TOuter, IEnumerable<TInner>, TResult>> ResultSelector { get; set; }
         public Func<TOuter, IEnumerable<TInner>, TResult> ResultSelectorCompiled { get; set; }
         public IEqualityComparer<TKey> Comparer { get; set; }
+        private INotifyEnumerable<TResult> notifyEnumerable;
 
         public GroupJoinExpression(IEnumerableExpression<TOuter> outer, IEnumerable<TInner> inner, Expression<Func<TOuter, TKey>> outerKeySelector, Func<TOuter, TKey> outerKeySelectorCompiled, Expression<Func<TInner, TKey>> innerKeySelector, Func<TInner, TKey> innerKeySelectorCompiled, Expression<Func<TOuter, IEnumerable<TInner>, TResult>> resultSelector, Func<TOuter, IEnumerable<TInner>, TResult> resultSelectorCompiled, IEqualityComparer<TKey> comparer)
         {
@@ -40,11 +41,16 @@ namespace NMF.Expressions
 
         public INotifyEnumerable<TResult> AsNotifiable()
         {
-            return Source.AsNotifiable().GroupJoin(Inner, OuterKeySelector, InnerKeySelector, ResultSelector, Comparer);
+            if (notifyEnumerable == null)
+            {
+                notifyEnumerable = Source.AsNotifiable().GroupJoin(Inner, OuterKeySelector, InnerKeySelector, ResultSelector, Comparer);
+            }
+            return notifyEnumerable;
         }
 
         public IEnumerator<TResult> GetEnumerator()
         {
+            if (notifyEnumerable != null) return notifyEnumerable.GetEnumerator();
             return SL.GroupJoin(Source, Inner, OuterKeySelectorCompiled, InnerKeySelectorCompiled, ResultSelectorCompiled, Comparer).GetEnumerator();
         }
 

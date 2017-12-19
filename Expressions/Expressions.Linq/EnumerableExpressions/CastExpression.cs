@@ -10,6 +10,7 @@ namespace NMF.Expressions
     internal class CastExpression<T> : IEnumerableExpression<T>
     {
         public IEnumerableExpression Source { get; private set; }
+        private INotifyEnumerable<T> notifyEnumerable;
 
         public CastExpression(IEnumerableExpression source)
         {
@@ -20,11 +21,16 @@ namespace NMF.Expressions
 
         public INotifyEnumerable<T> AsNotifiable()
         {
-            return Source.AsNotifiable().Cast<T>();
+            if (notifyEnumerable == null)
+            {
+                notifyEnumerable = Source.AsNotifiable().Cast<T>();
+            }
+            return notifyEnumerable;
         }
 
         public IEnumerator<T> GetEnumerator()
         {
+            if (notifyEnumerable != null) return notifyEnumerable.GetEnumerator();
             return SL.Cast<T>(Source).GetEnumerator();
         }
 

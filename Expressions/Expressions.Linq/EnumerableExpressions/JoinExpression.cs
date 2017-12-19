@@ -18,6 +18,7 @@ namespace NMF.Expressions
         public Expression<Func<TOuter, TInner, TResult>> ResultSelector { get; set; }
         public Func<TOuter, TInner, TResult> ResultSelectorCompiled { get; set; }
         public IEqualityComparer<TKey> Comparer { get; set; }
+        private INotifyEnumerable<TResult> notifyEnumerable;
 
         public JoinExpression(IEnumerableExpression<TOuter> outer, IEnumerable<TInner> inner, Expression<Func<TOuter, TKey>> outerKeySelector, Func<TOuter, TKey> outerKeySelectorCompiled, Expression<Func<TInner, TKey>> innerKeySelector, Func<TInner, TKey> innerKeySelectorCompiled, Expression<Func<TOuter, TInner, TResult>> resultSelector, Func<TOuter, TInner, TResult> resultSelectorCompiled, IEqualityComparer<TKey> comparer)
         {
@@ -40,17 +41,22 @@ namespace NMF.Expressions
 
         public INotifyEnumerable<TResult> AsNotifiable()
         {
-            var innerExpression = Inner as IEnumerableExpression<TInner>;
-            IEnumerable<TInner> inner = Inner;
-            if (innerExpression != null)
+            if (notifyEnumerable == null)
             {
-                inner = innerExpression.AsNotifiable();
+                var innerExpression = Inner as IEnumerableExpression<TInner>;
+                IEnumerable<TInner> inner = Inner;
+                if (innerExpression != null)
+                {
+                    inner = innerExpression.AsNotifiable();
+                }
+                notifyEnumerable = Source.AsNotifiable().Join(inner, OuterKeySelector, InnerKeySelector, ResultSelector, Comparer);
             }
-            return Source.AsNotifiable().Join(inner, OuterKeySelector, InnerKeySelector, ResultSelector, Comparer);
+            return notifyEnumerable;
         }
 
         public IEnumerator<TResult> GetEnumerator()
         {
+            if (notifyEnumerable != null) return notifyEnumerable.GetEnumerator();
             return SL.Join(Source, Inner, OuterKeySelectorCompiled, InnerKeySelectorCompiled, ResultSelectorCompiled, Comparer).GetEnumerator();
         }
 
