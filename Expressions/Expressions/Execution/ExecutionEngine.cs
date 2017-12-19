@@ -13,7 +13,8 @@ namespace NMF.Expressions
 {
     public abstract class ExecutionEngine
     {
-        private readonly Collection<IChangeListener> changeListener = new Collection<IChangeListener>();
+        private readonly List<IChangeListener> changeListener = new List<IChangeListener>();
+        private readonly List<INotifiable> changedNodes = new List<INotifiable>();
         private static ExecutionEngine _current = new SequentialExecutionEngine();
         public bool TransactionActive { get; private set; }
 
@@ -26,7 +27,9 @@ namespace NMF.Expressions
         {
             if (changeListener.Count > 0)
             {
-                var nodes = new List<INotifiable>(changeListener.Count);
+                var nodes = new List<INotifiable>(changeListener.Count + changedNodes.Count);
+                nodes.AddRange(changedNodes);
+                changedNodes.Clear();
                 foreach (var listener in changeListener)
                 {
                     var result = listener.AggregateChanges();
@@ -57,9 +60,13 @@ namespace NMF.Expressions
         public void InvalidateNode(INotifiable node)
         {
             if (TransactionActive)
-                throw new InvalidOperationException("A transaction is in progress. Commit or rollback first.");
-            
-            ExecuteSingle(node);
+            {
+                changedNodes.Add(node);
+            }
+            else
+            {
+                ExecuteSingle(node);
+            }
         }
 
         internal void InvalidateNode(IChangeListener listener)
