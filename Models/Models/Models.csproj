@@ -8,6 +8,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Meta\IModelElementExtension.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <EmbeddedResource Include="..\..\NMeta.nmeta" Link="NMeta.nmeta" />
     <EmbeddedResource Include="..\..\NMetaChanges.nmeta" Link="NMetaChanges.nmeta" />
   </ItemGroup>

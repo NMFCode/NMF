@@ -26,7 +26,7 @@ namespace NMF.Models
     public abstract class ModelElement : IModelElement, INotifyPropertyChanged, INotifyPropertyChanging
     {
         private ModelElement parent;
-        private ObservableSet<ModelElementExtension> extensions;
+        private ObservableCompositionSet<ModelElementExtension> extensions;
         private ModelElementFlag flag;
         private EventHandler<BubbledChangeEventArgs> bubbledChange;
 
@@ -745,18 +745,14 @@ namespace NMF.Models
         /// <summary>
         /// Gets a collection of model element extensions that have been applied to this model element
         /// </summary>
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Content)]
         public ICollectionExpression<ModelElementExtension> Extensions
         {
             get
             {
-                if (extensions == null)
-                {
-                    Interlocked.CompareExchange(ref extensions, new ObservableSet<ModelElementExtension>(), null);
-                }
-                return extensions;
+                return new ModelElementExtensionsProxy(this);
             }
-        }
-
+        }  
 
         /// <summary>
         /// Gets the extension with the given extension type
@@ -1095,6 +1091,130 @@ namespace NMF.Models
                     return element.GetExpressionForAttribute(attribute.Name.ToUpperInvariant());
                 }
                 throw new NotSupportedException();
+            }
+        }
+
+        private class ModelElementExtensionsProxy : ICollectionExpression<ModelElementExtension>
+        {
+            private ModelElement element;
+
+            public ModelElementExtensionsProxy(ModelElement element)
+            {
+                this.element = element;
+            }
+
+            public int Count
+            {
+                get
+                {
+                    if (element.extensions == null)
+                    {
+                        return 0;
+                    }
+                    else
+                    {
+                        return element.extensions.Count;
+                    }
+                }
+            }
+
+            private ICollectionExpression<ModelElementExtension> CreateCollection()
+            {
+                if (element.extensions == null)
+                {
+                    Interlocked.CompareExchange(ref element.extensions, new ObservableCompositionSet<ModelElementExtension>(element), null);
+                }
+                return element.extensions;
+            }
+
+            public bool IsReadOnly
+            {
+                get
+                {
+                    return false;
+                }
+            }
+
+            public void Add(ModelElementExtension item)
+            {
+                CreateCollection().Add(item);
+            }
+
+            public INotifyCollection<ModelElementExtension> AsNotifiable()
+            {
+                return CreateCollection().AsNotifiable();
+            }
+
+            public void Clear()
+            {
+                var extensions = element.extensions;
+                if (extensions != null)
+                {
+                    extensions.Clear();
+                }
+            }
+
+            public bool Contains(ModelElementExtension item)
+            {
+                var extensions = element.extensions;
+                if (extensions == null)
+                {
+                    return false;
+                }
+                else
+                {
+                    return extensions.Contains(item);
+                }
+            }
+
+            public void CopyTo(ModelElementExtension[] array, int arrayIndex)
+            {
+                var extensions = element.extensions;
+                if (extensions != null)
+                {
+                    extensions.CopyTo(array, arrayIndex);
+                }
+            }
+
+            public IEnumerator<ModelElementExtension> GetEnumerator()
+            {
+                var extensions = element.extensions;
+                if (extensions == null)
+                {
+                    return Enumerable.Empty<ModelElementExtension>().GetEnumerator();
+                }
+                else
+                {
+                    return extensions.GetEnumerator();
+                }
+            }
+
+            public bool Remove(ModelElementExtension item)
+            {
+                var extensions = element.extensions;
+                if (extensions == null)
+                {
+                    return false;
+                }
+                else
+                {
+                    return extensions.Remove(item);
+                }
+            }
+
+            INotifyEnumerable<ModelElementExtension> IEnumerableExpression<ModelElementExtension>.AsNotifiable()
+            {
+                return AsNotifiable();
+            }
+
+            INotifyEnumerable IEnumerableExpression.AsNotifiable()
+            {
+                return AsNotifiable();
+            }
+
+            IEnumerator IEnumerable.GetEnumerator()
+            {
+                return GetEnumerator();
             }
         }
     }

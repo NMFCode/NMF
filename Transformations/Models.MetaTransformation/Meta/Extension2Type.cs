@@ -39,33 +39,11 @@ namespace NMF.Models.Meta
                 SetTypeReferenceForMappedType(input, generatedType.GetReferenceForType());
                 base.Transform(input, generatedType, context);
                 generatedType.IsClass = true;
-                generatedType.BaseTypes.Add(new CodeTypeReference(typeof(ModelElementExtension<>).Name, CreateReference(input.AdornedClass, true, context)));
+                generatedType.BaseTypes.Add(new CodeTypeReference(typeof(ModelElementExtension<,>).Name, CreateReference(input.AdornedClass, true, context), generatedType.GetReferenceForType()));
                 generatedType.WriteDocumentation(input.Summary ?? string.Format("The {0} extension", input.Name), input.Remarks);
-
-                CreateConstructor(input, generatedType, context);
+                
                 CreateFromMethod(input, generatedType, context);
                 CreateGetExtension(input, generatedType, context);
-            }
-
-            /// <summary>
-            /// Creates the constructor for the extension
-            /// </summary>
-            /// <param name="input">The NMeta extension</param>
-            /// <param name="generatedType">The generated type declaration for the extension</param>
-            /// <param name="context">The transformation context</param>
-            protected virtual void CreateConstructor(IExtension input, CodeTypeDeclaration generatedType, ITransformationContext context)
-            {
-                var classRef = CreateReference(input.AdornedClass, true, context);
-                var constructor = CodeDomHelper.GetOrCreateDefaultConstructor(generatedType, () => new CodeConstructor());
-                constructor.Attributes = MemberAttributes.Public;
-                constructor.ReturnType = generatedType.GetReferenceForType();
-                constructor.Parameters.Add(new CodeParameterDeclarationExpression(classRef, "parent"));
-                constructor.BaseConstructorArgs.Add(new CodeArgumentReferenceExpression("parent"));
-                constructor.WriteDocumentation("Creates a new extension instance for the given parent", null, new Dictionary<string, string>() { { "parent", "The parent model element" } });
-                if (!generatedType.Members.Contains(constructor))
-                {
-                    generatedType.Members.Add(constructor);
-                }
             }
 
             /// <summary>

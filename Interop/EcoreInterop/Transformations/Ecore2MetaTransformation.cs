@@ -62,7 +62,7 @@ namespace NMF.Interop.Ecore.Transformations
                         {
                             if (!string.IsNullOrEmpty(name.Value) && !name.Value.Contains(":"))
                             {
-                                output.Extensions.Add(new SerializationInformation(output)
+                                output.Extensions.Add(new SerializationInformation
                                 {
                                     SerializationName = name.Value.Replace("_._type", "")
                                 });
@@ -333,7 +333,7 @@ namespace NMF.Interop.Ecore.Transformations
                         var serializationInfo = output.GetExtension<SerializationInformation>();
                         if (serializationInfo == null)
                         {
-                            serializationInfo = new SerializationInformation(output);
+                            serializationInfo = new SerializationInformation();
                             output.Extensions.Add(serializationInfo);
                         }
                         serializationInfo.IsDefault = true;

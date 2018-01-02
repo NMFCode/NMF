@@ -11,64 +11,32 @@ namespace NMF.Models
     [ModelRepresentationClassAttribute("http://nmf.codeplex.com/nmeta/#//ModelElementExtension/")]
     public abstract class ModelElementExtension : ModelElement, IModelElementExtension
     {
-        protected internal ModelElementExtension(IModelElement extended)
-        {
-            if (extended == null) throw new ArgumentNullException("extended");
-        }
-
-        protected abstract IModelElement ExtendedElementInternal
-        {
-            get;
-        }
-
-        event EventHandler<ValueChangedEventArgs> Meta.IModelElementExtension.ExtendedElementChanged
-        {
-            add { }
-            remove { }
-        }
-
-        event EventHandler<ValueChangedEventArgs> Meta.IModelElementExtension.ExtendedElementChanging
-        {
-            add { }
-            remove { }
-        }
-
         public abstract IExtension GetExtension();
 
         IModelElement Meta.IModelElementExtension.ExtendedElement
         {
-            get { return ExtendedElementInternal; }
+            get { return Parent; }
             set { }
-        }
-    }
-
-    public abstract class ModelElementExtension<T> : ModelElementExtension where T : IModelElement
-    {
-        public ModelElementExtension(T parent)
-            : base(parent)
-        {
-            ExtendedElement = parent;
-        }
-
-        public T ExtendedElement { get; private set; }
-
-        public static implicit operator T(ModelElementExtension<T> extension)
-        {
-            if (extension == null) return default(T);
-            return extension.ExtendedElement;
         }
 
         public override Meta.IClass GetClass()
         {
-            return ExtendedElement.GetClass();
+            return Parent.GetClass();
+        }
+    }
+
+    public abstract class ModelElementExtension<T, T2> : ModelElementExtension where T : IModelElement where T2 : ModelElementExtension<T, T2>
+    {
+        public static implicit operator T(ModelElementExtension<T, T2> extension)
+        {
+            if (extension == null) return default(T);
+            return (T)extension.Parent;
         }
 
-        protected override IModelElement ExtendedElementInternal
+        public static implicit operator ModelElementExtension<T, T2>(T element)
         {
-            get
-            {
-                return ExtendedElement;
-            }
+            var me = element as ModelElement;
+            return me?.GetExtension<ModelElementExtension<T, T2>>();
         }
     }
 }

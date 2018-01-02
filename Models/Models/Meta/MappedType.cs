@@ -30,12 +30,14 @@ using System.Linq;
 
 namespace NMF.Models.Meta
 {
-    
-    
+
+
     /// <summary>
     /// The MappedType extension
     /// </summary>
-    public class MappedType : ModelElementExtension<NMF.Models.Meta.IType>
+    [XmlNamespaceAttribute("http://nmf.codeplex.com/nmeta/")]
+    [XmlNamespacePrefixAttribute("nmeta")]
+    public class MappedType : ModelElementExtension<NMF.Models.Meta.IType, MappedType>
     {
         
         /// <summary>
@@ -46,15 +48,6 @@ namespace NMF.Models.Meta
         private static Lazy<ITypedElement> _systemTypeAttribute = new Lazy<ITypedElement>(RetrieveSystemTypeAttribute);
         
         private static IExtension _extensionType;
-        
-        /// <summary>
-        /// Creates a new extension instance for the given parent
-        /// </summary>
-        /// <param name="parent">The parent model element</param>
-        public MappedType(NMF.Models.Meta.IType parent) : 
-                base(parent)
-        {
-        }
         
         /// <summary>
         /// The SystemType property
@@ -138,7 +131,7 @@ namespace NMF.Models.Meta
             {
                 return extension;
             }
-            extension = new MappedType(parent);
+            extension = new MappedType();
             parent.Extensions.Add(extension);
             return extension;
         }

@@ -30,12 +30,15 @@ using System.Linq;
 
 namespace NMF.Models.Meta
 {
-    
-    
+
+
     /// <summary>
     /// The SerializationInformation extension
     /// </summary>
-    public class SerializationInformation : ModelElementExtension<NMF.Models.Meta.IMetaElement>
+    [XmlNamespaceAttribute("http://nmf.codeplex.com/nmeta/")]
+    [XmlNamespacePrefixAttribute("nmeta")]
+    [ModelRepresentationClassAttribute("http://nmf.codeplex.com/nmeta/#//SerializationInformation")]
+    public class SerializationInformation : ModelElementExtension<NMF.Models.Meta.IMetaElement, SerializationInformation>
     {
         
         /// <summary>
@@ -53,15 +56,6 @@ namespace NMF.Models.Meta
         private static Lazy<ITypedElement> _isDefaultAttribute = new Lazy<ITypedElement>(RetrieveIsDefaultAttribute);
 
         private static IExtension _extensionType;
-        
-        /// <summary>
-        /// Creates a new extension instance for the given parent
-        /// </summary>
-        /// <param name="parent">The parent model element</param>
-        public SerializationInformation(NMF.Models.Meta.IMetaElement parent) : 
-                base(parent)
-        {
-        }
         
         /// <summary>
         /// The SerializationName property
@@ -211,7 +205,7 @@ namespace NMF.Models.Meta
             {
                 return extension;
             }
-            extension = new SerializationInformation(parent);
+            extension = new SerializationInformation();
             parent.Extensions.Add(extension);
             return extension;
         }
