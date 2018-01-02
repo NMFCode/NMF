@@ -2,6 +2,7 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using NMF.Models.Repository;
 using NMF.Interop.Ecore;
+using System.Reflection;
 
 namespace NMF.CodeGenerationTests
 {
@@ -68,13 +69,39 @@ namespace NMF.CodeGenerationTests
         //    GenerateAndAssertEcore("schema.ecore");
         //}
 
+        [TestMethod]
+        public void DefaultValueExampleGeneratesAndInstanceCanBeLoaded()
+        {
+            GenerateAndLoadModel("DefaultValueTest.ecore", "DefaultValueTestInstance.xml");
+        }
+
         private void GenerateAndAssertEcore(string modelPath)
         {
             string log;
             string errorLog;
             var package = EcoreInterop.LoadPackageFromFile(modelPath);
             var ns = EcoreInterop.Transform2Meta(package);
-            var result = CodeGenerationTest.GenerateAndCompile(ns, out errorLog, out log);
+            var result = CodeGenerationTest.GenerateAndCompile(ns, null, out errorLog, out log);
+            Assert.AreEqual(0, result, log + errorLog);
+        }
+
+        private void GenerateAndLoadModel(string metamodelPath, string modelPath)
+        {
+            string log;
+            string errorLog;
+            var package = EcoreInterop.LoadPackageFromFile(metamodelPath);
+            var ns = EcoreInterop.Transform2Meta(package);
+
+            var loadModel = new Action<string, int>((path, buildExit) =>
+            {
+                if (buildExit != 0) return;
+                var repository = new ModelRepository();
+                var assemblyPath = System.IO.Path.Combine(path, "bin", "project.dll");
+                Assembly.LoadFile(assemblyPath);
+                repository.Resolve(modelPath);
+            });
+
+            var result = CodeGenerationTest.GenerateAndCompile(ns, loadModel, out errorLog, out log);
             Assert.AreEqual(0, result, log + errorLog);
         }
     }

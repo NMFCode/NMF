@@ -19,7 +19,7 @@ namespace NMF.CodeGenerationTests
     {
         private static object codeGenLock = new object();
 
-        public static int GenerateAndCompile(INamespace ns, out string error, out string log)
+        public static int GenerateAndCompile(INamespace ns, Action<string, int> afterCompileAction, out string error, out string log)
         {
             lock (codeGenLock)
             {
@@ -62,6 +62,7 @@ namespace NMF.CodeGenerationTests
                     }
                     buildJob.WaitForExit();
                     error = buildLog;
+                    afterCompileAction?.Invoke(path, buildJob.ExitCode);
                     return buildJob.ExitCode;
                 }
                 finally
