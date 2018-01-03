@@ -72,7 +72,7 @@ namespace NMF.CodeGenerationTests
         [TestMethod]
         public void DefaultValueExampleGeneratesAndInstanceCanBeLoaded()
         {
-            GenerateAndLoadModel("DefaultValueTest.ecore", "DefaultValueTestInstance.xml");
+            GenerateAndAssertEcore("DefaultValueTest.ecore");
         }
 
         private void GenerateAndAssertEcore(string modelPath)
