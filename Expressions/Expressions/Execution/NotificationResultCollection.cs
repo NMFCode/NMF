@@ -83,22 +83,30 @@ namespace NMF.Expressions
 
         public bool Contains(INotificationResult item)
         {
-            throw new NotImplementedException();
+            foreach (var it in this)
+            {
+                if (item == it) return true;
+            }
+            return false;
         }
 
         public void CopyTo(INotificationResult[] array, int arrayIndex)
         {
-            throw new NotImplementedException();
+            foreach (var item in this)
+            {
+                array[arrayIndex] = item;
+                arrayIndex++;
+            }
         }
 
         public bool Remove(INotificationResult item)
         {
-            throw new NotImplementedException();
+            throw new NotSupportedException();
         }
 
         public int IndexOf(INotificationResult item)
         {
-            throw new NotImplementedException();
+            throw new NotSupportedException();
         }
 
         public void Insert(int index, INotificationResult item)
