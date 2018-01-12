@@ -77,7 +77,7 @@ namespace NMF.Expressions.Linq
             var newValue = Value;
             if (!EqualityComparer<TResult>.Default.Equals(newValue, oldValue))
             {
-                OnValueChanged(new ValueChangedEventArgs(oldValue, newValue));
+                OnValueChanged(oldValue, newValue);
                 return new ValueChangedNotificationResult<TResult>(this, oldValue, newValue);
             }
             else

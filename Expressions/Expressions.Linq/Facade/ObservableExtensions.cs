@@ -1722,6 +1722,63 @@ namespace NMF.Expressions.Linq
         }
 
         /// <summary>
+        /// Gets the top x elements of the given collection, ordered by the given feature
+        /// </summary>
+        /// <typeparam name="TItem">The item type</typeparam>
+        /// <typeparam name="TKey">The key type</typeparam>
+        /// <param name="source">The element source</param>
+        /// <param name="x">A number indicating how many items should be selected</param>
+        /// <param name="keySelector">An expression to denote the selection of key features</param>
+        /// <returns>An array with the largest entries of the underlying collection</returns>
+        [ObservableProxy(typeof(ObservableTopX<>), "CreateSelector")]
+        public static TItem[] TopX<TItem, TKey>(this INotifyEnumerable<TItem> source, int x, Expression<Func<TItem, TKey>> keySelector)
+        {
+            return TopX(source, x, keySelector, null);
+        }
+
+        /// <summary>
+        /// Gets the top x elements of the given collection, ordered by the given feature
+        /// </summary>
+        /// <typeparam name="TItem">The item type</typeparam>
+        /// <typeparam name="TKey">The key type</typeparam>
+        /// <param name="source">The element source</param>
+        /// <param name="x">A number indicating how many items should be selected</param>
+        /// <param name="keySelector">An expression to denote the selection of key features</param>
+        /// <param name="comparer">A custom comparer</param>
+        /// <returns>An array with the largest entries of the underlying collection</returns>
+        [ObservableProxy(typeof(ObservableTopX<>), "CreateSelectorComparer")]
+        public static TItem[] TopX<TItem, TKey>(this INotifyEnumerable<TItem> source, int x, Expression<Func<TItem, TKey>> keySelector, IComparer<TKey> comparer)
+        {
+            if (source == null) throw new ArgumentNullException(nameof(source));
+            if (keySelector == null) throw new ArgumentNullException(nameof(keySelector));
+            if (x <= 0) throw new ArgumentOutOfRangeException(nameof(x));
+
+            comparer = comparer ?? Comparer<TKey>.Default;
+            var selector = keySelector.Compile();
+            var result = new List<TItem>(x + 1);
+            foreach (var item in source)
+            {
+                var key = selector(item);
+                if (result.Count < x || comparer.Compare(key, selector(result[result.Count - 1])) > 0)
+                {
+                    var inserted = false;
+                    for (int i = 0; i < result.Count; i++)
+                    {
+                        if (comparer.Compare(key, selector(result[i])) > 0)
+                        {
+                            inserted = true;
+                            result.Insert(i, item);
+                            if (result.Count == x + 1) result.RemoveAt(x);
+                            break;
+                        }
+                    }
+                    if (!inserted) result.Add(item);
+                }
+            }
+            return result.ToArray();
+        }
+
+        /// <summary>
         /// Unions the current collection with the given other collection 
         /// </summary>
         /// <typeparam name="TSource">The elements type</typeparam>

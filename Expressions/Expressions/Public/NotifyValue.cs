@@ -28,6 +28,14 @@ namespace NMF.Expressions
             ValueChanged?.Invoke(this, e);
         }
 
+        protected void OnValueChanged(T oldValue, T newValue)
+        {
+            if (ValueChanged != null)
+            {
+                ValueChanged(this, new ValueChangedEventArgs(oldValue, newValue));
+            }
+        }
+
         public void Dispose()
         {
 
