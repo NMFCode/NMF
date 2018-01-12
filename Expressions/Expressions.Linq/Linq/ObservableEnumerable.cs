@@ -19,12 +19,14 @@ namespace NMF.Expressions.Linq
         [DebuggerStepThrough]
         protected void OnAddItem(T item, int index = 0)
         {
+            if (!HasEventSubscriber) return;
             OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, item, index));
         }
 
         [DebuggerStepThrough]
         protected void OnAddItems(IEnumerable<T> items, int index = 0)
         {
+            if (!HasEventSubscriber) return;
             var added = items as List<T> ?? items.ToList();
             if (added.Count > 0)
             {
@@ -35,12 +37,14 @@ namespace NMF.Expressions.Linq
         [DebuggerStepThrough]
         protected void OnRemoveItem(T item, int index = 0)
         {
+            if (!HasEventSubscriber) return;
             OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Remove, item, index));
         }
 
         [DebuggerStepThrough]
         protected void OnRemoveItems(IEnumerable<T> items, int index = 0)
         {
+            if (!HasEventSubscriber) return;
             var removed = items as List<T> ?? items.ToList();
             if (removed.Count > 0)
             {
@@ -51,6 +55,7 @@ namespace NMF.Expressions.Linq
         [DebuggerStepThrough]
         protected void OnReplaceItems(IEnumerable<T> oldItems, IEnumerable<T> newItems, int index = 0)
         {
+            if (!HasEventSubscriber) return;
             var added = newItems as List<T> ?? newItems.ToList();
             var removed = oldItems as List<T> ?? oldItems.ToList();
             if (added.Count > 0 && removed.Count > 0)
@@ -63,24 +68,28 @@ namespace NMF.Expressions.Linq
         [DebuggerStepThrough]
         protected void OnCleared()
         {
+            if (!HasEventSubscriber) return;
             OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
         }
 
         [DebuggerStepThrough]
         protected void OnUpdateItem(T item, T old, int index = 0)
         {
+            if (!HasEventSubscriber) return;
             OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Replace, item, old, index));
         }
 
         [DebuggerStepThrough]
         protected void OnMoveItem(T item, int oldIndex = 0, int newIndex = 0)
         {
+            if (!HasEventSubscriber) return;
             OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Move, item, newIndex, oldIndex));
         }
 
         [DebuggerStepThrough]
         protected void OnMoveItems(IEnumerable<T> items, int oldIndex = 0, int newIndex = 0)
         {
+            if (!HasEventSubscriber) return;
             var moved = items as List<T> ?? items.ToList();
             if (moved.Count > 0)
             {
