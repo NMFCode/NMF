@@ -828,6 +828,8 @@ namespace NMF.Models
                     var e = new UriChangedEventArgs(originalAbsoluteUri);
                     OnDeleting(e);
                     OnDeleted(e);
+                    // only bubble deletion for deleted root
+                    OnBubbledChange(BubbledChangeEventArgs.ElementDeleted(this, e));
                 }
                 SetParent(null);
             }
@@ -867,7 +869,6 @@ namespace NMF.Models
                 }
             }
             Deleted?.Invoke(this, e);
-            OnBubbledChange(BubbledChangeEventArgs.ElementDeleted(this, e));
             UnsetFlag(ModelElementFlag.Deleting);
         }
 
