@@ -98,19 +98,6 @@ namespace NMF.Expressions.Linq.Tests
 
     }
 
-    public class MyTestClass
-    {
-        public void MyTestMethod()
-        {
-            INotifyEnumerable<Customer> customers = GetCustomers();
-            INotifyEnumerable<Order> orders = GetOrders();
-        }
-
-        private INotifyEnumerable<Customer> GetCustomers() { return null; }
-
-        private INotifyEnumerable<Order> GetOrders() { return null; }
-    }
-
     class Person : INotifyPropertyChanged
     {
         #region Name
@@ -211,34 +198,4 @@ namespace NMF.Expressions.Linq.Tests
         public event PropertyChangedEventHandler PropertyChanged;
 
     }
-
-    public class Customer
-    {
-        public int CustomerID;
-        public string Name;
-        public string Address;
-        public string City;
-        public string Region;
-        public string PostalCode;
-        public string Country;
-        public string Phone;
-        public List<Order> Orders;
-    }
-    public class Order
-    {
-        public int OrderID;
-        public int CustomerID;
-        public Customer Customer;
-        public DateTime OrderDate;
-        public decimal Total;
-    }
-    public class Product
-    {
-        public int ProductID;
-        public string Name;
-        public string Category;
-        public decimal UnitPrice;
-        public int UnitsInStock;
-    }
-
 }
