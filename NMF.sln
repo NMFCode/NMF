@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.27004.2002
+VisualStudioVersion = 15.0.27004.2010
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Analysis", "Analysis", "{DB96042F-8815-430D-8345-362F4266F0FE}"
 EndProject
@@ -133,6 +133,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Connectivity.Tests", "Analysis\Tests\Connectivity.Tests\Connectivity.Tests.csproj", "{C25C9F9F-2874-403F-9AB8-07ED7B1C65AC}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{C0E46867-0301-46DC-A6BF-7C929B78376B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IncrementalizationTests", "IntegrationTests\IncrementalizationTests\IncrementalizationTests.csproj", "{38A5EF80-6411-4522-9810-F1BF2FCBC8CB}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -490,6 +492,14 @@ Global
 		{C25C9F9F-2874-403F-9AB8-07ED7B1C65AC}.Signed Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C25C9F9F-2874-403F-9AB8-07ED7B1C65AC}.Signed Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C25C9F9F-2874-403F-9AB8-07ED7B1C65AC}.Signed Release|Any CPU.Build.0 = Release|Any CPU
+		{38A5EF80-6411-4522-9810-F1BF2FCBC8CB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{38A5EF80-6411-4522-9810-F1BF2FCBC8CB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{38A5EF80-6411-4522-9810-F1BF2FCBC8CB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{38A5EF80-6411-4522-9810-F1BF2FCBC8CB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{38A5EF80-6411-4522-9810-F1BF2FCBC8CB}.Signed Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{38A5EF80-6411-4522-9810-F1BF2FCBC8CB}.Signed Debug|Any CPU.Build.0 = Debug|Any CPU
+		{38A5EF80-6411-4522-9810-F1BF2FCBC8CB}.Signed Release|Any CPU.ActiveCfg = Release|Any CPU
+		{38A5EF80-6411-4522-9810-F1BF2FCBC8CB}.Signed Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -547,6 +557,7 @@ Global
 		{A7C48358-445E-4EA6-967D-576AEDEC0757} = {DB96042F-8815-430D-8345-362F4266F0FE}
 		{C25C9F9F-2874-403F-9AB8-07ED7B1C65AC} = {A7C48358-445E-4EA6-967D-576AEDEC0757}
 		{C0E46867-0301-46DC-A6BF-7C929B78376B} = {F63B0164-47EE-43BA-BAAE-411CD5EC092A}
+		{38A5EF80-6411-4522-9810-F1BF2FCBC8CB} = {20706503-D337-4882-9043-0C4AB6D6074C}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {7B6D2737-94B7-470E-B413-D9693622AA4D}

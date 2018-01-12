@@ -1,0 +1,32 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<nmeta:Namespace xmi:version="2.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" Uri="https://gitlab.upseil.com/lennart/streaming-model-analysis/debs2016/social-network" Prefix="social_network" Name="SocialNetwork" xmlns:xmi="http://www.omg.org/XMI" xmlns:nmeta="http://nmf.codeplex.com/nmeta/">
+  <Types xsi:type="nmeta:Class" IsAbstract="True" IdentifierScope="Global" Identifier="#//Submission/id" Name="Submission">
+    <References Opposite="#//User/submissions" ReferenceType="#//User" LowerBound="1" Name="submitter" />
+    <References IsContainment="True" Opposite="#//Comment/commented" ReferenceType="#//Comment" IsOrdered="True" IsUnique="True" UpperBound="-1" Name="comments" />
+    <Attributes LowerBound="1" Type="http://nmf.codeplex.com/nmeta/#//String" Name="id" />
+    <Attributes LowerBound="1" Type="http://nmf.codeplex.com/nmeta/#//DateTime" Name="timestamp" />
+    <Attributes LowerBound="1" Type="http://nmf.codeplex.com/nmeta/#//String" Name="content" />
+    <Attributes DefaultValue="10" LowerBound="1" Type="http://nmf.codeplex.com/nmeta/#//Integer" Name="score" />
+  </Types>
+  <Types xsi:type="nmeta:Class" BaseTypes="#//Submission" Name="Post">
+    <Attributes DefaultValue="true" LowerBound="1" Type="http://nmf.codeplex.com/nmeta/#//Boolean" Name="active" />
+    <Attributes LowerBound="1" Type="http://nmf.codeplex.com/nmeta/#//DateTime" Name="lastCommented" />
+  </Types>
+  <Types xsi:type="nmeta:Class" BaseTypes="#//Submission" Name="Comment">
+    <References Opposite="#//Submission/comments" ReferenceType="#//Submission" LowerBound="1" Name="commented" />
+    <References Opposite="#//User/likes" ReferenceType="#//User" IsUnique="True" UpperBound="-1" Name="likedBy" />
+    <References ReferenceType="#//Post" LowerBound="1" Name="post" />
+  </Types>
+  <Types xsi:type="nmeta:Class" IdentifierScope="Global" Identifier="#//User/id" Name="User">
+    <References Opposite="#//Submission/submitter" ReferenceType="#//Submission" IsUnique="True" UpperBound="-1" Name="submissions" />
+    <References Opposite="#//Comment/likedBy" ReferenceType="#//Comment" IsUnique="True" UpperBound="-1" Name="likes" />
+    <References ReferenceType="#//User" IsUnique="True" UpperBound="-1" Name="friends" />
+    <Attributes LowerBound="1" Type="http://nmf.codeplex.com/nmeta/#//String" Name="id" />
+    <Attributes LowerBound="1" Type="http://nmf.codeplex.com/nmeta/#//String" Name="name" />
+  </Types>
+  <Types xsi:type="nmeta:Class" Name="SocialNetwork">
+    <References IsContainment="True" ReferenceType="#//Post" IsOrdered="True" IsUnique="True" UpperBound="-1" Name="posts" />
+    <References IsContainment="True" ReferenceType="#//User" IsOrdered="True" IsUnique="True" UpperBound="-1" Name="users" />
+    <Attributes LowerBound="1" Type="http://nmf.codeplex.com/nmeta/#//DateTime" Name="CurrentTime" />
+  </Types>
+</nmeta:Namespace>

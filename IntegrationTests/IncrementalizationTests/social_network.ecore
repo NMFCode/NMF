@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ecore:EPackage xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" name="SocialNetwork" nsURI="https://gitlab.upseil.com/lennart/streaming-model-analysis/debs2016/social-network"
+    nsPrefix="social_network">
+  <eClassifiers xsi:type="ecore:EClass" name="Submission" abstract="true">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="id" ordered="false" unique="false"
+        lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"
+        changeable="false" iD="true"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="timestamp" ordered="false"
+        unique="false" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDate"
+        changeable="false"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="content" ordered="false"
+        unique="false" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"
+        changeable="false"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="submitter" ordered="false"
+        unique="false" lowerBound="1" eType="#//User" eOpposite="#//User/submissions"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="comments" ordered="false"
+        upperBound="-1" eType="#//Comment" containment="true" eOpposite="#//Comment/commented"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="score" ordered="false"
+        unique="false" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"
+        defaultValueLiteral="10"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Post" eSuperTypes="#//Submission">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="active" ordered="false"
+        unique="false" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"
+        defaultValueLiteral="true"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="lastCommented" ordered="false"
+        unique="false" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDate"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Comment" eSuperTypes="#//Submission">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="commented" ordered="false"
+        unique="false" lowerBound="1" eType="#//Submission" changeable="false" eOpposite="#//Submission/comments"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="likedBy" ordered="false"
+        upperBound="-1" eType="#//User" eOpposite="#//User/likes"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="post" ordered="false" unique="false"
+        lowerBound="1" eType="#//Post"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="User">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="id" ordered="false" unique="false"
+        lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"
+        changeable="false" iD="true"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" ordered="false" unique="false"
+        lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="submissions" ordered="false"
+        upperBound="-1" eType="#//Submission" eOpposite="#//Submission/submitter"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="likes" ordered="false"
+        upperBound="-1" eType="#//Comment" eOpposite="#//Comment/likedBy"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="friends" ordered="false"
+        upperBound="-1" eType="#//User"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="SocialNetwork">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="posts" ordered="false"
+        upperBound="-1" eType="#//Post" containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="users" ordered="false"
+        upperBound="-1" eType="#//User" containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="CurrentTime" ordered="false"
+        unique="false" lowerBound="1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDate"/>
+  </eClassifiers>
+</ecore:EPackage>
