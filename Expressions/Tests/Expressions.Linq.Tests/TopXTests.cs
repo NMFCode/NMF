@@ -110,6 +110,55 @@ namespace NMF.Expressions.Linq.Tests
             Assert.AreEqual(42, topEx.Value[2].Item);
         }
 
+        [TestMethod]
+        public void TopX_EmptyMultipleAdd_CorrectResult()
+        {
+            var collection = new NotifyCollection<Dummy<int>>();
+            var top1 = new Dummy<int>(43);
+            var top2 = new Dummy<int>(42);
+            var top3 = new Dummy<int>(30);
+
+            var changed = false;
+            var topEx = Observable.Expression(() => collection.TopX(3, d => d.Item));
+            topEx.ValueChanged += (sender, args) => changed = true;
+
+            var top = topEx.Value;
+            Assert.AreEqual(0, top.Length);
+
+            collection.Add(top2);
+            top = topEx.Value;
+
+            Assert.IsTrue(changed);
+            Assert.AreEqual(top2, top[0]);
+            Assert.AreEqual(1, top.Length);
+
+            changed = false;
+            collection.Add(top1);
+            collection.Add(top3);
+            top = topEx.Value;
+
+            Assert.IsTrue(changed);
+            Assert.AreEqual(top1, top[0]);
+            Assert.AreEqual(top2, top[1]);
+            Assert.AreEqual(top3, top[2]);
+            Assert.AreEqual(3, top.Length);
+
+            changed = false;
+            collection.Add(new Dummy<int>(22));
+
+            Assert.IsFalse(changed);
+            Assert.AreEqual(top, topEx.Value);
+
+            var newTop3 = new Dummy<int>((top3.Item + top2.Item) / 2);
+            collection.Add(newTop3);
+            top = topEx.Value;
+
+            Assert.IsTrue(changed);
+            Assert.AreEqual(top1, top[0]);
+            Assert.AreEqual(top2, top[1]);
+            Assert.AreEqual(newTop3, top[2]);
+            Assert.AreEqual(3, top.Length);
+        }
 
         [TestMethod]
         public void TopX_Remove_CorrectResult()
@@ -190,9 +239,6 @@ namespace NMF.Expressions.Linq.Tests
             Assert.IsTrue(changed);
             Assert.AreEqual(0, topEx.Value.Length);
         }
-
-
-
 
         [TestMethod]
         public void TopX_Change_CorrectResult()

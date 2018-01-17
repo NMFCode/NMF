@@ -96,7 +96,7 @@ namespace NMF.Expressions.Linq
                 {
                     if (en.MoveNext())
                     {
-                        if (!comparer.Equals(value[i], en.Current))
+                        if (value.Length <= i || !comparer.Equals(value[i], en.Current))
                         {
                             if (newValue == null)
                             {
@@ -116,10 +116,15 @@ namespace NMF.Expressions.Linq
                         {
                             return UnchangedNotificationResult.Instance;
                         }
-                        else
+                        else if (newValue == null)
                         {
                             newValue = new TItem[i];
-                            Array.Copy(oldValue, 0, newValue, 0, i);
+                            Array.Copy(value, 0, newValue, 0, i);
+                            break;
+                        }
+                        else
+                        {
+                            Array.Resize(ref newValue, i);
                             break;
                         }
                     }
