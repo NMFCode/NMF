@@ -231,5 +231,36 @@ namespace NMF.Expressions.Linq.Tests
             Assert.IsFalse(test.Any());
             Assert.IsTrue(update);
         }
+
+        [TestMethod]
+        public void WhereTransaction_ObservableItem_Updates()
+        {
+            ExecutionEngine.Current = new SequentialExecutionEngine();
+
+            var update = false;
+            var dummy1 = new ObservableDummy<bool>(true);
+            var coll = new NotifyCollection<Dummy<bool>>() { dummy1 };
+
+            var test = coll.Where(d => d.Item);
+
+            test.CollectionChanged += (o, e) =>
+            {
+                update = true;
+                Assert.AreEqual(dummy1, e.OldItems[0]);
+            };
+
+            Assert.IsTrue(Sys.Contains(test, dummy1));
+            Assert.IsFalse(update);
+
+            ExecutionEngine.Current.BeginTransaction();
+
+            dummy1.Item = false;
+            Assert.IsFalse(update);
+
+            ExecutionEngine.Current.CommitTransaction();
+
+            Assert.IsFalse(test.Any());
+            Assert.IsTrue(update);
+        }
     }
 }

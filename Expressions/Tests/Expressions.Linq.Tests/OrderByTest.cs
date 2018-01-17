@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -322,6 +323,130 @@ namespace NMF.Expressions.Linq.Tests
 
             Assert.IsTrue(update);
             test.AssertSequence(dummy3, dummy1, dummy2);
+        }
+
+        [TestMethod]
+        public void OrderByTransaction_ChangeRemove_Update()
+        {
+            ExecutionEngine.Current = new SequentialExecutionEngine();
+
+            var update = false;
+            var dummy1 = new ObservableDummy<int>(1);
+            var dummy2 = new Dummy<int>(3);
+            var dummy3 = new Dummy<int>(5);
+            var coll = new NotifyCollection<Dummy<int>>() { dummy1, dummy2, dummy3 };
+
+            var test = coll.OrderBy(d => d.Item);
+            test.CollectionChanged += (o, e) => update = true;
+            
+            test.AssertSequence(dummy1, dummy2, dummy3);
+            Assert.AreEqual(3, test.Sequences.Count());
+            Assert.IsFalse(update);
+
+            ExecutionEngine.Current.BeginTransaction();
+
+            dummy1.Item = 0;
+            coll.Remove(dummy1);
+            Assert.IsFalse(update);
+
+            ExecutionEngine.Current.CommitTransaction();
+
+            test.AssertSequence(dummy2, dummy3);
+            Assert.AreEqual(2, test.Sequences.Count());
+            Assert.IsTrue(update);
+        }
+
+        [TestMethod]
+        public void OrderByTransaction_ChangeReplace_Update()
+        {
+            ExecutionEngine.Current = new SequentialExecutionEngine();
+
+            var update = false;
+            var dummy1 = new ObservableDummy<int>(1);
+            var dummy2 = new Dummy<int>(3);
+            var dummy3 = new Dummy<int>(5);
+            var coll = new NotifyCollection<Dummy<int>>() { dummy1, dummy2, dummy3 };
+            var newDummy = new Dummy<int>(2);
+
+            var test = coll.OrderBy(d => d.Item);
+            test.CollectionChanged += (o, e) => update = true;
+
+            test.AssertSequence(dummy1, dummy2, dummy3);
+            Assert.AreEqual(3, test.Sequences.Count());
+            Assert.IsFalse(update);
+
+            ExecutionEngine.Current.BeginTransaction();
+
+            dummy1.Item = 0;
+            coll[0] = newDummy;
+            Assert.IsFalse(update);
+
+            ExecutionEngine.Current.CommitTransaction();
+
+            test.AssertSequence(newDummy, dummy2, dummy3);
+            Assert.AreEqual(3, test.Sequences.Count());
+            Assert.IsTrue(update);
+        }
+
+        [TestMethod]
+        public void WhereOrderByTransaction_ChangeRemove_Update() // Works without Transaction
+        {
+            ExecutionEngine.Current = new SequentialExecutionEngine();
+
+            var update = false;
+            var dummy1 = new ObservableDummy<int>(1);
+            var dummy2 = new Dummy<int>(3);
+            var dummy3 = new Dummy<int>(5);
+            var coll = new NotifyCollection<Dummy<int>>() { dummy1, dummy2, dummy3 };
+
+            var test = coll.Where(d => d.Item > 0).OrderBy(d => d.Item);
+            test.CollectionChanged += (o, e) => update = true;
+
+            test.AssertSequence(dummy1, dummy2, dummy3);
+            Assert.AreEqual(3, test.Sequences.Count());
+            Assert.IsFalse(update);
+
+            ExecutionEngine.Current.BeginTransaction();
+
+            dummy1.Item = 0;
+            Assert.IsFalse(update);
+
+            ExecutionEngine.Current.CommitTransaction();
+
+            test.AssertSequence(dummy2, dummy3);
+            Assert.AreEqual(2, test.Sequences.Count());
+            Assert.IsTrue(update);
+        }
+
+        [TestMethod]
+        public void WhereSelectOrderByTransaction_RemoveCausingChange_Update() // Works without Transaction
+        {
+            ExecutionEngine.Current = new SequentialExecutionEngine();
+
+            var update = false;
+            var dummy1 = new ObservableDummy<int>(1);
+            var dummy2 = new Dummy<int>(3);
+            var dummy3 = new Dummy<int>(5);
+            var coll = new NotifyCollection<Dummy<int>>() { dummy1, dummy2, dummy3 };
+
+            var test = coll.Where(d => d.Item > 0).Select(d => new Dummy<int>(d.Item * 2)).OrderBy(d => d.Item);
+            test.CollectionChanged += (o, e) => update = true;
+
+            ((IEnumerable<Dummy<int>>)test).Select(d => d.Item).AssertSequence(dummy1.Item * 2, dummy2.Item * 2, dummy3.Item * 2);
+            Assert.AreEqual(3, test.Sequences.Count());
+            Assert.IsFalse(update);
+
+            ExecutionEngine.Current.BeginTransaction();
+
+            dummy1.Item = 0;
+            Assert.IsFalse(update);
+
+            ExecutionEngine.Current.CommitTransaction();
+
+            // Calling Select directly on test leads to quadrupling of the entries in test
+            ((IEnumerable<Dummy<int>>)test).Select(d => d.Item).AssertSequence(dummy2.Item * 2, dummy3.Item * 2);
+            Assert.AreEqual(2, test.Sequences.Count());
+            Assert.IsTrue(update);
         }
     }
 }
