@@ -18,5 +18,7 @@
   <files>
     <file src="..\Expressions\Expressions.Linq\bin\Release\netstandard2.0\NMF.Expressions.dll" target="lib\netstandard2.0"/>
     <file src="..\Expressions\Expressions.Linq\bin\Release\netstandard2.0\NMF.Expressions.Linq.dll" target="lib\netstandard2.0"/>
+    <file src="..\Expressions\Net45\Expressions.Linq.Net45\bin\Release\NMF.Expressions.dll" target="lib\net45"/>
+    <file src="..\Expressions\Net45\Expressions.Linq.Net45\bin\Release\NMF.Expressions.Linq.dll" target="lib\net45"/>
   </files>
 </package>
