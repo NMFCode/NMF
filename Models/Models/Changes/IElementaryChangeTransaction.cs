@@ -43,6 +43,9 @@ namespace NMF.Models.Changes
         /// <summary>
         /// The sourceChange property
         /// </summary>
+        [XmlElementNameAttribute("sourceChange")]
+        [XmlAttributeAttribute(false)]
+        [ContainmentAttribute()]
         IModelChange SourceChange
         {
             get;
@@ -52,6 +55,11 @@ namespace NMF.Models.Changes
         /// <summary>
         /// The nestedChanges property
         /// </summary>
+        [DesignerSerializationVisibilityAttribute(DesignerSerializationVisibility.Content)]
+        [XmlElementNameAttribute("nestedChanges")]
+        [XmlAttributeAttribute(false)]
+        [ContainmentAttribute()]
+        [ConstantAttribute()]
         IOrderedSetExpression<IModelChange> NestedChanges
         {
             get;

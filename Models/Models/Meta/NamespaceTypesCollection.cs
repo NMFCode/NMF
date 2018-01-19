@@ -32,10 +32,10 @@ namespace NMF.Models.Meta
 {
     
     
-    public class NamespaceTypesCollection : ObservableOppositeList<NMF.Models.Meta.INamespace, NMF.Models.Meta.IType>
+    public class NamespaceTypesCollection : ObservableOppositeList<INamespace, IType>
     {
         
-        public NamespaceTypesCollection(NMF.Models.Meta.INamespace parent) : 
+        public NamespaceTypesCollection(INamespace parent) : 
                 base(parent)
         {
         }
@@ -44,11 +44,11 @@ namespace NMF.Models.Meta
         {
             if ((e.NewValue != this.Parent))
             {
-                this.Remove(((NMF.Models.Meta.IType)(sender)));
+                this.Remove(((IType)(sender)));
             }
         }
         
-        protected override void SetOpposite(NMF.Models.Meta.IType item, NMF.Models.Meta.INamespace parent)
+        protected override void SetOpposite(IType item, INamespace parent)
         {
             if ((parent != null))
             {

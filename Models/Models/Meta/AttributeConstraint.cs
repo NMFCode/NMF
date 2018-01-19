@@ -38,7 +38,7 @@ namespace NMF.Models.Meta
     [XmlNamespaceAttribute("http://nmf.codeplex.com/nmeta/")]
     [XmlNamespacePrefixAttribute("nmeta")]
     [ModelRepresentationClassAttribute("http://nmf.codeplex.com/nmeta/#//AttributeConstraint")]
-    public partial class AttributeConstraint : NMF.Models.ModelElement, NMF.Models.Meta.IAttributeConstraint, NMF.Models.IModelElement
+    public partial class AttributeConstraint : NMF.Models.ModelElement, IAttributeConstraint, NMF.Models.IModelElement
     {
         
         /// <summary>
@@ -55,7 +55,7 @@ namespace NMF.Models.Meta
         /// <summary>
         /// The backing field for the Constrains property
         /// </summary>
-        private NMF.Models.Meta.IAttribute _constrains;
+        private IAttribute _constrains;
         
         private static IClass _classInstance;
         
@@ -86,11 +86,11 @@ namespace NMF.Models.Meta
         [DesignerSerializationVisibilityAttribute(DesignerSerializationVisibility.Hidden)]
         [XmlAttributeAttribute(true)]
         [XmlOppositeAttribute("AttributeConstraints")]
-        public NMF.Models.Meta.IClass DeclaringType
+        public IClass DeclaringType
         {
             get
             {
-                return ModelHelper.CastAs<NMF.Models.Meta.IClass>(this.Parent);
+                return ModelHelper.CastAs<IClass>(this.Parent);
             }
             set
             {
@@ -102,7 +102,7 @@ namespace NMF.Models.Meta
         /// The Constrains property
         /// </summary>
         [XmlAttributeAttribute(true)]
-        public NMF.Models.Meta.IAttribute Constrains
+        public IAttribute Constrains
         {
             get
             {
@@ -112,7 +112,7 @@ namespace NMF.Models.Meta
             {
                 if ((this._constrains != value))
                 {
-                    NMF.Models.Meta.IAttribute old = this._constrains;
+                    IAttribute old = this._constrains;
                     ValueChangedEventArgs e = new ValueChangedEventArgs(old, value);
                     this.OnConstrainsChanging(e);
                     this.OnPropertyChanging("Constrains", e, _constrainsReference);
@@ -227,8 +227,8 @@ namespace NMF.Models.Meta
         /// <param name="newParent">The new parent model element</param>
         protected override void OnParentChanging(NMF.Models.IModelElement newParent, NMF.Models.IModelElement oldParent)
         {
-            NMF.Models.Meta.IClass oldDeclaringType = ModelHelper.CastAs<NMF.Models.Meta.IClass>(oldParent);
-            NMF.Models.Meta.IClass newDeclaringType = ModelHelper.CastAs<NMF.Models.Meta.IClass>(newParent);
+            IClass oldDeclaringType = ModelHelper.CastAs<IClass>(oldParent);
+            IClass newDeclaringType = ModelHelper.CastAs<IClass>(newParent);
             ValueChangedEventArgs e = new ValueChangedEventArgs(oldDeclaringType, newDeclaringType);
             this.OnDeclaringTypeChanging(e);
             this.OnPropertyChanging("DeclaringType", e, _declaringTypeReference);
@@ -254,8 +254,8 @@ namespace NMF.Models.Meta
         /// <param name="newParent">The new parent model element</param>
         protected override void OnParentChanged(NMF.Models.IModelElement newParent, NMF.Models.IModelElement oldParent)
         {
-            NMF.Models.Meta.IClass oldDeclaringType = ModelHelper.CastAs<NMF.Models.Meta.IClass>(oldParent);
-            NMF.Models.Meta.IClass newDeclaringType = ModelHelper.CastAs<NMF.Models.Meta.IClass>(newParent);
+            IClass oldDeclaringType = ModelHelper.CastAs<IClass>(oldParent);
+            IClass newDeclaringType = ModelHelper.CastAs<IClass>(newParent);
             if ((oldDeclaringType != null))
             {
                 oldDeclaringType.AttributeConstraints.Remove(this);
@@ -375,12 +375,12 @@ namespace NMF.Models.Meta
         {
             if ((feature == "DECLARINGTYPE"))
             {
-                this.DeclaringType = ((NMF.Models.Meta.IClass)(value));
+                this.DeclaringType = ((IClass)(value));
                 return;
             }
             if ((feature == "CONSTRAINS"))
             {
-                this.Constrains = ((NMF.Models.Meta.IAttribute)(value));
+                this.Constrains = ((IAttribute)(value));
                 return;
             }
             base.SetFeature(feature, value);
@@ -472,7 +472,7 @@ namespace NMF.Models.Meta
             {
                 if ((this._parent.DeclaringType == null))
                 {
-                    NMF.Models.Meta.IClass declaringTypeCasted = item.As<NMF.Models.Meta.IClass>();
+                    IClass declaringTypeCasted = item.As<IClass>();
                     if ((declaringTypeCasted != null))
                     {
                         this._parent.DeclaringType = declaringTypeCasted;
@@ -481,7 +481,7 @@ namespace NMF.Models.Meta
                 }
                 if ((this._parent.Constrains == null))
                 {
-                    NMF.Models.Meta.IAttribute constrainsCasted = item.As<NMF.Models.Meta.IAttribute>();
+                    IAttribute constrainsCasted = item.As<IAttribute>();
                     if ((constrainsCasted != null))
                     {
                         this._parent.Constrains = constrainsCasted;
@@ -569,14 +569,14 @@ namespace NMF.Models.Meta
         /// <summary>
         /// Represents a proxy to represent an incremental access to the DeclaringType property
         /// </summary>
-        private sealed class DeclaringTypeProxy : ModelPropertyChange<NMF.Models.Meta.IAttributeConstraint, NMF.Models.Meta.IClass>
+        private sealed class DeclaringTypeProxy : ModelPropertyChange<IAttributeConstraint, IClass>
         {
             
             /// <summary>
             /// Creates a new observable property access proxy
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
-            public DeclaringTypeProxy(NMF.Models.Meta.IAttributeConstraint modelElement) : 
+            public DeclaringTypeProxy(IAttributeConstraint modelElement) : 
                     base(modelElement, "DeclaringType")
             {
             }
@@ -584,7 +584,7 @@ namespace NMF.Models.Meta
             /// <summary>
             /// Gets or sets the value of this expression
             /// </summary>
-            public override NMF.Models.Meta.IClass Value
+            public override IClass Value
             {
                 get
                 {
@@ -600,14 +600,14 @@ namespace NMF.Models.Meta
         /// <summary>
         /// Represents a proxy to represent an incremental access to the Constrains property
         /// </summary>
-        private sealed class ConstrainsProxy : ModelPropertyChange<NMF.Models.Meta.IAttributeConstraint, NMF.Models.Meta.IAttribute>
+        private sealed class ConstrainsProxy : ModelPropertyChange<IAttributeConstraint, IAttribute>
         {
             
             /// <summary>
             /// Creates a new observable property access proxy
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
-            public ConstrainsProxy(NMF.Models.Meta.IAttributeConstraint modelElement) : 
+            public ConstrainsProxy(IAttributeConstraint modelElement) : 
                     base(modelElement, "Constrains")
             {
             }
@@ -615,7 +615,7 @@ namespace NMF.Models.Meta
             /// <summary>
             /// Gets or sets the value of this expression
             /// </summary>
-            public override NMF.Models.Meta.IAttribute Value
+            public override IAttribute Value
             {
                 get
                 {

@@ -175,11 +175,7 @@ namespace NMF.Models.Meta
                 RequireBaseClasses(cl => cl.BaseTypes);
 
                 var t = Transformation as Meta2ClassesTransformation;
-                if (t != null && t.CreateOperations)
-                {
-                    RequireGenerateMethods(Rule<Operation2Method>(), cl => cl.Operations);
-                }
-
+                RequireGenerateMethods(Rule<Operation2Method>(), cl => cl.Operations);
                 RequireGenerateProperties(Rule<Attribute2Property>(), cl => cl.Attributes);
                 RequireGenerateProperties(Rule<Reference2Property>(), cl => cl.References);
 
@@ -937,6 +933,61 @@ namespace NMF.Models.Meta
                 return setFeature;
             }
 
+            /// <summary>
+            /// Creates the CallOperation method
+            /// </summary>
+            /// <param name="input">The NMeta class for which to generate the method</param>
+            /// <param name="generatedType">The generated type for the class</param>
+            /// <param name="context">The transformaion context</param>
+            /// <returns>The CallOperation method</returns>
+            protected virtual CodeMemberMethod CreateCallOperation(IClass input, CodeTypeDeclaration generatedType, ITransformationContext context)
+            {
+                var callOperation = new CodeMemberMethod()
+                {
+                    Name = "CallOperation",
+                    ReturnType = typeof(object).ToTypeReference(),
+                    Attributes = MemberAttributes.Public | MemberAttributes.Override
+                };
+                callOperation.Parameters.Add(new CodeParameterDeclarationExpression(typeof(IOperation).ToTypeReference(), "operation"));
+                callOperation.Parameters.Add(new CodeParameterDeclarationExpression(typeof(object[]), "arguments"));
+                AddOperationsOfClass(input, generatedType, (_, op, ctx) =>
+                {
+                    var meth = context.Trace.ResolveIn(Rule<Operation2Method>(), op);
+                    var methRef = new CodeMethodReferenceExpression(new CodeThisReferenceExpression(), meth.Name);
+                    var ifStmt = new CodeConditionStatement(new CodeBinaryOperatorExpression(new CodeVariableReferenceExpression("operation"),
+                        CodeBinaryOperatorType.ValueEquality, new CodePrimitiveExpression(op.Name.ToUpperInvariant())));
+                    CodeExpression value = new CodeArgumentReferenceExpression("arguments");
+                    var callArgs = new CodeExpression[meth.Parameters.Count];
+                    for (int i = 0; i < meth.Parameters.Count; i++)
+                    {
+                        callArgs[i] = new CodeCastExpression(meth.Parameters[i].Type, new CodeIndexerExpression(value, new CodePrimitiveExpression(i)));
+                    }
+                    if (op.Type != null)
+                    {
+                        ifStmt.TrueStatements.Add(new CodeMethodReturnStatement(
+                            new CodeMethodInvokeExpression(new CodeThisReferenceExpression(), meth.Name, callArgs)));
+                    }
+                    else
+                    {
+                        ifStmt.TrueStatements.Add(new CodeMethodInvokeExpression(new CodeThisReferenceExpression(), meth.Name, callArgs));
+                        ifStmt.TrueStatements.Add(new CodeMethodReturnStatement());
+                    }
+                    callOperation.Statements.Add(ifStmt);
+                    return null;
+                }, callOperation, context);
+                if (callOperation.Statements.Count == 0)
+                {
+                    return null;
+                }
+                callOperation.Statements.Add(new CodeMethodInvokeExpression(new CodeBaseReferenceExpression(), "CallOperation", new CodeArgumentReferenceExpression("operation"), new CodeArgumentReferenceExpression("arguments")));
+                callOperation.WriteDocumentation("Calls the given operation", "The operation result or null, if the operation does not return any value", new Dictionary<string, string>()
+                {
+                    { "operation", "The operation that should be called" },
+                    { "arguments", "The arguments used to call the operation" }
+                });
+                return callOperation;
+            }
+
             private CodeMemberMethod AddSetFeature(CodeMemberMethod method, ITypedElement feature, ITransformationContext context, bool isReference)
             {
                 if (feature.UpperBound == 1)
@@ -1148,7 +1199,24 @@ namespace NMF.Models.Meta
                 }
                 return initial;
             }
-            
+
+            protected T AddOperationsOfClass<T>(IClass input, CodeTypeDeclaration typeDeclaration, Func<T, IOperation, ITransformationContext, T> action, T initial, ITransformationContext context)
+            {
+                var o2m = Rule<Operation2Method>();
+                foreach (var bcl in input.Closure(cl => cl.BaseTypes))
+                {
+                    foreach (var op in bcl.Operations)
+                    {
+                        var method = context.Trace.ResolveIn(o2m, op);
+                        if (typeDeclaration.Members.Contains(method))
+                        {
+                            initial = action(initial, op, context);
+                        }
+                    }
+                }
+                return initial;
+            }
+
             protected T AddAttributesOfClass<T>(IClass input, CodeTypeDeclaration typeDeclaration, Func<T, IAttribute, ITransformationContext, T> action, T initial, ITransformationContext context)
             {
                 var a2p = Rule<Attribute2Property>();

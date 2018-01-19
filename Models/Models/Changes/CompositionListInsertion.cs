@@ -125,7 +125,7 @@ namespace NMF.Models.Changes
         
         private static ITypedElement RetrieveAddedElementReference()
         {
-            return ((ITypedElement)(((NMF.Models.ModelElement)(NMF.Models.Changes.CompositionListInsertion.ClassInstance)).Resolve("addedElement")));
+            return ((ITypedElement)(((NMF.Models.ModelElement)(CompositionListInsertion.ClassInstance)).Resolve("addedElement")));
         }
         
         /// <summary>
@@ -209,27 +209,13 @@ namespace NMF.Models.Changes
         }
         
         /// <summary>
-        /// Gets the property expression for the given attribute
-        /// </summary>
-        /// <returns>An incremental property expression</returns>
-        /// <param name="attribute">The requested attribute in upper case</param>
-        protected override NMF.Expressions.INotifyExpression<object> GetExpressionForAttribute(string attribute)
-        {
-            if ((attribute == "AddedElement"))
-            {
-                return new AddedElementProxy(this);
-            }
-            return base.GetExpressionForAttribute(attribute);
-        }
-        
-        /// <summary>
         /// Gets the property expression for the given reference
         /// </summary>
         /// <returns>An incremental property expression</returns>
         /// <param name="reference">The requested reference in upper case</param>
         protected override NMF.Expressions.INotifyExpression<NMF.Models.IModelElement> GetExpressionForReference(string reference)
         {
-            if ((reference == "AddedElement"))
+            if ((reference == "ADDEDELEMENT"))
             {
                 return new AddedElementProxy(this);
             }

@@ -32,10 +32,10 @@ namespace NMF.Models.Meta
 {
     
     
-    public class StructuredTypeAttributesCollection : ObservableOppositeList<NMF.Models.Meta.IStructuredType, NMF.Models.Meta.IAttribute>
+    public class StructuredTypeAttributesCollection : ObservableOppositeList<IStructuredType, IAttribute>
     {
         
-        public StructuredTypeAttributesCollection(NMF.Models.Meta.IStructuredType parent) : 
+        public StructuredTypeAttributesCollection(IStructuredType parent) : 
                 base(parent)
         {
         }
@@ -44,11 +44,11 @@ namespace NMF.Models.Meta
         {
             if ((e.NewValue != this.Parent))
             {
-                this.Remove(((NMF.Models.Meta.IAttribute)(sender)));
+                this.Remove(((IAttribute)(sender)));
             }
         }
         
-        protected override void SetOpposite(NMF.Models.Meta.IAttribute item, NMF.Models.Meta.IStructuredType parent)
+        protected override void SetOpposite(IAttribute item, IStructuredType parent)
         {
             if ((parent != null))
             {

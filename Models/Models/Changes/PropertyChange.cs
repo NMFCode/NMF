@@ -57,6 +57,18 @@ namespace NMF.Models.Changes
                 return _classInstance;
             }
         }
+        
+        /// <summary>
+        /// Gets the Class for this model element
+        /// </summary>
+        public override IClass GetClass()
+        {
+            if ((_classInstance == null))
+            {
+                _classInstance = ((IClass)(MetaRepository.Instance.Resolve("http://nmf.codeplex.com/changes#//PropertyChange")));
+            }
+            return _classInstance;
+        }
     }
 }
 

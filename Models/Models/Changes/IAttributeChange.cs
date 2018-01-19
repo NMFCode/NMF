@@ -43,6 +43,8 @@ namespace NMF.Models.Changes
         /// <summary>
         /// The newValue property
         /// </summary>
+        [XmlElementNameAttribute("newValue")]
+        [XmlAttributeAttribute(true)]
         string NewValue
         {
             get;
@@ -52,6 +54,8 @@ namespace NMF.Models.Changes
         /// <summary>
         /// The oldValue property
         /// </summary>
+        [XmlElementNameAttribute("oldValue")]
+        [XmlAttributeAttribute(true)]
         string OldValue
         {
             get;

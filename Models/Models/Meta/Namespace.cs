@@ -39,7 +39,7 @@ namespace NMF.Models.Meta
     [XmlNamespacePrefixAttribute("nmeta")]
     [ModelRepresentationClassAttribute("http://nmf.codeplex.com/nmeta/#//Namespace")]
     [DebuggerDisplayAttribute("Namespace {Name}")]
-    public partial class Namespace : MetaElement, NMF.Models.Meta.INamespace, NMF.Models.IModelElement
+    public partial class Namespace : MetaElement, INamespace, NMF.Models.IModelElement
     {
         
         /// <summary>
@@ -140,11 +140,11 @@ namespace NMF.Models.Meta
         [DesignerSerializationVisibilityAttribute(DesignerSerializationVisibility.Hidden)]
         [XmlAttributeAttribute(true)]
         [XmlOppositeAttribute("ChildNamespaces")]
-        public NMF.Models.Meta.INamespace ParentNamespace
+        public INamespace ParentNamespace
         {
             get
             {
-                return ModelHelper.CastAs<NMF.Models.Meta.INamespace>(this.Parent);
+                return ModelHelper.CastAs<INamespace>(this.Parent);
             }
             set
             {
@@ -160,7 +160,7 @@ namespace NMF.Models.Meta
         [ContainmentAttribute()]
         [XmlOppositeAttribute("ParentNamespace")]
         [ConstantAttribute()]
-        public ICollectionExpression<NMF.Models.Meta.INamespace> ChildNamespaces
+        public ICollectionExpression<INamespace> ChildNamespaces
         {
             get
             {
@@ -176,7 +176,7 @@ namespace NMF.Models.Meta
         [ContainmentAttribute()]
         [XmlOppositeAttribute("Namespace")]
         [ConstantAttribute()]
-        public ICollectionExpression<NMF.Models.Meta.IType> Types
+        public ICollectionExpression<IType> Types
         {
             get
             {
@@ -338,8 +338,8 @@ namespace NMF.Models.Meta
         /// <param name="newParent">The new parent model element</param>
         protected override void OnParentChanging(NMF.Models.IModelElement newParent, NMF.Models.IModelElement oldParent)
         {
-            NMF.Models.Meta.INamespace oldParentNamespace = ModelHelper.CastAs<NMF.Models.Meta.INamespace>(oldParent);
-            NMF.Models.Meta.INamespace newParentNamespace = ModelHelper.CastAs<NMF.Models.Meta.INamespace>(newParent);
+            INamespace oldParentNamespace = ModelHelper.CastAs<INamespace>(oldParent);
+            INamespace newParentNamespace = ModelHelper.CastAs<INamespace>(newParent);
             ValueChangedEventArgs e = new ValueChangedEventArgs(oldParentNamespace, newParentNamespace);
             this.OnParentNamespaceChanging(e);
             this.OnPropertyChanging("ParentNamespace", e, _parentNamespaceReference);
@@ -365,8 +365,8 @@ namespace NMF.Models.Meta
         /// <param name="newParent">The new parent model element</param>
         protected override void OnParentChanged(NMF.Models.IModelElement newParent, NMF.Models.IModelElement oldParent)
         {
-            NMF.Models.Meta.INamespace oldParentNamespace = ModelHelper.CastAs<NMF.Models.Meta.INamespace>(oldParent);
-            NMF.Models.Meta.INamespace newParentNamespace = ModelHelper.CastAs<NMF.Models.Meta.INamespace>(newParent);
+            INamespace oldParentNamespace = ModelHelper.CastAs<INamespace>(oldParent);
+            INamespace newParentNamespace = ModelHelper.CastAs<INamespace>(newParent);
             if ((oldParentNamespace != null))
             {
                 oldParentNamespace.ChildNamespaces.Remove(this);
@@ -492,7 +492,7 @@ namespace NMF.Models.Meta
         {
             if ((feature == "PARENTNAMESPACE"))
             {
-                this.ParentNamespace = ((NMF.Models.Meta.INamespace)(value));
+                this.ParentNamespace = ((INamespace)(value));
                 return;
             }
             if ((feature == "URI"))
@@ -618,12 +618,12 @@ namespace NMF.Models.Meta
             /// <param name="item">The item to add</param>
             public override void Add(NMF.Models.IModelElement item)
             {
-                NMF.Models.Meta.INamespace childNamespacesCasted = item.As<NMF.Models.Meta.INamespace>();
+                INamespace childNamespacesCasted = item.As<INamespace>();
                 if ((childNamespacesCasted != null))
                 {
                     this._parent.ChildNamespaces.Add(childNamespacesCasted);
                 }
-                NMF.Models.Meta.IType typesCasted = item.As<NMF.Models.Meta.IType>();
+                IType typesCasted = item.As<IType>();
                 if ((typesCasted != null))
                 {
                     this._parent.Types.Add(typesCasted);
@@ -703,13 +703,13 @@ namespace NMF.Models.Meta
             /// <param name="item">The item that should be removed</param>
             public override bool Remove(NMF.Models.IModelElement item)
             {
-                NMF.Models.Meta.INamespace namespaceItem = item.As<NMF.Models.Meta.INamespace>();
+                INamespace namespaceItem = item.As<INamespace>();
                 if (((namespaceItem != null) 
                             && this._parent.ChildNamespaces.Remove(namespaceItem)))
                 {
                     return true;
                 }
-                NMF.Models.Meta.IType typeItem = item.As<NMF.Models.Meta.IType>();
+                IType typeItem = item.As<IType>();
                 if (((typeItem != null) 
                             && this._parent.Types.Remove(typeItem)))
                 {
@@ -784,19 +784,19 @@ namespace NMF.Models.Meta
             {
                 if ((this._parent.ParentNamespace == null))
                 {
-                    NMF.Models.Meta.INamespace parentNamespaceCasted = item.As<NMF.Models.Meta.INamespace>();
+                    INamespace parentNamespaceCasted = item.As<INamespace>();
                     if ((parentNamespaceCasted != null))
                     {
                         this._parent.ParentNamespace = parentNamespaceCasted;
                         return;
                     }
                 }
-                NMF.Models.Meta.INamespace childNamespacesCasted = item.As<NMF.Models.Meta.INamespace>();
+                INamespace childNamespacesCasted = item.As<INamespace>();
                 if ((childNamespacesCasted != null))
                 {
                     this._parent.ChildNamespaces.Add(childNamespacesCasted);
                 }
-                NMF.Models.Meta.IType typesCasted = item.As<NMF.Models.Meta.IType>();
+                IType typesCasted = item.As<IType>();
                 if ((typesCasted != null))
                 {
                     this._parent.Types.Add(typesCasted);
@@ -891,13 +891,13 @@ namespace NMF.Models.Meta
                     this._parent.ParentNamespace = null;
                     return true;
                 }
-                NMF.Models.Meta.INamespace namespaceItem = item.As<NMF.Models.Meta.INamespace>();
+                INamespace namespaceItem = item.As<INamespace>();
                 if (((namespaceItem != null) 
                             && this._parent.ChildNamespaces.Remove(namespaceItem)))
                 {
                     return true;
                 }
-                NMF.Models.Meta.IType typeItem = item.As<NMF.Models.Meta.IType>();
+                IType typeItem = item.As<IType>();
                 if (((typeItem != null) 
                             && this._parent.Types.Remove(typeItem)))
                 {
@@ -919,14 +919,14 @@ namespace NMF.Models.Meta
         /// <summary>
         /// Represents a proxy to represent an incremental access to the Uri property
         /// </summary>
-        private sealed class UriProxy : ModelPropertyChange<NMF.Models.Meta.INamespace, Uri>
+        private sealed class UriProxy : ModelPropertyChange<INamespace, Uri>
         {
             
             /// <summary>
             /// Creates a new observable property access proxy
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
-            public UriProxy(NMF.Models.Meta.INamespace modelElement) : 
+            public UriProxy(INamespace modelElement) : 
                     base(modelElement, "Uri")
             {
             }
@@ -950,14 +950,14 @@ namespace NMF.Models.Meta
         /// <summary>
         /// Represents a proxy to represent an incremental access to the Prefix property
         /// </summary>
-        private sealed class PrefixProxy : ModelPropertyChange<NMF.Models.Meta.INamespace, string>
+        private sealed class PrefixProxy : ModelPropertyChange<INamespace, string>
         {
             
             /// <summary>
             /// Creates a new observable property access proxy
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
-            public PrefixProxy(NMF.Models.Meta.INamespace modelElement) : 
+            public PrefixProxy(INamespace modelElement) : 
                     base(modelElement, "Prefix")
             {
             }
@@ -981,14 +981,14 @@ namespace NMF.Models.Meta
         /// <summary>
         /// Represents a proxy to represent an incremental access to the ParentNamespace property
         /// </summary>
-        private sealed class ParentNamespaceProxy : ModelPropertyChange<NMF.Models.Meta.INamespace, NMF.Models.Meta.INamespace>
+        private sealed class ParentNamespaceProxy : ModelPropertyChange<INamespace, INamespace>
         {
             
             /// <summary>
             /// Creates a new observable property access proxy
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
-            public ParentNamespaceProxy(NMF.Models.Meta.INamespace modelElement) : 
+            public ParentNamespaceProxy(INamespace modelElement) : 
                     base(modelElement, "ParentNamespace")
             {
             }
@@ -996,7 +996,7 @@ namespace NMF.Models.Meta
             /// <summary>
             /// Gets or sets the value of this expression
             /// </summary>
-            public override NMF.Models.Meta.INamespace Value
+            public override INamespace Value
             {
                 get
                 {

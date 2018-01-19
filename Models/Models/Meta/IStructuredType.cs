@@ -37,7 +37,7 @@ namespace NMF.Models.Meta
     /// </summary>
     [DefaultImplementationTypeAttribute(typeof(StructuredType))]
     [XmlDefaultImplementationTypeAttribute(typeof(StructuredType))]
-    public interface IStructuredType : NMF.Models.IModelElement, NMF.Models.Meta.IType
+    public interface IStructuredType : NMF.Models.IModelElement, IType
     {
         
         /// <summary>
@@ -48,7 +48,7 @@ namespace NMF.Models.Meta
         [ContainmentAttribute()]
         [XmlOppositeAttribute("DeclaringType")]
         [ConstantAttribute()]
-        ICollectionExpression<NMF.Models.Meta.IOperation> Operations
+        ICollectionExpression<IOperation> Operations
         {
             get;
         }
@@ -61,7 +61,7 @@ namespace NMF.Models.Meta
         [ContainmentAttribute()]
         [XmlOppositeAttribute("DeclaringType")]
         [ConstantAttribute()]
-        ICollectionExpression<NMF.Models.Meta.IAttribute> Attributes
+        ICollectionExpression<IAttribute> Attributes
         {
             get;
         }

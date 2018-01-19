@@ -39,7 +39,7 @@ namespace NMF.Models.Meta
     [XmlNamespacePrefixAttribute("nmeta")]
     [ModelRepresentationClassAttribute("http://nmf.codeplex.com/nmeta/#//Operation")]
     [DebuggerDisplayAttribute("Operation {Name}")]
-    public partial class Operation : TypedElement, NMF.Models.Meta.IOperation, NMF.Models.IModelElement
+    public partial class Operation : TypedElement, IOperation, NMF.Models.IModelElement
     {
         
         private static Lazy<ITypedElement> _parametersReference = new Lazy<ITypedElement>(RetrieveParametersReference);
@@ -56,7 +56,7 @@ namespace NMF.Models.Meta
         /// <summary>
         /// The backing field for the Refines property
         /// </summary>
-        private NMF.Models.Meta.IOperation _refines;
+        private IOperation _refines;
         
         private static IClass _classInstance;
         
@@ -75,7 +75,7 @@ namespace NMF.Models.Meta
         [ContainmentAttribute()]
         [XmlOppositeAttribute("Operation")]
         [ConstantAttribute()]
-        public ICollectionExpression<NMF.Models.Meta.IParameter> Parameters
+        public ICollectionExpression<IParameter> Parameters
         {
             get
             {
@@ -89,11 +89,11 @@ namespace NMF.Models.Meta
         [DesignerSerializationVisibilityAttribute(DesignerSerializationVisibility.Hidden)]
         [XmlAttributeAttribute(true)]
         [XmlOppositeAttribute("Operations")]
-        public NMF.Models.Meta.IStructuredType DeclaringType
+        public IStructuredType DeclaringType
         {
             get
             {
-                return ModelHelper.CastAs<NMF.Models.Meta.IStructuredType>(this.Parent);
+                return ModelHelper.CastAs<IStructuredType>(this.Parent);
             }
             set
             {
@@ -105,7 +105,7 @@ namespace NMF.Models.Meta
         /// The Refines property
         /// </summary>
         [XmlAttributeAttribute(true)]
-        public NMF.Models.Meta.IOperation Refines
+        public IOperation Refines
         {
             get
             {
@@ -115,7 +115,7 @@ namespace NMF.Models.Meta
             {
                 if ((this._refines != value))
                 {
-                    NMF.Models.Meta.IOperation old = this._refines;
+                    IOperation old = this._refines;
                     ValueChangedEventArgs e = new ValueChangedEventArgs(old, value);
                     this.OnRefinesChanging(e);
                     this.OnPropertyChanging("Refines", e, _refinesReference);
@@ -241,8 +241,8 @@ namespace NMF.Models.Meta
         /// <param name="newParent">The new parent model element</param>
         protected override void OnParentChanging(NMF.Models.IModelElement newParent, NMF.Models.IModelElement oldParent)
         {
-            NMF.Models.Meta.IStructuredType oldDeclaringType = ModelHelper.CastAs<NMF.Models.Meta.IStructuredType>(oldParent);
-            NMF.Models.Meta.IStructuredType newDeclaringType = ModelHelper.CastAs<NMF.Models.Meta.IStructuredType>(newParent);
+            IStructuredType oldDeclaringType = ModelHelper.CastAs<IStructuredType>(oldParent);
+            IStructuredType newDeclaringType = ModelHelper.CastAs<IStructuredType>(newParent);
             ValueChangedEventArgs e = new ValueChangedEventArgs(oldDeclaringType, newDeclaringType);
             this.OnDeclaringTypeChanging(e);
             this.OnPropertyChanging("DeclaringType", e, _declaringTypeReference);
@@ -268,8 +268,8 @@ namespace NMF.Models.Meta
         /// <param name="newParent">The new parent model element</param>
         protected override void OnParentChanged(NMF.Models.IModelElement newParent, NMF.Models.IModelElement oldParent)
         {
-            NMF.Models.Meta.IStructuredType oldDeclaringType = ModelHelper.CastAs<NMF.Models.Meta.IStructuredType>(oldParent);
-            NMF.Models.Meta.IStructuredType newDeclaringType = ModelHelper.CastAs<NMF.Models.Meta.IStructuredType>(newParent);
+            IStructuredType oldDeclaringType = ModelHelper.CastAs<IStructuredType>(oldParent);
+            IStructuredType newDeclaringType = ModelHelper.CastAs<IStructuredType>(newParent);
             if ((oldDeclaringType != null))
             {
                 oldDeclaringType.Operations.Remove(this);
@@ -367,12 +367,12 @@ namespace NMF.Models.Meta
         {
             if ((feature == "DECLARINGTYPE"))
             {
-                this.DeclaringType = ((NMF.Models.Meta.IStructuredType)(value));
+                this.DeclaringType = ((IStructuredType)(value));
                 return;
             }
             if ((feature == "REFINES"))
             {
-                this.Refines = ((NMF.Models.Meta.IOperation)(value));
+                this.Refines = ((IOperation)(value));
                 return;
             }
             base.SetFeature(feature, value);
@@ -467,7 +467,7 @@ namespace NMF.Models.Meta
             /// <param name="item">The item to add</param>
             public override void Add(NMF.Models.IModelElement item)
             {
-                NMF.Models.Meta.IParameter parametersCasted = item.As<NMF.Models.Meta.IParameter>();
+                IParameter parametersCasted = item.As<IParameter>();
                 if ((parametersCasted != null))
                 {
                     this._parent.Parameters.Add(parametersCasted);
@@ -527,7 +527,7 @@ namespace NMF.Models.Meta
             /// <param name="item">The item that should be removed</param>
             public override bool Remove(NMF.Models.IModelElement item)
             {
-                NMF.Models.Meta.IParameter parameterItem = item.As<NMF.Models.Meta.IParameter>();
+                IParameter parameterItem = item.As<IParameter>();
                 if (((parameterItem != null) 
                             && this._parent.Parameters.Remove(parameterItem)))
                 {
@@ -603,14 +603,14 @@ namespace NMF.Models.Meta
             /// <param name="item">The item to add</param>
             public override void Add(NMF.Models.IModelElement item)
             {
-                NMF.Models.Meta.IParameter parametersCasted = item.As<NMF.Models.Meta.IParameter>();
+                IParameter parametersCasted = item.As<IParameter>();
                 if ((parametersCasted != null))
                 {
                     this._parent.Parameters.Add(parametersCasted);
                 }
                 if ((this._parent.DeclaringType == null))
                 {
-                    NMF.Models.Meta.IStructuredType declaringTypeCasted = item.As<NMF.Models.Meta.IStructuredType>();
+                    IStructuredType declaringTypeCasted = item.As<IStructuredType>();
                     if ((declaringTypeCasted != null))
                     {
                         this._parent.DeclaringType = declaringTypeCasted;
@@ -619,7 +619,7 @@ namespace NMF.Models.Meta
                 }
                 if ((this._parent.Refines == null))
                 {
-                    NMF.Models.Meta.IOperation refinesCasted = item.As<NMF.Models.Meta.IOperation>();
+                    IOperation refinesCasted = item.As<IOperation>();
                     if ((refinesCasted != null))
                     {
                         this._parent.Refines = refinesCasted;
@@ -701,7 +701,7 @@ namespace NMF.Models.Meta
             /// <param name="item">The item that should be removed</param>
             public override bool Remove(NMF.Models.IModelElement item)
             {
-                NMF.Models.Meta.IParameter parameterItem = item.As<NMF.Models.Meta.IParameter>();
+                IParameter parameterItem = item.As<IParameter>();
                 if (((parameterItem != null) 
                             && this._parent.Parameters.Remove(parameterItem)))
                 {
@@ -733,14 +733,14 @@ namespace NMF.Models.Meta
         /// <summary>
         /// Represents a proxy to represent an incremental access to the DeclaringType property
         /// </summary>
-        private sealed class DeclaringTypeProxy : ModelPropertyChange<NMF.Models.Meta.IOperation, NMF.Models.Meta.IStructuredType>
+        private sealed class DeclaringTypeProxy : ModelPropertyChange<IOperation, IStructuredType>
         {
             
             /// <summary>
             /// Creates a new observable property access proxy
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
-            public DeclaringTypeProxy(NMF.Models.Meta.IOperation modelElement) : 
+            public DeclaringTypeProxy(IOperation modelElement) : 
                     base(modelElement, "DeclaringType")
             {
             }
@@ -748,7 +748,7 @@ namespace NMF.Models.Meta
             /// <summary>
             /// Gets or sets the value of this expression
             /// </summary>
-            public override NMF.Models.Meta.IStructuredType Value
+            public override IStructuredType Value
             {
                 get
                 {
@@ -764,14 +764,14 @@ namespace NMF.Models.Meta
         /// <summary>
         /// Represents a proxy to represent an incremental access to the Refines property
         /// </summary>
-        private sealed class RefinesProxy : ModelPropertyChange<NMF.Models.Meta.IOperation, NMF.Models.Meta.IOperation>
+        private sealed class RefinesProxy : ModelPropertyChange<IOperation, IOperation>
         {
             
             /// <summary>
             /// Creates a new observable property access proxy
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
-            public RefinesProxy(NMF.Models.Meta.IOperation modelElement) : 
+            public RefinesProxy(IOperation modelElement) : 
                     base(modelElement, "Refines")
             {
             }
@@ -779,7 +779,7 @@ namespace NMF.Models.Meta
             /// <summary>
             /// Gets or sets the value of this expression
             /// </summary>
-            public override NMF.Models.Meta.IOperation Value
+            public override IOperation Value
             {
                 get
                 {

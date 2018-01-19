@@ -39,7 +39,7 @@ namespace NMF.Models.Meta
     [XmlNamespacePrefixAttribute("nmeta")]
     [ModelRepresentationClassAttribute("http://nmf.codeplex.com/nmeta/#//StructuredType")]
     [DebuggerDisplayAttribute("StructuredType {Name}")]
-    public abstract partial class StructuredType : Type, NMF.Models.Meta.IStructuredType, NMF.Models.IModelElement
+    public abstract partial class StructuredType : Type, IStructuredType, NMF.Models.IModelElement
     {
         
         private static Lazy<ITypedElement> _operationsReference = new Lazy<ITypedElement>(RetrieveOperationsReference);
@@ -76,7 +76,7 @@ namespace NMF.Models.Meta
         [ContainmentAttribute()]
         [XmlOppositeAttribute("DeclaringType")]
         [ConstantAttribute()]
-        public ICollectionExpression<NMF.Models.Meta.IOperation> Operations
+        public ICollectionExpression<IOperation> Operations
         {
             get
             {
@@ -92,7 +92,7 @@ namespace NMF.Models.Meta
         [ContainmentAttribute()]
         [XmlOppositeAttribute("DeclaringType")]
         [ConstantAttribute()]
-        public ICollectionExpression<NMF.Models.Meta.IAttribute> Attributes
+        public ICollectionExpression<IAttribute> Attributes
         {
             get
             {
@@ -283,12 +283,12 @@ namespace NMF.Models.Meta
             /// <param name="item">The item to add</param>
             public override void Add(NMF.Models.IModelElement item)
             {
-                NMF.Models.Meta.IOperation operationsCasted = item.As<NMF.Models.Meta.IOperation>();
+                IOperation operationsCasted = item.As<IOperation>();
                 if ((operationsCasted != null))
                 {
                     this._parent.Operations.Add(operationsCasted);
                 }
-                NMF.Models.Meta.IAttribute attributesCasted = item.As<NMF.Models.Meta.IAttribute>();
+                IAttribute attributesCasted = item.As<IAttribute>();
                 if ((attributesCasted != null))
                 {
                     this._parent.Attributes.Add(attributesCasted);
@@ -368,13 +368,13 @@ namespace NMF.Models.Meta
             /// <param name="item">The item that should be removed</param>
             public override bool Remove(NMF.Models.IModelElement item)
             {
-                NMF.Models.Meta.IOperation operationItem = item.As<NMF.Models.Meta.IOperation>();
+                IOperation operationItem = item.As<IOperation>();
                 if (((operationItem != null) 
                             && this._parent.Operations.Remove(operationItem)))
                 {
                     return true;
                 }
-                NMF.Models.Meta.IAttribute attributeItem = item.As<NMF.Models.Meta.IAttribute>();
+                IAttribute attributeItem = item.As<IAttribute>();
                 if (((attributeItem != null) 
                             && this._parent.Attributes.Remove(attributeItem)))
                 {
@@ -441,12 +441,12 @@ namespace NMF.Models.Meta
             /// <param name="item">The item to add</param>
             public override void Add(NMF.Models.IModelElement item)
             {
-                NMF.Models.Meta.IOperation operationsCasted = item.As<NMF.Models.Meta.IOperation>();
+                IOperation operationsCasted = item.As<IOperation>();
                 if ((operationsCasted != null))
                 {
                     this._parent.Operations.Add(operationsCasted);
                 }
-                NMF.Models.Meta.IAttribute attributesCasted = item.As<NMF.Models.Meta.IAttribute>();
+                IAttribute attributesCasted = item.As<IAttribute>();
                 if ((attributesCasted != null))
                 {
                     this._parent.Attributes.Add(attributesCasted);
@@ -526,13 +526,13 @@ namespace NMF.Models.Meta
             /// <param name="item">The item that should be removed</param>
             public override bool Remove(NMF.Models.IModelElement item)
             {
-                NMF.Models.Meta.IOperation operationItem = item.As<NMF.Models.Meta.IOperation>();
+                IOperation operationItem = item.As<IOperation>();
                 if (((operationItem != null) 
                             && this._parent.Operations.Remove(operationItem)))
                 {
                     return true;
                 }
-                NMF.Models.Meta.IAttribute attributeItem = item.As<NMF.Models.Meta.IAttribute>();
+                IAttribute attributeItem = item.As<IAttribute>();
                 if (((attributeItem != null) 
                             && this._parent.Attributes.Remove(attributeItem)))
                 {

@@ -46,7 +46,7 @@ namespace NMF.Models.Meta
         [DesignerSerializationVisibilityAttribute(DesignerSerializationVisibility.Hidden)]
         [XmlAttributeAttribute(true)]
         [XmlOppositeAttribute("ReferenceConstraints")]
-        NMF.Models.Meta.IClass DeclaringType
+        IClass DeclaringType
         {
             get;
             set;
@@ -67,7 +67,7 @@ namespace NMF.Models.Meta
         /// The Constrains property
         /// </summary>
         [XmlAttributeAttribute(true)]
-        NMF.Models.Meta.IReference Constrains
+        IReference Constrains
         {
             get;
             set;

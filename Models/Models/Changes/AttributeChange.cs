@@ -146,7 +146,7 @@ namespace NMF.Models.Changes
         
         private static ITypedElement RetrieveNewValueAttribute()
         {
-            return ((ITypedElement)(((NMF.Models.ModelElement)(NMF.Models.Changes.AttributeChange.ClassInstance)).Resolve("newValue")));
+            return ((ITypedElement)(((NMF.Models.ModelElement)(AttributeChange.ClassInstance)).Resolve("newValue")));
         }
         
         /// <summary>
@@ -177,7 +177,7 @@ namespace NMF.Models.Changes
         
         private static ITypedElement RetrieveOldValueAttribute()
         {
-            return ((ITypedElement)(((NMF.Models.ModelElement)(NMF.Models.Changes.AttributeChange.ClassInstance)).Resolve("oldValue")));
+            return ((ITypedElement)(((NMF.Models.ModelElement)(AttributeChange.ClassInstance)).Resolve("oldValue")));
         }
         
         /// <summary>
@@ -243,6 +243,24 @@ namespace NMF.Models.Changes
                 return;
             }
             base.SetFeature(feature, value);
+        }
+        
+        /// <summary>
+        /// Gets the property expression for the given attribute
+        /// </summary>
+        /// <returns>An incremental property expression</returns>
+        /// <param name="attribute">The requested attribute in upper case</param>
+        protected override NMF.Expressions.INotifyExpression<object> GetExpressionForAttribute(string attribute)
+        {
+            if ((attribute == "NEWVALUE"))
+            {
+                return new NewValueProxy(this);
+            }
+            if ((attribute == "OLDVALUE"))
+            {
+                return new OldValueProxy(this);
+            }
+            return base.GetExpressionForAttribute(attribute);
         }
         
         /// <summary>

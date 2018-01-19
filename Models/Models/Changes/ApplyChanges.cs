@@ -247,4 +247,12 @@ namespace NMF.Models.Changes
             AffectedElement.GetAttributeValues((IAttribute)Feature).Insert(Index, AddedValue);
         }
     }
+
+    public partial class OperationCall
+    {
+        public override void Apply()
+        {
+            throw new NotImplementedException();
+        }
+    }
 }

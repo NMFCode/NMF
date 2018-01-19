@@ -39,7 +39,7 @@ namespace NMF.Models.Meta
     [XmlNamespacePrefixAttribute("nmeta")]
     [ModelRepresentationClassAttribute("http://nmf.codeplex.com/nmeta/#//Extension")]
     [DebuggerDisplayAttribute("Extension {Name}")]
-    public partial class Extension : ReferenceType, NMF.Models.Meta.IExtension, NMF.Models.IModelElement
+    public partial class Extension : ReferenceType, IExtension, NMF.Models.IModelElement
     {
         
         private static Lazy<ITypedElement> _adornedClassReference = new Lazy<ITypedElement>(RetrieveAdornedClassReference);
@@ -47,7 +47,7 @@ namespace NMF.Models.Meta
         /// <summary>
         /// The backing field for the AdornedClass property
         /// </summary>
-        private NMF.Models.Meta.IClass _adornedClass;
+        private IClass _adornedClass;
         
         private static IClass _classInstance;
         
@@ -55,7 +55,7 @@ namespace NMF.Models.Meta
         /// The AdornedClass property
         /// </summary>
         [XmlAttributeAttribute(true)]
-        public NMF.Models.Meta.IClass AdornedClass
+        public IClass AdornedClass
         {
             get
             {
@@ -65,7 +65,7 @@ namespace NMF.Models.Meta
             {
                 if ((this._adornedClass != value))
                 {
-                    NMF.Models.Meta.IClass old = this._adornedClass;
+                    IClass old = this._adornedClass;
                     ValueChangedEventArgs e = new ValueChangedEventArgs(old, value);
                     this.OnAdornedClassChanging(e);
                     this.OnPropertyChanging("AdornedClass", e, _adornedClassReference);
@@ -185,7 +185,7 @@ namespace NMF.Models.Meta
         {
             if ((feature == "ADORNEDCLASS"))
             {
-                this.AdornedClass = ((NMF.Models.Meta.IClass)(value));
+                this.AdornedClass = ((IClass)(value));
                 return;
             }
             base.SetFeature(feature, value);
@@ -267,7 +267,7 @@ namespace NMF.Models.Meta
             {
                 if ((this._parent.AdornedClass == null))
                 {
-                    NMF.Models.Meta.IClass adornedClassCasted = item.As<NMF.Models.Meta.IClass>();
+                    IClass adornedClassCasted = item.As<IClass>();
                     if ((adornedClassCasted != null))
                     {
                         this._parent.AdornedClass = adornedClassCasted;
@@ -340,14 +340,14 @@ namespace NMF.Models.Meta
         /// <summary>
         /// Represents a proxy to represent an incremental access to the AdornedClass property
         /// </summary>
-        private sealed class AdornedClassProxy : ModelPropertyChange<NMF.Models.Meta.IExtension, NMF.Models.Meta.IClass>
+        private sealed class AdornedClassProxy : ModelPropertyChange<IExtension, IClass>
         {
             
             /// <summary>
             /// Creates a new observable property access proxy
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
-            public AdornedClassProxy(NMF.Models.Meta.IExtension modelElement) : 
+            public AdornedClassProxy(IExtension modelElement) : 
                     base(modelElement, "AdornedClass")
             {
             }
@@ -355,7 +355,7 @@ namespace NMF.Models.Meta
             /// <summary>
             /// Gets or sets the value of this expression
             /// </summary>
-            public override NMF.Models.Meta.IClass Value
+            public override IClass Value
             {
                 get
                 {

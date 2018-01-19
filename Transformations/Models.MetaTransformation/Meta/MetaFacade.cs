@@ -15,7 +15,6 @@ namespace NMF.Models.Meta
     {
         private static Meta2ClassesTransformation meta2Classes = new Meta2ClassesTransformation()
         {
-            CreateOperations = true,
             SeparateImplementations = true,
             OnlyNested = false
         };

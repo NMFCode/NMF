@@ -65,7 +65,7 @@ namespace NMF.Models.Meta
         /// <summary>
         /// Gets the Extension for this model element
         /// </summary>
-        NMF.Models.Meta.IExtension GetExtension();
+        IExtension GetExtension();
     }
 }
 

@@ -32,10 +32,10 @@ namespace NMF.Models.Meta
 {
     
     
-    public class OperationParametersCollection : ObservableOppositeList<NMF.Models.Meta.IOperation, NMF.Models.Meta.IParameter>
+    public class OperationParametersCollection : ObservableOppositeList<IOperation, IParameter>
     {
         
-        public OperationParametersCollection(NMF.Models.Meta.IOperation parent) : 
+        public OperationParametersCollection(IOperation parent) : 
                 base(parent)
         {
         }
@@ -44,11 +44,11 @@ namespace NMF.Models.Meta
         {
             if ((e.NewValue != this.Parent))
             {
-                this.Remove(((NMF.Models.Meta.IParameter)(sender)));
+                this.Remove(((IParameter)(sender)));
             }
         }
         
-        protected override void SetOpposite(NMF.Models.Meta.IParameter item, NMF.Models.Meta.IOperation parent)
+        protected override void SetOpposite(IParameter item, IOperation parent)
         {
             if ((parent != null))
             {

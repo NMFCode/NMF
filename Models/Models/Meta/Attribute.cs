@@ -39,7 +39,7 @@ namespace NMF.Models.Meta
     [XmlNamespacePrefixAttribute("nmeta")]
     [ModelRepresentationClassAttribute("http://nmf.codeplex.com/nmeta/#//Attribute")]
     [DebuggerDisplayAttribute("Attribute {Name}")]
-    public partial class Attribute : TypedElement, NMF.Models.Meta.IAttribute, NMF.Models.IModelElement
+    public partial class Attribute : TypedElement, IAttribute, NMF.Models.IModelElement
     {
         
         /// <summary>
@@ -56,7 +56,7 @@ namespace NMF.Models.Meta
         /// <summary>
         /// The backing field for the Refines property
         /// </summary>
-        private NMF.Models.Meta.IAttribute _refines;
+        private IAttribute _refines;
         
         private static IClass _classInstance;
         
@@ -91,11 +91,11 @@ namespace NMF.Models.Meta
         [DesignerSerializationVisibilityAttribute(DesignerSerializationVisibility.Hidden)]
         [XmlAttributeAttribute(true)]
         [XmlOppositeAttribute("Attributes")]
-        public NMF.Models.Meta.IStructuredType DeclaringType
+        public IStructuredType DeclaringType
         {
             get
             {
-                return ModelHelper.CastAs<NMF.Models.Meta.IStructuredType>(this.Parent);
+                return ModelHelper.CastAs<IStructuredType>(this.Parent);
             }
             set
             {
@@ -107,7 +107,7 @@ namespace NMF.Models.Meta
         /// Gets or sets the attribute that is implemented by the current attribute
         /// </summary>
         [XmlAttributeAttribute(true)]
-        public NMF.Models.Meta.IAttribute Refines
+        public IAttribute Refines
         {
             get
             {
@@ -117,7 +117,7 @@ namespace NMF.Models.Meta
             {
                 if ((this._refines != value))
                 {
-                    NMF.Models.Meta.IAttribute old = this._refines;
+                    IAttribute old = this._refines;
                     ValueChangedEventArgs e = new ValueChangedEventArgs(old, value);
                     this.OnRefinesChanging(e);
                     this.OnPropertyChanging("Refines", e, _refinesReference);
@@ -248,8 +248,8 @@ namespace NMF.Models.Meta
         /// <param name="newParent">The new parent model element</param>
         protected override void OnParentChanging(NMF.Models.IModelElement newParent, NMF.Models.IModelElement oldParent)
         {
-            NMF.Models.Meta.IStructuredType oldDeclaringType = ModelHelper.CastAs<NMF.Models.Meta.IStructuredType>(oldParent);
-            NMF.Models.Meta.IStructuredType newDeclaringType = ModelHelper.CastAs<NMF.Models.Meta.IStructuredType>(newParent);
+            IStructuredType oldDeclaringType = ModelHelper.CastAs<IStructuredType>(oldParent);
+            IStructuredType newDeclaringType = ModelHelper.CastAs<IStructuredType>(newParent);
             ValueChangedEventArgs e = new ValueChangedEventArgs(oldDeclaringType, newDeclaringType);
             this.OnDeclaringTypeChanging(e);
             this.OnPropertyChanging("DeclaringType", e, _declaringTypeReference);
@@ -275,8 +275,8 @@ namespace NMF.Models.Meta
         /// <param name="newParent">The new parent model element</param>
         protected override void OnParentChanged(NMF.Models.IModelElement newParent, NMF.Models.IModelElement oldParent)
         {
-            NMF.Models.Meta.IStructuredType oldDeclaringType = ModelHelper.CastAs<NMF.Models.Meta.IStructuredType>(oldParent);
-            NMF.Models.Meta.IStructuredType newDeclaringType = ModelHelper.CastAs<NMF.Models.Meta.IStructuredType>(newParent);
+            IStructuredType oldDeclaringType = ModelHelper.CastAs<IStructuredType>(oldParent);
+            IStructuredType newDeclaringType = ModelHelper.CastAs<IStructuredType>(newParent);
             if ((oldDeclaringType != null))
             {
                 oldDeclaringType.Attributes.Remove(this);
@@ -375,12 +375,12 @@ namespace NMF.Models.Meta
         {
             if ((feature == "DECLARINGTYPE"))
             {
-                this.DeclaringType = ((NMF.Models.Meta.IStructuredType)(value));
+                this.DeclaringType = ((IStructuredType)(value));
                 return;
             }
             if ((feature == "REFINES"))
             {
-                this.Refines = ((NMF.Models.Meta.IAttribute)(value));
+                this.Refines = ((IAttribute)(value));
                 return;
             }
             if ((feature == "DEFAULTVALUE"))
@@ -491,7 +491,7 @@ namespace NMF.Models.Meta
             {
                 if ((this._parent.DeclaringType == null))
                 {
-                    NMF.Models.Meta.IStructuredType declaringTypeCasted = item.As<NMF.Models.Meta.IStructuredType>();
+                    IStructuredType declaringTypeCasted = item.As<IStructuredType>();
                     if ((declaringTypeCasted != null))
                     {
                         this._parent.DeclaringType = declaringTypeCasted;
@@ -500,7 +500,7 @@ namespace NMF.Models.Meta
                 }
                 if ((this._parent.Refines == null))
                 {
-                    NMF.Models.Meta.IAttribute refinesCasted = item.As<NMF.Models.Meta.IAttribute>();
+                    IAttribute refinesCasted = item.As<IAttribute>();
                     if ((refinesCasted != null))
                     {
                         this._parent.Refines = refinesCasted;
@@ -588,14 +588,14 @@ namespace NMF.Models.Meta
         /// <summary>
         /// Represents a proxy to represent an incremental access to the DefaultValue property
         /// </summary>
-        private sealed class DefaultValueProxy : ModelPropertyChange<NMF.Models.Meta.IAttribute, string>
+        private sealed class DefaultValueProxy : ModelPropertyChange<IAttribute, string>
         {
             
             /// <summary>
             /// Creates a new observable property access proxy
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
-            public DefaultValueProxy(NMF.Models.Meta.IAttribute modelElement) : 
+            public DefaultValueProxy(IAttribute modelElement) : 
                     base(modelElement, "DefaultValue")
             {
             }
@@ -619,14 +619,14 @@ namespace NMF.Models.Meta
         /// <summary>
         /// Represents a proxy to represent an incremental access to the DeclaringType property
         /// </summary>
-        private sealed class DeclaringTypeProxy : ModelPropertyChange<NMF.Models.Meta.IAttribute, NMF.Models.Meta.IStructuredType>
+        private sealed class DeclaringTypeProxy : ModelPropertyChange<IAttribute, IStructuredType>
         {
             
             /// <summary>
             /// Creates a new observable property access proxy
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
-            public DeclaringTypeProxy(NMF.Models.Meta.IAttribute modelElement) : 
+            public DeclaringTypeProxy(IAttribute modelElement) : 
                     base(modelElement, "DeclaringType")
             {
             }
@@ -634,7 +634,7 @@ namespace NMF.Models.Meta
             /// <summary>
             /// Gets or sets the value of this expression
             /// </summary>
-            public override NMF.Models.Meta.IStructuredType Value
+            public override IStructuredType Value
             {
                 get
                 {
@@ -650,14 +650,14 @@ namespace NMF.Models.Meta
         /// <summary>
         /// Represents a proxy to represent an incremental access to the Refines property
         /// </summary>
-        private sealed class RefinesProxy : ModelPropertyChange<NMF.Models.Meta.IAttribute, NMF.Models.Meta.IAttribute>
+        private sealed class RefinesProxy : ModelPropertyChange<IAttribute, IAttribute>
         {
             
             /// <summary>
             /// Creates a new observable property access proxy
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
-            public RefinesProxy(NMF.Models.Meta.IAttribute modelElement) : 
+            public RefinesProxy(IAttribute modelElement) : 
                     base(modelElement, "Refines")
             {
             }
@@ -665,7 +665,7 @@ namespace NMF.Models.Meta
             /// <summary>
             /// Gets or sets the value of this expression
             /// </summary>
-            public override NMF.Models.Meta.IAttribute Value
+            public override IAttribute Value
             {
                 get
                 {

@@ -39,7 +39,7 @@ namespace NMF.Models.Meta
     [XmlNamespacePrefixAttribute("nmeta")]
     [ModelRepresentationClassAttribute("http://nmf.codeplex.com/nmeta/#//ReferenceType")]
     [DebuggerDisplayAttribute("ReferenceType {Name}")]
-    public abstract partial class ReferenceType : StructuredType, NMF.Models.Meta.IReferenceType, NMF.Models.IModelElement
+    public abstract partial class ReferenceType : StructuredType, IReferenceType, NMF.Models.IModelElement
     {
         
         private static Lazy<ITypedElement> _eventsReference = new Lazy<ITypedElement>(RetrieveEventsReference);
@@ -76,7 +76,7 @@ namespace NMF.Models.Meta
         [ContainmentAttribute()]
         [XmlOppositeAttribute("DeclaringType")]
         [ConstantAttribute()]
-        public ICollectionExpression<NMF.Models.Meta.IEvent> Events
+        public ICollectionExpression<IEvent> Events
         {
             get
             {
@@ -92,7 +92,7 @@ namespace NMF.Models.Meta
         [ContainmentAttribute()]
         [XmlOppositeAttribute("DeclaringType")]
         [ConstantAttribute()]
-        public ICollectionExpression<NMF.Models.Meta.IReference> References
+        public ICollectionExpression<IReference> References
         {
             get
             {
@@ -283,12 +283,12 @@ namespace NMF.Models.Meta
             /// <param name="item">The item to add</param>
             public override void Add(NMF.Models.IModelElement item)
             {
-                NMF.Models.Meta.IEvent eventsCasted = item.As<NMF.Models.Meta.IEvent>();
+                IEvent eventsCasted = item.As<IEvent>();
                 if ((eventsCasted != null))
                 {
                     this._parent.Events.Add(eventsCasted);
                 }
-                NMF.Models.Meta.IReference referencesCasted = item.As<NMF.Models.Meta.IReference>();
+                IReference referencesCasted = item.As<IReference>();
                 if ((referencesCasted != null))
                 {
                     this._parent.References.Add(referencesCasted);
@@ -368,13 +368,13 @@ namespace NMF.Models.Meta
             /// <param name="item">The item that should be removed</param>
             public override bool Remove(NMF.Models.IModelElement item)
             {
-                NMF.Models.Meta.IEvent eventItem = item.As<NMF.Models.Meta.IEvent>();
+                IEvent eventItem = item.As<IEvent>();
                 if (((eventItem != null) 
                             && this._parent.Events.Remove(eventItem)))
                 {
                     return true;
                 }
-                NMF.Models.Meta.IReference referenceItem = item.As<NMF.Models.Meta.IReference>();
+                IReference referenceItem = item.As<IReference>();
                 if (((referenceItem != null) 
                             && this._parent.References.Remove(referenceItem)))
                 {
@@ -441,12 +441,12 @@ namespace NMF.Models.Meta
             /// <param name="item">The item to add</param>
             public override void Add(NMF.Models.IModelElement item)
             {
-                NMF.Models.Meta.IEvent eventsCasted = item.As<NMF.Models.Meta.IEvent>();
+                IEvent eventsCasted = item.As<IEvent>();
                 if ((eventsCasted != null))
                 {
                     this._parent.Events.Add(eventsCasted);
                 }
-                NMF.Models.Meta.IReference referencesCasted = item.As<NMF.Models.Meta.IReference>();
+                IReference referencesCasted = item.As<IReference>();
                 if ((referencesCasted != null))
                 {
                     this._parent.References.Add(referencesCasted);
@@ -526,13 +526,13 @@ namespace NMF.Models.Meta
             /// <param name="item">The item that should be removed</param>
             public override bool Remove(NMF.Models.IModelElement item)
             {
-                NMF.Models.Meta.IEvent eventItem = item.As<NMF.Models.Meta.IEvent>();
+                IEvent eventItem = item.As<IEvent>();
                 if (((eventItem != null) 
                             && this._parent.Events.Remove(eventItem)))
                 {
                     return true;
                 }
-                NMF.Models.Meta.IReference referenceItem = item.As<NMF.Models.Meta.IReference>();
+                IReference referenceItem = item.As<IReference>();
                 if (((referenceItem != null) 
                             && this._parent.References.Remove(referenceItem)))
                 {

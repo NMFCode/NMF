@@ -8,7 +8,11 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Meta\IModelElement.cs" />
     <Compile Remove="Meta\IModelElementExtension.cs" />
+    <Compile Remove="Meta\Model.cs" />
+    <Compile Remove="Meta\ModelElement.cs" />
+    <Compile Remove="Meta\ModelElementExtension.cs" />
   </ItemGroup>
 
   <ItemGroup>

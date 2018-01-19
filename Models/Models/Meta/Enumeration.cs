@@ -39,7 +39,7 @@ namespace NMF.Models.Meta
     [XmlNamespacePrefixAttribute("nmeta")]
     [ModelRepresentationClassAttribute("http://nmf.codeplex.com/nmeta/#//Enumeration")]
     [DebuggerDisplayAttribute("Enumeration {Name}")]
-    public partial class Enumeration : Type, NMF.Models.Meta.IEnumeration, NMF.Models.IModelElement
+    public partial class Enumeration : Type, IEnumeration, NMF.Models.IModelElement
     {
         
         /// <summary>
@@ -98,7 +98,7 @@ namespace NMF.Models.Meta
         [ContainmentAttribute()]
         [XmlOppositeAttribute("Enumeration")]
         [ConstantAttribute()]
-        public ICollectionExpression<NMF.Models.Meta.ILiteral> Literals
+        public ICollectionExpression<ILiteral> Literals
         {
             get
             {
@@ -338,7 +338,7 @@ namespace NMF.Models.Meta
             /// <param name="item">The item to add</param>
             public override void Add(NMF.Models.IModelElement item)
             {
-                NMF.Models.Meta.ILiteral literalsCasted = item.As<NMF.Models.Meta.ILiteral>();
+                ILiteral literalsCasted = item.As<ILiteral>();
                 if ((literalsCasted != null))
                 {
                     this._parent.Literals.Add(literalsCasted);
@@ -398,7 +398,7 @@ namespace NMF.Models.Meta
             /// <param name="item">The item that should be removed</param>
             public override bool Remove(NMF.Models.IModelElement item)
             {
-                NMF.Models.Meta.ILiteral literalItem = item.As<NMF.Models.Meta.ILiteral>();
+                ILiteral literalItem = item.As<ILiteral>();
                 if (((literalItem != null) 
                             && this._parent.Literals.Remove(literalItem)))
                 {
@@ -462,7 +462,7 @@ namespace NMF.Models.Meta
             /// <param name="item">The item to add</param>
             public override void Add(NMF.Models.IModelElement item)
             {
-                NMF.Models.Meta.ILiteral literalsCasted = item.As<NMF.Models.Meta.ILiteral>();
+                ILiteral literalsCasted = item.As<ILiteral>();
                 if ((literalsCasted != null))
                 {
                     this._parent.Literals.Add(literalsCasted);
@@ -522,7 +522,7 @@ namespace NMF.Models.Meta
             /// <param name="item">The item that should be removed</param>
             public override bool Remove(NMF.Models.IModelElement item)
             {
-                NMF.Models.Meta.ILiteral literalItem = item.As<NMF.Models.Meta.ILiteral>();
+                ILiteral literalItem = item.As<ILiteral>();
                 if (((literalItem != null) 
                             && this._parent.Literals.Remove(literalItem)))
                 {
@@ -544,14 +544,14 @@ namespace NMF.Models.Meta
         /// <summary>
         /// Represents a proxy to represent an incremental access to the IsFlagged property
         /// </summary>
-        private sealed class IsFlaggedProxy : ModelPropertyChange<NMF.Models.Meta.IEnumeration, bool>
+        private sealed class IsFlaggedProxy : ModelPropertyChange<IEnumeration, bool>
         {
             
             /// <summary>
             /// Creates a new observable property access proxy
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
-            public IsFlaggedProxy(NMF.Models.Meta.IEnumeration modelElement) : 
+            public IsFlaggedProxy(IEnumeration modelElement) : 
                     base(modelElement, "IsFlagged")
             {
             }

@@ -77,6 +77,14 @@ namespace NMF.Models.Changes
                     this.OnAffectedElementChanging(e);
                     this.OnPropertyChanging("AffectedElement", e, _affectedElementReference);
                     this._affectedElement = value;
+                    if ((old != null))
+                    {
+                        old.Deleted -= this.OnResetAffectedElement;
+                    }
+                    if ((value != null))
+                    {
+                        value.Deleted += this.OnResetAffectedElement;
+                    }
                     this.OnAffectedElementChanged(e);
                     this.OnPropertyChanged("AffectedElement", e, _affectedElementReference);
                 }
@@ -165,7 +173,7 @@ namespace NMF.Models.Changes
         
         private static ITypedElement RetrieveAffectedElementReference()
         {
-            return ((ITypedElement)(((NMF.Models.ModelElement)(NMF.Models.Changes.ElementaryChange.ClassInstance)).Resolve("affectedElement")));
+            return ((ITypedElement)(((NMF.Models.ModelElement)(ElementaryChange.ClassInstance)).Resolve("affectedElement")));
         }
         
         /// <summary>
@@ -206,7 +214,7 @@ namespace NMF.Models.Changes
         
         private static ITypedElement RetrieveFeatureReference()
         {
-            return ((ITypedElement)(((NMF.Models.ModelElement)(NMF.Models.Changes.ElementaryChange.ClassInstance)).Resolve("feature")));
+            return ((ITypedElement)(((NMF.Models.ModelElement)(ElementaryChange.ClassInstance)).Resolve("feature")));
         }
         
         /// <summary>
@@ -246,6 +254,25 @@ namespace NMF.Models.Changes
         }
         
         /// <summary>
+        /// Resolves the given URI to a child model element
+        /// </summary>
+        /// <returns>The model element or null if it could not be found</returns>
+        /// <param name="reference">The requested reference name</param>
+        /// <param name="index">The index of this reference</param>
+        protected override NMF.Models.IModelElement GetModelElementForReference(string reference, int index)
+        {
+            if ((reference == "AFFECTEDELEMENT"))
+            {
+                return this.AffectedElement;
+            }
+            if ((reference == "FEATURE"))
+            {
+                return this.Feature;
+            }
+            return base.GetModelElementForReference(reference, index);
+        }
+        
+        /// <summary>
         /// Sets a value to the given feature
         /// </summary>
         /// <param name="feature">The requested feature</param>
@@ -266,35 +293,17 @@ namespace NMF.Models.Changes
         }
         
         /// <summary>
-        /// Gets the property expression for the given attribute
-        /// </summary>
-        /// <returns>An incremental property expression</returns>
-        /// <param name="attribute">The requested attribute in upper case</param>
-        protected override NMF.Expressions.INotifyExpression<object> GetExpressionForAttribute(string attribute)
-        {
-            if ((attribute == "AffectedElement"))
-            {
-                return new AffectedElementProxy(this);
-            }
-            if ((attribute == "Feature"))
-            {
-                return new FeatureProxy(this);
-            }
-            return base.GetExpressionForAttribute(attribute);
-        }
-        
-        /// <summary>
         /// Gets the property expression for the given reference
         /// </summary>
         /// <returns>An incremental property expression</returns>
         /// <param name="reference">The requested reference in upper case</param>
         protected override NMF.Expressions.INotifyExpression<NMF.Models.IModelElement> GetExpressionForReference(string reference)
         {
-            if ((reference == "AffectedElement"))
+            if ((reference == "AFFECTEDELEMENT"))
             {
                 return new AffectedElementProxy(this);
             }
-            if ((reference == "Feature"))
+            if ((reference == "FEATURE"))
             {
                 return new FeatureProxy(this);
             }

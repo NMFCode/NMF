@@ -286,4 +286,13 @@ namespace NMF.Models.Changes
             yield return composition.ConvertIntoMove(child);
         }
     }
+
+    public partial class OperationCall
+    {
+        public override IEnumerable<IModelChange> Invert()
+        {
+            // Operation is undone by undoing atomic changes it produced so nothing to do here
+            yield break;
+        }
+    }
 }

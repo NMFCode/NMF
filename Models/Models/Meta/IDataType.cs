@@ -37,7 +37,7 @@ namespace NMF.Models.Meta
     /// </summary>
     [DefaultImplementationTypeAttribute(typeof(DataType))]
     [XmlDefaultImplementationTypeAttribute(typeof(DataType))]
-    public interface IDataType : NMF.Models.IModelElement, NMF.Models.Meta.IStructuredType
+    public interface IDataType : NMF.Models.IModelElement, IStructuredType
     {
     }
 }

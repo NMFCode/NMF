@@ -37,7 +37,7 @@ namespace NMF.Models.Meta
     /// </summary>
     [DefaultImplementationTypeAttribute(typeof(Literal))]
     [XmlDefaultImplementationTypeAttribute(typeof(Literal))]
-    public interface ILiteral : NMF.Models.IModelElement, NMF.Models.Meta.IMetaElement
+    public interface ILiteral : NMF.Models.IModelElement, IMetaElement
     {
         
         /// <summary>
@@ -56,7 +56,7 @@ namespace NMF.Models.Meta
         [DesignerSerializationVisibilityAttribute(DesignerSerializationVisibility.Hidden)]
         [XmlAttributeAttribute(true)]
         [XmlOppositeAttribute("Literals")]
-        NMF.Models.Meta.IEnumeration Enumeration
+        IEnumeration Enumeration
         {
             get;
             set;

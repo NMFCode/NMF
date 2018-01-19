@@ -43,9 +43,6 @@ namespace Ecore2Code
         [Option('x', "force", HelpText = "If specified, the code is generated regardless of existing code")]
         public bool Force { get; set; }
 
-        [Option('g', "operations", HelpText = "If specified, the code generator generates stubs for operations")]
-        public bool Operations { get; set; }
-
         [Option('u', "model-uri", HelpText ="If specified, overrides the uri of the base package.")]
         public string Uri { get; set; }
 
@@ -126,7 +123,6 @@ namespace Ecore2Code
             var stopWatch = new Stopwatch();
 
             packageTransform.ForceGeneration = options.Force;
-            packageTransform.CreateOperations = options.Operations;
             packageTransform.DefaultNamespace = options.OverallNamespace;
 
             LoadTypeMappings();

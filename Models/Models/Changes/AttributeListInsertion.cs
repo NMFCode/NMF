@@ -103,7 +103,7 @@ namespace NMF.Models.Changes
         
         private static ITypedElement RetrieveAddedValueAttribute()
         {
-            return ((ITypedElement)(((NMF.Models.ModelElement)(NMF.Models.Changes.AttributeListInsertion.ClassInstance)).Resolve("addedValue")));
+            return ((ITypedElement)(((NMF.Models.ModelElement)(AttributeListInsertion.ClassInstance)).Resolve("addedValue")));
         }
         
         /// <summary>
@@ -160,6 +160,20 @@ namespace NMF.Models.Changes
                 return;
             }
             base.SetFeature(feature, value);
+        }
+        
+        /// <summary>
+        /// Gets the property expression for the given attribute
+        /// </summary>
+        /// <returns>An incremental property expression</returns>
+        /// <param name="attribute">The requested attribute in upper case</param>
+        protected override NMF.Expressions.INotifyExpression<object> GetExpressionForAttribute(string attribute)
+        {
+            if ((attribute == "ADDEDVALUE"))
+            {
+                return new AddedValueProxy(this);
+            }
+            return base.GetExpressionForAttribute(attribute);
         }
         
         /// <summary>

@@ -39,7 +39,7 @@ namespace NMF.Models.Meta
     [XmlNamespacePrefixAttribute("nmeta")]
     [ModelRepresentationClassAttribute("http://nmf.codeplex.com/nmeta/#//PrimitiveType")]
     [DebuggerDisplayAttribute("PrimitiveType {Name}")]
-    public partial class PrimitiveType : Type, NMF.Models.Meta.IPrimitiveType, NMF.Models.IModelElement
+    public partial class PrimitiveType : Type, IPrimitiveType, NMF.Models.IModelElement
     {
         
         /// <summary>
@@ -191,14 +191,14 @@ namespace NMF.Models.Meta
         /// <summary>
         /// Represents a proxy to represent an incremental access to the SystemType property
         /// </summary>
-        private sealed class SystemTypeProxy : ModelPropertyChange<NMF.Models.Meta.IPrimitiveType, string>
+        private sealed class SystemTypeProxy : ModelPropertyChange<IPrimitiveType, string>
         {
             
             /// <summary>
             /// Creates a new observable property access proxy
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
-            public SystemTypeProxy(NMF.Models.Meta.IPrimitiveType modelElement) : 
+            public SystemTypeProxy(IPrimitiveType modelElement) : 
                     base(modelElement, "SystemType")
             {
             }

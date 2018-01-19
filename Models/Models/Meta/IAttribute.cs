@@ -37,7 +37,7 @@ namespace NMF.Models.Meta
     /// </summary>
     [DefaultImplementationTypeAttribute(typeof(Attribute))]
     [XmlDefaultImplementationTypeAttribute(typeof(Attribute))]
-    public interface IAttribute : NMF.Models.IModelElement, NMF.Models.Meta.ITypedElement
+    public interface IAttribute : NMF.Models.IModelElement, ITypedElement
     {
         
         /// <summary>
@@ -56,7 +56,7 @@ namespace NMF.Models.Meta
         [DesignerSerializationVisibilityAttribute(DesignerSerializationVisibility.Hidden)]
         [XmlAttributeAttribute(true)]
         [XmlOppositeAttribute("Attributes")]
-        NMF.Models.Meta.IStructuredType DeclaringType
+        IStructuredType DeclaringType
         {
             get;
             set;
@@ -66,7 +66,7 @@ namespace NMF.Models.Meta
         /// Gets or sets the attribute that is implemented by the current attribute
         /// </summary>
         [XmlAttributeAttribute(true)]
-        NMF.Models.Meta.IAttribute Refines
+        IAttribute Refines
         {
             get;
             set;
