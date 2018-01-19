@@ -20,7 +20,7 @@ namespace NMF.Models
             }
         }
 
-        private Dictionary<object, object> broker;
+        private Dictionary<object, object> broker = new Dictionary<object, object>();
 
         public TDelegate GetRegisteredDelegate<TDelegate>(IOperation op)
             where TDelegate : class
@@ -51,13 +51,9 @@ namespace NMF.Models
             {
                 return (TDelegate)del;
             }
-            else if (op.IsValueCreated)
-            {
-                return GetRegisteredDelegate<TDelegate>(op.Value);
-            }
             else
             {
-                return null;
+                return GetRegisteredDelegate<TDelegate>(op.Value);
             }
         }
 

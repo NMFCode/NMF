@@ -591,13 +591,13 @@ namespace NMF.Models.Changes
             var index = 0;
             foreach (var par in original.Operation.Parameters)
             {
-                var dataType = par.Type as IDataType;
-                if (dataType != null)
+                var rType = par.Type as IReferenceType;
+                if (rType == null)
                 {
                     opCall.Arguments.Add(new ValueArgument
                     {
                         Name = par.Name,
-                        Value = dataType.Serialize(original.Arguments[index])
+                        Value = par.Type.Serialize(original.Arguments[index])
                     });
                 }
                 else

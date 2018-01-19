@@ -38,12 +38,6 @@ namespace NMF.Models.Meta
                 var parameterDocDict = new Dictionary<string, string>();
                 foreach (var par in input.Parameters)
                 {
-                    output.Parameters.Add(new CodeParameterDeclarationExpression
-                    {
-                        Name = par.Name.ToCamelCase(),
-                        Type = CreateTypeReference(par, null, CreateCollectionInterfaceType, context),
-                        Direction = ConvertDirection(par.Direction)
-                    });
                     parameterDocDict.Add(par.Name.ToCamelCase(), par.Summary);
                 }
                 output.WriteDocumentation(input.Summary, null, parameterDocDict, input.Remarks);
