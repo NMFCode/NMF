@@ -235,32 +235,40 @@ namespace NMF.Expressions.Linq.Tests
         [TestMethod]
         public void WhereTransaction_ObservableItem_Updates()
         {
-            ExecutionEngine.Current = new SequentialExecutionEngine();
-
-            var update = false;
-            var dummy1 = new ObservableDummy<bool>(true);
-            var coll = new NotifyCollection<Dummy<bool>>() { dummy1 };
-
-            var test = coll.Where(d => d.Item);
-
-            test.CollectionChanged += (o, e) =>
+            var oldEngine = ExecutionEngine.Current;
+            try
             {
-                update = true;
-                Assert.AreEqual(dummy1, e.OldItems[0]);
-            };
+                ExecutionEngine.Current = new SequentialExecutionEngine();
 
-            Assert.IsTrue(Sys.Contains(test, dummy1));
-            Assert.IsFalse(update);
+                var update = false;
+                var dummy1 = new ObservableDummy<bool>(true);
+                var coll = new NotifyCollection<Dummy<bool>>() { dummy1 };
 
-            ExecutionEngine.Current.BeginTransaction();
+                var test = coll.Where(d => d.Item);
 
-            dummy1.Item = false;
-            Assert.IsFalse(update);
+                test.CollectionChanged += (o, e) =>
+                {
+                    update = true;
+                    Assert.AreEqual(dummy1, e.OldItems[0]);
+                };
 
-            ExecutionEngine.Current.CommitTransaction();
+                Assert.IsTrue(Sys.Contains(test, dummy1));
+                Assert.IsFalse(update);
 
-            Assert.IsFalse(test.Any());
-            Assert.IsTrue(update);
+                ExecutionEngine.Current.BeginTransaction();
+
+                dummy1.Item = false;
+                Assert.IsFalse(update);
+
+                ExecutionEngine.Current.CommitTransaction();
+
+                Assert.IsFalse(test.Any());
+                Assert.IsTrue(update);
+            }
+            finally
+            {
+                ExecutionEngine.Current = oldEngine;
+            }
         }
     }
 }

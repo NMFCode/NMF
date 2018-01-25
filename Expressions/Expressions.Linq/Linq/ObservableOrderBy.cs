@@ -133,14 +133,17 @@ namespace NMF.Expressions.Linq
                             searchTree.Remove(keyChange.OldValue);
                         }
                     }
-                    if (!searchTree.TryGetValue(keyChange.NewValue, out sequence))
+                    if ((sources.Count == 1 || !removed.Contains(tagged.Tag.Item)))
                     {
-                        sequence = new Collection<TItem>();
-                        searchTree.Add(keyChange.NewValue, sequence);
+
+                        if (!searchTree.TryGetValue(keyChange.NewValue, out sequence))
+                        {
+                            sequence = new Collection<TItem>();
+                            searchTree.Add(keyChange.NewValue, sequence);
+                        }
+                        sequence.Add(tagged.Tag.Item);
+                        moved.Add(tagged.Tag.Item);
                     }
-                    sequence.Add(tagged.Tag.Item);
-                    
-                    moved.Add(tagged.Tag.Item);
                 }
             }
 

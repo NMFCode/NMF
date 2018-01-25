@@ -12,6 +12,24 @@ namespace NMF.Expressions.Linq.Tests
     [TestClass]
     public class OrderByTest
     {
+        private ExecutionEngine executionEngine;
+
+        [TestInitialize]
+        public void StoreExecutionEngine()
+        {
+            executionEngine = ExecutionEngine.Current;
+        }
+
+        [TestCleanup]
+        public void RestoreExecutionEngine()
+        {
+            if (ExecutionEngine.Current.TransactionActive)
+            {
+                ExecutionEngine.Current.RollbackTransaction();
+            }
+            ExecutionEngine.Current = executionEngine;
+        }
+
         [TestMethod]
         public void OrderBy_NoObservableSourceItemAdded_NoUpdate()
         {
