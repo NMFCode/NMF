@@ -1830,8 +1830,8 @@ namespace NMF.Expressions.Linq
         /// <param name="x">A number indicating how many items should be selected</param>
         /// <param name="keySelector">An expression to denote the selection of key features</param>
         /// <returns>An array with the largest entries of the underlying collection</returns>
-        [ObservableProxy(typeof(ObservableTopX<>), "CreateExpressionSelector")]
-        public static TItem[] TopX<TItem, TKey>(this IEnumerableExpression<TItem> source, int x, Expression<Func<TItem, TKey>> keySelector)
+        [ObservableProxy(typeof(ObservableTopX<,>), "CreateExpressionSelector")]
+        public static KeyValuePair<TItem, TKey>[] TopX<TItem, TKey>(this IEnumerableExpression<TItem> source, int x, Expression<Func<TItem, TKey>> keySelector)
         {
             return TopX(source, x, keySelector, null);
         }
@@ -1846,8 +1846,8 @@ namespace NMF.Expressions.Linq
         /// <param name="keySelector">An expression to denote the selection of key features</param>
         /// <param name="comparer">A custom comparer</param>
         /// <returns>An array with the largest entries of the underlying collection</returns>
-        [ObservableProxy(typeof(ObservableTopX<>), "CreateExpressionSelectorComparer")]
-        public static TItem[] TopX<TItem, TKey>(this IEnumerableExpression<TItem> source, int x, Expression<Func<TItem, TKey>> keySelector, IComparer<TKey> comparer)
+        [ObservableProxy(typeof(ObservableTopX<,>), "CreateExpressionSelectorComparer")]
+        public static KeyValuePair<TItem, TKey>[] TopX<TItem, TKey>(this IEnumerableExpression<TItem> source, int x, Expression<Func<TItem, TKey>> keySelector, IComparer<TKey> comparer)
         {
             if (source == null) throw new ArgumentNullException(nameof(source));
             if (keySelector == null) throw new ArgumentNullException(nameof(keySelector));
@@ -1855,24 +1855,24 @@ namespace NMF.Expressions.Linq
 
             comparer = comparer ?? Comparer<TKey>.Default;
             var selector = keySelector.Compile();
-            var result = new List<TItem>(x + 1);
+            var result = new List<KeyValuePair<TItem, TKey>>(x + 1);
             foreach (var item in source)
             {
                 var key = selector(item);
-                if (result.Count < x || comparer.Compare(key, selector(result[result.Count - 1])) > 0)
+                if (result.Count < x || comparer.Compare(key, result[result.Count - 1].Value) > 0)
                 {
                     var inserted = false;
                     for (int i = 0; i < result.Count; i++)
                     {
-                        if (comparer.Compare(key, selector(result[i])) > 0)
+                        if (comparer.Compare(key, result[i].Value) > 0)
                         {
                             inserted = true;
-                            result.Insert(i, item);
+                            result.Insert(i, new KeyValuePair<TItem, TKey>(item, key));
                             if (result.Count == x + 1) result.RemoveAt(x);
                             break;
                         }
                     }
-                    if (!inserted) result.Add(item);
+                    if (!inserted) result.Add(new KeyValuePair<TItem, TKey>(item, key));
                 }
             }
             return result.ToArray();

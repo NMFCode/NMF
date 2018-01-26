@@ -64,6 +64,20 @@ namespace NMF.Expressions.Linq
             return SL.SelectMany(searchTree.Values, o => o).GetEnumerator();
         }
 
+        public IEnumerable<KeyValuePair<TItem, TKey>> KeyedItems
+        {
+            get
+            {
+                foreach (var seq in searchTree)
+                {
+                    foreach (var item in seq.Value)
+                    {
+                        yield return new KeyValuePair<TItem, TKey>(item, seq.Key);
+                    }
+                }
+            }
+        }
+
         public IEnumerable<TItem> GetSequenceForItem(TItem item)
         {
             TaggedObservableValue<TKey, Multiplicity<TItem>> lambdaResult;
