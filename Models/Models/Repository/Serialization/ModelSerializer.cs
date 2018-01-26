@@ -130,7 +130,7 @@ namespace NMF.Models.Repository.Serialization
             }
         }
 
-        protected override string GetAttributeValue(object value, ITypeSerializationInfo info, XmlSerializationContext context)
+        protected override string GetAttributeValue(object value, ITypeSerializationInfo info, bool isCollection, XmlSerializationContext context)
         {
             var model = context.Root as Model;
             var modelElement = value as ModelElement;
@@ -139,10 +139,28 @@ namespace NMF.Models.Repository.Serialization
                 Uri uri = model.CreateUriForElement(modelElement);
                 if (uri != null)
                 {
-                    return uri.ConvertToString();
+                    if (isCollection || modelElement.GetType() == info.Type)
+                    {
+                        return uri.ConvertToString();
+                    }
+                    else
+                    {
+                        // for EMF compatibility reasons, we need to render the type of a single-valued reference as well
+                        var concreteType = GetSerializationInfo(modelElement.GetType(), true);
+                        var sb = new StringBuilder();
+                        if (concreteType.NamespacePrefix != null)
+                        {
+                            sb.Append(concreteType.NamespacePrefix);
+                            sb.Append(":");
+                        }
+                        sb.Append(concreteType.ElementName);
+                        sb.Append(" ");
+                        sb.Append(uri.ConvertToString());
+                        return sb.ToString();
+                    }
                 }
             }
-            return base.GetAttributeValue(value, info, context);
+            return base.GetAttributeValue(value, info, isCollection, context);
         }
 
         protected override bool IsPropertyElement(XmlReader reader, IPropertySerializationInfo p)

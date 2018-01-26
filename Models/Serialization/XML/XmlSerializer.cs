@@ -726,7 +726,7 @@ namespace NMF.Serialization
 
             if (value == null) return;
 
-            string valueString = GetAttributeValue(value, property.PropertyType, context);
+            string valueString = GetAttributeValue(value, property.PropertyType, false, context);
 
             if (valueString != null)
             {
@@ -746,7 +746,7 @@ namespace NMF.Serialization
                     {
                         if (o != null)
                         {
-                            string str = GetAttributeValue(o, info, context);
+                            string str = GetAttributeValue(o, info, true, context);
                             if (str != null)
                             {
                                 sb.Append(str);
@@ -768,7 +768,7 @@ namespace NMF.Serialization
             }
         }
 
-        protected virtual string GetAttributeValue(object value, ITypeSerializationInfo info, XmlSerializationContext context)
+        protected virtual string GetAttributeValue(object value, ITypeSerializationInfo info, bool isCollection, XmlSerializationContext context)
         {
             if (info.IsStringConvertible)
             {
