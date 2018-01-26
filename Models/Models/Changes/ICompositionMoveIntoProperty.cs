@@ -43,6 +43,8 @@ namespace NMF.Models.Changes
         /// <summary>
         /// The newValue property
         /// </summary>
+        [XmlElementNameAttribute("newValue")]
+        [XmlAttributeAttribute(true)]
         NMF.Models.IModelElement NewValue
         {
             get;
@@ -52,6 +54,8 @@ namespace NMF.Models.Changes
         /// <summary>
         /// The oldValue property
         /// </summary>
+        [XmlElementNameAttribute("oldValue")]
+        [XmlAttributeAttribute(true)]
         NMF.Models.IModelElement OldValue
         {
             get;
@@ -61,6 +65,9 @@ namespace NMF.Models.Changes
         /// <summary>
         /// The origin property
         /// </summary>
+        [XmlElementNameAttribute("origin")]
+        [XmlAttributeAttribute(false)]
+        [ContainmentAttribute()]
         IElementaryChange Origin
         {
             get;

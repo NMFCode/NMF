@@ -37,7 +37,7 @@ namespace NMF.Models.Meta
     /// </summary>
     [DefaultImplementationTypeAttribute(typeof(Reference))]
     [XmlDefaultImplementationTypeAttribute(typeof(Reference))]
-    public interface IReference : NMF.Models.IModelElement, NMF.Models.Meta.ITypedElement
+    public interface IReference : NMF.Models.IModelElement, ITypedElement
     {
         
         /// <summary>
@@ -56,7 +56,7 @@ namespace NMF.Models.Meta
         [DesignerSerializationVisibilityAttribute(DesignerSerializationVisibility.Hidden)]
         [XmlAttributeAttribute(true)]
         [XmlOppositeAttribute("References")]
-        NMF.Models.Meta.IReferenceType DeclaringType
+        IReferenceType DeclaringType
         {
             get;
             set;
@@ -67,7 +67,7 @@ namespace NMF.Models.Meta
         /// </summary>
         [XmlAttributeAttribute(true)]
         [XmlOppositeAttribute("Opposite")]
-        NMF.Models.Meta.IReference Opposite
+        IReference Opposite
         {
             get;
             set;
@@ -77,7 +77,7 @@ namespace NMF.Models.Meta
         /// The ReferenceType property
         /// </summary>
         [XmlAttributeAttribute(true)]
-        NMF.Models.Meta.IReferenceType ReferenceType
+        IReferenceType ReferenceType
         {
             get;
             set;
@@ -87,7 +87,7 @@ namespace NMF.Models.Meta
         /// The reference that is refined by the current reference, only applicable if the reference is part of a class
         /// </summary>
         [XmlAttributeAttribute(true)]
-        NMF.Models.Meta.IReference Refines
+        IReference Refines
         {
             get;
             set;
@@ -97,7 +97,7 @@ namespace NMF.Models.Meta
         /// The least common anchestor of an instance and its referenced element, if statically known
         /// </summary>
         [XmlAttributeAttribute(true)]
-        NMF.Models.Meta.IClass Anchor
+        IClass Anchor
         {
             get;
             set;

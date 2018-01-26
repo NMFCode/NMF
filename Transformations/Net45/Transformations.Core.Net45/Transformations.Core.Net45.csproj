@@ -1,0 +1,128 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{4A418B93-D85D-4089-9961-0ABA1FBF1ABD}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>NMF.Transformations</RootNamespace>
+    <AssemblyName>NMF.Transformations.Core</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="Microsoft.CSharp" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Properties\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="..\..\Transformations.Core\Core\Computation.cs">
+      <Link>Computation.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Transformations.Core\Core\ComputationContext.cs">
+      <Link>ComputationContext.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Transformations.Core\Core\DelayedOutputCreation.cs">
+      <Link>DelayedOutputCreation.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Transformations.Core\Core\Dependency.cs">
+      <Link>Dependency.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Transformations.Core\Core\GeneralTransformation.cs">
+      <Link>GeneralTransformation.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Transformations.Core\Core\GeneralTransformationRule.cs">
+      <Link>GeneralTransformationRule.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Transformations.Core\Core\ITransformationContext.cs">
+      <Link>ITransformationContext.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Transformations.Core\Core\ITransformationEngineContext.cs">
+      <Link>ITransformationEngineContext.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Transformations.Core\Core\ITransformationPattern.cs">
+      <Link>ITransformationPattern.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Transformations.Core\Core\ITransformationRuleDependency.cs">
+      <Link>ITransformationRuleDependency.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Transformations.Core\Core\ITransformationTrace.cs">
+      <Link>ITransformationTrace.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Transformations.Core\Core\MultipleDependency.cs">
+      <Link>MultipleDependency.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Transformations.Core\Core\MultipleItemPersistor.cs">
+      <Link>MultipleItemPersistor.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Transformations.Core\Core\MultipleResultAwaitingPersistor.cs">
+      <Link>MultipleResultAwaitingPersistor.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Transformations.Core\Core\OutputDependency.cs">
+      <Link>OutputDependency.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Transformations.Core\Core\Persistor.cs">
+      <Link>Persistor.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Transformations.Core\Core\SingleDependency.cs">
+      <Link>SingleDependency.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Transformations.Core\Core\SingleItemPersistor.cs">
+      <Link>SingleItemPersistor.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Transformations.Core\Core\SingleResultAwaitingPersistor.cs">
+      <Link>SingleResultAwaitingPersistor.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Transformations.Core\Core\Trace.cs">
+      <Link>Trace.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Transformations.Core\Core\TraceEntry.cs">
+      <Link>TraceEntry.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Transformations.Core\Core\TransformationContext.cs">
+      <Link>TransformationContext.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Transformations.Core\Core\TransformationRunner.cs">
+      <Link>TransformationRunner.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Transformations.Core\Properties\AssemblyInfo.cs">
+      <Link>AssemblyInfo.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Transformations.Core\Properties\Resources.Designer.cs">
+      <Link>Resources.Designer.cs</Link>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="..\..\Transformations.Core\Properties\Resources.resx">
+      <Link>Resources.resx</Link>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\Tools\Net45\Utilities.Net45\Utilities.Net45.csproj">
+      <Project>{5f426e12-0fe2-4240-967c-1cfbc0fc30cf}</Project>
+      <Name>Utilities.Net45</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>

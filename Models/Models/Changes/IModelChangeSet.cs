@@ -43,6 +43,11 @@ namespace NMF.Models.Changes
         /// <summary>
         /// The changes property
         /// </summary>
+        [DesignerSerializationVisibilityAttribute(DesignerSerializationVisibility.Content)]
+        [XmlElementNameAttribute("changes")]
+        [XmlAttributeAttribute(false)]
+        [ContainmentAttribute()]
+        [ConstantAttribute()]
         IOrderedSetExpression<IModelChange> Changes
         {
             get;

@@ -37,14 +37,14 @@ namespace NMF.Models.Meta
     /// </summary>
     [DefaultImplementationTypeAttribute(typeof(Event))]
     [XmlDefaultImplementationTypeAttribute(typeof(Event))]
-    public interface IEvent : NMF.Models.IModelElement, NMF.Models.Meta.IMetaElement
+    public interface IEvent : NMF.Models.IModelElement, IMetaElement
     {
         
         /// <summary>
         /// The Type property
         /// </summary>
         [XmlAttributeAttribute(true)]
-        NMF.Models.Meta.IDataType Type
+        IDataType Type
         {
             get;
             set;
@@ -56,7 +56,7 @@ namespace NMF.Models.Meta
         [DesignerSerializationVisibilityAttribute(DesignerSerializationVisibility.Hidden)]
         [XmlAttributeAttribute(true)]
         [XmlOppositeAttribute("Events")]
-        NMF.Models.Meta.IReferenceType DeclaringType
+        IReferenceType DeclaringType
         {
             get;
             set;

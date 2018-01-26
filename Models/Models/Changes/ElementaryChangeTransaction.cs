@@ -88,12 +88,12 @@ namespace NMF.Models.Changes
                     if ((old != null))
                     {
                         old.Parent = null;
-                        old.Deleted -= this.OnResetSourceChange;
+                        old.ParentChanged -= this.OnResetSourceChange;
                     }
                     if ((value != null))
                     {
                         value.Parent = this;
-                        value.Deleted += this.OnResetSourceChange;
+                        value.ParentChanged += this.OnResetSourceChange;
                     }
                     this.OnSourceChangeChanged(e);
                     this.OnPropertyChanged("SourceChange", e, _sourceChangeReference);
@@ -166,7 +166,7 @@ namespace NMF.Models.Changes
         
         private static ITypedElement RetrieveSourceChangeReference()
         {
-            return ((ITypedElement)(((NMF.Models.ModelElement)(NMF.Models.Changes.ElementaryChangeTransaction.ClassInstance)).Resolve("sourceChange")));
+            return ((ITypedElement)(((NMF.Models.ModelElement)(ElementaryChangeTransaction.ClassInstance)).Resolve("sourceChange")));
         }
         
         /// <summary>
@@ -207,7 +207,7 @@ namespace NMF.Models.Changes
         
         private static ITypedElement RetrieveNestedChangesReference()
         {
-            return ((ITypedElement)(((NMF.Models.ModelElement)(NMF.Models.Changes.ElementaryChangeTransaction.ClassInstance)).Resolve("nestedChanges")));
+            return ((ITypedElement)(((NMF.Models.ModelElement)(ElementaryChangeTransaction.ClassInstance)).Resolve("nestedChanges")));
         }
         
         /// <summary>
@@ -305,27 +305,13 @@ namespace NMF.Models.Changes
         }
         
         /// <summary>
-        /// Gets the property expression for the given attribute
-        /// </summary>
-        /// <returns>An incremental property expression</returns>
-        /// <param name="attribute">The requested attribute in upper case</param>
-        protected override NMF.Expressions.INotifyExpression<object> GetExpressionForAttribute(string attribute)
-        {
-            if ((attribute == "SourceChange"))
-            {
-                return new SourceChangeProxy(this);
-            }
-            return base.GetExpressionForAttribute(attribute);
-        }
-        
-        /// <summary>
         /// Gets the property expression for the given reference
         /// </summary>
         /// <returns>An incremental property expression</returns>
         /// <param name="reference">The requested reference in upper case</param>
         protected override NMF.Expressions.INotifyExpression<NMF.Models.IModelElement> GetExpressionForReference(string reference)
         {
-            if ((reference == "SourceChange"))
+            if ((reference == "SOURCECHANGE"))
             {
                 return new SourceChangeProxy(this);
             }

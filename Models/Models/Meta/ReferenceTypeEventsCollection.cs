@@ -32,10 +32,10 @@ namespace NMF.Models.Meta
 {
     
     
-    public class ReferenceTypeEventsCollection : ObservableOppositeList<NMF.Models.Meta.IReferenceType, NMF.Models.Meta.IEvent>
+    public class ReferenceTypeEventsCollection : ObservableOppositeList<IReferenceType, IEvent>
     {
         
-        public ReferenceTypeEventsCollection(NMF.Models.Meta.IReferenceType parent) : 
+        public ReferenceTypeEventsCollection(IReferenceType parent) : 
                 base(parent)
         {
         }
@@ -44,11 +44,11 @@ namespace NMF.Models.Meta
         {
             if ((e.NewValue != this.Parent))
             {
-                this.Remove(((NMF.Models.Meta.IEvent)(sender)));
+                this.Remove(((IEvent)(sender)));
             }
         }
         
-        protected override void SetOpposite(NMF.Models.Meta.IEvent item, NMF.Models.Meta.IReferenceType parent)
+        protected override void SetOpposite(IEvent item, IReferenceType parent)
         {
             if ((parent != null))
             {

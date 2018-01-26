@@ -77,14 +77,6 @@ namespace NMF.Models.Changes
                     this.OnMovedElementChanging(e);
                     this.OnPropertyChanging("MovedElement", e, _movedElementReference);
                     this._movedElement = value;
-                    if ((old != null))
-                    {
-                        old.Deleted -= this.OnResetMovedElement;
-                    }
-                    if ((value != null))
-                    {
-                        value.Deleted += this.OnResetMovedElement;
-                    }
                     this.OnMovedElementChanged(e);
                     this.OnPropertyChanged("MovedElement", e, _movedElementReference);
                 }
@@ -115,12 +107,12 @@ namespace NMF.Models.Changes
                     if ((old != null))
                     {
                         old.Parent = null;
-                        old.Deleted -= this.OnResetOrigin;
+                        old.ParentChanged -= this.OnResetOrigin;
                     }
                     if ((value != null))
                     {
                         value.Parent = this;
-                        value.Deleted += this.OnResetOrigin;
+                        value.ParentChanged += this.OnResetOrigin;
                     }
                     this.OnOriginChanged(e);
                     this.OnPropertyChanged("Origin", e, _originReference);
@@ -187,7 +179,7 @@ namespace NMF.Models.Changes
         
         private static ITypedElement RetrieveMovedElementReference()
         {
-            return ((ITypedElement)(((NMF.Models.ModelElement)(NMF.Models.Changes.CompositionMoveToList.ClassInstance)).Resolve("movedElement")));
+            return ((ITypedElement)(((NMF.Models.ModelElement)(CompositionMoveToList.ClassInstance)).Resolve("movedElement")));
         }
         
         /// <summary>
@@ -228,7 +220,7 @@ namespace NMF.Models.Changes
         
         private static ITypedElement RetrieveOriginReference()
         {
-            return ((ITypedElement)(((NMF.Models.ModelElement)(NMF.Models.Changes.CompositionMoveToList.ClassInstance)).Resolve("origin")));
+            return ((ITypedElement)(((NMF.Models.ModelElement)(CompositionMoveToList.ClassInstance)).Resolve("origin")));
         }
         
         /// <summary>
@@ -289,6 +281,10 @@ namespace NMF.Models.Changes
         /// <param name="index">The index of this reference</param>
         protected override NMF.Models.IModelElement GetModelElementForReference(string reference, int index)
         {
+            if ((reference == "MOVEDELEMENT"))
+            {
+                return this.MovedElement;
+            }
             if ((reference == "ORIGIN"))
             {
                 return this.Origin;
@@ -317,35 +313,17 @@ namespace NMF.Models.Changes
         }
         
         /// <summary>
-        /// Gets the property expression for the given attribute
-        /// </summary>
-        /// <returns>An incremental property expression</returns>
-        /// <param name="attribute">The requested attribute in upper case</param>
-        protected override NMF.Expressions.INotifyExpression<object> GetExpressionForAttribute(string attribute)
-        {
-            if ((attribute == "MovedElement"))
-            {
-                return new MovedElementProxy(this);
-            }
-            if ((attribute == "Origin"))
-            {
-                return new OriginProxy(this);
-            }
-            return base.GetExpressionForAttribute(attribute);
-        }
-        
-        /// <summary>
         /// Gets the property expression for the given reference
         /// </summary>
         /// <returns>An incremental property expression</returns>
         /// <param name="reference">The requested reference in upper case</param>
         protected override NMF.Expressions.INotifyExpression<NMF.Models.IModelElement> GetExpressionForReference(string reference)
         {
-            if ((reference == "MovedElement"))
+            if ((reference == "MOVEDELEMENT"))
             {
                 return new MovedElementProxy(this);
             }
-            if ((reference == "Origin"))
+            if ((reference == "ORIGIN"))
             {
                 return new OriginProxy(this);
             }

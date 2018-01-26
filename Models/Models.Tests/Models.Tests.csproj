@@ -13,6 +13,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <EmbeddedResource Include="architecture.nmeta" />
     <EmbeddedResource Include="debug.nmf" />
     <EmbeddedResource Include="railway.nmf" />
   </ItemGroup>
@@ -42,5 +43,9 @@
     <None Update="RailwayModelWithXmi.xmi">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Metamodel\Architecture\" />
   </ItemGroup>
 </Project>

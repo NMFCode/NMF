@@ -157,7 +157,7 @@ namespace NMF.Models.Changes
         
         private static ITypedElement RetrieveNewValueReference()
         {
-            return ((ITypedElement)(((NMF.Models.ModelElement)(NMF.Models.Changes.AssociationChange.ClassInstance)).Resolve("newValue")));
+            return ((ITypedElement)(((NMF.Models.ModelElement)(AssociationChange.ClassInstance)).Resolve("newValue")));
         }
         
         /// <summary>
@@ -198,7 +198,7 @@ namespace NMF.Models.Changes
         
         private static ITypedElement RetrieveOldValueReference()
         {
-            return ((ITypedElement)(((NMF.Models.ModelElement)(NMF.Models.Changes.AssociationChange.ClassInstance)).Resolve("oldValue")));
+            return ((ITypedElement)(((NMF.Models.ModelElement)(AssociationChange.ClassInstance)).Resolve("oldValue")));
         }
         
         /// <summary>
@@ -238,6 +238,25 @@ namespace NMF.Models.Changes
         }
         
         /// <summary>
+        /// Resolves the given URI to a child model element
+        /// </summary>
+        /// <returns>The model element or null if it could not be found</returns>
+        /// <param name="reference">The requested reference name</param>
+        /// <param name="index">The index of this reference</param>
+        protected override NMF.Models.IModelElement GetModelElementForReference(string reference, int index)
+        {
+            if ((reference == "NEWVALUE"))
+            {
+                return this.NewValue;
+            }
+            if ((reference == "OLDVALUE"))
+            {
+                return this.OldValue;
+            }
+            return base.GetModelElementForReference(reference, index);
+        }
+        
+        /// <summary>
         /// Sets a value to the given feature
         /// </summary>
         /// <param name="feature">The requested feature</param>
@@ -258,35 +277,17 @@ namespace NMF.Models.Changes
         }
         
         /// <summary>
-        /// Gets the property expression for the given attribute
-        /// </summary>
-        /// <returns>An incremental property expression</returns>
-        /// <param name="attribute">The requested attribute in upper case</param>
-        protected override NMF.Expressions.INotifyExpression<object> GetExpressionForAttribute(string attribute)
-        {
-            if ((attribute == "NewValue"))
-            {
-                return new NewValueProxy(this);
-            }
-            if ((attribute == "OldValue"))
-            {
-                return new OldValueProxy(this);
-            }
-            return base.GetExpressionForAttribute(attribute);
-        }
-        
-        /// <summary>
         /// Gets the property expression for the given reference
         /// </summary>
         /// <returns>An incremental property expression</returns>
         /// <param name="reference">The requested reference in upper case</param>
         protected override NMF.Expressions.INotifyExpression<NMF.Models.IModelElement> GetExpressionForReference(string reference)
         {
-            if ((reference == "NewValue"))
+            if ((reference == "NEWVALUE"))
             {
                 return new NewValueProxy(this);
             }
-            if ((reference == "OldValue"))
+            if ((reference == "OLDVALUE"))
             {
                 return new OldValueProxy(this);
             }

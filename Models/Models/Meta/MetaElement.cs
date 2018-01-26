@@ -40,7 +40,7 @@ namespace NMF.Models.Meta
     [XmlNamespacePrefixAttribute("nmeta")]
     [ModelRepresentationClassAttribute("http://nmf.codeplex.com/nmeta/#//MetaElement")]
     [DebuggerDisplayAttribute("MetaElement {Name}")]
-    public abstract partial class MetaElement : ModelElement, NMF.Models.Meta.IMetaElement, NMF.Models.IModelElement
+    public abstract partial class MetaElement : NMF.Models.ModelElement, IMetaElement, NMF.Models.IModelElement
     {
         
         /// <summary>
@@ -389,14 +389,14 @@ namespace NMF.Models.Meta
         /// <summary>
         /// Represents a proxy to represent an incremental access to the Name property
         /// </summary>
-        private sealed class NameProxy : ModelPropertyChange<NMF.Models.Meta.IMetaElement, string>
+        private sealed class NameProxy : ModelPropertyChange<IMetaElement, string>
         {
             
             /// <summary>
             /// Creates a new observable property access proxy
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
-            public NameProxy(NMF.Models.Meta.IMetaElement modelElement) : 
+            public NameProxy(IMetaElement modelElement) : 
                     base(modelElement, "Name")
             {
             }
@@ -420,14 +420,14 @@ namespace NMF.Models.Meta
         /// <summary>
         /// Represents a proxy to represent an incremental access to the Summary property
         /// </summary>
-        private sealed class SummaryProxy : ModelPropertyChange<NMF.Models.Meta.IMetaElement, string>
+        private sealed class SummaryProxy : ModelPropertyChange<IMetaElement, string>
         {
             
             /// <summary>
             /// Creates a new observable property access proxy
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
-            public SummaryProxy(NMF.Models.Meta.IMetaElement modelElement) : 
+            public SummaryProxy(IMetaElement modelElement) : 
                     base(modelElement, "Summary")
             {
             }
@@ -451,14 +451,14 @@ namespace NMF.Models.Meta
         /// <summary>
         /// Represents a proxy to represent an incremental access to the Remarks property
         /// </summary>
-        private sealed class RemarksProxy : ModelPropertyChange<NMF.Models.Meta.IMetaElement, string>
+        private sealed class RemarksProxy : ModelPropertyChange<IMetaElement, string>
         {
             
             /// <summary>
             /// Creates a new observable property access proxy
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
-            public RemarksProxy(NMF.Models.Meta.IMetaElement modelElement) : 
+            public RemarksProxy(IMetaElement modelElement) : 
                     base(modelElement, "Remarks")
             {
             }

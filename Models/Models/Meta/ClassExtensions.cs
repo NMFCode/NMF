@@ -43,6 +43,18 @@ namespace NMF.Models.Meta
             return null;
         }
 
+        public static IOperation LookupOperation(this IClass @class, string name)
+        {
+            var operation = @class.Operations.FirstOrDefault(op => op.Name == name);
+            if (operation != null) return operation;
+            foreach (var baseType in @class.BaseTypes)
+            {
+                operation = LookupOperation(baseType, name);
+                if (operation != null) return operation;
+            }
+            return null;
+        }
+
         public static IAttribute LookupAttribute(this IClass @class, string name)
         {
             var attribute = @class.Attributes.FirstOrDefault(r => r.Name == name);

@@ -32,10 +32,10 @@ namespace NMF.Models.Meta
 {
     
     
-    public class ClassAttributeConstraintsCollection : ObservableOppositeList<NMF.Models.Meta.IClass, NMF.Models.Meta.IAttributeConstraint>
+    public class ClassAttributeConstraintsCollection : ObservableOppositeList<IClass, IAttributeConstraint>
     {
         
-        public ClassAttributeConstraintsCollection(NMF.Models.Meta.IClass parent) : 
+        public ClassAttributeConstraintsCollection(IClass parent) : 
                 base(parent)
         {
         }
@@ -44,11 +44,11 @@ namespace NMF.Models.Meta
         {
             if ((e.NewValue != this.Parent))
             {
-                this.Remove(((NMF.Models.Meta.IAttributeConstraint)(sender)));
+                this.Remove(((IAttributeConstraint)(sender)));
             }
         }
         
-        protected override void SetOpposite(NMF.Models.Meta.IAttributeConstraint item, NMF.Models.Meta.IClass parent)
+        protected override void SetOpposite(IAttributeConstraint item, IClass parent)
         {
             if ((parent != null))
             {

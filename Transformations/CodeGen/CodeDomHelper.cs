@@ -981,6 +981,13 @@ namespace NMF.CodeGen
         {
             var reference = new CodeTypeReference(type.Name);
             reference.SetNamespace(type.Namespace);
+            if (type.IsGenericType)
+            {
+                foreach (var typePar in type.GetGenericArguments())
+                {
+                    reference.TypeArguments.Add(typePar.ToTypeReference());
+                }
+            }
             return reference;
         }
 

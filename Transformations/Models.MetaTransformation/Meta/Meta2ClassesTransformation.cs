@@ -211,28 +211,10 @@ namespace NMF.Models.Meta
         {
             throw new NotImplementedException();
         }
-
-        private bool createOperations = true;
+        
         private string defaultNamespace;
         private bool separateImplementations = true;
         private bool onlyNested = false;
-
-        /// <summary>
-        /// Gets or sets a value indicating whether to generate operations
-        /// </summary>
-        /// <remarks>This value can only be set before the transformation is initialized</remarks>
-        public bool CreateOperations
-        {
-            get
-            {
-                return createOperations;
-            }
-            set
-            {
-                if (IsInitialized) throw new System.InvalidOperationException();
-                createOperations = value;
-            }
-        }
 
         /// <summary>
         /// Gets or sets the default namespace for the generated code

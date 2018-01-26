@@ -37,7 +37,7 @@ namespace NMF.Models.Meta
     /// </summary>
     [DefaultImplementationTypeAttribute(typeof(ReferenceType))]
     [XmlDefaultImplementationTypeAttribute(typeof(ReferenceType))]
-    public interface IReferenceType : NMF.Models.IModelElement, NMF.Models.Meta.IStructuredType
+    public interface IReferenceType : NMF.Models.IModelElement, IStructuredType
     {
         
         /// <summary>
@@ -48,7 +48,7 @@ namespace NMF.Models.Meta
         [ContainmentAttribute()]
         [XmlOppositeAttribute("DeclaringType")]
         [ConstantAttribute()]
-        ICollectionExpression<NMF.Models.Meta.IEvent> Events
+        ICollectionExpression<IEvent> Events
         {
             get;
         }
@@ -61,7 +61,7 @@ namespace NMF.Models.Meta
         [ContainmentAttribute()]
         [XmlOppositeAttribute("DeclaringType")]
         [ConstantAttribute()]
-        ICollectionExpression<NMF.Models.Meta.IReference> References
+        ICollectionExpression<IReference> References
         {
             get;
         }

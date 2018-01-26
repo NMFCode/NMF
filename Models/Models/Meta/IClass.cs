@@ -37,7 +37,7 @@ namespace NMF.Models.Meta
     /// </summary>
     [DefaultImplementationTypeAttribute(typeof(Class))]
     [XmlDefaultImplementationTypeAttribute(typeof(Class))]
-    public interface IClass : NMF.Models.IModelElement, NMF.Models.Meta.IReferenceType
+    public interface IClass : NMF.Models.IModelElement, IReferenceType
     {
         
         /// <summary>
@@ -56,7 +56,7 @@ namespace NMF.Models.Meta
         /// </summary>
         /// <remarks>This attribute is ignored when this class is not identified.</remarks>
         [XmlAttributeAttribute(true)]
-        IdentifierScope IdentifierScope
+        NMF.Models.Meta.IdentifierScope IdentifierScope
         {
             get;
             set;
@@ -68,7 +68,7 @@ namespace NMF.Models.Meta
         [DesignerSerializationVisibilityAttribute(DesignerSerializationVisibility.Content)]
         [XmlAttributeAttribute(true)]
         [ConstantAttribute()]
-        ICollectionExpression<NMF.Models.Meta.IClass> BaseTypes
+        ICollectionExpression<IClass> BaseTypes
         {
             get;
         }
@@ -77,7 +77,7 @@ namespace NMF.Models.Meta
         /// The InstanceOf property
         /// </summary>
         [XmlAttributeAttribute(true)]
-        NMF.Models.Meta.IClass InstanceOf
+        IClass InstanceOf
         {
             get;
             set;
@@ -87,7 +87,7 @@ namespace NMF.Models.Meta
         /// Gets or sets the attribute that will identify instances of this class
         /// </summary>
         [XmlAttributeAttribute(true)]
-        NMF.Models.Meta.IAttribute Identifier
+        IAttribute Identifier
         {
             get;
             set;
@@ -101,7 +101,7 @@ namespace NMF.Models.Meta
         [ContainmentAttribute()]
         [XmlOppositeAttribute("DeclaringType")]
         [ConstantAttribute()]
-        ICollectionExpression<NMF.Models.Meta.IAttributeConstraint> AttributeConstraints
+        ICollectionExpression<IAttributeConstraint> AttributeConstraints
         {
             get;
         }
@@ -114,7 +114,7 @@ namespace NMF.Models.Meta
         [ContainmentAttribute()]
         [XmlOppositeAttribute("DeclaringType")]
         [ConstantAttribute()]
-        ICollectionExpression<NMF.Models.Meta.IReferenceConstraint> ReferenceConstraints
+        ICollectionExpression<IReferenceConstraint> ReferenceConstraints
         {
             get;
         }

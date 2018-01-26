@@ -37,7 +37,7 @@ namespace NMF.Models.Meta
     /// </summary>
     [DefaultImplementationTypeAttribute(typeof(Enumeration))]
     [XmlDefaultImplementationTypeAttribute(typeof(Enumeration))]
-    public interface IEnumeration : NMF.Models.IModelElement, NMF.Models.Meta.IType
+    public interface IEnumeration : NMF.Models.IModelElement, IType
     {
         
         /// <summary>
@@ -58,7 +58,7 @@ namespace NMF.Models.Meta
         [ContainmentAttribute()]
         [XmlOppositeAttribute("Enumeration")]
         [ConstantAttribute()]
-        ICollectionExpression<NMF.Models.Meta.ILiteral> Literals
+        ICollectionExpression<ILiteral> Literals
         {
             get;
         }

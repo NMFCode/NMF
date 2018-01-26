@@ -114,7 +114,7 @@ namespace NMF.Models.Changes
         
         private static ITypedElement RetrieveAddedElementReference()
         {
-            return ((ITypedElement)(((NMF.Models.ModelElement)(NMF.Models.Changes.AssociationCollectionInsertion.ClassInstance)).Resolve("addedElement")));
+            return ((ITypedElement)(((NMF.Models.ModelElement)(AssociationCollectionInsertion.ClassInstance)).Resolve("addedElement")));
         }
         
         /// <summary>
@@ -154,6 +154,21 @@ namespace NMF.Models.Changes
         }
         
         /// <summary>
+        /// Resolves the given URI to a child model element
+        /// </summary>
+        /// <returns>The model element or null if it could not be found</returns>
+        /// <param name="reference">The requested reference name</param>
+        /// <param name="index">The index of this reference</param>
+        protected override NMF.Models.IModelElement GetModelElementForReference(string reference, int index)
+        {
+            if ((reference == "ADDEDELEMENT"))
+            {
+                return this.AddedElement;
+            }
+            return base.GetModelElementForReference(reference, index);
+        }
+        
+        /// <summary>
         /// Sets a value to the given feature
         /// </summary>
         /// <param name="feature">The requested feature</param>
@@ -169,27 +184,13 @@ namespace NMF.Models.Changes
         }
         
         /// <summary>
-        /// Gets the property expression for the given attribute
-        /// </summary>
-        /// <returns>An incremental property expression</returns>
-        /// <param name="attribute">The requested attribute in upper case</param>
-        protected override NMF.Expressions.INotifyExpression<object> GetExpressionForAttribute(string attribute)
-        {
-            if ((attribute == "AddedElement"))
-            {
-                return new AddedElementProxy(this);
-            }
-            return base.GetExpressionForAttribute(attribute);
-        }
-        
-        /// <summary>
         /// Gets the property expression for the given reference
         /// </summary>
         /// <returns>An incremental property expression</returns>
         /// <param name="reference">The requested reference in upper case</param>
         protected override NMF.Expressions.INotifyExpression<NMF.Models.IModelElement> GetExpressionForReference(string reference)
         {
-            if ((reference == "AddedElement"))
+            if ((reference == "ADDEDELEMENT"))
             {
                 return new AddedElementProxy(this);
             }

@@ -39,7 +39,7 @@ namespace NMF.Models.Meta
     [XmlNamespacePrefixAttribute("nmeta")]
     [ModelRepresentationClassAttribute("http://nmf.codeplex.com/nmeta/#//Literal")]
     [DebuggerDisplayAttribute("Literal {Name}")]
-    public partial class Literal : MetaElement, NMF.Models.Meta.ILiteral, NMF.Models.IModelElement
+    public partial class Literal : MetaElement, ILiteral, NMF.Models.IModelElement
     {
         
         /// <summary>
@@ -84,11 +84,11 @@ namespace NMF.Models.Meta
         [DesignerSerializationVisibilityAttribute(DesignerSerializationVisibility.Hidden)]
         [XmlAttributeAttribute(true)]
         [XmlOppositeAttribute("Literals")]
-        public NMF.Models.Meta.IEnumeration Enumeration
+        public IEnumeration Enumeration
         {
             get
             {
-                return ModelHelper.CastAs<NMF.Models.Meta.IEnumeration>(this.Parent);
+                return ModelHelper.CastAs<IEnumeration>(this.Parent);
             }
             set
             {
@@ -198,8 +198,8 @@ namespace NMF.Models.Meta
         /// <param name="newParent">The new parent model element</param>
         protected override void OnParentChanging(NMF.Models.IModelElement newParent, NMF.Models.IModelElement oldParent)
         {
-            NMF.Models.Meta.IEnumeration oldEnumeration = ModelHelper.CastAs<NMF.Models.Meta.IEnumeration>(oldParent);
-            NMF.Models.Meta.IEnumeration newEnumeration = ModelHelper.CastAs<NMF.Models.Meta.IEnumeration>(newParent);
+            IEnumeration oldEnumeration = ModelHelper.CastAs<IEnumeration>(oldParent);
+            IEnumeration newEnumeration = ModelHelper.CastAs<IEnumeration>(newParent);
             ValueChangedEventArgs e = new ValueChangedEventArgs(oldEnumeration, newEnumeration);
             this.OnEnumerationChanging(e);
             this.OnPropertyChanging("Enumeration", e, _enumerationReference);
@@ -225,8 +225,8 @@ namespace NMF.Models.Meta
         /// <param name="newParent">The new parent model element</param>
         protected override void OnParentChanged(NMF.Models.IModelElement newParent, NMF.Models.IModelElement oldParent)
         {
-            NMF.Models.Meta.IEnumeration oldEnumeration = ModelHelper.CastAs<NMF.Models.Meta.IEnumeration>(oldParent);
-            NMF.Models.Meta.IEnumeration newEnumeration = ModelHelper.CastAs<NMF.Models.Meta.IEnumeration>(newParent);
+            IEnumeration oldEnumeration = ModelHelper.CastAs<IEnumeration>(oldParent);
+            IEnumeration newEnumeration = ModelHelper.CastAs<IEnumeration>(newParent);
             if ((oldEnumeration != null))
             {
                 oldEnumeration.Literals.Remove(this);
@@ -280,7 +280,7 @@ namespace NMF.Models.Meta
         {
             if ((feature == "ENUMERATION"))
             {
-                this.Enumeration = ((NMF.Models.Meta.IEnumeration)(value));
+                this.Enumeration = ((IEnumeration)(value));
                 return;
             }
             if ((feature == "VALUE"))
@@ -381,7 +381,7 @@ namespace NMF.Models.Meta
             {
                 if ((this._parent.Enumeration == null))
                 {
-                    NMF.Models.Meta.IEnumeration enumerationCasted = item.As<NMF.Models.Meta.IEnumeration>();
+                    IEnumeration enumerationCasted = item.As<IEnumeration>();
                     if ((enumerationCasted != null))
                     {
                         this._parent.Enumeration = enumerationCasted;
@@ -454,14 +454,14 @@ namespace NMF.Models.Meta
         /// <summary>
         /// Represents a proxy to represent an incremental access to the Value property
         /// </summary>
-        private sealed class ValueProxy : ModelPropertyChange<NMF.Models.Meta.ILiteral, Nullable<int>>
+        private sealed class ValueProxy : ModelPropertyChange<ILiteral, Nullable<int>>
         {
             
             /// <summary>
             /// Creates a new observable property access proxy
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
-            public ValueProxy(NMF.Models.Meta.ILiteral modelElement) : 
+            public ValueProxy(ILiteral modelElement) : 
                     base(modelElement, "Value")
             {
             }
@@ -485,14 +485,14 @@ namespace NMF.Models.Meta
         /// <summary>
         /// Represents a proxy to represent an incremental access to the Enumeration property
         /// </summary>
-        private sealed class EnumerationProxy : ModelPropertyChange<NMF.Models.Meta.ILiteral, NMF.Models.Meta.IEnumeration>
+        private sealed class EnumerationProxy : ModelPropertyChange<ILiteral, IEnumeration>
         {
             
             /// <summary>
             /// Creates a new observable property access proxy
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
-            public EnumerationProxy(NMF.Models.Meta.ILiteral modelElement) : 
+            public EnumerationProxy(ILiteral modelElement) : 
                     base(modelElement, "Enumeration")
             {
             }
@@ -500,7 +500,7 @@ namespace NMF.Models.Meta
             /// <summary>
             /// Gets or sets the value of this expression
             /// </summary>
-            public override NMF.Models.Meta.IEnumeration Value
+            public override IEnumeration Value
             {
                 get
                 {

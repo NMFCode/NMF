@@ -57,7 +57,7 @@ namespace NMF.Models.Meta
         [DesignerSerializationVisibilityAttribute(DesignerSerializationVisibility.Hidden)]
         [XmlAttributeAttribute(true)]
         [XmlOppositeAttribute("AttributeConstraints")]
-        NMF.Models.Meta.IClass DeclaringType
+        IClass DeclaringType
         {
             get;
             set;
@@ -67,7 +67,7 @@ namespace NMF.Models.Meta
         /// The Constrains property
         /// </summary>
         [XmlAttributeAttribute(true)]
-        NMF.Models.Meta.IAttribute Constrains
+        IAttribute Constrains
         {
             get;
             set;

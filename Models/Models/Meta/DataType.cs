@@ -39,7 +39,7 @@ namespace NMF.Models.Meta
     [XmlNamespacePrefixAttribute("nmeta")]
     [ModelRepresentationClassAttribute("http://nmf.codeplex.com/nmeta/#//DataType")]
     [DebuggerDisplayAttribute("DataType {Name}")]
-    public partial class DataType : StructuredType, NMF.Models.Meta.IDataType, NMF.Models.IModelElement
+    public partial class DataType : StructuredType, IDataType, NMF.Models.IModelElement
     {
         
         private static IClass _classInstance;

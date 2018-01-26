@@ -77,7 +77,7 @@ namespace NMF.Models.Meta
                 fromMethod.Statements.Add(
                     new CodeConditionStatement(new CodeBinaryOperatorExpression(extensionRef, CodeBinaryOperatorType.IdentityInequality, nullRef), new CodeMethodReturnStatement(extensionRef)));
 
-                fromMethod.Statements.Add(new CodeAssignStatement(extensionRef, new CodeObjectCreateExpression(thisClassRef, parentRef)));
+                fromMethod.Statements.Add(new CodeAssignStatement(extensionRef, new CodeObjectCreateExpression(thisClassRef)));
                 fromMethod.Statements.Add(new CodeMethodInvokeExpression(new CodePropertyReferenceExpression(parentRef, "Extensions"), "Add", extensionRef));
                 fromMethod.Statements.Add(new CodeMethodReturnStatement(extensionRef));
                 fromMethod.WriteDocumentation(string.Format("Gets the {0} extension from the given model element", input.Name), "The extension object or null, if the model element does not have this extension",
@@ -134,11 +134,7 @@ namespace NMF.Models.Meta
 
                 var t = Transformation as Meta2ClassesTransformation;
 
-                if (t == null || t.CreateOperations)
-                {
-                    RequireGenerateMethods(Rule<Operation2Method>(), cl => cl.Operations);
-                }
-
+                RequireGenerateMethods(Rule<Operation2Method>(), cl => cl.Operations);
                 RequireGenerateProperties(Rule<Reference2Property>(), cl => cl.References);
                 RequireGenerateProperties(Rule<Attribute2Property>(), cl => cl.Attributes);
                 RequireEvents(Rule<Event2Event>(), cl => cl.Events);

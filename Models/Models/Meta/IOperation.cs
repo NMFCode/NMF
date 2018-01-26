@@ -37,7 +37,7 @@ namespace NMF.Models.Meta
     /// </summary>
     [DefaultImplementationTypeAttribute(typeof(Operation))]
     [XmlDefaultImplementationTypeAttribute(typeof(Operation))]
-    public interface IOperation : NMF.Models.IModelElement, NMF.Models.Meta.ITypedElement
+    public interface IOperation : NMF.Models.IModelElement, ITypedElement
     {
         
         /// <summary>
@@ -48,7 +48,7 @@ namespace NMF.Models.Meta
         [ContainmentAttribute()]
         [XmlOppositeAttribute("Operation")]
         [ConstantAttribute()]
-        ICollectionExpression<NMF.Models.Meta.IParameter> Parameters
+        ICollectionExpression<IParameter> Parameters
         {
             get;
         }
@@ -59,7 +59,7 @@ namespace NMF.Models.Meta
         [DesignerSerializationVisibilityAttribute(DesignerSerializationVisibility.Hidden)]
         [XmlAttributeAttribute(true)]
         [XmlOppositeAttribute("Operations")]
-        NMF.Models.Meta.IStructuredType DeclaringType
+        IStructuredType DeclaringType
         {
             get;
             set;
@@ -69,7 +69,7 @@ namespace NMF.Models.Meta
         /// The Refines property
         /// </summary>
         [XmlAttributeAttribute(true)]
-        NMF.Models.Meta.IOperation Refines
+        IOperation Refines
         {
             get;
             set;

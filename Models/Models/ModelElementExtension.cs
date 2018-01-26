@@ -13,7 +13,7 @@ namespace NMF.Models
     {
         public abstract IExtension GetExtension();
 
-        IModelElement Meta.IModelElementExtension.ExtendedElement
+        IModelElement IModelElementExtension.ExtendedElement
         {
             get { return Parent; }
             set { }

@@ -722,6 +722,17 @@ namespace NMF.Models
         }
 
         /// <summary>
+        /// Calls the given operation
+        /// </summary>
+        /// <param name="operation">The operation that should be called</param>
+        /// <param name="arguments">The arguments used to call the operation</param>
+        /// <returns>The operation result or null, if the operation does not return any value</returns>
+        public virtual object CallOperation(IOperation operation, object[] arguments)
+        {
+            throw new ArgumentOutOfRangeException(nameof(operation));
+        }
+
+        /// <summary>
         /// Gets a property expression for the given reference
         /// </summary>
         /// <param name="reference">The name of the requested reference in upper case</param>

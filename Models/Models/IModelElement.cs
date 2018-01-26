@@ -125,6 +125,14 @@ namespace NMF.Models
         IList GetAttributeValues(IAttribute attribute);
 
         /// <summary>
+        /// Calls the given operation
+        /// </summary>
+        /// <param name="operation">The operation that should be called</param>
+        /// <param name="arguments">The arguments used to call the operation</param>
+        /// <returns>The operation result or null, if the operation does not return any value</returns>
+        object CallOperation(IOperation operation, params object[] arguments);
+
+        /// <summary>
         /// Gets the referenced model element for the given reference and index
         /// </summary>
         /// <param name="reference">The reference</param>

@@ -32,10 +32,10 @@ namespace NMF.Models.Meta
 {
     
     
-    public class StructuredTypeOperationsCollection : ObservableOppositeList<NMF.Models.Meta.IStructuredType, NMF.Models.Meta.IOperation>
+    public class StructuredTypeOperationsCollection : ObservableOppositeList<IStructuredType, IOperation>
     {
         
-        public StructuredTypeOperationsCollection(NMF.Models.Meta.IStructuredType parent) : 
+        public StructuredTypeOperationsCollection(IStructuredType parent) : 
                 base(parent)
         {
         }
@@ -44,11 +44,11 @@ namespace NMF.Models.Meta
         {
             if ((e.NewValue != this.Parent))
             {
-                this.Remove(((NMF.Models.Meta.IOperation)(sender)));
+                this.Remove(((IOperation)(sender)));
             }
         }
         
-        protected override void SetOpposite(NMF.Models.Meta.IOperation item, NMF.Models.Meta.IStructuredType parent)
+        protected override void SetOpposite(IOperation item, IStructuredType parent)
         {
             if ((parent != null))
             {

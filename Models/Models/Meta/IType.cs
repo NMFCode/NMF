@@ -37,7 +37,7 @@ namespace NMF.Models.Meta
     /// </summary>
     [DefaultImplementationTypeAttribute(typeof(Type))]
     [XmlDefaultImplementationTypeAttribute(typeof(Type))]
-    public interface IType : NMF.Models.IModelElement, NMF.Models.Meta.IMetaElement
+    public interface IType : NMF.Models.IModelElement, IMetaElement
     {
         
         /// <summary>
@@ -46,7 +46,7 @@ namespace NMF.Models.Meta
         [DesignerSerializationVisibilityAttribute(DesignerSerializationVisibility.Hidden)]
         [XmlAttributeAttribute(true)]
         [XmlOppositeAttribute("Types")]
-        NMF.Models.Meta.INamespace Namespace
+        INamespace Namespace
         {
             get;
             set;

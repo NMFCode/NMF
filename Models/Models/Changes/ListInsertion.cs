@@ -103,7 +103,7 @@ namespace NMF.Models.Changes
         
         private static ITypedElement RetrieveIndexAttribute()
         {
-            return ((ITypedElement)(((NMF.Models.ModelElement)(NMF.Models.Changes.ListInsertion.ClassInstance)).Resolve("index")));
+            return ((ITypedElement)(((NMF.Models.ModelElement)(ListInsertion.ClassInstance)).Resolve("index")));
         }
         
         /// <summary>
@@ -160,6 +160,20 @@ namespace NMF.Models.Changes
                 return;
             }
             base.SetFeature(feature, value);
+        }
+        
+        /// <summary>
+        /// Gets the property expression for the given attribute
+        /// </summary>
+        /// <returns>An incremental property expression</returns>
+        /// <param name="attribute">The requested attribute in upper case</param>
+        protected override NMF.Expressions.INotifyExpression<object> GetExpressionForAttribute(string attribute)
+        {
+            if ((attribute == "INDEX"))
+            {
+                return Observable.Box(new IndexProxy(this));
+            }
+            return base.GetExpressionForAttribute(attribute);
         }
         
         /// <summary>

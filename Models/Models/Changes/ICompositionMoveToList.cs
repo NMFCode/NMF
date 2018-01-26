@@ -43,6 +43,8 @@ namespace NMF.Models.Changes
         /// <summary>
         /// The movedElement property
         /// </summary>
+        [XmlElementNameAttribute("movedElement")]
+        [XmlAttributeAttribute(true)]
         NMF.Models.IModelElement MovedElement
         {
             get;
@@ -52,6 +54,9 @@ namespace NMF.Models.Changes
         /// <summary>
         /// The origin property
         /// </summary>
+        [XmlElementNameAttribute("origin")]
+        [XmlAttributeAttribute(false)]
+        [ContainmentAttribute()]
         IElementaryChange Origin
         {
             get;

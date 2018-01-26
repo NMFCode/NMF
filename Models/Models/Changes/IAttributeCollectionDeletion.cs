@@ -43,6 +43,8 @@ namespace NMF.Models.Changes
         /// <summary>
         /// The deletedValue property
         /// </summary>
+        [XmlElementNameAttribute("deletedValue")]
+        [XmlAttributeAttribute(true)]
         string DeletedValue
         {
             get;

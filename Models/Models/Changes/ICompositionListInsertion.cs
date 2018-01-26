@@ -43,6 +43,9 @@ namespace NMF.Models.Changes
         /// <summary>
         /// The addedElement property
         /// </summary>
+        [XmlElementNameAttribute("addedElement")]
+        [XmlAttributeAttribute(false)]
+        [ContainmentAttribute()]
         NMF.Models.IModelElement AddedElement
         {
             get;

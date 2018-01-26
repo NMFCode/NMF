@@ -43,6 +43,8 @@ namespace NMF.Models.Changes
         /// <summary>
         /// The affectedElement property
         /// </summary>
+        [XmlElementNameAttribute("affectedElement")]
+        [XmlAttributeAttribute(true)]
         NMF.Models.IModelElement AffectedElement
         {
             get;
@@ -52,6 +54,8 @@ namespace NMF.Models.Changes
         /// <summary>
         /// The feature property
         /// </summary>
+        [XmlElementNameAttribute("feature")]
+        [XmlAttributeAttribute(true)]
         ITypedElement Feature
         {
             get;

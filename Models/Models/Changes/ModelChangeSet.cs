@@ -112,7 +112,7 @@ namespace NMF.Models.Changes
         
         private static ITypedElement RetrieveChangesReference()
         {
-            return ((ITypedElement)(((NMF.Models.ModelElement)(NMF.Models.Changes.ModelChangeSet.ClassInstance)).Resolve("changes")));
+            return ((ITypedElement)(((NMF.Models.ModelElement)(ModelChangeSet.ClassInstance)).Resolve("changes")));
         }
         
         /// <summary>

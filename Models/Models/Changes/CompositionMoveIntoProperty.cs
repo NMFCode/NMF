@@ -84,14 +84,6 @@ namespace NMF.Models.Changes
                     this.OnNewValueChanging(e);
                     this.OnPropertyChanging("NewValue", e, _newValueReference);
                     this._newValue = value;
-                    if ((old != null))
-                    {
-                        old.Deleted -= this.OnResetNewValue;
-                    }
-                    if ((value != null))
-                    {
-                        value.Deleted += this.OnResetNewValue;
-                    }
                     this.OnNewValueChanged(e);
                     this.OnPropertyChanged("NewValue", e, _newValueReference);
                 }
@@ -118,14 +110,6 @@ namespace NMF.Models.Changes
                     this.OnOldValueChanging(e);
                     this.OnPropertyChanging("OldValue", e, _oldValueReference);
                     this._oldValue = value;
-                    if ((old != null))
-                    {
-                        old.Deleted -= this.OnResetOldValue;
-                    }
-                    if ((value != null))
-                    {
-                        value.Deleted += this.OnResetOldValue;
-                    }
                     this.OnOldValueChanged(e);
                     this.OnPropertyChanged("OldValue", e, _oldValueReference);
                 }
@@ -156,12 +140,12 @@ namespace NMF.Models.Changes
                     if ((old != null))
                     {
                         old.Parent = null;
-                        old.Deleted -= this.OnResetOrigin;
+                        old.ParentChanged -= this.OnResetOrigin;
                     }
                     if ((value != null))
                     {
                         value.Parent = this;
-                        value.Deleted += this.OnResetOrigin;
+                        value.ParentChanged += this.OnResetOrigin;
                     }
                     this.OnOriginChanged(e);
                     this.OnPropertyChanged("Origin", e, _originReference);
@@ -238,7 +222,7 @@ namespace NMF.Models.Changes
         
         private static ITypedElement RetrieveNewValueReference()
         {
-            return ((ITypedElement)(((NMF.Models.ModelElement)(NMF.Models.Changes.CompositionMoveIntoProperty.ClassInstance)).Resolve("newValue")));
+            return ((ITypedElement)(((NMF.Models.ModelElement)(CompositionMoveIntoProperty.ClassInstance)).Resolve("newValue")));
         }
         
         /// <summary>
@@ -279,7 +263,7 @@ namespace NMF.Models.Changes
         
         private static ITypedElement RetrieveOldValueReference()
         {
-            return ((ITypedElement)(((NMF.Models.ModelElement)(NMF.Models.Changes.CompositionMoveIntoProperty.ClassInstance)).Resolve("oldValue")));
+            return ((ITypedElement)(((NMF.Models.ModelElement)(CompositionMoveIntoProperty.ClassInstance)).Resolve("oldValue")));
         }
         
         /// <summary>
@@ -320,7 +304,7 @@ namespace NMF.Models.Changes
         
         private static ITypedElement RetrieveOriginReference()
         {
-            return ((ITypedElement)(((NMF.Models.ModelElement)(NMF.Models.Changes.CompositionMoveIntoProperty.ClassInstance)).Resolve("origin")));
+            return ((ITypedElement)(((NMF.Models.ModelElement)(CompositionMoveIntoProperty.ClassInstance)).Resolve("origin")));
         }
         
         /// <summary>
@@ -381,6 +365,14 @@ namespace NMF.Models.Changes
         /// <param name="index">The index of this reference</param>
         protected override NMF.Models.IModelElement GetModelElementForReference(string reference, int index)
         {
+            if ((reference == "NEWVALUE"))
+            {
+                return this.NewValue;
+            }
+            if ((reference == "OLDVALUE"))
+            {
+                return this.OldValue;
+            }
             if ((reference == "ORIGIN"))
             {
                 return this.Origin;
@@ -414,43 +406,21 @@ namespace NMF.Models.Changes
         }
         
         /// <summary>
-        /// Gets the property expression for the given attribute
-        /// </summary>
-        /// <returns>An incremental property expression</returns>
-        /// <param name="attribute">The requested attribute in upper case</param>
-        protected override NMF.Expressions.INotifyExpression<object> GetExpressionForAttribute(string attribute)
-        {
-            if ((attribute == "NewValue"))
-            {
-                return new NewValueProxy(this);
-            }
-            if ((attribute == "OldValue"))
-            {
-                return new OldValueProxy(this);
-            }
-            if ((attribute == "Origin"))
-            {
-                return new OriginProxy(this);
-            }
-            return base.GetExpressionForAttribute(attribute);
-        }
-        
-        /// <summary>
         /// Gets the property expression for the given reference
         /// </summary>
         /// <returns>An incremental property expression</returns>
         /// <param name="reference">The requested reference in upper case</param>
         protected override NMF.Expressions.INotifyExpression<NMF.Models.IModelElement> GetExpressionForReference(string reference)
         {
-            if ((reference == "NewValue"))
+            if ((reference == "NEWVALUE"))
             {
                 return new NewValueProxy(this);
             }
-            if ((reference == "OldValue"))
+            if ((reference == "OLDVALUE"))
             {
                 return new OldValueProxy(this);
             }
-            if ((reference == "Origin"))
+            if ((reference == "ORIGIN"))
             {
                 return new OriginProxy(this);
             }

@@ -39,7 +39,7 @@ namespace NMF.Models.Meta
     [XmlNamespacePrefixAttribute("nmeta")]
     [ModelRepresentationClassAttribute("http://nmf.codeplex.com/nmeta/#//Type")]
     [DebuggerDisplayAttribute("Type {Name}")]
-    public abstract partial class Type : MetaElement, NMF.Models.Meta.IType, NMF.Models.IModelElement
+    public abstract partial class Type : MetaElement, IType, NMF.Models.IModelElement
     {
         
         private static Lazy<ITypedElement> _namespaceReference = new Lazy<ITypedElement>(RetrieveNamespaceReference);
@@ -52,11 +52,11 @@ namespace NMF.Models.Meta
         [DesignerSerializationVisibilityAttribute(DesignerSerializationVisibility.Hidden)]
         [XmlAttributeAttribute(true)]
         [XmlOppositeAttribute("Types")]
-        public NMF.Models.Meta.INamespace Namespace
+        public INamespace Namespace
         {
             get
             {
-                return ModelHelper.CastAs<NMF.Models.Meta.INamespace>(this.Parent);
+                return ModelHelper.CastAs<INamespace>(this.Parent);
             }
             set
             {
@@ -125,8 +125,8 @@ namespace NMF.Models.Meta
         /// <param name="newParent">The new parent model element</param>
         protected override void OnParentChanging(NMF.Models.IModelElement newParent, NMF.Models.IModelElement oldParent)
         {
-            NMF.Models.Meta.INamespace oldNamespace = ModelHelper.CastAs<NMF.Models.Meta.INamespace>(oldParent);
-            NMF.Models.Meta.INamespace newNamespace = ModelHelper.CastAs<NMF.Models.Meta.INamespace>(newParent);
+            INamespace oldNamespace = ModelHelper.CastAs<INamespace>(oldParent);
+            INamespace newNamespace = ModelHelper.CastAs<INamespace>(newParent);
             ValueChangedEventArgs e = new ValueChangedEventArgs(oldNamespace, newNamespace);
             this.OnNamespaceChanging(e);
             this.OnPropertyChanging("Namespace", e, _namespaceReference);
@@ -152,8 +152,8 @@ namespace NMF.Models.Meta
         /// <param name="newParent">The new parent model element</param>
         protected override void OnParentChanged(NMF.Models.IModelElement newParent, NMF.Models.IModelElement oldParent)
         {
-            NMF.Models.Meta.INamespace oldNamespace = ModelHelper.CastAs<NMF.Models.Meta.INamespace>(oldParent);
-            NMF.Models.Meta.INamespace newNamespace = ModelHelper.CastAs<NMF.Models.Meta.INamespace>(newParent);
+            INamespace oldNamespace = ModelHelper.CastAs<INamespace>(oldParent);
+            INamespace newNamespace = ModelHelper.CastAs<INamespace>(newParent);
             if ((oldNamespace != null))
             {
                 oldNamespace.Types.Remove(this);
@@ -192,7 +192,7 @@ namespace NMF.Models.Meta
         {
             if ((feature == "NAMESPACE"))
             {
-                this.Namespace = ((NMF.Models.Meta.INamespace)(value));
+                this.Namespace = ((INamespace)(value));
                 return;
             }
             base.SetFeature(feature, value);
@@ -274,7 +274,7 @@ namespace NMF.Models.Meta
             {
                 if ((this._parent.Namespace == null))
                 {
-                    NMF.Models.Meta.INamespace namespaceCasted = item.As<NMF.Models.Meta.INamespace>();
+                    INamespace namespaceCasted = item.As<INamespace>();
                     if ((namespaceCasted != null))
                     {
                         this._parent.Namespace = namespaceCasted;
@@ -347,14 +347,14 @@ namespace NMF.Models.Meta
         /// <summary>
         /// Represents a proxy to represent an incremental access to the Namespace property
         /// </summary>
-        private sealed class NamespaceProxy : ModelPropertyChange<NMF.Models.Meta.IType, NMF.Models.Meta.INamespace>
+        private sealed class NamespaceProxy : ModelPropertyChange<IType, INamespace>
         {
             
             /// <summary>
             /// Creates a new observable property access proxy
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
-            public NamespaceProxy(NMF.Models.Meta.IType modelElement) : 
+            public NamespaceProxy(IType modelElement) : 
                     base(modelElement, "Namespace")
             {
             }
@@ -362,7 +362,7 @@ namespace NMF.Models.Meta
             /// <summary>
             /// Gets or sets the value of this expression
             /// </summary>
-            public override NMF.Models.Meta.INamespace Value
+            public override INamespace Value
             {
                 get
                 {

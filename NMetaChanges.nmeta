@@ -93,4 +93,18 @@
     <References IsOrdered="True" Name="oldValue" />
     <References IsContainment="True" LowerBound="1" Name="origin" ReferenceType="#//ElementaryChange" />
   </Types>
+  <Types xsi:type="nmeta:Class" BaseTypes="#//ModelChange" Name="OperationCall">
+    <References IsOrdered="False" LowerBound="1" Name="operation" ReferenceType="http://nmf.codeplex.com/nmeta/#//Operation" />
+    <References IsOrdered="False" LowerBound="1" Name="targetElement" />
+    <References IsOrdered="True" IsUnique="False" Name="arguments" UpperBound="-1" ReferenceType="#//OperationArgument" />
+  </Types>
+  <Types xsi:type="nmeta:Class" Name="OperationArgument" IsAbstract="True">
+    <Attributes IsOrdered="False" IsUnique="True" Type="http://nmf.codeplex.com/nmeta/#//String" Name="name" />
+  </Types>
+  <Types xsi:type="nmeta:Class" Name="ValueArgument" BaseTypes="#//OperationArgument">
+    <Attributes IsOrdered="False" IsUnique="True" Type="http://nmf.codeplex.com/nmeta/#//String" Name="value" />
+  </Types>
+  <Types xsi:type="nmeta:Class" Name="ReferenceArgument" BaseTypes="#//OperationArgument">
+    <References IsOrdered="False" IsUnique="True" Name="value" />
+  </Types>
 </nmeta:Namespace>

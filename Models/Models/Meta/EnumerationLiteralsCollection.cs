@@ -32,10 +32,10 @@ namespace NMF.Models.Meta
 {
     
     
-    public class EnumerationLiteralsCollection : ObservableOppositeList<NMF.Models.Meta.IEnumeration, NMF.Models.Meta.ILiteral>
+    public class EnumerationLiteralsCollection : ObservableOppositeList<IEnumeration, ILiteral>
     {
         
-        public EnumerationLiteralsCollection(NMF.Models.Meta.IEnumeration parent) : 
+        public EnumerationLiteralsCollection(IEnumeration parent) : 
                 base(parent)
         {
         }
@@ -44,11 +44,11 @@ namespace NMF.Models.Meta
         {
             if ((e.NewValue != this.Parent))
             {
-                this.Remove(((NMF.Models.Meta.ILiteral)(sender)));
+                this.Remove(((ILiteral)(sender)));
             }
         }
         
-        protected override void SetOpposite(NMF.Models.Meta.ILiteral item, NMF.Models.Meta.IEnumeration parent)
+        protected override void SetOpposite(ILiteral item, IEnumeration parent)
         {
             if ((parent != null))
             {

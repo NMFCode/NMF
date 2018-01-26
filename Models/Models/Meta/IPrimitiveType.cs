@@ -37,7 +37,7 @@ namespace NMF.Models.Meta
     /// </summary>
     [DefaultImplementationTypeAttribute(typeof(PrimitiveType))]
     [XmlDefaultImplementationTypeAttribute(typeof(PrimitiveType))]
-    public interface IPrimitiveType : NMF.Models.IModelElement, NMF.Models.Meta.IType
+    public interface IPrimitiveType : NMF.Models.IModelElement, IType
     {
         
         /// <summary>

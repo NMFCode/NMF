@@ -148,6 +148,50 @@ namespace NMF.Models
             };
         }
 
+        /// <summary>
+        /// Creates an instance of BubbledChangeEventArgs describing that an operation is being called
+        /// </summary>
+        /// <param name="source">The model element that is the target for the call</param>
+        /// <param name="operation">The operation that is called</param>
+        /// <param name="args">The event arguments, including parameters of the call</param>
+        public static BubbledChangeEventArgs OperationCalling(IModelElement source, IOperation operation, OperationCallEventArgs args)
+        {
+            if (source == null)
+                throw new ArgumentNullException(nameof(source));
+            if (args == null)
+                throw new ArgumentNullException(nameof(args));
+            if (operation == null)
+                throw new ArgumentNullException(nameof(operation));
+
+            return new BubbledChangeEventArgs(source, operation)
+            {
+                ChangeType = ChangeType.OperationCalling,
+                OriginalEventArgs = args
+            };
+        }
+
+        /// <summary>
+        /// Creates an instance of BubbledChangeEventArgs describing that an operation is being called
+        /// </summary>
+        /// <param name="source">The model element that is the target for the call</param>
+        /// <param name="operation">The operation that is called</param>
+        /// <param name="args">The event arguments, including parameters of the call</param>
+        public static BubbledChangeEventArgs OperationCalled(IModelElement source, IOperation operation, OperationCallEventArgs args)
+        {
+            if (source == null)
+                throw new ArgumentNullException(nameof(source));
+            if (args == null)
+                throw new ArgumentNullException(nameof(args));
+            if (operation == null)
+                throw new ArgumentNullException(nameof(operation));
+
+            return new BubbledChangeEventArgs(source, operation)
+            {
+                ChangeType = ChangeType.OperationCalled,
+                OriginalEventArgs = args
+            };
+        }
+
         public static BubbledChangeEventArgs ElementDeleted(ModelElement source, UriChangedEventArgs e)
         {
             return new BubbledChangeEventArgs(source)
@@ -197,6 +241,8 @@ namespace NMF.Models
         CollectionChanged,
         ElementDeleted,
         ElementCreated,
-        UriChanged
+        UriChanged,
+        OperationCalling,
+        OperationCalled
     }
 }

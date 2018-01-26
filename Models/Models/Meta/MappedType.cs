@@ -30,14 +30,12 @@ using System.Linq;
 
 namespace NMF.Models.Meta
 {
-
-
+    
+    
     /// <summary>
     /// The MappedType extension
     /// </summary>
-    [XmlNamespaceAttribute("http://nmf.codeplex.com/nmeta/")]
-    [XmlNamespacePrefixAttribute("nmeta")]
-    public class MappedType : ModelElementExtension<NMF.Models.Meta.IType, MappedType>
+    public class MappedType : ModelElementExtension<IType, MappedType>
     {
         
         /// <summary>
@@ -120,7 +118,7 @@ namespace NMF.Models.Meta
         /// </summary>
         /// <returns>The extension object or null, if the model element does not have this extension</returns>
         /// <param name="parent">The parent model element that may hold the extension</param>
-        public static MappedType FromType(NMF.Models.Meta.IType parent)
+        public static MappedType FromType(IType parent)
         {
             if ((parent == null))
             {

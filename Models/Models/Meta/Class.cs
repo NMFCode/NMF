@@ -39,7 +39,7 @@ namespace NMF.Models.Meta
     [XmlNamespacePrefixAttribute("nmeta")]
     [ModelRepresentationClassAttribute("http://nmf.codeplex.com/nmeta/#//Class")]
     [DebuggerDisplayAttribute("Class {Name}")]
-    public partial class Class : ReferenceType, NMF.Models.Meta.IClass, NMF.Models.IModelElement
+    public partial class Class : ReferenceType, IClass, NMF.Models.IModelElement
     {
         
         /// <summary>
@@ -52,7 +52,7 @@ namespace NMF.Models.Meta
         /// <summary>
         /// The backing field for the IdentifierScope property
         /// </summary>
-        private IdentifierScope _identifierScope;
+        private NMF.Models.Meta.IdentifierScope _identifierScope;
         
         private static Lazy<ITypedElement> _identifierScopeAttribute = new Lazy<ITypedElement>(RetrieveIdentifierScopeAttribute);
         
@@ -61,21 +61,21 @@ namespace NMF.Models.Meta
         /// <summary>
         /// The backing field for the BaseTypes property
         /// </summary>
-        private ObservableAssociationList<NMF.Models.Meta.IClass> _baseTypes;
+        private ObservableAssociationList<IClass> _baseTypes;
         
         private static Lazy<ITypedElement> _instanceOfReference = new Lazy<ITypedElement>(RetrieveInstanceOfReference);
         
         /// <summary>
         /// The backing field for the InstanceOf property
         /// </summary>
-        private NMF.Models.Meta.IClass _instanceOf;
+        private IClass _instanceOf;
         
         private static Lazy<ITypedElement> _identifierReference = new Lazy<ITypedElement>(RetrieveIdentifierReference);
         
         /// <summary>
         /// The backing field for the Identifier property
         /// </summary>
-        private NMF.Models.Meta.IAttribute _identifier;
+        private IAttribute _identifier;
         
         private static Lazy<ITypedElement> _attributeConstraintsReference = new Lazy<ITypedElement>(RetrieveAttributeConstraintsReference);
         
@@ -95,7 +95,7 @@ namespace NMF.Models.Meta
         
         public Class()
         {
-            this._baseTypes = new ObservableAssociationList<NMF.Models.Meta.IClass>();
+            this._baseTypes = new ObservableAssociationList<IClass>();
             this._baseTypes.CollectionChanging += this.BaseTypesCollectionChanging;
             this._baseTypes.CollectionChanged += this.BaseTypesCollectionChanged;
             this._attributeConstraints = new ClassAttributeConstraintsCollection(this);
@@ -137,7 +137,7 @@ namespace NMF.Models.Meta
         /// </summary>
         /// <remarks>This attribute is ignored when this class is not identified.</remarks>
         [XmlAttributeAttribute(true)]
-        public IdentifierScope IdentifierScope
+        public NMF.Models.Meta.IdentifierScope IdentifierScope
         {
             get
             {
@@ -147,7 +147,7 @@ namespace NMF.Models.Meta
             {
                 if ((this._identifierScope != value))
                 {
-                    IdentifierScope old = this._identifierScope;
+                    NMF.Models.Meta.IdentifierScope old = this._identifierScope;
                     ValueChangedEventArgs e = new ValueChangedEventArgs(old, value);
                     this.OnIdentifierScopeChanging(e);
                     this.OnPropertyChanging("IdentifierScope", e, _identifierScopeAttribute);
@@ -164,7 +164,7 @@ namespace NMF.Models.Meta
         [DesignerSerializationVisibilityAttribute(DesignerSerializationVisibility.Content)]
         [XmlAttributeAttribute(true)]
         [ConstantAttribute()]
-        public ICollectionExpression<NMF.Models.Meta.IClass> BaseTypes
+        public ICollectionExpression<IClass> BaseTypes
         {
             get
             {
@@ -176,7 +176,7 @@ namespace NMF.Models.Meta
         /// The InstanceOf property
         /// </summary>
         [XmlAttributeAttribute(true)]
-        public NMF.Models.Meta.IClass InstanceOf
+        public IClass InstanceOf
         {
             get
             {
@@ -186,7 +186,7 @@ namespace NMF.Models.Meta
             {
                 if ((this._instanceOf != value))
                 {
-                    NMF.Models.Meta.IClass old = this._instanceOf;
+                    IClass old = this._instanceOf;
                     ValueChangedEventArgs e = new ValueChangedEventArgs(old, value);
                     this.OnInstanceOfChanging(e);
                     this.OnPropertyChanging("InstanceOf", e, _instanceOfReference);
@@ -209,7 +209,7 @@ namespace NMF.Models.Meta
         /// Gets or sets the attribute that will identify instances of this class
         /// </summary>
         [XmlAttributeAttribute(true)]
-        public NMF.Models.Meta.IAttribute Identifier
+        public IAttribute Identifier
         {
             get
             {
@@ -219,7 +219,7 @@ namespace NMF.Models.Meta
             {
                 if ((this._identifier != value))
                 {
-                    NMF.Models.Meta.IAttribute old = this._identifier;
+                    IAttribute old = this._identifier;
                     ValueChangedEventArgs e = new ValueChangedEventArgs(old, value);
                     this.OnIdentifierChanging(e);
                     this.OnPropertyChanging("Identifier", e, _identifierReference);
@@ -246,7 +246,7 @@ namespace NMF.Models.Meta
         [ContainmentAttribute()]
         [XmlOppositeAttribute("DeclaringType")]
         [ConstantAttribute()]
-        public ICollectionExpression<NMF.Models.Meta.IAttributeConstraint> AttributeConstraints
+        public ICollectionExpression<IAttributeConstraint> AttributeConstraints
         {
             get
             {
@@ -262,7 +262,7 @@ namespace NMF.Models.Meta
         [ContainmentAttribute()]
         [XmlOppositeAttribute("DeclaringType")]
         [ConstantAttribute()]
-        public ICollectionExpression<NMF.Models.Meta.IReferenceConstraint> ReferenceConstraints
+        public ICollectionExpression<IReferenceConstraint> ReferenceConstraints
         {
             get
             {
@@ -635,12 +635,12 @@ namespace NMF.Models.Meta
         {
             if ((feature == "INSTANCEOF"))
             {
-                this.InstanceOf = ((NMF.Models.Meta.IClass)(value));
+                this.InstanceOf = ((IClass)(value));
                 return;
             }
             if ((feature == "IDENTIFIER"))
             {
-                this.Identifier = ((NMF.Models.Meta.IAttribute)(value));
+                this.Identifier = ((IAttribute)(value));
                 return;
             }
             if ((feature == "ISABSTRACT"))
@@ -650,7 +650,7 @@ namespace NMF.Models.Meta
             }
             if ((feature == "IDENTIFIERSCOPE"))
             {
-                this.IdentifierScope = ((IdentifierScope)(value));
+                this.IdentifierScope = ((NMF.Models.Meta.IdentifierScope)(value));
                 return;
             }
             base.SetFeature(feature, value);
@@ -770,12 +770,12 @@ namespace NMF.Models.Meta
             /// <param name="item">The item to add</param>
             public override void Add(NMF.Models.IModelElement item)
             {
-                NMF.Models.Meta.IAttributeConstraint attributeConstraintsCasted = item.As<NMF.Models.Meta.IAttributeConstraint>();
+                IAttributeConstraint attributeConstraintsCasted = item.As<IAttributeConstraint>();
                 if ((attributeConstraintsCasted != null))
                 {
                     this._parent.AttributeConstraints.Add(attributeConstraintsCasted);
                 }
-                NMF.Models.Meta.IReferenceConstraint referenceConstraintsCasted = item.As<NMF.Models.Meta.IReferenceConstraint>();
+                IReferenceConstraint referenceConstraintsCasted = item.As<IReferenceConstraint>();
                 if ((referenceConstraintsCasted != null))
                 {
                     this._parent.ReferenceConstraints.Add(referenceConstraintsCasted);
@@ -855,13 +855,13 @@ namespace NMF.Models.Meta
             /// <param name="item">The item that should be removed</param>
             public override bool Remove(NMF.Models.IModelElement item)
             {
-                NMF.Models.Meta.IAttributeConstraint attributeConstraintItem = item.As<NMF.Models.Meta.IAttributeConstraint>();
+                IAttributeConstraint attributeConstraintItem = item.As<IAttributeConstraint>();
                 if (((attributeConstraintItem != null) 
                             && this._parent.AttributeConstraints.Remove(attributeConstraintItem)))
                 {
                     return true;
                 }
-                NMF.Models.Meta.IReferenceConstraint referenceConstraintItem = item.As<NMF.Models.Meta.IReferenceConstraint>();
+                IReferenceConstraint referenceConstraintItem = item.As<IReferenceConstraint>();
                 if (((referenceConstraintItem != null) 
                             && this._parent.ReferenceConstraints.Remove(referenceConstraintItem)))
                 {
@@ -943,14 +943,14 @@ namespace NMF.Models.Meta
             /// <param name="item">The item to add</param>
             public override void Add(NMF.Models.IModelElement item)
             {
-                NMF.Models.Meta.IClass baseTypesCasted = item.As<NMF.Models.Meta.IClass>();
+                IClass baseTypesCasted = item.As<IClass>();
                 if ((baseTypesCasted != null))
                 {
                     this._parent.BaseTypes.Add(baseTypesCasted);
                 }
                 if ((this._parent.InstanceOf == null))
                 {
-                    NMF.Models.Meta.IClass instanceOfCasted = item.As<NMF.Models.Meta.IClass>();
+                    IClass instanceOfCasted = item.As<IClass>();
                     if ((instanceOfCasted != null))
                     {
                         this._parent.InstanceOf = instanceOfCasted;
@@ -959,19 +959,19 @@ namespace NMF.Models.Meta
                 }
                 if ((this._parent.Identifier == null))
                 {
-                    NMF.Models.Meta.IAttribute identifierCasted = item.As<NMF.Models.Meta.IAttribute>();
+                    IAttribute identifierCasted = item.As<IAttribute>();
                     if ((identifierCasted != null))
                     {
                         this._parent.Identifier = identifierCasted;
                         return;
                     }
                 }
-                NMF.Models.Meta.IAttributeConstraint attributeConstraintsCasted = item.As<NMF.Models.Meta.IAttributeConstraint>();
+                IAttributeConstraint attributeConstraintsCasted = item.As<IAttributeConstraint>();
                 if ((attributeConstraintsCasted != null))
                 {
                     this._parent.AttributeConstraints.Add(attributeConstraintsCasted);
                 }
-                NMF.Models.Meta.IReferenceConstraint referenceConstraintsCasted = item.As<NMF.Models.Meta.IReferenceConstraint>();
+                IReferenceConstraint referenceConstraintsCasted = item.As<IReferenceConstraint>();
                 if ((referenceConstraintsCasted != null))
                 {
                     this._parent.ReferenceConstraints.Add(referenceConstraintsCasted);
@@ -1091,7 +1091,7 @@ namespace NMF.Models.Meta
             /// <param name="item">The item that should be removed</param>
             public override bool Remove(NMF.Models.IModelElement item)
             {
-                NMF.Models.Meta.IClass classItem = item.As<NMF.Models.Meta.IClass>();
+                IClass classItem = item.As<IClass>();
                 if (((classItem != null) 
                             && this._parent.BaseTypes.Remove(classItem)))
                 {
@@ -1107,13 +1107,13 @@ namespace NMF.Models.Meta
                     this._parent.Identifier = null;
                     return true;
                 }
-                NMF.Models.Meta.IAttributeConstraint attributeConstraintItem = item.As<NMF.Models.Meta.IAttributeConstraint>();
+                IAttributeConstraint attributeConstraintItem = item.As<IAttributeConstraint>();
                 if (((attributeConstraintItem != null) 
                             && this._parent.AttributeConstraints.Remove(attributeConstraintItem)))
                 {
                     return true;
                 }
-                NMF.Models.Meta.IReferenceConstraint referenceConstraintItem = item.As<NMF.Models.Meta.IReferenceConstraint>();
+                IReferenceConstraint referenceConstraintItem = item.As<IReferenceConstraint>();
                 if (((referenceConstraintItem != null) 
                             && this._parent.ReferenceConstraints.Remove(referenceConstraintItem)))
                 {
@@ -1135,14 +1135,14 @@ namespace NMF.Models.Meta
         /// <summary>
         /// Represents a proxy to represent an incremental access to the IsAbstract property
         /// </summary>
-        private sealed class IsAbstractProxy : ModelPropertyChange<NMF.Models.Meta.IClass, bool>
+        private sealed class IsAbstractProxy : ModelPropertyChange<IClass, bool>
         {
             
             /// <summary>
             /// Creates a new observable property access proxy
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
-            public IsAbstractProxy(NMF.Models.Meta.IClass modelElement) : 
+            public IsAbstractProxy(IClass modelElement) : 
                     base(modelElement, "IsAbstract")
             {
             }
@@ -1166,14 +1166,14 @@ namespace NMF.Models.Meta
         /// <summary>
         /// Represents a proxy to represent an incremental access to the IdentifierScope property
         /// </summary>
-        private sealed class IdentifierScopeProxy : ModelPropertyChange<NMF.Models.Meta.IClass, IdentifierScope>
+        private sealed class IdentifierScopeProxy : ModelPropertyChange<IClass, NMF.Models.Meta.IdentifierScope>
         {
             
             /// <summary>
             /// Creates a new observable property access proxy
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
-            public IdentifierScopeProxy(NMF.Models.Meta.IClass modelElement) : 
+            public IdentifierScopeProxy(IClass modelElement) : 
                     base(modelElement, "IdentifierScope")
             {
             }
@@ -1181,7 +1181,7 @@ namespace NMF.Models.Meta
             /// <summary>
             /// Gets or sets the value of this expression
             /// </summary>
-            public override IdentifierScope Value
+            public override NMF.Models.Meta.IdentifierScope Value
             {
                 get
                 {
@@ -1197,14 +1197,14 @@ namespace NMF.Models.Meta
         /// <summary>
         /// Represents a proxy to represent an incremental access to the InstanceOf property
         /// </summary>
-        private sealed class InstanceOfProxy : ModelPropertyChange<NMF.Models.Meta.IClass, NMF.Models.Meta.IClass>
+        private sealed class InstanceOfProxy : ModelPropertyChange<IClass, IClass>
         {
             
             /// <summary>
             /// Creates a new observable property access proxy
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
-            public InstanceOfProxy(NMF.Models.Meta.IClass modelElement) : 
+            public InstanceOfProxy(IClass modelElement) : 
                     base(modelElement, "InstanceOf")
             {
             }
@@ -1212,7 +1212,7 @@ namespace NMF.Models.Meta
             /// <summary>
             /// Gets or sets the value of this expression
             /// </summary>
-            public override NMF.Models.Meta.IClass Value
+            public override IClass Value
             {
                 get
                 {
@@ -1228,14 +1228,14 @@ namespace NMF.Models.Meta
         /// <summary>
         /// Represents a proxy to represent an incremental access to the Identifier property
         /// </summary>
-        private sealed class IdentifierProxy : ModelPropertyChange<NMF.Models.Meta.IClass, NMF.Models.Meta.IAttribute>
+        private sealed class IdentifierProxy : ModelPropertyChange<IClass, IAttribute>
         {
             
             /// <summary>
             /// Creates a new observable property access proxy
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
-            public IdentifierProxy(NMF.Models.Meta.IClass modelElement) : 
+            public IdentifierProxy(IClass modelElement) : 
                     base(modelElement, "Identifier")
             {
             }
@@ -1243,7 +1243,7 @@ namespace NMF.Models.Meta
             /// <summary>
             /// Gets or sets the value of this expression
             /// </summary>
-            public override NMF.Models.Meta.IAttribute Value
+            public override IAttribute Value
             {
                 get
                 {

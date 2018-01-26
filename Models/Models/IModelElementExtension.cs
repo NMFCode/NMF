@@ -28,7 +28,7 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
 
-namespace NMF.Models.Meta
+namespace NMF.Models
 {
     
     

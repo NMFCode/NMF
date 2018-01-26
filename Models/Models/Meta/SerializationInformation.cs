@@ -30,15 +30,12 @@ using System.Linq;
 
 namespace NMF.Models.Meta
 {
-
-
+    
+    
     /// <summary>
     /// The SerializationInformation extension
     /// </summary>
-    [XmlNamespaceAttribute("http://nmf.codeplex.com/nmeta/")]
-    [XmlNamespacePrefixAttribute("nmeta")]
-    [ModelRepresentationClassAttribute("http://nmf.codeplex.com/nmeta/#//SerializationInformation")]
-    public class SerializationInformation : ModelElementExtension<NMF.Models.Meta.IMetaElement, SerializationInformation>
+    public class SerializationInformation : ModelElementExtension<IMetaElement, SerializationInformation>
     {
         
         /// <summary>
@@ -47,14 +44,14 @@ namespace NMF.Models.Meta
         private string _serializationName;
         
         private static Lazy<ITypedElement> _serializationNameAttribute = new Lazy<ITypedElement>(RetrieveSerializationNameAttribute);
-
+        
         /// <summary>
         /// The backing field for the IsDefault property
         /// </summary>
         private bool _isDefault;
-
+        
         private static Lazy<ITypedElement> _isDefaultAttribute = new Lazy<ITypedElement>(RetrieveIsDefaultAttribute);
-
+        
         private static IExtension _extensionType;
         
         /// <summary>
@@ -81,9 +78,9 @@ namespace NMF.Models.Meta
                 }
             }
         }
-
+        
         /// <summary>
-        /// The SerializationName property
+        /// The IsDefault property
         /// </summary>
         [XmlAttributeAttribute(true)]
         public bool IsDefault
@@ -96,7 +93,7 @@ namespace NMF.Models.Meta
             {
                 if ((this._isDefault != value))
                 {
-                    bool old = this._isDefault;
+                    Nullable<bool> old = this._isDefault;
                     ValueChangedEventArgs e = new ValueChangedEventArgs(old, value);
                     this.OnIsDefaultChanging(e);
                     this.OnPropertyChanging("IsDefault", e, _isDefaultAttribute);
@@ -106,7 +103,7 @@ namespace NMF.Models.Meta
                 }
             }
         }
-
+        
         /// <summary>
         /// Gets fired before the SerializationName property changes its value
         /// </summary>
@@ -116,27 +113,22 @@ namespace NMF.Models.Meta
         /// Gets fired when the SerializationName property changed its value
         /// </summary>
         public event System.EventHandler<ValueChangedEventArgs> SerializationNameChanged;
-
+        
         /// <summary>
-        /// Gets fired before the SerializationName property changes its value
+        /// Gets fired before the IsDefault property changes its value
         /// </summary>
         public event System.EventHandler<ValueChangedEventArgs> IsDefaultChanging;
-
+        
         /// <summary>
-        /// Gets fired when the SerializationName property changed its value
+        /// Gets fired when the IsDefault property changed its value
         /// </summary>
         public event System.EventHandler<ValueChangedEventArgs> IsDefaultChanged;
-
+        
         private static ITypedElement RetrieveSerializationNameAttribute()
         {
             return ((ITypedElement)(((NMF.Models.ModelElement)(SerializationInformation.ClassInstance)).Resolve("SerializationName")));
         }
-
-        private static ITypedElement RetrieveIsDefaultAttribute()
-        {
-            return ((ITypedElement)(((NMF.Models.ModelElement)(SerializationInformation.ClassInstance)).Resolve("IsDefault")));
-        }
-
+        
         /// <summary>
         /// Raises the SerializationNameChanging event
         /// </summary>
@@ -162,9 +154,14 @@ namespace NMF.Models.Meta
                 handler.Invoke(this, eventArgs);
             }
         }
-
+        
+        private static ITypedElement RetrieveIsDefaultAttribute()
+        {
+            return ((ITypedElement)(((NMF.Models.ModelElement)(SerializationInformation.ClassInstance)).Resolve("IsDefault")));
+        }
+        
         /// <summary>
-        /// Raises the SerializationNameChanging event
+        /// Raises the IsDefaultChanging event
         /// </summary>
         /// <param name="eventArgs">The event data</param>
         protected virtual void OnIsDefaultChanging(ValueChangedEventArgs eventArgs)
@@ -175,9 +172,9 @@ namespace NMF.Models.Meta
                 handler.Invoke(this, eventArgs);
             }
         }
-
+        
         /// <summary>
-        /// Raises the SerializationNameChanged event
+        /// Raises the IsDefaultChanged event
         /// </summary>
         /// <param name="eventArgs">The event data</param>
         protected virtual void OnIsDefaultChanged(ValueChangedEventArgs eventArgs)
@@ -188,13 +185,13 @@ namespace NMF.Models.Meta
                 handler.Invoke(this, eventArgs);
             }
         }
-
+        
         /// <summary>
         /// Gets the SerializationInformation extension from the given model element
         /// </summary>
         /// <returns>The extension object or null, if the model element does not have this extension</returns>
         /// <param name="parent">The parent model element that may hold the extension</param>
-        public static SerializationInformation FromMetaElement(NMF.Models.Meta.IMetaElement parent)
+        public static SerializationInformation FromMetaElement(IMetaElement parent)
         {
             if ((parent == null))
             {

@@ -517,6 +517,8 @@ namespace NMF.Models.Changes
                     return afterEvent.ChangeType == ChangeType.PropertyChanged;
                 case ChangeType.ElementCreated:
                     return false;
+                case ChangeType.OperationCalling:
+                    return afterEvent.ChangeType == ChangeType.OperationCalled;
                 default:
                     throw new ArgumentException(nameof(beforeEvent.ChangeType));
             }
@@ -529,6 +531,8 @@ namespace NMF.Models.Changes
             {
                 case ChangeType.PropertyChanged:
                     return CreatePropertyChange(e);
+                case ChangeType.OperationCalled:
+                    return CreateOperationCall(e);
                 case ChangeType.CollectionChanged:
                     var collectionChangeArgs = (NotifyCollectionChangedEventArgs)e.OriginalEventArgs;
                     switch (collectionChangeArgs.Action)
@@ -574,6 +578,39 @@ namespace NMF.Models.Changes
                 default:
                     throw new InvalidOperationException("The " + e.ChangeType + " event cannot be the base of a model change. Use after-events only.");
             }
+        }
+
+        private OperationCall CreateOperationCall(BubbledChangeEventArgs e)
+        {
+            var original = e.OriginalEventArgs as OperationCallEventArgs;
+            var opCall = new OperationCall
+            {
+                Operation = original.Operation,
+                TargetElement = original.Target
+            };
+            var index = 0;
+            foreach (var par in original.Operation.Parameters)
+            {
+                var rType = par.Type as IReferenceType;
+                if (rType == null)
+                {
+                    opCall.Arguments.Add(new ValueArgument
+                    {
+                        Name = par.Name,
+                        Value = par.Type.Serialize(original.Arguments[index])
+                    });
+                }
+                else
+                {
+                    opCall.Arguments.Add(new ReferenceArgument
+                    {
+                        Name = par.Name,
+                        Value = (IModelElement)original.Arguments[index]
+                    });
+                }
+                index++;
+            }
+            return opCall;
         }
 
         private static IModelChange CreateCollectionInsertion(BubbledChangeEventArgs e, NotifyCollectionChangedEventArgs collectionChangeArgs)

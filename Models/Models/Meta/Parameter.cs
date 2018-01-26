@@ -39,13 +39,13 @@ namespace NMF.Models.Meta
     [XmlNamespacePrefixAttribute("nmeta")]
     [ModelRepresentationClassAttribute("http://nmf.codeplex.com/nmeta/#//Parameter")]
     [DebuggerDisplayAttribute("Parameter {Name}")]
-    public partial class Parameter : TypedElement, NMF.Models.Meta.IParameter, NMF.Models.IModelElement
+    public partial class Parameter : TypedElement, IParameter, NMF.Models.IModelElement
     {
         
         /// <summary>
         /// The backing field for the Direction property
         /// </summary>
-        private Direction _direction;
+        private NMF.Models.Meta.Direction _direction;
         
         private static Lazy<ITypedElement> _directionAttribute = new Lazy<ITypedElement>(RetrieveDirectionAttribute);
         
@@ -57,7 +57,7 @@ namespace NMF.Models.Meta
         /// The Direction property
         /// </summary>
         [XmlAttributeAttribute(true)]
-        public Direction Direction
+        public NMF.Models.Meta.Direction Direction
         {
             get
             {
@@ -67,7 +67,7 @@ namespace NMF.Models.Meta
             {
                 if ((this._direction != value))
                 {
-                    Direction old = this._direction;
+                    NMF.Models.Meta.Direction old = this._direction;
                     ValueChangedEventArgs e = new ValueChangedEventArgs(old, value);
                     this.OnDirectionChanging(e);
                     this.OnPropertyChanging("Direction", e, _directionAttribute);
@@ -84,11 +84,11 @@ namespace NMF.Models.Meta
         [DesignerSerializationVisibilityAttribute(DesignerSerializationVisibility.Hidden)]
         [XmlAttributeAttribute(true)]
         [XmlOppositeAttribute("Parameters")]
-        public NMF.Models.Meta.IOperation Operation
+        public IOperation Operation
         {
             get
             {
-                return ModelHelper.CastAs<NMF.Models.Meta.IOperation>(this.Parent);
+                return ModelHelper.CastAs<IOperation>(this.Parent);
             }
             set
             {
@@ -198,8 +198,8 @@ namespace NMF.Models.Meta
         /// <param name="newParent">The new parent model element</param>
         protected override void OnParentChanging(NMF.Models.IModelElement newParent, NMF.Models.IModelElement oldParent)
         {
-            NMF.Models.Meta.IOperation oldOperation = ModelHelper.CastAs<NMF.Models.Meta.IOperation>(oldParent);
-            NMF.Models.Meta.IOperation newOperation = ModelHelper.CastAs<NMF.Models.Meta.IOperation>(newParent);
+            IOperation oldOperation = ModelHelper.CastAs<IOperation>(oldParent);
+            IOperation newOperation = ModelHelper.CastAs<IOperation>(newParent);
             ValueChangedEventArgs e = new ValueChangedEventArgs(oldOperation, newOperation);
             this.OnOperationChanging(e);
             this.OnPropertyChanging("Operation", e, _operationReference);
@@ -225,8 +225,8 @@ namespace NMF.Models.Meta
         /// <param name="newParent">The new parent model element</param>
         protected override void OnParentChanged(NMF.Models.IModelElement newParent, NMF.Models.IModelElement oldParent)
         {
-            NMF.Models.Meta.IOperation oldOperation = ModelHelper.CastAs<NMF.Models.Meta.IOperation>(oldParent);
-            NMF.Models.Meta.IOperation newOperation = ModelHelper.CastAs<NMF.Models.Meta.IOperation>(newParent);
+            IOperation oldOperation = ModelHelper.CastAs<IOperation>(oldParent);
+            IOperation newOperation = ModelHelper.CastAs<IOperation>(newParent);
             if ((oldOperation != null))
             {
                 oldOperation.Parameters.Remove(this);
@@ -280,12 +280,12 @@ namespace NMF.Models.Meta
         {
             if ((feature == "OPERATION"))
             {
-                this.Operation = ((NMF.Models.Meta.IOperation)(value));
+                this.Operation = ((IOperation)(value));
                 return;
             }
             if ((feature == "DIRECTION"))
             {
-                this.Direction = ((Direction)(value));
+                this.Direction = ((NMF.Models.Meta.Direction)(value));
                 return;
             }
             base.SetFeature(feature, value);
@@ -381,7 +381,7 @@ namespace NMF.Models.Meta
             {
                 if ((this._parent.Operation == null))
                 {
-                    NMF.Models.Meta.IOperation operationCasted = item.As<NMF.Models.Meta.IOperation>();
+                    IOperation operationCasted = item.As<IOperation>();
                     if ((operationCasted != null))
                     {
                         this._parent.Operation = operationCasted;
@@ -454,14 +454,14 @@ namespace NMF.Models.Meta
         /// <summary>
         /// Represents a proxy to represent an incremental access to the Direction property
         /// </summary>
-        private sealed class DirectionProxy : ModelPropertyChange<NMF.Models.Meta.IParameter, Direction>
+        private sealed class DirectionProxy : ModelPropertyChange<IParameter, NMF.Models.Meta.Direction>
         {
             
             /// <summary>
             /// Creates a new observable property access proxy
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
-            public DirectionProxy(NMF.Models.Meta.IParameter modelElement) : 
+            public DirectionProxy(IParameter modelElement) : 
                     base(modelElement, "Direction")
             {
             }
@@ -469,7 +469,7 @@ namespace NMF.Models.Meta
             /// <summary>
             /// Gets or sets the value of this expression
             /// </summary>
-            public override Direction Value
+            public override NMF.Models.Meta.Direction Value
             {
                 get
                 {
@@ -485,14 +485,14 @@ namespace NMF.Models.Meta
         /// <summary>
         /// Represents a proxy to represent an incremental access to the Operation property
         /// </summary>
-        private sealed class OperationProxy : ModelPropertyChange<NMF.Models.Meta.IParameter, NMF.Models.Meta.IOperation>
+        private sealed class OperationProxy : ModelPropertyChange<IParameter, IOperation>
         {
             
             /// <summary>
             /// Creates a new observable property access proxy
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
-            public OperationProxy(NMF.Models.Meta.IParameter modelElement) : 
+            public OperationProxy(IParameter modelElement) : 
                     base(modelElement, "Operation")
             {
             }
@@ -500,7 +500,7 @@ namespace NMF.Models.Meta
             /// <summary>
             /// Gets or sets the value of this expression
             /// </summary>
-            public override NMF.Models.Meta.IOperation Value
+            public override IOperation Value
             {
                 get
                 {

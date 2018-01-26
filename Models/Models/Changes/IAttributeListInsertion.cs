@@ -43,6 +43,8 @@ namespace NMF.Models.Changes
         /// <summary>
         /// The addedValue property
         /// </summary>
+        [XmlElementNameAttribute("addedValue")]
+        [XmlAttributeAttribute(true)]
         string AddedValue
         {
             get;
