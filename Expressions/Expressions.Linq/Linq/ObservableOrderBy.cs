@@ -164,43 +164,47 @@ namespace NMF.Expressions.Linq
             if (added.Count == 0 && removed.Count == 0 && moved.Count == 0)
                 return UnchangedNotificationResult.Instance;
 
-            OnRemoveItems(removed);
-            OnAddItems(added);
-            OnMoveItems(moved);
+            RaiseEvents(added, removed, moved);
             return new CollectionChangedNotificationResult<TItem>(this, added, removed, moved);
         }
 
         private void NotifySource(CollectionChangedNotificationResult<TItem> sourceChange, List<TItem> added, List<TItem> removed)
         {
-            foreach (var item in sourceChange.AllRemovedItems)
+            if (sourceChange.RemovedItems != null)
             {
-                var lambdaResult = lambdas[item];
-                Collection<TItem> sequence;
-                if (searchTree.TryGetValue(lambdaResult.Value, out sequence))
+                foreach (var item in sourceChange.RemovedItems)
                 {
-                    sequence.Remove(item);
-                    if (sequence.Count == 0)
+                    var lambdaResult = lambdas[item];
+                    Collection<TItem> sequence;
+                    if (searchTree.TryGetValue(lambdaResult.Value, out sequence))
                     {
-                        searchTree.Remove(lambdaResult.Value);
+                        sequence.Remove(item);
+                        if (sequence.Count == 0)
+                        {
+                            searchTree.Remove(lambdaResult.Value);
+                        }
+                    }
+                    removed.Add(item);
+
+                    if (lambdaResult.Tag.Count == 1)
+                    {
+                        lambdas.Remove(item);
+                        lambdaResult.Successors.Unset(this);
+                    }
+                    else
+                    {
+                        lambdaResult.Tag = new Multiplicity<TItem>(lambdaResult.Tag.Item, lambdaResult.Tag.Count - 1);
                     }
                 }
-                removed.Add(item);
-                        
-                if (lambdaResult.Tag.Count == 1)
-                {
-                    lambdas.Remove(item);
-                    lambdaResult.Successors.Unset(this);
-                }
-                else
-                {
-                    lambdaResult.Tag = new Multiplicity<TItem>(lambdaResult.Tag.Item, lambdaResult.Tag.Count - 1);
-                }
             }
-                
-            foreach (var item in sourceChange.AllAddedItems)
+
+            if (sourceChange.AddedItems != null)
             {
-                AttachItem(item);
-                added.Add(item);
+                foreach (var item in sourceChange.AddedItems)
+                {
+                    AttachItem(item);
+                    added.Add(item);
+                }
             }
         }
     }

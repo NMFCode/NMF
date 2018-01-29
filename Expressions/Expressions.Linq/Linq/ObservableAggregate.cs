@@ -64,13 +64,19 @@ namespace NMF.Expressions.Linq
             }
             else
             {
-                foreach (var item in sourceChange.AllRemovedItems)
+                if (sourceChange.RemovedItems != null)
                 {
-                    RemoveItem(item);
+                    foreach (var item in sourceChange.RemovedItems)
+                    {
+                        RemoveItem(item);
+                    }
                 }
-                foreach (var item in sourceChange.AllAddedItems)
+                if (sourceChange.AddedItems != null)
                 {
-                    AddItem(item);
+                    foreach (var item in sourceChange.AddedItems)
+                    {
+                        AddItem(item);
+                    }
                 }
             }
 

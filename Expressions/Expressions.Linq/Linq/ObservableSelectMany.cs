@@ -75,8 +75,6 @@ namespace NMF.Expressions.Linq
         {
             var added = new List<TResult>();
             var removed = new List<TResult>();
-            var replaceAdded = new List<TResult>();
-            var replaceRemoved = new List<TResult>();
 
             foreach (var change in sources)
             {
@@ -102,20 +100,14 @@ namespace NMF.Expressions.Linq
                         removed.AddRange(subSourceChange.RemovedItems);
                     if (subSourceChange.AddedItems != null)
                         added.AddRange(subSourceChange.AddedItems);
-                    if (subSourceChange.ReplaceAddedItems != null)
-                        replaceAdded.AddRange(subSourceChange.ReplaceAddedItems);
-                    if (subSourceChange.ReplaceRemovedItems != null)
-                        replaceRemoved.AddRange(subSourceChange.ReplaceRemovedItems);
                 }
             }
 
-            if (added.Count == 0 && removed.Count == 0 && replaceAdded.Count == 0)
+            if (added.Count == 0 && removed.Count == 0 && added.Count == 0)
                 return UnchangedNotificationResult.Instance;
 
-            OnRemoveItems(removed);
-            OnAddItems(added);
-            OnReplaceItems(replaceRemoved, replaceAdded);
-            return new CollectionChangedNotificationResult<TResult>(this, added, removed, replaceAdded, replaceRemoved);
+            RaiseEvents(added, removed, null);
+            return new CollectionChangedNotificationResult<TResult>(this, added, removed);
         }
 
         private void NotifySource(CollectionChangedNotificationResult<TSource> sourceChange, List<TResult> added, List<TResult> removed)
@@ -143,30 +135,6 @@ namespace NMF.Expressions.Linq
                     wrapper.Successors.Set(this);
                     sourceItems.Add(item, wrapper);
                     added.AddRange(wrapper);
-                }
-            }
-
-            if (sourceChange.ReplaceAddedItems != null)
-            {
-                for (int i = 0; i < sourceChange.ReplaceAddedItems.Count; i++)
-                {
-                    var oldItem = sourceChange.ReplaceRemovedItems[i];
-                    var newItem = sourceChange.ReplaceAddedItems[i];
-
-                    var newSubSource = func.Observe(newItem);
-
-                    SubSourcePair wrapper;
-                    if (sourceItems.TryGetValue(oldItem, out wrapper))
-                    {
-                        removed.AddRange(SL.Select(wrapper.Results.Values, res => res.Value));
-                        wrapper.Successors.Unset(this);
-                        sourceItems.Remove(oldItem);
-                    }
-
-                    wrapper = new SubSourcePair(newSubSource, newItem, this);
-                    sourceItems.Add(newItem, wrapper);
-                    wrapper.Successors.Set(this);
-                    added.AddRange(SL.Select(wrapper.Results.Values, res => res.Value));
                 }
             }
         }
@@ -292,8 +260,6 @@ namespace NMF.Expressions.Linq
             {
                 var added = new List<TResult>();
                 var removed = new List<TResult>();
-                var replaceAdded = new List<TResult>();
-                var replaceRemoved = new List<TResult>();
 
                 foreach (var change in sources)
                 {
@@ -307,8 +273,8 @@ namespace NMF.Expressions.Linq
                     else if (change.Source is TaggedObservableValue<TResult, int>)
                     {
                         var resultChange = (ValueChangedNotificationResult<TResult>)change;
-                        replaceRemoved.Add(resultChange.OldValue);
-                        replaceAdded.Add(resultChange.NewValue);
+                        removed.Add(resultChange.OldValue);
+                        added.Add(resultChange.NewValue);
                     }
                     else
                     {
@@ -326,27 +292,31 @@ namespace NMF.Expressions.Linq
                     }
                 }
 
-                if (added.Count == 0 && removed.Count == 0 && replaceAdded.Count == 0)
+                if (added.Count == 0 && removed.Count == 0)
                     return UnchangedNotificationResult.Instance;
 
-                OnRemoveItems(removed);
-                OnAddItems(added);
-                OnReplaceItems(replaceRemoved, replaceAdded);
-                return new CollectionChangedNotificationResult<TResult>(this, added, removed, replaceAdded, replaceRemoved);
+                RaiseEvents(added, removed, null);
+                return new CollectionChangedNotificationResult<TResult>(this, added, removed);
             }
 
             private void NotifySubSourceValue(List<TResult> added, List<TResult> removed, CollectionChangedNotificationResult<TIntermediate> subSourceValueChange)
             {
-                foreach (var element in subSourceValueChange.AllRemovedItems)
+                if (subSourceValueChange.RemovedItems != null)
                 {
-                    removed.Add(Results[element].Value);
-                    DetachResult(element);
+                    foreach (var element in subSourceValueChange.RemovedItems)
+                    {
+                        removed.Add(Results[element].Value);
+                        DetachResult(element);
+                    }
                 }
-                    
-                foreach (var element in subSourceValueChange.AllAddedItems)
+
+                if (subSourceValueChange.AddedItems != null)
                 {
-                    AttachResult(element);
-                    added.Add(Results[element].Value);
+                    foreach (var element in subSourceValueChange.AddedItems)
+                    {
+                        AttachResult(element);
+                        added.Add(Results[element].Value);
+                    }
                 }
             }
         }

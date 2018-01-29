@@ -124,44 +124,55 @@ namespace NMF.Expressions.Linq
 
         private void NotifySource(CollectionChangedNotificationResult<TSource> change, List<TSource> added, List<TSource> removed)
         {
-            foreach (var item in change.AllRemovedItems)
+            if (change.RemovedItems != null)
             {
-                if (!sourceItems.ContainsKey(item))
+                foreach (var item in change.RemovedItems)
                 {
-                    removed.Add(item);
+                    if (!sourceItems.ContainsKey(item))
+                    {
+                        removed.Add(item);
+                    }
                 }
             }
-                
-            foreach (var item in change.AllAddedItems)
+
+            if (change.AddedItems != null)
             {
-                if (!sourceItems.ContainsKey(item))
+                foreach (var item in change.AddedItems)
                 {
-                    added.Add(item);
+                    if (!sourceItems.ContainsKey(item))
+                    {
+                        added.Add(item);
+                    }
                 }
             }
         }
 
         private void NotifySource2(CollectionChangedNotificationResult<TSource> change, List<TSource> added, List<TSource> removed)
         {
-            var uniqueRemoved = new HashSet<TSource>(sourceItems.Comparer);
-            foreach (var item in change.AllRemovedItems)
+            if (change.RemovedItems != null)
             {
-                if (RemoveItem(item))
+                var uniqueRemoved = new HashSet<TSource>(sourceItems.Comparer);
+                foreach (var item in change.RemovedItems)
                 {
-                    uniqueRemoved.Add(item);
+                    if (RemoveItem(item))
+                    {
+                        uniqueRemoved.Add(item);
+                    }
                 }
+                added.AddRange(SL.Where(source, item => uniqueRemoved.Contains(item)));
             }
-            added.AddRange(SL.Where(source, item => uniqueRemoved.Contains(item)));
-            
-            var uniqueAdded = new HashSet<TSource>(sourceItems.Comparer);
-            foreach (var item in change.AllAddedItems)
+            if (change.AddedItems != null)
             {
-                if (AddItem(item))
+                var uniqueAdded = new HashSet<TSource>(sourceItems.Comparer);
+                foreach (var item in change.AddedItems)
                 {
-                    uniqueAdded.Add(item);
+                    if (AddItem(item))
+                    {
+                        uniqueAdded.Add(item);
+                    }
                 }
+                removed.AddRange(SL.Where(source, item => uniqueAdded.Contains(item)));
             }
-            removed.AddRange(SL.Where(source, item => uniqueAdded.Contains(item)));
         }
     }
 }

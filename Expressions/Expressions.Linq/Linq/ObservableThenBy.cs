@@ -223,25 +223,31 @@ namespace NMF.Expressions.Linq
 
         private void NotifySource(CollectionChangedNotificationResult<TItem> sourceChange, List<TItem> added, List<TItem> removed)
         {
-            foreach (var item in sourceChange.AllRemovedItems)
+            if (sourceChange.RemovedItems != null)
             {
-                var searchTree = lambdaResults[item].Peek().Tag.SearchTree;
-                DetachItem(searchTree, item);
-            }
-            removed.AddRange(sourceChange.AllRemovedItems);
-
-            foreach (var item in sourceChange.AllAddedItems)
-            {
-                var sequence = source.GetSequenceForItem(item);
-                SortedDictionary<TKey, Collection<TItem>> searchTree;
-                if (!searchTrees.TryGetValue(sequence, out searchTree))
+                foreach (var item in sourceChange.RemovedItems)
                 {
-                    searchTree = new SortedDictionary<TKey, Collection<TItem>>(comparer);
-                    searchTrees.Add(sequence, searchTree);
+                    var searchTree = lambdaResults[item].Peek().Tag.SearchTree;
+                    DetachItem(searchTree, item);
                 }
-                AttachItem(searchTree, item);
+                removed.AddRange(sourceChange.RemovedItems);
             }
-            added.AddRange(sourceChange.AllAddedItems);
+
+            if (sourceChange.AddedItems != null)
+            {
+                foreach (var item in sourceChange.AddedItems)
+                {
+                    var sequence = source.GetSequenceForItem(item);
+                    SortedDictionary<TKey, Collection<TItem>> searchTree;
+                    if (!searchTrees.TryGetValue(sequence, out searchTree))
+                    {
+                        searchTree = new SortedDictionary<TKey, Collection<TItem>>(comparer);
+                        searchTrees.Add(sequence, searchTree);
+                    }
+                    AttachItem(searchTree, item);
+                }
+                added.AddRange(sourceChange.AddedItems);
+            }
         }
     }
 }

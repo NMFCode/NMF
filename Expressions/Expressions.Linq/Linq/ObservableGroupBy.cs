@@ -221,22 +221,22 @@ namespace NMF.Expressions.Linq
                 }
             }
 
-            if (sourceChange.ReplaceAddedItems != null)
-            {
-                for (int i = 0; i < sourceChange.ReplaceAddedItems.Count; i++)
-                {
-                    var oldItem = sourceChange.ReplaceRemovedItems[i];
-                    var newItem = sourceChange.ReplaceAddedItems[i];
-                    if (!ReplaceItem(oldItem, newItem))
-                    {
-                        var removedGroup = DetachItem(oldItem);
-                        if (!groups.ContainsValue(removedGroup))
-                            removed.Add(removedGroup);
-                        if (AttachItem(newItem))
-                            added.Add(groups[keys[newItem].Value]);
-                    }
-                }
-            }
+            //if (sourceChange.ReplaceAddedItems != null)
+            //{
+            //    for (int i = 0; i < sourceChange.ReplaceAddedItems.Count; i++)
+            //    {
+            //        var oldItem = sourceChange.ReplaceRemovedItems[i];
+            //        var newItem = sourceChange.ReplaceAddedItems[i];
+            //        if (!ReplaceItem(oldItem, newItem))
+            //        {
+            //            var removedGroup = DetachItem(oldItem);
+            //            if (!groups.ContainsValue(removedGroup))
+            //                removed.Add(removedGroup);
+            //            if (AttachItem(newItem))
+            //                added.Add(groups[keys[newItem].Value]);
+            //        }
+            //    }
+            //}
         }
     }
 }
