@@ -7,8 +7,8 @@
     <ProjectGuid>{BB72A145-15F9-48AF-BCED-1A80432D74DD}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Collections.Net45</RootNamespace>
-    <AssemblyName>Collections.Net45</AssemblyName>
+    <RootNamespace>NMF.Collections</RootNamespace>
+    <AssemblyName>NMF.Collections</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
