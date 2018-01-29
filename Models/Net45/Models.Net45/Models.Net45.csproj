@@ -597,5 +597,13 @@
       <Link>ScopedIdentifier.cs</Link>
     </Compile>
   </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="..\..\..\NMeta.nmeta">
+      <Link>NMeta.nmeta</Link>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\..\..\NMetaChanges.nmeta">
+      <Link>NMetaChanges.nmeta</Link>
+    </EmbeddedResource>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
