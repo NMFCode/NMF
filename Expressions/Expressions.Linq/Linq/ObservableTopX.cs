@@ -5,39 +5,40 @@ using System.Text;
 
 namespace NMF.Expressions.Linq
 {
-    internal sealed class ObservableTopX<TItem> : NotifyValue<TItem[]>
+    internal sealed class ObservableTopX<TItem, TKey> : NotifyValue<KeyValuePair<TItem, TKey>[]>
     {
-        public static INotifyValue<TItem[]> CreateSelector<TKey>(INotifyEnumerable<TItem> source, int x, Expression<Func<TItem, TKey>> selector)
+        public static INotifyValue<KeyValuePair<TItem, TKey>[]> CreateSelector(INotifyEnumerable<TItem> source, int x, Expression<Func<TItem, TKey>> selector)
         {
             return CreateSelectorComparer(source, x, selector, null);
         }
 
-        public static INotifyValue<TItem[]> CreateExpressionSelector<TKey>(IEnumerableExpression<TItem> source, int x, Expression<Func<TItem, TKey>> selector)
+        public static INotifyValue<KeyValuePair<TItem, TKey>[]> CreateExpressionSelector(IEnumerableExpression<TItem> source, int x, Expression<Func<TItem, TKey>> selector)
         {
             return CreateSelectorComparer(source.AsNotifiable(), x, selector, null);
         }
 
-        public static INotifyValue<TItem[]> CreateSelectorComparer<TKey>(INotifyEnumerable<TItem> source, int x, Expression<Func<TItem, TKey>> selector, IComparer<TKey> comparer)
+        public static INotifyValue<KeyValuePair<TItem, TKey>[]> CreateSelectorComparer(INotifyEnumerable<TItem> source, int x, Expression<Func<TItem, TKey>> selector, IComparer<TKey> comparer)
         {
-            var topx = new ObservableTopX<TItem>(source.OrderByDescending(selector, comparer), x);
+            var ordered = new ObservableOrderBy<TItem, TKey>(source, selector, new ReverseComparer<TKey>(comparer));
+            var topx = new ObservableTopX<TItem, TKey>(ordered, x);
             topx.Successors.SetDummy();
             return topx;
         }
 
-        public static INotifyValue<TItem[]> CreateExpressionSelectorComparer<TKey>(IEnumerableExpression<TItem> source, int x, Expression<Func<TItem, TKey>> selector, IComparer<TKey> comparer)
+        public static INotifyValue<KeyValuePair<TItem, TKey>[]> CreateExpressionSelectorComparer(IEnumerableExpression<TItem> source, int x, Expression<Func<TItem, TKey>> selector, IComparer<TKey> comparer)
         {
             return CreateSelectorComparer(source.AsNotifiable(), x, selector, comparer);
         }
 
         public int X { get; set; }
-        private TItem[] value;
-        private INotifyEnumerable<TItem> source;
+        private KeyValuePair<TItem, TKey>[] value;
+        private ObservableOrderBy<TItem, TKey> source;
 
-        public ObservableTopX(INotifyEnumerable<TItem> source, int x)
+        private ObservableTopX(ObservableOrderBy<TItem, TKey> source, int x)
         {
             this.source = source;
             X = x;
-            value = new TItem[0];
+            value = new KeyValuePair<TItem, TKey>[0];
 
             Successors.Attached += (obj, e) => Attach();
             Successors.Detached += (obj, e) => Detach();
@@ -53,12 +54,12 @@ namespace NMF.Expressions.Linq
             source.Successors.Set(this);
             if (source.Count() < X)
             {
-                value = System.Linq.Enumerable.ToArray(source);
+                value = System.Linq.Enumerable.ToArray(source.KeyedItems);
             }
             else
             {
-                value = new TItem[X];
-                using (var en = source.GetEnumerator())
+                value = new KeyValuePair<TItem, TKey>[X];
+                using (var en = source.KeyedItems.GetEnumerator())
                 {
                     for (int i = 0; i < X; i++)
                     {
@@ -69,7 +70,7 @@ namespace NMF.Expressions.Linq
             }
         }
 
-        public override TItem[] Value
+        public override KeyValuePair<TItem, TKey>[] Value
         {
             get
             {
@@ -88,19 +89,19 @@ namespace NMF.Expressions.Linq
         public override INotificationResult Notify(IList<INotificationResult> sources)
         {
             var oldValue = value;
-            TItem[] newValue = null;
+            KeyValuePair<TItem, TKey>[] newValue = null;
             var comparer = EqualityComparer<TItem>.Default;
-            using (var en = source.GetEnumerator())
+            using (var en = source.KeyedItems.GetEnumerator())
             {
                 for (int i = 0; i < X; i++)
                 {
                     if (en.MoveNext())
                     {
-                        if (value.Length <= i || !comparer.Equals(value[i], en.Current))
+                        if (value.Length <= i || !comparer.Equals(value[i].Key, en.Current.Key))
                         {
                             if (newValue == null)
                             {
-                                newValue = new TItem[X];
+                                newValue = new KeyValuePair<TItem, TKey>[X];
                                 Array.Copy(value, 0, newValue, 0, i);
                             }
                             newValue[i] = en.Current;
@@ -118,7 +119,7 @@ namespace NMF.Expressions.Linq
                         }
                         else if (newValue == null)
                         {
-                            newValue = new TItem[i];
+                            newValue = new KeyValuePair<TItem, TKey>[i];
                             Array.Copy(value, 0, newValue, 0, i);
                             break;
                         }
@@ -132,7 +133,7 @@ namespace NMF.Expressions.Linq
             }
             if (newValue != null)
             {
-                var e = new ValueChangedNotificationResult<TItem[]>(this, value, newValue);
+                var e = new ValueChangedNotificationResult<KeyValuePair<TItem, TKey>[]>(this, value, newValue);
                 value = newValue;
                 OnValueChanged(oldValue, newValue);
                 return e;

@@ -31,9 +31,9 @@ namespace NMF.Expressions.Linq.Tests
             collection.Add(new Dummy<int>(6));
 
             var top = collection.TopX(3, d => d.Item);
-            Assert.AreEqual(top1, top[0]);
-            Assert.AreEqual(top2, top[1]);
-            Assert.AreEqual(top3, top[2]);
+            Assert.AreEqual(top1, top[0].Key);
+            Assert.AreEqual(top2, top[1].Key);
+            Assert.AreEqual(top3, top[2].Key);
             Assert.AreEqual(3, top.Length);
         }
 
@@ -60,9 +60,9 @@ namespace NMF.Expressions.Linq.Tests
 
             var topEx = Observable.Expression(() => collection.TopX(3, d => d.Item));
             var top = topEx.Value;
-            Assert.AreEqual(top1, top[0]);
-            Assert.AreEqual(top2, top[1]);
-            Assert.AreEqual(top3, top[2]);
+            Assert.AreEqual(top1, top[0].Key);
+            Assert.AreEqual(top2, top[1].Key);
+            Assert.AreEqual(top3, top[2].Key);
             Assert.AreEqual(3, top.Length);
         }
 
@@ -83,9 +83,9 @@ namespace NMF.Expressions.Linq.Tests
             var topEx = Observable.Expression(() => collection.TopX(3, d => d.Item));
             var top = topEx.Value;
 
-            Assert.AreEqual(top1, top[0]);
-            Assert.AreEqual(top2, top[1]);
-            Assert.AreEqual(top3, top[2]);
+            Assert.AreEqual(top1, top[0].Key);
+            Assert.AreEqual(top2, top[1].Key);
+            Assert.AreEqual(top3, top[2].Key);
             Assert.AreEqual(3, top.Length);
 
             var changed = false;
@@ -105,9 +105,9 @@ namespace NMF.Expressions.Linq.Tests
             collection.Add(new Dummy<int>(42));
 
             Assert.IsTrue(changed);
-            Assert.AreEqual(43, topEx.Value[0].Item);
-            Assert.AreEqual(42, topEx.Value[1].Item);
-            Assert.AreEqual(42, topEx.Value[2].Item);
+            Assert.AreEqual(43, topEx.Value[0].Key.Item);
+            Assert.AreEqual(42, topEx.Value[1].Key.Item);
+            Assert.AreEqual(42, topEx.Value[2].Key.Item);
         }
 
         [TestMethod]
@@ -129,7 +129,7 @@ namespace NMF.Expressions.Linq.Tests
             top = topEx.Value;
 
             Assert.IsTrue(changed);
-            Assert.AreEqual(top2, top[0]);
+            Assert.AreEqual(top2, top[0].Key);
             Assert.AreEqual(1, top.Length);
 
             changed = false;
@@ -138,9 +138,9 @@ namespace NMF.Expressions.Linq.Tests
             top = topEx.Value;
 
             Assert.IsTrue(changed);
-            Assert.AreEqual(top1, top[0]);
-            Assert.AreEqual(top2, top[1]);
-            Assert.AreEqual(top3, top[2]);
+            Assert.AreEqual(top1, top[0].Key);
+            Assert.AreEqual(top2, top[1].Key);
+            Assert.AreEqual(top3, top[2].Key);
             Assert.AreEqual(3, top.Length);
 
             changed = false;
@@ -154,9 +154,9 @@ namespace NMF.Expressions.Linq.Tests
             top = topEx.Value;
 
             Assert.IsTrue(changed);
-            Assert.AreEqual(top1, top[0]);
-            Assert.AreEqual(top2, top[1]);
-            Assert.AreEqual(newTop3, top[2]);
+            Assert.AreEqual(top1, top[0].Key);
+            Assert.AreEqual(top2, top[1].Key);
+            Assert.AreEqual(newTop3, top[2].Key);
             Assert.AreEqual(3, top.Length);
         }
 
@@ -176,9 +176,9 @@ namespace NMF.Expressions.Linq.Tests
             var topEx = Observable.Expression(() => collection.TopX(3, d => d.Item));
             var top = topEx.Value;
 
-            Assert.AreEqual(top1, top[0]);
-            Assert.AreEqual(top2, top[1]);
-            Assert.AreEqual(top3, top[2]);
+            Assert.AreEqual(top1, top[0].Key);
+            Assert.AreEqual(top2, top[1].Key);
+            Assert.AreEqual(top3, top[2].Key);
             Assert.AreEqual(3, top.Length);
 
             var changed = false;
@@ -198,9 +198,9 @@ namespace NMF.Expressions.Linq.Tests
             collection.Remove(top1);
 
             Assert.IsTrue(changed);
-            Assert.AreEqual(42, topEx.Value[0].Item);
-            Assert.AreEqual(30, topEx.Value[1].Item);
-            Assert.AreEqual(6, topEx.Value[2].Item);
+            Assert.AreEqual(42, topEx.Value[0].Key.Item);
+            Assert.AreEqual(30, topEx.Value[1].Key.Item);
+            Assert.AreEqual(6, topEx.Value[2].Key.Item);
         }
 
 
@@ -220,9 +220,9 @@ namespace NMF.Expressions.Linq.Tests
             var topEx = Observable.Expression(() => collection.TopX(3, d => d.Item));
             var top = topEx.Value;
 
-            Assert.AreEqual(top1, top[0]);
-            Assert.AreEqual(top2, top[1]);
-            Assert.AreEqual(top3, top[2]);
+            Assert.AreEqual(top1, top[0].Key);
+            Assert.AreEqual(top2, top[1].Key);
+            Assert.AreEqual(top3, top[2].Key);
             Assert.AreEqual(3, top.Length);
 
             var changed = false;
@@ -256,9 +256,9 @@ namespace NMF.Expressions.Linq.Tests
             var topEx = Observable.Expression(() => collection.TopX(3, d => d.Item));
             var top = topEx.Value;
 
-            Assert.AreEqual(top1, top[0]);
-            Assert.AreEqual(top2, top[1]);
-            Assert.AreEqual(23, top[2].Item);
+            Assert.AreEqual(top1, top[0].Key);
+            Assert.AreEqual(top2, top[1].Key);
+            Assert.AreEqual(23, top[2].Key.Item);
             Assert.AreEqual(3, top.Length);
 
             var changed = false;
@@ -278,9 +278,9 @@ namespace NMF.Expressions.Linq.Tests
             top3.Item = 42;
 
             Assert.IsTrue(changed);
-            Assert.AreEqual(43, topEx.Value[0].Item);
-            Assert.AreEqual(42, topEx.Value[1].Item);
-            Assert.AreEqual(42, topEx.Value[2].Item);
+            Assert.AreEqual(43, topEx.Value[0].Key.Item);
+            Assert.AreEqual(42, topEx.Value[1].Key.Item);
+            Assert.AreEqual(42, topEx.Value[2].Key.Item);
         }
     }
 }

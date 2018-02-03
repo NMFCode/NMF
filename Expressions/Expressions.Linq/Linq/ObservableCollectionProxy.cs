@@ -61,10 +61,6 @@ namespace NMF.Expressions.Linq
                     {
                         OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Move, backParsed.MovedItems));
                     }
-                    if (backParsed.ReplaceAddedItems != null)
-                    {
-                        OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Replace, backParsed.ReplaceAddedItems, backParsed.ReplaceRemovedItems));
-                    }
                 }
             }
             return CollectionChangedNotificationResult<T>.Transfer(backParsed, this);

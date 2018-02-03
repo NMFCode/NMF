@@ -175,29 +175,35 @@ namespace NMF.Expressions.Linq
 
         private void NotifySource(CollectionChangedNotificationResult<TSource> sourceChange, List<TResult> added, List<TResult> removed)
         {
-            foreach (var item in sourceChange.AllRemovedItems)
+            if (sourceChange.RemovedItems != null)
             {
-                var data = results[item];
-                var resultItems = data.Item;
-                if (data.Count == 1)
+                foreach (var item in sourceChange.RemovedItems)
                 {
-                    if (data.Notifiable != null)
+                    var data = results[item];
+                    var resultItems = data.Item;
+                    if (data.Count == 1)
                     {
-                        data.Notifiable.Successors.Unset(this);
+                        if (data.Notifiable != null)
+                        {
+                            data.Notifiable.Successors.Unset(this);
+                        }
+                        resultItems.Successors.Unset(this);
+                        results.Remove(item);
                     }
-                    resultItems.Successors.Unset(this);
-                    results.Remove(item);
+                    else
+                    {
+                        results[item] = new Itemdata(data.Item, data.Notifiable, data.Count - 1);
+                    }
+                    removed.AddRange(resultItems.Value);
                 }
-                else
-                {
-                    results[item] = new Itemdata(data.Item, data.Notifiable, data.Count - 1);
-                }
-                removed.AddRange(resultItems.Value);
             }
 
-            foreach (var item in sourceChange.AllAddedItems)
+            if (sourceChange.AddedItems != null)
             {
-                added.AddRange(AttachItem(item));
+                foreach (var item in sourceChange.AddedItems)
+                {
+                    added.AddRange(AttachItem(item));
+                }
             }
         }
 

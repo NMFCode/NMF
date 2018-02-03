@@ -170,8 +170,6 @@ namespace NMF.Expressions.Linq
         {
             var added = new List<TResult>();
             var removed = new List<TResult>();
-            var replaceAdded = new List<TResult>();
-            var replaceRemoved = new List<TResult>();
             bool reset = false;
 
             foreach (var change in sources)
@@ -237,13 +235,13 @@ namespace NMF.Expressions.Linq
                     if (keyChange.Source is TaggedObservableValue<TKey, TOuter>)
                         NotifyOuterKey(keyChange, added, removed);
                     else
-                        NotifyInnerKey(keyChange, replaceAdded, replaceRemoved);
+                        NotifyInnerKey(keyChange, added, removed);
                 }
                 else
                 {
                     var resultChange = (ValueChangedNotificationResult<TResult>)change;
-                    replaceRemoved.Add(resultChange.OldValue);
-                    replaceAdded.Add(resultChange.NewValue);
+                    removed.Add(resultChange.OldValue);
+                    added.Add(resultChange.NewValue);
                 }
             }
 
@@ -253,78 +251,88 @@ namespace NMF.Expressions.Linq
                 return new CollectionChangedNotificationResult<TResult>(this);
             }
 
-            if (added.Count == 0 && removed.Count == 0 && replaceAdded.Count == 0)
+            if (added.Count == 0 && removed.Count == 0)
                 return UnchangedNotificationResult.Instance;
 
-            OnRemoveItems(removed);
-            OnAddItems(added);
-            OnReplaceItems(replaceRemoved, replaceAdded);
-            return new CollectionChangedNotificationResult<TResult>(this, added, removed, replaceAdded, replaceRemoved);
+            RaiseEvents(added, removed, null);
+            return new CollectionChangedNotificationResult<TResult>(this, added, removed);
         }
 
         private void NotifyOuter(CollectionChangedNotificationResult<TOuter> outerChange, List<TResult> added, List<TResult> removed)
         {
-            foreach (var outer in outerChange.AllRemovedItems)
+            if (outerChange.RemovedItems != null)
             {
-                var valueStack = outerValues[outer];
-                var value = valueStack.Pop();
-                if (valueStack.Count == 0)
+                foreach (var outer in outerChange.RemovedItems)
                 {
-                    outerValues.Remove(outer);
-                }
-                var group = groups[value.Value];
-                var result = group.OuterElements[value];
-                if (group.InnerKeys.Count == 0)
-                {
-                    if (group.OuterElements.Count == 0)
+                    var valueStack = outerValues[outer];
+                    var value = valueStack.Pop();
+                    if (valueStack.Count == 0)
                     {
-                        groups.Remove(value.Value);
+                        outerValues.Remove(outer);
                     }
+                    var group = groups[value.Value];
+                    var result = group.OuterElements[value];
+                    if (group.InnerKeys.Count == 0)
+                    {
+                        if (group.OuterElements.Count == 0)
+                        {
+                            groups.Remove(value.Value);
+                        }
+                    }
+                    else
+                    {
+                        removed.Add(result.Value);
+                    }
+                    group.OuterElements.Remove(value);
+                    value.Successors.Unset(this);
+                    result.Successors.Unset(this);
                 }
-                else
-                {
-                    removed.Add(result.Value);
-                }
-                group.OuterElements.Remove(value);
-                value.Successors.Unset(this);
-                result.Successors.Unset(this);
             }
-            
-            foreach (var outer in outerChange.AllAddedItems)
+
+            if (outerChange.AddedItems != null)
             {
-                added.Add(AttachOuter(outer));
+                foreach (var outer in outerChange.AddedItems)
+                {
+                    added.Add(AttachOuter(outer));
+                }
             }
         }
 
         private void NotifyInner(CollectionChangedNotificationResult<TInner> innerChange, List<TResult> added, List<TResult> removed)
         {
-            foreach (var inner in innerChange.AllRemovedItems)
+            if (innerChange.RemovedItems != null)
             {
-                var valueStack = innerValues[inner];
-                var value = valueStack.Pop();
-                if (valueStack.Count == 0)
+                foreach (var inner in innerChange.RemovedItems)
                 {
-                    innerValues.Remove(inner);
-                }
-                var group = groups[value.Value];
-                group.InnerKeys.Remove(value);
-                if (group.InnerKeys.Count == 0)
-                {
-                    if (group.OuterElements.Count == 0)
+                    var valueStack = innerValues[inner];
+                    var value = valueStack.Pop();
+                    if (valueStack.Count == 0)
                     {
-                        groups.Remove(value.Value);
+                        innerValues.Remove(inner);
                     }
-                    else
+                    var group = groups[value.Value];
+                    group.InnerKeys.Remove(value);
+                    if (group.InnerKeys.Count == 0)
                     {
-                        removed.AddRange(group.OuterElements.Values.Select(r => r.Value));
+                        if (group.OuterElements.Count == 0)
+                        {
+                            groups.Remove(value.Value);
+                        }
+                        else
+                        {
+                            removed.AddRange(group.OuterElements.Values.Select(r => r.Value));
+                        }
                     }
+                    value.Successors.Unset(this);
                 }
-                value.Successors.Unset(this);
             }
-                
-            foreach (var inner in innerChange.AllAddedItems)
+
+            if (innerChange.AddedItems != null)
             {
-                AttachInner(inner, added);
+                foreach (var inner in innerChange.AddedItems)
+                {
+                    AttachInner(inner, added);
+                }
             }
         }
 
@@ -356,14 +364,14 @@ namespace NMF.Expressions.Linq
             }
         }
 
-        private void NotifyInnerKey(ValueChangedNotificationResult<TKey> keyChange, List<TResult> replaceAdded, List<TResult> replaceRemoved)
+        private void NotifyInnerKey(ValueChangedNotificationResult<TKey> keyChange, List<TResult> added, List<TResult> removed)
         {
             var value = (TaggedObservableValue<TKey, TInner>)keyChange.Source;
             var group = groups[keyChange.OldValue];
             group.InnerKeys.Remove(value);
             if (group.InnerKeys.Count == 0)
             {
-                replaceRemoved.AddRange(group.OuterElements.Values.Select(r => r.Value));
+                removed.AddRange(group.OuterElements.Values.Select(r => r.Value));
             }
 
             if (!groups.TryGetValue(value.Value, out group))
@@ -374,7 +382,7 @@ namespace NMF.Expressions.Linq
             group.InnerKeys.Add(value);
             if (group.InnerKeys.Count == 1)
             {
-                replaceAdded.AddRange(group.OuterElements.Values.Select(r => r.Value));
+                added.AddRange(group.OuterElements.Values.Select(r => r.Value));
             }
         }
     }

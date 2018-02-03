@@ -26,12 +26,26 @@ namespace NMF.Expressions.Linq
         [DebuggerStepThrough]
         protected void OnAddItems(IEnumerable<T> items, int index = 0)
         {
-            if (!HasEventSubscriber) return;
+            if (!HasEventSubscriber || items == null) return;
             var added = items as List<T> ?? items.ToList();
             if (added.Count > 0)
             {
                 OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, added, index));
             }
+        }
+
+        internal void RaiseEvents(IList<T> added, IList<T> removed, IList<T> moved)
+        {
+            if (added != null && removed != null && added.Count == removed.Count)
+            {
+                OnReplaceItems(removed, added);
+            }
+            else
+            {
+                OnRemoveItems(removed);
+                OnAddItems(added);
+            }
+            OnMoveItems(moved);
         }
 
         [DebuggerStepThrough]
@@ -44,7 +58,7 @@ namespace NMF.Expressions.Linq
         [DebuggerStepThrough]
         protected void OnRemoveItems(IEnumerable<T> items, int index = 0)
         {
-            if (!HasEventSubscriber) return;
+            if (!HasEventSubscriber || items == null) return;
             var removed = items as List<T> ?? items.ToList();
             if (removed.Count > 0)
             {
@@ -89,7 +103,7 @@ namespace NMF.Expressions.Linq
         [DebuggerStepThrough]
         protected void OnMoveItems(IEnumerable<T> items, int oldIndex = 0, int newIndex = 0)
         {
-            if (!HasEventSubscriber) return;
+            if (!HasEventSubscriber || items == null) return;
             var moved = items as List<T> ?? items.ToList();
             if (moved.Count > 0)
             {

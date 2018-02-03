@@ -124,7 +124,7 @@ namespace NMF.Serialization.Xmi
                 var content = info.DefaultProperty.GetValue(obj, context);
                 if (info.DefaultProperty.ShouldSerializeValue(obj, content))
                 {
-                    writer.WriteString(GetAttributeValue(content, info.DefaultProperty.PropertyType, context));
+                    writer.WriteString(GetAttributeValue(content, info.DefaultProperty.PropertyType, false, context));
                 }
             }
             foreach (XmlPropertySerializationInfo pi in info.ElementProperties)

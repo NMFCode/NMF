@@ -16,8 +16,6 @@ namespace NMF.Expressions
         private List<T> addedItems;
         private List<T> removedItems;
         private List<T> movedItems;
-        private List<T> replaceAddedItems;
-        private List<T> replaceRemovedItems;
 
         public INotifiable Node { get; private set; }
 
@@ -59,9 +57,7 @@ namespace NMF.Expressions
                     null,
                     addedItems,
                     removedItems,
-                    movedItems,
-                    replaceAddedItems,
-                    replaceRemovedItems
+                    movedItems
                 );
             
             engineNotified = false;
@@ -69,8 +65,6 @@ namespace NMF.Expressions
             addedItems = null;
             removedItems = null;
             movedItems = null;
-            replaceAddedItems = null;
-            replaceRemovedItems = null;
 
             return result;
         }
@@ -109,7 +103,7 @@ namespace NMF.Expressions
                 return;
             foreach (T item in addedItems)
             {
-                if ((!removedItems?.Remove(item) ?? true) && (!replaceRemovedItems?.Remove(item) ?? true))
+                if (removedItems == null || !removedItems.Remove(item))
                 {
                     if (this.addedItems == null)
                         this.addedItems = new List<T>();
@@ -124,7 +118,7 @@ namespace NMF.Expressions
                 return;
             foreach (T item in removedItems)
             {
-                if ((!addedItems?.Remove(item) ?? true) && (!replaceAddedItems?.Remove(item) ?? true))
+                if (addedItems == null || !addedItems.Remove(item))
                 {
                     if (this.removedItems == null)
                         this.removedItems = new List<T>();
@@ -149,21 +143,21 @@ namespace NMF.Expressions
                 return;
             foreach (T item in replacingItems)
             {
-                if ((!removedItems?.Remove(item) ?? true) && (!replaceRemovedItems?.Remove(item) ?? true))
+                if (removedItems == null || !removedItems.Remove(item))
                 {
-                    if (replaceAddedItems == null)
-                        replaceAddedItems = new List<T>();
-                    replaceAddedItems.Add(item);
+                    if (addedItems == null)
+                        addedItems = new List<T>();
+                    addedItems.Add(item);
                 }
             }
 
             foreach (T item in replacedItems)
             {
-                if ((!addedItems?.Remove(item) ?? true) && (!replaceAddedItems?.Remove(item) ?? true))
+                if (addedItems == null || !addedItems.Remove(item))
                 {
-                    if (replaceRemovedItems == null)
-                        replaceRemovedItems = new List<T>();
-                    replaceRemovedItems.Add(item);
+                    if (removedItems == null)
+                        removedItems = new List<T>();
+                    removedItems.Add(item);
                 }
             }
         }
@@ -179,9 +173,7 @@ namespace NMF.Expressions
                 isReset ||
                 addedItems?.Count > 0 ||
                 removedItems?.Count > 0 ||
-                movedItems?.Count > 0 ||
-                replaceAddedItems?.Count > 0 ||
-                replaceRemovedItems?.Count > 0;
+                movedItems?.Count > 0;
         }
     }
 }

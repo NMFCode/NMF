@@ -291,13 +291,13 @@ namespace NMF.Expressions
                 {
                     CollectionChanged?.Invoke(this, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
                 }
-                else if (change.AllRemovedItems.Any())
+                else if (change.RemovedItems.Any())
                 {
-                    CollectionChanged?.Invoke(this, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Remove, change.AllRemovedItems));
+                    CollectionChanged?.Invoke(this, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Remove, change.RemovedItems));
                 }
-                else if (change.AllAddedItems.Any())
+                else if (change.AddedItems.Any())
                 {
-                    CollectionChanged?.Invoke(this, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, change.AllAddedItems));
+                    CollectionChanged?.Invoke(this, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, change.AddedItems));
                 }
 
                 return change;

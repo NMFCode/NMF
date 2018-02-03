@@ -145,8 +145,6 @@ namespace NMF.Expressions.Linq
         {
             var added = new List<TResult>();
             var removed = new List<TResult>();
-            var replaceAdded = new List<TResult>();
-            var replaceRemoved = new List<TResult>();
 
             foreach (var change in sources)
             {
@@ -182,8 +180,8 @@ namespace NMF.Expressions.Linq
                             if (removeIndex == -1)
                             {
                                 // the changed item was not added or removed
-                                replaceRemoved.Add(itemChange.OldValue);
-                                replaceAdded.Add(itemChange.NewValue);
+                                removed.Add(itemChange.OldValue);
+                                added.Add(itemChange.NewValue);
                             }
                             else
                             {
@@ -208,48 +206,51 @@ namespace NMF.Expressions.Linq
                     }
                     else
                     {
-                        replaceRemoved.Add(itemChange.OldValue);
-                        replaceAdded.Add(itemChange.NewValue);
+                        removed.Add(itemChange.OldValue);
+                        added.Add(itemChange.NewValue);
                     }
                 }
             }
-
-            OnRemoveItems(removed);
-            OnAddItems(added);
-            OnReplaceItems(replaceRemoved, replaceAdded);
-            return new CollectionChangedNotificationResult<TResult>(this, added, removed, replaceAdded, replaceRemoved);
+            RaiseEvents(added, removed, null);
+            return new CollectionChangedNotificationResult<TResult>(this, added, removed);
         }
 
         private void NotifySource(CollectionChangedNotificationResult<TSource> sourceChange, List<TResult> added, List<TResult> removed)
         {
-            foreach (var item in sourceChange.AllRemovedItems)
+            if (sourceChange.RemovedItems != null)
             {
-                if (item != null)
+                foreach (var item in sourceChange.RemovedItems)
                 {
-                    var lambdaResult = lambdaInstances[item];
-                    lambdaResult.Tag--;
-                    removed.Add(lambdaResult.Value);
-                    if (lambdaResult.Tag == 0)
+                    if (item != null)
                     {
-                        lambdaInstances.Remove(item);
-                        lambdaResult.Successors.Unset(this);
+                        var lambdaResult = lambdaInstances[item];
+                        lambdaResult.Tag--;
+                        removed.Add(lambdaResult.Value);
+                        if (lambdaResult.Tag == 0)
+                        {
+                            lambdaInstances.Remove(item);
+                            lambdaResult.Successors.Unset(this);
+                        }
                     }
-                }
-                else if (nullLambda != null)
-                {
-                    nullLambda.Tag--;
-                    if (nullLambda.Tag == 0)
+                    else if (nullLambda != null)
                     {
-                        nullLambda.Successors.Unset(this);
-                        nullLambda = null;
+                        nullLambda.Tag--;
+                        if (nullLambda.Tag == 0)
+                        {
+                            nullLambda.Successors.Unset(this);
+                            nullLambda = null;
+                        }
                     }
                 }
             }
-                
-            foreach (var item in sourceChange.AllAddedItems)
+
+            if (sourceChange.AddedItems != null)
             {
-                var lambdaResult = AttachItem(item);
-                added.Add(lambdaResult.Value);
+                foreach (var item in sourceChange.AddedItems)
+                {
+                    var lambdaResult = AttachItem(item);
+                    added.Add(lambdaResult.Value);
+                }
             }
         }
     }

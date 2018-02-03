@@ -18,7 +18,7 @@ namespace NMF.Models.Repository.Serialization
 
         public Model Model { get { return Root as Model; } }
 
-        private static Regex colonRegex = new Regex(@"^\w+:\w+ ", RegexOptions.Compiled);
+        private static Regex colonRegex = new Regex(@"^[\w\.]+:\w+ ", RegexOptions.Compiled);
 
         protected override object OnNameClash(string id, Type type, IEnumerable<object> candidates, object source)
         {

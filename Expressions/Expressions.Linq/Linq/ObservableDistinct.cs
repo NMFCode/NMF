@@ -105,20 +105,26 @@ namespace NMF.Expressions.Linq
 
             var removed = new List<TSource>();
             var added = new List<TSource>();
-            
-            foreach (var item in change.AllRemovedItems)
+
+            if (change.RemovedItems != null)
             {
-                if (RemoveItem(item))
+                foreach (var item in change.RemovedItems)
                 {
-                    removed.Add(item);
+                    if (RemoveItem(item))
+                    {
+                        removed.Add(item);
+                    }
                 }
             }
 
-            foreach (var item in change.AllAddedItems)
+            if (change.AddedItems != null)
             {
-                if (AddItem(item))
+                foreach (var item in change.AddedItems)
                 {
-                    added.Add(item);
+                    if (AddItem(item))
+                    {
+                        added.Add(item);
+                    }
                 }
             }
 
