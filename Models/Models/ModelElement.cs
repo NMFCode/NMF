@@ -56,6 +56,8 @@ namespace NMF.Models
         /// <summary>
         /// Gets the model that contains the current model element
         /// </summary>
+        [Browsable(false)]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public Model Model
         {
             get
@@ -322,6 +324,7 @@ namespace NMF.Models
         /// <summary>
         /// Gets or sets the parent element for the current model element
         /// </summary>
+        [Browsable(false)]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public IModelElement Parent
         {
@@ -347,6 +350,8 @@ namespace NMF.Models
         /// Gets a collection with the children of the current model element
         /// </summary>
         [Constant]
+        [Browsable(false)]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public virtual IEnumerableExpression<IModelElement> Children
         {
             get
@@ -359,6 +364,8 @@ namespace NMF.Models
         /// <summary>
         /// Gets the relative Uri for the current model element
         /// </summary>
+        [Category("General")]
+        [Description("The relative Uri of this model element from its model")]
         public Uri RelativeUri
         {
             get
@@ -370,6 +377,8 @@ namespace NMF.Models
         /// <summary>
         /// Gets the abolute Uri for the current model element
         /// </summary>
+        [Category("General")]
+        [Description("The absolute Uri of this model element, i.e., including the Uri of its containing model")]
         public Uri AbsoluteUri
         {
             get
@@ -495,6 +504,7 @@ namespace NMF.Models
         /// <summary>
         /// Gets a value indicating whether this item can be identified through its ToString value
         /// </summary>
+        [Browsable(false)]
         public virtual bool IsIdentified
         {
             get
@@ -756,6 +766,8 @@ namespace NMF.Models
         /// <summary>
         /// Gets a collection of model element extensions that have been applied to this model element
         /// </summary>
+        [Category("General")]
+        [Description("The extensions applied to this model element")]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Content)]
         public ICollectionExpression<ModelElementExtension> Extensions
         {
@@ -786,6 +798,8 @@ namespace NMF.Models
         /// <summary>
         /// Gets a collection of model elements referenced from this element.
         /// </summary>
+        [Browsable(false)]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public virtual IEnumerableExpression<IModelElement> ReferencedElements
         {
             get
