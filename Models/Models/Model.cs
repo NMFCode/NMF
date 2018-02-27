@@ -24,7 +24,7 @@ namespace NMF.Models
     [XmlNamespacePrefixAttribute("xmi")]
     [DebuggerDisplayAttribute("Model {ModelUri}")]
     [ModelRepresentationClass("http://nmf.codeplex.com/nmeta/#//Model/")]
-    public class Model : ModelElement
+    public class Model : ModelElement, IModel
     {
         /// <summary>
         /// The backing field for the ModelUri property

@@ -37,6 +37,7 @@ namespace NMF.Models.Meta
     /// </summary>
     [DefaultImplementationTypeAttribute(typeof(Model))]
     [XmlDefaultImplementationTypeAttribute(typeof(Model))]
+    [ModelRepresentationClass("http://nmf.codeplex.com/nmeta/#//Model/")]
     public interface IModel : NMF.Models.IModelElement
     {
         
@@ -57,7 +58,7 @@ namespace NMF.Models.Meta
         [XmlAttributeAttribute(false)]
         [ContainmentAttribute()]
         [ConstantAttribute()]
-        IListExpression<NMF.Models.IModelElement> RootElements
+        IOrderedSetExpression<NMF.Models.IModelElement> RootElements
         {
             get;
         }

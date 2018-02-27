@@ -168,6 +168,14 @@ namespace NMF.Models.Repository
                         {
                             serializer.KnownTypes.Add(t);
                             var attr = (ModelRepresentationClassAttribute)modelRepresentation[0];
+                            if (!t.IsInterface)
+                            {
+                                var iface = t.GetInterface("I" + t.Name);
+                                if (iface != null)
+                                {
+                                    t = iface;
+                                }
+                            }
                             saveMapping.Add(new KeyValuePair<string, System.Type>(attr.UriString, t));
                         }
                     }
