@@ -92,11 +92,11 @@ namespace NMF.Synchronizations
             });
         }
 
-        protected virtual IDisposable SynchronizeLTRCollections(ICollection<TDepLeft> lefts, ICollection<TDepRight> rights, ISynchronizationContext context, bool ignoreCandidates)
+        protected IDisposable SynchronizeLTRCollections(ICollection<TDepLeft> lefts, ICollection<TDepRight> rights, ISynchronizationContext context, bool ignoreCandidates)
         {
             if (rights != null)
             {
-                childRule.SynchronizeCollectionsRightToLeft(lefts, rights, context, ignoreCandidates);
+                childRule.SynchronizeCollectionsLeftToRight(rights, lefts, context, ignoreCandidates);
                 return RegisterLeftChangePropagationHooks(lefts, rights, context);
             }
             else
@@ -244,7 +244,7 @@ namespace NMF.Synchronizations
             });
         }
 
-        protected virtual IDisposable SynchronizeRTLCollections(ICollection<TDepLeft> lefts, ICollection<TDepRight> rights, ISynchronizationContext context, bool ignoreCandidates)
+        protected IDisposable SynchronizeRTLCollections(ICollection<TDepLeft> lefts, ICollection<TDepRight> rights, ISynchronizationContext context, bool ignoreCandidates)
         {
             if (lefts != null)
             {

@@ -81,13 +81,13 @@ namespace NMF.Synchronizations
                 case SynchronizationDirection.LeftToRight:
                 case SynchronizationDirection.LeftToRightForced:
                 case SynchronizationDirection.LeftWins:
-                    var c1 = TransformationRunner.Transform(new object[] { left }, new Axiom(right), startRule.LeftToRight, context);
+                    var c1 = TransformationRunner.Transform(new object[] { left }, right != null ? new Axiom(right) : null, startRule.LeftToRight, context);
                     right = c1.Output as TRight;
                     break;
                 case SynchronizationDirection.RightToLeft:
                 case SynchronizationDirection.RightToLeftForced:
                 case SynchronizationDirection.RightWins:
-                    var c2 = TransformationRunner.Transform(new object[] { right }, new Axiom(left), startRule.RightToLeft, context);
+                    var c2 = TransformationRunner.Transform(new object[] { right }, left != null ? new Axiom(left) : null, startRule.RightToLeft, context);
                     left = c2.Output as TLeft;
                     break;
                 default:
