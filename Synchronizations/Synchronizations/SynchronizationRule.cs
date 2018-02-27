@@ -411,11 +411,21 @@ namespace NMF.Synchronizations
 
         internal object CreateRightOutputInternal(TLeft input, IEnumerable candidates, ISynchronizationContext context, out bool existing)
         {
+            if (candidates is Axiom ax)
+            {
+                existing = true;
+                return ax.Object;
+            }
             return CreateRightOutput(input, candidates != null ? candidates.OfType<TRight>() : null, context, out existing);
         }
 
         internal object CreateLeftOutputInternal(TRight input, IEnumerable candidates, ISynchronizationContext context, out bool existing)
         {
+            if (candidates is Axiom ax)
+            {
+                existing = true;
+                return ax.Object;
+            }
             return CreateLeftOutput(input, candidates != null ? candidates.OfType<TLeft>() : null, context, out existing);
         }
 
@@ -474,6 +484,109 @@ namespace NMF.Synchronizations
                 }
             }
             return CreateLeftOutputInstance(out output);
+        }
+        
+
+        protected internal virtual void SynchronizeCollectionsRightToLeft(ICollection<TLeft> lefts, ICollection<TRight> rights, ISynchronizationContext context, bool ignoreCandidates)
+        {
+            if (lefts.IsReadOnly) throw new InvalidOperationException("Collection is read-only!");
+            IEnumerable<TLeft> leftsSaved;
+            HashSet<TLeft> doubles;
+            if (context.Direction == SynchronizationDirection.RightToLeft)
+            {
+                leftsSaved = null;
+                doubles = null;
+            }
+            else
+            {
+                leftsSaved = lefts.ToArray();
+                doubles = new HashSet<TLeft>();
+            }
+            IEnumerable leftContext = ignoreCandidates ? null : lefts;
+            foreach (var item in rights)
+            {
+                var comp = context.CallTransformation(RightToLeft, new object[] { item }, leftContext) as SynchronizationComputation<TRight, TLeft>;
+                comp.DoWhenOutputIsAvailable((inp, outp) =>
+                {
+                    if (!lefts.Contains(outp))
+                    {
+                        lefts.Add(outp);
+                    }
+                    else if (context.Direction != SynchronizationDirection.RightToLeft)
+                    {
+                        doubles.Add(outp);
+                    }
+                });
+            }
+            if (context.Direction == SynchronizationDirection.RightWins)
+            {
+                foreach (var item in leftsSaved.Except(doubles))
+                {
+                    var comp = context.CallTransformation(LeftToRight, new object[] { item }, null) as SynchronizationComputation<TLeft, TRight>;
+                    comp.DoWhenOutputIsAvailable((inp, outp) =>
+                    {
+                        rights.Add(outp);
+                    });
+                }
+            }
+            else if (context.Direction == SynchronizationDirection.RightToLeftForced)
+            {
+                foreach (var item in leftsSaved.Except(doubles))
+                {
+                    lefts.Remove(item);
+                }
+            }
+        }
+
+        protected internal virtual void SynchronizeCollectionsLeftToRight(ICollection<TRight> rights, ICollection<TLeft> lefts, ISynchronizationContext context, bool ignoreCandidates)
+        {
+            if (rights.IsReadOnly) throw new InvalidOperationException("Collection is read-only!");
+            IEnumerable<TRight> rightsSaved;
+            HashSet<TRight> doubles;
+            if (context.Direction == SynchronizationDirection.LeftToRight)
+            {
+                rightsSaved = null;
+                doubles = null;
+            }
+            else
+            {
+                rightsSaved = rights.ToArray();
+                doubles = new HashSet<TRight>();
+            }
+            IEnumerable rightContext = ignoreCandidates ? null : rights;
+            foreach (var item in lefts)
+            {
+                var comp = context.CallTransformation(LeftToRight, new object[] { item }, rightContext) as SynchronizationComputation<TLeft, TRight>;
+                comp.DoWhenOutputIsAvailable((inp, outp) =>
+                {
+                    if (!rights.Contains(outp))
+                    {
+                        rights.Add(outp);
+                    }
+                    else if (context.Direction != SynchronizationDirection.LeftToRight)
+                    {
+                        doubles.Add(outp);
+                    }
+                });
+            }
+            if (context.Direction == SynchronizationDirection.LeftWins)
+            {
+                foreach (var item in rightsSaved.Except(doubles))
+                {
+                    var comp = context.CallTransformation(RightToLeft, new object[] { item }, null) as SynchronizationComputation<TRight, TLeft>;
+                    comp.DoWhenOutputIsAvailable((inp, outp) =>
+                    {
+                        lefts.Add(outp);
+                    });
+                }
+            }
+            else if (context.Direction == SynchronizationDirection.LeftToRightForced)
+            {
+                foreach (var item in rightsSaved.Except(doubles))
+                {
+                    rights.Remove(item);
+                }
+            }
         }
 
         private static TLeft CreateLeftOutputInstance(out TLeft output)

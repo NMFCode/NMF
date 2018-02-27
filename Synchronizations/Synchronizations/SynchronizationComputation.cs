@@ -19,7 +19,6 @@ namespace NMF.Synchronizations
         where TOut : class
     {
         private TIn input;
-        private bool omitSearch = false;
 
         public event EventHandler<ValueChangedEventArgs> OutputChanged;
 

@@ -249,6 +249,7 @@ namespace NMF.Models.Collections
                         if (me != null)
                         {
                             var baseUri = parentUri.Value;
+                            if (baseUri == null) return;
                             if (string.IsNullOrEmpty(baseUri.Fragment)) return;
                             Uri oldUri;
                             string newRef = ModelHelper.CreatePath(Parent.GetCompositionName(this), i + diff);

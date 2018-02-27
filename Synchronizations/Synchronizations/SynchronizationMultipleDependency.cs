@@ -70,7 +70,7 @@ namespace NMF.Synchronizations
             var input = GetLefts(syncComputation.Input, syncComputation.SynchronizationContext.ChangePropagation != ChangePropagationMode.None);
             syncComputation.DoWhenOutputIsAvailable((inp, outp) =>
             {
-                var dependency = SynchronizeLTRCollections(syncComputation, input, GetRights(outp, syncComputation.SynchronizationContext.ChangePropagation == ChangePropagationMode.TwoWay), syncComputation.SynchronizationContext, syncComputation.OmitCandidateSearch);
+                var dependency = SynchronizeLTRCollections(input, GetRights(outp, syncComputation.SynchronizationContext.ChangePropagation == ChangePropagationMode.TwoWay), syncComputation.SynchronizationContext, syncComputation.OmitCandidateSearch);
                 if (dependency != null)
                 {
                     syncComputation.Dependencies.Add(dependency);
@@ -84,7 +84,7 @@ namespace NMF.Synchronizations
             var input = GetRights(syncComputation.Input, syncComputation.SynchronizationContext.ChangePropagation != ChangePropagationMode.None);
             syncComputation.DoWhenOutputIsAvailable((inp, outp) =>
             {
-                var dependency = SynchronizeRTLCollections(syncComputation, GetLefts(outp, syncComputation.SynchronizationContext.ChangePropagation == ChangePropagationMode.TwoWay), input, syncComputation.SynchronizationContext, syncComputation.OmitCandidateSearch);
+                var dependency = SynchronizeRTLCollections(GetLefts(outp, syncComputation.SynchronizationContext.ChangePropagation == ChangePropagationMode.TwoWay), input, syncComputation.SynchronizationContext, syncComputation.OmitCandidateSearch);
                 if (dependency != null)
                 {
                     syncComputation.Dependencies.Add(dependency);
@@ -92,41 +92,11 @@ namespace NMF.Synchronizations
             });
         }
 
-        protected virtual IDisposable SynchronizeLTRCollections(SynchronizationComputation<TLeft, TRight> computation, ICollection<TDepLeft> lefts, ICollection<TDepRight> rights, ISynchronizationContext context, bool ignoreCandidates)
+        protected virtual IDisposable SynchronizeLTRCollections(ICollection<TDepLeft> lefts, ICollection<TDepRight> rights, ISynchronizationContext context, bool ignoreCandidates)
         {
             if (rights != null)
             {
-                if (rights.IsReadOnly) throw new InvalidOperationException("Collection is read-only!");
-                IEnumerable<TDepRight> rightsSaved = rights;
-                if (lefts == null || context.Direction == SynchronizationDirection.LeftToRightForced)
-                {
-                    rightsSaved = rights.ToArray();
-                    rights.Clear();
-                }
-                var doubles = new HashSet<TDepRight>();
-                IEnumerable rightContext = ignoreCandidates ? null : rights;
-                foreach (var item in lefts)
-                {
-                    var comp = context.CallTransformation(childRule.LeftToRight, new object[] { item }, rightContext) as SynchronizationComputation<TDepLeft, TDepRight>;
-                    comp.DoWhenOutputIsAvailable((inp, outp) =>
-                    {
-                        if (!rights.Contains(outp))
-                        {
-                            rights.Add(outp);
-                        }
-                        else
-                        {
-                            doubles.Add(outp);
-                        }
-                    });
-                }
-                if (context.Direction == SynchronizationDirection.LeftWins)
-                {
-                    foreach (var item in rightsSaved.Except(doubles))
-                    {
-                        AddCorrespondingToLefts(lefts, context, item);
-                    }
-                }
+                childRule.SynchronizeCollectionsRightToLeft(lefts, rights, context, ignoreCandidates);
                 return RegisterLeftChangePropagationHooks(lefts, rights, context);
             }
             else
@@ -274,41 +244,11 @@ namespace NMF.Synchronizations
             });
         }
 
-        protected virtual IDisposable SynchronizeRTLCollections(SynchronizationComputation<TRight, TLeft> computation, ICollection<TDepLeft> lefts, ICollection<TDepRight> rights, ISynchronizationContext context, bool ignoreCandidates)
+        protected virtual IDisposable SynchronizeRTLCollections(ICollection<TDepLeft> lefts, ICollection<TDepRight> rights, ISynchronizationContext context, bool ignoreCandidates)
         {
             if (lefts != null)
             {
-                if (lefts.IsReadOnly) throw new InvalidOperationException("Collection is read-only!");
-                IEnumerable<TDepLeft> leftsSaved = lefts;
-                if (rights == null || context.Direction == SynchronizationDirection.RightToLeftForced)
-                {
-                    leftsSaved = lefts.ToArray();
-                    lefts.Clear();
-                }
-                var doubles = new HashSet<TDepLeft>();
-                IEnumerable leftContext = ignoreCandidates ? null : lefts;
-                foreach (var item in rights)
-                {
-                    var comp = context.CallTransformation(childRule.RightToLeft, new object[] { item }, leftContext) as SynchronizationComputation<TDepRight, TDepLeft>;
-                    comp.DoWhenOutputIsAvailable((inp, outp) =>
-                    {
-                        if (!lefts.Contains(outp))
-                        {
-                            lefts.Add(outp);
-                        }
-                        else
-                        {
-                            doubles.Add(outp);
-                        }
-                    });
-                }
-                if (context.Direction == SynchronizationDirection.RightWins)
-                {
-                    foreach (var item in leftsSaved.Except(doubles))
-                    {
-                        AddCorrespondingToRights(rights, context, item);
-                    }
-                }
+                childRule.SynchronizeCollectionsRightToLeft(lefts, rights, context, ignoreCandidates);
                 return RegisterRightChangePropagationHooks(lefts, rights, context);
             }
             else

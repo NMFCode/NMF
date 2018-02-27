@@ -119,7 +119,7 @@ namespace NMF.Transformations
     }
 
     /// <summary>
-    /// A helper class that reflects thr transformation rules that reside as nested classes within a given type
+    /// A helper class that reflects the transformation rules that reside as nested classes within a given type
     /// </summary>
     public static class Reflector
     {
