@@ -462,6 +462,159 @@ namespace NMF.Expressions.Tests
             Assert.AreEqual(func.Count(), incremental.Count());
         }
 
+        private IEnumerableExpression<string> CreateSelectManySelectManyExpressionOptimizable()
+        {
+            //DmglVisualizer.Initialize();
+
+            var func = CreateExpression(
+                from route in RailwayContainer.Routes
+                where route.Entry != null && route.Entry.Signal == Signal.GO
+                from swP in route.Follows.OfType<SwitchPosition>()
+                from sensor in route.DefinedBy
+                select swP.Position.ToString() + sensor.Id.ToString());
+            //select swP.Position.ToString());
+
+            //DmglVisualizer.OpenDgml();
+
+            var test = func.AsNotifiable();
+
+            //DDGDgmlVisualizer.initDgmlVisualizer(test);
+
+
+            //DmglVisualizer.OpenDgml();
+
+
+            return func;
+        }
+
+        private IEnumerableExpression<string> CreateJoinSelectExpressionOptimizable()
+        {
+            DmglVisualizer.Initialize();
+
+            var func = CreateExpression(
+                from route in RailwayContainer.Routes
+                where route.Entry != null && route.Entry.Signal == Signal.GO
+                from swP in route.Follows.OfType<SwitchPosition>()
+                let routeString = route.ToString()
+                select swP.Position.ToString());
+            //select swP.Position.ToString());
+
+            DmglVisualizer.OpenDgml();
+
+
+            var test = func.AsNotifiable();
+
+            //DDGDgmlVisualizer.initDgmlVisualizer(test);
+
+            return func;
+        }
+
+        [TestMethod]
+        public void NotifySystem_Optimize_SelectSelect()
+        {
+            //DmglVisualizer.Initialize();
+
+            var func = CreateExpression(from route in RailwayContainer.Routes
+                                        where route.Entry != null && route.Entry.Signal == Signal.GO
+                                        //from swP in route.Follows.OfType<SwitchPosition>()
+                                        //where swP.Switch.CurrentPosition != swP.Position
+                                        let routeString = route.ToString()
+                                        select route.ToIdentifierString() + routeString);
+
+            //DmglVisualizer.OpenDgml();
+
+            var routeTest = RailwayContainer.Routes[0];
+            var test = func.AsNotifiable();
+
+            //DDGDgmlVisualizer.initDgmlVisualizer(test);
+
+            var resultChanged = false;
+            test.CollectionChanged += (o, e) =>
+            {
+                resultChanged = true;
+            };
+
+            Assert.AreEqual(func.Count(), test.Count());
+            Assert.IsFalse(resultChanged);
+
+
+            routeTest.Entry.Signal = Signal.STOP;
+
+            Assert.IsTrue(resultChanged);
+            Assert.AreEqual(func.Count(), test.Count());
+        }
+
+        [TestMethod]
+        public void NotifySystem_Optimize_SelectSelectSelect()
+        {
+            //DmglVisualizer.Initialize();
+
+            var func = CreateExpression(
+                from route in RailwayContainer.Routes
+                where route.Entry != null && route.Entry.Signal == Signal.GO
+                let routeEntry = route.Entry.ToString()
+                let routeString = route.ToString()
+                select routeEntry + routeString);
+
+            //DmglVisualizer.OpenDgml();
+
+            var routeTest = RailwayContainer.Routes[0];
+
+            var test = func.AsNotifiable();
+
+            //DDGDgmlVisualizer.initDgmlVisualizer(test);
+
+            var resultChanged = false;
+            test.CollectionChanged += (o, e) =>
+            {
+                resultChanged = true;
+            };
+
+            Assert.AreEqual(func.Count(), test.Count());
+            Assert.IsFalse(resultChanged);
+
+            routeTest.Entry = new Semaphore();
+
+            Assert.IsTrue(resultChanged);
+            Assert.AreEqual(func.Count(), test.Count());
+        }
+
+        [TestMethod]
+        public void NotifySystem_Optimize_SelectManySelect()
+        {
+            //DmglVisualizer.Initialize();
+
+            var func = CreateExpression(
+                from route in RailwayContainer.Routes
+                where route.Entry != null && route.Entry.Signal == Signal.GO
+                from swP in route.Follows.OfType<SwitchPosition>()
+                let routeString = route.ToString()
+                select swP.Position.ToString());
+            //select swP.Position.ToString());
+
+            //DmglVisualizer.OpenDgml();
+
+            var routeTest = RailwayContainer.Routes[0];
+
+            var test = func.AsNotifiable();
+
+            //DDGDgmlVisualizer.initDgmlVisualizer(test);
+
+            var resultChanged = false;
+            test.CollectionChanged += (o, e) =>
+            {
+                resultChanged = true;
+            };
+
+            Assert.AreEqual(func.Count(), test.Count());
+            Assert.IsFalse(resultChanged);
+
+            routeTest.Entry = new Semaphore();
+
+            Assert.IsTrue(resultChanged);
+            Assert.AreEqual(func.Count(), test.Count());
+        }
+
         private IEnumerableExpression<T> CreateExpression<T>(IEnumerableExpression<T> value)
         {
             return value;

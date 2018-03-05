@@ -38,6 +38,8 @@
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.XML" />
+    <Reference Include="System.Xml.Linq" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="..\..\CommonAssemblyInfo.cs">
@@ -45,13 +47,18 @@
     </Compile>
     <Compile Include="EnumerableExpressions\CastExpression.cs" />
     <Compile Include="EnumerableExpressions\ConcatExpression.cs" />
+    <Compile Include="EnumerableExpressions\DebugVisitor.cs" />
     <Compile Include="EnumerableExpressions\DistinctExpression.cs" />
+    <Compile Include="EnumerableExpressions\DmglVisualizer.cs" />
+    <Compile Include="EnumerableExpressions\DynamicDependencyGraphDgmlVisualizer.cs" />
     <Compile Include="EnumerableExpressions\ExceptExpression.cs" />
     <Compile Include="EnumerableExpressions\GroupByExpression.cs" />
     <Compile Include="EnumerableExpressions\GroupJoinExpression.cs" />
     <Compile Include="EnumerableExpressions\JoinExpression.cs" />
     <Compile Include="EnumerableExpressions\OfTypeExpression.cs" />
     <Compile Include="EnumerableExpressions\OrderByExpression.cs" />
+    <Compile Include="EnumerableExpressions\QueryOptimizer.cs" />
+    <Compile Include="EnumerableExpressions\QueryOptimizerVisitor.cs" />
     <Compile Include="EnumerableExpressions\SelectExpression.cs" />
     <Compile Include="EnumerableExpressions\SelectManyExpression.cs" />
     <Compile Include="EnumerableExpressions\SimpleSelectManyExpression.cs" />
@@ -62,6 +69,7 @@
     <Compile Include="Facade\INotifyEnumerable.cs" />
     <Compile Include="Facade\NotifyCollection.cs" />
     <Compile Include="Facade\ObservableExtensions.cs" />
+    <Compile Include="Facade\OptimizableExpressionExtensions.cs" />
     <Compile Include="Facade\OrderableList.cs" />
     <Compile Include="Linq\Multiplicity.cs" />
     <Compile Include="Linq\ObservableAggregate.cs" />
@@ -101,6 +109,10 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\Tools\Utilities\Utilities.csproj">
+      <Project>{868226d4-bc8b-4b91-bd09-8f63d3c9debe}</Project>
+      <Name>Utilities</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Expressions\Expressions.csproj">
       <Project>{afca9d1d-26a6-482a-a5ab-0827ad0fd677}</Project>
       <Name>Expressions</Name>

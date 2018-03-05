@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
@@ -8,13 +9,15 @@ using NMF.Expressions.Linq;
 
 namespace NMF.Expressions
 {
-    internal class SelectManyExpression<TSource, TIntermediate, TResult> : IEnumerableExpression<TResult>
+    internal class SelectManyExpression<TSource, TIntermediate, TResult> : IEnumerableExpression<TResult>, IOptimizableEnumerableExpression 
     {
         public IEnumerableExpression<TSource> Source { get; private set; }
         public Expression<Func<TSource, IEnumerable<TIntermediate>>> FuncExpression { get; private set; }
         public Func<TSource, IEnumerable<TIntermediate>> FuncCompiled { get; private set; }
         public Expression<Func<TSource, TIntermediate, TResult>> ResultSelector { get; private set; }
         public Func<TSource, TIntermediate, TResult> ResultSelectorCompiled { get; private set; }
+
+        public Expression OptSelectorExpression => ResultSelector;
 
         public SelectManyExpression(IEnumerableExpression<TSource> source, Expression<Func<TSource, IEnumerable<TIntermediate>>> func, Func<TSource, IEnumerable<TIntermediate>> funcCompiled, Expression<Func<TSource, TIntermediate, TResult>> resultSelector, Func<TSource, TIntermediate, TResult> resultSelectorCompiled)
         {
@@ -27,6 +30,8 @@ namespace NMF.Expressions
             FuncCompiled = funcCompiled ?? ExpressionCompileRewriter.Compile(func);
             ResultSelector = resultSelector;
             ResultSelectorCompiled = resultSelectorCompiled ?? ExpressionCompileRewriter.Compile(resultSelector);
+
+            AddDgmlNode();
         }
 
         public INotifyEnumerable<TResult> AsNotifiable()
@@ -47,6 +52,34 @@ namespace NMF.Expressions
         INotifyEnumerable IEnumerableExpression.AsNotifiable()
         {
             return AsNotifiable();
+        }
+
+        public IEnumerableExpression<TOptimizedResult> AsOptimized<TOptimizedResult>(IOptimizableEnumerableExpression expression = null)
+        {
+            VisitForDebugging(ResultSelector);
+
+            return this.Merge<TOptimizedResult>(expression);
+        }
+
+        public IEnumerableExpression<TOptimizedResult> Merge<TOptimizedResult>(IOptimizableEnumerableExpression prevExpr)
+        {
+            var mergedSelectorExpression = new QueryOptimizer<TSource, TResult, TOptimizedResult>(prevExpr.OptSelectorExpression, OptSelectorExpression).Optimize() as Expression<Func<TSource, TIntermediate, TOptimizedResult>>;
+            return new SelectManyExpression<TSource, TIntermediate, TOptimizedResult>(Source, FuncExpression, null, mergedSelectorExpression, null);
+        }
+
+
+        [Conditional("DEBUG")]
+        public void AddDgmlNode()
+        {
+            DmglVisualizer.AddNode(this);
+        }
+
+        [Conditional("DEBUG")]
+        private void VisitForDebugging(dynamic expression)
+        {
+            //Ausgabe überprüfen
+            DebugVisitor debugVisitor = new DebugVisitor();
+            debugVisitor.Visit(expression);
         }
     }
 }

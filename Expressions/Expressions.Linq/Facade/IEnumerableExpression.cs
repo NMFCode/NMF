@@ -2,10 +2,29 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 
 namespace NMF.Expressions
 {
+    /// <summary>
+    /// Represents a collection that can be optimized
+    /// </summary>
+    internal interface IOptimizableEnumerableExpression
+    {
+        Expression OptSelectorExpression { get; }
+
+        /// <summary>
+        /// Gets optimization for this collection
+        /// </summary>
+        /// <typeparam name="TOptimizedResult"></typeparam>
+        /// <param name="expression"></param>
+        /// <returns></returns>
+        IEnumerableExpression<TOptimizedResult> AsOptimized<TOptimizedResult>(IOptimizableEnumerableExpression expression = null);
+
+        IEnumerableExpression<TOptimizedResult> Merge<TOptimizedResult>(IOptimizableEnumerableExpression prevExpr);
+    }
+
     /// <summary>
     /// Represents a collection that can be accessed incrementally, i.e. with change notifications
     /// </summary>
