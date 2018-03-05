@@ -33,6 +33,8 @@
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.XML" />
+    <Reference Include="System.Xml.Linq" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Properties\" />
@@ -44,8 +46,17 @@
     <Compile Include="..\..\Expressions.Linq\EnumerableExpressions\ConcatExpression.cs">
       <Link>EnumerableExpressions\ConcatExpression.cs</Link>
     </Compile>
+    <Compile Include="..\..\Expressions.Linq\EnumerableExpressions\DebugVisitor.cs">
+      <Link>EnumerableExpressions\DebugVisitor.cs</Link>
+    </Compile>
     <Compile Include="..\..\Expressions.Linq\EnumerableExpressions\DistinctExpression.cs">
       <Link>EnumerableExpressions\DistinctExpression.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Expressions.Linq\EnumerableExpressions\DmglVisualizer.cs">
+      <Link>EnumerableExpressions\DmglVisualizer.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Expressions.Linq\EnumerableExpressions\DynamicDependencyGraphDgmlVisualizer.cs">
+      <Link>EnumerableExpressions\DynamicDependencyGraphDgmlVisualizer.cs</Link>
     </Compile>
     <Compile Include="..\..\Expressions.Linq\EnumerableExpressions\ExceptExpression.cs">
       <Link>EnumerableExpressions\ExceptExpression.cs</Link>
@@ -64,6 +75,12 @@
     </Compile>
     <Compile Include="..\..\Expressions.Linq\EnumerableExpressions\OrderByExpression.cs">
       <Link>EnumerableExpressions\OrderByExpression.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Expressions.Linq\EnumerableExpressions\QueryOptimizer.cs">
+      <Link>EnumerableExpressions\QueryOptimizer.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Expressions.Linq\EnumerableExpressions\QueryOptimizerVisitor.cs">
+      <Link>EnumerableExpressions\QueryOptimizerVisitor.cs</Link>
     </Compile>
     <Compile Include="..\..\Expressions.Linq\EnumerableExpressions\SelectExpression.cs">
       <Link>EnumerableExpressions\SelectExpression.cs</Link>
@@ -94,6 +111,9 @@
     </Compile>
     <Compile Include="..\..\Expressions.Linq\Facade\ObservableExtensions.cs">
       <Link>Facade\ObservableExtensions.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Expressions.Linq\Facade\OptimizableExpressionExtensions.cs">
+      <Link>Facade\OptimizableExpressionExtensions.cs</Link>
     </Compile>
     <Compile Include="..\..\Expressions.Linq\Facade\OrderableList.cs">
       <Link>Facade\OrderableList.cs</Link>
@@ -209,6 +229,10 @@
     <Compile Include="AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\..\Tools\Net45\Utilities.Net45\Utilities.Net45.csproj">
+      <Project>{5f426e12-0fe2-4240-967c-1cfbc0fc30cf}</Project>
+      <Name>Utilities.Net45</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Expressions.Net45\Expressions.Net45.csproj">
       <Project>{ca44f2b7-551e-43b2-8c95-00102feed9a7}</Project>
       <Name>Expressions.Net45</Name>

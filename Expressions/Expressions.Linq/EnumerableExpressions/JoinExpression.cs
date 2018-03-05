@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq.Expressions;
 using System.Text;
 using SL = System.Linq.Enumerable;
@@ -7,7 +8,7 @@ using NMF.Expressions.Linq;
 
 namespace NMF.Expressions
 {
-    internal class JoinExpression<TOuter, TInner, TKey, TResult> : IEnumerableExpression<TResult>
+    internal class JoinExpression<TOuter, TInner, TKey, TResult> : IEnumerableExpression<TResult>, IOptimizableEnumerableExpression
     {
         public IEnumerableExpression<TOuter> Source { get; set; }
         public IEnumerable<TInner> Inner { get; set; }
@@ -19,6 +20,8 @@ namespace NMF.Expressions
         public Func<TOuter, TInner, TResult> ResultSelectorCompiled { get; set; }
         public IEqualityComparer<TKey> Comparer { get; set; }
         private INotifyEnumerable<TResult> notifyEnumerable;
+
+        public Expression OptSelectorExpression => ResultSelector;
 
         public JoinExpression(IEnumerableExpression<TOuter> outer, IEnumerable<TInner> inner, Expression<Func<TOuter, TKey>> outerKeySelector, Func<TOuter, TKey> outerKeySelectorCompiled, Expression<Func<TInner, TKey>> innerKeySelector, Func<TInner, TKey> innerKeySelectorCompiled, Expression<Func<TOuter, TInner, TResult>> resultSelector, Func<TOuter, TInner, TResult> resultSelectorCompiled, IEqualityComparer<TKey> comparer)
         {
@@ -37,6 +40,8 @@ namespace NMF.Expressions
             ResultSelector = resultSelector;
             ResultSelectorCompiled = resultSelectorCompiled ?? ExpressionCompileRewriter.Compile(resultSelector);
             Comparer = comparer;
+
+            AddDgmlNode();
         }
 
         public INotifyEnumerable<TResult> AsNotifiable()
@@ -68,6 +73,33 @@ namespace NMF.Expressions
         INotifyEnumerable IEnumerableExpression.AsNotifiable()
         {
             return AsNotifiable();
+        }
+
+        public IEnumerableExpression<TOptimizedResult> AsOptimized<TOptimizedResult>(IOptimizableEnumerableExpression expression = null)
+        {
+            VisitForDebugging(ResultSelector);
+
+            return Merge<TOptimizedResult>(expression);
+        }
+
+        public IEnumerableExpression<TOptimizedResult> Merge<TOptimizedResult>(IOptimizableEnumerableExpression prevExpr)
+        {
+            var mergedSelectorExpression = new QueryOptimizer<TOuter, TResult, TOptimizedResult>(prevExpr.OptSelectorExpression, OptSelectorExpression).Optimize() as Expression<Func<TOuter, TInner, TOptimizedResult>>;
+            return new JoinExpression<TOuter, TInner, TKey, TOptimizedResult>(Source, Inner, OuterKeySelector, null, InnerKeySelector, null, mergedSelectorExpression, null, Comparer);
+        }
+
+        [Conditional("DEBUG")]
+        public void AddDgmlNode()
+        {
+            DmglVisualizer.AddNode(this);
+        }
+
+        [Conditional("DEBUG")]
+        private void VisitForDebugging(dynamic expression)
+        {
+            //Ausgabe überprüfen
+            DebugVisitor debugVisitor = new DebugVisitor();
+            debugVisitor.Visit(expression);
         }
     }
 }
