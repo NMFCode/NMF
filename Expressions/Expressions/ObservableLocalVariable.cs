@@ -82,15 +82,15 @@ namespace NMF.Expressions
             return this;
         }
 
-        public INotifyExpression<T> ApplyParameters(IDictionary<string, object> parameters)
+        public INotifyExpression<T> ApplyParameters(IDictionary<string, object> parameters, IDictionary<INotifiable, INotifiable> trace)
         {
-            var applied = Variable.ApplyParameters(parameters);
+            var applied = Variable.ApplyParameters(parameters, trace);
             if (applied.IsParameterFree)
             {
                 parameters.Add(ParameterName, applied);
-                return Inner.ApplyParameters(parameters);
+                return Inner.ApplyParameters(parameters, trace);
             }
-            return new ObservableLocalVariable<T, TVar>(Inner.ApplyParameters(parameters), applied, ParameterName);
+            return new ObservableLocalVariable<T, TVar>(Inner.ApplyParameters(parameters, trace), applied, ParameterName);
         }
 
         public void Dispose()
@@ -110,9 +110,9 @@ namespace NMF.Expressions
             return new ValueChangedNotificationResult<T>(this, Inner.Value, Inner.Value);
         }
 
-        INotifyExpression INotifyExpression.ApplyParameters(IDictionary<string, object> parameters)
+        INotifyExpression INotifyExpression.ApplyParameters(IDictionary<string, object> parameters, IDictionary<INotifiable, INotifiable> trace)
         {
-            return ApplyParameters(parameters);
+            return ApplyParameters(parameters, trace);
         }
     }
 }

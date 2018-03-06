@@ -49,7 +49,7 @@ namespace NMF.Expressions
 
         protected virtual void OnDetach() { }
 
-        public abstract ObservableMemberBinding<T> ApplyParameters(INotifyExpression<T> newTarget, IDictionary<string, object> parameters);
+        public abstract ObservableMemberBinding<T> ApplyParameters(INotifyExpression<T> newTarget, IDictionary<string, object> parameters, IDictionary<INotifiable, INotifiable> trace);
 
         public abstract INotificationResult Notify(IList<INotificationResult> sources);
     }
@@ -99,9 +99,9 @@ namespace NMF.Expressions
             Member(Target.Value, Value.Value);
         }
 
-        public override ObservableMemberBinding<T> ApplyParameters(INotifyExpression<T> newTarget, IDictionary<string, object> parameters)
+        public override ObservableMemberBinding<T> ApplyParameters(INotifyExpression<T> newTarget, IDictionary<string, object> parameters, IDictionary<INotifiable, INotifiable> trace)
         {
-            return new ObservablePropertyMemberBinding<T, TMember>(newTarget, Member, Value.ApplyParameters(parameters));
+            return new ObservablePropertyMemberBinding<T, TMember>(newTarget, Member, Value.ApplyParameters(parameters, trace));
         }
 
         public override INotificationResult Notify(IList<INotificationResult> sources)
@@ -166,9 +166,9 @@ namespace NMF.Expressions
             MemberSet(Target.Value, Value.Value);
         }
 
-        public override ObservableMemberBinding<T> ApplyParameters(INotifyExpression<T> newTarget, IDictionary<string, object> parameters)
+        public override ObservableMemberBinding<T> ApplyParameters(INotifyExpression<T> newTarget, IDictionary<string, object> parameters, IDictionary<INotifiable, INotifiable> trace)
         {
-            return new ObservablePropertyMemberBinding<T, TMember>(newTarget, MemberSet, Value.ApplyParameters(parameters));
+            return new ObservablePropertyMemberBinding<T, TMember>(newTarget, MemberSet, Value.ApplyParameters(parameters, trace));
         }
 
         public override INotificationResult Notify(IList<INotificationResult> sources)

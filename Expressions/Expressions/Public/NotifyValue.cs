@@ -288,9 +288,9 @@ namespace NMF.Expressions
             }
         }
 
-        public INotifyExpression<T> ApplyParameters(IDictionary<string, object> parameters)
+        public INotifyExpression<T> ApplyParameters(IDictionary<string, object> parameters, IDictionary<INotifiable, INotifiable> trace)
         {
-            return new ReversableProxyExpression<T>(Inner.ApplyParameters(parameters), UpdateHandler);
+            return new ReversableProxyExpression<T>(Inner.ApplyParameters(parameters, trace), UpdateHandler);
         }
 
         public INotifyExpression<T> Reduce()
@@ -299,9 +299,9 @@ namespace NMF.Expressions
             return this;
         }
 
-        INotifyExpression INotifyExpression.ApplyParameters(IDictionary<string, object> parameters)
+        INotifyExpression INotifyExpression.ApplyParameters(IDictionary<string, object> parameters, IDictionary<INotifiable, INotifiable> trace)
         {
-            return ApplyParameters(parameters);
+            return ApplyParameters(parameters, trace);
         }
     }
 }

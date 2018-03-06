@@ -44,9 +44,9 @@ namespace NMF.Expressions
             LensPut = lensPut;
         }
 
-        public override INotifyExpression<TResult> ApplyParameters(IDictionary<string, object> parameters)
+        protected override INotifyExpression<TResult> ApplyParametersCore(IDictionary<string, object> parameters, IDictionary<INotifiable, INotifiable> trace)
         {
-		    var newTarget = Target.ApplyParameters(parameters);
+		    var newTarget = Target.ApplyParameters(parameters, trace);
             return new ObservableLensMethodCall<T, TResult>(newTarget, Method, LensPut.ApplyNewTarget(newTarget as INotifyReversableValue<T>));
         }
     }
@@ -86,10 +86,10 @@ namespace NMF.Expressions
             LensPut = lensPut;
         }
 
-        public override INotifyExpression<TResult> ApplyParameters(IDictionary<string, object> parameters)
+        protected override INotifyExpression<TResult> ApplyParametersCore(IDictionary<string, object> parameters, IDictionary<INotifiable, INotifiable> trace)
         {
-		    var newTarget = Target.ApplyParameters(parameters);
-            return new ObservableLensMethodCall<T, T1, TResult>(newTarget, Method, LensPut.ApplyNewTarget(newTarget as INotifyReversableValue<T>), Argument1.ApplyParameters(parameters));
+		    var newTarget = Target.ApplyParameters(parameters, trace);
+            return new ObservableLensMethodCall<T, T1, TResult>(newTarget, Method, LensPut.ApplyNewTarget(newTarget as INotifyReversableValue<T>), Argument1.ApplyParameters(parameters, trace));
         }
     }
     internal class ObservableLensMethodCall<T, T1, T2, TResult> : ObservableMethodCall<T, T1, T2, TResult>, INotifyReversableExpression<TResult>
@@ -128,10 +128,10 @@ namespace NMF.Expressions
             LensPut = lensPut;
         }
 
-        public override INotifyExpression<TResult> ApplyParameters(IDictionary<string, object> parameters)
+        protected override INotifyExpression<TResult> ApplyParametersCore(IDictionary<string, object> parameters, IDictionary<INotifiable, INotifiable> trace)
         {
-		    var newTarget = Target.ApplyParameters(parameters);
-            return new ObservableLensMethodCall<T, T1, T2, TResult>(newTarget, Method, LensPut.ApplyNewTarget(newTarget as INotifyReversableValue<T>), Argument1.ApplyParameters(parameters), Argument2.ApplyParameters(parameters));
+		    var newTarget = Target.ApplyParameters(parameters, trace);
+            return new ObservableLensMethodCall<T, T1, T2, TResult>(newTarget, Method, LensPut.ApplyNewTarget(newTarget as INotifyReversableValue<T>), Argument1.ApplyParameters(parameters, trace), Argument2.ApplyParameters(parameters, trace));
         }
     }
     internal class ObservableLensMethodCall<T, T1, T2, T3, TResult> : ObservableMethodCall<T, T1, T2, T3, TResult>, INotifyReversableExpression<TResult>
@@ -170,10 +170,10 @@ namespace NMF.Expressions
             LensPut = lensPut;
         }
 
-        public override INotifyExpression<TResult> ApplyParameters(IDictionary<string, object> parameters)
+        protected override INotifyExpression<TResult> ApplyParametersCore(IDictionary<string, object> parameters, IDictionary<INotifiable, INotifiable> trace)
         {
-		    var newTarget = Target.ApplyParameters(parameters);
-            return new ObservableLensMethodCall<T, T1, T2, T3, TResult>(newTarget, Method, LensPut.ApplyNewTarget(newTarget as INotifyReversableValue<T>), Argument1.ApplyParameters(parameters), Argument2.ApplyParameters(parameters), Argument3.ApplyParameters(parameters));
+		    var newTarget = Target.ApplyParameters(parameters, trace);
+            return new ObservableLensMethodCall<T, T1, T2, T3, TResult>(newTarget, Method, LensPut.ApplyNewTarget(newTarget as INotifyReversableValue<T>), Argument1.ApplyParameters(parameters, trace), Argument2.ApplyParameters(parameters, trace), Argument3.ApplyParameters(parameters, trace));
         }
     }
     internal class ObservableLensMethodCall<T, T1, T2, T3, T4, TResult> : ObservableMethodCall<T, T1, T2, T3, T4, TResult>, INotifyReversableExpression<TResult>
@@ -212,10 +212,10 @@ namespace NMF.Expressions
             LensPut = lensPut;
         }
 
-        public override INotifyExpression<TResult> ApplyParameters(IDictionary<string, object> parameters)
+        protected override INotifyExpression<TResult> ApplyParametersCore(IDictionary<string, object> parameters, IDictionary<INotifiable, INotifiable> trace)
         {
-		    var newTarget = Target.ApplyParameters(parameters);
-            return new ObservableLensMethodCall<T, T1, T2, T3, T4, TResult>(newTarget, Method, LensPut.ApplyNewTarget(newTarget as INotifyReversableValue<T>), Argument1.ApplyParameters(parameters), Argument2.ApplyParameters(parameters), Argument3.ApplyParameters(parameters), Argument4.ApplyParameters(parameters));
+		    var newTarget = Target.ApplyParameters(parameters, trace);
+            return new ObservableLensMethodCall<T, T1, T2, T3, T4, TResult>(newTarget, Method, LensPut.ApplyNewTarget(newTarget as INotifyReversableValue<T>), Argument1.ApplyParameters(parameters, trace), Argument2.ApplyParameters(parameters, trace), Argument3.ApplyParameters(parameters, trace), Argument4.ApplyParameters(parameters, trace));
         }
     }
     internal class ObservableLensMethodCall<T, T1, T2, T3, T4, T5, TResult> : ObservableMethodCall<T, T1, T2, T3, T4, T5, TResult>, INotifyReversableExpression<TResult>
@@ -254,10 +254,10 @@ namespace NMF.Expressions
             LensPut = lensPut;
         }
 
-        public override INotifyExpression<TResult> ApplyParameters(IDictionary<string, object> parameters)
+        protected override INotifyExpression<TResult> ApplyParametersCore(IDictionary<string, object> parameters, IDictionary<INotifiable, INotifiable> trace)
         {
-		    var newTarget = Target.ApplyParameters(parameters);
-            return new ObservableLensMethodCall<T, T1, T2, T3, T4, T5, TResult>(newTarget, Method, LensPut.ApplyNewTarget(newTarget as INotifyReversableValue<T>), Argument1.ApplyParameters(parameters), Argument2.ApplyParameters(parameters), Argument3.ApplyParameters(parameters), Argument4.ApplyParameters(parameters), Argument5.ApplyParameters(parameters));
+		    var newTarget = Target.ApplyParameters(parameters, trace);
+            return new ObservableLensMethodCall<T, T1, T2, T3, T4, T5, TResult>(newTarget, Method, LensPut.ApplyNewTarget(newTarget as INotifyReversableValue<T>), Argument1.ApplyParameters(parameters, trace), Argument2.ApplyParameters(parameters, trace), Argument3.ApplyParameters(parameters, trace), Argument4.ApplyParameters(parameters, trace), Argument5.ApplyParameters(parameters, trace));
         }
     }
     internal class ObservableLensMethodCall<T, T1, T2, T3, T4, T5, T6, TResult> : ObservableMethodCall<T, T1, T2, T3, T4, T5, T6, TResult>, INotifyReversableExpression<TResult>
@@ -296,10 +296,10 @@ namespace NMF.Expressions
             LensPut = lensPut;
         }
 
-        public override INotifyExpression<TResult> ApplyParameters(IDictionary<string, object> parameters)
+        protected override INotifyExpression<TResult> ApplyParametersCore(IDictionary<string, object> parameters, IDictionary<INotifiable, INotifiable> trace)
         {
-		    var newTarget = Target.ApplyParameters(parameters);
-            return new ObservableLensMethodCall<T, T1, T2, T3, T4, T5, T6, TResult>(newTarget, Method, LensPut.ApplyNewTarget(newTarget as INotifyReversableValue<T>), Argument1.ApplyParameters(parameters), Argument2.ApplyParameters(parameters), Argument3.ApplyParameters(parameters), Argument4.ApplyParameters(parameters), Argument5.ApplyParameters(parameters), Argument6.ApplyParameters(parameters));
+		    var newTarget = Target.ApplyParameters(parameters, trace);
+            return new ObservableLensMethodCall<T, T1, T2, T3, T4, T5, T6, TResult>(newTarget, Method, LensPut.ApplyNewTarget(newTarget as INotifyReversableValue<T>), Argument1.ApplyParameters(parameters, trace), Argument2.ApplyParameters(parameters, trace), Argument3.ApplyParameters(parameters, trace), Argument4.ApplyParameters(parameters, trace), Argument5.ApplyParameters(parameters, trace), Argument6.ApplyParameters(parameters, trace));
         }
     }
     internal class ObservableLensMethodCall<T, T1, T2, T3, T4, T5, T6, T7, TResult> : ObservableMethodCall<T, T1, T2, T3, T4, T5, T6, T7, TResult>, INotifyReversableExpression<TResult>
@@ -338,10 +338,10 @@ namespace NMF.Expressions
             LensPut = lensPut;
         }
 
-        public override INotifyExpression<TResult> ApplyParameters(IDictionary<string, object> parameters)
+        protected override INotifyExpression<TResult> ApplyParametersCore(IDictionary<string, object> parameters, IDictionary<INotifiable, INotifiable> trace)
         {
-		    var newTarget = Target.ApplyParameters(parameters);
-            return new ObservableLensMethodCall<T, T1, T2, T3, T4, T5, T6, T7, TResult>(newTarget, Method, LensPut.ApplyNewTarget(newTarget as INotifyReversableValue<T>), Argument1.ApplyParameters(parameters), Argument2.ApplyParameters(parameters), Argument3.ApplyParameters(parameters), Argument4.ApplyParameters(parameters), Argument5.ApplyParameters(parameters), Argument6.ApplyParameters(parameters), Argument7.ApplyParameters(parameters));
+		    var newTarget = Target.ApplyParameters(parameters, trace);
+            return new ObservableLensMethodCall<T, T1, T2, T3, T4, T5, T6, T7, TResult>(newTarget, Method, LensPut.ApplyNewTarget(newTarget as INotifyReversableValue<T>), Argument1.ApplyParameters(parameters, trace), Argument2.ApplyParameters(parameters, trace), Argument3.ApplyParameters(parameters, trace), Argument4.ApplyParameters(parameters, trace), Argument5.ApplyParameters(parameters, trace), Argument6.ApplyParameters(parameters, trace), Argument7.ApplyParameters(parameters, trace));
         }
     }
     internal class ObservableLensMethodCall<T, T1, T2, T3, T4, T5, T6, T7, T8, TResult> : ObservableMethodCall<T, T1, T2, T3, T4, T5, T6, T7, T8, TResult>, INotifyReversableExpression<TResult>
@@ -380,10 +380,10 @@ namespace NMF.Expressions
             LensPut = lensPut;
         }
 
-        public override INotifyExpression<TResult> ApplyParameters(IDictionary<string, object> parameters)
+        protected override INotifyExpression<TResult> ApplyParametersCore(IDictionary<string, object> parameters, IDictionary<INotifiable, INotifiable> trace)
         {
-		    var newTarget = Target.ApplyParameters(parameters);
-            return new ObservableLensMethodCall<T, T1, T2, T3, T4, T5, T6, T7, T8, TResult>(newTarget, Method, LensPut.ApplyNewTarget(newTarget as INotifyReversableValue<T>), Argument1.ApplyParameters(parameters), Argument2.ApplyParameters(parameters), Argument3.ApplyParameters(parameters), Argument4.ApplyParameters(parameters), Argument5.ApplyParameters(parameters), Argument6.ApplyParameters(parameters), Argument7.ApplyParameters(parameters), Argument8.ApplyParameters(parameters));
+		    var newTarget = Target.ApplyParameters(parameters, trace);
+            return new ObservableLensMethodCall<T, T1, T2, T3, T4, T5, T6, T7, T8, TResult>(newTarget, Method, LensPut.ApplyNewTarget(newTarget as INotifyReversableValue<T>), Argument1.ApplyParameters(parameters, trace), Argument2.ApplyParameters(parameters, trace), Argument3.ApplyParameters(parameters, trace), Argument4.ApplyParameters(parameters, trace), Argument5.ApplyParameters(parameters, trace), Argument6.ApplyParameters(parameters, trace), Argument7.ApplyParameters(parameters, trace), Argument8.ApplyParameters(parameters, trace));
         }
     }
     internal class ObservableLensMethodCall<T, T1, T2, T3, T4, T5, T6, T7, T8, T9, TResult> : ObservableMethodCall<T, T1, T2, T3, T4, T5, T6, T7, T8, T9, TResult>, INotifyReversableExpression<TResult>
@@ -422,10 +422,10 @@ namespace NMF.Expressions
             LensPut = lensPut;
         }
 
-        public override INotifyExpression<TResult> ApplyParameters(IDictionary<string, object> parameters)
+        protected override INotifyExpression<TResult> ApplyParametersCore(IDictionary<string, object> parameters, IDictionary<INotifiable, INotifiable> trace)
         {
-		    var newTarget = Target.ApplyParameters(parameters);
-            return new ObservableLensMethodCall<T, T1, T2, T3, T4, T5, T6, T7, T8, T9, TResult>(newTarget, Method, LensPut.ApplyNewTarget(newTarget as INotifyReversableValue<T>), Argument1.ApplyParameters(parameters), Argument2.ApplyParameters(parameters), Argument3.ApplyParameters(parameters), Argument4.ApplyParameters(parameters), Argument5.ApplyParameters(parameters), Argument6.ApplyParameters(parameters), Argument7.ApplyParameters(parameters), Argument8.ApplyParameters(parameters), Argument9.ApplyParameters(parameters));
+		    var newTarget = Target.ApplyParameters(parameters, trace);
+            return new ObservableLensMethodCall<T, T1, T2, T3, T4, T5, T6, T7, T8, T9, TResult>(newTarget, Method, LensPut.ApplyNewTarget(newTarget as INotifyReversableValue<T>), Argument1.ApplyParameters(parameters, trace), Argument2.ApplyParameters(parameters, trace), Argument3.ApplyParameters(parameters, trace), Argument4.ApplyParameters(parameters, trace), Argument5.ApplyParameters(parameters, trace), Argument6.ApplyParameters(parameters, trace), Argument7.ApplyParameters(parameters, trace), Argument8.ApplyParameters(parameters, trace), Argument9.ApplyParameters(parameters, trace));
         }
     }
     internal class ObservableLensMethodCall<T, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, TResult> : ObservableMethodCall<T, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, TResult>, INotifyReversableExpression<TResult>
@@ -464,10 +464,10 @@ namespace NMF.Expressions
             LensPut = lensPut;
         }
 
-        public override INotifyExpression<TResult> ApplyParameters(IDictionary<string, object> parameters)
+        protected override INotifyExpression<TResult> ApplyParametersCore(IDictionary<string, object> parameters, IDictionary<INotifiable, INotifiable> trace)
         {
-		    var newTarget = Target.ApplyParameters(parameters);
-            return new ObservableLensMethodCall<T, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, TResult>(newTarget, Method, LensPut.ApplyNewTarget(newTarget as INotifyReversableValue<T>), Argument1.ApplyParameters(parameters), Argument2.ApplyParameters(parameters), Argument3.ApplyParameters(parameters), Argument4.ApplyParameters(parameters), Argument5.ApplyParameters(parameters), Argument6.ApplyParameters(parameters), Argument7.ApplyParameters(parameters), Argument8.ApplyParameters(parameters), Argument9.ApplyParameters(parameters), Argument10.ApplyParameters(parameters));
+		    var newTarget = Target.ApplyParameters(parameters, trace);
+            return new ObservableLensMethodCall<T, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, TResult>(newTarget, Method, LensPut.ApplyNewTarget(newTarget as INotifyReversableValue<T>), Argument1.ApplyParameters(parameters, trace), Argument2.ApplyParameters(parameters, trace), Argument3.ApplyParameters(parameters, trace), Argument4.ApplyParameters(parameters, trace), Argument5.ApplyParameters(parameters, trace), Argument6.ApplyParameters(parameters, trace), Argument7.ApplyParameters(parameters, trace), Argument8.ApplyParameters(parameters, trace), Argument9.ApplyParameters(parameters, trace), Argument10.ApplyParameters(parameters, trace));
         }
     }
     internal class ObservableLensMethodCall<T, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, TResult> : ObservableMethodCall<T, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, TResult>, INotifyReversableExpression<TResult>
@@ -506,10 +506,10 @@ namespace NMF.Expressions
             LensPut = lensPut;
         }
 
-        public override INotifyExpression<TResult> ApplyParameters(IDictionary<string, object> parameters)
+        protected override INotifyExpression<TResult> ApplyParametersCore(IDictionary<string, object> parameters, IDictionary<INotifiable, INotifiable> trace)
         {
-		    var newTarget = Target.ApplyParameters(parameters);
-            return new ObservableLensMethodCall<T, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, TResult>(newTarget, Method, LensPut.ApplyNewTarget(newTarget as INotifyReversableValue<T>), Argument1.ApplyParameters(parameters), Argument2.ApplyParameters(parameters), Argument3.ApplyParameters(parameters), Argument4.ApplyParameters(parameters), Argument5.ApplyParameters(parameters), Argument6.ApplyParameters(parameters), Argument7.ApplyParameters(parameters), Argument8.ApplyParameters(parameters), Argument9.ApplyParameters(parameters), Argument10.ApplyParameters(parameters), Argument11.ApplyParameters(parameters));
+		    var newTarget = Target.ApplyParameters(parameters, trace);
+            return new ObservableLensMethodCall<T, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, TResult>(newTarget, Method, LensPut.ApplyNewTarget(newTarget as INotifyReversableValue<T>), Argument1.ApplyParameters(parameters, trace), Argument2.ApplyParameters(parameters, trace), Argument3.ApplyParameters(parameters, trace), Argument4.ApplyParameters(parameters, trace), Argument5.ApplyParameters(parameters, trace), Argument6.ApplyParameters(parameters, trace), Argument7.ApplyParameters(parameters, trace), Argument8.ApplyParameters(parameters, trace), Argument9.ApplyParameters(parameters, trace), Argument10.ApplyParameters(parameters, trace), Argument11.ApplyParameters(parameters, trace));
         }
     }
     internal class ObservableLensMethodCall<T, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, TResult> : ObservableMethodCall<T, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, TResult>, INotifyReversableExpression<TResult>
@@ -548,10 +548,10 @@ namespace NMF.Expressions
             LensPut = lensPut;
         }
 
-        public override INotifyExpression<TResult> ApplyParameters(IDictionary<string, object> parameters)
+        protected override INotifyExpression<TResult> ApplyParametersCore(IDictionary<string, object> parameters, IDictionary<INotifiable, INotifiable> trace)
         {
-		    var newTarget = Target.ApplyParameters(parameters);
-            return new ObservableLensMethodCall<T, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, TResult>(newTarget, Method, LensPut.ApplyNewTarget(newTarget as INotifyReversableValue<T>), Argument1.ApplyParameters(parameters), Argument2.ApplyParameters(parameters), Argument3.ApplyParameters(parameters), Argument4.ApplyParameters(parameters), Argument5.ApplyParameters(parameters), Argument6.ApplyParameters(parameters), Argument7.ApplyParameters(parameters), Argument8.ApplyParameters(parameters), Argument9.ApplyParameters(parameters), Argument10.ApplyParameters(parameters), Argument11.ApplyParameters(parameters), Argument12.ApplyParameters(parameters));
+		    var newTarget = Target.ApplyParameters(parameters, trace);
+            return new ObservableLensMethodCall<T, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, TResult>(newTarget, Method, LensPut.ApplyNewTarget(newTarget as INotifyReversableValue<T>), Argument1.ApplyParameters(parameters, trace), Argument2.ApplyParameters(parameters, trace), Argument3.ApplyParameters(parameters, trace), Argument4.ApplyParameters(parameters, trace), Argument5.ApplyParameters(parameters, trace), Argument6.ApplyParameters(parameters, trace), Argument7.ApplyParameters(parameters, trace), Argument8.ApplyParameters(parameters, trace), Argument9.ApplyParameters(parameters, trace), Argument10.ApplyParameters(parameters, trace), Argument11.ApplyParameters(parameters, trace), Argument12.ApplyParameters(parameters, trace));
         }
     }
     internal class ObservableLensMethodCall<T, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, TResult> : ObservableMethodCall<T, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, TResult>, INotifyReversableExpression<TResult>
@@ -590,10 +590,10 @@ namespace NMF.Expressions
             LensPut = lensPut;
         }
 
-        public override INotifyExpression<TResult> ApplyParameters(IDictionary<string, object> parameters)
+        protected override INotifyExpression<TResult> ApplyParametersCore(IDictionary<string, object> parameters, IDictionary<INotifiable, INotifiable> trace)
         {
-		    var newTarget = Target.ApplyParameters(parameters);
-            return new ObservableLensMethodCall<T, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, TResult>(newTarget, Method, LensPut.ApplyNewTarget(newTarget as INotifyReversableValue<T>), Argument1.ApplyParameters(parameters), Argument2.ApplyParameters(parameters), Argument3.ApplyParameters(parameters), Argument4.ApplyParameters(parameters), Argument5.ApplyParameters(parameters), Argument6.ApplyParameters(parameters), Argument7.ApplyParameters(parameters), Argument8.ApplyParameters(parameters), Argument9.ApplyParameters(parameters), Argument10.ApplyParameters(parameters), Argument11.ApplyParameters(parameters), Argument12.ApplyParameters(parameters), Argument13.ApplyParameters(parameters));
+		    var newTarget = Target.ApplyParameters(parameters, trace);
+            return new ObservableLensMethodCall<T, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, TResult>(newTarget, Method, LensPut.ApplyNewTarget(newTarget as INotifyReversableValue<T>), Argument1.ApplyParameters(parameters, trace), Argument2.ApplyParameters(parameters, trace), Argument3.ApplyParameters(parameters, trace), Argument4.ApplyParameters(parameters, trace), Argument5.ApplyParameters(parameters, trace), Argument6.ApplyParameters(parameters, trace), Argument7.ApplyParameters(parameters, trace), Argument8.ApplyParameters(parameters, trace), Argument9.ApplyParameters(parameters, trace), Argument10.ApplyParameters(parameters, trace), Argument11.ApplyParameters(parameters, trace), Argument12.ApplyParameters(parameters, trace), Argument13.ApplyParameters(parameters, trace));
         }
     }
     internal class ObservableLensMethodCall<T, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, TResult> : ObservableMethodCall<T, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, TResult>, INotifyReversableExpression<TResult>
@@ -632,10 +632,10 @@ namespace NMF.Expressions
             LensPut = lensPut;
         }
 
-        public override INotifyExpression<TResult> ApplyParameters(IDictionary<string, object> parameters)
+        protected override INotifyExpression<TResult> ApplyParametersCore(IDictionary<string, object> parameters, IDictionary<INotifiable, INotifiable> trace)
         {
-		    var newTarget = Target.ApplyParameters(parameters);
-            return new ObservableLensMethodCall<T, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, TResult>(newTarget, Method, LensPut.ApplyNewTarget(newTarget as INotifyReversableValue<T>), Argument1.ApplyParameters(parameters), Argument2.ApplyParameters(parameters), Argument3.ApplyParameters(parameters), Argument4.ApplyParameters(parameters), Argument5.ApplyParameters(parameters), Argument6.ApplyParameters(parameters), Argument7.ApplyParameters(parameters), Argument8.ApplyParameters(parameters), Argument9.ApplyParameters(parameters), Argument10.ApplyParameters(parameters), Argument11.ApplyParameters(parameters), Argument12.ApplyParameters(parameters), Argument13.ApplyParameters(parameters), Argument14.ApplyParameters(parameters));
+		    var newTarget = Target.ApplyParameters(parameters, trace);
+            return new ObservableLensMethodCall<T, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, TResult>(newTarget, Method, LensPut.ApplyNewTarget(newTarget as INotifyReversableValue<T>), Argument1.ApplyParameters(parameters, trace), Argument2.ApplyParameters(parameters, trace), Argument3.ApplyParameters(parameters, trace), Argument4.ApplyParameters(parameters, trace), Argument5.ApplyParameters(parameters, trace), Argument6.ApplyParameters(parameters, trace), Argument7.ApplyParameters(parameters, trace), Argument8.ApplyParameters(parameters, trace), Argument9.ApplyParameters(parameters, trace), Argument10.ApplyParameters(parameters, trace), Argument11.ApplyParameters(parameters, trace), Argument12.ApplyParameters(parameters, trace), Argument13.ApplyParameters(parameters, trace), Argument14.ApplyParameters(parameters, trace));
         }
     }
 }

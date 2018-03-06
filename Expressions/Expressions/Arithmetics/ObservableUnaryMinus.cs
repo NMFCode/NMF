@@ -23,9 +23,9 @@ namespace NMF.Expressions.Arithmetics
             return -Target.Value;
         }
 
-        public override INotifyExpression<int> ApplyParameters(IDictionary<string, object> parameters)
+        protected override INotifyExpression<int> ApplyParametersCore(IDictionary<string, object> parameters, IDictionary<INotifiable, INotifiable> trace)
         {
-            return new ObservableUnaryIntMinus(Target.ApplyParameters(parameters));
+            return new ObservableUnaryIntMinus(Target.ApplyParameters(parameters, trace));
         }
 
         protected override void SetValue(INotifyReversableExpression<int> inner, int value)
@@ -52,9 +52,9 @@ namespace NMF.Expressions.Arithmetics
             return -Target.Value;
         }
 
-        public override INotifyExpression<long> ApplyParameters(IDictionary<string, object> parameters)
+        protected override INotifyExpression<long> ApplyParametersCore(IDictionary<string, object> parameters, IDictionary<INotifiable, INotifiable> trace)
         {
-            return new ObservableUnaryLongMinus(Target.ApplyParameters(parameters));
+            return new ObservableUnaryLongMinus(Target.ApplyParameters(parameters, trace));
         }
 
         protected override void SetValue(INotifyReversableExpression<long> inner, long value)
@@ -81,9 +81,9 @@ namespace NMF.Expressions.Arithmetics
             return -Target.Value;
         }
 
-        public override INotifyExpression<float> ApplyParameters(IDictionary<string, object> parameters)
+        protected override INotifyExpression<float> ApplyParametersCore(IDictionary<string, object> parameters, IDictionary<INotifiable, INotifiable> trace)
         {
-            return new ObservableUnaryFloatMinus(Target.ApplyParameters(parameters));
+            return new ObservableUnaryFloatMinus(Target.ApplyParameters(parameters, trace));
         }
 
         protected override void SetValue(INotifyReversableExpression<float> inner, float value)
@@ -110,9 +110,9 @@ namespace NMF.Expressions.Arithmetics
             return -Target.Value;
         }
 
-        public override INotifyExpression<double> ApplyParameters(IDictionary<string, object> parameters)
+        protected override INotifyExpression<double> ApplyParametersCore(IDictionary<string, object> parameters, IDictionary<INotifiable, INotifiable> trace)
         {
-            return new ObservableUnaryDoubleMinus(Target.ApplyParameters(parameters));
+            return new ObservableUnaryDoubleMinus(Target.ApplyParameters(parameters, trace));
         }
 
         protected override void SetValue(INotifyReversableExpression<double> inner, double value)
@@ -139,9 +139,9 @@ namespace NMF.Expressions.Arithmetics
             return -Target.Value;
         }
 
-        public override INotifyExpression<decimal> ApplyParameters(IDictionary<string, object> parameters)
+        protected override INotifyExpression<decimal> ApplyParametersCore(IDictionary<string, object> parameters, IDictionary<INotifiable, INotifiable> trace)
         {
-            return new ObservableUnaryDecimalMinus(Target.ApplyParameters(parameters));
+            return new ObservableUnaryDecimalMinus(Target.ApplyParameters(parameters, trace));
         }
 
         protected override void SetValue(INotifyReversableExpression<decimal> inner, decimal value)

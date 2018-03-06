@@ -23,9 +23,9 @@ namespace NMF.Expressions.Arithmetics
             return Left.Value % Right.Value;
         }
 
-        public override INotifyExpression<int> ApplyParameters(IDictionary<string, object> parameters)
+        protected override INotifyExpression<int> ApplyParametersCore(IDictionary<string, object> parameters, IDictionary<INotifiable, INotifiable> trace)
         {
-            return new ObservableIntModulo(Left.ApplyParameters(parameters), Right.ApplyParameters(parameters));
+            return new ObservableIntModulo(Left.ApplyParameters(parameters, trace), Right.ApplyParameters(parameters, trace));
         }
     }
 
@@ -47,9 +47,9 @@ namespace NMF.Expressions.Arithmetics
             return Left.Value % Right.Value;
         }
 
-        public override INotifyExpression<long> ApplyParameters(IDictionary<string, object> parameters)
+        protected override INotifyExpression<long> ApplyParametersCore(IDictionary<string, object> parameters, IDictionary<INotifiable, INotifiable> trace)
         {
-            return new ObservableLongModulo(Left.ApplyParameters(parameters), Right.ApplyParameters(parameters));
+            return new ObservableLongModulo(Left.ApplyParameters(parameters, trace), Right.ApplyParameters(parameters, trace));
         }
     }
 
@@ -71,9 +71,9 @@ namespace NMF.Expressions.Arithmetics
             return Left.Value % Right.Value;
         }
 
-        public override INotifyExpression<uint> ApplyParameters(IDictionary<string, object> parameters)
+        protected override INotifyExpression<uint> ApplyParametersCore(IDictionary<string, object> parameters, IDictionary<INotifiable, INotifiable> trace)
         {
-            return new ObservableUIntModulo(Left.ApplyParameters(parameters), Right.ApplyParameters(parameters));
+            return new ObservableUIntModulo(Left.ApplyParameters(parameters, trace), Right.ApplyParameters(parameters, trace));
         }
     }
 
@@ -96,9 +96,9 @@ namespace NMF.Expressions.Arithmetics
             return Left.Value % Right.Value;
         }
 
-        public override INotifyExpression<ulong> ApplyParameters(IDictionary<string, object> parameters)
+        protected override INotifyExpression<ulong> ApplyParametersCore(IDictionary<string, object> parameters, IDictionary<INotifiable, INotifiable> trace)
         {
-            return new ObservableULongModulo(Left.ApplyParameters(parameters), Right.ApplyParameters(parameters));
+            return new ObservableULongModulo(Left.ApplyParameters(parameters, trace), Right.ApplyParameters(parameters, trace));
         }
     }
 
@@ -120,9 +120,9 @@ namespace NMF.Expressions.Arithmetics
             return Left.Value % Right.Value;
         }
 
-        public override INotifyExpression<float> ApplyParameters(IDictionary<string, object> parameters)
+        protected override INotifyExpression<float> ApplyParametersCore(IDictionary<string, object> parameters, IDictionary<INotifiable, INotifiable> trace)
         {
-            return new ObservableFloatModulo(Left.ApplyParameters(parameters), Right.ApplyParameters(parameters));
+            return new ObservableFloatModulo(Left.ApplyParameters(parameters, trace), Right.ApplyParameters(parameters, trace));
         }
     }
 
@@ -144,9 +144,9 @@ namespace NMF.Expressions.Arithmetics
             return Left.Value % Right.Value;
         }
 
-        public override INotifyExpression<double> ApplyParameters(IDictionary<string, object> parameters)
+        protected override INotifyExpression<double> ApplyParametersCore(IDictionary<string, object> parameters, IDictionary<INotifiable, INotifiable> trace)
         {
-            return new ObservableDoubleModulo(Left.ApplyParameters(parameters), Right.ApplyParameters(parameters));
+            return new ObservableDoubleModulo(Left.ApplyParameters(parameters, trace), Right.ApplyParameters(parameters, trace));
         }
     }
 }

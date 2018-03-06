@@ -100,9 +100,9 @@ namespace NMF.Expressions
             return Implementation(Target.Value);
         }
 
-        public override INotifyExpression<TOuter> ApplyParameters(IDictionary<string, object> parameters)
+        protected override INotifyExpression<TOuter> ApplyParametersCore(IDictionary<string, object> parameters, IDictionary<INotifiable, INotifiable> trace)
         {
-            return new ObservableUnaryExpression<TInner, TOuter>(Target.ApplyParameters(parameters), Implementation);
+            return new ObservableUnaryExpression<TInner, TOuter>(Target.ApplyParameters(parameters, trace), Implementation);
         }
     }
 
@@ -138,9 +138,9 @@ namespace NMF.Expressions
             }
         }
 
-        public override INotifyExpression<TOuter> ApplyParameters(IDictionary<string, object> parameters)
+        protected override INotifyExpression<TOuter> ApplyParametersCore(IDictionary<string, object> parameters, IDictionary<INotifiable, INotifiable> trace)
         {
-            return new ObservableConvert<TInner, TOuter>(Target.ApplyParameters(parameters));
+            return new ObservableConvert<TInner, TOuter>(Target.ApplyParameters(parameters, trace));
         }
 
         protected override void SetValue(INotifyReversableExpression<TInner> inner, TOuter value)
@@ -187,9 +187,9 @@ namespace NMF.Expressions
             return Target.Value as TOuter;
         }
 
-        public override INotifyExpression<TOuter> ApplyParameters(IDictionary<string, object> parameters)
+        protected override INotifyExpression<TOuter> ApplyParametersCore(IDictionary<string, object> parameters, IDictionary<INotifiable, INotifiable> trace)
         {
-            return new ObservableTypeAs<TInner, TOuter>(Target.ApplyParameters(parameters));
+            return new ObservableTypeAs<TInner, TOuter>(Target.ApplyParameters(parameters, trace));
         }
     }
 

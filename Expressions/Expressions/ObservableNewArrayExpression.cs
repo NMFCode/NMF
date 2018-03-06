@@ -38,9 +38,9 @@ namespace NMF.Expressions
             return (T[])Activator.CreateInstance(typeof(T[]), Bounds1.Value);
         }
         
-        public override INotifyExpression<T[]> ApplyParameters(IDictionary<string, object> parameters)
+        protected override INotifyExpression<T[]> ApplyParametersCore(IDictionary<string, object> parameters, IDictionary<INotifiable, INotifiable> trace)
         {
-            return new ObservableNewArray1Expression<T>(Bounds1.ApplyParameters(parameters));
+            return new ObservableNewArray1Expression<T>(Bounds1.ApplyParameters(parameters, trace));
         }
     }
     
@@ -82,9 +82,9 @@ namespace NMF.Expressions
             return (T[,])Activator.CreateInstance(typeof(T[,]), Bounds1.Value, Bounds2.Value);
         }
 
-        public override INotifyExpression<T[,]> ApplyParameters(IDictionary<string, object> parameters)
+        protected override INotifyExpression<T[,]> ApplyParametersCore(IDictionary<string, object> parameters, IDictionary<INotifiable, INotifiable> trace)
         {
-            return new ObservableNewArray2Expression<T>(Bounds1.ApplyParameters(parameters), Bounds2.ApplyParameters(parameters));
+            return new ObservableNewArray2Expression<T>(Bounds1.ApplyParameters(parameters, trace), Bounds2.ApplyParameters(parameters, trace));
         }
     }
 
@@ -130,9 +130,9 @@ namespace NMF.Expressions
             return (T[,,])Activator.CreateInstance(typeof(T[,,]), Bounds1.Value, Bounds2.Value, Bounds3.Value);
         }
 
-        public override INotifyExpression<T[,,]> ApplyParameters(IDictionary<string, object> parameters)
+        protected override INotifyExpression<T[,,]> ApplyParametersCore(IDictionary<string, object> parameters, IDictionary<INotifiable, INotifiable> trace)
         {
-            return new ObservableNewArray3Expression<T>(Bounds1.ApplyParameters(parameters), Bounds2.ApplyParameters(parameters), Bounds3.ApplyParameters(parameters));
+            return new ObservableNewArray3Expression<T>(Bounds1.ApplyParameters(parameters, trace), Bounds2.ApplyParameters(parameters, trace), Bounds3.ApplyParameters(parameters, trace));
         }
     }
 }

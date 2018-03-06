@@ -95,9 +95,9 @@ namespace NMF.Expressions
             }
         }
 
-        public override INotifyExpression<TResult> ApplyParameters(IDictionary<string, object> parameters)
+        protected override INotifyExpression<TResult> ApplyParametersCore(IDictionary<string, object> parameters, IDictionary<INotifiable, INotifiable> trace)
         {
-            return new ObservablePromotionMethodCall<T1, TResult>(Function, Argument1.ApplyParameters(parameters), Arg1Properties, Arg1Composition);
+            return new ObservablePromotionMethodCall<T1, TResult>(Function, Argument1.ApplyParameters(parameters, trace), Arg1Properties, Arg1Composition);
         }
 
         public override INotificationResult Notify(IList<INotificationResult> sources)
@@ -283,9 +283,9 @@ namespace NMF.Expressions
             }
         }
 
-        public override INotifyExpression<TResult> ApplyParameters(IDictionary<string, object> parameters)
+        protected override INotifyExpression<TResult> ApplyParametersCore(IDictionary<string, object> parameters, IDictionary<INotifiable, INotifiable> trace)
         {
-            return new ObservablePromotionMethodCall<T1, T2, TResult>(Function, Argument1.ApplyParameters(parameters), Arg1Properties, Arg1Composition, Argument2.ApplyParameters(parameters), Arg2Properties, Arg2Composition);
+            return new ObservablePromotionMethodCall<T1, T2, TResult>(Function, Argument1.ApplyParameters(parameters, trace), Arg1Properties, Arg1Composition, Argument2.ApplyParameters(parameters, trace), Arg2Properties, Arg2Composition);
         }
 
         public override INotificationResult Notify(IList<INotificationResult> sources)
@@ -555,9 +555,9 @@ namespace NMF.Expressions
             }
         }
 
-        public override INotifyExpression<TResult> ApplyParameters(IDictionary<string, object> parameters)
+        protected override INotifyExpression<TResult> ApplyParametersCore(IDictionary<string, object> parameters, IDictionary<INotifiable, INotifiable> trace)
         {
-            return new ObservablePromotionMethodCall<T1, T2, T3, TResult>(Function, Argument1.ApplyParameters(parameters), Arg1Properties, Arg1Composition, Argument2.ApplyParameters(parameters), Arg2Properties, Arg2Composition, Argument3.ApplyParameters(parameters), Arg3Properties, Arg3Composition);
+            return new ObservablePromotionMethodCall<T1, T2, T3, TResult>(Function, Argument1.ApplyParameters(parameters, trace), Arg1Properties, Arg1Composition, Argument2.ApplyParameters(parameters, trace), Arg2Properties, Arg2Composition, Argument3.ApplyParameters(parameters, trace), Arg3Properties, Arg3Composition);
         }
 
         public override INotificationResult Notify(IList<INotificationResult> sources)
@@ -911,9 +911,9 @@ namespace NMF.Expressions
             }
         }
 
-        public override INotifyExpression<TResult> ApplyParameters(IDictionary<string, object> parameters)
+        protected override INotifyExpression<TResult> ApplyParametersCore(IDictionary<string, object> parameters, IDictionary<INotifiable, INotifiable> trace)
         {
-            return new ObservablePromotionMethodCall<T1, T2, T3, T4, TResult>(Function, Argument1.ApplyParameters(parameters), Arg1Properties, Arg1Composition, Argument2.ApplyParameters(parameters), Arg2Properties, Arg2Composition, Argument3.ApplyParameters(parameters), Arg3Properties, Arg3Composition, Argument4.ApplyParameters(parameters), Arg4Properties, Arg4Composition);
+            return new ObservablePromotionMethodCall<T1, T2, T3, T4, TResult>(Function, Argument1.ApplyParameters(parameters, trace), Arg1Properties, Arg1Composition, Argument2.ApplyParameters(parameters, trace), Arg2Properties, Arg2Composition, Argument3.ApplyParameters(parameters, trace), Arg3Properties, Arg3Composition, Argument4.ApplyParameters(parameters, trace), Arg4Properties, Arg4Composition);
         }
 
         public override INotificationResult Notify(IList<INotificationResult> sources)
@@ -1351,9 +1351,9 @@ namespace NMF.Expressions
             }
         }
 
-        public override INotifyExpression<TResult> ApplyParameters(IDictionary<string, object> parameters)
+        protected override INotifyExpression<TResult> ApplyParametersCore(IDictionary<string, object> parameters, IDictionary<INotifiable, INotifiable> trace)
         {
-            return new ObservablePromotionMethodCall<T1, T2, T3, T4, T5, TResult>(Function, Argument1.ApplyParameters(parameters), Arg1Properties, Arg1Composition, Argument2.ApplyParameters(parameters), Arg2Properties, Arg2Composition, Argument3.ApplyParameters(parameters), Arg3Properties, Arg3Composition, Argument4.ApplyParameters(parameters), Arg4Properties, Arg4Composition, Argument5.ApplyParameters(parameters), Arg5Properties, Arg5Composition);
+            return new ObservablePromotionMethodCall<T1, T2, T3, T4, T5, TResult>(Function, Argument1.ApplyParameters(parameters, trace), Arg1Properties, Arg1Composition, Argument2.ApplyParameters(parameters, trace), Arg2Properties, Arg2Composition, Argument3.ApplyParameters(parameters, trace), Arg3Properties, Arg3Composition, Argument4.ApplyParameters(parameters, trace), Arg4Properties, Arg4Composition, Argument5.ApplyParameters(parameters, trace), Arg5Properties, Arg5Composition);
         }
 
         public override INotificationResult Notify(IList<INotificationResult> sources)
@@ -1875,9 +1875,9 @@ namespace NMF.Expressions
             }
         }
 
-        public override INotifyExpression<TResult> ApplyParameters(IDictionary<string, object> parameters)
+        protected override INotifyExpression<TResult> ApplyParametersCore(IDictionary<string, object> parameters, IDictionary<INotifiable, INotifiable> trace)
         {
-            return new ObservablePromotionMethodCall<T1, T2, T3, T4, T5, T6, TResult>(Function, Argument1.ApplyParameters(parameters), Arg1Properties, Arg1Composition, Argument2.ApplyParameters(parameters), Arg2Properties, Arg2Composition, Argument3.ApplyParameters(parameters), Arg3Properties, Arg3Composition, Argument4.ApplyParameters(parameters), Arg4Properties, Arg4Composition, Argument5.ApplyParameters(parameters), Arg5Properties, Arg5Composition, Argument6.ApplyParameters(parameters), Arg6Properties, Arg6Composition);
+            return new ObservablePromotionMethodCall<T1, T2, T3, T4, T5, T6, TResult>(Function, Argument1.ApplyParameters(parameters, trace), Arg1Properties, Arg1Composition, Argument2.ApplyParameters(parameters, trace), Arg2Properties, Arg2Composition, Argument3.ApplyParameters(parameters, trace), Arg3Properties, Arg3Composition, Argument4.ApplyParameters(parameters, trace), Arg4Properties, Arg4Composition, Argument5.ApplyParameters(parameters, trace), Arg5Properties, Arg5Composition, Argument6.ApplyParameters(parameters, trace), Arg6Properties, Arg6Composition);
         }
 
         public override INotificationResult Notify(IList<INotificationResult> sources)
@@ -2483,9 +2483,9 @@ namespace NMF.Expressions
             }
         }
 
-        public override INotifyExpression<TResult> ApplyParameters(IDictionary<string, object> parameters)
+        protected override INotifyExpression<TResult> ApplyParametersCore(IDictionary<string, object> parameters, IDictionary<INotifiable, INotifiable> trace)
         {
-            return new ObservablePromotionMethodCall<T1, T2, T3, T4, T5, T6, T7, TResult>(Function, Argument1.ApplyParameters(parameters), Arg1Properties, Arg1Composition, Argument2.ApplyParameters(parameters), Arg2Properties, Arg2Composition, Argument3.ApplyParameters(parameters), Arg3Properties, Arg3Composition, Argument4.ApplyParameters(parameters), Arg4Properties, Arg4Composition, Argument5.ApplyParameters(parameters), Arg5Properties, Arg5Composition, Argument6.ApplyParameters(parameters), Arg6Properties, Arg6Composition, Argument7.ApplyParameters(parameters), Arg7Properties, Arg7Composition);
+            return new ObservablePromotionMethodCall<T1, T2, T3, T4, T5, T6, T7, TResult>(Function, Argument1.ApplyParameters(parameters, trace), Arg1Properties, Arg1Composition, Argument2.ApplyParameters(parameters, trace), Arg2Properties, Arg2Composition, Argument3.ApplyParameters(parameters, trace), Arg3Properties, Arg3Composition, Argument4.ApplyParameters(parameters, trace), Arg4Properties, Arg4Composition, Argument5.ApplyParameters(parameters, trace), Arg5Properties, Arg5Composition, Argument6.ApplyParameters(parameters, trace), Arg6Properties, Arg6Composition, Argument7.ApplyParameters(parameters, trace), Arg7Properties, Arg7Composition);
         }
 
         public override INotificationResult Notify(IList<INotificationResult> sources)
@@ -3175,9 +3175,9 @@ namespace NMF.Expressions
             }
         }
 
-        public override INotifyExpression<TResult> ApplyParameters(IDictionary<string, object> parameters)
+        protected override INotifyExpression<TResult> ApplyParametersCore(IDictionary<string, object> parameters, IDictionary<INotifiable, INotifiable> trace)
         {
-            return new ObservablePromotionMethodCall<T1, T2, T3, T4, T5, T6, T7, T8, TResult>(Function, Argument1.ApplyParameters(parameters), Arg1Properties, Arg1Composition, Argument2.ApplyParameters(parameters), Arg2Properties, Arg2Composition, Argument3.ApplyParameters(parameters), Arg3Properties, Arg3Composition, Argument4.ApplyParameters(parameters), Arg4Properties, Arg4Composition, Argument5.ApplyParameters(parameters), Arg5Properties, Arg5Composition, Argument6.ApplyParameters(parameters), Arg6Properties, Arg6Composition, Argument7.ApplyParameters(parameters), Arg7Properties, Arg7Composition, Argument8.ApplyParameters(parameters), Arg8Properties, Arg8Composition);
+            return new ObservablePromotionMethodCall<T1, T2, T3, T4, T5, T6, T7, T8, TResult>(Function, Argument1.ApplyParameters(parameters, trace), Arg1Properties, Arg1Composition, Argument2.ApplyParameters(parameters, trace), Arg2Properties, Arg2Composition, Argument3.ApplyParameters(parameters, trace), Arg3Properties, Arg3Composition, Argument4.ApplyParameters(parameters, trace), Arg4Properties, Arg4Composition, Argument5.ApplyParameters(parameters, trace), Arg5Properties, Arg5Composition, Argument6.ApplyParameters(parameters, trace), Arg6Properties, Arg6Composition, Argument7.ApplyParameters(parameters, trace), Arg7Properties, Arg7Composition, Argument8.ApplyParameters(parameters, trace), Arg8Properties, Arg8Composition);
         }
 
         public override INotificationResult Notify(IList<INotificationResult> sources)
@@ -3951,9 +3951,9 @@ namespace NMF.Expressions
             }
         }
 
-        public override INotifyExpression<TResult> ApplyParameters(IDictionary<string, object> parameters)
+        protected override INotifyExpression<TResult> ApplyParametersCore(IDictionary<string, object> parameters, IDictionary<INotifiable, INotifiable> trace)
         {
-            return new ObservablePromotionMethodCall<T1, T2, T3, T4, T5, T6, T7, T8, T9, TResult>(Function, Argument1.ApplyParameters(parameters), Arg1Properties, Arg1Composition, Argument2.ApplyParameters(parameters), Arg2Properties, Arg2Composition, Argument3.ApplyParameters(parameters), Arg3Properties, Arg3Composition, Argument4.ApplyParameters(parameters), Arg4Properties, Arg4Composition, Argument5.ApplyParameters(parameters), Arg5Properties, Arg5Composition, Argument6.ApplyParameters(parameters), Arg6Properties, Arg6Composition, Argument7.ApplyParameters(parameters), Arg7Properties, Arg7Composition, Argument8.ApplyParameters(parameters), Arg8Properties, Arg8Composition, Argument9.ApplyParameters(parameters), Arg9Properties, Arg9Composition);
+            return new ObservablePromotionMethodCall<T1, T2, T3, T4, T5, T6, T7, T8, T9, TResult>(Function, Argument1.ApplyParameters(parameters, trace), Arg1Properties, Arg1Composition, Argument2.ApplyParameters(parameters, trace), Arg2Properties, Arg2Composition, Argument3.ApplyParameters(parameters, trace), Arg3Properties, Arg3Composition, Argument4.ApplyParameters(parameters, trace), Arg4Properties, Arg4Composition, Argument5.ApplyParameters(parameters, trace), Arg5Properties, Arg5Composition, Argument6.ApplyParameters(parameters, trace), Arg6Properties, Arg6Composition, Argument7.ApplyParameters(parameters, trace), Arg7Properties, Arg7Composition, Argument8.ApplyParameters(parameters, trace), Arg8Properties, Arg8Composition, Argument9.ApplyParameters(parameters, trace), Arg9Properties, Arg9Composition);
         }
 
         public override INotificationResult Notify(IList<INotificationResult> sources)
@@ -4811,9 +4811,9 @@ namespace NMF.Expressions
             }
         }
 
-        public override INotifyExpression<TResult> ApplyParameters(IDictionary<string, object> parameters)
+        protected override INotifyExpression<TResult> ApplyParametersCore(IDictionary<string, object> parameters, IDictionary<INotifiable, INotifiable> trace)
         {
-            return new ObservablePromotionMethodCall<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, TResult>(Function, Argument1.ApplyParameters(parameters), Arg1Properties, Arg1Composition, Argument2.ApplyParameters(parameters), Arg2Properties, Arg2Composition, Argument3.ApplyParameters(parameters), Arg3Properties, Arg3Composition, Argument4.ApplyParameters(parameters), Arg4Properties, Arg4Composition, Argument5.ApplyParameters(parameters), Arg5Properties, Arg5Composition, Argument6.ApplyParameters(parameters), Arg6Properties, Arg6Composition, Argument7.ApplyParameters(parameters), Arg7Properties, Arg7Composition, Argument8.ApplyParameters(parameters), Arg8Properties, Arg8Composition, Argument9.ApplyParameters(parameters), Arg9Properties, Arg9Composition, Argument10.ApplyParameters(parameters), Arg10Properties, Arg10Composition);
+            return new ObservablePromotionMethodCall<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, TResult>(Function, Argument1.ApplyParameters(parameters, trace), Arg1Properties, Arg1Composition, Argument2.ApplyParameters(parameters, trace), Arg2Properties, Arg2Composition, Argument3.ApplyParameters(parameters, trace), Arg3Properties, Arg3Composition, Argument4.ApplyParameters(parameters, trace), Arg4Properties, Arg4Composition, Argument5.ApplyParameters(parameters, trace), Arg5Properties, Arg5Composition, Argument6.ApplyParameters(parameters, trace), Arg6Properties, Arg6Composition, Argument7.ApplyParameters(parameters, trace), Arg7Properties, Arg7Composition, Argument8.ApplyParameters(parameters, trace), Arg8Properties, Arg8Composition, Argument9.ApplyParameters(parameters, trace), Arg9Properties, Arg9Composition, Argument10.ApplyParameters(parameters, trace), Arg10Properties, Arg10Composition);
         }
 
         public override INotificationResult Notify(IList<INotificationResult> sources)
@@ -5755,9 +5755,9 @@ namespace NMF.Expressions
             }
         }
 
-        public override INotifyExpression<TResult> ApplyParameters(IDictionary<string, object> parameters)
+        protected override INotifyExpression<TResult> ApplyParametersCore(IDictionary<string, object> parameters, IDictionary<INotifiable, INotifiable> trace)
         {
-            return new ObservablePromotionMethodCall<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, TResult>(Function, Argument1.ApplyParameters(parameters), Arg1Properties, Arg1Composition, Argument2.ApplyParameters(parameters), Arg2Properties, Arg2Composition, Argument3.ApplyParameters(parameters), Arg3Properties, Arg3Composition, Argument4.ApplyParameters(parameters), Arg4Properties, Arg4Composition, Argument5.ApplyParameters(parameters), Arg5Properties, Arg5Composition, Argument6.ApplyParameters(parameters), Arg6Properties, Arg6Composition, Argument7.ApplyParameters(parameters), Arg7Properties, Arg7Composition, Argument8.ApplyParameters(parameters), Arg8Properties, Arg8Composition, Argument9.ApplyParameters(parameters), Arg9Properties, Arg9Composition, Argument10.ApplyParameters(parameters), Arg10Properties, Arg10Composition, Argument11.ApplyParameters(parameters), Arg11Properties, Arg11Composition);
+            return new ObservablePromotionMethodCall<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, TResult>(Function, Argument1.ApplyParameters(parameters, trace), Arg1Properties, Arg1Composition, Argument2.ApplyParameters(parameters, trace), Arg2Properties, Arg2Composition, Argument3.ApplyParameters(parameters, trace), Arg3Properties, Arg3Composition, Argument4.ApplyParameters(parameters, trace), Arg4Properties, Arg4Composition, Argument5.ApplyParameters(parameters, trace), Arg5Properties, Arg5Composition, Argument6.ApplyParameters(parameters, trace), Arg6Properties, Arg6Composition, Argument7.ApplyParameters(parameters, trace), Arg7Properties, Arg7Composition, Argument8.ApplyParameters(parameters, trace), Arg8Properties, Arg8Composition, Argument9.ApplyParameters(parameters, trace), Arg9Properties, Arg9Composition, Argument10.ApplyParameters(parameters, trace), Arg10Properties, Arg10Composition, Argument11.ApplyParameters(parameters, trace), Arg11Properties, Arg11Composition);
         }
 
         public override INotificationResult Notify(IList<INotificationResult> sources)
@@ -6783,9 +6783,9 @@ namespace NMF.Expressions
             }
         }
 
-        public override INotifyExpression<TResult> ApplyParameters(IDictionary<string, object> parameters)
+        protected override INotifyExpression<TResult> ApplyParametersCore(IDictionary<string, object> parameters, IDictionary<INotifiable, INotifiable> trace)
         {
-            return new ObservablePromotionMethodCall<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, TResult>(Function, Argument1.ApplyParameters(parameters), Arg1Properties, Arg1Composition, Argument2.ApplyParameters(parameters), Arg2Properties, Arg2Composition, Argument3.ApplyParameters(parameters), Arg3Properties, Arg3Composition, Argument4.ApplyParameters(parameters), Arg4Properties, Arg4Composition, Argument5.ApplyParameters(parameters), Arg5Properties, Arg5Composition, Argument6.ApplyParameters(parameters), Arg6Properties, Arg6Composition, Argument7.ApplyParameters(parameters), Arg7Properties, Arg7Composition, Argument8.ApplyParameters(parameters), Arg8Properties, Arg8Composition, Argument9.ApplyParameters(parameters), Arg9Properties, Arg9Composition, Argument10.ApplyParameters(parameters), Arg10Properties, Arg10Composition, Argument11.ApplyParameters(parameters), Arg11Properties, Arg11Composition, Argument12.ApplyParameters(parameters), Arg12Properties, Arg12Composition);
+            return new ObservablePromotionMethodCall<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, TResult>(Function, Argument1.ApplyParameters(parameters, trace), Arg1Properties, Arg1Composition, Argument2.ApplyParameters(parameters, trace), Arg2Properties, Arg2Composition, Argument3.ApplyParameters(parameters, trace), Arg3Properties, Arg3Composition, Argument4.ApplyParameters(parameters, trace), Arg4Properties, Arg4Composition, Argument5.ApplyParameters(parameters, trace), Arg5Properties, Arg5Composition, Argument6.ApplyParameters(parameters, trace), Arg6Properties, Arg6Composition, Argument7.ApplyParameters(parameters, trace), Arg7Properties, Arg7Composition, Argument8.ApplyParameters(parameters, trace), Arg8Properties, Arg8Composition, Argument9.ApplyParameters(parameters, trace), Arg9Properties, Arg9Composition, Argument10.ApplyParameters(parameters, trace), Arg10Properties, Arg10Composition, Argument11.ApplyParameters(parameters, trace), Arg11Properties, Arg11Composition, Argument12.ApplyParameters(parameters, trace), Arg12Properties, Arg12Composition);
         }
 
         public override INotificationResult Notify(IList<INotificationResult> sources)
@@ -7895,9 +7895,9 @@ namespace NMF.Expressions
             }
         }
 
-        public override INotifyExpression<TResult> ApplyParameters(IDictionary<string, object> parameters)
+        protected override INotifyExpression<TResult> ApplyParametersCore(IDictionary<string, object> parameters, IDictionary<INotifiable, INotifiable> trace)
         {
-            return new ObservablePromotionMethodCall<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, TResult>(Function, Argument1.ApplyParameters(parameters), Arg1Properties, Arg1Composition, Argument2.ApplyParameters(parameters), Arg2Properties, Arg2Composition, Argument3.ApplyParameters(parameters), Arg3Properties, Arg3Composition, Argument4.ApplyParameters(parameters), Arg4Properties, Arg4Composition, Argument5.ApplyParameters(parameters), Arg5Properties, Arg5Composition, Argument6.ApplyParameters(parameters), Arg6Properties, Arg6Composition, Argument7.ApplyParameters(parameters), Arg7Properties, Arg7Composition, Argument8.ApplyParameters(parameters), Arg8Properties, Arg8Composition, Argument9.ApplyParameters(parameters), Arg9Properties, Arg9Composition, Argument10.ApplyParameters(parameters), Arg10Properties, Arg10Composition, Argument11.ApplyParameters(parameters), Arg11Properties, Arg11Composition, Argument12.ApplyParameters(parameters), Arg12Properties, Arg12Composition, Argument13.ApplyParameters(parameters), Arg13Properties, Arg13Composition);
+            return new ObservablePromotionMethodCall<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, TResult>(Function, Argument1.ApplyParameters(parameters, trace), Arg1Properties, Arg1Composition, Argument2.ApplyParameters(parameters, trace), Arg2Properties, Arg2Composition, Argument3.ApplyParameters(parameters, trace), Arg3Properties, Arg3Composition, Argument4.ApplyParameters(parameters, trace), Arg4Properties, Arg4Composition, Argument5.ApplyParameters(parameters, trace), Arg5Properties, Arg5Composition, Argument6.ApplyParameters(parameters, trace), Arg6Properties, Arg6Composition, Argument7.ApplyParameters(parameters, trace), Arg7Properties, Arg7Composition, Argument8.ApplyParameters(parameters, trace), Arg8Properties, Arg8Composition, Argument9.ApplyParameters(parameters, trace), Arg9Properties, Arg9Composition, Argument10.ApplyParameters(parameters, trace), Arg10Properties, Arg10Composition, Argument11.ApplyParameters(parameters, trace), Arg11Properties, Arg11Composition, Argument12.ApplyParameters(parameters, trace), Arg12Properties, Arg12Composition, Argument13.ApplyParameters(parameters, trace), Arg13Properties, Arg13Composition);
         }
 
         public override INotificationResult Notify(IList<INotificationResult> sources)
@@ -9091,9 +9091,9 @@ namespace NMF.Expressions
             }
         }
 
-        public override INotifyExpression<TResult> ApplyParameters(IDictionary<string, object> parameters)
+        protected override INotifyExpression<TResult> ApplyParametersCore(IDictionary<string, object> parameters, IDictionary<INotifiable, INotifiable> trace)
         {
-            return new ObservablePromotionMethodCall<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, TResult>(Function, Argument1.ApplyParameters(parameters), Arg1Properties, Arg1Composition, Argument2.ApplyParameters(parameters), Arg2Properties, Arg2Composition, Argument3.ApplyParameters(parameters), Arg3Properties, Arg3Composition, Argument4.ApplyParameters(parameters), Arg4Properties, Arg4Composition, Argument5.ApplyParameters(parameters), Arg5Properties, Arg5Composition, Argument6.ApplyParameters(parameters), Arg6Properties, Arg6Composition, Argument7.ApplyParameters(parameters), Arg7Properties, Arg7Composition, Argument8.ApplyParameters(parameters), Arg8Properties, Arg8Composition, Argument9.ApplyParameters(parameters), Arg9Properties, Arg9Composition, Argument10.ApplyParameters(parameters), Arg10Properties, Arg10Composition, Argument11.ApplyParameters(parameters), Arg11Properties, Arg11Composition, Argument12.ApplyParameters(parameters), Arg12Properties, Arg12Composition, Argument13.ApplyParameters(parameters), Arg13Properties, Arg13Composition, Argument14.ApplyParameters(parameters), Arg14Properties, Arg14Composition);
+            return new ObservablePromotionMethodCall<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, TResult>(Function, Argument1.ApplyParameters(parameters, trace), Arg1Properties, Arg1Composition, Argument2.ApplyParameters(parameters, trace), Arg2Properties, Arg2Composition, Argument3.ApplyParameters(parameters, trace), Arg3Properties, Arg3Composition, Argument4.ApplyParameters(parameters, trace), Arg4Properties, Arg4Composition, Argument5.ApplyParameters(parameters, trace), Arg5Properties, Arg5Composition, Argument6.ApplyParameters(parameters, trace), Arg6Properties, Arg6Composition, Argument7.ApplyParameters(parameters, trace), Arg7Properties, Arg7Composition, Argument8.ApplyParameters(parameters, trace), Arg8Properties, Arg8Composition, Argument9.ApplyParameters(parameters, trace), Arg9Properties, Arg9Composition, Argument10.ApplyParameters(parameters, trace), Arg10Properties, Arg10Composition, Argument11.ApplyParameters(parameters, trace), Arg11Properties, Arg11Composition, Argument12.ApplyParameters(parameters, trace), Arg12Properties, Arg12Composition, Argument13.ApplyParameters(parameters, trace), Arg13Properties, Arg13Composition, Argument14.ApplyParameters(parameters, trace), Arg14Properties, Arg14Composition);
         }
 
         public override INotificationResult Notify(IList<INotificationResult> sources)
@@ -10371,9 +10371,9 @@ namespace NMF.Expressions
             }
         }
 
-        public override INotifyExpression<TResult> ApplyParameters(IDictionary<string, object> parameters)
+        protected override INotifyExpression<TResult> ApplyParametersCore(IDictionary<string, object> parameters, IDictionary<INotifiable, INotifiable> trace)
         {
-            return new ObservablePromotionMethodCall<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, TResult>(Function, Argument1.ApplyParameters(parameters), Arg1Properties, Arg1Composition, Argument2.ApplyParameters(parameters), Arg2Properties, Arg2Composition, Argument3.ApplyParameters(parameters), Arg3Properties, Arg3Composition, Argument4.ApplyParameters(parameters), Arg4Properties, Arg4Composition, Argument5.ApplyParameters(parameters), Arg5Properties, Arg5Composition, Argument6.ApplyParameters(parameters), Arg6Properties, Arg6Composition, Argument7.ApplyParameters(parameters), Arg7Properties, Arg7Composition, Argument8.ApplyParameters(parameters), Arg8Properties, Arg8Composition, Argument9.ApplyParameters(parameters), Arg9Properties, Arg9Composition, Argument10.ApplyParameters(parameters), Arg10Properties, Arg10Composition, Argument11.ApplyParameters(parameters), Arg11Properties, Arg11Composition, Argument12.ApplyParameters(parameters), Arg12Properties, Arg12Composition, Argument13.ApplyParameters(parameters), Arg13Properties, Arg13Composition, Argument14.ApplyParameters(parameters), Arg14Properties, Arg14Composition, Argument15.ApplyParameters(parameters), Arg15Properties, Arg15Composition);
+            return new ObservablePromotionMethodCall<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, TResult>(Function, Argument1.ApplyParameters(parameters, trace), Arg1Properties, Arg1Composition, Argument2.ApplyParameters(parameters, trace), Arg2Properties, Arg2Composition, Argument3.ApplyParameters(parameters, trace), Arg3Properties, Arg3Composition, Argument4.ApplyParameters(parameters, trace), Arg4Properties, Arg4Composition, Argument5.ApplyParameters(parameters, trace), Arg5Properties, Arg5Composition, Argument6.ApplyParameters(parameters, trace), Arg6Properties, Arg6Composition, Argument7.ApplyParameters(parameters, trace), Arg7Properties, Arg7Composition, Argument8.ApplyParameters(parameters, trace), Arg8Properties, Arg8Composition, Argument9.ApplyParameters(parameters, trace), Arg9Properties, Arg9Composition, Argument10.ApplyParameters(parameters, trace), Arg10Properties, Arg10Composition, Argument11.ApplyParameters(parameters, trace), Arg11Properties, Arg11Composition, Argument12.ApplyParameters(parameters, trace), Arg12Properties, Arg12Composition, Argument13.ApplyParameters(parameters, trace), Arg13Properties, Arg13Composition, Argument14.ApplyParameters(parameters, trace), Arg14Properties, Arg14Composition, Argument15.ApplyParameters(parameters, trace), Arg15Properties, Arg15Composition);
         }
 
         public override INotificationResult Notify(IList<INotificationResult> sources)

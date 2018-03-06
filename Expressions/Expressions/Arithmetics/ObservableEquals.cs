@@ -27,9 +27,9 @@ namespace NMF.Expressions.Arithmetics
             return EqualityComparer<T>.Default.Equals(Left.Value, Right.Value);
         }
 
-        public override INotifyExpression<bool> ApplyParameters(IDictionary<string, object> parameters)
+        protected override INotifyExpression<bool> ApplyParametersCore(IDictionary<string, object> parameters, IDictionary<INotifiable, INotifiable> trace)
         {
-            return new ObservableEquals<T>(Left.ApplyParameters(parameters), Right.ApplyParameters(parameters));
+            return new ObservableEquals<T>(Left.ApplyParameters(parameters, trace), Right.ApplyParameters(parameters, trace));
         }
 
         public override ExpressionType NodeType
@@ -62,9 +62,9 @@ namespace NMF.Expressions.Arithmetics
             return !EqualityComparer<T>.Default.Equals(Left.Value, Right.Value);
         }
 
-        public override INotifyExpression<bool> ApplyParameters(IDictionary<string, object> parameters)
+        protected override INotifyExpression<bool> ApplyParametersCore(IDictionary<string, object> parameters, IDictionary<INotifiable, INotifiable> trace)
         {
-            return new ObservableNotEquals<T>(Left.ApplyParameters(parameters), Right.ApplyParameters(parameters));
+            return new ObservableNotEquals<T>(Left.ApplyParameters(parameters, trace), Right.ApplyParameters(parameters, trace));
         }
 
         public override ExpressionType NodeType

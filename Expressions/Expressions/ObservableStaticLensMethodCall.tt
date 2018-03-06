@@ -54,11 +54,11 @@ namespace NMF.Expressions
             LensPut = lensPut;
         }
 
-        public override INotifyExpression<TResult> ApplyParameters(IDictionary<string, object> parameters)
+        protected override INotifyExpression<TResult> ApplyParametersCore(IDictionary<string, object> parameters, IDictionary<INotifiable, INotifiable> trace)
         {
-			var newArgument1 = Argument1.ApplyParameters(parameters);
+			var newArgument1 = Argument1.ApplyParameters(parameters, trace);
 			if (newArgument1 == Argument1) return this;
-            return new ObservableStaticLensMethodCall<<# for (int j = 1; j <= i; j++) { #>T<#= j #>, <# } #>TResult>(Function, LensPut.ApplyNewTarget(newArgument1 as INotifyReversableValue<T1>), newArgument1<# for (int j = 2; j <= i; j++) { #>, Argument<#= j #>.ApplyParameters(parameters)<# } #>);
+            return new ObservableStaticLensMethodCall<<# for (int j = 1; j <= i; j++) { #>T<#= j #>, <# } #>TResult>(Function, LensPut.ApplyNewTarget(newArgument1 as INotifyReversableValue<T1>), newArgument1<# for (int j = 2; j <= i; j++) { #>, Argument<#= j #>.ApplyParameters(parameters, trace)<# } #>);
         }
     }
 <#

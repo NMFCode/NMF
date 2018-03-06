@@ -82,9 +82,9 @@ namespace NMF.Expressions
             RemoveAction = removeMethod;
         }
         
-        public override ObservableMemberBinding<T> ApplyParameters(INotifyExpression<T> newTarget, IDictionary<string, object> parameters)
+        public override ObservableMemberBinding<T> ApplyParameters(INotifyExpression<T> newTarget, IDictionary<string, object> parameters, IDictionary<INotifiable, INotifiable> trace)
         {
-            return new ObservableListInitializer<T, TElement>(newTarget, Value.ApplyParameters(parameters), AddAction, RemoveAction);
+            return new ObservableListInitializer<T, TElement>(newTarget, Value.ApplyParameters(parameters, trace), AddAction, RemoveAction);
         }
 
         public override INotificationResult Notify(IList<INotificationResult> sources)

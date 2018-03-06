@@ -37,7 +37,7 @@ namespace NMF.Expressions
             if (isParameterFree) return new ReversableProxyExpression<TResult>(expression, newValue => UpdateHandler(in1, newValue));
             var parameters = new Dictionary<string, object>();
             parameters.Add(parameter1Name, in1);
-            var result = expression.ApplyParameters(parameters);
+            var result = expression.ApplyParameters(parameters, new Dictionary<INotifiable, INotifiable>());
             return new ReversableProxyExpression<TResult>(result, newValue => UpdateHandler(in1, newValue));
         }
 
@@ -51,7 +51,7 @@ namespace NMF.Expressions
             if (isParameterFree) return new ReversableProxyExpression<TResult>(expression, newValue => UpdateHandler(in1.Value, newValue));
             var parameters = new Dictionary<string, object>();
             parameters.Add(parameter1Name, in1);
-            var result = expression.ApplyParameters(parameters) as INotifyReversableExpression<TResult>;
+            var result = expression.ApplyParameters(parameters, new Dictionary<INotifiable, INotifiable>()) as INotifyReversableExpression<TResult>;
             return new ReversableProxyExpression<TResult>(result, newValue => UpdateHandler(in1.Value, newValue));
         }
 
@@ -102,7 +102,7 @@ namespace NMF.Expressions
             var parameters = new Dictionary<string, object>();
             parameters.Add(parameter1Name, in1);
             parameters.Add(parameter2Name, in2);
-            var result = expression.ApplyParameters(parameters);
+            var result = expression.ApplyParameters(parameters, new Dictionary<INotifiable, INotifiable>());
             return new ReversableProxyExpression<TResult>(result, newValue => UpdateHandler(in1, in2, newValue));
         }
 
@@ -118,7 +118,7 @@ namespace NMF.Expressions
             var parameters = new Dictionary<string, object>();
             parameters.Add(parameter1Name, in1);
             parameters.Add(parameter2Name, in2);
-            var result = expression.ApplyParameters(parameters) as INotifyReversableExpression<TResult>;
+            var result = expression.ApplyParameters(parameters, new Dictionary<INotifiable, INotifiable>()) as INotifyReversableExpression<TResult>;
             return new ReversableProxyExpression<TResult>(result, newValue => UpdateHandler(in1.Value, in2.Value, newValue));
         }
 
@@ -172,7 +172,7 @@ namespace NMF.Expressions
             parameters.Add(parameter1Name, in1);
             parameters.Add(parameter2Name, in2);
             parameters.Add(parameter3Name, in3);
-            var result = expression.ApplyParameters(parameters);
+            var result = expression.ApplyParameters(parameters, new Dictionary<INotifiable, INotifiable>());
             return new ReversableProxyExpression<TResult>(result, newValue => UpdateHandler(in1, in2, in3, newValue));
         }
 
@@ -190,7 +190,7 @@ namespace NMF.Expressions
             parameters.Add(parameter1Name, in1);
             parameters.Add(parameter2Name, in2);
             parameters.Add(parameter3Name, in3);
-            var result = expression.ApplyParameters(parameters) as INotifyReversableExpression<TResult>;
+            var result = expression.ApplyParameters(parameters, new Dictionary<INotifiable, INotifiable>()) as INotifyReversableExpression<TResult>;
             return new ReversableProxyExpression<TResult>(result, newValue => UpdateHandler(in1.Value, in2.Value, in3.Value, newValue));
         }
 
@@ -247,7 +247,7 @@ namespace NMF.Expressions
             parameters.Add(parameter2Name, in2);
             parameters.Add(parameter3Name, in3);
             parameters.Add(parameter4Name, in4);
-            var result = expression.ApplyParameters(parameters);
+            var result = expression.ApplyParameters(parameters, new Dictionary<INotifiable, INotifiable>());
             return new ReversableProxyExpression<TResult>(result, newValue => UpdateHandler(in1, in2, in3, in4, newValue));
         }
 
@@ -267,7 +267,7 @@ namespace NMF.Expressions
             parameters.Add(parameter2Name, in2);
             parameters.Add(parameter3Name, in3);
             parameters.Add(parameter4Name, in4);
-            var result = expression.ApplyParameters(parameters) as INotifyReversableExpression<TResult>;
+            var result = expression.ApplyParameters(parameters, new Dictionary<INotifiable, INotifiable>()) as INotifyReversableExpression<TResult>;
             return new ReversableProxyExpression<TResult>(result, newValue => UpdateHandler(in1.Value, in2.Value, in3.Value, in4.Value, newValue));
         }
 
@@ -327,7 +327,7 @@ namespace NMF.Expressions
             parameters.Add(parameter3Name, in3);
             parameters.Add(parameter4Name, in4);
             parameters.Add(parameter5Name, in5);
-            var result = expression.ApplyParameters(parameters);
+            var result = expression.ApplyParameters(parameters, new Dictionary<INotifiable, INotifiable>());
             return new ReversableProxyExpression<TResult>(result, newValue => UpdateHandler(in1, in2, in3, in4, in5, newValue));
         }
 
@@ -349,7 +349,7 @@ namespace NMF.Expressions
             parameters.Add(parameter3Name, in3);
             parameters.Add(parameter4Name, in4);
             parameters.Add(parameter5Name, in5);
-            var result = expression.ApplyParameters(parameters) as INotifyReversableExpression<TResult>;
+            var result = expression.ApplyParameters(parameters, new Dictionary<INotifiable, INotifiable>()) as INotifyReversableExpression<TResult>;
             return new ReversableProxyExpression<TResult>(result, newValue => UpdateHandler(in1.Value, in2.Value, in3.Value, in4.Value, in5.Value, newValue));
         }
 
@@ -412,7 +412,7 @@ namespace NMF.Expressions
             parameters.Add(parameter4Name, in4);
             parameters.Add(parameter5Name, in5);
             parameters.Add(parameter6Name, in6);
-            var result = expression.ApplyParameters(parameters);
+            var result = expression.ApplyParameters(parameters, new Dictionary<INotifiable, INotifiable>());
             return new ReversableProxyExpression<TResult>(result, newValue => UpdateHandler(in1, in2, in3, in4, in5, in6, newValue));
         }
 
@@ -436,7 +436,7 @@ namespace NMF.Expressions
             parameters.Add(parameter4Name, in4);
             parameters.Add(parameter5Name, in5);
             parameters.Add(parameter6Name, in6);
-            var result = expression.ApplyParameters(parameters) as INotifyReversableExpression<TResult>;
+            var result = expression.ApplyParameters(parameters, new Dictionary<INotifiable, INotifiable>()) as INotifyReversableExpression<TResult>;
             return new ReversableProxyExpression<TResult>(result, newValue => UpdateHandler(in1.Value, in2.Value, in3.Value, in4.Value, in5.Value, in6.Value, newValue));
         }
 
@@ -502,7 +502,7 @@ namespace NMF.Expressions
             parameters.Add(parameter5Name, in5);
             parameters.Add(parameter6Name, in6);
             parameters.Add(parameter7Name, in7);
-            var result = expression.ApplyParameters(parameters);
+            var result = expression.ApplyParameters(parameters, new Dictionary<INotifiable, INotifiable>());
             return new ReversableProxyExpression<TResult>(result, newValue => UpdateHandler(in1, in2, in3, in4, in5, in6, in7, newValue));
         }
 
@@ -528,7 +528,7 @@ namespace NMF.Expressions
             parameters.Add(parameter5Name, in5);
             parameters.Add(parameter6Name, in6);
             parameters.Add(parameter7Name, in7);
-            var result = expression.ApplyParameters(parameters) as INotifyReversableExpression<TResult>;
+            var result = expression.ApplyParameters(parameters, new Dictionary<INotifiable, INotifiable>()) as INotifyReversableExpression<TResult>;
             return new ReversableProxyExpression<TResult>(result, newValue => UpdateHandler(in1.Value, in2.Value, in3.Value, in4.Value, in5.Value, in6.Value, in7.Value, newValue));
         }
 
@@ -597,7 +597,7 @@ namespace NMF.Expressions
             parameters.Add(parameter6Name, in6);
             parameters.Add(parameter7Name, in7);
             parameters.Add(parameter8Name, in8);
-            var result = expression.ApplyParameters(parameters);
+            var result = expression.ApplyParameters(parameters, new Dictionary<INotifiable, INotifiable>());
             return new ReversableProxyExpression<TResult>(result, newValue => UpdateHandler(in1, in2, in3, in4, in5, in6, in7, in8, newValue));
         }
 
@@ -625,7 +625,7 @@ namespace NMF.Expressions
             parameters.Add(parameter6Name, in6);
             parameters.Add(parameter7Name, in7);
             parameters.Add(parameter8Name, in8);
-            var result = expression.ApplyParameters(parameters) as INotifyReversableExpression<TResult>;
+            var result = expression.ApplyParameters(parameters, new Dictionary<INotifiable, INotifiable>()) as INotifyReversableExpression<TResult>;
             return new ReversableProxyExpression<TResult>(result, newValue => UpdateHandler(in1.Value, in2.Value, in3.Value, in4.Value, in5.Value, in6.Value, in7.Value, in8.Value, newValue));
         }
 
@@ -697,7 +697,7 @@ namespace NMF.Expressions
             parameters.Add(parameter7Name, in7);
             parameters.Add(parameter8Name, in8);
             parameters.Add(parameter9Name, in9);
-            var result = expression.ApplyParameters(parameters);
+            var result = expression.ApplyParameters(parameters, new Dictionary<INotifiable, INotifiable>());
             return new ReversableProxyExpression<TResult>(result, newValue => UpdateHandler(in1, in2, in3, in4, in5, in6, in7, in8, in9, newValue));
         }
 
@@ -727,7 +727,7 @@ namespace NMF.Expressions
             parameters.Add(parameter7Name, in7);
             parameters.Add(parameter8Name, in8);
             parameters.Add(parameter9Name, in9);
-            var result = expression.ApplyParameters(parameters) as INotifyReversableExpression<TResult>;
+            var result = expression.ApplyParameters(parameters, new Dictionary<INotifiable, INotifiable>()) as INotifyReversableExpression<TResult>;
             return new ReversableProxyExpression<TResult>(result, newValue => UpdateHandler(in1.Value, in2.Value, in3.Value, in4.Value, in5.Value, in6.Value, in7.Value, in8.Value, in9.Value, newValue));
         }
 
@@ -802,7 +802,7 @@ namespace NMF.Expressions
             parameters.Add(parameter8Name, in8);
             parameters.Add(parameter9Name, in9);
             parameters.Add(parameter10Name, in10);
-            var result = expression.ApplyParameters(parameters);
+            var result = expression.ApplyParameters(parameters, new Dictionary<INotifiable, INotifiable>());
             return new ReversableProxyExpression<TResult>(result, newValue => UpdateHandler(in1, in2, in3, in4, in5, in6, in7, in8, in9, in10, newValue));
         }
 
@@ -834,7 +834,7 @@ namespace NMF.Expressions
             parameters.Add(parameter8Name, in8);
             parameters.Add(parameter9Name, in9);
             parameters.Add(parameter10Name, in10);
-            var result = expression.ApplyParameters(parameters) as INotifyReversableExpression<TResult>;
+            var result = expression.ApplyParameters(parameters, new Dictionary<INotifiable, INotifiable>()) as INotifyReversableExpression<TResult>;
             return new ReversableProxyExpression<TResult>(result, newValue => UpdateHandler(in1.Value, in2.Value, in3.Value, in4.Value, in5.Value, in6.Value, in7.Value, in8.Value, in9.Value, in10.Value, newValue));
         }
 
@@ -912,7 +912,7 @@ namespace NMF.Expressions
             parameters.Add(parameter9Name, in9);
             parameters.Add(parameter10Name, in10);
             parameters.Add(parameter11Name, in11);
-            var result = expression.ApplyParameters(parameters);
+            var result = expression.ApplyParameters(parameters, new Dictionary<INotifiable, INotifiable>());
             return new ReversableProxyExpression<TResult>(result, newValue => UpdateHandler(in1, in2, in3, in4, in5, in6, in7, in8, in9, in10, in11, newValue));
         }
 
@@ -946,7 +946,7 @@ namespace NMF.Expressions
             parameters.Add(parameter9Name, in9);
             parameters.Add(parameter10Name, in10);
             parameters.Add(parameter11Name, in11);
-            var result = expression.ApplyParameters(parameters) as INotifyReversableExpression<TResult>;
+            var result = expression.ApplyParameters(parameters, new Dictionary<INotifiable, INotifiable>()) as INotifyReversableExpression<TResult>;
             return new ReversableProxyExpression<TResult>(result, newValue => UpdateHandler(in1.Value, in2.Value, in3.Value, in4.Value, in5.Value, in6.Value, in7.Value, in8.Value, in9.Value, in10.Value, in11.Value, newValue));
         }
 
@@ -1027,7 +1027,7 @@ namespace NMF.Expressions
             parameters.Add(parameter10Name, in10);
             parameters.Add(parameter11Name, in11);
             parameters.Add(parameter12Name, in12);
-            var result = expression.ApplyParameters(parameters);
+            var result = expression.ApplyParameters(parameters, new Dictionary<INotifiable, INotifiable>());
             return new ReversableProxyExpression<TResult>(result, newValue => UpdateHandler(in1, in2, in3, in4, in5, in6, in7, in8, in9, in10, in11, in12, newValue));
         }
 
@@ -1063,7 +1063,7 @@ namespace NMF.Expressions
             parameters.Add(parameter10Name, in10);
             parameters.Add(parameter11Name, in11);
             parameters.Add(parameter12Name, in12);
-            var result = expression.ApplyParameters(parameters) as INotifyReversableExpression<TResult>;
+            var result = expression.ApplyParameters(parameters, new Dictionary<INotifiable, INotifiable>()) as INotifyReversableExpression<TResult>;
             return new ReversableProxyExpression<TResult>(result, newValue => UpdateHandler(in1.Value, in2.Value, in3.Value, in4.Value, in5.Value, in6.Value, in7.Value, in8.Value, in9.Value, in10.Value, in11.Value, in12.Value, newValue));
         }
 
@@ -1147,7 +1147,7 @@ namespace NMF.Expressions
             parameters.Add(parameter11Name, in11);
             parameters.Add(parameter12Name, in12);
             parameters.Add(parameter13Name, in13);
-            var result = expression.ApplyParameters(parameters);
+            var result = expression.ApplyParameters(parameters, new Dictionary<INotifiable, INotifiable>());
             return new ReversableProxyExpression<TResult>(result, newValue => UpdateHandler(in1, in2, in3, in4, in5, in6, in7, in8, in9, in10, in11, in12, in13, newValue));
         }
 
@@ -1185,7 +1185,7 @@ namespace NMF.Expressions
             parameters.Add(parameter11Name, in11);
             parameters.Add(parameter12Name, in12);
             parameters.Add(parameter13Name, in13);
-            var result = expression.ApplyParameters(parameters) as INotifyReversableExpression<TResult>;
+            var result = expression.ApplyParameters(parameters, new Dictionary<INotifiable, INotifiable>()) as INotifyReversableExpression<TResult>;
             return new ReversableProxyExpression<TResult>(result, newValue => UpdateHandler(in1.Value, in2.Value, in3.Value, in4.Value, in5.Value, in6.Value, in7.Value, in8.Value, in9.Value, in10.Value, in11.Value, in12.Value, in13.Value, newValue));
         }
 
@@ -1272,7 +1272,7 @@ namespace NMF.Expressions
             parameters.Add(parameter12Name, in12);
             parameters.Add(parameter13Name, in13);
             parameters.Add(parameter14Name, in14);
-            var result = expression.ApplyParameters(parameters);
+            var result = expression.ApplyParameters(parameters, new Dictionary<INotifiable, INotifiable>());
             return new ReversableProxyExpression<TResult>(result, newValue => UpdateHandler(in1, in2, in3, in4, in5, in6, in7, in8, in9, in10, in11, in12, in13, in14, newValue));
         }
 
@@ -1312,7 +1312,7 @@ namespace NMF.Expressions
             parameters.Add(parameter12Name, in12);
             parameters.Add(parameter13Name, in13);
             parameters.Add(parameter14Name, in14);
-            var result = expression.ApplyParameters(parameters) as INotifyReversableExpression<TResult>;
+            var result = expression.ApplyParameters(parameters, new Dictionary<INotifiable, INotifiable>()) as INotifyReversableExpression<TResult>;
             return new ReversableProxyExpression<TResult>(result, newValue => UpdateHandler(in1.Value, in2.Value, in3.Value, in4.Value, in5.Value, in6.Value, in7.Value, in8.Value, in9.Value, in10.Value, in11.Value, in12.Value, in13.Value, in14.Value, newValue));
         }
 
@@ -1402,7 +1402,7 @@ namespace NMF.Expressions
             parameters.Add(parameter13Name, in13);
             parameters.Add(parameter14Name, in14);
             parameters.Add(parameter15Name, in15);
-            var result = expression.ApplyParameters(parameters);
+            var result = expression.ApplyParameters(parameters, new Dictionary<INotifiable, INotifiable>());
             return new ReversableProxyExpression<TResult>(result, newValue => UpdateHandler(in1, in2, in3, in4, in5, in6, in7, in8, in9, in10, in11, in12, in13, in14, in15, newValue));
         }
 
@@ -1444,7 +1444,7 @@ namespace NMF.Expressions
             parameters.Add(parameter13Name, in13);
             parameters.Add(parameter14Name, in14);
             parameters.Add(parameter15Name, in15);
-            var result = expression.ApplyParameters(parameters) as INotifyReversableExpression<TResult>;
+            var result = expression.ApplyParameters(parameters, new Dictionary<INotifiable, INotifiable>()) as INotifyReversableExpression<TResult>;
             return new ReversableProxyExpression<TResult>(result, newValue => UpdateHandler(in1.Value, in2.Value, in3.Value, in4.Value, in5.Value, in6.Value, in7.Value, in8.Value, in9.Value, in10.Value, in11.Value, in12.Value, in13.Value, in14.Value, in15.Value, newValue));
         }
 

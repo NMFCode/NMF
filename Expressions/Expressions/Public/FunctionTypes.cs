@@ -65,7 +65,7 @@ namespace NMF.Expressions
             {
                 parameters.Add(parameter1Name, in1);
             }
-            return expression.ApplyParameters(parameters);
+            return expression.ApplyParameters(parameters, new Dictionary<INotifiable, INotifiable>());
         }
 
         /// <summary>
@@ -80,7 +80,7 @@ namespace NMF.Expressions
             {
                 parameters.Add(parameter1Name, in1);
             }
-            return expression.ApplyParameters(parameters);
+            return expression.ApplyParameters(parameters, new Dictionary<INotifiable, INotifiable>());
         }
 
 
@@ -97,7 +97,7 @@ namespace NMF.Expressions
             {
                 parameters.Add(parameter1Name, in1);
             }
-            return expression.ApplyParameters(parameters) as INotifyReversableExpression<TResult>;
+            return expression.ApplyParameters(parameters, new Dictionary<INotifiable, INotifiable>()) as INotifyReversableExpression<TResult>;
         }
 
         /// <summary>
@@ -113,7 +113,7 @@ namespace NMF.Expressions
             {
                 parameters.Add(parameter1Name, in1);
             }
-            return expression.ApplyParameters(parameters) as INotifyReversableExpression<TResult>;
+            return expression.ApplyParameters(parameters, new Dictionary<INotifiable, INotifiable>()) as INotifyReversableExpression<TResult>;
         }
 
 
@@ -218,7 +218,7 @@ namespace NMF.Expressions
                 parameters.Add(parameter1Name, in1);
                 parameters.Add(parameter2Name, in2);
             }
-            return expression.ApplyParameters(parameters);
+            return expression.ApplyParameters(parameters, new Dictionary<INotifiable, INotifiable>());
         }
 
         /// <summary>
@@ -235,7 +235,7 @@ namespace NMF.Expressions
                 parameters.Add(parameter1Name, in1);
                 parameters.Add(parameter2Name, in2);
             }
-            return expression.ApplyParameters(parameters);
+            return expression.ApplyParameters(parameters, new Dictionary<INotifiable, INotifiable>());
         }
 
         /// <summary>
@@ -259,7 +259,7 @@ namespace NMF.Expressions
             if (isParameterFree) return new ObservingFunc<T2, TResult>(expression, true);
             var parameters = new Dictionary<string, object>();
             parameters.Add(parameter1Name, in1);
-            var result = expression.ApplyParameters(parameters);
+            var result = expression.ApplyParameters(parameters, new Dictionary<INotifiable, INotifiable>());
             return new ObservingFunc<T2, TResult>(result, result.IsParameterFree);
         }
 
@@ -278,7 +278,7 @@ namespace NMF.Expressions
                 parameters.Add(parameter1Name, in1);
                 parameters.Add(parameter2Name, in2);
             }
-            return expression.ApplyParameters(parameters) as INotifyReversableExpression<TResult>;
+            return expression.ApplyParameters(parameters, new Dictionary<INotifiable, INotifiable>()) as INotifyReversableExpression<TResult>;
         }
 
         /// <summary>
@@ -296,7 +296,7 @@ namespace NMF.Expressions
                 parameters.Add(parameter1Name, in1);
                 parameters.Add(parameter2Name, in2);
             }
-            return expression.ApplyParameters(parameters) as INotifyReversableExpression<TResult>;
+            return expression.ApplyParameters(parameters, new Dictionary<INotifiable, INotifiable>()) as INotifyReversableExpression<TResult>;
         }
 
 
@@ -407,7 +407,7 @@ namespace NMF.Expressions
                 parameters.Add(parameter2Name, in2);
                 parameters.Add(parameter3Name, in3);
             }
-            return expression.ApplyParameters(parameters);
+            return expression.ApplyParameters(parameters, new Dictionary<INotifiable, INotifiable>());
         }
 
         /// <summary>
@@ -426,7 +426,7 @@ namespace NMF.Expressions
                 parameters.Add(parameter2Name, in2);
                 parameters.Add(parameter3Name, in3);
             }
-            return expression.ApplyParameters(parameters);
+            return expression.ApplyParameters(parameters, new Dictionary<INotifiable, INotifiable>());
         }
 
         /// <summary>
@@ -450,7 +450,7 @@ namespace NMF.Expressions
             if (isParameterFree) return new ObservingFunc<T2, T3, TResult>(expression, true);
             var parameters = new Dictionary<string, object>();
             parameters.Add(parameter1Name, in1);
-            var result = expression.ApplyParameters(parameters);
+            var result = expression.ApplyParameters(parameters, new Dictionary<INotifiable, INotifiable>());
             return new ObservingFunc<T2, T3, TResult>(result, result.IsParameterFree);
         }
         /// <summary>
@@ -477,7 +477,7 @@ namespace NMF.Expressions
             var parameters = new Dictionary<string, object>();
             parameters.Add(parameter1Name, in1);
             parameters.Add(parameter2Name, in2);
-            var result = expression.ApplyParameters(parameters);
+            var result = expression.ApplyParameters(parameters, new Dictionary<INotifiable, INotifiable>());
             return new ObservingFunc<T3, TResult>(result, result.IsParameterFree);
         }
 
@@ -498,7 +498,7 @@ namespace NMF.Expressions
                 parameters.Add(parameter2Name, in2);
                 parameters.Add(parameter3Name, in3);
             }
-            return expression.ApplyParameters(parameters) as INotifyReversableExpression<TResult>;
+            return expression.ApplyParameters(parameters, new Dictionary<INotifiable, INotifiable>()) as INotifyReversableExpression<TResult>;
         }
 
         /// <summary>
@@ -518,7 +518,7 @@ namespace NMF.Expressions
                 parameters.Add(parameter2Name, in2);
                 parameters.Add(parameter3Name, in3);
             }
-            return expression.ApplyParameters(parameters) as INotifyReversableExpression<TResult>;
+            return expression.ApplyParameters(parameters, new Dictionary<INotifiable, INotifiable>()) as INotifyReversableExpression<TResult>;
         }
 
 
@@ -635,7 +635,7 @@ namespace NMF.Expressions
                 parameters.Add(parameter3Name, in3);
                 parameters.Add(parameter4Name, in4);
             }
-            return expression.ApplyParameters(parameters);
+            return expression.ApplyParameters(parameters, new Dictionary<INotifiable, INotifiable>());
         }
 
         /// <summary>
@@ -656,7 +656,7 @@ namespace NMF.Expressions
                 parameters.Add(parameter3Name, in3);
                 parameters.Add(parameter4Name, in4);
             }
-            return expression.ApplyParameters(parameters);
+            return expression.ApplyParameters(parameters, new Dictionary<INotifiable, INotifiable>());
         }
 
         /// <summary>
@@ -680,7 +680,7 @@ namespace NMF.Expressions
             if (isParameterFree) return new ObservingFunc<T2, T3, T4, TResult>(expression, true);
             var parameters = new Dictionary<string, object>();
             parameters.Add(parameter1Name, in1);
-            var result = expression.ApplyParameters(parameters);
+            var result = expression.ApplyParameters(parameters, new Dictionary<INotifiable, INotifiable>());
             return new ObservingFunc<T2, T3, T4, TResult>(result, result.IsParameterFree);
         }
         /// <summary>
@@ -707,7 +707,7 @@ namespace NMF.Expressions
             var parameters = new Dictionary<string, object>();
             parameters.Add(parameter1Name, in1);
             parameters.Add(parameter2Name, in2);
-            var result = expression.ApplyParameters(parameters);
+            var result = expression.ApplyParameters(parameters, new Dictionary<INotifiable, INotifiable>());
             return new ObservingFunc<T3, T4, TResult>(result, result.IsParameterFree);
         }
         /// <summary>
@@ -737,7 +737,7 @@ namespace NMF.Expressions
             parameters.Add(parameter1Name, in1);
             parameters.Add(parameter2Name, in2);
             parameters.Add(parameter3Name, in3);
-            var result = expression.ApplyParameters(parameters);
+            var result = expression.ApplyParameters(parameters, new Dictionary<INotifiable, INotifiable>());
             return new ObservingFunc<T4, TResult>(result, result.IsParameterFree);
         }
 
@@ -760,7 +760,7 @@ namespace NMF.Expressions
                 parameters.Add(parameter3Name, in3);
                 parameters.Add(parameter4Name, in4);
             }
-            return expression.ApplyParameters(parameters) as INotifyReversableExpression<TResult>;
+            return expression.ApplyParameters(parameters, new Dictionary<INotifiable, INotifiable>()) as INotifyReversableExpression<TResult>;
         }
 
         /// <summary>
@@ -782,7 +782,7 @@ namespace NMF.Expressions
                 parameters.Add(parameter3Name, in3);
                 parameters.Add(parameter4Name, in4);
             }
-            return expression.ApplyParameters(parameters) as INotifyReversableExpression<TResult>;
+            return expression.ApplyParameters(parameters, new Dictionary<INotifiable, INotifiable>()) as INotifyReversableExpression<TResult>;
         }
 
 
@@ -905,7 +905,7 @@ namespace NMF.Expressions
                 parameters.Add(parameter4Name, in4);
                 parameters.Add(parameter5Name, in5);
             }
-            return expression.ApplyParameters(parameters);
+            return expression.ApplyParameters(parameters, new Dictionary<INotifiable, INotifiable>());
         }
 
         /// <summary>
@@ -928,7 +928,7 @@ namespace NMF.Expressions
                 parameters.Add(parameter4Name, in4);
                 parameters.Add(parameter5Name, in5);
             }
-            return expression.ApplyParameters(parameters);
+            return expression.ApplyParameters(parameters, new Dictionary<INotifiable, INotifiable>());
         }
 
         /// <summary>
@@ -952,7 +952,7 @@ namespace NMF.Expressions
             if (isParameterFree) return new ObservingFunc<T2, T3, T4, T5, TResult>(expression, true);
             var parameters = new Dictionary<string, object>();
             parameters.Add(parameter1Name, in1);
-            var result = expression.ApplyParameters(parameters);
+            var result = expression.ApplyParameters(parameters, new Dictionary<INotifiable, INotifiable>());
             return new ObservingFunc<T2, T3, T4, T5, TResult>(result, result.IsParameterFree);
         }
         /// <summary>
@@ -979,7 +979,7 @@ namespace NMF.Expressions
             var parameters = new Dictionary<string, object>();
             parameters.Add(parameter1Name, in1);
             parameters.Add(parameter2Name, in2);
-            var result = expression.ApplyParameters(parameters);
+            var result = expression.ApplyParameters(parameters, new Dictionary<INotifiable, INotifiable>());
             return new ObservingFunc<T3, T4, T5, TResult>(result, result.IsParameterFree);
         }
         /// <summary>
@@ -1009,7 +1009,7 @@ namespace NMF.Expressions
             parameters.Add(parameter1Name, in1);
             parameters.Add(parameter2Name, in2);
             parameters.Add(parameter3Name, in3);
-            var result = expression.ApplyParameters(parameters);
+            var result = expression.ApplyParameters(parameters, new Dictionary<INotifiable, INotifiable>());
             return new ObservingFunc<T4, T5, TResult>(result, result.IsParameterFree);
         }
         /// <summary>
@@ -1042,7 +1042,7 @@ namespace NMF.Expressions
             parameters.Add(parameter2Name, in2);
             parameters.Add(parameter3Name, in3);
             parameters.Add(parameter4Name, in4);
-            var result = expression.ApplyParameters(parameters);
+            var result = expression.ApplyParameters(parameters, new Dictionary<INotifiable, INotifiable>());
             return new ObservingFunc<T5, TResult>(result, result.IsParameterFree);
         }
 
@@ -1067,7 +1067,7 @@ namespace NMF.Expressions
                 parameters.Add(parameter4Name, in4);
                 parameters.Add(parameter5Name, in5);
             }
-            return expression.ApplyParameters(parameters) as INotifyReversableExpression<TResult>;
+            return expression.ApplyParameters(parameters, new Dictionary<INotifiable, INotifiable>()) as INotifyReversableExpression<TResult>;
         }
 
         /// <summary>
@@ -1091,7 +1091,7 @@ namespace NMF.Expressions
                 parameters.Add(parameter4Name, in4);
                 parameters.Add(parameter5Name, in5);
             }
-            return expression.ApplyParameters(parameters) as INotifyReversableExpression<TResult>;
+            return expression.ApplyParameters(parameters, new Dictionary<INotifiable, INotifiable>()) as INotifyReversableExpression<TResult>;
         }
 
 
@@ -1220,7 +1220,7 @@ namespace NMF.Expressions
                 parameters.Add(parameter5Name, in5);
                 parameters.Add(parameter6Name, in6);
             }
-            return expression.ApplyParameters(parameters);
+            return expression.ApplyParameters(parameters, new Dictionary<INotifiable, INotifiable>());
         }
 
         /// <summary>
@@ -1245,7 +1245,7 @@ namespace NMF.Expressions
                 parameters.Add(parameter5Name, in5);
                 parameters.Add(parameter6Name, in6);
             }
-            return expression.ApplyParameters(parameters);
+            return expression.ApplyParameters(parameters, new Dictionary<INotifiable, INotifiable>());
         }
 
         /// <summary>
@@ -1269,7 +1269,7 @@ namespace NMF.Expressions
             if (isParameterFree) return new ObservingFunc<T2, T3, T4, T5, T6, TResult>(expression, true);
             var parameters = new Dictionary<string, object>();
             parameters.Add(parameter1Name, in1);
-            var result = expression.ApplyParameters(parameters);
+            var result = expression.ApplyParameters(parameters, new Dictionary<INotifiable, INotifiable>());
             return new ObservingFunc<T2, T3, T4, T5, T6, TResult>(result, result.IsParameterFree);
         }
         /// <summary>
@@ -1296,7 +1296,7 @@ namespace NMF.Expressions
             var parameters = new Dictionary<string, object>();
             parameters.Add(parameter1Name, in1);
             parameters.Add(parameter2Name, in2);
-            var result = expression.ApplyParameters(parameters);
+            var result = expression.ApplyParameters(parameters, new Dictionary<INotifiable, INotifiable>());
             return new ObservingFunc<T3, T4, T5, T6, TResult>(result, result.IsParameterFree);
         }
         /// <summary>
@@ -1326,7 +1326,7 @@ namespace NMF.Expressions
             parameters.Add(parameter1Name, in1);
             parameters.Add(parameter2Name, in2);
             parameters.Add(parameter3Name, in3);
-            var result = expression.ApplyParameters(parameters);
+            var result = expression.ApplyParameters(parameters, new Dictionary<INotifiable, INotifiable>());
             return new ObservingFunc<T4, T5, T6, TResult>(result, result.IsParameterFree);
         }
         /// <summary>
@@ -1359,7 +1359,7 @@ namespace NMF.Expressions
             parameters.Add(parameter2Name, in2);
             parameters.Add(parameter3Name, in3);
             parameters.Add(parameter4Name, in4);
-            var result = expression.ApplyParameters(parameters);
+            var result = expression.ApplyParameters(parameters, new Dictionary<INotifiable, INotifiable>());
             return new ObservingFunc<T5, T6, TResult>(result, result.IsParameterFree);
         }
         /// <summary>
@@ -1395,7 +1395,7 @@ namespace NMF.Expressions
             parameters.Add(parameter3Name, in3);
             parameters.Add(parameter4Name, in4);
             parameters.Add(parameter5Name, in5);
-            var result = expression.ApplyParameters(parameters);
+            var result = expression.ApplyParameters(parameters, new Dictionary<INotifiable, INotifiable>());
             return new ObservingFunc<T6, TResult>(result, result.IsParameterFree);
         }
 
@@ -1422,7 +1422,7 @@ namespace NMF.Expressions
                 parameters.Add(parameter5Name, in5);
                 parameters.Add(parameter6Name, in6);
             }
-            return expression.ApplyParameters(parameters) as INotifyReversableExpression<TResult>;
+            return expression.ApplyParameters(parameters, new Dictionary<INotifiable, INotifiable>()) as INotifyReversableExpression<TResult>;
         }
 
         /// <summary>
@@ -1448,7 +1448,7 @@ namespace NMF.Expressions
                 parameters.Add(parameter5Name, in5);
                 parameters.Add(parameter6Name, in6);
             }
-            return expression.ApplyParameters(parameters) as INotifyReversableExpression<TResult>;
+            return expression.ApplyParameters(parameters, new Dictionary<INotifiable, INotifiable>()) as INotifyReversableExpression<TResult>;
         }
 
 
@@ -1583,7 +1583,7 @@ namespace NMF.Expressions
                 parameters.Add(parameter6Name, in6);
                 parameters.Add(parameter7Name, in7);
             }
-            return expression.ApplyParameters(parameters);
+            return expression.ApplyParameters(parameters, new Dictionary<INotifiable, INotifiable>());
         }
 
         /// <summary>
@@ -1610,7 +1610,7 @@ namespace NMF.Expressions
                 parameters.Add(parameter6Name, in6);
                 parameters.Add(parameter7Name, in7);
             }
-            return expression.ApplyParameters(parameters);
+            return expression.ApplyParameters(parameters, new Dictionary<INotifiable, INotifiable>());
         }
 
         /// <summary>
@@ -1634,7 +1634,7 @@ namespace NMF.Expressions
             if (isParameterFree) return new ObservingFunc<T2, T3, T4, T5, T6, T7, TResult>(expression, true);
             var parameters = new Dictionary<string, object>();
             parameters.Add(parameter1Name, in1);
-            var result = expression.ApplyParameters(parameters);
+            var result = expression.ApplyParameters(parameters, new Dictionary<INotifiable, INotifiable>());
             return new ObservingFunc<T2, T3, T4, T5, T6, T7, TResult>(result, result.IsParameterFree);
         }
         /// <summary>
@@ -1661,7 +1661,7 @@ namespace NMF.Expressions
             var parameters = new Dictionary<string, object>();
             parameters.Add(parameter1Name, in1);
             parameters.Add(parameter2Name, in2);
-            var result = expression.ApplyParameters(parameters);
+            var result = expression.ApplyParameters(parameters, new Dictionary<INotifiable, INotifiable>());
             return new ObservingFunc<T3, T4, T5, T6, T7, TResult>(result, result.IsParameterFree);
         }
         /// <summary>
@@ -1691,7 +1691,7 @@ namespace NMF.Expressions
             parameters.Add(parameter1Name, in1);
             parameters.Add(parameter2Name, in2);
             parameters.Add(parameter3Name, in3);
-            var result = expression.ApplyParameters(parameters);
+            var result = expression.ApplyParameters(parameters, new Dictionary<INotifiable, INotifiable>());
             return new ObservingFunc<T4, T5, T6, T7, TResult>(result, result.IsParameterFree);
         }
         /// <summary>
@@ -1724,7 +1724,7 @@ namespace NMF.Expressions
             parameters.Add(parameter2Name, in2);
             parameters.Add(parameter3Name, in3);
             parameters.Add(parameter4Name, in4);
-            var result = expression.ApplyParameters(parameters);
+            var result = expression.ApplyParameters(parameters, new Dictionary<INotifiable, INotifiable>());
             return new ObservingFunc<T5, T6, T7, TResult>(result, result.IsParameterFree);
         }
         /// <summary>
@@ -1760,7 +1760,7 @@ namespace NMF.Expressions
             parameters.Add(parameter3Name, in3);
             parameters.Add(parameter4Name, in4);
             parameters.Add(parameter5Name, in5);
-            var result = expression.ApplyParameters(parameters);
+            var result = expression.ApplyParameters(parameters, new Dictionary<INotifiable, INotifiable>());
             return new ObservingFunc<T6, T7, TResult>(result, result.IsParameterFree);
         }
         /// <summary>
@@ -1799,7 +1799,7 @@ namespace NMF.Expressions
             parameters.Add(parameter4Name, in4);
             parameters.Add(parameter5Name, in5);
             parameters.Add(parameter6Name, in6);
-            var result = expression.ApplyParameters(parameters);
+            var result = expression.ApplyParameters(parameters, new Dictionary<INotifiable, INotifiable>());
             return new ObservingFunc<T7, TResult>(result, result.IsParameterFree);
         }
 
@@ -1828,7 +1828,7 @@ namespace NMF.Expressions
                 parameters.Add(parameter6Name, in6);
                 parameters.Add(parameter7Name, in7);
             }
-            return expression.ApplyParameters(parameters) as INotifyReversableExpression<TResult>;
+            return expression.ApplyParameters(parameters, new Dictionary<INotifiable, INotifiable>()) as INotifyReversableExpression<TResult>;
         }
 
         /// <summary>
@@ -1856,7 +1856,7 @@ namespace NMF.Expressions
                 parameters.Add(parameter6Name, in6);
                 parameters.Add(parameter7Name, in7);
             }
-            return expression.ApplyParameters(parameters) as INotifyReversableExpression<TResult>;
+            return expression.ApplyParameters(parameters, new Dictionary<INotifiable, INotifiable>()) as INotifyReversableExpression<TResult>;
         }
 
 
@@ -1997,7 +1997,7 @@ namespace NMF.Expressions
                 parameters.Add(parameter7Name, in7);
                 parameters.Add(parameter8Name, in8);
             }
-            return expression.ApplyParameters(parameters);
+            return expression.ApplyParameters(parameters, new Dictionary<INotifiable, INotifiable>());
         }
 
         /// <summary>
@@ -2026,7 +2026,7 @@ namespace NMF.Expressions
                 parameters.Add(parameter7Name, in7);
                 parameters.Add(parameter8Name, in8);
             }
-            return expression.ApplyParameters(parameters);
+            return expression.ApplyParameters(parameters, new Dictionary<INotifiable, INotifiable>());
         }
 
         /// <summary>
@@ -2050,7 +2050,7 @@ namespace NMF.Expressions
             if (isParameterFree) return new ObservingFunc<T2, T3, T4, T5, T6, T7, T8, TResult>(expression, true);
             var parameters = new Dictionary<string, object>();
             parameters.Add(parameter1Name, in1);
-            var result = expression.ApplyParameters(parameters);
+            var result = expression.ApplyParameters(parameters, new Dictionary<INotifiable, INotifiable>());
             return new ObservingFunc<T2, T3, T4, T5, T6, T7, T8, TResult>(result, result.IsParameterFree);
         }
         /// <summary>
@@ -2077,7 +2077,7 @@ namespace NMF.Expressions
             var parameters = new Dictionary<string, object>();
             parameters.Add(parameter1Name, in1);
             parameters.Add(parameter2Name, in2);
-            var result = expression.ApplyParameters(parameters);
+            var result = expression.ApplyParameters(parameters, new Dictionary<INotifiable, INotifiable>());
             return new ObservingFunc<T3, T4, T5, T6, T7, T8, TResult>(result, result.IsParameterFree);
         }
         /// <summary>
@@ -2107,7 +2107,7 @@ namespace NMF.Expressions
             parameters.Add(parameter1Name, in1);
             parameters.Add(parameter2Name, in2);
             parameters.Add(parameter3Name, in3);
-            var result = expression.ApplyParameters(parameters);
+            var result = expression.ApplyParameters(parameters, new Dictionary<INotifiable, INotifiable>());
             return new ObservingFunc<T4, T5, T6, T7, T8, TResult>(result, result.IsParameterFree);
         }
         /// <summary>
@@ -2140,7 +2140,7 @@ namespace NMF.Expressions
             parameters.Add(parameter2Name, in2);
             parameters.Add(parameter3Name, in3);
             parameters.Add(parameter4Name, in4);
-            var result = expression.ApplyParameters(parameters);
+            var result = expression.ApplyParameters(parameters, new Dictionary<INotifiable, INotifiable>());
             return new ObservingFunc<T5, T6, T7, T8, TResult>(result, result.IsParameterFree);
         }
         /// <summary>
@@ -2176,7 +2176,7 @@ namespace NMF.Expressions
             parameters.Add(parameter3Name, in3);
             parameters.Add(parameter4Name, in4);
             parameters.Add(parameter5Name, in5);
-            var result = expression.ApplyParameters(parameters);
+            var result = expression.ApplyParameters(parameters, new Dictionary<INotifiable, INotifiable>());
             return new ObservingFunc<T6, T7, T8, TResult>(result, result.IsParameterFree);
         }
         /// <summary>
@@ -2215,7 +2215,7 @@ namespace NMF.Expressions
             parameters.Add(parameter4Name, in4);
             parameters.Add(parameter5Name, in5);
             parameters.Add(parameter6Name, in6);
-            var result = expression.ApplyParameters(parameters);
+            var result = expression.ApplyParameters(parameters, new Dictionary<INotifiable, INotifiable>());
             return new ObservingFunc<T7, T8, TResult>(result, result.IsParameterFree);
         }
         /// <summary>
@@ -2257,7 +2257,7 @@ namespace NMF.Expressions
             parameters.Add(parameter5Name, in5);
             parameters.Add(parameter6Name, in6);
             parameters.Add(parameter7Name, in7);
-            var result = expression.ApplyParameters(parameters);
+            var result = expression.ApplyParameters(parameters, new Dictionary<INotifiable, INotifiable>());
             return new ObservingFunc<T8, TResult>(result, result.IsParameterFree);
         }
 
@@ -2288,7 +2288,7 @@ namespace NMF.Expressions
                 parameters.Add(parameter7Name, in7);
                 parameters.Add(parameter8Name, in8);
             }
-            return expression.ApplyParameters(parameters) as INotifyReversableExpression<TResult>;
+            return expression.ApplyParameters(parameters, new Dictionary<INotifiable, INotifiable>()) as INotifyReversableExpression<TResult>;
         }
 
         /// <summary>
@@ -2318,7 +2318,7 @@ namespace NMF.Expressions
                 parameters.Add(parameter7Name, in7);
                 parameters.Add(parameter8Name, in8);
             }
-            return expression.ApplyParameters(parameters) as INotifyReversableExpression<TResult>;
+            return expression.ApplyParameters(parameters, new Dictionary<INotifiable, INotifiable>()) as INotifyReversableExpression<TResult>;
         }
 
 
@@ -2465,7 +2465,7 @@ namespace NMF.Expressions
                 parameters.Add(parameter8Name, in8);
                 parameters.Add(parameter9Name, in9);
             }
-            return expression.ApplyParameters(parameters);
+            return expression.ApplyParameters(parameters, new Dictionary<INotifiable, INotifiable>());
         }
 
         /// <summary>
@@ -2496,7 +2496,7 @@ namespace NMF.Expressions
                 parameters.Add(parameter8Name, in8);
                 parameters.Add(parameter9Name, in9);
             }
-            return expression.ApplyParameters(parameters);
+            return expression.ApplyParameters(parameters, new Dictionary<INotifiable, INotifiable>());
         }
 
         /// <summary>
@@ -2520,7 +2520,7 @@ namespace NMF.Expressions
             if (isParameterFree) return new ObservingFunc<T2, T3, T4, T5, T6, T7, T8, T9, TResult>(expression, true);
             var parameters = new Dictionary<string, object>();
             parameters.Add(parameter1Name, in1);
-            var result = expression.ApplyParameters(parameters);
+            var result = expression.ApplyParameters(parameters, new Dictionary<INotifiable, INotifiable>());
             return new ObservingFunc<T2, T3, T4, T5, T6, T7, T8, T9, TResult>(result, result.IsParameterFree);
         }
         /// <summary>
@@ -2547,7 +2547,7 @@ namespace NMF.Expressions
             var parameters = new Dictionary<string, object>();
             parameters.Add(parameter1Name, in1);
             parameters.Add(parameter2Name, in2);
-            var result = expression.ApplyParameters(parameters);
+            var result = expression.ApplyParameters(parameters, new Dictionary<INotifiable, INotifiable>());
             return new ObservingFunc<T3, T4, T5, T6, T7, T8, T9, TResult>(result, result.IsParameterFree);
         }
         /// <summary>
@@ -2577,7 +2577,7 @@ namespace NMF.Expressions
             parameters.Add(parameter1Name, in1);
             parameters.Add(parameter2Name, in2);
             parameters.Add(parameter3Name, in3);
-            var result = expression.ApplyParameters(parameters);
+            var result = expression.ApplyParameters(parameters, new Dictionary<INotifiable, INotifiable>());
             return new ObservingFunc<T4, T5, T6, T7, T8, T9, TResult>(result, result.IsParameterFree);
         }
         /// <summary>
@@ -2610,7 +2610,7 @@ namespace NMF.Expressions
             parameters.Add(parameter2Name, in2);
             parameters.Add(parameter3Name, in3);
             parameters.Add(parameter4Name, in4);
-            var result = expression.ApplyParameters(parameters);
+            var result = expression.ApplyParameters(parameters, new Dictionary<INotifiable, INotifiable>());
             return new ObservingFunc<T5, T6, T7, T8, T9, TResult>(result, result.IsParameterFree);
         }
         /// <summary>
@@ -2646,7 +2646,7 @@ namespace NMF.Expressions
             parameters.Add(parameter3Name, in3);
             parameters.Add(parameter4Name, in4);
             parameters.Add(parameter5Name, in5);
-            var result = expression.ApplyParameters(parameters);
+            var result = expression.ApplyParameters(parameters, new Dictionary<INotifiable, INotifiable>());
             return new ObservingFunc<T6, T7, T8, T9, TResult>(result, result.IsParameterFree);
         }
         /// <summary>
@@ -2685,7 +2685,7 @@ namespace NMF.Expressions
             parameters.Add(parameter4Name, in4);
             parameters.Add(parameter5Name, in5);
             parameters.Add(parameter6Name, in6);
-            var result = expression.ApplyParameters(parameters);
+            var result = expression.ApplyParameters(parameters, new Dictionary<INotifiable, INotifiable>());
             return new ObservingFunc<T7, T8, T9, TResult>(result, result.IsParameterFree);
         }
         /// <summary>
@@ -2727,7 +2727,7 @@ namespace NMF.Expressions
             parameters.Add(parameter5Name, in5);
             parameters.Add(parameter6Name, in6);
             parameters.Add(parameter7Name, in7);
-            var result = expression.ApplyParameters(parameters);
+            var result = expression.ApplyParameters(parameters, new Dictionary<INotifiable, INotifiable>());
             return new ObservingFunc<T8, T9, TResult>(result, result.IsParameterFree);
         }
         /// <summary>
@@ -2772,7 +2772,7 @@ namespace NMF.Expressions
             parameters.Add(parameter6Name, in6);
             parameters.Add(parameter7Name, in7);
             parameters.Add(parameter8Name, in8);
-            var result = expression.ApplyParameters(parameters);
+            var result = expression.ApplyParameters(parameters, new Dictionary<INotifiable, INotifiable>());
             return new ObservingFunc<T9, TResult>(result, result.IsParameterFree);
         }
 
@@ -2805,7 +2805,7 @@ namespace NMF.Expressions
                 parameters.Add(parameter8Name, in8);
                 parameters.Add(parameter9Name, in9);
             }
-            return expression.ApplyParameters(parameters) as INotifyReversableExpression<TResult>;
+            return expression.ApplyParameters(parameters, new Dictionary<INotifiable, INotifiable>()) as INotifyReversableExpression<TResult>;
         }
 
         /// <summary>
@@ -2837,7 +2837,7 @@ namespace NMF.Expressions
                 parameters.Add(parameter8Name, in8);
                 parameters.Add(parameter9Name, in9);
             }
-            return expression.ApplyParameters(parameters) as INotifyReversableExpression<TResult>;
+            return expression.ApplyParameters(parameters, new Dictionary<INotifiable, INotifiable>()) as INotifyReversableExpression<TResult>;
         }
 
 
@@ -2990,7 +2990,7 @@ namespace NMF.Expressions
                 parameters.Add(parameter9Name, in9);
                 parameters.Add(parameter10Name, in10);
             }
-            return expression.ApplyParameters(parameters);
+            return expression.ApplyParameters(parameters, new Dictionary<INotifiable, INotifiable>());
         }
 
         /// <summary>
@@ -3023,7 +3023,7 @@ namespace NMF.Expressions
                 parameters.Add(parameter9Name, in9);
                 parameters.Add(parameter10Name, in10);
             }
-            return expression.ApplyParameters(parameters);
+            return expression.ApplyParameters(parameters, new Dictionary<INotifiable, INotifiable>());
         }
 
         /// <summary>
@@ -3047,7 +3047,7 @@ namespace NMF.Expressions
             if (isParameterFree) return new ObservingFunc<T2, T3, T4, T5, T6, T7, T8, T9, T10, TResult>(expression, true);
             var parameters = new Dictionary<string, object>();
             parameters.Add(parameter1Name, in1);
-            var result = expression.ApplyParameters(parameters);
+            var result = expression.ApplyParameters(parameters, new Dictionary<INotifiable, INotifiable>());
             return new ObservingFunc<T2, T3, T4, T5, T6, T7, T8, T9, T10, TResult>(result, result.IsParameterFree);
         }
         /// <summary>
@@ -3074,7 +3074,7 @@ namespace NMF.Expressions
             var parameters = new Dictionary<string, object>();
             parameters.Add(parameter1Name, in1);
             parameters.Add(parameter2Name, in2);
-            var result = expression.ApplyParameters(parameters);
+            var result = expression.ApplyParameters(parameters, new Dictionary<INotifiable, INotifiable>());
             return new ObservingFunc<T3, T4, T5, T6, T7, T8, T9, T10, TResult>(result, result.IsParameterFree);
         }
         /// <summary>
@@ -3104,7 +3104,7 @@ namespace NMF.Expressions
             parameters.Add(parameter1Name, in1);
             parameters.Add(parameter2Name, in2);
             parameters.Add(parameter3Name, in3);
-            var result = expression.ApplyParameters(parameters);
+            var result = expression.ApplyParameters(parameters, new Dictionary<INotifiable, INotifiable>());
             return new ObservingFunc<T4, T5, T6, T7, T8, T9, T10, TResult>(result, result.IsParameterFree);
         }
         /// <summary>
@@ -3137,7 +3137,7 @@ namespace NMF.Expressions
             parameters.Add(parameter2Name, in2);
             parameters.Add(parameter3Name, in3);
             parameters.Add(parameter4Name, in4);
-            var result = expression.ApplyParameters(parameters);
+            var result = expression.ApplyParameters(parameters, new Dictionary<INotifiable, INotifiable>());
             return new ObservingFunc<T5, T6, T7, T8, T9, T10, TResult>(result, result.IsParameterFree);
         }
         /// <summary>
@@ -3173,7 +3173,7 @@ namespace NMF.Expressions
             parameters.Add(parameter3Name, in3);
             parameters.Add(parameter4Name, in4);
             parameters.Add(parameter5Name, in5);
-            var result = expression.ApplyParameters(parameters);
+            var result = expression.ApplyParameters(parameters, new Dictionary<INotifiable, INotifiable>());
             return new ObservingFunc<T6, T7, T8, T9, T10, TResult>(result, result.IsParameterFree);
         }
         /// <summary>
@@ -3212,7 +3212,7 @@ namespace NMF.Expressions
             parameters.Add(parameter4Name, in4);
             parameters.Add(parameter5Name, in5);
             parameters.Add(parameter6Name, in6);
-            var result = expression.ApplyParameters(parameters);
+            var result = expression.ApplyParameters(parameters, new Dictionary<INotifiable, INotifiable>());
             return new ObservingFunc<T7, T8, T9, T10, TResult>(result, result.IsParameterFree);
         }
         /// <summary>
@@ -3254,7 +3254,7 @@ namespace NMF.Expressions
             parameters.Add(parameter5Name, in5);
             parameters.Add(parameter6Name, in6);
             parameters.Add(parameter7Name, in7);
-            var result = expression.ApplyParameters(parameters);
+            var result = expression.ApplyParameters(parameters, new Dictionary<INotifiable, INotifiable>());
             return new ObservingFunc<T8, T9, T10, TResult>(result, result.IsParameterFree);
         }
         /// <summary>
@@ -3299,7 +3299,7 @@ namespace NMF.Expressions
             parameters.Add(parameter6Name, in6);
             parameters.Add(parameter7Name, in7);
             parameters.Add(parameter8Name, in8);
-            var result = expression.ApplyParameters(parameters);
+            var result = expression.ApplyParameters(parameters, new Dictionary<INotifiable, INotifiable>());
             return new ObservingFunc<T9, T10, TResult>(result, result.IsParameterFree);
         }
         /// <summary>
@@ -3347,7 +3347,7 @@ namespace NMF.Expressions
             parameters.Add(parameter7Name, in7);
             parameters.Add(parameter8Name, in8);
             parameters.Add(parameter9Name, in9);
-            var result = expression.ApplyParameters(parameters);
+            var result = expression.ApplyParameters(parameters, new Dictionary<INotifiable, INotifiable>());
             return new ObservingFunc<T10, TResult>(result, result.IsParameterFree);
         }
 
@@ -3382,7 +3382,7 @@ namespace NMF.Expressions
                 parameters.Add(parameter9Name, in9);
                 parameters.Add(parameter10Name, in10);
             }
-            return expression.ApplyParameters(parameters) as INotifyReversableExpression<TResult>;
+            return expression.ApplyParameters(parameters, new Dictionary<INotifiable, INotifiable>()) as INotifyReversableExpression<TResult>;
         }
 
         /// <summary>
@@ -3416,7 +3416,7 @@ namespace NMF.Expressions
                 parameters.Add(parameter9Name, in9);
                 parameters.Add(parameter10Name, in10);
             }
-            return expression.ApplyParameters(parameters) as INotifyReversableExpression<TResult>;
+            return expression.ApplyParameters(parameters, new Dictionary<INotifiable, INotifiable>()) as INotifyReversableExpression<TResult>;
         }
 
 
@@ -3575,7 +3575,7 @@ namespace NMF.Expressions
                 parameters.Add(parameter10Name, in10);
                 parameters.Add(parameter11Name, in11);
             }
-            return expression.ApplyParameters(parameters);
+            return expression.ApplyParameters(parameters, new Dictionary<INotifiable, INotifiable>());
         }
 
         /// <summary>
@@ -3610,7 +3610,7 @@ namespace NMF.Expressions
                 parameters.Add(parameter10Name, in10);
                 parameters.Add(parameter11Name, in11);
             }
-            return expression.ApplyParameters(parameters);
+            return expression.ApplyParameters(parameters, new Dictionary<INotifiable, INotifiable>());
         }
 
         /// <summary>
@@ -3634,7 +3634,7 @@ namespace NMF.Expressions
             if (isParameterFree) return new ObservingFunc<T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, TResult>(expression, true);
             var parameters = new Dictionary<string, object>();
             parameters.Add(parameter1Name, in1);
-            var result = expression.ApplyParameters(parameters);
+            var result = expression.ApplyParameters(parameters, new Dictionary<INotifiable, INotifiable>());
             return new ObservingFunc<T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, TResult>(result, result.IsParameterFree);
         }
         /// <summary>
@@ -3661,7 +3661,7 @@ namespace NMF.Expressions
             var parameters = new Dictionary<string, object>();
             parameters.Add(parameter1Name, in1);
             parameters.Add(parameter2Name, in2);
-            var result = expression.ApplyParameters(parameters);
+            var result = expression.ApplyParameters(parameters, new Dictionary<INotifiable, INotifiable>());
             return new ObservingFunc<T3, T4, T5, T6, T7, T8, T9, T10, T11, TResult>(result, result.IsParameterFree);
         }
         /// <summary>
@@ -3691,7 +3691,7 @@ namespace NMF.Expressions
             parameters.Add(parameter1Name, in1);
             parameters.Add(parameter2Name, in2);
             parameters.Add(parameter3Name, in3);
-            var result = expression.ApplyParameters(parameters);
+            var result = expression.ApplyParameters(parameters, new Dictionary<INotifiable, INotifiable>());
             return new ObservingFunc<T4, T5, T6, T7, T8, T9, T10, T11, TResult>(result, result.IsParameterFree);
         }
         /// <summary>
@@ -3724,7 +3724,7 @@ namespace NMF.Expressions
             parameters.Add(parameter2Name, in2);
             parameters.Add(parameter3Name, in3);
             parameters.Add(parameter4Name, in4);
-            var result = expression.ApplyParameters(parameters);
+            var result = expression.ApplyParameters(parameters, new Dictionary<INotifiable, INotifiable>());
             return new ObservingFunc<T5, T6, T7, T8, T9, T10, T11, TResult>(result, result.IsParameterFree);
         }
         /// <summary>
@@ -3760,7 +3760,7 @@ namespace NMF.Expressions
             parameters.Add(parameter3Name, in3);
             parameters.Add(parameter4Name, in4);
             parameters.Add(parameter5Name, in5);
-            var result = expression.ApplyParameters(parameters);
+            var result = expression.ApplyParameters(parameters, new Dictionary<INotifiable, INotifiable>());
             return new ObservingFunc<T6, T7, T8, T9, T10, T11, TResult>(result, result.IsParameterFree);
         }
         /// <summary>
@@ -3799,7 +3799,7 @@ namespace NMF.Expressions
             parameters.Add(parameter4Name, in4);
             parameters.Add(parameter5Name, in5);
             parameters.Add(parameter6Name, in6);
-            var result = expression.ApplyParameters(parameters);
+            var result = expression.ApplyParameters(parameters, new Dictionary<INotifiable, INotifiable>());
             return new ObservingFunc<T7, T8, T9, T10, T11, TResult>(result, result.IsParameterFree);
         }
         /// <summary>
@@ -3841,7 +3841,7 @@ namespace NMF.Expressions
             parameters.Add(parameter5Name, in5);
             parameters.Add(parameter6Name, in6);
             parameters.Add(parameter7Name, in7);
-            var result = expression.ApplyParameters(parameters);
+            var result = expression.ApplyParameters(parameters, new Dictionary<INotifiable, INotifiable>());
             return new ObservingFunc<T8, T9, T10, T11, TResult>(result, result.IsParameterFree);
         }
         /// <summary>
@@ -3886,7 +3886,7 @@ namespace NMF.Expressions
             parameters.Add(parameter6Name, in6);
             parameters.Add(parameter7Name, in7);
             parameters.Add(parameter8Name, in8);
-            var result = expression.ApplyParameters(parameters);
+            var result = expression.ApplyParameters(parameters, new Dictionary<INotifiable, INotifiable>());
             return new ObservingFunc<T9, T10, T11, TResult>(result, result.IsParameterFree);
         }
         /// <summary>
@@ -3934,7 +3934,7 @@ namespace NMF.Expressions
             parameters.Add(parameter7Name, in7);
             parameters.Add(parameter8Name, in8);
             parameters.Add(parameter9Name, in9);
-            var result = expression.ApplyParameters(parameters);
+            var result = expression.ApplyParameters(parameters, new Dictionary<INotifiable, INotifiable>());
             return new ObservingFunc<T10, T11, TResult>(result, result.IsParameterFree);
         }
         /// <summary>
@@ -3985,7 +3985,7 @@ namespace NMF.Expressions
             parameters.Add(parameter8Name, in8);
             parameters.Add(parameter9Name, in9);
             parameters.Add(parameter10Name, in10);
-            var result = expression.ApplyParameters(parameters);
+            var result = expression.ApplyParameters(parameters, new Dictionary<INotifiable, INotifiable>());
             return new ObservingFunc<T11, TResult>(result, result.IsParameterFree);
         }
 
@@ -4022,7 +4022,7 @@ namespace NMF.Expressions
                 parameters.Add(parameter10Name, in10);
                 parameters.Add(parameter11Name, in11);
             }
-            return expression.ApplyParameters(parameters) as INotifyReversableExpression<TResult>;
+            return expression.ApplyParameters(parameters, new Dictionary<INotifiable, INotifiable>()) as INotifyReversableExpression<TResult>;
         }
 
         /// <summary>
@@ -4058,7 +4058,7 @@ namespace NMF.Expressions
                 parameters.Add(parameter10Name, in10);
                 parameters.Add(parameter11Name, in11);
             }
-            return expression.ApplyParameters(parameters) as INotifyReversableExpression<TResult>;
+            return expression.ApplyParameters(parameters, new Dictionary<INotifiable, INotifiable>()) as INotifyReversableExpression<TResult>;
         }
 
 
@@ -4223,7 +4223,7 @@ namespace NMF.Expressions
                 parameters.Add(parameter11Name, in11);
                 parameters.Add(parameter12Name, in12);
             }
-            return expression.ApplyParameters(parameters);
+            return expression.ApplyParameters(parameters, new Dictionary<INotifiable, INotifiable>());
         }
 
         /// <summary>
@@ -4260,7 +4260,7 @@ namespace NMF.Expressions
                 parameters.Add(parameter11Name, in11);
                 parameters.Add(parameter12Name, in12);
             }
-            return expression.ApplyParameters(parameters);
+            return expression.ApplyParameters(parameters, new Dictionary<INotifiable, INotifiable>());
         }
 
         /// <summary>
@@ -4284,7 +4284,7 @@ namespace NMF.Expressions
             if (isParameterFree) return new ObservingFunc<T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, TResult>(expression, true);
             var parameters = new Dictionary<string, object>();
             parameters.Add(parameter1Name, in1);
-            var result = expression.ApplyParameters(parameters);
+            var result = expression.ApplyParameters(parameters, new Dictionary<INotifiable, INotifiable>());
             return new ObservingFunc<T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, TResult>(result, result.IsParameterFree);
         }
         /// <summary>
@@ -4311,7 +4311,7 @@ namespace NMF.Expressions
             var parameters = new Dictionary<string, object>();
             parameters.Add(parameter1Name, in1);
             parameters.Add(parameter2Name, in2);
-            var result = expression.ApplyParameters(parameters);
+            var result = expression.ApplyParameters(parameters, new Dictionary<INotifiable, INotifiable>());
             return new ObservingFunc<T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, TResult>(result, result.IsParameterFree);
         }
         /// <summary>
@@ -4341,7 +4341,7 @@ namespace NMF.Expressions
             parameters.Add(parameter1Name, in1);
             parameters.Add(parameter2Name, in2);
             parameters.Add(parameter3Name, in3);
-            var result = expression.ApplyParameters(parameters);
+            var result = expression.ApplyParameters(parameters, new Dictionary<INotifiable, INotifiable>());
             return new ObservingFunc<T4, T5, T6, T7, T8, T9, T10, T11, T12, TResult>(result, result.IsParameterFree);
         }
         /// <summary>
@@ -4374,7 +4374,7 @@ namespace NMF.Expressions
             parameters.Add(parameter2Name, in2);
             parameters.Add(parameter3Name, in3);
             parameters.Add(parameter4Name, in4);
-            var result = expression.ApplyParameters(parameters);
+            var result = expression.ApplyParameters(parameters, new Dictionary<INotifiable, INotifiable>());
             return new ObservingFunc<T5, T6, T7, T8, T9, T10, T11, T12, TResult>(result, result.IsParameterFree);
         }
         /// <summary>
@@ -4410,7 +4410,7 @@ namespace NMF.Expressions
             parameters.Add(parameter3Name, in3);
             parameters.Add(parameter4Name, in4);
             parameters.Add(parameter5Name, in5);
-            var result = expression.ApplyParameters(parameters);
+            var result = expression.ApplyParameters(parameters, new Dictionary<INotifiable, INotifiable>());
             return new ObservingFunc<T6, T7, T8, T9, T10, T11, T12, TResult>(result, result.IsParameterFree);
         }
         /// <summary>
@@ -4449,7 +4449,7 @@ namespace NMF.Expressions
             parameters.Add(parameter4Name, in4);
             parameters.Add(parameter5Name, in5);
             parameters.Add(parameter6Name, in6);
-            var result = expression.ApplyParameters(parameters);
+            var result = expression.ApplyParameters(parameters, new Dictionary<INotifiable, INotifiable>());
             return new ObservingFunc<T7, T8, T9, T10, T11, T12, TResult>(result, result.IsParameterFree);
         }
         /// <summary>
@@ -4491,7 +4491,7 @@ namespace NMF.Expressions
             parameters.Add(parameter5Name, in5);
             parameters.Add(parameter6Name, in6);
             parameters.Add(parameter7Name, in7);
-            var result = expression.ApplyParameters(parameters);
+            var result = expression.ApplyParameters(parameters, new Dictionary<INotifiable, INotifiable>());
             return new ObservingFunc<T8, T9, T10, T11, T12, TResult>(result, result.IsParameterFree);
         }
         /// <summary>
@@ -4536,7 +4536,7 @@ namespace NMF.Expressions
             parameters.Add(parameter6Name, in6);
             parameters.Add(parameter7Name, in7);
             parameters.Add(parameter8Name, in8);
-            var result = expression.ApplyParameters(parameters);
+            var result = expression.ApplyParameters(parameters, new Dictionary<INotifiable, INotifiable>());
             return new ObservingFunc<T9, T10, T11, T12, TResult>(result, result.IsParameterFree);
         }
         /// <summary>
@@ -4584,7 +4584,7 @@ namespace NMF.Expressions
             parameters.Add(parameter7Name, in7);
             parameters.Add(parameter8Name, in8);
             parameters.Add(parameter9Name, in9);
-            var result = expression.ApplyParameters(parameters);
+            var result = expression.ApplyParameters(parameters, new Dictionary<INotifiable, INotifiable>());
             return new ObservingFunc<T10, T11, T12, TResult>(result, result.IsParameterFree);
         }
         /// <summary>
@@ -4635,7 +4635,7 @@ namespace NMF.Expressions
             parameters.Add(parameter8Name, in8);
             parameters.Add(parameter9Name, in9);
             parameters.Add(parameter10Name, in10);
-            var result = expression.ApplyParameters(parameters);
+            var result = expression.ApplyParameters(parameters, new Dictionary<INotifiable, INotifiable>());
             return new ObservingFunc<T11, T12, TResult>(result, result.IsParameterFree);
         }
         /// <summary>
@@ -4689,7 +4689,7 @@ namespace NMF.Expressions
             parameters.Add(parameter9Name, in9);
             parameters.Add(parameter10Name, in10);
             parameters.Add(parameter11Name, in11);
-            var result = expression.ApplyParameters(parameters);
+            var result = expression.ApplyParameters(parameters, new Dictionary<INotifiable, INotifiable>());
             return new ObservingFunc<T12, TResult>(result, result.IsParameterFree);
         }
 
@@ -4728,7 +4728,7 @@ namespace NMF.Expressions
                 parameters.Add(parameter11Name, in11);
                 parameters.Add(parameter12Name, in12);
             }
-            return expression.ApplyParameters(parameters) as INotifyReversableExpression<TResult>;
+            return expression.ApplyParameters(parameters, new Dictionary<INotifiable, INotifiable>()) as INotifyReversableExpression<TResult>;
         }
 
         /// <summary>
@@ -4766,7 +4766,7 @@ namespace NMF.Expressions
                 parameters.Add(parameter11Name, in11);
                 parameters.Add(parameter12Name, in12);
             }
-            return expression.ApplyParameters(parameters) as INotifyReversableExpression<TResult>;
+            return expression.ApplyParameters(parameters, new Dictionary<INotifiable, INotifiable>()) as INotifyReversableExpression<TResult>;
         }
 
 
@@ -4937,7 +4937,7 @@ namespace NMF.Expressions
                 parameters.Add(parameter12Name, in12);
                 parameters.Add(parameter13Name, in13);
             }
-            return expression.ApplyParameters(parameters);
+            return expression.ApplyParameters(parameters, new Dictionary<INotifiable, INotifiable>());
         }
 
         /// <summary>
@@ -4976,7 +4976,7 @@ namespace NMF.Expressions
                 parameters.Add(parameter12Name, in12);
                 parameters.Add(parameter13Name, in13);
             }
-            return expression.ApplyParameters(parameters);
+            return expression.ApplyParameters(parameters, new Dictionary<INotifiable, INotifiable>());
         }
 
         /// <summary>
@@ -5000,7 +5000,7 @@ namespace NMF.Expressions
             if (isParameterFree) return new ObservingFunc<T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, TResult>(expression, true);
             var parameters = new Dictionary<string, object>();
             parameters.Add(parameter1Name, in1);
-            var result = expression.ApplyParameters(parameters);
+            var result = expression.ApplyParameters(parameters, new Dictionary<INotifiable, INotifiable>());
             return new ObservingFunc<T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, TResult>(result, result.IsParameterFree);
         }
         /// <summary>
@@ -5027,7 +5027,7 @@ namespace NMF.Expressions
             var parameters = new Dictionary<string, object>();
             parameters.Add(parameter1Name, in1);
             parameters.Add(parameter2Name, in2);
-            var result = expression.ApplyParameters(parameters);
+            var result = expression.ApplyParameters(parameters, new Dictionary<INotifiable, INotifiable>());
             return new ObservingFunc<T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, TResult>(result, result.IsParameterFree);
         }
         /// <summary>
@@ -5057,7 +5057,7 @@ namespace NMF.Expressions
             parameters.Add(parameter1Name, in1);
             parameters.Add(parameter2Name, in2);
             parameters.Add(parameter3Name, in3);
-            var result = expression.ApplyParameters(parameters);
+            var result = expression.ApplyParameters(parameters, new Dictionary<INotifiable, INotifiable>());
             return new ObservingFunc<T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, TResult>(result, result.IsParameterFree);
         }
         /// <summary>
@@ -5090,7 +5090,7 @@ namespace NMF.Expressions
             parameters.Add(parameter2Name, in2);
             parameters.Add(parameter3Name, in3);
             parameters.Add(parameter4Name, in4);
-            var result = expression.ApplyParameters(parameters);
+            var result = expression.ApplyParameters(parameters, new Dictionary<INotifiable, INotifiable>());
             return new ObservingFunc<T5, T6, T7, T8, T9, T10, T11, T12, T13, TResult>(result, result.IsParameterFree);
         }
         /// <summary>
@@ -5126,7 +5126,7 @@ namespace NMF.Expressions
             parameters.Add(parameter3Name, in3);
             parameters.Add(parameter4Name, in4);
             parameters.Add(parameter5Name, in5);
-            var result = expression.ApplyParameters(parameters);
+            var result = expression.ApplyParameters(parameters, new Dictionary<INotifiable, INotifiable>());
             return new ObservingFunc<T6, T7, T8, T9, T10, T11, T12, T13, TResult>(result, result.IsParameterFree);
         }
         /// <summary>
@@ -5165,7 +5165,7 @@ namespace NMF.Expressions
             parameters.Add(parameter4Name, in4);
             parameters.Add(parameter5Name, in5);
             parameters.Add(parameter6Name, in6);
-            var result = expression.ApplyParameters(parameters);
+            var result = expression.ApplyParameters(parameters, new Dictionary<INotifiable, INotifiable>());
             return new ObservingFunc<T7, T8, T9, T10, T11, T12, T13, TResult>(result, result.IsParameterFree);
         }
         /// <summary>
@@ -5207,7 +5207,7 @@ namespace NMF.Expressions
             parameters.Add(parameter5Name, in5);
             parameters.Add(parameter6Name, in6);
             parameters.Add(parameter7Name, in7);
-            var result = expression.ApplyParameters(parameters);
+            var result = expression.ApplyParameters(parameters, new Dictionary<INotifiable, INotifiable>());
             return new ObservingFunc<T8, T9, T10, T11, T12, T13, TResult>(result, result.IsParameterFree);
         }
         /// <summary>
@@ -5252,7 +5252,7 @@ namespace NMF.Expressions
             parameters.Add(parameter6Name, in6);
             parameters.Add(parameter7Name, in7);
             parameters.Add(parameter8Name, in8);
-            var result = expression.ApplyParameters(parameters);
+            var result = expression.ApplyParameters(parameters, new Dictionary<INotifiable, INotifiable>());
             return new ObservingFunc<T9, T10, T11, T12, T13, TResult>(result, result.IsParameterFree);
         }
         /// <summary>
@@ -5300,7 +5300,7 @@ namespace NMF.Expressions
             parameters.Add(parameter7Name, in7);
             parameters.Add(parameter8Name, in8);
             parameters.Add(parameter9Name, in9);
-            var result = expression.ApplyParameters(parameters);
+            var result = expression.ApplyParameters(parameters, new Dictionary<INotifiable, INotifiable>());
             return new ObservingFunc<T10, T11, T12, T13, TResult>(result, result.IsParameterFree);
         }
         /// <summary>
@@ -5351,7 +5351,7 @@ namespace NMF.Expressions
             parameters.Add(parameter8Name, in8);
             parameters.Add(parameter9Name, in9);
             parameters.Add(parameter10Name, in10);
-            var result = expression.ApplyParameters(parameters);
+            var result = expression.ApplyParameters(parameters, new Dictionary<INotifiable, INotifiable>());
             return new ObservingFunc<T11, T12, T13, TResult>(result, result.IsParameterFree);
         }
         /// <summary>
@@ -5405,7 +5405,7 @@ namespace NMF.Expressions
             parameters.Add(parameter9Name, in9);
             parameters.Add(parameter10Name, in10);
             parameters.Add(parameter11Name, in11);
-            var result = expression.ApplyParameters(parameters);
+            var result = expression.ApplyParameters(parameters, new Dictionary<INotifiable, INotifiable>());
             return new ObservingFunc<T12, T13, TResult>(result, result.IsParameterFree);
         }
         /// <summary>
@@ -5462,7 +5462,7 @@ namespace NMF.Expressions
             parameters.Add(parameter10Name, in10);
             parameters.Add(parameter11Name, in11);
             parameters.Add(parameter12Name, in12);
-            var result = expression.ApplyParameters(parameters);
+            var result = expression.ApplyParameters(parameters, new Dictionary<INotifiable, INotifiable>());
             return new ObservingFunc<T13, TResult>(result, result.IsParameterFree);
         }
 
@@ -5503,7 +5503,7 @@ namespace NMF.Expressions
                 parameters.Add(parameter12Name, in12);
                 parameters.Add(parameter13Name, in13);
             }
-            return expression.ApplyParameters(parameters) as INotifyReversableExpression<TResult>;
+            return expression.ApplyParameters(parameters, new Dictionary<INotifiable, INotifiable>()) as INotifyReversableExpression<TResult>;
         }
 
         /// <summary>
@@ -5543,7 +5543,7 @@ namespace NMF.Expressions
                 parameters.Add(parameter12Name, in12);
                 parameters.Add(parameter13Name, in13);
             }
-            return expression.ApplyParameters(parameters) as INotifyReversableExpression<TResult>;
+            return expression.ApplyParameters(parameters, new Dictionary<INotifiable, INotifiable>()) as INotifyReversableExpression<TResult>;
         }
 
 
@@ -5720,7 +5720,7 @@ namespace NMF.Expressions
                 parameters.Add(parameter13Name, in13);
                 parameters.Add(parameter14Name, in14);
             }
-            return expression.ApplyParameters(parameters);
+            return expression.ApplyParameters(parameters, new Dictionary<INotifiable, INotifiable>());
         }
 
         /// <summary>
@@ -5761,7 +5761,7 @@ namespace NMF.Expressions
                 parameters.Add(parameter13Name, in13);
                 parameters.Add(parameter14Name, in14);
             }
-            return expression.ApplyParameters(parameters);
+            return expression.ApplyParameters(parameters, new Dictionary<INotifiable, INotifiable>());
         }
 
         /// <summary>
@@ -5785,7 +5785,7 @@ namespace NMF.Expressions
             if (isParameterFree) return new ObservingFunc<T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, TResult>(expression, true);
             var parameters = new Dictionary<string, object>();
             parameters.Add(parameter1Name, in1);
-            var result = expression.ApplyParameters(parameters);
+            var result = expression.ApplyParameters(parameters, new Dictionary<INotifiable, INotifiable>());
             return new ObservingFunc<T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, TResult>(result, result.IsParameterFree);
         }
         /// <summary>
@@ -5812,7 +5812,7 @@ namespace NMF.Expressions
             var parameters = new Dictionary<string, object>();
             parameters.Add(parameter1Name, in1);
             parameters.Add(parameter2Name, in2);
-            var result = expression.ApplyParameters(parameters);
+            var result = expression.ApplyParameters(parameters, new Dictionary<INotifiable, INotifiable>());
             return new ObservingFunc<T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, TResult>(result, result.IsParameterFree);
         }
         /// <summary>
@@ -5842,7 +5842,7 @@ namespace NMF.Expressions
             parameters.Add(parameter1Name, in1);
             parameters.Add(parameter2Name, in2);
             parameters.Add(parameter3Name, in3);
-            var result = expression.ApplyParameters(parameters);
+            var result = expression.ApplyParameters(parameters, new Dictionary<INotifiable, INotifiable>());
             return new ObservingFunc<T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, TResult>(result, result.IsParameterFree);
         }
         /// <summary>
@@ -5875,7 +5875,7 @@ namespace NMF.Expressions
             parameters.Add(parameter2Name, in2);
             parameters.Add(parameter3Name, in3);
             parameters.Add(parameter4Name, in4);
-            var result = expression.ApplyParameters(parameters);
+            var result = expression.ApplyParameters(parameters, new Dictionary<INotifiable, INotifiable>());
             return new ObservingFunc<T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, TResult>(result, result.IsParameterFree);
         }
         /// <summary>
@@ -5911,7 +5911,7 @@ namespace NMF.Expressions
             parameters.Add(parameter3Name, in3);
             parameters.Add(parameter4Name, in4);
             parameters.Add(parameter5Name, in5);
-            var result = expression.ApplyParameters(parameters);
+            var result = expression.ApplyParameters(parameters, new Dictionary<INotifiable, INotifiable>());
             return new ObservingFunc<T6, T7, T8, T9, T10, T11, T12, T13, T14, TResult>(result, result.IsParameterFree);
         }
         /// <summary>
@@ -5950,7 +5950,7 @@ namespace NMF.Expressions
             parameters.Add(parameter4Name, in4);
             parameters.Add(parameter5Name, in5);
             parameters.Add(parameter6Name, in6);
-            var result = expression.ApplyParameters(parameters);
+            var result = expression.ApplyParameters(parameters, new Dictionary<INotifiable, INotifiable>());
             return new ObservingFunc<T7, T8, T9, T10, T11, T12, T13, T14, TResult>(result, result.IsParameterFree);
         }
         /// <summary>
@@ -5992,7 +5992,7 @@ namespace NMF.Expressions
             parameters.Add(parameter5Name, in5);
             parameters.Add(parameter6Name, in6);
             parameters.Add(parameter7Name, in7);
-            var result = expression.ApplyParameters(parameters);
+            var result = expression.ApplyParameters(parameters, new Dictionary<INotifiable, INotifiable>());
             return new ObservingFunc<T8, T9, T10, T11, T12, T13, T14, TResult>(result, result.IsParameterFree);
         }
         /// <summary>
@@ -6037,7 +6037,7 @@ namespace NMF.Expressions
             parameters.Add(parameter6Name, in6);
             parameters.Add(parameter7Name, in7);
             parameters.Add(parameter8Name, in8);
-            var result = expression.ApplyParameters(parameters);
+            var result = expression.ApplyParameters(parameters, new Dictionary<INotifiable, INotifiable>());
             return new ObservingFunc<T9, T10, T11, T12, T13, T14, TResult>(result, result.IsParameterFree);
         }
         /// <summary>
@@ -6085,7 +6085,7 @@ namespace NMF.Expressions
             parameters.Add(parameter7Name, in7);
             parameters.Add(parameter8Name, in8);
             parameters.Add(parameter9Name, in9);
-            var result = expression.ApplyParameters(parameters);
+            var result = expression.ApplyParameters(parameters, new Dictionary<INotifiable, INotifiable>());
             return new ObservingFunc<T10, T11, T12, T13, T14, TResult>(result, result.IsParameterFree);
         }
         /// <summary>
@@ -6136,7 +6136,7 @@ namespace NMF.Expressions
             parameters.Add(parameter8Name, in8);
             parameters.Add(parameter9Name, in9);
             parameters.Add(parameter10Name, in10);
-            var result = expression.ApplyParameters(parameters);
+            var result = expression.ApplyParameters(parameters, new Dictionary<INotifiable, INotifiable>());
             return new ObservingFunc<T11, T12, T13, T14, TResult>(result, result.IsParameterFree);
         }
         /// <summary>
@@ -6190,7 +6190,7 @@ namespace NMF.Expressions
             parameters.Add(parameter9Name, in9);
             parameters.Add(parameter10Name, in10);
             parameters.Add(parameter11Name, in11);
-            var result = expression.ApplyParameters(parameters);
+            var result = expression.ApplyParameters(parameters, new Dictionary<INotifiable, INotifiable>());
             return new ObservingFunc<T12, T13, T14, TResult>(result, result.IsParameterFree);
         }
         /// <summary>
@@ -6247,7 +6247,7 @@ namespace NMF.Expressions
             parameters.Add(parameter10Name, in10);
             parameters.Add(parameter11Name, in11);
             parameters.Add(parameter12Name, in12);
-            var result = expression.ApplyParameters(parameters);
+            var result = expression.ApplyParameters(parameters, new Dictionary<INotifiable, INotifiable>());
             return new ObservingFunc<T13, T14, TResult>(result, result.IsParameterFree);
         }
         /// <summary>
@@ -6307,7 +6307,7 @@ namespace NMF.Expressions
             parameters.Add(parameter11Name, in11);
             parameters.Add(parameter12Name, in12);
             parameters.Add(parameter13Name, in13);
-            var result = expression.ApplyParameters(parameters);
+            var result = expression.ApplyParameters(parameters, new Dictionary<INotifiable, INotifiable>());
             return new ObservingFunc<T14, TResult>(result, result.IsParameterFree);
         }
 
@@ -6350,7 +6350,7 @@ namespace NMF.Expressions
                 parameters.Add(parameter13Name, in13);
                 parameters.Add(parameter14Name, in14);
             }
-            return expression.ApplyParameters(parameters) as INotifyReversableExpression<TResult>;
+            return expression.ApplyParameters(parameters, new Dictionary<INotifiable, INotifiable>()) as INotifyReversableExpression<TResult>;
         }
 
         /// <summary>
@@ -6392,7 +6392,7 @@ namespace NMF.Expressions
                 parameters.Add(parameter13Name, in13);
                 parameters.Add(parameter14Name, in14);
             }
-            return expression.ApplyParameters(parameters) as INotifyReversableExpression<TResult>;
+            return expression.ApplyParameters(parameters, new Dictionary<INotifiable, INotifiable>()) as INotifyReversableExpression<TResult>;
         }
 
 
@@ -6575,7 +6575,7 @@ namespace NMF.Expressions
                 parameters.Add(parameter14Name, in14);
                 parameters.Add(parameter15Name, in15);
             }
-            return expression.ApplyParameters(parameters);
+            return expression.ApplyParameters(parameters, new Dictionary<INotifiable, INotifiable>());
         }
 
         /// <summary>
@@ -6618,7 +6618,7 @@ namespace NMF.Expressions
                 parameters.Add(parameter14Name, in14);
                 parameters.Add(parameter15Name, in15);
             }
-            return expression.ApplyParameters(parameters);
+            return expression.ApplyParameters(parameters, new Dictionary<INotifiable, INotifiable>());
         }
 
         /// <summary>
@@ -6642,7 +6642,7 @@ namespace NMF.Expressions
             if (isParameterFree) return new ObservingFunc<T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, TResult>(expression, true);
             var parameters = new Dictionary<string, object>();
             parameters.Add(parameter1Name, in1);
-            var result = expression.ApplyParameters(parameters);
+            var result = expression.ApplyParameters(parameters, new Dictionary<INotifiable, INotifiable>());
             return new ObservingFunc<T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, TResult>(result, result.IsParameterFree);
         }
         /// <summary>
@@ -6669,7 +6669,7 @@ namespace NMF.Expressions
             var parameters = new Dictionary<string, object>();
             parameters.Add(parameter1Name, in1);
             parameters.Add(parameter2Name, in2);
-            var result = expression.ApplyParameters(parameters);
+            var result = expression.ApplyParameters(parameters, new Dictionary<INotifiable, INotifiable>());
             return new ObservingFunc<T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, TResult>(result, result.IsParameterFree);
         }
         /// <summary>
@@ -6699,7 +6699,7 @@ namespace NMF.Expressions
             parameters.Add(parameter1Name, in1);
             parameters.Add(parameter2Name, in2);
             parameters.Add(parameter3Name, in3);
-            var result = expression.ApplyParameters(parameters);
+            var result = expression.ApplyParameters(parameters, new Dictionary<INotifiable, INotifiable>());
             return new ObservingFunc<T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, TResult>(result, result.IsParameterFree);
         }
         /// <summary>
@@ -6732,7 +6732,7 @@ namespace NMF.Expressions
             parameters.Add(parameter2Name, in2);
             parameters.Add(parameter3Name, in3);
             parameters.Add(parameter4Name, in4);
-            var result = expression.ApplyParameters(parameters);
+            var result = expression.ApplyParameters(parameters, new Dictionary<INotifiable, INotifiable>());
             return new ObservingFunc<T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, TResult>(result, result.IsParameterFree);
         }
         /// <summary>
@@ -6768,7 +6768,7 @@ namespace NMF.Expressions
             parameters.Add(parameter3Name, in3);
             parameters.Add(parameter4Name, in4);
             parameters.Add(parameter5Name, in5);
-            var result = expression.ApplyParameters(parameters);
+            var result = expression.ApplyParameters(parameters, new Dictionary<INotifiable, INotifiable>());
             return new ObservingFunc<T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, TResult>(result, result.IsParameterFree);
         }
         /// <summary>
@@ -6807,7 +6807,7 @@ namespace NMF.Expressions
             parameters.Add(parameter4Name, in4);
             parameters.Add(parameter5Name, in5);
             parameters.Add(parameter6Name, in6);
-            var result = expression.ApplyParameters(parameters);
+            var result = expression.ApplyParameters(parameters, new Dictionary<INotifiable, INotifiable>());
             return new ObservingFunc<T7, T8, T9, T10, T11, T12, T13, T14, T15, TResult>(result, result.IsParameterFree);
         }
         /// <summary>
@@ -6849,7 +6849,7 @@ namespace NMF.Expressions
             parameters.Add(parameter5Name, in5);
             parameters.Add(parameter6Name, in6);
             parameters.Add(parameter7Name, in7);
-            var result = expression.ApplyParameters(parameters);
+            var result = expression.ApplyParameters(parameters, new Dictionary<INotifiable, INotifiable>());
             return new ObservingFunc<T8, T9, T10, T11, T12, T13, T14, T15, TResult>(result, result.IsParameterFree);
         }
         /// <summary>
@@ -6894,7 +6894,7 @@ namespace NMF.Expressions
             parameters.Add(parameter6Name, in6);
             parameters.Add(parameter7Name, in7);
             parameters.Add(parameter8Name, in8);
-            var result = expression.ApplyParameters(parameters);
+            var result = expression.ApplyParameters(parameters, new Dictionary<INotifiable, INotifiable>());
             return new ObservingFunc<T9, T10, T11, T12, T13, T14, T15, TResult>(result, result.IsParameterFree);
         }
         /// <summary>
@@ -6942,7 +6942,7 @@ namespace NMF.Expressions
             parameters.Add(parameter7Name, in7);
             parameters.Add(parameter8Name, in8);
             parameters.Add(parameter9Name, in9);
-            var result = expression.ApplyParameters(parameters);
+            var result = expression.ApplyParameters(parameters, new Dictionary<INotifiable, INotifiable>());
             return new ObservingFunc<T10, T11, T12, T13, T14, T15, TResult>(result, result.IsParameterFree);
         }
         /// <summary>
@@ -6993,7 +6993,7 @@ namespace NMF.Expressions
             parameters.Add(parameter8Name, in8);
             parameters.Add(parameter9Name, in9);
             parameters.Add(parameter10Name, in10);
-            var result = expression.ApplyParameters(parameters);
+            var result = expression.ApplyParameters(parameters, new Dictionary<INotifiable, INotifiable>());
             return new ObservingFunc<T11, T12, T13, T14, T15, TResult>(result, result.IsParameterFree);
         }
         /// <summary>
@@ -7047,7 +7047,7 @@ namespace NMF.Expressions
             parameters.Add(parameter9Name, in9);
             parameters.Add(parameter10Name, in10);
             parameters.Add(parameter11Name, in11);
-            var result = expression.ApplyParameters(parameters);
+            var result = expression.ApplyParameters(parameters, new Dictionary<INotifiable, INotifiable>());
             return new ObservingFunc<T12, T13, T14, T15, TResult>(result, result.IsParameterFree);
         }
         /// <summary>
@@ -7104,7 +7104,7 @@ namespace NMF.Expressions
             parameters.Add(parameter10Name, in10);
             parameters.Add(parameter11Name, in11);
             parameters.Add(parameter12Name, in12);
-            var result = expression.ApplyParameters(parameters);
+            var result = expression.ApplyParameters(parameters, new Dictionary<INotifiable, INotifiable>());
             return new ObservingFunc<T13, T14, T15, TResult>(result, result.IsParameterFree);
         }
         /// <summary>
@@ -7164,7 +7164,7 @@ namespace NMF.Expressions
             parameters.Add(parameter11Name, in11);
             parameters.Add(parameter12Name, in12);
             parameters.Add(parameter13Name, in13);
-            var result = expression.ApplyParameters(parameters);
+            var result = expression.ApplyParameters(parameters, new Dictionary<INotifiable, INotifiable>());
             return new ObservingFunc<T14, T15, TResult>(result, result.IsParameterFree);
         }
         /// <summary>
@@ -7227,7 +7227,7 @@ namespace NMF.Expressions
             parameters.Add(parameter12Name, in12);
             parameters.Add(parameter13Name, in13);
             parameters.Add(parameter14Name, in14);
-            var result = expression.ApplyParameters(parameters);
+            var result = expression.ApplyParameters(parameters, new Dictionary<INotifiable, INotifiable>());
             return new ObservingFunc<T15, TResult>(result, result.IsParameterFree);
         }
 
@@ -7272,7 +7272,7 @@ namespace NMF.Expressions
                 parameters.Add(parameter14Name, in14);
                 parameters.Add(parameter15Name, in15);
             }
-            return expression.ApplyParameters(parameters) as INotifyReversableExpression<TResult>;
+            return expression.ApplyParameters(parameters, new Dictionary<INotifiable, INotifiable>()) as INotifyReversableExpression<TResult>;
         }
 
         /// <summary>
@@ -7316,7 +7316,7 @@ namespace NMF.Expressions
                 parameters.Add(parameter14Name, in14);
                 parameters.Add(parameter15Name, in15);
             }
-            return expression.ApplyParameters(parameters) as INotifyReversableExpression<TResult>;
+            return expression.ApplyParameters(parameters, new Dictionary<INotifiable, INotifiable>()) as INotifyReversableExpression<TResult>;
         }
 
 
