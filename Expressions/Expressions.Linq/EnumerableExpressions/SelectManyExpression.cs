@@ -31,8 +31,9 @@ namespace NMF.Expressions
             FuncCompiled = funcCompiled ?? ExpressionCompileRewriter.Compile(func);
             ResultSelector = resultSelector;
             ResultSelectorCompiled = resultSelectorCompiled ?? ExpressionCompileRewriter.Compile(resultSelector);
-
+#if DEBUG
             AddDgmlNode();
+#endif
         }
 
         public INotifyEnumerable<TResult> AsNotifiable()
@@ -62,25 +63,24 @@ namespace NMF.Expressions
 
         public IEnumerableExpression<TOptimizedResult> AsOptimized<TOptimizedResult>(IOptimizableEnumerableExpression expression = null)
         {
+#if DEBUG
             VisitForDebugging(ResultSelector);
+#endif
 
             return this.Merge<TOptimizedResult>(expression);
         }
 
         public IEnumerableExpression<TOptimizedResult> Merge<TOptimizedResult>(IOptimizableEnumerableExpression prevExpr)
         {
-            var mergedSelectorExpression = new QueryOptimizer<TSource, TResult, TOptimizedResult>(prevExpr.OptSelectorExpression, OptSelectorExpression).Optimize() as Expression<Func<TSource, TIntermediate, TOptimizedResult>>;
+            var mergedSelectorExpression = QueryOptimizer.Optimize<TSource, TResult, TOptimizedResult>(prevExpr.OptSelectorExpression, OptSelectorExpression) as Expression<Func<TSource, TIntermediate, TOptimizedResult>>;
             return new SelectManyExpression<TSource, TIntermediate, TOptimizedResult>(Source, FuncExpression, null, mergedSelectorExpression, null);
         }
 
-
-        [Conditional("DEBUG")]
         public void AddDgmlNode()
         {
             DmglVisualizer.AddNode(this);
         }
 
-        [Conditional("DEBUG")]
         private void VisitForDebugging(dynamic expression)
         {
             //Ausgabe überprüfen

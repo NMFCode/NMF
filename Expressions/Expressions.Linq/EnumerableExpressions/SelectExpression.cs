@@ -27,8 +27,9 @@ namespace NMF.Expressions
             Source = source;
             SelectorExpression = selector;
             SelectorCompiled = selectorCompiled;
-
+#if DEBUG
             AddDgmlNode();
+#endif
         }
 
         public INotifyEnumerable<TResult> AsNotifiable()
@@ -64,8 +65,9 @@ namespace NMF.Expressions
 
         public IEnumerableExpression<TOptimizedResult> AsOptimized<TOptimizedResult>(IOptimizableEnumerableExpression expression = null)
         {
-
+#if DEBUG
             VisitForDebugging(SelectorExpression);
+#endif
 
             //TODO: Aufruf hier weglassen
             IEnumerableExpression<TResult> optimizedExpression = this.Optimize<TResult>(Source);
@@ -98,17 +100,15 @@ namespace NMF.Expressions
 
         public IEnumerableExpression<TOptimizedResult> Merge<TOptimizedResult>(IOptimizableEnumerableExpression prevExpr)
         {
-            var mergedSelectorExpression = new QueryOptimizer<TSource, TResult, TOptimizedResult>(prevExpr.OptSelectorExpression, OptSelectorExpression).Optimize() as Expression<Func<TSource, TOptimizedResult>>;
+            var mergedSelectorExpression = QueryOptimizer.Optimize<TSource, TResult, TOptimizedResult>(prevExpr.OptSelectorExpression, OptSelectorExpression) as Expression<Func<TSource, TOptimizedResult>>;
             return new SelectExpression<TSource, TOptimizedResult>(Source, mergedSelectorExpression, null);
         }
 
-        [Conditional("DEBUG")]
         public void AddDgmlNode()
         {
             DmglVisualizer.AddNode(this);
         }
 
-        [Conditional("DEBUG")]
         private void VisitForDebugging(dynamic expression)
         {
             //Ausgabe überprüfen
