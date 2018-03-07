@@ -66,8 +66,9 @@ namespace NMF.Expressions
 #if DEBUG
             VisitForDebugging(ResultSelector);
 #endif
-
-            return this.Merge<TOptimizedResult>(expression);
+            if(expression != null)
+                return Merge<TOptimizedResult>(expression);
+            return (IEnumerableExpression<TOptimizedResult>) this;
         }
 
         public IEnumerableExpression<TOptimizedResult> Merge<TOptimizedResult>(IOptimizableEnumerableExpression prevExpr)

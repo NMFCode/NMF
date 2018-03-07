@@ -70,33 +70,14 @@ namespace NMF.Expressions
             VisitForDebugging(SelectorExpression);
 #endif
 
-            //TODO: Aufruf hier weglassen
-            IEnumerableExpression<TResult> optimizedExpression = this.Optimize<TResult>(Source);
-
-            //Wenn expression == null : Ausgangspunkt der Optimierung
-            if (expression != null)
+            if (this.IsOptimizable(Source))
             {
-                //TODO: Hier eine IsOptimizable() Methode in einem if aufrufen (prüft nur den Typ)
-
-                //TODO: Dadurch kann man sich die Überprüfung mit != this sparen
-                //if return value of optimize() is the caller of this method
-                //nothing can be optimized
-                if (optimizedExpression != this)
-                {
-
-                    //TODO: Dann hier erst Optimize Extension Method Aufrufen und den Rückgabetyp ändern um anschließenden Cast zu sparen
-                    //TODO: bzw. wieso muss man hier nochmal AsOptimized aufrufen? Wurde doch oben in der Optimize ExtMethod gemacht wenn Typ passt!
-
-                    //test != this: eine bereit neu erstellte Expression soll weiter optimiert werden
-                    var castedOptimizedExpression = optimizedExpression as IOptimizableEnumerableExpression;
-                    return castedOptimizedExpression.AsOptimized<TOptimizedResult>(expression);
-                }
-
-                //Create new Expression
-                return Merge<TOptimizedResult>(expression);
+                return this.Optimize<TResult>(Source as IOptimizableEnumerableExpression).AsOptimized<TOptimizedResult>(expression);
             }
 
-            return (IEnumerableExpression<TOptimizedResult>)optimizedExpression;
+            if(expression != null)
+                return Merge<TOptimizedResult>(expression);
+            return (IEnumerableExpression<TOptimizedResult>) this;
         }
 
         public IEnumerableExpression<TOptimizedResult> Merge<TOptimizedResult>(IOptimizableEnumerableExpression prevExpr)
