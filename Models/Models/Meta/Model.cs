@@ -38,7 +38,7 @@ namespace NMF.Models.Meta
     [XmlNamespaceAttribute("http://nmf.codeplex.com/nmeta/")]
     [XmlNamespacePrefixAttribute("nmeta")]
     [ModelRepresentationClassAttribute("http://nmf.codeplex.com/nmeta/#//Model")]
-    public partial class Model : NMF.Models.ModelElement, NMF.Models.IModel, NMF.Models.IModelElement
+    public partial class Model : NMF.Models.ModelElement, IModel, NMF.Models.IModelElement
     {
         
         /// <summary>
@@ -53,13 +53,13 @@ namespace NMF.Models.Meta
         /// <summary>
         /// The backing field for the RootElements property
         /// </summary>
-        private ObservableCompositionList<NMF.Models.IModelElement> _rootElements;
+        private ObservableCompositionOrderedSet<NMF.Models.IModelElement> _rootElements;
         
         private static IClass _classInstance;
         
         public Model()
         {
-            this._rootElements = new ObservableCompositionList<NMF.Models.IModelElement>(this);
+            this._rootElements = new ObservableCompositionOrderedSet<NMF.Models.IModelElement>(this);
             this._rootElements.CollectionChanging += this.RootElementsCollectionChanging;
             this._rootElements.CollectionChanged += this.RootElementsCollectionChanged;
         }
@@ -67,6 +67,7 @@ namespace NMF.Models.Meta
         /// <summary>
         /// The ModelUri property
         /// </summary>
+        [CategoryAttribute("Model")]
         [XmlAttributeAttribute(true)]
         public Uri ModelUri
         {
@@ -93,10 +94,11 @@ namespace NMF.Models.Meta
         /// The RootElements property
         /// </summary>
         [DesignerSerializationVisibilityAttribute(DesignerSerializationVisibility.Content)]
+        [BrowsableAttribute(false)]
         [XmlAttributeAttribute(false)]
         [ContainmentAttribute()]
         [ConstantAttribute()]
-        public IListExpression<NMF.Models.IModelElement> RootElements
+        public IOrderedSetExpression<NMF.Models.IModelElement> RootElements
         {
             get
             {
@@ -153,7 +155,7 @@ namespace NMF.Models.Meta
         
         private static ITypedElement RetrieveModelUriAttribute()
         {
-            return ((ITypedElement)(((NMF.Models.ModelElement)(NMF.Models.Model.ClassInstance)).Resolve("ModelUri")));
+            return ((ITypedElement)(((NMF.Models.ModelElement)(Model.ClassInstance)).Resolve("ModelUri")));
         }
         
         /// <summary>
@@ -184,7 +186,7 @@ namespace NMF.Models.Meta
         
         private static ITypedElement RetrieveRootElementsReference()
         {
-            return ((ITypedElement)(((NMF.Models.ModelElement)(NMF.Models.Model.ClassInstance)).Resolve("RootElements")));
+            return ((ITypedElement)(((NMF.Models.ModelElement)(Model.ClassInstance)).Resolve("RootElements")));
         }
         
         /// <summary>
@@ -579,14 +581,14 @@ namespace NMF.Models.Meta
         /// <summary>
         /// Represents a proxy to represent an incremental access to the ModelUri property
         /// </summary>
-        private sealed class ModelUriProxy : ModelPropertyChange<NMF.Models.IModel, Uri>
+        private sealed class ModelUriProxy : ModelPropertyChange<IModel, Uri>
         {
             
             /// <summary>
             /// Creates a new observable property access proxy
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
-            public ModelUriProxy(NMF.Models.IModel modelElement) : 
+            public ModelUriProxy(IModel modelElement) : 
                     base(modelElement, "ModelUri")
             {
             }

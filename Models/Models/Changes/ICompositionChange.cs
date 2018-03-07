@@ -37,6 +37,7 @@ namespace NMF.Models.Changes
     /// </summary>
     [DefaultImplementationTypeAttribute(typeof(CompositionChange))]
     [XmlDefaultImplementationTypeAttribute(typeof(CompositionChange))]
+    [ModelRepresentationClassAttribute("http://nmf.codeplex.com/changes#//CompositionChange")]
     public interface ICompositionChange : NMF.Models.IModelElement, IElementaryChange
     {
     }

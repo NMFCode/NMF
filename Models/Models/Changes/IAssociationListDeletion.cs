@@ -37,12 +37,15 @@ namespace NMF.Models.Changes
     /// </summary>
     [DefaultImplementationTypeAttribute(typeof(AssociationListDeletion))]
     [XmlDefaultImplementationTypeAttribute(typeof(AssociationListDeletion))]
+    [ModelRepresentationClassAttribute("http://nmf.codeplex.com/changes#//AssociationListDeletion")]
     public interface IAssociationListDeletion : NMF.Models.IModelElement, IAssociationChange
     {
         
         /// <summary>
         /// The index property
         /// </summary>
+        [DisplayNameAttribute("index")]
+        [CategoryAttribute("AssociationListDeletion")]
         [XmlElementNameAttribute("index")]
         [XmlAttributeAttribute(true)]
         int Index
@@ -54,6 +57,8 @@ namespace NMF.Models.Changes
         /// <summary>
         /// The deletedElement property
         /// </summary>
+        [DisplayNameAttribute("deletedElement")]
+        [CategoryAttribute("AssociationListDeletion")]
         [XmlElementNameAttribute("deletedElement")]
         [XmlAttributeAttribute(true)]
         NMF.Models.IModelElement DeletedElement

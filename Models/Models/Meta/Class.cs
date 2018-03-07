@@ -110,6 +110,7 @@ namespace NMF.Models.Meta
         /// The IsAbstract property
         /// </summary>
         [DefaultValueAttribute(false)]
+        [CategoryAttribute("Class")]
         [XmlAttributeAttribute(true)]
         public bool IsAbstract
         {
@@ -136,6 +137,9 @@ namespace NMF.Models.Meta
         /// Specifies whether the identifier is valid only in the scope of its container or on a global scope.
         /// </summary>
         /// <remarks>This attribute is ignored when this class is not identified.</remarks>
+        [DescriptionAttribute("Specifies whether the identifier is valid only in the scope of its container or o" +
+            "n a global scope.")]
+        [CategoryAttribute("Class")]
         [XmlAttributeAttribute(true)]
         public NMF.Models.Meta.IdentifierScope IdentifierScope
         {
@@ -162,6 +166,7 @@ namespace NMF.Models.Meta
         /// The BaseTypes property
         /// </summary>
         [DesignerSerializationVisibilityAttribute(DesignerSerializationVisibility.Content)]
+        [CategoryAttribute("Class")]
         [XmlAttributeAttribute(true)]
         [ConstantAttribute()]
         public ICollectionExpression<IClass> BaseTypes
@@ -175,6 +180,7 @@ namespace NMF.Models.Meta
         /// <summary>
         /// The InstanceOf property
         /// </summary>
+        [CategoryAttribute("Class")]
         [XmlAttributeAttribute(true)]
         public IClass InstanceOf
         {
@@ -208,6 +214,8 @@ namespace NMF.Models.Meta
         /// <summary>
         /// Gets or sets the attribute that will identify instances of this class
         /// </summary>
+        [DescriptionAttribute("Gets or sets the attribute that will identify instances of this class")]
+        [CategoryAttribute("Class")]
         [XmlAttributeAttribute(true)]
         public IAttribute Identifier
         {
@@ -242,6 +250,7 @@ namespace NMF.Models.Meta
         /// The AttributeConstraints property
         /// </summary>
         [DesignerSerializationVisibilityAttribute(DesignerSerializationVisibility.Content)]
+        [BrowsableAttribute(false)]
         [XmlAttributeAttribute(false)]
         [ContainmentAttribute()]
         [XmlOppositeAttribute("DeclaringType")]
@@ -258,6 +267,7 @@ namespace NMF.Models.Meta
         /// The ReferenceConstraints property
         /// </summary>
         [DesignerSerializationVisibilityAttribute(DesignerSerializationVisibility.Content)]
+        [BrowsableAttribute(false)]
         [XmlAttributeAttribute(false)]
         [ContainmentAttribute()]
         [XmlOppositeAttribute("DeclaringType")]

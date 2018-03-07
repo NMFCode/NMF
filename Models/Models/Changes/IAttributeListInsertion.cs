@@ -37,12 +37,15 @@ namespace NMF.Models.Changes
     /// </summary>
     [DefaultImplementationTypeAttribute(typeof(AttributeListInsertion))]
     [XmlDefaultImplementationTypeAttribute(typeof(AttributeListInsertion))]
+    [ModelRepresentationClassAttribute("http://nmf.codeplex.com/changes#//AttributeListInsertion")]
     public interface IAttributeListInsertion : NMF.Models.IModelElement, IAttributeChange
     {
         
         /// <summary>
         /// The index property
         /// </summary>
+        [DisplayNameAttribute("index")]
+        [CategoryAttribute("AttributeListInsertion")]
         [XmlElementNameAttribute("index")]
         [XmlAttributeAttribute(true)]
         int Index
@@ -54,6 +57,8 @@ namespace NMF.Models.Changes
         /// <summary>
         /// The addedValue property
         /// </summary>
+        [DisplayNameAttribute("addedValue")]
+        [CategoryAttribute("AttributeListInsertion")]
         [XmlElementNameAttribute("addedValue")]
         [XmlAttributeAttribute(true)]
         string AddedValue

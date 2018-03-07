@@ -60,6 +60,8 @@ namespace NMF.Models.Changes
         /// <summary>
         /// The newValue property
         /// </summary>
+        [DisplayNameAttribute("newValue")]
+        [CategoryAttribute("AttributePropertyChange")]
         [XmlElementNameAttribute("newValue")]
         [XmlAttributeAttribute(true)]
         public string NewValue
@@ -86,6 +88,8 @@ namespace NMF.Models.Changes
         /// <summary>
         /// The oldValue property
         /// </summary>
+        [DisplayNameAttribute("oldValue")]
+        [CategoryAttribute("AttributePropertyChange")]
         [XmlElementNameAttribute("oldValue")]
         [XmlAttributeAttribute(true)]
         public string OldValue

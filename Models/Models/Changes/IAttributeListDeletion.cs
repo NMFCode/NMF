@@ -37,12 +37,15 @@ namespace NMF.Models.Changes
     /// </summary>
     [DefaultImplementationTypeAttribute(typeof(AttributeListDeletion))]
     [XmlDefaultImplementationTypeAttribute(typeof(AttributeListDeletion))]
+    [ModelRepresentationClassAttribute("http://nmf.codeplex.com/changes#//AttributeListDeletion")]
     public interface IAttributeListDeletion : NMF.Models.IModelElement, IAttributeChange
     {
         
         /// <summary>
         /// The deletedValue property
         /// </summary>
+        [DisplayNameAttribute("deletedValue")]
+        [CategoryAttribute("AttributeListDeletion")]
         [XmlElementNameAttribute("deletedValue")]
         [XmlAttributeAttribute(true)]
         string DeletedValue
@@ -54,6 +57,8 @@ namespace NMF.Models.Changes
         /// <summary>
         /// The index property
         /// </summary>
+        [DisplayNameAttribute("index")]
+        [CategoryAttribute("AttributeListDeletion")]
         [XmlElementNameAttribute("index")]
         [XmlAttributeAttribute(true)]
         int Index

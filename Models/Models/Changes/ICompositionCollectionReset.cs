@@ -37,6 +37,7 @@ namespace NMF.Models.Changes
     /// </summary>
     [DefaultImplementationTypeAttribute(typeof(CompositionCollectionReset))]
     [XmlDefaultImplementationTypeAttribute(typeof(CompositionCollectionReset))]
+    [ModelRepresentationClassAttribute("http://nmf.codeplex.com/changes#//CompositionCollectionReset")]
     public interface ICompositionCollectionReset : NMF.Models.IModelElement, ICompositionChange
     {
     }

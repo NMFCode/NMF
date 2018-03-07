@@ -37,12 +37,15 @@ namespace NMF.Models.Changes
     /// </summary>
     [DefaultImplementationTypeAttribute(typeof(AttributePropertyChange))]
     [XmlDefaultImplementationTypeAttribute(typeof(AttributePropertyChange))]
+    [ModelRepresentationClassAttribute("http://nmf.codeplex.com/changes#//AttributePropertyChange")]
     public interface IAttributePropertyChange : NMF.Models.IModelElement, IAttributeChange
     {
         
         /// <summary>
         /// The newValue property
         /// </summary>
+        [DisplayNameAttribute("newValue")]
+        [CategoryAttribute("AttributePropertyChange")]
         [XmlElementNameAttribute("newValue")]
         [XmlAttributeAttribute(true)]
         string NewValue
@@ -54,6 +57,8 @@ namespace NMF.Models.Changes
         /// <summary>
         /// The oldValue property
         /// </summary>
+        [DisplayNameAttribute("oldValue")]
+        [CategoryAttribute("AttributePropertyChange")]
         [XmlElementNameAttribute("oldValue")]
         [XmlAttributeAttribute(true)]
         string OldValue

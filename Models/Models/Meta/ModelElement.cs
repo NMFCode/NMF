@@ -81,6 +81,7 @@ namespace NMF.Models.Meta
         /// <summary>
         /// The AbsoluteUri property
         /// </summary>
+        [CategoryAttribute("ModelElement")]
         [XmlAttributeAttribute(true)]
         public Uri AbsoluteUri
         {
@@ -106,6 +107,7 @@ namespace NMF.Models.Meta
         /// <summary>
         /// The RelativeUri property
         /// </summary>
+        [CategoryAttribute("ModelElement")]
         [XmlAttributeAttribute(true)]
         public Uri RelativeUri
         {
@@ -132,6 +134,7 @@ namespace NMF.Models.Meta
         /// The Extensions property
         /// </summary>
         [DesignerSerializationVisibilityAttribute(DesignerSerializationVisibility.Content)]
+        [BrowsableAttribute(false)]
         [XmlAttributeAttribute(false)]
         [ContainmentAttribute()]
         [XmlOppositeAttribute("ExtendedElement")]
@@ -147,6 +150,7 @@ namespace NMF.Models.Meta
         /// <summary>
         /// The Parent property
         /// </summary>
+        [CategoryAttribute("ModelElement")]
         [XmlAttributeAttribute(true)]
         public NMF.Models.IModelElement Parent
         {

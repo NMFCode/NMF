@@ -63,6 +63,8 @@ namespace NMF.Models.Meta
         /// <summary>
         /// The default value for this attribute
         /// </summary>
+        [DescriptionAttribute("The default value for this attribute")]
+        [CategoryAttribute("Attribute")]
         [XmlAttributeAttribute(true)]
         public string DefaultValue
         {
@@ -88,6 +90,7 @@ namespace NMF.Models.Meta
         /// <summary>
         /// The type that declared this attribute
         /// </summary>
+        [BrowsableAttribute(false)]
         [DesignerSerializationVisibilityAttribute(DesignerSerializationVisibility.Hidden)]
         [XmlAttributeAttribute(true)]
         [XmlOppositeAttribute("Attributes")]
@@ -106,6 +109,8 @@ namespace NMF.Models.Meta
         /// <summary>
         /// Gets or sets the attribute that is implemented by the current attribute
         /// </summary>
+        [DescriptionAttribute("Gets or sets the attribute that is implemented by the current attribute")]
+        [CategoryAttribute("Attribute")]
         [XmlAttributeAttribute(true)]
         public IAttribute Refines
         {

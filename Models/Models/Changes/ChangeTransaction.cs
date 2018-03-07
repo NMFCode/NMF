@@ -67,6 +67,7 @@ namespace NMF.Models.Changes
         /// <summary>
         /// The sourceChange property
         /// </summary>
+        [BrowsableAttribute(false)]
         [XmlElementNameAttribute("sourceChange")]
         [XmlAttributeAttribute(false)]
         [ContainmentAttribute()]
@@ -105,6 +106,7 @@ namespace NMF.Models.Changes
         /// The nestedChanges property
         /// </summary>
         [DesignerSerializationVisibilityAttribute(DesignerSerializationVisibility.Content)]
+        [BrowsableAttribute(false)]
         [XmlElementNameAttribute("nestedChanges")]
         [XmlAttributeAttribute(false)]
         [ContainmentAttribute()]

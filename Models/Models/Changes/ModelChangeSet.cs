@@ -61,6 +61,7 @@ namespace NMF.Models.Changes
         /// The changes property
         /// </summary>
         [DesignerSerializationVisibilityAttribute(DesignerSerializationVisibility.Content)]
+        [BrowsableAttribute(false)]
         [XmlElementNameAttribute("changes")]
         [XmlAttributeAttribute(false)]
         [ContainmentAttribute()]

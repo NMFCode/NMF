@@ -53,6 +53,7 @@ namespace NMF.Models.Changes
         /// <summary>
         /// The addedElement property
         /// </summary>
+        [BrowsableAttribute(false)]
         [XmlElementNameAttribute("addedElement")]
         [XmlAttributeAttribute(false)]
         [ContainmentAttribute()]

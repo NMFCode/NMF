@@ -60,6 +60,8 @@ namespace NMF.Models.Changes
         /// <summary>
         /// The index property
         /// </summary>
+        [DisplayNameAttribute("index")]
+        [CategoryAttribute("CompositionListDeletion")]
         [XmlElementNameAttribute("index")]
         [XmlAttributeAttribute(true)]
         public int Index
@@ -86,6 +88,8 @@ namespace NMF.Models.Changes
         /// <summary>
         /// The deletedElement property
         /// </summary>
+        [DisplayNameAttribute("deletedElement")]
+        [CategoryAttribute("CompositionListDeletion")]
         [XmlElementNameAttribute("deletedElement")]
         [XmlAttributeAttribute(true)]
         public NMF.Models.IModelElement DeletedElement

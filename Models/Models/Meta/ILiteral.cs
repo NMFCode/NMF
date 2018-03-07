@@ -37,12 +37,14 @@ namespace NMF.Models.Meta
     /// </summary>
     [DefaultImplementationTypeAttribute(typeof(Literal))]
     [XmlDefaultImplementationTypeAttribute(typeof(Literal))]
+    [ModelRepresentationClassAttribute("http://nmf.codeplex.com/nmeta/#//Literal")]
     public interface ILiteral : NMF.Models.IModelElement, IMetaElement
     {
         
         /// <summary>
         /// The Value property
         /// </summary>
+        [CategoryAttribute("Literal")]
         [XmlAttributeAttribute(true)]
         Nullable<int> Value
         {
@@ -53,6 +55,7 @@ namespace NMF.Models.Meta
         /// <summary>
         /// The Enumeration property
         /// </summary>
+        [BrowsableAttribute(false)]
         [DesignerSerializationVisibilityAttribute(DesignerSerializationVisibility.Hidden)]
         [XmlAttributeAttribute(true)]
         [XmlOppositeAttribute("Literals")]

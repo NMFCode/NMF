@@ -69,6 +69,7 @@ namespace NMF.Models.Meta
         /// <summary>
         /// The Name property
         /// </summary>
+        [CategoryAttribute("MetaElement")]
         [IdAttribute()]
         [XmlAttributeAttribute(true)]
         public string Name
@@ -95,6 +96,7 @@ namespace NMF.Models.Meta
         /// <summary>
         /// The Summary property
         /// </summary>
+        [CategoryAttribute("MetaElement")]
         [XmlAttributeAttribute(true)]
         public string Summary
         {
@@ -120,6 +122,7 @@ namespace NMF.Models.Meta
         /// <summary>
         /// The Remarks property
         /// </summary>
+        [CategoryAttribute("MetaElement")]
         [XmlAttributeAttribute(true)]
         public string Remarks
         {

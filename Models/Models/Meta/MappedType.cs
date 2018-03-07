@@ -50,6 +50,7 @@ namespace NMF.Models.Meta
         /// <summary>
         /// The SystemType property
         /// </summary>
+        [CategoryAttribute("MappedType")]
         [XmlAttributeAttribute(true)]
         public System.Type SystemType
         {
@@ -129,7 +130,7 @@ namespace NMF.Models.Meta
             {
                 return extension;
             }
-            extension = new MappedType { Parent = parent };
+            extension = new MappedType();
             parent.Extensions.Add(extension);
             return extension;
         }

@@ -37,12 +37,15 @@ namespace NMF.Models.Changes
     /// </summary>
     [DefaultImplementationTypeAttribute(typeof(AttributeCollectionInsertion))]
     [XmlDefaultImplementationTypeAttribute(typeof(AttributeCollectionInsertion))]
+    [ModelRepresentationClassAttribute("http://nmf.codeplex.com/changes#//AttributeCollectionInsertion")]
     public interface IAttributeCollectionInsertion : NMF.Models.IModelElement, IAttributeChange
     {
         
         /// <summary>
         /// The addedValue property
         /// </summary>
+        [DisplayNameAttribute("addedValue")]
+        [CategoryAttribute("AttributeCollectionInsertion")]
         [XmlElementNameAttribute("addedValue")]
         [XmlAttributeAttribute(true)]
         string AddedValue

@@ -37,12 +37,15 @@ namespace NMF.Models.Changes
     /// </summary>
     [DefaultImplementationTypeAttribute(typeof(CompositionMoveIntoProperty))]
     [XmlDefaultImplementationTypeAttribute(typeof(CompositionMoveIntoProperty))]
+    [ModelRepresentationClassAttribute("http://nmf.codeplex.com/changes#//CompositionMoveIntoProperty")]
     public interface ICompositionMoveIntoProperty : NMF.Models.IModelElement, ICompositionChange
     {
         
         /// <summary>
         /// The newValue property
         /// </summary>
+        [DisplayNameAttribute("newValue")]
+        [CategoryAttribute("CompositionMoveIntoProperty")]
         [XmlElementNameAttribute("newValue")]
         [XmlAttributeAttribute(true)]
         NMF.Models.IModelElement NewValue
@@ -54,6 +57,8 @@ namespace NMF.Models.Changes
         /// <summary>
         /// The oldValue property
         /// </summary>
+        [DisplayNameAttribute("oldValue")]
+        [CategoryAttribute("CompositionMoveIntoProperty")]
         [XmlElementNameAttribute("oldValue")]
         [XmlAttributeAttribute(true)]
         NMF.Models.IModelElement OldValue
@@ -65,6 +70,7 @@ namespace NMF.Models.Changes
         /// <summary>
         /// The origin property
         /// </summary>
+        [BrowsableAttribute(false)]
         [XmlElementNameAttribute("origin")]
         [XmlAttributeAttribute(false)]
         [ContainmentAttribute()]

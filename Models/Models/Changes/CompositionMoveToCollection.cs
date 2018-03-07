@@ -60,6 +60,8 @@ namespace NMF.Models.Changes
         /// <summary>
         /// The movedElement property
         /// </summary>
+        [DisplayNameAttribute("movedElement")]
+        [CategoryAttribute("CompositionMoveToCollection")]
         [XmlElementNameAttribute("movedElement")]
         [XmlAttributeAttribute(true)]
         public NMF.Models.IModelElement MovedElement
@@ -86,6 +88,7 @@ namespace NMF.Models.Changes
         /// <summary>
         /// The origin property
         /// </summary>
+        [BrowsableAttribute(false)]
         [XmlElementNameAttribute("origin")]
         [XmlAttributeAttribute(false)]
         [ContainmentAttribute()]

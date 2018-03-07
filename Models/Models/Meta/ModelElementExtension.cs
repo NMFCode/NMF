@@ -48,6 +48,7 @@ namespace NMF.Models.Meta
         /// <summary>
         /// The ExtendedElement property
         /// </summary>
+        [BrowsableAttribute(false)]
         [DesignerSerializationVisibilityAttribute(DesignerSerializationVisibility.Hidden)]
         [XmlAttributeAttribute(true)]
         [XmlOppositeAttribute("Extensions")]

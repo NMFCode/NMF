@@ -60,6 +60,7 @@ namespace NMF.Models.Changes
         /// <summary>
         /// The newValue property
         /// </summary>
+        [BrowsableAttribute(false)]
         [XmlElementNameAttribute("newValue")]
         [XmlAttributeAttribute(false)]
         [ContainmentAttribute()]
@@ -87,6 +88,8 @@ namespace NMF.Models.Changes
         /// <summary>
         /// The oldValue property
         /// </summary>
+        [DisplayNameAttribute("oldValue")]
+        [CategoryAttribute("CompositionPropertyChange")]
         [XmlElementNameAttribute("oldValue")]
         [XmlAttributeAttribute(true)]
         public NMF.Models.IModelElement OldValue

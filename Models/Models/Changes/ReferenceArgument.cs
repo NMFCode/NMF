@@ -53,6 +53,8 @@ namespace NMF.Models.Changes
         /// <summary>
         /// The value property
         /// </summary>
+        [DisplayNameAttribute("value")]
+        [CategoryAttribute("ReferenceArgument")]
         [XmlElementNameAttribute("value")]
         [XmlAttributeAttribute(true)]
         public NMF.Models.IModelElement Value
@@ -70,14 +72,6 @@ namespace NMF.Models.Changes
                     this.OnValueChanging(e);
                     this.OnPropertyChanging("Value", e, _valueReference);
                     this._value = value;
-                    if ((old != null))
-                    {
-                        old.Deleted -= this.OnResetValue;
-                    }
-                    if ((value != null))
-                    {
-                        value.Deleted += this.OnResetValue;
-                    }
                     this.OnValueChanged(e);
                     this.OnPropertyChanged("Value", e, _valueReference);
                 }
@@ -149,16 +143,6 @@ namespace NMF.Models.Changes
             {
                 handler.Invoke(this, eventArgs);
             }
-        }
-        
-        /// <summary>
-        /// Handles the event that the Value property must reset
-        /// </summary>
-        /// <param name="sender">The object that sent this reset request</param>
-        /// <param name="eventArgs">The event data for the reset event</param>
-        private void OnResetValue(object sender, System.EventArgs eventArgs)
-        {
-            this.Value = null;
         }
         
         /// <summary>

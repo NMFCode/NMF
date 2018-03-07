@@ -48,7 +48,7 @@ namespace NMF.Models.Meta
         /// <summary>
         /// The backing field for the IsDefault property
         /// </summary>
-        private Nullable<bool> _isDefault;
+        private bool _isDefault;
         
         private static Lazy<ITypedElement> _isDefaultAttribute = new Lazy<ITypedElement>(RetrieveIsDefaultAttribute);
         
@@ -57,6 +57,7 @@ namespace NMF.Models.Meta
         /// <summary>
         /// The SerializationName property
         /// </summary>
+        [CategoryAttribute("SerializationInformation")]
         [XmlAttributeAttribute(true)]
         public string SerializationName
         {
@@ -82,8 +83,9 @@ namespace NMF.Models.Meta
         /// <summary>
         /// The IsDefault property
         /// </summary>
+        [CategoryAttribute("SerializationInformation")]
         [XmlAttributeAttribute(true)]
-        public Nullable<bool> IsDefault
+        public bool IsDefault
         {
             get
             {
@@ -93,7 +95,7 @@ namespace NMF.Models.Meta
             {
                 if ((this._isDefault != value))
                 {
-                    Nullable<bool> old = this._isDefault;
+                    bool old = this._isDefault;
                     ValueChangedEventArgs e = new ValueChangedEventArgs(old, value);
                     this.OnIsDefaultChanging(e);
                     this.OnPropertyChanging("IsDefault", e, _isDefaultAttribute);

@@ -37,12 +37,15 @@ namespace NMF.Models.Changes
     /// </summary>
     [DefaultImplementationTypeAttribute(typeof(ValueArgument))]
     [XmlDefaultImplementationTypeAttribute(typeof(ValueArgument))]
+    [ModelRepresentationClassAttribute("http://nmf.codeplex.com/changes#//ValueArgument")]
     public interface IValueArgument : NMF.Models.IModelElement, IOperationArgument
     {
         
         /// <summary>
         /// The value property
         /// </summary>
+        [DisplayNameAttribute("value")]
+        [CategoryAttribute("ValueArgument")]
         [XmlElementNameAttribute("value")]
         [XmlAttributeAttribute(true)]
         string Value

@@ -37,12 +37,15 @@ namespace NMF.Models.Changes
     /// </summary>
     [DefaultImplementationTypeAttribute(typeof(AssociationPropertyChange))]
     [XmlDefaultImplementationTypeAttribute(typeof(AssociationPropertyChange))]
+    [ModelRepresentationClassAttribute("http://nmf.codeplex.com/changes#//AssociationPropertyChange")]
     public interface IAssociationPropertyChange : NMF.Models.IModelElement, IAssociationChange
     {
         
         /// <summary>
         /// The newValue property
         /// </summary>
+        [DisplayNameAttribute("newValue")]
+        [CategoryAttribute("AssociationPropertyChange")]
         [XmlElementNameAttribute("newValue")]
         [XmlAttributeAttribute(true)]
         NMF.Models.IModelElement NewValue
@@ -54,6 +57,8 @@ namespace NMF.Models.Changes
         /// <summary>
         /// The oldValue property
         /// </summary>
+        [DisplayNameAttribute("oldValue")]
+        [CategoryAttribute("AssociationPropertyChange")]
         [XmlElementNameAttribute("oldValue")]
         [XmlAttributeAttribute(true)]
         NMF.Models.IModelElement OldValue

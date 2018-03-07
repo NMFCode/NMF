@@ -67,6 +67,8 @@ namespace NMF.Models.Changes
         /// <summary>
         /// The newValue property
         /// </summary>
+        [DisplayNameAttribute("newValue")]
+        [CategoryAttribute("CompositionMoveIntoProperty")]
         [XmlElementNameAttribute("newValue")]
         [XmlAttributeAttribute(true)]
         public NMF.Models.IModelElement NewValue
@@ -93,6 +95,8 @@ namespace NMF.Models.Changes
         /// <summary>
         /// The oldValue property
         /// </summary>
+        [DisplayNameAttribute("oldValue")]
+        [CategoryAttribute("CompositionMoveIntoProperty")]
         [XmlElementNameAttribute("oldValue")]
         [XmlAttributeAttribute(true)]
         public NMF.Models.IModelElement OldValue
@@ -119,6 +123,7 @@ namespace NMF.Models.Changes
         /// <summary>
         /// The origin property
         /// </summary>
+        [BrowsableAttribute(false)]
         [XmlElementNameAttribute("origin")]
         [XmlAttributeAttribute(false)]
         [ContainmentAttribute()]

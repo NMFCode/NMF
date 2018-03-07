@@ -37,12 +37,15 @@ namespace NMF.Models.Changes
     /// </summary>
     [DefaultImplementationTypeAttribute(typeof(AssociationCollectionDeletion))]
     [XmlDefaultImplementationTypeAttribute(typeof(AssociationCollectionDeletion))]
+    [ModelRepresentationClassAttribute("http://nmf.codeplex.com/changes#//AssociationCollectionDeletion")]
     public interface IAssociationCollectionDeletion : NMF.Models.IModelElement, IAssociationChange
     {
         
         /// <summary>
         /// The deletedElement property
         /// </summary>
+        [DisplayNameAttribute("deletedElement")]
+        [CategoryAttribute("AssociationCollectionDeletion")]
         [XmlElementNameAttribute("deletedElement")]
         [XmlAttributeAttribute(true)]
         NMF.Models.IModelElement DeletedElement

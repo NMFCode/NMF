@@ -53,6 +53,8 @@ namespace NMF.Models.Changes
         /// <summary>
         /// The name property
         /// </summary>
+        [DisplayNameAttribute("name")]
+        [CategoryAttribute("OperationArgument")]
         [XmlElementNameAttribute("name")]
         [XmlAttributeAttribute(true)]
         public string Name

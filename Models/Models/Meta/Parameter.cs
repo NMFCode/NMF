@@ -56,6 +56,7 @@ namespace NMF.Models.Meta
         /// <summary>
         /// The Direction property
         /// </summary>
+        [CategoryAttribute("Parameter")]
         [XmlAttributeAttribute(true)]
         public NMF.Models.Meta.Direction Direction
         {
@@ -81,6 +82,7 @@ namespace NMF.Models.Meta
         /// <summary>
         /// The Operation property
         /// </summary>
+        [BrowsableAttribute(false)]
         [DesignerSerializationVisibilityAttribute(DesignerSerializationVisibility.Hidden)]
         [XmlAttributeAttribute(true)]
         [XmlOppositeAttribute("Parameters")]

@@ -53,6 +53,8 @@ namespace NMF.Models.Changes
         /// <summary>
         /// The addedValue property
         /// </summary>
+        [DisplayNameAttribute("addedValue")]
+        [CategoryAttribute("AttributeCollectionInsertion")]
         [XmlElementNameAttribute("addedValue")]
         [XmlAttributeAttribute(true)]
         public string AddedValue

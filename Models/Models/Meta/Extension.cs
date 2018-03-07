@@ -54,6 +54,7 @@ namespace NMF.Models.Meta
         /// <summary>
         /// The AdornedClass property
         /// </summary>
+        [CategoryAttribute("Extension")]
         [XmlAttributeAttribute(true)]
         public IClass AdornedClass
         {

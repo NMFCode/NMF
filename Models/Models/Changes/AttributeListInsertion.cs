@@ -60,6 +60,8 @@ namespace NMF.Models.Changes
         /// <summary>
         /// The index property
         /// </summary>
+        [DisplayNameAttribute("index")]
+        [CategoryAttribute("AttributeListInsertion")]
         [XmlElementNameAttribute("index")]
         [XmlAttributeAttribute(true)]
         public int Index
@@ -86,6 +88,8 @@ namespace NMF.Models.Changes
         /// <summary>
         /// The addedValue property
         /// </summary>
+        [DisplayNameAttribute("addedValue")]
+        [CategoryAttribute("AttributeListInsertion")]
         [XmlElementNameAttribute("addedValue")]
         [XmlAttributeAttribute(true)]
         public string AddedValue

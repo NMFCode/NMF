@@ -37,6 +37,7 @@ namespace NMF.Models.Changes
     /// </summary>
     [DefaultImplementationTypeAttribute(typeof(ModelChangeSet))]
     [XmlDefaultImplementationTypeAttribute(typeof(ModelChangeSet))]
+    [ModelRepresentationClassAttribute("http://nmf.codeplex.com/changes#//ModelChangeSet")]
     public interface IModelChangeSet : NMF.Models.IModelElement
     {
         
@@ -44,6 +45,7 @@ namespace NMF.Models.Changes
         /// The changes property
         /// </summary>
         [DesignerSerializationVisibilityAttribute(DesignerSerializationVisibility.Content)]
+        [BrowsableAttribute(false)]
         [XmlElementNameAttribute("changes")]
         [XmlAttributeAttribute(false)]
         [ContainmentAttribute()]

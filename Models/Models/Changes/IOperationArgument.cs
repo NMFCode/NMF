@@ -37,12 +37,15 @@ namespace NMF.Models.Changes
     /// </summary>
     [DefaultImplementationTypeAttribute(typeof(OperationArgument))]
     [XmlDefaultImplementationTypeAttribute(typeof(OperationArgument))]
+    [ModelRepresentationClassAttribute("http://nmf.codeplex.com/changes#//OperationArgument")]
     public interface IOperationArgument : NMF.Models.IModelElement
     {
         
         /// <summary>
         /// The name property
         /// </summary>
+        [DisplayNameAttribute("name")]
+        [CategoryAttribute("OperationArgument")]
         [XmlElementNameAttribute("name")]
         [XmlAttributeAttribute(true)]
         string Name

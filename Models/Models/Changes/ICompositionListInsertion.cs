@@ -37,12 +37,15 @@ namespace NMF.Models.Changes
     /// </summary>
     [DefaultImplementationTypeAttribute(typeof(CompositionListInsertion))]
     [XmlDefaultImplementationTypeAttribute(typeof(CompositionListInsertion))]
+    [ModelRepresentationClassAttribute("http://nmf.codeplex.com/changes#//CompositionListInsertion")]
     public interface ICompositionListInsertion : NMF.Models.IModelElement, ICompositionChange
     {
         
         /// <summary>
         /// The index property
         /// </summary>
+        [DisplayNameAttribute("index")]
+        [CategoryAttribute("CompositionListInsertion")]
         [XmlElementNameAttribute("index")]
         [XmlAttributeAttribute(true)]
         int Index
@@ -54,6 +57,7 @@ namespace NMF.Models.Changes
         /// <summary>
         /// The addedElement property
         /// </summary>
+        [BrowsableAttribute(false)]
         [XmlElementNameAttribute("addedElement")]
         [XmlAttributeAttribute(false)]
         [ContainmentAttribute()]

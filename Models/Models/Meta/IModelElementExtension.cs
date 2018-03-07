@@ -37,12 +37,14 @@ namespace NMF.Models.Meta
     /// </summary>
     [DefaultImplementationTypeAttribute(typeof(ModelElementExtension))]
     [XmlDefaultImplementationTypeAttribute(typeof(ModelElementExtension))]
+    [ModelRepresentationClassAttribute("http://nmf.codeplex.com/nmeta/#//ModelElementExtension")]
     public interface IModelElementExtension : NMF.Models.IModelElement
     {
         
         /// <summary>
         /// The ExtendedElement property
         /// </summary>
+        [BrowsableAttribute(false)]
         [DesignerSerializationVisibilityAttribute(DesignerSerializationVisibility.Hidden)]
         [XmlAttributeAttribute(true)]
         [XmlOppositeAttribute("Extensions")]

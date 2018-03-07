@@ -37,12 +37,15 @@ namespace NMF.Models.Changes
     /// </summary>
     [DefaultImplementationTypeAttribute(typeof(ReferenceArgument))]
     [XmlDefaultImplementationTypeAttribute(typeof(ReferenceArgument))]
+    [ModelRepresentationClassAttribute("http://nmf.codeplex.com/changes#//ReferenceArgument")]
     public interface IReferenceArgument : NMF.Models.IModelElement, IOperationArgument
     {
         
         /// <summary>
         /// The value property
         /// </summary>
+        [DisplayNameAttribute("value")]
+        [CategoryAttribute("ReferenceArgument")]
         [XmlElementNameAttribute("value")]
         [XmlAttributeAttribute(true)]
         NMF.Models.IModelElement Value

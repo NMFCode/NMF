@@ -60,6 +60,8 @@ namespace NMF.Models.Changes
         /// <summary>
         /// The index property
         /// </summary>
+        [DisplayNameAttribute("index")]
+        [CategoryAttribute("CompositionListInsertion")]
         [XmlElementNameAttribute("index")]
         [XmlAttributeAttribute(true)]
         public int Index
@@ -86,6 +88,7 @@ namespace NMF.Models.Changes
         /// <summary>
         /// The addedElement property
         /// </summary>
+        [BrowsableAttribute(false)]
         [XmlElementNameAttribute("addedElement")]
         [XmlAttributeAttribute(false)]
         [ContainmentAttribute()]

@@ -87,6 +87,7 @@ namespace NMF.Models.Meta
         /// <summary>
         /// The Uri property
         /// </summary>
+        [CategoryAttribute("Namespace")]
         [XmlAttributeAttribute(true)]
         public Uri Uri
         {
@@ -112,6 +113,7 @@ namespace NMF.Models.Meta
         /// <summary>
         /// The Prefix property
         /// </summary>
+        [CategoryAttribute("Namespace")]
         [XmlAttributeAttribute(true)]
         public string Prefix
         {
@@ -137,6 +139,7 @@ namespace NMF.Models.Meta
         /// <summary>
         /// The ParentNamespace property
         /// </summary>
+        [BrowsableAttribute(false)]
         [DesignerSerializationVisibilityAttribute(DesignerSerializationVisibility.Hidden)]
         [XmlAttributeAttribute(true)]
         [XmlOppositeAttribute("ChildNamespaces")]
@@ -156,6 +159,7 @@ namespace NMF.Models.Meta
         /// The ChildNamespaces property
         /// </summary>
         [DesignerSerializationVisibilityAttribute(DesignerSerializationVisibility.Content)]
+        [BrowsableAttribute(false)]
         [XmlAttributeAttribute(false)]
         [ContainmentAttribute()]
         [XmlOppositeAttribute("ParentNamespace")]
@@ -172,6 +176,7 @@ namespace NMF.Models.Meta
         /// The Types property
         /// </summary>
         [DesignerSerializationVisibilityAttribute(DesignerSerializationVisibility.Content)]
+        [BrowsableAttribute(false)]
         [XmlAttributeAttribute(false)]
         [ContainmentAttribute()]
         [XmlOppositeAttribute("Namespace")]

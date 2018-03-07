@@ -37,12 +37,14 @@ namespace NMF.Models.Changes
     /// </summary>
     [DefaultImplementationTypeAttribute(typeof(CompositionPropertyChange))]
     [XmlDefaultImplementationTypeAttribute(typeof(CompositionPropertyChange))]
+    [ModelRepresentationClassAttribute("http://nmf.codeplex.com/changes#//CompositionPropertyChange")]
     public interface ICompositionPropertyChange : NMF.Models.IModelElement, ICompositionChange
     {
         
         /// <summary>
         /// The newValue property
         /// </summary>
+        [BrowsableAttribute(false)]
         [XmlElementNameAttribute("newValue")]
         [XmlAttributeAttribute(false)]
         [ContainmentAttribute()]
@@ -55,6 +57,8 @@ namespace NMF.Models.Changes
         /// <summary>
         /// The oldValue property
         /// </summary>
+        [DisplayNameAttribute("oldValue")]
+        [CategoryAttribute("CompositionPropertyChange")]
         [XmlElementNameAttribute("oldValue")]
         [XmlAttributeAttribute(true)]
         NMF.Models.IModelElement OldValue

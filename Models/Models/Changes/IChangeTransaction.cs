@@ -37,12 +37,14 @@ namespace NMF.Models.Changes
     /// </summary>
     [DefaultImplementationTypeAttribute(typeof(ChangeTransaction))]
     [XmlDefaultImplementationTypeAttribute(typeof(ChangeTransaction))]
+    [ModelRepresentationClassAttribute("http://nmf.codeplex.com/changes#//ChangeTransaction")]
     public interface IChangeTransaction : NMF.Models.IModelElement, IModelChange
     {
         
         /// <summary>
         /// The sourceChange property
         /// </summary>
+        [BrowsableAttribute(false)]
         [XmlElementNameAttribute("sourceChange")]
         [XmlAttributeAttribute(false)]
         [ContainmentAttribute()]
@@ -56,6 +58,7 @@ namespace NMF.Models.Changes
         /// The nestedChanges property
         /// </summary>
         [DesignerSerializationVisibilityAttribute(DesignerSerializationVisibility.Content)]
+        [BrowsableAttribute(false)]
         [XmlElementNameAttribute("nestedChanges")]
         [XmlAttributeAttribute(false)]
         [ContainmentAttribute()]

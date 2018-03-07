@@ -37,6 +37,7 @@ namespace NMF.Models.Changes
     /// </summary>
     [DefaultImplementationTypeAttribute(typeof(ModelChange))]
     [XmlDefaultImplementationTypeAttribute(typeof(ModelChange))]
+    [ModelRepresentationClassAttribute("http://nmf.codeplex.com/changes#//ModelChange")]
     public partial interface IModelChange : NMF.Models.IModelElement
     {
     }

@@ -37,12 +37,15 @@ namespace NMF.Models.Changes
     /// </summary>
     [DefaultImplementationTypeAttribute(typeof(CompositionMoveToList))]
     [XmlDefaultImplementationTypeAttribute(typeof(CompositionMoveToList))]
+    [ModelRepresentationClassAttribute("http://nmf.codeplex.com/changes#//CompositionMoveToList")]
     public interface ICompositionMoveToList : NMF.Models.IModelElement, ICompositionChange
     {
         
         /// <summary>
         /// The index property
         /// </summary>
+        [DisplayNameAttribute("index")]
+        [CategoryAttribute("CompositionMoveToList")]
         [XmlElementNameAttribute("index")]
         [XmlAttributeAttribute(true)]
         int Index
@@ -54,6 +57,8 @@ namespace NMF.Models.Changes
         /// <summary>
         /// The movedElement property
         /// </summary>
+        [DisplayNameAttribute("movedElement")]
+        [CategoryAttribute("CompositionMoveToList")]
         [XmlElementNameAttribute("movedElement")]
         [XmlAttributeAttribute(true)]
         NMF.Models.IModelElement MovedElement
@@ -65,6 +70,7 @@ namespace NMF.Models.Changes
         /// <summary>
         /// The origin property
         /// </summary>
+        [BrowsableAttribute(false)]
         [XmlElementNameAttribute("origin")]
         [XmlAttributeAttribute(false)]
         [ContainmentAttribute()]

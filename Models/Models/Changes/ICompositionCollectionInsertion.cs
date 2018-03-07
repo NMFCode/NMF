@@ -37,12 +37,14 @@ namespace NMF.Models.Changes
     /// </summary>
     [DefaultImplementationTypeAttribute(typeof(CompositionCollectionInsertion))]
     [XmlDefaultImplementationTypeAttribute(typeof(CompositionCollectionInsertion))]
+    [ModelRepresentationClassAttribute("http://nmf.codeplex.com/changes#//CompositionCollectionInsertion")]
     public interface ICompositionCollectionInsertion : NMF.Models.IModelElement, ICompositionChange
     {
         
         /// <summary>
         /// The addedElement property
         /// </summary>
+        [BrowsableAttribute(false)]
         [XmlElementNameAttribute("addedElement")]
         [XmlAttributeAttribute(false)]
         [ContainmentAttribute()]

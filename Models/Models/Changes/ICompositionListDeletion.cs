@@ -37,12 +37,15 @@ namespace NMF.Models.Changes
     /// </summary>
     [DefaultImplementationTypeAttribute(typeof(CompositionListDeletion))]
     [XmlDefaultImplementationTypeAttribute(typeof(CompositionListDeletion))]
+    [ModelRepresentationClassAttribute("http://nmf.codeplex.com/changes#//CompositionListDeletion")]
     public interface ICompositionListDeletion : NMF.Models.IModelElement, ICompositionChange
     {
         
         /// <summary>
         /// The index property
         /// </summary>
+        [DisplayNameAttribute("index")]
+        [CategoryAttribute("CompositionListDeletion")]
         [XmlElementNameAttribute("index")]
         [XmlAttributeAttribute(true)]
         int Index
@@ -54,6 +57,8 @@ namespace NMF.Models.Changes
         /// <summary>
         /// The deletedElement property
         /// </summary>
+        [DisplayNameAttribute("deletedElement")]
+        [CategoryAttribute("CompositionListDeletion")]
         [XmlElementNameAttribute("deletedElement")]
         [XmlAttributeAttribute(true)]
         NMF.Models.IModelElement DeletedElement

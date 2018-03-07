@@ -37,12 +37,14 @@ namespace NMF.Models.Meta
     /// </summary>
     [DefaultImplementationTypeAttribute(typeof(Parameter))]
     [XmlDefaultImplementationTypeAttribute(typeof(Parameter))]
+    [ModelRepresentationClassAttribute("http://nmf.codeplex.com/nmeta/#//Parameter")]
     public interface IParameter : NMF.Models.IModelElement, ITypedElement
     {
         
         /// <summary>
         /// The Direction property
         /// </summary>
+        [CategoryAttribute("Parameter")]
         [XmlAttributeAttribute(true)]
         NMF.Models.Meta.Direction Direction
         {
@@ -53,6 +55,7 @@ namespace NMF.Models.Meta
         /// <summary>
         /// The Operation property
         /// </summary>
+        [BrowsableAttribute(false)]
         [DesignerSerializationVisibilityAttribute(DesignerSerializationVisibility.Hidden)]
         [XmlAttributeAttribute(true)]
         [XmlOppositeAttribute("Parameters")]

@@ -68,6 +68,7 @@ namespace NMF.Models.Meta
         /// <summary>
         /// The IsFlagged property
         /// </summary>
+        [CategoryAttribute("Enumeration")]
         [XmlAttributeAttribute(true)]
         public bool IsFlagged
         {
@@ -94,6 +95,7 @@ namespace NMF.Models.Meta
         /// The Literals property
         /// </summary>
         [DesignerSerializationVisibilityAttribute(DesignerSerializationVisibility.Content)]
+        [BrowsableAttribute(false)]
         [XmlAttributeAttribute(false)]
         [ContainmentAttribute()]
         [XmlOppositeAttribute("Enumeration")]
@@ -266,7 +268,7 @@ namespace NMF.Models.Meta
             }
             return base.GetExpressionForAttribute(attribute);
         }
-        
+
         /// <summary>
         /// Gets the property name for the given container
         /// </summary>

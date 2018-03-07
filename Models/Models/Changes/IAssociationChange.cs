@@ -37,6 +37,7 @@ namespace NMF.Models.Changes
     /// </summary>
     [DefaultImplementationTypeAttribute(typeof(AssociationChange))]
     [XmlDefaultImplementationTypeAttribute(typeof(AssociationChange))]
+    [ModelRepresentationClassAttribute("http://nmf.codeplex.com/changes#//AssociationChange")]
     public interface IAssociationChange : NMF.Models.IModelElement, IElementaryChange
     {
     }

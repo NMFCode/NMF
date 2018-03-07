@@ -53,6 +53,8 @@ namespace NMF.Models.Changes
         /// <summary>
         /// The addedElement property
         /// </summary>
+        [DisplayNameAttribute("addedElement")]
+        [CategoryAttribute("AssociationCollectionInsertion")]
         [XmlElementNameAttribute("addedElement")]
         [XmlAttributeAttribute(true)]
         public NMF.Models.IModelElement AddedElement
