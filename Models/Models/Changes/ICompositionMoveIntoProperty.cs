@@ -37,7 +37,7 @@ namespace NMF.Models.Changes
     /// </summary>
     [DefaultImplementationTypeAttribute(typeof(CompositionMoveIntoProperty))]
     [XmlDefaultImplementationTypeAttribute(typeof(CompositionMoveIntoProperty))]
-    public interface ICompositionMoveIntoProperty : NMF.Models.IModelElement, IPropertyChange
+    public interface ICompositionMoveIntoProperty : NMF.Models.IModelElement, ICompositionChange
     {
         
         /// <summary>

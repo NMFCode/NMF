@@ -60,8 +60,8 @@ namespace NMF.Models.Tests.Evolution
             var changes = recorder.GetModelChanges();
 
             Assert.AreEqual(1, changes.Changes.Count);
-            Assert.IsInstanceOfType(changes.Changes[0], typeof(ElementaryChangeTransaction));
-            var t = changes.Changes[0] as ElementaryChangeTransaction;
+            Assert.IsInstanceOfType(changes.Changes[0], typeof(ChangeTransaction));
+            var t = changes.Changes[0] as ChangeTransaction;
             Assert.IsInstanceOfType(t.SourceChange, typeof(OperationCall));
             var call = t.SourceChange as OperationCall;
 

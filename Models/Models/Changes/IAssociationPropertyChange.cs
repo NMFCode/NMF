@@ -33,47 +33,54 @@ namespace NMF.Models.Changes
     
     
     /// <summary>
-    /// The public interface for ElementaryChangeTransaction
+    /// The public interface for AssociationPropertyChange
     /// </summary>
-    [DefaultImplementationTypeAttribute(typeof(ElementaryChangeTransaction))]
-    [XmlDefaultImplementationTypeAttribute(typeof(ElementaryChangeTransaction))]
-    public interface IElementaryChangeTransaction : NMF.Models.IModelElement, IModelChange
+    [DefaultImplementationTypeAttribute(typeof(AssociationPropertyChange))]
+    [XmlDefaultImplementationTypeAttribute(typeof(AssociationPropertyChange))]
+    public interface IAssociationPropertyChange : NMF.Models.IModelElement, IAssociationChange
     {
         
         /// <summary>
-        /// The sourceChange property
+        /// The newValue property
         /// </summary>
-        [XmlElementNameAttribute("sourceChange")]
-        [XmlAttributeAttribute(false)]
-        [ContainmentAttribute()]
-        IModelChange SourceChange
+        [XmlElementNameAttribute("newValue")]
+        [XmlAttributeAttribute(true)]
+        NMF.Models.IModelElement NewValue
         {
             get;
             set;
         }
         
         /// <summary>
-        /// The nestedChanges property
+        /// The oldValue property
         /// </summary>
-        [DesignerSerializationVisibilityAttribute(DesignerSerializationVisibility.Content)]
-        [XmlElementNameAttribute("nestedChanges")]
-        [XmlAttributeAttribute(false)]
-        [ContainmentAttribute()]
-        [ConstantAttribute()]
-        IOrderedSetExpression<IModelChange> NestedChanges
+        [XmlElementNameAttribute("oldValue")]
+        [XmlAttributeAttribute(true)]
+        NMF.Models.IModelElement OldValue
         {
             get;
+            set;
         }
         
         /// <summary>
-        /// Gets fired before the SourceChange property changes its value
+        /// Gets fired before the NewValue property changes its value
         /// </summary>
-        event System.EventHandler<ValueChangedEventArgs> SourceChangeChanging;
+        event System.EventHandler<ValueChangedEventArgs> NewValueChanging;
         
         /// <summary>
-        /// Gets fired when the SourceChange property changed its value
+        /// Gets fired when the NewValue property changed its value
         /// </summary>
-        event System.EventHandler<ValueChangedEventArgs> SourceChangeChanged;
+        event System.EventHandler<ValueChangedEventArgs> NewValueChanged;
+        
+        /// <summary>
+        /// Gets fired before the OldValue property changes its value
+        /// </summary>
+        event System.EventHandler<ValueChangedEventArgs> OldValueChanging;
+        
+        /// <summary>
+        /// Gets fired when the OldValue property changed its value
+        /// </summary>
+        event System.EventHandler<ValueChangedEventArgs> OldValueChanged;
     }
 }
 

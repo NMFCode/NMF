@@ -37,7 +37,7 @@ namespace NMF.Models.Changes
     /// </summary>
     [DefaultImplementationTypeAttribute(typeof(CompositionCollectionDeletion))]
     [XmlDefaultImplementationTypeAttribute(typeof(CompositionCollectionDeletion))]
-    public interface ICompositionCollectionDeletion : NMF.Models.IModelElement, ICollectionDeletion
+    public interface ICompositionCollectionDeletion : NMF.Models.IModelElement, ICompositionChange
     {
         
         /// <summary>

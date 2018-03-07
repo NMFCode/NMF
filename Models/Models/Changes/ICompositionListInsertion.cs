@@ -37,8 +37,19 @@ namespace NMF.Models.Changes
     /// </summary>
     [DefaultImplementationTypeAttribute(typeof(CompositionListInsertion))]
     [XmlDefaultImplementationTypeAttribute(typeof(CompositionListInsertion))]
-    public interface ICompositionListInsertion : NMF.Models.IModelElement, IListInsertion
+    public interface ICompositionListInsertion : NMF.Models.IModelElement, ICompositionChange
     {
+        
+        /// <summary>
+        /// The index property
+        /// </summary>
+        [XmlElementNameAttribute("index")]
+        [XmlAttributeAttribute(true)]
+        int Index
+        {
+            get;
+            set;
+        }
         
         /// <summary>
         /// The addedElement property
@@ -51,6 +62,16 @@ namespace NMF.Models.Changes
             get;
             set;
         }
+        
+        /// <summary>
+        /// Gets fired before the Index property changes its value
+        /// </summary>
+        event System.EventHandler<ValueChangedEventArgs> IndexChanging;
+        
+        /// <summary>
+        /// Gets fired when the Index property changed its value
+        /// </summary>
+        event System.EventHandler<ValueChangedEventArgs> IndexChanged;
         
         /// <summary>
         /// Gets fired before the AddedElement property changes its value

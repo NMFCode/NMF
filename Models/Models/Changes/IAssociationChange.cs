@@ -37,50 +37,8 @@ namespace NMF.Models.Changes
     /// </summary>
     [DefaultImplementationTypeAttribute(typeof(AssociationChange))]
     [XmlDefaultImplementationTypeAttribute(typeof(AssociationChange))]
-    public interface IAssociationChange : NMF.Models.IModelElement, IPropertyChange
+    public interface IAssociationChange : NMF.Models.IModelElement, IElementaryChange
     {
-        
-        /// <summary>
-        /// The newValue property
-        /// </summary>
-        [XmlElementNameAttribute("newValue")]
-        [XmlAttributeAttribute(true)]
-        NMF.Models.IModelElement NewValue
-        {
-            get;
-            set;
-        }
-        
-        /// <summary>
-        /// The oldValue property
-        /// </summary>
-        [XmlElementNameAttribute("oldValue")]
-        [XmlAttributeAttribute(true)]
-        NMF.Models.IModelElement OldValue
-        {
-            get;
-            set;
-        }
-        
-        /// <summary>
-        /// Gets fired before the NewValue property changes its value
-        /// </summary>
-        event System.EventHandler<ValueChangedEventArgs> NewValueChanging;
-        
-        /// <summary>
-        /// Gets fired when the NewValue property changed its value
-        /// </summary>
-        event System.EventHandler<ValueChangedEventArgs> NewValueChanged;
-        
-        /// <summary>
-        /// Gets fired before the OldValue property changes its value
-        /// </summary>
-        event System.EventHandler<ValueChangedEventArgs> OldValueChanging;
-        
-        /// <summary>
-        /// Gets fired when the OldValue property changed its value
-        /// </summary>
-        event System.EventHandler<ValueChangedEventArgs> OldValueChanged;
     }
 }
 

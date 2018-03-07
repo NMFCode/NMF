@@ -37,7 +37,7 @@ namespace NMF.Models.Changes
     /// </summary>
     [DefaultImplementationTypeAttribute(typeof(AssociationCollectionReset))]
     [XmlDefaultImplementationTypeAttribute(typeof(AssociationCollectionReset))]
-    public interface IAssociationCollectionReset : NMF.Models.IModelElement, ICollectionReset
+    public interface IAssociationCollectionReset : NMF.Models.IModelElement, IAssociationChange
     {
     }
 }

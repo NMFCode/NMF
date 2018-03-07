@@ -37,8 +37,19 @@ namespace NMF.Models.Changes
     /// </summary>
     [DefaultImplementationTypeAttribute(typeof(AttributeListInsertion))]
     [XmlDefaultImplementationTypeAttribute(typeof(AttributeListInsertion))]
-    public interface IAttributeListInsertion : NMF.Models.IModelElement, IListInsertion
+    public interface IAttributeListInsertion : NMF.Models.IModelElement, IAttributeChange
     {
+        
+        /// <summary>
+        /// The index property
+        /// </summary>
+        [XmlElementNameAttribute("index")]
+        [XmlAttributeAttribute(true)]
+        int Index
+        {
+            get;
+            set;
+        }
         
         /// <summary>
         /// The addedValue property
@@ -50,6 +61,16 @@ namespace NMF.Models.Changes
             get;
             set;
         }
+        
+        /// <summary>
+        /// Gets fired before the Index property changes its value
+        /// </summary>
+        event System.EventHandler<ValueChangedEventArgs> IndexChanging;
+        
+        /// <summary>
+        /// Gets fired when the Index property changed its value
+        /// </summary>
+        event System.EventHandler<ValueChangedEventArgs> IndexChanged;
         
         /// <summary>
         /// Gets fired before the AddedValue property changes its value

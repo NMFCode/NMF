@@ -12,11 +12,11 @@ namespace NMF.Models.Changes
     {
         public abstract IEnumerable<IModelChange> Invert();
     }
-    public partial class AssociationChange
+    public partial class AssociationPropertyChange
     {
         public override IEnumerable<IModelChange> Invert()
         {
-            yield return new AssociationChange
+            yield return new AssociationPropertyChange
             {
                 AffectedElement = AffectedElement,
                 Feature = Feature,
@@ -25,11 +25,11 @@ namespace NMF.Models.Changes
             };
         }
     }
-    public partial class CompositionChange
+    public partial class CompositionPropertyChange
     {
         public override IEnumerable<IModelChange> Invert()
         {
-            yield return new CompositionChange
+            yield return new CompositionPropertyChange
             {
                 AffectedElement = AffectedElement,
                 Feature = Feature,
@@ -38,11 +38,11 @@ namespace NMF.Models.Changes
             };
         }
     }
-    public partial class AttributeChange
+    public partial class AttributePropertyChange
     {
         public override IEnumerable<IModelChange> Invert()
         {
-            yield return new AttributeChange
+            yield return new AttributePropertyChange
             {
                 AffectedElement = AffectedElement,
                 Feature = Feature,
@@ -51,7 +51,7 @@ namespace NMF.Models.Changes
             };
         }
     }
-    public partial class ElementaryChangeTransaction
+    public partial class ChangeTransaction
     {
         public override IEnumerable<IModelChange> Invert()
         {
@@ -244,7 +244,7 @@ namespace NMF.Models.Changes
     {
         public override IEnumerable<IModelChange> Invert()
         {
-            var child = new CompositionChange
+            var child = new CompositionPropertyChange
             {
                 AffectedElement = AffectedElement,
                 OldValue = NewValue,

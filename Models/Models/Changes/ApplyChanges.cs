@@ -13,14 +13,14 @@ namespace NMF.Models.Changes
     {
         public abstract void Apply();
     }
-    public partial class AssociationChange
+    public partial class AssociationPropertyChange
     {
         public override void Apply()
         {
             AffectedElement.SetReferencedElement((IReference)Feature, NewValue);
         }
     }
-    public partial class CompositionChange : ICompositionInsertion, ICompositionDeletion
+    public partial class CompositionPropertyChange : ICompositionInsertion, ICompositionDeletion
     {
         public IModelElement DeletedElement => OldValue;
 
@@ -43,14 +43,14 @@ namespace NMF.Models.Changes
             };
         }
     }
-    public partial class AttributeChange
+    public partial class AttributePropertyChange
     {
         public override void Apply()
         {
             AffectedElement.SetAttributeValue((IAttribute)Feature, Feature.Type.Parse(NewValue));
         }
     }
-    public partial class ElementaryChangeTransaction
+    public partial class ChangeTransaction
     {
         public override void Apply()
         {

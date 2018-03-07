@@ -129,7 +129,7 @@ namespace NMF.Models.Meta
             {
                 return extension;
             }
-            extension = new MappedType();
+            extension = new MappedType { Parent = parent };
             parent.Extensions.Add(extension);
             return extension;
         }

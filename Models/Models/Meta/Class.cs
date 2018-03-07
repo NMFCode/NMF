@@ -691,7 +691,7 @@ namespace NMF.Models.Meta
             }
             return base.GetExpressionForReference(reference);
         }
-        
+
         /// <summary>
         /// Gets the property name for the given container
         /// </summary>

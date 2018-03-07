@@ -38,7 +38,7 @@ namespace NMF.Models.Changes
     [XmlNamespaceAttribute("http://nmf.codeplex.com/changes")]
     [XmlNamespacePrefixAttribute("changes")]
     [ModelRepresentationClassAttribute("http://nmf.codeplex.com/changes#//CompositionCollectionDeletion")]
-    public partial class CompositionCollectionDeletion : CollectionDeletion, ICompositionCollectionDeletion, NMF.Models.IModelElement
+    public partial class CompositionCollectionDeletion : CompositionChange, ICompositionCollectionDeletion, NMF.Models.IModelElement
     {
         
         private static Lazy<ITypedElement> _deletedElementReference = new Lazy<ITypedElement>(RetrieveDeletedElementReference);
@@ -141,16 +141,6 @@ namespace NMF.Models.Changes
             {
                 handler.Invoke(this, eventArgs);
             }
-        }
-        
-        /// <summary>
-        /// Handles the event that the DeletedElement property must reset
-        /// </summary>
-        /// <param name="sender">The object that sent this reset request</param>
-        /// <param name="eventArgs">The event data for the reset event</param>
-        private void OnResetDeletedElement(object sender, System.EventArgs eventArgs)
-        {
-            this.DeletedElement = null;
         }
         
         /// <summary>

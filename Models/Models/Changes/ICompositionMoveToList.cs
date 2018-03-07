@@ -37,8 +37,19 @@ namespace NMF.Models.Changes
     /// </summary>
     [DefaultImplementationTypeAttribute(typeof(CompositionMoveToList))]
     [XmlDefaultImplementationTypeAttribute(typeof(CompositionMoveToList))]
-    public interface ICompositionMoveToList : NMF.Models.IModelElement, IListInsertion
+    public interface ICompositionMoveToList : NMF.Models.IModelElement, ICompositionChange
     {
+        
+        /// <summary>
+        /// The index property
+        /// </summary>
+        [XmlElementNameAttribute("index")]
+        [XmlAttributeAttribute(true)]
+        int Index
+        {
+            get;
+            set;
+        }
         
         /// <summary>
         /// The movedElement property
@@ -62,6 +73,16 @@ namespace NMF.Models.Changes
             get;
             set;
         }
+        
+        /// <summary>
+        /// Gets fired before the Index property changes its value
+        /// </summary>
+        event System.EventHandler<ValueChangedEventArgs> IndexChanging;
+        
+        /// <summary>
+        /// Gets fired when the Index property changed its value
+        /// </summary>
+        event System.EventHandler<ValueChangedEventArgs> IndexChanged;
         
         /// <summary>
         /// Gets fired before the MovedElement property changes its value

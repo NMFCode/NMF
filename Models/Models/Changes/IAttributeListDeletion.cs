@@ -37,7 +37,7 @@ namespace NMF.Models.Changes
     /// </summary>
     [DefaultImplementationTypeAttribute(typeof(AttributeListDeletion))]
     [XmlDefaultImplementationTypeAttribute(typeof(AttributeListDeletion))]
-    public interface IAttributeListDeletion : NMF.Models.IModelElement, IListDeletion
+    public interface IAttributeListDeletion : NMF.Models.IModelElement, IAttributeChange
     {
         
         /// <summary>
@@ -52,6 +52,17 @@ namespace NMF.Models.Changes
         }
         
         /// <summary>
+        /// The index property
+        /// </summary>
+        [XmlElementNameAttribute("index")]
+        [XmlAttributeAttribute(true)]
+        int Index
+        {
+            get;
+            set;
+        }
+        
+        /// <summary>
         /// Gets fired before the DeletedValue property changes its value
         /// </summary>
         event System.EventHandler<ValueChangedEventArgs> DeletedValueChanging;
@@ -60,6 +71,16 @@ namespace NMF.Models.Changes
         /// Gets fired when the DeletedValue property changed its value
         /// </summary>
         event System.EventHandler<ValueChangedEventArgs> DeletedValueChanged;
+        
+        /// <summary>
+        /// Gets fired before the Index property changes its value
+        /// </summary>
+        event System.EventHandler<ValueChangedEventArgs> IndexChanging;
+        
+        /// <summary>
+        /// Gets fired when the Index property changed its value
+        /// </summary>
+        event System.EventHandler<ValueChangedEventArgs> IndexChanged;
     }
 }
 

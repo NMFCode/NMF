@@ -33,12 +33,12 @@ namespace NMF.Models.Changes
     
     
     /// <summary>
-    /// The default implementation of the ElementaryChangeTransaction class
+    /// The default implementation of the ChangeTransaction class
     /// </summary>
     [XmlNamespaceAttribute("http://nmf.codeplex.com/changes")]
     [XmlNamespacePrefixAttribute("changes")]
-    [ModelRepresentationClassAttribute("http://nmf.codeplex.com/changes#//ElementaryChangeTransaction")]
-    public partial class ElementaryChangeTransaction : ModelChange, IElementaryChangeTransaction, NMF.Models.IModelElement
+    [ModelRepresentationClassAttribute("http://nmf.codeplex.com/changes#//ChangeTransaction")]
+    public partial class ChangeTransaction : ModelChange, IChangeTransaction, NMF.Models.IModelElement
     {
         
         private static Lazy<ITypedElement> _sourceChangeReference = new Lazy<ITypedElement>(RetrieveSourceChangeReference);
@@ -57,7 +57,7 @@ namespace NMF.Models.Changes
         
         private static IClass _classInstance;
         
-        public ElementaryChangeTransaction()
+        public ChangeTransaction()
         {
             this._nestedChanges = new ObservableCompositionOrderedSet<IModelChange>(this);
             this._nestedChanges.CollectionChanging += this.NestedChangesCollectionChanging;
@@ -124,7 +124,7 @@ namespace NMF.Models.Changes
         {
             get
             {
-                return base.Children.Concat(new ElementaryChangeTransactionChildrenCollection(this));
+                return base.Children.Concat(new ChangeTransactionChildrenCollection(this));
             }
         }
         
@@ -135,7 +135,7 @@ namespace NMF.Models.Changes
         {
             get
             {
-                return base.ReferencedElements.Concat(new ElementaryChangeTransactionReferencedElementsCollection(this));
+                return base.ReferencedElements.Concat(new ChangeTransactionReferencedElementsCollection(this));
             }
         }
         
@@ -148,7 +148,7 @@ namespace NMF.Models.Changes
             {
                 if ((_classInstance == null))
                 {
-                    _classInstance = ((IClass)(MetaRepository.Instance.Resolve("http://nmf.codeplex.com/changes#//ElementaryChangeTransaction")));
+                    _classInstance = ((IClass)(MetaRepository.Instance.Resolve("http://nmf.codeplex.com/changes#//ChangeTransaction")));
                 }
                 return _classInstance;
             }
@@ -166,7 +166,7 @@ namespace NMF.Models.Changes
         
         private static ITypedElement RetrieveSourceChangeReference()
         {
-            return ((ITypedElement)(((NMF.Models.ModelElement)(ElementaryChangeTransaction.ClassInstance)).Resolve("sourceChange")));
+            return ((ITypedElement)(((NMF.Models.ModelElement)(ChangeTransaction.ClassInstance)).Resolve("sourceChange")));
         }
         
         /// <summary>
@@ -207,7 +207,7 @@ namespace NMF.Models.Changes
         
         private static ITypedElement RetrieveNestedChangesReference()
         {
-            return ((ITypedElement)(((NMF.Models.ModelElement)(ElementaryChangeTransaction.ClassInstance)).Resolve("nestedChanges")));
+            return ((ITypedElement)(((NMF.Models.ModelElement)(ChangeTransaction.ClassInstance)).Resolve("nestedChanges")));
         }
         
         /// <summary>
@@ -339,23 +339,23 @@ namespace NMF.Models.Changes
         {
             if ((_classInstance == null))
             {
-                _classInstance = ((IClass)(MetaRepository.Instance.Resolve("http://nmf.codeplex.com/changes#//ElementaryChangeTransaction")));
+                _classInstance = ((IClass)(MetaRepository.Instance.Resolve("http://nmf.codeplex.com/changes#//ChangeTransaction")));
             }
             return _classInstance;
         }
         
         /// <summary>
-        /// The collection class to to represent the children of the ElementaryChangeTransaction class
+        /// The collection class to to represent the children of the ChangeTransaction class
         /// </summary>
-        public class ElementaryChangeTransactionChildrenCollection : ReferenceCollection, ICollectionExpression<NMF.Models.IModelElement>, ICollection<NMF.Models.IModelElement>
+        public class ChangeTransactionChildrenCollection : ReferenceCollection, ICollectionExpression<NMF.Models.IModelElement>, ICollection<NMF.Models.IModelElement>
         {
             
-            private ElementaryChangeTransaction _parent;
+            private ChangeTransaction _parent;
             
             /// <summary>
             /// Creates a new instance
             /// </summary>
-            public ElementaryChangeTransactionChildrenCollection(ElementaryChangeTransaction parent)
+            public ChangeTransactionChildrenCollection(ChangeTransaction parent)
             {
                 this._parent = parent;
             }
@@ -499,17 +499,17 @@ namespace NMF.Models.Changes
         }
         
         /// <summary>
-        /// The collection class to to represent the children of the ElementaryChangeTransaction class
+        /// The collection class to to represent the children of the ChangeTransaction class
         /// </summary>
-        public class ElementaryChangeTransactionReferencedElementsCollection : ReferenceCollection, ICollectionExpression<NMF.Models.IModelElement>, ICollection<NMF.Models.IModelElement>
+        public class ChangeTransactionReferencedElementsCollection : ReferenceCollection, ICollectionExpression<NMF.Models.IModelElement>, ICollection<NMF.Models.IModelElement>
         {
             
-            private ElementaryChangeTransaction _parent;
+            private ChangeTransaction _parent;
             
             /// <summary>
             /// Creates a new instance
             /// </summary>
-            public ElementaryChangeTransactionReferencedElementsCollection(ElementaryChangeTransaction parent)
+            public ChangeTransactionReferencedElementsCollection(ChangeTransaction parent)
             {
                 this._parent = parent;
             }
@@ -655,14 +655,14 @@ namespace NMF.Models.Changes
         /// <summary>
         /// Represents a proxy to represent an incremental access to the sourceChange property
         /// </summary>
-        private sealed class SourceChangeProxy : ModelPropertyChange<IElementaryChangeTransaction, IModelChange>
+        private sealed class SourceChangeProxy : ModelPropertyChange<IChangeTransaction, IModelChange>
         {
             
             /// <summary>
             /// Creates a new observable property access proxy
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
-            public SourceChangeProxy(IElementaryChangeTransaction modelElement) : 
+            public SourceChangeProxy(IChangeTransaction modelElement) : 
                     base(modelElement, "sourceChange")
             {
             }

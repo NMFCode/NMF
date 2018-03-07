@@ -33,78 +33,78 @@ namespace NMF.Models.Changes
     
     
     /// <summary>
-    /// The default implementation of the AttributeListInsertion class
+    /// The default implementation of the AttributePropertyChange class
     /// </summary>
     [XmlNamespaceAttribute("http://nmf.codeplex.com/changes")]
     [XmlNamespacePrefixAttribute("changes")]
-    [ModelRepresentationClassAttribute("http://nmf.codeplex.com/changes#//AttributeListInsertion")]
-    public partial class AttributeListInsertion : AttributeChange, IAttributeListInsertion, NMF.Models.IModelElement
+    [ModelRepresentationClassAttribute("http://nmf.codeplex.com/changes#//AttributePropertyChange")]
+    public partial class AttributePropertyChange : AttributeChange, IAttributePropertyChange, NMF.Models.IModelElement
     {
         
         /// <summary>
-        /// The backing field for the Index property
+        /// The backing field for the NewValue property
         /// </summary>
-        private int _index;
+        private string _newValue;
         
-        private static Lazy<ITypedElement> _indexAttribute = new Lazy<ITypedElement>(RetrieveIndexAttribute);
+        private static Lazy<ITypedElement> _newValueAttribute = new Lazy<ITypedElement>(RetrieveNewValueAttribute);
         
         /// <summary>
-        /// The backing field for the AddedValue property
+        /// The backing field for the OldValue property
         /// </summary>
-        private string _addedValue;
+        private string _oldValue;
         
-        private static Lazy<ITypedElement> _addedValueAttribute = new Lazy<ITypedElement>(RetrieveAddedValueAttribute);
+        private static Lazy<ITypedElement> _oldValueAttribute = new Lazy<ITypedElement>(RetrieveOldValueAttribute);
         
         private static IClass _classInstance;
         
         /// <summary>
-        /// The index property
+        /// The newValue property
         /// </summary>
-        [XmlElementNameAttribute("index")]
+        [XmlElementNameAttribute("newValue")]
         [XmlAttributeAttribute(true)]
-        public int Index
+        public string NewValue
         {
             get
             {
-                return this._index;
+                return this._newValue;
             }
             set
             {
-                if ((this._index != value))
+                if ((this._newValue != value))
                 {
-                    int old = this._index;
+                    string old = this._newValue;
                     ValueChangedEventArgs e = new ValueChangedEventArgs(old, value);
-                    this.OnIndexChanging(e);
-                    this.OnPropertyChanging("Index", e, _indexAttribute);
-                    this._index = value;
-                    this.OnIndexChanged(e);
-                    this.OnPropertyChanged("Index", e, _indexAttribute);
+                    this.OnNewValueChanging(e);
+                    this.OnPropertyChanging("NewValue", e, _newValueAttribute);
+                    this._newValue = value;
+                    this.OnNewValueChanged(e);
+                    this.OnPropertyChanged("NewValue", e, _newValueAttribute);
                 }
             }
         }
         
         /// <summary>
-        /// The addedValue property
+        /// The oldValue property
         /// </summary>
-        [XmlElementNameAttribute("addedValue")]
+        [XmlElementNameAttribute("oldValue")]
         [XmlAttributeAttribute(true)]
-        public string AddedValue
+        public string OldValue
         {
             get
             {
-                return this._addedValue;
+                return this._oldValue;
             }
             set
             {
-                if ((this._addedValue != value))
+                if ((this._oldValue != value))
                 {
-                    string old = this._addedValue;
+                    string old = this._oldValue;
                     ValueChangedEventArgs e = new ValueChangedEventArgs(old, value);
-                    this.OnAddedValueChanging(e);
-                    this.OnPropertyChanging("AddedValue", e, _addedValueAttribute);
-                    this._addedValue = value;
-                    this.OnAddedValueChanged(e);
-                    this.OnPropertyChanged("AddedValue", e, _addedValueAttribute);
+                    this.OnOldValueChanging(e);
+                    this.OnPropertyChanging("OldValue", e, _oldValueAttribute);
+                    this._oldValue = value;
+                    this.OnOldValueChanged(e);
+                    this.OnPropertyChanged("OldValue", e, _oldValueAttribute);
                 }
             }
         }
@@ -118,44 +118,44 @@ namespace NMF.Models.Changes
             {
                 if ((_classInstance == null))
                 {
-                    _classInstance = ((IClass)(MetaRepository.Instance.Resolve("http://nmf.codeplex.com/changes#//AttributeListInsertion")));
+                    _classInstance = ((IClass)(MetaRepository.Instance.Resolve("http://nmf.codeplex.com/changes#//AttributePropertyChange")));
                 }
                 return _classInstance;
             }
         }
         
         /// <summary>
-        /// Gets fired before the Index property changes its value
+        /// Gets fired before the NewValue property changes its value
         /// </summary>
-        public event System.EventHandler<ValueChangedEventArgs> IndexChanging;
+        public event System.EventHandler<ValueChangedEventArgs> NewValueChanging;
         
         /// <summary>
-        /// Gets fired when the Index property changed its value
+        /// Gets fired when the NewValue property changed its value
         /// </summary>
-        public event System.EventHandler<ValueChangedEventArgs> IndexChanged;
+        public event System.EventHandler<ValueChangedEventArgs> NewValueChanged;
         
         /// <summary>
-        /// Gets fired before the AddedValue property changes its value
+        /// Gets fired before the OldValue property changes its value
         /// </summary>
-        public event System.EventHandler<ValueChangedEventArgs> AddedValueChanging;
+        public event System.EventHandler<ValueChangedEventArgs> OldValueChanging;
         
         /// <summary>
-        /// Gets fired when the AddedValue property changed its value
+        /// Gets fired when the OldValue property changed its value
         /// </summary>
-        public event System.EventHandler<ValueChangedEventArgs> AddedValueChanged;
+        public event System.EventHandler<ValueChangedEventArgs> OldValueChanged;
         
-        private static ITypedElement RetrieveIndexAttribute()
+        private static ITypedElement RetrieveNewValueAttribute()
         {
-            return ((ITypedElement)(((NMF.Models.ModelElement)(AttributeListInsertion.ClassInstance)).Resolve("index")));
+            return ((ITypedElement)(((NMF.Models.ModelElement)(AttributePropertyChange.ClassInstance)).Resolve("newValue")));
         }
         
         /// <summary>
-        /// Raises the IndexChanging event
+        /// Raises the NewValueChanging event
         /// </summary>
         /// <param name="eventArgs">The event data</param>
-        protected virtual void OnIndexChanging(ValueChangedEventArgs eventArgs)
+        protected virtual void OnNewValueChanging(ValueChangedEventArgs eventArgs)
         {
-            System.EventHandler<ValueChangedEventArgs> handler = this.IndexChanging;
+            System.EventHandler<ValueChangedEventArgs> handler = this.NewValueChanging;
             if ((handler != null))
             {
                 handler.Invoke(this, eventArgs);
@@ -163,30 +163,30 @@ namespace NMF.Models.Changes
         }
         
         /// <summary>
-        /// Raises the IndexChanged event
+        /// Raises the NewValueChanged event
         /// </summary>
         /// <param name="eventArgs">The event data</param>
-        protected virtual void OnIndexChanged(ValueChangedEventArgs eventArgs)
+        protected virtual void OnNewValueChanged(ValueChangedEventArgs eventArgs)
         {
-            System.EventHandler<ValueChangedEventArgs> handler = this.IndexChanged;
+            System.EventHandler<ValueChangedEventArgs> handler = this.NewValueChanged;
             if ((handler != null))
             {
                 handler.Invoke(this, eventArgs);
             }
         }
         
-        private static ITypedElement RetrieveAddedValueAttribute()
+        private static ITypedElement RetrieveOldValueAttribute()
         {
-            return ((ITypedElement)(((NMF.Models.ModelElement)(AttributeListInsertion.ClassInstance)).Resolve("addedValue")));
+            return ((ITypedElement)(((NMF.Models.ModelElement)(AttributePropertyChange.ClassInstance)).Resolve("oldValue")));
         }
         
         /// <summary>
-        /// Raises the AddedValueChanging event
+        /// Raises the OldValueChanging event
         /// </summary>
         /// <param name="eventArgs">The event data</param>
-        protected virtual void OnAddedValueChanging(ValueChangedEventArgs eventArgs)
+        protected virtual void OnOldValueChanging(ValueChangedEventArgs eventArgs)
         {
-            System.EventHandler<ValueChangedEventArgs> handler = this.AddedValueChanging;
+            System.EventHandler<ValueChangedEventArgs> handler = this.OldValueChanging;
             if ((handler != null))
             {
                 handler.Invoke(this, eventArgs);
@@ -194,12 +194,12 @@ namespace NMF.Models.Changes
         }
         
         /// <summary>
-        /// Raises the AddedValueChanged event
+        /// Raises the OldValueChanged event
         /// </summary>
         /// <param name="eventArgs">The event data</param>
-        protected virtual void OnAddedValueChanged(ValueChangedEventArgs eventArgs)
+        protected virtual void OnOldValueChanged(ValueChangedEventArgs eventArgs)
         {
-            System.EventHandler<ValueChangedEventArgs> handler = this.AddedValueChanged;
+            System.EventHandler<ValueChangedEventArgs> handler = this.OldValueChanged;
             if ((handler != null))
             {
                 handler.Invoke(this, eventArgs);
@@ -214,13 +214,13 @@ namespace NMF.Models.Changes
         /// <param name="index">The index of this attribute</param>
         protected override object GetAttributeValue(string attribute, int index)
         {
-            if ((attribute == "INDEX"))
+            if ((attribute == "NEWVALUE"))
             {
-                return this.Index;
+                return this.NewValue;
             }
-            if ((attribute == "ADDEDVALUE"))
+            if ((attribute == "OLDVALUE"))
             {
-                return this.AddedValue;
+                return this.OldValue;
             }
             return base.GetAttributeValue(attribute, index);
         }
@@ -232,14 +232,14 @@ namespace NMF.Models.Changes
         /// <param name="value">The value that should be set to that feature</param>
         protected override void SetFeature(string feature, object value)
         {
-            if ((feature == "INDEX"))
+            if ((feature == "NEWVALUE"))
             {
-                this.Index = ((int)(value));
+                this.NewValue = ((string)(value));
                 return;
             }
-            if ((feature == "ADDEDVALUE"))
+            if ((feature == "OLDVALUE"))
             {
-                this.AddedValue = ((string)(value));
+                this.OldValue = ((string)(value));
                 return;
             }
             base.SetFeature(feature, value);
@@ -252,13 +252,13 @@ namespace NMF.Models.Changes
         /// <param name="attribute">The requested attribute in upper case</param>
         protected override NMF.Expressions.INotifyExpression<object> GetExpressionForAttribute(string attribute)
         {
-            if ((attribute == "INDEX"))
+            if ((attribute == "NEWVALUE"))
             {
-                return Observable.Box(new IndexProxy(this));
+                return new NewValueProxy(this);
             }
-            if ((attribute == "ADDEDVALUE"))
+            if ((attribute == "OLDVALUE"))
             {
-                return new AddedValueProxy(this);
+                return new OldValueProxy(this);
             }
             return base.GetExpressionForAttribute(attribute);
         }
@@ -270,54 +270,23 @@ namespace NMF.Models.Changes
         {
             if ((_classInstance == null))
             {
-                _classInstance = ((IClass)(MetaRepository.Instance.Resolve("http://nmf.codeplex.com/changes#//AttributeListInsertion")));
+                _classInstance = ((IClass)(MetaRepository.Instance.Resolve("http://nmf.codeplex.com/changes#//AttributePropertyChange")));
             }
             return _classInstance;
         }
         
         /// <summary>
-        /// Represents a proxy to represent an incremental access to the index property
+        /// Represents a proxy to represent an incremental access to the newValue property
         /// </summary>
-        private sealed class IndexProxy : ModelPropertyChange<IAttributeListInsertion, int>
+        private sealed class NewValueProxy : ModelPropertyChange<IAttributePropertyChange, string>
         {
             
             /// <summary>
             /// Creates a new observable property access proxy
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
-            public IndexProxy(IAttributeListInsertion modelElement) : 
-                    base(modelElement, "index")
-            {
-            }
-            
-            /// <summary>
-            /// Gets or sets the value of this expression
-            /// </summary>
-            public override int Value
-            {
-                get
-                {
-                    return this.ModelElement.Index;
-                }
-                set
-                {
-                    this.ModelElement.Index = value;
-                }
-            }
-        }
-        
-        /// <summary>
-        /// Represents a proxy to represent an incremental access to the addedValue property
-        /// </summary>
-        private sealed class AddedValueProxy : ModelPropertyChange<IAttributeListInsertion, string>
-        {
-            
-            /// <summary>
-            /// Creates a new observable property access proxy
-            /// </summary>
-            /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
-            public AddedValueProxy(IAttributeListInsertion modelElement) : 
-                    base(modelElement, "addedValue")
+            public NewValueProxy(IAttributePropertyChange modelElement) : 
+                    base(modelElement, "newValue")
             {
             }
             
@@ -328,11 +297,42 @@ namespace NMF.Models.Changes
             {
                 get
                 {
-                    return this.ModelElement.AddedValue;
+                    return this.ModelElement.NewValue;
                 }
                 set
                 {
-                    this.ModelElement.AddedValue = value;
+                    this.ModelElement.NewValue = value;
+                }
+            }
+        }
+        
+        /// <summary>
+        /// Represents a proxy to represent an incremental access to the oldValue property
+        /// </summary>
+        private sealed class OldValueProxy : ModelPropertyChange<IAttributePropertyChange, string>
+        {
+            
+            /// <summary>
+            /// Creates a new observable property access proxy
+            /// </summary>
+            /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
+            public OldValueProxy(IAttributePropertyChange modelElement) : 
+                    base(modelElement, "oldValue")
+            {
+            }
+            
+            /// <summary>
+            /// Gets or sets the value of this expression
+            /// </summary>
+            public override string Value
+            {
+                get
+                {
+                    return this.ModelElement.OldValue;
+                }
+                set
+                {
+                    this.ModelElement.OldValue = value;
                 }
             }
         }

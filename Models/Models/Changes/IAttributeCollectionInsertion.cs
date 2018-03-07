@@ -37,7 +37,7 @@ namespace NMF.Models.Changes
     /// </summary>
     [DefaultImplementationTypeAttribute(typeof(AttributeCollectionInsertion))]
     [XmlDefaultImplementationTypeAttribute(typeof(AttributeCollectionInsertion))]
-    public interface IAttributeCollectionInsertion : NMF.Models.IModelElement, ICollectionInsertion
+    public interface IAttributeCollectionInsertion : NMF.Models.IModelElement, IAttributeChange
     {
         
         /// <summary>

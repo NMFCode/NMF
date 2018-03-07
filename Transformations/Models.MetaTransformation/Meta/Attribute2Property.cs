@@ -214,7 +214,7 @@ namespace NMF.Models.Meta
                 var serializationInfo = input.GetExtension<SerializationInformation>();
                 if (serializationInfo != null)
                 {
-                    if (serializationInfo.IsDefault)
+                    if (serializationInfo.IsDefault.GetValueOrDefault())
                     {
                         serializationName = null;
                         output.AddAttribute(typeof(XmlDefaultPropertyAttribute), true);

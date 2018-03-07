@@ -38,7 +38,7 @@ namespace NMF.Models.Changes
     [XmlNamespaceAttribute("http://nmf.codeplex.com/changes")]
     [XmlNamespacePrefixAttribute("changes")]
     [ModelRepresentationClassAttribute("http://nmf.codeplex.com/changes#//AttributeCollectionInsertion")]
-    public partial class AttributeCollectionInsertion : CollectionInsertion, IAttributeCollectionInsertion, NMF.Models.IModelElement
+    public partial class AttributeCollectionInsertion : AttributeChange, IAttributeCollectionInsertion, NMF.Models.IModelElement
     {
         
         /// <summary>

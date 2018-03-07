@@ -190,7 +190,7 @@ namespace NMF.Models.Changes
                 }
                 else
                 {
-                    var t = list[i] as IElementaryChangeTransaction;
+                    var t = list[i] as IChangeTransaction;
                     if (t != null && t.NestedChanges.Count == 1)
                     {
                     }
@@ -229,7 +229,7 @@ namespace NMF.Models.Changes
                 var insertion = list[i] as ICompositionInsertion;
                 if (insertion == null)
                 {
-                    var transaction = list[i] as IElementaryChangeTransaction;
+                    var transaction = list[i] as IChangeTransaction;
                     if (transaction != null && transaction.NestedChanges.Count == 1)
                     {
                         insertion = transaction.NestedChanges[0] as ICompositionInsertion;
@@ -470,7 +470,7 @@ namespace NMF.Models.Changes
 
         private static void CreateTransaction(List<IModelChange> changes, List<IModelChange> childChanges, IModelChange currentChange)
         {
-            var transaction = new ElementaryChangeTransaction();
+            var transaction = new ChangeTransaction();
             transaction.SourceChange = currentChange;
             transaction.NestedChanges.AddRange(childChanges);
             changes.Add(transaction);
@@ -491,7 +491,7 @@ namespace NMF.Models.Changes
                     var change = EventToChange(currentEvent);
                     // last event created the item
                     var sourceChange = changes[changes.Count - 1];
-                    var transaction = new ElementaryChangeTransaction
+                    var transaction = new ChangeTransaction
                     {
                         SourceChange = sourceChange
                     };
@@ -770,7 +770,7 @@ namespace NMF.Models.Changes
             {
                 if (reference.IsContainment)
                 {
-                    var change = new CompositionChange
+                    var change = new CompositionPropertyChange
                     {
                         AffectedElement = e.Element,
                         Feature = e.Feature,
@@ -788,7 +788,7 @@ namespace NMF.Models.Changes
                 }
                 else
                 {
-                    return new AssociationChange
+                    return new AssociationPropertyChange
                     {
                         AffectedElement = e.Element,
                         Feature = e.Feature,
@@ -799,7 +799,7 @@ namespace NMF.Models.Changes
             }
             else
             {
-                return new AttributeChange
+                return new AttributePropertyChange
                 {
                     AffectedElement = e.Element,
                     Feature = e.Feature,

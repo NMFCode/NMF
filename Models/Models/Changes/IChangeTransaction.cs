@@ -33,33 +33,47 @@ namespace NMF.Models.Changes
     
     
     /// <summary>
-    /// The public interface for ListInsertion
+    /// The public interface for ChangeTransaction
     /// </summary>
-    [DefaultImplementationTypeAttribute(typeof(ListInsertion))]
-    [XmlDefaultImplementationTypeAttribute(typeof(ListInsertion))]
-    public interface IListInsertion : NMF.Models.IModelElement, IElementaryChange
+    [DefaultImplementationTypeAttribute(typeof(ChangeTransaction))]
+    [XmlDefaultImplementationTypeAttribute(typeof(ChangeTransaction))]
+    public interface IChangeTransaction : NMF.Models.IModelElement, IModelChange
     {
         
         /// <summary>
-        /// The index property
+        /// The sourceChange property
         /// </summary>
-        [XmlElementNameAttribute("index")]
-        [XmlAttributeAttribute(true)]
-        int Index
+        [XmlElementNameAttribute("sourceChange")]
+        [XmlAttributeAttribute(false)]
+        [ContainmentAttribute()]
+        IModelChange SourceChange
         {
             get;
             set;
         }
         
         /// <summary>
-        /// Gets fired before the Index property changes its value
+        /// The nestedChanges property
         /// </summary>
-        event System.EventHandler<ValueChangedEventArgs> IndexChanging;
+        [DesignerSerializationVisibilityAttribute(DesignerSerializationVisibility.Content)]
+        [XmlElementNameAttribute("nestedChanges")]
+        [XmlAttributeAttribute(false)]
+        [ContainmentAttribute()]
+        [ConstantAttribute()]
+        IOrderedSetExpression<IModelChange> NestedChanges
+        {
+            get;
+        }
         
         /// <summary>
-        /// Gets fired when the Index property changed its value
+        /// Gets fired before the SourceChange property changes its value
         /// </summary>
-        event System.EventHandler<ValueChangedEventArgs> IndexChanged;
+        event System.EventHandler<ValueChangedEventArgs> SourceChangeChanging;
+        
+        /// <summary>
+        /// Gets fired when the SourceChange property changed its value
+        /// </summary>
+        event System.EventHandler<ValueChangedEventArgs> SourceChangeChanged;
     }
 }
 

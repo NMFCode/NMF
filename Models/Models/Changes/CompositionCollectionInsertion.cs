@@ -38,7 +38,7 @@ namespace NMF.Models.Changes
     [XmlNamespaceAttribute("http://nmf.codeplex.com/changes")]
     [XmlNamespacePrefixAttribute("changes")]
     [ModelRepresentationClassAttribute("http://nmf.codeplex.com/changes#//CompositionCollectionInsertion")]
-    public partial class CompositionCollectionInsertion : CollectionInsertion, ICompositionCollectionInsertion, NMF.Models.IModelElement
+    public partial class CompositionCollectionInsertion : CompositionChange, ICompositionCollectionInsertion, NMF.Models.IModelElement
     {
         
         private static Lazy<ITypedElement> _addedElementReference = new Lazy<ITypedElement>(RetrieveAddedElementReference);
@@ -55,6 +55,7 @@ namespace NMF.Models.Changes
         /// </summary>
         [XmlElementNameAttribute("addedElement")]
         [XmlAttributeAttribute(false)]
+        [ContainmentAttribute()]
         public NMF.Models.IModelElement AddedElement
         {
             get
@@ -152,16 +153,6 @@ namespace NMF.Models.Changes
             {
                 handler.Invoke(this, eventArgs);
             }
-        }
-        
-        /// <summary>
-        /// Handles the event that the AddedElement property must reset
-        /// </summary>
-        /// <param name="sender">The object that sent this reset request</param>
-        /// <param name="eventArgs">The event data for the reset event</param>
-        private void OnResetAddedElement(object sender, System.EventArgs eventArgs)
-        {
-            this.AddedElement = null;
         }
         
         /// <summary>

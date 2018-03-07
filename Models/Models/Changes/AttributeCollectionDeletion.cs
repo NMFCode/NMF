@@ -38,7 +38,7 @@ namespace NMF.Models.Changes
     [XmlNamespaceAttribute("http://nmf.codeplex.com/changes")]
     [XmlNamespacePrefixAttribute("changes")]
     [ModelRepresentationClassAttribute("http://nmf.codeplex.com/changes#//AttributeCollectionDeletion")]
-    public partial class AttributeCollectionDeletion : CollectionDeletion, IAttributeCollectionDeletion, NMF.Models.IModelElement
+    public partial class AttributeCollectionDeletion : AttributeChange, IAttributeCollectionDeletion, NMF.Models.IModelElement
     {
         
         /// <summary>

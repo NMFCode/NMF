@@ -48,7 +48,7 @@ namespace NMF.Models.Meta
         /// <summary>
         /// The backing field for the IsDefault property
         /// </summary>
-        private bool _isDefault;
+        private Nullable<bool> _isDefault;
         
         private static Lazy<ITypedElement> _isDefaultAttribute = new Lazy<ITypedElement>(RetrieveIsDefaultAttribute);
         
@@ -83,7 +83,7 @@ namespace NMF.Models.Meta
         /// The IsDefault property
         /// </summary>
         [XmlAttributeAttribute(true)]
-        public bool IsDefault
+        public Nullable<bool> IsDefault
         {
             get
             {

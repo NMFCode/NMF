@@ -204,7 +204,7 @@ namespace NMF.Models.Meta
             }
             return base.GetCollectionForFeature(feature);
         }
-        
+
         /// <summary>
         /// Gets the property name for the given container
         /// </summary>

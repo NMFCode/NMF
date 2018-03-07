@@ -50,7 +50,7 @@ namespace NMF.Models.Tests.Evolution
             var newValue = Signal.FAILURE;
             var oldValue = repository1.Resolve(parent.AbsoluteUri).GetType().GetProperty("Signal").GetValue(parent, null);
 
-            var change = new AttributeChange
+            var change = new AttributePropertyChange
             {
                 AffectedElement = parent,
                 Feature = Semaphore.ClassInstance.Resolve(new Uri("signal", UriKind.Relative)) as ITypedElement,
@@ -74,7 +74,7 @@ namespace NMF.Models.Tests.Evolution
             var newValue = railway1.Semaphores[0];
             var oldValue = parent.Entry;
 
-            var change = new AssociationChange
+            var change = new AssociationPropertyChange
             {
                 AffectedElement = parent,
                 Feature = Route.ClassInstance.LookupReference("entry"),

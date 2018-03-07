@@ -38,7 +38,7 @@ namespace NMF.Models.Meta
     [XmlNamespaceAttribute("http://nmf.codeplex.com/nmeta/")]
     [XmlNamespacePrefixAttribute("nmeta")]
     [ModelRepresentationClassAttribute("http://nmf.codeplex.com/nmeta/#//Model")]
-    public partial class Model : NMF.Models.ModelElement, IModel, NMF.Models.IModelElement
+    public partial class Model : NMF.Models.ModelElement, NMF.Models.IModel, NMF.Models.IModelElement
     {
         
         /// <summary>

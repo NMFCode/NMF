@@ -33,78 +33,78 @@ namespace NMF.Models.Changes
     
     
     /// <summary>
-    /// The default implementation of the CompositionListDeletion class
+    /// The default implementation of the AssociationPropertyChange class
     /// </summary>
     [XmlNamespaceAttribute("http://nmf.codeplex.com/changes")]
     [XmlNamespacePrefixAttribute("changes")]
-    [ModelRepresentationClassAttribute("http://nmf.codeplex.com/changes#//CompositionListDeletion")]
-    public partial class CompositionListDeletion : CompositionChange, ICompositionListDeletion, NMF.Models.IModelElement
+    [ModelRepresentationClassAttribute("http://nmf.codeplex.com/changes#//AssociationPropertyChange")]
+    public partial class AssociationPropertyChange : AssociationChange, IAssociationPropertyChange, NMF.Models.IModelElement
     {
         
-        /// <summary>
-        /// The backing field for the Index property
-        /// </summary>
-        private int _index;
-        
-        private static Lazy<ITypedElement> _indexAttribute = new Lazy<ITypedElement>(RetrieveIndexAttribute);
-        
-        private static Lazy<ITypedElement> _deletedElementReference = new Lazy<ITypedElement>(RetrieveDeletedElementReference);
+        private static Lazy<ITypedElement> _newValueReference = new Lazy<ITypedElement>(RetrieveNewValueReference);
         
         /// <summary>
-        /// The backing field for the DeletedElement property
+        /// The backing field for the NewValue property
         /// </summary>
-        private NMF.Models.IModelElement _deletedElement;
+        private NMF.Models.IModelElement _newValue;
+        
+        private static Lazy<ITypedElement> _oldValueReference = new Lazy<ITypedElement>(RetrieveOldValueReference);
+        
+        /// <summary>
+        /// The backing field for the OldValue property
+        /// </summary>
+        private NMF.Models.IModelElement _oldValue;
         
         private static IClass _classInstance;
         
         /// <summary>
-        /// The index property
+        /// The newValue property
         /// </summary>
-        [XmlElementNameAttribute("index")]
+        [XmlElementNameAttribute("newValue")]
         [XmlAttributeAttribute(true)]
-        public int Index
+        public NMF.Models.IModelElement NewValue
         {
             get
             {
-                return this._index;
+                return this._newValue;
             }
             set
             {
-                if ((this._index != value))
+                if ((this._newValue != value))
                 {
-                    int old = this._index;
+                    NMF.Models.IModelElement old = this._newValue;
                     ValueChangedEventArgs e = new ValueChangedEventArgs(old, value);
-                    this.OnIndexChanging(e);
-                    this.OnPropertyChanging("Index", e, _indexAttribute);
-                    this._index = value;
-                    this.OnIndexChanged(e);
-                    this.OnPropertyChanged("Index", e, _indexAttribute);
+                    this.OnNewValueChanging(e);
+                    this.OnPropertyChanging("NewValue", e, _newValueReference);
+                    this._newValue = value;
+                    this.OnNewValueChanged(e);
+                    this.OnPropertyChanged("NewValue", e, _newValueReference);
                 }
             }
         }
         
         /// <summary>
-        /// The deletedElement property
+        /// The oldValue property
         /// </summary>
-        [XmlElementNameAttribute("deletedElement")]
+        [XmlElementNameAttribute("oldValue")]
         [XmlAttributeAttribute(true)]
-        public NMF.Models.IModelElement DeletedElement
+        public NMF.Models.IModelElement OldValue
         {
             get
             {
-                return this._deletedElement;
+                return this._oldValue;
             }
             set
             {
-                if ((this._deletedElement != value))
+                if ((this._oldValue != value))
                 {
-                    NMF.Models.IModelElement old = this._deletedElement;
+                    NMF.Models.IModelElement old = this._oldValue;
                     ValueChangedEventArgs e = new ValueChangedEventArgs(old, value);
-                    this.OnDeletedElementChanging(e);
-                    this.OnPropertyChanging("DeletedElement", e, _deletedElementReference);
-                    this._deletedElement = value;
-                    this.OnDeletedElementChanged(e);
-                    this.OnPropertyChanged("DeletedElement", e, _deletedElementReference);
+                    this.OnOldValueChanging(e);
+                    this.OnPropertyChanging("OldValue", e, _oldValueReference);
+                    this._oldValue = value;
+                    this.OnOldValueChanged(e);
+                    this.OnPropertyChanged("OldValue", e, _oldValueReference);
                 }
             }
         }
@@ -116,7 +116,7 @@ namespace NMF.Models.Changes
         {
             get
             {
-                return base.ReferencedElements.Concat(new CompositionListDeletionReferencedElementsCollection(this));
+                return base.ReferencedElements.Concat(new AssociationPropertyChangeReferencedElementsCollection(this));
             }
         }
         
@@ -129,44 +129,44 @@ namespace NMF.Models.Changes
             {
                 if ((_classInstance == null))
                 {
-                    _classInstance = ((IClass)(MetaRepository.Instance.Resolve("http://nmf.codeplex.com/changes#//CompositionListDeletion")));
+                    _classInstance = ((IClass)(MetaRepository.Instance.Resolve("http://nmf.codeplex.com/changes#//AssociationPropertyChange")));
                 }
                 return _classInstance;
             }
         }
         
         /// <summary>
-        /// Gets fired before the Index property changes its value
+        /// Gets fired before the NewValue property changes its value
         /// </summary>
-        public event System.EventHandler<ValueChangedEventArgs> IndexChanging;
+        public event System.EventHandler<ValueChangedEventArgs> NewValueChanging;
         
         /// <summary>
-        /// Gets fired when the Index property changed its value
+        /// Gets fired when the NewValue property changed its value
         /// </summary>
-        public event System.EventHandler<ValueChangedEventArgs> IndexChanged;
+        public event System.EventHandler<ValueChangedEventArgs> NewValueChanged;
         
         /// <summary>
-        /// Gets fired before the DeletedElement property changes its value
+        /// Gets fired before the OldValue property changes its value
         /// </summary>
-        public event System.EventHandler<ValueChangedEventArgs> DeletedElementChanging;
+        public event System.EventHandler<ValueChangedEventArgs> OldValueChanging;
         
         /// <summary>
-        /// Gets fired when the DeletedElement property changed its value
+        /// Gets fired when the OldValue property changed its value
         /// </summary>
-        public event System.EventHandler<ValueChangedEventArgs> DeletedElementChanged;
+        public event System.EventHandler<ValueChangedEventArgs> OldValueChanged;
         
-        private static ITypedElement RetrieveIndexAttribute()
+        private static ITypedElement RetrieveNewValueReference()
         {
-            return ((ITypedElement)(((NMF.Models.ModelElement)(CompositionListDeletion.ClassInstance)).Resolve("index")));
+            return ((ITypedElement)(((NMF.Models.ModelElement)(AssociationPropertyChange.ClassInstance)).Resolve("newValue")));
         }
         
         /// <summary>
-        /// Raises the IndexChanging event
+        /// Raises the NewValueChanging event
         /// </summary>
         /// <param name="eventArgs">The event data</param>
-        protected virtual void OnIndexChanging(ValueChangedEventArgs eventArgs)
+        protected virtual void OnNewValueChanging(ValueChangedEventArgs eventArgs)
         {
-            System.EventHandler<ValueChangedEventArgs> handler = this.IndexChanging;
+            System.EventHandler<ValueChangedEventArgs> handler = this.NewValueChanging;
             if ((handler != null))
             {
                 handler.Invoke(this, eventArgs);
@@ -174,30 +174,30 @@ namespace NMF.Models.Changes
         }
         
         /// <summary>
-        /// Raises the IndexChanged event
+        /// Raises the NewValueChanged event
         /// </summary>
         /// <param name="eventArgs">The event data</param>
-        protected virtual void OnIndexChanged(ValueChangedEventArgs eventArgs)
+        protected virtual void OnNewValueChanged(ValueChangedEventArgs eventArgs)
         {
-            System.EventHandler<ValueChangedEventArgs> handler = this.IndexChanged;
+            System.EventHandler<ValueChangedEventArgs> handler = this.NewValueChanged;
             if ((handler != null))
             {
                 handler.Invoke(this, eventArgs);
             }
         }
         
-        private static ITypedElement RetrieveDeletedElementReference()
+        private static ITypedElement RetrieveOldValueReference()
         {
-            return ((ITypedElement)(((NMF.Models.ModelElement)(CompositionListDeletion.ClassInstance)).Resolve("deletedElement")));
+            return ((ITypedElement)(((NMF.Models.ModelElement)(AssociationPropertyChange.ClassInstance)).Resolve("oldValue")));
         }
         
         /// <summary>
-        /// Raises the DeletedElementChanging event
+        /// Raises the OldValueChanging event
         /// </summary>
         /// <param name="eventArgs">The event data</param>
-        protected virtual void OnDeletedElementChanging(ValueChangedEventArgs eventArgs)
+        protected virtual void OnOldValueChanging(ValueChangedEventArgs eventArgs)
         {
-            System.EventHandler<ValueChangedEventArgs> handler = this.DeletedElementChanging;
+            System.EventHandler<ValueChangedEventArgs> handler = this.OldValueChanging;
             if ((handler != null))
             {
                 handler.Invoke(this, eventArgs);
@@ -205,12 +205,12 @@ namespace NMF.Models.Changes
         }
         
         /// <summary>
-        /// Raises the DeletedElementChanged event
+        /// Raises the OldValueChanged event
         /// </summary>
         /// <param name="eventArgs">The event data</param>
-        protected virtual void OnDeletedElementChanged(ValueChangedEventArgs eventArgs)
+        protected virtual void OnOldValueChanged(ValueChangedEventArgs eventArgs)
         {
-            System.EventHandler<ValueChangedEventArgs> handler = this.DeletedElementChanged;
+            System.EventHandler<ValueChangedEventArgs> handler = this.OldValueChanged;
             if ((handler != null))
             {
                 handler.Invoke(this, eventArgs);
@@ -225,26 +225,15 @@ namespace NMF.Models.Changes
         /// <param name="index">The index of this reference</param>
         protected override NMF.Models.IModelElement GetModelElementForReference(string reference, int index)
         {
-            if ((reference == "DELETEDELEMENT"))
+            if ((reference == "NEWVALUE"))
             {
-                return this.DeletedElement;
+                return this.NewValue;
+            }
+            if ((reference == "OLDVALUE"))
+            {
+                return this.OldValue;
             }
             return base.GetModelElementForReference(reference, index);
-        }
-        
-        /// <summary>
-        /// Resolves the given attribute name
-        /// </summary>
-        /// <returns>The attribute value or null if it could not be found</returns>
-        /// <param name="attribute">The requested attribute name</param>
-        /// <param name="index">The index of this attribute</param>
-        protected override object GetAttributeValue(string attribute, int index)
-        {
-            if ((attribute == "INDEX"))
-            {
-                return this.Index;
-            }
-            return base.GetAttributeValue(attribute, index);
         }
         
         /// <summary>
@@ -254,31 +243,17 @@ namespace NMF.Models.Changes
         /// <param name="value">The value that should be set to that feature</param>
         protected override void SetFeature(string feature, object value)
         {
-            if ((feature == "DELETEDELEMENT"))
+            if ((feature == "NEWVALUE"))
             {
-                this.DeletedElement = ((NMF.Models.IModelElement)(value));
+                this.NewValue = ((NMF.Models.IModelElement)(value));
                 return;
             }
-            if ((feature == "INDEX"))
+            if ((feature == "OLDVALUE"))
             {
-                this.Index = ((int)(value));
+                this.OldValue = ((NMF.Models.IModelElement)(value));
                 return;
             }
             base.SetFeature(feature, value);
-        }
-        
-        /// <summary>
-        /// Gets the property expression for the given attribute
-        /// </summary>
-        /// <returns>An incremental property expression</returns>
-        /// <param name="attribute">The requested attribute in upper case</param>
-        protected override NMF.Expressions.INotifyExpression<object> GetExpressionForAttribute(string attribute)
-        {
-            if ((attribute == "INDEX"))
-            {
-                return Observable.Box(new IndexProxy(this));
-            }
-            return base.GetExpressionForAttribute(attribute);
         }
         
         /// <summary>
@@ -288,9 +263,13 @@ namespace NMF.Models.Changes
         /// <param name="reference">The requested reference in upper case</param>
         protected override NMF.Expressions.INotifyExpression<NMF.Models.IModelElement> GetExpressionForReference(string reference)
         {
-            if ((reference == "DELETEDELEMENT"))
+            if ((reference == "NEWVALUE"))
             {
-                return new DeletedElementProxy(this);
+                return new NewValueProxy(this);
+            }
+            if ((reference == "OLDVALUE"))
+            {
+                return new OldValueProxy(this);
             }
             return base.GetExpressionForReference(reference);
         }
@@ -302,23 +281,23 @@ namespace NMF.Models.Changes
         {
             if ((_classInstance == null))
             {
-                _classInstance = ((IClass)(MetaRepository.Instance.Resolve("http://nmf.codeplex.com/changes#//CompositionListDeletion")));
+                _classInstance = ((IClass)(MetaRepository.Instance.Resolve("http://nmf.codeplex.com/changes#//AssociationPropertyChange")));
             }
             return _classInstance;
         }
         
         /// <summary>
-        /// The collection class to to represent the children of the CompositionListDeletion class
+        /// The collection class to to represent the children of the AssociationPropertyChange class
         /// </summary>
-        public class CompositionListDeletionReferencedElementsCollection : ReferenceCollection, ICollectionExpression<NMF.Models.IModelElement>, ICollection<NMF.Models.IModelElement>
+        public class AssociationPropertyChangeReferencedElementsCollection : ReferenceCollection, ICollectionExpression<NMF.Models.IModelElement>, ICollection<NMF.Models.IModelElement>
         {
             
-            private CompositionListDeletion _parent;
+            private AssociationPropertyChange _parent;
             
             /// <summary>
             /// Creates a new instance
             /// </summary>
-            public CompositionListDeletionReferencedElementsCollection(CompositionListDeletion parent)
+            public AssociationPropertyChangeReferencedElementsCollection(AssociationPropertyChange parent)
             {
                 this._parent = parent;
             }
@@ -331,7 +310,11 @@ namespace NMF.Models.Changes
                 get
                 {
                     int count = 0;
-                    if ((this._parent.DeletedElement != null))
+                    if ((this._parent.NewValue != null))
+                    {
+                        count = (count + 1);
+                    }
+                    if ((this._parent.OldValue != null))
                     {
                         count = (count + 1);
                     }
@@ -341,12 +324,14 @@ namespace NMF.Models.Changes
             
             protected override void AttachCore()
             {
-                this._parent.DeletedElementChanged += this.PropagateValueChanges;
+                this._parent.NewValueChanged += this.PropagateValueChanges;
+                this._parent.OldValueChanged += this.PropagateValueChanges;
             }
             
             protected override void DetachCore()
             {
-                this._parent.DeletedElementChanged -= this.PropagateValueChanges;
+                this._parent.NewValueChanged -= this.PropagateValueChanges;
+                this._parent.OldValueChanged -= this.PropagateValueChanges;
             }
             
             /// <summary>
@@ -355,9 +340,14 @@ namespace NMF.Models.Changes
             /// <param name="item">The item to add</param>
             public override void Add(NMF.Models.IModelElement item)
             {
-                if ((this._parent.DeletedElement == null))
+                if ((this._parent.NewValue == null))
                 {
-                    this._parent.DeletedElement = item;
+                    this._parent.NewValue = item;
+                    return;
+                }
+                if ((this._parent.OldValue == null))
+                {
+                    this._parent.OldValue = item;
                     return;
                 }
             }
@@ -367,7 +357,8 @@ namespace NMF.Models.Changes
             /// </summary>
             public override void Clear()
             {
-                this._parent.DeletedElement = null;
+                this._parent.NewValue = null;
+                this._parent.OldValue = null;
             }
             
             /// <summary>
@@ -377,7 +368,11 @@ namespace NMF.Models.Changes
             /// <param name="item">The item that should be looked out for</param>
             public override bool Contains(NMF.Models.IModelElement item)
             {
-                if ((item == this._parent.DeletedElement))
+                if ((item == this._parent.NewValue))
+                {
+                    return true;
+                }
+                if ((item == this._parent.OldValue))
                 {
                     return true;
                 }
@@ -391,9 +386,14 @@ namespace NMF.Models.Changes
             /// <param name="arrayIndex">The starting index</param>
             public override void CopyTo(NMF.Models.IModelElement[] array, int arrayIndex)
             {
-                if ((this._parent.DeletedElement != null))
+                if ((this._parent.NewValue != null))
                 {
-                    array[arrayIndex] = this._parent.DeletedElement;
+                    array[arrayIndex] = this._parent.NewValue;
+                    arrayIndex = (arrayIndex + 1);
+                }
+                if ((this._parent.OldValue != null))
+                {
+                    array[arrayIndex] = this._parent.OldValue;
                     arrayIndex = (arrayIndex + 1);
                 }
             }
@@ -405,9 +405,14 @@ namespace NMF.Models.Changes
             /// <param name="item">The item that should be removed</param>
             public override bool Remove(NMF.Models.IModelElement item)
             {
-                if ((this._parent.DeletedElement == item))
+                if ((this._parent.NewValue == item))
                 {
-                    this._parent.DeletedElement = null;
+                    this._parent.NewValue = null;
+                    return true;
+                }
+                if ((this._parent.OldValue == item))
+                {
+                    this._parent.OldValue = null;
                     return true;
                 }
                 return false;
@@ -419,53 +424,22 @@ namespace NMF.Models.Changes
             /// <returns>A generic enumerator</returns>
             public override IEnumerator<NMF.Models.IModelElement> GetEnumerator()
             {
-                return Enumerable.Empty<NMF.Models.IModelElement>().Concat(this._parent.DeletedElement).GetEnumerator();
+                return Enumerable.Empty<NMF.Models.IModelElement>().Concat(this._parent.NewValue).Concat(this._parent.OldValue).GetEnumerator();
             }
         }
         
         /// <summary>
-        /// Represents a proxy to represent an incremental access to the index property
+        /// Represents a proxy to represent an incremental access to the newValue property
         /// </summary>
-        private sealed class IndexProxy : ModelPropertyChange<ICompositionListDeletion, int>
+        private sealed class NewValueProxy : ModelPropertyChange<IAssociationPropertyChange, NMF.Models.IModelElement>
         {
             
             /// <summary>
             /// Creates a new observable property access proxy
             /// </summary>
             /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
-            public IndexProxy(ICompositionListDeletion modelElement) : 
-                    base(modelElement, "index")
-            {
-            }
-            
-            /// <summary>
-            /// Gets or sets the value of this expression
-            /// </summary>
-            public override int Value
-            {
-                get
-                {
-                    return this.ModelElement.Index;
-                }
-                set
-                {
-                    this.ModelElement.Index = value;
-                }
-            }
-        }
-        
-        /// <summary>
-        /// Represents a proxy to represent an incremental access to the deletedElement property
-        /// </summary>
-        private sealed class DeletedElementProxy : ModelPropertyChange<ICompositionListDeletion, NMF.Models.IModelElement>
-        {
-            
-            /// <summary>
-            /// Creates a new observable property access proxy
-            /// </summary>
-            /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
-            public DeletedElementProxy(ICompositionListDeletion modelElement) : 
-                    base(modelElement, "deletedElement")
+            public NewValueProxy(IAssociationPropertyChange modelElement) : 
+                    base(modelElement, "newValue")
             {
             }
             
@@ -476,11 +450,42 @@ namespace NMF.Models.Changes
             {
                 get
                 {
-                    return this.ModelElement.DeletedElement;
+                    return this.ModelElement.NewValue;
                 }
                 set
                 {
-                    this.ModelElement.DeletedElement = value;
+                    this.ModelElement.NewValue = value;
+                }
+            }
+        }
+        
+        /// <summary>
+        /// Represents a proxy to represent an incremental access to the oldValue property
+        /// </summary>
+        private sealed class OldValueProxy : ModelPropertyChange<IAssociationPropertyChange, NMF.Models.IModelElement>
+        {
+            
+            /// <summary>
+            /// Creates a new observable property access proxy
+            /// </summary>
+            /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
+            public OldValueProxy(IAssociationPropertyChange modelElement) : 
+                    base(modelElement, "oldValue")
+            {
+            }
+            
+            /// <summary>
+            /// Gets or sets the value of this expression
+            /// </summary>
+            public override NMF.Models.IModelElement Value
+            {
+                get
+                {
+                    return this.ModelElement.OldValue;
+                }
+                set
+                {
+                    this.ModelElement.OldValue = value;
                 }
             }
         }

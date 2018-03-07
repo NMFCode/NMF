@@ -37,7 +37,7 @@ namespace NMF.Models.Changes
     /// </summary>
     [DefaultImplementationTypeAttribute(typeof(AssociationCollectionDeletion))]
     [XmlDefaultImplementationTypeAttribute(typeof(AssociationCollectionDeletion))]
-    public interface IAssociationCollectionDeletion : NMF.Models.IModelElement, ICollectionDeletion
+    public interface IAssociationCollectionDeletion : NMF.Models.IModelElement, IAssociationChange
     {
         
         /// <summary>

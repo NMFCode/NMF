@@ -37,8 +37,19 @@ namespace NMF.Models.Changes
     /// </summary>
     [DefaultImplementationTypeAttribute(typeof(CompositionListDeletion))]
     [XmlDefaultImplementationTypeAttribute(typeof(CompositionListDeletion))]
-    public interface ICompositionListDeletion : NMF.Models.IModelElement, IListDeletion
+    public interface ICompositionListDeletion : NMF.Models.IModelElement, ICompositionChange
     {
+        
+        /// <summary>
+        /// The index property
+        /// </summary>
+        [XmlElementNameAttribute("index")]
+        [XmlAttributeAttribute(true)]
+        int Index
+        {
+            get;
+            set;
+        }
         
         /// <summary>
         /// The deletedElement property
@@ -50,6 +61,16 @@ namespace NMF.Models.Changes
             get;
             set;
         }
+        
+        /// <summary>
+        /// Gets fired before the Index property changes its value
+        /// </summary>
+        event System.EventHandler<ValueChangedEventArgs> IndexChanging;
+        
+        /// <summary>
+        /// Gets fired when the Index property changed its value
+        /// </summary>
+        event System.EventHandler<ValueChangedEventArgs> IndexChanged;
         
         /// <summary>
         /// Gets fired before the DeletedElement property changes its value

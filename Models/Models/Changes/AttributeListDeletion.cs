@@ -38,7 +38,7 @@ namespace NMF.Models.Changes
     [XmlNamespaceAttribute("http://nmf.codeplex.com/changes")]
     [XmlNamespacePrefixAttribute("changes")]
     [ModelRepresentationClassAttribute("http://nmf.codeplex.com/changes#//AttributeListDeletion")]
-    public partial class AttributeListDeletion : ListDeletion, IAttributeListDeletion, NMF.Models.IModelElement
+    public partial class AttributeListDeletion : AttributeChange, IAttributeListDeletion, NMF.Models.IModelElement
     {
         
         /// <summary>
@@ -47,6 +47,13 @@ namespace NMF.Models.Changes
         private string _deletedValue;
         
         private static Lazy<ITypedElement> _deletedValueAttribute = new Lazy<ITypedElement>(RetrieveDeletedValueAttribute);
+        
+        /// <summary>
+        /// The backing field for the Index property
+        /// </summary>
+        private int _index;
+        
+        private static Lazy<ITypedElement> _indexAttribute = new Lazy<ITypedElement>(RetrieveIndexAttribute);
         
         private static IClass _classInstance;
         
@@ -77,6 +84,32 @@ namespace NMF.Models.Changes
         }
         
         /// <summary>
+        /// The index property
+        /// </summary>
+        [XmlElementNameAttribute("index")]
+        [XmlAttributeAttribute(true)]
+        public int Index
+        {
+            get
+            {
+                return this._index;
+            }
+            set
+            {
+                if ((this._index != value))
+                {
+                    int old = this._index;
+                    ValueChangedEventArgs e = new ValueChangedEventArgs(old, value);
+                    this.OnIndexChanging(e);
+                    this.OnPropertyChanging("Index", e, _indexAttribute);
+                    this._index = value;
+                    this.OnIndexChanged(e);
+                    this.OnPropertyChanged("Index", e, _indexAttribute);
+                }
+            }
+        }
+        
+        /// <summary>
         /// Gets the Class model for this type
         /// </summary>
         public new static IClass ClassInstance
@@ -100,6 +133,16 @@ namespace NMF.Models.Changes
         /// Gets fired when the DeletedValue property changed its value
         /// </summary>
         public event System.EventHandler<ValueChangedEventArgs> DeletedValueChanged;
+        
+        /// <summary>
+        /// Gets fired before the Index property changes its value
+        /// </summary>
+        public event System.EventHandler<ValueChangedEventArgs> IndexChanging;
+        
+        /// <summary>
+        /// Gets fired when the Index property changed its value
+        /// </summary>
+        public event System.EventHandler<ValueChangedEventArgs> IndexChanged;
         
         private static ITypedElement RetrieveDeletedValueAttribute()
         {
@@ -132,6 +175,37 @@ namespace NMF.Models.Changes
             }
         }
         
+        private static ITypedElement RetrieveIndexAttribute()
+        {
+            return ((ITypedElement)(((NMF.Models.ModelElement)(AttributeListDeletion.ClassInstance)).Resolve("index")));
+        }
+        
+        /// <summary>
+        /// Raises the IndexChanging event
+        /// </summary>
+        /// <param name="eventArgs">The event data</param>
+        protected virtual void OnIndexChanging(ValueChangedEventArgs eventArgs)
+        {
+            System.EventHandler<ValueChangedEventArgs> handler = this.IndexChanging;
+            if ((handler != null))
+            {
+                handler.Invoke(this, eventArgs);
+            }
+        }
+        
+        /// <summary>
+        /// Raises the IndexChanged event
+        /// </summary>
+        /// <param name="eventArgs">The event data</param>
+        protected virtual void OnIndexChanged(ValueChangedEventArgs eventArgs)
+        {
+            System.EventHandler<ValueChangedEventArgs> handler = this.IndexChanged;
+            if ((handler != null))
+            {
+                handler.Invoke(this, eventArgs);
+            }
+        }
+        
         /// <summary>
         /// Resolves the given attribute name
         /// </summary>
@@ -143,6 +217,10 @@ namespace NMF.Models.Changes
             if ((attribute == "DELETEDVALUE"))
             {
                 return this.DeletedValue;
+            }
+            if ((attribute == "INDEX"))
+            {
+                return this.Index;
             }
             return base.GetAttributeValue(attribute, index);
         }
@@ -159,6 +237,11 @@ namespace NMF.Models.Changes
                 this.DeletedValue = ((string)(value));
                 return;
             }
+            if ((feature == "INDEX"))
+            {
+                this.Index = ((int)(value));
+                return;
+            }
             base.SetFeature(feature, value);
         }
         
@@ -172,6 +255,10 @@ namespace NMF.Models.Changes
             if ((attribute == "DELETEDVALUE"))
             {
                 return new DeletedValueProxy(this);
+            }
+            if ((attribute == "INDEX"))
+            {
+                return Observable.Box(new IndexProxy(this));
             }
             return base.GetExpressionForAttribute(attribute);
         }
@@ -215,6 +302,37 @@ namespace NMF.Models.Changes
                 set
                 {
                     this.ModelElement.DeletedValue = value;
+                }
+            }
+        }
+        
+        /// <summary>
+        /// Represents a proxy to represent an incremental access to the index property
+        /// </summary>
+        private sealed class IndexProxy : ModelPropertyChange<IAttributeListDeletion, int>
+        {
+            
+            /// <summary>
+            /// Creates a new observable property access proxy
+            /// </summary>
+            /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
+            public IndexProxy(IAttributeListDeletion modelElement) : 
+                    base(modelElement, "index")
+            {
+            }
+            
+            /// <summary>
+            /// Gets or sets the value of this expression
+            /// </summary>
+            public override int Value
+            {
+                get
+                {
+                    return this.ModelElement.Index;
+                }
+                set
+                {
+                    this.ModelElement.Index = value;
                 }
             }
         }

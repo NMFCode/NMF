@@ -56,7 +56,7 @@ namespace NMF.Interop.Ecore.Tests
             var serializationInfo = type.GetExtension<SerializationInformation>();
             Assert.IsNotNull(serializationInfo);
             Assert.AreEqual(serializationInfo.SerializationName, serializedName);
-            Assert.IsFalse(serializationInfo.IsDefault);
+            Assert.IsFalse(serializationInfo.IsDefault.GetValueOrDefault());
         }
 
         private void AssertNoSerializationName(IMetaElement type)
@@ -71,7 +71,7 @@ namespace NMF.Interop.Ecore.Tests
             Assert.IsNotNull(feature);
             var serializationInfo = feature.GetExtension<SerializationInformation>();
             Assert.IsNotNull(serializationInfo);
-            Assert.IsTrue(serializationInfo.IsDefault);
+            Assert.IsTrue(serializationInfo.IsDefault.GetValueOrDefault());
         }
     }
 }

@@ -37,7 +37,7 @@ namespace NMF.Models.Changes
     /// </summary>
     [DefaultImplementationTypeAttribute(typeof(CompositionMoveToCollection))]
     [XmlDefaultImplementationTypeAttribute(typeof(CompositionMoveToCollection))]
-    public interface ICompositionMoveToCollection : NMF.Models.IModelElement, ICollectionInsertion
+    public interface ICompositionMoveToCollection : NMF.Models.IModelElement, ICompositionChange
     {
         
         /// <summary>

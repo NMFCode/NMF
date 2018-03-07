@@ -8,87 +8,86 @@
     <References IsOrdered="True" IsUnique="True" LowerBound="1" Name="affectedElement" />
     <References ReferenceType="http://nmf.codeplex.com/nmeta/#//TypedElement" IsOrdered="True" IsUnique="True" LowerBound="1" Name="feature" />
   </Types>
-  <Types xsi:type="nmeta:Class" BaseTypes="#//ModelChange" Name="ElementaryChangeTransaction">
+  <Types xsi:type="nmeta:Class" BaseTypes="#//ModelChange" Name="ChangeTransaction">
     <References IsContainment="True" ReferenceType="#//ModelChange" IsOrdered="True" IsUnique="True" LowerBound="1" Name="sourceChange" />
     <References IsContainment="True" ReferenceType="#//ModelChange" IsOrdered="True" IsUnique="True" UpperBound="-1" Name="nestedChanges" />
   </Types>
-  <Types xsi:type="nmeta:Class" IsAbstract="True" BaseTypes="#//ElementaryChange" Name="CollectionDeletion">
+  <Types xsi:type="nmeta:Class" IsAbstract="True" BaseTypes="#//ElementaryChange" Name="CompositionChange">
   </Types>
-  <Types xsi:type="nmeta:Class" BaseTypes="#//CollectionDeletion" Name="AssociationCollectionDeletion">
+  <Types xsi:type="nmeta:Class" IsAbstract="True" BaseTypes="#//ElementaryChange" Name="AssociationChange">
+  </Types>
+  <Types xsi:type="nmeta:Class" IsAbstract="True" BaseTypes="#//ElementaryChange" Name="AttributeChange">
+  </Types>
+  <Types xsi:type="nmeta:Class" BaseTypes="#//AssociationChange" Name="AssociationCollectionDeletion">
     <References IsOrdered="True" IsUnique="True" LowerBound="1" Name="deletedElement" />
   </Types>
-  <Types xsi:type="nmeta:Class" BaseTypes="#//CollectionDeletion" Name="CompositionCollectionDeletion">
+  <Types xsi:type="nmeta:Class" BaseTypes="#//CompositionChange" Name="CompositionCollectionDeletion">
     <References IsOrdered="True" IsUnique="True" Name="deletedElement" />
   </Types>
-  <Types xsi:type="nmeta:Class" BaseTypes="#//CollectionDeletion" Name="AttributeCollectionDeletion">
+  <Types xsi:type="nmeta:Class" BaseTypes="#//AttributeChange" Name="AttributeCollectionDeletion">
     <Attributes IsOrdered="True" IsUnique="True" LowerBound="1" Type="http://nmf.codeplex.com/nmeta/#//String" Name="deletedValue" />
   </Types>
-  <Types xsi:type="nmeta:Class" IsAbstract="True" BaseTypes="#//ElementaryChange" Name="CollectionInsertion">
-  </Types>
-  <Types xsi:type="nmeta:Class" BaseTypes="#//CollectionInsertion" Name="AssociationCollectionInsertion">
+  <Types xsi:type="nmeta:Class" BaseTypes="#//AssociationChange" Name="AssociationCollectionInsertion">
     <References IsOrdered="True" IsUnique="True" LowerBound="1" Name="addedElement" />
   </Types>
-  <Types xsi:type="nmeta:Class" BaseTypes="#//CollectionInsertion" Name="CompositionCollectionInsertion">
+  <Types xsi:type="nmeta:Class" BaseTypes="#//CompositionChange" Name="CompositionCollectionInsertion">
     <References IsContainment="True" IsOrdered="True" IsUnique="True" LowerBound="1" Name="addedElement" />
   </Types>
-  <Types xsi:type="nmeta:Class" BaseTypes="#//CollectionInsertion" Name="CompositionMoveToCollection">
+  <Types xsi:type="nmeta:Class" BaseTypes="#//CompositionChange" Name="CompositionMoveToCollection">
     <References IsOrdered="True" IsUnique="True" LowerBound="1" Name="movedElement" />
     <References IsContainment="True" LowerBound="1" Name="origin" ReferenceType="#//ElementaryChange" />
   </Types>
-  <Types xsi:type="nmeta:Class" BaseTypes="#//CollectionInsertion" Name="AttributeCollectionInsertion">
+  <Types xsi:type="nmeta:Class" BaseTypes="#//AttributeChange" Name="AttributeCollectionInsertion">
     <Attributes IsOrdered="True" IsUnique="True" LowerBound="1" Type="http://nmf.codeplex.com/nmeta/#//String" Name="addedValue" />
   </Types>
-  <Types xsi:type="nmeta:Class" IsAbstract="True" BaseTypes="#//ElementaryChange" Name="CollectionReset">
+  <Types xsi:type="nmeta:Class" BaseTypes="#//AssociationChange" Name="AssociationCollectionReset">
   </Types>
-  <Types xsi:type="nmeta:Class" BaseTypes="#//CollectionReset" Name="AssociationCollectionReset">
+  <Types xsi:type="nmeta:Class" BaseTypes="#//CompositionChange" Name="CompositionCollectionReset">
   </Types>
-  <Types xsi:type="nmeta:Class" BaseTypes="#//CollectionReset" Name="CompositionCollectionReset">
+  <Types xsi:type="nmeta:Class" BaseTypes="#//AttributeChange" Name="AttributeCollectionReset">
   </Types>
-  <Types xsi:type="nmeta:Class" BaseTypes="#//CollectionReset" Name="AttributeCollectionReset">
-  </Types>
-  <Types xsi:type="nmeta:Class" IsAbstract="True" BaseTypes="#//ElementaryChange" Name="ListDeletion">
+  <Types xsi:type="nmeta:Class" BaseTypes="#//AssociationChange" Name="AssociationListDeletion">
+    <References IsOrdered="True" IsUnique="True" Name="deletedElement" />
     <Attributes IsOrdered="True" IsUnique="True" LowerBound="1" Type="http://nmf.codeplex.com/nmeta/#//Integer" Name="index" />
   </Types>
-  <Types xsi:type="nmeta:Class" BaseTypes="#//ListDeletion" Name="AssociationListDeletion">
+  <Types xsi:type="nmeta:Class" BaseTypes="#//CompositionChange" Name="CompositionListDeletion">
     <References IsOrdered="True" IsUnique="True" Name="deletedElement" />
+    <Attributes IsOrdered="True" IsUnique="True" LowerBound="1" Type="http://nmf.codeplex.com/nmeta/#//Integer" Name="index" />
   </Types>
-  <Types xsi:type="nmeta:Class" BaseTypes="#//ListDeletion" Name="CompositionListDeletion">
-    <References IsOrdered="True" IsUnique="True" Name="deletedElement" />
-  </Types>
-  <Types xsi:type="nmeta:Class" BaseTypes="#//ListDeletion" Name="AttributeListDeletion">
+  <Types xsi:type="nmeta:Class" BaseTypes="#//AttributeChange" Name="AttributeListDeletion">
     <Attributes IsOrdered="True" IsUnique="True" Type="http://nmf.codeplex.com/nmeta/#//String" Name="deletedValue" />
-  </Types>
-  <Types xsi:type="nmeta:Class" IsAbstract="True" BaseTypes="#//ElementaryChange" Name="ListInsertion">
     <Attributes IsOrdered="True" IsUnique="True" LowerBound="1" Type="http://nmf.codeplex.com/nmeta/#//Integer" Name="index" />
   </Types>
-  <Types xsi:type="nmeta:Class" BaseTypes="#//ListInsertion" Name="AssociationListInsertion">
+  <Types xsi:type="nmeta:Class" BaseTypes="#//AssociationChange" Name="AssociationListInsertion">
     <References IsOrdered="True" IsUnique="True" LowerBound="1" Name="addedElement" />
+    <Attributes IsOrdered="True" IsUnique="True" LowerBound="1" Type="http://nmf.codeplex.com/nmeta/#//Integer" Name="index" />
   </Types>
-  <Types xsi:type="nmeta:Class" BaseTypes="#//ListInsertion" Name="CompositionListInsertion">
+  <Types xsi:type="nmeta:Class" BaseTypes="#//CompositionChange" Name="CompositionListInsertion">
     <References IsContainment="True" IsOrdered="True" IsUnique="True" LowerBound="1" Name="addedElement" />
+    <Attributes IsOrdered="True" IsUnique="True" LowerBound="1" Type="http://nmf.codeplex.com/nmeta/#//Integer" Name="index" />
   </Types>
-  <Types xsi:type="nmeta:Class" BaseTypes="#//ListInsertion" Name="CompositionMoveToList">
+  <Types xsi:type="nmeta:Class" BaseTypes="#//CompositionChange" Name="CompositionMoveToList">
+    <Attributes IsOrdered="True" IsUnique="True" LowerBound="1" Type="http://nmf.codeplex.com/nmeta/#//Integer" Name="index" />
     <References IsOrdered="True" IsUnique="True" LowerBound="1" Name="movedElement" />
     <References IsContainment="True" LowerBound="1" Name="origin" ReferenceType="#//ElementaryChange" />
   </Types>
-  <Types xsi:type="nmeta:Class" BaseTypes="#//ListInsertion" Name="AttributeListInsertion">
+  <Types xsi:type="nmeta:Class" BaseTypes="#//AttributeChange" Name="AttributeListInsertion">
+    <Attributes IsOrdered="True" IsUnique="True" LowerBound="1" Type="http://nmf.codeplex.com/nmeta/#//Integer" Name="index" />
     <Attributes IsOrdered="True" IsUnique="True" LowerBound="1" Type="http://nmf.codeplex.com/nmeta/#//String" Name="addedValue" />
   </Types>
-  <Types xsi:type="nmeta:Class" IsAbstract="True" BaseTypes="#//ElementaryChange" Name="PropertyChange">
-  </Types>
-  <Types xsi:type="nmeta:Class" BaseTypes="#//PropertyChange" Name="AttributeChange">
+  <Types xsi:type="nmeta:Class" BaseTypes="#//AttributeChange" Name="AttributePropertyChange">
     <Attributes IsOrdered="True" IsUnique="True" Type="http://nmf.codeplex.com/nmeta/#//String" Name="newValue" />
     <Attributes IsOrdered="True" IsUnique="True" Type="http://nmf.codeplex.com/nmeta/#//String" Name="oldValue" />
   </Types>
-  <Types xsi:type="nmeta:Class" BaseTypes="#//PropertyChange" Name="AssociationChange">
+  <Types xsi:type="nmeta:Class" BaseTypes="#//AssociationChange" Name="AssociationPropertyChange">
     <References IsOrdered="True" IsUnique="True" Name="newValue" />
     <References IsOrdered="True" IsUnique="True" Name="oldValue" />
   </Types>
-  <Types xsi:type="nmeta:Class" BaseTypes="#//PropertyChange" Name="CompositionChange">
+  <Types xsi:type="nmeta:Class" BaseTypes="#//CompositionChange" Name="CompositionPropertyChange">
     <References IsContainment="True" IsOrdered="True" IsUnique="True" Name="newValue" />
     <References IsOrdered="True" IsUnique="True" Name="oldValue" />
   </Types>
-  <Types xsi:type="nmeta:Class" BaseTypes="#//PropertyChange" Name="CompositionMoveIntoProperty">
+  <Types xsi:type="nmeta:Class" BaseTypes="#//CompositionChange" Name="CompositionMoveIntoProperty">
     <References IsOrdered="True" LowerBound="1" Name="newValue" />
     <References IsOrdered="True" Name="oldValue" />
     <References IsContainment="True" LowerBound="1" Name="origin" ReferenceType="#//ElementaryChange" />

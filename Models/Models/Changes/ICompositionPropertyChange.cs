@@ -33,54 +33,55 @@ namespace NMF.Models.Changes
     
     
     /// <summary>
-    /// The public interface for AssociationListDeletion
+    /// The public interface for CompositionPropertyChange
     /// </summary>
-    [DefaultImplementationTypeAttribute(typeof(AssociationListDeletion))]
-    [XmlDefaultImplementationTypeAttribute(typeof(AssociationListDeletion))]
-    public interface IAssociationListDeletion : NMF.Models.IModelElement, IAssociationChange
+    [DefaultImplementationTypeAttribute(typeof(CompositionPropertyChange))]
+    [XmlDefaultImplementationTypeAttribute(typeof(CompositionPropertyChange))]
+    public interface ICompositionPropertyChange : NMF.Models.IModelElement, ICompositionChange
     {
         
         /// <summary>
-        /// The index property
+        /// The newValue property
         /// </summary>
-        [XmlElementNameAttribute("index")]
-        [XmlAttributeAttribute(true)]
-        int Index
+        [XmlElementNameAttribute("newValue")]
+        [XmlAttributeAttribute(false)]
+        [ContainmentAttribute()]
+        NMF.Models.IModelElement NewValue
         {
             get;
             set;
         }
         
         /// <summary>
-        /// The deletedElement property
+        /// The oldValue property
         /// </summary>
-        [XmlElementNameAttribute("deletedElement")]
+        [XmlElementNameAttribute("oldValue")]
         [XmlAttributeAttribute(true)]
-        NMF.Models.IModelElement DeletedElement
+        NMF.Models.IModelElement OldValue
         {
             get;
             set;
         }
         
         /// <summary>
-        /// Gets fired before the Index property changes its value
+        /// Gets fired before the NewValue property changes its value
         /// </summary>
-        event System.EventHandler<ValueChangedEventArgs> IndexChanging;
+        event System.EventHandler<ValueChangedEventArgs> NewValueChanging;
         
         /// <summary>
-        /// Gets fired when the Index property changed its value
+        /// Gets fired when the NewValue property changed its value
         /// </summary>
-        event System.EventHandler<ValueChangedEventArgs> IndexChanged;
+        event System.EventHandler<ValueChangedEventArgs> NewValueChanged;
         
         /// <summary>
-        /// Gets fired before the DeletedElement property changes its value
+        /// Gets fired before the OldValue property changes its value
         /// </summary>
-        event System.EventHandler<ValueChangedEventArgs> DeletedElementChanging;
+        event System.EventHandler<ValueChangedEventArgs> OldValueChanging;
         
         /// <summary>
-        /// Gets fired when the DeletedElement property changed its value
+        /// Gets fired when the OldValue property changed its value
         /// </summary>
-        event System.EventHandler<ValueChangedEventArgs> DeletedElementChanged;
+        event System.EventHandler<ValueChangedEventArgs> OldValueChanged;
     }
 }
 

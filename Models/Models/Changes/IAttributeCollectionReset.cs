@@ -37,7 +37,7 @@ namespace NMF.Models.Changes
     /// </summary>
     [DefaultImplementationTypeAttribute(typeof(AttributeCollectionReset))]
     [XmlDefaultImplementationTypeAttribute(typeof(AttributeCollectionReset))]
-    public interface IAttributeCollectionReset : NMF.Models.IModelElement, ICollectionReset
+    public interface IAttributeCollectionReset : NMF.Models.IModelElement, IAttributeChange
     {
     }
 }

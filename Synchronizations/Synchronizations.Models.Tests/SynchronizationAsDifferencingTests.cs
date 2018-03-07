@@ -26,15 +26,11 @@ namespace Synchronizations.Models.Tests
         }
 
         [TestMethod]
-        public void DifferencingForSimpleDifferencesWorks()
+        public void DifferencingDetectsRenameAsRemoveAdd()
         {
             var model = new Model();
             var lisa = new Female { FullName = "Lisa Simpson" };
-            model.RootElements.Add(new Male { FullName = "Homer Simpson" });
-            model.RootElements.Add(new Female { FullName = "Marge Simpson" });
-            model.RootElements.Add(new Male { FullName = "Bart Simpson" });
-            model.RootElements.Add(lisa);
-            model.RootElements.Add(new Female { FullName = "Maggie Simpson" });
+            AddSimpsons(model, lisa);
 
             var copy = Copy(model);
             lisa.FullName = "Lisa Flanders";
@@ -47,6 +43,50 @@ namespace Synchronizations.Models.Tests
             Assert.IsNotNull(delete);
             Assert.AreEqual("Lisa Simpson", (delete.DeletedElement as IFemale).FullName);
             Assert.AreEqual("Lisa Flanders", (insert.AddedElement as IFemale).FullName);
+        }
+
+        [TestMethod]
+        public void DifferencingDetectsRemoveAsRemove()
+        {
+            var model = new Model();
+            var lisa = new Female { FullName = "Lisa Simpson" };
+            AddSimpsons(model, lisa);
+
+            var copy = Copy(model);
+            lisa.Delete();
+
+            var diff = GetDiff<IModel>(copy, model);
+            Assert.AreEqual(1, diff.Changes.Count);
+            var delete = diff.Changes.OfType<CompositionListDeletion>().FirstOrDefault();
+            Assert.IsNotNull(delete);
+            Assert.AreEqual("Lisa Simpson", (delete.DeletedElement as IFemale).FullName);
+        }
+
+        [TestMethod]
+        public void DifferencingDetectsAddAsInsertion()
+        {
+            var model = new Model();
+            var lisa = new Female { FullName = "Lisa Simpson" };
+            AddSimpsons(model, lisa);
+
+            var copy = Copy(model);
+            var newLisa = new Female { FullName = "Lisa Flanders" };
+            model.RootElements.Add(newLisa);
+
+            var diff = GetDiff<IModel>(copy, model);
+            Assert.AreEqual(1, diff.Changes.Count);
+            var insert = diff.Changes.OfType<CompositionListInsertion>().FirstOrDefault();
+            Assert.IsNotNull(insert);
+            Assert.AreEqual("Lisa Flanders", (insert.AddedElement as IFemale).FullName);
+        }
+
+        private static void AddSimpsons(Model model, Female lisa)
+        {
+            model.RootElements.Add(new Male { FullName = "Homer Simpson" });
+            model.RootElements.Add(new Female { FullName = "Marge Simpson" });
+            model.RootElements.Add(new Male { FullName = "Bart Simpson" });
+            model.RootElements.Add(lisa);
+            model.RootElements.Add(new Female { FullName = "Maggie Simpson" });
         }
 
         private ModelChangeSet GetDiff<T>(T from, T to)
