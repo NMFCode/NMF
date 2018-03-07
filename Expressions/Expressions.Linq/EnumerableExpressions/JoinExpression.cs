@@ -23,6 +23,8 @@ namespace NMF.Expressions
 
         public Expression OptSelectorExpression => ResultSelector;
 
+        public Expression OptSelectorExpression => ResultSelector;
+
         public JoinExpression(IEnumerableExpression<TOuter> outer, IEnumerable<TInner> inner, Expression<Func<TOuter, TKey>> outerKeySelector, Func<TOuter, TKey> outerKeySelectorCompiled, Expression<Func<TInner, TKey>> innerKeySelector, Func<TInner, TKey> innerKeySelectorCompiled, Expression<Func<TOuter, TInner, TResult>> resultSelector, Func<TOuter, TInner, TResult> resultSelectorCompiled, IEqualityComparer<TKey> comparer)
         {
             if (outer == null) throw new ArgumentNullException("outer");
