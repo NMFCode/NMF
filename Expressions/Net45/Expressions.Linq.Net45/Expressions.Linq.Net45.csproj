@@ -52,9 +52,6 @@
     <Compile Include="..\..\Expressions.Linq\EnumerableExpressions\DistinctExpression.cs">
       <Link>EnumerableExpressions\DistinctExpression.cs</Link>
     </Compile>
-    <Compile Include="..\..\Expressions.Linq\EnumerableExpressions\DmglVisualizer.cs">
-      <Link>EnumerableExpressions\DmglVisualizer.cs</Link>
-    </Compile>
     <Compile Include="..\..\Expressions.Linq\EnumerableExpressions\DynamicDependencyGraphDgmlVisualizer.cs">
       <Link>EnumerableExpressions\DynamicDependencyGraphDgmlVisualizer.cs</Link>
     </Compile>
@@ -75,6 +72,9 @@
     </Compile>
     <Compile Include="..\..\Expressions.Linq\EnumerableExpressions\OrderByExpression.cs">
       <Link>EnumerableExpressions\OrderByExpression.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Expressions.Linq\EnumerableExpressions\QueryExpressionDgmlVisualizer.cs">
+      <Link>EnumerableExpressions\QueryExpressionDgmlVisualizer.cs</Link>
     </Compile>
     <Compile Include="..\..\Expressions.Linq\EnumerableExpressions\QueryOptimizer.cs">
       <Link>EnumerableExpressions\QueryOptimizer.cs</Link>

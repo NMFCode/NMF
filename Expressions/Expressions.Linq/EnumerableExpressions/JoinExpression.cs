@@ -41,7 +41,7 @@ namespace NMF.Expressions
             ResultSelectorCompiled = resultSelectorCompiled ?? ExpressionCompileRewriter.Compile(resultSelector);
             Comparer = comparer;
 #if DEBUG
-            AddDgmlNode();
+            QueryExpressionDgmlVisualizer.AddNode(this);
 #endif
         }
 
@@ -89,11 +89,6 @@ namespace NMF.Expressions
         {
             var mergedSelectorExpression = QueryOptimizer.Optimize<TOuter, TResult, TOptimizedResult>(prevExpr.OptSelectorExpression, OptSelectorExpression) as Expression<Func<TOuter, TInner, TOptimizedResult>>;
             return new JoinExpression<TOuter, TInner, TKey, TOptimizedResult>(Source, Inner, OuterKeySelector, null, InnerKeySelector, null, mergedSelectorExpression, null, Comparer);
-        }
-
-        public void AddDgmlNode()
-        {
-            DmglVisualizer.AddNode(this);
         }
 
         private void VisitForDebugging(dynamic expression)

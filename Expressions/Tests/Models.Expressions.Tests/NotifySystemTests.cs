@@ -464,7 +464,7 @@ namespace NMF.Expressions.Tests
 
         private IEnumerableExpression<string> CreateSelectManySelectManyExpressionOptimizable()
         {
-            //DmglVisualizer.Initialize();
+            //QueryExpressionDgmlVisualizer.Initialize();
 
             var func = CreateExpression(
                 from route in RailwayContainer.Routes
@@ -474,14 +474,14 @@ namespace NMF.Expressions.Tests
                 select swP.Position.ToString() + sensor.Id.ToString());
             //select swP.Position.ToString());
 
-            //DmglVisualizer.OpenDgml();
+            //QueryExpressionDgmlVisualizer.OpenDgml();
 
             var test = func.AsNotifiable();
 
             //DDGDgmlVisualizer.initDgmlVisualizer(test);
 
 
-            //DmglVisualizer.OpenDgml();
+            //QueryExpressionDgmlVisualizer.OpenDgml();
 
 
             return func;
@@ -489,7 +489,7 @@ namespace NMF.Expressions.Tests
 
         private IEnumerableExpression<string> CreateJoinSelectExpressionOptimizable()
         {
-            DmglVisualizer.Initialize();
+            QueryExpressionDgmlVisualizer.Initialize();
 
             var func = CreateExpression(
                 from route in RailwayContainer.Routes
@@ -499,7 +499,7 @@ namespace NMF.Expressions.Tests
                 select swP.Position.ToString());
             //select swP.Position.ToString());
 
-            DmglVisualizer.OpenDgml();
+            QueryExpressionDgmlVisualizer.OpenDgml();
 
 
             var test = func.AsNotifiable();
@@ -512,7 +512,7 @@ namespace NMF.Expressions.Tests
         [TestMethod]
         public void NotifySystem_Optimize_SelectSelect()
         {
-            //DmglVisualizer.Initialize();
+            //QueryExpressionDgmlVisualizer.Initialize();
 
             var func = CreateExpression(from route in RailwayContainer.Routes
                                         where route.Entry != null && route.Entry.Signal == Signal.GO
@@ -521,7 +521,7 @@ namespace NMF.Expressions.Tests
                                         let routeString = route.ToString()
                                         select route.ToIdentifierString() + routeString);
 
-            //DmglVisualizer.OpenDgml();
+            //QueryExpressionDgmlVisualizer.OpenDgml();
 
             var routeTest = RailwayContainer.Routes[0];
             var test = func.AsNotifiable();
@@ -547,7 +547,7 @@ namespace NMF.Expressions.Tests
         [TestMethod]
         public void NotifySystem_Optimize_SelectSelectSelect()
         {
-            //DmglVisualizer.Initialize();
+            //QueryExpressionDgmlVisualizer.Initialize();
 
             var func = CreateExpression(
                 from route in RailwayContainer.Routes
@@ -556,7 +556,7 @@ namespace NMF.Expressions.Tests
                 let routeString = route.ToString()
                 select routeEntry + routeString);
 
-            //DmglVisualizer.OpenDgml();
+            //QueryExpressionDgmlVisualizer.OpenDgml();
 
             var routeTest = RailwayContainer.Routes[0];
 
@@ -582,7 +582,7 @@ namespace NMF.Expressions.Tests
         [TestMethod]
         public void NotifySystem_Optimize_SelectManySelect()
         {
-            //DmglVisualizer.Initialize();
+            //QueryExpressionDgmlVisualizer.Initialize();
 
             var func = CreateExpression(
                 from route in RailwayContainer.Routes
@@ -592,7 +592,7 @@ namespace NMF.Expressions.Tests
                 select swP.Position.ToString());
             //select swP.Position.ToString());
 
-            //DmglVisualizer.OpenDgml();
+            //QueryExpressionDgmlVisualizer.OpenDgml();
 
             var routeTest = RailwayContainer.Routes[0];
 

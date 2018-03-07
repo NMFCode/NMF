@@ -9,7 +9,7 @@ using System.Xml.Linq;
 
 namespace NMF.Expressions
 {
-    public static class DmglVisualizer
+    public static class QueryExpressionDgmlVisualizer
     {
         public static XDocument Doc { get; set; }
 
@@ -56,14 +56,12 @@ namespace NMF.Expressions
             e.SetAttributeValue("Label", NodeToLabel(node));
 
             return e;
-
         }
 
         public static void OpenDgml()
         {
             OpenDgml(Doc);
         }
-
 
         private static XDocument CreateDgmlDoc()
         {
@@ -102,8 +100,6 @@ namespace NMF.Expressions
             System.Diagnostics.Process.Start(filePath);
         }
 
-
-
         private static string NodeToLabel(IEnumerableExpression node)
         {
             var typeName = node.GetType().Name;
@@ -122,11 +118,5 @@ namespace NMF.Expressions
 
             return result;
         }
-
-
-
-
     }
-
-
 }
