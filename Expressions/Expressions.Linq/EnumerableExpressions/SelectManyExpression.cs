@@ -20,8 +20,6 @@ namespace NMF.Expressions
 
         public Expression OptSelectorExpression => ResultSelector;
 
-        public Expression OptSelectorExpression => ResultSelector;
-
         public SelectManyExpression(IEnumerableExpression<TSource> source, Expression<Func<TSource, IEnumerable<TIntermediate>>> func, Func<TSource, IEnumerable<TIntermediate>> funcCompiled, Expression<Func<TSource, TIntermediate, TResult>> resultSelector, Func<TSource, TIntermediate, TResult> resultSelectorCompiled)
         {
             if (source == null) throw new ArgumentNullException("source");

@@ -14,6 +14,7 @@ namespace NMF.Expressions
         public IEnumerableExpression<TSource> Source { get; private set; }
         public Expression<Func<TSource, TResult>> SelectorExpression { get; private set; }
         public Func<TSource, TResult> SelectorCompiled { get; private set; }
+
         private INotifyEnumerable<TResult> notifyEnumerable;
         public Expression OptSelectorExpression => SelectorExpression;
 
@@ -32,17 +33,17 @@ namespace NMF.Expressions
 
         public INotifyEnumerable<TResult> AsNotifiable()
         {
-            if (notifyEnumerable == null)
-            {
-                notifyEnumerable = Source.AsNotifiable().Select(SelectorExpression);
-            }
-            return notifyEnumerable;
             //TODO: Wie oben erst eine IsOptimizable Methode aufrufen und falls true Optimize aufrufen. Dadurch spart man sich hier wieder den != this Vergleich
             IEnumerableExpression<TResult> optimizedExpression = AsOptimized<TResult>();
 
             if (optimizedExpression != this)
                 return optimizedExpression.AsNotifiable();
 
+            if (notifyEnumerable == null)
+            {
+                notifyEnumerable = Source.AsNotifiable().Select(SelectorExpression);
+            }
+            return notifyEnumerable;
         }
 
         public IEnumerator<TResult> GetEnumerator()
