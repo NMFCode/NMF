@@ -37,7 +37,7 @@ namespace NMF.Models.Changes
     /// </summary>
     [DefaultImplementationTypeAttribute(typeof(ElementaryChangeTransaction))]
     [XmlDefaultImplementationTypeAttribute(typeof(ElementaryChangeTransaction))]
-    public interface IElementaryChangeTransaction : NMF.Models.IModelElement, IElementaryChange
+    public interface IElementaryChangeTransaction : NMF.Models.IModelElement, IModelChange
     {
         
         /// <summary>

@@ -493,7 +493,6 @@ namespace NMF.Models.Changes
                     var sourceChange = changes[changes.Count - 1];
                     var transaction = new ElementaryChangeTransaction
                     {
-                        AffectedElement = null,
                         SourceChange = sourceChange
                     };
                     transaction.NestedChanges.Add(change);

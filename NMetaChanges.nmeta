@@ -8,7 +8,7 @@
     <References IsOrdered="True" IsUnique="True" LowerBound="1" Name="affectedElement" />
     <References ReferenceType="http://nmf.codeplex.com/nmeta/#//TypedElement" IsOrdered="True" IsUnique="True" LowerBound="1" Name="feature" />
   </Types>
-  <Types xsi:type="nmeta:Class" BaseTypes="#//ElementaryChange" Name="ElementaryChangeTransaction">
+  <Types xsi:type="nmeta:Class" BaseTypes="#//ModelChange" Name="ElementaryChangeTransaction">
     <References IsContainment="True" ReferenceType="#//ModelChange" IsOrdered="True" IsUnique="True" LowerBound="1" Name="sourceChange" />
     <References IsContainment="True" ReferenceType="#//ModelChange" IsOrdered="True" IsUnique="True" UpperBound="-1" Name="nestedChanges" />
   </Types>

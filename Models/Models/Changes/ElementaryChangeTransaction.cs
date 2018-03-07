@@ -38,7 +38,7 @@ namespace NMF.Models.Changes
     [XmlNamespaceAttribute("http://nmf.codeplex.com/changes")]
     [XmlNamespacePrefixAttribute("changes")]
     [ModelRepresentationClassAttribute("http://nmf.codeplex.com/changes#//ElementaryChangeTransaction")]
-    public partial class ElementaryChangeTransaction : ElementaryChange, IElementaryChangeTransaction, NMF.Models.IModelElement
+    public partial class ElementaryChangeTransaction : ModelChange, IElementaryChangeTransaction, NMF.Models.IModelElement
     {
         
         private static Lazy<ITypedElement> _sourceChangeReference = new Lazy<ITypedElement>(RetrieveSourceChangeReference);
