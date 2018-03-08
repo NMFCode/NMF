@@ -77,7 +77,7 @@ namespace NMF.Expressions
             return new SelectManyExpression<TSource, TIntermediate, TOptimizedResult>(Source, FuncExpression, null, mergedSelectorExpression, null);
         }
 
-        private void VisitForDebugging(dynamic expression)
+        private void VisitForDebugging(Expression expression)
         {
             //Ausgabe überprüfen
             DebugVisitor debugVisitor = new DebugVisitor();

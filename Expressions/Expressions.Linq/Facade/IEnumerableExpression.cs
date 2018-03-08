@@ -18,11 +18,11 @@ namespace NMF.Expressions
         /// Gets optimization for this collection
         /// </summary>
         /// <typeparam name="TOptimizedResult"></typeparam>
-        /// <param name="expression"></param>
+        /// <param name="prevOptExpression"></param>
         /// <returns></returns>
-        IEnumerableExpression<TOptimizedResult> AsOptimized<TOptimizedResult>(IOptimizableEnumerableExpression expression = null);
+        IEnumerableExpression<TOptimizedResult> AsOptimized<TOptimizedResult>(IOptimizableEnumerableExpression prevOptExpression = null);
 
-        IEnumerableExpression<TOptimizedResult> Merge<TOptimizedResult>(IOptimizableEnumerableExpression prevExpr);
+        IEnumerableExpression<TOptimizedResult> Merge<TOptimizedResult>(IOptimizableEnumerableExpression prevOptExpression);
     }
 
     /// <summary>

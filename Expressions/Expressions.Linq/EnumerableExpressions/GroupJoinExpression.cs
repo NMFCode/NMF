@@ -86,7 +86,7 @@ namespace NMF.Expressions
             return new GroupJoinExpression<TOuter, TInner, TKey, TOptimizedResult>(Source, Inner, OuterKeySelector, null, InnerKeySelector, null, mergedSelectorExpression, null, Comparer);
         }
 
-        private void VisitForDebugging(dynamic expression)
+        private void VisitForDebugging(Expression expression)
         {
             //Ausgabe überprüfen
             DebugVisitor debugVisitor = new DebugVisitor();

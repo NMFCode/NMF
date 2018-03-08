@@ -29,13 +29,11 @@ namespace NMF.Expressions
             SelectorCompiled = selectorCompiled;
 #if DEBUG
             QueryExpressionDgmlVisualizer.AddNode(this);
-
 #endif
         }
 
         public INotifyEnumerable<TResult> AsNotifiable()
         {
-            //TODO: Wie oben erst eine IsOptimizable Methode aufrufen und falls true Optimize aufrufen. Dadurch spart man sich hier wieder den != this Vergleich
             IEnumerableExpression<TResult> optimizedExpression = AsOptimized<TResult>();
 
             if (optimizedExpression != this)
@@ -64,29 +62,28 @@ namespace NMF.Expressions
             return AsNotifiable();
         }
 
-        public IEnumerableExpression<TOptimizedResult> AsOptimized<TOptimizedResult>(IOptimizableEnumerableExpression expression = null)
+        public IEnumerableExpression<TOptimizedResult> AsOptimized<TOptimizedResult>(IOptimizableEnumerableExpression prevOptExpression = null)
         {
 #if DEBUG
             VisitForDebugging(SelectorExpression);
 #endif
 
-            if (this.IsOptimizable(Source))
-            {
-                return this.Optimize<TResult>(Source as IOptimizableEnumerableExpression).AsOptimized<TOptimizedResult>(expression);
-            }
+            if (this.IsSourceOptimizable(Source))
+                return this.Optimize<TResult>(Source as IOptimizableEnumerableExpression).AsOptimized<TOptimizedResult>(prevOptExpression);
 
-            if(expression != null)
-                return Merge<TOptimizedResult>(expression);
+            if(prevOptExpression != null)
+                return Merge<TOptimizedResult>(prevOptExpression);
+
             return (IEnumerableExpression<TOptimizedResult>) this;
         }
 
-        public IEnumerableExpression<TOptimizedResult> Merge<TOptimizedResult>(IOptimizableEnumerableExpression prevExpr)
+        public IEnumerableExpression<TOptimizedResult> Merge<TOptimizedResult>(IOptimizableEnumerableExpression prevOptExpression)
         {
-            var mergedSelectorExpression = QueryOptimizer.Optimize<TSource, TResult, TOptimizedResult>(prevExpr.OptSelectorExpression, OptSelectorExpression) as Expression<Func<TSource, TOptimizedResult>>;
+            var mergedSelectorExpression = QueryOptimizer.Optimize<TSource, TResult, TOptimizedResult>(prevOptExpression.OptSelectorExpression, OptSelectorExpression) as Expression<Func<TSource, TOptimizedResult>>;
             return new SelectExpression<TSource, TOptimizedResult>(Source, mergedSelectorExpression, null);
         }
 
-        private void VisitForDebugging(dynamic expression)
+        private void VisitForDebugging(Expression expression)
         {
             //Ausgabe überprüfen
             DebugVisitor debugVisitor = new DebugVisitor();
