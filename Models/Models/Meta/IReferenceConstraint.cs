@@ -37,12 +37,14 @@ namespace NMF.Models.Meta
     /// </summary>
     [DefaultImplementationTypeAttribute(typeof(ReferenceConstraint))]
     [XmlDefaultImplementationTypeAttribute(typeof(ReferenceConstraint))]
+    [ModelRepresentationClassAttribute("http://nmf.codeplex.com/nmeta/#//ReferenceConstraint")]
     public interface IReferenceConstraint : NMF.Models.IModelElement
     {
         
         /// <summary>
         /// The DeclaringType property
         /// </summary>
+        [BrowsableAttribute(false)]
         [DesignerSerializationVisibilityAttribute(DesignerSerializationVisibility.Hidden)]
         [XmlAttributeAttribute(true)]
         [XmlOppositeAttribute("ReferenceConstraints")]
@@ -56,6 +58,7 @@ namespace NMF.Models.Meta
         /// The References property
         /// </summary>
         [DesignerSerializationVisibilityAttribute(DesignerSerializationVisibility.Content)]
+        [CategoryAttribute("ReferenceConstraint")]
         [XmlAttributeAttribute(true)]
         [ConstantAttribute()]
         IListExpression<NMF.Models.IModelElement> References
@@ -66,6 +69,7 @@ namespace NMF.Models.Meta
         /// <summary>
         /// The Constrains property
         /// </summary>
+        [CategoryAttribute("ReferenceConstraint")]
         [XmlAttributeAttribute(true)]
         IReference Constrains
         {

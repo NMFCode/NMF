@@ -24,9 +24,9 @@ namespace NMF.Expressions.Arithmetics
             return ~Target.Value;
         }
 
-        public override INotifyExpression<int> ApplyParameters(IDictionary<string, object> parameters)
+        protected override INotifyExpression<int> ApplyParametersCore(IDictionary<string, object> parameters, IDictionary<INotifiable, INotifiable> trace)
         {
-            return new ObservableIntOnesComplement(Target.ApplyParameters(parameters));
+            return new ObservableIntOnesComplement(Target.ApplyParameters(parameters, trace));
         }
     }
 
@@ -48,9 +48,9 @@ namespace NMF.Expressions.Arithmetics
             return ~Target.Value;
         }
 
-        public override INotifyExpression<uint> ApplyParameters(IDictionary<string, object> parameters)
+        protected override INotifyExpression<uint> ApplyParametersCore(IDictionary<string, object> parameters, IDictionary<INotifiable, INotifiable> trace)
         {
-            return new ObservableUIntOnesComplement(Target.ApplyParameters(parameters));
+            return new ObservableUIntOnesComplement(Target.ApplyParameters(parameters, trace));
         }
     }
 
@@ -72,9 +72,9 @@ namespace NMF.Expressions.Arithmetics
             return ~Target.Value;
         }
 
-        public override INotifyExpression<long> ApplyParameters(IDictionary<string, object> parameters)
+        protected override INotifyExpression<long> ApplyParametersCore(IDictionary<string, object> parameters, IDictionary<INotifiable, INotifiable> trace)
         {
-            return new ObservableLongOnesComplement(Target.ApplyParameters(parameters));
+            return new ObservableLongOnesComplement(Target.ApplyParameters(parameters, trace));
         }
     }
 
@@ -96,9 +96,9 @@ namespace NMF.Expressions.Arithmetics
             return ~Target.Value;
         }
 
-        public override INotifyExpression<ulong> ApplyParameters(IDictionary<string, object> parameters)
+        protected override INotifyExpression<ulong> ApplyParametersCore(IDictionary<string, object> parameters, IDictionary<INotifiable, INotifiable> trace)
         {
-            return new ObservableULongOnesComplement(Target.ApplyParameters(parameters));
+            return new ObservableULongOnesComplement(Target.ApplyParameters(parameters, trace));
         }
     }
 }

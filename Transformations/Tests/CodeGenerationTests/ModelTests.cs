@@ -82,6 +82,7 @@ namespace NMF.CodeGenerationTests
             var package = EcoreInterop.LoadPackageFromFile(modelPath);
             var ns = EcoreInterop.Transform2Meta(package);
             var result = CodeGenerationTest.GenerateAndCompile(ns, null, out errorLog, out log);
+            Console.WriteLine(errorLog);
             Assert.AreEqual(0, result, log + errorLog);
         }
 

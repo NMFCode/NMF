@@ -10,6 +10,7 @@ namespace NMF.Models
     /// <summary>
     /// Defines the interface of a model element in NMF
     /// </summary>
+    [ModelRepresentationClass("http://nmf.codeplex.com/nmeta/#//ModelElement/")]
     public interface IModelElement : INotifyPropertyChanged, INotifyPropertyChanging
     {
         /// <summary>

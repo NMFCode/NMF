@@ -121,7 +121,7 @@ namespace NMF.Models.Expressions
         /// <param name="parameters">A set of parameter values</param>
         /// <returns>A new expression with all parameter placeholders replaced with the parameter values</returns>
         /// <remarks>In case that the current expression is parameter free, it simply returns itself</remarks>
-        public INotifyExpression<TProperty> ApplyParameters(IDictionary<string, object> parameters)
+        public INotifyExpression<TProperty> ApplyParameters(IDictionary<string, object> parameters, IDictionary<INotifiable, INotifiable> trace)
         {
             return this;
         }
@@ -167,9 +167,9 @@ namespace NMF.Models.Expressions
             return new ValueChangedNotificationResult<TProperty>(this, Value, Value);
         }
 
-        INotifyExpression INotifyExpression.ApplyParameters(IDictionary<string, object> parameters)
+        INotifyExpression INotifyExpression.ApplyParameters(IDictionary<string, object> parameters, IDictionary<INotifiable, INotifiable> trace)
         {
-            return ApplyParameters(parameters);
+            return ApplyParameters(parameters, trace);
         }
     }
 }

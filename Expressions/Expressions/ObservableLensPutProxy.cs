@@ -114,7 +114,7 @@ namespace NMF.Expressions
             }
         }
 
-        public INotifyExpression<T> ApplyParameters(IDictionary<string, object> parameters)
+        public INotifyExpression<T> ApplyParameters(IDictionary<string, object> parameters, IDictionary<INotifiable, INotifiable> trace)
         {
             throw new NotImplementedException();
         }
@@ -134,9 +134,9 @@ namespace NMF.Expressions
             throw new NotImplementedException();
         }
 
-        INotifyExpression INotifyExpression.ApplyParameters(IDictionary<string, object> parameters)
+        INotifyExpression INotifyExpression.ApplyParameters(IDictionary<string, object> parameters, IDictionary<INotifiable, INotifiable> trace)
         {
-            return ApplyParameters(parameters);
+            return ApplyParameters(parameters, trace);
         }
     }
 }

@@ -93,7 +93,7 @@ namespace NMF.Models.Meta
                         new CodePrimitiveExpression(generatedProperty.Name), valueChangeRef, attributeRef);
 
                     var callOnPropertyChanged = new CodeMethodInvokeExpression(
-                        new CodeThisReferenceExpression(), "OnPropertyChanged", 
+                        new CodeThisReferenceExpression(), "OnPropertyChanged",
                         new CodePrimitiveExpression(generatedProperty.Name), valueChangeRef, attributeRef);
 
                     generatedProperty.SetStatements.Add(new CodeConditionStatement(new CodeBinaryOperatorExpression(fieldRef, CodeBinaryOperatorType.IdentityInequality, value),
@@ -124,7 +124,21 @@ namespace NMF.Models.Meta
                         GenerateCollectionBubbleHandler(input, generatedProperty, "CollectionChanged", typeof(NotifyCollectionChangedEventArgs))));
                 }
 
+                GenerateComponentModelAttributes(input, generatedProperty);
                 GenerateSerializationAttributes(input, generatedProperty, context);
+            }
+
+            private static void GenerateComponentModelAttributes(IAttribute input, CodeMemberProperty generatedProperty)
+            {
+                if (input.Name != generatedProperty.Name)
+                {
+                    generatedProperty.AddAttribute(typeof(DisplayNameAttribute), input.Name);
+                }
+                if (input.Summary != null)
+                {
+                    generatedProperty.AddAttribute(typeof(DescriptionAttribute), input.Summary);
+                }
+                generatedProperty.AddAttribute(typeof(CategoryAttribute), input.DeclaringType.Name);
             }
 
             private CodeMemberField GenerateStaticAttributeField(IAttribute property, ITransformationContext context)

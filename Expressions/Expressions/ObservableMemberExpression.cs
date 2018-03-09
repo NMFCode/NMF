@@ -79,9 +79,9 @@ namespace NMF.Expressions
             get { return Target == null || Target.IsParameterFree; }
         }
 
-        public override INotifyExpression<TMember> ApplyParameters(IDictionary<string, object> parameters)
+        protected override INotifyExpression<TMember> ApplyParametersCore(IDictionary<string, object> parameters, IDictionary<INotifiable, INotifiable> trace)
         {
-            return new ObservableMemberExpression<TTarget, TMember>(Target.ApplyParameters(parameters), MemberName, MemberGet);
+            return new ObservableMemberExpression<TTarget, TMember>(Target.ApplyParameters(parameters, trace), MemberName, MemberGet);
         }
 
         public override INotificationResult Notify(IList<INotificationResult> sources)
@@ -205,9 +205,9 @@ namespace NMF.Expressions
             }
         }
 
-        public override INotifyExpression<TMember> ApplyParameters(IDictionary<string, object> parameters)
+        protected override INotifyExpression<TMember> ApplyParametersCore(IDictionary<string, object> parameters, IDictionary<INotifiable, INotifiable> trace)
         {
-            return new ObservableReversableMemberExpression<TTarget, TMember>(Target.ApplyParameters(parameters), MemberName, MemberGet, MemberSet);
+            return new ObservableReversableMemberExpression<TTarget, TMember>(Target.ApplyParameters(parameters, trace), MemberName, MemberGet, MemberSet);
         }
 
         public override INotificationResult Notify(IList<INotificationResult> sources)

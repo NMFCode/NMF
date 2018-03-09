@@ -37,12 +37,14 @@ namespace NMF.Models.Meta
     /// </summary>
     [DefaultImplementationTypeAttribute(typeof(PrimitiveType))]
     [XmlDefaultImplementationTypeAttribute(typeof(PrimitiveType))]
+    [ModelRepresentationClassAttribute("http://nmf.codeplex.com/nmeta/#//PrimitiveType")]
     public interface IPrimitiveType : NMF.Models.IModelElement, IType
     {
         
         /// <summary>
         /// The SystemType property
         /// </summary>
+        [CategoryAttribute("PrimitiveType")]
         [XmlAttributeAttribute(true)]
         string SystemType
         {

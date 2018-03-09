@@ -33,9 +33,9 @@ namespace NMF.Expressions
             }
         }
 
-        public override INotifyExpression<object> ApplyParameters(IDictionary<string, object> parameters)
+        protected override INotifyExpression<object> ApplyParametersCore(IDictionary<string, object> parameters, IDictionary<INotifiable, INotifiable> trace)
         {
-            return new ObservableBoxExpression<T>(Inner.ApplyParameters(parameters));
+            return new ObservableBoxExpression<T>(Inner.ApplyParameters(parameters, trace));
         }
 
         protected override object GetValue()

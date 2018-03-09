@@ -95,7 +95,7 @@ namespace NMF.Expressions
             remove { }
         }
 
-        public virtual INotifyExpression<T> ApplyParameters(IDictionary<string, object> parameters)
+        public virtual INotifyExpression<T> ApplyParameters(IDictionary<string, object> parameters, IDictionary<INotifiable, INotifiable> trace)
         {
             if (parameters == null) throw new ArgumentNullException("parameters");
 
@@ -134,9 +134,9 @@ namespace NMF.Expressions
             }
         }
 
-        INotifyExpression INotifyExpression.ApplyParameters(IDictionary<string, object> parameters)
+        INotifyExpression INotifyExpression.ApplyParameters(IDictionary<string, object> parameters, IDictionary<INotifiable, INotifiable> trace)
         {
-            return ApplyParameters(parameters);
+            return ApplyParameters(parameters, trace);
         }
 
         public INotifyExpression<T> Reduce()
@@ -184,7 +184,7 @@ namespace NMF.Expressions
             }
         }
 
-        public override INotifyExpression<T> ApplyParameters(IDictionary<string, object> parameters)
+        public override INotifyExpression<T> ApplyParameters(IDictionary<string, object> parameters, IDictionary<INotifiable, INotifiable> trace)
         {
             if (parameters == null) throw new ArgumentNullException("parameters");
 

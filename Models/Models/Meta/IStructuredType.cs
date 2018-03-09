@@ -37,6 +37,7 @@ namespace NMF.Models.Meta
     /// </summary>
     [DefaultImplementationTypeAttribute(typeof(StructuredType))]
     [XmlDefaultImplementationTypeAttribute(typeof(StructuredType))]
+    [ModelRepresentationClassAttribute("http://nmf.codeplex.com/nmeta/#//StructuredType")]
     public interface IStructuredType : NMF.Models.IModelElement, IType
     {
         
@@ -44,6 +45,7 @@ namespace NMF.Models.Meta
         /// The Operations property
         /// </summary>
         [DesignerSerializationVisibilityAttribute(DesignerSerializationVisibility.Content)]
+        [BrowsableAttribute(false)]
         [XmlAttributeAttribute(false)]
         [ContainmentAttribute()]
         [XmlOppositeAttribute("DeclaringType")]
@@ -57,6 +59,7 @@ namespace NMF.Models.Meta
         /// The Attributes property
         /// </summary>
         [DesignerSerializationVisibilityAttribute(DesignerSerializationVisibility.Content)]
+        [BrowsableAttribute(false)]
         [XmlAttributeAttribute(false)]
         [ContainmentAttribute()]
         [XmlOppositeAttribute("DeclaringType")]

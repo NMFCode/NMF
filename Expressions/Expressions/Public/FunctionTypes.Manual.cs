@@ -16,7 +16,7 @@ namespace NMF.Expressions
             var parameters = new Dictionary<string, object>();
             if (!isParameterFree)
                 parameters.Add(parameter1Name, input);
-            return new TaggedObservableValue<TResult, TTag>(expression.ApplyParameters(parameters), tag);
+            return new TaggedObservableValue<TResult, TTag>(expression.ApplyParameters(parameters, new Dictionary<INotifiable, INotifiable>()), tag);
         }
 
         internal TaggedObservableValue<TResult, TTag> InvokeTagged<TTag>(INotifyValue<T1> input, TTag tag = default(TTag))
@@ -24,8 +24,10 @@ namespace NMF.Expressions
             var parameters = new Dictionary<string, object>();
             if (!isParameterFree)
                 parameters.Add(parameter1Name, input);
-            return new TaggedObservableValue<TResult, TTag>(expression.ApplyParameters(parameters), tag);
+            return new TaggedObservableValue<TResult, TTag>(expression.ApplyParameters(parameters, new Dictionary<INotifiable, INotifiable>()), tag);
         }
+
+        public INotifiable Expression { get { return expression; } }
     }
 
     /// <summary>
@@ -44,7 +46,7 @@ namespace NMF.Expressions
                 parameters.Add(parameter1Name, input1);
                 parameters.Add(parameter2Name, input2);
             }
-            return new TaggedObservableValue<TResult, TTag>(expression.ApplyParameters(parameters), tag);
+            return new TaggedObservableValue<TResult, TTag>(expression.ApplyParameters(parameters, new Dictionary<INotifiable, INotifiable>()), tag);
         }
 
         internal TaggedObservableValue<TResult, TTag> InvokeTagged<TTag>(INotifyValue<T1> input1, T2 input2, TTag tag)
@@ -55,7 +57,7 @@ namespace NMF.Expressions
                 parameters.Add(parameter1Name, input1);
                 parameters.Add(parameter2Name, input2);
             }
-            return new TaggedObservableValue<TResult, TTag>(expression.ApplyParameters(parameters), tag);
+            return new TaggedObservableValue<TResult, TTag>(expression.ApplyParameters(parameters, new Dictionary<INotifiable, INotifiable>()), tag);
         }
     }
 
@@ -136,9 +138,9 @@ namespace NMF.Expressions
 
         public event EventHandler<ValueChangedEventArgs> ValueChanged;
 
-        public INotifyExpression<T> ApplyParameters(IDictionary<string, object> parameters)
+        public INotifyExpression<T> ApplyParameters(IDictionary<string, object> parameters, IDictionary<INotifiable, INotifiable> trace)
         {
-            return new TaggedObservableValue<T, TTag>(Expression.ApplyParameters(parameters), Tag);
+            return new TaggedObservableValue<T, TTag>(Expression.ApplyParameters(parameters, trace), Tag);
         }
 
         public INotifyExpression<T> Reduce()
@@ -159,9 +161,9 @@ namespace NMF.Expressions
             Successors.UnsetAll();
         }
 
-        INotifyExpression INotifyExpression.ApplyParameters(IDictionary<string, object> parameters)
+        INotifyExpression INotifyExpression.ApplyParameters(IDictionary<string, object> parameters, IDictionary<INotifiable, INotifiable> trace)
         {
-            return ApplyParameters(parameters);
+            return ApplyParameters(parameters, trace);
         }
     }
 }

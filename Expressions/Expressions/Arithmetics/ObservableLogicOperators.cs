@@ -26,9 +26,9 @@ namespace NMF.Expressions.Arithmetics
             return Left.Value && Right.Value;
         }
 
-        public override INotifyExpression<bool> ApplyParameters(IDictionary<string, object> parameters)
+        protected override INotifyExpression<bool> ApplyParametersCore(IDictionary<string, object> parameters, IDictionary<INotifiable, INotifiable> trace)
         {
-            return new ObservableLogicAnd(Left.ApplyParameters(parameters), Right.ApplyParameters(parameters));
+            return new ObservableLogicAnd(Left.ApplyParameters(parameters, trace), Right.ApplyParameters(parameters, trace));
         }
     }
 
@@ -52,9 +52,9 @@ namespace NMF.Expressions.Arithmetics
             return Left.Value || Right.Value;
         }
 
-        public override INotifyExpression<bool> ApplyParameters(IDictionary<string, object> parameters)
+        protected override INotifyExpression<bool> ApplyParametersCore(IDictionary<string, object> parameters, IDictionary<INotifiable, INotifiable> trace)
         {
-            return new ObservableLogicOr(Left.ApplyParameters(parameters), Right.ApplyParameters(parameters));
+            return new ObservableLogicOr(Left.ApplyParameters(parameters, trace), Right.ApplyParameters(parameters, trace));
         }
     }
 
@@ -78,9 +78,9 @@ namespace NMF.Expressions.Arithmetics
             return Left.Value ^ Right.Value;
         }
 
-        public override INotifyExpression<bool> ApplyParameters(IDictionary<string, object> parameters)
+        protected override INotifyExpression<bool> ApplyParametersCore(IDictionary<string, object> parameters, IDictionary<INotifiable, INotifiable> trace)
         {
-            return new ObservableLogicXor(Left.ApplyParameters(parameters), Right.ApplyParameters(parameters));
+            return new ObservableLogicXor(Left.ApplyParameters(parameters, trace), Right.ApplyParameters(parameters, trace));
         }
     }
 
@@ -119,9 +119,9 @@ namespace NMF.Expressions.Arithmetics
             return Right.Value;
         }
 
-        public override INotifyExpression<bool> ApplyParameters(IDictionary<string, object> parameters)
+        protected override INotifyExpression<bool> ApplyParametersCore(IDictionary<string, object> parameters, IDictionary<INotifiable, INotifiable> trace)
         {
-            return new ObservableLogicAndAlso(Left.ApplyParameters(parameters), Right.ApplyParameters(parameters));
+            return new ObservableLogicAndAlso(Left.ApplyParameters(parameters, trace), Right.ApplyParameters(parameters, trace));
         }
 
         public override INotificationResult Notify(IList<INotificationResult> sources)
@@ -178,9 +178,9 @@ namespace NMF.Expressions.Arithmetics
             return Right.Value;
         }
 
-        public override INotifyExpression<bool> ApplyParameters(IDictionary<string, object> parameters)
+        protected override INotifyExpression<bool> ApplyParametersCore(IDictionary<string, object> parameters, IDictionary<INotifiable, INotifiable> trace)
         {
-            return new ObservableLogicOrElse(Left.ApplyParameters(parameters), Right.ApplyParameters(parameters));
+            return new ObservableLogicOrElse(Left.ApplyParameters(parameters, trace), Right.ApplyParameters(parameters, trace));
         }
 
         public override INotificationResult Notify(IList<INotificationResult> sources)
@@ -222,9 +222,9 @@ namespace NMF.Expressions.Arithmetics
             return !Target.Value;
         }
 
-        public override INotifyExpression<bool> ApplyParameters(IDictionary<string, object> parameters)
+        protected override INotifyExpression<bool> ApplyParametersCore(IDictionary<string, object> parameters, IDictionary<INotifiable, INotifiable> trace)
         {
-            return new ObservableLogicNot(Target.ApplyParameters(parameters));
+            return new ObservableLogicNot(Target.ApplyParameters(parameters, trace));
         }
     }
 

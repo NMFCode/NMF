@@ -29,19 +29,21 @@ namespace NMF.Expressions
 
         public override IEnumerable<INotifiable> Dependencies { get { return Enumerable.Empty<INotifiable>(); } }
 
-        public override INotifyExpression<Expression<T>> ApplyParameters(IDictionary<string, object> parameters)
+        protected override INotifyExpression<Expression<T>> ApplyParametersCore(IDictionary<string, object> parameters, IDictionary<INotifiable, INotifiable> trace)
         {
-            var visitor = new ApplyLambdaParametersVisitor(parameters);
+            var visitor = new ApplyLambdaParametersVisitor(parameters, trace);
             return new ObservableLambdaExpression<T>((Expression<T>)visitor.Visit(Value));
         }
 
         private class ApplyLambdaParametersVisitor : ExpressionVisitorBase
         {
             private IDictionary<string, object> parameterMappings;
+            private IDictionary<INotifiable, INotifiable> trace;
 
-            public ApplyLambdaParametersVisitor(IDictionary<string, object> parameterMappings)
+            public ApplyLambdaParametersVisitor(IDictionary<string, object> parameterMappings, IDictionary<INotifiable, INotifiable> trace)
             {
                 this.parameterMappings = parameterMappings;
+                this.trace = trace;
             }
 
             protected override Expression VisitParameter(ParameterExpression node)
@@ -78,7 +80,7 @@ namespace NMF.Expressions
                 var expressionVal = node.Value as INotifyExpression;
                 if (expressionVal != null)
                 {
-                    return Expression.Constant(expressionVal.ApplyParameters(parameterMappings), node.Type);
+                    return Expression.Constant(expressionVal.ApplyParameters(parameterMappings, trace), node.Type);
                 }
                 return node;
             }

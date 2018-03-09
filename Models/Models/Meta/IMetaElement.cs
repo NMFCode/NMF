@@ -37,12 +37,14 @@ namespace NMF.Models.Meta
     /// </summary>
     [DefaultImplementationTypeAttribute(typeof(MetaElement))]
     [XmlDefaultImplementationTypeAttribute(typeof(MetaElement))]
+    [ModelRepresentationClassAttribute("http://nmf.codeplex.com/nmeta/#//MetaElement")]
     public interface IMetaElement : NMF.Models.IModelElement
     {
         
         /// <summary>
         /// The Name property
         /// </summary>
+        [CategoryAttribute("MetaElement")]
         [IdAttribute()]
         [XmlAttributeAttribute(true)]
         string Name
@@ -54,6 +56,7 @@ namespace NMF.Models.Meta
         /// <summary>
         /// The Summary property
         /// </summary>
+        [CategoryAttribute("MetaElement")]
         [XmlAttributeAttribute(true)]
         string Summary
         {
@@ -64,6 +67,7 @@ namespace NMF.Models.Meta
         /// <summary>
         /// The Remarks property
         /// </summary>
+        [CategoryAttribute("MetaElement")]
         [XmlAttributeAttribute(true)]
         string Remarks
         {

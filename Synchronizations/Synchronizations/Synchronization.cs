@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Collections;
 
 namespace NMF.Synchronizations
 {
@@ -23,8 +24,13 @@ namespace NMF.Synchronizations
                 {
                     foreach (var rule in SynchronizationRules)
                     {
-                        rule.Synchronization = this;
-                        rule.DeclareSynchronization();
+                        // Check whether the synchronization has already been registered.
+                        // This happens when a rule is overridden
+                        if (rule.Synchronization == null)
+                        {
+                            rule.Synchronization = this;
+                            rule.DeclareSynchronization();
+                        }
                     }
                 }
             }
@@ -75,13 +81,13 @@ namespace NMF.Synchronizations
                 case SynchronizationDirection.LeftToRight:
                 case SynchronizationDirection.LeftToRightForced:
                 case SynchronizationDirection.LeftWins:
-                    var c1 = TransformationRunner.Transform(new object[] { left }, new object[] { right }, startRule.LeftToRight, context);
+                    var c1 = TransformationRunner.Transform(new object[] { left }, right != null ? new Axiom(right) : null, startRule.LeftToRight, context);
                     right = c1.Output as TRight;
                     break;
                 case SynchronizationDirection.RightToLeft:
                 case SynchronizationDirection.RightToLeftForced:
                 case SynchronizationDirection.RightWins:
-                    var c2 = TransformationRunner.Transform(new object[] { right }, new object[] { left }, startRule.RightToLeft, context);
+                    var c2 = TransformationRunner.Transform(new object[] { right }, left != null ? new Axiom(left) : null, startRule.RightToLeft, context);
                     left = c2.Output as TLeft;
                     break;
                 default:
@@ -113,6 +119,26 @@ namespace NMF.Synchronizations
                     throw new ArgumentOutOfRangeException("direction");
             }
             return context;
+        }
+    }
+
+    internal class Axiom : IEnumerable
+    {
+        private object obj;
+
+        public Axiom(object obj)
+        {
+            this.obj = obj;
+        }
+
+        public object Object
+        {
+            get { return obj; }
+        }
+
+        public IEnumerator GetEnumerator()
+        {
+            return Enumerable.Repeat(obj, 1).GetEnumerator();
         }
     }
 }

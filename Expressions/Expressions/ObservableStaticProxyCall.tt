@@ -61,11 +61,11 @@ namespace NMF.Expressions
             get { return Argument1.IsParameterFree<# for (int j = 2; j <= i; j++) { #> && Argument<#= j #>.IsParameterFree<# } #>; }
         }
 
-        public override INotifyExpression<TResult> ApplyParameters(IDictionary<string, object> parameters)
+        protected override INotifyExpression<TResult> ApplyParametersCore(IDictionary<string, object> parameters, IDictionary<INotifiable, INotifiable> trace)
         {
-            return new ObservableStaticProxyCall<<# for (int j = 1; j <= i; j++) { #>T<#= j #>, <# } #>TResult>(ProxyFunction<# for (int j = 1; j <= i; j++) { #>, Argument<#= j #>.ApplyParameters(parameters)<# } #>);
+            return new ObservableStaticProxyCall<<# for (int j = 1; j <= i; j++) { #>T<#= j #>, <# } #>TResult>(ProxyFunction<# for (int j = 1; j <= i; j++) { #>, Argument<#= j #>.ApplyParameters(parameters, trace)<# } #>);
         }
-
+		
         protected override void OnAttach()
         {
 <# for (int j = 1; j <= i; j++) { #>

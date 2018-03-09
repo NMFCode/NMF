@@ -37,12 +37,14 @@ namespace NMF.Models.Meta
     /// </summary>
     [DefaultImplementationTypeAttribute(typeof(Reference))]
     [XmlDefaultImplementationTypeAttribute(typeof(Reference))]
+    [ModelRepresentationClassAttribute("http://nmf.codeplex.com/nmeta/#//Reference")]
     public interface IReference : NMF.Models.IModelElement, ITypedElement
     {
         
         /// <summary>
         /// The IsContainment property
         /// </summary>
+        [CategoryAttribute("Reference")]
         [XmlAttributeAttribute(true)]
         bool IsContainment
         {
@@ -53,6 +55,7 @@ namespace NMF.Models.Meta
         /// <summary>
         /// The DeclaringType property
         /// </summary>
+        [BrowsableAttribute(false)]
         [DesignerSerializationVisibilityAttribute(DesignerSerializationVisibility.Hidden)]
         [XmlAttributeAttribute(true)]
         [XmlOppositeAttribute("References")]
@@ -65,6 +68,7 @@ namespace NMF.Models.Meta
         /// <summary>
         /// The Opposite property
         /// </summary>
+        [CategoryAttribute("Reference")]
         [XmlAttributeAttribute(true)]
         [XmlOppositeAttribute("Opposite")]
         IReference Opposite
@@ -76,6 +80,7 @@ namespace NMF.Models.Meta
         /// <summary>
         /// The ReferenceType property
         /// </summary>
+        [CategoryAttribute("Reference")]
         [XmlAttributeAttribute(true)]
         IReferenceType ReferenceType
         {
@@ -86,6 +91,9 @@ namespace NMF.Models.Meta
         /// <summary>
         /// The reference that is refined by the current reference, only applicable if the reference is part of a class
         /// </summary>
+        [DescriptionAttribute("The reference that is refined by the current reference, only applicable if the re" +
+            "ference is part of a class")]
+        [CategoryAttribute("Reference")]
         [XmlAttributeAttribute(true)]
         IReference Refines
         {
@@ -96,6 +104,9 @@ namespace NMF.Models.Meta
         /// <summary>
         /// The least common anchestor of an instance and its referenced element, if statically known
         /// </summary>
+        [DescriptionAttribute("The least common anchestor of an instance and its referenced element, if statical" +
+            "ly known")]
+        [CategoryAttribute("Reference")]
         [XmlAttributeAttribute(true)]
         IClass Anchor
         {

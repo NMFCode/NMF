@@ -96,9 +96,9 @@ namespace NMF.Expressions
             }
         }
 
-        public override INotifyExpression<T> ApplyParameters(IDictionary<string, object> parameters)
+        protected override INotifyExpression<T> ApplyParametersCore(IDictionary<string, object> parameters, IDictionary<INotifiable, INotifiable> trace)
         {
-            return new ObservableConditionalExpression<T>(Test.ApplyParameters(parameters), True.ApplyParameters(parameters), False.ApplyParameters(parameters));
+            return new ObservableConditionalExpression<T>(Test.ApplyParameters(parameters, trace), True.ApplyParameters(parameters, trace), False.ApplyParameters(parameters, trace));
         }
 
         public override INotificationResult Notify(IList<INotificationResult> sources)

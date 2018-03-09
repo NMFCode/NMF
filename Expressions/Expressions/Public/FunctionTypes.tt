@@ -87,7 +87,7 @@ public partial class ObservingFunc<<# for (int j = 1; j <= i; j++) { #>T<#= j #>
                 parameters.Add(parameter<#= j #>Name, in<#= j #>);
 <# } #>
             }
-            return expression.ApplyParameters(parameters);
+            return expression.ApplyParameters(parameters, new Dictionary<INotifiable, INotifiable>());
         }
 
         /// <summary>
@@ -106,7 +106,7 @@ public partial class ObservingFunc<<# for (int j = 1; j <= i; j++) { #>T<#= j #>
                 parameters.Add(parameter<#= j #>Name, in<#= j #>);
 <# } #>
             }
-            return expression.ApplyParameters(parameters);
+            return expression.ApplyParameters(parameters, new Dictionary<INotifiable, INotifiable>());
         }
 
 <# for(int k = 1; k < i; k++) { #>
@@ -137,7 +137,7 @@ public partial class ObservingFunc<<# for (int j = 1; j <= i; j++) { #>T<#= j #>
 <# for(int j = 1; j <= k; j++) { #>
             parameters.Add(parameter<#= j #>Name, in<#= j #>);
 <# } #>
-            var result = expression.ApplyParameters(parameters);
+            var result = expression.ApplyParameters(parameters, new Dictionary<INotifiable, INotifiable>());
             return new ObservingFunc<<# for (int j = k+1; j <= i; j++) { #>T<#= j #>, <# } #>TResult>(result, result.IsParameterFree);
         }
 <# } #>
@@ -159,7 +159,7 @@ public partial class ObservingFunc<<# for (int j = 1; j <= i; j++) { #>T<#= j #>
                 parameters.Add(parameter<#= j #>Name, in<#= j #>);
 <# } #>
             }
-            return expression.ApplyParameters(parameters) as INotifyReversableExpression<TResult>;
+            return expression.ApplyParameters(parameters, new Dictionary<INotifiable, INotifiable>()) as INotifyReversableExpression<TResult>;
         }
 
         /// <summary>
@@ -179,7 +179,7 @@ public partial class ObservingFunc<<# for (int j = 1; j <= i; j++) { #>T<#= j #>
                 parameters.Add(parameter<#= j #>Name, in<#= j #>);
 <# } #>
             }
-            return expression.ApplyParameters(parameters) as INotifyReversableExpression<TResult>;
+            return expression.ApplyParameters(parameters, new Dictionary<INotifiable, INotifiable>()) as INotifyReversableExpression<TResult>;
         }
 
 

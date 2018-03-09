@@ -1,0 +1,25 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp2.0</TargetFramework>
+
+    <IsPackable>false</IsPackable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="15.5.0" />
+    <PackageReference Include="MSTest.TestAdapter" Version="1.2.0" />
+    <PackageReference Include="MSTest.TestFramework" Version="1.2.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Examples\Synchronizations.Sample\Synchronizations.Sample.csproj" />
+    <ProjectReference Include="..\..\Models\Models\Models.csproj" />
+    <ProjectReference Include="..\..\Tools\Utilities\Utilities.csproj" />
+    <ProjectReference Include="..\..\Transformations\Transformations.Core\Transformations.Core.csproj" />
+    <ProjectReference Include="..\..\Transformations\Transformations\Transformations.csproj" />
+    <ProjectReference Include="..\Synchronizations.Models\Synchronizations.Models.csproj" />
+    <ProjectReference Include="..\Synchronizations\Synchronizations.csproj" />
+  </ItemGroup>
+
+</Project>

@@ -38,7 +38,7 @@ namespace NMF.Models.Changes
     [XmlNamespaceAttribute("http://nmf.codeplex.com/changes")]
     [XmlNamespacePrefixAttribute("changes")]
     [ModelRepresentationClassAttribute("http://nmf.codeplex.com/changes#//CompositionMoveToCollection")]
-    public partial class CompositionMoveToCollection : CollectionInsertion, ICompositionMoveToCollection, NMF.Models.IModelElement
+    public partial class CompositionMoveToCollection : CompositionChange, ICompositionMoveToCollection, NMF.Models.IModelElement
     {
         
         private static Lazy<ITypedElement> _movedElementReference = new Lazy<ITypedElement>(RetrieveMovedElementReference);
@@ -60,6 +60,8 @@ namespace NMF.Models.Changes
         /// <summary>
         /// The movedElement property
         /// </summary>
+        [DisplayNameAttribute("movedElement")]
+        [CategoryAttribute("CompositionMoveToCollection")]
         [XmlElementNameAttribute("movedElement")]
         [XmlAttributeAttribute(true)]
         public NMF.Models.IModelElement MovedElement
@@ -86,6 +88,7 @@ namespace NMF.Models.Changes
         /// <summary>
         /// The origin property
         /// </summary>
+        [BrowsableAttribute(false)]
         [XmlElementNameAttribute("origin")]
         [XmlAttributeAttribute(false)]
         [ContainmentAttribute()]
@@ -206,16 +209,6 @@ namespace NMF.Models.Changes
             {
                 handler.Invoke(this, eventArgs);
             }
-        }
-        
-        /// <summary>
-        /// Handles the event that the MovedElement property must reset
-        /// </summary>
-        /// <param name="sender">The object that sent this reset request</param>
-        /// <param name="eventArgs">The event data for the reset event</param>
-        private void OnResetMovedElement(object sender, System.EventArgs eventArgs)
-        {
-            this.MovedElement = null;
         }
         
         private static ITypedElement RetrieveOriginReference()

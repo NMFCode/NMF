@@ -37,6 +37,7 @@ namespace NMF.Models.Meta
     /// </summary>
     [DefaultImplementationTypeAttribute(typeof(Class))]
     [XmlDefaultImplementationTypeAttribute(typeof(Class))]
+    [ModelRepresentationClassAttribute("http://nmf.codeplex.com/nmeta/#//Class")]
     public interface IClass : NMF.Models.IModelElement, IReferenceType
     {
         
@@ -44,6 +45,7 @@ namespace NMF.Models.Meta
         /// The IsAbstract property
         /// </summary>
         [DefaultValueAttribute(false)]
+        [CategoryAttribute("Class")]
         [XmlAttributeAttribute(true)]
         bool IsAbstract
         {
@@ -55,6 +57,9 @@ namespace NMF.Models.Meta
         /// Specifies whether the identifier is valid only in the scope of its container or on a global scope.
         /// </summary>
         /// <remarks>This attribute is ignored when this class is not identified.</remarks>
+        [DescriptionAttribute("Specifies whether the identifier is valid only in the scope of its container or o" +
+            "n a global scope.")]
+        [CategoryAttribute("Class")]
         [XmlAttributeAttribute(true)]
         NMF.Models.Meta.IdentifierScope IdentifierScope
         {
@@ -66,6 +71,7 @@ namespace NMF.Models.Meta
         /// The BaseTypes property
         /// </summary>
         [DesignerSerializationVisibilityAttribute(DesignerSerializationVisibility.Content)]
+        [CategoryAttribute("Class")]
         [XmlAttributeAttribute(true)]
         [ConstantAttribute()]
         ICollectionExpression<IClass> BaseTypes
@@ -76,6 +82,7 @@ namespace NMF.Models.Meta
         /// <summary>
         /// The InstanceOf property
         /// </summary>
+        [CategoryAttribute("Class")]
         [XmlAttributeAttribute(true)]
         IClass InstanceOf
         {
@@ -86,6 +93,8 @@ namespace NMF.Models.Meta
         /// <summary>
         /// Gets or sets the attribute that will identify instances of this class
         /// </summary>
+        [DescriptionAttribute("Gets or sets the attribute that will identify instances of this class")]
+        [CategoryAttribute("Class")]
         [XmlAttributeAttribute(true)]
         IAttribute Identifier
         {
@@ -97,6 +106,7 @@ namespace NMF.Models.Meta
         /// The AttributeConstraints property
         /// </summary>
         [DesignerSerializationVisibilityAttribute(DesignerSerializationVisibility.Content)]
+        [BrowsableAttribute(false)]
         [XmlAttributeAttribute(false)]
         [ContainmentAttribute()]
         [XmlOppositeAttribute("DeclaringType")]
@@ -110,6 +120,7 @@ namespace NMF.Models.Meta
         /// The ReferenceConstraints property
         /// </summary>
         [DesignerSerializationVisibilityAttribute(DesignerSerializationVisibility.Content)]
+        [BrowsableAttribute(false)]
         [XmlAttributeAttribute(false)]
         [ContainmentAttribute()]
         [XmlOppositeAttribute("DeclaringType")]

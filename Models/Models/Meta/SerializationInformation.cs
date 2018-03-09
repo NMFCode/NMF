@@ -57,6 +57,7 @@ namespace NMF.Models.Meta
         /// <summary>
         /// The SerializationName property
         /// </summary>
+        [CategoryAttribute("SerializationInformation")]
         [XmlAttributeAttribute(true)]
         public string SerializationName
         {
@@ -82,6 +83,7 @@ namespace NMF.Models.Meta
         /// <summary>
         /// The IsDefault property
         /// </summary>
+        [CategoryAttribute("SerializationInformation")]
         [XmlAttributeAttribute(true)]
         public bool IsDefault
         {
@@ -93,7 +95,7 @@ namespace NMF.Models.Meta
             {
                 if ((this._isDefault != value))
                 {
-                    Nullable<bool> old = this._isDefault;
+                    bool old = this._isDefault;
                     ValueChangedEventArgs e = new ValueChangedEventArgs(old, value);
                     this.OnIsDefaultChanging(e);
                     this.OnPropertyChanging("IsDefault", e, _isDefaultAttribute);

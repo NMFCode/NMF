@@ -38,7 +38,7 @@ namespace NMF.Models.Changes
     [XmlNamespaceAttribute("http://nmf.codeplex.com/changes")]
     [XmlNamespacePrefixAttribute("changes")]
     [ModelRepresentationClassAttribute("http://nmf.codeplex.com/changes#//AttributeCollectionInsertion")]
-    public partial class AttributeCollectionInsertion : CollectionInsertion, IAttributeCollectionInsertion, NMF.Models.IModelElement
+    public partial class AttributeCollectionInsertion : AttributeChange, IAttributeCollectionInsertion, NMF.Models.IModelElement
     {
         
         /// <summary>
@@ -53,6 +53,8 @@ namespace NMF.Models.Changes
         /// <summary>
         /// The addedValue property
         /// </summary>
+        [DisplayNameAttribute("addedValue")]
+        [CategoryAttribute("AttributeCollectionInsertion")]
         [XmlElementNameAttribute("addedValue")]
         [XmlAttributeAttribute(true)]
         public string AddedValue

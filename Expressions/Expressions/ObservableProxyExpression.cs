@@ -84,7 +84,7 @@ namespace NMF.Expressions
 
         public ExecutionMetaData ExecutionMetaData { get; } = new ExecutionMetaData();
 
-        public INotifyExpression<T> ApplyParameters(IDictionary<string, object> parameters)
+        public INotifyExpression<T> ApplyParameters(IDictionary<string, object> parameters, IDictionary<INotifiable, INotifiable> trace)
         {
             return this;
         }
@@ -111,9 +111,9 @@ namespace NMF.Expressions
             return new ValueChangedNotificationResult<T>(this, Value, Value);
         }
 
-        INotifyExpression INotifyExpression.ApplyParameters(IDictionary<string, object> parameters)
+        INotifyExpression INotifyExpression.ApplyParameters(IDictionary<string, object> parameters, IDictionary<INotifiable, INotifiable> trace)
         {
-            return ApplyParameters(parameters);
+            return ApplyParameters(parameters, trace);
         }
     }
 

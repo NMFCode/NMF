@@ -37,12 +37,28 @@ namespace NMF.Models.Changes
     /// </summary>
     [DefaultImplementationTypeAttribute(typeof(AssociationListDeletion))]
     [XmlDefaultImplementationTypeAttribute(typeof(AssociationListDeletion))]
-    public interface IAssociationListDeletion : NMF.Models.IModelElement, IListDeletion
+    [ModelRepresentationClassAttribute("http://nmf.codeplex.com/changes#//AssociationListDeletion")]
+    public interface IAssociationListDeletion : NMF.Models.IModelElement, IAssociationChange
     {
+        
+        /// <summary>
+        /// The index property
+        /// </summary>
+        [DisplayNameAttribute("index")]
+        [CategoryAttribute("AssociationListDeletion")]
+        [XmlElementNameAttribute("index")]
+        [XmlAttributeAttribute(true)]
+        int Index
+        {
+            get;
+            set;
+        }
         
         /// <summary>
         /// The deletedElement property
         /// </summary>
+        [DisplayNameAttribute("deletedElement")]
+        [CategoryAttribute("AssociationListDeletion")]
         [XmlElementNameAttribute("deletedElement")]
         [XmlAttributeAttribute(true)]
         NMF.Models.IModelElement DeletedElement
@@ -50,6 +66,16 @@ namespace NMF.Models.Changes
             get;
             set;
         }
+        
+        /// <summary>
+        /// Gets fired before the Index property changes its value
+        /// </summary>
+        event System.EventHandler<ValueChangedEventArgs> IndexChanging;
+        
+        /// <summary>
+        /// Gets fired when the Index property changed its value
+        /// </summary>
+        event System.EventHandler<ValueChangedEventArgs> IndexChanged;
         
         /// <summary>
         /// Gets fired before the DeletedElement property changes its value

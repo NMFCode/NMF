@@ -139,6 +139,7 @@ namespace NMF.Models.Meta
         /// <summary>
         /// The IsContainment property
         /// </summary>
+        [CategoryAttribute("Reference")]
         [XmlAttributeAttribute(true)]
         public bool IsContainment
         {
@@ -164,6 +165,7 @@ namespace NMF.Models.Meta
         /// <summary>
         /// The DeclaringType property
         /// </summary>
+        [BrowsableAttribute(false)]
         [DesignerSerializationVisibilityAttribute(DesignerSerializationVisibility.Hidden)]
         [XmlAttributeAttribute(true)]
         [XmlOppositeAttribute("References")]
@@ -182,6 +184,7 @@ namespace NMF.Models.Meta
         /// <summary>
         /// The Opposite property
         /// </summary>
+        [CategoryAttribute("Reference")]
         [XmlAttributeAttribute(true)]
         [XmlOppositeAttribute("Opposite")]
         public IReference Opposite
@@ -218,6 +221,7 @@ namespace NMF.Models.Meta
         /// <summary>
         /// The ReferenceType property
         /// </summary>
+        [CategoryAttribute("Reference")]
         [XmlAttributeAttribute(true)]
         public IReferenceType ReferenceType
         {
@@ -251,6 +255,9 @@ namespace NMF.Models.Meta
         /// <summary>
         /// The reference that is refined by the current reference, only applicable if the reference is part of a class
         /// </summary>
+        [DescriptionAttribute("The reference that is refined by the current reference, only applicable if the re" +
+            "ference is part of a class")]
+        [CategoryAttribute("Reference")]
         [XmlAttributeAttribute(true)]
         public IReference Refines
         {
@@ -284,6 +291,9 @@ namespace NMF.Models.Meta
         /// <summary>
         /// The least common anchestor of an instance and its referenced element, if statically known
         /// </summary>
+        [DescriptionAttribute("The least common anchestor of an instance and its referenced element, if statical" +
+            "ly known")]
+        [CategoryAttribute("Reference")]
         [XmlAttributeAttribute(true)]
         public IClass Anchor
         {
@@ -349,6 +359,7 @@ namespace NMF.Models.Meta
         /// <summary>
         /// The IsOrdered property
         /// </summary>
+        [CategoryAttribute("TypedElement")]
         [XmlAttributeAttribute(true)]
         public bool IsOrdered
         {
@@ -374,6 +385,7 @@ namespace NMF.Models.Meta
         /// <summary>
         /// The IsUnique property
         /// </summary>
+        [CategoryAttribute("TypedElement")]
         [XmlAttributeAttribute(true)]
         public bool IsUnique
         {
@@ -400,6 +412,7 @@ namespace NMF.Models.Meta
         /// The LowerBound property
         /// </summary>
         [DefaultValueAttribute(0)]
+        [CategoryAttribute("TypedElement")]
         [XmlAttributeAttribute(true)]
         public int LowerBound
         {
@@ -426,6 +439,7 @@ namespace NMF.Models.Meta
         /// The UpperBound property
         /// </summary>
         [DefaultValueAttribute(1)]
+        [CategoryAttribute("TypedElement")]
         [XmlAttributeAttribute(true)]
         public int UpperBound
         {

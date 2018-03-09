@@ -31,9 +31,10 @@ namespace NMF.Expressions
         /// Applies the given set of parameters to the expression
         /// </summary>
         /// <param name="parameters">A set of parameter values</param>
+        /// <param name="trace">A trace to make sure parameters are only applied once for every DDG node</param>
         /// <returns>A new expression with all parameter placeholders replaced with the parameter values</returns>
         /// <remarks>In case that the current expression is parameter free, it simply returns itself</remarks>
-        INotifyExpression ApplyParameters(IDictionary<string, object> parameters);
+        INotifyExpression ApplyParameters(IDictionary<string, object> parameters, IDictionary<INotifiable, INotifiable> trace);
     }
 
     /// <summary>
@@ -46,9 +47,10 @@ namespace NMF.Expressions
         /// Applies the given set of parameters to the expression
         /// </summary>
         /// <param name="parameters">A set of parameter values</param>
+        /// <param name="trace">A trace to make sure parameters are only applied once for every DDG node</param>
         /// <returns>A new expression with all parameter placeholders replaced with the parameter values</returns>
         /// <remarks>In case that the current expression is parameter free, it simply returns itself</remarks>
-        new INotifyExpression<T> ApplyParameters(IDictionary<string, object> parameters);
+        new INotifyExpression<T> ApplyParameters(IDictionary<string, object> parameters, IDictionary<INotifiable, INotifiable> trace);
 
         /// <summary>
         /// Simplifies the current expression

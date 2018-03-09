@@ -38,7 +38,7 @@ namespace NMF.Models.Changes
     [XmlNamespaceAttribute("http://nmf.codeplex.com/changes")]
     [XmlNamespacePrefixAttribute("changes")]
     [ModelRepresentationClassAttribute("http://nmf.codeplex.com/changes#//AssociationCollectionReset")]
-    public partial class AssociationCollectionReset : CollectionReset, IAssociationCollectionReset, NMF.Models.IModelElement
+    public partial class AssociationCollectionReset : AssociationChange, IAssociationCollectionReset, NMF.Models.IModelElement
     {
         
         private static IClass _classInstance;

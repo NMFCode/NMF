@@ -114,9 +114,9 @@ namespace NMF.Expressions
 <# } #>
         }
 
-        public override INotifyExpression<TResult> ApplyParameters(IDictionary<string, object> parameters)
+        protected override INotifyExpression<TResult> ApplyParametersCore(IDictionary<string, object> parameters, IDictionary<INotifiable, INotifiable> trace)
         {
-            return new ObservablePromotionMethodCall<<# for (int j = 1; j <= i; j++) { #>T<#= j #>, <# } #>TResult>(Function<# for (int j = 1; j <= i; j++) { #>, Argument<#= j #>.ApplyParameters(parameters), Arg<#= j #>Properties, Arg<#= j #>Composition<# } #>);
+            return new ObservablePromotionMethodCall<<# for (int j = 1; j <= i; j++) { #>T<#= j #>, <# } #>TResult>(Function<# for (int j = 1; j <= i; j++) { #>, Argument<#= j #>.ApplyParameters(parameters, trace), Arg<#= j #>Properties, Arg<#= j #>Composition<# } #>);
         }
 
         public override INotificationResult Notify(IList<INotificationResult> sources)

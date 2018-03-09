@@ -39,8 +39,8 @@ namespace NMF.Models.Tests
 
             var actual = rec.GetModelChanges().Changes[0];
 
-            Assert.IsInstanceOfType(actual, typeof(AttributeChange));
-            var change = actual as AttributeChange;
+            Assert.IsInstanceOfType(actual, typeof(AttributePropertyChange));
+            var change = actual as AttributePropertyChange;
             Assert.AreSame(semaphore, change.AffectedElement);
             Assert.AreEqual("signal", change.Feature.Name);
             Assert.AreEqual(oldValue.ToString(), change.OldValue);
@@ -58,8 +58,8 @@ namespace NMF.Models.Tests
 
             var actual = rec.GetModelChanges().Changes[0];
 
-            Assert.IsInstanceOfType(actual, typeof(AssociationChange));
-            var change = actual as AssociationChange;
+            Assert.IsInstanceOfType(actual, typeof(AssociationPropertyChange));
+            var change = actual as AssociationPropertyChange;
             Assert.AreSame(parent, change.AffectedElement);
             Assert.AreEqual("entry", change.Feature.Name);
             Assert.AreEqual(railway.Semaphores[0], change.NewValue);
@@ -75,8 +75,8 @@ namespace NMF.Models.Tests
             
             var actual = rec.GetModelChanges().Changes[0];
 
-            Assert.IsInstanceOfType(actual, typeof(ElementaryChangeTransaction));
-            var transaction = actual as ElementaryChangeTransaction;
+            Assert.IsInstanceOfType(actual, typeof(ChangeTransaction));
+            var transaction = actual as ChangeTransaction;
             Assert.IsInstanceOfType(transaction.SourceChange, typeof(CompositionListDeletion));
         }
 

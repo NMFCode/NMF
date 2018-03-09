@@ -280,6 +280,7 @@ namespace NMF.Synchronizations.Example.Persons
     /// </summary>
     [DefaultImplementationTypeAttribute(typeof(Female))]
     [XmlDefaultImplementationTypeAttribute(typeof(Female))]
+    [ModelRepresentationClassAttribute("http://www.eclipse.org/atl/atlTransformations/Persons#//Female/")]
     public interface IFemale : IModelElement, IPerson
     {
     }
@@ -289,6 +290,7 @@ namespace NMF.Synchronizations.Example.Persons
     /// </summary>
     [DefaultImplementationTypeAttribute(typeof(Male))]
     [XmlDefaultImplementationTypeAttribute(typeof(Male))]
+    [ModelRepresentationClassAttribute("http://www.eclipse.org/atl/atlTransformations/Persons#//Male/")]
     public interface IMale : IModelElement, IPerson
     {
     }
@@ -298,6 +300,7 @@ namespace NMF.Synchronizations.Example.Persons
     /// </summary>
     [DefaultImplementationTypeAttribute(typeof(Person))]
     [XmlDefaultImplementationTypeAttribute(typeof(Person))]
+    [ModelRepresentationClassAttribute("http://www.eclipse.org/atl/atlTransformations/Persons#//Person/")]
     public interface IPerson : IModelElement
     {
         

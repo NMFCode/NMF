@@ -140,9 +140,9 @@ namespace NMF.Expressions
             return Implementation(Left.Value, Right.Value);
         }
 
-        public override INotifyExpression<TResult> ApplyParameters(IDictionary<string, object> parameters)
+        protected override INotifyExpression<TResult> ApplyParametersCore(IDictionary<string, object> parameters, IDictionary<INotifiable, INotifiable> trace)
         {
-            return new ObservableBinaryExpression<TLeft, TRight, TResult>(Left.ApplyParameters(parameters), Right.ApplyParameters(parameters), Implementation);
+            return new ObservableBinaryExpression<TLeft, TRight, TResult>(Left.ApplyParameters(parameters, trace), Right.ApplyParameters(parameters, trace), Implementation);
         }
     }
 
@@ -187,9 +187,9 @@ namespace NMF.Expressions
             return Implementation(Left.Value, Right.Value);
         }
 
-        public override INotifyExpression<TResult> ApplyParameters(IDictionary<string, object> parameters)
+        protected override INotifyExpression<TResult> ApplyParametersCore(IDictionary<string, object> parameters, IDictionary<INotifiable, INotifiable> trace)
         {
-            return new ObservableReversableBinaryExpression<TLeft, TRight, TResult>(Left.ApplyParameters(parameters), Right.ApplyParameters(parameters), Implementation, rightReverser, leftReverser);
+            return new ObservableReversableBinaryExpression<TLeft, TRight, TResult>(Left.ApplyParameters(parameters, trace), Right.ApplyParameters(parameters, trace), Implementation, rightReverser, leftReverser);
         }
 
         protected override void SetLeftValue(INotifyReversableExpression<TLeft> left, TRight right, TResult result)
@@ -232,9 +232,9 @@ namespace NMF.Expressions
             return Left.Value ?? Right.Value;
         }
 
-        public override INotifyExpression<T> ApplyParameters(IDictionary<string, object> parameters)
+        protected override INotifyExpression<T> ApplyParametersCore(IDictionary<string, object> parameters, IDictionary<INotifiable, INotifiable> trace)
         {
-            return new ObservableCoalesceExpression<T>(Left.ApplyParameters(parameters), Right.ApplyParameters(parameters));
+            return new ObservableCoalesceExpression<T>(Left.ApplyParameters(parameters, trace), Right.ApplyParameters(parameters, trace));
         }
     }
 }

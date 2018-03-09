@@ -17,4 +17,41 @@
     <ProjectReference Include="..\..\Models\Models\Models.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="ModelFuncExtractionParameter.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>ModelFuncExtractionParameter.cs</LastGenOutput>
+    </None>
+    <None Update="ObservablePromotionMethodCall.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>ObservablePromotionMethodCall.cs</LastGenOutput>
+    </None>
+    <None Update="ObservableTreeExtensionCall.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>ObservableTreeExtensionCall.cs</LastGenOutput>
+    </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Service Include="{508349b6-6b84-4df5-91f0-309beebad82d}" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="ModelFuncExtractionParameter.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>ModelFuncExtractionParameter.tt</DependentUpon>
+    </Compile>
+    <Compile Update="ObservablePromotionMethodCall.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>ObservablePromotionMethodCall.tt</DependentUpon>
+    </Compile>
+    <Compile Update="ObservableTreeExtensionCall.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>ObservableTreeExtensionCall.tt</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
 </Project>

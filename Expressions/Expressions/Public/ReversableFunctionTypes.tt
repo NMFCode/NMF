@@ -53,7 +53,7 @@ namespace NMF.Expressions
 <# for(int j = 1; j <= i; j++) { #>
             parameters.Add(parameter<#= j #>Name, in<#= j #>);
 <# } #>
-            var result = expression.ApplyParameters(parameters);
+            var result = expression.ApplyParameters(parameters, new Dictionary<INotifiable, INotifiable>());
             return new ReversableProxyExpression<TResult>(result, newValue => UpdateHandler(<# for (int j = 1; j <= i; j++) { #>in<#= j #>, <# } #>newValue));
         }
 
@@ -71,7 +71,7 @@ namespace NMF.Expressions
 <# for(int j = 1; j <= i; j++) { #>
             parameters.Add(parameter<#= j #>Name, in<#= j #>);
 <# } #>
-            var result = expression.ApplyParameters(parameters) as INotifyReversableExpression<TResult>;
+            var result = expression.ApplyParameters(parameters, new Dictionary<INotifiable, INotifiable>()) as INotifyReversableExpression<TResult>;
             return new ReversableProxyExpression<TResult>(result, newValue => UpdateHandler(<# for (int j = 1; j <= i; j++) { #>in<#= j #>.Value, <# } #>newValue));
         }
 

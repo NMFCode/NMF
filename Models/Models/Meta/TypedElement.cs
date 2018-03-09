@@ -82,6 +82,7 @@ namespace NMF.Models.Meta
         /// <summary>
         /// The IsOrdered property
         /// </summary>
+        [CategoryAttribute("TypedElement")]
         [XmlAttributeAttribute(true)]
         public bool IsOrdered
         {
@@ -107,6 +108,7 @@ namespace NMF.Models.Meta
         /// <summary>
         /// The IsUnique property
         /// </summary>
+        [CategoryAttribute("TypedElement")]
         [XmlAttributeAttribute(true)]
         public bool IsUnique
         {
@@ -133,6 +135,7 @@ namespace NMF.Models.Meta
         /// The LowerBound property
         /// </summary>
         [DefaultValueAttribute(0)]
+        [CategoryAttribute("TypedElement")]
         [XmlAttributeAttribute(true)]
         public int LowerBound
         {
@@ -159,6 +162,7 @@ namespace NMF.Models.Meta
         /// The UpperBound property
         /// </summary>
         [DefaultValueAttribute(1)]
+        [CategoryAttribute("TypedElement")]
         [XmlAttributeAttribute(true)]
         public int UpperBound
         {
@@ -184,6 +188,7 @@ namespace NMF.Models.Meta
         /// <summary>
         /// The Type property
         /// </summary>
+        [CategoryAttribute("TypedElement")]
         [XmlAttributeAttribute(true)]
         public IType Type
         {

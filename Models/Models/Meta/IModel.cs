@@ -37,12 +37,14 @@ namespace NMF.Models.Meta
     /// </summary>
     [DefaultImplementationTypeAttribute(typeof(Model))]
     [XmlDefaultImplementationTypeAttribute(typeof(Model))]
+    [ModelRepresentationClassAttribute("http://nmf.codeplex.com/nmeta/#//Model")]
     public interface IModel : NMF.Models.IModelElement
     {
         
         /// <summary>
         /// The ModelUri property
         /// </summary>
+        [CategoryAttribute("Model")]
         [XmlAttributeAttribute(true)]
         Uri ModelUri
         {
@@ -54,10 +56,11 @@ namespace NMF.Models.Meta
         /// The RootElements property
         /// </summary>
         [DesignerSerializationVisibilityAttribute(DesignerSerializationVisibility.Content)]
+        [BrowsableAttribute(false)]
         [XmlAttributeAttribute(false)]
         [ContainmentAttribute()]
         [ConstantAttribute()]
-        IListExpression<NMF.Models.IModelElement> RootElements
+        IOrderedSetExpression<NMF.Models.IModelElement> RootElements
         {
             get;
         }

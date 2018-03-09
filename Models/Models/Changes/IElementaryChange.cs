@@ -37,12 +37,15 @@ namespace NMF.Models.Changes
     /// </summary>
     [DefaultImplementationTypeAttribute(typeof(ElementaryChange))]
     [XmlDefaultImplementationTypeAttribute(typeof(ElementaryChange))]
+    [ModelRepresentationClassAttribute("http://nmf.codeplex.com/changes#//ElementaryChange")]
     public interface IElementaryChange : NMF.Models.IModelElement, IModelChange
     {
         
         /// <summary>
         /// The affectedElement property
         /// </summary>
+        [DisplayNameAttribute("affectedElement")]
+        [CategoryAttribute("ElementaryChange")]
         [XmlElementNameAttribute("affectedElement")]
         [XmlAttributeAttribute(true)]
         NMF.Models.IModelElement AffectedElement
@@ -54,6 +57,8 @@ namespace NMF.Models.Changes
         /// <summary>
         /// The feature property
         /// </summary>
+        [DisplayNameAttribute("feature")]
+        [CategoryAttribute("ElementaryChange")]
         [XmlElementNameAttribute("feature")]
         [XmlAttributeAttribute(true)]
         ITypedElement Feature

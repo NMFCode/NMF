@@ -104,6 +104,9 @@
     <Compile Include="..\..\Models\Changes\AssociationListInsertion.cs">
       <Link>Changes\AssociationListInsertion.cs</Link>
     </Compile>
+    <Compile Include="..\..\Models\Changes\AssociationPropertyChange.cs">
+      <Link>Changes\AssociationPropertyChange.cs</Link>
+    </Compile>
     <Compile Include="..\..\Models\Changes\AttributeChange.cs">
       <Link>Changes\AttributeChange.cs</Link>
     </Compile>
@@ -122,14 +125,11 @@
     <Compile Include="..\..\Models\Changes\AttributeListInsertion.cs">
       <Link>Changes\AttributeListInsertion.cs</Link>
     </Compile>
-    <Compile Include="..\..\Models\Changes\CollectionDeletion.cs">
-      <Link>Changes\CollectionDeletion.cs</Link>
+    <Compile Include="..\..\Models\Changes\AttributePropertyChange.cs">
+      <Link>Changes\AttributePropertyChange.cs</Link>
     </Compile>
-    <Compile Include="..\..\Models\Changes\CollectionInsertion.cs">
-      <Link>Changes\CollectionInsertion.cs</Link>
-    </Compile>
-    <Compile Include="..\..\Models\Changes\CollectionReset.cs">
-      <Link>Changes\CollectionReset.cs</Link>
+    <Compile Include="..\..\Models\Changes\ChangeTransaction.cs">
+      <Link>Changes\ChangeTransaction.cs</Link>
     </Compile>
     <Compile Include="..\..\Models\Changes\CompositionChange.cs">
       <Link>Changes\CompositionChange.cs</Link>
@@ -158,11 +158,11 @@
     <Compile Include="..\..\Models\Changes\CompositionMoveToList.cs">
       <Link>Changes\CompositionMoveToList.cs</Link>
     </Compile>
+    <Compile Include="..\..\Models\Changes\CompositionPropertyChange.cs">
+      <Link>Changes\CompositionPropertyChange.cs</Link>
+    </Compile>
     <Compile Include="..\..\Models\Changes\ElementaryChange.cs">
       <Link>Changes\ElementaryChange.cs</Link>
-    </Compile>
-    <Compile Include="..\..\Models\Changes\ElementaryChangeTransaction.cs">
-      <Link>Changes\ElementaryChangeTransaction.cs</Link>
     </Compile>
     <Compile Include="..\..\Models\Changes\IAssociationChange.cs">
       <Link>Changes\IAssociationChange.cs</Link>
@@ -182,6 +182,9 @@
     <Compile Include="..\..\Models\Changes\IAssociationListInsertion.cs">
       <Link>Changes\IAssociationListInsertion.cs</Link>
     </Compile>
+    <Compile Include="..\..\Models\Changes\IAssociationPropertyChange.cs">
+      <Link>Changes\IAssociationPropertyChange.cs</Link>
+    </Compile>
     <Compile Include="..\..\Models\Changes\IAttributeChange.cs">
       <Link>Changes\IAttributeChange.cs</Link>
     </Compile>
@@ -200,14 +203,11 @@
     <Compile Include="..\..\Models\Changes\IAttributeListInsertion.cs">
       <Link>Changes\IAttributeListInsertion.cs</Link>
     </Compile>
-    <Compile Include="..\..\Models\Changes\ICollectionDeletion.cs">
-      <Link>Changes\ICollectionDeletion.cs</Link>
+    <Compile Include="..\..\Models\Changes\IAttributePropertyChange.cs">
+      <Link>Changes\IAttributePropertyChange.cs</Link>
     </Compile>
-    <Compile Include="..\..\Models\Changes\ICollectionInsertion.cs">
-      <Link>Changes\ICollectionInsertion.cs</Link>
-    </Compile>
-    <Compile Include="..\..\Models\Changes\ICollectionReset.cs">
-      <Link>Changes\ICollectionReset.cs</Link>
+    <Compile Include="..\..\Models\Changes\IChangeTransaction.cs">
+      <Link>Changes\IChangeTransaction.cs</Link>
     </Compile>
     <Compile Include="..\..\Models\Changes\ICompositionChange.cs">
       <Link>Changes\ICompositionChange.cs</Link>
@@ -236,17 +236,11 @@
     <Compile Include="..\..\Models\Changes\ICompositionMoveToList.cs">
       <Link>Changes\ICompositionMoveToList.cs</Link>
     </Compile>
+    <Compile Include="..\..\Models\Changes\ICompositionPropertyChange.cs">
+      <Link>Changes\ICompositionPropertyChange.cs</Link>
+    </Compile>
     <Compile Include="..\..\Models\Changes\IElementaryChange.cs">
       <Link>Changes\IElementaryChange.cs</Link>
-    </Compile>
-    <Compile Include="..\..\Models\Changes\IElementaryChangeTransaction.cs">
-      <Link>Changes\IElementaryChangeTransaction.cs</Link>
-    </Compile>
-    <Compile Include="..\..\Models\Changes\IListDeletion.cs">
-      <Link>Changes\IListDeletion.cs</Link>
-    </Compile>
-    <Compile Include="..\..\Models\Changes\IListInsertion.cs">
-      <Link>Changes\IListInsertion.cs</Link>
     </Compile>
     <Compile Include="..\..\Models\Changes\IModelChange.cs">
       <Link>Changes\IModelChange.cs</Link>
@@ -266,20 +260,11 @@
     <Compile Include="..\..\Models\Changes\IOperationCall.cs">
       <Link>Changes\IOperationCall.cs</Link>
     </Compile>
-    <Compile Include="..\..\Models\Changes\IPropertyChange.cs">
-      <Link>Changes\IPropertyChange.cs</Link>
-    </Compile>
     <Compile Include="..\..\Models\Changes\IReferenceArgument.cs">
       <Link>Changes\IReferenceArgument.cs</Link>
     </Compile>
     <Compile Include="..\..\Models\Changes\IValueArgument.cs">
       <Link>Changes\IValueArgument.cs</Link>
-    </Compile>
-    <Compile Include="..\..\Models\Changes\ListDeletion.cs">
-      <Link>Changes\ListDeletion.cs</Link>
-    </Compile>
-    <Compile Include="..\..\Models\Changes\ListInsertion.cs">
-      <Link>Changes\ListInsertion.cs</Link>
     </Compile>
     <Compile Include="..\..\Models\Changes\ModelChange.cs">
       <Link>Changes\ModelChange.cs</Link>
@@ -298,9 +283,6 @@
     </Compile>
     <Compile Include="..\..\Models\Changes\OperationCall.cs">
       <Link>Changes\OperationCall.cs</Link>
-    </Compile>
-    <Compile Include="..\..\Models\Changes\PropertyChange.cs">
-      <Link>Changes\PropertyChange.cs</Link>
     </Compile>
     <Compile Include="..\..\Models\Changes\ReferenceArgument.cs">
       <Link>Changes\ReferenceArgument.cs</Link>

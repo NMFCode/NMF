@@ -221,8 +221,8 @@
     <Compile Include="..\..\Expressions\ObservableNewArrayExpression.cs">
       <Link>ObservableNewArrayExpression.cs</Link>
     </Compile>
-    <Compile Include="..\..\Expressions\ObservableNewExpression1.cs">
-      <Link>ObservableNewExpression1.cs</Link>
+    <Compile Include="..\..\Expressions\ObservableNewExpression.cs">
+      <Link>ObservableNewExpression.cs</Link>
     </Compile>
     <Compile Include="..\..\Expressions\ObservableParameter.cs">
       <Link>ObservableParameter.cs</Link>

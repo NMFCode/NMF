@@ -37,12 +37,14 @@ namespace NMF.Models.Meta
     /// </summary>
     [DefaultImplementationTypeAttribute(typeof(Extension))]
     [XmlDefaultImplementationTypeAttribute(typeof(Extension))]
+    [ModelRepresentationClassAttribute("http://nmf.codeplex.com/nmeta/#//Extension")]
     public interface IExtension : NMF.Models.IModelElement, IReferenceType
     {
         
         /// <summary>
         /// The AdornedClass property
         /// </summary>
+        [CategoryAttribute("Extension")]
         [XmlAttributeAttribute(true)]
         IClass AdornedClass
         {

@@ -74,6 +74,8 @@ namespace NMF.Models.Changes
         /// <summary>
         /// The operation property
         /// </summary>
+        [DisplayNameAttribute("operation")]
+        [CategoryAttribute("OperationCall")]
         [XmlElementNameAttribute("operation")]
         [XmlAttributeAttribute(true)]
         public IOperation Operation
@@ -108,6 +110,8 @@ namespace NMF.Models.Changes
         /// <summary>
         /// The targetElement property
         /// </summary>
+        [DisplayNameAttribute("targetElement")]
+        [CategoryAttribute("OperationCall")]
         [XmlElementNameAttribute("targetElement")]
         [XmlAttributeAttribute(true)]
         public NMF.Models.IModelElement TargetElement
@@ -143,6 +147,8 @@ namespace NMF.Models.Changes
         /// The arguments property
         /// </summary>
         [DesignerSerializationVisibilityAttribute(DesignerSerializationVisibility.Content)]
+        [DisplayNameAttribute("arguments")]
+        [CategoryAttribute("OperationCall")]
         [XmlElementNameAttribute("arguments")]
         [XmlAttributeAttribute(true)]
         [ConstantAttribute()]

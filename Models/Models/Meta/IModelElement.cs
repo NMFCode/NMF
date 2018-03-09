@@ -37,12 +37,14 @@ namespace NMF.Models.Meta
     /// </summary>
     [DefaultImplementationTypeAttribute(typeof(ModelElement))]
     [XmlDefaultImplementationTypeAttribute(typeof(ModelElement))]
+    [ModelRepresentationClassAttribute("http://nmf.codeplex.com/nmeta/#//ModelElement")]
     public interface IModelElement : NMF.Models.IModelElement
     {
         
         /// <summary>
         /// The AbsoluteUri property
         /// </summary>
+        [CategoryAttribute("ModelElement")]
         [XmlAttributeAttribute(true)]
         Uri AbsoluteUri
         {
@@ -53,6 +55,7 @@ namespace NMF.Models.Meta
         /// <summary>
         /// The RelativeUri property
         /// </summary>
+        [CategoryAttribute("ModelElement")]
         [XmlAttributeAttribute(true)]
         Uri RelativeUri
         {
@@ -64,6 +67,7 @@ namespace NMF.Models.Meta
         /// The Extensions property
         /// </summary>
         [DesignerSerializationVisibilityAttribute(DesignerSerializationVisibility.Content)]
+        [BrowsableAttribute(false)]
         [XmlAttributeAttribute(false)]
         [ContainmentAttribute()]
         [XmlOppositeAttribute("ExtendedElement")]
@@ -76,6 +80,7 @@ namespace NMF.Models.Meta
         /// <summary>
         /// The Parent property
         /// </summary>
+        [CategoryAttribute("ModelElement")]
         [XmlAttributeAttribute(true)]
         NMF.Models.IModelElement Parent
         {

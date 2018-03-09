@@ -90,13 +90,13 @@ namespace NMF.Expressions
             }
         }
 
-        public override INotifyExpression<TResult> ApplyParameters(IDictionary<string, object> parameters)
+        protected override INotifyExpression<TResult> ApplyParametersCore(IDictionary<string, object> parameters, IDictionary<INotifiable, INotifiable> trace)
         {
             return new ObservableTreeExtensionCall<<# for (int j = 1; j <= i; j++) { #>T<#= j #>, <# } #>TResult>(Function, 
 <# for (int j = 1; j < i; j++) { #>
-                Argument<#= j #>.ApplyParameters(parameters), anchor<#= j #>Listener?.Select(l => l.Type), Arg<#= j #>Properties, 
+                Argument<#= j #>.ApplyParameters(parameters, trace), anchor<#= j #>Listener?.Select(l => l.Type), Arg<#= j #>Properties, 
 <# } #>
-                Argument<#= i #>.ApplyParameters(parameters), anchor<#= i #>Listener?.Select(l => l.Type), Arg<#= i #>Properties);
+                Argument<#= i #>.ApplyParameters(parameters, trace), anchor<#= i #>Listener?.Select(l => l.Type), Arg<#= i #>Properties);
         }
     }
 <# } #>

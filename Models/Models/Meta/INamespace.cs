@@ -37,12 +37,14 @@ namespace NMF.Models.Meta
     /// </summary>
     [DefaultImplementationTypeAttribute(typeof(Namespace))]
     [XmlDefaultImplementationTypeAttribute(typeof(Namespace))]
+    [ModelRepresentationClassAttribute("http://nmf.codeplex.com/nmeta/#//Namespace")]
     public interface INamespace : NMF.Models.IModelElement, IMetaElement
     {
         
         /// <summary>
         /// The Uri property
         /// </summary>
+        [CategoryAttribute("Namespace")]
         [XmlAttributeAttribute(true)]
         Uri Uri
         {
@@ -53,6 +55,7 @@ namespace NMF.Models.Meta
         /// <summary>
         /// The Prefix property
         /// </summary>
+        [CategoryAttribute("Namespace")]
         [XmlAttributeAttribute(true)]
         string Prefix
         {
@@ -63,6 +66,7 @@ namespace NMF.Models.Meta
         /// <summary>
         /// The ParentNamespace property
         /// </summary>
+        [BrowsableAttribute(false)]
         [DesignerSerializationVisibilityAttribute(DesignerSerializationVisibility.Hidden)]
         [XmlAttributeAttribute(true)]
         [XmlOppositeAttribute("ChildNamespaces")]
@@ -76,6 +80,7 @@ namespace NMF.Models.Meta
         /// The ChildNamespaces property
         /// </summary>
         [DesignerSerializationVisibilityAttribute(DesignerSerializationVisibility.Content)]
+        [BrowsableAttribute(false)]
         [XmlAttributeAttribute(false)]
         [ContainmentAttribute()]
         [XmlOppositeAttribute("ParentNamespace")]
@@ -89,6 +94,7 @@ namespace NMF.Models.Meta
         /// The Types property
         /// </summary>
         [DesignerSerializationVisibilityAttribute(DesignerSerializationVisibility.Content)]
+        [BrowsableAttribute(false)]
         [XmlAttributeAttribute(false)]
         [ContainmentAttribute()]
         [XmlOppositeAttribute("Namespace")]

@@ -71,6 +71,7 @@ namespace NMF.Models.Meta
         /// The Parameters property
         /// </summary>
         [DesignerSerializationVisibilityAttribute(DesignerSerializationVisibility.Content)]
+        [BrowsableAttribute(false)]
         [XmlAttributeAttribute(false)]
         [ContainmentAttribute()]
         [XmlOppositeAttribute("Operation")]
@@ -86,6 +87,7 @@ namespace NMF.Models.Meta
         /// <summary>
         /// The DeclaringType property
         /// </summary>
+        [BrowsableAttribute(false)]
         [DesignerSerializationVisibilityAttribute(DesignerSerializationVisibility.Hidden)]
         [XmlAttributeAttribute(true)]
         [XmlOppositeAttribute("Operations")]
@@ -104,6 +106,7 @@ namespace NMF.Models.Meta
         /// <summary>
         /// The Refines property
         /// </summary>
+        [CategoryAttribute("Operation")]
         [XmlAttributeAttribute(true)]
         public IOperation Refines
         {
@@ -395,7 +398,7 @@ namespace NMF.Models.Meta
             }
             return base.GetExpressionForReference(reference);
         }
-        
+
         /// <summary>
         /// Gets the property name for the given container
         /// </summary>

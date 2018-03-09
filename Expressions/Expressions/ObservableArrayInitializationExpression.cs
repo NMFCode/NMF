@@ -51,9 +51,9 @@ namespace NMF.Expressions
             return Value;
         }
 
-        public override INotifyExpression<T[]> ApplyParameters(IDictionary<string, object> parameters)
+        protected override INotifyExpression<T[]> ApplyParametersCore(IDictionary<string, object> parameters, IDictionary<INotifiable, INotifiable> trace)
         {
-            return new ObservableArrayInitializationExpression<T>(Expressions.Select(e => e.ApplyParameters(parameters)));
+            return new ObservableArrayInitializationExpression<T>(Expressions.Select(e => e.ApplyParameters(parameters, trace)));
         }
 
         public override INotificationResult Notify(IList<INotificationResult> sources)

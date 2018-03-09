@@ -54,6 +54,7 @@ namespace NMF.Models.Meta
         /// <summary>
         /// The SystemType property
         /// </summary>
+        [CategoryAttribute("PrimitiveType")]
         [XmlAttributeAttribute(true)]
         public string SystemType
         {

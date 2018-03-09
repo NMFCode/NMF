@@ -56,6 +56,7 @@ namespace NMF.Models.Meta
         /// <summary>
         /// The Type property
         /// </summary>
+        [CategoryAttribute("Event")]
         [XmlAttributeAttribute(true)]
         public IDataType Type
         {
@@ -89,6 +90,7 @@ namespace NMF.Models.Meta
         /// <summary>
         /// The DeclaringType property
         /// </summary>
+        [BrowsableAttribute(false)]
         [DesignerSerializationVisibilityAttribute(DesignerSerializationVisibility.Hidden)]
         [XmlAttributeAttribute(true)]
         [XmlOppositeAttribute("Events")]

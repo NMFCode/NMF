@@ -23,9 +23,9 @@ namespace NMF.Expressions.Arithmetics
             return Left.Value & Right.Value;
         }
 
-        public override INotifyExpression<int> ApplyParameters(IDictionary<string, object> parameters)
+        protected override INotifyExpression<int> ApplyParametersCore(IDictionary<string, object> parameters, IDictionary<INotifiable, INotifiable> trace)
         {
-            return new ObservableIntBitwiseAnd(Left.ApplyParameters(parameters), Right.ApplyParameters(parameters));
+            return new ObservableIntBitwiseAnd(Left.ApplyParameters(parameters, trace), Right.ApplyParameters(parameters, trace));
         }
     }
 
@@ -47,9 +47,9 @@ namespace NMF.Expressions.Arithmetics
             return Left.Value & Right.Value;
         }
 
-        public override INotifyExpression<uint> ApplyParameters(IDictionary<string, object> parameters)
+        protected override INotifyExpression<uint> ApplyParametersCore(IDictionary<string, object> parameters, IDictionary<INotifiable, INotifiable> trace)
         {
-            return new ObservableUIntBitwiseAnd(Left.ApplyParameters(parameters), Right.ApplyParameters(parameters));
+            return new ObservableUIntBitwiseAnd(Left.ApplyParameters(parameters, trace), Right.ApplyParameters(parameters, trace));
         }
     }
 
@@ -70,9 +70,9 @@ namespace NMF.Expressions.Arithmetics
             return Left.Value & Right.Value;
         }
 
-        public override INotifyExpression<long> ApplyParameters(IDictionary<string, object> parameters)
+        protected override INotifyExpression<long> ApplyParametersCore(IDictionary<string, object> parameters, IDictionary<INotifiable, INotifiable> trace)
         {
-            return new ObservableLongBitwiseAnd(Left.ApplyParameters(parameters), Right.ApplyParameters(parameters));
+            return new ObservableLongBitwiseAnd(Left.ApplyParameters(parameters, trace), Right.ApplyParameters(parameters, trace));
         }
     }
 
@@ -94,9 +94,9 @@ namespace NMF.Expressions.Arithmetics
             return Left.Value & Right.Value;
         }
 
-        public override INotifyExpression<ulong> ApplyParameters(IDictionary<string, object> parameters)
+        protected override INotifyExpression<ulong> ApplyParametersCore(IDictionary<string, object> parameters, IDictionary<INotifiable, INotifiable> trace)
         {
-            return new ObservableULongBitwiseAnd(Left.ApplyParameters(parameters), Right.ApplyParameters(parameters));
+            return new ObservableULongBitwiseAnd(Left.ApplyParameters(parameters, trace), Right.ApplyParameters(parameters, trace));
         }
     }
 }

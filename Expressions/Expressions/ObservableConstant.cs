@@ -30,7 +30,7 @@ namespace NMF.Expressions
 
         public override ISuccessorList Successors { get; } = SingletonSuccessorList.Instance;
 
-        public override INotifyExpression<T> ApplyParameters(IDictionary<string, object> parameters)
+        protected override INotifyExpression<T> ApplyParametersCore(IDictionary<string, object> parameters, IDictionary<INotifiable, INotifiable> trace)
         {
             return this;
         }
