@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Linq;
 using System.Text;
+using NMF.Expressions.EnumerableExpressions;
 
 namespace NMF.Expressions.Tests
 {
@@ -519,7 +520,7 @@ namespace NMF.Expressions.Tests
                                         //from swP in route.Follows.OfType<SwitchPosition>()
                                         //where swP.Switch.CurrentPosition != swP.Position
                                         let routeString = route.ToString()
-                                        select route.ToIdentifierString() + routeString);
+                                        select route.ToIdentifierString() + routeString + routeString);
 
             //QueryExpressionDgmlVisualizer.OpenDgml();
 

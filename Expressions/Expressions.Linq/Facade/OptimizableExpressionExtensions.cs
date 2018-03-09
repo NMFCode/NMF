@@ -10,13 +10,6 @@ namespace NMF.Expressions.Linq
     /// </summary>
     internal  static class OptimizableEnumerableExpressionExtensions
     {
-        internal static bool IsSourceOptimizable(this IOptimizableEnumerableExpression optimizableEnumerableExpression, IEnumerableExpression source)
-        {
-            if (source is IOptimizableEnumerableExpression)
-                return true;
-            return false;
-        }
-
         internal static IOptimizableEnumerableExpression Optimize<TOptimizedResult>(this IOptimizableEnumerableExpression optimizableEnumerableExpression, IOptimizableEnumerableExpression source)
         {
             return (IOptimizableEnumerableExpression) source.AsOptimized<TOptimizedResult>(optimizableEnumerableExpression);

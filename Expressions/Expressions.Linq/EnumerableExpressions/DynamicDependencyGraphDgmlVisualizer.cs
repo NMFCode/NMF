@@ -69,7 +69,7 @@ namespace NMF.Expressions.EnumerableExpressions
             var fileName = DateTime.Now.ToString("hh-mm-ss") + ".dgml";
             var filePath = Path.Combine(Path.GetTempPath(), fileName);
             doc.Save(filePath);
-            System.Diagnostics.Process.Start(filePath);
+            //System.Diagnostics.Process.Start(filePath);
         }
 
         private static XDocument CreateDgmlDoc()

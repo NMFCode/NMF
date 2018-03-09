@@ -68,8 +68,8 @@ namespace NMF.Expressions
             VisitForDebugging(SelectorExpression);
 #endif
 
-            if (this.IsSourceOptimizable(Source))
-                return this.Optimize<TResult>(Source as IOptimizableEnumerableExpression).AsOptimized<TOptimizedResult>(prevOptExpression);
+            if (Source is IOptimizableEnumerableExpression source)
+                return this.Optimize<TResult>(source).AsOptimized<TOptimizedResult>(prevOptExpression);
 
             if(prevOptExpression != null)
                 return Merge<TOptimizedResult>(prevOptExpression);
