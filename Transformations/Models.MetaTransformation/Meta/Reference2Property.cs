@@ -101,6 +101,22 @@ namespace NMF.Models.Meta
                     GenerateFullProperty(input, generatedProperty, context);
                 }
 
+                if (input.IsContainment || (input.Opposite != null && input.Opposite.IsContainment))
+                {
+                    generatedProperty.AddAttribute(typeof(BrowsableAttribute), false);
+                }
+                else
+                {
+                    if (input.Name != generatedProperty.Name)
+                    {
+                        generatedProperty.AddAttribute(typeof(DisplayNameAttribute), input.Name);
+                    }
+                    if (input.Summary != null)
+                    {
+                        generatedProperty.AddAttribute(typeof(DescriptionAttribute), input.Summary);
+                    }
+                    generatedProperty.AddAttribute(typeof(CategoryAttribute), input.DeclaringType.Name);
+                }
                 GenerateSerializationAttributes(input, generatedProperty, context);
             }
 

@@ -1,0 +1,16 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <AssemblyName>NMF.Synchronizations.Models</AssemblyName>
+    <RootNamespace>NMF.Synchronizations.Models</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Models\Models\Models.csproj" />
+    <ProjectReference Include="..\..\Transformations\Transformations.Core\Transformations.Core.csproj" />
+    <ProjectReference Include="..\..\Transformations\Transformations\Transformations.csproj" />
+    <ProjectReference Include="..\Synchronizations\Synchronizations.csproj" />
+  </ItemGroup>
+
+</Project>

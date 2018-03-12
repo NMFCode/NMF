@@ -37,12 +37,28 @@ namespace NMF.Models.Changes
     /// </summary>
     [DefaultImplementationTypeAttribute(typeof(AssociationListInsertion))]
     [XmlDefaultImplementationTypeAttribute(typeof(AssociationListInsertion))]
-    public interface IAssociationListInsertion : NMF.Models.IModelElement, IListInsertion
+    [ModelRepresentationClassAttribute("http://nmf.codeplex.com/changes#//AssociationListInsertion")]
+    public interface IAssociationListInsertion : NMF.Models.IModelElement, IAssociationChange
     {
+        
+        /// <summary>
+        /// The index property
+        /// </summary>
+        [DisplayNameAttribute("index")]
+        [CategoryAttribute("AssociationListInsertion")]
+        [XmlElementNameAttribute("index")]
+        [XmlAttributeAttribute(true)]
+        int Index
+        {
+            get;
+            set;
+        }
         
         /// <summary>
         /// The addedElement property
         /// </summary>
+        [DisplayNameAttribute("addedElement")]
+        [CategoryAttribute("AssociationListInsertion")]
         [XmlElementNameAttribute("addedElement")]
         [XmlAttributeAttribute(true)]
         NMF.Models.IModelElement AddedElement
@@ -50,6 +66,16 @@ namespace NMF.Models.Changes
             get;
             set;
         }
+        
+        /// <summary>
+        /// Gets fired before the Index property changes its value
+        /// </summary>
+        event System.EventHandler<ValueChangedEventArgs> IndexChanging;
+        
+        /// <summary>
+        /// Gets fired when the Index property changed its value
+        /// </summary>
+        event System.EventHandler<ValueChangedEventArgs> IndexChanged;
         
         /// <summary>
         /// Gets fired before the AddedElement property changes its value

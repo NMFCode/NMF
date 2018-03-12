@@ -91,15 +91,15 @@ namespace NMF.Expressions
             }
         }
 
-        public override INotifyExpression<T> ApplyParameters(IDictionary<string, object> parameters)
+        protected override INotifyExpression<T> ApplyParametersCore(IDictionary<string, object> parameters, IDictionary<INotifiable, INotifiable> trace)
         {
             if (proxy != null)
             {
-                return proxy.ApplyParameters(parameters);
+                return proxy.ApplyParameters(parameters, trace);
             }
             else
             {
-                return new ObservableDeferredProxyElement<T, T1>(ProxyGenerator, Argument1.ApplyParameters(parameters));
+                return new ObservableDeferredProxyElement<T, T1>(ProxyGenerator, Argument1.ApplyParameters(parameters, trace));
             }
         }
 
@@ -195,15 +195,15 @@ namespace NMF.Expressions
             }
         }
 
-        public override INotifyExpression<T> ApplyParameters(IDictionary<string, object> parameters)
+        protected override INotifyExpression<T> ApplyParametersCore(IDictionary<string, object> parameters, IDictionary<INotifiable, INotifiable> trace)
         {
             if (proxy != null)
             {
-                return proxy.ApplyParameters(parameters);
+                return proxy.ApplyParameters(parameters, trace);
             }
             else
             {
-                return new ObservableDeferredProxyElement<T, T1, T2>(ProxyGenerator, Argument1.ApplyParameters(parameters), Argument2.ApplyParameters(parameters));
+                return new ObservableDeferredProxyElement<T, T1, T2>(ProxyGenerator, Argument1.ApplyParameters(parameters, trace), Argument2.ApplyParameters(parameters, trace));
             }
         }
 
@@ -302,15 +302,15 @@ namespace NMF.Expressions
             }
         }
 
-        public override INotifyExpression<T> ApplyParameters(IDictionary<string, object> parameters)
+        protected override INotifyExpression<T> ApplyParametersCore(IDictionary<string, object> parameters, IDictionary<INotifiable, INotifiable> trace)
         {
             if (proxy != null)
             {
-                return proxy.ApplyParameters(parameters);
+                return proxy.ApplyParameters(parameters, trace);
             }
             else
             {
-                return new ObservableDeferredProxyElement<T, T1, T2, T3>(ProxyGenerator, Argument1.ApplyParameters(parameters), Argument2.ApplyParameters(parameters), Argument3.ApplyParameters(parameters));
+                return new ObservableDeferredProxyElement<T, T1, T2, T3>(ProxyGenerator, Argument1.ApplyParameters(parameters, trace), Argument2.ApplyParameters(parameters, trace), Argument3.ApplyParameters(parameters, trace));
             }
         }
 
@@ -412,15 +412,15 @@ namespace NMF.Expressions
             }
         }
 
-        public override INotifyExpression<T> ApplyParameters(IDictionary<string, object> parameters)
+        protected override INotifyExpression<T> ApplyParametersCore(IDictionary<string, object> parameters, IDictionary<INotifiable, INotifiable> trace)
         {
             if (proxy != null)
             {
-                return proxy.ApplyParameters(parameters);
+                return proxy.ApplyParameters(parameters, trace);
             }
             else
             {
-                return new ObservableDeferredProxyElement<T, T1, T2, T3, T4>(ProxyGenerator, Argument1.ApplyParameters(parameters), Argument2.ApplyParameters(parameters), Argument3.ApplyParameters(parameters), Argument4.ApplyParameters(parameters));
+                return new ObservableDeferredProxyElement<T, T1, T2, T3, T4>(ProxyGenerator, Argument1.ApplyParameters(parameters, trace), Argument2.ApplyParameters(parameters, trace), Argument3.ApplyParameters(parameters, trace), Argument4.ApplyParameters(parameters, trace));
             }
         }
 
@@ -525,15 +525,15 @@ namespace NMF.Expressions
             }
         }
 
-        public override INotifyExpression<T> ApplyParameters(IDictionary<string, object> parameters)
+        protected override INotifyExpression<T> ApplyParametersCore(IDictionary<string, object> parameters, IDictionary<INotifiable, INotifiable> trace)
         {
             if (proxy != null)
             {
-                return proxy.ApplyParameters(parameters);
+                return proxy.ApplyParameters(parameters, trace);
             }
             else
             {
-                return new ObservableDeferredProxyElement<T, T1, T2, T3, T4, T5>(ProxyGenerator, Argument1.ApplyParameters(parameters), Argument2.ApplyParameters(parameters), Argument3.ApplyParameters(parameters), Argument4.ApplyParameters(parameters), Argument5.ApplyParameters(parameters));
+                return new ObservableDeferredProxyElement<T, T1, T2, T3, T4, T5>(ProxyGenerator, Argument1.ApplyParameters(parameters, trace), Argument2.ApplyParameters(parameters, trace), Argument3.ApplyParameters(parameters, trace), Argument4.ApplyParameters(parameters, trace), Argument5.ApplyParameters(parameters, trace));
             }
         }
 
@@ -641,15 +641,15 @@ namespace NMF.Expressions
             }
         }
 
-        public override INotifyExpression<T> ApplyParameters(IDictionary<string, object> parameters)
+        protected override INotifyExpression<T> ApplyParametersCore(IDictionary<string, object> parameters, IDictionary<INotifiable, INotifiable> trace)
         {
             if (proxy != null)
             {
-                return proxy.ApplyParameters(parameters);
+                return proxy.ApplyParameters(parameters, trace);
             }
             else
             {
-                return new ObservableDeferredProxyElement<T, T1, T2, T3, T4, T5, T6>(ProxyGenerator, Argument1.ApplyParameters(parameters), Argument2.ApplyParameters(parameters), Argument3.ApplyParameters(parameters), Argument4.ApplyParameters(parameters), Argument5.ApplyParameters(parameters), Argument6.ApplyParameters(parameters));
+                return new ObservableDeferredProxyElement<T, T1, T2, T3, T4, T5, T6>(ProxyGenerator, Argument1.ApplyParameters(parameters, trace), Argument2.ApplyParameters(parameters, trace), Argument3.ApplyParameters(parameters, trace), Argument4.ApplyParameters(parameters, trace), Argument5.ApplyParameters(parameters, trace), Argument6.ApplyParameters(parameters, trace));
             }
         }
 
@@ -760,15 +760,15 @@ namespace NMF.Expressions
             }
         }
 
-        public override INotifyExpression<T> ApplyParameters(IDictionary<string, object> parameters)
+        protected override INotifyExpression<T> ApplyParametersCore(IDictionary<string, object> parameters, IDictionary<INotifiable, INotifiable> trace)
         {
             if (proxy != null)
             {
-                return proxy.ApplyParameters(parameters);
+                return proxy.ApplyParameters(parameters, trace);
             }
             else
             {
-                return new ObservableDeferredProxyElement<T, T1, T2, T3, T4, T5, T6, T7>(ProxyGenerator, Argument1.ApplyParameters(parameters), Argument2.ApplyParameters(parameters), Argument3.ApplyParameters(parameters), Argument4.ApplyParameters(parameters), Argument5.ApplyParameters(parameters), Argument6.ApplyParameters(parameters), Argument7.ApplyParameters(parameters));
+                return new ObservableDeferredProxyElement<T, T1, T2, T3, T4, T5, T6, T7>(ProxyGenerator, Argument1.ApplyParameters(parameters, trace), Argument2.ApplyParameters(parameters, trace), Argument3.ApplyParameters(parameters, trace), Argument4.ApplyParameters(parameters, trace), Argument5.ApplyParameters(parameters, trace), Argument6.ApplyParameters(parameters, trace), Argument7.ApplyParameters(parameters, trace));
             }
         }
 
@@ -882,15 +882,15 @@ namespace NMF.Expressions
             }
         }
 
-        public override INotifyExpression<T> ApplyParameters(IDictionary<string, object> parameters)
+        protected override INotifyExpression<T> ApplyParametersCore(IDictionary<string, object> parameters, IDictionary<INotifiable, INotifiable> trace)
         {
             if (proxy != null)
             {
-                return proxy.ApplyParameters(parameters);
+                return proxy.ApplyParameters(parameters, trace);
             }
             else
             {
-                return new ObservableDeferredProxyElement<T, T1, T2, T3, T4, T5, T6, T7, T8>(ProxyGenerator, Argument1.ApplyParameters(parameters), Argument2.ApplyParameters(parameters), Argument3.ApplyParameters(parameters), Argument4.ApplyParameters(parameters), Argument5.ApplyParameters(parameters), Argument6.ApplyParameters(parameters), Argument7.ApplyParameters(parameters), Argument8.ApplyParameters(parameters));
+                return new ObservableDeferredProxyElement<T, T1, T2, T3, T4, T5, T6, T7, T8>(ProxyGenerator, Argument1.ApplyParameters(parameters, trace), Argument2.ApplyParameters(parameters, trace), Argument3.ApplyParameters(parameters, trace), Argument4.ApplyParameters(parameters, trace), Argument5.ApplyParameters(parameters, trace), Argument6.ApplyParameters(parameters, trace), Argument7.ApplyParameters(parameters, trace), Argument8.ApplyParameters(parameters, trace));
             }
         }
 
@@ -1007,15 +1007,15 @@ namespace NMF.Expressions
             }
         }
 
-        public override INotifyExpression<T> ApplyParameters(IDictionary<string, object> parameters)
+        protected override INotifyExpression<T> ApplyParametersCore(IDictionary<string, object> parameters, IDictionary<INotifiable, INotifiable> trace)
         {
             if (proxy != null)
             {
-                return proxy.ApplyParameters(parameters);
+                return proxy.ApplyParameters(parameters, trace);
             }
             else
             {
-                return new ObservableDeferredProxyElement<T, T1, T2, T3, T4, T5, T6, T7, T8, T9>(ProxyGenerator, Argument1.ApplyParameters(parameters), Argument2.ApplyParameters(parameters), Argument3.ApplyParameters(parameters), Argument4.ApplyParameters(parameters), Argument5.ApplyParameters(parameters), Argument6.ApplyParameters(parameters), Argument7.ApplyParameters(parameters), Argument8.ApplyParameters(parameters), Argument9.ApplyParameters(parameters));
+                return new ObservableDeferredProxyElement<T, T1, T2, T3, T4, T5, T6, T7, T8, T9>(ProxyGenerator, Argument1.ApplyParameters(parameters, trace), Argument2.ApplyParameters(parameters, trace), Argument3.ApplyParameters(parameters, trace), Argument4.ApplyParameters(parameters, trace), Argument5.ApplyParameters(parameters, trace), Argument6.ApplyParameters(parameters, trace), Argument7.ApplyParameters(parameters, trace), Argument8.ApplyParameters(parameters, trace), Argument9.ApplyParameters(parameters, trace));
             }
         }
 
@@ -1135,15 +1135,15 @@ namespace NMF.Expressions
             }
         }
 
-        public override INotifyExpression<T> ApplyParameters(IDictionary<string, object> parameters)
+        protected override INotifyExpression<T> ApplyParametersCore(IDictionary<string, object> parameters, IDictionary<INotifiable, INotifiable> trace)
         {
             if (proxy != null)
             {
-                return proxy.ApplyParameters(parameters);
+                return proxy.ApplyParameters(parameters, trace);
             }
             else
             {
-                return new ObservableDeferredProxyElement<T, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10>(ProxyGenerator, Argument1.ApplyParameters(parameters), Argument2.ApplyParameters(parameters), Argument3.ApplyParameters(parameters), Argument4.ApplyParameters(parameters), Argument5.ApplyParameters(parameters), Argument6.ApplyParameters(parameters), Argument7.ApplyParameters(parameters), Argument8.ApplyParameters(parameters), Argument9.ApplyParameters(parameters), Argument10.ApplyParameters(parameters));
+                return new ObservableDeferredProxyElement<T, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10>(ProxyGenerator, Argument1.ApplyParameters(parameters, trace), Argument2.ApplyParameters(parameters, trace), Argument3.ApplyParameters(parameters, trace), Argument4.ApplyParameters(parameters, trace), Argument5.ApplyParameters(parameters, trace), Argument6.ApplyParameters(parameters, trace), Argument7.ApplyParameters(parameters, trace), Argument8.ApplyParameters(parameters, trace), Argument9.ApplyParameters(parameters, trace), Argument10.ApplyParameters(parameters, trace));
             }
         }
 
@@ -1266,15 +1266,15 @@ namespace NMF.Expressions
             }
         }
 
-        public override INotifyExpression<T> ApplyParameters(IDictionary<string, object> parameters)
+        protected override INotifyExpression<T> ApplyParametersCore(IDictionary<string, object> parameters, IDictionary<INotifiable, INotifiable> trace)
         {
             if (proxy != null)
             {
-                return proxy.ApplyParameters(parameters);
+                return proxy.ApplyParameters(parameters, trace);
             }
             else
             {
-                return new ObservableDeferredProxyElement<T, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11>(ProxyGenerator, Argument1.ApplyParameters(parameters), Argument2.ApplyParameters(parameters), Argument3.ApplyParameters(parameters), Argument4.ApplyParameters(parameters), Argument5.ApplyParameters(parameters), Argument6.ApplyParameters(parameters), Argument7.ApplyParameters(parameters), Argument8.ApplyParameters(parameters), Argument9.ApplyParameters(parameters), Argument10.ApplyParameters(parameters), Argument11.ApplyParameters(parameters));
+                return new ObservableDeferredProxyElement<T, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11>(ProxyGenerator, Argument1.ApplyParameters(parameters, trace), Argument2.ApplyParameters(parameters, trace), Argument3.ApplyParameters(parameters, trace), Argument4.ApplyParameters(parameters, trace), Argument5.ApplyParameters(parameters, trace), Argument6.ApplyParameters(parameters, trace), Argument7.ApplyParameters(parameters, trace), Argument8.ApplyParameters(parameters, trace), Argument9.ApplyParameters(parameters, trace), Argument10.ApplyParameters(parameters, trace), Argument11.ApplyParameters(parameters, trace));
             }
         }
 
@@ -1400,15 +1400,15 @@ namespace NMF.Expressions
             }
         }
 
-        public override INotifyExpression<T> ApplyParameters(IDictionary<string, object> parameters)
+        protected override INotifyExpression<T> ApplyParametersCore(IDictionary<string, object> parameters, IDictionary<INotifiable, INotifiable> trace)
         {
             if (proxy != null)
             {
-                return proxy.ApplyParameters(parameters);
+                return proxy.ApplyParameters(parameters, trace);
             }
             else
             {
-                return new ObservableDeferredProxyElement<T, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12>(ProxyGenerator, Argument1.ApplyParameters(parameters), Argument2.ApplyParameters(parameters), Argument3.ApplyParameters(parameters), Argument4.ApplyParameters(parameters), Argument5.ApplyParameters(parameters), Argument6.ApplyParameters(parameters), Argument7.ApplyParameters(parameters), Argument8.ApplyParameters(parameters), Argument9.ApplyParameters(parameters), Argument10.ApplyParameters(parameters), Argument11.ApplyParameters(parameters), Argument12.ApplyParameters(parameters));
+                return new ObservableDeferredProxyElement<T, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12>(ProxyGenerator, Argument1.ApplyParameters(parameters, trace), Argument2.ApplyParameters(parameters, trace), Argument3.ApplyParameters(parameters, trace), Argument4.ApplyParameters(parameters, trace), Argument5.ApplyParameters(parameters, trace), Argument6.ApplyParameters(parameters, trace), Argument7.ApplyParameters(parameters, trace), Argument8.ApplyParameters(parameters, trace), Argument9.ApplyParameters(parameters, trace), Argument10.ApplyParameters(parameters, trace), Argument11.ApplyParameters(parameters, trace), Argument12.ApplyParameters(parameters, trace));
             }
         }
 
@@ -1537,15 +1537,15 @@ namespace NMF.Expressions
             }
         }
 
-        public override INotifyExpression<T> ApplyParameters(IDictionary<string, object> parameters)
+        protected override INotifyExpression<T> ApplyParametersCore(IDictionary<string, object> parameters, IDictionary<INotifiable, INotifiable> trace)
         {
             if (proxy != null)
             {
-                return proxy.ApplyParameters(parameters);
+                return proxy.ApplyParameters(parameters, trace);
             }
             else
             {
-                return new ObservableDeferredProxyElement<T, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13>(ProxyGenerator, Argument1.ApplyParameters(parameters), Argument2.ApplyParameters(parameters), Argument3.ApplyParameters(parameters), Argument4.ApplyParameters(parameters), Argument5.ApplyParameters(parameters), Argument6.ApplyParameters(parameters), Argument7.ApplyParameters(parameters), Argument8.ApplyParameters(parameters), Argument9.ApplyParameters(parameters), Argument10.ApplyParameters(parameters), Argument11.ApplyParameters(parameters), Argument12.ApplyParameters(parameters), Argument13.ApplyParameters(parameters));
+                return new ObservableDeferredProxyElement<T, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13>(ProxyGenerator, Argument1.ApplyParameters(parameters, trace), Argument2.ApplyParameters(parameters, trace), Argument3.ApplyParameters(parameters, trace), Argument4.ApplyParameters(parameters, trace), Argument5.ApplyParameters(parameters, trace), Argument6.ApplyParameters(parameters, trace), Argument7.ApplyParameters(parameters, trace), Argument8.ApplyParameters(parameters, trace), Argument9.ApplyParameters(parameters, trace), Argument10.ApplyParameters(parameters, trace), Argument11.ApplyParameters(parameters, trace), Argument12.ApplyParameters(parameters, trace), Argument13.ApplyParameters(parameters, trace));
             }
         }
 
@@ -1677,15 +1677,15 @@ namespace NMF.Expressions
             }
         }
 
-        public override INotifyExpression<T> ApplyParameters(IDictionary<string, object> parameters)
+        protected override INotifyExpression<T> ApplyParametersCore(IDictionary<string, object> parameters, IDictionary<INotifiable, INotifiable> trace)
         {
             if (proxy != null)
             {
-                return proxy.ApplyParameters(parameters);
+                return proxy.ApplyParameters(parameters, trace);
             }
             else
             {
-                return new ObservableDeferredProxyElement<T, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14>(ProxyGenerator, Argument1.ApplyParameters(parameters), Argument2.ApplyParameters(parameters), Argument3.ApplyParameters(parameters), Argument4.ApplyParameters(parameters), Argument5.ApplyParameters(parameters), Argument6.ApplyParameters(parameters), Argument7.ApplyParameters(parameters), Argument8.ApplyParameters(parameters), Argument9.ApplyParameters(parameters), Argument10.ApplyParameters(parameters), Argument11.ApplyParameters(parameters), Argument12.ApplyParameters(parameters), Argument13.ApplyParameters(parameters), Argument14.ApplyParameters(parameters));
+                return new ObservableDeferredProxyElement<T, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14>(ProxyGenerator, Argument1.ApplyParameters(parameters, trace), Argument2.ApplyParameters(parameters, trace), Argument3.ApplyParameters(parameters, trace), Argument4.ApplyParameters(parameters, trace), Argument5.ApplyParameters(parameters, trace), Argument6.ApplyParameters(parameters, trace), Argument7.ApplyParameters(parameters, trace), Argument8.ApplyParameters(parameters, trace), Argument9.ApplyParameters(parameters, trace), Argument10.ApplyParameters(parameters, trace), Argument11.ApplyParameters(parameters, trace), Argument12.ApplyParameters(parameters, trace), Argument13.ApplyParameters(parameters, trace), Argument14.ApplyParameters(parameters, trace));
             }
         }
 
@@ -1820,15 +1820,15 @@ namespace NMF.Expressions
             }
         }
 
-        public override INotifyExpression<T> ApplyParameters(IDictionary<string, object> parameters)
+        protected override INotifyExpression<T> ApplyParametersCore(IDictionary<string, object> parameters, IDictionary<INotifiable, INotifiable> trace)
         {
             if (proxy != null)
             {
-                return proxy.ApplyParameters(parameters);
+                return proxy.ApplyParameters(parameters, trace);
             }
             else
             {
-                return new ObservableDeferredProxyElement<T, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15>(ProxyGenerator, Argument1.ApplyParameters(parameters), Argument2.ApplyParameters(parameters), Argument3.ApplyParameters(parameters), Argument4.ApplyParameters(parameters), Argument5.ApplyParameters(parameters), Argument6.ApplyParameters(parameters), Argument7.ApplyParameters(parameters), Argument8.ApplyParameters(parameters), Argument9.ApplyParameters(parameters), Argument10.ApplyParameters(parameters), Argument11.ApplyParameters(parameters), Argument12.ApplyParameters(parameters), Argument13.ApplyParameters(parameters), Argument14.ApplyParameters(parameters), Argument15.ApplyParameters(parameters));
+                return new ObservableDeferredProxyElement<T, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15>(ProxyGenerator, Argument1.ApplyParameters(parameters, trace), Argument2.ApplyParameters(parameters, trace), Argument3.ApplyParameters(parameters, trace), Argument4.ApplyParameters(parameters, trace), Argument5.ApplyParameters(parameters, trace), Argument6.ApplyParameters(parameters, trace), Argument7.ApplyParameters(parameters, trace), Argument8.ApplyParameters(parameters, trace), Argument9.ApplyParameters(parameters, trace), Argument10.ApplyParameters(parameters, trace), Argument11.ApplyParameters(parameters, trace), Argument12.ApplyParameters(parameters, trace), Argument13.ApplyParameters(parameters, trace), Argument14.ApplyParameters(parameters, trace), Argument15.ApplyParameters(parameters, trace));
             }
         }
 

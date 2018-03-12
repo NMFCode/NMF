@@ -118,12 +118,12 @@ namespace NMF.Expressions
                 return new ValueChangedNotificationResult<TValue>(this, value, value);
             }
 
-            public INotifyExpression ApplyParameters(IDictionary<string, object> parameters)
+            INotifyExpression INotifyExpression.ApplyParameters(IDictionary<string, object> parameters, IDictionary<INotifiable, INotifiable> trace)
             {
                 return this;
             }
 
-            INotifyExpression<TValue> INotifyExpression<TValue>.ApplyParameters(IDictionary<string, object> parameters)
+            INotifyExpression<TValue> INotifyExpression<TValue>.ApplyParameters(IDictionary<string, object> parameters, IDictionary<INotifiable, INotifiable> trace)
             {
                 return this;
             }

@@ -108,15 +108,15 @@ namespace NMF.Expressions
             }
         }
 
-        public override INotifyExpression<T> ApplyParameters(IDictionary<string, object> parameters)
+        protected override INotifyExpression<T> ApplyParametersCore(IDictionary<string, object> parameters, IDictionary<INotifiable, INotifiable> trace)
         {
             if (proxy != null)
             {
-                return proxy.ApplyParameters(parameters);
+                return proxy.ApplyParameters(parameters, trace);
             }
             else
             {
-                return new ObservableDeferredProxyElement<T<# for (int j = 1; j <= i; j++) { #>, T<#= j #><# } #>>(ProxyGenerator<# for (int j = 1; j <= i; j++) { #>, Argument<#= j #>.ApplyParameters(parameters)<# } #>);
+                return new ObservableDeferredProxyElement<T<# for (int j = 1; j <= i; j++) { #>, T<#= j #><# } #>>(ProxyGenerator<# for (int j = 1; j <= i; j++) { #>, Argument<#= j #>.ApplyParameters(parameters, trace)<# } #>);
             }
         }
 

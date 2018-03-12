@@ -37,12 +37,15 @@ namespace NMF.Models.Changes
     /// </summary>
     [DefaultImplementationTypeAttribute(typeof(CompositionCollectionDeletion))]
     [XmlDefaultImplementationTypeAttribute(typeof(CompositionCollectionDeletion))]
-    public interface ICompositionCollectionDeletion : NMF.Models.IModelElement, ICollectionDeletion
+    [ModelRepresentationClassAttribute("http://nmf.codeplex.com/changes#//CompositionCollectionDeletion")]
+    public interface ICompositionCollectionDeletion : NMF.Models.IModelElement, ICompositionChange
     {
         
         /// <summary>
         /// The deletedElement property
         /// </summary>
+        [DisplayNameAttribute("deletedElement")]
+        [CategoryAttribute("CompositionCollectionDeletion")]
         [XmlElementNameAttribute("deletedElement")]
         [XmlAttributeAttribute(true)]
         NMF.Models.IModelElement DeletedElement

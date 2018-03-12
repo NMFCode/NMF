@@ -37,12 +37,15 @@ namespace NMF.Models.Changes
     /// </summary>
     [DefaultImplementationTypeAttribute(typeof(OperationCall))]
     [XmlDefaultImplementationTypeAttribute(typeof(OperationCall))]
+    [ModelRepresentationClassAttribute("http://nmf.codeplex.com/changes#//OperationCall")]
     public interface IOperationCall : NMF.Models.IModelElement, IModelChange
     {
         
         /// <summary>
         /// The operation property
         /// </summary>
+        [DisplayNameAttribute("operation")]
+        [CategoryAttribute("OperationCall")]
         [XmlElementNameAttribute("operation")]
         [XmlAttributeAttribute(true)]
         IOperation Operation
@@ -54,6 +57,8 @@ namespace NMF.Models.Changes
         /// <summary>
         /// The targetElement property
         /// </summary>
+        [DisplayNameAttribute("targetElement")]
+        [CategoryAttribute("OperationCall")]
         [XmlElementNameAttribute("targetElement")]
         [XmlAttributeAttribute(true)]
         NMF.Models.IModelElement TargetElement
@@ -66,6 +71,8 @@ namespace NMF.Models.Changes
         /// The arguments property
         /// </summary>
         [DesignerSerializationVisibilityAttribute(DesignerSerializationVisibility.Content)]
+        [DisplayNameAttribute("arguments")]
+        [CategoryAttribute("OperationCall")]
         [XmlElementNameAttribute("arguments")]
         [XmlAttributeAttribute(true)]
         [ConstantAttribute()]

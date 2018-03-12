@@ -60,6 +60,8 @@ namespace NMF.Models.Changes
         /// <summary>
         /// The affectedElement property
         /// </summary>
+        [DisplayNameAttribute("affectedElement")]
+        [CategoryAttribute("ElementaryChange")]
         [XmlElementNameAttribute("affectedElement")]
         [XmlAttributeAttribute(true)]
         public NMF.Models.IModelElement AffectedElement
@@ -94,6 +96,8 @@ namespace NMF.Models.Changes
         /// <summary>
         /// The feature property
         /// </summary>
+        [DisplayNameAttribute("feature")]
+        [CategoryAttribute("ElementaryChange")]
         [XmlElementNameAttribute("feature")]
         [XmlAttributeAttribute(true)]
         public ITypedElement Feature

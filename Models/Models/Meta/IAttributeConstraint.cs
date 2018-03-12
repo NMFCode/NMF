@@ -37,6 +37,7 @@ namespace NMF.Models.Meta
     /// </summary>
     [DefaultImplementationTypeAttribute(typeof(AttributeConstraint))]
     [XmlDefaultImplementationTypeAttribute(typeof(AttributeConstraint))]
+    [ModelRepresentationClassAttribute("http://nmf.codeplex.com/nmeta/#//AttributeConstraint")]
     public interface IAttributeConstraint : NMF.Models.IModelElement
     {
         
@@ -44,6 +45,7 @@ namespace NMF.Models.Meta
         /// The Values property
         /// </summary>
         [DesignerSerializationVisibilityAttribute(DesignerSerializationVisibility.Content)]
+        [CategoryAttribute("AttributeConstraint")]
         [XmlAttributeAttribute(true)]
         [ConstantAttribute()]
         IListExpression<string> Values
@@ -54,6 +56,7 @@ namespace NMF.Models.Meta
         /// <summary>
         /// The DeclaringType property
         /// </summary>
+        [BrowsableAttribute(false)]
         [DesignerSerializationVisibilityAttribute(DesignerSerializationVisibility.Hidden)]
         [XmlAttributeAttribute(true)]
         [XmlOppositeAttribute("AttributeConstraints")]
@@ -66,6 +69,7 @@ namespace NMF.Models.Meta
         /// <summary>
         /// The Constrains property
         /// </summary>
+        [CategoryAttribute("AttributeConstraint")]
         [XmlAttributeAttribute(true)]
         IAttribute Constrains
         {

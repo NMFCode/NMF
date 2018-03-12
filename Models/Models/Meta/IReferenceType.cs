@@ -37,6 +37,7 @@ namespace NMF.Models.Meta
     /// </summary>
     [DefaultImplementationTypeAttribute(typeof(ReferenceType))]
     [XmlDefaultImplementationTypeAttribute(typeof(ReferenceType))]
+    [ModelRepresentationClassAttribute("http://nmf.codeplex.com/nmeta/#//ReferenceType")]
     public interface IReferenceType : NMF.Models.IModelElement, IStructuredType
     {
         
@@ -44,6 +45,7 @@ namespace NMF.Models.Meta
         /// The Events property
         /// </summary>
         [DesignerSerializationVisibilityAttribute(DesignerSerializationVisibility.Content)]
+        [BrowsableAttribute(false)]
         [XmlAttributeAttribute(false)]
         [ContainmentAttribute()]
         [XmlOppositeAttribute("DeclaringType")]
@@ -57,6 +59,7 @@ namespace NMF.Models.Meta
         /// The References property
         /// </summary>
         [DesignerSerializationVisibilityAttribute(DesignerSerializationVisibility.Content)]
+        [BrowsableAttribute(false)]
         [XmlAttributeAttribute(false)]
         [ContainmentAttribute()]
         [XmlOppositeAttribute("DeclaringType")]

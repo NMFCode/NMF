@@ -68,10 +68,10 @@ namespace NMF.Expressions
             }
         }
 
-        public override INotifyExpression<TResult> ApplyParameters(IDictionary<string, object> parameters)
+        protected override INotifyExpression<TResult> ApplyParametersCore(IDictionary<string, object> parameters, IDictionary<INotifiable, INotifiable> trace)
         {
             return new ObservableTreeExtensionCall<T1, TResult>(Function, 
-                Argument1.ApplyParameters(parameters), anchor1Listener?.Select(l => l.Type), Arg1Properties);
+                Argument1.ApplyParameters(parameters, trace), anchor1Listener?.Select(l => l.Type), Arg1Properties);
         }
     }
     class ObservableTreeExtensionCall<T1, T2, TResult> : ObservableStaticMethodCall<T1, T2, TResult>
@@ -169,11 +169,11 @@ namespace NMF.Expressions
             }
         }
 
-        public override INotifyExpression<TResult> ApplyParameters(IDictionary<string, object> parameters)
+        protected override INotifyExpression<TResult> ApplyParametersCore(IDictionary<string, object> parameters, IDictionary<INotifiable, INotifiable> trace)
         {
             return new ObservableTreeExtensionCall<T1, T2, TResult>(Function, 
-                Argument1.ApplyParameters(parameters), anchor1Listener?.Select(l => l.Type), Arg1Properties, 
-                Argument2.ApplyParameters(parameters), anchor2Listener?.Select(l => l.Type), Arg2Properties);
+                Argument1.ApplyParameters(parameters, trace), anchor1Listener?.Select(l => l.Type), Arg1Properties, 
+                Argument2.ApplyParameters(parameters, trace), anchor2Listener?.Select(l => l.Type), Arg2Properties);
         }
     }
     class ObservableTreeExtensionCall<T1, T2, T3, TResult> : ObservableStaticMethodCall<T1, T2, T3, TResult>
@@ -304,12 +304,12 @@ namespace NMF.Expressions
             }
         }
 
-        public override INotifyExpression<TResult> ApplyParameters(IDictionary<string, object> parameters)
+        protected override INotifyExpression<TResult> ApplyParametersCore(IDictionary<string, object> parameters, IDictionary<INotifiable, INotifiable> trace)
         {
             return new ObservableTreeExtensionCall<T1, T2, T3, TResult>(Function, 
-                Argument1.ApplyParameters(parameters), anchor1Listener?.Select(l => l.Type), Arg1Properties, 
-                Argument2.ApplyParameters(parameters), anchor2Listener?.Select(l => l.Type), Arg2Properties, 
-                Argument3.ApplyParameters(parameters), anchor3Listener?.Select(l => l.Type), Arg3Properties);
+                Argument1.ApplyParameters(parameters, trace), anchor1Listener?.Select(l => l.Type), Arg1Properties, 
+                Argument2.ApplyParameters(parameters, trace), anchor2Listener?.Select(l => l.Type), Arg2Properties, 
+                Argument3.ApplyParameters(parameters, trace), anchor3Listener?.Select(l => l.Type), Arg3Properties);
         }
     }
     class ObservableTreeExtensionCall<T1, T2, T3, T4, TResult> : ObservableStaticMethodCall<T1, T2, T3, T4, TResult>
@@ -473,13 +473,13 @@ namespace NMF.Expressions
             }
         }
 
-        public override INotifyExpression<TResult> ApplyParameters(IDictionary<string, object> parameters)
+        protected override INotifyExpression<TResult> ApplyParametersCore(IDictionary<string, object> parameters, IDictionary<INotifiable, INotifiable> trace)
         {
             return new ObservableTreeExtensionCall<T1, T2, T3, T4, TResult>(Function, 
-                Argument1.ApplyParameters(parameters), anchor1Listener?.Select(l => l.Type), Arg1Properties, 
-                Argument2.ApplyParameters(parameters), anchor2Listener?.Select(l => l.Type), Arg2Properties, 
-                Argument3.ApplyParameters(parameters), anchor3Listener?.Select(l => l.Type), Arg3Properties, 
-                Argument4.ApplyParameters(parameters), anchor4Listener?.Select(l => l.Type), Arg4Properties);
+                Argument1.ApplyParameters(parameters, trace), anchor1Listener?.Select(l => l.Type), Arg1Properties, 
+                Argument2.ApplyParameters(parameters, trace), anchor2Listener?.Select(l => l.Type), Arg2Properties, 
+                Argument3.ApplyParameters(parameters, trace), anchor3Listener?.Select(l => l.Type), Arg3Properties, 
+                Argument4.ApplyParameters(parameters, trace), anchor4Listener?.Select(l => l.Type), Arg4Properties);
         }
     }
     class ObservableTreeExtensionCall<T1, T2, T3, T4, T5, TResult> : ObservableStaticMethodCall<T1, T2, T3, T4, T5, TResult>
@@ -676,14 +676,14 @@ namespace NMF.Expressions
             }
         }
 
-        public override INotifyExpression<TResult> ApplyParameters(IDictionary<string, object> parameters)
+        protected override INotifyExpression<TResult> ApplyParametersCore(IDictionary<string, object> parameters, IDictionary<INotifiable, INotifiable> trace)
         {
             return new ObservableTreeExtensionCall<T1, T2, T3, T4, T5, TResult>(Function, 
-                Argument1.ApplyParameters(parameters), anchor1Listener?.Select(l => l.Type), Arg1Properties, 
-                Argument2.ApplyParameters(parameters), anchor2Listener?.Select(l => l.Type), Arg2Properties, 
-                Argument3.ApplyParameters(parameters), anchor3Listener?.Select(l => l.Type), Arg3Properties, 
-                Argument4.ApplyParameters(parameters), anchor4Listener?.Select(l => l.Type), Arg4Properties, 
-                Argument5.ApplyParameters(parameters), anchor5Listener?.Select(l => l.Type), Arg5Properties);
+                Argument1.ApplyParameters(parameters, trace), anchor1Listener?.Select(l => l.Type), Arg1Properties, 
+                Argument2.ApplyParameters(parameters, trace), anchor2Listener?.Select(l => l.Type), Arg2Properties, 
+                Argument3.ApplyParameters(parameters, trace), anchor3Listener?.Select(l => l.Type), Arg3Properties, 
+                Argument4.ApplyParameters(parameters, trace), anchor4Listener?.Select(l => l.Type), Arg4Properties, 
+                Argument5.ApplyParameters(parameters, trace), anchor5Listener?.Select(l => l.Type), Arg5Properties);
         }
     }
     class ObservableTreeExtensionCall<T1, T2, T3, T4, T5, T6, TResult> : ObservableStaticMethodCall<T1, T2, T3, T4, T5, T6, TResult>
@@ -913,15 +913,15 @@ namespace NMF.Expressions
             }
         }
 
-        public override INotifyExpression<TResult> ApplyParameters(IDictionary<string, object> parameters)
+        protected override INotifyExpression<TResult> ApplyParametersCore(IDictionary<string, object> parameters, IDictionary<INotifiable, INotifiable> trace)
         {
             return new ObservableTreeExtensionCall<T1, T2, T3, T4, T5, T6, TResult>(Function, 
-                Argument1.ApplyParameters(parameters), anchor1Listener?.Select(l => l.Type), Arg1Properties, 
-                Argument2.ApplyParameters(parameters), anchor2Listener?.Select(l => l.Type), Arg2Properties, 
-                Argument3.ApplyParameters(parameters), anchor3Listener?.Select(l => l.Type), Arg3Properties, 
-                Argument4.ApplyParameters(parameters), anchor4Listener?.Select(l => l.Type), Arg4Properties, 
-                Argument5.ApplyParameters(parameters), anchor5Listener?.Select(l => l.Type), Arg5Properties, 
-                Argument6.ApplyParameters(parameters), anchor6Listener?.Select(l => l.Type), Arg6Properties);
+                Argument1.ApplyParameters(parameters, trace), anchor1Listener?.Select(l => l.Type), Arg1Properties, 
+                Argument2.ApplyParameters(parameters, trace), anchor2Listener?.Select(l => l.Type), Arg2Properties, 
+                Argument3.ApplyParameters(parameters, trace), anchor3Listener?.Select(l => l.Type), Arg3Properties, 
+                Argument4.ApplyParameters(parameters, trace), anchor4Listener?.Select(l => l.Type), Arg4Properties, 
+                Argument5.ApplyParameters(parameters, trace), anchor5Listener?.Select(l => l.Type), Arg5Properties, 
+                Argument6.ApplyParameters(parameters, trace), anchor6Listener?.Select(l => l.Type), Arg6Properties);
         }
     }
     class ObservableTreeExtensionCall<T1, T2, T3, T4, T5, T6, T7, TResult> : ObservableStaticMethodCall<T1, T2, T3, T4, T5, T6, T7, TResult>
@@ -1184,16 +1184,16 @@ namespace NMF.Expressions
             }
         }
 
-        public override INotifyExpression<TResult> ApplyParameters(IDictionary<string, object> parameters)
+        protected override INotifyExpression<TResult> ApplyParametersCore(IDictionary<string, object> parameters, IDictionary<INotifiable, INotifiable> trace)
         {
             return new ObservableTreeExtensionCall<T1, T2, T3, T4, T5, T6, T7, TResult>(Function, 
-                Argument1.ApplyParameters(parameters), anchor1Listener?.Select(l => l.Type), Arg1Properties, 
-                Argument2.ApplyParameters(parameters), anchor2Listener?.Select(l => l.Type), Arg2Properties, 
-                Argument3.ApplyParameters(parameters), anchor3Listener?.Select(l => l.Type), Arg3Properties, 
-                Argument4.ApplyParameters(parameters), anchor4Listener?.Select(l => l.Type), Arg4Properties, 
-                Argument5.ApplyParameters(parameters), anchor5Listener?.Select(l => l.Type), Arg5Properties, 
-                Argument6.ApplyParameters(parameters), anchor6Listener?.Select(l => l.Type), Arg6Properties, 
-                Argument7.ApplyParameters(parameters), anchor7Listener?.Select(l => l.Type), Arg7Properties);
+                Argument1.ApplyParameters(parameters, trace), anchor1Listener?.Select(l => l.Type), Arg1Properties, 
+                Argument2.ApplyParameters(parameters, trace), anchor2Listener?.Select(l => l.Type), Arg2Properties, 
+                Argument3.ApplyParameters(parameters, trace), anchor3Listener?.Select(l => l.Type), Arg3Properties, 
+                Argument4.ApplyParameters(parameters, trace), anchor4Listener?.Select(l => l.Type), Arg4Properties, 
+                Argument5.ApplyParameters(parameters, trace), anchor5Listener?.Select(l => l.Type), Arg5Properties, 
+                Argument6.ApplyParameters(parameters, trace), anchor6Listener?.Select(l => l.Type), Arg6Properties, 
+                Argument7.ApplyParameters(parameters, trace), anchor7Listener?.Select(l => l.Type), Arg7Properties);
         }
     }
     class ObservableTreeExtensionCall<T1, T2, T3, T4, T5, T6, T7, T8, TResult> : ObservableStaticMethodCall<T1, T2, T3, T4, T5, T6, T7, T8, TResult>
@@ -1489,17 +1489,17 @@ namespace NMF.Expressions
             }
         }
 
-        public override INotifyExpression<TResult> ApplyParameters(IDictionary<string, object> parameters)
+        protected override INotifyExpression<TResult> ApplyParametersCore(IDictionary<string, object> parameters, IDictionary<INotifiable, INotifiable> trace)
         {
             return new ObservableTreeExtensionCall<T1, T2, T3, T4, T5, T6, T7, T8, TResult>(Function, 
-                Argument1.ApplyParameters(parameters), anchor1Listener?.Select(l => l.Type), Arg1Properties, 
-                Argument2.ApplyParameters(parameters), anchor2Listener?.Select(l => l.Type), Arg2Properties, 
-                Argument3.ApplyParameters(parameters), anchor3Listener?.Select(l => l.Type), Arg3Properties, 
-                Argument4.ApplyParameters(parameters), anchor4Listener?.Select(l => l.Type), Arg4Properties, 
-                Argument5.ApplyParameters(parameters), anchor5Listener?.Select(l => l.Type), Arg5Properties, 
-                Argument6.ApplyParameters(parameters), anchor6Listener?.Select(l => l.Type), Arg6Properties, 
-                Argument7.ApplyParameters(parameters), anchor7Listener?.Select(l => l.Type), Arg7Properties, 
-                Argument8.ApplyParameters(parameters), anchor8Listener?.Select(l => l.Type), Arg8Properties);
+                Argument1.ApplyParameters(parameters, trace), anchor1Listener?.Select(l => l.Type), Arg1Properties, 
+                Argument2.ApplyParameters(parameters, trace), anchor2Listener?.Select(l => l.Type), Arg2Properties, 
+                Argument3.ApplyParameters(parameters, trace), anchor3Listener?.Select(l => l.Type), Arg3Properties, 
+                Argument4.ApplyParameters(parameters, trace), anchor4Listener?.Select(l => l.Type), Arg4Properties, 
+                Argument5.ApplyParameters(parameters, trace), anchor5Listener?.Select(l => l.Type), Arg5Properties, 
+                Argument6.ApplyParameters(parameters, trace), anchor6Listener?.Select(l => l.Type), Arg6Properties, 
+                Argument7.ApplyParameters(parameters, trace), anchor7Listener?.Select(l => l.Type), Arg7Properties, 
+                Argument8.ApplyParameters(parameters, trace), anchor8Listener?.Select(l => l.Type), Arg8Properties);
         }
     }
     class ObservableTreeExtensionCall<T1, T2, T3, T4, T5, T6, T7, T8, T9, TResult> : ObservableStaticMethodCall<T1, T2, T3, T4, T5, T6, T7, T8, T9, TResult>
@@ -1828,18 +1828,18 @@ namespace NMF.Expressions
             }
         }
 
-        public override INotifyExpression<TResult> ApplyParameters(IDictionary<string, object> parameters)
+        protected override INotifyExpression<TResult> ApplyParametersCore(IDictionary<string, object> parameters, IDictionary<INotifiable, INotifiable> trace)
         {
             return new ObservableTreeExtensionCall<T1, T2, T3, T4, T5, T6, T7, T8, T9, TResult>(Function, 
-                Argument1.ApplyParameters(parameters), anchor1Listener?.Select(l => l.Type), Arg1Properties, 
-                Argument2.ApplyParameters(parameters), anchor2Listener?.Select(l => l.Type), Arg2Properties, 
-                Argument3.ApplyParameters(parameters), anchor3Listener?.Select(l => l.Type), Arg3Properties, 
-                Argument4.ApplyParameters(parameters), anchor4Listener?.Select(l => l.Type), Arg4Properties, 
-                Argument5.ApplyParameters(parameters), anchor5Listener?.Select(l => l.Type), Arg5Properties, 
-                Argument6.ApplyParameters(parameters), anchor6Listener?.Select(l => l.Type), Arg6Properties, 
-                Argument7.ApplyParameters(parameters), anchor7Listener?.Select(l => l.Type), Arg7Properties, 
-                Argument8.ApplyParameters(parameters), anchor8Listener?.Select(l => l.Type), Arg8Properties, 
-                Argument9.ApplyParameters(parameters), anchor9Listener?.Select(l => l.Type), Arg9Properties);
+                Argument1.ApplyParameters(parameters, trace), anchor1Listener?.Select(l => l.Type), Arg1Properties, 
+                Argument2.ApplyParameters(parameters, trace), anchor2Listener?.Select(l => l.Type), Arg2Properties, 
+                Argument3.ApplyParameters(parameters, trace), anchor3Listener?.Select(l => l.Type), Arg3Properties, 
+                Argument4.ApplyParameters(parameters, trace), anchor4Listener?.Select(l => l.Type), Arg4Properties, 
+                Argument5.ApplyParameters(parameters, trace), anchor5Listener?.Select(l => l.Type), Arg5Properties, 
+                Argument6.ApplyParameters(parameters, trace), anchor6Listener?.Select(l => l.Type), Arg6Properties, 
+                Argument7.ApplyParameters(parameters, trace), anchor7Listener?.Select(l => l.Type), Arg7Properties, 
+                Argument8.ApplyParameters(parameters, trace), anchor8Listener?.Select(l => l.Type), Arg8Properties, 
+                Argument9.ApplyParameters(parameters, trace), anchor9Listener?.Select(l => l.Type), Arg9Properties);
         }
     }
     class ObservableTreeExtensionCall<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, TResult> : ObservableStaticMethodCall<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, TResult>
@@ -2201,19 +2201,19 @@ namespace NMF.Expressions
             }
         }
 
-        public override INotifyExpression<TResult> ApplyParameters(IDictionary<string, object> parameters)
+        protected override INotifyExpression<TResult> ApplyParametersCore(IDictionary<string, object> parameters, IDictionary<INotifiable, INotifiable> trace)
         {
             return new ObservableTreeExtensionCall<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, TResult>(Function, 
-                Argument1.ApplyParameters(parameters), anchor1Listener?.Select(l => l.Type), Arg1Properties, 
-                Argument2.ApplyParameters(parameters), anchor2Listener?.Select(l => l.Type), Arg2Properties, 
-                Argument3.ApplyParameters(parameters), anchor3Listener?.Select(l => l.Type), Arg3Properties, 
-                Argument4.ApplyParameters(parameters), anchor4Listener?.Select(l => l.Type), Arg4Properties, 
-                Argument5.ApplyParameters(parameters), anchor5Listener?.Select(l => l.Type), Arg5Properties, 
-                Argument6.ApplyParameters(parameters), anchor6Listener?.Select(l => l.Type), Arg6Properties, 
-                Argument7.ApplyParameters(parameters), anchor7Listener?.Select(l => l.Type), Arg7Properties, 
-                Argument8.ApplyParameters(parameters), anchor8Listener?.Select(l => l.Type), Arg8Properties, 
-                Argument9.ApplyParameters(parameters), anchor9Listener?.Select(l => l.Type), Arg9Properties, 
-                Argument10.ApplyParameters(parameters), anchor10Listener?.Select(l => l.Type), Arg10Properties);
+                Argument1.ApplyParameters(parameters, trace), anchor1Listener?.Select(l => l.Type), Arg1Properties, 
+                Argument2.ApplyParameters(parameters, trace), anchor2Listener?.Select(l => l.Type), Arg2Properties, 
+                Argument3.ApplyParameters(parameters, trace), anchor3Listener?.Select(l => l.Type), Arg3Properties, 
+                Argument4.ApplyParameters(parameters, trace), anchor4Listener?.Select(l => l.Type), Arg4Properties, 
+                Argument5.ApplyParameters(parameters, trace), anchor5Listener?.Select(l => l.Type), Arg5Properties, 
+                Argument6.ApplyParameters(parameters, trace), anchor6Listener?.Select(l => l.Type), Arg6Properties, 
+                Argument7.ApplyParameters(parameters, trace), anchor7Listener?.Select(l => l.Type), Arg7Properties, 
+                Argument8.ApplyParameters(parameters, trace), anchor8Listener?.Select(l => l.Type), Arg8Properties, 
+                Argument9.ApplyParameters(parameters, trace), anchor9Listener?.Select(l => l.Type), Arg9Properties, 
+                Argument10.ApplyParameters(parameters, trace), anchor10Listener?.Select(l => l.Type), Arg10Properties);
         }
     }
     class ObservableTreeExtensionCall<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, TResult> : ObservableStaticMethodCall<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, TResult>
@@ -2608,20 +2608,20 @@ namespace NMF.Expressions
             }
         }
 
-        public override INotifyExpression<TResult> ApplyParameters(IDictionary<string, object> parameters)
+        protected override INotifyExpression<TResult> ApplyParametersCore(IDictionary<string, object> parameters, IDictionary<INotifiable, INotifiable> trace)
         {
             return new ObservableTreeExtensionCall<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, TResult>(Function, 
-                Argument1.ApplyParameters(parameters), anchor1Listener?.Select(l => l.Type), Arg1Properties, 
-                Argument2.ApplyParameters(parameters), anchor2Listener?.Select(l => l.Type), Arg2Properties, 
-                Argument3.ApplyParameters(parameters), anchor3Listener?.Select(l => l.Type), Arg3Properties, 
-                Argument4.ApplyParameters(parameters), anchor4Listener?.Select(l => l.Type), Arg4Properties, 
-                Argument5.ApplyParameters(parameters), anchor5Listener?.Select(l => l.Type), Arg5Properties, 
-                Argument6.ApplyParameters(parameters), anchor6Listener?.Select(l => l.Type), Arg6Properties, 
-                Argument7.ApplyParameters(parameters), anchor7Listener?.Select(l => l.Type), Arg7Properties, 
-                Argument8.ApplyParameters(parameters), anchor8Listener?.Select(l => l.Type), Arg8Properties, 
-                Argument9.ApplyParameters(parameters), anchor9Listener?.Select(l => l.Type), Arg9Properties, 
-                Argument10.ApplyParameters(parameters), anchor10Listener?.Select(l => l.Type), Arg10Properties, 
-                Argument11.ApplyParameters(parameters), anchor11Listener?.Select(l => l.Type), Arg11Properties);
+                Argument1.ApplyParameters(parameters, trace), anchor1Listener?.Select(l => l.Type), Arg1Properties, 
+                Argument2.ApplyParameters(parameters, trace), anchor2Listener?.Select(l => l.Type), Arg2Properties, 
+                Argument3.ApplyParameters(parameters, trace), anchor3Listener?.Select(l => l.Type), Arg3Properties, 
+                Argument4.ApplyParameters(parameters, trace), anchor4Listener?.Select(l => l.Type), Arg4Properties, 
+                Argument5.ApplyParameters(parameters, trace), anchor5Listener?.Select(l => l.Type), Arg5Properties, 
+                Argument6.ApplyParameters(parameters, trace), anchor6Listener?.Select(l => l.Type), Arg6Properties, 
+                Argument7.ApplyParameters(parameters, trace), anchor7Listener?.Select(l => l.Type), Arg7Properties, 
+                Argument8.ApplyParameters(parameters, trace), anchor8Listener?.Select(l => l.Type), Arg8Properties, 
+                Argument9.ApplyParameters(parameters, trace), anchor9Listener?.Select(l => l.Type), Arg9Properties, 
+                Argument10.ApplyParameters(parameters, trace), anchor10Listener?.Select(l => l.Type), Arg10Properties, 
+                Argument11.ApplyParameters(parameters, trace), anchor11Listener?.Select(l => l.Type), Arg11Properties);
         }
     }
     class ObservableTreeExtensionCall<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, TResult> : ObservableStaticMethodCall<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, TResult>
@@ -3049,21 +3049,21 @@ namespace NMF.Expressions
             }
         }
 
-        public override INotifyExpression<TResult> ApplyParameters(IDictionary<string, object> parameters)
+        protected override INotifyExpression<TResult> ApplyParametersCore(IDictionary<string, object> parameters, IDictionary<INotifiable, INotifiable> trace)
         {
             return new ObservableTreeExtensionCall<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, TResult>(Function, 
-                Argument1.ApplyParameters(parameters), anchor1Listener?.Select(l => l.Type), Arg1Properties, 
-                Argument2.ApplyParameters(parameters), anchor2Listener?.Select(l => l.Type), Arg2Properties, 
-                Argument3.ApplyParameters(parameters), anchor3Listener?.Select(l => l.Type), Arg3Properties, 
-                Argument4.ApplyParameters(parameters), anchor4Listener?.Select(l => l.Type), Arg4Properties, 
-                Argument5.ApplyParameters(parameters), anchor5Listener?.Select(l => l.Type), Arg5Properties, 
-                Argument6.ApplyParameters(parameters), anchor6Listener?.Select(l => l.Type), Arg6Properties, 
-                Argument7.ApplyParameters(parameters), anchor7Listener?.Select(l => l.Type), Arg7Properties, 
-                Argument8.ApplyParameters(parameters), anchor8Listener?.Select(l => l.Type), Arg8Properties, 
-                Argument9.ApplyParameters(parameters), anchor9Listener?.Select(l => l.Type), Arg9Properties, 
-                Argument10.ApplyParameters(parameters), anchor10Listener?.Select(l => l.Type), Arg10Properties, 
-                Argument11.ApplyParameters(parameters), anchor11Listener?.Select(l => l.Type), Arg11Properties, 
-                Argument12.ApplyParameters(parameters), anchor12Listener?.Select(l => l.Type), Arg12Properties);
+                Argument1.ApplyParameters(parameters, trace), anchor1Listener?.Select(l => l.Type), Arg1Properties, 
+                Argument2.ApplyParameters(parameters, trace), anchor2Listener?.Select(l => l.Type), Arg2Properties, 
+                Argument3.ApplyParameters(parameters, trace), anchor3Listener?.Select(l => l.Type), Arg3Properties, 
+                Argument4.ApplyParameters(parameters, trace), anchor4Listener?.Select(l => l.Type), Arg4Properties, 
+                Argument5.ApplyParameters(parameters, trace), anchor5Listener?.Select(l => l.Type), Arg5Properties, 
+                Argument6.ApplyParameters(parameters, trace), anchor6Listener?.Select(l => l.Type), Arg6Properties, 
+                Argument7.ApplyParameters(parameters, trace), anchor7Listener?.Select(l => l.Type), Arg7Properties, 
+                Argument8.ApplyParameters(parameters, trace), anchor8Listener?.Select(l => l.Type), Arg8Properties, 
+                Argument9.ApplyParameters(parameters, trace), anchor9Listener?.Select(l => l.Type), Arg9Properties, 
+                Argument10.ApplyParameters(parameters, trace), anchor10Listener?.Select(l => l.Type), Arg10Properties, 
+                Argument11.ApplyParameters(parameters, trace), anchor11Listener?.Select(l => l.Type), Arg11Properties, 
+                Argument12.ApplyParameters(parameters, trace), anchor12Listener?.Select(l => l.Type), Arg12Properties);
         }
     }
     class ObservableTreeExtensionCall<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, TResult> : ObservableStaticMethodCall<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, TResult>
@@ -3524,22 +3524,22 @@ namespace NMF.Expressions
             }
         }
 
-        public override INotifyExpression<TResult> ApplyParameters(IDictionary<string, object> parameters)
+        protected override INotifyExpression<TResult> ApplyParametersCore(IDictionary<string, object> parameters, IDictionary<INotifiable, INotifiable> trace)
         {
             return new ObservableTreeExtensionCall<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, TResult>(Function, 
-                Argument1.ApplyParameters(parameters), anchor1Listener?.Select(l => l.Type), Arg1Properties, 
-                Argument2.ApplyParameters(parameters), anchor2Listener?.Select(l => l.Type), Arg2Properties, 
-                Argument3.ApplyParameters(parameters), anchor3Listener?.Select(l => l.Type), Arg3Properties, 
-                Argument4.ApplyParameters(parameters), anchor4Listener?.Select(l => l.Type), Arg4Properties, 
-                Argument5.ApplyParameters(parameters), anchor5Listener?.Select(l => l.Type), Arg5Properties, 
-                Argument6.ApplyParameters(parameters), anchor6Listener?.Select(l => l.Type), Arg6Properties, 
-                Argument7.ApplyParameters(parameters), anchor7Listener?.Select(l => l.Type), Arg7Properties, 
-                Argument8.ApplyParameters(parameters), anchor8Listener?.Select(l => l.Type), Arg8Properties, 
-                Argument9.ApplyParameters(parameters), anchor9Listener?.Select(l => l.Type), Arg9Properties, 
-                Argument10.ApplyParameters(parameters), anchor10Listener?.Select(l => l.Type), Arg10Properties, 
-                Argument11.ApplyParameters(parameters), anchor11Listener?.Select(l => l.Type), Arg11Properties, 
-                Argument12.ApplyParameters(parameters), anchor12Listener?.Select(l => l.Type), Arg12Properties, 
-                Argument13.ApplyParameters(parameters), anchor13Listener?.Select(l => l.Type), Arg13Properties);
+                Argument1.ApplyParameters(parameters, trace), anchor1Listener?.Select(l => l.Type), Arg1Properties, 
+                Argument2.ApplyParameters(parameters, trace), anchor2Listener?.Select(l => l.Type), Arg2Properties, 
+                Argument3.ApplyParameters(parameters, trace), anchor3Listener?.Select(l => l.Type), Arg3Properties, 
+                Argument4.ApplyParameters(parameters, trace), anchor4Listener?.Select(l => l.Type), Arg4Properties, 
+                Argument5.ApplyParameters(parameters, trace), anchor5Listener?.Select(l => l.Type), Arg5Properties, 
+                Argument6.ApplyParameters(parameters, trace), anchor6Listener?.Select(l => l.Type), Arg6Properties, 
+                Argument7.ApplyParameters(parameters, trace), anchor7Listener?.Select(l => l.Type), Arg7Properties, 
+                Argument8.ApplyParameters(parameters, trace), anchor8Listener?.Select(l => l.Type), Arg8Properties, 
+                Argument9.ApplyParameters(parameters, trace), anchor9Listener?.Select(l => l.Type), Arg9Properties, 
+                Argument10.ApplyParameters(parameters, trace), anchor10Listener?.Select(l => l.Type), Arg10Properties, 
+                Argument11.ApplyParameters(parameters, trace), anchor11Listener?.Select(l => l.Type), Arg11Properties, 
+                Argument12.ApplyParameters(parameters, trace), anchor12Listener?.Select(l => l.Type), Arg12Properties, 
+                Argument13.ApplyParameters(parameters, trace), anchor13Listener?.Select(l => l.Type), Arg13Properties);
         }
     }
     class ObservableTreeExtensionCall<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, TResult> : ObservableStaticMethodCall<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, TResult>
@@ -4033,23 +4033,23 @@ namespace NMF.Expressions
             }
         }
 
-        public override INotifyExpression<TResult> ApplyParameters(IDictionary<string, object> parameters)
+        protected override INotifyExpression<TResult> ApplyParametersCore(IDictionary<string, object> parameters, IDictionary<INotifiable, INotifiable> trace)
         {
             return new ObservableTreeExtensionCall<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, TResult>(Function, 
-                Argument1.ApplyParameters(parameters), anchor1Listener?.Select(l => l.Type), Arg1Properties, 
-                Argument2.ApplyParameters(parameters), anchor2Listener?.Select(l => l.Type), Arg2Properties, 
-                Argument3.ApplyParameters(parameters), anchor3Listener?.Select(l => l.Type), Arg3Properties, 
-                Argument4.ApplyParameters(parameters), anchor4Listener?.Select(l => l.Type), Arg4Properties, 
-                Argument5.ApplyParameters(parameters), anchor5Listener?.Select(l => l.Type), Arg5Properties, 
-                Argument6.ApplyParameters(parameters), anchor6Listener?.Select(l => l.Type), Arg6Properties, 
-                Argument7.ApplyParameters(parameters), anchor7Listener?.Select(l => l.Type), Arg7Properties, 
-                Argument8.ApplyParameters(parameters), anchor8Listener?.Select(l => l.Type), Arg8Properties, 
-                Argument9.ApplyParameters(parameters), anchor9Listener?.Select(l => l.Type), Arg9Properties, 
-                Argument10.ApplyParameters(parameters), anchor10Listener?.Select(l => l.Type), Arg10Properties, 
-                Argument11.ApplyParameters(parameters), anchor11Listener?.Select(l => l.Type), Arg11Properties, 
-                Argument12.ApplyParameters(parameters), anchor12Listener?.Select(l => l.Type), Arg12Properties, 
-                Argument13.ApplyParameters(parameters), anchor13Listener?.Select(l => l.Type), Arg13Properties, 
-                Argument14.ApplyParameters(parameters), anchor14Listener?.Select(l => l.Type), Arg14Properties);
+                Argument1.ApplyParameters(parameters, trace), anchor1Listener?.Select(l => l.Type), Arg1Properties, 
+                Argument2.ApplyParameters(parameters, trace), anchor2Listener?.Select(l => l.Type), Arg2Properties, 
+                Argument3.ApplyParameters(parameters, trace), anchor3Listener?.Select(l => l.Type), Arg3Properties, 
+                Argument4.ApplyParameters(parameters, trace), anchor4Listener?.Select(l => l.Type), Arg4Properties, 
+                Argument5.ApplyParameters(parameters, trace), anchor5Listener?.Select(l => l.Type), Arg5Properties, 
+                Argument6.ApplyParameters(parameters, trace), anchor6Listener?.Select(l => l.Type), Arg6Properties, 
+                Argument7.ApplyParameters(parameters, trace), anchor7Listener?.Select(l => l.Type), Arg7Properties, 
+                Argument8.ApplyParameters(parameters, trace), anchor8Listener?.Select(l => l.Type), Arg8Properties, 
+                Argument9.ApplyParameters(parameters, trace), anchor9Listener?.Select(l => l.Type), Arg9Properties, 
+                Argument10.ApplyParameters(parameters, trace), anchor10Listener?.Select(l => l.Type), Arg10Properties, 
+                Argument11.ApplyParameters(parameters, trace), anchor11Listener?.Select(l => l.Type), Arg11Properties, 
+                Argument12.ApplyParameters(parameters, trace), anchor12Listener?.Select(l => l.Type), Arg12Properties, 
+                Argument13.ApplyParameters(parameters, trace), anchor13Listener?.Select(l => l.Type), Arg13Properties, 
+                Argument14.ApplyParameters(parameters, trace), anchor14Listener?.Select(l => l.Type), Arg14Properties);
         }
     }
     class ObservableTreeExtensionCall<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, TResult> : ObservableStaticMethodCall<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, TResult>
@@ -4576,24 +4576,24 @@ namespace NMF.Expressions
             }
         }
 
-        public override INotifyExpression<TResult> ApplyParameters(IDictionary<string, object> parameters)
+        protected override INotifyExpression<TResult> ApplyParametersCore(IDictionary<string, object> parameters, IDictionary<INotifiable, INotifiable> trace)
         {
             return new ObservableTreeExtensionCall<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, TResult>(Function, 
-                Argument1.ApplyParameters(parameters), anchor1Listener?.Select(l => l.Type), Arg1Properties, 
-                Argument2.ApplyParameters(parameters), anchor2Listener?.Select(l => l.Type), Arg2Properties, 
-                Argument3.ApplyParameters(parameters), anchor3Listener?.Select(l => l.Type), Arg3Properties, 
-                Argument4.ApplyParameters(parameters), anchor4Listener?.Select(l => l.Type), Arg4Properties, 
-                Argument5.ApplyParameters(parameters), anchor5Listener?.Select(l => l.Type), Arg5Properties, 
-                Argument6.ApplyParameters(parameters), anchor6Listener?.Select(l => l.Type), Arg6Properties, 
-                Argument7.ApplyParameters(parameters), anchor7Listener?.Select(l => l.Type), Arg7Properties, 
-                Argument8.ApplyParameters(parameters), anchor8Listener?.Select(l => l.Type), Arg8Properties, 
-                Argument9.ApplyParameters(parameters), anchor9Listener?.Select(l => l.Type), Arg9Properties, 
-                Argument10.ApplyParameters(parameters), anchor10Listener?.Select(l => l.Type), Arg10Properties, 
-                Argument11.ApplyParameters(parameters), anchor11Listener?.Select(l => l.Type), Arg11Properties, 
-                Argument12.ApplyParameters(parameters), anchor12Listener?.Select(l => l.Type), Arg12Properties, 
-                Argument13.ApplyParameters(parameters), anchor13Listener?.Select(l => l.Type), Arg13Properties, 
-                Argument14.ApplyParameters(parameters), anchor14Listener?.Select(l => l.Type), Arg14Properties, 
-                Argument15.ApplyParameters(parameters), anchor15Listener?.Select(l => l.Type), Arg15Properties);
+                Argument1.ApplyParameters(parameters, trace), anchor1Listener?.Select(l => l.Type), Arg1Properties, 
+                Argument2.ApplyParameters(parameters, trace), anchor2Listener?.Select(l => l.Type), Arg2Properties, 
+                Argument3.ApplyParameters(parameters, trace), anchor3Listener?.Select(l => l.Type), Arg3Properties, 
+                Argument4.ApplyParameters(parameters, trace), anchor4Listener?.Select(l => l.Type), Arg4Properties, 
+                Argument5.ApplyParameters(parameters, trace), anchor5Listener?.Select(l => l.Type), Arg5Properties, 
+                Argument6.ApplyParameters(parameters, trace), anchor6Listener?.Select(l => l.Type), Arg6Properties, 
+                Argument7.ApplyParameters(parameters, trace), anchor7Listener?.Select(l => l.Type), Arg7Properties, 
+                Argument8.ApplyParameters(parameters, trace), anchor8Listener?.Select(l => l.Type), Arg8Properties, 
+                Argument9.ApplyParameters(parameters, trace), anchor9Listener?.Select(l => l.Type), Arg9Properties, 
+                Argument10.ApplyParameters(parameters, trace), anchor10Listener?.Select(l => l.Type), Arg10Properties, 
+                Argument11.ApplyParameters(parameters, trace), anchor11Listener?.Select(l => l.Type), Arg11Properties, 
+                Argument12.ApplyParameters(parameters, trace), anchor12Listener?.Select(l => l.Type), Arg12Properties, 
+                Argument13.ApplyParameters(parameters, trace), anchor13Listener?.Select(l => l.Type), Arg13Properties, 
+                Argument14.ApplyParameters(parameters, trace), anchor14Listener?.Select(l => l.Type), Arg14Properties, 
+                Argument15.ApplyParameters(parameters, trace), anchor15Listener?.Select(l => l.Type), Arg15Properties);
         }
     }
     internal static class ObservableTreeExtensionCallTypes

@@ -53,6 +53,8 @@ namespace NMF.Models.Changes
         /// <summary>
         /// The value property
         /// </summary>
+        [DisplayNameAttribute("value")]
+        [CategoryAttribute("ValueArgument")]
         [XmlElementNameAttribute("value")]
         [XmlAttributeAttribute(true)]
         public string Value

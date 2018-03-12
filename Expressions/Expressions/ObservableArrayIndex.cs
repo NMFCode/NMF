@@ -27,9 +27,9 @@ namespace NMF.Expressions
             return Left.Value[Right.Value];
         }
 
-        public override INotifyExpression<T> ApplyParameters(IDictionary<string, object> parameters)
+        protected override INotifyExpression<T> ApplyParametersCore(IDictionary<string, object> parameters, IDictionary<INotifiable, INotifiable> trace)
         {
-            return new ObservableIntArrayIndex<T>(Left.ApplyParameters(parameters), Right.ApplyParameters(parameters));
+            return new ObservableIntArrayIndex<T>(Left.ApplyParameters(parameters, trace), Right.ApplyParameters(parameters, trace));
         }
     }
 
@@ -54,9 +54,9 @@ namespace NMF.Expressions
             return Left.Value[Right.Value];
         }
 
-        public override INotifyExpression<T> ApplyParameters(IDictionary<string, object> parameters)
+        protected override INotifyExpression<T> ApplyParametersCore(IDictionary<string, object> parameters, IDictionary<INotifiable, INotifiable> trace)
         {
-            return new ObservableLongArrayIndex<T>(Left.ApplyParameters(parameters), Right.ApplyParameters(parameters));
+            return new ObservableLongArrayIndex<T>(Left.ApplyParameters(parameters, trace), Right.ApplyParameters(parameters, trace));
         }
     }
 }

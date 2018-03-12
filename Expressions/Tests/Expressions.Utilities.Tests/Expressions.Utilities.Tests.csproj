@@ -15,5 +15,6 @@
   <ItemGroup>
     <ProjectReference Include="..\..\Expressions.Utilities\Expressions.Utilities.csproj" />
     <ProjectReference Include="..\..\Expressions\Expressions.csproj" />
+    <ProjectReference Include="..\Expressions.Test\Expressions.Test.csproj" />
   </ItemGroup>
 </Project>

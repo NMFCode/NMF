@@ -23,9 +23,9 @@ namespace NMF.Expressions.Arithmetics
             return Left.Value ^ Right.Value;
         }
 
-        public override INotifyExpression<int> ApplyParameters(IDictionary<string, object> parameters)
+        protected override INotifyExpression<int> ApplyParametersCore(IDictionary<string, object> parameters, IDictionary<INotifiable, INotifiable> trace)
         {
-            return new ObservableIntBitwiseXor(Left.ApplyParameters(parameters), Right.ApplyParameters(parameters));
+            return new ObservableIntBitwiseXor(Left.ApplyParameters(parameters, trace), Right.ApplyParameters(parameters, trace));
         }
 
         protected override void SetLeftValue(INotifyReversableExpression<int> left, int right, int result)
@@ -57,9 +57,9 @@ namespace NMF.Expressions.Arithmetics
             return Left.Value ^ Right.Value;
         }
 
-        public override INotifyExpression<uint> ApplyParameters(IDictionary<string, object> parameters)
+        protected override INotifyExpression<uint> ApplyParametersCore(IDictionary<string, object> parameters, IDictionary<INotifiable, INotifiable> trace)
         {
-            return new ObservableUIntBitwiseXor(Left.ApplyParameters(parameters), Right.ApplyParameters(parameters));
+            return new ObservableUIntBitwiseXor(Left.ApplyParameters(parameters, trace), Right.ApplyParameters(parameters, trace));
         }
 
         protected override void SetLeftValue(INotifyReversableExpression<uint> left, uint right, uint result)
@@ -91,9 +91,9 @@ namespace NMF.Expressions.Arithmetics
             return Left.Value ^ Right.Value;
         }
 
-        public override INotifyExpression<long> ApplyParameters(IDictionary<string, object> parameters)
+        protected override INotifyExpression<long> ApplyParametersCore(IDictionary<string, object> parameters, IDictionary<INotifiable, INotifiable> trace)
         {
-            return new ObservableLongBitwiseXor(Left.ApplyParameters(parameters), Right.ApplyParameters(parameters));
+            return new ObservableLongBitwiseXor(Left.ApplyParameters(parameters, trace), Right.ApplyParameters(parameters, trace));
         }
 
         protected override void SetLeftValue(INotifyReversableExpression<long> left, long right, long result)
@@ -125,9 +125,9 @@ namespace NMF.Expressions.Arithmetics
             return Left.Value ^ Right.Value;
         }
 
-        public override INotifyExpression<ulong> ApplyParameters(IDictionary<string, object> parameters)
+        protected override INotifyExpression<ulong> ApplyParametersCore(IDictionary<string, object> parameters, IDictionary<INotifiable, INotifiable> trace)
         {
-            return new ObservableULongBitwiseXor(Left.ApplyParameters(parameters), Right.ApplyParameters(parameters));
+            return new ObservableULongBitwiseXor(Left.ApplyParameters(parameters, trace), Right.ApplyParameters(parameters, trace));
         }
 
         protected override void SetLeftValue(INotifyReversableExpression<ulong> left, ulong right, ulong result)

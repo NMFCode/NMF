@@ -37,12 +37,15 @@ namespace NMF.Models.Changes
     /// </summary>
     [DefaultImplementationTypeAttribute(typeof(CompositionMoveToCollection))]
     [XmlDefaultImplementationTypeAttribute(typeof(CompositionMoveToCollection))]
-    public interface ICompositionMoveToCollection : NMF.Models.IModelElement, ICollectionInsertion
+    [ModelRepresentationClassAttribute("http://nmf.codeplex.com/changes#//CompositionMoveToCollection")]
+    public interface ICompositionMoveToCollection : NMF.Models.IModelElement, ICompositionChange
     {
         
         /// <summary>
         /// The movedElement property
         /// </summary>
+        [DisplayNameAttribute("movedElement")]
+        [CategoryAttribute("CompositionMoveToCollection")]
         [XmlElementNameAttribute("movedElement")]
         [XmlAttributeAttribute(true)]
         NMF.Models.IModelElement MovedElement
@@ -54,6 +57,7 @@ namespace NMF.Models.Changes
         /// <summary>
         /// The origin property
         /// </summary>
+        [BrowsableAttribute(false)]
         [XmlElementNameAttribute("origin")]
         [XmlAttributeAttribute(false)]
         [ContainmentAttribute()]

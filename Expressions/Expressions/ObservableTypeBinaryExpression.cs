@@ -60,9 +60,9 @@ namespace NMF.Expressions
             }
         }
 
-        public override INotifyExpression<bool> ApplyParameters(IDictionary<string, object> parameters)
+        protected override INotifyExpression<bool> ApplyParametersCore(IDictionary<string, object> parameters, IDictionary<INotifiable, INotifiable> trace)
         {
-            return new ObservableTypeExpression(Inner.ApplyParameters(parameters), TypeOperand, ExactMatch);
+            return new ObservableTypeExpression(Inner.ApplyParameters(parameters, trace), TypeOperand, ExactMatch);
         }
     }
 }

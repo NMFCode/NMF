@@ -125,9 +125,9 @@ namespace NMF.Models.Meta
                     else
                     {
                         reference.BaseType = mappedType.SystemType.Name;
-                        if (typeof(IModelElement).IsAssignableFrom(mappedType.SystemType) && !implementation)
+                        if (typeof(IModelElement).IsAssignableFrom(mappedType.SystemType) && implementation)
                         {
-                            reference.BaseType = "I" + reference.BaseType;
+                            reference.BaseType = reference.BaseType.Substring(1);
                         }
                         reference.SetNamespace(mappedType.SystemType.Namespace);
                     }

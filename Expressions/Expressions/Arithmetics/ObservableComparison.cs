@@ -29,9 +29,9 @@ namespace NMF.Expressions.Arithmetics
             return Comparer<T>.Default.Compare(Left.Value, Right.Value) > 0;
         }
 
-        public override INotifyExpression<bool> ApplyParameters(IDictionary<string, object> parameters)
+        protected override INotifyExpression<bool> ApplyParametersCore(IDictionary<string, object> parameters, IDictionary<INotifiable, INotifiable> trace)
         {
-            return new ObservableGreatherThan<T>(Left.ApplyParameters(parameters), Right.ApplyParameters(parameters));
+            return new ObservableGreatherThan<T>(Left.ApplyParameters(parameters, trace), Right.ApplyParameters(parameters, trace));
         }
     }
 
@@ -58,9 +58,9 @@ namespace NMF.Expressions.Arithmetics
             return Comparer<T>.Default.Compare(Left.Value, Right.Value) >= 0;
         }
 
-        public override INotifyExpression<bool> ApplyParameters(IDictionary<string, object> parameters)
+        protected override INotifyExpression<bool> ApplyParametersCore(IDictionary<string, object> parameters, IDictionary<INotifiable, INotifiable> trace)
         {
-            return new ObservableGreatherThanOrEquals<T>(Left.ApplyParameters(parameters), Right.ApplyParameters(parameters));
+            return new ObservableGreatherThanOrEquals<T>(Left.ApplyParameters(parameters, trace), Right.ApplyParameters(parameters, trace));
         }
     }
 
@@ -87,9 +87,9 @@ namespace NMF.Expressions.Arithmetics
             return Comparer<T>.Default.Compare(Left.Value, Right.Value) < 0;
         }
 
-        public override INotifyExpression<bool> ApplyParameters(IDictionary<string, object> parameters)
+        protected override INotifyExpression<bool> ApplyParametersCore(IDictionary<string, object> parameters, IDictionary<INotifiable, INotifiable> trace)
         {
-            return new ObservableLessThan<T>(Left.ApplyParameters(parameters), Right.ApplyParameters(parameters));
+            return new ObservableLessThan<T>(Left.ApplyParameters(parameters, trace), Right.ApplyParameters(parameters, trace));
         }
     }
 
@@ -116,9 +116,9 @@ namespace NMF.Expressions.Arithmetics
             return Comparer<T>.Default.Compare(Left.Value, Right.Value) <= 0;
         }
 
-        public override INotifyExpression<bool> ApplyParameters(IDictionary<string, object> parameters)
+        protected override INotifyExpression<bool> ApplyParametersCore(IDictionary<string, object> parameters, IDictionary<INotifiable, INotifiable> trace)
         {
-            return new ObservableLessThanOrEquals<T>(Left.ApplyParameters(parameters), Right.ApplyParameters(parameters));
+            return new ObservableLessThanOrEquals<T>(Left.ApplyParameters(parameters, trace), Right.ApplyParameters(parameters, trace));
         }
     }
 }

@@ -37,12 +37,14 @@ namespace NMF.Models.Meta
     /// </summary>
     [DefaultImplementationTypeAttribute(typeof(TypedElement))]
     [XmlDefaultImplementationTypeAttribute(typeof(TypedElement))]
+    [ModelRepresentationClassAttribute("http://nmf.codeplex.com/nmeta/#//TypedElement")]
     public interface ITypedElement : NMF.Models.IModelElement, IMetaElement
     {
         
         /// <summary>
         /// The IsOrdered property
         /// </summary>
+        [CategoryAttribute("TypedElement")]
         [XmlAttributeAttribute(true)]
         bool IsOrdered
         {
@@ -53,6 +55,7 @@ namespace NMF.Models.Meta
         /// <summary>
         /// The IsUnique property
         /// </summary>
+        [CategoryAttribute("TypedElement")]
         [XmlAttributeAttribute(true)]
         bool IsUnique
         {
@@ -64,6 +67,7 @@ namespace NMF.Models.Meta
         /// The LowerBound property
         /// </summary>
         [DefaultValueAttribute(0)]
+        [CategoryAttribute("TypedElement")]
         [XmlAttributeAttribute(true)]
         int LowerBound
         {
@@ -75,6 +79,7 @@ namespace NMF.Models.Meta
         /// The UpperBound property
         /// </summary>
         [DefaultValueAttribute(1)]
+        [CategoryAttribute("TypedElement")]
         [XmlAttributeAttribute(true)]
         int UpperBound
         {
@@ -85,6 +90,7 @@ namespace NMF.Models.Meta
         /// <summary>
         /// The Type property
         /// </summary>
+        [CategoryAttribute("TypedElement")]
         [XmlAttributeAttribute(true)]
         IType Type
         {

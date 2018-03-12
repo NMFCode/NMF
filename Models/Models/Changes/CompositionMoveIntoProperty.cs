@@ -38,7 +38,7 @@ namespace NMF.Models.Changes
     [XmlNamespaceAttribute("http://nmf.codeplex.com/changes")]
     [XmlNamespacePrefixAttribute("changes")]
     [ModelRepresentationClassAttribute("http://nmf.codeplex.com/changes#//CompositionMoveIntoProperty")]
-    public partial class CompositionMoveIntoProperty : PropertyChange, ICompositionMoveIntoProperty, NMF.Models.IModelElement
+    public partial class CompositionMoveIntoProperty : CompositionChange, ICompositionMoveIntoProperty, NMF.Models.IModelElement
     {
         
         private static Lazy<ITypedElement> _newValueReference = new Lazy<ITypedElement>(RetrieveNewValueReference);
@@ -67,6 +67,8 @@ namespace NMF.Models.Changes
         /// <summary>
         /// The newValue property
         /// </summary>
+        [DisplayNameAttribute("newValue")]
+        [CategoryAttribute("CompositionMoveIntoProperty")]
         [XmlElementNameAttribute("newValue")]
         [XmlAttributeAttribute(true)]
         public NMF.Models.IModelElement NewValue
@@ -93,6 +95,8 @@ namespace NMF.Models.Changes
         /// <summary>
         /// The oldValue property
         /// </summary>
+        [DisplayNameAttribute("oldValue")]
+        [CategoryAttribute("CompositionMoveIntoProperty")]
         [XmlElementNameAttribute("oldValue")]
         [XmlAttributeAttribute(true)]
         public NMF.Models.IModelElement OldValue
@@ -119,6 +123,7 @@ namespace NMF.Models.Changes
         /// <summary>
         /// The origin property
         /// </summary>
+        [BrowsableAttribute(false)]
         [XmlElementNameAttribute("origin")]
         [XmlAttributeAttribute(false)]
         [ContainmentAttribute()]
@@ -251,16 +256,6 @@ namespace NMF.Models.Changes
             }
         }
         
-        /// <summary>
-        /// Handles the event that the NewValue property must reset
-        /// </summary>
-        /// <param name="sender">The object that sent this reset request</param>
-        /// <param name="eventArgs">The event data for the reset event</param>
-        private void OnResetNewValue(object sender, System.EventArgs eventArgs)
-        {
-            this.NewValue = null;
-        }
-        
         private static ITypedElement RetrieveOldValueReference()
         {
             return ((ITypedElement)(((NMF.Models.ModelElement)(CompositionMoveIntoProperty.ClassInstance)).Resolve("oldValue")));
@@ -290,16 +285,6 @@ namespace NMF.Models.Changes
             {
                 handler.Invoke(this, eventArgs);
             }
-        }
-        
-        /// <summary>
-        /// Handles the event that the OldValue property must reset
-        /// </summary>
-        /// <param name="sender">The object that sent this reset request</param>
-        /// <param name="eventArgs">The event data for the reset event</param>
-        private void OnResetOldValue(object sender, System.EventArgs eventArgs)
-        {
-            this.OldValue = null;
         }
         
         private static ITypedElement RetrieveOriginReference()

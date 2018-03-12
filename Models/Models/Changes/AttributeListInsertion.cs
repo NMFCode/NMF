@@ -38,8 +38,15 @@ namespace NMF.Models.Changes
     [XmlNamespaceAttribute("http://nmf.codeplex.com/changes")]
     [XmlNamespacePrefixAttribute("changes")]
     [ModelRepresentationClassAttribute("http://nmf.codeplex.com/changes#//AttributeListInsertion")]
-    public partial class AttributeListInsertion : ListInsertion, IAttributeListInsertion, NMF.Models.IModelElement
+    public partial class AttributeListInsertion : AttributeChange, IAttributeListInsertion, NMF.Models.IModelElement
     {
+        
+        /// <summary>
+        /// The backing field for the Index property
+        /// </summary>
+        private int _index;
+        
+        private static Lazy<ITypedElement> _indexAttribute = new Lazy<ITypedElement>(RetrieveIndexAttribute);
         
         /// <summary>
         /// The backing field for the AddedValue property
@@ -51,8 +58,38 @@ namespace NMF.Models.Changes
         private static IClass _classInstance;
         
         /// <summary>
+        /// The index property
+        /// </summary>
+        [DisplayNameAttribute("index")]
+        [CategoryAttribute("AttributeListInsertion")]
+        [XmlElementNameAttribute("index")]
+        [XmlAttributeAttribute(true)]
+        public int Index
+        {
+            get
+            {
+                return this._index;
+            }
+            set
+            {
+                if ((this._index != value))
+                {
+                    int old = this._index;
+                    ValueChangedEventArgs e = new ValueChangedEventArgs(old, value);
+                    this.OnIndexChanging(e);
+                    this.OnPropertyChanging("Index", e, _indexAttribute);
+                    this._index = value;
+                    this.OnIndexChanged(e);
+                    this.OnPropertyChanged("Index", e, _indexAttribute);
+                }
+            }
+        }
+        
+        /// <summary>
         /// The addedValue property
         /// </summary>
+        [DisplayNameAttribute("addedValue")]
+        [CategoryAttribute("AttributeListInsertion")]
         [XmlElementNameAttribute("addedValue")]
         [XmlAttributeAttribute(true)]
         public string AddedValue
@@ -92,6 +129,16 @@ namespace NMF.Models.Changes
         }
         
         /// <summary>
+        /// Gets fired before the Index property changes its value
+        /// </summary>
+        public event System.EventHandler<ValueChangedEventArgs> IndexChanging;
+        
+        /// <summary>
+        /// Gets fired when the Index property changed its value
+        /// </summary>
+        public event System.EventHandler<ValueChangedEventArgs> IndexChanged;
+        
+        /// <summary>
         /// Gets fired before the AddedValue property changes its value
         /// </summary>
         public event System.EventHandler<ValueChangedEventArgs> AddedValueChanging;
@@ -100,6 +147,37 @@ namespace NMF.Models.Changes
         /// Gets fired when the AddedValue property changed its value
         /// </summary>
         public event System.EventHandler<ValueChangedEventArgs> AddedValueChanged;
+        
+        private static ITypedElement RetrieveIndexAttribute()
+        {
+            return ((ITypedElement)(((NMF.Models.ModelElement)(AttributeListInsertion.ClassInstance)).Resolve("index")));
+        }
+        
+        /// <summary>
+        /// Raises the IndexChanging event
+        /// </summary>
+        /// <param name="eventArgs">The event data</param>
+        protected virtual void OnIndexChanging(ValueChangedEventArgs eventArgs)
+        {
+            System.EventHandler<ValueChangedEventArgs> handler = this.IndexChanging;
+            if ((handler != null))
+            {
+                handler.Invoke(this, eventArgs);
+            }
+        }
+        
+        /// <summary>
+        /// Raises the IndexChanged event
+        /// </summary>
+        /// <param name="eventArgs">The event data</param>
+        protected virtual void OnIndexChanged(ValueChangedEventArgs eventArgs)
+        {
+            System.EventHandler<ValueChangedEventArgs> handler = this.IndexChanged;
+            if ((handler != null))
+            {
+                handler.Invoke(this, eventArgs);
+            }
+        }
         
         private static ITypedElement RetrieveAddedValueAttribute()
         {
@@ -140,6 +218,10 @@ namespace NMF.Models.Changes
         /// <param name="index">The index of this attribute</param>
         protected override object GetAttributeValue(string attribute, int index)
         {
+            if ((attribute == "INDEX"))
+            {
+                return this.Index;
+            }
             if ((attribute == "ADDEDVALUE"))
             {
                 return this.AddedValue;
@@ -154,6 +236,11 @@ namespace NMF.Models.Changes
         /// <param name="value">The value that should be set to that feature</param>
         protected override void SetFeature(string feature, object value)
         {
+            if ((feature == "INDEX"))
+            {
+                this.Index = ((int)(value));
+                return;
+            }
             if ((feature == "ADDEDVALUE"))
             {
                 this.AddedValue = ((string)(value));
@@ -169,6 +256,10 @@ namespace NMF.Models.Changes
         /// <param name="attribute">The requested attribute in upper case</param>
         protected override NMF.Expressions.INotifyExpression<object> GetExpressionForAttribute(string attribute)
         {
+            if ((attribute == "INDEX"))
+            {
+                return Observable.Box(new IndexProxy(this));
+            }
             if ((attribute == "ADDEDVALUE"))
             {
                 return new AddedValueProxy(this);
@@ -186,6 +277,37 @@ namespace NMF.Models.Changes
                 _classInstance = ((IClass)(MetaRepository.Instance.Resolve("http://nmf.codeplex.com/changes#//AttributeListInsertion")));
             }
             return _classInstance;
+        }
+        
+        /// <summary>
+        /// Represents a proxy to represent an incremental access to the index property
+        /// </summary>
+        private sealed class IndexProxy : ModelPropertyChange<IAttributeListInsertion, int>
+        {
+            
+            /// <summary>
+            /// Creates a new observable property access proxy
+            /// </summary>
+            /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
+            public IndexProxy(IAttributeListInsertion modelElement) : 
+                    base(modelElement, "index")
+            {
+            }
+            
+            /// <summary>
+            /// Gets or sets the value of this expression
+            /// </summary>
+            public override int Value
+            {
+                get
+                {
+                    return this.ModelElement.Index;
+                }
+                set
+                {
+                    this.ModelElement.Index = value;
+                }
+            }
         }
         
         /// <summary>

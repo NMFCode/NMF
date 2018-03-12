@@ -50,6 +50,7 @@ namespace NMF.Models.Meta
         /// <summary>
         /// The SystemType property
         /// </summary>
+        [CategoryAttribute("MappedType")]
         [XmlAttributeAttribute(true)]
         public System.Type SystemType
         {

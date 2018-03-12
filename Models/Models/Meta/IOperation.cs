@@ -37,6 +37,7 @@ namespace NMF.Models.Meta
     /// </summary>
     [DefaultImplementationTypeAttribute(typeof(Operation))]
     [XmlDefaultImplementationTypeAttribute(typeof(Operation))]
+    [ModelRepresentationClassAttribute("http://nmf.codeplex.com/nmeta/#//Operation")]
     public interface IOperation : NMF.Models.IModelElement, ITypedElement
     {
         
@@ -44,6 +45,7 @@ namespace NMF.Models.Meta
         /// The Parameters property
         /// </summary>
         [DesignerSerializationVisibilityAttribute(DesignerSerializationVisibility.Content)]
+        [BrowsableAttribute(false)]
         [XmlAttributeAttribute(false)]
         [ContainmentAttribute()]
         [XmlOppositeAttribute("Operation")]
@@ -56,6 +58,7 @@ namespace NMF.Models.Meta
         /// <summary>
         /// The DeclaringType property
         /// </summary>
+        [BrowsableAttribute(false)]
         [DesignerSerializationVisibilityAttribute(DesignerSerializationVisibility.Hidden)]
         [XmlAttributeAttribute(true)]
         [XmlOppositeAttribute("Operations")]
@@ -68,6 +71,7 @@ namespace NMF.Models.Meta
         /// <summary>
         /// The Refines property
         /// </summary>
+        [CategoryAttribute("Operation")]
         [XmlAttributeAttribute(true)]
         IOperation Refines
         {

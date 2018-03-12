@@ -36,9 +36,9 @@ namespace NMF.Expressions
             LensPut.SetValue(Target.Value, value);
         }
 
-        public override INotifyExpression<TResult> ApplyParameters(IDictionary<string, object> parameters)
+        protected override INotifyExpression<TResult> ApplyParametersCore(IDictionary<string, object> parameters, IDictionary<INotifiable, INotifiable> trace)
         {
-            var newTarget = Target.ApplyParameters(parameters);
+            var newTarget = Target.ApplyParameters(parameters, trace);
             return new ObservableSimpleLensMethodProxyCall<T, TResult>(newTarget, ProxyMethod, LensPut.ApplyNewTarget((INotifyReversableValue<T>)newTarget));
         }
     }
@@ -70,10 +70,10 @@ namespace NMF.Expressions
             LensPut.SetValue(Target.Value, Argument1.Value, value);
         }
 
-        public override INotifyExpression<TResult> ApplyParameters(IDictionary<string, object> parameters)
+        protected override INotifyExpression<TResult> ApplyParametersCore(IDictionary<string, object> parameters, IDictionary<INotifiable, INotifiable> trace)
         {
-            var newTarget = Target.ApplyParameters(parameters);
-            return new ObservableSimpleLensMethodProxyCall<T, T1, TResult>(newTarget, ProxyMethod, Argument1.ApplyParameters(parameters), LensPut.ApplyNewTarget((INotifyReversableValue<T>)newTarget));
+            var newTarget = Target.ApplyParameters(parameters, trace);
+            return new ObservableSimpleLensMethodProxyCall<T, T1, TResult>(newTarget, ProxyMethod, Argument1.ApplyParameters(parameters, trace), LensPut.ApplyNewTarget((INotifyReversableValue<T>)newTarget));
         }
     }
     internal class ObservableSimpleLensMethodProxyCall<T, T1, T2, TResult> : ObservableSimpleMethodProxyCall<T, T1, T2, TResult>
@@ -104,10 +104,10 @@ namespace NMF.Expressions
             LensPut.SetValue(Target.Value, Argument1.Value, Argument2.Value, value);
         }
 
-        public override INotifyExpression<TResult> ApplyParameters(IDictionary<string, object> parameters)
+        protected override INotifyExpression<TResult> ApplyParametersCore(IDictionary<string, object> parameters, IDictionary<INotifiable, INotifiable> trace)
         {
-            var newTarget = Target.ApplyParameters(parameters);
-            return new ObservableSimpleLensMethodProxyCall<T, T1, T2, TResult>(newTarget, ProxyMethod, Argument1.ApplyParameters(parameters), Argument2.ApplyParameters(parameters), LensPut.ApplyNewTarget((INotifyReversableValue<T>)newTarget));
+            var newTarget = Target.ApplyParameters(parameters, trace);
+            return new ObservableSimpleLensMethodProxyCall<T, T1, T2, TResult>(newTarget, ProxyMethod, Argument1.ApplyParameters(parameters, trace), Argument2.ApplyParameters(parameters, trace), LensPut.ApplyNewTarget((INotifyReversableValue<T>)newTarget));
         }
     }
     internal class ObservableSimpleLensMethodProxyCall<T, T1, T2, T3, TResult> : ObservableSimpleMethodProxyCall<T, T1, T2, T3, TResult>
@@ -138,10 +138,10 @@ namespace NMF.Expressions
             LensPut.SetValue(Target.Value, Argument1.Value, Argument2.Value, Argument3.Value, value);
         }
 
-        public override INotifyExpression<TResult> ApplyParameters(IDictionary<string, object> parameters)
+        protected override INotifyExpression<TResult> ApplyParametersCore(IDictionary<string, object> parameters, IDictionary<INotifiable, INotifiable> trace)
         {
-            var newTarget = Target.ApplyParameters(parameters);
-            return new ObservableSimpleLensMethodProxyCall<T, T1, T2, T3, TResult>(newTarget, ProxyMethod, Argument1.ApplyParameters(parameters), Argument2.ApplyParameters(parameters), Argument3.ApplyParameters(parameters), LensPut.ApplyNewTarget((INotifyReversableValue<T>)newTarget));
+            var newTarget = Target.ApplyParameters(parameters, trace);
+            return new ObservableSimpleLensMethodProxyCall<T, T1, T2, T3, TResult>(newTarget, ProxyMethod, Argument1.ApplyParameters(parameters, trace), Argument2.ApplyParameters(parameters, trace), Argument3.ApplyParameters(parameters, trace), LensPut.ApplyNewTarget((INotifyReversableValue<T>)newTarget));
         }
     }
     internal class ObservableSimpleLensMethodProxyCall<T, T1, T2, T3, T4, TResult> : ObservableSimpleMethodProxyCall<T, T1, T2, T3, T4, TResult>
@@ -172,10 +172,10 @@ namespace NMF.Expressions
             LensPut.SetValue(Target.Value, Argument1.Value, Argument2.Value, Argument3.Value, Argument4.Value, value);
         }
 
-        public override INotifyExpression<TResult> ApplyParameters(IDictionary<string, object> parameters)
+        protected override INotifyExpression<TResult> ApplyParametersCore(IDictionary<string, object> parameters, IDictionary<INotifiable, INotifiable> trace)
         {
-            var newTarget = Target.ApplyParameters(parameters);
-            return new ObservableSimpleLensMethodProxyCall<T, T1, T2, T3, T4, TResult>(newTarget, ProxyMethod, Argument1.ApplyParameters(parameters), Argument2.ApplyParameters(parameters), Argument3.ApplyParameters(parameters), Argument4.ApplyParameters(parameters), LensPut.ApplyNewTarget((INotifyReversableValue<T>)newTarget));
+            var newTarget = Target.ApplyParameters(parameters, trace);
+            return new ObservableSimpleLensMethodProxyCall<T, T1, T2, T3, T4, TResult>(newTarget, ProxyMethod, Argument1.ApplyParameters(parameters, trace), Argument2.ApplyParameters(parameters, trace), Argument3.ApplyParameters(parameters, trace), Argument4.ApplyParameters(parameters, trace), LensPut.ApplyNewTarget((INotifyReversableValue<T>)newTarget));
         }
     }
     internal class ObservableSimpleLensMethodProxyCall<T, T1, T2, T3, T4, T5, TResult> : ObservableSimpleMethodProxyCall<T, T1, T2, T3, T4, T5, TResult>
@@ -206,10 +206,10 @@ namespace NMF.Expressions
             LensPut.SetValue(Target.Value, Argument1.Value, Argument2.Value, Argument3.Value, Argument4.Value, Argument5.Value, value);
         }
 
-        public override INotifyExpression<TResult> ApplyParameters(IDictionary<string, object> parameters)
+        protected override INotifyExpression<TResult> ApplyParametersCore(IDictionary<string, object> parameters, IDictionary<INotifiable, INotifiable> trace)
         {
-            var newTarget = Target.ApplyParameters(parameters);
-            return new ObservableSimpleLensMethodProxyCall<T, T1, T2, T3, T4, T5, TResult>(newTarget, ProxyMethod, Argument1.ApplyParameters(parameters), Argument2.ApplyParameters(parameters), Argument3.ApplyParameters(parameters), Argument4.ApplyParameters(parameters), Argument5.ApplyParameters(parameters), LensPut.ApplyNewTarget((INotifyReversableValue<T>)newTarget));
+            var newTarget = Target.ApplyParameters(parameters, trace);
+            return new ObservableSimpleLensMethodProxyCall<T, T1, T2, T3, T4, T5, TResult>(newTarget, ProxyMethod, Argument1.ApplyParameters(parameters, trace), Argument2.ApplyParameters(parameters, trace), Argument3.ApplyParameters(parameters, trace), Argument4.ApplyParameters(parameters, trace), Argument5.ApplyParameters(parameters, trace), LensPut.ApplyNewTarget((INotifyReversableValue<T>)newTarget));
         }
     }
     internal class ObservableSimpleLensMethodProxyCall<T, T1, T2, T3, T4, T5, T6, TResult> : ObservableSimpleMethodProxyCall<T, T1, T2, T3, T4, T5, T6, TResult>
@@ -240,10 +240,10 @@ namespace NMF.Expressions
             LensPut.SetValue(Target.Value, Argument1.Value, Argument2.Value, Argument3.Value, Argument4.Value, Argument5.Value, Argument6.Value, value);
         }
 
-        public override INotifyExpression<TResult> ApplyParameters(IDictionary<string, object> parameters)
+        protected override INotifyExpression<TResult> ApplyParametersCore(IDictionary<string, object> parameters, IDictionary<INotifiable, INotifiable> trace)
         {
-            var newTarget = Target.ApplyParameters(parameters);
-            return new ObservableSimpleLensMethodProxyCall<T, T1, T2, T3, T4, T5, T6, TResult>(newTarget, ProxyMethod, Argument1.ApplyParameters(parameters), Argument2.ApplyParameters(parameters), Argument3.ApplyParameters(parameters), Argument4.ApplyParameters(parameters), Argument5.ApplyParameters(parameters), Argument6.ApplyParameters(parameters), LensPut.ApplyNewTarget((INotifyReversableValue<T>)newTarget));
+            var newTarget = Target.ApplyParameters(parameters, trace);
+            return new ObservableSimpleLensMethodProxyCall<T, T1, T2, T3, T4, T5, T6, TResult>(newTarget, ProxyMethod, Argument1.ApplyParameters(parameters, trace), Argument2.ApplyParameters(parameters, trace), Argument3.ApplyParameters(parameters, trace), Argument4.ApplyParameters(parameters, trace), Argument5.ApplyParameters(parameters, trace), Argument6.ApplyParameters(parameters, trace), LensPut.ApplyNewTarget((INotifyReversableValue<T>)newTarget));
         }
     }
     internal class ObservableSimpleLensMethodProxyCall<T, T1, T2, T3, T4, T5, T6, T7, TResult> : ObservableSimpleMethodProxyCall<T, T1, T2, T3, T4, T5, T6, T7, TResult>
@@ -274,10 +274,10 @@ namespace NMF.Expressions
             LensPut.SetValue(Target.Value, Argument1.Value, Argument2.Value, Argument3.Value, Argument4.Value, Argument5.Value, Argument6.Value, Argument7.Value, value);
         }
 
-        public override INotifyExpression<TResult> ApplyParameters(IDictionary<string, object> parameters)
+        protected override INotifyExpression<TResult> ApplyParametersCore(IDictionary<string, object> parameters, IDictionary<INotifiable, INotifiable> trace)
         {
-            var newTarget = Target.ApplyParameters(parameters);
-            return new ObservableSimpleLensMethodProxyCall<T, T1, T2, T3, T4, T5, T6, T7, TResult>(newTarget, ProxyMethod, Argument1.ApplyParameters(parameters), Argument2.ApplyParameters(parameters), Argument3.ApplyParameters(parameters), Argument4.ApplyParameters(parameters), Argument5.ApplyParameters(parameters), Argument6.ApplyParameters(parameters), Argument7.ApplyParameters(parameters), LensPut.ApplyNewTarget((INotifyReversableValue<T>)newTarget));
+            var newTarget = Target.ApplyParameters(parameters, trace);
+            return new ObservableSimpleLensMethodProxyCall<T, T1, T2, T3, T4, T5, T6, T7, TResult>(newTarget, ProxyMethod, Argument1.ApplyParameters(parameters, trace), Argument2.ApplyParameters(parameters, trace), Argument3.ApplyParameters(parameters, trace), Argument4.ApplyParameters(parameters, trace), Argument5.ApplyParameters(parameters, trace), Argument6.ApplyParameters(parameters, trace), Argument7.ApplyParameters(parameters, trace), LensPut.ApplyNewTarget((INotifyReversableValue<T>)newTarget));
         }
     }
     internal class ObservableSimpleLensMethodProxyCall<T, T1, T2, T3, T4, T5, T6, T7, T8, TResult> : ObservableSimpleMethodProxyCall<T, T1, T2, T3, T4, T5, T6, T7, T8, TResult>
@@ -308,10 +308,10 @@ namespace NMF.Expressions
             LensPut.SetValue(Target.Value, Argument1.Value, Argument2.Value, Argument3.Value, Argument4.Value, Argument5.Value, Argument6.Value, Argument7.Value, Argument8.Value, value);
         }
 
-        public override INotifyExpression<TResult> ApplyParameters(IDictionary<string, object> parameters)
+        protected override INotifyExpression<TResult> ApplyParametersCore(IDictionary<string, object> parameters, IDictionary<INotifiable, INotifiable> trace)
         {
-            var newTarget = Target.ApplyParameters(parameters);
-            return new ObservableSimpleLensMethodProxyCall<T, T1, T2, T3, T4, T5, T6, T7, T8, TResult>(newTarget, ProxyMethod, Argument1.ApplyParameters(parameters), Argument2.ApplyParameters(parameters), Argument3.ApplyParameters(parameters), Argument4.ApplyParameters(parameters), Argument5.ApplyParameters(parameters), Argument6.ApplyParameters(parameters), Argument7.ApplyParameters(parameters), Argument8.ApplyParameters(parameters), LensPut.ApplyNewTarget((INotifyReversableValue<T>)newTarget));
+            var newTarget = Target.ApplyParameters(parameters, trace);
+            return new ObservableSimpleLensMethodProxyCall<T, T1, T2, T3, T4, T5, T6, T7, T8, TResult>(newTarget, ProxyMethod, Argument1.ApplyParameters(parameters, trace), Argument2.ApplyParameters(parameters, trace), Argument3.ApplyParameters(parameters, trace), Argument4.ApplyParameters(parameters, trace), Argument5.ApplyParameters(parameters, trace), Argument6.ApplyParameters(parameters, trace), Argument7.ApplyParameters(parameters, trace), Argument8.ApplyParameters(parameters, trace), LensPut.ApplyNewTarget((INotifyReversableValue<T>)newTarget));
         }
     }
     internal class ObservableSimpleLensMethodProxyCall<T, T1, T2, T3, T4, T5, T6, T7, T8, T9, TResult> : ObservableSimpleMethodProxyCall<T, T1, T2, T3, T4, T5, T6, T7, T8, T9, TResult>
@@ -342,10 +342,10 @@ namespace NMF.Expressions
             LensPut.SetValue(Target.Value, Argument1.Value, Argument2.Value, Argument3.Value, Argument4.Value, Argument5.Value, Argument6.Value, Argument7.Value, Argument8.Value, Argument9.Value, value);
         }
 
-        public override INotifyExpression<TResult> ApplyParameters(IDictionary<string, object> parameters)
+        protected override INotifyExpression<TResult> ApplyParametersCore(IDictionary<string, object> parameters, IDictionary<INotifiable, INotifiable> trace)
         {
-            var newTarget = Target.ApplyParameters(parameters);
-            return new ObservableSimpleLensMethodProxyCall<T, T1, T2, T3, T4, T5, T6, T7, T8, T9, TResult>(newTarget, ProxyMethod, Argument1.ApplyParameters(parameters), Argument2.ApplyParameters(parameters), Argument3.ApplyParameters(parameters), Argument4.ApplyParameters(parameters), Argument5.ApplyParameters(parameters), Argument6.ApplyParameters(parameters), Argument7.ApplyParameters(parameters), Argument8.ApplyParameters(parameters), Argument9.ApplyParameters(parameters), LensPut.ApplyNewTarget((INotifyReversableValue<T>)newTarget));
+            var newTarget = Target.ApplyParameters(parameters, trace);
+            return new ObservableSimpleLensMethodProxyCall<T, T1, T2, T3, T4, T5, T6, T7, T8, T9, TResult>(newTarget, ProxyMethod, Argument1.ApplyParameters(parameters, trace), Argument2.ApplyParameters(parameters, trace), Argument3.ApplyParameters(parameters, trace), Argument4.ApplyParameters(parameters, trace), Argument5.ApplyParameters(parameters, trace), Argument6.ApplyParameters(parameters, trace), Argument7.ApplyParameters(parameters, trace), Argument8.ApplyParameters(parameters, trace), Argument9.ApplyParameters(parameters, trace), LensPut.ApplyNewTarget((INotifyReversableValue<T>)newTarget));
         }
     }
     internal class ObservableSimpleLensMethodProxyCall<T, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, TResult> : ObservableSimpleMethodProxyCall<T, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, TResult>
@@ -376,10 +376,10 @@ namespace NMF.Expressions
             LensPut.SetValue(Target.Value, Argument1.Value, Argument2.Value, Argument3.Value, Argument4.Value, Argument5.Value, Argument6.Value, Argument7.Value, Argument8.Value, Argument9.Value, Argument10.Value, value);
         }
 
-        public override INotifyExpression<TResult> ApplyParameters(IDictionary<string, object> parameters)
+        protected override INotifyExpression<TResult> ApplyParametersCore(IDictionary<string, object> parameters, IDictionary<INotifiable, INotifiable> trace)
         {
-            var newTarget = Target.ApplyParameters(parameters);
-            return new ObservableSimpleLensMethodProxyCall<T, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, TResult>(newTarget, ProxyMethod, Argument1.ApplyParameters(parameters), Argument2.ApplyParameters(parameters), Argument3.ApplyParameters(parameters), Argument4.ApplyParameters(parameters), Argument5.ApplyParameters(parameters), Argument6.ApplyParameters(parameters), Argument7.ApplyParameters(parameters), Argument8.ApplyParameters(parameters), Argument9.ApplyParameters(parameters), Argument10.ApplyParameters(parameters), LensPut.ApplyNewTarget((INotifyReversableValue<T>)newTarget));
+            var newTarget = Target.ApplyParameters(parameters, trace);
+            return new ObservableSimpleLensMethodProxyCall<T, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, TResult>(newTarget, ProxyMethod, Argument1.ApplyParameters(parameters, trace), Argument2.ApplyParameters(parameters, trace), Argument3.ApplyParameters(parameters, trace), Argument4.ApplyParameters(parameters, trace), Argument5.ApplyParameters(parameters, trace), Argument6.ApplyParameters(parameters, trace), Argument7.ApplyParameters(parameters, trace), Argument8.ApplyParameters(parameters, trace), Argument9.ApplyParameters(parameters, trace), Argument10.ApplyParameters(parameters, trace), LensPut.ApplyNewTarget((INotifyReversableValue<T>)newTarget));
         }
     }
     internal class ObservableSimpleLensMethodProxyCall<T, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, TResult> : ObservableSimpleMethodProxyCall<T, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, TResult>
@@ -410,10 +410,10 @@ namespace NMF.Expressions
             LensPut.SetValue(Target.Value, Argument1.Value, Argument2.Value, Argument3.Value, Argument4.Value, Argument5.Value, Argument6.Value, Argument7.Value, Argument8.Value, Argument9.Value, Argument10.Value, Argument11.Value, value);
         }
 
-        public override INotifyExpression<TResult> ApplyParameters(IDictionary<string, object> parameters)
+        protected override INotifyExpression<TResult> ApplyParametersCore(IDictionary<string, object> parameters, IDictionary<INotifiable, INotifiable> trace)
         {
-            var newTarget = Target.ApplyParameters(parameters);
-            return new ObservableSimpleLensMethodProxyCall<T, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, TResult>(newTarget, ProxyMethod, Argument1.ApplyParameters(parameters), Argument2.ApplyParameters(parameters), Argument3.ApplyParameters(parameters), Argument4.ApplyParameters(parameters), Argument5.ApplyParameters(parameters), Argument6.ApplyParameters(parameters), Argument7.ApplyParameters(parameters), Argument8.ApplyParameters(parameters), Argument9.ApplyParameters(parameters), Argument10.ApplyParameters(parameters), Argument11.ApplyParameters(parameters), LensPut.ApplyNewTarget((INotifyReversableValue<T>)newTarget));
+            var newTarget = Target.ApplyParameters(parameters, trace);
+            return new ObservableSimpleLensMethodProxyCall<T, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, TResult>(newTarget, ProxyMethod, Argument1.ApplyParameters(parameters, trace), Argument2.ApplyParameters(parameters, trace), Argument3.ApplyParameters(parameters, trace), Argument4.ApplyParameters(parameters, trace), Argument5.ApplyParameters(parameters, trace), Argument6.ApplyParameters(parameters, trace), Argument7.ApplyParameters(parameters, trace), Argument8.ApplyParameters(parameters, trace), Argument9.ApplyParameters(parameters, trace), Argument10.ApplyParameters(parameters, trace), Argument11.ApplyParameters(parameters, trace), LensPut.ApplyNewTarget((INotifyReversableValue<T>)newTarget));
         }
     }
     internal class ObservableSimpleLensMethodProxyCall<T, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, TResult> : ObservableSimpleMethodProxyCall<T, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, TResult>
@@ -444,10 +444,10 @@ namespace NMF.Expressions
             LensPut.SetValue(Target.Value, Argument1.Value, Argument2.Value, Argument3.Value, Argument4.Value, Argument5.Value, Argument6.Value, Argument7.Value, Argument8.Value, Argument9.Value, Argument10.Value, Argument11.Value, Argument12.Value, value);
         }
 
-        public override INotifyExpression<TResult> ApplyParameters(IDictionary<string, object> parameters)
+        protected override INotifyExpression<TResult> ApplyParametersCore(IDictionary<string, object> parameters, IDictionary<INotifiable, INotifiable> trace)
         {
-            var newTarget = Target.ApplyParameters(parameters);
-            return new ObservableSimpleLensMethodProxyCall<T, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, TResult>(newTarget, ProxyMethod, Argument1.ApplyParameters(parameters), Argument2.ApplyParameters(parameters), Argument3.ApplyParameters(parameters), Argument4.ApplyParameters(parameters), Argument5.ApplyParameters(parameters), Argument6.ApplyParameters(parameters), Argument7.ApplyParameters(parameters), Argument8.ApplyParameters(parameters), Argument9.ApplyParameters(parameters), Argument10.ApplyParameters(parameters), Argument11.ApplyParameters(parameters), Argument12.ApplyParameters(parameters), LensPut.ApplyNewTarget((INotifyReversableValue<T>)newTarget));
+            var newTarget = Target.ApplyParameters(parameters, trace);
+            return new ObservableSimpleLensMethodProxyCall<T, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, TResult>(newTarget, ProxyMethod, Argument1.ApplyParameters(parameters, trace), Argument2.ApplyParameters(parameters, trace), Argument3.ApplyParameters(parameters, trace), Argument4.ApplyParameters(parameters, trace), Argument5.ApplyParameters(parameters, trace), Argument6.ApplyParameters(parameters, trace), Argument7.ApplyParameters(parameters, trace), Argument8.ApplyParameters(parameters, trace), Argument9.ApplyParameters(parameters, trace), Argument10.ApplyParameters(parameters, trace), Argument11.ApplyParameters(parameters, trace), Argument12.ApplyParameters(parameters, trace), LensPut.ApplyNewTarget((INotifyReversableValue<T>)newTarget));
         }
     }
     internal class ObservableSimpleLensMethodProxyCall<T, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, TResult> : ObservableSimpleMethodProxyCall<T, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, TResult>
@@ -478,10 +478,10 @@ namespace NMF.Expressions
             LensPut.SetValue(Target.Value, Argument1.Value, Argument2.Value, Argument3.Value, Argument4.Value, Argument5.Value, Argument6.Value, Argument7.Value, Argument8.Value, Argument9.Value, Argument10.Value, Argument11.Value, Argument12.Value, Argument13.Value, value);
         }
 
-        public override INotifyExpression<TResult> ApplyParameters(IDictionary<string, object> parameters)
+        protected override INotifyExpression<TResult> ApplyParametersCore(IDictionary<string, object> parameters, IDictionary<INotifiable, INotifiable> trace)
         {
-            var newTarget = Target.ApplyParameters(parameters);
-            return new ObservableSimpleLensMethodProxyCall<T, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, TResult>(newTarget, ProxyMethod, Argument1.ApplyParameters(parameters), Argument2.ApplyParameters(parameters), Argument3.ApplyParameters(parameters), Argument4.ApplyParameters(parameters), Argument5.ApplyParameters(parameters), Argument6.ApplyParameters(parameters), Argument7.ApplyParameters(parameters), Argument8.ApplyParameters(parameters), Argument9.ApplyParameters(parameters), Argument10.ApplyParameters(parameters), Argument11.ApplyParameters(parameters), Argument12.ApplyParameters(parameters), Argument13.ApplyParameters(parameters), LensPut.ApplyNewTarget((INotifyReversableValue<T>)newTarget));
+            var newTarget = Target.ApplyParameters(parameters, trace);
+            return new ObservableSimpleLensMethodProxyCall<T, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, TResult>(newTarget, ProxyMethod, Argument1.ApplyParameters(parameters, trace), Argument2.ApplyParameters(parameters, trace), Argument3.ApplyParameters(parameters, trace), Argument4.ApplyParameters(parameters, trace), Argument5.ApplyParameters(parameters, trace), Argument6.ApplyParameters(parameters, trace), Argument7.ApplyParameters(parameters, trace), Argument8.ApplyParameters(parameters, trace), Argument9.ApplyParameters(parameters, trace), Argument10.ApplyParameters(parameters, trace), Argument11.ApplyParameters(parameters, trace), Argument12.ApplyParameters(parameters, trace), Argument13.ApplyParameters(parameters, trace), LensPut.ApplyNewTarget((INotifyReversableValue<T>)newTarget));
         }
     }
     internal class ObservableSimpleLensMethodProxyCall<T, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, TResult> : ObservableSimpleMethodProxyCall<T, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, TResult>
@@ -512,10 +512,10 @@ namespace NMF.Expressions
             LensPut.SetValue(Target.Value, Argument1.Value, Argument2.Value, Argument3.Value, Argument4.Value, Argument5.Value, Argument6.Value, Argument7.Value, Argument8.Value, Argument9.Value, Argument10.Value, Argument11.Value, Argument12.Value, Argument13.Value, Argument14.Value, value);
         }
 
-        public override INotifyExpression<TResult> ApplyParameters(IDictionary<string, object> parameters)
+        protected override INotifyExpression<TResult> ApplyParametersCore(IDictionary<string, object> parameters, IDictionary<INotifiable, INotifiable> trace)
         {
-            var newTarget = Target.ApplyParameters(parameters);
-            return new ObservableSimpleLensMethodProxyCall<T, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, TResult>(newTarget, ProxyMethod, Argument1.ApplyParameters(parameters), Argument2.ApplyParameters(parameters), Argument3.ApplyParameters(parameters), Argument4.ApplyParameters(parameters), Argument5.ApplyParameters(parameters), Argument6.ApplyParameters(parameters), Argument7.ApplyParameters(parameters), Argument8.ApplyParameters(parameters), Argument9.ApplyParameters(parameters), Argument10.ApplyParameters(parameters), Argument11.ApplyParameters(parameters), Argument12.ApplyParameters(parameters), Argument13.ApplyParameters(parameters), Argument14.ApplyParameters(parameters), LensPut.ApplyNewTarget((INotifyReversableValue<T>)newTarget));
+            var newTarget = Target.ApplyParameters(parameters, trace);
+            return new ObservableSimpleLensMethodProxyCall<T, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, TResult>(newTarget, ProxyMethod, Argument1.ApplyParameters(parameters, trace), Argument2.ApplyParameters(parameters, trace), Argument3.ApplyParameters(parameters, trace), Argument4.ApplyParameters(parameters, trace), Argument5.ApplyParameters(parameters, trace), Argument6.ApplyParameters(parameters, trace), Argument7.ApplyParameters(parameters, trace), Argument8.ApplyParameters(parameters, trace), Argument9.ApplyParameters(parameters, trace), Argument10.ApplyParameters(parameters, trace), Argument11.ApplyParameters(parameters, trace), Argument12.ApplyParameters(parameters, trace), Argument13.ApplyParameters(parameters, trace), Argument14.ApplyParameters(parameters, trace), LensPut.ApplyNewTarget((INotifyReversableValue<T>)newTarget));
         }
     }
 }

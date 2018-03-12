@@ -38,7 +38,7 @@ namespace NMF.Models.Meta
     [XmlNamespaceAttribute("http://nmf.codeplex.com/nmeta/")]
     [XmlNamespacePrefixAttribute("nmeta")]
     [ModelRepresentationClassAttribute("http://nmf.codeplex.com/nmeta/#//ModelElementExtension")]
-    public abstract partial class ModelElementExtension : NMF.Models.ModelElement, IModelElementExtension, NMF.Models.IModelElement
+    public abstract partial class ModelElementExtension : NMF.Models.ModelElement, NMF.Models.IModelElementExtension, NMF.Models.IModelElement
     {
         
         private static Lazy<ITypedElement> _extendedElementReference = new Lazy<ITypedElement>(RetrieveExtendedElementReference);
@@ -48,6 +48,7 @@ namespace NMF.Models.Meta
         /// <summary>
         /// The ExtendedElement property
         /// </summary>
+        [BrowsableAttribute(false)]
         [DesignerSerializationVisibilityAttribute(DesignerSerializationVisibility.Hidden)]
         [XmlAttributeAttribute(true)]
         [XmlOppositeAttribute("Extensions")]

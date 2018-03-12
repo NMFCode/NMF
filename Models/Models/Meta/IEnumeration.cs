@@ -37,12 +37,14 @@ namespace NMF.Models.Meta
     /// </summary>
     [DefaultImplementationTypeAttribute(typeof(Enumeration))]
     [XmlDefaultImplementationTypeAttribute(typeof(Enumeration))]
+    [ModelRepresentationClassAttribute("http://nmf.codeplex.com/nmeta/#//Enumeration")]
     public interface IEnumeration : NMF.Models.IModelElement, IType
     {
         
         /// <summary>
         /// The IsFlagged property
         /// </summary>
+        [CategoryAttribute("Enumeration")]
         [XmlAttributeAttribute(true)]
         bool IsFlagged
         {
@@ -54,6 +56,7 @@ namespace NMF.Models.Meta
         /// The Literals property
         /// </summary>
         [DesignerSerializationVisibilityAttribute(DesignerSerializationVisibility.Content)]
+        [BrowsableAttribute(false)]
         [XmlAttributeAttribute(false)]
         [ContainmentAttribute()]
         [XmlOppositeAttribute("Enumeration")]

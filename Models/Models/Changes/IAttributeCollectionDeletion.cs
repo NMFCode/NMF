@@ -37,12 +37,15 @@ namespace NMF.Models.Changes
     /// </summary>
     [DefaultImplementationTypeAttribute(typeof(AttributeCollectionDeletion))]
     [XmlDefaultImplementationTypeAttribute(typeof(AttributeCollectionDeletion))]
-    public interface IAttributeCollectionDeletion : NMF.Models.IModelElement, ICollectionDeletion
+    [ModelRepresentationClassAttribute("http://nmf.codeplex.com/changes#//AttributeCollectionDeletion")]
+    public interface IAttributeCollectionDeletion : NMF.Models.IModelElement, IAttributeChange
     {
         
         /// <summary>
         /// The deletedValue property
         /// </summary>
+        [DisplayNameAttribute("deletedValue")]
+        [CategoryAttribute("AttributeCollectionDeletion")]
         [XmlElementNameAttribute("deletedValue")]
         [XmlAttributeAttribute(true)]
         string DeletedValue

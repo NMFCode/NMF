@@ -38,8 +38,15 @@ namespace NMF.Models.Changes
     [XmlNamespaceAttribute("http://nmf.codeplex.com/changes")]
     [XmlNamespacePrefixAttribute("changes")]
     [ModelRepresentationClassAttribute("http://nmf.codeplex.com/changes#//CompositionMoveToList")]
-    public partial class CompositionMoveToList : ListInsertion, ICompositionMoveToList, NMF.Models.IModelElement
+    public partial class CompositionMoveToList : CompositionChange, ICompositionMoveToList, NMF.Models.IModelElement
     {
+        
+        /// <summary>
+        /// The backing field for the Index property
+        /// </summary>
+        private int _index;
+        
+        private static Lazy<ITypedElement> _indexAttribute = new Lazy<ITypedElement>(RetrieveIndexAttribute);
         
         private static Lazy<ITypedElement> _movedElementReference = new Lazy<ITypedElement>(RetrieveMovedElementReference);
         
@@ -58,8 +65,38 @@ namespace NMF.Models.Changes
         private static IClass _classInstance;
         
         /// <summary>
+        /// The index property
+        /// </summary>
+        [DisplayNameAttribute("index")]
+        [CategoryAttribute("CompositionMoveToList")]
+        [XmlElementNameAttribute("index")]
+        [XmlAttributeAttribute(true)]
+        public int Index
+        {
+            get
+            {
+                return this._index;
+            }
+            set
+            {
+                if ((this._index != value))
+                {
+                    int old = this._index;
+                    ValueChangedEventArgs e = new ValueChangedEventArgs(old, value);
+                    this.OnIndexChanging(e);
+                    this.OnPropertyChanging("Index", e, _indexAttribute);
+                    this._index = value;
+                    this.OnIndexChanged(e);
+                    this.OnPropertyChanged("Index", e, _indexAttribute);
+                }
+            }
+        }
+        
+        /// <summary>
         /// The movedElement property
         /// </summary>
+        [DisplayNameAttribute("movedElement")]
+        [CategoryAttribute("CompositionMoveToList")]
         [XmlElementNameAttribute("movedElement")]
         [XmlAttributeAttribute(true)]
         public NMF.Models.IModelElement MovedElement
@@ -86,6 +123,7 @@ namespace NMF.Models.Changes
         /// <summary>
         /// The origin property
         /// </summary>
+        [BrowsableAttribute(false)]
         [XmlElementNameAttribute("origin")]
         [XmlAttributeAttribute(false)]
         [ContainmentAttribute()]
@@ -158,6 +196,16 @@ namespace NMF.Models.Changes
         }
         
         /// <summary>
+        /// Gets fired before the Index property changes its value
+        /// </summary>
+        public event System.EventHandler<ValueChangedEventArgs> IndexChanging;
+        
+        /// <summary>
+        /// Gets fired when the Index property changed its value
+        /// </summary>
+        public event System.EventHandler<ValueChangedEventArgs> IndexChanged;
+        
+        /// <summary>
         /// Gets fired before the MovedElement property changes its value
         /// </summary>
         public event System.EventHandler<ValueChangedEventArgs> MovedElementChanging;
@@ -176,6 +224,37 @@ namespace NMF.Models.Changes
         /// Gets fired when the Origin property changed its value
         /// </summary>
         public event System.EventHandler<ValueChangedEventArgs> OriginChanged;
+        
+        private static ITypedElement RetrieveIndexAttribute()
+        {
+            return ((ITypedElement)(((NMF.Models.ModelElement)(CompositionMoveToList.ClassInstance)).Resolve("index")));
+        }
+        
+        /// <summary>
+        /// Raises the IndexChanging event
+        /// </summary>
+        /// <param name="eventArgs">The event data</param>
+        protected virtual void OnIndexChanging(ValueChangedEventArgs eventArgs)
+        {
+            System.EventHandler<ValueChangedEventArgs> handler = this.IndexChanging;
+            if ((handler != null))
+            {
+                handler.Invoke(this, eventArgs);
+            }
+        }
+        
+        /// <summary>
+        /// Raises the IndexChanged event
+        /// </summary>
+        /// <param name="eventArgs">The event data</param>
+        protected virtual void OnIndexChanged(ValueChangedEventArgs eventArgs)
+        {
+            System.EventHandler<ValueChangedEventArgs> handler = this.IndexChanged;
+            if ((handler != null))
+            {
+                handler.Invoke(this, eventArgs);
+            }
+        }
         
         private static ITypedElement RetrieveMovedElementReference()
         {
@@ -206,16 +285,6 @@ namespace NMF.Models.Changes
             {
                 handler.Invoke(this, eventArgs);
             }
-        }
-        
-        /// <summary>
-        /// Handles the event that the MovedElement property must reset
-        /// </summary>
-        /// <param name="sender">The object that sent this reset request</param>
-        /// <param name="eventArgs">The event data for the reset event</param>
-        private void OnResetMovedElement(object sender, System.EventArgs eventArgs)
-        {
-            this.MovedElement = null;
         }
         
         private static ITypedElement RetrieveOriginReference()
@@ -293,6 +362,21 @@ namespace NMF.Models.Changes
         }
         
         /// <summary>
+        /// Resolves the given attribute name
+        /// </summary>
+        /// <returns>The attribute value or null if it could not be found</returns>
+        /// <param name="attribute">The requested attribute name</param>
+        /// <param name="index">The index of this attribute</param>
+        protected override object GetAttributeValue(string attribute, int index)
+        {
+            if ((attribute == "INDEX"))
+            {
+                return this.Index;
+            }
+            return base.GetAttributeValue(attribute, index);
+        }
+        
+        /// <summary>
         /// Sets a value to the given feature
         /// </summary>
         /// <param name="feature">The requested feature</param>
@@ -309,7 +393,26 @@ namespace NMF.Models.Changes
                 this.Origin = ((IElementaryChange)(value));
                 return;
             }
+            if ((feature == "INDEX"))
+            {
+                this.Index = ((int)(value));
+                return;
+            }
             base.SetFeature(feature, value);
+        }
+        
+        /// <summary>
+        /// Gets the property expression for the given attribute
+        /// </summary>
+        /// <returns>An incremental property expression</returns>
+        /// <param name="attribute">The requested attribute in upper case</param>
+        protected override NMF.Expressions.INotifyExpression<object> GetExpressionForAttribute(string attribute)
+        {
+            if ((attribute == "INDEX"))
+            {
+                return Observable.Box(new IndexProxy(this));
+            }
+            return base.GetExpressionForAttribute(attribute);
         }
         
         /// <summary>
@@ -605,6 +708,37 @@ namespace NMF.Models.Changes
             public override IEnumerator<NMF.Models.IModelElement> GetEnumerator()
             {
                 return Enumerable.Empty<NMF.Models.IModelElement>().Concat(this._parent.MovedElement).Concat(this._parent.Origin).GetEnumerator();
+            }
+        }
+        
+        /// <summary>
+        /// Represents a proxy to represent an incremental access to the index property
+        /// </summary>
+        private sealed class IndexProxy : ModelPropertyChange<ICompositionMoveToList, int>
+        {
+            
+            /// <summary>
+            /// Creates a new observable property access proxy
+            /// </summary>
+            /// <param name="modelElement">The model instance element for which to create the property access proxy</param>
+            public IndexProxy(ICompositionMoveToList modelElement) : 
+                    base(modelElement, "index")
+            {
+            }
+            
+            /// <summary>
+            /// Gets or sets the value of this expression
+            /// </summary>
+            public override int Value
+            {
+                get
+                {
+                    return this.ModelElement.Index;
+                }
+                set
+                {
+                    this.ModelElement.Index = value;
+                }
             }
         }
         

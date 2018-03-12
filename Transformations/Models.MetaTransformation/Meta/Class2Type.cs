@@ -476,10 +476,6 @@ namespace NMF.Models.Meta
                 {
                     targetType.BaseType = "I" + instantiating.Name.ToPascalCase();
                 }
-                else
-                {
-                    targetType.BaseType = "I" + targetType.BaseType;
-                }
                 return targetType;
             }
 
@@ -632,6 +628,11 @@ namespace NMF.Models.Meta
                 iface.AddAttribute(typeof(DefaultImplementationTypeAttribute), new CodeTypeOfExpression(generatedType.Name));
                 iface.AddAttribute(typeof(XmlDefaultImplementationTypeAttribute), new CodeTypeOfExpression(generatedType.Name));
                 iface.WriteDocumentation("The public interface for " + input.Name);
+                var uri = input.AbsoluteUri;
+                if (uri != null && uri.IsAbsoluteUri)
+                {
+                    iface.AddAttribute(typeof(ModelRepresentationClassAttribute), uri.AbsoluteUri);
+                }
                 return iface;
             }
 

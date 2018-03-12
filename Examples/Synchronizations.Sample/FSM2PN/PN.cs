@@ -39,8 +39,8 @@ namespace NMF.Synchronizations.Example.PN
 
         public PetriNet()
         {
-            Places = new ObservableSet<Place>();
-            Transitions = new ObservableSet<Transition>();
+            Places = new PetriNetPlacesCollection(this);
+            Transitions = new PetriNetTransitionCollection(this);
         }
 
         protected void OnPropertyChanged(string propertyName)
@@ -233,6 +233,38 @@ namespace NMF.Synchronizations.Example.PN
             else
             {
                 item.Incoming.Remove(Parent);
+            }
+        }
+    }
+
+    public class PetriNetTransitionCollection : ObservableOppositeSet<PetriNet, Transition>
+    {
+        public PetriNetTransitionCollection(PetriNet parent) : base(parent)
+        {
+        }
+
+        protected override void SetOpposite(Transition item, PetriNet newParent)
+        {
+            if (newParent == null)
+            {
+                item.From.Clear();
+                item.To.Clear();
+            }
+        }
+    }
+
+    public class PetriNetPlacesCollection : ObservableOppositeSet<PetriNet, Place>
+    {
+        public PetriNetPlacesCollection(PetriNet parent) : base(parent)
+        {
+        }
+
+        protected override void SetOpposite(Place item, PetriNet newParent)
+        {
+            if (newParent == null)
+            {
+                item.Incoming.Clear();
+                item.Outgoing.Clear();
             }
         }
     }

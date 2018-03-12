@@ -62,10 +62,10 @@ namespace NMF.Expressions
             return InnerExpression.Value;
         }
 
-        public override INotifyExpression<T> ApplyParameters(IDictionary<string, object> parameters)
+        protected override INotifyExpression<T> ApplyParametersCore(IDictionary<string, object> parameters, IDictionary<INotifiable, INotifiable> trace)
         {
-            var inner = InnerExpression.ApplyParameters(parameters);
-            return new ObservableMemberInit<T>(inner, MemberBindings.Select(b => b.ApplyParameters(inner, parameters)));
+            var inner = InnerExpression.ApplyParameters(parameters, trace);
+            return new ObservableMemberInit<T>(inner, MemberBindings.Select(b => b.ApplyParameters(inner, parameters, trace)));
         }
     }
 }

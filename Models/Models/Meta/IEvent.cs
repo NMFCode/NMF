@@ -37,12 +37,14 @@ namespace NMF.Models.Meta
     /// </summary>
     [DefaultImplementationTypeAttribute(typeof(Event))]
     [XmlDefaultImplementationTypeAttribute(typeof(Event))]
+    [ModelRepresentationClassAttribute("http://nmf.codeplex.com/nmeta/#//Event")]
     public interface IEvent : NMF.Models.IModelElement, IMetaElement
     {
         
         /// <summary>
         /// The Type property
         /// </summary>
+        [CategoryAttribute("Event")]
         [XmlAttributeAttribute(true)]
         IDataType Type
         {
@@ -53,6 +55,7 @@ namespace NMF.Models.Meta
         /// <summary>
         /// The DeclaringType property
         /// </summary>
+        [BrowsableAttribute(false)]
         [DesignerSerializationVisibilityAttribute(DesignerSerializationVisibility.Hidden)]
         [XmlAttributeAttribute(true)]
         [XmlOppositeAttribute("Events")]

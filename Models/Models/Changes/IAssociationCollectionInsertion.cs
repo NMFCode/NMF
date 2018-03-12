@@ -37,12 +37,15 @@ namespace NMF.Models.Changes
     /// </summary>
     [DefaultImplementationTypeAttribute(typeof(AssociationCollectionInsertion))]
     [XmlDefaultImplementationTypeAttribute(typeof(AssociationCollectionInsertion))]
-    public interface IAssociationCollectionInsertion : NMF.Models.IModelElement, ICollectionInsertion
+    [ModelRepresentationClassAttribute("http://nmf.codeplex.com/changes#//AssociationCollectionInsertion")]
+    public interface IAssociationCollectionInsertion : NMF.Models.IModelElement, IAssociationChange
     {
         
         /// <summary>
         /// The addedElement property
         /// </summary>
+        [DisplayNameAttribute("addedElement")]
+        [CategoryAttribute("AssociationCollectionInsertion")]
         [XmlElementNameAttribute("addedElement")]
         [XmlAttributeAttribute(true)]
         NMF.Models.IModelElement AddedElement

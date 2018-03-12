@@ -72,6 +72,7 @@ namespace NMF.Models.Meta
         /// The Events property
         /// </summary>
         [DesignerSerializationVisibilityAttribute(DesignerSerializationVisibility.Content)]
+        [BrowsableAttribute(false)]
         [XmlAttributeAttribute(false)]
         [ContainmentAttribute()]
         [XmlOppositeAttribute("DeclaringType")]
@@ -88,6 +89,7 @@ namespace NMF.Models.Meta
         /// The References property
         /// </summary>
         [DesignerSerializationVisibilityAttribute(DesignerSerializationVisibility.Content)]
+        [BrowsableAttribute(false)]
         [XmlAttributeAttribute(false)]
         [ContainmentAttribute()]
         [XmlOppositeAttribute("DeclaringType")]
@@ -204,7 +206,7 @@ namespace NMF.Models.Meta
             }
             return base.GetCollectionForFeature(feature);
         }
-        
+
         /// <summary>
         /// Gets the property name for the given container
         /// </summary>

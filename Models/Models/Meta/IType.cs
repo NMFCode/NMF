@@ -37,12 +37,14 @@ namespace NMF.Models.Meta
     /// </summary>
     [DefaultImplementationTypeAttribute(typeof(Type))]
     [XmlDefaultImplementationTypeAttribute(typeof(Type))]
+    [ModelRepresentationClassAttribute("http://nmf.codeplex.com/nmeta/#//Type")]
     public interface IType : NMF.Models.IModelElement, IMetaElement
     {
         
         /// <summary>
         /// The Namespace property
         /// </summary>
+        [BrowsableAttribute(false)]
         [DesignerSerializationVisibilityAttribute(DesignerSerializationVisibility.Hidden)]
         [XmlAttributeAttribute(true)]
         [XmlOppositeAttribute("Types")]

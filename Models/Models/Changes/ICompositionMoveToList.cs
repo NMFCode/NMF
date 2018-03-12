@@ -37,12 +37,28 @@ namespace NMF.Models.Changes
     /// </summary>
     [DefaultImplementationTypeAttribute(typeof(CompositionMoveToList))]
     [XmlDefaultImplementationTypeAttribute(typeof(CompositionMoveToList))]
-    public interface ICompositionMoveToList : NMF.Models.IModelElement, IListInsertion
+    [ModelRepresentationClassAttribute("http://nmf.codeplex.com/changes#//CompositionMoveToList")]
+    public interface ICompositionMoveToList : NMF.Models.IModelElement, ICompositionChange
     {
+        
+        /// <summary>
+        /// The index property
+        /// </summary>
+        [DisplayNameAttribute("index")]
+        [CategoryAttribute("CompositionMoveToList")]
+        [XmlElementNameAttribute("index")]
+        [XmlAttributeAttribute(true)]
+        int Index
+        {
+            get;
+            set;
+        }
         
         /// <summary>
         /// The movedElement property
         /// </summary>
+        [DisplayNameAttribute("movedElement")]
+        [CategoryAttribute("CompositionMoveToList")]
         [XmlElementNameAttribute("movedElement")]
         [XmlAttributeAttribute(true)]
         NMF.Models.IModelElement MovedElement
@@ -54,6 +70,7 @@ namespace NMF.Models.Changes
         /// <summary>
         /// The origin property
         /// </summary>
+        [BrowsableAttribute(false)]
         [XmlElementNameAttribute("origin")]
         [XmlAttributeAttribute(false)]
         [ContainmentAttribute()]
@@ -62,6 +79,16 @@ namespace NMF.Models.Changes
             get;
             set;
         }
+        
+        /// <summary>
+        /// Gets fired before the Index property changes its value
+        /// </summary>
+        event System.EventHandler<ValueChangedEventArgs> IndexChanging;
+        
+        /// <summary>
+        /// Gets fired when the Index property changed its value
+        /// </summary>
+        event System.EventHandler<ValueChangedEventArgs> IndexChanged;
         
         /// <summary>
         /// Gets fired before the MovedElement property changes its value

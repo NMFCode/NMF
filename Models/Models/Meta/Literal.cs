@@ -56,6 +56,7 @@ namespace NMF.Models.Meta
         /// <summary>
         /// The Value property
         /// </summary>
+        [CategoryAttribute("Literal")]
         [XmlAttributeAttribute(true)]
         public Nullable<int> Value
         {
@@ -81,6 +82,7 @@ namespace NMF.Models.Meta
         /// <summary>
         /// The Enumeration property
         /// </summary>
+        [BrowsableAttribute(false)]
         [DesignerSerializationVisibilityAttribute(DesignerSerializationVisibility.Hidden)]
         [XmlAttributeAttribute(true)]
         [XmlOppositeAttribute("Literals")]

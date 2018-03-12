@@ -49,6 +49,7 @@ namespace NMF.Models.Meta
         /// <summary>
         /// The Namespace property
         /// </summary>
+        [BrowsableAttribute(false)]
         [DesignerSerializationVisibilityAttribute(DesignerSerializationVisibility.Hidden)]
         [XmlAttributeAttribute(true)]
         [XmlOppositeAttribute("Types")]

@@ -715,7 +715,7 @@ namespace NMF.Analyses
                 return Holm.AreConnected(Source, Target);
             }
 
-            public override INotifyExpression<bool> ApplyParameters(IDictionary<string, object> parameters)
+            protected override INotifyExpression<bool> ApplyParametersCore(IDictionary<string, object> parameters, IDictionary<INotifiable, INotifiable> trace)
             {
                 return this;
             }

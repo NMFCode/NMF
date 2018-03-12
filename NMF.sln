@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.27004.2010
+VisualStudioVersion = 15.0.27130.2027
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Analysis", "Analysis", "{DB96042F-8815-430D-8345-362F4266F0FE}"
 EndProject
@@ -165,6 +165,10 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Net45", "Net45", "{97A8C5A7-2D37-4237-AB1F-FB7D3053B5C0}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Synchronizations.Net45", "Synchronizations\Net45\Synchronizations.Net45\Synchronizations.Net45.csproj", "{39542BC9-A18A-4EF2-AC75-B5A7A9079FB0}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Synchronizations.Models", "Synchronizations\Synchronizations.Models\Synchronizations.Models.csproj", "{4448AD66-FF8A-4AB6-B17C-F401CCC6940D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Synchronizations.Models.Tests", "Synchronizations\Synchronizations.Models.Tests\Synchronizations.Models.Tests.csproj", "{4E94C7E4-3EC6-4F43-9E08-24B6A90FDEF2}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -602,6 +606,22 @@ Global
 		{39542BC9-A18A-4EF2-AC75-B5A7A9079FB0}.Signed Debug|Any CPU.Build.0 = Debug|Any CPU
 		{39542BC9-A18A-4EF2-AC75-B5A7A9079FB0}.Signed Release|Any CPU.ActiveCfg = Release|Any CPU
 		{39542BC9-A18A-4EF2-AC75-B5A7A9079FB0}.Signed Release|Any CPU.Build.0 = Release|Any CPU
+		{4448AD66-FF8A-4AB6-B17C-F401CCC6940D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4448AD66-FF8A-4AB6-B17C-F401CCC6940D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4448AD66-FF8A-4AB6-B17C-F401CCC6940D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4448AD66-FF8A-4AB6-B17C-F401CCC6940D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4448AD66-FF8A-4AB6-B17C-F401CCC6940D}.Signed Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4448AD66-FF8A-4AB6-B17C-F401CCC6940D}.Signed Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4448AD66-FF8A-4AB6-B17C-F401CCC6940D}.Signed Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4448AD66-FF8A-4AB6-B17C-F401CCC6940D}.Signed Release|Any CPU.Build.0 = Release|Any CPU
+		{4E94C7E4-3EC6-4F43-9E08-24B6A90FDEF2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4E94C7E4-3EC6-4F43-9E08-24B6A90FDEF2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4E94C7E4-3EC6-4F43-9E08-24B6A90FDEF2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4E94C7E4-3EC6-4F43-9E08-24B6A90FDEF2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4E94C7E4-3EC6-4F43-9E08-24B6A90FDEF2}.Signed Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4E94C7E4-3EC6-4F43-9E08-24B6A90FDEF2}.Signed Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4E94C7E4-3EC6-4F43-9E08-24B6A90FDEF2}.Signed Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4E94C7E4-3EC6-4F43-9E08-24B6A90FDEF2}.Signed Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -675,6 +695,8 @@ Global
 		{4A418B93-D85D-4089-9961-0ABA1FBF1ABD} = {7539F987-ECB9-496C-848F-10E8E54DBEF6}
 		{97A8C5A7-2D37-4237-AB1F-FB7D3053B5C0} = {3DCA5BDA-D495-4CD7-8424-3E33572DFF09}
 		{39542BC9-A18A-4EF2-AC75-B5A7A9079FB0} = {97A8C5A7-2D37-4237-AB1F-FB7D3053B5C0}
+		{4448AD66-FF8A-4AB6-B17C-F401CCC6940D} = {3DCA5BDA-D495-4CD7-8424-3E33572DFF09}
+		{4E94C7E4-3EC6-4F43-9E08-24B6A90FDEF2} = {16A909F8-F86F-4C65-9202-655E088A7D30}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {7B6D2737-94B7-470E-B413-D9693622AA4D}
