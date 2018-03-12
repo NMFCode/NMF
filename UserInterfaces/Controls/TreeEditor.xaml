@@ -1,0 +1,40 @@
+﻿<UserControl x:Class="NMF.Controls.TreeEditor"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:converter="clr-namespace:NMF.Controls.Converters"
+             xmlns:context="clr-namespace:NMF.Controls.ContextMenu"
+             xmlns:models="clr-namespace:NMF.Models;assembly=NMF.Models"
+             mc:Ignorable="d" 
+             Name="self"
+             d:DesignHeight="300" d:DesignWidth="300">
+    <UserControl.Resources>
+        <converter:ClassColorConverter x:Key="colorConverter" />
+        <context:ContextMenuRegistry x:Key="ContextMenu" />
+        <HierarchicalDataTemplate x:Key="defaultTemplate"
+                                  ItemsSource="{Binding Children}"
+                                  DataType="{x:Type models:IModelElement}">
+            <StackPanel Orientation="Horizontal">
+                <Rectangle Height="10" Width="10" Margin="5" Fill="{Binding Converter={StaticResource colorConverter}}" />
+                <TextBlock Text="{Binding ClassInstance.Name}" />
+                <TextBlock Text=" " />
+                <TextBlock Text="{Binding Name}" />
+                <StackPanel.ContextMenu>
+                    <ContextMenu>
+                        <MenuItem Header="Add Child" ItemsSource="{Binding Converter={StaticResource ContextMenu}}">
+                            <MenuItem.ItemTemplate>
+                                <DataTemplate>
+                                    <MenuItem Header="{Binding}" Command="{Binding}" />
+                                </DataTemplate>
+                            </MenuItem.ItemTemplate>
+                        </MenuItem>
+                        <MenuItem Header="Delete" Command="{x:Static ApplicationCommands.Delete}" CommandParameter="{Binding}" />
+                    </ContextMenu>
+                </StackPanel.ContextMenu>
+            </StackPanel>
+        </HierarchicalDataTemplate>
+    </UserControl.Resources>
+    <TreeView Name="innerTree" ItemTemplate="{Binding ElementName=self, Path=ItemTemplate}" SelectedItemChanged="innerTree_SelectedItemChanged">
+    </TreeView>
+</UserControl>
