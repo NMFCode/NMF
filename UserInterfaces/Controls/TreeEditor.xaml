@@ -12,15 +12,11 @@
     <UserControl.Resources>
         <converter:ClassColorConverter x:Key="colorConverter" />
         <context:ContextMenuRegistry x:Key="ContextMenu" />
-        <HierarchicalDataTemplate x:Key="defaultTemplate"
+        <HierarchicalDataTemplate x:Key="itemTemplate"
                                   ItemsSource="{Binding Children}"
                                   DataType="{x:Type models:IModelElement}">
-            <StackPanel Orientation="Horizontal">
-                <Rectangle Height="10" Width="10" Margin="5" Fill="{Binding Converter={StaticResource colorConverter}}" />
-                <TextBlock Text="{Binding ClassInstance.Name}" />
-                <TextBlock Text=" " />
-                <TextBlock Text="{Binding Name}" />
-                <StackPanel.ContextMenu>
+            <ContentPresenter Content="{Binding}" ContentTemplate="{Binding ElementName=self, Path=ItemTemplate}">
+                <ContentPresenter.ContextMenu>
                     <ContextMenu>
                         <MenuItem Header="Add Child" ItemsSource="{Binding Converter={StaticResource ContextMenu}}">
                             <MenuItem.ItemTemplate>
@@ -31,10 +27,10 @@
                         </MenuItem>
                         <MenuItem Header="Delete" Command="{x:Static ApplicationCommands.Delete}" CommandParameter="{Binding}" />
                     </ContextMenu>
-                </StackPanel.ContextMenu>
-            </StackPanel>
+                </ContentPresenter.ContextMenu>
+            </ContentPresenter>
         </HierarchicalDataTemplate>
     </UserControl.Resources>
-    <TreeView Name="innerTree" ItemTemplate="{Binding ElementName=self, Path=ItemTemplate}" SelectedItemChanged="innerTree_SelectedItemChanged">
+    <TreeView Name="innerTree" ItemTemplate="{StaticResource itemTemplate}" SelectedItemChanged="innerTree_SelectedItemChanged">
     </TreeView>
 </UserControl>

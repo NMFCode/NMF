@@ -1,4 +1,5 @@
 ﻿using Microsoft.Win32;
+using NMF.Models;
 using NMF.Models.Meta;
 using NMF.Models.Repository;
 using System;
@@ -72,7 +73,10 @@ namespace Editor
 
         private void CreateNewModel(object sender, ExecutedRoutedEventArgs e)
         {
-            Tree.RootElement = new Namespace();
+            var ns = new Namespace();
+            var model = new Model();
+            model.RootElements.Add(ns);
+            Tree.RootElement = ns;
         }
     }
 }

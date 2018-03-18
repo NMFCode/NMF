@@ -62,10 +62,15 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CollectionEditorDialog.xaml.cs">
+      <DependentUpon>CollectionEditorDialog.xaml</DependentUpon>
+    </Compile>
     <Compile Include="ContextMenu\ContextMenuRegistry.cs" />
     <Compile Include="Converters\ClassColorConverter.cs" />
     <Compile Include="ContextMenu\AddChildMenuItem.cs" />
     <Compile Include="Converters\CollectionConverter.cs" />
+    <Compile Include="Converters\TypeInstanceConverter.cs" />
+    <Compile Include="ModelTemplates.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -96,13 +101,21 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <Page Include="CollectionEditorDialog.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="ModelTemplates.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="PropertyView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="TreeEditor.xaml">
-      <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
   </ItemGroup>
   <ItemGroup />

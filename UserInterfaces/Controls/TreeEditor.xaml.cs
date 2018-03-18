@@ -24,10 +24,11 @@ namespace NMF.Controls
     {
         public TreeEditor()
         {
+            ItemTemplate = ModelTemplates.SmallItemTemplate;
+
             InitializeComponent();
 
             CommandBindings.Add(new CommandBinding(ApplicationCommands.Delete, DeleteSelectedElement, CanDelete));
-            SetValue(ItemTemplateProperty, Resources["defaultTemplate"]);
         }
 
         private void CanDelete(object sender, CanExecuteRoutedEventArgs e)
@@ -45,15 +46,15 @@ namespace NMF.Controls
             }
         }
 
-        public HierarchicalDataTemplate ItemTemplate
+        public DataTemplate ItemTemplate
         {
-            get { return (HierarchicalDataTemplate)GetValue(ItemTemplateProperty); }
+            get { return (DataTemplate)GetValue(ItemTemplateProperty); }
             set { SetValue(ItemTemplateProperty, value); }
         }
 
         // Using a DependencyProperty as the backing store for ItemTemplate.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty ItemTemplateProperty =
-            DependencyProperty.Register("ItemTemplate", typeof(HierarchicalDataTemplate), typeof(TreeEditor), new PropertyMetadata());
+            DependencyProperty.Register("ItemTemplate", typeof(DataTemplate), typeof(TreeEditor), new PropertyMetadata());
 
 
         public IModelElement SelectedItem

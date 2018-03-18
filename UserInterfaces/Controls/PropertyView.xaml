@@ -7,16 +7,24 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:nmf="clr-namespace:NMF.Models;assembly=NMF.Models"
              xmlns:nmfexp="clr-namespace:NMF.Expressions;assembly=NMF.Expressions.Linq"
+             Name="self"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
     <xctk:PropertyGrid.Resources>
         <converter:CollectionConverter x:Key="collectionConverter" />
+        <converter:TypeInstanceConverter x:Key="typeInstanceConverter" />
     </xctk:PropertyGrid.Resources>
     <xctk:PropertyGrid.EditorDefinitions>
         <xctk:EditorTemplateDefinition TargetProperties="{x:Type nmf:IModelElement}">
             <xctk:EditorTemplateDefinition.EditingTemplate>
                 <DataTemplate>
-                    <TextBlock Text="{Binding Value}" />
+                    <ComboBox IsEditable="False"
+                              SelectedItem="{Binding Value}"
+                              ItemTemplate="{Binding Path=DataTemplate, RelativeSource={RelativeSource AncestorType={x:Type xctk:PropertyGrid}}}">
+                        <ComboBox.ItemsSource>
+                            <Binding Converter="{StaticResource typeInstanceConverter}" />
+                        </ComboBox.ItemsSource>
+                    </ComboBox>
                 </DataTemplate>
             </xctk:EditorTemplateDefinition.EditingTemplate>
         </xctk:EditorTemplateDefinition>
