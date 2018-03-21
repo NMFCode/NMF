@@ -10,11 +10,15 @@ namespace NMF.Expressions
     {
         protected override void Execute(List<INotifiable> nodes)
         {
-            foreach (var node in nodes)
-                MarkNode(node);
+            for (int i = 0; i < nodes.Count; i++)
+            {
+                MarkNode(nodes[i]);
+            }
 
-            foreach (var source in nodes)
-                NotifyNode(source);
+            for (int i = 0; i < nodes.Count; i++)
+            {
+                NotifyNode(nodes[i]);
+            }
         }
 
         private void NotifyNode(INotifiable source)

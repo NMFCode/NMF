@@ -77,7 +77,7 @@ namespace NMF.Expressions.Linq
                 item.Successors.Unset(this);
             lambdaInstances.Clear();
         }
-        
+
         public override IEnumerator<TResult> GetEnumerator()
         {
             if (ObservableExtensions.KeepOrder)
@@ -163,7 +163,7 @@ namespace NMF.Expressions.Linq
                     }
                     else
                     {
-                        NotifySource(sourceChange, added, removed);
+                        NotifySource(sourceChange, added, removed, sources.Count > 1);
                     }
                 }
                 else
@@ -215,7 +215,7 @@ namespace NMF.Expressions.Linq
             return new CollectionChangedNotificationResult<TResult>(this, added, removed);
         }
 
-        private void NotifySource(CollectionChangedNotificationResult<TSource> sourceChange, List<TResult> added, List<TResult> removed)
+        private void NotifySource(CollectionChangedNotificationResult<TSource> sourceChange, List<TResult> added, List<TResult> removed, bool checkConflicts)
         {
             if (sourceChange.RemovedItems != null)
             {
@@ -225,7 +225,22 @@ namespace NMF.Expressions.Linq
                     {
                         var lambdaResult = lambdaInstances[item];
                         lambdaResult.Tag--;
-                        removed.Add(lambdaResult.Value);
+                        if (checkConflicts)
+                        {
+                            var addIndex = added.IndexOf(lambdaResult.Value);
+                            if (addIndex != -1)
+                            {
+                                added.RemoveAt(addIndex);
+                            }
+                            else
+                            {
+                                removed.Add(lambdaResult.Value);
+                            }
+                        }
+                        else
+                        {
+                            removed.Add(lambdaResult.Value);
+                        }
                         if (lambdaResult.Tag == 0)
                         {
                             lambdaInstances.Remove(item);
@@ -249,7 +264,22 @@ namespace NMF.Expressions.Linq
                 foreach (var item in sourceChange.AddedItems)
                 {
                     var lambdaResult = AttachItem(item);
-                    added.Add(lambdaResult.Value);
+                    if (checkConflicts)
+                    {
+                        var removeIndex = removed.IndexOf(lambdaResult.Value);
+                        if (removeIndex != -1)
+                        {
+                            removed.RemoveAt(removeIndex);
+                        }
+                        else
+                        {
+                            added.Add(lambdaResult.Value);
+                        }
+                    }
+                    else
+                    {
+                        added.Add(lambdaResult.Value);
+                    }
                 }
             }
         }
