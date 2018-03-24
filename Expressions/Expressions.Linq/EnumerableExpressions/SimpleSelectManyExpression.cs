@@ -8,9 +8,13 @@ using NMF.Expressions.Linq;
 
 namespace NMF.Expressions
 {
-    internal class SimpleSelectManyExpression<TSource, TResult> : IEnumerableExpression<TResult>
+    internal class SimpleSelectManyExpression<TSource, TResult> : IEnumerableExpression<TResult>, ISQO
     {
         public IEnumerableExpression<TSource> Source { get; private set; }
+
+        public IEnumerableExpression OptSource => Source;
+
+
         public Expression<Func<TSource, IEnumerable<TResult>>> SelectorExpression { get; private set; }
         public Func<TSource, IEnumerable<TResult>> SelectorCompiled { get; private set; }
         private INotifyEnumerable<TResult> notifyEnumerable;

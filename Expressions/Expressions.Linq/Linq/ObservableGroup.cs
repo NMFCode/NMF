@@ -18,6 +18,8 @@ namespace NMF.Expressions.Linq
         {
             this.key = key;
         }
+
+
         
         public TKey Key { get { return key; } }
 
@@ -31,6 +33,8 @@ namespace NMF.Expressions.Linq
         {
             return this;
         }
+
+        public IEnumerableExpression OptSource => throw new InvalidOperationException();
 
         INotifyEnumerable IEnumerableExpression.AsNotifiable()
         {

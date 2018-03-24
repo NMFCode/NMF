@@ -7,12 +7,14 @@ using NMF.Expressions.Linq;
 
 namespace NMF.Expressions
 {
-    internal abstract class SetExpression<T> : IEnumerableExpression<T>
+    internal abstract class SetExpression<T> : IEnumerableExpression<T>, ISQO
     {
         public IEnumerableExpression<T> Source { get; private set; }
         public IEnumerable<T> Other { get; private set; }
         public IEqualityComparer<T> Comparer { get; private set; }
         protected INotifyEnumerable<T> notifyEnumerable;
+
+        public IEnumerableExpression OptSource => Source;
 
         public SetExpression(IEnumerableExpression<T> source, IEnumerable<T> other, IEqualityComparer<T> comparer)
         {

@@ -8,9 +8,13 @@ using System.Linq.Expressions;
 namespace NMF.Expressions
 {
 
-    internal class ThenByExpression<T, TKey> : IOrderableEnumerableExpression<T>
+    internal class ThenByExpression<T, TKey> : IOrderableEnumerableExpression<T>, ISQO
     {
         public IOrderableEnumerableExpression<T> Source { get; private set; }
+
+        public IEnumerableExpression OptSource => Source;
+
+
         public Expression<Func<T, TKey>> Predicate { get; private set; }
         public Func<T, TKey> PredicateCompiled { get; private set; }
         public IComparer<TKey> Comparer { get; private set; }

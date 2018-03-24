@@ -9,7 +9,7 @@ using System.Linq;
 
 namespace NMF.Expressions
 {
-    internal class GroupByExpression<TElement, TKey> : IEnumerableExpression<IGroupingExpression<TKey, TElement>>
+    internal class GroupByExpression<TElement, TKey> : IEnumerableExpression<IGroupingExpression<TKey, TElement>>, ISQO
     {
         private class GroupingExpression : IGroupingExpression<TKey, TElement>
         {
@@ -37,6 +37,7 @@ namespace NMF.Expressions
                 groupBy.CreateIncremental();
                 return groupBy.notifyEnumerable[Key];
             }
+            public IEnumerableExpression OptSource => throw new InvalidOperationException();
 
             IEnumerator IEnumerable.GetEnumerator()
             {
@@ -51,6 +52,10 @@ namespace NMF.Expressions
 
 
         public IEnumerableExpression<TElement> Source { get; private set; }
+
+        public IEnumerableExpression OptSource => Source;
+
+
         public Expression<Func<TElement, TKey>> Predicate { get; private set; }
         public Func<TElement, TKey> PredicateCompiled { get; private set; }
         public IEqualityComparer<TKey> Comparer { get; private set; }

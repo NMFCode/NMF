@@ -9,10 +9,12 @@
 
   <ItemGroup>
     <PackageReference Include="System.Reflection.Emit.Lightweight" Version="4.3.0" />
+    <PackageReference Include="Microsoft.CSharp" Version="4.4.1" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\Expressions\Expressions.csproj" />
+    <ProjectReference Include="..\..\Tools\Utilities\Utilities.csproj" />
   </ItemGroup>
 
 </Project>
