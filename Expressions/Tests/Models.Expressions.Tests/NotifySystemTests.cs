@@ -599,7 +599,7 @@ namespace NMF.Expressions.Tests
 
             var test = func.AsNotifiable();
 
-            //DDGDgmlVisualizer.initDgmlVisualizer(test);
+            DDGDgmlVisualizer.initDgmlVisualizer(test);
 
             var resultChanged = false;
             test.CollectionChanged += (o, e) =>

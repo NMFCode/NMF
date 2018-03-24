@@ -9,10 +9,13 @@ using System.Collections.Specialized;
 
 namespace NMF.Expressions
 {
-    internal class OfTypeExpression<T> : IEnumerableExpression<T>
+    internal class OfTypeExpression<T> : IEnumerableExpression<T>, ISQO
     {
         public IEnumerableExpression Source { get; private set; }
         private INotifyEnumerable<T> notifyEnumerable;
+
+        public IEnumerableExpression OptSource => Source;
+
 
         public OfTypeExpression(IEnumerableExpression source)
         {

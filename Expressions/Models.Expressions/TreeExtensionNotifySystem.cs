@@ -66,8 +66,9 @@ namespace NMF.Expressions
             }
             types[parameterList.Count] = returnType;
 
-            var treeExtensionCallType = ObservableTreeExtensionCallTypes.Types[types.Length - 2].MakeGenericType(types);
-            var constructor = treeExtensionCallType.GetConstructors()[0];
+            var treeExtensionCallType = ObservableTreeExtensionCallTypes.Types[types.Length - 2];
+            var test = treeExtensionCallType.MakeGenericType(types);
+            var constructor = test.GetConstructors()[0];
 #if DEBUG
             if (constructor == null)
             {

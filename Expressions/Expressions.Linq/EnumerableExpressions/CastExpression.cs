@@ -7,10 +7,12 @@ using NMF.Expressions.Linq;
 
 namespace NMF.Expressions
 {
-    internal class CastExpression<T> : IEnumerableExpression<T>
+    internal class CastExpression<T> : IEnumerableExpression<T>, ISQO
     {
         public IEnumerableExpression Source { get; private set; }
         private INotifyEnumerable<T> notifyEnumerable;
+
+        public IEnumerableExpression OptSource => Source;
 
         public CastExpression(IEnumerableExpression source)
         {

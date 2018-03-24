@@ -10,9 +10,12 @@ using System.Collections;
 
 namespace NMF.Expressions
 {
-    internal class WhereExpression<T> : IEnumerableExpression<T>
+    internal class WhereExpression<T> : IEnumerableExpression<T>, ISQO
     {
         public IEnumerableExpression<T> Source { get; private set; }
+
+        public IEnumerableExpression OptSource => Source;
+
         public Expression<Func<T, bool>> PredicateExpression { get; private set; }
         public Func<T, bool> PredicateCompiled { get; private set; }
         private INotifyEnumerable<T> notifyEnumerable;

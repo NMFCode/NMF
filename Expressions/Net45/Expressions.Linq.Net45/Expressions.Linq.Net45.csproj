@@ -76,11 +76,14 @@
     <Compile Include="..\..\Expressions.Linq\EnumerableExpressions\QueryExpressionDgmlVisualizer.cs">
       <Link>EnumerableExpressions\QueryExpressionDgmlVisualizer.cs</Link>
     </Compile>
-    <Compile Include="..\..\Expressions.Linq\EnumerableExpressions\QueryOptimizer.cs">
-      <Link>EnumerableExpressions\QueryOptimizer.cs</Link>
+    <Compile Include="..\..\Expressions.Linq\ExpressionsOptimization\ProjectionMergeQueryOptimizer.cs">
+      <Link>ExpressionsOptimization\ProjectionMergeQueryOptimizer.cs</Link>
     </Compile>
-    <Compile Include="..\..\Expressions.Linq\EnumerableExpressions\QueryOptimizerVisitor.cs">
-      <Link>EnumerableExpressions\QueryOptimizerVisitor.cs</Link>
+	<Compile Include="..\..\Expressions.Linq\ExpressionsOptimization\QueryOptimizer.cs">
+      <Link>ExpressionsOptimization\QueryOptimizer.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Expressions.Linq\ExpressionsOptimization\QueryOptimizerVisitor.cs">
+      <Link>ExpressionsOptimization\QueryOptimizerVisitor.cs</Link>
     </Compile>
     <Compile Include="..\..\Expressions.Linq\EnumerableExpressions\SelectExpression.cs">
       <Link>EnumerableExpressions\SelectExpression.cs</Link>
@@ -112,8 +115,11 @@
     <Compile Include="..\..\Expressions.Linq\Facade\ObservableExtensions.cs">
       <Link>Facade\ObservableExtensions.cs</Link>
     </Compile>
-    <Compile Include="..\..\Expressions.Linq\Facade\OptimizableExpressionExtensions.cs">
-      <Link>Facade\OptimizableExpressionExtensions.cs</Link>
+    <Compile Include="..\..\Expressions.Linq\ExpressionsOptimization\IQueryOptimizer.cs">
+      <Link>ExpressionsOptimization\OptimizableExpressionExtensions.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Expressions.Linq\ExpressionsOptimization\OptimizableExpressionExtensions.cs">
+      <Link>ExpressionsOptimization\OptimizableExpressionExtensions.cs</Link>
     </Compile>
     <Compile Include="..\..\Expressions.Linq\Facade\OrderableList.cs">
       <Link>Facade\OrderableList.cs</Link>

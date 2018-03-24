@@ -7,11 +7,13 @@ using NMF.Expressions.Linq;
 
 namespace NMF.Expressions
 {
-    internal class ConcatExpression<T> : IEnumerableExpression<T>
+    internal class ConcatExpression<T> : IEnumerableExpression<T>, ISQO
     {
         public IEnumerableExpression<T> Source { get; private set; }
         public IEnumerable<T> Other { get; private set; }
         private INotifyEnumerable<T> notifyEnumerable;
+
+        public IEnumerableExpression OptSource => Source;
 
         public ConcatExpression(IEnumerableExpression<T> source, IEnumerable<T> other)
         {

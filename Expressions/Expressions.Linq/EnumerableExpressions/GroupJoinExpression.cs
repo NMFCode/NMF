@@ -8,7 +8,7 @@ using NMF.Expressions.Linq;
 
 namespace NMF.Expressions
 {
-    internal class GroupJoinExpression<TOuter, TInner, TKey, TResult> : IEnumerableExpression<TResult>, IOptimizableEnumerableExpression
+    internal class GroupJoinExpression<TOuter, TInner, TKey, TResult> : IEnumerableExpression<TResult>, IOptimizableEnumerableExpression<TResult>
     {
         public IEnumerableExpression<TOuter> Source { get; set; }
         public IEnumerable<TInner> Inner { get; set; }
@@ -22,6 +22,11 @@ namespace NMF.Expressions
         private INotifyEnumerable<TResult> notifyEnumerable;
 
         public Expression OptSelectorExpression => ResultSelector;
+
+        public Expression PrevExpression { get; set; }
+
+        public IEnumerableExpression OptSource => Source;
+
 
         public GroupJoinExpression(IEnumerableExpression<TOuter> outer, IEnumerable<TInner> inner, Expression<Func<TOuter, TKey>> outerKeySelector, Func<TOuter, TKey> outerKeySelectorCompiled, Expression<Func<TInner, TKey>> innerKeySelector, Func<TInner, TKey> innerKeySelectorCompiled, Expression<Func<TOuter, IEnumerable<TInner>, TResult>> resultSelector, Func<TOuter, IEnumerable<TInner>, TResult> resultSelectorCompiled, IEqualityComparer<TKey> comparer)
         {
@@ -82,8 +87,13 @@ namespace NMF.Expressions
 
         public IEnumerableExpression<TOptimizedResult> Merge<TOptimizedResult>(IOptimizableEnumerableExpression prevExpr)
         {
-            var mergedSelectorExpression = QueryOptimizer.Optimize<TOuter, TResult, TOptimizedResult>(prevExpr.OptSelectorExpression, OptSelectorExpression) as Expression<Func<TOuter, IEnumerable<TInner>, TOptimizedResult>>;
+            var mergedSelectorExpression = new ProjectionMergeQueryOptimizer().Optimize<TOuter, TResult, TOptimizedResult>(prevExpr.OptSelectorExpression, OptSelectorExpression) as Expression<Func<TOuter, IEnumerable<TInner>, TOptimizedResult>>;
             return new GroupJoinExpression<TOuter, TInner, TKey, TOptimizedResult>(Source, Inner, OuterKeySelector, null, InnerKeySelector, null, mergedSelectorExpression, null, Comparer);
+        }
+
+        IOptimizableEnumerableExpression<TOptimizedResult> IOptimizableEnumerableExpression.AsOptimized2<TOptimizedResult>(IQueryOptimizer queryOptimizer)
+        {
+            return (IOptimizableEnumerableExpression<TOptimizedResult>)queryOptimizer.OptimizeExpression<TOuter, TInner, TKey, TResult, TOptimizedResult>(this);
         }
 
         private void VisitForDebugging(Expression expression)

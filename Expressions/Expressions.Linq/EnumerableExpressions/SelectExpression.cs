@@ -9,7 +9,7 @@ using NMF.Expressions.Linq;
 
 namespace NMF.Expressions
 {
-    internal class SelectExpression<TSource, TResult> : IEnumerableExpression<TResult>, IOptimizableEnumerableExpression
+    internal class SelectExpression<TSource, TResult> : IEnumerableExpression<TResult>, IOptimizableEnumerableExpression<TResult>
     {
         public IEnumerableExpression<TSource> Source { get; private set; }
         public Expression<Func<TSource, TResult>> SelectorExpression { get; private set; }
@@ -17,6 +17,11 @@ namespace NMF.Expressions
 
         private INotifyEnumerable<TResult> notifyEnumerable;
         public Expression OptSelectorExpression => SelectorExpression;
+        public Expression PrevExpression { get; set; }
+
+        public IEnumerableExpression OptSource => Source;
+
+
 
         public SelectExpression(IEnumerableExpression<TSource> source, Expression<Func<TSource, TResult>> selector, Func<TSource, TResult> selectorCompiled)
         {
@@ -34,7 +39,13 @@ namespace NMF.Expressions
 
         public INotifyEnumerable<TResult> AsNotifiable()
         {
-            IEnumerableExpression<TResult> optimizedExpression = AsOptimized<TResult>();
+            //IEnumerableExpression<TResult> optimizedExpression = AsOptimized<TResult>();
+
+            //if (optimizedExpression != this)
+            //    return optimizedExpression.AsNotifiable();
+
+            //IEnumerableExpression<TResult> optimizedExpression = QueryOptimizer.DefaultQueryOptimizer.OptimizeExpression<TSource, TResult>(this) as IEnumerableExpression<TResult>;
+            IEnumerableExpression<TResult> optimizedExpression = QueryOptimizer.DefaultQueryOptimizer.Optimize<TResult>(this) as IEnumerableExpression<TResult>;
 
             if (optimizedExpression != this)
                 return optimizedExpression.AsNotifiable();
@@ -79,8 +90,13 @@ namespace NMF.Expressions
 
         public IEnumerableExpression<TOptimizedResult> Merge<TOptimizedResult>(IOptimizableEnumerableExpression prevOptExpression)
         {
-            var mergedSelectorExpression = QueryOptimizer.Optimize<TSource, TResult, TOptimizedResult>(prevOptExpression.OptSelectorExpression, OptSelectorExpression) as Expression<Func<TSource, TOptimizedResult>>;
+            var mergedSelectorExpression = new ProjectionMergeQueryOptimizer().Optimize<TSource, TResult, TOptimizedResult>(prevOptExpression.OptSelectorExpression, OptSelectorExpression) as Expression<Func<TSource, TOptimizedResult>>;
             return new SelectExpression<TSource, TOptimizedResult>(Source, mergedSelectorExpression, null);
+        }
+
+        IOptimizableEnumerableExpression<TOptimizedResult> IOptimizableEnumerableExpression.AsOptimized2<TOptimizedResult>(IQueryOptimizer queryOptimizer)
+        {
+            return queryOptimizer.OptimizeExpression<TSource, TResult, TOptimizedResult>(this);
         }
 
         private void VisitForDebugging(Expression expression)
