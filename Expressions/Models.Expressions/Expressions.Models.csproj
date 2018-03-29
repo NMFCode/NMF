@@ -18,10 +18,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Update="ModelFuncExtractionParameter.tt">
-      <Generator>TextTemplatingFileGenerator</Generator>
-      <LastGenOutput>ModelFuncExtractionParameter.cs</LastGenOutput>
-    </None>
     <None Update="ObservablePromotionMethodCall.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>ObservablePromotionMethodCall.cs</LastGenOutput>
@@ -37,11 +33,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Update="ModelFuncExtractionParameter.cs">
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-      <DependentUpon>ModelFuncExtractionParameter.tt</DependentUpon>
-    </Compile>
     <Compile Update="ObservablePromotionMethodCall.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
