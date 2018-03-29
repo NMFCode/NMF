@@ -11,8 +11,14 @@ namespace NMF.Expressions
 
         object NewValue { get; }
     }
+    public interface IValueChangedNotificationResult<out T> : IValueChangedNotificationResult
+    {
+        new T OldValue { get; }
 
-    public class ValueChangedNotificationResult<T> : IValueChangedNotificationResult
+        new T NewValue { get; }
+    }
+
+    public class ValueChangedNotificationResult<T> : IValueChangedNotificationResult<T>
     {
         private readonly INotifiable source;
         private readonly T oldValue;

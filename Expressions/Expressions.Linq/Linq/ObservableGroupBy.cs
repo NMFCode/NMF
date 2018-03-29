@@ -164,7 +164,7 @@ namespace NMF.Expressions.Linq
                 }
                 else
                 {
-                    var keyChange = (ValueChangedNotificationResult<TKey>)change;
+                    var keyChange = (IValueChangedNotificationResult<TKey>)change;
                     var tagged = (TaggedObservableValue<TKey, TItem>)keyChange.Source;
 
                     ObservableGroup<TKey, TItem> group;

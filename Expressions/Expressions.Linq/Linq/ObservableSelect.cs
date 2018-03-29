@@ -168,7 +168,7 @@ namespace NMF.Expressions.Linq
                 }
                 else
                 {
-                    var itemChange = (ValueChangedNotificationResult<TResult>)change;
+                    var itemChange = (IValueChangedNotificationResult<TResult>)change;
                     if (sources.Count > 1)
                     {
                         // if there are multiple changes, we need to check whether the change belongs to items

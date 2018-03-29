@@ -150,7 +150,7 @@ namespace NMF.Expressions
 
         public INotificationResult Notify(IList<INotificationResult> sources)
         {
-            var valueChange = (ValueChangedNotificationResult<T>)sources[0];
+            var valueChange = (IValueChangedNotificationResult<T>)sources[0];
             if (ValueChanged != null)
                 ValueChanged(this, new ValueChangedEventArgs(valueChange.OldValue, Value));
             return new ValueChangedNotificationResult<T>(this, valueChange.OldValue, Value);

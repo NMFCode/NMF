@@ -88,7 +88,7 @@ namespace NMF.Expressions
         {
             if (sources.Count > 0)
             {
-                var oldValue = ((ValueChangedNotificationResult<TTarget>)sources[0]).OldValue;
+                var oldValue = ((IValueChangedNotificationResult<TTarget>)sources[0]).OldValue;
                 listener.Unsubscribe();
                 AttachPropertyChangeListener(Target.Value);
             }

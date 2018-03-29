@@ -272,7 +272,7 @@ namespace NMF.Expressions.Linq
                     }
                     else if (change.Source is TaggedObservableValue<TResult, int>)
                     {
-                        var resultChange = (ValueChangedNotificationResult<TResult>)change;
+                        var resultChange = (IValueChangedNotificationResult<TResult>)change;
                         removed.Add(resultChange.OldValue);
                         added.Add(resultChange.NewValue);
                     }

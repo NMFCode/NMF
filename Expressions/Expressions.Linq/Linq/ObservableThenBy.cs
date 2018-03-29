@@ -190,7 +190,7 @@ namespace NMF.Expressions.Linq
                 {
                     var lambdaResult = (TaggedObservableValue<TKey, SequenceInfo>)change.Source;
                     var searchTree = lambdaResult.Tag.SearchTree;
-                    var keyChange = (ValueChangedNotificationResult<TKey>)change;
+                    var keyChange = (IValueChangedNotificationResult<TKey>)change;
 
                     Collection<TItem> itemSequence;
                     if (searchTree.TryGetValue(keyChange.OldValue, out itemSequence))

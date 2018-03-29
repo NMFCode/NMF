@@ -347,9 +347,8 @@ namespace NMF.Expressions.Linq
                         NotifyInner(innerChange, added, removed);
                     }
                 }
-                else if (change is ValueChangedNotificationResult<TKey>)
+                else if (change is IValueChangedNotificationResult<TKey> keyChange)
                 {
-                    var keyChange = (ValueChangedNotificationResult<TKey>)change;
                     if (keyChange.Source is TaggedObservableValue<TKey, TOuter>)
                         NotifyOuterKey(keyChange, added, removed);
                     else
@@ -446,7 +445,7 @@ namespace NMF.Expressions.Linq
             }
         }
 
-        private void NotifyOuterKey(ValueChangedNotificationResult<TKey> keyChange, List<TResult> replaceAdded, List<TResult> replaceRemoved)
+        private void NotifyOuterKey(IValueChangedNotificationResult<TKey> keyChange, List<TResult> replaceAdded, List<TResult> replaceRemoved)
         {
             var value = (TaggedObservableValue<TKey, TOuter>)keyChange.Source;
             var group = groups[keyChange.OldValue];
@@ -469,7 +468,7 @@ namespace NMF.Expressions.Linq
             }
         }
 
-        private void NotifyInnerKey(ValueChangedNotificationResult<TKey> keyChange, List<TResult> replaceAdded, List<TResult> replaceRemoved)
+        private void NotifyInnerKey(IValueChangedNotificationResult<TKey> keyChange, List<TResult> replaceAdded, List<TResult> replaceRemoved)
         {
             var value = (TaggedObservableValue<TKey, TInner>)keyChange.Source;
             var group = groups[keyChange.OldValue];

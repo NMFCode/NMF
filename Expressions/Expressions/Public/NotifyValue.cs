@@ -105,7 +105,7 @@ namespace NMF.Expressions
         {
             if (sources.Count > 0)
             {
-                var oldValue = ((ValueChangedNotificationResult<T>)sources[0]).OldValue;
+                var oldValue = ((IValueChangedNotificationResult<T>)sources[0]).OldValue;
                 OnValueChanged(oldValue, Value);
                 OnPropertyChanged("Value");
                 return new ValueChangedNotificationResult<T>(this, oldValue, Value);
@@ -224,7 +224,7 @@ namespace NMF.Expressions
         {
             if (sources.Count > 0)
             {
-                var oldValue = ((ValueChangedNotificationResult<T>)sources[0]).OldValue;
+                var oldValue = ((IValueChangedNotificationResult<T>)sources[0]).OldValue;
                 OnValueChanged(oldValue, Value);
                 return new ValueChangedNotificationResult<T>(this, oldValue, Value);
             }

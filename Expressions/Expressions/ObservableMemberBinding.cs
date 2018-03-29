@@ -173,11 +173,11 @@ namespace NMF.Expressions
 
         public override INotificationResult Notify(IList<INotificationResult> sources)
         {
-            ValueChangedNotificationResult<T> targetChange = null;
+            IValueChangedNotificationResult<T> targetChange = null;
             if (sources.Count >= 1 && sources[0].Source == Target)
-                targetChange = sources[0] as ValueChangedNotificationResult<T>;
+                targetChange = sources[0] as IValueChangedNotificationResult<T>;
             else if (sources.Count == 2 && sources[1].Source == Target)
-                targetChange = sources[1] as ValueChangedNotificationResult<T>;
+                targetChange = sources[1] as IValueChangedNotificationResult<T>;
             
             if (targetChange != null)
             {

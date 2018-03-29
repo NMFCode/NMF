@@ -60,13 +60,12 @@ namespace NMF.Expressions
         {
             if (sources.Count > 0)
             {
-                foreach (ValueChangedNotificationResult<T> change in sources)
+                foreach (IValueChangedNotificationResult<T> change in sources)
                 {
                     var index = Expressions.IndexOf((INotifyExpression<T>)change.Source);
                     Value[index] = change.NewValue;
                 }
                 OnValueChanged(Value, Value);
-                //TODO CollectionChangedNotificationResult?
                 return new ValueChangedNotificationResult<T[]>(this, Value, Value);
             }
             return UnchangedNotificationResult.Instance;

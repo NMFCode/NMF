@@ -126,11 +126,11 @@ namespace NMF.Expressions.Arithmetics
 
         public override INotificationResult Notify(IList<INotificationResult> sources)
         {
-            ValueChangedNotificationResult<bool> leftChange = null;
+            IValueChangedNotificationResult<bool> leftChange = null;
             if (sources.Count >= 1 && sources[0].Source == Left)
-                leftChange = sources[0] as ValueChangedNotificationResult<bool>;
+                leftChange = sources[0] as IValueChangedNotificationResult<bool>;
             else if (sources.Count >= 2 && sources[1].Source == Left)
-                leftChange = sources[1] as ValueChangedNotificationResult<bool>;
+                leftChange = sources[1] as IValueChangedNotificationResult<bool>;
             
             if (leftChange != null)
             {
@@ -185,11 +185,11 @@ namespace NMF.Expressions.Arithmetics
 
         public override INotificationResult Notify(IList<INotificationResult> sources)
         {
-            ValueChangedNotificationResult<bool> leftChange = null;
+            IValueChangedNotificationResult<bool> leftChange = null;
             if (sources.Count >= 1 && sources[0].Source == Left)
-                leftChange = sources[0] as ValueChangedNotificationResult<bool>;
+                leftChange = sources[0] as IValueChangedNotificationResult<bool>;
             else if (sources.Count >= 2 && sources[1].Source == Left)
-                leftChange = sources[1] as ValueChangedNotificationResult<bool>;
+                leftChange = sources[1] as IValueChangedNotificationResult<bool>;
 
             if (leftChange != null)
             {

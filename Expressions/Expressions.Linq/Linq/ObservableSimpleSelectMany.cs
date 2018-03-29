@@ -152,7 +152,7 @@ namespace NMF.Expressions.Linq
                     }
                     else
                     {
-                        var subSourceChange = (ValueChangedNotificationResult<IEnumerable<TResult>>)change;
+                        var subSourceChange = (IValueChangedNotificationResult<IEnumerable<TResult>>)change;
                         if (subSourceChange.OldValue != null)
                         {
                             removed.AddRange(subSourceChange.OldValue);

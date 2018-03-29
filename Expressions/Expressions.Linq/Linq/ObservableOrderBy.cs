@@ -136,7 +136,7 @@ namespace NMF.Expressions.Linq
                 else
                 {
                     var tagged = (TaggedObservableValue<TKey, Multiplicity<TItem>>)change.Source;
-                    var keyChange = (ValueChangedNotificationResult<TKey>)change;
+                    var keyChange = (IValueChangedNotificationResult<TKey>)change;
                     
                     Collection<TItem> sequence;
                     if (searchTree.TryGetValue(keyChange.OldValue, out sequence))
