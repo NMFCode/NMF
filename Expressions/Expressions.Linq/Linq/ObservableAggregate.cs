@@ -6,9 +6,10 @@ using System.Text;
 
 namespace NMF.Expressions.Linq
 {
-    public abstract class ObservableAggregate<TSource, TAccumulator, TResult> : NotifyValue<TResult>
+    public abstract class ObservableAggregate<TSource, TAccumulator, TResult> : NotifyValue<TResult>, IValueChangedNotificationResult<TResult>
     {
         private INotifyEnumerable<TSource> source;
+        private TResult oldValue;
 
         protected TAccumulator Accumulator { get; set; }
 
@@ -53,7 +54,7 @@ namespace NMF.Expressions.Linq
         public override INotificationResult Notify(IList<INotificationResult> sources)
         {
             var sourceChange = (CollectionChangedNotificationResult<TSource>)sources[0];
-            var oldValue = Value;
+            oldValue = Value;
             if (sourceChange.IsReset)
             {
                 ResetAccumulator();
@@ -84,12 +85,26 @@ namespace NMF.Expressions.Linq
             if (!EqualityComparer<TResult>.Default.Equals(newValue, oldValue))
             {
                 OnValueChanged(oldValue, newValue);
-                return new ValueChangedNotificationResult<TResult>(this, oldValue, newValue);
+                return this;
             }
             else
                 return UnchangedNotificationResult.Instance;
         }
 
         public override IEnumerable<INotifiable> Dependencies { get { yield return source; } }
+
+        #region value change notification
+        TResult IValueChangedNotificationResult<TResult>.OldValue { get { return oldValue; } }
+
+        TResult IValueChangedNotificationResult<TResult>.NewValue { get { return Value; } }
+
+        object IValueChangedNotificationResult.OldValue { get { return oldValue; } }
+
+        object IValueChangedNotificationResult.NewValue { get { return Value; } }
+
+        INotifiable INotificationResult.Source { get { return this; } }
+
+        bool INotificationResult.Changed { get { return true; } }
+        #endregion
     }
 }

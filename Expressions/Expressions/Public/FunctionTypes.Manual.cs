@@ -61,8 +61,9 @@ namespace NMF.Expressions
         }
     }
 
-    internal class TaggedObservableValue<T, TTag> : INotifyReversableExpression<T>
+    internal class TaggedObservableValue<T, TTag> : INotifyReversableExpression<T>, IValueChangedNotificationResult<T>
     {
+        private T oldValue;
         public INotifyExpression<T> Expression { get; set; }
         public TTag Tag { get; set; }
         
@@ -153,7 +154,15 @@ namespace NMF.Expressions
             var valueChange = (IValueChangedNotificationResult<T>)sources[0];
             if (ValueChanged != null)
                 ValueChanged(this, new ValueChangedEventArgs(valueChange.OldValue, Value));
-            return new ValueChangedNotificationResult<T>(this, valueChange.OldValue, Value);
+            if (valueChange.Changed)
+            {
+                oldValue = valueChange.OldValue;
+                return this;
+            }
+            else
+            {
+                return UnchangedNotificationResult.Instance;
+            }
         }
 
         public void Dispose()
@@ -165,5 +174,20 @@ namespace NMF.Expressions
         {
             return ApplyParameters(parameters, trace);
         }
+
+        #region embedded change notification
+
+        T IValueChangedNotificationResult<T>.OldValue { get { return oldValue; } }
+
+        T IValueChangedNotificationResult<T>.NewValue { get { return Value; } }
+
+        object IValueChangedNotificationResult.OldValue { get { return oldValue; } }
+
+        object IValueChangedNotificationResult.NewValue { get { return Value; } }
+
+        INotifiable INotificationResult.Source { get { return this; } }
+
+        bool INotificationResult.Changed { get { return true; } }
+        #endregion
     }
 }

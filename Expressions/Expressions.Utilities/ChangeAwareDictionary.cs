@@ -14,10 +14,11 @@ namespace NMF.Expressions
     /// <typeparam name="TValue">The type of the values</typeparam>
     public class ChangeAwareDictionary<TKey, TValue>
     {
-        private class Entry : INotifyReversableExpression<TValue>, INotifyPropertyChanged
+        private class Entry : INotifyReversableExpression<TValue>, INotifyPropertyChanged, IValueChangedNotificationResult<TValue>
         {
             private readonly PropertyChangeListener listener;
             private TValue value;
+            private TValue oldValue;
 
             public Entry()
             {
@@ -57,7 +58,7 @@ namespace NMF.Expressions
                 {
                     if (!EqualityComparer<TValue>.Default.Equals(value, this.value))
                     {
-                        var oldValue = this.value;
+                        oldValue = this.value;
                         this.value = value;
                         ValueChanged?.Invoke(this, new ValueChangedEventArgs(oldValue, value));
                         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("Value"));
@@ -115,7 +116,7 @@ namespace NMF.Expressions
 
             public INotificationResult Notify(IList<INotificationResult> sources)
             {
-                return new ValueChangedNotificationResult<TValue>(this, value, value);
+                return this;
             }
 
             INotifyExpression INotifyExpression.ApplyParameters(IDictionary<string, object> parameters, IDictionary<INotifiable, INotifiable> trace)
@@ -132,6 +133,21 @@ namespace NMF.Expressions
             {
                 return this;
             }
+
+            #region embedded change notification
+
+            TValue IValueChangedNotificationResult<TValue>.OldValue { get { return oldValue; } }
+
+            object IValueChangedNotificationResult.OldValue { get { return oldValue; } }
+
+            TValue IValueChangedNotificationResult<TValue>.NewValue { get { return value; } }
+
+            object IValueChangedNotificationResult.NewValue { get { return value; } }
+
+            INotifiable INotificationResult.Source { get { return this; } }
+
+            bool INotificationResult.Changed { get { return true; } }
+            #endregion
         }
 
         private Dictionary<TKey, Entry> inner;

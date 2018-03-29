@@ -7,10 +7,11 @@ using System.Linq.Expressions;
 
 namespace NMF.Expressions.Linq
 {
-    internal class ObservableFirstOrDefault<TSource> : INotifyValue<TSource>, INotifyReversableValue<TSource>
+    internal class ObservableFirstOrDefault<TSource> : INotifyValue<TSource>, INotifyReversableValue<TSource>, IValueChangedNotificationResult<TSource>
     {
         
         private TSource value;
+        private TSource oldValue;
         private INotifyEnumerable<TSource> source;
 
         public static ObservableFirstOrDefault<TSource> Create(INotifyEnumerable<TSource> source)
@@ -166,11 +167,11 @@ namespace NMF.Expressions.Linq
             get { return value; }
         }
 
-        protected void OnValueChanged(ValueChangedEventArgs e)
+        protected void OnValueChanged()
         {
             if (ValueChanged != null)
             {
-                ValueChanged(this, e);
+                ValueChanged(this, new ValueChangedEventArgs(oldValue, value));
             }
         }
 
@@ -194,10 +195,10 @@ namespace NMF.Expressions.Linq
             var newValue = SL.FirstOrDefault(source);
             if (!EqualityComparer<TSource>.Default.Equals(value, newValue))
             {
-                var oldValue = value;
+                oldValue = value;
                 value = newValue;
-                OnValueChanged(new ValueChangedEventArgs(oldValue, newValue));
-                return new ValueChangedNotificationResult<TSource>(this, oldValue, newValue);
+                OnValueChanged();
+                return this;
             }
 
             return UnchangedNotificationResult.Instance;
@@ -227,9 +228,9 @@ namespace NMF.Expressions.Linq
                             coll.Add(value);
                             if (EqualityComparer<TSource>.Default.Equals(this.value, value)) return;
                         }
-                        var old = this.value;
+                        oldValue = this.value;
                         this.value = value;
-                        OnValueChanged(new ValueChangedEventArgs(old, value));
+                        OnValueChanged();
                     }
                     else
                     {
@@ -253,5 +254,19 @@ namespace NMF.Expressions.Linq
         public IEnumerable<INotifiable> Dependencies { get { yield return source; } }
 
         public ExecutionMetaData ExecutionMetaData { get; } = new ExecutionMetaData();
+
+        #region value change notification
+        TSource IValueChangedNotificationResult<TSource>.OldValue { get { return oldValue; } }
+
+        TSource IValueChangedNotificationResult<TSource>.NewValue { get { return value; } }
+
+        object IValueChangedNotificationResult.OldValue { get { return oldValue; } }
+
+        object IValueChangedNotificationResult.NewValue { get { return value; } }
+
+        INotifiable INotificationResult.Source { get { return this; } }
+
+        bool INotificationResult.Changed { get { return true; } }
+        #endregion
     }
 }

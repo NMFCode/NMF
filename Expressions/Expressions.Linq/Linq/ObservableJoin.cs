@@ -356,7 +356,7 @@ namespace NMF.Expressions.Linq
                 }
                 else
                 {
-                    var resultChange = (ValueChangedNotificationResult<TResult>)change;
+                    var resultChange = (IValueChangedNotificationResult<TResult>)change;
                     removed.Add(resultChange.OldValue);
                     added.Add(resultChange.NewValue);
                 }
