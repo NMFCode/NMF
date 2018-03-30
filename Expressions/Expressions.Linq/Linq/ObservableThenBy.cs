@@ -165,21 +165,23 @@ namespace NMF.Expressions.Linq
 
         public override INotificationResult Notify(IList<INotificationResult> sources)
         {
-            var added = new List<TItem>();
-            var removed = new List<TItem>();
-            var moved = new List<TItem>();
+            var notification = CollectionChangedNotificationResult<TItem>.Create(this);
+            var added = notification.AddedItems;
+            var removed = notification.RemovedItems;
+            var moved = notification.MovedItems;
 
             foreach (var change in sources)
             {
                 if (change.Source == source)
                 {
-                    var sourceChange = (CollectionChangedNotificationResult<TItem>)change;
+                    var sourceChange = (ICollectionChangedNotificationResult<TItem>)change;
                     if (sourceChange.IsReset)
                     {
                         OnDetach();
                         OnAttach();
                         OnCleared();
-                        return new CollectionChangedNotificationResult<TItem>(this);
+                        notification.TurnIntoReset();
+                        return notification;
                     }
                     else
                     {
@@ -212,16 +214,13 @@ namespace NMF.Expressions.Linq
                 }
             }
 
-            if (added.Count == 0 && removed.Count == 0 && moved.Count == 0)
-                return UnchangedNotificationResult.Instance;
-
             OnRemoveItems(removed);
             OnAddItems(added);
             OnMoveItems(moved);
-            return new CollectionChangedNotificationResult<TItem>(this, added, removed, moved);
+            return notification;
         }
 
-        private void NotifySource(CollectionChangedNotificationResult<TItem> sourceChange, List<TItem> added, List<TItem> removed)
+        private void NotifySource(ICollectionChangedNotificationResult<TItem> sourceChange, List<TItem> added, List<TItem> removed)
         {
             if (sourceChange.RemovedItems != null)
             {

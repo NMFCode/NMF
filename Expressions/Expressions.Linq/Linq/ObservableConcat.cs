@@ -41,16 +41,18 @@ namespace NMF.Expressions.Linq
         
         public override INotificationResult Notify(IList<INotificationResult> sources)
         {
-            var added = new List<TSource>();
-            var removed = new List<TSource>();
-            var moved = new List<TSource>();
+            var notification = CollectionChangedNotificationResult<TSource>.Create(this);
+            var added = notification.AddedItems;
+            var removed = notification.RemovedItems;
+            var moved = notification.MovedItems;
 
             foreach (ICollectionChangedNotificationResult change in sources)
             {
                 if (change.IsReset)
                 {
                     OnCleared();
-                    return new CollectionChangedNotificationResult<TSource>(this);
+                    notification.TurnIntoReset();
+                    return notification;
                 }
 
                 if (change.AddedItems != null)
@@ -62,7 +64,7 @@ namespace NMF.Expressions.Linq
             }
 
             RaiseEvents(added, removed, moved);
-            return new CollectionChangedNotificationResult<TSource>(this, added, removed, moved);
+            return notification;
         }
     }
 }

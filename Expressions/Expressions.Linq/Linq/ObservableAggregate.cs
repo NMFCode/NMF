@@ -53,7 +53,7 @@ namespace NMF.Expressions.Linq
 
         public override INotificationResult Notify(IList<INotificationResult> sources)
         {
-            var sourceChange = (CollectionChangedNotificationResult<TSource>)sources[0];
+            var sourceChange = (ICollectionChangedNotificationResult<TSource>)sources[0];
             oldValue = Value;
             if (sourceChange.IsReset)
             {
@@ -105,6 +105,10 @@ namespace NMF.Expressions.Linq
         INotifiable INotificationResult.Source { get { return this; } }
 
         bool INotificationResult.Changed { get { return true; } }
+
+        void INotificationResult.IncreaseReferences(int references) { }
+
+        void INotificationResult.FreeReference() { }
         #endregion
     }
 }

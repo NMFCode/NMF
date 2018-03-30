@@ -10,5 +10,9 @@ namespace NMF.Expressions
         INotifiable Source { get; }
 
         bool Changed { get; }
+
+        void IncreaseReferences(int references);
+
+        void FreeReference();
     }
 }

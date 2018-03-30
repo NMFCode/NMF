@@ -45,5 +45,9 @@ namespace NMF.Expressions
             this.oldValue = oldValue;
             this.newValue = newValue;
         }
+
+        void INotificationResult.IncreaseReferences(int references) { }
+
+        void INotificationResult.FreeReference() { }
     }
 }

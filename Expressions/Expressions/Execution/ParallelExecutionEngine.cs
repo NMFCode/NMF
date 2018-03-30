@@ -76,16 +76,31 @@ namespace NMF.Expressions
                 {
                     result = node.Notify(metaData.Results);
                     evaluating = result.Changed;
+                    foreach (var item in metaData.Results)
+                    {
+                        item.FreeReference();
+                    }
                     metaData.Results.Clear();
                 }
 
                 if (node.Successors.HasSuccessors)
                 {
-                    foreach (var succ in node.Successors)
+                    if (evaluating)
                     {
-                        if (result != null && evaluating)
-                            succ.ExecutionMetaData.Results.Add(result);
-                        stack.Push(new Tuple<INotifiable, int>(succ, metaData.TotalVisits));
+                        result.IncreaseReferences(node.Successors.Count);
+                        foreach (var succ in node.Successors)
+                        {
+                            if (result != null)
+                                succ.ExecutionMetaData.Results.Add(result);
+                            stack.Push(new Tuple<INotifiable, int>(succ, metaData.TotalVisits));
+                        }
+                    }
+                    else
+                    {
+                        foreach (var succ in node.Successors)
+                        {
+                            stack.Push(new Tuple<INotifiable, int>(succ, metaData.TotalVisits));
+                        }
                     }
                 }
 

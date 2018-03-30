@@ -142,20 +142,22 @@ namespace NMF.Expressions.Linq
 
         public override INotificationResult Notify(IList<INotificationResult> sources)
         {
-            var added = new List<INotifyGrouping<TKey, TItem>>();
-            var removed = new List<INotifyGrouping<TKey, TItem>>();
+            var notification = CollectionChangedNotificationResult<INotifyGrouping<TKey, TItem>>.Create(this);
+            var added = notification.AddedItems;
+            var removed = notification.RemovedItems;
 
             foreach (var change in sources)
             {
                 if (change.Source == source)
                 {
-                    var sourceChange = (CollectionChangedNotificationResult<TItem>)change;
+                    var sourceChange = (ICollectionChangedNotificationResult<TItem>)change;
                     if (sourceChange.IsReset)
                     {
                         OnDetach();
                         OnAttach();
                         OnCleared();
-                        return new CollectionChangedNotificationResult<INotifyGrouping<TKey, TItem>>(this);
+                        notification.TurnIntoReset();
+                        return notification;
                     }
                     else
                     {
@@ -193,10 +195,10 @@ namespace NMF.Expressions.Linq
 
             OnRemoveItems(removed.Cast<ObservableGroup<TKey, TItem>>());
             OnAddItems(added.Cast<ObservableGroup<TKey, TItem>>());
-            return new CollectionChangedNotificationResult<INotifyGrouping<TKey, TItem>>(this, added, removed);
+            return notification;
         }
 
-        private void NotifySource(CollectionChangedNotificationResult<TItem> sourceChange, List<INotifyGrouping<TKey, TItem>> added, List<INotifyGrouping<TKey, TItem>> removed)
+        private void NotifySource(ICollectionChangedNotificationResult<TItem> sourceChange, List<INotifyGrouping<TKey, TItem>> added, List<INotifyGrouping<TKey, TItem>> removed)
         {
             if (sourceChange.RemovedItems != null)
             {

@@ -95,9 +95,6 @@
     <Compile Include="..\..\Expressions.Linq\Facade\ObservableExtensions.cs">
       <Link>Facade\ObservableExtensions.cs</Link>
     </Compile>
-    <Compile Include="..\..\Expressions.Linq\Facade\OrderableList.cs">
-      <Link>Facade\OrderableList.cs</Link>
-    </Compile>
     <Compile Include="..\..\Expressions.Linq\Linq\Multiplicity.cs">
       <Link>Linq\Multiplicity.cs</Link>
     </Compile>

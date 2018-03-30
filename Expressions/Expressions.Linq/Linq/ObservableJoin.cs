@@ -269,15 +269,16 @@ namespace NMF.Expressions.Linq
 
         public override INotificationResult Notify(IList<INotificationResult> sources)
         {
-            var added = new List<TResult>();
-            var removed = new List<TResult>();
+            var notification = CollectionChangedNotificationResult<TResult>.Create(this);
+            var added = notification.AddedItems;
+            var removed = notification.RemovedItems;
             bool reset = false;
 
             foreach (var change in sources)
             {
                 if (change.Source == outerSource)
                 {
-                    var outerChange = (CollectionChangedNotificationResult<TOuter>)change;
+                    var outerChange = (ICollectionChangedNotificationResult<TOuter>)change;
                     if (outerChange.IsReset)
                     {
                         foreach (var group in groups.Values)
@@ -302,7 +303,8 @@ namespace NMF.Expressions.Linq
                         if (reset || observableInnerSource == null) //both source collections may be reset, only return after handling both
                         {
                             OnCleared();
-                            return new CollectionChangedNotificationResult<TResult>(this);
+                            notification.TurnIntoReset();
+                            return notification;
                         }
                         reset = true;
                     }
@@ -313,7 +315,7 @@ namespace NMF.Expressions.Linq
                 }
                 else if (change.Source == observableInnerSource)
                 {
-                    var innerChange = (CollectionChangedNotificationResult<TInner>)change;
+                    var innerChange = (ICollectionChangedNotificationResult<TInner>)change;
                     if (innerChange.IsReset)
                     {
                         foreach (var group in groups.Values)
@@ -338,7 +340,8 @@ namespace NMF.Expressions.Linq
                         if (reset) //both source collections may be reset, only return after handling both
                         {
                             OnCleared();
-                            return new CollectionChangedNotificationResult<TResult>(this);
+                            notification.TurnIntoReset();
+                            return notification;
                         }
                         reset = true;
                     }
@@ -365,17 +368,15 @@ namespace NMF.Expressions.Linq
             if (reset) //only one source was reset
             {
                 OnCleared();
-                return new CollectionChangedNotificationResult<TResult>(this);
+                notification.TurnIntoReset();
+                return notification;
             }
 
-            if (added.Count == 0 && removed.Count == 0)
-                return UnchangedNotificationResult.Instance;
-
             RaiseEvents(added, removed, null);
-            return new CollectionChangedNotificationResult<TResult>(this, added, removed);
+            return notification;
         }
 
-        private void NotifyOuter(CollectionChangedNotificationResult<TOuter> outerChange, List<TResult> added, List<TResult> removed)
+        private void NotifyOuter(ICollectionChangedNotificationResult<TOuter> outerChange, List<TResult> added, List<TResult> removed)
         {
             if (outerChange.RemovedItems != null)
             {
@@ -410,7 +411,7 @@ namespace NMF.Expressions.Linq
             }
         }
 
-        private void NotifyInner(CollectionChangedNotificationResult<TInner> innerChange, List<TResult> added, List<TResult> removed)
+        private void NotifyInner(ICollectionChangedNotificationResult<TInner> innerChange, List<TResult> added, List<TResult> removed)
         {
             if (innerChange.RemovedItems != null)
             {

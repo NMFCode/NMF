@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 
 namespace NMF.Expressions
 {
@@ -16,16 +18,27 @@ namespace NMF.Expressions
 
         IList MovedItems { get; }
     }
-
-    public class CollectionChangedNotificationResult<T> : ICollectionChangedNotificationResult
+    public interface ICollectionChangedNotificationResult<T> : ICollectionChangedNotificationResult
     {
-        private INotifiable source;
-        private readonly bool isReset;
-        private readonly List<T> addedItems;
-        private readonly List<T> removedItems;
-        private readonly List<T> movedItems;
+        new List<T> AddedItems { get; }
 
-        public bool Changed { get { return true; } }
+        new List<T> RemovedItems { get; }
+
+        new List<T> MovedItems { get; }
+    }
+
+    public class CollectionChangedNotificationResult<T> : ICollectionChangedNotificationResult<T>
+    {
+        private static ConcurrentBag<CollectionChangedNotificationResult<T>> pool = new ConcurrentBag<CollectionChangedNotificationResult<T>>();
+
+        private INotifiable source;
+        private bool isReset;
+        private readonly List<T> addedItems = new List<T>();
+        private readonly List<T> removedItems = new List<T>();
+        private readonly List<T> movedItems = new List<T>();
+        private int references;
+
+        public bool Changed { get { return isReset || addedItems.Count > 0 || removedItems.Count > 0 || movedItems.Count > 0; } }
 
         public INotifiable Source { get { return source; } }
 
@@ -42,59 +55,62 @@ namespace NMF.Expressions
         IList ICollectionChangedNotificationResult.RemovedItems { get { return removedItems; } }
 
         IList ICollectionChangedNotificationResult.MovedItems { get { return movedItems; } }
-
-        public CollectionChangedNotificationResult(INotifiable source, List<T> addedItems, List<T> removedItems) : this(source, addedItems, removedItems, null) { }
-
-        public CollectionChangedNotificationResult(INotifiable source, List<T> addedItems, List<T> removedItems, List<T> movedItems)
-        {
-            this.source = source;
-            this.isReset = false;
-
-            if (addedItems != null && addedItems.Count > 0)
-                this.addedItems = addedItems;
-
-            if (removedItems != null && removedItems.Count > 0)
-                this.removedItems = removedItems;
-
-            if (movedItems != null && movedItems.Count > 0)
-                this.movedItems = movedItems;
-
-            if (this.addedItems == null && this.removedItems == null && this.movedItems == null)
-                throw new ArgumentException("A collection change that is not a reset must have at least one add, remove, move or replace.");
-        }
         
-        public CollectionChangedNotificationResult(INotifiable source)
+        private CollectionChangedNotificationResult(INotifiable source, bool isReset)
         {
             this.source = source;
+            this.isReset = isReset;
+        }
+
+        public static CollectionChangedNotificationResult<T> Create(INotifiable source, bool isReset = false)
+        {
+            CollectionChangedNotificationResult<T> item;
+            if (pool.TryTake(out item))
+            {
+                item.source = source;
+                item.addedItems.Clear();
+                item.removedItems.Clear();
+                item.movedItems.Clear();
+                item.isReset = isReset;
+            }
+            else
+            {
+                item = new CollectionChangedNotificationResult<T>(source, isReset);
+            }
+            return item;
+        }
+
+        public void TurnIntoReset()
+        {
             this.isReset = true;
         }
 
         public static CollectionChangedNotificationResult<T> Transfer(ICollectionChangedNotificationResult oldResult, INotifiable newSource)
         {
-            if (oldResult.IsReset)
-                return new CollectionChangedNotificationResult<T>(newSource);
-
-            var orig = oldResult as CollectionChangedNotificationResult<T>;
-            if (orig != null)
-                return new CollectionChangedNotificationResult<T>(newSource, orig.AddedItems, orig.RemovedItems, orig.MovedItems);
-            
-            return new CollectionChangedNotificationResult<T>(newSource,
-                Cast(oldResult.AddedItems),
-                Cast(oldResult.RemovedItems),
-                Cast(oldResult.MovedItems));
+            var result = Create(newSource);
+            result.AddedItems.AddRange(Cast(oldResult.AddedItems));
+            result.RemovedItems.AddRange(Cast(oldResult.RemovedItems));
+            result.MovedItems.AddRange(Cast(oldResult.MovedItems));
+            result.isReset = oldResult.IsReset;
+            return result;
         }
 
-        private static List<T> Cast(IList list)
+        private static IEnumerable<T> Cast(IList list)
         {
-            if (list == null || list.Count == 0)
-                return null;
-            
-            var result = new List<T>(list.Count);
-            for (int i = 0; i < list.Count; i++)
+            return list.Cast<T>();
+        }
+
+        public void IncreaseReferences(int references)
+        {
+            Interlocked.Add(ref this.references, references);
+        }
+
+        public void FreeReference()
+        {
+            if (Interlocked.Decrement(ref references) == 0)
             {
-                result.Add((T)list[i]);
+                pool.Add(this);
             }
-            return result;
         }
     }
 }

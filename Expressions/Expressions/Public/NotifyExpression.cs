@@ -231,6 +231,10 @@ namespace NMF.Expressions
         INotifiable INotificationResult.Source { get { return this; } }
 
         bool INotificationResult.Changed { get { return true; } }
+
+        void INotificationResult.IncreaseReferences(int references) { }
+
+        void INotificationResult.FreeReference() { }
         #endregion
     }
 }
