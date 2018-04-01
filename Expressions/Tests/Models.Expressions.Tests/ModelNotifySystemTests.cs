@@ -4,6 +4,7 @@ using NMF.Models.Tests.Railway;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using NMF.Models.Tests.Debug;
 
 namespace NMF.Expressions.Tests
 {
@@ -52,6 +53,32 @@ namespace NMF.Expressions.Tests
         }
 
         [TestMethod]
+        public void ParameterDependency_ListWorks()
+        {
+            var element = new AClass();
+            element.Cont1.Add(new CClass());
+            var changed = false;
+
+            // element.Cont1.Count as expression works
+            var test = Observable.Expression(() => CountContent(element));
+            test.ValueChanged += (o, e) => changed = true;
+
+            Assert.AreEqual(test.Value, 1);
+            Assert.IsFalse(changed);
+
+            element.Cont1.Add(new CClass());
+
+            Assert.AreEqual(test.Value, 2);
+            Assert.IsTrue(changed);
+
+            changed = false;
+            element.Cont1.RemoveAt(0);
+
+            Assert.AreEqual(test.Value, 1);
+            Assert.IsTrue(changed);
+        }
+
+        [TestMethod]
         [ExpectedException(typeof(InvalidOperationException))]
         public void ParameterDependency_WrongParameterThrows()
         {
@@ -86,6 +113,12 @@ namespace NMF.Expressions.Tests
         public static bool IsGo(ISemaphore semaphore)
         {
             return semaphore != null && semaphore.Signal == Signal.GO;
+        }
+
+        [ParameterDependency("element", "Cont1")]
+        public static int CountContent(IAClass element)
+        {
+            return element.Cont1.Count;
         }
 
         [ParameterDependency("does not exist", "foo")]
