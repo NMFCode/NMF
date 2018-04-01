@@ -10,7 +10,7 @@ namespace NMF.Expressions
 {
     public class PromotionNotifySystem : INotifySystem
     {
-        private static Type[] promotionMethodCallTypes =
+        private static readonly Type[] promotionMethodCallTypes =
         {
             typeof(ObservablePromotionMethodCall<,>),
             typeof(ObservablePromotionMethodCall<,,>),
@@ -62,7 +62,7 @@ namespace NMF.Expressions
             }
             foreach (var ex in modelFuncVisitor.ExtractParameters)
             {
-                parameterMappings.Add(ex.Parameter.Name, InstructionLevelNotifySystem.Instance.CreateExpression(ex.Value, parameters, parameterMappings));
+                parameterMappings.Add(ex.Parameter.Name, ModelNotifySystem.Instance.CreateExpression(ex.Value, parameters, parameterMappings));
             }
 
             for (int i = 0; i < parametersNew.Count; i++)
@@ -83,7 +83,7 @@ namespace NMF.Expressions
                     {
                         throw new NotSupportedException("Currently, only extraction of parameters typed as model elements or notifiable collections is supported.");
                     }
-                    args[3 * i + 1] = InstructionLevelNotifySystem.Instance.CreateExpression(val, parameters, parameterMappings);
+                    args[3 * i + 1] = ModelNotifySystem.Instance.CreateExpression(val, parameters, parameterMappings);
                     types[i] = val.Type;
                 }
                 PromotionExpressionVisitor.ParameterInfo parInfo;

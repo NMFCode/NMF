@@ -248,7 +248,7 @@ namespace NMF.Expressions.Linq
 
         public INotificationResult Notify(IList<INotificationResult> sources)
         {
-            var change = (CollectionChangedNotificationResult<T>)sources[0];
+            var change = (ICollectionChangedNotificationResult<T>)sources[0];
             var oldValue = Value;
             var reset = false;
 
@@ -372,7 +372,7 @@ namespace NMF.Expressions.Linq
 
         public INotificationResult Notify(IList<INotificationResult> sources)
         {
-            var change = (CollectionChangedNotificationResult<T?>)sources[0];
+            var change = (ICollectionChangedNotificationResult<T?>)sources[0];
             var oldValue = Value;
             var reset = false;
 

@@ -14,7 +14,7 @@ namespace NMF.Expressions
         private Dictionary<string, IncrementalizationStrategy> strategies = new Dictionary<string, IncrementalizationStrategy>();
         private IncrementalizationStrategy defaultStrategy;
 
-        private static InstructionLevelNotifySystem instructionLevel = InstructionLevelNotifySystem.Instance;
+        private static ModelNotifySystem instructionLevel = ModelNotifySystem.Instance;
         private RepositoryChangeNotificationSystem repositoryChange;
         private TreeExtensionNotifySystem augmentation = new TreeExtensionNotifySystem();
         private PromotionNotifySystem promotion = new PromotionNotifySystem();

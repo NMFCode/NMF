@@ -7,7 +7,7 @@ using System.Threading;
 
 namespace NMF.Expressions
 {
-    internal class NotificationResultCollection : IList<INotificationResult>
+    public class NotificationResultCollection : IList<INotificationResult>
     {
         private readonly Entry head = new Entry(null);
         private Entry tail;

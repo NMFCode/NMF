@@ -143,14 +143,15 @@ namespace NMF.Expressions.Linq
 
         public override INotificationResult Notify(IList<INotificationResult> sources)
         {
-            var added = new List<TResult>();
-            var removed = new List<TResult>();
+            var notification = CollectionChangedNotificationResult<TResult>.Create(this);
+            var added = notification.AddedItems;
+            var removed = notification.RemovedItems;
 
             foreach (var change in sources)
             {
                 if (change.Source == source)
                 {
-                    var sourceChange = (CollectionChangedNotificationResult<TSource>)change;
+                    var sourceChange = (ICollectionChangedNotificationResult<TSource>)change;
                     if (sourceChange.IsReset)
                     {
                         foreach (var item in lambdaInstances.Values)
@@ -159,7 +160,8 @@ namespace NMF.Expressions.Linq
                         foreach (var item in source)
                             AttachItem(item);
                         OnCleared();
-                        return new CollectionChangedNotificationResult<TResult>(this);
+                        notification.TurnIntoReset();
+                        return notification;
                     }
                     else
                     {
@@ -168,7 +170,7 @@ namespace NMF.Expressions.Linq
                 }
                 else
                 {
-                    var itemChange = (ValueChangedNotificationResult<TResult>)change;
+                    var itemChange = (IValueChangedNotificationResult<TResult>)change;
                     if (sources.Count > 1)
                     {
                         // if there are multiple changes, we need to check whether the change belongs to items
@@ -212,10 +214,10 @@ namespace NMF.Expressions.Linq
                 }
             }
             RaiseEvents(added, removed, null);
-            return new CollectionChangedNotificationResult<TResult>(this, added, removed);
+            return notification;
         }
 
-        private void NotifySource(CollectionChangedNotificationResult<TSource> sourceChange, List<TResult> added, List<TResult> removed, bool checkConflicts)
+        private void NotifySource(ICollectionChangedNotificationResult<TSource> sourceChange, List<TResult> added, List<TResult> removed, bool checkConflicts)
         {
             if (sourceChange.RemovedItems != null)
             {

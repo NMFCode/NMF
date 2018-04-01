@@ -10,7 +10,7 @@ namespace NMF.Expressions
     /// The common base class for incremental expressions
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    public abstract class NotifyExpression<T> : NotifyExpressionBase, INotifyExpression<T>
+    public abstract class NotifyExpression<T> : NotifyExpressionBase, INotifyExpression<T>, IValueChangedNotificationResult<T>
     {
         /// <summary>
         /// Creates a new incremental expression
@@ -32,6 +32,7 @@ namespace NMF.Expressions
 
         
         private T value;
+        private T oldValue;
 
         public event EventHandler<ValueChangedEventArgs> ValueChanged;
 
@@ -162,20 +163,10 @@ namespace NMF.Expressions
         /// <param name="newVal">The new value</param>
         protected void OnValueChanged(T oldVal, T newVal)
         {
-            OnValueChanged(new ValueChangedEventArgs(oldVal, newVal));
-        }
-
-
-        /// <summary>
-        /// Gets called when the value of the current expression changes
-        /// </summary>
-        /// <param name="e">The event data</param>
-        protected virtual void OnValueChanged(ValueChangedEventArgs e)
-        {
             var handler = ValueChanged;
             if (handler != null)
             {
-                handler.Invoke(this, e);
+                handler.Invoke(this, new ValueChangedEventArgs(oldVal, newVal));
             }
         }
 
@@ -187,10 +178,10 @@ namespace NMF.Expressions
             var newVal = GetValue();
             if (!EqualityComparer<T>.Default.Equals(value, newVal))
             {
-                var oldVal = value;
+                oldValue = value;
                 value = newVal;
-                OnValueChanged(oldVal, newVal);
-                return new ValueChangedNotificationResult<T>(this, oldVal, newVal);
+                OnValueChanged(oldValue, newVal);
+                return this;
             }
             return UnchangedNotificationResult.Instance;
         }
@@ -226,5 +217,24 @@ namespace NMF.Expressions
         {
             return ApplyParameters(parameters, trace);
         }
+
+        #region value change notification
+
+        T IValueChangedNotificationResult<T>.OldValue { get { return oldValue; } }
+
+        T IValueChangedNotificationResult<T>.NewValue { get { return value; } }
+
+        object IValueChangedNotificationResult.OldValue { get { return oldValue; } }
+
+        object IValueChangedNotificationResult.NewValue { get { return value; } }
+
+        INotifiable INotificationResult.Source { get { return this; } }
+
+        bool INotificationResult.Changed { get { return true; } }
+
+        void INotificationResult.IncreaseReferences(int references) { }
+
+        void INotificationResult.FreeReference() { }
+        #endregion
     }
 }

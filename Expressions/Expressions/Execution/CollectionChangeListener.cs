@@ -12,10 +12,7 @@ namespace NMF.Expressions
         private INotifyCollectionChanged collection;
         private bool engineNotified;
 
-        private bool isReset;
-        private List<T> addedItems;
-        private List<T> removedItems;
-        private List<T> movedItems;
+        private CollectionChangedNotificationResult<T> notification = CollectionChangedNotificationResult<T>.Create(null);
 
         public INotifiable Node { get; private set; }
 
@@ -49,22 +46,11 @@ namespace NMF.Expressions
             INotificationResult result;
             if (!HasChanges())
                 result = UnchangedNotificationResult.Instance;
-            else if (isReset)
-                result = new CollectionChangedNotificationResult<T>(null);
             else
-                result = new CollectionChangedNotificationResult<T>
-                (
-                    null,
-                    addedItems,
-                    removedItems,
-                    movedItems
-                );
+                result = notification;
             
             engineNotified = false;
-            isReset = false;
-            addedItems = null;
-            removedItems = null;
-            movedItems = null;
+            notification = CollectionChangedNotificationResult<T>.Create(null);
 
             return result;
         }
@@ -99,81 +85,71 @@ namespace NMF.Expressions
 
         private void TrackAddAction(IList addedItems)
         {
-            if (isReset)
+            if (notification.IsReset)
                 return;
             foreach (T item in addedItems)
             {
-                if (removedItems == null || !removedItems.Remove(item))
+                if (!notification.RemovedItems.Remove(item))
                 {
-                    if (this.addedItems == null)
-                        this.addedItems = new List<T>();
-                    this.addedItems.Add(item);
+                    notification.AddedItems.Add(item);
                 }
             }
         }
 
         private void TrackRemoveAction(IList removedItems)
         {
-            if (isReset)
+            if (notification.IsReset)
                 return;
             foreach (T item in removedItems)
             {
-                if (addedItems == null || !addedItems.Remove(item))
+                if (!notification.AddedItems.Remove(item))
                 {
-                    if (this.removedItems == null)
-                        this.removedItems = new List<T>();
-                    this.removedItems.Add(item);
+                    this.notification.RemovedItems.Add(item);
                 }
             }
         }
 
         private void TrackMoveAction(IList movedItems)
         {
-            if (isReset)
+            if (notification.IsReset)
                 return;
-            if (this.movedItems == null)
-                this.movedItems = new List<T>();
             foreach (T item in movedItems)
-                this.movedItems.Add(item);
+                this.notification.MovedItems.Add(item);
         }
 
         private void TrackReplaceAction(IList replacedItems, IList replacingItems)
         {
-            if (isReset)
+            if (notification.IsReset)
                 return;
             foreach (T item in replacingItems)
             {
-                if (removedItems == null || !removedItems.Remove(item))
+                if (!notification.RemovedItems.Remove(item))
                 {
-                    if (addedItems == null)
-                        addedItems = new List<T>();
-                    addedItems.Add(item);
+                    notification.AddedItems.Add(item);
                 }
             }
 
             foreach (T item in replacedItems)
             {
-                if (addedItems == null || !addedItems.Remove(item))
+                if (!notification.AddedItems.Remove(item))
                 {
-                    if (removedItems == null)
-                        removedItems = new List<T>();
-                    removedItems.Add(item);
+                    notification.RemovedItems.Add(item);
                 }
             }
         }
 
         private void TrackResetAction()
         {
-            isReset = true;
+            notification.TurnIntoReset();
         }
 
         private bool HasChanges()
         {
             return
-                isReset ||
-                addedItems?.Count > 0 ||
-                removedItems?.Count > 0 ||
-                movedItems?.Count > 0;
+                notification.IsReset ||
+                notification.AddedItems.Count > 0 ||
+                notification.RemovedItems.Count > 0 ||
+                notification.MovedItems.Count > 0;
         }
     }
 }

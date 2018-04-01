@@ -25,6 +25,8 @@ namespace NMF.Expressions
 
         public bool IsAttached => true;
 
+        public int Count => 0;
+
         event EventHandler ISuccessorList.Attached { add { } remove { } }
 
         event EventHandler ISuccessorList.Detached { add { } remove { } }

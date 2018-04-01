@@ -177,7 +177,7 @@ namespace NMF.Expressions.Linq
         {
             bool oldValue = Value;
 
-            foreach (CollectionChangedNotificationResult<T> change in sources)
+            foreach (ICollectionChangedNotificationResult<T> change in sources)
             {
                 if (change.Source == source1)
                     NotifySource1(change);
@@ -193,7 +193,7 @@ namespace NMF.Expressions.Linq
                 return new ValueChangedNotificationResult<bool>(this, oldValue, newValue);
         }
 
-        private void NotifySource1(CollectionChangedNotificationResult<T> change)
+        private void NotifySource1(ICollectionChangedNotificationResult<T> change)
         {
             if (change.IsReset)
             {
@@ -236,7 +236,7 @@ namespace NMF.Expressions.Linq
             }
         }
 
-        private void NotifySource2(CollectionChangedNotificationResult<T> change)
+        private void NotifySource2(ICollectionChangedNotificationResult<T> change)
         {
             if (change.IsReset)
             {

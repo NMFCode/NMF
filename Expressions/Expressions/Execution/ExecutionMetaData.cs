@@ -9,6 +9,6 @@ namespace NMF.Expressions
     {
         internal int TotalVisits;
         internal int RemainingVisits;
-        internal NotificationResultCollection Results = new NotificationResultCollection();
+        public NotificationResultCollection Results = new NotificationResultCollection();
     }
 }

@@ -39,7 +39,7 @@ namespace NMF.Expressions
             }
             foreach (var ex in modelFuncVisitor.ExtractParameters)
             {
-                parameterMappings.Add(ex.Parameter.Name, InstructionLevelNotifySystem.Instance.CreateExpression(ex.Value, parameters, parameterMappings));
+                parameterMappings.Add(ex.Parameter.Name, ModelNotifySystem.Instance.CreateExpression(ex.Value, parameters, parameterMappings));
             }
 
             var expressionLambda = Expression.Lambda(modelFunc, parameterList);

@@ -88,7 +88,7 @@ namespace NMF.Expressions
             }
         }
 
-        private void ExecuteSingle(INotifiable source)
+        protected virtual void ExecuteSingle(INotifiable source)
         {
             var stack = new Stack<INotifiable>();
             stack.Push(source);
@@ -97,10 +97,15 @@ namespace NMF.Expressions
             {
                 var node = stack.Pop();
                 var result = node.Notify(node.ExecutionMetaData.Results);
+                foreach (var item in node.ExecutionMetaData.Results)
+                {
+                    item.FreeReference();
+                }
                 node.ExecutionMetaData.Results.Clear();
 
                 if (result.Changed && node.Successors.HasSuccessors)
                 {
+                    result.IncreaseReferences(node.Successors.Count);
                     foreach (var succ in node.Successors)
                     {
                         succ.ExecutionMetaData.Results.UnsafeAdd(result);

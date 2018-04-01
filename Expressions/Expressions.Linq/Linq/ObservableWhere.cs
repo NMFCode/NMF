@@ -181,17 +181,18 @@ namespace NMF.Expressions.Linq
                 return SL.Sum(SL.Where(lambdaInstances.Values, lambda => lambda.Value), node => node.Tag.Multiplicity);
             }
         }
-        
+
         public override INotificationResult Notify(IList<INotificationResult> sources)
         {
-            var added = new List<T>();
-            var removed = new List<T>();
+            var notification = CollectionChangedNotificationResult<T>.Create(this);
+            var added = notification.AddedItems;
+            var removed = notification.RemovedItems;
 
             foreach (var change in sources)
             {
                 if (change.Source == source)
                 {
-                    var sourceChange = (CollectionChangedNotificationResult<T>)change;
+                    var sourceChange = (ICollectionChangedNotificationResult<T>)change;
                     if (sourceChange.IsReset)
                     {
                         foreach (var item in lambdaInstances.Values)
@@ -200,7 +201,8 @@ namespace NMF.Expressions.Linq
                         foreach (var item in source)
                             AttachItem(item);
                         OnCleared();
-                        return new CollectionChangedNotificationResult<T>(this);
+                        notification.TurnIntoReset();
+                        return notification;
                     }
                     else
                     {
@@ -228,15 +230,13 @@ namespace NMF.Expressions.Linq
                 }
             }
 
-            if (added.Count == 0 && removed.Count == 0)
-                return UnchangedNotificationResult.Instance;
-
             OnRemoveItems(removed);
             OnAddItems(added);
-            return new CollectionChangedNotificationResult<T>(this, added, removed);
+
+            return notification;
         }
 
-        private void NotifySource(CollectionChangedNotificationResult<T> sourceChange, List<T> added, List<T> removed)
+        private void NotifySource(ICollectionChangedNotificationResult<T> sourceChange, List<T> added, List<T> removed)
         {
             if (sourceChange.RemovedItems != null)
             {

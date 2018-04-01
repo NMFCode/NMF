@@ -103,7 +103,7 @@ namespace NMF.Expressions
         {
             if (sources.Count > 0)
             {
-                var change = (ValueChangedNotificationResult<T>)sources[0];
+                var change = (IValueChangedNotificationResult<T>)sources[0];
                 if (ValueChanged != null)
                     ValueChanged(this, new ValueChangedEventArgs(change.OldValue, Value));
                 return new ValueChangedNotificationResult<T>(this, change.OldValue, Value);

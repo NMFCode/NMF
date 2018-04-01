@@ -32,18 +32,20 @@ namespace NMF.Expressions.Linq
             if (change.IsReset)
             {
                 OnCleared();
-                return new CollectionChangedNotificationResult<T>(this);
+                return CollectionChangedNotificationResult<T>.Create(this, true);
             }
 
-            var removed = change.RemovedItems?.OfType<T>().ToList();
-            var added = change.AddedItems?.OfType<T>().ToList();
-            var moved = change.MovedItems?.OfType<T>().ToList();
-            
-            if ((removed?.Count ?? 0) + (added?.Count ?? 0) + (moved?.Count ?? 0) == 0)
-                return UnchangedNotificationResult.Instance;
+            var notification = CollectionChangedNotificationResult<T>.Create(this);
+            var removed = notification.RemovedItems;
+            var added = notification.AddedItems;
+            var moved = notification.MovedItems;
+
+            removed.AddRange(change.RemovedItems.OfType<T>());
+            added.AddRange(change.AddedItems.OfType<T>());
+            moved.AddRange(change.MovedItems.OfType<T>());
 
             RaiseEvents(added, removed, moved);
-            return new CollectionChangedNotificationResult<T>(this, added, removed, moved);
+            return notification;
         }
     }
 

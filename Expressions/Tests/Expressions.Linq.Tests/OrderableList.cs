@@ -24,8 +24,9 @@ namespace NMF.Expressions.Linq
         {
             if (e.Action != NotifyCollectionChangedAction.Reset)
             {
-                var removed = new List<T>();
-                var added = new List<T>();
+                var notification = CollectionChangedNotificationResult<T>.Create(this);
+                var removed = notification.RemovedItems;
+                var added = notification.AddedItems;
 
                 if (e.OldItems != null)
                 {
@@ -56,7 +57,7 @@ namespace NMF.Expressions.Linq
                     }
                 }
 
-                ExecutionMetaData.Results.Add(new CollectionChangedNotificationResult<T>(this, added, removed));
+                ExecutionMetaData.Results.Add(notification);
             }
             ExecutionEngine.Current.InvalidateNode(this);
         }
@@ -83,7 +84,7 @@ namespace NMF.Expressions.Linq
             if (sources.Count == 0)
             {
                 OnCleared();
-                return new CollectionChangedNotificationResult<T>(this);
+                return CollectionChangedNotificationResult<T>.Create(this, true);
             }
             else
             {

@@ -15,5 +15,9 @@ namespace NMF.Expressions
         public INotifiable Source => null;
 
         private UnchangedNotificationResult() { }
+
+        public void IncreaseReferences(int references) { }
+
+        public void FreeReference() { }
     }
 }
