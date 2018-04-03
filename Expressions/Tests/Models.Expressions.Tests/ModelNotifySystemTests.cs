@@ -58,8 +58,7 @@ namespace NMF.Expressions.Tests
             var element = new AClass();
             element.Cont1.Add(new CClass());
             var changed = false;
-
-            // element.Cont1.Count as expression works
+            
             var test = Observable.Expression(() => CountContent(element));
             test.ValueChanged += (o, e) => changed = true;
 
@@ -115,7 +114,7 @@ namespace NMF.Expressions.Tests
             return semaphore != null && semaphore.Signal == Signal.GO;
         }
 
-        [ParameterDependency("element", "Cont1")]
+        [ParameterDependency("element", "Cont1", true)]
         public static int CountContent(IAClass element)
         {
             return element.Cont1.Count;
