@@ -1,5 +1,6 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using NMF.Expressions.Test;
+using NMF.Models.Tests.Debug;
 using NMF.Models.Tests.Railway;
 using System;
 using System.Collections.Generic;
@@ -50,8 +51,32 @@ namespace NMF.Expressions.Tests
             Assert.IsTrue(changed);
             Assert.IsTrue(test.Value);
         }
-
         [TestMethod]
+        public void ParameterDependency_ListWorks()
+        {
+            var element = new AClass();
+            element.Cont1.Add(new CClass());
+            var changed = false;
+            
+            var test = Observable.Expression(() => CountContent(element));
+            test.ValueChanged += (o, e) => changed = true;
+
+            Assert.AreEqual(test.Value, 1);
+            Assert.IsFalse(changed);
+
+            element.Cont1.Add(new CClass());
+
+            Assert.AreEqual(test.Value, 2);
+            Assert.IsTrue(changed);
+
+            changed = false;
+            element.Cont1.RemoveAt(0);
+
+            Assert.AreEqual(test.Value, 1);
+            Assert.IsTrue(changed);
+        }
+
+    [TestMethod]
         [ExpectedException(typeof(InvalidOperationException))]
         public void ParameterDependency_WrongParameterThrows()
         {
@@ -87,8 +112,14 @@ namespace NMF.Expressions.Tests
         {
             return semaphore != null && semaphore.Signal == Signal.GO;
         }
+ 
+        [ParameterDependency("element", "Cont1", true)]
+        public static int CountContent(IAClass element)
+        {
+            return element.Cont1.Count;
+        }
 
-        [ParameterDependency("does not exist", "foo")]
+    [ParameterDependency("does not exist", "foo")]
         public static bool WrongParameters(ISemaphore semaphore)
         {
             return true;
