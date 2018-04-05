@@ -2,6 +2,7 @@
 using System.CodeDom;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
@@ -549,6 +550,7 @@ namespace NMF.CodeGen
                     Name = "_" + property.Name.ToCamelCase(),
                     Type = type ?? new CodeTypeReference(typeof(object))
                 };
+                field.AddAttribute(typeof(DebuggerBrowsableAttribute), DebuggerBrowsableState.Never);
 
                 field.WriteDocumentation(string.Format("The backing field for the {0} property", property.Name));
 
