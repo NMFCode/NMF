@@ -25,6 +25,7 @@ namespace Editor
     public partial class MainWindow : Window
     {
         private ModelRepository repository = new ModelRepository();
+        private int modelCounter;
 
         public MainWindow()
         {
@@ -76,6 +77,7 @@ namespace Editor
             var ns = new Namespace();
             var model = new Model();
             model.RootElements.Add(ns);
+            repository.Models.Add(new Uri($"temp:newModel{modelCounter++}"), model);
             Tree.RootElement = ns;
         }
     }
