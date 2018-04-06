@@ -17,27 +17,6 @@ namespace NMF.Serialization
     /// </summary>
     public class XmlSerializer
     {
-        private static Dictionary<Type, TypeConverter> standardTypes = new Dictionary<Type, TypeConverter>();
-
-        static XmlSerializer()
-        {
-            standardTypes.Add(typeof(string), new StringConverter());
-            standardTypes.Add(typeof(Int32), new Int32Converter());
-            standardTypes.Add(typeof(Int64), new Int64Converter());
-            standardTypes.Add(typeof(Int16), new Int16Converter());
-            standardTypes.Add(typeof(Boolean), new BooleanConverter());
-            standardTypes.Add(typeof(UInt16), new UInt16Converter());
-            standardTypes.Add(typeof(UInt32), new UInt32Converter());
-            standardTypes.Add(typeof(UInt64), new UInt64Converter());
-            standardTypes.Add(typeof(Byte), new ByteConverter());
-            standardTypes.Add(typeof(SByte), new SByteConverter());
-            standardTypes.Add(typeof(Double), new DoubleConverter());
-            standardTypes.Add(typeof(Single), new SingleConverter());
-            standardTypes.Add(typeof(Decimal), new DecimalConverter());
-            standardTypes.Add(typeof(DateTime), new DateTimeConverter());
-            standardTypes.Add(typeof(DateTimeOffset), new DateTimeOffsetConverter());
-            standardTypes.Add(typeof(TimeSpan), new TimeSpanConverter());
-        }
 
         private Dictionary<Type, ITypeSerializationInfo> types = new Dictionary<Type, ITypeSerializationInfo>();
         private XmlTypeCollection typesWrapper;
@@ -275,7 +254,7 @@ namespace NMF.Serialization
                     {
                         Type collType = i.GetGenericArguments()[0];
                         info.CollectionType = i;
-                        var converter = GetTypeConverter(collType);
+                        var converter = TypeConversion.GetTypeConverter(collType);
                         if (converter == null || !converter.CanConvertFrom(typeof(string)) || !converter.CanConvertTo(typeof(string)))
                         {
                             info.CollectionItemType = GetSerializationInfo(collType, true);
@@ -513,43 +492,17 @@ namespace NMF.Serialization
                 catch (Exception) { }
             }
 
-            return GetTypeConverter(pd.PropertyType);
+            return TypeConversion.GetTypeConverter(pd.PropertyType);
         }
 
-        private static TypeConverter GetTypeConverter(Type type)
-        {
-            TypeConverter converter;
-            if (!standardTypes.TryGetValue(type, out converter))
-            {
-                if (type.IsEnum)
-                {
-                    converter = new EnumConverter(type);
-                }
-                else
-                {
-                    var converterTypeString = Fetch(FetchAttribute<TypeConverterAttribute>(type, true), att => att.ConverterTypeName);
-                    if (converterTypeString != null)
-                    {
-                        try
-                        {
-                            converter = Activator.CreateInstance(Type.GetType(converterTypeString)) as TypeConverter;
-                        }
-                        catch (Exception) { }
-                    }
-                }
-                standardTypes.Add(type, converter);
-            }
-            return converter;
-        }
-
-        private static T FetchAttribute<T>(MemberInfo reflectedItem, bool inherit) where T : Attribute
+        internal static T FetchAttribute<T>(MemberInfo reflectedItem, bool inherit) where T : Attribute
         {
             var results = reflectedItem.GetCustomAttributes(typeof(T), inherit);
             if (results == null || results.Length == 0) return null;
             return results[0] as T;
         }
 
-        private static TValue Fetch<T, TValue>(T obj, Func<T, TValue> func) where T : class
+        internal static TValue Fetch<T, TValue>(T obj, Func<T, TValue> func) where T : class
         {
             if (obj == null) return default(TValue);
             return func(obj);

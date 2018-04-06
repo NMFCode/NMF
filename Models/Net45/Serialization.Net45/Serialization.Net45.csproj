@@ -39,6 +39,9 @@
     <Folder Include="Properties\" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\..\Serialization\TypeConversion.cs">
+      <Link>TypeConversion.cs</Link>
+    </Compile>
     <Compile Include="..\..\Serialization\XMI\UnknownElementEventArgs.cs">
       <Link>Xmi\UnknownElementEventArgs.cs</Link>
     </Compile>

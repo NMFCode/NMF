@@ -1,11 +1,14 @@
 ﻿using NMF.CodeGen;
 using NMF.Models.Meta;
+using NMF.Serialization;
 using NMF.Transformations;
 using NMF.Transformations.Core;
 using NMF.Utilities;
 using System;
 using System.CodeDom;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 
@@ -26,11 +29,7 @@ namespace NMF.Models.Meta
             /// <returns>The generated code declaration</returns>
             public override CodeTypeDeclaration CreateOutput(IDataType input, ITransformationContext context)
             {
-                return new CodeTypeDeclaration()
-                {
-                    Name = input.Name.ToPascalCase(),
-                    IsStruct = true
-                };
+                return CodeDomHelper.CreateTypeDeclarationWithReference(input.Name.ToPascalCase(), true);
             }
 
             /// <summary>
@@ -53,28 +52,42 @@ namespace NMF.Models.Meta
 
                 generatedType.BaseTypes.Add(new CodeTypeReference(typeof(IEquatable<>).Name, new CodeTypeReference(generatedType.Name)));
 
-                var constructor = new CodeConstructor();
+                var constructor = new CodeConstructor() { Attributes = MemberAttributes.Public };
 
                 var attr2Property = Rule<DataTypeAttribute2Property>();
                 foreach (var attr in input.Attributes)
                 {
-                    var fieldName = attr.Name.ToCamelCase();
                     var property = context.Trace.ResolveIn(attr2Property, attr);
-                    var field = new CodeMemberField(property.Type, fieldName);
-                    var fieldRef = new CodeFieldReferenceExpression(new CodeThisReferenceExpression(), fieldName);
+                    var fieldRef = property.GetBackingField();
 
-                    var cArg = new CodeParameterDeclarationExpression(field.Type, fieldName);
-                    var cStatement = new CodeAssignStatement(fieldRef, new CodeArgumentReferenceExpression(fieldName));
+                    var cArg = new CodeParameterDeclarationExpression(property.Type, attr.Name.ToCamelCase());
+                    var cStatement = new CodeAssignStatement(fieldRef, new CodeArgumentReferenceExpression(cArg.Name));
 
                     constructor.Parameters.Add(cArg);
                     constructor.Statements.Add(cStatement);
 
                     generatedType.Members.Add(property);
-                    generatedType.Members.Add(field);
+                    var dependent = CodeDomHelper.DependentMembers(property, false);
+                    if (dependent != null)
+                    {
+                        foreach (var item in dependent)
+                        {
+                            generatedType.Members.Add(item);
+                        }
+                    }
                 }
 
-                CreateGenericEquals(input, generatedType, context);
-                CreateObjectEquals(input, generatedType, context);
+                generatedType.Members.Add(constructor);
+                generatedType.Members.Add(CreateGenericEquals(input, generatedType, context));
+                generatedType.Members.Add(CreateObjectEquals(input, generatedType, context));
+                generatedType.Members.Add(CreateGetHashCode(input, context));
+                generatedType.Members.Add(CreateEqualsOperator(input, generatedType, context));
+                generatedType.Members.Add(CreateNotEqualsOperator(input, generatedType, context));
+                generatedType.Members.Add(CreateSerializeToJson(input, context));
+                generatedType.Members.Add(CreateTryParseJsonMethod(input, generatedType, context));
+                var converter = CreateTypeConverter(input, generatedType, context);
+                generatedType.Members.Add(converter);
+                generatedType.AddAttribute(typeof(TypeConverterAttribute), new CodeTypeOfExpression(converter.GetReferenceForType()));
             }
 
             /// <summary>
@@ -83,14 +96,14 @@ namespace NMF.Models.Meta
             /// <param name="input">The NMeta DataType for which to generate the Equals method</param>
             /// <param name="output">The generated type declaration</param>
             /// <param name="context">The transformation context</param>
-            protected virtual void CreateObjectEquals(IDataType input, CodeTypeDeclaration output, ITransformationContext context)
+            protected virtual CodeMemberMethod CreateObjectEquals(IDataType input, CodeTypeDeclaration output, ITransformationContext context)
             {
                 var thisTypeRef = new CodeTypeReference(output.Name);
                 var equals = new CodeMemberMethod()
                 {
                     Name = "Equals",
                     ReturnType = new CodeTypeReference(typeof(bool)),
-                    Attributes = MemberAttributes.Public | MemberAttributes.Override | MemberAttributes.Final
+                    Attributes = MemberAttributes.Public | MemberAttributes.Override
                 };
                 equals.Parameters.Add(new CodeParameterDeclarationExpression(typeof(object), "obj"));
                 var argRef = new CodeArgumentReferenceExpression("obj");
@@ -106,18 +119,17 @@ namespace NMF.Models.Meta
                 body.TrueStatements.Add(new CodeMethodReturnStatement(new CodeMethodInvokeExpression(new CodeThisReferenceExpression(), "Equals", new CodeCastExpression(thisTypeRef, argRef))));
                 body.FalseStatements.Add(new CodeMethodReturnStatement(new CodePrimitiveExpression(false)));
                 equals.Statements.Add(body);
-                output.Members.Add(equals);
+                return equals;
             }
 
             /// <summary>
             /// Generates the generic Equals method implementing Equals
             /// </summary>
             /// <param name="input">The NMeta data type</param>
-            /// <param name="output">The generated type declaration</param>
             /// <param name="context">The transformation context</param>
-            protected virtual void CreateGenericEquals(IDataType input, CodeTypeDeclaration output, ITransformationContext context)
+            protected virtual CodeMemberMethod CreateGenericEquals(IDataType input, CodeTypeDeclaration output, ITransformationContext context)
             {
-                var thisTypeRef = new CodeTypeReference(output.Name);
+                var thisTypeRef = output.GetReferenceForType();
                 var equals = new CodeMemberMethod()
                 {
                     Name = "Equals",
@@ -130,7 +142,6 @@ namespace NMF.Models.Meta
                     "True, if this structure and the given other object are equivalent", new Dictionary<string, string>() { { "other", "The other object" } });
 
                 var argRef = new CodeArgumentReferenceExpression("other");
-                output.Members.Add(equals);
                 var expressions = input.Attributes.Select(prop =>
                 {
                     var propName = prop.Name.ToPascalCase();
@@ -139,19 +150,262 @@ namespace NMF.Models.Meta
                     return new CodeBinaryOperatorExpression(thisRef, CodeBinaryOperatorType.IdentityEquality, otherRef);
                 }).ToArray();
 
-                if (expressions != null && expressions.Length > 0)
+                var exp = expressions[0];
+                for (int i = 0; i < expressions.Length; i++)
                 {
-                    var exp = expressions[0];
-                    for (int i = 0; i < expressions.Length; i++)
+                    exp = new CodeBinaryOperatorExpression(exp, CodeBinaryOperatorType.BooleanAnd, expressions[i]);
+                }
+                equals.Statements.Add(new CodeMethodReturnStatement(exp));
+                return equals;
+            }
+
+            protected virtual CodeMemberMethod CreateGetHashCode(IDataType input, ITransformationContext context)
+            {
+                var getHashCode = new CodeMemberMethod()
+                {
+                    Name = "GetHashCode",
+                    Attributes = MemberAttributes.Public | MemberAttributes.Override,
+                    ReturnType = typeof(int).ToTypeReference()
+                };
+
+                getHashCode.WriteDocumentation("Gets a has representation of the current value");
+
+                var hash = new CodeVariableReferenceExpression("hash");
+                getHashCode.Statements.Add(new CodeVariableDeclarationStatement(getHashCode.ReturnType, hash.VariableName, new CodePrimitiveExpression(0)));
+                
+                var attr2Property = Rule<DataTypeAttribute2Property>();
+                var thisRef = new CodeThisReferenceExpression();
+                var counter = 1;
+                foreach (var att in input.Attributes)
+                {
+                    var prop = context.Trace.ResolveIn(attr2Property, att);
+                    var propValue = new CodePropertyReferenceExpression(thisRef, prop.Name);
+
+                    var reassignHash = new CodeAssignStatement(hash,
+                        new CodeMethodInvokeExpression(new CodeTypeReferenceExpression(typeof(NMF.Utilities.Extensions).ToTypeReference()), "CombineHash",
+                        hash,
+                        new CodeMethodInvokeExpression(propValue, "GetHashCode"),
+                        new CodePrimitiveExpression(counter)));
+
+                    if (!IsString(att.Type))
                     {
-                        exp = new CodeBinaryOperatorExpression(exp, CodeBinaryOperatorType.BooleanAnd, expressions[i]);
+                        getHashCode.Statements.Add(reassignHash);
                     }
-                    equals.Statements.Add(new CodeMethodReturnStatement(exp));
+                    else
+                    {
+                        getHashCode.Statements.Add(new CodeConditionStatement(new CodeBinaryOperatorExpression(propValue, CodeBinaryOperatorType.IdentityInequality, new CodePrimitiveExpression()),
+                            reassignHash));
+                    }
+                    counter++;
                 }
-                else
+
+                getHashCode.Statements.Add(new CodeMethodReturnStatement(hash));
+                return getHashCode;
+            }
+
+            public virtual CodeTypeMember CreateEqualsOperator(IDataType dataType, CodeTypeDeclaration generatedType, ITransformationContext context)
+            {
+                return new CodeSnippetTypeMember(string.Format(@"
+        public static bool operator==({0} {1}1, {0} {1}2)
+        {{
+            return {1}1.Equals({1}2);
+        }}", generatedType.Name, dataType.Name.ToCamelCase()));
+            }
+
+            public virtual CodeTypeMember CreateNotEqualsOperator(IDataType dataType, CodeTypeDeclaration generatedType, ITransformationContext context)
+            {
+                return new CodeSnippetTypeMember(string.Format(@"
+        public static bool operator!=({0} {1}1, {0} {1}2)
+        {{
+            return !{1}1.Equals({1}2);
+        }}", generatedType.Name, dataType.Name.ToCamelCase()));
+            }
+
+            public virtual CodeMemberMethod CreateSerializeToJson(IDataType dataType, ITransformationContext context)
+            {
+                var serializeToJson = new CodeMemberMethod()
                 {
-                    equals.Statements.Add(new CodeMethodReturnStatement(new CodePrimitiveExpression(true)));
+                    Name = "SerializeToJson",
+                    ReturnType = typeof(string).ToTypeReference(),
+                    Attributes = MemberAttributes.Public | MemberAttributes.Final
+                };
+
+                serializeToJson.WriteDocumentation("Serializes this value to a JSON string");
+
+                var builder = new CodeVariableReferenceExpression("json");
+                serializeToJson.Statements.Add(new CodeVariableDeclarationStatement(typeof(StringBuilder).ToTypeReference(), builder.VariableName,
+                    new CodeObjectCreateExpression(typeof(StringBuilder).ToTypeReference())));
+
+                var thisRef = new CodeThisReferenceExpression();
+                var format = "{{{0}=";
+                var att2Prop = Rule<DataTypeAttribute2Property>();
+                var types = new Dictionary<IType, CodeVariableReferenceExpression>();
+                foreach (var att in dataType.Attributes)
+                {
+                    serializeToJson.Statements.Add(new CodeMethodInvokeExpression(builder, "Append", new CodePrimitiveExpression(string.Format(format, att.Name))));
+                    var prop = context.Trace.ResolveIn(att2Prop, att);
+                    CodeVariableReferenceExpression converter;
+                    if (!types.TryGetValue(att.Type, out converter))
+                    {
+                        var converterName = att.Type.Name.ToCamelCase() + "Converter";
+                        serializeToJson.Statements.Add(new CodeVariableDeclarationStatement(
+                            typeof(TypeConverter).ToTypeReference(),
+                            converterName,
+                            new CodeMethodInvokeExpression(new CodeTypeReferenceExpression(typeof(TypeConversion).ToTypeReference()), "GetConverter", new CodeTypeOfExpression(prop.Type))));
+                        converter = new CodeVariableReferenceExpression(converterName);
+                        types.Add(att.Type, converter);
+                    }
+                    serializeToJson.Statements.Add(new CodeMethodInvokeExpression(builder, "Append",
+                        new CodeMethodInvokeExpression(converter, "ConvertToInvariantString", new CodePropertyReferenceExpression(thisRef, prop.Name))));
+                    format = ", {0}=";
                 }
+                serializeToJson.Statements.Add(new CodeMethodInvokeExpression(builder, "Append", new CodePrimitiveExpression("}")));
+                serializeToJson.Statements.Add(new CodeMethodReturnStatement(new CodeMethodInvokeExpression(builder, "ToString")));
+                return serializeToJson;
+            }
+
+            public virtual CodeMemberMethod CreateTryParseJsonMethod(IDataType dataType, CodeTypeDeclaration generatedType, ITransformationContext context)
+            {
+                var tryParseJson = new CodeMemberMethod()
+                {
+                    Name = "TryParseJson",
+                    ReturnType = typeof(bool).ToTypeReference(),
+                    Attributes = MemberAttributes.Public | MemberAttributes.Final | MemberAttributes.Static
+                };
+                tryParseJson.WriteDocumentation($"Deserializes the given JSON string into a {dataType.Name}", "True, if the conversion was successful, otherwise false",
+                    new Dictionary<string, string>()
+                    {
+                        { "json", "The JSON string that is used as input to the conversion" },
+                        { "result", $"The resulting {dataType.Name} value" }
+                    });
+
+                tryParseJson.Parameters.Add(new CodeParameterDeclarationExpression(typeof(string).ToTypeReference(), "json"));
+                var resultP = new CodeParameterDeclarationExpression(generatedType.GetReferenceForType(), "result");
+                resultP.Direction = FieldDirection.Out;
+                tryParseJson.Parameters.Add(resultP);
+                var result = new CodeArgumentReferenceExpression(resultP.Name);
+
+                var parsed = new CodeVariableReferenceExpression("parsed");
+                tryParseJson.Statements.Add(new CodeVariableDeclarationStatement(typeof(IDictionary<string, string>).ToTypeReference(), parsed.VariableName,
+                    new CodeMethodInvokeExpression(new CodeTypeReferenceExpression(typeof(TypeConversion).ToTypeReference()), "ParseJson", new CodeArgumentReferenceExpression("json"))));
+
+                var ifParsed = new CodeConditionStatement();
+                ifParsed.Condition = new CodeBinaryOperatorExpression(parsed, CodeBinaryOperatorType.IdentityInequality, new CodePrimitiveExpression(null));
+                ifParsed.FalseStatements.Add(new CodeAssignStatement(result, new CodeDefaultValueExpression(resultP.Type)));
+                ifParsed.FalseStatements.Add(new CodeMethodReturnStatement(new CodePrimitiveExpression(false)));
+                ifParsed.TrueStatements.Add(new CodeAssignStatement(result, new CodeObjectCreateExpression(resultP.Type)));
+                var value = new CodeVariableReferenceExpression("value");
+                ifParsed.TrueStatements.Add(new CodeVariableDeclarationStatement(typeof(string).ToTypeReference(), value.VariableName));
+
+                var att2Prop = Rule<DataTypeAttribute2Property>();
+                var types = new Dictionary<IType, CodeVariableReferenceExpression>();
+                foreach (var att in dataType.Attributes)
+                {
+                    var prop = context.Trace.ResolveIn(att2Prop, att);
+                    CodeVariableReferenceExpression converter;
+                    if (!types.TryGetValue(att.Type, out converter))
+                    {
+                        var converterName = att.Type.Name.ToCamelCase() + "Converter";
+                        ifParsed.TrueStatements.Add(new CodeVariableDeclarationStatement(
+                            typeof(TypeConverter).ToTypeReference(),
+                            converterName,
+                            new CodeMethodInvokeExpression(new CodeTypeReferenceExpression(typeof(TypeConversion).ToTypeReference()), "GetConverter", new CodeTypeOfExpression(prop.Type))));
+                        converter = new CodeVariableReferenceExpression(converterName);
+                        types.Add(att.Type, converter);
+                    }
+                    var field = prop.GetBackingField();
+
+                    var ifPresent = new CodeConditionStatement();
+                    ifPresent.Condition = new CodeMethodInvokeExpression(parsed, "TryGetValue", new CodePrimitiveExpression(att.Name),
+                        new CodeDirectionExpression(FieldDirection.Out, value));
+                    var resultField = new CodeFieldReferenceExpression(result, field.FieldName);
+                    var resultValue = new CodeCastExpression(prop.Type, new CodeMethodInvokeExpression(converter, "ConvertFromInvariantString", value));
+                    ifPresent.TrueStatements.Add(new CodeAssignStatement(resultField, resultValue));
+                    ifParsed.TrueStatements.Add(ifPresent);
+                }
+
+                ifParsed.TrueStatements.Add(new CodeMethodReturnStatement(new CodePrimitiveExpression(true)));
+                tryParseJson.Statements.Add(ifParsed);
+                return tryParseJson;
+            }
+
+            protected virtual CodeTypeDeclaration CreateTypeConverter(IDataType dataType, CodeTypeDeclaration generatedType, ITransformationContext context)
+            {
+                var converter = CodeDomHelper.CreateTypeDeclarationWithReference($"{generatedType.Name}Converter", true);
+                converter.Attributes = MemberAttributes.Public;
+                converter.BaseTypes.Add(typeof(TypeConverter).ToTypeReference());
+                converter.WriteDocumentation($"A converter class to convert {generatedType.Name} instances from and to strings");
+
+                var canConvertFrom = new CodeMemberMethod
+                {
+                    Name = "CanConvertFrom",
+                    ReturnType = typeof(bool).ToTypeReference(),
+                    Attributes = MemberAttributes.Public | MemberAttributes.Override
+                };
+                canConvertFrom.Parameters.Add(new CodeParameterDeclarationExpression(typeof(ITypeDescriptorContext), "context"));
+                canConvertFrom.Parameters.Add(new CodeParameterDeclarationExpression(typeof(System.Type), "sourceType"));
+                canConvertFrom.Statements.Add(new CodeMethodReturnStatement(new CodeBinaryOperatorExpression(
+                    new CodeArgumentReferenceExpression("sourceType"),
+                    CodeBinaryOperatorType.IdentityEquality,
+                    new CodeTypeOfExpression(typeof(string)))));
+                canConvertFrom.WriteDocumentation("Determines whether the converter is able to convert from the given type");
+                converter.Members.Add(canConvertFrom);
+
+                var canConvertTo = new CodeMemberMethod
+                {
+                    Name = "CanConvertTo",
+                    ReturnType = typeof(bool).ToTypeReference(),
+                    Attributes = MemberAttributes.Public | MemberAttributes.Override
+                };
+                canConvertTo.Parameters.Add(new CodeParameterDeclarationExpression(typeof(ITypeDescriptorContext), "context"));
+                canConvertTo.Parameters.Add(new CodeParameterDeclarationExpression(typeof(System.Type), "destinationType"));
+                canConvertTo.Statements.Add(new CodeMethodReturnStatement(new CodeBinaryOperatorExpression(
+                    new CodeArgumentReferenceExpression("destinationType"),
+                    CodeBinaryOperatorType.IdentityEquality,
+                    new CodeTypeOfExpression(typeof(string)))));
+                canConvertTo.WriteDocumentation("Determines whether the converter is able to convert to the given type");
+                converter.Members.Add(canConvertTo);
+
+                var convertFrom = new CodeMemberMethod
+                {
+                    Name = "ConvertFrom",
+                    ReturnType = typeof(object).ToTypeReference(),
+                    Attributes = MemberAttributes.Public | MemberAttributes.Override
+                };
+                convertFrom.Parameters.Add(new CodeParameterDeclarationExpression(typeof(ITypeDescriptorContext), "context"));
+                convertFrom.Parameters.Add(new CodeParameterDeclarationExpression(typeof(CultureInfo), "culture"));
+                convertFrom.Parameters.Add(new CodeParameterDeclarationExpression(typeof(object), "value"));
+                var result = new CodeVariableReferenceExpression("result");
+                convertFrom.Statements.Add(new CodeVariableDeclarationStatement(generatedType.GetReferenceForType(), result.VariableName));
+                var value = new CodeArgumentReferenceExpression("value");
+                var ifParsed = new CodeConditionStatement();
+                ifParsed.Condition = new CodeBinaryOperatorExpression(
+                    new CodeBinaryOperatorExpression(value, CodeBinaryOperatorType.IdentityInequality, new CodePrimitiveExpression()),
+                    CodeBinaryOperatorType.BooleanAnd,
+                    new CodeMethodInvokeExpression(new CodeTypeReferenceExpression(generatedType.GetReferenceForType()), "TryParseJson",
+                        new CodeMethodInvokeExpression(value, "ToString"),
+                        new CodeDirectionExpression(FieldDirection.Out, result)));
+                ifParsed.TrueStatements.Add(new CodeMethodReturnStatement(result));
+                ifParsed.FalseStatements.Add(new CodeMethodReturnStatement(new CodePrimitiveExpression()));
+                convertFrom.Statements.Add(ifParsed);
+                converter.Members.Add(convertFrom);
+
+                var convertTo = new CodeMemberMethod
+                {
+                    Name = "ConvertTo",
+                    ReturnType = typeof(object).ToTypeReference(),
+                    Attributes = MemberAttributes.Public | MemberAttributes.Override
+                };
+                convertTo.Parameters.Add(new CodeParameterDeclarationExpression(typeof(ITypeDescriptorContext), "context"));
+                convertTo.Parameters.Add(new CodeParameterDeclarationExpression(typeof(CultureInfo), "culture"));
+                convertTo.Parameters.Add(new CodeParameterDeclarationExpression(typeof(object), "value"));
+                convertTo.Parameters.Add(new CodeParameterDeclarationExpression(typeof(System.Type), "destinationType"));
+                convertTo.Statements.Add(new CodeMethodReturnStatement(
+                    new CodeMethodInvokeExpression(new CodeCastExpression(generatedType.GetReferenceForType(), new CodeArgumentReferenceExpression("value")),
+                                                   "SerializeToJson")));
+                converter.Members.Add(convertTo);
+
+                return converter;
             }
 
             /// <summary>
