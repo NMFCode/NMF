@@ -17,6 +17,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using Xceed.Wpf.Toolkit.PropertyGrid;
+using NMF.Utilities;
 
 namespace NMF.Controls
 {
@@ -95,7 +96,17 @@ namespace NMF.Controls
             }
             else
             {
-                return repository.Models.Values.SelectMany(m => m.Descendants()).Where(e => type.IsInstanceOfType(e));
+                var modelRepo = repository as ModelRepository;
+                IEnumerable<Model> models;
+                if (modelRepo == null)
+                {
+                    models = repository.Models.Values.Distinct();
+                }
+                else
+                {
+                    models = modelRepo.Models.Values.Distinct().Concat(modelRepo.Parent.Models.Values.Distinct());
+                }
+                return models.SelectMany(m => m.Descendants()).Where(e => type.IsInstanceOfType(e));
             }
         }
     }

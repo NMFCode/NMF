@@ -21,7 +21,7 @@
                         <MenuItem Header="Add Child" ItemsSource="{Binding Converter={StaticResource ContextMenu}}">
                             <MenuItem.ItemTemplate>
                                 <DataTemplate>
-                                    <MenuItem Header="{Binding}" Command="{Binding}" />
+                                    <MenuItem Header="{Binding}" Command="{Binding}" CommandParameter="{Binding RelativeSource={RelativeSource AncestorType=TreeViewItem}}" />
                                 </DataTemplate>
                             </MenuItem.ItemTemplate>
                         </MenuItem>

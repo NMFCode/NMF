@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Controls;
 using System.Windows.Input;
 
 namespace NMF.Controls.ContextMenu
@@ -40,6 +41,13 @@ namespace NMF.Controls.ContextMenu
             {
                 var container = element.GetReferencedElements(containment);
                 container.Add(newElement);
+            }
+            var treeView = parameter as TreeViewItem;
+            if (treeView != null)
+            {
+                treeView.ExpandSubtree();
+                var treeItem = treeView.ItemContainerGenerator.ContainerFromItem(newElement) as TreeViewItem;
+                if (treeItem != null) treeItem.Focus();
             }
         }
 
