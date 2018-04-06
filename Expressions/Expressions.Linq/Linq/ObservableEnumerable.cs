@@ -94,14 +94,14 @@ namespace NMF.Expressions.Linq
         }
 
         [DebuggerStepThrough]
-        protected void OnMoveItem(T item, int oldIndex = -1, int newIndex = -1)
+        protected void OnMoveItem(T item, int oldIndex = 0, int newIndex = 0)
         {
             if (!HasEventSubscriber) return;
             OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Move, item, newIndex, oldIndex));
         }
 
         [DebuggerStepThrough]
-        protected void OnMoveItems(IEnumerable<T> items, int oldIndex = -1, int newIndex = -1)
+        protected void OnMoveItems(IEnumerable<T> items, int oldIndex = 0, int newIndex = 0)
         {
             if (!HasEventSubscriber || items == null) return;
             var moved = items as List<T> ?? items.ToList();
