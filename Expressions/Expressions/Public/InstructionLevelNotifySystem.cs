@@ -11,8 +11,18 @@ namespace NMF.Expressions
     public class InstructionLevelNotifySystem : INotifySystem
     {
         private int counter = 1;
-        private static ObservableExpressionBinder binder = new ObservableExpressionBinder();
+        private ObservableExpressionBinder binder;
         private static InstructionLevelNotifySystem defaultSystem = new InstructionLevelNotifySystem();
+
+        public InstructionLevelNotifySystem()
+        {
+            binder = CreateBinder();
+        }
+
+        internal virtual ObservableExpressionBinder CreateBinder()
+        {
+            return new ObservableExpressionBinder();
+        }
 
         /// <summary>
         /// Gets the default instruction-level-incremental system

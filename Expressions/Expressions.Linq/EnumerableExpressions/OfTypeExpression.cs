@@ -288,22 +288,29 @@ namespace NMF.Expressions
 
             public INotificationResult Notify(IList<INotificationResult> sources)
             {
-                var change = (CollectionChangedNotificationResult<T>)sources[0];
+                var change = (ICollectionChangedNotificationResult<T>)sources[0];
 
-                if (change.IsReset)
+                var handler = CollectionChanged;
+                if (handler != null)
                 {
-                    CollectionChanged?.Invoke(this, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
-                }
-                else if (change.RemovedItems.Any())
-                {
-                    CollectionChanged?.Invoke(this, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Remove, change.RemovedItems));
-                }
-                else if (change.AddedItems.Any())
-                {
-                    CollectionChanged?.Invoke(this, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, change.AddedItems));
+                    if (change.IsReset)
+                    {
+                        handler.Invoke(this, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
+                    }
+                    else
+                    {
+                        if (change.RemovedItems.Any())
+                        {
+                            handler.Invoke(this, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Remove, change.RemovedItems));
+                        }
+                        if (change.AddedItems.Any())
+                        {
+                            handler.Invoke(this, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, change.AddedItems));
+                        }
+                    }
                 }
 
-                return change;
+                return CollectionChangedNotificationResult<T>.Transfer(change, this);
             }
         }
     }

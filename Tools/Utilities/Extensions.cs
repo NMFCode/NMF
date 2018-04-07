@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 
 namespace NMF.Utilities
 {
@@ -43,6 +44,14 @@ namespace NMF.Utilities
         public static T As<T>(this object item) where T : class
         {
             return item as T;
+        }
+
+        public static int CombineHash(int hash, int argument, int position)
+        {
+            unchecked
+            {
+                return hash ^ (argument << position);
+            }
         }
 
         /// <summary>

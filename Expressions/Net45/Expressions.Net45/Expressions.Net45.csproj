@@ -266,9 +266,6 @@
     <Compile Include="..\..\Expressions\Properties\AssemblyInfo.cs">
       <Link>AssemblyInfo.cs</Link>
     </Compile>
-    <Compile Include="..\..\Expressions\Public\CollectionChangedNotificationResult.cs">
-      <Link>Public\CollectionChangedNotificationResult.cs</Link>
-    </Compile>
     <Compile Include="..\..\Expressions\Public\ConstantValue.cs">
       <Link>Public\ConstantValue.cs</Link>
     </Compile>

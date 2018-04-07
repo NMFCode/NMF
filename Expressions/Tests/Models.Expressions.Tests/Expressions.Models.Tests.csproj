@@ -17,6 +17,7 @@
     <ProjectReference Include="..\..\..\Models\Models\Models.csproj" />
     <ProjectReference Include="..\..\Expressions\Expressions.csproj" />
     <ProjectReference Include="..\..\Models.Expressions\Expressions.Models.csproj" />
+    <ProjectReference Include="..\Expressions.Test\Expressions.Test.csproj" />
   </ItemGroup>
 
 </Project>

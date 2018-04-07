@@ -73,20 +73,22 @@ namespace NMF.Expressions.Linq
 
         public override INotificationResult Notify(IList<INotificationResult> sources)
         {
-            var added = new List<TResult>();
-            var removed = new List<TResult>();
+            var notification = CollectionChangedNotificationResult<TResult>.Create(this);
+            var added = notification.AddedItems;
+            var removed = notification.RemovedItems;
 
             foreach (var change in sources)
             {
                 if (change.Source == source)
                 {
-                    var sourceChange = (CollectionChangedNotificationResult<TSource>)change;
+                    var sourceChange = (ICollectionChangedNotificationResult<TSource>)change;
                     if (sourceChange.IsReset)
                     {
                         OnDetach();
                         OnAttach();
                         OnCleared();
-                        return new CollectionChangedNotificationResult<TResult>(this);
+                        notification.TurnIntoReset();
+                        return notification;
                     }
                     else
                     {
@@ -95,22 +97,18 @@ namespace NMF.Expressions.Linq
                 }
                 else
                 {
-                    var subSourceChange = (CollectionChangedNotificationResult<TResult>)change;
+                    var subSourceChange = (ICollectionChangedNotificationResult<TResult>)change;
                     if (subSourceChange.RemovedItems != null)
                         removed.AddRange(subSourceChange.RemovedItems);
                     if (subSourceChange.AddedItems != null)
                         added.AddRange(subSourceChange.AddedItems);
                 }
             }
-
-            if (added.Count == 0 && removed.Count == 0 && added.Count == 0)
-                return UnchangedNotificationResult.Instance;
-
             RaiseEvents(added, removed, null);
-            return new CollectionChangedNotificationResult<TResult>(this, added, removed);
+            return notification;
         }
 
-        private void NotifySource(CollectionChangedNotificationResult<TSource> sourceChange, List<TResult> added, List<TResult> removed)
+        private void NotifySource(ICollectionChangedNotificationResult<TSource> sourceChange, List<TResult> added, List<TResult> removed)
         {
             if (sourceChange.RemovedItems != null)
             {
@@ -258,8 +256,9 @@ namespace NMF.Expressions.Linq
 
             public override INotificationResult Notify(IList<INotificationResult> sources)
             {
-                var added = new List<TResult>();
-                var removed = new List<TResult>();
+                var notification = CollectionChangedNotificationResult<TResult>.Create(this);
+                var added = notification.AddedItems;
+                var removed = notification.RemovedItems;
 
                 foreach (var change in sources)
                 {
@@ -272,13 +271,13 @@ namespace NMF.Expressions.Linq
                     }
                     else if (change.Source is TaggedObservableValue<TResult, int>)
                     {
-                        var resultChange = (ValueChangedNotificationResult<TResult>)change;
+                        var resultChange = (IValueChangedNotificationResult<TResult>)change;
                         removed.Add(resultChange.OldValue);
                         added.Add(resultChange.NewValue);
                     }
                     else
                     {
-                        var subSourceValueChange = (CollectionChangedNotificationResult<TIntermediate>)change;
+                        var subSourceValueChange = (ICollectionChangedNotificationResult<TIntermediate>)change;
                         if (subSourceValueChange.IsReset)
                         {
                             DetachSubSourceValue(SubSource.Value, removed);
@@ -292,14 +291,11 @@ namespace NMF.Expressions.Linq
                     }
                 }
 
-                if (added.Count == 0 && removed.Count == 0)
-                    return UnchangedNotificationResult.Instance;
-
                 RaiseEvents(added, removed, null);
-                return new CollectionChangedNotificationResult<TResult>(this, added, removed);
+                return notification;
             }
 
-            private void NotifySubSourceValue(List<TResult> added, List<TResult> removed, CollectionChangedNotificationResult<TIntermediate> subSourceValueChange)
+            private void NotifySubSourceValue(List<TResult> added, List<TResult> removed, ICollectionChangedNotificationResult<TIntermediate> subSourceValueChange)
             {
                 if (subSourceValueChange.RemovedItems != null)
                 {

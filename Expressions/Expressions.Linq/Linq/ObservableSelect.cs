@@ -77,7 +77,7 @@ namespace NMF.Expressions.Linq
                 item.Successors.Unset(this);
             lambdaInstances.Clear();
         }
-        
+
         public override IEnumerator<TResult> GetEnumerator()
         {
             if (ObservableExtensions.KeepOrder)
@@ -143,14 +143,15 @@ namespace NMF.Expressions.Linq
 
         public override INotificationResult Notify(IList<INotificationResult> sources)
         {
-            var added = new List<TResult>();
-            var removed = new List<TResult>();
+            var notification = CollectionChangedNotificationResult<TResult>.Create(this);
+            var added = notification.AddedItems;
+            var removed = notification.RemovedItems;
 
             foreach (var change in sources)
             {
                 if (change.Source == source)
                 {
-                    var sourceChange = (CollectionChangedNotificationResult<TSource>)change;
+                    var sourceChange = (ICollectionChangedNotificationResult<TSource>)change;
                     if (sourceChange.IsReset)
                     {
                         foreach (var item in lambdaInstances.Values)
@@ -159,17 +160,18 @@ namespace NMF.Expressions.Linq
                         foreach (var item in source)
                             AttachItem(item);
                         OnCleared();
-                        return new CollectionChangedNotificationResult<TResult>(this);
+                        notification.TurnIntoReset();
+                        return notification;
                     }
                     else
                     {
-                        NotifySource(sourceChange, added, removed);
+                        NotifySource(sourceChange, added, removed, sources.Count > 1);
                     }
                 }
                 else
                 {
-                    var itemChange = (ValueChangedNotificationResult<TResult>)change;
-                    if (source.Count() > 1)
+                    var itemChange = (IValueChangedNotificationResult<TResult>)change;
+                    if (sources.Count > 1)
                     {
                         // if there are multiple changes, we need to check whether the change belongs to items
                         // we just added or removed
@@ -212,10 +214,10 @@ namespace NMF.Expressions.Linq
                 }
             }
             RaiseEvents(added, removed, null);
-            return new CollectionChangedNotificationResult<TResult>(this, added, removed);
+            return notification;
         }
 
-        private void NotifySource(CollectionChangedNotificationResult<TSource> sourceChange, List<TResult> added, List<TResult> removed)
+        private void NotifySource(ICollectionChangedNotificationResult<TSource> sourceChange, List<TResult> added, List<TResult> removed, bool checkConflicts)
         {
             if (sourceChange.RemovedItems != null)
             {
@@ -225,7 +227,22 @@ namespace NMF.Expressions.Linq
                     {
                         var lambdaResult = lambdaInstances[item];
                         lambdaResult.Tag--;
-                        removed.Add(lambdaResult.Value);
+                        if (checkConflicts)
+                        {
+                            var addIndex = added.IndexOf(lambdaResult.Value);
+                            if (addIndex != -1)
+                            {
+                                added.RemoveAt(addIndex);
+                            }
+                            else
+                            {
+                                removed.Add(lambdaResult.Value);
+                            }
+                        }
+                        else
+                        {
+                            removed.Add(lambdaResult.Value);
+                        }
                         if (lambdaResult.Tag == 0)
                         {
                             lambdaInstances.Remove(item);
@@ -249,7 +266,22 @@ namespace NMF.Expressions.Linq
                 foreach (var item in sourceChange.AddedItems)
                 {
                     var lambdaResult = AttachItem(item);
-                    added.Add(lambdaResult.Value);
+                    if (checkConflicts)
+                    {
+                        var removeIndex = removed.IndexOf(lambdaResult.Value);
+                        if (removeIndex != -1)
+                        {
+                            removed.RemoveAt(removeIndex);
+                        }
+                        else
+                        {
+                            added.Add(lambdaResult.Value);
+                        }
+                    }
+                    else
+                    {
+                        added.Add(lambdaResult.Value);
+                    }
                 }
             }
         }

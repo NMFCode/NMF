@@ -91,17 +91,19 @@ namespace NMF.Expressions.Linq
 
         public override INotificationResult Notify(IList<INotificationResult> sources)
         {
-            var added = new List<TSource>();
-            var removed = new List<TSource>();
+            var notification = CollectionChangedNotificationResult<TSource>.Create(this);
+            var added = notification.AddedItems;
+            var removed = notification.RemovedItems;
 
-            foreach (CollectionChangedNotificationResult<TSource> change in sources)
+            foreach (ICollectionChangedNotificationResult<TSource> change in sources)
             {
                 if (change.IsReset)
                 {
                     OnDetach();
                     OnAttach();
                     OnCleared();
-                    return new CollectionChangedNotificationResult<TSource>(this);
+                    notification.TurnIntoReset();
+                    return notification;
                 }
 
                 if (change.Source == source)
@@ -114,15 +116,12 @@ namespace NMF.Expressions.Linq
                 }
             }
 
-            if (added.Count == 0 && removed.Count == 0)
-                return UnchangedNotificationResult.Instance;
-
             OnRemoveItems(removed);
             OnAddItems(added);
-            return new CollectionChangedNotificationResult<TSource>(this, added, removed);
+            return notification;
         }
 
-        private void NotifySource(CollectionChangedNotificationResult<TSource> change, List<TSource> added, List<TSource> removed)
+        private void NotifySource(ICollectionChangedNotificationResult<TSource> change, List<TSource> added, List<TSource> removed)
         {
             if (change.RemovedItems != null)
             {
@@ -147,7 +146,7 @@ namespace NMF.Expressions.Linq
             }
         }
 
-        private void NotifySource2(CollectionChangedNotificationResult<TSource> change, List<TSource> added, List<TSource> removed)
+        private void NotifySource2(ICollectionChangedNotificationResult<TSource> change, List<TSource> added, List<TSource> removed)
         {
             if (change.RemovedItems != null)
             {

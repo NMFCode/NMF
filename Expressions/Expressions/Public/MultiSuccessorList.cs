@@ -18,6 +18,8 @@ namespace NMF.Expressions
 
         public bool IsAttached => isDummySet || successors.Count > 0;
 
+        public int Count => successors.Count;
+
         public event EventHandler Attached;
         public event EventHandler Detached;
 

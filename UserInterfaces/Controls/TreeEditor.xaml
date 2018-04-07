@@ -1,0 +1,36 @@
+﻿<UserControl x:Class="NMF.Controls.TreeEditor"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:converter="clr-namespace:NMF.Controls.Converters"
+             xmlns:context="clr-namespace:NMF.Controls.ContextMenu"
+             xmlns:models="clr-namespace:NMF.Models;assembly=NMF.Models"
+             mc:Ignorable="d" 
+             Name="self"
+             d:DesignHeight="300" d:DesignWidth="300">
+    <UserControl.Resources>
+        <converter:ClassColorConverter x:Key="colorConverter" />
+        <context:ContextMenuRegistry x:Key="ContextMenu" />
+        <HierarchicalDataTemplate x:Key="itemTemplate"
+                                  ItemsSource="{Binding Children}"
+                                  DataType="{x:Type models:IModelElement}">
+            <ContentPresenter Content="{Binding}" ContentTemplate="{Binding ElementName=self, Path=ItemTemplate}">
+                <ContentPresenter.ContextMenu>
+                    <ContextMenu>
+                        <MenuItem Header="Add Child" ItemsSource="{Binding Converter={StaticResource ContextMenu}}">
+                            <MenuItem.ItemTemplate>
+                                <DataTemplate>
+                                    <MenuItem Header="{Binding}" Command="{Binding}" CommandParameter="{Binding RelativeSource={RelativeSource AncestorType=TreeViewItem}}" />
+                                </DataTemplate>
+                            </MenuItem.ItemTemplate>
+                        </MenuItem>
+                        <MenuItem Header="Delete" Command="{x:Static ApplicationCommands.Delete}" CommandParameter="{Binding}" />
+                    </ContextMenu>
+                </ContentPresenter.ContextMenu>
+            </ContentPresenter>
+        </HierarchicalDataTemplate>
+    </UserControl.Resources>
+    <TreeView Name="innerTree" ItemTemplate="{StaticResource itemTemplate}" SelectedItemChanged="innerTree_SelectedItemChanged">
+    </TreeView>
+</UserControl>

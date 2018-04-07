@@ -65,14 +65,14 @@ namespace NMF.Expressions
                         else
                         {
                             var notifyValueType = typeof(INotifyValue<>).MakeGenericType(node.Type);
-                            return Expression.MakeMemberAccess(Expression.Constant(argument, notifyValueType), ReflectionHelper.GetProperty(notifyValueType, "Value"));
+                            if (notifyValueType.IsInstanceOfType(argument))
+                            {
+                                return Expression.MakeMemberAccess(Expression.Constant(argument, notifyValueType), ReflectionHelper.GetProperty(notifyValueType, "Value"));
+                            }
                         }
                     }
                 }
-                else
-                {
-                    return node;
-                }
+                return node;
             }
 
             protected override Expression VisitConstant(ConstantExpression node)

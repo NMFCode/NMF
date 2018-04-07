@@ -90,24 +90,25 @@ namespace NMF.Expressions.Linq
 
         public override INotificationResult Notify(IList<INotificationResult> sources)
         {
-            CollectionChangedNotificationResult<TSource> sourceChange = null;
-            CollectionChangedNotificationResult<TSource> source2Change = null;
+            ICollectionChangedNotificationResult<TSource> sourceChange = null;
+            ICollectionChangedNotificationResult<TSource> source2Change = null;
 
             if (sources[0].Source == source)
-                sourceChange = (CollectionChangedNotificationResult<TSource>)sources[0];
+                sourceChange = (ICollectionChangedNotificationResult<TSource>)sources[0];
             else
-                source2Change = (CollectionChangedNotificationResult<TSource>)sources[0];
+                source2Change = (ICollectionChangedNotificationResult<TSource>)sources[0];
 
             if (sources.Count > 1)
             {
                 if (sources[1].Source == source)
-                    sourceChange = (CollectionChangedNotificationResult<TSource>)sources[1];
+                    sourceChange = (ICollectionChangedNotificationResult<TSource>)sources[1];
                 else
-                    source2Change = (CollectionChangedNotificationResult<TSource>)sources[1];
+                    source2Change = (ICollectionChangedNotificationResult<TSource>)sources[1];
             }
 
-            var added = new List<TSource>();
-            var removed = new List<TSource>();
+            var notification = CollectionChangedNotificationResult<TSource>.Create(this);
+            var added = notification.AddedItems;
+            var removed = notification.RemovedItems;
 
             if (source2Change != null)
             {
@@ -115,7 +116,8 @@ namespace NMF.Expressions.Linq
                 {
                     sourceItems.Clear();
                     OnCleared();
-                    return new CollectionChangedNotificationResult<TSource>(this);
+                    notification.TurnIntoReset();
+                    return notification;
                 }
                 else
                 {
@@ -128,7 +130,8 @@ namespace NMF.Expressions.Linq
                 if (sourceChange.IsReset)
                 {
                     OnCleared();
-                    return new CollectionChangedNotificationResult<TSource>(this);
+                    notification.TurnIntoReset();
+                    return notification;
                 }
                 else
                 {
@@ -136,15 +139,12 @@ namespace NMF.Expressions.Linq
                 }
             }
 
-            if (removed.Count == 0 && added.Count == 0)
-                return UnchangedNotificationResult.Instance;
-
             OnRemoveItems(removed);
             OnAddItems(added);
-            return new CollectionChangedNotificationResult<TSource>(this, SL.ToList(added), SL.ToList(removed));
+            return notification;
         }
 
-        private void NotifySource(CollectionChangedNotificationResult<TSource> change, List<TSource> added, List<TSource> removed)
+        private void NotifySource(ICollectionChangedNotificationResult<TSource> change, List<TSource> added, List<TSource> removed)
         {
             if (change.RemovedItems != null)
             {
@@ -169,7 +169,7 @@ namespace NMF.Expressions.Linq
             }
         }
 
-        private void NotifySource2(CollectionChangedNotificationResult<TSource> change, List<TSource> added, List<TSource> removed)
+        private void NotifySource2(ICollectionChangedNotificationResult<TSource> change, List<TSource> added, List<TSource> removed)
         {
             if (change.RemovedItems != null)
             {

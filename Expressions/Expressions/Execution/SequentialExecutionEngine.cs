@@ -10,11 +10,15 @@ namespace NMF.Expressions
     {
         protected override void Execute(List<INotifiable> nodes)
         {
-            foreach (var node in nodes)
-                MarkNode(node);
+            for (int i = 0; i < nodes.Count; i++)
+            {
+                MarkNode(nodes[i]);
+            }
 
-            foreach (var source in nodes)
-                NotifyNode(source);
+            for (int i = 0; i < nodes.Count; i++)
+            {
+                NotifyNode(nodes[i]);
+            }
         }
 
         private void NotifyNode(INotifiable source)
@@ -37,16 +41,31 @@ namespace NMF.Expressions
                 {
                     result = node.Notify(metaData.Results);
                     evaluating = result.Changed;
+                    foreach (var item in metaData.Results)
+                    {
+                        item.FreeReference();
+                    }
                     metaData.Results.Clear();
                 }
 
                 if (node.Successors.HasSuccessors)
                 {
-                    foreach (var succ in node.Successors)
+                    if (evaluating)
                     {
-                        if (result != null && evaluating)
-                            succ.ExecutionMetaData.Results.UnsafeAdd(result);
-                        stack.Push(new Tuple<INotifiable, int>(succ, metaData.TotalVisits));
+                        result.IncreaseReferences(node.Successors.Count);
+                        foreach (var succ in node.Successors)
+                        {
+                            if (result != null)
+                                succ.ExecutionMetaData.Results.UnsafeAdd(result);
+                            stack.Push(new Tuple<INotifiable, int>(succ, metaData.TotalVisits));
+                        }
+                    }
+                    else
+                    {
+                        foreach (var succ in node.Successors)
+                        {
+                            stack.Push(new Tuple<INotifiable, int>(succ, metaData.TotalVisits));
+                        }
                     }
                 }
                 

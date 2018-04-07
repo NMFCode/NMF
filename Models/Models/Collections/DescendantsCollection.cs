@@ -51,8 +51,7 @@ namespace NMF.Models.Collections
             private ISuccessorList successors;
             private ExecutionMetaData metadata;
 
-            private List<IModelElement> added;
-            private List<IModelElement> removed;
+            private CollectionChangedNotificationResult<IModelElement> notification;
             private bool isNotified;
 
             public Notifiable(IModelElement element)
@@ -60,6 +59,7 @@ namespace NMF.Models.Collections
                 this.element = element;
                 this.successors = new MultiSuccessorList();
                 this.metadata = new ExecutionMetaData();
+                this.notification = CollectionChangedNotificationResult<IModelElement>.Create(this, false);
 
                 element.BubbledChange += Element_BubbledChange;
             }
@@ -68,22 +68,14 @@ namespace NMF.Models.Collections
             {
                 if (e.ChangeType == ChangeType.ElementCreated)
                 {
-                    if (added == null)
-                    {
-                        added = new List<IModelElement>();
-                    }
-                    added.Add(e.Element);
-                    added.AddRange(e.Element.Descendants());
+                    notification.AddedItems.Add(e.Element);
+                    notification.AddedItems.AddRange(e.Element.Descendants());
                     CollectionChanged?.Invoke(this, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, e.Element));
                 }
                 else if (e.ChangeType == ChangeType.ElementDeleted)
                 {
-                    if (removed == null)
-                    {
-                        removed = new List<IModelElement>();
-                    }
-                    removed.Add(e.Element);
-                    removed.AddRange(e.Element.Descendants());
+                    notification.RemovedItems.Add(e.Element);
+                    notification.RemovedItems.AddRange(e.Element.Descendants());
                     CollectionChanged?.Invoke(this, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Remove, e.Element));
                 }
                 else
@@ -116,10 +108,9 @@ namespace NMF.Models.Collections
 
             public INotificationResult Notify(IList<INotificationResult> sources)
             {
-                INotificationResult result = new CollectionChangedNotificationResult<IModelElement>(this, added, removed);
                 isNotified = false;
-                added = null;
-                removed = null;
+                var result = notification;
+                notification = CollectionChangedNotificationResult<IModelElement>.Create(this, false);
                 return result;
             }
 

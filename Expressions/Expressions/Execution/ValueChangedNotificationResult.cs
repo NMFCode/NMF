@@ -11,8 +11,14 @@ namespace NMF.Expressions
 
         object NewValue { get; }
     }
+    public interface IValueChangedNotificationResult<out T> : IValueChangedNotificationResult
+    {
+        new T OldValue { get; }
 
-    public class ValueChangedNotificationResult<T> : IValueChangedNotificationResult
+        new T NewValue { get; }
+    }
+
+    public class ValueChangedNotificationResult<T> : IValueChangedNotificationResult<T>
     {
         private readonly INotifiable source;
         private readonly T oldValue;
@@ -39,5 +45,9 @@ namespace NMF.Expressions
             this.oldValue = oldValue;
             this.newValue = newValue;
         }
+
+        void INotificationResult.IncreaseReferences(int references) { }
+
+        void INotificationResult.FreeReference() { }
     }
 }

@@ -1,0 +1,138 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <ResourceDictionary.MergedDictionaries>
+        <ResourceDictionary Source="Styles/Shared.xaml"/>
+        <ResourceDictionary Source="Styles/ToolBar.xaml"/>
+    </ResourceDictionary.MergedDictionaries>
+    
+    <ToolBar x:Key="MyToolbar" Height="120">
+        <!--File-->
+        <GroupBox Header="File" Style="{StaticResource ToolbarGroup}" Margin="5,3,3,3">
+            <StackPanel Grid.Row="1" Orientation="Horizontal">
+                <Button Margin="3" Width="55" Style="{StaticResource ToolBarButtonBaseStyle}"
+                        HorizontalContentAlignment="Center"
+                        Command="{x:Static ApplicationCommands.New}">
+                    <Button.Content>
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="4*"/>
+                                <RowDefinition Height="1*"/>
+                            </Grid.RowDefinitions>
+                            <Image Source="Images/GenericDocument.png" Width="45"/>
+                            <TextBlock Grid.Row="1" Text="New" VerticalAlignment="Bottom" HorizontalAlignment="Center"/>
+                        </Grid>
+                    </Button.Content>
+                </Button>
+                <StackPanel Orientation="Vertical" Margin="0,2,0,2">
+                    <Button Margin="1" Padding="2" HorizontalContentAlignment="Left"
+                            Style="{StaticResource ToolBarButtonBaseStyle}"
+                            Command="{x:Static ApplicationCommands.Open}">
+                        <Button.Content>
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition/>
+                                    <ColumnDefinition/>
+                                </Grid.ColumnDefinitions>
+                                <Image Source="Images/OpenFolder.png" Width="16"/>
+                                <TextBlock Margin="3,0,3,0" Text="Open" VerticalAlignment="Center"  Grid.Column="1"/>
+                            </Grid>
+                        </Button.Content>
+                    </Button>
+                    <Button Margin="1" Padding="2" HorizontalContentAlignment="Left"
+                            Style="{StaticResource ToolBarButtonBaseStyle}"
+                            Command="{x:Static ApplicationCommands.Save}">
+                        <Button.Content>
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition/>
+                                    <ColumnDefinition />
+                                </Grid.ColumnDefinitions>
+                                <Image Source="Images/Save.png" Width="16"/>
+                                <TextBlock Margin="3,0,3,0" Text="Save" VerticalAlignment="Center" Grid.Column="1"/>
+                            </Grid>
+                        </Button.Content>
+                    </Button>
+                    <Button Margin="1" Padding="2" HorizontalContentAlignment="Left"
+                            Style="{StaticResource ToolBarButtonBaseStyle}"
+                            Command="{x:Static ApplicationCommands.Print}">
+                        <Button.Content>
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition/>
+                                    <ColumnDefinition />
+                                </Grid.ColumnDefinitions>
+                                <Image Source="Images/Print.png" Width="16"/>
+                                <TextBlock Margin="3,0,3,0" Text="Print" VerticalAlignment="Center" Grid.Column="1"/>
+                            </Grid>
+                        </Button.Content>
+                    </Button>
+                </StackPanel>
+            </StackPanel>
+        </GroupBox>
+
+        <!--Edit-->
+        <GroupBox Header="Edit" Style="{StaticResource ToolbarGroup}" Margin="3">
+            <StackPanel Grid.Row="1" Orientation="Horizontal">
+                <Button Margin="3" Width="55"
+                        Style="{StaticResource ToolBarButtonBaseStyle}"
+                        Command="{x:Static ApplicationCommands.Paste}">
+                    <Button.Content>
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="4*"/>
+                                <RowDefinition Height="1*"/>
+                            </Grid.RowDefinitions>
+                            <Image Source="Images/PasteBig.png" Width="45"/>
+                            <TextBlock Grid.Row="1" Text="Paste" VerticalAlignment="Bottom" HorizontalAlignment="Center"/>
+                        </Grid>
+                    </Button.Content>
+                </Button>
+                <StackPanel Orientation="Vertical" Margin="0,2,0,2">
+                    <Button Margin="1" Padding="2" HorizontalContentAlignment="Left"
+                            Style="{StaticResource ToolBarButtonBaseStyle}"
+                            Command="{x:Static ApplicationCommands.Cut}">
+                        <Button.Content>
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition/>
+                                    <ColumnDefinition />
+                                </Grid.ColumnDefinitions>
+                                <Image Source="Images/Cut.png" Width="16"/>
+                                <TextBlock Margin="3,0,3,0" Text="Cut" VerticalAlignment="Center" Grid.Column="1"/>
+                            </Grid>
+                        </Button.Content>
+                    </Button>
+                    <Button Margin="1" Padding="2" HorizontalContentAlignment="Left"
+                            Style="{StaticResource ToolBarButtonBaseStyle}"
+                            Command="{x:Static ApplicationCommands.Copy}">
+                        <Button.Content>
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition/>
+                                    <ColumnDefinition />
+                                </Grid.ColumnDefinitions>
+                                <Image Source="Images/Copy.png" Width="16"/>
+                                <TextBlock Margin="3,0,3,0" Text="Copy" VerticalAlignment="Center" Grid.Column="1"/>
+                            </Grid>
+                        </Button.Content>
+                    </Button>
+                    <Button Margin="1" Padding="2" HorizontalContentAlignment="Left"
+                            Style="{StaticResource ToolBarButtonBaseStyle}"
+                            Command="{x:Static ApplicationCommands.Delete}">
+                        <Button.Content>
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition/>
+                                    <ColumnDefinition />
+                                </Grid.ColumnDefinitions>
+                                <Image Source="Images/Delete.png" Width="16"/>
+                                <TextBlock Margin="3,0,3,0" Text="Delete" VerticalAlignment="Center" Grid.Column="1"/>
+                            </Grid>
+                        </Button.Content>
+                    </Button>
+                </StackPanel>
+            </StackPanel>
+        </GroupBox>
+    </ToolBar>
+</ResourceDictionary>

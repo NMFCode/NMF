@@ -7,6 +7,8 @@ namespace NMF.Expressions
 {
     public interface ISuccessorList : IEnumerable<INotifiable>
     {
+        int Count { get; }
+
         INotifiable this[int index] { get; }
 
         bool HasSuccessors { get; }

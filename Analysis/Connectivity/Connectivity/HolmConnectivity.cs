@@ -19,6 +19,10 @@ namespace NMF.Analyses
             public bool Changed { get { return true; } }
 
             public static readonly NoArgResult Instance = new NoArgResult();
+
+            public void IncreaseReferences(int references) { }
+
+            public void FreeReference() { }
         }
         
         internal class TopTreeNode
