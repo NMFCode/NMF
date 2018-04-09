@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.27004.2002
+VisualStudioVersion = 15.0.27130.2027
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Analysis", "Analysis", "{DB96042F-8815-430D-8345-362F4266F0FE}"
 EndProject
@@ -171,6 +171,7 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Synchronizations.Models.Tests", "Synchronizations\Synchronizations.Models.Tests\Synchronizations.Models.Tests.csproj", "{4E94C7E4-3EC6-4F43-9E08-24B6A90FDEF2}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Expressions.Utilities.Net45", "Expressions\Net45\Expressions.Utilities.Net45\Expressions.Utilities.Net45.csproj", "{95428F1D-8232-4360-86F8-727139E03426}"
+EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "UserInterface", "UserInterface", "{6B587373-3C4C-4127-BFD1-DA9A89C0555B}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Controls", "UserInterfaces\Controls\Controls.csproj", "{7C5A3F03-57A3-4009-928A-6C0E1085FA09}"
