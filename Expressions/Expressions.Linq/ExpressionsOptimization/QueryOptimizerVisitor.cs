@@ -1,4 +1,5 @@
-﻿using System.Linq.Expressions;
+﻿using System.Linq;
+using System.Linq.Expressions;
 using System.Runtime.CompilerServices;
 
 namespace NMF.Expressions
@@ -18,6 +19,7 @@ namespace NMF.Expressions
 
         protected override Expression VisitParameter(ParameterExpression node)
         {
+
             var param = _firstLambdaSelectorExpression.Parameters[0];
 
             if (node.ToString().Equals(param.ToString()))

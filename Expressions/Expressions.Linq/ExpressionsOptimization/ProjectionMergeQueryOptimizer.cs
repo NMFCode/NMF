@@ -44,8 +44,8 @@ namespace NMF.Expressions
         /// <returns></returns>
         public Expression Optimize<TSource, TResult, TNewResult>(Expression firstExpression, Expression secondExpression)
         {
-            //return MergeLambdaExpressions(firstExpression as LambdaExpression, secondExpression as LambdaExpression);
-            return MergeLambdaExpressionsWithVariables<TSource, TResult, TNewResult>(firstExpression as LambdaExpression, secondExpression as LambdaExpression);
+           return MergeLambdaExpressions(firstExpression as LambdaExpression, secondExpression as LambdaExpression);
+           //return MergeLambdaExpressionsWithVariables<TSource, TResult, TNewResult>(firstExpression as LambdaExpression, secondExpression as LambdaExpression);
         }
 
         /// <summary>

@@ -525,6 +525,7 @@ namespace NMF.Expressions.Tests
             //QueryExpressionDgmlVisualizer.OpenDgml();
 
             var routeTest = RailwayContainer.Routes[0];
+
             var test = func.AsNotifiable();
 
             //DDGDgmlVisualizer.initDgmlVisualizer(test);

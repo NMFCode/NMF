@@ -39,12 +39,6 @@ namespace NMF.Expressions
 
         public INotifyEnumerable<TResult> AsNotifiable()
         {
-            //IEnumerableExpression<TResult> optimizedExpression = AsOptimized<TResult>();
-
-            //if (optimizedExpression != this)
-            //    return optimizedExpression.AsNotifiable();
-
-            //IEnumerableExpression<TResult> optimizedExpression = QueryOptimizer.DefaultQueryOptimizer.OptimizeExpression<TSource, TResult>(this) as IEnumerableExpression<TResult>;
             IEnumerableExpression<TResult> optimizedExpression = QueryOptimizer.DefaultQueryOptimizer.Optimize<TResult>(this) as IEnumerableExpression<TResult>;
 
             if (optimizedExpression != this)

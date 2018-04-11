@@ -121,9 +121,6 @@
     <Compile Include="..\..\Expressions.Linq\ExpressionsOptimization\OptimizableExpressionExtensions.cs">
       <Link>ExpressionsOptimization\OptimizableExpressionExtensions.cs</Link>
     </Compile>
-    <Compile Include="..\..\Expressions.Linq\Facade\OrderableList.cs">
-      <Link>Facade\OrderableList.cs</Link>
-    </Compile>
     <Compile Include="..\..\Expressions.Linq\Linq\Multiplicity.cs">
       <Link>Linq\Multiplicity.cs</Link>
     </Compile>
