@@ -33,6 +33,25 @@ namespace NMF.Serialization
 
         public static TypeConverter GetTypeConverter(Type type)
         {
+            var converterType = XmlSerializer.Fetch(XmlSerializer.FetchAttribute<XmlTypeConverterAttribute>(type, true), att => att.Type);
+            if (converterType != null)
+            {
+                try
+                {
+                    return Activator.CreateInstance(converterType) as TypeConverter;
+                }
+                catch (Exception)
+                { }
+            }
+            var converterTypeString = XmlSerializer.Fetch(XmlSerializer.FetchAttribute<TypeConverterAttribute>(type, true), att => att.ConverterTypeName);
+            if (converterTypeString != null)
+            {
+                try
+                {
+                    return Activator.CreateInstance(Type.GetType(converterTypeString)) as TypeConverter;
+                }
+                catch (Exception) { }
+            }
             TypeConverter converter;
             if (!standardTypes.TryGetValue(type, out converter))
             {
@@ -42,7 +61,7 @@ namespace NMF.Serialization
                 }
                 else
                 {
-                    var converterTypeString = XmlSerializer.Fetch(XmlSerializer.FetchAttribute<TypeConverterAttribute>(type, true), att => att.ConverterTypeName);
+                    converterTypeString = XmlSerializer.Fetch(XmlSerializer.FetchAttribute<TypeConverterAttribute>(type, true), att => att.ConverterTypeName);
                     if (converterTypeString != null)
                     {
                         try
