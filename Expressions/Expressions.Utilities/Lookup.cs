@@ -7,14 +7,20 @@ using System.Linq;
 
 namespace NMF.Expressions.Linq
 {
-    public class Lookup<TSource, TKey> : ILookup<TSource, TKey>
+    public class Lookup<TSource, TKey> : ILookupExpression<TSource, TKey>, IEnumerableExpression<TKey>
     {
         private IEnumerableExpression<TSource> source;
         private ObservingFunc<TSource, TKey> keySelector;
         private Dictionary<TKey, LookupSlave> lookupCache = new Dictionary<TKey, LookupSlave>();
         private Incremental incremental;
 
-        public IEnumerableExpression<TKey> Keys => throw new NotImplementedException();
+        public IEnumerableExpression<TKey> Keys
+        {
+            get
+            {
+                return this;
+            }
+        }
 
         public Lookup(IEnumerableExpression<TSource> source, ObservingFunc<TSource, TKey> keySelector)
         {
@@ -111,6 +117,33 @@ namespace NMF.Expressions.Linq
                 incremental = new Incremental(this, source.AsNotifiable(), keySelector);
                 incremental.Successors.SetDummy();
             }
+        }
+
+        public INotifyEnumerable<TKey> AsNotifiable()
+        {
+            PerformIncrementalLookup();
+            return incremental;
+        }
+
+        public IEnumerator<TKey> GetEnumerator()
+        {
+            return lookupCache.Keys.GetEnumerator();
+        }
+
+        INotifyEnumerable IEnumerableExpression.AsNotifiable()
+        {
+            return AsNotifiable();
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return GetEnumerator();
+        }
+
+        INotifyLookup<TSource, TKey> ILookupExpression<TSource, TKey>.AsNotifiable()
+        {
+            PerformIncrementalLookup();
+            return incremental;
         }
 
         protected class Incremental : IncrementalLookupBase<TSource, TKey>

@@ -4,11 +4,13 @@ using System.Text;
 
 namespace NMF.Expressions.Linq
 {
-    public interface ILookup<TSource, TKey>
+    public interface ILookupExpression<TSource, TKey>
     {
         IEnumerableExpression<TSource> this[TKey key] { get; }
 
         IEnumerableExpression<TKey> Keys { get; }
+
+        INotifyLookup<TSource, TKey> AsNotifiable();
     }
 
     public interface INotifyLookup<TSource, TKey>

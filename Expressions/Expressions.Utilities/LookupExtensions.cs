@@ -7,7 +7,7 @@ namespace NMF.Expressions.Linq
 {
     public static class LookupExtensions
     {
-        public static ILookup<TSource, TKey> ToLookup<TSource, TKey>(this IEnumerableExpression<TSource> source, Expression<Func<TSource, TKey>> keySelector)
+        public static ILookupExpression<TSource, TKey> ToLookup<TSource, TKey>(this IEnumerableExpression<TSource> source, Expression<Func<TSource, TKey>> keySelector)
         {
             return new Lookup<TSource, TKey>(source, keySelector);
         }

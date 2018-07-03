@@ -8,7 +8,7 @@ using System.Text;
 namespace NMF.Expressions.Linq
 {
 
-    public abstract class IncrementalLookupBase<TSource, TKey> : INotifyEnumerable<TKey>
+    public abstract class IncrementalLookupBase<TSource, TKey> : ObservableEnumerable<TKey>, INotifyLookup<TSource, TKey>
     {
         private INotifyEnumerable<TSource> source;
         private ObservingFunc<TSource, TKey> keySelector;
@@ -16,30 +16,15 @@ namespace NMF.Expressions.Linq
         private Dictionary<TKey, IncrementalLookupSlave> slaves = new Dictionary<TKey, IncrementalLookupSlave>();
         private Notification notification;
 
-        public event NotifyCollectionChangedEventHandler CollectionChanged;
-
         public IncrementalLookupBase(INotifyEnumerable<TSource> source, ObservingFunc<TSource, TKey> keySelector)
         {
             this.source = source;
             this.keySelector = keySelector;
             notification = new Notification(this);
-
-            Successors.Attached += Attach;
-            Successors.Detached += Detach;
         }
 
-        protected virtual void Detach(object sender, EventArgs e)
+        protected override void OnAttach()
         {
-            source.Successors.Unset(this);
-            foreach (var incKey in keyValueCache.Values)
-            {
-                incKey.Successors.Unset(this);
-            }
-        }
-
-        protected virtual void Attach(object sender, EventArgs e)
-        {
-            source.Successors.Set(this);
             foreach (var item in source)
             {
                 var incKey = AttachItem(item);
@@ -47,9 +32,7 @@ namespace NMF.Expressions.Linq
             }
         }
 
-        public ISuccessorList Successors { get; } = NotifySystem.DefaultSystem.CreateSuccessorList();
-
-        public IEnumerable<INotifiable> Dependencies
+        public override IEnumerable<INotifiable> Dependencies
         {
             get
             {
@@ -57,7 +40,18 @@ namespace NMF.Expressions.Linq
             }
         }
 
-        public ExecutionMetaData ExecutionMetaData { get; } = new ExecutionMetaData();
+        public INotifyEnumerable<TKey> Keys
+        {
+            get { return this; }
+        }
+
+        public INotifyEnumerable<TSource> this[TKey key]
+        {
+            get
+            {
+                return slaves[key];
+            }
+        }
 
         internal IncrementalLookupSlave GetLookup(TKey key)
         {
@@ -75,7 +69,7 @@ namespace NMF.Expressions.Linq
             return slaves.Values;
         }
 
-        public INotificationResult Notify(IList<INotificationResult> sources)
+        public override INotificationResult Notify(IList<INotificationResult> sources)
         {
             notification.Reset();
             foreach (var change in sources)
@@ -159,6 +153,7 @@ namespace NMF.Expressions.Linq
                 incKey = keySelector.InvokeTagged(item, (item, 1));
                 keyValueCache.Add(item, incKey);
                 incKey.Successors.Set(this);
+                notification.AddedItems.Add(incKey.Value);
             }
             else
             {
@@ -167,18 +162,9 @@ namespace NMF.Expressions.Linq
             return incKey;
         }
 
-        public void Dispose()
-        {
-        }
-
-        public IEnumerator<TKey> GetEnumerator()
+        public override IEnumerator<TKey> GetEnumerator()
         {
             return slaves.Keys.GetEnumerator();
-        }
-
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return GetEnumerator();
         }
 
         protected internal class IncrementalLookupSlave : ObservableEnumerable<TSource>
@@ -243,10 +229,13 @@ namespace NMF.Expressions.Linq
             }
         }
 
-        protected class Notification : INotificationResult
+        protected class Notification : ICollectionChangedNotificationResult<TKey>
         {
             private IncrementalLookupBase<TSource, TKey> parent;
             private Dictionary<TKey, CollectionChangedNotificationResult<TSource>> notifications = new Dictionary<TKey, CollectionChangedNotificationResult<TSource>>();
+            private List<TKey> addedKeys = new List<TKey>();
+            private List<TKey> removedKeys = new List<TKey>();
+            private bool isReset = false;
 
             public Notification(IncrementalLookupBase<TSource, TKey> parent)
             {
@@ -275,11 +264,49 @@ namespace NMF.Expressions.Linq
             public void Reset()
             {
                 notifications.Clear();
+                addedKeys.Clear();
+                removedKeys.Clear();
+                isReset = false;
             }
 
             public INotifiable Source { get { return parent; } }
 
             public bool Changed { get { return true; } }
+
+            public List<TKey> AddedItems
+            {
+                get { return addedKeys; }
+            }
+
+            public List<TKey> RemovedItems
+            {
+                get { return removedKeys; }
+            }
+
+            public List<TKey> MovedItems
+            {
+                get { return null; }
+            }
+
+            public bool IsReset
+            {
+                get { return isReset; }
+            }
+
+            IList ICollectionChangedNotificationResult.AddedItems
+            {
+                get { return AddedItems; }
+            }
+
+            IList ICollectionChangedNotificationResult.RemovedItems
+            {
+                get { return RemovedItems; }
+            }
+
+            IList ICollectionChangedNotificationResult.MovedItems
+            {
+                get { return MovedItems; }
+            }
 
             public void FreeReference()
             {
