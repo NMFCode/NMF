@@ -35,9 +35,16 @@ namespace NMF.Expressions
 
             successors.Add(node);
             if (isDummySet)
+            {
                 isDummySet = false;
+            }
             else
-                Attached?.Invoke(this, EventArgs.Empty);
+            {
+                if (successors.Count == 1)
+                {
+                    Attached?.Invoke(this, EventArgs.Empty);
+                }
+            }
         }
 
         public void SetDummy()

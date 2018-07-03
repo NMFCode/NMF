@@ -13,6 +13,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\..\Collections\Collections\Collections.csproj" />
     <ProjectReference Include="..\..\Expressions.Utilities\Expressions.Utilities.csproj" />
     <ProjectReference Include="..\..\Expressions\Expressions.csproj" />
     <ProjectReference Include="..\Expressions.Test\Expressions.Test.csproj" />

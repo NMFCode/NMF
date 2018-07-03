@@ -28,11 +28,4 @@ namespace NMF.Expressions
         INotifyValue<bool> Empty { get; }
         INotifyEnumerable<T> Tail { get; }
     }
-
-    public interface ILookup<TKey, TValue>
-    {
-        TValue this[TKey key] { get; }
-    }
-
-    public interface INotifyLookup<TKey, TValue> : INotifyCollection<KeyValuePair<TKey, TValue>>, ILookup<TKey, TValue> { }
 }
