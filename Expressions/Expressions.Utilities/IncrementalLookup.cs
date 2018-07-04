@@ -7,8 +7,7 @@ using System.Text;
 
 namespace NMF.Expressions.Linq
 {
-
-    public abstract class IncrementalLookupBase<TSource, TKey> : ObservableEnumerable<TKey>, INotifyLookup<TSource, TKey>
+    public class IncrementalLookup<TSource, TKey> : ObservableEnumerable<TKey>, INotifyLookup<TSource, TKey>
     {
         private INotifyEnumerable<TSource> source;
         private ObservingFunc<TSource, TKey> keySelector;
@@ -16,7 +15,7 @@ namespace NMF.Expressions.Linq
         private Dictionary<TKey, IncrementalLookupSlave> slaves = new Dictionary<TKey, IncrementalLookupSlave>();
         private Notification notification;
 
-        public IncrementalLookupBase(INotifyEnumerable<TSource> source, ObservingFunc<TSource, TKey> keySelector)
+        public IncrementalLookup(INotifyEnumerable<TSource> source, ObservingFunc<TSource, TKey> keySelector)
         {
             this.source = source;
             this.keySelector = keySelector;
@@ -169,14 +168,14 @@ namespace NMF.Expressions.Linq
 
         protected internal class IncrementalLookupSlave : ObservableEnumerable<TSource>
         {
-            private IncrementalLookupBase<TSource, TKey> parent;
+            private IncrementalLookup<TSource, TKey> parent;
             private TKey key;
 
             public TKey Key { get { return key; } }
 
             public List<TSource> Items { get; } = new List<TSource>();
 
-            public IncrementalLookupSlave(IncrementalLookupBase<TSource, TKey> parent, TKey key)
+            public IncrementalLookupSlave(IncrementalLookup<TSource, TKey> parent, TKey key)
             {
                 this.parent = parent;
                 this.key = key;
@@ -231,13 +230,13 @@ namespace NMF.Expressions.Linq
 
         protected class Notification : ICollectionChangedNotificationResult<TKey>
         {
-            private IncrementalLookupBase<TSource, TKey> parent;
+            private IncrementalLookup<TSource, TKey> parent;
             private Dictionary<TKey, CollectionChangedNotificationResult<TSource>> notifications = new Dictionary<TKey, CollectionChangedNotificationResult<TSource>>();
             private List<TKey> addedKeys = new List<TKey>();
             private List<TKey> removedKeys = new List<TKey>();
             private bool isReset = false;
 
-            public Notification(IncrementalLookupBase<TSource, TKey> parent)
+            public Notification(IncrementalLookup<TSource, TKey> parent)
             {
                 this.parent = parent;
             }

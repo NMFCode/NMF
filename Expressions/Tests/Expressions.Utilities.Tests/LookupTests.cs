@@ -6,6 +6,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using NMF.Expressions.Linq;
+using System.Collections.ObjectModel;
+using System.ComponentModel;
 
 namespace Expressions.Utilities.Tests
 {
@@ -132,6 +134,29 @@ namespace Expressions.Utilities.Tests
             Assert.IsTrue(test2Changed);
             Assert.AreEqual(3, test1.Count());
             Assert.AreEqual(4, test2.Count());
+        }
+
+        [TestMethod]
+        public void CustomersTest()
+        {
+            var oc = new ObservableCollection<Customer>();
+
+            var customersByLocationLookup = oc.WithUpdates().ToLookup(o => o.Location);
+            var r = new Random(1);
+
+            for (var i = 0; i < 10000; i++)
+            {
+                var c = new Customer() { Name = "Customer " + i, Location = "Location " + r.Next(50) };
+                oc.Add(c);
+            }
+
+            Assert.AreEqual(oc.Where(o => o.Location == "Location 30").Count(), customersByLocationLookup["Location 30"].Count());
+        }
+
+        public class Customer
+        {
+            public string Name { get; set; }
+            public string Location { get; set; }
         }
     }
 }

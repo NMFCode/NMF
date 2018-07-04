@@ -11,5 +11,12 @@ namespace NMF.Expressions.Linq
         {
             return new Lookup<TSource, TKey>(source, keySelector);
         }
+
+        public static INotifyLookup<TSource, TKey> ToLookup<TSource, TKey>(this INotifyEnumerable<TSource> source, Expression<Func<TSource, TKey>> keySelector)
+        {
+            var lookup = new IncrementalLookup<TSource, TKey>(source, keySelector);
+            lookup.Successors.SetDummy();
+            return lookup;
+        }
     }
 }

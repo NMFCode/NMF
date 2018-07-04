@@ -12,7 +12,7 @@ namespace NMF.Expressions.Linq
         private IEnumerableExpression<TSource> source;
         private ObservingFunc<TSource, TKey> keySelector;
         private Dictionary<TKey, LookupSlave> lookupCache = new Dictionary<TKey, LookupSlave>();
-        private Incremental incremental;
+        private IncrementalLookup<TSource, TKey> incremental;
 
         public IEnumerableExpression<TKey> Keys
         {
@@ -72,7 +72,7 @@ namespace NMF.Expressions.Linq
                 }
             }
 
-            private IncrementalLookupBase<TSource, TKey>.IncrementalLookupSlave Incremental
+            private IncrementalLookup<TSource, TKey>.IncrementalLookupSlave Incremental
             {
                 get; set;
             }
@@ -114,7 +114,7 @@ namespace NMF.Expressions.Linq
         {
             if (incremental == null)
             {
-                incremental = new Incremental(this, source.AsNotifiable(), keySelector);
+                incremental = new IncrementalLookup<TSource, TKey>(source.AsNotifiable(), keySelector);
                 incremental.Successors.SetDummy();
             }
         }
@@ -144,16 +144,6 @@ namespace NMF.Expressions.Linq
         {
             PerformIncrementalLookup();
             return incremental;
-        }
-
-        protected class Incremental : IncrementalLookupBase<TSource, TKey>
-        {
-            private Lookup<TSource, TKey> parent;
-
-            public Incremental(Lookup<TSource, TKey> parent, INotifyEnumerable<TSource> source, ObservingFunc<TSource, TKey> keySelector) : base(source, keySelector)
-            {
-                this.parent = parent;
-            }
         }
     }
 }
