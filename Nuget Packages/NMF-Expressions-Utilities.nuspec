@@ -15,7 +15,12 @@
         <language>en</language>
         <tags>Incremental; LINQ;</tags>
         <dependencies>
+          <group>
             <dependency id="NMF-Expressions" version="$version$" />
+          </group>
+          <group targetFramework="net45">
+            <dependency id="System.ValueTuple" version="4.5.0" />
+          </group>
         </dependencies>
     </metadata>
   <files>

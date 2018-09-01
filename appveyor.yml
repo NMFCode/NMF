@@ -21,7 +21,7 @@ build:
 after_build:
 - ps: >-
     foreach ($nuspec in get-childitem "*.nuspec" -Recurse){
-        & nuget pack $nuspec -Version $env:APPVEYOR_BUILD_VERSION
+        & nuget pack $nuspec -Version $env:APPVEYOR_BUILD_VERSION -Symbols
     }
 artifacts:
 - path: '*.nupkg'
@@ -36,7 +36,7 @@ deploy:
 notifications:
 - provider: Email
   to:
-  - hinkel@fzi.de
+  - georg.hinkel@gmail.com
   subject: NMF Build
   on_build_success: false
   on_build_failure: true

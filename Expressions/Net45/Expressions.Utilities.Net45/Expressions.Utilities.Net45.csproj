@@ -37,6 +37,9 @@
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.ValueTuple, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\..\..\packages\System.ValueTuple.4.5.0\lib\netstandard1.0\System.ValueTuple.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="..\..\Expressions.Utilities\Binding.cs">
@@ -45,8 +48,20 @@
     <Compile Include="..\..\Expressions.Utilities\ChangeAwareDictionary.cs">
       <Link>ChangeAwareDictionary.cs</Link>
     </Compile>
+    <Compile Include="..\..\Expressions.Utilities\ILookupExpression.cs">
+      <Link>ILookupExpression.cs</Link>
+    </Compile>
     <Compile Include="..\..\Expressions.Utilities\IncrementalFunc.cs">
       <Link>IncrementalFunc.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Expressions.Utilities\IncrementalLookup.cs">
+      <Link>IncrementalLookup.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Expressions.Utilities\Lookup.cs">
+      <Link>Lookup.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Expressions.Utilities\LookupExtensions.cs">
+      <Link>LookupExtensions.cs</Link>
     </Compile>
     <Compile Include="..\..\Expressions.Utilities\Properties\AssemblyInfo.cs">
       <Link>AssemblyInfo.cs</Link>
@@ -54,6 +69,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Properties\" />
