@@ -1,0 +1,13 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <AssemblyName>NMF.Expressions.Debug</AssemblyName>
+    <RootNamespace>NMF.Expressions.Debug</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Expressions\Expressions.csproj" />
+  </ItemGroup>
+
+</Project>

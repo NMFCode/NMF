@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 
 namespace NMF.Expressions.Arithmetics
@@ -14,6 +15,8 @@ namespace NMF.Expressions.Arithmetics
                 return "({0} % {1})";
             }
         }
+
+        public override ExpressionType NodeType => ExpressionType.Modulo;
 
         public ObservableIntModulo(INotifyExpression<int> left, INotifyExpression<int> right)
             : base(left, right) { }
@@ -39,6 +42,8 @@ namespace NMF.Expressions.Arithmetics
             }
         }
 
+        public override ExpressionType NodeType => ExpressionType.Modulo;
+
         public ObservableLongModulo(INotifyExpression<long> left, INotifyExpression<long> right)
             : base(left, right) { }
 
@@ -62,6 +67,8 @@ namespace NMF.Expressions.Arithmetics
                 return "({0} % {1})";
             }
         }
+
+        public override ExpressionType NodeType => ExpressionType.Modulo;
 
         public ObservableUIntModulo(INotifyExpression<uint> left, INotifyExpression<uint> right)
             : base(left, right) { }
@@ -88,6 +95,8 @@ namespace NMF.Expressions.Arithmetics
             }
         }
 
+        public override ExpressionType NodeType => ExpressionType.Modulo;
+
         public ObservableULongModulo(INotifyExpression<ulong> left, INotifyExpression<ulong> right)
             : base(left, right) { }
 
@@ -112,6 +121,8 @@ namespace NMF.Expressions.Arithmetics
             }
         }
 
+        public override ExpressionType NodeType => ExpressionType.Modulo;
+
         public ObservableFloatModulo(INotifyExpression<float> left, INotifyExpression<float> right)
             : base(left, right) { }
 
@@ -135,6 +146,8 @@ namespace NMF.Expressions.Arithmetics
                 return "({0} % {1})";
             }
         }
+
+        public override ExpressionType NodeType => ExpressionType.Modulo;
 
         public ObservableDoubleModulo(INotifyExpression<double> left, INotifyExpression<double> right)
             : base(left, right) { }

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 
 namespace NMF.Expressions.Arithmetics
@@ -15,6 +16,8 @@ namespace NMF.Expressions.Arithmetics
                 return "~{0}";
             }
         }
+
+        public override ExpressionType NodeType => ExpressionType.OnesComplement;
 
         public ObservableIntOnesComplement(INotifyExpression<int> inner)
             : base(inner) { }
@@ -40,6 +43,8 @@ namespace NMF.Expressions.Arithmetics
             }
         }
 
+        public override ExpressionType NodeType => ExpressionType.OnesComplement;
+
         public ObservableUIntOnesComplement(INotifyExpression<uint> inner)
             : base(inner) { }
 
@@ -64,6 +69,8 @@ namespace NMF.Expressions.Arithmetics
             }
         }
 
+        public override ExpressionType NodeType => ExpressionType.OnesComplement;
+
         public ObservableLongOnesComplement(INotifyExpression<long> inner)
             : base(inner) { }
 
@@ -87,6 +94,8 @@ namespace NMF.Expressions.Arithmetics
                 return "~{0}";
             }
         }
+
+        public override ExpressionType NodeType => ExpressionType.OnesComplement;
 
         public ObservableULongOnesComplement(INotifyExpression<ulong> inner)
             : base(inner) { }

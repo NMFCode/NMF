@@ -8,11 +8,6 @@ namespace NMF.Expressions
 {
     internal class ObservableConditionalExpression<T> : NotifyExpression<T>
     {
-        public override string ToString()
-        {
-            return string.Format("({0} ? {1} : {2})", Test.ToString(), True.ToString(), False.ToString()) + "{" + (Value != null ? Value.ToString() : "(null)") + "}";
-        }
-
         public ObservableConditionalExpression(ConditionalExpression expression, ObservableExpressionBinder binder)
             : this(binder.VisitObservable<bool>(expression.Test), binder.VisitObservable<T>(expression.IfTrue), binder.VisitObservable<T>(expression.IfFalse)) { }
 

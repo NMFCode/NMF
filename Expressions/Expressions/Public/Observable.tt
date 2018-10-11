@@ -46,5 +46,23 @@ namespace NMF.Expressions
             return new ReversableObservingFunc<<# for (int j = 1; j <= i; j++) { #>T<#= j #>, <# } #>TResult>(expression, updateHandler);
         }
 <# } #>
+
+<# for (int i = 1; i <= 9; i++) { #>
+        /// <summary>
+        /// Recurses the given function
+        /// </summary>
+<# for (int j = 1; j <= i; j++) { #>
+        /// <typeparam name="T1">The type of function argument <#= j #></typeparam>
+<# } #>
+        /// <typeparam name="TResult">The result type</typeparam>
+        /// <param name="innerFunc">The inner function</param>
+        /// <returns>An observing function that runs the given function recursively</returns>
+        public static ObservingFunc<<# for (int j = 1; j <= i; j++) { #>T<#= j #>, <# } #>TResult> Recurse<<# for (int j = 1; j <= i; j++) { #>T<#= j #>, <# } #>TResult>(Expression<Func<Func<<# for (int j = 1; j <= i; j++) { #>T<#= j #>, <# } #>TResult>, <# for (int j = 1; j <= i; j++) { #>T<#= j #>, <# } #>TResult>> innerFunc)
+        {
+            var func = Func(innerFunc);
+            var recurse = new RecurseInfo<<# for (int j = 1; j <= i; j++) { #>T<#= j #>, <# } #>TResult>(func);
+            return func.ObservePartial(recurse.Func);
+        }
+<# } #>
     }
 }

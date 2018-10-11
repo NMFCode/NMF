@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 
 namespace NMF.Expressions.Arithmetics
@@ -14,6 +15,8 @@ namespace NMF.Expressions.Arithmetics
                 return "({0} | {1})";
             }
         }
+
+        public override ExpressionType NodeType => ExpressionType.Or;
 
         public ObservableIntBitwiseOr(INotifyExpression<int> left, INotifyExpression<int> right)
             : base(left, right) { }
@@ -47,6 +50,8 @@ namespace NMF.Expressions.Arithmetics
             return Left.Value | Right.Value;
         }
 
+        public override ExpressionType NodeType => ExpressionType.Or;
+
         protected override INotifyExpression<uint> ApplyParametersCore(IDictionary<string, object> parameters, IDictionary<INotifiable, INotifiable> trace)
         {
             return new ObservableUIntBitwiseOr(Left.ApplyParameters(parameters, trace), Right.ApplyParameters(parameters, trace));
@@ -71,6 +76,8 @@ namespace NMF.Expressions.Arithmetics
             return Left.Value | Right.Value;
         }
 
+        public override ExpressionType NodeType => ExpressionType.Or;
+
         protected override INotifyExpression<long> ApplyParametersCore(IDictionary<string, object> parameters, IDictionary<INotifiable, INotifiable> trace)
         {
             return new ObservableLongBitwiseOr(Left.ApplyParameters(parameters, trace), Right.ApplyParameters(parameters, trace));
@@ -94,6 +101,8 @@ namespace NMF.Expressions.Arithmetics
         {
             return Left.Value | Right.Value;
         }
+
+        public override ExpressionType NodeType => ExpressionType.Or;
 
         protected override INotifyExpression<ulong> ApplyParametersCore(IDictionary<string, object> parameters, IDictionary<INotifiable, INotifiable> trace)
         {

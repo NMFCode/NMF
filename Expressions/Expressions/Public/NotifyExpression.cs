@@ -186,6 +186,11 @@ namespace NMF.Expressions
             return UnchangedNotificationResult.Instance;
         }
 
+        public override string ToString()
+        {
+            return "[" + NodeType.ToString() + "]";
+        }
+
         /// <summary>
         /// Applies the given set of parameters to the expression
         /// </summary>

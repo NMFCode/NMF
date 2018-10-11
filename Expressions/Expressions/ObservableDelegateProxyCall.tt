@@ -1,0 +1,115 @@
+﻿<#@ template debug="false" hostspecific="false" language="C#" #>
+<#@ assembly name="System.Core" #>
+<#@ import namespace="System.Linq" #>
+<#@ import namespace="System.Text" #>
+<#@ import namespace="System.Collections.Generic" #>
+<#@ output extension=".cs" #>
+using System;
+using System.Collections.Generic;
+using System.Linq.Expressions;
+using System.Reflection;
+using System.Text;
+
+namespace NMF.Expressions
+{
+<# int maxDelegateProxyParameters = 10; #>
+<# for (int i = 1; i <= maxDelegateProxyParameters; i++) { #>
+    internal class ObservableDelegateProxy<<# for (int j = 1; j <= i; j++) { #>T<#= j #>, <# } #>TReturn> : ObservableDelegateProxyBase<TReturn>
+    {
+        public INotifyExpression<Func<<# for (int j = 1; j <= i; j++) { #>T<#= j #>, <# } #>TReturn>> Target { get; private set; }
+<# for (int j = 1; j <= i; j++) { #>
+        public INotifyExpression<T<#= j #>> Arg<#= j #> { get; private set; }
+<# } #>
+
+		public ObservableDelegateProxy(MethodCallExpression node, ObservableExpressionBinder binder)
+		    : this(binder.VisitObservable<Func<<# for (int j = 1; j <= i; j++) { #>T<#= j #>, <# } #>TReturn>>(node.Object)<# for(int j = 1; j <= i; j++) { #>, binder.VisitObservable<T<#= j #>>(node.Arguments[<#= j-1 #>])<# } #>) {}
+
+        public ObservableDelegateProxy(INotifyExpression<Func<<# for (int j = 1; j <= i; j++) { #>T<#= j #>, <# } #>TReturn>> target<# for (int j = 1; j <= i; j++) { #>, INotifyExpression<T<#= j #>> argument<#= j #><# } #>)
+        {
+            Target = target;
+<# for (int j = 1; j <= i; j++) { #>
+            Arg<#= j #> = argument<#= j #>;
+<# } #>
+        }
+
+        public override bool IsParameterFree => Target.IsParameterFree<# for (int j = 1; j <= i; j++) { #> && Arg<#= j #>.IsParameterFree<# } #>;
+
+        public override IEnumerable<INotifiable> Dependencies
+        {
+            get
+            {
+                yield return Target;
+<# for (int j = 1; j <= i; j++) { #>
+                yield return Arg<#= j #>;
+<# } #>
+                if (Inner != null) yield return Inner;
+            }
+        }
+
+		protected override INotifyExpression<Delegate> GetTarget() => Target;
+
+        protected override INotifyValue<TReturn> CreateCall(MethodInfo method, out bool argChangesTriggerReeval)
+        {
+            var proxyAttribute = method.GetCustomAttribute<ObservableProxyAttribute>(inherit: false);
+            if (proxyAttribute.InitializeProxyMethod(method, new Type[] { typeof(INotifyValue<T1>)<# for (int j = 2; j <= i; j++) { #>, typeof(INotifyValue<T<#= j #>>)<# } #> }, out var incProxy))
+            {
+                Func<<# for (int j = 1; j <= i; j++) { #>INotifyValue<T<#= j #>>, <# } #>INotifyValue<TReturn>> incProxyFunc;
+                if (incProxy.IsStatic)
+                {
+                    incProxyFunc = (Func<<# for (int j = 1; j <= i; j++) { #>INotifyValue<T<#= j #>>, <# } #>INotifyValue<TReturn>>)
+                        incProxy.CreateDelegate(typeof(Func<<# for (int j = 1; j <= i; j++) { #>INotifyValue<T<#= j #>>, <# } #>INotifyValue<TReturn>>));
+                }
+                else
+                {
+                    incProxyFunc = (Func<<# for (int j = 1; j <= i; j++) { #>INotifyValue<T<#= j #>>, <# } #>INotifyValue<TReturn>>)
+                        incProxy.CreateDelegate(typeof(Func<<# for (int j = 1; j <= i; j++) { #>INotifyValue<T<#= j #>>, <# } #>INotifyValue<TReturn>>), Target.Value.Target);
+                }
+                var inner = incProxyFunc(Arg1<# for (int j = 2; j <= i; j++) { #>, Arg<#= j #><# } #>);
+                inner.Successors.Set(this);
+                argChangesTriggerReeval = false;
+				return inner;
+            }
+            else if (proxyAttribute.InitializeProxyMethod(method, new Type[] { typeof(T1)<# for (int j = 2; j <= i; j++) { #>, typeof(T<#= j #>)<# } #>}, out var shallowProxy))
+            {
+                Func<<# for (int j = 1; j <= i; j++) { #>T<#= j #>, <# } #>INotifyValue<TReturn>> shallowProxyFunc;
+                if (shallowProxy.IsStatic)
+                {
+                    shallowProxyFunc = (Func<<# for (int j = 1; j <= i; j++) { #>T<#= j #>, <# } #>INotifyValue<TReturn>>)shallowProxy.CreateDelegate(typeof(Func<<# for (int j = 1; j <= i; j++) { #>T<#= j #>, <# } #>INotifyValue<TReturn>>));
+                }
+                else
+                {
+                    shallowProxyFunc = (Func<<# for (int j = 1; j <= i; j++) { #>T<#= j #>, <# } #>INotifyValue<TReturn>>)shallowProxy.CreateDelegate(typeof(Func<<# for (int j = 1; j <= i; j++) { #>T<#= j #>, <# } #>INotifyValue<TReturn>>), Target.Value.Target);
+                }
+                var inner = shallowProxyFunc(Arg1.Value<# for (int j = 2; j <= i; j++) { #>, Arg<#= j #>.Value<# } #>);
+                inner.Successors.Set(this);
+                argChangesTriggerReeval = true;
+				return inner;
+            }
+            else
+            {
+                var inner = Observable.Constant(Target.Value(Arg1.Value<# for (int j = 2; j <= i; j++) { #>, Arg<#= j #>.Value<# } #>));
+                argChangesTriggerReeval = true;
+				inner.Successors.Set(this);
+				return inner;
+            }
+        }
+
+        protected override INotifyExpression<TReturn> ApplyParametersCore(IDictionary<string, object> parameters, IDictionary<INotifiable, INotifiable> trace)
+        {
+            var targetCopy = Target.ApplyParameters(parameters, trace);
+<# for (int j = 1; j <= i; j++) { #>
+            var arg<#= j #>Copy = Arg<#= j #>.ApplyParameters(parameters, trace);
+<# } #>
+
+            if (Target == targetCopy<# for (int j = 1; j <= i; j++) { #> && Arg<#= j #> == arg<#= j #>Copy<# } #>) { return this; }
+
+            var copy = new ObservableDelegateProxy<<# for (int j = 1; j <= i; j++) { #>T<#= j #>, <# } #>TReturn>(targetCopy<# for (int j = 1; j <= i; j++) { #>, arg<#= j #>Copy<# } #>);
+            return copy;
+        }
+    }
+<# } #>
+    internal partial class ObservableExpressionTypes
+	{
+	    public static readonly Type[] DelegateProxyTypes = new Type[] { typeof(ObservableDelegateProxy<,>)<# for (int i = 2; i <= maxDelegateProxyParameters; i++) { #>, typeof(ObservableDelegateProxy<<#= new string(',', i) #>>)<# } #> };
+	}
+}

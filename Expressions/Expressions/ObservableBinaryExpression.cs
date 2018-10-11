@@ -20,10 +20,7 @@ namespace NMF.Expressions
 
         protected abstract string Format { get; }
 
-        public override string ToString()
-        {
-            return string.Format(Format, Left.ToString(), Right.ToString()) + "{" + (Value != null ? Value.ToString() : "(null)") + "}";
-        }
+        public string Expression => string.Format(Format, Left.ToString(), Right.ToString()) + "{" + (Value != null ? Value.ToString() : "(null)") + "}";
 
         public override bool CanBeConstant
         {

@@ -20,6 +20,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <LangVersion>latest</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -173,6 +174,12 @@
     <Compile Include="..\..\Expressions\ObservableDeferredProxyElement.cs">
       <Link>ObservableDeferredProxyElement.cs</Link>
     </Compile>
+    <Compile Include="..\..\Expressions\ObservableDelegateProxyBase.cs">
+      <Link>ObservableDelegateProxyBase.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Expressions\ObservableDelegateProxyCall.cs">
+      <Link>ObservableDelegateProxyCall.cs</Link>
+    </Compile>
     <Compile Include="..\..\Expressions\ObservableExpressionBinder.cs">
       <Link>ObservableExpressionBinder.cs</Link>
     </Compile>
@@ -232,6 +239,9 @@
     </Compile>
     <Compile Include="..\..\Expressions\ObservableProxyExpression.cs">
       <Link>ObservableProxyExpression.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Expressions\ObservableRecursion.cs">
+      <Link>ObservableRecursion.cs</Link>
     </Compile>
     <Compile Include="..\..\Expressions\ObservableReversableExpression.cs">
       <Link>ObservableReversableExpression.cs</Link>

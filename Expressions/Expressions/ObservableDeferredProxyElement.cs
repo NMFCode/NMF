@@ -1838,8 +1838,8 @@ namespace NMF.Expressions
             return proxy.Value;
         }
     }
-    internal class ObservableDeferredElementTypes
+    internal partial class ObservableExpressionTypes
     {
-        public static readonly Type[] Types = { typeof(ObservableDeferredProxyElement<,>), typeof(ObservableDeferredProxyElement<,,>), typeof(ObservableDeferredProxyElement<,,,>), typeof(ObservableDeferredProxyElement<,,,,>), typeof(ObservableDeferredProxyElement<,,,,,>), typeof(ObservableDeferredProxyElement<,,,,,,>), typeof(ObservableDeferredProxyElement<,,,,,,,>), typeof(ObservableDeferredProxyElement<,,,,,,,,>), typeof(ObservableDeferredProxyElement<,,,,,,,,,>), typeof(ObservableDeferredProxyElement<,,,,,,,,,,>), typeof(ObservableDeferredProxyElement<,,,,,,,,,,,>), typeof(ObservableDeferredProxyElement<,,,,,,,,,,,,>), typeof(ObservableDeferredProxyElement<,,,,,,,,,,,,,>), typeof(ObservableDeferredProxyElement<,,,,,,,,,,,,,,>), typeof(ObservableDeferredProxyElement<,,,,,,,,,,,,,,,>)};
+        public static readonly Type[] DeferredProxyTypes = { typeof(ObservableDeferredProxyElement<,>), typeof(ObservableDeferredProxyElement<,,>), typeof(ObservableDeferredProxyElement<,,,>), typeof(ObservableDeferredProxyElement<,,,,>), typeof(ObservableDeferredProxyElement<,,,,,>), typeof(ObservableDeferredProxyElement<,,,,,,>), typeof(ObservableDeferredProxyElement<,,,,,,,>), typeof(ObservableDeferredProxyElement<,,,,,,,,>), typeof(ObservableDeferredProxyElement<,,,,,,,,,>), typeof(ObservableDeferredProxyElement<,,,,,,,,,,>), typeof(ObservableDeferredProxyElement<,,,,,,,,,,,>), typeof(ObservableDeferredProxyElement<,,,,,,,,,,,,>), typeof(ObservableDeferredProxyElement<,,,,,,,,,,,,,>), typeof(ObservableDeferredProxyElement<,,,,,,,,,,,,,,>), typeof(ObservableDeferredProxyElement<,,,,,,,,,,,,,,,>)};
     }
 }

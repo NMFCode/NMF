@@ -564,5 +564,159 @@ namespace NMF.Expressions
         {
             return new ReversableObservingFunc<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, TResult>(expression, updateHandler);
         }
+
+        /// <summary>
+        /// Recurses the given function
+        /// </summary>
+        /// <typeparam name="T1">The type of function argument 1</typeparam>
+        /// <typeparam name="TResult">The result type</typeparam>
+        /// <param name="innerFunc">The inner function</param>
+        /// <returns>An observing function that runs the given function recursively</returns>
+        public static ObservingFunc<T1, TResult> Recurse<T1, TResult>(Expression<Func<Func<T1, TResult>, T1, TResult>> innerFunc)
+        {
+            var func = Func(innerFunc);
+            var recurse = new RecurseInfo<T1, TResult>(func);
+            return func.ObservePartial(recurse.Func);
+        }
+        /// <summary>
+        /// Recurses the given function
+        /// </summary>
+        /// <typeparam name="T1">The type of function argument 1</typeparam>
+        /// <typeparam name="T1">The type of function argument 2</typeparam>
+        /// <typeparam name="TResult">The result type</typeparam>
+        /// <param name="innerFunc">The inner function</param>
+        /// <returns>An observing function that runs the given function recursively</returns>
+        public static ObservingFunc<T1, T2, TResult> Recurse<T1, T2, TResult>(Expression<Func<Func<T1, T2, TResult>, T1, T2, TResult>> innerFunc)
+        {
+            var func = Func(innerFunc);
+            var recurse = new RecurseInfo<T1, T2, TResult>(func);
+            return func.ObservePartial(recurse.Func);
+        }
+        /// <summary>
+        /// Recurses the given function
+        /// </summary>
+        /// <typeparam name="T1">The type of function argument 1</typeparam>
+        /// <typeparam name="T1">The type of function argument 2</typeparam>
+        /// <typeparam name="T1">The type of function argument 3</typeparam>
+        /// <typeparam name="TResult">The result type</typeparam>
+        /// <param name="innerFunc">The inner function</param>
+        /// <returns>An observing function that runs the given function recursively</returns>
+        public static ObservingFunc<T1, T2, T3, TResult> Recurse<T1, T2, T3, TResult>(Expression<Func<Func<T1, T2, T3, TResult>, T1, T2, T3, TResult>> innerFunc)
+        {
+            var func = Func(innerFunc);
+            var recurse = new RecurseInfo<T1, T2, T3, TResult>(func);
+            return func.ObservePartial(recurse.Func);
+        }
+        /// <summary>
+        /// Recurses the given function
+        /// </summary>
+        /// <typeparam name="T1">The type of function argument 1</typeparam>
+        /// <typeparam name="T1">The type of function argument 2</typeparam>
+        /// <typeparam name="T1">The type of function argument 3</typeparam>
+        /// <typeparam name="T1">The type of function argument 4</typeparam>
+        /// <typeparam name="TResult">The result type</typeparam>
+        /// <param name="innerFunc">The inner function</param>
+        /// <returns>An observing function that runs the given function recursively</returns>
+        public static ObservingFunc<T1, T2, T3, T4, TResult> Recurse<T1, T2, T3, T4, TResult>(Expression<Func<Func<T1, T2, T3, T4, TResult>, T1, T2, T3, T4, TResult>> innerFunc)
+        {
+            var func = Func(innerFunc);
+            var recurse = new RecurseInfo<T1, T2, T3, T4, TResult>(func);
+            return func.ObservePartial(recurse.Func);
+        }
+        /// <summary>
+        /// Recurses the given function
+        /// </summary>
+        /// <typeparam name="T1">The type of function argument 1</typeparam>
+        /// <typeparam name="T1">The type of function argument 2</typeparam>
+        /// <typeparam name="T1">The type of function argument 3</typeparam>
+        /// <typeparam name="T1">The type of function argument 4</typeparam>
+        /// <typeparam name="T1">The type of function argument 5</typeparam>
+        /// <typeparam name="TResult">The result type</typeparam>
+        /// <param name="innerFunc">The inner function</param>
+        /// <returns>An observing function that runs the given function recursively</returns>
+        public static ObservingFunc<T1, T2, T3, T4, T5, TResult> Recurse<T1, T2, T3, T4, T5, TResult>(Expression<Func<Func<T1, T2, T3, T4, T5, TResult>, T1, T2, T3, T4, T5, TResult>> innerFunc)
+        {
+            var func = Func(innerFunc);
+            var recurse = new RecurseInfo<T1, T2, T3, T4, T5, TResult>(func);
+            return func.ObservePartial(recurse.Func);
+        }
+        /// <summary>
+        /// Recurses the given function
+        /// </summary>
+        /// <typeparam name="T1">The type of function argument 1</typeparam>
+        /// <typeparam name="T1">The type of function argument 2</typeparam>
+        /// <typeparam name="T1">The type of function argument 3</typeparam>
+        /// <typeparam name="T1">The type of function argument 4</typeparam>
+        /// <typeparam name="T1">The type of function argument 5</typeparam>
+        /// <typeparam name="T1">The type of function argument 6</typeparam>
+        /// <typeparam name="TResult">The result type</typeparam>
+        /// <param name="innerFunc">The inner function</param>
+        /// <returns>An observing function that runs the given function recursively</returns>
+        public static ObservingFunc<T1, T2, T3, T4, T5, T6, TResult> Recurse<T1, T2, T3, T4, T5, T6, TResult>(Expression<Func<Func<T1, T2, T3, T4, T5, T6, TResult>, T1, T2, T3, T4, T5, T6, TResult>> innerFunc)
+        {
+            var func = Func(innerFunc);
+            var recurse = new RecurseInfo<T1, T2, T3, T4, T5, T6, TResult>(func);
+            return func.ObservePartial(recurse.Func);
+        }
+        /// <summary>
+        /// Recurses the given function
+        /// </summary>
+        /// <typeparam name="T1">The type of function argument 1</typeparam>
+        /// <typeparam name="T1">The type of function argument 2</typeparam>
+        /// <typeparam name="T1">The type of function argument 3</typeparam>
+        /// <typeparam name="T1">The type of function argument 4</typeparam>
+        /// <typeparam name="T1">The type of function argument 5</typeparam>
+        /// <typeparam name="T1">The type of function argument 6</typeparam>
+        /// <typeparam name="T1">The type of function argument 7</typeparam>
+        /// <typeparam name="TResult">The result type</typeparam>
+        /// <param name="innerFunc">The inner function</param>
+        /// <returns>An observing function that runs the given function recursively</returns>
+        public static ObservingFunc<T1, T2, T3, T4, T5, T6, T7, TResult> Recurse<T1, T2, T3, T4, T5, T6, T7, TResult>(Expression<Func<Func<T1, T2, T3, T4, T5, T6, T7, TResult>, T1, T2, T3, T4, T5, T6, T7, TResult>> innerFunc)
+        {
+            var func = Func(innerFunc);
+            var recurse = new RecurseInfo<T1, T2, T3, T4, T5, T6, T7, TResult>(func);
+            return func.ObservePartial(recurse.Func);
+        }
+        /// <summary>
+        /// Recurses the given function
+        /// </summary>
+        /// <typeparam name="T1">The type of function argument 1</typeparam>
+        /// <typeparam name="T1">The type of function argument 2</typeparam>
+        /// <typeparam name="T1">The type of function argument 3</typeparam>
+        /// <typeparam name="T1">The type of function argument 4</typeparam>
+        /// <typeparam name="T1">The type of function argument 5</typeparam>
+        /// <typeparam name="T1">The type of function argument 6</typeparam>
+        /// <typeparam name="T1">The type of function argument 7</typeparam>
+        /// <typeparam name="T1">The type of function argument 8</typeparam>
+        /// <typeparam name="TResult">The result type</typeparam>
+        /// <param name="innerFunc">The inner function</param>
+        /// <returns>An observing function that runs the given function recursively</returns>
+        public static ObservingFunc<T1, T2, T3, T4, T5, T6, T7, T8, TResult> Recurse<T1, T2, T3, T4, T5, T6, T7, T8, TResult>(Expression<Func<Func<T1, T2, T3, T4, T5, T6, T7, T8, TResult>, T1, T2, T3, T4, T5, T6, T7, T8, TResult>> innerFunc)
+        {
+            var func = Func(innerFunc);
+            var recurse = new RecurseInfo<T1, T2, T3, T4, T5, T6, T7, T8, TResult>(func);
+            return func.ObservePartial(recurse.Func);
+        }
+        /// <summary>
+        /// Recurses the given function
+        /// </summary>
+        /// <typeparam name="T1">The type of function argument 1</typeparam>
+        /// <typeparam name="T1">The type of function argument 2</typeparam>
+        /// <typeparam name="T1">The type of function argument 3</typeparam>
+        /// <typeparam name="T1">The type of function argument 4</typeparam>
+        /// <typeparam name="T1">The type of function argument 5</typeparam>
+        /// <typeparam name="T1">The type of function argument 6</typeparam>
+        /// <typeparam name="T1">The type of function argument 7</typeparam>
+        /// <typeparam name="T1">The type of function argument 8</typeparam>
+        /// <typeparam name="T1">The type of function argument 9</typeparam>
+        /// <typeparam name="TResult">The result type</typeparam>
+        /// <param name="innerFunc">The inner function</param>
+        /// <returns>An observing function that runs the given function recursively</returns>
+        public static ObservingFunc<T1, T2, T3, T4, T5, T6, T7, T8, T9, TResult> Recurse<T1, T2, T3, T4, T5, T6, T7, T8, T9, TResult>(Expression<Func<Func<T1, T2, T3, T4, T5, T6, T7, T8, T9, TResult>, T1, T2, T3, T4, T5, T6, T7, T8, T9, TResult>> innerFunc)
+        {
+            var func = Func(innerFunc);
+            var recurse = new RecurseInfo<T1, T2, T3, T4, T5, T6, T7, T8, T9, TResult>(func);
+            return func.ObservePartial(recurse.Func);
+        }
     }
 }

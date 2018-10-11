@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 
 namespace NMF.Expressions.Arithmetics
@@ -14,6 +15,8 @@ namespace NMF.Expressions.Arithmetics
                 return "({0} & {1})";
             }
         }
+
+        public override ExpressionType NodeType => ExpressionType.And;
 
         public ObservableIntBitwiseAnd(INotifyExpression<int> left, INotifyExpression<int> right)
             : base(left, right) { }
@@ -38,6 +41,8 @@ namespace NMF.Expressions.Arithmetics
                 return "({0} & {1})";
             }
         }
+
+        public override ExpressionType NodeType => ExpressionType.And;
 
         public ObservableUIntBitwiseAnd(INotifyExpression<uint> left, INotifyExpression<uint> right)
             : base(left, right) { }
@@ -70,6 +75,9 @@ namespace NMF.Expressions.Arithmetics
             return Left.Value & Right.Value;
         }
 
+
+        public override ExpressionType NodeType => ExpressionType.And;
+
         protected override INotifyExpression<long> ApplyParametersCore(IDictionary<string, object> parameters, IDictionary<INotifiable, INotifiable> trace)
         {
             return new ObservableLongBitwiseAnd(Left.ApplyParameters(parameters, trace), Right.ApplyParameters(parameters, trace));
@@ -93,6 +101,9 @@ namespace NMF.Expressions.Arithmetics
         {
             return Left.Value & Right.Value;
         }
+
+
+        public override ExpressionType NodeType => ExpressionType.And;
 
         protected override INotifyExpression<ulong> ApplyParametersCore(IDictionary<string, object> parameters, IDictionary<INotifiable, INotifiable> trace)
         {

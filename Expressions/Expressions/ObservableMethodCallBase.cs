@@ -30,6 +30,11 @@ namespace NMF.Expressions
 
         public override ExpressionType NodeType { get { return ExpressionType.Invoke; } }
 
+        public override string ToString()
+        {
+            return $"[Invoke {Method.Name}]";
+        }
+
         public override bool CanBeConstant
         {
             get

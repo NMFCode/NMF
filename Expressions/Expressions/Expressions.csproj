@@ -7,6 +7,23 @@
     <RootNamespace>NMF.Expressions</RootNamespace>
   </PropertyGroup>
 
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <LangVersion>latest</LangVersion>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="ObservableDelegateProxyCall.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>ObservableDelegateProxyCall.tt</DependentUpon>
+    </None>
+    <None Include="ObservableRecursion.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>ObservableRecursion.tt</DependentUpon>
+    </None>
+  </ItemGroup>
+
   <ItemGroup>
     <PackageReference Include="System.Reflection.Emit.Lightweight" Version="4.3.0" />
   </ItemGroup>
@@ -19,6 +36,10 @@
     <None Update="ObservableDeferredProxyElement.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>ObservableDeferredProxyElement.cs</LastGenOutput>
+    </None>
+    <None Update="ObservableDelegateProxyCall.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>ObservableDelegateProxyCall.cs</LastGenOutput>
     </None>
     <None Update="ObservableExpressionTypes.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
@@ -43,6 +64,10 @@
     <None Update="ObservableNewExpression.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>ObservableNewExpression.cs</LastGenOutput>
+    </None>
+    <None Update="ObservableRecursion.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>ObservableRecursion.cs</LastGenOutput>
     </None>
     <None Update="ObservableSimpleLensMethodProxyCall.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
@@ -97,6 +122,11 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>ObservableDeferredProxyElement.tt</DependentUpon>
     </Compile>
+    <Compile Update="ObservableDelegateProxyCall.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>ObservableDelegateProxyCall.tt</DependentUpon>
+    </Compile>
     <Compile Update="ObservableExpressionTypes.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
@@ -126,6 +156,11 @@
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
       <DependentUpon>ObservableNewExpression.tt</DependentUpon>
+    </Compile>
+    <Compile Update="ObservableRecursion.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>ObservableRecursion.tt</DependentUpon>
     </Compile>
     <Compile Update="ObservableSimpleLensMethodProxyCall.cs">
       <DesignTime>True</DesignTime>

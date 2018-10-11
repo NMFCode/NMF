@@ -71,7 +71,7 @@ namespace NMF.Expressions
 
         public override string ToString()
         {
-            return string.Format("{0}.{1}", Target.ToString(), MemberName);
+            return $"[MemberAccess {MemberName}]";
         }
 
         public override bool IsParameterFree
@@ -148,6 +148,11 @@ namespace NMF.Expressions
                 return Target.Value == null ||
                     !(Target.Value is INotifyPropertyChanged);
             }
+        }
+
+        public override string ToString()
+        {
+            return $"[MemberAccess {MemberName}]";
         }
 
         public INotifyExpression<TTarget> Target { get; private set; }

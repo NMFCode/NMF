@@ -27,6 +27,8 @@ namespace NMF.Expressions
         public Func<INotifyValue<TResult>> ProxyFunction { get; private set; }
 
         public MethodInfo ProxyMethod { get; private set; }
+		
+        protected override string ProxyMethodName => ProxyMethod.Name;
 
         public override IEnumerable<INotifiable> Dependencies
         {
@@ -113,6 +115,8 @@ namespace NMF.Expressions
         public Func<T1, INotifyValue<TResult>> ProxyFunction { get; private set; }
 
         public MethodInfo ProxyMethod { get; private set; }
+		
+        protected override string ProxyMethodName => ProxyMethod.Name;
 
         public override IEnumerable<INotifiable> Dependencies
         {
@@ -205,6 +209,8 @@ namespace NMF.Expressions
         public Func<T1, T2, INotifyValue<TResult>> ProxyFunction { get; private set; }
 
         public MethodInfo ProxyMethod { get; private set; }
+		
+        protected override string ProxyMethodName => ProxyMethod.Name;
 
         public override IEnumerable<INotifiable> Dependencies
         {
@@ -303,6 +309,8 @@ namespace NMF.Expressions
         public Func<T1, T2, T3, INotifyValue<TResult>> ProxyFunction { get; private set; }
 
         public MethodInfo ProxyMethod { get; private set; }
+		
+        protected override string ProxyMethodName => ProxyMethod.Name;
 
         public override IEnumerable<INotifiable> Dependencies
         {
@@ -407,6 +415,8 @@ namespace NMF.Expressions
         public Func<T1, T2, T3, T4, INotifyValue<TResult>> ProxyFunction { get; private set; }
 
         public MethodInfo ProxyMethod { get; private set; }
+		
+        protected override string ProxyMethodName => ProxyMethod.Name;
 
         public override IEnumerable<INotifiable> Dependencies
         {
@@ -517,6 +527,8 @@ namespace NMF.Expressions
         public Func<T1, T2, T3, T4, T5, INotifyValue<TResult>> ProxyFunction { get; private set; }
 
         public MethodInfo ProxyMethod { get; private set; }
+		
+        protected override string ProxyMethodName => ProxyMethod.Name;
 
         public override IEnumerable<INotifiable> Dependencies
         {
@@ -633,6 +645,8 @@ namespace NMF.Expressions
         public Func<T1, T2, T3, T4, T5, T6, INotifyValue<TResult>> ProxyFunction { get; private set; }
 
         public MethodInfo ProxyMethod { get; private set; }
+		
+        protected override string ProxyMethodName => ProxyMethod.Name;
 
         public override IEnumerable<INotifiable> Dependencies
         {
@@ -755,6 +769,8 @@ namespace NMF.Expressions
         public Func<T1, T2, T3, T4, T5, T6, T7, INotifyValue<TResult>> ProxyFunction { get; private set; }
 
         public MethodInfo ProxyMethod { get; private set; }
+		
+        protected override string ProxyMethodName => ProxyMethod.Name;
 
         public override IEnumerable<INotifiable> Dependencies
         {
@@ -883,6 +899,8 @@ namespace NMF.Expressions
         public Func<T1, T2, T3, T4, T5, T6, T7, T8, INotifyValue<TResult>> ProxyFunction { get; private set; }
 
         public MethodInfo ProxyMethod { get; private set; }
+		
+        protected override string ProxyMethodName => ProxyMethod.Name;
 
         public override IEnumerable<INotifiable> Dependencies
         {
@@ -1017,6 +1035,8 @@ namespace NMF.Expressions
         public Func<T1, T2, T3, T4, T5, T6, T7, T8, T9, INotifyValue<TResult>> ProxyFunction { get; private set; }
 
         public MethodInfo ProxyMethod { get; private set; }
+		
+        protected override string ProxyMethodName => ProxyMethod.Name;
 
         public override IEnumerable<INotifiable> Dependencies
         {
@@ -1157,6 +1177,8 @@ namespace NMF.Expressions
         public Func<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, INotifyValue<TResult>> ProxyFunction { get; private set; }
 
         public MethodInfo ProxyMethod { get; private set; }
+		
+        protected override string ProxyMethodName => ProxyMethod.Name;
 
         public override IEnumerable<INotifiable> Dependencies
         {
@@ -1303,6 +1325,8 @@ namespace NMF.Expressions
         public Func<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, INotifyValue<TResult>> ProxyFunction { get; private set; }
 
         public MethodInfo ProxyMethod { get; private set; }
+		
+        protected override string ProxyMethodName => ProxyMethod.Name;
 
         public override IEnumerable<INotifiable> Dependencies
         {
@@ -1455,6 +1479,8 @@ namespace NMF.Expressions
         public Func<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, INotifyValue<TResult>> ProxyFunction { get; private set; }
 
         public MethodInfo ProxyMethod { get; private set; }
+		
+        protected override string ProxyMethodName => ProxyMethod.Name;
 
         public override IEnumerable<INotifiable> Dependencies
         {
@@ -1613,6 +1639,8 @@ namespace NMF.Expressions
         public Func<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, INotifyValue<TResult>> ProxyFunction { get; private set; }
 
         public MethodInfo ProxyMethod { get; private set; }
+		
+        protected override string ProxyMethodName => ProxyMethod.Name;
 
         public override IEnumerable<INotifiable> Dependencies
         {
@@ -1777,6 +1805,8 @@ namespace NMF.Expressions
         public Func<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, INotifyValue<TResult>> ProxyFunction { get; private set; }
 
         public MethodInfo ProxyMethod { get; private set; }
+		
+        protected override string ProxyMethodName => ProxyMethod.Name;
 
         public override IEnumerable<INotifiable> Dependencies
         {
@@ -1947,6 +1977,8 @@ namespace NMF.Expressions
         public Func<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, INotifyValue<TResult>> ProxyFunction { get; private set; }
 
         public MethodInfo ProxyMethod { get; private set; }
+		
+        protected override string ProxyMethodName => ProxyMethod.Name;
 
         public override IEnumerable<INotifiable> Dependencies
         {

@@ -11,7 +11,21 @@ namespace NMF.Expressions
     {
         public override string ToString()
         {
-            return Value != null ? Value.ToString() : "(null)";
+            return "[Constant " + ToDiagnosticString() + "]";
+        }
+
+        private string ToDiagnosticString()
+        {
+            var val = (Value != null ? Value.ToString() : "(null)");
+            var index = val.IndexOfAny(new[] { '<', '>', '"', '´', '`' });
+            if (index >= 0)
+            {
+                return val.Substring(0, index) + "...";
+            }
+            else
+            {
+                return val;
+            }
         }
 
         public ObservableConstant(T value) : base(value) { }

@@ -567,17 +567,21 @@ namespace NMF.Expressions
 
         protected override Expression VisitMethodCall(MethodCallExpression node)
         {
+            if (typeof(Delegate).IsAssignableFrom(node.Method.DeclaringType) && node.Method.Name == "Invoke")
+            {
+                // in that case, we need to insert a proxy node to infer proxies of the actual method that is being executed
+            }
+
             var staticMethod = node.Method.IsStatic;
             var typeOffset = staticMethod ? 0 : 1;
             var typesLength = 1 + node.Arguments.Count + typeOffset;
-            if (typesLength == 1)
+            if (typesLength == 1 && staticMethod)
             {
+                // we cannot get any information anyhow, so treat the result as constant
                 return Activator.CreateInstance(typeof(ObservableConstant<>).MakeGenericType(node.Type), node.Method.Invoke(null, null)) as Expression;
             }
 
             var types = new Type[typesLength];
-
-            var lensAttribute = node.Method.GetCustomAttribute(typeof(LensPutAttribute));
             var typesArg = new Type[node.Arguments.Count];
             var typesArgInc = new Type[node.Arguments.Count];
             var typesArgStatic = new Type[node.Arguments.Count + typeOffset];
@@ -607,127 +611,27 @@ namespace NMF.Expressions
                 var proxyAttribute = proxyTypes.FirstOrDefault() as ObservableProxyAttribute;
                 if (proxyAttribute != null)
                 {
-                    MethodInfo proxyMethod;
-                    if (!staticMethod && proxyAttribute.InitializeProxyMethod(node.Method, typesArgInc, out proxyMethod))
-                    {
-                        if (proxyMethod.IsStatic)
-                        {
-                            throw new InvalidOperationException("The provided proxy method must not be static or the target parameter must be provided.");
-                        }
-                        CheckForOutParameter(proxyMethod.GetParameters());
-                        CheckReturnTypeIsCorrect(node, proxyMethod);
-                        var target = Visit(node.Object) as INotifyExpression;
-                        if (target.IsConstant && lensAttribute == null)
-                        {
-                            var args = new Object[node.Arguments.Count];
-                            for (int i = 0; i < node.Arguments.Count; i++)
-                            {
-                                args[i] = Visit(node.Arguments[i]);
-                            }
-                            return proxyMethod.Invoke(target.ValueObject, args) as Expression;
-                        }
-                        else
-                        {
-                            var implTypes = lensAttribute == null
-                                ? ObservableExpressionTypes.ObservableSimpleMethodProxyCall
-                                : ObservableExpressionTypes.ObservableSimpleLensMethodProxyCall;
-                            return System.Activator.CreateInstance(implTypes[node.Arguments.Count].MakeGenericType(types), node, this, proxyMethod) as Expression;
-                        }
-                    }
-                    else if (!staticMethod && proxyAttribute.InitializeProxyMethod(node.Method, typesArg, out proxyMethod))
-                    {
-                        if (proxyMethod.IsStatic)
-                        {
-                            throw new InvalidOperationException("The provided proxy method must not be static or the target parameter must be provided.");
-                        }
-                        CheckForOutParameter(proxyMethod.GetParameters());
-                        CheckReturnTypeIsCorrect(node, proxyMethod);
-                        var typeArray = lensAttribute == null ? ObservableExpressionTypes.ObservableMethodProxyCall : ObservableExpressionTypes.ObservableMethodLensProxyCall;
-                        return System.Activator.CreateInstance(typeArray[typesLength - 2].MakeGenericType(types), node, this, proxyMethod) as Expression;
-                    }
-                    else if (proxyAttribute.InitializeProxyMethod(node.Method, typesArgStaticInc, out proxyMethod))
-                    {
-                        if (!proxyMethod.IsStatic)
-                        {
-                            throw new InvalidOperationException("The provided proxy method must be static or the target parameter must be omitted.");
-                        }
-                        CheckForOutParameter(proxyMethod.GetParameters());
-                        CheckReturnTypeIsCorrect(node, proxyMethod);
-                        if (proxyAttribute.IsRecursive)
-                        {
-                            var proxyArgs = new Object[1 + node.Arguments.Count + typeOffset];
-                            var proxyCallTypes = new Type[1 + node.Arguments.Count + typeOffset];
-                            proxyArgs[0] = proxyMethod;
-                            proxyCallTypes[0] = node.Type;
-                            if (!staticMethod)
-                            {
-                                proxyArgs[1] = Visit(node.Object);
-                                proxyCallTypes[1] = node.Object.Type;
-                            }
-                            for (int i = 0; i < node.Arguments.Count; i++)
-                            {
-                                proxyArgs[i + typeOffset + 1] = Visit(node.Arguments[i]);
-                                proxyCallTypes[i + typeOffset + 1] = node.Arguments[i].Type;
-                            }
-                            if (lensAttribute == null)
-                            {
-                                var deferredProxyType = ObservableDeferredElementTypes.Types[proxyCallTypes.Length - 2];
-                                deferredProxyType = deferredProxyType.MakeGenericType(proxyCallTypes);
-                                return Activator.CreateInstance(deferredProxyType, proxyArgs) as Expression;
-                            }
-                            else
-                            {
-                                throw new NotImplementedException();
-                            }
-                        }
-                        else
-                        {
-                            var proxyArgs = new Object[node.Arguments.Count + typeOffset];
-                            if (!staticMethod)
-                            {
-                                proxyArgs[0] = Visit(node.Object);
-                            }
-                            for (int i = 0; i < node.Arguments.Count; i++)
-                            {
-                                proxyArgs[i + typeOffset] = Visit(node.Arguments[i]);
-                            }
-                            try
-                            {
-                                if (lensAttribute == null)
-                                {
-                                    object proxy = proxyMethod.Invoke(null, proxyArgs);
-                                    var proxyExp = proxy as Expression;
-                                    if (proxyExp != null) return proxyExp;
-                                    return System.Activator.CreateInstance(typeof(ObservableProxyExpression<>).MakeGenericType(node.Method.ReturnType), proxy) as Expression;
-                                }
-                                else
-                                {
-                                    throw new NotImplementedException();
-                                }
-                            }
-                            catch (NullReferenceException)
-                            {
-                                throw new InvalidOperationException(string.Format("The proxy method {0} threw a NullReferenceException. Is the underlying function recursive? If so, you have to specify this manually.", proxyMethod.Name));
-                            }
-                        }
-                    }
-                    else if (proxyAttribute.InitializeProxyMethod(node.Method, typesArgStatic, out proxyMethod))
-                    {
-                        if (!proxyMethod.IsStatic)
-                        {
-                            throw new InvalidOperationException("The provided proxy method must be static or the target parameter must be omitted.");
-                        }
-                        CheckForOutParameter(proxyMethod.GetParameters());
-                        CheckReturnTypeIsCorrect(node, proxyMethod);
-                        var typeArray = lensAttribute == null ? ObservableExpressionTypes.ObservableStaticProxyCall : ObservableExpressionTypes.ObservableStaticLensProxyCall;
-                        return System.Activator.CreateInstance(typeArray[typesLength - 2].MakeGenericType(types), node, this, proxyMethod) as Expression;
-                    }
-                    else
-                    {
-                        throw new NotSupportedException($"The parameters of the proxy method {proxyAttribute.MethodName} are invalid. Parameters must match the original method {node.Method.Name} or all parameters must be converted to monads.");
-                    }
+                    return VisitProxyMethodCall(node, types, typesArg, typesArgInc, typesArgStatic, typesArgStaticInc, proxyAttribute);
                 }
             }
+            if (node.Object != null && typeof(Delegate).IsAssignableFrom(node.Object.Type) && node.Method.Name == "Invoke")
+            {
+                return VisitDelegateInvokeExpression(node, types);
+            }
+            return VisitStandardMethodCall(node, types);
+        }
+
+        private Expression VisitDelegateInvokeExpression(MethodCallExpression node, Type[] types)
+        {
+            var proxyType = ObservableExpressionTypes.DelegateProxyTypes[node.Arguments.Count - 1];
+            var typeArgs = new Type[node.Arguments.Count + 1];
+            Array.Copy(types, 1, typeArgs, 0, typeArgs.Length);
+            return Activator.CreateInstance(proxyType.MakeGenericType(typeArgs), node, this) as Expression;
+        }
+
+        private Expression VisitStandardMethodCall(MethodCallExpression node, Type[] types)
+        {
+            var lensAttribute = node.Method.GetCustomAttribute(typeof(LensPutAttribute));
             Type[] methodArray;
             if (node.Method.IsStatic)
             {
@@ -751,7 +655,155 @@ namespace NMF.Expressions
                     methodArray = ObservableExpressionTypes.ObservableMethodCall;
                 }
             }
-            return System.Activator.CreateInstance(methodArray[typesLength - 2].MakeGenericType(types), node, this) as Expression;
+            return System.Activator.CreateInstance(methodArray[types.Length - 2].MakeGenericType(types), node, this) as Expression;
+        }
+
+        private Expression VisitProxyMethodCall(MethodCallExpression node, Type[] types, Type[] typesArg, Type[] typesArgInc, Type[] typesArgStatic, Type[] typesArgStaticInc, ObservableProxyAttribute proxyAttribute)
+        {
+            var lensAttribute = node.Method.GetCustomAttribute(typeof(LensPutAttribute));
+            MethodInfo proxyMethod;
+            if (!node.Method.IsStatic)
+            {
+                if (proxyAttribute.InitializeProxyMethod(node.Method, typesArgInc, out proxyMethod))
+                {
+                    return VisitIncrementalMemberProxyCall(node, lensAttribute, types, proxyMethod, proxyAttribute.IsRecursive);
+                }
+                else if (proxyAttribute.InitializeProxyMethod(node.Method, typesArg, out proxyMethod))
+                {
+                    return VisitStaticMemberProxyCall(node, types.Length, lensAttribute, types, proxyMethod);
+                }
+            }
+            if (proxyAttribute.InitializeProxyMethod(node.Method, typesArgStaticInc, out proxyMethod))
+            {
+                return VisitIncrementalStaticProxyCall(node, lensAttribute, proxyMethod, proxyAttribute.IsRecursive);
+            }
+            else if (proxyAttribute.InitializeProxyMethod(node.Method, typesArgStatic, out proxyMethod))
+            {
+                return VisitStaticProxyCall(node, types.Length, lensAttribute, types, proxyMethod);
+            }
+            else
+            {
+                throw new NotSupportedException($"The parameters of the proxy method {proxyAttribute.MethodName} are invalid. Parameters must match the original method {node.Method.Name} or all parameters must be converted to monads.");
+            }
+        }
+
+        private Expression VisitStaticProxyCall(MethodCallExpression node, int typesLength, Attribute lensAttribute, Type[] types, MethodInfo proxyMethod)
+        {
+            if (!proxyMethod.IsStatic)
+            {
+                throw new InvalidOperationException("The provided proxy method must be static or the target parameter must be omitted.");
+            }
+            CheckForOutParameter(proxyMethod.GetParameters());
+            CheckReturnTypeIsCorrect(node, proxyMethod);
+            var typeArray = lensAttribute == null ? ObservableExpressionTypes.ObservableStaticProxyCall : ObservableExpressionTypes.ObservableStaticLensProxyCall;
+            return System.Activator.CreateInstance(typeArray[typesLength - 2].MakeGenericType(types), node, this, proxyMethod) as Expression;
+        }
+
+        private Expression VisitIncrementalStaticProxyCall(MethodCallExpression node, Attribute lensAttribute, MethodInfo proxyMethod, bool isRecursive)
+        {
+            var typeOffset = node.Method.IsStatic ? 0 : 1;
+            if (!proxyMethod.IsStatic)
+            {
+                throw new InvalidOperationException("The provided proxy method must be static or the target parameter must be omitted.");
+            }
+            CheckForOutParameter(proxyMethod.GetParameters());
+            CheckReturnTypeIsCorrect(node, proxyMethod);
+            if (isRecursive)
+            {
+                var proxyArgs = new Object[1 + node.Arguments.Count + typeOffset];
+                var proxyCallTypes = new Type[1 + node.Arguments.Count + typeOffset];
+                proxyArgs[0] = proxyMethod;
+                proxyCallTypes[0] = node.Type;
+                if (!node.Method.IsStatic)
+                {
+                    proxyArgs[1] = Visit(node.Object);
+                    proxyCallTypes[1] = node.Object.Type;
+                }
+                for (int i = 0; i < node.Arguments.Count; i++)
+                {
+                    proxyArgs[i + typeOffset + 1] = Visit(node.Arguments[i]);
+                    proxyCallTypes[i + typeOffset + 1] = node.Arguments[i].Type;
+                }
+                if (lensAttribute == null)
+                {
+                    var deferredProxyType = ObservableExpressionTypes.DeferredProxyTypes[proxyCallTypes.Length - 2];
+                    deferredProxyType = deferredProxyType.MakeGenericType(proxyCallTypes);
+                    return Activator.CreateInstance(deferredProxyType, proxyArgs) as Expression;
+                }
+                else
+                {
+                    throw new NotImplementedException();
+                }
+            }
+            else
+            {
+                var proxyArgs = new Object[node.Arguments.Count + typeOffset];
+                if (!node.Method.IsStatic)
+                {
+                    proxyArgs[0] = Visit(node.Object);
+                }
+                for (int i = 0; i < node.Arguments.Count; i++)
+                {
+                    proxyArgs[i + typeOffset] = Visit(node.Arguments[i]);
+                }
+                try
+                {
+                    if (lensAttribute == null)
+                    {
+                        object proxy = proxyMethod.Invoke(null, proxyArgs);
+                        var proxyExp = proxy as Expression;
+                        if (proxyExp != null) return proxyExp;
+                        return System.Activator.CreateInstance(typeof(ObservableProxyExpression<>).MakeGenericType(node.Method.ReturnType), proxy) as Expression;
+                    }
+                    else
+                    {
+                        throw new NotImplementedException();
+                    }
+                }
+                catch (NullReferenceException)
+                {
+                    throw new InvalidOperationException(string.Format("The proxy method {0} threw a NullReferenceException. Is the underlying function recursive? If so, you have to specify this manually.", proxyMethod.Name));
+                }
+            }
+        }
+
+        private Expression VisitStaticMemberProxyCall(MethodCallExpression node, int typesLength, Attribute lensAttribute, Type[] types, MethodInfo proxyMethod)
+        {
+            if (proxyMethod.IsStatic)
+            {
+                throw new InvalidOperationException("The provided proxy method must not be static or the target parameter must be provided.");
+            }
+            CheckForOutParameter(proxyMethod.GetParameters());
+            CheckReturnTypeIsCorrect(node, proxyMethod);
+            var typeArray = lensAttribute == null ? ObservableExpressionTypes.ObservableMethodProxyCall : ObservableExpressionTypes.ObservableMethodLensProxyCall;
+            return System.Activator.CreateInstance(typeArray[typesLength - 2].MakeGenericType(types), node, this, proxyMethod) as Expression;
+        }
+
+        private Expression VisitIncrementalMemberProxyCall(MethodCallExpression node, Attribute lensAttribute, Type[] types, MethodInfo proxyMethod, bool isRecursive)
+        {
+            if (proxyMethod.IsStatic)
+            {
+                throw new InvalidOperationException("The provided proxy method must not be static or the target parameter must be provided.");
+            }
+            CheckForOutParameter(proxyMethod.GetParameters());
+            CheckReturnTypeIsCorrect(node, proxyMethod);
+            var target = Visit(node.Object) as INotifyExpression;
+            if (target.IsConstant && lensAttribute == null && !isRecursive)
+            {
+                var args = new Object[node.Arguments.Count];
+                for (int i = 0; i < node.Arguments.Count; i++)
+                {
+                    args[i] = Visit(node.Arguments[i]);
+                }
+                return proxyMethod.Invoke(target.ValueObject, args) as Expression;
+            }
+            else
+            {
+                var implTypes = lensAttribute == null
+                    ? ObservableExpressionTypes.ObservableSimpleMethodProxyCall
+                    : ObservableExpressionTypes.ObservableSimpleLensMethodProxyCall;
+                return System.Activator.CreateInstance(implTypes[node.Arguments.Count].MakeGenericType(types), node, this, proxyMethod) as Expression;
+            }
         }
 
         private void CheckReturnTypeIsCorrect(MethodCallExpression node, MethodInfo proxyMethod)

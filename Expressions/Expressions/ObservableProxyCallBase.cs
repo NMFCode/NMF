@@ -64,14 +64,21 @@ namespace NMF.Expressions
 
         public override string ToString()
         {
-            return "proxy for " + Proxy.ToString();
+            return $"[ProxyInvoke {ProxyMethodName}]";
         }
 
+        protected abstract string ProxyMethodName { get; }
+
         protected abstract INotifyValue<TResult> CreateProxy();
+
+        protected virtual bool RequireRenewProxy(IList<INotificationResult> changes)
+        {
+            return changes.Count > 1 || changes[0].Source != Proxy;
+        }
         
         public override INotificationResult Notify(IList<INotificationResult> sources)
         {
-            if (sources.Count > 1 || sources[0].Source != Proxy)
+            if (RequireRenewProxy(sources))
                 RenewProxy();
             return base.Notify(sources);
         }

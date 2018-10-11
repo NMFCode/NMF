@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 
 namespace NMF.Expressions.Arithmetics
@@ -14,6 +15,8 @@ namespace NMF.Expressions.Arithmetics
                 return "({0} ^ {1})";
             }
         }
+
+        public override ExpressionType NodeType => ExpressionType.ExclusiveOr;
 
         public ObservableIntBitwiseXor(INotifyExpression<int> left, INotifyExpression<int> right)
             : base(left, right) { }
@@ -49,6 +52,8 @@ namespace NMF.Expressions.Arithmetics
             }
         }
 
+        public override ExpressionType NodeType => ExpressionType.ExclusiveOr;
+
         public ObservableUIntBitwiseXor(INotifyExpression<uint> left, INotifyExpression<uint> right)
             : base(left, right) { }
 
@@ -83,6 +88,8 @@ namespace NMF.Expressions.Arithmetics
             }
         }
 
+        public override ExpressionType NodeType => ExpressionType.ExclusiveOr;
+
         public ObservableLongBitwiseXor(INotifyExpression<long> left, INotifyExpression<long> right)
             : base(left, right) { }
 
@@ -116,6 +123,8 @@ namespace NMF.Expressions.Arithmetics
                 return "({0} ^ {1})";
             }
         }
+
+        public override ExpressionType NodeType => ExpressionType.ExclusiveOr;
 
         public ObservableULongBitwiseXor(INotifyExpression<ulong> left, INotifyExpression<ulong> right)
             : base(left, right) { }
