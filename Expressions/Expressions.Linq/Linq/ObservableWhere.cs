@@ -10,6 +10,11 @@ namespace NMF.Expressions.Linq
 {
     internal sealed class ObservableWhere<T> : ObservableEnumerable<T>, INotifyCollection<T>
     {
+        public override string ToString()
+        {
+            return "[Where]";
+        }
+
         internal struct ItemMultiplicity
         {
             public ItemMultiplicity(T item, int multiplicity) : this()

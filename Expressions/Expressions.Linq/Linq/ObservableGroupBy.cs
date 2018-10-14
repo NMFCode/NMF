@@ -8,6 +8,11 @@ namespace NMF.Expressions.Linq
 {
     internal sealed class ObservableGroupBy<TKey, TItem> : ObservableEnumerable<ObservableGroup<TKey, TItem>>
     {
+        public override string ToString()
+        {
+            return "[GroupBy]";
+        }
+
         private INotifyEnumerable<TItem> source;
         private ObservingFunc<TItem, TKey> keySelector;
 

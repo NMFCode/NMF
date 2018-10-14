@@ -176,7 +176,12 @@ namespace NMF.Expressions.Linq
 
     internal class ObservableMin<T> : INotifyValue<T>
     {
-        
+        public override string ToString()
+        {
+            return "[Min]";
+        }
+
+
         private INotifyEnumerable<T> source;
         private IComparer<T> comparer;
         private bool hasValue;
@@ -302,7 +307,12 @@ namespace NMF.Expressions.Linq
     internal class ObservableNullableMin<T> : INotifyValue<T?>
         where T : struct
     {
-        
+        public override string ToString()
+        {
+            return "[Min]";
+        }
+
+
         private INotifyEnumerable<T?> source;
         private IComparer<T> comparer;
         private T? current;

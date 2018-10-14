@@ -7,6 +7,11 @@ namespace NMF.Expressions.Linq
 {
     internal class ObservableContains<TSource> : ObservableAggregate<TSource, int, bool>
     {
+        public override string ToString()
+        {
+            return $"[Contains {searchItem}]";
+        }
+
         public static ObservableContains<TSource> Create(INotifyEnumerable<TSource> source, TSource searchItem)
         {
             return CreateWithComparer(source, searchItem, null);

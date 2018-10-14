@@ -8,6 +8,11 @@ namespace NMF.Expressions.Linq
 {
     internal class ObservableAll<TItem> : ObservableAggregate<bool, int, bool>
     {
+        public override string ToString()
+        {
+            return "[All]";
+        }
+
         public static ObservableAll<TItem> Create(INotifyEnumerable<TItem> source, Expression<Func<TItem, bool>> predicate)
         {
             var observable =  new ObservableAll<TItem>(source, predicate);

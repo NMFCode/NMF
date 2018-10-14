@@ -15,6 +15,11 @@ namespace NMF.Expressions.Linq
             return observable;
         }
 
+        public override string ToString()
+        {
+            return "[Any]";
+        }
+
         public static ObservableAny<TSource> CreateExpression(IEnumerableExpression<TSource> source)
         {
             return Create(source.AsNotifiable());
@@ -49,6 +54,11 @@ namespace NMF.Expressions.Linq
 
     internal class ObservableLambdaAny<TSource> : ObservableAggregate<bool, int, bool>
     {
+        public override string ToString()
+        {
+            return "[Any]";
+        }
+
         public static ObservableLambdaAny<TSource> Create(INotifyEnumerable<TSource> source, Expression<Func<TSource, bool>> selector)
         {
             var observable = new ObservableLambdaAny<TSource>(source, selector);

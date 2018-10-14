@@ -8,6 +8,11 @@ namespace NMF.Expressions.Linq
 {
     internal sealed class ObservableSelectMany<TSource, TIntermediate, TResult> : ObservableEnumerable<TResult>
     {
+        public override string ToString()
+        {
+            return "[SelectMany]";
+        }
+
         private INotifyEnumerable<TSource> source;
         private ObservingFunc<TSource, IEnumerable<TIntermediate>> func;
 

@@ -9,6 +9,11 @@ namespace NMF.Expressions.Linq
 {
     internal sealed class ObservableOrderBy<TItem, TKey> : ObservableEnumerable<TItem>, IOrderableNotifyEnumerable<TItem>
     {
+        public override string ToString()
+        {
+            return "[OrderBy]";
+        }
+
         private INotifyEnumerable<TItem> source;
         private ObservingFunc<TItem, TKey> keySelector;
         private Dictionary<TItem, TaggedObservableValue<TKey, Multiplicity<TItem>>> lambdas = new Dictionary<TItem, TaggedObservableValue<TKey, Multiplicity<TItem>>>();

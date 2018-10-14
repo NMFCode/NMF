@@ -7,6 +7,11 @@ namespace NMF.Expressions.Linq
 {
     internal sealed class ObservableTopX<TItem, TKey> : NotifyValue<KeyValuePair<TItem, TKey>[]>
     {
+        public override string ToString()
+        {
+            return $"[Top {X}]";
+        }
+
         public static INotifyValue<KeyValuePair<TItem, TKey>[]> CreateSelector(INotifyEnumerable<TItem> source, int x, Expression<Func<TItem, TKey>> selector)
         {
             return CreateSelectorComparer(source, x, selector, null);

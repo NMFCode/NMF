@@ -9,6 +9,11 @@ namespace NMF.Expressions.Linq
 {
     internal sealed class ObservableExcept<TSource> : ObservableEnumerable<TSource>
     {
+        public override string ToString()
+        {
+            return "[Except]";
+        }
+
         private INotifyEnumerable<TSource> source;
         private IEnumerable<TSource> source2;
         private INotifyEnumerable<TSource> observableSource2;

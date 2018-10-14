@@ -9,6 +9,11 @@ namespace NMF.Expressions.Linq
 {
     internal sealed class ObservableDistinct<TSource> : ObservableEnumerable<TSource>
     {
+        public override string ToString()
+        {
+            return "[Distinct]";
+        }
+
         private INotifyEnumerable<TSource> source;
         private Dictionary<TSource, int> occurences;
         private int nullOccurences = 0;

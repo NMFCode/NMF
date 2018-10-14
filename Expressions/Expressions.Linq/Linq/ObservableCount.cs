@@ -8,6 +8,11 @@ namespace NMF.Expressions.Linq
 {
     internal class ObservableCount<TSource> : ObservableAggregate<TSource, int, int>
     {
+        public override string ToString()
+        {
+            return "[Count]";
+        }
+
         public static ObservableCount<TSource> Create(INotifyEnumerable<TSource> source)
         {
             var observable = new ObservableCount<TSource>(source);

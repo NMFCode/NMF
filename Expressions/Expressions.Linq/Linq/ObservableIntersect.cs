@@ -8,6 +8,11 @@ namespace NMF.Expressions.Linq
 {
     internal sealed class ObservableIntersect<TSource> : ObservableEnumerable<TSource>
     {
+        public override string ToString()
+        {
+            return "[Intersect]";
+        }
+
         private INotifyEnumerable<TSource> source;
         private IEnumerable<TSource> source2;
         private INotifyEnumerable<TSource> observableSource2;

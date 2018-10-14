@@ -10,6 +10,11 @@ namespace NMF.Expressions.Linq
 {
     internal class ObservableOfType<T> : ObservableEnumerable<T>
     {
+        public override string ToString()
+        {
+            return $"[OfType {typeof(T).Name}]";
+        }
+
         public INotifyEnumerable Source { get; private set; }
 
         public override IEnumerable<INotifiable> Dependencies { get { yield return Source; } }

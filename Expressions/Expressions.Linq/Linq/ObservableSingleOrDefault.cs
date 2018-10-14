@@ -9,7 +9,12 @@ namespace NMF.Expressions.Linq
 {
     internal class ObservableSingleOrDefault<TSource> : INotifyValue<TSource>, INotifyReversableValue<TSource>
     {
-        
+        public override string ToString()
+        {
+            return "[SingleOrDefault]";
+        }
+
+
         private TSource value;
         private INotifyEnumerable<TSource> source;
 

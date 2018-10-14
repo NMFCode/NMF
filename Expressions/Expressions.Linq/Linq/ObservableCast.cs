@@ -9,6 +9,11 @@ namespace NMF.Expressions.Linq
 {
     internal sealed class ObservableCast<TTarget> : ObservableEnumerable<TTarget>
     {
+        public override string ToString()
+        {
+            return "[Cast]";
+        }
+
         private INotifyEnumerable source;
 
         public ObservableCast(INotifyEnumerable source)

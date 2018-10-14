@@ -8,6 +8,11 @@ namespace NMF.Expressions.Linq
 {
     internal sealed class ObservableSetEquals<T> : ObservableSetComparer<T>
     {
+        public override string ToString()
+        {
+            return "[SetEquals]";
+        }
+
         private int not_balanced;
 
         public static INotifyValue<bool> Create(INotifyEnumerable<T> source, IEnumerable<T> other)

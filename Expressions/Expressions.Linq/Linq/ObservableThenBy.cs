@@ -9,6 +9,11 @@ namespace NMF.Expressions.Linq
 {
     internal sealed class ObservableThenBy<TItem, TKey> : ObservableEnumerable<TItem>, IOrderableNotifyEnumerable<TItem>
     {
+        public override string ToString()
+        {
+            return "[ThenBy]";
+        }
+
         private IOrderableNotifyEnumerable<TItem> source;
         private Dictionary<IEnumerable<TItem>, SortedDictionary<TKey, Collection<TItem>>> searchTrees = new Dictionary<IEnumerable<TItem>, SortedDictionary<TKey, Collection<TItem>>>();
         private Dictionary<TItem, Stack<TaggedObservableValue<TKey, SequenceInfo>>> lambdaResults = new Dictionary<TItem, Stack<TaggedObservableValue<TKey, SequenceInfo>>>();

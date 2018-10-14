@@ -8,6 +8,11 @@ namespace NMF.Expressions.Linq
 {
     internal sealed class ObservableSimpleSelectMany<TSource, TResult> : ObservableEnumerable<TResult>
     {
+        public override string ToString()
+        {
+            return "[Flatten]";
+        }
+
         private INotifyEnumerable<TSource> source;
         private ObservingFunc<TSource, IEnumerable<TResult>> selector;
 

@@ -231,6 +231,11 @@ namespace NMF.Expressions.Linq
 
     internal class ObservableIntSum : ObservableAggregate<int, int, int>
     {
+        public override string ToString()
+        {
+            return "[Sum]";
+        }
+
         public ObservableIntSum(INotifyEnumerable<int> source)
             : base(source, 0)
         {
@@ -259,6 +264,11 @@ namespace NMF.Expressions.Linq
 
     internal class ObservableLongSum : ObservableAggregate<long, long, long>
     {
+        public override string ToString()
+        {
+            return "[Sum]";
+        }
+
         public ObservableLongSum(INotifyEnumerable<long> source)
             : base(source, 0)
         {
@@ -287,6 +297,11 @@ namespace NMF.Expressions.Linq
 
     internal class ObservableFloatSum : ObservableAggregate<float, float, float>
     {
+        public override string ToString()
+        {
+            return "[Sum]";
+        }
+
         public ObservableFloatSum(INotifyEnumerable<float> source)
             : base(source, 0)
         {
@@ -315,6 +330,11 @@ namespace NMF.Expressions.Linq
 
     internal class ObservableDoubleSum : ObservableAggregate<double, double, double>
     {
+        public override string ToString()
+        {
+            return "[Sum]";
+        }
+
         public ObservableDoubleSum(INotifyEnumerable<double> source)
             : base(source, 0)
         {
@@ -343,6 +363,11 @@ namespace NMF.Expressions.Linq
 
     internal class ObservableDecimalSum : ObservableAggregate<decimal, decimal, decimal>
     {
+        public override string ToString()
+        {
+            return "[Sum]";
+        }
+
         public ObservableDecimalSum(INotifyEnumerable<decimal> source)
             : base(source, 0)
         {
@@ -371,6 +396,11 @@ namespace NMF.Expressions.Linq
 
     internal class ObservableNullableIntSum : ObservableAggregate<int?, SumData<int>, int?>
     {
+        public override string ToString()
+        {
+            return "[Sum]";
+        }
+
         public ObservableNullableIntSum(INotifyEnumerable<int?> source)
             : base(source, new SumData<int>())
         {
@@ -419,6 +449,11 @@ namespace NMF.Expressions.Linq
 
     internal class ObservableNullableLongSum : ObservableAggregate<long?, SumData<long>, long?>
     {
+        public override string ToString()
+        {
+            return "[Sum]";
+        }
+
         public ObservableNullableLongSum(INotifyEnumerable<long?> source)
             : base(source, new SumData<long>())
         {
@@ -467,6 +502,11 @@ namespace NMF.Expressions.Linq
 
     internal class ObservableNullableFloatSum : ObservableAggregate<float?, SumData<float>, float?>
     {
+        public override string ToString()
+        {
+            return "[Sum]";
+        }
+
         public ObservableNullableFloatSum(INotifyEnumerable<float?> source)
             : base(source, new SumData<float>())
         {
@@ -515,6 +555,11 @@ namespace NMF.Expressions.Linq
 
     internal class ObservableNullableDoubleSum : ObservableAggregate<double?, SumData<double>, double?>
     {
+        public override string ToString()
+        {
+            return "[Sum]";
+        }
+
         public ObservableNullableDoubleSum(INotifyEnumerable<double?> source)
             : base(source, new SumData<double>())
         {
@@ -563,6 +608,11 @@ namespace NMF.Expressions.Linq
 
     internal class ObservableNullableDecimalSum : ObservableAggregate<decimal?, SumData<decimal>, decimal?>
     {
+        public override string ToString()
+        {
+            return "[Sum]";
+        }
+
         public ObservableNullableDecimalSum(INotifyEnumerable<decimal?> source)
             : base(source, new SumData<decimal>())
         {

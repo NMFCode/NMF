@@ -8,6 +8,11 @@ namespace NMF.Expressions.Linq
 {
     internal sealed class ObservableJoin<TOuter, TInner, TKey, TResult> : ObservableEnumerable<TResult>
     {
+        public override string ToString()
+        {
+            return "[Join]";
+        }
+
         private INotifyEnumerable<TOuter> outerSource;
         private IEnumerable<TInner> innerSource;
         private INotifyEnumerable<TInner> observableInnerSource;

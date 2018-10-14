@@ -9,6 +9,11 @@ namespace NMF.Expressions.Linq
 {
     internal sealed class ObservableSelect<TSource, TResult> : ObservableEnumerable<TResult>
     {
+        public override string ToString()
+        {
+            return "[Select]";
+        }
+
         private INotifyEnumerable<TSource> source;
         private ObservingFunc<TSource, TResult> lambda;
         private TaggedObservableValue<TResult, int> nullLambda;

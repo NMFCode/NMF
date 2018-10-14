@@ -7,6 +7,11 @@ namespace NMF.Expressions.Linq
 {
     internal sealed class ObservableProperSubsetOf<T> : ObservableSubsetOf<T>
     {
+        public override string ToString()
+        {
+            return "[ProperSubsetOf]";
+        }
+
         private int diffCount;
 
         public new static INotifyValue<bool> Create(INotifyEnumerable<T> source, IEnumerable<T> other)
@@ -81,6 +86,11 @@ namespace NMF.Expressions.Linq
 
     internal sealed class ObservableProperSupersetOf<T> : ObservableSubsetOf<T>
     {
+        public override string ToString()
+        {
+            return "[ProperSupersetOf]";
+        }
+
         private int diffCount;
 
         public new static INotifyValue<bool> Create(INotifyEnumerable<T> source, IEnumerable<T> other)
