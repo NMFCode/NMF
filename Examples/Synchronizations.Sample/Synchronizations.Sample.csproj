@@ -7,6 +7,10 @@
     <AssemblyName>Synchronizations.Example</AssemblyName>
   </PropertyGroup>
 
+  <PropertyGroup>
+    <LangVersion>latest</LangVersion>
+  </PropertyGroup>
+
   <ItemGroup>
     <None Remove="Families.nmf" />
     <None Remove="Persons.nmf" />
