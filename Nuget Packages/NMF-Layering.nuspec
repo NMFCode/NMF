@@ -18,5 +18,7 @@
     </metadata>
   <files>
     <file src="..\Analysis\Layering\bin\Release\netstandard2.0\NMF.Layering.dll" target="lib\netstandard2.0" />
+    <file src="..\Analysis\Layering\bin\Release\net45\NMF.Layering.dll" target="lib\net45" />
+    <file src="..\Analysis\Layering\bin\Release\net461\NMF.Layering.dll" target="lib\net461" />
   </files>
 </package>

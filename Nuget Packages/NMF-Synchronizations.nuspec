@@ -16,13 +16,14 @@
         <language>en</language>
         <tags>Model-driven; MDE; MDSD;</tags>
         <dependencies>
-            <dependency id="NMF-Expressions" version="$version$" />
-            <dependency id="NMF-Transformations" version="$version$" />
-            <dependency id="NMF-Utilities" version="$version$" />
+            <dependency id="NMF-Expressions" version="[$version$,3.0)" />
+            <dependency id="NMF-Transformations" version="[$version$,3.0)" />
+            <dependency id="NMF-Utilities" version="[$version$,3.0)" />
         </dependencies>
     </metadata>
   <files>
     <file src="..\Synchronizations\Synchronizations\bin\Release\netstandard2.0\NMF.Synchronizations.dll" target="lib\netstandard2.0" />
-    <file src="..\Synchronizations\Net45\Synchronizations.Net45\bin\Release\NMF.Synchronizations.dll" target="lib\net45" />
+    <file src="..\Synchronizations\Synchronizations\bin\Release\net45\NMF.Synchronizations.dll" target="lib\net45" />
+    <file src="..\Synchronizations\Synchronizations\bin\Release\net461\NMF.Synchronizations.dll" target="lib\net461" />
   </files>
 </package>

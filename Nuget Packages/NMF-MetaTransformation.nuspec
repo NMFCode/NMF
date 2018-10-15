@@ -16,14 +16,16 @@
         <language>en</language>
         <tags>Model-driven; MDE; MDSD;</tags>
         <dependencies>
-            <dependency id="NMF-Expressions" version="$version$" />
-            <dependency id="NMF-Transformations" version="$version$" />
-            <dependency id="NMF-Layering" version="$version$" />
-            <dependency id="NMF-Utilities" version="$version$" />
-            <dependency id="NMF-CodeGen" version="$version$" />
+            <dependency id="NMF-Expressions" version="[$version$,3.0)" />
+            <dependency id="NMF-Transformations" version="[$version$,3.0)" />
+            <dependency id="NMF-Layering" version="[$version$,3.0)" />
+            <dependency id="NMF-Utilities" version="[$version$,3.0)" />
+            <dependency id="NMF-CodeGen" version="[$version$,3.0)" />
         </dependencies>
     </metadata>
   <files>
     <file src="..\Transformations\Models.MetaTransformation\bin\Release\netstandard2.0\NMF.Models.MetaTransformation.dll" target="lib\netstandard2.0" />
+    <file src="..\Transformations\Models.MetaTransformation\bin\Release\net45\NMF.Models.MetaTransformation.dll" target="lib\net45" />
+    <file src="..\Transformations\Models.MetaTransformation\bin\Release\net461\NMF.Models.MetaTransformation.dll" target="lib\net461" />
   </files>
 </package>

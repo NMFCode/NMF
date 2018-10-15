@@ -16,9 +16,9 @@
         <language>en</language>
         <tags>Model-driven; MDE; EMF; XMI; MDSD; Ecore</tags>
         <dependencies>
-            <dependency id="NMF-Expressions" version="$version$" />
-            <dependency id="NMF-Repository" version="$version$" />
-            <dependency id="NMF-Basics" version="$version$" />
+            <dependency id="NMF-Expressions" version="[$version$,3.0)" />
+            <dependency id="NMF-Repository" version="[$version$,3.0)" />
+            <dependency id="NMF-Basics" version="[$version$,3.0)" />
         </dependencies>
     </metadata>
   <files>
