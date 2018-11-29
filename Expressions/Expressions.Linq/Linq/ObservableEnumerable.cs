@@ -34,18 +34,18 @@ namespace NMF.Expressions.Linq
             }
         }
 
-        internal void RaiseEvents(IList<T> added, IList<T> removed, IList<T> moved)
+        internal void RaiseEvents(IList<T> added, IList<T> removed, IList<T> moved, int oldItemsStartIndex = 0, int newItemsStartIndex = 0)
         {
             if (added != null && removed != null && added.Count == removed.Count)
             {
-                OnReplaceItems(removed, added);
+                OnReplaceItems(removed, added, newItemsStartIndex);
             }
             else
             {
-                OnRemoveItems(removed);
-                OnAddItems(added);
+                OnRemoveItems(removed, oldItemsStartIndex);
+                OnAddItems(added, newItemsStartIndex);
             }
-            OnMoveItems(moved);
+            OnMoveItems(moved, oldItemsStartIndex, newItemsStartIndex);
         }
 
         [DebuggerStepThrough]

@@ -17,14 +17,18 @@ namespace NMF.Expressions
         IList RemovedItems { get; }
 
         IList MovedItems { get; }
+
+        int OldItemsStartIndex { get; }
+
+        int NewItemsStartIndex { get; }
     }
     public interface ICollectionChangedNotificationResult<T> : ICollectionChangedNotificationResult
     {
         new List<T> AddedItems { get; }
 
-        new List<T> RemovedItems { get; }
-
         new List<T> MovedItems { get; }
+
+        new List<T> RemovedItems { get; }
     }
 
     public class CollectionChangedNotificationResult<T> : ICollectionChangedNotificationResult<T>
@@ -34,8 +38,8 @@ namespace NMF.Expressions
         private INotifiable source;
         private bool isReset;
         private readonly List<T> addedItems = new List<T>();
-        private readonly List<T> removedItems = new List<T>();
         private readonly List<T> movedItems = new List<T>();
+        private readonly List<T> removedItems = new List<T>();
         private int references;
 
         public bool Changed { get { return isReset || addedItems.Count > 0 || removedItems.Count > 0 || movedItems.Count > 0; } }
@@ -46,16 +50,20 @@ namespace NMF.Expressions
 
         public List<T> AddedItems { get { return addedItems; } }
 
-        public List<T> RemovedItems { get { return removedItems; } }
-
         public List<T> MovedItems { get { return movedItems; } }
+
+        public List<T> RemovedItems { get { return removedItems; } }
 
         IList ICollectionChangedNotificationResult.AddedItems { get { return addedItems; } }
 
         IList ICollectionChangedNotificationResult.RemovedItems { get { return removedItems; } }
 
         IList ICollectionChangedNotificationResult.MovedItems { get { return movedItems; } }
-        
+
+        public int OldItemsStartIndex { get; set; } = -1;
+
+        public int NewItemsStartIndex { get; set; } = -1;
+
         private CollectionChangedNotificationResult(INotifiable source, bool isReset)
         {
             this.source = source;
@@ -69,8 +77,10 @@ namespace NMF.Expressions
             {
                 item.source = source;
                 item.addedItems.Clear();
-                item.removedItems.Clear();
                 item.movedItems.Clear();
+                item.removedItems.Clear();
+                item.NewItemsStartIndex = -1;
+                item.OldItemsStartIndex = -1;
                 item.isReset = isReset;
             }
             else
@@ -89,10 +99,37 @@ namespace NMF.Expressions
         {
             var result = Create(newSource);
             result.AddedItems.AddRange(Cast(oldResult.AddedItems));
-            result.RemovedItems.AddRange(Cast(oldResult.RemovedItems));
             result.MovedItems.AddRange(Cast(oldResult.MovedItems));
+            result.RemovedItems.AddRange(Cast(oldResult.RemovedItems));
             result.isReset = oldResult.IsReset;
+            result.NewItemsStartIndex = oldResult.NewItemsStartIndex;
+            result.OldItemsStartIndex = oldResult.OldItemsStartIndex;
             return result;
+        }
+
+
+        public void UpdateOldStartIndex(int startIndex)
+        {
+            if (OldItemsStartIndex == -1)
+            {
+                OldItemsStartIndex = startIndex;
+            }
+            else
+            {
+                OldItemsStartIndex = Math.Min(OldItemsStartIndex, startIndex);
+            }
+        }
+
+        public void UpdateNewStartIndex(int startIndex)
+        {
+            if (NewItemsStartIndex == -1)
+            {
+                NewItemsStartIndex = startIndex;
+            }
+            else
+            {
+                NewItemsStartIndex = Math.Min(NewItemsStartIndex, startIndex);
+            }
         }
 
         private static IEnumerable<T> Cast(IList list)

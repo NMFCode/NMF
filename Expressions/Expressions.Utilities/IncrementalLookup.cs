@@ -307,6 +307,10 @@ namespace NMF.Expressions.Linq
                 get { return MovedItems; }
             }
 
+            public int OldItemsStartIndex => 0;
+
+            public int NewItemsStartIndex => 0;
+
             public void FreeReference()
             {
             }

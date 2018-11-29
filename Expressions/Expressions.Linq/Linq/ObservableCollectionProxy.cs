@@ -51,15 +51,15 @@ namespace NMF.Expressions.Linq
                 {
                     if (backParsed.RemovedItems != null && backParsed.RemovedItems.Count > 0)
                     {
-                        OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Remove, backParsed.RemovedItems));
+                        OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Remove, backParsed.RemovedItems, backParsed.OldItemsStartIndex));
                     }
                     if (backParsed.AddedItems != null && backParsed.AddedItems.Count > 0)
                     {
-                        OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, backParsed.AddedItems));
+                        OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, backParsed.AddedItems, backParsed.NewItemsStartIndex));
                     }
                     if (backParsed.MovedItems != null && backParsed.MovedItems.Count > 0)
                     {
-                        OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Move, backParsed.MovedItems));
+                        OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Move, backParsed.MovedItems, backParsed.NewItemsStartIndex, backParsed.OldItemsStartIndex));
                     }
                 }
             }

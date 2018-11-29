@@ -60,15 +60,38 @@ namespace NMF.Expressions.Linq
                     return notification;
                 }
 
+                var offset = change.Source == source ? 0 : SL.Count(source);
                 if (change.AddedItems != null)
+                {
                     added.AddRange(SL.Cast<TSource>(change.AddedItems));
+                    if (change.NewItemsStartIndex != -1)
+                    {
+                        notification.UpdateNewStartIndex(offset + change.NewItemsStartIndex);
+                    }
+                }
                 if (change.RemovedItems != null)
+                {
                     removed.AddRange(SL.Cast<TSource>(change.RemovedItems));
+                    if (change.OldItemsStartIndex != -1)
+                    {
+                        notification.UpdateOldStartIndex(offset + change.OldItemsStartIndex);
+                    }
+                }
                 if (change.MovedItems != null)
+                {
                     moved.AddRange(SL.Cast<TSource>(change.MovedItems));
+                    if (change.NewItemsStartIndex != -1)
+                    {
+                        notification.UpdateNewStartIndex(offset + change.NewItemsStartIndex);
+                    }
+                    if (change.OldItemsStartIndex != -1)
+                    {
+                        notification.UpdateOldStartIndex(offset + change.OldItemsStartIndex);
+                    }
+                }
             }
 
-            RaiseEvents(added, removed, moved);
+            RaiseEvents(added, removed, moved, notification.OldItemsStartIndex, notification.NewItemsStartIndex);
             return notification;
         }
     }

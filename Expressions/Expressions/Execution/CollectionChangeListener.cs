@@ -60,16 +60,16 @@ namespace NMF.Expressions
             switch (e.Action)
             {
                 case NotifyCollectionChangedAction.Add:
-                    TrackAddAction(e.NewItems);
+                    TrackAddAction(e.NewItems, e.NewStartingIndex);
                     break;
                 case NotifyCollectionChangedAction.Remove:
-                    TrackRemoveAction(e.OldItems);
+                    TrackRemoveAction(e.OldItems, e.OldStartingIndex);
                     break;
                 case NotifyCollectionChangedAction.Move:
-                    TrackMoveAction(e.OldItems);
+                    TrackMoveAction(e.OldItems, e.NewStartingIndex);
                     break;
                 case NotifyCollectionChangedAction.Replace:
-                    TrackReplaceAction(e.OldItems, e.NewItems);
+                    TrackReplaceAction(e.OldItems, e.NewItems, e.NewStartingIndex);
                     break;
                 case NotifyCollectionChangedAction.Reset:
                     TrackResetAction();
@@ -83,7 +83,7 @@ namespace NMF.Expressions
             }
         }
 
-        private void TrackAddAction(IList addedItems)
+        private void TrackAddAction(IList addedItems, int startIndex)
         {
             if (notification.IsReset)
                 return;
@@ -94,9 +94,10 @@ namespace NMF.Expressions
                     notification.AddedItems.Add(item);
                 }
             }
+            notification.UpdateNewStartIndex(startIndex);
         }
 
-        private void TrackRemoveAction(IList removedItems)
+        private void TrackRemoveAction(IList removedItems, int startIndex)
         {
             if (notification.IsReset)
                 return;
@@ -107,17 +108,20 @@ namespace NMF.Expressions
                     this.notification.RemovedItems.Add(item);
                 }
             }
+            notification.UpdateOldStartIndex(startIndex);
         }
 
-        private void TrackMoveAction(IList movedItems)
+        private void TrackMoveAction(IList movedItems, int startIndex)
         {
             if (notification.IsReset)
                 return;
             foreach (T item in movedItems)
                 this.notification.MovedItems.Add(item);
+            notification.UpdateNewStartIndex(startIndex);
+            notification.UpdateOldStartIndex(startIndex);
         }
 
-        private void TrackReplaceAction(IList replacedItems, IList replacingItems)
+        private void TrackReplaceAction(IList replacedItems, IList replacingItems, int startIndex)
         {
             if (notification.IsReset)
                 return;
@@ -136,6 +140,9 @@ namespace NMF.Expressions
                     notification.RemovedItems.Add(item);
                 }
             }
+
+            notification.UpdateOldStartIndex(startIndex);
+            notification.UpdateNewStartIndex(startIndex);
         }
 
         private void TrackResetAction()
