@@ -244,6 +244,7 @@ namespace NMF.Models.Repository
                     }
                 }
             }
+            model.Freeze();
         }
 
         private string MakeRelativePath(string resourceName, string baseResourceName)

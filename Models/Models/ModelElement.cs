@@ -35,7 +35,9 @@ namespace NMF.Models
         {
             Deleting = 1,
             RaiseBubbledChanges = 2,
-            RequireUris = 4
+            RequireUris = 4,
+            Locked = 8,
+            Frozen = 24
         }
 
         internal bool IsFlagSet(ModelElementFlag flag)
@@ -149,6 +151,90 @@ namespace NMF.Models
             }
         }
 
+        /// <summary>
+        /// Freezes this model element such that it becomes immutable.
+        /// </summary>
+        public void Freeze()
+        {
+            if (!IsFlagSet(ModelElementFlag.Frozen))
+            {
+                SetFlag(ModelElementFlag.Frozen);
+                // free event handlers because there will no longer be changes
+                PropertyChanged = null;
+                bubbledChange = null;
+                PropertyChanging = null;
+                foreach (var child in Children)
+                {
+                    child.Freeze();
+                }
+            }
+        }
+
+        /// <summary>
+        /// Locks this model element against any changes (can be undone)
+        /// </summary>
+        public void Lock()
+        {
+            if (!IsFlagSet(ModelElementFlag.Locked))
+            {
+                SetFlag(ModelElementFlag.Locked);
+                foreach (var child in Children)
+                {
+                    child.Lock();   
+                }
+            }
+        }
+
+        public bool IsFrozen => IsFlagSet(ModelElementFlag.Frozen);
+
+        public bool IsLocked => IsFlagSet(ModelElementFlag.Locked);
+
+        /// <summary>
+        /// Unlocks this model element.
+        /// </summary>
+        /// <exception cref="LockedException">thrown if the model element could not be unlocked</exception>
+        public void Unlock()
+        {
+            if (!TryUnlock()) throw new LockedException();
+        }
+
+        /// <summary>
+        /// Tries to unlock the current model element in order to make changes possible
+        /// </summary>
+        /// <returns>True, if unlocking the model element succeeds, otherwise False</returns>
+        public bool TryUnlock()
+        {
+            if (IsFlagSet(ModelElementFlag.Locked))
+            {
+                if (IsFlagSet(ModelElementFlag.Frozen))
+                {
+                    return false;
+                }
+
+                var unlockEventArgs = new UnlockEventArgs(this);
+                OnBubbledChange(BubbledChangeEventArgs.Unlock(this, unlockEventArgs));
+
+                if (unlockEventArgs.MayUnlock)
+                {
+                    UnlockInternal();
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        private void UnlockInternal()
+        {
+            var current = this;
+            while (current != null)
+            {
+                current.UnsetFlag(ModelElementFlag.Locked);
+                current = current.Parent as ModelElement;
+            }
+        }
 
         /// <summary>
         /// Sets the parent for the current model element to the given element
@@ -156,6 +242,7 @@ namespace NMF.Models
         /// <param name="newParent">The new parent for the given element</param>
         private void SetParent(IModelElement newParent)
         {
+            Unlock();
             var newParentME = newParent as ModelElement;
             if (newParentME != parent)
             {
@@ -828,6 +915,7 @@ namespace NMF.Models
         /// <param name="propertyName">The name of the changed property</param>
         protected virtual void OnPropertyChanging(string propertyName, ValueChangedEventArgs e = null, Lazy<ITypedElement> feature = null)
         {
+            Unlock();
             PropertyChanging?.Invoke(this, new PropertyChangingEventArgs(propertyName));
             if (!IsFlagSet(ModelElementFlag.Deleting))
                 OnBubbledChange(BubbledChangeEventArgs.PropertyChanging(this, propertyName, e, IsFlagSet(ModelElementFlag.RequireUris), feature));
@@ -1052,6 +1140,7 @@ namespace NMF.Models
         /// <param name="e">The event data</param>
         protected void OnCollectionChanging(string propertyName, NotifyCollectionChangedEventArgs e, Lazy<ITypedElement> feature = null)
         {
+            Unlock();
             if (!IsFlagSet(ModelElementFlag.Deleting))
                 OnBubbledChange(BubbledChangeEventArgs.CollectionChanging(this, propertyName, e, IsFlagSet(ModelElementFlag.RequireUris), feature));
         }

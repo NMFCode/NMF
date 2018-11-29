@@ -847,5 +847,16 @@ namespace NMF.Models
         {
             return element != null && element.Model != this;
         }
+
+        public event EventHandler<UnlockEventArgs> UnlockRequested;
+
+        protected override void OnBubbledChange(BubbledChangeEventArgs e)
+        {
+            base.OnBubbledChange(e);
+            if (e.ChangeType == ChangeType.UnlockRequest)
+            {
+                UnlockRequested?.Invoke(this, e.OriginalEventArgs as UnlockEventArgs);
+            }
+        }
     }
 }

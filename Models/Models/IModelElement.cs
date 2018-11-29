@@ -163,6 +163,38 @@ namespace NMF.Models
         void SetAttributeValue(IAttribute attribute, object value);
 
         /// <summary>
+        /// Freezes this model element such that it becomes immutable.
+        /// </summary>
+        void Freeze();
+
+        /// <summary>
+        /// Locks this model element against any changes (can be undone)
+        /// </summary>
+        void Lock();
+
+        /// <summary>
+        /// Unlocks this model element.
+        /// </summary>
+        /// <exception cref="LockedException">thrown if the model element could not be unlocked</exception>
+        void Unlock();
+
+        /// <summary>
+        /// Tries to unlock the current model element in order to make changes possible
+        /// </summary>
+        /// <returns>True, if unlocking the model element succeeds, otherwise False</returns>
+        bool TryUnlock();
+
+        /// <summary>
+        /// Determines whether the model elements and all elements underneath are frozen
+        /// </summary>
+        bool IsFrozen { get; }
+
+        /// <summary>
+        /// Determines whether the model elements and all elements underneath are locked
+        /// </summary>
+        bool IsLocked { get; }
+
+        /// <summary>
         /// Gets fired when an elementary change happens in the composition hierarchy rooted at the current element. The original elementary change can be retrieved in the event data
         /// </summary>
         event EventHandler<BubbledChangeEventArgs> BubbledChange;

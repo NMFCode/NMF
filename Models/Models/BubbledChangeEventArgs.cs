@@ -122,6 +122,15 @@ namespace NMF.Models
             };
         }
 
+        internal static BubbledChangeEventArgs Unlock(ModelElement modelElement, UnlockEventArgs unlockEventArgs)
+        {
+            return new BubbledChangeEventArgs(modelElement)
+            {
+                ChangeType = ChangeType.UnlockRequest,
+                OriginalEventArgs = unlockEventArgs
+            };
+        }
+
         /// <summary>
         /// Creates an instance of BubbledChangeEventArgs describing a change in a collection.
         /// </summary>
@@ -243,6 +252,7 @@ namespace NMF.Models
         ElementCreated,
         UriChanged,
         OperationCalling,
-        OperationCalled
+        OperationCalled,
+        UnlockRequest
     }
 }
