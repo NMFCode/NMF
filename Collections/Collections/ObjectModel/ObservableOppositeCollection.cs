@@ -28,21 +28,34 @@ namespace NMF.Collections.ObjectModel
             if (!RequireEvents())
             {
                 SilentClear();
-                foreach (var item in elements)
-                {
-                    SetOpposite(item, default(TParent));
-                }
+                UnsetOpposites(elements);
             }
             else
             {
                 var e = new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset);
                 OnCollectionChanging(e);
                 SilentClear();
-                foreach (var item in elements)
-                {
-                    SetOpposite(item, default(TParent));
-                }
+                UnsetOpposites(elements);
                 OnCollectionChanged(e);
+            }
+        }
+
+        private void UnsetOpposites(TCollected[] elements)
+        {
+            var elementIndex = 0;
+            try
+            {
+                for (elementIndex = 0; elementIndex < elements.Length; elementIndex++)
+                {
+                    SetOpposite(elements[elementIndex], default(TParent));
+                }
+            }
+            catch
+            {
+                for (int i = elementIndex; i < elements.Length; i++)
+                {
+                    SilentAdd(elements[elementIndex]);
+                }
             }
         }
 
@@ -52,7 +65,7 @@ namespace NMF.Collections.ObjectModel
             {
                 if (SilentAdd(item))
                 {
-                    SetOpposite(item, Parent);
+                    TrySetOpposite(item);
                     return true;
                 }
                 return false;
@@ -63,11 +76,24 @@ namespace NMF.Collections.ObjectModel
                 OnCollectionChanging(e);
                 if (SilentAdd(item))
                 {
-                    SetOpposite(item, Parent);
+                    TrySetOpposite(item);
                     OnCollectionChanged(e);
                     return true;
                 }
                 return false;
+            }
+        }
+
+        private void TrySetOpposite(TCollected item)
+        {
+            try
+            {
+                SetOpposite(item, Parent);
+            }
+            catch
+            {
+                SilentRemove(item, Count - 1);
+                throw;
             }
         }
 
@@ -76,14 +102,14 @@ namespace NMF.Collections.ObjectModel
             if (!RequireEvents())
             {
                 SilentInsert(index, item);
-                SetOpposite(item, Parent);
+                TrySetOpposite(item);
             }
             else
             {
                 var e = new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, item, index);
                 OnCollectionChanging(e);
                 SilentInsert(index, item);
-                SetOpposite(item, Parent);
+                TrySetOpposite(item);
                 OnCollectionChanged(e);
             }
         }
@@ -94,7 +120,7 @@ namespace NMF.Collections.ObjectModel
             {
                 if(SilentRemove(item, index))
                 {
-                    SetOpposite(item, default(TParent));
+                    TryUnsetOpposite(item, index);
                     return true;
                 }
                 return false;
@@ -105,11 +131,24 @@ namespace NMF.Collections.ObjectModel
                 OnCollectionChanging(e);
                 if (SilentRemove(item, index))
                 {
-                    SetOpposite(item, default(TParent));
+                    TryUnsetOpposite(item, index);
                     OnCollectionChanged(e);
                     return true;
                 }
                 return false;
+            }
+        }
+
+        private void TryUnsetOpposite(TCollected item, int index)
+        {
+            try
+            {
+                SetOpposite(item, default(TParent));
+            }
+            catch
+            {
+                SilentInsert(index, item);
+                throw;
             }
         }
 
@@ -118,16 +157,32 @@ namespace NMF.Collections.ObjectModel
             if (!RequireEvents())
             {
                 SilentReplace(index, oldValue, newValue);
-                SetOpposite(oldValue, default(TParent));
-                SetOpposite(newValue, Parent);
+                try
+                {
+                    SetOpposite(oldValue, default(TParent));
+                    SetOpposite(newValue, Parent);
+                }
+                catch
+                {
+                    SilentReplace(index, newValue, oldValue);
+                    throw;
+                }
             }
             else
             {
                 var e = new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Replace, newValue, oldValue, index);
                 OnCollectionChanging(e);
                 SilentReplace(index, oldValue, newValue);
-                SetOpposite(oldValue, default(TParent));
-                SetOpposite(newValue, Parent);
+                try
+                {
+                    SetOpposite(oldValue, default(TParent));
+                    SetOpposite(newValue, Parent);
+                }
+                catch
+                {
+                    SilentReplace(index, newValue, oldValue);
+                    throw;
+                }
                 OnCollectionChanged(e);
             }
         }
@@ -153,21 +208,34 @@ namespace NMF.Collections.ObjectModel
             if (!RequireEvents())
             {
                 SilentClear();
-                foreach (var item in elements)
-                {
-                    SetOpposite(item, default(TParent));
-                }
+                UnsetOpposites(elements);
             }
             else
             {
                 var e = new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset);
                 OnCollectionChanging(e);
                 SilentClear();
-                foreach (var item in elements)
-                {
-                    SetOpposite(item, default(TParent));
-                }
+                UnsetOpposites(elements);
                 OnCollectionChanged(e);
+            }
+        }
+
+        private void UnsetOpposites(TCollected[] elements)
+        {
+            var elementIndex = 0;
+            try
+            {
+                for (elementIndex = 0; elementIndex < elements.Length; elementIndex++)
+                {
+                    SetOpposite(elements[elementIndex], default(TParent));
+                }
+            }
+            catch
+            {
+                for (int i = elementIndex; i < elements.Length; i++)
+                {
+                    SilentAdd(elements[elementIndex]);
+                }
             }
         }
 
@@ -248,24 +316,39 @@ namespace NMF.Collections.ObjectModel
                     var e = new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset);
                     OnCollectionChanging(e);
                     Items.Clear();
-                    noModification = true;
-                    foreach (var item in elements)
-                    {
-                        SetOpposite(item, default(TParent));
-                    }
-                    noModification = false;
+                    UnsetOpposites(elements);
                     OnCollectionChanged(e, true);
                 }
                 else
                 {
                     Items.Clear();
-                    noModification = true;
-                    foreach (var item in elements)
-                    {
-                        SetOpposite(item, default(TParent));
-                    }
-                    noModification = false;
+                    UnsetOpposites(elements);
                 }
+            }
+        }
+
+
+        private void UnsetOpposites(TCollected[] elements)
+        {
+            var elementIndex = 0;
+            try
+            {
+                noModification = true;
+                for (elementIndex = 0; elementIndex < elements.Length; elementIndex++)
+                {
+                    SetOpposite(elements[elementIndex], default(TParent));
+                }
+            }
+            catch
+            {
+                for (int i = elementIndex; i < elements.Length; i++)
+                {
+                    Items.Add(elements[elementIndex]);
+                }
+            }
+            finally
+            {
+                noModification = false;
             }
         }
 
@@ -278,18 +361,32 @@ namespace NMF.Collections.ObjectModel
                     var e = new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, item, index);
                     OnCollectionChanging(e);
                     Items.Insert(index, item);
-                    noModification = true;
-                    SetOpposite(item, Parent);
-                    noModification = false;
+                    TrySetOpposite(index, item);
                     OnCollectionChanged(e, true);
                 }
                 else
                 {
                     Items.Insert(index, item);
-                    noModification = true;
-                    SetOpposite(item, Parent);
-                    noModification = false;
+                    TrySetOpposite(index, item);
                 }
+            }
+        }
+
+        private void TrySetOpposite(int index, TCollected item)
+        {
+            try
+            {
+                noModification = true;
+                SetOpposite(item, Parent);
+            }
+            catch
+            {
+                Items.RemoveAt(index);
+                throw;
+            }
+            finally
+            {
+                noModification = false;
             }
         }
 
@@ -303,18 +400,32 @@ namespace NMF.Collections.ObjectModel
                     var e = new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Remove, item, index);
                     OnCollectionChanging(e);
                     Items.RemoveAt(index);
-                    noModification = true;
-                    SetOpposite(item, default(TParent));
-                    noModification = false;
+                    TryUnsetOpposite(index, item);
                     OnCollectionChanged(e, true);
                 }
                 else
                 {
                     Items.RemoveAt(index);
-                    noModification = true;
-                    SetOpposite(item, default(TParent));
-                    noModification = false;
+                    TryUnsetOpposite(index, item);
                 }
+            }
+        }
+
+        private void TryUnsetOpposite(int index, TCollected item)
+        {
+            try
+            {
+                noModification = true;
+                SetOpposite(item, default(TParent));
+            }
+            catch
+            {
+                Items.Insert(index, item);
+                throw;
+            }
+            finally
+            {
+                noModification = false;
             }
         }
 
@@ -328,20 +439,33 @@ namespace NMF.Collections.ObjectModel
                     var e = new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Replace, item, oldItem, index);
                     OnCollectionChanging(e);
                     Items[index] = item;
-                    noModification = true;
-                    SetOpposite(oldItem, default(TParent));
-                    SetOpposite(item, Parent);
-                    noModification = false;
+                    TryReplaceOpposite(index, item, oldItem);
                     OnCollectionChanged(e, false);
                 }
                 else
                 {
                     Items[index] = item;
-                    noModification = true;
-                    SetOpposite(oldItem, default(TParent));
-                    SetOpposite(item, Parent);
-                    noModification = false;
+                    TryReplaceOpposite(index, item, oldItem);
                 }
+            }
+        }
+
+        private void TryReplaceOpposite(int index, TCollected item, TCollected oldItem)
+        {
+            try
+            {
+                noModification = true;
+                SetOpposite(oldItem, default(TParent));
+                SetOpposite(item, Parent);
+            }
+            catch
+            {
+                Items[index] = oldItem;
+                throw;
+            }
+            finally
+            {
+                noModification = false;
             }
         }
     }

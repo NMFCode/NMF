@@ -1,15 +1,16 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>netcoreapp2.0</TargetFramework>
+    <TargetFrameworks>netcoreapp2.0;net461;net471;net45</TargetFrameworks>
     <IsPackable>false</IsPackable>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <AssemblyName>NMF.Expressions.Test</AssemblyName>
     <RootNamespace>NMF.Expressions.Test</RootNamespace>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="15.5.0" />
-    <PackageReference Include="MSTest.TestAdapter" Version="1.2.0" />
-    <PackageReference Include="MSTest.TestFramework" Version="1.2.0" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="15.9.0" />
+    <PackageReference Include="MSTest.TestAdapter" Version="1.4.0" />
+    <PackageReference Include="MSTest.TestFramework" Version="1.4.0" />
+    <PackageReference Include="System.ValueTuple" Version="4.5.0" />
   </ItemGroup>
 
   <ItemGroup>
@@ -43,6 +44,11 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>MethodCallTestsDynamic.tt</DependentUpon>
     </Compile>
+    <Compile Update="TestGenerationSettings.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>TestGenerationSettings.t4</DependentUpon>
+    </Compile>
   </ItemGroup>
 
   <ItemGroup>
@@ -70,6 +76,10 @@
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>MethodCallTestsDynamic.cs</LastGenOutput>
     </None>
+    <None Update="TestGenerationSettings.t4">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>TestGenerationSettings.cs</LastGenOutput>
+    </None>
   </ItemGroup>
 
   <ItemGroup>
@@ -78,14 +88,4 @@
     <ProjectReference Include="..\..\Expressions.Linq\Expressions.Linq.csproj" />
     <ProjectReference Include="..\..\Expressions\Expressions.csproj" />
   </ItemGroup>
-
-  <ItemGroup>
-    <Service Include="{508349b6-6b84-4df5-91f0-309beebad82d}" />
-  </ItemGroup>
-  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
-    <PropertyGroup>
-      <ErrorText>Dieses Projekt verweist auf mindestens ein NuGet-Paket, das auf diesem Computer fehlt. Verwenden Sie die Wiederherstellung von NuGet-Paketen, um die fehlenden Dateien herunterzuladen. Weitere Informationen finden Sie unter "http://go.microsoft.com/fwlink/?LinkID=322105". Die fehlende Datei ist "{0}".</ErrorText>
-    </PropertyGroup>
-    <Error Condition="!Exists('..\..\..\packages\MSTest.TestAdapter.1.2.0\build\netcoreapp1.0\MSTest.TestAdapter.props')" Text="$([System.String]::Format('$(ErrorText)', '..\..\..\packages\MSTest.TestAdapter.1.2.0\build\netcoreapp1.0\MSTest.TestAdapter.props'))" />
-  </Target>
 </Project>

@@ -37,7 +37,7 @@ namespace NMF.CodeGenerationTests
 
                     File.WriteAllText(projectFile, GenerateProjectFile(codeFile));
 
-                    var startInfo = new ProcessStartInfo("MSBuild.exe", projectFile);
+                    var startInfo = new ProcessStartInfo("dotnet.exe", "build " + projectFile);
                     startInfo.CreateNoWindow = true;
                     startInfo.ErrorDialog = false;
                     startInfo.UseShellExecute = false;
