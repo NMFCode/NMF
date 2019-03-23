@@ -60,10 +60,14 @@ namespace NMF.Expressions
                 var node = tuple.Item1;
                 var metaData = node.ExecutionMetaData;
 
+                if (metaData.RemainingVisits == 0)
+                {
+                    continue;
+                }
                 if (metaData.RemainingVisits != tuple.Item2)
                 {
                     int remaining = Interlocked.Add(ref metaData.RemainingVisits, -tuple.Item2);
-                    if (remaining > 0)
+                    if (remaining != 0)
                         continue;
                 }
                 else
@@ -105,6 +109,7 @@ namespace NMF.Expressions
                 }
 
                 metaData.TotalVisits = 0;
+                metaData.RemainingVisits = 0;
             }
         }
 
