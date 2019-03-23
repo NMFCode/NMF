@@ -1094,6 +1094,11 @@ namespace NMF.Models.Meta
                 this.UpperBound = ((int)(value));
                 return;
             }
+            if ((feature == "TYPE"))
+            {
+                ((ITypedElement)(this)).Type = ((IType)(value));
+                return;
+            }
             base.SetFeature(feature, value);
         }
         

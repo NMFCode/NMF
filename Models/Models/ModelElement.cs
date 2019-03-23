@@ -1152,7 +1152,7 @@ namespace NMF.Models
         protected virtual void OnBubbledChange(BubbledChangeEventArgs e)
         {
             bubbledChange?.Invoke(this, e);
-            if (IsFlagSet(ModelElementFlag.RaiseBubbledChanges))
+            if (IsFlagSet(ModelElementFlag.RaiseBubbledChanges) || e.ChangeType == ChangeType.UnlockRequest)
             {
                 var parent = Parent as ModelElement;
                 if (parent != null)

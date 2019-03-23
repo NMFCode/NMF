@@ -31,6 +31,8 @@
     <ProjectReference Include="..\..\Tools\Utilities\Utilities.csproj" />
     <ProjectReference Include="..\Models\Models.csproj" />
     <ProjectReference Include="..\Serialization\Serialization.csproj" />
+    <ProjectReference Include="..\Tests\Models.Tests.MSTest\Models.Tests.MSTest.csproj" />
+    <ProjectReference Include="..\Tests\Models.Tests.Shared\Models.Tests.Shared.csproj" />
   </ItemGroup>
 
   <ItemGroup>
