@@ -16,6 +16,11 @@ namespace NMF.Models
             return new DescendantsCollection(element);
         }
 
+        public static IEnumerableExpression<IModelElement> Ancestors(this IModelElement element)
+        {
+            return new AncestorCollection(element);
+        }
+
         public static void Serialize(this IModelSerializer serializer, IModelElement element, string path)
         {
             Uri uri;
