@@ -21,6 +21,11 @@ namespace NMF.Models
             return new AncestorCollection(element);
         }
 
+        public static IEnumerableExpression<ModelTreeItem> AncestorTree(this IModelElement element)
+        {
+            return new AncestorTreeCollection(element);
+        }
+
         public static void Serialize(this IModelSerializer serializer, IModelElement element, string path)
         {
             Uri uri;
