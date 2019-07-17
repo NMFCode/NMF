@@ -58,11 +58,14 @@ namespace Ecore2Code
         [Option('m', "metamodel", Required=false, HelpText="Specify this argument if you want to serialize the NMeta metamodel possibly generated from Ecore")]
         public string NMeta { get; set; }
 
-        [Option('r', "resolve", Required=false, HelpText="A list of namespace remappings in the syntax URI=file, multiple entries separated by ';'", Separator=';')]
+        [Option('r', "resolve", Required=false, HelpText="A list of namespace remappings with optional code base namespace override in the syntax URI@baseNamespace=file, multiple entries separated by ';'", Separator=';')]
         public IEnumerable<string> NamespaceMappings { get; set; }
 
         [Option('t', "type-mapping", Required = false, HelpText = "A list of type mappings in the syntax <Ecore Instance Class>=<.NET class>, multiple entries separated by ';'", Separator =';')]
         public IEnumerable<string> TypeMappings { get; set; }
+
+        [Option('i', "input-only", HelpText = "If set, generate code for input files only")]
+        public bool InputOnly { get; set; }
     }
 
     public enum SupportedLanguage
@@ -119,17 +122,19 @@ namespace Ecore2Code
 
         private void GenerateCode()
         {
-            var packageTransform = new NMF.Models.Meta.Meta2ClassesTransformation();
+            var packageTransform = new Meta2ClassesTransformation();
             var stopWatch = new Stopwatch();
 
             packageTransform.ForceGeneration = options.Force;
             packageTransform.DefaultNamespace = options.OverallNamespace;
+            packageTransform.GenerateForInputOnly = options.InputOnly;
 
             LoadTypeMappings();
 
-            Dictionary<Uri, string> mappings = LoadNamespaceMappings();
+            Dictionary<Uri, string> fileMappings = new Dictionary<Uri, string>();
+            LoadNamespaceMappings(fileMappings, packageTransform.NamespaceMap);
 
-            var metaPackage = LoadPackageFromFiles(mappings);
+            var metaPackage = LoadPackageFromFiles(fileMappings);
             SetUri(metaPackage);
 
             Model model = metaPackage.Model;
@@ -156,12 +161,10 @@ namespace Ecore2Code
             Console.WriteLine("Code generated successfully!");
         }
 
-        private Dictionary<Uri, string> LoadNamespaceMappings()
+        private void LoadNamespaceMappings(Dictionary<Uri, string> fileMappings, Dictionary<Uri, string> namespaceMappings)
         {
-            Dictionary<Uri, string> mappings = null;
             if (options.NamespaceMappings != null && options.NamespaceMappings.Count() > 0)
             {
-                mappings = new Dictionary<Uri, string>();
                 foreach (var mapping in options.NamespaceMappings)
                 {
                     if (string.IsNullOrEmpty(mapping)) continue;
@@ -171,16 +174,21 @@ namespace Ecore2Code
                         Console.WriteLine("Namespace mapping {0} is missing required separator =", mapping);
                         continue;
                     }
-                    Uri uri;
-                    if (!Uri.TryCreate(mapping.Substring(0, lastIdx), UriKind.Absolute, out uri))
+                    string file = mapping.Substring(lastIdx + 1);
+                    string[] uriNs = mapping.Substring(0, lastIdx).Split(new[] { '@' });
+                    
+                    if (!Uri.TryCreate(uriNs[0], UriKind.Absolute, out Uri uri))
                     {
-                        uri = new Uri(mapping.Substring(0, lastIdx), UriKind.Relative);
+                        uri = new Uri(uriNs[0], UriKind.Relative);
                     }
-                    mappings.Add(uri, mapping.Substring(lastIdx + 1));
+                    fileMappings.Add(uri, file);
+
+                    if (uriNs.Length == 2)
+                    {
+                        namespaceMappings.Add(uri, uriNs[1]);
+                    }
                 }
             }
-
-            return mappings;
         }
 
         private void LoadTypeMappings()

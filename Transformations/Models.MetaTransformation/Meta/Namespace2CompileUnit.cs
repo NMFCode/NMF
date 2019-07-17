@@ -39,7 +39,13 @@ namespace NMF.Models.Meta
                 {
                     foreach (var item in context.Trace.TraceAllIn(ns2ns))
                     {
-                        if (AddToCompileUnit(item.GetInput(0) as INamespace, t))
+                        var ns = item.GetInput(0) as INamespace;
+                        if (ns != input && t.GenerateForInputOnly)
+                        {
+                            continue;
+                        }
+
+                        if (AddToCompileUnit(ns, t))
                         {
                             output.Namespaces.Add(item.Output as CodeNamespace);
                         }

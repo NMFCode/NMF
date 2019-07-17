@@ -48,7 +48,10 @@ namespace NMF.Models.Meta
                     var t = Transformation as Meta2ClassesTransformation;
                     if (t != null)
                     {
-                        baseName = t.DefaultNamespace;
+                        if (!t.NamespaceMap.TryGetValue(input.Uri, out baseName))
+                        {
+                            baseName = t.DefaultNamespace;
+                        }
                     }
                     else
                     {

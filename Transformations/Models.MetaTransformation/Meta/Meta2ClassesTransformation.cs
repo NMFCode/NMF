@@ -233,6 +233,11 @@ namespace NMF.Models.Meta
         }
 
         /// <summary>
+        /// Gets the namespace assigned to a model URI
+        /// </summary>
+        public Dictionary<Uri, string> NamespaceMap { get; } = new Dictionary<Uri, string>();
+
+        /// <summary>
         /// Gets or sets a value indicating whether to separate the class implementations, i.e. create a public interface or not
         /// </summary>
         /// <remarks>This value can only be set before the transformation is initialized</remarks>
@@ -265,5 +270,7 @@ namespace NMF.Models.Meta
                 onlyNested = value;
             }
         }
+
+        public bool GenerateForInputOnly { get; set; }
     }
 }
