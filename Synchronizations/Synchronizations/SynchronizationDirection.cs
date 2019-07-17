@@ -13,7 +13,8 @@ namespace NMF.Synchronizations
         LeftToRightForced,
         RightToLeftForced,
         LeftWins,
-        RightWins
+        RightWins,
+        CheckOnly
     }
 
     public static class SynchronizationDirectionExtensions

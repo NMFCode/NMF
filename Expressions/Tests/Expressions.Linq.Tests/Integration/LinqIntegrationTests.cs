@@ -70,7 +70,7 @@ namespace NMF.Expressions.Linq.Tests.Integration
         public void SelectManyWithAverage1()
         {
             var updates = 0;
-            var coll = new NotifyCollection<TestItem>();
+            INotifyCollection<TestItem> coll = new NotifyCollection<TestItem>();
 
             var query = from item in coll
                         group item by item.Team into team
@@ -107,7 +107,7 @@ namespace NMF.Expressions.Linq.Tests.Integration
         public void SelectManyWithAverage2()
         {
             var updates = 0;
-            var coll = new NotifyCollection<TestItem>();
+            INotifyCollection<TestItem> coll = new NotifyCollection<TestItem>();
 
             var query = from item in coll
                         group item by item.Team into team

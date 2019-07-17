@@ -113,6 +113,11 @@ namespace NMF.Synchronizations.Example.PN
             if (PropertyChanged != null) PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
         }
 
+        public override string ToString()
+        {
+            return $"Place {Id}";
+        }
+
         public event PropertyChangedEventHandler PropertyChanged;
     }
 
@@ -153,7 +158,12 @@ namespace NMF.Synchronizations.Example.PN
                 return string.Format("[{0}] --({1})-> [{2}]", start, input, end);
             }
         }
-        
+
+        public override string ToString()
+        {
+            return Representation;
+        }
+
 
         public Transition()
         {
@@ -184,6 +194,11 @@ namespace NMF.Synchronizations.Example.PN
                 item.To.Remove(Parent);
             }
         }
+
+        public override string ToString()
+        {
+            return $"incoming transitions for {Parent}";
+        }
     }
 
     public class PlaceOutgoingCollection : ObservableOppositeSet<Place, Transition>
@@ -200,6 +215,11 @@ namespace NMF.Synchronizations.Example.PN
             {
                 item.From.Remove(Parent);
             }
+        }
+
+        public override string ToString()
+        {
+            return $"outgoing transitions for {Parent}";
         }
     }
 
@@ -218,6 +238,11 @@ namespace NMF.Synchronizations.Example.PN
                 item.Outgoing.Remove(Parent);
             }
         }
+
+        public override string ToString()
+        {
+            return $"source places of {Parent}";
+        }
     }
 
     public class TransitionToCollection : ObservableOppositeSet<Transition, Place>
@@ -235,6 +260,11 @@ namespace NMF.Synchronizations.Example.PN
                 item.Incoming.Remove(Parent);
             }
         }
+
+        public override string ToString()
+        {
+            return $"target places of {Parent}";
+        }
     }
 
     public class PetriNetTransitionCollection : ObservableOppositeSet<PetriNet, Transition>
@@ -251,6 +281,11 @@ namespace NMF.Synchronizations.Example.PN
                 item.To.Clear();
             }
         }
+
+        public override string ToString()
+        {
+            return $"transitions of {Parent}";
+        }
     }
 
     public class PetriNetPlacesCollection : ObservableOppositeSet<PetriNet, Place>
@@ -266,6 +301,11 @@ namespace NMF.Synchronizations.Example.PN
                 item.Incoming.Clear();
                 item.Outgoing.Clear();
             }
+        }
+
+        public override string ToString()
+        {
+            return $"places of {Parent}";
         }
     }
 

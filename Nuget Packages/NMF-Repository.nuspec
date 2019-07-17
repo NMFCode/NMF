@@ -18,17 +18,15 @@
         <dependencies>
             <dependency id="NMF-Expressions" version="[$version$,3.0)" />
             <dependency id="NMF-Utilities" version="[$version$,3.0)" />
+            <dependency id="NMF-Collections" version="[$version$,3.0)" />
         </dependencies>
     </metadata>
   <files>
     <file src="..\Models\Models\bin\Release\netstandard2.0\NMF.Serialization.dll" target="lib\netstandard2.0" />
-    <file src="..\Models\Models\bin\Release\netstandard2.0\NMF.Collections.dll" target="lib\netstandard2.0" />
     <file src="..\Models\Models\bin\Release\netstandard2.0\NMF.Models.dll" target="lib\netstandard2.0" />
     <file src="..\Models\Models\bin\Release\net45\NMF.Serialization.dll" target="lib\net45" />
-    <file src="..\Models\Models\bin\Release\net45\NMF.Collections.dll" target="lib\net45" />
     <file src="..\Models\Models\bin\Release\net45\NMF.Models.dll" target="lib\net45" />
     <file src="..\Models\Models\bin\Release\net461\NMF.Serialization.dll" target="lib\net461" />
-    <file src="..\Models\Models\bin\Release\net461\NMF.Collections.dll" target="lib\net461" />
     <file src="..\Models\Models\bin\Release\net461\NMF.Models.dll" target="lib\net461" />
   </files>
 </package>

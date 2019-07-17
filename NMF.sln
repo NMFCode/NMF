@@ -150,6 +150,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "NuSpec", "NuSpec", "{E671CC
 	ProjectSection(SolutionItems) = preProject
 		Nuget Packages\NMF-Basics.nuspec = Nuget Packages\NMF-Basics.nuspec
 		Nuget Packages\NMF-CodeGen.nuspec = Nuget Packages\NMF-CodeGen.nuspec
+		Nuget Packages\NMF-Collections.nuspec = Nuget Packages\NMF-Collections.nuspec
 		Nuget Packages\NMF-Expressions-Debug.nuspec = Nuget Packages\NMF-Expressions-Debug.nuspec
 		Nuget Packages\NMF-Expressions-Utilities.nuspec = Nuget Packages\NMF-Expressions-Utilities.nuspec
 		Nuget Packages\NMF-Expressions.nuspec = Nuget Packages\NMF-Expressions.nuspec
@@ -165,11 +166,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "NuSpec", "NuSpec", "{E671CC
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Expressions.Debug", "Expressions\Expressions.Debug\Expressions.Debug.csproj", "{C7C0E256-E81D-42BE-97EA-8222540093C2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Models.Tests.Shared", "Models\Tests\Models.Tests.Shared\Models.Tests.Shared.csproj", "{BA796E48-E727-4E45-B416-D4461ABFF168}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Models.Tests.Shared", "Models\Tests\Models.Tests.Shared\Models.Tests.Shared.csproj", "{BA796E48-E727-4E45-B416-D4461ABFF168}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Models.Tests.MSTest", "Models\Tests\Models.Tests.MSTest\Models.Tests.MSTest.csproj", "{C445E47E-BF24-4CFF-8A4C-6EE673BF4042}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Models.Tests.MSTest", "Models\Tests\Models.Tests.MSTest\Models.Tests.MSTest.csproj", "{C445E47E-BF24-4CFF-8A4C-6EE673BF4042}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Models.Tests.NUnit", "Models\Tests\Models.Tests.NUnit\Models.Tests.NUnit.csproj", "{804C236B-E8EA-4F86-A4E5-08AAE244B613}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Models.Tests.NUnit", "Models\Tests\Models.Tests.NUnit\Models.Tests.NUnit.csproj", "{804C236B-E8EA-4F86-A4E5-08AAE244B613}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

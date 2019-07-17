@@ -8,7 +8,7 @@ using System.Text;
 
 namespace NMF.Expressions
 {
-    public class NotifyCollection<T> : ObservableCollection<T>, INotifyEnumerable<T>, INotifyCollection<T>
+    public class NotifyCollection<T> : ObservableCollection<T>, INotifyEnumerable<T>, INotifyCollection<T>, ICollectionExpression<T>
     {
         private readonly CollectionChangeListener<T> listener;
 
@@ -49,6 +49,21 @@ namespace NMF.Expressions
         private void Detach()
         {
             listener.Unsubscribe();
+        }
+
+        INotifyCollection<T> ICollectionExpression<T>.AsNotifiable()
+        {
+            return this;
+        }
+
+        INotifyEnumerable<T> IEnumerableExpression<T>.AsNotifiable()
+        {
+            return this;
+        }
+
+        INotifyEnumerable IEnumerableExpression.AsNotifiable()
+        {
+            return this;
         }
     }
 }

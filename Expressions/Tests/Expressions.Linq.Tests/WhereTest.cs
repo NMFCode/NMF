@@ -242,7 +242,7 @@ namespace NMF.Expressions.Linq.Tests
 
                 var update = false;
                 var dummy1 = new ObservableDummy<bool>(true);
-                var coll = new NotifyCollection<Dummy<bool>>() { dummy1 };
+                INotifyCollection<Dummy<bool>> coll = new NotifyCollection<Dummy<bool>>() { dummy1 };
 
                 var test = coll.Where(d => d.Item);
 

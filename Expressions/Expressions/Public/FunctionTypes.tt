@@ -234,6 +234,12 @@ public partial class ObservingFunc<<# for (int j = 1; j <= i; j++) { #>T<#= j #>
                 return reversable != null && reversable.IsReversable;
             }
         }
+
+		/// <inheritdoc cref="object" />
+		public override string ToString()
+		{
+		    return expression.ToString();
+		}
     }
 <#
     } 

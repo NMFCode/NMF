@@ -331,7 +331,7 @@ namespace NMF.Expressions.Linq.Tests
         {
             var update = false;
 
-            var coll = new NotifyCollection<int>() { 1, 2, 3, 4, 5, 6 };
+            INotifyCollection<int> coll = new NotifyCollection<int>() { 1, 2, 3, 4, 5, 6 };
 
             var test = coll.GroupBy(i => i % 3);
 

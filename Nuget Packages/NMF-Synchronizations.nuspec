@@ -19,6 +19,7 @@
             <dependency id="NMF-Expressions" version="[$version$,3.0)" />
             <dependency id="NMF-Transformations" version="[$version$,3.0)" />
             <dependency id="NMF-Utilities" version="[$version$,3.0)" />
+            <dependency id="NMF-Collections" version="[$version$,3.0)" />
         </dependencies>
     </metadata>
   <files>

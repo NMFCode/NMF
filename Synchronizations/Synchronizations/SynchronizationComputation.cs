@@ -9,10 +9,6 @@ using NMF.Expressions;
 
 namespace NMF.Synchronizations
 {
-    internal interface IOutputAccept<in T>
-    {
-        void AcceptNewOutput(T value);
-    }
 
     public abstract class SynchronizationComputation<TIn, TOut> : Computation, INotifyValue<TOut>, IOutputAccept<TOut>
         where TIn : class

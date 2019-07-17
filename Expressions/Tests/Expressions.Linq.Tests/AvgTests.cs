@@ -948,7 +948,7 @@ namespace NMF.Expressions.Linq.Tests
         public void IntAverage_ObservableSourceReset_Update()
         {
             var update = false;
-            var coll = new NotifyCollection<int>() { 1, 2, 3 };
+            INotifyCollection<int> coll = new NotifyCollection<int>() { 1, 2, 3 };
 
             var test = Observable.Expression(() => coll.Average());
 
@@ -978,7 +978,7 @@ namespace NMF.Expressions.Linq.Tests
         public void NullableIntAverage_ObservableSourceReset_Update()
         {
             var update = false;
-            var coll = new NotifyCollection<int?>() { 1, 2, null, 3 };
+            INotifyCollection<int?> coll = new NotifyCollection<int?>() { 1, 2, null, 3 };
 
             var test = Observable.Expression(() => coll.Average());
 
@@ -1008,7 +1008,7 @@ namespace NMF.Expressions.Linq.Tests
         public void LambdaIntAverage_ObservableSourceReset_Update()
         {
             var update = false;
-            var coll = new NotifyCollection<Dummy<int>>() { 1, 2, 3 };
+            INotifyCollection<Dummy<int>> coll = new NotifyCollection<Dummy<int>>() { 1, 2, 3 };
 
             var test = Observable.Expression(() => coll.Average(d => d.Item));
 
@@ -1038,7 +1038,7 @@ namespace NMF.Expressions.Linq.Tests
         public void LambdaNullableIntAverage_ObservableSourceReset_Update()
         {
             var update = false;
-            var coll = new NotifyCollection<Dummy<int?>>() { 1, 2, new Dummy<int?>(), 3 };
+            INotifyCollection<Dummy<int?>> coll = new NotifyCollection<Dummy<int?>>() { 1, 2, new Dummy<int?>(), 3 };
 
             var test = Observable.Expression(() => coll.Average(d => d.Item));
 

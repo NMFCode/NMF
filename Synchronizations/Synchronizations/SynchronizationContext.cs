@@ -1,4 +1,7 @@
-﻿using NMF.Transformations;
+﻿using NMF.Collections.ObjectModel;
+using NMF.Expressions;
+using NMF.Synchronizations.Inconsistencies;
+using NMF.Transformations;
 using NMF.Transformations.Core;
 using System;
 using System.Collections.Generic;
@@ -10,24 +13,24 @@ namespace NMF.Synchronizations
 {
     public class SynchronizationContext : TransformationContext, ISynchronizationContext
     {
-        private SynchronizationDirection direction;
-        private ChangePropagationMode changePropagation;
-
         public SynchronizationContext(Synchronization synchronization, SynchronizationDirection direction, ChangePropagationMode changePropagation)
             : base(synchronization)
         {
-            this.direction = direction;
-            this.changePropagation = changePropagation;
+            Direction = direction;
+            ChangePropagation = changePropagation;
+            Inconsistencies = new ObservableSet<IInconsistency>();
         }
 
         public SynchronizationDirection Direction
         {
-            get { return direction; }
+            get; set;
         }
 
         public ChangePropagationMode ChangePropagation
         {
-            get { return changePropagation; }
+            get;
         }
+
+        public ICollectionExpression<IInconsistency> Inconsistencies { get; }
     }
 }

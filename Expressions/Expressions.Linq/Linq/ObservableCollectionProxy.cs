@@ -1,15 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 
 namespace NMF.Expressions.Linq
 {
+    [DebuggerDisplay("proxy for {Inner}")]
     internal sealed class ObservableCollectionProxy<T> : ObservableEnumerable<T>, INotifyCollection<T>
     {
         private readonly CollectionChangeListener<T> listener;
-        private IEnumerable<T> inner;
+        public IEnumerable<T> Inner { get; }
 
         public override IEnumerable<INotifiable> Dependencies { get { return Enumerable.Empty<INotifiable>(); } }
 
@@ -17,18 +19,18 @@ namespace NMF.Expressions.Linq
         {
             if (inner == null) throw new ArgumentNullException("inner");
 
-            this.inner = inner;
-            this.listener = new CollectionChangeListener<T>(this);
+            Inner = inner;
+            listener = new CollectionChangeListener<T>(this);
         }
 
         public override IEnumerator<T> GetEnumerator()
         {
-            return inner.GetEnumerator();
+            return Inner.GetEnumerator();
         }
 
         protected override void OnAttach()
         {
-            var notifiable = inner as INotifyCollectionChanged;
+            var notifiable = Inner as INotifyCollectionChanged;
             if (notifiable != null)
                 listener.Subscribe(notifiable);
         }
@@ -68,27 +70,32 @@ namespace NMF.Expressions.Linq
 
         public override bool Contains(T item)
         {
-            return inner.Contains(item);
+            return Inner.Contains(item);
         }
 
         public override int Count
         {
             get
             {
-                return inner.Count();
+                return Inner.Count();
             }
+        }
+
+        public override string ToString()
+        {
+            return Inner.ToString();
         }
 
         void ICollection<T>.Add(T item)
         {
-            var coll = inner as ICollection<T>;
+            var coll = Inner as ICollection<T>;
             if (coll == null || coll.IsReadOnly) throw new InvalidOperationException("Source is not a collection or is read-only");
             coll.Add(item);
         }
 
         void ICollection<T>.Clear()
         {
-            var coll = inner as ICollection<T>;
+            var coll = Inner as ICollection<T>;
             if (coll == null || coll.IsReadOnly) throw new InvalidOperationException("Source is not a collection or is read-only");
             var list = new List<T>(this);
             if (list.Count == coll.Count)
@@ -108,14 +115,14 @@ namespace NMF.Expressions.Linq
         {
             get
             {
-                var collection = inner as ICollection<T>;
+                var collection = Inner as ICollection<T>;
                 return collection == null || collection.IsReadOnly;
             }
         }
 
         bool ICollection<T>.Remove(T item)
         {
-            var coll = inner as ICollection<T>;
+            var coll = Inner as ICollection<T>;
             if (coll == null || coll.IsReadOnly) throw new InvalidOperationException("Source is not a collection or is read-only");
             return coll.Remove(item);
         }

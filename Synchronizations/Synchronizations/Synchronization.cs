@@ -90,6 +90,11 @@ namespace NMF.Synchronizations
                     var c2 = TransformationRunner.Transform(new object[] { right }, left != null ? new Axiom(left) : null, startRule.RightToLeft, context);
                     left = c2.Output as TLeft;
                     break;
+                case SynchronizationDirection.CheckOnly:
+                    if (left == null) throw new ArgumentException("Passed model must not be null when running in check-only mode", nameof(left));
+                    if (right == null) throw new ArgumentException("Passed model must not be null when running in check-only mode", nameof(right));
+                    TransformationRunner.Transform(new object[] { left }, new Axiom(right), startRule.LeftToRight, context);
+                    break;
                 default:
                     throw new ArgumentOutOfRangeException("direction");
             }
@@ -119,26 +124,6 @@ namespace NMF.Synchronizations
                     throw new ArgumentOutOfRangeException("direction");
             }
             return context;
-        }
-    }
-
-    internal class Axiom : IEnumerable
-    {
-        private object obj;
-
-        public Axiom(object obj)
-        {
-            this.obj = obj;
-        }
-
-        public object Object
-        {
-            get { return obj; }
-        }
-
-        public IEnumerator GetEnumerator()
-        {
-            return Enumerable.Repeat(obj, 1).GetEnumerator();
         }
     }
 }

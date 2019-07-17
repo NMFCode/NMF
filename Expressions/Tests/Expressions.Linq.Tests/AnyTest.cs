@@ -147,7 +147,7 @@ namespace NMF.Expressions.Linq.Tests
         public void Any_ObservableSourceReset_Update()
         {
             var update = false;
-            var coll = new NotifyCollection<int>() { 1, 2, 3 };
+            INotifyCollection<int> coll = new NotifyCollection<int>() { 1, 2, 3 };
 
             var test = Observable.Expression(() => coll.Any());
 
@@ -297,7 +297,7 @@ namespace NMF.Expressions.Linq.Tests
         public void LambdaAny_ObservableSourceReset_Update()
         {
             var update = false;
-            var coll = new NotifyCollection<int>() { 1, 2, 3 };
+            INotifyCollection<int> coll = new NotifyCollection<int>() { 1, 2, 3 };
 
             var test = Observable.Expression(() => coll.Any(i => i > 0));
 

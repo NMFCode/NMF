@@ -135,6 +135,11 @@ namespace NMF.Synchronizations.Example.FSM
 
 
         public event PropertyChangedEventHandler PropertyChanged;
+
+        public override string ToString()
+        {
+            return $"State {Name}";
+        }
     }
 
     [DebuggerDisplay("{Representation}")]
@@ -219,6 +224,11 @@ namespace NMF.Synchronizations.Example.FSM
             }
         }
 
+        public override string ToString()
+        {
+            return Representation;
+        }
+
         protected void OnPropertyChanged(string propertyName)
         {
             if (PropertyChanged != null) PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
@@ -234,6 +244,11 @@ namespace NMF.Synchronizations.Example.FSM
         protected override void SetOpposite(Transition item, State newParent)
         {
             item.StartState = newParent;
+        }
+
+        public override string ToString()
+        {
+            return $"transitions of {Parent}";
         }
     }
 

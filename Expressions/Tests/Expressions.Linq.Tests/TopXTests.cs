@@ -12,7 +12,7 @@ namespace NMF.Expressions.Linq.Tests
         [TestMethod]
         public void TopX_NoObservable_CorrectResult()
         {
-            var collection = new NotifyCollection<Dummy<int>>();
+            INotifyCollection<Dummy<int>> collection = new NotifyCollection<Dummy<int>>();
             var top1 = new Dummy<int>(43);
             var top2 = new Dummy<int>(42);
             var top3 = new Dummy<int>(30);
@@ -40,7 +40,7 @@ namespace NMF.Expressions.Linq.Tests
         [TestMethod]
         public void TopX_NoChanges_CorrectResult()
         {
-            var collection = new NotifyCollection<Dummy<int>>();
+            INotifyCollection<Dummy<int>> collection = new NotifyCollection<Dummy<int>>();
             var top1 = new Dummy<int>(43);
             var top2 = new Dummy<int>(42);
             var top3 = new Dummy<int>(30);
@@ -70,7 +70,7 @@ namespace NMF.Expressions.Linq.Tests
         [TestMethod]
         public void TopX_Insert_CorrectResult()
         {
-            var collection = new NotifyCollection<Dummy<int>>();
+            INotifyCollection<Dummy<int>> collection = new NotifyCollection<Dummy<int>>();
             var top1 = new Dummy<int>(43);
             var top2 = new Dummy<int>(42);
             var top3 = new Dummy<int>(30);
@@ -113,7 +113,7 @@ namespace NMF.Expressions.Linq.Tests
         [TestMethod]
         public void TopX_EmptyMultipleAdd_CorrectResult()
         {
-            var collection = new NotifyCollection<Dummy<int>>();
+            INotifyCollection<Dummy<int>> collection = new NotifyCollection<Dummy<int>>();
             var top1 = new Dummy<int>(43);
             var top2 = new Dummy<int>(42);
             var top3 = new Dummy<int>(30);
@@ -164,6 +164,7 @@ namespace NMF.Expressions.Linq.Tests
         public void TopX_Remove_CorrectResult()
         {
             var collection = new NotifyCollection<Dummy<int>>();
+            var collCasted = (INotifyCollection<Dummy<int>>)collection;
             var top1 = new Dummy<int>(43);
             var top2 = new Dummy<int>(42);
             var top3 = new Dummy<int>(30);
@@ -173,7 +174,7 @@ namespace NMF.Expressions.Linq.Tests
             collection.Add(new Dummy<int>(23));
             collection.Add(new Dummy<int>(6));
 
-            var topEx = Observable.Expression(() => collection.TopX(3, d => d.Item));
+            var topEx = Observable.Expression(() => collCasted.TopX(3, d => d.Item));
             var top = topEx.Value;
 
             Assert.AreEqual(top1, top[0].Key);
@@ -207,7 +208,7 @@ namespace NMF.Expressions.Linq.Tests
         [TestMethod]
         public void TopX_Clear_CorrectResult()
         {
-            var collection = new NotifyCollection<Dummy<int>>();
+            INotifyCollection<Dummy<int>> collection = new NotifyCollection<Dummy<int>>();
             var top1 = new Dummy<int>(43);
             var top2 = new Dummy<int>(42);
             var top3 = new Dummy<int>(30);
@@ -243,7 +244,7 @@ namespace NMF.Expressions.Linq.Tests
         [TestMethod]
         public void TopX_Change_CorrectResult()
         {
-            var collection = new NotifyCollection<Dummy<int>>();
+            INotifyCollection<Dummy<int>> collection = new NotifyCollection<Dummy<int>>();
             var top1 = new ObservableDummy<int>(43);
             var top2 = new ObservableDummy<int>(42);
             var top3 = new ObservableDummy<int>(3);

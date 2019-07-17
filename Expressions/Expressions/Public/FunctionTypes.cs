@@ -153,6 +153,12 @@ namespace NMF.Expressions
                 return reversable != null && reversable.IsReversable;
             }
         }
+
+		/// <inheritdoc cref="object" />
+		public override string ToString()
+		{
+		    return expression.ToString();
+		}
     }
     /// <summary>
     /// Represents an observable expression with 2 input parameters
@@ -351,6 +357,12 @@ namespace NMF.Expressions
                 return reversable != null && reversable.IsReversable;
             }
         }
+
+		/// <inheritdoc cref="object" />
+		public override string ToString()
+		{
+		    return expression.ToString();
+		}
     }
     /// <summary>
     /// Represents an observable expression with 3 input parameters
@@ -601,6 +613,12 @@ namespace NMF.Expressions
                 return reversable != null && reversable.IsReversable;
             }
         }
+
+		/// <inheritdoc cref="object" />
+		public override string ToString()
+		{
+		    return expression.ToString();
+		}
     }
     /// <summary>
     /// Represents an observable expression with 4 input parameters
@@ -907,6 +925,12 @@ namespace NMF.Expressions
                 return reversable != null && reversable.IsReversable;
             }
         }
+
+		/// <inheritdoc cref="object" />
+		public override string ToString()
+		{
+		    return expression.ToString();
+		}
     }
     /// <summary>
     /// Represents an observable expression with 5 input parameters
@@ -1273,6 +1297,12 @@ namespace NMF.Expressions
                 return reversable != null && reversable.IsReversable;
             }
         }
+
+		/// <inheritdoc cref="object" />
+		public override string ToString()
+		{
+		    return expression.ToString();
+		}
     }
     /// <summary>
     /// Represents an observable expression with 6 input parameters
@@ -1703,6 +1733,12 @@ namespace NMF.Expressions
                 return reversable != null && reversable.IsReversable;
             }
         }
+
+		/// <inheritdoc cref="object" />
+		public override string ToString()
+		{
+		    return expression.ToString();
+		}
     }
     /// <summary>
     /// Represents an observable expression with 7 input parameters
@@ -2201,6 +2237,12 @@ namespace NMF.Expressions
                 return reversable != null && reversable.IsReversable;
             }
         }
+
+		/// <inheritdoc cref="object" />
+		public override string ToString()
+		{
+		    return expression.ToString();
+		}
     }
     /// <summary>
     /// Represents an observable expression with 8 input parameters
@@ -2771,6 +2813,12 @@ namespace NMF.Expressions
                 return reversable != null && reversable.IsReversable;
             }
         }
+
+		/// <inheritdoc cref="object" />
+		public override string ToString()
+		{
+		    return expression.ToString();
+		}
     }
     /// <summary>
     /// Represents an observable expression with 9 input parameters
@@ -3417,6 +3465,12 @@ namespace NMF.Expressions
                 return reversable != null && reversable.IsReversable;
             }
         }
+
+		/// <inheritdoc cref="object" />
+		public override string ToString()
+		{
+		    return expression.ToString();
+		}
     }
     /// <summary>
     /// Represents an observable expression with 10 input parameters
@@ -4143,6 +4197,12 @@ namespace NMF.Expressions
                 return reversable != null && reversable.IsReversable;
             }
         }
+
+		/// <inheritdoc cref="object" />
+		public override string ToString()
+		{
+		    return expression.ToString();
+		}
     }
     /// <summary>
     /// Represents an observable expression with 11 input parameters
@@ -4953,6 +5013,12 @@ namespace NMF.Expressions
                 return reversable != null && reversable.IsReversable;
             }
         }
+
+		/// <inheritdoc cref="object" />
+		public override string ToString()
+		{
+		    return expression.ToString();
+		}
     }
     /// <summary>
     /// Represents an observable expression with 12 input parameters
@@ -5851,6 +5917,12 @@ namespace NMF.Expressions
                 return reversable != null && reversable.IsReversable;
             }
         }
+
+		/// <inheritdoc cref="object" />
+		public override string ToString()
+		{
+		    return expression.ToString();
+		}
     }
     /// <summary>
     /// Represents an observable expression with 13 input parameters
@@ -6841,6 +6913,12 @@ namespace NMF.Expressions
                 return reversable != null && reversable.IsReversable;
             }
         }
+
+		/// <inheritdoc cref="object" />
+		public override string ToString()
+		{
+		    return expression.ToString();
+		}
     }
     /// <summary>
     /// Represents an observable expression with 14 input parameters
@@ -7927,6 +8005,12 @@ namespace NMF.Expressions
                 return reversable != null && reversable.IsReversable;
             }
         }
+
+		/// <inheritdoc cref="object" />
+		public override string ToString()
+		{
+		    return expression.ToString();
+		}
     }
     /// <summary>
     /// Represents an observable expression with 15 input parameters
@@ -9113,5 +9197,11 @@ namespace NMF.Expressions
                 return reversable != null && reversable.IsReversable;
             }
         }
+
+		/// <inheritdoc cref="object" />
+		public override string ToString()
+		{
+		    return expression.ToString();
+		}
     }
 }

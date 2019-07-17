@@ -1,4 +1,6 @@
-﻿using NMF.Transformations;
+﻿using NMF.Expressions;
+using NMF.Synchronizations.Inconsistencies;
+using NMF.Transformations;
 using NMF.Transformations.Core;
 using System;
 using System.Collections.Generic;
@@ -10,8 +12,10 @@ namespace NMF.Synchronizations
 {
     public interface ISynchronizationContext : ITransformationContext
     {
-        SynchronizationDirection Direction { get; }
+        SynchronizationDirection Direction { get; set; }
 
         ChangePropagationMode ChangePropagation { get; }
+
+        ICollectionExpression<IInconsistency> Inconsistencies { get; }
     }
 }

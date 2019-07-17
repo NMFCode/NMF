@@ -1,4 +1,5 @@
 ﻿using NMF.Expressions;
+using NMF.Synchronizations.Inconsistencies;
 using NMF.Transformations;
 using NMF.Transformations.Core;
 using System;
@@ -17,12 +18,12 @@ namespace NMF.Synchronizations
         where TDepRight : class
     {
         private SynchronizationRule<TLeft, TRight> parentRule;
-        private SynchronizationRule<TDepLeft, TDepRight> childRule;
+        internal SynchronizationRule<TDepLeft, TDepRight> childRule;
 
-        private Func<TLeft, TDepLeft> leftGetter;
-        private Func<TRight, TDepRight> rightGetter;
-        private Action<TRight, TDepRight> rightSetter;
-        private Action<TLeft, TDepLeft> leftSetter;
+        internal Func<TLeft, TDepLeft> leftGetter;
+        internal Func<TRight, TDepRight> rightGetter;
+        internal Action<TRight, TDepRight> rightSetter;
+        internal Action<TLeft, TDepLeft> leftSetter;
 
         private ObservingFunc<TLeft, TDepLeft> leftFunc;
         private ObservingFunc<TRight, TDepRight> rightFunc;
@@ -159,7 +160,7 @@ namespace NMF.Synchronizations
             Action<TRight, TDepRight> rightSetter = (r, val) => right.Value = val;
             CallLTRTransformationForInput(syncComputation, syncComputation.SynchronizationContext.Direction,
                 left.Value, right.Value, leftSetter, rightSetter);
-            return new TwoWaySynchronization(left, right, syncComputation, this);
+            return new IncrementalReferenceConsistencyCheck<TLeft, TRight, TDepLeft, TDepRight>(left, right, syncComputation, this);
         }
 
         private IDisposable HandleTwoWayRTLSynchronization(SynchronizationComputation<TRight, TLeft> syncComputation)
@@ -172,76 +173,7 @@ namespace NMF.Synchronizations
             Action<TRight, TDepRight> rightSetter = (r, val) => right.Value = val;
             CallRTLTransformationForInput(syncComputation, syncComputation.SynchronizationContext.Direction,
                 right.Value, left.Value, leftSetter, rightSetter);
-            return new TwoWaySynchronization(left, right, syncComputation.Opposite, this);
-        }
-
-        private class TwoWaySynchronization : IDisposable
-        {
-            public INotifyReversableValue<TDepLeft> Left { get; private set; }
-            public INotifyReversableValue<TDepRight> Right { get; private set; }
-            public SynchronizationSingleDependency<TLeft, TRight, TDepLeft, TDepRight> Parent { get; private set; }
-            public SynchronizationComputation<TLeft, TRight> Computation { get; private set; }
-
-            private bool isProcessingChange = false;
-
-            public TwoWaySynchronization(INotifyReversableValue<TDepLeft> left, INotifyReversableValue<TDepRight> right, SynchronizationComputation<TLeft, TRight> computation, SynchronizationSingleDependency<TLeft, TRight, TDepLeft, TDepRight> parent)
-            {
-                Left = left;
-                Right = right;
-                Parent = parent;
-                Computation = computation;
-
-                Left.ValueChanged += Left_ValueChanged;
-                Right.ValueChanged += Right_ValueChanged;
-            }
-
-            private void Right_ValueChanged(object sender, ValueChangedEventArgs e)
-            {
-                if (!isProcessingChange)
-                {
-                    isProcessingChange = true;
-                    try
-                    {
-                        Action<TLeft, TDepLeft> leftSetter = (l, val) => Left.Value = val;
-                        Action<TRight, TDepRight> rightSetter = (r, val) => Right.Value = val;
-
-                        Parent.CallRTLTransformationForInput(Computation.Opposite, SynchronizationDirection.RightToLeftForced, Right.Value, Left.Value, leftSetter, rightSetter);
-
-                    }
-                    finally
-                    {
-                        isProcessingChange = false;
-                    }
-                }
-            }
-
-            private void Left_ValueChanged(object sender, ValueChangedEventArgs e)
-            {
-                if (!isProcessingChange)
-                {
-                    isProcessingChange = true;
-                    try
-                    {
-                        Action<TLeft, TDepLeft> leftSetter = (l, val) => Left.Value = val;
-                        Action<TRight, TDepRight> rightSetter = (r, val) => Right.Value = val;
-
-                        Parent.CallLTRTransformationForInput(Computation, SynchronizationDirection.LeftToRightForced, Left.Value, Right.Value, leftSetter, rightSetter);
-
-                    }
-                    finally
-                    {
-                        isProcessingChange = false;
-                    }
-                }
-            }
-
-            public void Dispose()
-            {
-                Left.ValueChanged -= Left_ValueChanged;
-                Right.ValueChanged -= Right_ValueChanged;
-                Left.Dispose();
-                Right.Dispose();
-            }
+            return new IncrementalReferenceConsistencyCheck<TLeft, TRight, TDepLeft, TDepRight>(left, right, syncComputation.Opposite, this);
         }
 
         private IDisposable HandleOneWayLTRSynchronization(SynchronizationComputation<TLeft, TRight> syncComputation)
@@ -354,8 +286,17 @@ namespace NMF.Synchronizations
                 input, leftGetter(syncComputation.Opposite.Input), leftSetter, rightSetter);
         }
 
-        private void CallLTRTransformationForInput(SynchronizationComputation<TLeft, TRight> syncComputation, SynchronizationDirection direction, TDepLeft input, TDepRight context, Action<TLeft, TDepLeft> leftSetter, Action<TRight, TDepRight> rightSetter)
+        internal void CallLTRTransformationForInput(SynchronizationComputation<TLeft, TRight> syncComputation, SynchronizationDirection direction, TDepLeft input, TDepRight context, Action<TLeft, TDepLeft> leftSetter, Action<TRight, TDepRight> rightSetter)
         {
+            if (direction == SynchronizationDirection.CheckOnly)
+            {
+                // two-way change propagation is handled through dependency
+                if (syncComputation.SynchronizationContext.ChangePropagation == ChangePropagationMode.None)
+                {
+                    Match(syncComputation, input, rightGetter(syncComputation.Opposite.Input));
+                }
+                return;
+            }
             var right = syncComputation.Opposite.Input;
             if (input != null)
             {
@@ -391,8 +332,17 @@ namespace NMF.Synchronizations
             }
         }
 
-        private void CallRTLTransformationForInput(SynchronizationComputation<TRight, TLeft> syncComputation, SynchronizationDirection direction, TDepRight input, TDepLeft context, Action<TLeft, TDepLeft> leftSetter, Action<TRight, TDepRight> rightSetter)
+        internal void CallRTLTransformationForInput(SynchronizationComputation<TRight, TLeft> syncComputation, SynchronizationDirection direction, TDepRight input, TDepLeft context, Action<TLeft, TDepLeft> leftSetter, Action<TRight, TDepRight> rightSetter)
         {
+            if (direction == SynchronizationDirection.CheckOnly)
+            {
+                // two-way change propagation is handled through dependency
+                if (syncComputation.SynchronizationContext.ChangePropagation == ChangePropagationMode.None)
+                {
+                    Match(syncComputation.Opposite, leftGetter(syncComputation.Opposite.Input), input);
+                }
+                return;
+            }
             var left = syncComputation.Opposite.Input;
             if (input != null)
             {
@@ -425,6 +375,17 @@ namespace NMF.Synchronizations
                     }
                     leftSetter(left, null);
                 }
+            }
+        }
+
+        private void Match(SynchronizationComputation<TLeft, TRight> baseCorrespondence, TDepLeft leftValue, TDepRight rightValue)
+        {
+            if (leftValue == null && rightValue == null) return;
+            if ((leftValue != null && rightValue == null)
+                || (rightValue != null && leftValue == null)
+                || !childRule.ShouldCorrespond(leftValue, rightValue, baseCorrespondence.SynchronizationContext))
+            {
+                baseCorrespondence.SynchronizationContext.Inconsistencies.Add(new ReferenceInconsistency<TLeft, TRight, TDepLeft, TDepRight>(this, baseCorrespondence, leftValue, rightValue));
             }
         }
 
@@ -664,58 +625,6 @@ namespace NMF.Synchronizations
                         break;
                 }
             }
-        }
-    }
-
-    internal class GuardedSynchronization<TLeft, TRight> : IDisposable
-        where TLeft : class
-        where TRight : class
-    {
-        public SynchronizationComputation<TLeft, TRight> Computation { get; set; }
-        public Func<SynchronizationComputation<TLeft, TRight>, IDisposable> Func { get; set; }
-        public IDisposable Current { get; set; }
-        public INotifyValue<bool> Guard { get; set; }
-
-        public GuardedSynchronization(SynchronizationComputation<TLeft, TRight> computation, Func<SynchronizationComputation<TLeft, TRight>, IDisposable> func, INotifyValue<bool> guard)
-        {
-            Computation = computation;
-            Func = func;
-            Guard = guard;
-
-            if (guard.Value)
-            {
-                Current = func(computation);
-                if (Current != null)
-                {
-                    Computation.Dependencies.Add(Current);
-                }
-            }
-
-            Guard.ValueChanged += Guard_ValueChanged;
-        }
-
-        private void Guard_ValueChanged(object sender, ValueChangedEventArgs e)
-        {
-            if (Current != null)
-            {
-                Computation.Dependencies.Remove(Current);
-                Current.Dispose();
-                Current = null;
-            }
-            if (Guard.Value)
-            {
-                Current = Func(Computation);
-                if (Current != null)
-                {
-                    Computation.Dependencies.Add(Current);
-                }
-            }
-        }
-
-        public void Dispose()
-        {
-            Guard.ValueChanged -= Guard_ValueChanged;
-            Guard.Dispose();
         }
     }
 }

@@ -71,7 +71,7 @@ namespace NMF.Expressions.Linq
 
         public IEnumerable<T> GetSequenceForItem(T item)
         {
-            return Sequences.FirstOrDefault(s => s.Contains(item));
+            return Sequences.AsEnumerable().FirstOrDefault(s => s.Contains(item));
         }
 
         IEnumerable<IEnumerable<T>> IOrderableNotifyEnumerable<T>.Sequences

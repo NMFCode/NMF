@@ -1,10 +1,12 @@
 ﻿using NMF.Expressions;
+using NMF.Synchronizations.Inconsistencies;
 using NMF.Transformations;
 using NMF.Transformations.Core;
 using NMF.Utilities;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
@@ -489,6 +491,11 @@ namespace NMF.Synchronizations
 
         protected internal virtual void SynchronizeCollectionsRightToLeft(ICollection<TLeft> lefts, ICollection<TRight> rights, ISynchronizationContext context, bool ignoreCandidates)
         {
+            if (context.Direction == SynchronizationDirection.CheckOnly)
+            {
+                MatchCollections(lefts, rights, context);
+                return;
+            }
             if (lefts.IsReadOnly) throw new InvalidOperationException("Collection is read-only!");
             IEnumerable<TLeft> leftsSaved;
             HashSet<TLeft> doubles;
@@ -540,6 +547,11 @@ namespace NMF.Synchronizations
 
         protected internal virtual void SynchronizeCollectionsLeftToRight(ICollection<TRight> rights, ICollection<TLeft> lefts, ISynchronizationContext context, bool ignoreCandidates)
         {
+            if (context.Direction == SynchronizationDirection.CheckOnly)
+            {
+                MatchCollections(lefts, rights, context);
+                return;
+            }
             if (rights.IsReadOnly) throw new InvalidOperationException("Collection is read-only!");
             IEnumerable<TRight> rightsSaved;
             HashSet<TRight> doubles;
@@ -586,6 +598,40 @@ namespace NMF.Synchronizations
                 {
                     rights.Remove(item);
                 }
+            }
+        }
+
+        private void MatchCollections(ICollection<TLeft> lefts, ICollection<TRight> rights, ISynchronizationContext context)
+        {
+            var leftsRemaining = lefts.ToList();
+            var rightsRemaining = new HashSet<TRight>(rights);
+            foreach (var left in lefts)
+            {
+                var right = null as TRight;
+                var found = false;
+                foreach (var item in rightsRemaining)
+                {
+                    if (ShouldCorrespond(left, item, context))
+                    {
+                        right = item;
+                        found = true;
+                        break;
+                    }
+                }
+                if (found)
+                {
+                    // call rule in order to establish trace entry and determine inner differences
+                    context.CallTransformation(LeftToRight, new object[] { left }, new Axiom(right));
+                    rightsRemaining.Remove(right);
+                }
+                else
+                {
+                    context.Inconsistencies.Add(new MissingItemInconsistency<TLeft, TRight>(context, LeftToRight, lefts, rights, left, false));
+                }
+            }
+            foreach (var item in rightsRemaining)
+            {
+                context.Inconsistencies.Add(new MissingItemInconsistency<TRight, TLeft>(context, RightToLeft, rights, lefts, item, true));
             }
         }
 
@@ -666,5 +712,6 @@ namespace NMF.Synchronizations
 
             return predicate;
         }
+
     }
 }

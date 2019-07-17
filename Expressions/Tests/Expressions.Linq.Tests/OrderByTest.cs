@@ -352,7 +352,7 @@ namespace NMF.Expressions.Linq.Tests
             var dummy1 = new ObservableDummy<int>(1);
             var dummy2 = new Dummy<int>(3);
             var dummy3 = new Dummy<int>(5);
-            var coll = new NotifyCollection<Dummy<int>>() { dummy1, dummy2, dummy3 };
+            INotifyCollection<Dummy<int>> coll = new NotifyCollection<Dummy<int>>() { dummy1, dummy2, dummy3 };
 
             var test = coll.OrderBy(d => d.Item);
             test.CollectionChanged += (o, e) => update = true;
@@ -384,9 +384,10 @@ namespace NMF.Expressions.Linq.Tests
             var dummy2 = new Dummy<int>(3);
             var dummy3 = new Dummy<int>(5);
             var coll = new NotifyCollection<Dummy<int>>() { dummy1, dummy2, dummy3 };
+            var collCasted = (INotifyCollection<Dummy<int>>)coll;
             var newDummy = new Dummy<int>(2);
 
-            var test = coll.OrderBy(d => d.Item);
+            var test = collCasted.OrderBy(d => d.Item);
             test.CollectionChanged += (o, e) => update = true;
 
             test.AssertSequence(dummy1, dummy2, dummy3);
@@ -415,7 +416,7 @@ namespace NMF.Expressions.Linq.Tests
             var dummy1 = new ObservableDummy<int>(1);
             var dummy2 = new Dummy<int>(3);
             var dummy3 = new Dummy<int>(5);
-            var coll = new NotifyCollection<Dummy<int>>() { dummy1, dummy2, dummy3 };
+            INotifyCollection<Dummy<int>> coll = new NotifyCollection<Dummy<int>>() { dummy1, dummy2, dummy3 };
 
             var test = coll.Where(d => d.Item > 0).OrderBy(d => d.Item);
             test.CollectionChanged += (o, e) => update = true;
@@ -445,7 +446,7 @@ namespace NMF.Expressions.Linq.Tests
             var dummy1 = new ObservableDummy<int>(1);
             var dummy2 = new Dummy<int>(3);
             var dummy3 = new Dummy<int>(5);
-            var coll = new NotifyCollection<Dummy<int>>() { dummy1, dummy2, dummy3 };
+            INotifyCollection<Dummy<int>> coll = new NotifyCollection<Dummy<int>>() { dummy1, dummy2, dummy3 };
 
             var test = coll.Where(d => d.Item > 0).Select(d => new Dummy<int>(d.Item * 2)).OrderBy(d => d.Item);
             test.CollectionChanged += (o, e) => update = true;
