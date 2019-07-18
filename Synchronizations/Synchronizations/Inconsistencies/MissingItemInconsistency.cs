@@ -73,9 +73,9 @@ namespace NMF.Synchronizations.Inconsistencies
             var hashCode = Rule.GetHashCode();
             unchecked
             {
-                hashCode = (23 * hashCode) + SourceCollection.GetHashCode();
-                hashCode = (23 * hashCode) + TargetCollection.GetHashCode();
-                hashCode = (23 * hashCode) + Source.GetHashCode();
+                if (SourceCollection != null) hashCode = (23 * hashCode) + SourceCollection.GetHashCode();
+                if (TargetCollection != null) hashCode = (23 * hashCode) + TargetCollection.GetHashCode();
+                if (Source != null) hashCode = (23 * hashCode) + Source.GetHashCode();
                 hashCode = (23 * hashCode) + IsLeftMissing.GetHashCode();
             }
             return hashCode;

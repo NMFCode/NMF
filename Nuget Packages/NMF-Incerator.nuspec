@@ -15,6 +15,7 @@
         <copyright>Copyright © Georg Hinkel 2015</copyright>
         <language>en</language>
         <tags>Model-driven; MDE; EMF; XMI; MDSD; Ecore</tags>
+      <repository type="git" url="https://github.com/NMFCode/NMF" />
         <dependencies>
             <dependency id="NMF-Expressions" version="[$version$,3.0)" />
             <dependency id="NMF-Repository" version="[$version$,3.0)" />
