@@ -170,7 +170,7 @@ namespace NMF.Models.Repository
                             var attr = (ModelRepresentationClassAttribute)modelRepresentation[0];
                             if (!t.IsInterface)
                             {
-                                var iface = t.GetInterface("I" + t.Name);
+                                var iface = t.GetInterface(t.Namespace + ".I" + t.Name);
                                 if (iface != null)
                                 {
                                     t = iface;
