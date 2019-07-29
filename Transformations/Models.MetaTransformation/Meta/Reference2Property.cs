@@ -70,7 +70,7 @@ namespace NMF.Models.Meta
                 var declaringTypeRef = CreateReference(property.DeclaringType, true, context, implementation: true);
                 staticAttributeFieldInit.Statements.Add(new CodeMethodReturnStatement(new CodeCastExpression(typedElementType,
                     new CodeMethodInvokeExpression(new CodeCastExpression(CodeDomHelper.ToTypeReference(typeof(ModelElement)),
-                    new CodePropertyReferenceExpression(new CodeTypeReferenceExpression(declaringTypeRef), "ClassInstance")),
+                    new CodePropertyReferenceExpression(new CodeTypeReferenceExpression(declaringTypeRef.Namespace() + "." + declaringTypeRef.BaseType), "ClassInstance")),
                     "Resolve", new CodePrimitiveExpression(property.Name)))));
                 staticAttributeField.InitExpression = new CodeObjectCreateExpression(staticAttributeField.Type, new CodeMethodReferenceExpression(null, staticAttributeFieldInit.Name));
                 CodeDomHelper.DependentMembers(staticAttributeField, true).Add(staticAttributeFieldInit);
