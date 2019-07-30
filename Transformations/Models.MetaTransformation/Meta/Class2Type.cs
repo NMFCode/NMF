@@ -1051,7 +1051,7 @@ namespace NMF.Models.Meta
                     if (r.UpperBound != 1)
                     {
                         stmts.Add(new CodeConditionStatement(new CodeBinaryOperatorExpression(containerRef, CodeBinaryOperatorType.ValueEquality, new CodeFieldReferenceExpression(new CodeThisReferenceExpression(), "_" + p.Name.ToCamelCase())),
-                            new CodeMethodReturnStatement(new CodePrimitiveExpression(p.Name))));
+                            new CodeMethodReturnStatement(new CodePrimitiveExpression(r.Name))));
                     }
                     return stmts;
                 }, getCompositionName.Statements, true, context);
