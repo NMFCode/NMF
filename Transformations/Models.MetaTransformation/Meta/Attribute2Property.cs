@@ -157,9 +157,11 @@ namespace NMF.Models.Meta
                     ReturnType = typedElementType
                 };
                 var declaringTypeRef = CreateReference(property.DeclaringType, true, context, implementation: true);
+                // we need to fully qualify the type in case some derived class has a property with the same name as the type
+                var fullTypeRef = new CodeTypeReference(declaringTypeRef.Namespace() + "." + declaringTypeRef.BaseType);
                 staticAttributeFieldInit.Statements.Add(new CodeMethodReturnStatement(new CodeCastExpression(typedElementType,
                     new CodeMethodInvokeExpression(new CodeCastExpression(CodeDomHelper.ToTypeReference(typeof(ModelElement)), 
-                    new CodePropertyReferenceExpression(new CodeTypeReferenceExpression(declaringTypeRef.Namespace() + "." + declaringTypeRef.BaseType), "ClassInstance")),
+                    new CodePropertyReferenceExpression(new CodeTypeReferenceExpression(fullTypeRef), "ClassInstance")),
                     "Resolve", new CodePrimitiveExpression(property.Name)))));
                 staticAttributeField.InitExpression = new CodeObjectCreateExpression(staticAttributeField.Type, new CodeMethodReferenceExpression(null, staticAttributeFieldInit.Name));
                 CodeDomHelper.DependentMembers(staticAttributeField, true).Add(staticAttributeFieldInit);

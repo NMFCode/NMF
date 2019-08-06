@@ -52,7 +52,7 @@ namespace NMF.Models.Meta
             }
 
 
-            private CodeMemberField GenerateStaticAttributeField(IReference property, ITransformationContext context)
+            private CodeMemberField GenerateStaticReferenceField(IReference property, ITransformationContext context)
             {
                 var typedElementType = CodeDomHelper.ToTypeReference(typeof(ITypedElement));
                 var staticAttributeField = new CodeMemberField()
@@ -68,9 +68,11 @@ namespace NMF.Models.Meta
                     ReturnType = typedElementType
                 };
                 var declaringTypeRef = CreateReference(property.DeclaringType, true, context, implementation: true);
+                // we need to fully qualify the type in case some derived class has a property with the same name as the type
+                var fullTypeRef = new CodeTypeReference(declaringTypeRef.Namespace() + "." + declaringTypeRef.BaseType);
                 staticAttributeFieldInit.Statements.Add(new CodeMethodReturnStatement(new CodeCastExpression(typedElementType,
                     new CodeMethodInvokeExpression(new CodeCastExpression(CodeDomHelper.ToTypeReference(typeof(ModelElement)),
-                    new CodePropertyReferenceExpression(new CodeTypeReferenceExpression(declaringTypeRef.Namespace() + "." + declaringTypeRef.BaseType), "ClassInstance")),
+                    new CodePropertyReferenceExpression(new CodeTypeReferenceExpression(fullTypeRef), "ClassInstance")),
                     "Resolve", new CodePrimitiveExpression(property.Name)))));
                 staticAttributeField.InitExpression = new CodeObjectCreateExpression(staticAttributeField.Type, new CodeMethodReferenceExpression(null, staticAttributeFieldInit.Name));
                 CodeDomHelper.DependentMembers(staticAttributeField, true).Add(staticAttributeFieldInit);
@@ -90,7 +92,7 @@ namespace NMF.Models.Meta
                 if (string.IsNullOrEmpty(summary)) summary = string.Format("The {0} property", input.Name);
                 generatedProperty.WriteDocumentation(summary, input.Remarks);
 
-                CodeDomHelper.DependentMembers(generatedProperty, true).Add(GenerateStaticAttributeField(input, context));
+                CodeDomHelper.DependentMembers(generatedProperty, true).Add(GenerateStaticReferenceField(input, context));
 
                 if (input.IsContainerReference() && input.DeclaringType is IClass && input.DeclaringType.References.Count(r => r.IsContainerReference()) == 1)
                 {
