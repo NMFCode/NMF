@@ -46,22 +46,23 @@ namespace NMF.CodeGenerationTests
                     startInfo.WorkingDirectory = path;
 
                     var buildJob = Process.Start(startInfo);
-                    string buildLog = null;
+                    var outputBuilder = new StringBuilder();
+                    var errorBuilder = new StringBuilder();
 
                     buildJob.ErrorDataReceived += (o, e) =>
                     {
-                        buildLog += e.Data;
+                        errorBuilder.AppendLine(e.Data);
                         Debug.WriteLine(e.Data);
                     };
-                    log = null;
                     var line = buildJob.StandardOutput.ReadLine();
                     while (line != null)
                     {
-                        log += line;
+                        outputBuilder.AppendLine(line);
                         line = buildJob.StandardOutput.ReadLine();
                     }
                     buildJob.WaitForExit();
-                    error = buildLog;
+                    error = errorBuilder.ToString();
+                    log = outputBuilder.ToString();
                     afterCompileAction?.Invoke(path, buildJob.ExitCode);
                     return buildJob.ExitCode;
                 }

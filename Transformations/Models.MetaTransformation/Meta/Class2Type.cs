@@ -1267,7 +1267,7 @@ namespace NMF.Models.Meta
             {
                 if (containment.UpperBound == 1 || containment.IsOrdered)
                 {
-                    var propRef = new CodePropertyReferenceExpression(new CodeThisReferenceExpression(), property.Name.ToPascalCase());
+                    var propRef = new CodePropertyReferenceExpression(new CodeThisReferenceExpression(), property.Name);
                     var ifStmt = new CodeConditionStatement(new CodeBinaryOperatorExpression(new CodeVariableReferenceExpression("reference"),
                         CodeBinaryOperatorType.ValueEquality, new CodePrimitiveExpression(containment.Name.ToUpperInvariant())));
                     if (containment.UpperBound == 1)

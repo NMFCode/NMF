@@ -46,7 +46,7 @@ namespace NMF.Models.Meta
                 if (input.ParentNamespace == null)
                 {
                     var t = Transformation as Meta2ClassesTransformation;
-                    if (t != null)
+                    if (t != null && input.Uri != null)
                     {
                         if (!t.NamespaceMap.TryGetValue(input.Uri, out baseName))
                         {

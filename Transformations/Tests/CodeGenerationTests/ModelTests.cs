@@ -63,11 +63,17 @@ namespace NMF.CodeGenerationTests
             GenerateAndAssertEcore("COSEM.ecore");
         }
 
-        //[TestMethod]
-        //public void SmartGridSchemaGeneratesSuccessfully()
-        //{
-        //    GenerateAndAssertEcore("schema.ecore");
-        //}
+        [TestMethod]
+        public void SmartGridSchemaGeneratesSuccessfully()
+        {
+            GenerateAndAssertEcore("schema.ecore");
+        }
+
+        [TestMethod]
+        public void KDMGeneratesSuccessfully()
+        {
+            GenerateAndAssertEcore("KDM.ecore");
+        }
 
         [TestMethod]
         public void DefaultValueExampleGeneratesAndInstanceCanBeLoaded()
