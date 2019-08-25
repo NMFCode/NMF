@@ -58,7 +58,8 @@ namespace NMF.Serialization.Xmi
 
         protected override ITypeSerializationInfo GetElementTypeInfo(XmlReader reader, IPropertySerializationInfo property)
         {
-            string attr = reader.GetAttribute(TypeField, XMLSchemaInstanceNamespace);
+            string attr = reader.GetAttribute(TypeField, XMLSchemaInstanceNamespace)
+                ?? reader.GetAttribute(TypeField, XMINamespace);
             if (attr != null)
             {
                 int separator = attr.IndexOf(':');
