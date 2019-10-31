@@ -251,9 +251,11 @@ namespace NMF.Serialization
 
         public IPropertySerializationInfo DefaultProperty { get; set; }
 
+        public Type MappedType => Type;
+
         public void CreateCollectionAddMethod()
         {
-            var itemType = CollectionItemType.Type;
+            var itemType = CollectionItemType.MappedType;
             var collectionAddMethod = CollectionType.GetMethod("Add", new Type[] { itemType });
             if (collectionAddMethod == null) throw new Exception($"Could not find a suitable add method in the type {CollectionType}");
             var parameters = collectionAddMethod.GetParameters();
@@ -263,6 +265,26 @@ namespace NMF.Serialization
             var coll = Expression.Parameter(typeof(object));
             var body = Expression.Call(Expression.Convert(coll, CollectionType), collectionAddMethod, Expression.Convert(p, itemType));
             addMethod = Expression.Lambda<Action<object, object>>(body, coll, p).Compile();
+        }
+
+        public object CreateObject(object[] args)
+        {
+            return Constructor.Invoke(args);
+        }
+
+        public override string ToString()
+        {
+            return Type.FullName;
+        }
+
+        public bool IsAssignableFrom(ITypeSerializationInfo specializedType)
+        {
+            return specializedType is XmlTypeSerializationInfo typeInfo && Type.IsAssignableFrom(typeInfo.Type);
+        }
+
+        public bool IsInstanceOf(object instance)
+        {
+            return Type.IsInstanceOfType(instance);
         }
     }
 }

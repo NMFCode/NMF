@@ -1,4 +1,5 @@
-﻿using NMF.Serialization.Xmi;
+﻿using NMF.Serialization;
+using NMF.Serialization.Xmi;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,7 +21,7 @@ namespace NMF.Models.Repository.Serialization
 
         private static Regex colonRegex = new Regex(@"^[\w\.]+:\w+ ", RegexOptions.Compiled);
 
-        protected override object OnNameClash(string id, Type type, IEnumerable<object> candidates, object source)
+        protected override object OnNameClash(string id, ITypeSerializationInfo type, IEnumerable<object> candidates, object source)
         {
             var modelElement = source as IModelElement;
             if (modelElement != null)
@@ -35,7 +36,7 @@ namespace NMF.Models.Repository.Serialization
             return base.OnNameClash(id, type, candidates, source);
         }
 
-        public override object Resolve(string id, Type type, Type minType = null, bool exactType = false, bool failOnConflict = true, object source = null)
+        public override object Resolve(string id, ITypeSerializationInfo type, Type minType = null, bool failOnConflict = true, object source = null)
         {
             if (string.IsNullOrEmpty(id)) return null;
             var match = colonRegex.Match(id);
@@ -78,27 +79,13 @@ namespace NMF.Models.Repository.Serialization
             {
                 if (failOnConflict)
                 {
-                    if (exactType)
+                    if ((minType != null && minType.IsInstanceOfType(resolved)) || type.IsInstanceOf(resolved))
                     {
-                        if (resolved.GetType() == type)
-                        {
-                            return resolved;
-                        }
-                        else
-                        {
-                            throw new InvalidOperationException($"The model element with the uri {id} has not the expected type {type.Name} but is a {resolved.GetType().Name} instead.");
-                        }
+                        return resolved;
                     }
                     else
                     {
-                        if ((minType ?? type).IsInstanceOfType(resolved))
-                        {
-                            return resolved;
-                        }
-                        else
-                        {
-                            throw new InvalidOperationException($"The model element with the uri {id} has not the expected type {type.Name} but is a {resolved.GetType().Name}.");
-                        }
+                        throw new InvalidOperationException($"The model element with the uri {id} has not the expected type {type} but is a {resolved.GetType().Name} instead.");
                     }
                 }
                 else
@@ -106,7 +93,7 @@ namespace NMF.Models.Repository.Serialization
                     return resolved;
                 }
             }
-            var baseResolved = base.Resolve(id, type, minType, exactType, failOnConflict, source);
+            var baseResolved = base.Resolve(id, type, minType, failOnConflict, source);
             if (baseResolved != null)
             {
                 return baseResolved;

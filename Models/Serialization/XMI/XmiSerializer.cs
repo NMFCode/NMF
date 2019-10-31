@@ -36,6 +36,12 @@ namespace NMF.Serialization.Xmi
         /// <remarks>The types will be loaded with the specified settings</remarks>
         public XmiSerializer(XmlSerializationSettings settings, IEnumerable<Type> additionalTypes) : base(settings, additionalTypes) { }
 
+        /// <summary>
+        /// Creates a new XmlSerializer and copies settings and known types from the given serializer
+        /// </summary>
+        /// <param name="parent">An XML serializer to copy settings and known type information from</param>
+        public XmiSerializer(XmlSerializer parent) : base(parent) { }
+
         private static readonly string TypeField = "type";
         public static readonly string XMLSchemaInstanceNamespace = "http://www.w3.org/2001/XMLSchema-instance";
         public static readonly string XMLSchemaInstancePrefix = "xsi";
@@ -128,20 +134,19 @@ namespace NMF.Serialization.Xmi
                     writer.WriteString(GetAttributeValue(content, info.DefaultProperty.PropertyType, false, context));
                 }
             }
-            foreach (XmlPropertySerializationInfo pi in info.ElementProperties)
+            foreach (var pi in info.ElementProperties)
             {
                 var value = pi.GetValue(obj, context);
                 if (pi.ShouldSerializeValue(obj, value))
                 {
                     if (pi.PropertyType.IsCollection)
                     {
-                        var collectionType = pi.PropertyType.CollectionItemType.Type;
+                        var collectionType = pi.PropertyType.CollectionItemType;
                         foreach (object item in value as IEnumerable)
                         {
                             writer.WriteStartElement(pi.NamespacePrefix, pi.ElementName, pi.Namespace);
-                            var itemType = item.GetType();
-                            var itemInfo = GetSerializationInfo(itemType, true);
-                            if (itemType != collectionType)
+                            var itemInfo = GetSerializationInfoForInstance(item, true);
+                            if (itemInfo != collectionType)
                             {
                                 WriteTypeQualifier(writer, itemInfo);
                             }
@@ -161,10 +166,10 @@ namespace NMF.Serialization.Xmi
                         writer.WriteStartElement(pi.NamespacePrefix, pi.ElementName, pi.Namespace);
                         if (value != null)
                         {
-                            var type = value.GetType();
-                            if (type != pi.PropertyType.Type.GetImplementationType())
+                            var type = GetSerializationInfoForInstance(value, true);
+                            if (type != pi.PropertyType)
                             {
-                                WriteTypeQualifier(writer, GetSerializationInfo(type, true));
+                                WriteTypeQualifier(writer, type);
                             }
                         }
                         else
@@ -243,7 +248,7 @@ namespace NMF.Serialization.Xmi
                 {
                     if (info.DefaultProperty == null)
                     {
-                        throw new InvalidOperationException("Simple content unexpected for type " + info.Type.FullName);
+                        throw new InvalidOperationException("Simple content unexpected for type " + info.ToString());
                     }
                     InitializePropertyFromText(info.DefaultProperty, obj, reader.Value, context);
                 }
@@ -317,9 +322,9 @@ namespace NMF.Serialization.Xmi
             }
         }
 
-        protected override void InitializeTypeSerializationInfo(ITypeSerializationInfo serializationInfo)
+        protected override void InitializeTypeSerializationInfo(Type type, ITypeSerializationInfo serializationInfo)
         {
-            base.InitializeTypeSerializationInfo(serializationInfo);
+            base.InitializeTypeSerializationInfo(type, serializationInfo);
 
             if (!serializationInfo.IsIdentified && !serializationInfo.IsCollection && serializationInfo is XmlTypeSerializationInfo)
             {

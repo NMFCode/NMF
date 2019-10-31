@@ -77,7 +77,7 @@ namespace NMF.Serialization
             set;
         }
 
-        internal string GetPersistanceString(string input)
+        public string GetPersistanceString(string input)
         {
             if (string.IsNullOrEmpty(input)) return string.Empty;
             switch (NameCase)

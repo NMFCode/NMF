@@ -38,8 +38,8 @@ namespace NMF.Serialization
             Root = root;
         }
 
-        private Dictionary<Type, Dictionary<string, object>> idStore = new Dictionary<Type, Dictionary<string, object>>();
-        private Dictionary<Type, List<Dictionary<string, object>>> pathStore = new Dictionary<Type, List<Dictionary<string, object>>>();
+        private Dictionary<ITypeSerializationInfo, Dictionary<string, object>> idStore = new Dictionary<ITypeSerializationInfo, Dictionary<string, object>>();
+        private Dictionary<ITypeSerializationInfo, List<Dictionary<string, object>>> pathStore = new Dictionary<ITypeSerializationInfo, List<Dictionary<string, object>>>();
         private HashSet<ObjectPropertyPair> blockedProperties = new HashSet<ObjectPropertyPair>();
 
         private Queue<XmlIdentifierDelay> lostProperties = new Queue<XmlIdentifierDelay>();
@@ -48,21 +48,12 @@ namespace NMF.Serialization
         internal Queue<XmlIdentifierDelay> LostProperties { get { return lostProperties; } }
         internal Queue<ISupportInitialize> Inits { get { return inits; } }
 
-        public virtual void RegisterId(string id, object value)
-        {
-            if (value != null)
-            {
-                var type = value.GetType();
-                RegisterId(id, value, type);
-            }
-        }
-
         public virtual void Cleanup()
         {
             while (lostProperties.Count > 0)
             {
                 XmlIdentifierDelay p = lostProperties.Dequeue();
-                var resolved = Resolve(p.Identifier, p.TargetType.Type, p.TargetMinType, exactType: false, failOnConflict: true, source: p.Target);
+                var resolved = Resolve(p.Identifier, p.TargetType, p.TargetMinType, failOnConflict: true, source: p.Target);
                 if (resolved == null)
                 {
                     throw new InvalidOperationException(string.Format("The reference {0} could not be resolved", p.Identifier));
@@ -75,7 +66,7 @@ namespace NMF.Serialization
             }
         }
 
-        private void RegisterId(string id, object value, Type type)
+        public void RegisterId(string id, object value, ITypeSerializationInfo type)
         {
             if (id == null) return;
             Dictionary<string, object> dict;
@@ -107,7 +98,7 @@ namespace NMF.Serialization
             public readonly List<object> Objects = new List<object>();
         }
 
-        public virtual bool ContainsId(string id, Type type)
+        public virtual bool ContainsId(string id, ITypeSerializationInfo type)
         {
             if (id == null) return false;
             Dictionary<string, object> dict;
@@ -129,12 +120,12 @@ namespace NMF.Serialization
             }
         }
 
-        protected virtual object OnNameClash(string id, Type type, IEnumerable<object> candidates, object source)
+        protected virtual object OnNameClash(string id, ITypeSerializationInfo type, IEnumerable<object> candidates, object source)
         {
             throw new XmlResolveNameClashException(id, type, candidates);
         }
 
-        public virtual object Resolve(string id, Type type, Type minType = null, bool exactType = false, bool failOnConflict = true, object source = null)
+        public virtual object Resolve(string id, ITypeSerializationInfo type, Type minType = null, bool failOnConflict = true, object source = null)
         {
             if (id == null) return null;
             Dictionary<string, object> dict;
@@ -155,7 +146,7 @@ namespace NMF.Serialization
                 }
                 return obj;
             }
-            else if (!exactType)
+            else
             {
                 object result = null;
                 List<Dictionary<string, object>> paths = GetOrCreateTypeStores(type);
@@ -197,13 +188,9 @@ namespace NMF.Serialization
                     return result;
                 }
             }
-            else
-            {
-                return null;
-            }
         }
 
-        private List<Dictionary<string, object>> GetOrCreateTypeStores(Type type)
+        private List<Dictionary<string, object>> GetOrCreateTypeStores(ITypeSerializationInfo type)
         {
             // we have to search all paths
             List<Dictionary<string, object>> paths;
@@ -246,8 +233,8 @@ namespace NMF.Serialization
 
     public class XmlResolveNameClashException : Exception
     {
-        public XmlResolveNameClashException(string id, Type type, IEnumerable<object> candidates)
-            : base($"Resolving failed because the id {id} is not unique for type {type.Name}.")
+        public XmlResolveNameClashException(string id, ITypeSerializationInfo type, IEnumerable<object> candidates)
+            : base($"Resolving failed because the id {id} is not unique for type {type}.")
         {
             Id = id;
             Type = type;
@@ -258,6 +245,6 @@ namespace NMF.Serialization
 
         public string Id { get; private set; }
 
-        public Type Type { get; private set; }
+        public ITypeSerializationInfo Type { get; private set; }
     }
 }

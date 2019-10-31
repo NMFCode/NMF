@@ -95,7 +95,7 @@ namespace NMF.Models.Meta
         public static bool IsAssignableFrom(this IClass @class, IClass specificType)
         {
             if (specificType == null) throw new ArgumentNullException("specificType");
-            return specificType == @class || specificType.BaseTypes.Any(t => t.IsAssignableFrom(specificType));
+            return specificType == @class || specificType.BaseTypes.Any(t => @class.IsAssignableFrom(t));
         }
     }
 }

@@ -185,8 +185,14 @@ namespace NMF.Models
             }
         }
 
+        /// <summary>
+        /// Gets a value indicating whether the model element is closed for any future modifications
+        /// </summary>
         public bool IsFrozen => IsFlagSet(ModelElementFlag.Frozen);
 
+        /// <summary>
+        /// Gets a value indicating whether the model element is temporarily locked
+        /// </summary>
         public bool IsLocked => IsFlagSet(ModelElementFlag.Locked);
 
         /// <summary>
@@ -733,6 +739,11 @@ namespace NMF.Models
             return null;
         }
 
+        /// <summary>
+        /// Gets the property name for the given container
+        /// </summary>
+        /// <returns>The name of the respective container reference</returns>
+        /// <param name="container">The container object</param>
         protected internal virtual string GetCompositionName(object container)
         {
             return container as string;
@@ -1040,17 +1051,6 @@ namespace NMF.Models
             {
                 return (Meta.IClass)MetaRepository.Instance.ResolveType("http://nmf.codeplex.com/nmeta/#//ModelElement/");
             }
-        }
-
-
-        /// <summary>
-        /// Gets the value for the given attribute
-        /// </summary>
-        /// <param name="attribute">The attribute whose value is queried</param>
-        /// <returns>The attribute value</returns>
-        public virtual object GetAttributeValue(Meta.IAttribute attribute)
-        {
-            throw new ArgumentOutOfRangeException("attribute");
         }
 
         /// <summary>

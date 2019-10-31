@@ -50,17 +50,12 @@ namespace NMF.Serialization
             get { return Enumerable.Empty<ITypeSerializationInfo>(); }
         }
 
-        public Type Type
+        public Type MappedType
         {
             get { return sourceType; }
         }
 
         public IPropertySerializationInfo[] ConstructorProperties
-        {
-            get { return null; }
-        }
-
-        public System.Reflection.ConstructorInfo Constructor
         {
             get { return null; }
         }
@@ -111,6 +106,21 @@ namespace NMF.Serialization
         public string ConvertToString(object input)
         {
             return converter.ConvertToInvariantString(input);
+        }
+
+        public object CreateObject(object[] args)
+        {
+            throw new NotSupportedException();
+        }
+
+        public bool IsAssignableFrom(ITypeSerializationInfo specializedType)
+        {
+            return specializedType == this;
+        }
+
+        public bool IsInstanceOf(object instance)
+        {
+            return sourceType.IsInstanceOfType(instance);
         }
     }
 }

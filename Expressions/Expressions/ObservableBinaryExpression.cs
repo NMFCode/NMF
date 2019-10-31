@@ -206,7 +206,7 @@ namespace NMF.Expressions
         }
     }
 
-    internal sealed class ObservableCoalesceExpression<T> : ObservableBinaryExpressionBase<T, T, T>
+    internal class ObservableCoalesceExpression<T> : ObservableBinaryExpressionBase<T, T, T>
         where T : class
     {
         protected override string Format
@@ -232,6 +232,35 @@ namespace NMF.Expressions
         protected override INotifyExpression<T> ApplyParametersCore(IDictionary<string, object> parameters, IDictionary<INotifiable, INotifiable> trace)
         {
             return new ObservableCoalesceExpression<T>(Left.ApplyParameters(parameters, trace), Right.ApplyParameters(parameters, trace));
+        }
+    }
+
+    internal class ObservableReversableCoalesceExpression<T> : ObservableCoalesceExpression<T>, INotifyReversableExpression<T> where T : class
+    {
+        public ObservableReversableCoalesceExpression(INotifyReversableExpression<T> left, INotifyReversableExpression<T> right)
+            : base(left, right) { }
+
+        public bool IsReversable
+        {
+            get
+            {
+                return ((INotifyReversableExpression<T>)Left).IsReversable || ((INotifyReversableExpression<T>)Right).IsReversable;
+            }
+        }
+
+        T INotifyReversableValue<T>.Value
+        {
+            get => Value; set
+            {
+                try
+                {
+                    ((INotifyReversableExpression<T>)Left).Value = value;
+                }
+                catch
+                {
+                    ((INotifyReversableExpression<T>)Right).Value = value;
+                }
+            }
         }
     }
 }

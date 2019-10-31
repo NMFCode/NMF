@@ -17,6 +17,12 @@ namespace NMF.Models.Repository.Serialization
 
         public ModelSerializer(XmlSerializationSettings settings) : this(settings, null) { }
 
+        /// <summary>
+        /// Creates a new serializer and copies settings and known types from the given serializer
+        /// </summary>
+        /// <param name="parent">An XML serializer to copy settings and known type information from</param>
+        public ModelSerializer(XmlSerializer parent) : base(parent) { }
+
         public ModelSerializer(XmlSerializationSettings settings, IEnumerable<Type> knownTypes)
             : base(settings, knownTypes)
         {
@@ -139,7 +145,7 @@ namespace NMF.Models.Repository.Serialization
                 Uri uri = model.CreateUriForElement(modelElement);
                 if (uri != null)
                 {
-                    if (isCollection || modelElement.GetType() == info.Type)
+                    if (isCollection || GetSerializationInfoForInstance(modelElement, false) == info)
                     {
                         return uri.ConvertToString();
                     }

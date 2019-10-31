@@ -72,6 +72,24 @@ namespace NMF.Serialization
         }
 
         /// <summary>
+        /// Creates a new XmlSerializer and copies settings and known types from the given serializer
+        /// </summary>
+        /// <param name="parent">An XML serializer to copy settings and known type information from</param>
+        public XmlSerializer(XmlSerializer parent)
+        {
+            this.settings = parent.settings;
+            this.typesWrapper = new XmlTypeCollection(this);
+            foreach (var typeEntry in parent.types)
+            {
+                types.Add(typeEntry.Key, typeEntry.Value);
+            }
+            foreach (var typeByQualifier in parent.typesByQualifier)
+            {
+                typesByQualifier.Add(typeByQualifier.Key, new Dictionary<string, ITypeSerializationInfo>(typeByQualifier.Value));
+            }
+        }
+
+        /// <summary>
         /// The settings to be used in the serializer
         /// </summary>
         public XmlSerializationSettings Settings
@@ -116,12 +134,12 @@ namespace NMF.Serialization
 
             if (initializationQueue != null)
             {
-                EnqueueBaseTypes(info);
+                EnqueueBaseTypes(type, info);
             }
             else
             {
                 initializationQueue = new Queue<Action>();
-                EnqueueBaseTypes(info);
+                EnqueueBaseTypes(type, info);
 
                 while (initializationQueue.Count > 0)
                 {
@@ -135,13 +153,13 @@ namespace NMF.Serialization
             return info;
         }
 
-        private void EnqueueBaseTypes(ITypeSerializationInfo info)
+        private void EnqueueBaseTypes(Type type, ITypeSerializationInfo info)
         {
-            if (info.Type.BaseType != null)
+            if (type.BaseType != null)
             {
-                GetSerializationInfo(info.Type.BaseType, true);
+                GetSerializationInfo(type.BaseType, true);
             }
-            initializationQueue.Enqueue(() => InitializeTypeSerializationInfo(info));
+            initializationQueue.Enqueue(() => InitializeTypeSerializationInfo(type, info));
         }
 
         protected void RegisterNamespace(ITypeSerializationInfo info)
@@ -195,9 +213,8 @@ namespace NMF.Serialization
             return new XmlTypeSerializationInfo(type);
         }
 
-        protected virtual void InitializeTypeSerializationInfo(ITypeSerializationInfo serializationInfo)
+        protected virtual void InitializeTypeSerializationInfo(Type type, ITypeSerializationInfo serializationInfo)
         {
-            Type type = serializationInfo.Type;
             XmlTypeSerializationInfo info = serializationInfo as XmlTypeSerializationInfo;
 
             if (info == null) throw new NotSupportedException("Cannot initialize other serialization info types");
@@ -312,7 +329,7 @@ namespace NMF.Serialization
                 Type[] ts = new Type[constructorInfos.GetLength(0)];
                 for (int i = 0; i < constructorInfos.GetLength(0); i++)
                 {
-                    ts[i] = constructorInfos[i] == null ? typeof(object) : constructorInfos[i].PropertyType.Type;
+                    ts[i] = constructorInfos[i] == null ? typeof(object) : constructorInfos[i].PropertyType.MappedType;
                 }
                 info.Constructor = constructorType.GetConstructor(ts);
                 if (info.Constructor == null) throw new InvalidOperationException("No suitable constructor found for type " + type.FullName);
@@ -585,7 +602,7 @@ namespace NMF.Serialization
         {
             if (!fragment) target.WriteStartDocument();
             source = SelectRoot(source, fragment);
-            var info = GetSerializationInfo(source.GetType(), true);
+            var info = GetSerializationInfoForInstance(source, true);
             WriteBeginRootElement(target, source, info);
             XmlSerializationContext context = CreateSerializationContext(source);
             Serialize(source, target, null, false, XmlIdentificationMode.FullObject, context);
@@ -627,7 +644,7 @@ namespace NMF.Serialization
                 writer.WriteString(property.ConvertToString(obj));
                 return;
             }
-            ITypeSerializationInfo info = GetSerializationInfo(obj.GetType(), false);
+            ITypeSerializationInfo info = GetSerializationInfoForInstance(obj, false);
             if (WriteIdentifiedObject(writer, obj, identificationMode, info, context)) return;
             if (writeInstance) WriteBeginElement(writer, obj, info);
             if (info.ConstructorProperties != null)
@@ -668,7 +685,7 @@ namespace NMF.Serialization
                 if (pi.IsIdentifier)
                 {
                     string id = CStr(pi.GetValue(obj, context));
-                    context.RegisterId(id, obj);
+                    context.RegisterId(id, obj, pi.PropertyType);
                 }
             }
         }
@@ -751,7 +768,7 @@ namespace NMF.Serialization
                 if (pi.IsIdentifier)
                 {
                     string id = CStr(value);
-                    context.RegisterId(id, obj);
+                    context.RegisterId(id, obj, GetSerializationInfoForInstance(obj, false) ?? info);
                 }
             }
         }
@@ -782,12 +799,12 @@ namespace NMF.Serialization
         {
             if (!info.IsIdentified) return false;
             string id = CStr(info.IdentifierProperty.GetValue(obj, context));
-            if (identificationMode == XmlIdentificationMode.Identifier || (identificationMode == XmlIdentificationMode.AsNeeded && context.ContainsId(id, info.Type)))
+            if (identificationMode == XmlIdentificationMode.Identifier || (identificationMode == XmlIdentificationMode.AsNeeded && context.ContainsId(id, info)))
             {
                 writer.WriteString(id);
                 return true;
             }
-            else if (identificationMode == XmlIdentificationMode.FullObject && context.ContainsId(id, info.Type))
+            else if (identificationMode == XmlIdentificationMode.FullObject && context.ContainsId(id, info))
             {
                 writer.WriteStartElement(info.ElementName, info.Namespace);
                 if (info.AttributeProperties.Contains(info.IdentifierProperty))
@@ -881,10 +898,9 @@ namespace NMF.Serialization
 
         protected object CreateRoot(XmlReader reader)
         {
-            object root = null;
             while (reader.NodeType != XmlNodeType.Element) reader.Read();
             var rootInfo = GetRootElementTypeInfo(reader);
-            root = CreateObject(reader, rootInfo, null);
+            object root = CreateObject(reader, rootInfo, null);
             return root;
         }
 
@@ -911,7 +927,7 @@ namespace NMF.Serialization
         {
             if (tsi.ConstructorProperties == null)
             {
-                return tsi.Constructor.Invoke(emptyObjects);
+                return tsi.CreateObject(emptyObjects);
             }
             else
             {
@@ -921,7 +937,7 @@ namespace NMF.Serialization
                     IPropertySerializationInfo pi = tsi.ConstructorProperties[i];
                     objects[i] = pi.ConvertFromString(reader.GetAttribute(pi.ElementName, pi.Namespace));
                 }
-                return tsi.Constructor.Invoke(objects);
+                return tsi.CreateObject(objects);
             }
         }
 
@@ -935,7 +951,7 @@ namespace NMF.Serialization
             else if (reader.NodeType != XmlNodeType.EndElement)
             {
                 object target = DeserializeInternal(reader, property, context);
-                if (!property.IsReadOnly && (target == null || property.PropertyType.Type.IsAssignableFrom(target.GetType())))
+                if (!property.IsReadOnly && (target == null || property.PropertyType.IsInstanceOf(target)))
                 {
                     property.SetValue(obj, target, context);
                 }
@@ -1009,7 +1025,7 @@ namespace NMF.Serialization
         {
             if (obj == null) return;
             if (obj is ISupportInitialize) ((ISupportInitialize)obj).BeginInit();
-            ITypeSerializationInfo info = GetSerializationInfo(obj.GetType(), false);
+            ITypeSerializationInfo info = GetSerializationInfoForInstance(obj, false);
             if (reader.HasAttributes)
             {
                 if (info.IsIdentified && info.AttributeProperties.Contains(info.IdentifierProperty))
@@ -1023,18 +1039,18 @@ namespace NMF.Serialization
                         {
                             if (OverrideIdentifiedObject(obj, reader, context))
                             {
-                                if (!context.ContainsId(id, info.Type))
+                                if (!context.ContainsId(id, info))
                                 {
-                                    context.RegisterId(id, obj);
+                                    context.RegisterId(id, obj, info);
                                 }
                                 else
                                 {
-                                    obj = context.Resolve(id, info.Type);
+                                    obj = context.Resolve(id, info);
                                 }
                             }
                             else
                             {
-                                context.RegisterId(id, obj);
+                                context.RegisterId(id, obj, info);
                             }
                         }
                     }
@@ -1089,13 +1105,13 @@ namespace NMF.Serialization
                                 string str = CStr(p.GetValue(obj, context));
                                 if (!string.IsNullOrEmpty(str))
                                 {
-                                    if (context.ContainsId(str, info.Type))
+                                    if (context.ContainsId(str, info))
                                     {
-                                        obj = context.Resolve(str, info.Type);
+                                        obj = context.Resolve(str, info);
                                     }
                                     else
                                     {
-                                        context.RegisterId(str, obj);
+                                        context.RegisterId(str, obj, info);
                                     }
                                 }
                             }
@@ -1114,7 +1130,7 @@ namespace NMF.Serialization
                 {
                     if (info.DefaultProperty == null)
                     {
-                        throw new InvalidOperationException("Simple content unexpected for type " + info.Type.FullName);
+                        throw new InvalidOperationException("Simple content unexpected for type " + info.ToString());
                     }
                     InitializePropertyFromText(info.DefaultProperty, obj, reader.Value, context);
                 }
@@ -1159,6 +1175,11 @@ namespace NMF.Serialization
             return true;
         }
 
+        public virtual ITypeSerializationInfo GetSerializationInfoForInstance(object instance, bool createIfNecessary)
+        {
+            if (instance == null) throw new ArgumentNullException(nameof(instance));
+            return GetSerializationInfo(instance.GetType(), createIfNecessary);
+        }
 
         public ITypeSerializationInfo GetSerializationInfo(Type type, bool createIfNecessary)
         {
@@ -1187,7 +1208,7 @@ namespace NMF.Serialization
                     {
                         if (tmp.Type.IsAssignableFrom(type))
                         {
-                            if (info == null || info.Type.IsAssignableFrom(tmp.Type))
+                            if (info == null || info.IsAssignableFrom(tmp))
                             {
                                 info = tmp;
                             }

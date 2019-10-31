@@ -91,6 +91,18 @@ namespace NMF.Expressions
         }
 
         /// <summary>
+        /// Coalesces the given value with the given alternative
+        /// </summary>
+        /// <typeparam name="T">The element type</typeparam>
+        /// <param name="value">The incremental value that should be coalesced</param>
+        /// <param name="ifNull">The incremental coalesce value</param>
+        /// <returns>An incremental coalesced value</returns>
+        public static INotifyReversableExpression<T> Coalesce<T>(INotifyReversableExpression<T> value, INotifyReversableExpression<T> ifNull) where T : class
+        {
+            return new ObservableReversableCoalesceExpression<T>(value, ifNull);
+        }
+
+        /// <summary>
         /// Boxes the given incremental value
         /// </summary>
         /// <typeparam name="T">The type of the box</typeparam>
@@ -187,7 +199,7 @@ namespace NMF.Expressions
         /// <param name="inner">The value that should be tested for the given type</param>
         /// <param name="type">The type for which should be tested</param>
         /// <returns>An incremental value whether the object is of the given type</returns>
-        public static INotifyExpression<bool> InstanceIOf(INotifyExpression<object> inner, Type type)
+        public static INotifyExpression<bool> InstanceOf(INotifyExpression<object> inner, Type type)
         {
             return new ObservableTypeExpression(inner, type, ReflectionHelper.IsValueType(type));
         }

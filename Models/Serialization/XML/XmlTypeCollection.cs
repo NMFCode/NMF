@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using System.Collections;
+using System.Linq;
 
 namespace NMF.Serialization
 {
@@ -112,15 +113,15 @@ namespace NMF.Serialization
         /// <returns>An IEnumerator object</returns>
         public IEnumerator<Type> GetEnumerator()
         {
-            return new Enumerator(Serializer.Types.Values.GetEnumerator());
+            return new Enumerator(Serializer.Types.Values.OfType<XmlTypeSerializationInfo>().GetEnumerator());
         }
 
         private struct Enumerator : IEnumerator<Type>
         {
 
-            IEnumerator<ITypeSerializationInfo> enu;
+            IEnumerator<XmlTypeSerializationInfo> enu;
 
-            public Enumerator(IEnumerator<ITypeSerializationInfo> enu)
+            public Enumerator(IEnumerator<XmlTypeSerializationInfo> enu)
             {
                 this.enu = enu;
             }

@@ -11,6 +11,8 @@ namespace NMF.Serialization
         string Namespace { get; }
         string NamespacePrefix { get; }
 
+        Type MappedType { get; }
+
         IPropertySerializationInfo DefaultProperty { get; }
 
         IEnumerable<IPropertySerializationInfo> AttributeProperties { get; }
@@ -18,11 +20,13 @@ namespace NMF.Serialization
 
         IEnumerable<ITypeSerializationInfo> BaseTypes { get; }
 
-        Type Type { get; }
+        bool IsAssignableFrom(ITypeSerializationInfo specializedType);
+
+        bool IsInstanceOf(object instance);
 
         IPropertySerializationInfo[] ConstructorProperties { get; }
 
-        ConstructorInfo Constructor { get; }
+        object CreateObject(object[] args);
 
         bool IsIdentified { get; }
 
