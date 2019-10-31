@@ -29,5 +29,12 @@
     <file src="..\Models\Models\bin\Release\net45\NMF.Models.dll" target="lib\net45" />
     <file src="..\Models\Models\bin\Release\net461\NMF.Serialization.dll" target="lib\net461" />
     <file src="..\Models\Models\bin\Release\net461\NMF.Models.dll" target="lib\net461" />
+
+    <file src="..\Models\Models\bin\Release\NMF.Serialization.xml" target="lib\netstandard2.0" />
+    <file src="..\Models\Models\bin\Release\NMF.Models.xml" target="lib\netstandard2.0" />
+    <file src="..\Models\Models\bin\Release\NMF.Serialization.xml" target="lib\net45" />
+    <file src="..\Models\Models\bin\Release\NMF.Models.xml" target="lib\net45" />
+    <file src="..\Models\Models\bin\Release\NMF.Serialization.xml" target="lib\net461" />
+    <file src="..\Models\Models\bin\Release\NMF.Models.xml" target="lib\net461" />
   </files>
 </package>

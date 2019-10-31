@@ -6,6 +6,10 @@
     <RootNamespace>NMF.Expressions.Debug</RootNamespace>
   </PropertyGroup>
 
+  <PropertyGroup Condition="'$(Configuration)'=='Release'">
+    <DocumentationFile>bin/Release/NMF.Expressions.Debug.xml</DocumentationFile>
+  </PropertyGroup>
+
   <PropertyGroup>
     <LangVersion>latest</LangVersion>
   </PropertyGroup>

@@ -27,5 +27,9 @@
     <file src="..\Synchronizations\Synchronizations\bin\Release\netstandard2.0\NMF.Synchronizations.dll" target="lib\netstandard2.0" />
     <file src="..\Synchronizations\Synchronizations\bin\Release\net45\NMF.Synchronizations.dll" target="lib\net45" />
     <file src="..\Synchronizations\Synchronizations\bin\Release\net461\NMF.Synchronizations.dll" target="lib\net461" />
+    
+    <file src="..\Synchronizations\Synchronizations\bin\Release\NMF.Synchronizations.xml" target="lib\netstandard2.0" />
+    <file src="..\Synchronizations\Synchronizations\bin\Release\NMF.Synchronizations.xml" target="lib\net45" />
+    <file src="..\Synchronizations\Synchronizations\bin\Release\NMF.Synchronizations.xml" target="lib\net461" />
   </files>
 </package>

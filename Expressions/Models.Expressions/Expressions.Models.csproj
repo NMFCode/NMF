@@ -4,7 +4,11 @@
     <TargetFrameworks>netstandard2.0;net45;net461</TargetFrameworks>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <AssemblyName>NMF.Expressions.Models</AssemblyName>
-    <RootNamespace>Expressions</RootNamespace>
+    <RootNamespace>NMF.Expressions</RootNamespace>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)'=='Release'">
+    <DocumentationFile>bin/Release/NMF.Expressions.Models.xml</DocumentationFile>
   </PropertyGroup>
 
   <PropertyGroup>

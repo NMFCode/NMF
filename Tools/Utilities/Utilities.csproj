@@ -11,4 +11,8 @@
     <LangVersion>latest</LangVersion>
   </PropertyGroup>
 
+  <PropertyGroup Condition="'$(Configuration)'=='Release'">
+    <DocumentationFile>bin/Release/NMF.Utilities.xml</DocumentationFile>
+  </PropertyGroup>
+
 </Project>

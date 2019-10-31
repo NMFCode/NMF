@@ -19,6 +19,10 @@
     <Compile Remove="Meta\ModelElementExtension.cs" />
   </ItemGroup>
 
+  <PropertyGroup Condition="'$(Configuration)'=='Release'">
+    <DocumentationFile>bin/Release/NMF.Models.xml</DocumentationFile>
+  </PropertyGroup>
+
   <ItemGroup>
     <EmbeddedResource Include="..\..\NMeta.nmeta" Link="NMeta.nmeta" />
     <EmbeddedResource Include="..\..\NMetaChanges.nmeta" Link="NMetaChanges.nmeta" />

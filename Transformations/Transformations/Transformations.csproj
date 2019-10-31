@@ -11,6 +11,10 @@
     <LangVersion>latest</LangVersion>
   </PropertyGroup>
 
+  <PropertyGroup Condition="'$(Configuration)'=='Release'">
+    <DocumentationFile>bin/Release/NMF.Transformations.xml</DocumentationFile>
+  </PropertyGroup>
+
   <ItemGroup>
     <ProjectReference Include="..\..\Expressions\Expressions.Linq\Expressions.Linq.csproj" />
     <ProjectReference Include="..\..\Expressions\Expressions\Expressions.csproj" />

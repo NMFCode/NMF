@@ -6,6 +6,10 @@
     <RootNamespace>NMF.Synchronizations.Models</RootNamespace>
   </PropertyGroup>
 
+  <PropertyGroup Condition="'$(Configuration)'=='Release'">
+    <DocumentationFile>bin/Release/NMF.Synchronizations.Models.xml</DocumentationFile>
+  </PropertyGroup>
+
   <PropertyGroup>
     <LangVersion>latest</LangVersion>
   </PropertyGroup>

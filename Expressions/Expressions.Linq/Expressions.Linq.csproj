@@ -7,6 +7,10 @@
     <RootNamespace>NMF.Expressions.Linq</RootNamespace>
   </PropertyGroup>
 
+  <PropertyGroup Condition="'$(Configuration)'=='Release'">
+    <DocumentationFile>bin/Release/NMF.Expressions.Linq.xml</DocumentationFile>
+  </PropertyGroup>
+
   <PropertyGroup>
     <LangVersion>latest</LangVersion>
   </PropertyGroup>

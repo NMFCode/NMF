@@ -27,5 +27,8 @@
     <file src="..\Transformations\CodeGen\bin\Release\netstandard2.0\NMF.CodeGen.dll" target="lib\netstandard2.0" />
     <file src="..\Transformations\CodeGen\bin\Release\net45\NMF.CodeGen.dll" target="lib\net45" />
     <file src="..\Transformations\CodeGen\bin\Release\net461\NMF.CodeGen.dll" target="lib\net461" />
+    <file src="..\Transformations\CodeGen\bin\Release\NMF.CodeGen.xml" target="lib\netstandard2.0" />
+    <file src="..\Transformations\CodeGen\bin\Release\NMF.CodeGen.xml" target="lib\net45" />
+    <file src="..\Transformations\CodeGen\bin\Release\NMF.CodeGen.xml" target="lib\net461" />
   </files>
 </package>
