@@ -3,8 +3,12 @@
     <TargetFrameworks>netcoreapp2.1;net461;net471;net45</TargetFrameworks>
     <IsPackable>false</IsPackable>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
-    <AssemblyName>NMF.Models.Tests</AssemblyName>
+    <AssemblyName>Models.Tests</AssemblyName>
     <RootNamespace>NMF.Models.Tests</RootNamespace>
+  </PropertyGroup>
+  
+  <PropertyGroup>
+    <OutputPath>..\..\Build\Tests\</OutputPath>
   </PropertyGroup>
 
   <ItemGroup>

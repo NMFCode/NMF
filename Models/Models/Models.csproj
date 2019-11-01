@@ -19,8 +19,9 @@
     <Compile Remove="Meta\ModelElementExtension.cs" />
   </ItemGroup>
 
-  <PropertyGroup Condition="'$(Configuration)'=='Release'">
-    <DocumentationFile>bin/Release/NMF.Models.xml</DocumentationFile>
+  <PropertyGroup>
+    <OutputPath>..\..\Build\</OutputPath>
+    <DocumentationFile>..\..\Build\NMF.Models.xml</DocumentationFile>
   </PropertyGroup>
 
   <ItemGroup>

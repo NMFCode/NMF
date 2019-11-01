@@ -5,6 +5,10 @@
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
   </PropertyGroup>
 
+  <PropertyGroup>
+    <OutputPath>..\..\Build\Tests\</OutputPath>
+  </PropertyGroup>
+
   <ItemGroup>
     <PackageReference Include="MSTest.TestFramework" Version="1.4.0" />
   </ItemGroup>

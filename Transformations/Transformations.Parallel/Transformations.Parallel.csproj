@@ -11,6 +11,11 @@
     <LangVersion>latest</LangVersion>
   </PropertyGroup>
 
+  <PropertyGroup>
+    <OutputPath>..\..\Build\</OutputPath>
+    <DocumentationFile>..\..\Build\NMF.Transformations.Parallel.xml</DocumentationFile>
+  </PropertyGroup>
+
   <ItemGroup>
     <ProjectReference Include="..\..\Tools\Utilities\Utilities.csproj" />
     <ProjectReference Include="..\Transformations.Core\Transformations.Core.csproj" />

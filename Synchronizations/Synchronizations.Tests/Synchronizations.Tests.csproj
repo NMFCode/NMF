@@ -6,6 +6,10 @@
   </PropertyGroup>
 
   <PropertyGroup>
+    <OutputPath>..\..\Build\Tests\</OutputPath>
+  </PropertyGroup>
+
+  <PropertyGroup>
     <LangVersion>latest</LangVersion>
   </PropertyGroup>
 

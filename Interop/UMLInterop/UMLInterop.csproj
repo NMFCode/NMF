@@ -8,6 +8,10 @@
   </PropertyGroup>
 
   <PropertyGroup>
+    <OutputPath>..\..\Build\</OutputPath>
+  </PropertyGroup>
+
+  <PropertyGroup>
     <LangVersion>latest</LangVersion>
   </PropertyGroup>
 </Project>

@@ -7,8 +7,10 @@
     <RootNamespace>NMF.Synchronizations</RootNamespace>
   </PropertyGroup>
 
-  <PropertyGroup Condition="'$(Configuration)'=='Release'">
-    <DocumentationFile>bin/Release/NMF.Synchronizations.xml</DocumentationFile>
+
+  <PropertyGroup>
+    <OutputPath>..\..\Build\</OutputPath>
+    <DocumentationFile>..\..\Build\NMF.Synchronizations.xml</DocumentationFile>
   </PropertyGroup>
 
   <PropertyGroup>

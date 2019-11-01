@@ -7,6 +7,13 @@
 
   <PropertyGroup>
     <LangVersion>latest</LangVersion>
+    <AssemblyName>NMF.Analysis</AssemblyName>
+    <RootNamespace>NMF.Analysis</RootNamespace>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <OutputPath>..\..\Build\</OutputPath>
+    <DocumentationFile>..\..\Build\NMF.Analysis.xml</DocumentationFile>
   </PropertyGroup>
 
   <ItemGroup>

@@ -7,6 +7,10 @@
     <RootNamespace>NMF.Models.Tests.Dynamic</RootNamespace>
     <AssemblyName>NMF.Models.Tests.Dynamic</AssemblyName>
   </PropertyGroup>
+  
+  <PropertyGroup>
+    <OutputPath>..\..\..\Build\Tests</OutputPath>
+  </PropertyGroup>
 
   <ItemGroup>
     <None Include="..\..\Models.Tests\debug.debug" Link="debug.debug">

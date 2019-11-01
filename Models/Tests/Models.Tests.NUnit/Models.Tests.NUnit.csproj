@@ -2,6 +2,13 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
+    <AssemblyName>NMF.Models.Tests.NUnit</AssemblyName>
+    <RootNamespace>NMF.Models.Tests</RootNamespace>
+  </PropertyGroup>
+  
+  <PropertyGroup>
+    <OutputPath>..\..\..\Build\</OutputPath>
+    <DocumentationFile>..\..\..\Build\NMF.Models.Tests.NUnit.xml</DocumentationFile>
   </PropertyGroup>
 
   <ItemGroup>

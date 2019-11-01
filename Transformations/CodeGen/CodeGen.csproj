@@ -11,8 +11,9 @@
     <LangVersion>latest</LangVersion>
   </PropertyGroup>
 
-  <PropertyGroup Condition="'$(Configuration)'=='Release'">
-    <DocumentationFile>bin/Release/NMF.CodeGen.xml</DocumentationFile>
+  <PropertyGroup>
+    <OutputPath>..\..\Build\</OutputPath>
+    <DocumentationFile>..\..\Build\NMF.CodeGen.xml</DocumentationFile>
   </PropertyGroup>
 
   <ItemGroup>

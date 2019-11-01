@@ -8,6 +8,11 @@
   </PropertyGroup>
 
   <PropertyGroup>
+    <OutputPath>..\..\Build\</OutputPath>
+    <DocumentationFile>..\..\Build\NMF.Optimizations.xml</DocumentationFile>
+  </PropertyGroup>
+
+  <PropertyGroup>
     <LangVersion>latest</LangVersion>
   </PropertyGroup>
 

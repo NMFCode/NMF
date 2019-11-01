@@ -13,6 +13,10 @@
     <PackageReference Include="System.ValueTuple" Version="4.5.0" />
   </ItemGroup>
 
+  <PropertyGroup>
+    <OutputPath>..\..\..\Build\Tests\</OutputPath>
+  </PropertyGroup>
+
   <ItemGroup>
     <Compile Update="Arithmetic\BasicArithmeticExpressionTests.cs">
       <DependentUpon>BasicArithmeticExpressionTests.tt</DependentUpon>

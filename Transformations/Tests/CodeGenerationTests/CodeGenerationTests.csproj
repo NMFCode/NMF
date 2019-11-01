@@ -5,6 +5,10 @@
     <RootNamespace>NMF.CodeGenerationTests</RootNamespace>
     <AssemblyName>CodeGenerationTests</AssemblyName>
   </PropertyGroup>
+
+  <PropertyGroup>
+    <OutputPath>..\..\..\Build\Tests\</OutputPath>
+  </PropertyGroup>
   <ItemGroup>
     <EmbeddedResource Include="ProjectTemplate.csproj" />
   </ItemGroup>

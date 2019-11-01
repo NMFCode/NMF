@@ -11,8 +11,9 @@
     <LangVersion>latest</LangVersion>
   </PropertyGroup>
 
-  <PropertyGroup Condition="'$(Configuration)'=='Release'">
-    <DocumentationFile>bin/Release/NMF.Layering.xml</DocumentationFile>
+  <PropertyGroup>
+    <OutputPath>..\..\Build\</OutputPath>
+    <DocumentationFile>..\..\Build\NMF.Layering.xml</DocumentationFile>
   </PropertyGroup>
 
 </Project>

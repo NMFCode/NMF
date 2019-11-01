@@ -12,8 +12,9 @@
     <ProjectReference Include="..\Models\Models.csproj" />
   </ItemGroup>
 
-  <PropertyGroup Condition="'$(Configuration)'=='Release'">
-    <DocumentationFile>bin/Release/NMF.Models.Dynamic.xml</DocumentationFile>
+  <PropertyGroup>
+    <OutputPath>..\..\Build\</OutputPath>
+    <DocumentationFile>..\..\Build\NMF.Models.Dynamic.xml</DocumentationFile>
   </PropertyGroup>
 
 </Project>

@@ -6,6 +6,11 @@
   </PropertyGroup>
 
   <PropertyGroup>
+    <OutputPath>..\..\Build\Examples</OutputPath>
+    <DocumentationFile>..\..\Build\Examples\Transformations.Sample.xml</DocumentationFile>
+  </PropertyGroup>
+
+  <PropertyGroup>
     <LangVersion>latest</LangVersion>
   </PropertyGroup>
 

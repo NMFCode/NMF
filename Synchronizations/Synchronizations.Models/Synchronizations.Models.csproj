@@ -6,8 +6,9 @@
     <RootNamespace>NMF.Synchronizations.Models</RootNamespace>
   </PropertyGroup>
 
-  <PropertyGroup Condition="'$(Configuration)'=='Release'">
-    <DocumentationFile>bin/Release/NMF.Synchronizations.Models.xml</DocumentationFile>
+  <PropertyGroup>
+    <OutputPath>..\..\Build\</OutputPath>
+    <DocumentationFile>..\..\Build\NMF.Synchronizations.Models.xml</DocumentationFile>
   </PropertyGroup>
 
   <PropertyGroup>

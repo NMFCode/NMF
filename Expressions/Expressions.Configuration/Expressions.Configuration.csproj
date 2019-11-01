@@ -7,8 +7,9 @@
     <RootNamespace>NMF.Expressions</RootNamespace>
   </PropertyGroup>
 
-  <PropertyGroup Condition="'$(Configuration)'=='Release'">
-    <DocumentationFile>bin/Release/NMF.Expressions.Configuration.xml</DocumentationFile>
+  <PropertyGroup>
+    <OutputPath>..\..\Build\</OutputPath>
+    <DocumentationFile>..\..\Build\NMF.Expressions.Configuration.xml</DocumentationFile>
   </PropertyGroup>
 
   <PropertyGroup>

@@ -7,6 +7,13 @@
 
   <PropertyGroup>
     <LangVersion>latest</LangVersion>
+    <AssemblyName>NMF.Benchmarks</AssemblyName>
+    <RootNamespace>NMF.Benchmarks</RootNamespace>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <OutputPath>..\..\Build\</OutputPath>
+    <DocumentationFile>..\..\Build\NMF.Benchmarks.xml</DocumentationFile>
   </PropertyGroup>
 
   <ItemGroup>

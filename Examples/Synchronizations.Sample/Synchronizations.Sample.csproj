@@ -8,6 +8,11 @@
   </PropertyGroup>
 
   <PropertyGroup>
+    <OutputPath>..\..\Build\Examples</OutputPath>
+    <DocumentationFile>..\..\Build\Examples\Synchronizations.Example.xml</DocumentationFile>
+  </PropertyGroup>
+
+  <PropertyGroup>
     <LangVersion>latest</LangVersion>
   </PropertyGroup>
 

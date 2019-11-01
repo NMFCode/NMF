@@ -2,6 +2,13 @@
 
   <PropertyGroup>
     <TargetFrameworks>netcoreapp2.1;net45;net461;net471</TargetFrameworks>
+    <AssemblyName>NMF.Models.Tests.MSTest</AssemblyName>
+    <RootNamespace>NMF.Models.Tests</RootNamespace>
+  </PropertyGroup>
+  
+  <PropertyGroup>
+    <OutputPath>..\..\..\Build\</OutputPath>
+    <DocumentationFile>..\..\..\Build\NMF.Models.Tests.MSTest.xml</DocumentationFile>
   </PropertyGroup>
 
   <ItemGroup>
