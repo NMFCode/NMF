@@ -6,13 +6,14 @@
         <title>NMF Basics</title>
         <authors>Georg Hinkel</authors>
         <owners>Georg Hinkel</owners>
-        <licenseUrl>http://nmf.codeplex.com/license</licenseUrl>
+        <license type="expression">BSD-3-Clause</license>
         <projectUrl>http://github.com/NMFCode/NMF</projectUrl>
         <requireLicenseAcceptance>false</requireLicenseAcceptance>
         <developmentDependency>true</developmentDependency>
         <description>This package contains the basic libraries for a model-driven project using the .NET Modelling Framework (NMF).</description>
         <summary>This package contains the basic libraries for a model-driven project using the .NET Modelling Framework (NMF).</summary>
         <copyright>Copyright © Georg Hinkel 2015</copyright>
+      <icon>images\icon.jpg</icon>
         <language>en</language>
         <tags>Model-driven; MDE; EMF; XMI; MDSD; Ecore</tags>
         <repository type="git" url="https://github.com/NMFCode/NMF" />
@@ -29,5 +30,6 @@
   <files>
     <file src="..\Tools\Ecore2Code\bin\Release\*.dll" target="tools" />
     <file src="..\Tools\Ecore2Code\bin\Release\Ecore2Code.exe" target="tools" />
+    <file src="icon.jpg" target="images" />
   </files>
 </package>

@@ -5,13 +5,14 @@
         <version>$version$</version>
         <title>NMF Expressions Debugging Helper</title>
         <authors>Georg Hinkel</authors>
-        <licenseUrl>http://nmf.codeplex.com/license</licenseUrl>
+        <license type="expression">BSD-3-Clause</license>
         <projectUrl>http://github.com/NMFCode/NMF</projectUrl>
         <requireLicenseAcceptance>false</requireLicenseAcceptance>
         <developmentDependency>true</developmentDependency>
         <description>This package contains some debugging utility classes for NMF Expressions</description>
         <summary>This package contains some debugging utility classes for NMF Expressions</summary>
         <copyright>Copyright © Georg Hinkel 2018</copyright>
+      <icon>images\icon.jpg</icon>
         <language>en</language>
         <tags>Incremental; LINQ;</tags>
       <repository type="git" url="https://github.com/NMFCode/NMF" />
@@ -28,5 +29,6 @@
     <file src="..\Expressions\Expressions.Debug\bin\Release\NMF.Expressions.Debug.xml" target="lib\netstandard2.0"/>
     <file src="..\Expressions\Expressions.Debug\bin\Release\NMF.Expressions.Debug.xml" target="lib\net45"/>
     <file src="..\Expressions\Expressions.Debug\bin\Release\NMF.Expressions.Debug.xml" target="lib\net461"/>
+    <file src="icon.jpg" target="images" />
   </files>
 </package>

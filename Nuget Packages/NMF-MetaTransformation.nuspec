@@ -6,13 +6,14 @@
         <title>NMF Meta Transformation</title>
         <authors>Georg Hinkel</authors>
         <owners>Georg Hinkel</owners>
-        <licenseUrl>http://nmf.codeplex.com/license</licenseUrl>
+        <license type="expression">BSD-3-Clause</license>
         <projectUrl>http://github.com/NMFCode/NMF</projectUrl>
         <requireLicenseAcceptance>false</requireLicenseAcceptance>
         <developmentDependency>true</developmentDependency>
         <description>This package contains a transformation from NMeta to code.</description>
         <summary>This package contains a transformation from NMeta to code.</summary>
         <copyright>Copyright © Georg Hinkel 2016</copyright>
+      <icon>images\icon.jpg</icon>
         <language>en</language>
         <tags>Model-driven; MDE; MDSD;</tags>
       <repository type="git" url="https://github.com/NMFCode/NMF" />
@@ -28,5 +29,6 @@
     <file src="..\Transformations\Models.MetaTransformation\bin\Release\netstandard2.0\NMF.Models.MetaTransformation.dll" target="lib\netstandard2.0" />
     <file src="..\Transformations\Models.MetaTransformation\bin\Release\net45\NMF.Models.MetaTransformation.dll" target="lib\net45" />
     <file src="..\Transformations\Models.MetaTransformation\bin\Release\net461\NMF.Models.MetaTransformation.dll" target="lib\net461" />
+    <file src="icon.jpg" target="images" />
   </files>
 </package>
