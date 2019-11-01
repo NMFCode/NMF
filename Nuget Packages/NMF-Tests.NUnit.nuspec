@@ -1,0 +1,30 @@
+<?xml version="1.0"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
+    <metadata>
+      <id>NMF-Tests.NUnit</id>
+      <version>$version$</version>
+      <title>NMF Model Tests for NUnit</title>
+      <authors>Georg Hinkel</authors>
+      <owners>Georg Hinkel</owners>
+      <license type="expression">BSD-3-Clause</license>
+      <projectUrl>http://github.com/NMFCode/NMF</projectUrl>
+      <requireLicenseAcceptance>false</requireLicenseAcceptance>
+      <developmentDependency>true</developmentDependency>
+      <description>This package contains abstract test suites for model element classes using the NUnit testing framework.</description>
+      <summary>This package contains abstract test suites for model element classes using the NUnit testing framework.</summary>
+      <copyright>Copyright © Georg Hinkel 2019</copyright>
+      <icon>images\icon.jpg</icon>
+        <language>en</language>
+        <tags>Model-driven; MDE; EMF; XMI; MDSD; Ecore</tags>
+        <repository type="git" url="https://github.com/NMFCode/NMF" />
+        <dependencies>
+            <dependency id="NMF-Expressions" version="[$version$, 3.0)" />
+            <dependency id="NMF-Repository" version="[$version$, 3.0)" />
+          <dependency id="NUnit" version="3.11.0" />
+        </dependencies>
+    </metadata>
+  <files>
+    <file src="..\Build\netstandard2.0\NMF.Models.Test*.dll" target="lib\netstandard2.0" />
+    <file src="icon.jpg" target="images" />
+  </files>
+</package>

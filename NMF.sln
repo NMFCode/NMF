@@ -151,6 +151,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "NuSpec", "NuSpec", "{E671CC
 		Nuget Packages\NMF-Basics.nuspec = Nuget Packages\NMF-Basics.nuspec
 		Nuget Packages\NMF-CodeGen.nuspec = Nuget Packages\NMF-CodeGen.nuspec
 		Nuget Packages\NMF-Collections.nuspec = Nuget Packages\NMF-Collections.nuspec
+		Nuget Packages\NMF-Controls.nuspec = Nuget Packages\NMF-Controls.nuspec
 		Nuget Packages\NMF-Dynamic.nuspec = Nuget Packages\NMF-Dynamic.nuspec
 		Nuget Packages\NMF-Expressions-Debug.nuspec = Nuget Packages\NMF-Expressions-Debug.nuspec
 		Nuget Packages\NMF-Expressions-Utilities.nuspec = Nuget Packages\NMF-Expressions-Utilities.nuspec
@@ -161,6 +162,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "NuSpec", "NuSpec", "{E671CC
 		Nuget Packages\NMF-MetaTransformation.nuspec = Nuget Packages\NMF-MetaTransformation.nuspec
 		Nuget Packages\NMF-Repository.nuspec = Nuget Packages\NMF-Repository.nuspec
 		Nuget Packages\NMF-Synchronizations.nuspec = Nuget Packages\NMF-Synchronizations.nuspec
+		Nuget Packages\NMF-Tests.MSTest.nuspec = Nuget Packages\NMF-Tests.MSTest.nuspec
+		Nuget Packages\NMF-Tests.NUnit.nuspec = Nuget Packages\NMF-Tests.NUnit.nuspec
 		Nuget Packages\NMF-Transformations.nuspec = Nuget Packages\NMF-Transformations.nuspec
 		Nuget Packages\NMF-Utilities.nuspec = Nuget Packages\NMF-Utilities.nuspec
 	EndProjectSection
@@ -175,7 +178,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Models.Tests.NUnit", "Model
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Models.Dynamic", "Models\Models.Dynamic\Models.Dynamic.csproj", "{0A1FCD3F-2944-443E-A818-DB2AAA2E19B3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Models.Tests.Dynamic", "Models\Tests\Models.Tests.Dynamic\Models.Tests.Dynamic.csproj", "{1E2CB79C-4BEF-4DD8-9691-5D8D7A807DF8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Models.Tests.Dynamic", "Models\Tests\Models.Tests.Dynamic\Models.Tests.Dynamic.csproj", "{1E2CB79C-4BEF-4DD8-9691-5D8D7A807DF8}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

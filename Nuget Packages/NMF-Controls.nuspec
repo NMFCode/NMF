@@ -1,0 +1,32 @@
+<?xml version="1.0"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
+    <metadata>
+        <id>NMF-Controls</id>
+        <version>$version$</version>
+        <title>NMF Model user controls for WPF</title>
+        <authors>Georg Hinkel</authors>
+        <owners>Georg Hinkel</owners>
+        <license type="expression">BSD-3-Clause</license>
+        <projectUrl>http://github.com/NMFCode/NMF</projectUrl>
+        <requireLicenseAcceptance>false</requireLicenseAcceptance>
+        <developmentDependency>true</developmentDependency>
+        <description>A library for model-specific user controls.</description>
+        <summary>This package contains a set of generic user controls that make use of the model structure.</summary>
+        <copyright>Copyright © Georg Hinkel 2019</copyright>
+        <icon>images\icon.jpg</icon>
+        <language>en</language>
+        <tags>Model-driven; MDE; MDSD;</tags>
+      <repository type="git" url="https://github.com/NMFCode/NMF" />
+        <dependencies>
+          <dependency id="NMF-Expressions" version="[$version$, 3.0)" />
+          <dependency id="NMF-Repository" version="[$version$, 3.0)" />
+          <dependency id="Extended.Wpf.Toolkit" version="3.4.0" />
+          <dependency id="System.ValueTuple" version="4.5.0" />
+        </dependencies>
+    </metadata>
+  <files>
+    <file src="..\Build\Controls\NMF.Controls.dll" target="lib\net461" />
+    <file src="..\Build\Controls\NMF.Controls.xml" target="lib\net461" />
+    <file src="icon.jpg" target="images" />
+  </files>
+</package>
