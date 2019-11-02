@@ -83,18 +83,14 @@ namespace NMF.Models.Tests
         [TestMethod]
         public void RecordListDeletionAssociation()
         {
-            //ListDeletionAssociation will be removed
-            /*var parent = railway.Routes[0].DefinedBy[0].Elements[0];
+            var parent = railway.Routes[0].DefinedBy[0].Elements[0];
             var rec = new ModelChangeRecorder();
             rec.Start(railway);
 
             parent.ConnectsTo.RemoveAt(0);
-            var expected = new List<IModelChange>()
-            {
-                new ListDeletionAssociation<ITrackElement>(parent.AbsoluteUri, "ConnectsTo", 0, 1)
-            };
             var actual = rec.GetModelChanges().Changes;
-            CollectionAssert.AreEqual(expected, actual);*/
+            Assert.AreEqual(1, actual.Count);
+            Assert.IsInstanceOfType(actual.Single(), typeof(AssociationListDeletion));
         }
 
         [TestMethod]
@@ -106,9 +102,8 @@ namespace NMF.Models.Tests
 
             parent.ConnectsTo.Clear();
 
-            //var expected = new CollectionResetAssociation<ITrackElement>(parent.AbsoluteUri, "ConnectsTo", new List<Uri>());
-            //var actual = rec.GetModelChanges().Changes[0];
-            //Assert.AreEqual(expected, actual);
+            var actual = rec.GetModelChanges().Changes.Single();
+            Assert.IsInstanceOfType(actual, typeof(AssociationCollectionReset));
         }
 
         [TestMethod]
@@ -120,13 +115,8 @@ namespace NMF.Models.Tests
 
             railway.Semaphores.Insert(0, semaphore);
 
-            //var expected = new ChangeTransaction()
-            //{
-            //    SourceChange = new ListInsertionComposition<ISemaphore>(railway.AbsoluteUri, "Semaphores", 0, new List<ISemaphore>() { semaphore }),
-            //    NestedChanges = new List<IModelChange>() { new ElementCreation(semaphore) }
-            //};
-            //var actual = rec.GetModelChanges().Changes[0];
-            //Assert.AreEqual(expected, actual);
+            var actual = rec.GetModelChanges().Changes.Single();
+            Assert.IsInstanceOfType(actual, typeof(CompositionListInsertion));
         }
 
         [TestMethod]
@@ -139,12 +129,8 @@ namespace NMF.Models.Tests
 
             parent.ConnectsTo.Insert(0, newItem);
 
-            //var expected = new List<IModelChange>()
-            //{
-            //    new ListInsertionAssociation<ITrackElement>(parent.AbsoluteUri, "ConnectsTo", 0, new List<Uri>() { newItem.AbsoluteUri })
-            //};
-            //var actual = rec.GetModelChanges().Changes;
-            //CollectionAssert.AreEqual(expected, actual);
+            var actual = rec.GetModelChanges().Changes.Single();
+            Assert.IsInstanceOfType(actual, typeof(AssociationListInsertion));
         }
 
         [TestMethod]
@@ -156,8 +142,10 @@ namespace NMF.Models.Tests
 
             toDelete.Delete();
 
-            //var actual = ((ChangeTransaction)rec.GetModelChanges().Changes[0]).SourceChange;
-            //Assert.AreEqual(expected, actual);
+            // deleting a route means that a range of elements are deleted, so we see several changes that an association was deleted
+            // only the last one is the actual deletion from the composition
+            var actual = rec.GetModelChanges().Changes.Last();
+            Assert.IsInstanceOfType(actual, typeof(CompositionListDeletion));
         }
     }
 }

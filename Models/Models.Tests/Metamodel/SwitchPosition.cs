@@ -405,17 +405,32 @@ namespace NMF.Models.Tests.Railway
         /// <param name="reference">The requested reference in upper case</param>
         protected override NMF.Expressions.INotifyExpression<NMF.Models.IModelElement> GetExpressionForReference(string reference)
         {
-            if ((reference == "Switch"))
+            if ((reference == "SWITCH"))
             {
                 return new SwitchProxy(this);
             }
-            if ((reference == "Route"))
+            if ((reference == "ROUTE"))
             {
                 return new RouteProxy(this);
             }
             return base.GetExpressionForReference(reference);
         }
-        
+
+        /// <summary>
+        /// Gets the Model element for the given reference and index
+        /// </summary>
+        /// <param name="reference">The reference name in upper case</param>
+        /// <param name="index">The index of the element within the reference</param>
+        /// <returns>The model element at the given reference</returns>
+        protected override IModelElement GetModelElementForReference(string reference, int index)
+        {
+            if ((reference == "ROUTE"))
+            {
+                return Route;
+            }
+            return base.GetModelElementForReference(reference, index);
+        }
+
         /// <summary>
         /// Gets the Class for this model element
         /// </summary>
