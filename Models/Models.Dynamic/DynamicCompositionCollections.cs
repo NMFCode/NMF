@@ -6,7 +6,7 @@ using NMF.Models.Meta;
 
 namespace NMF.Models.Dynamic
 {
-    internal class DynamicCompositionList : CompositionList<IModelElement>
+    internal class DynamicCompositionList : ObservableCompositionList<IModelElement>
     {
         public DynamicCompositionList(ModelElement parent, IClass type) : base(parent)
         {
@@ -33,7 +33,7 @@ namespace NMF.Models.Dynamic
         }
     }
 
-    internal class DynamicCompositionOrderedSet : CompositionOrderedSet<IModelElement>
+    internal class DynamicCompositionOrderedSet : ObservableCompositionOrderedSet<IModelElement>
     {
         public IClass Type { get; }
 
@@ -61,7 +61,7 @@ namespace NMF.Models.Dynamic
         }
     }
 
-    internal class DynamicCompositionSet : CompositionSet<IModelElement>
+    internal class DynamicCompositionSet : ObservableCompositionSet<IModelElement>
     {
         public IClass Type { get; }
 

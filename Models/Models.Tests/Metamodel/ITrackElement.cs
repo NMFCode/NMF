@@ -23,6 +23,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
@@ -36,12 +37,18 @@ namespace NMF.Models.Tests.Railway
     /// </summary>
     [DefaultImplementationTypeAttribute(typeof(TrackElement))]
     [XmlDefaultImplementationTypeAttribute(typeof(TrackElement))]
+    [ModelRepresentationClassAttribute("http://www.semanticweb.org/ontologies/2015/ttc/trainbenchmark#//TrackElement")]
     public interface ITrackElement : IModelElement, IRailwayElement
     {
         
         /// <summary>
         /// The sensor property
         /// </summary>
+        [BrowsableAttribute(false)]
+        [XmlElementNameAttribute("sensor")]
+        [DesignerSerializationVisibilityAttribute(DesignerSerializationVisibility.Hidden)]
+        [XmlAttributeAttribute(true)]
+        [XmlOppositeAttribute("elements")]
         ISensor Sensor
         {
             get;
@@ -51,6 +58,12 @@ namespace NMF.Models.Tests.Railway
         /// <summary>
         /// The connectsTo property
         /// </summary>
+        [DesignerSerializationVisibilityAttribute(DesignerSerializationVisibility.Content)]
+        [DisplayNameAttribute("connectsTo")]
+        [CategoryAttribute("TrackElement")]
+        [XmlElementNameAttribute("connectsTo")]
+        [XmlAttributeAttribute(true)]
+        [ConstantAttribute()]
         IListExpression<ITrackElement> ConnectsTo
         {
             get;

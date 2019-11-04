@@ -210,17 +210,17 @@ namespace NMF.Serialization
             return paths;
         }
 
-        public bool IsOppositeSet(object instance, IPropertySerializationInfo property)
+        public bool IsBlocked(object instance, IPropertySerializationInfo property)
         {
             if (property == null || property.Opposite == null) return false;
             var pair = new ObjectPropertyPair() { Object = instance, Property = property };
             return blockedProperties.Contains(pair);
         }
 
-        public void BlockOpposite(object value, IPropertySerializationInfo property)
+        public void BlockProperty(object value, IPropertySerializationInfo property)
         {
-            if (property == null || property.Opposite == null) return;
-            var pair = new ObjectPropertyPair() { Object = value, Property = property.Opposite };
+            if (property == null || value == null) return;
+            var pair = new ObjectPropertyPair() { Object = value, Property = property };
             blockedProperties.Add(pair);
         }
 

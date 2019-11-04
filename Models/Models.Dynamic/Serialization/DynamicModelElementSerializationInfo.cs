@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using NMF.Models.Meta;
 using NMF.Serialization;
@@ -24,11 +25,11 @@ namespace NMF.Models.Dynamic
 
         public IPropertySerializationInfo DefaultProperty => null;
 
-        public IEnumerable<IPropertySerializationInfo> AttributeProperties { get; internal set; }
+        public IEnumerable<IPropertySerializationInfo> DeclaredAttributeProperties { get; internal set; }
 
-        public IEnumerable<IPropertySerializationInfo> ElementProperties { get; internal set; }
+        public IEnumerable<IPropertySerializationInfo> DeclaredElementProperties { get; internal set; }
 
-        public IEnumerable<ITypeSerializationInfo> BaseTypes { get; internal set; }
+        public IEnumerable<DynamicModelElementSerializationInfo> BaseTypes { get; internal set; }
 
         public IPropertySerializationInfo[] ConstructorProperties => null;
 
@@ -43,6 +44,10 @@ namespace NMF.Models.Dynamic
         public bool IsStringConvertible => false;
 
         public IClass Class { get; }
+
+        public IEnumerable<IPropertySerializationInfo> AttributeProperties => DeclaredAttributeProperties.Concat(BaseTypes.SelectMany(type => type.DeclaredAttributeProperties));
+
+        public IEnumerable<IPropertySerializationInfo> ElementProperties => DeclaredElementProperties.Concat(BaseTypes.SelectMany(type => type.DeclaredElementProperties));
 
         public void AddToCollection(object collection, object item)
         {

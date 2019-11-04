@@ -243,12 +243,6 @@ namespace NMF.Serialization
             return converter.ConvertToInvariantString(input);
         }
 
-
-        IEnumerable<ITypeSerializationInfo> ITypeSerializationInfo.BaseTypes
-        {
-            get { return baseTypes; }
-        }
-
         public IPropertySerializationInfo DefaultProperty { get; set; }
 
         public Type MappedType => Type;

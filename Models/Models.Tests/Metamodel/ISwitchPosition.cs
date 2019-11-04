@@ -23,6 +23,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
@@ -36,12 +37,17 @@ namespace NMF.Models.Tests.Railway
     /// </summary>
     [DefaultImplementationTypeAttribute(typeof(SwitchPosition))]
     [XmlDefaultImplementationTypeAttribute(typeof(SwitchPosition))]
+    [ModelRepresentationClassAttribute("http://www.semanticweb.org/ontologies/2015/ttc/trainbenchmark#//SwitchPosition")]
     public interface ISwitchPosition : IModelElement, IRailwayElement
     {
         
         /// <summary>
         /// The position property
         /// </summary>
+        [DisplayNameAttribute("position")]
+        [CategoryAttribute("SwitchPosition")]
+        [XmlElementNameAttribute("position")]
+        [XmlAttributeAttribute(true)]
         Position Position
         {
             get;
@@ -51,6 +57,11 @@ namespace NMF.Models.Tests.Railway
         /// <summary>
         /// The switch property
         /// </summary>
+        [DisplayNameAttribute("switch")]
+        [CategoryAttribute("SwitchPosition")]
+        [XmlElementNameAttribute("switch")]
+        [XmlAttributeAttribute(true)]
+        [XmlOppositeAttribute("positions")]
         ISwitch Switch
         {
             get;
@@ -60,6 +71,11 @@ namespace NMF.Models.Tests.Railway
         /// <summary>
         /// The route property
         /// </summary>
+        [BrowsableAttribute(false)]
+        [XmlElementNameAttribute("route")]
+        [DesignerSerializationVisibilityAttribute(DesignerSerializationVisibility.Hidden)]
+        [XmlAttributeAttribute(true)]
+        [XmlOppositeAttribute("follows")]
         IRoute Route
         {
             get;

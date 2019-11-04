@@ -23,6 +23,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
@@ -36,12 +37,17 @@ namespace NMF.Models.Tests.Railway
     /// </summary>
     [DefaultImplementationTypeAttribute(typeof(Semaphore))]
     [XmlDefaultImplementationTypeAttribute(typeof(Semaphore))]
+    [ModelRepresentationClassAttribute("http://www.semanticweb.org/ontologies/2015/ttc/trainbenchmark#//Semaphore")]
     public interface ISemaphore : IModelElement, IRailwayElement
     {
         
         /// <summary>
         /// The signal property
         /// </summary>
+        [DisplayNameAttribute("signal")]
+        [CategoryAttribute("Semaphore")]
+        [XmlElementNameAttribute("signal")]
+        [XmlAttributeAttribute(true)]
         Signal Signal
         {
             get;

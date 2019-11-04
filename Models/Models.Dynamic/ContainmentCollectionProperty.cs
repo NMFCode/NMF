@@ -22,16 +22,16 @@ namespace NMF.Models.Dynamic
                 {
                     if (reference.IsOrdered)
                     {
-                        collectionType = typeof(CompositionOrderedSet<>);
+                        collectionType = typeof(ObservableCompositionOrderedSet<>);
                     }
                     else
                     {
-                        collectionType = typeof(CompositionSet<>);
+                        collectionType = typeof(ObservableCompositionSet<>);
                     }
                 }
                 else
                 {
-                    collectionType = typeof(CompositionList<>);
+                    collectionType = typeof(ObservableCompositionList<>);
                 }
                 Collection = Activator.CreateInstance(collectionType.MakeGenericType(mappedType.SystemType), parent) as IList;
             }

@@ -23,6 +23,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
@@ -44,6 +45,7 @@ namespace NMF.Models.Tests.Railway
         /// <summary>
         /// The backing field for the Position property
         /// </summary>
+        [DebuggerBrowsableAttribute(DebuggerBrowsableState.Never)]
         private Position _position;
         
         private static Lazy<ITypedElement> _positionAttribute = new Lazy<ITypedElement>(RetrievePositionAttribute);
@@ -53,6 +55,7 @@ namespace NMF.Models.Tests.Railway
         /// <summary>
         /// The backing field for the Switch property
         /// </summary>
+        [DebuggerBrowsableAttribute(DebuggerBrowsableState.Never)]
         private ISwitch _switch;
         
         private static Lazy<ITypedElement> _routeReference = new Lazy<ITypedElement>(RetrieveRouteReference);
@@ -62,9 +65,11 @@ namespace NMF.Models.Tests.Railway
         /// <summary>
         /// The position property
         /// </summary>
+        [DisplayNameAttribute("position")]
+        [CategoryAttribute("SwitchPosition")]
         [XmlElementNameAttribute("position")]
         [XmlAttributeAttribute(true)]
-        public virtual Position Position
+        public Position Position
         {
             get
             {
@@ -88,10 +93,12 @@ namespace NMF.Models.Tests.Railway
         /// <summary>
         /// The switch property
         /// </summary>
+        [DisplayNameAttribute("switch")]
+        [CategoryAttribute("SwitchPosition")]
         [XmlElementNameAttribute("switch")]
         [XmlAttributeAttribute(true)]
         [XmlOppositeAttribute("positions")]
-        public virtual ISwitch Switch
+        public ISwitch Switch
         {
             get
             {
@@ -128,11 +135,12 @@ namespace NMF.Models.Tests.Railway
         /// <summary>
         /// The route property
         /// </summary>
+        [BrowsableAttribute(false)]
         [XmlElementNameAttribute("route")]
         [DesignerSerializationVisibilityAttribute(DesignerSerializationVisibility.Hidden)]
         [XmlAttributeAttribute(true)]
         [XmlOppositeAttribute("follows")]
-        public virtual IRoute Route
+        public IRoute Route
         {
             get
             {
@@ -202,7 +210,7 @@ namespace NMF.Models.Tests.Railway
         
         private static ITypedElement RetrievePositionAttribute()
         {
-            return ((ITypedElement)(((ModelElement)(SwitchPosition.ClassInstance)).Resolve("position")));
+            return ((ITypedElement)(((ModelElement)(NMF.Models.Tests.Railway.SwitchPosition.ClassInstance)).Resolve("position")));
         }
         
         /// <summary>
@@ -233,7 +241,7 @@ namespace NMF.Models.Tests.Railway
         
         private static ITypedElement RetrieveSwitchReference()
         {
-            return ((ITypedElement)(((ModelElement)(SwitchPosition.ClassInstance)).Resolve("switch")));
+            return ((ITypedElement)(((ModelElement)(NMF.Models.Tests.Railway.SwitchPosition.ClassInstance)).Resolve("switch")));
         }
         
         /// <summary>
@@ -274,7 +282,7 @@ namespace NMF.Models.Tests.Railway
         
         private static ITypedElement RetrieveRouteReference()
         {
-            return ((ITypedElement)(((ModelElement)(SwitchPosition.ClassInstance)).Resolve("route")));
+            return ((ITypedElement)(((ModelElement)(NMF.Models.Tests.Railway.SwitchPosition.ClassInstance)).Resolve("route")));
         }
         
         /// <summary>
@@ -341,6 +349,25 @@ namespace NMF.Models.Tests.Railway
         }
         
         /// <summary>
+        /// Resolves the given URI to a child model element
+        /// </summary>
+        /// <returns>The model element or null if it could not be found</returns>
+        /// <param name="reference">The requested reference name</param>
+        /// <param name="index">The index of this reference</param>
+        protected override IModelElement GetModelElementForReference(string reference, int index)
+        {
+            if ((reference == "SWITCH"))
+            {
+                return this.Switch;
+            }
+            if ((reference == "ROUTE"))
+            {
+                return this.Route;
+            }
+            return base.GetModelElementForReference(reference, index);
+        }
+        
+        /// <summary>
         /// Resolves the given attribute name
         /// </summary>
         /// <returns>The attribute value or null if it could not be found</returns>
@@ -387,13 +414,9 @@ namespace NMF.Models.Tests.Railway
         /// <param name="attribute">The requested attribute in upper case</param>
         protected override NMF.Expressions.INotifyExpression<object> GetExpressionForAttribute(string attribute)
         {
-            if ((attribute == "Switch"))
+            if ((attribute == "POSITION"))
             {
-                return new SwitchProxy(this);
-            }
-            if ((attribute == "Route"))
-            {
-                return new RouteProxy(this);
+                return Observable.Box(new PositionProxy(this));
             }
             return base.GetExpressionForAttribute(attribute);
         }
@@ -415,22 +438,7 @@ namespace NMF.Models.Tests.Railway
             }
             return base.GetExpressionForReference(reference);
         }
-
-        /// <summary>
-        /// Gets the Model element for the given reference and index
-        /// </summary>
-        /// <param name="reference">The reference name in upper case</param>
-        /// <param name="index">The index of the element within the reference</param>
-        /// <returns>The model element at the given reference</returns>
-        protected override IModelElement GetModelElementForReference(string reference, int index)
-        {
-            if ((reference == "ROUTE"))
-            {
-                return Route;
-            }
-            return base.GetModelElementForReference(reference, index);
-        }
-
+        
         /// <summary>
         /// Gets the Class for this model element
         /// </summary>

@@ -1,18 +1,23 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using NMF.Expressions;
+using NMF.Expressions.Linq;
 using NMF.Models.Meta;
 using NMF.Utilities;
 
 namespace NMF.Models.Dynamic
 {
+    [DebuggerDisplay("{Representation}")]
     public class DynamicModelElement : ModelElement
     {
         private IClass _class;
         private Dictionary<string, IAttributeProperty> _attributeProperties = new Dictionary<string, IAttributeProperty>();
         private Dictionary<string, IReferenceProperty> _referenceProperties = new Dictionary<string, IReferenceProperty>();
+        private IAttributeProperty _identifierProperty;
+        private IdentifierScope _identifierScope;
 
         public DynamicModelElement(IClass @class) : this(@class, null)
         {
@@ -41,7 +46,12 @@ namespace NMF.Models.Dynamic
 
             foreach (var att in @class.Attributes)
             {
-                LoadAttribute(att);
+                var property = LoadAttribute(att);
+                if (att == @class.Identifier && _identifierProperty == null)
+                {
+                    _identifierProperty = property;
+                    _identifierScope = @class.IdentifierScope;
+                }
             }
 
             foreach (var reference in @class.References)
@@ -72,9 +82,13 @@ namespace NMF.Models.Dynamic
             IReferenceProperty property;
             if (reference.UpperBound == 1)
             {
-                if (reference.IsContainment)
+                if (reference.Opposite != null)
                 {
-                    property = new ContainmentProperty();
+                    property = new OppositeProperty(this, reference);
+                }
+                else if (reference.IsContainment)
+                {
+                    property = new ContainmentProperty(this);
                 }
                 else
                 {
@@ -83,7 +97,11 @@ namespace NMF.Models.Dynamic
             }
             else
             {
-                if (reference.IsContainment)
+                if (reference.Opposite != null)
+                {
+                    property = new OppositeCollectionProperty(this, reference);
+                }
+                else if (reference.IsContainment)
                 {
                     property = new ContainmentCollectionProperty(this, reference);
                 }
@@ -122,14 +140,14 @@ namespace NMF.Models.Dynamic
             return ((IDecomposedAttributeProperty)refinedProperty);
         }
 
-        private void LoadAttribute(IAttribute attribute)
+        private IAttributeProperty LoadAttribute(IAttribute attribute)
         {
             var referenceKey = attribute.Name.ToUpperInvariant();
             if (_attributeProperties.TryGetValue(referenceKey, out var existingProperty))
             {
                 if (existingProperty is DecomposedAttributeProperty)
                 {
-                    return;
+                    return existingProperty;
                 }
                 else
                 {
@@ -146,6 +164,7 @@ namespace NMF.Models.Dynamic
                 property = new AttributeCollectionProperty(attribute);
             }
             _attributeProperties.Add(referenceKey, property);
+            return property;
         }
 
         private void LoadReferenceConstraint(IReferenceConstraint refConstraint)
@@ -162,6 +181,38 @@ namespace NMF.Models.Dynamic
         {
             return _class;
         }
+
+        public override IEnumerableExpression<IModelElement> Children
+        {
+            get
+            {
+                var children = base.Children;
+                foreach (var reference in _referenceProperties.Values)
+                {
+                    if (reference.IsContainment)
+                    {
+                        if (reference.Collection != null)
+                        {
+                            children = children.Concat((IEnumerableExpression<IModelElement>)reference.Collection);
+                        }
+                        else
+                        {
+                            throw new NotImplementedException();
+                        }
+                    }
+                }
+                return children;
+            }
+        }
+
+        public override bool IsIdentified => _identifierProperty != null;
+
+        public override string ToIdentifierString()
+        {
+            return _identifierProperty.Value.Value?.ToString();
+        }
+
+        internal string Representation => IsIdentified ? $"{_class.Name} {ToIdentifierString()}" : _class.Name;
 
         private IAttributeProperty GetAttributeProperty(string attribute)
         {

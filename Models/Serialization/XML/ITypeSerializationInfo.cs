@@ -18,8 +18,6 @@ namespace NMF.Serialization
         IEnumerable<IPropertySerializationInfo> AttributeProperties { get; }
         IEnumerable<IPropertySerializationInfo> ElementProperties { get; }
 
-        IEnumerable<ITypeSerializationInfo> BaseTypes { get; }
-
         bool IsAssignableFrom(ITypeSerializationInfo specializedType);
 
         bool IsInstanceOf(object instance);

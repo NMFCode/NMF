@@ -23,6 +23,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
@@ -44,6 +45,7 @@ namespace NMF.Models.Tests.Railway
         /// <summary>
         /// The backing field for the Length property
         /// </summary>
+        [DebuggerBrowsableAttribute(DebuggerBrowsableState.Never)]
         private int _length;
         
         private static Lazy<ITypedElement> _lengthAttribute = new Lazy<ITypedElement>(RetrieveLengthAttribute);
@@ -53,9 +55,11 @@ namespace NMF.Models.Tests.Railway
         /// <summary>
         /// The length property
         /// </summary>
+        [DisplayNameAttribute("length")]
+        [CategoryAttribute("Segment")]
         [XmlElementNameAttribute("length")]
         [XmlAttributeAttribute(true)]
-        public virtual int Length
+        public int Length
         {
             get
             {
@@ -103,7 +107,7 @@ namespace NMF.Models.Tests.Railway
         
         private static ITypedElement RetrieveLengthAttribute()
         {
-            return ((ITypedElement)(((ModelElement)(Segment.ClassInstance)).Resolve("length")));
+            return ((ITypedElement)(((ModelElement)(NMF.Models.Tests.Railway.Segment.ClassInstance)).Resolve("length")));
         }
         
         /// <summary>
@@ -160,6 +164,20 @@ namespace NMF.Models.Tests.Railway
                 return;
             }
             base.SetFeature(feature, value);
+        }
+        
+        /// <summary>
+        /// Gets the property expression for the given attribute
+        /// </summary>
+        /// <returns>An incremental property expression</returns>
+        /// <param name="attribute">The requested attribute in upper case</param>
+        protected override NMF.Expressions.INotifyExpression<object> GetExpressionForAttribute(string attribute)
+        {
+            if ((attribute == "LENGTH"))
+            {
+                return Observable.Box(new LengthProxy(this));
+            }
+            return base.GetExpressionForAttribute(attribute);
         }
         
         /// <summary>

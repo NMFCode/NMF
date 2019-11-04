@@ -21,6 +21,7 @@ namespace NMF.Models.Dynamic
 
         protected override void OnValueChanging(ValueChangedEventArgs e)
         {
+            base.OnValueChanging(e);
             if (e.OldValue != null)
             {
                 ((IModelElement)e.OldValue).Deleted -= ReferenceDeleted;
@@ -29,7 +30,6 @@ namespace NMF.Models.Dynamic
             {
                 ((IModelElement)e.NewValue).Deleted += ReferenceDeleted;
             }
-            base.OnValueChanging(e);
         }
 
         private void ReferenceDeleted(object sender, UriChangedEventArgs e)

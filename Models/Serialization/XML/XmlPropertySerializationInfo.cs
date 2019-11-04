@@ -116,13 +116,16 @@ namespace NMF.Serialization
 
         public void AddToCollection(object input, object item, XmlSerializationContext context)
         {
-            if (!context.IsOppositeSet(input, this))
+            if (!context.IsBlocked(input, this))
             {
                 try
                 {
                     var collection = GetValue(input, context);
                     PropertyType.AddToCollection(collection, item);
-                    context.BlockOpposite(item, this);
+                    if (Opposite != null)
+                    {
+                        context.BlockProperty(item, Opposite);
+                    }
                 }
                 catch (InvalidCastException e)
                 {
@@ -188,12 +191,15 @@ namespace NMF.Serialization
 
         public override void SetValue(object obj, object value, XmlSerializationContext context)
         {
-            if (context.IsOppositeSet(obj, this))
+            if (context.IsBlocked(obj, this))
             {
                 return;
             }
             setter((TComponent)obj, (TProperty)value);
-            context.BlockOpposite(value, this);
+            if (Opposite != null)
+            {
+                context.BlockProperty(value, Opposite);
+            }
         }
 
         public override bool ShouldSerializeValue(object obj, object value)

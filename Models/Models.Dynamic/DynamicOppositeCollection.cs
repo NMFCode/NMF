@@ -8,92 +8,290 @@ namespace NMF.Models.Dynamic
 {
     internal class DynamicOppositeList : ObservableOppositeList<IModelElement, IModelElement>
     {
-        private IReference _backReference;
+        public IReference Reference { get; }
 
-        public DynamicOppositeList(IModelElement parent, IReference backReference) : base(parent)
+        public DynamicOppositeList(IModelElement parent, IReference reference) : base(parent)
         {
-            _backReference = backReference;
+            Reference = reference;
         }
 
         protected override void SetOpposite(IModelElement item, IModelElement newParent)
         {
-            if (_backReference.UpperBound == 1)
+            if (Reference.Opposite.UpperBound == 1)
             {
-                item.SetReferencedElement(_backReference, newParent);
+                item.SetReferencedElement(Reference.Opposite, newParent);
+                if (Reference.IsContainment)
+                {
+                    if (newParent == null)
+                    {
+                        item.ParentChanged -= OnItemParentChanged;
+                    }
+                    else
+                    {
+                        item.ParentChanged += OnItemParentChanged;
+                    }
+                }
+                else
+                {
+                    if (newParent == null)
+                    {
+                        item.Deleted -= OnItemDeleted;
+                    }
+                    else
+                    {
+                        item.Deleted += OnItemDeleted;
+                    }
+                }
             }
             else
             {
-                var collection = item.GetReferencedElements(_backReference);
+                var collection = item.GetReferencedElements(Reference.Opposite);
                 if (newParent == null)
                 {
                     collection.Remove(Parent);
+                    if (Reference.IsContainment)
+                    {
+                        item.ParentChanged -= OnItemParentChanged;
+                    }
+                    else
+                    {
+                        item.Deleted -= OnItemDeleted;
+                    }
                 }
                 else
                 {
                     collection.Add(Parent);
+                    if (Reference.IsContainment)
+                    {
+                        item.ParentChanged += OnItemParentChanged;
+                    }
+                    else
+                    {
+                        item.Deleted += OnItemDeleted;
+                    }
                 }
             }
+        }
+
+        private void OnItemDeleted(object sender, UriChangedEventArgs e)
+        {
+            Remove((IModelElement)sender);
+        }
+
+        private void OnItemParentChanged(object sender, NMF.Expressions.ValueChangedEventArgs e)
+        {
+            if (e.NewValue != Parent)
+            {
+                Remove((IModelElement)sender);
+            }
+        }
+
+        protected override void InsertItem(int index, IModelElement item)
+        {
+            if (!((IClass)Reference.ReferenceType).IsAssignableFrom(item.GetClass()))
+            {
+                throw new InvalidOperationException($"Item is of type {item.GetClass().Name} instead of expected type {Reference.ReferenceType.Name}");
+            }
+            base.InsertItem(index, item);
+        }
+
+        protected override void SetItem(int index, IModelElement item)
+        {
+            if (!((IClass)Reference.ReferenceType).IsAssignableFrom(item.GetClass()))
+            {
+                throw new InvalidOperationException($"Item is of type {item.GetClass().Name} instead of expected type {Reference.ReferenceType.Name}");
+            }
+            base.SetItem(index, item);
         }
     }
 
     internal class DynamicOppositeSet : ObservableOppositeSet<IModelElement, IModelElement>
     {
-        private IReference _backReference;
+        public IReference Reference { get; }
 
-        public DynamicOppositeSet(IModelElement parent, IReference backReference) : base(parent)
+        public DynamicOppositeSet(IModelElement parent, IReference reference) : base(parent)
         {
-            _backReference = backReference;
+            Reference = reference;
         }
 
         protected override void SetOpposite(IModelElement item, IModelElement newParent)
         {
-            if (_backReference.UpperBound == 1)
+            if (Reference.Opposite.UpperBound == 1)
             {
-                item.SetReferencedElement(_backReference, newParent);
+                item.SetReferencedElement(Reference.Opposite, newParent);
+                if (Reference.IsContainment)
+                {
+                    if (newParent == null)
+                    {
+                        item.ParentChanged -= OnItemParentChanged;
+                    }
+                    else
+                    {
+                        item.ParentChanged += OnItemParentChanged;
+                    }
+                }
+                else
+                {
+                    if (newParent == null)
+                    {
+                        item.Deleted -= OnItemDeleted;
+                    }
+                    else
+                    {
+                        item.Deleted += OnItemDeleted;
+                    }
+                }
             }
             else
             {
-                var collection = item.GetReferencedElements(_backReference);
+                var collection = item.GetReferencedElements(Reference.Opposite);
                 if (newParent == null)
                 {
                     collection.Remove(Parent);
+                    if (Reference.IsContainment)
+                    {
+                        item.ParentChanged -= OnItemParentChanged;
+                    }
+                    else
+                    {
+                        item.Deleted -= OnItemDeleted;
+                    }
                 }
                 else
                 {
                     collection.Add(Parent);
+                    if (Reference.IsContainment)
+                    {
+                        item.ParentChanged += OnItemParentChanged;
+                    }
+                    else
+                    {
+                        item.Deleted += OnItemDeleted;
+                    }
                 }
             }
+        }
+
+        private void OnItemDeleted(object sender, UriChangedEventArgs e)
+        {
+            Remove((IModelElement)sender);
+        }
+
+        private void OnItemParentChanged(object sender, NMF.Expressions.ValueChangedEventArgs e)
+        {
+            if (e.NewValue != Parent)
+            {
+                Remove((IModelElement)sender);
+            }
+        }
+
+        public override bool Add(IModelElement item)
+        {
+            if (!((IClass)Reference.ReferenceType).IsAssignableFrom(item.GetClass()))
+            {
+                throw new InvalidOperationException($"Item is of type {item.GetClass().Name} instead of expected type {Reference.ReferenceType.Name}");
+            }
+            return base.Add(item);
         }
     }
 
     internal class DynamicOppositeOrderedSet : ObservableOppositeOrderedSet<IModelElement, IModelElement>
     {
 
-        private IReference _backReference;
+        public IReference Reference { get; }
 
-        public DynamicOppositeOrderedSet(IModelElement parent, IReference backReference) : base(parent)
+        public DynamicOppositeOrderedSet(IModelElement parent, IReference reference) : base(parent)
         {
-            _backReference = backReference;
+            Reference = reference;
         }
 
         protected override void SetOpposite(IModelElement item, IModelElement newParent)
         {
-            if (_backReference.UpperBound == 1)
+            if (Reference.Opposite.UpperBound == 1)
             {
-                item.SetReferencedElement(_backReference, newParent);
+                item.SetReferencedElement(Reference.Opposite, newParent);
+                if (Reference.IsContainment)
+                {
+                    if (newParent == null)
+                    {
+                        item.ParentChanged -= OnItemParentChanged;
+                    }
+                    else
+                    {
+                        item.ParentChanged += OnItemParentChanged;
+                    }
+                }
+                else
+                {
+                    if (newParent == null)
+                    {
+                        item.Deleted -= OnItemDeleted;
+                    }
+                    else
+                    {
+                        item.Deleted += OnItemDeleted;
+                    }
+                }
             }
             else
             {
-                var collection = item.GetReferencedElements(_backReference);
+                var collection = item.GetReferencedElements(Reference.Opposite);
                 if (newParent == null)
                 {
                     collection.Remove(Parent);
+                    if (Reference.IsContainment)
+                    {
+                        item.ParentChanged -= OnItemParentChanged;
+                    }
+                    else
+                    {
+                        item.Deleted -= OnItemDeleted;
+                    }
                 }
                 else
                 {
                     collection.Add(Parent);
+                    if (Reference.IsContainment)
+                    {
+                        item.ParentChanged += OnItemParentChanged;
+                    }
+                    else
+                    {
+                        item.Deleted += OnItemDeleted;
+                    }
                 }
             }
+        }
+
+        private void OnItemDeleted(object sender, UriChangedEventArgs e)
+        {
+            Remove((IModelElement)sender);
+        }
+
+        private void OnItemParentChanged(object sender, NMF.Expressions.ValueChangedEventArgs e)
+        {
+            if (e.NewValue != Parent)
+            {
+                Remove((IModelElement)sender);
+            }
+        }
+
+        public override void Insert(int index, IModelElement item)
+        {
+            if (!((IClass)Reference.ReferenceType).IsAssignableFrom(item.GetClass()))
+            {
+                throw new InvalidOperationException($"Item is of type {item.GetClass().Name} instead of expected type {Reference.ReferenceType.Name}");
+            }
+            base.Insert(index, item);
+        }
+
+        protected override void Replace(int index, IModelElement oldValue, IModelElement newValue)
+        {
+            if (!((IClass)Reference.ReferenceType).IsAssignableFrom(newValue.GetClass()))
+            {
+                throw new InvalidOperationException($"Item is of type {newValue.GetClass().Name} instead of expected type {Reference.ReferenceType.Name}");
+            }
+            base.Replace(index, oldValue, newValue);
         }
     }
 }

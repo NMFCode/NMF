@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using NMF.Expressions;
 using NMF.Models.Meta;
@@ -19,9 +20,14 @@ namespace NMF.Models.Dynamic
             {
                 _attributeType = mappedType.SystemType;
             }
-            else if (attribute.Type is IEnumeration)
+            else if (attribute.Type is IEnumeration enumeration)
             {
                 _attributeType = typeof(string);
+                var defaultLiteral = enumeration.Literals.FirstOrDefault(l => l.Value.GetValueOrDefault() == 0);
+                if (defaultLiteral != null)
+                {
+                    Value.Value = defaultLiteral.Name;
+                }
             }
             else
             {

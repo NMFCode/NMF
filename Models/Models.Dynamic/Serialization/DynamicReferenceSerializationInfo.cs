@@ -41,8 +41,15 @@ namespace NMF.Models.Dynamic.Serialization
 
         public void AddToCollection(object input, object item, XmlSerializationContext context)
         {
-            var modelElement = (ModelElement)input;
-            modelElement.GetReferencedElements(Reference).Add(item);
+            if (!context.IsBlocked(input, this))
+            {
+                var modelElement = (ModelElement)input;
+                modelElement.GetReferencedElements(Reference).Add(item);
+                if (Opposite != null)
+                {
+                    context.BlockProperty(item, Opposite);
+                }
+            }
         }
 
         public object ConvertFromString(string text)
@@ -67,13 +74,20 @@ namespace NMF.Models.Dynamic.Serialization
 
         public void SetValue(object input, object value, XmlSerializationContext context)
         {
-            var modelElement = (ModelElement)input;
-            modelElement.SetReferencedElement(Reference, value as IModelElement);
+            if (!context.IsBlocked(input, this))
+            {
+                var modelElement = (ModelElement)input;
+                modelElement.SetReferencedElement(Reference, value as IModelElement);
+                if (Opposite != null)
+                {
+                    context.BlockProperty(value, Opposite);
+                }
+            }
         }
 
         public bool ShouldSerializeValue(object obj, object value)
         {
-            return value != null;
+            return value != null && (Reference.Opposite == null || !Reference.Opposite.IsContainment); 
         }
     }
 }

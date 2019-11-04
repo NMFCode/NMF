@@ -115,11 +115,11 @@ namespace NMF.Models.Security
             }
             if (modelElement.Model == containingModel)
             {
-                return new BigInteger(GetDeterministicHashCode(modelElement.RelativeUri.ToString()));
+                return new BigInteger(GetDeterministicHashCode(modelElement.RelativeUri.ToString().ToLowerInvariant()));
             }
             else
             {
-                return new BigInteger(GetDeterministicHashCode(modelElement.AbsoluteUri.AbsoluteUri));
+                return new BigInteger(GetDeterministicHashCode(modelElement.AbsoluteUri.AbsoluteUri.ToLowerInvariant()));
             }
         }
 

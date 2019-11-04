@@ -2,11 +2,13 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Xml;
 using NMF.Models.Meta;
 using NMF.Models.Repository;
 using NMF.Models.Repository.Serialization;
 using NMF.Serialization;
 using NMF.Serialization.Xmi;
+using NMF.Utilities;
 
 namespace NMF.Models.Dynamic.Serialization
 {
@@ -29,11 +31,12 @@ namespace NMF.Models.Dynamic.Serialization
 
             foreach (var item in _serializationInfos.Values)
             {
-                item.BaseTypes = item.Class.BaseTypes.Select(baseType => _serializationInfos[baseType]).ToList();
-                item.AttributeProperties = item.Class.Attributes.Select(CreateAttributeSerializationInfo)
+                item.BaseTypes = item.Class.Closure(c => c.BaseTypes).Except(item.Class).Select(baseType => _serializationInfos[baseType]).ToList();
+                item.DeclaredAttributeProperties = item.Class.Attributes.Select(CreateAttributeSerializationInfo)
                     .Concat(item.Class.References.Where(r => !r.IsContainment).Select(CreateReferenceSerializationInfo)).ToList();
-                item.ElementProperties = item.Class.References.Where(r => r.IsContainment)
+                item.DeclaredElementProperties = item.Class.References.Where(r => r.IsContainment)
                     .Select(CreateReferenceSerializationInfo).ToList();
+
                 RegisterNamespace(item);
             }
         }
@@ -64,7 +67,21 @@ namespace NMF.Models.Dynamic.Serialization
             {
                 type = new CollectionTypeSerializationInfo(type);
             }
-            return new DynamicReferenceSerializationInfo(arg, type);
+            var referenceInfo = new DynamicReferenceSerializationInfo(arg, type);
+            if (arg.Opposite != null)
+            {
+                if (_serializationInfos.TryGetValue(arg.Opposite.DeclaringType, out var oppositeType) && oppositeType.DeclaredElementProperties != null)
+                {
+                    var oppositeSerializationInfo = oppositeType.DeclaredElementProperties
+                        .Concat(oppositeType.DeclaredAttributeProperties)
+                        .OfType<DynamicReferenceSerializationInfo>()
+                        .Single(r => r.Reference == arg.Opposite);
+
+                    oppositeSerializationInfo.Opposite = referenceInfo;
+                    referenceInfo.Opposite = oppositeSerializationInfo;
+                }
+            }
+            return referenceInfo;
         }
 
         private IPropertySerializationInfo CreateAttributeSerializationInfo(IAttribute arg)
@@ -90,6 +107,15 @@ namespace NMF.Models.Dynamic.Serialization
                 return XmiStringSerializationInfo.Instance;
             }
             throw new NotImplementedException();
+        }
+
+        protected override void HandleUnknownAttribute(XmlReader reader, object obj, ITypeSerializationInfo info, XmlSerializationContext context)
+        {
+            if (reader.Name == "xsi:type")
+            {
+                return;
+            }
+            base.HandleUnknownAttribute(reader, obj, info, context);
         }
     }
 }

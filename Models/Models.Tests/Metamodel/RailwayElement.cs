@@ -23,6 +23,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
@@ -45,6 +46,7 @@ namespace NMF.Models.Tests.Railway
         /// <summary>
         /// The backing field for the Id property
         /// </summary>
+        [DebuggerBrowsableAttribute(DebuggerBrowsableState.Never)]
         private Nullable<int> _id;
         
         private static Lazy<ITypedElement> _idAttribute = new Lazy<ITypedElement>(RetrieveIdAttribute);
@@ -54,10 +56,12 @@ namespace NMF.Models.Tests.Railway
         /// <summary>
         /// The id property
         /// </summary>
+        [DisplayNameAttribute("id")]
+        [CategoryAttribute("RailwayElement")]
         [XmlElementNameAttribute("id")]
         [IdAttribute()]
         [XmlAttributeAttribute(true)]
-        public virtual Nullable<int> Id
+        public Nullable<int> Id
         {
             get
             {
@@ -116,7 +120,7 @@ namespace NMF.Models.Tests.Railway
         
         private static ITypedElement RetrieveIdAttribute()
         {
-            return ((ITypedElement)(((ModelElement)(RailwayElement.ClassInstance)).Resolve("id")));
+            return ((ITypedElement)(((ModelElement)(NMF.Models.Tests.Railway.RailwayElement.ClassInstance)).Resolve("id")));
         }
         
         /// <summary>
@@ -173,6 +177,20 @@ namespace NMF.Models.Tests.Railway
                 return;
             }
             base.SetFeature(feature, value);
+        }
+        
+        /// <summary>
+        /// Gets the property expression for the given attribute
+        /// </summary>
+        /// <returns>An incremental property expression</returns>
+        /// <param name="attribute">The requested attribute in upper case</param>
+        protected override NMF.Expressions.INotifyExpression<object> GetExpressionForAttribute(string attribute)
+        {
+            if ((attribute == "ID"))
+            {
+                return Observable.Box(new IdProxy(this));
+            }
+            return base.GetExpressionForAttribute(attribute);
         }
         
         /// <summary>
