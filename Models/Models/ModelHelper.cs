@@ -42,8 +42,7 @@ namespace NMF.Models
         public static int IndexOfReference<T>(IList<T> reference, IModelElement element) where T : class, IModelElement
         {
             if (reference == null) return -1;
-            var casted = element as T;
-            if (casted != null)
+            if (element is T casted)
             {
                 return reference.IndexOf(casted);
             }
@@ -53,7 +52,8 @@ namespace NMF.Models
             }
         }
 
-        public static Regex uriSegmentRegex = new Regex(@"^(.+[\._])?(?<Number>\d+)$", RegexOptions.Compiled);
+        private static readonly Regex uriSegmentRegex = new Regex(@"^(.+[\._])?(?<Number>\d+)$", RegexOptions.Compiled);
+        private static readonly Regex identifierRegex = new Regex(@"^(<Reference>\w+)\[(<IdReference>\w+)\s*=\s*'(<Identifier>\w*)'\]$", RegexOptions.Compiled);
 
         /// <summary>
         /// Parses the given relative Uri
@@ -61,11 +61,12 @@ namespace NMF.Models
         /// <param name="segment">the relative Uri</param>
         /// <param name="reference">The reference that corresponds to the Uri. This is never null.</param>
         /// <param name="index">The element index of the Uri or 0 if no index is given</param>
-        public static void ParseSegment(string segment, out string reference, out int index)
+        /// <returns>True, if the segment was parsed successfully, otherwise false</returns>
+        public static bool ParseSegment(string segment, out string reference, out int index)
         {
             reference = string.Empty;
             index = 0;
-            if (segment == null) return;
+            if( segment == null ) return true;
             if (segment.StartsWith("@")) segment = segment.Substring(1);
             var match = uriSegmentRegex.Match(segment);
             if (match.Success)
@@ -87,6 +88,34 @@ namespace NMF.Models
                 reference = segment;
             }
             reference = reference.ToUpperInvariant();
+            return !segment.Contains( '[' );
+        }
+
+        /// <summary>
+        /// Parses the given relative Uri for a identifier reference
+        /// </summary>
+        /// <param name="segment">The relative Uri</param>
+        /// <param name="reference">The reference that corresponds to the Uri. This is never null.</param>
+        /// <param name="identifierReference">The identifier reference. This is never null.</param>
+        /// <param name="identifier">The identifier. This is never null.</param>
+        /// <returns>True, if the segment was parsed successfully, otherwise false</returns>
+        public static bool ParseIdentifierSegment( string segment, out string reference, out string identifierReference, out string identifier )
+        {
+            reference = string.Empty;
+            identifierReference = string.Empty;
+            identifier = string.Empty;
+            if(segment == null) return false;
+            if(segment.StartsWith("@")) segment = segment.Substring(1);
+            var match = identifierRegex.Match(segment);
+            if( match.Success )
+            {
+                reference = match.Groups["Reference"].Value;
+                identifierReference = match.Groups["IdReference"].Value;
+                identifier = match.Groups["Identifier"].Value;
+            }
+            reference = reference.ToUpperInvariant();
+            identifierReference = identifierReference.ToUpperInvariant();
+            return match.Success;
         }
 
         public static T Parse<T>(string text)

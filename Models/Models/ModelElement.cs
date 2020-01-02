@@ -780,10 +780,25 @@ namespace NMF.Models
                     }
                 }
             }
-            string reference;
-            int index;
-            ModelHelper.ParseSegment(segment, out reference, out index);
-            return GetModelElementForReference(reference, index);
+
+            if( ModelHelper.ParseSegment( segment, out var reference, out var index ) )
+            {
+                return GetModelElementForReference( reference, index );
+            }
+
+            if( ModelHelper.ParseIdentifierSegment( segment, out reference, out var identifierReference, out var identifier ) )
+            {
+                var collection = GetCollectionForFeature( reference );
+                foreach( var element in collection.OfType<ModelElement>() )
+                {
+                    if( string.Equals(element.GetAttributeValue( identifierReference, 0 )?.ToString(), identifier) )
+                    {
+                        return element;
+                    }
+                }
+            }
+
+            return null;
         }
 
 
@@ -805,7 +820,7 @@ namespace NMF.Models
         /// <returns>A non-generic list of elements</returns>
         protected virtual IList GetCollectionForFeature(string feature)
         {
-            throw new ArgumentOutOfRangeException("feature");
+            throw new ArgumentOutOfRangeException(nameof(feature));
         }
 
         /// <summary>
@@ -816,7 +831,7 @@ namespace NMF.Models
         /// <returns>The attribute value</returns>
         protected virtual object GetAttributeValue(string attribute, int index)
         {
-            throw new ArgumentOutOfRangeException("attribute");
+            throw new ArgumentOutOfRangeException(nameof(attribute));
         }
 
         /// <summary>
@@ -826,7 +841,7 @@ namespace NMF.Models
         /// <param name="value">The value that should be set</param>
         protected virtual void SetFeature(string feature, object value)
         {
-            throw new ArgumentOutOfRangeException("feature");
+            throw new ArgumentOutOfRangeException(nameof(feature));
         }
 
         /// <summary>
@@ -847,7 +862,7 @@ namespace NMF.Models
         /// <returns>A property expression</returns>
         protected virtual INotifyExpression<IModelElement> GetExpressionForReference(string reference)
         {
-            throw new ArgumentOutOfRangeException("reference");
+            throw new ArgumentOutOfRangeException(nameof(reference));
         }
 
         /// <summary>
@@ -857,7 +872,7 @@ namespace NMF.Models
         /// <returns>A property expression</returns>
         protected virtual INotifyExpression<object> GetExpressionForAttribute(string attribute)
         {
-            throw new ArgumentOutOfRangeException("attribute");
+            throw new ArgumentOutOfRangeException(nameof(attribute));
         }
 
 
@@ -882,14 +897,7 @@ namespace NMF.Models
         /// <returns>The extension of the given extension type or null, if no such exists</returns>
         public T GetExtension<T>() where T : ModelElementExtension
         {
-            if (extensions == null)
-            {
-                return null;
-            }
-            else
-            {
-                return extensions.OfType<T>().FirstOrDefault();
-            }
+            return extensions?.OfType<T>().FirstOrDefault();
         }
 
 
@@ -898,13 +906,7 @@ namespace NMF.Models
         /// </summary>
         [Browsable(false)]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public virtual IEnumerableExpression<IModelElement> ReferencedElements
-        {
-            get
-            {
-                return Extensions;
-            }
-        }
+        public virtual IEnumerableExpression<IModelElement> ReferencedElements => Extensions;
 
 
         /// <summary>
@@ -912,6 +914,7 @@ namespace NMF.Models
         /// </summary>
         /// <param name="propertyName">The name of the changed property</param>
         /// <param name="valueChangedEvent">The original event data</param>
+        /// <param name="feature">The feature</param>
         protected virtual void OnPropertyChanged(string propertyName, ValueChangedEventArgs valueChangedEvent, Lazy<ITypedElement> feature = null)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
@@ -924,6 +927,7 @@ namespace NMF.Models
         /// Gets called when the PropertyChanging event is fired
         /// </summary>
         /// <param name="propertyName">The name of the changed property</param>
+        /// <param name="feature">The feature</param>
         protected virtual void OnPropertyChanging(string propertyName, ValueChangedEventArgs e = null, Lazy<ITypedElement> feature = null)
         {
             Unlock();
@@ -1045,13 +1049,7 @@ namespace NMF.Models
         /// <summary>
         /// Gets the NMeta class object for this type
         /// </summary>
-        public static Meta.IClass ClassInstance
-        {
-            get
-            {
-                return (Meta.IClass)MetaRepository.Instance.ResolveType("http://nmf.codeplex.com/nmeta/#//ModelElement/");
-            }
-        }
+        public static Meta.IClass ClassInstance => (Meta.IClass)MetaRepository.Instance.ResolveType("http://nmf.codeplex.com/nmeta/#//ModelElement/");
 
         /// <summary>
         /// Gets the referenced element of the current model element for the given reference
@@ -1062,7 +1060,7 @@ namespace NMF.Models
         [ObservableProxy(typeof(ModelElementProxy), "GetReferencedElement")]
         public IModelElement GetReferencedElement(Meta.IReference reference, int index = 0)
         {
-            if (reference == null) throw new ArgumentNullException("reference");
+            if (reference == null) throw new ArgumentNullException(nameof(reference));
             return GetModelElementForReference(reference.Name.ToUpperInvariant(), 0);
         }
 
@@ -1073,7 +1071,7 @@ namespace NMF.Models
         /// <param name="element">The element that should be set</param>
         public void SetReferencedElement(Meta.IReference reference, IModelElement element)
         {
-            if (reference == null) throw new ArgumentNullException("reference");
+            if (reference == null) throw new ArgumentNullException(nameof(reference));
             SetFeature(reference.Name.ToUpperInvariant(), element);
         }
 
