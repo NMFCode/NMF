@@ -53,7 +53,7 @@ namespace NMF.Models
         }
 
         private static readonly Regex uriSegmentRegex = new Regex(@"^(.+[\._])?(?<Number>\d+)$", RegexOptions.Compiled);
-        private static readonly Regex identifierRegex = new Regex(@"^(<Reference>\w+)\[(<IdReference>\w+)\s*=\s*'(<Identifier>\w*)'\]$", RegexOptions.Compiled);
+        private static readonly Regex identifierRegex = new Regex(@"^(?<Reference>\w+)\[(?<IdReference>\w+)\s*=\s*'(?<Identifier>[^']+)'\]$", RegexOptions.Compiled);
 
         /// <summary>
         /// Parses the given relative Uri

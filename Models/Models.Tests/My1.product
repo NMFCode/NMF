@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<example:ProductLibrary xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:example="product">
+  <products ID="prod1">
+    <productsegments ID="seg" workpieceOut="//@products[ID='prod1']/@workpiecetypes.0"/>
+    <workpiecetypes ID="piece"/>
+  </products>
+</example:ProductLibrary>

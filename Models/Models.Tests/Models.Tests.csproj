@@ -13,12 +13,14 @@
 
   <ItemGroup>
     <None Remove="debug.nmf" />
+    <None Remove="minimal_example.nmf" />
     <None Remove="railway.nmf" />
   </ItemGroup>
 
   <ItemGroup>
     <EmbeddedResource Include="architecture.nmeta" />
     <EmbeddedResource Include="debug.nmf" />
+    <EmbeddedResource Include="minimal_example.nmf" />
     <EmbeddedResource Include="railway.nmf" />
   </ItemGroup>
 
@@ -41,6 +43,9 @@
 
   <ItemGroup>
     <None Update="debug.debug">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="My1.product">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="railway.railway">

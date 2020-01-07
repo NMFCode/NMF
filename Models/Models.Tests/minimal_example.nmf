@@ -1,0 +1,21 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<nmeta:Namespace xmi:version="2.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" Uri="http://www.example.org/minimal_example" Prefix="minimal_example" Name="minimal_example" xmlns:xmi="http://www.omg.org/XMI" xmlns:nmeta="http://nmf.codeplex.com/nmeta/">
+  <ChildNamespaces Uri="product" Prefix="example" Name="product">
+    <Types xsi:type="nmeta:Class" Name="ProductLibrary">
+      <References IsContainment="True" ReferenceType="nmeta:Class #//product/ProductDefinition" IsOrdered="True" IsUnique="True" UpperBound="-1" Name="products" />
+    </Types>
+    <Types xsi:type="nmeta:Class" Name="ProductSegment">
+      <References ReferenceType="nmeta:Class #//product/WorkpieceType" IsOrdered="True" IsUnique="True" UpperBound="-1" Name="workpieceIn" />
+      <References ReferenceType="nmeta:Class #//product/WorkpieceType" IsOrdered="True" IsUnique="True" Name="workpieceOut" />
+      <Attributes IsOrdered="True" IsUnique="True" LowerBound="1" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//String" Name="ID" />
+    </Types>
+    <Types xsi:type="nmeta:Class" IdentifierScope="Global" Identifier="#//product/ProductDefinition/ID" Name="ProductDefinition">
+      <References IsContainment="True" ReferenceType="nmeta:Class #//product/ProductSegment" IsOrdered="True" IsUnique="True" LowerBound="1" UpperBound="-1" Name="productsegments" />
+      <References IsContainment="True" ReferenceType="nmeta:Class #//product/WorkpieceType" IsOrdered="True" IsUnique="True" LowerBound="1" UpperBound="-1" Name="workpiecetypes" />
+      <Attributes IsOrdered="True" IsUnique="True" LowerBound="1" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//String" Name="ID" />
+    </Types>
+    <Types xsi:type="nmeta:Class" Name="WorkpieceType">
+      <Attributes IsOrdered="True" IsUnique="True" LowerBound="1" Type="nmeta:PrimitiveType http://nmf.codeplex.com/nmeta/#//String" Name="ID" />
+    </Types>
+  </ChildNamespaces>
+</nmeta:Namespace>

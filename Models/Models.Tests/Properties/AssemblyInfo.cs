@@ -39,3 +39,4 @@ using NMF.Models;
 [assembly: ModelMetadata("http://www.semanticweb.org/ontologies/2015/ttc/trainbenchmark", "NMF.Models.Tests.railway.nmf")]
 [assembly: ModelMetadata("about:foo", "NMF.Models.Tests.debug.nmf")]
 [assembly: ModelMetadata("test:architecture", "NMF.Models.Tests.architecture.nmeta")]
+[assembly: ModelMetadata("http://www.example.org/minimal_example", "NMF.Models.Tests.minimal_example.nmf")]
