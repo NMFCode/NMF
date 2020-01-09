@@ -14,11 +14,11 @@ namespace NMF.Expressions
 
         protected override void Execute(List<INotifiable> nodes)
         {
-            Schedule(nodes, MarkNode);
-            Schedule(nodes, NotifyNode);
+            ScheduleMark(nodes);
+            ScheduleNotify(nodes);
         }
 
-        private void Schedule(List<INotifiable> nodes, Action<INotifiable> action)
+        private void ScheduleMark(List<INotifiable> nodes)
         {
             var taskCount = Math.Min(MaxTasks, nodes.Count);
             var tasks = new Task[taskCount - 1];
@@ -27,13 +27,13 @@ namespace NMF.Expressions
             Action<object> work = state =>
             {
                 int startIndex = (int)state;
-                action(nodes[startIndex]);
+                MarkNode(nodes[startIndex]);
                 if (taskCount < nodes.Count)
                 {
                     int index = Interlocked.Increment(ref counter);
                     while (index < nodes.Count)
                     {
-                        action(nodes[index]);
+                        MarkNode(nodes[index]);
                         index = Interlocked.Increment(ref counter);
                     }
                 }
@@ -48,27 +48,52 @@ namespace NMF.Expressions
             Task.WaitAll(tasks);
         }
 
-        private void NotifyNode(INotifiable source)
-        {
-            bool evaluating = true;
-            var stack = new Stack<Tuple<INotifiable, int>>();
-            stack.Push(new Tuple<INotifiable, int>(source, 1));
 
-            while (stack.Count > 0)
+        private void ScheduleNotify(List<INotifiable> nodes)
+        {
+            var taskCount = Math.Min(MaxTasks, nodes.Count);
+            var tasks = new Task[taskCount - 1];
+            int counter = taskCount - 1;
+
+            Action<object> work = state =>
             {
-                var tuple = stack.Pop();
-                var node = tuple.Item1;
+                int startIndex = (int)state;
+                NotifyNode(nodes[startIndex], true, 1);
+                if (taskCount < nodes.Count)
+                {
+                    int index = Interlocked.Increment(ref counter);
+                    while (index < nodes.Count)
+                    {
+                        NotifyNode(nodes[index], true, 1);
+                        index = Interlocked.Increment(ref counter);
+                    }
+                }
+            };
+
+            for (int i = 0; i < taskCount - 1; i++)
+            {
+                tasks[i] = Task.Factory.StartNew(work, i);
+            }
+            work(taskCount - 1);
+
+            Task.WaitAll(tasks);
+        }
+
+        private void NotifyNode(INotifiable node, bool evaluating, int visits)
+        {            
+            while (node != null)
+            {
                 var metaData = node.ExecutionMetaData;
 
                 if (metaData.RemainingVisits == 0)
                 {
-                    continue;
+                    return;
                 }
-                if (metaData.RemainingVisits != tuple.Item2)
+                if (metaData.RemainingVisits != visits)
                 {
-                    int remaining = Interlocked.Add(ref metaData.RemainingVisits, -tuple.Item2);
+                    int remaining = Interlocked.Add(ref metaData.RemainingVisits, -visits);
                     if (remaining != 0)
-                        continue;
+                        return;
                 }
                 else
                 {
@@ -87,41 +112,98 @@ namespace NMF.Expressions
                     metaData.Results.Clear();
                 }
 
+                visits = metaData.TotalVisits;
+                metaData.RemainingVisits = 0;
+                metaData.TotalVisits = 0;
+
                 if (node.Successors.HasSuccessors)
                 {
                     if (evaluating)
                     {
                         result.IncreaseReferences(node.Successors.Count);
-                        foreach (var succ in node.Successors)
+                        if (node.Successors.Count == 1)
                         {
-                            if (result != null)
-                                succ.ExecutionMetaData.Results.Add(result);
-                            stack.Push(new Tuple<INotifiable, int>(succ, metaData.TotalVisits));
+                            node = node.Successors[0];
+                            node.ExecutionMetaData.Results.Add(result);
+                        }
+                        else
+                        {
+                            var childTasks = new Task[node.Successors.Count];
+                            for (int i = 0; i < node.Successors.Count; i++)
+                            {
+                                var successor = node.Successors[i];
+                                successor.ExecutionMetaData.Results.Add(result);
+                                childTasks[i] = Task.Factory.StartNew(() => NotifyNode(successor, true, visits));
+                            }
+                            Task.WaitAll(childTasks);
+                            return;
                         }
                     }
                     else
                     {
-                        foreach (var succ in node.Successors)
+                        if (node.Successors.Count == 1)
                         {
-                            stack.Push(new Tuple<INotifiable, int>(succ, metaData.TotalVisits));
+                            node = node.Successors[0];
                         }
+                        else
+                        {
+                            var childTasks = new Task[node.Successors.Count];
+                            for (int i = 0; i < node.Successors.Count; i++)
+                            {
+                                var successor = node.Successors[i];
+                                childTasks[i] = Task.Factory.StartNew(() => NotifyNode(successor, true, visits));
+                            }
+                            Task.WaitAll(childTasks);
+                            return;
+                        }
+
                     }
                 }
+            }
+        }
 
-                metaData.TotalVisits = 0;
-                metaData.RemainingVisits = 0;
+        private void MarkNode(object state)
+        {
+            if (state is INotifiable notifiable)
+            {
+                MarkNode(notifiable);
             }
         }
 
         private void MarkNode(INotifiable node)
         {
+            List<Task> tasksToWait = null;
             do
             {
                 var metaData = node.ExecutionMetaData;
                 Interlocked.Increment(ref metaData.RemainingVisits);
                 Interlocked.Increment(ref metaData.TotalVisits);
+                var succesors = node.Successors;
+                if (succesors.HasSuccessors)
+                {
+                    node = succesors[0];
+                    if (succesors.Count > 1)
+                    {
+                        if (tasksToWait == null)
+                        {
+                            tasksToWait = new List<Task>();
+                        }
+                        for (int i = 1; i < succesors.Count; i++)
+                        {
+                            tasksToWait.Add(Task.Factory.StartNew(MarkNode, succesors[i]));
+                        }
+                    }
+                }
+                else
+                {
+                    node = null;
+                }
             }
-            while (node.Successors.HasSuccessors && (node = node.Successors[0]) != null);
+            while (node != null);
+            if (tasksToWait != null)
+            {
+                Task.WaitAll(tasksToWait.ToArray());
+            }
         }
     }
 }
