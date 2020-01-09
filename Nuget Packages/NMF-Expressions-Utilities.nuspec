@@ -8,7 +8,6 @@
         <license type="expression">BSD-3-Clause</license>
         <projectUrl>http://github.com/NMFCode/NMF</projectUrl>
         <requireLicenseAcceptance>false</requireLicenseAcceptance>
-        <developmentDependency>true</developmentDependency>
         <description>This package contains some utility classes for NMF Expressions</description>
         <summary>This package contains some utility classes for NMF Expressions</summary>
         <copyright>Copyright © Georg Hinkel 2016</copyright>
@@ -17,11 +16,16 @@
         <tags>Incremental; LINQ;</tags>
       <repository type="git" url="https://github.com/NMFCode/NMF" />
         <dependencies>
-          <group>
-            <dependency id="NMF-Expressions" version="[$version$,3.0)" />
-          </group>
           <group targetFramework="net45">
+            <dependency id="NMF-Expressions" version="[$version$,3.0)" />
             <dependency id="System.ValueTuple" version="4.5.0" />
+          </group>
+          <group targetFramework="net461">
+            <dependency id="NMF-Expressions" version="[$version$,3.0)" />
+            <dependency id="System.ValueTuple" version="4.5.0" />
+          </group>
+          <group targetFramework="netstandard2.0">
+            <dependency id="NMF-Expressions" version="[$version$,3.0)" />
           </group>
         </dependencies>
     </metadata>

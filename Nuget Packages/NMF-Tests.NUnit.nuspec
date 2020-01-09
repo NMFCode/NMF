@@ -9,7 +9,6 @@
       <license type="expression">BSD-3-Clause</license>
       <projectUrl>http://github.com/NMFCode/NMF</projectUrl>
       <requireLicenseAcceptance>false</requireLicenseAcceptance>
-      <developmentDependency>true</developmentDependency>
       <description>This package contains abstract test suites for model element classes using the NUnit testing framework.</description>
       <summary>This package contains abstract test suites for model element classes using the NUnit testing framework.</summary>
       <copyright>Copyright © Georg Hinkel 2019</copyright>
@@ -18,9 +17,11 @@
         <tags>Model-driven; MDE; EMF; XMI; MDSD; Ecore</tags>
         <repository type="git" url="https://github.com/NMFCode/NMF" />
         <dependencies>
+          <group targetFramework="netstandard2.0">
             <dependency id="NMF-Expressions" version="[$version$, 3.0)" />
             <dependency id="NMF-Repository" version="[$version$, 3.0)" />
-          <dependency id="NUnit" version="3.11.0" />
+            <dependency id="NUnit" version="3.11.0" />
+          </group>
         </dependencies>
     </metadata>
   <files>

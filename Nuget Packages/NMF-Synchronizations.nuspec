@@ -9,7 +9,6 @@
         <license type="expression">BSD-3-Clause</license>
         <projectUrl>http://github.com/NMFCode/NMF</projectUrl>
         <requireLicenseAcceptance>false</requireLicenseAcceptance>
-        <developmentDependency>true</developmentDependency>
         <description>The NMF Synchronizations language to support bidirectional and/or incremental model synchronizations.</description>
         <summary>The NMF Synchronizations language to support bidirectional and/or incremental model synchronizations.</summary>
         <copyright>Copyright © Georg Hinkel 2015</copyright>
@@ -18,10 +17,24 @@
         <tags>Model-driven; MDE; MDSD;</tags>
         <repository type="git" url="https://github.com/NMFCode/NMF" />
         <dependencies>
+          <group targetFramework="net45">
             <dependency id="NMF-Expressions" version="[$version$,3.0)" />
-            <dependency id="NMF-Transformations" version="[$version$,3.0)" />
             <dependency id="NMF-Utilities" version="[$version$,3.0)" />
             <dependency id="NMF-Collections" version="[$version$,3.0)" />
+            <dependency id="NMF-Transformations" version="[$version$,3.0)" />
+          </group>
+          <group targetFramework="net461">
+            <dependency id="NMF-Expressions" version="[$version$,3.0)" />
+            <dependency id="NMF-Utilities" version="[$version$,3.0)" />
+            <dependency id="NMF-Collections" version="[$version$,3.0)" />
+            <dependency id="NMF-Transformations" version="[$version$,3.0)" />
+          </group>
+          <group targetFramework="netstandard2.0">
+            <dependency id="NMF-Expressions" version="[$version$,3.0)" />
+            <dependency id="NMF-Utilities" version="[$version$,3.0)" />
+            <dependency id="NMF-Collections" version="[$version$,3.0)" />
+            <dependency id="NMF-Transformations" version="[$version$,3.0)" />
+          </group>
         </dependencies>
     </metadata>
   <files>

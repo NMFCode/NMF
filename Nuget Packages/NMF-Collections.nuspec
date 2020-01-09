@@ -9,16 +9,23 @@
         <license type="expression">BSD-3-Clause</license>
         <projectUrl>http://github.com/NMFCode/NMF</projectUrl>
         <requireLicenseAcceptance>false</requireLicenseAcceptance>
-        <developmentDependency>true</developmentDependency>
         <description>This package contains collection classes enabled for change propagation.</description>
         <summary>This package contains collection classes enabled for change propagation.</summary>
         <copyright>Copyright © Georg Hinkel 2019</copyright>
-      <icon>images\icon.jpg</icon>
+        <icon>images\icon.jpg</icon>
         <language>en</language>
         <tags>Model-driven; MDE; MDSD;</tags>
-      <repository type="git" url="https://github.com/NMFCode/NMF" />
+        <repository type="git" url="https://github.com/NMFCode/NMF" />
         <dependencies>
+          <group targetFramework="net45">
             <dependency id="NMF-Expressions" version="[$version$,3.0)" />
+          </group>
+          <group targetFramework="net461">
+            <dependency id="NMF-Expressions" version="[$version$,3.0)" />
+          </group>
+          <group targetFramework="netstandard2.0">
+            <dependency id="NMF-Expressions" version="[$version$,3.0)" />
+          </group>
         </dependencies>
     </metadata>
   <files>

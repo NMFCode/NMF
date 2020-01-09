@@ -9,23 +9,19 @@
         <license type="expression">BSD-3-Clause</license>
         <projectUrl>http://github.com/NMFCode/NMF</projectUrl>
         <requireLicenseAcceptance>false</requireLicenseAcceptance>
-        <developmentDependency>true</developmentDependency>
         <description>This package contains the basic libraries for a model-driven project using the .NET Modelling Framework (NMF).</description>
         <summary>This package contains the basic libraries for a model-driven project using the .NET Modelling Framework (NMF).</summary>
         <copyright>Copyright © Georg Hinkel 2015</copyright>
-      <icon>images\icon.jpg</icon>
+        <icon>images\icon.jpg</icon>
         <language>en</language>
         <tags>Model-driven; MDE; EMF; XMI; MDSD; Ecore</tags>
         <repository type="git" url="https://github.com/NMFCode/NMF" />
         <dependencies>
+          <group targetFramework="any">
             <dependency id="NMF-Expressions" version="[$version$, 3.0)" />
             <dependency id="NMF-Repository" version="[$version$, 3.0)" />
+          </group>
         </dependencies>
-        <frameworkAssemblies>
-            <frameworkAssembly assemblyName="System" targetFramework="" />
-            <frameworkAssembly assemblyName="System.Xml" targetFramework="" />
-            <frameworkAssembly assemblyName="System.Core" targetFramework="" />
-        </frameworkAssemblies>
     </metadata>
   <files>
     <file src="..\Build\Tools\Ecore2Code\*.dll" target="tools" />

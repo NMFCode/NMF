@@ -9,7 +9,6 @@
         <license type="expression">BSD-3-Clause</license>
         <projectUrl>http://github.com/NMFCode/NMF</projectUrl>
         <requireLicenseAcceptance>false</requireLicenseAcceptance>
-        <developmentDependency>true</developmentDependency>
         <description>This package contains a set of classes to create NMF model repositories without generating code.</description>
         <summary>This package contains a set of classes to create NMF model repositories without generating code.</summary>
         <copyright>Copyright © Georg Hinkel 2019</copyright>
@@ -18,10 +17,24 @@
         <tags>Model-driven; MDE; MDSD;</tags>
       <repository type="git" url="https://github.com/NMFCode/NMF" />
         <dependencies>
+          <group targetFramework="net45">
             <dependency id="NMF-Expressions" version="[$version$,3.0)" />
+            <dependency id="NMF-Repository" version="[$version$, 3.0)" />
             <dependency id="NMF-Utilities" version="[$version$,3.0)" />
             <dependency id="NMF-Collections" version="[$version$,3.0)" />
-            <dependency id="NMF-Repository" version="[$version$,3.0)" />
+          </group>
+          <group targetFramework="net461">
+            <dependency id="NMF-Expressions" version="[$version$,3.0)" />
+            <dependency id="NMF-Repository" version="[$version$, 3.0)" />
+            <dependency id="NMF-Utilities" version="[$version$,3.0)" />
+            <dependency id="NMF-Collections" version="[$version$,3.0)" />
+          </group>
+          <group targetFramework="netstandard2.0">
+            <dependency id="NMF-Expressions" version="[$version$,3.0)" />
+            <dependency id="NMF-Repository" version="[$version$, 3.0)" />
+            <dependency id="NMF-Utilities" version="[$version$,3.0)" />
+            <dependency id="NMF-Collections" version="[$version$,3.0)" />
+          </group>
         </dependencies>
     </metadata>
   <files>
