@@ -129,7 +129,7 @@ namespace NMF.Expressions
                         else
                         {
                             var childTasks = new Task[node.Successors.Count];
-                            for (int i = 0; i < node.Successors.Count; i++)
+                            for (int i = 0; i < node.Successors.Count && i < childTasks.Length; i++)
                             {
                                 var successor = node.Successors[i];
                                 successor.ExecutionMetaData.Results.Add(result);
