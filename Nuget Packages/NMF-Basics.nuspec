@@ -24,8 +24,9 @@
         </dependencies>
     </metadata>
   <files>
-    <file src="..\Build\Tools\Ecore2Code\*.dll" target="tools" />
-    <file src="..\Build\Tools\Ecore2Code\Ecore2Code.exe" target="tools" />
+    <file src="..\Build\Tools\net461\Ecore2Code\*.dll" target="tools" />
+    <file src="..\Build\Tools\net461\Ecore2Code\*.pdb" target="tools" />
+    <file src="..\Build\Tools\net461\Ecore2Code\Ecore2Code.exe" target="tools" />
     <file src="icon.jpg" target="images" />
   </files>
 </package>

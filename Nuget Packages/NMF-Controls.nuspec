@@ -27,6 +27,7 @@
     </metadata>
   <files>
     <file src="..\Build\Controls\NMF.Controls.dll" target="lib\net461" />
+    <file src="..\Build\Controls\NMF.Controls.pdb" target="lib\net461" />
     <file src="..\Build\Controls\NMF.Controls.xml" target="lib\net461" />
     <file src="icon.jpg" target="images" />
   </files>

@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
+    <metadata>
+        <id>NMF-Ecore2Code</id>
+        <version>$version$</version>
+        <title>NMF Code generator</title>
+        <authors>Georg Hinkel</authors>
+        <owners>Georg Hinkel</owners>
+        <license type="expression">BSD-3-Clause</license>
+        <projectUrl>http://github.com/NMFCode/NMF</projectUrl>
+        <requireLicenseAcceptance>false</requireLicenseAcceptance>
+        <description>This package contains the code generator of the .NET Modelling Framework (NMF) packaged as a .NET Core Tool.</description>
+        <summary>This package contains the code generator of the .NET Modelling Framework (NMF) packaged as a .NET Core Tool.</summary>
+        <copyright>Copyright © Georg Hinkel 2020</copyright>
+        <icon>images\icon.jpg</icon>
+        <language>en</language>
+        <tags>Model-driven; MDE; EMF; XMI; MDSD; Ecore</tags>
+        <repository type="git" url="https://github.com/NMFCode/NMF" />
+    </metadata>
+  <files>
+    <file src="..\Build\Tools\Ecore2Code\netcore3.1\*.dll" target="tools\netcoreapp3.1\any" />
+    <file src="..\Build\Tools\Ecore2Code\netcore3.1\*.pdb" target="tools\netcoreapp3.1\any" />
+    <file src="..\Build\Tools\Ecore2Code\netcore3.1\Ecore2Code.deps.json" target="tools\netcoreapp3.1\any" />
+    <file src="..\Build\Tools\Ecore2Code\netcore3.1\Ecore2Code.runtimeconfig.json" target="tools\netcoreapp3.1\any" />
+    <file src="icon.jpg" target="images" />
+  </files>
+</package>
