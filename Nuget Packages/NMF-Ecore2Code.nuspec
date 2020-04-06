@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
     <metadata>
-        <id>NMF-Ecore2Code</id>
+        <id>NMF-Ecore2Code-test</id>
         <version>$version$</version>
         <title>NMF Code generator</title>
         <authors>Georg Hinkel</authors>
@@ -16,12 +16,17 @@
         <language>en</language>
         <tags>Model-driven; MDE; EMF; XMI; MDSD; Ecore</tags>
         <repository type="git" url="https://github.com/NMFCode/NMF" />
+        <packageTypes>
+          <packageType name="DotnetTool" />
+        </packageTypes>
     </metadata>
   <files>
     <file src="..\Build\Tools\Ecore2Code\netcoreapp3.1\*.dll" target="tools\netcoreapp3.1\any" />
     <file src="..\Build\Tools\Ecore2Code\netcoreapp3.1\*.pdb" target="tools\netcoreapp3.1\any" />
+    <file src="..\Build\Tools\Ecore2Code\netcoreapp3.1\Ecore2Code.exe" target="tools\netcoreapp3.1\any" />
     <file src="..\Build\Tools\Ecore2Code\netcoreapp3.1\Ecore2Code.deps.json" target="tools\netcoreapp3.1\any" />
     <file src="..\Build\Tools\Ecore2Code\netcoreapp3.1\Ecore2Code.runtimeconfig.json" target="tools\netcoreapp3.1\any" />
+	<file src="..\Tools\Ecore2Code\DotnetToolSettings.xml" target="tools\netcoreapp3.1\any" />
     <file src="icon.jpg" target="images" />
   </files>
 </package>
