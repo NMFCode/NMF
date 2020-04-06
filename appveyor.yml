@@ -21,7 +21,7 @@ build:
 after_build:
 - ps: >-
     foreach ($nuspec in get-childitem "*.nuspec" -Recurse){
-        & nuget pack $nuspec -Version $env:APPVEYOR_BUILD_VERSION -Symbols
+        & nuget pack $nuspec -Version $env:APPVEYOR_BUILD_VERSION -Symbols -SymbolPackageFormat snupkg
     }
 artifacts:
 - path: '*.nupkg'

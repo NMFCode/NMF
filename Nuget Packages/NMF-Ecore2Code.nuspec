@@ -18,10 +18,10 @@
         <repository type="git" url="https://github.com/NMFCode/NMF" />
     </metadata>
   <files>
-    <file src="..\Build\Tools\Ecore2Code\netcore3.1\*.dll" target="tools\netcoreapp3.1\any" />
-    <file src="..\Build\Tools\Ecore2Code\netcore3.1\*.pdb" target="tools\netcoreapp3.1\any" />
-    <file src="..\Build\Tools\Ecore2Code\netcore3.1\Ecore2Code.deps.json" target="tools\netcoreapp3.1\any" />
-    <file src="..\Build\Tools\Ecore2Code\netcore3.1\Ecore2Code.runtimeconfig.json" target="tools\netcoreapp3.1\any" />
+    <file src="..\Build\Tools\Ecore2Code\netcoreapp3.1\*.dll" target="tools\netcoreapp3.1\any" />
+    <file src="..\Build\Tools\Ecore2Code\netcoreapp3.1\*.pdb" target="tools\netcoreapp3.1\any" />
+    <file src="..\Build\Tools\Ecore2Code\netcoreapp3.1\Ecore2Code.deps.json" target="tools\netcoreapp3.1\any" />
+    <file src="..\Build\Tools\Ecore2Code\netcoreapp3.1\Ecore2Code.runtimeconfig.json" target="tools\netcoreapp3.1\any" />
     <file src="icon.jpg" target="images" />
   </files>
 </package>

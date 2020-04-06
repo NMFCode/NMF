@@ -38,8 +38,8 @@
     <StartupObject />
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="CommandLine, Version=2.2.1.0, Culture=neutral, PublicKeyToken=de6f01bd326f8c32, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\CommandLineParser.2.2.1\lib\net45\CommandLine.dll</HintPath>
+    <Reference Include="CommandLine, Version=2.7.82.0, Culture=neutral, PublicKeyToken=5a870481e358d379, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\CommandLineParser.2.7.82\lib\net461\CommandLine.dll</HintPath>
     </Reference>
     <Reference Include="GAF.461, Version=2.3.1.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\..\packages\GAF.2.3.1\lib\net461\GAF.461.dll</HintPath>

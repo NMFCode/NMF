@@ -148,11 +148,13 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Editor", "UserInterfaces\Ed
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "NuSpec", "NuSpec", "{E671CCB0-4E77-4C8C-9B24-8675DE75AF58}"
 	ProjectSection(SolutionItems) = preProject
+		Nuget Packages\DotnetToolSettings.xml = Nuget Packages\DotnetToolSettings.xml
 		Nuget Packages\NMF-Basics.nuspec = Nuget Packages\NMF-Basics.nuspec
 		Nuget Packages\NMF-CodeGen.nuspec = Nuget Packages\NMF-CodeGen.nuspec
 		Nuget Packages\NMF-Collections.nuspec = Nuget Packages\NMF-Collections.nuspec
 		Nuget Packages\NMF-Controls.nuspec = Nuget Packages\NMF-Controls.nuspec
 		Nuget Packages\NMF-Dynamic.nuspec = Nuget Packages\NMF-Dynamic.nuspec
+		Nuget Packages\NMF-Ecore2Code.nuspec = Nuget Packages\NMF-Ecore2Code.nuspec
 		Nuget Packages\NMF-Expressions-Debug.nuspec = Nuget Packages\NMF-Expressions-Debug.nuspec
 		Nuget Packages\NMF-Expressions-Utilities.nuspec = Nuget Packages\NMF-Expressions-Utilities.nuspec
 		Nuget Packages\NMF-Expressions.nuspec = Nuget Packages\NMF-Expressions.nuspec

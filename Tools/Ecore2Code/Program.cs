@@ -72,8 +72,6 @@ namespace Ecore2Code
     {
         CS,
         VB,
-        CPP,
-        JS,
         PY
     }
 
@@ -243,12 +241,6 @@ namespace Ecore2Code
                     break;
                 case SupportedLanguage.VB:
                     generator = new Microsoft.VisualBasic.VBCodeProvider();
-                    break;
-                case SupportedLanguage.CPP:
-                    generator = new Microsoft.VisualC.CppCodeProvider();
-                    break;
-                case SupportedLanguage.JS:
-                    generator = new Microsoft.JScript.JScriptCodeProvider();
                     break;
                 case SupportedLanguage.PY:
                     generator = new PythonProvider();
