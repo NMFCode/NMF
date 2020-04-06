@@ -240,7 +240,7 @@ namespace NMF.Serialization.Xmi
                         }
                         if (!found)
                         {
-                            OnUnknownElement(new UnknownElementEventArgs(obj, reader.ReadOuterXml()));
+                            base.OnUnknownElement(new UnknownElementEventArgs(obj, reader.ReadOuterXml()));
                         }
                     }
                 }
@@ -271,13 +271,6 @@ namespace NMF.Serialization.Xmi
                 base.HandleUnknownAttribute(reader, obj, info, context);
             }
         }
-
-        protected virtual void OnUnknownElement(UnknownElementEventArgs e)
-        {
-            if (UnknownElement != null) UnknownElement(this, e);
-        }
-
-        public event EventHandler<UnknownElementEventArgs> UnknownElement;
 
         private void ReadElementFromProperty(XmlReader reader, object obj, XmlSerializationContext context, IPropertySerializationInfo p)
         {

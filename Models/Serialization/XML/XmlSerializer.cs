@@ -205,7 +205,7 @@ namespace NMF.Serialization
                     return info;
                 }
             }
-            throw new InvalidOperationException($"The type {localName} in namespace {ns} could not be resolved.");
+            return HandleUnknownType(ns, localName);
         }
 
         protected virtual ITypeSerializationInfo CreateTypeSerializationInfoFor(Type type)
@@ -1124,6 +1124,10 @@ namespace NMF.Serialization
                         object o = DeserializeInternal(reader, null, context);
                         info.AddToCollection(obj, o);
                     }
+                    else
+                    {
+                        HandleUnknownElement(reader, obj, info, context);
+                    }
 
                 }
                 else if ((reader.NodeType == XmlNodeType.Text || reader.NodeType == XmlNodeType.CDATA))
@@ -1166,14 +1170,49 @@ namespace NMF.Serialization
             reader.MoveToElement();
         }
 
-        protected virtual void HandleUnknownAttribute(XmlReader reader, object obj, ITypeSerializationInfo info, XmlSerializationContext context)
+        protected virtual ITypeSerializationInfo HandleUnknownType(string ns, string localName)
         {
+            var e = new UnknownTypeEventArgs(ns, localName);
+            OnUnknownType(e);
+            if (e.Type != null)
+            {
+                return e.Type;
+            }
+            throw new InvalidOperationException($"The type {localName} in namespace {ns} could not be resolved.");
         }
 
-        protected virtual bool HandleException(Exception ex)
+        protected virtual void HandleUnknownAttribute(XmlReader reader, object obj, ITypeSerializationInfo info, XmlSerializationContext context)
         {
-            return true;
+            var e = new UnknownAttributeEventArgs(reader.NamespaceURI, reader.LocalName, reader.Value);
+            OnUnknownAttribute(e);
         }
+
+        protected virtual void HandleUnknownElement(XmlReader reader, object obj, ITypeSerializationInfo info, XmlSerializationContext context)
+        {
+            OnUnknownElement(new UnknownElementEventArgs(obj, reader.ReadOuterXml()));
+        }
+
+
+        protected virtual void OnUnknownElement(UnknownElementEventArgs e)
+        {
+            UnknownElement?.Invoke(this, e);
+        }
+
+        protected virtual void OnUnknownAttribute(UnknownAttributeEventArgs e)
+        {
+            UnknownAttribute?.Invoke(this, e);
+        }
+
+        protected virtual void OnUnknownType(UnknownTypeEventArgs e)
+        {
+            UnknownType?.Invoke(this, e);
+        }
+
+        public event EventHandler<UnknownElementEventArgs> UnknownElement;
+
+        public event EventHandler<UnknownAttributeEventArgs> UnknownAttribute;
+
+        public event EventHandler<UnknownTypeEventArgs> UnknownType;
 
         public virtual ITypeSerializationInfo GetSerializationInfoForInstance(object instance, bool createIfNecessary)
         {

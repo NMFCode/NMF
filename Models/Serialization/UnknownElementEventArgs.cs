@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace NMF.Serialization.Xmi
+namespace NMF.Serialization
 {
     public class UnknownElementEventArgs : EventArgs
-    {
+    {     
         public UnknownElementEventArgs(object context, string propertyXml)
         {
             if (context == null) throw new ArgumentNullException("context");
@@ -16,8 +16,8 @@ namespace NMF.Serialization.Xmi
             PropertyXml = propertyXml;
         }
 
-        public object Context { get; private set; }
+        public object Context { get; }
 
-        public string PropertyXml { get; private set; }
+        public string PropertyXml { get; }
     }
 }
