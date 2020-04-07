@@ -68,11 +68,16 @@ namespace NMF.Serialization.Xmi
                 ?? reader.GetAttribute(TypeField, XMINamespace);
             if (attr != null)
             {
+                var prefix = string.Empty;
+                var localName = attr;
                 int separator = attr.IndexOf(':');
-                if (separator == -1) return GetTypeInfo(reader.LookupNamespace(string.Empty), attr);
-                var prefix = attr.Substring(0, separator);
-                var localName = attr.Substring(separator + 1);
-                return GetTypeInfo(reader.LookupNamespace(prefix), localName);
+                if (separator != -1)
+                {
+                    prefix = attr.Substring(0, separator);
+                    localName = attr.Substring(separator + 1);
+                }
+                var ns = reader.LookupNamespace(prefix);
+                return GetTypeInfo(ns, localName) ?? HandleUnknownType(property, ns, localName);
             }
             else
             {

@@ -193,7 +193,7 @@ namespace NMF.Serialization
                 typesOfNamespace.Add(elName, info);
         }
 
-        protected ITypeSerializationInfo GetTypeInfo(string ns, string localName)
+        public ITypeSerializationInfo GetTypeInfo(string ns, string localName)
         {
             Dictionary<string, ITypeSerializationInfo> typesOfNs;
             if (typesByQualifier.TryGetValue(ns ?? "", out typesOfNs))
@@ -205,7 +205,7 @@ namespace NMF.Serialization
                     return info;
                 }
             }
-            return HandleUnknownType(ns, localName);
+            return null;
         }
 
         protected virtual ITypeSerializationInfo CreateTypeSerializationInfoFor(Type type)
@@ -911,7 +911,7 @@ namespace NMF.Serialization
 
         protected virtual ITypeSerializationInfo GetRootElementTypeInfo(XmlReader reader)
         {
-            var info = GetTypeInfo(reader.NamespaceURI, reader.LocalName);
+            var info = GetTypeInfo(reader.NamespaceURI, reader.LocalName) ?? HandleUnknownType(null, reader.NamespaceURI, reader.LocalName);
 
             if (info != null)
             {
@@ -1170,9 +1170,9 @@ namespace NMF.Serialization
             reader.MoveToElement();
         }
 
-        protected virtual ITypeSerializationInfo HandleUnknownType(string ns, string localName)
+        protected virtual ITypeSerializationInfo HandleUnknownType(IPropertySerializationInfo property, string ns, string localName)
         {
-            var e = new UnknownTypeEventArgs(ns, localName);
+            var e = new UnknownTypeEventArgs(property, ns, localName);
             OnUnknownType(e);
             if (e.Type != null)
             {
@@ -1183,7 +1183,7 @@ namespace NMF.Serialization
 
         protected virtual void HandleUnknownAttribute(XmlReader reader, object obj, ITypeSerializationInfo info, XmlSerializationContext context)
         {
-            var e = new UnknownAttributeEventArgs(reader.NamespaceURI, reader.LocalName, reader.Value);
+            var e = new UnknownAttributeEventArgs(obj, reader.NamespaceURI, reader.LocalName, reader.Value);
             OnUnknownAttribute(e);
         }
 
