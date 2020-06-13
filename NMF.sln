@@ -63,7 +63,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{16A909F8
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Synchronizations.Tests", "Synchronizations\Synchronizations.Tests\Synchronizations.Tests.csproj", "{863F112D-A4A4-4225-B6DA-4E9BD0625001}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ecore2Code", "Tools\Ecore2Code\Ecore2Code.csproj", "{BE62B112-0032-4631-B021-A1008B2CB367}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Ecore2Code", "Tools\Ecore2Code\Ecore2Code.csproj", "{BE62B112-0032-4631-B021-A1008B2CB367}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tests", "Tools\Tests\Tests.csproj", "{A73B97DD-F870-48D0-86AE-713457B47E2B}"
 EndProject
@@ -162,6 +162,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "NuSpec", "NuSpec", "{E671CC
 		Nuget Packages\NMF-Interop-Ecore.nuspec = Nuget Packages\NMF-Interop-Ecore.nuspec
 		Nuget Packages\NMF-Layering.nuspec = Nuget Packages\NMF-Layering.nuspec
 		Nuget Packages\NMF-MetaTransformation.nuspec = Nuget Packages\NMF-MetaTransformation.nuspec
+		Nuget Packages\NMF-ModelSynchronizations.nuspec = Nuget Packages\NMF-ModelSynchronizations.nuspec
 		Nuget Packages\NMF-Repository.nuspec = Nuget Packages\NMF-Repository.nuspec
 		Nuget Packages\NMF-Synchronizations.nuspec = Nuget Packages\NMF-Synchronizations.nuspec
 		Nuget Packages\NMF-Tests.MSTest.nuspec = Nuget Packages\NMF-Tests.MSTest.nuspec
