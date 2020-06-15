@@ -49,7 +49,7 @@ namespace NMF.Expressions
                         }
                         return VisitImplementedOperator(node, "op_Subtraction");
                     case ExpressionType.Divide:
-                        return VisitImplementedOperator(node, "op_Multiply");
+                        return VisitImplementedOperator(node, "op_Division", "op_Multiply");
                     case ExpressionType.ExclusiveOr:
                         break;
                     case ExpressionType.Multiply:
@@ -57,7 +57,7 @@ namespace NMF.Expressions
                         return VisitImplementedOperator(node, "op_Division");
                     case ExpressionType.Subtract:
                     case ExpressionType.SubtractChecked:
-                        return VisitImplementedOperator(node, "op_Addition");
+                        return VisitImplementedOperator(node, "op_Subtraction", "op_Addition");
                     default:
                         return VisitImplementedBinary(node);
                 }

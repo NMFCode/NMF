@@ -71,7 +71,7 @@ namespace NMF.Expressions
                         return;
                     }
                     var rightReversable = Right as INotifyReversableExpression<TRight>;
-                    if (rightReversable != null && rightReversable.IsReversable && Right.CanBeConstant)
+                    if (rightReversable != null && rightReversable.IsReversable && Left.CanBeConstant)
                     {
                         SetRightValue(rightReversable, Left.Value, value);
                         return;
@@ -202,6 +202,70 @@ namespace NMF.Expressions
             if (leftReverser != null)
             {
                 right.Value = leftReverser(result, left);
+            }
+        }
+    }
+
+    internal sealed class ObservableReversableBinaryExpression2<TLeft, TRight, TResult> : ObservableReversableBinaryExpressionBase<TLeft, TRight, TResult>
+    {
+        protected override string Format
+        {
+            get
+            {
+                return Implementation.ToString() + "({0}, {1})";
+            }
+        }
+
+        private Func<TRight, TResult, TLeft> rightReverser;
+        private Func<TLeft, TResult, TRight> leftReverser;
+
+        public ObservableReversableBinaryExpression2(BinaryExpression node, ObservableExpressionBinder binder, MethodInfo leftReverser, MethodInfo rightReverser)
+            : this(
+                binder.VisitObservable<TLeft>(node.Left),
+                binder.VisitObservable<TRight>(node.Right),
+                ReflectionHelper.CreateDelegate<Func<TLeft, TRight, TResult>>(node.Method),
+                rightReverser != null ? ReflectionHelper.CreateDelegate<Func<TRight, TResult, TLeft>>(rightReverser) : null,
+                leftReverser != null ? ReflectionHelper.CreateDelegate<Func<TLeft, TResult, TRight>>(leftReverser) : null)
+        { }
+
+        public ObservableReversableBinaryExpression2(INotifyExpression<TLeft> left,
+            INotifyExpression<TRight> right,
+            Func<TLeft, TRight, TResult> implementation,
+            Func<TRight, TResult, TLeft> rightReverser,
+            Func<TLeft, TResult, TRight> leftReverser)
+            : base(left, right)
+        {
+            Implementation = implementation;
+
+            this.leftReverser = leftReverser;
+            this.rightReverser = rightReverser;
+        }
+
+        public Func<TLeft, TRight, TResult> Implementation { get; private set; }
+
+        protected override TResult GetValue()
+        {
+            return Implementation(Left.Value, Right.Value);
+        }
+
+        protected override INotifyExpression<TResult> ApplyParametersCore(IDictionary<string, object> parameters, IDictionary<INotifiable, INotifiable> trace)
+        {
+            return new ObservableReversableBinaryExpression2<TLeft, TRight, TResult>(Left.ApplyParameters(parameters, trace), Right.ApplyParameters(parameters, trace), Implementation, rightReverser, leftReverser);
+        }
+
+        protected override void SetLeftValue(INotifyReversableExpression<TLeft> left, TRight right, TResult result)
+        {
+            if (rightReverser != null)
+            {
+                left.Value = rightReverser(right, result);
+            }
+        }
+
+        protected override void SetRightValue(INotifyReversableExpression<TRight> right, TLeft left, TResult result)
+        {
+            if (leftReverser != null)
+            {
+                right.Value = leftReverser(left, result);
             }
         }
     }

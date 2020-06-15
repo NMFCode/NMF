@@ -66,6 +66,62 @@ namespace NMF.Expressions.Test.Reversable
             Assert.AreEqual(42m, dummy.Item);
         }
 
+        [TestMethod]
+        public void ReversableDivide2_Int_CorrectResult()
+        {
+            var dummy = new ObservableDummy<int>(1);
+            SetValue(() => 252 / dummy.Item, 6);
+            Assert.AreEqual(42, dummy.Item);
+        }
+
+        [TestMethod]
+        public void ReversableDivide2_UInt_CorrectResult()
+        {
+            var dummy = new ObservableDummy<uint>(1);
+            SetValue(() => 252 / dummy.Item, 6u);
+            Assert.AreEqual(42u, dummy.Item);
+        }
+
+        [TestMethod]
+        public void ReversableDivide2_Long_CorrectResult()
+        {
+            var dummy = new ObservableDummy<long>(1);
+            SetValue(() => 252 / dummy.Item, 6L);
+            Assert.AreEqual(42, dummy.Item);
+        }
+
+        [TestMethod]
+        public void ReversableDivide2_ULong_CorrectResult()
+        {
+            var dummy = new ObservableDummy<ulong>(1);
+            SetValue(() => 252 / dummy.Item, 6ul);
+            Assert.AreEqual(42ul, dummy.Item);
+        }
+
+        [TestMethod]
+        public void ReversableDivide2_Float_CorrectResult()
+        {
+            var dummy = new ObservableDummy<float>(1);
+            SetValue(() => 252 / dummy.Item, 6f);
+            Assert.AreEqual(42, dummy.Item);
+        }
+
+        [TestMethod]
+        public void ReversableDivide2_Double_CorrectResult()
+        {
+            var dummy = new ObservableDummy<double>(1);
+            SetValue(() => 252 / dummy.Item, 6.0);
+            Assert.AreEqual(42, dummy.Item);
+        }
+
+        [TestMethod]
+        public void ReversableDivide2_Decimal_CorrectResult()
+        {
+            var dummy = new ObservableDummy<decimal>(1);
+            SetValue(() => 252 / dummy.Item, 6m);
+            Assert.AreEqual(42m, dummy.Item);
+        }
+
         protected override void SetValue<T>(Expression<Func<T>> expression, T value)
         {
             var reversable = Observable.Reversable(expression);

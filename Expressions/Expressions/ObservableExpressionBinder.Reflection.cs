@@ -18,18 +18,25 @@ namespace NMF.Expressions
         private Expression VisitImplementedOperator(BinaryExpression node, string reverseOperator)
         {
             var leftSubtract = node.Method.DeclaringType.GetMethod(reverseOperator, BindingFlags.Public | BindingFlags.Static, null, new Type[] { node.Type, node.Left.Type }, null);
-            MethodInfo rightSubtract;
-            if (node.Left.Type == node.Right.Type)
-            {
-                rightSubtract = leftSubtract;
-            }
-            else
-            {
-                rightSubtract = node.Method.DeclaringType.GetMethod(reverseOperator, BindingFlags.Static | BindingFlags.Public, null, new Type[] { node.Type, node.Right.Type }, null);
-            }
+            var rightSubtract = node.Method.DeclaringType.GetMethod(reverseOperator, BindingFlags.Static | BindingFlags.Public, null, new Type[] { node.Type, node.Right.Type }, null);
             if (leftSubtract != null || rightSubtract != null)
             {
                 return Activator.CreateInstance(typeof(ObservableReversableBinaryExpression<,,>).MakeGenericType(node.Left.Type, node.Right.Type, node.Type),
+                    node, this, leftSubtract, rightSubtract) as Expression;
+            }
+            else
+            {
+                return VisitImplementedBinary(node);
+            }
+        }
+
+        private Expression VisitImplementedOperator(BinaryExpression node, string leftReverseOperator, string rightReverseOperator)
+        {
+            var leftSubtract = node.Method.DeclaringType.GetMethod(leftReverseOperator, BindingFlags.Public | BindingFlags.Static, null, new Type[] { node.Left.Type, node.Type }, null);
+            var rightSubtract = node.Method.DeclaringType.GetMethod(rightReverseOperator, BindingFlags.Static | BindingFlags.Public, null, new Type[] { node.Right.Type, node.Type }, null);
+            if (leftSubtract != null || rightSubtract != null)
+            {
+                return Activator.CreateInstance(typeof(ObservableReversableBinaryExpression2<,,>).MakeGenericType(node.Left.Type, node.Right.Type, node.Type),
                     node, this, leftSubtract, rightSubtract) as Expression;
             }
             else

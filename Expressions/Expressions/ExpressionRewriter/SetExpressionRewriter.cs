@@ -81,18 +81,18 @@ namespace NMF.Expressions
                 switch (node.NodeType)
                 {
                     case ExpressionType.Add:
-                        return VisitImplementedBinary(node, "op_Subtraction", Expression.Subtract);
+                        return VisitImplementedBinary(node, "op_Subtraction", "op_Subtraction", Expression.Subtract);
                     case ExpressionType.AddChecked:
-                        return VisitImplementedBinary(node, "op_Subtraction", Expression.SubtractChecked);
+                        return VisitImplementedBinary(node, "op_Subtraction", "op_Subtraction", Expression.SubtractChecked);
                     case ExpressionType.Divide:
-                        return VisitImplementedBinary(node, "op_Multiply", Expression.Multiply);
+                        return VisitImplementedBinary(node, "op_Division", "op_Multiply", Expression.Multiply);
                     case ExpressionType.Multiply:
                     case ExpressionType.MultiplyChecked:
-                        return VisitImplementedBinary(node, "op_Division", Expression.Divide);
+                        return VisitImplementedBinary(node, "op_Division", "op_Division", Expression.Divide);
                     case ExpressionType.Subtract:
-                        return VisitImplementedBinary(node, "op_Addition", Expression.Add);
+                        return VisitImplementedBinary(node, "op_Subtraction", "op_Addition", Expression.Add);
                     case ExpressionType.SubtractChecked:
-                        return VisitImplementedBinary(node, "op_Addition", Expression.AddChecked);
+                        return VisitImplementedBinary(node, "op_Subtraction", "op_Addition", Expression.AddChecked);
                     default:
                         return null;
                 }
@@ -128,7 +128,7 @@ namespace NMF.Expressions
                 case ExpressionType.Divide:
                     if (leftConstant)
                     {
-                        Value = Expression.MultiplyChecked(Value, node.Left);
+                        Value = Expression.Divide(node.Left, Value);
                         return Visit(node.Right);
                     }
                     if (rightConstant)
@@ -167,7 +167,7 @@ namespace NMF.Expressions
                 case ExpressionType.Subtract:
                     if (leftConstant)
                     {
-                        Value = Expression.Add(Value, node.Left);
+                        Value = Expression.Subtract(node.Left, Value);
                         return Visit(node.Right);
                     }
                     if (rightConstant)
@@ -179,7 +179,7 @@ namespace NMF.Expressions
                 case ExpressionType.SubtractChecked:
                     if (leftConstant)
                     {
-                        Value = Expression.AddChecked(Value, node.Left);
+                        Value = Expression.SubtractChecked(node.Left, Value);
                         return Visit(node.Right);
                     }
                     if (rightConstant)
@@ -194,14 +194,14 @@ namespace NMF.Expressions
             return null;
         }
 
-        private Expression VisitImplementedBinary(BinaryExpression node, string reverseOperator, Func<Expression, Expression, MethodInfo, BinaryExpression> expressionCreator)
+        private Expression VisitImplementedBinary(BinaryExpression node, string reverseOperatorLeftConstant, string reverseOperatorRightConstant, Func<Expression, Expression, MethodInfo, BinaryExpression> expressionCreator)
         {
             var leftConstant = node.Left != null && node.Left.NodeType == ExpressionType.Constant;
             var rightConstant = node.Right != null && node.Right.NodeType == ExpressionType.Constant;
 
             if (leftConstant)
             {
-                var reverseOp = ReflectionHelper.GetMethod(node.Method.DeclaringType, reverseOperator,
+                var reverseOp = ReflectionHelper.GetMethod(node.Method.DeclaringType, reverseOperatorLeftConstant,
                     new Type[] {
                         node.Type,
                         node.Left.Type
@@ -209,14 +209,14 @@ namespace NMF.Expressions
 
                 if (reverseOp != null)
                 {
-                    Value = expressionCreator(Value, node.Left, reverseOp);
+                    Value = expressionCreator(node.Left, Value, reverseOp);
                     return Visit(node.Right);
                 }
             }
 
             if (rightConstant)
             {
-                var reverseOp = ReflectionHelper.GetMethod(node.Method.DeclaringType, reverseOperator,
+                var reverseOp = ReflectionHelper.GetMethod(node.Method.DeclaringType, reverseOperatorRightConstant,
                     new Type[] {
                         node.Type,
                         node.Right.Type
