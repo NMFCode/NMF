@@ -27,7 +27,12 @@ namespace NMF.Models.Repository
 
         public Uri GetRepositoryUri(Uri uri)
         {
-            return uri;
+            if (!uri.IsAbsoluteUri)
+            {
+                return uri;
+            }
+            // throw away the fragment
+            return new Uri(uri.GetLeftPart(UriPartial.Query));
         }
 
         public abstract Stream Open(Uri repositoryId);
