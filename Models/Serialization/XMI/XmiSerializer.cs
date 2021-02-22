@@ -326,9 +326,8 @@ namespace NMF.Serialization.Xmi
 
             if (!serializationInfo.IsIdentified && !serializationInfo.IsCollection && serializationInfo is XmlTypeSerializationInfo)
             {
-                XmlTypeSerializationInfo info = serializationInfo as XmlTypeSerializationInfo;
                 var id = IdAttribute;
-                if (id != null && info != null)
+                if (id != null && serializationInfo is XmlTypeSerializationInfo info)
                 {
                     if (!info.AttributeProperties.Contains(id))
                     {

@@ -41,13 +41,21 @@ namespace NMF.Models.Repository
         /// </summary>
         /// <param name="parent">The parent repository</param>
         /// <remarks>If no parent repository is provided, the meta repository is used as parent repository</remarks>
-        public ModelRepository(IModelRepository parent)
+        public ModelRepository(IModelRepository parent) : this(parent, null, FileLocator.Instance) { }
+
+        /// <summary>
+        /// Creates a new model repository with a given parent
+        /// </summary>
+        /// <param name="parent">The parent repository</param>
+        /// <param name="serializer">A serializer object or null to use the default</param>
+        /// <param name="locators">A set of model locators</param>
+        /// <remarks>If no parent repository is provided, the meta repository is used as parent repository</remarks>
+        public ModelRepository(IModelRepository parent, IModelSerializer serializer, params IModelLocator[] locators)
         {
             models = new ModelRepositoryModelCollection(this);
-            Locators = new List<IModelLocator>();
-            Locators.Add(FileLocator.Instance);
+            Locators = new List<IModelLocator>(locators);
             Parent = parent ?? MetaRepository.Instance;
-            Serializer = MetaRepository.Instance.Serializer;
+            Serializer = serializer ?? MetaRepository.Instance.Serializer;
             Parent.BubbledChange += Parent_BubbledChange;
         }
 

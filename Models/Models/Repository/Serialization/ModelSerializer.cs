@@ -11,10 +11,20 @@ using System.Xml;
 
 namespace NMF.Models.Repository.Serialization
 {
+    /// <summary>
+    /// Denotes the standard model serializer
+    /// </summary>
     public class ModelSerializer : XmiSerializer, IModelSerializer
     {
+        /// <summary>
+        /// Creates a new model serializer
+        /// </summary>
         public ModelSerializer() : this(XmlSerializationSettings.Default) { }
 
+        /// <summary>
+        /// Creates a new model serializer
+        /// </summary>
+        /// <param name="settings">The serialization settings</param>
         public ModelSerializer(XmlSerializationSettings settings) : this(settings, null) { }
 
         /// <summary>
@@ -26,13 +36,11 @@ namespace NMF.Models.Repository.Serialization
         public ModelSerializer(XmlSerializationSettings settings, IEnumerable<Type> knownTypes)
             : base(settings, knownTypes)
         {
-
         }
 
         protected override void InitializeElementProperties(XmlReader reader, ref object obj, ITypeSerializationInfo info, XmlSerializationContext context)
         {
-            var model = obj as Model;
-            if (model == null)
+            if (!(obj is Model model))
             {
                 base.InitializeElementProperties(reader, ref obj, info, context);
             }
@@ -64,8 +72,7 @@ namespace NMF.Models.Repository.Serialization
 
         protected override void WriteElementProperties(XmlWriter writer, object obj, ITypeSerializationInfo info, XmlSerializationContext context)
         {
-            var model = obj as Model;
-            if (model == null)
+            if (!(obj is Model model))
             {
                 base.WriteElementProperties(writer, obj, info, context);
             }
@@ -94,18 +101,13 @@ namespace NMF.Models.Repository.Serialization
         {
             if (identificationMode == XmlIdentificationMode.Identifier)
             {
-                var model = context.Root as Model;
-                if (model != null)
+                if (context.Root is Model model && obj is IModelElement modelElement)
                 {
-                    var modelElement = obj as IModelElement;
-                    if (modelElement != null)
+                    var uri = model.CreateUriForElement(modelElement);
+                    if (uri != null)
                     {
-                        Uri uri = model.CreateUriForElement(modelElement);
-                        if (uri != null)
-                        {
-                            writer.WriteString(uri.ConvertToString());
-                            return true;
-                        }
+                        writer.WriteString(uri.ConvertToString());
+                        return true;
                     }
                 }
             }
@@ -114,12 +116,10 @@ namespace NMF.Models.Repository.Serialization
 
         public override void Serialize(object obj, XmlWriter writer, IPropertySerializationInfo property, bool writeInstance, XmlIdentificationMode identificationMode, XmlSerializationContext context)
         {
-            var modelElement = obj as IModelElement;
             var useBaseSerialization = true;
-            if (modelElement != null)
+            if (obj is IModelElement modelElement)
             {
-                var modelSerializationContext = context as ModelSerializationContext;
-                if (modelSerializationContext != null && modelSerializationContext.Model != null)
+                if (context is ModelSerializationContext modelSerializationContext && modelSerializationContext.Model != null)
                 {
                     useBaseSerialization = !modelSerializationContext.Model.SerializeAsReference(modelElement);
                 }
@@ -138,9 +138,7 @@ namespace NMF.Models.Repository.Serialization
 
         protected override string GetAttributeValue(object value, ITypeSerializationInfo info, bool isCollection, XmlSerializationContext context)
         {
-            var model = context.Root as Model;
-            var modelElement = value as ModelElement;
-            if (modelElement != null && model != null)
+            if (value is ModelElement modelElement && context.Root is Model model)
             {
                 Uri uri = model.CreateUriForElement(modelElement);
                 if (uri != null)
@@ -235,8 +233,7 @@ namespace NMF.Models.Repository.Serialization
         protected override object SelectRoot(object graph, bool fragment)
         {
             if (fragment) return graph;
-            var modelElement = graph as IModelElement;
-            if (modelElement != null)
+            if (graph is IModelElement modelElement)
             {
                 var model = modelElement.Model;
                 if (model == null) return graph;

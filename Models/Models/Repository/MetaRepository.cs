@@ -10,10 +10,10 @@ namespace NMF.Models.Repository
 {
     public sealed class MetaRepository : IModelRepository
     {
-        private static MetaRepository instance = new MetaRepository();
-        private ModelCollection entries;
-        private ModelSerializer serializer = new ModelSerializer();
-        private HashSet<Assembly> traversedAssemblies = new HashSet<Assembly>();
+        private static readonly MetaRepository instance = new MetaRepository();
+        private readonly ModelCollection entries;
+        private readonly ModelSerializer serializer = new ModelSerializer();
+        private readonly HashSet<Assembly> traversedAssemblies = new HashSet<Assembly>();
 
         event EventHandler<BubbledChangeEventArgs> IModelRepository.BubbledChange
         {
