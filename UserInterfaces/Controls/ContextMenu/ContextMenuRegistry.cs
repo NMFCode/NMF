@@ -12,19 +12,21 @@ using NMF.Models.Meta;
 
 namespace NMF.Controls.ContextMenu
 {
+    /// <summary>
+    /// Denotes a converter that converts model elements into context menus
+    /// </summary>
     public class ContextMenuRegistry : IValueConverter
     {
         private Dictionary<IClass, List<IClass>> cachedDerived;
         private Dictionary<System.Type, List<(IReference, System.Type)>> cachedContextMenus = new Dictionary<System.Type, List<(IReference, System.Type)>>();
         private Dictionary<IReferenceType, HashSet<System.Type>> cachedImplementationTypes = new Dictionary<IReferenceType, HashSet<System.Type>>();
 
+        /// <inheritdoc />
         public object Convert(object value, System.Type targetType, object parameter, CultureInfo culture)
         {
-            var element = value as IModelElement;
-            if (element == null) return null;
+            if (!(value is IModelElement element)) return null;
             var type = value.GetType();
-            List<(IReference, System.Type)> menuRegistry;
-            if (!cachedContextMenus.TryGetValue(type, out menuRegistry))
+            if (!cachedContextMenus.TryGetValue(type, out List<(IReference, System.Type)> menuRegistry))
             {
                 menuRegistry = new List<(IReference, System.Type)>();
 
@@ -113,6 +115,7 @@ namespace NMF.Controls.ContextMenu
             return systemType;
         }
 
+        /// <inheritdoc />
         public object ConvertBack(object value, System.Type targetType, object parameter, CultureInfo culture)
         {
             throw new NotSupportedException();

@@ -61,6 +61,15 @@ namespace NMF.Synchronizations
             }
         }
 
+        /// <summary>
+        /// Creates a new instance
+        /// </summary>
+        /// <param name="leftContext">The LHS context element</param>
+        /// <param name="leftSetter">The LHS setter</param>
+        /// <param name="leftValue">The left value</param>
+        /// <param name="rightContext">The RHS context element</param>
+        /// <param name="rightSetter">The RHS setter</param>
+        /// <param name="rightValue">The right value</param>
         public PropertyInequality(TLeft leftContext, Action<TLeft, TValue> leftSetter, TValue leftValue, TRight rightContext, Action<TRight, TValue> rightSetter, TValue rightValue)
         {
             LeftContext = leftContext;
@@ -72,21 +81,18 @@ namespace NMF.Synchronizations
         }
 
         /// <inheritdoc />
-
         public void ResolveLeft()
         {
             LeftSetter(LeftContext, RightValue);
         }
 
         /// <inheritdoc />
-
         public void ResolveRight()
         {
             RightSetter(RightContext, LeftValue);
         }
 
         /// <inheritdoc />
-
         public override int GetHashCode()
         {
             var hashCode = 0;
@@ -103,7 +109,6 @@ namespace NMF.Synchronizations
         }
 
         /// <inheritdoc />
-
         public override bool Equals(object obj)
         {
             if (ReferenceEquals( obj, this)) return true;
@@ -112,14 +117,12 @@ namespace NMF.Synchronizations
         }
 
         /// <inheritdoc />
-
         public bool Equals(IInconsistency other)
         {
             return Equals(other as PropertyInequality<TLeft, TRight, TValue>);
         }
 
         /// <inheritdoc />
-
         public bool Equals(PropertyInequality<TLeft, TRight, TValue> other)
         {
             return other != null && EqualityComparer<TLeft>.Default.Equals(other.LeftContext, LeftContext) && EqualityComparer<TRight>.Default.Equals(other.RightContext, RightContext)
@@ -128,7 +131,6 @@ namespace NMF.Synchronizations
         }
 
         /// <inheritdoc />
-
         public override string ToString()
         {
             return Representation;

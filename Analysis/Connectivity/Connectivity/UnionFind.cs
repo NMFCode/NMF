@@ -7,11 +7,20 @@ using System.Threading.Tasks;
 
 namespace NMF.Analyses
 {
+    /// <summary>
+    /// Denotes a connectivity implementation based on UnionFind
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
     public class UnionFind<T> : Connectivity<T>
     {
         private Func<T, IEnumerable<T>> incidents;
         private Dictionary<T, T> parents = new Dictionary<T, T>();
 
+        /// <summary>
+        /// Creates a new instance
+        /// </summary>
+        /// <param name="incidents">A function selecting the incidents</param>
+        /// <param name="rootNodes">A collection of root nodes</param>
         public UnionFind(Func<T, IEnumerable<T>> incidents, IEnumerable<T> rootNodes)
         {
             this.incidents = incidents;
@@ -24,6 +33,11 @@ namespace NMF.Analyses
             }
         }
 
+        /// <summary>
+        /// Creates a new instance
+        /// </summary>
+        /// <param name="incidents">A function selecting the incidents</param>
+        /// <param name="rootNodes">A collection of root nodes</param>
         public UnionFind(Func<T, IEnumerable<T>> incidents, params T[] rootNodes)
             : this(incidents, (IEnumerable<T>)rootNodes) { }
 
@@ -49,14 +63,10 @@ namespace NMF.Analyses
             }
         }
 
-        private int NotConnectedToSelf
-        {
-            get
-            {
-                return parents.Where(pair => EqualityComparer<T>.Default.Equals(pair.Key, pair.Value)).Count();
-            }
-        }
-
+        /// <summary>
+        /// Adds the given node
+        /// </summary>
+        /// <param name="value">The node to add</param>
         public void AddNode(T value)
         {
             if (!parents.ContainsKey(value))
@@ -74,11 +84,13 @@ namespace NMF.Analyses
             }
         }
 
+        /// <inheritdoc />
         public override bool AreConnected(T source, T target)
         {
             return EqualityComparer<T>.Default.Equals(FindAndUpdate(source), FindAndUpdate(target));
         }
 
+        /// <inheritdoc />
         protected override INotifyValue<bool> AreConnectedInc(T a, T b)
         {
             throw new NotSupportedException();

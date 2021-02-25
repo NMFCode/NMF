@@ -9,26 +9,43 @@ using NMF.Expressions;
 
 namespace NMF.Synchronizations
 {
-
+    /// <summary>
+    /// Denotes a computation in a synchronization
+    /// </summary>
+    /// <typeparam name="TIn"></typeparam>
+    /// <typeparam name="TOut"></typeparam>
     public abstract class SynchronizationComputation<TIn, TOut> : Computation, INotifyValue<TOut>, IOutputAccept<TOut>
         where TIn : class
         where TOut : class
     {
         private TIn input;
 
+        /// <summary>
+        /// Gets raised when the output of this synchronization changed
+        /// </summary>
         public event EventHandler<ValueChangedEventArgs> OutputChanged;
 
+        /// <summary>
+        /// Indicates whether candidate search can be skipped because the context was newly established
+        /// </summary>
         public bool OmitCandidateSearch
         {
             get;
             protected set;
         }
 
+        /// <summary>
+        /// Fires the event that the output has changed
+        /// </summary>
+        /// <param name="e"></param>
         protected virtual void OnOutputChanged(ValueChangedEventArgs e)
         {
             OutputChanged?.Invoke(this, e);
         }
 
+        /// <summary>
+        /// Gets the input of this correspondence
+        /// </summary>
         public TIn Input
         {
             get
@@ -60,8 +77,18 @@ namespace NMF.Synchronizations
             }
         }
 
+        /// <summary>
+        /// Gets the opposite correspondence
+        /// </summary>
         public SynchronizationComputation<TOut, TIn> Opposite { get; private set; }
 
+        /// <summary>
+        /// Creates a new instance
+        /// </summary>
+        /// <param name="rule">The transformation rule for which this correspondence was created</param>
+        /// <param name="reverseRule">The reverse transformation rule</param>
+        /// <param name="context">The context in which the correspondence is created</param>
+        /// <param name="input">The input element</param>
         public SynchronizationComputation(TransformationRuleBase<TIn, TOut> rule, TransformationRuleBase<TOut, TIn> reverseRule, IComputationContext context, TIn input)
             : base(rule, context)
         {
@@ -88,6 +115,7 @@ namespace NMF.Synchronizations
             }
         }
 
+        /// <inheritdoc />
         public override object GetInput(int index)
         {
             if (index == 0)
@@ -100,6 +128,10 @@ namespace NMF.Synchronizations
             }
         }
 
+        /// <summary>
+        /// Performs the given action when the corresponding element of this computation was found
+        /// </summary>
+        /// <param name="toPerform">The action to perform</param>
         public void DoWhenOutputIsAvailable(Action<TIn, TOut> toPerform)
         {
             if (toPerform == null) return;
@@ -113,11 +145,13 @@ namespace NMF.Synchronizations
             }
         }
 
+        /// <inheritdoc />
         public void AcceptNewOutput(TOut value)
         {
             Opposite.Input = value;
         }
 
+        /// <inheritdoc />
         protected sealed override object OutputCore
         {
             get
@@ -130,6 +164,9 @@ namespace NMF.Synchronizations
             }
         }
 
+        /// <summary>
+        /// The context in which the correspondence has been established
+        /// </summary>
         public ISynchronizationContext SynchronizationContext
         {
             get
@@ -138,6 +175,9 @@ namespace NMF.Synchronizations
             }
         }
 
+        /// <summary>
+        /// Gets whether this correspondence was the original one
+        /// </summary>
         public virtual bool IsOriginalComputation
         {
             get
@@ -146,6 +186,9 @@ namespace NMF.Synchronizations
             }
         }
 
+        /// <summary>
+        /// Gets the synchronization rule of this correspondence
+        /// </summary>
         public SynchronizationRuleBase SynchronizationRule
         {
             get
@@ -162,6 +205,9 @@ namespace NMF.Synchronizations
             }
         }
 
+        /// <summary>
+        /// Gets the dependencies for this correspondence
+        /// </summary>
         public virtual ICollection<IDisposable> Dependencies
         {
             get
@@ -170,18 +216,22 @@ namespace NMF.Synchronizations
             }
         }
 
-        
+
+        /// <inheritdoc />
         public ISuccessorList Successors { get; } = NotifySystem.DefaultSystem.CreateSuccessorList();
 
         IEnumerable<INotifiable> INotifiable.Dependencies { get { return Enumerable.Empty<INotifiable>(); } }
 
+        /// <inheritdoc />
         public ExecutionMetaData ExecutionMetaData { get; } = new ExecutionMetaData();
 
+        /// <inheritdoc />
         public INotificationResult Notify(IList<INotificationResult> sources)
         {
             throw new InvalidOperationException();
         }
 
+        /// <inheritdoc />
         public void Dispose() { }
 
         private class OppositeComputation : SynchronizationComputation<TOut, TIn>

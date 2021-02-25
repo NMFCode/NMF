@@ -21,6 +21,10 @@ namespace NMF.Controls
     /// </summary>
     public partial class CollectionEditorDialog : Window
     {
+        /// <summary>
+        /// Creates a new collection editor dialog for the given property
+        /// </summary>
+        /// <param name="property"></param>
         public CollectionEditorDialog(PropertyItem property)
         {
             DataContext = property;
@@ -33,14 +37,18 @@ namespace NMF.Controls
         }
 
 
-
+        /// <summary>
+        /// Gets or sets the item template
+        /// </summary>
         public DataTemplate ItemTemplate
         {
             get { return (DataTemplate)GetValue(ItemTemplateProperty); }
             set { SetValue(ItemTemplateProperty, value); }
         }
 
-        // Using a DependencyProperty as the backing store for ItemTemplate.  This enables animation, styling, binding, etc...
+        /// <summary>
+        /// The ItemTemplate Dependency property
+        /// </summary>
         public static readonly DependencyProperty ItemTemplateProperty =
             DependencyProperty.Register("ItemTemplate", typeof(DataTemplate), typeof(CollectionEditorDialog), new PropertyMetadata());
 

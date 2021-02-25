@@ -10,13 +10,21 @@ using System.Threading.Tasks;
 
 namespace NMF.Transformations.Parallel
 {
+    /// <summary>
+    /// Denotes a context of a computation in a parallel transformation
+    /// </summary>
     public class ParallelComputationContext : ComputationContext
     {
-        public int transformationRequirements;
+        private int transformationRequirements;
         ConcurrentQueue<Action> computations;
 
+        /// <summary>
+        /// Creates a new parallel execution context
+        /// </summary>
+        /// <param name="context"></param>
         public ParallelComputationContext(ITransformationContext context) : base(context) { }
 
+        /// <inheritdoc />
         public override void MarkRequire(Computation other, bool isRequired)
         {
             base.MarkRequire(other, isRequired);

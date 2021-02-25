@@ -126,10 +126,11 @@ namespace NMF.Models.Meta
             /// Generates the generic Equals method implementing Equals
             /// </summary>
             /// <param name="input">The NMeta data type</param>
+            /// <param name="generatedType">The type generated for the given data type</param>
             /// <param name="context">The transformation context</param>
-            protected virtual CodeMemberMethod CreateGenericEquals(IDataType input, CodeTypeDeclaration output, ITransformationContext context)
+            protected virtual CodeMemberMethod CreateGenericEquals(IDataType input, CodeTypeDeclaration generatedType, ITransformationContext context)
             {
-                var thisTypeRef = output.GetReferenceForType();
+                var thisTypeRef = generatedType.GetReferenceForType();
                 var equals = new CodeMemberMethod()
                 {
                     Name = "Equals",
@@ -159,6 +160,12 @@ namespace NMF.Models.Meta
                 return equals;
             }
 
+            /// <summary>
+            /// Generates a GetHashCode method
+            /// </summary>
+            /// <param name="input">The data type for which the GetHashCode method should be generated</param>
+            /// <param name="context">The context in which the transformation is made</param>
+            /// <returns>A definition of the GetHashCode method</returns>
             protected virtual CodeMemberMethod CreateGetHashCode(IDataType input, ITransformationContext context)
             {
                 var getHashCode = new CodeMemberMethod()
@@ -203,6 +210,13 @@ namespace NMF.Models.Meta
                 return getHashCode;
             }
 
+            /// <summary>
+            /// Creates an equals operator
+            /// </summary>
+            /// <param name="dataType">The data type for which the operator should be generated</param>
+            /// <param name="generatedType">the generated type definition</param>
+            /// <param name="context">The context in which the request is made</param>
+            /// <returns>An equals operator</returns>
             public virtual CodeTypeMember CreateEqualsOperator(IDataType dataType, CodeTypeDeclaration generatedType, ITransformationContext context)
             {
                 return new CodeSnippetTypeMember(string.Format(@"
@@ -212,6 +226,13 @@ namespace NMF.Models.Meta
         }}", generatedType.Name, dataType.Name.ToCamelCase()));
             }
 
+            /// <summary>
+            /// Creates a not-equals operator
+            /// </summary>
+            /// <param name="dataType">The data type for which the operator should be generated</param>
+            /// <param name="generatedType">The generated tye definition</param>
+            /// <param name="context">The context in which the request is made</param>
+            /// <returns>An unequals operator</returns>
             public virtual CodeTypeMember CreateNotEqualsOperator(IDataType dataType, CodeTypeDeclaration generatedType, ITransformationContext context)
             {
                 return new CodeSnippetTypeMember(string.Format(@"
@@ -221,6 +242,12 @@ namespace NMF.Models.Meta
         }}", generatedType.Name, dataType.Name.ToCamelCase()));
             }
 
+            /// <summary>
+            /// Creates a method that exports the data type to Json
+            /// </summary>
+            /// <param name="dataType">The data type</param>
+            /// <param name="context">The context in which the request is made</param>
+            /// <returns>A method declaration</returns>
             public virtual CodeMemberMethod CreateSerializeToJson(IDataType dataType, ITransformationContext context)
             {
                 var serializeToJson = new CodeMemberMethod()
@@ -264,6 +291,13 @@ namespace NMF.Models.Meta
                 return serializeToJson;
             }
 
+            /// <summary>
+            /// Creates a TryParse method targeted for Json
+            /// </summary>
+            /// <param name="dataType">The data type</param>
+            /// <param name="generatedType">The generated type definition</param>
+            /// <param name="context">The context in which the call is made</param>
+            /// <returns>A method declaration</returns>
             public virtual CodeMemberMethod CreateTryParseJsonMethod(IDataType dataType, CodeTypeDeclaration generatedType, ITransformationContext context)
             {
                 var tryParseJson = new CodeMemberMethod()
@@ -329,6 +363,13 @@ namespace NMF.Models.Meta
                 return tryParseJson;
             }
 
+            /// <summary>
+            /// Creates a type converter for the given data type
+            /// </summary>
+            /// <param name="dataType">The data type</param>
+            /// <param name="generatedType">The generated type</param>
+            /// <param name="context">The context in which the request is made</param>
+            /// <returns>A type declaration of the type converter</returns>
             protected virtual CodeTypeDeclaration CreateTypeConverter(IDataType dataType, CodeTypeDeclaration generatedType, ITransformationContext context)
             {
                 var converter = CodeDomHelper.CreateTypeDeclarationWithReference($"{generatedType.Name}Converter", true);

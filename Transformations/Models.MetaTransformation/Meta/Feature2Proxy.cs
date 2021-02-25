@@ -14,8 +14,12 @@ namespace NMF.Models.Meta
 {
     public partial class Meta2ClassesTransformation
     {
+        /// <summary>
+        /// Denotes the transformation rule from a feature to a proxy type
+        /// </summary>
         public class Feature2Proxy : TransformationRule<ITypedElement, CodeTypeDeclaration>
         {
+            /// <inheritdoc />
             public override void Transform(ITypedElement feature, CodeTypeDeclaration generatedType, ITransformationContext context)
             {
                 generatedType.Name = feature.Name.ToPascalCase() + "Proxy";

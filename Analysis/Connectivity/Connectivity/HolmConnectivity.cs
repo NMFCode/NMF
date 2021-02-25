@@ -10,6 +10,10 @@ using System.Linq.Expressions;
 
 namespace NMF.Analyses
 {
+    /// <summary>
+    /// Denotes an implementation of Holm's incremental connectivity algorithm
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
     public class HolmConnectivity<T> : Connectivity<T>, INotifiable
     {
         internal class NoArgResult : INotificationResult
@@ -727,9 +731,15 @@ namespace NMF.Analyses
         
         private Dictionary<T, EulerVertex> nodes = new Dictionary<T, EulerVertex>();
         private INotifyEnumerable<T> incElements;
-        private ExecutionMetaData metadata = new ExecutionMetaData();
-        private ISuccessorList successors = NotifySystem.DefaultSystem.CreateSuccessorList();
+        private readonly ExecutionMetaData metadata = new ExecutionMetaData();
+        private readonly ISuccessorList successors = NotifySystem.DefaultSystem.CreateSuccessorList();
 
+        /// <summary>
+        /// Creates a new instance
+        /// </summary>
+        /// <param name="incidents">A function returning incident nodes</param>
+        /// <param name="incremental">A flag determing whether the algorithms runs incremental</param>
+        /// <param name="elements">A collection of nodes</param>
         public HolmConnectivity(Func<T, IEnumerableExpression<T>> incidents, bool incremental, IEnumerableExpression<T> elements)
         {
             Incidents = incidents;
@@ -795,12 +805,20 @@ namespace NMF.Analyses
             }
         }
 
+        /// <summary>
+        /// Gets a value indicating whether this instance runs incremental
+        /// </summary>
         public bool Incremental { get; private set; }
 
+        /// <summary>
+        /// Gets a function returning incident nodes
+        /// </summary>
         public Func<T, IEnumerableExpression<T>> Incidents { get; private set; }
 
+        /// <inheritdoc />
         public ISuccessorList Successors { get { return successors; } }
 
+        /// <inheritdoc />
         public IEnumerable<INotifiable> Dependencies
         {
             get
@@ -814,6 +832,7 @@ namespace NMF.Analyses
             }
         }
 
+        /// <inheritdoc />
         public ExecutionMetaData ExecutionMetaData { get { return metadata; } }
 
         private EulerVertex GetOrCreate(T value, bool createIfNecessary)
@@ -861,6 +880,7 @@ namespace NMF.Analyses
             }
         }
 
+        /// <inheritdoc />
         public override bool AreConnected(T source, T target)
         {
             var sourceV = GetOrCreate(source, false);
@@ -874,6 +894,7 @@ namespace NMF.Analyses
             return sourceV.node.Root() == targetV.node.Root();
         }
 
+        /// <inheritdoc />
         protected override INotifyValue<bool> AreConnectedInc(T a, T b)
         {
             var incValue = new AreConnectedValue(a, b, this);
@@ -881,6 +902,7 @@ namespace NMF.Analyses
             return incValue;
         }
 
+        /// <inheritdoc />
         public INotificationResult Notify(IList<INotificationResult> sources)
         {
             foreach (var change in sources)
@@ -893,6 +915,7 @@ namespace NMF.Analyses
             return NoArgResult.Instance;
         }
 
+        /// <inheritdoc />
         public void Dispose()
         {
             Successors.UnsetAll();

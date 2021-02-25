@@ -227,6 +227,12 @@ namespace NMF.Transformations.Core
             return compCon;
         }
 
+        /// <summary>
+        /// Creates a computation context for the given input with the given transformation rule
+        /// </summary>
+        /// <param name="input">The inputs</param>
+        /// <param name="rule">The transformation rule to process these inputs</param>
+        /// <returns>A computation context</returns>
         protected virtual ComputationContext CreateComputationContext(object[] input, GeneralTransformationRule rule)
         {
             return new ComputationContext(this);
@@ -712,6 +718,9 @@ namespace NMF.Transformations.Core
             ExecutePendingComputations();
         }
 
+        /// <summary>
+        /// Calls dependencies of transformations executed so far
+        /// </summary>
         public void CallPendingDependencies()
         {
             while (dependencyCallQueue.Count > 0)

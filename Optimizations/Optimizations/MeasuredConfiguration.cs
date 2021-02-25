@@ -6,13 +6,26 @@ using System.Text;
 
 namespace NMF.Optimizations
 {
+    /// <summary>
+    /// Denotes a measured configuration
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
     [DebuggerDisplay("{Representation}")]
     public struct MeasuredConfiguration<T> : IEquatable<MeasuredConfiguration<T>>
     {
+        /// <summary>
+        /// The actual configuration
+        /// </summary>
         public T Configuration { get; private set; }
 
+        /// <summary>
+        /// The measurements for this configuration
+        /// </summary>
         public IDictionary<string, double> Measurements { get; private set; }
 
+        /// <summary>
+        /// A representation of this measurement
+        /// </summary>
         public string Representation
         {
             get
@@ -34,22 +47,29 @@ namespace NMF.Optimizations
             }
         }
 
+        /// <summary>
+        /// Creates a new measured configuration
+        /// </summary>
+        /// <param name="configuration">the configuration that has been measured</param>
+        /// <param name="measurements">the actual measured metrics</param>
         public MeasuredConfiguration(T configuration, IDictionary<string, double> measurements) : this()
         {
             Configuration = configuration;
             Measurements = measurements;
         }
 
+        /// <inheritdoc />
         public bool Equals(MeasuredConfiguration<T> other)
         {
             return EqualityComparer<T>.Default.Equals(Configuration, other.Configuration);
         }
 
+        /// <inheritdoc />
         public override bool Equals(object obj)
         {
-            if (obj is MeasuredConfiguration<T>)
+            if (obj is MeasuredConfiguration<T> configuration)
             {
-                return Equals((MeasuredConfiguration<T>)obj);
+                return Equals(configuration);
             }
             else
             {
@@ -57,6 +77,7 @@ namespace NMF.Optimizations
             }
         }
 
+        /// <inheritdoc />
         public static bool operator ==(MeasuredConfiguration<T> obj1, MeasuredConfiguration<T> obj2)
         {
             if (obj1 == null)
@@ -64,11 +85,13 @@ namespace NMF.Optimizations
             return obj1.Equals(obj2);
         }
 
+        /// <inheritdoc />
         public static bool operator !=(MeasuredConfiguration<T> obj1, MeasuredConfiguration<T> obj2)
         {
             return !(obj1 == obj2);
         }
 
+        /// <inheritdoc />
         public override int GetHashCode()
         {
             if (Configuration == null) return 0;

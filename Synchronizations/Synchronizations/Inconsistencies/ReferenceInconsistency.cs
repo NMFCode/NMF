@@ -26,10 +26,11 @@ namespace NMF.Synchronizations.Inconsistencies
         /// Gets the RHS dependent element
         /// </summary>
         public TDepRight RightValue { get; }
+
         private SynchronizationSingleDependency<TLeft, TRight, TDepLeft, TDepRight> Rule { get; }
 
         /// <summary>
-        /// Gets the base correspondence
+        /// The correspondence of elements on the basis of which the inconsistency was found
         /// </summary>
         public SynchronizationComputation<TLeft, TRight> BaseCorrespondence { get; }
 
@@ -41,16 +42,14 @@ namespace NMF.Synchronizations.Inconsistencies
             RightValue = rightValue;
         }
 
-        /// <inheritdoc />
 
+        /// <inheritdoc />
         public bool CanResolveLeft => Rule.leftSetter != null;
 
         /// <inheritdoc />
-
         public bool CanResolveRight => Rule.rightSetter != null;
 
         /// <inheritdoc />
-
         public override int GetHashCode()
         {
             var hashCode = Rule.GetHashCode();
@@ -64,7 +63,6 @@ namespace NMF.Synchronizations.Inconsistencies
         }
 
         /// <inheritdoc />
-
         public override bool Equals(object obj)
         {
             if (ReferenceEquals( obj, this)) return true;
@@ -73,14 +71,12 @@ namespace NMF.Synchronizations.Inconsistencies
         }
 
         /// <inheritdoc />
-
         public bool Equals(IInconsistency other)
         {
             return Equals(other as ReferenceInconsistency<TLeft, TRight, TDepLeft, TDepRight>);
         }
 
         /// <inheritdoc />
-
         public bool Equals(ReferenceInconsistency<TLeft, TRight, TDepLeft, TDepRight> other)
         {
             return other != null && Rule == other.Rule && BaseCorrespondence == other.BaseCorrespondence
@@ -88,7 +84,6 @@ namespace NMF.Synchronizations.Inconsistencies
         }
 
         /// <inheritdoc />
-
         public void ResolveLeft()
         {
             var context = BaseCorrespondence.SynchronizationContext;
@@ -114,7 +109,6 @@ namespace NMF.Synchronizations.Inconsistencies
         }
 
         /// <inheritdoc />
-
         public void ResolveRight()
         {
             var context = BaseCorrespondence.SynchronizationContext;

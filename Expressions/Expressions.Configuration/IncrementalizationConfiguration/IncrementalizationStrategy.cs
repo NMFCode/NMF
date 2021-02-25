@@ -30,17 +30,27 @@ using System.Linq;
 namespace NMF.Expressions.IncrementalizationConfiguration
 {
     
-    
+    /// <summary>
+    /// Denotes the different possibilities for a function incrementalization
+    /// </summary>
     [ModelRepresentationClassAttribute("http://nmf.codeplex.com/incrementalizationConfig#//IncrementalizationStrategy/")]
     public enum IncrementalizationStrategy
     {
-        
+        /// <summary>
+        /// Denotes that functions should be incrementalized on instruction-level
+        /// </summary>
         InstructionLevel = 0,
-        
+        /// <summary>
+        /// Denotes that functions should be incrementalized by promoting cross-references to arguments
+        /// </summary>
         ArgumentPromotion = 1,
-        
+        /// <summary>
+        /// Denotes that functions should be incrementalized by listening to repository changes
+        /// </summary>
         ListenRepositoryChanges = 2,
-        
+        /// <summary>
+        /// Denotes that functions should be incrementalized by augmentations
+        /// </summary>
         UseAugmentation = 3,
     }
 }

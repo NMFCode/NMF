@@ -11,8 +11,17 @@ using System.Threading.Tasks;
 
 namespace NMF.Synchronizations
 {
+    /// <summary>
+    /// Denotes a context in which a synchroniation takes place
+    /// </summary>
     public class SynchronizationContext : TransformationContext, ISynchronizationContext
     {
+        /// <summary>
+        /// Creates a new instance
+        /// </summary>
+        /// <param name="synchronization">The synchronization that should be executed</param>
+        /// <param name="direction">The direction of the synchronization</param>
+        /// <param name="changePropagation">The change propagation mode of the synchronization</param>
         public SynchronizationContext(Synchronization synchronization, SynchronizationDirection direction, ChangePropagationMode changePropagation)
             : base(synchronization)
         {
@@ -22,21 +31,18 @@ namespace NMF.Synchronizations
         }
 
         /// <inheritdoc />
-
         public SynchronizationDirection Direction
         {
             get; set;
         }
 
         /// <inheritdoc />
-
         public ChangePropagationMode ChangePropagation
         {
             get;
         }
 
         /// <inheritdoc />
-
         public ICollectionExpression<IInconsistency> Inconsistencies { get; }
     }
 }

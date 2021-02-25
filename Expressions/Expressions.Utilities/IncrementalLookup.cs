@@ -7,14 +7,24 @@ using System.Text;
 
 namespace NMF.Expressions.Linq
 {
+    /// <summary>
+    /// Implements an incremental lookup
+    /// </summary>
+    /// <typeparam name="TSource">The source type of elements</typeparam>
+    /// <typeparam name="TKey">The type along which the elements are grouped</typeparam>
     public class IncrementalLookup<TSource, TKey> : ObservableEnumerable<TKey>, INotifyLookup<TSource, TKey>
     {
-        private INotifyEnumerable<TSource> source;
-        private ObservingFunc<TSource, TKey> keySelector;
-        private Dictionary<TSource, TaggedObservableValue<TKey, (TSource, int)>> keyValueCache = new Dictionary<TSource, TaggedObservableValue<TKey, (TSource, int)>>();
-        private Dictionary<TKey, IncrementalLookupSlave> slaves = new Dictionary<TKey, IncrementalLookupSlave>();
-        private Notification notification;
+        private readonly INotifyEnumerable<TSource> source;
+        private readonly ObservingFunc<TSource, TKey> keySelector;
+        private readonly Dictionary<TSource, TaggedObservableValue<TKey, (TSource, int)>> keyValueCache = new Dictionary<TSource, TaggedObservableValue<TKey, (TSource, int)>>();
+        private readonly Dictionary<TKey, IncrementalLookupSlave> slaves = new Dictionary<TKey, IncrementalLookupSlave>();
+        private readonly Notification notification;
 
+        /// <summary>
+        /// Creates an incremental lookup
+        /// </summary>
+        /// <param name="source">The source of elements</param>
+        /// <param name="keySelector">A function that selects the keys for an element</param>
         public IncrementalLookup(INotifyEnumerable<TSource> source, ObservingFunc<TSource, TKey> keySelector)
         {
             this.source = source;
@@ -22,6 +32,7 @@ namespace NMF.Expressions.Linq
             notification = new Notification(this);
         }
 
+        /// <inheritdoc />
         protected override void OnAttach()
         {
             foreach (var item in source)
@@ -31,6 +42,7 @@ namespace NMF.Expressions.Linq
             }
         }
 
+        /// <inheritdoc />
         public override IEnumerable<INotifiable> Dependencies
         {
             get
@@ -39,11 +51,13 @@ namespace NMF.Expressions.Linq
             }
         }
 
+        /// <inheritdoc />
         public INotifyEnumerable<TKey> Keys
         {
             get { return this; }
         }
 
+        /// <inheritdoc />
         public INotifyEnumerable<TSource> this[TKey key]
         {
             get
@@ -68,6 +82,7 @@ namespace NMF.Expressions.Linq
             return slaves.Values;
         }
 
+        /// <inheritdoc />
         public override INotificationResult Notify(IList<INotificationResult> sources)
         {
             notification.Reset();
@@ -161,15 +176,16 @@ namespace NMF.Expressions.Linq
             return incKey;
         }
 
+        /// <inheritdoc />
         public override IEnumerator<TKey> GetEnumerator()
         {
             return slaves.Keys.GetEnumerator();
         }
 
-        protected internal class IncrementalLookupSlave : ObservableEnumerable<TSource>
+        internal class IncrementalLookupSlave : ObservableEnumerable<TSource>
         {
-            private IncrementalLookup<TSource, TKey> parent;
-            private TKey key;
+            private readonly IncrementalLookup<TSource, TKey> parent;
+            private readonly TKey key;
 
             public TKey Key { get { return key; } }
 
@@ -228,12 +244,12 @@ namespace NMF.Expressions.Linq
             }
         }
 
-        protected class Notification : ICollectionChangedNotificationResult<TKey>
+        internal class Notification : ICollectionChangedNotificationResult<TKey>
         {
-            private IncrementalLookup<TSource, TKey> parent;
-            private Dictionary<TKey, CollectionChangedNotificationResult<TSource>> notifications = new Dictionary<TKey, CollectionChangedNotificationResult<TSource>>();
-            private List<TKey> addedKeys = new List<TKey>();
-            private List<TKey> removedKeys = new List<TKey>();
+            private readonly IncrementalLookup<TSource, TKey> parent;
+            private readonly Dictionary<TKey, CollectionChangedNotificationResult<TSource>> notifications = new Dictionary<TKey, CollectionChangedNotificationResult<TSource>>();
+            private readonly List<TKey> addedKeys = new List<TKey>();
+            private readonly List<TKey> removedKeys = new List<TKey>();
             private bool isReset = false;
 
             public Notification(IncrementalLookup<TSource, TKey> parent)

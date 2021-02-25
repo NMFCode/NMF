@@ -10,6 +10,9 @@ using NMF.Utilities;
 
 namespace NMF.Models.Dynamic
 {
+    /// <summary>
+    /// Denotes a dynamic model element
+    /// </summary>
     [DebuggerDisplay("{Representation}")]
     public class DynamicModelElement : ModelElement
     {
@@ -19,10 +22,19 @@ namespace NMF.Models.Dynamic
         private IAttributeProperty _identifierProperty;
         private IdentifierScope _identifierScope;
 
+        /// <summary>
+        /// Creates a dynamic model element of the given class
+        /// </summary>
+        /// <param name="class">The class for which the model element is an instance</param>
         public DynamicModelElement(IClass @class) : this(@class, null)
         {
         }
 
+        /// <summary>
+        /// Creates a dynamic model element of the given class
+        /// </summary>
+        /// <param name="class">The class for which the model element is an instance</param>
+        /// <param name="implemented">The class whose properties are directly implemented</param>
         public DynamicModelElement(IClass @class, IClass implemented)
         {
             _class = @class;
@@ -177,11 +189,13 @@ namespace NMF.Models.Dynamic
             GetOrCreateDecomposedAttribute(attConstraint.Constrains).AddConstraint(attConstraint.Values);
         }
 
+        /// <inheritdoc />
         public override IClass GetClass()
         {
             return _class;
         }
 
+        /// <inheritdoc />
         public override IEnumerableExpression<IModelElement> Children
         {
             get
@@ -205,8 +219,10 @@ namespace NMF.Models.Dynamic
             }
         }
 
+        /// <inheritdoc />
         public override bool IsIdentified => _identifierProperty != null;
 
+        /// <inheritdoc />
         public override string ToIdentifierString()
         {
             return _identifierProperty.Value.Value?.ToString();
@@ -226,6 +242,7 @@ namespace NMF.Models.Dynamic
             return referenceProperty;
         }
 
+        /// <inheritdoc />
         protected override object GetAttributeValue(string attribute, int index)
         {
             var property = GetAttributeProperty(attribute);
@@ -236,11 +253,13 @@ namespace NMF.Models.Dynamic
             return base.GetAttributeValue(attribute, index);
         }
 
+        /// <inheritdoc />
         protected override IList GetCollectionForFeature(string feature)
         {
             return GetAttributeProperty(feature)?.Collection ?? GetReferenceProperty(feature)?.Collection ?? base.GetCollectionForFeature(feature);
         }
 
+        /// <inheritdoc />
         protected override string GetCompositionName(object container)
         {
             foreach (var prop in _attributeProperties)
@@ -260,16 +279,19 @@ namespace NMF.Models.Dynamic
             return base.GetCompositionName(container);
         }
 
+        /// <inheritdoc />
         protected override INotifyExpression<object> GetExpressionForAttribute(string attribute)
         {
             return GetAttributeProperty(attribute).Value ?? base.GetExpressionForAttribute(attribute);
         }
 
+        /// <inheritdoc />
         protected override INotifyExpression<IModelElement> GetExpressionForReference(string reference)
         {
             return GetReferenceProperty(reference).ReferencedElement ?? base.GetExpressionForReference(reference);
         }
 
+        /// <inheritdoc />
         protected override IModelElement GetModelElementForReference(string reference, int index)
         {
             var property = GetReferenceProperty(reference.ToUpperInvariant());
@@ -280,6 +302,7 @@ namespace NMF.Models.Dynamic
             return base.GetModelElementForReference(reference, index);
         }
 
+        /// <inheritdoc />
         protected override string GetRelativePathForNonIdentifiedChild(IModelElement child)
         {
             foreach (var reference in _referenceProperties)
@@ -301,6 +324,7 @@ namespace NMF.Models.Dynamic
             return base.GetRelativePathForNonIdentifiedChild(child);
         }
 
+        /// <inheritdoc />
         protected override void SetFeature(string feature, object value)
         {
             if (_attributeProperties.TryGetValue(feature, out var attributeProperty))

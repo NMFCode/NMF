@@ -37,11 +37,13 @@ namespace NMF.Models.Meta
 
             private Reference2Property reference2Property;
 
+            /// <inheritdoc />
             public override void RegisterDependencies()
             {
                 reference2Property = Rule<Reference2Property>();
             }
 
+            /// <inheritdoc />
             protected virtual List<IReference> GetImplementingReferences(IClass scope, ITransformationContext context)
             {
                 var generatedType = context.Trace.ResolveIn(Rule<Class2Type>(), scope);
@@ -94,6 +96,8 @@ namespace NMF.Models.Meta
             /// <param name="generatedType">The generated code type declaration</param>
             /// <param name="elementType">The element type reference</param>
             /// <param name="implementingReferences">The attributes implementing the collection</param>
+            /// <param name="context">The context in which the collection is implemented</param>
+            /// <param name="standardValuesRef">A reference to the standard values field</param>
             protected virtual void ImplementCollection(CodeTypeDeclaration generatedType, CodeTypeReference elementType, CodeExpression standardValuesRef, List<IReference> implementingReferences, ITransformationContext context)
             {
                 generatedType.BaseTypes.Add(new CodeTypeReference(typeof(ICollectionExpression<>).Name, elementType));

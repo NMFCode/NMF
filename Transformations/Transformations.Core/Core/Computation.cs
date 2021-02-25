@@ -226,6 +226,11 @@ namespace NMF.Transformations.Core
             OnOutputInitialized(EventArgs.Empty);
         }
 
+        /// <summary>
+        /// Sets the provided computation as the base computation
+        /// </summary>
+        /// <param name="baseComputation">The base computation</param>
+        /// <remarks>By default, this method is blank.</remarks>
         public virtual void SetBaseComputation(Computation baseComputation) { }
 
         void IPersistor.Persist(object output)

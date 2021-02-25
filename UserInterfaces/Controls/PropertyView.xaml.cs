@@ -26,30 +26,39 @@ namespace NMF.Controls
     /// </summary>
     public partial class PropertyView : PropertyGrid
     {
+        /// <summary>
+        /// Gets raised when all elements should be found
+        /// </summary>
         public event EventHandler<FindAllElementsEventArgs> FindAllElements;
 
+        /// <summary>
+        /// Creates a new property view
+        /// </summary>
         public PropertyView()
         {
             InitializeComponent();
             DataTemplate = ModelTemplates.SmallItemTemplate;
         }
 
-
+        /// <summary>
+        /// Gets or sets the data template to be used
+        /// </summary>
         public DataTemplate DataTemplate
         {
             get { return (DataTemplate)GetValue(DataTemplateProperty); }
             set { SetValue(DataTemplateProperty, value); }
         }
 
-        // Using a DependencyProperty as the backing store for DataTemplate.  This enables animation, styling, binding, etc...
+        /// <summary>
+        /// Gets the DataTemplate property
+        /// </summary>
         public static readonly DependencyProperty DataTemplateProperty =
             DependencyProperty.Register("DataTemplate", typeof(DataTemplate), typeof(PropertyView), new PropertyMetadata());
 
 
         private void EditorButton_Click(object sender, RoutedEventArgs e)
         {
-            var property = (sender as FrameworkElement).DataContext as PropertyItem;
-            if (property == null) return;
+            if (!((sender as FrameworkElement).DataContext is PropertyItem property)) return;
             var collectionType = property.PropertyType
                 .GetInterfaces()
                 .FirstOrDefault(i => i.IsGenericType && i.GetGenericTypeDefinition() == typeof(IEnumerable<>));
@@ -68,8 +77,7 @@ namespace NMF.Controls
 
         internal IEnumerable<IModelElement> GetPossibleItemsFor(PropertyItem property)
         {
-            var element = property.Instance as IModelElement;
-            if (element == null) return null;
+            if (!(property.Instance is IModelElement element)) return null;
             var type = property.PropertyType;
             if (!typeof(IModelElement).IsAssignableFrom(type))
             {
@@ -96,9 +104,8 @@ namespace NMF.Controls
             }
             else
             {
-                var modelRepo = repository as ModelRepository;
                 IEnumerable<Model> models;
-                if (modelRepo == null)
+                if (!(repository is ModelRepository modelRepo))
                 {
                     models = repository.Models.Values.Distinct();
                 }
@@ -111,13 +118,38 @@ namespace NMF.Controls
         }
     }
 
+    /// <summary>
+    /// Denotes the event data when all elements should be obtained
+    /// </summary>
     public class FindAllElementsEventArgs : EventArgs
     {
+        /// <summary>
+        /// The type of elements
+        /// </summary>
         public Type ElementType { get; private set; }
+
+        /// <summary>
+        /// The instance for which elements are required
+        /// </summary>
         public IModelElement Instance { get; private set; }
+
+        /// <summary>
+        /// The property for which the elements should be added
+        /// </summary>
         public PropertyDescriptor Property { get; private set; }
+
+        /// <summary>
+        /// Gets or sets the allowable elements
+        /// </summary>
         public IEnumerable<IModelElement> AllowableElements { get; set; }
 
+        /// <summary>
+        /// Creates a new event data object
+        /// </summary>
+        /// <param name="instance">the instance</param>
+        /// <param name="property">the property</param>
+        /// <param name="elementType">the element type</param>
+        /// <param name="elements">the elements</param>
         public FindAllElementsEventArgs(IModelElement instance, PropertyDescriptor property, Type elementType, IEnumerable<IModelElement> elements)
         {
             ElementType = elementType;

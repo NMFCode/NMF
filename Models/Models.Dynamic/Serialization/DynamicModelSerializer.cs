@@ -12,12 +12,23 @@ using NMF.Utilities;
 
 namespace NMF.Models.Dynamic.Serialization
 {
+    /// <summary>
+    /// Denotes a serializer that works dynamically
+    /// </summary>
     public class DynamicModelSerializer : ModelSerializer
     {
         private Dictionary<IReferenceType, DynamicModelElementSerializationInfo> _serializationInfos = new Dictionary<IReferenceType, DynamicModelElementSerializationInfo>();
 
+        /// <summary>
+        /// Creates a dynamic serializer supporting the provided namespaces
+        /// </summary>
+        /// <param name="namespaces">The namespaces known by this serializer</param>
         public DynamicModelSerializer(params INamespace[] namespaces) : this((IEnumerable<INamespace>)namespaces) { }
 
+        /// <summary>
+        /// Creates a dynamic serializer supporting the provided namespaces
+        /// </summary>
+        /// <param name="namespaces">The namespaces known by this serializer</param>
         public DynamicModelSerializer(IEnumerable<INamespace> namespaces) : base(MetaRepository.Instance.Serializer)
         {
             foreach (var ns in namespaces)
@@ -41,6 +52,7 @@ namespace NMF.Models.Dynamic.Serialization
             }
         }
 
+        /// <inheritdoc />
         public override ITypeSerializationInfo GetSerializationInfoForInstance(object instance, bool createIfNecessary)
         {
             if (instance is DynamicModelElement dynamicElement)
@@ -109,6 +121,7 @@ namespace NMF.Models.Dynamic.Serialization
             throw new NotImplementedException();
         }
 
+        /// <inheritdoc />
         protected override void HandleUnknownAttribute(XmlReader reader, object obj, ITypeSerializationInfo info, XmlSerializationContext context)
         {
             if (reader.Name == "xsi:type")

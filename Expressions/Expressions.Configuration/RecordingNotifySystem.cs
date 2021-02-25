@@ -9,12 +9,30 @@ using NMF.Utilities;
 
 namespace NMF.Expressions
 {
+    /// <summary>
+    /// Denotes an incrementalization system that records any requests
+    /// </summary>
     public class RecordingNotifySystem : INotifySystem
     {
+        /// <summary>
+        /// The inner incrementalization system
+        /// </summary>
         public INotifySystem Inner { get; private set; }
+
+        /// <summary>
+        /// The recorded configuration
+        /// </summary>
         public Configuration Configuration { get; private set; }
+
+        /// <summary>
+        /// The default strategy to apply
+        /// </summary>
         public IncrementalizationStrategy DefaultStrategy { get; set; }
 
+        /// <summary>
+        /// Creates a new recording incrementalization system
+        /// </summary>
+        /// <param name="inner">The inner incrementalization system</param>
         public RecordingNotifySystem(INotifySystem inner)
         {
             Inner = inner ?? NotifySystem.DefaultSystem;
@@ -22,6 +40,12 @@ namespace NMF.Expressions
             DefaultStrategy = IncrementalizationStrategy.InstructionLevel;
         }
 
+        /// <summary>
+        /// Calculates the strategies applicable to incrementalize the given expression
+        /// </summary>
+        /// <param name="expression">The expression that shall be incrementalized</param>
+        /// <param name="parameters">The parameters</param>
+        /// <returns>A colection of viable incrementalization strategies</returns>
         protected virtual IEnumerable<IncrementalizationStrategy> GetApplicableStrategies(Expression expression, IEnumerable<ParameterExpression> parameters)
         {
             yield return IncrementalizationStrategy.InstructionLevel;
@@ -69,12 +93,19 @@ namespace NMF.Expressions
             }
         }
 
+        /// <inheritdoc />
         public INotifyExpression CreateExpression(Expression expression, IEnumerable<ParameterExpression> parameters, IDictionary<string, object> parameterMappings)
         {
             RecordExpressionUsage(expression, parameters, false);
             return Inner.CreateExpression(expression, parameters, parameterMappings);
         }
 
+        /// <summary>
+        /// Records the usage of the given expression
+        /// </summary>
+        /// <param name="expression">The expression that was used</param>
+        /// <param name="parameters">The parameters</param>
+        /// <param name="reversible">True, if the expression should be incrementalized reversable</param>
         protected virtual void RecordExpressionUsage(Expression expression, IEnumerable<ParameterExpression> parameters, bool reversible)
         {
             var methodIdentifier = expression.ToString();
@@ -90,18 +121,21 @@ namespace NMF.Expressions
             }
         }
 
+        /// <inheritdoc />
         public INotifyExpression<T> CreateExpression<T>(Expression expression, IEnumerable<ParameterExpression> parameters, IDictionary<string, object> parameterMappings)
         {
             RecordExpressionUsage(expression, parameters, false);
             return Inner.CreateExpression<T>(expression, parameters, parameterMappings);
         }
 
+        /// <inheritdoc />
         public INotifyReversableExpression<T> CreateReversableExpression<T>(Expression expression, IEnumerable<ParameterExpression> parameters, IDictionary<string, object> parameterMappings)
         {
             RecordExpressionUsage(expression, parameters, true);
             return Inner.CreateReversableExpression<T>(expression, parameters, parameterMappings);
         }
 
+        /// <inheritdoc />
         public ISuccessorList CreateSuccessorList() => new MultiSuccessorList();
     }
 }

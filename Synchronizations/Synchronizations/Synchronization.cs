@@ -15,10 +15,12 @@ namespace NMF.Synchronizations
     /// </summary>
     public abstract class Synchronization : Transformation
     {
+        /// <summary>
+        /// Gets a collection of synchronization rules
+        /// </summary>
         public abstract IEnumerable<SynchronizationRuleBase> SynchronizationRules { get; }
 
         /// <inheritdoc />
-
         public override void RegisterRules()
         {
             if (!IsRulesRegistered)
@@ -41,18 +43,34 @@ namespace NMF.Synchronizations
             }
         }
 
+        /// <summary>
+        /// Gets the synchronization rule for the given synchronization rule type
+        /// </summary>
+        /// <param name="type">The type of synchronization rule</param>
+        /// <returns>The synchronization rule object</returns>
         public virtual SynchronizationRuleBase GetSynchronizationRuleForType(Type type)
         {
             if (type == null) throw new ArgumentNullException("type");
             return SynchronizationRules.Where(type.IsInstanceOfType).FirstOrDefault();
         }
 
+        /// <summary>
+        /// Gets all synchronization rules of the given type
+        /// </summary>
+        /// <param name="type">The type of synchronization rule</param>
+        /// <returns>All synchronization rules of the given type</returns>
         public virtual IEnumerable<SynchronizationRuleBase> GetSynchronizationRulesForType(Type type)
         {
             if (type == null) throw new ArgumentNullException("type");
             return SynchronizationRules.Where(type.IsInstanceOfType);
         }
 
+        /// <summary>
+        /// Gets the synchronization rule for the given LHS and RHS type combination
+        /// </summary>
+        /// <param name="left">The LHS type</param>
+        /// <param name="right">The RHS type</param>
+        /// <returns>The synchronization rule or null, if no synchronization rule could be found</returns>
         public virtual SynchronizationRuleBase GetSynchronizationRuleForSignature(Type left, Type right)
         {
             var exactMatch = SynchronizationRules.Where(s => s.LeftType == left && s.RightType == right).FirstOrDefault();
@@ -60,11 +78,27 @@ namespace NMF.Synchronizations
             return SynchronizationRules.Where(s => left.IsAssignableFrom(s.LeftType) && right.IsAssignableFrom(s.RightType)).FirstOrDefault();
         }
 
+        /// <summary>
+        /// Gets all synchronization rules for the given LHS and RHS type combination
+        /// </summary>
+        /// <param name="left">The LHS type</param>
+        /// <param name="right">The RHS type</param>
+        /// <returns></returns>
         public virtual IEnumerable<SynchronizationRuleBase> GetSynchronizationRulesForSignature(Type left, Type right)
         {
             return SynchronizationRules.Where(s => left.IsAssignableFrom(s.LeftType) && right.IsAssignableFrom(s.RightType));
         }
 
+        /// <summary>
+        /// Synchronizes the given LHS element with the provided RHS element or creates them if necessary
+        /// </summary>
+        /// <typeparam name="TLeft">The LHS type</typeparam>
+        /// <typeparam name="TRight">The RHS type</typeparam>
+        /// <param name="left">The LHS element</param>
+        /// <param name="right">The RHS element</param>
+        /// <param name="direction">The direction of the model synchronization</param>
+        /// <param name="changePropagation">The change propagation mode</param>
+        /// <returns>The synchronization context in which the synchronization takes place</returns>
         public ISynchronizationContext Synchronize<TLeft, TRight>(ref TLeft left, ref TRight right, SynchronizationDirection direction, ChangePropagationMode changePropagation)
             where TLeft : class
             where TRight : class
@@ -72,6 +106,17 @@ namespace NMF.Synchronizations
             return Synchronize<TLeft, TRight>(GetSynchronizationRuleForSignature(typeof(TLeft), typeof(TRight)) as SynchronizationRule<TLeft, TRight>, ref left, ref right, direction, changePropagation);
         }
 
+        /// <summary>
+        /// Synchronizes the given LHS element with the provided RHS element or creates them if necessary
+        /// </summary>
+        /// <typeparam name="TLeft">The LHS type</typeparam>
+        /// <typeparam name="TRight">The RHS type</typeparam>
+        /// <param name="startRule">The rule that should be started with</param>
+        /// <param name="left">The LHS element</param>
+        /// <param name="right">The RHS element</param>
+        /// <param name="direction">The direction of the model synchronization</param>
+        /// <param name="changePropagation">The change propagation mode</param>
+        /// <returns>The synchronization context in which the synchronization takes place</returns>
         public ISynchronizationContext Synchronize<TLeft, TRight>(SynchronizationRule<TLeft, TRight> startRule, ref TLeft left, ref TRight right, SynchronizationDirection direction, ChangePropagationMode changePropagation)
             where TLeft : class
             where TRight : class
@@ -106,6 +151,17 @@ namespace NMF.Synchronizations
             return context;
         }
 
+        /// <summary>
+        /// Synchronizes the given LHS elements with the provided RHS elements or creates them if necessary
+        /// </summary>
+        /// <typeparam name="TLeft">The LHS type</typeparam>
+        /// <typeparam name="TRight">The RHS type</typeparam>
+        /// <param name="startRule">The synchronization rule to start with</param>
+        /// <param name="lefts">The LHS elements</param>
+        /// <param name="rights">The RHS elements</param>
+        /// <param name="direction">The direction of the model synchronization</param>
+        /// <param name="changePropagation">The change propagation mode</param>
+        /// <returns>The synchronization context in which the synchronization takes place</returns>
         public ISynchronizationContext SynchronizeMany<TLeft, TRight>(SynchronizationRule<TLeft, TRight> startRule, ICollection<TLeft> lefts, ICollection<TRight> rights, SynchronizationDirection direction, ChangePropagationMode changePropagation)
             where TLeft : class
             where TRight : class

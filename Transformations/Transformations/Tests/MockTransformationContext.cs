@@ -109,6 +109,7 @@ namespace NMF.Transformations.Tests
         /// </summary>
         /// <param name="input">The input for the transformation rule</param>
         /// <param name="transformationRule">The rule that should be applied</param>
+        /// <param name="context">The context elements</param>
         /// <returns>The computation that handles this request</returns>
         public virtual Computation CallTransformation(GeneralTransformationRule transformationRule, object[] input, IEnumerable context)
         {
@@ -201,6 +202,7 @@ namespace NMF.Transformations.Tests
         }
 
 
+        /// <inheritdoc />
         public event EventHandler<ComputationEventArgs> ComputationCompleted
         {
             add { }
@@ -208,10 +210,12 @@ namespace NMF.Transformations.Tests
         }
 
 
+        /// <inheritdoc />
         public void RegisterComputationDependency(Computation computation, Computation dependency, bool isRequired)
         {
         }
 
+        /// <inheritdoc />
         public bool IsThreadSafe
         {
             get { return false; }

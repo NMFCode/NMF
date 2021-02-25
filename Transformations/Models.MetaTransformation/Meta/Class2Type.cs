@@ -43,6 +43,7 @@ namespace NMF.Models.Meta
                 return input.Name.ToPascalCase();
             }
 
+            /// <inheritdoc />
             public override CodeTypeDeclaration CreateOutput(IClass input, ITransformationContext context)
             {
                 var generatedType = base.CreateOutput(input, context);
@@ -50,6 +51,7 @@ namespace NMF.Models.Meta
                 return generatedType;
             }
 
+            /// <inheritdoc />
             protected override bool ShouldContainMembers(CodeTypeDeclaration generatedType, CodeTypeDeclaration baseType)
             {
                 return base.ShouldContainMembers(generatedType, baseType) && baseType.Name != "ModelElement";
@@ -467,6 +469,12 @@ namespace NMF.Models.Meta
                 return referencedType;
             }
 
+            /// <summary>
+            /// Gets the interface type for the given instantiating class
+            /// </summary>
+            /// <param name="instantiating">The instantiating class</param>
+            /// <param name="context">The context in which the request is made</param>
+            /// <returns></returns>
             protected virtual CodeTypeReference GetInterfaceType(IClass instantiating, ITransformationContext context)
             {
                 var targetType = new CodeTypeReference();
@@ -484,6 +492,15 @@ namespace NMF.Models.Meta
                 return classField;
             }
 
+            /// <summary>
+            /// Creates the overridden type-safe Get(Class) method
+            /// </summary>
+            /// <param name="input">The class for which the method is generated</param>
+            /// <param name="instantiating">The return type of the method</param>
+            /// <param name="context">The context in which the request is made</param>
+            /// <param name="classField">The class field</param>
+            /// <param name="isOverride">True, if this is an override, otherwise false</param>
+            /// <returns>A method declaration</returns>
             protected virtual CodeMemberMethod CreateOverriddenGetClassMethod(IClass input, IClass instantiating, ITransformationContext context, CodeMemberField classField, bool isOverride)
             {
                 var type = GetInterfaceType(instantiating, context);
@@ -528,6 +545,15 @@ namespace NMF.Models.Meta
                 }
             }
 
+            /// <summary>
+            /// Generates a class instance property
+            /// </summary>
+            /// <param name="input">The class for which the property shall be generated</param>
+            /// <param name="instantiating">The type of class that should be returned</param>
+            /// <param name="context">The context in which the request is made</param>
+            /// <param name="classField">The class field</param>
+            /// <param name="isOld">True, if there is already an inherited property with the same name, otherwise False</param>
+            /// <returns>A property declaration or null</returns>
             protected virtual CodeMemberProperty CreateClassInstanceProperty(IClass input, IClass instantiating, ITransformationContext context, CodeMemberField classField, bool isOld)
             {
                 var absoluteUri = input.AbsoluteUri;
@@ -556,6 +582,12 @@ namespace NMF.Models.Meta
                 }
             }    
 
+            /// <summary>
+            /// Creates an abstract type-safe Get(Class) method
+            /// </summary>
+            /// <param name="input">The type of class that the method shall return</param>
+            /// <param name="context">The context in which this call is made</param>
+            /// <returns>A code method declaration</returns>
             protected virtual CodeMemberMethod CreateAbstractGetClassMethod(IClass input, ITransformationContext context)
             {
                 var abstractGetClass = new CodeMemberMethod()
@@ -690,6 +722,7 @@ namespace NMF.Models.Meta
             /// Implements the members necessary for the identifier mechanism of the given NMeta class
             /// </summary>
             /// <param name="class">The NMeta class</param>
+            /// <param name="context">The context in which the class is generated</param>
             /// <param name="generatedType">The generated type for the NMeta class</param>
             protected virtual void ImplementIdentifier(IClass @class, CodeTypeDeclaration generatedType, ITransformationContext context)
             {
@@ -1036,6 +1069,13 @@ namespace NMF.Models.Meta
                 return getExpressionForReference;
             }
 
+            /// <summary>
+            /// Generates the GetCompositionName method
+            /// </summary>
+            /// <param name="input">The class for which the method is generated</param>
+            /// <param name="generatedType">The generated type declaration</param>
+            /// <param name="context">The context in which the request is made</param>
+            /// <returns>A method declaration</returns>
             protected virtual CodeMemberMethod CreateGetCompositionName(IClass input, CodeTypeDeclaration generatedType, ITransformationContext context)
             {
                 var getCompositionName = new CodeMemberMethod
@@ -1176,6 +1216,17 @@ namespace NMF.Models.Meta
                 return childrenProperty;
             }
 
+            /// <summary>
+            /// Iterates all references of the given class
+            /// </summary>
+            /// <typeparam name="T">The type of the result</typeparam>
+            /// <param name="input">The start class</param>
+            /// <param name="typeDeclaration">The type declaration in the context of which the references should be added</param>
+            /// <param name="action">the action that should be performed for each reference</param>
+            /// <param name="initial">an initial result object</param>
+            /// <param name="containmentsOnly">if true, only containment references are considered</param>
+            /// <param name="context">The context in which the references should be visited</param>
+            /// <returns>the result object after is has been applied for all references</returns>
             protected T AddReferencesOfClass<T>(IClass input, CodeTypeDeclaration typeDeclaration, Func<T, IReference, CodeMemberProperty, ITransformationContext, T> action, T initial, bool containmentsOnly, ITransformationContext context)
             {
                 var r2p = Rule<Reference2Property>();
@@ -1196,6 +1247,16 @@ namespace NMF.Models.Meta
                 return initial;
             }
 
+            /// <summary>
+            /// Iterates all operations of the given class
+            /// </summary>
+            /// <typeparam name="T">The type of the result</typeparam>
+            /// <param name="input">The input class</param>
+            /// <param name="typeDeclaration">The class declaration in the context of which the operations are iterated</param>
+            /// <param name="action">an action that should be performed for each operation</param>
+            /// <param name="initial">the initial result</param>
+            /// <param name="context">the context in which the operations are iterated</param>
+            /// <returns>the result after all operations have been iterated</returns>
             protected T AddOperationsOfClass<T>(IClass input, CodeTypeDeclaration typeDeclaration, Func<T, IOperation, ITransformationContext, T> action, T initial, ITransformationContext context)
             {
                 var o2m = Rule<Operation2Method>();
@@ -1213,6 +1274,16 @@ namespace NMF.Models.Meta
                 return initial;
             }
 
+            /// <summary>
+            /// Iterates the attributes of the given class
+            /// </summary>
+            /// <typeparam name="T">The result type</typeparam>
+            /// <param name="input">The class whose attributes should be iterated</param>
+            /// <param name="typeDeclaration">The generated type declaration for the input</param>
+            /// <param name="action">The action that should be performed for each attribute</param>
+            /// <param name="initial">The initial result</param>
+            /// <param name="context">The context in which the attributes should be iterated</param>
+            /// <returns>The result after all attributes have been processed</returns>
             protected T AddAttributesOfClass<T>(IClass input, CodeTypeDeclaration typeDeclaration, Func<T, IAttribute, CodeMemberProperty, ITransformationContext, T> action, T initial, ITransformationContext context)
             {
                 var a2p = Rule<Attribute2Property>();

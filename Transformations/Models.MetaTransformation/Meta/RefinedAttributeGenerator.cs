@@ -171,6 +171,7 @@ namespace NMF.Models.Meta
                 property.DependentMembers(true).Add(new CodeSnippetTypeMember(eventSnippet));
             }
 
+            /// <inheritdoc />
             public override void RegisterDependencies()
             {
                 Require(Rule<RefinedAttributeCollectionClassGenerator>(), (scope, att) => att.UpperBound != 1 && !att.IsUnique);

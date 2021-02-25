@@ -21,11 +21,13 @@ namespace NMF.Models.Meta
         /// </summary>
         public class RefinedReferenceGenerator : TransformationRule<IClass, IReference, CodeMemberProperty>
         {
+            /// <inheritdoc />
             public override CodeMemberProperty CreateOutput(IClass input1, IReference input2, ITransformationContext context)
             {
                 return base.CreateOutput(input1, input2, context);
             }
 
+            /// <inheritdoc />
             public override void Transform(IClass scope, IReference reference, CodeMemberProperty property, Transformations.Core.ITransformationContext context)
             {
                 var baseTypes = Layering<IClass>.CreateLayers(scope, c => c.BaseTypes).Select(c => c.Single()).ToList();
@@ -226,6 +228,7 @@ namespace NMF.Models.Meta
                 property.DependentMembers(true).Add(new CodeSnippetTypeMember(eventSnippet));
             }
 
+            /// <inheritdoc />
             public override void RegisterDependencies()
             {
                 Require(Rule<RefinedReferenceCollectionClassGenerator>(), (scope, reference) => 

@@ -37,6 +37,7 @@ namespace NMF.Models.Meta
                 }
             }
 
+            /// <inheritdoc />
             public override void Transform(IEvent input, CodeMemberEvent output, ITransformationContext context)
             {
                 base.Transform(input, output, context);

@@ -40,6 +40,7 @@ namespace NMF.Models.Meta
                 Call(Rule<Type2Type>(), reference => reference.Type);
             }
 
+            /// <inheritdoc />
             public override CodeMemberProperty CreateOutput(IReference input, ITransformationContext context)
             {
                 var property = new CodeMemberProperty();
@@ -371,6 +372,7 @@ namespace NMF.Models.Meta
             /// <param name="property">The NMeta reference</param>
             /// <param name="codeProperty">The generated code property</param>
             /// <param name="fieldReference">A reference to the backening field</param>
+            /// <param name="context">The context in which the reference is generated</param>
             /// <remarks>Normal means in this case that the reference is not an overridden container reference</remarks>
             protected virtual void GenerateSetStatement(IReference property, CodeMemberProperty codeProperty, CodeExpression fieldReference, ITransformationContext context)
             {

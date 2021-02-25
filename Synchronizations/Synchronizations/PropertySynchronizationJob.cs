@@ -10,6 +10,12 @@ using System.Threading.Tasks;
 
 namespace NMF.Synchronizations
 {
+    /// <summary>
+    /// Denotes a synchronization job to synchronize properties
+    /// </summary>
+    /// <typeparam name="TLeft">The LHS type of elements</typeparam>
+    /// <typeparam name="TRight">The RHS type of elements</typeparam>
+    /// <typeparam name="TValue">The value type of the property synchronization</typeparam>
     internal class PropertySynchronizationJob<TLeft, TRight, TValue> : ISynchronizationJob<TLeft, TRight>
         where TLeft : class
         where TRight : class
@@ -24,6 +30,12 @@ namespace NMF.Synchronizations
 
         private bool isEarly;
 
+        /// <summary>
+        /// Creates a new property synchronization job
+        /// </summary>
+        /// <param name="leftSelector">The LHS selector</param>
+        /// <param name="rightSelector">The RHS selector</param>
+        /// <param name="isEarly">TRue, if the property synchronization should be executed immediately when the correspondence is established, otherwise false</param>
         public PropertySynchronizationJob(Expression<Func<TLeft, TValue>> leftSelector, Expression<Func<TRight, TValue>> rightSelector, bool isEarly)
         {
             if (leftSelector == null) throw new ArgumentNullException("leftSelector");
@@ -57,6 +69,7 @@ namespace NMF.Synchronizations
             this.isEarly = isEarly;
         }
 
+        /// <inheritdoc />
         public bool IsEarly
         {
             get
@@ -65,7 +78,7 @@ namespace NMF.Synchronizations
             }
         }
 
-        protected IDisposable PerformTwoWay(TLeft left, TRight right, ISynchronizationContext context)
+        private IDisposable PerformTwoWay(TLeft left, TRight right, ISynchronizationContext context)
         {
             var leftEx3 = leftFunc.InvokeReversable(left);
             leftEx3.Successors.SetDummy();
@@ -110,7 +123,7 @@ namespace NMF.Synchronizations
             return dependency;
         }
 
-        protected IDisposable PerformOneWay(TLeft left, TRight right, ISynchronizationContext context)
+        private IDisposable PerformOneWay(TLeft left, TRight right, ISynchronizationContext context)
         {
             IDisposable dependency = null;
             switch (context.Direction)
@@ -169,7 +182,7 @@ namespace NMF.Synchronizations
             return dependency;
         }
 
-        protected void PerformNoChangePropagation(TLeft left, TRight right, SynchronizationDirection direction, ISynchronizationContext context)
+        private void PerformNoChangePropagation(TLeft left, TRight right, SynchronizationDirection direction, ISynchronizationContext context)
         {
             switch (direction)
             {
@@ -216,6 +229,7 @@ namespace NMF.Synchronizations
             }
         }
 
+        /// <inheritdoc />
         public IDisposable Perform(SynchronizationComputation<TLeft, TRight> computation, SynchronizationDirection direction, ISynchronizationContext context)
         {
             var left = computation.Input;

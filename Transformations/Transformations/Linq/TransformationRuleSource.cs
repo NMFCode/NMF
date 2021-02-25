@@ -127,13 +127,17 @@ namespace NMF.Transformations.Linq
             return items.GetEnumerator();
         }
 
-        
+
+        /// <inheritdoc />
         public ISuccessorList Successors { get; } = NotifySystem.DefaultSystem.CreateSuccessorList();
 
+        /// <inheritdoc />
         public IEnumerable<INotifiable> Dependencies { get { return Enumerable.Empty<INotifiable>(); } }
 
+        /// <inheritdoc />
         public ExecutionMetaData ExecutionMetaData { get; } = new ExecutionMetaData();
 
+        /// <inheritdoc />
         public INotificationResult Notify(IList<INotificationResult> sources)
         {
             throw new InvalidOperationException();
@@ -265,13 +269,17 @@ namespace NMF.Transformations.Linq
             return items.GetEnumerator();
         }
 
-        
+
+        /// <inheritdoc />
         public ISuccessorList Successors { get; } = NotifySystem.DefaultSystem.CreateSuccessorList();
 
+        /// <inheritdoc />
         public IEnumerable<INotifiable> Dependencies { get { return Enumerable.Empty<INotifiable>(); } }
 
+        /// <inheritdoc />
         public ExecutionMetaData ExecutionMetaData { get; } = new ExecutionMetaData();
 
+        /// <inheritdoc />
         public INotificationResult Notify(IList<INotificationResult> sources)
         {
             throw new InvalidOperationException();
@@ -399,13 +407,17 @@ namespace NMF.Transformations.Linq
             return items.GetEnumerator();
         }
 
-        
+
+        /// <inheritdoc />
         public ISuccessorList Successors { get; } = NotifySystem.DefaultSystem.CreateSuccessorList();
 
+        /// <inheritdoc />
         public IEnumerable<INotifiable> Dependencies { get { return Enumerable.Empty<INotifiable>(); } }
 
+        /// <inheritdoc />
         public ExecutionMetaData ExecutionMetaData { get; } = new ExecutionMetaData();
 
+        /// <inheritdoc />
         public INotificationResult Notify(IList<INotificationResult> sources)
         {
             throw new InvalidOperationException();
@@ -535,13 +547,17 @@ namespace NMF.Transformations.Linq
             return items.GetEnumerator();
         }
 
-        
+
+        /// <inheritdoc />
         public ISuccessorList Successors { get; } = NotifySystem.DefaultSystem.CreateSuccessorList();
 
+        /// <inheritdoc />
         public IEnumerable<INotifiable> Dependencies { get { return Enumerable.Empty<INotifiable>(); } }
 
+        /// <inheritdoc />
         public ExecutionMetaData ExecutionMetaData { get; } = new ExecutionMetaData();
 
+        /// <inheritdoc />
         public INotificationResult Notify(IList<INotificationResult> sources)
         {
             throw new InvalidOperationException();

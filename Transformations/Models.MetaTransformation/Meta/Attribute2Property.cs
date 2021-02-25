@@ -35,6 +35,7 @@ namespace NMF.Models.Meta
                 Require(Rule<RefinedAttributeGenerator>(), att => att.DeclaringType as IClass, att => att.Refines, att => att.Refines != null);
             }
 
+            /// <inheritdoc />
             public override CodeMemberProperty CreateOutput(IAttribute input, ITransformationContext context)
             {
                 var property = new CodeMemberProperty();

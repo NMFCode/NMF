@@ -86,7 +86,7 @@ namespace NMF.Analyses
         /// <summary>
         /// Creates a layering of the given elements
         /// </summary>
-        /// <param name="nodes">The collection of nodes that make up the graph</param>
+        /// <param name="root">The root element of the graph</param>
         /// <param name="edges">A function that selects for each node the connected nodes</param>
         /// <returns>A list of strongly connected components</returns>
         public static IList<ICollection<T>> CreateLayers(T root, Func<T, IEnumerable<T>> edges)

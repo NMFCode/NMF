@@ -11,17 +11,17 @@ using System.Threading.Tasks;
 namespace NMF.Synchronizations
 {
     /// <summary>
-    /// Denotes the context of a synchronization
+    /// Denotes a context of a model synchronization run
     /// </summary>
     public interface ISynchronizationContext : ITransformationContext
     {
         /// <summary>
-        /// Gets or sets the direction of the synchronization
+        /// Gets the direction of the synchronization process
         /// </summary>
         SynchronizationDirection Direction { get; set; }
 
         /// <summary>
-        /// Gets the change propagation mode of the synchronization
+        /// Gets the change propagation mode of the model synchronization
         /// </summary>
         ChangePropagationMode ChangePropagation { get; }
 

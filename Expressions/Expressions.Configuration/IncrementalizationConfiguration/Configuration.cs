@@ -47,6 +47,9 @@ namespace NMF.Expressions.IncrementalizationConfiguration
         
         private static IClass _classInstance;
         
+        /// <summary>
+        /// Creates a new instance
+        /// </summary>
         public Configuration()
         {
             this._methodConfigurations = new ObservableCompositionList<IMethodConfiguration>(this);
@@ -219,11 +222,13 @@ namespace NMF.Expressions.IncrementalizationConfiguration
                 }
             }
             
+            /// <inheritdoc />
             protected override void AttachCore()
             {
                 this._parent.MethodConfigurations.AsNotifiable().CollectionChanged += this.PropagateCollectionChanges;
             }
-            
+
+            /// <inheritdoc />
             protected override void DetachCore()
             {
                 this._parent.MethodConfigurations.AsNotifiable().CollectionChanged -= this.PropagateCollectionChanges;
@@ -342,12 +347,14 @@ namespace NMF.Expressions.IncrementalizationConfiguration
                     return count;
                 }
             }
-            
+
+            /// <inheritdoc />
             protected override void AttachCore()
             {
                 this._parent.MethodConfigurations.AsNotifiable().CollectionChanged += this.PropagateCollectionChanges;
             }
-            
+
+            /// <inheritdoc />
             protected override void DetachCore()
             {
                 this._parent.MethodConfigurations.AsNotifiable().CollectionChanged -= this.PropagateCollectionChanges;

@@ -36,11 +36,9 @@ namespace NMF.Synchronizations.Inconsistencies
         public SynchronizationComputation<TLeft, TRight> Computation { get; private set; }
 
         /// <inheritdoc />
-
         public bool CanResolveLeft => Left.IsReversable;
 
         /// <inheritdoc />
-
         public bool CanResolveRight => Right.IsReversable;
 
         private bool isProcessingChange = false;
@@ -73,7 +71,6 @@ namespace NMF.Synchronizations.Inconsistencies
         }
 
         /// <inheritdoc />
-
         public void Dispose()
         {
             Left.ValueChanged -= Left_ValueChanged;
@@ -83,7 +80,6 @@ namespace NMF.Synchronizations.Inconsistencies
         }
 
         /// <inheritdoc />
-
         public void ResolveLeft()
         {
             if (!isProcessingChange)
@@ -109,7 +105,6 @@ namespace NMF.Synchronizations.Inconsistencies
         }
 
         /// <inheritdoc />
-
         public void ResolveRight()
         {
             if (!isProcessingChange)
@@ -131,7 +126,6 @@ namespace NMF.Synchronizations.Inconsistencies
         }
 
         /// <inheritdoc />
-
         public override int GetHashCode()
         {
             var hashCode = Parent.GetHashCode();
@@ -145,7 +139,6 @@ namespace NMF.Synchronizations.Inconsistencies
         }
 
         /// <inheritdoc />
-
         public override bool Equals(object obj)
         {
             if (ReferenceEquals( obj, this)) return true;
@@ -154,14 +147,12 @@ namespace NMF.Synchronizations.Inconsistencies
         }
 
         /// <inheritdoc />
-
         public bool Equals(IInconsistency other)
         {
             return Equals(other as IncrementalReferenceConsistencyCheck<TLeft, TRight, TDepLeft, TDepRight>);
         }
 
         /// <inheritdoc />
-
         public bool Equals(IncrementalReferenceConsistencyCheck<TLeft, TRight, TDepLeft, TDepRight> other)
         {
             return other != null && Parent == other.Parent && Computation == other.Computation

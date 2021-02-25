@@ -5,8 +5,16 @@ using System.Text;
 
 namespace NMF.Expressions.Debug
 {
+    /// <summary>
+    /// Denotes a helper class to export DDG nodes as DGML
+    /// </summary>
     public class DgmlExporter
     {
+        /// <summary>
+        /// Generates a DGML document for the DDG rooted at the given element
+        /// </summary>
+        /// <param name="root">The rrot of the DDG</param>
+        /// <returns>The DGML document</returns>
         public static string Export(INotifiable root)
         {
             var dict = new Dictionary<INotifiable, string>();

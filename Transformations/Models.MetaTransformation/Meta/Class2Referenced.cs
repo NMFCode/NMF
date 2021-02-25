@@ -19,6 +19,7 @@ namespace NMF.Models.Meta
         public class Class2Referenced : Class2Children
         {
 
+            /// <inheritdoc />
             protected override List<IReference> GetImplementingReferences(IClass scope, ITransformationContext context)
             {
                 var generatedType = context.Trace.ResolveIn(Rule<Class2Type>(), scope);

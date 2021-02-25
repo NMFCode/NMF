@@ -5,12 +5,23 @@ using System.Text;
 
 namespace NMF.Optimizations
 {
+    /// <summary>
+    /// Denotes a benchmark that repeats measurements a number of times and takes the average results
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
     public class RepeatAverageBenchmark<T> : IBenchmark<T>
     {
+        /// <summary>
+        /// The inner benchmark
+        /// </summary>
         public IBenchmark<T> Inner { get; set; }
 
+        /// <summary>
+        /// Gets the number of repetitions
+        /// </summary>
         public int N { get; set; }
 
+        /// <inheritdoc />
         public IEnumerable<string> Metrics
         {
             get
@@ -19,6 +30,11 @@ namespace NMF.Optimizations
             }
         }
 
+        /// <summary>
+        /// Creates a new repeated benchmark
+        /// </summary>
+        /// <param name="inner">The inner benchmark</param>
+        /// <param name="n">The number of repetitions</param>
         public RepeatAverageBenchmark(IBenchmark<T> inner, int n = 5)
         {
             if (inner == null) throw new ArgumentNullException("inner");
@@ -28,7 +44,7 @@ namespace NMF.Optimizations
             N = n;
         }
 
-
+        /// <inheritdoc />
         public IDictionary<string, double> MeasureConfiguration(T configuration)
         {
             var initial = Inner.MeasureConfiguration(configuration);

@@ -15,6 +15,9 @@ namespace NMF.CodeGen
     public abstract class NamespaceGenerator<T> : TransformationRule<T, CodeNamespace>
         where T : class
     {
+        /// <summary>
+        /// Creates a new instance
+        /// </summary>
         protected NamespaceGenerator()
         {
             TransformationDelayLevel = 1;
@@ -122,6 +125,10 @@ namespace NMF.CodeGen
             return reference;
         }
 
+        /// <summary>
+        /// Gets the identifier for namespace conflicts
+        /// </summary>
+        /// <returns>An object that is used to obtain namespace conflicts</returns>
         protected virtual object GetNamespaceConflictsIdentifier()
         {
             return typeof(NamespaceGenerator<>);
@@ -235,6 +242,11 @@ namespace NMF.CodeGen
             }
         }
 
+        /// <summary>
+        /// Determines whether the given type name is a conflict with a system type
+        /// </summary>
+        /// <param name="typeName"></param>
+        /// <returns></returns>
         protected virtual bool IsSystemNameConflict(string typeName)
         {
             foreach (var ass in AssembliesToCheck)
@@ -250,6 +262,9 @@ namespace NMF.CodeGen
             return false;
         }
 
+        /// <summary>
+        /// Gets the assemblies in which to check for system name conflicts
+        /// </summary>
         protected virtual IEnumerable<System.Reflection.Assembly> AssembliesToCheck
         {
             get
@@ -489,10 +504,6 @@ namespace NMF.CodeGen
             return Require(rule, selector, AddType);
         }
 
-        /// <summary>
-        /// Gets called when the given type is added to the output namespace, e.g. to prevent name conflicts
-        /// </summary>
-        /// <param name="type"></param>
         private void AddType(CodeNamespace ns, CodeTypeDeclaration type)
         {
             var name = CreateNewValidName(ns, type.Name);

@@ -170,6 +170,7 @@ namespace NMF.Models.Meta
             /// </summary>
             /// <param name="baseTypeReference">The parent element type</param>
             /// <param name="elementTypeReference">The referenced element type</param>
+            /// <param name="isContainment">True, if the collection is a containment collection, otherwise False</param>
             /// <returns>The type reference to the opposite list</returns>
             protected virtual CodeTypeReference CreateList(CodeTypeReference baseTypeReference, CodeTypeReference elementTypeReference, bool isContainment)
             {
@@ -181,6 +182,7 @@ namespace NMF.Models.Meta
             /// </summary>
             /// <param name="baseTypeReference">The parent element type</param>
             /// <param name="elementTypeReference">The referenced element type</param>
+            /// <param name="isContainment">True, if the collection is a containment collection, otherwise False</param>
             /// <returns>The type reference to the opposite bag</returns>
             protected virtual CodeTypeReference CreateBag(CodeTypeReference baseTypeReference, CodeTypeReference elementTypeReference, bool isContainment)
             {
@@ -192,6 +194,7 @@ namespace NMF.Models.Meta
             /// </summary>
             /// <param name="baseTypeReference">The parent element type</param>
             /// <param name="elementTypeReference">The referenced element type</param>
+            /// <param name="isContainment">True, if the collection is a containment collection, otherwise False</param>
             /// <returns>The type reference to the opposite set</returns>
             protected virtual CodeTypeReference CreateSet(CodeTypeReference baseTypeReference, CodeTypeReference elementTypeReference, bool isContainment)
             {
@@ -203,6 +206,7 @@ namespace NMF.Models.Meta
             /// </summary>
             /// <param name="baseTypeReference">The parent element type</param>
             /// <param name="elementTypeReference">The referenced element type</param>
+            /// <param name="isContainment">True, if the collection is a containment collection, otherwise False</param>
             /// <returns>The type reference to the opposite ordered set</returns>
             protected virtual CodeTypeReference CreateOrderedSet(CodeTypeReference baseTypeReference, CodeTypeReference elementTypeReference, bool isContainment)
             {

@@ -45,6 +45,8 @@ namespace NMF.CodeGen
         /// Gets the enumeration literals that should be generated for the given input model element
         /// </summary>
         /// <param name="input">The input model element</param>
+        /// <param name="context">The context in which the enumeration is generated</param>
+        /// <param name="generatedType">The generated type</param>
         /// <returns>A collection of enumeration members</returns>
         protected abstract IEnumerable<EnumMember> GetMembers(T input, CodeTypeDeclaration generatedType, ITransformationContext context);
 

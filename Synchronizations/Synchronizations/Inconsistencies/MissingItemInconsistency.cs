@@ -164,6 +164,9 @@ namespace NMF.Synchronizations.Inconsistencies
         /// </summary>
         public bool IsLeftMissing { get; }
 
+        /// <summary>
+        /// A human-readable representation of the inconsistency
+        /// </summary>
         [Browsable(false)]
         [EditorBrowsable(EditorBrowsableState.Never)]
         public string Representation
@@ -174,6 +177,15 @@ namespace NMF.Synchronizations.Inconsistencies
             }
         }
 
+        /// <summary>
+        /// Creates a new inconsistency
+        /// </summary>
+        /// <param name="context">The context in which the inconsistency was found</param>
+        /// <param name="rule">The synchronization rule for which the inconsistency was found</param>
+        /// <param name="sourceCollection">The source collection of elements</param>
+        /// <param name="targetCollection">The target collection of elements</param>
+        /// <param name="source">The element that is missing</param>
+        /// <param name="isLeftMissing">True, if the element is missing in the LHS, otherwise false</param>
         public MissingItemInconsistency(ISynchronizationContext context, TransformationRuleBase<TSource, TTarget> rule, ICollection<TSource> sourceCollection, ICollection<TTarget> targetCollection, TSource source, bool isLeftMissing)
         {
             this.Context = context;
@@ -214,6 +226,7 @@ namespace NMF.Synchronizations.Inconsistencies
             return false;
         }
 
+        /// <inheritdoc />
         public bool Equals(IInconsistency other)
         {
             return Equals(other as MissingItemInconsistency<TSource, TTarget>);

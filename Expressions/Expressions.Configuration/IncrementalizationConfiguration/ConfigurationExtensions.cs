@@ -6,8 +6,16 @@ using NMF.Utilities;
 
 namespace NMF.Expressions.IncrementalizationConfiguration
 {
+    /// <summary>
+    /// Denotes a helper class for configurations
+    /// </summary>
     public static class ConfigurationExtensions
     {
+        /// <summary>
+        /// Clones the provided configuration
+        /// </summary>
+        /// <param name="configuration">The configuration to clone</param>
+        /// <returns>The cloned configuration</returns>
         public static Configuration Clone(this Configuration configuration)
         {
             if (configuration == null) return null;
@@ -25,6 +33,11 @@ namespace NMF.Expressions.IncrementalizationConfiguration
             return conf;
         }
 
+        /// <summary>
+        /// Generates a state-space of possibilities given the provided base configuration
+        /// </summary>
+        /// <param name="baseConfiguration">The base configuration</param>
+        /// <returns>A collection of allowed configurations</returns>
         public static IEnumerable<Configuration> GetAllPossibilities(this Configuration baseConfiguration)
         {
             var nextIndices = new int[baseConfiguration.MethodConfigurations.Count];
@@ -50,6 +63,11 @@ namespace NMF.Expressions.IncrementalizationConfiguration
             }
         }
 
+        /// <summary>
+        /// Describes the current configuration in a string
+        /// </summary>
+        /// <param name="configuration">The configuration to be described</param>
+        /// <returns>A descriptive string</returns>
         public static string Describe(this Configuration configuration)
         {
             return string.Join(",", from mc in configuration.MethodConfigurations

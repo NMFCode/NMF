@@ -99,6 +99,14 @@ namespace NMF.Models.Meta
                 ImplementNotifiable(generatedType, elementType);
             }
 
+            /// <summary>
+            /// Implement notifications for the given refined reference class
+            /// </summary>
+            /// <param name="generatedType">The generated type</param>
+            /// <param name="implementingReferences">The implementing references</param>
+            /// <param name="constructor">The constructor of the generated type</param>
+            /// <param name="constrParentRef">The reference to the parent element</param>
+            /// <param name="context">The context in which the request was made</param>
             protected virtual void ImplementNotifications(CodeTypeDeclaration generatedType, List<IReference> implementingReferences, CodeConstructor constructor, CodeArgumentReferenceExpression constrParentRef, ITransformationContext context)
             {
                 generatedType.Members.Add(GenerateCollectionChangedEvent());
@@ -220,6 +228,10 @@ namespace NMF.Models.Meta
             /// <param name="generatedType">The generated code type declaration</param>
             /// <param name="elementType">The element tyoe reference</param>
             /// <param name="implementingReferences">The attributes implementing the collection</param>
+            /// <param name="constraintReferences">The constraints that apply to the reference</param>
+            /// <param name="context">The context in which the collection is implemented</param>
+            /// <param name="original">The original reference</param>
+            /// <param name="standardValuesRef">A reference to the standard values field</param>
             protected virtual void ImplementList(CodeTypeDeclaration generatedType, CodeTypeReference elementType, CodeExpression standardValuesRef, IReference original, List<IReference> implementingReferences, List<IModelElement> constraintReferences, ITransformationContext context)
             {
                 generatedType.BaseTypes.Add(new CodeTypeReference(typeof(IListExpression<>).Name, elementType));
@@ -235,7 +247,11 @@ namespace NMF.Models.Meta
             /// </summary>
             /// <param name="generatedType">The generated code type declaration</param>
             /// <param name="elementType">The element type reference</param>
-            /// <param name="implementingReferences">The attributes implementing the collection</param>
+            /// <param name="implementingReferences">The references implementing the collection</param>
+            /// <param name="constraintReferences">The constraints that apply to the reference</param>
+            /// <param name="context">The context in which the collection is implemented</param>
+            /// <param name="original">The original reference</param>
+            /// <param name="standardValuesRef">A reference to the standard values field</param>
             protected virtual void ImplementCollection(CodeTypeDeclaration generatedType, CodeTypeReference elementType, CodeExpression standardValuesRef, IReference original, List<IReference> implementingReferences, List<IModelElement> constraintReferences, ITransformationContext context)
             {
                 generatedType.BaseTypes.Add(new CodeTypeReference(typeof(ICollectionExpression<>).Name, elementType));

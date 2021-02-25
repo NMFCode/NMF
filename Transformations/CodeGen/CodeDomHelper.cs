@@ -128,6 +128,7 @@ namespace NMF.CodeGen
         /// Creates a type declaration with a reference attached to it
         /// </summary>
         /// <param name="name">The initial name of the type declaration</param>
+        /// <param name="autoAssignNamespace">If true, the namespace is set in the user data such that the code generation helper can automatically deduct when the namespace can be omitted.</param>
         /// <returns>The generated type declaration</returns>
         public static CodeTypeDeclaration CreateTypeDeclarationWithReference(string name, bool autoAssignNamespace)
         {
@@ -255,7 +256,8 @@ namespace NMF.CodeGen
         /// Adds a statement to throw an exception of the given type
         /// </summary>
         /// <typeparam name="TException">The type of the exception</typeparam>
-        /// <param name="method"></param>
+        /// <param name="method">The method that should throw the exception</param>
+        /// <param name="arguments">The arguments that should be passed to the constructor of the exception</param>
         public static void ThrowException<TException>(this CodeMemberMethod method, params object[] arguments)
         {
             CodeExpression[] codeArguments = null;
@@ -334,6 +336,7 @@ namespace NMF.CodeGen
         /// Creates a primitive expression from the serialized value
         /// </summary>
         /// <param name="value">The serialized value</param>
+        /// <param name="isEnum">True, if the value is an enum, otherwise False</param>
         /// <param name="type">The type for the primitive expression</param>
         /// <returns>A code expression that represents the value as a code expression or null if there is no such expression</returns>
         public static CodeExpression CreatePrimitiveExpression(string value, CodeTypeReference type, bool isEnum)
@@ -434,7 +437,9 @@ namespace NMF.CodeGen
         /// Generates an OnChanging-pattern for the given property
         /// </summary>
         /// <param name="property">The code property</param>
-        /// <returns></returns>
+        /// <returns>A method that can be called on changing of a property</returns>
+        /// <param name="eventType">The type of the changing event</param>
+        /// <param name="eventData">The event data for the changing event</param>
         public static CodeStatement CreateOnChangingEventPattern(this CodeMemberProperty property, CodeTypeReference eventType, CodeExpression eventData)
         {
             CodeTypeReference handlerType;
@@ -479,6 +484,8 @@ namespace NMF.CodeGen
         /// </summary>
         /// <param name="property">The code property</param>
         /// <returns>The statement to call the OnChanged method for the given property</returns>
+        /// <param name="eventData">The event data</param>
+        /// <param name="eventType">The event type</param>
         public static CodeStatement CreateOnChangedEventPattern(this CodeMemberProperty property, CodeTypeReference eventType, CodeExpression eventData)
         {
             CodeTypeReference handlerType;
@@ -526,6 +533,11 @@ namespace NMF.CodeGen
             return CreateBackingField(property, property.Type, null);
         }
 
+        /// <summary>
+        /// Gets the backing field for the given property
+        /// </summary>
+        /// <param name="property">The property</param>
+        /// <returns>A code field reference to the backing field</returns>
         public static CodeFieldReferenceExpression GetBackingField(this CodeMemberProperty property)
         {
             return property.GetOrCreateUserItem<CodeFieldReferenceExpression>(BackingFieldRefKey);

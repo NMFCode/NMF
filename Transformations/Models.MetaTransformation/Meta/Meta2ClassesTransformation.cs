@@ -110,6 +110,7 @@ namespace NMF.Models.Meta
         /// <param name="isReference">A value indicating whether to default to IModelElement or object</param>
         /// <param name="context">The transformation context</param>
         /// <returns>A code type reference</returns>
+        /// <param name="implementation">if true, a reference to the implementation is returned, otherwise a reference to the interface</param>
         protected static CodeTypeReference CreateReference(IType type, bool isReference, ITransformationContext context, bool implementation = false)
         {
             if (type != null)
@@ -271,6 +272,9 @@ namespace NMF.Models.Meta
             }
         }
 
+        /// <summary>
+        /// If set, the transformation only produces results for namespaces that have been explicitly been asked for
+        /// </summary>
         public bool GenerateForInputOnly { get; set; }
     }
 }

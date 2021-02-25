@@ -14,6 +14,9 @@ using TaskParallel = System.Threading.Tasks.Parallel;
 
 namespace NMF.Transformations.Parallel
 {
+    /// <summary>
+    /// Denotes the transformation context of a parallel transformation
+    /// </summary>
     public class ParallelTransformationContext : ITransformationEngineContext
     {
         private ConcurrentDictionary<object[], List<ITraceEntry>> computationsMade = new ConcurrentDictionary<object[], List<ITraceEntry>>(ItemEqualityComparer<object>.Instance);
@@ -219,7 +222,7 @@ namespace NMF.Transformations.Parallel
             }
         }
 
-        protected ParallelComputationContext CreateComputationContext(GeneralTransformationRule rule)
+        private ParallelComputationContext CreateComputationContext(GeneralTransformationRule rule)
         {
             var compCon = new ParallelComputationContext(this);
             compCon.DelayOutputAtLeast(rule.OutputDelayLevel);
@@ -438,19 +441,9 @@ namespace NMF.Transformations.Parallel
             }
         }
 
+        /// <inheritdoc />
         protected void ExecuteLevel(ConcurrentQueue<Computation> computationsOfLevel)
         {
-            //int reqs = 0;
-            //int prov = 0;
-            //foreach (var item in computationsOfLevel)
-            //{
-            //    var pc = item.Context as ParallelComputationContext;
-            //    reqs += pc.transformationRequirements;
-            //    prov += pc.dependentContexts;
-            //}
-
-            //Console.WriteLine("{0} computations provided, {1} needed", prov, reqs);
-
             using (var countEvent = new CountdownEvent(1))
             {
                 while (true)
@@ -483,8 +476,6 @@ namespace NMF.Transformations.Parallel
                     }
                 }
                 countEvent.Signal();
-                //Thread.Sleep(2000);
-                //if (countEvent.CurrentCount > 0) Debugger.Break();
                 countEvent.Wait();
             }
         }

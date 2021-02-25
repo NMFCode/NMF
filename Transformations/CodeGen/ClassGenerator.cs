@@ -120,6 +120,12 @@ namespace NMF.CodeGen
             }
         }
 
+        /// <summary>
+        /// Determines whether the provided type should contain members of the given base type
+        /// </summary>
+        /// <param name="generatedType">The type that is currently being generated</param>
+        /// <param name="baseType">The base types</param>
+        /// <returns>True if so, otherwise false</returns>
         protected virtual bool ShouldContainMembers(CodeTypeDeclaration generatedType, CodeTypeDeclaration baseType)
         {
             var baseClasses = CodeDomHelper.GetOrCreateUserItem<IEnumerable<CodeTypeDeclaration>>(generatedType, CodeDomHelper.BaseClassesKey);
@@ -192,6 +198,12 @@ namespace NMF.CodeGen
             return ancestors.Union(conflicting);
         }
 
+        /// <summary>
+        /// Resolves the members inherited from multiple base classes
+        /// </summary>
+        /// <param name="generatedType">The generated type</param>
+        /// <param name="shadows">The members that are shadowed by others</param>
+        /// <param name="constructor">The constructor to which initializations should be added</param>
         protected virtual void ResolveMultipleInheritanceMembers(CodeTypeDeclaration generatedType, HashSet<CodeTypeMember> shadows, CodeConstructor constructor)
         {
             var allClasses = generatedType.Closure(GetBaseClasses);
@@ -328,6 +340,11 @@ namespace NMF.CodeGen
             return true;
         }
 
+        /// <summary>
+        /// Generates the interface members for the given type
+        /// </summary>
+        /// <param name="generatedType">The generated type</param>
+        /// <param name="interfaceDecl">The interface declaration</param>
         protected virtual void CreateInterfaceMembers(CodeTypeDeclaration generatedType, CodeTypeDeclaration interfaceDecl)
         {
             foreach (CodeTypeMember item in generatedType.Members)
@@ -500,7 +517,6 @@ namespace NMF.CodeGen
         /// <summary>
         /// Creates a dependency to generate the code for the base classes of the current class
         /// </summary>
-        /// <typeparam name="TClass">The model element type from which to generate the base class</typeparam>
         /// <param name="selector">A function used to select the model element from which to generate a base class</param>
         /// <returns>The transformation rule dependency</returns>
         public ITransformationRuleDependency RequireBaseClass(Func<T, T> selector)
@@ -511,7 +527,6 @@ namespace NMF.CodeGen
         /// <summary>
         /// Creates a dependency to generate the code for the base classes of the current class
         /// </summary>
-        /// <typeparam name="TClass">The model element type from which to generate the base classes</typeparam>
         /// <param name="selector">The function used to select the model elements from which to generate the base classes</param>
         /// <returns>The transformation rule dependency</returns>
         public ITransformationRuleDependency RequireBaseClasses(Func<T, IEnumerable<T>> selector)

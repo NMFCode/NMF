@@ -6,12 +6,21 @@ using NMF.Expressions;
 
 namespace NMF.Synchronizations
 {
+    /// <summary>
+    /// Denotes the base class for a synchronization job that is filtered by a guard
+    /// </summary>
+    /// <typeparam name="TLeft">The LHS type of the guard</typeparam>
+    /// <typeparam name="TRight">The RHS type of the guard</typeparam>
     public abstract class GuardedSynchronizationJob<TLeft, TRight> : ISynchronizationJob<TLeft, TRight>
         where TLeft : class
         where TRight : class
     {
-        public ISynchronizationJob<TLeft, TRight> Inner { get; private set; }
+        private ISynchronizationJob<TLeft, TRight> Inner { get; set; }
 
+        /// <summary>
+        /// Creates a new guarded synchronization job
+        /// </summary>
+        /// <param name="inner">The inner synchronization job</param>
         public GuardedSynchronizationJob(ISynchronizationJob<TLeft, TRight> inner)
         {
             if (inner == null) throw new ArgumentNullException("inner");
@@ -19,6 +28,7 @@ namespace NMF.Synchronizations
             Inner = inner;
         }
 
+        /// <inheritdoc />
         public bool IsEarly
         {
             get
@@ -27,11 +37,17 @@ namespace NMF.Synchronizations
             }
         }
 
+        /// <inheritdoc />
         public IDisposable Perform(SynchronizationComputation<TLeft, TRight> computation, SynchronizationDirection direction, ISynchronizationContext context)
         {
             return new Dependency(Inner, computation, direction, CreateTracker(computation));
         }
 
+        /// <summary>
+        /// Creates a tracker for the given computation
+        /// </summary>
+        /// <param name="computation">The computation that shall be tracked</param>
+        /// <returns></returns>
         protected abstract INotifyValue<bool> CreateTracker(SynchronizationComputation<TLeft, TRight> computation);
 
         private class Dependency : IDisposable
@@ -83,12 +99,22 @@ namespace NMF.Synchronizations
         }
     }
 
+    /// <summary>
+    /// Denotes a class that represents a synchronization job guarded at both LHS and RHS
+    /// </summary>
+    /// <typeparam name="TLeft">The LHS type</typeparam>
+    /// <typeparam name="TRight">The RHS type</typeparam>
     public class BothGuardedSynchronizationJob<TLeft, TRight> : GuardedSynchronizationJob<TLeft, TRight>
         where TLeft : class
         where TRight : class
     {
-        public ObservingFunc<TLeft, TRight, bool> Guard { get; private set; }
+        private ObservingFunc<TLeft, TRight, bool> Guard { get; set; }
 
+        /// <summary>
+        /// Creates a new guarded synchronization job
+        /// </summary>
+        /// <param name="inner">The inner synchronization job</param>
+        /// <param name="guard">The actual guard</param>
         public BothGuardedSynchronizationJob(ISynchronizationJob<TLeft, TRight> inner, ObservingFunc<TLeft, TRight, bool> guard)
             : base(inner)
         {
@@ -97,6 +123,7 @@ namespace NMF.Synchronizations
             Guard = guard;
         }
 
+        /// <inheritdoc />
         protected override INotifyValue<bool> CreateTracker(SynchronizationComputation<TLeft, TRight> computation)
         {
             var tracker = Guard.Observe(computation.Input, computation.Opposite.Input);
@@ -105,12 +132,22 @@ namespace NMF.Synchronizations
         }
     }
 
+    /// <summary>
+    /// Denotes a synchronization job that is guarded at the RHS
+    /// </summary>
+    /// <typeparam name="TLeft">The LHS type</typeparam>
+    /// <typeparam name="TRight">The RHS type</typeparam>
     public class RightGuardedSynchronizationJob<TLeft, TRight> : GuardedSynchronizationJob<TLeft, TRight>
         where TLeft : class
         where TRight : class
     {
-        public ObservingFunc<TRight, bool> Guard { get; private set; }
+        private ObservingFunc<TRight, bool> Guard { get; set; }
 
+        /// <summary>
+        /// Creates a new synchronization job guarded at the RHS
+        /// </summary>
+        /// <param name="inner"></param>
+        /// <param name="guard"></param>
         public RightGuardedSynchronizationJob(ISynchronizationJob<TLeft, TRight> inner, ObservingFunc<TRight, bool> guard)
             : base(inner)
         {
@@ -119,6 +156,7 @@ namespace NMF.Synchronizations
             Guard = guard;
         }
 
+        /// <inheritdoc />
         protected override INotifyValue<bool> CreateTracker(SynchronizationComputation<TLeft, TRight> computation)
         {
             var tracker = Guard.Observe(computation.Opposite.Input);
@@ -127,12 +165,22 @@ namespace NMF.Synchronizations
         }
     }
 
+    /// <summary>
+    /// Denotes a synchronization job guarded at the LHS
+    /// </summary>
+    /// <typeparam name="TLeft">The LHS type</typeparam>
+    /// <typeparam name="TRight">The RHS type</typeparam>
     public class LeftGuardedSynchronizationJob<TLeft, TRight> : GuardedSynchronizationJob<TLeft, TRight>
         where TLeft : class
         where TRight : class
     {
-        public ObservingFunc<TLeft, bool> Guard { get; private set; }
+        private ObservingFunc<TLeft, bool> Guard { get; set; }
 
+        /// <summary>
+        /// Creates a new synchronization job guarded at the LHS
+        /// </summary>
+        /// <param name="inner">The inner synchronization job</param>
+        /// <param name="guard">The guard function</param>
         public LeftGuardedSynchronizationJob(ISynchronizationJob<TLeft, TRight> inner, ObservingFunc<TLeft, bool> guard)
             : base(inner)
         {
@@ -141,6 +189,7 @@ namespace NMF.Synchronizations
             Guard = guard;
         }
 
+        /// <inheritdoc />
         protected override INotifyValue<bool> CreateTracker(SynchronizationComputation<TLeft, TRight> computation)
         {
             var tracker = Guard.Observe(computation.Input);

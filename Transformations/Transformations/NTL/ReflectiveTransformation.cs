@@ -123,6 +123,14 @@ namespace NMF.Transformations
     /// </summary>
     public static class Reflector
     {
+        /// <summary>
+        /// Obtains the rules from the given type stack
+        /// </summary>
+        /// <typeparam name="T">The type of rules</typeparam>
+        /// <param name="typeStack">A stack of types from which to reflect the rules</param>
+        /// <param name="createDefaults">A function that returns the defaults</param>
+        /// <param name="createCustoms">A function that returns the customs</param>
+        /// <returns>A collection of rules</returns>
         public static IDictionary<Type, T> ReflectDictionary<T>(Stack<Type> typeStack, Func<IEnumerable<T>> createDefaults, Func<IEnumerable<T>> createCustoms)
             where T : class
         {

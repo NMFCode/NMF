@@ -24,7 +24,7 @@ namespace NMF.Synchronizations
         where TRight : class
     {
         /// <summary>
-        /// Gets a collection of synchronization jobs
+        /// Gets the jobs performed by this synchronization rule
         /// </summary>
         public ICollection<ISynchronizationJob<TLeft, TRight>> SynchronizationJobs { get; private set; }
 
@@ -48,11 +48,11 @@ namespace NMF.Synchronizations
         /// </summary>
         public TransformationRuleBase<TRight, TLeft> RightToLeft { get { return rightToLeft; } }
 
-        private LeftToRightRule<TLeft, TRight> leftToRight;
-        private RightToLeftRule<TLeft, TRight> rightToLeft;
+        private readonly LeftToRightRule<TLeft, TRight> leftToRight;
+        private readonly RightToLeftRule<TLeft, TRight> rightToLeft;
 
-        private static Type leftImplementationType = GetImplementationType( typeof( TLeft ) );
-        private static Type rightImplementationType = GetImplementationType( typeof( TRight ) );
+        private static readonly Type leftImplementationType = GetImplementationType(typeof(TLeft));
+        private static readonly Type rightImplementationType = GetImplementationType(typeof(TRight));
 
         private static Type GetImplementationType( Type type )
         {
@@ -78,7 +78,7 @@ namespace NMF.Synchronizations
         }
 
         /// <summary>
-        /// Gets or sets the delay level of the transformations
+        /// Gets or sets the transformation delay level
         /// </summary>
         public byte TransformationDelayLevel
         {
@@ -142,7 +142,7 @@ namespace NMF.Synchronizations
         /// <param name="left">The LHS element</param>
         /// <param name="right">The RHS element</param>
         /// <param name="context">The context in which the synchronization is run</param>
-        /// <returns></returns>
+        /// <returns>True, if the elements should be regarded as corresponding to each other, otherwise false</returns>
         public virtual bool ShouldCorrespond( TLeft left, TRight right, ISynchronizationContext context )
         {
             return false;
@@ -1003,9 +1003,9 @@ namespace NMF.Synchronizations
         }
 
         /// <summary>
-        /// Performs an opaque synchronization job
+        /// Executes the given action when a correspondence between LHS and RHS elements is established
         /// </summary>
-        /// <param name="action"></param>
+        /// <param name="action">The action to perform</param>
         public void SynchronizeOpaque(Func<TLeft, TRight, SynchronizationDirection, ISynchronizationContext, IDisposable> action)
         {
             SynchronizationJobs.Add(new OpaqueSynchronizationJob<TLeft, TRight>(action));
@@ -1041,7 +1041,6 @@ namespace NMF.Synchronizations
         /// <returns>The RHS element</returns>
         protected virtual TRight CreateRightOutput(TLeft input, IEnumerable<TRight> candidates, ISynchronizationContext context, out bool existing)
         {
-            TRight output = null;
             existing = false;
             if (candidates != null)
             {
@@ -1051,9 +1050,8 @@ namespace NMF.Synchronizations
                     inputArray[0] = item;
                     if (item != null && !context.Trace.TraceIn(rightToLeft, inputArray).Any() && ShouldCorrespond(input, item, context))
                     {
-                        output = item;
                         existing = true;
-                        return output;
+                        return item;
                     }
                 }
             }
@@ -1085,7 +1083,6 @@ namespace NMF.Synchronizations
         /// <returns>The LHS element</returns>
         protected virtual TLeft CreateLeftOutput(TRight input, IEnumerable<TLeft> candidates, ISynchronizationContext context, out bool existing)
         {
-            TLeft output = null;
             existing = false;
             if (candidates != null)
             {
@@ -1095,13 +1092,12 @@ namespace NMF.Synchronizations
                     inputArray[0] = item;
                     if (item != null && !context.Trace.TraceIn(rightToLeft, inputArray).Any() && ShouldCorrespond(item, input, context))
                     {
-                        output = item;
                         existing = true;
-                        return output;
+                        return item;
                     }
                 }
             }
-            return CreateLeftOutputInstance(out output);
+            return CreateLeftOutputInstance();
         }
         
         /// <summary>
@@ -1264,25 +1260,24 @@ namespace NMF.Synchronizations
             }
         }
 
-        private static TLeft CreateLeftOutputInstance(out TLeft output)
+        private static TLeft CreateLeftOutputInstance()
         {
             if (leftImplementationType != null)
             {
-                output = Activator.CreateInstance(leftImplementationType) as TLeft;
+                return Activator.CreateInstance(leftImplementationType) as TLeft;
             }
             else
             {
                 throw new NotImplementedException();
             }
-            return output;
         }
 
         /// <summary>
-        /// Marks the current synchronization rule instantiating for the given synchronization rule
+        /// Marks this synchronization rule instantiating for the given other synchronization rule
         /// </summary>
-        /// <param name="synchronizationRule">The synchronization rule that should be instantiated</param>
-        /// <param name="leftPredicate">A predicate for the LHS or null</param>
-        /// <param name="rightPredicate">A predicate for the RHS or null</param>
+        /// <param name="synchronizationRule">The other synchronization rule with more abstract LHS and RHS types</param>
+        /// <param name="leftPredicate">A filter function on the LHS when this instantiation applies or null</param>
+        /// <param name="rightPredicate">A filter function on the RHS when this instantiation applies or null</param>
         public void MarkInstantiatingFor(SynchronizationRuleBase synchronizationRule, Expression<Func<TLeft, bool>> leftPredicate = null, Expression<Func<TRight, bool>> rightPredicate = null)
         {
             if (synchronizationRule == null) throw new ArgumentNullException("synchronizationRule");

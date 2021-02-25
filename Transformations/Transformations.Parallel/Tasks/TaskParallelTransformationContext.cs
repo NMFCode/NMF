@@ -13,6 +13,9 @@ using TaskParallel = System.Threading.Tasks.Parallel;
 
 namespace NMF.Transformations.Parallel.Tasks
 {
+    /// <summary>
+    /// Denotes a parallel transformation context using the TPL
+    /// </summary>
     public class TaskParallelTransformationContext : ITransformationEngineContext
     {
         
@@ -219,7 +222,7 @@ namespace NMF.Transformations.Parallel.Tasks
             }
         }
 
-        protected TaskParallelComputationContext CreateComputationContext(GeneralTransformationRule rule)
+        private TaskParallelComputationContext CreateComputationContext(GeneralTransformationRule rule)
         {
             var compCon = new TaskParallelComputationContext(this);
             compCon.DelayOutputAtLeast(rule.OutputDelayLevel);
@@ -438,7 +441,7 @@ namespace NMF.Transformations.Parallel.Tasks
             }
         }
 
-        protected void ExecuteLevel(ConcurrentQueue<Computation> computationsOfLevel)
+        private void ExecuteLevel(ConcurrentQueue<Computation> computationsOfLevel)
         {
             var allTasks = new List<Task>();
             while (true)

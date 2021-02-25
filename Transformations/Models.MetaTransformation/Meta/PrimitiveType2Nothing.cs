@@ -15,6 +15,7 @@ namespace NMF.Models.Meta
         /// </summary>
         public class PrimitiveType2Nothing : TransformationRule<IPrimitiveType, CodeTypeDeclaration>
         {
+            /// <inheritdoc />
             public override CodeTypeDeclaration CreateOutput(IPrimitiveType input, Transformations.Core.ITransformationContext context)
             {
                 return null;

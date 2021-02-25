@@ -8,10 +8,15 @@ using System.Text;
 
 namespace NMF.Synchronizations.Models
 {
+    /// <summary>
+    /// Denotes the base class for a homgeneous model synchronization
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
     public class HomogeneousSynchronization<T> : ReflectiveSynchronization
     {
-        private static Model targetModel = MetaRepository.Instance.ResolveClass(typeof(T)).Model;
+        private static readonly Model targetModel = MetaRepository.Instance.ResolveClass(typeof(T)).Model;
 
+        /// <inheritdoc />
         protected override IEnumerable<SynchronizationRuleBase> CreateDefaultSynchronizationRules()
         {
             var dict = new Dictionary<System.Type, SynchronizationRuleBase>();

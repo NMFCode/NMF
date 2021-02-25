@@ -23,6 +23,8 @@ namespace NMF.Models.Meta
             /// Gets the enumeration members that should be generated based on the given NMeta enumeration
             /// </summary>
             /// <param name="input">The NMeta enumeration</param>
+            /// <param name="context">The context in which the enumeration is generated</param>
+            /// <param name="generatedType">The generated type</param>
             /// <returns>A collection of enumeration members</returns>
             protected override IEnumerable<EnumGenerator<IEnumeration>.EnumMember> GetMembers(IEnumeration input, CodeTypeDeclaration generatedType, ITransformationContext context)
             {

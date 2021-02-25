@@ -29,6 +29,7 @@ namespace NMF.Transformations
             throw new InvalidOperationException("This rule is only intended for tracing purposes and must not be called using regular dependencies.");
         }
 
+        /// <inheritdoc />
         public override bool NeedDependenciesForOutputCreation
         {
             get { return false; }

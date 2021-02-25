@@ -1053,10 +1053,9 @@ namespace NMF.Transformations
         /// <typeparam name="TRequiredInput1">The first type argument of the selector output tuple</typeparam>
         /// <typeparam name="TRequiredInput2">The second type argument pf the selector output tuple</typeparam>
         /// <param name="selector">The source selector that selects the output of dependant transformation rules as typed tuples</param>
+        /// <param name="computation">The computation from which the arrays are selected</param>
         /// <exception cref="ArgumentNullException">An ArgumentNullException is thrown whenever a null reference is passed to the selector parameter</exception>
-        /// <param name="inputs">The inputs for the selector</param>
         /// <exception cref="ArgumentNullException">An ArgumentNullException is thrown if the inputs parameter is passed a null instance</exception>
-        /// <param name="output">The output of this transformation rule</param>
         /// <returns>A collection of inputs for other transformation rules</returns>
         /// <remarks>This method is used as helper function for DependMany. This version is output sensitive. Use it only with the needOutput-parameter of DependMany set to true!</remarks>  
         protected internal static IEnumerable<object[]> SelectArrays<TRequiredInput1, TRequiredInput2>(Func<TIn, TOut, IEnumerable<Tuple<TRequiredInput1, TRequiredInput2>>> selector, Computation computation) 
@@ -1082,10 +1081,9 @@ namespace NMF.Transformations
         /// </summary>
         /// <typeparam name="TRequiredInput">The type argument of the selector output</typeparam>
         /// <param name="selector">The source selector that selects the output of dependant transformation rules as typed tuples</param>
+        /// <param name="computation">The computation from which the arrays are selected</param>
         /// <exception cref="ArgumentNullException">An ArgumentNullException is thrown whenever a null reference is passed to the selector parameter</exception>
-        /// <param name="inputs">The inputs for the selector</param>
         /// <exception cref="ArgumentNullException">An ArgumentNullException is thrown whenever a null reference is passed to the inputs parameter</exception>
-        /// <param name="output">The output of this transformation rule</param>
         /// <returns>A collection of inputs for other transformation rules</returns>
         /// <remarks>This method is used as helper function for DependMany. This version is output sensitive. Use it only with the needOutput-parameter of DependMany set to true!</remarks>      
         protected internal static IEnumerable<object[]> SelectArrays<TRequiredInput>(Func<TIn, TOut, IEnumerable<TRequiredInput>> selector, Computation computation)

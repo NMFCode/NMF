@@ -8,10 +8,10 @@ using System.Threading.Tasks;
 namespace NMF.Synchronizations
 {
     /// <summary>
-    /// Denotes a job that is executed when a new correspondence is found
+    /// Denotes a job that should be performed as part of a model synchronization
     /// </summary>
-    /// <typeparam name="TLeft"></typeparam>
-    /// <typeparam name="TRight"></typeparam>
+    /// <typeparam name="TLeft">The LHS type</typeparam>
+    /// <typeparam name="TRight">The RHS type</typeparam>
     public interface ISynchronizationJob<TLeft, TRight>
         where TLeft : class
         where TRight : class

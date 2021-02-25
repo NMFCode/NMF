@@ -40,13 +40,17 @@ namespace NMF.Synchronizations.Inconsistencies
         }
 
         /// <inheritdoc />
-
         public bool CanResolveLeft => SourceLeft.IsReversable;
 
         /// <inheritdoc />
-
         public bool CanResolveRight => SourceRight.IsReversable;
 
+        /// <summary>
+        /// Creates a new inconsistency
+        /// </summary>
+        /// <param name="source1">The LHS source</param>
+        /// <param name="source2">The RHS source</param>
+        /// <param name="context">The context in which the inconsistency arose</param>
         public IncrementalPropertyConsistencyCheck(INotifyReversableValue<T> source1, INotifyReversableValue<T> source2, ISynchronizationContext context)
         {
             SourceLeft = source1;
@@ -78,7 +82,6 @@ namespace NMF.Synchronizations.Inconsistencies
         }
 
         /// <inheritdoc />
-
         public void Dispose()
         {
             SourceLeft.ValueChanged -= Source_ValueChanged;
@@ -88,21 +91,18 @@ namespace NMF.Synchronizations.Inconsistencies
         }
 
         /// <inheritdoc />
-
         public void ResolveLeft()
         {
             SourceLeft.Value = SourceRight.Value;
         }
 
         /// <inheritdoc />
-
         public void ResolveRight()
         {
             SourceRight.Value = SourceLeft.Value;
         }
 
         /// <inheritdoc />
-
         public override int GetHashCode()
         {
             var hashCode = Context.GetHashCode();
@@ -115,7 +115,6 @@ namespace NMF.Synchronizations.Inconsistencies
         }
 
         /// <inheritdoc />
-
         public override bool Equals(object obj)
         {
             if (ReferenceEquals( obj, this)) return true;
@@ -124,21 +123,18 @@ namespace NMF.Synchronizations.Inconsistencies
         }
 
         /// <inheritdoc />
-
         public bool Equals(IInconsistency other)
         {
             return Equals(other as IncrementalPropertyConsistencyCheck<T>);
         }
 
         /// <inheritdoc />
-
         public bool Equals(IncrementalPropertyConsistencyCheck<T> other)
         {
             return other != null && other.Context == Context && other.SourceLeft == SourceLeft && other.SourceRight == SourceRight;
         }
 
         /// <inheritdoc />
-
         public override string ToString()
         {
             return Representation;

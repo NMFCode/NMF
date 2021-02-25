@@ -7,13 +7,19 @@ using System.Linq;
 
 namespace NMF.Expressions.Linq
 {
+    /// <summary>
+    /// Denotes an incremental lookup implementation
+    /// </summary>
+    /// <typeparam name="TSource">The source type of elements</typeparam>
+    /// <typeparam name="TKey">The key type</typeparam>
     public class Lookup<TSource, TKey> : ILookupExpression<TSource, TKey>, IEnumerableExpression<TKey>
     {
-        private IEnumerableExpression<TSource> source;
-        private ObservingFunc<TSource, TKey> keySelector;
-        private Dictionary<TKey, LookupSlave> lookupCache = new Dictionary<TKey, LookupSlave>();
+        private readonly IEnumerableExpression<TSource> source;
+        private readonly ObservingFunc<TSource, TKey> keySelector;
+        private readonly Dictionary<TKey, LookupSlave> lookupCache = new Dictionary<TKey, LookupSlave>();
         private IncrementalLookup<TSource, TKey> incremental;
 
+        /// <inheritdoc />
         public IEnumerableExpression<TKey> Keys
         {
             get
@@ -22,12 +28,18 @@ namespace NMF.Expressions.Linq
             }
         }
 
+        /// <summary>
+        /// Creates a new lookup for the given source and key selector
+        /// </summary>
+        /// <param name="source">The source collection</param>
+        /// <param name="keySelector">A function that selects the keys of a given element</param>
         public Lookup(IEnumerableExpression<TSource> source, ObservingFunc<TSource, TKey> keySelector)
         {
             this.source = source;
             this.keySelector = keySelector;
         }
 
+        /// <inheritdoc />
         public IEnumerableExpression<TSource> this[TKey key]
         {
             get
@@ -57,7 +69,7 @@ namespace NMF.Expressions.Linq
             }
         }
 
-        protected class LookupSlave : IEnumerableExpression<TSource>
+        private class LookupSlave : IEnumerableExpression<TSource>
         {
             private Lookup<TSource, TKey> parent;
             private List<TSource> items;
@@ -119,12 +131,14 @@ namespace NMF.Expressions.Linq
             }
         }
 
+        /// <inheritdoc />
         public INotifyEnumerable<TKey> AsNotifiable()
         {
             PerformIncrementalLookup();
             return incremental;
         }
 
+        /// <inheritdoc />
         public IEnumerator<TKey> GetEnumerator()
         {
             return lookupCache.Keys.GetEnumerator();

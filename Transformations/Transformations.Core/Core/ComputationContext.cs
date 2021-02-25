@@ -176,7 +176,7 @@ namespace NMF.Transformations.Core
             OutputDelay = delay;
         }
 
-
+        /// <inheritdoc />
         public void InitializeOutput(object output)
         {
             if (OutputDelay != null)

@@ -12,14 +12,18 @@ using System.Text;
 
 namespace NMF.Synchronizations.Models
 {
+    /// <summary>
+    /// Denotes a transformation rule that produces exact copies of model elements
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
     public class ModelCopyRule<T> : SynchronizationRule<T, T> where T : class, IModelElement
     {
-        private static IClass modelClass = MetaRepository.Instance.ResolveClass(typeof(T)) as IClass;
+        private static readonly IClass modelClass = MetaRepository.Instance.ResolveClass(typeof(T)) as IClass;
 
-        private static MethodInfo singleAttribute;
-        private static MethodInfo multipleAttribute;
-        private static MethodInfo singleReference;
-        private static MethodInfo multipleReference;
+        private static readonly MethodInfo singleAttribute;
+        private static readonly MethodInfo multipleAttribute;
+        private static readonly MethodInfo singleReference;
+        private static readonly MethodInfo multipleReference;
 
         static ModelCopyRule()
         {
@@ -30,6 +34,7 @@ namespace NMF.Synchronizations.Models
             multipleReference = methods.FirstOrDefault(m => m.Name == "SynchronizeMany" && m.IsGenericMethodDefinition && m.GetGenericArguments().Length == 2 && m.GetParameters().Length == 3);
         }
 
+        /// <inheritdoc />
         public override void DeclareSynchronization()
         {
             if (modelClass.BaseTypes.Count > 1)

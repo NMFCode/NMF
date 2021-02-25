@@ -12,6 +12,9 @@ namespace NMF.Transformations.Core
     /// </summary>
     public interface ITransformationContext
     {
+        /// <summary>
+        /// Indicates whether the transformation context is thread-safe
+        /// </summary>
         bool IsThreadSafe { get; }
 
         /// <summary>
