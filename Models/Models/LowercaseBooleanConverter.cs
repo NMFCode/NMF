@@ -2,24 +2,21 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Globalization;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace NMF.Models
 {
     /// <summary>
-    /// Denotes a type converter that converts date time to string in iso format
+    /// Denotes a type converter that converts booleans to lower case strings
     /// </summary>
-    public class IsoDateTimeConverter : System.ComponentModel.DateTimeConverter
+    public class LowercaseBooleanConverter : System.ComponentModel.BooleanConverter
     {
         /// <inheritdoc />
         public override object ConvertTo(ITypeDescriptorContext context, CultureInfo culture, object value, Type destinationType)
         {
-            if (value is DateTime dateTime && destinationType == typeof(string))
+            if (value is bool boolean)
             {
-                if (dateTime == default) return string.Empty;
-                return dateTime.ToString("s");
+                return value.ToString().ToLowerInvariant();
             }
             return base.ConvertTo(context, culture, value, destinationType);
         }

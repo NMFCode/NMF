@@ -47,7 +47,10 @@ namespace Models.Tests.Shared
                 {
                     foreach (var item in derived)
                     {
-                        toInvestigate.Enqueue(item);
+                        if (item != Model.ClassInstance)
+                        {
+                            toInvestigate.Enqueue(item);
+                        }
                     }
                 }
             }

@@ -8,6 +8,9 @@ using NMF.Utilities;
 
 namespace NMF.Serialization.Xmi
 {
+    /// <summary>
+    /// Denotes a serializer implementation that serializes objects to XMI
+    /// </summary>
     public class XmiSerializer : XmlSerializer
     {
         /// <summary>
@@ -43,25 +46,45 @@ namespace NMF.Serialization.Xmi
         public XmiSerializer(XmlSerializer parent) : base(parent) { }
 
         private static readonly string TypeField = "type";
+        /// <summary>
+        /// Denotes the namespace for XML schema instance
+        /// </summary>
         public static readonly string XMLSchemaInstanceNamespace = "http://www.w3.org/2001/XMLSchema-instance";
+        
+        /// <summary>
+        /// Denotes the standard prefix to use for the XML schema instance namespace
+        /// </summary>
         public static readonly string XMLSchemaInstancePrefix = "xsi";
 
+        /// <summary>
+        /// Denotes the standard prefix for the XMI namespace
+        /// </summary>
         public static readonly string XMIPrefix = "xmi";
+
+        /// <summary>
+        /// Denotes the XMI namespace
+        /// </summary>
         public static readonly string XMINamespace = "http://www.omg.org/XMI";
 
+        /// <summary>
+        /// Gets or sets the root prefix
+        /// </summary>
         public string RootPrefix { get; set; }
 
-        protected override bool GoToPropertyContent(System.Xml.XmlReader reader)
+        /// <inheritdoc />
+        protected override bool GoToPropertyContent(XmlReader reader)
         {
             //do not move forward
             return true;
         }
 
+        /// <inheritdoc />
         protected override XmlSerializationContext CreateSerializationContext(object root)
         {
             return new XmiSerializationContext(root);
         }
 
+        /// <inheritdoc />
         protected override ITypeSerializationInfo GetElementTypeInfo(XmlReader reader, IPropertySerializationInfo property)
         {
             string attr = reader.GetAttribute(TypeField, XMLSchemaInstanceNamespace)
@@ -92,7 +115,8 @@ namespace NMF.Serialization.Xmi
             }
         }
 
-        protected override void WriteBeginElement(System.Xml.XmlWriter writer, object obj, ITypeSerializationInfo info)
+        /// <inheritdoc />
+        protected override void WriteBeginElement(XmlWriter writer, object obj, ITypeSerializationInfo info)
         {
             string prefix = info.NamespacePrefix;
             if (prefix == null)
@@ -107,11 +131,13 @@ namespace NMF.Serialization.Xmi
             writer.WriteAttributeString(XMLSchemaInstancePrefix, TypeField, XMLSchemaInstanceNamespace, value);
         }
 
-        protected override void WriteEndElement(System.Xml.XmlWriter writer, object obj, ITypeSerializationInfo info)
+        /// <inheritdoc />
+        protected override void WriteEndElement(XmlWriter writer, object obj, ITypeSerializationInfo info)
         {
         }
 
-        protected override void WriteBeginRootElement(System.Xml.XmlWriter writer, object root, ITypeSerializationInfo info)
+        /// <inheritdoc />
+        protected override void WriteBeginRootElement(XmlWriter writer, object root, ITypeSerializationInfo info)
         {
             writer.WriteStartElement(info.NamespacePrefix ?? RootPrefix, info.ElementName, info.Namespace);
 
@@ -119,17 +145,20 @@ namespace NMF.Serialization.Xmi
             writer.WriteAttributeString("xmlns", XMLSchemaInstancePrefix, null, XMLSchemaInstanceNamespace);
         }
 
-        protected override void WriteEndRootElement(System.Xml.XmlWriter writer, object root, ITypeSerializationInfo info)
+        /// <inheritdoc />
+        protected override void WriteEndRootElement(XmlWriter writer, object root, ITypeSerializationInfo info)
         {
             writer.WriteEndElement();
         }
 
+        /// <inheritdoc />
         protected override bool WriteIdentifiedObject(XmlWriter writer, object obj, XmlIdentificationMode identificationMode, ITypeSerializationInfo info, XmlSerializationContext context)
         {
             return false;
         }
 
-        protected override void WriteElementProperties(System.Xml.XmlWriter writer, object obj, ITypeSerializationInfo info, XmlSerializationContext context)
+        /// <inheritdoc />
+        protected override void WriteElementProperties(XmlWriter writer, object obj, ITypeSerializationInfo info, XmlSerializationContext context)
         {
             if (info.DefaultProperty != null)
             {
@@ -207,7 +236,8 @@ namespace NMF.Serialization.Xmi
             }
         }
 
-        protected override void InitializeElementProperties(System.Xml.XmlReader reader, ref object obj, ITypeSerializationInfo info, XmlSerializationContext context)
+        /// <inheritdoc />
+        protected override void InitializeElementProperties(XmlReader reader, ref object obj, ITypeSerializationInfo info, XmlSerializationContext context)
         {
             int currentDepth = reader.Depth;
             while (reader.Depth < currentDepth || reader.Read())
@@ -260,11 +290,13 @@ namespace NMF.Serialization.Xmi
             }
         }
 
+        /// <inheritdoc />
         protected override bool OverrideIdentifiedObject(object obj, XmlReader reader, XmlSerializationContext context)
         {
             return false;
         }
 
+        /// <inheritdoc />
         protected override void HandleUnknownAttribute(XmlReader reader, object obj, ITypeSerializationInfo info, XmlSerializationContext context)
         {
             if (reader.NamespaceURI == XmiArtificialIdAttribute.Instance.Namespace && reader.LocalName == XmiArtificialIdAttribute.Instance.ElementName)
@@ -320,6 +352,7 @@ namespace NMF.Serialization.Xmi
             }
         }
 
+        /// <inheritdoc />
         protected override void InitializeTypeSerializationInfo(Type type, ITypeSerializationInfo serializationInfo)
         {
             base.InitializeTypeSerializationInfo(type, serializationInfo);
@@ -338,6 +371,9 @@ namespace NMF.Serialization.Xmi
             }
         }
 
+        /// <summary>
+        /// Gets the attribute used for identifiers
+        /// </summary>
         protected virtual IPropertySerializationInfo IdAttribute
         {
             get

@@ -70,6 +70,7 @@ namespace NMF.Models.Meta
         /// </summary>
         [CategoryAttribute("Enumeration")]
         [XmlAttributeAttribute(true)]
+        [TypeConverter(typeof(LowercaseBooleanConverter))]
         public bool IsFlagged
         {
             get

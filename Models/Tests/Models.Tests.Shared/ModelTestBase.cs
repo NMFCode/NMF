@@ -2,21 +2,41 @@
 using NMF.Models;
 using NMF.Models.Meta;
 using NMF.Models.Repository;
+using NMF.Models.Repository.Serialization;
+using NMF.Models.Security;
 using NMF.Utilities;
 using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
+using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
 
 namespace Models.Tests.Shared
 {
+    /// <summary>
+    /// Denotes an abstract base class for implicit model tests
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
     public abstract class ModelTestBase<T> where T : IModelElement, new()
     {
+        /// <summary>
+        /// Gets the class instance for the test
+        /// </summary>
         protected readonly IClass Class;
+        /// <summary>
+        /// Denotes a collection if ancestors of this class
+        /// </summary>
         protected readonly IEnumerable<IClass> AllAncestors;
 
+        /// <summary>
+        /// Denotes a collection of attributes with fixed values
+        /// </summary>
         protected readonly HashSet<IAttribute> fixedAttributes = new HashSet<IAttribute>();
+
+        /// <summary>
+        /// Gets a lookup which reference is refined by other references
+        /// </summary>
         protected readonly Dictionary<IReference, IReference> refinesLookup = new Dictionary<IReference, IReference>();
 
         public ModelTestBase()
@@ -45,19 +65,46 @@ namespace Models.Tests.Shared
 
         #region Abstract members
 
+        /// <summary>
+        /// Asserts that the condition is true
+        /// </summary>
+        /// <param name="condition">The condition</param>
+        /// <param name="message">The message if not true</param>
         protected abstract void AssertIsTrue(bool condition, string message = null);
 
+        /// <summary>
+        /// Asserts that the condition is false
+        /// </summary>
+        /// <param name="condition">The condition</param>
+        /// <param name="message">The message if not false</param>
         protected abstract void AssertIsFalse(bool condition, string message = null);
 
+        /// <summary>
+        /// Asserts that executing the action will throw the given type of exception
+        /// </summary>
+        /// <typeparam name="TException">The expected exception type</typeparam>
+        /// <param name="toPerform">The action that should be performed in the test</param>
+        /// <param name="message">The error message when a different exception or no exception is thrown</param>
         protected abstract void AssertThrowsException<TException>(Action toPerform, string message = null)
             where TException : Exception;
 
+        /// <summary>
+        /// Asserts that the given actual value equals the expected value
+        /// </summary>
+        /// <param name="expected">The expected value</param>
+        /// <param name="actual">The actual value</param>
+        /// <param name="message">The error message</param>
         protected abstract void AssertAreEqual(object expected, object actual, string message = null);
 
         #endregion
 
         #region Helper Methods
 
+        /// <summary>
+        /// Checks the action for all attributes
+        /// </summary>
+        /// <param name="toCheck">The check that should be performed</param>
+        /// <param name="task">The name of the test</param>
         protected void CheckForAllAttributes(Action<IAttribute> toCheck, [CallerMemberName] string task = null)
         {
             foreach (var attribute in AllAncestors.SelectMany(c => c.Attributes))
@@ -71,11 +118,22 @@ namespace Models.Tests.Shared
             }
         }
 
+        /// <summary>
+        /// Determines whether the given attribute should be included in the given test
+        /// </summary>
+        /// <param name="attribute">The attribute</param>
+        /// <param name="task">The test name</param>
+        /// <returns>True, if the attribute should be considered, otherwise false</returns>
         protected virtual bool ShouldCheckAttribute(IAttribute attribute, string task)
         {
             return true;
         }
 
+        /// <summary>
+        /// Checks the given action for all references
+        /// </summary>
+        /// <param name="toCheck">The check that should be performed</param>
+        /// <param name="task">The name of the test to be executed</param>
         protected void CheckForAllReferences(Action<IReference> toCheck, [CallerMemberName] string task = null)
         {
             foreach (var reference in AllAncestors.SelectMany(c => c.References))
@@ -89,11 +147,22 @@ namespace Models.Tests.Shared
             }
         }
 
+        /// <summary>
+        /// Determines whether the test should include the given reference
+        /// </summary>
+        /// <param name="reference">The reference</param>
+        /// <param name="task">The name of the test</param>
+        /// <returns>True, if the reference should be considered, otherwise false</returns>
         protected virtual bool ShouldCheckReference(IReference reference, string task)
         {
             return true;
         }
 
+        /// <summary>
+        /// Performs the given check for all containments
+        /// </summary>
+        /// <param name="toCheck">The check to be performed</param>
+        /// <param name="task">The name of the test</param>
         protected void CheckForAllContainments(Action<IReference> toCheck, [CallerMemberName] string task = null)
         {
             foreach (var reference in AllAncestors.SelectMany(c => c.References))
@@ -108,11 +177,21 @@ namespace Models.Tests.Shared
             }
         }
 
+        /// <summary>
+        /// Gets the primary value for the given feature
+        /// </summary>
+        /// <param name="feature">The feature</param>
+        /// <returns>A value</returns>
         protected virtual object GetPrimaryValue(ITypedElement feature)
         {
             return GetValue(feature, false);
         }
 
+        /// <summary>
+        /// Gets a secondary value for the given feature
+        /// </summary>
+        /// <param name="feature">The feature</param>
+        /// <returns>A value different than the one returned by GetPrimaryValue</returns>
         protected virtual object GetOtherValue(ITypedElement feature)
         {
             return GetValue(feature, true);
@@ -127,7 +206,7 @@ namespace Models.Tests.Shared
                 {
                     reference = refiningReference;
                 }
-                type = reference.Type;
+                type = reference.Type ?? ModelElement.ClassInstance;
             }
             switch (type)
             {
@@ -183,6 +262,9 @@ namespace Models.Tests.Shared
 
         #region Test methods
 
+        /// <summary>
+        /// Tests that model elements can be resolved by a relative Uri
+        /// </summary>
         public virtual void ResolveOfRelativeUri_SucceedsAndFindsCorrectModelElement()
         {
             CheckForAllContainments(con =>
@@ -214,6 +296,9 @@ namespace Models.Tests.Shared
             });
         }
 
+        /// <summary>
+        /// Tests that attributes can change when the element is in normal state. This shall lead to change events to be raised.
+        /// </summary>
         public virtual void AttributeChange_StateNormal_SucceedsAndFiresChangeEvents()
         {
             CheckForAllAttributes(att =>
@@ -244,6 +329,9 @@ namespace Models.Tests.Shared
             });
         }
         
+        /// <summary>
+        /// Tests that when the model element is locked, attempting to change an attribute leads to a request to unlock the model element
+        /// </summary>
         public virtual void AttributeChange_StateLocked_RequestsUnlockAndSucceeds()
         {
             CheckForAllAttributes(att =>
@@ -286,6 +374,9 @@ namespace Models.Tests.Shared
             });
         }
         
+        /// <summary>
+        /// Tests that if an attribute is attempted to change while the element is locked and the unlock is refused, an exception occurs
+        /// </summary>
         public virtual void AttributeChange_StateLockedNoUnlock_ThrowsException()
         {
             CheckForAllAttributes(att =>
@@ -328,6 +419,9 @@ namespace Models.Tests.Shared
             });
         }
         
+        /// <summary>
+        /// Tests that when the model element is fixed, any attempt to change a value throws an exception
+        /// </summary>
         public virtual void AttributeChange_StateFixed_ThrowsException()
         {
             CheckForAllAttributes(att =>
@@ -373,6 +467,9 @@ namespace Models.Tests.Shared
             });
         }
         
+        /// <summary>
+        /// Tests that reference changes succeed when the model element is in normal state and change events are raised appropriately
+        /// </summary>
         public virtual void ReferenceChange_StateNormal_SucceedsAndFiresChangeEvents()
         {
             CheckForAllReferences(reference =>
@@ -411,6 +508,9 @@ namespace Models.Tests.Shared
             });
         }
         
+        /// <summary>
+        /// Tests that reference changes succeed if the model element is locked and the unlock request is granted
+        /// </summary>
         public virtual void ReferenceChange_StateLocked_RequestsUnlockAndSucceeds()
         {
             CheckForAllReferences(reference =>
@@ -468,6 +568,9 @@ namespace Models.Tests.Shared
             });
         }
         
+        /// <summary>
+        /// Tests that an attempt to change a reference while a model element is locked and the unlock request is denied leads to an exception
+        /// </summary>
         public virtual void ReferenceChange_StateLockedNoUnlock_ThrowsException()
         {
             CheckForAllReferences(reference =>
@@ -518,6 +621,9 @@ namespace Models.Tests.Shared
             });
         }
         
+        /// <summary>
+        /// Tests that any changes to references will fail if the element is fixed
+        /// </summary>
         public virtual void ReferenceChange_StateFixed_ThrowsException()
         {
             CheckForAllReferences(reference =>
@@ -569,6 +675,59 @@ namespace Models.Tests.Shared
                 AssertIsFalse(changed);
                 AssertIsFalse(unlockRequested);
             });
+        }
+
+        public virtual void SerializationRoundtrip_KeepsModelHash()
+        {
+            var model = new Model();
+            model.ModelUri = new Uri("foo:bar");
+            var element = new T();
+            model.RootElements.Add(element);
+            var serializer = new ModelSerializer();
+            CheckForAllAttributes(att =>
+            {
+                if (att.UpperBound == 1)
+                {
+                    element.SetAttributeValue(att, GetPrimaryValue(att));
+                }
+                else
+                {
+                    element.GetAttributeValues(att).Add(GetPrimaryValue(att));
+                }
+            });
+            CheckForAllReferences(reference =>
+            {
+                if (reference.Opposite != null && reference.Opposite.IsContainment)
+                {
+                    return;
+                }
+                var referencedValue = GetPrimaryValue(reference) as IModelElement;
+                if (reference.UpperBound == 1)
+                {
+                    element.SetReferencedElement(reference, referencedValue);
+                }
+                else
+                {
+                    element.GetReferencedElements(reference).Add(referencedValue);
+                }
+                if (!reference.IsContainment)
+                {
+                    model.RootElements.Add(referencedValue);
+                }
+            });
+
+            var hash = Convert.ToBase64String(ModelHasher.CreateHash(element));
+
+            using (var ms = new MemoryStream())
+            {
+                serializer.Serialize(model, ms);
+                ms.Position = 0;
+                var repo = new ModelRepository();
+                var deserializedModel = serializer.Deserialize(ms, model.ModelUri, repo, false);
+
+                var deserializedHash = Convert.ToBase64String(ModelHasher.CreateHash(element));
+                AssertAreEqual(hash, deserializedHash, "The hashes of the original model element and the one after serialization roundtrip do not coincide.");
+            }
         }
 
         private void PerformChecksForModelElement(NMF.Models.Meta.IReference reference, IModelElement element, IModelElement other)

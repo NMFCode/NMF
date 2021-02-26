@@ -143,7 +143,7 @@ namespace NMF.Models.Repository.Serialization
                 Uri uri = model.CreateUriForElement(modelElement);
                 if (uri != null)
                 {
-                    if (isCollection || GetSerializationInfoForInstance(modelElement, false) == info)
+                    if (isCollection || GetSerializationInfoForInstance(modelElement, true) == info)
                     {
                         return uri.ConvertToString();
                     }

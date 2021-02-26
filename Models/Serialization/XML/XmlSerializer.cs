@@ -115,18 +115,6 @@ namespace NMF.Serialization
 
         private Queue<Action> initializationQueue;
 
-        protected void EnqueueInitialization(Action action)
-        {
-            if (initializationQueue != null)
-            {
-                initializationQueue.Enqueue(action);
-            }
-            else
-            {
-                throw new InvalidOperationException();
-            }
-        }
-
         private ITypeSerializationInfo AddType(Type type)
         {
             ITypeSerializationInfo info = CreateTypeSerializationInfoFor(type);
@@ -162,10 +150,13 @@ namespace NMF.Serialization
             initializationQueue.Enqueue(() => InitializeTypeSerializationInfo(type, info));
         }
 
+        /// <summary>
+        /// Registers the given type serialization info for a namespace lookup
+        /// </summary>
+        /// <param name="info">the type serialization info</param>
         protected void RegisterNamespace(ITypeSerializationInfo info)
         {
-            Dictionary<string, ITypeSerializationInfo> typesOfNamespace;
-            if (!typesByQualifier.TryGetValue(info.Namespace ?? "", out typesOfNamespace))
+            if (!typesByQualifier.TryGetValue(info.Namespace ?? "", out Dictionary<string, ITypeSerializationInfo> typesOfNamespace))
             {
                 typesOfNamespace = new Dictionary<string, ITypeSerializationInfo>();
                 if (info.Namespace != null)
@@ -193,14 +184,18 @@ namespace NMF.Serialization
                 typesOfNamespace.Add(elName, info);
         }
 
+        /// <summary>
+        /// Gets the type serialization info corresponding to the provided pair of namespace and local name
+        /// </summary>
+        /// <param name="ns">the namespace of the type</param>
+        /// <param name="localName">the local name of the type</param>
+        /// <returns>the type serialization info</returns>
         public ITypeSerializationInfo GetTypeInfo(string ns, string localName)
         {
-            Dictionary<string, ITypeSerializationInfo> typesOfNs;
-            if (typesByQualifier.TryGetValue(ns ?? "", out typesOfNs))
+            if (typesByQualifier.TryGetValue(ns ?? "", out Dictionary<string, ITypeSerializationInfo> typesOfNs))
             {
-                ITypeSerializationInfo info;
                 if (!Settings.CaseSensitive) localName = localName.ToUpperInvariant();
-                if (typesOfNs.TryGetValue(localName, out info))
+                if (typesOfNs.TryGetValue(localName, out ITypeSerializationInfo info))
                 {
                     return info;
                 }
@@ -208,16 +203,24 @@ namespace NMF.Serialization
             return null;
         }
 
+        /// <summary>
+        /// Creates the type serialization information for the given type
+        /// </summary>
+        /// <param name="type">the system type for which the serialization information should be created</param>
+        /// <returns>a type serialization info</returns>
         protected virtual ITypeSerializationInfo CreateTypeSerializationInfoFor(Type type)
         {
             return new XmlTypeSerializationInfo(type);
         }
 
+        /// <summary>
+        /// Initializes the given type serialization information for the given type
+        /// </summary>
+        /// <param name="type">the system type</param>
+        /// <param name="serializationInfo">the serialization information object</param>
         protected virtual void InitializeTypeSerializationInfo(Type type, ITypeSerializationInfo serializationInfo)
         {
-            XmlTypeSerializationInfo info = serializationInfo as XmlTypeSerializationInfo;
-
-            if (info == null) throw new NotSupportedException("Cannot initialize other serialization info types");
+            if (serializationInfo is not XmlTypeSerializationInfo info) throw new NotSupportedException("Cannot initialize other serialization info types");
 
             string identifier = null;
             IPropertySerializationInfo[] constructorInfos = null;
@@ -302,8 +305,7 @@ namespace NMF.Serialization
                 info.BaseTypes.Add(parentTsi);
                 if (!info.IsIdentified && parentTsi.IsIdentified)
                 {
-                    XmlPropertySerializationInfo identifierProperty = parentTsi.IdentifierProperty as XmlPropertySerializationInfo;
-                    if (identifierProperty != null)
+                    if (parentTsi.IdentifierProperty is XmlPropertySerializationInfo identifierProperty)
                     {
                         info.IdentifierProperty = identifierProperty;
                     }
@@ -525,6 +527,11 @@ namespace NMF.Serialization
             return func(obj);
         }
 
+        /// <summary>
+        /// Creates the property serialization information for the given property
+        /// </summary>
+        /// <param name="pd">the property for which the serialization information should be created</param>
+        /// <returns>a property serialization info object</returns>
         protected virtual XmlPropertySerializationInfo CreatePropertySerializationInfo(PropertyInfo pd)
         {
             return Activator.CreateInstance(typeof(XmlPropertySerializationInfo<,>).MakeGenericType(pd.DeclaringType, pd.PropertyType), pd)
@@ -562,7 +569,7 @@ namespace NMF.Serialization
         /// Serializes the given object
         /// </summary>
         /// <param name="writer">The TextWriter to write the Xml-code on</param>
-        /// <param name="o">The object to be serialized</param>
+        /// <param name="source">The object to be serialized</param>
         public void Serialize(object source, TextWriter writer)
         {
             Serialize(source, writer, false);
@@ -572,7 +579,7 @@ namespace NMF.Serialization
         /// Serializes the given object
         /// </summary>
         /// <param name="writer">The XmlWriter to write the Xml-code on</param>
-        /// <param name="o">The object to be serialized</param>
+        /// <param name="source">The object to be serialized</param>
         public void Serialize(object source, XmlWriter writer)
         {
             Serialize(source, writer, false);
@@ -583,7 +590,7 @@ namespace NMF.Serialization
         /// </summary>
         /// <param name="target">The TextWriter to write the Xml-code on</param>
         /// <param name="fragment">A value that indicates whether the serializer should write a document definition</param>
-        /// <param name="o">The object to be serialized</param>
+        /// <param name="source">The object to be serialized</param>
         public void Serialize(object source, TextWriter target, bool fragment)
         {
             XmlWriter xml = XmlWriter.Create(target, Settings.GetXmlWriterSettings());
@@ -597,7 +604,7 @@ namespace NMF.Serialization
         /// </summary>
         /// <param name="target">The XmlWriter to write the Xml-code on</param>
         /// <param name="fragment">A value that indicates whether the serializer should write a document definition</param>
-        /// <param name="o">The object to be serialized</param>
+        /// <param name="source">The object to be serialized</param>
         public void Serialize(object source, XmlWriter target, bool fragment)
         {
             if (!fragment) target.WriteStartDocument();
@@ -621,6 +628,11 @@ namespace NMF.Serialization
             return graph;
         }
 
+        /// <summary>
+        /// Creates a serialization context for the given root element
+        /// </summary>
+        /// <param name="root">The root element of the serialization</param>
+        /// <returns>A serialization context</returns>
         protected virtual XmlSerializationContext CreateSerializationContext(object root)
         {
             return new XmlSerializationContext(root);
@@ -630,9 +642,10 @@ namespace NMF.Serialization
         /// Serializes the given object
         /// </summary>
         /// <param name="writer">The XmlWriter to write the Xml-code on</param>
-        /// <param name="converter">A TypeConverter that might convert the object straight to string. Can be left out.</param>
         /// <param name="writeInstance">A value that indicates whether the serializer should write the element definition</param>
-        /// <param name="o">The object to be serialized</param>
+        /// <param name="obj">The object to be serialized</param>
+        /// <param name="property">The property for which the object is serialized</param>
+        /// <param name="context">The serialization context</param>
         /// <param name="identificationMode">A value indicating whether it is allowed to the serializer to use identifier</param>
         /// <remarks>If a converter is provided that is able to convert the object to string and convert the string back to this object, just the string-conversion is printed out</remarks>
         [EditorBrowsable(EditorBrowsableState.Advanced)]
@@ -657,16 +670,35 @@ namespace NMF.Serialization
             if (writeInstance) WriteEndElement(writer, obj, info);
         }
 
+        /// <summary>
+        /// Writes the root element to the given writer
+        /// </summary>
+        /// <param name="writer">The xml writer to write to</param>
+        /// <param name="root">The root element</param>
+        /// <param name="info">The serialization information of the objects type</param>
         protected virtual void WriteBeginRootElement(XmlWriter writer, object root, ITypeSerializationInfo info)
         {
             WriteBeginElement(writer, root, info);
         }
 
+        /// <summary>
+        /// Writes the beginning of an element
+        /// </summary>
+        /// <param name="writer">The xml writer to write to</param>
+        /// <param name="obj">The element</param>
+        /// <param name="info">The serialization information of the objects type</param>
         protected virtual void WriteBeginElement(XmlWriter writer, object obj, ITypeSerializationInfo info)
         {
             writer.WriteStartElement(info.NamespacePrefix, info.ElementName, info.Namespace);
         }
 
+        /// <summary>
+        /// Writes the properties necessary for the constrctor call of this element
+        /// </summary>
+        /// <param name="writer">The xml writer to write to</param>
+        /// <param name="obj">The element</param>
+        /// <param name="info">The serialization information of the objects type</param>
+        /// <param name="context">The serialization context</param>
         protected virtual void WriteConstructorProperties(XmlWriter writer, object obj, ITypeSerializationInfo info, XmlSerializationContext context)
         {
             for (int i = 0; i <= info.ConstructorProperties.GetUpperBound(0); i++)
@@ -676,6 +708,13 @@ namespace NMF.Serialization
             }
         }
 
+        /// <summary>
+        /// Writes the attribute properties of the given object
+        /// </summary>
+        /// <param name="writer">The xml writer to write to</param>
+        /// <param name="obj">The element</param>
+        /// <param name="info">The serialization information of the objects type</param>
+        /// <param name="context">The serialization context</param>
         protected virtual void WriteAttributeProperties(XmlWriter writer, object obj, ITypeSerializationInfo info, XmlSerializationContext context)
         {
             foreach (IPropertySerializationInfo pi in info.AttributeProperties)
@@ -690,6 +729,14 @@ namespace NMF.Serialization
             }
         }
 
+        /// <summary>
+        /// Writes the attribute value to the given writer
+        /// </summary>
+        /// <param name="writer">The xml writer to write to</param>
+        /// <param name="obj">The element</param>
+        /// <param name="context">The serialization context</param>
+        /// <param name="value">The value of the attribute</param>
+        /// <param name="property">The property serialization information</param>
         protected virtual void WriteAttributeValue(XmlWriter writer, object obj, object value, IPropertySerializationInfo property, XmlSerializationContext context)
         {
             ITypeSerializationInfo info = property.PropertyType;
@@ -738,6 +785,14 @@ namespace NMF.Serialization
             }
         }
 
+        /// <summary>
+        /// Gets the serialization of the given attribute value
+        /// </summary>
+        /// <param name="value">The value of the attribute</param>
+        /// <param name="info">The serialization information of the type</param>
+        /// <param name="isCollection">True, if the value is added to a collection, otherwise false</param>
+        /// <param name="context">The serialization context</param>
+        /// <returns>The serialized value of the attribute</returns>
         protected virtual string GetAttributeValue(object value, ITypeSerializationInfo info, bool isCollection, XmlSerializationContext context)
         {
             if (info.IsStringConvertible)
@@ -754,6 +809,13 @@ namespace NMF.Serialization
             }
         }
 
+        /// <summary>
+        /// Writes the element properties of the given object to the provided writer
+        /// </summary>
+        /// <param name="writer">The xml writer to write to</param>
+        /// <param name="obj">The element</param>
+        /// <param name="info">The serialization information of the objects type</param>
+        /// <param name="context">The serialization context</param>
         protected virtual void WriteElementProperties(XmlWriter writer, object obj, ITypeSerializationInfo info, XmlSerializationContext context)
         {
             foreach (XmlPropertySerializationInfo pi in info.ElementProperties)
@@ -773,6 +835,13 @@ namespace NMF.Serialization
             }
         }
 
+        /// <summary>
+        /// Writes the elements of the given collection to the provided writer
+        /// </summary>
+        /// <param name="writer">The xml writer to write to</param>
+        /// <param name="obj">The element</param>
+        /// <param name="info">The serialization information of the objects type</param>
+        /// <param name="context">The serialization context</param>
         protected virtual void WriteCollectionMembers(XmlWriter writer, object obj, ITypeSerializationInfo info, XmlSerializationContext context)
         {
             if (info.IsCollection)
@@ -785,16 +854,37 @@ namespace NMF.Serialization
             }
         }
 
+        /// <summary>
+        /// Completes the current element for the provided object
+        /// </summary>
+        /// <param name="writer">The xml writer to write to</param>
+        /// <param name="obj">The element</param>
+        /// <param name="info">The serialization information of the objects type</param>
         protected virtual void WriteEndElement(XmlWriter writer, object obj, ITypeSerializationInfo info)
         {
             writer.WriteEndElement();
         }
 
+        /// <summary>
+        /// Completes the root element
+        /// </summary>
+        /// <param name="writer">The xml writer to write to</param>
+        /// <param name="root">The element</param>
+        /// <param name="info">The serialization information of the objects type</param>
         protected virtual void WriteEndRootElement(XmlWriter writer, object root, ITypeSerializationInfo info)
         {
             writer.WriteEndElement();
         }
 
+        /// <summary>
+        /// Writes the provided identified object
+        /// </summary>
+        /// <param name="writer">The xml writer to write to</param>
+        /// <param name="obj">The element</param>
+        /// <param name="info">The serialization information of the objects type</param>
+        /// <param name="context">The serialization context</param>
+        /// <param name="identificationMode">The identification mode for the current object</param>
+        /// <returns>true, if the object could be written as identified object, otherwise false</returns>
         protected virtual bool WriteIdentifiedObject(XmlWriter writer, object obj, XmlIdentificationMode identificationMode, ITypeSerializationInfo info, XmlSerializationContext context)
         {
             if (!info.IsIdentified) return false;
@@ -825,7 +915,7 @@ namespace NMF.Serialization
 
         private static string CStr(object obj)
         {
-            return obj == null ? null : obj.ToString();
+            return obj?.ToString();
         }
          
         /// <summary>
@@ -869,13 +959,12 @@ namespace NMF.Serialization
         /// <remarks>The function will deserialize the object at the XmlReaders current position</remarks>
         public object Deserialize(XmlReader reader)
         {
-            XmlSerializationContext context;
-            object root = DeserializeRootInternal(reader, out context);
+            object root = DeserializeRootInternal(reader, out XmlSerializationContext context);
             context.Cleanup();
             return root;
         }
         
-        protected object DeserializeInternal(XmlReader reader, IPropertySerializationInfo property, XmlSerializationContext context)
+        internal object DeserializeInternal(XmlReader reader, IPropertySerializationInfo property, XmlSerializationContext context)
         {
             object d = null;
             while (reader.NodeType != XmlNodeType.Element) reader.Read();
@@ -886,7 +975,7 @@ namespace NMF.Serialization
             return d;
         }
 
-        protected object DeserializeRootInternal(XmlReader reader, out XmlSerializationContext context)
+        internal object DeserializeRootInternal(XmlReader reader, out XmlSerializationContext context)
         {
             object root = CreateRoot(reader);
 
@@ -896,6 +985,11 @@ namespace NMF.Serialization
             return root;
         }
 
+        /// <summary>
+        /// Creates the root element
+        /// </summary>
+        /// <param name="reader">The xml reader</param>
+        /// <returns>The root element</returns>
         protected object CreateRoot(XmlReader reader)
         {
             while (reader.NodeType != XmlNodeType.Element) reader.Read();
@@ -904,11 +998,22 @@ namespace NMF.Serialization
             return root;
         }
 
+        /// <summary>
+        /// Gets the type information for the current property
+        /// </summary>
+        /// <param name="reader">The xml reader</param>
+        /// <param name="property">The current property</param>
+        /// <returns>The type serialization info that should be used in the remainder</returns>
         protected virtual ITypeSerializationInfo GetElementTypeInfo(XmlReader reader, IPropertySerializationInfo property)
         {
             return GetRootElementTypeInfo(reader);
         }
 
+        /// <summary>
+        /// Gets the type information for the root element
+        /// </summary>
+        /// <param name="reader">The xml reader</param>
+        /// <returns>The type serialization info for the root element</returns>
         protected virtual ITypeSerializationInfo GetRootElementTypeInfo(XmlReader reader)
         {
             var info = GetTypeInfo(reader.NamespaceURI, reader.LocalName) ?? HandleUnknownType(null, reader.NamespaceURI, reader.LocalName);
@@ -923,6 +1028,13 @@ namespace NMF.Serialization
             }
         }
 
+        /// <summary>
+        /// Creates the object for the current position
+        /// </summary>
+        /// <param name="reader">the xml reader</param>
+        /// <param name="tsi">the type serialization information</param>
+        /// <param name="context">the serialization context</param>
+        /// <returns>the deserialized object</returns>
         protected virtual object CreateObject(XmlReader reader, ITypeSerializationInfo tsi, XmlSerializationContext context)
         {
             if (tsi.ConstructorProperties == null)
@@ -941,6 +1053,14 @@ namespace NMF.Serialization
             }
         }
 
+        /// <summary>
+        /// Initialized the property from the reader
+        /// </summary>
+        /// <param name="reader">the xml reader</param>
+        /// <param name="property">the property</param>
+        /// <param name="obj">the object</param>
+        /// <param name="context">the serialization context</param>
+        /// <returns>true, if the initialization was successful, otherwise false</returns>
         protected virtual bool InitializeProperty(XmlReader reader, IPropertySerializationInfo property, object obj, XmlSerializationContext context)
         {
             if (!GoToPropertyContent(reader)) return false;
@@ -968,6 +1088,11 @@ namespace NMF.Serialization
             return true;
         }
 
+        /// <summary>
+        /// Moves the reader to the content of the property
+        /// </summary>
+        /// <param name="reader">the Xml reader</param>
+        /// <returns>true, if the reader could be moved sucessfully, otherwise false</returns>
         protected virtual bool GoToPropertyContent(XmlReader reader)
         {
             int currentDepth = reader.Depth;
@@ -976,6 +1101,13 @@ namespace NMF.Serialization
             return true;
         }
 
+        /// <summary>
+        /// Initializes the given property from the provided text
+        /// </summary>
+        /// <param name="property">The property</param>
+        /// <param name="obj">The object</param>
+        /// <param name="text">The input text</param>
+        /// <param name="context">The serialization context</param>
         protected virtual void InitializePropertyFromText(IPropertySerializationInfo property, object obj, string text, XmlSerializationContext context)
         {
             ITypeSerializationInfo info = property.PropertyType;
@@ -986,7 +1118,7 @@ namespace NMF.Serialization
             else if (info.IsCollection)
             {
                 ITypeSerializationInfo itemInfo = info.CollectionItemType;
-                object coll = property.GetValue(obj, context);
+                _ = property.GetValue(obj, context);
                 foreach (var item in text.Split(new char[] { ' '}, StringSplitOptions.RemoveEmptyEntries))
                 {
                     if (itemInfo.IsStringConvertible)
@@ -1005,12 +1137,12 @@ namespace NMF.Serialization
             }
         }
 
-        protected internal void EnqueueAddToPropertyDelay(IPropertySerializationInfo property, object obj, string text, XmlSerializationContext context)
+        internal void EnqueueAddToPropertyDelay(IPropertySerializationInfo property, object obj, string text, XmlSerializationContext context)
         {
             context.LostProperties.Enqueue(new XmlAddToPropertyDelay(property) { Target = obj, Identifier = text });
         }
 
-        protected internal void EnqueueSetPropertyDelay(IPropertySerializationInfo property, object obj, string text, XmlSerializationContext context)
+        internal void EnqueueSetPropertyDelay(IPropertySerializationInfo property, object obj, string text, XmlSerializationContext context)
         {
             context.LostProperties.Enqueue(new XmlSetPropertyDelay() { Identifier = text, Target = obj, Property = property });
         }
@@ -1019,12 +1151,13 @@ namespace NMF.Serialization
         /// Initializes the given object with the xml code at the current position of the XmlReader
         /// </summary>
         /// <param name="reader">The XmlReader with the Xml code</param>
-        /// <param name="o">The object to initialize</param>
+        /// <param name="obj">The object to initialize</param>
+        /// <param name="context">The serialization context</param>
         /// <returns>The initialized object</returns>
         public void Initialize(XmlReader reader, object obj, XmlSerializationContext context)
         {
             if (obj == null) return;
-            if (obj is ISupportInitialize) ((ISupportInitialize)obj).BeginInit();
+            if (obj is ISupportInitialize initialize) initialize.BeginInit();
             ITypeSerializationInfo info = GetSerializationInfoForInstance(obj, false);
             if (reader.HasAttributes)
             {
@@ -1058,15 +1191,28 @@ namespace NMF.Serialization
                 InitializeAttributeProperties(reader, obj, info, context);
             }
             InitializeElementProperties(reader, ref obj, info, context);
-            ISupportInitialize init = obj as ISupportInitialize;
-            if (init != null) context.Inits.Enqueue(init);
+            if (obj is ISupportInitialize init) context.Inits.Enqueue(init);
         }
 
+        /// <summary>
+        /// Determines whether the already identified element should be overridden
+        /// </summary>
+        /// <param name="obj">The object that would be overridden</param>
+        /// <param name="reader">The current reader position</param>
+        /// <param name="context">The serialization context</param>
+        /// <returns>true, if the element shall be overridden, otherwise false</returns>
         protected virtual bool OverrideIdentifiedObject(object obj, XmlReader reader, XmlSerializationContext context)
         {
             return true;
         }
 
+        /// <summary>
+        /// Initializes the element properties from the xml reader position
+        /// </summary>
+        /// <param name="reader">the xml reader</param>
+        /// <param name="obj">the element</param>
+        /// <param name="info">the type serialization information</param>
+        /// <param name="context">the serialization context</param>
         protected virtual void InitializeElementProperties(XmlReader reader, ref object obj, ITypeSerializationInfo info, XmlSerializationContext context)
         {
             int currentDepth = reader.Depth;
@@ -1141,11 +1287,24 @@ namespace NMF.Serialization
             }
         }
 
-        protected virtual bool IsPropertyElement(XmlReader reader, IPropertySerializationInfo p)
+        /// <summary>
+        /// Determines whether the element at the current reader position refers to the given property
+        /// </summary>
+        /// <param name="reader">The reader position</param>
+        /// <param name="property">The property that should be tested</param>
+        /// <returns>true, if the element is about the property, otherwise false</returns>
+        protected virtual bool IsPropertyElement(XmlReader reader, IPropertySerializationInfo property)
         {
-            return Settings.TreatAsEqual(reader.NamespaceURI, p.Namespace) && Settings.TreatAsEqual(reader.LocalName, p.ElementName);
+            return Settings.TreatAsEqual(reader.NamespaceURI, property.Namespace) && Settings.TreatAsEqual(reader.LocalName, property.ElementName);
         }
 
+        /// <summary>
+        /// Initializes the attribute properties from the current reader position
+        /// </summary>
+        /// <param name="reader">the xml reader</param>
+        /// <param name="obj">the object</param>
+        /// <param name="info">the type serialization information</param>
+        /// <param name="context">the serialization context</param>
         protected virtual void InitializeAttributeProperties(XmlReader reader, object obj, ITypeSerializationInfo info, XmlSerializationContext context)
         {
             var cont = reader.MoveToFirstAttribute();
@@ -1170,6 +1329,13 @@ namespace NMF.Serialization
             reader.MoveToElement();
         }
 
+        /// <summary>
+        /// Handles the case that the type of the element is not known
+        /// </summary>
+        /// <param name="property">The property for which the type was requested</param>
+        /// <param name="ns">The namespace at the current position</param>
+        /// <param name="localName">The local name of the type</param>
+        /// <returns>The type serialization information received for this type or null, if no type could be resolved</returns>
         protected virtual ITypeSerializationInfo HandleUnknownType(IPropertySerializationInfo property, string ns, string localName)
         {
             var e = new UnknownTypeEventArgs(property, ns, localName);
@@ -1181,48 +1347,93 @@ namespace NMF.Serialization
             throw new InvalidOperationException($"The type {localName} in namespace {ns} could not be resolved.");
         }
 
+        /// <summary>
+        /// Handles an attribute that was not known to the serializer
+        /// </summary>
+        /// <param name="reader">The current reader position</param>
+        /// <param name="obj">The object that is currently deserialized</param>
+        /// <param name="info">The type serialization information of the object</param>
+        /// <param name="context">The serialization context</param>
         protected virtual void HandleUnknownAttribute(XmlReader reader, object obj, ITypeSerializationInfo info, XmlSerializationContext context)
         {
             var e = new UnknownAttributeEventArgs(obj, reader.NamespaceURI, reader.LocalName, reader.Value);
             OnUnknownAttribute(e);
         }
 
+        /// <summary>
+        /// Handles an element that was not known to the serializer
+        /// </summary>
+        /// <param name="reader">The current reader position</param>
+        /// <param name="obj">The object that is currently deserialized</param>
+        /// <param name="info">The type serialization information of the object</param>
+        /// <param name="context">The serialization context</param>
         protected virtual void HandleUnknownElement(XmlReader reader, object obj, ITypeSerializationInfo info, XmlSerializationContext context)
         {
             OnUnknownElement(new UnknownElementEventArgs(obj, reader.ReadOuterXml()));
         }
 
-
+        /// <summary>
+        /// Fires the UnknownElement event
+        /// </summary>
+        /// <param name="e">the event data</param>
         protected virtual void OnUnknownElement(UnknownElementEventArgs e)
         {
             UnknownElement?.Invoke(this, e);
         }
 
+        /// <summary>
+        /// Fires the UnknownAttribute event
+        /// </summary>
+        /// <param name="e">the event data</param>
         protected virtual void OnUnknownAttribute(UnknownAttributeEventArgs e)
         {
             UnknownAttribute?.Invoke(this, e);
         }
 
+        /// <summary>
+        /// Handles the UnknownType event
+        /// </summary>
+        /// <param name="e">the event data</param>
         protected virtual void OnUnknownType(UnknownTypeEventArgs e)
         {
             UnknownType?.Invoke(this, e);
         }
 
+        /// <summary>
+        /// Gets raised when the serializer finds an element that is not known
+        /// </summary>
         public event EventHandler<UnknownElementEventArgs> UnknownElement;
 
+        /// <summary>
+        /// Get raised when the serializer finds an attribute that is not known
+        /// </summary>
         public event EventHandler<UnknownAttributeEventArgs> UnknownAttribute;
 
+        /// <summary>
+        /// Gets raised when the serializer finds a type that is not known
+        /// </summary>
         public event EventHandler<UnknownTypeEventArgs> UnknownType;
 
+        /// <summary>
+        /// Gets the serialization information for the provided instance
+        /// </summary>
+        /// <param name="instance">The instance</param>
+        /// <param name="createIfNecessary">If true, the serialization information is added if missing</param>
+        /// <returns>The type serialization information</returns>
         public virtual ITypeSerializationInfo GetSerializationInfoForInstance(object instance, bool createIfNecessary)
         {
             if (instance == null) throw new ArgumentNullException(nameof(instance));
             return GetSerializationInfo(instance.GetType(), createIfNecessary);
         }
 
+        /// <summary>
+        /// Gets the serialization information for the given type
+        /// </summary>
+        /// <param name="type">The type</param>
+        /// <param name="createIfNecessary">If true, the serialization information is added if missing</param>
+        /// <returns>The type serialization information</returns>
         public ITypeSerializationInfo GetSerializationInfo(Type type, bool createIfNecessary)
         {
-            ITypeSerializationInfo info;
             if (type == null) throw new ArgumentNullException("type");
             if (type.IsGenericType && type.GetGenericTypeDefinition() == typeof(Nullable<>))
             {
@@ -1235,7 +1446,7 @@ namespace NMF.Serialization
                     return GetSerializationInfo(att.DefaultImplementationType, createIfNecessary);
                 }
             }
-            if (!types.TryGetValue(type, out info))
+            if (!types.TryGetValue(type, out ITypeSerializationInfo info))
             {
                 if (createIfNecessary)
                 {
@@ -1257,11 +1468,6 @@ namespace NMF.Serialization
                 }
             } 
             return info;
-        }
-
-        public object Deserialize(TextReader input, bool fragment)
-        {
-            return Deserialize(input);
         }
     }
 

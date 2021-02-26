@@ -8,6 +8,9 @@ using NMF.Models.Meta;
 
 namespace NMF.Models.Repository
 {
+    /// <summary>
+    /// Denotes the repository with the metamodels contained in the loaded assemblies
+    /// </summary>
     public sealed class MetaRepository : IModelRepository
     {
         private static readonly MetaRepository instance = new MetaRepository();
@@ -21,6 +24,9 @@ namespace NMF.Models.Repository
             remove { }
         }
 
+        /// <summary>
+        /// Gets the instance
+        /// </summary>
         public static MetaRepository Instance
         {
             get
@@ -29,6 +35,9 @@ namespace NMF.Models.Repository
             }
         }
 
+        /// <summary>
+        /// Gets the serializer used for the deserialization of the models
+        /// </summary>
         public ModelSerializer Serializer
         {
             get
@@ -118,6 +127,11 @@ namespace NMF.Models.Repository
             MappedType.FromType(type).SystemType = systemType;
         }
 
+        /// <summary>
+        /// Resolves the given uri into a type
+        /// </summary>
+        /// <param name="uriString">The absolute uri</param>
+        /// <returns>The type object</returns>
         public IType ResolveType(string uriString)
         {
             return Resolve(new Uri(uriString, UriKind.Absolute)) as IType;
@@ -272,6 +286,7 @@ namespace NMF.Models.Repository
             RegisterAssembly(args.LoadedAssembly);
         }
 
+        /// <inheritdoc />
         public IModelElement Resolve(Uri uri)
         {
             Model model;
@@ -282,6 +297,7 @@ namespace NMF.Models.Repository
             return null;
         }
 
+        /// <inheritdoc />
         public IModelElement Resolve(string uriString)
         {
             return Resolve(new Uri(uriString, UriKind.Absolute));

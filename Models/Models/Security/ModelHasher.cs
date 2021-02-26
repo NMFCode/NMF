@@ -9,10 +9,8 @@ namespace NMF.Models.Security
     /// <summary>
     /// A class that computes model hashes
     /// </summary>
-    public class ModelHasher
+    public static class ModelHasher
     {
-        private static SHA512Managed _sha = new SHA512Managed();
-
         /// <summary>
         /// Creates a SHA512 hash for the given model
         /// </summary>
@@ -20,7 +18,7 @@ namespace NMF.Models.Security
         /// <returns>A hash code for the given model element</returns>
         public static byte[] CreateHash(IModelElement modelElement)
         {
-            return CreateHash(modelElement, modelElement?.Model, _sha);
+            return CreateHash(modelElement, modelElement?.Model, new SHA512Managed());
         }
 
         /// <summary>
@@ -39,13 +37,13 @@ namespace NMF.Models.Security
             if (modelElement == null) throw new ArgumentNullException(nameof(modelElement));
             if (containingModel == null) throw new ArgumentNullException(nameof(containingModel));
             
-            return (hashAlgorithm ?? _sha).ComputeHash(CreateHashInternal(modelElement, containingModel).ToByteArray());
+            return (hashAlgorithm ?? new SHA512Managed()).ComputeHash(CreateHashInternal(modelElement, containingModel).ToByteArray());
         }
 
         private static BigInteger CreateHashInternal(IModelElement modelElement, Model containingModel)
         {
             var hashCode = new BigInteger(GetDeterministicHashCode(modelElement.GetClass().AbsoluteUri.AbsoluteUri));
-            ApplyClass(modelElement, containingModel, modelElement.GetClass(), new HashSet<IClass>(), ref hashCode);
+            ApplyClass(modelElement, containingModel, modelElement.GetClass(), new HashSet<IClass>() { ModelElement.ClassInstance }, ref hashCode);
             return hashCode;
         }
 

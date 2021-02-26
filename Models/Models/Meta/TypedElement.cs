@@ -84,6 +84,7 @@ namespace NMF.Models.Meta
         /// </summary>
         [CategoryAttribute("TypedElement")]
         [XmlAttributeAttribute(true)]
+        [TypeConverter(typeof(LowercaseBooleanConverter))]
         public bool IsOrdered
         {
             get
@@ -110,6 +111,7 @@ namespace NMF.Models.Meta
         /// </summary>
         [CategoryAttribute("TypedElement")]
         [XmlAttributeAttribute(true)]
+        [TypeConverter(typeof(LowercaseBooleanConverter))]
         public bool IsUnique
         {
             get

@@ -112,6 +112,7 @@ namespace NMF.Models.Meta
         [DefaultValueAttribute(false)]
         [CategoryAttribute("Class")]
         [XmlAttributeAttribute(true)]
+        [TypeConverter(typeof(LowercaseBooleanConverter))]
         public bool IsAbstract
         {
             get

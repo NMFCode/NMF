@@ -85,6 +85,7 @@ namespace NMF.Models.Meta
         /// </summary>
         [CategoryAttribute("SerializationInformation")]
         [XmlAttributeAttribute(true)]
+        [TypeConverter(typeof(LowercaseBooleanConverter))]
         public bool IsDefault
         {
             get

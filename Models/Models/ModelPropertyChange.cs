@@ -18,12 +18,16 @@ namespace NMF.Models.Expressions
         private readonly PropertyChangeListener listener;
         private readonly string propertyName;
         
+        /// <summary>
+        /// The model element
+        /// </summary>
         public TClass ModelElement { get; private set; }
 
         /// <summary>
         /// Creates a proxy for the given model instance
         /// </summary>
-        /// <param name="modelElement"></param>
+        /// <param name="modelElement">the model element</param>
+        /// <param name="propertyName">The property name</param>
         protected ModelPropertyChange(TClass modelElement, string propertyName)
         {
             ModelElement = modelElement;
@@ -98,8 +102,10 @@ namespace NMF.Models.Expressions
             }
         }
 
+        /// <inheritdoc />
         public ISuccessorList Successors { get; } = NotifySystem.DefaultSystem.CreateSuccessorList();
 
+        /// <inheritdoc />
         public IEnumerable<INotifiable> Dependencies
         {
             get
@@ -108,6 +114,7 @@ namespace NMF.Models.Expressions
             }
         }
 
+        /// <inheritdoc />
         public ExecutionMetaData ExecutionMetaData { get; } = new ExecutionMetaData();
 
         /// <summary>
@@ -151,17 +158,23 @@ namespace NMF.Models.Expressions
             return this;
         }
 
+        /// <inheritdoc />
         public void Dispose()
         {
             Dispose(true);
             GC.SuppressFinalize(this);
         }
 
+        /// <summary>
+        /// Disposes the current object
+        /// </summary>
+        /// <param name="disposing">True, if managed resources should disposed, otherwise false</param>
         protected virtual void Dispose(bool disposing)
         {
             Successors.UnsetAll();
         }
 
+        /// <inheritdoc />
         public INotificationResult Notify(IList<INotificationResult> sources)
         {
             return new ValueChangedNotificationResult<TProperty>(this, Value, Value);

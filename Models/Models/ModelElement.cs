@@ -486,6 +486,7 @@ namespace NMF.Models
         /// </summary>
         /// <param name="fragment">The fragment starting from this element</param>
         /// <param name="absolute">True, if an absolute Uri is desired, otherwise false</param>
+        /// <param name="baseElement">The element from which the uri shall be created or null</param>
         /// <returns>A uri (relative or absolute)</returns>
         protected internal virtual Uri CreateUriWithFragment(string fragment, bool absolute, IModelElement baseElement = null)
         {
@@ -831,6 +832,14 @@ namespace NMF.Models
         /// <returns>The attribute value</returns>
         protected virtual object GetAttributeValue(string attribute, int index)
         {
+            if (attribute == "ABSOLUTEURI")
+            {
+                return AbsoluteUri;
+            }
+            else if (attribute == "RELATIVEURI")
+            {
+                return RelativeUri;
+            }
             throw new ArgumentOutOfRangeException(nameof(attribute));
         }
 
@@ -928,6 +937,7 @@ namespace NMF.Models
         /// </summary>
         /// <param name="propertyName">The name of the changed property</param>
         /// <param name="feature">The feature</param>
+        /// <param name="e">The event data</param>
         protected virtual void OnPropertyChanging(string propertyName, ValueChangedEventArgs e = null, Lazy<ITypedElement> feature = null)
         {
             Unlock();
@@ -1125,6 +1135,7 @@ namespace NMF.Models
         /// </summary>
         /// <param name="propertyName">The name of the property that has changed</param>
         /// <param name="e">The event data</param>
+        /// <param name="feature">The feature that is changing</param>
         protected void OnCollectionChanged(string propertyName, NotifyCollectionChangedEventArgs e, Lazy<ITypedElement> feature = null)
         {
             if (!IsFlagSet(ModelElementFlag.Deleting))
@@ -1136,6 +1147,7 @@ namespace NMF.Models
         /// </summary>
         /// <param name="propertyName">The name of the property that has changed</param>
         /// <param name="e">The event data</param>
+        /// <param name="feature">The feature that is changing</param>
         protected void OnCollectionChanging(string propertyName, NotifyCollectionChangedEventArgs e, Lazy<ITypedElement> feature = null)
         {
             Unlock();

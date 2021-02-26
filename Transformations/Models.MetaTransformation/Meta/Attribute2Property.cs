@@ -110,6 +110,10 @@ namespace NMF.Models.Meta
                     {
                         generatedProperty.AddAttribute(typeof(TypeConverterAttribute), new CodeTypeOfExpression(typeof(IsoDateTimeConverter).ToTypeReference()));
                     }
+                    else if (generatedProperty.Type.BaseType == typeof(bool).FullName)
+                    {
+                        generatedProperty.AddAttribute(typeof(TypeConverterAttribute), new CodeTypeOfExpression(typeof(LowercaseBooleanConverter).ToTypeReference()));
+                    }
                 }
                 else
                 {
