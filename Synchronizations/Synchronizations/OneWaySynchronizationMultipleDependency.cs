@@ -19,10 +19,10 @@ namespace NMF.Synchronizations
         private TransformationRuleBase<TSource, TTarget> parentRule;
         private TransformationRuleBase<TSourceDep, TTargetDep> childRule;
 
-        private Func<TSource, IEnumerableExpression<TSourceDep>> __sourceGetter;
-        private Func<TTarget, ICollection<TTargetDep>> __targetGetter;
+        private Func<TSource, ITransformationContext, IEnumerableExpression<TSourceDep>> __sourceGetter;
+        private Func<TTarget, ITransformationContext, ICollection<TTargetDep>> __targetGetter;
 
-        public OneWaySynchronizationMultipleDependency(TransformationRuleBase<TSource, TTarget> parentRule,TransformationRuleBase<TSourceDep, TTargetDep> childRule, Expression<Func<TSource, IEnumerableExpression<TSourceDep>>> leftSelector, Expression<Func<TTarget, ICollection<TTargetDep>>> rightSelector)
+        public OneWaySynchronizationMultipleDependency(TransformationRuleBase<TSource, TTarget> parentRule,TransformationRuleBase<TSourceDep, TTargetDep> childRule, Expression<Func<TSource, ITransformationContext, IEnumerableExpression<TSourceDep>>> leftSelector, Expression<Func<TTarget, ITransformationContext, ICollection<TTargetDep>>> rightSelector)
         {
             if (parentRule == null) throw new ArgumentNullException("parentRule");
             if (childRule == null) throw new ArgumentNullException("childRule");
@@ -36,9 +36,9 @@ namespace NMF.Synchronizations
             this.__targetGetter = ExpressionCompileRewriter.Compile(rightSelector);
         }
 
-        private IEnumerable<TSourceDep> GetSourceItems(TSource source, bool incremental)
+        private IEnumerable<TSourceDep> GetSourceItems(TSource source, ITransformationContext context, bool incremental)
         {
-            var lefts = __sourceGetter(source);
+            var lefts = __sourceGetter(source, context);
             if (incremental)
             {
                 return lefts.AsNotifiable();
@@ -49,18 +49,18 @@ namespace NMF.Synchronizations
             }
         }
 
-        private ICollection<TTargetDep> GetTargetCollection(TTarget right)
+        private ICollection<TTargetDep> GetTargetCollection(TTarget right, ITransformationContext context)
         {
-            return __targetGetter(right);
+            return __targetGetter(right, context);
         }
 
         protected override void HandleReadyComputation(Computation computation)
         {
             var syncComputation = computation as SynchronizationComputation<TSource, TTarget>;
-            var input = GetSourceItems(syncComputation.Input, syncComputation.SynchronizationContext.ChangePropagation != ChangePropagationMode.None);
+            var input = GetSourceItems(syncComputation.Input, computation.TransformationContext, syncComputation.SynchronizationContext.ChangePropagation != ChangePropagationMode.None);
             syncComputation.DoWhenOutputIsAvailable((inp, outp) =>
             {
-                var dependency = SynchronizeCollections(input, GetTargetCollection(outp), syncComputation.SynchronizationContext, syncComputation.OmitCandidateSearch);
+                var dependency = SynchronizeCollections(input, GetTargetCollection(outp, syncComputation.TransformationContext), syncComputation.SynchronizationContext, syncComputation.OmitCandidateSearch);
                 if (dependency != null)
                 {
                     syncComputation.Dependencies.Add(dependency);

@@ -1,6 +1,7 @@
 ﻿using NMF.Expressions;
 using NMF.Synchronizations.Inconsistencies;
 using NMF.Transformations;
+using NMF.Transformations.Core;
 using System;
 
 namespace NMF.Synchronizations.Inconsistencies
@@ -67,8 +68,8 @@ namespace NMF.Synchronizations.Inconsistencies
                 isProcessingChange = true;
                 try
                 {
-                    Action<TLeft, TDepLeft> leftSetter = (l, val) => Left.Value = val;
-                    Action<TRight, TDepRight> rightSetter = (r, val) => Right.Value = val;
+                    Action<TLeft, ITransformationContext, TDepLeft> leftSetter = (l, _, val) => Left.Value = val;
+                    Action<TRight, ITransformationContext, TDepRight> rightSetter = (r, _, val) => Right.Value = val;
 
                     Parent.CallRTLTransformationForInput(Computation.Opposite, SynchronizationDirection.RightToLeftForced, Right.Value, Left.Value, leftSetter, rightSetter);
 
@@ -88,8 +89,8 @@ namespace NMF.Synchronizations.Inconsistencies
                 isProcessingChange = true;
                 try
                 {
-                    Action<TLeft, TDepLeft> leftSetter = (l, val) => Left.Value = val;
-                    Action<TRight, TDepRight> rightSetter = (r, val) => Right.Value = val;
+                    Action<TLeft, ITransformationContext, TDepLeft> leftSetter = ( l, _, val ) => Left.Value = val;
+                    Action<TRight, ITransformationContext, TDepRight> rightSetter = ( r, _, val ) => Right.Value = val;
 
                     Parent.CallLTRTransformationForInput(Computation, SynchronizationDirection.LeftToRightForced, Left.Value, Right.Value, leftSetter, rightSetter);
 

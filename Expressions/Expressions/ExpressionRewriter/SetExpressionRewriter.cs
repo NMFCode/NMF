@@ -7,6 +7,9 @@ using System.Text;
 
 namespace NMF.Expressions
 {
+    /// <summary>
+    /// An expression visitor that turns getter functions into setters
+    /// </summary>
     public class SetExpressionRewriter : ExpressionVisitor
     {
         private static readonly Type[] actionTypes =
@@ -19,6 +22,12 @@ namespace NMF.Expressions
             typeof(Action<,,,,,>)
         };
 
+        /// <summary>
+        /// Create a setter for the given getter expression
+        /// </summary>
+        /// <typeparam name="TValue">The return type of the getter expression</typeparam>
+        /// <param name="getter">The getter expression</param>
+        /// <returns>An expression that corresponds to the setter of the given getter</returns>
         public static Expression<Action<TValue>> CreateSetter<TValue>(Expression<Func<TValue>> getter)
         {
             if (getter == null) throw new ArgumentNullException("getter");
@@ -29,6 +38,13 @@ namespace NMF.Expressions
             return Expression.Lambda<Action<TValue>>(body, p);
         }
 
+        /// <summary>
+        /// Create a setter for the given getter expression
+        /// </summary>
+        /// <typeparam name="T">The type of the first parameter</typeparam>
+        /// <typeparam name="TValue">The return type of the getter expression</typeparam>
+        /// <param name="getter">The getter expression</param>
+        /// <returns>An expression that corresponds to the setter of the given getter</returns>
         public static Expression<Action<T, TValue>> CreateSetter<T, TValue>(Expression<Func<T, TValue>> getter)
         {
             if (getter == null) throw new ArgumentNullException("getter");
@@ -39,6 +55,29 @@ namespace NMF.Expressions
             return Expression.Lambda<Action<T, TValue>>(body, getter.Parameters[0], p);
         }
 
+        /// <summary>
+        /// Create a setter for the given getter expression
+        /// </summary>
+        /// <typeparam name="T1">The type of the first parameter</typeparam>
+        /// <typeparam name="T2">The type of the second parameter</typeparam>
+        /// <typeparam name="TValue">The return type of the getter expression</typeparam>
+        /// <param name="getter">The getter expression</param>
+        /// <returns>An expression that corresponds to the setter of the given getter</returns>
+        public static Expression<Action<T1, T2, TValue>> CreateSetter<T1, T2, TValue>( Expression<Func<T1, T2, TValue>> getter )
+        {
+            if(getter == null) throw new ArgumentNullException( "getter" );
+            var p = Expression.Parameter( typeof( TValue ) );
+            var visitor = new SetExpressionRewriter( p );
+            var body = visitor.Visit( getter.Body );
+            if(body == null) return null;
+            return Expression.Lambda<Action<T1, T2, TValue>>( body, getter.Parameters[0], getter.Parameters[1], p );
+        }
+
+        /// <summary>
+        /// Create a setter for the given getter expression
+        /// </summary>
+        /// <param name="getter">The getter expression</param>
+        /// <returns>An expression that corresponds to the setter of the given getter</returns>
         public static LambdaExpression CreateSetter(LambdaExpression getter)
         {
             if (getter == null) throw new ArgumentNullException("getter");

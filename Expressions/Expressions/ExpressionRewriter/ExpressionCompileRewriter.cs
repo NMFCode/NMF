@@ -7,10 +7,19 @@ using System.Text;
 
 namespace NMF.Expressions
 {
+    /// <summary>
+    /// Represents a visitor that rewrites a lamba expression for compilation by interpreting ExpressionCompileRewriter attributes
+    /// </summary>
     public class ExpressionCompileRewriter : ExpressionVisitor
     {
         private static ExpressionCompileRewriter instance = new ExpressionCompileRewriter();
 
+        /// <summary>
+        /// Optimizes the given expression and compiles it
+        /// </summary>
+        /// <typeparam name="T">The type of the lambda expression</typeparam>
+        /// <param name="lambda">The lambda expression to optimize and compile</param>
+        /// <returns>The compiled and optimized expression</returns>
         public static T Compile<T>(Expression<T> lambda)
         {
             if (lambda == null) return default(T);
@@ -18,6 +27,7 @@ namespace NMF.Expressions
             return newLambda.Compile();
         }
 
+        /// <inheritdoc />
         protected override Expression VisitMethodCall(MethodCallExpression node)
         {
             var rewriterAttributes = ReflectionHelper.GetCustomAttributes<ExpressionCompileRewriterAttribute>(node.Method, false);

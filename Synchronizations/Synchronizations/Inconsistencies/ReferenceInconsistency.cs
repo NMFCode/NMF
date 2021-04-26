@@ -69,11 +69,11 @@ namespace NMF.Synchronizations.Inconsistencies
                 {
                     var comp = context.CallTransformation(Rule.childRule.RightToLeft, new object[] { RightValue }, new Axiom(LeftValue))
                         as SynchronizationComputation<TDepRight, TDepLeft>;
-                    comp.DoWhenOutputIsAvailable((inp, outp) => Rule.leftSetter(BaseCorrespondence.Input, outp));
+                    comp.DoWhenOutputIsAvailable((inp, outp) => Rule.leftSetter(BaseCorrespondence.Input, context, outp));
                 }
                 else
                 {
-                    Rule.leftSetter(BaseCorrespondence.Input, null);
+                    Rule.leftSetter(BaseCorrespondence.Input, context, null);
                 }
             }
             finally
@@ -93,11 +93,11 @@ namespace NMF.Synchronizations.Inconsistencies
                 {
                     var comp = context.CallTransformation(Rule.childRule.LeftToRight, new object[] { LeftValue }, new Axiom(RightValue))
                         as SynchronizationComputation<TDepLeft, TDepRight>;
-                    comp.DoWhenOutputIsAvailable((inp, outp) => Rule.rightSetter(BaseCorrespondence.Opposite.Input, outp));
+                    comp.DoWhenOutputIsAvailable((inp, outp) => Rule.rightSetter(BaseCorrespondence.Opposite.Input, context, outp));
                 }
                 else
                 {
-                    Rule.rightSetter(BaseCorrespondence.Opposite.Input, null);
+                    Rule.rightSetter(BaseCorrespondence.Opposite.Input, context, null);
                 }
             }
             finally

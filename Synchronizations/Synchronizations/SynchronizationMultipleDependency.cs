@@ -22,10 +22,10 @@ namespace NMF.Synchronizations
         private SynchronizationRule<TLeft, TRight> parentRule;
         private SynchronizationRule<TDepLeft, TDepRight> childRule;
 
-        private Func<TLeft, ICollectionExpression<TDepLeft>> __leftGetter;
-        private Func<TRight, ICollectionExpression<TDepRight>> __rightGetter;
+        private Func<TLeft, ITransformationContext, ICollectionExpression<TDepLeft>> __leftGetter;
+        private Func<TRight, ITransformationContext, ICollectionExpression<TDepRight>> __rightGetter;
 
-        public SynchronizationMultipleDependency(SynchronizationRule<TLeft, TRight> parentRule, SynchronizationRule<TDepLeft, TDepRight> childRule, Expression<Func<TLeft, ICollectionExpression<TDepLeft>>> leftSelector, Expression<Func<TRight, ICollectionExpression<TDepRight>>> rightSelector)
+        public SynchronizationMultipleDependency(SynchronizationRule<TLeft, TRight> parentRule, SynchronizationRule<TDepLeft, TDepRight> childRule, Expression<Func<TLeft, ITransformationContext, ICollectionExpression<TDepLeft>>> leftSelector, Expression<Func<TRight, ITransformationContext, ICollectionExpression<TDepRight>>> rightSelector)
         {
             if (parentRule == null) throw new ArgumentNullException("parentRule");
             if (childRule == null) throw new ArgumentNullException("childRule");
@@ -39,9 +39,9 @@ namespace NMF.Synchronizations
             this.__rightGetter = ExpressionCompileRewriter.Compile(rightSelector);
         }
 
-        private ICollection<TDepLeft> GetLefts(TLeft left, bool incremental)
+        private ICollection<TDepLeft> GetLefts(TLeft left, ITransformationContext context, bool incremental)
         {
-            var lefts = __leftGetter(left);
+            var lefts = __leftGetter(left, context);
             if (incremental)
             {
                 return lefts.AsNotifiable();
@@ -52,9 +52,9 @@ namespace NMF.Synchronizations
             }
         }
 
-        private ICollection<TDepRight> GetRights(TRight right, bool incremental)
+        private ICollection<TDepRight> GetRights(TRight right, ITransformationContext context, bool incremental)
         {
-            var rights = __rightGetter(right);
+            var rights = __rightGetter(right, context);
             if (incremental)
             {
                 return rights.AsNotifiable();
@@ -68,10 +68,10 @@ namespace NMF.Synchronizations
         public void HandleLeftToRightDependency(Computation computation)
         {
             var syncComputation = computation as SynchronizationComputation<TLeft, TRight>;
-            var input = GetLefts(syncComputation.Input, syncComputation.SynchronizationContext.ChangePropagation != ChangePropagationMode.None);
+            var input = GetLefts(syncComputation.Input, computation.TransformationContext, syncComputation.SynchronizationContext.ChangePropagation != ChangePropagationMode.None);
             syncComputation.DoWhenOutputIsAvailable((inp, outp) =>
             {
-                var dependency = SynchronizeLTRCollections(input, GetRights(outp, syncComputation.SynchronizationContext.ChangePropagation == ChangePropagationMode.TwoWay), syncComputation.SynchronizationContext, syncComputation.OmitCandidateSearch);
+                var dependency = SynchronizeLTRCollections(input, GetRights(outp, syncComputation.TransformationContext, syncComputation.SynchronizationContext.ChangePropagation == ChangePropagationMode.TwoWay), syncComputation.SynchronizationContext, syncComputation.OmitCandidateSearch);
                 if (dependency != null)
                 {
                     syncComputation.Dependencies.Add(dependency);
@@ -82,10 +82,10 @@ namespace NMF.Synchronizations
         public void HandleRightToLeftDependency(Computation computation)
         {
             var syncComputation = computation as SynchronizationComputation<TRight, TLeft>;
-            var input = GetRights(syncComputation.Input, syncComputation.SynchronizationContext.ChangePropagation != ChangePropagationMode.None);
+            var input = GetRights(syncComputation.Input, computation.TransformationContext, syncComputation.SynchronizationContext.ChangePropagation != ChangePropagationMode.None);
             syncComputation.DoWhenOutputIsAvailable((inp, outp) =>
             {
-                var dependency = SynchronizeRTLCollections(GetLefts(outp, syncComputation.SynchronizationContext.ChangePropagation == ChangePropagationMode.TwoWay), input, syncComputation.SynchronizationContext, syncComputation.OmitCandidateSearch);
+                var dependency = SynchronizeRTLCollections(GetLefts(outp, syncComputation.TransformationContext, syncComputation.SynchronizationContext.ChangePropagation == ChangePropagationMode.TwoWay), input, syncComputation.SynchronizationContext, syncComputation.OmitCandidateSearch);
                 if (dependency != null)
                 {
                     syncComputation.Dependencies.Add(dependency);

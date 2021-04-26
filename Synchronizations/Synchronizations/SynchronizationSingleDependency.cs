@@ -20,18 +20,18 @@ namespace NMF.Synchronizations
         private SynchronizationRule<TLeft, TRight> parentRule;
         internal SynchronizationRule<TDepLeft, TDepRight> childRule;
 
-        internal Func<TLeft, TDepLeft> leftGetter;
-        internal Func<TRight, TDepRight> rightGetter;
-        internal Action<TRight, TDepRight> rightSetter;
-        internal Action<TLeft, TDepLeft> leftSetter;
+        internal Func<TLeft, ITransformationContext, TDepLeft> leftGetter;
+        internal Func<TRight, ITransformationContext, TDepRight> rightGetter;
+        internal Action<TRight, ITransformationContext, TDepRight> rightSetter;
+        internal Action<TLeft, ITransformationContext, TDepLeft> leftSetter;
 
-        private ObservingFunc<TLeft, TDepLeft> leftFunc;
-        private ObservingFunc<TRight, TDepRight> rightFunc;
+        private ObservingFunc<TLeft, ITransformationContext, TDepLeft> leftFunc;
+        private ObservingFunc<TRight, ITransformationContext, TDepRight> rightFunc;
 
-        public SynchronizationSingleDependency(SynchronizationRule<TLeft, TRight> parentRule, SynchronizationRule<TDepLeft, TDepRight> childRule, Expression<Func<TLeft, TDepLeft>> leftSelector, Expression<Func<TRight, TDepRight>> rightSelector)
+        public SynchronizationSingleDependency(SynchronizationRule<TLeft, TRight> parentRule, SynchronizationRule<TDepLeft, TDepRight> childRule, Expression<Func<TLeft, ITransformationContext, TDepLeft>> leftSelector, Expression<Func<TRight, ITransformationContext, TDepRight>> rightSelector)
             : this(parentRule, childRule, leftSelector, rightSelector, null, null) { }
 
-        public SynchronizationSingleDependency(SynchronizationRule<TLeft, TRight> parentRule, SynchronizationRule<TDepLeft, TDepRight> childRule, Expression<Func<TLeft, TDepLeft>> leftSelector, Expression<Func<TRight, TDepRight>> rightSelector, Action<TLeft, TDepLeft> leftSetter, Action<TRight, TDepRight> rightSetter)
+        public SynchronizationSingleDependency(SynchronizationRule<TLeft, TRight> parentRule, SynchronizationRule<TDepLeft, TDepRight> childRule, Expression<Func<TLeft, ITransformationContext, TDepLeft>> leftSelector, Expression<Func<TRight, ITransformationContext, TDepRight>> rightSelector, Action<TLeft, ITransformationContext, TDepLeft> leftSetter, Action<TRight, ITransformationContext, TDepRight> rightSetter)
         {
             if (parentRule == null) throw new ArgumentNullException("parentRule");
             if (childRule == null) throw new ArgumentNullException("childRule");
@@ -152,12 +152,12 @@ namespace NMF.Synchronizations
 
         private IDisposable HandleTwoWayLTRSynchronization(SynchronizationComputation<TLeft, TRight> syncComputation)
         {
-            var left = leftFunc.InvokeReversable(syncComputation.Input);
+            var left = leftFunc.InvokeReversable(syncComputation.Input, syncComputation.TransformationContext);
             left.Successors.SetDummy();
-            var right = rightFunc.InvokeReversable(syncComputation.Opposite.Input);
+            var right = rightFunc.InvokeReversable(syncComputation.Opposite.Input, syncComputation.TransformationContext);
             right.Successors.SetDummy();
-            Action<TLeft, TDepLeft> leftSetter = (l, val) => left.Value = val;
-            Action<TRight, TDepRight> rightSetter = (r, val) => right.Value = val;
+            Action<TLeft, ITransformationContext, TDepLeft> leftSetter = (l, ctx, val) => left.Value = val;
+            Action<TRight, ITransformationContext, TDepRight> rightSetter = (r, ctx, val) => right.Value = val;
             CallLTRTransformationForInput(syncComputation, syncComputation.SynchronizationContext.Direction,
                 left.Value, right.Value, leftSetter, rightSetter);
             return new IncrementalReferenceConsistencyCheck<TLeft, TRight, TDepLeft, TDepRight>(left, right, syncComputation, this);
@@ -165,12 +165,12 @@ namespace NMF.Synchronizations
 
         private IDisposable HandleTwoWayRTLSynchronization(SynchronizationComputation<TRight, TLeft> syncComputation)
         {
-            var left = leftFunc.InvokeReversable(syncComputation.Opposite.Input);
+            var left = leftFunc.InvokeReversable(syncComputation.Opposite.Input, syncComputation.TransformationContext);
             left.Successors.SetDummy();
-            var right = rightFunc.InvokeReversable(syncComputation.Input);
+            var right = rightFunc.InvokeReversable(syncComputation.Input, syncComputation.TransformationContext);
             right.Successors.SetDummy();
-            Action<TLeft, TDepLeft> leftSetter = (l, val) => left.Value = val;
-            Action<TRight, TDepRight> rightSetter = (r, val) => right.Value = val;
+            Action<TLeft, ITransformationContext, TDepLeft> leftSetter = ( l, ctx, val ) => left.Value = val;
+            Action<TRight, ITransformationContext, TDepRight> rightSetter = ( r, ctx, val ) => right.Value = val;
             CallRTLTransformationForInput(syncComputation, syncComputation.SynchronizationContext.Direction,
                 right.Value, left.Value, leftSetter, rightSetter);
             return new IncrementalReferenceConsistencyCheck<TLeft, TRight, TDepLeft, TDepRight>(left, right, syncComputation.Opposite, this);
@@ -178,9 +178,9 @@ namespace NMF.Synchronizations
 
         private IDisposable HandleOneWayLTRSynchronization(SynchronizationComputation<TLeft, TRight> syncComputation)
         {
-            var input = leftFunc.Observe(syncComputation.Input);
+            var input = leftFunc.Observe(syncComputation.Input, syncComputation.TransformationContext);
             input.Successors.SetDummy();
-            Action<TLeft, TDepLeft> leftSetter = (left, val) =>
+            Action<TLeft, ITransformationContext, TDepLeft> leftSetter = (left, ctx, val) =>
             {
                 var reversable = input as INotifyReversableValue<TDepLeft>;
                 if (reversable != null && reversable.IsReversable)
@@ -193,7 +193,7 @@ namespace NMF.Synchronizations
                 }
             };
             CallLTRTransformationForInput(syncComputation, syncComputation.SynchronizationContext.Direction,
-                input.Value, rightGetter(syncComputation.Opposite.Input), leftSetter, rightSetter);
+                input.Value, rightGetter(syncComputation.Opposite.Input, syncComputation.TransformationContext), leftSetter, rightSetter);
             return new OneWayLTRSynchronization(input, syncComputation, this);
         }
 
@@ -214,7 +214,7 @@ namespace NMF.Synchronizations
 
             private void Left_ValueChanged(object sender, ValueChangedEventArgs e)
             {
-                Parent.CallLTRTransformationForInput(Computation, SynchronizationDirection.LeftToRightForced, Left.Value, Parent.rightGetter(Computation.Opposite.Input), Parent.leftSetter, Parent.rightSetter);
+                Parent.CallLTRTransformationForInput(Computation, SynchronizationDirection.LeftToRightForced, Left.Value, Parent.rightGetter(Computation.Opposite.Input, Computation.TransformationContext), Parent.leftSetter, Parent.rightSetter);
             }
 
             public void Dispose()
@@ -226,9 +226,9 @@ namespace NMF.Synchronizations
 
         private IDisposable HandleOneWayRTLSynchronization(SynchronizationComputation<TRight, TLeft> syncComputation)
         {
-            var input = rightFunc.Observe(syncComputation.Input);
+            var input = rightFunc.Observe(syncComputation.Input, syncComputation.TransformationContext);
             input.Successors.SetDummy();
-            Action<TRight, TDepRight> rightSetter = (right, val) =>
+            Action<TRight, ITransformationContext, TDepRight> rightSetter = (right, ctx, val) =>
             {
                 var reversable = input as INotifyReversableValue<TDepRight>;
                 if (reversable != null && reversable.IsReversable)
@@ -241,7 +241,7 @@ namespace NMF.Synchronizations
                 }
             };
             CallRTLTransformationForInput(syncComputation, syncComputation.SynchronizationContext.Direction,
-                input.Value, leftGetter(syncComputation.Opposite.Input), leftSetter, rightSetter);
+                input.Value, leftGetter(syncComputation.Opposite.Input, syncComputation.TransformationContext), leftSetter, rightSetter);
             return new OneWayRTLDependency(input, syncComputation, this);
         }
 
@@ -262,7 +262,7 @@ namespace NMF.Synchronizations
 
             private void Left_ValueChanged(object sender, ValueChangedEventArgs e)
             {
-                Parent.CallRTLTransformationForInput(Computation, SynchronizationDirection.RightToLeftForced, Right.Value, Parent.leftGetter(Computation.Opposite.Input), Parent.leftSetter, Parent.rightSetter);
+                Parent.CallRTLTransformationForInput(Computation, SynchronizationDirection.RightToLeftForced, Right.Value, Parent.leftGetter(Computation.Opposite.Input, Computation.TransformationContext), Parent.leftSetter, Parent.rightSetter);
             }
 
             public void Dispose()
@@ -274,26 +274,26 @@ namespace NMF.Synchronizations
 
         private void HandleStaticLTRDependency(SynchronizationComputation<TLeft, TRight> syncComputation)
         {
-            var input = leftGetter(syncComputation.Input);
+            var input = leftGetter(syncComputation.Input, syncComputation.TransformationContext);
             CallLTRTransformationForInput(syncComputation, syncComputation.SynchronizationContext.Direction,
-                input, rightGetter(syncComputation.Opposite.Input), leftSetter, rightSetter);
+                input, rightGetter(syncComputation.Opposite.Input, syncComputation.TransformationContext ), leftSetter, rightSetter);
         }
 
         private void HandleStaticRTLDependency(SynchronizationComputation<TRight, TLeft> syncComputation)
         {
-            var input = rightGetter(syncComputation.Input);
+            var input = rightGetter(syncComputation.Input, syncComputation.TransformationContext );
             CallRTLTransformationForInput(syncComputation, syncComputation.SynchronizationContext.Direction,
-                input, leftGetter(syncComputation.Opposite.Input), leftSetter, rightSetter);
+                input, leftGetter(syncComputation.Opposite.Input, syncComputation.TransformationContext ), leftSetter, rightSetter);
         }
 
-        internal void CallLTRTransformationForInput(SynchronizationComputation<TLeft, TRight> syncComputation, SynchronizationDirection direction, TDepLeft input, TDepRight context, Action<TLeft, TDepLeft> leftSetter, Action<TRight, TDepRight> rightSetter)
+        internal void CallLTRTransformationForInput(SynchronizationComputation<TLeft, TRight> syncComputation, SynchronizationDirection direction, TDepLeft input, TDepRight context, Action<TLeft, ITransformationContext, TDepLeft> leftSetter, Action<TRight, ITransformationContext, TDepRight> rightSetter)
         {
             if (direction == SynchronizationDirection.CheckOnly)
             {
                 // two-way change propagation is handled through dependency
                 if (syncComputation.SynchronizationContext.ChangePropagation == ChangePropagationMode.None)
                 {
-                    Match(syncComputation, input, rightGetter(syncComputation.Opposite.Input));
+                    Match(syncComputation, input, rightGetter(syncComputation.Opposite.Input, syncComputation.TransformationContext ) );
                 }
                 return;
             }
@@ -308,11 +308,11 @@ namespace NMF.Synchronizations
                 if (comp == null) return;
                 if (!comp.IsDelayed)
                 {
-                    rightSetter(right, comp.Output as TDepRight);
+                    rightSetter(right, syncComputation.TransformationContext, comp.Output as TDepRight);
                 }
                 else
                 {
-                    comp.OutputInitialized += (o, e) => rightSetter(right, comp.Output as TDepRight);
+                    comp.OutputInitialized += (o, e) => rightSetter(right, syncComputation.TransformationContext, comp.Output as TDepRight);
                 }
             }
             else
@@ -327,19 +327,19 @@ namespace NMF.Synchronizations
                     {
                         return;
                     }
-                    rightSetter(right, null);
+                    rightSetter(right, syncComputation.TransformationContext, null);
                 }
             }
         }
 
-        internal void CallRTLTransformationForInput(SynchronizationComputation<TRight, TLeft> syncComputation, SynchronizationDirection direction, TDepRight input, TDepLeft context, Action<TLeft, TDepLeft> leftSetter, Action<TRight, TDepRight> rightSetter)
+        internal void CallRTLTransformationForInput(SynchronizationComputation<TRight, TLeft> syncComputation, SynchronizationDirection direction, TDepRight input, TDepLeft context, Action<TLeft, ITransformationContext, TDepLeft> leftSetter, Action<TRight, ITransformationContext, TDepRight> rightSetter)
         {
             if (direction == SynchronizationDirection.CheckOnly)
             {
                 // two-way change propagation is handled through dependency
                 if (syncComputation.SynchronizationContext.ChangePropagation == ChangePropagationMode.None)
                 {
-                    Match(syncComputation.Opposite, leftGetter(syncComputation.Opposite.Input), input);
+                    Match(syncComputation.Opposite, leftGetter(syncComputation.Opposite.Input, syncComputation.TransformationContext ), input);
                 }
                 return;
             }
@@ -354,11 +354,11 @@ namespace NMF.Synchronizations
                 if (comp == null) return;
                 if (!comp.IsDelayed)
                 {
-                    leftSetter(left, comp.Output as TDepLeft);
+                    leftSetter(left, syncComputation.TransformationContext, comp.Output as TDepLeft);
                 }
                 else
                 {
-                    comp.OutputInitialized += (o, e) => leftSetter(left, comp.Output as TDepLeft);
+                    comp.OutputInitialized += (o, e) => leftSetter(left, syncComputation.TransformationContext, comp.Output as TDepLeft);
                 };
             }
             else
@@ -373,7 +373,7 @@ namespace NMF.Synchronizations
                     {
                         return;
                     }
-                    leftSetter(left, null);
+                    leftSetter(left, syncComputation.TransformationContext, null);
                 }
             }
         }

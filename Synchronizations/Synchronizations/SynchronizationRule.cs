@@ -22,8 +22,8 @@ namespace NMF.Synchronizations
 
         public SynchronizationRule()
         {
-            leftToRight = new LeftToRightRule<TLeft, TRight>(this);
-            rightToLeft = new RightToLeftRule<TLeft, TRight>(this);
+            leftToRight = new LeftToRightRule<TLeft, TRight>( this );
+            rightToLeft = new RightToLeftRule<TLeft, TRight>( this );
             SynchronizationJobs = new List<ISynchronizationJob<TLeft, TRight>>();
         }
 
@@ -34,15 +34,15 @@ namespace NMF.Synchronizations
         private LeftToRightRule<TLeft, TRight> leftToRight;
         private RightToLeftRule<TLeft, TRight> rightToLeft;
 
-        private static Type leftImplementationType = GetImplementationType(typeof(TLeft));
-        private static Type rightImplementationType = GetImplementationType(typeof(TRight));
+        private static Type leftImplementationType = GetImplementationType( typeof( TLeft ) );
+        private static Type rightImplementationType = GetImplementationType( typeof( TRight ) );
 
-        private static Type GetImplementationType(Type type)
+        private static Type GetImplementationType( Type type )
         {
-            if (!type.IsAbstract && !type.IsInterface) return type;
+            if(!type.IsAbstract && !type.IsInterface) return type;
 
-            var customs = type.GetCustomAttributes(typeof(DefaultImplementationTypeAttribute), false);
-            if (customs != null && customs.Length > 0)
+            var customs = type.GetCustomAttributes( typeof( DefaultImplementationTypeAttribute ), false );
+            if(customs != null && customs.Length > 0)
             {
                 var defaultImplAtt = customs[0] as DefaultImplementationTypeAttribute;
                 return defaultImplAtt.DefaultImplementationType;
@@ -64,12 +64,12 @@ namespace NMF.Synchronizations
         {
             get
             {
-                return Math.Max(LTR.TransformationDelayLevel, RTL.TransformationDelayLevel);
+                return Math.Max( LTR.TransformationDelayLevel, RTL.TransformationDelayLevel );
             }
             set
             {
-                leftToRight.SetTransformationDelay(value);
-                rightToLeft.SetTransformationDelay(value);
+                leftToRight.SetTransformationDelay( value );
+                rightToLeft.SetTransformationDelay( value );
             }
         }
 
@@ -77,86 +77,108 @@ namespace NMF.Synchronizations
         {
             get
             {
-                return Math.Max(LTR.OutputDelayLevel, RTL.OutputDelayLevel);
+                return Math.Max( LTR.OutputDelayLevel, RTL.OutputDelayLevel );
             }
             set
             {
-                leftToRight.SetOutputDelay(value);
-                rightToLeft.SetOutputDelay(value);
+                leftToRight.SetOutputDelay( value );
+                rightToLeft.SetOutputDelay( value );
             }
         }
 
-        internal void InitializeOutput(SynchronizationComputation<TLeft, TRight> computation)
+        internal void InitializeOutput( SynchronizationComputation<TLeft, TRight> computation )
         {
             var context = computation.SynchronizationContext;
             var dependencies = computation.Dependencies;
-            foreach (var job in SynchronizationJobs.Where(j => j.IsEarly))
+            foreach(var job in SynchronizationJobs.Where( j => j.IsEarly ))
             {
-                var dependency = job.Perform(computation, context.Direction, context);
-                if (dependency != null)
+                var dependency = job.Perform( computation, context.Direction, context );
+                if(dependency != null)
                 {
-                    dependencies.Add(dependency);
+                    dependencies.Add( dependency );
                 }
             }
         }
 
-        internal void Synchronize(SynchronizationComputation<TLeft, TRight> computation, SynchronizationDirection direction, ISynchronizationContext context)
+        internal void Synchronize( SynchronizationComputation<TLeft, TRight> computation, SynchronizationDirection direction, ISynchronizationContext context )
         {
             var dependencies = computation.Dependencies;
-            foreach (var job in SynchronizationJobs.Where(j => !j.IsEarly))
+            foreach(var job in SynchronizationJobs.Where( j => !j.IsEarly ))
             {
-                var dependency = job.Perform(computation, direction, context);
-                if (dependency != null)
+                var dependency = job.Perform( computation, direction, context );
+                if(dependency != null)
                 {
-                    dependencies.Add(dependency);
+                    dependencies.Add( dependency );
                 }
             }
         }
 
-        public virtual bool ShouldCorrespond(TLeft left, TRight right, ISynchronizationContext context)
+        public virtual bool ShouldCorrespond( TLeft left, TRight right, ISynchronizationContext context )
         {
             return false;
         }
 
         public sealed override Type LeftType
         {
-            get { return typeof(TLeft); }
+            get { return typeof( TLeft ); }
         }
 
         public sealed override Type RightType
         {
-            get { return typeof(TRight); }
+            get { return typeof( TRight ); }
         }
 
-        public void Synchronize<TDepLeft, TDepRight>(SynchronizationRule<TDepLeft, TDepRight> rule, Expression<Func<TLeft, TDepLeft>> leftSelector, Expression<Func<TRight, TDepRight>> rightSelector, Expression<Func<TLeft, TRight, bool>> guard = null)
+        public void Synchronize<TDepLeft, TDepRight>( SynchronizationRule<TDepLeft, TDepRight> rule, Expression<Func<TLeft, TDepLeft>> leftSelector, Expression<Func<TRight, TDepRight>> rightSelector, Expression<Func<TLeft, TRight, bool>> guard = null )
             where TDepLeft : class
             where TDepRight : class
         {
-            if (rule == null) throw new ArgumentNullException("rule");
-            if (leftSelector == null) throw new ArgumentNullException("leftSelector");
-            if (rightSelector == null) throw new ArgumentNullException("rightSelector");
-
-            var dependency = new SynchronizationSingleDependency<TLeft, TRight, TDepLeft, TDepRight>(this, rule, leftSelector, rightSelector);
-            var guardFunc = ObservingFunc<TLeft, TRight, bool>.FromExpression(guard);
-            LeftToRight.Dependencies.Add(dependency.CreateLeftToRightDependency(guardFunc));
-            RightToLeft.Dependencies.Add(dependency.CreateRightToLeftDependency(guardFunc));
+            Synchronize( rule, ExpressionHelper.AddContextParameter( leftSelector ), ExpressionHelper.AddContextParameter( rightSelector ), guard );
         }
 
-        public void Synchronize<TDepLeft, TDepRight>(SynchronizationRule<TDepLeft, TDepRight> rule, Expression<Func<TLeft, TDepLeft>> leftSelector, Action<TLeft, TDepLeft> leftSetter, Expression<Func<TRight, TDepRight>> rightSelector, Expression<Func<TLeft, TRight, bool>> guard = null)
+        public void Synchronize<TDepLeft, TDepRight>( SynchronizationRule<TDepLeft, TDepRight> rule, Expression<Func<TLeft, ITransformationContext, TDepLeft>> leftSelector, Expression<Func<TRight, ITransformationContext, TDepRight>> rightSelector, Expression<Func<TLeft, TRight, bool>> guard = null )
             where TDepLeft : class
             where TDepRight : class
         {
-            if (rule == null) throw new ArgumentNullException("rule");
-            if (leftSelector == null) throw new ArgumentNullException("leftSelector");
-            if (rightSelector == null) throw new ArgumentNullException("rightSelector");
+            if(rule == null) throw new ArgumentNullException( "rule" );
+            if(leftSelector == null) throw new ArgumentNullException( "leftSelector" );
+            if(rightSelector == null) throw new ArgumentNullException( "rightSelector" );
 
-            var dependency = new SynchronizationSingleDependency<TLeft, TRight, TDepLeft, TDepRight>(this, rule, leftSelector, rightSelector, leftSetter, null);
-            var guardFunc = ObservingFunc<TLeft, TRight, bool>.FromExpression(guard);
-            LeftToRight.Dependencies.Add(dependency.CreateLeftToRightDependency(guardFunc));
-            RightToLeft.Dependencies.Add(dependency.CreateRightToLeftDependency(guardFunc));
+            var dependency = new SynchronizationSingleDependency<TLeft, TRight, TDepLeft, TDepRight>( this, rule, leftSelector, rightSelector );
+            var guardFunc = ObservingFunc<TLeft, TRight, bool>.FromExpression( guard );
+            LeftToRight.Dependencies.Add( dependency.CreateLeftToRightDependency( guardFunc ) );
+            RightToLeft.Dependencies.Add( dependency.CreateRightToLeftDependency( guardFunc ) );
         }
 
-        public void Synchronize<TDepLeft, TDepRight>(SynchronizationRule<TDepLeft, TDepRight> rule, Expression<Func<TLeft, TDepLeft>> leftSelector, Expression<Func<TRight, TDepRight>> rightSelector, Action<TRight, TDepRight> rightSetter, Expression<Func<TLeft, TRight, bool>> guard = null)
+
+        public void Synchronize<TDepLeft, TDepRight>( SynchronizationRule<TDepLeft, TDepRight> rule, Expression<Func<TLeft, TDepLeft>> leftSelector, Action<TLeft, TDepLeft> leftSetter, Expression<Func<TRight, TDepRight>> rightSelector, Expression<Func<TLeft, TRight, bool>> guard = null )
+            where TDepLeft : class
+            where TDepRight : class
+        {
+            Synchronize( rule, ExpressionHelper.AddContextParameter( leftSelector ), ( left, ctx, leftValue ) => leftSetter( left, leftValue ), ExpressionHelper.AddContextParameter( rightSelector ), guard );
+        }
+
+        public void Synchronize<TDepLeft, TDepRight>( SynchronizationRule<TDepLeft, TDepRight> rule, Expression<Func<TLeft, ITransformationContext, TDepLeft>> leftSelector, Action<TLeft, ITransformationContext, TDepLeft> leftSetter, Expression<Func<TRight, ITransformationContext, TDepRight>> rightSelector, Expression<Func<TLeft, TRight, bool>> guard = null )
+            where TDepLeft : class
+            where TDepRight : class
+        {
+            if(rule == null) throw new ArgumentNullException( "rule" );
+            if(leftSelector == null) throw new ArgumentNullException( "leftSelector" );
+            if(rightSelector == null) throw new ArgumentNullException( "rightSelector" );
+
+            var dependency = new SynchronizationSingleDependency<TLeft, TRight, TDepLeft, TDepRight>( this, rule, leftSelector, rightSelector, leftSetter, null );
+            var guardFunc = ObservingFunc<TLeft, TRight, bool>.FromExpression( guard );
+            LeftToRight.Dependencies.Add( dependency.CreateLeftToRightDependency( guardFunc ) );
+            RightToLeft.Dependencies.Add( dependency.CreateRightToLeftDependency( guardFunc ) );
+        }
+
+        public void Synchronize<TDepLeft, TDepRight>( SynchronizationRule<TDepLeft, TDepRight> rule, Expression<Func<TLeft, TDepLeft>> leftSelector, Expression<Func<TRight, TDepRight>> rightSelector, Action<TRight, TDepRight> rightSetter, Expression<Func<TLeft, TRight, bool>> guard = null )
+            where TDepLeft : class
+            where TDepRight : class
+        {
+            Synchronize( rule, ExpressionHelper.AddContextParameter( leftSelector ), ExpressionHelper.AddContextParameter( rightSelector ), ( r, ctx, value ) => rightSetter( r, value ), guard );
+        }
+
+        public void Synchronize<TDepLeft, TDepRight>(SynchronizationRule<TDepLeft, TDepRight> rule, Expression<Func<TLeft, ITransformationContext, TDepLeft>> leftSelector, Expression<Func<TRight, ITransformationContext, TDepRight>> rightSelector, Action<TRight, ITransformationContext, TDepRight> rightSetter, Expression<Func<TLeft, TRight, bool>> guard = null)
             where TDepLeft : class
             where TDepRight : class
         {
@@ -170,7 +192,14 @@ namespace NMF.Synchronizations
             RightToLeft.Dependencies.Add(dependency.CreateRightToLeftDependency(guardFunc));
         }
 
-        public void Synchronize<TDepLeft, TDepRight>(SynchronizationRule<TDepLeft, TDepRight> rule, Expression<Func<TLeft, TDepLeft>> leftSelector, Action<TLeft, TDepLeft> leftSetter, Expression<Func<TRight, TDepRight>> rightSelector, Action<TRight, TDepRight> rightSetter, Expression<Func<TLeft, TRight, bool>> guard = null)
+        public void Synchronize<TDepLeft, TDepRight>( SynchronizationRule<TDepLeft, TDepRight> rule, Expression<Func<TLeft, TDepLeft>> leftSelector, Action<TLeft, TDepLeft> leftSetter, Expression<Func<TRight, TDepRight>> rightSelector, Action<TRight, TDepRight> rightSetter, Expression<Func<TLeft, TRight, bool>> guard = null )
+            where TDepLeft : class
+            where TDepRight : class
+        {
+            Synchronize( rule, ExpressionHelper.AddContextParameter( leftSelector ), ( left, ctx, leftValue ) => leftSetter( left, leftValue ), ExpressionHelper.AddContextParameter( rightSelector ), ( r, ctx, value ) => rightSetter( r, value ), guard );
+        }
+
+        public void Synchronize<TDepLeft, TDepRight>(SynchronizationRule<TDepLeft, TDepRight> rule, Expression<Func<TLeft, ITransformationContext, TDepLeft>> leftSelector, Action<TLeft, ITransformationContext, TDepLeft> leftSetter, Expression<Func<TRight, ITransformationContext, TDepRight>> rightSelector, Action<TRight, ITransformationContext, TDepRight> rightSetter, Expression<Func<TLeft, TRight, bool>> guard = null)
             where TDepLeft : class
             where TDepRight : class
         {
@@ -184,7 +213,15 @@ namespace NMF.Synchronizations
             RightToLeft.Dependencies.Add(dependency.CreateRightToLeftDependency(guardFunc));
         }
 
-        public void SynchronizeLeftToRightOnly<TDepLeft, TDepRight>(SynchronizationRule<TDepLeft, TDepRight> rule, Expression<Func<TLeft, TDepLeft>> leftSelector, Expression<Func<TRight, TDepRight>> rightSelector, Expression<Func<TLeft, bool>> guard = null)
+
+        public void SynchronizeLeftToRightOnly<TDepLeft, TDepRight>( SynchronizationRule<TDepLeft, TDepRight> rule, Expression<Func<TLeft, TDepLeft>> leftSelector, Expression<Func<TRight, TDepRight>> rightSelector, Expression<Func<TLeft, bool>> guard = null )
+            where TDepLeft : class
+            where TDepRight : class
+        {
+            SynchronizeLeftToRightOnly( rule, ExpressionHelper.AddContextParameter( leftSelector ), ExpressionHelper.AddContextParameter( rightSelector ), guard );
+        }
+
+        public void SynchronizeLeftToRightOnly<TDepLeft, TDepRight>(SynchronizationRule<TDepLeft, TDepRight> rule, Expression<Func<TLeft, ITransformationContext, TDepLeft>> leftSelector, Expression<Func<TRight, ITransformationContext, TDepRight>> rightSelector, Expression<Func<TLeft, bool>> guard = null)
             where TDepLeft : class
             where TDepRight : class
         {
@@ -197,7 +234,15 @@ namespace NMF.Synchronizations
             LeftToRight.Dependencies.Add(dependency.CreateLeftToRightOnlyDependency(guardFunc));
         }
 
-        public void SynchronizeRightToLeftOnly<TDepLeft, TDepRight>(SynchronizationRule<TDepLeft, TDepRight> rule, Expression<Func<TLeft, TDepLeft>> leftSelector, Expression<Func<TRight, TDepRight>> rightSelector, Expression<Func<TRight, bool>> guard = null)
+
+        public void SynchronizeRightToLeftOnly<TDepLeft, TDepRight>( SynchronizationRule<TDepLeft, TDepRight> rule, Expression<Func<TLeft, TDepLeft>> leftSelector, Expression<Func<TRight, TDepRight>> rightSelector, Expression<Func<TRight, bool>> guard = null )
+            where TDepLeft : class
+            where TDepRight : class
+        {
+            SynchronizeRightToLeftOnly( rule, ExpressionHelper.AddContextParameter( leftSelector ), ExpressionHelper.AddContextParameter( rightSelector ), guard );
+        }
+
+        public void SynchronizeRightToLeftOnly<TDepLeft, TDepRight>(SynchronizationRule<TDepLeft, TDepRight> rule, Expression<Func<TLeft, ITransformationContext, TDepLeft>> leftSelector, Expression<Func<TRight, ITransformationContext, TDepRight>> rightSelector, Expression<Func<TRight, bool>> guard = null)
             where TDepLeft : class
             where TDepRight : class
         {
@@ -210,7 +255,15 @@ namespace NMF.Synchronizations
             RightToLeft.Dependencies.Add(dependency.CreateRightToLeftOnlyDependency(guardFunc));
         }
 
-        public void SynchronizeMany<TDepLeft, TDepRight>(SynchronizationRule<TDepLeft, TDepRight> rule, Expression<Func<TLeft, ICollectionExpression<TDepLeft>>> leftSelector, Expression<Func<TRight, ICollectionExpression<TDepRight>>> rightSelector)
+
+        public void SynchronizeMany<TDepLeft, TDepRight>( SynchronizationRule<TDepLeft, TDepRight> rule, Expression<Func<TLeft, ICollectionExpression<TDepLeft>>> leftSelector, Expression<Func<TRight, ICollectionExpression<TDepRight>>> rightSelector )
+            where TDepLeft : class
+            where TDepRight : class
+        {
+            SynchronizeMany( rule, ExpressionHelper.AddContextParameter( leftSelector ), ExpressionHelper.AddContextParameter( rightSelector ) );
+        }
+
+        public void SynchronizeMany<TDepLeft, TDepRight>(SynchronizationRule<TDepLeft, TDepRight> rule, Expression<Func<TLeft, ITransformationContext, ICollectionExpression<TDepLeft>>> leftSelector, Expression<Func<TRight, ITransformationContext, ICollectionExpression<TDepRight>>> rightSelector)
             where TDepLeft : class
             where TDepRight : class
         {
@@ -223,7 +276,14 @@ namespace NMF.Synchronizations
             RightToLeft.Dependencies.Add(dependency.CreateRightToLeftDependency());
         }
 
-        public void SynchronizeManyLeftToRightOnly<TDepLeft, TDepRight>(SynchronizationRule<TDepLeft, TDepRight> rule, Expression<Func<TLeft, IEnumerableExpression<TDepLeft>>> leftSelector, Expression<Func<TRight, ICollection<TDepRight>>> rightSelector)
+        public void SynchronizeManyLeftToRightOnly<TDepLeft, TDepRight>( SynchronizationRule<TDepLeft, TDepRight> rule, Expression<Func<TLeft, IEnumerableExpression<TDepLeft>>> leftSelector, Expression<Func<TRight, ICollection<TDepRight>>> rightSelector )
+            where TDepLeft : class
+            where TDepRight : class
+        {
+            SynchronizeManyLeftToRightOnly( rule, ExpressionHelper.AddContextParameter( leftSelector ), ExpressionHelper.AddContextParameter( rightSelector ) );
+        }
+
+        public void SynchronizeManyLeftToRightOnly<TDepLeft, TDepRight>(SynchronizationRule<TDepLeft, TDepRight> rule, Expression<Func<TLeft, ITransformationContext, IEnumerableExpression<TDepLeft>>> leftSelector, Expression<Func<TRight, ITransformationContext, ICollection<TDepRight>>> rightSelector)
             where TDepLeft : class
             where TDepRight : class
         {
@@ -235,7 +295,14 @@ namespace NMF.Synchronizations
             LeftToRight.Dependencies.Add(dependency);
         }
 
-        public void SynchronizeManyRightToLeftOnly<TDepLeft, TDepRight>(SynchronizationRule<TDepLeft, TDepRight> rule, Expression<Func<TLeft, ICollection<TDepLeft>>> leftSelector, Expression<Func<TRight, IEnumerableExpression<TDepRight>>> rightSelector)
+        public void SynchronizeManyRightToLeftOnly<TDepLeft, TDepRight>( SynchronizationRule<TDepLeft, TDepRight> rule, Expression<Func<TLeft, ICollection<TDepLeft>>> leftSelector, Expression<Func<TRight, IEnumerableExpression<TDepRight>>> rightSelector )
+            where TDepLeft : class
+            where TDepRight : class
+        {
+            SynchronizeManyRightToLeftOnly( rule, ExpressionHelper.AddContextParameter( leftSelector ), ExpressionHelper.AddContextParameter( rightSelector ) );
+        }
+
+        public void SynchronizeManyRightToLeftOnly<TDepLeft, TDepRight>(SynchronizationRule<TDepLeft, TDepRight> rule, Expression<Func<TLeft, ITransformationContext, ICollection<TDepLeft>>> leftSelector, Expression<Func<TRight, ITransformationContext, IEnumerableExpression<TDepRight>>> rightSelector)
             where TDepLeft : class
             where TDepRight : class
         {
