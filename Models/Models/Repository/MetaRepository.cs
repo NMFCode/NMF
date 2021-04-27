@@ -202,14 +202,31 @@ namespace NMF.Models.Repository
                 for (int i = 0; i < attributes.Length; i++)
                 {
                     var metadata = attributes[i] as ModelMetadataAttribute;
-                    if (metadata != null && names.Contains(metadata.ResourceName) && metadata.ModelUri.IsAbsoluteUri)
+                    var resourceName = metadata.ResourceName;
+                    if (!names.Contains(metadata.ResourceName))
+                    {
+                        var resources = names.Where(n => n.EndsWith(resourceName)).ToList();
+                        if (resources.Count == 1)
+                        {
+                            resourceName = resources[0];
+                        }
+                        else if (resources.Count == 0)
+                        {
+                            throw new Exception($"Embedded resource {resourceName} was not found in assembly {assembly.FullName}.");
+                        }
+                        else
+                        {
+                            throw new Exception($"Multiple embedded resources with the suffix {resourceName} were found in {assembly.FullName}.");
+                        }
+                    }
+                    if (metadata != null && metadata.ModelUri.IsAbsoluteUri)
                     {
 #if DEBUG
-                        LoadModel(assembly, attributes, i, metadata);
+                        LoadModel(assembly, attributes, i, resourceName, metadata.ModelUri);
 #else
                         try
                         {
-                            LoadModel(assembly, attributes, i, metadata);
+                            LoadModel(assembly, attributes, i, resourceName, metadata.ModelUri);
                         }
                         catch (Exception e)
                         {
@@ -224,7 +241,7 @@ namespace NMF.Models.Repository
                     }
                     else
                     {
-                        throw new Exception($"The declared embedded resource {metadata.ResourceName} of asembly {assembly.FullName} could not be found.");
+                        throw new Exception($"The declared embedded resource {metadata.ResourceName} of assembly {assembly.FullName} could not be found.");
                     }
                 }
                 for (int i = 0; i < saveMapping.Count; i++)
@@ -243,15 +260,15 @@ namespace NMF.Models.Repository
             }
         }
 
-        private void LoadModel(Assembly assembly, object[] attributes, int i, ModelMetadataAttribute metadata)
+        private void LoadModel(Assembly assembly, object[] attributes, int i, string resourceName, Uri modelUri)
         {
-            var model = serializer.Deserialize(assembly.GetManifestResourceStream(metadata.ResourceName), metadata.ModelUri, this, true);
+            var model = serializer.Deserialize(assembly.GetManifestResourceStream(resourceName), modelUri, this, true);
             for (int j = i + 1; j < attributes.Length; j++)
             {
                 var followingAttribute = attributes[j] as ModelMetadataAttribute;
                 if (followingAttribute != null)
                 {
-                    var followUri = new Uri(followingAttribute.ModelUri, MakeRelativePath(metadata.ResourceName, followingAttribute.ResourceName));
+                    var followUri = new Uri(followingAttribute.ModelUri, MakeRelativePath(resourceName, followingAttribute.ResourceName));
                     if (!entries.ContainsKey(followUri))
                     {
                         entries.Add(followUri, model);
