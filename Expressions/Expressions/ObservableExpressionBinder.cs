@@ -608,10 +608,9 @@ namespace NMF.Expressions
             var proxyTypes = node.Method.GetCustomAttributes(typeof(ObservableProxyAttribute), false);
             if (proxyTypes != null)
             {
-                var proxyAttribute = proxyTypes.FirstOrDefault() as ObservableProxyAttribute;
-                if (proxyAttribute != null)
+                if(proxyTypes.FirstOrDefault() is ObservableProxyAttribute proxyAttribute)
                 {
-                    return VisitProxyMethodCall(node, types, typesArg, typesArgInc, typesArgStatic, typesArgStaticInc, proxyAttribute);
+                    return VisitProxyMethodCall( node, types, typesArg, typesArgInc, typesArgStatic, typesArgStaticInc, proxyAttribute );
                 }
             }
             if (node.Object != null && typeof(Delegate).IsAssignableFrom(node.Object.Type) && node.Method.Name == "Invoke")
@@ -751,8 +750,7 @@ namespace NMF.Expressions
                     if (lensAttribute == null)
                     {
                         object proxy = proxyMethod.Invoke(null, proxyArgs);
-                        var proxyExp = proxy as Expression;
-                        if (proxyExp != null) return proxyExp;
+                        if(proxy is Expression proxyExp) return proxyExp;
                         return System.Activator.CreateInstance(typeof(ObservableProxyExpression<>).MakeGenericType(node.Method.ReturnType), proxy) as Expression;
                     }
                     else
@@ -886,14 +884,13 @@ namespace NMF.Expressions
                 }
                 else
                 {
-                    var expression = value as Expression;
-                    if (expression != null)
+                    if(value is Expression expression)
                     {
                         return expression;
                     }
                     else
                     {
-                        throw new InvalidOperationException(string.Format("The provided value {0} for parameter {1} is not valid.", value, node.Type));
+                        throw new InvalidOperationException( string.Format( "The provided value {0} for parameter {1} is not valid.", value, node.Type ) );
                     }
                 }
             }
@@ -1042,13 +1039,12 @@ namespace NMF.Expressions
         {
             INotifyExpression<TMember> value = binder.VisitObservable<TMember>(node.Expression);
             var property = node.Member as PropertyInfo;
-            var reversable = value as INotifyReversableExpression<TMember>;
-            if (reversable != null && ReflectionHelper.IsAssignableFrom(typeof(INotifyPropertyChanged), typeof(T)))
+            if(value is INotifyReversableExpression<TMember> reversable && ReflectionHelper.IsAssignableFrom( typeof( INotifyPropertyChanged ), typeof( T ) ))
             {
-                return new ObservableReversablePropertyMemberBinding<T, TMember>(target, node.Member.Name,
-                    ReflectionHelper.CreateDelegate(typeof(Func<T, TMember>), ReflectionHelper.GetGetter(property)) as Func<T, TMember>,
-                    ReflectionHelper.CreateDelegate(typeof(Action<T, TMember>), ReflectionHelper.GetSetter(property)) as Action<T, TMember>,
-                    reversable);
+                return new ObservableReversablePropertyMemberBinding<T, TMember>( target, node.Member.Name,
+                    ReflectionHelper.CreateDelegate( typeof( Func<T, TMember> ), ReflectionHelper.GetGetter( property ) ) as Func<T, TMember>,
+                    ReflectionHelper.CreateDelegate( typeof( Action<T, TMember> ), ReflectionHelper.GetSetter( property ) ) as Action<T, TMember>,
+                    reversable );
             }
             return new ObservablePropertyMemberBinding<T, TMember>(target,
                 ReflectionHelper.CreateDelegate(typeof(Action<T, TMember>), ReflectionHelper.GetSetter(property)) as Action<T, TMember>, value);

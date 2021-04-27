@@ -39,8 +39,7 @@ namespace NMF.Expressions
 
             if (result.Changed)
             {
-                var disposable = oldValue as IDisposable;
-                if (disposable != null)
+                if(oldValue is IDisposable disposable)
                     disposable.Dispose();
             }
 

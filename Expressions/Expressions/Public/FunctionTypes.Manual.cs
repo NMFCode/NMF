@@ -84,14 +84,13 @@ namespace NMF.Expressions
 
             set
             {
-                var expression = Expression as INotifyReversableExpression<T>;
-                if (expression != null)
+                if(Expression is INotifyReversableExpression<T> expression)
                 {
                     expression.Value = value;
                 }
                 else
                 {
-                    throw new InvalidOperationException("The expression is read-only.");
+                    throw new InvalidOperationException( "The expression is read-only." );
                 }
             }
         }
@@ -100,8 +99,7 @@ namespace NMF.Expressions
         {
             get
             {
-                var expression = Expression as INotifyReversableExpression<T>;
-                return expression != null && expression.IsReversable;
+                return Expression is INotifyReversableExpression<T> expression && expression.IsReversable;
             }
         }
 

@@ -107,12 +107,14 @@ namespace NMF.Expressions
             this.Value = value;
         }
 
+        /// <inheritdoc />
         public override Expression Visit(Expression node)
         {
             if (node == null) return null;
             return base.Visit(node);
         }
 
+        /// <inheritdoc />
         protected override Expression VisitBinary(BinaryExpression node)
         {
             if (node.Method != null)
@@ -271,6 +273,7 @@ namespace NMF.Expressions
             return null;
         }
 
+        /// <inheritdoc />
         protected override Expression VisitConditional(ConditionalExpression node)
         {
             var current = Value;
@@ -301,26 +304,31 @@ namespace NMF.Expressions
             }
         }
 
+        /// <inheritdoc />
         protected override Expression VisitDefault(DefaultExpression node)
         {
             return null;
         }
 
+        /// <inheritdoc />
         protected override ElementInit VisitElementInit(ElementInit node)
         {
             return null;
         }
 
+        /// <inheritdoc />
         protected override Expression VisitIndex(IndexExpression node)
         {
             return null;
         }
 
+        /// <inheritdoc />
         protected override Expression VisitListInit(ListInitExpression node)
         {
             return null;
         }
 
+        /// <inheritdoc />
         protected override Expression VisitMember(MemberExpression node)
         {
             if (ReflectionHelper.IsAssignableFrom(node.Type, Value.Type))
@@ -333,72 +341,74 @@ namespace NMF.Expressions
             }
         }
 
+        /// <inheritdoc />
         protected override MemberAssignment VisitMemberAssignment(MemberAssignment node)
         {
             return null;
         }
 
+        /// <inheritdoc />
         protected override Expression VisitMemberInit(MemberInitExpression node)
         {
             return null;
         }
 
+        /// <inheritdoc />
         protected override MemberListBinding VisitMemberListBinding(MemberListBinding node)
         {
             return null;
         }
 
+        /// <inheritdoc />
         protected override MemberMemberBinding VisitMemberMemberBinding(MemberMemberBinding node)
         {
             return null;
         }
 
+        /// <inheritdoc />
         protected override Expression VisitMethodCall(MethodCallExpression node)
         {
             var attributes = node.Method.GetCustomAttributes(typeof(SetExpressionRewriterAttribute), false);
             if (attributes != null)
             {
-                var proxyAttribute = attributes.FirstOrDefault() as SetExpressionRewriterAttribute;
-                if (proxyAttribute != null)
+                if(attributes.FirstOrDefault() is SetExpressionRewriterAttribute proxyAttribute)
                 {
                     MethodInfo proxyMethod;
-                    if (!proxyAttribute.InitializeProxyMethod(node.Method, new Type[] { typeof(MethodCallExpression), typeof(SetExpressionRewriter) }, out proxyMethod))
+                    if(!proxyAttribute.InitializeProxyMethod( node.Method, new Type[] { typeof( MethodCallExpression ), typeof( SetExpressionRewriter ) }, out proxyMethod ))
                     {
-                        throw new InvalidOperationException($"The given expression rewriter method for method {node.Method.Name} has the wrong signature. It must accept parameters of type MethodCallExpression and SetExpressionRewriter.");
+                        throw new InvalidOperationException( $"The given expression rewriter method for method {node.Method.Name} has the wrong signature. It must accept parameters of type MethodCallExpression and SetExpressionRewriter." );
                     }
-                    else if (proxyMethod != null && proxyMethod.IsStatic && proxyMethod.ReturnType == typeof(Expression))
+                    else if(proxyMethod != null && proxyMethod.IsStatic && proxyMethod.ReturnType == typeof( Expression ))
                     {
-                        var func = ReflectionHelper.CreateDelegate<Func<MethodCallExpression, SetExpressionRewriter, Expression>>(proxyMethod);
-                        return func(node, this);
+                        var func = ReflectionHelper.CreateDelegate<Func<MethodCallExpression, SetExpressionRewriter, Expression>>( proxyMethod );
+                        return func( node, this );
                     }
                 }
             }
             attributes = node.Method.GetCustomAttributes(typeof(LensPutAttribute), false);
             if (attributes != null && node.Method.ReturnType != typeof(void) && Value != null)
             {
-                var lensPutAttribute = attributes.FirstOrDefault() as LensPutAttribute;
-                if (lensPutAttribute != null)
+                if(attributes.FirstOrDefault() is LensPutAttribute lensPutAttribute)
                 {
-                    MethodInfo lensMethod;
-                    var typeList = new List<Type>(node.Method.GetParameters().Select(p => p.ParameterType));
-                    if (!node.Method.IsStatic)
+                    var typeList = new List<Type>( node.Method.GetParameters().Select( p => p.ParameterType ) );
+                    if(!node.Method.IsStatic)
                     {
-                        typeList.Insert(0, node.Object.Type);
+                        typeList.Insert( 0, node.Object.Type );
                     }
-                    typeList.Add(node.Method.ReturnType);
-                    if (!lensPutAttribute.InitializeProxyMethod(node.Method, typeList.ToArray(), out lensMethod))
+                    typeList.Add( node.Method.ReturnType );
+                    if(!lensPutAttribute.InitializeProxyMethod( node.Method, typeList.ToArray(), out MethodInfo lensMethod ))
                     {
-                        typeList.RemoveAt(0);
-                        if (node.Method.IsStatic || !lensPutAttribute.InitializeProxyMethod(node.Method, typeList.ToArray(), out lensMethod))
+                        typeList.RemoveAt( 0 );
+                        if(node.Method.IsStatic || !lensPutAttribute.InitializeProxyMethod( node.Method, typeList.ToArray(), out lensMethod ))
                         {
-                            throw new InvalidOperationException($"The lens put method for method {node.Method.Name} has the wrong signature. It must accept the same parameter types as the original method plus the return type of the original method.");
+                            throw new InvalidOperationException( $"The lens put method for method {node.Method.Name} has the wrong signature. It must accept the same parameter types as the original method plus the return type of the original method." );
                         }
-                        else if (lensMethod != null && !lensMethod.IsStatic)
+                        else if(lensMethod != null && !lensMethod.IsStatic)
                         {
-                            var args = new List<Expression>(node.Arguments);
-                            args.Add(Value);
-                            var call = Expression.Call(node.Object, lensMethod, args);
-                            if (lensMethod.ReturnType == typeof(void))
+                            var args = new List<Expression>( node.Arguments );
+                            args.Add( Value );
+                            var call = Expression.Call( node.Object, lensMethod, args );
+                            if(lensMethod.ReturnType == typeof( void ))
                             {
                                 Value = null;
                             }
@@ -409,16 +419,16 @@ namespace NMF.Expressions
                             return call;
                         }
                     }
-                    else if (lensMethod != null && lensMethod.IsStatic)
+                    else if(lensMethod != null && lensMethod.IsStatic)
                     {
-                        var args = new List<Expression>(node.Arguments);
-                        args.Add(Value);
-                        if (!node.Method.IsStatic)
+                        var args = new List<Expression>( node.Arguments );
+                        args.Add( Value );
+                        if(!node.Method.IsStatic)
                         {
-                            args.Insert(0, node.Object);
+                            args.Insert( 0, node.Object );
                         }
-                        var call = Expression.Call(lensMethod, args);
-                        if (lensMethod.ReturnType == typeof(void))
+                        var call = Expression.Call( lensMethod, args );
+                        if(lensMethod.ReturnType == typeof( void ))
                         {
                             Value = null;
                             return call;
@@ -426,13 +436,13 @@ namespace NMF.Expressions
                         else
                         {
                             Value = call;
-                            if (node.Method.IsStatic)
+                            if(node.Method.IsStatic)
                             {
-                                return Visit(node.Arguments[0]);
+                                return Visit( node.Arguments[0] );
                             }
                             else
                             {
-                                return Visit(node.Object);
+                                return Visit( node.Object );
                             }
                         }
                     }
@@ -441,21 +451,25 @@ namespace NMF.Expressions
             return null;
         }
 
+        /// <inheritdoc />
         protected override Expression VisitNew(NewExpression node)
         {
             return null;
         }
 
+        /// <inheritdoc />
         protected override Expression VisitNewArray(NewArrayExpression node)
         {
             return null;
         }
 
+        /// <inheritdoc />
         protected override Expression VisitParameter(ParameterExpression node)
         {
             return null;
         }
 
+        /// <inheritdoc />
         protected override Expression VisitUnary(UnaryExpression node)
         {
             if (node == null || node.Method != null) return null;

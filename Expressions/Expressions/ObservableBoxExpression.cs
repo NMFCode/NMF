@@ -54,8 +54,7 @@ namespace NMF.Expressions
         {
             get
             {
-                var innerReversable = Inner as INotifyReversableExpression<T>;
-                return innerReversable != null && innerReversable.IsReversable;
+                return Inner is INotifyReversableExpression<T> innerReversable && innerReversable.IsReversable;
             }
         }
 

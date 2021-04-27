@@ -10,14 +10,13 @@ namespace NMF.Expressions
         public static INotifyValue<T> AsReversable<T>(this INotifyValue<T> value, Action<T> reversableHandler)
         {
             if (reversableHandler == null) throw new ArgumentNullException("reversableHandler");
-            var expression = value as INotifyExpression<T>;
-            if (expression != null)
+            if(value is INotifyExpression<T> expression)
             {
-                return new ReversableProxyExpression<T>(expression, reversableHandler);
+                return new ReversableProxyExpression<T>( expression, reversableHandler );
             }
             else
             {
-                return new ReversableProxyValue<T, INotifyValue<T>>(value, reversableHandler);
+                return new ReversableProxyValue<T, INotifyValue<T>>( value, reversableHandler );
             }
         }
 

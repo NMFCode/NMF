@@ -110,14 +110,13 @@ namespace NMF.Expressions
         /// <returns>An incremental value of type object</returns>
         public static INotifyExpression<object> Box<T>(INotifyExpression<T> value)
         {
-            var reversable = value as INotifyReversableExpression<T>;
-            if (reversable != null)
+            if(value is INotifyReversableExpression<T> reversable)
             {
-                return new ObservableReversableBoxExpression<T>(reversable);
+                return new ObservableReversableBoxExpression<T>( reversable );
             }
             else
             {
-                return new ObservableBoxExpression<T>(value);
+                return new ObservableBoxExpression<T>( value );
             }
         }
 

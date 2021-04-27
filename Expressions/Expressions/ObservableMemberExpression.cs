@@ -108,9 +108,8 @@ namespace NMF.Expressions
 
         private void AttachPropertyChangeListener(object target)
         {
-            var newTarget = target as INotifyPropertyChanged;
-            if (newTarget != null)
-                listener.Subscribe(newTarget, MemberName);
+            if(target is INotifyPropertyChanged newTarget)
+                listener.Subscribe( newTarget, MemberName );
         }
     }
 
@@ -239,9 +238,8 @@ namespace NMF.Expressions
 
         private void AttachPropertyChangeListener(object target)
         {
-            var newTarget = target as INotifyPropertyChanged;
-            if (newTarget != null)
-                listener.Subscribe(newTarget, MemberName);
+            if(target is INotifyPropertyChanged newTarget)
+                listener.Subscribe( newTarget, MemberName );
         }
     }
 }

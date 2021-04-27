@@ -64,16 +64,14 @@ namespace NMF.Expressions
             {
                 if (!EqualityComparer<TResult>.Default.Equals(Value, value))
                 {
-                    var leftReversable = Left as INotifyReversableExpression<TLeft>;
-                    if (leftReversable != null && leftReversable.IsReversable && Right.CanBeConstant)
+                    if(Left is INotifyReversableExpression<TLeft> leftReversable && leftReversable.IsReversable && Right.CanBeConstant)
                     {
-                        SetLeftValue(leftReversable, Right.Value, value);
+                        SetLeftValue( leftReversable, Right.Value, value );
                         return;
                     }
-                    var rightReversable = Right as INotifyReversableExpression<TRight>;
-                    if (rightReversable != null && rightReversable.IsReversable && Left.CanBeConstant)
+                    if(Right is INotifyReversableExpression<TRight> rightReversable && rightReversable.IsReversable && Left.CanBeConstant)
                     {
-                        SetRightValue(rightReversable, Left.Value, value);
+                        SetRightValue( rightReversable, Left.Value, value );
                         return;
                     }
                     throw new InvalidOperationException("Binary expressions can only be reversed if one operand is reversable and the other one is constant.");
@@ -91,13 +89,11 @@ namespace NMF.Expressions
             {
                 if (Successors.HasSuccessors)
                 {
-                    var leftReversable = Left as INotifyReversableExpression<TLeft>;
-                    if (leftReversable != null)
+                    if(Left is INotifyReversableExpression<TLeft> leftReversable)
                     {
                         return leftReversable.CanBeConstant && Right.CanBeConstant;
                     }
-                    var rightReversable = Right as INotifyReversableExpression<TRight>;
-                    if (rightReversable != null)
+                    if(Right is INotifyReversableExpression<TRight> rightReversable)
                     {
                         return rightReversable.CanBeConstant && Left.CanBeConstant;
                     }

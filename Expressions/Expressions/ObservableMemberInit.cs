@@ -25,9 +25,8 @@ namespace NMF.Expressions
             if (memberBindings == null) throw new ArgumentNullException("memberBindings");
 
             InnerExpression = innerExpression;
-            
-            var list = memberBindings as List<ObservableMemberBinding<T>>;
-            if (list == null)
+
+            if(memberBindings is not List<ObservableMemberBinding<T>> list)
             {
                 list = memberBindings.ToList();
             }

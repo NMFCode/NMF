@@ -39,29 +39,26 @@ namespace NMF.Expressions
             object value;
             if (parameters != null && parameters.TryGetValue(Name, out value))
             {
-                var notifyExpression = value as INotifyExpression<T>;
-                if (notifyExpression != null)
+                if(value is INotifyExpression<T> notifyExpression)
                 {
                     return notifyExpression;
                 }
                 else
                 {
-                    var notifyValue = value as INotifyValue<T>;
-                    if (notifyValue != null)
+                    if(value is INotifyValue<T> notifyValue)
                     {
-                        var notifyReversableValue = value as INotifyReversableValue<T>;
-                        if (notifyReversableValue != null)
+                        if(value is INotifyReversableValue<T> notifyReversableValue)
                         {
-                            return new ObservableProxyReversableExpression<T>(notifyReversableValue);
+                            return new ObservableProxyReversableExpression<T>( notifyReversableValue );
                         }
                         else
                         {
-                            return new ObservableProxyExpression<T>(notifyValue);
+                            return new ObservableProxyExpression<T>( notifyValue );
                         }
                     }
                     else
                     {
-                        return new ObservableConstant<T>((T)value);
+                        return new ObservableConstant<T>( (T)value );
                     }
                 }
             }

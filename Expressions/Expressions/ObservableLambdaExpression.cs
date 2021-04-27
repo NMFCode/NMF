@@ -57,17 +57,16 @@ namespace NMF.Expressions
                     }
                     else
                     {
-                        INotifyExpression expression = argument as INotifyExpression;
-                        if (expression != null && expression.IsConstant)
+                        if(argument is INotifyExpression expression && expression.IsConstant)
                         {
-                            return Expression.Constant(expression.ValueObject, node.Type);
+                            return Expression.Constant( expression.ValueObject, node.Type );
                         }
                         else
                         {
-                            var notifyValueType = typeof(INotifyValue<>).MakeGenericType(node.Type);
-                            if (notifyValueType.IsInstanceOfType(argument))
+                            var notifyValueType = typeof( INotifyValue<> ).MakeGenericType( node.Type );
+                            if(notifyValueType.IsInstanceOfType( argument ))
                             {
-                                return Expression.MakeMemberAccess(Expression.Constant(argument, notifyValueType), ReflectionHelper.GetProperty(notifyValueType, "Value"));
+                                return Expression.MakeMemberAccess( Expression.Constant( argument, notifyValueType ), ReflectionHelper.GetProperty( notifyValueType, "Value" ) );
                             }
                         }
                     }
@@ -77,10 +76,9 @@ namespace NMF.Expressions
 
             protected override Expression VisitConstant(ConstantExpression node)
             {
-                var expressionVal = node.Value as INotifyExpression;
-                if (expressionVal != null)
+                if(node.Value is INotifyExpression expressionVal)
                 {
-                    return Expression.Constant(expressionVal.ApplyParameters(parameterMappings, trace), node.Type);
+                    return Expression.Constant( expressionVal.ApplyParameters( parameterMappings, trace ), node.Type );
                 }
                 return node;
             }
@@ -102,8 +100,7 @@ namespace NMF.Expressions
 
             protected override Expression VisitConstant(ConstantExpression node)
             {
-                var expressionVal = node.Value as INotifyExpression;
-                if (expressionVal != null && !expressionVal.IsParameterFree)
+                if(node.Value is INotifyExpression expressionVal && !expressionVal.IsParameterFree)
                 {
                     FoundExternalParameter = true;
                 }

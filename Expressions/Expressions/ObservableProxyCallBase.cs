@@ -19,8 +19,7 @@ namespace NMF.Expressions
             get
             {
                 if (Proxy == null) return true;
-                var reversable = Proxy as INotifyReversableValue<TResult>;
-                return reversable != null && reversable.IsReversable;
+                return Proxy is INotifyReversableValue<TResult> reversable && reversable.IsReversable;
             }
         }
 

@@ -85,8 +85,7 @@ namespace NMF.Expressions
 
             if (result.Changed)
             {
-                var disposable = oldValue as IDisposable;
-                if (disposable != null)
+                if(oldValue is IDisposable disposable)
                     disposable.Dispose();
             }
 
@@ -95,9 +94,8 @@ namespace NMF.Expressions
 
         private void AttachCollectionChangeListener(object target)
         {
-            var newTarget = target as INotifyCollectionChanged;
-            if (newTarget != null)
-                listener.Subscribe(newTarget);
+            if(target is INotifyCollectionChanged newTarget)
+                listener.Subscribe( newTarget );
         }
     }
 }

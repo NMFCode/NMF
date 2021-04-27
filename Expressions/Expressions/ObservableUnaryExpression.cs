@@ -52,10 +52,9 @@ namespace NMF.Expressions
             {
                 if (!EqualityComparer<TOuter>.Default.Equals(Value, value))
                 {
-                    var reversable = Target as INotifyReversableExpression<TInner>;
-                    if (reversable != null && reversable.IsReversable)
+                    if(Target is INotifyReversableExpression<TInner> reversable && reversable.IsReversable)
                     {
-                        SetValue(reversable, value);
+                        SetValue( reversable, value );
                     }
                 }
             }
@@ -67,8 +66,7 @@ namespace NMF.Expressions
         {
             get
             {
-                var reversable = Target as INotifyReversableExpression<TInner>;
-                return reversable != null && reversable.IsReversable;
+                return Target is INotifyReversableExpression<TInner> reversable && reversable.IsReversable;
             }
         }
     }
