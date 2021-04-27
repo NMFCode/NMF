@@ -21,15 +21,21 @@ namespace NMF.Synchronizations
             Inconsistencies = new ObservableSet<IInconsistency>();
         }
 
+        /// <inheritdoc />
+
         public SynchronizationDirection Direction
         {
             get; set;
         }
 
+        /// <inheritdoc />
+
         public ChangePropagationMode ChangePropagation
         {
             get;
         }
+
+        /// <inheritdoc />
 
         public ICollectionExpression<IInconsistency> Inconsistencies { get; }
     }

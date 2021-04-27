@@ -73,13 +73,6 @@ namespace NMF.Synchronizations
             if (targets != null)
             {
                 if (targets.IsReadOnly) throw new InvalidOperationException("Collection is read-only!");
-                IEnumerable<TTargetDep> rightsSaved = targets;
-                if (source == null || (context.Direction == SynchronizationDirection.LeftToRightForced || context.Direction == SynchronizationDirection.RightToLeftForced))
-                {
-                    rightsSaved = targets.ToArray();
-                    targets.Clear();
-                }
-                var doubles = new HashSet<TTargetDep>();
                 IEnumerable rightContext = ignoreCandidates ? null : targets;
                 foreach (var item in source)
                 {
@@ -89,10 +82,6 @@ namespace NMF.Synchronizations
                         if (!targets.Contains(outp))
                         {
                             targets.Add(outp);
-                        }
-                        else
-                        {
-                            doubles.Add(outp);
                         }
                     });
                 }
@@ -175,8 +164,7 @@ namespace NMF.Synchronizations
                 Context = context;
                 Parent = parent;
 
-                var notifier = lefts as INotifyCollectionChanged;
-                if (notifier != null)
+                if(lefts is INotifyCollectionChanged notifier)
                 {
                     notifier.CollectionChanged += LeftsChanged;
                 }
@@ -189,8 +177,7 @@ namespace NMF.Synchronizations
 
             public void Dispose()
             {
-                var notifier = Lefts as INotifyCollectionChanged;
-                if (notifier != null)
+                if(Lefts is INotifyCollectionChanged notifier)
                 {
                     notifier.CollectionChanged -= LeftsChanged;
                 }

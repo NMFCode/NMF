@@ -6,18 +6,40 @@ using System;
 
 namespace NMF.Synchronizations.Inconsistencies
 {
+    /// <summary>
+    /// Denotes an incrementally maintained inconsistency that a reference has different values in LHS and RHS
+    /// </summary>
+    /// <typeparam name="TLeft">The LHS context type</typeparam>
+    /// <typeparam name="TRight">The RHS context type</typeparam>
+    /// <typeparam name="TDepLeft">The LHS dependency type</typeparam>
+    /// <typeparam name="TDepRight">The RHS dependency type</typeparam>
     public class IncrementalReferenceConsistencyCheck<TLeft, TRight, TDepLeft, TDepRight> : IDisposable, IInconsistency
         where TLeft : class
         where TRight : class
         where TDepLeft : class
         where TDepRight : class
     {
+        /// <summary>
+        /// Gets an incrementally maintained value of the LHS dependency
+        /// </summary>
         public INotifyReversableValue<TDepLeft> Left { get; private set; }
+
+        /// <summary>
+        /// Gets an incrementally maintained value of the RHS dependency
+        /// </summary>
         public INotifyReversableValue<TDepRight> Right { get; private set; }
         internal SynchronizationSingleDependency<TLeft, TRight, TDepLeft, TDepRight> Parent { get; private set; }
+
+        /// <summary>
+        /// Gets the base correspondence on the basis of which the inconsistency was detected
+        /// </summary>
         public SynchronizationComputation<TLeft, TRight> Computation { get; private set; }
 
+        /// <inheritdoc />
+
         public bool CanResolveLeft => Left.IsReversable;
+
+        /// <inheritdoc />
 
         public bool CanResolveRight => Right.IsReversable;
 
@@ -50,6 +72,8 @@ namespace NMF.Synchronizations.Inconsistencies
             ResolveRight();
         }
 
+        /// <inheritdoc />
+
         public void Dispose()
         {
             Left.ValueChanged -= Left_ValueChanged;
@@ -57,6 +81,8 @@ namespace NMF.Synchronizations.Inconsistencies
             Left.Dispose();
             Right.Dispose();
         }
+
+        /// <inheritdoc />
 
         public void ResolveLeft()
         {
@@ -82,6 +108,8 @@ namespace NMF.Synchronizations.Inconsistencies
             }
         }
 
+        /// <inheritdoc />
+
         public void ResolveRight()
         {
             if (!isProcessingChange)
@@ -102,6 +130,8 @@ namespace NMF.Synchronizations.Inconsistencies
             }
         }
 
+        /// <inheritdoc />
+
         public override int GetHashCode()
         {
             var hashCode = Parent.GetHashCode();
@@ -114,17 +144,23 @@ namespace NMF.Synchronizations.Inconsistencies
             return hashCode;
         }
 
+        /// <inheritdoc />
+
         public override bool Equals(object obj)
         {
-            if (object.ReferenceEquals(obj, this)) return true;
+            if (ReferenceEquals( obj, this)) return true;
             if (obj is IncrementalReferenceConsistencyCheck<TLeft, TRight, TDepLeft, TDepRight> other) return Equals(other);
             return false;
         }
+
+        /// <inheritdoc />
 
         public bool Equals(IInconsistency other)
         {
             return Equals(other as IncrementalReferenceConsistencyCheck<TLeft, TRight, TDepLeft, TDepRight>);
         }
+
+        /// <inheritdoc />
 
         public bool Equals(IncrementalReferenceConsistencyCheck<TLeft, TRight, TDepLeft, TDepRight> other)
         {

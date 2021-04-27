@@ -4,7 +4,7 @@ using System.Linq.Expressions;
 
 namespace NMF.Synchronizations
 {
-    public class OneWayPropertySynchronizationJob<TSource, TTarget, TValue>
+    internal class OneWayPropertySynchronizationJob<TSource, TTarget, TValue>
         where TSource : class
         where TTarget : class
     {
@@ -40,11 +40,11 @@ namespace NMF.Synchronizations
         {
             switch (context.ChangePropagation)
             {
-                case NMF.Transformations.ChangePropagationMode.None:
+                case Transformations.ChangePropagationMode.None:
                     targetSetter(target, sourceGetter(source));
                     return null;
-                case NMF.Transformations.ChangePropagationMode.OneWay:
-                case NMF.Transformations.ChangePropagationMode.TwoWay:
+                case Transformations.ChangePropagationMode.OneWay:
+                case Transformations.ChangePropagationMode.TwoWay:
                     var incVal = sourceFunc.Observe(source);
                     incVal.Successors.SetDummy();
                     targetSetter(target, incVal.Value);

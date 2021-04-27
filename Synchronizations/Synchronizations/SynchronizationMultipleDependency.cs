@@ -387,8 +387,7 @@ namespace NMF.Synchronizations
             public LeftToRightHook(ICollection<TDepLeft> lefts, ICollection<TDepRight> rights, ISynchronizationContext context, SynchronizationMultipleDependency<TLeft, TRight, TDepLeft, TDepRight> parent)
                 : base(lefts, rights, context, parent)
             {
-                var notifier = lefts as INotifyCollectionChanged;
-                if (notifier != null)
+                if(lefts is INotifyCollectionChanged notifier)
                 {
                     notifier.CollectionChanged += LeftsChanged;
                 }
@@ -401,8 +400,7 @@ namespace NMF.Synchronizations
 
             public override void Dispose()
             {
-                var notifier = Lefts as INotifyCollectionChanged;
-                if (notifier != null)
+                if(Lefts is INotifyCollectionChanged notifier)
                 {
                     notifier.CollectionChanged -= LeftsChanged;
                 }
@@ -414,8 +412,7 @@ namespace NMF.Synchronizations
             public RightToLeftHook(ICollection<TDepLeft> lefts, ICollection<TDepRight> rights, ISynchronizationContext context, SynchronizationMultipleDependency<TLeft, TRight, TDepLeft, TDepRight> parent)
                 : base(lefts, rights, context, parent)
             {
-                var notifier = rights as INotifyCollectionChanged;
-                if (notifier != null)
+                if(rights is INotifyCollectionChanged notifier)
                 {
                     notifier.CollectionChanged += RightsChanged;
                 }
@@ -428,8 +425,7 @@ namespace NMF.Synchronizations
 
             public override void Dispose()
             {
-                var notifier = Lefts as INotifyCollectionChanged;
-                if (notifier != null)
+                if(Lefts is INotifyCollectionChanged notifier)
                 {
                     notifier.CollectionChanged -= RightsChanged;
                 }
@@ -443,13 +439,11 @@ namespace NMF.Synchronizations
             public BidirectionalHook(ICollection<TDepLeft> lefts, ICollection<TDepRight> rights, ISynchronizationContext context, SynchronizationMultipleDependency<TLeft, TRight, TDepLeft, TDepRight> parent)
                 : base(lefts, rights, context, parent)
             {
-                var leftNotifier = lefts as INotifyCollectionChanged;
-                var rightNotifier = rights as INotifyCollectionChanged;
-                if (leftNotifier != null)
+                if (lefts is INotifyCollectionChanged leftNotifier)
                 {
                     leftNotifier.CollectionChanged += LeftsChanged;
                 }
-                if (rightNotifier != null)
+                if (rights is INotifyCollectionChanged rightNotifier)
                 {
                     rightNotifier.CollectionChanged += RightsChanged;
                 }
@@ -489,13 +483,11 @@ namespace NMF.Synchronizations
 
             public override void Dispose()
             {
-                var leftNotifier = Lefts as INotifyCollectionChanged;
-                var rightNotifier = Rights as INotifyCollectionChanged;
-                if (leftNotifier != null)
+                if(Lefts is INotifyCollectionChanged leftNotifier)
                 {
                     leftNotifier.CollectionChanged -= LeftsChanged;
                 }
-                if (rightNotifier != null)
+                if (Rights is INotifyCollectionChanged rightNotifier)
                 {
                     rightNotifier.CollectionChanged -= RightsChanged;
                 }

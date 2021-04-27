@@ -182,14 +182,13 @@ namespace NMF.Synchronizations
             input.Successors.SetDummy();
             Action<TLeft, ITransformationContext, TDepLeft> leftSetter = (left, ctx, val) =>
             {
-                var reversable = input as INotifyReversableValue<TDepLeft>;
-                if (reversable != null && reversable.IsReversable)
+                if(input is INotifyReversableValue<TDepLeft> reversable && reversable.IsReversable)
                 {
                     reversable.Value = val;
                 }
                 else
                 {
-                    throw new InvalidOperationException(string.Format("The expression {0} cannot be written to as it is not reversable.", input));
+                    throw new InvalidOperationException( string.Format( "The expression {0} cannot be written to as it is not reversable.", input ) );
                 }
             };
             CallLTRTransformationForInput(syncComputation, syncComputation.SynchronizationContext.Direction,
@@ -230,14 +229,13 @@ namespace NMF.Synchronizations
             input.Successors.SetDummy();
             Action<TRight, ITransformationContext, TDepRight> rightSetter = (right, ctx, val) =>
             {
-                var reversable = input as INotifyReversableValue<TDepRight>;
-                if (reversable != null && reversable.IsReversable)
+                if(input is INotifyReversableValue<TDepRight> reversable && reversable.IsReversable)
                 {
                     reversable.Value = val;
                 }
                 else
                 {
-                    throw new InvalidOperationException(string.Format("The expression {0} cannot be written to as it is not reversable.", input));
+                    throw new InvalidOperationException( string.Format( "The expression {0} cannot be written to as it is not reversable.", input ) );
                 }
             };
             CallRTLTransformationForInput(syncComputation, syncComputation.SynchronizationContext.Direction,

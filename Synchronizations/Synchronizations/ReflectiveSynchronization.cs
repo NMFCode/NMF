@@ -8,6 +8,9 @@ using System.Threading.Tasks;
 
 namespace NMF.Synchronizations
 {
+    /// <summary>
+    /// Denotes a synchronization that assigns the synchronization rules from the nested classes through reflection
+    /// </summary>
     public class ReflectiveSynchronization : Synchronization
     {
         private IDictionary<Type, GeneralTransformationRule> rules;

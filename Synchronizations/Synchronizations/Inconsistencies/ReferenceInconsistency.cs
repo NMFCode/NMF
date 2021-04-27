@@ -4,15 +4,33 @@ using System.Collections.Generic;
 
 namespace NMF.Synchronizations.Inconsistencies
 {
+    /// <summary>
+    /// Denotes an inconsistency in a reference
+    /// </summary>
+    /// <typeparam name="TLeft">The LHS element type of the inconsistency</typeparam>
+    /// <typeparam name="TRight">The RHS element type of the inconsistency</typeparam>
+    /// <typeparam name="TDepLeft">The LHS dependency type</typeparam>
+    /// <typeparam name="TDepRight">The RHS dependency type</typeparam>
     public class ReferenceInconsistency<TLeft, TRight, TDepLeft, TDepRight> : IInconsistency
         where TLeft : class
         where TRight : class
         where TDepLeft : class
         where TDepRight : class
     {
+        /// <summary>
+        /// Gets the LHS dependent element
+        /// </summary>
         public TDepLeft LeftValue { get; }
+
+        /// <summary>
+        /// Gets the RHS dependent element
+        /// </summary>
         public TDepRight RightValue { get; }
         private SynchronizationSingleDependency<TLeft, TRight, TDepLeft, TDepRight> Rule { get; }
+
+        /// <summary>
+        /// Gets the base correspondence
+        /// </summary>
         public SynchronizationComputation<TLeft, TRight> BaseCorrespondence { get; }
 
         internal ReferenceInconsistency(SynchronizationSingleDependency<TLeft, TRight, TDepLeft, TDepRight> rule, SynchronizationComputation<TLeft, TRight> baseCorrespondence, TDepLeft leftValue, TDepRight rightValue)
@@ -23,10 +41,15 @@ namespace NMF.Synchronizations.Inconsistencies
             RightValue = rightValue;
         }
 
+        /// <inheritdoc />
 
         public bool CanResolveLeft => Rule.leftSetter != null;
 
+        /// <inheritdoc />
+
         public bool CanResolveRight => Rule.rightSetter != null;
+
+        /// <inheritdoc />
 
         public override int GetHashCode()
         {
@@ -40,23 +63,31 @@ namespace NMF.Synchronizations.Inconsistencies
             return hashCode;
         }
 
+        /// <inheritdoc />
+
         public override bool Equals(object obj)
         {
-            if (object.ReferenceEquals(obj, this)) return true;
+            if (ReferenceEquals( obj, this)) return true;
             if (obj is ReferenceInconsistency<TLeft, TRight, TDepLeft, TDepRight> other) return Equals(other);
             return false;
         }
+
+        /// <inheritdoc />
 
         public bool Equals(IInconsistency other)
         {
             return Equals(other as ReferenceInconsistency<TLeft, TRight, TDepLeft, TDepRight>);
         }
 
+        /// <inheritdoc />
+
         public bool Equals(ReferenceInconsistency<TLeft, TRight, TDepLeft, TDepRight> other)
         {
             return other != null && Rule == other.Rule && BaseCorrespondence == other.BaseCorrespondence
                 && EqualityComparer<TDepLeft>.Default.Equals(other.LeftValue, LeftValue) && EqualityComparer<TDepRight>.Default.Equals(other.RightValue, RightValue);
         }
+
+        /// <inheritdoc />
 
         public void ResolveLeft()
         {
@@ -81,6 +112,8 @@ namespace NMF.Synchronizations.Inconsistencies
                 context.Direction = direction;
             }
         }
+
+        /// <inheritdoc />
 
         public void ResolveRight()
         {

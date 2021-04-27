@@ -6,6 +6,9 @@ using System.Threading.Tasks;
 
 namespace NMF.Synchronizations
 {
+    /// <summary>
+    /// Denotes the direction of a synchronization
+    /// </summary>
     public enum SynchronizationDirection
     {
         LeftToRight,

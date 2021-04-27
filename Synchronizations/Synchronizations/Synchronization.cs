@@ -10,9 +10,14 @@ using System.Collections;
 
 namespace NMF.Synchronizations
 {
+    /// <summary>
+    /// Denotes an abstract synchronization
+    /// </summary>
     public abstract class Synchronization : Transformation
     {
         public abstract IEnumerable<SynchronizationRuleBase> SynchronizationRules { get; }
+
+        /// <inheritdoc />
 
         public override void RegisterRules()
         {

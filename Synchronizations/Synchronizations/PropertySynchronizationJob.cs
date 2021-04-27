@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace NMF.Synchronizations
 {
-    public class PropertySynchronizationJob<TLeft, TRight, TValue> : ISynchronizationJob<TLeft, TRight>
+    internal class PropertySynchronizationJob<TLeft, TRight, TValue> : ISynchronizationJob<TLeft, TRight>
         where TLeft : class
         where TRight : class
     {
@@ -222,12 +222,12 @@ namespace NMF.Synchronizations
             var right = computation.Opposite.Input;
             switch (context.ChangePropagation)
             {
-                case NMF.Transformations.ChangePropagationMode.None:
+                case Transformations.ChangePropagationMode.None:
                     PerformNoChangePropagation(left, right, direction, context);
                     return null;
-                case NMF.Transformations.ChangePropagationMode.OneWay:
+                case Transformations.ChangePropagationMode.OneWay:
                     return PerformOneWay(left, right, context);
-                case NMF.Transformations.ChangePropagationMode.TwoWay:
+                case Transformations.ChangePropagationMode.TwoWay:
                     return PerformTwoWay(left, right, context);
                 default:
                     throw new InvalidOperationException();

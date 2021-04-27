@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace NMF.Synchronizations
 {
-    public class OpaqueSynchronizationJob<TLeft, TRight> : ISynchronizationJob<TLeft, TRight>
+    internal class OpaqueSynchronizationJob<TLeft, TRight> : ISynchronizationJob<TLeft, TRight>
         where TLeft : class
         where TRight : class
     {
